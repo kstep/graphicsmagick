@@ -94,11 +94,37 @@ UNIX/Cygwin COMPILATION
   everything that you think it should. If it does not, then adjust your
   environment so that it does.
 
+  By default, `make install' will install the package's files in
+  `/usr/local/bin', `/usr/local/man', etc. You can specify an
+  installation prefix other than `/usr/local' by giving `configure' the
+  option `--prefix=PATH'. This is valuable in case you don't have
+  privileges to install under the default paths or if you want to
+  install in the system directories instead.
+
   If you are not happy with configure's choice of compiler, compilation
   flags, or libraries, you can give `configure' initial values for
   variables by specifying them on the configure command line, e.g.:
 
       ./configure CC=c89 CFLAGS=-O2 LIBS=-lposix
+
+  Options which should be common to packages installed under the same
+  directory heirarchy may be supplied via a 'config.site' file located
+  under the installation prefix via the path ${prefix}/share/config.site
+  where ${prefix} is the installation prefix. This file is used for all
+  packages installed under that prefix. This is an example config.site
+  file:
+
+  # Configuration defaults for all packages installed under this prefix
+  CC=gcc
+  CXX=c++
+  CFLAGS=-O2
+  CXXFLAGS=-O
+  LDFLAGS=-R/usr/local/lib
+
+  When the 'config.site' file is being used to supply defaults, configure
+  will issue a message similar to:
+
+    configure: loading site script /usr/local/share/config.site
 
   The configure variables you should be aware of are:
 
@@ -120,15 +146,9 @@ UNIX/Cygwin COMPILATION
   Any variable (e.g. CPPFLAGS or LDFLAGS) which requires a directory
   path must specify an absolute path rather than a relative path.
 
-  By default, `make install' will install the package's files in
-  `/usr/local/bin', `/usr/local/man', etc.  You can specify an
-  installation prefix other than `/usr/local' by giving `configure' the
-  option `--prefix=PATH'.
-
   Configure can usually find the X include and library files
   automatically, but if it doesn't, you can use the `configure' options
-  `--x-includes=DIR' and `--x-libraries=DIR' to specify their
-  locations.
+  `--x-includes=DIR' and `--x-libraries=DIR' to specify their locations.
 
   The configure script provides a number of ImageMagick specific
   options.  When disabling an option --disable-something is equivalent
@@ -197,13 +217,12 @@ UNIX/Cygwin COMPILATION
     o --enable-shared: the shared libraries are built. Shared
       libraries are preferred because they allow programs to share
       common code, making the individual programs much smaller. In
-      addition shared libraries are required in order for PerlMagick
-      to be dynamically loaded by an installed PERL (otherwise an
-      additional PERL (PerlMagick) must be installed.  This option
-      is not the default because it is usually the case that all
-      libraries used by ImageMagick also be dynamic libraries if
-      ImageMagick itself is to be dynamically loaded (such as for
-      PerlMagick).
+      addition shared libraries are required in order for PerlMagick to
+      be dynamically loaded by an installed PERL (otherwise an
+      additional PERL (PerlMagick) must be installed. This option is not
+      the default because all libraries used by ImageMagick must also be
+      dynamic libraries if ImageMagick itself is to be dynamically
+      loaded (such as for PerlMagick).
 
       ImageMagick built with delegates (see MAGICK PLUG-INS below) can
       pose additional challenges.  You can build all the delegates
@@ -224,7 +243,8 @@ UNIX/Cygwin COMPILATION
       loadable object which is loaded into your current PERL interpreter
       at run-time. Use of dynamically-loaded extensions is preferable
       over statically linked extensions so --enable-shared should be
-      specified if possible.
+      specified if possible (note that all libraries used with
+      ImageMagick must be shared libraries!).
 
     o --disable-static: static archive libraries (with extension .a)
       are not built.  If you are building shared libraries, there is
@@ -244,10 +264,12 @@ UNIX/Cygwin COMPILATION
       then support for modules is disabled.
 
     o --enable-lzw: Unisys reportedly claims a patent on the algorithm
-      supporting LZW compression (e.g. used by GIF and TIFF).  To avoid
-      possibly infringing on this patent, support for LZW is disabled
-      by default.  With LZW support, GIF files written by ImageMagick
-      will be much larger than expected.
+      supporting LZW compression (e.g. used by GIF and TIFF). To avoid
+      possibly infringing on this patent, support for LZW is disabled by
+      default. With LZW support, GIF files written by ImageMagick will
+      be much larger than expected. Note that the TIFF library must be
+      patched in order to support LZW compression, and that this support
+      must be explicitly enabled in the libtiff Makefiles.
 
     o --disable-16bit-pixel: By default ImageMagick represents images
       internally using a sixteen-bit pixel quantum (the size of the red,
@@ -255,28 +277,23 @@ UNIX/Cygwin COMPILATION
       QuantumDepth=8 is applied when ImageMagick is built, allowing RGBA
       values to range from 0 to 255 rather than 0 to 65535. Use of
       sixteen-bit pixel quantums typically causes ImageMagick to run
-      about 30% slower then when it is built to support eight-bit pixel
-      quantums. Those who favor performance over output quality may
-      prefer to specify --disable-16bit-pixel.
+      about 30% slower (and take twice as much memory) than when it is
+      built to support eight-bit pixel quantums. Those who value
+      performance over accuracy may specify --disable-16bit-pixel.
       
     o --without-magick-plus-plus: Disable building Magick++, the C++
-      application programming interface to ImageMagick.  A suitable C++
-      compiler is required. Specify the CXX configure variable to
-      select the C++ compiler to use (default "g++"), and CXXFLAGS to
-      select the desired compiler opimization and debug flags
-      (default "-g -O2").
+      application programming interface to ImageMagick. A suitable C++
+      compiler is required in order to build Magick++. Specify the CXX
+      configure variable to select the C++ compiler to use (default
+      "g++"), and CXXFLAGS to select the desired compiler opimization
+      and debug flags (default "-g -O2"). Antique C++ compilers will
+      normally be rejected by configure tests so specifying this option
+      should only be necessary if Magick++ fails to compile.
 
-    o --without-frozenpaths: By default, the configure script will
-      determine the location of all delegates (external programs) and
-      incorporate the full paths within the delegates.mgk file. This is
-      the default because it is assumed that the installer's
-      environment is appropriately configured and that the operation of
-      ImageMagick should not be subject to the end-user's environment.
-      However, if it is desirable to allow the end user to define
-      their own environment or possible that the end user's environment
-      does not match the installer's environment (e.g. for binary
-      distributions), --without-frozenpaths may be specified so that
-      only the delegate's name is included in the delegates.mgk file.
+    o --without-frozenpaths: Normally full paths to external programs
+      (based on searching the PATH set when configure is run) will be
+      saved to the delegates.mgk file. Specify this option to disable
+      saving full paths to programs.
 
     o --without-threads: By default, the ImageMagick library is compiled
       with multi-thread support.  If this is undesireable, then specify
@@ -335,17 +352,18 @@ UNIX/Cygwin COMPILATION
       Ghostscript Postscript Type 1 font files (e.g. "n022003l.pfb") so
       that they can be rendered using the FreeType library. If the font
       files are installed using the default Ghostscript installation
-      paths (prefix/share/ghostscript/fonts), they should be discovered
-      automatically by configure and specifying this option is not
-      necessary. Specify this option if the Ghostscript fonts fail to be
-      located automatically, or the location needs to be overridden.
+      paths (${prefix}/share/ghostscript/fonts), they should be
+      discovered automatically by configure and specifying this option
+      is not necessary. Specify this option if the Ghostscript fonts
+      fail to be located automatically, or the location needs to be
+      overridden.
 
     o --with-windows-font-dir: If configured under a Unix emulation
-      environment like Cygwin or mingw, configure should automatically
-      locate the MS-Windows system font directory. If configure is not
-      running under MS-Windows yet MS-Windows-compatible fonts are
-      available use --with-windows-font-dir=/path to specify the
-      directory where the fonts are installed.
+      environment like Cygwin configure should automatically locate the
+      MS-Windows system font directory. If configure is not running
+      under MS-Windows yet MS-Windows-compatible fonts are available use
+      --with-windows-font-dir=/path to specify the directory where the
+      fonts are installed.
 
   Building under Cygwin
 
@@ -374,8 +392,8 @@ UNIX/Cygwin COMPILATION
     please review this log file to determine why, however, please be
     aware that *errors in the config.log are normal* because configure
     works by trying something and seeing if it fails. An error in
-    config.log is only a problem if the test should have worked on your
-    system.. After taking corrective action, be sure to remove the
+    config.log is only a problem if the test should have passed on your
+    system. After taking corrective action, be sure to remove the
     'config.cache' file before running configure so that configure will
     re-inspect the environment rather than using cached values.
 
@@ -434,19 +452,21 @@ UNIX/Cygwin COMPILATION
 
     Be sure to read the manual pages for the display(1), animate(1),
     montage(1), import(1), mogrify(1), identify(1), composite(1), and
-    convert(1) utilities. Also read the ImageMagick frequently asked
-    questions in the file www/Magick.html. This is required reading.
-    Most of the questions I get via electronic mail are answered in this
-    document.
+    convert(1) utilities. The ImageMagick(1) manual page provides
+    details for utility options and will also aid with understanding
+    library interfaces. Also read the ImageMagick frequently asked
+    questions in the file www/Magick.html.
 
   X11 Resources:
 
     Place display(1) X application defaults in
-    /usr/lib/X11/app-defaults/Display. Use the appropriate name for
-    other clients (e.g. Animate, Montage, etc). To execute display(1)
-    from as a menu item of any window manager (olwm, mwm, twm, etc), use
+    /usr/lib/X11/app-defaults/Display or in a directory specified by the
+    XUSERFILESEARCHPATH environment variable. Use the appropriate name
+    for other clients (e.g. Animate, Montage, etc). To execute
+    display(1) from as a menu item of any window manager (olwm, mwm,
+    twm, etc), use
 
-       logo:Untitled
+       display logo:Untitled
 
 MAGICK DELEGATES
 
@@ -470,7 +490,7 @@ MAGICK DELEGATES
 
           ftp://ftp.x.org/contrib/applications/drawing_tools/transfig
 
-      to read the TransFig image format.
+      to read the Fig image format.
 
     o ImageMagick requires the FreeType software, version 2.0 or above,
       available as
@@ -500,7 +520,7 @@ MAGICK DELEGATES
       of libjpeg and that symbols from this libjpeg may be confused with
       symbols with the stand-alone libjpeg. If conflicts cause JPEG to
       fail, it may be necessary to use Ghostscript's copy of libjpeg for
-      ImageMagick, and all delegate libraries which depend on libjpeg..
+      ImageMagick, and all delegate libraries which depend on libjpeg.
 
     o ImageMagick requires the NCSA HDF5 library available via anonymous
       FTP as
@@ -524,7 +544,7 @@ MAGICK DELEGATES
 
     o ImageMagick requires gnuplot available via anonymous FTP as
 
-          ftp://ftp.dartmouth.edu/pub/gnuplot/gnuplot3.5.tar.Z
+          ftp://ftp.dartmouth.edu/pub/gnuplot/gnuplot-3.7.tar.gz
 
       to read GNUPLOT plot files (with extension gplt).
 
@@ -591,7 +611,7 @@ MAGICK DELEGATES
     o ImageMagick requires scanimage from
 
           http://www.mostang.com/sane/
-
+								 
       to import image from a scanner device.
 
     o ImageMagick requires Sam Leffler's TIFF software available
@@ -603,11 +623,13 @@ MAGICK DELEGATES
 
           http://www.libtiff.org/
 
-      to read the TIFF image format.  It in turn optionally requires
-      the JPEG and ZLIB libraries.  The TIFF library no longer includes
-      support for LZW compression due to patent issues.  If you need to
-      use LZW compression, support is available via a seperate
-      LZW compression kit (a patch) at the sites listed above.
+      to read the TIFF image format. It in turn optionally requires the
+      JPEG and ZLIB libraries. Support for JPEG, ZIP, and LZW
+      compression must be explicitly enabled by editing libtiff
+      Makefiles. The TIFF library no longer includes support for LZW
+      compression due to patent issues. If you need to use LZW
+      compression, support is available via a seperate LZW compression
+      kit (a patch) at the sites listed above.
 
     o ImageMagick requires libwmf 0.2.2 (or CVS libwmf) available
       from
@@ -644,7 +666,7 @@ MAGICK DELEGATES
 
       The libwmf-based WMF renderer is not capable of using Windows
       fonts with libwmf 0.2.2.  Windows fonts are fully supported
-      when the CVS (development) version of libwmf is used.
+      when using libwmf 0.2.4 or later.
 
     o ImageMagick requires the FlashPIX library version 1.2.0 from
       the Digital Imaging Group in order to support the FlashPIX
