@@ -1416,10 +1416,22 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   */
   switch (encoding_type)
 	{
-		ft_encoding_sjis: encoding=EncodeSJIS(draw_info->text,&length); break;
-    ft_encoding_unicode: encoding=EncodeUnicode(draw_info->text,&length); break;
-    default: encoding=EncodeText(draw_info->text,&length); break;
-  } 
+		case ft_encoding_sjis:
+    {
+      encoding=EncodeSJIS(draw_info->text,&length);
+      break;
+    }
+    case ft_encoding_unicode:
+		{
+      encoding=EncodeUnicode(draw_info->text,&length);
+      break;
+		}
+    default:
+		{
+		  encoding=EncodeText(draw_info->text,&length);
+      break;
+		}
+  }
   if (encoding == (unsigned short *) NULL)
     {
       (void) FT_Done_Face(face);
