@@ -1099,7 +1099,7 @@ static unsigned int RenderPostscript(Image *image,
       break;
   }
   CompositeImage(image,OverCompositeOp,annotate_image,
-    (int) ceil(offset->x-0.5),(int) ceil(offset->y-bounds->y2-1.5));
+    (int) ceil(offset->x-0.5),(int) ceil(offset->y-bounds->y2-0.5));
   DestroyImage(annotate_image);
   return(True);
 }
