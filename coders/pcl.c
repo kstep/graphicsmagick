@@ -362,7 +362,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       /*
         Write PCL monochrome image.
       */
-      SetImageType(image.GrayscaleType);
+      SetImageType(image,GrayscaleType);
       monochrome_image=image;
       if ((width != image->columns) || (height != image->rows))
         {
