@@ -173,82 +173,10 @@ typedef struct pgm_instance_s
     height;
 
   int
-    framenum;
+    frame_number;
 } pgm_instance_t;
 
-int libvo_common_alloc_frames (vo_instance_t * _instance,
-			       int width, int height, int frame_size,
-			       void (* copy) (vo_frame_t *, uint8_t **),
-			       void (* field) (vo_frame_t *, int),
-			       void (* draw) (vo_frame_t *))
-{
-    common_instance_t * instance;
-    size_t size;
-    uint8_t * alloc;
-    int i;
-
-    instance = (common_instance_t *) _instance;
-    instance->prediction_index = 1;
-    size = width * height/4;
-    alloc = (uint8_t *) AcquireMemory(18*size);
-    if (alloc == NULL)
-	return 1;
-
-    for (i = 0; i < 3; i++) {
-	instance->frame_ptr[i] =
-	    (vo_frame_t *) (((char *) instance) + sizeof (common_instance_t) +
-			    i * frame_size);
-	instance->frame_ptr[i]->base[0] = alloc;
-	instance->frame_ptr[i]->base[1] = alloc + 4 * size;
-	instance->frame_ptr[i]->base[2] = alloc + 5 * size;
-	instance->frame_ptr[i]->copy = copy;
-	instance->frame_ptr[i]->field = field;
-	instance->frame_ptr[i]->draw = draw;
-	instance->frame_ptr[i]->instance = (vo_instance_t *) instance;
-	alloc += 6 * size;
-    }
-
-    return 0;
-}
-
-void libvo_common_free_frames (vo_instance_t * _instance)
-{
-    common_instance_t * instance;
-
-    instance = (common_instance_t *) _instance;
-    LiberateMemory( (void **) &(instance->frame_ptr[0]->base[0]));
-}
-
-vo_frame_t * libvo_common_get_frame (vo_instance_t * _instance, int flags)
-{
-    common_instance_t * instance;
-
-    instance = (common_instance_t *)_instance;
-    if (flags & VO_PREDICTION_FLAG) {
-        instance->prediction_index ^= 1;
-        return instance->frame_ptr[instance->prediction_index];
-    } else
-        return instance->frame_ptr[2];
-}
-
-
-static int internal_setup (vo_instance_t * _instance, int width, int height,
-                           void (* draw_frame) (vo_frame_t *))
-{
-    pgm_instance_t * instance;
-
-    instance = (pgm_instance_t *) _instance;
-
-    instance->vo.close = libvo_common_free_frames;
-    instance->vo.get_frame = libvo_common_get_frame;
-    instance->width = width;
-    instance->height = height;
-    return libvo_common_alloc_frames ((vo_instance_t *) instance,
-                                      width, height, sizeof (vo_frame_t),
-                                      NULL, NULL, draw_frame);
-}
-
-static void pgm_draw_frame (vo_frame_t * frame)
+static void ConvertFrameToImage(vo_frame_t *frame)
 {
   Image
     *chroma_image,
@@ -274,11 +202,11 @@ static void pgm_draw_frame (vo_frame_t * frame)
     *instance;
 
   instance=(pgm_instance_t *) frame->instance;
-  instance->framenum++;
-  if (instance->framenum < 0)
+  instance->frame_number++;
+  if (instance->frame_number < 0)
     return;
   if (clone_info->subrange != 0)
-    if (instance->framenum < clone_info->subimage)
+    if (instance->frame_number < clone_info->subimage)
       return;
   if (image->columns != 0)
     {
@@ -296,7 +224,7 @@ static void pgm_draw_frame (vo_frame_t * frame)
     } 
   image->columns=instance->width;
   image->rows=instance->height;
-  image->scene=instance->framenum;
+  image->scene=instance->frame_number;
   p=frame->base[0];
   for (y=0; y < (long) image->rows; y++)
   {
@@ -380,9 +308,86 @@ static void pgm_draw_frame (vo_frame_t * frame)
   (void) TransformRGBImage(image,YCbCrColorspace);
 }
 
-static int pgm_setup (vo_instance_t * instance, int width, int height)
+int libvo_common_alloc_frames(vo_instance_t *_instance,int width,int height,
+  int frame_size,void (*copy) (vo_frame_t *,uint8_t **),
+  void (*field) (vo_frame_t *,int),void (*draw) (vo_frame_t *))
 {
-   return internal_setup (instance, width, height, pgm_draw_frame);
+  common_instance_t
+    *instance;
+
+  register int
+    i;
+
+  size_t
+    size;
+
+  uint8_t
+    *pixels;
+
+
+  instance=(common_instance_t *) _instance;
+  instance->prediction_index=1;
+  size=width*height/4;
+  pixels=(uint8_t *) AcquireMemory(18*size);
+  if (pixels == (uint8_t *) NULL)
+    return(1);
+  for (i=0; i < 3; i++)
+  {
+    instance->frame_ptr[i]=(vo_frame_t *)
+      (((char *) instance)+sizeof(common_instance_t)+i*frame_size);
+    instance->frame_ptr[i]->base[0]=pixels;
+    instance->frame_ptr[i]->base[1]=pixels+4*size;
+    instance->frame_ptr[i]->base[2]=pixels+5*size;
+    instance->frame_ptr[i]->copy=copy;
+    instance->frame_ptr[i]->field=field;
+    instance->frame_ptr[i]->draw=draw;
+    instance->frame_ptr[i]->instance=(vo_instance_t *) instance;
+    pixels+=6*size;
+  }
+  return(0);
+}
+
+void libvo_common_free_frames(vo_instance_t *_instance)
+{
+  common_instance_t
+    *instance;
+
+  instance=(common_instance_t *) _instance;
+  LiberateMemory((void **) &(instance->frame_ptr[0]->base[0]));
+}
+
+vo_frame_t *libvo_common_get_frame(vo_instance_t *_instance,int flags)
+{
+  common_instance_t
+    *instance;
+
+  instance = (common_instance_t *)_instance;
+  if (flags & VO_PREDICTION_FLAG)
+    {
+      instance->prediction_index^=1;
+      return(instance->frame_ptr[instance->prediction_index]);
+    }
+  return(instance->frame_ptr[2]);
+}
+
+static int internal_setup(vo_instance_t *_instance,int width,int height,
+  void (*draw_frame)(vo_frame_t *))
+{
+  pgm_instance_t
+    *instance;
+
+  instance=(pgm_instance_t *) _instance;
+  instance->vo.close=libvo_common_free_frames;
+  instance->vo.get_frame=libvo_common_get_frame;
+  instance->width=width;
+  instance->height=height;
+  return(libvo_common_alloc_frames((vo_instance_t *) instance,
+    width,height,sizeof(vo_frame_t),NULL,NULL,draw_frame));
+}
+
+static int pgm_setup(vo_instance_t *instance,int width,int height)
+{
+  return(internal_setup(instance,width,height,ConvertFrameToImage));
 }
 
 vo_instance_t *OpenVideo(void)
@@ -392,23 +397,23 @@ vo_instance_t *OpenVideo(void)
 
   instance=(pgm_instance_t *) AcquireMemory(sizeof(pgm_instance_t));
   if (instance == (pgm_instance_t *) NULL)
-    return NULL;
+    return((vo_instance_t *) NULL);
   instance->vo.setup=pgm_setup;
-  instance->framenum=(-2);
-  return(vo_instance_t *) instance;
+  instance->frame_number=(-2);
+  return((vo_instance_t *) instance);
 }
 
 static Image *ReadMPEGImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  static uint8_t
-    buffer[4096];
-
   mpeg2dec_t
     mpeg_info;
 
   register uint8_t
     *q;
+
+  uint8_t
+    buffer[4096];
 
   unsigned int
     status;
@@ -425,6 +430,8 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   clone_info=CloneImageInfo(image_info);
   video=vo_open(OpenVideo);
+  if (video == (vo_instance_t *) NULL)
+    ThrowReaderException(DelegateWarning,"Unable to open video channel",image);
   mpeg2_init(&mpeg_info,0,video);
   do
   {
@@ -545,7 +552,7 @@ ModuleExport void UnregisterMPEGImage(void)
 */
 
 static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
-  const DelegateInfo *delegate_info,Image *image,ExceptionInfo *exception)
+  Image *image)
 {
   char
     filename[MaxTextExtent];
@@ -582,7 +589,6 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   /*
     Write parameter file (see mpeg2encode documentation for details).
   */
-  (void) CoalesceImages(image,exception);
   file=fopen(image_info->unique,"w");
   if (file == (FILE *) NULL)
     return(False);
@@ -651,7 +657,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   (void) fprintf(file,"%u\n",GetNumberScenes(image));  /* number of frames */
   (void) fprintf(file,"0\n");  /* number of first frame */
   (void) fprintf(file,"00:00:00:00\n");  /* timecode of first frame */
-  mpeg=LocaleCompare(delegate_info->encode,"M2V") != 0;
+  mpeg=LocaleCompare(image->magick,"M2V") != 0;
   if (image_info->quality > 98)
     (void) fprintf(file,"1\n");
   else
@@ -704,11 +710,53 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   (void) fprintf(file,"1 1 7 7\n");
   (void) fprintf(file,"1 1 3 3\n");
   (void) fclose(file);
-  (void) strcat(image->filename,"%d.yuv");
   return(True);
 }
 
 static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
 {
-  return(True);
+  ImageInfo
+    *clone_info;
+
+  register Image
+    *p;
+
+  unsigned int
+    status;
+
+  /*
+    Open output image file.
+  */
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+  if (status == False)
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+  (void) CoalesceImages(image,&image->exception);
+  clone_info=CloneImageInfo(image_info);
+  TemporaryFilename(clone_info->unique);
+  TemporaryFilename(clone_info->zero);
+  FormatString(image->filename,clone_info->unique);
+  status=WriteMPEGParameterFiles(clone_info,image);
+  if (status == False)
+    ThrowWriterException(DelegateWarning,"Unable to open file",image);
+  for (p=image; p != (Image *) NULL; p=p->next)
+  {
+    FormatString(p->filename,"%.1024s%%d.yuv",clone_info->unique);
+    status=WriteImage(clone_info,p);
+    if (status == False)
+      break;
+  }
+  (void) strncpy(image->filename,clone_info->unique,MaxTextExtent-1);
+  status=InvokeDelegate(clone_info,image,(char *) NULL,"mpeg-encode",
+    &image->exception);
+  FormatString(image->filename,"%.1024s%%d.yuv",clone_info->unique);
+  for (p=image; p != (Image *) NULL; p=p->next)
+  {
+    (void) remove(p->filename);
+    (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+  }
+  (void) remove(clone_info->unique);
+  (void) remove(clone_info->zero);
+  DestroyImageInfo(clone_info);
+  CloseBlob(image);
+  return(status);
 }
