@@ -26,9 +26,9 @@ namespace Magick
   class Image;
   class ImageRef;
 
-  const std::string borderGeometryDefault = "6x6+0+0";
-  const std::string frameGeometryDefault  = "25x25+6+6";
-  const std::string raiseGeometryDefault  = "6x6+0+0";
+  extern const std::string borderGeometryDefault;
+  extern const std::string frameGeometryDefault;
+  extern const std::string raiseGeometryDefault;
 
   // Compare two Image objects regardless of LHS/RHS
   // Image sizes and signatures are used as basis of comparison
