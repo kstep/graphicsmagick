@@ -305,7 +305,6 @@ CHECK_FILE_FORMATS = \
 	EPT \
 	FAX \
 	FITS \
-	$(FPX) \
 	GIF \
 	GRAY \
 	$(HDF) \
