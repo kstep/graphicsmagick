@@ -60,6 +60,7 @@ int main ( int argc, char **argv )
    * Read original image
    */
   GetImageInfo( &imageInfo );
+  GetExceptionInfo( &exception );
   imageInfo.dither = 0;
   strncpy( imageInfo.filename, infile, MaxTextExtent-1 );
   fflush(stdout);
