@@ -22,19 +22,47 @@ for details):
 
   o General:
 
-    - See ImageMagick-5.4.5/ChangeLog.
+    - Initial IMDisplay GUI released for Microsoft Windows. Included in
+      VisualMagick build.
+
+    - WMF renderer inlines composite images in MVG output so that
+      generated MVG files are completely stand-alone.
+
+    - CCIS-601 4:2:2 YUV and CCIS-601 4:2:2 MPEG-2 format support added.
+
+    - See ImageMagick-5.4.5/ChangeLog for additional changes.
 
   o Utilities enhancements/changes:
 
-    - 
+    - Mogrify/convert '-transform' option added to apply affine
+      transforms to an image.
 
   o C API enhancements:
 
-    - 
+    - New "draw.h" API works, and is used by Magick++ and the WMF
+      renderer.
+
+    - Error reporting improved when performing color lookups.
+
+    - Affine transformation support added for compositing images (see
+      AffineTransformImage()).
 
   o C++ API enhancements:
 
-    - 
+    - Drawable classes re-written to use ImageMagick draw.h API
+      implementation.
+
+    - Pixels::getConst() method added to access read-only pixels.
+
+    - Blob class extended to support encoding and decoding Base64 data.
+
+    - Image::ping method added to "ping" (obtain dimensions, etc.) a Blob.
+
+    - Composite images are now inlined in MVG so that MVG files are
+      completely stand-alone.
+
+    - See ImageMagick-5.4.5/Magick++/NEWS and
+      ImageMagick-5.4.5/Magick++/ChangeLog for additional changes.
 
 The ImageMagick WWW page is
 
