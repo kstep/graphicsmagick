@@ -419,6 +419,8 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     Extract crop image.
   */
   crop_image->page=page;
+  if ((geometry->width == 0) || (geometry->height == 0))
+    memset(&crop_image->page,0,sizeof(RectangleInfo));
   for (y=0; y < (long) crop_image->rows; y++)
   {
     p=AcquireImagePixels(image,page.x,page.y+y,crop_image->columns,1,exception);
