@@ -1,3 +1,9 @@
+2003-10-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/bit_stream.h: Added a bit-stream writer function.
+	* PerlMagick/t/reference/read/input_tim.miff: Reference image
+	was defective.
+
 2003-10-03  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* magick/image.c, magick/image.h: Updated AddCoderOptions to

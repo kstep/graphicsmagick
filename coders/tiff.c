@@ -772,7 +772,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           register IndexPacket
             *indexes;
           
-          BitStream
+          BitStreamReadHandle
             stream;
 
           unsigned int
@@ -808,12 +808,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   packet_size*width));
             }
 
-          InitializeBitStream(&stream,scanline);
+          BitStreamInitializeRead(&stream,scanline);
 
           for (x = (long) width; x > 0 ; x--)
             {
               /* index */
-              quantum=ReadBitStream(&stream,bits_per_sample);
+              quantum=BitStreamRead(&stream,bits_per_sample);
 #if QuantumDepth < 16
               if (bits_per_sample > QuantumDepth)
                 quantum /= index_scale;
@@ -823,7 +823,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               if (image->matte)
                 {
                   /* matte */
-                  quantum = ReadBitStream(&stream,bits_per_sample);
+                  quantum = BitStreamRead(&stream,bits_per_sample);
                   if (QuantumDepth > bits_per_sample)
                     quantum <<= (QuantumDepth-bits_per_sample);
                   else

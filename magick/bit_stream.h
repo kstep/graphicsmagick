@@ -16,39 +16,44 @@
 extern "C" {
 #endif
 
-  /*
-    Bit stream "handle"
-  */
-  typedef struct _BitStream
-  {
-    const unsigned char *byte;
-    int bits_available;
-  } BitStream;
+  static const unsigned int BitAndMasks[9] =
+    {
+      /*
+        Same as (~(~0 << retrieve_bits))
+      */
+      0x00, 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff
+    };
 
   /*
-    Initialize structure used by ReadBitStream
+    Bit stream reader "handle"
   */
-  static inline void InitializeBitStream(BitStream *bit_stream, const unsigned char *bytes)
+  typedef struct _BitStreamReadHandle
   {
-    bit_stream->byte=bytes;
-    bit_stream->bits_available=8;
+    const unsigned char
+    *bytes;
+
+    int
+    bits_remaining;
+  } BitStreamReadHandle;
+
+  /*
+    Initialize Bit Stream for reading
+  */
+  static inline void BitStreamInitializeRead(BitStreamReadHandle *bit_stream,
+                                             const unsigned char *bytes)
+  {
+    bit_stream->bytes          = bytes;
+    bit_stream->bits_remaining = 8;
   }
 
   /*
     Return the requested number of bits from the current position in a
     bit stream.
   */
-
-  static inline unsigned int ReadBitStream(BitStream *bit_stream,
-    const unsigned int requested_bits)
+  static inline unsigned int BitStreamRead(BitStreamReadHandle *bit_stream,
+                                           const unsigned int requested_bits)
   {
-    static const unsigned int BitMasks[9] =
-      {
-        /*
-          Same as (~(~0 << retrieve_bits))
-        */
-        0x00, 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff
-      };
+
 
     unsigned int
       current_bits = 0,
@@ -57,25 +62,86 @@ extern "C" {
     while (current_bits < requested_bits)
       {
         register unsigned int
-          retrieve_bits;
+          octet_bits;
 
-        retrieve_bits = (requested_bits - current_bits);
-        if (retrieve_bits > bit_stream->bits_available)
-          retrieve_bits = bit_stream->bits_available;
+        octet_bits = (requested_bits - current_bits);
+        if (octet_bits > bit_stream->bits_remaining)
+          octet_bits = bit_stream->bits_remaining;
 
-        quantum = (quantum << retrieve_bits) |
-          ((*bit_stream->byte >> (bit_stream->bits_available - retrieve_bits))
-           & BitMasks[retrieve_bits]);
+        quantum = (quantum << octet_bits) |
+          ((*bit_stream->bytes >> (bit_stream->bits_remaining - octet_bits))
+           & BitAndMasks[octet_bits]);
 
-        current_bits += retrieve_bits;
-        bit_stream->bits_available -= retrieve_bits;
-        if (bit_stream->bits_available == 0)
+        current_bits += octet_bits;
+        bit_stream->bits_remaining -= octet_bits;
+        if (bit_stream->bits_remaining == 0)
           {
-            bit_stream->byte++;
-            bit_stream->bits_available=8;
+            bit_stream->bytes++;
+            bit_stream->bits_remaining=8;
           }
       }
     return quantum;
+  }
+
+  /*
+    Bit stream writer "handle"
+  */
+  typedef struct _BitStreamWriteHandle
+  {
+    unsigned char
+    *bytes;
+
+    int
+    bits_remaining;
+  } BitStreamWriteHandle;
+
+  /*
+    Initialize Bit Stream for writing
+  */
+  static inline void BitStreamInitializeWrite(BitStreamWriteHandle *bit_stream,
+                                              unsigned char *bytes)
+  {
+    bit_stream->bytes          = bytes;
+    bit_stream->bits_remaining = 8;
+  }
+
+  /*
+    Write quantum using the specified number of bits at the current
+    position in the bit stream.
+  */
+  static inline void BitStreamWrite(BitStreamWriteHandle *bit_stream,
+                                    const unsigned int requested_bits, const unsigned int quantum)
+  {
+    unsigned int
+      current_bits = 0;
+
+    while (current_bits < requested_bits)
+      {
+        register unsigned int
+          remaining_quantum_bits,
+          octet_bits;
+
+        remaining_quantum_bits = requested_bits - current_bits;
+
+        octet_bits = remaining_quantum_bits;
+        if (octet_bits > bit_stream->bits_remaining)
+          octet_bits = bit_stream->bits_remaining;
+
+        if(bit_stream->bits_remaining == 8)
+          *bit_stream->bytes = 0;
+
+        *bit_stream->bytes |=
+          (((quantum >> (remaining_quantum_bits - octet_bits)) &
+            BitAndMasks[octet_bits]) << (bit_stream->bits_remaining - octet_bits));
+
+        current_bits += octet_bits;
+        bit_stream->bits_remaining -= octet_bits;
+        if (bit_stream->bits_remaining == 0)
+          {
+            bit_stream->bytes++;
+            bit_stream->bits_remaining=8;
+          }
+      }
   }
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -53,6 +53,41 @@
 </tr>
 </table>
 <p>
+2003-10-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/bit_stream.h: Added a bit-stream writer function.
+  <LI> PerlMagick/t/reference/read/input_tim.miff: Reference image
+        was defective.
+
+</UL>
+<p>
+2003-10-03  Lars Ruben Skyum  &lt;lars.skyum@stibo.com&gt;
+
+<UL>
+  <LI> magick/image.c, magick/image.h: Updated AddCoderOptions to
+        accept "flag" keys that have no values. They are placed in the
+        coder options map with an empty, zero length string value. Option
+        argument syntax is now: "key1[=[value1]],key2[=[value2]],..."
+
+</UL>
+<p>
+2003-10-03  Lars Ruben Skyum  &lt;lars.skyum@stibo.com&gt;
+
+<UL>
+  <LI> magick/command.c: Updated +coder-options option to not clear the
+        entire map of coder options, but accept a list of names to remove
+        from the map. Use option argument "*" to clear the entire map of
+        coder options.<BR>
+  <LI> magick/image.c, magick/image.h: Added function
+        RemoveCoderOptions. Added cast of signed char to unsigned char and
+        int in calls to isspace and isprint.
+  <LI> magcik/utility.c: Added cast of signed char to unsigned char and
+        int in calls to isspace and isprint. Added special handling of
+        +coder-options option in ExpandFilenames function.
+
+</UL>
+<p>
 2003-10-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
