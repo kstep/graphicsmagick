@@ -3358,7 +3358,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     q->opacity=((*p++) << 8);
                     q->opacity|=(*p++);
-                    q->opacity*=65537;
                     q->opacity=(Quantum) (MaxRGB-q->opacity);
                     q++;
                   }
@@ -3374,7 +3373,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     q->opacity=((*p++) << 8);
                     q->opacity|=(*p++);
-                    q->opacity*=65537;
+                    q->opacity*=65537L;
                     q->opacity=(Quantum) (MaxRGB-q->opacity);
                     q++;
                   }
