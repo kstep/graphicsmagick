@@ -117,9 +117,9 @@ public:
   HRESULT DispatchToImage(IDispatch* pdisp,CComObject<CMagickImage>** ppMagickImage);
   HRESULT UnknownToImage(IUnknown* pdisp,CComObject<CMagickImage>** ppMagickImage);
   HRESULT Execute(unsigned int (*func)(ImageInfo *image_info,
-    const int argc,char **argv,ExceptionInfo *exception));
+    const int argc,char **argv,char **text,ExceptionInfo *exception),char **text);
 	HRESULT Perform(unsigned int (*func)(ImageInfo *image_info,
-    const int argc,char **argv,ExceptionInfo *exception),
+    const int argc,char **argv,char **text,ExceptionInfo *exception),
       SAFEARRAY **pArrayVar,VARIANT *pVar2);
   LPTSTR StrChr(LPTSTR lpsz, TCHAR ch);
 public:

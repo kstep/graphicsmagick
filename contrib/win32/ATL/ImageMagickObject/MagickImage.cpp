@@ -601,20 +601,22 @@ STDMETHODIMP CMagickImage::Identify(SAFEARRAY **pArrayVar, VARIANT *pVar)
 }
 
 HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
-  const int argc,LPTSTR *argv,ExceptionInfo *exception),
+  const int argc,LPTSTR *argv,LPTSTR *text,ExceptionInfo *exception),
   SAFEARRAY **pArrayVar, VARIANT *pVar)
 {
   USES_CONVERSION;
 
   HRESULT hr = E_INVALIDARG;
+  char *text;
 
 #ifdef _DEBUG
-  _DbgBreak();
+  //_DbgBreak();
 #endif
 
 #ifdef DO_DEBUG
 	DebugString("CMagickImage - Perform enter\n");
 #endif
+  text = (char *)NULL;
   m_coll.clear();
 #ifdef SUPPORT_OBJECTS
   CComObject<CMagickImage>* pMagickImage;
@@ -980,10 +982,17 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
 #ifdef DO_DEBUG
 	DebugString("CMagickImage - Perform before execute\n");
 #endif
-  hr = Execute(func);
+  hr = Execute(func,&text);
 #ifdef DO_DEBUG
 	DebugString("CMagickImage - Perform after execute\n");
 #endif
+  if (text != (char *) NULL)
+    {
+      CComVariant var;
+      var = text;
+      var.Detach(pVar);
+      LiberateMemory((void **) &text);
+    }
 
   if (m_coll.size())
   {
@@ -1094,7 +1103,7 @@ void CMagickImage::fatalerrorhandler(const ExceptionType error,const char *messa
 }
 
 HRESULT CMagickImage::Execute(unsigned int (*func)(ImageInfo *image_info,
-  const int argc,char **argv,ExceptionInfo *exception))
+  const int argc,char **argv,char **text,ExceptionInfo *exception),char **s)
 {
   unsigned int retcode = 0;
 
@@ -1109,7 +1118,7 @@ HRESULT CMagickImage::Execute(unsigned int (*func)(ImageInfo *image_info,
   */
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  retcode = (func)(image_info, GetArgc(), GetArgv(), &exception);
+  retcode = (func)(image_info, GetArgc(), GetArgv(), s, &exception);
   DestroyImageInfo(image_info);
   DestroyExceptionInfo(&exception);
   if (!retcode)

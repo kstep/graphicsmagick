@@ -116,7 +116,6 @@ typedef struct _CompositeOptions
 %
 %
 */
-
 static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
   Image *composite_image,Image *mask_image,CompositeOptions *option_info,
   ExceptionInfo *exception)
@@ -259,24 +258,35 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
   return(status);
 }
 
+static void LiberateCompositeOptions(CompositeOptions *option_info)
+{
+  if (option_info->displace_geometry != (char *) NULL)
+    LiberateMemory((void **) &(option_info->displace_geometry));
+  if (option_info->geometry != (char *) NULL)
+    LiberateMemory((void **) &(option_info->geometry));
+  if (option_info->unsharp_geometry != (char *) NULL)
+    LiberateMemory((void **) &(option_info->unsharp_geometry));
+  if (option_info->watermark_geometry != (char *) NULL)
+    LiberateMemory((void **) &(option_info->watermark_geometry));
+}
+
 MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   const int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #define NotInitialized  (unsigned int) (~0)
 #define ThrowCompositeException(code,reason,description) \
 { \
-  if (image != (Image *) NULL) \
-    DestroyImageList(image); \
-  if (composite_image != (Image *) NULL) \
-    DestroyImageList(composite_image); \
-  if (mask_image != (Image *) NULL) \
-    DestroyImageList(mask_image); \
+  LiberateCompositeOptions(&option_info); \
+  DestroyImageList(image); \
+  DestroyImageList(composite_image); \
+  DestroyImageList(mask_image); \
   ThrowException(exception,code,reason,description); \
   return(False); \
 }
 
   char
     *filename,
+    *format,
     *option,
     *write_filename;
 
@@ -314,6 +324,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   composite_image=(Image *) NULL;
   option_info.displace_geometry=(char *) NULL;
   filename=(char *) NULL;
+  format="%w,%h,%m";
   option_info.geometry=(char *) NULL;
   image=(Image *) NULL;
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
@@ -764,6 +775,18 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("format",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,"Missing format string",
+                    option);
+                format=argv[i];
+              }
+            break;
+          }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
         break;
       }
@@ -1198,18 +1221,20 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
     Write composite images.
   */
   status&=WriteImages(image_info,image,argv[argc-1],exception);
-  if (option_info.displace_geometry != (char *) NULL)
-    LiberateMemory((void **) &option_info.displace_geometry);
-  if (option_info.geometry != (char *) NULL)
-    LiberateMemory((void **) &option_info.geometry);
-  if (option_info.unsharp_geometry != (char *) NULL)
-    LiberateMemory((void **) &option_info.unsharp_geometry);
-  if (option_info.watermark_geometry != (char *) NULL)
-    LiberateMemory((void **) &option_info.watermark_geometry);
-  if (composite_image != (Image *) NULL)
-    DestroyImages(composite_image);
-  if (mask_image != (Image *) NULL)
-    DestroyImages(mask_image);
+  if (metadata != (char **) NULL)
+    {
+      char
+        *s;
+
+      s=TranslateText(image_info,image,format);
+      if (s == (char *) NULL)
+        ThrowCompositeException(ResourceLimitError,
+          "Unable to format image metadata","Memory allocation failed");
+      *metadata=s;
+    }
+  LiberateCompositeOptions(&option_info);
+  DestroyImageList(composite_image);
+  DestroyImageList(mask_image);
   DestroyImageList(image);
   return(status);
 }
@@ -1295,16 +1320,15 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 #define NotInitialized  (unsigned int) (~0)
 #define ThrowConvertException(code,reason,description) \
 { \
-  if (image != (Image *) NULL) \
-    DestroyImageList(image); \
-  if (image_list != (Image *) NULL) \
-    DestroyImageList(image_list); \
+  DestroyImageList(image); \
+  DestroyImageList(image_list); \
   ThrowException(exception,code,reason,description); \
   return(False); \
 }
 
   char
     *filename,
+    *format,
     *option;
 
   double
@@ -1338,6 +1362,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   status=True;
   filename=(char *) NULL;
+  format="%w,%h,%m";
   image=(Image *) NULL;
   image_list=(Image *) NULL;
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
@@ -1909,6 +1934,18 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowConvertException(OptionError,"Missing font name",option);
                 (void) CloneString(&image_info->font,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("format",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowConvertException(OptionError,"Missing format string",
+                    option);
+                format=argv[i];
               }
             break;
           }
@@ -2906,6 +2943,17 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       DestroyImageList(image);
     }
   status&=WriteImages(image_info,image_list,argv[argc-1],exception);
+  if (metadata != (char **) NULL)
+    {
+      char
+        *s;
+
+      s=TranslateText(image_info,image_list,format);
+      if (s == (char *) NULL)
+        ThrowConvertException(ResourceLimitError,
+          "Unable to format image metadata","Memory allocation failed");
+      *metadata=s;
+    }
   DestroyImageList(image_list);
   return(status);
 }
@@ -2953,8 +3001,9 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
 {
 #define ThrowIdentifyException(code,reason,description) \
 { \
-  if (image != (Image *) NULL) \
-    DestroyImageList(image); \
+  if (format != (char *) NULL) \
+    LiberateMemory((void **) &format); \
+  DestroyImageList(image); \
   ThrowException(exception,code,reason,description); \
   return(False); \
 }
@@ -3050,6 +3099,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             }
         }
         DestroyImageList(image);
+        image=(Image *) NULL;
         number_images++;
         continue;
       }
@@ -3219,6 +3269,9 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   if ((i != argc) || (number_images == 0))
     ThrowIdentifyException(OptionError,"Missing an image file name",
       (char *) NULL);
+  if (format != (char *) NULL)
+    LiberateMemory((void **) &format);
+  DestroyImageList(image);
   return(status);
 }
 
@@ -4808,16 +4861,14 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
 {
 #define ThrowMontageException(code,reason,description) \
 { \
-  if (image != (Image *) NULL) \
-    DestroyImageList(image); \
-  if (image_list != (Image *) NULL) \
-    DestroyImageList(image_list); \
-  if (montage_image != (Image *) NULL) \
-    DestroyImageList(montage_image); \
+  DestroyImageList(image); \
+  DestroyImageList(image_list); \
+  DestroyImageList(montage_image); \
   ThrowException(exception,code,reason,description); \
   return(False); \
 }
   char
+    *format,
     *option,
     *transparent_color;
 
@@ -4856,6 +4907,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   /*
     Set defaults.
   */
+  format="%w,%h,%m";
   first_scene=0;
   image=(Image *) NULL;
   image_list=(Image *) NULL;
@@ -5365,6 +5417,18 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                   ThrowMontageException(OptionError,"Missing font name",option);
                 (void) CloneString(&image_info->font,argv[i]);
                 (void) CloneString(&montage_info->font,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("format",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowMontageException(OptionError,"Missing format string",
+                    option);
+                format=argv[i];
               }
             break;
           }
@@ -5882,6 +5946,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       (void) CatchImageException(image);
       PushImageList(&image_list,image,exception);
       DestroyImageList(image);
+      image=(Image *) NULL;
       j=i;
     }
   (void) strncpy(montage_info->filename,argv[argc-1],MaxTextExtent-1);
@@ -5898,6 +5963,17 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) strncpy(montage_image->magick_filename,argv[argc-1],MaxTextExtent-1);
   status&=WriteImages(image_info,montage_image,argv[argc-1],&image->exception);
+  if (metadata != (char **) NULL)
+    {
+      char
+        *s;
+
+      s=TranslateText(image_info,montage_image,format);
+      if (s == (char *) NULL)
+        ThrowMontageException(ResourceLimitError,
+          "Unable to format image metadata","Memory allocation failed");
+      *metadata=s;
+    }
   DestroyImageList(montage_image);
   DestroyMontageInfo(montage_info);
   return(status);
