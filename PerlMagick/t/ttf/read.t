@@ -68,7 +68,7 @@ undef $image;
 print("Draw text using annotate ...\n");
 $infile = 'input.ttf';
 $md5    = '3aa0c3a2d6cc1d8720220afd1f3749db25749dad84cb882d23c3440579aeeb12';
-$md5_16 = 'f22ecd1982bbb60a49359eccec6476ac05866a22d6393267b244e459aede19a0';
+$md5_16 = '982838ef4eb9c55c9480726a5253e778f486bfe0060721cce5f4a9b4759a7908';
 
 $image=Image::Magick->new;
 $status = $image->Set(size=>'330x30');
