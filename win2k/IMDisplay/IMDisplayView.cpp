@@ -826,21 +826,20 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
         // Extract the pixels from Magick++ image object and convert to a DIB section
         //
 
-        unsigned int columns = inImage.columns();
-        unsigned int rows = inImage.rows();
+        const unsigned int columns = inImage.columns();
+        const unsigned int rows = inImage.rows();
 
         RGBQUAD *pDestPixel = prgbaDIB;
 
-        for( unsigned int row = 0 ; row < rows ; ++row )
+        for( unsigned int row = 0 ; row < rows ; row++ )
           {
-            const PixelPacket *pPixels = inImage.getConstPixels(0,row,columns,row);
+            const PixelPacket *pPixels = inImage.getConstPixels(0,row,columns,1);
 #if QuantumDepth == 8
             // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
-            size_t stride = sizeof(PixelPacket)*columns;
-            memcpy((void*)pDestPixel,(const void*)pPixels,stride);
-            pDestPixel += stride;
+            memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*columns);
+            pDestPixel += columns;
 
-#else	// 16 or 32 bit Quantum
+#else	    // 16 or 32 bit Quantum
             // Transfer pixels, scaling to Quantum
             for( unsigned long nPixelCount = columns; nPixelCount ; nPixelCount-- )
               {
