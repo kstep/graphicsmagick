@@ -1225,7 +1225,8 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
       Image
         *clip_mask;
 
-      clip_mask=CloneImage(image,0,0,True,&image->exception);
+      clip_mask=CloneImage(image,image->columns,image->rows,True,
+        &image->exception);
       if (clip_mask == (Image *) NULL)
         return(False);
       SetImageClipMask(image,clip_mask);
