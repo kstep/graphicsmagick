@@ -51,8 +51,9 @@ $call Make map.c
 $call Make mat.c
 $call Make matte.c
 $call Make miff.c
-$call Make mpc.c
 $call Make mono.c
+$call Make mpc.c
+$call Make mpeg.c
 $call Make mtv.c
 $call Make mvg.c
 $call Make null.c
@@ -104,8 +105,8 @@ $call Make xwd.c
 $call Make yuv.c
 $library/create libCoders.olb 8bim,art,avi,avs,bmp,cmyk,cut,dcm,dps,dpx,ept, -
  fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icm,icon,iptc,jbig,jp2, -
-  jpeg,label,logo,map,mat,matte,miff,mpc,mono,mtv,mvg,null,pcd,pcl,pcx,pdb, -
-  pdf,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,rgb, -
+  jpeg,label,logo,map,mat,matte,miff,mono,mpc,mpc,mtv,mvg,null,pcd,pcl,pcx, -
+  pdb,pdf,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,rgb, -
   rla,rle,sct,sfw,sgi,stegano,sun,svg,tga,tiff,tile,tim,ttf, -
   txt,uil,url,uyvy,vicar,vid,viff,wbmp,wmf,wpg,x,xbm,xc,xpm,xwd,yuv, -
   [-.magick]compress,[-.magick]prervicccm
