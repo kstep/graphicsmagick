@@ -44,7 +44,7 @@ combination is delimited by at least one control or whitespace character.
 Comments may appear in the header section and are always delimited by braces.
 The <b>MIFF</b> header always ends with a colon (<tt>:</tt>) character,
 followed by a
-<i>ctrl-Z</i> character. It is also common to preceed the
+<i>ctrl-Z</i> character. It is also common to precede the
 colon with a <i>formfeed</i> and a <i>newline</i> character. The <i>formfeed</i>
 prevents the listing of binary data when using <b>more(1)</b> under Unix
 where the <i>ctrl-Z</i> has the same effect with the <b>type</b> command
@@ -349,7 +349,7 @@ keyword in the header defines how the image data is compressed. Uncompressed
 pixels are just stored one scanline at a time in row order. Runlength encoded
 compression counts runs of identical adjacent pixels and stores the pixels
 followed by a length byte (the number of identical pixels minus 1). Zip
-and BZip compression compresses each row of an image and preceeds the compressed
+and BZip compression compresses each row of an image and precedes the compressed
 row with the length of compressed pixel bytes as a word in most significant
 byte first order.
 <p><b>MIFF</b> files may contain more than one image. Simply concatenate
