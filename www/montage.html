@@ -732,7 +732,11 @@ and whose width is 512 and height is 480. To generate a Unicode character
 (<i>TrueType fonts only</i>), embed the code as an escaped hex string (e.g.
 <tt>\0x30a3</tt>).
 <p>Use <b>image</b> to composite an image with another image. Follow the
-image coordinates with the filename of an image.
+image coordinates with the image size and filename:
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; -draw 'image 100,100 100,100 225,225 image.jpg'</p
+re>
+
 <dd>
 If the first character of <i>string</i> is <i>@</i>, the text is read from
 a file titled by the remaining characters in the string.</dd>

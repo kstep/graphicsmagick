@@ -515,6 +515,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 #define DrawImageText  "  Drawing on image...  "
 
   char
+    geometry[MaxTextExtent],
     keyword[MaxTextExtent],
     *p,
     *primitive;
@@ -1084,7 +1085,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         register char
           *q;
 
-        if (primitive_info[j].coordinates != 1)
+        if (primitive_info[j].coordinates != 2)
           {
             primitive_type=UndefinedPrimitive;
             break;
@@ -1127,6 +1128,16 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         composite_image=ReadImage(composite_info,&image->exception);
         if (composite_image == (Image *) NULL)
           break;
+        if ((primitive_info[j+1].pixel.x != 0) && 
+            (primitive_info[j+1].pixel.y != 0))
+          {
+            /*
+              Resize image.
+            */
+            FormatString(geometry,"%gx%g",primitive_info[j+1].pixel.x,
+              primitive_info[j+1].pixel.y);
+            TransformImage(&composite_image,(char *) NULL,geometry);
+          }
         if ((clone_info->affine[1] == 0.0) && (clone_info->affine[2] == 0.0))
           {
             if ((clone_info->affine[0] != 1.0) ||
@@ -1175,7 +1186,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               }
           }
         CompositeImage(image,image->matte ? OverCompositeOp :
-          ReplaceCompositeOp,composite_image,(int) pixel.x,(int) pixel.y);
+          ReplaceCompositeOp,composite_image,(int) primitive_info[j].pixel.x,
+          (int) primitive_info[j].pixel.y);
         DestroyImage(composite_image);
         DestroyImageInfo(composite_info);
         break;

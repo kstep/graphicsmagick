@@ -1147,8 +1147,9 @@ static void SVGEndElement(void *context,const xmlChar *name)
     }
   if (LocaleCompare((char *) name,"image") == 0)
     {
-      (void) fprintf(svg_info->file,"image %f,%f %s\n",
-        svg_info->page.x,svg_info->page.y,svg_info->url);
+      (void) fprintf(svg_info->file,"image %g,%g %g,%g %s\n",svg_info->page.x,
+        svg_info->page.y,svg_info->page.width,svg_info->page.height,
+        svg_info->url);
       return;
     }
   if (LocaleCompare((char *) name,"line") == 0)

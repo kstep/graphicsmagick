@@ -665,7 +665,11 @@ To generate a Unicode character (TrueType fonts only), embed the
 code as an escaped hex string (e.g. \\0x30a3).
 
 Use \fBimage\fP to composite an image with another image.  Follow the
-image coordinates with the filename of an image.
+image coordinates with the image size and filename:
+
+.nf
+     -draw 'image 100,100 225,225 image.jpg'
+.fi
 
 If the first character of \fIstring\fP is \fB@\fP, the text is read
 from a file titled by the remaining characters in the string.
