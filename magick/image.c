@@ -982,7 +982,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->directory=(char *) NULL;
   clone_image->semaphore=(SemaphoreInfo *) NULL;
   clone_image->clip_mask=(Image *) NULL;
-  GetExceptionInfo(&clone_image->exception);
+  ThrowException(&clone_image->exception,image->exception.severity,
+	  image->exception.reason,image->exception.description);
   clone_image->reference_count=1;
   GetCacheInfo(&clone_image->cache);
   clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
@@ -1819,9 +1820,6 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     elapsed_time,
     user_time;
 
-  ExceptionInfo
-    exception;
-
   Image
     *p;
 
@@ -1913,8 +1911,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   (void) SignatureImage(image);
   image->total_colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
   (void) fprintf(file,"Image: %.1024s\n",image->filename);
-  GetExceptionInfo(&exception);
-  magick_info=GetMagickInfo(image->magick,&exception);
+  magick_info=GetMagickInfo(image->magick,&image->exception);
   if ((magick_info == (const MagickInfo *) NULL) ||
       (*magick_info->description == '\0'))
     (void) fprintf(file,"  Format: %.1024s\n",image->magick);
@@ -2262,9 +2259,6 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     (void) fprintf(file,"  Montage: %.1024s\n",image->montage);
   if (image->directory != (char *) NULL)
     {
-      ExceptionInfo
-        exception;
-
       Image
         *tile;
 
@@ -2294,10 +2288,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         p=q;
         (void) fprintf(file,"    %.1024s",image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
-        tile=ReadImage(image_info,&exception);
-        if (exception.severity != UndefinedException)
-          MagickWarning(exception.severity,exception.reason,
-            exception.description);
+        tile=ReadImage(image_info,&image->exception);
         (void) SetWarningHandler(handler);
         if (tile == (Image *) NULL)
           {

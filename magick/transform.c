@@ -1182,14 +1182,14 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
     if (LocaleCompare(image->generic_profile[i].name,name) == 0)
       break;
   if (i == (long) image->generic_profiles)
-		{
+    {
       image->generic_profile=(ProfileInfo *)
         AcquireMemory((i+1)*sizeof(ProfileInfo));
       if (image->generic_profile == (ProfileInfo *) NULL)
         ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
           (char *) NULL)
       image->generic_profiles++;
-		}
+    }
   if (image->generic_profile[i].length != 0)
     LiberateMemory((void **) &image->generic_profile[i].info);
   image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
