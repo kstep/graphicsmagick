@@ -2620,7 +2620,7 @@ Copy(ref)
     if (status)
       goto MethodException;
     image=SetupList(reference,&info,(SV ***) NULL);
-    if (image == (Image *) NULL);
+    if (image == (Image *) NULL)
       {
         MagickError(OptionError,"No images to clone",NULL);
         goto MethodException;
