@@ -298,7 +298,7 @@ static struct
       {"sigma", DoubleReference} } },
     { "Shear", { {"geom", StringReference}, {"x", DoubleReference},
       {"y", DoubleReference}, {"color", StringReference} } },
-    { "Spread", { {"amount", IntegerReference} } },
+    { "Spread", { {"radius", IntegerReference} } },
     { "Swirl", { {"degree", DoubleReference} } },
     { "Resize", { {"geom", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"filter", FilterTypess},
@@ -4534,7 +4534,7 @@ Mogrify(ref,...)
         case 29:  /* Spread */
         {
           if (!attribute_flag[0])
-            argument_list[0].int_reference=3;
+            argument_list[0].int_reference=1;
           image=SpreadImage(image,argument_list[0].int_reference,&exception);
           break;
         }

@@ -87,7 +87,7 @@ typedef struct _AggregatePacket
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o image: The image.
 %
 %    o noise_type:  The type of noise: Uniform, Gaussian, Multiplicative,
 %      Impulse, Laplacian, or Poisson.
@@ -531,9 +531,10 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ColorizeImage creates a new image that is a copy of an existing
-%  one with the image pixels colorized.  The colorization is controlled
-%  with the pen color and the opacity levels.
+%  ColorizeImage() blends the fill color with each pixel in the image.
+%  A percentage blend is specified with opacity.  Control the application
+%  of different color components by specifying a different percentage for
+%  each component (e.g. 90/100/10 is 90% red, 100% green, and 10% blue).
 %
 %  The format of the ColorizeImage method is:
 %
@@ -542,10 +543,10 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o image: The image.
 %
 %    o opacity:  A character string indicating the level of opacity as a
-%      percentage (0-100).
+%      percentage.
 %
 %    o target: A color value.
 %
@@ -640,9 +641,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ConvolveImage applies a general image convolution kernel to an
-%  image returns the results.  ConvolveImage allocates the memory necessary for
-%  the new Image structure and returns a pointer to the new image.
+%  ConvolveImage() applies a custom convolution kernel to the image.
 %
 %  The format of the ConvolveImage method is:
 %
@@ -651,15 +650,11 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
 %
 %  A description of each parameter follows:
 %
-%    o convolve_image: Method ConvolveImage returns a pointer to the image
-%      after it is convolved.  A null image is returned if there is a memory
-%      shortage.
+%    o image: The image.
 %
-%    o image: the image.
+%    o order: The number of columns and rows in the filter kernel.
 %
-%    o order:  The number of columns and rows in the filter kernel.
-%
-%    o kernel:  An array of double representing the convolution kernel.
+%    o kernel: An array of double representing the convolution kernel.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -814,13 +809,8 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DespeckleImage creates a new image that is a copy of an existing
-%  one with the speckle noise minified.  It uses the eight hull algorithm
-%  described in Applied Optics, Vol. 24, No. 10, 15 May 1985, "Geometric filter
-%  for Speckle Reduction", by Thomas R Crimmins.  Each pixel in the image is
-%  replaced by one of its eight of its surrounding pixels using a polarity and
-%  negative hull function.  DespeckleImage allocates the memory necessary for
-%  the new Image structure and returns a pointer to the new image.
+%  Despeckle() reduces the speckle noise in an image while perserving the
+%  edges of the original image.
 %
 %  The format of the DespeckleImage method is:
 %
@@ -828,11 +818,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 %
 %  A description of each parameter follows:
 %
-%    o despeckle_image: Method DespeckleImage returns a pointer to the image
-%      after it is despeckled.  A null image is returned if there is a memory
-%      shortage.
-%
-%    o image: the image.
+%    o image: The image.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -976,9 +962,9 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method EdgeImage creates a new image that is a copy of an existing
-%  one with the edges enhanced.  It allocates the memory necessary for the
-%  new Image structure and returns a pointer to the new image.
+%  EdgeImage() finds edges in an image.  Radius defines the radius of the
+%  convolution filter.  Use a radius of 0 and Edge() selects a suitable
+%  radius for you.
 %
 %  The format of the EdgeImage method is:
 %
@@ -987,12 +973,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o edge_image: Method EdgeImage returns a pointer to the image
-%      after it is edge.  A null image is returned if there is a memory
-%      shortage.
-%
-%    o image: the address of a structure of type Image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
 %    o radius: the radius of the pixel neighborhood.
 %
@@ -1045,9 +1026,11 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method EmbossImage creates a new image that is a copy of an existing
-%  one with the edge highlighted.  It allocates the memory necessary for the
-%  new Image structure and returns a pointer to the new image.
+%  EmbossImage() returns a grayscale image with a three-dimensional effect.
+%  We convolve the image with a Gaussian operator of the given radius and
+%  standard deviation (sigma).  For reasonable results, radius should be
+%  larger than sigma.  Use a radius of 0 and Emboss() selects a suitable
+%  radius for you.
 %
 %  The format of the EmbossImage method is:
 %
@@ -1056,11 +1039,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o emboss_image: Method EmbossImage returns a pointer to the image
-%      after it is embossed.  A null image is returned if there is a memory
-%      shortage.
-%
-%    o image: the image.
+%    o image: The image.
 %
 %    o radius: the radius of the pixel neighborhood.
 %
@@ -1128,20 +1107,8 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method EnhanceImage creates a new image that is a copy of an existing
-%  one with the noise minified.  It allocates the memory necessary for the new
-%  Image structure and returns a pointer to the new image.
-%
-%  EnhanceImage does a weighted average of pixels in a 5x5 cell around each
-%  target pixel.  Only pixels in the 5x5 cell that are within a RGB distance
-%  threshold of the target pixel are averaged.
-%
-%  Weights assume that the importance of neighboring pixels is negately
-%  proportional to the square of their distance from the target pixel.
-%
-%  The scan only processes pixels that have a full set of neighbors.  Pixels
-%  in the top, bottom, left, and right pairs of rows and columns are omitted
-%  from the scan.
+%  EnhanceImage() applies a digital filter that improves the quality of a
+%  noisy image.
 %
 %  The format of the EnhanceImage method is:
 %
@@ -1149,11 +1116,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o enhance_image: Method EnhanceImage returns a pointer to the image
-%      after it is enhanced.  A null image is returned if there is a memory
-%      shortage.
-%
-%    o image: the image.
+%    o image: The image.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -1295,9 +1258,10 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GaussianBlurImage creates a new image that is a copy of an existing
-%  one with the pixels blur.  It allocates the memory necessary for the
-%  new Image structure and returns a pointer to the new image.
+%  GaussianBlurImage() blurs an image.  We convolve the image with a 
+%  Gaussian operator of the given radius and standard deviation (sigma).
+%  For reasonable results, the radius should be larger than sigma.  Use a
+%  radius of 0 and GaussianBlurImage() selects a suitable radius for you
 %
 %  The format of the BlurImage method is:
 %
@@ -1388,9 +1352,9 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
 %      after it is implode.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: the image.
+%    o image: The image.
 %
-%    o amount:  A double value that defines the extent of the implosion.
+%    o amount:  Define the extent of the implosion.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -1502,9 +1466,9 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MedianFilterImage creates a new image that is a copy of an existing
-%  one with each pixel component replaced with the median color in a pixel
-%  neighborhood.
+%  MedianFilterImage() applies a digital filter that improves the quality 
+%  of a noisy image.  Each pixel is replaced by the median in a set of
+%  neighboring pixels as defined by radius. 
 %
 %  The format of the MedianFilterImage method is:
 %
@@ -1513,14 +1477,9 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 %
 %  A description of each parameter follows:
 %
-%    o median_image: Method MedianFilterImage returns a pointer to the image
-%      after it is `filtered'.  A null image is returned if there is a memory
-%      shortage.
+%    o image: The image.
 %
-%    o image: the address of a structure of type Image;  returned from
-%      ReadImage.
-%
-%    o radius: the radius of the pixel neighborhood.
+%    o radius: The radius of the pixel neighborhood.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -1683,9 +1642,9 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MorphImages morphs a sequence of images.  Both the next pixels and
-%  size are linearly interpolated to give the appearance of a meta-morphosis
-%  from one next to the next.
+%  The MorphImages() method requires a minimum of two images.  The first
+%  image is transformed into the second by a number of intervening images
+%  as specified by frames.
 %
 %  The format of the MorphImage method is:
 %
@@ -1694,14 +1653,10 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o morph_images: Method MorphImages returns an next sequence that
-%      has linearly interpolated pixels and size between two input image.
-%
 %    o image: The image.
 %
-%    o number_frames:  This unsigned integer reflects the number of in-between
-%      image to generate.  The more in-between frames, the smoother
-%      the morph.
+%    o number_frames:  Define the number of in-between image to generate.
+%      The more in-between frames, the smoother the morph.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -2059,9 +2014,9 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method OilPaintImage creates a new image that is a copy of an existing
-%  one with each pixel component replaced with the color of greatest frequency
-%  in a circular neighborhood.
+%  OilPaintImage() applies a special effect filter that simulates an oil 
+%  painting.  Each pixel is replaced by the most frequent color occurring
+%  in a circular region defined by radius.
 %
 %  The format of the OilPaintImage method is:
 %
@@ -2070,11 +2025,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o paint_image: Method OilPaintImage returns a pointer to the image
-%      after it is `painted'.  A null image is returned if there is a memory
-%      shortage.
-%
-%    o image: the image.
+%    o image: The image.
 %
 %    o radius: The radius of the circular neighborhood.
 %
@@ -2217,8 +2168,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method PlasmaImage initializes an image with plasma fractal values.  The
-%  image must be initialized with a base color and the random number generator
+%  PlasmaImage() initializes an image with plasma fractal values.  The image
+%  must be initialized with a base color and the random number generator
 %  seeded before this method is called.
 %
 %  The format of the PlasmaImage method is:
@@ -2228,17 +2179,13 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method PlasmaImage returns True when the fractal process
-%      is complete.  Otherwise False is returned.
+%    o image: The image.
 %
-%    o image: the image.
+%    o segment:   Define the region to apply plasma fractals values.
 %
-%    o segment:  specifies a structure of type SegmentInfo that defines
-%      the boundaries of the area where the plasma fractals are applied.
+%    o attenuate: Define the plasma attenuation factor.
 %
-%    o attenuate:  specifies the plasma attenuation factor.
-%
-%    o depth: this integer values define the plasma recursion depth.
+%    o depth: Limit the plasma recursion depth.
 %
 %
 */
@@ -2407,17 +2354,10 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReduceNoiseImage creates a new image that is a copy of an existing
-%  one with the noise minified with a noise peak elimination filter.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  The principal function of noise peak elimination filter is to smooth the
-%  objects within an image without losing edge information and without
-%  creating undesired structures.  The central idea of the algorithm is to
-%  replace a pixel with its next neighbor in value within a window, if this
-%  pixel has been found to be noise.  A pixel is defined as noise if and
-%  only if this pixel is a maximum or minimum within the window.
+%  ReduceNoiseImage() smooths the contours of an image while still preserving
+%  edge information.  The algorithm works by replacing each pixel with its
+%  neighbor closest in value.  A neighbor is defined by \texttt{radius}.
+%  Use a radius of 0 and ReduceNoise() selects a suitable radius for you.
 %
 %  The format of the ReduceNoiseImage method is:
 %
@@ -2426,14 +2366,9 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %  A description of each parameter follows:
 %
-%    o noise_image: Method ReduceNoiseImage returns a pointer to the image
-%      after the noise is minified.  A null image is returned if there is a
-%      memory shortage.
+%    o image: The image.
 %
-%    o image: the address of a structure of type Image;  returned from
-%      ReadImage.
-%
-%    o radius: the radius of the pixel neighborhood.
+%    o radius: The radius of the pixel neighborhood.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -2609,10 +2544,10 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ShadeImage creates a new image that is a copy of an existing
-%  one with the image pixels shaded using a distance light source.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
+%  ShadeImage() shines a distant light on an image to create a
+%  three-dimensional effect. You control the positioning of the light with
+%  azimuth and elevation; azimuth is measured in degrees off the x axis
+%  and elevation is measured in pixels above the Z axis.
 %
 %  The format of the ShadeImage method is:
 %
@@ -2621,17 +2556,12 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o shade_image: Method ShadeImage returns a pointer to the image
-%      after it is shaded.  A null image is returned if there is a memory
-%      shortage.
-%
-%    o image: the image.
+%    o image: The image.
 %
 %    o color_shading: A value other than zero shades the red, green, and blue
 %      components of the image.
 %
-%    o azimuth, elevation:  A double value that indicates the light source
-%      direction.
+%    o azimuth, elevation:  Define the light source direction.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -2769,8 +2699,10 @@ MagickExport Image *ShadeImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SharpenImage creates a new image that is sharpened version of
-%  the original image using a Laplacian convolution kernel.
+%  SharpenImage() sharpens an image.  We convolve the image with a 
+%  Gaussian operator of the given radius and standard deviation (sigma).
+%  For reasonable results, radius should be larger than sigma.  Use a 
+%  radius of 0 and SharpenImage() selects a suitable radius for you.
 %
 %  The format of the SharpenImage method is:
 %
@@ -2779,9 +2711,7 @@ MagickExport Image *ShadeImage(const Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o sharp_image: Method SharpenImage returns a pointer to the image
-%      after it is sharp.  A null image is returned if there is a memory
-%      shortage.
+%    o image: The image.
 %
 %    o radius: The radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -2849,8 +2779,10 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SolarizeImage produces a 'solarization' effect seen when exposing
-%  a photographic film to light during the development process.
+%  SolarizeImage() applies a special effect to the image, similar to the effect
+%  achieved in a photo darkroom by selectively exposing areas of photo
+%  sensitive paper to light.  Threshold ranges from 0 to MaxRGB and is a
+%  measure of the extent of the solarization.
 %
 %  The format of the SolarizeImage method is:
 %
@@ -2858,10 +2790,9 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o image: The image.
 %
-%    o threshold:  An double value that defines the extent of the
-%      solarization.
+%    o threshold:  Define the extent of the solarization.
 %
 %
 */
@@ -2938,32 +2869,25 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SpreadImage creates a new image that is a copy of an existing
-%  one with the image pixels randomly displaced.  It allocates the memory
-%  necessary for the new Image structure and returns a pointer to the new
-%  image.
+%  SpreadImage() is a special effects method that randomly displaces each 
+%  pixel in a block defined by the amount parameter.
 %
 %  The format of the SpreadImage method is:
 %
-%      Image *SpreadImage(iconst Image *image,const unsigned int amount,
+%      Image *SpreadImage(const Image *image,const unsigned int radius,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o spread_image: Method SpreadImage returns a pointer to the image
-%      after it is spread.  A null image is returned if there is a memory
-%      shortage.
+%    o image: The image.
 %
-%    o image: the image.
-%
-%    o amount:  An unsigned value constraining the "vicinity" for choosing
-%      a random pixel to swap.
+%    o radius:  Choose a random pixel in a neighborhood of this extent.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport Image *SpreadImage(const Image *image,const unsigned int amount,
+MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
   ExceptionInfo *exception)
 {
 #define SpreadImageText  "  Spread image...  "
@@ -2999,7 +2923,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int amount,
   /*
     Convolve each row.
   */
-  quantum=(amount+1) >> 1;
+  quantum=radius;
   for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(spread_image,0,y,spread_image->columns,1);
@@ -3009,8 +2933,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int amount,
     {
       do
       {
-        x_distance=(rand() & (amount+1))-quantum;
-        y_distance=(rand() & (amount+1))-quantum;
+        x_distance=(rand() & (2*radius+1))-quantum;
+        y_distance=(rand() & (2*radius+1))-quantum;
       } while (((x+x_distance) < 0) || ((y+y_distance) < 0) ||
                ((x+x_distance) >= (long) image->columns) ||
                ((y+y_distance) >= (long) image->rows));
@@ -3035,22 +2959,21 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int amount,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SteganoImage hides a digital watermark within the image.
+%  Use SteganoImage() to hide a digital watermark within the image.  
+%  Recover the hidden watermark later to prove that the authenticity of
+%  an image.  texttt{Offset} defines the start position within the image
+%  to hide the watermark.
 %
 %  The format of the SteganoImage method is:
 %
-%      Image *SteganoImage(Image *image,Image *watermark,
+%      Image *SteganoImage(const Image *image,Image *watermark,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o stegano_image: Method SteganoImage returns a pointer to the
-%      steganographic image with the watermark hidden.  A null image is
-%      returned if there is a memory shortage.
-%
 %    o image: The image.
 %
-%    o watermark: The image.
+%    o watermark: The watermark image.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -3162,12 +3085,9 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method StereoImage combines two images and produces a single image that
-%  is the composite of a left and right image of a stereo pair.  The left
-%  image is converted to gray scale and written to the red channel of the
-%  stereo image.  The right image is converted to gray scale and written to the
-%  blue channel of the stereo image.  View the composite image with red-blue
-%  glasses to create a stereo effect.
+%  StereoImage() combines two images and produces a single image that is the
+%  composite of a left and right image of a stereo pair.  Special red-green
+%  stereo glasses are required to view this effect.
 %
 %  The format of the StereoImage method is:
 %
@@ -3181,7 +3101,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
 %
 %    o image: The image.
 %
-%    o offset_image: The image.
+%    o offset_image: Another image.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -3263,10 +3183,9 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SwirlImage creates a new image that is a copy of an existing
-%  one with the image pixels "swirl" at a specified angle.  It allocates the
-%  memory necessary for the new Image structure and returns a pointer to the
-%  new image.
+%  SwirlImage() swirls the pixels about the center of the image, where
+%  degrees indicates the sweep of the arc through which each pixel is moved.
+%  You get a more dramatic effect as the degrees move from 1 to 360.
 %
 %  The format of the SwirlImage method is:
 %
@@ -3275,13 +3194,9 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
 %
 %  A description of each parameter follows:
 %
-%    o swirl_image: Method SwirlImage returns a pointer to the image
-%      after it is swirl.  A null image is returned if there is a memory
-%      shortage.
+%    o image: The image.
 %
-%    o image: the image.
-%
-%    o degrees:  An double value that defines the tightness of the swirling.
+%    o degrees: Define the tightness of the swirling effect.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -3392,7 +3307,9 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ThresholdImage thresholds the reference image.
+%  ThresholdImage() changes the value of individual pixels based on
+%  the intensity of each pixel compared to threshold.  The result is a
+%  high-contrast, two color image.
 %
 %  The format of the ThresholdImage method is:
 %
@@ -3400,9 +3317,9 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o image: The image.
 %
-%    o threshold: A double indicating the threshold value.
+%    o threshold: Define the threshold value
 %
 %
 */
@@ -3463,8 +3380,10 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnsharpMaskImage creates a new image that is sharpened version of
-%  the original image using the unsharp mask algorithm.
+%  UnsharpMaskImage() sharpens an image.  We convolve the image with a 
+%  Gaussian operatorof the given radius and standard deviation (sigma).
+%  For reasonable results, radius should be larger than sigma.  Use a radius
+%  of 0 and UnsharpMaskImage() selects a suitable radius for you.
 %
 %  The format of the UnsharpMaskImage method is:
 %
@@ -3474,9 +3393,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %
 %  A description of each parameter follows:
 %
-%    o unsharp_image: Method UnsharpMaskImage returns a pointer to the image
-%      after it is sharpened.  A null image is returned if there is a memory
-%      shortage.
+%    o image: The image.
 %
 %    o radius: The radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -3580,10 +3497,9 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WaveImage creates a new image that is a copy of an existing
-%  one with the image pixels altered along a sine wave.  It allocates the
-%  memory necessary for the new Image structure and returns a pointer to
-%  the new image.
+%  The WaveImage() filter creates a "ripple" effect in the image by shifting 
+%  the pixels vertically along a sine wave whose amplitude and wavelength
+%  is specified by the given parameters.
 %
 %  The format of the WaveImage method is:
 %
@@ -3592,13 +3508,10 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o wave_image: Method WaveImage returns a pointer to the image after
-%      it is waved.  A null image is returned if there is a memory shortage.
+%    o image: The image.
 %
-%    o image: the image.
-%
-%    o amplitude, frequency:  A double value that indicates the amplitude
-%      and wave_length of the sine wave.
+%    o amplitude, frequency:  Define the amplitude and wave_length of the
+%      sine wave.
 %
 %    o exception: Return any errors or warnings in this structure.
 %

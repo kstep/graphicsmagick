@@ -81,8 +81,8 @@
 <P>Image * <STRONG>ShadeImage</STRONG>( const Image *image, const unsigned int color_shading, double azimuth, double elevation, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>SharpenImage</STRONG>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>void  <STRONG>SolarizeImage</STRONG>( Image *image, const double threshold );</P>
-<P>Image * <STRONG>SpreadImage</STRONG>( iconst Image *image, const unsigned int amount, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>SteganoImage</STRONG>( Image *image, Image *watermark, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>SpreadImage</STRONG>( const Image *image, const unsigned int radius, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>SteganoImage</STRONG>( const Image *image, Image *watermark, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>StereoImage</STRONG>( const Image *image, const Image *offset_image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>SwirlImage</STRONG>( const Image *image, double degrees, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ThresholdImage</STRONG>( Image *image, const double threshold );</P>
@@ -101,7 +101,7 @@
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_noise_type%3A">noise_type:</A></STRONG><BR>
 <DD>
@@ -159,19 +159,18 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="colorizeimage">ColorizeImage</A></H2>
-<P>Method ColorizeImage creates a new image that is a copy of an existing one with the image pixels colorized.  The colorization is controlled with the pen color and the opacity levels.</P>
 <P>The format of the ColorizeImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ColorizeImage ( const <A HREF="types/Image.html">Image</A> *image, const char *opacity, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_opacity%3A">opacity:</A></STRONG><BR>
 <DD>
 
-<FONT SIZE=-1>A</FONT> character string indicating the level of opacity as a percentage (0-100).
+<FONT SIZE=-1>A</FONT> character string indicating the level of opacity as a percentage.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_target%3A">target:</A></STRONG><BR>
 <DD>
@@ -184,19 +183,13 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="convolveimage">ConvolveImage</A></H2>
-<P>Method ConvolveImage applies a general image convolution kernel to an image returns the results.  ConvolveImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the ConvolveImage method is:</P>
+<blockquote>ConvolveImage ( ) applies a custom convolution kernel to the image.; </blockquote><P>The format of the ConvolveImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ConvolveImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int order, const double *kernel, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_convolve_image%3A">convolve_image:</A></STRONG><BR>
-<DD>
-Method ConvolveImage returns a pointer to the image after it is convolved.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_order%3A">order:</A></STRONG><BR>
 <DD>
@@ -212,20 +205,14 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="despeckleimage">DespeckleImage</A></H2>
-<P>Method DespeckleImage creates a new image that is a copy of an existing one with the speckle noise minified.  It uses the eight hull algorithm described in Applied Optics, Vol.  24, No.  10, 15 May 1985, ``Geometric filter for Speckle Reduction'', by Thomas 
-<FONT SIZE=-1>R</FONT> Crimmins.  Each pixel in the image is replaced by one of its eight of its surrounding pixels using a polarity and negative hull function.  DespeckleImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P><CODE>Despeckle()</CODE> reduces the speckle noise in an image while perserving the edges of the original image.</P>
 <P>The format of the DespeckleImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *DespeckleImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_despeckle_image%3A">despeckle_image:</A></STRONG><BR>
-<DD>
-Method DespeckleImage returns a pointer to the image after it is despeckled.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -233,19 +220,13 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="edgeimage">EdgeImage</A></H2>
-<P>Method EdgeImage creates a new image that is a copy of an existing one with the edges enhanced.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the EdgeImage method is:</P>
+<blockquote>EdgeImage ( ) finds edges in an image. Radius defines the radius of theconvolution filter. Use a radius of 0 and Edge ( ) selects a suitableradius for you.; </blockquote><P>The format of the EdgeImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *EdgeImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_edge_image%3A">edge_image:</A></STRONG><BR>
-<DD>
-Method EdgeImage returns a pointer to the image after it is edge.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the address of a structure of type Image; returned from ReadImage.
+The image.
 <P></P>
 <p><dt><STRONG>radius:</STRONG><BR>
 <DD>
@@ -257,19 +238,13 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="embossimage">EmbossImage</A></H2>
-<P>Method EmbossImage creates a new image that is a copy of an existing one with the edge highlighted.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the EmbossImage method is:</P>
+<blockquote>EmbossImage ( ) returns a grayscale image with a three-dimensional effect.We convolve the image with a Gaussian operator of the given radius andstandard deviation ( sigma ) . For reasonable results, radius should belarger than sigma. Use a radius of 0 and Emboss ( ) selects a suitableradius for you.; </blockquote><P>The format of the EmbossImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *EmbossImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_emboss_image%3A">emboss_image:</A></STRONG><BR>
-<DD>
-Method EmbossImage returns a pointer to the image after it is embossed.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG>radius:</STRONG><BR>
 <DD>
@@ -285,23 +260,13 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="enhanceimage">EnhanceImage</A></H2>
-<P>Method EnhanceImage creates a new image that is a copy of an existing one with the noise minified.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>EnhanceImage does a weighted average of pixels in a 5x5 cell around each target pixel.  Only pixels in the 5x5 cell that are within a 
-<FONT SIZE=-1>RGB</FONT> distance threshold of the target pixel are averaged.</P>
-<P>Weights assume that the importance of neighboring pixels is negately proportional to the square of their distance from the target pixel.</P>
-<P>The scan only processes pixels that have a full set of neighbors.  Pixels in the top, bottom, left, and right pairs of rows and columns are omitted from the scan.</P>
-<P>The format of the EnhanceImage method is:</P>
+<blockquote>EnhanceImage ( ) applies a digital filter that improves the quality of anoisy image.; </blockquote><P>The format of the EnhanceImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_enhance_image%3A">enhance_image:</A></STRONG><BR>
-<DD>
-Method EnhanceImage returns a pointer to the image after it is enhanced.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -309,8 +274,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="gaussianblurimage">GaussianBlurImage</A></H2>
-<P>Method GaussianBlurImage creates a new image that is a copy of an existing one with the pixels blur.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the BlurImage method is:</P>
+<blockquote>GaussianBlurImage ( ) blurs an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) .For reasonable results, the radius should be larger than sigma. Use aradius of 0 and GaussianBlurImage ( ) selects a suitable radius for you; </blockquote><P>The format of the BlurImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *GaussianBlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -345,12 +309,11 @@ Method ImplodeImage returns a pointer to the image after it is implode.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_amount%3A">amount:</A></STRONG><BR>
 <DD>
-
-<FONT SIZE=-1>A</FONT> double value that defines the extent of the implosion.
+Define the extent of the implosion.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -358,23 +321,17 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="medianfilterimage">MedianFilterImage</A></H2>
-<P>Method MedianFilterImage creates a new image that is a copy of an existing one with each pixel component replaced with the median color in a pixel neighborhood.</P>
-<P>The format of the MedianFilterImage method is:</P>
+<blockquote>MedianFilterImage ( ) applies a digital filter that improves the quality of a noisy image. Each pixel is replaced by the median in a set ofneighboring pixels as defined by radius. ; </blockquote><P>The format of the MedianFilterImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MedianFilterImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_median_image%3A">median_image:</A></STRONG><BR>
-<DD>
-Method MedianFilterImage returns a pointer to the image after it is `filtered'. 
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the address of a structure of type Image; returned from ReadImage.
+The image.
 <P></P>
 <p><dt><STRONG>radius:</STRONG><BR>
 <DD>
-the radius of the pixel neighborhood.
+The radius of the pixel neighborhood.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -382,22 +339,17 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="morphimages">MorphImages</A></H2>
-<P>Method MorphImages morphs a sequence of images.  Both the next pixels and size are linearly interpolated to give the appearance of a meta-morphosis from one next to the next.</P>
-<P>The format of the MorphImage method is:</P>
+<blockquote>The MorphImages ( ) method requires a minimum of two images. The firstimage is transformed into the second by a number of intervening imagesas specified by frames.; </blockquote><P>The format of the MorphImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MorphImages ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long number_frames, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_morph_images%3A">morph_images:</A></STRONG><BR>
-<DD>
-Method MorphImages returns an next sequence that has linearly interpolated pixels and size between two input image.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_number_frames%3A">number_frames:</A></STRONG><BR>
 <DD>
-This unsigned integer reflects the number of in-between image to generate.  The more in-between frames, the smoother the morph.
+Define the number of in-between image to generate.  The more in-between frames, the smoother the morph.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -434,19 +386,13 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="oilpaintimage">OilPaintImage</A></H2>
-<P>Method OilPaintImage creates a new image that is a copy of an existing one with each pixel component replaced with the color of greatest frequency in a circular neighborhood.</P>
-<P>The format of the OilPaintImage method is:</P>
+<blockquote>OilPaintImage ( ) applies a special effect filter that simulates an oil painting. Each pixel is replaced by the most frequent color occurringin a circular region defined by radius.; </blockquote><P>The format of the OilPaintImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *OilPaintImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_paint_image%3A">paint_image:</A></STRONG><BR>
-<DD>
-Method OilPaintImage returns a pointer to the image after it is `painted'. 
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG>radius:</STRONG><BR>
 <DD>
@@ -458,52 +404,39 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="plasmaimage">PlasmaImage</A></H2>
-<P>Method PlasmaImage initializes an image with plasma fractal values.  The image must be initialized with a base color and the random number generator seeded before this method is called.</P>
-<P>The format of the PlasmaImage method is:</P>
+<blockquote>PlasmaImage ( ) initializes an image with plasma fractal values. The imagemust be initialized with a base color and the random number generatorseeded before this method is called.; </blockquote><P>The format of the PlasmaImage method is:</P>
 <blockquote>unsigned int PlasmaImage ( <A HREF="types/Image.html">Image</A> *image, const SegmentInfo *segment, int attenuate, int depth ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
-<DD>
-Method PlasmaImage returns True when the fractal process is complete.  Otherwise False is returned.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_segment%3A">segment:</A></STRONG><BR>
 <DD>
-specifies a structure of type SegmentInfo that defines the boundaries of the area where the plasma fractals are applied.
+Define the region to apply plasma fractals values.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_attenuate%3A">attenuate:</A></STRONG><BR>
 <DD>
-specifies the plasma attenuation factor.
+Define the plasma attenuation factor.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_depth%3A">depth:</A></STRONG><BR>
 <DD>
-this integer values define the plasma recursion depth.
+Limit the plasma recursion depth.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="reducenoiseimage">ReduceNoiseImage</A></H2>
-<P>Method ReduceNoiseImage creates a new image that is a copy of an existing one with the noise minified with a noise peak elimination filter.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The principal function of noise peak elimination filter is to smooth the objects within an image without losing edge information and without creating undesired structures.  The central idea of the algorithm is to replace a pixel with its next neighbor in value within a window, if this pixel has been found to be noise.  
-<FONT SIZE=-1>A</FONT> pixel is defined as noise if and only if this pixel is a maximum or minimum within the window.</P>
-<P>The format of the ReduceNoiseImage method is:</P>
+<blockquote>ReduceNoiseImage ( ) smooths the contours of an image while still preservingedge information. The algorithm works by replacing each pixel with itsneighbor closest in value. A neighbor is defined by \texttt{radius}.Use a radius of 0 and ReduceNoise ( ) selects a suitable radius for you.; </blockquote><P>The format of the ReduceNoiseImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_noise_image%3A">noise_image:</A></STRONG><BR>
-<DD>
-Method ReduceNoiseImage returns a pointer to the image after the noise is minified.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the address of a structure of type Image; returned from ReadImage.
+The image.
 <P></P>
 <p><dt><STRONG>radius:</STRONG><BR>
 <DD>
-the radius of the pixel neighborhood.
+The radius of the pixel neighborhood.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -511,19 +444,13 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="shadeimage">ShadeImage</A></H2>
-<P>Method ShadeImage creates a new image that is a copy of an existing one with the image pixels shaded using a distance light source.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the ShadeImage method is:</P>
+<blockquote>ShadeImage ( ) shines a distant light on an image to create athree-dimensional effect. You control the positioning of the light withazimuth and elevation; azimuth is measured in degrees off the x axisand elevation is measured in pixels above the Z axis.; </blockquote><P>The format of the ShadeImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ShadeImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int color_shading, double azimuth, double elevation, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_shade_image%3A">shade_image:</A></STRONG><BR>
-<DD>
-Method ShadeImage returns a pointer to the image after it is shaded.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_color_shading%3A">color_shading:</A></STRONG><BR>
 <DD>
@@ -532,8 +459,7 @@ the image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_azimuth%2C_elevation%3A">azimuth, elevation:</A></STRONG><BR>
 <DD>
-
-<FONT SIZE=-1>A</FONT> double value that indicates the light source direction.
+Define the light source direction.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -541,15 +467,13 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="sharpenimage">SharpenImage</A></H2>
-<P>Method SharpenImage creates a new image that is sharpened version of the original image using a Laplacian convolution kernel.</P>
-<P>The format of the SharpenImage method is:</P>
+<blockquote>SharpenImage ( ) sharpens an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) .For reasonable results, radius should be larger than sigma. Use a radius of 0 and SharpenImage ( ) selects a suitable radius for you.; </blockquote><P>The format of the SharpenImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SharpenImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_sharp_image%3A">sharp_image:</A></STRONG><BR>
+<p><dt><STRONG>image:</STRONG><BR>
 <DD>
-Method SharpenImage returns a pointer to the image after it is sharp.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
+The image.
 <P></P>
 <p><dt><STRONG>radius:</STRONG><BR>
 <DD>
@@ -565,38 +489,31 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="solarizeimage">SolarizeImage</A></H2>
-<P>Method SolarizeImage produces a 'solarization' effect seen when exposing a photographic film to light during the development process.</P>
-<P>The format of the SolarizeImage method is:</P>
+<blockquote>SolarizeImage ( ) applies a special effect to the image, similar to the effectachieved in a photo darkroom by selectively exposing areas of photosensitive paper to light. Threshold ranges from 0 to MaxRGB and is ameasure of the extent of the solarization.; </blockquote><P>The format of the SolarizeImage method is:</P>
 <blockquote>void SolarizeImage ( <A HREF="types/Image.html">Image</A> *image, const double threshold ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_threshold%3A">threshold:</A></STRONG><BR>
 <DD>
-An double value that defines the extent of the solarization.
+Define the extent of the solarization.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="spreadimage">SpreadImage</A></H2>
-<P>Method SpreadImage creates a new image that is a copy of an existing one with the image pixels randomly displaced.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the SpreadImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *SpreadImage ( iconst <A HREF="types/Image.html">Image</A> *image, const unsigned int amount, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>SpreadImage ( ) is a special effects method that randomly displaces each pixel in a block defined by the amount parameter.; </blockquote><P>The format of the SpreadImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *SpreadImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_spread_image%3A">spread_image:</A></STRONG><BR>
-<DD>
-Method SpreadImage returns a pointer to the image after it is spread.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
-<p><dt><STRONG>amount:</STRONG><BR>
+<p><dt><STRONG>radius:</STRONG><BR>
 <DD>
-An unsigned value constraining the ``vicinity'' for choosing a random pixel to swap.
+Choose a random pixel in a neighborhood of this extent.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -604,23 +521,17 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="steganoimage">SteganoImage</A></H2>
-<P>Method SteganoImage hides a digital watermark within the image.</P>
-<P>The format of the SteganoImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *SteganoImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *watermark, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>Use SteganoImage ( ) to hide a digital watermark within the image. Recover the hidden watermark later to prove that the authenticity ofan image. texttt{Offset} defines the start position within the imageto hide the watermark.; </blockquote><P>The format of the SteganoImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *SteganoImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *watermark, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_stegano_image%3A">stegano_image:</A></STRONG><BR>
-<DD>
-Method SteganoImage returns a pointer to the steganographic image with the watermark hidden.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_watermark%3A">watermark:</A></STRONG><BR>
 <DD>
-The image.
+The watermark image.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -628,8 +539,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="stereoimage">StereoImage</A></H2>
-<P>Method StereoImage combines two images and produces a single image that is the composite of a left and right image of a stereo pair.  The left image is converted to gray scale and written to the red channel of the stereo image.  The right image is converted to gray scale and written to the blue channel of the stereo image.  View the composite image with red-blue glasses to create a stereo effect.</P>
-<P>The format of the StereoImage method is:</P>
+<blockquote>StereoImage ( ) combines two images and produces a single image that is thecomposite of a left and right image of a stereo pair. Special red-greenstereo glasses are required to view this effect.; </blockquote><P>The format of the StereoImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *StereoImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Image.html">Image</A> *offset_image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -644,7 +554,7 @@ The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_offset_image%3A">offset_image:</A></STRONG><BR>
 <DD>
-The image.
+Another image.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -652,23 +562,17 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="swirlimage">SwirlImage</A></H2>
-<P>Method SwirlImage creates a new image that is a copy of an existing one with the image pixels ``swirl'' at a specified angle.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the SwirlImage method is:</P>
+<blockquote>SwirlImage ( ) swirls the pixels about the center of the image, wheredegrees indicates the sweep of the arc through which each pixel is moved.You get a more dramatic effect as the degrees move from 1 to 360.; </blockquote><P>The format of the SwirlImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SwirlImage ( const <A HREF="types/Image.html">Image</A> *image, double degrees, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_swirl_image%3A">swirl_image:</A></STRONG><BR>
-<DD>
-Method SwirlImage returns a pointer to the image after it is swirl.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_degrees%3A">degrees:</A></STRONG><BR>
 <DD>
-An double value that defines the tightness of the swirling.
+Define the tightness of the swirling effect.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -676,31 +580,27 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="thresholdimage">ThresholdImage</A></H2>
-<P>Method ThresholdImage thresholds the reference image.</P>
-<P>The format of the ThresholdImage method is:</P>
+<blockquote>ThresholdImage ( ) changes the value of individual pixels based onthe intensity of each pixel compared to threshold. The result is ahigh-contrast, two color image.; </blockquote><P>The format of the ThresholdImage method is:</P>
 <blockquote>unsigned int ThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const double threshold ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG>threshold:</STRONG><BR>
 <DD>
-
-<FONT SIZE=-1>A</FONT> double indicating the threshold value.
+Define the threshold value
 <P></P></DL></DL>
 <P>
 <H2><A NAME="unsharpmaskimage">UnsharpMaskImage</A></H2>
-<P>Method UnsharpMaskImage creates a new image that is sharpened version of the original image using the unsharp mask algorithm.</P>
-<P>The format of the UnsharpMaskImage method is:</P>
+<blockquote>UnsharpMaskImage ( ) sharpens an image. We convolve the image with a Gaussian operatorof the given radius and standard deviation ( sigma ) .For reasonable results, radius should be larger than sigma. Use a radiusof 0 and UnsharpMaskImage ( ) selects a suitable radius for you.; </blockquote><P>The format of the UnsharpMaskImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *UnsharpMaskImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double amount, const double threshold, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_unsharp_image%3A">unsharp_image:</A></STRONG><BR>
+<p><dt><STRONG>image:</STRONG><BR>
 <DD>
-Method UnsharpMaskImage returns a pointer to the image after it is sharpened.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
+The image.
 <P></P>
 <p><dt><STRONG>radius:</STRONG><BR>
 <DD>
@@ -724,24 +624,17 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="waveimage">WaveImage</A></H2>
-<P>Method WaveImage creates a new image that is a copy of an existing one with the image pixels altered along a sine wave.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the WaveImage method is:</P>
+<blockquote>The WaveImage ( ) filter creates a "ripple" effect in the image by shifting the pixels vertically along a sine wave whose amplitude and wavelengthis specified by the given parameters.; </blockquote><P>The format of the WaveImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *WaveImage ( const <A HREF="types/Image.html">Image</A> *image, const double amplitude, const double wave_length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_wave_image%3A">wave_image:</A></STRONG><BR>
-<DD>
-Method WaveImage returns a pointer to the image after it is waved.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_amplitude%2C_frequency%3A">amplitude, frequency:</A></STRONG><BR>
 <DD>
-
-<FONT SIZE=-1>A</FONT> double value that indicates the amplitude and wave_length of the sine wave.
+Define the amplitude and wave_length of the sine wave.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
