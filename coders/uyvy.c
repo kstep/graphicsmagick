@@ -280,6 +280,9 @@ ModuleExport void UnregisterUYVYImage(void)
 */
 static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
 {
+  DoublePixelPacket
+    pixel;
+
   long
     y;
 
@@ -291,10 +294,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     full,
-    status,
-    u,
-    v,
-    y1;
+    status;
 
   /*
     Open output image file.
@@ -315,10 +315,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
     Accumulate two pixels, then output.
   */
   full=False;
-  u=0;
-  v=0;
-  y1=0;
-  full=False;
+  memset(&pixel,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -328,19 +325,17 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
     {
       if (full)
         {
-          (void) WriteBlobByte(image,ScaleQuantumToChar((u+p->green) >> 1));
-          (void) WriteBlobByte(image,ScaleQuantumToChar(y1));
-          (void) WriteBlobByte(image,ScaleQuantumToChar((v+p->blue) >> 1));
+          pixel.green=(pixel.green+p->green)/2;
+          pixel.blue=(pixel.blue+p->blue)/2;
+          (void) WriteBlobByte(image,ScaleQuantumToChar(pixel.green));
+          (void) WriteBlobByte(image,ScaleQuantumToChar(pixel.red));
+          (void) WriteBlobByte(image,ScaleQuantumToChar(pixel.blue));
           (void) WriteBlobByte(image,ScaleQuantumToChar(p->red));
-          full=False;
         }
-      else
-        {
-          y1=p->red;
-          u=p->green;
-          v=p->blue;
-          full=True;
-        }
+      pixel.red=p->red;
+      pixel.green=p->green;
+      pixel.blue=p->blue;
+      full=!full;
       p++;
     }
     if (QuantumTick(y,image->rows))
