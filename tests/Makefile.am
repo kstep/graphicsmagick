@@ -28,7 +28,7 @@
 # ImageMagick Studio.
 #
 
-AUTOMAKE_OPTIONS = 1.2 foreign
+AUTOMAKE_OPTIONS = 1.4 foreign
 
 INCLUDES = -I../ -I$(top_srcdir) -I../magick
 # ../magick/config.h is needed.

@@ -3,10 +3,10 @@
 #
 # Copyright Bob Friesenhahn, 1999, 2000
 #
-AUTOMAKE_OPTIONS = 1.4 dist-zip #readme-alpha
+AUTOMAKE_OPTIONS = 1.4 dist-zip
 
 # Additional files to distribute
-EXTRA_DIST = ltcf-c.sh ltcf-cxx.sh ltcf-gcj.sh
+EXTRA_DIST =
 
 SUBDIRS = lib tests demo
 
@@ -18,7 +18,7 @@ dist-hook:
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(\.bak$$)|(CVS)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
+	      find $$dir -depth -print | egrep -v '(~$$)|(\.bak$$)|(/CVS)|(/\.#)|(/\.deps)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
 	)

@@ -108,12 +108,12 @@ then
   with_modules='no'
 fi
 AM_CONDITIONAL(WITH_MODULES, test "$with_modules" != 'no')
+# Configure libltdl
+AC_CONFIG_SUBDIRS(ltdl)
 if test "$with_modules" != 'no'
 then
   AC_DEFINE(HasLTDL,,Define if using libltdl to create dynamically loadable modules)
 
-  # Configure libltdl
-  AC_CONFIG_SUBDIRS(ltdl)
   # Set DLLDFLAGS
   if test X"$enable_shared" = Xyes; then
     DLLDFLAGS=-export-dynamic

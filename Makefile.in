@@ -198,14 +198,15 @@ install_sh = @install_sh@
 #  bug tracking system at http://www.simplesystems.org/ImageMagick/bugs.
 
 # Don't require all the GNU mandated files
-# Remove comment from no-dependencies for distributions compatable with
-# traditional 'make'
 
 
-AUTOMAKE_OPTIONS = 1.4 foreign # no-dependencies
+AUTOMAKE_OPTIONS = 1.4 dist-zip foreign
 
 # Subdirectories to build
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = @WITH_MAGICK_PLUS_PLUS_TRUE@Magick++
+
+# Directories to include in distribution
+DIST_SUBDIRS = delegates ltdl coders magick utilities tests Magick++
 @WITH_MODULES_TRUE@SUBDIRS = @WITH_MODULES_TRUE@delegates ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
 @WITH_MODULES_FALSE@SUBDIRS = @WITH_MODULES_FALSE@delegates coders magick utilities tests $(MAGICK_PLUS_PLUS)
 
@@ -216,7 +217,7 @@ EXTRA_DIST = Manifest.ps ImageMagick.html Magickshr.opt Make.com README.txt \
 
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = images scenes scripts www PerlMagick Magick++
+DISTDIRS = images scenes scripts www PerlMagick
 
 @WITH_PERL_TRUE@PERLMAGICK = @WITH_PERL_TRUE@PerlMagick
 @WITH_PERL_TRUE@PERLMAKEMAKER = @WITH_PERL_TRUE@$(PERLMAGICK)/Makefile.PL
@@ -237,7 +238,6 @@ install-sh ltmain.sh missing mkinstalldirs
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DIST_SUBDIRS =  delegates ltdl magick coders utilities tests Magick++
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
@@ -389,6 +389,15 @@ dist: distdir
 	|| chmod -R a+r $(distdir)
 	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c > $(distdir).tar.gz
 	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
+dist-zip: distdir
+	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
+	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
+	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
+	  ! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
+	|| chmod -R a+r $(distdir)
+	-rm -f $(distdir).zip
+	zip -rq $(distdir).zip $(distdir)
+	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
 dist-all: distdir
 	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
 	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
@@ -396,6 +405,8 @@ dist-all: distdir
 	  ! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
 	|| chmod -R a+r $(distdir)
 	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c > $(distdir).tar.gz
+	-rm -f $(distdir).zip
+	zip -rq $(distdir).zip $(distdir)
 	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
 distdir: $(DISTFILES)
 	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
@@ -501,7 +512,7 @@ dist-hook:
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
+	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
 	)

@@ -32,14 +32,15 @@
 #  bug tracking system at http://www.simplesystems.org/ImageMagick/bugs.
 
 # Don't require all the GNU mandated files
-# Remove comment from no-dependencies for distributions compatable with
-# traditional 'make'
-AUTOMAKE_OPTIONS = 1.4 foreign # no-dependencies
+AUTOMAKE_OPTIONS = 1.4 dist-zip foreign
 
 # Subdirectories to build
 if WITH_MAGICK_PLUS_PLUS
 MAGICK_PLUS_PLUS=Magick++
 endif # WITH_MAGICK_PLUS_PLUS
+
+# Directories to include in distribution
+DIST_SUBDIRS=delegates ltdl coders magick utilities tests Magick++
 
 if WITH_MODULES
 SUBDIRS = delegates ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
@@ -53,14 +54,14 @@ EXTRA_DIST = Manifest.ps ImageMagick.html Magickshr.opt Make.com README.txt \
 	ltcf-gcj.sh
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = images scenes scripts www PerlMagick Magick++
+DISTDIRS = images scenes scripts www PerlMagick
 dist-hook:
 	( \
 	  builddir=`pwd` ; \
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
+	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
 	)

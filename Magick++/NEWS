@@ -1,8 +1,13 @@
 This file records noteworthy changes.
+(5.2.4)
+  * Released with ImageMagick 5.2.4.
+  * Magick++ is now built by the regular ImageMagick build process.
+    when --with-magick_plus_plus is specified to configure.
+  * Fixed bug with setting text drawing options.
 
 (5.2.3)
   * Switched to new release numbering (match ImageMagick release number)
-  * Released with ImageMagick 5.2.2.
+  * Released with ImageMagick 5.2.3.
   * Fixed bug in which the Image read method was not reporting
     warnings (only errors).
   * Parameter changes to blur, charcoal, emboss, and sharpen methods

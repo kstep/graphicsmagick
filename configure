@@ -4356,16 +4356,16 @@ else
   WITH_MODULES_TRUE='#'
   WITH_MODULES_FALSE=
 fi
+# Configure libltdl
+
+subdirs="$subdirs ltdl"
+
 if test "$with_modules" != 'no'
 then
 
 cat >>confdefs.h <<\EOF
 #define HasLTDL
 EOF
-
-  # Configure libltdl
-
-subdirs="$subdirs ltdl"
 
   # Set DLLDFLAGS
   if test X"$enable_shared" = Xyes; then

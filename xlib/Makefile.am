@@ -31,9 +31,7 @@
 #  bfriesen@simple.dallas.tx.us
 
 # Don't require all the GNU mandated files
-# Remove comment from no-dependencies for distributions compatable with
-# traditional 'make'
-AUTOMAKE_OPTIONS = 1.2 foreign # no-dependencies
+AUTOMAKE_OPTIONS = 1.4 foreign
 
 lib_LTLIBRARIES = @X11STUBSLANAME@
 

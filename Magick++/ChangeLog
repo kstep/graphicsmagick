@@ -1,3 +1,9 @@
+2000-09-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Options.cpp : Bugfix.  Some DrawInfo attributes were not
+ 	being updated.  This lead to options like fontPointsize not
+ 	changing the font.
+
 2000-08-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (blurImage, charcoalImage, embossImage,

@@ -265,6 +265,7 @@ inline unsigned int Magick::Options::depth ( void ) const
 inline void Magick::Options::fontPointsize ( double pointSize_ )
 {
   _imageInfo->pointsize = pointSize_;
+  _drawInfo->pointsize = pointSize_;
   updateAnnotateInfo();
 }
 inline double Magick::Options::fontPointsize ( void ) const

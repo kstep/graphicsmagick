@@ -122,6 +122,7 @@ std::string Magick::Options::backgroundTexture ( void ) const
 void Magick::Options::borderColor ( const Color &color_ )
 {
   _imageInfo->border_color = color_;
+  _drawInfo->border_color = color_;
 }
 Magick::Color Magick::Options::borderColor ( void ) const
 {
@@ -181,9 +182,15 @@ Magick::Color Magick::Options::fillColor ( void ) const
 void Magick::Options::font ( const std::string &font_ )
 {
   if ( font_.length() == 0 )
-    LiberateMemory( (void**)&_imageInfo->font );
+    {
+      LiberateMemory( (void**)&_imageInfo->font );
+      LiberateMemory( (void**)&_drawInfo->font );
+    }
   else
-    Magick::CloneString( &_imageInfo->font, font_ );
+    {
+      Magick::CloneString( &_imageInfo->font, font_ );
+      Magick::CloneString( &_drawInfo->font, font_ );
+    }
 
   updateAnnotateInfo();
 }
