@@ -1,3 +1,8 @@
+2003-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Color.cpp: Ensure that all non-default constructors set
+	opacity to opaque.
+
 2003-09-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (colorHistogram): If map key is not const,

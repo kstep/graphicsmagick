@@ -301,7 +301,7 @@ Magick::ColorHSL::ColorHSL ( double hue_,
   redQuantum   ( red );
   greenQuantum ( green );
   blueQuantum  ( blue );
-
+  alphaQuantum ( OpaqueOpacity );
 }
 
 // Null constructor
@@ -451,6 +451,7 @@ Magick::ColorGray::ColorGray ( double shade_ )
 	    scaleDoubleToQuantum( shade_ ),
 	    scaleDoubleToQuantum( shade_ ) )
 {
+  alphaQuantum ( OpaqueOpacity );
 }
 
 // Null constructor
@@ -499,6 +500,7 @@ Magick::ColorMono::ColorMono ( bool mono_  )
 	    ( mono_ ? MaxRGB : 0 ),
 	    ( mono_ ? MaxRGB : 0 ) )
 {
+  alphaQuantum ( OpaqueOpacity );
 }
 
 // Null constructor
@@ -553,6 +555,7 @@ Magick::ColorRGB::ColorRGB ( double red_,
 	    scaleDoubleToQuantum(green_),
 	    scaleDoubleToQuantum(blue_) )
 {
+  alphaQuantum ( OpaqueOpacity );
 }
 // Null constructor
 Magick::ColorRGB::ColorRGB ( void )
@@ -604,6 +607,7 @@ Magick::ColorYUV::ColorYUV ( double y_,
 	    scaleDoubleToQuantum(y_ - (0.39380 * u_) - (0.58050 * v_) ),
 	    scaleDoubleToQuantum(y_ + 2.02790 * u_ ) )
 {
+  alphaQuantum ( OpaqueOpacity );
 }
 // Null constructor
 Magick::ColorYUV::ColorYUV ( void )
