@@ -65,8 +65,8 @@ extern MagickExport void
   GetBlobInfo(BlobInfo *),
   *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
   *MapBlob(int,const MapMode,off_t,size_t),
-  MSBOrderLong(char *,const size_t),
-  MSBOrderShort(char *,const size_t);
+  MSBOrderLong(unsigned char *,const size_t),
+  MSBOrderShort(unsigned char *,const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

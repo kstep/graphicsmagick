@@ -141,11 +141,11 @@ static char *ParseColor(char *data)
     *targets[NumberTargets] = { "c ", "g ", "g4 ", "m ", "b ", "s " };
 
   register char
-     *p,
-     *r;
+    *p,
+    *r;
 
   register const char
-     *q;
+    *q;
 
   register int
     i;

@@ -885,7 +885,8 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
 %
 %  The format of the MSBOrderLong method is:
 %
-%      void MSBOrderLong(register char *buffer,const unsigned int length)
+%      void MSBOrderLong(register unsigned char *buffer,
+%        const unsigned int length)
 %
 %  A description of each parameter follows.
 %
@@ -895,16 +896,17 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
 %
 %
 */
-MagickExport void MSBOrderLong(register char *buffer,const size_t length)
+MagickExport void MSBOrderLong(register unsigned char *buffer,
+	const size_t length)
 {
   int
     c;
 
-  register char
+  register unsigned char
     *p,
     *q;
 
-  assert(buffer != (char *) NULL);
+  assert(buffer != (unsigned char *) NULL);
   q=buffer+length;
   while (buffer < q)
   {
@@ -936,7 +938,7 @@ MagickExport void MSBOrderLong(register char *buffer,const size_t length)
 %
 %  The format of the MSBOrderShort method is:
 %
-%      void MSBOrderShort(register char *p,const size_t length)
+%      void MSBOrderShort(register unsigned char *p,const size_t length)
 %
 %  A description of each parameter follows.
 %
@@ -946,13 +948,15 @@ MagickExport void MSBOrderLong(register char *buffer,const size_t length)
 %
 %
 */
-MagickExport void MSBOrderShort(register char *p,const size_t length)
+MagickExport void MSBOrderShort(register unsigned char *p,const size_t length)
 {
-  register char
-    c,
+	int
+    c;
+
+  register unsigned char
     *q;
 
-  assert(p != (char *) NULL);
+  assert(p != (unsigned char *) NULL);
   q=p+length;
   while (p < q)
   {
