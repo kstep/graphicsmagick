@@ -3540,7 +3540,7 @@ Get(ref,...)
               if (!image)
                 break;
               (void) SignatureImage(image);
-              attribute=GetImageAttribute(image,"Signature");
+              attribute=GetImageAttribute(image,"signature");
               if (attribute != (ImageAttribute *) NULL)
                 s=newSVpv(attribute->value,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);

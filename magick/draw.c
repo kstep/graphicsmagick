@@ -4439,9 +4439,13 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end,const PointInfo degrees)
 {
   double
-    angle;
+    step;
+
+  long
+    segments;
 
   PointInfo
+    angle,
     point;
 
   register PrimitiveInfo
@@ -4453,14 +4457,30 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   /*
     Ellipses are just short segmented polys.
   */
+  step=2/end.y;
+  if (end.x > end.y)
+    step=2/end.x;
+  if (step > MagickPI/8.0)
+    step=MagickPI/8.0;
+  else
+    {
+      segments=ceil(MagickPI/step/2)*4;
+      step=MagickPI/segments;
+    }
+  angle.x=DegreesToRadians(degrees.x);
+  angle.y=DegreesToRadians(degrees.y);
   p=primitive_info;
-  for (angle=degrees.x; angle <= degrees.y; angle+=1.0)
+  for ( ; angle.x < angle.y; angle.x+=step)
   {
-    point.x=cos(DegreesToRadians(fmod(angle,360.0)))*end.x+start.x;
-    point.y=sin(DegreesToRadians(fmod(angle,360.0)))*end.y+start.y;
+    point.x=cos(angle.x)*end.x+start.x;
+    point.y=sin(angle.x)*end.y+start.y;
     TracePoint(p,point);
     p++;
   }
+  point.x=cos(angle.y)*end.x+start.x+MagickEpsilon;
+  point.y=sin(angle.y)*end.y+start.y+MagickEpsilon;
+  TracePoint(p,point);
+  p++;
   primitive_info->coordinates=p-primitive_info;
   for (i=0; i < (long) primitive_info->coordinates; i++)
   {

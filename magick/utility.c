@@ -3339,6 +3339,16 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         q+=offset;
         break;
       }
+      case '#':
+      {
+        (void) SignatureImage(image);
+        attribute=GetImageAttribute(image,"signature");
+        if (attribute == (ImageAttribute *) NULL)
+          break;
+        (void) strncpy(q,attribute->value,MaxTextExtent-1);
+        q+=strlen(attribute->value);
+        break;
+      }
       case '%':
       {
         *q++=(*p);
