@@ -3,6 +3,9 @@ set srcdir=..\..\..\Magick++\tests
 set bindir=..\..\bin\
 set PATH=%bindir%;%PATH%
 
+echo exceptions ...
+exceptions
+
 echo appendImages ...
 appendImages
 
