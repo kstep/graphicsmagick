@@ -21,6 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#closepixelcache">CloseImagePixels</A></LI>
+		<LI><A HREF="#compresscache">CompressCache</A></LI>
 		<LI><A HREF="#destroypixelcache">DestroyImagePixels</A></LI>
 		<LI><A HREF="#getindexesfromcache">GetIndexes</A></LI>
 		<LI><A HREF="#getonepixelfromcache">GetOnePixel</A></LI>
@@ -28,6 +29,7 @@
 		<LI><A HREF="#getpixelsfromcache">GetPixels</A></LI>
 		<LI><A HREF="#setpixelcache">SetImagePixels</A></LI>
 		<LI><A HREF="#syncpixelcache">SyncImagePixels</A></LI>
+		<LI><A HREF="#uncompresscache">UncompressCache</A></LI>
 		<LI><A HREF="#writecacheinfo">WriteCacheInfo</A></LI>
 	</UL>
 
@@ -44,6 +46,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>void  <STRONG>CloseImagePixels</STRONG>( Image *image );</P>
+<P>unsigned int  <STRONG>CompressCache</STRONG>( Cache cache );</P>
 <P>void  <STRONG>DestroyImagePixels</STRONG>( Image *image );</P>
 <P>IndexPacket * <STRONG>GetIndexes</STRONG>( const Image *image );</P>
 <P>PixelPacket * <STRONG>GetOnePixel</STRONG>( const Image image, const int x, const int y );</P>
@@ -51,6 +54,7 @@
 <P>PixelPacket * <STRONG>GetPixels</STRONG>( const Image image );</P>
 <P>PixelPacket * <STRONG>SetImagePixels</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
 <P>unsigned int  <STRONG>SyncImagePixels</STRONG>( Image *image );</P>
+<P>unsigned int  <STRONG>UncompressCache</STRONG>( Cache cache );</P>
 <P>unsigned int  <STRONG>WriteCacheInfo</STRONG>( Image *image );</P>
 <P>
 <HR>
@@ -59,7 +63,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="closepixelcache">CloseImagePixels</A></H2>
-<P>Method CloseImagePixels closes the pixel cache.  Use this method to prevent the too many file descriptors from being allocated when reading an image sequence.  File descriptors are only used for a disk-based cache.  This is essentially a no-op for a memory-based cache.</P>
+<P>Method CloseImagePixels closes the pixel cache.  Use this method to prevent too many file descriptors from being allocated when reading an image sequence.  File descriptors are only used for a disk-based cache.  This is essentially a no-op for a memory-based cache.</P>
 <P>The format of the CloseImagePixels method is:</P>
 <blockquote>void CloseImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -67,6 +71,17 @@
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 The address of a structure of type Image.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="compresscache">CompressCache</A></H2>
+<P>Method CompressCache compresses the disk-based pixel cache.</P>
+<P>The format of the CompressCache method is:</P>
+<blockquote>unsigned int CompressCache ( Cache cache ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_cache%3A">cache:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a Cache structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroypixelcache">DestroyImagePixels</A></H2>
@@ -186,6 +201,17 @@ Method SyncImagePixels returns True if the image pixels are transferred to the i
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The address of a structure of type Image.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="uncompresscache">UncompressCache</A></H2>
+<P>Method UncompressCache uncompresses the disk-based pixel cache.</P>
+<P>The format of the UncompressCache method is:</P>
+<blockquote>unsigned int UncompressCache ( Cache cache ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>cache:</STRONG><BR>
+<DD>
+Specifies a pointer to a Cache structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="writecacheinfo">WriteCacheInfo</A></H2>

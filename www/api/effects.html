@@ -32,6 +32,7 @@
 		<LI><A HREF="#implodeimage">ImplodeImage</A></LI>
 		<LI><A HREF="#medianfilterimage">MedianFilterImage</A></LI>
 		<LI><A HREF="#morphimages">MorphImages</A></LI>
+		<LI><A HREF="#motionblurimage">MotionBlurImage</A></LI>
 		<LI><A HREF="#oilpaintimage">OilPaintImage</A></LI>
 		<LI><A HREF="#plasmaimage">PlasmaImage</A></LI>
 		<LI><A HREF="#reducenoiseimage">ReduceNoiseImage</A></LI>
@@ -68,9 +69,10 @@
 <P>Image * <STRONG>EmbossImage</STRONG>( Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>EnhanceImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>GaussianBlurImage</STRONG>( Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>ImplodeImage</STRONG>( Image *image, const double factor, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ImplodeImage</STRONG>( Image *image, const double amount, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MedianFilterImage</STRONG>( Image *image, const double radius, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MorphImages</STRONG>( Image *image, const unsigned int number_frames, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>MotionBlurImage</STRONG>( Image *image, const double radius, const double sigma, const double amount, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>OilPaintImage</STRONG>( Image *image, const double radius, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, int attenuate, int depth );</P>
 <P>Image * <STRONG>ReduceNoiseImage</STRONG>( Image *image, const double, ExceptionInfo *exception );</P>
@@ -115,7 +117,7 @@ return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="blurimage">BlurImage</A></H2>
-<P>Method BlurImage creates a blurred copy of the input image.  We convolve the image with a Gaussian operator of the given width and standard deviation (sigma).</P>
+<P>Method BlurImage creates a blurred copy of the input image.  We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).</P>
 <P>Each output pixel is set to a value that is the weighted average of the input pixels in an area enclosing the pixel.  The width parameter determines how large the area is.  Each pixel in the area is weighted in the average according to its distance from the center, and the standard deviation, sigma.  The actual weight is calculated according to the Gaussian distribution (also called normal distribution), which looks like a Bell Curve centered on a pixel.  The standard deviation controls how 'pointy' the curve is.  The pixels near the center of the curve (closer to the center of the area we are averaging) contribute more than the distant pixels.</P>
 <P>In general, the width should be wide enough to include most of the total weight under the Gaussian for the standard deviation you choose.  the width parameter to the function specifies the radius of the Gaussian convolution mask in pixels, not counting the centre pixel, the width parameter should be chosen larger than the standard deviation, perhaps about twice as large to three times as large.  
 <FONT SIZE=-1>A</FONT> width of 1 will give a (standard) 3x3 convolution mask, a width of 2 gives a 5 by 5 convolution mask.  Using non-integral widths will result in some pixels being considered 'partial' pixels, in which case their weight will be reduced proportionally.</P>
@@ -322,7 +324,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="implodeimage">ImplodeImage</A></H2>
 <P>Method ImplodeImage creates a new image that is a copy of an existing one with the image pixels ``implode'' by the specified percentage.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the ImplodeImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ImplodeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ImplodeImage ( <A HREF="types/Image.html">Image</A> *image, const double amount, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_implode_image%3A">implode_image:</A></STRONG><BR>
@@ -334,7 +336,7 @@ Method ImplodeImage returns a pointer to the image after it is implode.
 <DD>
 The address of a structure of type Image; returned from ReadImage.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_factor%3A">factor:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_amount%3A">amount:</A></STRONG><BR>
 <DD>
 
 <FONT SIZE=-1>A</FONT> double value that defines the extent of the implosion.
@@ -385,6 +387,35 @@ The address of a structure of type Image; returned from ReadImage.
 <p><dt><STRONG><A NAME="item_o_number_frames%3A">number_frames:</A></STRONG><BR>
 <DD>
 This unsigned integer reflects the number of in-between image to generate.  The more in-between frames, the smoother the morph.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="motionblurimage">MotionBlurImage</A></H2>
+<P>Method MotionBlurImage creates a new image that has a ``motion blur'' effect applied to it.</P>
+<P>Andrew Protano contributed this effect.</P>
+<P>The format of the MotionBlurImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *MotionBlurImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double amount, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>blur_image:</STRONG><BR>
+<DD>
+Method MotionBlurImage returns a pointer to the image after it is blur.  
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
+<P></P>
+<p><dt><STRONG>radius:</STRONG><BR>
+<DD>
+The radius of the Gaussian, in pixels, not counting the center pixel.
+<P></P>
+<p><dt><STRONG>sigma:</STRONG><BR>
+<DD>
+The standard deviation of the Gaussian, in pixels.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_angle%3A">angle:</A></STRONG><BR>
+<DD>
+Apply the effect along this angle.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -532,7 +563,7 @@ return any errors or warnings in this structure.
 <DD>
 The address of a structure of type Image; returned from ReadImage.
 <P></P>
-<p><dt><STRONG>factor:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_factor%3A">factor:</A></STRONG><BR>
 <DD>
 An double value that defines the extent of the solarization.
 <P></P></DL></DL>
@@ -552,7 +583,7 @@ Method SpreadImage returns a pointer to the image after it is spread.
 <DD>
 The address of a structure of type Image; returned from ReadImage.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_amount%3A">amount:</A></STRONG><BR>
+<p><dt><STRONG>amount:</STRONG><BR>
 <DD>
 An unsigned value constraining the ``vicinity'' for choosing a random pixel to swap.
 <P></P>
@@ -657,7 +688,7 @@ The address of a structure of type Image; returned from ReadImage.
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_unsharp_image%3A">unsharp_image:</A></STRONG><BR>
 <DD>
-Method UnsharpMaskImage returns a pointer to the image after it is blur.  
+Method UnsharpMaskImage returns a pointer to the image after it is sharpened.  
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 <P></P>
 <p><dt><STRONG>radius:</STRONG><BR>
