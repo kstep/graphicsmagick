@@ -1,6 +1,6 @@
 The ImageMagick Studio LLC development group announces the release of
 ImageMagick 5.4.1. Version 5.4.1 is a feature release but also resolves
-bugs reported against 5.3.9.
+bugs reported against 5.4.0.
 
 ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 72 major
@@ -19,7 +19,7 @@ available.  ImageMagick is available for free, may be used to support
 both open and proprietary applications, and may be redistributed
 without fee.
 
-Significant changes from the 5.3.9 release (see release ChangeLog
+Significant changes from the 5.4.0 release (see release ChangeLog
 for details):
 
   o General:
@@ -27,55 +27,42 @@ for details):
     - Many bugs fixed which were reported via the ImageMagick bug
       tracking system, or via the mailing lists.
 
-    - WMF support is updated to use libwmf 0.2.2. Under Unix, WMF
-      is rendered via ImageMagick drawing commands, whereas under
-      Windows, WMF is rendered natively by Windows.
+    - ImageMagick image registry format added (magick string "mpr").
+      This format provides a means for in-memory images to be registered
+      and passed to the drawing module (without use of temporary file)
+      via the filename "mpr:id". Registration of images is managed via
+      the SetMagickRegistry(), GetMagickRegistry(), and
+      DeleteMagickRegistry() C APIs.
 
-    - Support added for OTB, On-the-air bitmap format.
+    - WMF rendering is improved. Dashed lines are now supported. Text
+      scaling and placement is significantly improved. Scaling and
+      translation of coordinates to fit the image are done by the
+      drawing module rather than within the WMF renderer.
 
-    - Most delegate library dependencies (e.g. libtiff) are moved to
-      loadable modules, and the module inter-dependencies on delegate
-      libraries have been minimized. This removes most link-time
-      dependencies from programs which depend on libMagick.so.
+    - Pattern definition, and filling with pattern, are now supported by
+      the SVG renderer, and by ImageMagick's native drawing format
+      (MVG). Support was also added for defining and filling with
+      gradients (for simple gradients only).
 
-    - Security enhancements added to protect against buffer overflow.
+    - The default background color is changed from 'white' to 'none'
+      (transparent black).
 
-  o Utilities enhancements:
+  o Utilities enhancements/changes:
 
-    - 'convert' now supports a '-channel' option, with enumerations
-      'Cyan', 'Magenta', 'Yellow', and 'Black'.
-
-    - The '-draw' command now accepts a command of the form
-      'decorate color' to specify the text underbox color.
+    - Abbreviated options are no longer supported.  This will impact
+      any programs or scripts that used abbreviated options.
 
   o C API enhancements:
 
-    - Desired image type (e.g. 'GrayscaleType') may be set via the
-      ImageInfo 'type' member.
-
-    - CloneImage() now uses an implicit referenced counted pixel cache.
-      This eliminates the overhead caused by cloning an image which is
-      never modified, or when the original image is not further modified.
-
-    - New function 'AcquireImagePixels' supports obtaining a read-only
-      view of image pixels.
-
-    - Functions that can treat an image as read only now accept a
-      'const Image *' parameter rather than 'Image *'.
-
-    - Stroke dash pattern specifications are now of type 'double'
-      rather than 'unsigned int' in order to support specification
-      of non-integral patterns.
+    - Added PingBlob() function to test a BLOB based on its header.
 
   o C++ API enhancements:
 
-    - Added the Image::boundingBox method to return the smallest
-      bounding box enclosing non-border pixels.
+    - Eliminated memory leak in the draw() method.
 
-    - Added the Image::getConstIndexes method to return read-only pixel
-      indexes.
-
-    - Added the Image::getConstPixels method to return read-only pixels.
+    - DestroyMagick() is automatically invoked when the static
+      destructors for the image module are invoked. This help eliminate
+      apparent memory "leaks".
 
 The ImageMagick WWW page is
 
