@@ -544,9 +544,10 @@ static void wmf_magick_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel)
 		    (int) rgb->r, (int) rgb->g, (int) rgb->b);
 
   magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-		    draw_pixel->pt.x, draw_pixel->pt.y,
-		    draw_pixel->pt.x + draw_pixel->pixel_width,
-		    draw_pixel->pt.y + draw_pixel->pixel_height);
+		    XC(draw_pixel->pt.x),
+		    YC(draw_pixel->pt.y),
+		    XC(draw_pixel->pt.x + draw_pixel->pixel_width),
+		    YC(draw_pixel->pt.y + draw_pixel->pixel_height));
 
   /* Restore graphic context */
   magick_mvg_printf(API, "pop graphic-context\n");
@@ -645,20 +646,20 @@ static void magick_draw_arc(wmfAPI * API,
 
     if (finish == magick_arc_ellipse)
       magick_mvg_printf(API, "ellipse %.10g,%.10g %.10g,%.10g 0,360\n",
-			O.x, O.y, Rx, Ry);
+			XC(O.x), YC(O.y), Rx, Ry);
     else if (finish == magick_arc_pie)
       magick_mvg_printf(API, "ellipse %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
-			O.x, O.y, Rx, Ry, phi_s, phi_e);
+			XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
     else if (finish == magick_arc_chord)
     {
       magick_mvg_printf(API, "arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
-			O.x, O.y, Rx, Ry, phi_s, phi_e);
+			XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
       magick_mvg_printf(API, "line %.10g,%.10g %.10g,%.10g\n",
-			start.x, start.y, end.x, end.y);
+			XC(start.x), YC(start.y), XC(end.x), YC(end.y));
     }
     else			/* if (finish == magick_arc_open) */
       magick_mvg_printf(API, "arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
-			O.x, O.y, Rx, Ry, phi_s, phi_e);
+			XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
   }
 
   /* Restore graphic context */
@@ -674,8 +675,8 @@ static void wmf_magick_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line)
   {
     magick_pen(API, draw_line->dc);
     magick_mvg_printf(API, "line %.10g,%.10g %.10g,%.10g\n",
-		      draw_line->from.x, draw_line->from.y,
-		      draw_line->to.x, draw_line->to.y);
+		      XC(draw_line->from.x), YC(draw_line->from.y),
+		      XC(draw_line->to.x), YC(draw_line->to.y));
   }
 
   /* Restore graphic context */
@@ -701,7 +702,9 @@ static void wmf_magick_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line)
 
     for (i = 0; i < poly_line->count; i++)
     {
-      magick_mvg_printf(API, " %.10g,%.10g", poly_line->pt[i].x, poly_line->pt[i].y);
+      magick_mvg_printf(API, " %.10g,%.10g",
+			XC(poly_line->pt[i].x),
+			YC(poly_line->pt[i].y));
     }
 
     magick_mvg_printf(API, "\n");
@@ -731,7 +734,9 @@ static void wmf_magick_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
 
     for (i = 0; i < poly_line->count; i++)
     {
-      magick_mvg_printf(API, " %.10g,%.10g", poly_line->pt[i].x, poly_line->pt[i].y);
+      magick_mvg_printf(API, " %.10g,%.10g",
+			XC(poly_line->pt[i].x),
+			YC(poly_line->pt[i].y));
     }
 
     magick_mvg_printf(API, "\n");
@@ -753,13 +758,13 @@ static void wmf_magick_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_re
 
     if ((draw_rect->width > 0) || (draw_rect->height > 0))
       magick_mvg_printf(API, "roundrectangle %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
-			draw_rect->TL.x, draw_rect->TL.y,
-			draw_rect->BR.x, draw_rect->BR.y,
+			XC(draw_rect->TL.x), YC(draw_rect->TL.y),
+			XC(draw_rect->BR.x), YC(draw_rect->BR.y),
 			draw_rect->width / 2, draw_rect->height / 2);
     else
       magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-			draw_rect->TL.x, draw_rect->TL.y,
-			draw_rect->BR.x, draw_rect->BR.y);
+			XC(draw_rect->TL.x), YC(draw_rect->TL.y),
+			XC(draw_rect->BR.x), YC(draw_rect->BR.y));
   }
 
   /* Restore graphic context */
@@ -797,8 +802,8 @@ static void wmf_magick_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect
       for (i = 0; i < poly_rect->count; i++)
         {
           magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                            (double)poly_rect->TL[i].x, (double)poly_rect->TL[i].y,
-                            (double)poly_rect->BR[i].x, (double)poly_rect->BR[i].y);
+                            XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
+                            XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
         }
     }
 
@@ -832,8 +837,8 @@ static void wmf_magick_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
       for (i = 0; i < poly_rect->count; i++)
         {
           magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                            (double)poly_rect->TL[i].x, (double)poly_rect->TL[i].y,
-                            (double)poly_rect->BR[i].x, (double)poly_rect->BR[i].y);
+                            XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
+                            XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
         }
       magick_mvg_printf(API, "pop graphic-context\n");
       magick_mvg_printf(API, "pop clip-path\n");
@@ -1009,7 +1014,8 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 	   specify the hight of the ascent only so calculate final
 	   pointsize based on ratio of ascent to ascent+descent */
 	pointsize = font_height_points *
-	  ((double) font_height_points / (metrics.ascent + AbsoluteValue(metrics.descent)));
+	  ((double) font_height_points /
+	   (metrics.ascent + AbsoluteValue(metrics.descent)));
 	draw_info.pointsize = pointsize;
       }
       else
@@ -1073,12 +1079,11 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   magick_mvg_printf(API, "font '%s'\n", font_name);
 
   /* Translate coordinates so target is 0,0 */
-  magick_mvg_printf(API, "translate %.10g,%.10g\n", point.x, point.y);
+  magick_mvg_printf(API, "translate %.10g,%.10g\n", XC(point.x), YC(point.y));
 
   /* Transform horizontal scale to draw text at 1:1 ratio */
   magick_mvg_printf(API, "scale %.10g,%.10g\n",
-		    ddata->scale_y / ddata->scale_x,
-		    1.0);
+		    ddata->scale_y / ddata->scale_x, 1.0);
 
   /* Apply rotation */
   /* ImageMagick's drawing rotation is clockwise from horizontal
@@ -1144,7 +1149,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
       ulBR.y = AbsoluteValue(metrics.descent);
 
       magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-			ulTL.x, ulTL.y, ulBR.x, ulBR.y);
+			XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
 
     }
 
@@ -1166,7 +1171,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
       ulBR.y = -(((double) metrics.ascent) / 2 - line_height / 2);
 
       magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-			ulTL.x, ulTL.y, ulBR.x, ulBR.y);
+			XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
 
     }
   }
@@ -1546,8 +1551,9 @@ static void magick_pen(wmfAPI * API, wmfDC * dc)
   {
     case PS_DASH:		/* -------  */
       /* Pattern 18,7 */
+      magick_mvg_printf(API, "stroke-antialias 0\n");
       magick_mvg_printf(API, "stroke-dasharray %.10g,%.10g\n",
-			pixel_width * 17, pixel_width * 8);
+			pixel_width * 18, pixel_width * 7);
       break;
 
     case PS_ALTERNATE:
