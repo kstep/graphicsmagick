@@ -133,52 +133,28 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   assert(geometry != (const RectangleInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((geometry->width != 0) || (geometry->height != 0))
-    {
-      if (((geometry->x+(long) geometry->width) < 0) ||
-          ((geometry->y+(long) geometry->height) < 0) ||
-          (geometry->x >= (long) image->columns) ||
-          (geometry->y >= (long) image->rows))
-        ThrowImageException(OptionError,"GeometryDoesNotContainImage",
-          "UnableToCropImage");
-    }
+  if (((geometry->x+(long) geometry->width) < 0) ||
+      ((geometry->y+(long) geometry->height) < 0) ||
+      (geometry->x >= (long) image->columns) ||
+      (geometry->y >= (long) image->rows))
+    ThrowImageException(OptionError,"GeometryDoesNotContainImage",
+      "UnableToCropImage");
   page=(*geometry);
-  if ((page.width != 0) || (page.height != 0))
+  if ((page.x+(long) page.width) > (long) image->columns)
+    page.width=image->columns-page.x;
+  if ((page.y+(long) page.height) > (long) image->rows)
+    page.height=image->rows-page.y;
+  if (page.x < 0)
     {
-      if ((page.x+(long) page.width) > (long) image->columns)
-        page.width=image->columns-page.x;
-      if ((page.y+(long) page.height) > (long) image->rows)
-        page.height=image->rows-page.y;
-      if (page.x < 0)
-        {
-          page.width+=page.x;
-          page.x=0;
-        }
-      if (page.y < 0)
-        {
-          page.height+=page.y;
-          page.y=0;
-        }
+      page.width+=page.x;
+      page.x=0;
     }
-  else
+  if (page.y < 0)
     {
-      /*
-        Set bounding box to the image dimensions.
-      */
-      page=GetImageBoundingBox(image,exception);
-      page.width+=geometry->x*2;
-      page.height+=geometry->y*2;
-      page.x-=geometry->x;
-      if (page.x < 0)
-        page.x=0;
-      page.y-=geometry->y;
-      if (page.y < 0)
-        page.y=0;
-      if ((((long) page.width+page.x) > (long) image->columns) ||
-          (((long) page.height+page.y) > (long) image->rows))
-        ThrowImageException(OptionError,"GeometryDoesNotContainImage",
-          "UnableToCropImage");
+      page.height+=page.y;
+      page.y=0;
     }
+
   if ((page.width == 0) || (page.height == 0))
     ThrowImageException(OptionError,"GeometryDimensionsAreZero",
       "UnableToCropImage");

@@ -1,3 +1,9 @@
+2003-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/nt_feature.c (CropImageToHBITMAP): Remove useless
+	autocrop support which was transferred from CropImage when
+	creating CropImageToHBITMAP.
+
 2003-02-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/miff.c (ReadMIFFImage): RLE packet size was not
