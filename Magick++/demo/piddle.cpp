@@ -154,7 +154,6 @@ int main( int /*argc*/, char ** argv)
     drawList.push_back(DrawablePopGraphicContext());
 
     // Draw everything using completed drawing list
-    image.debug(true);
     image.draw(drawList);
 
 //     image.write( "piddle.mvg" );
