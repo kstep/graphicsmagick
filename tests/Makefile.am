@@ -99,10 +99,26 @@ endif
 
 if !HasTIFF
 TESTS_TIFF_XFAIL_TESTS = \
+	tests/rwblob_EPT_bilevel.sh \
+	tests/rwblob_EPT_gray.sh \
+	tests/rwblob_EPT_pallette.sh \
+	tests/rwblob_EPT_truecolor.sh \
+	tests/rwblob_PTIF_bilevel.sh \
+	tests/rwblob_PTIF_gray.sh \
+	tests/rwblob_PTIF_pallette.sh \
+	tests/rwblob_PTIF_truecolor.sh \
 	tests/rwblob_TIFF_bilevel.sh \
 	tests/rwblob_TIFF_gray.sh \
 	tests/rwblob_TIFF_pallette.sh \
 	tests/rwblob_TIFF_truecolor.sh \
+	tests/rwfile_EPT_bilevel.sh \
+	tests/rwfile_EPT_gray.sh \
+	tests/rwfile_EPT_pallette.sh \
+	tests/rwfile_EPT_truecolor.sh \
+	tests/rwfile_PTIF_bilevel.sh \
+	tests/rwfile_PTIF_gray.sh \
+	tests/rwfile_PTIF_pallette.sh \
+	tests/rwfile_PTIF_truecolor.sh \
 	tests/rwfile_TIFF_bilevel.sh \
 	tests/rwfile_TIFF_gray.sh \
 	tests/rwfile_TIFF_pallette.sh \

@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2004-12-22  Ralf Wildenhues  &lt;Ralf.Wildenhues@gmx.de&gt;
+
+<UL>
+  <LI> magick/Makefile.am (MAGICK_BASE_SRCS): Remove mention of
+        non-existent mmath.h.<BR>
+  <LI> configure.ac: AC_LIBTOOL_SETUP is an internal macro and must not
+        be used externally (will be pulled in automatically).
+  <LI> PerlMagick/Makefile.am: Missing file needed to be committed to CVS.
+  <LI> tests/Makefile.am (TESTS_TIFF_XFAIL_TESTS): EPT and PTIF tests
+        are expected to fail if libtiff is missing.
+
+</UL>
+<p>
 2004-12-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

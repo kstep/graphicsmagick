@@ -686,7 +686,7 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST = magick/animate.c \
 	magick/list.c magick/list.h magick/locale.c magick/locale_c.h \
 	magick/log.c magick/log.h magick/magic.c magick/magic.h \
 	magick/magick.c magick/magick.h magick/map.c magick/map.h \
-	magick/memory.c magick/mmath.h magick/module.c magick/module.h \
+	magick/memory.c magick/module.c magick/module.h \
 	magick/monitor.c magick/monitor.h magick/montage.c \
 	magick/montage.h magick/paint.c magick/paint.h \
 	magick/pixel_iterator.c magick/pixel_iterator.h \
@@ -2505,7 +2505,6 @@ MAGICK_BASE_SRCS = \
 	magick/map.c \
 	magick/map.h \
 	magick/memory.c \
-	magick/mmath.h \
 	magick/module.c \
 	magick/module.h \
 	magick/monitor.c \
@@ -2944,10 +2943,26 @@ tests_drawtest_LDADD = $(LIBMAGICK)
 @HasPNG_FALSE@	tests/rwfile_PNG_truecolor.sh
 
 @HasTIFF_FALSE@TESTS_TIFF_XFAIL_TESTS = \
+@HasTIFF_FALSE@	tests/rwblob_EPT_bilevel.sh \
+@HasTIFF_FALSE@	tests/rwblob_EPT_gray.sh \
+@HasTIFF_FALSE@	tests/rwblob_EPT_pallette.sh \
+@HasTIFF_FALSE@	tests/rwblob_EPT_truecolor.sh \
+@HasTIFF_FALSE@	tests/rwblob_PTIF_bilevel.sh \
+@HasTIFF_FALSE@	tests/rwblob_PTIF_gray.sh \
+@HasTIFF_FALSE@	tests/rwblob_PTIF_pallette.sh \
+@HasTIFF_FALSE@	tests/rwblob_PTIF_truecolor.sh \
 @HasTIFF_FALSE@	tests/rwblob_TIFF_bilevel.sh \
 @HasTIFF_FALSE@	tests/rwblob_TIFF_gray.sh \
 @HasTIFF_FALSE@	tests/rwblob_TIFF_pallette.sh \
 @HasTIFF_FALSE@	tests/rwblob_TIFF_truecolor.sh \
+@HasTIFF_FALSE@	tests/rwfile_EPT_bilevel.sh \
+@HasTIFF_FALSE@	tests/rwfile_EPT_gray.sh \
+@HasTIFF_FALSE@	tests/rwfile_EPT_pallette.sh \
+@HasTIFF_FALSE@	tests/rwfile_EPT_truecolor.sh \
+@HasTIFF_FALSE@	tests/rwfile_PTIF_bilevel.sh \
+@HasTIFF_FALSE@	tests/rwfile_PTIF_gray.sh \
+@HasTIFF_FALSE@	tests/rwfile_PTIF_pallette.sh \
+@HasTIFF_FALSE@	tests/rwfile_PTIF_truecolor.sh \
 @HasTIFF_FALSE@	tests/rwfile_TIFF_bilevel.sh \
 @HasTIFF_FALSE@	tests/rwfile_TIFF_gray.sh \
 @HasTIFF_FALSE@	tests/rwfile_TIFF_pallette.sh \

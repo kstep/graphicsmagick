@@ -1,3 +1,13 @@
+2004-12-22  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* magick/Makefile.am (MAGICK_BASE_SRCS): Remove mention of
+	non-existent mmath.h.
+	* configure.ac: AC_LIBTOOL_SETUP is an internal macro and must not
+	be used externally (will be pulled in automatically).
+	* PerlMagick/Makefile.am: Missing file needed to be committed to CVS.
+	* tests/Makefile.am (TESTS_TIFF_XFAIL_TESTS): EPT and PTIF tests
+	are expected to fail if libtiff is missing.
+
 2004-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* TODO.txt: Organized todo list for 1.2 release.

@@ -323,7 +323,6 @@ AC_ENABLE_STATIC
 AC_LIBTOOL_TAGS([CXX])
 AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_DLOPEN
-AC_LIBTOOL_SETUP
 AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 
@@ -1021,7 +1020,25 @@ then
  LIBS=''
  AC_LANG_PUSH(C++)
 
-  # Test for C++ compiler __func__ support
+# Full set of headers used ...
+# algorithm cctype cerrno cmath cstdio cstdlib cstring ctime exception
+# functional iomanip iosfwd iostream iterator list string strstream utility
+ AC_LANG_CPLUSPLUS
+ AC_PROG_CXX
+ AC_CXX_BOOL
+ AC_CXX_CONST_CAST
+ AC_CXX_DEFAULT_TEMPLATE_PARAMETERS
+ AC_CXX_EXCEPTIONS
+ AC_CXX_NAMESPACES
+ AC_CXX_EXPLICIT
+ AC_CXX_HAVE_STD
+ AC_CXX_HAVE_STL
+ AC_CXX_MUTABLE
+ AC_CXX_NEW_FOR_SCOPING
+ AC_CXX_STATIC_CAST
+ AC_CXX_TEMPLATES
+
+ # Test for C++ compiler __func__ support
  if test "$ac_cv_have_CPP__func__" != 'yes' ; then
   AC_CACHE_CHECK(for C++ compiler __func__ support, ac_cv_have_CPP__func__,
   [AC_TRY_COMPILE(
@@ -1040,23 +1057,6 @@ then
   fi
  fi
 
-# Full set of headers used ...
-# algorithm cctype cerrno cmath cstdio cstdlib cstring ctime exception
-# functional iomanip iosfwd iostream iterator list string strstream utility
- AC_LANG_CPLUSPLUS
- AC_PROG_CXX
- AC_CXX_BOOL
- AC_CXX_CONST_CAST
- AC_CXX_DEFAULT_TEMPLATE_PARAMETERS
- AC_CXX_EXCEPTIONS
- AC_CXX_NAMESPACES
- AC_CXX_EXPLICIT
- AC_CXX_HAVE_STD
- AC_CXX_HAVE_STL
- AC_CXX_MUTABLE
- AC_CXX_NEW_FOR_SCOPING
- AC_CXX_STATIC_CAST
- AC_CXX_TEMPLATES
  AC_LANG_POP
 
  AC_MSG_CHECKING(whether C++ compiler is sufficient for Magick++)

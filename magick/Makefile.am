@@ -102,7 +102,6 @@ MAGICK_BASE_SRCS = \
 	magick/map.c \
 	magick/map.h \
 	magick/memory.c \
-	magick/mmath.h \
 	magick/module.c \
 	magick/module.h \
 	magick/monitor.c \
