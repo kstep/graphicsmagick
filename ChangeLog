@@ -1,5 +1,7 @@
 2004-04-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/compress.c (HuffmanEncode2Image): Avoid out of bounds
+	array access.
 	* magick/studio.h (_FILE_OFFSET_BITS): Fix _FILE_OFFSET_BITS
 	#ifdef to avoid warnings when it is not defined.
 
