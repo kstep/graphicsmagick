@@ -626,7 +626,7 @@ MagickExport void Hull(const long x_offset,const long y_offset,
       for (x=0; x < (long) columns; x++)
       {
         v=(*p);
-        if (v > (Quantum) (*r+Upscale(1)))
+        if (v > (unsigned long) (*r+Upscale(1)))
           v-=Upscale(1);
         *q=v;
         p++;
@@ -651,7 +651,7 @@ MagickExport void Hull(const long x_offset,const long y_offset,
       for (x=0; x < (long) columns; x++)
       {
         v=(*q);
-        if (((Quantum) (*s+Upscale(1)) > v) && (*r > v))
+        if (((unsigned long) (*s+Upscale(1)) > v) && (*r > v))
           v+=Upscale(1);
         *p=v;
         p++;
@@ -663,7 +663,7 @@ MagickExport void Hull(const long x_offset,const long y_offset,
       for (x=0; x < (long) columns; x++)
       {
         v=(*q);
-        if (((Quantum) (*s+Upscale(1)) < v) && (*r < v))
+        if (((unsigned long) (*s+Upscale(1)) < v) && (*r < v))
           v-=Upscale(1);
         *p=v;
         p++;
@@ -980,9 +980,9 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method Upsample doubles the size of the image.
+%  Upsample() doubles the size of the image.
 %
-%  The format of the UpSample method is:
+%  The format of the Upsample method is:
 %
 %      void Upsample(const unsigned long width,const unsigned long height,
 %        const unsigned long scaled_width,unsigned char *pixels)
