@@ -559,11 +559,13 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
     *node_info;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p;
+
+  register size_t
+    i;
 
   register unsigned int
     id,
@@ -618,10 +620,10 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
         index--;
         if (level != MaxTreeDepth)
           continue;
-        for (i=0; i < (int) node_info->number_unique; i++)
+        for (i=0; i < node_info->number_unique; i++)
            if (ColorMatch(*p,node_info->list[i],0))
              break;
-        if (i < (int) node_info->number_unique)
+        if (i < node_info->number_unique)
           {
             node_info->list[i].count++;
             continue;
@@ -715,13 +717,13 @@ static void Histogram(Image *image,CubeInfo *cube_info,
       register ColorPacket
         *p;
 
-      register int
+      register size_t
         i;
 
       p=node_info->list;
-      for (i=0; i < (int) node_info->number_unique; i++)
+      for (i=0; i < node_info->number_unique; i++)
       {
-        (void) fprintf(file,"%10d: (%5d,%5d,%5d)  ",(int) p->count,
+        (void) fprintf(file,"%10lu: (%5d,%5d,%5d)  ",p->count,
           p->red,p->green,p->blue);
         (void) fprintf(file,"  ");
         color.red=p->red;
@@ -780,7 +782,7 @@ MagickExport unsigned int IsGrayImage(Image *image)
   (void) IsPseudoClass(image);
   if (image->storage_class != PseudoClass)
     return(False);
-  for (i=0; i < (int) image->colors; i++)
+  for (i=0; i < image->colors; i++)
     if (!IsGray(image->colormap[i]))
       return(False);
   return(True);
@@ -825,12 +827,12 @@ MagickExport unsigned int IsMonochromeImage(Image *image)
     return(False);
   if (image->colors > 2)
     return(False);
-  if (((int) Intensity(image->colormap[0]) != 0) &&
-      ((int) Intensity(image->colormap[0]) != MaxRGB))
+  if ((Intensity(image->colormap[0]) != 0) &&
+      (Intensity(image->colormap[0]) != MaxRGB))
     return(False);
   if (image->colors == 2)
-    if (((int) Intensity(image->colormap[1]) != 0) &&
-        ((int) Intensity(image->colormap[1]) != MaxRGB))
+    if ((Intensity(image->colormap[1]) != 0) &&
+        (Intensity(image->colormap[1]) != MaxRGB))
       return(False);
   return(True);
 }
@@ -936,7 +938,6 @@ MagickExport unsigned int IsPseudoClass(Image *image)
     *indexes;
 
   register int
-    i,
     x;
 
   register NodeInfo
@@ -945,6 +946,9 @@ MagickExport unsigned int IsPseudoClass(Image *image)
   register PixelPacket
     *p,
     *q;
+
+  register size_t
+    i;
 
   unsigned int
     id,
@@ -993,10 +997,10 @@ MagickExport unsigned int IsPseudoClass(Image *image)
         node_info=node_info->child[id];
         index--;
       }
-      for (i=0; i < (int) node_info->number_unique; i++)
+      for (i=0; i < node_info->number_unique; i++)
         if (ColorMatch(*p,node_info->list[i],0))
           break;
-      if (i == (int) node_info->number_unique)
+      if (i == node_info->number_unique)
         {
           /*
             Add this unique color to the color list.
@@ -1027,7 +1031,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
         Create colormap.
       */
       image->storage_class=PseudoClass;
-      image->colors=cube_info->colors;
+      image->colors=(unsigned int) cube_info->colors;
       if (image->colormap == (PixelPacket *) NULL)
         image->colormap=(PixelPacket *)
           AcquireMemory(image->colors*sizeof(PixelPacket));
@@ -1058,7 +1062,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
             node_info=node_info->child[id];
             index--;
           }
-          for (i=0; i < (int) node_info->number_unique; i++)
+          for (i=0; i < node_info->number_unique; i++)
             if (ColorMatch(*q,node_info->list[i],0))
               break;
           index=node_info->list[i].index;
@@ -1106,7 +1110,7 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
   register ColorInfo
     *p;
 
-  register int
+  register size_t
     i;
 
   if (file == (const FILE *) NULL)
@@ -1185,7 +1189,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,PixelPacket *color
     opacity,
     red;
 
-  register int
+  register long
     i;
 
   register ColorInfo
@@ -1206,7 +1210,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,PixelPacket *color
       char
         c;
 
-      unsigned long
+      size_t
         n;
 
       green=0;
@@ -1225,7 +1229,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,PixelPacket *color
             red=green;
             green=blue;
             blue=0;
-            for (i=(int) n-1; i >= 0; i--)
+            for (i=n-1; i >= 0; i--)
             {
               c=(*name++);
               blue<<=4;
@@ -1257,7 +1261,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,PixelPacket *color
               green=blue;
               blue=opacity;
               opacity=0;
-              for (i=(int) n-1; i >= 0; i--)
+              for (i=n-1; i >= 0; i--)
               {
                 c=(*name++);
                 opacity<<=4;
@@ -1624,7 +1628,7 @@ MagickExport IndexPacket ValidateColormapIndex(Image *image,const int index)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if ((index >= 0) && (index < (int) image->colors))
+  if ((index >= 0) && (index < image->colors))
     return(index);
   ThrowException(&image->exception,CorruptImageWarning,
     "invalid colormap index",image->filename);
