@@ -89,7 +89,7 @@ UNIX/Cygwin COMPILATION
     cd ImageMagick-5.2.0
 
   If you do not have gunzip(1), it is available as
-  prep.ai.mit.edu:pub/gnu/gzip-1.2.4.shar.
+  ftp.gnu.org:pub/gnu/gzip-1.2.4.shar.
 
   Use 'configure' to automatically configure, build, and install
   ImageMagick.
