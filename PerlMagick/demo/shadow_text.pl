@@ -4,14 +4,13 @@
 #
 use Image::Magick;
 
-$image=Image::Magick->new(size=>'300x120');
+$image=Image::Magick->new(size=>'500x120');
 $image->Read('xc:white');
-$image->Annotate(font=>'@Generic.ttf', fill=>'black',pointsize=>60,
-  gravity=>'Center',text=>'Magick');
+$image->Annotate(font=>'@Generic.ttf',fill=>'rgb(100,100,100)',pointsize=>60,
+  text=>'Works like magick!',geometry=>'+30+90');
+$image->Blur('0x1');
+$image->Annotate(font=>'@Generic.ttf',fill=>'red',pointsize=>60,
+  text=>'Works like magick!',geometry=>'+26+86');
 $mask=$image->Clone();
-$mask->Negate();
-$mask->Blur();
-$image->Roll('+5+5');
-$image->Composite(image=>$mask,compose=>'add');
 $image->Write('shadow.gif');
 $image->display();
