@@ -583,6 +583,28 @@ AC_CHECK_SIZEOF(int,0)
 AC_CHECK_SIZEOF(long,0)
 AC_CHECK_SIZEOF(long long,0)
 
+# Test for C compiler __func__ support
+if test "$ac_cv_have___func__" != 'yes' ; then
+AC_CACHE_CHECK(for C compiler __func__ support, ac_cv_have___func__,
+[AC_TRY_COMPILE(
+,
+changequote(<<, >>)dnl
+<<
+const char *func=__func__;
+return 0;
+>>,
+changequote([, ])dnl
+ac_cv_have___func__='yes',
+ac_cv_have___func__='no')])
+
+if test "$ac_cv_have___func__" = 'yes' ; then
+ AC_MSG_RESULT(yes)
+ AC_DEFINE(HAS___func__,1,Define if C compiler supports __func__)
+else
+ AC_MSG_RESULT(no)
+fi
+fi
+
 #
 # Check for functions
 #
@@ -596,9 +618,9 @@ AC_FUNC_VPRINTF
 AC_FUNC_MMAP
 AC_FUNC_STRTOD
 AC_FUNC_STRCOLL
-AC_CHECK_FUNCS(closedir getcwd getexecname gettimeofday mkdir mkstemp \
-  opendir poll readdir select snprintf strchr strerror strtol sysconf \
-  tempnam vsnprintf)
+AC_CHECK_FUNCS(closedir ftime getcwd getexecname gettimeofday mkdir \
+  mkstemp opendir poll readdir select snprintf strchr strerror strtol \
+  sysconf tempnam vsnprintf)
 
 # Test for sys_errlist array if strerror() not supported.
 if test "$ac_cv_func_strerror" != 'yes' ; then

@@ -1,5 +1,8 @@
 /* magick/magick_config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define if C compiler supports __func__ */
+#undef HAS___func__
+
 /* Define to 1 if you have the `argz_append' function. */
 #undef HAVE_ARGZ_APPEND
 
@@ -81,6 +84,9 @@
 
 /* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
 #undef HAVE_FSEEKO
+
+/* Define to 1 if you have the `ftime' function. */
+#undef HAVE_FTIME
 
 /* Define to 1 if you have the `getcwd' function. */
 #undef HAVE_GETCWD
