@@ -485,7 +485,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
       }
     (void) jbg_enc_lrange(&jbig_info,-1,-1);
     jbg_enc_options(&jbig_info,JBG_ILEAVE | JBG_SMID,JBG_TPDON | JBG_TPBON |
-      JBG_DPON,-1,-1,-1);
+      JBG_DPON,0,-1,-1);
     /*
       Write JBIG image.
     */

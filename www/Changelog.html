@@ -53,6 +53,25 @@
 </tr>
 </table>
 <p>
+2005-03-09  Alexander Yaworsky  &lt;yaworsky@users.sourceforge.net&gt;
+
+<UL>
+  <LI> coders/jbig.c (WriteJBIGImage): JBIG was writing an empty output
+        file. Apparently libjbig parameters have changed. Setting l0
+        parameter of jbg_enc_options to zero instead of -1 (like in
+        jbigkit's pbmtools) solved the problem.
+
+</UL>
+<p>
+2004-08-24  Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+<UL>
+  <LI> coders/png.c: Fixed call to png_set_unknown_chunks (arg should
+        be 1 not 0 to ignore chunks.  tEXt and zTXt were inadvertently
+        included in the list of unused chunks.
+  <LI> coders/bmp.c: Applied security fix from Cristy.
+
+</UL>
+<p>
 2004-08-05  Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
 
 <UL>

@@ -1962,6 +1962,7 @@ MagickExport DIR *opendir(char *path)
 
   assert(path != (char *) NULL);
   (void) strncpy(file_specification,path,MaxTextExtent-1);
+  file_specification[MaxTextExtent-1]='\0';
   (void) strcat(file_specification,DirectorySeparator);
   entry=(DIR *) AcquireMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
