@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020908;16044300">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030408;10081400">
+	<META NAME="CHANGED" CONTENT="20030416;21054700">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
 	<STYLE>
@@ -263,11 +263,13 @@ Enter it and press a carriage return.
 <P>To get the tree and place it in a sub-directory of your current
 working directory, issue the command: 
 </P>
-<PRE STYLE="margin-bottom: 0.2in"> cvs co -P GraphicsMagick</PRE><P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs co -P -r GraphicsMagick-1_0 GraphicsMagick</PRE><P>
 Or to save bandwidth get the compressed version, type: 
 </P>
-<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co -P GraphicsMagick</PRE><P>
-To update the sources within a checked out directory execute 
+<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co -P -r GraphicsMagick-1_0 GraphicsMagick</PRE><P>
+Note that the &quot;<FONT FACE="Courier New">-r GraphicsMagick-1_0</FONT>&quot;
+requests the sources from the GraphicsMagick 1.0 development branch.</P>
+<P>To update the sources within a checked out directory execute 
 </P>
 <PRE STYLE="margin-bottom: 0.2in"> cvs update -P -d</PRE><P>
 and only the files which have changed will be updated. 
@@ -288,7 +290,7 @@ and only the files which have changed will be updated.
 				<P>GraphicsMagick</P>
 			</TD>
 			<TD WIDTH=65%>
-				<P> (core sources)</P>
+				<P>(core sources)</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
@@ -299,7 +301,7 @@ and only the files which have changed will be updated.
 				<P>GraphicsMagick-NT</P>
 			</TD>
 			<TD WIDTH=65%>
-				<P> (everything needed for Windows)</P>
+				<P>(everything needed for Windows)</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
@@ -310,7 +312,7 @@ and only the files which have changed will be updated.
 				<P>GraphicsMagick-World</P>
 			</TD>
 			<TD WIDTH=65%>
-				<P> (everything related to GraphicsMagick)</P>
+				<P>(everything related to GraphicsMagick)</P>
 			</TD>
 		</TR>
 	</TABLE>
@@ -318,33 +320,33 @@ and only the files which have changed will be updated.
 <P>To check out the GraphicsMagick source for NT, try this commmand
 line: 
 </P>
-<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co -P GraphicsMagick-NT</PRE><P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co -P -r GraphicsMagick-1_0 GraphicsMagick-NT</PRE><P>
 If you require a specific release of GraphicsMagick, you may check it
 out like</P>
-<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co -r GraphicsMagick-1_0_0 -P GraphicsMagick</PRE><P>
-where the &quot;<FONT FACE="Cumberland">GraphicsMagick-1_0_0</FONT>&quot;
-is the release branch tag. You can use</P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co-r GraphicsMagick-1_0_1 -P GraphicsMagick</PRE><P>
+where the &quot;<FONT FACE="Cumberland">GraphicsMagick-1_0_1</FONT>&quot;
+is the release tag. Note that this is just an illustration. This
+release tag may not actually exist. You can use</P>
 <PRE STYLE="margin-bottom: 0.2in">  cvs status -v README.txt</PRE><P>
-from within an existing checked out directory to see what branch tags
-are available.</P>
+from within an existing checked out directory to see what branch and
+release tags are available.</P>
 <P>You can use</P>
-<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 update -r GraphicsMagick-1_0_0 </PRE><P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 update -r GraphicsMagick-1_0_1</PRE><P>
 from within an existing checked out directory to move it up (or down)
-to that release branch.</P>
+to that branch or release tag.</P>
 <P>Checking out from release tag, or updating to a release tag,
 causes the &quot;sticky&quot; flag to be set on checked out files so
 that further update requests will only cause an update if the tag is
 a branch tag, and is a newer version on the branch. To clear the
-sticky flags and update to the most current version on the main
-branch, use</P>
+sticky flags and update to the most current version on the trunk, use</P>
 <PRE STYLE="margin-bottom: 0.2in"> cvs -z3 update -A</PRE><P>
-Once a release has been tagged, checking out from a release branch is
+Once a release has been tagged, checking out using a release tag is
 the only reliable way to obtain release files from CVS since the
-default is to always check out the current development sources, which
-may not be stable or released.</P>
-<P>Using compression levels over <TT>-z3</TT>,may actually slow the
-CVS transfer since they require the CVS server to work much harder,
-yet don't compress the data much more.</P>
+default is to check out the most current sources on the requested
+branch, which may not be stable or released.</P>
+<P>Using compression levels over <TT>-z3</TT>,may slow the CVS
+transfer since they require the CVS server to work much harder, yet
+don't compress the data much more.</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">

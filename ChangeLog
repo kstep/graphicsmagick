@@ -1,5 +1,11 @@
 2003-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/download.html: Added links to directories
+	at ftp.graphicsmagick.org.
+	* index.html: Add notice regarding 1.0 Beta0
+	availability.
+	* www/cvs.html: Updated CVS checkout information to
+	include the GraphicsMagick-1_0 branch.
 	* coders/psd.c (ReadPSDImage): Applied patch
 	(SourceForge patch ID 722849) from Derry Bryson to
 	fix a memory leak. An image was being leaked.
