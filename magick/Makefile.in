@@ -153,10 +153,6 @@ TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WWWDecodeDelegate = @WWWDecodeDelegate@
-X11STUBSDIR = @X11STUBSDIR@
-X11STUBSLA = @X11STUBSLA@
-X11STUBSLANAME = @X11STUBSLANAME@
-X11STUBSLIB = @X11STUBSLIB@
 XTP_DEFS = @XTP_DEFS@
 XTP_FTP = @XTP_FTP@
 XTP_LIBS = @XTP_LIBS@
@@ -189,7 +185,7 @@ EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = classify.h compress.h config.h defines.h delegates.h error.h 	gems.h image.h magick.h memory.h monitor.h PreRvIcccm.h quantize.h 	utility.h version.h widget.h xwindows.h
+include_HEADERS = classify.h compress.h config.h defines.h delegates.h error.h 	gems.h image.h magick.h memory.h monitor.h PreRvIcccm.h quantize.h 	utility.h version.h widget.h xwindows.h api.h
 
 
 # Headers which are not installed but which are distributed

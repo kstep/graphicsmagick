@@ -15,7 +15,6 @@
 #define Options_header
 
 #include <string>
-#include <stdio.h>
 #include <MagickColor.h>
 #include <MagickGeometry.h>
 #include <MagickInclude.h>
@@ -86,15 +85,8 @@ namespace Magick
     void            depth ( unsigned int depth_ );
     unsigned int    depth ( void ) const;
     
-    void            fileDescriptor ( FILE *file_ );
-    FILE *          fileDescriptor ( void ) const;
-    
     void            fileName ( const std::string &fileName_ );
     std::string     fileName ( void ) const;
-
-    // ImageInfo filter is no longer used by ImageMagick
-//     void            filterType ( FilterType filterType_ );
-//     FilterType      filterType ( void ) const;
     
     void            font ( const std::string &font_ );
     std::string     font ( void ) const;
@@ -249,15 +241,6 @@ inline void Magick::Options::depth ( unsigned int depth_ )
 inline unsigned int Magick::Options::depth ( void ) const
 {
   return _imageInfo->depth;
-}
-
-inline void Magick::Options::fileDescriptor ( FILE *file_ )
-{
-  _imageInfo->file = file_;
-}
-inline FILE * Magick::Options::fileDescriptor ( void ) const
-{
-  return _imageInfo->file;
 }
 
 inline void Magick::Options::fontPointsize ( unsigned int pointSize_ )

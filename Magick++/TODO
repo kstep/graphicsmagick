@@ -16,6 +16,9 @@ Items large and small which remain to be done before Magick++ 1.0
   Paul S. Mostert <pmostert@gte.net>
   Mario Olimpio de Menezes <mario@curiango.ipen.br>
 
+* Install Magick++ headers into a Magick++ subdirectory and remove Magick
+  from the file name.
+
 * Image canvas should be DirectClass rather than PseudoClass.
 
 * Support manipulating IPTC profiles directly. Bill Radcliffe

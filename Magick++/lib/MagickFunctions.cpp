@@ -82,7 +82,3 @@ std::string Magick::PostscriptGeometry( const std::string &page_ )
   return pagesize;
 }
 
-unsigned int Magick::QueryColorDatabase( const std::string target_, MagickLib::ColorPacket &color_ )
-{
-  return MagickLib::QueryColorDatabase( target_.c_str(), &color_ );
-}

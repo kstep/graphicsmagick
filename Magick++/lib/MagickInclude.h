@@ -18,13 +18,16 @@
 // including locale.h
 #include <clocale>
 
+// Needed for stdio FILE
+#include <cstdio>
+
 namespace MagickLib
 {
-
 #undef PACKAGE
 #undef VERSION
 
-#include <magick/magick.h>
+#include <magick/api.h>
+
 #ifdef MAGICK_IMPLEMENTATION
 # include <magick/defines.h>
 #endif // MAGICK_IMPLEMENTATION

@@ -34,7 +34,6 @@ namespace Magick
   //
   class Color
   {
-    friend class MagickImage;
   public:
     Color ( Quantum red_,
 	    Quantum green_,

@@ -83,7 +83,7 @@ const Magick::Color& Magick::Color::operator = ( std::string x11color_ )
   isValid ( false );
 
   MagickLib::ColorPacket target_color;
-  if ( Magick::QueryColorDatabase( x11color_, target_color ) )
+  if ( MagickLib::QueryColorDatabase( x11color_.c_str(), &target_color ) )
     {
       redQuantum( XDownScale(target_color.red) );
       greenQuantum( XDownScale(target_color.green) );

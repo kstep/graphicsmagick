@@ -52,7 +52,7 @@ SO_REQLIBS= -lX11 -lc
 
 HEADERS = magick.h classify.h image.h gems.h compress.h monitor.h error.h \
   utility.h quantize.h xwindows.h widget.h PreRvIcccm.h memory.h delegates.h \
-  version.h defines.h
+  version.h defines.h api.h
 
 SRCS = PreRvIcccm.c animate.c annotate.c avs.c bmp.c cmyk.c colors.c \
   compress.c dcm.c decorate.c delegates.c display.c dps.c draw.c \

@@ -217,16 +217,6 @@ std::string Magick::Options::fileName ( void ) const
   return std::string( _imageInfo->filename );
 }
 
-// FIXME: The ImageInfo filter member is no longer used
-// void Magick::Options::filterType ( Magick::FilterType filterType_ )
-// {
-//   _imageInfo->filter = filterType_;
-// }
-// Magick::FilterType Magick::Options::filterType ( void ) const
-// {
-//   return (Magick::FilterType)_imageInfo->filter;
-// }
-
 void Magick::Options::font ( const std::string &font_ )
 {
   if ( font_.length() == 0 )

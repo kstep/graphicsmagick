@@ -30,7 +30,5 @@ namespace Magick
   int ParseImageGeometry( const std::string &geometry_, int &x, int &y,
 			  unsigned int &width, unsigned int &height );
   std::string PostscriptGeometry( const std::string &page_ );
-  unsigned int QueryColorDatabase( const std::string target_,
-				   MagickLib::ColorPacket &color_ );
 }
 #endif // MagickFunctions_header

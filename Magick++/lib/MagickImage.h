@@ -10,7 +10,6 @@
 #define Image_header
 
 #include <string>
-#include <cstdio>
 #include <list>
 
 #include <MagickBlob.h>

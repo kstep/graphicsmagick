@@ -58,29 +58,17 @@
 #endif
 
 /*
-  ImageMagick include declarations.
+  ImageMagick API headers
 */
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-#if defined(__cplusplus) || defined(c_plusplus)
-#define class  c_class
-#endif
-
-#if !defined(WIN32)
-#define Export
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#include <magick/api.h>
 #else
-#define Export  __declspec(dllexport)
-#pragma warning( disable : 4018 )
-#pragma warning( disable : 4244 )
-#pragma warning( disable : 4142 )
+#include "api.h"
 #endif
 
 #undef index
 #undef tainted
 
-#define MaxTextExtent  1664
 #if defined(macintosh)
 #define HasJPEG
 #define HasLZW
@@ -99,42 +87,6 @@ extern "C" {
 #define HasTTF
 #define HasX11
 #define HasZLIB
-#endif
-
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#if defined(HAVE_CONFIG_H)
-#include <magick/config.h>
-#endif
-#include <magick/classify.h>
-#include <magick/image.h>
-#include <magick/quantize.h>
-#include <magick/gems.h>
-#include <magick/compress.h>
-#include <magick/utility.h>
-#include <magick/monitor.h>
-#include <magick/error.h>
-#include <magick/memory.h>
-#include <magick/delegates.h>
-#include <magick/version.h>
-#else
-#include "classify.h"
-#include "image.h"
-#include "quantize.h"
-#include "gems.h"
-#include "compress.h"
-#include "utility.h"
-#include "monitor.h"
-#include "error.h"
-#if defined(_VISUALC_)
-#define INT32  X11_INT32
-#endif
-#include "memory.h"
-#include "delegates.h"
-#include "version.h"
-#endif
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
 #endif
 
 #endif

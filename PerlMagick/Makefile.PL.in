@@ -6,7 +6,7 @@ use Config;
 WriteMakefile(
     'NAME'	=> 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
-    'LIBS'	=> ['@LDFLAGS@ @MAGICKLIB@ @X11STUBSLIB@ @LIBS@'],
+    'LIBS'	=> ['@LDFLAGS@ @MAGICKLIB@ @LIBS@'],
     'DEFINE'	=> '',     # e.g., '-DHAVE_SOMETHING' 
     'INC'	=> '-I@top_srcdir@ @CPPFLAGS@',
     ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),

@@ -3067,7 +3067,7 @@ Get(ref,...)
           if (strEQcase(attribute,"taint"))
             {
               if (image)
-                s=newSViv(image->tainted);
+                s=newSViv(IsTainted(image));
               break;
             }
           if (strEQcase(attribute,"temporary"))

@@ -63,7 +63,7 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = classify.h compress.h config.h defines.h delegates.h error.h \
 	gems.h image.h magick.h memory.h monitor.h PreRvIcccm.h quantize.h \
-	utility.h version.h widget.h xwindows.h
+	utility.h version.h widget.h xwindows.h api.h
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = animate.h display.h mac.h nt.h vms.h

@@ -40,8 +40,20 @@ INCLUDES	= -I$(srcdir) $(X_CFLAGS)
 # Subdirectories to build
 SUBDIRS = delegates magick xtp
 
+STDMANPAGES = ImageMagick.1  combine.1 convert.1  identify.1 \
+   miff.4 mogrify.1 montage.1 quantize.5
+X11MANPAGES = animate.1 display.1 import.1
+ALLMANPAGES = $(STDMANPAGES) $(X11MANPAGES)
+
 # Executables to build
-bin_PROGRAMS = animate combine convert display identify import mogrify montage
+if HasX11
+X11PROGRAMS = animate display import
+MANPAGES = $(ALLMANPAGES)
+else
+X11PROGRAMS =
+MANPAGES = $(STDMANPAGES)
+endif
+bin_PROGRAMS = combine convert identify mogrify montage $(X11PROGRAMS)
 
 # Per-executable sources
 display_SOURCES  = display.c
@@ -54,15 +66,13 @@ identify_SOURCES = identify.c
 combine_SOURCES  = combine.c
 
 # Libtool libraries used by all executables
-LDADD		 = $(MAGICK_LIB) @X11STUBSLA@
+LDADD		 = $(MAGICK_LIB)
 
 # Manual pages to install
-MANPAGES = ImageMagick.1 animate.1 combine.1 convert.1 display.1 identify.1 \
-  import.1 miff.4 mogrify.1 montage.1 quantize.5
 man_MANS = $(MANPAGES)
 
 # Additional files to distribute
-EXTRA_DIST = $(MANPAGES) Magick.tmpl Manifest.ps ImageMagick.html Imakefile \
+EXTRA_DIST = $(ALLMANPAGES) Magick.tmpl Manifest.ps ImageMagick.html Imakefile \
 	Magickshr.opt Make.com README.txt Copyright.txt FlashPix.txt \
 	acconfig.h QuickStart.txt ImageMagick.pdf
 

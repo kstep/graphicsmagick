@@ -48,7 +48,7 @@ while test $# -gt 0; do
       echo '@LDFLAGS@'
       ;;
     --libs)
-      echo '@MAGICKLIB@ @X11STUBSLIB@ @LIBS@'
+      echo '@MAGICKLIB@ @LIBS@'
       ;;
     *)
       echo "${usage}" 1>&2

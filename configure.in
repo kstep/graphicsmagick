@@ -512,10 +512,6 @@ fi
 AC_PATH_X
 AC_PATH_XTRA
 
-X11STUBSDIR=''
-X11STUBSLA=''
-X11STUBSLIB=''
-
 LIB_XEXT=''
 LIB_XT=''
 if test "$with_x" != 'no'
@@ -534,10 +530,7 @@ then
     AC_CHECK_LIB(Xt,XtSetEventDispatcher,LIB_XT='-lXt',,)
     LIBS="$LIB_XEXT $LIB_XT $LIBS"
 fi
-AC_SUBST(X11STUBSDIR)
-AC_SUBST(X11STUBSLANAME)
-AC_SUBST(X11STUBSLA)
-AC_SUBST(X11STUBSLIB)
+AM_CONDITIONAL(HasX11, test "$with_x" != 'no')
 
 #
 # If profiling, then check for -ldl and dlopen (required for Solaris & gcc)
