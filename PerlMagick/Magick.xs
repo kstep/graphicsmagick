@@ -6387,13 +6387,24 @@ QueryFontMetrics(ref,...)
         FormatString(draw_info->geometry,"%f,%f",x,y);
       }
     status=GetFontMetrics(image,draw_info,&metrics);
-    if (status != False)
+    if (status == False)
+      PUSHs(&sv_undef);
+    else
       {
-        FormatString(message,"%g,%g,%d,%d,%d,%d,%d",metrics.pixels_per_em.x,
-          metrics.pixels_per_em.y,metrics.ascent,metrics.descent,metrics.width,
-          metrics.height,metrics.max_advance);
-        s=sv_2mortal(newSVpv(message,0));
-        PUSHs(s);
+        FormatString(message,"%g",metrics.pixels_per_em.x);
+        PUSHs(sv_2mortal(newSVpv(message,0)));
+        FormatString(message,"%g",metrics.pixels_per_em.y);
+        PUSHs(sv_2mortal(newSVpv(message,0)));
+        FormatString(message,"%d",metrics.ascent);
+        PUSHs(sv_2mortal(newSVpv(message,0)));
+        FormatString(message,"%d",metrics.descent);
+        PUSHs(sv_2mortal(newSVpv(message,0)));
+        FormatString(message,"%d",metrics.width);
+        PUSHs(sv_2mortal(newSVpv(message,0)));
+        FormatString(message,"%d",metrics.height);
+        PUSHs(sv_2mortal(newSVpv(message,0)));
+        FormatString(message,"%d",metrics.max_advance);
+        PUSHs(sv_2mortal(newSVpv(message,0)));
       }
     DestroyDrawInfo(draw_info);
 
