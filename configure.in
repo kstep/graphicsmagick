@@ -40,9 +40,9 @@ test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
 
 # Check for programs
 AC_PROG_CC
+AC_PROG_CPP
 AM_PROG_LD
 AC_SUBST(LD)
-AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
@@ -76,6 +76,11 @@ AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_SETUP
 # Configure libtool
 AC_PROG_LIBTOOL
+
+if test "$with_magick_plus_plus" = 'yes'
+then
+ AC_LIBTOOL_CXX
+fi
 
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
@@ -202,6 +207,12 @@ AC_ARG_WITH(largefiles,
 	      [  --without-largefiles    disable support for large (64 bit) file offsets],
 	      [with_largefiles=$withval],
 	      [with_largefiles='yes'])
+
+# Enable build/install of Magick++
+AC_ARG_WITH(magick_plus_plus,
+	      [  --with-magick_plus_plus enable build/install of Magick++],
+	      [with_magick_plus_plus=$withval],
+	      [with_magick_plus_plus='no'])
 
 # Disable build/install of PerlMagick.
 AC_ARG_WITH(perl,
@@ -347,6 +358,52 @@ then
   AC_MSG_RESULT($result)
 fi
 AC_SUBST(LIB_LF)
+
+
+#
+# C++ Support Tests (For Magick++)
+#
+if test "$with_magick_plus_plus" = 'yes'
+then
+ with_magick_plus_plus='no'
+ AC_PROG_CXX
+ AC_LANG_CPLUSPLUS
+ AC_CXX_BOOL
+ AC_CXX_CONST_CAST
+ AC_CXX_DEFAULT_TEMPLATE_PARAMETERS
+ AC_CXX_EXCEPTIONS
+ AC_CXX_EXPLICIT
+ AC_CXX_HAVE_STD
+ AC_CXX_HAVE_STL
+ AC_CXX_MEMBER_TEMPLATES_OUTSIDE_CLASS
+ AC_CXX_MUTABLE
+ AC_CXX_NAMESPACES
+ AC_CXX_NEW_FOR_SCOPING
+ AC_CXX_STATIC_CAST
+ AC_CXX_TEMPLATES
+
+ AC_MSG_CHECKING(whether C++ compiler is sufficient for Magick++)
+ if test \
+  $ac_cv_cxx_bool = 'yes' -a \
+  $ac_cv_cxx_const_cast = 'yes' -a \
+  $ac_cv_cxx_default_template_parameters = 'yes' -a \
+  $ac_cv_cxx_exceptions = 'yes' -a \
+  $ac_cv_cxx_explicit = 'yes' -a \
+  $ac_cv_cxx_have_std = 'yes' -a \
+  $ac_cv_cxx_have_stl = 'yes' -a \
+  $ac_cv_cxx_member_templates_outside_class = 'yes' -a \
+  $ac_cv_cxx_mutable = 'yes' -a \
+  $ac_cv_cxx_namespaces = 'yes' -a \
+  $ac_cv_cxx_new_for_scoping = 'yes' -a \
+  $ac_cv_cxx_static_cast = 'yes' -a \
+  $ac_cv_cxx_templates = 'yes'
+ then
+  with_magick_plus_plus='yes'
+ fi
+ AC_MSG_RESULT($with_magick_plus_plus)
+fi
+AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$with_magick_plus_plus" != 'no')
+
 
 # Check for delegate sub-directories and add -I & -L options as required.
 # This presumes that delegates are installed as detailed in the ImageMagick
@@ -1415,6 +1472,7 @@ X_EXTRA_LIBS=`echo $X_EXTRA_LIBS | sed -e 's/  */ /g'`
 CC=`echo $CC | sed -e 's/  */ /g'`
 CFLAGS=`echo $CFLAGS | sed -e 's/  */ /g'`
 CPPFLAGS=`echo $CPPFLAGS | sed -e 's/  */ /g'`
+CXXFLAGS=`echo $CXXFLAGS | sed -e 's/  */ /g'`
 LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
 #LIBS=`echo $LIBS | sed -e 's/  */ /g'`
 if test "$with_modules" = 'no'
@@ -1433,7 +1491,11 @@ AC_SUBST(X_CFLAGS)
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile coders/Makefile utilities/Makefile tests/Makefile magick/Magick-config PerlMagick/Makefile.PL)
+AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile \
+  coders/Makefile utilities/Makefile tests/Makefile magick/Magick-config \
+  Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile \
+  Magick++/demo/Makefile Magick++/tests/Makefile
+  PerlMagick/Makefile.PL)
 
 echo ""
 
@@ -1483,6 +1545,7 @@ echo "Final Compilation Flags:"
 echo "  CC       = $CC"
 echo "  CFLAGS   = $CFLAGS"
 echo "  CPPFLAGS = $CPPFLAGS"
+echo "  CXXFLAGS = $CXXFLAGS"
 echo "  LDFLAGS  = $LDFLAGS"
 #echo "  LIBS     = $LIBS"
 echo ""
