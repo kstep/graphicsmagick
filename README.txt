@@ -301,19 +301,41 @@ UNIX/Cygwin/MinGW COMPILATION
       be explicitly enabled in the libtiff Makefiles.
 
     o --with-quantum-depth: This option allows the user to specify the
-      number of bits to use per pixel quantum (the size of the
-      red, green, blue, and alpha pixel components. For example,
-      "--with-quantum-depth=8" builds ImageMagick using 8-bit
-      quantums. Currently supported arguments are 8, 16, or 32. The
-      default is 16.
+      number of bits to use per pixel quantum (the size of the red,
+      green, blue, and alpha pixel components. For example,
+      "--with-quantum-depth=8" builds ImageMagick using 8-bit quantums.
+      Most computer display adaptors use 8-bit quantums. Currently
+      supported arguments are 8, 16, or 32. The default is 16. This
+      option is the most important option in determining the overall
+      run-time performance of ImageMagick.
 
-      A quantum depth of 16 provides a range of 0 to 65535. A quantum
-      depth of eight provides a range of 0 to 255. Notice that the
-      eight-bit quantum is 256 times less accurate than the sixteen-bit
-      quantum size. Use of sixteen-bit pixel quantums typically causes
-      ImageMagick to run about 30% slower (and take twice as much memory)
-      than when it is built to support eight-bit pixel quantums. Those who
-      value performance over accuracy may specify --with-quantum-depth=8.
+      The number of bits in a quantum determines how many values it may
+      contain. Each quantum level supports 256 times as many values as
+      the previous level. The following table shows the range available
+      for various quantum sizes.
+
+          QuantumDepth  Valid Range (Decimal)  Valid Range (Hex)
+                8            0-255                   00-FF
+               16           0-65535                0000-FFFF
+               32         0-4294967295         00000000-FFFFFFFF
+
+      Larger pixel quantums cause ImageMagick to run more slowly and to
+      require more memory. For example, using sixteen-bit pixel quantums
+      causes ImageMagick to run 15% to 50% slower (and take twice as
+      much memory) than when it is built to support eight-bit pixel
+      quantums.
+
+      The amount of virtual memory consumed by an image can be computed
+      by the equation (QuantumDepth*Rows*Columns*5)/8. This is an
+      important consideration when resources are limited, particularly
+      since processing an image may require several images to be in
+      memory at one time. The following table shows memory consumption
+      values for a 1024x768 image:
+
+          QuantumDepth  Virtual Memory
+              8              3MB
+             16              8MB
+             32             15MB
 
     o --without-magick-plus-plus: Disable building Magick++, the C++
       application programming interface to ImageMagick. A suitable C++
@@ -334,12 +356,10 @@ UNIX/Cygwin/MinGW COMPILATION
       --without-threads.
 
     o --with-cache: Specify a different image pixel cache threshold
-      using the --with-cache option. When ImageMagick will have more image
-      pixel data in memory than the cache threshold setting, additional
-      images are cached on disk. Since memory is much faster than disk,
-      it is usually better to use memory rather than disk for the pixel
-      cache. The default cache threshold is 2047MB.  Small memory machines
-      may want to decrease the threshold.
+      using the --with-cache option. This sets the maximum amount of
+      heap memory that ImageMagick is allowed to consume before
+      switching to using memory-mapped temporary files to store raw
+      pixel data.
 
     o --disable-largefile: By default, ImageMagick is compiled with
       support for large (> 2GB on a 32-bit CPU) files if the operating
@@ -390,12 +410,9 @@ UNIX/Cygwin/MinGW COMPILATION
       necessary. Specify this option if the Ghostscript fonts fail to
       be located automatically, or the location needs to be overridden.
 
-    o --with-windows-font-dir: If configured under a Unix emulation
-      environment like Cygwin configure should automatically locate
-      the MS-Windows system font directory. If configure is not running
-      under MS-Windows yet MS-Windows-compatible fonts are available
-      use --with-windows-font-dir=/path to specify the directory where
-      the fonts are installed.
+    o --with-windows-font-dir: Specify the directory containing
+      MS-Windows-compatible fonts. This is not necessary when ImageMagick
+      is running under MS-Windows.
 
   Building under Cygwin
 
@@ -846,15 +863,21 @@ VMS COMPILATION
 
 Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
 
+ [ Visual C++ 7.0 users may follow this proceedure, however, once the
+   workspace and project files have been converted to the new "Solution"
+   format, the configured Visual C++ 6.0 workspace and project files are
+   no longer used. This currently puts Visual C++ 7.0 users at a
+   disadvantage. ]
+
   The Visual C++ distribution targeted at Windows Win2K or Windows 95
   does not provide any stock workspace (DSW) or project files (DSP)
   except for those included with third party libraries. Instead, there
   is a "configure" program that must be built and run that creates an
   environment that meets your particular needs.
 
-  The issue with the Visual C++ working environment is that there are
-  a fairly large number of mutually exclusive options that must all be
-  used in a coherent manner, or problems result.
+  The Visual C++ working environment provides a large number of mutually
+  exclusive options that must all be used in a coherent manner, or
+  problems result.
 
   The Visual C++ system provides three different types of "runtimes"
   that must match across all application, library, and DLL code that is
@@ -868,12 +891,14 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
     3) Static Multi-threaded runtimes
     4) Static Multi-threaded DLL runtimes
 
-  In addition to these runtimes, the VisualMagick build environment allows
-  you to select whether to include the X11 libraries in the build or use
-  the X11 "stubs". The assumption is that most Win32 user could care
-  less about X11 support, so we stub out all the X11 functionality so
-  that everything compiles. However, the X11 utility programs animate,
-  display, and import will not work.
+  In addition to these runtimes, the VisualMagick build environment
+  allows you to select whether to include the X11 libraries in the build
+  or use X11 "stubs". Either option is available because X11 DLLs are
+  provided with the VisualMagick build environment. Most Windows users
+  do not use X11 so they can accept the default X11 "stubs" option.
+  Users that use X11 or want to build a full ImageMagick, will want to
+  de-select the X11 "stubs" option. When X11 is stubbed out, the X11
+  utility programs animate, display, and import will not work.
 
   This leads to five different possible build options, which should
   cover almost any particular situation. The default binary distribution
@@ -882,8 +907,8 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
   multi-threaded support (the only option for DLL's).
 
   To do a build for your requirements, simply go to the configure sub-
-  directory under VisualMagick and open the configure.dsw workspace.
-  Set the build configuration to "Release" under the
+  directory under VisualMagick and open the configure.dsw workspace. Set
+  the build configuration to "Release" under the
 
       "Build..., Set Active Configuration..."  menu.
 
@@ -892,7 +917,8 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
   specific reason to do so.
 
   After creating your build environment you can proceed to open the DSW
-  file that was generated and build everything from there.
+  file that was generated in the VisualMagick directory and build
+  everything from there.
 
   In the final DSW file you will find a project call "All". In order to
   build everything in the distribution, select this project and make it
@@ -933,7 +959,7 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
     "Include all demo and test programs"
 
   In addition, there is another related checkbox (checked by default)
-  that causes all generate project files to be created standalone so
+  that causes all generated project files to be created standalone so
   that they can be copied to other areas of you system.
 
   This is the checkbox:
@@ -1074,9 +1100,8 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
    is GIF and JPEG, then simply drop all the other DLL's into the local
    trash can and get on with your life.
 
-   WARNING: Always keep the "xc" format, since IM seems to need and
-   "assume" that this one exists and gets real "unhappy" if it does
-   not. We are still tracking down some of these issues.
+   WARNING: Always keep the "xc" format, since IM uses it for internal
+   purposes.
 
   ALSO. You can elect to changes these things the good old "hard-coded"
   way. Two #defines are applicable.
@@ -1098,18 +1123,16 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
 
       convert image.ext win:
 
-  Make sure gswin32 (Ghostscript) is in your execution path (see
-  Autoexec.bat), otherwise, you will be unable to convert or view a
-  Postscript document.
+  Make sure Ghostscript is installed, otherwise, you will be unable to
+  convert or view a Postscript document.
 
-  Make sure iexplore (Internet Explorer) is in your execution path (see
-  Autoexec.bat), otherwise, you will be unable to browse the ImageMagick
-  documentation.
+  Make sure iexplore (Internet Explorer) is in your execution path,
+  otherwise, you will be unable to browse the ImageMagick documentation.
 
   The Win2K executables will work under Windows 95/98.
 
 
-MACINTOSH COMPILATION
+MACINTOSH MacOS 9 COMPILATION
 
   The Macintosh distribution contains MetroWerks Codewarrior Professional
   projects for compilation.  For those who do not have access to
@@ -1130,9 +1153,9 @@ Magick++
 
   Magick++ is currently supported using the following C++ compilers:
 
-    egcs 1.1.2 (or later)
     gcc 2.95.2 (or later)
     Visual C++ 6.0 (Windows)
+    Visual C++ 7.0 (Windows)
     IRIX C++ 7.3.1.1m
     HP-UX HP-UX aCC A.03.30
     Sun Workshop 5.0 C++ (tests/demos require work-around to build)
