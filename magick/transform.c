@@ -1175,8 +1175,6 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
 #endif
           LiberateMemory((void **) &image->color_profile.info);
         }
-      if (image->color_profile.length != 0)
-        LiberateMemory((void **) &image->color_profile.info);
       image->color_profile.info=AcquireMemory(length);
       if (image->color_profile.info == (unsigned char *) NULL)
         ThrowBinaryException(ResourceLimitWarning,"Unable to add ICM profile",

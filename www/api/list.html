@@ -21,11 +21,12 @@
 	<UL>
 
 		<LI><A HREF="#cloneimagelist">CloneImageList</A>
+		<LI><A HREF="#deleteimagelist">DeleteImageList</A>
 		<LI><A HREF="#destroyimagelist">DestroyImageList</A>
 		<LI><A HREF="#getimagelist">GetImageList</A>
 		<LI><A HREF="#getimagelistsize">GetImageListSize</A>
 		<LI><A HREF="#getnextimage">GetNextImage</A>
-		<LI><A HREF="#imagelisttogroup">ImageListToGroup</A>
+		<LI><A HREF="#imagelisttoarray">ImageListToArray</A>
 		<LI><A HREF="#newimagelist">NewImageList</A>
 		<LI><A HREF="#popimagelist">PopImageList</A>
 		<LI><A HREF="#pushimagelist">PushImageList</A>
@@ -48,11 +49,12 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>CloneImageList</STRONG>( const Image *images, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>DeleteImageList</STRONG>( Image *images, const unsigned long n );</P>
 <P>void  <STRONG>DestroyImageList</STRONG>( Image *image );</P>
-<P>Image * <STRONG>GetImageList</STRONG>( const Image *images, const unsigned long n, ExceptionInfo *esception );</P>
+<P>Image * <STRONG>GetImageList</STRONG>( const Image *images, const unsigned long n, ExceptionInfo *exception );</P>
 <P>size_t  <STRONG>GetImageListSize</STRONG>( const Image *images );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( Image *images );</P>
-<P>Image **  <STRONG>ImageListToGroup</STRONG>( const Image *images, ExceptionInfo *exception );</P>
+<P>Image **  <STRONG>ImageListToArray</STRONG>( const Image *images, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>NewImageList</STRONG>( void );</P>
 <P>Image * <STRONG>PopImageList</STRONG>( Image ** images );</P>
 <P>unsigned int  <STRONG>PushImageList</STRONG>( Image *images, const Image *image, ExceptionInfo *exception );</P>
@@ -80,6 +82,20 @@ The image list.
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="deleteimagelist">DeleteImageList</A></H2>
+<blockquote>DeleteImageList() deletes an image at the specified position in the list. </blockquote><P>The format of the DeleteImageList method is:</P>
+<blockquote>unsigned int DeleteImageList ( <A HREF="types/Image.html">Image</A> *images, const unsigned long n ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
+<DD>
+The image list.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_n%3A">n:</A></STRONG><BR>
+<DD>
+The position within the list.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="destroyimagelist">DestroyImageList</A></H2>
 <blockquote>DestroyImageList() destroys an image list. </blockquote><P>The format of the DestroyImageList method is:</P>
 <blockquote>void DestroyImageList ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
@@ -92,14 +108,14 @@ The image sequence.
 <P>
 <H2><A NAME="getimagelist">GetImageList</A></H2>
 <blockquote>GetImageList() returns an image at the specified position in the list. </blockquote><P>The format of the GetImageList method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *GetImageList ( const <A HREF="types/Image.html">Image</A> *images, const unsigned long n, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *esception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *GetImageList ( const <A HREF="types/Image.html">Image</A> *images, const unsigned long n, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_n%3A">n:</A></STRONG><BR>
+<dd><p></p><dt><STRONG>n:</STRONG><BR>
 <DD>
 The position within the list.
 <P></P>
@@ -128,9 +144,9 @@ The image list.
 The image list.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="imagelisttogroup">ImageListToGroup</A></H2>
-<blockquote>ImageListToGroup() is a convenience method that converts an image list to a sequential array. For example, </blockquote><blockquote>group = ImageListToGroup ( images, exception ); for ( i = 0; i < n; i++ ) puts ( group[i]->filename ) ;; </blockquote><P>The format of the ImageListToGroup method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> **ImageListToGroup ( const <A HREF="types/Image.html">Image</A> *images, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<H2><A NAME="imagelisttoarray">ImageListToArray</A></H2>
+<blockquote>ImageListToArray() is a convenience method that converts an image list to a sequential array. For example, </blockquote><blockquote>group = ImageListToArray ( images, exception ); for ( i = 0; i < n; i++ ) puts ( group[i]->filename ) ;; </blockquote><P>The format of the ImageListToArray method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> **ImageListToArray ( const <A HREF="types/Image.html">Image</A> *images, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>

@@ -54,7 +54,7 @@
 <P>Image * <STRONG>FlipImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FlopImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MosaicImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const char *profile_name, const char *filename );</P>
+<P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const char *name, const void *profile, const size_t length );</P>
 <P>Image * <STRONG>RollImage</STRONG>( const Image *image, const long x_offset, const long y_offset, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ShaveImage</STRONG>( const Image *image, const RectangleInfo *shave_info, ExceptionInfo *exception );</P>
 <P>void  <STRONG>TransformImage</STRONG>( Image ** image, const char *crop_geometry, const char *image_geometry );</P>
@@ -189,23 +189,27 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="profileimage">ProfileImage</A></H2>
-<blockquote>ProfileImage() adds or removes a ICM, IPTC, or generic profile from an image. If the profile name is defined it is deleted from the image. If a filename is given, one or more profiles are read and added to the image. ProfileImage ( ) returns a value other than 0 if the profile is successfully added or removed from the image. </blockquote><P>The format of the ProfileImage method is:</P>
-<blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const char *profile_name, const char *filename ); </blockquote><P>
+<blockquote>ProfileImage() adds or removes a ICM, IPTC, or generic profile from an image. If the profile is NULL, it is removed from the image otherwise added. Use a name of ' *' and a profile of NULL to remove all profiles from the image. </blockquote><P>The format of the ProfileImage method is:</P>
+<blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const char *name, const void *profile, const size_t length ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_profile_name%3A">profile_name:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
 <DD>
-Type of profile to add or remove.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_filename%3A">filename:</A></STRONG><BR>
-<DD>
-Filename of the 
+Name of profile to add or remove: 
 <FONT SIZE=-1>ICM,</FONT> 
 <FONT SIZE=-1>IPTC,</FONT> or generic profile.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_profile%3A">profile:</A></STRONG><BR>
+<DD>
+The profile.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
+<DD>
+The length of the profile.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="rollimage">RollImage</A></H2>

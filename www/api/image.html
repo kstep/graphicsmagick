@@ -27,6 +27,7 @@
 		<LI><A HREF="#appendimages">AppendImages</A>
 		<LI><A HREF="#averageimages">AverageImages</A>
 		<LI><A HREF="#channelimage">ChannelImage</A>
+		<LI><A HREF="#clipimage">ClipImage</A>
 		<LI><A HREF="#cloneimage">CloneImage</A>
 		<LI><A HREF="#cloneimageinfo">CloneImageInfo</A>
 		<LI><A HREF="#compositeimage">CompositeImage</A>
@@ -69,6 +70,7 @@
 <P>Image * <STRONG>AppendImages</STRONG>( const Image *image, const unsigned int stack, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>AverageImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ChannelImage</STRONG>( Image *image, const ChannelType channel );</P>
+<P>unsigned int  <STRONG>ClipImage</STRONG>( Image *image );</P>
 <P>Image * <STRONG>CloneImage</STRONG>( const Image *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, ExceptionInfo *exception );</P>
 <P>ImageInfo * <STRONG>CloneImageInfo</STRONG>( const ImageInfo *image_info );</P>
 <P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, const Image *composite_image, const long x_offset, const long y_offset );</P>
@@ -198,6 +200,16 @@ The image.
 <dd><p></p><dt><STRONG><A NAME="item_o_channel%3A">channel:</A></STRONG><BR>
 <DD>
 Identify which channel to extract: Red, Cyan, Green, Magenta, Blue, Yellow, or Opacity.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="clipimage">ClipImage</A></H2>
+<blockquote>ClipImage() sets the image clip mask based any clipping path information if it exists. </blockquote><P>The format of the ClipImage method is:</P>
+<blockquote>unsigned int ClipImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cloneimage">CloneImage</A></H2>
