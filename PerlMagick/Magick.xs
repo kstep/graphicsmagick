@@ -127,25 +127,28 @@ struct PackageInfo
     *quantize_info;
 };
 
-union ArgumentList
+struct ArgumentList
 {
-  long
-    int_reference;
+  union
+	{
+    long
+      int_reference;
 
-  double
-    double_reference;
+    double
+      double_reference;
 
-  char
-    *string_reference;
+    char
+      *string_reference;
 
-  STRLEN
+    Image
+      *image_reference;
+
+    SV
+      *array_reference;
+  };
+
+  size_t
     length;
-
-  Image
-    *image_reference;
-
-  SV
-    *array_reference;
 };
 
 /*
@@ -4203,7 +4206,7 @@ Mogrify(ref,...)
       *reference,
       **reference_vector;
 
-    union ArgumentList
+    struct ArgumentList
       argument_list[MaxArguments];
 
     volatile int
@@ -4265,7 +4268,7 @@ Mogrify(ref,...)
         MagickError(OptionError,"no images to mogrify",attribute);
         goto ReturnIt;
       }
-    Zero(&argument_list,NumberOf(argument_list),union ArgumentList);
+    Zero(&argument_list,NumberOf(argument_list),struct ArgumentList);
     Zero(&attribute_flag,NumberOf(attribute_flag),char);
     for (i=base; (i < items) || ((i == items) && (base == items)); i+=2)
     {
@@ -4276,7 +4279,7 @@ Mogrify(ref,...)
         *pp,
         *qq;
 
-      union ArgumentList
+      struct ArgumentList
         *al;
 
       SV
