@@ -507,34 +507,37 @@ MagickExport Image *ReverseImageList(const Image *images,
   ExceptionInfo *exception)
 {
   Image
-    *clone_images,
+    *reverse_images,
     *image;
+
+  register long
+	  i;
 
   assert(images != (Image *) NULL);
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
-  clone_images=NewImageList();
-  for ( ; images != (Image *) NULL; images=images->next)
+  reverse_images=NewImageList();
+  for (i=0; i < SizeImageList(images); i++)
   {
-    image=CloneImage(images,0,0,True,exception);
+    image=GetImageList(images,SizeImageList(images)-i-1,exception);
     if (image == (Image *) NULL)
       {
-        if (clone_images != (Image *) NULL)
-          DestroyImageList(clone_images);
+        if (reverse_images != (Image *) NULL)
+          DestroyImageList(reverse_images);
         break;
       }
-    if (clone_images == (Image *) NULL)
+    if (reverse_images == (Image *) NULL)
       {
-        clone_images=image;
+        reverse_images=image;
         continue;
       }
-    image->previous=clone_images;
-    clone_images->next=image;
-    clone_images=clone_images->next;
+    image->previous=reverse_images;
+    reverse_images->next=image;
+    reverse_images=reverse_images->next;
   }
-  while (clone_images->previous != (Image *) NULL)
-    clone_images=clone_images->previous;
+  while (reverse_images->previous != (Image *) NULL)
+    reverse_images=reverse_images->previous;
   return(clone_images);
 }
 
