@@ -981,8 +981,9 @@ text or graphic aliasing.
 .B "-draw \fI<string>"\fP
 \fRannotate an image with one or more graphic primitives
 
-Use this option to annotate an image with one or more graphic primitives
-and transformations.  The primitives include
+Use this option to annotate an image with one or more graphic primitives.
+The primitives include shapes, text, transformations,
+and pixel operations.  The shape primitives are
 
 
      point           x,y
@@ -996,33 +997,54 @@ and transformations.  The primitives include
      polygon         x0,y0  ...  xn,yn
      bezier          x0,y0  ...  xn,yn
      path            path specification
-     color           x0,y0 method
-     matte           x0,y0 method
-     text            x0,y0 string
      image           operator x0,y0 w,h filename
 
-The transformations are
+The text primitive is
+
+
+     text            x0,y0 string
+
+The transformation primitives are
 
 
      rotate          degrees
      translate       dx,dy
-     scale           factor
+     scale           sx,sy
      skewX           degrees
      skewY           degrees
 
+The pixel operation primitives are
+
+
+     color           x0,y0 method
+     matte           x0,y0 method
+
+The shape primitives are drawn in the color specified in the preceding
+\fB-stroke\fP option. Except for the \fBline\fP and \fBpoint\fP
+primitives, they are filled with the color specified in the preceding
+\fB-fill\fP option.  For unfilled shapes, use -fill none.
+
 \fBPoint\fP requires a single coordinate.
-\fBLine\fP requires a start and end coordinate, while
-\fBrectangle\fP
+
+\fBLine\fP requires a start and end coordinate.
+
+\fBRectangle\fP
 expects an upper left and lower right coordinate.
+
 \fBRoundRectangle\fP has the upper left and lower right coordinates
 and the width and height of the corners.
+
 \fBCircle\fP has a center coordinate and a coordinate for
-the outer edge.  Use \fBArc\fP to circumscribe an arc within
+the outer edge.
+
+Use \fBArc\fP to circumscribe an arc within
 a rectangle.  Arcs require a start and end point as well as the degree
 of rotation (e.g. 130,30 200,100 45,90).
+
 Use \fBEllipse\fP to draw a partial ellipse
 centered at the given point with the x-axis and y-axis radius
 and start and end of arc in degrees (e.g. 100,100 100,150 0,360).
+
 Finally, \fBpolyline\fP and \fBpolygon\fP require
 three or more coordinates to define its boundaries.
 Coordinates are integers separated by an optional comma.  For example,
@@ -1032,8 +1054,8 @@ that extends to 150,150 use:
 
      -draw 'circle 100,100 150,150'
 
-See Paths.
-Paths
+\fBPaths\fP
+(See Paths)
 represent an outline of an object which is defined in terms of
 moveto (set a new current point), lineto (draw a straight line),
 curveto (draw a curve using a cubic bezier), arc (elliptical or
@@ -1044,8 +1066,63 @@ line or curve operations) are possible to allow effects such as
 "donut holes" in objects.
 
 
+Use \fBimage\fP to composite an image with another image. Follow the
+image keyword with the composite operator, image location, image size,
+and filename:
+
+
+     -draw 'image Over 100,100 225,225 image.jpg'
+
+You can use 0,0 for the image size, which means to use the actual
+dimensions found in the image header. Otherwise, it will
+be scaled to the given dimensions.
+See \fB-compose\fP for a description of the composite operators.
+
+
+Use \fBtext\fP to annotate an image with text. Follow the text coordinates
+with a string. If the string has embedded spaces, enclose it in double
+quotes. Optionally you can include the image filename, type, width, height,
+or other image attribute by embedding special format character.
+See \fB-comment\fP for details.
+
+
+For example,
+
+
+     -draw 'text 100,100 "%m:%f %wx%h"'
+
+annotates the image with MIFF:bird.miff 512x480 for an image titled
+bird.miff
+and whose width is 512 and height is 480.
+
+
+If the first character of \fIstring\fP is \fI@\fP, the text is read from
+a file titled by the remaining characters in the string.
+
+
+\fBRotate\fP rotates subsequent shape primitives and text primitives about
+the origen of the main image. If the \fB-region\fP option precedes the
+\fB-draw\fP option, the origen for transformations is the upper left
+corner of the region.
+
+\fBTranslate\fP translates them.
+
+\fBScale\fP scales them.
+
+\fBSkewX\fP and \fBSkewY\fP skew them with respect to the origen of
+the main image or the region.
+
+The transformations modify the current affine matrix, which is initialized
+from the initial affine matrix defined by the \fB-affine\fP option.
+Transformations are cumulative within the \fB-draw\fP option.
+The initial affine matrix is not affected; that matrix is only changed by the
+appearance of another \fB-affine\fP option.  If another \fB-draw\fP
+option appears, the current affine matrix is reinitialized from
+the initial affine matrix.
+
+
 Use \fBcolor\fP to change the color of a pixel to the fill color (see
-\fB-fill\fP. Follow the pixel coordinate
+\fB-fill\fP). Follow the pixel coordinate
 with a method:
 
 
@@ -1077,55 +1154,11 @@ value of any neighbor pixel that is not the border color (\fB-bordercolor\fP).
 Finally \fBreset\fP changes the matte value of all pixels.
 
 
-Use \fBtext\fP to annotate an image with text. Follow the text coordinates
-with a string. If the string has embedded spaces, enclose it in double
-quotes. Optionally you can include the image filename, type, width, height,
-or other image attribute by embedding special format character.
-See \fB-comment\fP for details.
-
-
-For example,
-
-
-     -draw 'text 100,100 "%m:%f %wx%h"'
-
-annotates the image with MIFF:bird.miff 512x480 for an image titled
-bird.miff
-and whose width is 512 and height is 480.
-
-
-Use \fBimage\fP to composite an image with another image. Follow the
-image keyword with the composite operator, image location, image size,
-and filename:
-
-
-     -draw 'image Over 100,100 225,225 image.jpg'
-
-You can use 0,0 for the image size, which means to use the actual
-dimensions found in the image header. Otherwise, it will
-be scaled to the given dimensions.
-See \fB-compose\fP for a description of the composite operators.
-
-
-If the first character of \fIstring\fP is \fI@\fP, the text is read from
-a file titled by the remaining characters in the string.
-
-
 You can set the primitive color, font, and font bounding box
 color with
 \fB-fill\fP, \fB-font\fP, and \fB-box\fP respectively. Options
 are processed in command line order so be sure to use these
 options \fIbefore\fP the \fB-draw\fP option.
-
-
-Rotate rotates the primitive about the origen of the main image.
-Translate translates it, and scale scales it.
-SkewX and SkewY skew it with respect to the origen.
-The transformations modify the currennt affine matrix, which is initialized
-from the initial affine matrix which is defined by from the \fB-affine\fP option.
-Transformations are cumulative within the \fB-draw\fP option.
-The initial affine matrix is not affected; it is only changed by the
-appearance of another \fB-affine\fP option.
 
 .TP
 .B "-edge \fI<radius>"\fP
