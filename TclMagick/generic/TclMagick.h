@@ -29,12 +29,6 @@ typedef struct {
 				* to delete it */
 } TclMagickObj;
 
-char *getMagickObjName(TclMagickObj *mPtr);
-TclMagickObj *newMagickObj(Tcl_Interp  *interp, int type,
-			   void *wandPtr, char *name);
-TclMagickObj *findMagickObj(Tcl_Interp *interp, int type, char *name);
-int myMagickError(Tcl_Interp  *interp, MagickWand *wandPtr );
-
 #ifdef __WIN32__
 #   define WIN32_LEAN_AND_MEAN
 #   include <windows.h>
@@ -58,6 +52,12 @@ int myMagickError(Tcl_Interp  *interp, MagickWand *wandPtr );
 #else
 #   define EXPORT(a,b) a b
 #endif
+
+EXPORT(char, *getMagickObjName)(TclMagickObj *mPtr);
+EXPORT(TclMagickObj, *newMagickObj)(Tcl_Interp  *interp, int type, 
+                                    void *wandPtr, char *name);
+EXPORT(TclMagickObj, *findMagickObj)(Tcl_Interp *interp, int type, char *name);
+EXPORT(int, myMagickError)(Tcl_Interp  *interp, MagickWand *wandPtr );
 
 
 #endif

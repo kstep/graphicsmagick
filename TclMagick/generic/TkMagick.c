@@ -212,6 +212,9 @@ EXPORT(int, Tkmagick_Init)(Tcl_Interp *interp)
     if (Tcl_InitStubs(interp, "8", 0) == NULL) {
 	return TCL_ERROR;
     }
+    if (Tk_InitStubs(interp, "8", 0) == NULL) {
+	return TCL_ERROR;
+    }
 
     if ( Tcl_PkgRequire(interp, "TclMagick", "0.4", 0) == NULL) {
 	return TCL_ERROR;
