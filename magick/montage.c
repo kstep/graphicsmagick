@@ -10,7 +10,7 @@
 %              M   M   OOO   N   N    T    A   A   GGG   EEEEE                %
 %                                                                             %
 %                                                                             %
-%                     ImageMagick Image Montage Methods                       %
+%              ImageMagick Methods to Create Image Thumbnails                 %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -136,17 +136,17 @@ The format of the AddNoiseImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">noisy_image:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">noisy_image:</A></STRONG><DD>
 <P>
 Method AddNoiseImage returns a pointer to the image after the noise is minified. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>noise_type:</STRONG><DD>
+<p><dt><STRONG>noise_type:</STRONG><DD>
 <P>
 The type of noise: Gaussian, multiplicative Gaussian, impulse, laplacian,
 or Poisson.
@@ -183,17 +183,17 @@ The format of the BlurImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>blurred_image:</STRONG><DD>
+<p><dt><STRONG>blurred_image:</STRONG><DD>
 <P>
 Method BlurImage returns a pointer to the image after it is blurred. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>factor:</STRONG><DD>
+<p><dt><STRONG>factor:</STRONG><DD>
 <P>
 An double value reflecting the percent weight to give to the center pixel
 of the neighborhood.
@@ -216,11 +216,11 @@ The format of the ColorizeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>opaque_color, pen_color:</STRONG><DD>
+<p><dt><STRONG>opaque_color, pen_color:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> character string that contain an 
@@ -246,13 +246,13 @@ The format of the DespeckleImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>despeckled_image:</STRONG><DD>
+<p><dt><STRONG>despeckled_image:</STRONG><DD>
 <P>
 Method DespeckleImage returns a pointer to the image after it is despeckled. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
@@ -288,17 +288,17 @@ The format of the EdgeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>edged_image:</STRONG><DD>
+<p><dt><STRONG>edged_image:</STRONG><DD>
 <P>
 Method EdgeImage returns a pointer to the image after it is edged. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>factor:</STRONG><DD>
+<p><dt><STRONG>factor:</STRONG><DD>
 <P>
 An double value reflecting the percent weight to give to the center pixel
 of the neighborhood.
@@ -335,13 +335,13 @@ The format of the EmbossImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>embossed_image:</STRONG><DD>
+<p><dt><STRONG>embossed_image:</STRONG><DD>
 <P>
 Method EmbossImage returns a pointer to the image after it is embossed. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
@@ -378,13 +378,13 @@ The format of the EnhanceImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>enhanced_image:</STRONG><DD>
+<p><dt><STRONG>enhanced_image:</STRONG><DD>
 <P>
 Method EnhanceImage returns a pointer to the image after it is enhanced. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
@@ -408,17 +408,17 @@ The format of the ImplodeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>imploded_image:</STRONG><DD>
+<p><dt><STRONG>imploded_image:</STRONG><DD>
 <P>
 Method ImplodeImage returns a pointer to the image after it is imploded. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>factor:</STRONG><DD>
+<p><dt><STRONG>factor:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> double value that defines the extent of the
@@ -443,16 +443,16 @@ The format of the MorphImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>morphed_image:</STRONG><DD>
+<p><dt><STRONG>morphed_image:</STRONG><DD>
 <P>
 Method MorphImages returns an image sequence that has linearly interpolated
 pixels and size between two input images.
 
-<DT><STRONG>images:</STRONG><DD>
+<p><dt><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>number_frames:</STRONG><DD>
+<p><dt><STRONG>number_frames:</STRONG><DD>
 <P>
 This unsigned integer reflects the number of in-between images to generate.
 The more in-between frames, the smoother the morph.
@@ -476,17 +476,17 @@ The format of the OilPaintImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>painted_image:</STRONG><DD>
+<p><dt><STRONG>painted_image:</STRONG><DD>
 <P>
 Method OilPaintImage returns a pointer to the image after it is `painted'. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>radius:</STRONG><DD>
+<p><dt><STRONG>radius:</STRONG><DD>
 <P>
 An unsigned int that is the radius of the circular neighborhood.
 
@@ -509,25 +509,25 @@ The format of the PlasmaImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method PlasmaImage returns True when the fractal process is complete.
 Otherwise False is returned.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>segment_info:</STRONG><DD>
+<p><dt><STRONG>segment_info:</STRONG><DD>
 <P>
 specifies a structure of type SegmentInfo that defines the boundaries of
 the area where the plasma fractals are applied.
 
-<DT><STRONG>attenuate:</STRONG><DD>
+<p><dt><STRONG>attenuate:</STRONG><DD>
 <P>
 specifies the plasma attenuation factor.
 
-<DT><STRONG>depth:</STRONG><DD>
+<p><dt><STRONG>depth:</STRONG><DD>
 <P>
 this integer values define the plasma recursion depth.
 
@@ -556,13 +556,13 @@ The format of the ReduceNoiseImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>noisy_image:</STRONG><DD>
+<p><dt><STRONG>noisy_image:</STRONG><DD>
 <P>
 Method ReduceNoiseImage returns a pointer to the image after the noise is minified. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
@@ -586,23 +586,23 @@ The format of the ShadeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>shaded_image:</STRONG><DD>
+<p><dt><STRONG>shaded_image:</STRONG><DD>
 <P>
 Method ShadeImage returns a pointer to the image after it is shaded. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>color_shading:</STRONG><DD>
+<p><dt><STRONG>color_shading:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> value other than zero shades the red, green, and
 blue components of the image.
 
-<DT><STRONG>azimuth, elevation:</STRONG><DD>
+<p><dt><STRONG>azimuth, elevation:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> double value that indicates the light source
@@ -640,17 +640,17 @@ The format of the SharpenImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>sharpened_image:</STRONG><DD>
+<p><dt><STRONG>sharpened_image:</STRONG><DD>
 <P>
 Method SharpenImage returns a pointer to the image after it is sharpened. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>factor:</STRONG><DD>
+<p><dt><STRONG>factor:</STRONG><DD>
 <P>
 An double value reflecting the percent weight to give to the center pixel
 of the neighborhood.
@@ -673,11 +673,11 @@ The format of the SolarizeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>factor:</STRONG><DD>
+<p><dt><STRONG>factor:</STRONG><DD>
 <P>
 An double value that defines the extent of the solarization.
 
@@ -700,17 +700,17 @@ The format of the SpreadImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>spread_image:</STRONG><DD>
+<p><dt><STRONG>spread_image:</STRONG><DD>
 <P>
 Method SpreadImage returns a pointer to the image after it is spread. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>amount:</STRONG><DD>
+<p><dt><STRONG>amount:</STRONG><DD>
 <P>
 An unsigned value constraining the ``vicinity'' for choosing a random pixel
 to swap.
@@ -732,17 +732,17 @@ The format of the SteganoImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>stegano_image:</STRONG><DD>
+<p><dt><STRONG>stegano_image:</STRONG><DD>
 <P>
 Method SteganoImage returns a pointer to the steganographic image with the watermark hidden. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>watermark:</STRONG><DD>
+<p><dt><STRONG>watermark:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -768,17 +768,17 @@ The format of the StereoImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>stereo_image:</STRONG><DD>
+<p><dt><STRONG>stereo_image:</STRONG><DD>
 <P>
 Method StereoImage returns a pointer to the stereo image. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>left_image:</STRONG><DD>
+<p><dt><STRONG>left_image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>right_image:</STRONG><DD>
+<p><dt><STRONG>right_image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -802,17 +802,17 @@ The format of the SwirlImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>swirled_image:</STRONG><DD>
+<p><dt><STRONG>swirled_image:</STRONG><DD>
 <P>
 Method SwirlImage returns a pointer to the image after it is swirled. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>degrees:</STRONG><DD>
+<p><dt><STRONG>degrees:</STRONG><DD>
 <P>
 An double value that defines the tightness of the swirling.
 
@@ -833,11 +833,11 @@ The format of the ThresholdImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>threshold:</STRONG><DD>
+<p><dt><STRONG>threshold:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> double indicating the threshold value.
@@ -862,17 +862,17 @@ The format of the WaveImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>shaded_image:</STRONG><DD>
+<p><dt><STRONG>shaded_image:</STRONG><DD>
 <P>
 Method WaveImage returns a pointer to the image after it is shaded. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>amplitude, frequency:</STRONG><DD>
+<p><dt><STRONG>amplitude, frequency:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> double value that indicates the amplitude and

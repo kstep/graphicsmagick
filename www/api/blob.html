@@ -22,11 +22,24 @@
 		<LI><A HREF="#GetBlobInfo">GetBlobInfo</A>
 		<LI><A HREF="#GetStringBlob">GetStringBlob</A>
 		<LI><A HREF="#ImageToBlob">ImageToBlob</A>
+		<LI><A HREF="#LSBFirstReadLong">LSBFirstReadLong</A>
+		<LI><A HREF="#LSBFirstReadShort">LSBFirstReadShort</A>
+		<LI><A HREF="#LSBFirstWriteLong">LSBFirstWriteLong</A>
+		<LI><A HREF="#LSBFirstWriteShort">LSBFirstWriteShort</A>
+		<LI><A HREF="#MSBFirstOrderLong">MSBFirstOrderLong</A>
+		<LI><A HREF="#MSBFirstOrderShort">MSBFirstOrderShort</A>
+		<LI><A HREF="#MSBFirstReadShort">MSBFirstReadShort</A>
+		<LI><A HREF="#MSBFirstReadLong">MSBFirstReadLong</A>
+		<LI><A HREF="#MSBFirstWriteLong">MSBFirstWriteLong</A>
+		<LI><A HREF="#MSBFirstWriteShort">MSBFirstWriteShort</A>
 		<LI><A HREF="#OpenBlob">OpenBlob</A>
 		<LI><A HREF="#ReadBlob">ReadBlob</A>
+		<LI><A HREF="#ReadByte">ReadByte</A>
+		<LI><A HREF="#ReadDataBlock">ReadDataBlock</A>
 		<LI><A HREF="#SeekBlob">SeekBlob</A>
 		<LI><A HREF="#TellBlob">TellBlob</A>
 		<LI><A HREF="#WriteBlob">WriteBlob</A>
+		<LI><A HREF="#WriteByte">WriteByte</A>
 	</UL>
 
 </UL>
@@ -65,12 +78,45 @@ char * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, 
 <CODE>*length</CODE> );
 
 <P>
+unsigned long  <STRONG>LSBFirstReadLong</STRONG>( Image <CODE>*image</CODE> );
+
+<P>
+unsigned short  <STRONG>LSBFirstReadShort</STRONG>( Image <CODE>*image</CODE> );
+
+<P>
+unsigned long  <STRONG>LSBFirstWriteLong</STRONG>( Image *image, const unsigned long value );
+
+<P>
+unsigned long  <STRONG>LSBFirstWriteShort</STRONG>( Image *image, const unsigned short value );
+
+<P>
+void  <STRONG>MSBFirstOrderLong</STRONG>( register char *p, const unsigned int length );
+
+<P>
+void  <STRONG>MSBFirstOrderShort</STRONG>( register char *p, const unsigned int length );
+
+<P>
+unsigned long  <STRONG>MSBFirstReadLong</STRONG>( Image <CODE>*image</CODE> );
+
+<P>
+unsigned short  <STRONG>MSBFirstReadShort</STRONG>( Image <CODE>*image</CODE> );
+
+<P>
+unsigned long  <STRONG>MSBFirstWriteLong</STRONG>( Image *image, const unsigned long value );
+
+<P>
+unsigned long  <STRONG>MSBFirstWriteShort</STRONG>( Image *image, const unsigned short value );
+
+<P>
 unsigned int  <STRONG>OpenBlob</STRONG>( const ImageInfo *image_info, Image *image, const char <CODE>*type</CODE>
 );
 
 <P>
 unsigned long  <STRONG>ReadBlob</STRONG>( Image *image, const unsigned long number_bytes, char <CODE>*data</CODE>
 );
+
+<P>
+int  <STRONG>ReadByte</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
 int  <STRONG>SeekBlob</STRONG>( Image *image, const long offset, const int whence );
@@ -84,6 +130,9 @@ int  <STRONG>TellBlob</STRONG>( const Image <CODE>*image</CODE> );
 <P>
 unsigned long  <STRONG>WriteBlob</STRONG>( Image *image, const unsigned long number_bytes, const char
 <CODE>*data</CODE> );
+
+<P>
+unsigned long  <STRONG>WriteByte</STRONG>( Image *image, const char value );
 
 <P>
 <HR>
@@ -105,22 +154,22 @@ The format of the BlobToImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">image:</A></STRONG><DD>
 <P>
 Method BlobToImage returns an image from the supplied blob. If an error occurs 
 <FONT SIZE=-1>NULL</FONT> is returned.
 
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>blob:</STRONG><DD>
+<p><dt><STRONG>blob:</STRONG><DD>
 <P>
 The address of a character stream in one of the image formats understood by
 ImageMagick.
 
-<DT><STRONG>length:</STRONG><DD>
+<p><dt><STRONG>length:</STRONG><DD>
 <P>
 This unsigned integer reflects the length in bytes of the blob.
 
@@ -142,7 +191,7 @@ The format of the CloseBlob method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -164,12 +213,12 @@ The format of the EOFBlob method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method EOFBlob returns 0 on success; otherwise, it returns -1 and set errno
 to indicate the error.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -190,12 +239,12 @@ The format of the FlushBlob method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method FlushBlob returns 0 on success; otherwise, it returns -1 and set
 errno to indicate the error.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -216,7 +265,7 @@ The format of the GetBlobInfo method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>blob_info:</STRONG><DD>
+<p><dt><STRONG>blob_info:</STRONG><DD>
 <P>
 Specifies a pointer to a BlobInfo structure.
 
@@ -239,16 +288,16 @@ The format of the GetStringBlob method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method GetStringBlob returns the string on success, otherwise, a null is
 returned.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>string:</STRONG><DD>
+<p><dt><STRONG>string:</STRONG><DD>
 <P>
 The address of a character buffer.
 
@@ -270,7 +319,7 @@ The format of the ImageToBlob method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>blob:</STRONG><DD>
+<p><dt><STRONG>blob:</STRONG><DD>
 <P>
 Method ImageToBlob returns a chunk of memory written in the desired image format (e.g. 
 <FONT SIZE=-1>JPEG,</FONT> 
@@ -278,18 +327,290 @@ Method ImageToBlob returns a chunk of memory written in the desired image format
 <FONT SIZE=-1>NULL</FONT> is returned.
 
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>length:</STRONG><DD>
+<p><dt><STRONG>length:</STRONG><DD>
 <P>
 This pointer to an unsigned int sets the initial length of the blob. On
 return, it reflects the actual length of the blob.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="LSBFirstReadLong">LSBFirstReadLong</A></H2>
+<P>
+Method LSBFirstReadLong reads a long value as a 32 bit quantity in
+least-significant byte first order.
+
+<P>
+The format of the LSBFirstReadLong method is:
+
+<blockquote>unsigned long LSBFirstReadLong ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
+
+<DL><DL>
+<p><dt><STRONG>value:</STRONG><DD>
+<P>
+Method LSBFirstReadLong returns an unsigned long read from the file.
+
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="LSBFirstReadShort">LSBFirstReadShort</A></H2>
+<P>
+Method LSBFirstReadShort reads a short value as a 16 bit quantity in
+least-significant byte first order.
+
+<P>
+The format of the LSBFirstReadShort method is:
+
+<blockquote>unsigned short LSBFirstReadShort ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
+
+<DL><DL>
+<p><dt><STRONG>value:</STRONG><DD>
+<P>
+Method LSBFirstReadShort returns an unsigned short read from the file.
+
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="LSBFirstWriteLong">LSBFirstWriteLong</A></H2>
+<P>
+Method LSBFirstWriteLong writes a long value as a 32 bit quantity in
+least-significant byte first order.
+
+<P>
+The format of the LSBFirstWriteLong method is:
+
+<blockquote>unsigned long LSBFirstWriteLong ( <A HREF="types/Image.html">Image</A> *image, const unsigned long value ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
+
+<DL><DL>
+<p><dt><STRONG>count:</STRONG><DD>
+<P>
+Method LSBFirstWriteLong returns the number of unsigned longs written.
+
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<p><dt><STRONG>value:</STRONG><DD>
+<P>
+Specifies the value to write.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="LSBFirstWriteShort">LSBFirstWriteShort</A></H2>
+<P>
+Method LSBFirstWriteShort writes a long value as a 16 bit quantity in
+least-significant byte first order.
+
+<P>
+The format of the LSBFirstWriteShort method is:
+
+<blockquote>unsigned long LSBFirstWriteShort ( <A HREF="types/Image.html">Image</A> *image, const unsigned short value ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
+
+<DL><DL>
+<p><dt><STRONG>count:</STRONG><DD>
+<P>
+Method LSBFirstWriteShort returns the number of unsigned longs written.
+
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<p><dt><STRONG>value:</STRONG><DD>
+<P>
+Specifies the value to write.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MSBFirstOrderLong">MSBFirstOrderLong</A></H2>
+<P>
+Method MSBFirstOrderLong converts a least-significant byte first buffer of
+integers to most-significant byte first.
+
+<P>
+The format of the MSBFirstOrderLong method is:
+
+<blockquote>void MSBFirstOrderLong ( register char *p, const unsigned int length ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
+
+<DL><DL>
+<p><dt><STRONG>p:</STRONG><DD>
+<P>
+Specifies a pointer to a buffer of integers.
+
+<p><dt><STRONG>length:</STRONG><DD>
+<P>
+Specifies the length of the buffer.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MSBFirstOrderShort">MSBFirstOrderShort</A></H2>
+<P>
+Method MSBFirstOrderShort converts a least-significant byte first buffer of
+integers to most-significant byte first.
+
+<P>
+The format of the MSBFirstOrderShort method is:
+
+<blockquote>void MSBFirstOrderShort ( register char *p, const unsigned int length ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
+
+<DL><DL>
+<p><dt><STRONG>p:</STRONG><DD>
+<P>
+Specifies a pointer to a buffer of integers.
+
+<p><dt><STRONG>length:</STRONG><DD>
+<P>
+Specifies the length of the buffer.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MSBFirstReadShort">MSBFirstReadShort</A></H2>
+<P>
+Method MSBFirstReadShort reads a short value as a 16 bit quantity in
+most-significant byte first order.
+
+<P>
+The format of the MSBFirstReadShort method is:
+
+<blockquote>unsigned short MSBFirstReadShort ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
+
+<DL><DL>
+<p><dt><STRONG>value:</STRONG><DD>
+<P>
+Method MSBFirstReadShort returns an unsigned short read from the file.
+
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MSBFirstReadLong">MSBFirstReadLong</A></H2>
+<P>
+Method MSBFirstReadLong reads a long value as a 32 bit quantity in
+most-significant byte first order.
+
+<P>
+The format of the MSBFirstReadLong method is:
+
+<blockquote>unsigned long MSBFirstReadLong ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
+
+<DL><DL>
+<p><dt><STRONG>value:</STRONG><DD>
+<P>
+Method MSBFirstReadLong returns an unsigned long read from the file.
+
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MSBFirstWriteLong">MSBFirstWriteLong</A></H2>
+<P>
+Method MSBFirstWriteLong writes a long value as a 32 bit quantity in
+most-significant byte first order.
+
+<P>
+The format of the MSBFirstWriteLong method is:
+
+<blockquote>unsigned long MSBFirstWriteLong ( <A HREF="types/Image.html">Image</A> *image, const unsigned long value ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
+
+<DL><DL>
+<p><dt><STRONG>count:</STRONG><DD>
+<P>
+Method MSBFirstWriteLong returns the number of unsigned longs written.
+
+<p><dt><STRONG>value:</STRONG><DD>
+<P>
+Specifies the value to write.
+
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MSBFirstWriteShort">MSBFirstWriteShort</A></H2>
+<P>
+Method MSBFirstWriteShort writes a long value as a 16 bit quantity in
+most-significant byte first order.
+
+<P>
+The format of the MSBFirstWriteShort method is:
+
+<blockquote>unsigned long MSBFirstWriteShort ( <A HREF="types/Image.html">Image</A> *image, const unsigned short value ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
+
+<DL><DL>
+<p><dt><STRONG>value:</STRONG><DD>
+<P>
+Specifies the value to write.
+
+<p><dt><STRONG>file:</STRONG><DD>
+<P>
+Specifies the file to write the data to.
 
 </DL></DL>
 <P>
@@ -311,20 +632,20 @@ The format of the OpenBlob method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method OpenBlob returns True if the file is successfully opened otherwise
 False.
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>type:</STRONG><DD>
+<p><dt><STRONG>type:</STRONG><DD>
 <P>
 'r' for reading; 'w' for writing.
 
@@ -346,20 +667,77 @@ The format of the ReadBlob method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>count:</STRONG><DD>
+<p><dt><STRONG>count:</STRONG><DD>
 <P>
 Method ReadBlob returns the number of items read.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>number_bytes:</STRONG><DD>
+<p><dt><STRONG>number_bytes:</STRONG><DD>
 <P>
 Specifies an integer representing the number of bytes to read from the
 file.
 
-<DT><STRONG>data:</STRONG><DD>
+<p><dt><STRONG>data:</STRONG><DD>
+<P>
+Specifies an area to place the information requested from the file.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadByte">ReadByte</A></H2>
+<P>
+Method ReadByte reads a single byte from the image file and returns it.
+
+<P>
+The format of the ReadByte method is:
+
+<blockquote>int ReadByte ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
+
+<DL><DL>
+<p><dt><STRONG>value:</STRONG><DD>
+<P>
+Method ReadByte returns an integer read from the file.
+
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadDataBlock">ReadDataBlock</A></H2>
+<P>
+Method ReadBlobBlock reads data from the image file and returns it. The
+amount of data is determined by first reading a count byte. The number or
+bytes read is returned.
+
+<P>
+The format of the ReadBlobBlock method is:
+
+<P>
+<PRE>    unsigned long ReadBlobBlock(Image *image,char *data)
+</PRE>
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+<DL><DL>
+<p><dt><STRONG>count:</STRONG><DD>
+<P>
+Method ReadBlobBlock returns the number of bytes read.
+
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<p><dt><STRONG>data:</STRONG><DD>
 <P>
 Specifies an area to place the information requested from the file.
 
@@ -381,20 +759,20 @@ The format of the SeekBlob method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method SeekBlob returns 0 on success; otherwise, it returned -1 and set
 errno to indicate the error.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>offset:</STRONG><DD>
+<p><dt><STRONG>offset:</STRONG><DD>
 <P>
 Specifies an integer representing the offset in bytes.
 
-<DT><STRONG>whence:</STRONG><DD>
+<p><dt><STRONG>whence:</STRONG><DD>
 <P>
 Specifies an integer representing how the offset is treated relative to the
 beginning of the blob as follows:
@@ -421,12 +799,12 @@ The format of the SetBlobQuantum method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>blob_info:</STRONG><DD>
+<p><dt><STRONG>blob_info:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to a BlobInfo structure.
 
-<DT><STRONG>quantum:</STRONG><DD>
+<p><dt><STRONG>quantum:</STRONG><DD>
 <P>
 An unsigned long that reflects the number of bytes to increase a blob.
 
@@ -447,12 +825,12 @@ The format of the TellBlob method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method TellBlob returns 0 on success; otherwise, it returned -1 and set
 errno to indicate the error.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -474,27 +852,57 @@ The format of the WriteBlob method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method WriteBlob returns True if all the data requested is obtained without
 error, otherwise False.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>size:</STRONG><DD>
+<p><dt><STRONG>size:</STRONG><DD>
 <P>
 Specifies an integer representing the length of an individual item to be
 written to the file.
 
-<DT><STRONG>number_items:</STRONG><DD>
+<p><dt><STRONG>number_items:</STRONG><DD>
 <P>
 Specifies an integer representing the number of items to write to the file.
 
-<DT><STRONG>data:</STRONG><DD>
+<p><dt><STRONG>data:</STRONG><DD>
 <P>
 The address of the data to write to the blob or file.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="WriteByte">WriteByte</A></H2>
+<P>
+Method WriteByte write an integer to a file. It returns the number of bytes
+written (either 0 or 1);
+
+<P>
+The format of the WriteByte method is:
+
+<blockquote>unsigned long WriteByte ( <A HREF="types/Image.html">Image</A> *image, const char value ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
+
+<DL><DL>
+<p><dt><STRONG>count:</STRONG><DD>
+<P>
+Method WriteByte returns the number of bytes written.
+
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<p><dt><STRONG>value:</STRONG><DD>
+<P>
+Specifies the value to write.
 
 </DL></DL>
 </BODY>

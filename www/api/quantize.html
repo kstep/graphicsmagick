@@ -86,13 +86,13 @@ The format of the CloneQuantizeInfo method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">cloned_info:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">cloned_info:</A></STRONG><DD>
 <P>
 Method CloneQuantizeInfo returns a duplicate of the given quantize info, or if image info is 
 <FONT SIZE=-1>NULL</FONT> a new one.
 
 
-<DT><STRONG>quantize_info:</STRONG><DD>
+<p><dt><STRONG>quantize_info:</STRONG><DD>
 <P>
 a structure of type info.
 
@@ -113,7 +113,7 @@ The format of the DestroyCubeInfo method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>cube_info:</STRONG><DD>
+<p><dt><STRONG>cube_info:</STRONG><DD>
 <P>
 The address of a structure of type CubeInfo.
 
@@ -135,7 +135,7 @@ The format of the DestroyQuantizeInfo method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>quantize_info:</STRONG><DD>
+<p><dt><STRONG>quantize_info:</STRONG><DD>
 <P>
 Specifies a pointer to an QuantizeInfo structure.
 
@@ -156,7 +156,7 @@ The format of the GetQuantizeInfo method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>quantize_info:</STRONG><DD>
+<p><dt><STRONG>quantize_info:</STRONG><DD>
 <P>
 Specifies a pointer to a QuantizeInfo structure.
 
@@ -178,16 +178,16 @@ The format of the MapImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 Specifies a pointer to an Image structure.
 
-<DT><STRONG>map_image:</STRONG><DD>
+<p><dt><STRONG>map_image:</STRONG><DD>
 <P>
 Specifies a pointer to a Image structure. Reduce image to a set of colors
 represented by this image.
 
-<DT><STRONG>dither:</STRONG><DD>
+<p><dt><STRONG>dither:</STRONG><DD>
 <P>
 Set this integer value to something other than zero to dither the quantized
 image.
@@ -210,16 +210,16 @@ The format of the MapImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 Specifies a pointer to a set of Image structures.
 
-<DT><STRONG>map_image:</STRONG><DD>
+<p><dt><STRONG>map_image:</STRONG><DD>
 <P>
 Specifies a pointer to a Image structure. Reduce image to a set of colors
 represented by this image.
 
-<DT><STRONG>dither:</STRONG><DD>
+<p><dt><STRONG>dither:</STRONG><DD>
 <P>
 Set this integer value to something other than zero to dither the quantized
 image.
@@ -234,18 +234,18 @@ Method QuantizationError measures the difference between the original and quanti
 
 
 <DL><DL>
-<DT><STRONG>mean_error_per_pixel:</STRONG><DD>
+<p><dt><STRONG>mean_error_per_pixel:</STRONG><DD>
 <P>
 This value is the mean error for any single pixel in the image.
 
-<DT><STRONG>normalized_mean_square_error:</STRONG><DD>
+<p><dt><STRONG>normalized_mean_square_error:</STRONG><DD>
 <P>
 This value is the normalized mean quantization error for any single pixel
 in the image. This distance measure is normalized to a range between 0 and
 1. It is independent of the range of red, green, and blue values in the
 image.
 
-<DT><STRONG>normalized_maximum_square_error:</STRONG><DD>
+<p><dt><STRONG>normalized_maximum_square_error:</STRONG><DD>
 <P>
 Thsi value is the normalized maximum quantization error for any single
 pixel in the image. This distance measure is normalized to a range between
@@ -263,7 +263,7 @@ The format of the QuantizationError method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a byte (8 bits) array of run-length encoded pixel data of
 your reference image. The sum of the run-length counts in the reference
@@ -289,11 +289,11 @@ The format of the QuantizeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>quantize_info:</STRONG><DD>
+<p><dt><STRONG>quantize_info:</STRONG><DD>
 <P>
 Specifies a pointer to an QuantizeInfo structure.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 Specifies a pointer to a Image structure.
 
@@ -317,11 +317,11 @@ The format of the QuantizeImages method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>quantize_info:</STRONG><DD>
+<p><dt><STRONG>quantize_info:</STRONG><DD>
 <P>
 Specifies a pointer to an QuantizeInfo structure.
 
-<DT><STRONG>images:</STRONG><DD>
+<p><dt><STRONG>images:</STRONG><DD>
 <P>
 Specifies a pointer to a list of Image structures.
 

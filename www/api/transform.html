@@ -78,17 +78,17 @@ The format of the ChopImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">chop_image:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">chop_image:</A></STRONG><DD>
 <P>
 Method ChopImage returns a pointer to the chop image. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
 or if the image width or height is zero.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>chop_info:</STRONG><DD>
+<p><dt><STRONG>chop_info:</STRONG><DD>
 <P>
 Specifies a pointer to a RectangleInfo which defines the region of the
 image to crop.
@@ -113,7 +113,7 @@ The format of the CoalesceImages method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage. It
 points to the first image in the group to be coalesced.
@@ -139,17 +139,17 @@ The format of the CropImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>cropped_image:</STRONG><DD>
+<p><dt><STRONG>cropped_image:</STRONG><DD>
 <P>
 Method CropImage returns a pointer to the cropped image. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
 or if the image width or height is zero.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>crop_info:</STRONG><DD>
+<p><dt><STRONG>crop_info:</STRONG><DD>
 <P>
 Specifies a pointer to a RectangleInfo which defines the region of the
 image to crop.
@@ -174,7 +174,7 @@ The format of the DeconstructImages method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>images:</STRONG><DD>
+<p><dt><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage. It
 points to the first image in the group to be deconstructed.
@@ -198,13 +198,13 @@ The format of the FlipImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>flipped_image:</STRONG><DD>
+<p><dt><STRONG>flipped_image:</STRONG><DD>
 <P>
 Method FlipImage returns a pointer to the image after reflecting. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -227,13 +227,13 @@ The format of the FlopImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>flopped_image:</STRONG><DD>
+<p><dt><STRONG>flopped_image:</STRONG><DD>
 <P>
 Method FlopImage returns a pointer to the image after reflecting. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -256,22 +256,22 @@ The format of the RollImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>rolled_image:</STRONG><DD>
+<p><dt><STRONG>rolled_image:</STRONG><DD>
 <P>
 Method RollImage returns a pointer to the image after rolling. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
 shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>x_offset:</STRONG><DD>
+<p><dt><STRONG>x_offset:</STRONG><DD>
 <P>
 An integer that specifies the number of columns to roll in the horizontal
 direction.
 
-<DT><STRONG>y_offset:</STRONG><DD>
+<p><dt><STRONG>y_offset:</STRONG><DD>
 <P>
 An integer that specifies the number of rows to roll in the vertical
 direction.

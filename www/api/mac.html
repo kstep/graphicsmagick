@@ -97,19 +97,19 @@ The format of the BottleneckTest method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">picture:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">picture:</A></STRONG><DD>
 <P>
 Specifies a pointer to a PicHandle structure.
 
-<DT><STRONG>codec:</STRONG><DD>
+<p><dt><STRONG>codec:</STRONG><DD>
 <P>
 The code type is returned in this CodecType pointer structure.
 
-<DT><STRONG>depth:</STRONG><DD>
+<p><dt><STRONG>depth:</STRONG><DD>
 <P>
 The image depth is returned as an integer pointer.
 
-<DT><STRONG>colormap_id:</STRONG><DD>
+<p><dt><STRONG>colormap_id:</STRONG><DD>
 <P>
 The colormap 
 <FONT SIZE=-1>ID</FONT> is returned in this short pointer.
@@ -132,7 +132,7 @@ The format of the closedir method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>entry:</STRONG><DD>
+<p><dt><STRONG>entry:</STRONG><DD>
 <P>
 Specifies a pointer to a 
 <FONT SIZE=-1>DIR</FONT> structure.
@@ -154,7 +154,7 @@ The format of the Exit method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 an integer value representing the status of the terminating process.
 
@@ -175,11 +175,11 @@ The format of the FilenameToFSSpec method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>filename:</STRONG><DD>
+<p><dt><STRONG>filename:</STRONG><DD>
 <P>
 Specifies the name of the file.
 
-<DT><STRONG>fsspec:</STRONG><DD>
+<p><dt><STRONG>fsspec:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to type FSSpec.
@@ -206,12 +206,12 @@ The format of the ImageFormatConflict method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method ImageFormatConflict returns true if the image format conflicts with
 a logical drive.
 
-<DT><STRONG>magick:</STRONG><DD>
+<p><dt><STRONG>magick:</STRONG><DD>
 <P>
 Specifies the image format.
 
@@ -272,7 +272,7 @@ The format of the MACSystemCommand method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>command:</STRONG><DD>
+<p><dt><STRONG>command:</STRONG><DD>
 <P>
 This string is the command to execute.
 
@@ -304,7 +304,7 @@ The format of the opendir method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>entry:</STRONG><DD>
+<p><dt><STRONG>entry:</STRONG><DD>
 <P>
 Specifies a pointer to a 
 <FONT SIZE=-1>DIR</FONT> structure.
@@ -327,7 +327,7 @@ The format of the ProcessPendingEvents method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>text:</STRONG><DD>
+<p><dt><STRONG>text:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> character string representing the current process.
@@ -351,7 +351,7 @@ The format of the readdir
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>entry:</STRONG><DD>
+<p><dt><STRONG>entry:</STRONG><DD>
 <P>
 Specifies a pointer to a 
 <FONT SIZE=-1>DIR</FONT> structure.
@@ -382,13 +382,13 @@ The format of the ReadPICTImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 Method ReadPICTImage returns a pointer to the image after reading. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a a memory
 shortage or if the image cannot be read.
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
@@ -416,12 +416,12 @@ The format of the seekdir method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>entry:</STRONG><DD>
+<p><dt><STRONG>entry:</STRONG><DD>
 <P>
 Specifies a pointer to a 
 <FONT SIZE=-1>DIR</FONT> structure.
 
-<DT><STRONG>position:</STRONG><DD>
+<p><dt><STRONG>position:</STRONG><DD>
 <P>
 specifies the position associated with the directory stream.
 
@@ -442,15 +442,15 @@ The format of the SetApplicationType method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>filename:</STRONG><DD>
+<p><dt><STRONG>filename:</STRONG><DD>
 <P>
 Specifies the name of the file.
 
-<DT><STRONG>filename:</STRONG><DD>
+<p><dt><STRONG>filename:</STRONG><DD>
 <P>
 Specifies the file type.
 
-<DT><STRONG>application:</STRONG><DD>
+<p><dt><STRONG>application:</STRONG><DD>
 <P>
 Specifies the type of the application.
 
@@ -472,7 +472,7 @@ The format of the telldir method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>entry:</STRONG><DD>
+<p><dt><STRONG>entry:</STRONG><DD>
 <P>
 Specifies a pointer to a 
 <FONT SIZE=-1>DIR</FONT> structure.

@@ -97,12 +97,12 @@ The format of the ASCII85Encode method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">code:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">code:</A></STRONG><DD>
 <P>
 a binary unsigned char to encode to 
 <FONT SIZE=-1>ASCII</FONT> 85.
 
-<DT><STRONG>file:</STRONG><DD>
+<p><dt><STRONG>file:</STRONG><DD>
 <P>
 write the encoded 
 <FONT SIZE=-1>ASCII</FONT> character to this file.
@@ -124,12 +124,12 @@ The format of the HuffmanDecodeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method HuffmanDecodeImage returns True if all the pixels are compressed
 without error, otherwise False.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -150,16 +150,16 @@ The format of the HuffmanEncodeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method HuffmanEncodeImage returns True if all the pixels are compressed
 without error, otherwise False.
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -181,16 +181,16 @@ The format of the Huffman2DEncodeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method Huffman2DEncodeImage returns True if all the pixels are compressed
 without error, otherwise False.
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -215,20 +215,20 @@ The format of the LZWEncodeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method LZWEncodeImage returns True if all the pixels are compressed without
 error, otherwise False.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>number_pixels:</STRONG><DD>
+<p><dt><STRONG>number_pixels:</STRONG><DD>
 <P>
 An unsigned interger that specifies the number of pixels to compress.
 
-<DT><STRONG>pixels:</STRONG><DD>
+<p><dt><STRONG>pixels:</STRONG><DD>
 <P>
 The address of an unsigned array of characters containing the pixels to
 compress.
@@ -253,20 +253,20 @@ The format of the PackbitsEncodeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method PackbitsEncodeImage returns True if all the pixels are compressed
 without error, otherwise False.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>number_pixels:</STRONG><DD>
+<p><dt><STRONG>number_pixels:</STRONG><DD>
 <P>
 An unsigned integer that specifies the number of pixels to compress.
 
-<DT><STRONG>pixels:</STRONG><DD>
+<p><dt><STRONG>pixels:</STRONG><DD>
 <P>
 The address of an unsigned array of characters containing the pixels to
 compress.
@@ -290,12 +290,12 @@ The format of the RunlengthDecodeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method RunlengthDecodeImage return True if the image is decoded. False is
 returned if there is an error occurs.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -317,12 +317,12 @@ The format of the RunlengthEncodeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method RunlengthEncodeImage return the number of bytes the image consumes.
 Zero is returned if an error occurs.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -343,7 +343,7 @@ The format of the SetRunlengthEncoder function is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>packet:</STRONG><DD>
+<p><dt><STRONG>packet:</STRONG><DD>
 <P>
 Specifies a RunlengthPacket type.
 
@@ -364,11 +364,11 @@ The format of the SetRunlengthPackets function is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>packets:</STRONG><DD>
+<p><dt><STRONG>packets:</STRONG><DD>
 <P>
 The number of runlength packets.
 
@@ -393,27 +393,27 @@ The format of the ZLIBEncodeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method ZLIBEncodeImage returns True if all the pixels are compressed
 without error, otherwise False.
 
-<DT><STRONG>file:</STRONG><DD>
+<p><dt><STRONG>file:</STRONG><DD>
 <P>
 The address of a structure of type 
 <FONT SIZE=-1>FILE.</FONT> 
 <FONT SIZE=-1>ZLIB</FONT> encoded pixels are written to this file.
 
 
-<DT><STRONG>number_pixels:</STRONG><DD>
+<p><dt><STRONG>number_pixels:</STRONG><DD>
 <P>
 An unsigned integer that specifies the number of pixels to compress.
 
-<DT><STRONG>quality:</STRONG><DD>
+<p><dt><STRONG>quality:</STRONG><DD>
 <P>
 the compression level (0-100).
 
-<DT><STRONG>pixels:</STRONG><DD>
+<p><dt><STRONG>pixels:</STRONG><DD>
 <P>
 The address of an unsigned array of characters containing the pixels to
 compress.

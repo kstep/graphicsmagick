@@ -85,13 +85,13 @@ The format of the Contrast method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">sign:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">sign:</A></STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> positive value enhances the contrast otherwise it is
 reduced.
 
-<DT><STRONG>red, green, blue:</STRONG><DD>
+<p><dt><STRONG>red, green, blue:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to a pixel component of type Quantum.
@@ -113,12 +113,12 @@ The format of the GenerateNoise method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>pixel:</STRONG><DD>
+<p><dt><STRONG>pixel:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> structure of type Quantum.
 
-<DT><STRONG>noise_type:</STRONG><DD>
+<p><dt><STRONG>noise_type:</STRONG><DD>
 <P>
 The type of noise: Gaussian, multiplicative Gaussian, impulse, laplacian,
 or Poisson.
@@ -141,14 +141,14 @@ The format of the HSLTransformImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>hue, saturation, luminosity:</STRONG><DD>
+<p><dt><STRONG>hue, saturation, luminosity:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> double value representing a component of the 
 <FONT SIZE=-1>HSL</FONT> color space.
 
 
-<DT><STRONG>red, green, blue:</STRONG><DD>
+<p><dt><STRONG>red, green, blue:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to a pixel component of type Quantum.
@@ -172,20 +172,20 @@ The format of the Hull method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>x_offset, y_offset:</STRONG><DD>
+<p><dt><STRONG>x_offset, y_offset:</STRONG><DD>
 <P>
 An integer value representing the offset of the current pixel within the
 image.
 
-<DT><STRONG>polarity:</STRONG><DD>
+<p><dt><STRONG>polarity:</STRONG><DD>
 <P>
 An integer value declaring the polarity (+,-).
 
-<DT><STRONG>columns, rows:</STRONG><DD>
+<p><dt><STRONG>columns, rows:</STRONG><DD>
 <P>
 Specifies the number of rows and columns in the image.
 
-<DT><STRONG>f, g:</STRONG><DD>
+<p><dt><STRONG>f, g:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to an image pixel and one of it's neighbor.
@@ -208,11 +208,11 @@ The format of the InterpolateColor method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>x_offset,y_offset:</STRONG><DD>
+<p><dt><STRONG>x_offset,y_offset:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> double representing the current (x,y) position of
@@ -235,14 +235,14 @@ The format of the ModulateImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>percent_hue, percent_saturation, percent_brightness:</STRONG><DD>
+<p><dt><STRONG>percent_hue, percent_saturation, percent_brightness:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> double value representing the percent change in a component of the 
 <FONT SIZE=-1>HSL</FONT> color space.
 
 
-<DT><STRONG>red, green, blue:</STRONG><DD>
+<p><dt><STRONG>red, green, blue:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to a pixel component of type Quantum.
@@ -265,13 +265,13 @@ The format of the TransformHSL method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>red, green, blue:</STRONG><DD>
+<p><dt><STRONG>red, green, blue:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> Quantum value representing the red, green, and blue
 component of a pixel..
 
-<DT><STRONG>hue, saturation, luminosity:</STRONG><DD>
+<p><dt><STRONG>hue, saturation, luminosity:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to a double value representing a component of the 
@@ -295,15 +295,15 @@ The format of the UpSample method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>width,height:</STRONG><DD>
+<p><dt><STRONG>width,height:</STRONG><DD>
 <P>
 Unsigned values representing the width and height of the image pixel array.
 
-<DT><STRONG>scaled_width:</STRONG><DD>
+<p><dt><STRONG>scaled_width:</STRONG><DD>
 <P>
 Specifies the final width of the upsampled pixel array.
 
-<DT><STRONG>pixels:</STRONG><DD>
+<p><dt><STRONG>pixels:</STRONG><DD>
 <P>
 An unsigned char containing the pixel data. On output the upsampled pixels
 are returned here.

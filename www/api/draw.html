@@ -74,26 +74,26 @@ The format of the ColorFloodfillImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">image:</A></STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>target:</STRONG><DD>
+<p><dt><STRONG>target:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> RunlengthPacket structure. This is the 
 <FONT SIZE=-1>RGB</FONT> value of the target color.
 
 
-<DT><STRONG>tile:</STRONG><DD>
+<p><dt><STRONG>tile:</STRONG><DD>
 <P>
 An image representing the image to tile onto the floodplane.
 
-<DT><STRONG>x,y:</STRONG><DD>
+<p><dt><STRONG>x,y:</STRONG><DD>
 <P>
 Unsigned integers representing the current location of the pen.
 
-<DT><STRONG>method:</STRONG><DD>
+<p><dt><STRONG>method:</STRONG><DD>
 <P>
 drawing method of type PrimitiveType: floodfill or fill to border.
 
@@ -107,18 +107,18 @@ Method DrawImage draws a primitive (line, rectangle, ellipse) on the image.
 <P>
 The format of the DrawImage method is:
 
-<blockquote>void DrawImage ( <A HREF="types/Image.html">Image</A> *image, const AnnotateInfo *annotate_info ); </blockquote>
+<blockquote>void DrawImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>annotate_info:</STRONG><DD>
+<p><dt><STRONG>annotate_info:</STRONG><DD>
 <P>
 The address of a DrawInfo structure.
 
@@ -137,31 +137,31 @@ Rick Mabry provided the algorithms for anti-aliased primitives.
 <P>
 The format of the InsidePrimitive method is:
 
-<blockquote>unsigned short InsidePrimitive ( PrimitiveInfo *primitive_info, const AnnotateInfo *annotate_info, const <A HREF="types/PointInfo.html">PointInfo</A> *pixel, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+<blockquote>unsigned short InsidePrimitive ( PrimitiveInfo *primitive_info, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info, const <A HREF="types/PointInfo.html">PointInfo</A> *pixel, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>opacity:</STRONG><DD>
+<p><dt><STRONG>opacity:</STRONG><DD>
 <P>
 Method InsidePrimitive returns a pen opacity associated with the (x,y)
 position of the image.
 
-<DT><STRONG>primitive_info:</STRONG><DD>
+<p><dt><STRONG>primitive_info:</STRONG><DD>
 <P>
 Specifies a pointer to a PrimitiveInfo structure.
 
-<DT><STRONG>annotate_info:</STRONG><DD>
+<p><dt><STRONG>annotate_info:</STRONG><DD>
 <P>
 Specifies a pointer to a AnnotateInfo structure.
 
-<DT><STRONG>target:</STRONG><DD>
+<p><dt><STRONG>target:</STRONG><DD>
 <P>
 PointInfo representing the (x,y) location in the image.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -184,28 +184,28 @@ The format of the MatteFloodfillImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>target:</STRONG><DD>
+<p><dt><STRONG>target:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> RunlengthPacket structure. This is the 
 <FONT SIZE=-1>RGB</FONT> value of the target color.
 
 
-<DT><STRONG>matte:</STRONG><DD>
+<p><dt><STRONG>matte:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> integer value representing the amount of
 transparency.
 
-<DT><STRONG>x,y:</STRONG><DD>
+<p><dt><STRONG>x,y:</STRONG><DD>
 <P>
 Unsigned integers representing the current location of the pen.
 
-<DT><STRONG>method:</STRONG><DD>
+<p><dt><STRONG>method:</STRONG><DD>
 <P>
 drawing method of type PrimitiveType: floodfill or fill to border.
 
@@ -226,11 +226,11 @@ The format of the OpaqueImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>opaque_color, pen_color:</STRONG><DD>
+<p><dt><STRONG>opaque_color, pen_color:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> character string that contain an 

@@ -43,7 +43,7 @@ MagickInfo * <STRONG>RegisterMagickInfo</STRONG>( const char *tag, Image *(* dec
 <CODE>int(*</CODE> encoder )( const ImageInfo *, Image *), unsigned
 <CODE>int(*</CODE> magick )( const unsigned char *, const unsigned int ),
 const unsigned int adjoin, const unsigned int blob_support, const char
-<CODE>*description</CODE> )blob_support, description ));
+<CODE>*description</CODE> );
 
 <P>
 <HR>
@@ -59,19 +59,19 @@ Method GetMagickInfo returns a pointer MagickInfo structure that matches the spe
 <P>
 The format of the GetMagickInfo method is:
 
-<blockquote>MagickInfo *GetMagickInfo ( const char *tag ); </blockquote>
+<blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *GetMagickInfo ( const char *tag ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">magick_info:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">magick_info:</A></STRONG><DD>
 <P>
 Method GetMagickInfo returns a pointer MagickInfo structure that matches
 the specified tag.
 
-<DT><STRONG>tag:</STRONG><DD>
+<p><dt><STRONG>tag:</STRONG><DD>
 <P>
 a character string that represents the image format we are looking for.
 
@@ -103,46 +103,46 @@ Method RegisterMagickInfo adds attributes for a particular image format to the l
 <P>
 The format of the RegisterMagickInfo method is:
 
-<blockquote>MagickInfo *RegisterMagickInfo ( const char *tag, <A HREF="types/Image.html">Image</A> *( *decoder ) ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *), unsigned int ( *encoder ) ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *, <A HREF="types/Image.html">Image</A> *), unsigned int ( *magick ) ( const unsigned char *, const unsigned int ), const unsigned int adjoin, const unsigned int blob_support, const char *description ) blob_support, description ) ); </blockquote>
+<blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *RegisterMagickInfo ( const char *tag, <A HREF="types/Image.html">Image</A> *( *decoder ) ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *), unsigned int ( *encoder ) ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *, <A HREF="types/Image.html">Image</A> *), unsigned int ( *magick ) ( const unsigned char *, const unsigned int ), const unsigned int adjoin, const unsigned int blob_support, const char *description ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>magick_info:</STRONG><DD>
+<p><dt><STRONG>magick_info:</STRONG><DD>
 <P>
 Method RegisterMagickInfo returns a pointer MagickInfo structure that
 contains the specified tag info.
 
-<DT><STRONG>tag:</STRONG><DD>
+<p><dt><STRONG>tag:</STRONG><DD>
 <P>
 a character string that represents the image format we are looking for.
 
-<DT><STRONG>decoder:</STRONG><DD>
+<p><dt><STRONG>decoder:</STRONG><DD>
 <P>
 a method that is used to read the image format.
 
-<DT><STRONG>encoder:</STRONG><DD>
+<p><dt><STRONG>encoder:</STRONG><DD>
 <P>
 a method that is used to write the image format.
 
-<DT><STRONG>magick:</STRONG><DD>
+<p><dt><STRONG>magick:</STRONG><DD>
 <P>
 this method returns True if the image format signature matches a subset of
 the first few bytes of the file or blob.
 
-<DT><STRONG>adjoin:</STRONG><DD>
+<p><dt><STRONG>adjoin:</STRONG><DD>
 <P>
 a value greater than 0 means the image format can save more than one frame
 to the file or blob.
 
-<DT><STRONG>blob_support:</STRONG><DD>
+<p><dt><STRONG>blob_support:</STRONG><DD>
 <P>
 a value greater than 0 means the format supports native in-memory 
 <FONT SIZE=-1>I/O.</FONT>
 
-<DT><STRONG>description:</STRONG><DD>
+<p><dt><STRONG>description:</STRONG><DD>
 <P>
 a character string that describes the image format.
 

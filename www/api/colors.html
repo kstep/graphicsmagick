@@ -73,7 +73,7 @@ The format of the CompressColormap method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">image:</A></STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -94,18 +94,18 @@ The format of the GetNumberColors method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>number_colors:</STRONG><DD>
+<p><dt><STRONG>number_colors:</STRONG><DD>
 <P>
 Method GetNumberColors returns the number of unique colors in the specified
 image.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a byte (8 bits) array of run-length encoded pixel data of
 your source image. The sum of the run-length counts in the source image
 must be equal to or exceed the number of pixels.
 
-<DT><STRONG>file:</STRONG><DD>
+<p><dt><STRONG>file:</STRONG><DD>
 <P>
 An pointer to a 
 <FONT SIZE=-1>FILE.</FONT> If it is non-null a list of unique pixel field
@@ -118,12 +118,12 @@ file.
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>color_cube:</STRONG><DD>
+<p><dt><STRONG>color_cube:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to the CubeInfo structure.
 
-<DT><STRONG>level:</STRONG><DD>
+<p><dt><STRONG>level:</STRONG><DD>
 <P>
 Specifies the level in the classification the node resides.
 
@@ -146,12 +146,12 @@ The format of the IsMonochromeImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method IsMonochromeImage returns True if the image is monochrome otherwise
 False is returned.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
@@ -174,12 +174,12 @@ The format of the IsPseudoClass method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method IsPseudoClass returns True is the image is PseudoClass or has 256
 color or less.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a byte (8 bits) array of run-length encoded pixel data of
 your source image. The sum of the run-length counts in the source image
@@ -203,18 +203,18 @@ The format of the QueryColorDatabase method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method QueryColorDatabase returns True if the 
 <FONT SIZE=-1>RGB</FONT> values of the target color is defined, otherwise
 False is returned.
 
-<DT><STRONG>target:</STRONG><DD>
+<p><dt><STRONG>target:</STRONG><DD>
 <P>
 Specifies the color to lookup in the 
 <FONT SIZE=-1>X</FONT> color database.
 
-<DT><STRONG>color:</STRONG><DD>
+<p><dt><STRONG>color:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to an ColorPacket structure. The 
@@ -240,18 +240,18 @@ The format of the QueryColorName method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>distance:</STRONG><DD>
+<p><dt><STRONG>distance:</STRONG><DD>
 <P>
 Method QueryColorName returns the distance-squared in 
 <FONT SIZE=-1>RGB</FONT> space as well as the color name that is at a
 minimum distance.
 
-<DT><STRONG>color:</STRONG><DD>
+<p><dt><STRONG>color:</STRONG><DD>
 <P>
 This is a pointer to a ColorPacket structure that contains the color we are
 searching for.
 
-<DT><STRONG>name:</STRONG><DD>
+<p><dt><STRONG>name:</STRONG><DD>
 <P>
 The name of the color that is closest to the supplied color is returned in
 this character buffer.

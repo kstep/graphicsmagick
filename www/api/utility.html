@@ -31,21 +31,9 @@
 		<LI><A HREF="#ListColors">ListColors</A>
 		<LI><A HREF="#ListFiles">ListFiles</A>
 		<LI><A HREF="#LocaleFilename">LocaleFilename</A>
-		<LI><A HREF="#LSBFirstReadLong">LSBFirstReadLong</A>
-		<LI><A HREF="#LSBFirstReadShort">LSBFirstReadShort</A>
-		<LI><A HREF="#LSBFirstWriteLong">LSBFirstWriteLong</A>
-		<LI><A HREF="#LSBFirstWriteShort">LSBFirstWriteShort</A>
-		<LI><A HREF="#MSBFirstOrderLong">MSBFirstOrderLong</A>
-		<LI><A HREF="#MSBFirstOrderShort">MSBFirstOrderShort</A>
-		<LI><A HREF="#MSBFirstReadShort">MSBFirstReadShort</A>
-		<LI><A HREF="#MSBFirstReadLong">MSBFirstReadLong</A>
-		<LI><A HREF="#MSBFirstWriteLong">MSBFirstWriteLong</A>
-		<LI><A HREF="#MSBFirstWriteShort">MSBFirstWriteShort</A>
 		<LI><A HREF="#MultilineCensus">MultilineCensus</A>
 		<LI><A HREF="#ParseGeometry">ParseGeometry</A>
 		<LI><A HREF="#PostscriptGeometry">PostscriptGeometry</A>
-		<LI><A HREF="#ReadByte">ReadByte</A>
-		<LI><A HREF="#ReadDataBlock">ReadDataBlock</A>
 		<LI><A HREF="#SetClientName">SetClientName</A>
 		<LI><A HREF="#StringToArgv">StringToArgv</A>
 		<LI><A HREF="#StringToList">StringToList</A>
@@ -53,7 +41,6 @@
 		<LI><A HREF="#SystemCommand">SystemCommand</A>
 		<LI><A HREF="#TemporaryFilename">TemporaryFilename</A>
 		<LI><A HREF="#TranslateText">TranslateText</A>
-		<LI><A HREF="#WriteByte">WriteByte</A>
 	</UL>
 
 </UL>
@@ -106,18 +93,6 @@ unsigned int  <STRONG>IsAccessible</STRONG>( const char <CODE>*filename</CODE> )
 unsigned int  <STRONG>IsDirectory</STRONG>( const char <CODE>*filename</CODE> );
 
 <P>
-unsigned long  <STRONG>LSBFirstReadLong</STRONG>( Image <CODE>*image</CODE> );
-
-<P>
-unsigned short  <STRONG>LSBFirstReadShort</STRONG>( Image <CODE>*image</CODE> );
-
-<P>
-unsigned long  <STRONG>LSBFirstWriteLong</STRONG>( Image *image, const unsigned long value );
-
-<P>
-unsigned long  <STRONG>LSBFirstWriteShort</STRONG>( Image *image, const unsigned short value );
-
-<P>
 int  <STRONG>Latin1Compare</STRONG>( const char *p, const char <CODE>*q</CODE> );
 
 <P>
@@ -130,24 +105,6 @@ filelist= <STRONG>ListFiles</STRONG>( directory, pattern, number_entries );
 void  <STRONG>LocaleFilename</STRONG>( char <CODE>*filename</CODE> );
 
 <P>
-void  <STRONG>MSBFirstOrderLong</STRONG>( register char *p, const unsigned int length );
-
-<P>
-void  <STRONG>MSBFirstOrderShort</STRONG>( register char *p, const unsigned int length );
-
-<P>
-unsigned long  <STRONG>MSBFirstReadLong</STRONG>( Image <CODE>*image</CODE> );
-
-<P>
-unsigned short  <STRONG>MSBFirstReadShort</STRONG>( Image <CODE>*image</CODE> );
-
-<P>
-unsigned long  <STRONG>MSBFirstWriteLong</STRONG>( Image *image, const unsigned long value );
-
-<P>
-unsigned long  <STRONG>MSBFirstWriteShort</STRONG>( Image *image, const unsigned short value );
-
-<P>
 int  <STRONG>MultilineCensus</STRONG>( const char <CODE>*label</CODE> );
 
 <P>
@@ -156,9 +113,6 @@ int  <STRONG>ParseGeometry</STRONG>( const char *geometry, int *x, int *y, unsig
 
 <P>
 void Destroy <STRONG>PostscriptGeometry</STRONG>( char <CODE>*geometry</CODE> );
-
-<P>
-int  <STRONG>ReadByte</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
 char * <STRONG>SetClientName</STRONG>( const char <CODE>*name</CODE> );
@@ -183,9 +137,6 @@ char * <STRONG>TranslateText</STRONG>( const ImageInfo *image_info, const Image 
 <CODE>*formatted_text</CODE> );
 
 <P>
-unsigned long  <STRONG>WriteByte</STRONG>( Image *image, const char value );
-
-<P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
@@ -205,11 +156,11 @@ The format of the AllocateString method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">allocated_string:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">allocated_string:</A></STRONG><DD>
 <P>
 Method AllocateString returns a copy of the source string.
 
-<DT><STRONG>source:</STRONG><DD>
+<p><dt><STRONG>source:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> character string.
@@ -232,12 +183,12 @@ The format of the AppendImageFormat method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>format:</STRONG><DD>
+<p><dt><STRONG>format:</STRONG><DD>
 <P>
 Specifies a pointer to an array of characters. This is the format of the
 image.
 
-<DT><STRONG>filename:</STRONG><DD>
+<p><dt><STRONG>filename:</STRONG><DD>
 <P>
 Specifies a pointer to an array of characters. The unique file name is
 returned in this array.
@@ -259,7 +210,7 @@ The format of the BaseFilename function is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>name:</STRONG><DD>
+<p><dt><STRONG>name:</STRONG><DD>
 <P>
 Specifies a pointer to a character array that contains the name.
 
@@ -281,17 +232,17 @@ The format of the (void) CloneString method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method CloneString returns True is the string is cloned, otherwise False is
 returned.
 
-<DT><STRONG>destination:</STRONG><DD>
+<p><dt><STRONG>destination:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to a character string.
 
-<DT><STRONG>source:</STRONG><DD>
+<p><dt><STRONG>source:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> character string.
@@ -317,17 +268,17 @@ The format of the ConvertTextToUnicode function is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>unicode:</STRONG><DD>
+<p><dt><STRONG>unicode:</STRONG><DD>
 <P>
 Method ConvertTextToUnicode returns a pointer to an unsigned short array representing the Unicode translation of the 
 <FONT SIZE=-1>ASCII</FONT> string.
 
 
-<DT><STRONG>text:</STRONG><DD>
+<p><dt><STRONG>text:</STRONG><DD>
 <P>
 Specifies a pointer to a character array that contains the text to convert.
 
-<DT><STRONG>count:</STRONG><DD>
+<p><dt><STRONG>count:</STRONG><DD>
 <P>
 The number of characters that were translated from 
 <FONT SIZE=-1>ASCII</FONT> to Unicode is returned in this unsigned integer
@@ -350,7 +301,7 @@ The format of the ExpandFilename function is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>filename:</STRONG><DD>
+<p><dt><STRONG>filename:</STRONG><DD>
 <P>
 Specifies a pointer to a character array that contains the filename.
 
@@ -373,12 +324,12 @@ The format of the ExpandFilenames function is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>argc:</STRONG><DD>
+<p><dt><STRONG>argc:</STRONG><DD>
 <P>
 Specifies a pointer to an integer describing the number of elements in the
 argument vector.
 
-<DT><STRONG>argv:</STRONG><DD>
+<p><dt><STRONG>argv:</STRONG><DD>
 <P>
 Specifies a pointer to a text array containing the command line arguments.
 
@@ -399,11 +350,11 @@ The format of the FormatString method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>string:</STRONG><DD>
+<p><dt><STRONG>string:</STRONG><DD>
 <P>
 Method FormatString returns the formatted string in this character buffer.
 
-<DT><STRONG>format:</STRONG><DD>
+<p><dt><STRONG>format:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> string describing the format to use to write the
@@ -429,22 +380,22 @@ The format of the GetGeometry method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>flags:</STRONG><DD>
+<p><dt><STRONG>flags:</STRONG><DD>
 <P>
 Method GetGeometry returns a bitmask that indicates which of the four
 values were located in the geometry string.
 
-<DT><STRONG>image_geometry:</STRONG><DD>
+<p><dt><STRONG>image_geometry:</STRONG><DD>
 <P>
 Specifies a character string representing the geometry specification.
 
-<DT><STRONG>x,y:</STRONG><DD>
+<p><dt><STRONG>x,y:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to an integer. The x and y offset as
 determined by the geometry specification is returned here.
 
-<DT><STRONG>width,height:</STRONG><DD>
+<p><dt><STRONG>width,height:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to an unsigned integer. The width and height
@@ -467,11 +418,11 @@ The format of the GlobExpression function is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>expression:</STRONG><DD>
+<p><dt><STRONG>expression:</STRONG><DD>
 <P>
 Specifies a pointer to a text string containing a file name.
 
-<DT><STRONG>pattern:</STRONG><DD>
+<p><dt><STRONG>pattern:</STRONG><DD>
 <P>
 Specifies a pointer to a text string containing a pattern.
 
@@ -493,12 +444,12 @@ The format of the IsAccessible method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method IsAccessible returns True is the file as defined by filename is
 accessible, otherwise False is returned.
 
-<DT><STRONG>filename:</STRONG><DD>
+<p><dt><STRONG>filename:</STRONG><DD>
 <P>
 Specifies a pointer to an array of characters. The unique file name is
 returned in this array.
@@ -522,12 +473,12 @@ The format of the IsAccessible method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method IsDirectory returns True is the file as defined by filename is a
 directory, otherwise False is returned.
 
-<DT><STRONG>filename:</STRONG><DD>
+<p><dt><STRONG>filename:</STRONG><DD>
 <P>
 Specifies a pointer to an array of characters. The unique file name is
 returned in this array.
@@ -551,12 +502,12 @@ The format of the Latin1Compare method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>p:</STRONG><DD>
+<p><dt><STRONG>p:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to the string to convert to Latin1 string.
 
-<DT><STRONG>q:</STRONG><DD>
+<p><dt><STRONG>q:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to the string to convert to Latin1 string.
@@ -580,17 +531,17 @@ The format of the ListColors function is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>filelist:</STRONG><DD>
+<p><dt><STRONG>filelist:</STRONG><DD>
 <P>
 Method ListColors returns a list of colors contained in the database. If the database cannot be read, a 
 <FONT SIZE=-1>NULL</FONT> list is returned.
 
 
-<DT><STRONG>pattern:</STRONG><DD>
+<p><dt><STRONG>pattern:</STRONG><DD>
 <P>
 Specifies a pointer to a text string containing a pattern.
 
-<DT><STRONG>number_colors:</STRONG><DD>
+<p><dt><STRONG>number_colors:</STRONG><DD>
 <P>
 This integer returns the number of colors in the list.
 
@@ -612,21 +563,21 @@ The format of the ListFiles function is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>filelist:</STRONG><DD>
+<p><dt><STRONG>filelist:</STRONG><DD>
 <P>
 Method ListFiles returns a list of filenames contained in the directory. If the directory specified cannot be read or it is a file a 
 <FONT SIZE=-1>NULL</FONT> list is returned.
 
 
-<DT><STRONG>directory:</STRONG><DD>
+<p><dt><STRONG>directory:</STRONG><DD>
 <P>
 Specifies a pointer to a text string containing a directory name.
 
-<DT><STRONG>pattern:</STRONG><DD>
+<p><dt><STRONG>pattern:</STRONG><DD>
 <P>
 Specifies a pointer to a text string containing a pattern.
 
-<DT><STRONG>number_entries:</STRONG><DD>
+<p><dt><STRONG>number_entries:</STRONG><DD>
 <P>
 This integer returns the number of filenames in the list.
 
@@ -648,282 +599,10 @@ The format of the LocaleFilename method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>filename:</STRONG><DD>
+<p><dt><STRONG>filename:</STRONG><DD>
 <P>
 Specifies a pointer to an array of characters. The unique file name is
 returned in this array.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="LSBFirstReadLong">LSBFirstReadLong</A></H2>
-<P>
-Method LSBFirstReadLong reads a long value as a 32 bit quantity in
-least-significant byte first order.
-
-<P>
-The format of the LSBFirstReadLong method is:
-
-<blockquote>unsigned long LSBFirstReadLong ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>value:</STRONG><DD>
-<P>
-Method LSBFirstReadLong returns an unsigned long read from the file.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="LSBFirstReadShort">LSBFirstReadShort</A></H2>
-<P>
-Method LSBFirstReadShort reads a short value as a 16 bit quantity in
-least-significant byte first order.
-
-<P>
-The format of the LSBFirstReadShort method is:
-
-<blockquote>unsigned short LSBFirstReadShort ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>value:</STRONG><DD>
-<P>
-Method LSBFirstReadShort returns an unsigned short read from the file.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="LSBFirstWriteLong">LSBFirstWriteLong</A></H2>
-<P>
-Method LSBFirstWriteLong writes a long value as a 32 bit quantity in
-least-significant byte first order.
-
-<P>
-The format of the LSBFirstWriteLong method is:
-
-<blockquote>unsigned long LSBFirstWriteLong ( <A HREF="types/Image.html">Image</A> *image, const unsigned long value ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>count:</STRONG><DD>
-<P>
-Method LSBFirstWriteLong returns the number of unsigned longs written.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>value:</STRONG><DD>
-<P>
-Specifies the value to write.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="LSBFirstWriteShort">LSBFirstWriteShort</A></H2>
-<P>
-Method LSBFirstWriteShort writes a long value as a 16 bit quantity in
-least-significant byte first order.
-
-<P>
-The format of the LSBFirstWriteShort method is:
-
-<blockquote>unsigned long LSBFirstWriteShort ( <A HREF="types/Image.html">Image</A> *image, const unsigned short value ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>count:</STRONG><DD>
-<P>
-Method LSBFirstWriteShort returns the number of unsigned longs written.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>value:</STRONG><DD>
-<P>
-Specifies the value to write.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="MSBFirstOrderLong">MSBFirstOrderLong</A></H2>
-<P>
-Method MSBFirstOrderLong converts a least-significant byte first buffer of
-integers to most-significant byte first.
-
-<P>
-The format of the MSBFirstOrderLong method is:
-
-<blockquote>void MSBFirstOrderLong ( register char *p, const unsigned int length ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>p:</STRONG><DD>
-<P>
-Specifies a pointer to a buffer of integers.
-
-<DT><STRONG>length:</STRONG><DD>
-<P>
-Specifies the length of the buffer.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="MSBFirstOrderShort">MSBFirstOrderShort</A></H2>
-<P>
-Method MSBFirstOrderShort converts a least-significant byte first buffer of
-integers to most-significant byte first.
-
-<P>
-The format of the MSBFirstOrderShort method is:
-
-<blockquote>void MSBFirstOrderShort ( register char *p, const unsigned int length ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>p:</STRONG><DD>
-<P>
-Specifies a pointer to a buffer of integers.
-
-<DT><STRONG>length:</STRONG><DD>
-<P>
-Specifies the length of the buffer.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="MSBFirstReadShort">MSBFirstReadShort</A></H2>
-<P>
-Method MSBFirstReadShort reads a short value as a 16 bit quantity in
-most-significant byte first order.
-
-<P>
-The format of the MSBFirstReadShort method is:
-
-<blockquote>unsigned short MSBFirstReadShort ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>value:</STRONG><DD>
-<P>
-Method MSBFirstReadShort returns an unsigned short read from the file.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="MSBFirstReadLong">MSBFirstReadLong</A></H2>
-<P>
-Method MSBFirstReadLong reads a long value as a 32 bit quantity in
-most-significant byte first order.
-
-<P>
-The format of the MSBFirstReadLong method is:
-
-<blockquote>unsigned long MSBFirstReadLong ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>value:</STRONG><DD>
-<P>
-Method MSBFirstReadLong returns an unsigned long read from the file.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="MSBFirstWriteLong">MSBFirstWriteLong</A></H2>
-<P>
-Method MSBFirstWriteLong writes a long value as a 32 bit quantity in
-most-significant byte first order.
-
-<P>
-The format of the MSBFirstWriteLong method is:
-
-<blockquote>unsigned long MSBFirstWriteLong ( <A HREF="types/Image.html">Image</A> *image, const unsigned long value ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>count:</STRONG><DD>
-<P>
-Method MSBFirstWriteLong returns the number of unsigned longs written.
-
-<DT><STRONG>value:</STRONG><DD>
-<P>
-Specifies the value to write.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="MSBFirstWriteShort">MSBFirstWriteShort</A></H2>
-<P>
-Method MSBFirstWriteShort writes a long value as a 16 bit quantity in
-most-significant byte first order.
-
-<P>
-The format of the MSBFirstWriteShort method is:
-
-<blockquote>unsigned long MSBFirstWriteShort ( <A HREF="types/Image.html">Image</A> *image, const unsigned short value ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>value:</STRONG><DD>
-<P>
-Specifies the value to write.
-
-<DT><STRONG>file:</STRONG><DD>
-<P>
-Specifies the file to write the data to.
 
 </DL></DL>
 <P>
@@ -943,7 +622,7 @@ The format of the MultilineCenus method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>label:</STRONG><DD>
+<p><dt><STRONG>label:</STRONG><DD>
 <P>
 This character string is the label.
 
@@ -967,22 +646,22 @@ The format of the ParseImageGeometry method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>flags:</STRONG><DD>
+<p><dt><STRONG>flags:</STRONG><DD>
 <P>
 Method ParseImageGeometry returns a bitmask that indicates which of the
 four values were located in the geometry string.
 
-<DT><STRONG>image_geometry:</STRONG><DD>
+<p><dt><STRONG>image_geometry:</STRONG><DD>
 <P>
 Specifies a character string representing the geometry specification.
 
-<DT><STRONG>x,y:</STRONG><DD>
+<p><dt><STRONG>x,y:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to an integer. The x and y offset as
 determined by the geometry specification is returned here.
 
-<DT><STRONG>width,height:</STRONG><DD>
+<p><dt><STRONG>width,height:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to an unsigned integer. The width and height
@@ -1006,68 +685,11 @@ The format of the PostscriptGeometry method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>page:</STRONG><DD>
+<p><dt><STRONG>page:</STRONG><DD>
 <P>
 Specifies a pointer to an array of characters. The string is either a Postscript page name (e.g. 
 <FONT SIZE=-1>A4)</FONT> or a postscript page geometry (e.g. 612x792+36+36).
 
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="ReadByte">ReadByte</A></H2>
-<P>
-Method ReadByte reads a single byte from the image file and returns it.
-
-<P>
-The format of the ReadByte method is:
-
-<blockquote>int ReadByte ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>value:</STRONG><DD>
-<P>
-Method ReadByte returns an integer read from the file.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="ReadDataBlock">ReadDataBlock</A></H2>
-<P>
-Method ReadBlobBlock reads data from the image file and returns it. The
-amount of data is determined by first reading a count byte. The number or
-bytes read is returned.
-
-<P>
-The format of the ReadBlobBlock method is:
-
-<P>
-<PRE>    unsigned long ReadBlobBlock(Image *image,char *data)
-</PRE>
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>count:</STRONG><DD>
-<P>
-Method ReadBlobBlock returns the number of bytes read.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>data:</STRONG><DD>
-<P>
-Specifies an area to place the information requested from the file.
 
 </DL></DL>
 <P>
@@ -1087,11 +709,11 @@ The format of the SetClientName method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>client_name:</STRONG><DD>
+<p><dt><STRONG>client_name:</STRONG><DD>
 <P>
 Method SetClientName returns the current client name.
 
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Specifies the new client name.
 
@@ -1112,17 +734,17 @@ The format of the StringToArgv method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>argv:</STRONG><DD>
+<p><dt><STRONG>argv:</STRONG><DD>
 <P>
 Method StringToArgv returns the string list unless an error occurs, otherwise 
 <FONT SIZE=-1>NULL.</FONT>
 
 
-<DT><STRONG>text:</STRONG><DD>
+<p><dt><STRONG>text:</STRONG><DD>
 <P>
 Specifies the string to segment into a list.
 
-<DT><STRONG>argc:</STRONG><DD>
+<p><dt><STRONG>argc:</STRONG><DD>
 <P>
 This integer pointer returns the number of arguments in the list.
 
@@ -1145,13 +767,13 @@ The format of the StringToList method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>list:</STRONG><DD>
+<p><dt><STRONG>list:</STRONG><DD>
 <P>
 Method StringToList returns the string list unless an error occurs, otherwise 
 <FONT SIZE=-1>NULL.</FONT>
 
 
-<DT><STRONG>text:</STRONG><DD>
+<p><dt><STRONG>text:</STRONG><DD>
 <P>
 Specifies the string to segment into a list.
 
@@ -1173,7 +795,7 @@ The format of the Strip method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>data:</STRONG><DD>
+<p><dt><STRONG>data:</STRONG><DD>
 <P>
 Specifies an array of characters.
 
@@ -1195,16 +817,16 @@ The format of the SystemCommand method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method SystemCommand returns False if the command is executed successfully.
 
-<DT><STRONG>verbose:</STRONG><DD>
+<p><dt><STRONG>verbose:</STRONG><DD>
 <P>
 An unsigned integer other than 0 prints the executed command before it is
 invoked.
 
-<DT><STRONG>command:</STRONG><DD>
+<p><dt><STRONG>command:</STRONG><DD>
 <P>
 This string is the command to execute.
 
@@ -1226,7 +848,7 @@ The format of the TemporaryFilename method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG>filename:</STRONG><DD>
+<p><dt><STRONG>filename:</STRONG><DD>
 <P>
 Specifies a pointer to an array of characters. The unique file name is
 returned in this array.
@@ -1249,52 +871,22 @@ The format of the TranslateText method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>translated_text:</STRONG><DD>
+<p><dt><STRONG>translated_text:</STRONG><DD>
 <P>
 Method TranslateText returns the translated text string.
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 The address of a structure of type ImageInfo.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>formatted_text:</STRONG><DD>
+<p><dt><STRONG>formatted_text:</STRONG><DD>
 <P>
 The address of a character string containing the embedded formatting
 characters.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="WriteByte">WriteByte</A></H2>
-<P>
-Method WriteByte write an integer to a file. It returns the number of bytes
-written (either 0 or 1);
-
-<P>
-The format of the WriteByte method is:
-
-<blockquote>unsigned long WriteByte ( <A HREF="types/Image.html">Image</A> *image, const char value ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>count:</STRONG><DD>
-<P>
-Method WriteByte returns the number of bytes written.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>value:</STRONG><DD>
-<P>
-Specifies the value to write.
 
 </DL></DL>
 </BODY>

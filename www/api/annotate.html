@@ -60,18 +60,18 @@ number by embedding special format characters.
 <P>
 The format of the AnnotateImage method is:
 
-<blockquote>void AnnotateImage ( <A HREF="types/Image.html">Image</A> *image, const AnnotateInfo *annotate_info ); </blockquote>
+<blockquote>void AnnotateImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">image:</A></STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>annotate_info:</STRONG><DD>
+<p><dt><STRONG>annotate_info:</STRONG><DD>
 <P>
 The address of a AnnotateInfo structure.
 
@@ -87,24 +87,24 @@ Method CloneAnnotateInfo makes a duplicate of the given annotate info, or if ann
 <P>
 The format of the CloneAnnotateInfo method is:
 
-<blockquote>AnnotateInfo *CloneAnnotateInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const AnnotateInfo *annotate_info ); </blockquote>
+<blockquote><A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *CloneAnnotateInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>cloned_info:</STRONG><DD>
+<p><dt><STRONG>cloned_info:</STRONG><DD>
 <P>
 Method CloneAnnotateInfo returns a duplicate of the given annotate info, or if annotate info is 
 <FONT SIZE=-1>NULL</FONT> a new one.
 
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 a structure of type info.
 
-<DT><STRONG>annotate_info:</STRONG><DD>
+<p><dt><STRONG>annotate_info:</STRONG><DD>
 <P>
 a structure of type info.
 
@@ -119,14 +119,14 @@ AnnotateInfo structure.
 <P>
 The format of the DestroyAnnotateInfo method is:
 
-<blockquote>void DestroyAnnotateInfo ( AnnotateInfo *annotate_info ); </blockquote>
+<blockquote>void DestroyAnnotateInfo ( <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>annotate_info:</STRONG><DD>
+<p><dt><STRONG>annotate_info:</STRONG><DD>
 <P>
 Specifies a pointer to an AnnotateInfo structure.
 
@@ -140,18 +140,18 @@ Method GetAnnotateInfo initializes the AnnotateInfo structure.
 <P>
 The format of the GetAnnotateInfo method is:
 
-<blockquote>void GetAnnotateInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, AnnotateInfo *annotate_info ); </blockquote>
+<blockquote>void GetAnnotateInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>annotate_info:</STRONG><DD>
+<p><dt><STRONG>annotate_info:</STRONG><DD>
 <P>
 Specifies a pointer to a AnnotateInfo structure.
 
