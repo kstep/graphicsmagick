@@ -39,6 +39,15 @@ extern "C" {
 #define ScaleQuantumToShort(quantum)  ((unsigned short) (257UL*(quantum)))
 #define ScaleShortToQuantum(value)  ((Quantum) ((value)/257UL))
 #define ScaleToQuantum(value)  ((unsigned long) (value))
+/*
+  i=0.299*red+0.587*green+0.114*blue
+*/
+#define PixelIntensity(pixel) ((unsigned long) \
+   (((unsigned int)306U*(pixel)->red+601U*(pixel)->green+117U*(pixel)->blue) \
+   >> 10))
+#define PixelIntensityToQuantum(pixel) ((Quantum) \
+   (((unsigned int)306U*(pixel)->red+601U*(pixel)->green+117U*(pixel)->blue) \
+   >> 10))
 
 typedef unsigned char Quantum;
 #elif (QuantumDepth == 16)
@@ -57,6 +66,15 @@ typedef unsigned char Quantum;
 #define ScaleQuantumToShort(quantum)  ((unsigned short) (quantum))
 #define ScaleShortToQuantum(value)  ((Quantum) (value))
 #define ScaleToQuantum(value)  ((unsigned long) (257UL*(value)))
+/*
+  i=0.299*red+0.587*green+0.114*blue
+*/
+#define PixelIntensity(pixel) ((unsigned long) \
+   (((unsigned int)306U*(pixel)->red+601U*(pixel)->green+117U*(pixel)->blue) \
+   >> 10))
+#define PixelIntensityToQuantum(pixel) ((Quantum) \
+   (((unsigned int)306U*(pixel)->red+601U*(pixel)->green+117U*(pixel)->blue) \
+   >> 10))
 
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
@@ -75,6 +93,13 @@ typedef unsigned short Quantum;
 #define ScaleQuantumToShort(quantum)  ((unsigned short) ((quantum)/65537UL))
 #define ScaleShortToQuantum(value)  ((Quantum) (65537UL*(value)))
 #define ScaleToQuantum(value)  ((unsigned long) (16843009UL*(value)))
+/*
+  i=0.299*red+0.587*green+0.114*blue
+*/
+#define PixelIntensity(pixel) ((unsigned long) \
+  (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue+0.5))
+#define PixelIntensityToQuantum(pixel) ((Quantum) \
+  (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue+0.5))
 
 typedef unsigned int Quantum;
 #else
@@ -84,10 +109,6 @@ typedef unsigned int Quantum;
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
 #define OpaqueOpacity  0UL
-#define PixelIntensity(pixel) ((unsigned long) \
-  (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue+0.5))
-#define PixelIntensityToQuantum(pixel) ((Quantum) \
-  (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue+0.5))
 #define TransparentOpacity  MaxRGB
 /*
   Deprecated defines.

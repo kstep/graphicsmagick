@@ -809,6 +809,7 @@ MagickExport Image *MorphImages(const Image *image,
 %
 %
 */
+#define PaintHistSize 256
 MagickExport Image *OilPaintImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
@@ -856,7 +857,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   /*
     Allocate histogram and scanline.
   */
-  histogram=(unsigned long *) AcquireMemory((MaxMap+1)*sizeof(unsigned long));
+  histogram=(unsigned long *) AcquireMemory((PaintHistSize)*sizeof(unsigned long));
   if (histogram == (unsigned long *) NULL)
     {
       DestroyImage(paint_image);
@@ -882,7 +883,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         Determine most frequent color.
       */
       count=0;
-      (void) memset(histogram,0,(MaxMap+1)*sizeof(unsigned long));
+      (void) memset(histogram,0,(PaintHistSize)*sizeof(unsigned long));
       r=p++;
       s=r;
       for (v=width; v > 0; v--)
@@ -899,7 +900,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
           register unsigned long
             *hp;
 
-          hp=histogram+ScaleQuantumToMap(PixelIntensityToQuantum(ru));
+          hp=histogram+ScaleQuantumToChar(PixelIntensityToQuantum(ru));
           (*hp)++;
           if (*hp > count)
             {

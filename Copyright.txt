@@ -41,17 +41,17 @@ follows.
 
   Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
   to making software imaging solutions freely available.
-  
+
   Permission is hereby granted, free of charge, to any person obtaining a
   copy of this software and associated documentation files ("ImageMagick"),
   to deal in ImageMagick without restriction, including without limitation
   the rights to use, copy, modify, merge, publish, distribute, sublicense,
   and/or sell copies of ImageMagick, and to permit persons to whom the
   ImageMagick is furnished to do so, subject to the following conditions:
-  
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of ImageMagick.
-  
+
   The software is provided "as is", without warranty of any kind, express or
   implied, including but not limited to the warranties of merchantability,
   fitness for a particular purpose and noninfringement.  In no event shall
@@ -59,7 +59,7 @@ follows.
   whether in an action of contract, tort or otherwise, arising from, out of
   or in connection with ImageMagick or the use or other dealings in
   ImageMagick.
-  
+
   Except as contained in this notice, the name of the ImageMagick Studio
   shall not be used in advertising or otherwise to promote the sale, use or
   other dealings in ImageMagick without prior written authorization from the
@@ -70,7 +70,7 @@ follows.
   E. I. du Pont de Nemours and Company:
 
   Copyright 1999 E. I. du Pont de Nemours and Company
-  
+
   Permission is hereby granted, free of charge, to any person obtaining a
   copy of this software and associated documentation files
   ("ImageMagick"), to deal in ImageMagick without restriction, including
@@ -78,10 +78,10 @@ follows.
   distribute, sublicense, and/or sell copies of ImageMagick, and to
   permit persons to whom the ImageMagick is furnished to do so, subject
   to the following conditions:
-  
+
   The above copyright notice and this permission notice shall be included
   in all copies or substantial portions of ImageMagick.
-  
+
   The software is provided "as is", without warranty of any kind, express
   or implied, including but not limited to the warranties of
   merchantability, fitness for a particular purpose and noninfringement.
@@ -89,7 +89,7 @@ follows.
   any claim, damages or other liability, whether in an action of
   contract, tort or otherwise, arising from, out of or in connection with
   ImageMagick or the use or other dealings in ImageMagick.
-  
+
   Except as contained in this notice, the name of the E. I. du Pont de
   Nemours and Company shall not be used in advertising or otherwise to
   promote the sale, use or other dealings in ImageMagick without prior
@@ -122,7 +122,7 @@ follows.
   directory, is distributed under the following license:
 
   Copyright 1999 - 2002 Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
-                                                                          
+
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of the source files and associated documentation
   files ("Magick++"), to deal in Magick++ without restriction,
@@ -130,12 +130,12 @@ follows.
   merge, publish, distribute, sublicense, and/or sell copies of
   Magick++, and to permit persons to whom the Magick++ is furnished
   to do so, subject to the following conditions:
-                                                                          
+
   This copyright notice shall be included in all copies or
   substantial portions of Magick++. The copyright to Magick++ is
   retained by its author and shall not be subsumed or replaced by any
   other copyright.
-                                                                          
+
   The software is provided "as is", without warranty of any kind,
   express or implied, including but not limited to the warranties of
   merchantability, fitness for a particular purpose and

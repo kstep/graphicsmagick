@@ -1,3 +1,14 @@
+
+2003-01-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/fx.c (OilPaintImage): Compute histogram using 8-bit quantums
+	for more sensible performance with Q:16 and Q:32 builds.
+
+	* magick/image.h (PixelIntensityToQuantum): Compute using integral
+ 	arithmetic for Q:8 and Q:16.  Much faster than floating point!
+	(PixelIntensity): Compute using integral arithmetic for Q:8 and
+ 	Q:16. Much faster than floating point!
+
 2002-01-28  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* Fixed bug in png.c, introduced in IM-5.5.1.  A pair of
