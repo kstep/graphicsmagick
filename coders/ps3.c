@@ -488,8 +488,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
               MagickMonitor(SaveImageText,y,image->rows);
         }
         if (compression == ZipCompression)
-          status=
-            ZLIBEncodeImage(image,length,image_info->quality,pixels);
+          status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
         else
           if (compression == LZWCompression)
             status=LZWEncodeImage(image,length,pixels);
