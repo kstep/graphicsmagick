@@ -1,3 +1,8 @@
+2003-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (BlobToImage): Skip calling SetImageInfo() if
+	magick is already set.
+
 2003-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/error.h (enum): Remove spurious comma.
