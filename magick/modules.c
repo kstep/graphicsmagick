@@ -647,7 +647,7 @@ static void AddModuleTag(const char *filename, char *module)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L o a d D y n a m i c M o d u l e                                                       %
+%   L o a d D y n a m i c M o d u l e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -880,7 +880,7 @@ Export ModuleInfo *SetModuleInfo(const char *tag)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n l o a d D y n a m i c M o d u l e                                                   %
+%   U n l o a d D y n a m i c M o d u l e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
