@@ -1619,18 +1619,18 @@ static Image *ReadCacheImage(const ImageInfo *image_info,
           if (image->class == PseudoClass)
             {
               if (!image->matte)
-                (void) PopImagePixels(image,IndexQuantum,pixels);
+                (void) PushImagePixels(image,IndexQuantum,pixels);
               else
-                (void) PopImagePixels(image,IndexOpacityQuantum,pixels);
+                (void) PushImagePixels(image,IndexOpacityQuantum,pixels);
             }
           else
             if (image->colorspace == CMYKColorspace)
-              (void) PopImagePixels(image,CMYKQuantum,pixels);
+              (void) PushImagePixels(image,CMYKQuantum,pixels);
             else
               if (!image->matte)
-                (void) PopImagePixels(image,RGBQuantum,pixels);
+                (void) PushImagePixels(image,RGBQuantum,pixels);
               else
-                (void) PopImagePixels(image,RGBAQuantum,pixels);
+                (void) PushImagePixels(image,RGBAQuantum,pixels);
         }
       else
         {
@@ -2610,18 +2610,18 @@ static unsigned int WriteCacheImage(const ImageInfo *image_info,Image *image)
           if (image->class == PseudoClass)
             {
               if (!image->matte)
-                (void) PushImagePixels(image,IndexQuantum,pixels);
+                (void) PopImagePixels(image,IndexQuantum,pixels);
               else
-                (void) PushImagePixels(image,IndexOpacityQuantum,pixels);
+                (void) PopImagePixels(image,IndexOpacityQuantum,pixels);
             }
           else
             if (image->colorspace == CMYKColorspace)
-              (void) PushImagePixels(image,CMYKQuantum,pixels);
+              (void) PopImagePixels(image,CMYKQuantum,pixels);
             else
               if (!image->matte)
-                (void) PushImagePixels(image,RGBQuantum,pixels);
+                (void) PopImagePixels(image,RGBQuantum,pixels);
               else
-                (void) PushImagePixels(image,RGBAQuantum,pixels);
+                (void) PopImagePixels(image,RGBAQuantum,pixels);
         }
       else
         {

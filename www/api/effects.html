@@ -60,7 +60,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>AddNoiseImage</STRONG>( Image *image, const NoiseType noise_type, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>BlurImage</STRONG>( Image *image, const double factor, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>ColorizeImage</STRONG>( Image *image, const char *opacity, const char *pen_color, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ColorizeImage</STRONG>( Image *image, const char *opacity, const PixelPacket target, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>DespeckleImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>EdgeImage</STRONG>( Image *image, const double factor, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>EmbossImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
@@ -145,7 +145,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="colorizeimage">ColorizeImage</A></H2>
 <P>Method ColorizeImage creates a new image that is a copy of an existing one with the image pixels colorized.  The colorization is controlled with the pen color and the opacity levels.</P>
 <P>The format of the ColorizeImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ColorizeImage ( <A HREF="types/Image.html">Image</A> *image, const char *opacity, const char *pen_color, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ColorizeImage ( <A HREF="types/Image.html">Image</A> *image, const char *opacity, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -157,10 +157,10 @@ The address of a structure of type Image; returned from ReadImage.
 
 <FONT SIZE=-1>A</FONT> character string indicating the level of opacity as a percentage (0-100).
 <P></P>
-<p><dt><STRONG><A NAME="item_o_pen_color%3A">pen_color:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_target%3A">target:</A></STRONG><BR>
 <DD>
 
-<FONT SIZE=-1>A</FONT> color string.
+<FONT SIZE=-1>A</FONT> color value.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>

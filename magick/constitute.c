@@ -914,20 +914,20 @@ Export Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P o p I m a g e P i x e l s                                               %
++   P o p I m a g e P i x e l s                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method PopImagePixels transfers one or more pixel components from a buffer
-%  or file into the image pixel buffer of an image.  It returns True if the
-%  pixels are successfully transferred, otherwise False.
+%  Method PopImagePixels transfers one or more pixel components from the image
+%  pixel cache to a user supplied buffer.   It returns True if the pixels are
+%  successfully transferred, otherwise False.
 %
 %  The format of the PopImagePixels method is:
 %
-%      unsigned int PopImagePixels(const Image *image,
-%        const QuantumTypes quantum,const unsigned char *source)
+%      unsigned int PopImagePixels(const Image *,const QuantumTypes quantum,
+%        unsigned char *destination)
 %
 %  A description of each parameter follows:
 %
@@ -939,10 +939,283 @@ Export Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %    o quantum: Declare which pixel components to transfer (red, green, blue,
 %      opacity, RGB, or RGBA).
 %
-%    o source:  The pixel components are transferred from this buffer.
+%    o destination:  The components are transferred to this buffer.
+%
 %
 */
 Export unsigned int PopImagePixels(const Image *image,
+  const QuantumTypes quantum,unsigned char *destination)
+{
+  register IndexPacket
+    *indexes;
+
+  register int
+    x;
+
+  register PixelPacket
+    *p;
+
+  register unsigned char
+    *q;
+
+  assert(image != (Image *) NULL);
+  assert(destination != (unsigned char *) NULL);
+  p=GetPixels(image);
+  indexes=GetIndexes(image);
+  q=destination;
+  switch (quantum)
+  {
+    case IndexQuantum:
+    {
+      if (image->colors <= 256)
+        {
+          for (x=0; x < (int) image->columns; x++)
+            *q++=indexes[x];
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=indexes[x] >> 8;
+        *q++=indexes[x];
+      }
+      break;
+    }
+    case IndexOpacityQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=indexes[x];
+            *q++=p->opacity;
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=indexes[x] >> 8;
+        *q++=indexes[x];
+        *q++=p->opacity >> 8;
+        *q++=p->opacity;
+        p++;
+      }
+      break;
+    }
+    case GrayQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=Intensity(*p);
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=Intensity(*p) >> 8;
+        *q++=Intensity(*p);
+        p++;
+      }
+      break;
+    }
+    case GrayOpacityQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=Intensity(*p);
+            *q++=p->opacity;
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=Intensity(*p) >> 8;
+        *q++=Intensity(*p);
+        *q++=p->opacity >> 8;
+        *q++=p->opacity;
+        p++;
+      }
+      break;
+    }
+    case RedQuantum:
+    case CyanQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=DownScale(p->red);
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=p->red >> 8;
+        *q++=p->red;
+        p++;
+      }
+      break;
+    }
+    case GreenQuantum:
+    case YellowQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=DownScale(p->green);
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=p->green >> 8;
+        *q++=p->green;
+        p++;
+      }
+      break;
+    }
+    case BlueQuantum:
+    case MagentaQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=DownScale(p->blue);
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=p->blue >> 8;
+        *q++=p->blue;
+        p++;
+      }
+      break;
+    }
+    case OpacityQuantum:
+    case BlackQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=DownScale(p->opacity);
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=p->opacity >> 8;
+        *q++=p->opacity;
+        p++;
+      }
+      break;
+    }
+    case RGBQuantum:
+    default:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=DownScale(p->red);
+            *q++=DownScale(p->green);
+            *q++=DownScale(p->blue);
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=p->red >> 8;
+        *q++=p->red;
+        *q++=p->green >> 8;
+        *q++=p->green;
+        *q++=p->blue >> 8;
+        *q++=p->blue;
+        p++;
+      }
+      break;
+    }
+    case RGBAQuantum:
+    case CMYKQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=DownScale(p->red);
+            *q++=DownScale(p->green);
+            *q++=DownScale(p->blue);
+            *q++=DownScale(p->opacity);
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=p->red >> 8;
+        *q++=p->red;
+        *q++=p->green >> 8;
+        *q++=p->green;
+        *q++=p->blue >> 8;
+        *q++=p->blue;
+        *q++=p->opacity >> 8;
+        *q++=p->opacity;
+        p++;
+      }
+      break;
+    }
+  }
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   P u s h I m a g e P i x e l s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method PushImagePixels transfers one or more pixel components from a user
+%  supplied buffer into the image pixel cache of an image.  It returns True if
+%  the pixels are successfully transferred, otherwise False.
+%
+%  The format of the PushImagePixels method is:
+%
+%      unsigned int PushImagePixels(const Image *image,
+%        const QuantumTypes quantum,const unsigned char *source)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method PushImagePixels returns True if the pixels are
+%      successfully transferred, otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o quantum: Declare which pixel components to transfer (red, green, blue,
+%      opacity, RGB, or RGBA).
+%
+%    o source:  The pixel components are transferred from this buffer.
+%
+*/
+Export unsigned int PushImagePixels(const Image *image,
   const QuantumTypes quantum,const unsigned char *source)
 {
   IndexPacket
@@ -1193,279 +1466,6 @@ Export unsigned int PopImagePixels(const Image *image,
         q->opacity=(*p++ << 8);
         q->opacity|=(*p++);
         q++;
-      }
-      break;
-    }
-  }
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P u s h I m a g e P i x e l s                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method PushImagePixels transfers one or more pixel components from the image
-%  pixel buffer to a buffer or file. It returns True if the pixels are
-%  successfully transferred, otherwise False.
-%
-%  The format of the PushImagePixels method is:
-%
-%      unsigned int PushImagePixels(const Image *,const QuantumTypes quantum,
-%        unsigned char *destination)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method PushImagePixels returns True if the pixels are
-%      successfully transferred, otherwise False.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o quantum: Declare which pixel components to transfer (red, green, blue,
-%      opacity, RGB, or RGBA).
-%
-%    o destination:  The components are transferred to this buffer.
-%
-%
-*/
-Export unsigned int PushImagePixels(const Image *image,
-  const QuantumTypes quantum,unsigned char *destination)
-{
-  register IndexPacket
-    *indexes;
-
-  register int
-    x;
-
-  register PixelPacket
-    *p;
-
-  register unsigned char
-    *q;
-
-  assert(image != (Image *) NULL);
-  assert(destination != (unsigned char *) NULL);
-  p=GetPixels(image);
-  indexes=GetIndexes(image);
-  q=destination;
-  switch (quantum)
-  {
-    case IndexQuantum:
-    {
-      if (image->colors <= 256)
-        {
-          for (x=0; x < (int) image->columns; x++)
-            *q++=indexes[x];
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=indexes[x] >> 8;
-        *q++=indexes[x];
-      }
-      break;
-    }
-    case IndexOpacityQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=indexes[x];
-            *q++=p->opacity;
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=indexes[x] >> 8;
-        *q++=indexes[x];
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
-      }
-      break;
-    }
-    case GrayQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=Intensity(*p);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=Intensity(*p) >> 8;
-        *q++=Intensity(*p);
-        p++;
-      }
-      break;
-    }
-    case GrayOpacityQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=Intensity(*p);
-            *q++=p->opacity;
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=Intensity(*p) >> 8;
-        *q++=Intensity(*p);
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
-      }
-      break;
-    }
-    case RedQuantum:
-    case CyanQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->red);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->red >> 8;
-        *q++=p->red;
-        p++;
-      }
-      break;
-    }
-    case GreenQuantum:
-    case YellowQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->green);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->green >> 8;
-        *q++=p->green;
-        p++;
-      }
-      break;
-    }
-    case BlueQuantum:
-    case MagentaQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->blue);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->blue >> 8;
-        *q++=p->blue;
-        p++;
-      }
-      break;
-    }
-    case OpacityQuantum:
-    case BlackQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->opacity);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
-      }
-      break;
-    }
-    case RGBQuantum:
-    default:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->red);
-            *q++=DownScale(p->green);
-            *q++=DownScale(p->blue);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->red >> 8;
-        *q++=p->red;
-        *q++=p->green >> 8;
-        *q++=p->green;
-        *q++=p->blue >> 8;
-        *q++=p->blue;
-        p++;
-      }
-      break;
-    }
-    case RGBAQuantum:
-    case CMYKQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->red);
-            *q++=DownScale(p->green);
-            *q++=DownScale(p->blue);
-            *q++=DownScale(p->opacity);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=p->red >> 8;
-        *q++=p->red;
-        *q++=p->green >> 8;
-        *q++=p->green;
-        *q++=p->blue >> 8;
-        *q++=p->blue;
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
       }
       break;
     }

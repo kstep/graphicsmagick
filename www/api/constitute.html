@@ -23,8 +23,6 @@
 		<LI><A HREF="#constituteimage">ConstituteImage</A></LI>
 		<LI><A HREF="#dispatchimage">DispatchImage</A></LI>
 		<LI><A HREF="#pingimage">PingImage</A></LI>
-		<LI><A HREF="#pullimagepixels">PullImagePixels</A></LI>
-		<LI><A HREF="#pushimagepixels">PushImagePixels</A></LI>
 		<LI><A HREF="#readimage">ReadImage</A></LI>
 		<LI><A HREF="#readimages">ReadImages</A></LI>
 		<LI><A HREF="#writeimage">WriteImage</A></LI>
@@ -46,8 +44,6 @@
 <P>Image * <STRONG>ConstituteImage</STRONG>( const unsigned int width, const unsigned int height, const char *map, const StorageType type, const void *pixels, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>DispatchImage</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels );</P>
 <P>Image * <STRONG>PingImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
-<P>unsigned int  <STRONG>PullImagePixels</STRONG>( const Image *image, const QuantumTypes quantum, const unsigned char *source );</P>
-<P>unsigned int  <STRONG>PushImagePixels</STRONG>( const Image *, const QuantumTypes quantum, unsigned char *destination );</P>
 <P>Image * <STRONG>ReadImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ReadImages</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>WriteImage</STRONG>( const ImageInfo *image_info, Image *image );</P>
@@ -156,56 +152,6 @@ Specifies a pointer to an ImageInfo structure.
 return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="pullimagepixels">PullImagePixels</A></H2>
-<P>Method PullImagePixels transfers one or more pixel components from a buffer or file into the image pixel buffer of an image.  It returns True if the pixels are successfully transferred, otherwise False.</P>
-<P>The format of the PullImagePixels method is:</P>
-<blockquote>unsigned int PullImagePixels ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#QuantumTypes">QuantumTypes</A> quantum, const unsigned char *source ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
-<DD>
-Method PullImagePixels returns True if the pixels are successfully transferred, otherwise False.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
-<DD>
-Declare which pixel components to transfer (red, green, blue, opacity, 
-<FONT SIZE=-1>RGB,</FONT> or 
-<FONT SIZE=-1>RGBA).</FONT>
-<P></P>
-<p><dt><STRONG><A NAME="item_o_source%3A">source:</A></STRONG><BR>
-<DD>
-The pixel components are transferred from this buffer.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="pushimagepixels">PushImagePixels</A></H2>
-<P>Method PushImagePixels transfers one or more pixel components from the image pixel buffer to a buffer or file.  It returns True if the pixels are successfully transferred, otherwise False.</P>
-<P>The format of the PushImagePixels method is:</P>
-<blockquote>unsigned int PushImagePixels ( const <A HREF="types/Image.html">Image</A> *, const <A HREF="types/Enumerations.html#QuantumTypes">QuantumTypes</A> quantum, unsigned char *destination ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method PushImagePixels returns True if the pixels are successfully transferred, otherwise False.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image.
-<P></P>
-<p><dt><STRONG>quantum:</STRONG><BR>
-<DD>
-Declare which pixel components to transfer (red, green, blue, opacity, 
-<FONT SIZE=-1>RGB,</FONT> or 
-<FONT SIZE=-1>RGBA).</FONT>
-<P></P>
-<p><dt><STRONG><A NAME="item_o_destination%3A">destination:</A></STRONG><BR>
-<DD>
-The components are transferred to this buffer.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="readimage">ReadImage</A></H2>
 <P>Method ReadImage reads an image and returns it.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  By default, the image format is determined by its magic number.  To specify a particular image format, precede the filename with an explicit image format name and a colon (i.e.  ps:image) or as the filename suffix (i.e.  image.ps).</P>
 <P>The format of the ReadImage method is:</P>
@@ -249,7 +195,7 @@ Specifies a pointer to an ImageInfo structure.
 <blockquote>unsigned int WriteImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
 <DD>
 Method WriteImage return True if the image is written.  False is returned is there is a memory shortage or if the image file fails to write.
 <P></P>

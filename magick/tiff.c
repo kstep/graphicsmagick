@@ -834,7 +834,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           /*
             Transfer image scanline.
           */
-          (void) PopImagePixels(image,IndexQuantum,quantum_scanline);
+          (void) PushImagePixels(image,IndexQuantum,quantum_scanline);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -896,12 +896,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               }
             }
           if (image->colorspace == CMYKColorspace)
-            (void) PopImagePixels(image,CMYKQuantum,scanline);
+            (void) PushImagePixels(image,CMYKQuantum,scanline);
           else
             if (!image->matte)
-              (void) PopImagePixels(image,RGBQuantum,scanline);
+              (void) PushImagePixels(image,RGBQuantum,scanline);
             else
-              (void) PopImagePixels(image,RGBAQuantum,scanline);
+              (void) PushImagePixels(image,RGBAQuantum,scanline);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -1596,9 +1596,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
               if (!image->matte)
-                (void) PushImagePixels(image,RGBQuantum,scanline);
+                (void) PopImagePixels(image,RGBQuantum,scanline);
               else
-                (void) PushImagePixels(image,RGBAQuantum,scanline);
+                (void) PopImagePixels(image,RGBAQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
               if (image->previous == (Image *) NULL)
@@ -1617,7 +1617,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             {
               if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
-              (void) PushImagePixels(image,RedQuantum,scanline);
+              (void) PopImagePixels(image,RedQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
             }
@@ -1626,7 +1626,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             {
               if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
-              (void) PushImagePixels(image,GreenQuantum,scanline);
+              (void) PopImagePixels(image,GreenQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
                 break;
             }
@@ -1635,7 +1635,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             {
               if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
-              (void) PushImagePixels(image,BlueQuantum,scanline);
+              (void) PopImagePixels(image,BlueQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
                 break;
             }
@@ -1645,7 +1645,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               {
                 if (!GetImagePixels(image,0,y,image->columns,1))
                   break;
-                (void) PushImagePixels(image,OpacityQuantum,scanline);
+                (void) PopImagePixels(image,OpacityQuantum,scanline);
                 if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
                   break;
               }
@@ -1666,7 +1666,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PushImagePixels(image,RGBAQuantum,scanline);
+          (void) PopImagePixels(image,RGBAQuantum,scanline);
           if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
             break;
           if (image->previous == (Image *) NULL)
@@ -1733,9 +1733,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
               if (photometric == PHOTOMETRIC_PALETTE)
-                (void) PushImagePixels(image,IndexQuantum,scanline);
+                (void) PopImagePixels(image,IndexQuantum,scanline);
               else
-                (void) PushImagePixels(image,GrayQuantum,scanline);
+                (void) PopImagePixels(image,GrayQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
               if (image->previous == (Image *) NULL)

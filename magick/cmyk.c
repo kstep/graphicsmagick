@@ -169,7 +169,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,CMYKQuantum,scanline+x);
+          (void) PushImagePixels(image,CMYKQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -195,13 +195,13 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,CyanQuantum,scanline+x);
+          (void) PushImagePixels(image,CyanQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          (void) PopImagePixels(image,YellowQuantum,scanline+x);
+          (void) PushImagePixels(image,YellowQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          (void) PopImagePixels(image,MagentaQuantum,scanline+x);
+          (void) PushImagePixels(image,MagentaQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          (void) PopImagePixels(image,BlackQuantum,scanline+x);
+          (void) PushImagePixels(image,BlackQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -240,7 +240,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,CyanQuantum,scanline+x);
+          (void) PushImagePixels(image,CyanQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -266,7 +266,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,YellowQuantum,scanline+x);
+          (void) PushImagePixels(image,YellowQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -292,7 +292,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,MagentaQuantum,scanline+x);
+          (void) PushImagePixels(image,MagentaQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -319,7 +319,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
             scanline);
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,BlackQuantum,scanline+x);
+          (void) PushImagePixels(image,BlackQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -481,7 +481,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PushImagePixels(image,CMYKQuantum,pixels);
+          (void) PopImagePixels(image,CMYKQuantum,pixels);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -498,13 +498,13 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PushImagePixels(image,CyanQuantum,pixels);
+          (void) PopImagePixels(image,CyanQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
-          (void) PushImagePixels(image,YellowQuantum,pixels);
+          (void) PopImagePixels(image,YellowQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
-          (void) PushImagePixels(image,MagentaQuantum,pixels);
+          (void) PopImagePixels(image,MagentaQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
-          (void) PushImagePixels(image,BlackQuantum,pixels);
+          (void) PopImagePixels(image,BlackQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
           if (QuantumTick(y,image->rows))
             ProgressMonitor(SaveImageText,y,image->rows);
@@ -528,7 +528,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PushImagePixels(image,CyanQuantum,pixels);
+          (void) PopImagePixels(image,CyanQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (image_info->interlace == PartitionInterlace)
@@ -544,7 +544,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PushImagePixels(image,YellowQuantum,pixels);
+          (void) PopImagePixels(image,YellowQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (image_info->interlace == PartitionInterlace)
@@ -560,7 +560,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PushImagePixels(image,MagentaQuantum,pixels);
+          (void) PopImagePixels(image,MagentaQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         ProgressMonitor(SaveImageText,300,400);
@@ -577,7 +577,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PushImagePixels(image,BlackQuantum,pixels);
+          (void) PopImagePixels(image,BlackQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (image_info->interlace == PartitionInterlace)

@@ -627,7 +627,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    (void) PushImagePixels(image,GrayQuantum,pixels);
+    (void) PopImagePixels(image,GrayQuantum,pixels);
     (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);

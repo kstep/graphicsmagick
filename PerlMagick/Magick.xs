@@ -3775,7 +3775,7 @@ Mogrify(ref,...)
             target;
 
           target=GetOnePixel(image,0,0);
-          if (!attribute_flag[0])
+          if (attribute_flag[0])
             (void) QueryColorDatabase(argument_list[0].string_reference,
               &target);
           if (!attribute_flag[1])
@@ -4459,11 +4459,11 @@ Mogrify(ref,...)
             target;
 
           target=GetOnePixel(image,0,0);
-          if (!attribute_flag[0])
+          if (attribute_flag[0])
             (void) QueryColorDatabase(argument_list[0].string_reference,
               &target);
           pen_color=GetOnePixel(image,0,0);
-          if (!attribute_flag[1])
+          if (attribute_flag[1])
             (void) QueryColorDatabase(argument_list[1].string_reference,
               &pen_color);
           OpaqueImage(image,target,pen_color);
@@ -4592,7 +4592,7 @@ Mogrify(ref,...)
             target;
 
           target=GetOnePixel(image,0,0);
-          if (!attribute_flag[0])
+          if (attribute_flag[0])
             (void) QueryColorDatabase(argument_list[0].string_reference,
               &target);
           TransparentImage(image,target);

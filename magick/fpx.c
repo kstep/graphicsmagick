@@ -921,12 +921,12 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     if (!GetImagePixels(image,0,y,image->columns,1))
       break;
     if (fpx_info.numberOfComponents == 1)
-      (void) PushImagePixels(image,GrayQuantum,pixels);
+      (void) PopImagePixels(image,GrayQuantum,pixels);
     else
       if (!image->matte)
-        (void) PushImagePixels(image,RGBQuantum,pixels);
+        (void) PopImagePixels(image,RGBQuantum,pixels);
       else
-        (void) PushImagePixels(image,RGBAQuantum,pixels);
+        (void) PopImagePixels(image,RGBAQuantum,pixels);
     fpx_status=FPX_WriteImageLine(flashpix,&fpx_info);
     if (fpx_status != FPX_OK)
       break;

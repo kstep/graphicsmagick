@@ -170,7 +170,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,ExceptionInfo *exception
         (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
       if (!SetImagePixels(image,0,y,image->columns,1))
         break;
-      (void) PopImagePixels(image,GrayQuantum,scanline+x);
+      (void) PushImagePixels(image,GrayQuantum,scanline+x);
       if (!SyncImagePixels(image))
         break;
       if (image->previous == (Image *) NULL)
@@ -319,7 +319,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     {
       if (!GetImagePixels(image,0,y,image->columns,1))
         break;
-      (void) PushImagePixels(image,GrayQuantum,pixels);
+      (void) PopImagePixels(image,GrayQuantum,pixels);
       (void) WriteBlob(image,packet_size*image->columns,pixels);
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))

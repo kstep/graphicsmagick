@@ -172,9 +172,9 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
           if (!image->matte)
-            (void) PopImagePixels(image,RGBQuantum,scanline+x);
+            (void) PushImagePixels(image,RGBQuantum,scanline+x);
           else
-            (void) PopImagePixels(image,RGBAQuantum,scanline+x);
+            (void) PushImagePixels(image,RGBAQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -200,16 +200,16 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,RedQuantum,scanline+x);
+          (void) PushImagePixels(image,RedQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          (void) PopImagePixels(image,GreenQuantum,scanline+x);
+          (void) PushImagePixels(image,GreenQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          (void) PopImagePixels(image,BlueQuantum,scanline+x);
+          (void) PushImagePixels(image,BlueQuantum,scanline+x);
           if (image->matte)
             {
               (void) ReadBlob(image,packet_size*image->tile_info.width,
                 scanline);
-              (void) PopImagePixels(image,OpacityQuantum,scanline+x);
+              (void) PushImagePixels(image,OpacityQuantum,scanline+x);
             }
           if (!SyncImagePixels(image))
             break;
@@ -249,7 +249,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,RedQuantum,scanline+x);
+          (void) PushImagePixels(image,RedQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -275,7 +275,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,GreenQuantum,scanline+x);
+          (void) PushImagePixels(image,GreenQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -301,7 +301,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,BlueQuantum,scanline+x);
+          (void) PushImagePixels(image,BlueQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -335,7 +335,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 scanline);
               if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
-              (void) PopImagePixels(image,OpacityQuantum,scanline+x);
+              (void) PushImagePixels(image,OpacityQuantum,scanline+x);
               if (!SyncImagePixels(image))
                 break;
               if (image->previous == (Image *) NULL)
@@ -509,12 +509,12 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             break;
           if (Latin1Compare(image_info->magick,"RGBA") != 0)
             {
-              (void) PushImagePixels(image,RGBQuantum,pixels);
+              (void) PopImagePixels(image,RGBQuantum,pixels);
               (void) WriteBlob(image,packet_size*image->columns,pixels);
             }
           else
             {
-              (void) PushImagePixels(image,RGBAQuantum,pixels);
+              (void) PopImagePixels(image,RGBAQuantum,pixels);
               (void) WriteBlob(image,packet_size*image->columns,pixels);
             }
           if (image->previous == (Image *) NULL)
@@ -532,15 +532,15 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PushImagePixels(image,RedQuantum,pixels);
+          (void) PopImagePixels(image,RedQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
-          (void) PushImagePixels(image,GreenQuantum,pixels);
+          (void) PopImagePixels(image,GreenQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
-          (void) PushImagePixels(image,BlueQuantum,pixels);
+          (void) PopImagePixels(image,BlueQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
           if (image->matte)
             {
-              (void) PushImagePixels(image,OpacityQuantum,pixels);
+              (void) PopImagePixels(image,OpacityQuantum,pixels);
               (void) WriteBlob(image,image->columns,pixels);
             }
           if (QuantumTick(y,image->rows))
@@ -565,7 +565,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PushImagePixels(image,RedQuantum,pixels);
+          (void) PopImagePixels(image,RedQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (image_info->interlace == PartitionInterlace)
@@ -581,7 +581,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PushImagePixels(image,GreenQuantum,pixels);
+          (void) PopImagePixels(image,GreenQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (image_info->interlace == PartitionInterlace)
@@ -597,7 +597,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PushImagePixels(image,BlueQuantum,pixels);
+          (void) PopImagePixels(image,BlueQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (image->matte)
@@ -616,7 +616,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             {
               if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
-              (void) PushImagePixels(image,OpacityQuantum,pixels);
+              (void) PopImagePixels(image,OpacityQuantum,pixels);
               (void) WriteBlob(image,image->columns,pixels);
             }
           }
