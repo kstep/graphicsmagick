@@ -2194,6 +2194,22 @@ namespace Magick
     throwException( exceptionInfo );
   }
 
+  // Merge a sequence of image frames which represent image layers.
+  // This is useful for combining Photoshop layers into a single image.
+  template <class InputIterator>
+  void flattenImages( Image *flattendImage_,
+		      InputIterator first_,
+		      InputIterator last_ ) {
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
+    linkImages( first_, last_ );
+    MagickLib::Image* image = MagickLib::FlattenImages( first_->image(),
+							&exceptionInfo );
+    unlinkImages( first_, last_ );
+    flattendImage_->replaceImage( image );
+    throwException( exceptionInfo );
+  }
+
   // Replace the colors of a sequence of images with the closest color
   // from a reference image.
   // Set dither_ to true to enable dithering.  Set measureError_ to

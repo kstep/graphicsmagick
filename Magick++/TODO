@@ -10,7 +10,7 @@ Items large and small which remain to be worked on.
 * Add microtimer support for image processing operations so that the
   processing time for the last operation is immediately available.
 
-* Add support for FlattenImage() and OrderedDitherImage().
+* Add support for OrderedDitherImage().
 
 * Add support for specifying a CMS color profile (ImageInfo
   color_profile member).
