@@ -926,8 +926,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         ThrowBinaryException(DelegateWarning,"Unable to open freetype library",
           draw_info->font);
     }
-  if ((face == (FT_Face) NULL) ||
-      (LocaleCompare(draw_info->font,font) != 0))
+  if ((face == (FT_Face) NULL) || (LocaleCompare(draw_info->font,font) != 0))
     {
       register char
         *p,
@@ -972,6 +971,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       if (status)
         ThrowBinaryException(DelegateWarning,"Unable to read font",
           draw_info->font);
+      (void) strcpy(font,draw_info->font);
     }
   /*
     Set text size.
@@ -1054,7 +1054,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       }
     FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
     if ((clone_info->fill.opacity != TransparentOpacity) &&
-        (clone_info->stroke.opacity == TransparentOpacity) &&  render)
+        (clone_info->stroke.opacity == TransparentOpacity) && render)
       {
         /*
           Rasterize the glyph.
