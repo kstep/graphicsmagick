@@ -359,10 +359,7 @@ void Magick::Image::blur( const double radius_, const double sigma_ )
 // Only uses width & height
 void Magick::Image::border( const Geometry &geometry_ )
 {
-  RectangleInfo borderInfo;
-  borderInfo.width  = geometry_.width();
-  borderInfo.height = geometry_.height();
-
+  RectangleInfo borderInfo = geometry_;
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
@@ -395,16 +392,7 @@ void Magick::Image::charcoal( const double radius_, const double sigma_ )
 // Chop image
 void Magick::Image::chop( const Geometry &geometry_ )
 {
-  RectangleInfo chopInfo;
-  chopInfo.width  = geometry_.width();
-  chopInfo.height = geometry_.height();
-  chopInfo.x      = geometry_.xOff();
-  if ( geometry_.xNegative() )
-    chopInfo.x = - chopInfo.x;
-  chopInfo.y      = geometry_.yOff();
-  if ( geometry_.yNegative() )
-    chopInfo.y = - chopInfo.y;
-
+  RectangleInfo chopInfo = geometry_;
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
@@ -596,16 +584,7 @@ void Magick::Image::convolve ( unsigned int order_, const double *kernel_ )
 // Crop image
 void Magick::Image::crop ( const Geometry &geometry_ )
 {
-  RectangleInfo cropInfo;
-  cropInfo.width  = geometry_.width();
-  cropInfo.height = geometry_.height();
-  cropInfo.x      = geometry_.xOff();
-  if ( geometry_.xNegative() )
-    cropInfo.x = - cropInfo.x;
-  cropInfo.y      = geometry_.yOff();
-  if ( geometry_.yNegative() )
-    cropInfo.y = - cropInfo.y;
-
+  RectangleInfo cropInfo = geometry_;
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
@@ -1129,16 +1108,7 @@ void Magick::Image::quantize ( bool measureError_  )
 void Magick::Image::raise ( const Geometry &geometry_ ,
 			    bool raisedFlag_ )
 {
-  RectangleInfo raiseInfo;
-  raiseInfo.width  = geometry_.width();
-  raiseInfo.height = geometry_.height();
-  raiseInfo.x      = geometry_.xOff();
-  if ( geometry_.xNegative() )
-    raiseInfo.x = - raiseInfo.x;
-  raiseInfo.y      = geometry_.yOff();
-  if ( geometry_.yNegative() )
-    raiseInfo.y = - raiseInfo.y;
-
+  RectangleInfo raiseInfo = geometry_;
   modifyImage();
   RaiseImage ( image(), &raiseInfo, raisedFlag_ );
   throwImageException();
@@ -1420,16 +1390,7 @@ void Magick::Image::sharpen ( const double radius_, const double sigma_ )
 // Shave pixels from image edges.
 void Magick::Image::shave ( const Geometry &geometry_ )
 {
-  RectangleInfo shaveInfo;
-  shaveInfo.width  = geometry_.width();
-  shaveInfo.height = geometry_.height();
-  shaveInfo.x      = geometry_.xOff();
-  if ( geometry_.xNegative() )
-    shaveInfo.x = - shaveInfo.x;
-  shaveInfo.y      = geometry_.yOff();
-  if ( geometry_.yNegative() )
-    shaveInfo.y = - shaveInfo.y;
-
+  RectangleInfo shaveInfo = geometry_;
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
@@ -1856,10 +1817,7 @@ Magick::Geometry Magick::Image::boundingBox ( void ) const
   GetExceptionInfo( &exceptionInfo );
   RectangleInfo bbox = GetImageBoundingBox( constImage(), &exceptionInfo);
   throwException( exceptionInfo );
-  return Geometry( static_cast<unsigned int>(bbox.width),
-                   static_cast<unsigned int>(bbox.height),
-                   static_cast<unsigned int>(bbox.x),
-                   static_cast<unsigned int>(bbox.y) );
+  return Geometry( bbox );
 }
 
 // Text bounding-box base color

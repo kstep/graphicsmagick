@@ -12,6 +12,9 @@ with Magick++ itself.
 
   * Implemented support for read-only pixels and pixel indexes.
 
+  * Added Image boundingBox() method to return smallest bounding box
+    enclosing non-border pixels.
+
 (5.3.9)
   * New class, CoderInfo, to return information for a specified image
     format as well as the coderInfoList() template function to return

@@ -314,17 +314,31 @@ ostream& operator<<(ostream& stream_, const Magick::Geometry& geometry_)
   return stream_;
 }
 
+// Construct from RectangleInfo
+#undef abs
+#define abs(x) ((x) >= 0 ? (x) : -(x))
+Magick::Geometry::Geometry ( const MagickLib::RectangleInfo &rectangle_ )
+  : _width(static_cast<unsigned int>(abs(rectangle_.width))),
+    _height(static_cast<unsigned int>(abs(rectangle_.height))),
+    _xOff(static_cast<unsigned int>(abs(rectangle_.x))),
+    _yOff(static_cast<unsigned int>(abs(rectangle_.y))),
+    _xNegative(rectangle_.x < 0 ? true : false),
+    _yNegative(rectangle_.y < 0 ? true : false),
+    _isValid(true),
+    _percent(false),
+    _aspect(false),
+    _greater(false),
+    _less(false)
+{    
+}
+
 // Return an ImageMagick RectangleInfo struct
 Magick::Geometry::operator MagickLib::RectangleInfo() const
 {
   RectangleInfo rectangle;
-  rectangle.width  = width();
-  rectangle.height = height();;
-  rectangle.x      = xOff();
-  if ( xNegative() )
-    rectangle.x -= 2 * rectangle.x;
-  rectangle.y      = yOff();
-  if ( yNegative() )
-    rectangle.y -= 2 * rectangle.y;
+  rectangle.width = _width;
+  rectangle.height = _height;
+  _xNegative ? rectangle.x = -_xOff : rectangle.x = _xOff;
+  _yNegative ? rectangle.y = -_yOff : rectangle.y = _yOff;
   return rectangle;
 }

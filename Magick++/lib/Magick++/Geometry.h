@@ -104,6 +104,9 @@ namespace Magick
     // Public methods below this point are for Magick++ use only.
     //
 
+    // Construct from RectangleInfo
+    Geometry ( const MagickLib::RectangleInfo &rectangle_ );
+
     // Return an ImageMagick RectangleInfo struct
     operator MagickLib::RectangleInfo() const;
     

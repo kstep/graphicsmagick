@@ -1,5 +1,8 @@
 2001-10-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lib/Geometry.cpp (Geometry): Add constructor from
+ 	MagickLib::RectangleInfo.
+
 	* lib/Image.cpp (boundingBox): Method to return smallest bounding
  	box enclosing non-border pixels.  Still needs documentation.
 
