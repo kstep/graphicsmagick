@@ -70,7 +70,8 @@ static ModuleInfo
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyModuleInfo deallocates memory associated ModuleInfo list.
+%  Method DestroyModuleInfo deallocates memory associated with the ModuleInfo
+%  list.
 %
 %  The format of the DestroyModuleInfo method is:
 %
@@ -97,9 +98,24 @@ Export void DestroyModuleInfo()
 }
 
 /*
- * De-initialize modules subsystem and prepare for exit
- *
- */
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   E x i t M o d u l e s                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ExitModules de-initialize modules subsystem and prepares for exit.
+%  list.
+%
+%  The format of the ExitModules method is:
+%
+%      void ExitModules()
+%
+*/
 Export void ExitModules(void)
 {
   register ModuleInfo
@@ -159,9 +175,24 @@ Export ModuleInfo *GetModuleInfo(const char *tag)
 }
 
 /*
- * Initialize modules subsystem
- *
- */
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I n i t i a l i z e M o d u l e s                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeModules initializes the modules subsystem. It must be
+%  invoked before the LoadModule method may be used.
+%
+%  The format of the InitializeModules method is:
+%
+%      void InitializeModules()
+%
+*/
 Export void InitializeModules(void)
 {
   static int
@@ -183,9 +214,28 @@ Export void InitializeModules(void)
 }
 
 /*
- * List modules available to load
- *
- */
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L i s t M o d u l e s                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ListModules returns a list containing the names of modules which may
+%  be loaded.
+%
+%  The format of the ListModules function is:
+%
+%      char **ListModules()
+%
+%  A description of each parameter follows:
+%
+%    o modulelist: Method ListModules returns a list of available modules. If
+%      an error occurs a NULL list is returned.
+*/
 Export char **ListModules(void)
 {
   char
@@ -227,11 +277,30 @@ Export char **ListModules(void)
 
   return module_list;
 }
-
+
 /*
- * Load a module
- *
- */
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L o a d M o d u l e                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LoadModule loads a module, and invokes its registration function.
+%  Returns True on success, and False if there is an error.
+%
+%  The format of the LoadModule method is:
+%
+%      int LoadModule(const char *module)
+%
+%  A description of each parameter follows:
+%
+%    o module: a character string that indicates the module to load.
+%
+*/
 Export int LoadModule(const char* module)
 {
   char
@@ -240,7 +309,7 @@ Export int LoadModule(const char* module)
     module_file[MaxTextExtent],
     *source;
 
-  lt_dlhandle
+  ModuleHandle
     handle;
 
   ModuleInfo
@@ -314,9 +383,30 @@ Export int LoadModule(const char* module)
 }
 
 /*
- * Register a module with the ModuleInfo list
- *
- */
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r M o d u l e I n f o                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterModuleInfo adds an entry to the module list.
+%  Returns a pointer to the registered entry on success.
+%
+%  The format of the RegisterModuleInfo method is:
+%
+%      ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
+%
+%  A description of each parameter follows:
+%
+%    o info: a pointer to the registered entry is returned.
+%
+%    o entry: a pointer to the ModuleInfo structure to register.
+%
+*/
 Export ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
 {
   register ModuleInfo
@@ -388,17 +478,36 @@ Export ModuleInfo *SetModuleInfo(const char *tag)
       "Memory allocation failed");
   entry->tag=AllocateString(tag);
   entry->handle=
-    (lt_dlhandle) NULL;
+    (ModuleHandle) NULL;
   entry->load_time=0;
   entry->previous=(ModuleInfo *) NULL;
   entry->next=(ModuleInfo *) NULL;
   return(entry);
 }
-
+
 /*
- * Unload a module
- *
- */
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n l o a d M o d u l e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnloadModule unloads a module, and invokes its de-registration
+%  function. Returns True on success, and False if there is an error.
+%
+%  The format of the UnloadModule method is:
+%
+%      int UnloadModule(const char *module)
+%
+%  A description of each parameter follows:
+%
+%    o module: a character string that indicates the module to unload.
+%
+*/
 Export int UnloadModule(const char* module)
 {
   char

@@ -8,14 +8,17 @@
 extern "C" {
 #endif
 
-#include "ltdl/ltdl.h"
+#if defined(HasLTDL)
+# include "ltdl/ltdl.h"
+  typedef lt_dlhandle ModuleHandle;
+#endif /* HasLTDL */
 
 typedef struct _ModuleInfo
 {
   char
     *tag;
 
-  lt_dlhandle
+  ModuleHandle
     handle;
 
   time_t
