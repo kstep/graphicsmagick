@@ -3064,6 +3064,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   assert(watermark->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  image->depth=QuantumDepth;
   stegano_image=CloneImage(image,0,0,False,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
@@ -3106,7 +3107,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   */
   i=image->offset;
   j=0;
-  shift=QuantumDepth-1;
+  shift=image->depth-1;
   for (y=0; y < (int) image->rows; y++)
   {
     for (x=0; x < (int) image->columns; x++)

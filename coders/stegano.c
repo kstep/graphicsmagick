@@ -189,6 +189,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
       MagickMonitor(LoadImageText,y,stegano_image->rows);
   }
   SyncImage(image);
+  image->storage_class=DirectClass;
   DestroyImage(stegano_image);
   return(image);
 }
