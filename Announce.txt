@@ -27,8 +27,11 @@ for details):
     - Many bugs fixed which were reported via the ImageMagick bug
       tracking system, or via the mailing lists.
 
-    - WMF support now works with libwmf 0.2.2, which may be compiled
-      under Windows.
+    - WMF support is updated to use libwmf 0.2.2. Under Unix, WMF
+      is rendered via ImageMagick drawing commands, whereas under
+      Windows, WMF is rendered natively by Windows.
+
+    - Support added for OTB, On-the-air bitmap format.
 
     - Most delegate library dependencies (e.g. libtiff) are moved to
       loadable modules, and the module inter-dependencies on delegate
