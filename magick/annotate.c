@@ -192,20 +192,22 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   SetGeometry(image,&geometry);
   if (draw_info->geometry != (char *) NULL)
     {
-      unsigned int
+      int
         flags;
 
       /*
         User specified annotation geometry.
       */
-      flags=ParseImageGeometry(draw_info->geometry,&geometry.x,&geometry.y,
+      flags=ParseGeometry(draw_info->geometry,&geometry.x,&geometry.y,
         &geometry.width,&geometry.height);
+      if ((flags & XNegative) != 0)
+        geometry.x+=image->columns;
       if ((flags & WidthValue) == 0)
-        geometry.width-=2*geometry.x > (long) geometry.width ?
-          geometry.width : 2*geometry.x;
-      if ((flags & HeightValue) == 0)
-        geometry.height-=2*geometry.y > (long) geometry.height ?
-          geometry.height : 2*geometry.y;
+        geometry.width-=2*geometry.x > (long) geometry.width ? geometry.width : 2*geometry.x;
+      if ((flags & YNegative) != 0)
+        geometry.y+=image->rows;
+      if ((flags & HeightValue) == 0) 
+        geometry.height-=2*geometry.y > (long) geometry.height ? geometry.height : 2*geometry.y;
     }
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);

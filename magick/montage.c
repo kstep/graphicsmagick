@@ -398,8 +398,8 @@ MagickExport Image *MontageImages(const Image *images,
   if (montage_info->frame != (char *) NULL)
     {
       SetGeometry(image_list[0],&geometry);
-      flags=ParseImageGeometry(montage_info->frame,&geometry.x,&geometry.y,
-        &geometry.width,&geometry.height);
+      flags=GetGeometry(montage_info->geometry,&tile_info.x,
+        &tile_info.y,&tile_info.width,&tile_info.height);
       frame_info.width=geometry.width;
       frame_info.height=geometry.height;
       frame_info.x=geometry.x;
@@ -426,14 +426,10 @@ MagickExport Image *MontageImages(const Image *images,
         Initialize tile geometry.
       */
       SetGeometry(image_list[0],&tile_info);
-      flags=ParseImageGeometry(montage_info->geometry,&tile_info.x,
+      flags=GetGeometry(montage_info->geometry,&tile_info.x,
         &tile_info.y,&tile_info.width,&tile_info.height);
       if ((tile_info.x == 0) && (tile_info.y == 0))
         concatenate=!((flags & WidthValue) || (flags & HeightValue));
-      if (tile_info.x < 0)
-        tile_info.x=0;
-      if (tile_info.y < 0)
-        tile_info.y=0;
     }
   for (i=1; i < (long) number_images; i++)
   {
