@@ -1214,11 +1214,11 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         RGBTransformImage(image,CMYKColorspace);
     (void) WriteBlobString(image,"id=ImageMagick\n");
     if (image->storage_class == PseudoClass)
-      FormatString(buffer,"class=PseudoClass  colors=%u  opaque=%s\n",
+      FormatString(buffer,"class=PseudoClass  colors=%u  matte=%s\n",
         image->colors,image->matte ? "True" : "False");
     else
       if (image->colorspace != CMYKColorspace)
-        FormatString(buffer,"class=DirectClass  opaque=%s\n",
+        FormatString(buffer,"class=DirectClass  matte=%s\n",
           image->matte ? "True" : "False");
       else
         (void) strcpy(buffer,"class=DirectClass  colorspace=CMYK\n");

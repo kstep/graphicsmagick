@@ -1639,11 +1639,11 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
   (void) fprintf(file,"id=MagickCache\n");
   (void) fprintf(file,"cache=%.1024s\n",cache_info->cache_filename);
   if (image->storage_class == PseudoClass)
-    (void) fprintf(file,"class=PseudoClass  colors=%u  opaque=%s\n",
+    (void) fprintf(file,"class=PseudoClass  colors=%u  matte=%s\n",
       image->colors,image->matte ? "True" : "False");
   else
     if (image->colorspace != CMYKColorspace)
-      (void) fprintf(file,"class=DirectClass  opaque=%s\n",
+      (void) fprintf(file,"class=DirectClass  matte=%s\n",
         image->matte ? "True" : "False");
     else
       (void) fprintf(file,"class=DirectClass  colorspace=CMYK\n");
