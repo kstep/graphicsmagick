@@ -865,7 +865,7 @@ MagickExport void GetToken(const char *start,char **end,char *token)
   register char
     *p;
 
-  register int
+  register size_t
     i;
 
   i=0;
@@ -2200,10 +2200,10 @@ MagickExport char **StringToList(const char *text)
   register const char
     *p;
 
-  register int
+  register size_t
     i;
 
-  unsigned int
+  size_t
     lines;
 
   if (text == (char *) NULL)
@@ -2225,7 +2225,7 @@ MagickExport char **StringToList(const char *text)
         MagickError(ResourceLimitError,"Unable to convert text to list",
           "Memory allocation failed");
       p=text;
-      for (i=0; i < (int) lines; i++)
+      for (i=0; i < lines; i++)
       {
         for (q=(char *) p; *q != '\0'; q++)
           if ((*q == '\r') || (*q == '\n'))
@@ -2246,7 +2246,7 @@ MagickExport char **StringToList(const char *text)
       char
         hex_string[MaxTextExtent];
 
-      register int
+      register size_t
         j;
 
       /*
@@ -2258,17 +2258,17 @@ MagickExport char **StringToList(const char *text)
         MagickError(ResourceLimitError,"Unable to convert text",
           "Memory allocation failed");
       p=text;
-      for (i=0; i < (int) lines; i++)
+      for (i=0; i < lines; i++)
       {
         textlist[i]=(char *) AcquireMemory(MaxTextExtent);
         if (textlist[i] == (char *) NULL)
           MagickError(ResourceLimitError,"Unable to convert text",
             "Memory allocation failed");
-        FormatString(textlist[i],"0x%08x: ",(unsigned int) (i*0x14));
+        FormatString(textlist[i],"0x%08lx: ",0x14*i);
         q=textlist[i]+strlen(textlist[i]);
         for (j=1; j <= Min(strlen(p),0x14); j++)
         {
-          FormatString(hex_string,"%02x",(unsigned int) (*(p+j)));
+          FormatString(hex_string,"%02lx",*(p+j));
           (void) strcpy(q,hex_string);
           q+=2;
           if ((j % 0x04) == 0)
@@ -2611,14 +2611,14 @@ MagickExport void TemporaryFilename(char *filename)
 #define IN_QUOTE 2
 #define IN_OZONE 3
 
-static int sindex(char c,char *string)
+static long sindex(char c,char *string)
 {
   register char
     *p;
 
   for (p=string; *p; p++)
     if (c == (*p))
-      return((int) (p-string));
+      return(p-string);
   return(-1);
 }
 
@@ -2658,7 +2658,7 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
   char
     c;
 
-  register int
+  register long
     i;
 
   *breaker=False;
@@ -2875,7 +2875,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   for (q=translated_text; *p != '\0'; p++)
   {
     *q='\0';
-    if ((q-translated_text+MaxTextExtent) >= (int) length)
+    if ((q-translated_text+MaxTextExtent) >= length)
       {
         length<<=1;
         ReacquireMemory((void **) &translated_text,length);
