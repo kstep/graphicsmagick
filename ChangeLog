@@ -1,3 +1,15 @@
+2004-07-15  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick\magick\magick_config.h.: enabled LZW compression by default.
+	* BCBMagick: included jbig delegate library. 
+	  - Modified these files into directory BCBMagick: All\bcbMagick.mak;
+	    All\GMlib.bpg; All\GMdll.bpg; coders\libCoders.bpr; magick\GM_magick.bpr;
+	    utilities\gm_lib.bpr; utilities\gm_dll.bpr
+	  - Added these files into new directory BCBMagick\jbig: jbig.bpr; 
+	    jbig.bpf; GM_jbig.bpr; GM_jbig.c; tstcodec.bpr
+	  - Modified file jbig\jbiglib\jbig.h; 
+	* BCBMagick\readme.txt: updated documentation.    
+
 2004-07-10  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyUsage): -ordered-dither help was

@@ -1,6 +1,6 @@
 # 
 # ***************************************************************
-# **  GraphicsMagick library - v.1.2 - 01 July 2004            **
+# **  GraphicsMagick library - v.1.2 - 15 July 2004            **
 # **                                                           **
 # **  Porting for compilation with Borland C++Builder 6.0      **
 # **-----------------------------------------------------------**
@@ -37,6 +37,13 @@ copy-all:
 # coders	<<<<<<<<<<<<<<<<<<<< 
   copy $(GMBCB)\coders\libCoders.bpr $(GMDIR)\coders
   copy $(GMBCB)\coders\libCoders.bpf $(GMDIR)\coders
+
+# jbig		<<<<<<<<<<<<<<<<<<<< 
+  copy $(GMBCB)\jbig\jbig.bpr $(GMDIR)\jbig
+  copy $(GMBCB)\jbig\jbig.bpf $(GMDIR)\jbig
+  copy $(GMBCB)\jbig\GM_jbig.bpr $(GMDIR)\jbig
+  copy $(GMBCB)\jbig\GM_jbig.c $(GMDIR)\jbig
+  copy $(GMBCB)\jbig\tstcodec.bpr $(GMDIR)\jbig
 
 # jpeg		<<<<<<<<<<<<<<<<<<<<
   copy $(GMBCB)\jpeg\jpeg.bpg $(GMDIR)\jpeg
@@ -149,6 +156,7 @@ get-libs:
   copy $(GMDIR)\bzlib\libbz2.lib $(GMBCB)\lib
   copy $(GMDIR)\coders\libCoders.lib $(GMBCB)\lib
   copy $(GMDIR)\lcms\BCB6\lcms.lib $(GMBCB)\lib
+  copy $(GMDIR)\jbig\jbig.lib $(GMBCB)\lib
   copy $(GMDIR)\jpeg\jpeglib.lib $(GMBCB)\lib
   copy $(GMDIR)\magick\libMagick.lib $(GMBCB)\lib
   xcopy /Y $(GMDIR)\Magick++\lib\libMagickpp.lib $(GMBCB)\lib
@@ -171,6 +179,8 @@ get-dlls:
   copy $(GMDIR)\bzlib\GM_bzlib.dll $(GMBCB)\dll
   copy $(GMDIR)\lcms\BCB6\GM_lcms.lib $(GMBCB)\dll
   copy $(GMDIR)\lcms\BCB6\GM_lcms.dll $(GMBCB)\dll
+  copy $(GMDIR)\jbig\GM_jbig.lib $(GMBCB)\dll
+  copy $(GMDIR)\jbig\GM_jbig.dll $(GMBCB)\dll
   copy $(GMDIR)\jpeg\GM_jpeg.lib $(GMBCB)\dll
   copy $(GMDIR)\jpeg\GM_jpeg.dll $(GMBCB)\dll
   copy $(GMDIR)\magick\GM_magick.lib $(GMBCB)\dll

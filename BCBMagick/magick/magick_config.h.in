@@ -89,7 +89,7 @@
 // GraphicsMagick Group does not support the illegal import of
 // LZW-enabled software into a country where the UNISYS LZW patent
 // applies.
-#undef HasLZW
+#define HasLZW
 
 /////////////
 //
@@ -129,7 +129,7 @@
 //#define HasFPX
 
 // Define to use the JBIG library
-//#define HasJBIG
+#define HasJBIG
 
 // Define to use the Jasper JPEG v2 library
 //#define HasJP2

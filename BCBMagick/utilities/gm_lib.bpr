@@ -8,10 +8,10 @@
     <RESFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
-    <LIBFILES value="..\bzlib\libbz2.lib ..\coders\libCoders.lib ..\jpeg\jpeglib.lib 
-      ..\lcms\BCB6\lcms.lib ..\magick\libMagick.lib ..\Magick++\lib\libMagickpp.lib 
-      ..\png\projects\BCB6\libpng.lib ..\tiff\libtiff\libtiff.lib ..\ttf\libttf.lib 
-      ..\zlib\contrib\BCB6\zlib.lib"/>
+    <LIBFILES value="..\bzlib\libbz2.lib ..\coders\libCoders.lib ..\jbig\jbig.lib 
+      ..\jpeg\jpeglib.lib ..\lcms\BCB6\lcms.lib ..\magick\libMagick.lib 
+      ..\Magick++\lib\libMagickpp.lib ..\png\projects\BCB6\libpng.lib 
+      ..\tiff\libtiff\libtiff.lib ..\ttf\libttf.lib ..\zlib\contrib\BCB6\zlib.lib"/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
     <PACKAGES value=""/>
@@ -48,6 +48,7 @@
       <FILE FILENAME="gm.c" FORMNAME="" UNITNAME="gm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\bzlib\libbz2.lib" FORMNAME="" UNITNAME="libbz2.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\coders\libCoders.lib" FORMNAME="" UNITNAME="libCoders.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\jbig\jbig.lib" FORMNAME="" UNITNAME="jbig.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\jpeg\jpeglib.lib" FORMNAME="" UNITNAME="jpeglib.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\lcms\BCB6\lcms.lib" FORMNAME="" UNITNAME="lcms.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\magick\libMagick.lib" FORMNAME="" UNITNAME="libMagick.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>

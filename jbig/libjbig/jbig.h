@@ -228,27 +228,44 @@ struct jbg_dec_state {
 
 /* function prototypes */
 
-#if !defined(_VISUALC_)
-#  error Something is very very wrong. This header must only be used under Visual C++.
-#endif
 /**
- * Under VISUALC we have single threaded static libraries, or
- * mutli-threaded DLLs using the multithreaded runtime DLLs.
+ ** Borland C++ Builder defines
  **/
-#if defined(_MT) && defined(_DLL) && !defined(_LIB)
-#  pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
-#  if !defined(_JBIGLIB_)
-#    define JBIGEXPORT __declspec(dllimport)
+#if defined(__BORLANDC__)
+#  if defined(_DLL)
+#    define _JBIGDLL_
+#    define _JBIGLIB_
 #  else
-#   define JBIGEXPORT __declspec(dllexport)
-#  endif
-#else
-#  define JBIGEXPORT
+#    undef _JBIGDLL_
+#  endif   
 #endif
 
-#pragma warning(disable : 4018)
-#pragma warning(disable : 4244)
-#pragma warning(disable : 4142)
+/**
+ * Under VISUALC we have single threaded static libraries, or
+ * multi-threaded DLLs using the multithreaded runtime DLLs.
+ **/
+ 
+#if defined(_MT) && defined(_DLL) && !defined(_JBIGDLL_) && !defined(_LIB)
+#   define _JBIGDLL_
+#endif
+#if defined(_JBIGDLL_)
+#   if defined(_VISUALC_)
+#       pragma warning( disable : 4273 )
+#   endif
+#   if !defined(_JBIGLIB_)
+#       define JBIGEXPORT __declspec(dllimport)
+#   else
+#       define JBIGEXPORT __declspec(dllexport)
+#   endif
+#else
+#   define JBIGEXPORT
+#endif
+
+#if defined(_VISUALC_)
+#   pragma warning( disable : 4018 )
+#   pragma warning( disable : 4244 )
+#   pragma warning( disable : 4142 )
+#endif
 
 extern JBIGEXPORT void jbg_enc_init(struct jbg_enc_state *s, unsigned long x, unsigned long y,
 		  int planes, unsigned char **p,

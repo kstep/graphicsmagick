@@ -1,5 +1,5 @@
 ***********************************************************
-**  GraphicsMagick library - v.1.2 - 01 July 2004        **
+**  GraphicsMagick library - v.1.2 - 15 July 2004        **
 **                                                       **
 **  Porting for compilation with Borland C++Builder 6.0  **
 **-------------------------------------------------------**
@@ -27,8 +27,9 @@ with a small subset of the main "delegates" library available.
 These are:
 
     bzlib
-    lcms
+    jbig
     jpeg
+    lcms
     libtiff
     libpng
     FreeType library (ttf)
@@ -101,6 +102,7 @@ USE OF STATIC LIBRARY IN YOUR PROJECTS
 
         [GM dir]\BCBMagick\lib\libbz2.lib
         [GM dir]\BCBMagick\lib\libCoders.lib
+        [GM dir]\BCBMagick\lib\jbig.lib
         [GM dir]\BCBMagick\lib\jpeglib.lib
         [GM dir]\BCBMagick\lib\lcms.lib
         [GM dir]\BCBMagick\lib\libMagick.lib
@@ -137,8 +139,9 @@ USE OF DLLs IN YOUR PROJECTS
     Libraries:
 
         [GM dir]\BCBMagick\dll\GM_bzlib.lib
-        [GM dir]\BCBMagick\dll\GM_lcms.lib
+        [GM dir]\BCBMagick\dll\GM_jbig.lib
         [GM dir]\BCBMagick\dll\GM_jpeg.lib
+        [GM dir]\BCBMagick\dll\GM_lcms.lib
         [GM dir]\BCBMagick\dll\GM_magick.lib
         [GM dir]\BCBMagick\dll\GM_Magickpp.lib		(only for Magick++)
         [GM dir]\BCBMagick\dll\GM_png.lib
@@ -150,8 +153,9 @@ USE OF DLLs IN YOUR PROJECTS
     (test purposes) or into Windows System directory (standard):    
 
         [GM dir]\BCBMagick\dll\GM_bzlib.dll
-        [GM dir]\BCBMagick\dll\GM_lcms.dll
+        [GM dir]\BCBMagick\dll\GM_jbig.dll
         [GM dir]\BCBMagick\dll\GM_jpeg.dll
+        [GM dir]\BCBMagick\dll\GM_lcms.dll
         [GM dir]\BCBMagick\dll\GM_magick.dll
         [GM dir]\BCBMagick\dll\GM_Magickpp.dll		(only for Magick++)
         [GM dir]\BCBMagick\dll\GM_png.dll

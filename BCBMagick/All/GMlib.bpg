@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = libbz2.lib jpeglib.lib lcms.lib libttf.lib zlib.lib \
+PROJECTS = libbz2.lib jbig.lib jpeglib.lib lcms.lib libttf.lib zlib.lib \
   libpng.lib libtiff.lib libCoders.lib libMagick.lib libMagickpp.lib \
   gm_lib.exe
 #------------------------------------------------------------------------------
@@ -17,6 +17,10 @@ default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
 libbz2.lib: ..\..\bzlib\libbz2.bpr
+  $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+jbig.lib: ..\..\jbig\jbig.bpr
   $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 

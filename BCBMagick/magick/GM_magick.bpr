@@ -61,7 +61,7 @@
     <USERDEFINES value="WIN32;_DLL"/>
     <SYSDEFINES value="NO_STRICT;_NO_VCL;_RTLDLL"/>
     <MAINSOURCE value="GM_magick.c"/>
-    <INCLUDEPATH value="..;..\bzlib;..\coders;..\filters;..\jpeg;..\lcms\include;..\png\;..\tiff\libtiff;..\ttf\include;;..\zlib;$(BCB)\include;$(BCB)\include\vcl"/>
+    <INCLUDEPATH value="..;..\bzlib;..\coders;..\filters;..\jbig;..\jpeg;..\lcms\include;..\png\;..\tiff\libtiff;..\ttf\include;;..\zlib;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="..\coders;..\filters;&quot;D:\GraphicsMagick-1.1\magick&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-sus -w-spa -w-rch -w-pia -w-par -w-8027 -w-eff -w-csu -w-ccc -w-aus"/>
     <OTHERFILES value=""/>
@@ -237,6 +237,7 @@
       <FILE FILENAME="..\coders\xwd.c" FORMNAME="" UNITNAME="xwd.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\coders\yuv.c" FORMNAME="" UNITNAME="yuv.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\bzlib\GM_bzlib.lib" FORMNAME="" UNITNAME="GM_bzlib.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\jbig\GM_jbig.lib" FORMNAME="" UNITNAME="GM_jbig.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\jpeg\GM_jpeg.lib" FORMNAME="" UNITNAME="GM_jpeg.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\lcms\BCB6\GM_lcms.lib" FORMNAME="" UNITNAME="GM_lcms.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\png\projects\BCB6\GM_png.lib" FORMNAME="" UNITNAME="GM_png.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -252,7 +253,7 @@
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
-MinorVer=1
+MinorVer=2
 Release=0
 Build=1
 Debug=0
