@@ -678,7 +678,31 @@ fi
 #
 ########
 AC_FUNC_MMAP
-AC_CHECK_FUNCS(ftime getexecname getc_unlocked mkstemp poll pread pwrite putc_unlocked select tempnam times strerror sysconf vsprintf vsnprintf)
+AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp poll pread \
+  pwrite putc_unlocked select tempnam times strerror sysconf vsprintf vsnprintf])
+
+########
+#
+# Try to find a command which reports usable physical memory
+#
+########
+MAGICK_PHYSICAL_MEMORY_COMMAND=''
+case "${host}" in
+  *-*-freebsd* )
+    AC_PATH_PROG(SysCtlDelegate,sysctl,)
+    if test "${SysCtlDelegate}X" != 'X'
+    then
+       # "sysctl -n hw.physmem" became available in FreeBSD 2.0
+       MAGICK_PHYSICAL_MEMORY_COMMAND="${SysCtlDelegate} -n hw.physmem"
+    fi
+    ;;
+esac
+if test "${MAGICK_PHYSICAL_MEMORY_COMMAND}X" != 'X'
+then
+  AC_DEFINE_UNQUOTED(MAGICK_PHYSICAL_MEMORY_COMMAND,
+    "${MAGICK_PHYSICAL_MEMORY_COMMAND}",
+    [Command which returns total physical memory in bytes])
+fi
 
 ########
 #

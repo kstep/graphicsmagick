@@ -727,6 +727,8 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 
       /* Format output so that command spans multiple lines if
          necessary */
+      if (getenv("COLUMNS"))
+        screen_width=atoi(getenv("COLUMNS"))-1;
       command_length=strlen(commands[0]);
       command_start_column=fprintf(file,"%8s%c=%c%s  ",p->decode ? p->decode : "",
         p->mode <= 0 ? '<' : ' ',p->mode >= 0 ? '>' : ' ',delegate);

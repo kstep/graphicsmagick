@@ -56,6 +56,23 @@
 2003-04-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/resource.c (InitializeMagickResources):
+        Added the ability to obtain the amount of physical
+        memory by executing an external command.
+  <LI> configure.ac: Check for getpagesize().
+        (MAGICK_PHYSICAL_MEMORY_COMMAND): Added a test for
+        an external command which (quickly) returns the
+        amount of physical memory installed on the machine.
+        Currently only activated for FreeBSD.
+  <LI> magick/delegate.c (ListDelegateInfo): If COLUMNS
+        environment variable is set, then use it to obtain
+        the screen width.  Some shells dynamically update
+        COLUMNS, but COLUMNS may need to be explicitly
+        exported in order for it to be seen by subordinate
+        programs (such as gm).<BR>
+  <LI> magick/effect.c (AddNoiseImage): Use IsGrayImage()
+        to check if the image is gray.  Add missing columns
+        loop for intensity case (oops!).
   <LI> magick/command.c (DisplayImageCommand): Fix
         -dispose option processing bug reported by
         Felix Heimbrecht.<BR>

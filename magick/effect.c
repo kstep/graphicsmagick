@@ -37,6 +37,7 @@
 */
 #include "studio.h"
 #include "cache.h"
+#include "color.h"
 #include "effect.h"
 #include "enhance.h"
 #include "fx.h"
@@ -222,6 +223,9 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   register PixelPacket
     *q;
 
+  unsigned int
+   is_grayscale;
+
   /*
     Initialize noise image attributes.
   */
@@ -232,6 +236,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   noise_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
+  is_grayscale=IsGrayImage(image,exception);
   noise_image->storage_class=DirectClass;
   /*
     Add noise in each row.
@@ -242,22 +247,25 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
     q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    if (image->colorspace == GRAYColorspace)
+    if (is_grayscale)
       {
         /*
           Intensity noise
         */
-        q->red=q->green=q->blue=
-          GenerateNoise(PixelIntensityToQuantum(q),noise_type);
-        p++;
-        q++;
+        for (x=(long) image->columns; x > 0; x--)
+          {
+            q->red=q->green=q->blue=
+              GenerateNoise(PixelIntensityToQuantum(q),noise_type);
+            p++;
+            q++;
+          }
       }
     else
       {
         /*
           Noise across RGB channels
         */
-        for (x=0; x < (long) image->columns; x++)
+        for (x=(long) image->columns; x > 0; x--)
           {
             q->red=GenerateNoise(p->red,noise_type);
             q->green=GenerateNoise(p->green,noise_type);
@@ -272,8 +280,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
       if (!MagickMonitor(AddNoiseImageText,y,image->rows,exception))
         break;
   }
-  if (image->colorspace == GRAYColorspace)
-    noise_image->is_grayscale=image->is_grayscale;
+  noise_image->is_grayscale=is_grayscale;
   return(noise_image);
 }
 

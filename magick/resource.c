@@ -287,41 +287,67 @@ MagickExport void InitializeMagickResources(void)
   /*
     Set Magick resource limits.
   */
-
 #if defined(POSIX)
   {
     long
       files=-1,
-      total_memory=0,
-      pagesize=-1,
-      pages=-1;
+      total_memory=0;
 
 #  if defined(HAVE_SYSCONF) && defined(_SC_OPEN_MAX)
     files=sysconf(_SC_OPEN_MAX);
 #  endif
 
-#  if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
-    pagesize=sysconf(_SC_PAGE_SIZE);
-#  endif /* defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE) */
+#  if defined(_SC_PHYS_PAGES) && (defined(_SC_PAGE_SIZE) || defined(HAVE_GETPAGESIZE))
+    {
+    long
+      pagesize=-1,
+      pages=-1;
+    /*
+      Compute total physical memory based on number of memory pages,
+      and page size.
+    */
+#    if defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
+    pages=sysconf(_SC_PHYS_PAGES);
+#    endif /* defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES) */
 
-#  if defined(HAVE_GETPAGESIZE)
+#    if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
+    pagesize=sysconf(_SC_PAGE_SIZE);
+#    endif /* defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE) */
+
+#    if defined(HAVE_GETPAGESIZE)
     if (pagesize <= 0)
       pagesize=getpagesize();
-#  endif /* defined(HAVE_GETPAGESIZE) */
+#    endif /* defined(HAVE_GETPAGESIZE) */
 
-#  if defined(PAGESIZE)
-    if (pagesize <= 0)
-      pagesize=PAGESIZE;
-#  endif /* defined(PAGESIZE) */
-
-#  if defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
-    pages=sysconf(_SC_PHYS_PAGES);
-#  endif /* defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES) */
     if (pages > 0 && pagesize > 0)
       total_memory=((pages+512)/1024)*((pagesize+512)/1024);
     (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
       "Total physical memory %ld MB (%ld pages and %ld bytes per page)",
         total_memory, pages, pagesize);
+    }
+#  elif defined(MAGICK_PHYSICAL_MEMORY_COMMAND)
+    {
+      double
+        bytes=0;
+
+      FILE
+        *command;
+      /*
+        Execute the external command defined by
+        MAGICK_PHYSICAL_MEMORY_COMMAND to obtain the total physical
+        memory in bytes.  This external command should be quite speedy
+        or else it will impact the time to start GraphicsMagick.
+      */
+      if ((command = popen(MAGICK_PHYSICAL_MEMORY_COMMAND, "r")) != NULL)
+        {
+          if (fscanf(command,"%lf",&bytes) == 1)
+            total_memory=(bytes/(1024*1024));
+          (void) pclose(command);
+          (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+            "Total physical memory %ld MB",total_memory);
+        }
+    }
+#  endif
 
     if (files > 0)
       max_files=files/2;
