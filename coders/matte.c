@@ -162,9 +162,6 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
-    *indexes;
-
   register long
     x;
 
@@ -177,27 +174,26 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
   if (!image->matte)
     ThrowWriterException(ResourceLimitWarning,
       "Image does not have a matte channel",image);
-  matte_image=CloneImage(image,image->columns,image->rows,True,
-    &image->exception);
+  matte_image=
+		CloneImage(image,image->columns,image->rows,True,&image->exception);
   if (matte_image == (Image *) NULL)
     return(False);
-  if (!AllocateImageColormap(matte_image,MaxRGB+1))
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+  SetImageType(matte_image,TrueColorType);
   /*
     Convert image to matte pixels.
   */
-  matte_image->matte=False;
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     q=SetImagePixels(matte_image,0,y,matte_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    indexes=GetIndexes(matte_image);
     for (x=0; x < (long) image->columns; x++)
     {
-      indexes[x]=p->opacity;
-      *q=matte_image->colormap[(int) p->opacity];
+      q->red=p->opacity;
+      q->green=p->opacity;
+      q->blue=p->opacity;
+      q->opacity=OpaqueOpacity;
       p++;
       q++;
     }
