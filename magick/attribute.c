@@ -470,7 +470,7 @@ static int exiffmtbytes[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
 
 static const struct {
     unsigned short Tag;
-    char * Desc;
+    char* Desc;
 } TagTable[] = {
   {  0x100,  "ImageWidth"},
   {  0x101,  "ImageLength"},

@@ -473,7 +473,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->matte=psd_info.channels >= 2;
     }
   length=ReadBlobMSBLong(image);
-  if (length > 0)
+  if (length != 0)
     {
       /*
         Read PSD raster colormap.

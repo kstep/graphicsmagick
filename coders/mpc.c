@@ -684,7 +684,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         *p++=c;
       } while (c != '\0');
     }
-  if (image->color_profile.length > 0)
+  if (image->color_profile.length != 0)
     {
       /*
         Color profile.

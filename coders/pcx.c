@@ -352,7 +352,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Uncompress image data.
     */
     p=pcx_pixels;
-    while (pcx_packets > 0)
+    while (pcx_packets != 0)
     {
       packet=ReadBlobByte(image);
       if ((packet & 0xc0) != 0xc0)
