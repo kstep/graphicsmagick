@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                         W   W  BBBB   M   M  PPPP                           %
-%                         W   W  B   B  MM MM  P   P                          %
-%                         W W W  BBBB   M M M  PPPP                           %
-%                         WW WW  B   B  M   M  P                              %
-%                         W   W  BBBB   M   M  P                              %
+%                              OOO   TTTTT  BBBB                              %
+%                             O   O    T    B   B                             %
+%                             O   O    T    BBBB                              %
+%                             O   O    T    B   B                             %
+%                              OOO     T    BBBB                              %
 %                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %
@@ -58,33 +58,32 @@
   Forward declarations.
 */
 static unsigned int
-  WriteWBMPImage(const ImageInfo *,Image *);
+  WriteOTBImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d W B M P I m a g e                                                 %
+%   R e a d O T B I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadWBMPImage reads a WBMP (level 0) image file and returns it.  It
+%  Method ReadOTBImage reads a OTB (level 0) image file and returns it.  It
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  ReadWBMPImage was contributed by Milan Votava <votava@mageo.cz>.
+%  ReadOTBImage was contributed by Milan Votava <votava@mageo.cz>.
 %
-%  The format of the ReadWBMPImage method is:
+%  The format of the ReadOTBImage method is:
 %
-%      Image *ReadWBMPImage(const ImageInfo *image_info,
-%        ExceptionInfo *exception)
+%      Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadWBMPImage returns a pointer to the image after
+%    o image:  Method ReadOTBImage returns a pointer to the image after
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
@@ -95,7 +94,7 @@ static unsigned int
 %
 */
 
-static unsigned int WBMPReadInteger(Image *image,unsigned long *value)
+static unsigned int OTBReadInteger(Image *image,unsigned long *value)
 {
   int
     byte;
@@ -112,8 +111,7 @@ static unsigned int WBMPReadInteger(Image *image,unsigned long *value)
   return(True);
 }
 
-static Image *ReadWBMPImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -137,13 +135,11 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     i;
 
   unsigned char
-    bit;
+    bit,
+    depth;
 
   unsigned int
     status;
-
-  unsigned short
-    header;
 
   /*
     Open image file.
@@ -156,20 +152,16 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  if (!ReadBlob(image,2,(char *) &header)) 
-    ThrowReaderException(CorruptImageWarning,"Not a WBMP image file",image);
-  if (header)
-    ThrowReaderException(CorruptImageWarning,
-      "Only WBMP level 0 files supported",image);
   /*
     Initialize image structure.
   */
-  if (WBMPReadInteger(image,&image->columns) == False) 
-    ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",image);
-  if (WBMPReadInteger(image,&image->rows) == False) 
-    ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",image);
-  for (i=0; i < image->offset; i++)
-    (void) ReadBlobByte(image);
+  (void) ReadBlobByte(image);
+  image->columns=ReadBlobByte(image);
+  image->rows=ReadBlobByte(image);
+  depth=ReadBlobByte(image);
+  if (depth != 1)
+    ThrowReaderException(CorruptImageWarning,"Only OTB level 0 files supported",
+      image);
   if (!AllocateImageColormap(image,2))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   if (image_info->ping)
@@ -194,7 +186,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
         {
           byte=ReadBlobByte(image);
           if (byte == EOF)
-            ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",
+            ThrowReaderException(CorruptImageWarning,"Corrupt OTB image",
               image);
         }
       indexes[x]=(byte & (0x01 << (7-bit))) ? 1 : 0;
@@ -219,35 +211,35 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r W B M P I m a g e                                         %
+%   R e g i s t e r O T B I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterWBMPImage adds attributes for the WBMP image format to
+%  Method RegisterOTBImage adds attributes for the OTB image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterWBMPImage method is:
+%  The format of the RegisterOTBImage method is:
 %
-%      RegisterWBMPImage(void)
+%      RegisterOTBImage(void)
 %
 */
-ModuleExport void RegisterWBMPImage(void)
+ModuleExport void RegisterOTBImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("WBMP");
-  entry->decoder=ReadWBMPImage;
-  entry->encoder=WriteWBMPImage;
+  entry=SetMagickInfo("OTB");
+  entry->decoder=ReadOTBImage;
+  entry->encoder=WriteOTBImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Wireless Bitmap (level 0) image");
-  entry->module=AllocateString("WBMP");
+  entry->description=AllocateString("On-the-air bitmap");
+  entry->module=AllocateString("OTB");
   (void) RegisterMagickInfo(entry);
 }
 
@@ -256,23 +248,23 @@ ModuleExport void RegisterWBMPImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r W B M P I m a g e                                     %
+%   U n r e g i s t e r O T B I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterWBMPImage removes format registrations made by the
-%  WBMP module from the list of supported formats.
+%  Method UnregisterOTBImage removes format registrations made by the
+%  OTB module from the list of supported formats.
 %
-%  The format of the UnregisterWBMPImage method is:
+%  The format of the UnregisterOTBImage method is:
 %
-%      UnregisterWBMPImage(void)
+%      UnregisterOTBImage(void)
 %
 */
-ModuleExport void UnregisterWBMPImage(void)
+ModuleExport void UnregisterOTBImage(void)
 {
-  (void) UnregisterMagickInfo("WBMP");
+  (void) UnregisterMagickInfo("OTB");
 }
 
 /*
@@ -280,24 +272,24 @@ ModuleExport void UnregisterWBMPImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e W B M P I m a g e                                               %
+%   W r i t e O T B I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteWBMPImage writes an image to a file in the Wireless Bitmap
+%  Method WriteOTBImage writes an image to a file in the Wireless Bitmap
 %  (level 0) image format.
 %
-%  WriteWBMPImage was contributed by Milan Votava <votava@mageo.cz>.
+%  WriteOTBImage was contributed by Milan Votava <votava@mageo.cz>.
 %
-%  The format of the WriteWBMPImage method is:
+%  The format of the WriteOTBImage method is:
 %
-%      unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
+%      unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o status: Method WriteWBMPImage return True if the image is written.
+%    o status: Method WriteOTBImage return True if the image is written.
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
@@ -308,7 +300,7 @@ ModuleExport void UnregisterWBMPImage(void)
 %
 */
 
-static void WBMPWriteInteger(Image *image,const unsigned long value)
+static void OTBWriteInteger(Image *image,const unsigned long value)
 {
   int
     bits,
@@ -339,7 +331,7 @@ static void WBMPWriteInteger(Image *image,const unsigned long value)
   (void) WriteBlob(image,n,(char *) buffer+5-n);
 }
 
-static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
 {
   long
     y;
@@ -390,8 +382,9 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   if (image->colors == 2)
     polarity=Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
   (void) WriteBlobMSBShort(image,0);
-  WBMPWriteInteger(image,image->columns);
-  WBMPWriteInteger(image,image->rows);
+  OTBWriteInteger(image,image->columns);
+  OTBWriteInteger(image,image->rows);
+  (void) WriteBlobMSBShort(image,1);  /* depth */
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
