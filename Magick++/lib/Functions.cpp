@@ -29,7 +29,11 @@ void Magick::ColorizeImage( MagickLib::Image &image_, const std::string &opacity
 
 void Magick::CommentImage( MagickLib::Image &image_, const std::string &comments_ )
 {
+#ifdef OLD_API
   MagickLib::CommentImage( &image_, comments_.c_str() );
+#else
+  MagickLib::SetImageAttribute( &image_,"Comment",comments_.c_str() );
+#endif
 }
 
 // Get current image geometry
@@ -51,7 +55,11 @@ bool Magick::IsGeometry( const std::string &geometry_)
 
 void Magick::LabelImage( MagickLib::Image &image_, const std::string &label_)
 {
+#ifdef OLD_API
   MagickLib::LabelImage( &image_, label_.c_str() );
+#else
+  MagickLib::SetImageAttribute( &image_,"Label",label_.c_str() );
+#endif
 }
 
 void Magick::OpaqueImage( MagickLib::Image &image_, const std::string &opaqueColor_,
