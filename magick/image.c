@@ -4119,6 +4119,11 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         (void) CloneString(&local_info->box,argv[++i]);
         continue;
       }
+    if (strncmp("-cache",option,4) == 0)
+      {
+        SetCacheThreshold(atoi(argv[++i]));
+        continue;
+      }
     if (strncmp("-charcoal",option,3) == 0)
       {
         char
