@@ -4022,6 +4022,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             LayerImage(*image,layer);
             continue;
           }
+        if (LocaleCompare("-linewidth",option) == 0)
+          {
+            draw_info->stroke_width=atof(argv[++i]);
+            continue;
+          }
         break;
       }
       case 'm':

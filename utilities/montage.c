@@ -1032,6 +1032,16 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleNCompare("strokewidth",option+1,2) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing size",option);
+                }
+              break;
+            }
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
