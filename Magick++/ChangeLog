@@ -1,3 +1,51 @@
+1999-08-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp: Added accessor methods for other key ImageMagick
+ 	structs.
+
+	* lib/Options.cpp (penTexture): Fixed bug with removing texture
+ 	caused by change in Image constructor.
+
+	* lib/Image.cpp: Changed strategy such that an Image containing a
+ 	null MagickLib::Image pointer is never constructed except for
+ 	under error conditions.  Removed existing checks for null image
+ 	pointer on attribute methods.
+
+	Use image() and constImage() accessor methods as part of Image
+ 	implementation in order to clean-up code and ensure
+ 	const-correctness.
+	
+1999-08-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (Magick): Added STL function readImages().
+  	Not tested yet.
+	(Magick): Added STL function writeImages(). Not tested yet.
+
+	* lib/Image.cpp: Removed support for 'text' attribute as this is
+ 	no longer present in ImageMagick as of 4.2.8.
+
+1999-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (condense): Skip condensing image if already
+ 	condensed.
+	(uncondense): Skip uncondensing image if not condensed.
+	(condensed): New method to test if image is condensed.
+	(classType): New method which supports conversion of the image
+ 	storage class. May result in loss of color information
+ 	(quantization is used) if a DirectClass image is converted to
+ 	PseudoClass.
+
+1999-07-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Color.h (Magick::Color): Color parameters are now
+ 	stored in a MagickLib::RunlengthPacket structure which is
+ 	referenced via a pointer.  This structure is either allocated by a
+ 	Magick::Color constructor or passed as an argument to a
+ 	Magick::Color constructor so that it may refer to to a
+ 	MagickLib::Image pixel. The owner of the structure is managed so
+ 	that the structure is only deleted if it was allocated by
+ 	Magick::Color.
+
 1999-07-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* overall : Removed 'Magick' prefix from all source file

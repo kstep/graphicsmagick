@@ -343,7 +343,7 @@ distdir: $(DISTFILES)
 	done
 Blob.lo Blob.o : Blob.cpp Magick++/Blob.h Magick++/Include.h
 Color.lo Color.o : Color.cpp Magick++/Color.h Magick++/Include.h \
-	Magick++/Functions.h
+	Magick++/Functions.h Magick++/LastError.h
 Drawable.lo Drawable.o : Drawable.cpp Magick++/Drawable.h \
 	Magick++/Color.h Magick++/Include.h Magick++/Geometry.h
 Exception.lo Exception.o : Exception.cpp Magick++/Exception.h

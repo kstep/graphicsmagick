@@ -1,6 +1,9 @@
 Items large and small which remain to be done before Magick++ 1.0
 --------------------------------------------------------------------
 
+* Allocate ImageMagick Image and ImageInfo, even for Magick::Image
+  default constructor.
+
 * Support an efficient yet simple way to manipulate image pixels and
   colormap (if pseudocolor) via an array style mechanism. Probably
   support image as a two-dimensional array of a derived class of
@@ -16,18 +19,11 @@ Items large and small which remain to be done before Magick++ 1.0
   Paul S. Mostert <pmostert@gte.net>
   Mario Olimpio de Menezes <mario@curiango.ipen.br>
 
-* Install Magick++ headers into a Magick++ subdirectory and remove Magick
-  from the file name.
-
 * Image canvas should be DirectClass rather than PseudoClass.
 
 * Support manipulating IPTC profiles directly. Bill Radcliffe
   <BillR@corbis.com> has agreed to write a container class to support
   this.
-
-* Support reading an image from a BLOB in memory for at least one
-  format. Bill Radcliffe <BillR@corbis.com> has done work in this area.
-  Hopefully he will be able to contribute some of his work.
 
 * Add thread-safety.  The only impact here is with error reporting
   which is synchronous through a function call (ImageMagick design).
@@ -39,26 +35,25 @@ Items large and small which remain to be done before Magick++ 1.0
 * Port to Sun Workshop 5.0 under Solaris (no access to compiler yet
   but hope so soon ...)
 
-* Support building dynamic library under Unix.
+* Support building working dynamic library under Unix.
 
-* Support building DLL under Win32.
+* Support building working DLL under Win32.
 
 * Documentation based on Framemaker sources which produce Postscript,
-  PDF, and HTML outputs.  Status: in Framemaker but not yet ready for
-  prime time.
+  PDF, and HTML outputs.  Status: documentation for Magick++ is
+  included in the ImageMagick documentation which is distributed
+  as a PDF file.  HTML generation not yet ready for use.
 
 Items which will require the aid of volunteers.  Volunteers?
 --------------------------------------------------------------------
 
-* Port to CodeWarrior Professional 5.0 (release in June) under NT
+* Port to CodeWarrior Professional 5.0 (released in June) under NT
 
 * Port to Borland C++ Builder 4.0 (http://www.borland.com/)
 
 * Port to EDG C++ (multi-platform) compiler (http://www.edg.com/)
 
 * Port to HP-UX C++ compiler
-
-* Port to SGI C++ compiler
 
 * Port to AIX C Set++ compiler
 

@@ -13,15 +13,20 @@ using namespace std;
 
 #include <Magick++/Exception.h>
 
+// Construct with message string
 Magick::Exception::Exception( const std::string& what_ )
   : _what(what_)
 {
 }
-const char* Magick::Exception::what( ) const
+
+// Return message string
+const char* Magick::Exception::what( ) const throw()
 {
   return _what.c_str();
 }
 
+
+// Print exception to stream.
 std::ostream& Magick::operator<<( std::ostream& stream_,
 				  const Magick::Exception& exception_)
 {

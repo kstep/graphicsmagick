@@ -102,60 +102,50 @@ void Magick::LastError::throwException( void )
   if ( _qualifier.length() > 0 )
     message += " (" + _qualifier + ")";
 
+
+
   // FIXME: For some reason this all of a sudden became necessary on a SVR4 box!
 #undef strerror
   if ( syserror() )
     message += std::string(" [") + strerror(syserror()) + std::string("]");
 
-  switch ( _error )
+  int error = _error;
+  clear();
+
+  switch ( error )
     {
       // Warnings
     case MagickLib::ResourceLimitWarning :
-      clear();
       throw WarningResourceLimit( message );
     case MagickLib::XServerWarning :
-      clear();
       throw WarningXServer( message );
     case MagickLib::OptionWarning :
-      clear();
       throw WarningOption( message );
     case MagickLib::DelegateWarning :
-      clear();
       throw WarningDelegate( message );
     case MagickLib::MissingDelegateWarning :
-      clear();
       throw WarningMissingDelegate( message );
     case MagickLib::CorruptImageWarning :
-      clear();
       throw WarningCorruptImage( message );
     case MagickLib::FileOpenWarning :
-      clear();
       throw WarningFileOpen( message );
       // Errors
     case MagickLib::ResourceLimitError :
-      clear();
       throw ErrorResourceLimit( message );
     case MagickLib::XServerError :
-      clear();
       throw ErrorXServer( message );
     case MagickLib::OptionError :
-      clear();
       throw ErrorOption( message );
     case MagickLib::DelegateError :
-      clear();
       throw ErrorDelegate( message );
     case MagickLib::MissingDelegateError :
-      clear();
       throw ErrorMissingDelegate( message );
     case MagickLib::CorruptImageError :
-      clear();
       throw ErrorCorruptImage( message );
     case MagickLib::FileOpenError :
-      clear();
       throw ErrorFileOpen( message );
     case MagickLib::UndefinedError :
     default :
-      clear();
       throw ErrorUndefined( message );
     }
 }

@@ -95,7 +95,7 @@ INCLUDES = -I../lib
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = color attributes manipulate
+check_PROGRAMS = color attributes manipulate readwrite
 
 LDADD = ../lib/libMagick++.la
 
@@ -105,7 +105,9 @@ color_SOURCES = color.cpp
 
 manipulate_SOURCES = manipulate.cpp
 
-EXTRA_DIST = Generic.ttf test_image.miff test_image_anim.gif 	attributes.dsp color.dsp manipulate.dsp
+readwrite_SOURCES = readwrite.cpp
+
+EXTRA_DIST = Generic.ttf test_image.miff test_image_anim.gif 	attributes.dsp color.dsp manipulate.dsp readwrite.dsp
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
@@ -126,6 +128,10 @@ manipulate_OBJECTS =  manipulate.o
 manipulate_LDADD = $(LDADD)
 manipulate_DEPENDENCIES =  ../lib/libMagick++.la
 manipulate_LDFLAGS = 
+readwrite_OBJECTS =  readwrite.o
+readwrite_LDADD = $(LDADD)
+readwrite_DEPENDENCIES =  ../lib/libMagick++.la
+readwrite_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -138,8 +144,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(color_SOURCES) $(attributes_SOURCES) $(manipulate_SOURCES)
-OBJECTS = $(color_OBJECTS) $(attributes_OBJECTS) $(manipulate_OBJECTS)
+SOURCES = $(color_SOURCES) $(attributes_SOURCES) $(manipulate_SOURCES) $(readwrite_SOURCES)
+OBJECTS = $(color_OBJECTS) $(attributes_OBJECTS) $(manipulate_OBJECTS) $(readwrite_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -210,6 +216,10 @@ attributes: $(attributes_OBJECTS) $(attributes_DEPENDENCIES)
 manipulate: $(manipulate_OBJECTS) $(manipulate_DEPENDENCIES)
 	@rm -f manipulate
 	$(CXXLINK) $(manipulate_LDFLAGS) $(manipulate_OBJECTS) $(manipulate_LDADD) $(LIBS)
+
+readwrite: $(readwrite_OBJECTS) $(readwrite_DEPENDENCIES)
+	@rm -f readwrite
+	$(CXXLINK) $(readwrite_LDFLAGS) $(readwrite_OBJECTS) $(readwrite_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 .cpp.lo:
@@ -274,6 +284,13 @@ color.o: color.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
 	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
 	../lib/Magick++/Functions.h
 manipulate.o: manipulate.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
+	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
+	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
+	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
+	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
+	../lib/Magick++/Functions.h
+readwrite.o: readwrite.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
 	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
 	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
 	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
@@ -361,6 +378,7 @@ check:
 	./color
 	./attributes
 	./manipulate
+	./readwrite
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

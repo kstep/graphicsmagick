@@ -21,7 +21,7 @@ namespace Magick
     friend std::ostream& operator<<(std::ostream& stream_, const Exception& exception_);
   public:
     Exception( const std::string& what_ );
-    virtual const char* what () const;
+    virtual const char* what () const throw();
   private:
     std::string _what;
   };

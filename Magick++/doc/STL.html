@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.5 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Documentation on Magick++'s STL support templates.">
    <meta name="Keywords" content="STL,Magick++,ImageMagick">
@@ -204,8 +204,8 @@ such that the original frames morph (blend) into each other when played
 as an animation.</font></td>
 </tr>
 
-<tr>
-<td>
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
 <center><a NAME="readImages"></a><font size=-1>readImages</font></center>
 </td>
 
@@ -217,7 +217,15 @@ the string <i>imageSpec_</i>.</font></td>
 </tr>
 
 <tr>
-<td>
+<td><font size=-1>Container *sequence_, const <a href="Blob.html">Blob</a>
+&amp;blob_</font></td>
+
+<td><font size=-1>Read a sequence of image frames into existing container
+(appending to container sequence_) from <a href="Blob.html">Blob</a> blob_.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
 <center><a NAME="writeImages"></a><font size=-1>writeImages</font></center>
 </td>
 
@@ -231,6 +239,19 @@ Set <i>adjoin_ </i>to false to write a set of image frames via a wildcard
 </i>(e.g.
 image%02d.miff).</font>
 <br><font size=-1><b><font color="#FF0000">Caution: </font></b>if an image
+format is selected which is capable of supporting fewer colors than the
+original image or quantization has been requested, the original image will
+be quantized to fewer colors. Use a copy of the original if this is a problem.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>InputIterator first_, InputIterator last_, const <a href="Blob.html">Blob</a>
+&amp;blob_, bool adjoin_</font></td>
+
+<td><font size=-1>Write images in container to in-memory BLOB specified
+by <a href="Blob.html">Blob</a> blob_. Set adjoin_ to false to write a
+set of image frames via a wildcard imageSpec_ (e.g. image%02d.miff).</font>
+<br><font size=-1><b><font color="#FF0000">Caution:</font></b> if an image
 format is selected which is capable of supporting fewer colors than the
 original image or quantization has been requested, the original image will
 be quantized to fewer colors. Use a copy of the original if this is a problem.</font></td>
@@ -871,7 +892,7 @@ the histograms of the color components and identifying units that are homogeneou
 with the fuzzy c-means technique. Also uses <i>quantizeColorSpace</i> and
 <i>verbose</i>
 image attributes. Specify <i>clusterThreshold_</i>, as the number&nbsp;
-of&nbsp; pixels&nbsp; each cluster&nbsp; must exceed the the cluster threshold
+of&nbsp; pixels&nbsp; each cluster&nbsp; must exceed the cluster threshold
 to be considered valid. <i>SmoothingThreshold_</i> eliminates noise in
 the&nbsp; second derivative of the histogram. As the value is&nbsp; increased,
 you can&nbsp; expect&nbsp; a&nbsp; smoother second derivative.&nbsp; The

@@ -97,6 +97,9 @@ namespace Magick
   template <class Container>
   void readImages( Container *sequence_,
 		   const std::string &imageSpec_ );
+  template <class Container>
+  void readImages( Container *sequence_,
+		   const Blob &blob_ );
 
   // Write images to file.
   // Set adjoin_ to false to write a set of image frames via a
@@ -105,6 +108,11 @@ namespace Magick
   void writeImages( InputIterator first_,
 		    InputIterator last_,
 		    const std::string &imageSpec_,
+		    bool adjoin_ );
+  template <class InputIterator>
+  void writeImages( InputIterator first_,
+		    InputIterator last_,
+		    const Blob &blob_,
 		    bool adjoin_ );
 
   //
@@ -2004,7 +2012,7 @@ namespace Magick
   void animateImages( InputIterator first_,
 		      InputIterator last_ ) {
     linkImages( first_, last_ );
-    MagickLib::AnimateImages( first_->options()->imageInfo(), first_->image() );
+    MagickLib::AnimateImages( first_->imageInfo(), first_->image() );
     unlinkImages( first_, last_ );
   }
 
@@ -2047,7 +2055,7 @@ namespace Magick
   void displayImages( InputIterator first_,
 		      InputIterator last_ ) {
     linkImages( first_, last_ );
-    MagickLib::DisplayImages( first_->options()->imageInfo(), first_->image() );
+    MagickLib::DisplayImages( first_->imageInfo(), first_->image() );
     unlinkImages( first_, last_ );
   }
 
@@ -2210,6 +2218,24 @@ namespace Magick
     if ( errPtr->isError() )
       errPtr->throwException();
   }
+  template <class Container>
+  void readImages( Container *sequence_,
+		   const Blob &blob_ ) {
+    Magick::Options options;
+    MagickLib::Image *images = MagickLib::BlobToImage( options.imageInfo(),
+						       static_cast<const char *>(blob_.data()),
+						       blob_.length() );
+
+    // Reset-blob struct in Image.
+    // FIXME: requirement for this is eliminated in final 4.2.8
+    MagickLib::GetBlobInfo( &(images->blob) );
+
+    insertImages( sequence_, images, options );
+
+    LastError* errPtr = LastError::instance();
+    if ( errPtr->isError() )
+      errPtr->throwException();
+  }
 
   // Write
   //unsigned int WriteImage(ImageInfo *,Image *);
@@ -2228,7 +2254,7 @@ namespace Magick
     first_->adjoin( adjoin_ );
 
     linkImages( first_, last_ );
-    int errorStat = MagickLib::WriteImage( first_->options()->imageInfo(),
+    int errorStat = MagickLib::WriteImage( first_->imageInfo(),
 					   first_->image() );
     unlinkImages( first_, last_ );
 
@@ -2239,6 +2265,38 @@ namespace Magick
 
     if ( errorStat != false )
       return;
+
+    LastError* errPtr = LastError::instance();
+    if ( errPtr->isError() )
+      errPtr->throwException();
+  }
+  template <class InputIterator>
+  void writeImages( InputIterator first_,
+		    InputIterator last_,
+		    const Blob &blob_,
+		    bool adjoin_ ) {
+    // Save original image settings
+    std::string origMagick = first_->magick();
+    bool origAdjoin = first_->adjoin();
+
+    first_->adjoin( adjoin_ );
+
+    linkImages( first_, last_ );
+
+    unsigned long length = 24576; // 64 x 64 x 6
+    void* data = MagickLib::ImageToBlob( first_->imageInfo(),
+					 first_->image(),
+					 &length );
+    blob_->updateNoCopy( data, length );
+    // Reset-blob struct in Image.
+    // FIXME: requirement for this should be temporary
+    MagickLib::GetBlobInfo( &(first_->image()->blob) );
+
+    unlinkImages( first_, last_ );
+
+    // Restore original image settings
+    first_->magick( origMagick );
+    first_->adjoin( origAdjoin );
 
     LastError* errPtr = LastError::instance();
     if ( errPtr->isError() )

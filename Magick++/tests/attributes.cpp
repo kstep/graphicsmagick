@@ -1234,15 +1234,6 @@ int main( int /*argc*/, char ** /*argv*/)
     image.subRange(0);
 
     //
-    // text
-    //
-    if ( image.text().length() != 0 )
-      {
-	++failures;
-	cout << "Line: " << __LINE__ << ", text default is not empty string as expected" << endl;
-      }
-
-    //
     // tileName
     //
     if ( image.tileName().length() != 0 )

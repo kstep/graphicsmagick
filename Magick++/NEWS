@@ -1,4 +1,12 @@
+(0.8.6)
+  * Color is now based on ImageMagick's RunlengthPacket structure (via a
+    pointer) so that it may eventually be used to represent an image
+    pixel.
 (0.8.5)
+  * Headers are now installed under prefix/include/Magick++ on Unix
+    systems with the exception that Magick++.h is installed under
+    prefix/include as it was before.  Programs which include Magick++.h
+    (the documented approach) should not be impacted.
   * Image constructors to construct an image from a BLOB.
   * Image read and write methods to decode and encode images stored in a
     BLOB.  This allows reading/writing image "files" from/to memory rather

@@ -102,6 +102,8 @@ namespace Magick
     void            charcoal ( double factor_ = 50 );
     
     // Chop image (remove vertical or horizontal subregion of image)
+    // FIXME: describe how geometry argument is used to select either horizontal or
+    // vertical subregion of image.
     void            chop ( const Geometry &geometry_ );
     
     // Colorize opaque color in image using pen color
@@ -140,7 +142,7 @@ namespace Magick
     void            despeckle ( void );
     
     // Display image on screen
-    void            display ( void ) const;
+    void            display ( void );
     
     // Draw on image using a single drawable
     void            draw ( const Drawable &drawable_ );
@@ -447,6 +449,12 @@ namespace Magick
     void            chromaWhitePoint ( float *x_, float *y_ ) const;
     
     // Image class (DirectClass or PseudoClass)
+    // NOTE: setting a DirectClass image to PseudoClass will result in
+    // the loss of color information if the number of colors in the
+    // image is greater than the maximum palette size (either 256 or
+    // 65536 entries depending on whether QuantumLeap was specified
+    // when ImageMagick was built).
+    void            classType ( ClassType class_ );
     ClassType       classType ( void ) const;
     
     // Colors within this distance are considered equal
@@ -466,6 +474,9 @@ namespace Magick
     // Compression type
     void            compressType ( CompressionType compressType_ );
     CompressionType compressType ( void ) const;
+
+    // Image pixels are condensed (Run-Length encoded)
+    bool            condensed( void ) const;
     
     // Vertical and horizontal resolution in pixels of the image
     void            density ( const Geometry &geomery_ );
@@ -580,7 +591,7 @@ namespace Magick
     // Get/set pixel color at location x & y.
     void            pixelColor ( unsigned int x_, unsigned int y_,
 				 const Color &color_ );
-    Color           pixelColor ( unsigned int x_, unsigned int y_ ) const;
+    Color           pixelColor ( unsigned int x_, unsigned int y_ );
 
     // Postscript page size. 
     void            psPageSize ( const Geometry &pageSize_ );
@@ -643,9 +654,6 @@ namespace Magick
     void            subRange ( unsigned int subRange_ );
     unsigned int    subRange ( void ) const;
 
-    // Any text associated with the image
-    std::string     text ( void ) const;
-
     // Tile name
     void            tileName ( const std::string &tileName_ );
     std::string     tileName ( void ) const;
@@ -684,9 +692,15 @@ namespace Magick
 
     // Retrieve Image*
     MagickLib::Image*& image( void );
+    const MagickLib::Image* constImage( void ) const;
 
     // Retrieve Options*
     Options* options( void );
+    const Options* constOptions( void ) const;
+
+    // Retrieve ImageInfo*
+    MagickLib::ImageInfo * imageInfo( void );
+    const MagickLib::ImageInfo * constImageInfo( void ) const;
 
     // Replace current image (reference counted)
     MagickLib::Image* replaceImage ( MagickLib::Image* replacement_ );
@@ -783,13 +797,30 @@ inline MagickLib::Image*& Magick::Image::image( void )
 {
   return _imgRef->image();
 }
+inline const MagickLib::Image* Magick::Image::constImage( void ) const
+{
+  return _imgRef->image();
+}
 
 // Get Magick::Options*
 inline Magick::Options* Magick::Image::options( void )
 {
   return _imgRef->options();
 }
+inline const Magick::Options* Magick::Image::constOptions( void ) const
+{
+  return _imgRef->options();
+}
 
+// Get ImageInfo *
+inline MagickLib::ImageInfo* Magick::Image::imageInfo( void )
+{
+  return _imgRef->options()->imageInfo();
+}
+inline const MagickLib::ImageInfo * Magick::Image::constImageInfo( void ) const
+{
+  return _imgRef->options()->imageInfo();
+}
 
 
 #endif // Image_header

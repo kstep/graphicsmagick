@@ -16,7 +16,7 @@ using namespace std;
 
 #include <Magick++/Color.h>
 #include <Magick++/Functions.h>
-
+#include <Magick++/LastError.h>
 
 //
 // Color operator fuctions
@@ -77,10 +77,47 @@ int Magick::operator <= ( const Magick::Color& left_,
 // Color Implementation
 //
 
+// Copy constructor
+Magick::Color::Color ( const Color & color_ )
+  : _packet(0)
+{
+  if ( this != &color_ )
+    {
+      if ( color_._packet != 0 )
+	{
+	  _packet = new MagickLib::RunlengthPacket;
+	  _packet->red    = color_._packet->red;
+	  _packet->green  = color_._packet->green;
+	  _packet->blue   = color_._packet->blue;
+	  _packet->length = 1;
+	  _packet->index  = color_._packet->index;
+	}
+    }
+}
+
+Magick::Color Magick::Color::operator = ( const Color& color_ )
+{
+  if ( this != &color_ )
+    {
+      if ( color_._packet != 0 )
+	{
+	  if ( ! _packet )
+	    _packet = new MagickLib::RunlengthPacket;
+	  _packet->red    = color_._packet->red;
+	  _packet->green  = color_._packet->green;
+	  _packet->blue   = color_._packet->blue;
+	  _packet->length = 1;
+	  _packet->index  = color_._packet->index;
+	}
+    }
+  return *this;
+}
+
 // Set color via X11 color specification string
 const Magick::Color& Magick::Color::operator = ( std::string x11color_ )
 {
-  isValid ( false );
+  if ( !_packet )
+    initRep();
 
   MagickLib::ColorPacket target_color;
   if ( MagickLib::QueryColorDatabase( x11color_.c_str(), &target_color ) )
@@ -96,6 +133,11 @@ const Magick::Color& Magick::Color::operator = ( std::string x11color_ )
 	// If alpha is not set, then set to MaxRGB (Opaque) since that
 	// is the default when a color is specified.
 	alphaQuantum( MaxRGB );
+    }
+  else
+    {
+      LastError err( MagickLib::OptionError, "Color not valid.", x11color_ );
+      err.throwException();
     }
 
   return *this;
@@ -123,19 +165,19 @@ Magick::Color::operator std::string() const
 #if defined(QuantumLeap)
   colorstr << "#"
 	   << hex
-	   << setw(4) << (unsigned int)_red
-	   << setw(4) << (unsigned int)_green
-	   << setw(4) << (unsigned int)_blue;
-  if ( _alpha < MaxRGB )
-    colorstr << hex << setw(4) << (unsigned int)_alpha;
+	   << setw(4) << (unsigned int)redQuantum()
+	   << setw(4) << (unsigned int)greenQuantum()
+	   << setw(4) << (unsigned int)blueQuantum();
+  if ( alphaQuantum() < MaxRGB )
+    colorstr << hex << setw(4) << (unsigned int)alphaQuantum();
 #else
   colorstr << "#"
 	   << hex
-	   << setw(2) << (unsigned int)_red
-	   << setw(2) << (unsigned int)_green
-	   << setw(2) << (unsigned int)_blue;
-  if ( _alpha < MaxRGB )
-    colorstr << hex << setw(2) << (unsigned int)_alpha;
+	   << setw(2) << (unsigned int)redQuantum()
+	   << setw(2) << (unsigned int)greenQuantum()
+	   << setw(2) << (unsigned int)blueQuantum();
+  if ( alphaQuantum() < MaxRGB )
+    colorstr << hex << setw(2) << (unsigned int)alphaQuantum();
 #endif
 
   colorstr << ends;

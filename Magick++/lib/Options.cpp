@@ -11,6 +11,7 @@
 
 #include <string>
 #include <cstdlib>
+#include <iostream>
 #include <Magick++/Options.h>
 #include <Magick++/Functions.h>
 #include <Magick++/Include.h>
@@ -334,17 +335,11 @@ void Magick::Options::penTexture ( const MagickLib::Image *penTexture_ )
 
   _penTexture = (MagickLib::Image *)NULL;
 
-  if ( penTexture_ )
+  if ( penTexture_ && penTexture_->packets )
     _penTexture = MagickLib::CloneImage( penTexture_,
 					 penTexture_->columns,
 					 penTexture_->rows,
 					 True );
-//   delete _penTexture;
-
-//   if ( penTexture_ != (const Magick::Image*)NULL )
-//     _penTexture = new Image(*penTexture_);
-//   else
-//     _penTexture = (Magick::Image*)NULL;
 }
 const MagickLib::Image* Magick::Options::penTexture ( void  ) const
 {
