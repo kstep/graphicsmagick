@@ -1280,7 +1280,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (point.y > bounds.y2)
         bounds.y2=point.y;
     }
-    mid=ceil(clone_info->affine[0]*clone_info->linewidth/2.0);
+    mid=clone_info->affine[0]*clone_info->linewidth/2.0;
     bounds.x1-=mid;
     if (bounds.x1 < 0.0)
       bounds.x1=0.0;
@@ -2265,8 +2265,8 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
       case PointPrimitive:
       default:
       {
-        if ((point->x == (int) ceil(p->point.x-0.5)) &&
-            (point->y == (int) ceil(p->point.y-0.5)))
+        if ((ceil(point->x-0.5) == ceil(p->point.x-0.5)) &&
+            (ceil(point->y-0.5) == ceil(p->point.y-0.5)))
           opacity=1.0;
         break;
       }
@@ -2367,8 +2367,8 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case PointMethod:
           default:
           {
-            if ((point->x != (int) ceil(p->point.x-0.5)) ||
-                (point->y != (int) ceil(p->point.y-0.5)))
+            if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
+                (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
               break;
             opacity=1.0;
             break;
@@ -2378,11 +2378,11 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
             PixelPacket
               target;
 
-            if ((point->x != (int) ceil(p->point.x-0.5)) ||
-                (point->y != (int) ceil(p->point.y-0.5)))
+            if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
+                (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
               break;
-            target=GetOnePixel(image,(int) ceil(p->point.x-0.5),
-              (int) ceil(p->point.y-0.5));
+            target=GetOnePixel(image,ceil(p->point.x-0.5),(int)
+              ceil(p->point.y-0.5));
             (void) OpaqueImage(image,target,draw_info->fill);
             opacity=0.0;
             break;
@@ -2390,18 +2390,18 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            if ((point->x != (int) ceil(p->point.x-0.5)) ||
-                (point->y != (int) ceil(p->point.y-0.5)))
+            if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
+                (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
               break;
-            target=GetOnePixel(image,(int) ceil(p->point.x-0.5),
-              (int) ceil(p->point.y-0.5));
+            target=GetOnePixel(image,ceil(p->point.x-0.5),(int)
+              ceil(p->point.y-0.5));
             if (p->method == FillToBorderMethod)
               {
                 border_color=draw_info->border_color;
                 target=border_color;
               }
             (void) ColorFloodfillImage(image,draw_info,target,
-              (int) ceil(point->x-0.5),(int) ceil(point->y-0.5),p->method);
+              ceil(point->x-0.5),ceil(point->y-0.5),p->method);
             break;
           }
           case ResetMethod:
@@ -2424,11 +2424,11 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case PointMethod:
           default:
           {
-            if ((point->x != (int) ceil(p->point.x-0.5)) ||
-                (point->y != (int) ceil(p->point.y-0.5)))
+            if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
+                (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
               break;
-            q=GetImagePixels(image,(int) ceil(point->x-0.5),
-              (int) ceil(point->y-0.5),1,1);
+            q=GetImagePixels(image,ceil(point->x-0.5),(int)
+              ceil(point->y-0.5),1,1);
             if (q != (PixelPacket *) NULL)
               {
                 q->opacity=TransparentOpacity;
@@ -2441,11 +2441,11 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
             PixelPacket
               target;
 
-            if ((point->x != (int) ceil(p->point.x-0.5)) ||
-                (point->y != (int) ceil(p->point.y-0.5)))
+              if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
+                  (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
               break;
-            target=GetOnePixel(image,(int) ceil(p->point.x-0.5),
-              (int) ceil(p->point.y-0.5));
+            target=GetOnePixel(image,ceil(p->point.x-0.5),(int)
+              ceil(p->point.y-0.5));
             (void) TransparentImage(image,target);
             opacity=0.0;
             break;
@@ -2453,11 +2453,11 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            if ((point->x != (int) ceil(p->point.x-0.5)) ||
-                (point->y != (int) ceil(p->point.y-0.5)))
+            if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
+                (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
               break;
-            target=GetOnePixel(image,(int) ceil(p->point.x-0.5),
-              (int) ceil(p->point.y-0.5));
+            target=GetOnePixel(image,ceil(p->point.x-0.5),(int)
+              ceil(p->point.y-0.5));
             if (p->method == FillToBorderMethod)
               {
                 border_color=draw_info->border_color;
@@ -2469,8 +2469,8 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           }
           case ResetMethod:
           {
-            q=GetImagePixels(image,(int) ceil(point->x-0.5),
-              (int) ceil(point->y-0.5),1,1);
+            q=GetImagePixels(image,ceil(point->x-0.5),(int)
+              ceil(point->y-0.5),1,1);
             if (q != (PixelPacket *) NULL)
               {
                 q->opacity=OpaqueOpacity;
@@ -2492,8 +2492,8 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
         register char
           *r;
 
-        if ((point->x != (int) ceil(p->point.x-0.5)) ||
-            (point->y != (int) ceil(p->point.y-0.5)))
+        if ((ceil(point->x-0.5) != ceil(p->point.x-0.5)) ||
+            (ceil(point->y-0.5) != ceil(p->point.y-0.5)))
           break;
         if (p->text == (char *) NULL)
           break;
