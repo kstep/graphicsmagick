@@ -4108,6 +4108,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
 #endif
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
   CloseBlob(image);
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   have_mng_structure=False;

@@ -2127,6 +2127,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       register char
         *p;
 
+      register long
+        i;
+
       unsigned long
         first,
         last;
@@ -2148,14 +2151,21 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         quantum=first > last ? -1 : 1;
         for (p=q; first != (last+quantum); first+=quantum)
         {
-          for (next=image; next; next=next->next)
+          i=0;
+          for (next=image; next != (Image *) NULL; next=next->next)
           {
-            if (next->scene != first)
-              continue;
+            if (next->scene != 0)
+              i=next->scene;
+            if (i != first)
+              {
+                i++;
+                continue;
+              }
             clone_image=CloneImage(next,0,0,True,exception);
             if (clone_image == (Image *) NULL)
               break;
             PushImageList(&subimages,clone_image,exception);
+            i++;
           }
         }
       }
