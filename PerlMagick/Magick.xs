@@ -4551,7 +4551,7 @@ Mogrify(ref,...)
           if (attribute_flag[4])
             target=fill_color;
           if (attribute_flag[5])
-            image->fuzz=argument_list[5].int_reference;
+            image->fuzz=argument_list[5].double_reference;
           ColorFloodfillImage(image,draw_info,target,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);
@@ -4961,7 +4961,7 @@ Mogrify(ref,...)
           if (attribute_flag[4])
             target=fill_color;
           if (attribute_flag[5])
-            image->fuzz=argument_list[5].int_reference;
+            image->fuzz=argument_list[5].double_reference;
           MatteFloodfillImage(image,target,matte,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);
@@ -5016,7 +5016,7 @@ Mogrify(ref,...)
             (void) QueryColorDatabase(argument_list[1].string_reference,
               &fill_color);
           if (attribute_flag[2])
-            image->fuzz=argument_list[2].int_reference;
+            image->fuzz=argument_list[2].double_reference;
           OpaqueImage(image,target,fill_color);
           break;
         }
