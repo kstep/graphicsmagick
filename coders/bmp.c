@@ -56,6 +56,7 @@
 #include "studio.h"
 #include "blob.h"
 #include "list.h"
+#include "log.h"
 #include "magick.h"
 #include "monitor.h"
 #include "utility.h"
@@ -408,17 +409,12 @@ static unsigned int IsBMP(const unsigned char *magick,const size_t length)
 {
   if (length < 2)
     return(False);
-  if (LocaleNCompare((char *) magick,"BA",2) == 0)
-    return(True);
-  if (LocaleNCompare((char *) magick,"BM",2) == 0)
-    return(True);
-  if (LocaleNCompare((char *) magick,"IC",2) == 0)
-    return(True);
-  if (LocaleNCompare((char *) magick,"PI",2) == 0)
-    return(True);
-  if (LocaleNCompare((char *) magick,"CI",2) == 0)
-    return(True);
-  if (LocaleNCompare((char *) magick,"CP",2) == 0)
+  if ((LocaleNCompare((char *) magick,"BA",2) == 0) ||
+      (LocaleNCompare((char *) magick,"BM",2) == 0) ||
+      (LocaleNCompare((char *) magick,"IC",2) == 0) ||
+      (LocaleNCompare((char *) magick,"PI",2) == 0) ||
+      (LocaleNCompare((char *) magick,"CI",2) == 0) ||
+      (LocaleNCompare((char *) magick,"CP",2) == 0))
     return(True);
   return(False);
 }
@@ -511,6 +507,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open image file.
   */
+  LogMagickEvent(CoderEvent," Begin ReadBMPImage()");
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
@@ -556,6 +553,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ReadBlobLSBLong(image);
     bmp_info.offset_bits=ReadBlobLSBLong(image);
     bmp_info.size=ReadBlobLSBLong(image);
+    if (bmp_info.file_size != GetBlobSize(image))
+         {
+           ThrowReaderException(CorruptImageWarning,
+             "Corrupt BMP header: length and file_size do not match.", image);
+         }
     if (bmp_info.size == 12)
       {
         /*
@@ -571,6 +573,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.compression=BI_RGB;
         bmp_info.image_size=0;
         bmp_info.alpha_mask=0;
+      }
+    else if (bmp_info.size < 40)
+      {
+         ThrowReaderException(CorruptImageWarning,
+           "Corrupt BMP header: Non OS/2 BMP header size < 40",image);
       }
     else
       {
@@ -699,6 +706,53 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
           }
       }
+    /* TMcC: Check rest of header */
+    if (bmp_info.width <= 0)
+       ThrowReaderException(CorruptImageWarning,
+          "Corrupt BMP header: Negative or zero width", image);
+    
+    if (bmp_info.height == 0)
+       ThrowReaderException(CorruptImageWarning,
+          "Corrupt BMP header: Zero Height", image);
+    
+    if ( (bmp_info.height < 0) && (bmp_info.compression !=0) )
+       ThrowReaderException(CorruptImageWarning,
+         "Corrupt BMP header: Negative height with compression not valid",
+            image);
+    
+    if (bmp_info.planes != 1)
+       ThrowReaderException(CorruptImageWarning,
+         "Corrupt BMP header: Static Planes value not equal 1", image);
+    
+    if ((bmp_info.bits_per_pixel != 1) && (bmp_info.bits_per_pixel != 4) &&
+        (bmp_info.bits_per_pixel != 8) && (bmp_info.bits_per_pixel != 16) &&
+        (bmp_info.bits_per_pixel != 24) && (bmp_info.bits_per_pixel != 32))
+       ThrowReaderException(CorruptImageWarning,
+         "Corrupt BMP header: Invalid Bits per Pixel", image);
+    
+    if (bmp_info.number_colors > 1<<bmp_info.number_colors)
+       ThrowReaderException(CorruptImageWarning,
+         "Corrupt BMP header: Invalid Number of Colors", image);
+    
+    if (bmp_info.compression > 3)
+       ThrowReaderException(CorruptImageWarning,
+          "Corrupt BMP header: Invalid Compression", image);
+    
+    if ((bmp_info.compression == 1) && (bmp_info.bits_per_pixel != 8))
+       ThrowReaderException(CorruptImageWarning,
+         "Corrupt BMP header: Invalid bits per pixel for RLE8 compression",
+          image);
+    
+    if ((bmp_info.compression == 2) && (bmp_info.bits_per_pixel != 4))
+       ThrowReaderException(CorruptImageWarning,
+         "Corrupt BMP header: Invalid bits per pixel for RLE4 compression",
+          image);
+    
+    if ((bmp_info.compression == 3) && (bmp_info.bits_per_pixel < 16))
+       ThrowReaderException(CorruptImageWarning,
+     "Corrupt BMP header: Invalid bits per pixel for BITFIELDS compression",
+      image);
+
     switch (bmp_info.compression)
     {
       case BI_RGB:
@@ -1191,6 +1245,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
+  LogMagickEvent(CoderEvent," End   ReadBMPImage()");
   return(image);
 }
 
@@ -1342,6 +1397,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
+  LogMagickEvent(CoderEvent," Begin WriteBMPImage()");
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
@@ -1723,5 +1779,6 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     while (image->previous != (Image *) NULL)
       image=image->previous;
   CloseBlob(image);
+  LogMagickEvent(CoderEvent," End   WriteBMPImage()");
   return(True);
 }
