@@ -127,8 +127,8 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
           double
             gamma;
 
-          gamma=((MaxRGB-beta)+(MaxRGB-alpha)-(MaxRGB-beta)*(MaxRGB-alpha)/
-            MaxRGB);
+          gamma=
+            (MaxRGB-beta)+(MaxRGB-alpha)-(MaxRGB-beta)*(MaxRGB-alpha)/MaxRGB;
           color.red=(Quantum) (((MaxRGB-beta)*(q->red)+(MaxRGB-alpha)*
             ((p->red)-(MaxRGB-beta)*(q->red)/MaxRGB))/gamma);
           color.green=(Quantum) (((MaxRGB-beta)*(q->green)+(MaxRGB-alpha)*
@@ -147,7 +147,7 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
       double
         gamma;
 
-      gamma=MaxRGB*MaxRGB;
+      gamma=(double) MaxRGB*MaxRGB;
       color.red=(Quantum) ((MaxRGB-alpha)*p->red*(MaxRGB-beta)/gamma);
       color.green=(Quantum) ((MaxRGB-alpha)*p->green*(MaxRGB-beta)/gamma);
       color.blue=(Quantum) ((MaxRGB-alpha)*p->blue*(MaxRGB-beta)/gamma);
@@ -159,7 +159,7 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
       double
         gamma;
 
-      gamma=MaxRGB*MaxRGB;
+      gamma=(double) MaxRGB*MaxRGB;
       color.red=(Quantum) ((MaxRGB-alpha)*p->red*beta/gamma);
       color.green=(Quantum) ((MaxRGB-alpha)*p->green*beta/gamma);
       color.blue=(Quantum) ((MaxRGB-alpha)*p->blue*beta/gamma);
@@ -175,7 +175,7 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
         opacity,
         red;
 
-      gamma=MaxRGB*MaxRGB;
+      gamma=(double) MaxRGB*MaxRGB;
       red=((MaxRGB-alpha)*p->red*(MaxRGB-beta)+
         (MaxRGB-beta)*q->red*alpha)/gamma;
       color.red=(Quantum) (red > MaxRGB ? MaxRGB : red);
@@ -199,7 +199,7 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
         opacity,
         red;
 
-      gamma=MaxRGB*MaxRGB;
+      gamma=(double) MaxRGB*MaxRGB;
       red=((MaxRGB-alpha)*p->red*beta+(MaxRGB-beta)*q->red*alpha)/gamma;
       color.red=(Quantum) (red > MaxRGB ? MaxRGB : red);
       green=((MaxRGB-alpha)*p->green*beta+(MaxRGB-beta)*q->green*alpha)/gamma;
