@@ -32,7 +32,7 @@
 #  bug tracking system at http://www.simplesystems.org/ImageMagick/bugs.
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.4 dist-zip foreign
+AUTOMAKE_OPTIONS = 1.4 dist-zip dist-bzip2 foreign
 
 # Subdirectories to build
 if WITH_MAGICK_PLUS_PLUS

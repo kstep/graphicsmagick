@@ -200,7 +200,7 @@ install_sh = @install_sh@
 # Don't require all the GNU mandated files
 
 
-AUTOMAKE_OPTIONS = 1.4 dist-zip foreign
+AUTOMAKE_OPTIONS = 1.4 dist-zip dist-bzip2 foreign
 
 # Subdirectories to build
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = @WITH_MAGICK_PLUS_PLUS_TRUE@Magick++
@@ -232,7 +232,7 @@ CONFIG_CLEAN_FILES =
 DIST_SOURCES = 
 DIST_COMMON =  Makefile.am Makefile.in acconfig.h acinclude.m4 \
 aclocal.m4 config.guess config.sub configure configure.in depcomp \
-install-sh ltmain.sh missing mkinstalldirs
+install-sh ltconfig ltmain.sh missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -398,6 +398,14 @@ dist-zip: distdir
 	-rm -f $(distdir).zip
 	zip -rq $(distdir).zip $(distdir)
 	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
+dist-bzip2: distdir
+	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
+	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
+	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
+	  ! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
+	|| chmod -R a+r $(distdir)
+	$(AMTAR) chof - $(distdir) | bzip2 -9 -c > $(distdir).tar.bz2
+	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
 dist-all: distdir
 	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
 	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
@@ -407,6 +415,7 @@ dist-all: distdir
 	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c > $(distdir).tar.gz
 	-rm -f $(distdir).zip
 	zip -rq $(distdir).zip $(distdir)
+	$(AMTAR) chof - $(distdir) | bzip2 -9 -c > $(distdir).tar.bz2
 	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
 distdir: $(DISTFILES)
 	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
