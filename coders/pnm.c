@@ -505,7 +505,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM raw image to pixel packets.
         */
-        packets=image->depth/8;
+        packets=image->depth <= 8 ? 1 : 2;
         pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
@@ -556,7 +556,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PNM raster image to pixel packets.
         */
-        packets=3*image->depth/8;
+        packets=image->depth <= 8 ? 3 : 6;
         pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
@@ -1085,7 +1085,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Allocate memory for pixels.
         */
-        packets=3*image->depth/8;
+        packets=image->depth <= 8 ? 3 : 6;
         pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,"Memory allocation failed",
