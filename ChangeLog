@@ -1,4 +1,10 @@
 2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Text escaping for -draw and DrawAnnotation was not working properly.
+    Now it does.  Backslash should act as a escape for the following
+    character but should not be displayed except unless the backslash
+    is escaped by another backslash (e.g. "\\").
+
+2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Modified Base64Encode() of utility.c so that it returns the number of
     characters encoded. This avoids having to invoke strlen() on possibly
     megabytes of data.

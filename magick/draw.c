@@ -562,17 +562,13 @@ MagickExport void DrawAnnotation(DrawContext context,
        (*p != 0) && (string_length < (sizeof(escaped_string) - 3));
        ++p)
     {
-      if (*p == '\'')
+      if ( (*p == '\\') || (*p == '\''))
         {
           *q++ = '\\';
-          *q++ = '\\';
-          string_length += 2;
-        }
-      else
-        {
-          *q++ = (*p);
           ++string_length;
         }
+      *q++ = (*p);
+      ++string_length;
     }
   *q = 0;
 

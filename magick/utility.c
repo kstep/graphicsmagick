@@ -1537,87 +1537,71 @@ MagickExport void GetToken(const char *start,char **end,char *token)
 
   i=0;
   for (p=(char *) start; *p != '\0'; )
-  {
-    while (isspace((int) (*p)) && (*p != '\0'))
-      p++;
-    switch (*p)
     {
-      case '"':
-      {
-        for (p++; *p != '\0'; p++)
+      while (isspace((int) (*p)) && (*p != '\0'))
+        p++;
+      switch (*p)
         {
-          if ((*p == '"') && (*(p-1) != '\\'))
-            {
-              p++;
-              break;
-            }
-          token[i++]=(*p);
-        }
-        break;
-      }
-      case '\'':
-      {
-        for (p++; *p != '\0'; p++)
-        {
-          if ((*p == '\'') && (*(p-1) != '\\'))
-            {
-              p++;
-              break;
-            }
-          token[i++]=(*p);
-        }
-        break;
-      }
-      case '{':
-      {
-        for (p++; *p != '\0'; p++)
-        {
-          if ((*p == '}') && (*(p-1) != '\\'))
-            {
-              p++;
-              break;
-            }
-          token[i++]=(*p);
-        }
-        break;
-      }
-      default:
-      {
-        char
-          *q;
-
-        (void) strtod(p,&q);
-        if (p != q)
+        case '"':
+        case '\'':
+        case '{':
           {
-            for ( ; p < q; p++)
-              token[i++]=(*p);
-            if (*p == '%')
-              token[i++]=(*p++);
-            break;
-          }
-        if (!isalpha((int) *p) && (*p != '#') && (*p != '<'))
-          {
-            token[i++]=(*p++);
-            break;
-          }
-        for ( ; *p != '\0'; p++)
-        {
-          if ((isspace((int) *p) || (*p == '=')) && (*(p-1) != '\\'))
-            break;
-          token[i++]=(*p);
-          if (*p == '(')
+            register char
+              escape=*p;
+            
+            if (escape == '{')
+              escape='}';
             for (p++; *p != '\0'; p++)
-            {
-              token[i++]=(*p);
-              if ((*p == ')') && (*(p-1) != '\\'))
+              {
+                if ((*p == '\\') && ((*(p+1) == escape) || (*(p+1) == '\\')))
+                  p++;
+                else
+                  if (*p == escape)
+                    {
+                      p++;
+                      break;
+                    }
+                token[i++]=(*p);
+              }
+            break;
+          }
+        default:
+          {
+            char
+              *q;
+
+            (void) strtod(p,&q);
+            if (p != q)
+              {
+                for ( ; p < q; p++)
+                  token[i++]=(*p);
+                if (*p == '%')
+                  token[i++]=(*p++);
                 break;
-            }
+              }
+            if (!isalpha((int) *p) && (*p != '#') && (*p != '<'))
+              {
+                token[i++]=(*p++);
+                break;
+              }
+            for ( ; *p != '\0'; p++)
+              {
+                if ((isspace((int) *p) || (*p == '=')) && (*(p-1) != '\\'))
+                  break;
+                token[i++]=(*p);
+                if (*p == '(')
+                  for (p++; *p != '\0'; p++)
+                    {
+                      token[i++]=(*p);
+                      if ((*p == ')') && (*(p-1) != '\\'))
+                        break;
+                    }
+              }
+            break;
+          }
         }
-        break;
-      }
+      break;
     }
-    break;
-  }
   token[i]='\0';
   if (LocaleNCompare(token,"url(#",5) == 0)
     {
