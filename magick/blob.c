@@ -1150,8 +1150,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 
                   (void) strncpy(format,p,MaxTextExtent-1);
                   FormatString(p,format,GetImageListIndex(image));
-                  break;
                 }
+              break;
             }
             if (!image_info->adjoin)
               if ((image->previous != (Image *) NULL) ||
