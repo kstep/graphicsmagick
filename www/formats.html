@@ -3,10 +3,10 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
 	<TITLE>Open ImageMagick - File Formats</TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020810;12535100">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20021113;20371221">
+	<META NAME="CHANGED" CONTENT="20021201;10400400">
 	<META NAME="CLASSIFICATION" CONTENT="Describes the file formats supported by Open ImageMagick.">
 	<META NAME="DESCRIPTION" CONTENT="Open ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With Open ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="Open ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software    development, simulation, image, software, AniMagick, Animagic,    Magick++">
@@ -24,12 +24,12 @@
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
 <P ALIGN=CENTER><A HREF="http://promote.pair.com/direct.pl?imagemagick.org"><IMG SRC="../images/promote.png" NAME="Graphic1" ALIGN=RIGHT WIDTH=120 HEIGHT=60 BORDER=0></A><IMG SRC="../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
-<P STYLE="margin-bottom: 0in">Open ImageMagick uses an ASCII string known
-as &quot;magick&quot; (e.g. &quot;GIF&quot;) to identify file
+<P STYLE="margin-bottom: 0in">Open ImageMagick uses an ASCII string
+known as &quot;magick&quot; (e.g. &quot;GIF&quot;) to identify file
 formats, algorithms acting as formats, built-in images, and embedded
 profile types.</P>
-<P STYLE="margin-bottom: 0in"><BR>Open ImageMagick supports reading over
-87 major file formats (not including sub-formats). The following
+<P STYLE="margin-bottom: 0in"><BR>Open ImageMagick supports reading
+over 88 major file formats (not including sub-formats). The following
 table provides a summary of the supported image formats.</P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Supported
 Image Formats</B></FONT></P>
@@ -674,6 +674,27 @@ Image Formats</B></FONT></P>
 		</TR>
 		<TR>
 			<TD WIDTH=13% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT><A HREF="http://www.libmng.com/"><SPAN STYLE="text-decoration: none"><B><FONT SIZE=3>JNG</FONT></B></SPAN></A></P>
+			</TD>
+			<TD WIDTH=10% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>RW</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=26% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Multiple-image
+				Network Graphics</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=51% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT><SPAN STYLE="text-decoration: none"><FONT SIZE=3>JPEG
+				in a PNG-style wrapper with transparency. Requires libjpeg and
+				libpng-1.0.2 or later, <A HREF="http://www.libpng.org/pub/png/libpng.html/">libpng-1.2.5</A>
+				or later recommended. </FONT></SPAN>
+				</P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=13% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>JP2</FONT></FONT></P>
 			</TD>
@@ -688,7 +709,7 @@ Image Formats</B></FONT></P>
 			</TD>
 			<TD WIDTH=51% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT><SPAN STYLE="text-decoration: none"><FONT SIZE=3>Requires
-				<A HREF="http://www.ece.uvic.ca/~mdadams/jasper/">jasper-1.500.0.zip</A></FONT></SPAN></P>
+				<A HREF="http://www.ece.uvic.ca/~mdadams/jasper/">jasper-1.600.0.zip</A></FONT></SPAN></P>
 			</TD>
 		</TR>
 		<TR>
@@ -707,7 +728,7 @@ Image Formats</B></FONT></P>
 			</TD>
 			<TD WIDTH=51% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT><SPAN STYLE="text-decoration: none"><FONT SIZE=3>Requires
-				<A HREF="http://www.ece.ubc.ca/~mdadams/jasper/">jasper-1.500.0.zip</A></FONT></SPAN></P>
+				<A HREF="http://www.ece.ubc.ca/~mdadams/jasper/">jasper-1.600.0.zip</A></FONT></SPAN></P>
 			</TD>
 		</TR>
 		<TR>
@@ -783,9 +804,9 @@ Image Formats</B></FONT></P>
 			</TD>
 			<TD WIDTH=51% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Open ImageMagick's
-				own image format (with ASCII header) which ensures that no image
-				attributes understood by Open ImageMagick are lost.</FONT></FONT></P>
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Open
+				ImageMagick's own image format (with ASCII header) which ensures
+				that no image attributes understood by Open ImageMagick are lost.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR>
@@ -817,12 +838,14 @@ Image Formats</B></FONT></P>
 			</TD>
 			<TD WIDTH=26% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Multiple-image
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>JPEG
 				Network Graphics</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=51% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT><SPAN STYLE="text-decoration: none"><FONT SIZE=3>Requires
-				<A HREF="libpng-1.02.tar.gz">libpng-1.02.tar.gz</A> or later.</FONT></SPAN></P>
+				libpng-1.0.2 or later, <A HREF="http://www.libpng.org/pub/png/libpng.html/">libpng-1.2.5</A>
+				or later recommended. </FONT></SPAN>
+				</P>
 			</TD>
 		</TR>
 		<TR>
@@ -879,11 +902,11 @@ Image Formats</B></FONT></P>
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>The
 				native &quot;in-memory&quot; Open ImageMagick uncompressed file
-				format. This file format is identical to that used by Open ImageMagick
-				to represent images in memory and is read in &quot;zero time&quot;
-				via memory mapping. The MPC format is not portable and is not
-				suitable as an archive format. It is suitable as an intermediate
-				format for high-performance image processing.</FONT></FONT></P>
+				format. This file format is identical to that used by Open
+				ImageMagick to represent images in memory and is read in &quot;zero
+				time&quot; via memory mapping. The MPC format is not portable and
+				is not suitable as an archive format. It is suitable as an
+				intermediate format for high-performance image processing.</FONT></FONT></P>
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>The
 				MPC format requires two files to support one image. When writing
@@ -949,8 +972,8 @@ Image Formats</B></FONT></P>
 			</TD>
 			<TD WIDTH=51% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT><SPAN STYLE="text-decoration: none"><FONT SIZE=3>The
-				native Open ImageMagick vector metafile format. A text file containing
-				vector drawing commands accepted by <A HREF="convert.html">convert</A>'s
+				native Open ImageMagick vector metafile format. A text file
+				containing vector drawing commands accepted by <A HREF="convert.html">convert</A>'s
 				-draw option.</FONT></SPAN></P>
 			</TD>
 		</TR>
@@ -1266,7 +1289,7 @@ Image Formats</B></FONT></P>
 		</TR>
 		<TR>
 			<TD WIDTH=13% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT><A HREF="http://www.cdrom.com/pub/png/"><SPAN STYLE="text-decoration: none"><B><FONT SIZE=3>PNG</FONT></B></SPAN></A></P>
+				<P ALIGN=LEFT><A HREF="http://www.libpng.org/pub/png/"><SPAN STYLE="text-decoration: none"><B><FONT SIZE=3>PNG</FONT></B></SPAN></A></P>
 			</TD>
 			<TD WIDTH=10% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
@@ -1279,8 +1302,8 @@ Image Formats</B></FONT></P>
 			</TD>
 			<TD WIDTH=51% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT><SPAN STYLE="text-decoration: none"><FONT SIZE=3>Requires
-				<A HREF="ftp://ftp.uu.net/graphics/png/src/">libpng-1.02.tar.gz</A>.
-				</FONT></SPAN>
+				libpng-1.0.2 or later, <A HREF="http://www.libpng.org/pub/png/libpng.html/">libpng-1.2.5</A>
+				or later recommended. </FONT></SPAN>
 				</P>
 			</TD>
 		</TR>
@@ -1653,7 +1676,7 @@ Image Formats</B></FONT></P>
 			</TD>
 			<TD WIDTH=51% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT><SPAN STYLE="text-decoration: none"><FONT SIZE=3>Requires
-				<A HREF="http://xmlsoft.org/">libxml2</A> and <A HREF="freetype-2.tar.g">freetype-2</A>.
+				<A HREF="http://xmlsoft.org/">libxml2</A> and <A HREF="http://www.freetype.org/">freetype-2</A>.
 				Note that SVG is a very complex specification so support is still
 				not complete.</FONT></SPAN></P>
 			</TD>
@@ -1878,10 +1901,10 @@ Image Formats</B></FONT></P>
 				metafile header. Use the -density option to adjust the output
 				resolution, and thereby adjust the ouput size. The default output
 				resolution is 72DPI so &quot;-density 144&quot; results in an
-				image twice as large as the default. Use <STRONG><FONT FACE="Verdana, Arial, Helvetica, sans-serif">-background
-				color</FONT></STRONG> to specify the WMF background color
-				(default white) or <STRONG><FONT FACE="Verdana, Arial, Helvetica, sans-serif">-texture
-				filename</FONT></STRONG> to specify a background texture image.</FONT></SPAN></P>
+				image twice as large as the default. Use <STRONG>-background
+				color</STRONG> to specify the WMF background color (default
+				white) or <STRONG>-texture filename</STRONG> to specify a
+				background texture image.</FONT></SPAN></P>
 			</TD>
 		</TR>
 		<TR>
@@ -2005,9 +2028,9 @@ Image Formats</B></FONT></P>
 </CENTER>
 <P><BR><BR>
 </P>
-<P>Open ImageMagick supports a number of image format specifications which
-refer to images prepared via an algorithm, or input/output targets.
-The following table lists these pseudo image formats:</P>
+<P>Open ImageMagick supports a number of image format specifications
+which refer to images prepared via an algorithm, or input/output
+targets. The following table lists these pseudo image formats:</P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Pseudo
 Image Formats</B></FONT></P>
 <CENTER>
@@ -2471,8 +2494,8 @@ Images</B></FONT></P>
 			</TD>
 			<TD WIDTH=36% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Open ImageMagick
-				Logo</FONT></FONT></P>
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Open
+				ImageMagick Logo</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=47% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
@@ -2518,10 +2541,10 @@ Images</B></FONT></P>
 </CENTER>
 <P><BR><BR>
 </P>
-<P STYLE="margin-bottom: 0in">Open ImageMagick provides a number of format
-identifiers which are used to add, remove, and save embedded profiles
-for images which can support embedded profiles. Image types which may
-contain embedded profiles are TIFF, JPEG, and PDF.</P>
+<P STYLE="margin-bottom: 0in">Open ImageMagick provides a number of
+format identifiers which are used to add, remove, and save embedded
+profiles for images which can support embedded profiles. Image types
+which may contain embedded profiles are TIFF, JPEG, and PDF.</P>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Supported
@@ -2705,7 +2728,7 @@ is automatically uncompressed with the <TT>gzip</TT> program and the
 image is subsequently read. 
 </P>
 <HR>
-<P><A HREF="../Open ImageMagick.html"><IMG SRC="../images/home.png" NAME="Graphic2" ALT="Open ImageMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@imagemagick.org"><IMG SRC="../images/mail.png" NAME="Graphic3" ALT="Open ImageMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>
+<P><A HREF="../ImageMagick.html"><IMG SRC="../images/home.png" NAME="Graphic2" ALT="Open ImageMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@imagemagick.org"><IMG SRC="../images/mail.png" NAME="Graphic3" ALT="Open ImageMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>
 Image manipulation software that works like magic.</FONT> 
 </P>
 </BODY>
