@@ -1833,9 +1833,9 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
           *q++=image->colormap[i].red >> 8;
           *q++=image->colormap[i].red & 0xff;
           *q++=image->colormap[i].green >> 8;
-          *q++=image->colormap[i].green  & 0xff;
+          *q++=image->colormap[i].green & 0xff;
           *q++=image->colormap[i].blue >> 8;
-          *q++=image->colormap[i].blue  & 0xff;
+          *q++=image->colormap[i].blue & 0xff;
         }
       (void) fwrite(colormap,packet_size,image->colors,file);
       LiberateMemory((void **) &colormap);
