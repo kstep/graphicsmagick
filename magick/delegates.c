@@ -586,7 +586,8 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
         SetImageInfo(local_info,True);
         for (p=image; p != (Image *) NULL; p=p->next)
         {
-          (void) strcpy(p->filename,filename);
+          FormatString(p->filename,"%.1024s:%.1024s",delegate_info.decode_tag,
+            filename);
           status=WriteImage(local_info,p);
           if (status == False)
             {

@@ -5994,11 +5994,11 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     /*
       Write Thumb object.
     */
-    image->orphan=True;
     width=image->columns;
     height=image->rows;
     x=0;
     y=0;
+    image->orphan=True;
     (void) ParseImageGeometry(DefaultThumbnailGeometry,&x,&y,&width,&height);
     if (image->class == PseudoClass)
       tile_image=SampleImage(image,width,height);
@@ -13736,6 +13736,8 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
   else
     if (!GetDelegateInfo((char *) NULL,image_info->magick,&delegate_info))
       {
+        MagickWarning(MissingDelegateWarning,
+          "no encode delegate for this image format",image_info->magick);
         magick_info=(MagickInfo *) GetMagickInfo(image->magick);
         if ((magick_info != (MagickInfo *) NULL) &&
             (magick_info->encoder !=
@@ -13743,7 +13745,7 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=(magick_info->encoder)(image_info,image);
         else
           MagickWarning(MissingDelegateWarning,
-            "no encode delegate for this image format",image_info->magick);
+            "no encode delegate for this image format",image->magick);
       }
     else
       {

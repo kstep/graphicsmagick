@@ -2491,15 +2491,10 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
   *clone_image=(*image);
   clone_image->columns=columns;
   clone_image->rows=rows;
-  if (clone_pixels)
-    clone_image->pixels=(RunlengthPacket *)
-      AllocateMemory((unsigned int) image->packets*sizeof(RunlengthPacket));
-  else
-    {
-      clone_image->packets=clone_image->columns*clone_image->rows;
-      clone_image->pixels=(RunlengthPacket *) AllocateMemory((unsigned int)
-        clone_image->packets*sizeof(RunlengthPacket));
-    }
+  if (!clone_pixels)
+    clone_image->packets=clone_image->columns*clone_image->rows;
+  clone_image->pixels=(RunlengthPacket *) AllocateMemory((unsigned int)
+    clone_image->packets*sizeof(RunlengthPacket));
   if (clone_image->pixels == (RunlengthPacket *) NULL)
     return((Image *) NULL);
   if (!clone_pixels)
@@ -3386,7 +3381,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         Display visual image directory.
       */
       GetImageInfo(&image_info);
-      image_info.size="64x64";
+      CloneString(&image_info.size,"64x64");
       (void) fprintf(file,"  directory:\n");
       for (p=image->directory; *p != '\0'; p++)
       {
@@ -6651,7 +6646,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-background",option,6) == 0)
       {
-        image_info->background_color=argv[++i];
+        CloneString(&image_info->background_color,argv[++i]);
         (void) XQueryColorDatabase(image_info->background_color,&target_color);
         (*image)->background_color.red=XDownScale(target_color.red);
         (*image)->background_color.green=XDownScale(target_color.green);
@@ -6708,7 +6703,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-bordercolor",option,8) == 0)
       {
-        image_info->border_color=argv[++i];
+        CloneString(&image_info->border_color,argv[++i]);
         CloneString(&annotate_info.border_color,image_info->border_color);
         (void) XQueryColorDatabase(image_info->border_color,&target_color);
         (*image)->border_color.red=XDownScale(target_color.red);
@@ -6829,7 +6824,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
         /*
           Set image density.
         */
-        image_info->density=argv[++i];
+        CloneString(&image_info->density,argv[++i]);
         CloneString(&annotate_info.density,image_info->density);
         count=sscanf(image_info->density,"%lfx%lf",
           &(*image)->x_resolution,&(*image)->y_resolution);
@@ -6854,7 +6849,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-display",option,6) == 0)
       {
-        image_info->server_name=argv[++i];
+        CloneString(&image_info->server_name,argv[++i]);
         CloneString(&annotate_info.server_name,image_info->server_name);
         continue;
       }
@@ -7042,7 +7037,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (Latin1Compare("-font",option) == 0)
       {
-        image_info->font=argv[++i];
+        CloneString(&image_info->font,argv[++i]);
         CloneString(&annotate_info.font,image_info->font);
         continue;
       }
@@ -7167,7 +7162,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-mattecolor",option,7) == 0)
       {
-        image_info->matte_color=argv[++i];
+        CloneString(&image_info->matte_color,argv[++i]);
         (void) XQueryColorDatabase(image_info->matte_color,&target_color);
         (*image)->matte_color.red=XDownScale(target_color.red);
         (*image)->matte_color.green=XDownScale(target_color.green);
@@ -7256,7 +7251,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (Latin1Compare("-pen",option) == 0)
       {
-        image_info->pen=argv[++i];
+        CloneString(&image_info->pen,argv[++i]);
         CloneString(&annotate_info.pen,image_info->pen);
         continue;
       }
@@ -10678,6 +10673,9 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
   if (*p == ']')
     for (q=p-1; q > image_info->filename; q--)
     {
+      char
+        *tile;
+
       /*
         Look for sub-image specification (e.g. img0001.pcd[4]).
       */
@@ -10685,13 +10683,15 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
         continue;
       if (!IsGeometry(q+1))
         break;
-      image_info->tile=(char *) AllocateMemory((p-q)*sizeof(char));
-      if (image_info->tile == (char *) NULL)
+      tile=(char *) AllocateMemory((p-q)*sizeof(char));
+      if (tile == (char *) NULL)
         break;
-      (void) strncpy(image_info->tile,q+1,p-q-1);
-      image_info->tile[p-q-1]='\0';
+      (void) strncpy(tile,q+1,p-q-1);
+      tile[p-q-1]='\0';
       *q='\0';
       p=q;
+      CloneString(&image_info->tile,tile);
+      FreeMemory((char *) tile);
       if (!IsSubimage(image_info->tile,True))
         break;
       /*
