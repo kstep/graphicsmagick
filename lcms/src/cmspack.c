@@ -1,32 +1,25 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2000 Marti Maria
+//  Copyright (C) 1998-2003 Marti Maria
 //
-// THIS SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
-// WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+// Permission is hereby granted, free of charge, to any person obtaining 
+// a copy of this software and associated documentation files (the "Software"), 
+// to deal in the Software without restriction, including without limitation 
+// the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+// and/or sell copies of the Software, and to permit persons to whom the Software 
+// is furnished to do so, subject to the following conditions:
 //
-// IN NO EVENT SHALL MARTI MARIA BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
-// INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
-// OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-// WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
-// LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
-// OF THIS SOFTWARE.
+// The above copyright notice and this permission notice shall be included in 
+// all copies or substantial portions of the Software.
 //
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+// THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE 
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 #include "lcms.h"
 
@@ -80,6 +73,17 @@ LPBYTE Unroll4Bytes(register _LPcmsTRANSFORM info, register WORD wIn[], register
        wIn[1] = RGB_8_TO_16(*accum); accum++; // M
        wIn[2] = RGB_8_TO_16(*accum); accum++; // Y
        wIn[3] = RGB_8_TO_16(*accum); accum++; // K
+
+       return accum;
+}
+
+static
+LPBYTE Unroll4BytesReverse(register _LPcmsTRANSFORM info, register WORD wIn[], register LPBYTE accum)
+{
+       wIn[0] = RGB_8_TO_16(REVERSE_FLAVOR_8(*accum)); accum++; // C
+       wIn[1] = RGB_8_TO_16(REVERSE_FLAVOR_8(*accum)); accum++; // M
+       wIn[2] = RGB_8_TO_16(REVERSE_FLAVOR_8(*accum)); accum++; // Y
+       wIn[3] = RGB_8_TO_16(REVERSE_FLAVOR_8(*accum)); accum++; // K
 
        return accum;
 }
@@ -152,6 +156,18 @@ LPBYTE Unroll4Words(register _LPcmsTRANSFORM info, register WORD wIn[], register
 }
 
 static
+LPBYTE Unroll4WordsReverse(register _LPcmsTRANSFORM info, register WORD wIn[], register LPBYTE accum)
+{
+       wIn[0] = REVERSE_FLAVOR_16(*(LPWORD) accum); accum+= 2; // C
+       wIn[1] = REVERSE_FLAVOR_16(*(LPWORD) accum); accum+= 2; // M
+       wIn[2] = REVERSE_FLAVOR_16(*(LPWORD) accum); accum+= 2; // Y
+       wIn[3] = REVERSE_FLAVOR_16(*(LPWORD) accum); accum+= 2; // K
+
+       return accum;
+}
+
+
+static
 LPBYTE Unroll4WordsSwapFirst(register _LPcmsTRANSFORM info, register WORD wIn[], register LPBYTE accum)
 {
        wIn[3] = *(LPWORD) accum; accum+= 2; // K
@@ -197,6 +213,18 @@ LPBYTE Unroll4WordsBigEndian(register _LPcmsTRANSFORM info, register WORD wIn[],
 
        return accum;
 }
+
+static
+LPBYTE Unroll4WordsBigEndianReverse(register _LPcmsTRANSFORM info, register WORD wIn[], register LPBYTE accum)
+{
+       wIn[0] = REVERSE_FLAVOR_16(CHANGE_ENDIAN(*(LPWORD) accum)); accum+= 2; //C
+       wIn[1] = REVERSE_FLAVOR_16(CHANGE_ENDIAN(*(LPWORD) accum)); accum+= 2; //M
+       wIn[2] = REVERSE_FLAVOR_16(CHANGE_ENDIAN(*(LPWORD) accum)); accum+= 2; //Y
+       wIn[3] = REVERSE_FLAVOR_16(CHANGE_ENDIAN(*(LPWORD) accum)); accum+= 2; //K
+
+       return accum;
+}
+
 
 // KYMC
 static
@@ -753,6 +781,18 @@ LPBYTE Pack4Bytes(register _LPcmsTRANSFORM info, register WORD wOut[], register 
 }
 
 static
+LPBYTE Pack4BytesReverse(register _LPcmsTRANSFORM info, register WORD wOut[], register LPBYTE output)
+{
+         *output++ = REVERSE_FLAVOR_8(RGB_16_TO_8(wOut[0]));
+         *output++ = REVERSE_FLAVOR_8(RGB_16_TO_8(wOut[1]));
+         *output++ = REVERSE_FLAVOR_8(RGB_16_TO_8(wOut[2]));
+         *output++ = REVERSE_FLAVOR_8(RGB_16_TO_8(wOut[3]));
+
+         return output;
+}
+
+
+static
 LPBYTE Pack4BytesSwapFirst(register _LPcmsTRANSFORM info, register WORD wOut[], register LPBYTE output)
 {
          *output++ = RGB_16_TO_8(wOut[3]);
@@ -805,6 +845,22 @@ LPBYTE Pack4Words(register _LPcmsTRANSFORM info, register WORD wOut[], register 
        return output;
 }
 
+
+static
+LPBYTE Pack4WordsReverse(register _LPcmsTRANSFORM info, register WORD wOut[], register LPBYTE output)
+{
+       *(LPWORD) output = REVERSE_FLAVOR_16(wOut[0]);
+       output+= 2;
+       *(LPWORD) output = REVERSE_FLAVOR_16(wOut[1]);
+       output+= 2;
+       *(LPWORD) output = REVERSE_FLAVOR_16(wOut[2]);
+       output+= 2;
+       *(LPWORD) output = REVERSE_FLAVOR_16(wOut[3]);
+       output+= 2;
+
+       return output;
+}
+
 // ABGR
 
 static
@@ -833,6 +889,22 @@ LPBYTE Pack4WordsBigEndian(register _LPcmsTRANSFORM info, register WORD wOut[], 
        *(LPWORD) output = CHANGE_ENDIAN(wOut[2]);
        output+= 2;
        *(LPWORD) output = CHANGE_ENDIAN(wOut[3]);
+       output+= 2;
+
+       return output;
+}
+
+
+static
+LPBYTE Pack4WordsBigEndianReverse(register _LPcmsTRANSFORM info, register WORD wOut[], register LPBYTE output)
+{
+       *(LPWORD) output = CHANGE_ENDIAN(REVERSE_FLAVOR_16(wOut[0]));
+       output+= 2;
+       *(LPWORD) output = CHANGE_ENDIAN(REVERSE_FLAVOR_16(wOut[1]));
+       output+= 2;
+       *(LPWORD) output = CHANGE_ENDIAN(REVERSE_FLAVOR_16(wOut[2]));
+       output+= 2;
+       *(LPWORD) output = CHANGE_ENDIAN(REVERSE_FLAVOR_16(wOut[3]));
        output+= 2;
 
        return output;
@@ -1303,8 +1375,12 @@ _cmsFIXFN _cmsIdentifyInputFormat(_LPcmsTRANSFORM xform, DWORD dwInput)
                       else {
                             if (T_SWAPFIRST(dwInput))
                                 FromInput = Unroll4BytesSwapFirst;
-                            else
-                                FromInput = Unroll4Bytes;
+                            else {
+                                if (T_FLAVOR(dwInput))
+                                    FromInput = Unroll4BytesReverse;
+                                else
+                                    FromInput = Unroll4Bytes;
+                            }
                       }
                       break;
 
@@ -1360,14 +1436,16 @@ _cmsFIXFN _cmsIdentifyInputFormat(_LPcmsTRANSFORM xform, DWORD dwInput)
                       break;
 
               case 4: if (T_DOSWAP(dwInput)) {
+
                             if (T_ENDIAN16(dwInput))
                                    FromInput = Unroll4WordsSwapBigEndian;
                             else {
                                    
                                     if (T_SWAPFIRST(dwInput))
                                         FromInput = Unroll4WordsSwapSwapFirst;
-                                    else
+                                    else 
                                         FromInput = Unroll4WordsSwap;
+
                             }
                             
                       }
@@ -1377,13 +1455,22 @@ _cmsFIXFN _cmsIdentifyInputFormat(_LPcmsTRANSFORM xform, DWORD dwInput)
                                     FromInput = Unroll1WordSkip3;
                             else
 
-                            if (T_ENDIAN16(dwInput))
-                                   FromInput = Unroll4WordsBigEndian;
+                                if (T_ENDIAN16(dwInput)) {
+
+                                    if (T_FLAVOR(dwInput))
+                                        FromInput = Unroll4WordsBigEndianReverse;
+                                    else
+                                        FromInput = Unroll4WordsBigEndian;
+                                }
                             else {
                                   if (T_SWAPFIRST(dwInput))
                                     FromInput = Unroll4WordsSwapFirst;
-                                   else 
-                                    FromInput = Unroll4Words;
+                                  else {
+                                      if (T_FLAVOR(dwInput))
+                                            FromInput = Unroll4WordsReverse;
+                                      else
+                                            FromInput = Unroll4Words;                                    
+                                  }
                             }
                       }
                       break;
@@ -1519,8 +1606,13 @@ _cmsFIXFN _cmsIdentifyOutputFormat(_LPcmsTRANSFORM xform, DWORD dwOutput)
                              else {
                                  if (T_SWAPFIRST(dwOutput))
                                         ToOutput = Pack4BytesSwapFirst;
-                                 else
-                                        ToOutput = Pack4Bytes;
+                                 else {
+
+                                     if (T_FLAVOR(dwOutput))
+                                         ToOutput = Pack4BytesReverse;
+                                     else
+                                          ToOutput = Pack4Bytes;
+                                 }
                              }
                              }
                              break;
@@ -1535,6 +1627,7 @@ _cmsFIXFN _cmsIdentifyOutputFormat(_LPcmsTRANSFORM xform, DWORD dwOutput)
                             }
                             break;
 
+					 case 5:
                      case 7:
                      case 8:
                      case 9:
@@ -1639,10 +1732,19 @@ _cmsFIXFN _cmsIdentifyOutputFormat(_LPcmsTRANSFORM xform, DWORD dwOutput)
                                    }
                                    else {
 
-                                   if (T_ENDIAN16(dwOutput))
-                                          ToOutput = Pack4WordsBigEndian;
-                                   else
-                                          ToOutput = Pack4Words;
+                                       if (T_ENDIAN16(dwOutput)) {
+                                              
+                                           if (T_FLAVOR(dwOutput))
+                                                ToOutput = Pack4WordsBigEndianReverse;
+                                           else
+                                                ToOutput = Pack4WordsBigEndian;
+                                       }
+                                       else {
+                                          if (T_FLAVOR(dwOutput))
+                                              ToOutput = Pack4WordsReverse;
+                                          else 
+                                               ToOutput = Pack4Words;
+                                        }
                                    }
                             }
                             break;

@@ -9,7 +9,7 @@ AC_PREREQ(2.57)
 #
 # Set the package name and version
 #
-AC_INIT(lcms,1.11)
+AC_INIT(lcms,1.12)
 
 #
 # Libtool library revision control info
@@ -32,7 +32,7 @@ AC_INIT(lcms,1.11)
 #  6. If any interfaces have been removed since the last public release,
 #     then set age to 0.
 LIBRARY_CURRENT=1
-LIBRARY_REVISION=11
+LIBRARY_REVISION=12
 LIBRARY_AGE=0
 
 
@@ -119,7 +119,7 @@ then
     AC_MSG_RESULT($SWIG_VERSION_OK)
   fi
 
-  if test $SWIG_VERSION_OK != 'yes'
+  if test ! $SWIG_VERSION_OK = 'yes'
   then
     AC_MSG_WARN([SWIG $SWIG_MINIMUM_VERSION or later is required to build the LCMS Python extension.])
     AC_MSG_WARN([Python extension build disabled.])
@@ -290,7 +290,7 @@ AC_SUBST(LIB_MATH)
 #
 have_jpeg='no'
 LIB_JPEG=''
-if test "$with_jpeg" != 'no'
+if test ! "$with_jpeg" = 'no'
 then
     AC_MSG_CHECKING(for JPEG support )
     AC_MSG_RESULT()
@@ -303,7 +303,7 @@ then
     AC_CHECK_LIB(jpeg,jpeg_read_header,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
 
 # Test for compatible JPEG library
-if test "$ac_cv_jpeg_version_ok" != 'yes' ; then
+if test ! "$ac_cv_jpeg_version_ok" = 'yes' ; then
 AC_CACHE_CHECK(for JPEG library is version 6b or later, ac_cv_jpeg_version_ok,
 [AC_TRY_COMPILE(
 #include <stdio.h>
@@ -354,7 +354,7 @@ AC_SUBST(LIB_JPEG)
 #
 have_zlib='no'
 dnl PNG requires zlib so enable zlib check if PNG is requested
-if test "$with_zlib" != 'no' || test "$with_png" != 'no'
+if test ! "$with_zlib" = 'no' || test ! "$with_png" = 'no'
 then
   LIB_ZLIB=''
   AC_MSG_CHECKING(for ZLIB support )
@@ -395,7 +395,7 @@ AC_SUBST(LIB_ZLIB)
 #
 have_tiff='no'
 LIB_TIFF=''
-if test "$with_tiff" != 'no'
+if test ! "$with_tiff" = 'no'
 then
     AC_MSG_CHECKING(for TIFF support )
     AC_MSG_RESULT()
@@ -451,14 +451,4 @@ LIBS=''
 #
 # Perform substitutions
 #
-AC_OUTPUT( \
-  Makefile \
-  include/icc34.h \
-  include/Makefile \
-  jpegicc/Makefile \
-  python/Makefile \
-  samples/Makefile \
-  testbed/Makefile \
-  tifficc/Makefile \
-  src/Makefile \
-)
+AC_OUTPUT(Makefile include/icc34.h include/Makefile jpegicc/Makefile python/Makefile samples/Makefile testbed/Makefile tifficc/Makefile src/Makefile )

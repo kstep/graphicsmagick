@@ -2,33 +2,27 @@
 //  Little cms
 //  Copyright (C) 1998-2003 Marti Maria
 //
-// THIS SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
-// WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+// Permission is hereby granted, free of charge, to any person obtaining 
+// a copy of this software and associated documentation files (the "Software"), 
+// to deal in the Software without restriction, including without limitation 
+// the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+// and/or sell copies of the Software, and to permit persons to whom the Software 
+// is furnished to do so, subject to the following conditions:
 //
-// IN NO EVENT SHALL MARTI MARIA BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
-// INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
-// OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-// WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
-// LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
-// OF THIS SOFTWARE.
+// The above copyright notice and this permission notice shall be included in 
+// all copies or substantial portions of the Software.
 //
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+// THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE 
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 // Postscript level 2 operators
+
 
 
 #include "lcms.h"
@@ -37,9 +31,9 @@
 
 // PostScript ColorRenderingDictionary and ColorSpaceArray
 
-LCMSAPI DWORD LCMSEXPORT cmsGetPSCSA(cmsHPROFILE hProfile, int Intent, LPVOID Buffer, DWORD dwBufferLen);
-LCMSAPI DWORD LCMSEXPORT cmsGetPSCRD(cmsHPROFILE hProfile, int Intent, LPVOID Buffer, DWORD dwBufferLen);
-
+LCMSAPI DWORD LCMSEXPORT cmsGetPostScriptCSA(cmsHPROFILE hProfile, int Intent, LPVOID Buffer, DWORD dwBufferLen);
+LCMSAPI DWORD LCMSEXPORT cmsGetPostScriptCRD(cmsHPROFILE hProfile, int Intent, LPVOID Buffer, DWORD dwBufferLen);
+LCMSAPI DWORD LCMSEXPORT cmsGetPostScriptCRDEx(cmsHPROFILE hProfile, int Intent, DWORD dwFlags, LPVOID Buffer, DWORD dwBufferLen);
 // -------------------------------------------------------------------- Implementation
 
 #define MAXPSCOLS   60      // Columns on tables
@@ -80,7 +74,7 @@ LCMSAPI DWORD LCMSEXPORT cmsGetPSCRD(cmsHPROFILE hProfile, int Intent, LPVOID Bu
             /MatrixA [D50]  
             /RangeLMN [ 0.0 D50X 0.0 D50Y 0.0 D50Z ]
             /WhitePoint [D50]
-            /BlackPoint [Perfect absorber]
+            /BlackPoint [BP]
             /RenderingIntent (intent)
       >>
     ] 
@@ -104,7 +98,7 @@ LCMSAPI DWORD LCMSEXPORT cmsGetPSCRD(cmsHPROFILE hProfile, int Intent, LPVOID Bu
                 /RangeLMN [ 0.0 D50X 0.0 D50Y 0.0 D50Z ]
                 /DecodeLMN [ { / 2} dup dup ]
                 /WhitePoint [D50]
-                /BlackPoint [Perfect absorber]
+                /BlackPoint [BP]
                 /RenderingIntent (intent)
             >>
     ] 
@@ -123,7 +117,7 @@ LCMSAPI DWORD LCMSEXPORT cmsGetPSCRD(cmsHPROFILE hProfile, int Intent, LPVOID Bu
             /DecodeABC[ <postlinearization> ]
             /MatrixABC [ 1 1 1 1 0 0 0 0 -1]
             /WhitePoint [D50]
-            /BlackPoint [Perfect absorber]
+            /BlackPoint [BP]
             /RenderingIntent (intent)
     ] 
 
@@ -136,7 +130,7 @@ LCMSAPI DWORD LCMSEXPORT cmsGetPSCRD(cmsHPROFILE hProfile, int Intent, LPVOID Bu
   <<
     /ColorRenderingType 1
     /WhitePoint [ D50 ]
-    /BlackPoint [Perfect absorber]
+    /BlackPoint [BP]
     /MatrixPQR [ Bradford ]
     /RangePQR [-0.125 1.375 -0.125 1.375 -0.125 1.375 ]
     /TransformPQR [            
@@ -311,6 +305,8 @@ typedef struct {
                 char* PreMin;
                 char* PostMin;
 
+                int  lIsInput;  // Handle L* encoding
+
             } SAMPLERCARGO, FAR* LPSAMPLERCARGO;
 
 
@@ -339,6 +335,15 @@ static
 BYTE Word2Byte(WORD w)
 {
     return (BYTE) floor((double) w / 257.0 + 0.5);
+}
+
+
+// Convert L* to byte (using ICC2 notation)
+
+static
+BYTE L2Byte(WORD w)
+{
+    return (BYTE) ((WORD) (w >> 8) & 0xFF);
 }
 
 // Write a raw, uncooked byte. Check for space
@@ -440,15 +445,23 @@ void EmitHeader(LPMEMSTREAM m, const char* Title, cmsHPROFILE hProfile)
 
 }
 
+
+// Emits White & Black point. White point is always D50, Black point is the device 
+// Black point adapted to D50. 
+
 static
-void EmitWhiteBlackD50(LPMEMSTREAM m)
+void EmitWhiteBlackD50(LPMEMSTREAM m, LPcmsCIEXYZ BlackPoint)
 {
 
-    Writef(m, "/BlackPoint [0.0 0.0 0.0]\n" 
-              "/WhitePoint [%f %f %f]\n", cmsD50_XYZ()->X, 
+    Writef(m, "/BlackPoint [%f %f %f]\n", BlackPoint -> X,
+                                          BlackPoint -> Y,
+                                          BlackPoint -> Z);
+
+    Writef(m, "/WhitePoint [%f %f %f]\n", cmsD50_XYZ()->X, 
                                           cmsD50_XYZ()->Y,
                                           cmsD50_XYZ()->Z);
 }
+
 
 static
 void EmitRangeCheck(LPMEMSTREAM m)
@@ -704,8 +717,14 @@ int OutputValueSampler(register WORD In[], register WORD Out[], register LPVOID 
         if (sc ->bps == 8) {
 
             // Value as byte
-            BYTE wByteOut = Word2Byte(wWordOut);
-            WriteByte(sc -> m, wByteOut );
+            BYTE wByteOut;
+            
+            if (sc ->lIsInput && i == 0)
+                wByteOut = L2Byte(wWordOut);
+            else
+                wByteOut = Word2Byte(wWordOut);
+
+            WriteByte(sc -> m, wByteOut);
         }
         else {
 
@@ -724,7 +743,8 @@ static
 void WriteCLUT(LPMEMSTREAM m, LPLUT Lut, int bps, char* PreMaj, 
                                                   char* PostMaj,
                                                   char* PreMin,
-                                                  char* PostMin)
+                                                  char* PostMin,
+                                                  int lIsInput)
 {
     unsigned int i;
     SAMPLERCARGO sc;
@@ -739,6 +759,7 @@ void WriteCLUT(LPMEMSTREAM m, LPLUT Lut, int bps, char* PreMaj,
 
     sc.PreMin = PreMin;
     sc.PostMin= PostMin;
+    sc.lIsInput = lIsInput;
 
     Writef(m, "[");
 
@@ -764,7 +785,7 @@ void WriteCLUT(LPMEMSTREAM m, LPLUT Lut, int bps, char* PreMaj,
 // Dumps CIEBasedA Color Space Array
 
 static
-int EmitCIEBasedA(LPMEMSTREAM m, LPWORD Tab, int nEntries)
+int EmitCIEBasedA(LPMEMSTREAM m, LPWORD Tab, int nEntries, LPcmsCIEXYZ BlackPoint)
 {
             
         Writef(m, "[ /CIEBasedA\n");
@@ -779,7 +800,7 @@ int EmitCIEBasedA(LPMEMSTREAM m, LPWORD Tab, int nEntries)
         Writef(m, "/MatrixA [ 0.9642 1.0000 0.8249 ]\n");
         Writef(m, "/RangeLMN [ 0.0 0.9642 0.0 1.0000 0.0 0.8249 ]\n");
         
-        EmitWhiteBlackD50(m);
+        EmitWhiteBlackD50(m, BlackPoint);
         EmitIntent(m, INTENT_PERCEPTUAL);
 
         Writef(m, ">>\n");        
@@ -792,7 +813,7 @@ int EmitCIEBasedA(LPMEMSTREAM m, LPWORD Tab, int nEntries)
 // Dumps CIEBasedABC Color Space Array
 
 static
-int EmitCIEBasedABC(LPMEMSTREAM m, LPWORD L[], int nEntries, LPWMAT3 Matrix)
+int EmitCIEBasedABC(LPMEMSTREAM m, LPWORD L[], int nEntries, LPWMAT3 Matrix, LPcmsCIEXYZ BlackPoint)
 {
     int i;
 
@@ -819,7 +840,7 @@ int EmitCIEBasedABC(LPMEMSTREAM m, LPWORD L[], int nEntries, LPWMAT3 Matrix)
 
         Writef(m, "/RangeLMN [ 0.0 0.9642 0.0 1.0000 0.0 0.8249 ]\n");
         
-        EmitWhiteBlackD50(m);
+        EmitWhiteBlackD50(m, BlackPoint);
         EmitIntent(m, INTENT_PERCEPTUAL);
 
         Writef(m, ">>\n");
@@ -831,7 +852,7 @@ int EmitCIEBasedABC(LPMEMSTREAM m, LPWORD L[], int nEntries, LPWMAT3 Matrix)
 
 
 static
-int EmitCIEBasedDEF(LPMEMSTREAM m, LPLUT Lut, int Intent)
+int EmitCIEBasedDEF(LPMEMSTREAM m, LPLUT Lut, int Intent, LPcmsCIEXYZ BlackPoint)
 {
     char* PreMaj;
     char* PostMaj;
@@ -871,12 +892,12 @@ int EmitCIEBasedDEF(LPMEMSTREAM m, LPLUT Lut, int Intent)
     if (Lut ->wFlags & LUT_HAS3DGRID) {
 
             Writef(m, "/Table ");    
-            WriteCLUT(m, Lut, 8, PreMaj, PostMaj, PreMin, PostMin);
+            WriteCLUT(m, Lut, 8, PreMaj, PostMaj, PreMin, PostMin, TRUE);
             Writef(m, "]\n");
     }
        
     EmitLab2XYZ(m);
-    EmitWhiteBlackD50(m);
+    EmitWhiteBlackD50(m, BlackPoint);
     EmitIntent(m, Intent);
 
     Writef(m, "   >>\n");       
@@ -901,6 +922,7 @@ int WriteInputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent)
     DWORD InputFormat;
     int rc;
     cmsHPROFILE Profiles[2];
+    cmsCIEXYZ BlackPointAdaptedToD50;
 
     // Does create a device-link based transform. 
     // The DeviceLink is next dumped as working CSA.
@@ -909,6 +931,8 @@ int WriteInputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent)
     ColorSpace  =  cmsGetColorSpace(hProfile);
     nChannels   = _cmsChannelsOf(ColorSpace);
     InputFormat = CHANNELS_SH(nChannels) | BYTES_SH(2);
+
+    cmsDetectBlackPoint(&BlackPointAdaptedToD50, hProfile, Intent,LCMS_BPFLAGS_D50_ADAPTED);
 
     // Is a devicelink profile?
     if (cmsGetDeviceClass(hProfile) == icSigLinkClass) {
@@ -968,10 +992,10 @@ int WriteInputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent)
             _LPcmsTRANSFORM v = (_LPcmsTRANSFORM) xform;
 
             if (v ->DeviceLink) 
-                rc = EmitCIEBasedDEF(m, v->DeviceLink, Intent);
+                rc = EmitCIEBasedDEF(m, v->DeviceLink, Intent, &BlackPointAdaptedToD50);
             else {
                 DeviceLink = _cmsPrecalculateDeviceLink(xform, 0);
-                rc = EmitCIEBasedDEF(m, DeviceLink, Intent);
+                rc = EmitCIEBasedDEF(m, DeviceLink, Intent, &BlackPointAdaptedToD50);
                 cmsFreeLUT(DeviceLink);
             }
             }
@@ -999,9 +1023,13 @@ int WriteInputMatrixShaper(LPMEMSTREAM m, cmsHPROFILE hProfile)
     icColorSpaceSignature ColorSpace;
     LPMATSHAPER MatShaper;
     int rc;
+    cmsCIEXYZ BlackPointAdaptedToD50;
+
 
     ColorSpace = cmsGetColorSpace(hProfile);
     MatShaper  = cmsBuildInputMatrixShaper(hProfile, NULL);
+
+    cmsDetectBlackPoint(&BlackPointAdaptedToD50, hProfile, INTENT_RELATIVE_COLORIMETRIC, LCMS_BPFLAGS_D50_ADAPTED);
 
     if (MatShaper == NULL) {
 
@@ -1012,7 +1040,8 @@ int WriteInputMatrixShaper(LPMEMSTREAM m, cmsHPROFILE hProfile)
     if (ColorSpace == icSigGrayData) {
             
             rc = EmitCIEBasedA(m, MatShaper ->L[0], 
-                                  MatShaper ->p16.nSamples);
+                                  MatShaper ->p16.nSamples,
+                                  &BlackPointAdaptedToD50);
         
     }
     else
@@ -1021,7 +1050,8 @@ int WriteInputMatrixShaper(LPMEMSTREAM m, cmsHPROFILE hProfile)
         
             rc = EmitCIEBasedABC(m, MatShaper->L, 
                                         MatShaper ->p16.nSamples, 
-                                        &MatShaper ->Matrix);      
+                                        &MatShaper ->Matrix,
+                                        &BlackPointAdaptedToD50);      
         }
         else  {
 
@@ -1160,9 +1190,118 @@ DWORD LCMSEXPORT cmsGetPostScriptCSA(cmsHPROFILE hProfile,
 // ------------------------------------------------------ Color Rendering Dictionary (CRD)
 
 
+
+/*
+
+  Black point compensation plus chromatic adaptation:
+
+  Step 1 - Chromatic adaptation
+  =============================
+
+          WPout
+    X = ------- PQR
+          Wpin
+
+  Step 2 - Black point compensation
+  =================================
+
+          (WPout - BPout)*X - WPout*(BPin - BPout)
+    out = --------------------------------------- 
+                        WPout - BPin
+
+
+  Algorithm discussion
+  ====================
+      
+  TransformPQR(WPin, BPin, WPout, BPout, PQR)
+
+  Wpin,etc= { Xws Yws Zws Pws Qws Rws }
+
+
+  Algorithm             Stack 0...n
+  ===========================================================
+                        PQR BPout WPout BPin WPin
+  4 index 3 get         WPin PQR BPout WPout BPin WPin  
+  div                   (PQR/WPin) BPout WPout BPin WPin   
+  2 index 3 get         WPout (PQR/WPin) BPout WPout BPin WPin   
+  mult                  WPout*(PQR/WPin) BPout WPout BPin WPin   
+  
+  2 index 3 get         WPout WPout*(PQR/WPin) BPout WPout BPin WPin   
+  2 index 3 get         BPout WPout WPout*(PQR/WPin) BPout WPout BPin WPin     
+  sub                   (WPout-BPout) WPout*(PQR/WPin) BPout WPout BPin WPin    
+  mult                  (WPout-BPout)* WPout*(PQR/WPin) BPout WPout BPin WPin   
+          
+  2 index 3 get         WPout (BPout-WPout)* WPout*(PQR/WPin) BPout WPout BPin WPin     
+  4 index 3 get         BPin WPout (BPout-WPout)* WPout*(PQR/WPin) BPout WPout BPin WPin     
+  3 index 3 get         BPout BPin WPout (BPout-WPout)* WPout*(PQR/WPin) BPout WPout BPin WPin
+  
+  sub                   (BPin-BPout) WPout (BPout-WPout)* WPout*(PQR/WPin) BPout WPout BPin WPin     
+  mult                  (BPin-BPout)*WPout (BPout-WPout)* WPout*(PQR/WPin) BPout WPout BPin WPin     
+  sub                   (BPout-WPout)* WPout*(PQR/WPin)-(BPin-BPout)*WPout BPout WPout BPin WPin     
+
+  3 index 3 get         BPin (BPout-WPout)* WPout*(PQR/WPin)-(BPin-BPout)*WPout BPout WPout BPin WPin     
+  3 index 3 get         WPout BPin (BPout-WPout)* WPout*(PQR/WPin)-(BPin-BPout)*WPout BPout WPout BPin WPin     
+  exch
+  sub                   (WPout-BPin) (BPout-WPout)* WPout*(PQR/WPin)-(BPin-BPout)*WPout BPout WPout BPin WPin       
+  div                
+  
+  exch pop 
+  exch pop
+  exch pop
+  exch pop
+
+*/
+
+
 static
-void EmitPQRStage(LPMEMSTREAM m)
+void EmitPQRStage(LPMEMSTREAM m, int DoBPC)
 {
+
+    
+        Writef(m,"%% Bradford Cone Space\n"
+                 "/MatrixPQR [0.8951 -0.7502 0.0389 0.2664 1.7135 -0.0685 -0.1614 0.0367 1.0296 ] \n");
+
+        Writef(m, "/RangePQR [ -0.5 2 -0.5 2 -0.5 2 ]\n");
+
+        // No BPC
+
+        if (!DoBPC) {
+
+        Writef(m, "%% VonKries-like transform in Bradford Cone Space\n"
+                  "/TransformPQR [\n"
+                  "{exch pop exch 3 get mul exch pop exch 3 get div} bind\n"
+                  "{exch pop exch 4 get mul exch pop exch 4 get div} bind\n"
+	              "{exch pop exch 5 get mul exch pop exch 5 get div} bind\n]\n"); 
+        } else {
+
+        // BPC
+
+        Writef(m, "%% VonKries-like transform in Bradford Cone Space plus BPC\n"
+                  "/TransformPQR [\n");
+                  
+    Writef(m, "{4 index 3 get div 2 index 3 get mul "
+                "2 index 3 get 2 index 3 get sub mul "                          
+                "2 index 3 get 4 index 3 get 3 index 3 get sub mul sub "
+                "3 index 3 get 3 index 3 get exch sub div "
+                "exch pop exch pop exch pop exch pop } bind\n");
+
+    Writef(m, "{4 index 4 get div 2 index 4 get mul "
+                "2 index 4 get 2 index 4 get sub mul "
+                "2 index 4 get 4 index 4 get 3 index 4 get sub mul sub "
+                "3 index 4 get 3 index 4 get exch sub div "
+                "exch pop exch pop exch pop exch pop } bind\n");
+
+    Writef(m, "{4 index 5 get div 2 index 5 get mul "
+                "2 index 5 get 2 index 5 get sub mul "
+                "2 index 5 get 4 index 5 get 3 index 5 get sub mul sub "
+                "3 index 5 get 3 index 5 get exch sub div "
+                "exch pop exch pop exch pop exch pop } bind\n]\n");
+
+        }
+
+    
+    
+    /*
     Writef(m, "/MatrixPQR [0.40024 -0.2263 0.0 0.7076 1.16532 0.0 -0.08081 0.0457 0.91822 ]\n");
     Writef(m, "/RangePQR [-0.125 1.375 -0.125 1.375 -0.125 1.375 ]\n");
     Writef(m, "/TransformPQR [\n");
@@ -1170,6 +1309,7 @@ void EmitPQRStage(LPMEMSTREAM m)
     Writef(m, "{4 index 4 get div 2 index 4 get mul exch pop exch pop exch pop exch pop } bind\n");
     Writef(m, "{4 index 5 get div 2 index 5 get mul exch pop exch pop exch pop exch pop } bind\n");
     Writef(m, "]\n");
+    */
 }
 
 
@@ -1198,7 +1338,7 @@ void EmitXYZ2Lab(LPMEMSTREAM m)
 // 8 bits.
 
 static
-int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent)
+int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent, DWORD dwFlags)
 {
     cmsHPROFILE hLab;
     cmsHTRANSFORM xform;
@@ -1208,7 +1348,9 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent)
     _LPcmsTRANSFORM v;
     LPLUT DeviceLink;
     cmsHPROFILE Profiles[3];
+    cmsCIEXYZ BlackPointAdaptedToD50;
     BOOL lFreeDeviceLink = FALSE;
+    BOOL lDoBPC = (dwFlags & cmsFLAGS_BLACKPOINTCOMPENSATION);
 
     
     hLab         = cmsCreateLabProfile(NULL);
@@ -1268,9 +1410,12 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent)
     Writef(m, "<<\n");
     Writef(m, "/ColorRenderingType 1\n");
 
+
+    cmsDetectBlackPoint(&BlackPointAdaptedToD50, hProfile, Intent, LCMS_BPFLAGS_D50_ADAPTED);
+
     // Emit headers, etc.
-    EmitWhiteBlackD50(m);
-    EmitPQRStage(m);
+    EmitWhiteBlackD50(m, &BlackPointAdaptedToD50);
+    EmitPQRStage(m, lDoBPC);
     EmitXYZ2Lab(m);
         
     if (DeviceLink ->wFlags & LUT_HASTL1) {
@@ -1287,7 +1432,7 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent)
     
     Writef(m, "/RenderTable ");
     
-    WriteCLUT(m, DeviceLink, 8, "<", ">\n", "", "");
+    WriteCLUT(m, DeviceLink, 8, "<", ">\n", "", "", FALSE);
 
     Writef(m, " %d {} bind ", nChannels);
 
@@ -1300,7 +1445,11 @@ int WriteOutputLUT(LPMEMSTREAM m, cmsHPROFILE hProfile, int Intent)
     EmitIntent(m, Intent);
 
     Writef(m, ">>\n");
-    Writef(m, "/Current exch /ColorRendering defineresource pop\n");
+
+    if (!(dwFlags & cmsFLAGS_NODEFAULTRESOURCEDEF)) {
+
+        Writef(m, "/Current exch /ColorRendering defineresource pop\n");
+    }
 
     if (lFreeDeviceLink) cmsFreeLUT(DeviceLink);
     cmsDeleteTransform(xform);
@@ -1333,7 +1482,7 @@ void BuildColorantList(char *Colorant, int nColorant, WORD Out[])
 // This is a HP extension.
 
 static
-int WriteNamedColorCRD(LPMEMSTREAM m, cmsHPROFILE hNamedColor, int Intent)
+int WriteNamedColorCRD(LPMEMSTREAM m, cmsHPROFILE hNamedColor, int Intent, DWORD dwFlags)
 {
     cmsHTRANSFORM xform;    
     int i, nColors, nColorant;
@@ -1372,8 +1521,12 @@ int WriteNamedColorCRD(LPMEMSTREAM m, cmsHPROFILE hNamedColor, int Intent)
         Writef(m, "  (%s) [ %s ]\n", ColorName, Colorant);
     }
 
-    
-    Writef(m, "   >> /Current exch /HPSpotTable defineresource pop\n");
+    Writef(m, "   >>");
+
+    if (!(dwFlags & cmsFLAGS_NODEFAULTRESOURCEDEF)) {
+
+    Writef(m, " /Current exch /HPSpotTable defineresource pop\n");
+    }
 
     cmsDeleteTransform(xform);  
     return 1;
@@ -1385,8 +1538,8 @@ int WriteNamedColorCRD(LPMEMSTREAM m, cmsHPROFILE hNamedColor, int Intent)
 // CRD are always LUT-Based, no matter if profile is
 // implemented as matrix-shaper.
 
-DWORD LCMSEXPORT cmsGetPostScriptCRD(cmsHPROFILE hProfile, 
-                              int Intent, 
+DWORD LCMSEXPORT cmsGetPostScriptCRDEx(cmsHPROFILE hProfile, 
+                              int Intent, DWORD dwFlags,
                               LPVOID Buffer, DWORD dwBufferLen)
 {
     
@@ -1398,12 +1551,16 @@ DWORD LCMSEXPORT cmsGetPostScriptCRD(cmsHPROFILE hProfile,
     if (!mem) return 0;
 
     
+    if (!(dwFlags & cmsFLAGS_NODEFAULTRESOURCEDEF)) {
+
     EmitHeader(mem, "Color Rendering Dictionary (CRD)", hProfile);
+    }
+
 
     // Is a named color profile?
     if (cmsGetDeviceClass(hProfile) == icSigNamedColorClass) {
 
-        if (!WriteNamedColorCRD(mem, hProfile, Intent)) {
+        if (!WriteNamedColorCRD(mem, hProfile, Intent, dwFlags)) {
 
                     free((void*) mem);
                     return 0;
@@ -1414,14 +1571,17 @@ DWORD LCMSEXPORT cmsGetPostScriptCRD(cmsHPROFILE hProfile,
     // CRD are always implemented as LUT. 
 
 
-    if (!WriteOutputLUT(mem, hProfile, Intent)) {
+    if (!WriteOutputLUT(mem, hProfile, Intent, dwFlags)) {
         free((void*) mem);
         return 0;
     }
     }
-     
+    
+    if (!(dwFlags & cmsFLAGS_NODEFAULTRESOURCEDEF)) {
+
     Writef(mem, "%%%%EndResource\n");
     Writef(mem, "\n%% CRD End\n");
+    }
 
     // Done, keep memory usage
     dwBytesUsed = mem ->dwUsed;
@@ -1433,3 +1593,12 @@ DWORD LCMSEXPORT cmsGetPostScriptCRD(cmsHPROFILE hProfile,
     return dwBytesUsed;
 }
 
+
+// For compatibility with previous versions
+
+DWORD LCMSEXPORT cmsGetPostScriptCRD(cmsHPROFILE hProfile, 
+                              int Intent, 
+                              LPVOID Buffer, DWORD dwBufferLen)
+{
+    return cmsGetPostScriptCRDEx(hProfile, Intent, 0, Buffer, dwBufferLen);
+}

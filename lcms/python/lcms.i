@@ -2,6 +2,16 @@
 //  Little cms
 //  Copyright (C) 1998-2003 Marti Maria
 //
+// Permission is hereby granted, free of charge, to any person obtaining 
+// a copy of this software and associated documentation files (the "Software"), 
+// to deal in the Software without restriction, including without limitation 
+// the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+// and/or sell copies of the Software, and to permit persons to whom the Software 
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in 
+// all copies or substantial portions of the Software.
+//
 // THIS SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
 // WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
@@ -13,37 +23,14 @@
 // LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
 // OF THIS SOFTWARE.
 //
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Version 1.12
 
-// Version 1.10
-
-
-// Ugly-- swig doesn't like VC6 __declspec and so, so force to non-windows
-// (this has no significance at all)
-
-#ifndef NON_WINDOWS
-#define NON_WINDOWS	1
-#endif
 
 /* File lcms.i */
 %module lcms
 %{
 #include "lcms.h"
 %}
-
 
 #define register
 %varargs(char* args) cmsSignalError;
@@ -55,9 +42,11 @@
 %ignore USE_TETRAHEDRAL;
 %ignore LCMS_DLL;
 %ignore LCMS_DLL_BUILD;
+%ignore NON_WINDOWS;
 %ignore USE_BIG_ENDIAN;
 %ignore USE_INT64;
 %ignore USE_CUSTOM_SWAB;
+%ignore USE_257_FOR_16_TO_8_CONVERSION;
 %ignore M_PI;
 %ignore LOGE;
 %ignore LCMS_APIONLY;
@@ -67,6 +56,7 @@
 %ignore _cmsSAMPLER;
 %ignore SAMPLEDCURVE;
 %ignore LPSAMPLEDCURVE;
+
 
 %rename (cmsSaveProfile) _cmsSaveProfile;
 

@@ -1,14 +1,14 @@
 
- New in ver 1.11
+ New in ver 1.12
  ===============
 
 
-  Overall speedup and much more precission. 
+  License changed to MIT
 
-  [Added] CIECAM02 Appearance model
-  [Added] more ICC4 compatibility
-  [Added] Error handlers
-  [Added] Black point compensation
-
-   Improved TIFFICC, JPEGICC and ICCLINK utilities.   
-   New samples on how to build profiles
+  [Added] cmsCreateBCHSWabstractProfile : Bright/Contrast/Hue/Saturation controls
+  [Added] pseq tag handling: cmsReadProfileSequenceDescription and cmsSEQ, cmsPSEQDESC structures
+  [Added] CRD generation now supports black point compensation, see cmsGetPostScriptCRDEx
+  [Added] cmsTakeManufacturer and cmsTakeModel for uncooked info on these tags
+  [Added] Wriiting 8 bit profiles is now supported
+  
+   
