@@ -4179,6 +4179,9 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   char
     message[MaxTextExtent];
 
+  Image
+    *image;
+
   long
     n;
 
@@ -4195,7 +4198,18 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     SAXHandler;
 
   /*
-    Parse command-line arguments.
+    Open image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  image=AllocateImage(image_info);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  if (status == False)
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  /*
+    Parse MSL file.
   */
   (void) memset(&msl_info,0,sizeof(MSLInfo));
   GetExceptionInfo(&msl_info.exception);
@@ -4208,26 +4222,17 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (msl_info.image == (Image **) NULL) ||
       (msl_info.attributes == (Image **) NULL) ||
       (msl_info.group_info == (MSLGroupInfo *) NULL))
-    MagickError(ResourceLimitError,"Unable to allocate image",
+    MagickError(ResourceLimitError,"Unable to intrepret MSL image",
       "Memory allocation failed");
   msl_info.image_info[0]=CloneImageInfo(image_info);
   msl_info.draw_info[0]=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   msl_info.attributes[0]=image_info->attributes;
-  msl_info.image[0]=AllocateImage(image_info);
-  msl_info.group_info[0].numImages = 0;
-  /*
-    Open image file.
-  */
-  status=OpenBlob(*msl_info.image_info,*msl_info.image,ReadBinaryType,exception);
-  if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",*msl_info.image);
-  /*
-    Parse MSL file.
-  */
+  msl_info.image[0]=image;
+  msl_info.group_info[0].numImages=0;
   (void) xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXModules);
   msl_info.parser=xmlCreatePushParserCtxt(SAXHandler,&msl_info,(char *) NULL,0,
-	  msl_info.image[0]->filename);
+    image->filename);
   while (ReadBlobString(msl_info.image[0],message) != (char *) NULL)
   {
     n=(long) strlen(message);
