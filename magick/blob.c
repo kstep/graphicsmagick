@@ -369,7 +369,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       if (blob != (unsigned char *) NULL)
         return(blob);
 #endif
-      ThrowException(exception,BlobWarning,"Unable to create blob",filename);
+      ThrowException(exception,BlobWarning,"Unable to open file",filename);
       return((void *) NULL);
     }
   *length=fstat(file,&attributes) < 0 ? 0 : attributes.st_size;
@@ -377,7 +377,8 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   if (blob == (unsigned char *) NULL)
     {
       (void) close(file);
-      ThrowException(exception,BlobWarning,"Unable to create blob",filename);
+      ThrowException(exception,BlobWarning,"Unable to create blob",
+        "Memory allocation failed");
       return((void *) NULL);
     }
   count=read(file,blob,*length);
@@ -385,7 +386,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   (void) close(file);
   if (count != *length)
     {
-      ThrowException(exception,BlobWarning,"Unable to read blob",(char *) NULL);
+      ThrowException(exception,BlobWarning,"Unable to read file",filename);
       return((void *) NULL);
     }
   return(blob);
@@ -527,7 +528,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       if (status == False)
         {
           DestroyImageInfo(clone_info);
-          ThrowException(exception,BlobWarning,"Unable to create blob",
+          ThrowException(exception,BlobWarning,"Unable to write blob",
             clone_info->magick);
           DestroyImageInfo(clone_info);
           return((void *) NULL);
@@ -556,7 +557,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   if (status == False)
     {
       DestroyImageInfo(clone_info);
-      ThrowException(exception,BlobWarning,"Unable to create blob",
+      ThrowException(exception,BlobWarning,"Unable to write blob",
         image->filename);
       return((void *) NULL);
     }
@@ -569,7 +570,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
     {
       (void) remove(image->filename);
       (void) strcpy(image->filename,filename);
-      ThrowException(exception,BlobWarning,"Unable to create blob",
+      ThrowException(exception,BlobWarning,"Unable to read file",
         image->filename);
       return((void *) NULL);
     }
@@ -589,7 +590,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   (void) strcpy(image->filename,filename);
   if (count != *length)
     {
-      ThrowException(exception,BlobWarning,"Unable to read blob",(char *) NULL);
+      ThrowException(exception,BlobWarning,"Unable to read file",filename);
       return((void *) NULL);
     }
   return(blob);
