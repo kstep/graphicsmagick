@@ -346,7 +346,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   Image
     *canvas,
-    *clone_image,
     *image,
     *tile;
 
@@ -562,7 +561,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (strncmp(command,"fill",4) == 0))
           (void) CloneString(&draw_info->pen,graphic_context[n].fill);
         (void) QueryColorDatabase(draw_info->pen,&tile->background_color);
-        SetImage(tile,graphic_context[n].opacity*Opaque/100.0);
+        SetImage(tile,(Quantum) (graphic_context[n].opacity*Opaque/100.0));
         if (draw_info->tile != (Image *) NULL)
           DestroyImage(draw_info->tile);
         draw_info->tile=tile;
@@ -585,7 +584,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 "Unable to draw primitive",image);
             (void) CloneString(&draw_info->pen,graphic_context[n].stroke);
             (void) QueryColorDatabase(draw_info->pen,&tile->background_color);
-            SetImage(tile,graphic_context[n].opacity*Opaque/100.0);
+            SetImage(tile,(Quantum) (graphic_context[n].opacity*Opaque/100.0));
             if (draw_info->tile != (Image *) NULL)
               DestroyImage(draw_info->tile);
             draw_info->tile=tile;
@@ -619,7 +618,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (Latin1Compare(token,"=") == 0)
       (void) GetToken(image,&value,&c,exception);
     if (Latin1Compare(keyword,"angle") == 0)
-      (void) sscanf(value,"%f",&element.angle);
+      (void) sscanf(value,"%lf",&element.angle);
     if (Latin1Compare(keyword,"circle") == 0)
       CloneString(&primitive,"circle");
     if (Latin1Compare(keyword,"cx") == 0)
