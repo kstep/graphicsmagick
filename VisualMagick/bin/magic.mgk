@@ -30,6 +30,7 @@
   <magic name="HTML" offset="1" target="html" />
   <magic name="ILBM" offset="8" target="ILBM" />
   <magic name="IPTC" offset="0" target="\034\002" />
+  <magic name="JNG" offset="0" target="\213JNG\r\n\032\n" />
   <magic name="JPEG" offset="0" target="\377\330\377" />
   <magic name="JPC" offset="0" target="\377\117" />
   <magic name="JP2" offset="4" target="\152\120\040\040\015" />
