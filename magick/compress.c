@@ -1694,6 +1694,9 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   Image
     *huffman_image;
 
+  ImageInfo
+    *local_info;
+
   int
     count;
 
@@ -1719,7 +1722,9 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   ((Image *) image)->orphan=False;
   TemporaryFilename(huffman_image->filename);
   (void) strcpy(huffman_image->magick,"TIFF");
-  status=WriteImage(image_info,huffman_image);
+  local_info=CloneImageInfo(image_info);
+  status=WriteImage(local_info,huffman_image);
+  DestroyImageInfo(local_info);
   DestroyImage(huffman_image);
   if (status == False)
     return(False);

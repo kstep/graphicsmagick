@@ -35,7 +35,7 @@ $library_options=""
 $compile_options="/nodebug/optimize"
 $if (f$trnlnm("sys$system:decc$compiler.exe") .nes. "")
 $then       ! VAX with DEC C compiler
-$  compile_options="/decc/prefix=all/nodebug/optimize"
+$  compile_options="/decc/nodebug/optimize"
 $  library_options="_decc"
 $else       ! VAX with VAX C compiler, (GCC library needed for PNG format only)
 $  define/nolog lnk$library sys$library:vaxcrtl
@@ -46,7 +46,7 @@ $if (f$getsyi("HW_MODEL") .gt. 1023)
 $then       ! Alpha with DEC C compiler
 $  define/nolog sys decc$library_include
 $  deas lnk$library
-$  compile_options="/prefix=all/nodebug/optimize"
+$  compile_options="/nodebug/optimize"
 $  library_options="_axp"
 $  share := 'share'y
 $else
@@ -61,18 +61,18 @@ $
 $ if share
 $ then
 $    write sys$output "Making shareable image"
-$    link/share/exe=magickshr   [.magick]libmagick.olb/lib, -
+$    link/share/exe=magickshr.exe   [.magick]libmagick.olb/lib, -
   [.jpeg]libjpeg.olb'library_options'/lib, -
   [.png]libpng.olb'library_options'/lib, -
   [.tiff]libtiff.olb'library_options'/lib, -
   [.ttf]libttf.olb'library_options'/lib, -
   [.zlib]libz.olb'library_options'/lib, -
-  []magickshr/opt
-$ libr/crea/share/log magickshr magickshr
+  []magickshr.opt/opt
+$ libr/crea/share/log magickshr.olb magickshr.exe
 $    set file/trunc magickshr.olb
 $    purge magickshr.olb
-$    link_libraries := magickshr/lib
-$    define/nolog magickshr 'f$environment("default")'magickshr
+$    link_libraries := magickshr.olb/lib
+$    define/nolog magickshr 'f$environment("default")'magickshr.exe
 $    write sys$output "Shareable image logical MAGICKSHR defined:"
 $    show logi magickshr
 $ else
@@ -85,9 +85,9 @@ $    link_libraries := [.magick]libmagick.olb/lib, -
 $ endif
 $if ((p1 .nes. "") .and. (p1 .nes. "DISPLAY")) then goto SkipDisplay
 $write sys$output "Making Display..."
-$call Make display
+$call Make display.c
 $
-$link'link_options' display, -
+$link'link_options' display.obj, -
   'link_libraries',sys$input:/opt
   sys$share:decw$xlibshr.exe/share
 $
@@ -97,9 +97,9 @@ $
 $SkipDisplay:
 $if ((p1 .nes. "") .and. (p1 .nes. "IMPORT")) then goto SkipImport
 $write sys$output "Making Import..."
-$call Make import
+$call Make import.c
 $
-$link'link_options' import, -
+$link'link_options' import.obj, -
   'link_libraries',sys$input:/opt
   sys$share:decw$xlibshr.exe/share
 $
@@ -109,9 +109,9 @@ $SkipImport:
 $
 $if ((p1 .nes. "") .and. (p1 .nes. "ANIMATE")) then goto SkipAnimate
 $write sys$output "Making Animate..."
-$call Make animate
+$call Make animate.c
 $
-$link'link_options' animate, -
+$link'link_options' animate.obj, -
   'link_libraries',sys$input:/opt
   sys$share:decw$xlibshr.exe/share
 $
@@ -121,9 +121,9 @@ $
 $SkipAnimate:
 $if ((p1 .nes. "") .and. (p1 .nes. "MONTAGE")) then goto SkipMontage
 $write sys$output "Making Montage..."
-$call Make montage
+$call Make montage.c
 $
-$link'link_options' montage, -
+$link'link_options' montage.obj, -
   'link_libraries',sys$input:/opt
   sys$share:decw$xlibshr.exe/share
 $
@@ -133,9 +133,9 @@ $
 $SkipMontage:
 $if ((p1 .nes. "") .and. (p1 .nes. "MOGRIFY")) then goto SkipMogrify
 $write sys$output "Making Mogrify..."
-$call Make mogrify
+$call Make mogrify.c
 $
-$link'link_options' mogrify, -
+$link'link_options' mogrify.obj, -
   'link_libraries',sys$input:/opt
   sys$share:decw$xlibshr.exe/share
 $
@@ -145,9 +145,9 @@ $
 $SkipMogrify:
 $if ((p1 .nes. "") .and. (p1 .nes. "CONVERT")) then goto SkipConvert
 $write sys$output "Making Convert..."
-$call Make convert
+$call Make convert.c
 $
-$link'link_options' convert, -
+$link'link_options' convert.obj, -
   'link_libraries',sys$input:/opt
   sys$share:decw$xlibshr.exe/share
 $
@@ -156,9 +156,9 @@ $write sys$output "..symbol CONVERT defined."
 $SkipConvert:
 $if ((p1 .nes. "") .and. (p1 .nes. "IDENTIFY")) then goto SkipIdentify
 $write sys$output "Making Identify..."
-$call Make identify
+$call Make identify.c
 $
-$link'link_options' identify, -
+$link'link_options' identify.obj, -
   'link_libraries',sys$input:/opt
   sys$share:decw$xlibshr.exe/share
 $
@@ -167,9 +167,9 @@ $write sys$output "..symbol IDENTIFY defined."
 $SkipIdentify:
 $if ((p1 .nes. "") .and. (p1 .nes. "COMBINE")) then goto SkipCombine
 $write sys$output "Making Combine..."
-$call Make combine
+$call Make combine.c
 $
-$link'link_options' combine, -
+$link'link_options' combine.obj, -
   'link_libraries',sys$input:/opt
   sys$share:decw$xlibshr.exe/share
 $

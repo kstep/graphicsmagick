@@ -6,7 +6,7 @@ $if (f$trnlnm("X11") .eqs. "") then define/nolog X11 decw$include:
 $compile_options="/nodebug/optimize"
 $if (f$trnlnm("sys$system:decc$compiler.exe") .nes. "") 
 $then     ! VAX with DEC C
-$  compile_options="/decc/prefix=all/nodebug/optimize"
+$  compile_options="/decc/nodebug/optimize"
 $else     ! VAX with VAX C
 $define/nolog lnk$library sys$library:vaxcrtl
 $define/nolog sys sys$share
@@ -14,33 +14,33 @@ $endif
 $if (f$getsyi("HW_MODEL") .gt. 1023)
 $then     ! Alpha with DEC C
 $  define/nolog sys decc$library_include
-$  compile_options="/prefix=all/nodebug/optimize"
+$  compile_options="/nodebug/optimize"
 $endif
 $
 $write sys$output "Making Magick..."
-$call Make image
-$call Make effects
-$call Make shear
-$call Make segment
-$call Make quantize
-$call Make colors
-$call Make gems
-$call Make signature
-$call Make decode ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
-$call Make encode ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
-$call Make compress ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
-$call Make utility
-$call Make monitor
-$call Make error
-$call Make delegates
-$call Make magick  ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
-$call Make display
-$call Make animate
-$call Make widget
-$call Make X
-$call Make PreRvIcccm
-$call Make memory
-$call Make vms
+$call Make image.c
+$call Make effects.c
+$call Make shear.c
+$call Make segment.c
+$call Make quantize.c
+$call Make colors.c
+$call Make gems.c
+$call Make signature.c
+$call Make decode.c ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
+$call Make encode.c ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
+$call Make compress.c ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
+$call Make utility.c
+$call Make monitor.c
+$call Make error.c
+$call Make delegates.c
+$call Make magick.c ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
+$call Make display.c
+$call Make animate.c
+$call Make widget.c
+$call Make X.c
+$call Make PreRvIcccm.c
+$call Make memory.c
+$call Make vms.c
 $library/create libmagick.olb image.obj,effects.obj,shear.obj,segment.obj, -
   quantize.obj,colors.obj,gems.obj,signature.obj,decode.obj,encode.obj, -
   compress.obj,utility.obj,monitor.obj,error.obj,delegates.obj,magick.obj, -
