@@ -226,6 +226,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     }
   if (draw_info->clip_path != (char *) NULL)
     clone_info->clip_path=AllocateString(draw_info->clip_path);
+  if (draw_info->pattern_path != (char *) NULL)
+    clone_info->pattern_path=AllocateString(draw_info->pattern_path);
   return(clone_info);
 }
 
@@ -957,6 +959,8 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->dash_pattern);
   if (draw_info->clip_path != (char *) NULL)
     LiberateMemory((void **) &draw_info->clip_path);
+  if (draw_info->pattern_path != (char *) NULL)
+    LiberateMemory((void **) &draw_info->pattern_path);
   LiberateMemory((void **) &draw_info);
 }
 
@@ -2680,6 +2684,64 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
   if (status == False)
     ThrowBinaryException(OptionWarning,
       "Non-conforming drawing primitive definition",keyword);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w P a t t e r n P a t h                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawPatternPath() draws a pattern.
+%
+%  The format of the DrawPatternPath method is:
+%
+%      unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o draw_info: The draw info.
+%
+%
+*/
+static unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info)
+{
+  char
+    pattern[MaxTextExtent];
+
+  const ImageAttribute
+    *attribute;
+
+  DrawInfo
+    *clone_info;
+
+  unsigned int
+    status;
+
+  assert(draw_info != (const DrawInfo *) NULL);
+  FormatString(pattern,"[%.1024s]",draw_info->clip_path);
+  attribute=GetImageAttribute(image,pattern);
+  if (attribute == (ImageAttribute *) NULL)
+    return(False);
+  SetImage(draw_info->tile,OpaqueOpacity);
+  if (draw_info->debug)
+    (void) fprintf(stdout,"\nbegin pattern-path %.1024s\n",
+      draw_info->pattern_path);
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  (void) CloneString(&clone_info->primitive,attribute->value);
+  (void) QueryColorDatabase("black",&clone_info->fill);
+  status=DrawImage(draw_info->tile,clone_info);
+  DestroyDrawInfo(clone_info);
+  if (draw_info->debug)
+    (void) fprintf(stdout,"end pattern-path\n\n");
   return(status);
 }
 
