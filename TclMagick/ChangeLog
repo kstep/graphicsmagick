@@ -1,3 +1,26 @@
+2004-01-25  David N. Welton  <davidw@dedasys.com>
+
+	* tcl.m4: Moved to top level directory.
+
+	* AUTHORS NEWS README INSTALL COPYING: Added to make automake
+	happy.
+
+	* configure.ac: Added this in the top level directory as it
+	doesn't seem that it will be very happy in unix/.
+
+	* generic/Makefile.am: Tentative addition of Makefile.am governing
+	the building of libTclMagick.so.
+
+2004-01-16  David N. Welton  <davidw@dedasys.com>
+
+	* tests/test-*.tcl: Added "multiplatform" startup code for tests.
+
+2004-01-15  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.h: Added findMagickObj and myMagickError to .h
+	file, and made then non-static in the .c file.  They are used in
+	TkMagick.c.
+
 2004-01-09  Rolf Schroedter <rolf.schroedter@dlr.de>
 
         * API changes:
@@ -5,12 +28,6 @@
         * New API's:
 		magick version            # returns TclMagick version
 		magick library ?-option?  # Returns Magick library attributes
-
-2004-01-15  David N. Welton  <davidw@dedasys.com>
-
-	* generic/TclMagick.h: Added findMagickObj and myMagickError to .h
-	file, and made then non-static in the .c file.  They are used in
-	TkMagick.c.
 
 2004-01-09  Rolf Schroedter <rolf.schroedter@dlr.de>
 

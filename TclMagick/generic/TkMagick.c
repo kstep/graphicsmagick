@@ -201,7 +201,7 @@ EXPORT(int, Tkmagick_Init)(Tcl_Interp *interp)
 	return TCL_ERROR;
     }
 
-    if ( Tcl_PkgRequire(interp, "TclMagick", "0.2", 0) == NULL) {
+    if ( Tcl_PkgRequire(interp, "TclMagick", "0.3", 0) == NULL) {
 	return TCL_ERROR;
     }
     if ( Tcl_PkgProvide(interp,"TkMagick", "0.1") != TCL_OK ) {

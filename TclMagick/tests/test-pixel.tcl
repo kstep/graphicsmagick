@@ -10,12 +10,17 @@
 # Load debugging version 
 # or require TclMagick package from library
 #
-if {[file exists ../win/debug/tclMagick.dll]} {
-    load ../win/debug/tclMagick.dll
+if { $tcl_platform(platform) == "unix" } {
+    set auto_path "[file join .. unix] $auto_path"
+    package require TclMagick
+} else {
+    set dll [file join .. win debug tclMagick.dll]
+    if {[file exists $dll]} {
+	load $dl
+    }
+    package require TclMagick
 }
-package require TclMagick
 puts [info script]
-
 
 ############################################
 # Command debugging

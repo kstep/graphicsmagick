@@ -7,13 +7,20 @@
 
 
 ############################################
-# Load debugging version 
+# Load debugging version
 # or require TclMagick package from library
 #
-if {[file exists ../win/debug/tclMagick.dll]} {
-    load ../win/debug/tclMagick.dll
+
+if { $tcl_platform(platform) == "unix" } {
+    set auto_path "[file join .. unix] $auto_path"
+    package require TclMagick
+} else {
+    set dll [file join .. win debug tclMagick.dll]
+    if {[file exists $dll]} {
+	load $dl
+    }
+    package require TclMagick
 }
-package require TclMagick
 puts [info script]
 
 
@@ -21,7 +28,7 @@ puts [info script]
 # Global options
 #
 set IMG "xc:white"
-set TMP "../tmp"
+set TMP [file join .. tmp]
 set FONT "Ariel"        ;# undefine FONT if none available
 
 ##########################################
@@ -157,7 +164,7 @@ proc DLR_logo {draw color x y scale} {
         $draw SetFontFamily $::FONT
         $draw SetFontSize 20
         $draw Annotation [expr {$x+55.0}] [expr {$y+82.0}] "DLR"
-    } else {    
+    } else {
         # Draw the letters manually
         #
         $draw path start move [expr {$x+55.0}] [expr {$y+82.0}]
@@ -197,7 +204,7 @@ proc DLR_logo {draw color x y scale} {
             horizontal -2
             line -2.5 +10.5
             close
-            finish
+	    finish
         }
     }
     $draw PopGraphicContext    
