@@ -488,6 +488,441 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  L S B F i r s t R e a d L o n g                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LSBFirstReadLong reads a long value as a 32 bit quantity in
+%  least-significant byte first order.
+%
+%  The format of the LSBFirstReadLong method is:
+%
+%      unsigned long LSBFirstReadLong(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method LSBFirstReadLong returns an unsigned long read from
+%      the file.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export unsigned long LSBFirstReadLong(Image *image)
+{
+  unsigned char
+    buffer[4];
+
+  unsigned long
+    value;
+
+  assert(image != (Image *) NULL);
+  value=ReadBlob(image,4,(char *) buffer);
+  if (value == 0)
+    return((unsigned long) ~0);
+  value=(unsigned long) (buffer[3] << 24);
+  value|=(unsigned long) (buffer[2] << 16);
+  value|=(unsigned long) (buffer[1] << 8);
+  value|=(unsigned long) (buffer[0]);
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  L S B F i r s t R e a d S h o r t                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LSBFirstReadShort reads a short value as a 16 bit quantity in
+%  least-significant byte first order.
+%
+%  The format of the LSBFirstReadShort method is:
+%
+%      unsigned short LSBFirstReadShort(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method LSBFirstReadShort returns an unsigned short read from
+%      the file.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export unsigned short LSBFirstReadShort(Image *image)
+{
+  unsigned char
+    buffer[2];
+
+  unsigned short
+    value;
+
+  assert(image != (Image *) NULL);
+  value=ReadBlob(image,2,(char *) buffer);
+  if (value == 0)
+    return((unsigned short) ~0);
+  value=(unsigned short) (buffer[1] << 8);
+  value|=(unsigned short) (buffer[0]);
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  L S B F i r s t W r i t e L o n g                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LSBFirstWriteLong writes a long value as a 32 bit quantity in
+%  least-significant byte first order.
+%
+%  The format of the LSBFirstWriteLong method is:
+%
+%      unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
+%
+%  A description of each parameter follows.
+%
+%    o count: Method LSBFirstWriteLong returns the number of unsigned longs
+%      written.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o value: Specifies the value to write.
+%
+%
+*/
+Export unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
+{
+  unsigned char
+    buffer[4];
+
+  assert(image != (Image *) NULL);
+  buffer[0]=(unsigned char) (value);
+  buffer[1]=(unsigned char) ((value) >> 8);
+  buffer[2]=(unsigned char) ((value) >> 16);
+  buffer[3]=(unsigned char) ((value) >> 24);
+  return(WriteBlob(image,4,(char *) buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  L S B F i r s t W r i t e S h o r t                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LSBFirstWriteShort writes a long value as a 16 bit quantity in
+%  least-significant byte first order.
+%
+%  The format of the LSBFirstWriteShort method is:
+%
+%      unsigned long LSBFirstWriteShort(Image *image,const unsigned short value)
+%
+%  A description of each parameter follows.
+%
+%    o count: Method LSBFirstWriteShort returns the number of unsigned longs
+%      written.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o value:  Specifies the value to write.
+%
+%
+*/
+Export unsigned long LSBFirstWriteShort(Image *image,const unsigned short value)
+{
+  unsigned char
+    buffer[2];
+
+  assert(image != (Image *) NULL);
+  buffer[0]=(unsigned char) (value);
+  buffer[1]=(unsigned char) ((value) >> 8);
+  return(WriteBlob(image,2,(char *) buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M S B F i r s t O r d e r L o n g                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MSBFirstOrderLong converts a least-significant byte first buffer
+%  of integers to most-significant byte first.
+%
+%  The format of the MSBFirstOrderLong method is:
+%
+%      void MSBFirstOrderLong(register char *p,const unsigned int length)
+%
+%  A description of each parameter follows.
+%
+%   o  p:  Specifies a pointer to a buffer of integers.
+%
+%   o  length:  Specifies the length of the buffer.
+%
+%
+*/
+Export void MSBFirstOrderLong(register char *p,const unsigned int length)
+{
+  register char
+    c,
+    *q,
+    *sp;
+
+  assert(p != (char *) NULL);
+  q=p+length;
+  while (p < q)
+  {
+    sp=p+3;
+    c=(*sp);
+    *sp=(*p);
+    *p++=c;
+    sp=p+1;
+    c=(*sp);
+    *sp=(*p);
+    *p++=c;
+    p+=2;
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M S B F i r s t O r d e r S h o r t                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MSBFirstOrderShort converts a least-significant byte first buffer
+%  of integers to most-significant byte first.
+%
+%  The format of the MSBFirstOrderShort method is:
+%
+%      void MSBFirstOrderShort(register char *p,const unsigned int length)
+%
+%  A description of each parameter follows.
+%
+%   o  p:  Specifies a pointer to a buffer of integers.
+%
+%   o  length:  Specifies the length of the buffer.
+%
+%
+*/
+Export void MSBFirstOrderShort(register char *p,const unsigned int length)
+{
+  register char
+    c,
+    *q;
+
+  assert(p != (char *) NULL);
+  q=p+length;
+  while (p < q)
+  {
+    c=(*p);
+    *p=(*(p+1));
+    p++;
+    *p++=c;
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M S B F i r s t R e a d S h o r t                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MSBFirstReadShort reads a short value as a 16 bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the MSBFirstReadShort method is:
+%
+%      unsigned short MSBFirstReadShort(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method MSBFirstReadShort returns an unsigned short read from
+%      the file.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export unsigned short MSBFirstReadShort(Image *image)
+{
+  unsigned char
+    buffer[2];
+
+  unsigned short
+    value;
+
+  assert(image != (Image *) NULL);
+  value=ReadBlob(image,2,(char *) buffer);
+  if (value == 0)
+    return((unsigned short) ~0);
+  value=(unsigned int) (buffer[0] << 8);
+  value|=(unsigned int) (buffer[1]);
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M S B F i r s t R e a d L o n g                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MSBFirstReadLong reads a long value as a 32 bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the MSBFirstReadLong method is:
+%
+%      unsigned long MSBFirstReadLong(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method MSBFirstReadLong returns an unsigned long read from
+%      the file.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+%
+*/
+Export unsigned long MSBFirstReadLong(Image *image)
+{
+  unsigned char
+    buffer[4];
+
+  unsigned long
+    value;
+
+  assert(image != (Image *) NULL);
+  value=ReadBlob(image,4,(char *) buffer);
+  if (value == 0)
+    return((unsigned long) ~0);
+  value=(unsigned int) (buffer[0] << 24);
+  value|=(unsigned int) (buffer[1] << 16);
+  value|=(unsigned int) (buffer[2] << 8);
+  value|=(unsigned int) (buffer[3]);
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M S B F i r s t W r i t e L o n g                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MSBFirstWriteLong writes a long value as a 32 bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the MSBFirstWriteLong method is:
+%
+%      unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
+%
+%  A description of each parameter follows.
+%
+%    o count: Method MSBFirstWriteLong returns the number of unsigned longs
+%      written.
+%
+%    o value:  Specifies the value to write.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+%
+*/
+Export unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
+{
+  unsigned char
+    buffer[4];
+
+  assert(image != (Image *) NULL);
+  buffer[0]=(unsigned char) ((value) >> 24);
+  buffer[1]=(unsigned char) ((value) >> 16);
+  buffer[2]=(unsigned char) ((value) >> 8);
+  buffer[3]=(unsigned char) (value);
+  return(WriteBlob(image,4,(char *) buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M S B F i r s t W r i t e S h o r t                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MSBFirstWriteShort writes a long value as a 16 bit quantity in
+%  most-significant byte first order.
+%
+%  The format of the MSBFirstWriteShort method is:
+%
+%      unsigned long MSBFirstWriteShort(Image *image,const unsigned short value)
+%
+%  A description of each parameter follows.
+%
+%   o  value:  Specifies the value to write.
+%
+%   o  file:  Specifies the file to write the data to.
+%
+%
+*/
+Export unsigned long MSBFirstWriteShort(Image *image,const unsigned short value)
+{
+  unsigned char
+    buffer[2];
+
+  assert(image != (Image *) NULL);
+  buffer[0]=(unsigned char) ((value) >> 8);
+  buffer[1]=(unsigned char) (value);
+  return(WriteBlob(image,2,(char *) buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   O p e n B l o b                                                           %
 %                                                                             %
 %                                                                             %
@@ -747,6 +1182,93 @@ Export unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  R e a d B y t e                                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadByte reads a single byte from the image file and returns it.
+%
+%  The format of the ReadByte method is:
+%
+%      int ReadByte(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o value:  Method ReadByte returns an integer read from the file.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export int ReadByte(Image *image)
+{
+  int
+    count;
+
+  unsigned char
+    value;
+
+  assert(image != (Image *) NULL);
+  count=ReadBlob(image,1,(char *) &value);
+  if (count == 0)
+    return((int) ~0);
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  R e a d D a t a B l o c k                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobBlock reads data from the image file and returns it.  The
+%  amount of data is determined by first reading a count byte.  The number
+%  or bytes read is returned.
+%
+%  The format of the ReadBlobBlock method is:
+%
+%      unsigned long ReadBlobBlock(Image *image,char *data)
+%
+%  A description of each parameter follows:
+%
+%    o count:  Method ReadBlobBlock returns the number of bytes read.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o data:  Specifies an area to place the information requested from
+%      the file.
+%
+%
+*/
+Export unsigned long ReadBlobBlock(Image *image,char *data)
+{
+  unsigned char
+    block_count;
+
+  unsigned long
+    count;
+
+  assert(image != (Image *) NULL);
+  assert(data != (char *) NULL);
+  count=ReadBlob(image,1,(char *) &block_count);
+  if (count == 0)
+    return(0);
+  count=ReadBlob(image,(unsigned long) block_count,data);
+  return(count);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  S e e k B l o b                                                            %
 %                                                                             %
 %                                                                             %
@@ -950,4 +1472,42 @@ Export unsigned long WriteBlob(Image *image,const unsigned long number_bytes,
   if (image->blob.offset > image->blob.length)
     image->blob.length=image->blob.offset;
   return(number_bytes);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  W r i t e B y t e                                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteByte write an integer to a file.  It returns the number of
+%  bytes written (either 0 or 1);
+%
+%  The format of the WriteByte method is:
+%
+%      unsigned long WriteByte(Image *image,const char value)
+%
+%  A description of each parameter follows.
+%
+%    o count:  Method WriteByte returns the number of bytes written.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o value: Specifies the value to write.
+%
+%
+*/
+Export unsigned long WriteByte(Image *image,const char value)
+{
+  unsigned long
+    count;
+
+  assert(image != (Image *) NULL);
+  count=WriteBlob(image,1,(char *) &value);
+  return(count);
 }

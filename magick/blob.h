@@ -25,6 +25,7 @@ extern Export Image
 extern Export int
   EOFBlob(const Image *),
   FlushBlob(const Image *),
+  ReadByte(Image *),
   SeekBlob(Image *,const long,const int),
   TellBlob(const Image *image);
 
@@ -32,11 +33,25 @@ extern Export unsigned int
   OpenBlob(const ImageInfo *,Image *,const char *);
 
 extern Export unsigned long
+  LSBFirstReadLong(Image *),
+  LSBFirstWriteLong(Image *,const unsigned long),
+  LSBFirstWriteShort(Image *,const unsigned short),
+  MSBFirstReadLong(Image *),
+  MSBFirstWriteLong(Image *,const unsigned long),
+  MSBFirstWriteShort(Image *,const unsigned short),
   ReadBlob(Image *,const unsigned long,char *),
-  WriteBlob(Image *,const unsigned long,const char *);
+  ReadBlobBlock(Image *,char *),
+  WriteBlob(Image *,const unsigned long,const char *),
+  WriteByte(Image *,const char value);
+
+extern Export unsigned short
+  LSBFirstReadShort(Image *),
+  MSBFirstReadShort(Image *);
 
 extern Export void
   CloseBlob(Image *),
+  MSBFirstOrderLong(char *,const unsigned int),
+  MSBFirstOrderShort(char *,const unsigned int),
   GetBlobInfo(BlobInfo *),
   SetBlobQuantum(BlobInfo *,const unsigned long);
 

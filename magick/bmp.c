@@ -70,7 +70,9 @@
 %
 %  The format of the DecodeImage method is:
 %
-%      Image *ReadBMPImage(const ImageInfo *image_info)
+%      unsigned int DecodeImage(Image *image,const unsigned int compression,
+%        const unsigned int number_columns,const unsigned int number_rows,
+%        unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -119,6 +121,8 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
   for (y=0; y < (int) number_rows; )
   {
     count=ReadByte(image);
+    if (count < 0)
+      return(False);
     if (count != 0)
       {
         /*
@@ -199,7 +203,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
     if (QuantumTick(y,number_rows))
       ProgressMonitor(LoadImageText,y,number_rows);
   }
-  return(False);
+  return(True);
 }
 
 /*
@@ -578,9 +582,11 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         /*
           Convert run-length encoded raster pixels.
         */
-        (void) DecodeImage(image,(unsigned int) bmp_header.compression,
+        status=DecodeImage(image,(unsigned int) bmp_header.compression,
           (unsigned int) bmp_header.width,(unsigned int) bmp_header.height,
           bmp_pixels);
+        if (status == False)
+          ReaderExit(CorruptImageWarning,"not enough image pixels",image);
       }
     /*
       Initialize image structure.
