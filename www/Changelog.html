@@ -53,6 +53,15 @@
 </tr>
 </table>
 <p>
+2003-09-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Set CXX to PTHREAD_CXX if necessary (and warn).
+  <LI> acinclude.m4 (ACX_PTHREAD): Add check to see if xlC_r should be
+        used for AIX.
+
+</UL>
+<p>
 2003-09-10  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
 
 <UL>
@@ -63,6 +72,8 @@
 2003-09-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/log.h: It seems that test programs are using
+        GetMagickModule so make it visible by default.
   <LI> configure.ac: Use GM_FUNC_MMAP_FILEIO macro to test mmap.
   <LI> acinclude.m4 (GM_FUNC_MMAP_FILEIO): New macro to test mmap's
         capability to do coherent file I/O.  The AC_FUNC_MMAP macro

@@ -1,3 +1,9 @@
+2003-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Set CXX to PTHREAD_CXX if necessary (and warn).
+	* acinclude.m4 (ACX_PTHREAD): Add check to see if xlC_r should be
+	used for AIX.
+
 2003-09-10  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/render.c: Fixed handling of arc primitive (see IM-5.5.8).

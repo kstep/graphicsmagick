@@ -217,6 +217,11 @@ then
       AC_MSG_WARN([Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads.])
       CC="$PTHREAD_CC"
     fi
+    if test "$CXX" != "$PTHREAD_CXX"
+    then
+      AC_MSG_WARN([Replacing compiler $CXX with compiler $PTHREAD_CXX to support pthreads.])
+      CXX="$PTHREAD_CXX"
+    fi
   fi
 
 fi

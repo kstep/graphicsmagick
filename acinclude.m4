@@ -686,13 +686,20 @@ if test "x$acx_pthread_ok" = xyes; then
           * )
            AC_CHECK_PROG(PTHREAD_CC, cc_r, cc_r, ${CC}) ;;
         esac
+        PTHREAD_CXX="$CXX"
+        case "$CXX" in
+          *xlC | *xlC_r )
+           AC_CHECK_PROG(PTHREAD_CXX, xlC_r, xlC_r, ${CXX}) ;;
+        esac
 else
         PTHREAD_CC="$CC"
+        PTHREAD_CXX="$CXX"
 fi
 
 AC_SUBST(PTHREAD_LIBS)
 AC_SUBST(PTHREAD_CFLAGS)
 AC_SUBST(PTHREAD_CC)
+AC_SUBST(PTHREAD_CXX)
 
 # Finally, execute ACTION-IF-FOUND/ACTION-IF-NOT-FOUND:
 if test x"$acx_pthread_ok" = xyes; then
