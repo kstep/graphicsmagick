@@ -348,22 +348,34 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
+    doexit,
     global_colormap,
     status;
 
   /*
     Initialize command line arguments.
   */
-  ReadCommandlLine(argc,&argv);
-  if (LocaleCompare("mogrify",argv[0]) == 0)
-    InitializeMagick(GetExecutionPath(argv[0]));
+  if (LocaleCompare("-mogrify",argv[0]) == 0)
+    {
+      doexit=False;
+      if (argc < 3)
+        return(False);
+    }
   else
-    InitializeMagick(*argv);
-  status=ExpandFilenames(&argc,&argv);
-  if (status == False)
-    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
-  if (argc < 2)
-    Usage();
+    {
+      doexit=True;
+      ReadCommandlLine(argc,&argv);
+      if (LocaleNCompare("mogrify",argv[0],7) == 0)
+        InitializeMagick(GetExecutionPath(argv[0]));
+      else
+        InitializeMagick(*argv);
+      status=ExpandFilenames(&argc,&argv);
+      if (status == False)
+        MagickError(ResourceLimitError,"Memory allocation failed",
+          (char *) NULL);
+      if (argc < 3)
+        Usage();
+    }
   /*
     Set defaults.
   */
@@ -1726,6 +1738,8 @@ int main(int argc,char **argv)
   if ((i != argc) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImageInfo(image_info);
+  if (doexit == False)
+    return(True);
   DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(0);
