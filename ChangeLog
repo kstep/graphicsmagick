@@ -1,3 +1,11 @@
+2003-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/Makefile.am (check-constitute): Added
+	constitute tests.
+	* magick/constitute.c: New test program to ensure
+	that ConstituteImage and DispatchImage are working
+	correctly.
+
 2003-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/download.html: Added links to directories
