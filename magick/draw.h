@@ -13,19 +13,19 @@ extern "C" {
 
 #include "render.h"
 
+
 typedef struct _DrawContext *DrawContext;
 
 extern MagickExport DrawContext
-  DrawAllocateContext(void);
+  DrawAllocateContext(const ImageInfo *image_info, Image *image);
 
 extern MagickExport int
-  DrawRender(const DrawContext context,
-             const ImageInfo *image_info, Image *image);
+  DrawRender(const DrawContext context);
 
 extern MagickExport void
   DrawAnnotation(DrawContext context,
 		 const double x, const double y,
-		 const char *text),
+		 const unsigned char *text),
   DrawArc(DrawContext context,
           const double sx, const double sy,
           const double ex, const double ey,
@@ -38,6 +38,7 @@ extern MagickExport void
   DrawColor(DrawContext context,
             const double x, const double y,
             const PaintMethod paintMethod),
+  DrawComment(DrawContext context,const char* comment),
   DrawDestroyContext(DrawContext context),
   DrawEllipse(DrawContext context,
               const double ox, const double oy,
@@ -132,10 +133,11 @@ extern MagickExport void
   DrawSetClipPath(DrawContext context, const char *clip_path),
   DrawSetClipRule(DrawContext context, const FillRule fill_rule),
   DrawSetClipUnits(DrawContext context, const ClipPathUnits clip_units),
-  DrawSetFill(DrawContext context, const PixelPacket * fill_color),
-  DrawSetFillString(DrawContext context, const char* fill_color),
+  DrawSetFillColor(DrawContext context, const PixelPacket * fill_color),
+  DrawSetFillColorString(DrawContext context, const char* fill_color),
   DrawSetFillOpacity(DrawContext context, const double fill_opacity),
   DrawSetFillRule(DrawContext context, const FillRule fill_rule),
+  DrawSetFillPatternURL(DrawContext context, const char* fill_url),
   DrawSetFont(DrawContext context, const char *font_name),
   DrawSetFontFamily(DrawContext context, const char *font_family),
   DrawSetFontSize(DrawContext context, const double font_pointsize),
@@ -149,23 +151,22 @@ extern MagickExport void
   DrawSetSkewY(DrawContext context, const double degrees),
   DrawSetStopColor(DrawContext context, const PixelPacket * color,
                    const double offset),
-  DrawSetStroke(DrawContext context, const PixelPacket * stroke_color),
-  DrawSetStrokeString(DrawContext context, const char* stroke_color),
   DrawSetStrokeAntialias(DrawContext context, const int true_false),
-  DrawSetStrokeDashArray(DrawContext context,
-                         const double *dasharray),
-  DrawSetStrokeDashOffset(DrawContext context,
-                          const unsigned int dashoffset),
+  DrawSetStrokeColor(DrawContext context, const PixelPacket * stroke_color),
+  DrawSetStrokeColorString(DrawContext context, const char* stroke_color),
+  DrawSetStrokeDashArray(DrawContext context,const double *dasharray),
+  DrawSetStrokeDashOffset(DrawContext context,const unsigned int dashoffset),
   DrawSetStrokeLineCap(DrawContext context, const LineCap linecap),
   DrawSetStrokeLineJoin(DrawContext context, const LineJoin linejoin),
-  DrawSetStrokeMiterLimit(DrawContext context,
-                          const unsigned long miterlimit),
+  DrawSetStrokeMiterLimit(DrawContext context,const unsigned long miterlimit),
   DrawSetStrokeOpacity(DrawContext context, const double opacity),
+  DrawSetStrokePatternURL(DrawContext context, const char* stroke_url),
   DrawSetStrokeWidth(DrawContext context, const double width),
   DrawSetTextAntialias(DrawContext context, const int true_false),
   DrawSetTextDecoration(DrawContext context,
                         const DecorationType decoration),
   DrawSetTextUnderColor(DrawContext context, const PixelPacket * color),
+  DrawSetTextUnderColorString(DrawContext context, const char* under_color),
   DrawSetTranslate(DrawContext context, const double x, const double y),
   DrawSetViewbox(DrawContext context,
                  unsigned long x1, unsigned long y1,
