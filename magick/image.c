@@ -1552,6 +1552,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           break;
         }
         case CopyOpacityCompositeOp:
+        default:
         {
           if (!composite_image->matte)
             {
@@ -1753,8 +1754,6 @@ MagickExport unsigned int CompositeImage(Image *image,
             destination.opacity=source.opacity;
           break;
         }
-        default:
-          break;
       }
       q->red=destination.red;
       q->green=destination.green;

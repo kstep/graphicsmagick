@@ -357,7 +357,7 @@ static struct
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
       {"skewY", DoubleReference}, {"tile", ImageReference},
       {"pointsize", DoubleReference}, {"antialias", BooleanTypes},
-      {"density", StringReference} } },
+      {"density", StringReference}, {"linewidth", DoubleReference} } },
     { "Equalize", },
     { "Gamma", { {"gamma", StringReference}, {"red", DoubleReference},
       {"green", DoubleReference}, {"blue", DoubleReference} } },
@@ -5030,6 +5030,8 @@ Mogrify(ref,...)
           if (attribute_flag[18])
             (void) CloneString(&draw_info->density,
               argument_list[18].string_reference);
+          if (attribute_flag[19])
+            draw_info->stroke_width=argument_list[19].double_reference;
           DrawImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           break;
