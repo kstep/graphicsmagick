@@ -981,8 +981,6 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   Image *composite_image,const int x_offset,const int y_offset)
 {
   int
-    height,
-    width,
     y;
 
   long
@@ -1232,25 +1230,22 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   /*
     Initialize composited image.
   */
-  width=Min(composite_image->columns,image->columns-x_offset);
-  if (width > image->columns)
-    width=image->columns;
-  height=Min(composite_image->rows,image->rows-y_offset);
-  for (y=0; y < height; y++)
+  for (y=0; y < image->rows; y++)
   {
-    if ((y+y_offset) < 0)
+    if (y < y_offset)
       continue;
-    p=GetPixelCache(composite_image,0,y,width,1);
-    q=GetPixelCache(image,Max(x_offset,0),y+y_offset,width,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((y-y_offset) >= composite_image->rows)
       break;
-    for (x=0; x < width; x++)
+    for (x=0; x < image->columns; x++)
     {
-      if ((x+x_offset) < 0)
-        {
-          p++;
-          continue;
-        }
+      if (x < x_offset)
+        continue;
+      if ((x-x_offset) >= composite_image->columns)
+        break;
+      p=GetPixelCache(composite_image,x-x_offset,y-y_offset,1,1);
+      q=GetPixelCache(image,x,y,1,1);
+      if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        break;
       opacity=q->opacity;
       switch (compose)
       {
@@ -1496,20 +1491,17 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           break;
         }
       }
+      if (image->class == PseudoClass)
+        if (image->class == composite_image->class)
+          *image->indexes=(*composite_image->indexes);
       q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red;
       q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green;
       q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue;
       q->opacity=(opacity < Transparent) ? Transparent :
         (opacity > Opaque) ? Opaque : opacity;
-      p++;
-      q++;
+      if (!SyncPixelCache(image))
+        break;
     }
-    if ((image->class == PseudoClass) &&
-        (composite_image->class == PseudoClass))
-      (void) memcpy(image->indexes,composite_image->indexes,
-         width*sizeof(IndexPacket));
-    if (!SyncPixelCache(image))
-      break;
   }
   if (compose == DisplaceCompositeOp)
     DestroyImage(composite_image);

@@ -115,7 +115,8 @@ Export unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
     matte_image->colormap[i].blue=(Quantum) i;
   }
   SyncImage(matte_image);
-  status=WriteMIFFImage(image_info,matte_image);
+  (void) strcpy(matte_image->magick,"MIFF");
+  status=WriteImage(image_info,matte_image);
   DestroyImage(matte_image);
   return(status);
 }

@@ -55,7 +55,7 @@ libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c attributes.c avs.c bim.
   display.c dps.c draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c \
   gems.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c \
   image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c \
-  miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c pdb.c \
+  miff.c monitor.c mono.c montage.c mtv.c pcd.c pcl.c pcx.c pdb.c \
   pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c \
   psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c \
   shear.c signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c \
@@ -80,7 +80,7 @@ pkgdir            = $(libdir)/ImageMagick/modules/coders
 if WITH_MODULES
 pkg_LTLIBRARIES   = avs.la bmp.la cmyk.la dcm.la dps.la ept.la fax.la fpx.la \
   fits.la gif.la gray.la hdf.la icc.la icon.la iptc.la jbig.la jpeg.la \
-  logo.la miff.la mono.la mtv.la null.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la \
+  logo.la miff.la mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la \
   png.la pix.la plasma.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
   pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la sun.la tga.la  tiff.la tile.la \
   tim.la txt.la uil.la uyvy.la vicar.la vid.la viff.la wbmp.la x.la xbm.la \
@@ -198,11 +198,6 @@ mono_la_LIBADD      =
 mtv_la_SOURCES      = mtv.c
 mtv_la_LDFLAGS      = -no-undefined -module -avoid-version
 mtv_la_LIBADD       =
-
-# NULL module
-null_la_SOURCES     = null.c
-null_la_LDFLAGS     = -no-undefined -module -avoid-version
-null_la_LIBADD      =
 
 # PCD module
 pcd_la_SOURCES      = pcd.c

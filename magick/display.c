@@ -6778,7 +6778,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"Label","Preview");
       TemporaryFilename((*image)->filename);
-      status=WritePREVIEWImage(image_info,*image);
+      (void) strcpy((*image)->magick,"PREVIEW");
+      status=WriteImage(image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
       status=WriteImage(image_info,*image);
       if (status)

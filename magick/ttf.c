@@ -152,8 +152,8 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
       return(image);
     }
   DestroyImage(image);
-  (void) strcpy(local_info->filename,"white");
-  image=ReadXCImage(local_info);
+  (void) strcpy(local_info->filename,"xc:white");
+  image=ReadImage(local_info);
   DestroyImageInfo(local_info);
   if (image == (Image *) NULL)
     {

@@ -40,11 +40,11 @@ Image * <STRONG>BlobToImage</STRONG>( const ImageInfo *image_info, const char *b
 
 </P>
 <P>
-void  <STRONG>DestroyBlobInfo</STRONG>( BlobInfo <CODE>*blob_info</CODE> );
+void  <STRONG>DestroyBlobInfo</STRONG>( BlobInfo <CODE>*blob</CODE> );
 
 </P>
 <P>
-void  <STRONG>GetBlobInfo</STRONG>( BlobInfo <CODE>*blob_info</CODE> );
+void  <STRONG>GetBlobInfo</STRONG>( BlobInfo <CODE>*blob</CODE> );
 
 </P>
 <P>
@@ -52,7 +52,7 @@ char * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, 
 
 </P>
 <P>
-void  <STRONG>SetBlobQuantum</STRONG>( BlobInfo *blob_info, const size_t quantum );
+void  <STRONG>SetBlobQuantum</STRONG>( BlobInfo *blob, const size_t quantum );
 
 </P>
 <P>
@@ -114,7 +114,7 @@ structure.
 The format of the DestroyBlobInfo method is:
 
 </P>
-<blockquote>void DestroyBlobInfo ( BlobInfo *blob_info ); </blockquote>
+<blockquote>void DestroyBlobInfo ( BlobInfo *blob ); </blockquote>
 
 <P>
 
@@ -122,7 +122,7 @@ The format of the DestroyBlobInfo method is:
 
 </P>
 <DL><DL>
-<p><dt><STRONG>blob_info:</STRONG><DD>
+<p><dt><STRONG>blob:</STRONG><DD>
 <P>
 Specifies a pointer to a BlobInfo structure.
 
@@ -139,7 +139,7 @@ Method GetBlobInfo initializes the BlobInfo structure.
 The format of the GetBlobInfo method is:
 
 </P>
-<blockquote>void GetBlobInfo ( BlobInfo *blob_info ); </blockquote>
+<blockquote>void GetBlobInfo ( BlobInfo *blob ); </blockquote>
 
 <P>
 
@@ -147,7 +147,7 @@ The format of the GetBlobInfo method is:
 
 </P>
 <DL><DL>
-<p><dt><STRONG>blob_info:</STRONG><DD>
+<p><dt><STRONG>blob:</STRONG><DD>
 <P>
 Specifies a pointer to a BlobInfo structure.
 
@@ -215,7 +215,7 @@ current length.
 The format of the SetBlobQuantum method is:
 
 </P>
-<blockquote>void SetBlobQuantum ( BlobInfo *blob_info, const size_t quantum ); </blockquote>
+<blockquote>void SetBlobQuantum ( BlobInfo *blob, const size_t quantum ); </blockquote>
 
 <P>
 
@@ -223,7 +223,7 @@ The format of the SetBlobQuantum method is:
 
 </P>
 <DL><DL>
-<p><dt><STRONG>blob_info:</STRONG><DD>
+<p><dt><STRONG>blob:</STRONG><DD>
 <P>
 
 <FONT SIZE=-1>A</FONT> pointer to a BlobInfo structure.

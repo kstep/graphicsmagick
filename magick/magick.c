@@ -139,8 +139,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
     {
       MagickInfo
         *entry;
-#if defined(HasLTDL)
-#else
+
       entry=SetMagickInfo("8BIM");
       entry->decoder=Read8BIMImage;
       entry->encoder=Write8BIMImage;
@@ -161,7 +160,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->description=
         AllocateString("Joint Bi-level Image experts Group interchange format");
       RegisterMagickInfo(entry);
-#endif /* HasJBIG */
+#endif
       entry=SetMagickInfo("BMP");
       entry->decoder=ReadBMPImage;
       entry->encoder=WriteBMPImage;
@@ -270,7 +269,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->adjoin=False;
       entry->description=AllocateString("FlashPix Format");
       RegisterMagickInfo(entry);
-#endif /* HasFPX */
+#endif
       entry=SetMagickInfo("G3");
       entry->decoder=ReadFAXImage;
       entry->adjoin=False;
@@ -322,9 +321,9 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->blob_support=False;
       entry->description=AllocateString("Hierarchical Data Format");
       RegisterMagickInfo(entry);
-#endif /* HasHDF */
+#endif
       entry=SetMagickInfo("HISTOGRAM");
-      entry->decoder=ReadHISTOGRAMImage;
+      entry->decoder=ReadMIFFImage;
       entry->encoder=WriteHISTOGRAMImage;
       entry->adjoin=False;
       entry->description=AllocateString("Histogram of the image");
@@ -381,7 +380,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->description=
         AllocateString("Joint Bi-level Image experts Group interchange format");
       RegisterMagickInfo(entry);
-#endif /* HasJBIG */
+#endif
 #if defined(HasJPEG)
       entry=SetMagickInfo("JPG");
       entry->decoder=ReadJPEGImage;
@@ -444,7 +443,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->magick=IsMNG;
       entry->description=AllocateString("Multiple-image Network Graphics");
       RegisterMagickInfo(entry);
-#endif /* HasPNG */
+#endif
       entry=SetMagickInfo("MONO");
       entry->decoder=ReadMONOImage;
       entry->encoder=WriteMONOImage;
@@ -464,7 +463,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->description=AllocateString("Netscape 216 color cube");
       RegisterMagickInfo(entry);
       entry=SetMagickInfo("NULL");
-      entry->decoder=ReadNULLImage;
+      entry->decoder=ReadXCImage;
       entry->adjoin=False;
       entry->description=AllocateString("NULL image");
       RegisterMagickInfo(entry);
@@ -570,7 +569,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->adjoin=False;
       entry->description=AllocateString("Portable Network Graphics");
       RegisterMagickInfo(entry);
-#endif /* HasPNG */
+#endif
       entry=SetMagickInfo("PNM");
       entry->decoder=ReadPNMImage;
       entry->encoder=WritePNMImage;
@@ -616,7 +615,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->blob_support=False;
       entry->description=AllocateString("Pyramid encoded TIFF");
       RegisterMagickInfo(entry);
-#endif /* HasTIFF */
+#endif
       entry=SetMagickInfo("PWP");
       entry->decoder=ReadPWPImage;
       entry->magick=IsPWP;
@@ -716,7 +715,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->blob_support=False;
       entry->description=AllocateString("24-bit Tagged Image File Format");
       RegisterMagickInfo(entry);
-#endif /* HasTIFF */
+#endif
       entry=SetMagickInfo("TILE");
       entry->decoder=ReadTILEImage;
       entry->raw=True;
@@ -732,7 +731,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->adjoin=False;
       entry->description=AllocateString("TrueType font");
       RegisterMagickInfo(entry);
-#endif /* HasTTF */
+#endif
       entry=SetMagickInfo("TXT");
       entry->decoder=ReadTXTImage;
       entry->encoder=WriteTXTImage;
@@ -792,7 +791,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->adjoin=False;
       entry->description=AllocateString("X Image");
       RegisterMagickInfo(entry);
-#endif /* HasX11 */
+#endif
       entry=SetMagickInfo("XBM");
       entry->decoder=ReadXBMImage;
       entry->encoder=WriteXBMImage;
@@ -829,7 +828,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->description=
         AllocateString("X Windows system window dump (color)");
       RegisterMagickInfo(entry);
-#endif /* HasX11 */
+#endif
       entry=SetMagickInfo("YUV");
       entry->decoder=ReadYUVImage;
       entry->encoder=WriteYUVImage;
@@ -837,7 +836,6 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       entry->raw=True;
       entry->description=AllocateString("CCIR 601 4:1:1");
       RegisterMagickInfo(entry);
-#endif /* ! HasLTDL */
     }
   if (tag == (char *) NULL)
     return(magick_info);

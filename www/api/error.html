@@ -15,6 +15,7 @@
 	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
 	<UL>
 
+		<LI><A HREF="#GetErrorInfo">GetErrorInfo</A></LI>
 		<LI><A HREF="#MagickError">MagickError</A></LI>
 		<LI><A HREF="#MagickWarning">MagickWarning</A></LI>
 		<LI><A HREF="#SetErrorHandler">SetErrorHandler</A></LI>
@@ -34,6 +35,10 @@ error - ImageMagick Error Methods
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>GetErrorInfo</STRONG>( ErrorInfo <CODE>*error_info</CODE> );
+
+</P>
 <P>
 void  <STRONG>MagickError</STRONG>( const ErrorType error, const char *message, const char
 <CODE>*qualifier</CODE> );
@@ -57,6 +62,31 @@ ErrorHandler  <STRONG>SetWarningHandler</STRONG>( ErrorHandler handler );
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
 <HR>
+<H2><A NAME="GetErrorInfo">GetErrorInfo</A></H2>
+<P>
+Method GetErrorInfo initializes the ErrorInfo structure.
+
+</P>
+<P>
+The format of the GetErrorInfo method is:
+
+</P>
+<blockquote>GetErrorInfo ( ErrorInfo *error_info ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o">error_info:</A></STRONG><DD>
+<P>
+Specifies a pointer to a ErrorInfo structure.
+
+</P>
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="MagickError">MagickError</A></H2>
 <P>
 Method MagickError calls the error handler methods with an error message.
@@ -74,7 +104,7 @@ The format of the MagickError method is:
 
 </P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o">error:</A></STRONG><DD>
+<p><dt><STRONG>error:</STRONG><DD>
 <P>
 Specifies the numeric error category.
 

@@ -308,7 +308,8 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       AppendImageFormat("gif",image->filename);
       next=image->next;
       image->next=(Image *) NULL;
-      status|=WriteGIFImage(local_info,image);
+      (void) strcpy(image->magick,"GIF");
+      status|=WriteImage(local_info,image);
       image->next=next;
       /*
         Determine image map filename.

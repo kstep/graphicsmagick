@@ -60,44 +60,6 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d H I S T O G R A M I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadHISTOGRAMImage reads a HISTOGRAM image file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  The format of the ReadHISTOGRAMImage method is:
-%
-%      Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadHISTOGRAMImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-Export Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
-{
-  Image
-    *image;
-
-  image=ReadMIFFImage(image_info);
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e H I S T O G R A M I m a g e                                     %
 %                                                                             %
 %                                                                             %
@@ -304,7 +266,8 @@ Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Write HISTOGRAM image as MIFF.
   */
-  status=WriteMIFFImage(image_info,histogram_image);
+  (void) strcpy(histogram_image->magick,"MIFF");
+  status=WriteImage(image_info,histogram_image);
   DestroyImage(histogram_image);
   return(status);
 }

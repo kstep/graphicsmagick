@@ -509,7 +509,8 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
           montage_image->directory=(char *) NULL;
         }
     }
-  status=WriteMIFFImage(image_info,montage_image);
+  (void) strcpy(montage_image->magick,"MIFF");
+  status=WriteImage(image_info,montage_image);
   DestroyImage(montage_image);
   return(status);
 }

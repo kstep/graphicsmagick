@@ -801,9 +801,9 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
     EscapeParenthesis(text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
-  (void) strcpy(local_info->filename,filename);
+  (void) FormatString(local_info->filename,"ps:%.1024s",filename);
   DestroyImage(image);
-  image=ReadPSImage(local_info);
+  image=ReadImage(local_info);
   (void) remove(filename);
   /*
     Set bounding box to the image dimensions.

@@ -95,6 +95,24 @@ INCLTDL = @INCLTDL@
 LDFLAGS = @LDFLAGS@
 LIBLTDL = @LIBLTDL@
 LIBTOOL = @LIBTOOL@
+LIB_BZLIB = @LIB_BZLIB@
+LIB_DL = @LIB_DL@
+LIB_DPS = @LIB_DPS@
+LIB_FPX = @LIB_FPX@
+LIB_HDF = @LIB_HDF@
+LIB_JBIG = @LIB_JBIG@
+LIB_JPEG = @LIB_JPEG@
+LIB_LF = @LIB_LF@
+LIB_MATH = @LIB_MATH@
+LIB_PNG = @LIB_PNG@
+LIB_SFIO = @LIB_SFIO@
+LIB_THREAD = @LIB_THREAD@
+LIB_TIFF = @LIB_TIFF@
+LIB_TTF = @LIB_TTF@
+LIB_X11 = @LIB_X11@
+LIB_XEXT = @LIB_XEXT@
+LIB_XT = @LIB_XT@
+LIB_ZLIB = @LIB_ZLIB@
 LN_S = @LN_S@
 LPDelegate = @LPDelegate@
 LZWDecodeDelegate = @LZWDecodeDelegate@
@@ -170,7 +188,7 @@ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON =  README COPYING.LIB Makefile.am Makefile.in acinclude.m4 \
-configure configure.in
+configure configure.in mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)

@@ -3886,7 +3886,8 @@ Export unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   */
   (void) strcpy(filename,image->filename);
   TemporaryFilename(image->filename);
-  status=WriteGIFImage(image_info,image);
+  (void) strcpy(image->magick,"GIF");
+  status=WriteImage(image_info,image);
   if (status == False)
     return(status);
   filesize=image->filesize;
