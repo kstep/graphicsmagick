@@ -172,12 +172,16 @@ MagickExport unsigned int EqualizeImage(Image *image)
 {
 #define EqualizeImageText  "  Equalizing image...  "
 
+  double
+    *map;
+
   long
     j,
     y;
 
   Quantum
-    *equalize_map;
+    *equalize_map,
+    intensity;
 
   register const PixelPacket
     *p;
@@ -190,8 +194,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
     *q;
 
   unsigned long
-    *histogram,
-    *map;
+    *histogram;
 
   /*
     Allocate and initialize histogram arrays.
@@ -199,10 +202,10 @@ MagickExport unsigned int EqualizeImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   histogram=(unsigned long *) AcquireMemory((MaxRGB+1)*sizeof(unsigned long));
-  map=(unsigned long *) AcquireMemory((MaxRGB+1)*sizeof(unsigned long));
+  map=(double *) AcquireMemory((MaxRGB+1)*sizeof(double));
   equalize_map=(Quantum *) AcquireMemory((MaxRGB+1)*sizeof(Quantum));
-  if ((histogram == (unsigned long *) NULL) ||
-      (map == (unsigned long *) NULL) || (equalize_map == (Quantum *) NULL))
+  if ((histogram == (unsigned long *) NULL) || (map == (double *) NULL) ||
+      (equalize_map == (Quantum *) NULL))
     ThrowBinaryException(ResourceLimitError,"Unable to equalize image",
       "Memory allocation failed");
   /*
@@ -216,7 +219,8 @@ MagickExport unsigned int EqualizeImage(Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      histogram[(long) Intensity(p)]++;
+      intensity=Intensity(p);
+      histogram[intensity]++;
       p++;
     }
   }
@@ -240,8 +244,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
     Equalize.
   */
   for (i=0; i <= MaxRGB; i++)
-    equalize_map[i]=(unsigned long)
-      ((MaxRGB*(map[i]-map[0]))/(map[MaxRGB]-map[0]));
+    equalize_map[i]=(Quantum) ((MaxRGB*(map[i]-map[0]))/(map[MaxRGB]-map[0]));
   LiberateMemory((void **) &map);
   /*
     Stretch the histogram.
@@ -790,12 +793,11 @@ MagickExport unsigned int NormalizeImage(Image *image)
     *histogram;
 
   long
-    intensity,
     threshold_intensity,
     y;
 
   Quantum
-    gray_value,
+    intensity,
     *normalize_map;
 
   register const PixelPacket
@@ -836,8 +838,8 @@ MagickExport unsigned int NormalizeImage(Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      gray_value=Intensity(p);
-      histogram[gray_value]++;
+      intensity=Intensity(p);
+      histogram[intensity]++;
       p++;
     }
   }
@@ -889,6 +891,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
           return(False);
         }
     }
+  LiberateMemory((void **) &histogram);
   /*
     Stretch the histogram to create the normalized image mapping.
   */
@@ -899,7 +902,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       if (i > (long) high)
         normalize_map[i]=MaxRGB;
       else
-        normalize_map[i]=(Quantum) ((MaxRGB-1)*(i-low)/(high-low));
+        normalize_map[i]=(Quantum) (MaxRGB*(i-low)/(high-low));
   /*
     Normalize the image.
   */
@@ -946,6 +949,5 @@ MagickExport unsigned int NormalizeImage(Image *image)
     }
   }
   LiberateMemory((void **) &normalize_map);
-  LiberateMemory((void **) &histogram);
   return(True);
 }
