@@ -86,7 +86,7 @@
 */
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
-#define MNG_INSERT_LAYERS
+#undef  MNG_INSERT_LAYERS /* In 5.4.4, this interferes with MMAP'ed files */
 #define PNG_BUILD_PALETTE /* This works as of 5.4.3 */
 #define PNG_SORT_PALETTE  /* This works as of 5.4.0 */
 
@@ -4183,7 +4183,7 @@ ModuleExport void RegisterPNGImage(void)
   *version='\0';
 #if defined(PNG_LIBPNG_VER_STRING)
   (void) strncpy(version,AllocateString(PNG_LIBPNG_VER_STRING),MaxTextExtent-2);
-# if PNG_LIBPNG_VER > 10005
+ PNG_LIBPNG_VER > 10005
   if (LocaleCompare(PNG_LIBPNG_VER_STRING,png_get_header_ver(NULL)) != 0)
     {
       (void) strcat(version,",");
