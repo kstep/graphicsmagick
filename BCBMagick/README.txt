@@ -1,5 +1,5 @@
 ***********************************************************
-**  GraphicsMagick library - v.1.1 - 03 Nov 2003         **
+**  GraphicsMagick library - v.1.1 - 02 Feb 2004         **
 **                                                       **
 **  Porting for compilation with Borland C++Builder 6.0  **
 **-------------------------------------------------------**
@@ -30,6 +30,7 @@ These are:
     lcms
     jpeg
     libtiff
+    libpng
     FreeType library (ttf)
     zlib
 
@@ -103,6 +104,7 @@ USE OF STATIC LIBRARY IN YOUR PROJECTS
         [GM dir]\BCBMagick\lib\lcms.lib
         [GM dir]\BCBMagick\lib\libMagick.lib
         [GM dir]\BCBMagick\lib\libMagickpp.lib		(only for Magick++)
+        [GM dir]\BCBMagick\lib\libpng.lib
         [GM dir]\BCBMagick\lib\libtiff.lib
         [GM dir]\BCBMagick\lib\libttf.lib
         [GM dir]\BCBMagick\lib\zlib.lib
@@ -138,7 +140,8 @@ USE OF DLLs IN YOUR PROJECTS
         [GM dir]\BCBMagick\dll\GM_jpeg.lib
         [GM dir]\BCBMagick\dll\GM_magick.lib
         [GM dir]\BCBMagick\dll\GM_Magickpp.lib		(only for Magick++)
-        [GM dir]\BCBMagick\dll\GL_tiff.lib
+        [GM dir]\BCBMagick\dll\GM_png.lib
+        [GM dir]\BCBMagick\dll\GM_tiff.lib
         [GM dir]\BCBMagick\dll\GM_ttf.lib
         [GM dir]\BCBMagick\dll\GM_zlib.lib
         
@@ -150,7 +153,8 @@ USE OF DLLs IN YOUR PROJECTS
         [GM dir]\BCBMagick\dll\GM_jpeg.dll
         [GM dir]\BCBMagick\dll\GM_magick.dll
         [GM dir]\BCBMagick\dll\GM_Magickpp.dll		(only for Magick++)
-        [GM dir]\BCBMagick\dll\GL_tiff.dll
+        [GM dir]\BCBMagick\dll\GM_png.dll
+        [GM dir]\BCBMagick\dll\GM_tiff.dll
         [GM dir]\BCBMagick\dll\GM_ttf.dll
         [GM dir]\BCBMagick\dll\GM_zlib.dll
 

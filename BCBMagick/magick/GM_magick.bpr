@@ -44,8 +44,9 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value="..\bzlib\GM_bzlib.lib ..\jpeg\GM_jpeg.lib 
-      ..\lcms\Projects\BCB6\GM_lcms.lib ..\tiff\libtiff\GM_tiff.lib 
-      ..\ttf\GM_ttf.lib ..\zlib\contrib\BCB6\GM_zlib.lib"/>
+      ..\lcms\Projects\BCB6\GM_lcms.lib ..\png\projects\BCB6\GM_png.lib 
+      ..\tiff\libtiff\GM_tiff.lib ..\ttf\GM_ttf.lib 
+      ..\zlib\contrib\BCB6\GM_zlib.lib"/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
     <PACKAGES value=""/>
@@ -59,7 +60,7 @@
     <USERDEFINES value="WIN32;_DLL"/>
     <SYSDEFINES value="NO_STRICT;_NO_VCL;_RTLDLL"/>
     <MAINSOURCE value="GM_magick.c"/>
-    <INCLUDEPATH value="..;..\bzlib;..\coders;..\filters;..\jpeg;..\tiff\libtiff;..\ttf\include;..\lcms\include;..\zlib;$(BCB)\include;$(BCB)\include\vcl"/>
+    <INCLUDEPATH value="..;..\bzlib;..\coders;..\filters;..\jpeg;..\lcms\include;..\png\;..\tiff\libtiff;..\ttf\include;;..\zlib;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="..\coders;..\filters;&quot;D:\GraphicsMagick-1.1\magick&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-sus -w-spa -w-rch -w-pia -w-par -w-8027 -w-eff -w-csu -w-ccc -w-aus"/>
     <OTHERFILES value=""/>
@@ -236,6 +237,7 @@
       <FILE FILENAME="..\bzlib\GM_bzlib.lib" FORMNAME="" UNITNAME="GM_bzlib.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\jpeg\GM_jpeg.lib" FORMNAME="" UNITNAME="GM_jpeg.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\lcms\BCB6\GM_lcms.lib" FORMNAME="" UNITNAME="GM_lcms.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\png\projects\BCB6\GM_png.lib" FORMNAME="" UNITNAME="GM_png.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\tiff\libtiff\GM_tiff.lib" FORMNAME="" UNITNAME="GM_tiff.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\ttf\GM_ttf.lib" FORMNAME="" UNITNAME="GM_ttf.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\zlib\contrib\BCB6\GM_zlib.lib" FORMNAME="" UNITNAME="GM_zlib.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -273,7 +275,7 @@ Comments=www.graphicsMagick.org
 
 [HistoryLists\hlIncludePath]
 Count=1
-Item0=..;..\bzlib;..\coders;..\filters;..\jpeg;..\tiff\libtiff;..\ttf\include;..\lcms\include;..\zlib;$(BCB)\include;$(BCB)\include\vcl
+Item0=..;..\bzlib;..\coders;..\filters;..\jpeg;..\lcms\include;..\png;..\tiff\libtiff;..\ttf\include;..\zlib;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
 Count=1

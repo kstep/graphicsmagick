@@ -141,7 +141,7 @@
 #define HasLCMS
 
 // Define to use the PNG library
-//#define HasPNG
+#define HasPNG
 
 // Define to use the TIFF library
 #define HasTIFF

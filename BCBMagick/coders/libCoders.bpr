@@ -31,7 +31,7 @@
     <USERDEFINES value="WIN32;_LIB"/>
     <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="libCoders.bpf"/>
-    <INCLUDEPATH value="..;..\..;..\bzlib;..\coders;..\jpeg;..\magick;..\tiff\libtiff;..\zlib;$(BCB)\include;$(BCB)\include\vcl"/>
+    <INCLUDEPATH value="..;..\..;..\bzlib;..\coders;..\jpeg;..\magick;..\png;..\tiff\libtiff;..\zlib;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-sus -w-spa -w-rch -w-pia -w-pch -w-par -w-csu -w-ccc -w-aus"/>
     <LISTFILE value="libCoders"/>
@@ -180,7 +180,7 @@ Comments=
 
 [HistoryLists\hlIncludePath]
 Count=1
-Item0=..;..\..;..\bzlib;..\coders;..\jpeg;..\magick;..\tiff\libtiff;..\zlib;$(BCB)\include;$(BCB)\include\vcl
+Item0=..;..\..;..\bzlib;..\coders;..\jpeg;..\magick;..\png;..\tiff\libtiff;..\zlib;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
 Count=1

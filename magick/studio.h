@@ -57,7 +57,8 @@ extern "C" {
 #  pragma message("BCBMagick lib DLL export interface")
 #  define _MAGICKDLL_
 #  define _MAGICKLIB_
-#  define BuildMagickModules
+#  undef BuildMagickModules
+#  define SupportMagickModules
 #endif 
 
 #if defined(WIN32) && !defined(__CYGWIN__)

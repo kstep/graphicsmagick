@@ -1,3 +1,12 @@
+2004-01-31  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* magick/studio.h: Fixed problem related to DLL version of BCBMagick.
+	Sometimes was incorrectly checked the presence of VC++ DLL. Thanks 
+	very much to Oliver Bertini for bringing this problem to our attention.
+	* BCBMagick: added libpng delegate library in both static and DLL
+	modes.
+	* BCBMagick: removed all unuseful files from CVS.
+	
 2004-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/render.c (CloneDrawInfo): Fixed nasty memory leak which

@@ -8,8 +8,9 @@
     <RESFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
-    <LIBFILES value="..\bzlib\GM_bzlib.lib ..\jpeg\GM_jpeg.lib ..\lcms\bin\GM_lcms.lib 
-      ..\magick\GM_magick.lib ..\Magick++\lib\GM_magickpp.lib 
+    <LIBFILES value="..\bzlib\GM_bzlib.lib ..\jpeg\GM_jpeg.lib 
+      ..\lcms\BCB6\GM_lcms.lib ..\magick\GM_magick.lib 
+      ..\Magick++\lib\GM_magickpp.lib ..\png\projects\BCB6\GM_png.lib
       ..\tiff\libtiff\GM_tiff.lib ..\ttf\GM_ttf.lib 
       ..\zlib\contrib\BCB6\GM_zlib.lib"/>
     <LIBRARIES value=""/>
@@ -48,7 +49,7 @@
       <FILE FILENAME="gm.c" FORMNAME="" UNITNAME="gm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\bzlib\GM_bzlib.lib" FORMNAME="" UNITNAME="GM_bzlib.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\jpeg\GM_jpeg.lib" FORMNAME="" UNITNAME="GM_jpeg.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\lcms\bin\GM_lcms.lib" FORMNAME="" UNITNAME="GM_lcms.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\lcms\BCB6\GM_lcms.lib" FORMNAME="" UNITNAME="GM_lcms.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\magick\GM_magick.lib" FORMNAME="" UNITNAME="GM_magick.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Magick++\lib\GM_magickpp.lib" FORMNAME="" UNITNAME="GM_magickpp.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\tiff\libtiff\GM_tiff.lib" FORMNAME="" UNITNAME="GM_tiff.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>

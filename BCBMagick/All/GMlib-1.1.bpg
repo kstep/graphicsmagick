@@ -10,7 +10,8 @@ DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
 PROJECTS = libbz2.lib jpeglib.lib lcms.lib libttf.lib zlib.lib \
-  libtiff.lib libCoders.lib libMagick.lib libMagickpp.lib
+  libpng.lib libtiff.lib libCoders.lib libMagick.lib libMagickpp.lib \
+  gm_lib.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -34,6 +35,10 @@ libttf.lib: ..\..\ttf\libttf.bpr
 zlib.lib: ..\..\zlib\contrib\BCB6\zlib.bpr
   $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+  
+libpng.lib: ..\..\png\projects\BCB6\libpng.bpr
+  $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 libtiff.lib: ..\..\tiff\libtiff\libtiff.bpr
   $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
@@ -48,6 +53,10 @@ libMagick.lib: ..\..\magick\libMagick.bpr
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 libMagickpp.lib: ..\..\Magick++\lib\libMagickpp.bpr
+  $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+  
+gm_lib.exe: ..\..\utilities\gm_lib.bpr
   $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 

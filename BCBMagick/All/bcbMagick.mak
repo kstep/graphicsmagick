@@ -1,6 +1,6 @@
 # 
 # ***************************************************************
-# **  GraphicsMagick library - v.1.1 - 15 January 2004         **
+# **  GraphicsMagick library - v.1.1 - 02 February 2004        **
 # **                                                           **
 # **  Porting for compilation with Borland C++Builder 6.0      **
 # **-----------------------------------------------------------**
@@ -78,6 +78,14 @@ copy-all:
   xcopy /Y $(GMBCB)\Magickpp\lib\GM_Magickpp.bpr $(GMDIR)\Magick++\lib
   xcopy /Y $(GMBCB)\Magickpp\lib\GM_Magickpp.cpp $(GMDIR)\Magick++\lib
   
+# png		<<<<<<<<<<<<<<<<<<<<
+  @if not exist $(GMDIR)\png\projects\BCB6 mkdir $(GMDIR)\png\projects\BCB6
+  
+  copy $(GMBCB)\png\projects\BCB6\libpng.bpf $(GMDIR)\png\projects\BCB6
+  copy $(GMBCB)\png\projects\BCB6\libpng.bpr $(GMDIR)\png\projects\BCB6
+  copy $(GMBCB)\png\projects\BCB6\GM_png.bpr $(GMDIR)\png\projects\BCB6
+  copy $(GMBCB)\png\projects\BCB6\GM_png.cpp $(GMDIR)\png\projects\BCB6
+  
 # tiff		<<<<<<<<<<<<<<<<<<<<
   copy $(GMBCB)\tiff\libtiff.bpg $(GMDIR)\tiff
   copy $(GMBCB)\tiff\libtiff\libtiff.bpr $(GMDIR)\tiff\libtiff
@@ -144,6 +152,7 @@ get-libs:
   copy $(GMDIR)\jpeg\jpeglib.lib $(GMBCB)\lib
   copy $(GMDIR)\magick\libMagick.lib $(GMBCB)\lib
   xcopy /Y $(GMDIR)\Magick++\lib\libMagickpp.lib $(GMBCB)\lib
+  copy $(GMDIR)\png\projects\BCB6\libpng.lib $(GMBCB)\lib
   copy $(GMDIR)\tiff\libtiff\libtiff.lib $(GMBCB)\lib
   copy $(GMDIR)\ttf\libttf.lib $(GMBCB)\lib
   copy $(GMDIR)\zlib\contrib\BCB6\zlib.lib $(GMBCB)\lib
@@ -168,6 +177,8 @@ get-dlls:
   copy $(GMDIR)\magick\GM_magick.dll $(GMBCB)\dll
   xcopy /Y $(GMDIR)\Magick++\lib\GM_Magickpp.lib $(GMBCB)\dll
   xcopy /Y $(GMDIR)\Magick++\lib\GM_Magickpp.dll $(GMBCB)\dll
+  copy $(GMDIR)\png\projects\BCB6\GM_png.lib $(GMBCB)\dll
+  copy $(GMDIR)\png\projects\BCB6\GM_png.dll $(GMBCB)\dll
   copy $(GMDIR)\tiff\libtiff\GM_tiff.lib $(GMBCB)\dll
   copy $(GMDIR)\tiff\libtiff\GM_tiff.dll $(GMBCB)\dll
   copy $(GMDIR)\ttf\GM_ttf.lib $(GMBCB)\dll
