@@ -1495,11 +1495,11 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case DifferenceCompositeOp:
         {
-          red=AbsoluteValue(p->red-(int) q->red);
-          green=AbsoluteValue(p->green-(int) q->green);
-          blue=AbsoluteValue(p->blue-(int) q->blue);
+          red=AbsoluteValue(p->red-(double) q->red);
+          green=AbsoluteValue(p->green-(double) q->green);
+          blue=AbsoluteValue(p->blue-(double) q->blue);
           if (composite_image->matte)
-            opacity=AbsoluteValue(p->opacity-(int) q->opacity);
+            opacity=AbsoluteValue(p->opacity-(double) q->opacity);
           break;
         }
         case BumpmapCompositeOp:
@@ -1572,17 +1572,17 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case ThresholdCompositeOp:
         {
-          red=q->red-(int) p->red;
+          red=q->red-(double) p->red;
           if (AbsoluteValue(red*2.0) < threshold)
             red=q->red;
           else
             red=q->red+(red*amount);
-          green=q->green-(int) p->green;
+          green=q->green-(double) p->green;
           if (AbsoluteValue(green*2.0) < threshold)
             green=q->green;
           else
             green=q->green+(green*amount);
-          blue=q->blue-(int) p->blue;
+          blue=q->blue-(double) p->blue;
           if (AbsoluteValue(blue*2.0) < threshold)
             blue=q->blue;
           else

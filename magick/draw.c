@@ -90,7 +90,7 @@ typedef struct _EdgeInfo
   int
     number_points,
     direction,
-    ghost,
+    ghostline,
     highwater;
 } EdgeInfo;
 
@@ -98,7 +98,7 @@ typedef enum
 {
   MoveToCode,
   OpenCode,
-  GhostCode,
+  GhostlineCode,
   LineToCode,
   EndCode
 } PathInfoCode;
@@ -1834,7 +1834,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                 }
               distance=DistanceToLine(p->points+j-1,x,y);
               gamma=0.0;
-              if (!p->ghost)
+              if (!p->ghostline)
                 {
                   beta=mid+0.5;
                   if ((stroke_opacity < 1.0) && (distance <= (beta*beta)))
@@ -1978,7 +1978,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
   int
     direction,
     edge,
-    ghost,
+    ghostline,
     next_direction,
     number_edges,
     number_points;
@@ -2009,7 +2009,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
     return((PolygonInfo *) NULL);
   direction=0;
   edge=0;
-  ghost=False;
+  ghostline=False;
   n=0;
   number_points=0;
   points=(PointInfo *) NULL;
@@ -2018,7 +2018,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
   for (i=0; path_info[i].code != EndCode; i++)
   {
     if ((path_info[i].code == MoveToCode) || (path_info[i].code == OpenCode) ||
-        (path_info[i].code == GhostCode))
+        (path_info[i].code == GhostlineCode))
       {
         /*
           Move to.
@@ -2036,7 +2036,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
             polygon_info->edges[edge].number_points=n;
             polygon_info->edges[edge].scanline=(-1.0);
             polygon_info->edges[edge].highwater=0;
-            polygon_info->edges[edge].ghost=ghost;
+            polygon_info->edges[edge].ghostline=ghostline;
             polygon_info->edges[edge].direction=direction > 0;
             if (direction < 0)
               ReversePoints(points,n);
@@ -2045,7 +2045,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
             polygon_info->edges[edge].bounds.y1=points[0].y;
             polygon_info->edges[edge].bounds.y2=points[n-1].y;
             points=(PointInfo *) NULL;
-            ghost=False;
+            ghostline=False;
             edge++;
           }
         if (points == (PointInfo *) NULL)
@@ -2055,7 +2055,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
             if (points == (PointInfo *) NULL)
               return((PolygonInfo *) NULL);
           }
-        ghost=path_info[i].code == GhostCode;
+        ghostline=path_info[i].code == GhostlineCode;
         point=path_info[i].point;
         points[0]=point;
         bounds.x1=point.x;
@@ -2087,7 +2087,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
         polygon_info->edges[edge].number_points=n;
         polygon_info->edges[edge].scanline=(-1.0);
         polygon_info->edges[edge].highwater=0;
-        polygon_info->edges[edge].ghost=ghost;
+        polygon_info->edges[edge].ghostline=ghostline;
         polygon_info->edges[edge].direction=direction > 0;
         if (direction < 0)
           ReversePoints(points,n);
@@ -2100,7 +2100,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
         if (points == (PointInfo *) NULL)
           return((PolygonInfo *) NULL);
         n=1;
-        ghost=False;
+        ghostline=False;
         points[0]=point;
         bounds.x1=point.x;
         bounds.x2=point.x;
@@ -2141,7 +2141,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
           polygon_info->edges[edge].number_points=n;
           polygon_info->edges[edge].scanline=(-1.0);
           polygon_info->edges[edge].highwater=0;
-          polygon_info->edges[edge].ghost=ghost;
+          polygon_info->edges[edge].ghostline=ghostline;
           polygon_info->edges[edge].direction=direction > 0;
           if (direction < 0)
             ReversePoints(points,n);
@@ -2149,7 +2149,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
           polygon_info->edges[edge].bounds=bounds;
           polygon_info->edges[edge].bounds.y1=points[0].y;
           polygon_info->edges[edge].bounds.y2=points[n-1].y;
-          ghost=False;
+          ghostline=False;
           edge++;
         }
     }
@@ -2240,7 +2240,7 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
       Mark the first point as open if it does not match the last.
     */
     path_info[start].code=OpenCode;
-    path_info[n].code=GhostCode;
+    path_info[n].code=GhostlineCode;
     path_info[n].point=point;
     n++;
     path_info[n].code=LineToCode;
@@ -2357,7 +2357,7 @@ static void PrintPathInfo(const PathInfo *path_info)
   (void) fprintf(stdout,"  begin vector-path\n");
   for (p=path_info; p->code != EndCode; p++)
     (void) fprintf(stdout,"    %g,%g %s\n",p->point.x,p->point.y,
-      p->code == GhostCode ? "moveto ghost" :
+      p->code == GhostlineCode ? "moveto ghostline" :
       p->code == OpenCode ? "moveto open" : p->code == MoveToCode ? "moveto" :
       p->code == LineToCode ? "lineto" : "?");
   (void) fprintf(stdout,"  end vector-path\n");
@@ -2377,8 +2377,8 @@ static void PrintPolygonInfo(const PolygonInfo *polygon_info)
   for (i=0; i < polygon_info->number_edges; i++)
   {
     (void) fprintf(stdout,"    edge %d:\n      direction: %s\n      "
-      "ghost: %s\n      bounds: %g,%g - %g,%g\n",i,
-      p->direction ? "down" : "up",p->ghost ? "transparent" : "opaque",
+      "ghostline: %s\n      bounds: %g,%g - %g,%g\n",i,
+      p->direction ? "down" : "up",p->ghostline ? "transparent" : "opaque",
       p->bounds.x1,p->bounds.y1,p->bounds.x2,p->bounds.y2);
     for (j=0; j < p->number_points; j++)
       (void) fprintf(stdout,"        %g,%g\n",p->points[j].x,p->points[j].y);
