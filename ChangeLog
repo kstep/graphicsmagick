@@ -1,3 +1,11 @@
+2003-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh: Update to unreleased 1.0.3 so that development
+	builds from CVS do not interfere with existing 1.0.2 release
+	library.
+	* configure.ac: Don't add -lfpx to LIBS while configuring
+	because the C compiler may fail to link with it in later
+	tests.
 
 2003-06-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.0.2 ChangeLog</TITLE>
+<TITLE>GraphicsMagick 1.0.3 ChangeLog</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -49,10 +49,21 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0.2 ChangeLog</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0.3 ChangeLog</font></font></font></b></td>
 </tr>
 </table>
+<p>
+2003-06-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
+<UL>
+  <LI> version.sh: Update to unreleased 1.0.3 so that development
+        builds from CVS do not interfere with existing 1.0.2 release
+        library.<BR>
+  <LI> configure.ac: Don't add -lfpx to LIBS while configuring
+        because the C compiler may fail to link with it in later
+        tests.
+
+</UL>
 <p>
 2003-06-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
