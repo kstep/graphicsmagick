@@ -113,6 +113,9 @@ static Image *ReadMPRImage(const ImageInfo *image_info,
   image=(Image *) GetMagickRegistry(id,&type,&length);
   if ((image == (Image *) NULL) || (type != ImageRegistryType))
     ThrowReaderException(RegistryWarning,"Image not found in registry",image);
+  if (length != sizeof(Image))
+    ThrowReaderException(RegistryWarning,"Incompatible image in registry",
+      image);
   return(CloneImage(image,0,0,True,exception));
 }
 
