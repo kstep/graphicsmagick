@@ -4412,10 +4412,6 @@ Mogrify(ref,...)
               &draw_info->fill);
           if (attribute_flag[5])
             draw_info->linewidth=argument_list[5].double_reference;
-          if (attribute_flag[8])
-            draw_info->translate.x=argument_list[8].double_reference;
-          if (attribute_flag[9])
-            draw_info->translate.y=argument_list[9].double_reference;
           if (attribute_flag[10])
             draw_info->angle=argument_list[10].double_reference;
           if (attribute_flag[11])

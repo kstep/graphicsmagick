@@ -645,6 +645,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     while (isspace((int) (*p)) && (*p != '\0'))
       p++;
     n=0;
+    if (LocaleCompare("angle",keyword) == 0)
+      {
+        (void) sscanf(p,"%lf%n",&clone_info->angle,&n);
+        p+=n;
+        continue;
+      }
     if (LocaleCompare("antialias",keyword) == 0)
       {
         (void) sscanf(p,"%u%n",&clone_info->antialias,&n);
@@ -677,25 +683,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         p+=n;
         continue;
       }
-    if (LocaleCompare("rotate",keyword) == 0)
-      {
-        (void) sscanf(p,"%lf%n",&clone_info->angle,&n);
-        p+=n;
-        continue;
-      }
-    if (LocaleCompare("scale",keyword) == 0)
-      {
-        (void) sscanf(p,"%lf%n",&clone_info->scale,&n);
-        p+=n;
-        continue;
-      }
-    if (LocaleCompare("skew",keyword) == 0)
-      {
-        (void) sscanf(p,"%lf%*[ ,]%lf%n",&clone_info->skew.x,
-          &clone_info->skew.y,&n);
-        p+=n;
-        continue;
-      }
     if (LocaleCompare("stroke",keyword) == 0)
       {
         for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
@@ -704,10 +691,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         (void) QueryColorDatabase(keyword,&clone_info->stroke);
         continue;
       }
-    if (LocaleCompare("translate",keyword) == 0)
+    if (LocaleCompare("transform",keyword) == 0)
       {
-        (void) sscanf(p,"%lf%*[ ,]%lf%n",&clone_info->translate.x,
-          &clone_info->translate.y,&n);
+        (void) sscanf(p,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf%n",
+          &clone_info->transform[0],&clone_info->transform[1],
+          &clone_info->transform[2],&clone_info->transform[3],
+          &clone_info->transform[4],&clone_info->transform[5],&n);
         p+=n;
         continue;
       }
@@ -1105,33 +1094,17 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (primitive_type == UndefinedPrimitive)
       break;
     primitive_info[i].primitive=UndefinedPrimitive;
-    if (clone_info->angle != 0.0)
-      {
-        double
-          alpha,
-          beta;
-
-        /*
-          Rotate transform.
-        */
-        alpha=cos(DegreesToRadians(fmod(clone_info->angle,360.0)));
-        beta=sin(DegreesToRadians(fmod(clone_info->angle,360.0)));
-        for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
-        {
-          pixel=primitive_info[i].pixel;
-          primitive_info[i].pixel.x=alpha*pixel.x-beta*pixel.y;
-          primitive_info[i].pixel.y=beta*pixel.x+alpha*pixel.y;
-        }
-      }
     /*
-      Translate transform.
+      Transform points.
     */
-    if ((clone_info->translate.x != 0.0) || (clone_info->translate.y != 0.0))
-      for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
-      {
-        primitive_info[i].pixel.x+=clone_info->translate.x;
-        primitive_info[i].pixel.y+=clone_info->translate.y;
-      }
+    for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
+    {
+      pixel=primitive_info[i].pixel;
+      primitive_info[i].pixel.x=clone_info->transform[0]*pixel.x+
+	clone_info->transform[2]*pixel.y+clone_info->transform[4];
+      primitive_info[i].pixel.y=clone_info->transform[1]*pixel.x+
+	clone_info->transform[3]*pixel.y+clone_info->transform[5];
+    }
     /*
       Compute bounding box.
     */
@@ -1908,6 +1881,9 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
 */
 MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 {
+  register int
+    i;
+
   /*
     Initialize draw attributes.
   */
@@ -1919,12 +1895,11 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->opacity=100.0;
   draw_info->linewidth=1.0;
   draw_info->pointsize=image_info->pointsize;
-  draw_info->translate.x=0.0;
-  draw_info->translate.y=0.0;
-  draw_info->skew.x=0.0;
-  draw_info->skew.y=0.0;
-  draw_info->scale=0.0;
   draw_info->angle=0.0;
+  for (i=0; i < 6; i++)
+    draw_info->transform[i]=0.0;
+  draw_info->transform[0]=1.0;
+  draw_info->transform[3]=1.0;
   draw_info->fill=image_info->fill;
   draw_info->stroke=image_info->stroke;
   (void) QueryColorDatabase("none",&draw_info->box);
