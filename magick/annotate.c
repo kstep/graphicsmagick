@@ -268,8 +268,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       {
         offset.x=geometry.x+i*draw_info->affine.ry*metrics.height+
           draw_info->affine.ry*(metrics.ascent+metrics.descent);
-        offset.y=geometry.height+i*draw_info->affine.sy*metrics.height+
-          draw_info->affine.sy*metrics.ascent-geometry.y;
+        offset.y=geometry.height+i*draw_info->affine.sy*metrics.height-
+          geometry.y;
         break;
       }
       case SouthGravity:
@@ -278,8 +278,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
           draw_info->affine.sx*metrics.width/2+draw_info->affine.ry*
           (metrics.ascent+metrics.descent)-geometry.x;
         offset.y=geometry.height+i*draw_info->affine.sy*metrics.height-
-          draw_info->affine.rx*metrics.width/2+draw_info->affine.sy*
-          metrics.ascent-geometry.y;
+          draw_info->affine.rx*metrics.width/2-geometry.y;
         break;
       }
       case SouthEastGravity:
@@ -288,8 +287,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
           draw_info->affine.sx*metrics.width+draw_info->affine.ry*
           (metrics.ascent+metrics.descent)-geometry.x;
         offset.y=geometry.height+i*draw_info->affine.sy*metrics.height-
-          draw_info->affine.rx*metrics.width+draw_info->affine.sy*
-          metrics.ascent-geometry.y;
+          draw_info->affine.rx*metrics.width-geometry.y;
         break;
       }
     }
