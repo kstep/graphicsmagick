@@ -6582,6 +6582,8 @@ QueryConfigration(ref,...)
                 *p;
 
               p=GetMagicInfo((unsigned char *) value,Extent(value),&exception);
+              if (LocalCompare(value,"*") == 0)
+                p=GetMagicInfo((unsigned char *) NULL,0,&exception);
               if (p == (MagicInfo *) NULL)
                 break;
               if (LocalCompare(value,"*") == 0)

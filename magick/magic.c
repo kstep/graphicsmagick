@@ -182,8 +182,7 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magic,
       atexit(DestroyMagicInfo);
     }
   LiberateSemaphore(&magic_semaphore);
-  if ((magic == (const unsigned char *) NULL) ||
-      (LocaleCompare(magic,"*") == 0))
+  if ((magic == (const unsigned char *) NULL) || (length == 0))
     return(magic_list);
   /*
     Search for requested magic.
@@ -230,7 +229,7 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
   if (file == (const FILE *) NULL)
     file=stdout;
   (void) fprintf(file,"ImageMagick understands these magic strings:\n");
-  p=GetMagicInfo((unsigned char *) "*",1,exception);
+  p=GetMagicInfo((unsigned char *) NULL,0,exception);
   if (p == (MagicInfo *) NULL)
     return(False);
   if (p->filename != (char *) NULL)
