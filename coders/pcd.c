@@ -981,7 +981,6 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
       /*
         Rotate portrait to landscape.
       */
-      image->orphan=True;
       rotated_image=RotateImage(image,90.0,&image->exception);
       if (rotated_image == (Image *) NULL)
         return(False);
