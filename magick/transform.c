@@ -434,7 +434,7 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
       {
         indexes=GetIndexes(image);
         crop_indexes=GetIndexes(crop_image);
-        memcpy(crop_indexes,indexes,image->columns*sizeof(IndexPacket));
+        memcpy(crop_indexes,indexes,crop_image->columns*sizeof(IndexPacket));
       }
     if (!SyncImagePixels(crop_image))
       break;
