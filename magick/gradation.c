@@ -202,3 +202,27 @@ Export void RegisterGRADATIONImage(void)
     AllocateString("Gradual passing from one shade to another");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r G R A D A T I O N I m a g e                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterGRADATIONImage removes format registrations made by the
+%  GRADATION module from the list of supported formats.
+%
+%  The format of the UnregisterGRADATIONImage method is:
+%
+%      UnregisterGRADATIONImage(void)
+%
+*/
+Export void UnregisterGRADATIONImage(void)
+{
+  UnregisterMagickInfo("GRADATION");
+}

@@ -101,6 +101,30 @@ Export void RegisterMATTEImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r M A T T E I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterMATTEImage removes format registrations made by the
+%  MATTE module from the list of supported formats.
+%
+%  The format of the UnregisterMATTEImage method is:
+%
+%      UnregisterMATTEImage(void)
+%
+*/
+Export void UnregisterMATTEImage(void)
+{
+  UnregisterMagickInfo("MATTE");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e M A T T E I m a g e                                             %
 %                                                                             %
 %                                                                             %

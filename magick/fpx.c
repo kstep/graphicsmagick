@@ -496,6 +496,30 @@ Export void RegisterFPXImage(void)
 #endif
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r F P X I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterFPXImage removes format registrations made by the
+%  FPX module from the list of supported formats.
+%
+%  The format of the UnregisterFPXImage method is:
+%
+%      UnregisterFPXImage(void)
+%
+*/
+Export void UnregisterFPXImage(void)
+{
+  UnregisterMagickInfo("FPX");
+}
+
 #if defined(HasFPX)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

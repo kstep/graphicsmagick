@@ -1251,6 +1251,32 @@ Export void RegisterPICTImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r P I C T I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterPICTImage removes format registrations made by the
+%  PICT module from the list of supported formats.
+%
+%  The format of the UnregisterPICTImage method is:
+%
+%      UnregisterPICTImage(void)
+%
+*/
+Export void UnregisterPICTImage(void)
+{
+  UnregisterMagickInfo("PCT");
+  UnregisterMagickInfo("PICT");
+  UnregisterMagickInfo("PICT24");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e P I C T I m a g e                                               %
 %                                                                             %
 %                                                                             %

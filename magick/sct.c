@@ -276,3 +276,27 @@ Export void RegisterSCTImage(void)
   entry->description=AllocateString("Scitex HandShake");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r S C T I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterSCTImage removes format registrations made by the
+%  SCT module from the list of supported formats.
+%
+%  The format of the UnregisterSCTImage method is:
+%
+%      UnregisterSCTImage(void)
+%
+*/
+Export void UnregisterSCTImage(void)
+{
+  UnregisterMagickInfo("SCT");
+}

@@ -101,6 +101,30 @@ Export void RegisterHISTOGRAMImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r H I S T O G R A M I m a g e                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterHISTOGRAMImage removes format registrations made by the
+%  HISTOGRAM module from the list of supported formats.
+%
+%  The format of the UnregisterHISTOGRAMImage method is:
+%
+%      UnregisterHISTOGRAMImage(void)
+%
+*/
+Export void UnregisterHISTOGRAMImage(void)
+{
+  UnregisterMagickInfo("HISTOGRAM");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e H I S T O G R A M I m a g e                                     %
 %                                                                             %
 %                                                                             %

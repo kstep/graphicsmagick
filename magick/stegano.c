@@ -236,3 +236,27 @@ Export void RegisterSTEGANOImage(void)
   entry->description=AllocateString("Steganographic image");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r S T E G A N O I m a g e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterSTEGANOImage removes format registrations made by the
+%  STEGANO module from the list of supported formats.
+%
+%  The format of the UnregisterSTEGANOImage method is:
+%
+%      UnregisterSTEGANOImage(void)
+%
+*/
+Export void UnregisterSTEGANOImage(void)
+{
+  UnregisterMagickInfo("STEGANO");
+}

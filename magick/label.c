@@ -876,3 +876,27 @@ Export void RegisterLABELImage(void)
   entry->description=AllocateString("Text image format");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r L A B E L I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterLABELImage removes format registrations made by the
+%  LABEL module from the list of supported formats.
+%
+%  The format of the UnregisterLABELImage method is:
+%
+%      UnregisterLABELImage(void)
+%
+*/
+Export void UnregisterLABELImage(void)
+{
+  UnregisterMagickInfo("LABEL");
+}

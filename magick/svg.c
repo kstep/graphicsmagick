@@ -763,3 +763,27 @@ Export void RegisterSVGImage(void)
   entry->description=AllocateString("Scalable Vector Gaphics");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r S V G I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterSVGImage removes format registrations made by the
+%  SVG module from the list of supported formats.
+%
+%  The format of the UnregisterSVGImage method is:
+%
+%      UnregisterSVGImage(void)
+%
+*/
+Export void UnregisterSVGImage(void)
+{
+  UnregisterMagickInfo("SVG");
+}

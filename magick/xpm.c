@@ -470,6 +470,31 @@ Export void RegisterXPMImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r X P M I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterXPMImage removes format registrations made by the
+%  XPM module from the list of supported formats.
+%
+%  The format of the UnregisterXPMImage method is:
+%
+%      UnregisterXPMImage(void)
+%
+*/
+Export void UnregisterXPMImage(void)
+{
+  UnregisterMagickInfo("PM");
+  UnregisterMagickInfo("XPM");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e X P M I m a g e                                                 %
 %                                                                             %
 %                                                                             %

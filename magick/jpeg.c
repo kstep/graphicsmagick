@@ -768,6 +768,32 @@ Export void RegisterJPEGImage(void)
 #endif
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r J P E G I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterJPEGImage removes format registrations made by the
+%  JPEG module from the list of supported formats.
+%
+%  The format of the UnregisterJPEGImage method is:
+%
+%      UnregisterJPEGImage(void)
+%
+*/
+Export void UnregisterJPEGImage(void)
+{
+  UnregisterMagickInfo("JPEG24");
+  UnregisterMagickInfo("JPEG");
+  UnregisterMagickInfo("JPG");
+}
+
 #if defined(HasJPEG)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -213,3 +213,27 @@ Export void RegisterPLASMAImage(void)
   entry->description=AllocateString("Plasma fractal image");
   RegisterMagickInfo(entry);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r P L A S M A I m a g e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterPLASMAImage removes format registrations made by the
+%  PLASMA module from the list of supported formats.
+%
+%  The format of the UnregisterPLASMAImage method is:
+%
+%      UnregisterPLASMAImage(void)
+%
+*/
+Export void UnregisterPLASMAImage(void)
+{
+  UnregisterMagickInfo("PLASMA");
+}

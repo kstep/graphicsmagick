@@ -658,6 +658,31 @@ Export void RegisterPCXImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r P C X I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterPCXImage removes format registrations made by the
+%  PCX module from the list of supported formats.
+%
+%  The format of the UnregisterPCXImage method is:
+%
+%      UnregisterPCXImage(void)
+%
+*/
+Export void UnregisterPCXImage(void)
+{
+  UnregisterMagickInfo("DCX");
+  UnregisterMagickInfo("PCX");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e P C X I m a g e                                                 %
 %                                                                             %
 %                                                                             %

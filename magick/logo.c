@@ -3903,6 +3903,33 @@ Export void RegisterLOGOImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n r e g i s t e r L O G O I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterLOGOImage removes format registrations made by the
+%  LOGO module from the list of supported formats.
+%
+%  The format of the UnregisterLOGOImage method is:
+%
+%      UnregisterLOGOImage(void)
+%
+*/
+Export void UnregisterLOGOImage(void)
+{
+  UnregisterMagickInfo("GRANITE");
+  UnregisterMagickInfo("H");
+  UnregisterMagickInfo("LOGO");
+  UnregisterMagickInfo("NETSCAPE");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e L O G O I m a g e                                               %
 %                                                                             %
 %                                                                             %
