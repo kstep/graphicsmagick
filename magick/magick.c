@@ -590,11 +590,14 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
     "-----------------------\n");
   AcquireSemaphoreInfo(&magick_semaphore);
   for ( ; p != (MagickInfo *) NULL; p=p->next)
-    if (p->stealth != True)
-      (void) fprintf(file,"%9s%c  %c%c%c  %s\n",p->name ? p->name : "",
-        p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',
-        p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-',
-        p->description ? p->description : "");
+  {
+    if (p->stealth)
+      continue;
+    (void) fprintf(file,"%9s%c  %c%c%c  %s\n",p->name ? p->name : "",
+      p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',
+      p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-',
+      p->description ? p->description : "");
+  }
   LiberateSemaphoreInfo(&magick_semaphore);
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
