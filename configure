@@ -1973,6 +1973,12 @@ eval "eval INFO_DIR=$infodir"
 eval "eval MAN_DIR=$mandir"
 
 
+# Get full paths to source and build directories
+srcdirfull=`cd $srcdir && pwd`
+builddir=`pwd`
+
+WinPathScript="${srcdirfull}/winpath.sh"
+
 # Check for programs
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -3764,7 +3770,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3767 "configure"' > conftest.$ac_ext
+  echo '#line 3773 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7668,7 +7674,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7671 "configure"
+#line 7677 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7766,7 +7772,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7769 "configure"
+#line 7775 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10915,7 +10921,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10918 "configure"
+#line 10924 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11013,7 +11019,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11016 "configure"
+#line 11022 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13673,7 +13679,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13676 "configure"
+#line 13682 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13771,7 +13777,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13774 "configure"
+#line 13780 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14769,7 +14775,7 @@ _ACEOF
   MagickModulesPath="${im_cv_x_coder_modules}"
   if test "$native_win32_build" = 'yes'
   then
-    MagickModulesPath=`echo "${MagickModulesPath}" | sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
+    MagickModulesPath=`$WinPathScript "$MagickModulesPath" 2`
   fi
 
 cat >>confdefs.h <<_ACEOF
@@ -20194,10 +20200,6 @@ else
 fi
 
 
-# Get full paths to source and build directories
-srcdirfull=`cd $srcdir && pwd`
-builddir=`pwd`
-
 # Only check for delegate libraries in subdirectories if requested.
 if test "$with_delegate_build" != 'no'
 then
@@ -20314,7 +20316,7 @@ echo "${ECHO_T}$im_cv_x_configure" >&6
 X11ConfigurePath="$im_cv_x_configure"
 if test "$native_win32_build" = 'yes'
 then
-  X11ConfigurePath=`echo $X11ConfigurePath|sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
+  X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 2`
 fi
 
 cat >>confdefs.h <<_ACEOF
@@ -27331,7 +27333,7 @@ fi
 MagickLibPath="${LIB_DIR}/ImageMagick/"
 if test "$native_win32_build" = 'yes'
 then
-  MagickLibPath=`echo "${MagickLibPath}" | sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
+  MagickLibPath=`$WinPathScript "$MagickLibPath" 2`
 fi
 
 cat >>confdefs.h <<_ACEOF
@@ -27350,7 +27352,7 @@ else
    MagickSharePathDefine="$MagickSharePath"
  if test "$native_win32_build" = 'yes'
  then
-   MagickSharePathDefine=`echo "${MagickSharePathDefine}" | sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
+   MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 2`
  fi
 fi;
 
@@ -28914,7 +28916,7 @@ else
 	  windows_font_dir="/${drive}/${sysdir}/fonts/"
           if test -f "${windows_font_dir}times.ttf"
           then
-            windows_font_dir=`echo "$windows_font_dir" | sed -e 's:^/::;s/./&:/;s:/:\\\\:g'`
+            windows_font_dir=`$WinPathScript "$windows_font_dir" 2`
             break 2
           fi
         done
@@ -28960,7 +28962,7 @@ type_include_files="$type_include_files "'file="type-ghostscript.mgk"'
 
 if test "$native_win32_build" = 'yes'
 then
-  PSDelegate=`echo "$PSDelegate" | sed -e 's:^/::;s/./&:/;s:/:\\\\:g'`
+  PSDelegate=`$WinPathScript "$PSDelegate" 1`
 fi
 
 

@@ -90,6 +90,12 @@ AC_SUBST(INFO_DIR)
 eval "eval MAN_DIR=$mandir"
 AC_SUBST(MAN_DIR)
 
+# Get full paths to source and build directories
+srcdirfull=`cd $srcdir && pwd`
+builddir=`pwd`
+
+WinPathScript="${srcdirfull}/winpath.sh"
+
 # Check for programs
 AC_PROG_CC
 AC_PROG_CPP
@@ -181,7 +187,7 @@ then
   MagickModulesPath="${im_cv_x_coder_modules}"
   if test "$native_win32_build" = 'yes'
   then
-    MagickModulesPath=`echo "${MagickModulesPath}" | sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
+    MagickModulesPath=`$WinPathScript "$MagickModulesPath" 2`
   fi
   AC_DEFINE_UNQUOTED(MagickModulesPath,"$MagickModulesPath",Location of coder modules)
 fi
@@ -629,10 +635,6 @@ then
 fi
 AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$have_magick_plus_plus" = 'yes')
 
-# Get full paths to source and build directories
-srcdirfull=`cd $srcdir && pwd`
-builddir=`pwd`
-
 # Only check for delegate libraries in subdirectories if requested.
 if test "$with_delegate_build" != 'no'
 then
@@ -742,7 +744,7 @@ AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
 X11ConfigurePath="$im_cv_x_configure"
 if test "$native_win32_build" = 'yes'
 then
-  X11ConfigurePath=`echo $X11ConfigurePath|sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'` 
+  X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 2`
 fi
 AC_DEFINE_UNQUOTED(X11ConfigurePath,"X11ConfigurePath",Location of X11 configure files)
 
@@ -1555,7 +1557,7 @@ AC_SUBST(LIB_WMF_DEPS)
 MagickLibPath="${LIB_DIR}/ImageMagick/"
 if test "$native_win32_build" = 'yes'
 then
-  MagickLibPath=`echo "${MagickLibPath}" | sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
+  MagickLibPath=`$WinPathScript "$MagickLibPath" 2`
 fi
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPath",Directory where architecture-dependent files live.)
 
@@ -1568,7 +1570,7 @@ AC_ARG_WITH(share-path,
    MagickSharePathDefine="$MagickSharePath"
  if test "$native_win32_build" = 'yes'
  then
-   MagickSharePathDefine=`echo "${MagickSharePathDefine}" | sed -e 's:^/::;s/./&:/;s:/:\\\\\\\\:g'`
+   MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 2`
  fi)
 AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePathDefine",Directory where architecture-independent files live.)
 AC_SUBST(MagickSharePath)
@@ -1674,7 +1676,7 @@ else
 	  windows_font_dir="/${drive}/${sysdir}/fonts/"
           if test -f "${windows_font_dir}times.ttf"
           then
-            windows_font_dir=`echo "$windows_font_dir" | sed -e 's:^/::;s/./&:/;s:/:\\\\:g'`
+            windows_font_dir=`$WinPathScript "$windows_font_dir" 2`
             break 2
           fi
         done
@@ -1719,7 +1721,7 @@ type_include_files="$type_include_files "'file="type-ghostscript.mgk"'
 AC_SUBST(ghostscript_font_dir)
 if test "$native_win32_build" = 'yes'
 then
-  PSDelegate=`echo "$PSDelegate" | sed -e 's:^/::;s/./&:/;s:/:\\\\:g'`
+  PSDelegate=`$WinPathScript "$PSDelegate" 1`
 fi
 
 AC_SUBST(type_include_files)
