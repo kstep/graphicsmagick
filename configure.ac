@@ -409,7 +409,7 @@ do
 done
 
 # Libraries
-for dir in bzlib fpx/obj hdf/src/.libs jasper jbig/libjbig jpeg lcms/src png tiff/libtiff ttf/objs/.libs wmf xml/.libs zlib
+for dir in bzlib fpx/obj hdf/src/.libs jasper jbig/libjbig jpeg lcms/src png tiff/libtiff ttf/objs/.libs wmf/src/.libs xml/.libs zlib
 do
   if test -d "$builddir/$dir"
   then
