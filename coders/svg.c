@@ -233,7 +233,7 @@ static char **StringToTokens(const char *text,int *number_tokens)
       for (p++; (*p != '"') && (*p != '\0'); p++);
     if (*p == '\'')
       for (p++; (*p != '\'') && (*p != '\0'); p++);
-    if (*p == '(')
+    if ((LocaleNCompare(p,"rgb(",4) == 0) || (*p == '('))
       for (p++; (*p != ')') && (*p != '\0'); p++);
     while (!isspace((int) (*p)) && (*p != '(') && (*p != '\0'))
     {
@@ -267,7 +267,7 @@ static char **StringToTokens(const char *text,int *number_tokens)
           q++;
         }
       else
-        if (*q == '(')
+        if ((LocaleNCompare(q,"rgb(",4) == 0) || (*q == '('))
           {
             for (q++; (*q != ')') && (*q != '\0'); q++);
             q++;
