@@ -98,14 +98,14 @@ typedef struct _DrawInfo
     box,
     border_color;
 
-  unsigned int
-    verbose;
-
   char
     *server_name;
 
   PolygonInfo
     clip_path;
+
+  unsigned int
+    debug;
 
   unsigned long
     signature;

@@ -48,7 +48,7 @@ struct dirent
   Macintosh utilities routines.
 */
 extern MagickExport DIR
-  *opendir(char *);
+  *opendir(const char *);
 
 MagickExport Image
   *ReadPICTImage(const ImageInfo *,ExceptionInfo *);

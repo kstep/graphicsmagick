@@ -48,8 +48,8 @@
 %
 %  The directory methods are strongly based on similar methods written
 %  by Steve Summit, scs@eskimo.com.  The Ghostscript launch code is strongly
-%  based on Dave Schooley's Mac Gnuplot and provided by
-%  schindall@wave14i.nrl.navy.mil.  Mac-centric improvements provided by
+%  based on Dave Schooley's Mac Gnuplot and contributed by
+%  schindall@wave14i.nrl.navy.mil.  Mac-centric improvements contributed by
 %  leonardr@digapp.com.
 %
 %
@@ -234,11 +234,7 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
   bottlenecks.polyProc=NewQDPolyProc(&PolyMethod);
   bottlenecks.rgnProc=NewQDRgnProc(&RegionMethod);
   bottlenecks.bitsProc=NewQDBitsProc(&BitsMethod);
-#if GENERATINGCFM
-  bottlenecks.newProc1=NewStdPixProc(&StandardPixmap);
-#else
-  bottlenecks.newProc1=(UniversalProcPtr) StandardPixmap;
-#endif
+  bottlenecks.newProc1=(RoutineDescriptor *) NewStdPixProc(&StandardPixmap);
   /*
     Install our custom bottlenecks to intercept any compressed images.
   */
@@ -258,7 +254,6 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
       *depth=(**image_description).depth;
       *colormap_id=(**image_description).clutID;
     }
-#if GENERATINGCFM
   DisposeRoutineDescriptor(bottlenecks.textProc);
   DisposeRoutineDescriptor(bottlenecks.lineProc);
   DisposeRoutineDescriptor(bottlenecks.rectProc);
@@ -269,7 +264,6 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
   DisposeRoutineDescriptor(bottlenecks.rgnProc);
   DisposeRoutineDescriptor(bottlenecks.bitsProc);
   DisposeRoutineDescriptor(bottlenecks.newProc1);
-#endif
   return(0);
 }
 
@@ -399,16 +393,52 @@ MagickExport void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
 %
 %
 */
+
+static OSErr HGetVInfo(short volume_index,StringPtr volume_name,short *volume,
+  unsigned long *free_bytes,unsigned long *total_bytes)
+{
+  HParamBlockRec
+    pb;
+
+  OSErr
+    result;
+  
+  unsigned long
+    blocksize;
+
+  unsigned short
+    allocation_blocks,
+    free_blocks;
+
+  /*
+    Use the File Manager to get the real vRefNum.
+  */
+  pb.volumeParam.ioVRefNum=0;
+  pb.volumeParam.ioNamePtr=volume_name;
+  pb.volumeParam.ioVolIndex=volume_index;
+  result=PBHGetVInfoSync(&pb);
+  if (result != noErr)
+    return(result);
+  *volume=pb.volumeParam.ioVRefNum;
+  blocksize=(unsigned long) pb.volumeParam.ioVAlBlkSiz;
+  allocation_blocks=(unsigned short) pb.volumeParam.ioVNmAlBlks;
+  free_blocks=(unsigned short) pb.volumeParam.ioVFrBlk;
+  *free_bytes=free_blocks*blocksize;
+  *total_bytes=allocation_blocks*blocksize;
+  return(result);
+}
+ 
 MagickExport int ImageFormatConflict(const char *magick)
 {
-  long
+  unsigned long
+    free_bytes,
     number_bytes;
 
   OSErr
-    status,
-    volume;
+    status;
 
   short
+    volume,
     index;
 
   Str255
@@ -416,12 +446,12 @@ MagickExport int ImageFormatConflict(const char *magick)
 
   StringPtr
     p;
-
+  
   assert(magick != (char *) NULL);
   p=(StringPtr) &volume_name;
   for (index=(-1); ; index--)
   {
-    status=GetVInfo(index,p,&volume,&number_bytes);
+    status=HGetVInfo(index,p,&volume,&free_bytes,&number_bytes);
     if (status)
       return(False);
     if (LocaleCompare(p2cstr(p),magick) == 0)
@@ -835,7 +865,7 @@ MagickExport void MACWarningHandler(const ExceptionType warning,
 %
 %
 */
-MagickExport DIR *opendir(char *path)
+MagickExport DIR *opendir(const char *path)
 {
   char
     pathname[1664];
@@ -1160,7 +1190,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   SetRect(&rectangle,0,0,image->columns,image->rows);
   (void) UpdateGWorld(&graphic_world,depth,&rectangle,
     picture_info.theColorTable,nil,0);
-  LockPixels(graphic_world->portPixMap);
+  LockPixels(GetGWorldPixMap(graphic_world));  /*->portPixMap); */
   EraseRect(&rectangle);
   DrawPicture(picture_handle,&rectangle);
   if ((depth <= 8) && (colormap_id == -1))
@@ -1193,7 +1223,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     if (QuantumTick(y,image->rows))
       MagickMonitor(LoadImageText,y,image->rows);
   }
-  UnlockPixels(graphic_world->portPixMap);
+  UnlockPixels(GetGWorldPixMap(graphic_world));
   SetGWorld(port,device);
   if (picture_info.theColorTable != nil)
     DisposeHandle((Handle) picture_info.theColorTable);
@@ -1355,18 +1385,22 @@ MagickExport void seekdir(DIR *entry,long position)
 MagickExport void SetApplicationType(const char *filename,const char *magick,
   OSType application)
 {
+  FSSpec
+    file_specification;
+
   OSType
     filetype;
 
   Str255
     name;
-
+   
   assert(filename != (char *) NULL);
-  (void) strcpy((char *) name,filename);
-  c2pstr((char *) name);
   filetype='    ';
   (void) strncpy((char *) &filetype,magick,Min(Extent(magick),4));
-  Create(name,0,application,filetype);
+  (void) strcpy((char *) name,filename);
+  c2pstr((char *) name);
+  FSMakeFSSpec(0,0,name,&file_specification);
+  FSpCreate(&file_specification,application,filetype,smSystemScript);
 }
 
 /*

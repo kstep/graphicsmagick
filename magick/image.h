@@ -533,9 +533,6 @@ typedef struct _ImageInfo
   /*
     Miscellaneous members.
   */
-  unsigned int
-    verbose;
-
   PreviewType
     preview_type;
 
@@ -546,7 +543,9 @@ typedef struct _ImageInfo
     group;
 
   unsigned int
-    ping;
+    ping,
+    verbose,
+    debug;
 
   int
     (*fifo)(const Image *,const void *,const size_t);

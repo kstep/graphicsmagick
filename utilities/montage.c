@@ -568,6 +568,11 @@ int main(int argc,char **argv)
         }
         case 'd':
         {
+          if (LocaleNCompare("debug",option+1,3) == 0)
+            {
+              image_info->debug=(*option == '-');
+              break;
+            }
           if (LocaleNCompare("density",option+1,3) == 0)
             {
               CloneString(&image_info->density,(char *) NULL);

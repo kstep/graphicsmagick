@@ -3664,6 +3664,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'd':
       {
+        if (LocaleNCompare("debug",option+1,3) == 0)
+          draw_info->debug=(*option == '-');
         if (LocaleNCompare("-density",option,4) == 0)
           {
             int
