@@ -144,6 +144,7 @@ UNIX/Cygwin COMPILATION
     --enable-static[=PKGS]  build static libraries [default=yes]
     --enable-lzw            enable LZW support (default is no)
     --enable-16bit-pixel    enable 16 bit/quantum pixels (default is no)
+    --with-threads          enable threads support
     --with-cache            set pixel cache threshhold (default 80MB)
     --without-frozenpaths   disable frozen delegate paths
     --without-largefiles    disable support for large (64 bit) file offsets
@@ -245,6 +246,33 @@ UNIX/Cygwin COMPILATION
       binary distributions), --without-frozenpaths may be specified so
       that only the delegate's name is included in the delegates.mgk
       file.
+
+    o --with-threads: By default, the ImageMagick library is compiled
+      without multi-thread support.  This is fine for the utilities,
+      and for use in single-threaded applications. When multi-threaded
+      applications are to be used with the ImageMagick library, thread
+      safety should be selected via --with-threads.  Multi-thread
+      support is disabled by default since a thread-safe ImageMagick
+      may run slower (OS dependent) due to additional locking within
+      the C library (e.g. in malloc()).
+
+    o --with-cache: Specify a different image pixel cache threshold
+      using the --with-cache option. When ImageMagick will have more
+      image pixel data in memory than the cache threshold setting,
+      additional images are cached on disk. Since memory is much faster
+      than disk, it is usually better to use memory rather than disk
+      for the pixel cache. On large memory machines, the cache threshold
+      may be increased to a larger size than the default of 80MB. Small
+      memory machines may want to decrease the threshold.
+
+    o --without-largefiles: By default, ImageMagick is compiled with
+      support for large (> 2GB on a 32-bit CPU) files if the operating
+      system supports large files.  All applications which use the
+      ImageMagick library must then also include support for large
+      files. By disabling support for large files via
+      --without-largefiles, dependent applications do not require
+      special compilation options for large files in order to use
+      the library.
 
     o --without-perl: By default, PerlMagick is conveniently compiled
       and installed in one step. When --without-perl is specified, you
