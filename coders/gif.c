@@ -58,6 +58,9 @@
 /*
   Forward declarations.
 */
+static MagickExport size_t
+  ReadBlobBlock(Image *,unsigned char *);
+
 static unsigned int
   WriteGIFImage(const ImageInfo *,Image *);
 
@@ -683,6 +686,53 @@ static unsigned int IsGIF(const unsigned char *magick,const size_t length)
   if (LocaleNCompare((char *) magick,"GIF8",4) == 0)
     return(True);
   return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b B l o c k                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobBlock reads data from the image file and returns it.  The
+%  amount of data is determined by first reading a count byte.  The number
+%  or bytes read is returned.
+%
+%  The format of the ReadBlobBlock method is:
+%
+%      size_t ReadBlobBlock(Image *image,unsigned char *data)
+%
+%  A description of each parameter follows:
+%
+%    o count:  Method ReadBlobBlock returns the number of bytes read.
+%
+%    o image: The image.
+%
+%    o data:  Specifies an area to place the information requested from
+%      the file.
+%
+%
+*/
+static size_t ReadBlobBlock(Image *image,unsigned char *data)
+{
+  size_t
+    count;
+
+  unsigned char
+    block_count;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(data != (unsigned char *) NULL);
+  count=ReadBlob(image,1,&block_count);
+  if (count == 0)
+    return(0);
+  return(ReadBlob(image,(size_t) block_count,data));
 }
 
 /*
