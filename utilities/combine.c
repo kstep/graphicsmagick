@@ -892,7 +892,7 @@ int main(int argc,char **argv)
       /*
         Create mattes for blending.
       */
-      opacity=OpaqueOpacity-(OpaqueOpacity*blend)/100;
+      opacity=(TransparentOpacity*blend)/100;
       image->storage_class=DirectClass;
       image->matte=True;
       for (y=0; y < (int) image->rows; y++)
@@ -917,7 +917,7 @@ int main(int argc,char **argv)
           break;
         for (x=0; x < (int) composite_image->columns; x++)
         {
-          q->opacity=OpaqueOpacity-opacity;
+          q->opacity=TransparentOpacity-opacity;
           q++;
         }
         if (!SyncImagePixels(composite_image))

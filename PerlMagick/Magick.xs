@@ -340,7 +340,8 @@ static struct
       {"bordercolor", StringReference} } },
     { "Composite", { {"compos", CompositeTypes}, {"image", ImageReference},
       {"geom", StringReference}, {"x", IntegerReference},
-      {"y", IntegerReference}, {"grav", GravityTypes} } },
+      {"y", IntegerReference}, {"grav", GravityTypes},
+      {"opacity", StringReference} } },
     { "Contrast", { {"sharp", BooleanTypes} } },
     { "CycleColormap", { {"amount", IntegerReference} } },
     { "Draw", { {"prim", PrimitiveTypes}, {"points", StringReference},
@@ -4444,6 +4445,63 @@ Mogrify(ref,...)
                 rectangle_info.y=image->rows-
                   argument_list[1].image_reference->rows;
                 break;
+              }
+            }
+          /* blend opacity */
+          if (!attribute_flag[6])
+            argument_list[6].string_reference="0.0";
+          /* Maybe I should remove this test... */
+          if (argument_list[0].int_reference == BlendCompositeOp)
+            {
+              Image
+                *composite_image;
+
+              Quantum 
+                opacity;
+
+              register PixelPacket 
+                *q;
+
+              double 
+                blend;
+
+              int 
+                x,
+                y;
+              
+              composite_image=argument_list[1].image_reference;
+              blend=atof(argument_list[6].string_reference);
+              opacity=(blend*TransparentOpacity)/100;
+              image->storage_class=DirectClass;
+              image->matte=True;
+              for (y=0; y < (int) image->rows; y++)
+              {
+                q=GetImagePixels(image,0,y,image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
+                for (x=0; x < (int) image->columns; x++)
+                {
+                  q->opacity=opacity;
+                  q++;
+                }
+                if (!SyncImagePixels(image))
+                  break;
+              }
+              composite_image->storage_class=DirectClass;
+              composite_image->matte=True;
+              for (y=0; y < (int) composite_image->rows; y++)
+              {
+                q=GetImagePixels(composite_image,0,y,
+                        composite_image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
+                for (x=0; x < (int) composite_image->columns; x++)
+                {
+                  q->opacity=TransparentOpacity-opacity;
+                  q++;
+                }
+                if (!SyncImagePixels(composite_image))
+                  break;
               }
             }
           CompositeImage(image,(CompositeOperator)

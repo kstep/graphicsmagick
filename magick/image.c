@@ -4090,12 +4090,43 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         /*
           Apply transformations to a selected region of the image.
         */
-        region_info.width=(*image)->columns;
-        region_info.height=(*image)->rows;
+        width=(*image)->columns;
+        height=(*image)->rows;
         region_info.x=0;
         region_info.y=0;
-        (void) ParseGeometry(argv[++i],&region_info.x,&region_info.y,
-          &region_info.width,&region_info.height);
+        flags=ParseGeometry(argv[++i],&region_info.x,&region_info.y,
+          &width,&height);
+        if ((flags & WidthValue) == 0)
+          width=(unsigned int) ((int) (*image)->columns-region_info.x);
+        if ((flags & HeightValue) == 0)
+          height=(unsigned int) ((int) (*image)->rows-region_info.y);
+        if ((width != 0) || (height != 0))
+          {
+            if ((flags & XNegative) != 0)
+              region_info.x+=(*image)->columns-width;
+            if ((flags & YNegative) != 0)
+              region_info.y+=(*image)->rows-height;
+          }
+        if (strchr(argv[i],'%') != (char *) NULL)
+          {
+            /*
+              Region geometry is relative to image size.
+            */
+            x=0;
+            y=0;
+            (void) ParseImageGeometry(argv[i],&x,&y,&width,&height);
+            if (width > (*image)->columns)
+              width=(*image)->columns;
+            if (height > (*image)->rows)
+              height=(*image)->rows;
+            region_info.x=width >> 1;
+            region_info.y=height >> 1;
+            width=(*image)->columns-width;
+            height=(*image)->rows-height;
+            flags|=XValue | YValue;
+          }
+        region_info.width=width;
+        region_info.height=height;
         crop_image=CropImage(*image,&region_info,&(*image)->exception);
         if (crop_image == (Image *) NULL)
           break;

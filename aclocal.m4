@@ -310,23 +310,24 @@ done
 ac_aux_dir="$ac_aux_dir"])])
 
 
-# serial 44 AC_PROG_LIBTOOL
+# serial 43 AC_PROG_LIBTOOL
 AC_DEFUN(AC_PROG_LIBTOOL,[AC_REQUIRE([_AC_PROG_LIBTOOL])])
 AC_DEFUN(_AC_PROG_LIBTOOL,
 [AC_REQUIRE([AC_LIBTOOL_SETUP])dnl
+AC_BEFORE([$0],[AC_LIBTOOL_CXX])dnl
 
 # Save cache, so that ltconfig can load it
 AC_CACHE_SAVE
 
 # Actually configure libtool.  ac_aux_dir is where install-sh is found.
-AR="$AR" CC="$CC" CFLAGS="$CFLAGS" CPPFLAGS="$CPPFLAGS" \
+AR="$AR" LTCC="$CC" CC="$CC" CFLAGS="$CFLAGS" CPPFLAGS="$CPPFLAGS" \
 MAGIC="$MAGIC" LD="$LD" LDFLAGS="$LDFLAGS" LIBS="$LIBS" \
 LN_S="$LN_S" NM="$NM" RANLIB="$RANLIB" STRIP="$STRIP" \
 AS="$AS" DLLTOOL="$DLLTOOL" OBJDUMP="$OBJDUMP" \
 objext="$OBJEXT" exeext="$EXEEXT" reload_flag="$reload_flag" \
 deplibs_check_method="$deplibs_check_method" file_magic_cmd="$file_magic_cmd" \
 ${CONFIG_SHELL-/bin/sh} $ac_aux_dir/ltconfig --no-reexec \
-$libtool_flags --no-verify --build="$build" $ac_aux_dir/ltmain.sh $host \
+$libtool_flags --no-verify --build="$build" $ac_aux_dir/ltmain.sh $lt_target \
 || AC_MSG_ERROR([libtool configure failed])
 
 # Reload cache, that may have been modified by ltconfig
@@ -357,6 +358,7 @@ AC_REQUIRE([AC_PROG_LD_RELOAD_FLAG])dnl
 AC_REQUIRE([AC_PROG_NM])dnl
 AC_REQUIRE([AC_PROG_LN_S])dnl
 AC_REQUIRE([AC_DEPLIBS_CHECK_METHOD])dnl
+# Autoconf's AC_OBJEXT and AC_EXEEXT macros only works for C compilers!
 AC_REQUIRE([AC_OBJEXT])dnl
 AC_REQUIRE([AC_EXEEXT])dnl
 dnl
@@ -368,6 +370,11 @@ file_magic*)
     AC_PATH_MAGIC
   fi
   ;;
+esac
+
+case "x$target" in
+xNONE|x) lt_target="$host" ;;
+*) lt_target="$target" ;;
 esac
 
 AC_CHECK_TOOL(RANLIB, ranlib, :)
@@ -397,7 +404,7 @@ test x"$pic_mode" = xno && libtool_flags="$libtool_flags --prefer-non-pic"
 
 # Some flags need to be propagated to the compiler or linker for good
 # libtool support.
-case "$host" in
+case "$lt_target" in
 *-*-irix6*)
   # Find out which ABI we are using.
   echo '[#]line __oline__ "configure"' > conftest.$ac_ext
@@ -446,7 +453,7 @@ ifdef([AC_PROVIDE_AC_LIBTOOL_WIN32_DLL],
       DllMain (0, 0, 0);],
       [lt_cv_need_dllmain=no],[lt_cv_need_dllmain=yes])])
 
-  case "$host/$CC" in
+  case "$lt_target/$CC" in
   *-*-cygwin*/gcc*-mno-cygwin*|*-*-mingw*)
     # old mingw systems require "-dll" to link a DLL, while more recent ones
     # require "-mdll"
@@ -667,7 +674,7 @@ ac_prog=ld
 if test "$ac_cv_prog_gcc" = yes; then
   # Check if gcc -print-prog-name=ld gives a path.
   AC_MSG_CHECKING([for ld used by GCC])
-  case $host in
+  case $lt_target in
   *-*-mingw*)
     # gcc leaves a trailing carriage return which upsets mingw
     ac_prog=`($CC -print-prog-name=ld) 2>&5 | tr -d '\015'` ;;
@@ -784,7 +791,6 @@ bsdi4*)
   changequote(,)dnl
   lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [ML]SB (shared object|dynamic lib)'
   changequote([, ])dnl
-  lt_cv_file_magic_cmd='/usr/bin/file -L'
   lt_cv_file_magic_test_file=/shlib/libc.so
   ;;
 
@@ -794,19 +800,11 @@ cygwin* | mingw*)
   ;;
 
 freebsd*)
-  if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
-    case "$host_cpu" in
-    i*86 )
-      changequote(,)dnl
-      lt_cv_deplibs_check_method=='file_magic OpenBSD/i[3-9]86 demand paged shared library'
-      changequote([, ])dnl
-      lt_cv_file_magic_cmd=/usr/bin/file
-      lt_cv_file_magic_test_file=`echo /usr/lib/libc.so.*`
-      ;;
-    esac
-  else
+  case "$version_type" in
+  freebsd-elf*)
     lt_cv_deplibs_check_method=pass_all
-  fi
+    ;;
+  esac
   ;;
 
 gnu*)
@@ -846,7 +844,7 @@ irix5* | irix6*)
 # This must be Linux ELF.
 linux-gnu*)
   case "$host_cpu" in
-  alpha* | i*86 | powerpc* | sparc* | ia64* )
+  alpha* | i*86 | powerpc* | sparc* )
     lt_cv_deplibs_check_method=pass_all ;;
   *)
     # glibc up to 2.1.1 does not perform some relocations on ARM
@@ -855,17 +853,6 @@ linux-gnu*)
     changequote([, ])dnl
   esac
   lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
-  ;;
-
-netbsd*)
-  if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then :
-  else
-    changequote(,)dnl
-    lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [LM]SB shared object'
-    changequote([, ])dnl
-    lt_cv_file_magic_cmd='/usr/bin/file -L'
-    lt_cv_file_magic_test_file=`echo /usr/lib/libc.so*`
-  fi
   ;;
 
 osf3* | osf4* | osf5*)
@@ -915,19 +902,18 @@ else
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}${PATH_SEPARATOR-:}"
   for ac_dir in $PATH /usr/ccs/bin /usr/ucb /bin; do
     test -z "$ac_dir" && ac_dir=.
-    tmp_nm=$ac_dir/${ac_tool_prefix}nm
-    if test -f $tmp_nm || test -f $tmp_nm$ac_exeext ; then
+    if test -f $ac_dir/nm || test -f $ac_dir/nm$ac_exeext ; then
       # Check to see if the nm accepts a BSD-compat flag.
       # Adding the `sed 1q' prevents false positives on HP-UX, which says:
       #   nm: unknown option "B" ignored
-      if ($tmp_nm -B /dev/null 2>&1 | sed '1q'; exit 0) | egrep /dev/null >/dev/null; then
-	ac_cv_path_NM="$tmp_nm -B"
+      if ($ac_dir/nm -B /dev/null 2>&1 | sed '1q'; exit 0) | egrep /dev/null >/dev/null; then
+	ac_cv_path_NM="$ac_dir/nm -B"
 	break
-      elif ($tmp_nm -p /dev/null 2>&1 | sed '1q'; exit 0) | egrep /dev/null >/dev/null; then
-	ac_cv_path_NM="$tmp_nm -p"
+      elif ($ac_dir/nm -p /dev/null 2>&1 | sed '1q'; exit 0) | egrep /dev/null >/dev/null; then
+	ac_cv_path_NM="$ac_dir/nm -p"
 	break
       else
-	ac_cv_path_NM=${ac_cv_path_NM="$tmp_nm"} # keep the first match, but
+	ac_cv_path_NM=${ac_cv_path_NM="$ac_dir/nm"} # keep the first match, but
 	continue # so that we can try to find one that supports BSD flags
       fi
     fi
@@ -943,7 +929,7 @@ AC_MSG_RESULT([$NM])
 AC_DEFUN(AC_CHECK_LIBM,
 [AC_REQUIRE([AC_CANONICAL_HOST])dnl
 LIBM=
-case "$host" in
+case "$lt_target" in
 *-*-beos* | *-*-cygwin*)
   # These system don't have libm
   ;;
@@ -1006,6 +992,29 @@ AC_DEFUN(AC_LIBLTDL_INSTALLABLE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
     LIBLTDL="-lltdl"
     INCLTDL=
   fi
+])
+
+# AC_LIBTOOL_CXX - enable support for C++ libraries
+AC_DEFUN(AC_LIBTOOL_CXX,
+[AC_REQUIRE([AC_PROG_CXX])
+AC_REQUIRE([AC_PROG_CXXCPP])
+AC_REQUIRE([AC_PROG_LIBTOOL])
+lt_save_CC="$CC"
+lt_save_CFLAGS="$CFLAGS"
+dnl Make sure LTCC is set to the C compiler, i.e. set LTCC before CC
+dnl is set to the C++ compiler.
+AR="$AR" LTCC="$CC" CC="$CXX" CXX="$CXX" CFLAGS="$CXXFLAGS" CPPFLAGS="$CPPFLAGS" \
+MAGIC="$MAGIC" LDFLAGS="$LDFLAGS" LIBS="$LIBS" \
+LN_S="$LN_S" NM="$NM" RANLIB="$RANLIB" STRIP="$STRIP" \
+AS="$AS" DLLTOOL="$DLLTOOL" OBJDUMP="$OBJDUMP" \
+objext="$OBJEXT" exeext="$EXEEXT" reload_flag="$reload_flag" \
+deplibs_check_method="$deplibs_check_method" \
+file_magic_cmd="$file_magic_cmd" \
+${CONFIG_SHELL-/bin/sh} $ac_aux_dir/ltconfig -o libtool $libtool_flags \
+--build="$build" --add-tag=CXX $ac_aux_dir/ltcf-cxx.sh $lt_target \
+|| AC_MSG_ERROR([libtool tag configuration failed])
+CC="$lt_save_CC"
+CFLAGS="$lt_save_CFLAGS"
 ])
 
 dnl old names

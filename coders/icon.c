@@ -167,9 +167,6 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   register unsigned char
     *p;
 
-  unsigned char
-    *icon_colormap;
-
   unsigned int
     status;
 
@@ -214,33 +211,48 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     icon_info.y_pixels=LSBFirstReadLong(image);
     icon_info.number_colors=LSBFirstReadLong(image);
     icon_info.colors_important=LSBFirstReadLong(image);
+    image->matte=icon_info.bits_per_pixel == 32;
     image->columns=(unsigned int) icon_info.width;
     image->rows=(unsigned int) icon_info.height;
-    if (!AllocateImageColormap(image,1 << icon_info.bits_per_pixel))
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-        image);
+    image->depth=8;
+    if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel < 16))
+      {
+        image->storage_class=PseudoClass;
+        image->colors=(unsigned int) icon_info.number_colors;
+        if (image->colors == 0)
+          image->colors=1 << icon_info.bits_per_pixel;
+      }
     if (image_info->ping)
       {
         CloseBlob(image);
         return(image);
       }
-    /*
-      Read Icon raster colormap.
-    */
-    icon_colormap=(unsigned char *) AcquireMemory(4*image->colors);
-    if (icon_colormap == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-        image);
-    (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);
-    p=icon_colormap;
-    for (x=0; x < (int) image->colors; x++)
+  if (image->storage_class == PseudoClass)
     {
-      image->colormap[x].blue=UpScale(*p++);
-      image->colormap[x].green=UpScale(*p++);
-      image->colormap[x].red=UpScale(*p++);
-      p++;
+      unsigned char
+        *icon_colormap;
+
+      /*
+        Read Icon raster colormap.
+      */
+      if (!AllocateImageColormap(image,1 << icon_info.bits_per_pixel))
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
+      icon_colormap=(unsigned char *) AcquireMemory(4*image->colors);
+      if (icon_colormap == (unsigned char *) NULL)
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
+      (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);
+      p=icon_colormap;
+      for (x=0; x < (int) image->colors; x++)
+      {
+        image->colormap[x].blue=UpScale(*p++);
+        image->colormap[x].green=UpScale(*p++);
+        image->colormap[x].red=UpScale(*p++);
+        p++;
+      }
+      LiberateMemory((void **) &icon_colormap);
     }
-    LiberateMemory((void **) &icon_colormap);
     /*
       Convert Icon raster image to pixel packets.
     */
@@ -350,6 +362,34 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             indexes[x]=(IndexPacket) byte;
             byte=ReadByte(image);
             indexes[x]|=byte << 8;
+          }
+          if (!SyncImagePixels(image))
+            break;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+        }
+        break;
+      }
+      case 24:
+      case 32:
+      {
+        /*
+          Convert DirectColor scanline.
+        */
+        for (y=image->rows-1; y >= 0; y--)
+        {
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (int) image->columns; x++)
+          {
+            q->blue=ReadByte(image);
+            q->green=ReadByte(image);
+            q->red=ReadByte(image);
+            if (image->matte)
+              q->opacity=ReadByte(image);
+            q++;
           }
           if (!SyncImagePixels(image))
             break;
