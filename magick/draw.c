@@ -3345,7 +3345,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
     Ellipses are just short segmented polys.
   */
   p=primitive_info;
-  for (angle=(degrees.x+1.0); angle <= degrees.y; angle+=1.0)
+  for (angle=degrees.x; angle <= degrees.y; angle+=1.0)
   {
     point.x=cos(DegreesToRadians(fmod(angle,360.0)))*end.x+start.x;
     point.y=sin(DegreesToRadians(fmod(angle,360.0)))*end.y+start.y;
