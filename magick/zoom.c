@@ -602,23 +602,33 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %
 */
 
-static double Blackman(const double x,const double support)
-{
-  return(0.42+0.5*cos(MagickPI*x)+0.08*cos(2*MagickPI*x));
-}
-
 static double Bessel(const double x,const double support)
 {
   if (x == 0.0)
-    return(Blackman(x/support,support)*MagickPI/4.0);
-  return(Blackman(x/support,support)*BesselOrderOne(MagickPI*x)/(2.0*x));
+    return(MagickPI/4.0);
+  return(BesselOrderOne(MagickPI*x)/(2.0*x));
 }
 
 static double Sinc(const double x,const double support)
 {
   if (x == 0.0)
-    return(Blackman(x/support,support));
-  return(Blackman(x/support,support)*sin(MagickPI*x)/(MagickPI*x));
+    return(1.0);
+  return(sin(MagickPI*x)/(MagickPI*x));
+}
+
+static double Blackman(const double x,const double support)
+{
+  return(0.42+0.5*cos(MagickPI*x)+0.08*cos(2*MagickPI*x));
+}
+
+static double BlackmanBessel(const double x,const double support)
+{
+  return(Blackman(x/support,support)*Bessel(x,support));
+}
+
+static double BlackmanSinc(const double x,const double support)
+{
+  return(Blackman(x/support,support)*Sinc(x,support));
 }
 
 static double Box(const double x,const double support)
@@ -1039,8 +1049,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
       { Catrom, 2.0 },
       { Mitchell, 2.0 },
       { Lanczos, 3.0 },
-      { Bessel, 3.2383 },
-      { Sinc, 4.0 }
+      { BlackmanBessel, 3.2383 },
+      { BlackmanSinc, 4.0 }
     };
 
   size_t
