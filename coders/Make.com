@@ -41,6 +41,7 @@ $call Make histogram.c
 $call Make html.c
 $call Make icon.c
 $call Make jbig.c
+$call Make jp2.c
 $call Make jpeg.c
 $call Make label.c
 $call Make logo.c
@@ -49,9 +50,10 @@ $call Make mat.c
 $call Make matte.c
 $call Make meta.c
 $call Make miff.c
-$call Make mpc.c
-$call Make mpeg.c
 $call Make mono.c
+$call Make mpc.c
+$call Make mpr.c
+$call Make mpeg.c
 $call Make mtv.c
 $call Make mvg.c
 $call Make null.c
@@ -105,11 +107,11 @@ $call Make xpm.c
 $call Make xwd.c
 $call Make yuv.c
 $library/create libCoders.olb art,avi,avs,bmp,cmyk,cut,dcm,dib,dps,dpx,ept, -
-  fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icon,jbig,jpeg,label,logo, -
-  map,mat,matte,meta,miff,mpc,mpeg,mono,mtv,mvg,null,otb,pcd,pcl,pcx,pdb,pdf, -
-  pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,registry,rgb,rla,rle,sct, -
-  sfw,sgi,stegano,sun,svg,tga,tiff,tile,tim,ttf,txt,uil,url,uyvy,vicar,vid, -
-  viff,wbmp,wmf,wpg,x,xbm,xc,xcf,xpm,xwd,yuv,[-.magick]compress, -
+  fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icon,jbig,jp2,jpeg,label, -
+  logo,map,mat,matte,meta,miff,mono,mpc,mpr,mpeg,mtv,mvg,null,otb,pcd,pcl,pcx, -
+  pdb,pdf,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,registry,rgb,rla, -
+  rle,sct,sfw,sgi,stegano,sun,svg,tga,tiff,tile,tim,ttf,txt,uil,url,uyvy, -
+  vicar,vid,viff,wbmp,wmf,wpg,x,xbm,xc,xcf,xpm,xwd,yuv,[-.magick]compress, -
   [-.magick]prervicccm
 $exit
 $
