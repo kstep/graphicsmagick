@@ -1427,7 +1427,10 @@ int main(int argc,char **argv)
           DescribeImage(image,stdout,False);
         if ((format == (char *) NULL) && (status != False))
           if (Latin1Compare(image_info.filename,"-") != 0)
-            (void) rename(image->filename,filename);
+            {
+              (void) remove(filename);
+              (void) rename(image->filename,filename);
+            }
         DestroyImage(image);
       }
     }

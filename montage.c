@@ -669,7 +669,7 @@ int main(int argc,char **argv)
             }
           if (strncmp("gravity",option+1,2) == 0)
             {
-              montage_info.gravity=CenterGravity;
+              montage_info.gravity=SouthGravity;
               if (*option == '-')
                 {
                   i++;
@@ -964,13 +964,13 @@ int main(int argc,char **argv)
             }
           if (strncmp("tile",option+1,3) == 0)
             {
-              *montage_info.tile=(char) NULL;
+              montage_info.tile=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) strcpy(montage_info.tile,argv[i]);
+                  montage_info.tile=argv[i];
                 }
               break;
             }

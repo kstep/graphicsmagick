@@ -206,6 +206,8 @@ Export Image *AllocateImage(const ImageInfo *image_info)
       int
         y;
 
+      (void) sscanf(image_info->size,"%ux%u",
+        &allocated_image->columns,&allocated_image->rows);
       flags=XParseGeometry(image_info->size,&allocated_image->offset,&y,
         &allocated_image->columns,&allocated_image->rows);
       if ((flags & HeightValue) == 0)
@@ -216,6 +218,8 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   if (image_info->tile != (char *) NULL)
     if (!IsSubimage(image_info->tile,False))
       {
+        (void) sscanf(image_info->tile,"%ux%u",
+          &allocated_image->columns,&allocated_image->rows);
         flags=XParseGeometry(image_info->tile,&allocated_image->tile_info.x,
           &allocated_image->tile_info.y,&allocated_image->columns,
           &allocated_image->rows);
@@ -11114,7 +11118,10 @@ Export void TransformImage(Image **image,char *crop_geometry,
       */
       zoomed_image=ZoomImage(transformed_image,width,height);
       if (zoomed_image == (Image *) NULL)
+{
+puts("what's up");
         zoomed_image=ScaleImage(transformed_image,width,height);
+}
       if (zoomed_image != (Image *) NULL)
         {
           DestroyImage(transformed_image);

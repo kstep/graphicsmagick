@@ -138,6 +138,8 @@ extern "C" {
 #define DefaultPreviewGeometry  "204x204+10+10"
 #define DefaultPreviewMatte  "#dfdfdf"
 #define DefaultPreviewPageGeometry  "3x3"
+#define DefaultPyramidHeight  64
+#define DefaultPyramidWidth  64
 #define DefaultTextBackground  "#ffffff"
 #define DefaultTextForeground  "#000000"
 #define DefaultTileBackground  "#696e7e"

@@ -7177,11 +7177,7 @@ Image *ReadNULLImage(const ImageInfo *image_info)
 static Image *OverviewImage(const ImageInfo *image_info,Image *image)
 {
   char
-    *client_name,
     *commands[3];
-
-  Display
-    *display;
 
   Image
     *montage_image;
@@ -7196,7 +7192,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
     Create image tiles.
   */
   local_info=(*image_info);
-  commands[0]=client_name;
+  commands[0]=SetClientName((char *) NULL);
   commands[1]="-label";
   commands[2]=DefaultTileLabel;
   MogrifyImages(&local_info,3,commands,&image);
@@ -14238,13 +14234,15 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
     q=image->pixels;
     SetRunlengthEncoder(q);
     method=0;
-    if ((samples_per_pixel > 1) || TIFFIsTiled(tiff))
+    if (samples_per_pixel > 1)
       {
         method=2;
         if ((samples_per_pixel >= 3) && (photometric == PHOTOMETRIC_RGB) &&
             (interlace == PLANARCONFIG_CONTIG))
           method=1;
       }
+    if (TIFFIsTiled(tiff))
+      method=2;
     switch (method)
     {
       case 0:
@@ -15590,7 +15588,6 @@ Image *ReadVIDImage(const ImageInfo *image_info)
 #define ClientName  "montage"
 
   char
-    *client_name,
     *commands[5],
     **filelist,
     **list;
@@ -15648,7 +15645,7 @@ Image *ReadVIDImage(const ImageInfo *image_info)
   GetMontageInfo(&montage_info);
   image=(Image *) NULL;
   local_info=(*image_info);
-  commands[0]=client_name;
+  commands[0]=SetClientName((char *) NULL);
   commands[1]="-label";
   commands[2]=DefaultTileLabel;
   for (i=0; i < number_files; i++)

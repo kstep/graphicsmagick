@@ -2266,7 +2266,7 @@ unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     {
       for (j=0; j <= ((int) p->length); j++)
       {
-  	WriteQuantum(Intensity(*p),q);
+        WriteQuantum(Intensity(*p),q);
         x++;
         if (x == image->columns)
           {
@@ -11048,6 +11048,91 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
+
+static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
+  tsample_t sample,Image *image)
+{
+  int
+    bytes_per_pixel,
+    number_tiles,
+    status,
+    tile_width;
+
+  register int
+    i,
+    j,
+    k;
+
+  static unsigned char
+    *scanlines = (unsigned char *) NULL,
+    *tile_pixels = (unsigned char *) NULL;
+
+  if (!TIFFIsTiled(tiff))
+    return(TIFFWriteScanline(tiff,scanline,row,sample));
+  if (scanlines == (unsigned char *) NULL)
+    scanlines=(unsigned char *) 
+      AllocateMemory(image->tile_info.height*TIFFScanlineSize(tiff));
+  if (scanlines == (unsigned char *) NULL)
+    return(-1);
+  if (tile_pixels == (unsigned char *) NULL)
+    tile_pixels=(unsigned char *)AllocateMemory(TIFFTileSize(tiff));
+  if (tile_pixels == (unsigned char *) NULL)
+    return(-1);
+  /*
+    Fill scanlines to tile height.
+  */
+  i=(row % image->tile_info.height)*TIFFScanlineSize(tiff);
+  memcpy(scanlines+i,(unsigned char *) scanline,TIFFScanlineSize(tiff));
+  if (((row % image->tile_info.height) != (image->tile_info.height-1)) &&
+      (row != image->rows-1))
+    return(0);
+  /*
+    Write tile to TIFF image.
+  */
+  status=0;
+  bytes_per_pixel=
+    TIFFTileSize(tiff)/(image->tile_info.height*image->tile_info.width);
+  number_tiles=
+    (image->columns+image->tile_info.height-1)/image->tile_info.height;
+  for (i=0; i < number_tiles; i++)
+  {
+    tile_width=(i == number_tiles-1) ?
+      image->columns-(i*image->tile_info.width) : image->tile_info.width;
+    for (j=0; j < ((row % image->tile_info.height)+1); j++)
+      for (k=0; k < tile_width; k++)
+      {
+        register int
+          l;
+
+        register unsigned char
+          *p,
+          *q;
+
+        p=scanlines+(j*TIFFScanlineSize(tiff)+(i*image->tile_info.width+k)*
+          bytes_per_pixel);
+        q=tile_pixels+
+          (j*(TIFFTileSize(tiff)/image->tile_info.height)+k*bytes_per_pixel);
+        for (l=0; l < bytes_per_pixel; l++)
+          *q++=(*p++);
+      }
+      status=TIFFWriteTile(tiff,tile_pixels,i*image->tile_info.width,(row/
+        image->tile_info.height)*image->tile_info.height,0,sample);
+      if (status < 0)
+        break;
+  }
+  if (row == (image->rows-1))
+    {
+      /*
+        Free memory resources.
+      */
+      FreeMemory((char *) scanlines);
+      scanlines=(unsigned char *) NULL;
+      FreeMemory((char *) tile_pixels);
+      tile_pixels=(unsigned char *) NULL;
+    }
+  return(status);
+}
+
 unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
 #if !defined(TIFFDefaultStripSize)
@@ -11062,7 +11147,8 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
   int
     flags,
-    sans_offset;
+    sans_offset,
+    y;
 
   register RunlengthPacket
     *p;
@@ -11070,8 +11156,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   register int
     i,
     j,
-    x,
-    y;
+    x;
 
   register unsigned char
     *q;
@@ -11094,6 +11179,55 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   unsigned short
     value;
 
+  if (Latin1Compare(image_info->magick,"PTIF") == 0)
+    {
+      Image
+        *next_image,
+        *pyramid_image;
+
+      unsigned int
+        height,
+        width;
+
+      /*
+        Pyramid encode TIFF image.
+      */
+      pyramid_image=(Image *) NULL;
+      if (image->tile_info.width == 0)
+        image->tile_info.width=DefaultPyramidWidth;
+      if (image->tile_info.height == 0)
+        image->tile_info.height=DefaultPyramidHeight;
+      width=image->columns;
+      height=image->rows;
+      do
+      {
+        image->orphan=True;
+        next_image=ZoomImage(image,width,height);
+        image->orphan=False;
+        if (next_image == (Image *) NULL)
+          PrematureExit(FileOpenWarning,"Unable to pyramid encode image",image);
+        if (pyramid_image == (Image *) NULL)
+          pyramid_image=next_image;
+        else
+          {
+            register Image
+              *p;
+
+            /*
+              Link image into pyramid image list.
+            */
+            for (p=pyramid_image; p->next != (Image *) NULL; p=p->next);
+            next_image->previous=p;
+            p->next=next_image;
+          }
+        width=(width+1)/2;
+        height=(height+1)/2;
+        if ((width == 0) || (height == 0))
+          break;
+      } while ((width >= image->tile_info.width) ||
+               (height >= image->tile_info.height));
+      image=pyramid_image;
+    }
   /*
     Open TIFF file.
   */
@@ -11126,6 +11260,9 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize TIFF fields.
     */
+    if (Latin1Compare(image_info->magick,"PTIF") == 0)
+      if (image->previous != (Image *) NULL)
+        TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
     TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
     TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
     TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
@@ -11197,7 +11334,14 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
     TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
     TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
-    TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+    if (Latin1Compare(image_info->magick,"PTIF") != 0)
+    if ((image->tile_info.width*image->tile_info.height) == 0)
+      TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+    else
+      {
+        TIFFSetField(tiff,TIFFTAG_TILEWIDTH,image->tile_info.width);
+        TIFFSetField(tiff,TIFFTAG_TILELENGTH,image->tile_info.height);
+      }
     if (photometric == PHOTOMETRIC_RGB)
       if ((image_info->interlace == PlaneInterlace) ||
           (image_info->interlace == PartitionInterlace))
@@ -11310,7 +11454,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 x++;
                 if (x == image->columns)
                   {
-                    if (TIFFWriteScanline(tiff,(char *) scanline,y,0) < 0)
+                    if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                       break;
                     if (image->previous == (Image *) NULL)
                       if (QuantumTick(y,image->rows))
@@ -11339,7 +11483,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 x++;
                 if (x == image->columns)
                   {
-                    if (TIFFWriteScanline(tiff,(char *) scanline,y,0) < 0)
+                    if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                       break;
                     q=scanline;
                     x=0;
@@ -11359,7 +11503,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 x++;
                 if (x == image->columns)
                   {
-                    if (TIFFWriteScanline(tiff,(char *) scanline,y,1) < 0)
+                    if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
                       break;
                     q=scanline;
                     x=0;
@@ -11379,7 +11523,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 x++;
                 if (x == image->columns)
                   {
-                    if (TIFFWriteScanline(tiff,(char *) scanline,y,2) < 0)
+                    if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
                       break;
                     q=scanline;
                     x=0;
@@ -11400,7 +11544,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   x++;
                   if (x == image->columns)
                     {
-                      if (TIFFWriteScanline(tiff,(char *) scanline,y,3) < 0)
+                      if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
                         break;
                       q=scanline;
                       x=0;
@@ -11461,7 +11605,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             x++;
             if (x == image->columns)
               {
-                if (TIFFWriteScanline(tiff,(char *) scanline,y,0) < 0)
+                if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                   break;
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
@@ -11539,7 +11683,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 x++;
                 if (x == image->columns)
                   {
-                    if (TIFFWriteScanline(tiff,(char *) scanline,y,0) < 0)
+                    if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                       break;
                     if (image->previous == (Image *) NULL)
                       if (QuantumTick(y,image->rows))
@@ -11592,7 +11736,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 */
                 if (bit != 0)
                   *q++=byte << (8-bit);
-                if (TIFFWriteScanline(tiff,(char *) scanline,y,0) < 0)
+                if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                   break;
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
@@ -11622,6 +11766,8 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
+  if (Latin1Compare(image_info->magick,"PTIF") == 0)
+    DestroyImages(image);
   (void) TIFFClose(tiff);
   if (image->temporary)
     {

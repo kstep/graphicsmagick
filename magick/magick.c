@@ -192,6 +192,7 @@ static const MagickInfo
       "Adobe Level II PostScript file" },
     { "PSD", ReadPSDImage, WritePSDImage, False,
       "Adobe Photoshop bitmap file" },
+    { "PTIF", ReadTIFFImage, WriteTIFFImage, True, "Pyramid encoded TIFF" },
     { "RAS", ReadSUNImage, WriteSUNImage, True, "SUN Rasterfile" },
     { "RGB", ReadRGBImage, WriteRGBImage, True,
       "Raw red, green, and blue bytes" },
