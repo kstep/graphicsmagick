@@ -742,7 +742,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"/* XPM */\n");
   (void) WriteBlobString(image,"static char *magick[] = {\n");
   (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
-  FormatString(buffer,"\"%u %u %u %d\",\n",image->columns,
+  FormatString(buffer,"\"%u %u %lu %d\",\n",image->columns,
     image->rows,colors,characters_per_pixel);
   (void) WriteBlobString(image,buffer);
   for (i=0; i < (long) colors; i++)
