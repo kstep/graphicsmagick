@@ -146,7 +146,7 @@
 %    -threshold value     threshold the image
 %    -tile filename       tile image when filling a graphic primitive
 %    -transparent color   make this color transparent within the image
-%    -treedepth value     depth of the color color tree
+%    -treedepth value     depth of the color tree
 %    -type type           image type
 %    -units type          PixelsPerInch, PixelsPerCentimeter, or Undefined
 %    -verbose             print detailed information about the image
@@ -345,7 +345,7 @@ static void Usage()
       "-threshold value     threshold the image",
       "-tile filename       tile image when filling a graphic primitive",
       "-transparent color   make this color transparent within the image",
-      "-treedepth value     depth of the color color tree",
+      "-treedepth value     depth of the color tree",
       "-type type           image type",
       "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-verbose             print detailed information about the image",
