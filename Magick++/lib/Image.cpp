@@ -9,8 +9,8 @@
 
 #include <string>
 #include <iostream>
-#include <cstring>
-#include <cstdio>
+#include <string.h>
+#include <stdio.h>
 #include <errno.h>
 
 using namespace std;

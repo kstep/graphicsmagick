@@ -7,7 +7,7 @@
 
 #define MAGICK_IMPLEMENTATION
 
-#include <cstring>
+#include <string.h>
 #include <new>
 
 using namespace std;

@@ -20,18 +20,13 @@
 // C++ Builder 4.0.
 //
 #include <vcl.h>
-#include <stdio.h>
 #endif // defined(__BORLANDC__)
 
-// If <clocale> is not included, then SPARC Works 5.0 blows up when
-// including locale.h
-#include <clocale>
-
 // Needed for stdio FILE
-#include <cstdio>
+#include <stdio.h>
 
 // Needed for time_t
-#include <ctime>
+#include <time.h>
 
 // Needed for off_t
 #include <sys/types.h>
