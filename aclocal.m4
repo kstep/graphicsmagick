@@ -263,10 +263,7 @@ ac_cv_cxx_have_std,
 [AC_REQUIRE([AC_CXX_NAMESPACES])
  AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE([#if defined(_AIX50)
-# undef _XOPEN_SOURCE
-#endif
-#include <iostream>
+ AC_TRY_COMPILE([#include <iostream>
 #include <map>
 #include <iomanip>
 #ifdef HAVE_NAMESPACES

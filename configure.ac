@@ -78,10 +78,10 @@ MAGICK_API_LIBS=''
 #
 # Standards compliance definitions
 #
-AC_DEFINE(_XOPEN_SOURCE,500,[Required X Open interface level (500)])
-AC_DEFINE(_POSIX_C_SOURCE,199506L,[Required POSIX interface level (199506L)])
-AC_DEFINE(_ISOC99_SOURCE,1,[Code may make use of ISO C '99 features])
-AC_DEFINE(__EXTENSIONS__,1,[Enable all API extensions (for Solaris)])
+#AC_DEFINE(_XOPEN_SOURCE,500,[Required X Open interface level (500)])
+#AC_DEFINE(_POSIX_C_SOURCE,199506L,[Required POSIX interface level (199506L)])
+#AC_DEFINE(_ISOC99_SOURCE,1,[Code may make use of ISO C '99 features])
+#AC_DEFINE(__EXTENSIONS__,1,[Enable all API extensions (for Solaris)])
 
 #
 # Evaluate shell variable equivalents to Makefile directory variables

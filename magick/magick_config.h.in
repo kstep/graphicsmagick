@@ -501,23 +501,11 @@
 /* Number of bits in a file offset, on hosts where this is settable. */
 #undef _FILE_OFFSET_BITS
 
-/* Code may make use of ISO C '99 features */
-#undef _ISOC99_SOURCE
-
 /* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
 #undef _LARGEFILE_SOURCE
 
 /* Define for large files, on AIX-style hosts. */
 #undef _LARGE_FILES
-
-/* Required POSIX interface level (199506L) */
-#undef _POSIX_C_SOURCE
-
-/* Required X Open interface level (500) */
-#undef _XOPEN_SOURCE
-
-/* Enable all API extensions (for Solaris) */
-#undef __EXTENSIONS__
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
