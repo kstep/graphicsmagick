@@ -1955,8 +1955,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
     {
       do
       {
-        x_distance=(((2*(long) radius+1)*rand())/RAND_MAX)-quantum;
-        y_distance=(((2*(long) radius+1)*rand())/RAND_MAX)-quantum;
+        x_distance=(((2*(double) radius+1)*rand())/RAND_MAX)-quantum;
+        y_distance=(((2*(double) radius+1)*rand())/RAND_MAX)-quantum;
       } while (((x+x_distance) < 0) || ((y+y_distance) < 0) ||
                ((x+x_distance) >= (long) image->columns) ||
                ((y+y_distance) >= (long) image->rows));
