@@ -241,14 +241,15 @@ extern MagickExport void
   DestroyTypeInfo(void),
   GetDrawInfo(const ImageInfo *,DrawInfo *),
   TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
-           const double,const unsigned int,const unsigned int),
+    const double,const unsigned int,const unsigned int),
   TraceBezier(PrimitiveInfo *,const unsigned long),
   TraceCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
   TraceEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
   TraceLine(PrimitiveInfo *,const PointInfo,const PointInfo),
   TracePoint(PrimitiveInfo *,const PointInfo),
   TraceRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
-  TraceRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,PointInfo);
+  TraceRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,
+    PointInfo);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
