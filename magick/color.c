@@ -1491,12 +1491,13 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
             } while (isxdigit((int) *name));
           }
       n<<=2;
-      color->red=(Quantum) (((double) MaxRGB*pixel.red)/((1 << n)-1));
-      color->green=(Quantum) (((double) MaxRGB*pixel.green)/((1 << n)-1));
-      color->blue=(Quantum) (((double) MaxRGB*pixel.blue)/((1 << n)-1));
+      color->red=(Quantum) (((double) MaxRGB*pixel.red)/((1 << n)-1)+0.5);
+      color->green=(Quantum) (((double) MaxRGB*pixel.green)/((1 << n)-1)+0.5);
+      color->blue=(Quantum) (((double) MaxRGB*pixel.blue)/((1 << n)-1)+0.5);
       color->opacity=OpaqueOpacity;
       if (pixel.opacity >= 0)
-        color->opacity=(Quantum) (((double) MaxRGB*pixel.opacity)/((1 << n)-1));
+        color->opacity=(Quantum)
+          (((double) MaxRGB*pixel.opacity)/((1 << n)-1)+0.5);
       return(True);
     }
   if (LocaleNCompare(name,"rgb(",4) == 0)
