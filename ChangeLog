@@ -1,5 +1,8 @@
 2003-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/tiff.c (ReadTIFFImage): Add support for reading
+	12-bit grayscale TIFFs. Fix reading 16-bit grayscale TIFFs
+	when QuantumDepth=8.
 	* VisualMagick/installer/gm-dynamic-full-8.iss,
 	VisualMagick/installer/gm-dynamic-full-16.iss: Many C header
 	files were not being included in the distribution.  Oops!

@@ -598,6 +598,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
          (photometric == PHOTOMETRIC_PALETTE)))
       {
         image->colors=1 << bits_per_sample;
+        /* Constrain image colormap to MaxColormapSize */
+        image->colors=Min(MaxColormapSize,image->colors);
         if (!AllocateImageColormap(image,image->colors))
           {
             TIFFClose(tiff);
@@ -667,14 +669,58 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         unsigned long
           packet_size;
 
+        QuantumType
+          push_method;
+
         /*
           Convert TIFF image to PseudoClass MIFF image.
         */
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Using PseudoClass read method with %u bits per sample",
-               bits_per_sample);
-        packet_size=bits_per_sample > 8 ? 2 : 1;
+          if (image->matte)
+            push_method=GrayAlphaQuantum;
+          else
+            if (photometric != PHOTOMETRIC_PALETTE)
+              push_method=GrayQuantum;
+            else
+              push_method=IndexQuantum;
+
+          /* Constrain image depth to QuantumDepth */
+          image->depth=Min(QuantumDepth,image->depth);
+
+          if (logging)
+            {
+              const char
+                *push_method_str="Unknown";
+
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "Using PseudoClass read method with %u bits per sample",
+                  bits_per_sample);
+
+              switch (push_method)
+                {
+                case GrayAlphaQuantum:
+                  {
+                    push_method_str="GrayAlphaQuantum";
+                    break;
+                  }
+                case GrayQuantum:
+                  {
+                    push_method_str="GrayQuantum";
+                    break;
+                  }
+                case IndexQuantum:
+                  {
+                    push_method_str="IndexQuantum";
+                    break;
+                  }
+                default:
+                  {
+                  }
+                }
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                 "Pushing pixels using %s method",push_method_str);
+            }
+
+        packet_size=image->depth > 8 ? 2 : 1;
         if (image->matte)
           packet_size*=2;
         quantum_scanline=(unsigned char *) AcquireMemory(packet_size*width);
@@ -841,44 +887,51 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             }
             case 12:
             {
-              unsigned long
+              unsigned int
                 quantum;
 
               for (x=0; x < (long) (width-1); x+=2)
               {
                 quantum=((*(p+1) >> 4) & 0xf) | (*p);
+#if QuantumDepth < 16
+                *r++=(quantum/16);
+#else
                 *r++=quantum >> 8;
                 *r++=quantum;
+#endif
                 quantum=((*(p+1) & 0xf) << 8) | (*(p+2));
+#if QuantumDepth < 16
+                *r++=(quantum/16);
+#else
                 *r++=quantum >> 8;
                 *r++=quantum;
+#endif
                 p+=3;
               }
               if ((width % 2) != 0)
                 {
                   quantum=((*(p+1) >> 4) & 0xf) | (*p);
+#if QuantumDepth < 16
+                  *r++=(quantum/16);
+#else
                   *r++=quantum >> 8;
                   *r++=quantum;
+#endif
                 }
               break;
             }
             case 16:
             {
-              if (image->depth <= 8)
+              for (x=(long) image->columns; x > 0; x--)
                 {
-                  for (x=0; x < (long) width; x++)
-                  {
-                    *r=(*p++) << 8;
-                    *r|=(*p++);
-                    r++;
-                  }
-                  break;
+#if QuantumDepth < 16
+                  *r++=(((unsigned int)(*(p) << 8) | (*(p+1)))/257);
+                  p+=2;
+#else
+                  *r++=(*p++);
+                  *r++=(*p++);
+#endif
                 }
-              for (x=0; x < (long) image->columns; x++)
-              {
-                *r++=(*p++);
-                *r++=(*p++);
-              }
               break;
             }
             default:
@@ -887,13 +940,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           /*
             Transfer image scanline.
           */
-          if (image->matte)
-            (void) PushImagePixels(image,GrayAlphaQuantum,quantum_scanline);
-          else
-            if (photometric != PHOTOMETRIC_PALETTE)
-              (void) PushImagePixels(image,GrayQuantum,quantum_scanline);
-            else
-              (void) PushImagePixels(image,IndexQuantum,quantum_scanline);
+          (void) PushImagePixels(image,push_method,quantum_scanline);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
