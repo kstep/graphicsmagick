@@ -1437,8 +1437,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   */
   size_rectangle.top=0;
   size_rectangle.left=0;
-  size_rectangle.right=image->rows;
-  size_rectangle.bottom=image->columns;
+  size_rectangle.bottom=image->rows;
+  size_rectangle.right=image->columns;
   frame_rectangle=size_rectangle;
   crop_rectangle=size_rectangle;
   source_rectangle=size_rectangle;
@@ -1447,8 +1447,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   row_bytes=image->columns | 0x8000;
   bounds.top=0;
   bounds.left=0;
-  bounds.right=image->rows;
-  bounds.bottom=image->columns;
+  bounds.bottom=image->rows;
+  bounds.right=image->columns;
   pixmap.version=0;
   pixmap.pack_type=0;
   pixmap.pack_size=0;
