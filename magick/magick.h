@@ -58,7 +58,7 @@ extern "C" {
 #  include "api.h"
 #endif
 
-#if defined(HAVE_MMAP)
+#if defined(HAVE_MMAP) && !defined(_VISUALC_)
 #  include <sys/mman.h>
 #endif
 #if defined(HasPTHREADS)
