@@ -1294,16 +1294,15 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (bounds.y2 >= image->rows)
       bounds.y2=image->rows-1.0;
     alpha=1.0/MaxRGB;
-    target.y=bounds.y1;
+    target.y=ceil(bounds.y1-0.5);
     for (y=0; y <= (int) (bounds.y2-bounds.y1+0.5); y++)
     {
       /*
         Fill the primitive on the image.
       */
-      target.x=bounds.x1;
+      target.x=ceil(bounds.x1-0.5);
       n=(int) (bounds.x2-bounds.x1+0.5);
-      q=GetImagePixels(image,(int) ceil(target.x-0.5),(int) ceil(target.y-0.5),
-        n+1,1);
+      q=GetImagePixels(image,(int) target.x,(int) target.y,n+1,1);
       if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x <= n; x++)
@@ -1383,13 +1382,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         }
         q++;
-        target.x+=1.0;
+        target.x++;
       }
       if (!SyncImagePixels(image))
         break;
       if (QuantumTick(y,image->rows))
         MagickMonitor(DrawImageText,y,image->rows);
-      target.y+=1.0;
+      target.y++;
     }
   }
   /*
@@ -1820,14 +1819,12 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         } while (IsGeometry(p));
         break;
       }
+      case 'M':
       case 'm':
       {
         primitive_info->coordinates=q-primitive_info;
         number_coordinates+=primitive_info->coordinates;
         primitive_info=q;
-      }
-      case 'M':
-      {
         do
         {
           x=strtod(p,&p);
