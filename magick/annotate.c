@@ -1328,12 +1328,13 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           }
       }
     origin.x+=face->glyph->advance.x;
-    if ((origin.x/64.0) > metrics->width)
-      metrics->width=origin.x/64.0;
+    if (origin.x > metrics->width)
+      metrics->width=origin.x;
     if (last_glyph.id != 0)
       FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
   }
+  metrics->width/=64.0;
   if (render)
     if ((draw_info->stroke.opacity != TransparentOpacity) ||
         (draw_info->stroke_pattern != (Image *) NULL))
