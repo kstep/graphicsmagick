@@ -69,9 +69,9 @@
 %  it.  It allocates the memory necessary for the new Image structure and
 %  returns a pointer to the new image.
 %
-%  The format of the ReadPCLImage routine is:
+%  The format of the ReadPCLImage method is:
 %
-%      image=ReadPCLImage(image_info)
+%      Image *ReadPCLImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -103,9 +103,9 @@ Export Image *ReadPCLImage(const ImageInfo *image_info)
 %  Method WritePCLImage writes an image in the Page Control Language encoded
 %  image format.
 %
-%  The format of the WritePCLImage routine is:
+%  The format of the WritePCLImage method is:
 %
-%      status=WritePCLImage(image_info,image)
+%      unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

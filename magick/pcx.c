@@ -69,9 +69,9 @@
 %  It allocates the memory necessary for the new Image structure and returns
 %  a pointer to the new image.
 %
-%  The format of the ReadPCXImage routine is:
+%  The format of the ReadPCXImage method is:
 %
-%      image=ReadPCXImage(image_info)
+%      Image *ReadPCXImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -571,9 +571,9 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
 %  Method WritePCXImage writes an image in the ZSoft IBM PC Paintbrush file
 %  format.
 %
-%  The format of the WritePCXImage routine is:
+%  The format of the WritePCXImage method is:
 %
-%      status=WritePCXImage(image_info,image)
+%      unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -84,9 +84,9 @@
 %       sin(x1) =  sin(x)cos(3pi/4)-cos(x)sin(3pi/4)
 %               = -1/sqrt(2) * (sin(x) + cos(x))
 %
-%  The format of the BesselOrderOne routine is:
+%  The format of the BesselOrderOne method is:
 %
-%      value=BesselOrderOne(x)
+%      Image *MagnifyImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -262,7 +262,7 @@ static double BesselOrderOne(double x)
 %    number_columns << 1
 %    number_rows << 1
 %
-%  The format of the MagnifyImage routine is:
+%  The format of the MagnifyImage method is:
 %
 %      magnified_image=MagnifyImage(image)
 %
@@ -437,9 +437,9 @@ Export Image *MagnifyImage(Image *image)
 %  in the top, bottom, left, and right pairs of rows and columns are omitted
 %  from the scan.
 %
-%  The format of the MinifyImage routine is:
+%  The format of the MinifyImage method is:
 %
-%      minified_image=MinifyImage(image)
+%      Image *MinifyImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -682,9 +682,10 @@ Export Image *MinifyImage(Image *image)
 %  existing one using pixel sampling.  It allocates the memory necessary
 %  for the new Image structure and returns a pointer to the new image.
 %
-%  The format of the SampleImage routine is:
+%  The format of the SampleImage method is:
 %
-%      sampled_image=SampleImage(image,columns,rows)
+%      Image *SampleImage(const Image *image,const unsigned int columns,
+%        const unsigned int rows)
 %
 %  A description of each parameter follows:
 %
@@ -877,9 +878,10 @@ Export Image *SampleImage(const Image *image,const unsigned int columns,
 %  The scaling algorithm was suggested by rjohnson@shell.com and is adapted
 %  from pnmscale(1) of PBMPLUS by Jef Poskanzer.
 %
-%  The format of the ScaleImage routine is:
+%  The format of the ScaleImage method is:
 %
-%      scaled_image=ScaleImage(image,columns,rows)
+%      Image *ScaleImage(const Image *image,const unsigned int columns,
+%        const unsigned int rows)
 %
 %  A description of each parameter follows:
 %
@@ -1322,9 +1324,10 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
 %  The filter member of the Image structure specifies which image filter to
 %  use. Blur specifies the blur factor where > 1 is blurry, < 1 is sharp.
 %
-%  The format of the ZoomImage routine is:
+%  The format of the ZoomImage method is:
 %
-%      zoomed_image=ZoomImage(image,columns,rows)
+%      Image *ZoomImage(Image *image,const unsigned int columns,
+%        const unsigned int rows)
 %
 %  A description of each parameter follows:
 %

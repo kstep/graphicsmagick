@@ -71,9 +71,10 @@
 %  Method XMagickCommand makes a transform to the image or Image window as
 %  specified by a user menu button or keyboard command.
 %
-%  The format of the XMagickCommand routine is:
+%  The format of the XMagickCommand method is:
 %
-%    XMagickCommand(display,resource_info,windows,image,command_type,state);
+%      void XAnimateBackgroundImage(Display *display,
+%        XResourceInfo *resource_info, Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -390,7 +391,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %  Method XAnimateBackgroundImage animates an image sequence in the
 %  background of a window.
 %
-%  The format of the XAnimateBackgroundImage routine is:
+%  The format of the XAnimateBackgroundImage method is:
 %
 %      XAnimateBackgroundImage(display,resource_info,image)
 %
@@ -825,9 +826,10 @@ Export void XAnimateBackgroundImage(Display *display,
 %
 %  Method XAnimateImages displays an image via X11.
 %
-%  The format of the XAnimateImages routine is:
+%  The format of the XAnimateImages method is:
 %
-%      XAnimateImages(display,resource_info,argv,argc,image)
+%      Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
+%        char **argv,const int argc,Image *image)
 %
 %  A description of each parameter follows:
 %

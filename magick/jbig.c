@@ -71,9 +71,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadJBIGImage routine is:
+%  The format of the ReadJBIGImage method is:
 %
-%      image=ReadJBIGImage(image_info)
+%      Image *ReadJBIGImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -290,9 +290,9 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
 %
 %  Method WriteJBIGImage writes an image in the JBIG encoded image format.
 %
-%  The format of the WriteJBIGImage routine is:
+%  The format of the WriteJBIGImage method is:
 %
-%      status=WriteJBIGImage(image_info,image)
+%      unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

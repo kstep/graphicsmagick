@@ -68,9 +68,9 @@
 %  Method PackbitsDecodeImage uncompresses an image via Macintosh Packbits
 %  encoding specific to the Adobe Photoshop image format.
 %
-%  The format of the PackbitsDecodeImage routine is:
+%  The format of the PackbitsDecodeImage method is:
 %
-%      status=PackbitsDecodeImage(image,channel)
+%      Image *ReadPSDImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -215,7 +215,7 @@ static unsigned int PackbitsDecodeImage(Image *image,const int channel)
 %  It allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadPSDImage routine is:
+%  The format of the ReadPSDImage method is:
 %
 %      image=ReadPSDImage(image_info)
 %
@@ -716,9 +716,9 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
 %  Method WritePSDImage writes an image in the Adobe Photoshop encoded image
 %  format.
 %
-%  The format of the WritePSDImage routine is:
+%  The format of the WritePSDImage method is:
 %
-%      status=WritePSDImage(image_info,image)
+%      unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -69,9 +69,9 @@
 %  one with noise added.  It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  The format of the AddNoiseImage routine is:
+%  The format of the AddNoiseImage method is:
 %
-%      noisy_image=AddNoiseImage(image,noise_type)
+%      Image *AddNoiseImage(const Image *image,const NoiseType noise_type)
 %
 %  A description of each parameter follows:
 %
@@ -170,9 +170,9 @@ Export Image *AddNoiseImage(const Image *image,const NoiseType noise_type)
 %  in the top, bottom, left, and right pairs of rows and columns are omitted
 %  from the scan.
 %
-%  The format of the BlurImage routine is:
+%  The format of the BlurImage method is:
 %
-%      blurred_image=BlurImage(image,factor)
+%      Image *BlurImage(const Image *image,const double factor)
 %
 %  A description of each parameter follows:
 %
@@ -377,9 +377,10 @@ Export Image *BlurImage(const Image *image,const double factor)
 %  Method ColorizeImage colorizes an image with the pen color.  The amount
 %  of the coloring is controlled with the opacity levels.
 %
-%  The format of the ColorizeImage routine is:
+%  The format of the ColorizeImage method is:
 %
-%      ColorizeImage(image,opaque_color,pen_color)
+%      void ColorizeImage(Image *image,const char *opacity,
+%        const char *pen_color)
 %
 %  A description of each parameter follows:
 %
@@ -502,9 +503,9 @@ Export void ColorizeImage(Image *image,const char *opacity,
 %  negative hull function.  DespeckleImage allocates the memory necessary for
 %  the new Image structure and returns a pointer to the new image.
 %
-%  The format of the DespeckleImage routine is:
+%  The format of the DespeckleImage method is:
 %
-%      despeckled_image=DespeckleImage(image)
+%      Image *DespeckleImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -703,9 +704,9 @@ Export Image *DespeckleImage(Image *image)
 %  in the top, bottom, left, and right pairs of rows and columns are omitted
 %  from the scan.
 %
-%  The format of the EdgeImage routine is:
+%  The format of the EdgeImage method is:
 %
-%      edged_image=EdgeImage(image,factor)
+%      Image *EdgeImage(const Image *image,const double factor)
 %
 %  A description of each parameter follows:
 %
@@ -931,9 +932,9 @@ Export Image *EdgeImage(const Image *image,const double factor)
 %  in the top, bottom, left, and right pairs of rows and columns are omitted
 %  from the scan.
 %
-%  The format of the EmbossImage routine is:
+%  The format of the EmbossImage method is:
 %
-%      embossed_image=EmbossImage(image)
+%      Image *EmbossImage(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1153,9 +1154,9 @@ Export Image *EmbossImage(const Image *image)
 %  in the top, bottom, left, and right pairs of rows and columns are omitted
 %  from the scan.
 %
-%  The format of the EnhanceImage routine is:
+%  The format of the EnhanceImage method is:
 %
-%      enhanced_image=EnhanceImage(image)
+%      Image *EnhanceImage(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1419,9 +1420,9 @@ Export Image *EnhanceImage(const Image *image)
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ImplodeImage routine is:
+%  The format of the ImplodeImage method is:
 %
-%      imploded_image=ImplodeImage(image,factor)
+%      Image *ImplodeImage(Image *image,const double factor)
 %
 %  A description of each parameter follows:
 %
@@ -1562,9 +1563,9 @@ Export Image *ImplodeImage(Image *image,const double factor)
 %  are linearly interpolated to give the appearance of a meta-morphosis from
 %  one image to the next.
 %
-%  The format of the MorphImage routine is:
+%  The format of the MorphImage method is:
 %
-%      morphed_image=MorphImages(images,number_frames)
+%      Image *MorphImages(Image *images,const unsigned int number_frames)
 %
 %  A description of each parameter follows:
 %
@@ -1724,9 +1725,9 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
 %  one with each pixel component replaced with the color of greatest frequency
 %  in a circular neighborhood.
 %
-%  The format of the OilPaintImage routine is:
+%  The format of the OilPaintImage method is:
 %
-%      painted_image=OilPaintImage(image,radius)
+%      Image *OilPaintImage(Image *image,const unsigned int radius)
 %
 %  A description of each parameter follows:
 %
@@ -1882,11 +1883,12 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
 %
 %  Method PlasmaImage initializes an image with plasma fractal values.  The
 %  image must be initialized with a base color and the random number generator
-%  seeded before this routine is called.
+%  seeded before this method is called.
 %
-%  The format of the PlasmaImage routine is:
+%  The format of the PlasmaImage method is:
 %
-%      status=PlasmaImage(image,segment_info,attenuate,depth)
+%      unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
+%        int attenuate,int depth)
 %
 %  A description of each parameter follows:
 %
@@ -2072,9 +2074,9 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
 %  if and only if this pixel is a maximum or minimum within the 3 x 3
 %  window.
 %
-%  The format of the ReduceNoiseImage routine is:
+%  The format of the ReduceNoiseImage method is:
 %
-%      noisy_image=ReduceNoiseImage(image)
+%      Image *ReduceNoiseImage(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2304,9 +2306,10 @@ Export Image *ReduceNoiseImage(const Image *image)
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ShadeImage routine is:
+%  The format of the ShadeImage method is:
 %
-%      shaded_image=ShadeImage(image,color_shading,azimuth,elevation)
+%      Image *ShadeImage(Image *image,const unsigned int color_shading,
+%        double azimuth,double elevation)
 %
 %  A description of each parameter follows:
 %
@@ -2505,9 +2508,9 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
 %  in the top, bottom, left, and right pairs of rows and columns are omitted
 %  from the scan.
 %
-%  The format of the SharpenImage routine is:
+%  The format of the SharpenImage method is:
 %
-%      sharpened_image=SharpenImage(image,factor)
+%      Image *SharpenImage(const Image *image,const double factor)
 %
 %  A description of each parameter follows:
 %
@@ -2742,9 +2745,9 @@ Export Image *SharpenImage(const Image *image,const double factor)
 %  Method SolarizeImage produces a 'solarization' effect seen when exposing
 %  a photographic film to light during the development process.
 %
-%  The format of the SolarizeImage routine is:
+%  The format of the SolarizeImage method is:
 %
-%      SolarizeImage(image,factor)
+%      void SolarizeImage(Image *image,const double factor)
 %
 %  A description of each parameter follows:
 %
@@ -2825,9 +2828,9 @@ Export void SolarizeImage(Image *image,const double factor)
 %  necessary for the new Image structure and returns a pointer to the new
 %  image.
 %
-%  The format of the SpreadImage routine is:
+%  The format of the SpreadImage method is:
 %
-%      spread_image=SpreadImage(image,amount)
+%      Image *SpreadImage(Image *image,const unsigned int amount)
 %
 %  A description of each parameter follows:
 %
@@ -2918,9 +2921,9 @@ Export Image *SpreadImage(Image *image,const unsigned int amount)
 %
 %  Method SteganoImage hides a digital watermark within the image.
 %
-%  The format of the SteganoImage routine is:
+%  The format of the SteganoImage method is:
 %
-%      stegano_image=SteganoImage(image,watermark)
+%      Image *SteganoImage(Image *image,Image *watermark)
 %
 %  A description of each parameter follows:
 %
@@ -3059,9 +3062,9 @@ Export Image *SteganoImage(Image *image,Image *watermark)
 %  blue channel of the stereo image.  View the composite image with red-blue
 %  glasses to create a stereo effect.
 %
-%  The format of the StereoImage routine is:
+%  The format of the StereoImage method is:
 %
-%      stereo_image=StereoImage(left_image,right_image)
+%      Image *StereoImage(Image *left_image,const Image *right_image)
 %
 %  A description of each parameter follows:
 %
@@ -3169,9 +3172,9 @@ Export Image *StereoImage(Image *left_image,const Image *right_image)
 %  memory necessary for the new Image structure and returns a pointer to the
 %  new image.
 %
-%  The format of the SwirlImage routine is:
+%  The format of the SwirlImage method is:
 %
-%      swirled_image=SwirlImage(image,degrees)
+%      Image *SwirlImage(Image *image,double degrees)
 %
 %  A description of each parameter follows:
 %
@@ -3306,9 +3309,9 @@ Export Image *SwirlImage(Image *image,double degrees)
 %
 %  Method ThresholdImage thresholds the reference image.
 %
-%  The format of the ThresholdImage routine is:
+%  The format of the ThresholdImage method is:
 %
-%      ThresholdImage(image,threshold)
+%      void ThresholdImage(Image *image,const double threshold)
 %
 %  A description of each parameter follows:
 %
@@ -3380,9 +3383,10 @@ Export void ThresholdImage(Image *image,const double threshold)
 %  memory necessary for the new Image structure and returns a pointer to
 %  the new image.
 %
-%  The format of the WaveImage routine is:
+%  The format of the WaveImage method is:
 %
-%      waved_image=WaveImage(image,amplitude,frequency)
+%      Image *WaveImage(Image *image,const double amplitude,
+%        const double wavelength)
 %
 %  A description of each parameter follows:
 %

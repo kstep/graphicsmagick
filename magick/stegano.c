@@ -69,9 +69,9 @@
 %  image type.  It allocates the memory necessary for the new Image structure
 %  and returns a pointer to the new image.
 %
-%  The format of the ReadSTEGANOImage routine is:
+%  The format of the ReadSTEGANOImage method is:
 %
-%      image=ReadSTEGANOImage(image_info)
+%      Image *ReadSTEGANOImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

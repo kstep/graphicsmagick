@@ -69,9 +69,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadXBMImage routine is:
+%  The format of the ReadXBMImage method is:
 %
-%      image=ReadXBMImage(image_info)
+%      Image *ReadXBMImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -342,9 +342,9 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
 %
 %  Procedure WriteXBMImage writes an image to a file in the X bitmap format.
 %
-%  The format of the WriteXBMImage routine is:
+%  The format of the WriteXBMImage method is:
 %
-%      status=WriteXBMImage(image_info,image)
+%      unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -71,9 +71,9 @@
 %
 %  Contributed by os@scee.sony.co.uk.
 %
-%  The format of the ReadTIMImage routine is:
+%  The format of the ReadTIMImage method is:
 %
-%      image=ReadTIMImage(image_info)
+%      Image *ReadTIMImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

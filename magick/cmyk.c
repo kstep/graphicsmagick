@@ -69,9 +69,9 @@
 %  black bytes and returns it.  It allocates the memory necessary for the new
 %  Image structure and returns a pointer to the new image.
 %
-%  The format of the ReadCMYKImage routine is:
+%  The format of the ReadCMYKImage method is:
 %
-%      image=ReadCMYKImage(image_info)
+%      Image *ReadCMYKImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -446,9 +446,9 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
 %  Method WriteCMYKImage writes an image to a file in cyan, magenta, yellow,
 %  and black rasterfile format.
 %
-%  The format of the WriteCMYKImage routine is:
+%  The format of the WriteCMYKImage method is:
 %
-%      status=WriteCMYKImage(image_info,image)
+%      unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

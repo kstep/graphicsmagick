@@ -32,8 +32,8 @@ animate - Methods to Interactively Animate an Image Sequence
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>XAnimateBackgroundImage</STRONG>(display,resource_info,image)
-
+<PRE> B&lt;XAnimateBackgroundImage&gt;(display,resource_info,image)
+</PRE>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -45,22 +45,25 @@ Method XAnimateBackgroundImage animates an image sequence in the background
 of a window.
 
 <P>
-The format of the XAnimateBackgroundImage routine is:
+The format of the XAnimateBackgroundImage method is:
 
 <P>
 <PRE>        XAnimateBackgroundImage(display,resource_info,image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">display:</A></STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -71,25 +74,30 @@ Specifies a pointer to a Image structure; returned from ReadImage.
 <HR>
 <H2><A NAME="XAnimateImage">XAnimateImage</A></H2>
 <P>
-Method XAnimateImages displays an image via X11.
+Method XAnimateImages displays an image via 
+<FONT SIZE=-1>X11.</FONT>
 
 <P>
-The format of the XAnimateImages routine is:
+The format of the XAnimateImages method is:
 
 <P>
-<PRE>    XAnimateImages(display,resource_info,argv,argc,image)
+<PRE>    Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
+      char **argv,const int argc,Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 <DT><STRONG>argv:</STRONG><DD>
 <P>

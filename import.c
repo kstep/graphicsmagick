@@ -126,9 +126,9 @@
 %
 %  Procedure Usage displays the program usage;
 %
-%  The format of the Usage routine is:
+%  The format of the Usage method is:
 %
-%      Usage(client_name)
+%      void Usage(const char *client_name)
 %
 %    o client_name: a character string representing the name of the client
 %      program.

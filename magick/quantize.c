@@ -330,9 +330,9 @@ static void
 %  pixel's value in the pixel array becomes the index of this node's mean
 %  color in the color map.
 %
-%  The format of the Assignment routine is:
+%  The format of the Assignment method is:
 %
-%      Assignment(cube_info,quantize_info,image)
+%      QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
 %
 %  A description of each parameter follows.
 %
@@ -504,7 +504,7 @@ static unsigned int Assignment(CubeInfo *cube_info,
 %    within a node and the nodes' center.  This represents the quantization
 %    error for a node.
 %
-%  The format of the Classification routine is:
+%  The format of the Classification method is:
 %
 %      Classification(cube_info,image)
 %
@@ -637,7 +637,7 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image)
 %  Method CloneQuantizeInfo makes a duplicate of the given quantize info, or if
 %  quantize info is NULL, a new one.
 %
-%  The format of the CloneQuantizeInfo routine is:
+%  The format of the CloneQuantizeInfo method is:
 %
 %      cloned_info=CloneQuantizeInfo(quantize_info)
 %
@@ -682,9 +682,9 @@ Export QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
 %  Method ClosestColor traverses the color cube tree at a particular node
 %  and determines which colormap entry best represents the input color.
 %
-%  The format of the ClosestColor routine is:
+%  The format of the ClosestColor method is:
 %
-%      ClosestColor(cube_info,node_info)
+%      void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %  A description of each parameter follows.
 %
@@ -750,7 +750,7 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
 %  colormap entry.  A colormap entry is any node in the color cube tree where
 %  the number of unique colors is not zero.
 %
-%  The format of the DefineColormap routine is:
+%  The format of the DefineColormap method is:
 %
 %      DefineColormap(cube_info,node_info)
 %
@@ -807,7 +807,7 @@ static void DefineColormap(CubeInfo *cube_info,NodeInfo *node_info)
 %
 %  Method DestroyCubeInfo deallocates memory associated with an image.
 %
-%  The format of the DestroyCubeInfo routine is:
+%  The format of the DestroyCubeInfo method is:
 %
 %      DestroyCubeInfo(cube_info))
 %
@@ -857,7 +857,7 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
 %  Method DestroyQuantizeInfo deallocates memory associated with an
 %  QuantizeInfo structure.
 %
-%  The format of the DestroyQuantizeInfo routine is:
+%  The format of the DestroyQuantizeInfo method is:
 %
 %      DestroyQuantizeInfo(quantize_info)
 %
@@ -889,9 +889,9 @@ Export void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 %  corresponding color reduced algorithm to neighboring pixels along a Hilbert
 %  curve.
 %
-%  The format of the Dither routine is:
+%  The format of the Dither method is:
 %
-%      Dither(cube_info,image,direction)
+%      void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %  A description of each parameter follows.
 %
@@ -1030,7 +1030,7 @@ static void Dither(CubeInfo *cube_info,Image *image,
 %  This algorithm is strongly based on a similar algorithm by Thiadmer
 %  Riemersma.
 %
-%  The format of the DitherImage routine is:
+%  The format of the DitherImage method is:
 %
 %      DitherImage(cube_info,image)
 %
@@ -1091,7 +1091,7 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
 %
 %  Method GetCubeInfo initialize the Cube data structure.
 %
-%  The format of the GetCubeInfo routine is:
+%  The format of the GetCubeInfo method is:
 %
 %      status=GetCubeInfo(cube_info,dither,depth)
 %
@@ -1220,13 +1220,13 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,unsigned int dither,
 %  Method GetNodeInfo allocates memory for a new node in the color cube
 %  tree and presets all fields to zero.
 %
-%  The format of the GetNodeInfo routine is:
+%  The format of the GetNodeInfo method is:
 %
 %      node=GetNodeInfo(cube_info,node,id,level)
 %
 %  A description of each parameter follows.
 %
-%    o node: The GetNodeInfo routine returns this integer address.
+%    o node: The GetNodeInfo method returns this integer address.
 %
 %    o id: Specifies the child number of the node.
 %
@@ -1289,7 +1289,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
 %
 %  Method GetQuantizeInfo initializes the QuantizeInfo structure.
 %
-%  The format of the GetQuantizeInfo routine is:
+%  The format of the GetQuantizeInfo method is:
 %
 %      GetQuantizeInfo(quantize_info)
 %
@@ -1324,9 +1324,10 @@ Export void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %  the coherence between neighboring pixels.  Here, the quantization error is
 %  distributed along the Hilbert curve.
 %
-%  The format of the HilbertCurve routine is:
+%  The format of the HilbertCurve method is:
 %
-%      HilbertCurve(cube_info,image,direction)
+%      unsigned int MapImages(Image *images,const Image *map_image,
+%        const unsigned int dither)
 %
 %  A description of each parameter follows.
 %
@@ -1445,7 +1446,7 @@ static void HilbertCurve(CubeInfo *cube_info,Image *image,const int level,
 %  MapImage replaces the colors of an image with the closest color from
 %  a reference image.
 %
-%  The format of the MapImage routine is:
+%  The format of the MapImage method is:
 %
 %      status=MapImage(image,map_image,dither)
 %
@@ -1512,7 +1513,7 @@ unsigned int MapImage(Image *image,const Image *map_image,
 %  MapImages replaces the colors of a sequence of images with the closest
 %  color from a reference image.
 %
-%  The format of the MapImage routine is:
+%  The format of the MapImage method is:
 %
 %      status=MapImages(images,map_image,dither)
 %
@@ -1606,9 +1607,10 @@ Export unsigned int MapImages(Image *images,const Image *map_image,
 %  reducing color images to monochrome using positional information to retain
 %  as much information as possible.
 %
-%  The format of the OrderedDitherImage routine is:
+%  The format of the OrderedDitherImage method is:
 %
-%      OrderedDitherImage(image)
+%      unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
+%        Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -1712,7 +1714,7 @@ static unsigned int OrderedDitherImage(Image *image)
 %  Method PruneChild deletes the given node and merges its statistics into
 %  its parent.
 %
-%  The format of the PruneSubtree routine is:
+%  The format of the PruneSubtree method is:
 %
 %      PruneChild(cube_info,node_info)
 %
@@ -1765,7 +1767,7 @@ static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
 %  Method PruneLevel deletes all nodes at the bottom level of the color
 %  tree merging their color statistics into their parent node.
 %
-%  The format of the PruneLevel routine is:
+%  The format of the PruneLevel method is:
 %
 %      PruneLevel(cube_info,node_info)
 %
@@ -1824,7 +1826,7 @@ static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
 %      independent of the range of red, green, and blue values in your image.
 %
 %
-%  The format of the QuantizationError routine is:
+%  The format of the QuantizationError method is:
 %
 %      status=QuantizationError(image)
 %
@@ -1924,7 +1926,7 @@ unsigned int QuantizationError(Image *image)
 %  algorithm is to minimize the difference between the input and output image
 %  while minimizing the processing time.
 %
-%  The format of the QuantizeImage routine is:
+%  The format of the QuantizeImage method is:
 %
 %      status=QuantizeImage(quantize_info,image)
 %
@@ -2019,9 +2021,10 @@ Export unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
 %  algorithm is to minimize the difference between the input and output images
 %  while minimizing the processing time.
 %
-%  The format of the QuantizeImages routine is:
+%  The format of the QuantizeImages method is:
 %
-%      status=QuantizeImages(quantize_info,images)
+%      unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
+%        Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -2156,9 +2159,10 @@ Export unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
 %  Method Reduce traverses the color cube tree and prunes any node whose
 %  quantization error falls below a particular threshold.
 %
-%  The format of the Reduce routine is:
+%  The format of the Reduce method is:
 %
-%      Reduce(cube_info,node_info)
+%      unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
+%        Image *images)
 %
 %  A description of each parameter follows.
 %
@@ -2237,7 +2241,7 @@ static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
 %  n2  pixels whose colors should be defined by nodes at a lower level in
 %  the tree.
 %
-%  The format of the Reduction routine is:
+%  The format of the Reduction method is:
 %
 %      Reduction(cube_info,number_colors)
 %

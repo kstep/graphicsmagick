@@ -307,9 +307,9 @@ const PICTCode
 %  Method DecodeImage decompresses an image via Macintosh pack bits
 %  decoding for Macintosh PICT images.
 %
-%  The format of the DecodeImage routine is:
+%  The format of the DecodeImage method is:
 %
-%      status=DecodeImage(image,bytes_per_line,bits_per_pixel)
+%      Image *ReadPICTImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -522,7 +522,7 @@ static unsigned char* DecodeImage(Image *image,int bytes_per_line,
 %  Method EncodeImage compresses an image via Macintosh pack bits encoding
 %  for Macintosh PICT images.
 %
-%  The format of the EncodeImage routine is:
+%  The format of the EncodeImage method is:
 %
 %      status=EncodeImage(image,scanline,bytes_per_line,pixels)
 %
@@ -684,7 +684,7 @@ static unsigned int EncodeImage(Image *image,const unsigned char *scanline,
 %  and returns it.  It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  The format of the ReadPICTImage routine is:
+%  The format of the ReadPICTImage method is:
 %
 %      image=ReadPICTImage(image_info)
 %
@@ -1264,9 +1264,9 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
 %  Method WritePICTImage writes an image to a file in the Apple Macintosh
 %  QuickDraw/PICT image format.
 %
-%  The format of the WritePICTImage routine is:
+%  The format of the WritePICTImage method is:
 %
-%      status=WritePICTImage(image_info,image)
+%      unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

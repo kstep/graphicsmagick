@@ -32,10 +32,7 @@ monitor - ImageMagick Progress Monitor Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>ProgressMonitor</STRONG>(text,quantum,span)
-
-<P>
-previous_handler=<STRONG>SetMonitorHandler</STRONG>(handler)
+MonitorHandler <STRONG>SetMonitorHandler</STRONG>(MonitorHandlerhandler)
 
 <P>
 <HR>
@@ -44,17 +41,19 @@ previous_handler=<STRONG>SetMonitorHandler</STRONG>(handler)
 <HR>
 <H2><A NAME="ProgressMonitor">ProgressMonitor</A></H2>
 <P>
-Method ProgressMonitor calls the monitor handler routines with a text
-string that describes the task and a measure of completion.
+Method ProgressMonitor calls the monitor handler methods with a text string
+that describes the task and a measure of completion.
 
 <P>
-The format of the ProgressMonitor routine is:
+The format of the ProgressMonitor method is:
 
 <P>
-<PRE>        ProgressMonitor(text,quantum,span)
+<PRE>    void ProgressMonitor(const char *text,const unsigned int quantum,
+      const unsigned int span)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">quantum:</A></STRONG><DD>
@@ -71,22 +70,23 @@ Specifies the span relative to completing a task.
 <HR>
 <H2><A NAME="SetMonitorHandler">SetMonitorHandler</A></H2>
 <P>
-Method SetMonitorHandler sets the monitor handler to the specified routine
+Method SetMonitorHandler sets the monitor handler to the specified method
 and returns the previous monitor handler.
 
 <P>
-The format of the SetMonitorHandler routine is:
+The format of the SetMonitorHandler method is:
 
 <P>
-<PRE>        previous_handler=SetMonitorHandler(handler)
+<PRE>        MonitorHandler SetMonitorHandler(MonitorHandler handler)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>handler:</STRONG><DD>
 <P>
-Specifies a pointer to a routine to handle monitors.
+Specifies a pointer to a method to handle monitors.
 
 </DL></DL>
 </BODY>

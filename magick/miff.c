@@ -75,9 +75,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadMIFFImage routine is:
+%  The format of the ReadMIFFImage method is:
 %
-%      image=ReadMIFFImage(filename)
+%      Image *ReadMIFFImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -390,7 +390,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
     /*
       Verify that required image information is defined.
     */
-    if ((strcmp(id,"ImageMagick") == 0) || (image->class == UndefinedClass) ||
+    if ((strcmp(id,"ImageMagick") != 0) || (image->class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
       ReaderExit(CorruptImageWarning,"Incorrect image header in file",image);
@@ -668,9 +668,9 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
 %
 %  Method WriteMIFFImage writes an image to a file.
 %
-%  The format of the WriteMIFFImage routine is:
+%  The format of the WriteMIFFImage method is:
 %
-%      status=WriteMIFFImage(image_info,image)
+%      unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %

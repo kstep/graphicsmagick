@@ -69,9 +69,9 @@
 %  the memory necessary for the new Image structure and returns a pointer to
 %  the new image.
 %
-%  The format of the ReadSCTImage routine is:
+%  The format of the ReadSCTImage method is:
 %
-%      image=ReadSCTImage(image_info)
+%      Image *ReadSCTImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

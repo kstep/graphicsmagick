@@ -69,9 +69,9 @@
 %
 %  Procedure ReadXImage reads an image from an X window.
 %
-%  The format of the ReadXImage routine is:
+%  The format of the ReadXImage method is:
 %
-%      image=ReadXImage(image_info)
+%      Image *ReadXImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -109,9 +109,9 @@ Export Image *ReadXImage(const ImageInfo *image_info)
 %
 %  Method WriteXImage writes an image to an X server.
 %
-%  The format of the WriteXImage routine is:
+%  The format of the WriteXImage method is:
 %
-%      status=WriteXImage(image_info,image)
+%      unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

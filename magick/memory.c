@@ -69,9 +69,9 @@
 %  Method AllocateMemory returns a pointer to a block of at least size bytes
 %  suitably aligned for any use.
 %
-%  The format of the AllocateMemory routine is:
+%  The format of the AllocateMemory method is:
 %
-%      memory=AllocateMemory(size)
+%      void *AllocateMemory(const size_t size)
 %
 %  A description of each parameter follows:
 %
@@ -101,9 +101,9 @@ Export void *AllocateMemory(const size_t size)
 %
 %  Method FreeMemory frees memory that has already been allocated.
 %
-%  The format of the FreeMemory routine is:
+%  The format of the FreeMemory method is:
 %
-%      FreeMemory(memory)
+%      void FreeMemory(void *memory)
 %
 %  A description of each parameter follows:
 %
@@ -134,9 +134,9 @@ Export void FreeMemory(void *memory)
 %  pointer to the (possibly moved) block.  The contents will be unchanged up
 %  to the lesser  of the new and old sizes.
 %
-%  The format of the ReallocateMemory routine is:
+%  The format of the ReallocateMemory method is:
 %
-%      memory=ReallocateMemory(memory,size)
+%      void *ReallocateMemory(void *memory,const size_t size)
 %
 %  A description of each parameter follows:
 %

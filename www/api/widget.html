@@ -37,49 +37,14 @@
 <P>
 <H1><A NAME="NAME">NAME</A></H1>
 <P>
-widget - X11 User Interface Methods for ImageMagick
+widget - 
+<FONT SIZE=-1>X11</FONT> User Interface Methods for ImageMagick
 
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>XColorBrowserWidget</STRONG>(display,windows,action,reply)
-
-<P>
-selection_number=<STRONG>XCommandWidget</STRONG>(display,windows,selections,event)
-
-<P>
-status=<STRONG>XConfirmWidget</STRONG>(display,windows,message,qualifier)
-
-<P>
-<STRONG>XDialogWidget</STRONG>(display,windows,action,query,reply)
-
-<P>
-<STRONG>XFileBrowserWidget</STRONG>(display,windows,action,reply)
-
-<P>
-<STRONG>XFontBrowserWidget</STRONG>(display,windows,action,reply)
-
-<P>
-<STRONG>XInfoWidget</STRONG>(display,windows,activity)
-
-<P>
-<STRONG>XListBrowserWidget</STRONG>(display,windows,window_info,list,action,query,reply)
-
-<P>
-selection_number=<STRONG>XMenuWidget</STRONG>(display,windows,title,selections,item)
-
-<P>
-<STRONG>XMonitorWidget</STRONG>(display,windows,task,quantum,span)
-
-<P>
-<STRONG>XNoticeWidget</STRONG>(display,windows,message,qualifier)
-
-<P>
-<STRONG>XPreferencesWidget</STRONG>(display,resource_info,windows)
-
-<P>
-<STRONG>XTextViewWidget</STRONG>(display,resource_info,windows,mono,title,textlist)
+void <STRONG>XInfoWidget</STRONG>(Display*display,XWindows*windows,constchar*activity)
 
 <P>
 <HR>
@@ -93,18 +58,21 @@ query to the user. The user keys a reply and presses the Action or Cancel
 button to exit. The typed text is returned as the reply function parameter.
 
 <P>
-The format of the XColorBrowserWidget routine is:
+The format of the XColorBrowserWidget method is:
 
 <P>
-<PRE>      XColorBrowserWidget(display,windows,action,reply)
+<PRE>    void XColorBrowserWidget(Display *display,XWindows *windows,
+      const char *action,char *reply)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">display:</A></STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -127,13 +95,15 @@ Method XCommandWidget maps a menu and returns the command pointed to by the
 user when the button is released.
 
 <P>
-The format of the XCommandWidget routine is:
+The format of the XCommandWidget method is:
 
 <P>
-<PRE>      selection_number=XCommandWidget(display,windows,selections,event)
+<PRE>    int XCommandWidget(Display *display,XWindows *windows,
+      const char **selections,XEvent *event)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>selection_number:</STRONG><DD>
@@ -142,7 +112,8 @@ Specifies the number of the selection that the user choose.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -155,7 +126,8 @@ menu.
 
 <DT><STRONG>event:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XEvent structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XEvent structure.
 
 </DL></DL>
 <P>
@@ -166,13 +138,15 @@ Method XConfirmWidget displays a Confirm widget with a notice to the user.
 The function returns -1 if Dismiss is pressed, 0 for Cancel, and 1 for Yes.
 
 <P>
-The format of the XConfirmWidget routine is:
+The format of the XConfirmWidget method is:
 
 <P>
-<PRE>      status=XConfirmWidget(display,windows,message,qualifier)
+<PRE>    int XConfirmWidget(Display *display,XWindows *windows,
+      const char *message,const char *qualifier)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -182,7 +156,8 @@ is returned.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -206,18 +181,21 @@ user keys a reply and presses the Ok or Cancel button to exit. The typed
 text is returned as the reply function parameter.
 
 <P>
-The format of the XDialogWidget routine is:
+The format of the XDialogWidget method is:
 
 <P>
-<PRE>      XDialogWidget(display,windows,action,query,reply)
+<PRE>    int XDialogWidget(Display *display,XWindows *windows,const char *action,
+      const char *query,char *reply)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -245,18 +223,21 @@ to the user. The user keys a reply and presses the Action or Cancel button
 to exit. The typed text is returned as the reply function parameter.
 
 <P>
-The format of the XFileBrowserWidget routine is:
+The format of the XFileBrowserWidget method is:
 
 <P>
-<PRE>      XFileBrowserWidget(display,windows,action,reply)
+<PRE>    void XFileBrowserWidget(Display *display,XWindows *windows,
+      const char *action,char *reply)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -280,18 +261,21 @@ to the user. The user keys a reply and presses the Action or Cancel button
 to exit. The typed text is returned as the reply function parameter.
 
 <P>
-The format of the XFontBrowserWidget routine is:
+The format of the XFontBrowserWidget method is:
 
 <P>
-<PRE>      XFontBrowserWidget(display,windows,action,reply)
+<PRE>    void XFontBrowserWidget(Display *display,XWindows *windows,
+      const char *action,char *reply)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -315,18 +299,20 @@ inform the user that what activity is currently being performed (e.g.
 reading an image, rotating an image, etc.).
 
 <P>
-The format of the XInfoWidget routine is:
+The format of the XInfoWidget method is:
 
 <P>
-<PRE>      XInfoWidget(display,windows,activity)
+<PRE>        void XInfoWidget(Display *display,XWindows *windows,const char *activity)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -348,18 +334,22 @@ the user presses the Action or Cancel button to exit. The typed text is
 returned as the reply function parameter.
 
 <P>
-The format of the XListBrowserWidget routine is:
+The format of the XListBrowserWidget method is:
 
 <P>
-<PRE>      XListBrowserWidget(display,windows,window_info,list,action,query,reply)
+<PRE>    void XListBrowserWidget(Display *display,XWindows *windows,
+      XWindowInfo *window_info,char const **list,const char *action,
+      const char *query,char *reply)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -391,13 +381,15 @@ Method XMenuWidget maps a menu and returns the command pointed to by the
 user when the button is released.
 
 <P>
-The format of the XMenuWidget routine is:
+The format of the XMenuWidget method is:
 
 <P>
-<PRE>      selection_number=XMenuWidget(display,windows,title,selections,item)
+<PRE>    int XMenuWidget(Display *display,XWindows *windows,const char *title,
+      const char **selections,char *item)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>selection_number:</STRONG><DD>
@@ -406,7 +398,8 @@ Specifies the number of the selection that the user choose.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -431,23 +424,26 @@ here.
 <HR>
 <H2><A NAME="XMonitorWidget">XMonitorWidget</A></H2>
 <P>
-Method XMonitorWidget displays the progress a task is making in completing
-a task. A span of zero toggles the active status. An inactive state
-disables the progress monitor.
+Method XMonitorWidget displays the progress a task is making in completing a task. 
+<FONT SIZE=-1>A</FONT> span of zero toggles the active status. An inactive state disables the progress monitor.
+
 
 <P>
-The format of the XMonitorWidget routine is:
+The format of the XMonitorWidget method is:
 
 <P>
-<PRE>      XMonitorWidget(display,windows,task,quantum,span)
+<PRE>    void XMonitorWidget(Display *display,XWindows *windows,const char *task,
+      const unsigned int quantum,const unsigned int span)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -475,18 +471,21 @@ Method XNoticeWidget displays a Notice widget with a notice to the user.
 The function returns when the user presses the ``Dismiss'' button.
 
 <P>
-The format of the XNoticeWidget routine is:
+The format of the XNoticeWidget method is:
 
 <P>
-<PRE>      XNoticeWidget(display,windows,message,qualifier)
+<PRE>    void XNoticeWidget(Display *display,XWindows *windows,
+      const char *message,const char *qualifier)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -510,22 +509,26 @@ preferences. If the user presses the Apply button, the preferences are
 stored in a configuration file in the users' home directory.
 
 <P>
-The format of the XPreferencesWidget routine is:
+The format of the XPreferencesWidget method is:
 
 <P>
-<PRE>      XPreferencesWidget(display,resource_info,windows)
+<PRE>    unsigned int XPreferencesWidget(Display *display,
+      XResourceInfo *resource_info,XWindows *windows)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -539,22 +542,27 @@ Specifies a pointer to a XWindows structure.
 Method XTextViewWidget displays text in a Text View widget.
 
 <P>
-The format of the XTextViewWidget routine is:
+The format of the XTextViewWidget method is:
 
 <P>
-<PRE>      XTextViewWidget(display,resource_info,windows,mono,title,textlist)
+<PRE>    void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
+      XWindows *windows,const unsigned int mono,const char *title,
+      char const **textlist)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>

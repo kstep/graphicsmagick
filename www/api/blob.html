@@ -25,7 +25,6 @@
 		<LI><A HREF="#OpenBlob">OpenBlob</A>
 		<LI><A HREF="#ReadBlob">ReadBlob</A>
 		<LI><A HREF="#SeekBlob">SeekBlob</A>
-		<LI><A HREF="#SetBlobQuantum">SetBlobQuantum</A>
 		<LI><A HREF="#TellBlob">TellBlob</A>
 		<LI><A HREF="#WriteBlob">WriteBlob</A>
 	</UL>
@@ -43,43 +42,28 @@ blob -
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-image=<STRONG>BlobToImage</STRONG>(blob,length)
+void <STRONG>CloseBlob</STRONG>(Image*image)
 
 <P>
-<STRONG>CloseBlob</STRONG>(image)
+int <STRONG>EOFBlob</STRONG>(constImage*image)
 
 <P>
-status=<STRONG>EOFBlob</STRONG>(image)
+int <STRONG>FlushBlob</STRONG>(constImage*image)
 
 <P>
-status=<STRONG>FlushBlob</STRONG>(image)
+void <STRONG>GetBlobInfo</STRONG>(BlobInfo*blob_info)
 
 <P>
-<STRONG>GetBlobInfo</STRONG>(blob_info)
+char* <STRONG>GetStringBlob</STRONG>(Image*image,char*string)
 
 <P>
-status=<STRONG>GetStringBlob</STRONG>(image,string)
+int <STRONG>SeekBlob</STRONG>(Image*image,constlongoffset,constintwhence)
 
 <P>
-blob=<STRONG>ImageToBlob</STRONG>(image_info,image,length)
+void <STRONG>SetBlobQuantum</STRONG>(BlobInfo*blob_info,constunsignedlongquantum)
 
 <P>
-status=<STRONG>OpenBlob</STRONG>(image_info,image,type)
-
-<P>
-count=<STRONG>ReadBlob</STRONG>(image,number_bytes,data);
-
-<P>
-status=<STRONG>SeekBlob</STRONG>(image,offset,whence)
-
-<P>
-status=<STRONG>SetBlobQuantum</STRONG>(blob_info,quantum)
-
-<P>
-status=<STRONG>TellBlob</STRONG>(image)
-
-<P>
-count=<STRONG>WriteBlob</STRONG>(image,size,number_items,data)
+int <STRONG>TellBlob</STRONG>(constImage*image)
 
 <P>
 <HR>
@@ -92,19 +76,22 @@ Method BlobToImage implements direct to memory image formats. It returns
 the blob as an image.
 
 <P>
-The format of the BlobToImage routine is:
+The format of the BlobToImage method is:
 
 <P>
-<PRE>        image=BlobToImage(blob,length)
+<PRE>    Image *BlobToImage(const ImageInfo *image_info,const char *blob,
+      const unsigned long length)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
 <P>
-Method BlobToImage returns an image from the supplied blob. If an error
-occurs NULL is returned.
+Method BlobToImage returns an image from the supplied blob. If an error occurs 
+<FONT SIZE=-1>NULL</FONT> is returned.
+
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
@@ -128,13 +115,14 @@ Method CloseBlob closes a file associated with the image. If the filename
 prefix is '|', the file is a pipe and is closed with PipeClose.
 
 <P>
-The format of the CloseBlob routine is:
+The format of the CloseBlob method is:
 
 <P>
-<PRE>        CloseBlob(image)
+<PRE>        void CloseBlob(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -146,17 +134,18 @@ The address of a structure of type Image.
 <HR>
 <H2><A NAME="EOFBlob">EOFBlob</A></H2>
 <P>
-Method EOFBlob returns a non-zero value when EOF has been detected reading
-from a blob or file.
+Method EOFBlob returns a non-zero value when 
+<FONT SIZE=-1>EOF</FONT> has been detected reading from a blob or file.
 
 <P>
-The format of the EOFBlob routine is:
+The format of the EOFBlob method is:
 
 <P>
-<PRE>        status=EOFBlob(image)
+<PRE>        int EOFBlob(const Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -176,13 +165,14 @@ The address of a structure of type Image.
 Method FlushBlob flushes the datastream if it is a file.
 
 <P>
-The format of the FlushBlob routine is:
+The format of the FlushBlob method is:
 
 <P>
-<PRE>        status=FlushBlob(image)
+<PRE>        int FlushBlob(const Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -202,13 +192,14 @@ The address of a structure of type Image.
 Method GetBlobInfo initializes the BlobInfo structure.
 
 <P>
-The format of the GetBlobInfo routine is:
+The format of the GetBlobInfo method is:
 
 <P>
-<PRE>        GetBlobInfo(blob_info)
+<PRE>        void GetBlobInfo(BlobInfo *blob_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>blob_info:</STRONG><DD>
@@ -225,13 +216,14 @@ character is read or an end-of-file condition is encountered. from a blob
 or file.
 
 <P>
-The format of the GetStringBlob routine is:
+The format of the GetStringBlob method is:
 
 <P>
-<PRE>        status=GetStringBlob(image,string)
+<PRE>        char *GetStringBlob(Image *image,char *string)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -256,19 +248,24 @@ Method ImageToBlob implements direct to memory image formats. It returns
 the image as a blob and its length.
 
 <P>
-The format of the ImageToBlob routine is:
+The format of the ImageToBlob method is:
 
 <P>
-<PRE>        blob=ImageToBlob(image_info,image,length)
+<PRE>    char *ImageToBlob(const ImageInfo *image_info,Image *image,
+      unsigned long *length)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>blob:</STRONG><DD>
 <P>
-Method ImageToBlob returns a chunk of memory written in the desired image
-format (e.g. JPEG, GIF, etc.). If an error occurs NULL is returned.
+Method ImageToBlob returns a chunk of memory written in the desired image format (e.g. 
+<FONT SIZE=-1>JPEG,</FONT> 
+<FONT SIZE=-1>GIF,</FONT> etc.). If an error occurs 
+<FONT SIZE=-1>NULL</FONT> is returned.
+
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
@@ -288,20 +285,21 @@ return, it reflects the actual length of the blob.
 <HR>
 <H2><A NAME="OpenBlob">OpenBlob</A></H2>
 <P>
-Method OpenBlob open a file associated with the image. A file name of '-'
-sets the file to stdin for type 'r' and stdout for type 'w'. If the
-filename suffix is '.gz' or '.Z', the image is decompressed for type 'r'
-and compressed for type 'w'. If the filename prefix is '|', it is piped to
-or from a system command.
+Method OpenBlob open a file associated with the image. 
+<FONT SIZE=-1>A</FONT> file name of '-' sets the file to stdin for type 'r' and stdout for type 'w'. If the filename suffix is '.gz' or 
+<FONT SIZE=-1>'.Z',</FONT> the image is decompressed for type 'r' and compressed for type 'w'. If the filename prefix is '|', it is piped to or from a system command.
+
 
 <P>
-The format of the OpenBlob routine is:
+The format of the OpenBlob method is:
 
 <P>
-<PRE>        status=OpenBlob(image_info,image,type)
+<PRE>    unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
+      const char *type)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -330,13 +328,15 @@ Method ReadBlob reads data from the blob or image file and returns it. It
 returns the number of bytes read.
 
 <P>
-The format of the ReadBlob routine is:
+The format of the ReadBlob method is:
 
 <P>
-<PRE>        count=ReadBlob(image,number_bytes,data);
+<PRE>    unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
+      char *data)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>count:</STRONG><DD>
@@ -365,13 +365,14 @@ Method SeekBlob sets the offset in bytes from the beginning of a blob or
 file.
 
 <P>
-The format of the SeekBlob routine is:
+The format of the SeekBlob method is:
 
 <P>
-<PRE>        status=SeekBlob(image,offset,whence)
+<PRE>        int SeekBlob(Image *image,const long offset,const int whence)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -395,34 +396,30 @@ beginning of the blob as follows:
 </DL></DL>
 <P>
 <PRE>      SEEK_SET  Set position equal to offset bytes.
+      SEEK_CUR  Set position to current location plus offset.
+      SEEK_END  Set position to EOF plus offset.
+=head2 SetBlobQuantum
 </PRE>
-<P>
-<PRE>      SEEK_CUR  Set position to current location plus offset.
-</PRE>
-<P>
-<PRE>      SEEK_END  Set position to EOF plus offset.
-</PRE>
-<P>
-<HR>
-<H2><A NAME="SetBlobQuantum">SetBlobQuantum</A></H2>
 <P>
 Method SetBlobQuantum set the current value of the blob quantum. This is
 the size in bytes to add to a blob when writing to a blob exceeds its
 current length.
 
 <P>
-The format of the SetBlobQuantum routine is:
+The format of the SetBlobQuantum method is:
 
 <P>
-<PRE>        status=SetBlobQuantum(blob_info,quantum)
+<PRE>        void SetBlobQuantum(BlobInfo *blob_info,const unsigned long quantum)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>blob_info:</STRONG><DD>
 <P>
-A pointer to a BlobInfo structure.
+
+<FONT SIZE=-1>A</FONT> pointer to a BlobInfo structure.
 
 <DT><STRONG>quantum:</STRONG><DD>
 <P>
@@ -436,13 +433,14 @@ An unsigned long that reflects the number of bytes to increase a blob.
 Method TellBlob obtains the current value of the blob or file position.
 
 <P>
-The format of the TellBlob routine is:
+The format of the TellBlob method is:
 
 <P>
-<PRE>        status=TellBlob(image)
+<PRE>        int TellBlob(const Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -463,13 +461,15 @@ Method WriteBlob writes data to a blob or image file. It returns the number
 of items written.
 
 <P>
-The format of the WriteBlob routine is:
+The format of the WriteBlob method is:
 
 <P>
-<PRE>        count=WriteBlob(image,size,number_items,data)
+<PRE>    unsigned long WriteBlob(Image *image,const unsigned long number_bytes,
+      const char *data)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>

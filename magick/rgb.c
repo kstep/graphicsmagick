@@ -69,9 +69,9 @@
 %  returns it.  It allocates the memory necessary for the new Image structure
 %  and returns a pointer to the new image.
 %
-%  The format of the ReadRGBImage routine is:
+%  The format of the ReadRGBImage method is:
 %
-%      image=ReadRGBImage(image_info)
+%      Image *ReadRGBImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -467,9 +467,9 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
 %  Method WriteRGBImage writes an image to a file in red, green, and
 %  blue rasterfile format.
 %
-%  The format of the WriteRGBImage routine is:
+%  The format of the WriteRGBImage method is:
 %
-%      status=WriteRGBImage(image_info,image)
+%      unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -68,9 +68,9 @@
 %  Method ReadPLASMAImage creates a plasma fractal image.  The image is
 %  initialized to to the X server color as specified by the filename.
 %
-%  The format of the ReadPLASMAImage routine is:
+%  The format of the ReadPLASMAImage method is:
 %
-%      image=ReadPLASMAImage(image_info)
+%      Image *ReadPLASMAImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

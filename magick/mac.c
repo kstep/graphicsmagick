@@ -45,7 +45,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The directory routines are strongly based on similar routines written
+%  The directory methods are strongly based on similar methods written
 %  by Steve Summit, scs@eskimo.com.  The Ghostscript launch code is strongly
 %  based on Dave Schooley's Mac Gnuplot and provided by
 %  schindall@wave14i.nrl.navy.mil.
@@ -115,9 +115,9 @@ static pascal void
 %
 %  Method BottleneckTest intercepts any compressed images.
 %
-%  The format of the BottleneckTest routine is:
+%  The format of the BottleneckTest method is:
 %
-%      BottleneckTest(picture,codec,depth,colormap_id)
+%      int ImageFormatConflict(const char *magick)
 %
 %  A description of each parameter follows:
 %
@@ -285,7 +285,7 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
 %  Method closedir closes the named directory stream and frees the DIR
 %  structure.
 %
-%  The format of the closedir routine is:
+%  The format of the closedir method is:
 %
 %      closedir(entry)
 %
@@ -314,7 +314,7 @@ void closedir(DIR *entry)
 %
 %  Method Exit exits the process.
 %
-%  The format of the Exit routine is:
+%  The format of the Exit method is:
 %
 %      Exit(status)
 %
@@ -345,7 +345,7 @@ int Exit(int status)
 %
 %  Method FilenameToFSSpec sets the file type of an image.
 %
-%  The format of the FilenameToFSSpec routine is:
+%  The format of the FilenameToFSSpec method is:
 %
 %      FilenameToFSSpec(filename,fsspec)
 %
@@ -384,7 +384,7 @@ void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
 %
 %  Contributed by Mark Gavin of Digital Applications, Inc.
 %
-%  The format of the ImageFormatConflict routine is:
+%  The format of the ImageFormatConflict method is:
 %
 %      status=ImageFormatConflict(magick)
 %
@@ -442,9 +442,10 @@ Export int ImageFormatConflict(const char *magick)
 %  Method MACErrorHandler displays an error message and then terminates
 %  the program.
 %
-%  The format of the MACErrorHandler routine is:
+%  The format of the MACErrorHandler method is:
 %
-%      MACErrorHandler(error,message,qualifier)
+%      void MACErrorHandler(const unsigned int error,const char *message,
+%        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
@@ -742,9 +743,10 @@ static OSErr MacGSSetWorkingFolder(char *directory)
 %   Method MACSystemCommand executes the specified command and waits until it
 %   terminates.  The returned value is the exit status of the command.
 %
-%  The format of the MACSystemCommand routine is:
+%  The format of the MACSystemCommand method is:
 %
-%      MACSystemCommand(command)
+%      void MACWarningHandler(const unsigned int warning,const char *message,
+%        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
@@ -775,7 +777,7 @@ int MACSystemCommand(const char * command)
 %
 %  Method MACWarningHandler displays a warning message.
 %
-%  The format of the MACWarningHandler routine is:
+%  The format of the MACWarningHandler method is:
 %
 +      MACWarningHandler(warning,message,qualifier)
 %
@@ -821,9 +823,9 @@ Export void MACWarningHandler(const unsigned int warning,const char *message,
 %  Method opendir opens the directory named by filename and associates a
 %  directory stream with it.
 %
-%  The format of the opendir routine is:
+%  The format of the opendir method is:
 %
-%      opendir(entry)
+%      void ProcessPendingEvents(const char *text)
 %
 %  A description of each parameter follows:
 %
@@ -882,7 +884,7 @@ DIR *opendir(char *path)
 %  Method ProcessPendingEvents processes any pending events.  This prevents
 %  ImageMagick from monopolizing the processor.
 %
-%  The format of the ProcessPendingEvents routine is:
+%  The format of the ProcessPendingEvents method is:
 %
 %      ProcessPendingEvents(text)
 %
@@ -979,16 +981,16 @@ struct dirent *readdir(DIR *entry)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ReadPICTImage reads an Apple Macintosh QuickDraw/PICT image
-%  file using MacOS QuickDraw routines and returns it.  It allocates the
+%  file using MacOS QuickDraw methods and returns it.  It allocates the
 %  memory necessary for the new Image structure and returns a pointer to
 %  the new image.
 %
-%  This routine was written and contributed by spd@daphne.cps.unizar.es
+%  This method was written and contributed by spd@daphne.cps.unizar.es
 %  (feel free to copy and use it as you want. No warranty).
 %
-%  The format of the ReadPICTImage routine is:
+%  The format of the ReadPICTImage method is:
 %
-%      image=ReadPICTImage(image_info)
+%      void ProcessPendingEvents(const char *text)
 %
 %  A description of each parameter follows:
 %
@@ -1347,7 +1349,7 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
 %  Method seekdir sets the position of the next readdir() operation
 %  on the directory stream.
 %
-%  The format of the seekdir routine is:
+%  The format of the seekdir method is:
 %
 %      seekdir(entry,position)
 %
@@ -1380,7 +1382,7 @@ void seekdir(DIR *entry,long position)
 %
 %  Method SetApplicationType sets the file type of an image.
 %
-%  The format of the SetApplicationType routine is:
+%  The format of the SetApplicationType method is:
 %
 %      SetApplicationType(filename,magick,application)
 %
@@ -1425,7 +1427,7 @@ void SetApplicationType(const char *filename,const char *magick,
 %   Method telldir returns the current location associated  with  the
 %   named directory stream.
 %
-%  The format of the telldir routine is:
+%  The format of the telldir method is:
 %
 %      telldir(entry)
 %

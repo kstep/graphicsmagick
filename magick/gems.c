@@ -69,9 +69,9 @@
 %  Method Contrast enhances the intensity differences between the lighter
 %  and darker elements of the image.
 %
-%  The format of the Contrast routine is:
+%  The format of the Contrast method is:
 %
-%      Contrast(sign,red,green,blue)
+%      void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
 %
 %  A description of each parameter follows:
 %
@@ -119,9 +119,9 @@ Export void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
 %
 %  Method GenerateNoise adds noise to a pixel.
 %
-%  The format of the GenerateNoise routine is:
+%  The format of the GenerateNoise method is:
 %
-%      GenerateNoise(pixel,noise_type)
+%      Quantum GenerateNoise(const Quantum pixel,const NoiseType noise_type)
 %
 %  A description of each parameter follows:
 %
@@ -247,9 +247,10 @@ Export Quantum GenerateNoise(const Quantum pixel,const NoiseType noise_type)
 %  Method HSLTransform converts a (hue, saturation, luminosity) to a
 %  (red, green, blue) triple.
 %
-%  The format of the HSLTransformImage routine is:
+%  The format of the HSLTransformImage method is:
 %
-%      HSLTransform(hue,saturation,luminosity,red,green,blue)
+%      void HSLTransform(const double hue,const double saturation,
+%        const double luminosity,Quantum *red,Quantum *green,Quantum *blue)
 %
 %  A description of each parameter follows:
 %
@@ -322,9 +323,10 @@ Export void HSLTransform(const double hue,const double saturation,
 %  one of its eight of its surrounding pixels using a polarity and negative
 %  hull function.
 %
-%  The format of the Hull routine is:
+%  The format of the Hull method is:
 %
-%      Hull(x_offset,y_offset,polarity,columns,rows,f,g)
+%      void Hull(const int x_offset,const int y_offset,const int polarity,
+%        const unsigned int columns,const unsigned int rows,Quantum *f,Quantum *g)
 %
 %  A description of each parameter follows:
 %
@@ -448,9 +450,10 @@ Export void Hull(const int x_offset,const int y_offset,const int polarity,
 %  Method InterpolateColor applies bi-linear interpolation between a pixel and
 %  it's neighbors.
 %
-%  The format of the InterpolateColor routine is:
+%  The format of the InterpolateColor method is:
 %
-%      InterpolateColor(image,x_offset,y_offset)
+%      ColorPacket InterpolateColor(Image *image,const double x_offset,
+%        const double y_offset)
 %
 %  A description of each parameter follows:
 %
@@ -555,9 +558,10 @@ Export ColorPacket InterpolateColor(Image *image,const double x_offset,
 %  Method Modulate modulates the hue, saturation, and brightness of an
 %  image.
 %
-%  The format of the ModulateImage routine is:
+%  The format of the ModulateImage method is:
 %
-%      Modulate(percent_hue,percent_saturation,percent_brightness,red,green,
+%      void Modulate(double percent_hue,double percent_saturation,
+%        double percent_brightness,Quantum *red,Quantum *green,Quantum *blue)
 %        blue)
 %
 %  A description of each parameter follows:
@@ -622,9 +626,10 @@ Export void Modulate(double percent_hue,double percent_saturation,
 %  Method TransformHSL converts a (red, green, blue) to a (hue, saturation,
 %  luminosity) triple.
 %
-%  The format of the TransformHSL routine is:
+%  The format of the TransformHSL method is:
 %
-%      TransformHSL(red,green,blue,hue,saturation,luminosity)
+%      void TransformHSL(const Quantum red,const Quantum green,
+%        const Quantum blue,double *hue,double *saturation,double *luminosity)
 %
 %  A description of each parameter follows:
 %
@@ -688,9 +693,10 @@ Export void TransformHSL(const Quantum red,const Quantum green,
 %
 %  Method Upsample doubles the size of the image.
 %
-%  The format of the UpSample routine is:
+%  The format of the UpSample method is:
 %
-%      Upsample(width,height,scaled_width,pixels)
+%      void Upsample(const unsigned int width,const unsigned int height,
+%        const unsigned int scaled_width,unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %

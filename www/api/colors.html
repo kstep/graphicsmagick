@@ -36,22 +36,22 @@ colors - Methods to Count the Colors in an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>CompressColormap</STRONG>(image)
+void <STRONG>CompressColormap</STRONG>(Image*image)
 
 <P>
-number_colors=<STRONG>GetNumberColors</STRONG>(image,file)
+number_colors= <STRONG>GetNumberColors</STRONG>(image,file)
 
 <P>
-status=<STRONG>IsMonochromeImage</STRONG>(image)
+status= <STRONG>IsMonochromeImage</STRONG>(image)
 
 <P>
-status=<STRONG>IsPseudoClass</STRONG>(image)
+unsigned int <STRONG>IsPseudoClass</STRONG>(Image*image)
 
 <P>
-status=<STRONG>QueryColorDatabase</STRONG>(target,color)
+unsigned int <STRONG>QueryColorDatabase</STRONG>(constchar*target,ColorPacket*color)
 
 <P>
-distance=<STRONG>QueryColorName</STRONG>(color,name)
+unsigned int <STRONG>QueryColorName</STRONG>(constColorPacket*color,char*name)
 
 <P>
 <HR>
@@ -64,28 +64,19 @@ Method CompressColormap compresses an image colormap removing any duplicate
 and unused color entries.
 
 <P>
-The format of the CompressColormap routine is:
+The format of the CompressColormap method is:
 
 <P>
-<PRE>        CompressColormap(image)
+<PRE>        void CompressColormap(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
 <P>
 The address of a structure of type Image.
-
-</DL></DL>
-<P>
-A description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>node_info:</STRONG><DD>
-<P>
-The address of a structure of type NodeInfo which points to a node in the
-color cube tree that is to be pruned.
 
 </DL></DL>
 <P>
@@ -95,13 +86,14 @@ color cube tree that is to be pruned.
 Method GetNumberColors returns the number of unique colors in an image.
 
 <P>
-The format of the GetNumberColors routine is:
+The format of the GetNumberColors method is:
 
 <P>
 <PRE>        number_colors=GetNumberColors(image,file)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>number_colors:</STRONG><DD>
@@ -117,17 +109,21 @@ must be equal to or exceed the number of pixels.
 
 <DT><STRONG>file:</STRONG><DD>
 <P>
-An pointer to a FILE. If it is non-null a list of unique pixel field values
-and the number of times each occurs in the image is written to the file.
+An pointer to a 
+<FONT SIZE=-1>FILE.</FONT> If it is non-null a list of unique pixel field
+values and the number of times each occurs in the image is written to the
+file.
 
 </DL></DL>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>color_cube:</STRONG><DD>
 <P>
-A pointer to the CubeInfo structure.
+
+<FONT SIZE=-1>A</FONT> pointer to the CubeInfo structure.
 
 <DT><STRONG>level:</STRONG><DD>
 <P>
@@ -143,13 +139,14 @@ False is returned. If the image is DirectClass and monochrome, it is
 demoted to PseudoClass.
 
 <P>
-The format of the IsMonochromeImage routine is:
+The format of the IsMonochromeImage method is:
 
 <P>
 <PRE>        status=IsMonochromeImage(image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -171,13 +168,14 @@ unique colors or less. If the image is DirectClass and has less 256 colors
 or less, the image is demoted to PseudoClass.
 
 <P>
-The format of the IsPseudoClass routine is:
+The format of the IsPseudoClass method is:
 
 <P>
-<PRE>        status=IsPseudoClass(image)
+<PRE>        unsigned int IsPseudoClass(Image *image)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -196,55 +194,63 @@ must be equal to or exceed the number of pixels.
 <HR>
 <H2><A NAME="QueryColorDatabase">QueryColorDatabase</A></H2>
 <P>
-Method QueryColorDatabase looks up a RGB values for a color given in the
-target string.
+Method QueryColorDatabase looks up a 
+<FONT SIZE=-1>RGB</FONT> values for a color given in the target string.
 
 <P>
-The format of the QueryColorDatabase routine is:
+The format of the QueryColorDatabase method is:
 
 <P>
-<PRE>      status=QueryColorDatabase(target,color)
+<PRE>        unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
 <P>
-Method QueryColorDatabase returns True if the RGB values of the target
-color is defined, otherwise False is returned.
+Method QueryColorDatabase returns True if the 
+<FONT SIZE=-1>RGB</FONT> values of the target color is defined, otherwise
+False is returned.
 
 <DT><STRONG>target:</STRONG><DD>
 <P>
-Specifies the color to lookup in the X color database.
+Specifies the color to lookup in the 
+<FONT SIZE=-1>X</FONT> color database.
 
 <DT><STRONG>color:</STRONG><DD>
 <P>
-A pointer to an ColorPacket structure. The RGB value of the target color is
-returned as this value.
+
+<FONT SIZE=-1>A</FONT> pointer to an ColorPacket structure. The 
+<FONT SIZE=-1>RGB</FONT> value of the target color is returned as this value.
+
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="QueryColorName">QueryColorName</A></H2>
 <P>
-Method QueryColorName returns the name of the color that is closest to the
-supplied color in RGB space.
+Method QueryColorName returns the name of the color that is closest to the supplied color in 
+<FONT SIZE=-1>RGB</FONT> space.
+
 
 <P>
-The format of the QueryColorName routine is:
+The format of the QueryColorName method is:
 
 <P>
-<PRE>        distance=QueryColorName(color,name)
+<PRE>        unsigned int QueryColorName(const ColorPacket *color,char *name)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>distance:</STRONG><DD>
 <P>
-Method QueryColorName returns the distance-squared in RGB space as well as
-the color name that is at a minimum distance.
+Method QueryColorName returns the distance-squared in 
+<FONT SIZE=-1>RGB</FONT> space as well as the color name that is at a
+minimum distance.
 
 <DT><STRONG>color:</STRONG><DD>
 <P>

@@ -69,9 +69,9 @@
 %  the memory necessary for the new Image structure and returns a pointer to
 %  the new image.
 %
-%  The format of the ReadMTVImage routine is:
+%  The format of the ReadMTVImage method is:
 %
-%      image=ReadMTVImage(image_info)
+%      Image *ReadMTVImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -227,9 +227,9 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
 %  Method WriteMTVImage writes an image to a file in red, green, and blue
 %  MTV rasterfile format.
 %
-%  The format of the WriteMTVImage routine is:
+%  The format of the WriteMTVImage method is:
 %
-%      status=WriteMTVImage(image_info,image)
+%      unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

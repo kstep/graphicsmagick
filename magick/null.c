@@ -69,9 +69,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadNULLImage routine is:
+%  The format of the ReadNULLImage method is:
 %
-%      image=ReadNULLImage(image_info)
+%      Image *ReadNULLImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

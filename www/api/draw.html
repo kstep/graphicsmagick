@@ -35,16 +35,7 @@ draw - Methods to Draw on an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>ColorFloodfillImage</STRONG>(image,target,tile,x,y,method)
-
-<P>
-<STRONG>DrawImage</STRONG>(image,annotate_info)
-
-<P>
-opacity=<STRONG>InsidePrimitive</STRONG>(primitive_info,annotate_info,target,image)
-
-<P>
-<STRONG>MatteFloodfillImage</STRONG>(image,target,matte,x,y,method)
+void <STRONG>DrawImage</STRONG>(Image*image,constAnnotateInfo*annotate_info)
 
 <P>
 <HR>
@@ -58,13 +49,15 @@ floodfill algorithm is strongly based on a similar algorithm in ``Graphics
 Gems'' by Paul Heckbert.
 
 <P>
-The format of the ColorFloodfillImage routine is:
+The format of the ColorFloodfillImage method is:
 
 <P>
-<PRE>        ColorFloodfillImage(image,target,tile,x,y,method)
+<PRE>    void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
+      Image *tile,const int x_offset,const int y_offset,const PaintMethod method)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
@@ -73,7 +66,10 @@ The address of a structure of type Image.
 
 <DT><STRONG>target:</STRONG><DD>
 <P>
-A RunlengthPacket structure. This is the RGB value of the target color.
+
+<FONT SIZE=-1>A</FONT> RunlengthPacket structure. This is the 
+<FONT SIZE=-1>RGB</FONT> value of the target color.
+
 
 <DT><STRONG>tile:</STRONG><DD>
 <P>
@@ -95,13 +91,14 @@ drawing method of type PrimitiveType: floodfill or fill to border.
 Method DrawImage draws a primitive (line, rectangle, ellipse) on the image.
 
 <P>
-The format of the DrawImage routine is:
+The format of the DrawImage method is:
 
 <P>
-<PRE>        DrawImage(image,annotate_info)
+<PRE>        void DrawImage(Image *image,const AnnotateInfo *annotate_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -117,23 +114,23 @@ The address of a DrawInfo structure.
 <HR>
 <H2><A NAME="InsidePrimitive">InsidePrimitive</A></H2>
 <P>
-Method InsidePrimitive returns the opacity of the pen at the (x,y) position
-of the image. The opacity is Opaque if the (x,y) position is within the
-primitive as defined in primitive_info. A value less than fully opaque and
-greater than fully transparent is returned for a primitive edge pixel to
-allow for anti-aliasing. Otherwise fully transparent is returned.
+Method InsidePrimitive returns the opacity of the pen at the (x,y) position of the image. The opacity is Opaque if the (x,y) position is within the primitive as defined in primitive_info. 
+<FONT SIZE=-1>A</FONT> value less than fully opaque and greater than fully transparent is returned for a primitive edge pixel to allow for anti-aliasing. Otherwise fully transparent is returned.
+
 
 <P>
 Rick Mabry provided the algorithms for anti-aliased primitives.
 
 <P>
-The format of the InsidePrimitive routine is:
+The format of the InsidePrimitive method is:
 
 <P>
-<PRE>        opacity=InsidePrimitive(primitive_info,annotate_info,target,image)
+<PRE>    unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
+      const AnnotateInfo *annotate_info,const PointInfo *pixel,Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>opacity:</STRONG><DD>
@@ -167,13 +164,16 @@ value. The floodfill algorithm is strongly based on a similar algorithm in
 ``Graphics Gems'' by Paul Heckbert.
 
 <P>
-The format of the MatteFloodfillImage routine is:
+The format of the MatteFloodfillImage method is:
 
 <P>
-<PRE>        MatteFloodfillImage(image,target,matte,x,y,method)
+<PRE>    void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
+      const unsigned int matte,const int x_offset,const int y_offset,
+      const PaintMethod method)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -182,11 +182,16 @@ The address of a structure of type Image.
 
 <DT><STRONG>target:</STRONG><DD>
 <P>
-A RunlengthPacket structure. This is the RGB value of the target color.
+
+<FONT SIZE=-1>A</FONT> RunlengthPacket structure. This is the 
+<FONT SIZE=-1>RGB</FONT> value of the target color.
+
 
 <DT><STRONG>matte:</STRONG><DD>
 <P>
-A integer value representing the amount of transparency.
+
+<FONT SIZE=-1>A</FONT> integer value representing the amount of
+transparency.
 
 <DT><STRONG>x,y:</STRONG><DD>
 <P>
@@ -204,13 +209,15 @@ drawing method of type PrimitiveType: floodfill or fill to border.
 Method OpaqueImage changes the color of an opaque pixel to the pen color.
 
 <P>
-The format of the OpaqueImage routine is:
+The format of the OpaqueImage method is:
 
 <P>
-<PRE>    OpaqueImage(image,opaque_color,pen_color)
+<PRE>    void OpaqueImage(Image *image,const char *opaque_color,
+      const char *pen_color)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -219,7 +226,10 @@ The address of a structure of type Image; returned from ReadImage.
 
 <DT><STRONG>opaque_color, pen_color:</STRONG><DD>
 <P>
-A character string that contain an X11 color string.
+
+<FONT SIZE=-1>A</FONT> character string that contain an 
+<FONT SIZE=-1>X11</FONT> color string.
+
 
 </DL></DL>
 </BODY>

@@ -81,9 +81,9 @@ extern char
 %  Method closedir closes the named directory stream and frees the DIR
 %  structure.
 %
-%  The format of the closedir routine is:
+%  The format of the closedir method is:
 %
-%      closedir(entry)
+%      void closedir(DIR *entry)
 %
 %  A description of each parameter follows:
 %
@@ -111,9 +111,9 @@ Export void closedir(DIR *entry)
 %
 %  Method Exit calls TerminateProcess for Win95.
 %
-%  The format of the Exit routine is:
+%  The format of the Exit method is:
 %
-%      Exit(status)
+%      int Exit(int status)
 %
 %  A description of each parameter follows:
 %
@@ -144,9 +144,9 @@ Export int Exit(int status)
 %  Method ImageFormatConflict returns true if the image format conflicts with
 %  a logical drive (.e.g. X:).
 %
-%  The format of the ImageFormatConflict routine is:
+%  The format of the ImageFormatConflict method is:
 %
-%      status=ImageFormatConflict(magick)
+%      int ImageFormatConflict(const char *magick)
 %
 %  A description of each parameter follows:
 %
@@ -178,9 +178,9 @@ Export int ImageFormatConflict(const char *magick)
 %
 %  Method IsWindows95 returns true if the system is Windows 95.
 %
-%  The format of the IsWindows95 routine is:
+%  The format of the IsWindows95 method is:
 %
-%      IsWindows95()
+%      int IsWindows95()
 %
 %  A description of each parameter follows:
 %
@@ -215,9 +215,10 @@ Export int IsWindows95()
 %  Method NTErrorHandler displays an error message and then terminates
 %  the program.
 %
-%  The format of the NTErrorHandler routine is:
+%  The format of the NTErrorHandler method is:
 %
-%      NTErrorHandler(error,message,qualifier)
+%      void NTErrorHandler(const unsigned int error,const char *message,
+%        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
@@ -271,9 +272,9 @@ Export void NTErrorHandler(const unsigned int error,const char *message,
 %   Method NTSystemCommand executes the specified command and waits until it
 %   terminates.  The returned value is the exit status of the command.
 %
-%  The format of the NTSystemCommand routine is:
+%  The format of the NTSystemCommand method is:
 %
-%      NTSystemCommand(command)
+%      int NTSystemCommand(const char *command)
 %
 %  A description of each parameter follows:
 %
@@ -347,9 +348,9 @@ Export int NTSystemCommand(const char *command)
 %   Method NTTemporaryFilename creates a name for a temporary file.  It
 %   returns zero if an error occurs.
 %
-%  The format of the TemporaryFilename routine is:
+%  The format of the TemporaryFilename method is:
 %
-%      NTTemporaryFilename(filename)
+%      int NTTemporaryFilename(char *filename)
 %
 %  A description of each parameter follows:
 %
@@ -389,9 +390,10 @@ Export int NTTemporaryFilename(char *filename)
 %
 %  Method NTWarningHandler displays a warning message.
 %
-%  The format of the NTWarningHandler routine is:
+%  The format of the NTWarningHandler method is:
 %
-%      NTWarningHandler(warning,message,qualifier)
+%      void NTWarningHandler(const unsigned int warning,const char *message,
+%        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
@@ -436,9 +438,9 @@ Export void NTWarningHandler(const unsigned int warning,const char *message,
 %  Method opendir opens the directory named by filename and associates
 %  a directory stream with it.
 %
-%  The format of the opendir routine is:
+%  The format of the opendir method is:
 %
-%      opendir(entry)
+%      DIR *opendir(char *path)
 %
 %  A description of each parameter follows:
 %
@@ -519,9 +521,9 @@ Export struct dirent *readdir(DIR *entry)
 %   Method seekdir sets the position of the next readdir() operation
 %   on the directory stream.
 %
-%  The format of the seekdir routine is:
+%  The format of the seekdir method is:
 %
-%      seekdir(entry,position)
+%      void seekdir(DIR *entry,long position)
 %
 %  A description of each parameter follows:
 %
@@ -552,9 +554,9 @@ Export void seekdir(DIR *entry,long position)
 %   Method telldir returns the current location associated  with  the
 %   named directory stream.
 %
-%  The format of the telldir routine is:
+%  The format of the telldir method is:
 %
-%      telldir(entry)
+%      long telldir(DIR *entry)
 %
 %  A description of each parameter follows:
 %

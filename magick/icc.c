@@ -71,9 +71,9 @@
 %  methods in that only the color profile information is useful in the
 %  returned image.
 %
-%  The format of the ReadICCImage routine is:
+%  The format of the ReadICCImage method is:
 %
-%      image=ReadICCImage(image_info)
+%      Image *ReadICCImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -155,9 +155,9 @@ Export Image *ReadICCImage(const ImageInfo *image_info)
 %
 %  Method WriteICCImage writes an image in the ICC format.
 %
-%  The format of the WriteICCImage routine is:
+%  The format of the WriteICCImage method is:
 %
-%      status=WriteICCImage(image_info,image)
+%      unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -68,9 +68,9 @@
 %  Method PCDDecodeImage recovers the Huffman encoded luminance and
 %  chrominance deltas.
 %
-%  The format of the PCDDecodeImage routine is:
+%  The format of the PCDDecodeImage method is:
 %
-%      status=PCDDecodeImage(image,luma,chroma1,chroma2)
+%      Image *ReadPCDImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -340,7 +340,7 @@ static unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
 %  pointer to the new image.  Much of the PCD decoder was derived from
 %  the program hpcdtoppm(1) by Hadmut Danisch.
 %
-%  The format of the ReadPCDImage routine is:
+%  The format of the ReadPCDImage method is:
 %
 %      image=ReadPCDImage(image_info)
 %
@@ -755,9 +755,10 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
 %  Method WritePCDImage writes an image in the Photo CD encoded image
 %  format.
 %
-%  The format of the WritePCDImage routine is:
+%  The format of the WritePCDImage method is:
 %
-%      status=WritePCDImage(image_info,image)
+%      unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
+%        char *geometry,char *tile_geometry)
 %
 %  A description of each parameter follows.
 %

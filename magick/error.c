@@ -91,9 +91,10 @@ static ErrorHandler
 %  Method DefaultErrorHandler displays an error message and then terminates
 %  the program.
 %
-%  The format of the DefaultErrorHandler routine is:
+%  The format of the DefaultErrorHandler method is:
 %
-%      DefaultErrorHandler(error,message,qualifier)
+%      void MagickError(const unsigned int error,const char *message,
+%        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
@@ -135,7 +136,7 @@ static void DefaultErrorHandler(const unsigned int error,const char *message,
 %
 %  Method DefaultWarningHandler displays a warning message.
 %
-%  The format of the DefaultWarningHandler routine is:
+%  The format of the DefaultWarningHandler method is:
 %
 +      DefaultWarningHandler(warning,message,qualifier)
 %
@@ -173,9 +174,9 @@ static void DefaultWarningHandler(const unsigned int warning,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MagickError calls the error handler routines with an error message.
+%  Method MagickError calls the error handler methods with an error message.
 %
-%  The format of the MagickError routine is:
+%  The format of the MagickError method is:
 %
 %      MagickError(error,message,qualifier)
 %
@@ -209,12 +210,13 @@ Export void MagickError(const unsigned int error,const char *message,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MagickWarning calls the warning handler routines with a warning
+%  Method MagickWarning calls the warning handler methods with a warning
 %  message.
 %
-%  The format of the MagickWarning routine is:
+%  The format of the MagickWarning method is:
 %
-%      MagickWarning(warning,message,qualifier)
+%      void MagickWarning(const unsigned int warning,const char *message,
+%        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
@@ -245,16 +247,16 @@ Export void MagickWarning(const unsigned int warning,const char *message,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetErrorHandler sets the error handler to the specified routine
+%  Method SetErrorHandler sets the error handler to the specified method
 %  and returns the previous error handler.
 %
-%  The format of the SetErrorHandler routine is:
+%  The format of the SetErrorHandler method is:
 %
-%      previous_handler=SetErrorHandler(handler)
+%      ErrorHandler SetErrorHandler(ErrorHandler handler)
 %
 %  A description of each parameter follows:
 %
-%    o handler: Specifies a pointer to a routine to handle errors.
+%    o handler: Specifies a pointer to a method to handle errors.
 %
 %
 */
@@ -279,16 +281,16 @@ Export ErrorHandler SetErrorHandler(ErrorHandler handler)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetWarningHandler sets the warning handler to the specified routine
+%  Method SetWarningHandler sets the warning handler to the specified method
 %  and returns the previous warning handler.
 %
-%  The format of the SetWarningHandler routine is:
+%  The format of the SetWarningHandler method is:
 %
-%      previous_handler=SetWarningHandler(handler)
+%      ErrorHandler SetWarningHandler(ErrorHandler handler)
 %
 %  A description of each parameter follows:
 %
-%    o handler: Specifies a pointer to a routine to handle warnings.
+%    o handler: Specifies a pointer to a method to handle warnings.
 %
 %
 */

@@ -34,22 +34,20 @@ error - ImageMagick Error Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>MagickError</STRONG>(error,message,qualifier)
+<PRE> B&lt;MagickError&gt;(error,message,qualifier)
+</PRE>
+<P>
+ErrorHandler <STRONG>SetErrorHandler</STRONG>(ErrorHandlerhandler)
 
 <P>
-<STRONG>MagickWarning</STRONG>(warning,message,qualifier)
-
-<P>
-previous_handler=<STRONG>SetErrorHandler</STRONG>(handler)
-
-<P>
-previous_handler=<STRONG>SetWarningHandler</STRONG>(handler)
+ErrorHandler <STRONG>SetWarningHandler</STRONG>(ErrorHandlerhandler)
 
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">warning:</A></STRONG><DD>
@@ -69,16 +67,17 @@ Specifies any qualifier to the message.
 <HR>
 <H2><A NAME="MagickError">MagickError</A></H2>
 <P>
-Method MagickError calls the error handler routines with an error message.
+Method MagickError calls the error handler methods with an error message.
 
 <P>
-The format of the MagickError routine is:
+The format of the MagickError method is:
 
 <P>
 <PRE>        MagickError(error,message,qualifier)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>error:</STRONG><DD>
@@ -98,17 +97,19 @@ Specifies any qualifier to the message.
 <HR>
 <H2><A NAME="MagickWarning">MagickWarning</A></H2>
 <P>
-Method MagickWarning calls the warning handler routines with a warning
+Method MagickWarning calls the warning handler methods with a warning
 message.
 
 <P>
-The format of the MagickWarning routine is:
+The format of the MagickWarning method is:
 
 <P>
-<PRE>        MagickWarning(warning,message,qualifier)
+<PRE>    void MagickWarning(const unsigned int warning,const char *message,
+      const char *qualifier)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>warning:</STRONG><DD>
@@ -128,44 +129,46 @@ Specifies any qualifier to the message.
 <HR>
 <H2><A NAME="SetErrorHandler">SetErrorHandler</A></H2>
 <P>
-Method SetErrorHandler sets the error handler to the specified routine and
+Method SetErrorHandler sets the error handler to the specified method and
 returns the previous error handler.
 
 <P>
-The format of the SetErrorHandler routine is:
+The format of the SetErrorHandler method is:
 
 <P>
-<PRE>        previous_handler=SetErrorHandler(handler)
+<PRE>        ErrorHandler SetErrorHandler(ErrorHandler handler)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>handler:</STRONG><DD>
 <P>
-Specifies a pointer to a routine to handle errors.
+Specifies a pointer to a method to handle errors.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="SetWarningHandler">SetWarningHandler</A></H2>
 <P>
-Method SetWarningHandler sets the warning handler to the specified routine
+Method SetWarningHandler sets the warning handler to the specified method
 and returns the previous warning handler.
 
 <P>
-The format of the SetWarningHandler routine is:
+The format of the SetWarningHandler method is:
 
 <P>
-<PRE>        previous_handler=SetWarningHandler(handler)
+<PRE>        ErrorHandler SetWarningHandler(ErrorHandler handler)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>handler:</STRONG><DD>
 <P>
-Specifies a pointer to a routine to handle warnings.
+Specifies a pointer to a method to handle warnings.
 
 </DL></DL>
 </BODY>

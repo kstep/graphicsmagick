@@ -69,9 +69,9 @@
 %  It allocates the memory necessary for the new Image structure and returns
 %  a pointer to the new image.
 %
-%  The format of the ReadTGAImage routine is:
+%  The format of the ReadTGAImage method is:
 %
-%      image=ReadTGAImage(image_info)
+%      Image *ReadTGAImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -457,9 +457,9 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
 %  Method WriteTGAImage writes a image in the Truevision Targa rasterfile
 %  format.
 %
-%  The format of the WriteTGAImage routine is:
+%  The format of the WriteTGAImage method is:
 %
-%      status=WriteTGAImage(image_info,image)
+%      unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -51,44 +51,32 @@ mac - Macintosh Utility Methods for ImageMagick
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>BottleneckTest</STRONG>(picture,codec,depth,colormap_id)
+<PRE> B&lt;Exit&gt;(status)
+</PRE>
+<P>
+<PRE> B&lt;FilenameToFSSpec&gt;(filename,fsspec)
+</PRE>
+<P>
+status= <STRONG>ImageFormatConflict</STRONG>(magick)
 
 <P>
-<STRONG>Exit</STRONG>(status)
-
+<PRE> B&lt;ProcessPendingEvents&gt;(text)
+</PRE>
 <P>
-<STRONG>FilenameToFSSpec</STRONG>(filename,fsspec)
-
+<PRE> B&lt;SetApplicationType&gt;(filename,magick,application)
+</PRE>
 <P>
-status=<STRONG>ImageFormatConflict</STRONG>(magick)
-
+<PRE> B&lt;closedir&gt;(entry)
+</PRE>
 <P>
-<STRONG>MACSystemCommand</STRONG>(command)
-
+<PRE> B&lt;readdir&gt;(entry)
+</PRE>
 <P>
-<STRONG>ProcessPendingEvents</STRONG>(text)
-
+<PRE> B&lt;seekdir&gt;(entry,position)
+</PRE>
 <P>
-image=<STRONG>ReadPICTImage</STRONG>(image_info)
-
-<P>
-<STRONG>SetApplicationType</STRONG>(filename,magick,application)
-
-<P>
-<STRONG>closedir</STRONG>(entry)
-
-<P>
-<STRONG>opendir</STRONG>(entry)
-
-<P>
-<STRONG>readdir</STRONG>(entry)
-
-<P>
-<STRONG>seekdir</STRONG>(entry,position)
-
-<P>
-<STRONG>telldir</STRONG>(entry)
-
+<PRE> B&lt;telldir&gt;(entry)
+</PRE>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -99,13 +87,14 @@ image=<STRONG>ReadPICTImage</STRONG>(image_info)
 Method BottleneckTest intercepts any compressed images.
 
 <P>
-The format of the BottleneckTest routine is:
+The format of the BottleneckTest method is:
 
 <P>
-<PRE>        BottleneckTest(picture,codec,depth,colormap_id)
+<PRE>    int ImageFormatConflict(const char *magick)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">picture:</A></STRONG><DD>
@@ -122,29 +111,32 @@ The image depth is returned as an integer pointer.
 
 <DT><STRONG>colormap_id:</STRONG><DD>
 <P>
-The colormap ID is returned in this short pointer.
+The colormap 
+<FONT SIZE=-1>ID</FONT> is returned in this short pointer.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="closedir">closedir</A></H2>
 <P>
-Method closedir closes the named directory stream and frees the DIR
-structure.
+Method closedir closes the named directory stream and frees the 
+<FONT SIZE=-1>DIR</FONT> structure.
 
 <P>
-The format of the closedir routine is:
+The format of the closedir method is:
 
 <P>
 <PRE>        closedir(entry)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>entry:</STRONG><DD>
 <P>
-Specifies a pointer to a DIR structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>DIR</FONT> structure.
 
 </DL></DL>
 <P>
@@ -154,13 +146,14 @@ Specifies a pointer to a DIR structure.
 Method Exit exits the process.
 
 <P>
-The format of the Exit routine is:
+The format of the Exit method is:
 
 <P>
 <PRE>        Exit(status)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -175,13 +168,14 @@ an integer value representing the status of the terminating process.
 Method FilenameToFSSpec sets the file type of an image.
 
 <P>
-The format of the FilenameToFSSpec routine is:
+The format of the FilenameToFSSpec method is:
 
 <P>
 <PRE>        FilenameToFSSpec(filename,fsspec)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>filename:</STRONG><DD>
@@ -190,27 +184,30 @@ Specifies the name of the file.
 
 <DT><STRONG>fsspec:</STRONG><DD>
 <P>
-A pointer to type FSSpec.
+
+<FONT SIZE=-1>A</FONT> pointer to type FSSpec.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="ImageFormatConflict">ImageFormatConflict</A></H2>
 <P>
-Method ImageFormatConflict returns true if the image format conflicts with
-a logical drive (.e.g. X:).
+Method ImageFormatConflict returns true if the image format conflicts with a logical drive (.e.g. 
+<FONT SIZE=-1>X:).</FONT>
+
 
 <P>
 Contributed by Mark Gavin of Digital Applications, Inc.
 
 <P>
-The format of the ImageFormatConflict routine is:
+The format of the ImageFormatConflict method is:
 
 <P>
 <PRE>        status=ImageFormatConflict(magick)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -265,18 +262,18 @@ Method MacGSSetWorkingFolder set the Ghostscript working folder.
 <H2><A NAME="MACSystemCommand">MACSystemCommand</A></H2>
 <P>
 <PRE> Method MACSystemCommand executes the specified command and waits until it
+ terminates.  The returned value is the exit status of the command.
 </PRE>
 <P>
-<PRE> terminates.  The returned value is the exit status of the command.
-</PRE>
-<P>
-The format of the MACSystemCommand routine is:
+The format of the MACSystemCommand method is:
 
 <P>
-<PRE>        MACSystemCommand(command)
+<PRE>    void MACWarningHandler(const unsigned int warning,const char *message,
+      const char *qualifier)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>command:</STRONG><DD>
@@ -291,7 +288,7 @@ This string is the command to execute.
 Method MACWarningHandler displays a warning message.
 
 <P>
-The format of the MACWarningHandler routine is:
+The format of the MACWarningHandler method is:
 
 <P>
 <HR>
@@ -301,18 +298,20 @@ Method opendir opens the directory named by filename and associates a
 directory stream with it.
 
 <P>
-The format of the opendir routine is:
+The format of the opendir method is:
 
 <P>
-<PRE>        opendir(entry)
+<PRE>    void ProcessPendingEvents(const char *text)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>entry:</STRONG><DD>
 <P>
-Specifies a pointer to a DIR structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>DIR</FONT> structure.
 
 </DL></DL>
 <P>
@@ -323,18 +322,20 @@ Method ProcessPendingEvents processes any pending events. This prevents
 ImageMagick from monopolizing the processor.
 
 <P>
-The format of the ProcessPendingEvents routine is:
+The format of the ProcessPendingEvents method is:
 
 <P>
 <PRE>        ProcessPendingEvents(text)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>text:</STRONG><DD>
 <P>
-A character string representing the current process.
+
+<FONT SIZE=-1>A</FONT> character string representing the current process.
 
 </DL></DL>
 <P>
@@ -352,12 +353,14 @@ The format of the readdir
 <PRE>        readdir(entry)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>entry:</STRONG><DD>
 <P>
-Specifies a pointer to a DIR structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>DIR</FONT> structure.
 
 </DL></DL>
 <P>
@@ -365,30 +368,31 @@ Specifies a pointer to a DIR structure.
 <H2><A NAME="ReadPICTImage">ReadPICTImage</A></H2>
 <P>
 Method ReadPICTImage reads an Apple Macintosh QuickDraw/PICT image file
-using MacOS QuickDraw routines and returns it. It allocates the memory
+using MacOS QuickDraw methods and returns it. It allocates the memory
 necessary for the new Image structure and returns a pointer to the new
 image.
 
 <P>
-This routine was written and contributed by <A
+This method was written and contributed by <A
 HREF="mailto:spd@daphne.cps.unizar.es">spd@daphne.cps.unizar.es</A> (feel
 free to copy and use it as you want. No warranty).
 
 <P>
-The format of the ReadPICTImage routine is:
+The format of the ReadPICTImage method is:
 
 <P>
-<PRE>        image=ReadPICTImage(image_info)
+<PRE>    void ProcessPendingEvents(const char *text)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
 <P>
-Method ReadPICTImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
-read.
+Method ReadPICTImage returns a pointer to the image after reading. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a a memory
+shortage or if the image cannot be read.
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
@@ -409,18 +413,20 @@ Method seekdir sets the position of the next <CODE>readdir()</CODE>
 operation on the directory stream.
 
 <P>
-The format of the seekdir routine is:
+The format of the seekdir method is:
 
 <P>
 <PRE>        seekdir(entry,position)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>entry:</STRONG><DD>
 <P>
-Specifies a pointer to a DIR structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>DIR</FONT> structure.
 
 <DT><STRONG>position:</STRONG><DD>
 <P>
@@ -434,13 +440,14 @@ specifies the position associated with the directory stream.
 Method SetApplicationType sets the file type of an image.
 
 <P>
-The format of the SetApplicationType routine is:
+The format of the SetApplicationType method is:
 
 <P>
 <PRE>        SetApplicationType(filename,magick,application)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>filename:</STRONG><DD>
@@ -461,23 +468,23 @@ Specifies the type of the application.
 <H2><A NAME="telldir">telldir</A></H2>
 <P>
 <PRE> Method telldir returns the current location associated  with  the
+ named directory stream.
 </PRE>
 <P>
-<PRE> named directory stream.
-</PRE>
-<P>
-The format of the telldir routine is:
+The format of the telldir method is:
 
 <P>
 <PRE>        telldir(entry)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>entry:</STRONG><DD>
 <P>
-Specifies a pointer to a DIR structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>DIR</FONT> structure.
 
 </DL></DL>
 </BODY>

@@ -70,9 +70,9 @@
 %  particular color.  It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  The format of the BorderImage routine is:
+%  The format of the BorderImage method is:
 %
-%      bordered_image=BorderImage(image,border_info)
+%      Image *BorderImage(const Image *image,const RectangleInfo *border_info)
 %
 %  A description of each parameter follows:
 %
@@ -127,9 +127,9 @@ Export Image *BorderImage(const Image *image,const RectangleInfo *border_info)
 %  particular color.  It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  The format of the FrameImage routine is:
+%  The format of the FrameImage method is:
 %
-%      framed_image=FrameImage(image,frame_info)
+%      Image *FrameImage(const Image *image,const FrameInfo *frame_info)
 %
 %  A description of each parameter follows:
 %
@@ -379,9 +379,10 @@ Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
 %  Method RaiseImage lightens and darkens the edges of an image to give a
 %  3-D raised or lower effect.
 %
-%  The format of the RaiseImage routine is:
+%  The format of the RaiseImage method is:
 %
-%      RaiseImage(image,raise_info,raised)
+%      void RaiseImage(Image *image,const RectangleInfo *raise_info,
+%        const int raised)
 %
 %  A description of each parameter follows:
 %

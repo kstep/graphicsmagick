@@ -81,9 +81,9 @@ const char
 %  specified by the given path and directory name.  True is returned if
 %  the delegates file is read and at least one delegate is noted.
 %
-%  The format of the ReadDelegates routine is:
+%  The format of the ReadDelegates method is:
 %
-%     status=ReadDelegates(path,directory)
+%      void DestroyDelegateInfo(void)
 %
 %  A description of each parameter follows:
 %
@@ -216,7 +216,7 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
 %  Method DestroyDelegateInfo deallocates memory associated with the delegates
 %  list.
 %
-%  The format of the DestroyDelegateInfo routine is:
+%  The format of the DestroyDelegateInfo method is:
 %
 %      DestroyDelegateInfo(image_info)
 %
@@ -262,9 +262,10 @@ Export void DestroyDelegateInfo(void)
 %  Method GetDelegateInfo returns any delegates associated with the specified
 %  tag.  True is returned if a delegate is found, otherwise False.
 %
-%  The format of the GetDelegateInfo routine is:
+%  The format of the GetDelegateInfo method is:
 %
-%     status=GetDelegateInfo(decode_tag,encode_tag,delegate_info)
+%      unsigned int GetDelegateInfo(const char *decode_tag,
+%        const char *encode_tag,DelegateInfo *delegate_info)
 %
 %  A description of each parameter follows:
 %
@@ -358,9 +359,10 @@ Export unsigned int GetDelegateInfo(const char *decode_tag,
 %  Method GetDelegateCommand replaces any embedded formatting characters with
 %  the appropriate image attribute and returns the resulting command.
 %
-%  The format of the GetDelegateCommand routine is:
+%  The format of the GetDelegateCommand method is:
 %
-%      command=GetDelegateCommand(image_info,image,decode_tag,encode_tag)
+%      char *GetDelegateCommand(const ImageInfo *image_info,const Image *image,
+%        const char *decode_tag,const char *encode_tag)
 %
 %  A description of each parameter follows:
 %
@@ -432,9 +434,10 @@ Export char *GetDelegateCommand(const ImageInfo *image_info,const Image *image,
 %  the appropriate image attribute and executes the resulting command.  False
 %  is returned if the commands execute with success otherwise True.
 %
-%  The format of the InvokeDelegate routine is:
+%  The format of the InvokeDelegate method is:
 %
-%      InvokeDelegate(image_info,image,decode_tag,encode_tag)
+%      unsigned int InvokeDelegate(const ImageInfo *image_info,
+%        Image *image,const char *decode_tag,const char *encode_tag)
 %
 %  A description of each parameter follows:
 %
@@ -659,9 +662,9 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
 %
 %  Method ListDelegateInfo lists the image formats to a file.
 %
-%  The format of the ListDelegateInfo routine is:
+%  The format of the ListDelegateInfo method is:
 %
-%      ListDelegateInfo(file)
+%      void ListDelegateInfo(FILE *file)
 %
 %  A description of each parameter follows.
 %
@@ -750,9 +753,9 @@ Export void ListDelegateInfo(FILE *file)
 %  returns the address of the first delegate.  If the delegate is NULL, just
 %  the address of the first delegate is returned.
 %
-%  The format of the SetDelegateInfo routine is:
+%  The format of the SetDelegateInfo method is:
 %
-%     delegate_info=SetDelegateInfo(delegate_info)
+%      DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
 %
 %  A description of each parameter follows:
 %

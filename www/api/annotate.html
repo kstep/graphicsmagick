@@ -34,16 +34,10 @@ annotate - Methods to Annotate an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>AnnotateImage</STRONG>(image,annotate_info)
+void <STRONG>AnnotateImage</STRONG>(Image*image,constAnnotateInfo*annotate_info)
 
 <P>
-cloned_info=<STRONG>CloneAnnotateInfo</STRONG>(image_info,annotate_info)
-
-<P>
-<STRONG>DestroyAnnotateInfo</STRONG>(annotate_info)
-
-<P>
-<STRONG>GetAnnotateInfo</STRONG>(image_info,annotate_info)
+void <STRONG>DestroyAnnotateInfo</STRONG>(AnnotateInfo*annotate_info)
 
 <P>
 <HR>
@@ -57,13 +51,14 @@ annotation can include the image filename, type, width, height, or scene
 number by embedding special format characters.
 
 <P>
-The format of the AnnotateImage routine is:
+The format of the AnnotateImage method is:
 
 <P>
-<PRE>        AnnotateImage(image,annotate_info)
+<PRE>        void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
@@ -79,23 +74,27 @@ The address of a AnnotateInfo structure.
 <HR>
 <H2><A NAME="CloneAnnotateInfo">CloneAnnotateInfo</A></H2>
 <P>
-Method CloneAnnotateInfo makes a duplicate of the given annotate info, or
-if annotate info is NULL, a new one.
+Method CloneAnnotateInfo makes a duplicate of the given annotate info, or if annotate info is 
+<FONT SIZE=-1>NULL,</FONT> a new one.
+
 
 <P>
-The format of the CloneAnnotateInfo routine is:
+The format of the CloneAnnotateInfo method is:
 
 <P>
-<PRE>        cloned_info=CloneAnnotateInfo(image_info,annotate_info)
+<PRE>    AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
+      const AnnotateInfo *annotate_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>cloned_info:</STRONG><DD>
 <P>
-Method CloneAnnotateInfo returns a duplicate of the given annotate info, or
-if annotate info is NULL a new one.
+Method CloneAnnotateInfo returns a duplicate of the given annotate info, or if annotate info is 
+<FONT SIZE=-1>NULL</FONT> a new one.
+
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
@@ -114,13 +113,14 @@ Method DestroyAnnotateInfo deallocates memory associated with an
 AnnotateInfo structure.
 
 <P>
-The format of the DestroyAnnotateInfo routine is:
+The format of the DestroyAnnotateInfo method is:
 
 <P>
-<PRE>        DestroyAnnotateInfo(annotate_info)
+<PRE>        void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>annotate_info:</STRONG><DD>
@@ -135,13 +135,15 @@ Specifies a pointer to an AnnotateInfo structure.
 Method GetAnnotateInfo initializes the AnnotateInfo structure.
 
 <P>
-The format of the GetAnnotateInfo routine is:
+The format of the GetAnnotateInfo method is:
 
 <P>
-<PRE>        GetAnnotateInfo(image_info,annotate_info)
+<PRE>    void GetAnnotateInfo(const ImageInfo *image_info,
+      AnnotateInfo *annotate_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image_info:</STRONG><DD>

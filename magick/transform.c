@@ -70,9 +70,9 @@
 %  one.  It allocates the memory necessary for the new Image structure and
 %  returns a pointer to the new image.
 %
-%  The format of the ChopImage routine is:
+%  The format of the ChopImage method is:
 %
-%      chop_image=ChopImage(image,chop_info)
+%      Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
 %
 %  A description of each parameter follows:
 %
@@ -226,9 +226,9 @@ Export Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
 %  Method CoalesceImages merges a sequence of images.  This is useful for GIF
 %  and MNG animation sequences that have page offsets and disposal methods.
 %
-%  The format of the CoalesceImages routine is:
+%  The format of the CoalesceImages method is:
 %
-%      CoalesceImages(images)
+%      void CoalesceImages(Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -367,13 +367,13 @@ Export void CoalesceImages(Image *images)
 %
 %  Method CropImage creates a new image that is a subregion of an existing
 %  one.  It allocates the memory necessary for the new Image structure and
-%  returns a pointer to the new image.  This routine is optimized to preserve
+%  returns a pointer to the new image.  This method is optimized to preserve
 %  the runlength encoding.  That is, the cropped image will always use less
 %  memory than the original.
 %
-%  The format of the CropImage routine is:
+%  The format of the CropImage method is:
 %
-%      cropped_image=CropImage(image,crop_info)
+%      Image *CropImage(const Image *image,const RectangleInfo *crop_info)
 %
 %  A description of each parameter follows:
 %
@@ -653,9 +653,9 @@ Export Image *CropImage(const Image *image,const RectangleInfo *crop_info)
 %  Method DeconstructImages breaks down an image sequence into constituent
 %  parts.  This is useful for creating GIF or MNG animation sequences.
 %
-%  The format of the DeconstructImages routine is:
+%  The format of the DeconstructImages method is:
 %
-%      DeconstructImages(images)
+%      void DeconstructImages(Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -842,9 +842,9 @@ Export void DeconstructImages(Image *images)
 %  vertical direction It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  The format of the FlipImage routine is:
+%  The format of the FlipImage method is:
 %
-%      flipped_image=FlipImage(image)
+%      Image *FlipImage(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -958,9 +958,9 @@ Export Image *FlipImage(const Image *image)
 %  horizontal direction It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  The format of the FlopImage routine is:
+%  The format of the FlopImage method is:
 %
-%      flopped_image=FlopImage(image)
+%      Image *FlopImage(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1074,9 +1074,10 @@ Export Image *FlopImage(const Image *image)
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the RollImage routine is:
+%  The format of the RollImage method is:
 %
-%      rolled_image=RollImage(image,x_offset,y_offset)
+%      Image *RollImage(const Image *image,const int x_offset,
+%        const int y_offset)
 %
 %  A description of each parameter follows:
 %

@@ -33,13 +33,13 @@ memory - ImageMagick Memory Allocation Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-memory=<STRONG>AllocateMemory</STRONG>(size)
+void* <STRONG>AllocateMemory</STRONG>(constsize_tsize)
 
 <P>
-<STRONG>FreeMemory</STRONG>(memory)
+void <STRONG>FreeMemory</STRONG>(void*memory)
 
 <P>
-memory=<STRONG>ReallocateMemory</STRONG>(memory,size)
+void* <STRONG>ReallocateMemory</STRONG>(void*memory,constsize_tsize)
 
 <P>
 <HR>
@@ -52,13 +52,14 @@ Method AllocateMemory returns a pointer to a block of at least size bytes
 suitably aligned for any use.
 
 <P>
-The format of the AllocateMemory routine is:
+The format of the AllocateMemory method is:
 
 <P>
-<PRE>        memory=AllocateMemory(size)
+<PRE>        void *AllocateMemory(const size_t size)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">memory:</A></STRONG><DD>
@@ -78,13 +79,14 @@ Specifies the size of the memory to return.
 Method FreeMemory frees memory that has already been allocated.
 
 <P>
-The format of the FreeMemory routine is:
+The format of the FreeMemory method is:
 
 <P>
-<PRE>        FreeMemory(memory)
+<PRE>        void FreeMemory(void *memory)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>span:</STRONG><DD>
@@ -101,13 +103,14 @@ pointer to the (possibly moved) block. The contents will be unchanged up to
 the lesser of the new and old sizes.
 
 <P>
-The format of the ReallocateMemory routine is:
+The format of the ReallocateMemory method is:
 
 <P>
-<PRE>        memory=ReallocateMemory(memory,size)
+<PRE>        void *ReallocateMemory(void *memory,const size_t size)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>memory:</STRONG><DD>

@@ -73,9 +73,9 @@
 %  returns it.  It allocates the memory necessary for the new Image structure
 %  and returns a pointer to the new image.
 %
-%  The format of the ReadHDFImage routine is:
+%  The format of the ReadHDFImage method is:
 %
-%      image=ReadHDFImage(image_info)
+%      Image *ReadHDFImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -344,9 +344,9 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
 %  Method WriteHDFImage writes an image in the Hierarchial Data Format image
 %  format.
 %
-%  The format of the WriteHDFImage routine is:
+%  The format of the WriteHDFImage method is:
 %
-%      status=WriteHDFImage(image_info,image)
+%      unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

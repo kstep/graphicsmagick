@@ -69,9 +69,9 @@
 %  It allocates the memory necessary for the new Image structure and returns
 %  a pointer to the new image.
 %
-%  The format of the ReadPNMImage routine is:
+%  The format of the ReadPNMImage method is:
 %
-%      image=ReadPNMImage(image_info)
+%      Image *ReadPNMImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -598,9 +598,9 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
 %  Procedure WritePNMImage writes an image to a file in the PNM rasterfile
 %  format.
 %
-%  The format of the WritePNMImage routine is:
+%  The format of the WritePNMImage method is:
 %
-%      status=WritePNMImage(image_info,image)
+%      unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

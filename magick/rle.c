@@ -69,9 +69,9 @@
 %  image file and returns it.  It allocates the memory necessary for the new
 %  Image structure and returns a pointer to the new image.
 %
-%  The format of the ReadRLEImage routine is:
+%  The format of the ReadRLEImage method is:
 %
-%      image=ReadRLEImage(image_info)
+%      Image *ReadRLEImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

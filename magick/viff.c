@@ -69,9 +69,9 @@
 %  it.  It allocates the memory necessary for the new Image structure and
 %  returns a pointer to the new image.
 %
-%  The format of the ReadVIFFImage routine is:
+%  The format of the ReadVIFFImage method is:
 %
-%      image=ReadVIFFImage(image_info)
+%      Image *ReadVIFFImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -696,9 +696,9 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
 %
 %  Method WriteVIFFImage writes an image to a file in the VIFF image format.
 %
-%  The format of the WriteVIFFImage routine is:
+%  The format of the WriteVIFFImage method is:
 %
-%      status=WriteVIFFImage(image_info,image)
+%      unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

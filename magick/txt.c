@@ -69,9 +69,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadTXTImage routine is:
+%  The format of the ReadTXTImage method is:
 %
-%      image=ReadTXTImage(image_info)
+%      Image *ReadTXTImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -286,9 +286,9 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
 %
 %  Method WriteTXTImage writes the pixel values as text numbers.
 %
-%  The format of the WriteTXTImage routine is:
+%  The format of the WriteTXTImage method is:
 %
-%      status=WriteTXTImage(image_info,image)
+%      unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

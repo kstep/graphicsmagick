@@ -69,9 +69,9 @@
 %  and returns it.  It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  The format of the ReadYUVImage routine is:
+%  The format of the ReadYUVImage method is:
 %
-%      image=ReadYUVImage(image_info)
+%      Image *ReadYUVImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -290,9 +290,9 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
 %  Method WriteYUVImage writes an image to a file in the digital YUV
 %  (CCIR 601 4:1:1) format.
 %
-%  The format of the WriteYUVImage routine is:
+%  The format of the WriteYUVImage method is:
 %
-%      status=WriteYUVImage(image_info,image)
+%      unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -69,9 +69,9 @@
 %  It allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadSFWImage routine is:
+%  The format of the ReadSFWImage method is:
 %
-%      image=ReadSFWImage(image_info)
+%      Image *ReadSFWImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

@@ -74,9 +74,9 @@
 %  returns it.  It allocates the memory necessary for the new Image structure
 %  and returns a pointer to the new image.
 %
-%  The format of the ReadPDFImage routine is:
+%  The format of the ReadPDFImage method is:
 %
-%      image=ReadPDFImage(image_info)
+%      Image *ReadPDFImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -331,9 +331,9 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
 %  Method WritePDFImage writes an image in the Portable Document image
 %  format.
 %
-%  The format of the WritePDFImage routine is:
+%  The format of the WritePDFImage method is:
 %
-%      status=WritePDFImage(image_info,image)
+%      unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

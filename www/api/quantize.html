@@ -39,31 +39,28 @@ quantize - Methods to Reduce the Number of Unique Colors in an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-cloned_info=<STRONG>CloneQuantizeInfo</STRONG>(quantize_info)
+cloned_info= <STRONG>CloneQuantizeInfo</STRONG>(quantize_info)
 
 <P>
-<STRONG>DestroyCubeInfo</STRONG>(cube_info))
+<PRE> B&lt;DestroyCubeInfo&gt;(cube_info))
+</PRE>
+<P>
+<PRE> B&lt;DestroyQuantizeInfo&gt;(quantize_info)
+</PRE>
+<P>
+<PRE> B&lt;GetQuantizeInfo&gt;(quantize_info)
+</PRE>
+<P>
+status= <STRONG>MapImage</STRONG>(image,map_image,dither)
 
 <P>
-<STRONG>DestroyQuantizeInfo</STRONG>(quantize_info)
+status= <STRONG>MapImages</STRONG>(images,map_image,dither)
 
 <P>
-<STRONG>GetQuantizeInfo</STRONG>(quantize_info)
+status= <STRONG>QuantizationError</STRONG>(image)
 
 <P>
-status=<STRONG>MapImage</STRONG>(image,map_image,dither)
-
-<P>
-status=<STRONG>MapImages</STRONG>(images,map_image,dither)
-
-<P>
-status=<STRONG>QuantizationError</STRONG>(image)
-
-<P>
-status=<STRONG>QuantizeImage</STRONG>(quantize_info,image)
-
-<P>
-status=<STRONG>QuantizeImages</STRONG>(quantize_info,images)
+status= <STRONG>QuantizeImage</STRONG>(quantize_info,image)
 
 <P>
 <HR>
@@ -72,23 +69,26 @@ status=<STRONG>QuantizeImages</STRONG>(quantize_info,images)
 <HR>
 <H2><A NAME="CloneQuantizeInfo">CloneQuantizeInfo</A></H2>
 <P>
-Method CloneQuantizeInfo makes a duplicate of the given quantize info, or
-if quantize info is NULL, a new one.
+Method CloneQuantizeInfo makes a duplicate of the given quantize info, or if quantize info is 
+<FONT SIZE=-1>NULL,</FONT> a new one.
+
 
 <P>
-The format of the CloneQuantizeInfo routine is:
+The format of the CloneQuantizeInfo method is:
 
 <P>
 <PRE>        cloned_info=CloneQuantizeInfo(quantize_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">cloned_info:</A></STRONG><DD>
 <P>
-Method CloneQuantizeInfo returns a duplicate of the given quantize info, or
-if image info is NULL a new one.
+Method CloneQuantizeInfo returns a duplicate of the given quantize info, or if image info is 
+<FONT SIZE=-1>NULL</FONT> a new one.
+
 
 <DT><STRONG>quantize_info:</STRONG><DD>
 <P>
@@ -102,13 +102,14 @@ a structure of type info.
 Method DestroyCubeInfo deallocates memory associated with an image.
 
 <P>
-The format of the DestroyCubeInfo routine is:
+The format of the DestroyCubeInfo method is:
 
 <P>
 <PRE>        DestroyCubeInfo(cube_info))
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>cube_info:</STRONG><DD>
@@ -124,13 +125,14 @@ Method DestroyQuantizeInfo deallocates memory associated with an
 QuantizeInfo structure.
 
 <P>
-The format of the DestroyQuantizeInfo routine is:
+The format of the DestroyQuantizeInfo method is:
 
 <P>
 <PRE>        DestroyQuantizeInfo(quantize_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>quantize_info:</STRONG><DD>
@@ -145,13 +147,14 @@ Specifies a pointer to an QuantizeInfo structure.
 Method GetQuantizeInfo initializes the QuantizeInfo structure.
 
 <P>
-The format of the GetQuantizeInfo routine is:
+The format of the GetQuantizeInfo method is:
 
 <P>
 <PRE>        GetQuantizeInfo(quantize_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>quantize_info:</STRONG><DD>
@@ -167,13 +170,14 @@ MapImage replaces the colors of an image with the closest color from a
 reference image.
 
 <P>
-The format of the MapImage routine is:
+The format of the MapImage method is:
 
 <P>
 <PRE>        status=MapImage(image,map_image,dither)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -199,13 +203,14 @@ MapImages replaces the colors of a sequence of images with the closest
 color from a reference image.
 
 <P>
-The format of the MapImage routine is:
+The format of the MapImage method is:
 
 <P>
 <PRE>        status=MapImages(images,map_image,dither)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -227,11 +232,9 @@ image.
 <HR>
 <H2><A NAME="QuantizationError">QuantizationError</A></H2>
 <P>
-Method QuantizationError measures the difference between the original and
-quantized images. This difference is the total quantization error. The
-error is computed by summing over all pixels in an image the distance
-squared in RGB space between each reference pixel value and its quantized
-value. These values are computed:
+Method QuantizationError measures the difference between the original and quantized images. This difference is the total quantization error. The error is computed by summing over all pixels in an image the distance squared in 
+<FONT SIZE=-1>RGB</FONT> space between each reference pixel value and its quantized value. These values are computed:
+
 
 <DL><DL>
 <DT><STRONG>mean_error_per_pixel:</STRONG><DD>
@@ -254,13 +257,14 @@ your image.
 
 </DL></DL>
 <P>
-The format of the QuantizationError routine is:
+The format of the QuantizationError method is:
 
 <P>
 <PRE>        status=QuantizationError(image)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -280,13 +284,14 @@ algorithm is to minimize the difference between the input and output image
 while minimizing the processing time.
 
 <P>
-The format of the QuantizeImage routine is:
+The format of the QuantizeImage method is:
 
 <P>
 <PRE>        status=QuantizeImage(quantize_info,image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>quantize_info:</STRONG><DD>
@@ -308,13 +313,15 @@ algorithm is to minimize the difference between the input and output images
 while minimizing the processing time.
 
 <P>
-The format of the QuantizeImages routine is:
+The format of the QuantizeImages method is:
 
 <P>
-<PRE>        status=QuantizeImages(quantize_info,images)
+<PRE>    unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
+      Image *images)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>quantize_info:</STRONG><DD>

@@ -71,9 +71,9 @@
 %  methods in that only the iptc profile information is useful in the
 %  returned image.
 %
-%  The format of the ReadIPTCImage routine is:
+%  The format of the ReadIPTCImage method is:
 %
-%      image=ReadIPTCImage(image_info)
+%      Image *ReadIPTCImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -155,9 +155,9 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
 %
 %  Method WriteIPTCImage writes an image in the IPTC format.
 %
-%  The format of the WriteIPTCImage routine is:
+%  The format of the WriteIPTCImage method is:
 %
-%      status=WriteIPTCImage(image_info,image)
+%      unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

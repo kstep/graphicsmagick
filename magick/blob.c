@@ -69,9 +69,10 @@
 %  Method BlobToImage implements direct to memory image formats.  It returns
 %  the blob as an image.
 %
-%  The format of the BlobToImage routine is:
+%  The format of the BlobToImage method is:
 %
-%      image=BlobToImage(blob,length)
+%      Image *BlobToImage(const ImageInfo *image_info,const char *blob,
+%        const unsigned long length)
 %
 %  A description of each parameter follows:
 %
@@ -159,9 +160,9 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
 %  Method CloseBlob closes a file associated with the image.  If the
 %  filename prefix is '|', the file is a pipe and is closed with PipeClose.
 %
-%  The format of the CloseBlob routine is:
+%  The format of the CloseBlob method is:
 %
-%      CloseBlob(image)
+%      void CloseBlob(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -221,9 +222,9 @@ Export void CloseBlob(Image *image)
 %  Method EOFBlob returns a non-zero value when EOF has been detected reading
 %  from a blob or file.
 %
-%  The format of the EOFBlob routine is:
+%  The format of the EOFBlob method is:
 %
-%      status=EOFBlob(image)
+%      int EOFBlob(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -255,9 +256,9 @@ Export int EOFBlob(const Image *image)
 %
 %  Method FlushBlob flushes the datastream if it is a file.
 %
-%  The format of the FlushBlob routine is:
+%  The format of the FlushBlob method is:
 %
-%      status=FlushBlob(image)
+%      int FlushBlob(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -289,9 +290,9 @@ Export int FlushBlob(const Image *image)
 %
 %  Method GetBlobInfo initializes the BlobInfo structure.
 %
-%  The format of the GetBlobInfo routine is:
+%  The format of the GetBlobInfo method is:
 %
-%      GetBlobInfo(blob_info)
+%      void GetBlobInfo(BlobInfo *blob_info)
 %
 %  A description of each parameter follows:
 %
@@ -324,9 +325,9 @@ Export void GetBlobInfo(BlobInfo *blob_info)
 %  character is read or an end-of-file  condition is encountered.
 %  from a blob or file.
 %
-%  The format of the GetStringBlob routine is:
+%  The format of the GetStringBlob method is:
 %
-%      status=GetStringBlob(image,string)
+%      char *GetStringBlob(Image *image,char *string)
 %
 %  A description of each parameter follows:
 %
@@ -371,9 +372,10 @@ Export char *GetStringBlob(Image *image,char *string)
 %  Method ImageToBlob implements direct to memory image formats.  It returns
 %  the image as a blob and its length.
 %
-%  The format of the ImageToBlob routine is:
+%  The format of the ImageToBlob method is:
 %
-%      blob=ImageToBlob(image_info,image,length)
+%      char *ImageToBlob(const ImageInfo *image_info,Image *image,
+%        unsigned long *length)
 %
 %  A description of each parameter follows:
 %
@@ -498,9 +500,10 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
 %  and compressed for type 'w'.  If the filename prefix is '|', it is piped
 %  to or from a system command.
 %
-%  The format of the OpenBlob routine is:
+%  The format of the OpenBlob method is:
 %
-%      status=OpenBlob(image_info,image,type)
+%      unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
+%        const char *type)
 %
 %  A description of each parameter follows:
 %
@@ -682,9 +685,10 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %  Method ReadBlob reads data from the blob or image file and returns it.  It
 %  returns the number of bytes read.
 %
-%  The format of the ReadBlob routine is:
+%  The format of the ReadBlob method is:
 %
-%      count=ReadBlob(image,number_bytes,data);
+%      unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
+%        char *data)
 %
 %  A description of each parameter follows:
 %
@@ -752,9 +756,9 @@ Export unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
 %  Method SeekBlob sets the offset in bytes from the beginning of a blob or
 %  file.
 %
-%  The format of the SeekBlob routine is:
+%  The format of the SeekBlob method is:
 %
-%      status=SeekBlob(image,offset,whence)
+%      int SeekBlob(Image *image,const long offset,const int whence)
 %
 %  A description of each parameter follows:
 %
@@ -828,9 +832,9 @@ Export int SeekBlob(Image *image,const long offset,const int whence)
 %  is the size in bytes to add to a blob when writing to a blob exceeds its
 %  current length.
 %
-%  The format of the SetBlobQuantum routine is:
+%  The format of the SetBlobQuantum method is:
 %
-%      status=SetBlobQuantum(blob_info,quantum)
+%      void SetBlobQuantum(BlobInfo *blob_info,const unsigned long quantum)
 %
 %  A description of each parameter follows:
 %
@@ -860,9 +864,9 @@ Export void SetBlobQuantum(BlobInfo *blob_info,const unsigned long quantum)
 %
 %  Method TellBlob obtains the current value of the blob or file position.
 %
-%  The format of the TellBlob routine is:
+%  The format of the TellBlob method is:
 %
-%      status=TellBlob(image)
+%      int TellBlob(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -895,9 +899,10 @@ Export int TellBlob(const Image *image)
 %  Method WriteBlob writes data to a blob or image file.  It returns the
 %  number of items written.
 %
-%  The format of the WriteBlob routine is:
+%  The format of the WriteBlob method is:
 %
-%      count=WriteBlob(image,size,number_items,data)
+%      unsigned long WriteBlob(Image *image,const unsigned long number_bytes,
+%        const char *data)
 %
 %  A description of each parameter follows:
 %

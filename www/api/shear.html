@@ -32,11 +32,8 @@ shear - Methods to Shear or Rotate an Image by an Arbitrary Angle
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>RotateImage</STRONG>(image,degrees,crop,sharpen)
-
-<P>
-<STRONG>ShearImage</STRONG>(image,x_shear,y_shear,crop)
-
+<PRE> B&lt;RotateImage&gt;(image,degrees,crop,sharpen)
+</PRE>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -44,35 +41,33 @@ shear - Methods to Shear or Rotate an Image by an Arbitrary Angle
 <HR>
 <H2><A NAME="RotateImage">RotateImage</A></H2>
 <P>
-Method RotateImage creates a new image that is a rotated copy of an
-existing one. Positive angles rotate counter-clockwise (right-hand rule),
-while negative angles rotate clockwise. Rotated images are usually larger
-than the originals and have 'empty' triangular corners. X axis. Empty
-triangles left over from shearing the image are filled with the color
-defined by the pixel at location (0,0). RotateImage allocates the memory
-necessary for the new Image structure and returns a pointer to the new
-image.
+Method RotateImage creates a new image that is a rotated copy of an existing one. Positive angles rotate counter-clockwise (right-hand rule), while negative angles rotate clockwise. Rotated images are usually larger than the originals and have 'empty' triangular corners. 
+<FONT SIZE=-1>X</FONT> axis. Empty triangles left over from shearing the image are filled with the color defined by the pixel at location (0,0). RotateImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.
+
 
 <P>
-Method RotateImage is based on the paper ``A Fast Algorithm for General
-Raster Rotatation'' by Alan W. Paeth. RotateImage is adapted from a similar
-routine based on the Paeth paper written by Michael Halle of the Spatial
-Imaging Group, MIT Media Lab.
+Method RotateImage is based on the paper 
+<FONT SIZE=-1>``A</FONT> Fast Algorithm for General Raster Rotatation'' by Alan 
+<FONT SIZE=-1>W.</FONT> Paeth. RotateImage is adapted from a similar method based on the Paeth paper written by Michael Halle of the Spatial Imaging Group, 
+<FONT SIZE=-1>MIT</FONT> Media Lab.
+
 
 <P>
-The format of the RotateImage routine is:
+The format of the RotateImage method is:
 
 <P>
 <PRE>        RotateImage(image,degrees,crop,sharpen)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">status:</A></STRONG><DD>
 <P>
-Method RotateImage returns a pointer to the image after rotating. A null
-image is returned if there is a memory shortage.
+Method RotateImage returns a pointer to the image after rotating. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
+shortage.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -84,47 +79,57 @@ Specifies the number of degrees to rotate the image.
 
 <DT><STRONG>crop:</STRONG><DD>
 <P>
-A value other than zero crops the corners of the rotated image and retains
-the original image size.
+
+<FONT SIZE=-1>A</FONT> value other than zero crops the corners of the
+rotated image and retains the original image size.
 
 <DT><STRONG>sharpen:</STRONG><DD>
 <P>
-A value other than zero sharpens the image after it is rotated.
+
+<FONT SIZE=-1>A</FONT> value other than zero sharpens the image after it is
+rotated.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="ShearImage">ShearImage</A></H2>
 <P>
-Method ShearImage creates a new image that is a sheared copy of an existing
-one. Shearing slides one edge of an image along the X or Y axis, creating a
-parallelogram. An X direction shear slides an edge along the X axis, while
-a Y direction shear slides an edge along the Y axis. The amount of the
-shear is controlled by a shear angle. For X direction shears, x_shear is
-measured relative to the Y axis, and similarly, for Y direction shears
-y_shear is measured relative to the X axis. Empty triangles left over from
-shearing the image are filled with the color defined by the pixel at
-location (0,0). ShearImage allocates the memory necessary for the new Image
-structure and returns a pointer to the new image.
+Method ShearImage creates a new image that is a sheared copy of an existing one. Shearing slides one edge of an image along the 
+<FONT SIZE=-1>X</FONT> or 
+<FONT SIZE=-1>Y</FONT> axis, creating a parallelogram. An 
+<FONT SIZE=-1>X</FONT> direction shear slides an edge along the 
+<FONT SIZE=-1>X</FONT> axis, while a 
+<FONT SIZE=-1>Y</FONT> direction shear slides an edge along the 
+<FONT SIZE=-1>Y</FONT> axis. The amount of the shear is controlled by a shear angle. For 
+<FONT SIZE=-1>X</FONT> direction shears, x_shear is measured relative to the 
+<FONT SIZE=-1>Y</FONT> axis, and similarly, for 
+<FONT SIZE=-1>Y</FONT> direction shears y_shear is measured relative to the 
+<FONT SIZE=-1>X</FONT> axis. Empty triangles left over from shearing the image are filled with the color defined by the pixel at location (0,0). ShearImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.
+
 
 <P>
-Method ShearImage is based on the paper ``A Fast Algorithm for General
-Raster Rotatation'' by Alan W. Paeth.
+Method ShearImage is based on the paper 
+<FONT SIZE=-1>``A</FONT> Fast Algorithm for General Raster Rotatation'' by Alan 
+<FONT SIZE=-1>W.</FONT> Paeth.
+
 
 <P>
-The format of the ShearImage routine is:
+The format of the ShearImage method is:
 
 <P>
-<PRE>        ShearImage(image,x_shear,y_shear,crop)
+<PRE>    Image *ShearImage(const Image *image,const double x_shear,
+      const double y_shear,const unsigned int crop)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
 <P>
-Method ShearImage returns a pointer to the image after rotating. A null
-image is returned if there is a memory shortage.
+Method ShearImage returns a pointer to the image after rotating. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
+shortage.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -136,8 +141,9 @@ Specifies the number of degrees to shear the image.
 
 <DT><STRONG>crop:</STRONG><DD>
 <P>
-A value other than zero crops the corners of the rotated image and retains
-the original image size.
+
+<FONT SIZE=-1>A</FONT> value other than zero crops the corners of the
+rotated image and retains the original image size.
 
 </DL></DL>
 </BODY>

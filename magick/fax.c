@@ -69,9 +69,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadFAXImage routine is:
+%  The format of the ReadFAXImage method is:
 %
-%      image=ReadFAXImage(image_info)
+%      Image *ReadFAXImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -150,9 +150,9 @@ Export Image *ReadFAXImage(const ImageInfo *image_info)
 %  Procedure WriteFAXImage writes an image to a file in 1 dimensional Huffman
 %  encoded format.
 %
-%  The format of the WriteFAXImage routine is:
+%  The format of the WriteFAXImage method is:
 %
-%      status=WriteFAXImage(image_info,image)
+%      unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -76,9 +76,9 @@ static MagickInfo
 %  the specified tag.  If tag is NULL, the head of the image format list is
 %  returned.
 %
-%  The format of the GetMagickInfo routine is:
+%  The format of the GetMagickInfo method is:
 %
-%      magick_info=GetMagickInfo(tag)
+%      MagickInfo *GetMagickInfo(const char *tag)
 %
 %  A description of each parameter follows:
 %
@@ -777,9 +777,9 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 %
 %  Method ListMagickInfo lists the image formats to a.
 %
-%  The format of the ListMagickInfo routine is:
+%  The format of the ListMagickInfo method is:
 %
-%      ListMagickInfo(file)
+%      void ListMagickInfo(FILE *file)
 %
 %  A description of each parameter follows.
 %
@@ -828,9 +828,14 @@ Export void ListMagickInfo(FILE *file)
 %  the saving of more than one frame to the same file or blob, whether the
 %  format supports native in-memory I/O, and a brief description of the format.
 %
-%  The format of the RegisterMagickInfo routine is:
+%  The format of the RegisterMagickInfo method is:
 %
-%      magick_info=RegisterMagickInfo(tag,decoder,encoder,magick,adjoin,
+%      MagickInfo *RegisterMagickInfo(const char *tag,
+%        Image *(*decoder)(const ImageInfo *),
+%        unsigned int (*encoder)(const ImageInfo *,Image *),
+%        unsigned int (*magick)(const unsigned char *,const unsigned int),
+%        const unsigned int adjoin,const unsigned int blob_support,
+%        const char *description)
 %        blob_support,description))
 %
 %  A description of each parameter follows:

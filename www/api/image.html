@@ -76,139 +76,115 @@ image - ImageMagick Image Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-allocated_image=<STRONG>AllocateImage</STRONG>(image_info)
+Image* <STRONG>AllocateImage</STRONG>(constImageInfo*image_info)
 
 <P>
-<STRONG>AllocateNextImage</STRONG>(image_info,image)
+void <STRONG>AllocateNextImage</STRONG>(constImageInfo*image_info,Image*image)
 
 <P>
-status=<STRONG>AnimateImages</STRONG>(image_info,image)
+unsigned int <STRONG>AnimateImages</STRONG>(constImageInfo*image_info,Image*image)
 
 <P>
-<STRONG>AppendImages</STRONG>(images,stack)
+Image* <STRONG>AppendImages</STRONG>(Image*images,constunsigned intstack)
 
 <P>
-averaged_image=<STRONG>AverageImages</STRONG>(images)
+Image* <STRONG>AverageImages</STRONG>(constImage*images)
 
 <P>
-clone_image=<STRONG>CloneImage</STRONG>(image,columns,rows,clone_pixels)
+ImageInfo* <STRONG>CloneImageInfo</STRONG>(constImageInfo*image_info)
 
 <P>
-cloned_info=<STRONG>CloneImageInfo</STRONG>(image_info)
+void <STRONG>CommentImage</STRONG>(Image*image,constchar*comments)
 
 <P>
-<STRONG>CommentImage</STRONG>(image,comments)
+void <STRONG>CondenseImage</STRONG>(Image*image)
 
 <P>
-<STRONG>CompositeImage</STRONG>(image,compose,composite_image,x_offset,y_offset)
+<PRE> B&lt;CycleColormapImage&gt;(image,amount)
+</PRE>
+<P>
+void <STRONG>DescribeImage</STRONG>(Image*image,FILE*file,constunsigned intverbose)
 
 <P>
-<STRONG>CondenseImage</STRONG>(image)
+void <STRONG>DestroyImage</STRONG>(Image*image)
 
 <P>
-image=<STRONG>CreateImage</STRONG>(width,height,red,green,blue,opacity)
+void <STRONG>DestroyImageInfo</STRONG>(ImageInfo*image_info)
 
 <P>
-<STRONG>CycleColormapImage</STRONG>(image,amount)
+void <STRONG>DestroyImages</STRONG>(Image*image)
 
 <P>
-<STRONG>DescribeImage</STRONG>(image,file,verbose)
+unsigned int <STRONG>DisplayImages</STRONG>(constImageInfo*image_info,Image*image)
 
 <P>
-<STRONG>DestroyImage</STRONG>(image)
+void <STRONG>GetImageInfo</STRONG>(ImageInfo*image_info)
 
 <P>
-<STRONG>DestroyImageInfo</STRONG>(image_info)
+ImageType <STRONG>GetImageType</STRONG>(Image*image)
 
 <P>
-<STRONG>DestroyImages</STRONG>(image)
+unsigned int <STRONG>GetNumberScenes</STRONG>(constImage*image)
 
 <P>
-status=<STRONG>DisplayImages</STRONG>(image_info,image)
+unsigned int <STRONG>IsGeometry</STRONG>(constchar*geometry)
 
 <P>
-<STRONG>GetImageInfo</STRONG>(image_info)
+unsigned int <STRONG>IsGrayImage</STRONG>(Image*image)
 
 <P>
-type=<STRONG>GetImageType</STRONG>(image)
+unsigned int <STRONG>IsSubimage</STRONG>(constchar*geometry,constunsigned intpedantic)
 
 <P>
-scenes=<STRONG>GetNumberScenes</STRONG>(image)
+unsigned int <STRONG>IsTainted</STRONG>(constImage*image)
 
 <P>
-<STRONG>GetPixels</STRONG>(image,red_pixels,green_pixels,blue_pixels,opacity_pixels)
+void <STRONG>LabelImage</STRONG>(Image*image,constchar*label)
 
 <P>
-status=<STRONG>IsGeometry</STRONG>(geometry)
+void <STRONG>LayerImage</STRONG>(Image*image,constLayerTypelayer)
 
 <P>
-status=<STRONG>IsGrayImage</STRONG>(image)
+Image** <STRONG>ListToGroupImage</STRONG>(constImage*image,unsigned int*number_images)
 
 <P>
-status=<STRONG>IsSubimage</STRONG>(geometry,pedantic)
+void <STRONG>MatteImage</STRONG>(Image*image)
 
 <P>
-status=<STRONG>IsTainted</STRONG>(image)
+Image* <STRONG>PingImage</STRONG>(constImageInfo*image_info)
 
 <P>
-<STRONG>LabelImage</STRONG>(image,label)
+void <STRONG>RGBTransformImage</STRONG>(Image*image,constColorspaceTypecolorspace)
 
 <P>
-<STRONG>LayerImage</STRONG>(image,layer)
+Image* <STRONG>ReadImage</STRONG>(ImageInfo*image_info)
 
 <P>
-images=<STRONG>ListToGroupImage</STRONG>(images,number_images)
+Image* <STRONG>ReadImages</STRONG>(ImageInfo*image_info)
 
 <P>
-<STRONG>MatteImage</STRONG>(image)
+void <STRONG>SetImage</STRONG>(Image*image)
 
 <P>
-<STRONG>MogrifyImage</STRONG>(image_info,argc,argv,image)
+void <STRONG>SetImageInfo</STRONG>(ImageInfo*image_info,constunsigned intrectify)
 
 <P>
-<STRONG>MogrifyImages</STRONG>(image_info,argc,argv,images)
+void <STRONG>SyncImage</STRONG>(Image*image)
 
 <P>
-flags=<STRONG>ParseImageGeometry</STRONG>(image_geometry,x,y,width,height)
+void <STRONG>TextureImage</STRONG>(Image*image,Image*texture)
 
 <P>
-image=<STRONG>PingImage</STRONG>(image_info)
+void <STRONG>TransformRGBImage</STRONG>(Image*image,constColorspaceTypecolorspace)
 
 <P>
-<STRONG>RGBTransformImage</STRONG>(image,colorspace)
+void <STRONG>TransparentImage</STRONG>(Image*image,constchar*color)
 
 <P>
-image=<STRONG>ReadImage</STRONG>(image_info)
+unsigned int <STRONG>UncondenseImage</STRONG>(Image*image)
 
 <P>
-image=<STRONG>ReadImages</STRONG>(image_info)
-
-<P>
-<STRONG>SetImage</STRONG>(image)
-
-<P>
-<STRONG>SetImageInfo</STRONG>(image_info,rectify)
-
-<P>
-<STRONG>SyncImage</STRONG>(image)
-
-<P>
-<STRONG>TextureImage</STRONG>(image,texture)
-
-<P>
-<STRONG>TransformImage</STRONG>(image,crop_geometry,image_geometry)
-
-<P>
-<STRONG>TransformRGBImage</STRONG>(image,colorspace)
-
-<P>
-<STRONG>TransparentImage</STRONG>(image,color)
-
-<P>
-status=<STRONG>UncondenseImage</STRONG>(image)
-
-<P>
-status=<STRONG>WriteImage</STRONG>(image_info,image)
+unsigned int <STRONG>WriteImage</STRONG>(constImageInfo*image_info,Image*image)
 
 <P>
 <HR>
@@ -221,21 +197,23 @@ Method AllocateImage allocates an Image structure and initializes each
 field to a default value.
 
 <P>
-The format of the AllocateImage routine is:
+The format of the AllocateImage method is:
 
 <P>
-<PRE>        allocated_image=AllocateImage(image_info)
+<PRE>        Image *AllocateImage(const ImageInfo *image_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">allocated_image:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">allocated_image:</A></STRONG><DD>
 <P>
-Method AllocateImage returns a pointer to an image structure initialized to
-default values. A null image is returned if there is a memory shortage.
+Method AllocateImage returns a pointer to an image structure initialized to default values. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
 
-<DT><STRONG>image_info:</STRONG><DD>
+
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
@@ -248,20 +226,21 @@ Method AllocateNextImage allocates an Image structure and initializes each
 field to a default value.
 
 <P>
-The format of the AllocateNextImage routine is:
+The format of the AllocateNextImage method is:
 
 <P>
-<PRE>        AllocateNextImage(image_info,image)
+<PRE>        void AllocateNextImage(const ImageInfo *image_info,Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -270,28 +249,30 @@ The address of a structure of type Image.
 <HR>
 <H2><A NAME="AnimateImages">AnimateImages</A></H2>
 <P>
-Method AnimateImages displays one or more images to an X window.
+Method AnimateImages displays one or more images to an 
+<FONT SIZE=-1>X</FONT> window.
 
 <P>
-The format of the AllocateNextImage routine is:
+The format of the AllocateNextImage method is:
 
 <P>
-<PRE>        status=AnimateImages(image_info,image)
+<PRE>        unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
-Method DisplayImages returns True if the images are displayed in an X
-window, otherwise False is returned.
+Method DisplayImages returns True if the images are displayed in an 
+<FONT SIZE=-1>X</FONT> window, otherwise False is returned.
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -307,20 +288,21 @@ stack is false, rectangular images are stacked left-to-right otherwise
 top-to-bottom.
 
 <P>
-The format of the AppendImage routine is:
+The format of the AppendImage method is:
 
 <P>
-<PRE>        AppendImages(images,stack)
+<PRE>        Image *AppendImages(Image *images,const unsigned int stack)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>images:</STRONG><DD>
+<p><dt><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>stack:</STRONG><DD>
+<p><dt><STRONG>stack:</STRONG><DD>
 <P>
 An unsigned value other than stacks rectangular images top-to-bottom
 otherwise left-to-right.
@@ -334,20 +316,21 @@ Method AverageImages averages a set of images. All the input images must be
 the same size in pixels.
 
 <P>
-The format of the AverageImage routine is:
+The format of the AverageImage method is:
 
 <P>
-<PRE>        averaged_image=AverageImages(images)
+<PRE>        Image *AverageImages(const Image *images)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>averaged_image:</STRONG><DD>
+<p><dt><STRONG>averaged_image:</STRONG><DD>
 <P>
 Method AverageImages returns the mean pixel value for an image sequence.
 
-<DT><STRONG>images:</STRONG><DD>
+<p><dt><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
@@ -360,33 +343,36 @@ Method CloneImage returns a copy of all fields of the input image. The the
 pixel memory is allocated but the pixel data is not copied.
 
 <P>
-The format of the CloneImage routine is:
+The format of the CloneImage method is:
 
 <P>
-<PRE>        clone_image=CloneImage(image,columns,rows,clone_pixels)
+<PRE>    Image *CloneImage(const Image *image,const unsigned int columns,
+      const unsigned int rows,const unsigned int clone_pixels)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>clone_image:</STRONG><DD>
+<p><dt><STRONG>clone_image:</STRONG><DD>
 <P>
-Method CloneImage returns a pointer to the image after copying. A null
-image is returned if there is a memory shortage.
+Method CloneImage returns a pointer to the image after copying. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
+shortage.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>columns:</STRONG><DD>
+<p><dt><STRONG>columns:</STRONG><DD>
 <P>
 An integer that specifies the number of columns in the copied image.
 
-<DT><STRONG>rows:</STRONG><DD>
+<p><dt><STRONG>rows:</STRONG><DD>
 <P>
 An integer that specifies the number of rows in the copied image.
 
-<DT><STRONG>clone_pixels:</STRONG><DD>
+<p><dt><STRONG>clone_pixels:</STRONG><DD>
 <P>
 Specifies whether the pixel data is copied. Must be either True or False;
 
@@ -395,25 +381,28 @@ Specifies whether the pixel data is copied. Must be either True or False;
 <HR>
 <H2><A NAME="CloneImageInfo">CloneImageInfo</A></H2>
 <P>
-Method CloneImageInfo makes a duplicate of the given image info, or if
-image info is NULL, a new one.
+Method CloneImageInfo makes a duplicate of the given image info, or if image info is 
+<FONT SIZE=-1>NULL,</FONT> a new one.
+
 
 <P>
-The format of the CloneImageInfo routine is:
+The format of the CloneImageInfo method is:
 
 <P>
-<PRE>        cloned_info=CloneImageInfo(image_info)
+<PRE>        ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>cloned_info:</STRONG><DD>
+<p><dt><STRONG>cloned_info:</STRONG><DD>
 <P>
-Method CloneImageInfo returns a duplicate of the given image info, or if
-image info is NULL a new one.
+Method CloneImageInfo returns a duplicate of the given image info, or if image info is 
+<FONT SIZE=-1>NULL</FONT> a new one.
 
-<DT><STRONG>image_info:</STRONG><DD>
+
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 a structure of type info.
 
@@ -427,20 +416,21 @@ can include the image filename, type, width, height, or scene number by
 embedding special format characters.
 
 <P>
-The format of the CommentImage routine is:
+The format of the CommentImage method is:
 
 <P>
-<PRE>        CommentImage(image,comments)
+<PRE>        void CommentImage(Image *image,const char *comments)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>comments:</STRONG><DD>
+<p><dt><STRONG>comments:</STRONG><DD>
 <P>
 The address of a character string containing the comment format.
 
@@ -453,32 +443,34 @@ Method CompositeImage returns the second image composited onto the first at
 the specified offsets.
 
 <P>
-The format of the CompositeImage routine is:
+The format of the CompositeImage method is:
 
 <P>
-<PRE>        CompositeImage(image,compose,composite_image,x_offset,y_offset)
+<PRE>    void CompositeImage(Image *image,const CompositeOperator compose,
+      Image *composite_image,const int x_offset,const int y_offset)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>compose:</STRONG><DD>
+<p><dt><STRONG>compose:</STRONG><DD>
 <P>
 Specifies an image composite operator.
 
-<DT><STRONG>composite_image:</STRONG><DD>
+<p><dt><STRONG>composite_image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>x_offset:</STRONG><DD>
+<p><dt><STRONG>x_offset:</STRONG><DD>
 <P>
 An integer that specifies the column offset of the composited image.
 
-<DT><STRONG>y_offset:</STRONG><DD>
+<p><dt><STRONG>y_offset:</STRONG><DD>
 <P>
 An integer that specifies the row offset of the composited image.
 
@@ -491,16 +483,17 @@ Method CondenseImage compresses an image to the minimum number of
 runlength-encoded packets.
 
 <P>
-The format of the CondenseImage routine is:
+The format of the CondenseImage method is:
 
 <P>
-<PRE>        CondenseImage(image)
+<PRE>        void CondenseImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -514,35 +507,35 @@ data and returns it. It allocates the memory necessary for the new Image
 structure and returns a pointer to the new image.
 
 <P>
-The format of the CreateImage routine is:
+The format of the CreateImage method is:
 
 <P>
-<PRE>        image=CreateImage(width,height,red,green,blue,opacity)
+<PRE>    void CycleColormapImage(Image *image,const int amount)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
-Method CreateImage returns a pointer to the image after reading. A null
-image is returned if there is a memory shortage or if the image cannot be
-read.
+Method CreateImage returns a pointer to the image after reading. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
+or if the image cannot be read.
 
-<DT><STRONG>width:</STRONG><DD>
+<p><dt><STRONG>width:</STRONG><DD>
 <P>
 Specifies the width in pixels of the image.
 
-<DT><STRONG>height:</STRONG><DD>
+<p><dt><STRONG>height:</STRONG><DD>
 <P>
 Specifies the height in pixels of the image.
 
-<DT><STRONG>red,green,blue,opacity:</STRONG><DD>
+<p><dt><STRONG>red,green,blue,opacity:</STRONG><DD>
 <P>
-This array of normalized float values [0..1] contain the red, green, blue,
-and opacity components of the pixel data. The length of the arrays must
-equal the area specified by the width and height values. If you do not want
-to initialize a particular component, specify it as NULL.
+This array of normalized float values [0..1] contain the red, green, blue, and opacity components of the pixel data. The length of the arrays must equal the area specified by the width and height values. If you do not want to initialize a particular component, specify it as 
+<FONT SIZE=-1>NULL.</FONT>
+
 
 </DL></DL>
 <P>
@@ -552,20 +545,21 @@ to initialize a particular component, specify it as NULL.
 Method CycleColormapImage cycles the image colormap by a specified amount.
 
 <P>
-The format of the CycleColormapImage routine is:
+The format of the CycleColormapImage method is:
 
 <P>
 <PRE>        CycleColormapImage(image,amount)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>amount:</STRONG><DD>
+<p><dt><STRONG>amount:</STRONG><DD>
 <P>
 An unsigned value that specifies the offset of the colormap.
 
@@ -578,24 +572,25 @@ Method DescribeImage describes an image by printing its attributes to
 stdout.
 
 <P>
-The format of the DescribeImage routine is:
+The format of the DescribeImage method is:
 
 <P>
-<PRE>        DescribeImage(image,file,verbose)
+<PRE>        void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>file:</STRONG><DD>
+<p><dt><STRONG>file:</STRONG><DD>
 <P>
 send the image attributes to this file.
 
-<DT><STRONG>verbose:</STRONG><DD>
+<p><dt><STRONG>verbose:</STRONG><DD>
 <P>
 an unsigned value other than zero prints detailed information about the
 image.
@@ -608,16 +603,17 @@ image.
 Method DestroyImage deallocates memory associated with an image.
 
 <P>
-The format of the DestroyImage routine is:
+The format of the DestroyImage method is:
 
 <P>
-<PRE>        DestroyImage(image)
+<PRE>        void DestroyImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -630,16 +626,17 @@ Method DestroyImageInfo deallocates memory associated with an ImageInfo
 structure.
 
 <P>
-The format of the DestroyImageInfo routine is:
+The format of the DestroyImageInfo method is:
 
 <P>
-<PRE>        DestroyImageInfo(image_info)
+<PRE>        void DestroyImageInfo(ImageInfo *image_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
@@ -652,16 +649,17 @@ Method DestroyImages deallocates memory associated with a linked list of
 images.
 
 <P>
-The format of the DestroyImages routine is:
+The format of the DestroyImages method is:
 
 <P>
-<PRE>        DestroyImages(image)
+<PRE>        void DestroyImages(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -670,28 +668,30 @@ The address of a structure of type Image.
 <HR>
 <H2><A NAME="DisplayImages">DisplayImages</A></H2>
 <P>
-Method DisplayImages displays one or more images to an X window.
+Method DisplayImages displays one or more images to an 
+<FONT SIZE=-1>X</FONT> window.
 
 <P>
-The format of the AllocateNextImage routine is:
+The format of the AllocateNextImage method is:
 
 <P>
-<PRE>        status=DisplayImages(image_info,image)
+<PRE>        unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
-Method DisplayImages returns True if the images are displayed in an X
-window, otherwise False is returned.
+Method DisplayImages returns True if the images are displayed in an 
+<FONT SIZE=-1>X</FONT> window, otherwise False is returned.
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -703,16 +703,17 @@ The address of a structure of type Image.
 Method GetImageInfo initializes the ImageInfo structure.
 
 <P>
-The format of the GetImageInfo routine is:
+The format of the GetImageInfo method is:
 
 <P>
-<PRE>        GetImageInfo(image_info)
+<PRE>        void GetImageInfo(ImageInfo *image_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
@@ -724,21 +725,22 @@ Specifies a pointer to an ImageInfo structure.
 Method GetImageType returns the type of image (e.g. bilevel, palette, etc).
 
 <P>
-The format of the GetImageType routine is:
+The format of the GetImageType method is:
 
 <P>
-<PRE>        type=GetImageType(image)
+<PRE>        ImageType GetImageType(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>type:</STRONG><DD>
+<p><dt><STRONG>type:</STRONG><DD>
 <P>
 Method GetImageType returns a ImageType enum that specifies the type of the
 specified image (e.g. bilevel, palette, etc).
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -750,20 +752,21 @@ The address of a structure of type Image.
 Method GetNumberScenes returns the number of scenes in an image sequence.
 
 <P>
-The format of the GetNumberScenes routine is:
+The format of the GetNumberScenes method is:
 
 <P>
-<PRE>        scenes=GetNumberScenes(image)
+<PRE>        unsigned int GetNumberScenes(const Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>scenes:</STRONG><DD>
+<p><dt><STRONG>scenes:</STRONG><DD>
 <P>
 Method GetNumberScenes returns the number of scenes in an image sequence.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -776,25 +779,25 @@ Method GetPixels returns the pixel data of an image as normalized red,
 green, blue, and opacity values.
 
 <P>
-The format of the GetPixels routine is:
+The format of the GetPixels method is:
 
 <P>
-<PRE>        GetPixels(image,red_pixels,green_pixels,blue_pixels,opacity_pixels)
+<PRE>    unsigned int IsGeometry(const char *geometry)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 Specifies a pointer to a Image structure; returned from ReadImage.
 
-<DT><STRONG>red_pixels,green_pixels,blue_pixels,opacity_pixels:</STRONG><DD>
+<p><dt><STRONG>red_pixels,green_pixels,blue_pixels,opacity_pixels:</STRONG><DD>
 <P>
-These arrays are returned with the correpondingred, green, blue, and
-opacity values from the image. The length of the arrays must equal the area
-specified by the columns and row values values of the Image structure. If
-you do not want to initialize a particular component, specify it as NULL.
+These arrays are returned with the correpondingred, green, blue, and opacity values from the image. The length of the arrays must equal the area specified by the columns and row values values of the Image structure. If you do not want to initialize a particular component, specify it as 
+<FONT SIZE=-1>NULL.</FONT>
+
 
 </DL></DL>
 <P>
@@ -805,21 +808,22 @@ Method IsGeometry returns True if the geometry specification is valid as
 determined by ParseGeometry.
 
 <P>
-The format of the IsGeometry routine is:
+The format of the IsGeometry method is:
 
 <P>
-<PRE>        status=IsGeometry(geometry)
+<PRE>        unsigned int IsGeometry(const char *geometry)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method IsGeometry returns True if the geometry specification is valid
 otherwise False is returned.
 
-<DT><STRONG>geometry:</STRONG><DD>
+<p><dt><STRONG>geometry:</STRONG><DD>
 <P>
 This string is the geometry specification.
 
@@ -833,21 +837,22 @@ is returned. If the image is DirectClass and grayscale, it is demoted to
 PseudoClass.
 
 <P>
-The format of the IsGrayImage routine is:
+The format of the IsGrayImage method is:
 
 <P>
-<PRE>        status=IsGrayImage(image)
+<PRE>        unsigned int IsGrayImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method IsGrayImage returns True if the image is grayscale otherwise False
 is returned.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
@@ -860,28 +865,30 @@ Method IsSubimage returns True if the geometry is a valid subimage
 specification (e.g. [1], [1-9], [1,7,4]).
 
 <P>
-The format of the IsSubimage routine is:
+The format of the IsSubimage method is:
 
 <P>
-<PRE>        status=IsSubimage(geometry,pedantic)
+<PRE>        unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method IsSubimage returns True if the geometry is a valid subimage
 specification otherwise False is returned.
 
-<DT><STRONG>geometry:</STRONG><DD>
+<p><dt><STRONG>geometry:</STRONG><DD>
 <P>
 This string is the geometry specification.
 
-<DT><STRONG>pedantic:</STRONG><DD>
+<p><dt><STRONG>pedantic:</STRONG><DD>
 <P>
-A value other than 0 invokes a more restriction set of conditions for a
-valid specification (e.g. [1], [1-4], [4-1]).
+
+<FONT SIZE=-1>A</FONT> value other than 0 invokes a more restriction set of
+conditions for a valid specification (e.g. [1], [1-4], [4-1]).
 
 </DL></DL>
 <P>
@@ -893,21 +900,22 @@ first read or if any image in the sequence has a difference magic or
 filename.
 
 <P>
-The format of the IsTainted routine is:
+The format of the IsTainted method is:
 
 <P>
-<PRE>        status=IsTainted(image)
+<PRE>        unsigned int IsTainted(const Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method IsTainted returns True if the image has been altered since it was
 first read.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -921,20 +929,21 @@ include the image filename, type, width, height, or scene number by
 embedding special format characters.
 
 <P>
-The format of the LabelImage routine is:
+The format of the LabelImage method is:
 
 <P>
-<PRE>        LabelImage(image,label)
+<PRE>        void LabelImage(Image *image,const char *label)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>label:</STRONG><DD>
+<p><dt><STRONG>label:</STRONG><DD>
 <P>
 The address of a character string containing the label format.
 
@@ -946,22 +955,25 @@ The address of a character string containing the label format.
 Method LayerImage extracts the specified layer from the references image.
 
 <P>
-The format of the LayerImage routine is:
+The format of the LayerImage method is:
 
 <P>
-<PRE>        LayerImage(image,layer)
+<PRE>        void LayerImage(Image *image,const LayerType layer)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>layer:</STRONG><DD>
+<p><dt><STRONG>layer:</STRONG><DD>
 <P>
-A value of type LayerType that identifies which layer to extract.
+
+<FONT SIZE=-1>A</FONT> value of type LayerType that identifies which layer
+to extract.
 
 </DL></DL>
 <P>
@@ -972,28 +984,30 @@ Method ListToGroupImage converts a linked list of images to a sequential
 array.
 
 <P>
-The format of the ListToGroupImage routine is:
+The format of the ListToGroupImage method is:
 
 <P>
-<PRE>        images=ListToGroupImage(images,number_images)
+<PRE>        Image **ListToGroupImage(const Image *image,unsigned int *number_images)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>images:</STRONG><DD>
+<p><dt><STRONG>images:</STRONG><DD>
 <P>
 Method ListToGroupImage converts a linked list of images to a sequential
 array and returns the array..
 
-<DT><STRONG>images:</STRONG><DD>
+<p><dt><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>number_images:</STRONG><DD>
+<p><dt><STRONG>number_images:</STRONG><DD>
 <P>
-A pointer to an unsigned integer. The number of images in the image array
-is returned here.
+
+<FONT SIZE=-1>A</FONT> pointer to an unsigned integer. The number of images
+in the image array is returned here.
 
 </DL></DL>
 <P>
@@ -1004,16 +1018,17 @@ Method MatteImage initializes the matte channel of the reference image to
 opaque.
 
 <P>
-The format of the MatteImage routine is:
+The format of the MatteImage method is:
 
 <P>
-<PRE>        MatteImage(image)
+<PRE>        void MatteImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
@@ -1026,29 +1041,31 @@ Method MogrifyImage applies image processing options to an image as
 prescribed by command line options.
 
 <P>
-The format of the MogrifyImage routine is:
+The format of the MogrifyImage method is:
 
 <P>
-<PRE>        MogrifyImage(image_info,argc,argv,image)
+<PRE>    void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
+      Image **image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>argc:</STRONG><DD>
+<p><dt><STRONG>argc:</STRONG><DD>
 <P>
 Specifies a pointer to an integer describing the number of elements in the
 argument vector.
 
-<DT><STRONG>argv:</STRONG><DD>
+<p><dt><STRONG>argv:</STRONG><DD>
 <P>
 Specifies a pointer to a text array containing the command line arguments.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
@@ -1061,29 +1078,31 @@ Method MogrifyImages applies image processing options to a sequence of
 images as prescribed by command line options.
 
 <P>
-The format of the MogrifyImage routine is:
+The format of the MogrifyImage method is:
 
 <P>
-<PRE>        MogrifyImages(image_info,argc,argv,images)
+<PRE>    void MogrifyImages(const ImageInfo *image_info,const int argc,
+      char **argv,Image **images)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>argc:</STRONG><DD>
+<p><dt><STRONG>argc:</STRONG><DD>
 <P>
 Specifies a pointer to an integer describing the number of elements in the
 argument vector.
 
-<DT><STRONG>argv:</STRONG><DD>
+<p><dt><STRONG>argv:</STRONG><DD>
 <P>
 Specifies a pointer to a text array containing the command line arguments.
 
-<DT><STRONG>images:</STRONG><DD>
+<p><dt><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
@@ -1098,33 +1117,37 @@ of the four values (width, height, xoffset, yoffset) were located in the
 string, and whether the x and y values are negative. In addition,
 
 <P>
-The format of the ParseImageGeometry routine is:
+The format of the ParseImageGeometry method is:
 
 <P>
-<PRE>        flags=ParseImageGeometry(image_geometry,x,y,width,height)
+<PRE>    int ParseImageGeometry(const char *geometry,int *x,int *y,
+      unsigned int *width,unsigned int *height)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>flags:</STRONG><DD>
+<p><dt><STRONG>flags:</STRONG><DD>
 <P>
 Method ParseImageGeometry returns a bitmask that indicates which of the
 four values were located in the geometry string.
 
-<DT><STRONG>image_geometry:</STRONG><DD>
+<p><dt><STRONG>image_geometry:</STRONG><DD>
 <P>
 Specifies a character string representing the geometry specification.
 
-<DT><STRONG>x,y:</STRONG><DD>
+<p><dt><STRONG>x,y:</STRONG><DD>
 <P>
-A pointer to an integer. The x and y offset as determined by the geometry
-specification is returned here.
 
-<DT><STRONG>width,height:</STRONG><DD>
+<FONT SIZE=-1>A</FONT> pointer to an integer. The x and y offset as
+determined by the geometry specification is returned here.
+
+<p><dt><STRONG>width,height:</STRONG><DD>
 <P>
-A pointer to an unsigned integer. The width and height as determined by the
-geometry specification is returned here.
+
+<FONT SIZE=-1>A</FONT> pointer to an unsigned integer. The width and height
+as determined by the geometry specification is returned here.
 
 </DL></DL>
 <P>
@@ -1136,21 +1159,22 @@ the image is returned as well. Note, only the first image in a multi-frame
 image file is pinged.
 
 <P>
-The format of the PingImage routine is:
+The format of the PingImage method is:
 
 <P>
-<PRE>        image=PingImage(image_info)
+<PRE>        Image *PingImage(const ImageInfo *image_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>Image:</STRONG><DD>
+<p><dt><STRONG>Image:</STRONG><DD>
 <P>
 Method PingImage returns the image size in bytes if the image file exists
 and it size can be determined otherwise 0.
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
@@ -1167,21 +1191,23 @@ image format name and a colon (i.e. ps:image) or as the filename suffix
 (i.e. image.ps).
 
 <P>
-The format of the ReadImage routine is:
+The format of the ReadImage method is:
 
 <P>
-<PRE>        image=ReadImage(image_info)
+<PRE>        Image *ReadImage(ImageInfo *image_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
-Method ReadImage returns a pointer to the image after reading. A null image
-is returned if there is a memory shortage or if the image cannot be read.
+Method ReadImage returns a pointer to the image after reading. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
+or if the image cannot be read.
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
@@ -1194,21 +1220,23 @@ Method ReadImages reads a list of image names from a file and then returns
 the images as a linked list.
 
 <P>
-The format of the ReadImage routine is:
+The format of the ReadImage method is:
 
 <P>
-<PRE>        image=ReadImages(image_info)
+<PRE>        Image *ReadImages(ImageInfo *image_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
-Method ReadImage returns a pointer to the image after reading. A null image
-is returned if there is a memory shortage or if the image cannot be read.
+Method ReadImage returns a pointer to the image after reading. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
+or if the image cannot be read.
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
@@ -1217,26 +1245,27 @@ Specifies a pointer to an ImageInfo structure.
 <HR>
 <H2><A NAME="RGBTransformImage">RGBTransformImage</A></H2>
 <P>
-Method RGBTransformImage converts the reference image from RGB to an
-alternate colorspace. The transformation matrices are not the standard
-ones: the weights are rescaled to normalized the range of the transformed
-values to be [0..MaxRGB].
+Method RGBTransformImage converts the reference image from 
+<FONT SIZE=-1>RGB</FONT> to an alternate colorspace. The transformation
+matrices are not the standard ones: the weights are rescaled to normalized
+the range of the transformed values to be [0..MaxRGB].
 
 <P>
-The format of the RGBTransformImage routine is:
+The format of the RGBTransformImage method is:
 
 <P>
-<PRE>        RGBTransformImage(image,colorspace)
+<PRE>        void RGBTransformImage(Image *image,const ColorspaceType colorspace)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>colorspace:</STRONG><DD>
+<p><dt><STRONG>colorspace:</STRONG><DD>
 <P>
 An unsigned integer value that indicates which colorspace to transform the
 image.
@@ -1249,16 +1278,17 @@ image.
 Method SetImage initializes the reference image to the background color.
 
 <P>
-The format of the SetImage routine is:
+The format of the SetImage method is:
 
 <P>
-<PRE>        SetImage(image)
+<PRE>        void SetImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
@@ -1267,29 +1297,28 @@ The address of a structure of type Image; returned from ReadImage.
 <HR>
 <H2><A NAME="SetImageInfo">SetImageInfo</A></H2>
 <P>
-Method SetImageInfo initializes the `magick' field of the ImageInfo
-structure. It is set to a type of image format based on the prefix or
-suffix of the filename. For example, `ps:image' returns PS indicating a
-Postscript image. JPEG is returned for this filename: `image.jpg'. The
-filename prefix has precendence over the suffix. Use an optional index
-enclosed in brackets after a file name to specify a desired subimage of a
-multi-resolution image format like Photo CD (e.g. img0001.pcd[4]).
+Method SetImageInfo initializes the `magick' field of the ImageInfo structure. It is set to a type of image format based on the prefix or suffix of the filename. For example, `ps:image' returns 
+<FONT SIZE=-1>PS</FONT> indicating a Postscript image. 
+<FONT SIZE=-1>JPEG</FONT> is returned for this filename: `image.jpg'. The filename prefix has precendence over the suffix. Use an optional index enclosed in brackets after a file name to specify a desired subimage of a multi-resolution image format like Photo 
+<FONT SIZE=-1>CD</FONT> (e.g. img0001.pcd[4]).
+
 
 <P>
-The format of the SetImageInfo routine is:
+The format of the SetImageInfo method is:
 
 <P>
-<PRE>        SetImageInfo(image_info,rectify)
+<PRE>        void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>rectify:</STRONG><DD>
+<p><dt><STRONG>rectify:</STRONG><DD>
 <P>
 an unsigned value other than zero rectifies the attribute for multi-frame
 support (user may want multi-frame but image format may not support it).
@@ -1303,18 +1332,20 @@ Method SortColormapByIntensity sorts the colormap of a PseudoClass image by
 decreasing color intensity.
 
 <P>
-The format of the SortColormapByIntensity routine is:
+The format of the SortColormapByIntensity method is:
 
 <P>
-<PRE>    SortColormapByIntensity(image)
+<PRE>    void SortColormapByIntensity(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
-A pointer to a Image structure.
+
+<FONT SIZE=-1>A</FONT> pointer to a Image structure.
 
 </DL></DL>
 <P>
@@ -1325,16 +1356,17 @@ Method SyncImage initializes the red, green, and blue intensities of each
 pixel as defined by the colormap index.
 
 <P>
-The format of the SyncImage routine is:
+The format of the SyncImage method is:
 
 <P>
-<PRE>        SyncImage(image)
+<PRE>        void SyncImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -1346,20 +1378,21 @@ The address of a structure of type Image.
 Method TextureImage layers a texture onto the background of an image.
 
 <P>
-The format of the TextureImage routine is:
+The format of the TextureImage method is:
 
 <P>
-<PRE>        TextureImage(image,texture)
+<PRE>        void TextureImage(Image *image,Image *texture)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>texture:</STRONG><DD>
+<p><dt><STRONG>texture:</STRONG><DD>
 <P>
 This image contains the texture to layer on the background.
 
@@ -1385,26 +1418,28 @@ size with bilinear interpolation. The image is then scaled to the exact
 specified image size with pixel replication.
 
 <P>
-The format of the TransformImage routine is:
+The format of the TransformImage method is:
 
 <P>
-<PRE>        TransformImage(image,crop_geometry,image_geometry)
+<PRE>    void TransformImage(Image **image,const char *crop_geometry,
+      const char *image_geometry)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of an address of a structure of type Image. The transformed
 image is returned as this parameter.
 
-<DT><STRONG>crop_geometry:</STRONG><DD>
+<p><dt><STRONG>crop_geometry:</STRONG><DD>
 <P>
 Specifies a pointer to a crop geometry string. This geometry defines a
 subregion of the image.
 
-<DT><STRONG>image_geometry:</STRONG><DD>
+<p><dt><STRONG>image_geometry:</STRONG><DD>
 <P>
 Specifies a pointer to a image geometry string. The specified width and
 height of this geometry string are absolute.
@@ -1420,23 +1455,25 @@ weights are rescaled to normalized the range of the transformed values to
 be [0..MaxRGB].
 
 <P>
-The format of the TransformRGBImage routine is:
+The format of the TransformRGBImage method is:
 
 <P>
-<PRE>        TransformRGBImage(image,colorspace)
+<PRE>        void TransformRGBImage(Image *image,const ColorspaceType colorspace)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>colorspace:</STRONG><DD>
+<p><dt><STRONG>colorspace:</STRONG><DD>
 <P>
-An unsigned integer value that indicates the colorspace the image is
-currently in. On return the image is in the RGB color space.
+An unsigned integer value that indicates the colorspace the image is currently in. On return the image is in the 
+<FONT SIZE=-1>RGB</FONT> color space.
+
 
 </DL></DL>
 <P>
@@ -1448,22 +1485,26 @@ All pixel locations are initially set to opaque. Any pixel that matches the
 specified color are set to transparent.
 
 <P>
-The format of the TransparentImage routine is:
+The format of the TransparentImage method is:
 
 <P>
-<PRE>        TransparentImage(image,color)
+<PRE>        void TransparentImage(Image *image,const char *color)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
 
-<DT><STRONG>color:</STRONG><DD>
+<p><dt><STRONG>color:</STRONG><DD>
 <P>
-A character string that contain an X11 color string.
+
+<FONT SIZE=-1>A</FONT> character string that contain an 
+<FONT SIZE=-1>X11</FONT> color string.
+
 
 </DL></DL>
 <P>
@@ -1474,21 +1515,22 @@ Method UncondenseImage uncompresses runlength-encoded pixels packets to a
 rectangular array of pixels.
 
 <P>
-The format of the UncondenseImage routine is:
+The format of the UncondenseImage method is:
 
 <P>
-<PRE>        status=UncondenseImage(image)
+<PRE>        unsigned int UncondenseImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method UncondenseImage returns True if the image is uncompressed otherwise
 False.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
 
@@ -1497,36 +1539,34 @@ The address of a structure of type Image.
 <HR>
 <H2><A NAME="WriteImage">WriteImage</A></H2>
 <P>
-Method WriteImage writes an image to a file as defined by
-image-&gt;filename. You can specify a particular image format by prefixing
-the file with the image type and a colon (i.e. ps:image) or specify the
-image type as the filename suffix (i.e. image.ps). The image may be
-modified to adapt it to the requirements of the image format. For example,
-DirectClass images must be color-reduced to PseudoClass if the format is
-GIF.
+Method WriteImage writes an image to a file as defined by image-&gt;filename. You can specify a particular image format by prefixing the file with the image type and a colon (i.e. ps:image) or specify the image type as the filename suffix (i.e. image.ps). The image may be modified to adapt it to the requirements of the image format. For example, DirectClass images must be color-reduced to PseudoClass if the format is 
+<FONT SIZE=-1>GIF.</FONT>
+
 
 <P>
-The format of the WriteImage routine is:
+The format of the WriteImage method is:
 
 <P>
-<PRE>        status=WriteImage(image_info,image)
+<PRE>        unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>status:</STRONG><DD>
+<p><dt><STRONG>status:</STRONG><DD>
 <P>
 Method WriteImage return True if the image is written. False is returned is
 there is a memory shortage or if the image file fails to write.
 
-<DT><STRONG>image_info:</STRONG><DD>
+<p><dt><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><DD>
 <P>
-A pointer to a Image structure.
+
+<FONT SIZE=-1>A</FONT> pointer to a Image structure.
 
 </DL></DL>
 </BODY>

@@ -312,9 +312,9 @@ const ColorlistInfo
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadXPMImage routine is:
+%  The format of the ReadXPMImage method is:
 %
-%      image=ReadXPMImage(image_info)
+%      Image *ReadXPMImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -640,9 +640,9 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
 %
 %  Procedure WriteXPMImage writes an image to a file in the X pixmap format.
 %
-%  The format of the WriteXPMImage routine is:
+%  The format of the WriteXPMImage method is:
 %
-%      status=WriteXPMImage(image_info,image)
+%      unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

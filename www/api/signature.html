@@ -31,8 +31,8 @@ signature - Methods to Compute a Digital Signature for an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>SignatureImage</STRONG>(image)
-
+<PRE> B&lt;SignatureImage&gt;(image)
+</PRE>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -40,20 +40,21 @@ signature - Methods to Compute a Digital Signature for an Image
 <HR>
 <H2><A NAME="SignatureImage">SignatureImage</A></H2>
 <P>
-Method SignatureImage computes a digital signature from an image. This
-signature uniquely identifies the image and is convenient for determining
-if the colormap of a sequence of images is identical when animating. The
-digital signature is from RSA Data Security MD5 Digest Algorithm described
-in Internet draft [MD5], July 1992.
+Method SignatureImage computes a digital signature from an image. This signature uniquely identifies the image and is convenient for determining if the colormap of a sequence of images is identical when animating. The digital signature is from 
+<FONT SIZE=-1>RSA</FONT> Data Security 
+<FONT SIZE=-1>MD5</FONT> Digest Algorithm described in Internet draft 
+<FONT SIZE=-1>[MD5],</FONT> July 1992.
+
 
 <P>
-The format of the SignatureImage routine is:
+The format of the SignatureImage method is:
 
 <P>
 <PRE>        SignatureImage(image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>

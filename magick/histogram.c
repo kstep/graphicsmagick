@@ -69,9 +69,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadHISTOGRAMImage routine is:
+%  The format of the ReadHISTOGRAMImage method is:
 %
-%      image=ReadHISTOGRAMImage(image_info)
+%      Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -110,12 +110,13 @@ Export Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
 %  image comment contains a list of unique pixel values and the number of times
 %  each occurs in the image.
 %
-%  This routine is strongly based on a similar one written by
+%  This method is strongly based on a similar one written by
 %  muquit@warm.semcor.com which in turn is based on ppmhistmap of netpbm.
 %
-%  The format of the WriteHISTOGRAMImage routine is:
+%  The format of the WriteHISTOGRAMImage method is:
 %
-%      status=WriteHISTOGRAMImage(image_info,image)
+%      unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
+%        Image *image)
 %
 %  A description of each parameter follows.
 %

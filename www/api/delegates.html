@@ -36,22 +36,13 @@ delegates - Methods to Read/Write/Invoke Delegates
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>DestroyDelegateInfo</STRONG>(image_info)
+<PRE> B&lt;DestroyDelegateInfo&gt;(image_info)
+</PRE>
+<P>
+void <STRONG>ListDelegateInfo</STRONG>(FILE*file)
 
 <P>
-command=<STRONG>GetDelegateCommand</STRONG>(image_info,image,decode_tag,encode_tag)
-
-<P>
-status=<STRONG>GetDelegateInfo</STRONG>(decode_tag,encode_tag,delegate_info)
-
-<P>
-<STRONG>InvokeDelegate</STRONG>(image_info,image,decode_tag,encode_tag)
-
-<P>
-<STRONG>ListDelegateInfo</STRONG>(file)
-
-<P>
-delegate_info=<STRONG>SetDelegateInfo</STRONG>(delegate_info)
+DelegateInfo* <STRONG>SetDelegateInfo</STRONG>(DelegateInfo*delegate_info)
 
 <P>
 <HR>
@@ -64,13 +55,14 @@ Method DestroyDelegateInfo deallocates memory associated with the delegates
 list.
 
 <P>
-The format of the DestroyDelegateInfo routine is:
+The format of the DestroyDelegateInfo method is:
 
 <P>
 <PRE>        DestroyDelegateInfo(image_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">image_info:</A></STRONG><DD>
@@ -86,13 +78,15 @@ Method GetDelegateInfo returns any delegates associated with the specified
 tag. True is returned if a delegate is found, otherwise False.
 
 <P>
-The format of the GetDelegateInfo routine is:
+The format of the GetDelegateInfo method is:
 
 <P>
-<PRE>       status=GetDelegateInfo(decode_tag,encode_tag,delegate_info)
+<PRE>    unsigned int GetDelegateInfo(const char *decode_tag,
+      const char *encode_tag,DelegateInfo *delegate_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -110,8 +104,9 @@ Specifies the encode delegate we are searching for as a character string.
 
 <DT><STRONG>delegate_info:</STRONG><DD>
 <P>
-A structure of type DelegateInfo. On return this structure contains the
-delegate information for the specified tag.
+
+<FONT SIZE=-1>A</FONT> structure of type DelegateInfo. On return this
+structure contains the delegate information for the specified tag.
 
 </DL></DL>
 <P>
@@ -122,13 +117,15 @@ Method GetDelegateCommand replaces any embedded formatting characters with
 the appropriate image attribute and returns the resulting command.
 
 <P>
-The format of the GetDelegateCommand routine is:
+The format of the GetDelegateCommand method is:
 
 <P>
-<PRE>        command=GetDelegateCommand(image_info,image,decode_tag,encode_tag)
+<PRE>    char *GetDelegateCommand(const ImageInfo *image_info,const Image *image,
+      const char *decode_tag,const char *encode_tag)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>command:</STRONG><DD>
@@ -162,13 +159,15 @@ appropriate image attribute and executes the resulting command. False is
 returned if the commands execute with success otherwise True.
 
 <P>
-The format of the InvokeDelegate routine is:
+The format of the InvokeDelegate method is:
 
 <P>
-<PRE>        InvokeDelegate(image_info,image,decode_tag,encode_tag)
+<PRE>    unsigned int InvokeDelegate(const ImageInfo *image_info,
+      Image *image,const char *decode_tag,const char *encode_tag)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image_info:</STRONG><DD>
@@ -187,36 +186,39 @@ The address of a structure of type Image.
 Method ListDelegateInfo lists the image formats to a file.
 
 <P>
-The format of the ListDelegateInfo routine is:
+The format of the ListDelegateInfo method is:
 
 <P>
-<PRE>        ListDelegateInfo(file)
+<PRE>        void ListDelegateInfo(FILE *file)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>file:</STRONG><DD>
 <P>
-An pointer to a FILE.
+An pointer to a 
+<FONT SIZE=-1>FILE.</FONT>
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="SetDelegateInfo">SetDelegateInfo</A></H2>
 <P>
-Method SetDelegateInfo adds or replaces a delegate in the delegate list and
-returns the address of the first delegate. If the delegate is NULL, just
-the address of the first delegate is returned.
+Method SetDelegateInfo adds or replaces a delegate in the delegate list and returns the address of the first delegate. If the delegate is 
+<FONT SIZE=-1>NULL,</FONT> just the address of the first delegate is returned.
+
 
 <P>
-The format of the SetDelegateInfo routine is:
+The format of the SetDelegateInfo method is:
 
 <P>
-<PRE>       delegate_info=SetDelegateInfo(delegate_info)
+<PRE>        DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>delegate_info:</STRONG><DD>
@@ -226,8 +228,9 @@ delegates list.
 
 <DT><STRONG>delegate_info:</STRONG><DD>
 <P>
-A structure of type DelegateInfo. This information is added to the end of
-the delegates linked-list.
+
+<FONT SIZE=-1>A</FONT> structure of type DelegateInfo. This information is
+added to the end of the delegates linked-list.
 
 </DL></DL>
 </BODY>

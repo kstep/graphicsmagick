@@ -81,9 +81,9 @@ Export const char
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadLABELImage routine is:
+%  The format of the ReadLABELImage method is:
 %
-%      image=ReadLABELImage(image_info)
+%      Image *ReadLABELImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

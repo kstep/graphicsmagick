@@ -68,9 +68,9 @@
 %  Method DecodeImage unpacks the packed image pixels into
 %  runlength-encoded pixel packets.
 %
-%  The format of the DecodeImage routine is:
+%  The format of the DecodeImage method is:
 %
-%      status=DecodeImage(compressed_pixels,number_columns,number_rows,
+%      Image *ReadSUNImage(const ImageInfo *image_info)
 %        pixels)
 %
 %  A description of each parameter follows:
@@ -152,7 +152,7 @@ static unsigned int DecodeImage(const unsigned char *compressed_pixels,
 %  the memory necessary for the new Image structure and returns a pointer to
 %  the new image.
 %
-%  The format of the ReadSUNImage routine is:
+%  The format of the ReadSUNImage method is:
 %
 %      image=ReadSUNImage(image_info)
 %
@@ -507,9 +507,9 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
 %
 %  Method WriteSUNImage writes an image in the SUN rasterfile format.
 %
-%  The format of the WriteSUNImage routine is:
+%  The format of the WriteSUNImage method is:
 %
-%      status=WriteSUNImage(image_info,image)
+%      unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -69,9 +69,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadFITSImage routine is:
+%  The format of the ReadFITSImage method is:
 %
-%      image=ReadFITSImage(image_info)
+%      Image *ReadFITSImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -453,9 +453,9 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
 %  Method WriteFITSImage writes a Flexible Image Transport System image to a
 %  file as gray scale intensities [0..255].
 %
-%  The format of the WriteFITSImage routine is:
+%  The format of the WriteFITSImage method is:
 %
-%      status=WriteFITSImage(image_info,image)
+%      unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

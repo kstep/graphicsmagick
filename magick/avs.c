@@ -69,9 +69,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadAVSImage routine is:
+%  The format of the ReadAVSImage method is:
 %
-%      image=ReadAVSImage(image_info)
+%      Image *ReadAVSImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -226,9 +226,9 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
 %
 %  Method WriteAVSImage writes an image to a file in AVS X image format.
 %
-%  The format of the WriteAVSImage routine is:
+%  The format of the WriteAVSImage method is:
 %
-%      status=WriteAVSImage(image_info,image)
+%      unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

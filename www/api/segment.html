@@ -31,7 +31,7 @@ segment - Methods to Segment an Image with Thresholding Fuzzy c-Means
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-status=<STRONG>SegmentImage</STRONG>(image,colorspace,verbose)
+status= <STRONG>SegmentImage</STRONG>(image,colorspace,verbose)
 
 <P>
 <HR>
@@ -52,13 +52,14 @@ the value is increased, you can expect a smoother second derivative. The
 default is 1.5.
 
 <P>
-The format of the SegmentImage routine is:
+The format of the SegmentImage method is:
 
 <P>
 <PRE>        status=SegmentImage(image,colorspace,verbose)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">colors:</A></STRONG><DD>
@@ -72,15 +73,18 @@ Specifies a pointer to an Image structure; returned from ReadImage.
 
 <DT><STRONG>colorspace:</STRONG><DD>
 <P>
-An unsigned integer value that indicates the colorspace. Empirical evidence
-suggests that distances in YUV or YIQ correspond to perceptual color
-differences more closely than do distances in RGB space. The image is then
-returned to RGB colorspace after color reduction.
+An unsigned integer value that indicates the colorspace. Empirical evidence suggests that distances in 
+<FONT SIZE=-1>YUV</FONT> or 
+<FONT SIZE=-1>YIQ</FONT> correspond to perceptual color differences more closely than do distances in 
+<FONT SIZE=-1>RGB</FONT> space. The image is then returned to 
+<FONT SIZE=-1>RGB</FONT> colorspace after color reduction.
+
 
 <DT><STRONG>verbose:</STRONG><DD>
 <P>
-A value greater than zero prints detailed information about the identified
-classes.
+
+<FONT SIZE=-1>A</FONT> value greater than zero prints detailed information
+about the identified classes.
 
 </DL></DL>
 </BODY>

@@ -76,9 +76,9 @@
 %
 %  MNG support written by Glenn Randers-Pehrson, randeg@alum.rpi.edu
 %
-%  The format of the ReadPNGImage routine is:
+%  The format of the ReadPNGImage method is:
 %
-%      image=ReadPNGImage(image_info)
+%      Image *ReadPNGImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -2746,9 +2746,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %
 %  MNG support written by Glenn Randers-Pehrson, randeg@alum.rpi.edu
 %
-%  The format of the WritePNGImage routine is:
+%  The format of the WritePNGImage method is:
 %
-%      status=WritePNGImage(image_info,image)
+%      unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -69,9 +69,9 @@
 %  Directory file.  It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  The format of the ReadVIDImage routine is:
+%  The format of the ReadVIDImage method is:
 %
-%      image=ReadVIDImage(image_info)
+%      Image *ReadVIDImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

@@ -76,9 +76,10 @@ const int
 %
 %  Method XAnnotateEditImage annotates the image with text.
 %
-%  The format of the XAnnotateEditImage routine is:
+%  The format of the XAnnotateEditImage method is:
 %
-%    XAnnotateEditImage(display,resource_info,windows,image)
+%      unsigned int XDisplayBackgroundImage(Display *display,
+%        XResourceInfo *resource_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1034,7 +1035,7 @@ static unsigned int XAnnotateEditImage(Display *display,
 %
 %  Method XBackgroundImage displays the image in the background of a window.
 %
-%  The format of the XBackgroundImage routine is:
+%  The format of the XBackgroundImage method is:
 %
 %    status=XBackgroundImage(display,resource_info,windows,image)
 %
@@ -1106,7 +1107,7 @@ static unsigned int XBackgroundImage(Display *display,
 %
 %  Method XChopImage chops the X image.
 %
-%  The format of the XChopImage routine is:
+%  The format of the XChopImage method is:
 %
 %    status=XChopImage(display,resource_info,windows,image)
 %
@@ -1524,7 +1525,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
 %  the color of one pixel for a DirectColor image or one colormap entry for
 %  a PseudoClass image.
 %
-%  The format of the XColorEditImage routine is:
+%  The format of the XColorEditImage method is:
 %
 %    XColorEditImage(display,resource_info,windows,image)
 %
@@ -2116,7 +2117,7 @@ static unsigned int XColorEditImage(Display *display,
 %  the image and composites it with the X window image at a location the user
 %  chooses with the pointer.
 %
-%  The format of the XCompositeImage routine is:
+%  The format of the XCompositeImage method is:
 %
 %    status=XCompositeImage(display,resource_info,windows,image)
 %
@@ -2632,7 +2633,7 @@ static unsigned int XCompositeImage(Display *display,
 %  Method XConfigureImage creates a new X image.  It also notifies the
 %  window manager of the new image size and configures the transient widows.
 %
-%  The format of the XConfigureImage routine is:
+%  The format of the XConfigureImage method is:
 %
 %    status=XConfigureImage(display,resource_info,windows,image)
 %
@@ -2794,7 +2795,7 @@ static unsigned int XConfigureImage(Display *display,
 %  crop, copy, or cut it.  For copy or cut, the image can subsequently be
 %  composited onto the image with XPasteImage.
 %
-%  The format of the XCropImage routine is:
+%  The format of the XCropImage method is:
 %
 %    status=XCropImage(display,resource_info,windows,image,mode)
 %
@@ -3537,7 +3538,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
 %  Method XDrawEditImage draws a graphic primitive (point, line, rectangle,
 %  etc.) on the image.
 %
-%  The format of the XDrawEditImage routine is:
+%  The format of the XDrawEditImage method is:
 %
 %    status=XDrawEditImage(display,resource_info,windows,degrees,image)
 %
@@ -4478,7 +4479,7 @@ static unsigned int XDrawEditImage(Display *display,
 %  window displays a zoomed image and the rectangle shows which portion of
 %  the image is displayed in the Image window.
 %
-%  The format of the XDrawPanRectangle routine is:
+%  The format of the XDrawPanRectangle method is:
 %
 %    XDrawPanRectangle(display,windows)
 %
@@ -4532,7 +4533,7 @@ static void XDrawPanRectangle(Display *display,XWindows *windows)
 %  Method XImageCache handles the creation, manipulation, and destruction of
 %  the image cache (undo and redo buffers).
 %
-%  The format of the XImageCache routine is:
+%  The format of the XImageCache method is:
 %
 %    XImageCache(display,resource_info,windows,command,image)
 %
@@ -4799,7 +4800,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
 %  Method XImageWindowCommand makes a transform to the image or Image window
 %  as specified by a user menu button or keyboard command.
 %
-%  The format of the XMagickCommand routine is:
+%  The format of the XMagickCommand method is:
 %
 %    loaded_image=XImageWindowCommand(display,resource_info,windows,state,
 %      key_symbol,image)
@@ -5196,7 +5197,7 @@ static CommandType XImageWindowCommand(Display *display,
 %  Method XMagickCommand makes a transform to the image or Image window
 %  as specified by a user menu button or keyboard command.
 %
-%  The format of the XMagickCommand routine is:
+%  The format of the XMagickCommand method is:
 %
 %    loaded_image=XMagickCommand(display,resource_info,windows,command,image)
 %
@@ -6920,7 +6921,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %  Method XMagnifyImage magnifies portions of the image as indicated
 %  by the pointer.  The magnified portion is displayed in a separate window.
 %
-%  The format of the XMagnifyImage routine is:
+%  The format of the XMagnifyImage method is:
 %
 %    XMagnifyImage(display,windows,event)
 %
@@ -7043,7 +7044,7 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
 %  Method XMagnifyWindowCommand moves the image within an Magnify window by
 %  one pixel as specified by the key symbol.
 %
-%  The format of the XMagnifyWindowCommand routine is:
+%  The format of the XMagnifyWindowCommand method is:
 %
 %    XMagnifyWindowCommand(display,windows,state,key_symbol)
 %
@@ -7163,7 +7164,7 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
 %  Method XMakePanImage creates a thumbnail of the image and displays it in
 %  the Pan icon window.
 %
-%  The format of the XMakePanImage routine is:
+%  The format of the XMakePanImage method is:
 %
 %      XMakePanImage(display,resource_info,windows,image)
 %
@@ -7220,7 +7221,7 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
 %  the Matte channel of an image.  If the image is PseudoClass it is promoted
 %  to DirectClass before the matte information is stored.
 %
-%  The format of the XMatteEditImage routine is:
+%  The format of the XMatteEditImage method is:
 %
 %    XMatteEditImage(display,resource_info,windows,image)
 %
@@ -7742,7 +7743,7 @@ static unsigned int XMatteEditImage(Display *display,
 %
 %  Method XOpenBlob loads an image from a file.
 %
-%  The format of the XOpenBlob routine is:
+%  The format of the XOpenBlob method is:
 %
 %    loaded_image=XOpenBlob(display,resource_info,windows,command)
 %
@@ -7964,7 +7965,7 @@ static Image *XOpenBlob(Display *display,XResourceInfo *resource_info,
 %
 %  Method XPanImage pans the image until the mouse button is released.
 %
-%  The format of the XPanImage routine is:
+%  The format of the XPanImage method is:
 %
 %    XPanImage(display,windows,event)
 %
@@ -8127,7 +8128,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
 %  Method XPasteImage pastes an image previously saved with XCropImage
 %  in the X window image at a location the user chooses with the pointer.
 %
-%  The format of the XPasteImage routine is:
+%  The format of the XPasteImage method is:
 %
 %    status=XPasteImage(display,resource_info,windows,image)
 %
@@ -8502,7 +8503,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
 %
 %  Method XPrintImage prints an image to a Postscript printer.
 %
-%  The format of the XPrintImage routine is:
+%  The format of the XPrintImage method is:
 %
 %    status=XPrintImage(display,resource_info,windows,image)
 %
@@ -8602,7 +8603,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
 %  Method XROIImage applies an image processing technique to a region
 %  of interest.
 %
-%  The format of the XROIImage routine is:
+%  The format of the XROIImage method is:
 %
 %    status=XROIImage(display,resource_info,windows,image)
 %
@@ -9449,7 +9450,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
 %  if zero, the rotation angle is computed from the slope of a line drawn by
 %  the user.
 %
-%  The format of the XRotateImage routine is:
+%  The format of the XRotateImage method is:
 %
 %    status=XRotateImage(display,resource_info,windows,degrees,image)
 %
@@ -9996,7 +9997,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
 %
 %  Method XSaveImage saves an image to a file.
 %
-%  The format of the XSaveImage routine is:
+%  The format of the XSaveImage method is:
 %
 %    status=XSaveImage(display,resource_info,windows,image)
 %
@@ -10432,7 +10433,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
 %  Image window and translates it to a cropping geometry relative to the
 %  image.
 %
-%  The format of the XSetCropGeometry routine is:
+%  The format of the XSetCropGeometry method is:
 %
 %    XSetCropGeometry(display,windows,crop_info,image)
 %
@@ -10528,7 +10529,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
 %  Method XTileImage loads or deletes a selected tile from a visual
 %  image directory.  The load or delete command is chosen from a menu.
 %
-%  The format of the XTileImage routine is:
+%  The format of the XTileImage method is:
 %
 %    tiled_image=XTileImage(display,resource_info,windows,image,event)
 %
@@ -10798,7 +10799,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
 %  string the translation is respect to the width and height contained within
 %  the string.
 %
-%  The format of the XTranslateImage routine is:
+%  The format of the XTranslateImage method is:
 %
 %    XTranslateImage(display,windows,image,key_symbol)
 %
@@ -10916,7 +10917,7 @@ static void XTranslateImage(Display *display,XWindows *windows,
 %
 %  Method XTrimImage trims the edges from the Image window.
 %
-%  The format of the XTrimImage routine is:
+%  The format of the XTrimImage method is:
 %
 %    status=XTrimImage(display,resource_info,windows,image)
 %
@@ -11056,7 +11057,7 @@ static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
 %
 %  Method XVisualDirectoryImage creates a Visual Image Directory.
 %
-%  The format of the XVisualDirectoryImage routine is:
+%  The format of the XVisualDirectoryImage method is:
 %
 %    loaded_image=XVisualDirectoryImage(display,resource_info,windows)
 %
@@ -11238,7 +11239,7 @@ static Image *XVisualDirectoryImage(Display *display,
 %  Method XDisplayBackgroundImage displays an image in the background of a
 %  window.
 %
-%  The format of the XDisplayBackgroundImage routine is:
+%  The format of the XDisplayBackgroundImage method is:
 %
 %      status=XDisplayBackgroundImage(display,resource_info,image)
 %
@@ -11488,9 +11489,10 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
 %  Method XDisplayImage displays an image via X11.  A new image is created
 %  and returned if the user interactively transforms the displayed image.
 %
-%  The format of the XDisplayImage routine is:
+%  The format of the XDisplayImage method is:
 %
-%      loaded_image=XDisplayImage(display,resource_info,argv,argc,image,state)
+%      Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
+%        char **argv,int argc,Image **image,unsigned long *state)
 %
 %  A description of each parameter follows:
 %

@@ -71,9 +71,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadTTFImage routine is:
+%  The format of the ReadTTFImage method is:
 %
-%      image=ReadTTFImage(image_info)
+%      Image *ReadTTFImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

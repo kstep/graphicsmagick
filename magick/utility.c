@@ -68,9 +68,9 @@
 %  Method AllocateString allocates memory for a string and copies the source
 %  string to that memory location (and returns it).
 %
-%  The format of the AllocateString routine is:
+%  The format of the AllocateString method is:
 %
-%      allocated_string=AllocateString(source)
+%      char *AllocateString(const char *source)
 %
 %  A description of each parameter follows:
 %
@@ -114,9 +114,9 @@ Export char *AllocateString(const char *source)
 %  Method AppendImageFormat appends the image format type to the filename.
 %  If an extension to the file already exists, it is first removed.
 %
-%  The format of the AppendImageFormat routine is:
+%  The format of the AppendImageFormat method is:
 %
-%       AppendImageFormat(format,filename)
+%      void AppendImageFormat(const char *format,char *filename)
 %
 %  A description of each parameter follows.
 %
@@ -237,9 +237,9 @@ Export char *BaseFilename(const char *name)
 %  Method CloneString allocates memory for the destination string and copies
 %  the source string to that memory location.
 %
-%  The format of the (void) CloneString routine is:
+%  The format of the (void) CloneString method is:
 %
-%      status=CloneString(destination,source)
+%      unsigned int CloneString(char **destination,const char *source)
 %
 %  A description of each parameter follows:
 %
@@ -658,9 +658,9 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
 %
 %  Method FormatString prints formatted output of a variable argument list.
 %
-%  The format of the FormatString routine is:
+%  The format of the FormatString method is:
 %
-%       FormatString(string,format,...)
+%      void FormatString(char *string,const char *format,...)
 %
 %  A description of each parameter follows.
 %
@@ -703,9 +703,10 @@ Export void FormatString(char *string,const char *format,...)
 %  in the string, and whether the x and y values are negative.  In addition,
 %  there are flags to report any meta characters (%, !, <, and >).
 %
-%  The format of the GetGeometry routine is:
+%  The format of the GetGeometry method is:
 %
-%      flags=GetGeometry(image_geometry,x,y,width,height)
+%      int GetGeometry(const char *image_geometry,int *x,int *y,
+%        unsigned int *width,unsigned int *height)
 %
 %  A description of each parameter follows:
 %
@@ -1049,9 +1050,9 @@ Export int GlobExpression(const char *expression,const char *pattern)
 %  Method IsAccessible returns True if the file as defined by filename is
 %  accessible.
 %
-%  The format of the IsAccessible routine is:
+%  The format of the IsAccessible method is:
 %
-%       status=IsAccessible(filename)
+%      unsigned int IsAccessible(const char *filename)
 %
 %  A description of each parameter follows.
 %
@@ -1099,9 +1100,9 @@ Export unsigned int IsAccessible(const char *filename)
 %  a directory.  Once MetroWerks write a stat(2) function, we can remove the
 %  chdir(2) function.
 %
-%  The format of the IsAccessible routine is:
+%  The format of the IsAccessible method is:
 %
-%       status=IsDirectory(filename)
+%      unsigned int IsDirectory(const char *filename)
 %
 %  A description of each parameter follows.
 %
@@ -1155,9 +1156,9 @@ Export unsigned int IsDirectory(const char *filename)
 %  greater than, equal to, or less than second.  The two strings are
 %  assumed to be encoded using ISO 8859-1.
 %
-%  The format of the Latin1Compare routine is:
+%  The format of the Latin1Compare method is:
 %
-%      Latin1Compare(p,q)
+%      int Latin1Compare(const char *p,const char *q)
 %
 %  A description of each parameter follows:
 %
@@ -1210,9 +1211,9 @@ Export int Latin1Compare(const char *p,const char *q)
 %  destination (including the null), changing all Latin-1 lowercase letters
 %  to uppercase.  The string is assumed to be encoded using ISO 8859-1.
 %
-%  The format of the Latin1Upper routine is:
+%  The format of the Latin1Upper method is:
 %
-%      Latin1Upper(string)
+%      void Latin1Upper(char *string)
 %
 %  A description of each parameter follows:
 %
@@ -1538,9 +1539,9 @@ Export char **ListFiles(char *directory,const char *pattern,int *number_entries)
 %  Method LocaleFilename replaces the contents of the string pointed to
 %  by filename by a unique file name relative to the directory.
 %
-%  The format of the LocaleFilename routine is:
+%  The format of the LocaleFilename method is:
 %
-%       LocaleFilename(filename)
+%      void LocaleFilename(char *filename)
 %
 %  A description of each parameter follows.
 %
@@ -1582,9 +1583,9 @@ Export void LocaleFilename(char *filename)
 %  Method LSBFirstReadLong reads a long value as a 32 bit quantity in
 %  least-significant byte first order.
 %
-%  The format of the LSBFirstReadLong routine is:
+%  The format of the LSBFirstReadLong method is:
 %
-%       value=LSBFirstReadLong(image)
+%      unsigned long LSBFirstReadLong(Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -1628,9 +1629,9 @@ Export unsigned long LSBFirstReadLong(Image *image)
 %  Method LSBFirstReadShort reads a short value as a 16 bit quantity in
 %  least-significant byte first order.
 %
-%  The format of the LSBFirstReadShort routine is:
+%  The format of the LSBFirstReadShort method is:
 %
-%       value=LSBFirstReadShort(image)
+%      unsigned short LSBFirstReadShort(Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -1672,9 +1673,9 @@ Export unsigned short LSBFirstReadShort(Image *image)
 %  Method LSBFirstWriteLong writes a long value as a 32 bit quantity in
 %  least-significant byte first order.
 %
-%  The format of the LSBFirstWriteLong routine is:
+%  The format of the LSBFirstWriteLong method is:
 %
-%       count=LSBFirstWriteLong(image,value)
+%      unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %  A description of each parameter follows.
 %
@@ -1714,9 +1715,9 @@ Export unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
 %  Method LSBFirstWriteShort writes a long value as a 16 bit quantity in
 %  least-significant byte first order.
 %
-%  The format of the LSBFirstWriteShort routine is:
+%  The format of the LSBFirstWriteShort method is:
 %
-%       count=LSBFirstWriteShort(image,value)
+%      unsigned long LSBFirstWriteShort(Image *image,const unsigned short value)
 %
 %  A description of each parameter follows.
 %
@@ -1754,9 +1755,9 @@ Export unsigned long LSBFirstWriteShort(Image *image,const unsigned short value)
 %  Method MSBFirstOrderLong converts a least-significant byte first buffer
 %  of integers to most-significant byte first.
 %
-%  The format of the MSBFirstOrderLong routine is:
+%  The format of the MSBFirstOrderLong method is:
 %
-%       MSBFirstOrderLong(p,length);
+%      void MSBFirstOrderLong(register char *p,const unsigned int length)
 %
 %  A description of each parameter follows.
 %
@@ -1803,9 +1804,9 @@ Export void MSBFirstOrderLong(register char *p,const unsigned int length)
 %  Method MSBFirstOrderShort converts a least-significant byte first buffer
 %  of integers to most-significant byte first.
 %
-%  The format of the MSBFirstOrderShort routine is:
+%  The format of the MSBFirstOrderShort method is:
 %
-%       MSBFirstOrderLongShort(p,length);
+%      void MSBFirstOrderShort(register char *p,const unsigned int length)
 %
 %  A description of each parameter follows.
 %
@@ -1846,9 +1847,9 @@ Export void MSBFirstOrderShort(register char *p,const unsigned int length)
 %  Method MSBFirstReadShort reads a short value as a 16 bit quantity in
 %  most-significant byte first order.
 %
-%  The format of the MSBFirstReadShort routine is:
+%  The format of the MSBFirstReadShort method is:
 %
-%       value=MSBFirstReadShort(image)
+%      unsigned short MSBFirstReadShort(Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -1890,9 +1891,9 @@ Export unsigned short MSBFirstReadShort(Image *image)
 %  Method MSBFirstReadLong reads a long value as a 32 bit quantity in
 %  most-significant byte first order.
 %
-%  The format of the MSBFirstReadLong routine is:
+%  The format of the MSBFirstReadLong method is:
 %
-%       value=MSBFirstReadLong(image)
+%      unsigned long MSBFirstReadLong(Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -1937,9 +1938,9 @@ Export unsigned long MSBFirstReadLong(Image *image)
 %  Method MSBFirstWriteLong writes a long value as a 32 bit quantity in
 %  most-significant byte first order.
 %
-%  The format of the MSBFirstWriteLong routine is:
+%  The format of the MSBFirstWriteLong method is:
 %
-%       count=MSBFirstWriteLong(image,value)
+%      unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %  A description of each parameter follows.
 %
@@ -1980,9 +1981,9 @@ Export unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
 %  Method MSBFirstWriteShort writes a long value as a 16 bit quantity in
 %  most-significant byte first order.
 %
-%  The format of the MSBFirstWriteShort routine is:
+%  The format of the MSBFirstWriteShort method is:
 %
-%       MSBFirstWriteShort(value,file)
+%      unsigned long MSBFirstWriteShort(Image *image,const unsigned short value)
 %
 %  A description of each parameter follows.
 %
@@ -2017,9 +2018,9 @@ Export unsigned long MSBFirstWriteShort(Image *image,const unsigned short value)
 %  Method MultilineCensus returns the number of lines within a label.  A line
 %  is represented by a \n character.
 %
-%  The format of the MultilineCenus routine is:
+%  The format of the MultilineCenus method is:
 %
-%       MultilineCenus(label)
+%      int MultilineCensus(const char *label)
 %
 %  A description of each parameter follows.
 %
@@ -2060,9 +2061,10 @@ Export int MultilineCensus(const char *label)
 %  in the string, and whether the x and y values are negative.  In addition,
 %  there are flags to report any meta characters (%, !, <, and >).
 %
-%  The format of the ParseImageGeometry routine is:
+%  The format of the ParseImageGeometry method is:
 %
-%      flags=ParseImageGeometry(image_geometry,x,y,width,height)
+%      int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
+%        unsigned int *height)
 %
 %  A description of each parameter follows:
 %
@@ -2222,9 +2224,9 @@ Export int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
 %  Method PostscriptGeometry replaces any page mneumonic with the equivalent
 %  size in picas.
 %
-%  The format of the PostscriptGeometry routine is:
+%  The format of the PostscriptGeometry method is:
 %
-%       geometry=PostscriptGeometry(page)
+%      void DestroyPostscriptGeometry(char *geometry)
 %
 %  A description of each parameter follows.
 %
@@ -2376,9 +2378,9 @@ Export char *PostscriptGeometry(const char *page)
 %
 %  Method ReadByte reads a single byte from the image file and returns it.
 %
-%  The format of the ReadByte routine is:
+%  The format of the ReadByte method is:
 %
-%       value=ReadByte(image)
+%      int ReadByte(Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -2418,9 +2420,9 @@ Export int ReadByte(Image *image)
 %  amount of data is determined by first reading a count byte.  The number
 %  or bytes read is returned.
 %
-%  The format of the ReadBlobBlock routine is:
+%  The format of the ReadBlobBlock method is:
 %
-%      count=ReadBlob(image,data)
+%      unsigned long ReadBlobBlock(Image *image,char *data)
 %
 %  A description of each parameter follows:
 %
@@ -2464,9 +2466,9 @@ Export unsigned long ReadBlobBlock(Image *image,char *data)
 %  Method SetClientName sets the client name if the name is specified.
 %  Otherwise the current client name is returned.
 %
-%  The format of the SetClientName routine is:
+%  The format of the SetClientName method is:
 %
-%      client_name=SetClientName(name)
+%      char *SetClientName(const char *name)
 %
 %  A description of each parameter follows:
 %
@@ -2503,9 +2505,9 @@ Export char *SetClientName(const char *name)
 %
 %  Method StringToArgv converts a text string into command line arguments.
 %
-%  The format of the StringToArgv routine is:
+%  The format of the StringToArgv method is:
 %
-%      argv=StringToArgv(text,argc)
+%      char **StringToArgv(const char *text,int *argc)
 %
 %  A description of each parameter follows:
 %
@@ -2614,9 +2616,9 @@ Export char **StringToArgv(const char *text,int *argc)
 %  HEX characters if any control characters are discovered within the text
 %  string.
 %
-%  The format of the StringToList routine is:
+%  The format of the StringToList method is:
 %
-%      list=StringToList(text)
+%      char **StringToList(const char *text)
 %
 %  A description of each parameter follows:
 %
@@ -2761,9 +2763,9 @@ Export char **StringToList(const char *text)
 %  Method Strip strips the whitespace from the beginning and end of a string
 %  of characters.
 %
-%  The format of the Strip routine is:
+%  The format of the Strip method is:
 %
-%     Strip(data)
+%      void Strip(char *data)
 %
 %  A description of each parameter follows:
 %
@@ -2813,9 +2815,9 @@ Export void Strip(char *data)
 %  Method SystemCommand executes the specified command and waits until it
 %  terminates.  The returned value is the exit status of the command.
 %
-%  The format of the SystemCommand routine is:
+%  The format of the SystemCommand method is:
 %
-%      status=SystemCommand(verbose,command)
+%      int SystemCommand(const unsigned int verbose,const char *command)
 %
 %  A description of each parameter follows:
 %
@@ -2868,9 +2870,9 @@ Export int SystemCommand(const unsigned int verbose,const char *command)
 %  by filename by a unique file name.  Some delegates do not like % or .
 %  in their filenames.
 %
-%  The format of the TemporaryFilename routine is:
+%  The format of the TemporaryFilename method is:
 %
-%       TemporaryFilename(filename)
+%      void TemporaryFilename(char *filename)
 %
 %  A description of each parameter follows.
 %
@@ -2928,9 +2930,10 @@ Export void TemporaryFilename(char *filename)
 %  Method TranslateText replaces any embedded formatting characters with
 %  the appropriate image attribute and returns the translated text.
 %
-%  The format of the TranslateText routine is:
+%  The format of the TranslateText method is:
 %
-%      translated_text=TranslateText(image_info,image,formatted_text)
+%      char *TranslateText(const ImageInfo *image_info,const Image *image,
+%        const char *formatted_text)
 %
 %  A description of each parameter follows:
 %
@@ -3281,9 +3284,9 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
 %  Method WriteByte write an integer to a file.  It returns the number of
 %  bytes written (either 0 or 1);
 %
-%  The format of the WriteByte routine is:
+%  The format of the WriteByte method is:
 %
-%       count=WriteByte(image,value)
+%      unsigned long WriteByte(Image *image,const char value)
 %
 %  A description of each parameter follows.
 %

@@ -75,9 +75,9 @@
 %  centered on the Postscript page.  Otherwise, the image is positioned as
 %  specified by the geometry.
 %
-%  The format of the WritePS2Image routine is:
+%  The format of the WritePS2Image method is:
 %
-%      status=WritePS2Image(image_info,image)
+%      unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %

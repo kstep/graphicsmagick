@@ -71,9 +71,9 @@
 %  returns it.  It allocates the memory necessary for the new Image structure
 %  and returns a pointer to the new image.
 %
-%  The format of the ReadXWDImage routine is:
+%  The format of the ReadXWDImage method is:
 %
-%      image=ReadXWDImage(image_info)
+%      Image *ReadXWDImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -479,9 +479,9 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
 %  Method WriteXWDImage writes an image to a file in X window dump
 %  rasterfile format.
 %
-%  The format of the WriteXWDImage routine is:
+%  The format of the WriteXWDImage method is:
 %
-%      status=WriteXWDImage(image_info,image)
+%      unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

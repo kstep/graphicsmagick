@@ -70,9 +70,9 @@
 %  memory necessary for the new Image structure and returns a pointer to the
 %  new image.
 %
-%  The format of the ReadGRADATIONImage routine is:
+%  The format of the ReadGRADATIONImage method is:
 %
-%      image=ReadGRADATIONImage(image_info)
+%      Image *ReadGRADATIONImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

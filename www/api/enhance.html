@@ -36,22 +36,22 @@ enhance - Methods to Enhance an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>ContrastImage</STRONG>(image,sharpen)
+void <STRONG>ContrastImage</STRONG>(Image*image,constunsigned intsharpen)
 
 <P>
-<STRONG>EqualizeImage</STRONG>(image)
+void <STRONG>EqualizeImage</STRONG>(Image*image)
 
 <P>
-<STRONG>GammaImage</STRONG>(image,gamma)
+void <STRONG>GammaImage</STRONG>(Image*image,constchar*gamma)
 
 <P>
-<STRONG>ModulateImage</STRONG>(image,modulate)
+void <STRONG>ModulateImage</STRONG>(Image*image,constchar*modulate)
 
 <P>
-<STRONG>NegateImage</STRONG>(image,grayscale)
+void <STRONG>NegateImage</STRONG>(Image*image,constunsigned intgrayscale)
 
 <P>
-<STRONG>NormalizeImage</STRONG>(image)
+void <STRONG>NormalizeImage</STRONG>(Image*image)
 
 <P>
 <HR>
@@ -64,13 +64,14 @@ Method ContrastImage enhances the intensity differences between the lighter
 and darker elements of the image.
 
 <P>
-The format of the ContrastImage routine is:
+The format of the ContrastImage method is:
 
 <P>
-<PRE>        ContrastImage(image,sharpen)
+<PRE>        void ContrastImage(Image *image,const unsigned int sharpen)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
@@ -90,13 +91,14 @@ Method EqualizeImage performs histogram equalization on the reference
 image.
 
 <P>
-The format of the EqualizeImage routine is:
+The format of the EqualizeImage method is:
 
 <P>
-<PRE>        EqualizeImage(image)
+<PRE>        void EqualizeImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -111,13 +113,14 @@ The address of a structure of type Image; returned from ReadImage.
 Method GammaImage converts the reference image to gamma corrected colors.
 
 <P>
-The format of the GammaImage routine is:
+The format of the GammaImage method is:
 
 <P>
-<PRE>        GammaImage(image,gamma)
+<PRE>        void GammaImage(Image *image,const char *gamma)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -126,7 +129,9 @@ The address of a structure of type Image; returned from ReadImage.
 
 <DT><STRONG>gamma:</STRONG><DD>
 <P>
-A character string indicating the level of gamma correction.
+
+<FONT SIZE=-1>A</FONT> character string indicating the level of gamma
+correction.
 
 </DL></DL>
 <P>
@@ -137,13 +142,14 @@ Method ModulateImage modulates the hue, saturation, and brightness of an
 image.
 
 <P>
-The format of the ModulateImage routine is:
+The format of the ModulateImage method is:
 
 <P>
-<PRE>        ModulateImage(image,modulate)
+<PRE>        void ModulateImage(Image *image,const char *modulate)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -152,8 +158,10 @@ The address of a structure of type Image; returned from ReadImage.
 
 <DT><STRONG>modulate:</STRONG><DD>
 <P>
-A character string indicating the percent change in brightness, saturation,
-and hue in floating point notation separated by commas (e.g. 10.1,0.0,3.1).
+
+<FONT SIZE=-1>A</FONT> character string indicating the percent change in
+brightness, saturation, and hue in floating point notation separated by
+commas (e.g. 10.1,0.0,3.1).
 
 </DL></DL>
 <P>
@@ -164,13 +172,14 @@ Method NegateImage negates the colors in the reference image. The Grayscale
 option means that only grayscale values within the image are negated.
 
 <P>
-The format of the NegateImage routine is:
+The format of the NegateImage method is:
 
 <P>
-<PRE>        NegateImage(image,grayscale)
+<PRE>        void NegateImage(Image *image,const unsigned int grayscale)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -186,13 +195,14 @@ Method NormalizeImage normalizes the pixel values to span the full range of
 color values. This is a contrast enhancement technique.
 
 <P>
-The format of the NormalizeImage routine is:
+The format of the NormalizeImage method is:
 
 <P>
-<PRE>        NormalizeImage(image)
+<PRE>        void NormalizeImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>

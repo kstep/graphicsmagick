@@ -97,9 +97,9 @@ const InterlaceType
 %  Method AllocateImage allocates an Image structure and initializes each
 %  field to a default value.
 %
-%  The format of the AllocateImage routine is:
+%  The format of the AllocateImage method is:
 %
-%      allocated_image=AllocateImage(image_info)
+%      Image *AllocateImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -317,9 +317,9 @@ Export Image *AllocateImage(const ImageInfo *image_info)
 %  Method AllocateNextImage allocates an Image structure and initializes each
 %  field to a default value.
 %
-%  The format of the AllocateNextImage routine is:
+%  The format of the AllocateNextImage method is:
 %
-%      AllocateNextImage(image_info,image)
+%      void AllocateNextImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -360,9 +360,9 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
 %
 %  Method AnimateImages displays one or more images to an X window.
 %
-%  The format of the AllocateNextImage routine is:
+%  The format of the AllocateNextImage method is:
 %
-%      status=AnimateImages(image_info,image)
+%      unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -427,9 +427,9 @@ Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
 %  If stack is false, rectangular images are stacked left-to-right otherwise
 %  top-to-bottom.
 %
-%  The format of the AppendImage routine is:
+%  The format of the AppendImage method is:
 %
-%      AppendImages(images,stack)
+%      Image *AppendImages(Image *images,const unsigned int stack)
 %
 %  A description of each parameter follows:
 %
@@ -599,9 +599,9 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
 %  Method AverageImages averages a set of images.  All the input images must
 %  be the same size in pixels.
 %
-%  The format of the AverageImage routine is:
+%  The format of the AverageImage method is:
 %
-%      averaged_image=AverageImages(images)
+%      Image *AverageImages(const Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -756,9 +756,10 @@ Export Image *AverageImages(const Image *images)
 %  Method CloneImage returns a copy of all fields of the input image.  The
 %  the pixel memory is allocated but the pixel data is not copied.
 %
-%  The format of the CloneImage routine is:
+%  The format of the CloneImage method is:
 %
-%      clone_image=CloneImage(image,columns,rows,clone_pixels)
+%      Image *CloneImage(const Image *image,const unsigned int columns,
+%        const unsigned int rows,const unsigned int clone_pixels)
 %
 %  A description of each parameter follows:
 %
@@ -924,9 +925,9 @@ Export Image *CloneImage(const Image *image,const unsigned int columns,
 %  Method CloneImageInfo makes a duplicate of the given image info, or if
 %  image info is NULL, a new one.
 %
-%  The format of the CloneImageInfo routine is:
+%  The format of the CloneImageInfo method is:
 %
-%      cloned_info=CloneImageInfo(image_info)
+%      ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -1002,9 +1003,9 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %  comment can include the image filename, type, width, height, or scene
 %  number by embedding special format characters.
 %
-%  The format of the CommentImage routine is:
+%  The format of the CommentImage method is:
 %
-%      CommentImage(image,comments)
+%      void CommentImage(Image *image,const char *comments)
 %
 %  A description of each parameter follows:
 %
@@ -1036,9 +1037,10 @@ Export void CommentImage(Image *image,const char *comments)
 %  Method CompositeImage returns the second image composited onto the
 %  first at the specified offsets.
 %
-%  The format of the CompositeImage routine is:
+%  The format of the CompositeImage method is:
 %
-%      CompositeImage(image,compose,composite_image,x_offset,y_offset)
+%      void CompositeImage(Image *image,const CompositeOperator compose,
+%        Image *composite_image,const int x_offset,const int y_offset)
 %
 %  A description of each parameter follows:
 %
@@ -1540,9 +1542,9 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
 %  Method CondenseImage compresses an image to the minimum number of
 %  runlength-encoded packets.
 %
-%  The format of the CondenseImage routine is:
+%  The format of the CondenseImage method is:
 %
-%      CondenseImage(image)
+%      void CondenseImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1639,9 +1641,9 @@ Export void CondenseImage(Image *image)
 %  and returns it.  It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  The format of the CreateImage routine is:
+%  The format of the CreateImage method is:
 %
-%      image=CreateImage(width,height,red,green,blue,opacity)
+%      void CycleColormapImage(Image *image,const int amount)
 %
 %  A description of each parameter follows:
 %
@@ -1733,7 +1735,7 @@ Image *CreateImage(const unsigned int width,const unsigned int height,
 %  Method CycleColormapImage cycles the image colormap by a specified
 %  amount.
 %
-%  The format of the CycleColormapImage routine is:
+%  The format of the CycleColormapImage method is:
 %
 %      CycleColormapImage(image,amount)
 %
@@ -1795,9 +1797,9 @@ Export void CycleColormapImage(Image *image,const int amount)
 %  Method DescribeImage describes an image by printing its attributes to
 %  stdout.
 %
-%  The format of the DescribeImage routine is:
+%  The format of the DescribeImage method is:
 %
-%      DescribeImage(image,file,verbose)
+%      void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
 %
 %  A description of each parameter follows:
 %
@@ -2216,9 +2218,9 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
 %
 %  Method DestroyImage deallocates memory associated with an image.
 %
-%  The format of the DestroyImage routine is:
+%  The format of the DestroyImage method is:
 %
-%      DestroyImage(image)
+%      void DestroyImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2328,9 +2330,9 @@ Export void DestroyImage(Image *image)
 %  Method DestroyImageInfo deallocates memory associated with an ImageInfo
 %  structure.
 %
-%  The format of the DestroyImageInfo routine is:
+%  The format of the DestroyImageInfo method is:
 %
-%      DestroyImageInfo(image_info)
+%      void DestroyImageInfo(ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -2407,9 +2409,9 @@ Export void DestroyImageInfo(ImageInfo *image_info)
 %  Method DestroyImages deallocates memory associated with a linked list
 %  of images.
 %
-%  The format of the DestroyImages routine is:
+%  The format of the DestroyImages method is:
 %
-%      DestroyImages(image)
+%      void DestroyImages(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2454,9 +2456,9 @@ Export void DestroyImages(Image *image)
 %
 %  Method DisplayImages displays one or more images to an X window.
 %
-%  The format of the AllocateNextImage routine is:
+%  The format of the AllocateNextImage method is:
 %
-%      status=DisplayImages(image_info,image)
+%      unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2530,9 +2532,9 @@ Export unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
 %
 %  Method GetImageInfo initializes the ImageInfo structure.
 %
-%  The format of the GetImageInfo routine is:
+%  The format of the GetImageInfo method is:
 %
-%      GetImageInfo(image_info)
+%      void GetImageInfo(ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -2622,9 +2624,9 @@ Export void GetImageInfo(ImageInfo *image_info)
 %
 %  Method GetImageType returns the type of image (e.g. bilevel, palette, etc).
 %
-%  The format of the GetImageType routine is:
+%  The format of the GetImageType method is:
 %
-%      type=GetImageType(image)
+%      ImageType GetImageType(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2664,9 +2666,9 @@ Export ImageType GetImageType(Image *image)
 %
 %  Method GetNumberScenes returns the number of scenes in an image sequence.
 %
-%  The format of the GetNumberScenes routine is:
+%  The format of the GetNumberScenes method is:
 %
-%      scenes=GetNumberScenes(image)
+%      unsigned int GetNumberScenes(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2711,9 +2713,9 @@ Export unsigned int GetNumberScenes(const Image *image)
 %  Method GetPixels returns the pixel data of an image as normalized red,
 %  green, blue, and opacity values.
 %
-%  The format of the GetPixels routine is:
+%  The format of the GetPixels method is:
 %
-%      GetPixels(image,red_pixels,green_pixels,blue_pixels,opacity_pixels)
+%      unsigned int IsGeometry(const char *geometry)
 %
 %  A description of each parameter follows:
 %
@@ -2783,9 +2785,9 @@ void GetPixels(const Image *image,float *red_pixels,float *green_pixels,
 %  Method IsGeometry returns True if the geometry specification is valid
 %  as determined by ParseGeometry.
 %
-%  The format of the IsGeometry routine is:
+%  The format of the IsGeometry method is:
 %
-%      status=IsGeometry(geometry)
+%      unsigned int IsGeometry(const char *geometry)
 %
 %  A description of each parameter follows:
 %
@@ -2830,9 +2832,9 @@ Export unsigned int IsGeometry(const char *geometry)
 %  False is returned.  If the image is DirectClass and grayscale, it is demoted
 %  to PseudoClass.
 %
-%  The format of the IsGrayImage routine is:
+%  The format of the IsGrayImage method is:
 %
-%      status=IsGrayImage(image)
+%      unsigned int IsGrayImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2920,9 +2922,9 @@ Export unsigned int IsGrayImage(Image *image)
 %  Method IsSubimage returns True if the geometry is a valid subimage
 %  specification (e.g. [1], [1-9], [1,7,4]).
 %
-%  The format of the IsSubimage routine is:
+%  The format of the IsSubimage method is:
 %
-%      status=IsSubimage(geometry,pedantic)
+%      unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
 %
 %  A description of each parameter follows:
 %
@@ -2969,9 +2971,9 @@ Export unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
 %  was first read or if any image in the sequence has a difference magic or
 %  filename.
 %
-%  The format of the IsTainted routine is:
+%  The format of the IsTainted method is:
 %
-%      status=IsTainted(image)
+%      unsigned int IsTainted(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -3021,9 +3023,9 @@ Export unsigned int IsTainted(const Image *image)
 %  can include the image filename, type, width, height, or scene number by
 %  embedding special format characters.
 %
-%  The format of the LabelImage routine is:
+%  The format of the LabelImage method is:
 %
-%      LabelImage(image,label)
+%      void LabelImage(Image *image,const char *label)
 %
 %  A description of each parameter follows:
 %
@@ -3052,9 +3054,9 @@ Export void LabelImage(Image *image,const char *label)
 %
 %  Method LayerImage extracts the specified layer from the references image.
 %
-%  The format of the LayerImage routine is:
+%  The format of the LayerImage method is:
 %
-%      LayerImage(image,layer)
+%      void LayerImage(Image *image,const LayerType layer)
 %
 %  A description of each parameter follows:
 %
@@ -3147,9 +3149,9 @@ Export void LayerImage(Image *image,const LayerType layer)
 %  Method ListToGroupImage converts a linked list of images to a sequential
 %  array.
 %
-%  The format of the ListToGroupImage routine is:
+%  The format of the ListToGroupImage method is:
 %
-%      images=ListToGroupImage(images,number_images)
+%      Image **ListToGroupImage(const Image *image,unsigned int *number_images)
 %
 %  A description of each parameter follows:
 %
@@ -3214,9 +3216,9 @@ Export Image **ListToGroupImage(const Image *image,unsigned int *number_images)
 %  Method MatteImage initializes the matte channel of the reference image to
 %  opaque.
 %
-%  The format of the MatteImage routine is:
+%  The format of the MatteImage method is:
 %
-%      MatteImage(image)
+%      void MatteImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -3257,9 +3259,10 @@ Export void MatteImage(Image *image)
 %  Method MogrifyImage applies image processing options to an image as
 %  prescribed by command line options.
 %
-%  The format of the MogrifyImage routine is:
+%  The format of the MogrifyImage method is:
 %
-%      MogrifyImage(image_info,argc,argv,image)
+%      void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
+%        Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -3327,7 +3330,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         return;
       }
   /*
-    Initialize routine variables.
+    Initialize method variables.
   */
   local_info=CloneImageInfo(image_info);
   GetQuantizeInfo(&quantize_info);
@@ -4453,9 +4456,10 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
 %  Method MogrifyImages applies image processing options to a sequence of
 %  images as prescribed by command line options.
 %
-%  The format of the MogrifyImage routine is:
+%  The format of the MogrifyImage method is:
 %
-%      MogrifyImages(image_info,argc,argv,images)
+%      void MogrifyImages(const ImageInfo *image_info,const int argc,
+%        char **argv,Image **images)
 %
 %  A description of each parameter follows:
 %
@@ -4535,9 +4539,10 @@ Export void MogrifyImages(const ImageInfo *image_info,const int argc,
 %  in the string, and whether the x and y values are negative.  In addition,
 %  there are flags to report any meta characters (%, !, <, and >).
 %
-%  The format of the ParseImageGeometry routine is:
+%  The format of the ParseImageGeometry method is:
 %
-%      flags=ParseImageGeometry(image_geometry,x,y,width,height)
+%      int ParseImageGeometry(const char *geometry,int *x,int *y,
+%        unsigned int *width,unsigned int *height)
 %
 %  A description of each parameter follows:
 %
@@ -4718,9 +4723,9 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
 %  the image is returned as well.  Note, only the first image in a multi-frame
 %  image file is pinged.
 %
-%  The format of the PingImage routine is:
+%  The format of the PingImage method is:
 %
-%      image=PingImage(image_info)
+%      Image *PingImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -4771,9 +4776,9 @@ Export Image *PingImage(const ImageInfo *image_info)
 %  explicit image format name and a colon (i.e.  ps:image) or as the filename
 %  suffix  (i.e. image.ps).
 %
-%  The format of the ReadImage routine is:
+%  The format of the ReadImage method is:
 %
-%      image=ReadImage(image_info)
+%      Image *ReadImage(ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -5017,9 +5022,9 @@ Export Image *ReadImage(ImageInfo *image_info)
 %  Method ReadImages reads a list of image names from a file and then returns
 %  the images as a linked list.
 %
-%  The format of the ReadImage routine is:
+%  The format of the ReadImage method is:
 %
-%      image=ReadImages(image_info)
+%      Image *ReadImages(ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -5137,9 +5142,9 @@ Export Image *ReadImages(ImageInfo *image_info)
 %  ones: the weights are rescaled to normalized the range of the transformed
 %  values to be [0..MaxRGB].
 %
-%  The format of the RGBTransformImage routine is:
+%  The format of the RGBTransformImage method is:
 %
-%      RGBTransformImage(image,colorspace)
+%      void RGBTransformImage(Image *image,const ColorspaceType colorspace)
 %
 %  A description of each parameter follows:
 %
@@ -5595,9 +5600,9 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
 %
 %  Method SetImage initializes the reference image to the background color.
 %
-%  The format of the SetImage routine is:
+%  The format of the SetImage method is:
 %
-%      SetImage(image)
+%      void SetImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -5650,9 +5655,9 @@ Export void SetImage(Image *image)
 %  enclosed in brackets after a file name to specify a desired subimage of a
 %  multi-resolution image format like Photo CD (e.g. img0001.pcd[4]).
 %
-%  The format of the SetImageInfo routine is:
+%  The format of the SetImageInfo method is:
 %
-%      SetImageInfo(image_info,rectify)
+%      void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
 %
 %  A description of each parameter follows:
 %
@@ -5903,9 +5908,9 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
 %  Method SortColormapByIntensity sorts the colormap of a PseudoClass image
 %  by decreasing color intensity.
 %
-%  The format of the SortColormapByIntensity routine is:
+%  The format of the SortColormapByIntensity method is:
 %
-%      SortColormapByIntensity(image)
+%      void SortColormapByIntensity(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -5995,9 +6000,9 @@ Export void SortColormapByIntensity(Image *image)
 %  Method SyncImage initializes the red, green, and blue intensities of each
 %  pixel as defined by the colormap index.
 %
-%  The format of the SyncImage routine is:
+%  The format of the SyncImage method is:
 %
-%      SyncImage(image)
+%      void SyncImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -6047,9 +6052,9 @@ Export void SyncImage(Image *image)
 %
 %  Method TextureImage layers a texture onto the background of an image.
 %
-%  The format of the TextureImage routine is:
+%  The format of the TextureImage method is:
 %
-%      TextureImage(image,texture)
+%      void TextureImage(Image *image,Image *texture)
 %
 %  A description of each parameter follows:
 %
@@ -6109,9 +6114,10 @@ Export void TextureImage(Image *image,Image *texture)
 %  size with bilinear interpolation.  The image is then scaled to the exact
 %  specified image size with pixel replication.
 %
-%  The format of the TransformImage routine is:
+%  The format of the TransformImage method is:
 %
-%      TransformImage(image,crop_geometry,image_geometry)
+%      void TransformImage(Image **image,const char *crop_geometry,
+%        const char *image_geometry)
 %
 %  A description of each parameter follows:
 %
@@ -6277,9 +6283,9 @@ Export void TransformImage(Image **image,const char *crop_geometry,
 %  weights are rescaled to normalized the range of the transformed values to
 %  be [0..MaxRGB].
 %
-%  The format of the TransformRGBImage routine is:
+%  The format of the TransformRGBImage method is:
 %
-%      TransformRGBImage(image,colorspace)
+%      void TransformRGBImage(Image *image,const ColorspaceType colorspace)
 %
 %  A description of each parameter follows:
 %
@@ -6728,9 +6734,9 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
 %  image.  All pixel locations are initially set to opaque.  Any pixel
 %  that matches the specified color are set to transparent.
 %
-%  The format of the TransparentImage routine is:
+%  The format of the TransparentImage method is:
 %
-%      TransparentImage(image,color)
+%      void TransparentImage(Image *image,const char *color)
 %
 %  A description of each parameter follows:
 %
@@ -6798,9 +6804,9 @@ Export void TransparentImage(Image *image,const char *color)
 %  Method UncondenseImage uncompresses runlength-encoded pixels packets to
 %  a rectangular array of pixels.
 %
-%  The format of the UncondenseImage routine is:
+%  The format of the UncondenseImage method is:
 %
-%      status=UncondenseImage(image)
+%      unsigned int UncondenseImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -6877,9 +6883,9 @@ Export unsigned int UncondenseImage(Image *image)
 %  to the requirements of the image format.  For example, DirectClass images
 %  must be color-reduced to PseudoClass if the format is GIF.
 %
-%  The format of the WriteImage routine is:
+%  The format of the WriteImage method is:
 %
-%      status=WriteImage(image_info,image)
+%      unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %

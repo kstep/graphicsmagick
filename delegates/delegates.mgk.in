@@ -140,10 +140,10 @@ hpgl=>
 	mv `basename %o` %o
 
 htm=>
-	@HTMLDecodeDelegate@ -o %o %i
+	@HTMLDecodeDelegate@ -U -o %o %i
 
 html=>
-	@HTMLDecodeDelegate@ -o %o %i
+	@HTMLDecodeDelegate@ -U -o %o %i
 
 http=>
 	@WWWDecodeDelegate@ %m:%i > %o 2>&1
@@ -205,10 +205,10 @@ rgba<=rle
 	@RLEEncodeDelegate@ -w %w -h %h -n 4 -o %o %i
 
 scan=>
-	@SCANDecodeDelegate@  -d %i > %o
+	@SCANDecodeDelegate@ -d %i > %o
 
 shtml=>
-	@HTMLDecodeDelegate@ -o %o %i
+	@HTMLDecodeDelegate@ -U -o %o %i
 
 txt<=>ps
 	@TXTDelegate@ -o %o %i

@@ -38,22 +38,7 @@ gems - Graphic Gems - Graphic Support Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>GenerateNoise</STRONG>(pixel,noise_type)
-
-<P>
-<STRONG>HSLTransform</STRONG>(hue,saturation,luminosity,red,green,blue)
-
-<P>
-<STRONG>Hull</STRONG>(x_offset,y_offset,polarity,columns,rows,f,g)
-
-<P>
-<STRONG>InterpolateColor</STRONG>(image,x_offset,y_offset)
-
-<P>
-<STRONG>TransformHSL</STRONG>(red,green,blue,hue,saturation,luminosity)
-
-<P>
-<STRONG>Upsample</STRONG>(width,height,scaled_width,pixels)
+Quantum <STRONG>GenerateNoise</STRONG>(constQuantumpixel,constNoiseTypenoise_type)
 
 <P>
 <HR>
@@ -66,22 +51,26 @@ Method Contrast enhances the intensity differences between the lighter and
 darker elements of the image.
 
 <P>
-The format of the Contrast routine is:
+The format of the Contrast method is:
 
 <P>
-<PRE>    Contrast(sign,red,green,blue)
+<PRE>    void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">sign:</A></STRONG><DD>
 <P>
-A positive value enhances the contrast otherwise it is reduced.
+
+<FONT SIZE=-1>A</FONT> positive value enhances the contrast otherwise it is
+reduced.
 
 <DT><STRONG>red, green, blue:</STRONG><DD>
 <P>
-A pointer to a pixel component of type Quantum.
+
+<FONT SIZE=-1>A</FONT> pointer to a pixel component of type Quantum.
 
 </DL></DL>
 <P>
@@ -91,18 +80,20 @@ A pointer to a pixel component of type Quantum.
 Method GenerateNoise adds noise to a pixel.
 
 <P>
-The format of the GenerateNoise routine is:
+The format of the GenerateNoise method is:
 
 <P>
-<PRE>        GenerateNoise(pixel,noise_type)
+<PRE>        Quantum GenerateNoise(const Quantum pixel,const NoiseType noise_type)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>pixel:</STRONG><DD>
 <P>
-A structure of type Quantum.
+
+<FONT SIZE=-1>A</FONT> structure of type Quantum.
 
 <DT><STRONG>noise_type:</STRONG><DD>
 <P>
@@ -118,42 +109,48 @@ Method HSLTransform converts a (hue, saturation, luminosity) to a (red,
 green, blue) triple.
 
 <P>
-The format of the HSLTransformImage routine is:
+The format of the HSLTransformImage method is:
 
 <P>
-<PRE>        HSLTransform(hue,saturation,luminosity,red,green,blue)
+<PRE>    void HSLTransform(const double hue,const double saturation,
+      const double luminosity,Quantum *red,Quantum *green,Quantum *blue)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>hue, saturation, luminosity:</STRONG><DD>
 <P>
-A double value representing a component of the HSL color space.
+
+<FONT SIZE=-1>A</FONT> double value representing a component of the 
+<FONT SIZE=-1>HSL</FONT> color space.
+
 
 <DT><STRONG>red, green, blue:</STRONG><DD>
 <P>
-A pointer to a pixel component of type Quantum.
+
+<FONT SIZE=-1>A</FONT> pointer to a pixel component of type Quantum.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="Hull">Hull</A></H2>
 <P>
-Method Hull implements the eight hull algorithm described in Applied
-Optics, Vol. 24, No. 10, 15 May 1985, ``Geometric filter for Speckle
-Reduction'', by Thomas R Crimmins. Each pixel in the image is replaced by
-one of its eight of its surrounding pixels using a polarity and negative
-hull function.
+Method Hull implements the eight hull algorithm described in Applied Optics, Vol. 24, No. 10, 15 May 1985, ``Geometric filter for Speckle Reduction'', by Thomas 
+<FONT SIZE=-1>R</FONT> Crimmins. Each pixel in the image is replaced by one of its eight of its surrounding pixels using a polarity and negative hull function.
+
 
 <P>
-The format of the Hull routine is:
+The format of the Hull method is:
 
 <P>
-<PRE>        Hull(x_offset,y_offset,polarity,columns,rows,f,g)
+<PRE>    void Hull(const int x_offset,const int y_offset,const int polarity,
+      const unsigned int columns,const unsigned int rows,Quantum *f,Quantum *g)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>x_offset, y_offset:</STRONG><DD>
@@ -171,7 +168,8 @@ Specifies the number of rows and columns in the image.
 
 <DT><STRONG>f, g:</STRONG><DD>
 <P>
-A pointer to an image pixel and one of it's neighbor.
+
+<FONT SIZE=-1>A</FONT> pointer to an image pixel and one of it's neighbor.
 
 </DL></DL>
 <P>
@@ -182,13 +180,15 @@ Method InterpolateColor applies bi-linear interpolation between a pixel and
 it's neighbors.
 
 <P>
-The format of the InterpolateColor routine is:
+The format of the InterpolateColor method is:
 
 <P>
-<PRE>        InterpolateColor(image,x_offset,y_offset)
+<PRE>    ColorPacket InterpolateColor(Image *image,const double x_offset,
+      const double y_offset)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -197,7 +197,9 @@ The address of a structure of type Image.
 
 <DT><STRONG>x_offset,y_offset:</STRONG><DD>
 <P>
-A double representing the current (x,y) position of the pixel.
+
+<FONT SIZE=-1>A</FONT> double representing the current (x,y) position of
+the pixel.
 
 </DL></DL>
 <P>
@@ -207,26 +209,29 @@ A double representing the current (x,y) position of the pixel.
 Method Modulate modulates the hue, saturation, and brightness of an image.
 
 <P>
-The format of the ModulateImage routine is:
+The format of the ModulateImage method is:
 
 <P>
-<PRE>    Modulate(percent_hue,percent_saturation,percent_brightness,red,green,
+<PRE>    void Modulate(double percent_hue,double percent_saturation,
+      double percent_brightness,Quantum *red,Quantum *green,Quantum *blue)
+      blue)
 </PRE>
 <P>
-<PRE>      blue)
-</PRE>
-<P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>percent_hue, percent_saturation, percent_brightness:</STRONG><DD>
 <P>
-A double value representing the percent change in a component of the HSL
-color space.
+
+<FONT SIZE=-1>A</FONT> double value representing the percent change in a component of the 
+<FONT SIZE=-1>HSL</FONT> color space.
+
 
 <DT><STRONG>red, green, blue:</STRONG><DD>
 <P>
-A pointer to a pixel component of type Quantum.
+
+<FONT SIZE=-1>A</FONT> pointer to a pixel component of type Quantum.
 
 </DL></DL>
 <P>
@@ -237,24 +242,29 @@ Method TransformHSL converts a (red, green, blue) to a (hue, saturation,
 luminosity) triple.
 
 <P>
-The format of the TransformHSL routine is:
+The format of the TransformHSL method is:
 
 <P>
-<PRE>        TransformHSL(red,green,blue,hue,saturation,luminosity)
+<PRE>    void TransformHSL(const Quantum red,const Quantum green,
+      const Quantum blue,double *hue,double *saturation,double *luminosity)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>red, green, blue:</STRONG><DD>
 <P>
-A Quantum value representing the red, green, and blue component of a
-pixel..
+
+<FONT SIZE=-1>A</FONT> Quantum value representing the red, green, and blue
+component of a pixel..
 
 <DT><STRONG>hue, saturation, luminosity:</STRONG><DD>
 <P>
-A pointer to a double value representing a component of the HSL color
-space.
+
+<FONT SIZE=-1>A</FONT> pointer to a double value representing a component of the 
+<FONT SIZE=-1>HSL</FONT> color space.
+
 
 </DL></DL>
 <P>
@@ -264,13 +274,15 @@ space.
 Method Upsample doubles the size of the image.
 
 <P>
-The format of the UpSample routine is:
+The format of the UpSample method is:
 
 <P>
-<PRE>        Upsample(width,height,scaled_width,pixels)
+<PRE>    void Upsample(const unsigned int width,const unsigned int height,
+      const unsigned int scaled_width,unsigned char *pixels)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>width,height:</STRONG><DD>

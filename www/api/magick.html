@@ -17,7 +17,6 @@
 
 		<LI><A HREF="#GetMagickInfo">GetMagickInfo</A>
 		<LI><A HREF="#ListMagickInfo">ListMagickInfo</A>
-		<LI><A HREF="#RegisterMagickInfo">RegisterMagickInfo</A>
 	</UL>
 
 </UL>
@@ -33,10 +32,10 @@ magick - Methods to Read or List ImageMagick Image formats
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-magick_info=<STRONG>GetMagickInfo</STRONG>(tag)
+MagickInfo* <STRONG>GetMagickInfo</STRONG>(constchar*tag)
 
 <P>
-<STRONG>ListMagickInfo</STRONG>(file)
+void <STRONG>ListMagickInfo</STRONG>(FILE*file)
 
 <P>
 <HR>
@@ -45,18 +44,19 @@ magick_info=<STRONG>GetMagickInfo</STRONG>(tag)
 <HR>
 <H2><A NAME="GetMagickInfo">GetMagickInfo</A></H2>
 <P>
-Method GetMagickInfo returns a pointer MagickInfo structure that matches
-the specified tag. If tag is NULL, the head of the image format list is
-returned.
+Method GetMagickInfo returns a pointer MagickInfo structure that matches the specified tag. If tag is 
+<FONT SIZE=-1>NULL,</FONT> the head of the image format list is returned.
+
 
 <P>
-The format of the GetMagickInfo routine is:
+The format of the GetMagickInfo method is:
 
 <P>
-<PRE>        magick_info=GetMagickInfo(tag)
+<PRE>        MagickInfo *GetMagickInfo(const char *tag)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">magick_info:</A></STRONG><DD>
@@ -76,38 +76,39 @@ a character string that represents the image format we are looking for.
 Method ListMagickInfo lists the image formats to a.
 
 <P>
-The format of the ListMagickInfo routine is:
+The format of the ListMagickInfo method is:
 
 <P>
-<PRE>        ListMagickInfo(file)
+<PRE>        void ListMagickInfo(FILE *file)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <P>
 <PRE>  o:  An pointer to a FILE.
+=head2 RegisterMagickInfo
 </PRE>
 <P>
-<HR>
-<H2><A NAME="RegisterMagickInfo">RegisterMagickInfo</A></H2>
-<P>
-Method RegisterMagickInfo adds attributes for a particular image format to
-the list of supported formats. The attributes include the image format tag,
-a method to read and/or write the format, whether the format supports the
-saving of more than one frame to the same file or blob, whether the format
-supports native in-memory I/O, and a brief description of the format.
+Method RegisterMagickInfo adds attributes for a particular image format to the list of supported formats. The attributes include the image format tag, a method to read and/or write the format, whether the format supports the saving of more than one frame to the same file or blob, whether the format supports native in-memory 
+<FONT SIZE=-1>I/O,</FONT> and a brief description of the format.
+
 
 <P>
-The format of the RegisterMagickInfo routine is:
+The format of the RegisterMagickInfo method is:
 
 <P>
-<PRE>    magick_info=RegisterMagickInfo(tag,decoder,encoder,magick,adjoin,
+<PRE>    MagickInfo *RegisterMagickInfo(const char *tag,
+      Image *(*decoder)(const ImageInfo *),
+      unsigned int (*encoder)(const ImageInfo *,Image *),
+      unsigned int (*magick)(const unsigned char *,const unsigned int),
+      const unsigned int adjoin,const unsigned int blob_support,
+      const char *description)
+      blob_support,description))
 </PRE>
 <P>
-<PRE>      blob_support,description))
-</PRE>
-<P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>magick_info:</STRONG><DD>
@@ -139,7 +140,8 @@ to the file or blob.
 
 <DT><STRONG>blob_support:</STRONG><DD>
 <P>
-a value greater than 0 means the format supports native in-memory I/O.
+a value greater than 0 means the format supports native in-memory 
+<FONT SIZE=-1>I/O.</FONT>
 
 <DT><STRONG>description:</STRONG><DD>
 <P>

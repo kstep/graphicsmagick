@@ -71,9 +71,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadTIFFImage routine is:
+%  The format of the ReadTIFFImage method is:
 %
-%      image=ReadTIFFImage(image_info)
+%      Image *ReadTIFFImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -934,9 +934,9 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
 %
 %  Method WriteTIFFImage writes an image in the Tagged image file format.
 %
-%  The format of the WriteTIFFImage routine is:
+%  The format of the WriteTIFFImage method is:
 %
-%      status=WriteTIFFImage(image_info,image)
+%      unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %

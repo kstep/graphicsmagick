@@ -69,9 +69,9 @@
 %  bytes and returns it.  It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  The format of the ReadMAPImage routine is:
+%  The format of the ReadMAPImage method is:
 %
-%      image=ReadMAPImage(image_info)
+%      Image *ReadMAPImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -183,9 +183,9 @@ Export Image *ReadMAPImage(const ImageInfo *image_info)
 %  Method WriteMAPImage writes an image to a file as red, green, and blue
 %  colormap bytes followed by the colormap indexes.
 %
-%  The format of the WriteMAPImage routine is:
+%  The format of the WriteMAPImage method is:
 %
-%      status=WriteMAPImage(image_info,image)
+%      unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

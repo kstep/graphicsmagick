@@ -72,12 +72,13 @@ static MonitorHandler
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ProgressMonitor calls the monitor handler routines with a text
+%  Method ProgressMonitor calls the monitor handler methods with a text
 %  string that describes the task and a measure of completion.
 %
-%  The format of the ProgressMonitor routine is:
+%  The format of the ProgressMonitor method is:
 %
-%      ProgressMonitor(text,quantum,span)
+%      void ProgressMonitor(const char *text,const unsigned int quantum,
+%        const unsigned int span)
 %
 %  A description of each parameter follows:
 %
@@ -107,16 +108,16 @@ Export void ProgressMonitor(const char *text,const unsigned int quantum,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetMonitorHandler sets the monitor handler to the specified routine
+%  Method SetMonitorHandler sets the monitor handler to the specified method
 %  and returns the previous monitor handler.
 %
-%  The format of the SetMonitorHandler routine is:
+%  The format of the SetMonitorHandler method is:
 %
-%      previous_handler=SetMonitorHandler(handler)
+%      MonitorHandler SetMonitorHandler(MonitorHandler handler)
 %
 %  A description of each parameter follows:
 %
-%    o handler: Specifies a pointer to a routine to handle monitors.
+%    o handler: Specifies a pointer to a method to handle monitors.
 %
 %
 */

@@ -77,9 +77,9 @@ const char
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadPSImage routine is:
+%  The format of the ReadPSImage method is:
 %
-%      image=ReadPSImage(image_info)
+%      Image *ReadPSImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -377,9 +377,9 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
 %  centered on the Postscript page.  Otherwise, the image is positioned as
 %  specified by the geometry.
 %
-%  The format of the WritePSImage routine is:
+%  The format of the WritePSImage method is:
 %
-%      status=WritePSImage(image_info,image)
+%      unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %

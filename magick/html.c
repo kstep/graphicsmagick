@@ -67,9 +67,9 @@
 %
 %  Method WriteHTMLImage writes an image in the HTML encoded image format.
 %
-%  The format of the WriteHTMLImage routine is:
+%  The format of the WriteHTMLImage method is:
 %
-%      status=WriteHTMLImage(image_info,image)
+%      unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

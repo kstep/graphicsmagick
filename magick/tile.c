@@ -69,9 +69,9 @@
 %  memory necessary for the new Image structure and returns a pointer to the
 %  new image.
 %
-%  The format of the ReadTILEImage routine is:
+%  The format of the ReadTILEImage method is:
 %
-%      image=ReadTILEImage(image_info)
+%      Image *ReadTILEImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

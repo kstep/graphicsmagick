@@ -68,9 +68,9 @@
 %  Method DecodeImage unpacks the packed image pixels into runlength-encoded
 %  pixel packets.
 %
-%  The format of the DecodeImage routine is:
+%  The format of the DecodeImage method is:
 %
-%      status=DecodeImage(image,compression,number_columns,number_rows,pixels)
+%      Image *ReadBMPImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -215,7 +215,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 %
 %  Method EncodeImage compresses pixels using a runlength encoded format.
 %
-%  The format of the EncodeImage routine is:
+%  The format of the EncodeImage method is:
 %
 %      status=EncodeImage(pixels,number_columns,number_rows,
 %        compressed_pixels)
@@ -311,7 +311,7 @@ static unsigned int EncodeImage(const unsigned char *pixels,
 %  returns it.  It allocates the memory necessary for the new Image structure
 %  and returns a pointer to the new image.
 %
-%  The format of the ReadBMPImage routine is:
+%  The format of the ReadBMPImage method is:
 %
 %      image=ReadBMPImage(image_info)
 %
@@ -801,9 +801,9 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
 %  Method WriteBMPImage writes an image in Microsoft Windows bitmap encoded
 %  image format.
 %
-%  The format of the WriteBMPImage routine is:
+%  The format of the WriteBMPImage method is:
 %
-%      status=WriteBMPImage(image_info,image)
+%      unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -36,43 +36,42 @@
 <P>
 <H1><A NAME="NAME">NAME</A></H1>
 <P>
-nt - Windows NT Utility Methods for ImageMagick
+nt - Windows 
+<FONT SIZE=-1>NT</FONT> Utility Methods for ImageMagick
 
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>Exit</STRONG>(status)
+int <STRONG>Exit</STRONG>(intstatus)
 
 <P>
-status=<STRONG>ImageFormatConflict</STRONG>(magick)
+int <STRONG>ImageFormatConflict</STRONG>(constchar*magick)
 
 <P>
-<STRONG>IsWindows95</STRONG>()
+int <STRONG>IsWindows95</STRONG>()
 
 <P>
-<STRONG>NTSystemCommand</STRONG>(command)
+int <STRONG>NTSystemCommand</STRONG>(constchar*command)
 
 <P>
-<STRONG>NTTemporaryFilename</STRONG>(filename)
+int <STRONG>NTTemporaryFilename</STRONG>(char*filename)
 
 <P>
-<STRONG>NTWarningHandler</STRONG>(warning,message,qualifier)
+void <STRONG>closedir</STRONG>(DIR*entry)
 
 <P>
-<STRONG>closedir</STRONG>(entry)
+
+<FONT SIZE=-1>DIR*</FONT> <STRONG>opendir</STRONG>(char*path)
 
 <P>
-<STRONG>opendir</STRONG>(entry)
+<PRE> B&lt;readdir&gt;(entry)
+</PRE>
+<P>
+void <STRONG>seekdir</STRONG>(DIR*entry,longposition)
 
 <P>
-<STRONG>readdir</STRONG>(entry)
-
-<P>
-<STRONG>seekdir</STRONG>(entry,position)
-
-<P>
-<STRONG>telldir</STRONG>(entry)
+long <STRONG>telldir</STRONG>(DIR*entry)
 
 <P>
 <HR>
@@ -81,22 +80,24 @@ status=<STRONG>ImageFormatConflict</STRONG>(magick)
 <HR>
 <H2><A NAME="closedir">closedir</A></H2>
 <P>
-Method closedir closes the named directory stream and frees the DIR
-structure.
+Method closedir closes the named directory stream and frees the 
+<FONT SIZE=-1>DIR</FONT> structure.
 
 <P>
-The format of the closedir routine is:
+The format of the closedir method is:
 
 <P>
-<PRE>        closedir(entry)
+<PRE>        void closedir(DIR *entry)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">entry:</A></STRONG><DD>
 <P>
-Specifies a pointer to a DIR structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>DIR</FONT> structure.
 
 </DL></DL>
 <P>
@@ -106,13 +107,14 @@ Specifies a pointer to a DIR structure.
 Method Exit calls TerminateProcess for Win95.
 
 <P>
-The format of the Exit routine is:
+The format of the Exit method is:
 
 <P>
-<PRE>        Exit(status)
+<PRE>        int Exit(int status)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -124,17 +126,19 @@ an integer value representing the status of the terminating process.
 <HR>
 <H2><A NAME="ImageFormatConflict">ImageFormatConflict</A></H2>
 <P>
-Method ImageFormatConflict returns true if the image format conflicts with
-a logical drive (.e.g. X:).
+Method ImageFormatConflict returns true if the image format conflicts with a logical drive (.e.g. 
+<FONT SIZE=-1>X:).</FONT>
+
 
 <P>
-The format of the ImageFormatConflict routine is:
+The format of the ImageFormatConflict method is:
 
 <P>
-<PRE>        status=ImageFormatConflict(magick)
+<PRE>        int ImageFormatConflict(const char *magick)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -154,13 +158,14 @@ Specifies the image format.
 Method IsWindows95 returns true if the system is Windows 95.
 
 <P>
-The format of the IsWindows95 routine is:
+The format of the IsWindows95 method is:
 
 <P>
-<PRE>        IsWindows95()
+<PRE>        int IsWindows95()
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -173,18 +178,17 @@ an integer value representing the status of the terminating process.
 <H2><A NAME="NTSystemCommand">NTSystemCommand</A></H2>
 <P>
 <PRE> Method NTSystemCommand executes the specified command and waits until it
+ terminates.  The returned value is the exit status of the command.
 </PRE>
 <P>
-<PRE> terminates.  The returned value is the exit status of the command.
-</PRE>
-<P>
-The format of the NTSystemCommand routine is:
+The format of the NTSystemCommand method is:
 
 <P>
-<PRE>        NTSystemCommand(command)
+<PRE>        int NTSystemCommand(const char *command)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>command:</STRONG><DD>
@@ -197,18 +201,17 @@ This string is the command to execute.
 <H2><A NAME="NTTemporaryFilename">NTTemporaryFilename</A></H2>
 <P>
 <PRE> Method NTTemporaryFilename creates a name for a temporary file.  It
+ returns zero if an error occurs.
 </PRE>
 <P>
-<PRE> returns zero if an error occurs.
-</PRE>
-<P>
-The format of the TemporaryFilename routine is:
+The format of the TemporaryFilename method is:
 
 <P>
-<PRE>        NTTemporaryFilename(filename)
+<PRE>        int NTTemporaryFilename(char *filename)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>filename:</STRONG><DD>
@@ -223,13 +226,15 @@ Specifies a pointer to a string to place the filename.
 Method NTWarningHandler displays a warning message.
 
 <P>
-The format of the NTWarningHandler routine is:
+The format of the NTWarningHandler method is:
 
 <P>
-<PRE>        NTWarningHandler(warning,message,qualifier)
+<PRE>    void NTWarningHandler(const unsigned int warning,const char *message,
+      const char *qualifier)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>warning:</STRONG><DD>
@@ -253,18 +258,20 @@ Method opendir opens the directory named by filename and associates a
 directory stream with it.
 
 <P>
-The format of the opendir routine is:
+The format of the opendir method is:
 
 <P>
-<PRE>        opendir(entry)
+<PRE>        DIR *opendir(char *path)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>entry:</STRONG><DD>
 <P>
-Specifies a pointer to a DIR structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>DIR</FONT> structure.
 
 </DL></DL>
 <P>
@@ -282,12 +289,14 @@ The format of the readdir
 <PRE>        readdir(entry)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>entry:</STRONG><DD>
 <P>
-Specifies a pointer to a DIR structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>DIR</FONT> structure.
 
 </DL></DL>
 <P>
@@ -295,23 +304,23 @@ Specifies a pointer to a DIR structure.
 <H2><A NAME="seekdir">seekdir</A></H2>
 <P>
 <PRE> Method seekdir sets the position of the next readdir() operation
+ on the directory stream.
 </PRE>
 <P>
-<PRE> on the directory stream.
-</PRE>
-<P>
-The format of the seekdir routine is:
+The format of the seekdir method is:
 
 <P>
-<PRE>        seekdir(entry,position)
+<PRE>        void seekdir(DIR *entry,long position)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>entry:</STRONG><DD>
 <P>
-Specifies a pointer to a DIR structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>DIR</FONT> structure.
 
 <DT><STRONG>position:</STRONG><DD>
 <P>
@@ -323,30 +332,31 @@ specifies the position associated with the directory stream.
 <H2><A NAME="telldir">telldir</A></H2>
 <P>
 <PRE> Method telldir returns the current location associated  with  the
+ named directory stream.
 </PRE>
 <P>
-<PRE> named directory stream.
-</PRE>
-<P>
-The format of the telldir routine is:
+The format of the telldir method is:
 
 <P>
-<PRE>        telldir(entry)
+<PRE>        long telldir(DIR *entry)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>entry:</STRONG><DD>
 <P>
-Specifies a pointer to a DIR structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>DIR</FONT> structure.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="DllMain">DllMain</A></H2>
 <P>
-Method Dllmain is the entry point for the ImageMagick DLL library.
+Method Dllmain is the entry point for the ImageMagick 
+<FONT SIZE=-1>DLL</FONT> library.
 
 </BODY>
 

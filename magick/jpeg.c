@@ -119,9 +119,9 @@ static jmp_buf
 %  the memory necessary for the new Image structure and returns a pointer to
 %  the new image.
 %
-%  The format of the ReadJPEGImage routine is:
+%  The format of the ReadJPEGImage method is:
 %
-%      image=ReadJPEGImage(image_info)
+%      Image *ReadJPEGImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -663,9 +663,9 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the WriteJPEGImage routine is:
+%  The format of the WriteJPEGImage method is:
 %
-%      status=WriteJPEGImage(image_info,image)
+%      unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %

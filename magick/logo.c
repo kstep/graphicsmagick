@@ -5755,9 +5755,9 @@ static const unsigned char
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadLOGOImage routine is:
+%  The format of the ReadLOGOImage method is:
 %
-%      image=ReadLOGOImage(image_info)
+%      Image *ReadLOGOImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -5858,9 +5858,9 @@ Export Image *ReadLOGOImage(const ImageInfo *image_info)
 %  We use GIF because it is the only format that is compressed without
 %  requiring addition optional delegates (TIFF, ZIP, etc).
 %
-%  The format of the WriteLOGOImage routine is:
+%  The format of the WriteLOGOImage method is:
 %
-%      status=WriteLOGOImage(image_info,image)
+%      unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

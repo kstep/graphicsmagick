@@ -67,9 +67,9 @@
 %
 %  Method DecodeImage uncompresses an image via GIF-coding.
 %
-%  The format of the DecodeImage routine is:
+%  The format of the DecodeImage method is:
 %
-%      status=DecodeImage(image)
+%      Image *ReadGIFImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -380,7 +380,7 @@ static unsigned int DecodeImage(Image *image)
 %
 %  Method EncodeImage compresses an image via GIF-coding.
 %
-%  The format of the EncodeImage routine is:
+%  The format of the EncodeImage method is:
 %
 %      status=EncodeImage(image,data_size)
 %
@@ -626,7 +626,7 @@ static unsigned int EncodeImage(Image *image,const unsigned int data_size)
 %  It allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadGIFImage routine is:
+%  The format of the ReadGIFImage method is:
 %
 %      image=ReadGIFImage(image_info)
 %
@@ -994,9 +994,9 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
 %  Method WriteGIFImage writes an image to a file in the Compuserve Graphics
 %  image format.
 %
-%  The format of the WriteGIFImage routine is:
+%  The format of the WriteGIFImage method is:
 %
-%      status=WriteGIFImage(image_info,image)
+%      unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

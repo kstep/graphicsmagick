@@ -68,9 +68,9 @@
 %  Function WriteMATTEImage writes an image of matte bytes to a file.  It
 %  consists of data from the matte component of the image [0..255].
 %
-%  The format of the WriteMATTEImage routine is:
+%  The format of the WriteMATTEImage method is:
 %
-%      status=WriteMATTEImage(image_info,image)
+%      unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

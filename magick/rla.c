@@ -71,9 +71,9 @@
 %
 %  Note:  This module was contributed by Lester Vecsey (master@internexus.net).
 %
-%  The format of the ReadRLAImage routine is:
+%  The format of the ReadRLAImage method is:
 %
-%      image=ReadRLAImage(image_info)
+%      Image *ReadRLAImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

@@ -1509,9 +1509,10 @@ static void XSetTextColor(Display *display,const XWindowInfo *window_info,
 %  query to the user.  The user keys a reply and presses the Action or Cancel
 %  button to exit.  The typed text is returned as the reply function parameter.
 %
-%  The format of the XColorBrowserWidget routine is:
+%  The format of the XColorBrowserWidget method is:
 %
-%    XColorBrowserWidget(display,windows,action,reply)
+%      void XColorBrowserWidget(Display *display,XWindows *windows,
+%        const char *action,char *reply)
 %
 %  A description of each parameter follows:
 %
@@ -2666,9 +2667,10 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,
 %  Method XCommandWidget maps a menu and returns the command pointed to by
 %  the user when the button is released.
 %
-%  The format of the XCommandWidget routine is:
+%  The format of the XCommandWidget method is:
 %
-%    selection_number=XCommandWidget(display,windows,selections,event)
+%      int XCommandWidget(Display *display,XWindows *windows,
+%        const char **selections,XEvent *event)
 %
 %  A description of each parameter follows:
 %
@@ -3094,9 +3096,10 @@ Export int XCommandWidget(Display *display,XWindows *windows,
 %  The function returns -1 if Dismiss is pressed, 0 for Cancel, and 1 for
 %  Yes.
 %
-%  The format of the XConfirmWidget routine is:
+%  The format of the XConfirmWidget method is:
 %
-%    status=XConfirmWidget(display,windows,message,qualifier)
+%      int XConfirmWidget(Display *display,XWindows *windows,
+%        const char *message,const char *qualifier)
 %
 %  A description of each parameter follows:
 %
@@ -3497,9 +3500,10 @@ Export int XConfirmWidget(Display *display,XWindows *windows,
 %  The user keys a reply and presses the Ok or Cancel button to exit.  The
 %  typed text is returned as the reply function parameter.
 %
-%  The format of the XDialogWidget routine is:
+%  The format of the XDialogWidget method is:
 %
-%    XDialogWidget(display,windows,action,query,reply)
+%      int XDialogWidget(Display *display,XWindows *windows,const char *action,
+%        const char *query,char *reply)
 %
 %  A description of each parameter follows:
 %
@@ -4067,9 +4071,10 @@ Export int XDialogWidget(Display *display,XWindows *windows,const char *action,
 %  to the user.  The user keys a reply and presses the Action or Cancel button
 %  to exit.  The typed text is returned as the reply function parameter.
 %
-%  The format of the XFileBrowserWidget routine is:
+%  The format of the XFileBrowserWidget method is:
 %
-%    XFileBrowserWidget(display,windows,action,reply)
+%      void XFileBrowserWidget(Display *display,XWindows *windows,
+%        const char *action,char *reply)
 %
 %  A description of each parameter follows:
 %
@@ -5292,9 +5297,10 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,
 %  to the user.  The user keys a reply and presses the Action or Cancel button
 %  to exit.  The typed text is returned as the reply function parameter.
 %
-%  The format of the XFontBrowserWidget routine is:
+%  The format of the XFontBrowserWidget method is:
 %
-%    XFontBrowserWidget(display,windows,action,reply)
+%      void XFontBrowserWidget(Display *display,XWindows *windows,
+%        const char *action,char *reply)
 %
 %  A description of each parameter follows:
 %
@@ -6468,9 +6474,9 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,
 %  inform the user that what activity is currently being performed (e.g.
 %  reading an image, rotating an image, etc.).
 %
-%  The format of the XInfoWidget routine is:
+%  The format of the XInfoWidget method is:
 %
-%    XInfoWidget(display,windows,activity)
+%      void XInfoWidget(Display *display,XWindows *windows,const char *activity)
 %
 %  A description of each parameter follows:
 %
@@ -6564,9 +6570,11 @@ Export void XInfoWidget(Display *display,XWindows *windows,const char *activity)
 %  the user presses the Action or Cancel button to exit.  The typed text is
 %  returned as the reply function parameter.
 %
-%  The format of the XListBrowserWidget routine is:
+%  The format of the XListBrowserWidget method is:
 %
-%    XListBrowserWidget(display,windows,window_info,list,action,query,reply)
+%      void XListBrowserWidget(Display *display,XWindows *windows,
+%        XWindowInfo *window_info,char const **list,const char *action,
+%        const char *query,char *reply)
 %
 %  A description of each parameter follows:
 %
@@ -7459,9 +7467,10 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
 %  Method XMenuWidget maps a menu and returns the command pointed to by the
 %  user when the button is released.
 %
-%  The format of the XMenuWidget routine is:
+%  The format of the XMenuWidget method is:
 %
-%    selection_number=XMenuWidget(display,windows,title,selections,item)
+%      int XMenuWidget(Display *display,XWindows *windows,const char *title,
+%        const char **selections,char *item)
 %
 %  A description of each parameter follows:
 %
@@ -7888,9 +7897,10 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
 %  completing a task.  A span of zero toggles the active status.  An inactive
 %  state disables the progress monitor.
 %
-%  The format of the XMonitorWidget routine is:
+%  The format of the XMonitorWidget method is:
 %
-%    XMonitorWidget(display,windows,task,quantum,span)
+%      void XMonitorWidget(Display *display,XWindows *windows,const char *task,
+%        const unsigned int quantum,const unsigned int span)
 %
 %  A description of each parameter follows:
 %
@@ -7965,9 +7975,10 @@ Export void XMonitorWidget(Display *display,XWindows *windows,const char *task,
 %  Method XNoticeWidget displays a Notice widget with a notice to the user.
 %  The function returns when the user presses the "Dismiss" button.
 %
-%  The format of the XNoticeWidget routine is:
+%  The format of the XNoticeWidget method is:
 %
-%    XNoticeWidget(display,windows,message,qualifier)
+%      void XNoticeWidget(Display *display,XWindows *windows,
+%        const char *message,const char *qualifier)
 %
 %  A description of each parameter follows:
 %
@@ -8283,9 +8294,10 @@ Export void XNoticeWidget(Display *display,XWindows *windows,
 %  preferences.  If the user presses the Apply button, the preferences are
 %  stored in a configuration file in the users' home directory.
 %
-%  The format of the XPreferencesWidget routine is:
+%  The format of the XPreferencesWidget method is:
 %
-%    XPreferencesWidget(display,resource_info,windows)
+%      unsigned int XPreferencesWidget(Display *display,
+%        XResourceInfo *resource_info,XWindows *windows)
 %
 %  A description of each parameter follows:
 %
@@ -8702,9 +8714,11 @@ Export unsigned int XPreferencesWidget(Display *display,
 %
 %  Method XTextViewWidget displays text in a Text View widget.
 %
-%  The format of the XTextViewWidget routine is:
+%  The format of the XTextViewWidget method is:
 %
-%    XTextViewWidget(display,resource_info,windows,mono,title,textlist)
+%      void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
+%        XWindows *windows,const unsigned int mono,const char *title,
+%        char const **textlist)
 %
 %  A description of each parameter follows:
 %

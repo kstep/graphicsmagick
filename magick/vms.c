@@ -45,7 +45,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The directory routines are strongly based on similar routines written
+%  The directory methods are strongly based on similar methods written
 %  by Rich Salz.
 %
 */
@@ -73,9 +73,8 @@
 %  Method closedir closes the named directory stream and frees the DIR
 %  structure.
 %
-%  The format of the closedir routine is:
+%  The format of the closedir method is:
 %
-%      closedir(entry)
 %
 %  A description of each parameter follows:
 %
@@ -104,7 +103,7 @@ void closedir(DIR *directory)
 %  Method opendir opens the directory named by filename and associates
 %  a directory stream with it.
 %
-%  The format of the opendir routine is:
+%  The format of the opendir method is:
 %
 %      opendir(entry)
 %

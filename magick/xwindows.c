@@ -99,9 +99,9 @@ static void
 %
 %  Method IsTrue returns True if the message is "true", "on", "yes" or "1".
 %
-%  The format of the IsTrue routine is:
+%  The format of the IsTrue method is:
 %
-%      option=IsTrue(message)
+%      unsigned int IsTrue(const char *message)
 %
 %  A description of each parameter follows:
 %
@@ -139,9 +139,10 @@ Export unsigned int IsTrue(const char *message)
 %
 %  Method XAnnotateImage annotates the image with text.
 %
-%  The format of the XAnnotateImage routine is:
+%  The format of the XAnnotateImage method is:
 %
-%    status=XAnnotateImage(display,pixel_info,annotate_info,image)
+%      unsigned int XAnnotateImage(Display *display,
+%        const XPixelInfo *pixel_info,XAnnotateInfo *annotate_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -422,9 +423,10 @@ Export unsigned int XAnnotateImage(Display *display,
 %  specified in the X resource database or a font such that the text width
 %  displayed with the font does not exceed the specified maximum width.
 %
-%  The format of the XBestFont routine is:
+%  The format of the XBestFont method is:
 %
-%      font=XBestFont(display,resource_info,text_font)
+%      XFontStruct *XBestFont(Display *display,
+%        const XResourceInfo *resource_info,const unsigned int text_font)
 %
 %  A description of each parameter follows:
 %
@@ -586,9 +588,9 @@ Export XFontStruct *XBestFont(Display *display,
 %  an icon size that maintains the aspect ratio of the image.  If the window
 %  manager has preferred icon sizes, one of the preferred sizes is used.
 %
-%  The format of the XBestIconSize routine is:
+%  The format of the XBestIconSize method is:
 %
-%      XBestIconSize(display,window,image)
+%      void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -705,9 +707,10 @@ Export void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
 %  to the requested color.  If the color array is NULL, the colors are obtained
 %  from the X server.
 %
-%  The format of the XBestPixel routine is:
+%  The format of the XBestPixel method is:
 %
-%      pixel=XBestPixel(display,colormap,colors,number_colors,color)
+%      void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
+%        unsigned int number_colors,XColor *color)
 %
 %  A description of each parameter follows:
 %
@@ -825,9 +828,10 @@ Export void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
 %       simultaneous colors.  If more than one visual can display the same
 %       number of simultaneous colors, one is chosen based on a rank.
 %
-%  The format of the XBestVisualInfo routine is:
+%  The format of the XBestVisualInfo method is:
 %
-%      visual_info=XBestVisualInfo(display,map_info,resource_info)
+%      XVisualInfo *XBestVisualInfo(Display *display,
+%        XStandardColormap *map_info,XResourceInfo *resource_info)
 %
 %  A description of each parameter follows:
 %
@@ -1128,9 +1132,9 @@ Export XVisualInfo *XBestVisualInfo(Display *display,
 %  Method XCheckRefreshWindows checks the X server for exposure events for
 %  a particular window and updates the area associated withe exposure event.
 %
-%  The format of the XCheckRefreshWindows routine is:
+%  The format of the XCheckRefreshWindows method is:
 %
-%      XCheckRefreshWindows(display,windows)
+%      void XCheckRefreshWindows(Display *display,XWindows *windows)
 %
 %  A description of each parameter follows:
 %
@@ -1289,9 +1293,10 @@ Export Window XClientWindow(Display *display,Window target_window)
 %
 %  Method XConfigureImageColormap creates a new X colormap.
 %
-%  The format of the XConfigureImageColormap routine is:
+%  The format of the XConfigureImageColormap method is:
 %
-%    XConfigureImageColormap(display,resource_info,windows,image)
+%      void XConfigureImageColormap(Display *display,
+%        XResourceInfo *resource_info,XWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1347,9 +1352,9 @@ Export void XConfigureImageColormap(Display *display,
 %  Method XConstrainWindowPosition assures a window is positioned witin the
 %  X server boundaries.
 %
-%  The format of the XConstrainWindowPosition routine is:
+%  The format of the XConstrainWindowPosition method is:
 %
-%      XConstrainWindowPosition(display,window_info)
+%      void XConstrainWindowPosition(Display *display,XWindowInfo *window_info)
 %
 %  A description of each parameter follows:
 %
@@ -1395,9 +1400,9 @@ Export void XConstrainWindowPosition(Display *display,XWindowInfo *window_info)
 %  Method XDelay suspends program execution for the number of milliseconds
 %  specified.
 %
-%  The format of the Delay routine is:
+%  The format of the Delay method is:
 %
-%      XDelay(display,milliseconds)
+%      void XDelay(Display *display,const unsigned long milliseconds)
 %
 %  A description of each parameter follows:
 %
@@ -1461,9 +1466,9 @@ Export void XDelay(Display *display,const unsigned long milliseconds)
 %  Method XDestroyWindowColors frees X11 color resources previously saved on
 %  a window by XRetainWindowColors or programs like xsetroot.
 %
-%  The format of the XDestroyWindowColors routine is:
+%  The format of the XDestroyWindowColors method is:
 %
-%      XDestroyWindowColors(display,window)
+%      void XDestroyWindowColors(Display *display,Window window)
 %
 %  A description of each parameter follows:
 %
@@ -1528,9 +1533,11 @@ Export void XDestroyWindowColors(Display *display,Window window)
 %
 %  Method XDisplayImageInfo displays information about an X image.
 %
-%  The format of the XDisplayImageInfo routine is:
+%  The format of the XDisplayImageInfo method is:
 %
-%      XDisplayImageInfo(display,resource_info,windows,undo_image,image)
+%      void XDisplayImageInfo(Display *display,
+%        const XResourceInfo *resource_info,XWindows *windows,Image *undo_image,
+%        Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1711,9 +1718,10 @@ Export void XDisplayImageInfo(Display *display,
 %  and green, and 2 bits of blue (3/3/2) and can be used as indices into a
 %  8-bit X standard colormap.
 %
-%  The format of the XDitherImage routine is:
+%  The format of the XDitherImage method is:
 %
-%      XDitherImage(image,ximage)
+%      unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
+%        XDrawInfo *draw_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1877,7 +1885,7 @@ static void XDitherImage(Image *image,XImage *ximage)
 %
 %  Method XDrawImage draws a line on the image.
 %
-%  The format of the XDrawImage routine is:
+%  The format of the XDrawImage method is:
 %
 %    status=XDrawImage(display,pixel_info,draw_info,image)
 %
@@ -2283,9 +2291,11 @@ Export int XError(Display *display,XErrorEvent *error)
 %
 %  Method XFreeResources frees X11 resources.
 %
-%  The format of the XFreeResources routine is:
+%  The format of the XFreeResources method is:
 %
-%      XFreeResources(display,visual_info,map_info,pixel_info,font_info,
+%      void XFreeResources(Display *display,XVisualInfo *visual_info,
+%        XStandardColormap *map_info,XPixelInfo *pixel_info,XFontStruct *font_info,
+%        XResourceInfo *resource_info,XWindowInfo *window_info)
 %        resource_info,window_info)
 %
 %  A description of each parameter follows:
@@ -2375,9 +2385,11 @@ Export void XFreeResources(Display *display,XVisualInfo *visual_info,
 %
 %  Method XFreeStandardColormap frees an X11 colormap.
 %
-%  The format of the XFreeStandardColormap routine is:
+%  The format of the XFreeStandardColormap method is:
 %
-%      XFreeStandardColormap(display,visual_info,map_info,pixel_info)
+%      void XFreeStandardColormap(Display *display,
+%        const XVisualInfo *visual_info,XStandardColormap *map_info,
+%        XPixelInfo *pixel_info)
 %
 %  A description of each parameter follows:
 %
@@ -2441,9 +2453,9 @@ Export void XFreeStandardColormap(Display *display,
 %
 %  Method XGetAnnotateInfo initializes the AnnotateInfo structure.
 %
-%  The format of the GetAnnotateInfo routine is:
+%  The format of the GetAnnotateInfo method is:
 %
-%      XGetAnnotateInfo(annotate_info)
+%      void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
 %
 %  A description of each parameter follows:
 %
@@ -2487,9 +2499,10 @@ Export void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
 %
 %  Method XGetMapInfo initializes the XStandardColormap structure.
 %
-%  The format of the XStandardColormap routine is:
+%  The format of the XStandardColormap method is:
 %
-%      XGetMapInfo(visual_info,colormap,map_info)
+%      void XGetMapInfo(const XVisualInfo *visual_info,const Colormap colormap,
+%        XStandardColormap *map_info)
 %
 %  A description of each parameter follows:
 %
@@ -2551,9 +2564,9 @@ Export void XGetMapInfo(const XVisualInfo *visual_info,const Colormap colormap,
 %
 %  Method XGetImportInfo initializes the XImportInfo structure.
 %
-%  The format of the XGetImportInfo routine is:
+%  The format of the XGetImportInfo method is:
 %
-%      XGetImportInfo(ximage_info)
+%      void XGetImportInfo(XImportInfo *ximage_info)
 %
 %  A description of each parameter follows:
 %
@@ -2584,9 +2597,11 @@ Export void XGetImportInfo(XImportInfo *ximage_info)
 %
 %  Method XGetPixelInfo initializes the PixelInfo structure.
 %
-%  The format of the XGetPixelInfo routine is:
+%  The format of the XGetPixelInfo method is:
 %
-%      XGetPixelInfo(display,visual_info,map_info,resource_info,image,
+%      void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
+%        const XStandardColormap *map_info,const XResourceInfo *resource_info,
+%        Image *image,XPixelInfo *pixel_info)
 %        pixel_info)
 %
 %  A description of each parameter follows:
@@ -2878,9 +2893,10 @@ Export void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
 %  name or class.  If the resource name or class is not defined in the
 %  database, the supplied default value is returned.
 %
-%  The format of the XGetResourceClass routine is:
+%  The format of the XGetResourceClass method is:
 %
-%      value=XGetResourceClass(database,client_name,keyword,resource_default)
+%      char *XGetResourceClass(XrmDatabase database,const char *client_name,
+%        const char *keyword,char *resource_default)
 %
 %  A description of each parameter follows:
 %
@@ -2973,9 +2989,10 @@ Export char *XGetResourceClass(XrmDatabase database,const char *client_name,
 %  Method XGetResourceDatabase creates a new resource database and
 %  initializes it.
 %
-%  The format of the XGetResourceDatabase routine is:
+%  The format of the XGetResourceDatabase method is:
 %
-%      database=XGetResourceDatabase(display,client_name)
+%      XrmDatabase XGetResourceDatabase(Display *display,
+%        const char *client_name)
 %
 %  A description of each parameter follows:
 %
@@ -3070,9 +3087,10 @@ Export XrmDatabase XGetResourceDatabase(Display *display,
 %
 %  Method XGetResourceInfo initializes the ResourceInfo structure.
 %
-%  The format of the XGetResourceInfo routine is:
+%  The format of the XGetResourceInfo method is:
 %
-%      XGetResourceInfo(database,client_name,resource_info)
+%      void XGetResourceInfo(XrmDatabase database,char *client_name,
+%        XResourceInfo *resource_info)
 %
 %  A description of each parameter follows:
 %
@@ -3275,9 +3293,10 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
 %  resource name.  If the resource name is not defined in the database, the
 %  supplied default value is returned.
 %
-%  The format of the XGetResourceInstance routine is:
+%  The format of the XGetResourceInstance method is:
 %
-%      value=XGetResourceInstance(database,client_name,keyword,resource_default)
+%      char *XGetResourceInstance(XrmDatabase database,const char *client_name,
+%        const char *keyword,const char *resource_default)
 %
 %  A description of each parameter follows:
 %
@@ -3337,9 +3356,9 @@ Export char *XGetResourceInstance(XrmDatabase database,const char *client_name,
 %  Method XGetScreenDensity returns the density of the X server screen in
 %  dots-per-inch.
 %
-%  The format of the XGetScreenDensity routine is:
+%  The format of the XGetScreenDensity method is:
 %
-%      density=XGetScreenDensity(display)
+%      char *XGetScreenDensity(Display *display)
 %
 %  A description of each parameter follows:
 %
@@ -3399,9 +3418,9 @@ Export char *XGetScreenDensity(Display *display)
 %  Method XGetSubwindow returns the subwindow of a window chosen the
 %  user with the pointer and a button press.
 %
-%  The format of the XGetSubwindow routine is:
+%  The format of the XGetSubwindow method is:
 %
-%      subwindow=XGetSubwindow(display,window,x,y)
+%      Window XGetSubwindow(Display *display,Window window,int x,int y)
 %
 %  A description of each parameter follows:
 %
@@ -3469,9 +3488,9 @@ Export Window XGetSubwindow(Display *display,Window window,int x,int y)
 %  Method XGetWindowColor returns the color of a pixel interactively chosen
 %  from the X server.
 %
-%  The format of the XGetWindowColor routine is:
+%  The format of the XGetWindowColor method is:
 %
-%      status=XGetWindowColor(display,name)
+%      unsigned int XGetWindowColor(Display *display,char *name)
 %
 %  A description of each parameter follows:
 %
@@ -3611,9 +3630,10 @@ Export unsigned int XGetWindowColor(Display *display,char *name)
 %  window that have the same visual, colormap, and are contained by its
 %  parent are exempted.
 %
-%  The format of the XGetWindowImage routine is:
+%  The format of the XGetWindowImage method is:
 %
-%      image=XGetWindowImage(display,window,borders,level)
+%      Image *XGetWindowImage(Display *display,const Window window,
+%        const unsigned int borders,const unsigned int level)
 %
 %  A description of each parameter follows:
 %
@@ -4183,9 +4203,11 @@ Export Image *XGetWindowImage(Display *display,const Window window,
 %
 %  Method XGetWindowInfo initializes the XWindowInfo structure.
 %
-%  The format of the XGetWindowInfo routine is:
+%  The format of the XGetWindowInfo method is:
 %
-%      XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+%      void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
+%        XStandardColormap *map_info,XPixelInfo *pixel_info,XFontStruct *font_info,
+%        XResourceInfo *resource_info,XWindowInfo *window)
 %        resource_info,window)
 %
 %  A description of each parameter follows:
@@ -4317,9 +4339,10 @@ Export void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
 %  Method XHighlightEllipse puts a border on the X server around a region
 %  defined by highlight_info.
 %
-%  The format of the XHighlightEllipse routine is:
+%  The format of the XHighlightEllipse method is:
 %
-%    XHighlightEllipse(display,window,annotate_context,highlight_info)
+%      void XHighlightEllipse(Display *display,Window window,
+%        GC annotate_context,const RectangleInfo *highlight_info)
 %
 %  A description of each parameter follows:
 %
@@ -4366,9 +4389,10 @@ Export void XHighlightEllipse(Display *display,Window window,
 %  Method XHighlightLine puts a border on the X server around a region
 %  defined by highlight_info.
 %
-%  The format of the XHighlightLine routine is:
+%  The format of the XHighlightLine method is:
 %
-%    XHighlightLine(display,window,annotate_context,highlight_info)
+%      void XHighlightLine(Display *display,Window window,GC annotate_context,
+%        const XSegment *highlight_info)
 %
 %  A description of each parameter follows:
 %
@@ -4409,9 +4433,10 @@ Export void XHighlightLine(Display *display,Window window,GC annotate_context,
 %  Method XHighlightRectangle puts a border on the X server around a region
 %  defined by highlight_info.
 %
-%  The format of the XHighlightRectangle routine is:
+%  The format of the XHighlightRectangle method is:
 %
-%    XHighlightRectangle(display,window,annotate_context,highlight_info)
+%      void XHighlightRectangle(Display *display,Window window,
+%        GC annotate_context,const RectangleInfo *highlight_info)
 %
 %  A description of each parameter follows:
 %
@@ -4455,9 +4480,9 @@ Export void XHighlightRectangle(Display *display,Window window,
 %
 %  Procedure XImportImage reads an image from an X window.
 %
-%  The format of the XImportImage routine is:
+%  The format of the XImportImage method is:
 %
-%      image=XImportImage(image_info,ximage_info);
+%      Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
 %
 %  A description of each parameter follows:
 %
@@ -4714,9 +4739,10 @@ Export Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
 %
 %  Method XInitializeWindows initializes the XWindows structure.
 %
-%  The format of the XInitializeWindows routine is:
+%  The format of the XInitializeWindows method is:
 %
-%      windows=XInitializeWindows(display,resource_info)
+%      XWindows *XInitializeWindows(Display *display,
+%        XResourceInfo *resource_info)
 %
 %  A description of each parameter follows:
 %
@@ -4900,9 +4926,10 @@ Export XWindows *XInitializeWindows(Display *display,
 %
 %  Method XMakeCursor creates a crosshairs X11 cursor.
 %
-%  The format of the XMakeCursor routine is:
+%  The format of the XMakeCursor method is:
 %
-%      XMakeCursor(display,window,colormap,background_color,foreground_color)
+%      Cursor XMakeCursor(Display *display,Window window,Colormap colormap,
+%        char *background_color,char *foreground_color)
 %
 %  A description of each parameter follows:
 %
@@ -4995,9 +5022,11 @@ Export Cursor XMakeCursor(Display *display,Window window,Colormap colormap,
 %  Method XMakeImage creates an X11 image.  If the image size differs from
 %  the X11 image size, the image is first resized.
 %
-%  The format of the XMakeImage routine is:
+%  The format of the XMakeImage method is:
 %
-%      status=XMakeImage(display,resource_info,window,image,width,height)
+%      unsigned int XMakeImage(Display *display,
+%        const XResourceInfo *resource_info,XWindowInfo *window,Image *image,
+%        unsigned int width,unsigned int height)
 %
 %  A description of each parameter follows:
 %
@@ -5349,9 +5378,9 @@ Export unsigned int XMakeImage(Display *display,
 %  two general cases, many special cases are found here to help speed up the
 %  image conversion.
 %
-%  The format of the XMakeImageLSBFirst routine is:
+%  The format of the XMakeImageLSBFirst method is:
 %
-%      XMakeImageLSBFirst(resource_info,window,image,ximage,matte_image)
+%      void XMakeMagnifyImage(Display *display,XWindows *windows)
 %
 %  A description of each parameter follows:
 %
@@ -5908,7 +5937,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
 %  general cases, many special cases are found here to help speed up the image
 %  conversion.
 %
-%  The format of the XMakeImageMSBFirst routine is:
+%  The format of the XMakeImageMSBFirst method is:
 %
 %      XMakeImageMSBFirst(resource_info,window,image,ximage,matte_image)
 %
@@ -6464,7 +6493,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
 %
 %  Method XMakeMagnifyImage magnifies a region of an X image and displays it.
 %
-%  The format of the XMakeMagnifyImage routine is:
+%  The format of the XMakeMagnifyImage method is:
 %
 %      XMakeMagnifyImage(display,windows)
 %
@@ -6898,9 +6927,11 @@ Export void XMakeMagnifyImage(Display *display,XWindows *windows)
 %
 %  Method XMakePixmap creates an X11 pixmap.
 %
-%  The format of the XMakePixmap routine is:
+%  The format of the XMakePixmap method is:
 %
-%      status=XMakePixmap(display,resource_info,window)
+%      void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
+%        XResourceInfo *resource_info,Image *image,XStandardColormap *map_info,
+%        XPixelInfo *pixel_info)
 %
 %  A description of each parameter follows:
 %
@@ -6994,7 +7025,7 @@ unsigned int XMakePixmap(Display *display,const XResourceInfo *resource_info,
 %
 %  Method XMakeStandardColormap creates an X11 Standard Colormap.
 %
-%  The format of the XMakeStandardColormap routine is:
+%  The format of the XMakeStandardColormap method is:
 %
 %      XMakeStandardColormap(display,visual_info,resource_info,image,
 %        map_info,pixel_info)
@@ -7660,9 +7691,10 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
 %
 %  Method XMakeWindow creates an X11 window.
 %
-%  The format of the XMakeWindow routine is:
+%  The format of the XMakeWindow method is:
 %
-%      XMakeWindow(display,parent,argv,argc,class_hint,manager_hints,
+%      void XMakeWindow(Display *display,Window parent,char **argv,int argc,
+%        XClassHint *class_hint,XWMHints *manager_hints,XWindowInfo *window_info)
 %        window_info)
 %
 %  A description of each parameter follows:
@@ -7900,9 +7932,10 @@ Export void XMakeWindow(Display *display,Window parent,char **argv,int argc,
 %  Method XProgressMonitor displays the progress a task is making in
 %  completing a task.
 %
-%  The format of the XProgressMonitor routine is:
+%  The format of the XProgressMonitor method is:
 %
-%      XProgressMonitor(task,quantum,span)
+%      void XProgressMonitor(const char *task,const unsigned int quantum,
+%        const unsigned int span)
 %
 %  A description of each parameter follows:
 %
@@ -7941,9 +7974,9 @@ Export void XProgressMonitor(const char *task,const unsigned int quantum,
 %  Method XQueryColorDatabase looks up a RGB values for a color given in the
 %  target string.
 %
-%  The format of the XQueryColorDatabase routine is:
+%  The format of the XQueryColorDatabase method is:
 %
-%    status=XQueryColorDatabase(target,color)
+%      unsigned int XQueryColorDatabase(const char *target,ColorPacket *color)
 %
 %  A description of each parameter follows:
 %
@@ -8019,9 +8052,9 @@ Export unsigned int XQueryColorDatabase(const char *target,ColorPacket *color)
 %
 %  Method XQueryPosition gets the pointer coordinates relative to a window.
 %
-%  The format of the XQueryPosition routine is:
+%  The format of the XQueryPosition method is:
 %
-%    XQueryPosition(display,window,x,y)
+%      void XQueryPosition(Display *display,const Window window,int *x,int *y)
 %
 %  A description of each parameter follows:
 %
@@ -8071,9 +8104,10 @@ Export void XQueryPosition(Display *display,const Window window,int *x,int *y)
 %
 %  Method XRefreshWindow refreshes an image in a X window.
 %
-%  The format of the XRefreshWindow routine is:
+%  The format of the XRefreshWindow method is:
 %
-%      XRefreshWindow(display,window,event)
+%      void XRefreshWindow(Display *display,const XWindowInfo *window,
+%        const XEvent *event)
 %
 %  A description of each parameter follows:
 %
@@ -8175,9 +8209,10 @@ Export void XRefreshWindow(Display *display,const XWindowInfo *window,
 %  Method XRemoteCommand forces a remote display(1) to display the specified
 %  image filename.
 %
-%  The format of the XRemoteCommand routine is:
+%  The format of the XRemoteCommand method is:
 %
-%    XRemoteCommand(display,window,filename)
+%      void XRemoteCommand(Display *display,const char *window,
+%        const char *filename)
 %
 %  A description of each parameter follows:
 %
@@ -8254,9 +8289,9 @@ Export void XRemoteCommand(Display *display,const char *window,
 %  Method XRetainWindowColors sets X11 color resources on a window.  This
 %  preserves the colors associated with an image displayed on the window.
 %
-%  The format of the XRetainWindowColors routine is:
+%  The format of the XRetainWindowColors method is:
 %
-%      XRetainWindowColors(display,window)
+%      void XRetainWindowColors(Display *display,const Window window)
 %
 %  A description of each parameter follows:
 %
@@ -8486,9 +8521,10 @@ Export Window XSelectWindow(Display *display,RectangleInfo *crop_info)
 %
 %  Method XSignalHandler is called if the program execution is interrupted.
 %
-%  The format of the XSignalHandler routine is:
+%  The format of the XSignalHandler method is:
 %
-%    XSignalHandler(status)
+%      void XSetCursorState(Display *display,XWindows *windows,
+%        const unsigned int state)
 %
 %
 */
@@ -8529,7 +8565,7 @@ void XSignalHandler(int status)
 %  Method XSetCursorState sets the cursor state to busy, otherwise the
 %  cursor are reset to their default.
 %
-%  The format of the XXSetCursorState routine is:
+%  The format of the XXSetCursorState method is:
 %
 %      XSetCursorState(display,windows,state)
 %
@@ -8583,9 +8619,9 @@ Export void XSetCursorState(Display *display,XWindows *windows,
 %  Method XSetWindows sets the X windows structure if the windows info
 %  is specified.  Otherwise the current windows structure is returned.
 %
-%  The format of the XSetWindows routine is:
+%  The format of the XSetWindows method is:
 %
-%      windows=XSetWindows(windows_info)
+%      XWindows *XSetWindows(XWindows *windows_info)
 %
 %  A description of each parameter follows:
 %
@@ -8618,9 +8654,9 @@ Export XWindows *XSetWindows(XWindows *windows_info)
 %  Method XUserPreferences saves the preferences in a configuration file in
 %  the users' home directory.
 %
-%  The format of the XUserPreferences routine is:
+%  The format of the XUserPreferences method is:
 %
-%      XUserPreferences(resource_info)
+%      void XUserPreferences(XResourceInfo *resource_info)
 %
 %  A description of each parameter follows:
 %
@@ -8689,9 +8725,9 @@ Export void XUserPreferences(XResourceInfo *resource_info)
 %  Method XVisualClassName returns the visual class name as a character
 %  string.
 %
-%  The format of the XVisualClassName routine is:
+%  The format of the XVisualClassName method is:
 %
-%      visual_type=XVisualClassName(class)
+%      char *XVisualClassName(const int class)
 %
 %  A description of each parameter follows:
 %
@@ -8729,9 +8765,10 @@ Export char *XVisualClassName(const int class)
 %
 %  Method XWarning displays a warning message in a Notice widget.
 %
-%  The format of the XWarning routine is:
+%  The format of the XWarning method is:
 %
-%      XWarning(warning,message,qualifier)
+%      void XWarning(const unsigned int warning,const char *message,
+%        const char *qualifier)
 %
 %  A description of each parameter follows:
 %

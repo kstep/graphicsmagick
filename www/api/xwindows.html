@@ -65,7 +65,6 @@
 		<LI><A HREF="#XRetainWindowColors">XRetainWindowColors</A>
 		<LI><A HREF="#XSelectWindow">XSelectWindow</A>
 		<LI><A HREF="#XSignalHandler">XSignalHandler</A>
-		<LI><A HREF="#XSetCursorState">XSetCursorState</A>
 		<LI><A HREF="#XSetWindows">XSetWindows</A>
 		<LI><A HREF="#XUserPreferences">XUserPreferences</A>
 		<LI><A HREF="#XVisualClassName">XVisualClassName</A>
@@ -82,163 +81,89 @@
 <P>
 <H1><A NAME="NAME">NAME</A></H1>
 <P>
-xwindows - X11 Utility Methods for ImageMagick
+xwindows - 
+<FONT SIZE=-1>X11</FONT> Utility Methods for ImageMagick
 
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-option=<STRONG>IsTrue</STRONG>(message)
+unsigned int <STRONG>IsTrue</STRONG>(constchar*message)
 
 <P>
-status=<STRONG>XAnnotateImage</STRONG>(display,pixel_info,annotate_info,image)
+void <STRONG>XBestIconSize</STRONG>(Display*display,XWindowInfo*window,Image*image)
 
 <P>
-font=<STRONG>XBestFont</STRONG>(display,resource_info,text_font)
+void <STRONG>XCheckRefreshWindows</STRONG>(Display*display,XWindows*windows)
 
 <P>
-<STRONG>XBestIconSize</STRONG>(display,window,image)
+<PRE> B&lt;XClientMessage&gt;(display,window,protocol,message,timestamp)
+</PRE>
+<P>
+client_window= <STRONG>XClientWindow</STRONG>(display,target_window)
 
 <P>
-pixel=<STRONG>XBestPixel</STRONG>(display,colormap,colors,number_colors,color)
+void <STRONG>XConstrainWindowPosition</STRONG>(Display*display,XWindowInfo*window_info)
 
 <P>
-visual_info=<STRONG>XBestVisualInfo</STRONG>(display,map_info,resource_info)
+void <STRONG>XDelay</STRONG>(Display*display,constunsignedlongmilliseconds)
 
 <P>
-<STRONG>XCheckRefreshWindows</STRONG>(display,windows)
+void <STRONG>XDestroyWindowColors</STRONG>(Display*display,Windowwindow)
 
 <P>
-<STRONG>XClientMessage</STRONG>(display,window,protocol,message,timestamp)
+status= <STRONG>XDrawImage</STRONG>(display,pixel_info,draw_info,image)
 
 <P>
-client_window=<STRONG>XClientWindow</STRONG>(display,target_window)
+<PRE> B&lt;XError&gt;(display,error)
+</PRE>
+<P>
+void <STRONG>XGetAnnotateInfo</STRONG>(XAnnotateInfo*annotate_info)
 
 <P>
-<STRONG>XConfigureImageColormap</STRONG>(display,resource_info,windows,image)
+char* <STRONG>XGetScreenDensity</STRONG>(Display*display)
 
 <P>
-<STRONG>XConstrainWindowPosition</STRONG>(display,window_info)
+Window <STRONG>XGetSubwindow</STRONG>(Display*display,Windowwindow,intx,inty)
 
 <P>
-<STRONG>XDelay</STRONG>(display,milliseconds)
+unsigned int <STRONG>XGetWindowColor</STRONG>(Display*display,char*name)
 
 <P>
-<STRONG>XDestroyWindowColors</STRONG>(display,window)
+Image* <STRONG>XImportImage</STRONG>(constImageInfo*image_info,XImportInfo*ximage_info)
 
 <P>
-<STRONG>XDisplayImageInfo</STRONG>(display,resource_info,windows,undo_image,image)
+<PRE> B&lt;XMakeMagnifyImage&gt;(display,windows)
+</PRE>
+<P>
+unsigned int <STRONG>XQueryColorDatabase</STRONG>(constchar*target,ColorPacket*color)
 
 <P>
-status=<STRONG>XDrawImage</STRONG>(display,pixel_info,draw_info,image)
+void <STRONG>XQueryPosition</STRONG>(Display*display,constWindowwindow,int*x,int*y)
 
 <P>
-<STRONG>XError</STRONG>(display,error)
+void <STRONG>XRetainWindowColors</STRONG>(Display*display,constWindowwindow)
 
 <P>
-<STRONG>XFreeStandardColormap</STRONG>(display,visual_info,map_info,pixel_info)
+target_window= <STRONG>XSelectWindow</STRONG>(display,crop_info)
 
 <P>
-<STRONG>XGetAnnotateInfo</STRONG>(annotate_info)
+<PRE> B&lt;XSetCursorState&gt;(display,windows,state)
+</PRE>
+<P>
+XWindows* <STRONG>XSetWindows</STRONG>(XWindows*windows_info)
 
 <P>
-<STRONG>XGetMapInfo</STRONG>(visual_info,colormap,map_info)
+void <STRONG>XUserPreferences</STRONG>(XResourceInfo*resource_info)
 
 <P>
-value=<STRONG>XGetResourceClass</STRONG>(database,client_name,keyword,resource_default)
+char* <STRONG>XVisualClassName</STRONG>(constintclass)
 
 <P>
-database=<STRONG>XGetResourceDatabase</STRONG>(display,client_name)
+child= <STRONG>XWindowByID</STRONG>(display,window,id)
 
 <P>
-<STRONG>XGetResourceInfo</STRONG>(database,client_name,resource_info)
-
-<P>
-value=<STRONG>XGetResourceInstance</STRONG>(database,client_name,keyword,resource_default)
-
-<P>
-density=<STRONG>XGetScreenDensity</STRONG>(display)
-
-<P>
-subwindow=<STRONG>XGetSubwindow</STRONG>(display,window,x,y)
-
-<P>
-status=<STRONG>XGetWindowColor</STRONG>(display,name)
-
-<P>
-image=<STRONG>XGetWindowImage</STRONG>(display,window,borders,level)
-
-<P>
-<STRONG>XHighlightEllipse</STRONG>(display,window,annotate_context,highlight_info)
-
-<P>
-<STRONG>XHighlightLine</STRONG>(display,window,annotate_context,highlight_info)
-
-<P>
-<STRONG>XHighlightRectangle</STRONG>(display,window,annotate_context,highlight_info)
-
-<P>
-image=<STRONG>XImportImage</STRONG>(image_info,ximage_info);
-
-<P>
-windows=<STRONG>XInitializeWindows</STRONG>(display,resource_info)
-
-<P>
-<STRONG>XMakeCursor</STRONG>(display,window,colormap,background_color,foreground_color)
-
-<P>
-status=<STRONG>XMakeImage</STRONG>(display,resource_info,window,image,width,height)
-
-<P>
-<STRONG>XMakeMagnifyImage</STRONG>(display,windows)
-
-<P>
-status=<STRONG>XMakePixmap</STRONG>(display,resource_info,window)
-
-<P>
-<STRONG>XProgressMonitor</STRONG>(task,quantum,span)
-
-<P>
-status=<STRONG>XQueryColorDatabase</STRONG>(target,color)
-
-<P>
-<STRONG>XQueryPosition</STRONG>(display,window,x,y)
-
-<P>
-<STRONG>XRefreshWindow</STRONG>(display,window,event)
-
-<P>
-<STRONG>XRemoteCommand</STRONG>(display,window,filename)
-
-<P>
-<STRONG>XRetainWindowColors</STRONG>(display,window)
-
-<P>
-target_window=<STRONG>XSelectWindow</STRONG>(display,crop_info)
-
-<P>
-<STRONG>XSetCursorState</STRONG>(display,windows,state)
-
-<P>
-windows=<STRONG>XSetWindows</STRONG>(windows_info)
-
-<P>
-<STRONG>XSignalHandler</STRONG>(status)
-
-<P>
-<STRONG>XUserPreferences</STRONG>(resource_info)
-
-<P>
-visual_type=<STRONG>XVisualClassName</STRONG>(class)
-
-<P>
-<STRONG>XWarning</STRONG>(warning,message,qualifier)
-
-<P>
-child=<STRONG>XWindowByID</STRONG>(display,window,id)
-
-<P>
-window=<STRONG>XWindowByName</STRONG>(display,root_window,name)
+window= <STRONG>XWindowByName</STRONG>(display,root_window,name)
 
 <P>
 <HR>
@@ -251,13 +176,14 @@ Method IsTrue returns True if the message is ``true'', ``on'', ``yes'' or
 ``1''.
 
 <P>
-The format of the IsTrue routine is:
+The format of the IsTrue method is:
 
 <P>
-<PRE>        option=IsTrue(message)
+<PRE>        unsigned int IsTrue(const char *message)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">option:</A></STRONG><DD>
@@ -276,13 +202,15 @@ Specifies a pointer to a character array.
 Method XAnnotateImage annotates the image with text.
 
 <P>
-The format of the XAnnotateImage routine is:
+The format of the XAnnotateImage method is:
 
 <P>
-<PRE>      status=XAnnotateImage(display,pixel_info,annotate_info,image)
+<PRE>    unsigned int XAnnotateImage(Display *display,
+      const XPixelInfo *pixel_info,XAnnotateInfo *annotate_info,Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -292,7 +220,8 @@ with text. False is returned is there is a memory shortage.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>pixel_info:</STRONG><DD>
 <P>
@@ -311,18 +240,20 @@ Specifies a pointer to a Image structure; returned from ReadImage.
 <HR>
 <H2><A NAME="XBestFont">XBestFont</A></H2>
 <P>
-Method XBestFont returns the ``best'' font. ``Best'' is defined as a font
-specified in the X resource database or a font such that the text width
-displayed with the font does not exceed the specified maximum width.
+Method XBestFont returns the ``best'' font. ``Best'' is defined as a font specified in the 
+<FONT SIZE=-1>X</FONT> resource database or a font such that the text width displayed with the font does not exceed the specified maximum width.
+
 
 <P>
-The format of the XBestFont routine is:
+The format of the XBestFont method is:
 
 <P>
-<PRE>        font=XBestFont(display,resource_info,text_font)
+<PRE>    XFontStruct *XBestFont(Display *display,
+      const XResourceInfo *resource_info,const unsigned int text_font)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>font:</STRONG><DD>
@@ -331,11 +262,13 @@ XBestFont returns a pointer to a XFontStruct structure.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 <DT><STRONG>text_font:</STRONG><DD>
 <P>
@@ -351,18 +284,20 @@ an icon size that maintains the aspect ratio of the image. If the window
 manager has preferred icon sizes, one of the preferred sizes is used.
 
 <P>
-The format of the XBestIconSize routine is:
+The format of the XBestIconSize method is:
 
 <P>
-<PRE>        XBestIconSize(display,window,image)
+<PRE>        void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -373,18 +308,21 @@ Specifies a pointer to a Image structure; returned from ReadImage.
 <HR>
 <H2><A NAME="XBestPixel">XBestPixel</A></H2>
 <P>
-Method XBestPixel returns a pixel from an array of pixels that is closest
-to the requested color. If the color array is NULL, the colors are obtained
-from the X server.
+Method XBestPixel returns a pixel from an array of pixels that is closest to the requested color. If the color array is 
+<FONT SIZE=-1>NULL,</FONT> the colors are obtained from the 
+<FONT SIZE=-1>X</FONT> server.
+
 
 <P>
-The format of the XBestPixel routine is:
+The format of the XBestPixel method is:
 
 <P>
-<PRE>        pixel=XBestPixel(display,colormap,colors,number_colors,color)
+<PRE>    void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
+      unsigned int number_colors,XColor *color)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>pixel:</STRONG><DD>
@@ -393,11 +331,15 @@ XBestPixel returns the pixel value closest to the requested color.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>colormap:</STRONG><DD>
 <P>
-Specifies the ID of the X server colormap.
+Specifies the 
+<FONT SIZE=-1>ID</FONT> of the 
+<FONT SIZE=-1>X</FONT> server colormap.
+
 
 <DT><STRONG>colors:</STRONG><DD>
 <P>
@@ -409,7 +351,8 @@ Specifies the number of XColor structures in the color definition array.
 
 <DT><STRONG>color:</STRONG><DD>
 <P>
-Specifies the desired RGB value to find in the colors array.
+Specifies the desired 
+<FONT SIZE=-1>RGB</FONT> value to find in the colors array.
 
 </DL></DL>
 <P>
@@ -435,30 +378,30 @@ Method XBestVisualInfo returns visual information for a visual that is the
 </OL>
 <P>
 <PRE>  4  From the list of visuals, choose one that can display the most
+     simultaneous colors.  If more than one visual can display the same
+     number of simultaneous colors, one is chosen based on a rank.
 </PRE>
 <P>
-<PRE>     simultaneous colors.  If more than one visual can display the same
-</PRE>
-<P>
-<PRE>     number of simultaneous colors, one is chosen based on a rank.
-</PRE>
-<P>
-The format of the XBestVisualInfo routine is:
+The format of the XBestVisualInfo method is:
 
 <P>
-<PRE>        visual_info=XBestVisualInfo(display,map_info,resource_info)
+<PRE>    XVisualInfo *XBestVisualInfo(Display *display,
+      XStandardColormap *map_info,XResourceInfo *resource_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>visual_info:</STRONG><DD>
 <P>
-XBestVisualInfo returns a pointer to a X11 XVisualInfo structure.
+XBestVisualInfo returns a pointer to a 
+<FONT SIZE=-1>X11</FONT> XVisualInfo structure.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>map_info:</STRONG><DD>
 <P>
@@ -467,29 +410,33 @@ Standard Colormap.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="XCheckRefreshWindows">XCheckRefreshWindows</A></H2>
 <P>
-Method XCheckRefreshWindows checks the X server for exposure events for a
-particular window and updates the area associated withe exposure event.
+Method XCheckRefreshWindows checks the 
+<FONT SIZE=-1>X</FONT> server for exposure events for a particular window
+and updates the area associated withe exposure event.
 
 <P>
-The format of the XCheckRefreshWindows routine is:
+The format of the XCheckRefreshWindows method is:
 
 <P>
-<PRE>        XCheckRefreshWindows(display,windows)
+<PRE>        void XCheckRefreshWindows(Display *display,XWindows *windows)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>windows:</STRONG><DD>
 <P>
@@ -510,7 +457,8 @@ The format of the XClientMessage function is:
 <PRE>        XClientMessage(display,window,protocol,message,timestamp)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
@@ -538,9 +486,9 @@ Specifies a value of type Time.
 <HR>
 <H2><A NAME="XClientWindow">XClientWindow</A></H2>
 <P>
-Method XClientWindow finds a window, at or below the specified window,
-which has a WM_STATE property. If such a window is found, it is returned,
-otherwise the argument window is returned.
+Method XClientWindow finds a window, at or below the specified window, which has a 
+<FONT SIZE=-1>WM_STATE</FONT> property. If such a window is found, it is returned, otherwise the argument window is returned.
+
 
 <P>
 The format of the XClientWindow function is:
@@ -549,13 +497,15 @@ The format of the XClientWindow function is:
 <PRE>        client_window=XClientWindow(display,target_window)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>client_window:</STRONG><DD>
 <P>
-XClientWindow returns a window, at or below the specified window, which has
-a WM_STATE property otherwise the argument target_window is returned.
+XClientWindow returns a window, at or below the specified window, which has a 
+<FONT SIZE=-1>WM_STATE</FONT> property otherwise the argument target_window is returned.
+
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
@@ -563,32 +513,38 @@ Specifies a pointer to the Display structure; returned from XOpenDisplay.
 
 <DT><STRONG>target_window:</STRONG><DD>
 <P>
-Specifies the window to find a WM_STATE property.
+Specifies the window to find a 
+<FONT SIZE=-1>WM_STATE</FONT> property.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="XConfigureImageColormap">XConfigureImageColormap</A></H2>
 <P>
-Method XConfigureImageColormap creates a new X colormap.
+Method XConfigureImageColormap creates a new 
+<FONT SIZE=-1>X</FONT> colormap.
 
 <P>
-The format of the XConfigureImageColormap routine is:
+The format of the XConfigureImageColormap method is:
 
 <P>
-<PRE>      XConfigureImageColormap(display,resource_info,windows,image)
+<PRE>    void XConfigureImageColormap(Display *display,
+      XResourceInfo *resource_info,XWindows *windows,Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 <DT><STRONG>windows:</STRONG><DD>
 <P>
@@ -603,17 +559,18 @@ Specifies a pointer to a Image structure; returned from ReadImage.
 <HR>
 <H2><A NAME="XConstrainWindowPosition">XConstrainWindowPosition</A></H2>
 <P>
-Method XConstrainWindowPosition assures a window is positioned witin the X
-server boundaries.
+Method XConstrainWindowPosition assures a window is positioned witin the 
+<FONT SIZE=-1>X</FONT> server boundaries.
 
 <P>
-The format of the XConstrainWindowPosition routine is:
+The format of the XConstrainWindowPosition method is:
 
 <P>
-<PRE>        XConstrainWindowPosition(display,window_info)
+<PRE>        void XConstrainWindowPosition(Display *display,XWindowInfo *window_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
@@ -633,13 +590,14 @@ Method XDelay suspends program execution for the number of milliseconds
 specified.
 
 <P>
-The format of the Delay routine is:
+The format of the Delay method is:
 
 <P>
-<PRE>        XDelay(display,milliseconds)
+<PRE>        void XDelay(Display *display,const unsigned long milliseconds)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
@@ -655,22 +613,25 @@ Specifies the number of milliseconds to delay before returning.
 <HR>
 <H2><A NAME="XDestroyWindowColors">XDestroyWindowColors</A></H2>
 <P>
-Method XDestroyWindowColors frees X11 color resources previously saved on a
-window by XRetainWindowColors or programs like xsetroot.
+Method XDestroyWindowColors frees 
+<FONT SIZE=-1>X11</FONT> color resources previously saved on a window by
+XRetainWindowColors or programs like xsetroot.
 
 <P>
-The format of the XDestroyWindowColors routine is:
+The format of the XDestroyWindowColors method is:
 
 <P>
-<PRE>        XDestroyWindowColors(display,window)
+<PRE>        void XDestroyWindowColors(Display *display,Window window)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -681,25 +642,31 @@ Specifies a pointer to a Window structure.
 <HR>
 <H2><A NAME="XDisplayImageInfo">XDisplayImageInfo</A></H2>
 <P>
-Method XDisplayImageInfo displays information about an X image.
+Method XDisplayImageInfo displays information about an 
+<FONT SIZE=-1>X</FONT> image.
 
 <P>
-The format of the XDisplayImageInfo routine is:
+The format of the XDisplayImageInfo method is:
 
 <P>
-<PRE>        XDisplayImageInfo(display,resource_info,windows,undo_image,image)
+<PRE>    void XDisplayImageInfo(Display *display,
+      const XResourceInfo *resource_info,XWindows *windows,Image *undo_image,
+      Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 <DT><STRONG>windows:</STRONG><DD>
 <P>
@@ -721,13 +688,14 @@ Specifies a pointer to a Image structure; returned from ReadImage.
 Method XDrawImage draws a line on the image.
 
 <P>
-The format of the XDrawImage routine is:
+The format of the XDrawImage method is:
 
 <P>
 <PRE>      status=XDrawImage(display,pixel_info,draw_info,image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -737,7 +705,8 @@ text. False is returned is there is a memory shortage.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>pixel_info:</STRONG><DD>
 <P>
@@ -768,7 +737,8 @@ The format of the XError function is:
 <PRE>        XError(display,error)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
@@ -784,28 +754,32 @@ Specifies the error event.
 <HR>
 <H2><A NAME="XFreeResources">XFreeResources</A></H2>
 <P>
-Method XFreeResources frees X11 resources.
+Method XFreeResources frees 
+<FONT SIZE=-1>X11</FONT> resources.
 
 <P>
-The format of the XFreeResources routine is:
+The format of the XFreeResources method is:
 
 <P>
-<PRE>    XFreeResources(display,visual_info,map_info,pixel_info,font_info,
+<PRE>    void XFreeResources(Display *display,XVisualInfo *visual_info,
+      XStandardColormap *map_info,XPixelInfo *pixel_info,XFontStruct *font_info,
+      XResourceInfo *resource_info,XWindowInfo *window_info)
+      resource_info,window_info)
 </PRE>
 <P>
-<PRE>      resource_info,window_info)
-</PRE>
-<P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>visual_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XVisualInfo structure; returned from
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XVisualInfo structure; returned from
 XGetVisualInfo.
 
 <DT><STRONG>map_info:</STRONG><DD>
@@ -823,36 +797,44 @@ Specifies a pointer to a XFontStruct structure.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 <DT><STRONG>window_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XWindowInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XWindowInfo structure.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="XFreeStandardColormap">XFreeStandardColormap</A></H2>
 <P>
-Method XFreeStandardColormap frees an X11 colormap.
+Method XFreeStandardColormap frees an 
+<FONT SIZE=-1>X11</FONT> colormap.
 
 <P>
-The format of the XFreeStandardColormap routine is:
+The format of the XFreeStandardColormap method is:
 
 <P>
-<PRE>        XFreeStandardColormap(display,visual_info,map_info,pixel_info)
+<PRE>    void XFreeStandardColormap(Display *display,
+      const XVisualInfo *visual_info,XStandardColormap *map_info,
+      XPixelInfo *pixel_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>visual_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XVisualInfo structure; returned from
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XVisualInfo structure; returned from
 XGetVisualInfo.
 
 <DT><STRONG>map_info:</STRONG><DD>
@@ -872,13 +854,14 @@ Specifies a pointer to a XPixelInfo structure.
 Method XGetAnnotateInfo initializes the AnnotateInfo structure.
 
 <P>
-The format of the GetAnnotateInfo routine is:
+The format of the GetAnnotateInfo method is:
 
 <P>
-<PRE>        XGetAnnotateInfo(annotate_info)
+<PRE>        void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>annotate_info:</STRONG><DD>
@@ -893,27 +876,34 @@ Specifies a pointer to a XAnnotateInfo structure.
 Method XGetMapInfo initializes the XStandardColormap structure.
 
 <P>
-The format of the XStandardColormap routine is:
+The format of the XStandardColormap method is:
 
 <P>
-<PRE>        XGetMapInfo(visual_info,colormap,map_info)
+<PRE>    void XGetMapInfo(const XVisualInfo *visual_info,const Colormap colormap,
+      XStandardColormap *map_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>colormap:</STRONG><DD>
 <P>
-Specifies the ID of the X server colormap.
+Specifies the 
+<FONT SIZE=-1>ID</FONT> of the 
+<FONT SIZE=-1>X</FONT> server colormap.
+
 
 <DT><STRONG>visual_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XVisualInfo structure; returned from
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XVisualInfo structure; returned from
 XGetVisualInfo.
 
 <DT><STRONG>map_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XStandardColormap structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XStandardColormap structure.
 
 </DL></DL>
 <P>
@@ -923,13 +913,14 @@ Specifies a pointer to a X11 XStandardColormap structure.
 Method XGetImportInfo initializes the XImportInfo structure.
 
 <P>
-The format of the XGetImportInfo routine is:
+The format of the XGetImportInfo method is:
 
 <P>
-<PRE>    XGetImportInfo(ximage_info)
+<PRE>    void XGetImportInfo(XImportInfo *ximage_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>ximage_info:</STRONG><DD>
@@ -944,25 +935,28 @@ Specifies a pointer to a ImageInfo structure.
 Method XGetPixelInfo initializes the PixelInfo structure.
 
 <P>
-The format of the XGetPixelInfo routine is:
+The format of the XGetPixelInfo method is:
 
 <P>
-<PRE>    XGetPixelInfo(display,visual_info,map_info,resource_info,image,
+<PRE>    void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
+      const XStandardColormap *map_info,const XResourceInfo *resource_info,
+      Image *image,XPixelInfo *pixel_info)
+      pixel_info)
 </PRE>
 <P>
-<PRE>      pixel_info)
-</PRE>
-<P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>visual_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XVisualInfo structure; returned from
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XVisualInfo structure; returned from
 XGetVisualInfo.
 
 <DT><STRONG>map_info:</STRONG><DD>
@@ -972,7 +966,8 @@ Standard Colormap.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -987,18 +982,21 @@ Specifies a pointer to a XPixelInfo structure.
 <HR>
 <H2><A NAME="XGetResourceClass">XGetResourceClass</A></H2>
 <P>
-Method XGetResourceClass queries the X server for the specified resource
-name or class. If the resource name or class is not defined in the
-database, the supplied default value is returned.
+Method XGetResourceClass queries the 
+<FONT SIZE=-1>X</FONT> server for the specified resource name or class. If
+the resource name or class is not defined in the database, the supplied
+default value is returned.
 
 <P>
-The format of the XGetResourceClass routine is:
+The format of the XGetResourceClass method is:
 
 <P>
-<PRE>        value=XGetResourceClass(database,client_name,keyword,resource_default)
+<PRE>    char *XGetResourceClass(XrmDatabase database,const char *client_name,
+      const char *keyword,char *resource_default)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>value:</STRONG><DD>
@@ -1012,8 +1010,8 @@ Specifies a resource database; returned from XrmGetStringDatabase.
 
 <DT><STRONG>client_name:</STRONG><DD>
 <P>
-Specifies the application name used to retrieve resource info from the X
-server database.
+Specifies the application name used to retrieve resource info from the 
+<FONT SIZE=-1>X</FONT> server database.
 
 <DT><STRONG>keyword:</STRONG><DD>
 <P>
@@ -1033,13 +1031,15 @@ Method XGetResourceDatabase creates a new resource database and initializes
 it.
 
 <P>
-The format of the XGetResourceDatabase routine is:
+The format of the XGetResourceDatabase method is:
 
 <P>
-<PRE>        database=XGetResourceDatabase(display,client_name)
+<PRE>    XrmDatabase XGetResourceDatabase(Display *display,
+      const char *client_name)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>database:</STRONG><DD>
@@ -1048,12 +1048,13 @@ Method XGetResourceDatabase returns the database after it is initialized.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>client_name:</STRONG><DD>
 <P>
-Specifies the application name used to retrieve resource info from the X
-server database.
+Specifies the application name used to retrieve resource info from the 
+<FONT SIZE=-1>X</FONT> server database.
 
 </DL></DL>
 <P>
@@ -1063,13 +1064,15 @@ server database.
 Method XGetResourceInfo initializes the ResourceInfo structure.
 
 <P>
-The format of the XGetResourceInfo routine is:
+The format of the XGetResourceInfo method is:
 
 <P>
-<PRE>        XGetResourceInfo(database,client_name,resource_info)
+<PRE>    void XGetResourceInfo(XrmDatabase database,char *client_name,
+      XResourceInfo *resource_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>database:</STRONG><DD>
@@ -1078,30 +1081,34 @@ Specifies a resource database; returned from XrmGetStringDatabase.
 
 <DT><STRONG>client_name:</STRONG><DD>
 <P>
-Specifies the application name used to retrieve resource info from the X
-server database.
+Specifies the application name used to retrieve resource info from the 
+<FONT SIZE=-1>X</FONT> server database.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="XGetResourceInstance">XGetResourceInstance</A></H2>
 <P>
-Method XGetResourceInstance queries the X server for the specified resource
-name. If the resource name is not defined in the database, the supplied
-default value is returned.
+Method XGetResourceInstance queries the 
+<FONT SIZE=-1>X</FONT> server for the specified resource name. If the
+resource name is not defined in the database, the supplied default value is
+returned.
 
 <P>
-The format of the XGetResourceInstance routine is:
+The format of the XGetResourceInstance method is:
 
 <P>
-<PRE>        value=XGetResourceInstance(database,client_name,keyword,resource_default)
+<PRE>    char *XGetResourceInstance(XrmDatabase database,const char *client_name,
+      const char *keyword,const char *resource_default)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>value:</STRONG><DD>
@@ -1115,8 +1122,8 @@ Specifies a resource database; returned from XrmGetStringDatabase.
 
 <DT><STRONG>client_name:</STRONG><DD>
 <P>
-Specifies the application name used to retrieve resource info from the X
-server database.
+Specifies the application name used to retrieve resource info from the 
+<FONT SIZE=-1>X</FONT> server database.
 
 <DT><STRONG>keyword:</STRONG><DD>
 <P>
@@ -1132,27 +1139,29 @@ specified keyword/class.
 <HR>
 <H2><A NAME="XGetScreenDensity">XGetScreenDensity</A></H2>
 <P>
-Method XGetScreenDensity returns the density of the X server screen in
-dots-per-inch.
+Method XGetScreenDensity returns the density of the 
+<FONT SIZE=-1>X</FONT> server screen in dots-per-inch.
 
 <P>
-The format of the XGetScreenDensity routine is:
+The format of the XGetScreenDensity method is:
 
 <P>
-<PRE>        density=XGetScreenDensity(display)
+<PRE>        char *XGetScreenDensity(Display *display)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>density:</STRONG><DD>
 <P>
-Method XGetScreenDensity returns the density of the X screen in
-dots-per-inch.
+Method XGetScreenDensity returns the density of the 
+<FONT SIZE=-1>X</FONT> screen in dots-per-inch.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 </DL></DL>
 <P>
@@ -1163,23 +1172,26 @@ Method XGetSubwindow returns the subwindow of a window chosen the user with
 the pointer and a button press.
 
 <P>
-The format of the XGetSubwindow routine is:
+The format of the XGetSubwindow method is:
 
 <P>
-<PRE>        subwindow=XGetSubwindow(display,window,x,y)
+<PRE>        Window XGetSubwindow(Display *display,Window window,int x,int y)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>subwindow:</STRONG><DD>
 <P>
-Method XGetSubwindow returns NULL if no subwindow is found otherwise the
-subwindow is returned.
+Method XGetSubwindow returns 
+<FONT SIZE=-1>NULL</FONT> if no subwindow is found otherwise the subwindow
+is returned.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -1198,62 +1210,71 @@ the y coordinate of the pointer relative to the origin of the window.
 <HR>
 <H2><A NAME="XGetWindowColor">XGetWindowColor</A></H2>
 <P>
-Method XGetWindowColor returns the color of a pixel interactively chosen
-from the X server.
+Method XGetWindowColor returns the color of a pixel interactively chosen from the 
+<FONT SIZE=-1>X</FONT> server.
+
 
 <P>
-The format of the XGetWindowColor routine is:
+The format of the XGetWindowColor method is:
 
 <P>
-<PRE>        status=XGetWindowColor(display,name)
+<PRE>        unsigned int XGetWindowColor(Display *display,char *name)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
 <P>
-Method XGetWindowColor returns True if the color is obtained from the X
-server. False is returned if any errors occurs.
+Method XGetWindowColor returns True if the color is obtained from the 
+<FONT SIZE=-1>X</FONT> server. False is returned if any errors occurs.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>name:</STRONG><DD>
 <P>
-The name of of the color if found in the X Color Database is returned in
-this character string.
+The name of of the color if found in the 
+<FONT SIZE=-1>X</FONT> Color Database is returned in this character string.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="XGetWindowImage">XGetWindowImage</A></H2>
 <P>
-Method XGetWindowImage reads an image from the target X window and returns
-it. XGetWindowImage optionally descends the window hierarchy and overlays
-the target image with each child image in an optimized fashion. Any child
-window that have the same visual, colormap, and are contained by its parent
-are exempted.
+Method XGetWindowImage reads an image from the target 
+<FONT SIZE=-1>X</FONT> window and returns it. XGetWindowImage optionally
+descends the window hierarchy and overlays the target image with each child
+image in an optimized fashion. Any child window that have the same visual,
+colormap, and are contained by its parent are exempted.
 
 <P>
-The format of the XGetWindowImage routine is:
+The format of the XGetWindowImage method is:
 
 <P>
-<PRE>        image=XGetWindowImage(display,window,borders,level)
+<PRE>    Image *XGetWindowImage(Display *display,const Window window,
+      const unsigned int borders,const unsigned int level)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
 <P>
-Method XGetWindowImage returns a MIFF image if it can be successfully read
-from the X window. A null image is returned if any errors occurs.
+Method XGetWindowImage returns a 
+<FONT SIZE=-1>MIFF</FONT> image if it can be successfully read from the 
+<FONT SIZE=-1>X</FONT> window. 
+<FONT SIZE=-1>A</FONT> null image is returned if any errors occurs.
+
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -1265,11 +1286,10 @@ Specifies whether borders pixels are to be saved with the image.
 
 <DT><STRONG>level:</STRONG><DD>
 <P>
-Specifies an unsigned integer representing the level of decent in the
-window hierarchy. This value must be zero or one on the initial call to
-XGetWindowImage. A value of zero returns after one call. A value of one
-causes the function to descend the window hierarchy and overlay the target
-image with each subwindow image.
+Specifies an unsigned integer representing the level of decent in the window hierarchy. This value must be zero or one on the initial call to XGetWindowImage. 
+<FONT SIZE=-1>A</FONT> value of zero returns after one call. 
+<FONT SIZE=-1>A</FONT> value of one causes the function to descend the window hierarchy and overlay the target image with each subwindow image.
+
 
 </DL></DL>
 <P>
@@ -1279,25 +1299,28 @@ image with each subwindow image.
 Method XGetWindowInfo initializes the XWindowInfo structure.
 
 <P>
-The format of the XGetWindowInfo routine is:
+The format of the XGetWindowInfo method is:
 
 <P>
-<PRE>    XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+<PRE>    void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
+      XStandardColormap *map_info,XPixelInfo *pixel_info,XFontStruct *font_info,
+      XResourceInfo *resource_info,XWindowInfo *window)
+      resource_info,window)
 </PRE>
 <P>
-<PRE>      resource_info,window)
-</PRE>
-<P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>visual_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XVisualInfo structure; returned from
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XVisualInfo structure; returned from
 XGetVisualInfo.
 
 <DT><STRONG>map_info:</STRONG><DD>
@@ -1315,29 +1338,33 @@ Specifies a pointer to a XFontStruct structure.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="XHighlightEllipse">XHighlightEllipse</A></H2>
 <P>
-Method XHighlightEllipse puts a border on the X server around a region
-defined by highlight_info.
+Method XHighlightEllipse puts a border on the 
+<FONT SIZE=-1>X</FONT> server around a region defined by highlight_info.
 
 <P>
-The format of the XHighlightEllipse routine is:
+The format of the XHighlightEllipse method is:
 
 <P>
-<PRE>      XHighlightEllipse(display,window,annotate_context,highlight_info)
+<PRE>    void XHighlightEllipse(Display *display,Window window,
+      GC annotate_context,const RectangleInfo *highlight_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -1345,7 +1372,8 @@ Specifies a pointer to a Window structure.
 
 <DT><STRONG>annotate_context:</STRONG><DD>
 <P>
-Specifies a pointer to a GC structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>GC</FONT> structure.
 
 <DT><STRONG>highlight_info:</STRONG><DD>
 <P>
@@ -1357,22 +1385,25 @@ of any highlighting rectangle.
 <HR>
 <H2><A NAME="XHighlightLine">XHighlightLine</A></H2>
 <P>
-Method XHighlightLine puts a border on the X server around a region defined
-by highlight_info.
+Method XHighlightLine puts a border on the 
+<FONT SIZE=-1>X</FONT> server around a region defined by highlight_info.
 
 <P>
-The format of the XHighlightLine routine is:
+The format of the XHighlightLine method is:
 
 <P>
-<PRE>      XHighlightLine(display,window,annotate_context,highlight_info)
+<PRE>    void XHighlightLine(Display *display,Window window,GC annotate_context,
+      const XSegment *highlight_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -1380,7 +1411,8 @@ Specifies a pointer to a Window structure.
 
 <DT><STRONG>annotate_context:</STRONG><DD>
 <P>
-Specifies a pointer to a GC structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>GC</FONT> structure.
 
 <DT><STRONG>highlight_info:</STRONG><DD>
 <P>
@@ -1392,22 +1424,25 @@ of any highlighting rectangle.
 <HR>
 <H2><A NAME="XHighlightRectangle">XHighlightRectangle</A></H2>
 <P>
-Method XHighlightRectangle puts a border on the X server around a region
-defined by highlight_info.
+Method XHighlightRectangle puts a border on the 
+<FONT SIZE=-1>X</FONT> server around a region defined by highlight_info.
 
 <P>
-The format of the XHighlightRectangle routine is:
+The format of the XHighlightRectangle method is:
 
 <P>
-<PRE>      XHighlightRectangle(display,window,annotate_context,highlight_info)
+<PRE>    void XHighlightRectangle(Display *display,Window window,
+      GC annotate_context,const RectangleInfo *highlight_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -1415,7 +1450,8 @@ Specifies a pointer to a Window structure.
 
 <DT><STRONG>annotate_context:</STRONG><DD>
 <P>
-Specifies a pointer to a GC structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>GC</FONT> structure.
 
 <DT><STRONG>highlight_info:</STRONG><DD>
 <P>
@@ -1427,16 +1463,18 @@ of any highlighting rectangle.
 <HR>
 <H2><A NAME="XImportImage">XImportImage</A></H2>
 <P>
-Procedure XImportImage reads an image from an X window.
+Procedure XImportImage reads an image from an 
+<FONT SIZE=-1>X</FONT> window.
 
 <P>
-The format of the XImportImage routine is:
+The format of the XImportImage method is:
 
 <P>
-<PRE>        image=XImportImage(image_info,ximage_info);
+<PRE>        Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image_info:</STRONG><DD>
@@ -1455,13 +1493,15 @@ Specifies a pointer to an XImportInfo structure.
 Method XInitializeWindows initializes the XWindows structure.
 
 <P>
-The format of the XInitializeWindows routine is:
+The format of the XInitializeWindows method is:
 
 <P>
-<PRE>        windows=XInitializeWindows(display,resource_info)
+<PRE>    XWindows *XInitializeWindows(Display *display,
+      XResourceInfo *resource_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>windows:</STRONG><DD>
@@ -1470,41 +1510,49 @@ XInitializeWindows returns a pointer to a XWindows structure.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="XMakeCursor">XMakeCursor</A></H2>
 <P>
-Method XMakeCursor creates a crosshairs X11 cursor.
+Method XMakeCursor creates a crosshairs 
+<FONT SIZE=-1>X11</FONT> cursor.
 
 <P>
-The format of the XMakeCursor routine is:
+The format of the XMakeCursor method is:
 
 <P>
-<PRE>        XMakeCursor(display,window,colormap,background_color,foreground_color)
+<PRE>    Cursor XMakeCursor(Display *display,Window window,Colormap colormap,
+      char *background_color,char *foreground_color)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
-Specifies the ID of the window for which the cursor is assigned.
+Specifies the 
+<FONT SIZE=-1>ID</FONT> of the window for which the cursor is assigned.
 
 <DT><STRONG>colormap:</STRONG><DD>
 <P>
-Specifies the ID of the colormap from which the background and foreground
-color will be retrieved.
+Specifies the 
+<FONT SIZE=-1>ID</FONT> of the colormap from which the background and
+foreground color will be retrieved.
 
 <DT><STRONG>background_color:</STRONG><DD>
 <P>
@@ -1519,31 +1567,39 @@ Specifies the color to use for the cursor foreground.
 <HR>
 <H2><A NAME="XMakeImage">XMakeImage</A></H2>
 <P>
-Method XMakeImage creates an X11 image. If the image size differs from the
-X11 image size, the image is first resized.
+Method XMakeImage creates an 
+<FONT SIZE=-1>X11</FONT> image. If the image size differs from the 
+<FONT SIZE=-1>X11</FONT> image size, the image is first resized.
+
 
 <P>
-The format of the XMakeImage routine is:
+The format of the XMakeImage method is:
 
 <P>
-<PRE>        status=XMakeImage(display,resource_info,window,image,width,height)
+<PRE>    unsigned int XMakeImage(Display *display,
+      const XResourceInfo *resource_info,XWindowInfo *window,Image *image,
+      unsigned int width,unsigned int height)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
 <P>
-Method XMakeImage returns True if the X image is successfully created.
-False is returned is there is a memory shortage.
+Method XMakeImage returns True if the 
+<FONT SIZE=-1>X</FONT> image is successfully created. False is returned is
+there is a memory shortage.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -1566,21 +1622,24 @@ Specifies the height in pixels of the rectangular area to display.
 <HR>
 <H2><A NAME="XMakeMagnifyImage">XMakeMagnifyImage</A></H2>
 <P>
-Method XMakeMagnifyImage magnifies a region of an X image and displays it.
+Method XMakeMagnifyImage magnifies a region of an 
+<FONT SIZE=-1>X</FONT> image and displays it.
 
 <P>
-The format of the XMakeMagnifyImage routine is:
+The format of the XMakeMagnifyImage method is:
 
 <P>
 <PRE>        XMakeMagnifyImage(display,windows)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>windows:</STRONG><DD>
 <P>
@@ -1591,30 +1650,37 @@ Specifies a pointer to a XWindows structure.
 <HR>
 <H2><A NAME="XMakePixmap">XMakePixmap</A></H2>
 <P>
-Method XMakePixmap creates an X11 pixmap.
+Method XMakePixmap creates an 
+<FONT SIZE=-1>X11</FONT> pixmap.
 
 <P>
-The format of the XMakePixmap routine is:
+The format of the XMakePixmap method is:
 
 <P>
-<PRE>        status=XMakePixmap(display,resource_info,window)
+<PRE>    void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
+      XResourceInfo *resource_info,Image *image,XStandardColormap *map_info,
+      XPixelInfo *pixel_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
 <P>
-Method XMakePixmap returns True if the X pixmap is successfully created.
-False is returned is there is a memory shortage.
+Method XMakePixmap returns True if the 
+<FONT SIZE=-1>X</FONT> pixmap is successfully created. False is returned is
+there is a memory shortage.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -1625,33 +1691,36 @@ Specifies a pointer to a XWindowInfo structure.
 <HR>
 <H2><A NAME="XMakeStandardColormap">XMakeStandardColormap</A></H2>
 <P>
-Method XMakeStandardColormap creates an X11 Standard Colormap.
+Method XMakeStandardColormap creates an 
+<FONT SIZE=-1>X11</FONT> Standard Colormap.
 
 <P>
-The format of the XMakeStandardColormap routine is:
+The format of the XMakeStandardColormap method is:
 
 <P>
 <PRE>    XMakeStandardColormap(display,visual_info,resource_info,image,
+      map_info,pixel_info)
 </PRE>
 <P>
-<PRE>      map_info,pixel_info)
-</PRE>
-<P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>visual_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XVisualInfo structure; returned from
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XVisualInfo structure; returned from
 XGetVisualInfo.
 
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -1671,24 +1740,26 @@ Specifies a pointer to a XPixelInfo structure.
 <HR>
 <H2><A NAME="XMakeWindow">XMakeWindow</A></H2>
 <P>
-Method XMakeWindow creates an X11 window.
+Method XMakeWindow creates an 
+<FONT SIZE=-1>X11</FONT> window.
 
 <P>
-The format of the XMakeWindow routine is:
+The format of the XMakeWindow method is:
 
 <P>
-<PRE>    XMakeWindow(display,parent,argv,argc,class_hint,manager_hints,
+<PRE>    void XMakeWindow(Display *display,Window parent,char **argv,int argc,
+      XClassHint *class_hint,XWMHints *manager_hints,XWindowInfo *window_info)
+      window_info)
 </PRE>
 <P>
-<PRE>      window_info)
-</PRE>
-<P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>parent:</STRONG><DD>
 <P>
@@ -1704,15 +1775,18 @@ Specifies the number of arguments.
 
 <DT><STRONG>class_hint:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XClassHint structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XClassHint structure.
 
 <DT><STRONG>manager_hints:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XWMHints structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XWMHints structure.
 
 <DT><STRONG>window_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XWindowInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XWindowInfo structure.
 
 </DL></DL>
 <P>
@@ -1723,13 +1797,15 @@ Method XProgressMonitor displays the progress a task is making in
 completing a task.
 
 <P>
-The format of the XProgressMonitor routine is:
+The format of the XProgressMonitor method is:
 
 <P>
-<PRE>        XProgressMonitor(task,quantum,span)
+<PRE>    void XProgressMonitor(const char *task,const unsigned int quantum,
+      const unsigned int span)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>task:</STRONG><DD>
@@ -1750,32 +1826,37 @@ Specifies the span relative to completing a task.
 <HR>
 <H2><A NAME="XQueryColorDatabase">XQueryColorDatabase</A></H2>
 <P>
-Method XQueryColorDatabase looks up a RGB values for a color given in the
-target string.
+Method XQueryColorDatabase looks up a 
+<FONT SIZE=-1>RGB</FONT> values for a color given in the target string.
 
 <P>
-The format of the XQueryColorDatabase routine is:
+The format of the XQueryColorDatabase method is:
 
 <P>
-<PRE>      status=XQueryColorDatabase(target,color)
+<PRE>        unsigned int XQueryColorDatabase(const char *target,ColorPacket *color)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
 <P>
-Method XQueryColorDatabase returns True if the RGB values of the target
-color is defined, otherwise False is returned.
+Method XQueryColorDatabase returns True if the 
+<FONT SIZE=-1>RGB</FONT> values of the target color is defined, otherwise
+False is returned.
 
 <DT><STRONG>target:</STRONG><DD>
 <P>
-Specifies the color to lookup in the X color database.
+Specifies the color to lookup in the 
+<FONT SIZE=-1>X</FONT> color database.
 
 <DT><STRONG>color:</STRONG><DD>
 <P>
-A pointer to an ColorPacket structure. The RGB value of the target color is
-returned as this value.
+
+<FONT SIZE=-1>A</FONT> pointer to an ColorPacket structure. The 
+<FONT SIZE=-1>RGB</FONT> value of the target color is returned as this value.
+
 
 </DL></DL>
 <P>
@@ -1785,18 +1866,20 @@ returned as this value.
 Method XQueryPosition gets the pointer coordinates relative to a window.
 
 <P>
-The format of the XQueryPosition routine is:
+The format of the XQueryPosition method is:
 
 <P>
-<PRE>      XQueryPosition(display,window,x,y)
+<PRE>        void XQueryPosition(Display *display,const Window window,int *x,int *y)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -1817,21 +1900,25 @@ window.
 <HR>
 <H2><A NAME="XRefreshWindow">XRefreshWindow</A></H2>
 <P>
-Method XRefreshWindow refreshes an image in a X window.
+Method XRefreshWindow refreshes an image in a 
+<FONT SIZE=-1>X</FONT> window.
 
 <P>
-The format of the XRefreshWindow routine is:
+The format of the XRefreshWindow method is:
 
 <P>
-<PRE>        XRefreshWindow(display,window,event)
+<PRE>    void XRefreshWindow(Display *display,const XWindowInfo *window,
+      const XEvent *event)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -1839,8 +1926,8 @@ Specifies a pointer to a XWindowInfo structure.
 
 <DT><STRONG>event:</STRONG><DD>
 <P>
-Specifies a pointer to a XEvent structure. If it is NULL, the entire image
-is refreshed.
+Specifies a pointer to a XEvent structure. If it is 
+<FONT SIZE=-1>NULL,</FONT> the entire image is refreshed.
 
 </DL></DL>
 <P>
@@ -1851,22 +1938,26 @@ Method XRemoteCommand forces a remote <CODE>display(1)</CODE> to display
 the specified image filename.
 
 <P>
-The format of the XRemoteCommand routine is:
+The format of the XRemoteCommand method is:
 
 <P>
-<PRE>      XRemoteCommand(display,window,filename)
+<PRE>    void XRemoteCommand(Display *display,const char *window,
+      const char *filename)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
-Specifies the name or id of an X window.
+Specifies the name or id of an 
+<FONT SIZE=-1>X</FONT> window.
 
 <DT><STRONG>filename:</STRONG><DD>
 <P>
@@ -1877,22 +1968,25 @@ The name of the image filename to display.
 <HR>
 <H2><A NAME="XRetainWindowColors">XRetainWindowColors</A></H2>
 <P>
-Method XRetainWindowColors sets X11 color resources on a window. This
-preserves the colors associated with an image displayed on the window.
+Method XRetainWindowColors sets 
+<FONT SIZE=-1>X11</FONT> color resources on a window. This preserves the
+colors associated with an image displayed on the window.
 
 <P>
-The format of the XRetainWindowColors routine is:
+The format of the XRetainWindowColors method is:
 
 <P>
-<PRE>        XRetainWindowColors(display,window)
+<PRE>        void XRetainWindowColors(Display *display,const Window window)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>window:</STRONG><DD>
 <P>
@@ -1914,7 +2008,8 @@ The format of the XSelectWindow function is:
 <PRE>        target_window=XSelectWindow(display,crop_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>window:</STRONG><DD>
@@ -1938,31 +2033,32 @@ of any cropping rectangle.
 Method XSignalHandler is called if the program execution is interrupted.
 
 <P>
-The format of the XSignalHandler routine is:
+The format of the XSignalHandler method is:
 
 <P>
-<PRE>      XSignalHandler(status)
+<PRE>    void XSetCursorState(Display *display,XWindows *windows,
+      const unsigned int state)
+=head2 XSetCursorState
 </PRE>
-<P>
-<HR>
-<H2><A NAME="XSetCursorState">XSetCursorState</A></H2>
 <P>
 Method XSetCursorState sets the cursor state to busy, otherwise the cursor
 are reset to their default.
 
 <P>
-The format of the XXSetCursorState routine is:
+The format of the XXSetCursorState method is:
 
 <P>
 <PRE>        XSetCursorState(display,windows,state)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>display:</STRONG><DD>
 <P>
-Specifies a connection to an X server; returned from XOpenDisplay.
+Specifies a connection to an 
+<FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 
 <DT><STRONG>windows:</STRONG><DD>
 <P>
@@ -1978,17 +2074,19 @@ the cursor are reset to their default.
 <HR>
 <H2><A NAME="XSetWindows">XSetWindows</A></H2>
 <P>
-Method XSetWindows sets the X windows structure if the windows info is
-specified. Otherwise the current windows structure is returned.
+Method XSetWindows sets the 
+<FONT SIZE=-1>X</FONT> windows structure if the windows info is specified.
+Otherwise the current windows structure is returned.
 
 <P>
-The format of the XSetWindows routine is:
+The format of the XSetWindows method is:
 
 <P>
-<PRE>        windows=XSetWindows(windows_info)
+<PRE>        XWindows *XSetWindows(XWindows *windows_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>windows:</STRONG><DD>
@@ -2008,18 +2106,20 @@ Method XUserPreferences saves the preferences in a configuration file in
 the users' home directory.
 
 <P>
-The format of the XUserPreferences routine is:
+The format of the XUserPreferences method is:
 
 <P>
-<PRE>        XUserPreferences(resource_info)
+<PRE>        void XUserPreferences(XResourceInfo *resource_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>resource_info:</STRONG><DD>
 <P>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a 
+<FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 
 </DL></DL>
 <P>
@@ -2030,13 +2130,14 @@ Method XVisualClassName returns the visual class name as a character
 string.
 
 <P>
-The format of the XVisualClassName routine is:
+The format of the XVisualClassName method is:
 
 <P>
-<PRE>        visual_type=XVisualClassName(class)
+<PRE>        char *XVisualClassName(const int class)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>visual_type:</STRONG><DD>
@@ -2055,13 +2156,15 @@ Specifies the visual class.
 Method XWarning displays a warning message in a Notice widget.
 
 <P>
-The format of the XWarning routine is:
+The format of the XWarning method is:
 
 <P>
-<PRE>        XWarning(warning,message,qualifier)
+<PRE>    void XWarning(const unsigned int warning,const char *message,
+      const char *qualifier)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>warning:</STRONG><DD>
@@ -2081,9 +2184,9 @@ Specifies any qualifier to the message.
 <HR>
 <H2><A NAME="XWindowByID">XWindowByID</A></H2>
 <P>
-Method XWindowByID locates a child window with a given ID. If not window
-with the given name is found, 0 is returned. Only the window specified and
-its subwindows are searched.
+Method XWindowByID locates a child window with a given 
+<FONT SIZE=-1>ID.</FONT> If not window with the given name is found, 0 is
+returned. Only the window specified and its subwindows are searched.
 
 <P>
 The format of the XWindowByID function is:
@@ -2092,7 +2195,8 @@ The format of the XWindowByID function is:
 <PRE>        child=XWindowByID(display,window,id)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>child:</STRONG><DD>
@@ -2125,7 +2229,8 @@ The format of the XWindowByName function is:
 <PRE>        window=XWindowByName(display,root_window,name)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>window:</STRONG><DD>
@@ -2161,7 +2266,8 @@ The format of the XWindowByProperty function is:
 <PRE>    child=XWindowByProperty(display,window,property)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>child:</STRONG><DD>

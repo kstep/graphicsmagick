@@ -68,9 +68,9 @@
 %  Method WriteEPTImage writes an image in the Adobe Encapsulated Postscript
 %  format with a TIFF preview.
 %
-%  The format of the WriteEPTImage routine is:
+%  The format of the WriteEPTImage method is:
 %
-%      status=WriteEPTImage(image_info,image)
+%      unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

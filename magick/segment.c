@@ -179,9 +179,11 @@ static void
 %  to determine which class it belongs to.  If not class is identified it
 %  is assigned to the closest class based on the fuzzy c-Means technique.
 %
-%  The format of the Classify routine is:
+%  The format of the Classify method is:
 %
-%      Classify(image,extrema,cluster_threshold,weighting_exponent,verbose)
+%      unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
+%        const unsigned int verbose,const double cluster_threshold,
+%        const double smoothing_threshold)
 %
 %  A description of each parameter follows.
 %
@@ -563,7 +565,7 @@ static unsigned int Classify(Image *image,short **extrema,
 %  Method ConsolidateCrossings guarantees that an even number of zero
 %  crossings always lie between two crossings.
 %
-%  The format of the ConsolidateCrossings routine is:
+%  The format of the ConsolidateCrossings method is:
 %
 %      ConsolidateCrossings(zero_crossing,number_crossings)
 %
@@ -684,7 +686,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
 %  Method DefineRegion defines the left and right boundaries of a peak
 %  region.
 %
-%  The format of the DefineRegion routine is:
+%  The format of the DefineRegion method is:
 %
 %      status=DefineRegion(extrema,extents)
 %
@@ -741,7 +743,7 @@ static int DefineRegion(const short *extrema,ExtentPacket *extents)
 %  Method DerivativeHistogram determines the derivative of the histogram
 %  using central differencing.
 %
-%  The format of the DerivativeHistogram routine is:
+%  The format of the DerivativeHistogram method is:
 %
 %      DerivativeHistogram(histogram,derivative)
 %
@@ -788,7 +790,7 @@ static void DerivativeHistogram(const double *histogram,double *derivative)
 %
 %  Method InitializeHistogram computes the histogram for an image.
 %
-%  The format of the InitializeHistogram routine is:
+%  The format of the InitializeHistogram method is:
 %
 %      InitializeHistogram(image,histogram)
 %
@@ -844,7 +846,7 @@ static void InitializeHistogram(const Image *image,long **histogram)
 %  Method InitializeIntervalTree initializes an interval tree from the
 %  lists of zero crossings.
 %
-%  The format of the InitializeIntervalTree routine is:
+%  The format of the InitializeIntervalTree method is:
 %
 %      InitializeIntervalTree(zero_crossing,number_crossings)
 %
@@ -1022,7 +1024,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
 %
 %  Method OptimalTau finds the optimal tau for each band of the histogram.
 %
-%  The format of the OptimalTau routine is:
+%  The format of the OptimalTau method is:
 %
 %      OptimalTau(histogram,max_tau,min_tau,delta_tau,smoothing_threshold,
 %        extrema)
@@ -1255,7 +1257,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
 %
 %  Method ScaleSpace performs a scale-space filter on the 1D histogram.
 %
-%  The format of the ScaleSpace routine is:
+%  The format of the ScaleSpace method is:
 %
 %      ScaleSpace(histogram,tau,scaled_histogram)
 %
@@ -1308,7 +1310,7 @@ static void ScaleSpace(const long *histogram,const double tau,
 %  marks directions as:  1 is negative to positive; 0 is zero crossing; and
 %  -1 is positive to negative.
 %
-%  The format of the ZeroCrossHistogram routine is:
+%  The format of the ZeroCrossHistogram method is:
 %
 %      ZeroCrossHistogram(second_derivative,smoothing_threshold,crossings)
 %
@@ -1383,7 +1385,7 @@ static void ZeroCrossHistogram(double *second_derivative,
 %  As the value is increased, you can expect a smoother second derivative.
 %  The default is 1.5.
 %
-%  The format of the SegmentImage routine is:
+%  The format of the SegmentImage method is:
 %
 %      status=SegmentImage(image,colorspace,verbose)
 %

@@ -87,9 +87,10 @@
 %  The floodfill algorithm is strongly based on a similar algorithm in
 %  "Graphics Gems" by Paul Heckbert.
 %
-%  The format of the ColorFloodfillImage routine is:
+%  The format of the ColorFloodfillImage method is:
 %
-%      ColorFloodfillImage(image,target,tile,x,y,method)
+%      void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
+%        Image *tile,const int x_offset,const int y_offset,const PaintMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -335,9 +336,9 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
 %  Method DrawImage draws a primitive (line, rectangle, ellipse) on the
 %  image.
 %
-%  The format of the DrawImage routine is:
+%  The format of the DrawImage method is:
 %
-%      DrawImage(image,annotate_info)
+%      void DrawImage(Image *image,const AnnotateInfo *annotate_info)
 %
 %  A description of each parameter follows:
 %
@@ -913,9 +914,10 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
 %
 %  Rick Mabry provided the algorithms for anti-aliased primitives.
 %
-%  The format of the InsidePrimitive routine is:
+%  The format of the InsidePrimitive method is:
 %
-%      opacity=InsidePrimitive(primitive_info,annotate_info,target,image)
+%      unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
+%        const AnnotateInfo *annotate_info,const PointInfo *pixel,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1415,9 +1417,11 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 %  value.  The floodfill algorithm is strongly based on a similar algorithm in
 %  "Graphics Gems" by Paul Heckbert.
 %
-%  The format of the MatteFloodfillImage routine is:
+%  The format of the MatteFloodfillImage method is:
 %
-%      MatteFloodfillImage(image,target,matte,x,y,method)
+%      void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
+%        const unsigned int matte,const int x_offset,const int y_offset,
+%        const PaintMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -1589,9 +1593,10 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
 %
 %  Method OpaqueImage changes the color of an opaque pixel to the pen color.
 %
-%  The format of the OpaqueImage routine is:
+%  The format of the OpaqueImage method is:
 %
-%      OpaqueImage(image,opaque_color,pen_color)
+%      void OpaqueImage(Image *image,const char *opaque_color,
+%        const char *pen_color)
 %
 %  A description of each parameter follows:
 %

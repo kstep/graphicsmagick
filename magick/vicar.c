@@ -69,9 +69,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadVICARImage routine is:
+%  The format of the ReadVICARImage method is:
 %
-%      image=ReadVICARImage(image_info)
+%      Image *ReadVICARImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -294,15 +294,15 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
 %  Method WriteVICARImage writes an image in the VICAR rasterfile format.
 %  Vicar files contain a text header, followed by one or more planes of binary
 %  grayscale image data.  Vicar files are designed to allow many planes to be
-%  stacked together to form image cubes.  This routine only writes a single
+%  stacked together to form image cubes.  This method only writes a single
 %  grayscale plane.
 %
 %  Method WriteVICARImage was written contributed by
 %  gorelick@esther.la.asu.edu.
 %
-%  The format of the WriteVICARImage routine is:
+%  The format of the WriteVICARImage method is:
 %
-%      status=WriteVICARImage(image_info,image)
+%      unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

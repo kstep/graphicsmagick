@@ -75,9 +75,9 @@
 %  centered on the Postscript page.  Otherwise, the image is positioned as
 %  specified by the geometry.
 %
-%  The format of the WritePS3Image routine is:
+%  The format of the WritePS3Image method is:
 %
-%      status=WritePS3Image(image_info,image)
+%      unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %

@@ -48,7 +48,7 @@
 %  Method RotateImage, XShearImage, and YShearImage is based on the paper
 %  "A Fast Algorithm for General Raster Rotatation" by Alan W. Paeth,
 %  Graphics Interface '86 (Vancouver).  RotateImage is adapted from a similar
-%  routine based on the Paeth paper written by Michael Halle of the Spatial
+%  method based on the Paeth paper written by Michael Halle of the Spatial
 %  Imaging Group, MIT Media Lab.
 %
 %
@@ -74,9 +74,10 @@
 %  Method CropShearImage crops the sheared image as determined by the
 %  bounding box as defined by width and height and shearing angles.
 %
-%  The format of the CropShearImage routine is:
+%  The format of the CropShearImage method is:
 %
-%      CropShearImage(image,x_shear,y_shear,width,height,crop)
+%      Image *RotateImage(const Image *image,const double degrees,
+%        const unsigned int crop,const unsigned int sharpen)
 %
 %  A description of each parameter follows.
 %
@@ -191,7 +192,7 @@ static void CropShearImage(Image **image,const double x_shear,
 %  It allocates the memory necessary for the new Image structure and returns
 %  a pointer to the rotated image.
 %
-%  The format of the IntegralRotateImage routine is:
+%  The format of the IntegralRotateImage method is:
 %
 %      rotated_image=IntegralRotateImage(image,rotations)
 %
@@ -372,7 +373,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations)
 %  vertical Y-axis.  X shears will widen an image creating 'empty' triangles
 %  on the left and right sides of the source image.
 %
-%  The format of the XShearImage routine is:
+%  The format of the XShearImage method is:
 %
 %      XShearImage(image,degrees,width,height,x_offset,y_offset,range_limit)
 %
@@ -656,7 +657,7 @@ static void XShearImage(Image *image,const double degrees,
 %  to a horizontal X-axis.  Y shears will increase the height of an image
 %  creating 'empty' triangles on the top and bottom of the source image.
 %
-%  The format of the YShearImage routine is:
+%  The format of the YShearImage method is:
 %
 %      YShearImage(image,degrees,width,height,x_offset,y_offset,range_limit)
 %
@@ -946,10 +947,10 @@ static void YShearImage(Image *image,const double degrees,
 %
 %  Method RotateImage is based on the paper "A Fast Algorithm for General
 %  Raster Rotatation" by Alan W. Paeth.  RotateImage is adapted from a similar
-%  routine based on the Paeth paper written by Michael Halle of the Spatial
+%  method based on the Paeth paper written by Michael Halle of the Spatial
 %  Imaging Group, MIT Media Lab.
 %
-%  The format of the RotateImage routine is:
+%  The format of the RotateImage method is:
 %
 %      RotateImage(image,degrees,crop,sharpen)
 %
@@ -1135,9 +1136,10 @@ Export Image *RotateImage(const Image *image,const double degrees,
 %  Method ShearImage is based on the paper "A Fast Algorithm for General
 %  Raster Rotatation" by Alan W. Paeth.
 %
-%  The format of the ShearImage routine is:
+%  The format of the ShearImage method is:
 %
-%      ShearImage(image,x_shear,y_shear,crop)
+%      Image *ShearImage(const Image *image,const double x_shear,
+%        const double y_shear,const unsigned int crop)
 %
 %  A description of each parameter follows.
 %

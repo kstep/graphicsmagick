@@ -37,25 +37,22 @@ transform - Methods to Transform an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-chop_image=<STRONG>ChopImage</STRONG>(image,chop_info)
+Image* <STRONG>ChopImage</STRONG>(constImage*image,constRectangleInfo*chop_info)
 
 <P>
-<STRONG>CoalesceImages</STRONG>(images)
+void <STRONG>CoalesceImages</STRONG>(Image*images)
 
 <P>
-cropped_image=<STRONG>CropImage</STRONG>(image,crop_info)
+Image* <STRONG>CropImage</STRONG>(constImage*image,constRectangleInfo*crop_info)
 
 <P>
-<STRONG>DeconstructImages</STRONG>(images)
+void <STRONG>DeconstructImages</STRONG>(Image*images)
 
 <P>
-flipped_image=<STRONG>FlipImage</STRONG>(image)
+Image* <STRONG>FlipImage</STRONG>(constImage*image)
 
 <P>
-flopped_image=<STRONG>FlopImage</STRONG>(image)
-
-<P>
-rolled_image=<STRONG>RollImage</STRONG>(image,x_offset,y_offset)
+Image* <STRONG>FlopImage</STRONG>(constImage*image)
 
 <P>
 <HR>
@@ -69,20 +66,21 @@ one. It allocates the memory necessary for the new Image structure and
 returns a pointer to the new image.
 
 <P>
-The format of the ChopImage routine is:
+The format of the ChopImage method is:
 
 <P>
-<PRE>        chop_image=ChopImage(image,chop_info)
+<PRE>        Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">chop_image:</A></STRONG><DD>
 <P>
-Method ChopImage returns a pointer to the chop image. A null image is
-returned if there is a memory shortage or if the image width or height is
-zero.
+Method ChopImage returns a pointer to the chop image. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
+or if the image width or height is zero.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -98,17 +96,20 @@ image to crop.
 <HR>
 <H2><A NAME="CoalesceImages">CoalesceImages</A></H2>
 <P>
-Method CoalesceImages merges a sequence of images. This is useful for GIF
-and MNG animation sequences that have page offsets and disposal methods.
+Method CoalesceImages merges a sequence of images. This is useful for 
+<FONT SIZE=-1>GIF</FONT> and 
+<FONT SIZE=-1>MNG</FONT> animation sequences that have page offsets and disposal methods.
+
 
 <P>
-The format of the CoalesceImages routine is:
+The format of the CoalesceImages method is:
 
 <P>
-<PRE>        CoalesceImages(images)
+<PRE>        void CoalesceImages(Image *images)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -123,25 +124,26 @@ points to the first image in the group to be coalesced.
 <P>
 Method CropImage creates a new image that is a subregion of an existing
 one. It allocates the memory necessary for the new Image structure and
-returns a pointer to the new image. This routine is optimized to preserve
+returns a pointer to the new image. This method is optimized to preserve
 the runlength encoding. That is, the cropped image will always use less
 memory than the original.
 
 <P>
-The format of the CropImage routine is:
+The format of the CropImage method is:
 
 <P>
-<PRE>        cropped_image=CropImage(image,crop_info)
+<PRE>        Image *CropImage(const Image *image,const RectangleInfo *crop_info)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>cropped_image:</STRONG><DD>
 <P>
-Method CropImage returns a pointer to the cropped image. A null image is
-returned if there is a memory shortage or if the image width or height is
-zero.
+Method CropImage returns a pointer to the cropped image. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
+or if the image width or height is zero.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -157,17 +159,20 @@ image to crop.
 <HR>
 <H2><A NAME="DeconstructImages">DeconstructImages</A></H2>
 <P>
-Method DeconstructImages breaks down an image sequence into constituent
-parts. This is useful for creating GIF or MNG animation sequences.
+Method DeconstructImages breaks down an image sequence into constituent parts. This is useful for creating 
+<FONT SIZE=-1>GIF</FONT> or 
+<FONT SIZE=-1>MNG</FONT> animation sequences.
+
 
 <P>
-The format of the DeconstructImages routine is:
+The format of the DeconstructImages method is:
 
 <P>
-<PRE>        DeconstructImages(images)
+<PRE>        void DeconstructImages(Image *images)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>images:</STRONG><DD>
@@ -185,19 +190,21 @@ vertical direction It allocates the memory necessary for the new Image
 structure and returns a pointer to the new image.
 
 <P>
-The format of the FlipImage routine is:
+The format of the FlipImage method is:
 
 <P>
-<PRE>        flipped_image=FlipImage(image)
+<PRE>        Image *FlipImage(const Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>flipped_image:</STRONG><DD>
 <P>
-Method FlipImage returns a pointer to the image after reflecting. A null
-image is returned if there is a memory shortage.
+Method FlipImage returns a pointer to the image after reflecting. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
+shortage.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -213,19 +220,21 @@ horizontal direction It allocates the memory necessary for the new Image
 structure and returns a pointer to the new image.
 
 <P>
-The format of the FlopImage routine is:
+The format of the FlopImage method is:
 
 <P>
-<PRE>        flopped_image=FlopImage(image)
+<PRE>        Image *FlopImage(const Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>flopped_image:</STRONG><DD>
 <P>
-Method FlopImage returns a pointer to the image after reflecting. A null
-image is returned if there is a memory shortage.
+Method FlopImage returns a pointer to the image after reflecting. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
+shortage.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -241,19 +250,22 @@ the memory necessary for the new Image structure and returns a pointer to
 the new image.
 
 <P>
-The format of the RollImage routine is:
+The format of the RollImage method is:
 
 <P>
-<PRE>        rolled_image=RollImage(image,x_offset,y_offset)
+<PRE>    Image *RollImage(const Image *image,const int x_offset,
+      const int y_offset)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>rolled_image:</STRONG><DD>
 <P>
-Method RollImage returns a pointer to the image after rolling. A null image
-is returned if there is a memory shortage.
+Method RollImage returns a pointer to the image after rolling. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
+shortage.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>

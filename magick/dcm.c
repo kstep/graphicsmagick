@@ -2613,9 +2613,9 @@ static const DicomInfo
 %  (DICOM) file and returns it.  It It allocates the memory necessary for the
 %  new Image structure and returns a pointer to the new image.
 %
-%  The format of the ReadDCMImage routine is:
+%  The format of the ReadDCMImage method is:
 %
-%      image=ReadDCMImage(image_info)
+%      Image *ReadDCMImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

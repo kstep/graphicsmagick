@@ -69,11 +69,11 @@
 %
 %  Method ReadFPXImage reads a FlashPix image file and returns it.  It
 %  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.  This routine was contributed by BillR@corbis.com.
+%  pointer to the new image.  This method was contributed by BillR@corbis.com.
 %
-%  The format of the ReadFPXImage routine is:
+%  The format of the ReadFPXImage method is:
 %
-%      image=ReadFPXImage(image_info)
+%      Image *ReadFPXImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -488,11 +488,11 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method WriteFPXImage writes an image in the FlashPix image format.  This
-%  routine was contributed by BillR@corbis.com.
+%  method was contributed by BillR@corbis.com.
 %
-%  The format of the WriteFPXImage routine is:
+%  The format of the WriteFPXImage method is:
 %
-%      fpx_status=WriteFPXImage(image_info,image)
+%      unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -69,9 +69,9 @@
 %  It allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadGRAYImage routine is:
+%  The format of the ReadGRAYImage method is:
 %
-%      image=ReadGRAYImage(image_info)
+%      Image *ReadGRAYImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -261,9 +261,9 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
 %  Method WriteGRAYImage writes an image to a file as gray scale intensity
 %  values.
 %
-%  The format of the WriteGRAYImage routine is:
+%  The format of the WriteGRAYImage method is:
 %
-%      status=WriteGRAYImage(image_info,image)
+%      unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

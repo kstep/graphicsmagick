@@ -56,7 +56,7 @@
 
 #if defined(PRE_R6_ICCCM)
 /*
-  Compatibility routines for pre X11R6 ICCCM.
+  Compatibility methods for pre X11R6 ICCCM.
 */
 Status XInitImage(XImage *ximage)
 {
@@ -98,7 +98,7 @@ Status XInitImage(XImage *ximage)
 
 #if defined(PRE_R5_ICCCM)
 /*
-  Compatibility routines for pre X11R5 ICCCM.
+  Compatibility methods for pre X11R5 ICCCM.
 */
 void XrmCombineDatabase(XrmDatabase source,XrmDatabase *target,
   Bool override)
@@ -137,7 +137,7 @@ Bool XSupportsLocale()
 
 #if defined(PRE_R4_ICCCM)
 /*
-  Compatibility routines for pre X11R4 ICCCM.
+  Compatibility methods for pre X11R4 ICCCM.
 */
 XClassHint *XAllocClassHint)
 {

@@ -41,38 +41,26 @@ compress - Image Compression/Decompression Coders
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>ASCII85Encode</STRONG>(code,file)
+unsigned int <STRONG>Huffman2DEncodeImage</STRONG>(ImageInfo*image_info,Image*image)
 
 <P>
-status=<STRONG>Huffman2DEncodeImage</STRONG>(image_info,image)
+unsigned int <STRONG>HuffmanDecodeImage</STRONG>(Image*image)
 
 <P>
-status=<STRONG>HuffmanDecodeImage</STRONG>(image)
+unsigned int <STRONG>HuffmanEncodeImage</STRONG>(constImageInfo*image_info,Image*image)
 
 <P>
-status=<STRONG>HuffmanEncodeImage</STRONG>(image_info,image)
+unsigned int <STRONG>RunlengthDecodeImage</STRONG>(Image*image)
 
 <P>
-status=<STRONG>LZWEncodeImage</STRONG>(image,number_pixels,pixels)
+unsigned int <STRONG>RunlengthEncodeImage</STRONG>(Image*image)
 
 <P>
-status=<STRONG>PackbitsEncodeImage</STRONG>(image,number_pixels,pixels)
-
+<PRE> B&lt;SetRunlengthEncoder&gt;(packet)
+</PRE>
 <P>
-status=<STRONG>RunlengthDecodeImage</STRONG>(image)
-
-<P>
-count=<STRONG>RunlengthEncodeImage</STRONG>(image)
-
-<P>
-<STRONG>SetRunlengthEncoder</STRONG>(packet)
-
-<P>
-<STRONG>SetRunlengthPackets</STRONG>(image,packets)
-
-<P>
-status=<STRONG>ZLIBEncodeImage</STRONG>(file,number_pixels,quality,pixels)
-
+<PRE> B&lt;SetRunlengthPackets&gt;(image,packets)
+</PRE>
 <P>
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
@@ -80,27 +68,32 @@ status=<STRONG>ZLIBEncodeImage</STRONG>(file,number_pixels,quality,pixels)
 <HR>
 <H2><A NAME="ASCII85Encode">ASCII85Encode</A></H2>
 <P>
-Method ASCII85Encode encodes data in ASCII base-85 format. ASCII base-85
-encoding produces five ASCII printing characters from every four bytes of
-binary data.
+Method ASCII85Encode encodes data in 
+<FONT SIZE=-1>ASCII</FONT> base-85 format. 
+<FONT SIZE=-1>ASCII</FONT> base-85 encoding produces five 
+<FONT SIZE=-1>ASCII</FONT> printing characters from every four bytes of binary data.
+
 
 <P>
-The format of the ASCII85Encode routine is:
+The format of the ASCII85Encode method is:
 
 <P>
-<PRE>        ASCII85Encode(code,file)
+<PRE>    void Ascii85Initialize(void)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">code:</A></STRONG><DD>
 <P>
-a binary unsigned char to encode to ASCII 85.
+a binary unsigned char to encode to 
+<FONT SIZE=-1>ASCII</FONT> 85.
 
 <DT><STRONG>file:</STRONG><DD>
 <P>
-write the encoded ASCII character to this file.
+write the encoded 
+<FONT SIZE=-1>ASCII</FONT> character to this file.
 
 </DL></DL>
 <P>
@@ -110,13 +103,14 @@ write the encoded ASCII character to this file.
 Method HuffmanDecodeImage uncompresses an image via Huffman-coding.
 
 <P>
-The format of the HuffmanDecodeImage routine is:
+The format of the HuffmanDecodeImage method is:
 
 <P>
-<PRE>        status=HuffmanDecodeImage(image)
+<PRE>        unsigned int HuffmanDecodeImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -136,13 +130,14 @@ The address of a structure of type Image.
 Method HuffmanEncodeImage compresses an image via Huffman-coding.
 
 <P>
-The format of the HuffmanEncodeImage routine is:
+The format of the HuffmanEncodeImage method is:
 
 <P>
-<PRE>        status=HuffmanEncodeImage(image_info,image)
+<PRE>        unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -167,13 +162,14 @@ Method Huffman2DEncodeImage compresses an image via two-dimensional
 Huffman-coding.
 
 <P>
-The format of the Huffman2DEncodeImage routine is:
+The format of the Huffman2DEncodeImage method is:
 
 <P>
-<PRE>        status=Huffman2DEncodeImage(image_info,image)
+<PRE>        unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -194,18 +190,22 @@ The address of a structure of type Image.
 <HR>
 <H2><A NAME="LZWEncodeImage">LZWEncodeImage</A></H2>
 <P>
-Method LZWEncodeImage compresses an image via LZW-coding specific to
-Postscript Level II or Portable Document Format. To ensure portability, the
-binary LZW bytes are encoded as ASCII base-85.
+Method LZWEncodeImage compresses an image via LZW-coding specific to Postscript Level 
+<FONT SIZE=-1>II</FONT> or Portable Document Format. To ensure portability, the binary 
+<FONT SIZE=-1>LZW</FONT> bytes are encoded as 
+<FONT SIZE=-1>ASCII</FONT> base-85.
+
 
 <P>
-The format of the LZWEncodeImage routine is:
+The format of the LZWEncodeImage method is:
 
 <P>
-<PRE>        status=LZWEncodeImage(image,number_pixels,pixels)
+<PRE>    unsigned int LZWEncodeImage(Image *image,
+      const unsigned int number_pixels,unsigned char *pixels)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -231,18 +231,21 @@ compress.
 <HR>
 <H2><A NAME="PackbitsEncodeImage">PackbitsEncodeImage</A></H2>
 <P>
-Method PackbitsEncodeImage compresses an image via Macintosh Packbits
-encoding specific to Postscript Level II or Portable Document Format. To
-ensure portability, the binary Packbits bytes are encoded as ASCII Base-85.
+Method PackbitsEncodeImage compresses an image via Macintosh Packbits encoding specific to Postscript Level 
+<FONT SIZE=-1>II</FONT> or Portable Document Format. To ensure portability, the binary Packbits bytes are encoded as 
+<FONT SIZE=-1>ASCII</FONT> Base-85.
+
 
 <P>
-The format of the PackbitsEncodeImage routine is:
+The format of the PackbitsEncodeImage method is:
 
 <P>
-<PRE>        status=PackbitsEncodeImage(image,number_pixels,pixels)
+<PRE>    unsigned int PackbitsEncodeImage(Image *image,
+      const unsigned int number_pixels,unsigned char *pixels)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -273,13 +276,14 @@ runlength-encoded pixel packets. The packed image pixel memory is then
 freed.
 
 <P>
-The format of the RunlengthDecodeImage routine is:
+The format of the RunlengthDecodeImage method is:
 
 <P>
-<PRE>        status=RunlengthDecodeImage(image)
+<PRE>        unsigned int RunlengthDecodeImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -300,13 +304,14 @@ Method RunlengthEncodeImage packs the runlength-encoded pixel packets into
 the minimum number of bytes.
 
 <P>
-The format of the RunlengthEncodeImage routine is:
+The format of the RunlengthEncodeImage method is:
 
 <P>
-<PRE>        count=RunlengthEncodeImage(image)
+<PRE>        unsigned int RunlengthEncodeImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -332,7 +337,8 @@ The format of the SetRunlengthEncoder function is:
 <PRE>        SetRunlengthEncoder(packet)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>packet:</STRONG><DD>
@@ -353,7 +359,8 @@ The format of the SetRunlengthPackets function is:
 <PRE>        SetRunlengthPackets(image,packets)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>image:</STRONG><DD>
@@ -369,18 +376,23 @@ The number of runlength packets.
 <HR>
 <H2><A NAME="ZLIBEncodeImage">ZLIBEncodeImage</A></H2>
 <P>
-Method ZLIBEncodeImage compresses an image via ZLIB-coding specific to
-Postscript Level II or Portable Document Format. To ensure portability, the
-binary ZLIB bytes are encoded as ASCII base-85.
+Method ZLIBEncodeImage compresses an image via ZLIB-coding specific to Postscript Level 
+<FONT SIZE=-1>II</FONT> or Portable Document Format. To ensure portability, the binary 
+<FONT SIZE=-1>ZLIB</FONT> bytes are encoded as 
+<FONT SIZE=-1>ASCII</FONT> base-85.
+
 
 <P>
-The format of the ZLIBEncodeImage routine is:
+The format of the ZLIBEncodeImage method is:
 
 <P>
-<PRE>        status=ZLIBEncodeImage(file,number_pixels,quality,pixels)
+<PRE>    unsigned int ZLIBEncodeImage(Image *image,
+      const unsigned long number_pixels,const unsigned int quality,
+      unsigned char *pixels)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -390,8 +402,10 @@ without error, otherwise False.
 
 <DT><STRONG>file:</STRONG><DD>
 <P>
-The address of a structure of type FILE. ZLIB encoded pixels are written to
-this file.
+The address of a structure of type 
+<FONT SIZE=-1>FILE.</FONT> 
+<FONT SIZE=-1>ZLIB</FONT> encoded pixels are written to this file.
+
 
 <DT><STRONG>number_pixels:</STRONG><DD>
 <P>

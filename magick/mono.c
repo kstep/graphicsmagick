@@ -69,9 +69,9 @@
 %  it.  It allocates the memory necessary for the new Image structure and
 %  returns a pointer to the new image.
 %
-%  The format of the ReadMONOImage routine is:
+%  The format of the ReadMONOImage method is:
 %
-%      image=ReadMONOImage(image_info)
+%      Image *ReadMONOImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -212,9 +212,9 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
 %
 %  Method WriteMONOImage writes an image of raw bits in LSB order to a file.
 %
-%  The format of the WriteMONOImage routine is:
+%  The format of the WriteMONOImage method is:
 %
-%      status=WriteMONOImage(image_info,image)
+%      unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

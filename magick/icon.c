@@ -69,9 +69,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadICONImage routine is:
+%  The format of the ReadICONImage method is:
 %
-%      image=ReadICONImage(image_info)
+%      Image *ReadICONImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %

@@ -35,19 +35,10 @@ zoom - Methods to Resize an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-magnified_image=<STRONG>MagnifyImage</STRONG>(image)
+magnified_image= <STRONG>MagnifyImage</STRONG>(image)
 
 <P>
-minified_image=<STRONG>MinifyImage</STRONG>(image)
-
-<P>
-sampled_image=<STRONG>SampleImage</STRONG>(image,columns,rows)
-
-<P>
-scaled_image=<STRONG>ScaleImage</STRONG>(image,columns,rows)
-
-<P>
-zoomed_image=<STRONG>ZoomImage</STRONG>(image,columns,rows)
+Image* <STRONG>MinifyImage</STRONG>(Image*image)
 
 <P>
 <HR>
@@ -66,24 +57,24 @@ bilinear interpolation. The magnified image columns and rows become:
 
 <P>
 <PRE>  number_columns &lt;&lt; 1
+  number_rows &lt;&lt; 1
 </PRE>
 <P>
-<PRE>  number_rows &lt;&lt; 1
-</PRE>
-<P>
-The format of the MagnifyImage routine is:
+The format of the MagnifyImage method is:
 
 <P>
 <PRE>        magnified_image=MagnifyImage(image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">magnified_image:</A></STRONG><DD>
 <P>
-Method MagnifyImage returns a pointer to the image after magnification. A
-null image is returned if there is a memory shortage.
+Method MagnifyImage returns a pointer to the image after magnification. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
+shortage.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -106,9 +97,7 @@ pixels. Therefore the minified image columns and rows become:
 
 <P>
 <PRE>  number_columns/2
-</PRE>
-<P>
-<PRE>  number_rows/2
+  number_rows/2
 </PRE>
 <P>
 Weights assume that the importance of neighboring pixels is negately
@@ -120,20 +109,21 @@ the top, bottom, left, and right pairs of rows and columns are omitted from
 the scan.
 
 <P>
-The format of the MinifyImage routine is:
+The format of the MinifyImage method is:
 
 <P>
-<PRE>        minified_image=MinifyImage(image)
+<PRE>        Image *MinifyImage(Image *image)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>minified_image:</STRONG><DD>
 <P>
-Method MinifyImage returns a pointer to the image after reducing. A null
-image is returned if there is a memory shortage or if the image size is
-less than IconSize*2.
+Method MinifyImage returns a pointer to the image after reducing. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
+or if the image size is less than IconSize*2.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -149,19 +139,22 @@ one using pixel sampling. It allocates the memory necessary for the new
 Image structure and returns a pointer to the new image.
 
 <P>
-The format of the SampleImage routine is:
+The format of the SampleImage method is:
 
 <P>
-<PRE>        sampled_image=SampleImage(image,columns,rows)
+<PRE>    Image *SampleImage(const Image *image,const unsigned int columns,
+      const unsigned int rows)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>sampled_image:</STRONG><DD>
 <P>
-Method SampleImage returns a pointer to the image after scaling. A null
-image is returned if there is a memory shortage.
+Method SampleImage returns a pointer to the image after scaling. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
+shortage.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -189,24 +182,27 @@ old pixel read in your new pixel. The remainder of the old pixel will be
 counted in the next new pixel.
 
 <P>
-The scaling algorithm was suggested by <A
-HREF="mailto:rjohnson@shell.com">rjohnson@shell.com</A> and is adapted from
-<CODE>pnmscale(1)</CODE> of PBMPLUS by Jef Poskanzer.
+The scaling algorithm was suggested by <A HREF="mailto:rjohnson@shell.com">rjohnson@shell.com</A> and is adapted from <CODE>pnmscale(1)</CODE> of 
+<FONT SIZE=-1>PBMPLUS</FONT> by Jef Poskanzer.
+
 
 <P>
-The format of the ScaleImage routine is:
+The format of the ScaleImage method is:
 
 <P>
-<PRE>        scaled_image=ScaleImage(image,columns,rows)
+<PRE>    Image *ScaleImage(const Image *image,const unsigned int columns,
+      const unsigned int rows)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>scaled_image:</STRONG><DD>
 <P>
-Method ScaleImage returns a pointer to the image after scaling. A null
-image is returned if there is a memory shortage.
+Method ScaleImage returns a pointer to the image after scaling. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
+shortage.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
@@ -225,12 +221,9 @@ An integer that specifies the number of rows in the scaled image.
 <HR>
 <H2><A NAME="ZoomImage">ZoomImage</A></H2>
 <P>
-Method ZoomImage creates a new image that is a scaled size of an existing
-one. It allocates the memory necessary for the new Image structure and
-returns a pointer to the new image. The Point filter gives fast pixel
-replication, Triangle is equivalent to bi-linear interpolation, and Mitchel
-giver slower, very high-quality results. See Graphic Gems III for details
-on this algorithm.
+Method ZoomImage creates a new image that is a scaled size of an existing one. It allocates the memory necessary for the new Image structure and returns a pointer to the new image. The Point filter gives fast pixel replication, Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower, very high-quality results. See Graphic Gems 
+<FONT SIZE=-1>III</FONT> for details on this algorithm.
+
 
 <P>
 The filter member of the Image structure specifies which image filter to
@@ -238,19 +231,22 @@ use. Blur specifies the blur factor where &gt; 1 is blurry, &lt; 1 is
 sharp.
 
 <P>
-The format of the ZoomImage routine is:
+The format of the ZoomImage method is:
 
 <P>
-<PRE>        zoomed_image=ZoomImage(image,columns,rows)
+<PRE>    Image *ZoomImage(Image *image,const unsigned int columns,
+      const unsigned int rows)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>zoomed_image:</STRONG><DD>
 <P>
-Method ZoomImage returns a pointer to the image after scaling. A null image
-is returned if there is a memory shortage.
+Method ZoomImage returns a pointer to the image after scaling. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
+shortage.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>

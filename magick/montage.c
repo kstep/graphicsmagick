@@ -69,9 +69,9 @@
 %  Method DestroyMontageInfo deallocates memory associated with an MontageInfo
 %  structure.
 %
-%  The format of the DestroyMontageInfo routine is:
+%  The format of the DestroyMontageInfo method is:
 %
-%      DestroyMontageInfo(montage_info)
+%      void DestroyMontageInfo(MontageInfo *montage_info)
 %
 %  A description of each parameter follows:
 %
@@ -127,9 +127,9 @@ Export void DestroyMontageInfo(MontageInfo *montage_info)
 %
 %  Method GetMontageInfo initializes the MontageInfo structure.
 %
-%  The format of the GetMontageInfo routine is:
+%  The format of the GetMontageInfo method is:
 %
-%      GetMontageInfo(montage_info)
+%      void GetMontageInfo(MontageInfo *montage_info)
 %
 %  A description of each parameter follows:
 %
@@ -172,9 +172,9 @@ Export void GetMontageInfo(MontageInfo *montage_info)
 %  Method MontageImages creates a composite image by combining several
 %  separate images.
 %
-%  The format of the MontageImages routine is:
+%  The format of the MontageImages method is:
 %
-%      MontageImages(images,montage_info)
+%      Image *MontageImages(const Image *images,const MontageInfo *montage_info)
 %
 %  A description of each parameter follows:
 %

@@ -93,9 +93,9 @@ static void
 %
 %  Method ComputeMessageDigest computes the message digest.
 %
-%  The format of the ComputeMessageDigest routine is:
+%  The format of the ComputeMessageDigest method is:
 %
-%      ComputeMessageDigest(message_digest,input_message,message_length)
+%      void SignatureImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -176,7 +176,7 @@ static void ComputeMessageDigest(MessageDigest *message_digest)
 %
 %  Method InitializeMessageDigest initializes the message digest structure.
 %
-%  The format of the InitializeMessageDigest routine is:
+%  The format of the InitializeMessageDigest method is:
 %
 %      InitializeMessageDigest(message_digest)
 %
@@ -212,7 +212,7 @@ static void InitializeMessageDigest(MessageDigest *message_digest)
 %
 %  Method TransformMessageDigest updates the message digest.
 %
-%  The format of the TransformMessageDigest routine is:
+%  The format of the TransformMessageDigest method is:
 %
 %      TransformMessageDigest(message_digest,message)
 %
@@ -370,7 +370,7 @@ static void TransformMessageDigest(MessageDigest *message_digest,
 %
 %  Method UpdateMessageDigest updates the message digest.
 %
-%  The format of the UpdateMessageDigest routine is:
+%  The format of the UpdateMessageDigest method is:
 %
 %      UpdateMessageDigest(message_digest,input_message,message_length)
 %
@@ -446,7 +446,7 @@ static void UpdateMessageDigest(MessageDigest *message_digest,
 %  digital signature is from RSA Data Security MD5 Digest Algorithm described
 %  in Internet draft [MD5], July 1992.
 %
-%  The format of the SignatureImage routine is:
+%  The format of the SignatureImage method is:
 %
 %      SignatureImage(image)
 %

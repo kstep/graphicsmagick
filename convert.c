@@ -174,9 +174,9 @@
 %  Method ConcatentateImages reads each file in sequence and writes it to a
 %  single file.  It is required by the delegates subsystem.
 %
-%  The format of the ConcatentateImages routine is:
+%  The format of the ConcatentateImages method is:
 %
-%      ConcatentateImages(argc,argv)
+%      void ConcatenateImages(int argc,char **argv)
 %
 %  A description of each parameter follows:
 %
@@ -234,9 +234,9 @@ static void ConcatenateImages(int argc,char **argv)
 %
 %  Procedure Usage displays the program usage;
 %
-%  The format of the Usage routine is:
+%  The format of the Usage method is:
 %
-%      Usage(client_name)
+%      void Usage(const char *client_name)
 %
 %    o client_name: a character string representing the name of the client
 %      program.

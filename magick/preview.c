@@ -75,9 +75,9 @@ const char
 %  stength of an image enhancement function (e.g. gamma).  The image is written
 %  in the MIFF format.
 %
-%  The format of the WritePREVIEWImage routine is:
+%  The format of the WritePREVIEWImage method is:
 %
-%      status=WritePREVIEWImage(image_info,image)
+%      unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

@@ -77,9 +77,9 @@ const char
 %  annotation can include the image filename, type, width, height, or scene
 %  number by embedding special format characters.
 %
-%  The format of the AnnotateImage routine is:
+%  The format of the AnnotateImage method is:
 %
-%      AnnotateImage(image,annotate_info)
+%      void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
 %
 %  A description of each parameter follows:
 %
@@ -329,9 +329,10 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
 %  Method CloneAnnotateInfo makes a duplicate of the given annotate info, or if
 %  annotate info is NULL, a new one.
 %
-%  The format of the CloneAnnotateInfo routine is:
+%  The format of the CloneAnnotateInfo method is:
 %
-%      cloned_info=CloneAnnotateInfo(image_info,annotate_info)
+%      AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
+%        const AnnotateInfo *annotate_info)
 %
 %  A description of each parameter follows:
 %
@@ -390,9 +391,9 @@ Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
 %  Method DestroyAnnotateInfo deallocates memory associated with an
 %  AnnotateInfo structure.
 %
-%  The format of the DestroyAnnotateInfo routine is:
+%  The format of the DestroyAnnotateInfo method is:
 %
-%      DestroyAnnotateInfo(annotate_info)
+%      void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 %
 %  A description of each parameter follows:
 %
@@ -434,9 +435,10 @@ Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 %
 %  Method GetAnnotateInfo initializes the AnnotateInfo structure.
 %
-%  The format of the GetAnnotateInfo routine is:
+%  The format of the GetAnnotateInfo method is:
 %
-%      GetAnnotateInfo(image_info,annotate_info)
+%      void GetAnnotateInfo(const ImageInfo *image_info,
+%        AnnotateInfo *annotate_info)
 %
 %  A description of each parameter follows:
 %

@@ -69,9 +69,9 @@
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadSGIImage routine is:
+%  The format of the ReadSGIImage method is:
 %
-%      image=ReadSGIImage(image_info)
+%      Image *ReadSGIImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -453,9 +453,9 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
 %
 %  Method WriteSGIImage writes an image in SGI RGB encoded image format.
 %
-%  The format of the WriteSGIImage routine is:
+%  The format of the WriteSGIImage method is:
 %
-%      status=WriteSGIImage(image_info,image)
+%      unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %

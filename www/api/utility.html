@@ -69,109 +69,109 @@ utility - ImageMagick Utility Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-allocated_string=<STRONG>AllocateString</STRONG>(source)
+char* <STRONG>AllocateString</STRONG>(constchar*source)
 
 <P>
-<STRONG>AppendImageFormat</STRONG>(format,filename)
+void <STRONG>AppendImageFormat</STRONG>(constchar*format,char*filename)
 
 <P>
-<STRONG>BaseFilename</STRONG>(name)
+<PRE> B&lt;BaseFilename&gt;(name)
+</PRE>
+<P>
+unsigned int <STRONG>CloneString</STRONG>(char**destination,constchar*source)
 
 <P>
-status=<STRONG>CloneString</STRONG>(destination,source)
+unicode= <STRONG>ConvertTextToUnicode</STRONG>(text,count)
 
 <P>
-unicode=<STRONG>ConvertTextToUnicode</STRONG>(text,count)
+<PRE> B&lt;ExpandFilename&gt;(filename)
+</PRE>
+<P>
+status= <STRONG>ExpandFilenames</STRONG>(argc,argv)
 
 <P>
-<STRONG>ExpandFilename</STRONG>(filename)
+void <STRONG>FormatString</STRONG>(char*string,constchar*format,...)
 
 <P>
-status=<STRONG>ExpandFilenames</STRONG>(argc,argv)
+<PRE> B&lt;GlobExpression&gt;(expression,pattern)
+</PRE>
+<P>
+unsigned int <STRONG>IsAccessible</STRONG>(constchar*filename)
 
 <P>
-<STRONG>FormatString</STRONG>(string,format,...)
+unsigned int <STRONG>IsDirectory</STRONG>(constchar*filename)
 
 <P>
-flags=<STRONG>GetGeometry</STRONG>(image_geometry,x,y,width,height)
+unsignedlong <STRONG>LSBFirstReadLong</STRONG>(Image*image)
 
 <P>
-<STRONG>GlobExpression</STRONG>(expression,pattern)
+unsignedshort <STRONG>LSBFirstReadShort</STRONG>(Image*image)
 
 <P>
-status=<STRONG>IsAccessible</STRONG>(filename)
+unsignedlong <STRONG>LSBFirstWriteLong</STRONG>(Image*image,constunsignedlongvalue)
 
 <P>
-status=<STRONG>IsDirectory</STRONG>(filename)
+unsignedlong <STRONG>LSBFirstWriteShort</STRONG>(Image*image,constunsignedshortvalue)
 
 <P>
-value=<STRONG>LSBFirstReadLong</STRONG>(image)
+int <STRONG>Latin1Compare</STRONG>(constchar*p,constchar*q)
 
 <P>
-value=<STRONG>LSBFirstReadShort</STRONG>(image)
+filelist= <STRONG>ListColors</STRONG>(pattern,number_colors)
 
 <P>
-count=<STRONG>LSBFirstWriteLong</STRONG>(image,value)
+filelist= <STRONG>ListFiles</STRONG>(directory,pattern,number_entries)
 
 <P>
-count=<STRONG>LSBFirstWriteShort</STRONG>(image,value)
+void <STRONG>LocaleFilename</STRONG>(char*filename)
 
 <P>
-<STRONG>Latin1Compare</STRONG>(p,q)
+void <STRONG>MSBFirstOrderLong</STRONG>(registerchar*p,constunsigned intlength)
 
 <P>
-filelist=<STRONG>ListColors</STRONG>(pattern,number_colors)
+void <STRONG>MSBFirstOrderShort</STRONG>(registerchar*p,constunsigned intlength)
 
 <P>
-filelist=<STRONG>ListFiles</STRONG>(directory,pattern,number_entries)
+unsignedlong <STRONG>MSBFirstReadLong</STRONG>(Image*image)
 
 <P>
-<STRONG>LocaleFilename</STRONG>(filename)
+unsignedshort <STRONG>MSBFirstReadShort</STRONG>(Image*image)
 
 <P>
-<STRONG>MSBFirstOrderLong</STRONG>(p,length);
+unsignedlong <STRONG>MSBFirstWriteLong</STRONG>(Image*image,constunsignedlongvalue)
 
 <P>
-value=<STRONG>MSBFirstReadLong</STRONG>(image)
+unsignedlong <STRONG>MSBFirstWriteShort</STRONG>(Image*image,constunsignedshortvalue)
 
 <P>
-value=<STRONG>MSBFirstReadShort</STRONG>(image)
+int <STRONG>MultilineCensus</STRONG>(constchar*label)
 
 <P>
-count=<STRONG>MSBFirstWriteLong</STRONG>(image,value)
+voidDestroy <STRONG>PostscriptGeometry</STRONG>(char*geometry)
 
 <P>
-<STRONG>MSBFirstWriteShort</STRONG>(value,file)
+int <STRONG>ReadByte</STRONG>(Image*image)
 
 <P>
-geometry=<STRONG>PostscriptGeometry</STRONG>(page)
+char* <STRONG>SetClientName</STRONG>(constchar*name)
 
 <P>
-value=<STRONG>ReadByte</STRONG>(image)
+char** <STRONG>StringToArgv</STRONG>(constchar*text,int*argc)
 
 <P>
-client_name=<STRONG>SetClientName</STRONG>(name)
+char** <STRONG>StringToList</STRONG>(constchar*text)
 
 <P>
-argv=<STRONG>StringToArgv</STRONG>(text,argc)
+void <STRONG>Strip</STRONG>(char*data)
 
 <P>
-list=<STRONG>StringToList</STRONG>(text)
+int <STRONG>SystemCommand</STRONG>(constunsigned intverbose,constchar*command)
 
 <P>
-<STRONG>Strip</STRONG>(data)
+void <STRONG>TemporaryFilename</STRONG>(char*filename)
 
 <P>
-status=<STRONG>SystemCommand</STRONG>(verbose,command)
-
-<P>
-<STRONG>TemporaryFilename</STRONG>(filename)
-
-<P>
-translated_text=<STRONG>TranslateText</STRONG>(image_info,image,formatted_text)
-
-<P>
-count=<STRONG>WriteByte</STRONG>(image,value)
+unsignedlong <STRONG>WriteByte</STRONG>(Image*image,constcharvalue)
 
 <P>
 <HR>
@@ -184,13 +184,14 @@ Method AllocateString allocates memory for a string and copies the source
 string to that memory location (and returns it).
 
 <P>
-The format of the AllocateString routine is:
+The format of the AllocateString method is:
 
 <P>
-<PRE>        allocated_string=AllocateString(source)
+<PRE>        char *AllocateString(const char *source)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG><A NAME="item_o">allocated_string:</A></STRONG><DD>
@@ -199,7 +200,8 @@ Method AllocateString returns a copy of the source string.
 
 <DT><STRONG>source:</STRONG><DD>
 <P>
-A character string.
+
+<FONT SIZE=-1>A</FONT> character string.
 
 </DL></DL>
 <P>
@@ -210,13 +212,14 @@ Method AppendImageFormat appends the image format type to the filename. If
 an extension to the file already exists, it is first removed.
 
 <P>
-The format of the AppendImageFormat routine is:
+The format of the AppendImageFormat method is:
 
 <P>
-<PRE>         AppendImageFormat(format,filename)
+<PRE>        void AppendImageFormat(const char *format,char *filename)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>format:</STRONG><DD>
@@ -243,7 +246,8 @@ The format of the BaseFilename function is:
 <PRE>        BaseFilename(name)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>name:</STRONG><DD>
@@ -259,13 +263,14 @@ Method CloneString allocates memory for the destination string and copies
 the source string to that memory location.
 
 <P>
-The format of the (void) CloneString routine is:
+The format of the (void) CloneString method is:
 
 <P>
-<PRE>        status=CloneString(destination,source)
+<PRE>        unsigned int CloneString(char **destination,const char *source)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -275,21 +280,24 @@ returned.
 
 <DT><STRONG>destination:</STRONG><DD>
 <P>
-A pointer to a character string.
+
+<FONT SIZE=-1>A</FONT> pointer to a character string.
 
 <DT><STRONG>source:</STRONG><DD>
 <P>
-A character string.
+
+<FONT SIZE=-1>A</FONT> character string.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="ConvertTextToUnicode">ConvertTextToUnicode</A></H2>
 <P>
-Method ConvertTextToUnicode converts an ASCII text string to Unicode and
-returns the Unicode translation and the character count. Normal characters
-are just copied. However, escaped hex codes are interpreted before
-converting to Unicode (e.g. \0x30a3 is 12451 in the Unicode character set).
+Method ConvertTextToUnicode converts an 
+<FONT SIZE=-1>ASCII</FONT> text string to Unicode and returns the Unicode
+translation and the character count. Normal characters are just copied.
+However, escaped hex codes are interpreted before converting to Unicode
+(e.g. \0x30a3 is 12451 in the Unicode character set).
 
 <P>
 The format of the ConvertTextToUnicode function is:
@@ -298,13 +306,15 @@ The format of the ConvertTextToUnicode function is:
 <PRE>        unicode=ConvertTextToUnicode(text,count)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>unicode:</STRONG><DD>
 <P>
-Method ConvertTextToUnicode returns a pointer to an unsigned short array
-representing the Unicode translation of the ASCII string.
+Method ConvertTextToUnicode returns a pointer to an unsigned short array representing the Unicode translation of the 
+<FONT SIZE=-1>ASCII</FONT> string.
+
 
 <DT><STRONG>text:</STRONG><DD>
 <P>
@@ -312,8 +322,9 @@ Specifies a pointer to a character array that contains the text to convert.
 
 <DT><STRONG>count:</STRONG><DD>
 <P>
-The number of characters that were translated from ASCII to Unicode is
-returned in this unsigned integer pointer.
+The number of characters that were translated from 
+<FONT SIZE=-1>ASCII</FONT> to Unicode is returned in this unsigned integer
+pointer.
 
 </DL></DL>
 <P>
@@ -329,7 +340,8 @@ The format of the ExpandFilename function is:
 <PRE>        ExpandFilename(filename)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>filename:</STRONG><DD>
@@ -352,7 +364,8 @@ The format of the ExpandFilenames function is:
 <PRE>        status=ExpandFilenames(argc,argv)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>argc:</STRONG><DD>
@@ -372,13 +385,14 @@ Specifies a pointer to a text array containing the command line arguments.
 Method FormatString prints formatted output of a variable argument list.
 
 <P>
-The format of the FormatString routine is:
+The format of the FormatString method is:
 
 <P>
-<PRE>         FormatString(string,format,...)
+<PRE>        void FormatString(char *string,const char *format,...)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>string:</STRONG><DD>
@@ -387,7 +401,9 @@ Method FormatString returns the formatted string in this character buffer.
 
 <DT><STRONG>format:</STRONG><DD>
 <P>
-A string describing the format to use to write the remaining arguments.
+
+<FONT SIZE=-1>A</FONT> string describing the format to use to write the
+remaining arguments.
 
 </DL></DL>
 <P>
@@ -400,13 +416,15 @@ four values (width, height, xoffset, yoffset) were located in the string,
 and whether the x and y values are negative. In addition,
 
 <P>
-The format of the GetGeometry routine is:
+The format of the GetGeometry method is:
 
 <P>
-<PRE>        flags=GetGeometry(image_geometry,x,y,width,height)
+<PRE>    int GetGeometry(const char *image_geometry,int *x,int *y,
+      unsigned int *width,unsigned int *height)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>flags:</STRONG><DD>
@@ -420,13 +438,15 @@ Specifies a character string representing the geometry specification.
 
 <DT><STRONG>x,y:</STRONG><DD>
 <P>
-A pointer to an integer. The x and y offset as determined by the geometry
-specification is returned here.
+
+<FONT SIZE=-1>A</FONT> pointer to an integer. The x and y offset as
+determined by the geometry specification is returned here.
 
 <DT><STRONG>width,height:</STRONG><DD>
 <P>
-A pointer to an unsigned integer. The width and height as determined by the
-geometry specification is returned here.
+
+<FONT SIZE=-1>A</FONT> pointer to an unsigned integer. The width and height
+as determined by the geometry specification is returned here.
 
 </DL></DL>
 <P>
@@ -442,7 +462,8 @@ The format of the GlobExpression function is:
 <PRE>        GlobExpression(expression,pattern)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>expression:</STRONG><DD>
@@ -462,13 +483,14 @@ Method IsAccessible returns True if the file as defined by filename is
 accessible.
 
 <P>
-The format of the IsAccessible routine is:
+The format of the IsAccessible method is:
 
 <P>
-<PRE>         status=IsAccessible(filename)
+<PRE>        unsigned int IsAccessible(const char *filename)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -491,13 +513,14 @@ directory. Once MetroWerks write a <CODE>stat(2)</CODE> function, we can
 remove the <CODE>chdir(2)</CODE> function.
 
 <P>
-The format of the IsAccessible routine is:
+The format of the IsAccessible method is:
 
 <P>
-<PRE>         status=IsDirectory(filename)
+<PRE>        unsigned int IsDirectory(const char *filename)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -515,37 +538,39 @@ returned in this array.
 <HR>
 <H2><A NAME="Latin1Compare">Latin1Compare</A></H2>
 <P>
-Method Latin1Compare compares two null terminated Latin-1 strings, ignoring
-case differences, and returns an integer greater than, equal to, or less
-than 0, according to whether first is lexicographically greater than, equal
-to, or less than second. The two strings are assumed to be encoded using
-ISO 8859-1.
+Method Latin1Compare compares two null terminated Latin-1 strings, ignoring case differences, and returns an integer greater than, equal to, or less than 0, according to whether first is lexicographically greater than, equal to, or less than second. The two strings are assumed to be encoded using 
+<FONT SIZE=-1>ISO</FONT> 8859-1.
+
 
 <P>
-The format of the Latin1Compare routine is:
+The format of the Latin1Compare method is:
 
 <P>
-<PRE>        Latin1Compare(p,q)
+<PRE>        int Latin1Compare(const char *p,const char *q)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>p:</STRONG><DD>
 <P>
-A pointer to the string to convert to Latin1 string.
+
+<FONT SIZE=-1>A</FONT> pointer to the string to convert to Latin1 string.
 
 <DT><STRONG>q:</STRONG><DD>
 <P>
-A pointer to the string to convert to Latin1 string.
+
+<FONT SIZE=-1>A</FONT> pointer to the string to convert to Latin1 string.
 
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="ListColors">ListColors</A></H2>
 <P>
-Method ListColors reads the X client color database and returns a list of
-colors contained in the database sorted in ascending alphabetic order.
+Method ListColors reads the 
+<FONT SIZE=-1>X</FONT> client color database and returns a list of colors
+contained in the database sorted in ascending alphabetic order.
 
 <P>
 The format of the ListColors function is:
@@ -554,13 +579,15 @@ The format of the ListColors function is:
 <PRE>        filelist=ListColors(pattern,number_colors)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>filelist:</STRONG><DD>
 <P>
-Method ListColors returns a list of colors contained in the database. If
-the database cannot be read, a NULL list is returned.
+Method ListColors returns a list of colors contained in the database. If the database cannot be read, a 
+<FONT SIZE=-1>NULL</FONT> list is returned.
+
 
 <DT><STRONG>pattern:</STRONG><DD>
 <P>
@@ -585,14 +612,15 @@ The format of the ListFiles function is:
 <PRE>        filelist=ListFiles(directory,pattern,number_entries)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>filelist:</STRONG><DD>
 <P>
-Method ListFiles returns a list of filenames contained in the directory. If
-the directory specified cannot be read or it is a file a NULL list is
-returned.
+Method ListFiles returns a list of filenames contained in the directory. If the directory specified cannot be read or it is a file a 
+<FONT SIZE=-1>NULL</FONT> list is returned.
+
 
 <DT><STRONG>directory:</STRONG><DD>
 <P>
@@ -615,13 +643,14 @@ Method LocaleFilename replaces the contents of the string pointed to by
 filename by a unique file name relative to the directory.
 
 <P>
-The format of the LocaleFilename routine is:
+The format of the LocaleFilename method is:
 
 <P>
-<PRE>         LocaleFilename(filename)
+<PRE>        void LocaleFilename(char *filename)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>filename:</STRONG><DD>
@@ -638,13 +667,14 @@ Method LSBFirstReadLong reads a long value as a 32 bit quantity in
 least-significant byte first order.
 
 <P>
-The format of the LSBFirstReadLong routine is:
+The format of the LSBFirstReadLong method is:
 
 <P>
-<PRE>         value=LSBFirstReadLong(image)
+<PRE>        unsigned long LSBFirstReadLong(Image *image)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>value:</STRONG><DD>
@@ -664,13 +694,14 @@ Method LSBFirstReadShort reads a short value as a 16 bit quantity in
 least-significant byte first order.
 
 <P>
-The format of the LSBFirstReadShort routine is:
+The format of the LSBFirstReadShort method is:
 
 <P>
-<PRE>         value=LSBFirstReadShort(image)
+<PRE>        unsigned short LSBFirstReadShort(Image *image)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>value:</STRONG><DD>
@@ -690,13 +721,14 @@ Method LSBFirstWriteLong writes a long value as a 32 bit quantity in
 least-significant byte first order.
 
 <P>
-The format of the LSBFirstWriteLong routine is:
+The format of the LSBFirstWriteLong method is:
 
 <P>
-<PRE>         count=LSBFirstWriteLong(image,value)
+<PRE>        unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>count:</STRONG><DD>
@@ -720,13 +752,14 @@ Method LSBFirstWriteShort writes a long value as a 16 bit quantity in
 least-significant byte first order.
 
 <P>
-The format of the LSBFirstWriteShort routine is:
+The format of the LSBFirstWriteShort method is:
 
 <P>
-<PRE>         count=LSBFirstWriteShort(image,value)
+<PRE>        unsigned long LSBFirstWriteShort(Image *image,const unsigned short value)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>count:</STRONG><DD>
@@ -750,13 +783,14 @@ Method MSBFirstOrderLong converts a least-significant byte first buffer of
 integers to most-significant byte first.
 
 <P>
-The format of the MSBFirstOrderLong routine is:
+The format of the MSBFirstOrderLong method is:
 
 <P>
-<PRE>         MSBFirstOrderLong(p,length);
+<PRE>        void MSBFirstOrderLong(register char *p,const unsigned int length)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>p:</STRONG><DD>
@@ -776,13 +810,14 @@ Method MSBFirstOrderShort converts a least-significant byte first buffer of
 integers to most-significant byte first.
 
 <P>
-The format of the MSBFirstOrderShort routine is:
+The format of the MSBFirstOrderShort method is:
 
 <P>
-<PRE>     MSBFirstOrderLongShort(p,length);
+<PRE>        void MSBFirstOrderShort(register char *p,const unsigned int length)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>p:</STRONG><DD>
@@ -802,13 +837,14 @@ Method MSBFirstReadShort reads a short value as a 16 bit quantity in
 most-significant byte first order.
 
 <P>
-The format of the MSBFirstReadShort routine is:
+The format of the MSBFirstReadShort method is:
 
 <P>
-<PRE>         value=MSBFirstReadShort(image)
+<PRE>        unsigned short MSBFirstReadShort(Image *image)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>value:</STRONG><DD>
@@ -828,13 +864,14 @@ Method MSBFirstReadLong reads a long value as a 32 bit quantity in
 most-significant byte first order.
 
 <P>
-The format of the MSBFirstReadLong routine is:
+The format of the MSBFirstReadLong method is:
 
 <P>
-<PRE>         value=MSBFirstReadLong(image)
+<PRE>        unsigned long MSBFirstReadLong(Image *image)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>value:</STRONG><DD>
@@ -854,13 +891,14 @@ Method MSBFirstWriteLong writes a long value as a 32 bit quantity in
 most-significant byte first order.
 
 <P>
-The format of the MSBFirstWriteLong routine is:
+The format of the MSBFirstWriteLong method is:
 
 <P>
-<PRE>         count=MSBFirstWriteLong(image,value)
+<PRE>        unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>count:</STRONG><DD>
@@ -884,13 +922,14 @@ Method MSBFirstWriteShort writes a long value as a 16 bit quantity in
 most-significant byte first order.
 
 <P>
-The format of the MSBFirstWriteShort routine is:
+The format of the MSBFirstWriteShort method is:
 
 <P>
-<PRE>         MSBFirstWriteShort(value,file)
+<PRE>        unsigned long MSBFirstWriteShort(Image *image,const unsigned short value)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>value:</STRONG><DD>
@@ -906,17 +945,18 @@ Specifies the file to write the data to.
 <HR>
 <H2><A NAME="MultilineCensus">MultilineCensus</A></H2>
 <P>
-Method MultilineCensus returns the number of lines within a label. A line
-is represented by a \n character.
+Method MultilineCensus returns the number of lines within a label. 
+<FONT SIZE=-1>A</FONT> line is represented by a \n character.
 
 <P>
-The format of the MultilineCenus routine is:
+The format of the MultilineCenus method is:
 
 <P>
-<PRE>     MultilineCenus(label)
+<PRE>        int MultilineCensus(const char *label)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>label:</STRONG><DD>
@@ -934,13 +974,15 @@ of the four values (width, height, xoffset, yoffset) were located in the
 string, and whether the x and y values are negative. In addition,
 
 <P>
-The format of the ParseImageGeometry routine is:
+The format of the ParseImageGeometry method is:
 
 <P>
-<PRE>    flags=ParseImageGeometry(image_geometry,x,y,width,height)
+<PRE>    int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
+      unsigned int *height)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>flags:</STRONG><DD>
@@ -954,13 +996,15 @@ Specifies a character string representing the geometry specification.
 
 <DT><STRONG>x,y:</STRONG><DD>
 <P>
-A pointer to an integer. The x and y offset as determined by the geometry
-specification is returned here.
+
+<FONT SIZE=-1>A</FONT> pointer to an integer. The x and y offset as
+determined by the geometry specification is returned here.
 
 <DT><STRONG>width,height:</STRONG><DD>
 <P>
-A pointer to an unsigned integer. The width and height as determined by the
-geometry specification is returned here.
+
+<FONT SIZE=-1>A</FONT> pointer to an unsigned integer. The width and height
+as determined by the geometry specification is returned here.
 
 </DL></DL>
 <P>
@@ -971,20 +1015,21 @@ Method PostscriptGeometry replaces any page mneumonic with the equivalent
 size in picas.
 
 <P>
-The format of the PostscriptGeometry routine is:
+The format of the PostscriptGeometry method is:
 
 <P>
-<PRE>         geometry=PostscriptGeometry(page)
+<PRE>        void DestroyPostscriptGeometry(char *geometry)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>page:</STRONG><DD>
 <P>
-Specifies a pointer to an array of characters. The string is either a
-Postscript page name (e.g. A4) or a postscript page geometry (e.g.
-612x792+36+36).
+Specifies a pointer to an array of characters. The string is either a Postscript page name (e.g. 
+<FONT SIZE=-1>A4)</FONT> or a postscript page geometry (e.g. 612x792+36+36).
+
 
 </DL></DL>
 <P>
@@ -994,13 +1039,14 @@ Postscript page name (e.g. A4) or a postscript page geometry (e.g.
 Method ReadByte reads a single byte from the image file and returns it.
 
 <P>
-The format of the ReadByte routine is:
+The format of the ReadByte method is:
 
 <P>
-<PRE>         value=ReadByte(image)
+<PRE>        int ReadByte(Image *image)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>value:</STRONG><DD>
@@ -1021,13 +1067,14 @@ amount of data is determined by first reading a count byte. The number or
 bytes read is returned.
 
 <P>
-The format of the ReadBlobBlock routine is:
+The format of the ReadBlobBlock method is:
 
 <P>
-<PRE>    count=ReadBlob(image,data)
+<PRE>    unsigned long ReadBlobBlock(Image *image,char *data)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>count:</STRONG><DD>
@@ -1051,13 +1098,14 @@ Method SetClientName sets the client name if the name is specified.
 Otherwise the current client name is returned.
 
 <P>
-The format of the SetClientName routine is:
+The format of the SetClientName method is:
 
 <P>
-<PRE>        client_name=SetClientName(name)
+<PRE>        char *SetClientName(const char *name)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>client_name:</STRONG><DD>
@@ -1076,19 +1124,21 @@ Specifies the new client name.
 Method StringToArgv converts a text string into command line arguments.
 
 <P>
-The format of the StringToArgv routine is:
+The format of the StringToArgv method is:
 
 <P>
-<PRE>        argv=StringToArgv(text,argc)
+<PRE>        char **StringToArgv(const char *text,int *argc)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>argv:</STRONG><DD>
 <P>
-Method StringToArgv returns the string list unless an error occurs,
-otherwise NULL.
+Method StringToArgv returns the string list unless an error occurs, otherwise 
+<FONT SIZE=-1>NULL.</FONT>
+
 
 <DT><STRONG>text:</STRONG><DD>
 <P>
@@ -1103,25 +1153,26 @@ This integer pointer returns the number of arguments in the list.
 <HR>
 <H2><A NAME="StringToList">StringToList</A></H2>
 <P>
-Method StringToList converts a text string into a list by segmenting the
-text string at each carriage return discovered. The list is converted to
-HEX characters if any control characters are discovered within the text
-string.
+Method StringToList converts a text string into a list by segmenting the text string at each carriage return discovered. The list is converted to 
+<FONT SIZE=-1>HEX</FONT> characters if any control characters are discovered within the text string.
+
 
 <P>
-The format of the StringToList routine is:
+The format of the StringToList method is:
 
 <P>
-<PRE>        list=StringToList(text)
+<PRE>        char **StringToList(const char *text)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>list:</STRONG><DD>
 <P>
-Method StringToList returns the string list unless an error occurs,
-otherwise NULL.
+Method StringToList returns the string list unless an error occurs, otherwise 
+<FONT SIZE=-1>NULL.</FONT>
+
 
 <DT><STRONG>text:</STRONG><DD>
 <P>
@@ -1136,13 +1187,14 @@ Method Strip strips the whitespace from the beginning and end of a string
 of characters.
 
 <P>
-The format of the Strip routine is:
+The format of the Strip method is:
 
 <P>
-<PRE>       Strip(data)
+<PRE>        void Strip(char *data)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>data:</STRONG><DD>
@@ -1158,13 +1210,14 @@ Method SystemCommand executes the specified command and waits until it
 terminates. The returned value is the exit status of the command.
 
 <P>
-The format of the SystemCommand routine is:
+The format of the SystemCommand method is:
 
 <P>
-<PRE>        status=SystemCommand(verbose,command)
+<PRE>        int SystemCommand(const unsigned int verbose,const char *command)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>status:</STRONG><DD>
@@ -1189,13 +1242,14 @@ Method TemporaryFilename replaces the contents of the string pointed to in
 their filenames.
 
 <P>
-The format of the TemporaryFilename routine is:
+The format of the TemporaryFilename method is:
 
 <P>
-<PRE>         TemporaryFilename(filename)
+<PRE>        void TemporaryFilename(char *filename)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>filename:</STRONG><DD>
@@ -1212,13 +1266,15 @@ Method TranslateText replaces any embedded formatting characters with the
 appropriate image attribute and returns the translated text.
 
 <P>
-The format of the TranslateText routine is:
+The format of the TranslateText method is:
 
 <P>
-<PRE>        translated_text=TranslateText(image_info,image,formatted_text)
+<PRE>    char *TranslateText(const ImageInfo *image_info,const Image *image,
+      const char *formatted_text)
 </PRE>
 <P>
-A description of each parameter follows:
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
 <DT><STRONG>translated_text:</STRONG><DD>
@@ -1247,13 +1303,14 @@ Method WriteByte write an integer to a file. It returns the number of bytes
 written (either 0 or 1);
 
 <P>
-The format of the WriteByte routine is:
+The format of the WriteByte method is:
 
 <P>
-<PRE>         count=WriteByte(image,value)
+<PRE>        unsigned long WriteByte(Image *image,const char value)
 </PRE>
 <P>
-A description of each parameter follows.
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows.
 
 <DL><DL>
 <DT><STRONG>count:</STRONG><DD>

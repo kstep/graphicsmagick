@@ -68,9 +68,9 @@
 %  Method ContrastImage enhances the intensity differences between the
 %  lighter and darker elements of the image.
 %
-%  The format of the ContrastImage routine is:
+%  The format of the ContrastImage method is:
 %
-%      ContrastImage(image,sharpen)
+%      void ContrastImage(Image *image,const unsigned int sharpen)
 %
 %  A description of each parameter follows:
 %
@@ -160,9 +160,9 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
 %  Method EqualizeImage performs histogram equalization on the reference
 %  image.
 %
-%  The format of the EqualizeImage routine is:
+%  The format of the EqualizeImage method is:
 %
-%      EqualizeImage(image)
+%      void EqualizeImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -294,9 +294,9 @@ Export void EqualizeImage(Image *image)
 %
 %  Method GammaImage converts the reference image to gamma corrected colors.
 %
-%  The format of the GammaImage routine is:
+%  The format of the GammaImage method is:
 %
-%      GammaImage(image,gamma)
+%      void GammaImage(Image *image,const char *gamma)
 %
 %  A description of each parameter follows:
 %
@@ -428,9 +428,9 @@ Export void GammaImage(Image *image,const char *gamma)
 %  Method ModulateImage modulates the hue, saturation, and brightness of an
 %  image.
 %
-%  The format of the ModulateImage routine is:
+%  The format of the ModulateImage method is:
 %
-%      ModulateImage(image,modulate)
+%      void ModulateImage(Image *image,const char *modulate)
 %
 %  A description of each parameter follows:
 %
@@ -531,9 +531,9 @@ Export void ModulateImage(Image *image,const char *modulate)
 %  Grayscale option means that only grayscale values within the image are
 %  negated.
 %
-%  The format of the NegateImage routine is:
+%  The format of the NegateImage method is:
 %
-%      NegateImage(image,grayscale)
+%      void NegateImage(Image *image,const unsigned int grayscale)
 %
 %  A description of each parameter follows:
 %
@@ -615,9 +615,9 @@ Export void NegateImage(Image *image,const unsigned int grayscale)
 %  Method NormalizeImage normalizes the pixel values to span the full
 %  range of color values.  This is a contrast enhancement technique.
 %
-%  The format of the NormalizeImage routine is:
+%  The format of the NormalizeImage method is:
 %
-%      NormalizeImage(image)
+%      void NormalizeImage(Image *image)
 %
 %  A description of each parameter follows:
 %

@@ -216,9 +216,9 @@ static const HuffmanTable
 %  encoding produces five ASCII printing characters from every four bytes of
 %  binary data.
 %
-%  The format of the ASCII85Encode routine is:
+%  The format of the ASCII85Encode method is:
 %
-%      ASCII85Encode(code,file)
+%      void Ascii85Initialize(void)
 %
 %  A description of each parameter follows:
 %
@@ -346,9 +346,9 @@ Export void Ascii85Encode(Image *image,const unsigned int code)
 %
 %  Method HuffmanDecodeImage uncompresses an image via Huffman-coding.
 %
-%  The format of the HuffmanDecodeImage routine is:
+%  The format of the HuffmanDecodeImage method is:
 %
-%      status=HuffmanDecodeImage(image)
+%      unsigned int HuffmanDecodeImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -648,9 +648,9 @@ Export unsigned int HuffmanDecodeImage(Image *image)
 %
 %  Method HuffmanEncodeImage compresses an image via Huffman-coding.
 %
-%  The format of the HuffmanEncodeImage routine is:
+%  The format of the HuffmanEncodeImage method is:
 %
-%      status=HuffmanEncodeImage(image_info,image)
+%      unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -896,9 +896,9 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
 %  Method Huffman2DEncodeImage compresses an image via two-dimensional
 %  Huffman-coding.
 %
-%  The format of the Huffman2DEncodeImage routine is:
+%  The format of the Huffman2DEncodeImage method is:
 %
-%      status=Huffman2DEncodeImage(image_info,image)
+%      unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1044,9 +1044,10 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 %  Postscript Level II or Portable Document Format.  To ensure portability, the
 %  binary LZW bytes are encoded as ASCII base-85.
 %
-%  The format of the LZWEncodeImage routine is:
+%  The format of the LZWEncodeImage method is:
 %
-%      status=LZWEncodeImage(image,number_pixels,pixels)
+%      unsigned int LZWEncodeImage(Image *image,
+%        const unsigned int number_pixels,unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -1220,9 +1221,10 @@ Export unsigned int LZWEncodeImage(Image *image,
 %  encoding specific to Postscript Level II or Portable Document Format.  To
 %  ensure portability, the binary Packbits bytes are encoded as ASCII Base-85.
 %
-%  The format of the PackbitsEncodeImage routine is:
+%  The format of the PackbitsEncodeImage method is:
 %
-%      status=PackbitsEncodeImage(image,number_pixels,pixels)
+%      unsigned int PackbitsEncodeImage(Image *image,
+%        const unsigned int number_pixels,unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -1360,9 +1362,9 @@ Export unsigned int PackbitsEncodeImage(Image *image,
 %  runlength-encoded pixel packets.  The packed image pixel memory is then
 %  freed.
 %
-%  The format of the RunlengthDecodeImage routine is:
+%  The format of the RunlengthDecodeImage method is:
 %
-%      status=RunlengthDecodeImage(image)
+%      unsigned int RunlengthDecodeImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1546,9 +1548,9 @@ Export unsigned int RunlengthDecodeImage(Image *image)
 %  Method RunlengthEncodeImage packs the runlength-encoded pixel packets
 %  into the minimum number of bytes.
 %
-%  The format of the RunlengthEncodeImage routine is:
+%  The format of the RunlengthEncodeImage method is:
 %
-%      count=RunlengthEncodeImage(image)
+%      unsigned int RunlengthEncodeImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1913,9 +1915,11 @@ Export void SetRunlengthPackets(Image *image,const unsigned long packets)
 %  Postscript Level II or Portable Document Format.  To ensure portability, the
 %  binary ZLIB bytes are encoded as ASCII base-85.
 %
-%  The format of the ZLIBEncodeImage routine is:
+%  The format of the ZLIBEncodeImage method is:
 %
-%      status=ZLIBEncodeImage(file,number_pixels,quality,pixels)
+%      unsigned int ZLIBEncodeImage(Image *image,
+%        const unsigned long number_pixels,const unsigned int quality,
+%        unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %

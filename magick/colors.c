@@ -895,9 +895,9 @@ static void
 %  Method CompressColormap compresses an image colormap removing any
 %  duplicate and unused color entries.
 %
-%  The format of the CompressColormap routine is:
+%  The format of the CompressColormap method is:
 %
-%      CompressColormap(image)
+%      void CompressColormap(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1004,9 +1004,9 @@ Export void CompressColormap(Image *image)
 %  Method DestroyList traverses the color cube tree and free the list of
 %  unique colors.
 %
-%  The format of the DestroyList routine is:
+%  The format of the DestroyList method is:
 %
-+      DestroyList(node_info)
+%      unsigned long GetNumberColors(const Image *image,FILE *file)
 %
 %  A description of each parameter follows.
 %
@@ -1044,7 +1044,7 @@ static void DestroyList(const NodeInfo *node_info)
 %
 %  Method GetNumberColors returns the number of unique colors in an image.
 %
-%  The format of the GetNumberColors routine is:
+%  The format of the GetNumberColors method is:
 %
 %      number_colors=GetNumberColors(image,file)
 %
@@ -1197,9 +1197,9 @@ Export unsigned long GetNumberColors(const Image *image,FILE *file)
 %  Method Histogram traverses the color cube tree and produces a list of
 %  unique pixel field values and the number of times each occurs in the image.
 %
-%  The format of the Histogram routine is:
+%  The format of the Histogram method is:
 %
-%      Histogram(color_cube,node_info,file)
+%      unsigned int IsMonochromeImage(Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -1267,7 +1267,7 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
 %  Method InitializeNode allocates memory for a new node in the color cube
 %  tree and presets all fields to zero.
 %
-%  The format of the InitializeNode routine is:
+%  The format of the InitializeNode method is:
 %
 +      node_info=InitializeNode(color_cube,level)
 %
@@ -1327,7 +1327,7 @@ static NodeInfo *InitializeNode(CubeInfo *color_cube,const unsigned int level)
 %  False is returned.  If the image is DirectClass and monochrome, it is
 %  demoted to PseudoClass.
 %
-%  The format of the IsMonochromeImage routine is:
+%  The format of the IsMonochromeImage method is:
 %
 %      status=IsMonochromeImage(image)
 %
@@ -1378,9 +1378,9 @@ Export unsigned int IsMonochromeImage(Image *image)
 %  unique colors or less.  If the image is DirectClass and has less 256 colors
 %  or less, the image is demoted to PseudoClass.
 %
-%  The format of the IsPseudoClass routine is:
+%  The format of the IsPseudoClass method is:
 %
-%      status=IsPseudoClass(image)
+%      unsigned int IsPseudoClass(Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -1538,9 +1538,9 @@ Export unsigned int IsPseudoClass(Image *image)
 %  Method QueryColorDatabase looks up a RGB values for a color given in the
 %  target string.
 %
-%  The format of the QueryColorDatabase routine is:
+%  The format of the QueryColorDatabase method is:
 %
-%    status=QueryColorDatabase(target,color)
+%      unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
 %
 %  A description of each parameter follows:
 %
@@ -1727,9 +1727,9 @@ Export unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
 %  Method QueryColorName returns the name of the color that is closest to the
 %  supplied color in RGB space.
 %
-%  The format of the QueryColorName routine is:
+%  The format of the QueryColorName method is:
 %
-%      distance=QueryColorName(color,name)
+%      unsigned int QueryColorName(const ColorPacket *color,char *name)
 %
 %  A description of each parameter follows.
 %
