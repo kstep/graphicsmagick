@@ -170,246 +170,148 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method Base64Decode decodes base64 encoded text and returns its binary
-%  equivalent. NULL is returned if the text is not valid base64 data, or a
+%  Base64Decode() decodes Base64-encoded text and returns its binary
+%  equivalent.  NULL is returned if the text is not valid base64 data, or a
 %  memory allocation failure occurs.
+%
+%  Contributed by Bob Friesenhahn.
 %
 %  The format of the Base64Decode method is:
 %
-%      unsigned char *Base64Decode(const char *source, size_t *output_size);
+%      unsigned char *Base64Decode(const char *source,length_t *length)
 %
 %  A description of each parameter follows:
 %
-%    o source:  A pointer to a base64 encoded string.
+%    o source:  A pointer to a Base64-encoded string.
 %
-%    o output_length: The number of bytes decoded.
+%    o length: The number of bytes decoded.
 %
 */
 
-/*
- * Copyright (c) 1996 by Internet Software Consortium.
- *
- * Permission to use, copy, modify, and distribute this software for any
- * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies.
- *
- * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM DISCLAIMS
- * ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL INTERNET SOFTWARE
- * CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
- * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
- * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
- * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
- * SOFTWARE.
- */
+static const char
+  Base64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-/*
- * Portions Copyright (c) 1995 by International Business Machines, Inc.
- *
- * International Business Machines, Inc. (hereinafter called IBM) grants
- * permission under its copyrights to use, copy, modify, and distribute this
- * Software with or without fee, provided that the above copyright notice and
- * all paragraphs of this notice appear in all copies, and that the name of IBM
- * not be used in connection with the marketing of any product incorporating
- * the Software or modifications thereof, without specific, written prior
- * permission.
- *
- * To the extent it has a right to do so, IBM grants an immunity from suit
- * under its patents, if any, for the use, sale or manufacture of products to
- * the extent that such products are used for performing Domain Name System
- * dynamic updates in TCP/IP networks by means of the Software.  No immunity is
- * granted for any product per se or for any other function of any product.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", AND IBM DISCLAIMS ALL WARRANTIES,
- * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE.  IN NO EVENT SHALL IBM BE LIABLE FOR ANY SPECIAL,
- * DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER ARISING
- * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE, EVEN
- * IF IBM IS APPRISED OF THE POSSIBILITY OF SUCH DAMAGES.
- */
-
-static const char Base64[] =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-static const char Pad64 = '=';
-
-unsigned char *Base64Decode(const char *source, size_t *output_length)
+MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
 {
-  char
-    *pos;
+  int
+    state;
+
+  register char
+    *q;
+
+  register const char
+    *p;
+
+  register size_t
+    i;
 
   unsigned char
-    *output;
+    *decode;
 
-  size_t
-    allocated_length;
-
-  int
-    data_length,
-    state,
-    ch;
-
-  state = 0;
-  data_length = 0;
-
-  *output_length = 0;
-  allocated_length = MaxTextExtent;
-  output = (char*)AcquireMemory(allocated_length);
-  if(output == NULL)
-    return NULL;
-
-  while ((ch = *source++) != '\0')
+  assert(source != (char *) NULL);
+  assert(length != (size_t *) NULL);
+  *length=0;
+  decode=(unsigned char *) AcquireMemory(strlen(source));
+  if (decode == (unsigned char *) NULL)
+    return((unsigned char *) NULL);
+  i=0;
+  state=0;
+  for (p=source; *p != '\0'; p++)
+  {
+    if (isspace((int) *p))
+      continue;
+    if (*p == '=')
+      break;
+    q=strchr(Base64,*p);
+    if (q == (char *) NULL)
+      {
+        LiberateMemory((void **) &decode);
+        return((unsigned char *) NULL);  /* non-base64 character */
+      }
+    switch (state)
     {
-      if (isspace(ch))		/* Skip whitespace anywhere. */
-        continue;
-
-      if (ch == Pad64)
+      case 0:
+      {
+        decode[i]=(q-Base64) << 2;
+        state++;
         break;
-
-      pos = strchr(Base64, ch);
-      if (pos == 0)		/* A non-base64 character. */
-        {
-          LiberateMemory((void **)&output);
-          return NULL;
-        }
-
-      switch (state)
-        {
-        case 0:
-          if (output)
-            {
-              if (data_length >= allocated_length)
-                {
-                  allocated_length += MaxTextExtent;
-                  ReacquireMemory((void **)&output, allocated_length);
-                  if(output == NULL)
-                    return NULL;
-                }
-              output[data_length] = (pos - Base64) << 2;
-            }
-          state = 1;
-          break;
-        case 1:
-          if (output)
-            {
-              if (data_length + 1 >= allocated_length)
-                {
-                  allocated_length += MaxTextExtent;
-                  ReacquireMemory((void **)&output, allocated_length);
-                  if(output == NULL)
-                    return NULL;
-                }
-              output[data_length] |= (pos - Base64) >> 4;
-              output[data_length + 1] = ((pos - Base64) & 0x0f) << 4;
-            }
-          data_length++;
-          state = 2;
-          break;
-        case 2:
-          if (output)
-            {
-              if (data_length + 1 >= allocated_length)
-                {
-                  allocated_length += MaxTextExtent;
-                  ReacquireMemory((void **)&output, allocated_length);
-                  if(output == NULL)
-                    return NULL;
-                }
-              output[data_length] |= (pos - Base64) >> 2;
-              output[data_length + 1] = ((pos - Base64) & 0x03) << 6;
-            }
-          data_length++;
-          state = 3;
-          break;
-        case 3:
-          if (output)
-            {
-              if (data_length >= allocated_length)
-                {
-                  allocated_length += MaxTextExtent;
-                  ReacquireMemory((void **)&output, allocated_length);
-                  if(output == NULL)
-                    return NULL;
-                }
-              output[data_length] |= (pos - Base64);
-            }
-          data_length++;
-          state = 0;
-          break;
-        }
+      }
+      case 1:
+      {
+        decode[i++]|=(q-Base64) >> 4;
+        decode[i]=((q-Base64) & 0x0f) << 4;
+        state++;
+        break;
+      }
+      case 2:
+      {
+        decode[i++]|=(q-Base64) >> 2;
+        decode[i]=((q-Base64) & 0x03) << 6;
+        state++;
+        break;
+      }
+      case 3:
+      {
+        decode[i++]|=(q-Base64);
+        state=0;
+        break;
+      }
     }
-
+  }
   /*
-   * We are done decoding Base-64 chars.  Let's see if we ended
-   * on a byte boundary, and/or with erroneous trailing characters.
-   */
-
-  if (ch == Pad64)
-    {				/* We got a pad char. */
-      ch = *source++;		/* Skip it, get next. */
-      switch (state)
-        {
-        case 0:			/* Invalid = in first position */
-        case 1:			/* Invalid = in second position */
-          {
-            LiberateMemory((void **)&output);
-            return NULL;
-          }
-
-        case 2:			/* Valid, means one byte of info */
-          /* Skip any number of spaces. */
-          for (; ch != '\0'; ch = *source++)
-            if (!isspace(ch))
-              break;
-          /* Make sure there is another trailing = sign. */
-          if (ch != Pad64)
-            {
-              LiberateMemory((void **)&output);
-              return NULL;
-            }
-          ch = *source++;		/* Skip the = */
-          /* Fall through to "single trailing =" case. */
-          /* FALLTHROUGH */
-
-        case 3:			/* Valid, means two bytes of info */
-          /*
-           * We know this char is an =.  Is there anything but
-           * whitespace after it?
-           */
-          for (; ch != '\0'; ch = *source++)
-            if (!isspace(ch))
-              {
-                LiberateMemory((void **)&output);
-                return NULL;
-              }
-
-          /*
-           * Now make sure for cases 2 and 3 that the "extra"
-           * bits that slopped past the last full byte were
-           * zeros.  If we don't check them, they become a
-           * subliminal channel.
-           */
-          if (output && output[data_length] != 0)
-            {
-              LiberateMemory((void **)&output);
-              return NULL;
-            }
-        }
-    }
-  else
+    Verify Base-64 string has proper terminal characters.
+  */
+  if (*p != '=')
     {
-      /*
-       * We ended by seeing the end of the string.  Make sure we
-       * have no partial bytes lying around.
-       */
       if (state != 0)
         {
-          LiberateMemory((void **)&output);
-          return NULL;
+          LiberateMemory((void **) &decode);
+          return((unsigned char *) NULL);
+        }
+      return(decode);
+    }
+  p++;
+  switch (state)
+  {
+    case 0:
+    case 1:
+    {
+      /*
+        Invalid '=' character.
+      */
+      LiberateMemory((void **) &decode);
+      return((unsigned char *) NULL);
+    }
+    case 2:
+    {
+      for ( ; *p != '\0'; p++)
+        if (!isspace((int) *p))
+          break;
+      if (*p != '=')
+        {
+          LiberateMemory((void **) &decode);
+          return((unsigned char *) NULL);
+        }
+      p++;
+    }
+    case 3:
+    {
+      for ( ; *p != '\0'; p++)
+        if (!isspace((int) *p))
+          {
+            LiberateMemory((void **) &decode);
+            return((unsigned char *) NULL);
+          }
+      if (decode[i] != 0)
+        {
+          LiberateMemory((void **) &decode);
+          return((unsigned char *) NULL);
         }
     }
-
-  *output_length = data_length;
-  return (output);
+  }
+  ReacquireMemory((void **) &decode,i);
+  *length=i;
+  return(decode);
 }
 
 /*
@@ -423,113 +325,84 @@ unsigned char *Base64Decode(const char *source, size_t *output_length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method Base64Encode encodes arbitrary binary data to base64 encoded format
-%  and returns the result as a null-terminated ASCII string. NULL is returned
-%  if a memory allocation failure occurs.
+%  Base64Encode() encodes arbitrary binary data to base64 encoded format and
+%  returns the result as a null-terminated ASCII string.  NULL is returned if
+%  a memory allocation failure occurs.
+%
+%  Contributed by Bob Friesenhahn.
 %
 %  The format of the Base64Encode method is:
 %
-%      unsigned char *Base64Encode(const unsigned char *source, const size_t source_length);
+%      char *Base64Encode(const unsigned char *source,const size_t length)
 %
 %  A description of each parameter follows:
 %
 %    o source:  A pointer to binary data to encode.
 %
-%    o source_length: The number of bytes to encode.
+%    o length: The number of bytes to encode.
 %
 */
-
-char *Base64Encode(const unsigned char *source, const size_t source_length)
+MagickExport char *Base64Encode(const unsigned char *source,const size_t length)
 {
-  size_t
-    allocated_length = 0,
-    data_length = 0,
-    srclength = source_length;
+  char
+    *encode;
 
   int
+    j;
+
+  register const char
+    *p;
+
+  register size_t
     i;
 
-  char
-    *output;
+  size_t
+    remainder;
 
   unsigned char
-    input_char[3],
-    output_char[4];
+    input[3],
+    output[4];
 
-
-  allocated_length = source_length;
-  output = (char*)AcquireMemory(allocated_length);
-  if(output == NULL)
-    return NULL;
-
-  while (2 < srclength)
+  assert(source != (unsigned char *) NULL);
+  encode=(char *) AcquireMemory(4*length+1);
+  if (encode == (char *) NULL)
+    return((char *) NULL);
+  i=0;
+  p=source;
+  for (remainder=length; remainder >= 2; remainder-=3)
+  {
+    input[0]=(*p++);
+    input[1]=(*p++);
+    input[2]=(*p++);
+    output[0]=input[0] >> 2;
+    output[1]=((input[0] & 0x03) << 4)+(input[1] >> 4);
+    output[2]=((input[1] & 0x0f) << 2)+(input[2] >> 6);
+    output[3]=input[2] & 0x3f;
+    encode[i++]=Base64[output[0]];
+    encode[i++]=Base64[output[1]];
+    encode[i++]=Base64[output[2]];
+    encode[i++]=Base64[output[3]];
+  }
+  if (remainder != 0)
     {
-      input_char[0] = *source++;
-      input_char[1] = *source++;
-      input_char[2] = *source++;
-      srclength -= 3;
-
-      output_char[0] = input_char[0] >> 2;
-      output_char[1] = ((input_char[0] & 0x03) << 4) + (input_char[1] >> 4);
-      output_char[2] = ((input_char[1] & 0x0f) << 2) + (input_char[2] >> 6);
-      output_char[3] = input_char[2] & 0x3f;
-      assert(output_char[0] < 64);
-      assert(output_char[1] < 64);
-      assert(output_char[2] < 64);
-      assert(output_char[3] < 64);
-
-      if (data_length + 4 > allocated_length)
-        {
-          allocated_length += MaxTextExtent;
-          ReacquireMemory((void **)&output, allocated_length);
-          if(output == NULL)
-            return NULL;
-        }
-      output[data_length++] = Base64[output_char[0]];
-      output[data_length++] = Base64[output_char[1]];
-      output[data_length++] = Base64[output_char[2]];
-      output[data_length++] = Base64[output_char[3]];
-    }
-
-  /* Now we worry about padding. */
-  if (0 != srclength)
-    {
-      /* Get what's left. */
-      input_char[0] = input_char[1] = input_char[2] = '\0';
-      for (i = 0; i < srclength; i++)
-        input_char[i] = *source++;
-
-      output_char[0] = input_char[0] >> 2;
-      output_char[1] = ((input_char[0] & 0x03) << 4) + (input_char[1] >> 4);
-      output_char[2] = ((input_char[1] & 0x0f) << 2) + (input_char[2] >> 6);
-      assert(output_char[0] < 64);
-      assert(output_char[1] < 64);
-      assert(output_char[2] < 64);
-
-      if (data_length + 4 > allocated_length)
-        {
-          allocated_length += MaxTextExtent;
-          ReacquireMemory((void **)&output, allocated_length);
-          if(output == NULL)
-            return NULL;
-        }
-      output[data_length++] = Base64[output_char[0]];
-      output[data_length++] = Base64[output_char[1]];
-      if (srclength == 1)
-        output[data_length++] = Pad64;
+      for (j=0; j < remainder; j++)
+        input[j]=(*p++);
+      for ( ; j < 2; j++)
+        input[j]='\0';
+      output[0]=input[0] >> 2;
+      output[1]=((input[0] & 0x03) << 4)+(input[1] >> 4);
+      output[2]=((input[1] & 0x0f) << 2)+(input[2] >> 6);
+      encode[i++]=Base64[output[0]];
+      encode[i++]=Base64[output[1]];
+      if (remainder == 1)
+        encode[i++]='=';
       else
-        output[data_length++] = Base64[output_char[2]];
-      output[data_length++] = Pad64;
+        encode[i++]=Base64[output[2]];
+      encode[i++]='=';
     }
-  if (data_length >= allocated_length)
-    {
-      allocated_length += MaxTextExtent;
-      ReacquireMemory((void **)&output, allocated_length);
-      if(output == NULL)
-        return NULL;
-    }
-  output[data_length] = '\0';	/* Returned value doesn't count \0. */
-  return (output);
+  encode[i++]='\0';
+  ReacquireMemory((void **) &encode,i);
+  return(encode);
 }
 
 /*
@@ -1231,7 +1104,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       former_width=(*width);
       former_height=(*height);
     }
-  if (!(flags & AspectValue) && 
+  if (!(flags & AspectValue) &&
       ((*width != former_width) || (*height != former_height)))
     {
       double
@@ -1244,12 +1117,12 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
         scale_factor=1.0;
       else
         if (((flags & WidthValue) != 0) && (flags & HeightValue) != 0)
-          { 
+          {
             scale_factor=(double) *width/former_width;
             if (scale_factor > ((double) *height/former_height))
               scale_factor=(double) *height/former_height;
-          }  
-        else 
+          }
+        else
           if ((flags & WidthValue) != 0)
             scale_factor=(double) *width/former_width;
           else
