@@ -503,7 +503,7 @@ MagickExport char *Base64Encode(const unsigned char *blob,
 %
 %  A description of each parameter follows.
 %
-%    o status:  Method CheckFileAssibility returns True is the file as defined by
+%    o status:  CheckFileAssibility() returns True is the file as defined by
 %      filename is accessible, otherwise False is returned.
 %
 %    o filename:  Specifies a pointer to an array of characters.  The unique
