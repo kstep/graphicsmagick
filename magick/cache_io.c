@@ -62,6 +62,9 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasPTHREADS)
+#include <pthread.h>
+#endif
 
 /*
   Typedef declarations.
@@ -100,8 +103,7 @@ typedef struct _CacheInfo
   Global declarations.
 */
 static size_t
-  cache_threshold = PixelCacheThreshold,
-  free_memory = PixelCacheThreshold*1024*1024;
+  cache_threshold = PixelCacheThreshold;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -169,7 +171,7 @@ Export void DestroyCacheInfo(CacheHandle cache_handle)
 
   size_t
     length;
-    
+
   assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
   ClosePixelCache(cache_handle);
@@ -193,7 +195,7 @@ Export void DestroyCacheInfo(CacheHandle cache_handle)
         Free pixels.
       */
       FreeMemory(cache_info->pixels);
-      free_memory+=cache_info->number_pixels*sizeof(PixelPacket);
+      (void) GetCacheMemory(cache_info->number_pixels*sizeof(PixelPacket));
     }
   if (cache_info->indexes != (IndexPacket *) NULL)
     {
@@ -201,7 +203,7 @@ Export void DestroyCacheInfo(CacheHandle cache_handle)
         Free colormap indexes.
       */
       FreeMemory(cache_info->indexes);
-      free_memory+=cache_info->number_pixels*sizeof(IndexPacket);
+      (void) GetCacheMemory(cache_info->number_pixels*sizeof(IndexPacket));
     }
   FreeMemory(cache_info);
   cache_handle=(void *) NULL;
@@ -282,6 +284,52 @@ Export void GetCacheInfo(CacheHandle *cache_handle)
   cache_info->rows=0;
   cache_info->columns=0;
   *cache_handle=cache_info;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e M e m o r y                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheMemory adjusts the amount of free cache memory and then
+%  returns the resulting value.
+%
+%  The format of the GetCacheMemory method is:
+%
+%      size_t GetCacheMemory(size_t memory)
+%
+%  A description of each parameter follows:
+%
+%    o memory: Specifies the adjustment to the cache memory.  Use 0 to
+%      return the current free memory in the cache.
+%
+%
+*/
+Export size_t GetCacheMemory(size_t memory)
+{
+  CacheInfo
+    *cache_info;
+
+  static size_t
+    free_memory = PixelCacheThreshold*1024*1024;
+
+#if defined(HasPTHREADS)
+  static pthread_mutex_t
+    memory_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+  pthread_mutex_lock(&memory_mutex);
+  free_memory+=memory;
+  pthread_mutex_unlock(&memory_mutex);
+#else
+  free_memory+=memory;
+#endif
+  return(free_memory);
 }
 
 /*
@@ -374,7 +422,7 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
       length=number_pixels*sizeof(PixelPacket);
       if (type == PseudoClass)
         length+=number_pixels*sizeof(IndexPacket);
-      if (length <= free_memory)
+      if (length <= GetCacheMemory(0))
         {
           /*
             Create in-memory pixel cache.
@@ -384,7 +432,7 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
           if (cache_info->pixels != (PixelPacket *) NULL)
             {
               SetCacheClassType(cache_handle,DirectClass);
-              free_memory-=number_pixels*sizeof(PixelPacket);
+              (void) GetCacheMemory(-number_pixels*sizeof(PixelPacket));
               if (type == PseudoClass)
                 {
                   cache_info->indexes=(IndexPacket *)
@@ -392,7 +440,7 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
                   if (cache_info->indexes != (IndexPacket *) NULL)
                     {
                       SetCacheClassType(cache_handle,PseudoClass);
-                      free_memory-=number_pixels*sizeof(IndexPacket);
+                      (void) GetCacheMemory(-number_pixels*sizeof(IndexPacket));
                     }
                 }
             }
@@ -457,7 +505,7 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
               if (cache_info->indexes != (IndexPacket *) NULL)
                 {
                   SetCacheClassType(cache_handle,PseudoClass);
-                  free_memory-=number_pixels*sizeof(IndexPacket);
+                  (void) GetCacheMemory(-number_pixels*sizeof(IndexPacket));
                 }
             }
           else
@@ -719,7 +767,7 @@ Export void SetCacheClassType(CacheHandle cache_handle,ClassType type)
 */
 Export void SetCacheThreshold(unsigned int threshold)
 {
-  free_memory-=(cache_threshold-threshold)*1024*1024;
+  (void) GetCacheMemory(-cache_threshold-threshold*1024*1024);
   cache_threshold=threshold;
 }
 

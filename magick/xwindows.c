@@ -4135,12 +4135,12 @@ Export Image *XGetWindowImage(Display *display,const Window window,
                 break;
               for (x=0; x < (int) composite_image->columns; x++)
               {
-                pixel=XGetPixel(ximage,x,y);
-                index=(unsigned short) pixel;
-                image->indexes[x]=index;
-                q->red=image->colormap[index].red;
-                q->green=image->colormap[index].green;
-                q->blue=image->colormap[index].blue;
+                index=XGetPixel(ximage,x,y);
+                if (composite_image->class == PseudoClass)
+                  composite_image->indexes[x]=index;
+                q->red=composite_image->colormap[index].red;
+                q->green=composite_image->colormap[index].green;
+                q->blue=composite_image->colormap[index].blue;
                 q++;
               }
               if (!SyncPixelCache(composite_image))

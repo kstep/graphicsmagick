@@ -617,8 +617,8 @@ HOW TO COMPILE
 
     TTF:
       cd ImageMagick
-      gunzip -c freetype-1.1.tar.gz | tar xvof -
-      mv freetype-1.1 ttf
+      gunzip -c freetype-1.3.tar.gz | tar xvof -
+      mv freetype-1.3 ttf
       cd ttf
       ./configure -disable-shared
       make

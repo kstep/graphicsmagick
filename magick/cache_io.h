@@ -18,6 +18,9 @@ extern "C" {
 extern Export ClassType
   GetCacheClassType(CacheHandle);
 
+extern Export size_t
+  GetCacheMemory(size_t);
+
 extern Export unsigned int
   GetCacheThreshold(),
   InitializePixelCache(CacheHandle,ClassType,
