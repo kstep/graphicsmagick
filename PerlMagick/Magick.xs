@@ -344,7 +344,7 @@ static struct
     { "ColorFloodfill", { {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"fill", StringReference},
       {"bordercolor", StringReference}, {"fuzz", DoubleReference} } },
-    { "Composite", { {"compos", CompositeTypes}, {"image", ImageReference},
+    { "Composite", { {"image", ImageReference}, {"compos", CompositeTypes},
       {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"grav", GravityTypes},
       {"opacity", StringReference}, {"tile", BooleanTypes} } },
@@ -4575,14 +4575,14 @@ Mogrify(ref,...)
         
           compose=OverCompositeOp;
           if (attribute_flag[0])
-            compose=(CompositeOperator) argument_list[0].int_reference;
-          if (attribute_flag[1])
-            composite_image=argument_list[1].image_reference;
+            composite_image=argument_list[0].image_reference;
           else
             {
               MagickWarning(OptionWarning,"Missing image in composite",NULL);
               goto ReturnIt;
             }
+          if (attribute_flag[1])
+            compose=(CompositeOperator) argument_list[1].int_reference;
           if (!attribute_flag[3])
             argument_list[3].int_reference=0;
           if (!attribute_flag[4])
