@@ -155,7 +155,7 @@ extern MagickExport void
   DrawSetStrokeColor(DrawContext context, const PixelPacket * stroke_color),
   DrawSetStrokeColorString(DrawContext context, const char* stroke_color),
   DrawSetStrokeDashArray(DrawContext context,const double *dasharray),
-  DrawSetStrokeDashOffset(DrawContext context,const unsigned int dashoffset),
+  DrawSetStrokeDashOffset(DrawContext context,const double dashoffset),
   DrawSetStrokeLineCap(DrawContext context, const LineCap linecap),
   DrawSetStrokeLineJoin(DrawContext context, const LineJoin linejoin),
   DrawSetStrokeMiterLimit(DrawContext context,const unsigned long miterlimit),

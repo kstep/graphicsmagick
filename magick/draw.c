@@ -1895,7 +1895,7 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
 }
 
 MagickExport void DrawSetStrokeDashOffset(DrawContext context,
-                                          const unsigned int dash_offset)
+                                          const double dash_offset)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
@@ -1904,7 +1904,7 @@ MagickExport void DrawSetStrokeDashOffset(DrawContext context,
     {
       CurrentContext->dash_offset = dash_offset;
 
-      MvgPrintf(context, "stroke-dashoffset %u\n", dash_offset);
+      MvgPrintf(context, "stroke-dashoffset %.4g\n", dash_offset);
     }
 }
 
