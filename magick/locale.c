@@ -16,7 +16,7 @@
 %                  LLLLL   OOO    CCCC  A   A  LLLLL  EEEEE                   % 
 %                                                                             % 
 %                                                                             % 
-%                    ImageMagick Locale Message Methods                       % 
+%                   GraphicsMagick Locale Message Methods                     % 
 %                                                                             % 
 %                                                                             % 
 %                              Software Design                                % 
@@ -72,7 +72,7 @@ const char *AllocateManagedString(const char *s)
 #if defined(WIN32)
 const char *NTFormatMessage(DWORD id, ...)
 {
-	va_list
+  va_list
     args;
 
   const char
@@ -90,7 +90,7 @@ const char *NTFormatMessage(DWORD id, ...)
   LPVOID
     buffer;
 
-	va_start( args, id );
+  va_start( args, id );
 
   buffer = (LPVOID) NULL; /* stop compiler from complaining */
   FormatString(temp,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
@@ -106,7 +106,7 @@ const char *NTFormatMessage(DWORD id, ...)
          by thread basis and extract the correct localized message */
       /* SetThreadLocale( MAKELCID( MAKELANGID( 0x0409, SUBLANG_NEUTRAL ), SORT_DEFAULT ) ); */
 	    status=FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-        FORMAT_MESSAGE_FROM_HMODULE,
+                  FORMAT_MESSAGE_FROM_HMODULE,
 		    handle,
 		    id,
 		    MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),
