@@ -485,7 +485,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
   for (y=0; y < (long) image->rows; y++)
   {
     q=pixels+y*width;
-    if ((bytes_per_line > 250) || (bits_per_pixel > 8))
+    if ((bytes_per_line > 250) && (bits_per_pixel > 8))
       scanline_length=ReadBlobMSBShort(blob);
     else
       scanline_length=ReadBlobByte(blob);
