@@ -2748,12 +2748,14 @@ case $host_os in
          * ) CYGWIN=no;;
 esac
 
-if test "${CC}" != "gcc" ; then
+if test "${GCC}" != "yes" ; then
     case "${host}" in
           *-*-hpux* )
-               CFLAGS="${CFLAGS} -Wp,-H30000 -Ae"
+               CFLAGS="${CFLAGS} -Wp,-H30000"
                ;;
     esac
+else
+    CFLAGS="${CFLAGS} -Wall"
 fi
 
 #

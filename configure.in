@@ -52,12 +52,14 @@ AC_CYGWIN
 AC_EXEEXT
 AC_OBJEXT
 
-if test "${CC}" != "gcc" ; then
+if test "${GCC}" != "yes" ; then
     case "${host}" in
           *-*-hpux* )
-               CFLAGS="${CFLAGS} -Wp,-H30000 -Ae"
+               CFLAGS="${CFLAGS} -Wp,-H30000"
                ;;
     esac
+else
+    CFLAGS="${CFLAGS} -Wall"
 fi
 
 #
