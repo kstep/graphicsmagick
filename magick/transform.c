@@ -973,7 +973,7 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %  The format of the ProfileImage method is:
 %
 %      unsigned int ProfileImage(Image *image,const char *name,
-%        const void *profile,const size_t length)
+%        const unsigned char *profile,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -988,14 +988,8 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %
 */
 MagickExport unsigned int ProfileImage(Image *image,const char *name,
-  const void *profile,const size_t length)
+  const unsigned char *profile,const size_t length)
 {
-  ExceptionInfo
-    exception;
-
-  ImageInfo
-    *image_info;
-
   register long
     i,
     j;
@@ -1070,7 +1064,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
               opacity;
           } ProfilePacket;
 
-          Colorspace
+          ColorspaceType
             colorspace;
 
           cmsHPROFILE
