@@ -58,11 +58,7 @@ WriteMakefile
    'INSTALLBIN'	=> '@bindir@',
 
    # Library specification
-   'LIBS'	=> ['@LDFLAGS@ @MAGICKLIB@ @LIB_JBIG@ @LIB_HDF@ @LIB_LCMS@ ' .
-                    '@LIB_TIFF@ @LIB_TTF@ @LIB_JPEG@ @LIB_JP2@ @LIB_GS@ ' .
-                    '@LIB_PNG@ @LIB_FPX@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ ' . 
-                    '@LIB_X11@ @LIB_BZLIB@ @LIB_XML@ @LIB_ZLIB@ @LIB_THREAD@ ' .
-                    '@LIB_LF@ @LIB_MATH@'],
+   'LIBS'	=> ['@LDFLAGS@ @MAGICKLIB@ @MAGICK_DEP_LIBS@'],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',
