@@ -1,0 +1,622 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="Author" content="Bob Friesenhahn">
+   <meta name="Description" content="Description of Image structure members.">
+   <title>ImageMagick Image Structure</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+
+<center>
+<h1>
+ImageMagick Image Structure</h1></center>
+The Image structure represents an ImageMagick image. It is initially allocated
+by AllocateImage() and deallocated by DestroyImage(). The functions ReadImage(),
+ReadImages(), BlobToImage() and CreateImage() return a new image. Use CloneImage()
+to copy an image.
+<p>The members of the Image structure are shown in the following table:
+<br>&nbsp;
+<table BORDER CELLSPACING=0 CELLPADDING=5 WIDTH="100%" NOSAVE >
+<caption><b>Image Structure Members</b></caption>
+
+<tr ALIGN=CENTER NOSAVE>
+<td NOSAVE><b>Member</b></td>
+
+<td><b>Type</b></td>
+
+<td><b>Description</b></td>
+</tr>
+
+<tr NOSAVE>
+<td><a NAME="background_color"></a>background_color</td>
+
+<td><a href="ColorPacket.html">ColorPacket</a></td>
+
+<td NOSAVE>Image background color</td>
+</tr>
+
+<tr>
+<td><a NAME="blob"></a>blob</td>
+
+<td>BlobInfo</td>
+
+<td>Private member. Use by BlobToImage() and ImageToBlob().</td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE><a NAME="blur"></a>blur</td>
+
+<td>double</td>
+
+<td>Blur factor to apply to the image when zooming. Default is 1.0 (no
+blur).</td>
+</tr>
+
+<tr>
+<td><a NAME="border_color"></a>border_color</td>
+
+<td><a href="ColorPacket.html">ColorPacket</a></td>
+
+<td>Image border color</td>
+</tr>
+
+<tr>
+<td><a NAME="chromaticity"></a>chromaticity</td>
+
+<td><a href="ChromaticityInfo.html">ChromaticityInfo</a></td>
+
+<td>Red, green, blue, and white-point chromaticity values.</td>
+</tr>
+
+<tr>
+<td><a NAME="class"></a>class</td>
+
+<td><a href="Enumerations.html#ClassType">ClassType</a></td>
+
+<td>Image storage class. If <a href="Enumerations.html#ClassType">DirectClass</a>
+then the image packets contain valid RGB or CMYK colors. If <a href="Enumerations.html#ClassType">PseudoClass</a>
+then the image has a colormap referenced by pixel's index member. For C++
+this member is known as "c_class"</td>
+</tr>
+
+<tr>
+<td><a NAME="coalesce_frames"></a>coalesce_frames</td>
+
+<td>unsigned int</td>
+
+<td>Not used for anything.</td>
+</tr>
+
+<tr>
+<td><a NAME="color_profile"></a>color_profile</td>
+
+<td><a href="ProfileInfo.html">ProfileInfo</a></td>
+
+<td>ICC color profile. Specifications are available from the International
+Color Consortium for the format of ICC color profiles.</td>
+</tr>
+
+<tr>
+<td><a NAME="colormap"></a>colormap</td>
+
+<td><a href="ColorPacket.html">ColorPacket</a> *</td>
+
+<td>PseudoColor palette array.</td>
+</tr>
+
+<tr>
+<td><a NAME="colors"></a>colors</td>
+
+<td>unsigned int</td>
+
+<td>The desired number of colors. Used by QuantizeImage().</td>
+</tr>
+
+<tr>
+<td><a NAME="colorspace"></a>colorspace</td>
+
+<td><a href="Enumerations.html#ColorspaceType">ColorspaceType</a></td>
+
+<td>Image pixel interpretation.If the colorspace is RGB the pixels are
+red, green, blue. If matte is true, then red, green, blue, and index. If
+it is CMYK, the pixels are cyan, yellow, magenta, black. Otherwise the
+colorspace is ignored.</td>
+</tr>
+
+<tr>
+<td><a NAME="columns"></a>columns</td>
+
+<td>unsigned int</td>
+
+<td>Image width</td>
+</tr>
+
+<tr>
+<td><a NAME="comments"></a>comments</td>
+
+<td>char *</td>
+
+<td>Image comments</td>
+</tr>
+
+<tr>
+<td><a NAME="compression"></a>compression</td>
+
+<td><a href="Enumerations.html#CompressionType">CompressionType</a></td>
+
+<td>Image compresion type. The default is the compression type of the specified
+image file.</td>
+</tr>
+
+<tr>
+<td><a NAME="delay"></a>delay</td>
+
+<td>unsigned int</td>
+
+<td>Time in 1/100ths of a second (0 to 65535) which must expire before
+displaying the next image in an animated sequence. This option is useful
+for regulating the animation of a sequence of GIF images within Netscape.</td>
+</tr>
+
+<tr>
+<td><a NAME="depth"></a>depth</td>
+
+<td>unsigned int</td>
+
+<td>Image depth (8 or 16). QuantumLeap must be defined before a depth of
+16 is valid.</td>
+</tr>
+
+<tr>
+<td><a NAME="directory"></a>directory</td>
+
+<td>char *</td>
+
+<td>Tile names from within an image montage. Only valid after calling MontageImages()
+or reading a MIFF file which contains a directory.</td>
+</tr>
+
+<tr>
+<td><a NAME="dispose"></a>dispose</td>
+
+<td>unsigned int</td>
+
+<td>GIF disposal method. This option is used to control how successive
+frames are rendered (how the preceding frame is disposed of) when creating
+a GIF animation.</td>
+</tr>
+
+<tr>
+<td><a NAME="exempt"></a>exempt</td>
+
+<td>int</td>
+
+<td>Private member.</td>
+</tr>
+
+<tr>
+<td><a NAME="file"></a>file</td>
+
+<td>FILE *</td>
+
+<td>Private member. Used by ReadImage() and WriteImage().</td>
+</tr>
+
+<tr>
+<td><a NAME="filename"></a>filename</td>
+
+<td>char[MaxTextExtent]</td>
+
+<td>Image file name to read or write.</td>
+</tr>
+
+<tr>
+<td><a NAME="filesize"></a>filesize</td>
+
+<td>long int</td>
+
+<td>Number of bytes of the encoded file.</td>
+</tr>
+
+<tr>
+<td><a NAME="filter"></a>filter</td>
+
+<td><a href="Enumerations.html#FilterType">FilterType</a></td>
+
+<td>Filter to use when resizing image. The reduction filter employed has
+a sigificant effect on the time required to resize an image and the resulting
+quality. The default filter is Lanczos which has been shown to produce
+high quality results when reducing most images.</td>
+</tr>
+
+<tr>
+<td><a NAME="fuzz"></a>fuzz</td>
+
+<td>int</td>
+
+<td>Colors within this distance are considered equal. A number of algorithms
+search for a target color. By default the color must be exact. Use this
+option to match colors that are close to the target color in RGB space.</td>
+</tr>
+
+<tr>
+<td><a NAME="gamma"></a>gamma</td>
+
+<td>double</td>
+
+<td>Gamma level of the image. The same color image displayed on two different
+workstations may look different due to differences in the display monitor.
+Use gamma correction to adjust for this color difference.</td>
+</tr>
+
+<tr>
+<td><a NAME="geometry"></a>geometry</td>
+
+<td>char *</td>
+
+<td>Preferred size of the image when encoding.</td>
+</tr>
+
+<tr>
+<td><a NAME="id"></a>id</td>
+
+<td>IdType</td>
+
+<td>Private member. Used only by the MIFF decoder.</td>
+</tr>
+
+<tr>
+<td><a NAME="insert_backdrops"></a>insert_backdrops</td>
+
+<td>unsigned int</td>
+
+<td>Not used.</td>
+</tr>
+
+<tr>
+<td><a NAME="interlace"></a>interlace</td>
+
+<td><a href="Enumerations.html#InterlaceType">InterlaceType</a></td>
+
+<td>The type of interlacing scheme (default NoInterlace). This option is
+used to specify the type of interlacing scheme for raw image formats such
+as RGB or YUV. NoInterlace means do not interlace, LineInterlace uses scanline
+interlacing, and PlaneInterlace uses plane interlacing. PartitionInterlace
+is like PlaneInterlace except the different planes are saved to individual
+files (e.g. image.R, image.G, and image.B). Use LineInterlace or PlaneInterlace
+to create an interlaced GIF or progressive JPEG image.</td>
+</tr>
+
+<tr>
+<td><a NAME="iptc_profile"></a>iptc_profile</td>
+
+<td><a href="ProfileInfo.html">ProfileInfo</a></td>
+
+<td>IPTC profile. Specifications are available from the International Press
+Telecommunications Council for IPTC profiles.</td>
+</tr>
+
+<tr>
+<td><a NAME="iterations"></a>iterations</td>
+
+<td>unsigned int</td>
+
+<td>Number of iterations to loop an animation (e.g. Netscape loop extension)
+for.</td>
+</tr>
+
+<tr>
+<td><a NAME="label"></a>label</td>
+
+<td>char *</td>
+
+<td>Image label</td>
+</tr>
+
+<tr>
+<td><a NAME="list"></a>list</td>
+
+<td>struct _Image *</td>
+
+<td>Undo image list (used only by 'display')</td>
+</tr>
+
+<tr>
+<td><a NAME="magick"></a>magick</td>
+
+<td>char[MaxTextExtent]</td>
+
+<td>Image encoding format (e.g. "GIF").</td>
+</tr>
+
+<tr>
+<td><a NAME="magick_columns"></a>magick_columns</td>
+
+<td>unsigned int</td>
+
+<td>Base image width (before transformations)</td>
+</tr>
+
+<tr>
+<td><a NAME="magick_filename"></a>magick_filename</td>
+
+<td>char[MaxTextExtent]</td>
+
+<td>Base image filename (before transformations)</td>
+</tr>
+
+<tr>
+<td><a NAME="magick_rows"></a>magick_rows</td>
+
+<td>unsigned int</td>
+
+<td>Base image height (before transformations)</td>
+</tr>
+
+<tr>
+<td><a NAME="magick_time"></a>magick_time</td>
+
+<td>long int</td>
+
+<td>Time (as reported by POSIX time()) that image was allocated by AllocateImage().
+Used by DescribeImage() to display the time spent reading the image.</td>
+</tr>
+
+<tr>
+<td><a NAME="matte"></a>matte</td>
+
+<td>unsigned int</td>
+
+<td>If non-zero, then packets index member contains alpha channel.</td>
+</tr>
+
+<tr>
+<td><a NAME="matte_color"></a>matte_color</td>
+
+<td><a href="ColorPacket.html">ColorPacket</a></td>
+
+<td>Image matte (transparent) color</td>
+</tr>
+
+<tr>
+<td><a NAME="mean_error_per_pixel"></a>mean_error_per_pixel</td>
+
+<td>unsigned int</td>
+
+<td>The mean error per pixel computed when an image is color reduced. This
+parameter is only valid if verbose is set to true and the image has just
+been quantized.</td>
+</tr>
+
+<tr>
+<td><a NAME="montage"></a>montage</td>
+
+<td>char *</td>
+
+<td>Tile size and offset within an image montage. Only valid for montage
+images.</td>
+</tr>
+
+<tr>
+<td><a NAME="next"></a>next</td>
+
+<td>struct _Image *</td>
+
+<td>Next image frame in sequence</td>
+</tr>
+
+<tr>
+<td><a NAME="normalized_maximum_error"></a>normalized_maximum_error</td>
+
+<td>double</td>
+
+<td>The normalized max error per pixel computed when an image is color
+reduced. This parameter is only valid if <i>verbose</i> is set to true
+and the image has just been quantized.</td>
+</tr>
+
+<tr>
+<td><a NAME="normalized_mean_error"></a>normalized_mean_error</td>
+
+<td>double</td>
+
+<td>The normalized mean error per pixel computed when an image is color
+reduced. This parameter is only valid if <i>verbose</i> is set to true
+and the image has just been quantized.</td>
+</tr>
+
+<tr>
+<td><a NAME="offset"></a>offset</td>
+
+<td>int</td>
+
+<td>Number of initial bytes to skip over when reading raw image.</td>
+</tr>
+
+<tr>
+<td><a NAME="orphan"></a>orphan</td>
+
+<td>unsigned int</td>
+
+<td>Private member. When set, CloneImage() clones only the current frame,
+creating an "orphan" frame.</td>
+</tr>
+
+<tr>
+<td><a NAME="packed_pixels"></a>packed_pixels</td>
+
+<td>unsigned char *</td>
+
+<td>Private member. The packed_pixels are used only for the RunlengthEncode
+methods for writing MIFF or MAP image types.</td>
+</tr>
+
+<tr>
+<td><a NAME="packet_size"></a>packet_size</td>
+
+<td>unsigned int</td>
+
+<td>The number of bytes in each pixel packet.</td>
+</tr>
+
+<tr>
+<td><a NAME="packets"></a>packets</td>
+
+<td>unsigned long</td>
+
+<td>The number of runlength-encoded packets in the image.</td>
+</tr>
+
+<tr>
+<td><a NAME="page"></a>page</td>
+
+<td>char *</td>
+
+<td>Equivalent size of Postscript page.</td>
+</tr>
+
+<tr>
+<td><a NAME="pipe"></a>pipe</td>
+
+<td>int</td>
+
+<td>Private member. Set to <i>True</i> if image is read/written from/to
+a POSIX pipe.</td>
+</tr>
+
+<tr>
+<td><a NAME="pixels"></a>pixels</td>
+
+<td><a href="RunlengthPacket.html">RunlengthPacket</a> *</td>
+
+<td>Image pixels</td>
+</tr>
+
+<tr>
+<td><a NAME="previous"></a>previous</td>
+
+<td>struct _Image *</td>
+
+<td>Previous image frame in sequence.</td>
+</tr>
+
+<tr>
+<td><a NAME="rendering_intent"></a>rendering_intent</td>
+
+<td><a href="Enumerations.html#RenderingIntent">RenderingIntent</a></td>
+
+<td>The type of rendering intent.</td>
+</tr>
+
+<tr>
+<td><a NAME="restart_animation_here"></a>restart_animation_here</td>
+
+<td>int</td>
+
+<td>Scene number to re-start animation at.</td>
+</tr>
+
+<tr>
+<td><a NAME="rows"></a>rows</td>
+
+<td>unsigned int</td>
+
+<td>Image height</td>
+</tr>
+
+<tr>
+<td><a NAME="scene"></a>scene</td>
+
+<td>unsigned int</td>
+
+<td>Image frame scene number.</td>
+</tr>
+
+<tr>
+<td><a NAME="signature"></a>signature</td>
+
+<td>char *</td>
+
+<td>Image MD5 signature. Valid after SignatureImage() has been called.</td>
+</tr>
+
+<tr>
+<td><a NAME="status"></a>status</td>
+
+<td>int</td>
+
+<td>Private member.</td>
+</tr>
+
+<tr>
+<td><a NAME="tainted"></a>tainted</td>
+
+<td>int</td>
+
+<td>Set to True if the image pixels have been modified.</td>
+</tr>
+
+<tr>
+<td><a NAME="temporary"></a>temporary</td>
+
+<td>int</td>
+
+<td>Private member.</td>
+</tr>
+
+<tr>
+<td><a NAME="text"></a>text</td>
+
+<td>char *</td>
+
+<td>Any text associated with the image.</td>
+</tr>
+
+<tr>
+<td><a NAME="tile_info"></a>tile_info</td>
+
+<td><a href="RectangleInfo.html">RectangleInfo</a></td>
+
+<td>Describes a tile within an image.&nbsp; For example, if your images
+is 640x480 you may only want 320x256 with an offset of +128+64. It is used
+for raw formats such as RGB and CMYK as well as for TIFF.</td>
+</tr>
+
+<tr>
+<td><a NAME="total_colors"></a>total_colors</td>
+
+<td>unsigned long</td>
+
+<td>The number of colors in the image after QuantizeImage(), or QuantizeImages()
+if the verbose flag was set before the call. Calculated by GetNumberColors().</td>
+</tr>
+
+<tr>
+<td><a NAME="units"></a>units</td>
+
+<td><a href="Enumerations.html#ResolutionType">ResolutionType</a></td>
+
+<td>Units of image resolution</td>
+</tr>
+
+<tr>
+<td><a NAME="x_resolution"></a>x_resolution</td>
+
+<td>double</td>
+
+<td>Horizontal resolution of the image</td>
+</tr>
+
+<tr>
+<td><a NAME="y_resolution"></a>y_resolution</td>
+
+<td>double</td>
+
+<td>Veritcal resolution of the image</td>
+</tr>
+</table>
+
+</body>
+</html>
