@@ -60,6 +60,9 @@
 */
 typedef struct _DIBInfo
 {
+  unsigned long
+    size;
+
   long
     width,
     height;
@@ -420,6 +423,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine if this is a DIB file.
   */
   (void) memset(&dib_info,0,sizeof(DIBInfo));
+  dib_info.size=ReadBlobLSBLong(image);
+  if(dib_info.size!=40)
+    ThrowReaderException(CorruptImageWarning,"Not a DIB image",image);
   /*
     Microsoft Windows DIB image file.
   */
@@ -755,7 +761,7 @@ ModuleExport void RegisterDIBImage(void)
   entry->encoder=WriteDIBImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AllocateString("Microsoft Windows bitmap image");
+  entry->description=AllocateString("Microsoft Windows Device-Independent Bitmap");
   entry->module=AllocateString("DIB");
   (void) RegisterMagickInfo(entry);
 }
@@ -878,6 +884,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
       dib_info.number_colors=1 << dib_info.bits_per_pixel;
     }
   bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
+  dib_info.size=40;
   dib_info.width=image->columns;
   dib_info.height=image->rows;
   dib_info.planes=1;
