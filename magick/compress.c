@@ -940,10 +940,10 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   if (status == False)
     return(False);
   tiff=TIFFOpen(filename,ReadBinaryType);
-  (void) remove(filename);
   if (tiff == (TIFF *) NULL)
     {
       MagickWarning(FileOpenWarning,"Unable to open file",image_info->filename);
+      (void) remove(filename);
       return(False);
     }
   /*
@@ -960,6 +960,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
         (char *) NULL);
       TIFFClose(tiff);
+      (void) remove(filename);
       return(False);
     }
   /*
@@ -978,6 +979,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   }
   FreeMemory(buffer);
   TIFFClose(tiff);
+  (void) remove(filename);
   return(True);
 }
 #else

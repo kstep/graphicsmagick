@@ -539,7 +539,7 @@ static unsigned int Classify(Image *image,short **extrema,
               ratio=numerator/sqrt(distance_squared);
               sum+=pow(ratio,(double) (2.0/(weighting_exponent-1.0)));
             }
-            if ((1.0/sum) > local_minima)
+            if (sum && ((1.0/sum) > local_minima))
               {
                 /*
                   Classify this pixel.
