@@ -1,6 +1,7 @@
 2003-04-01  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/png.c: Use new temporary file manager for JNG components.
+	Merge with IM 5.5.7 (mostly cosmetic changes).
 
 2003-03-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
