@@ -224,9 +224,6 @@ MagickExport PixelPacket *GetCacheViewPixels(const ViewInfo *view)
 */
 MagickExport ViewInfo *OpenCacheView(Image *image)
 {
-  unsigned int
-    status;
-
   ViewInfo
     *view;
 
