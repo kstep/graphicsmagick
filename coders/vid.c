@@ -135,12 +135,12 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  LogMagickEvent(CoderEvent,"(ReadVIDImage) enter");
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,"enter");
   image=AllocateImage(image_info);
   list=(char **) AcquireMemory(sizeof(char *));
   if (list == (char **) NULL)
     {
-      LogMagickEvent(CoderEvent,"(ReadVIDImage) return");
+      (void) LogMagickEvent(CoderEvent,__MagickMethod,"return");
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     }
   list[0]=(char *) AllocateString((char *) NULL);
@@ -150,7 +150,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=ExpandFilenames(&number_files,&filelist);
   if ((status == False) || (number_files == 0))
     {
-      LogMagickEvent(CoderEvent,"(ReadVIDImage) return");
+      (void) LogMagickEvent(CoderEvent,__MagickMethod,"return");
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     }
   DestroyImage(image);
@@ -167,17 +167,17 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (clone_info->size == (char *) NULL)
       CloneString(&clone_info->size,DefaultTileGeometry);
     (void) strncpy(clone_info->filename,filelist[i],MaxTextExtent-1);
-    LogMagickEvent(CoderEvent,"(ReadVIDImage) name: %.1024s",
+    (void) LogMagickEvent(CoderEvent,__MagickMethod,"name: %.1024s",
       clone_info->filename);
     next_image=ReadImage(clone_info,exception);
     LiberateMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)
       {
-        LogMagickEvent(CoderEvent,"(ReadVIDImage) geometry: %ldx%ld",
+        (void) LogMagickEvent(CoderEvent,__MagickMethod,"geometry: %ldx%ld",
           next_image->columns,next_image->rows);
         (void) SetImageAttribute(next_image,"label",DefaultTileLabel);
         (void) TransformImage(&next_image,(char *) NULL,clone_info->size);
-        LogMagickEvent(CoderEvent,"(ReadVIDImage) thumbnail geometry: %ldx%ld",
+        (void) LogMagickEvent(CoderEvent,__MagickMethod,"thumbnail geometry: %ldx%ld",
           next_image->columns,next_image->rows);
         if (image == (Image *) NULL)
           image=next_image;
@@ -196,7 +196,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void **) &filelist);
   if (image == (Image *) NULL)
     {
-      LogMagickEvent(CoderEvent,"(ReadVIDImage) return");
+      (void) LogMagickEvent(CoderEvent,__MagickMethod,"return");
       ThrowReaderException(CorruptImageError,"UnableToReadVIDImage",image);
     }
   while (image->previous != (Image *) NULL)
@@ -205,18 +205,18 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Create the visual image directory.
   */
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
-  LogMagickEvent(CoderEvent,"(ReadVIDImage) creating montage");
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,"creating montage");
   montage_image=MontageImages(image,montage_info,exception);
   DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
     {
-      LogMagickEvent(CoderEvent,"(ReadVIDImage) return");
+      (void) LogMagickEvent(CoderEvent,__MagickMethod,"return");
       ThrowReaderException(CorruptImageError,"UnableToReadVIDImage",image);
     }
   DestroyImageList(image);
   LiberateMemory((void **) &list[0]);
   LiberateMemory((void **) &list);
-  LogMagickEvent(CoderEvent,"(ReadVIDImage) return");
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,"return");
   return(montage_image);
 }
 

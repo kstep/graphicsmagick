@@ -4723,29 +4723,33 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   if (IsEventLogging())
     {
       (void) XSynchronize(display,True);
-      LogMagickEvent(X11Event,"Version: %.1024s",
+      (void) LogMagickEvent(X11Event,__MagickMethod,"Version: %.1024s",
         GetMagickVersion((unsigned long *) NULL));
-      LogMagickEvent(X11Event,"  timestamp: %ld",time((time_t *) NULL));
-      LogMagickEvent(X11Event,"Protocols:");
-      LogMagickEvent(X11Event,"  Window Manager: 0x%lx",windows->wm_protocols);
-      LogMagickEvent(X11Event,"    delete window: 0x%lx",
+      (void) LogMagickEvent(X11Event,__MagickMethod,"Protocols:");
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  Window Manager: 0x%lx",
+        windows->wm_protocols);
+      (void) LogMagickEvent(X11Event,__MagickMethod,"    delete window: 0x%lx",
         windows->wm_delete_window);
-      LogMagickEvent(X11Event,"    take focus: 0x%lx",windows->wm_take_focus);
-      LogMagickEvent(X11Event,"  ImageMagick: 0x%lx",windows->im_protocols);
-      LogMagickEvent(X11Event,"    remote command: 0x%lx",
+      (void) LogMagickEvent(X11Event,__MagickMethod,"    take focus: 0x%lx",
+        windows->wm_take_focus);
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  ImageMagick: 0x%lx",
+        windows->im_protocols);
+      (void) LogMagickEvent(X11Event,__MagickMethod,"    remote command: 0x%lx",
         windows->im_remote_command);
-      LogMagickEvent(X11Event,"    update widget: 0x%lx",
+      (void) LogMagickEvent(X11Event,__MagickMethod,"    update widget: 0x%lx",
         windows->im_update_widget);
-      LogMagickEvent(X11Event,"    update colormap: 0x%lx",
-        windows->im_update_colormap);
-      LogMagickEvent(X11Event,"    former image: 0x%lx",
+      (void) LogMagickEvent(X11Event,__MagickMethod,
+        "    update colormap: 0x%lx",windows->im_update_colormap);
+      (void) LogMagickEvent(X11Event,__MagickMethod,"    former image: 0x%lx",
         windows->im_former_image);
-      LogMagickEvent(X11Event,"    next image: 0x%lx",windows->im_next_image);
-      LogMagickEvent(X11Event,"    retain colors: 0x%lx",
+      (void) LogMagickEvent(X11Event,__MagickMethod,"    next image: 0x%lx",
+        windows->im_next_image);
+      (void) LogMagickEvent(X11Event,__MagickMethod,"    retain colors: 0x%lx",
         windows->im_retain_colors);
-      LogMagickEvent(X11Event,"    exit: 0x%lx",windows->im_exit);
-      LogMagickEvent(X11Event,"  Drag and Drop: 0x%lx",windows->dnd_protocols);
-      LogMagickEvent(X11Event,"  timestamp: %ld",time((time_t *) NULL));
+      (void) LogMagickEvent(X11Event,__MagickMethod,"    exit: 0x%lx",
+        windows->im_exit);
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  Drag and Drop: 0x%lx",
+        windows->dnd_protocols);
     }
   /*
     Allocate standard colormap.
@@ -4782,21 +4786,22 @@ MagickExport XWindows *XInitializeWindows(Display *display,
       resource_info->visual_type);
   if (IsEventLogging())
     {
-      LogMagickEvent(X11Event,"Visual:");
-      LogMagickEvent(X11Event,"  visual id: 0x%lx",
+      (void) LogMagickEvent(X11Event,__MagickMethod,"Visual:");
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  visual id: 0x%lx",
         windows->visual_info->visualid);
-      LogMagickEvent(X11Event,"  class: %.1024s",
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  class: %.1024s",
         XVisualClassName(windows->visual_info->storage_class));
-      LogMagickEvent(X11Event,"  depth: %d planes",
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  depth: %d planes",
         windows->visual_info->depth);
-      LogMagickEvent(X11Event,"  size of colormap: %d entries",
-        windows->visual_info->colormap_size);
-      LogMagickEvent(X11Event,"  red, green, blue masks: 0x%lx 0x%lx 0x%lx",
+      (void) LogMagickEvent(X11Event,__MagickMethod,
+        "  size of colormap: %d entries",windows->visual_info->colormap_size);
+      (void) LogMagickEvent(X11Event,__MagickMethod,
+        "  red, green, blue masks: 0x%lx 0x%lx 0x%lx",
         windows->visual_info->red_mask,windows->visual_info->green_mask,
         windows->visual_info->blue_mask);
-      LogMagickEvent(X11Event,"  significant bits in color: %d bits",
+      (void) LogMagickEvent(X11Event,__MagickMethod,
+        "  significant bits in color: %d bits",
         windows->visual_info->bits_per_rgb);
-      LogMagickEvent(X11Event,"  timestamp: %ld",time((time_t *) NULL));
     }
   /*
     Allocate class and manager hints.
@@ -5095,19 +5100,25 @@ MagickExport unsigned int XMakeImage(Display *display,
     }
   if (IsEventLogging())
     {
-      LogMagickEvent(X11Event,"XImage:");
-      LogMagickEvent(X11Event,"  width, height: %dx%d",ximage->width,
-        ximage->height);
-      LogMagickEvent(X11Event,"  format: %d",ximage->format);
-      LogMagickEvent(X11Event,"  byte order: %d",ximage->byte_order);
-      LogMagickEvent(X11Event,"  bitmap unit, bit order, pad: %d %d %d",
-        ximage->bitmap_unit,ximage->bitmap_bit_order,ximage->bitmap_pad);
-      LogMagickEvent(X11Event,"  depth: %d",ximage->depth);
-      LogMagickEvent(X11Event,"  bytes per line: %d",ximage->bytes_per_line);
-      LogMagickEvent(X11Event,"  bits per pixel: %d",ximage->bits_per_pixel);
-      LogMagickEvent(X11Event,"  red, green, blue masks: 0x%lx 0x%lx 0x%lx",
-        ximage->red_mask,ximage->green_mask,ximage->blue_mask);
-      LogMagickEvent(X11Event,"  timestamp: %ld",time((time_t *) NULL));
+      (void) LogMagickEvent(X11Event,__MagickMethod,"XImage:");
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  width, height: %dx%d",
+        ximage->width,ximage->height);
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  format: %d",
+        ximage->format);
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  byte order: %d",
+        ximage->byte_order);
+      (void) LogMagickEvent(X11Event,__MagickMethod,
+        "  bitmap unit, bit order, pad: %d %d %d",ximage->bitmap_unit,
+        ximage->bitmap_bit_order,ximage->bitmap_pad);
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  depth: %d",
+        ximage->depth);
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  bytes per line: %d",
+        ximage->bytes_per_line);
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  bits per pixel: %d",
+        ximage->bits_per_pixel);
+      (void) LogMagickEvent(X11Event,__MagickMethod,
+        "  red, green, blue masks: 0x%lx 0x%lx 0x%lx",ximage->red_mask,
+        ximage->green_mask,ximage->blue_mask);
     }
   if (!window->shared_memory)
     {
@@ -5166,10 +5177,9 @@ MagickExport unsigned int XMakeImage(Display *display,
           (char *) NULL,width,height,XBitmapPad(display),0);
         if (IsEventLogging())
           {
-            LogMagickEvent(X11Event,"Matte Image:");
-            LogMagickEvent(X11Event,"  width, height: %dx%d",matte_image->width,
-              matte_image->height);
-            LogMagickEvent(X11Event,"  timestamp: %ld",time((time_t *) NULL));
+            (void) LogMagickEvent(X11Event,__MagickMethod,"Matte Image:");
+            (void) LogMagickEvent(X11Event,__MagickMethod,
+              "  width, height: %dx%d",matte_image->width,matte_image->height);
           }
         if (matte_image != (XImage *) NULL)
           {
@@ -6913,9 +6923,9 @@ static unsigned int XMakePixmap(Display *display,
       window->ximage,0,0,0,0,width,height);
   if (IsEventLogging())
     {
-      LogMagickEvent(X11Event,"Pixmap:");
-      LogMagickEvent(X11Event,"  width, height: %ux%u",width,height);
-      LogMagickEvent(X11Event,"  timestamp: %ld",time((time_t *) NULL));
+      (void) LogMagickEvent(X11Event,__MagickMethod,"Pixmap:");
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  width, height: %ux%u",
+        width,height);
     }
   /*
     Restore cursor.
@@ -7089,13 +7099,15 @@ MagickExport void XMakeStandardColormap(Display *display,
           }
       if (IsEventLogging())
         {
-          LogMagickEvent(X11Event,"Standard Colormap:");
-          LogMagickEvent(X11Event,"  colormap id: 0x%lx",map_info->colormap);
-          LogMagickEvent(X11Event,"  red, green, blue max: %lu %lu %lu",
-            map_info->red_max,map_info->green_max,map_info->blue_max);
-          LogMagickEvent(X11Event,"  red, green, blue mult: %lu %lu %lu",
-            map_info->red_mult,map_info->green_mult,map_info->blue_mult);
-          LogMagickEvent(X11Event,"  timestamp: %ld",time((time_t *) NULL));
+          (void) LogMagickEvent(X11Event,__MagickMethod,"Standard Colormap:");
+          (void) LogMagickEvent(X11Event,__MagickMethod,"  colormap id: 0x%lx",
+            map_info->colormap);
+          (void) LogMagickEvent(X11Event,__MagickMethod,
+            "  red, green, blue max: %lu %lu %lu",map_info->red_max,
+            map_info->green_max,map_info->blue_max);
+          (void) LogMagickEvent(X11Event,__MagickMethod,
+            "  red, green, blue mult: %lu %lu %lu",map_info->red_mult,
+            map_info->green_mult,map_info->blue_mult);
         }
       return;
     }
@@ -7527,13 +7539,15 @@ MagickExport void XMakeStandardColormap(Display *display,
   LiberateMemory((void **) &colors);
   if (IsEventLogging())
     {
-      LogMagickEvent(X11Event,"Standard Colormap:");
-      LogMagickEvent(X11Event,"  colormap id: 0x%lx",map_info->colormap);
-      LogMagickEvent(X11Event,"  red, green, blue max: %lu %lu %lu",
-        map_info->red_max,map_info->green_max,map_info->blue_max);
-      LogMagickEvent(X11Event,"  red, green, blue mult: %lu %lu %lu",
-        map_info->red_mult,map_info->green_mult,map_info->blue_mult);
-      LogMagickEvent(X11Event,"  timestamp: %ld",time((time_t *) NULL));
+      (void) LogMagickEvent(X11Event,__MagickMethod,"Standard Colormap:");
+      (void) LogMagickEvent(X11Event,__MagickMethod,"  colormap id: 0x%lx",
+        map_info->colormap);
+      (void) LogMagickEvent(X11Event,__MagickMethod,
+        "  red, green, blue max: %lu %lu %lu",map_info->red_max,
+        map_info->green_max,map_info->blue_max);
+      (void) LogMagickEvent(X11Event,__MagickMethod,
+        "  red, green, blue mult: %lu %lu %lu",map_info->red_mult,
+        map_info->green_mult,map_info->blue_mult);
     }
 }
 

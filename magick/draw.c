@@ -4263,7 +4263,7 @@ MagickExport int DrawRender(const DrawContext context)
   assert(context->signature == MagickSignature);
 
   CurrentContext->primitive = context->mvg;
-  LogMagickEvent(RenderEvent,"MVG:\n'%s'\n",context->mvg);
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"MVG:\n'%s'\n",context->mvg);
   DrawImage(context->image, CurrentContext);
   CurrentContext->primitive = (char *) NULL;
 

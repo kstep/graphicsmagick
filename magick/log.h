@@ -8,6 +8,23 @@
 extern "C" {
 #endif
 
+#if defined(__GNUC__) && defined(__GNUC_MINOR__)
+# define GNUC_Prerequiste(major,minor) \
+    ((__GNUC__ << 16) + __GNUC_MINOR__ >= ((major) << 16) + (minor))
+#else
+# define GNUC_Prerequiste(major,minor)  0
+#endif
+
+#if defined(__cplusplus) ? GNUC_Prerequiste(2,6) : GNUC_Prerequiste(2,4)
+#  define __MagickMethod  __PRETTY_FUNCTION__
+#else
+# if defined __STDC_VERSION__ && (__STDC_VERSION__ >= 199901L)
+#  define __MagickMethod  __func__
+# else
+#  define __MagickMethod  "unknown"
+# endif
+#endif
+
 typedef enum
 { 
   UndefinedEvents = 0x0000,
@@ -30,10 +47,10 @@ typedef enum
 extern MagickExport unsigned int
   IsEventLogging(void),
 #if defined(__GNUC__)
-  LogMagickEvent(const LogEventType,const char *,...)
-    __attribute__((format (printf,2,3)));
+  LogMagickEvent(const LogEventType,const char *,const char *,...)
+    __attribute__((format (printf,3,4)));
 #else
-  LogMagickEvent(const LogEventType,const char *,...);
+  LogMagickEvent(const LogEventType,const char *,const char *,...);
 #endif
 
 extern MagickExport unsigned long

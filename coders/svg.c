@@ -389,7 +389,8 @@ static int SVGHasInternalSubset(void *context)
   /*
     Does this document has an internal subset?
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.SVGHasInternalSubset()");
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.SVGHasInternalSubset()");
   svg_info=(SVGInfo *) context;
   return(svg_info->document->intSubset != NULL);
 }
@@ -402,7 +403,8 @@ static int SVGHasExternalSubset(void *context)
   /*
     Does this document has an external subset?
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.SVGHasExternalSubset()");
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.SVGHasExternalSubset()");
   svg_info=(SVGInfo *) context;
   return(svg_info->document->extSubset != NULL);
 }
@@ -416,8 +418,8 @@ static void SVGInternalSubset(void *context,const xmlChar *name,
   /*
     Does this document has an internal subset?
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.internalSubset(%.1024s, %.1024s, %.1024s)",
-    (char *) name,
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.internalSubset(%.1024s, %.1024s, %.1024s)",(char *) name,
     (external_id != (const xmlChar *) NULL ? (char *) external_id : "none"),
     (system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
   svg_info=(SVGInfo *) context;
@@ -439,7 +441,8 @@ static xmlParserInputPtr SVGResolveEntity(void *context,
     not resolve the entities, in that case the ENTITY_REF nodes are
     built in the structure (and the parameter values).
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.resolveEntity(%.1024s, %.1024s)",
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.resolveEntity(%.1024s, %.1024s)",
     (public_id != (const xmlChar *) NULL ? (char *) public_id : "none"),
     (system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
   svg_info=(SVGInfo *) context;
@@ -456,7 +459,8 @@ static xmlEntityPtr SVGGetEntity(void *context,const xmlChar *name)
   /*
     Get an entity by name.
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.SVGGetEntity(%.1024s)",name);
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.SVGGetEntity(%.1024s)",name);
   svg_info=(SVGInfo *) context;
   return(xmlGetDocEntity(svg_info->document,name));
 }
@@ -469,7 +473,8 @@ static xmlEntityPtr SVGGetParameterEntity(void *context,const xmlChar *name)
   /*
     Get a parameter entity by name.
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.getParameterEntity(%.1024s)",name);
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.getParameterEntity(%.1024s)",name);
   svg_info=(SVGInfo *) context;
   return(xmlGetParameterEntity(svg_info->document,name));
 }
@@ -549,7 +554,8 @@ static void SVGElementDeclaration(void *context,const xmlChar *name,int type,
   /*
     An element definition has been parsed.
   */
-  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  SAX.elementDecl(%.1024s, %d, ...)",name,type);
+  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+    "  SAX.elementDecl(%.1024s, %d, ...)",name,type);
   svg_info=(SVGInfo *) context;
   parser=svg_info->parser;
   if (parser->inSubset == 1)

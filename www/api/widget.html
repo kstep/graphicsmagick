@@ -53,7 +53,7 @@
 <p>void  <strong>XInfoWidget</strong>( Display *display, XWindows *windows, const char *activity );</p>
 <p>void  <strong>XListBrowserWidget</strong>( Display *display, XWindows *windows, XWindowInfo *window_info, const char ** list, const char *action, const char *query, char *reply );</p>
 <p>int  <strong>XMenuWidget</strong>( Display *display, XWindows *windows, const char *title, const char ** selections, char *item );</p>
-<p>void  <strong>XMonitorWidget</strong>( Display *display, XWindows *windows, const char *task, const ExtendedSignedIntegralType quantum, const size_t span );</p>
+<p>void  <strong>XMonitorWidget</strong>( Display *display, XWindows *windows, const char *task, const ExtendedSignedIntegralType quantum, const ExtendedUnsignedIntegralType span );</p>
 <p>void  <strong>XNoticeWidget</strong>( Display *display, XWindows *windows, const char *reason, const char *description );</p>
 <p>unsigned int  <strong>XPreferencesWidget</strong>( Display *display, XResourceInfo *resource_info, XWindows *windows );</p>
 <p>void  <strong>XTextViewWidget</strong>( Display *display, const XResourceInfo *resource_info, XWindows *windows, const unsigned int mono, const char *title, const char ** textlist );</p>
@@ -381,7 +381,7 @@ Specifies a character array.  The item selected from the menu is returned here.
 <h2><a name="xmonitorwidget">XMonitorWidget</a></h2>
 <p>Method XMonitorWidget displays the progress a task is making in completing a task.  A span of zero toggles the active status.  An inactive state disables the progress monitor.</p>
 <p>The format of the XMonitorWidget method is:</p>
-<blockquote>void XMonitorWidget ( Display *display, XWindows *windows, const char *task, const ExtendedSignedIntegralType quantum, const size_t span ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>void XMonitorWidget ( Display *display, XWindows *windows, const char *task, const ExtendedSignedIntegralType quantum, const ExtendedUnsignedIntegralType span ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o display:</strong><br />
 </dt>

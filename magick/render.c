@@ -608,22 +608,24 @@ static void LogPolygonInfo(const PolygonInfo *polygon_info)
     i,
     j;
 
-  LogMagickEvent(RenderEvent,"    begin active-edge");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"    begin active-edge");
   p=polygon_info->edges;
   for (i=0; i < polygon_info->number_edges; i++)
   {
-    LogMagickEvent(RenderEvent,"      edge %lu:",i);
-    LogMagickEvent(RenderEvent,"      direction: %s",
+    (void) LogMagickEvent(RenderEvent,__MagickMethod,"      edge %lu:",i);
+    (void) LogMagickEvent(RenderEvent,__MagickMethod,"      direction: %s",
       p->direction ? "down" : "up");
-    LogMagickEvent(RenderEvent,"      ghostline: %s",
+    (void) LogMagickEvent(RenderEvent,__MagickMethod,"      ghostline: %s",
       p->ghostline ? "transparent" : "opaque");
-    LogMagickEvent(RenderEvent,"      bounds: %g,%g - %g,%g",
-      p->bounds.x1,p->bounds.y1,p->bounds.x2,p->bounds.y2);
+    (void) LogMagickEvent(RenderEvent,__MagickMethod,
+      "      bounds: %g,%g - %g,%g",p->bounds.x1,p->bounds.y1,p->bounds.x2,
+      p->bounds.y2);
     for (j=0; j < p->number_points; j++)
-      LogMagickEvent(RenderEvent,"        %g,%g",p->points[j].x,p->points[j].y);
+      (void) LogMagickEvent(RenderEvent,__MagickMethod,"        %g,%g",
+        p->points[j].x,p->points[j].y);
     p++;
   }
-  LogMagickEvent(RenderEvent,"    end active-edge");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"    end active-edge");
 }
 
 static void ReversePoints(PointInfo *points,const int number_points)
@@ -867,13 +869,14 @@ static void LogPathInfo(const PathInfo *path_info)
   register const PathInfo
     *p;
 
-  LogMagickEvent(RenderEvent,"    begin vector-path");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"    begin vector-path");
   for (p=path_info; p->code != EndCode; p++)
-    LogMagickEvent(RenderEvent,"      %g,%g %s",p->point.x,p->point.y,
-      p->code == GhostlineCode ? "moveto ghostline" :
-      p->code == OpenCode ? "moveto open" : p->code == MoveToCode ? "moveto" :
-      p->code == LineToCode ? "lineto" : "?");
-  LogMagickEvent(RenderEvent,"    end vector-path");
+    (void) LogMagickEvent(RenderEvent,__MagickMethod,
+      "      %g,%g %s",p->point.x,p->point.y,p->code == GhostlineCode ?
+      "moveto ghostline" : p->code == OpenCode ? "moveto open" :
+      p->code == MoveToCode ? "moveto" : p->code == LineToCode ? "lineto" :
+      "?");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"    end vector-path");
 }
 
 static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
@@ -1520,7 +1523,8 @@ MagickExport unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
   (void) QueryColorDatabase("none",&image->clip_mask->background_color,
     &image->exception);
   SetImage(image->clip_mask,TransparentOpacity);
-  LogMagickEvent(RenderEvent,"\nbegin clip-path %.1024s",draw_info->clip_path);
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"\nbegin clip-path %.1024s",
+    draw_info->clip_path);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("white",&clone_info->fill,&image->exception);
@@ -1528,7 +1532,7 @@ MagickExport unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
   status=DrawImage(image->clip_mask,clone_info);
   (void) NegateImage(image->clip_mask,False);
   DestroyDrawInfo(clone_info);
-  LogMagickEvent(RenderEvent,"end clip-path");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"end clip-path");
   return(status);
 }
 
@@ -1595,7 +1599,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
     number_vertices;
 
   assert(draw_info != (const DrawInfo *) NULL);
-  LogMagickEvent(RenderEvent,"    begin draw-dash");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"    begin draw-dash");
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->miterlimit=0;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
@@ -1682,7 +1686,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
   }
   LiberateMemory((void **) &dash_polygon);
   DestroyDrawInfo(clone_info);
-  LogMagickEvent(RenderEvent,"    end draw-dash");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"    end draw-dash");
   return(status);
 }
 
@@ -1800,7 +1804,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   assert(draw_info->primitive != (char *) NULL);
   if (*draw_info->primitive == '\0')
     return(False);
-  LogMagickEvent(RenderEvent,"begin draw-image");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"begin draw-image");
   if (*draw_info->primitive != '@')
     primitive=TranslateText((ImageInfo *) NULL,image,draw_info->primitive);
   else
@@ -2884,7 +2888,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (primitive_type == UndefinedPrimitive)
       {
-        LogMagickEvent(RenderEvent,"  %.*s",(int) (q-p),p);
+        (void) LogMagickEvent(RenderEvent,__MagickMethod,"  %.*s",
+          (int) (q-p),p);
         continue;
       }
     /*
@@ -3163,7 +3168,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     }
     if (primitive_info == (PrimitiveInfo *) NULL)
       break;
-    LogMagickEvent(RenderEvent,"  %.*s",(int) (q-p),p);
+    (void) LogMagickEvent(RenderEvent,__MagickMethod,"  %.*s",(int) (q-p),p);
     if (status == False)
       break;
     primitive_info[i].primitive=UndefinedPrimitive;
@@ -3207,7 +3212,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (status == False)
       break;
   }
-  LogMagickEvent(RenderEvent,"end draw-image");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"end draw-image");
   /*
     Free resources.
   */
@@ -3294,15 +3299,15 @@ MagickExport unsigned int DrawPatternPath(Image *image,
   (void) QueryColorDatabase("none",&(*pattern)->background_color,
     &image->exception);
   SetImage(*pattern,OpaqueOpacity);
-  LogMagickEvent(RenderEvent,"begin pattern-path %.1024s %.1024s",name,
-    geometry->value);
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,
+    "begin pattern-path %.1024s %.1024s",name,geometry->value);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->fill_pattern=(Image *) NULL;
   clone_info->stroke_pattern=(Image *) NULL;
   (void) CloneString(&clone_info->primitive,path->value);
   status=DrawImage(*pattern,clone_info);
   DestroyDrawInfo(clone_info);
-  LogMagickEvent(RenderEvent,"end pattern-path");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"end pattern-path");
   return(status);
 }
 
@@ -3591,7 +3596,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     return(False);
   if (0)
     DrawBoundingRectangles(image,draw_info,polygon_info);
-  LogMagickEvent(RenderEvent,"    begin draw-polygon");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"    begin draw-polygon");
   fill=(primitive_info->method == FillToBorderMethod) ||
     (primitive_info->method == FloodfillMethod);
   fill_color=draw_info->fill;
@@ -3645,7 +3650,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
         if (!SyncImagePixels(image))
           break;
       }
-      LogMagickEvent(RenderEvent,"    end draw-polygon");
+      (void) LogMagickEvent(RenderEvent,__MagickMethod,"    end draw-polygon");
       return(True);
     }
   /*
@@ -3696,7 +3701,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     if (!SyncImagePixels(image))
       break;
   }
-  LogMagickEvent(RenderEvent,"    end draw-polygon");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"    end draw-polygon");
   DestroyPolygonInfo(polygon_info);
   return(True);
 }
@@ -3763,30 +3768,32 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
   {
     case PointPrimitive:
     {
-      LogMagickEvent(RenderEvent,"PointPrimitive %ld,%ld %s",x,y,
-        methods[primitive_info->method]);
+      (void) LogMagickEvent(RenderEvent,__MagickMethod,
+        "PointPrimitive %ld,%ld %s",x,y,methods[primitive_info->method]);
       return;
     }
     case ColorPrimitive:
     {
-      LogMagickEvent(RenderEvent,"ColorPrimitive %ld,%ld %s",x,y,
-        methods[primitive_info->method]);
+      (void) LogMagickEvent(RenderEvent,__MagickMethod,
+        "ColorPrimitive %ld,%ld %s",x,y,methods[primitive_info->method]);
       return;
     }
     case MattePrimitive:
     {
-      LogMagickEvent(RenderEvent,"MattePrimitive %ld,%ld %s",x,y,
-        methods[primitive_info->method]);
+      (void) LogMagickEvent(RenderEvent,__MagickMethod,
+        "MattePrimitive %ld,%ld %s",x,y,methods[primitive_info->method]);
       return;
     }
     case TextPrimitive:
     {
-      LogMagickEvent(RenderEvent,"TextPrimitive %ld,%ld",x,y);
+      (void) LogMagickEvent(RenderEvent,__MagickMethod,"TextPrimitive %ld,%ld",
+        x,y);
       return;
     }
     case ImagePrimitive:
     {
-      LogMagickEvent(RenderEvent,"ImagePrimitive %ld,%ld",x,y);
+      (void) LogMagickEvent(RenderEvent,__MagickMethod,"ImagePrimitive %ld,%ld",
+        x,y);
       return;
     }
     default:
@@ -3801,26 +3808,29 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
     if (coordinates <= 0)
       {
         coordinates=(long) primitive_info[i].coordinates;
-        LogMagickEvent(RenderEvent,"    begin open (%ld)",coordinates);
+        (void) LogMagickEvent(RenderEvent,__MagickMethod,"    begin open (%ld)",
+          coordinates);
         p=point;
       }
     point=primitive_info[i].point;
     if ((fabs(q.x-point.x) > MagickEpsilon) ||
         (fabs(q.y-point.y) > MagickEpsilon))
-      LogMagickEvent(RenderEvent,"      %ld: %g,%g",coordinates,
-        point.x,point.y);
+      (void) LogMagickEvent(RenderEvent,__MagickMethod,"      %ld: %g,%g",
+        coordinates,point.x,point.y);
     else
-      LogMagickEvent(RenderEvent,"      %ld: %g,%g (duplicate)",coordinates,
-        point.x,point.y);
+      (void) LogMagickEvent(RenderEvent,__MagickMethod,
+        "      %ld: %g,%g (duplicate)",coordinates,point.x,point.y);
     q=point;
     coordinates--;
     if (coordinates > 0)
       continue;
     if ((fabs(p.x-point.x) > MagickEpsilon) ||
         (fabs(p.y-point.y) > MagickEpsilon))
-      LogMagickEvent(RenderEvent,"    end last (%ld)",coordinates);
+      (void) LogMagickEvent(RenderEvent,__MagickMethod,"    end last (%ld)",
+        coordinates);
     else
-      LogMagickEvent(RenderEvent,"    end open (%ld)",coordinates);
+      (void) LogMagickEvent(RenderEvent,__MagickMethod,"    end open (%ld)",
+        coordinates);
   }
 }
 
@@ -3843,10 +3853,11 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
   unsigned int
     status;
 
-  LogMagickEvent(RenderEvent,"  begin draw-primitive");
-  LogMagickEvent(RenderEvent,"    affine: %g,%g,%g,%g,%g,%g",
-    draw_info->affine.sx,draw_info->affine.rx,draw_info->affine.ry,
-    draw_info->affine.sy,draw_info->affine.tx,draw_info->affine.ty);
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"  begin draw-primitive");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,
+    "    affine: %g,%g,%g,%g,%g,%g",draw_info->affine.sx,draw_info->affine.rx,
+    draw_info->affine.ry,draw_info->affine.sy,draw_info->affine.tx,
+    draw_info->affine.ty);
   status=True;
   x=(long) ceil(primitive_info->point.x-0.5);
   y=(long) ceil(primitive_info->point.y-0.5);
@@ -4150,7 +4161,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       break;
     }
   }
-  LogMagickEvent(RenderEvent,"  end draw-primitive");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,"  end draw-primitive");
   return(status);
 }
 
@@ -4224,7 +4235,8 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   /*
     Draw stroked polygon.
   */
-  LogMagickEvent(RenderEvent,"    begin draw-stroke-polygon");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,
+    "    begin draw-stroke-polygon");
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->fill=draw_info->stroke;
   clone_info->stroke.opacity=TransparentOpacity;
@@ -4245,7 +4257,8 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
       }
   }
   DestroyDrawInfo(clone_info);
-  LogMagickEvent(RenderEvent,"    end draw-stroke-polygon");
+  (void) LogMagickEvent(RenderEvent,__MagickMethod,
+    "    end draw-stroke-polygon");
   return(status);
 }
 
