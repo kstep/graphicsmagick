@@ -1,3 +1,13 @@
+2002-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Created Windows "setup.exe" style installation package for
+    ImageMagick.
+  * Include PerlMagick Perl extension for ActiveState ActivePerl as
+    checkmark install option in Windows installation package.
+  * Include ImageMagickObject OLE Object for WSH and Visual Basic (not
+    IIS!!!) as checkmark install option in Windows installation package.
+  * Windows installation package establishes file extension associations
+    for ImageMagick.
+
 2002-07-17  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
   * PPM files were being written in P4 or P5 format if all pixels were gray.
     This is correct behavior for the PNM format but not for the PPM format.
