@@ -599,13 +599,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].blue=UpScale(*p++);
           image->colormap[i].green=UpScale(*p++);
           image->colormap[i].red=UpScale(*p++);
-          if (bmp_info.size != 12)
+          if (packet_size == 4)
             p++;
         }
         LiberateMemory((void **) &bmp_colormap);
       }
-    while (TellBlob(image) < (int) (start_position+bmp_info.offset_bits))
-      (void) ReadBlobByte(image);
+    SeekBlob(image,start_position+bmp_info.offset_bits,SEEK_SET);
     /*
       Read image data.
     */
