@@ -29,7 +29,8 @@ extern "C" {
   else \
     { \
       ThrowException(exception,code,reason,(image)->filename); \
-      CloseBlob(image); \
+      if (image->blob->type != UndefinedStream) \
+        CloseBlob(image); \
       DestroyImageList(image); \
     } \
   return((Image *) NULL); \
