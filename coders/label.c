@@ -96,8 +96,17 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   FontMetric
     metrics;
 
+  int
+    y;
+
   Image
     *image;
+
+  register int
+    x;
+
+  register PixelPacket
+    *q;
 
   unsigned int
     status;
@@ -114,8 +123,27 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     ThrowReaderException(DelegateWarning,"Unable to get font metrics",image);
   image->columns=metrics.width;
   image->rows=metrics.height;
-  SetImage(image,TransparentOpacity);
+  image->background_color.red=(~draw_info->fill.red);
+  image->background_color.green=(~draw_info->fill.green);
+  image->background_color.blue=(~draw_info->fill.blue);
+  SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);
+  image->matte=True;
+  if (0)
+  for (y=0; y < (int) image->rows; y++)
+  {
+    q=GetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      if (ColorMatch(*q,image->background_color,0))
+        q->opacity=TransparentOpacity;
+      q++;
+    }
+    if (!SyncImagePixels(image))
+      break;
+  }
   DestroyDrawInfo(draw_info);
   return(image);
 }
