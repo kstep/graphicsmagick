@@ -139,7 +139,7 @@ wmf_error_t wmf_scan (wmfAPI* API,unsigned long flags,wmfD_Rect* d_r)
 		return (API->err);
 	}
 
-	WMFLibPlayMetaFile (API);
+	WmfPlayMetaFile (API);
 
 	if (ERR (API))
 	{	WMF_DEBUG (API,"bailing...");
@@ -256,7 +256,7 @@ wmf_error_t wmf_play (wmfAPI* API,unsigned long flags,wmfD_Rect* d_r)
 
 	P->flags |= PLAYER_PLAY; /* Set play mode */
 
-	WMFLibPlayMetaFile (API);
+	WmfPlayMetaFile (API);
 
 	if (ERR (API))
 	{	WMF_DEBUG (API,"bailing...");
@@ -269,7 +269,7 @@ wmf_error_t wmf_play (wmfAPI* API,unsigned long flags,wmfD_Rect* d_r)
 	return (API->err);
 }
 
-static wmf_error_t WMFLibPlayMetaFile (wmfAPI* API)
+static wmf_error_t WmfPlayMetaFile (wmfAPI* API)
 {	int i;
 	int byte;
 
@@ -294,7 +294,7 @@ static wmf_error_t WMFLibPlayMetaFile (wmfAPI* API)
 	wmfFunctionReference* FR = (wmfFunctionReference*) API->function_reference;
 	wmfFontData*          FD = (wmfFontData*)          API->font_data;
 
-	WMF_DEBUG (API,"~~~~~~~~PlayMetaFile");
+	WMF_DEBUG (API,"~~~~~~~~WmfPlayMetaFile");
 
 	P->dc_stack_length = 0;
 
@@ -334,7 +334,7 @@ static wmf_error_t WMFLibPlayMetaFile (wmfAPI* API)
 	}
 
 	if ((API->bbuf.read == 0) || (API->bbuf.seek == 0) || (API->bbuf.tell == 0))
-	{	WMF_ERROR (API,"PlayMetaFile: input functions set improperly!");
+	{	WMF_ERROR (API,"WmfPlayMetaFile: input functions set improperly!");
 		API->err = wmf_E_Glitch;
 		return (API->err);
 	}
@@ -346,7 +346,7 @@ static wmf_error_t WMFLibPlayMetaFile (wmfAPI* API)
 		return (API->err);
 	}
 
-	WMFLibSetMapMode (API,(PLACEABLE (API)? (U16)MM_DPI : (U16)MM_TEXT));
+	WmfSetMapMode (API,(U16)(PLACEABLE (API) ? MM_DPI : MM_TEXT));
 
 	if (PLAY (API))
 	{	if (FR->device_begin) FR->device_begin (API);

@@ -115,7 +115,7 @@ static void D_Rect (wmfAPI*,wmfD_Rect*,U16,U16,U16,U16);
 
 static void D_Coord_Register (wmfAPI*,wmfD_Coord,float);
 
-static void WMFLibSetMapMode (wmfAPI*,U16 map_mode);
+static void WmfSetMapMode (wmfAPI*,U16 map_mode);
 
 static double PixelWidth (wmfAPI*);
 static double PixelHeight (wmfAPI*);
@@ -146,8 +146,8 @@ static void REGION_SubtractNonO1 (wmfAPI*,wmfRegion*,wmfD_Rect*,wmfD_Rect*,float
 static void REGION_IntersectRegion (wmfAPI*,wmfRegion*,wmfRegion*,wmfRegion*);
 static void REGION_IntersectO (wmfAPI*,wmfRegion*,wmfD_Rect*,wmfD_Rect*,wmfD_Rect*,wmfD_Rect*,float,float);
 
-static void WMFLibSetRectRgn (wmfAPI*,wmfRegion*,wmfD_Rect*);
-static void WMFLibCombineRgn (wmfAPI*,wmfRegion*,wmfRegion*,wmfRegion*,U16);
+static void WmfSetRectRgn (wmfAPI*,wmfRegion*,wmfD_Rect*);
+static void WmfCombineRgn (wmfAPI*,wmfRegion*,wmfRegion*,wmfRegion*,U16);
 
 static void rect_merge (wmfAPI*,wmfRegion*,wmfD_Rect*,float,float);
 
@@ -215,7 +215,7 @@ static void diagnose_object (wmfAPI*,unsigned int,wmfObject*);
 /* In: player.c
  */
 
-static wmf_error_t WMFLibPlayMetaFile (wmfAPI*);
+static wmf_error_t WmfPlayMetaFile (wmfAPI*);
 
 static U16 ParU16 (wmfAPI*,wmfRecord*,unsigned long);
 static S16 ParS16 (wmfAPI*,wmfRecord*,unsigned long);
@@ -247,7 +247,7 @@ static wmfRecord OffsetRecord (wmfAPI*,wmfRecord*,unsigned long);
 
 #define SCAN_DIAGNOSTIC(API,MESG) if (SCAN ((API)) && DIAG ((API))) fputs (MESG,stderr);
 
-/* Modes for SetMapMode
+/* Modes for WmfSetMapMode
  */
 #define MM_TEXT        1
 #define MM_LOMETRIC    2

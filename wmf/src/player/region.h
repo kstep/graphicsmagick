@@ -44,7 +44,7 @@ static wmfD_Rect* rgn_memchk (wmfAPI* API,wmfRegion* rgn)
 	&& ((r1)->BR.y > (r2)->TL.y) \
 	&& ((r1)->TL.y < (r2)->BR.y) )
 
-static void WMFLibSetRectRgn (wmfAPI* API,wmfRegion* rgn,wmfD_Rect* rect)
+static void WmfSetRectRgn (wmfAPI* API,wmfRegion* rgn,wmfD_Rect* rect)
 {	if ((rect == 0) || (rect->TL.x == rect->BR.x) || (rect->TL.y == rect->BR.y)) /* EMPTY_REGION (rgn); */
 	{	rgn->extents.TL.x = 0;
 		rgn->extents.TL.y = 0;
@@ -63,7 +63,7 @@ static void WMFLibSetRectRgn (wmfAPI* API,wmfRegion* rgn,wmfD_Rect* rect)
 	}
 }
 
-static void WMFLibCombineRgn (wmfAPI* API,wmfRegion* destObj,wmfRegion* src1Obj,wmfRegion* src2Obj,U16 mode)
+static void WmfCombineRgn (wmfAPI* API,wmfRegion* destObj,wmfRegion* src1Obj,wmfRegion* src2Obj,U16 mode)
 {	if ((destObj == 0) || (src1Obj == 0)) return;
 
 	if (mode == RGN_COPY)

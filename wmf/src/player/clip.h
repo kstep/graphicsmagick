@@ -45,7 +45,7 @@ static void Clipping (wmfAPI* API,wmfRegion* clip,wmfRegion* vis,wmfD_Rect* rect
 		}
 	}
 
-	WMFLibSetRectRgn (API,&rgn,rect);
+	WmfSetRectRgn (API,&rgn,rect);
 
 	if ((clip->numRects == 0) && (flags & CLIP_INTERSECT))
 	{	(*clip) = rgn;
@@ -64,8 +64,8 @@ static void Clipping (wmfAPI* API,wmfRegion* clip,wmfRegion* vis,wmfD_Rect* rect
 			}
 		}
 
-		WMFLibSetRectRgn (API,clip,0);
-		WMFLibCombineRgn (API,clip,vis,0,RGN_COPY);
+		WmfSetRectRgn (API,clip,0);
+		WmfCombineRgn (API,clip,vis,0,RGN_COPY);
 
 		if (ERR (API))
 		{	WMF_DEBUG (API,"bailing...");
@@ -73,14 +73,14 @@ static void Clipping (wmfAPI* API,wmfRegion* clip,wmfRegion* vis,wmfD_Rect* rect
 		}
 	}
 
-	WMFLibCombineRgn (API,&rgn,clip,&rgn,((flags & CLIP_EXCLUDE) ? (U16)RGN_DIFF : (U16)RGN_AND));
+	WmfCombineRgn (API,&rgn,clip,&rgn,(U16)((flags & CLIP_EXCLUDE) ? RGN_DIFF : RGN_AND));
 
 	if (ERR (API))
 	{	WMF_DEBUG (API,"bailing...");
 		return;
 	}
 
-	(*clip) = rgn; /* What about what *was* in clip ?? Check CombineRgn */
+	(*clip) = rgn; /* What about what *was* in clip ?? Check WmfCombineRgn */
 }
 
 #endif /* ! WMFPLAYER_CLIP_H */

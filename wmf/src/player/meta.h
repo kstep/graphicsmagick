@@ -30,7 +30,7 @@ static void meta_mapmode (wmfAPI* API,wmfRecord* Record)
 
 	par_U16 = ParU16 (API,Record,0);
 
-	WMFLibSetMapMode (API,par_U16);
+	WmfSetMapMode (API,par_U16);
 }
 
 static void meta_orgext (wmfAPI* API,wmfRecord* Record)
@@ -1409,7 +1409,7 @@ static void meta_rgn_create (wmfAPI* API,wmfRecord* Record)
 		return;
 	}
 
-	WMFLibSetRectRgn (API,region,0);
+	WmfSetRectRgn (API,region,0);
 
 	if (SCAN (API) && DIAG (API))
 	{	fprintf (stderr,"\t[0x%04x]",Record->function);
@@ -1430,7 +1430,7 @@ static void meta_rgn_create (wmfAPI* API,wmfRecord* Record)
 		return;
 	}
 
-	WMFLibSetRectRgn (API,&temp_region,0);
+	WmfSetRectRgn (API,&temp_region,0);
 
 	end = OffsetRecord (API,Record,10);
 	max_index = 10;
@@ -1474,8 +1474,8 @@ static void meta_rgn_create (wmfAPI* API,wmfRecord* Record)
 
 			D_Rect (API,&d_r,x1,y1,x2,y2);
 
-			WMFLibSetRectRgn (API,&temp_region,&d_r);
-			WMFLibCombineRgn (API,region,region,&temp_region,RGN_OR);
+			WmfSetRectRgn (API,&temp_region,&d_r);
+			WmfCombineRgn (API,region,region,&temp_region,RGN_OR);
 		}
 	}
 
@@ -1537,7 +1537,7 @@ static void meta_clip_select (wmfAPI* API,wmfRecord* Record)
 
 	clip = (wmfRegion*) P->dc->clip;
 
-	WMFLibCombineRgn (API,clip,region,0,RGN_COPY);
+	WmfCombineRgn (API,clip,region,0,RGN_COPY);
 }
 
 static void meta_clip_offset (wmfAPI* API,wmfRecord* Record)
