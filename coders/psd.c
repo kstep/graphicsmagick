@@ -459,7 +459,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image.
   */
-  SetImage(image,TransparentOpacity);
+  SetImage(image,OpaqueOpacity);
   image->matte=psd_info.channels >= 4;
   if (psd_info.mode == CMYKMode)
     {
@@ -592,7 +592,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image)
           }
-        SetImage(layer_info[i].image,TransparentOpacity);
+        SetImage(layer_info[i].image,OpaqueOpacity);
         if (psd_info.mode == CMYKMode)
           layer_info[i].image->colorspace=CMYKColorspace;
         for (j=0; j < layer_info[i].channels; j++)
