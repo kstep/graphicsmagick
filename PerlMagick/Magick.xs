@@ -364,8 +364,7 @@ static struct
       {"antialias", BooleanTypes}, {"family", StringReference},
       {"style", StyleTypes}, {"stretch", StretchTypes},
       {"weight", IntegerReference}, {"align", AlignTypes},
-      {"encoding", StringReference}, {"unicode", BooleanTypes },
-      {"affine", ArrayReference}, {"box", StringReference} } },
+      {"encoding", StringReference}, {"affine", ArrayReference} } },
     { "ColorFloodfill", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
       {"fill", StringReference}, {"bordercolor", StringReference},
@@ -4846,12 +4845,12 @@ Mogrify(ref,...)
             }
           if (attribute_flag[11])
             draw_info->gravity=(GravityType) argument_list[11].int_reference;
-          if (attribute_flag[26])
+          if (attribute_flag[25])
             {
               AV
                 *av;
 
-              av=(AV *) argument_list[26].array_reference;
+              av=(AV *) argument_list[25].array_reference;
               if (av_len(av) >= 1)
                 draw_info->affine.sx=(double) SvNV(*(av_fetch(av,0,0)));
               if (av_len(av) >= 2)
@@ -4952,10 +4951,8 @@ Mogrify(ref,...)
           if (attribute_flag[24])
             (void) CloneString(&draw_info->encoding,
               argument_list[24].string_reference);
-          if (attribute_flag[25])
-            draw_info->unicode=argument_list[25].int_reference != 0;
-          if (attribute_flag[27])
-            (void) QueryColorDatabase(argument_list[27].string_reference,
+          if (attribute_flag[26])
+            (void) QueryColorDatabase(argument_list[26].string_reference,
               &draw_info->undercolor,&exception);
           AnnotateImage(image,draw_info);
           DestroyDrawInfo(draw_info);
@@ -7064,6 +7061,17 @@ QueryFontMetrics(ref,...)
           MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
+        case 'e':
+        case 'E':
+        {
+          if (LocaleCompare(attribute,"encoding") == 0)
+            {
+              CloneString(&draw_info->encoding,SvPV(ST(i),na));
+              break;
+            }
+          MagickError(OptionError,"Invalid attribute",attribute);
+          break;
+        }
         case 'f':
         case 'F':
         {
@@ -7153,27 +7161,6 @@ QueryFontMetrics(ref,...)
               (void) sscanf(SvPV(ST(i),na),"%lf%*[, ]%lf",&affine.tx,
                 &affine.ty);
               break;
-            }
-          MagickError(OptionError,"Invalid attribute",attribute);
-          break;
-        }
-        case 'U':
-        case 'u':
-        {
-          if (LocaleCompare(attribute,"unicode") == 0)
-            {
-              int
-                sp;
-
-              sp=!SvPOK(ST(i)) ? SvIV(ST(i)) :
-                LookupStr(BooleanTypes,SvPV(ST(i),na));
-              if (sp < 0)
-                {
-                  MagickError(OptionError,"Invalid unicode type",SvPV(ST(i),na));
-                  break;
-                }
-             draw_info->unicode=sp != 0;
-             break;
             }
           MagickError(OptionError,"Invalid attribute",attribute);
           break;
