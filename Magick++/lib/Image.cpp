@@ -1944,12 +1944,9 @@ unsigned int Magick::Image::columns ( void ) const
 void Magick::Image::comment ( const std::string &comment_ )
 {
   modifyImage();
-
+  SetImageAttribute( image(), "Comment", NULL );
   if ( comment_.length() > 0 )
     SetImageAttribute( image(), "Comment", comment_.c_str() );
-  else
-    SetImageAttribute( image(), "Comment", NULL );
-
   throwImageException();
 }
 std::string Magick::Image::comment ( void ) const
