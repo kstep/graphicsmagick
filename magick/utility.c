@@ -400,8 +400,8 @@ MagickExport unsigned short *ConvertTextToUnicode(const char *text,int *count)
 */
 
 #if defined(HasGS)
-#include "iapi.h"
-#include "errors.h"
+#include "ps/iapi.h"
+#include "ps/errors.h"
 #endif
 
 MagickExport unsigned int ExecutePostscriptInterpreter(const unsigned int

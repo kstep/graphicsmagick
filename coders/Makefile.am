@@ -34,7 +34,7 @@ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
 MAGICK_CODER_SRCS = art.c avi.c avs.c 8bim.c bmp.c cmyk.c cut.c dcm.c dps.c \
   dpx.c ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c histogram.c  \
-  htmlc. icm.c icon.c iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c  \
+  html.c icm.c icon.c iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c  \
   mono.c mpc.c mtv.c mvg.c null.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c \
   plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c  \
   rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c \

@@ -206,7 +206,7 @@ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
 MAGICK_CODER_SRCS = art.c avi.c avs.c 8bim.c bmp.c cmyk.c cut.c dcm.c dps.c \
   dpx.c ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c histogram.c  \
-  htmlc. icm.c icon.c iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c  \
+  html.c icm.c icon.c iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c  \
   mono.c mpc.c mtv.c mvg.c null.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c \
   plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c  \
   rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c \
@@ -747,16 +747,17 @@ libCoders_la_LIBADD =
 @WITH_MODULES_FALSE@am_libCoders_la_OBJECTS =  art.lo avi.lo avs.lo \
 @WITH_MODULES_FALSE@8bim.lo bmp.lo cmyk.lo cut.lo dcm.lo dps.lo dpx.lo \
 @WITH_MODULES_FALSE@ept.lo fax.lo fits.lo fpx.lo gif.lo gradient.lo \
-@WITH_MODULES_FALSE@gray.lo hdf.lo histogram.lo icm.lo icon.lo iptc.lo \
-@WITH_MODULES_FALSE@jbig.lo jpeg.lo label.lo logo.lo map.lo matte.lo \
-@WITH_MODULES_FALSE@miff.lo mono.lo mpc.lo mtv.lo mvg.lo null.lo pcd.lo \
-@WITH_MODULES_FALSE@pcl.lo pcx.lo pdb.lo pdf.lo pict.lo pix.lo \
-@WITH_MODULES_FALSE@plasma.lo png.lo pnm.lo preview.lo ps.lo ps2.lo \
-@WITH_MODULES_FALSE@ps3.lo psd.lo pwp.lo rgb.lo rla.lo rle.lo sct.lo \
-@WITH_MODULES_FALSE@sfw.lo sgi.lo stegano.lo sun.lo svg.lo tga.lo \
-@WITH_MODULES_FALSE@tiff.lo tile.lo tim.lo ttf.lo txt.lo uil.lo url.lo \
-@WITH_MODULES_FALSE@uyvy.lo vicar.lo vid.lo viff.lo wbmp.lo wmf.lo \
-@WITH_MODULES_FALSE@wpg.lo x.lo xbm.lo xc.lo xpm.lo xwd.lo yuv.lo
+@WITH_MODULES_FALSE@gray.lo hdf.lo histogram.lo html.lo icm.lo icon.lo \
+@WITH_MODULES_FALSE@iptc.lo jbig.lo jpeg.lo label.lo logo.lo map.lo \
+@WITH_MODULES_FALSE@matte.lo miff.lo mono.lo mpc.lo mtv.lo mvg.lo \
+@WITH_MODULES_FALSE@null.lo pcd.lo pcl.lo pcx.lo pdb.lo pdf.lo pict.lo \
+@WITH_MODULES_FALSE@pix.lo plasma.lo png.lo pnm.lo preview.lo ps.lo \
+@WITH_MODULES_FALSE@ps2.lo ps3.lo psd.lo pwp.lo rgb.lo rla.lo rle.lo \
+@WITH_MODULES_FALSE@sct.lo sfw.lo sgi.lo stegano.lo sun.lo svg.lo \
+@WITH_MODULES_FALSE@tga.lo tiff.lo tile.lo tim.lo ttf.lo txt.lo uil.lo \
+@WITH_MODULES_FALSE@url.lo uyvy.lo vicar.lo vid.lo viff.lo wbmp.lo \
+@WITH_MODULES_FALSE@wmf.lo wpg.lo x.lo xbm.lo xc.lo xpm.lo xwd.lo \
+@WITH_MODULES_FALSE@yuv.lo
 libCoders_la_OBJECTS =  $(am_libCoders_la_OBJECTS)
 logo_la_DEPENDENCIES =  ../magick/libMagick.la
 am_logo_la_OBJECTS =  logo.lo
