@@ -2331,8 +2331,8 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   DestroyImageInfo(clone_info);
 	for (i=1; i < number_images; i++)
-	  LiberateMemory((void *) &images[i]);
-  LiberateMemory((void *) &images);
+	  LiberateMemory((void **) &images[i]);
+  LiberateMemory((void **) &images);
   return(image);
 }
 
