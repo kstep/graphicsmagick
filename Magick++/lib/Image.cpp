@@ -628,7 +628,10 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
   DrawContext context = DrawAllocateContext( options()->drawInfo(), image());
   for( std::list<Magick::Drawable>::const_iterator p = drawable_.begin();
        p != drawable_.end(); p++ )
-    p->operator()(context);
+    {
+      p->operator()(context);
+      throwImageException();
+    }
   DrawRender(context);
   DrawDestroyContext(context);
 

@@ -14,21 +14,26 @@ extern "C" {
 #define _XOPEN_SOURCE  500
 #define _POSIX_C_SOURCE  199506L
 
-#define _MAGICK_CONFIG_H
-#if !defined(vms) && !defined(macintosh)
-#include "magick/magick_config.h"
-#else
-#include "magick_config.h"
+#if !defined(_MAGICK_CONFIG_H)
+# define _MAGICK_CONFIG_H
+# if !defined(vms) && !defined(macintosh)
+#  include "magick/magick_config.h"
+# else
+#  include "magick_config.h"
+# endif
+# if defined(__cplusplus) || defined(c_plusplus)
+#  undef inline
+# endif
 #endif
 
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #if !defined(WIN32)
-#  include <unistd.h>
+# include <unistd.h>
 #else
-#  include <direct.h>
-#  define HAVE_STRERROR
+# include <direct.h>
+# define HAVE_STRERROR
 #endif
 
 #if defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)

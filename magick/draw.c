@@ -164,10 +164,21 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
   if (context->mvg == 0)
     {
       context->mvg = (char *) AcquireMemory(alloc_size);
+      if( context->mvg == (char*) NULL )
+        {
+          ThrowException(&context->image->exception,ResourceLimitError,"Unable to draw image",
+                         "Memory allocation failed");
+          return -1;
+        }
+
       context->mvg_alloc = alloc_size;
       context->mvg_length = 0;
       if (context->mvg == 0)
-        return -1;
+        {
+          ThrowException(&context->image->exception,ResourceLimitError,"Unable to draw image",
+                         "Memory allocation failed");
+          return -1;
+        }
     }
 
   /* Re-allocate additional memory if necessary (ensure 20K unused) */
@@ -177,7 +188,11 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
 
       ReacquireMemory((void **) &context->mvg, realloc_size);
       if (context->mvg == NULL)
-        return -1;
+        {
+          ThrowException(&context->image->exception,ResourceLimitError,"Unable to draw image",
+                         "Memory allocation failed");
+          return -1;
+        }
       context->mvg_alloc = realloc_size;
     }
 
@@ -399,10 +414,18 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
   context->index = 0;
   context->graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
   if(context->graphic_context == (DrawInfo **) NULL)
-    MagickFatalError(ResourceLimitFatalError,
-                     "Unable to allocate drawing context",
+    {
+      ThrowException(&context->image->exception,ResourceLimitError,"Unable to draw image",
                      "Memory allocation failed");
+      return (DrawContext) NULL;
+    }
   CurrentContext=CloneDrawInfo((ImageInfo*)NULL,draw_info);
+  if(CurrentContext == (DrawInfo*) NULL)
+    {
+      ThrowException(&context->image->exception,ResourceLimitError,"Unable to draw image",
+                     "Memory allocation failed");
+      return (DrawContext) NULL;
+    }
 
   context->filter_off = False;
 
@@ -460,6 +483,9 @@ MagickExport void DrawSetClipPath(DrawContext context, const char *clip_path)
       LocaleCompare(CurrentContext->clip_path,clip_path) != 0)
     {
       CloneString(&CurrentContext->clip_path,clip_path);
+      if(CurrentContext->clip_path == (char*)NULL)
+        ThrowDrawException(ResourceLimitError, "Unable to draw image",
+                           "Memory allocation failed");
 #if 0
       (void) DrawClipPath(context->image,context->graphic_context[context->index,
                                                                  CurrentContext->clip_path));
@@ -705,6 +731,9 @@ MagickExport void DrawSetFont(DrawContext context, const char *font_name)
      LocaleCompare(CurrentContext->font,font_name) != 0)
     {
       (void) CloneString(&CurrentContext->font,font_name);
+      if(CurrentContext->font == (char*)NULL)
+        ThrowDrawException(ResourceLimitError, "Unable to draw image",
+                           "Memory allocation failed");
       MvgPrintf(context, "font '%s'\n", font_name);
     }
 }
@@ -720,7 +749,9 @@ MagickExport void DrawSetFontFamily(DrawContext context,
      LocaleCompare(CurrentContext->family,font_family) != 0)
     {
       (void) CloneString(&CurrentContext->family,font_family);
-
+      if(CurrentContext->family == (char*)NULL)
+        ThrowDrawException(ResourceLimitError, "Unable to draw image",
+                           "Memory allocation failed");
       MvgPrintf(context, "font-family %s\n", font_family);
     }
 }
@@ -930,7 +961,8 @@ MagickExport void DrawComposite(DrawContext context,
 
   image_info = CloneImageInfo((ImageInfo*)NULL);
   if(!image_info)
-    return;
+    ThrowDrawException(ResourceLimitError, "Unable to draw image",
+                       "Memory allocation failed");
 
   blob = (unsigned char*)ImageToBlob( image_info, clone_image, &blob_length,
                                       &context->image->exception );
@@ -1626,6 +1658,9 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
     }
   CurrentContext=
     CloneDrawInfo((ImageInfo *) NULL,context->graphic_context[context->index-1]);
+  if(CurrentContext == (DrawInfo*) NULL)
+    ThrowDrawException(ResourceLimitError, "Unable to draw image",
+                       "Memory allocation failed");
 
   MvgPrintf(context, "push graphic-context\n");
   context->indent_depth++;

@@ -24,6 +24,9 @@ extern "C" {
 # else
 #  include "magick_config.h"
 # endif
+# if defined(__cplusplus) || defined(c_plusplus)
+#  undef inline
+# endif
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
