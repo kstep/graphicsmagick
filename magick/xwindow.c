@@ -3317,7 +3317,7 @@ MagickExport char *XGetResourceInstance(XrmDatabase database,
   status=XrmGetResource(database,resource_name,"ImageMagick",&resource_type,
     &resource_value);
   if (status == False)
-    return((char *) resource_default);
+    return(AllocateString(resource_default));
   return(resource_value.addr);
 }
 
