@@ -1,3 +1,8 @@
+2004-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/compress.c (Ascii85Tuple): Encoding bug is indeed fixed
+	on DEC Alpha. Also warnings reduction with Digital Unix compiler.
+
 2004-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/compress.c (Ascii85Tuple): Add casts to reduce compiler

@@ -59,8 +59,10 @@ CONFIG_CLEAN_FILES = GraphicsMagickWand-config GraphicsMagickWand.pc
 am__installdirs = $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir) $(DESTDIR)$(pkgconfigdir) $(DESTDIR)$(pkgincludedir)
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
+am__DEPENDENCIES_1 =
 libGraphicsMagickWand_la_DEPENDENCIES =  \
-	$(top_builddir)/magick/libGraphicsMagick.la
+	$(top_builddir)/magick/libGraphicsMagick.la \
+	$(am__DEPENDENCIES_1)
 am_libGraphicsMagickWand_la_OBJECTS = drawing_wand.lo magick_wand.lo \
 	pixel_wand.lo magick_compat.lo
 libGraphicsMagickWand_la_OBJECTS =  \
@@ -444,7 +446,7 @@ libGraphicsMagickWand_la_SOURCES = drawing_wand.c magick_wand.c pixel_wand.c \
 libGraphicsMagickWand_la_LDFLAGS = -no-undefined \
 	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
 
-libGraphicsMagickWand_la_LIBADD = $(top_builddir)/magick/libGraphicsMagick.la
+libGraphicsMagickWand_la_LIBADD = $(top_builddir)/magick/libGraphicsMagick.la $(LIB_MATH)
 drawtest_LDADD = libGraphicsMagickWand.la
 drawtest_LDFLAGS = @LDFLAGS@
 drawtest_SOURCES = drawtest.c

@@ -27,7 +27,7 @@ libGraphicsMagickWand_la_SOURCES = drawing_wand.c magick_wand.c pixel_wand.c \
 libGraphicsMagickWand_la_LDFLAGS = -no-undefined \
 	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
 
-libGraphicsMagickWand_la_LIBADD = $(top_builddir)/magick/libGraphicsMagick.la
+libGraphicsMagickWand_la_LIBADD = $(top_builddir)/magick/libGraphicsMagick.la $(LIB_MATH)
 
 check_PROGRAMS = drawtest wandtest
 
