@@ -164,6 +164,9 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
   Image
     *image;
 
+  IndexPacket
+    index;
+
   int
     c,
     j,
@@ -177,6 +180,9 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
   register int
     i,
     x;
+
+  register PixelPacket
+    *q;
 
   register unsigned char
     *p;
@@ -347,8 +353,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
     /*
       Convert FITS pixels to pixel packets.
     */
-    status=ReadBlob(image,image->columns*image->rows*packet_size,
-      (char *) fits_pixels);
+    status=ReadBlob(image,image->columns*image->rows*packet_size,fits_pixels);
     if (status == False)
       MagickWarning(CorruptImageWarning,"Insufficient image data in file",
         image->filename);
@@ -408,7 +413,8 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
     p=fits_pixels;
     for (y=image->rows-1; y >= 0; y--)
     {
-      if (!SetPixelCache(image,0,y,image->columns,1))
+      q=SetPixelCache(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x < (int) image->columns; x++)
       {
@@ -434,14 +440,17 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         else
           if (scaled_pixel > MaxRGB)
             scaled_pixel=MaxRGB;
-        image->indexes[x]=(unsigned short) scaled_pixel;
+        index=scaled_pixel;
+        image->indexes[x]=index;
+        q->red=image->colormap[index].red;
+        q->green=image->colormap[index].green;
+        q->blue=image->colormap[index].blue;
       }
       if (!SyncPixelCache(image))
         break;
       if (QuantumTick(y,image->rows))
         ProgressMonitor(LoadImageText,y,image->rows);
     }
-    SyncImage(image);
     FreeMemory(fits_pixels);
     /*
       Proceed to next image.
@@ -578,7 +587,7 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
       *q++=DownScale(Intensity(*p));
       p++;
     }
-    (void) WriteBlob(image,q-pixels,(char *) pixels);
+    (void) WriteBlob(image,q-pixels,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
   }

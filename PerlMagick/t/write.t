@@ -68,7 +68,7 @@ testReadWrite( 'DIB:input.dib',
 testReadWrite( 'FITS:input.fits',
                'FITS:output.fits',
                q//,
-               '64cf3c4c88aa5b1083eeb57f4fb8a457' );
+               '6dc34477296f85d8584e655b3a429945' );
 
 #
 # CompuServe graphics interchange format
