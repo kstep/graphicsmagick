@@ -60,6 +60,7 @@ OutputBaseFilename=ImageMagick-5.4.8-win2k
 Name: desktop_icon; Description: "Create a &desktop icon"; MinVersion: 4,4
 Name: update_path; Description: "Update executable search path"
 Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.6.1 build 633"; Flags: unchecked
+Name: install_Magick_DLL; Description: "Install ImageMagickObject OLE Control for Visual Basic and WSH"; Flags: unchecked
 
 ; Windows registry settings
 [Registry]
@@ -532,6 +533,10 @@ Source: "..\PerlMagick\Image-Magick.ppd"; DestDir: "{app}\PerlMagick"; CopyMode:
 Source: "..\PerlMagick\Image-Magick.tar.gz"; DestDir: "{app}\PerlMagick\x86"; CopyMode: alwaysoverwrite
 Source: "..\PerlMagick\demo\*"; DestDir: "{app}\PerlMagick\demo"; CopyMode: alwaysoverwrite
 Source: "PerlMagick-PPM.txt"; DestDir: "{app}\PerlMagick"; CopyMode: alwaysoverwrite; DestName: "README.txt"
+; ImageMagickObject DLL (usable from Visual Basic and WSH)
+Source: "bin\ImageMagickObject.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+Source: "..\contrib\win32\ATL\ImageMagickObject\Tests\VBTest\*"; DestDir: "{app}\ImageMagickObject\VBExample"; CopyMode: alwaysoverwrite
+Source: "..\contrib\win32\ATL\ImageMagickObject\Tests\WSHTest\*"; DestDir: "{app}\ImageMagickObject\WSHExample"; CopyMode: alwaysoverwrite
 
 [Icons]
 Name: "{group}\ImageMagick Web Pages"; Filename: "{app}\ImageMagick.html"
@@ -545,9 +550,13 @@ Name: "{userdesktop}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; Icon
 ; Add -debug to parameters to enable debugging
 Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -a:""{app}"""; StatusMsg: "Updating environment variables..."; Tasks: update_path
 Filename: "ppm"; Parameters: "install Image-Magick.ppd"; WorkingDir: "{app}\PerlMagick"; StatusMsg: "Installing PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
+; Add /s to regsvr32 for silent operation
+Filename: "regsvr32"; Parameters: "/c ""{app}\ImageMagickObject.dll"""; StatusMsg: "Registering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
 
 [UninstallRun]
 ; Add -debug to parameters to enable debugging
 Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -r:""{app}"""; StatusMsg: "Restoring environment variables..."; Tasks: update_path
 Filename: "ppm"; Parameters: "remove Image-Magick"; StatusMsg: "Uninstalling PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
+; Add /s to regsvr32 for silent operation
+Filename: "regsvr32"; Parameters: "/u ""{app}\ImageMagickObject.dll"""; StatusMsg: "Unregistering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
 
