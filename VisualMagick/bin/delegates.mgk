@@ -3,7 +3,7 @@
 <delegate decode="autotrace" stealth="True" command='autotrace -output-format svg -output-file "%o" "%i"' />
   <delegate decode="bmp" encode="launch" mode="encode" command='imdisplay.exe "%i."' />
   <delegate decode="bmp" encode="win" mode="encode" command='imdisplay.exe "%i."' />
-  <delegate decode="browse" restrain="True" spawn="True" command='cmd /C start http://www.imagemagick.org/ImageMagick/'  />
+  <delegate decode="browse" restrain="True" spawn="True" command='cmd /C start http://www.imagemagick.org/'  />
   <delegate decode="bzip" restrain="True" command='|bzip2 -cd "%i"' />
   <delegate decode="cgm" command='ralcgm -d ps "%i" "%o" %u
     convert -concatenate %o*.ps "%o"' />
