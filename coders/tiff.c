@@ -720,7 +720,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Palette or grayscale image
         */
-        image->colors=MaxRGBGivenBits(bits_per_sample);
+        image->colors=MaxRGBGivenBits(bits_per_sample)+1;
         /* Constrain image colormap to MaxColormapSize */
         image->colors=Min(MaxColormapSize,image->colors);
         /* Allocate colormap */
