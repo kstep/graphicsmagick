@@ -107,12 +107,13 @@ static void Rd_WP_DWORD(Image *image, DWORD *d)
 }
 
 
-static void InsertRow(char *p,int y,Image *image)
+static void InsertRow(unsigned char *p,int y,Image *image)
 {
 int bit,x;
 register PixelPacket *q;
 IndexPacket index;
 register IndexPacket *indexes;
+
 
  switch (image->depth)
       {
@@ -182,9 +183,9 @@ register IndexPacket *indexes;
       case 8: /* Convert PseudoColor scanline. */
            {
            q=SetImagePixels(image,0,y,image->columns,1);
-           if (q == (PixelPacket *) NULL)
-                 break;
+           if (q == (PixelPacket *) NULL) break;
            indexes=GetIndexes(image);
+
            for (x=0; x < (int) image->columns; x++)
                 {
                 index=(*p++);
@@ -316,13 +317,13 @@ long ldblk;
 static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image *image;
-  unsigned char *pixels;
   unsigned int status;
   WPGHeader  Header;
   WPGRecord  Rec;
   WPGBitmapType1 BitmapHeader1;
   WPGBitmapType2 BitmapHeader2;
-  unsigned long height,width;
+  WPGColorMapRec WPG_Palette;
+  int i;
 
   /*
     Open image file.
@@ -334,7 +335,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read WPG image.
   */
-   Header.FileId==LSBFirstReadLong(image);
+   Header.FileId=LSBFirstReadLong(image);
    Header.DataOffset=LSBFirstReadLong(image);
    Header.ProductType=LSBFirstReadShort(image);
    Header.FileType=LSBFirstReadShort(image);
@@ -343,18 +344,25 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
    Header.EncryptKey=LSBFirstReadShort(image);
    Header.Reserved=LSBFirstReadShort(image);
 
-  if (Header.FileId!=0x435057FF || Header.FileType!=1 )
+  if (Header.FileId!=0x435057FF || (Header.ProductType>>8)!=0x16 )
       ThrowReaderException(CorruptImageWarning,"Not a WPG image file",image);
   if(Header.EncryptKey!=0 )
       ThrowReaderException(CorruptImageWarning,"Encrypted WPG image file",image);
+  if(Header.FileType!=1 )
+      ThrowReaderException(CorruptImageWarning,"Unsupported level of WPG image",image);
 
+  image->colors = 0;
   while(!EOFBlob(image)) /* object parser loop */
    {
    SeekBlob(image,Header.DataOffset,SEEK_SET);  /*How could I do fseek??*/
    if(EOFBlob(image)) break;
 
-   Rec.RecType=ReadByte(image);
+   Rec.RecType=(i=ReadByte(image));
+   if(i==EOF) break;
    Rd_WP_DWORD(image,&Rec.RecordLength);
+   if(EOFBlob(image)) break;
+
+//printf("[--Type:%d;%lX----]",(int)Rec.RecType,Rec.RecordLength);fflush(stdout);
 
    Header.DataOffset=TellBlob(image)+Rec.RecordLength;
 
@@ -367,21 +375,34 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	     BitmapHeader1.HorzRes=LSBFirstReadShort(image);
 	     BitmapHeader1.VertRes=LSBFirstReadShort(image);
 
+	     if(BitmapHeader1.HorzRes && BitmapHeader1.VertRes)
+	       {
+	       image->units=PixelsPerCentimeterResolution;
+	       image->x_resolution=BitmapHeader1.HorzRes/470.0;
+	       image->y_resolution=BitmapHeader1.VertRes/470.0;
+	       }
              image->columns=BitmapHeader1.Width;
              image->rows=BitmapHeader1.Heigth;
              image->depth=BitmapHeader1.Depth;
-             
-	     if(UnpackWPGRaster(image)<0) /* The raster cannot be unpacked */
-                 {
-                 ThrowReaderException(ResourceLimitWarning,"Cannot decompress raster",image);
-                 }
-             break;
-/*	  0x0E:	// palette
-	     BlockRead(f,WpPal,sizeof(WpPal),readed);
 
-	     CreatePalette(Pal,round(ln(WpPal.NumOfEntries)/ln(2)));
-	     BlockRead(F,Pal^.pal[WpPal.StartIndex],3*(WpPal.NumOfEntries-WpPal.StartIndex));
-*/
+	     goto UnpackRaster;
+	     
+     case 0x0E:	/*Color palette */
+             WPG_Palette.StartIndex=LSBFirstReadShort(image);
+	     WPG_Palette.NumOfEntries=LSBFirstReadShort(image);
+	     
+	     image->colors=WPG_Palette.NumOfEntries;
+	     if (!AllocateImageColormap(image,image->colors))
+                    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+			             image);
+             for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
+               {
+	       image->colormap[i].red=ReadByte(image);
+	       image->colormap[i].green=ReadByte(image);
+               image->colormap[i].blue=ReadByte(image);
+	       }
+	     break;  
+
      case 0x14:  /* bitmap type 2 */
              BitmapHeader2.RotAngle=LSBFirstReadShort(image);
              BitmapHeader2.LowLeftX=LSBFirstReadShort(image);
@@ -393,26 +414,36 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
              BitmapHeader2.Depth=LSBFirstReadShort(image);
              BitmapHeader2.HorzRes=LSBFirstReadShort(image);
              BitmapHeader2.VertRes=LSBFirstReadShort(image);
-
-             image->columns=BitmapHeader1.Width;
-             image->rows=BitmapHeader1.Heigth;
-             image->depth=BitmapHeader1.Depth;
-             
+	     
+	     image->units=PixelsPerCentimeterResolution;
+	     image->page.width=(BitmapHeader2.LowLeftX-BitmapHeader2.UpRightX)/470.0;
+	     image->page.height=(BitmapHeader2.LowLeftX-BitmapHeader2.UpRightY)/470.0;
+	     image->page.x=BitmapHeader2.LowLeftX/470.0;
+	     image->page.y=BitmapHeader2.LowLeftX/470.0;
+	     if(BitmapHeader2.HorzRes && BitmapHeader2.VertRes)
+	       {
+	       image->x_resolution=BitmapHeader2.HorzRes/470.0;
+	       image->y_resolution=BitmapHeader2.VertRes/470.0;
+	       }
+             image->columns=BitmapHeader2.Width;
+             image->rows=BitmapHeader2.Heigth;
+             image->depth=BitmapHeader2.Depth;
+	     
+UnpackRaster:
+	     if (image->colors == 0)
+	         { 
+                 image->colors=1 << BitmapHeader1.Depth; 
+	         if (!AllocateImageColormap(image,image->colors))
+                    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+			             image);	 
+                 }
 	     if(UnpackWPGRaster(image)<0) /* The raster cannot be unpacked */
                  {
-                 ThrowReaderException(ResourceLimitWarning,"Cannot decompress raster",image);
+                 ThrowReaderException(ResourceLimitWarning,"Cannot decompress WPG raster",image);
                  }
 	     break;
      }
   }
-
-
-/* if Pal<>nil then
-	{
-	p.Palette:=pal;
-	pal:=nil;
-	p.Typ:='P';
-	};*/
 
  while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -452,7 +483,7 @@ ModuleExport void RegisterWPGImage(void)
 
   entry=SetMagickInfo("WPG");
   entry->decoder=ReadWPGImage;
-/*  entry->encoder=WriteWPGImage;*/
+//  entry->encoder=WriteWPGImage;
   entry->description=AllocateString("Word Perfect Graphics");
   entry->module=AllocateString("WPG");
   RegisterMagickInfo(entry);
