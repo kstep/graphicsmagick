@@ -445,7 +445,7 @@ void Magick::DrawablePoint::print (std::ostream& stream_) const
 // Text pointsize
 void Magick::DrawablePointSize::print (std::ostream& stream_) const
 {
-  stream_ << "pointsize "
+  stream_ << "font-size "
           << _pointSize;
 }
 

@@ -1659,6 +1659,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             CloneString(&graphic_context[n]->font,value);
             break;
           }
+        if (LocaleCompare("font-size",keyword) == 0)
+          {
+            graphic_context[n]->pointsize=strtod(q,&q);
+            break;
+          }
         status=False;
         break;
       }
@@ -1788,11 +1793,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("point",keyword) == 0)
           {
             primitive_type=PointPrimitive;
-            break;
-          }
-        if (LocaleCompare("pointsize",keyword) == 0)
-          {
-            graphic_context[n]->pointsize=strtod(q,&q);
             break;
           }
         if (LocaleCompare("polyline",keyword) == 0)

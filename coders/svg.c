@@ -732,13 +732,122 @@ static void SVGStartElement(void *context,const xmlChar *name,
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"  SAX.startElement(%s",(char *) name);
+  switch (*name)
+  {
+    case 'C':
+    case 'c':
+    {
+      if (LocaleCompare((char *) name,"circle") == 0)
+        {
+          (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      if (LocaleCompare((char *) name,"clipPath") == 0)
+        {
+          (void) fprintf(svg_info->file,"push clip-path\n");
+          break;
+        }
+      break;
+    }
+    case 'E':
+    case 'e':
+    {
+      if (LocaleCompare((char *) name,"ellipse") == 0)
+        {
+          (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      break;
+    }
+    case 'G':
+    case 'g':
+    {
+      if (LocaleCompare((char *) name,"g") == 0)
+        {
+          (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      break;
+    }
+    case 'I':
+    case 'i':
+    {
+      if (LocaleCompare((char *) name,"image") == 0)
+        {
+          (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      break;
+    }
+    case 'L':
+    case 'l':
+    {
+      if (LocaleCompare((char *) name,"line") == 0)
+        {
+          (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      break;
+    }
+    case 'P':
+    case 'p':
+    {
+      if (LocaleCompare((char *) name,"path") == 0)
+        {
+          (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      if (LocaleCompare((char *) name,"polygon") == 0)
+        {
+          (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      if (LocaleCompare((char *) name,"polyline") == 0)
+        {
+          (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      break;
+    }
+    case 'R':
+    case 'r':
+    {
+      if (LocaleCompare((char *) name,"rect") == 0)
+        {
+          (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      break;
+    }
+    case 'S':
+    case 's':
+    {
+      if (LocaleCompare((char *) name,"svg") == 0)
+        {
+          (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      break;
+    }
+    case 'T':
+    case 't':
+    {
+      if (LocaleCompare((char *) name,"text") == 0)
+        {
+          (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      break;
+    }
+    default:
+      break;
+  }
   svg_info->n++;
   ReacquireMemory((void **) &svg_info->scale,(svg_info->n+1)*sizeof(double));
   if (svg_info->scale == (double *) NULL)
     MagickError(ResourceLimitError,"Unable to convert SVG image",
       "Memory allocation failed");
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
-  (void) fprintf(svg_info->file,"push graphic-context\n");
   color=AllocateString("none");
   id=AllocateString("*");
   font_family=(char *) NULL;
@@ -851,7 +960,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"font-size") == 0)
             {
               svg_info->pointsize=GetUserSpaceCoordinateValue(svg_info,value);
-              (void) fprintf(svg_info->file,"pointsize %g\n",
+              (void) fprintf(svg_info->file,"font-size %g\n",
                 svg_info->pointsize);
               break;
             }
@@ -1097,7 +1206,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         svg_info->pointsize=
                           GetUserSpaceCoordinateValue(svg_info,value);
-                        (void) fprintf(svg_info->file,"pointsize %g\n",
+                        (void) fprintf(svg_info->file,"font-size %g\n",
                           svg_info->pointsize);
                         break;
                       }
@@ -1501,8 +1610,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (font_weight != (char *) NULL)
         LiberateMemory((void **) &font_weight);
     }
-  if (svg_info->verbose)
-    (void) fprintf(stdout,"  )\n");
   if (LocaleCompare((char *) name,"svg") == 0)
     {
       if (attributes != (const xmlChar **) NULL)
@@ -1551,8 +1658,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
           svg_info->height=page.height;
         }
     }
-  if (LocaleCompare((char *) name,"clipPath") == 0)
-    (void) fprintf(svg_info->file,"push clip-path-%s %s\n",id,units);
+  if (svg_info->verbose)
+    (void) fprintf(stdout,"  )\n");
   LiberateMemory((void **) &id);
   LiberateMemory((void **) &units);
   if (color != (char *) NULL)
@@ -1582,6 +1689,12 @@ static void SVGEndElement(void *context,const xmlChar *name)
           (void) fprintf(svg_info->file,"circle %g,%g %g,%g\n",
             svg_info->element.cx,svg_info->element.cy,svg_info->element.cx,
             svg_info->element.cy+svg_info->element.minor);
+          (void) fprintf(svg_info->file,"pop graphic-context\n");
+          break;
+        }
+      if (LocaleCompare((char *) name,"clipPath") == 0)
+        {
+          (void) fprintf(svg_info->file,"pop clip-path\n");
           break;
         }
       break;
@@ -1619,6 +1732,17 @@ static void SVGEndElement(void *context,const xmlChar *name)
             svg_info->element.cx,svg_info->element.cy,
             angle == 0.0 ? svg_info->element.major : svg_info->element.minor,
             angle == 0.0 ? svg_info->element.minor : svg_info->element.major);
+          (void) fprintf(svg_info->file,"pop graphic-context\n");
+          break;
+        }
+      break;
+    }
+    case 'G':
+    case 'g':
+    {
+      if (LocaleCompare((char *) name,"g") == 0)
+        {
+          (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
         }
       break;
@@ -1631,6 +1755,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
           (void) fprintf(svg_info->file,"image Replace %g,%g %g,%g %s\n",
             svg_info->bounds.x,svg_info->bounds.y,svg_info->bounds.width,
             svg_info->bounds.height,svg_info->url);
+          (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
         }
       break;
@@ -1643,6 +1768,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
           (void) fprintf(svg_info->file,"line %g,%g %g,%g\n",
             svg_info->segment.x1,svg_info->segment.y1,svg_info->segment.x2,
             svg_info->segment.y2);
+          (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
         }
       break;
@@ -1653,16 +1779,19 @@ static void SVGEndElement(void *context,const xmlChar *name)
       if (LocaleCompare((char *) name,"path") == 0)
         {
           (void) fprintf(svg_info->file,"path '%s'\n",svg_info->vertices);
+          (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
         }
       if (LocaleCompare((char *) name,"polygon") == 0)
         {
           (void) fprintf(svg_info->file,"polygon %s\n",svg_info->vertices);
+          (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
         }
       if (LocaleCompare((char *) name,"polyline") == 0)
         {
           (void) fprintf(svg_info->file,"polyline %s\n",svg_info->vertices);
+          (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
         }
       break;
@@ -1678,6 +1807,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
                 svg_info->bounds.x,svg_info->bounds.y,
                 svg_info->bounds.x+svg_info->bounds.width,
                 svg_info->bounds.y+svg_info->bounds.height);
+              (void) fprintf(svg_info->file,"pop graphic-context\n");
               break;
             }
           if (svg_info->radius.x == 0.0)
@@ -1691,6 +1821,17 @@ static void SVGEndElement(void *context,const xmlChar *name)
             svg_info->radius.x,svg_info->radius.y);
           svg_info->radius.x=0.0;
           svg_info->radius.y=0.0;
+          (void) fprintf(svg_info->file,"pop graphic-context\n");
+          break;
+        }
+      break;
+    }
+    case 'S':
+    case 's':
+    {
+      if (LocaleCompare((char *) name,"svg") == 0)
+        {
+          (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
         }
       break;
@@ -1710,6 +1851,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
             }
           (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->bounds.x,
             svg_info->bounds.y,svg_info->text);
+          (void) fprintf(svg_info->file,"pop graphic-context\n");
           break;
         }
       if (LocaleCompare((char *) name,"title") == 0)
@@ -1724,9 +1866,6 @@ static void SVGEndElement(void *context,const xmlChar *name)
   }
   if (svg_info->text != (char *) NULL)
     *svg_info->text='\0';
-  (void) fprintf(svg_info->file,"pop graphic-context\n");
-  if (LocaleCompare((char *) name,"clipPath") == 0)
-    (void) fprintf(svg_info->file,"pop clip-path\n");
   svg_info->n--;
 }
 
@@ -2371,7 +2510,7 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
           if ((fabs(affine->sx-1.0) < MagickEpsilon) &&
               (fabs(affine->sy-1.0) < MagickEpsilon))
             {
-              *transform='\0';
+              (void) WriteBlobString(image,"\">\n");
               return;
             }
           FormatString(transform,"\" transform=\"scale(%g %g)\">\n",
@@ -2425,15 +2564,13 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   char
     buffer[MaxTextExtent],
     keyword[MaxTextExtent],
+    last_keyword[MaxTextExtent],
     *primitive,
     *q,
     value[MaxTextExtent];
 
   double
     angle;
-
-  DrawInfo
-    **graphic_context;
 
   ImageAttribute
     *attribute;
@@ -2482,12 +2619,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       (attribute->value == (char *) NULL))
     ThrowWriterException(DelegateWarning,"no image vector graphics",image);
   n=0;
-  graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
-  if (graphic_context == (DrawInfo **) NULL)
-    MagickError(ResourceLimitWarning,"Unable to draw image",
-      "Memory allocation failed");
-  graphic_context[n]=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  primitive=graphic_context[n]->primitive;
   /*
     Allocate primitive info memory.
   */
@@ -2495,16 +2626,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   primitive_info=(PrimitiveInfo *)
     AcquireMemory(number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
-    {
-      for ( ; n >= 0; n--)
-        DestroyDrawInfo(graphic_context[n]);
-      LiberateMemory((void **) &graphic_context);
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-        image);
-    }
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   status=True;
-  if (graphic_context[n]->debug)
-    (void) fprintf(stdout,"begin vector-graphics\n");
   for (q=attribute->value; *q != '\0'; )
   {
     while (isspace((int) (*q)) && (*q != '\0'))
@@ -2514,14 +2637,10 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         /*
           Comment.
         */
-        WriteBlobString(image,"\">\n");
-        WriteBlobString(image,"<desc>\n  ");
-        while ((*q != '\n') && (*q != '\0'))
-        {
+        WriteBlobString(image,"<desc>");
+        for (q++; (*q != '\n') && (*q != '\0'); q++)
           WriteBlobByte(image,*q);
-          q++;
-        }
-        WriteBlobString(image,"\n</desc>\n");
+        WriteBlobString(image,"</desc>\n");
         continue;
       }
     /*
@@ -2536,8 +2655,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     while (isspace((int) (*q)) && (*q != '\0'))
       q++;
     primitive_type=UndefinedPrimitive;
-    current=graphic_context[n]->affine;
-    IdentityAffine(&affine);
     switch (*keyword)
     {
       case ';':
@@ -2625,14 +2742,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            if (LocaleCompare("none",value) == 0)
-              graphic_context[n]->decorate=NoDecoration;
-            if (LocaleCompare("underline",value) == 0)
-              graphic_context[n]->decorate=UnderlineDecoration;
-            if (LocaleCompare("overline",value) == 0)
-              graphic_context[n]->decorate=OverlineDecoration;
-            if (LocaleCompare("line-through",value) == 0)
-              graphic_context[n]->decorate=LineThroughDecoration;
             break;
           }
         status=False;
@@ -2661,9 +2770,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
                 value[x]=(*q++);
             value[x]='\0';
-            (void) QueryColorDatabase(value,&graphic_context[n]->fill);
-            if (graphic_context[n]->fill.opacity != TransparentOpacity)
-              graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             FormatString(buffer,"fill:%s;",value);
             WriteBlobString(image,buffer);
             break;
@@ -2673,16 +2779,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            if (LocaleCompare("evenodd",value) == 0)
-              graphic_context[n]->fill_rule=EvenOddRule;
-            if (LocaleCompare("nonzero",value) == 0)
-              graphic_context[n]->fill_rule=NonZeroRule;
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
           {
-            graphic_context[n]->fill.opacity=(Quantum)
-              ceil(MaxRGB*strtod(q,&q)/100.0-0.5);
+            strtod(q,&q);
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
@@ -2690,7 +2791,14 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            CloneString(&graphic_context[n]->font,value);
+            FormatString(buffer,"font-family:%s;",value);
+            WriteBlobString(image,buffer);
+            break;
+          }
+        if (LocaleCompare("font-size",keyword) == 0)
+          {
+            FormatString(buffer,"font-size:%g;",strtod(q,&q));
+            WriteBlobString(image,buffer);
             break;
           }
         status=False;
@@ -2704,24 +2812,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            if (LocaleCompare("NorthWest",value) == 0)
-              graphic_context[n]->gravity=NorthWestGravity;
-            if (LocaleCompare("North",value) == 0)
-              graphic_context[n]->gravity=NorthGravity;
-            if (LocaleCompare("NorthEast",value) == 0)
-              graphic_context[n]->gravity=NorthEastGravity;
-            if (LocaleCompare("West",value) == 0)
-              graphic_context[n]->gravity=WestGravity;
-            if (LocaleCompare("Center",value) == 0)
-              graphic_context[n]->gravity=CenterGravity;
-            if (LocaleCompare("East",value) == 0)
-              graphic_context[n]->gravity=EastGravity;
-            if (LocaleCompare("SouthWest",value) == 0)
-              graphic_context[n]->gravity=SouthWestGravity;
-            if (LocaleCompare("South",value) == 0)
-              graphic_context[n]->gravity=SouthGravity;
-            if (LocaleCompare("SouthEast",value) == 0)
-              graphic_context[n]->gravity=SouthEastGravity;
             break;
           }
         status=False;
@@ -2735,40 +2825,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            if (LocaleCompare("Over",value) == 0)
-              graphic_context[n]->compose=OverCompositeOp;
-            if (LocaleCompare("In",value) == 0)
-              graphic_context[n]->compose=InCompositeOp;
-            if (LocaleCompare("Out",value) == 0)
-              graphic_context[n]->compose=OutCompositeOp;
-            if (LocaleCompare("Atop",value) == 0)
-              graphic_context[n]->compose=AtopCompositeOp;
-            if (LocaleCompare("Xor",value) == 0)
-              graphic_context[n]->compose=XorCompositeOp;
-            if (LocaleCompare("Plus",value) == 0)
-              graphic_context[n]->compose=PlusCompositeOp;
-            if (LocaleCompare("Minus",value) == 0)
-              graphic_context[n]->compose=MinusCompositeOp;
-            if (LocaleCompare("Add",value) == 0)
-              graphic_context[n]->compose=AddCompositeOp;
-            if (LocaleCompare("Subtract",value) == 0)
-              graphic_context[n]->compose=SubtractCompositeOp;
-            if (LocaleCompare("Difference",value) == 0)
-              graphic_context[n]->compose=DifferenceCompositeOp;
-            if (LocaleCompare("Multiply",value) == 0)
-              graphic_context[n]->compose=MultiplyCompositeOp;
-            if (LocaleCompare("Bumpmap",value) == 0)
-              graphic_context[n]->compose=BumpmapCompositeOp;
-            if (LocaleCompare("Replace",value) == 0)
-              graphic_context[n]->compose=ReplaceCompositeOp;
-            if (LocaleCompare("ReplaceRed",value) == 0)
-              graphic_context[n]->compose=ReplaceRedCompositeOp;
-            if (LocaleCompare("ReplaceGreen",value) == 0)
-              graphic_context[n]->compose=ReplaceGreenCompositeOp;
-            if (LocaleCompare("ReplaceBlue",value) == 0)
-              graphic_context[n]->compose=ReplaceBlueCompositeOp;
-            if (LocaleCompare("ReplaceMatte",value) == 0)
-              graphic_context[n]->compose=ReplaceMatteCompositeOp;
             primitive_type=ImagePrimitive;
             break;
           }
@@ -2802,10 +2858,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("opacity",keyword) == 0)
           {
-            graphic_context[n]->opacity=(Quantum)
-              ceil(MaxRGB*strtod(q,&q)/100.0-0.5);
-            graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
-            graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
+            strtod(q,&q);
             break;
           }
         status=False;
@@ -2822,11 +2875,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare("point",keyword) == 0)
           {
             primitive_type=PointPrimitive;
-            break;
-          }
-        if (LocaleCompare("pointsize",keyword) == 0)
-          {
-            graphic_context[n]->pointsize=strtod(q,&q);
             break;
           }
         if (LocaleCompare("polyline",keyword) == 0)
@@ -2848,7 +2896,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               break;
             if (LocaleCompare("graphic-context",value) == 0)
               {
-                DestroyDrawInfo(graphic_context[n]);
                 n--;
                 if (n < 0)
                   ThrowWriterException(CorruptImageWarning,
@@ -2874,13 +2921,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (LocaleCompare("graphic-context",value) == 0)
               {
                 n++;
-                ReacquireMemory((void **) &graphic_context,
-                  (n+1)*sizeof(DrawInfo *));
-                if (graphic_context == (DrawInfo **) NULL)
-                  MagickError(ResourceLimitWarning,"Unable to draw image",
-                    "Memory allocation failed");
-                graphic_context[n]=
-                  CloneDrawInfo((ImageInfo *) NULL,graphic_context[n-1]);
+                if (LocaleCompare(keyword,last_keyword) == 0)
+                  (void) WriteBlobString(image,"\">\n");
                 (void) WriteBlobString(image,"<g style=\"");
               }
             break;
@@ -2945,16 +2987,13 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
                 value[x]=(*q++);
             value[x]='\0';
-            (void) QueryColorDatabase(value,&graphic_context[n]->stroke);
-            if (graphic_context[n]->stroke.opacity != TransparentOpacity)
-              graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             FormatString(buffer,"stroke:%s;",value);
             WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
           {
-            graphic_context[n]->stroke_antialias=(unsigned int) strtod(q,&q);
+            strtod(q,&q);
             break;
           }
         if (LocaleCompare("stroke-dasharray",keyword) == 0)
@@ -2967,18 +3006,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 r=q;
                 for (x=0; IsGeometry(r); x++)
                   (void) strtod(r,&r);
-                graphic_context[n]->dash_pattern=(unsigned int *)
-                  AcquireMemory((x+1)*sizeof(unsigned int));
-                if (graphic_context[n]->dash_pattern == (unsigned int *) NULL)
-                  {
-                    ThrowException(&image->exception,ResourceLimitWarning,
-                      "Unable to draw image","Memory allocation failed");
-                    break;
-                  }
                 for (x=0; IsGeometry(q); x++)
-                  graphic_context[n]->dash_pattern[x]=
-                    (unsigned int) strtod(q,&q);
-                graphic_context[n]->dash_pattern[x]=0;
+                  strtod(q,&q);
                 break;
               }
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
@@ -2986,14 +3015,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             value[x]='\0';
             if (LocaleCompare(value,"none") != 0)
               break;
-            if (graphic_context[n]->dash_pattern != (unsigned int *) NULL)
-              LiberateMemory((void **) &graphic_context[n]->dash_pattern);
-            graphic_context[n]->dash_pattern=(unsigned int *) NULL;
             break;
           }
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
           {
-            graphic_context[n]->dash_offset=(unsigned int) strtod(q,&q);
+            strtod(q,&q);
             break;
           }
         if (LocaleCompare("stroke-linecap",keyword) == 0)
@@ -3001,12 +3027,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            if (LocaleCompare("butt",value) == 0)
-              graphic_context[n]->linecap=ButtCap;
-            if (LocaleCompare("round",value) == 0)
-              graphic_context[n]->linecap=RoundCap;
-            if (LocaleCompare("square",value) == 0)
-              graphic_context[n]->linecap=SquareCap;
             break;
           }
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
@@ -3014,30 +3034,21 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            if (LocaleCompare("butt",value) == 0)
-              graphic_context[n]->linejoin=MiterJoin;
-            if (LocaleCompare("round",value) == 0)
-              graphic_context[n]->linejoin=RoundJoin;
-            if (LocaleCompare("square",value) == 0)
-              graphic_context[n]->linejoin=BevelJoin;
             break;
           }
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
           {
-            graphic_context[n]->miterlimit=(unsigned int) strtod(q,&q);
+            strtod(q,&q);
             break;
           }
         if (LocaleCompare("stroke-opacity",keyword) == 0)
           {
-            graphic_context[n]->stroke.opacity=(Quantum)
-              ceil(MaxRGB*strtod(q,&q)/100.0-0.5);
+            strtod(q,&q);
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
           {
-            graphic_context[n]->stroke_width=strtod(q,&q);
-            FormatString(buffer,"stroke-width:%g;",
-              graphic_context[n]->stroke_width);
+            FormatString(buffer,"stroke-width:%g;",strtod(q,&q));
             WriteBlobString(image,buffer);
             continue;
           }
@@ -3054,7 +3065,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("text-antialias",keyword) == 0)
           {
-            graphic_context[n]->text_antialias=(unsigned int) strtod(q,&q);
+            strtod(q,&q);
             break;
           }
         if (LocaleCompare("translate",keyword) == 0)
@@ -3097,26 +3108,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
+    (void) strcpy(last_keyword,keyword);
     if (status == False)
       break;
-    if ((affine.sx != 1.0) || (affine.rx != 0.0) || (affine.ry != 0.0) ||
-        (affine.sy != 1.0) || (affine.tx != 0.0) || (affine.ty != 0.0))
-      {
-        graphic_context[n]->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-        graphic_context[n]->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-        graphic_context[n]->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-        graphic_context[n]->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-        graphic_context[n]->affine.tx=
-          current.sx*affine.tx+current.ry*affine.ty+current.tx;
-        graphic_context[n]->affine.ty=
-          current.rx*affine.tx+current.sy*affine.ty+current.ty;
-      }
     if (primitive_type == UndefinedPrimitive)
-      {
-        if (graphic_context[n]->debug)
-          (void) fprintf(stdout,"  %.*s\n",q-p,p);
-        continue;
-      }
+      continue;
     /*
       Parse the primitive attributes.
     */
@@ -3449,11 +3445,15 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             (void) strncpy(primitive_info[j].text,p,q-p+1);
             primitive_info[j].text[q-p]='\0';
           }
-        (void) FormatString(buffer,"  <text x=\"%g\" y=\"%g\"/>\n    ",
+        (void) FormatString(buffer,"  <text x=\"%g\" y=\"%g\">",
           primitive_info[j+1].point.x,primitive_info[j+1].point.y);
         (void) WriteBlobString(image,buffer);
-        (void) WriteBlobString(image,primitive_info[j].text);
-        (void) WriteBlobString(image,"\n  </text>\n");
+        for (p=primitive_info[j].text; *p != '\0'; p++)
+          if (*p != '&')
+            WriteBlobByte(image,*p);
+          else
+            WriteBlobString(image,"&amp;");
+        (void) WriteBlobString(image,"</text>\n");
         break;
       }
       case ImagePrimitive:
@@ -3499,8 +3499,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     }
     if (primitive_info == (PrimitiveInfo *) NULL)
       break;
-    if (graphic_context[n]->debug)
-      (void) fprintf(stdout,"  %.*s\n",q-p,p);
     if (status == False)
       break;
     if ((*q == '"') || (*q == '\''))
@@ -3513,17 +3511,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     if (status == False)
       break;
   }
-  if (graphic_context[n]->debug)
-    (void) fprintf(stdout,"end vector-graphics\n");
   (void) WriteBlobString(image,"</svg>\n");
   /*
     Free resources.
   */
   if (primitive_info != (PrimitiveInfo *) NULL)
     LiberateMemory((void **) &primitive_info);
-  for ( ; n >= 0; n--)
-    DestroyDrawInfo(graphic_context[n]);
-  LiberateMemory((void **) &graphic_context);
   CloseBlob(image);
   return(status);
 }
