@@ -1507,7 +1507,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                   opacity=Upscale(*p);
                 else
                   opacity=(Quantum)
-                    ((*p) >= 64 ? TransparentOpacity : OpaqueOpacity);
+                    ((*p) < 127 ? OpaqueOpacity : TransparentOpacity);
                 fill_color=draw_info->fill;
                 if (pattern != (Image *) NULL)
                   fill_color=AcquireOnePixel(pattern,
