@@ -1137,11 +1137,11 @@ MagickExport unsigned int CompositeImage(Image *image,
     *q;
 
 
-	/* 
-		If the compositing is NoCompositeOp, we don't composite!
-	*/
+    /* 
+        If the compositing is NoCompositeOp, we don't composite!
+    */
   if ( compose == NoCompositeOp )
-	return( True );
+    return( True );
 
   /*
     Prepare composite image.
@@ -1566,127 +1566,127 @@ MagickExport unsigned int CompositeImage(Image *image,
               *q=pixel;
               break;
             }
-			case DarkenCompositeOp:
-			{
-				if ( pixel.red < q->red )
-					q->red = pixel.red;
-				if ( pixel.green < q->green )
-					q->green = pixel.green;
-				if ( pixel.blue < q->blue )
-					q->blue = pixel.blue;
-				if ( pixel.opacity < q->opacity )
-					q->opacity = pixel.opacity;
-				break;
-			}
-			case LightenCompositeOp:
-			{
-				if ( pixel.red > q->red )
-					q->red = pixel.red;
-				if ( pixel.green > q->green )
-					q->green = pixel.green;
-				if ( pixel.blue > q->blue )
-					q->blue = pixel.blue;
-				if ( pixel.opacity > q->opacity )
-					q->opacity = pixel.opacity;
-				break;
-			}
-			case HueCompositeOp:
-			{
-				double	src_hue;
+            case DarkenCompositeOp:
+            {
+                if ( pixel.red < q->red )
+                    q->red = pixel.red;
+                if ( pixel.green < q->green )
+                    q->green = pixel.green;
+                if ( pixel.blue < q->blue )
+                    q->blue = pixel.blue;
+                if ( pixel.opacity < q->opacity )
+                    q->opacity = pixel.opacity;
+                break;
+            }
+            case LightenCompositeOp:
+            {
+                if ( pixel.red > q->red )
+                    q->red = pixel.red;
+                if ( pixel.green > q->green )
+                    q->green = pixel.green;
+                if ( pixel.blue > q->blue )
+                    q->blue = pixel.blue;
+                if ( pixel.opacity > q->opacity )
+                    q->opacity = pixel.opacity;
+                break;
+            }
+            case HueCompositeOp:
+            {
+                double    src_hue;
 
-				TransformHSL(pixel.red,pixel.green, pixel.blue,&src_hue,&saturation,&brightness);
-				TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
-				HSLTransform(src_hue,saturation,brightness,&q->red,&q->green,&q->blue);
-				if ( pixel.opacity < q->opacity )
-					q->opacity = pixel.opacity;
-				break;
-			}
-			case SaturateCompositeOp:
-			{
-				double	src_saturation;
+                TransformHSL(pixel.red,pixel.green, pixel.blue,&src_hue,&saturation,&brightness);
+                TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
+                HSLTransform(src_hue,saturation,brightness,&q->red,&q->green,&q->blue);
+                if ( pixel.opacity < q->opacity )
+                    q->opacity = pixel.opacity;
+                break;
+            }
+            case SaturateCompositeOp:
+            {
+                double    src_saturation;
 
-				TransformHSL(pixel.red,pixel.green, pixel.blue,&hue,&src_saturation,&brightness);
-				TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
-				HSLTransform(hue,src_saturation,brightness,&q->red,&q->green,&q->blue);
-				if ( pixel.opacity < q->opacity )
-					q->opacity = pixel.opacity;
-				break;
-			}
-			case LuminizeCompositeOp:
-			{
-				double	src_brightness;
+                TransformHSL(pixel.red,pixel.green, pixel.blue,&hue,&src_saturation,&brightness);
+                TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
+                HSLTransform(hue,src_saturation,brightness,&q->red,&q->green,&q->blue);
+                if ( pixel.opacity < q->opacity )
+                    q->opacity = pixel.opacity;
+                break;
+            }
+            case LuminizeCompositeOp:
+            {
+                double    src_brightness;
 
-				TransformHSL(pixel.red,pixel.green, pixel.blue,&hue,&saturation,&src_brightness);
-				TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
-				HSLTransform(hue,saturation,src_brightness,&q->red,&q->green,&q->blue);
-				if ( pixel.opacity < q->opacity )
-					q->opacity = pixel.opacity;
-				break;
-			}
-			case ColorizeCompositeOp:
-			{
-				double	src_hue, src_saturation, src_brightness;
+                TransformHSL(pixel.red,pixel.green, pixel.blue,&hue,&saturation,&src_brightness);
+                TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
+                HSLTransform(hue,saturation,src_brightness,&q->red,&q->green,&q->blue);
+                if ( pixel.opacity < q->opacity )
+                    q->opacity = pixel.opacity;
+                break;
+            }
+            case ColorizeCompositeOp:
+            {
+                double    src_hue, src_saturation, src_brightness;
 
-				TransformHSL(pixel.red,pixel.green, pixel.blue,&src_hue,&src_saturation,&src_brightness);
-				TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
-				HSLTransform(src_hue,src_saturation,brightness,&q->red,&q->green,&q->blue);
-				if ( pixel.opacity < q->opacity )
-					q->opacity = pixel.opacity;
-				break;
-			}
-			case ScreenCompositeOp:
-			{
-				/* BOGUS: NOT YET IMPLEMENTED */
-				/*
-					This is a code snippet the implements screen, but I haven't figured out
-					how to make it work with IM yet :(
+                TransformHSL(pixel.red,pixel.green, pixel.blue,&src_hue,&src_saturation,&src_brightness);
+                TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
+                HSLTransform(src_hue,src_saturation,brightness,&q->red,&q->green,&q->blue);
+                if ( pixel.opacity < q->opacity )
+                    q->opacity = pixel.opacity;
+                break;
+            }
+            case ScreenCompositeOp:
+            {
+                /* BOGUS: NOT YET IMPLEMENTED */
+                /*
+                    This is a code snippet the implements screen, but I haven't figured out
+                    how to make it work with IM yet :(
 
-					#define DO_SCREEN_VALUE(b,t) \
-								res1 = 0x0000FFFF - (int)b[i] ; res2 = 0x0000FFFF - (int)t[i] ;\
-								res1 = 0x0000FFFF - ((res1*res2)>>16); b[i] = res1 < 0 ? 0 : res1
+                    #define DO_SCREEN_VALUE(b,t) \
+                                res1 = 0x0000FFFF - (int)b[i] ; res2 = 0x0000FFFF - (int)t[i] ;\
+                                res1 = 0x0000FFFF - ((res1*res2)>>16); b[i] = res1 < 0 ? 0 : res1
 
-						while( ++i < max_i )
-							if( ta[i] )
-							{
-								int res1 ;
-								int res2 ;
+                        while( ++i < max_i )
+                            if( ta[i] )
+                            {
+                                int res1 ;
+                                int res2 ;
 
-								DO_SCREEN_VALUE(br,tr);
-								DO_SCREEN_VALUE(bg,tg);
-								DO_SCREEN_VALUE(bb,tb);
+                                DO_SCREEN_VALUE(br,tr);
+                                DO_SCREEN_VALUE(bg,tg);
+                                DO_SCREEN_VALUE(bb,tb);
 
-								if( ta[i] > ba[i] )
-									ba[i] = ta[i] ;
-							}
-				*/
-				break;
-			}
-			case OverlayCompositeOp:
-			{
-				/* BOGUS: NOT YET IMPLEMENTED */
-				/*
-					This is a code snippet the implements overlay, but I haven't figured out
-					how to make it work with IM yet :(
+                                if( ta[i] > ba[i] )
+                                    ba[i] = ta[i] ;
+                            }
+                */
+                break;
+            }
+            case OverlayCompositeOp:
+            {
+                /* BOGUS: NOT YET IMPLEMENTED */
+                /*
+                    This is a code snippet the implements overlay, but I haven't figured out
+                    how to make it work with IM yet :(
 
-					#define DO_OVERLAY_VALUE(b,t) \
-									tmp_screen = 0x0000FFFF - (((0x0000FFFF - (int)b[i]) * (0x0000FFFF - (int)t[i])) >> 16); \
-									tmp_mult   = (b[i] * t[i]) >> 16; \
-									res = (b[i] * tmp_screen + (0x0000FFFF - (int)b[i]) * tmp_mult) >> 16; \
-									b[i] = res < 0 ? 0 : res
+                    #define DO_OVERLAY_VALUE(b,t) \
+                                    tmp_screen = 0x0000FFFF - (((0x0000FFFF - (int)b[i]) * (0x0000FFFF - (int)t[i])) >> 16); \
+                                    tmp_mult   = (b[i] * t[i]) >> 16; \
+                                    res = (b[i] * tmp_screen + (0x0000FFFF - (int)b[i]) * tmp_mult) >> 16; \
+                                    b[i] = res < 0 ? 0 : res
 
-						while( ++i < max_i )
-							if( ta[i] )
-							{
-								int tmp_screen, tmp_mult, res ;
-								DO_OVERLAY_VALUE(br,tr);
-								DO_OVERLAY_VALUE(bg,tg);
-								DO_OVERLAY_VALUE(bb,tb);
-								if( ta[i] > ba[i] )
-									ba[i] = ta[i] ;
-							}
-				*/
-				break;
-			}
+                        while( ++i < max_i )
+                            if( ta[i] )
+                            {
+                                int tmp_screen, tmp_mult, res ;
+                                DO_OVERLAY_VALUE(br,tr);
+                                DO_OVERLAY_VALUE(bg,tg);
+                                DO_OVERLAY_VALUE(bb,tb);
+                                if( ta[i] > ba[i] )
+                                    ba[i] = ta[i] ;
+                            }
+                */
+                break;
+            }
           }
           break;
         }
