@@ -23,13 +23,14 @@ $call Make art.c
 $call Make avi.c
 $call Make avs.c
 $call Make bmp.c
-$call Make caption.c
+$call Make clipboard.c
 $call Make cmyk.c
 $call Make cut.c
 $call Make dcm.c
 $call Make dib.c
 $call Make dps.c
 $call Make dpx.c
+$call Make emf.c
 $call Make ept.c
 $call Make fax.c
 $call Make fits.c
@@ -42,8 +43,8 @@ $call Make histogram.c
 $call Make html.c
 $call Make icon.c
 $call Make jbig.c
-$call Make jp2.c
 $call Make jpeg.c
+$call Make jp2.c
 $call Make label.c
 $call Make logo.c
 $call Make map.c
@@ -51,16 +52,15 @@ $call Make mat.c
 $call Make matte.c
 $call Make meta.c
 $call Make miff.c
-$call Make mono.c
 $call Make mpc.c
+$call Make mpeg.c
 $call Make mpr.c
 $call Make msl.c
-$call Make mpeg.c
+$call Make mono.c
 $call Make mtv.c
 $call Make mvg.c
 $call Make null.c
 $call Make otb.c
-$call Make palm.c
 $call Make pcd.c
 $call Make pcl.c
 $call Make pcx.c
@@ -77,6 +77,7 @@ $call Make ps2.c
 $call Make ps3.c
 $call Make psd.c
 $call Make pwp.c
+$call Make registry.c
 $call Make rgb.c
 $call Make rla.c
 $call Make rle.c
@@ -108,13 +109,13 @@ $call Make xcf.c
 $call Make xpm.c
 $call Make xwd.c
 $call Make yuv.c
-$library/create libCoders.olb art,avi,avs,bmp,caption,cmyk,cut,dcm,dib,dps, -
-  dpx,ept,fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icon,jbig,jp2, -
-	jpeg,label,logo,map,mat,matte,meta,miff,mono,mpc,mpr,mpeg,msl,mtv,mvg, -
-	null,otb,palm,pcd,pcl,pcx,pdb,pdf,pict,pix,plasma,png,pnm,preview,ps,ps2, -
-	ps3,psd,pwp,rgb,rla,rle,sct,sfw,sgi,stegano,sun,svg,tga,tiff,tile,tim, -
-	ttf,txt,uil,url,uyvy,vicar,vid,viff,wbmp,wmf,wpg,x,xbm,xc,xcf,xpm,xwd, -
-	yuv,[-.magick]compress,[-.magick]prervicccm
+$library/create libCoders.olb art,avi,avs,bmp,clipboard,cmyk,cut,dcm,dib,dps, -
+  dpx,emf,ept,fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icon,jbig, -
+  jpeg,jp2,label,logo,map,mat,matte,meta,miff,mpc,mpr,msl,mpeg,mono,mtv,mvg, -
+  null,otb,pcd,pcl,pcx,pdb,pdf,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3, -
+  psd,pwp,registry,rgb,la,rle,sct,sfw,sgi,stegano,sun,svg,tga,tiff,tile,tim, -
+  ttf,txt,uil,url,uyvy,vicar,vid,viff,wbmp,wmf,wpg,x,xbm,xc,xcf,xpm,xwd, -
+  yuv,[-.magick]compress,[-.magick]prervicccm
 $exit
 $
 $Make: subroutine
