@@ -1785,7 +1785,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     Display verbose info about the image.
   */
   (void) SignatureImage(image);
-  (void) GetNumberColors(image,(FILE *) NULL);
+  image->total_colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
   (void) fprintf(file,"Image: %.1024s\n",image->filename);
   GetExceptionInfo(&exception);
   magick_info=(MagickInfo *) GetMagickInfo(image->magick,&exception);
@@ -1863,7 +1863,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   if (image->storage_class == DirectClass)
     {
       if (image->total_colors < 1024)
-        (void) GetNumberColors(image,file);
+        (void) GetNumberColors(image,file,&image->exception);
     }
   else
     {
@@ -2976,7 +2976,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   assert(image->signature == MagickSignature);
   assert(reference != (Image *) NULL);
   assert(reference->signature == MagickSignature);
-  (void) GetNumberColors(image,(FILE *) NULL);
+  (void) GetNumberColors(image,(FILE *) NULL,&image->exception);
   image->mean_error_per_pixel=0.0;
   image->normalized_mean_error=0.0;
   image->normalized_maximum_error=0.0;

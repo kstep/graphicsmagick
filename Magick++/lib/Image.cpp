@@ -1631,8 +1631,11 @@ void Magick::Image::write ( const int x_,
                             const StorageType type_,
                             void *pixels_ )
 {
-  DispatchImage( image(), x_, y_, columns_, rows_, map_.c_str(), type_, pixels_ );
-  throwImageException();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  DispatchImage( image(), x_, y_, columns_, rows_, map_.c_str(), type_, pixels_,
+    &exceptionInfo);
+  throwException( exceptionInfo );
 }
 
 // Zoom image
@@ -2828,7 +2831,9 @@ std::string Magick::Image::tileName ( void ) const
 
 unsigned long Magick::Image::totalColors ( void )
 {
-  return GetNumberColors( image(), 0);
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  return GetNumberColors( image(), 0, &exceptionInfo);
 }
 
 // Origin of coordinate system to use when annotating with text or drawing

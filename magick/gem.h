@@ -13,7 +13,7 @@ extern "C" {
 */
 extern MagickExport double
   ExpandAffine(const AffineMatrix *),
-  Permutate(long,long);
+  Permutate(const long,const long);
 
 extern MagickExport int
   GetOptimalKernelWidth(const double,const double),
@@ -35,7 +35,8 @@ extern MagickExport void
   Hull(const long,const long,const unsigned long,const unsigned long,Quantum *,
     Quantum *,const int),
   IdentityAffine(AffineMatrix *),
-  Modulate(double,double,double,Quantum *,Quantum *,Quantum *),
+  Modulate(const double,const double,const double,Quantum *,Quantum *,
+    Quantum *),
   TransformHSL(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),
   Upsample(const unsigned long,const unsigned long,const unsigned long,

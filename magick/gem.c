@@ -706,9 +706,9 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
 %
 %  The format of the ModulateImage method is:
 %
-%      void Modulate(double percent_hue,double percent_saturation,
-%        double percent_brightness,Quantum *red,Quantum *green,Quantum *blue)
-%        blue)
+%      void Modulate(const double percent_hue,const double percent_saturation,
+%        const double percent_brightness,Quantum *red,Quantum *green,
+%        Quantum *blue)
 %
 %  A description of each parameter follows:
 %
@@ -719,8 +719,9 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
 %
 %
 */
-MagickExport void Modulate(double percent_hue,double percent_saturation,
-  double percent_brightness,Quantum *red,Quantum *green,Quantum *blue)
+MagickExport void Modulate(const double percent_hue,
+  const double percent_saturation,const double percent_brightness,
+  Quantum *red,Quantum *green,Quantum *blue)
 {
   double
     brightness,
@@ -783,7 +784,7 @@ MagickExport void Modulate(double percent_hue,double percent_saturation,
 %
 %
 */
-MagickExport double Permutate(long n,long k)
+MagickExport double Permutate(const long n,const long k)
 {
   double
     r;

@@ -587,14 +587,14 @@ MagickExport void DestroyConstitute(void)
 %  in the order specified by map.  Suppose we want want to extract the first
 %  scanline of a 640x480 image as character data in red-green-blue order:
 %
-%      DispatchImage(image,0,0,640,1,"RGB",0,pixels);
+%      DispatchImage(image,0,0,640,1,"RGB",0,pixels,exception);
 %
 %  The format of the DispatchImage method is:
 %
-%      unsigned int DispatchImage(Image *image,const long x_offset,
+%      unsigned int DispatchImage(const Image *image,const long x_offset,
 %        const long y_offset,const unsigned long columns,
 %        const unsigned long rows,const char *map,const StorageType type,
-%        void *pixels)
+%        void *pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -616,11 +616,13 @@ MagickExport void DestroyConstitute(void)
 %      map and type.  You must preallocate this array where the expected
 %      length varies depending on the values of width, height, and type.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
+MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
   const long y_offset,const unsigned long columns,const unsigned long rows,
-  const char *map,const StorageType type,void *pixels)
+  const char *map,const StorageType type,void *pixels,ExceptionInfo *exception)
 {
   long
     y;
@@ -632,7 +634,7 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
     i,
     x;
 
-  register PixelPacket
+  register const PixelPacket
     *p;
 
   assert(image != (Image *) NULL);
@@ -651,21 +653,18 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
       {
         if (image->colorspace == CMYKColorspace)
           break;
-        (void) RGBTransformImage(image,CMYKColorspace);
-        break;
+        ThrowException(exception,OptionWarning,
+          "color separation image type required",map);
+        return(False);
       }
       case 'i':
       case 'I':
       {
-        QuantizeInfo
-          quantize_info;
-
         if (image->storage_class == PseudoClass)
           break;
-        GetQuantizeInfo(&quantize_info);
-        quantize_info.number_colors=MaxRGB+1;
-        (void) QuantizeImage(&quantize_info,image);
-        break;
+        ThrowException(exception,OptionWarning,"palette image type required",
+          map);
+        return(False);
       }
       default:
         break;
@@ -680,8 +679,8 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
       q=(unsigned char *) pixels;
       for (y=0; y < (long) rows; y++)
       {
-        p=GetImagePixels(image,x_offset,y_offset+y,columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
         for (x=0; x < (long) columns; x++)
@@ -729,7 +728,10 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
                 break;
               }
               default:
-                ThrowBinaryException(OptionWarning,"Invalid pixel map",map)
+              {
+                ThrowException(exception,OptionWarning,"Invalid pixel map",map);
+                return(False);
+              }
             }
           }
           p++;
@@ -745,8 +747,8 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
       q=(unsigned short *) pixels;
       for (y=0; y < (long) rows; y++)
       {
-        p=GetImagePixels(image,x_offset,y_offset+y,columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
         for (x=0; x < (long) columns; x++)
@@ -794,7 +796,10 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
                 break;
               }
               default:
-                ThrowBinaryException(OptionWarning,"Invalid pixel map",map)
+              {
+                ThrowException(exception,OptionWarning,"Invalid pixel map",map);
+                return(False);
+              }
             }
           }
           p++;
@@ -810,8 +815,8 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
       q=(unsigned int *) pixels;
       for (y=0; y < (long) rows; y++)
       {
-        p=GetImagePixels(image,x_offset,y_offset+y,columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
         for (x=0; x < (long) columns; x++)
@@ -859,7 +864,10 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
                 break;
               }
               default:
-                ThrowBinaryException(OptionWarning,"Invalid pixel map",map)
+              {
+                ThrowException(exception,OptionWarning,"Invalid pixel map",map);
+                return(False);
+              }
             }
           }
           p++;
@@ -875,8 +883,8 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
       q=(float *) pixels;
       for (y=0; y < (long) rows; y++)
       {
-        p=GetImagePixels(image,x_offset,y_offset+y,columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
         for (x=0; x < (long) columns; x++)
@@ -924,7 +932,10 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
                 break;
               }
               default:
-                ThrowBinaryException(OptionWarning,"Invalid pixel map",map)
+              {
+                ThrowException(exception,OptionWarning,"Invalid pixel map",map);
+                return(False);
+              }
             }
           }
           p++;
@@ -940,8 +951,8 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
       q=(double *) pixels;
       for (y=0; y < (long) rows; y++)
       {
-        p=GetImagePixels(image,x_offset,y_offset+y,columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
         for (x=0; x < (long) columns; x++)
@@ -989,7 +1000,10 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
                 break;
               }
               default:
-                ThrowBinaryException(OptionWarning,"Invalid pixel map",map)
+              {
+                ThrowException(exception,OptionWarning,"Invalid pixel map",map);
+                return(False);
+              }
             }
           }
           p++;
@@ -998,7 +1012,10 @@ MagickExport unsigned int DispatchImage(Image *image,const long x_offset,
       break;
     }
     default:
-      ThrowBinaryException(OptionWarning,"Invalid pixel map",map)
+    {
+      ThrowException(exception,OptionWarning,"Invalid pixel map",map);
+      return(False);
+    }
   }
   return(True);
 }
@@ -1073,7 +1090,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
 %
 %  The format of the PopImagePixels method is:
 %
-%      unsigned int PopImagePixels(Image *,const QuantumType quantum,
+%      unsigned int PopImagePixels(const Image *,const QuantumType quantum,
 %        unsigned char *destination)
 %
 %  A description of each parameter follows:
@@ -1090,7 +1107,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
 %
 %
 */
-MagickExport unsigned int PopImagePixels(Image *image,
+MagickExport unsigned int PopImagePixels(const Image *image,
   const QuantumType quantum,unsigned char *destination)
 {
   register IndexPacket

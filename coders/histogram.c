@@ -323,7 +323,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       /*
         Add a histogram as an image comment.
       */
-      (void) GetNumberColors(image,file);
+      (void) GetNumberColors(image,file,&image->exception);
       (void) fclose(file);
       FormatString(command,"@%.1024s",filename);
       (void) SetImageAttribute(histogram_image,"comment",command);

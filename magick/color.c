@@ -156,7 +156,7 @@ static unsigned int
 
 static void
   DestroyColorList(const NodeInfo *),
-  Histogram(Image *,CubeInfo *,const NodeInfo *,FILE *);
+  Histogram(const Image *,CubeInfo *,const NodeInfo *,FILE *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -523,7 +523,8 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %
 %  The format of the GetNumberColors method is:
 %
-%      unsigned long GetNumberColors(Image *image,FILE *file)
+%      unsigned long GetNumberColors(const Image *image,FILE *file,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -541,7 +542,8 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %
 %
 */
-MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
+MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
+  ExceptionInfo *exception)
 {
 #define ComputeImageColorsText  "  Compute image colors...  "
 
@@ -554,14 +556,12 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
   NodeInfo
     *node_info;
 
-  register long
-    x;
-
-  register PixelPacket
+  register const PixelPacket
     *p;
 
   register long
-    i;
+    i,
+    x;
 
   register unsigned int
     id,
@@ -574,20 +574,20 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
   /*
     Initialize color description tree.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   cube_info=GetCubeInfo();
   if (cube_info == (CubeInfo *) NULL)
     {
-      ThrowException(&image->exception,ResourceLimitWarning,
+      ThrowException(exception,ResourceLimitWarning,
         "unable to determine the number of image colors",
         "Memory allocation failed");
       return(0);
     }
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
       return(False);
     for (x=0; x < (long) image->columns; x++)
     {
@@ -606,7 +606,7 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
             node_info->child[id]=GetNodeInfo(cube_info,level);
             if (node_info->child[id] == (NodeInfo *) NULL)
               {
-                ThrowException(&image->exception,ResourceLimitWarning,
+                ThrowException(exception,ResourceLimitWarning,
                   "unable to determine the number of image colors",
                   "memory allocation failed");
                 return(0);
@@ -631,7 +631,7 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
             (i+1)*sizeof(ColorPacket));
         if (node_info->list == (ColorPacket *) NULL)
           {
-            ThrowException(&image->exception,ResourceLimitWarning,
+            ThrowException(exception,ResourceLimitWarning,
               "unable to determine the number of image colors",
               "memory allocation failed");
             return(0);
@@ -656,7 +656,6 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
     }
   number_colors=cube_info->colors;
   DestroyCubeInfo(cube_info);
-  image->total_colors=number_colors;
   return(number_colors);
 }
 
@@ -688,7 +687,7 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
 %
 %
 */
-static void Histogram(Image *image,CubeInfo *cube_info,
+static void Histogram(const Image *image,CubeInfo *cube_info,
   const NodeInfo *node_info,FILE *file)
 {
 #define HistogramImageText  "  Compute image histogram...  "
@@ -855,8 +854,7 @@ MagickExport unsigned int IsMonochromeImage(Image *image)
 %    o status: Method IsOpaqueImage returns False if the image has one or more
 %      pixels that are transparent otherwise True is returned.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
 %
 */
@@ -1174,7 +1172,8 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 %
 %
 */
-MagickExport unsigned int QueryColorDatabase(const char *name,PixelPacket *color)
+MagickExport unsigned int QueryColorDatabase(const char *name,
+  PixelPacket *color)
 {
   ExceptionInfo
     exception;
@@ -1326,7 +1325,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,PixelPacket *color
 %
 %  The format of the QueryColorname method is:
 %
-%      unsigned int QueryColorname(Image *image,const PixelPacket *color,
+%      unsigned int QueryColorname(const Image *image,const PixelPacket *color,
 %        ComplianceType compliance,char *name)
 %
 %  A description of each parameter follows.
@@ -1344,8 +1343,8 @@ MagickExport unsigned int QueryColorDatabase(const char *name,PixelPacket *color
 %
 %
 */
-MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
-  const ComplianceType compliance,char *name)
+MagickExport unsigned int QueryColorname(const Image *image,
+  const PixelPacket *color,const ComplianceType compliance,char *name)
 {
 
   ExceptionInfo

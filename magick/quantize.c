@@ -1901,7 +1901,7 @@ MagickExport unsigned int QuantizationError(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  image->total_colors=GetNumberColors(image,(FILE *) NULL);
+  image->total_colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
   image->mean_error_per_pixel=0.0;
   image->normalized_mean_error=0.0;
   image->normalized_maximum_error=0.0;

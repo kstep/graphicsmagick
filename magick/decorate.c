@@ -136,7 +136,7 @@ MagickExport Image *BorderImage(Image *image,const RectangleInfo *border_info,
 %
 %  The format of the FrameImage method is:
 %
-%      Image *FrameImage(Image *image,const FrameInfo *frame_info,
+%      Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -153,7 +153,7 @@ MagickExport Image *BorderImage(Image *image,const RectangleInfo *border_info,
 %
 %
 */
-MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
+MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   ExceptionInfo *exception)
 {
 #define FrameImageText  "  Add frame to image...  "
@@ -166,11 +166,13 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
     width,
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   PixelPacket
@@ -291,9 +293,9 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
     /*
       Initialize scanline with border color.
     */
-    p=GetImagePixels(image,0,y,image->columns,1);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     q=SetImagePixels(frame_image,0,frame_info->y+y,frame_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=highlight;

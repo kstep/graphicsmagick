@@ -80,7 +80,7 @@
 %
 %  The format of the ChopImage method is:
 %
-%      Image *ChopImage(Image *image,const RectangleInfo *chop_info)
+%      Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -93,7 +93,7 @@
 %
 %
 */
-MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
+MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   ExceptionInfo *exception)
 {
 #define ChopImageText  "  Chop image...  "
@@ -108,6 +108,9 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
   RectangleInfo
     clone_info;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *chop_indexes,
     *indexes;
@@ -117,13 +120,12 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
     Check chop geometry.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -163,9 +165,9 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
   j=0;
   for (y=0; y < (long) clone_info.y; y++)
   {
-    p=GetImagePixels(image,0,i++,image->columns,1);
+    p=AcquireImagePixels(image,0,i++,image->columns,1,exception);
     q=SetImagePixels(chop_image,0,j++,chop_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     indexes=GetIndexes(image);
     chop_indexes=GetIndexes(chop_image);
@@ -191,7 +193,7 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
   i+=clone_info.height;
   for (y=0; y < (long) (image->rows-(clone_info.y+clone_info.height)); y++)
   {
-    p=GetImagePixels(image,0,i++,image->columns,1);
+    p=AcquireImagePixels(image,0,i++,image->columns,1,exception);
     q=SetImagePixels(chop_image,0,j++,chop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -273,7 +275,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
   /*
     Coalesce image.
   */
-  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
+  for (next=image->next; next != (Image *) NULL; next=next->next)
   {
     coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
     if (coalesce_image->next == (Image *) NULL)
@@ -311,7 +313,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 %
 %  The format of the CropImage method is:
 %
-%      Image *CropImage(Image *image,const RectangleInfo *crop_info,
+%      Image *CropImage(const Image *image,const RectangleInfo *crop_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -325,7 +327,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 %
 %
 */
-MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
+MagickExport Image *CropImage(const Image *image,const RectangleInfo *crop_info,
   ExceptionInfo *exception)
 {
 #define CropImageText  "  Crop image...  "
@@ -339,17 +341,19 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
   RectangleInfo
     page;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
     Check crop geometry.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(crop_info != (const RectangleInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
@@ -418,9 +422,9 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
   crop_image->page=page;
   for (y=0; y < (long) crop_image->rows; y++)
   {
-    p=GetImagePixels(image,page.x,page.y+y,crop_image->columns,1);
+    p=AcquireImagePixels(image,page.x,page.y+y,crop_image->columns,1,exception);
     q=SetImagePixels(crop_image,0,y,crop_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     (void) memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
@@ -479,6 +483,9 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
   RectangleInfo
     *bounds;
 
+  register const PixelPacket
+    *p;
+
   register Image
     *next;
 
@@ -487,10 +494,9 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     x;
 
   register PixelPacket
-    *p,
     *q;
 
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -518,16 +524,16 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     Compute the bounding box for each next in the sequence.
   */
   i=0;
-  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
+  for (next=image->next; next != (const Image *) NULL; next=next->next)
   {
     /*
       Set bounding box to the next dimensions.
     */
     for (x=0; x < (long) next->columns; x++)
     {
-      p=GetImagePixels(next,x,0,1,next->rows);
+      p=AcquireImagePixels(next,x,0,1,next->rows,exception);
       q=GetImagePixels(next->previous,x,0,1,next->previous->rows);
-      if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
       for (y=0; y < (long) next->rows; y++)
       {
@@ -542,7 +548,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     bounds[i].x=x;
     for (y=0; y < (long) next->rows; y++)
     {
-      p=GetImagePixels(next,0,y,next->columns,1);
+      p=AcquireImagePixels(next,0,y,next->columns,1,exception);
       q=GetImagePixels(next->previous,0,y,next->previous->columns,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
@@ -559,7 +565,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     bounds[i].y=y;
     for (x=next->columns-1; x >= 0; x--)
     {
-      p=GetImagePixels(next,x,0,1,next->rows);
+      p=AcquireImagePixels(next,x,0,1,next->rows,exception);
       q=GetImagePixels(next->previous,x,0,1,next->previous->rows);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
@@ -576,7 +582,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     bounds[i].width=x-bounds[i].x+1;
     for (y=next->rows-1; y >= 0; y--)
     {
-      p=GetImagePixels(next,0,y,next->columns,1);
+      p=AcquireImagePixels(next,0,y,next->columns,1,exception);
       q=GetImagePixels(next->previous,0,y,next->previous->columns,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
@@ -606,7 +612,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     Deconstruct the image sequence.
   */
   i=0;
-  for (next=image->next; next != (Image *) NULL; next=next->next)
+  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
   {
     next->orphan=True;
     crop_next=CropImage(next,&bounds[i++],exception);
@@ -699,7 +705,7 @@ MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
 %
 %  The format of the FlipImage method is:
 %
-%      Image *FlipImage(Image *image,ExceptionInfo *exception)
+%      Image *FlipImage(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -709,7 +715,7 @@ MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
 %
 %
 */
-MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
+MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
 {
 #define FlipImageText  "  Flip image...  "
 
@@ -719,11 +725,13 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
   register PixelPacket
-    *p,
     *q;
 
   unsigned int
@@ -732,7 +740,7 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
   /*
     Initialize flip image attributes.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -744,9 +752,9 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (long) flip_image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     q=SetImagePixels(flip_image,0,flip_image->rows-y-1,flip_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     (void) memcpy(q,p,flip_image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
@@ -780,7 +788,7 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
 %
 %  The format of the FlopImage method is:
 %
-%      Image *FlopImage(Image *image,ExceptionInfo *exception)
+%      Image *FlopImage(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -790,7 +798,7 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
 %
 %
 */
-MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
+MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 {
 #define FlopImageText  "  Flop image...  "
 
@@ -804,11 +812,13 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
     *flop_indexes,
     *indexes;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   unsigned int
@@ -817,7 +827,7 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
   /*
     Initialize flop image attributes.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -829,7 +839,7 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (long) flop_image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     q=SetImagePixels(flop_image,0,y,flop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -1247,8 +1257,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
 %
 %  The format of the RollImage method is:
 %
-%      Image *RollImage(Image *image,const long x_offset,const long y_offset,
-%        ExceptionInfo *exception)
+%      Image *RollImage(const Image *image,const long x_offset,
+%        const long y_offset,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1262,7 +1272,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
 %
 %
 */
-MagickExport Image *RollImage(Image *image,const long x_offset,
+MagickExport Image *RollImage(const Image *image,const long x_offset,
   const long y_offset,ExceptionInfo *exception)
 {
 #define RollImageText  "  Roll image...  "
@@ -1273,6 +1283,9 @@ MagickExport Image *RollImage(Image *image,const long x_offset,
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes,
     *roll_indexes;
@@ -1281,7 +1294,6 @@ MagickExport Image *RollImage(Image *image,const long x_offset,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   PointInfo
@@ -1290,7 +1302,7 @@ MagickExport Image *RollImage(Image *image,const long x_offset,
   /*
     Initialize roll image attributes.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -1311,8 +1323,8 @@ MagickExport Image *RollImage(Image *image,const long x_offset,
     /*
       Transfer scanline.
     */
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
@@ -1352,7 +1364,7 @@ MagickExport Image *RollImage(Image *image,const long x_offset,
 %
 %  The format of the ShaveImage method is:
 %
-%      Image *ShaveImage(Image *image,const RectangleInfo *shave_info,
+%      Image *ShaveImage(const Image *image,const RectangleInfo *shave_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1370,8 +1382,8 @@ MagickExport Image *RollImage(Image *image,const long x_offset,
 %
 %
 */
-MagickExport Image *ShaveImage(Image *image,const RectangleInfo *shave_info,
-  ExceptionInfo *exception)
+MagickExport Image *ShaveImage(const Image *image,
+  const RectangleInfo *shave_info,ExceptionInfo *exception)
 {
   RectangleInfo
     crop_info;

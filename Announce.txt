@@ -1,6 +1,6 @@
 The ImageMagick Studio LLC development group announces the release of
-ImageMagick 5.3.9.  Version 5.3.9 is a bug-fix release to resolve bugs
-reported against 5.3.8, 5.3.8.1, and 5.3.8.2.
+ImageMagick 5.4.0.  Version 5.4.0 is a bug-fix release to resolve bugs
+reported against 5.3.9.
 
 ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 72 major
@@ -61,9 +61,9 @@ The ImageMagick WWW page is
 
   http://www.imagemagick.org/
  
-ImageMagick 5.3.9 is available via ftp as
+ImageMagick 5.4.0 is available via ftp as
 
-  ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.9.tar.gz
+  ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.0.tar.gz
 
 If ftp.imagemagick.org is overloaded (very likely), check the list of
 mirrors at http://www.imagemagick.org/www/archives.html for other

@@ -3007,8 +3007,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'k':
       {
-        (void) GetNumberColors(image,(FILE *) NULL);
-        FormatString(q,"%lu",image->total_colors);
+        FormatString(q,"%lu",
+          GetNumberColors(image,(FILE *) NULL,&image->exception));
         q=translated_text+strlen(translated_text);
         break;
       }
