@@ -44,6 +44,7 @@
   <module name="PNM" alias="PBM"/>
   <module name="PCD" alias="PCDS"/>
   <module name="PICT" alias="PCT"/>
+  <module name="TTF" alias="PFA"/>
   <module name="TTF" alias="PFB"/>
   <module name="TTF" alias="PFM"/>
   <module name="PNM" alias="PGM"/>

@@ -1,3 +1,11 @@
+2002-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/modules.mgk: Add support for PFA fonts.
+
+	* coders/ttf.c (RegisterTTFImage): Add support for PFA fonts.
+
+	* magick/annotate.c (RenderType): Add support for PFA fonts.
+
 2002-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Modified type.mgk so that it may include the additional files
     type-windows.mgk, type-solaris.mgk, and type-ghostscript.mgk depending
