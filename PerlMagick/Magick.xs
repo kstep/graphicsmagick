@@ -284,7 +284,8 @@ static struct
     { "AddNoise", { {"noise", NoiseTypes} } },
     { "Colorize", { {"fill", StringReference}, {"opacity", StringReference} } },
     { "Border", { {"geom", StringReference}, {"width", IntegerReference},
-      {"height", IntegerReference}, {"color", StringReference} } },
+      {"height", IntegerReference}, {"fill", StringReference},
+      {"color", StringReference} } },
     { "Blur", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference} } },
     { "Chop", { {"geom", StringReference}, {"width", IntegerReference},
@@ -302,7 +303,8 @@ static struct
     { "Flop", },
     { "Frame", { {"geom", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"inner", IntegerReference},
-      {"outer", IntegerReference}, {"color", StringReference} } },
+      {"outer", IntegerReference}, {"fill", StringReference},
+      {"color", StringReference} } },
     { "Implode", { {"factor", DoubleReference} } },
     { "Magnify", },
     { "MedianFilter", { {"radius", DoubleReference} } },
@@ -3725,8 +3727,7 @@ Mogrify(ref,...)
       flags;
 
     PixelPacket
-      border_color,
-      pen_color;
+      fill_color;
 
     RectangleInfo
       rectangle_info,
@@ -3897,7 +3898,7 @@ Mogrify(ref,...)
     error_jump=(&error_jmp);
     if (setjmp(error_jmp))
       goto ReturnIt;
-    (void) memset((char *) &pen_color,0,sizeof(PixelPacket));
+    (void) memset((char *) &fill_color,0,sizeof(PixelPacket));
     first=True;
     pv=reference_vector;
     for (next=image; next; first=False, next=next->next)
@@ -3987,10 +3988,13 @@ Mogrify(ref,...)
                 rectangle_info.height=argument_list[2].int_reference;
               if (attribute_flag[3])
                 QueryColorDatabase(argument_list[3].string_reference,
-                  &border_color);
+                  &fill_color);
+              if (attribute_flag[4])
+                QueryColorDatabase(argument_list[4].string_reference,
+                  &fill_color);
             }
-          if (attribute_flag[3])
-            image->border_color=border_color;
+          if (attribute_flag[3] || attribute_flag[4])
+            image->border_color=fill_color;
           image=BorderImage(image,&rectangle_info,&exception);
           break;
         }
@@ -4141,12 +4145,15 @@ Mogrify(ref,...)
               frame_info.y=frame_info.height;
               if (attribute_flag[5])
                 QueryColorDatabase(argument_list[5].string_reference,
-                  &pen_color);
+                  &fill_color);
+              if (attribute_flag[6])
+                QueryColorDatabase(argument_list[6].string_reference,
+                  &fill_color);
             }
           frame_info.width=image->columns+(frame_info.x << 1);
           frame_info.height=image->rows+(frame_info.y << 1);
-          if (attribute_flag[5])
-            image->matte_color=pen_color;
+          if (attribute_flag[5] || attribute_flag[6])
+            image->matte_color=fill_color;
           image=FrameImage(image,&frame_info,&exception);
           break;
         }
@@ -4490,11 +4497,11 @@ Mogrify(ref,...)
             (void) QueryColorDatabase(argument_list[3].string_reference,
               &draw_info->fill);
           if (attribute_flag[4])
-            QueryColorDatabase(argument_list[4].string_reference,&border_color);
+            QueryColorDatabase(argument_list[4].string_reference,&fill_color);
           target=GetOnePixel(image,rectangle_info.x % image->columns,
             rectangle_info.y % image->rows);
           if (attribute_flag[4])
-            target=border_color;
+            target=fill_color;
           ColorFloodfillImage(image,draw_info,target,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);
@@ -4876,7 +4883,7 @@ Mogrify(ref,...)
                 rectangle_info.y=argument_list[2].int_reference;
               if (attribute_flag[4])
                 QueryColorDatabase(argument_list[4].string_reference,
-                  &border_color);
+                  &fill_color);
             }
           matte=TransparentOpacity;
           if (attribute_flag[3])
@@ -4886,7 +4893,7 @@ Mogrify(ref,...)
           target=GetOnePixel(image,rectangle_info.x % image->columns,
             rectangle_info.y % image->rows);
           if (attribute_flag[4])
-            target=border_color;
+            target=fill_color;
           MatteFloodfillImage(image,target,matte,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);
@@ -4929,21 +4936,21 @@ Mogrify(ref,...)
         case 47:  /* Opaque */
         {
           PixelPacket
-            pen_color,
+            fill_color,
             target;
 
           target=GetOnePixel(image,0,0);
           if (attribute_flag[0])
             (void) QueryColorDatabase(argument_list[0].string_reference,
               &target);
-          pen_color=GetOnePixel(image,0,0);
+          fill_color=GetOnePixel(image,0,0);
           if (attribute_flag[1])
             (void) QueryColorDatabase(argument_list[1].string_reference,
-              &pen_color);
+              &fill_color);
           if (attribute_flag[2])
             (void) QueryColorDatabase(argument_list[2].string_reference,
-              &pen_color);
-          OpaqueImage(image,target,pen_color);
+              &fill_color);
+          OpaqueImage(image,target,fill_color);
           break;
         }
         case 48:  /* Quantize */
@@ -5162,18 +5169,18 @@ Mogrify(ref,...)
             *kernel;
 
           unsigned int
-            order;
+            radius;
 
           if (!attribute_flag[0])
             break;
           av=(AV*) argument_list[0].array_reference;
-          order=sqrt(av_len(av)+1);
-          kernel=(double *) AcquireMemory(order*order*sizeof(double));
+          radius=sqrt(av_len(av)+1);
+          kernel=(double *) AcquireMemory(radius*radius*sizeof(double));
           for (j=0; j < (av_len(av)+1); j++)
             kernel[j]=(double) SvNV(*(av_fetch(av,j,0)));
-          for ( ; j < (order*order); j++)
+          for ( ; j < (radius*radius); j++)
             kernel[j]=0.0;
-          image=ConvolveImage(image,order,kernel,&exception);
+          image=ConvolveImage(image,radius,kernel,&exception);
           LiberateMemory((void **) &kernel);
           break;
         }

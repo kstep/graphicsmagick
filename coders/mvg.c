@@ -53,6 +53,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static unsigned int
+  WriteMVGImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -144,6 +150,7 @@ ModuleExport void RegisterMVGImage(void)
 
   entry=SetMagickInfo("MVG");
   entry->decoder=ReadMVGImage;
+  entry->encoder=WriteMVGImage;
   entry->adjoin=False;
   entry->description=AllocateString("Magick Vector Graphics");
   entry->module=AllocateString("MVG");
@@ -172,4 +179,55 @@ ModuleExport void RegisterMVGImage(void)
 ModuleExport void UnregisterMVGImage(void)
 {
   UnregisterMagickInfo("MVG");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e M V G I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteMVGImage writes an image to a file in MVG image format.
+%
+%  The format of the WriteMVGImage method is:
+%
+%      unsigned int WriteMVGImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Method WriteMVGImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+static unsigned int WriteMVGImage(const ImageInfo *image_info,Image *image)
+{
+  ImageAttribute
+    *attribute;
+
+  unsigned int
+    status;
+
+  /*
+    Open output image file.
+  */
+  attribute=GetImageAttribute(image,"MVG");
+  if (attribute == (ImageAttribute *) NULL)
+    ThrowWriterException(DelegateWarning,"no image vector graphics",image);
+  status=OpenBlob(image_info,image,WriteBinaryType);
+  if (status == False)
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+  (void) WriteBlob(image,Extent(attribute->value),attribute->value);
+  CloseBlob(image);
+  return(True);
 }

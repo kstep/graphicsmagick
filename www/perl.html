@@ -439,7 +439,7 @@ standard deviation (sigma).</td>
 <td>Border</td>
 
 <td>geometry=><i>geometry</i>, width=><i>integer</i>, height=><i>integer</i>,
-color=<i>colorname</i></td>
+fill=<i>colorname</i></td>
 
 <td>surround the image with a border of color</td>
 </tr>
@@ -507,14 +507,6 @@ NorthEast, West, Center, East, SouthWest, South, SouthEast}</i>,
 opacity=><i>float</i>,tile=><i>image-handle</i></td>
 
 <td>composite one image onto another</td>
-</tr>
-
-<tr>
-<td>Condense</td>
-
-<td></td>
-
-<td>compress image to take up the least amount of memory</td>
 </tr>
 
 <tr>
@@ -640,7 +632,7 @@ horizontal direction</td>
 <td>Frame</td>
 
 <td>geometry=><i>geometry</i>, width=><i>integer</i>, height=><i>integer</i>,
-inner=><i>integer</i>, outer=><i>integer</i>, color=><i>colorname</i></td>
+inner=><i>integer</i>, outer=><i>integer</i>, fill=><i>colorname</i></td>
 
 <td>surround the image with an ornamental border</td>
 </tr>
@@ -1150,7 +1142,7 @@ next image in a sequence</td>
 <tr>
 <td>dispose</td>
 
-<td><i>{0, 1, 2, 3, 4}</i></td>
+<td><i>{0, 1, 2, 3}</i></td>
 
 <td>GIF disposal method</td>
 </tr>
@@ -1642,14 +1634,6 @@ reduced</td>
 </tr>
 
 <tr>
-<td>text</td>
-
-<td><i>string</i></td>
-
-<td>any text associated with the image</td>
-</tr>
-
-<tr>
 <td>type</td>
 
 <td>{Bilevel, Grayscale, Palette, TrueColor, MatteType, ColorSeparation
@@ -1810,14 +1794,6 @@ SouthEast}</td>
 </tr>
 
 <tr>
-<td>stroke</td>
-
-<td>color</td>
-
-<td>stroke color for annotations</td>
-</tr>
-
-<tr>
 <td>pointsize</td>
 
 <td><i>integer</i></td>
@@ -1834,15 +1810,12 @@ SouthEast}</td>
 </tr>
 
 <tr>
-<td>pen</td>
+<td>stroke</td>
 
-<td>string</td>
+<td>color</td>
 
-<td>color for annotation text</td>
+<td>stroke color for annotations</td>
 </tr>
-
-<tr>
-<td>pointsize</td>
 
 <tr>
 <td>texture</td>

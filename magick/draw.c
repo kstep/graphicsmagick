@@ -613,6 +613,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
+  (void) SetImageAttribute(image,"MVG",primitive);
   for (q=primitive; *q != '\0'; )
   {
     /*
