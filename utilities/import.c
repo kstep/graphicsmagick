@@ -86,6 +86,7 @@
 %    -page geometry      size and location of an image canvas
 %    -pointsize value    pointsize of Postscript font
 %    -quality value      JPEG/MIFF/PNG compression level
+%    -resize geometry    perferred size or location of the image
 %    -rotate degrees     apply Paeth rotation to the image
 %    -scene value        number of screen snapshots
 %    -screen             select image from root window
@@ -165,6 +166,7 @@ static void Usage(void)
       "-page geometry      size and location of an image canvas",
       "-pointsize value    pointsize of Postscript font",
       "-quality value      JPEG/MIFF/PNG compression level",
+      "-resize geometry    perferred size or location of the image",
       "-rotate degrees     apply Paeth rotation to the image",
       "-scene value        number of screen snapshots",
       "-screen             select image from root window",
@@ -767,6 +769,16 @@ int main(int argc,char **argv)
         }
         case 'r':
         {
+          if (LocaleCompare("resize",option+1) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !IsGeometry(argv[i]))
+                    MagickError(OptionError,"Missing geometry",option);
+                }
+              break;
+            }
           if (LocaleCompare("rotate",option+1) == 0)
             {
               i++;
