@@ -111,6 +111,8 @@ Export void *AllocateMemory(size_t size)
 */
 Export void FreeMemory(void *memory)
 {
+  if (memory == (void *) NULL)
+    return;
   free(memory);
 }
 

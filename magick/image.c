@@ -3147,8 +3147,8 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   if (image->normalized_maximum_error != 0)
     (void) fprintf(file,"  normalized maximum error: %.6f\n",
       image->normalized_maximum_error);
-  if (image->signature != (char *) NULL)
-    (void) fprintf(file,"  signature: %.128s\n",image->signature);
+  SignatureImage(image);
+  (void) fprintf(file,"  signature: %.128s\n",image->signature);
   if (image->matte)
     (void) fprintf(file,"  matte: True\n");
   else

@@ -1698,8 +1698,8 @@ Export void XDisplayImageInfo(Display *display,
   if (image->normalized_maximum_error != 0)
     FormatString(text,"%s  normalized maximum error: %.6f\n",text,
       image->normalized_maximum_error);
-  if (image->signature != (char *) NULL)
-    FormatString(text,"%s  signature: %.128s\n",text,image->signature);
+  SignatureImage(image);
+  FormatString(text,"%s  signature: %.128s\n",text,image->signature);
   if (image->matte)
     (void) strcat(text,"  matte: True\n");
   else
@@ -8787,7 +8787,6 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
         number_images-=tiles_per_page;
       }
   }
-  FreeMemory((char *) images);
   while (montage_image->previous != (Image *) NULL)
     montage_image=montage_image->previous;
   return(montage_image);

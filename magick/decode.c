@@ -17799,9 +17799,11 @@ Export Image *ReadImage(ImageInfo *image_info)
   if (image->status)
     MagickWarning(CorruptImageWarning,"An error has occurred reading file",
       image->filename);
+  (void) GetDelegateInfo(image->magick,"*",&delegate_info);
   for (next_image=image; next_image; next_image=next_image->next)
   {
-    SignatureImage(next_image);
+    if (delegate_info.direction == 0)
+      SignatureImage(next_image);  /* <=> delegate */
     (void) strcpy(next_image->magick_filename,image_info->filename);
     if (image->temporary)
       (void) strcpy(next_image->filename,image_info->filename);
