@@ -85,7 +85,7 @@ typedef struct _DrawInfo
   char
     *server_name;
 
-  unsigned int
+  double
     *dash_pattern;
 
   char

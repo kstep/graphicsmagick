@@ -211,19 +211,18 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     clone_info->tile=ReferenceImage(draw_info->tile);
   if (draw_info->server_name != (char *) NULL)
     clone_info->server_name=AllocateString(draw_info->server_name);
-  if (draw_info->dash_pattern != (unsigned int *) NULL)
+  if (draw_info->dash_pattern != (double *) NULL)
     {
       register long
         x;
 
-      for (x=0; draw_info->dash_pattern[x]; x++);
-      clone_info->dash_pattern=(unsigned int *)
-        AcquireMemory((x+1)*sizeof(unsigned int));
-      if (clone_info->dash_pattern == (unsigned int *) NULL)
+      for (x=0; draw_info->dash_pattern[x] != 0.0; x++);
+      clone_info->dash_pattern=(double *) AcquireMemory((x+1)*sizeof(double));
+      if (clone_info->dash_pattern == (double *) NULL)
         MagickError(ResourceLimitError,"Unable to clone dash pattern",
           "Memory allocation failed");
       (void) memcpy(clone_info->dash_pattern,draw_info->dash_pattern,
-        (x+1)*sizeof(unsigned int));
+        (x+1)*sizeof(double));
     }
   if (draw_info->clip_path != (char *) NULL)
     clone_info->clip_path=AllocateString(draw_info->clip_path);
@@ -954,7 +953,7 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     DestroyImage(draw_info->tile);
   if (draw_info->server_name != (char *) NULL)
     LiberateMemory((void **) &draw_info->server_name);
-  if (draw_info->dash_pattern != (unsigned int *) NULL)
+  if (draw_info->dash_pattern != (double *) NULL)
     LiberateMemory((void **) &draw_info->dash_pattern);
   if (draw_info->clip_path != (char *) NULL)
     LiberateMemory((void **) &draw_info->clip_path);
@@ -1318,7 +1317,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
   {
     if (n == -1)
       n=0;
-    if (draw_info->dash_pattern[n] == 0)
+    if (draw_info->dash_pattern[n] == 0.0)
       break;
     if (dash_offset > (scale*draw_info->dash_pattern[n]))
       {
@@ -1353,7 +1352,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
     if (distance == 0)
       {
         n++;
-        if (draw_info->dash_pattern[n] == 0)
+        if (draw_info->dash_pattern[n] == 0.0)
           n=0;
         distance=scale*draw_info->dash_pattern[n];
       }
@@ -1383,7 +1382,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
           status|=DrawStrokePolygon(image,clone_info,dash_polygon);
         }
       n++;
-      if (draw_info->dash_pattern[n] == 0)
+      if (draw_info->dash_pattern[n] == 0.0)
         n=0;
       distance=scale*draw_info->dash_pattern[n];
     }
@@ -2187,11 +2186,17 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 
                 p=q;
                 GetToken(p,&p,token);
-                for (x=0; IsGeometry(token); x++)
+                if (*token == ',')
                   GetToken(p,&p,token);
-                graphic_context[n]->dash_pattern=(unsigned int *)
-                  AcquireMemory((x+1)*sizeof(unsigned int));
-                if (graphic_context[n]->dash_pattern == (unsigned int *) NULL)
+                for (x=0; IsGeometry(token); x++)
+                {
+                  GetToken(p,&p,token);
+                  if (*token == ',')
+                    GetToken(p,&p,token);
+                }
+                graphic_context[n]->dash_pattern=(double *)
+                  AcquireMemory((x+1)*sizeof(double));
+                if (graphic_context[n]->dash_pattern == (double *) NULL)
                   {
                     ThrowException(&image->exception,ResourceLimitWarning,
                       "Unable to draw image","Memory allocation failed");
@@ -2200,17 +2205,19 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 for (j=0; j < x; j++)
                 {
                   GetToken(q,&q,token);
-                  graphic_context[n]->dash_pattern[j]=atoi(token);
+                  if (*token == ',')
+                    GetToken(q,&q,token);
+                  graphic_context[n]->dash_pattern[j]=atof(token);
                 }
-                graphic_context[n]->dash_pattern[j]=0;
+                graphic_context[n]->dash_pattern[j]=0.0;
                 break;
               }
             GetToken(q,&q,token);
             if (LocaleCompare(token,"#000000ff") != 0)
               break;
-            if (graphic_context[n]->dash_pattern != (unsigned int *) NULL)
+            if (graphic_context[n]->dash_pattern != (double *) NULL)
               LiberateMemory((void **) &graphic_context[n]->dash_pattern);
-            graphic_context[n]->dash_pattern=(unsigned int *) NULL;
+            graphic_context[n]->dash_pattern=(double *) NULL;
             break;
           }
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
@@ -3436,7 +3443,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       if (draw_info->debug)
         PrintPrimitiveInfo(primitive_info);
       scale=ExpandAffine(&draw_info->affine);
-      if ((draw_info->dash_pattern != (unsigned *) NULL) &&
+      if ((draw_info->dash_pattern != (double *) NULL) &&
           (scale*draw_info->stroke_width > MagickEpsilon) &&
           (draw_info->stroke.opacity != TransparentOpacity))
         {
