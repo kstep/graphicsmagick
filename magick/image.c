@@ -4746,7 +4746,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             height=(*image)->rows;
             x=0;
             y=0;
-            (void) ParseImageGeometry(argv[++i],&x,&y,&width,&height);
+            (void) ParseGeometry(argv[++i],&x,&y,&width,&height);
             if ((width == (*image)->columns) && (height == (*image)->rows))
               break;
             FormatString(geometry,"%lux%lu%+ld%+ld",width,height,

@@ -1292,7 +1292,7 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
       y=0;
       image->rows=height;
       image->columns=width;
-      (void) ParseImageGeometry(image_info->size,&x,&y,&image->columns,
+      (void) ParseGeometry(image_info->size,&x,&y,&image->columns,
         &image->rows);
     }
   if (image_info->page != (char *) NULL)
