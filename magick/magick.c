@@ -681,7 +681,6 @@ MagickExport char *MagickToMime(const char *magick)
   } MediaType;
 
   char
-    lower[MaxTextExtent],
     media[MaxTextExtent];
 
   MediaType
@@ -723,9 +722,8 @@ MagickExport char *MagickToMime(const char *magick)
   for (entry=MediaTypes; entry->magick != (char *) NULL; entry++)
     if (LocaleCompare(entry->magick,magick) == 0)
       return(AllocateString(entry->media));
-  FormatString(lower,"%.1024s", magick);
-  LocaleLower(lower);
-  FormatString(media,"image/x-%.1024s",lower);
+  FormatString(media,"image/x-%.1024s",magick);
+  LocaleLower(media+8);
   return(AllocateString(media));
 }
 
