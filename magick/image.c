@@ -1017,6 +1017,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->pipet=image->pipet;
   clone_image->file=image->file;
   clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
+  clone_image->blob->size=image->blob->size;
   clone_image->magick_columns=image->magick_columns;
   clone_image->magick_rows=image->magick_rows;
   (void) strncpy(clone_image->magick_filename,image->magick_filename,
