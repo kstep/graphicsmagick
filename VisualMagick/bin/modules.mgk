@@ -2,6 +2,7 @@
 <modulemap>
   <module magick="8BIM" name="META" />
   <module magick="8BIMTEXT" name="META" />
+  <module magick="8BIMWTEXT" name="META" />
   <module magick="AFM" name="TTF" />
   <module magick="APP1" name="META" />
   <module magick="APP1JPEG" name="META" />
@@ -33,9 +34,14 @@
   <module magick="ICC" name="META" />
   <module magick="ICM" name="META" />
   <module magick="ICO" name="ICON" />
+  <module magick="IMAGE" name="LOGO" />
   <module magick="IMPLICIT" name="MIFF" />
   <module magick="IPTC" name="META" />
+  <module magick="IPTCTEXT" name="META" />
+  <module magick="IPTCWTEXT" name="META" />
   <module magick="JBG" name="JBIG" />
+  <module magick="JNG" name="PNG" />
+  <module magick="JPC" name="JP2" />
   <module magick="JPG" name="JPEG" />
   <module magick="K" name="GRAY" />
   <module magick="M" name="GRAY" />
@@ -47,6 +53,7 @@
   <module magick="O" name="GRAY" />
   <module magick="P7" name="PNM" />
   <module magick="PAL" name="UYVY" />
+  <module magick="PATTERN" name="LOGO" />
   <module magick="PBM" name="PNM" />
   <module magick="PCDS" name="PCD" />
   <module magick="PCT" name="PICT" />
@@ -54,8 +61,12 @@
   <module magick="PFB" name="TTF" />
   <module magick="PFM" name="TTF" />
   <module magick="PGM" name="PNM" />
+  <module magick="PGX" name="JP2" />
   <module magick="PICON" name="XPM" />
   <module magick="PM" name="XPM" />
+  <module magick="PNG8" name="PNG" />
+  <module magick="PNG24" name="PNG" />
+  <module magick="PNG32" name="PNG" />
   <module magick="PPM" name="PNM" />
   <module magick="PSD" name="PSD" />
   <module magick="PTIF" name="TIFF" />
@@ -69,8 +80,9 @@
   <module magick="VDA" name="TGA" />
   <module magick="VST" name="TGA" />
   <module magick="WMFWIN32" name="EMF" />
-  <module magick="XV" name="VIFF" />
   <module magick="XMP" name="META" />
   <module magick="XTRNARRAY" name="XTRN" />
+  <module magick="XTRNBSTR" name="XTRN" />
+  <module magick="XV" name="VIFF" />
   <module magick="Y" name="GRAY" />
 </modulemap>

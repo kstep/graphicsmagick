@@ -1,3 +1,11 @@
+2003-05-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/type.c (GetTypeBlob): Search $MAGICK_HOME for type.mgk.
+	* coders/modules.mgk: Add missing mappings for PNG8,
+	PNG24, and PNG32.
+	* VisualMagick/bin/modules.mgk: Add missing mappings for PNG8,
+	PNG24, and PNG32.
+
 2003-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/nt_base.c (DllMain): Fix contributed by Achim Domma. For
