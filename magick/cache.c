@@ -64,8 +64,14 @@
 static off_t
   cache_memory = ~0;
 
+static PixelPacket
+  constant_virtual_pixel = { 0, 0, 0, 0};
+
 static SemaphoreInfo
   *cache_semaphore = (SemaphoreInfo *) NULL;
+
+static VirtualPixelExtent
+  virtual_pixel_extent = EdgeExtent;
 
 /*
   Declare pixel cache interfaces.
@@ -175,10 +181,18 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   const long x,const long y,const unsigned long columns,
   const unsigned long rows,const unsigned long nexus,ExceptionInfo *exception)
 {
-#define Cx(x) ((x) < 0 ? 0 : (x) >= (long) cache_info->columns ? \
+#define EdgeX(x) ((x) < 0 ? 0 : (x) >= (long) cache_info->columns ? \
   (long) cache_info->columns-1 : (x))
-#define Cy(y) ((y) < 0 ? 0 : (y) >= (long) cache_info->rows ? \
+#define EdgeY(y) ((y) < 0 ? 0 : (y) >= (long) cache_info->rows ? \
   (long) cache_info->rows-1 : (y))
+#define MirrorX(x) ((((x) >= 0) && (x) < (long) cache_info->columns) ? \
+  (x) : (long) cache_info->columns-TileX(x))
+#define MirrorY(y) ((((y) >= 0) && (y) < (long) cache_info->rows) ? \
+  (y) : (long) cache_info->rows-TileY(y))
+#define TileX(x) (((x) >= 0) ? ((x) % (long) cache_info->columns) : \
+  (long) cache_info->columns-(-(x) % (long) cache_info->columns))
+#define TileY(y) (((y) >= 0) ? ((y) % (long) cache_info->rows) : \
+  (long) cache_info->rows-(-(y) % (long) cache_info->rows))
 
   CacheInfo
     *cache_info;
@@ -276,7 +290,33 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
             Transfer a single pixel.
           */
           span=1;
-          p=AcquireCacheNexus(image,Cx(x+u),Cy(y+v),1,1,image_nexus,exception);
+          switch (virtual_pixel_extent)
+          {
+            case ConstantExtent:
+            {
+              p=(&constant_virtual_pixel);
+              break;
+            }
+            case EdgeExtent:
+            default:
+            {
+              p=AcquireCacheNexus(image,EdgeX(x+u),EdgeY(y+v),1,1,image_nexus,
+                exception);
+              break;
+            }
+            case TileExtent:
+            {
+              p=AcquireCacheNexus(image,TileX(x+u),TileY(y+v),1,1,image_nexus,
+                exception);
+              break;
+            }
+            case MirrorExtent:
+            {
+              p=AcquireCacheNexus(image,MirrorX(x+u),MirrorY(y+v),1,1,
+                image_nexus,exception);
+              break;
+            }
+          }
           if (p == (const PixelPacket *) NULL)
             break;
           *q++=(*p);
@@ -2567,6 +2607,55 @@ MagickExport void SetPixelCacheMethods(AcquirePixelHandler acquire_pixel,
   acquire_one_pixel_from_handler=acquire_one_pixel_from;
   get_one_pixel_from_handler=get_one_pixel_from;
   destroy_pixel_handler=destroy_pixel;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t V i r t u a l P i x e l E x t e n t                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetVirtualPixelExtent() sets the method used to define "virtual" pixels
+%  that may exceed the boundaries of the image when being acquired with
+%  the AcquireImagePixels() method.
+%
+%  The format of the SetVirtualPixelExtent() method is:
+%
+%      SetVirtualPixelExtent(const VirtualPixelExtent extent,
+%        const PixelPacket *pixel)
+%
+%  A description of each parameter follows:
+%
+%    o extent: choose from these methods:
+%
+%        ConstantExtent:  every value outside the image is a constant as
+%        defines by the pixel parameter.
+%
+%        EdgeExtent:  the edge pixels of the image extend infinitely.
+%        Any pixel outside the image is assigned the same value as the
+%        pixel at the edge closest to it.
+%
+%        TileExtent:  the image extends periodically or tiled.  The pixels
+%        wrap around the edges of the image.
+%
+%        MirrorExtent:  mirror the image at the boundaries.
+%
+%    o pixel: the constant pixel value for the ConstantExtent method
+%      otherwise NULL.
+%
+%
+*/
+MagickExport void SetVirtualPixelExtent(const VirtualPixelExtent extent,
+  const PixelPacket *pixel)
+{
+  virtual_pixel_extent=extent;
+  if (pixel != (PixelPacket *) NULL)
+    constant_virtual_pixel=(*pixel);
 }
 
 /*

@@ -513,6 +513,14 @@ typedef enum
 
 typedef enum
 {
+  ConstantExtent,
+  EdgeExtent,
+  TileExtent,
+  MirrorExtent
+} VirtualPixelExtent;
+
+typedef enum
+{
   ControlState = 0x0001,
   InactiveWidgetState = 0x0004,
   JumpListState = 0x0008,

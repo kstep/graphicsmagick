@@ -1,6 +1,7 @@
 2002-06-09  Cristy  <cristy@mystic.es.dupont.com>
 	* Label color could not be set (bug report by Ron Savage).
 	* Added CatchException() method to magick/error.c.
+	* Added SetVirtualPixelExtent() method to magick/cache.c.
 
 2002-06-06  Cristy  <cristy@mystic.es.dupont.com>
 	* ImageMagick, version 5.4.6-1 released.

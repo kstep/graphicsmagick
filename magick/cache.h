@@ -156,7 +156,9 @@ extern MagickExport void
   SetCacheThreshold(const off_t),
   SetPixelCacheMethods(AcquirePixelHandler,GetPixelHandler,SetPixelHandler,
     SyncPixelHandler,GetPixelsFromHandler,GetIndexesFromHandler,
-    AcquireOnePixelFromHandler,GetOnePixelFromHandler,DestroyPixelHandler);
+    AcquireOnePixelFromHandler,GetOnePixelFromHandler,DestroyPixelHandler),
+  SetVirtualPixelExtent(const VirtualPixelExtent,const PixelPacket *);
+
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
