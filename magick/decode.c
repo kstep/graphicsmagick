@@ -5326,6 +5326,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
         q->green=XDownScale(pen_color.green);
         q->blue=XDownScale(pen_color.blue);
         q->index=(int) (Opaque*Min(*p,4))/4;
+        if (q->index == Transparent)
+          {
+            q->red=(~q->red);
+            q->green=(~q->green);
+            q->blue=(~q->blue);
+          }
         q->length=0;
         x++;
         if (x == image->columns)
@@ -5506,6 +5512,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
             q->red=XDownScale(pen_color.red);
             q->green=XDownScale(pen_color.green);
             q->blue=XDownScale(pen_color.blue);
+            if (q->index == Transparent)
+              {
+                q->red=(~q->red);
+                q->green=(~q->green);
+                q->blue=(~q->blue);
+              }
             q++;
           }
           return(image);
@@ -5581,6 +5593,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
     q->red=XDownScale(pen_color.red);
     q->green=XDownScale(pen_color.green);
     q->blue=XDownScale(pen_color.blue);
+    if (q->index == Transparent)
+      {
+        q->red=(~q->red);
+        q->green=(~q->green);
+        q->blue=(~q->blue);
+      }
     q++;
   }
   return(image);
@@ -14728,11 +14746,11 @@ static Image *ReadTTFImage(const ImageInfo *image_info)
   for (i=12; i <= 72; i+=6)
   {
     y+=i+6;
-    local_info.pointsize=18;
+    annotate_info.pointsize=18;
     FormatString(annotate_info.text,"%d",i);
     FormatString(annotate_info.geometry,"+10%+d",y);
     AnnotateImage(image,&annotate_info);
-    local_info.pointsize=i;
+    annotate_info.pointsize=i;
     (void) strcpy(annotate_info.text,
       "That which does not kill us, makes us stronger");
     FormatString(annotate_info.geometry,"+40%+d",y);

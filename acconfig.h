@@ -227,6 +227,9 @@
 /* Define location of the 'netscape' program */
 #undef BrowseDelegate
 
+/* Define location of the 'groff' program */
+#undef MANDelegate
+
 /* Define location of the 'gimp' program */
 #undef LaunchDelegate
 

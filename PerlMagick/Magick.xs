@@ -2894,23 +2894,23 @@ Mogrify(ref, ...)
 		    if (first)
 		    {
 			temp = copy_info(info);
-			GetAnnotateInfo(&temp->info, &annotate);
-			if (aflag[7])
-			    newval(&temp->info.server_name, alist[7].t_str);
 			if (aflag[1])
 			    newval(&temp->info.font, alist[1].t_str);
 			if (aflag[2])
 			    temp->info.pointsize = alist[2].t_int;
 			if (aflag[3])
 			    newval(&temp->info.density, alist[3].t_str);
-			if (aflag[4])
-			    annotate.box = alist[4].t_str;
 			if (aflag[5])
 			    newval(&temp->info.pen, alist[5].t_str);
-			if (aflag[6])
-			    annotate.geometry = alist[6].t_str;
+			if (aflag[7])
+			    newval(&temp->info.server_name, alist[7].t_str);
+			GetAnnotateInfo(&temp->info, &annotate);
 			if (aflag[0])
 			    annotate.text = alist[0].t_str;
+			if (aflag[4])
+			    annotate.box = alist[4].t_str;
+			if (aflag[6])
+			    annotate.geometry = alist[6].t_str;
 			if (aflag[8] || aflag[9])
 			{
 			    if (!aflag[8])
@@ -3075,16 +3075,15 @@ Mogrify(ref, ...)
 		    if (first)
 		    {
 			temp = copy_info(info);
-			GetAnnotateInfo(&temp->info, &annotate);
 			if (aflag[3])
 			    newval(&temp->info.pen, alist[3].t_str);
-			if (aflag[4])
-			    annotate.linewidth = alist[4].t_int;
 			if (aflag[5])
-			    newval(&temp->info.server_name,
-				alist[5].t_str);
+			    newval(&temp->info.server_name, alist[5].t_str);
 			if (aflag[6])
 			    newval(&temp->info.border_color, alist[6].t_str);
+			GetAnnotateInfo(&temp->info, &annotate);
+			if (aflag[4])
+			    annotate.linewidth = alist[4].t_int;
 		    }
 		    n = MaxTextExtent;
 		    if (aflag[1])

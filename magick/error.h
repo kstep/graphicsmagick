@@ -1,4 +1,26 @@
 /*
+  Error declarations.
+*/
+#ifndef _ERROR_H
+#define _ERROR_H
+
+/*
+  Error define definitions.
+*/
+#if defined(sun) && !defined(SVR4)
+#if !defined(strerror)
+#define strerror(n) \
+  (((n) >= 0 && (n) < sys_nerr) ? sys_errlist[n] : "unknown error")
+
+extern char
+  *sys_errlist[];
+
+extern int
+  sys_nerr;
+#endif
+#endif
+
+/*
   Error typedef declarations.
 */
 typedef void
@@ -44,3 +66,5 @@ extern Export ErrorHandler
 extern Export void
   MagickError(const int,const char *,const char *),
   MagickWarning(const int,const char *,const char *);
+
+#endif

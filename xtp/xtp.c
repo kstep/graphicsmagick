@@ -1430,6 +1430,8 @@ int main(int argc,char **argv)
       case 'g':
       {
         get_expression=filename;
+        if (localname == (char *) NULL)
+          localname=filename;
         break;
       }
       case 'p':
@@ -1466,6 +1468,8 @@ int main(int argc,char **argv)
         if (strncmp("put",*argv+1,2) == 0)
           {
             put_expression=filename;
+            if (remotename == (char *) NULL)
+              remotename=filename;
             break;
           }
         Error("Unrecognized option",*argv);
@@ -1675,11 +1679,19 @@ int main(int argc,char **argv)
       */
       (void) sprintf(command,"mget %s\n",get_expression);
       if (!IsGlob(get_expression) && (localname != (char *) NULL))
-        (void) sprintf(command,"get %s %s\n",get_expression,localname);
+        (void) sprintf(command,"get %s %s~\n",get_expression,localname);
       (void) write(master,command,strlen(command));
       while (response=Wait())
         if ((status == 5) || verbose)
           (void) fprintf(stderr,"%s\n",response);
+      if (!IsGlob(get_expression) && (localname != (char *) NULL))
+        {
+          (void) sprintf(command,"rename %s~ %s\n",localname,localname);
+          (void) write(master,command,strlen(command));
+          while (response=Wait())
+            if ((status == 5) || verbose)
+              (void) fprintf(stderr,"%s\n",response);
+        }
     }
   else
     if (put_expression != (char *) NULL)
@@ -1694,11 +1706,19 @@ int main(int argc,char **argv)
             (void) fprintf(stderr,"%s\n",response);
         (void) sprintf(command,"mput %s\n",put_expression);
         if (!IsGlob(put_expression) && (remotename != (char *) NULL))
-          (void) sprintf(command,"put %s %s\n",put_expression,remotename);
+          (void) sprintf(command,"put %s %s~\n",put_expression,remotename);
         (void) write(master,command,strlen(command));
         while (response=Wait())
           if ((status == 5) || verbose)
             (void) fprintf(stderr,"%s\n",response);
+        if (!IsGlob(put_expression) && (remotename != (char *) NULL))
+          {
+            (void) sprintf(command,"rename %s~ %s\n",remotename,remotename);
+            (void) write(master,command,strlen(command));
+            while (response=Wait())
+              if ((status == 5) || verbose)
+                (void) fprintf(stderr,"%s\n",response);
+          }
       }
     else
       ProcessRequest(system_type,prune,verbose);

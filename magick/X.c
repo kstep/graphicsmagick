@@ -8067,6 +8067,9 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
     *sharpened_image,
     *tile_image;
 
+  ImageInfo
+    local_info;
+
   int
     x,
     x_offset,
@@ -8254,20 +8257,22 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
   /*
     Initialize annotate info.
   */
-  GetAnnotateInfo((ImageInfo *) &resource_info->image_info,&annotate_info);
-  annotate_info.pointsize=montage_info->pointsize;
+  local_info=resource_info->image_info;
+  local_info.font=resource_info->font;
+  local_info.pointsize=montage_info->pointsize;
+  GetAnnotateInfo((ImageInfo *) &local_info,&annotate_info);
   annotate_info.geometry=geometry;
-  annotate_info.gravity=CenterGravity;
+  annotate_info.gravity=NorthGravity;
   /*
     Initialize font info.
   */
-  font_height=annotate_info.pointsize;
-  FormatLabel((ImageInfo *) &resource_info->image_info,resource_info->title,
-    ((tile_info.width+(border_width << 1))*Min(number_images,
-    tiles_per_column)) >> 1,&font_height);
+  font_height=annotate_info.bounds.height;
+  FormatLabel((ImageInfo *) &local_info,resource_info->title,((tile_info.width+
+    (border_width << 1))*Min(number_images,tiles_per_column)) >> 1,
+    &font_height);
   for (tile=0; tile < number_images; tile++)
-    FormatLabel((ImageInfo *) &resource_info->image_info,images[tile]->label,
-      tile_info.width+(border_width << 1),&font_height);
+    FormatLabel((ImageInfo *) &local_info,images[tile]->label,tile_info.width+
+      (border_width << 1),&font_height);
   /*
     Determine the number of lines in an image label.
   */

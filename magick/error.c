@@ -56,22 +56,6 @@
 #include "magick.h"
 
 /*
-  Define declarations.
-*/
-#if defined(sun) && !defined(SVR4)
-#if !defined(strerror)
-#define strerror(n) \
-  (((n) >= 0 && (n) < sys_nerr) ? sys_errlist[n] : "unknown error")
-
-extern char
-  *sys_errlist[];
-
-extern int
-  sys_nerr;
-#endif
-#endif
-
-/*
   Forward declaraations.
 */
 static void

@@ -1812,9 +1812,6 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 {
-  ColorPacket
-    transparent_pixel;
-
   Image
     *next_image;
 
@@ -1823,6 +1820,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 
   register int
     i,
+    j,
     x;
 
   register RunlengthPacket
@@ -1834,15 +1832,17 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   unsigned char
     bits_per_pixel,
     c,
-    *colormap;
+    *colormap,
+    *global_colormap,
+    *matte;
 
   unsigned int
     colors,
-    global_colormap,
     height,
     interlace,
     scene,
     status,
+    transparency,
     width;
 
   /*
@@ -1852,11 +1852,36 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
   /*
+    Determine image bounding box.
+  */
+  page_info.width=image->columns;
+  page_info.height=image->rows;
+  page_info.x=0;
+  page_info.y=0;
+  next_image=image;
+  for (next_image=image; next_image != (Image *) NULL; )
+  {
+    (void) XParseGeometry(next_image->page,&page_info.x,&page_info.y,
+      &width,&height);
+    if ((next_image->columns+page_info.x) > page_info.width)
+      page_info.width=next_image->columns+page_info.x;
+    if ((next_image->rows+page_info.y) > page_info.height)
+      page_info.height=next_image->rows+page_info.y;
+    next_image=next_image->next;
+  }
+  /*
     Allocate colormap.
   */
-  colormap=(unsigned char *) AllocateMemory(3*256*sizeof(unsigned char));
-  if (colormap == (unsigned char *) NULL)
+  matte=(unsigned char *)
+    AllocateMemory(page_info.width*page_info.height*sizeof(unsigned char));
+  global_colormap=(unsigned char *) AllocateMemory(768*sizeof(unsigned char));
+  colormap=(unsigned char *) AllocateMemory(768*sizeof(unsigned char));
+  if ((matte == (unsigned char *) NULL) ||
+      (global_colormap == (unsigned char *) NULL) ||
+      (colormap == (unsigned char *) NULL))
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+  for (i=0; i < 768; i++)
+    colormap[i]=0;
   /*
     Write GIF header.
   */
@@ -1868,38 +1893,6 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       (void) fwrite("GIF87a",1,6,image->file);
     else
       (void) fwrite("GIF89a",1,6,image->file);
-  /*
-    Determine image bounding box and global colormap status.
-  */
-  page_info.width=image->columns;
-  page_info.height=image->rows;
-  page_info.x=0;
-  page_info.y=0;
-  global_colormap=image->class == PseudoClass;
-  next_image=image;
-  for ( ; next_image != (Image *) NULL; next_image=next_image->next)
-  {
-    (void) XParseGeometry(next_image->page,&page_info.x,&page_info.y,
-      &width,&height);
-    if ((next_image->columns+page_info.x) > page_info.width)
-      page_info.width=next_image->columns+page_info.x;
-    if ((next_image->rows+page_info.y) > page_info.height)
-      page_info.height=next_image->rows+page_info.y;
-    if (!global_colormap)
-      continue;
-    if ((next_image->class == DirectClass) ||
-        (next_image->colors != image->colors))
-      {
-        global_colormap=False;
-        continue;
-      }
-    for (i=0; i < image->colors; i++)
-      if (!ColorMatch(next_image->colormap[i],image->colormap[i],0))
-        {
-          global_colormap=False;
-          break;
-        }
-  }
   if (image_info->page != (char *) NULL)
     (void) XParseGeometry(image_info->page,&page_info.x,&page_info.y,
       &page_info.width,&page_info.height);
@@ -1914,7 +1907,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
-    transparent_pixel.flags=False;
+    transparency=False;
     if (IsPseudoClass(image))
       colors=image->colors;
     else
@@ -1922,10 +1915,6 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         QuantizeInfo
           quantize_info;
 
-        unsigned char
-          *matte_image;
-
-        matte_image=(unsigned char *) NULL;
         if (image->matte)
           {
             /*
@@ -1933,51 +1922,39 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             */
             if (!UncondenseImage(image))
               return(False);
-            matte_image=(unsigned char *)
-              AllocateMemory(image->packets*sizeof(unsigned char));
-            if (matte_image == (unsigned char *) NULL)
-              PrematureExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
             p=image->pixels;
             for (i=0; i < image->packets; i++)
             {
-              matte_image[i]=p->index == Transparent;
+              matte[i]=p->index == Transparent;
               if (p->index == Transparent)
-                {
-                  transparent_pixel.red=p->red;
-                  transparent_pixel.green=p->green;
-                  transparent_pixel.blue=p->blue;
-                  transparent_pixel.flags=True;
-                }
+                transparency=True;
               p++;
             }
           }
-        colors=transparent_pixel.flags ? 255 : 256;
         GetQuantizeInfo(&quantize_info);
-        quantize_info.number_colors=colors;
+        quantize_info.number_colors=transparency ? 255 : 256;
         quantize_info.dither=image_info->dither;
         (void) QuantizeImage(&quantize_info,image);
         SyncImage(image);
         colors=image->colors;
-        if (transparent_pixel.flags)
+        if (transparency)
           {
             /*
               Set the transparent pixel index.
             */
-            image->class=DirectClass;
             if (!UncondenseImage(image))
               return(False);
             p=image->pixels;
+            image->class=DirectClass;
+            image->matte=True;
             for (i=0; i < image->packets; i++)
             {
-              if (matte_image[i])
+              if (matte[i])
                 p->index=image->colors;
               p++;
             }
             colors++;
           }
-        if (matte_image != (unsigned char *) NULL)
-          FreeMemory((char *) matte_image);
       }
     for (bits_per_pixel=1; bits_per_pixel < 8; bits_per_pixel++)
       if ((1 << bits_per_pixel) >= colors)
@@ -1989,11 +1966,11 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       *q++=DownScale(image->colormap[i].green);
       *q++=DownScale(image->colormap[i].blue);
     }
-    if (transparent_pixel.flags)
+    if (transparency)
       {
-        *q++=DownScale(transparent_pixel.red);
-        *q++=DownScale(transparent_pixel.green);
-        *q++=DownScale(transparent_pixel.blue);
+        *q++=DownScale(image->background_color.red);
+        *q++=DownScale(image->background_color.green);
+        *q++=DownScale(image->background_color.blue);
         i++;
       }
     for ( ; i < (int) (1 << bits_per_pixel); i++)
@@ -2002,11 +1979,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       *q++=(Quantum) 0x0;
       *q++=(Quantum) 0x0;
     }
-    if (!image_info->adjoin || (image->previous == (Image *) NULL))
+    if (image->previous == (Image *) NULL)
       {
-        register int
-          j;
-
         /*
           Write global colormap.
         */
@@ -2020,6 +1994,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         (void) fputc(j,image->file);  /* background color */
         (void) fputc(0x0,image->file);  /* reserved */
         (void) fwrite(colormap,1,3*(1 << bits_per_pixel),image->file);
+        for (j=0; j < 768; j++)
+          global_colormap[j]=colormap[j];
       }
     if (Latin1Compare(image_info->magick,"GIF87") != 0)
       {
@@ -2030,7 +2006,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         (void) fputc(0xf9,image->file);
         (void) fputc(0x04,image->file);
         c=image->dispose << 2;
-        if (transparent_pixel.flags)
+        if (transparency)
           c|=0x01;
         (void) fputc(c,image->file);
         LSBFirstWriteShort(image->delay,image->file);
@@ -2089,7 +2065,10 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     c=0x00;
     if (interlace != NoInterlace)
       c|=0x40;  /* pixel data is interlaced */
-    if (global_colormap)
+    for (j=0; j < colors; j++)
+      if (colormap[j] != global_colormap[j])
+        break;
+    if (j == colors)
       (void) fputc((char) c,image->file);
     else
       {
@@ -2163,7 +2142,9 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
   (void) fputc(';',image->file); /* terminator */
+  FreeMemory((char *) global_colormap);
   FreeMemory((char *) colormap);
+  FreeMemory((char *) matte);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
@@ -6992,7 +6973,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         /*
           Convert PseudoClass image to a PNG monochrome image.
         */
-        polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
+        polarity=Intensity(image->colormap[0]) < (MaxRGB >> 1);
         if (image->colors == 2)
           polarity=
             Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
@@ -7892,8 +7873,8 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case BlurPreview:
       {
         FormatString(factor,"%.1f",percentage);
-        FormatString(label,"+sharpen %s",factor);
-        commands[argc++]="+sharpen";
+        FormatString(label,"-blur %s",factor);
+        commands[argc++]="-blur";
         commands[argc++]=factor;
         break;
       }
@@ -8465,6 +8446,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     else
       if (image->page != (char *) NULL)
         (void) ParseImageGeometry(image->page,&x,&y,&width,&height);
+      else
+        if (Latin1Compare(image_info->magick,"PS") == 0)
+          (void) ParseImageGeometry(PSPageGeometry,&x,&y,&width,&height);
     /*
       Scale relative to dots-per-inch.
     */
@@ -8475,11 +8459,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
-    if ((image->x_resolution != 0) && (image->y_resolution != 0))
-      {
-        x_resolution=image->x_resolution;
-        y_resolution=image->y_resolution;
-      }
     if (image_info->density != (char *) NULL)
       {
         count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);

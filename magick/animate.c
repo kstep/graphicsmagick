@@ -519,6 +519,7 @@ Export void XAnimateBackgroundImage(Display *display,
   */
   if (window_info.id == root_window)
     XDestroyWindowColors(display,root_window);
+  CoalesceImages(image);
   if (resources.map_type == (char *) NULL)
     if ((visual_info->class != TrueColor) &&
         (visual_info->class != DirectColor))
@@ -966,7 +967,6 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   unsigned int
     context_mask,
     number_scenes,
-    sans,
     state;
 
   Window
@@ -1079,6 +1079,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   class_hints=windows->class_hints;
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
+  CoalesceImages(image);
   if (resource_info->map_type == (char *) NULL)
     if ((visual_info->class != TrueColor) &&
         (visual_info->class != DirectColor))
@@ -1568,17 +1569,10 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         XFree((void *) window_name.value);
       }
     windows->image.pixmaps[scene]=windows->image.pixmap;
-    if (images[scene]->matte)
-      XClearWindow(display,windows->image.id);
     event.xexpose.x=0;
     event.xexpose.y=0;
     event.xexpose.width=images[scene]->columns;
     event.xexpose.height=images[scene]->rows;
-    if (images[scene]->page != (char *) NULL)
-      (void) ParseImageGeometry(images[scene]->page,&event.xexpose.x,
-        &event.xexpose.y,&sans,&sans);
-    windows->image.x=(-event.xexpose.x);
-    windows->image.y=(-event.xexpose.y);
     XRefreshWindow(display,&windows->image,&event);
   }
   if (windows->command.mapped)
@@ -1667,17 +1661,10 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
           windows->image.ximage->width=image->columns;
           windows->image.ximage->height=image->rows;
           windows->image.pixmap=windows->image.pixmaps[scene];
-          if (image->matte)
-            XClearWindow(display,windows->image.id);
           event.xexpose.x=0;
           event.xexpose.y=0;
           event.xexpose.width=image->columns;
           event.xexpose.height=image->rows;
-          if (image->page != (char *) NULL)
-            (void) ParseImageGeometry(image->page,&event.xexpose.x,
-              &event.xexpose.y,&sans,&sans);
-          windows->image.x=(-event.xexpose.x);
-          windows->image.y=(-event.xexpose.y);
           XRefreshWindow(display,&windows->image,&event);
           XSync(display,False);
           state&=(~StepAnimationState);

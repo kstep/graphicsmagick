@@ -146,6 +146,9 @@ http=>
 launch=>pnm
 	@LaunchDelegate@ %i
 
+man=>
+	@MANDelegate@ -Tps %i > %o
+
 mpg=>
 	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%05d
 	@ConvertDelegate@ -concatenate %o*.ppm %o

@@ -426,8 +426,12 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     Annotate image.
   */
   GetImageInfo(&local_info);
-  local_info.font=annotate_info->font;
+  local_info.server_name=annotate_info->server_name;
+  local_info.density=annotate_info->density;
   local_info.pointsize=annotate_info->pointsize;
+  local_info.font=annotate_info->font;
+  local_info.pen=annotate_info->pen;
+  local_info.border_color=annotate_info->border_color;
   local_info.size=size;
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
@@ -643,9 +647,6 @@ Export Image *AppendImages(Image *images,unsigned int stack)
   SetNumberScenes(images);
   if ((images->columns != images->next->columns) || !stack)
     {
-      MonitorHandler
-        handler;
-
       register int
         x;
 
@@ -657,9 +658,7 @@ Export Image *AppendImages(Image *images,unsigned int stack)
       {
         if (image->class == DirectClass)
           appended_image->class=DirectClass;
-        handler=SetMonitorHandler((MonitorHandler) NULL);
         CompositeImage(appended_image,ReplaceCompositeOp,image,x,0);
-        (void) SetMonitorHandler(handler);
         x+=image->columns;
         ProgressMonitor(AppendImageText,scene,images->number_scenes);
         scene++;
@@ -1789,8 +1788,6 @@ Export void CompressColormap(Image *image)
 Export void CompositeImage(Image *image,const CompositeOperator compose,
   Image *composite_image,const int x_offset,const int y_offset)
 {
-#define CompositeImageText  "  Compositing image...  "
-
   int
     y;
 
@@ -2227,8 +2224,6 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       q->length=0;
       q++;
     }
-    if (QuantumTick(y,composite_image->rows))
-      ProgressMonitor(CompositeImageText,y,composite_image->rows);
   }
   if (compose == BlendCompositeOp)
     image->matte=False;
@@ -4739,30 +4734,37 @@ Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
   ImageInfo
     local_info;
 
+  assert(image_info != (ImageInfo *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
-  annotate_info->geometry=(char *) NULL;
-  annotate_info->font=image_info->font;
-  annotate_info->box=(char *) NULL;
-  annotate_info->pen=image_info->pen;
+  annotate_info->server_name=image_info->server_name;
+  annotate_info->density=image_info->density;
   annotate_info->pointsize=image_info->pointsize;
+  annotate_info->font=image_info->font;
+  annotate_info->pen=image_info->pen;
   annotate_info->border_color=image_info->border_color;
+  annotate_info->geometry=(char *) NULL;
   annotate_info->text=(char *) NULL;
+  annotate_info->box=(char *) NULL;
   annotate_info->primitive=(char *) NULL;
   annotate_info->linewidth=1;
   annotate_info->gravity=NorthWestGravity;
-  annotate_info->bounds.width=0;
-  annotate_info->bounds.height=0;
+  annotate_info->bounds.width=annotate_info->pointsize;
+  annotate_info->bounds.height=annotate_info->pointsize;
+  annotate_info->bounds.x=0;
+  annotate_info->bounds.y=0;
+  if (annotate_info->font == (char *) NULL)
+    return;
+  /*
+    Get font bounds.
+  */
   local_info=(*image_info);
   FormatString(local_info.filename,"label:%s",Alphabet);
   annotate_image=ReadImage(&local_info);
-  if (annotate_image != (Image *) NULL)
-    {
-      annotate_info->bounds.width=
-        (annotate_image->columns+(strlen(Alphabet) >> 1))/strlen(Alphabet);
-      annotate_info->bounds.height=annotate_image->rows;
-    }
-  annotate_info->bounds.x=0;
-  annotate_info->bounds.y=0;
+  if (annotate_image == (Image *) NULL)
+    return;
+  annotate_info->bounds.width=
+    (annotate_image->columns+(strlen(Alphabet) >> 1))/strlen(Alphabet);
+  annotate_info->bounds.height=annotate_image->rows;
   DestroyImage(annotate_image);
 }
 
@@ -6437,11 +6439,6 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
           }
         continue;
       }
-    if (strncmp("-font",option,3) == 0)
-      {
-        annotate_info.font=argv[++i];
-        continue;
-      }
     if (Latin1Compare("-frame",option) == 0)
       {
         Image
@@ -6685,11 +6682,6 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
             DestroyImage(*image);
             *image=painted_image;
           }
-        continue;
-      }
-    if (strncmp("-normalize",option,4) == 0)
-      {
-        NormalizeImage(*image);
         continue;
       }
     if (strncmp("raise",option+1,2) == 0)

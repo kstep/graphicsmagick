@@ -6,7 +6,7 @@ use Image::Magick;
 # Create watermark.
 #
 $watermark=Image::Magick->new;
-$watermark->ReadImage('label:Copyright @ 1998 cristy@mystic.es.dupont.com');
+$watermark->ReadImage('smile.gif');
 ($width, $height)=$watermark->Get('width','height');
 #
 # Hide watermark in image.

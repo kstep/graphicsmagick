@@ -1,6 +1,6 @@
 Revision history for Perl extension Image::Magick.
 
-1.50 Tue Nov 3 1998
+1.52 Tue Nov 3 1998
 	- Added global_colormap to QuantizeImage.  Added methods
 	  Stereo and Stegano.
 1.49 Wed Oct 21 1998

@@ -885,6 +885,10 @@ then
 
 fi
 
+# Look for groff program.
+AC_PATH_PROG(MANDelegate, groff, groff)
+AC_SUBST(MANDelegate)
+
 # Look for Gimp program.
 AC_PATH_PROG(LaunchDelegate, gimp, gimp)
 AC_SUBST(LaunchDelegate)

@@ -127,6 +127,7 @@ LaunchDelegate = @LaunchDelegate@
 MAGICKLIB = @MAGICKLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANDelegate = @MANDelegate@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
 MVDelegate = @MVDelegate@

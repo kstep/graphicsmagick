@@ -500,19 +500,23 @@ typedef struct _SegmentInfo
 typedef struct _AnnotateInfo
 {
   char
+    *server_name,
+    *density,
+    *border_color,
+    *font,
+    *pen;
+
+  unsigned int
+    pointsize;
+
+  char
     *geometry,
     *text,
-    *font,
-    *pen,
     *box,
-    *border_color,
     *primitive;
 
   unsigned int
     linewidth,
-    pointsize;
-
-  int
     gravity;
 
   RectangleInfo
