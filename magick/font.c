@@ -182,6 +182,8 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
       atexit(DestroyFontInfo);
     }
   LiberateSemaphore(&font_semaphore);
+  if (LocaleCompare(name,"*") == 0)
+    return(font_list);
   /*
     Search for requested font.
   */
@@ -218,19 +220,32 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
 */
 MagickExport unsigned int ListFontInfo(FILE *file,ExceptionInfo *exception)
 {
+  char
+    name[MaxTextExtent];
+
   register FontInfo
     *p;
+
+  register int
+    i;
 
   if (file == (const FILE *) NULL)
     file=stdout;
   (void) fprintf(file,"\nImageMagick supports these built-in fonts:\n\n");
-  (void) fprintf(file,"Font\n");
-  (void) fprintf(file,"-----------------------------\n");
-  (void) GetFontInfo("*",exception);
-  if (font_list == (FontInfo *) NULL)
+  (void) fprintf(file,"Name                         Description\n");
+  (void) fprintf(file,"--------------------------------------------------------"    "-----------------\n");
+  p=GetFontInfo("*",exception);
+  if (p == (FontInfo *) NULL)
     return(False);
   for (p=font_list; p != (FontInfo *) NULL; p=p->next)
-    (void) fprintf(file,"%.1024s\n",p->name);
+  {
+    (void) fprintf(file,"%.1024s",p->name);
+    for (i=Extent(p->name); i <= 28; i++)
+      (void) fprintf(file," ");
+    if (p->description != (char *) NULL)
+      (void) fprintf(file,"%.1024s",p->description);
+    (void) fprintf(file,"\n");
+  }
   (void) fflush(file);
   return(True);
 }
