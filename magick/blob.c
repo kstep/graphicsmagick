@@ -212,6 +212,7 @@ MagickExport void CloseBlob(Image *image)
   if (image->blob.data != (unsigned char *) NULL)
     {
       image->blob.extent=image->blob.length;
+      image->blob.eof=False;
       return;
     }
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
@@ -821,8 +822,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
     }
   GetBlobInfo(&image->blob);
   image->exempt=False;
-  if (image_info->fifo !=
-      (int (*)(const Image *,const void *,const size_t)) NULL)
+  if (image_info->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
     {
       /*
         Use stream fifo.
@@ -1457,7 +1457,9 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
       break;
     }
   }
-  if (image->blob.offset > image->blob.length)
+  if (image->blob.offset <= image->blob.length)
+    image->blob.eof=False;
+  else
     {
       image->blob.length=image->blob.offset;
       ReacquireMemory((void **) &image->blob.data,image->blob.length);
