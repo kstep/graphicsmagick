@@ -39,9 +39,11 @@ pop defs
 pop graphic-context
 pop linear-gradient
 push clip-path-%s  (%s is the name of the clip path)
-push graphic-context
 push defs
-push linear-gradient
+push gradient id linear x1,y1 x2,y2
+push gradient id radial cx,cy fx,fy r
+push graphic-context
+push pattern id x,y width,height
 rectangle upperLeftX,upperLeftY lowerRightX,lowerRightY
 rotate angle
 roundrectangle upperLeftX,upperLeftY lowerRightX,lowerRightY cornerWidth,cornerHeight
