@@ -70,6 +70,92 @@ Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueN
 ; Create file associations
 ;
 
+; AVS (.AVS)
+Root: HKCR; Subkey: ".avs"; ValueType: string; ValueName: ""; ValueData: "ImageMagickAVSFile"
+Root: HKCR; Subkey: "ImageMagickAVSFile"; ValueType: string; ValueName: ""; ValueData: "AVS X Image"
+Root: HKCR; Subkey: "ImageMagickAVSFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickAVSFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickAVSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; BMP (.bmp)
+Root: HKCR; Subkey: ".bmp"; ValueType: string; ValueName: ""; ValueData: "ImageMagickBMPFile"
+Root: HKCR; Subkey: "ImageMagickBMPFile"; ValueType: string; ValueName: ""; ValueData: "Windows Bitmap"
+Root: HKCR; Subkey: "ImageMagickBMPFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickBMPFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickBMPFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; CGM (.cgm)
+Root: HKCR; Subkey: ".CGM"; ValueType: string; ValueName: ""; ValueData: "ImageMagickCGMFile"
+Root: HKCR; Subkey: "ImageMagickCGMFile"; ValueType: string; ValueName: ""; ValueData: "Computer Graphics Metafile"
+Root: HKCR; Subkey: "ImageMagickCGMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickCGMFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickCGMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; CUT (.cut)
+Root: HKCR; Subkey: ".cut"; ValueType: string; ValueName: ""; ValueData: "ImageMagickCUTFile"
+Root: HKCR; Subkey: "ImageMagickCUTFile"; ValueType: string; ValueName: ""; ValueData: "DR Halo File"
+Root: HKCR; Subkey: "ImageMagickCUTFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickCUTFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickCUTFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; DIB (.dib)
+Root: HKCR; Subkey: ".dib"; ValueType: string; ValueName: ""; ValueData: "ImageMagickDIBFile"
+Root: HKCR; Subkey: "ImageMagickDIBFile"; ValueType: string; ValueName: ""; ValueData: "Windows Device Independent Bitmap"
+Root: HKCR; Subkey: "ImageMagickDIBFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickDIBFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickDIBFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; DICOM (.dcm, .dicom)
+Root: HKCR; Subkey: ".dcm"; ValueType: string; ValueName: ""; ValueData: "ImageMagickDICOMFile"
+Root: HKCR; Subkey: ".dicom"; ValueType: string; ValueName: ""; ValueData: "ImageMagickDICOMFile"
+Root: HKCR; Subkey: "ImageMagickDICOMFile"; ValueType: string; ValueName: ""; ValueData: "DICOM Image"
+Root: HKCR; Subkey: "ImageMagickDICOMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickDICOMFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickDICOMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; DPX (.dpx)
+Root: HKCR; Subkey: ".DPX"; ValueType: string; ValueName: ""; ValueData: "ImageMagickDPXFile"
+Root: HKCR; Subkey: "ImageMagickDPXFile"; ValueType: string; ValueName: ""; ValueData: "Digital Moving Picture Exchange"
+Root: HKCR; Subkey: "ImageMagickDPXFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickDPXFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickDPXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; EMF (.emf)
+Root: HKCR; Subkey: ".emf"; ValueType: string; ValueName: ""; ValueData: "ImageMagickEMFFile"
+Root: HKCR; Subkey: "ImageMagickEMFFile"; ValueType: string; ValueName: ""; ValueData: "Windows Ehanced Meta File"
+Root: HKCR; Subkey: "ImageMagickEMFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickEMFFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickEMFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; EPS (.eps)
+Root: HKCR; Subkey: ".eps"; ValueType: string; ValueName: ""; ValueData: "ImageMagickEPSFile"
+Root: HKCR; Subkey: "ImageMagickEPSFile"; ValueType: string; ValueName: ""; ValueData: "Encapsulated Postscript File"
+Root: HKCR; Subkey: "ImageMagickEPSFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickEPSFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickEPSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; FlashPIX (.fpx)
+Root: HKCR; Subkey: ".fpx"; ValueType: string; ValueName: ""; ValueData: "ImageMagickFPXFile"
+Root: HKCR; Subkey: "ImageMagickFPXFile"; ValueType: string; ValueName: ""; ValueData: "FlashPIX File"
+Root: HKCR; Subkey: "ImageMagickFPXFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickFPXFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickFPXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; GIF (.gif)
+Root: HKCR; Subkey: ".gif"; ValueType: string; ValueName: ""; ValueData: "ImageMagickGIFFile"
+Root: HKCR; Subkey: "ImageMagickGIFFile"; ValueType: string; ValueName: ""; ValueData: "Compuserv GIF File"
+Root: HKCR; Subkey: "ImageMagickGIFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickGIFFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickGIFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; HPGL (.hp, .hpgl)
+Root: HKCR; Subkey: ".hp"; ValueType: string; ValueName: ""; ValueData: "ImageMagickHPGLFile"
+Root: HKCR; Subkey: ".hpgl"; ValueType: string; ValueName: ""; ValueData: "ImageMagickHPGLFile"
+Root: HKCR; Subkey: "ImageMagickHPGLFile"; ValueType: string; ValueName: ""; ValueData: "HP-GL Plotter File"
+Root: HKCR; Subkey: "ImageMagickHPGLFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickHPGLFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickHPGLFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
 ; JBIG (.bie, .jbg, .jbig)
 Root: HKCR; Subkey: ".bie"; ValueType: string; ValueName: ""; ValueData: "ImageMagickJBIGFile"
 Root: HKCR; Subkey: ".jbg"; ValueType: string; ValueName: ""; ValueData: "ImageMagickJBIGFile"
@@ -87,12 +173,20 @@ Root: HKCR; Subkey: "ImageMagickJPEGFile\DefaultIcon"; ValueType: string; ValueN
 Root: HKCR; Subkey: "ImageMagickJPEGFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickJPEGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
-; MIFF (.miff)
-Root: HKCR; Subkey: ".miff"; ValueType: string; ValueName: ""; ValueData: "ImageMagickMIFFFile"
-Root: HKCR; Subkey: "ImageMagickMIFFFile"; ValueType: string; ValueName: ""; ValueData: "Magick Image File"
-Root: HKCR; Subkey: "ImageMagickMIFFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickMIFFFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickMIFFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+; KHOROS (.viff, .xv)
+Root: HKCR; Subkey: ".viff"; ValueType: string; ValueName: ""; ValueData: "ImageMagickKHOROSFile"
+Root: HKCR; Subkey: ".xv"; ValueType: string; ValueName: ""; ValueData: "ImageMagickKHOROSFile"
+Root: HKCR; Subkey: "ImageMagickKHOROSFile"; ValueType: string; ValueName: ""; ValueData: "Khoros Visualization Image"
+Root: HKCR; Subkey: "ImageMagickKHOROSFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickKHOROSFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickKHOROSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; MNG (.mng)
+Root: HKCR; Subkey: ".mng"; ValueType: string; ValueName: ""; ValueData: "ImageMagickMNGFile"
+Root: HKCR; Subkey: "ImageMagickMNGFile"; ValueType: string; ValueName: ""; ValueData: "Multiple-image Network Graphics File"
+Root: HKCR; Subkey: "ImageMagickMNGFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickMNGFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickMNGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
 ; MPC (.mpc)
 Root: HKCR; Subkey: ".mpc"; ValueType: string; ValueName: ""; ValueData: "ImageMagickMPCFile"
@@ -100,6 +194,13 @@ Root: HKCR; Subkey: "ImageMagickMPCFile"; ValueType: string; ValueName: ""; Valu
 Root: HKCR; Subkey: "ImageMagickMPCFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
 Root: HKCR; Subkey: "ImageMagickMPCFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickMPCFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; MIFF (.miff)
+Root: HKCR; Subkey: ".miff"; ValueType: string; ValueName: ""; ValueData: "ImageMagickMIFFFile"
+Root: HKCR; Subkey: "ImageMagickMIFFFile"; ValueType: string; ValueName: ""; ValueData: "Magick Image File"
+Root: HKCR; Subkey: "ImageMagickMIFFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickMIFFFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickMIFFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
 ; MSL (.msl)
 Root: HKCR; Subkey: ".msl"; ValueType: string; ValueName: ""; ValueData: "ImageMagickMSLFile"
@@ -136,20 +237,6 @@ Root: HKCR; Subkey: "ImageMagickPPMFile\DefaultIcon"; ValueType: string; ValueNa
 Root: HKCR; Subkey: "ImageMagickPPMFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickPPMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
-; GIF (.gif)
-Root: HKCR; Subkey: ".gif"; ValueType: string; ValueName: ""; ValueData: "ImageMagickGIFFile"
-Root: HKCR; Subkey: "ImageMagickGIFFile"; ValueType: string; ValueName: ""; ValueData: "Compuserv GIF File"
-Root: HKCR; Subkey: "ImageMagickGIFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickGIFFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickGIFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; FlashPIX (.fpx)
-Root: HKCR; Subkey: ".fpx"; ValueType: string; ValueName: ""; ValueData: "ImageMagickFPXFile"
-Root: HKCR; Subkey: "ImageMagickFPXFile"; ValueType: string; ValueName: ""; ValueData: "FlashPIX File"
-Root: HKCR; Subkey: "ImageMagickFPXFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickFPXFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickFPXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
 ; PNG (.png)
 Root: HKCR; Subkey: ".png"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPNGFile"
 Root: HKCR; Subkey: "ImageMagickPNGFile"; ValueType: string; ValueName: ""; ValueData: "Portable Network Graphics File"
@@ -157,12 +244,12 @@ Root: HKCR; Subkey: "ImageMagickPNGFile\DefaultIcon"; ValueType: string; ValueNa
 Root: HKCR; Subkey: "ImageMagickPNGFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickPNGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
-; MNG (.mng)
-Root: HKCR; Subkey: ".mng"; ValueType: string; ValueName: ""; ValueData: "ImageMagickMNGFile"
-Root: HKCR; Subkey: "ImageMagickMNGFile"; ValueType: string; ValueName: ""; ValueData: "Multiple-image Network Graphics File"
-Root: HKCR; Subkey: "ImageMagickMNGFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickMNGFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickMNGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+; PTIF (.ptif)
+Root: HKCR; Subkey: ".ptif"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPTIFFile"
+Root: HKCR; Subkey: "ImageMagickPTIFFile"; ValueType: string; ValueName: ""; ValueData: "Pyramid encoded TIFF"
+Root: HKCR; Subkey: "ImageMagickPTIFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickPTIFFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickPTIFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
 ; TIFF (.fax, .g3, .tif, .tiff)
 Root: HKCR; Subkey: ".fax"; ValueType: string; ValueName: ""; ValueData: "ImageMagickTIFFFile"
@@ -174,55 +261,12 @@ Root: HKCR; Subkey: "ImageMagickTIFFFile\DefaultIcon"; ValueType: string; ValueN
 Root: HKCR; Subkey: "ImageMagickTIFFFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickTIFFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
-; PTIF (.ptif)
-Root: HKCR; Subkey: ".ptif"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPTIFFile"
-Root: HKCR; Subkey: "ImageMagickPTIFFile"; ValueType: string; ValueName: ""; ValueData: "Pyramid encoded TIFF"
-Root: HKCR; Subkey: "ImageMagickPTIFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickPTIFFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickPTIFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; BMP (.bmp)
-Root: HKCR; Subkey: ".bmp"; ValueType: string; ValueName: ""; ValueData: "ImageMagickBMPFile"
-Root: HKCR; Subkey: "ImageMagickBMPFile"; ValueType: string; ValueName: ""; ValueData: "Windows Bitmap"
-Root: HKCR; Subkey: "ImageMagickBMPFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickBMPFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickBMPFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; DIB (.dib)
-Root: HKCR; Subkey: ".dib"; ValueType: string; ValueName: ""; ValueData: "ImageMagickDIBFile"
-Root: HKCR; Subkey: "ImageMagickDIBFile"; ValueType: string; ValueName: ""; ValueData: "Windows Device Independent Bitmap"
-Root: HKCR; Subkey: "ImageMagickDIBFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickDIBFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickDIBFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; CUT (.cut)
-Root: HKCR; Subkey: ".cut"; ValueType: string; ValueName: ""; ValueData: "ImageMagickCUTFile"
-Root: HKCR; Subkey: "ImageMagickCUTFile"; ValueType: string; ValueName: ""; ValueData: "DR Halo File"
-Root: HKCR; Subkey: "ImageMagickCUTFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickCUTFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickCUTFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; DICOM (.dcm, .dicom)
-Root: HKCR; Subkey: ".dcm"; ValueType: string; ValueName: ""; ValueData: "ImageMagickDICOMFile"
-Root: HKCR; Subkey: ".dicom"; ValueType: string; ValueName: ""; ValueData: "ImageMagickDICOMFile"
-Root: HKCR; Subkey: "ImageMagickDICOMFile"; ValueType: string; ValueName: ""; ValueData: "DICOM Image"
-Root: HKCR; Subkey: "ImageMagickDICOMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickDICOMFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickDICOMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
 ; PCX (.pcx)
 Root: HKCR; Subkey: ".pcx"; ValueType: string; ValueName: ""; ValueData: "ImageMagickDCXFile"
 Root: HKCR; Subkey: "ImageMagickDCXFile"; ValueType: string; ValueName: ""; ValueData: "ZSoft Paintbrush File"
 Root: HKCR; Subkey: "ImageMagickDCXFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
 Root: HKCR; Subkey: "ImageMagickDCXFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickDCXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; DPX (.dpx)
-Root: HKCR; Subkey: ".DPX"; ValueType: string; ValueName: ""; ValueData: "ImageMagickDPXFile"
-Root: HKCR; Subkey: "ImageMagickDPXFile"; ValueType: string; ValueName: ""; ValueData: "Digital Moving Picture Exchange"
-Root: HKCR; Subkey: "ImageMagickDPXFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickDPXFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickDPXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
 ; FITS (.fits)
 Root: HKCR; Subkey: ".FITS"; ValueType: string; ValueName: ""; ValueData: "ImageMagickFITSFile"
@@ -284,6 +328,13 @@ Root: HKCR; Subkey: "ImageMagickPCDFile\DefaultIcon"; ValueType: string; ValueNa
 Root: HKCR; Subkey: "ImageMagickPCDFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickPCDFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
+; PDF (.pdf)
+Root: HKCR; Subkey: ".pdf"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPDFFile"
+Root: HKCR; Subkey: "ImageMagickPDFFile"; ValueType: string; ValueName: ""; ValueData: "Portable Document Format"
+Root: HKCR; Subkey: "ImageMagickPDFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickPDFFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickPDFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
 ; PICT (.pct, .pict )
 Root: HKCR; Subkey: ".pct"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPICTFile"
 Root: HKCR; Subkey: ".pict"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPICTFile"
@@ -314,6 +365,21 @@ Root: HKCR; Subkey: "ImageMagickPSDFile\DefaultIcon"; ValueType: string; ValueNa
 Root: HKCR; Subkey: "ImageMagickPSDFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickPSDFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
+; Postscript (.ps)
+Root: HKCR; Subkey: ".ps"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPostscriptFile"
+Root: HKCR; Subkey: "ImageMagickPostscriptFile"; ValueType: string; ValueName: ""; ValueData: "Postscript File"
+Root: HKCR; Subkey: "ImageMagickPostscriptFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickPostscriptFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickPostscriptFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
+; PSFONT (.pfa, .pfb)
+Root: HKCR; Subkey: ".pfa"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPSFONTFile"
+Root: HKCR; Subkey: ".pfb"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPSFONTFile"
+Root: HKCR; Subkey: "ImageMagickPSFONTFile"; ValueType: string; ValueName: ""; ValueData: "Postscript Font"
+Root: HKCR; Subkey: "ImageMagickPSFONTFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickPSFONTFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickPSFONTFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
 ; SFW (.pwp, .sfw)
 Root: HKCR; Subkey: ".pwp"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPWPFile"
 Root: HKCR; Subkey: ".sfw"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPWPFile"
@@ -329,20 +395,19 @@ Root: HKCR; Subkey: "ImageMagickTIMFile\DefaultIcon"; ValueType: string; ValueNa
 Root: HKCR; Subkey: "ImageMagickTIMFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickTIMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
+; TTF (.ttf)
+Root: HKCR; Subkey: ".ttf"; ValueType: string; ValueName: ""; ValueData: "ImageMagickTTFFile"
+Root: HKCR; Subkey: "ImageMagickTTFFile"; ValueType: string; ValueName: ""; ValueData: "TrueType Font"
+Root: HKCR; Subkey: "ImageMagickTTFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickTTFFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickTTFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
 ; VICAR (.vicar)
 Root: HKCR; Subkey: ".vicar"; ValueType: string; ValueName: ""; ValueData: "ImageMagickVICARFile"
 Root: HKCR; Subkey: "ImageMagickVICARFile"; ValueType: string; ValueName: ""; ValueData: "VICAR Rasterfile"
 Root: HKCR; Subkey: "ImageMagickVICARFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
 Root: HKCR; Subkey: "ImageMagickVICARFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickVICARFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; KHOROS (.viff, .xv)
-Root: HKCR; Subkey: ".viff"; ValueType: string; ValueName: ""; ValueData: "ImageMagickKHOROSFile"
-Root: HKCR; Subkey: ".xv"; ValueType: string; ValueName: ""; ValueData: "ImageMagickKHOROSFile"
-Root: HKCR; Subkey: "ImageMagickKHOROSFile"; ValueType: string; ValueName: ""; ValueData: "Khoros Visualization Image"
-Root: HKCR; Subkey: "ImageMagickKHOROSFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickKHOROSFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickKHOROSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
 ; WBMP (.wbmp)
 Root: HKCR; Subkey: ".wbmp"; ValueType: string; ValueName: ""; ValueData: "ImageMagickWBMPFile"
@@ -358,13 +423,6 @@ Root: HKCR; Subkey: "ImageMagickWMFFile\DefaultIcon"; ValueType: string; ValueNa
 Root: HKCR; Subkey: "ImageMagickWMFFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickWMFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
-; EMF (.emf)
-Root: HKCR; Subkey: ".emf"; ValueType: string; ValueName: ""; ValueData: "ImageMagickEMFFile"
-Root: HKCR; Subkey: "ImageMagickEMFFile"; ValueType: string; ValueName: ""; ValueData: "Windows Ehanced Meta File"
-Root: HKCR; Subkey: "ImageMagickEMFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickEMFFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickEMFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
 ; XBM (.xbm)
 Root: HKCR; Subkey: ".xbm"; ValueType: string; ValueName: ""; ValueData: "ImageMagickXBMFile"
 Root: HKCR; Subkey: "ImageMagickXBMFile"; ValueType: string; ValueName: ""; ValueData: "X Windows Bitmap"
@@ -379,6 +437,13 @@ Root: HKCR; Subkey: "ImageMagickXCFFile\DefaultIcon"; ValueType: string; ValueNa
 Root: HKCR; Subkey: "ImageMagickXCFFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickXCFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
+; XFIG (.fig)
+Root: HKCR; Subkey: ".fig"; ValueType: string; ValueName: ""; ValueData: "ImageMagickXFIGFile"
+Root: HKCR; Subkey: "ImageMagickXFIGFile"; ValueType: string; ValueName: ""; ValueData: "Xfig File"
+Root: HKCR; Subkey: "ImageMagickXFIGFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
+Root: HKCR; Subkey: "ImageMagickXFIGFile\shell\open"; ValueType: none
+Root: HKCR; Subkey: "ImageMagickXFIGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+
 ; XPM (.xpm)
 Root: HKCR; Subkey: ".xpm"; ValueType: string; ValueName: ""; ValueData: "ImageMagickXPMFile"
 Root: HKCR; Subkey: "ImageMagickXPMFile"; ValueType: string; ValueName: ""; ValueData: "X Windows Pixmap"
@@ -392,71 +457,6 @@ Root: HKCR; Subkey: "ImageMagickXWDFile"; ValueType: string; ValueName: ""; Valu
 Root: HKCR; Subkey: "ImageMagickXWDFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
 Root: HKCR; Subkey: "ImageMagickXWDFile\shell\open"; ValueType: none
 Root: HKCR; Subkey: "ImageMagickXWDFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; TTF (.ttf)
-Root: HKCR; Subkey: ".ttf"; ValueType: string; ValueName: ""; ValueData: "ImageMagickTTFFile"
-Root: HKCR; Subkey: "ImageMagickTTFFile"; ValueType: string; ValueName: ""; ValueData: "TrueType Font"
-Root: HKCR; Subkey: "ImageMagickTTFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickTTFFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickTTFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; PSFONT (.pfa, .pfb)
-Root: HKCR; Subkey: ".pfa"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPSFONTFile"
-Root: HKCR; Subkey: ".pfb"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPSFONTFile"
-Root: HKCR; Subkey: "ImageMagickPSFONTFile"; ValueType: string; ValueName: ""; ValueData: "Postscript Font"
-Root: HKCR; Subkey: "ImageMagickPSFONTFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickPSFONTFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickPSFONTFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; AVS (.AVS)
-Root: HKCR; Subkey: ".avs"; ValueType: string; ValueName: ""; ValueData: "ImageMagickAVSFile"
-Root: HKCR; Subkey: "ImageMagickAVSFile"; ValueType: string; ValueName: ""; ValueData: "AVS X Image"
-Root: HKCR; Subkey: "ImageMagickAVSFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickAVSFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickAVSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; Postscript (.ps)
-Root: HKCR; Subkey: ".ps"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPostscriptFile"
-Root: HKCR; Subkey: "ImageMagickPostscriptFile"; ValueType: string; ValueName: ""; ValueData: "Postscript File"
-Root: HKCR; Subkey: "ImageMagickPostscriptFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickPostscriptFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickPostscriptFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; EPS (.eps)
-Root: HKCR; Subkey: ".eps"; ValueType: string; ValueName: ""; ValueData: "ImageMagickEPSFile"
-Root: HKCR; Subkey: "ImageMagickEPSFile"; ValueType: string; ValueName: ""; ValueData: "Encapsulated Postscript File"
-Root: HKCR; Subkey: "ImageMagickEPSFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickEPSFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickEPSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; PDF (.pdf)
-Root: HKCR; Subkey: ".pdf"; ValueType: string; ValueName: ""; ValueData: "ImageMagickPDFFile"
-Root: HKCR; Subkey: "ImageMagickPDFFile"; ValueType: string; ValueName: ""; ValueData: "Portable Document Format"
-Root: HKCR; Subkey: "ImageMagickPDFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickPDFFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickPDFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; XFIG (.fig)
-Root: HKCR; Subkey: ".fig"; ValueType: string; ValueName: ""; ValueData: "ImageMagickXFIGFile"
-Root: HKCR; Subkey: "ImageMagickXFIGFile"; ValueType: string; ValueName: ""; ValueData: "Xfig File"
-Root: HKCR; Subkey: "ImageMagickXFIGFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickXFIGFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickXFIGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; CGM (.cgm)
-Root: HKCR; Subkey: ".CGM"; ValueType: string; ValueName: ""; ValueData: "ImageMagickCGMFile"
-Root: HKCR; Subkey: "ImageMagickCGMFile"; ValueType: string; ValueName: ""; ValueData: "Computer Graphics Metafile"
-Root: HKCR; Subkey: "ImageMagickCGMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickCGMFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickCGMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
-
-; HPGL (.hp, .hpgl)
-Root: HKCR; Subkey: ".hp"; ValueType: string; ValueName: ""; ValueData: "ImageMagickHPGLFile"
-Root: HKCR; Subkey: ".hpgl"; ValueType: string; ValueName: ""; ValueData: "ImageMagickHPGLFile"
-Root: HKCR; Subkey: "ImageMagickHPGLFile"; ValueType: string; ValueName: ""; ValueData: "HP-GL Plotter File"
-Root: HKCR; Subkey: "ImageMagickHPGLFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
-Root: HKCR; Subkey: "ImageMagickHPGLFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "ImageMagickHPGLFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
 
 [Files]
 ; Executables
