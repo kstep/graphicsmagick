@@ -1,4 +1,8 @@
 .TH convert 1 "Date: 2002/01/01 01:00:00" "ImageMagick"
+.TP
+.in 15
+.in 15
+.in 20
 .SH NAME
 
 convert - convert an image or sequence of images
@@ -393,10 +397,10 @@ behavior.
 .B "-append"
 \fRappend a set of images
 
-All the input images must have the same width or height.
-Images of the same width are stacked top-to-bottom.
-Images of the same height are stacked left-to-right.
-Use \fB+append\fP to stack rectangular images top-to-bottom.
+All the input images must have the same width or height. Images of the
+same width are stacked top-to-bottom. Images with different widths are stacked
+left-to-right. Use \fB+append\fP to stack images of the same
+width and the same height left-to-right.
 
 .TP
 .B "-average"
@@ -1966,31 +1970,32 @@ display(1), animate(1), identify(1), montage(1), mogrify(1),
 composite(1)
 
 .SH COPYRIGHT
-Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
-to making software imaging solutions freely available.
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files ("ImageMagick"),
+\fBCopyright (C) 2002 ImageMagick Studio\fP
+
+\fBPermission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files ("ImageMagick"),
 to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of ImageMagick, and to permit persons to whom the
-ImageMagick is furnished to do so, subject to the following conditions:
+and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
+is furnished to do so, subject to the following conditions:\fP
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of ImageMagick.
+\fBThe above copyright notice and this permission notice shall be included
+in all copies or substantial portions of ImageMagick.\fP
 
-The software is provided "as is", without warranty of any kind, express or
-implied, including but not limited to the warranties of merchantability,
-fitness for a particular purpose and noninfringement.  In no event shall
+\fBThe software is provided "as is", without warranty of any kind, express
+or implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and noninfringement.In no event shall
 ImageMagick Studio be liable for any claim, damages or other liability,
-whether in an action of contract, tort or otherwise, arising from, out of
-or in connection with ImageMagick or the use or other dealings in
-ImageMagick.
+whether in an action of contract, tort or otherwise, arising from, out
+of or in connection with ImageMagick or the use or other dealings in
+ImageMagick.\fP
 
-Except as contained in this notice, the name of the ImageMagick Studio
-shall not be used in advertising or otherwise to promote the sale, use or
-other dealings in ImageMagick without prior written authorization from the
-ImageMagick Studio.
-
+\fBExcept as contained in this notice, the name of the
+ImageMagick Studio LLC shall not be used in advertising or otherwise to
+promote the sale, use or other dealings in ImageMagick without prior written
+authorization from the ImageMagick Studio.\fP
 .SH AUTHORS
-John Cristy, ImageMagick Studio LLC
+
+\fIJohn Cristy, ImageMagick Studio LLC\fP.
+
