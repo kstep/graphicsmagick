@@ -1,9 +1,24 @@
-ImageMagick now depends on the external files, delegates.mgk and magic.mgk.
-If ImageMagick commands fail, verify that these files are installed
-and valid for your environment. For details beyond this document, see
-README.txt and ImageMagick.html.
+Environment Variables:
 
-Unix:
+  ImageMagick depends on a number of external configuration files which
+  include delegates.mgk, magic.mgk, and modules.mgk.  ImageMagick looks
+  in the current working directory for these files or a well known
+  location depending on the operating system.  For example,
+  /usr/local/share/ImageMagick on Unix or c:\ImageMagick on Windows.
+  If you put ImageMagick files in a non-standard locations you can hint
+  to ImageMagick where to look with these environment variables:
+
+	MAGICK_DELEGATE_PATH	path to delegates.mgk and magic.mgk
+	MAGICK_MODULES_PATH	path to modules.mgk
+
+  Other useful enviroment variables include
+
+	MAGIGK_CACHE_THRESHOLD	megabytes of memory available to pixel cache
+	TMPDIR			path to store temporary files
+	LD_LIBRARY_PATH		path to libMagick.so
+
+
+Unix Install:
 
   Download
 
@@ -21,28 +36,8 @@ Unix:
   Alternatively, download the appropriate binary from
   ftp://www.wizards.dupont.com/pub/ImageMagick/binaries.
 
-  If you download the binary distribution, you must move
-  the file share/ImageMagick/delegates.mgk to the directory
-  /usr/local/share/ImageMagick/ or to the directory $HOME/.magick
-  and move the file share/ImageMagick/magic.mgk to directory
-  /usr/local/share/ImageMagick/, or to the directory $HOME/.magick.
-  If the binary distribution is anywhere but /usr/local you will
-  probably need to set the LD_LIBRARY_PATH, MAGICK_DELEGATE_PATH, and
-  MAGICK_MODULE_PATH environment variables.  For example,
 
-    setenv LD_LIBRARY_PATH ~/lib
-    setenv MAGICK_DELEGATE_PATH ~/share/ImageMagick
-    setenv MAGICK_DELEGATE_PATH ~/ImageMagick/modules/coders
-
-
-  In some cases, ImageMagick needs to write temporary files.  If your
-  default location is too small, use the TMPDIR environment variable to
-  specify a path. For example:
-
-    export TMPDIR=/home/tmp
-
-
-Win2K, NT, Win95, Win98:
+Win2K, NT, Win95, Win98 Install:
 
   Download
 
@@ -51,25 +46,15 @@ Win2K, NT, Win95, Win98:
   and double click on it to extract the distribution.  Next, select
   File->New->Folder to create c:\ImageMagick.
 
-    ImageMagick-5.2.0/delegates/win2k.mgk
+  Use Copy/Paste/Rename to copy and rename 
 
-  to
+	ImageMagick-5.2.0\delegates\win2k.mgk to c:\ImageMagick\delegates.mgk
 
-    c:\ImageMagick\delegates.mgk
+  and
 
-  Use Copy/Paste/Rename to copy and rename win2k.mgk to delegates.mgk.  Now
-  copy
+	ImageMagick-5.2.0\delegates\magic.mgk to c:\ImageMagick\magic.mgk
 
-    ImageMagick-5.2.0\delegates\magic.mgk
-
-  to
-
-    c:\ImageMagick\magic.mgk
-
-  If you have an X server, change to directory
-  ImageMagick-5.2.0/ImageMagick-5.2.0/bin and double-click on
-  display.exe.  Otherwise, select Start->Programs->Command Prompt.  In
-  the Command Prompt window type
+  Select Start->Programs->Command Prompt.  In the Command Prompt window type
 
     cd ImageMagick-5.2.0
     identify -verbose logo:
@@ -78,17 +63,11 @@ Win2K, NT, Win95, Win98:
 
     ftp://www.wizards.dupont.com/pub/ImageMagick/win2k/ImageMagick-5.2.0.zip
 
-  and double click on the ImageMagick Visual C++ project to build from
-  the source.
-
-  In some cases, ImageMagick needs to write temporary files.  If your
-  default location is too small, use the TMPDIR environment variable to
-  specify a path. For example:
-
-    set TMPDIR=d:\temp
+  and read README.txt for detailed instructions on compiling the ImageMagick
+  source.
 
 
-MAC:
+MAC Install:
 
   Download
 
@@ -109,7 +88,7 @@ MAC:
   and double click on the Make AppleScript script to build from the source.
 
 
-VMS:
+VMS Install:
 
   Type
 
