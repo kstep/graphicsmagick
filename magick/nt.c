@@ -608,7 +608,7 @@ Export char *ntgetlasterror(void)
 		    (LPTSTR) &buf,
 		    0,
 		    NULL)) {
-    s=AllocateString(s);
+    s=AllocateString(buf);
     LocalFree(buf);
   }
   else
