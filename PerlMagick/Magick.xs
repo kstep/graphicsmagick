@@ -1083,14 +1083,9 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"blue-primary") == 0)
         {
           for ( ; image; image=image->next)
-          {
-            (void) sscanf(SvPV(sval,na),"%lf %lf",
+            (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf",
               &image->chromaticity.blue_primary.x,
               &image->chromaticity.blue_primary.y);
-            (void) sscanf(SvPV(sval,na),"%lf,%lf",
-              &image->chromaticity.blue_primary.x,
-              &image->chromaticity.blue_primary.y);
-          }
           return;
         }
       if (LocaleCompare(attribute,"bordercolor") == 0)
@@ -1143,8 +1138,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 red=color->red;
                 green=color->green;
                 blue=color->blue;
-                (void) sscanf(SvPV(sval,na),"%lf %lf %lf",&red,&green,&blue);
-                (void) sscanf(SvPV(sval,na),"%lf,%lf,%lf",&red,&green,&blue);
+                (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf%*[, ]%lf",&red,
+                  &green,&blue);
                 color->red=(Quantum)
                   ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
                 color->green=(Quantum)
@@ -1311,14 +1306,9 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"green-primary") == 0)
         {
           for ( ; image; image=image->next)
-          {
-            (void) sscanf(SvPV(sval,na),"%lf %lf",
+            (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf",
               &image->chromaticity.green_primary.x,
               &image->chromaticity.green_primary.y);
-            (void) sscanf(SvPV(sval,na),"%lf,%lf",
-              &image->chromaticity.green_primary.x,
-              &image->chromaticity.green_primary.y);
-          }
           return;
         }
       break;
@@ -1343,8 +1333,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               continue;
             x=0;
             y=0;
-            (void) sscanf(attribute,"%*[^[][%ld %ld",&x,&y);
-            (void) sscanf(attribute,"%*[^[][%ld,%ld",&x,&y);
+            (void) sscanf(attribute,"%*[^[][%ld%*[, ]%ld",&x,&y);
             pixel=GetImagePixels(image,x % image->columns,y % image->rows,1,1);
             if (pixel == (PixelPacket *) NULL)
               break;
@@ -1474,8 +1463,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           {
             x=0;
             y=0;
-            (void) sscanf(attribute,"%*[^[][%ld %ld",&x,&y);
-            (void) sscanf(attribute,"%*[^[][%ld,%ld",&x,&y);
+            (void) sscanf(attribute,"%*[^[][%ld%*[, ]%ld",&x,&y);
             pixel=GetImagePixels(image,x % image->columns,y % image->rows,1,1);
             if (pixel == (PixelPacket *) NULL)
               break;
@@ -1488,10 +1476,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 green=pixel->green;
                 blue=pixel->blue;
                 opacity=pixel->opacity;
-                (void) sscanf(SvPV(sval,na),"%lf %lf %lf %lf",&red,&green,&blue,
-                  &opacity);
-                (void) sscanf(SvPV(sval,na),"%lf,%lf,%lf,%lf",&red,&green,&blue,
-                  &opacity);
+                (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf%*[, ]%lf%*[, ]%lf",
+                  &red,&green,&blue,&opacity);
                 pixel->red=(Quantum)
                   ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
                 pixel->green=(Quantum)
@@ -1542,14 +1528,9 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"red-primary") == 0)
         {
           for ( ; image; image=image->next)
-          {
-            (void) sscanf(SvPV(sval,na),"%lf %lf",
+            (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf",
               &image->chromaticity.red_primary.x,
               &image->chromaticity.red_primary.y);
-            (void) sscanf(SvPV(sval,na),"%lf,%lf",
-              &image->chromaticity.red_primary.x,
-              &image->chromaticity.red_primary.y);
-          }
           return;
         }
       if (LocaleCompare(attribute,"render") == 0)
@@ -1688,14 +1669,9 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"white-primary") == 0)
         {
           for ( ; image; image=image->next)
-          {
-            (void) sscanf(SvPV(sval,na),"%lf %lf",
+            (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf",
               &image->chromaticity.white_point.x,
               &image->chromaticity.white_point.y);
-            (void) sscanf(SvPV(sval,na),"%lf,%lf",
-              &image->chromaticity.white_point.x,
-              &image->chromaticity.white_point.y);
-          }
           return;
         }
       break;
@@ -3216,8 +3192,7 @@ Get(ref,...)
                 break;
               x=0;
               y=0;
-              (void) sscanf(attribute,"%*[^[][%ld %ld",&x,&y);
-              (void) sscanf(attribute,"%*[^[][%ld,%ld",&x,&y);
+              (void) sscanf(attribute,"%*[^[][%ld%*[, ]%ld",&x,&y);
               (void) GetOnePixel(image,x % image->columns,y % image->rows);
               indexes=GetIndexes(image);
               FormatString(name,"%u",*indexes);
@@ -3369,8 +3344,7 @@ Get(ref,...)
                 break;
               x=0;
               y=0;
-              (void) sscanf(attribute,"%*[^[][%ld %ld",&x,&y);
-              (void) sscanf(attribute,"%*[^[][%ld,%ld",&x,&y);
+              (void) sscanf(attribute,"%*[^[][%ld%*[, ]%ld",&x,&y);
               pixel=GetOnePixel(image,x % image->columns,y % image->rows);
               FormatString(name,"%u,%u,%u,%u",pixel.red,pixel.green,pixel.blue,
                 pixel.opacity);
@@ -4626,9 +4600,7 @@ Mogrify(ref,...)
                 /*
                   Translate.
                 */
-                k=sscanf(value,"%lf%lf",&affine.tx,&affine.ty);
-                if (k == 1)
-                  k=sscanf(value,"%lf,%lf",&affine.tx,&affine.ty);
+                k=sscanf(value,"%lf%*[, ]%lf",&affine.tx,&affine.ty);
                 if (k == 1)
                   affine.ty=affine.tx;
                 break;
@@ -4638,9 +4610,7 @@ Mogrify(ref,...)
                 /*
                   Scale.
                 */
-                k=sscanf(value,"%lf%lf",&affine.sx,&affine.sy);
-                if (k == 1)
-                  k=sscanf(value,"%lf,%lf",&affine.sx,&affine.sy);
+                k=sscanf(value,"%lf%*[, ]%lf",&affine.sx,&affine.sy);
                 if (k == 1)
                   affine.sy=affine.sx;
                 break;
@@ -4984,9 +4954,7 @@ Mogrify(ref,...)
                 /*
                   Translate.
                 */
-                k=sscanf(value,"%lf%lf",&affine.tx,&affine.ty);
-                if (k == 1)
-                  k=sscanf(value,"%lf,%lf",&affine.tx,&affine.ty);
+                k=sscanf(value,"%lf%*[, ]%lf",&affine.tx,&affine.ty);
                 if (k == 1)
                   affine.ty=affine.tx;
                 break;
@@ -4996,9 +4964,7 @@ Mogrify(ref,...)
                 /*
                   Scale.
                 */
-                k=sscanf(value,"%lf%lf",&affine.sx,&affine.sy);
-                if (k == 1)
-                  k=sscanf(value,"%lf,%lf",&affine.sx,&affine.sy);
+                k=sscanf(value,"%lf%*[, ]%lf",&affine.sx,&affine.sy);
                 if (k == 1)
                   affine.sy=affine.sx;
                 break;
@@ -6682,8 +6648,8 @@ QueryFontMetrics(ref,...)
         {
           if (LocaleCompare(attribute,"rotate") == 0)
             {
-              (void) sscanf(SvPV(ST(i),na),"%lf %lf",&affine.rx,&affine.ry);
-              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.rx,&affine.ry);
+              (void) sscanf(SvPV(ST(i),na),"%lf%*[, ]%lf",&affine.rx,
+                &affine.ry);
               break;
             }
           break;
@@ -6693,8 +6659,8 @@ QueryFontMetrics(ref,...)
         {
           if (LocaleCompare(attribute,"scale") == 0)
             {
-              (void) sscanf(SvPV(ST(i),na),"%lf %lf",&affine.sx,&affine.sy);
-              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.sx,&affine.sy);
+              (void) sscanf(SvPV(ST(i),na),"%lf%*[, ]%lf",&affine.sx,
+                affine.sy);
               break;
             }
           if (LocaleCompare(attribute,"skew") == 0)
@@ -6705,8 +6671,7 @@ QueryFontMetrics(ref,...)
 
               x_angle=0.0;
               y_angle=0.0;
-              (void) sscanf(SvPV(ST(i),na),"%lf %lf",&x_angle,&y_angle);
-              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&x_angle,&y_angle);
+              (void) sscanf(SvPV(ST(i),na),"%lf%*[, ]%lf",&x_angle,&y_angle);
               affine.ry=tan(DegreesToRadians(fmod(x_angle,360.0)));
               affine.rx=tan(DegreesToRadians(fmod(y_angle,360.0)));
               break;
@@ -6723,8 +6688,8 @@ QueryFontMetrics(ref,...)
             }
           if (LocaleCompare(attribute,"translate") == 0)
             {
-              (void) sscanf(SvPV(ST(i),na),"%lf %lf",&affine.tx,&affine.ty);
-              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.tx,&affine.ty);
+              (void) sscanf(SvPV(ST(i),na),"%lf%*[, ]%lf",&affine.tx,
+                &affine.ty);
               break;
             }
           break;

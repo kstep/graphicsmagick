@@ -4091,6 +4091,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               (void) SetImageAttribute(*image,"label",(char *) NULL);
             continue;
           }
+        if (LocaleCompare("levels",option+1) == 0)
+          {
+            (void) LevelImage(*image,argv[++i]);
+            continue;
+          }
         if (LocaleCompare("-linewidth",option) == 0)
           {
             draw_info->stroke_width=atof(argv[++i]);
