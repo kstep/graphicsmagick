@@ -3173,6 +3173,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (LocaleCompare("-box",option) == 0)
       {
         (void) CloneString(&draw_info->box,argv[++i]);
+        (void) QueryColorDatabase(argv[++i],&draw_info->box);
         continue;
       }
     if (LocaleNCompare("-charcoal",option,3) == 0)

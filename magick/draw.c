@@ -168,8 +168,6 @@ Export DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     cloned_info->primitive=AllocateString(draw_info->primitive);
   if (draw_info->font != (char *) NULL)
     cloned_info->font=AllocateString(draw_info->font);
-  if (draw_info->box != (char *) NULL)
-    cloned_info->box=AllocateString(draw_info->box);
   return(cloned_info);
 }
 
@@ -478,8 +476,6 @@ Export void DestroyDrawInfo(DrawInfo *draw_info)
     FreeMemory((void **) &draw_info->primitive);
   if (draw_info->font != (char *) NULL)
     FreeMemory((void **) &draw_info->font);
-  if (draw_info->box != (char *) NULL)
-    FreeMemory((void **) &draw_info->box);
   if (draw_info->tile != (Image *) NULL)
     DestroyImage(draw_info->tile);
   FreeMemory((void **) &draw_info);
@@ -1996,17 +1992,17 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   assert(draw_info != (DrawInfo *) NULL);
   draw_info->primitive=(char *) NULL;
   draw_info->font=AllocateString(image_info->font);
-  draw_info->box=(char *) NULL;
   draw_info->opacity=100;
   draw_info->antialias=image_info->antialias;
-  draw_info->stroke=image_info->stroke;
-  draw_info->fill=image_info->fill;
   draw_info->gravity=NorthWestGravity;
   draw_info->linewidth=1.0;
   draw_info->pointsize=image_info->pointsize;
   draw_info->translate.x=0.0;
   draw_info->translate.y=0.0;
   draw_info->rotate=0.0;
+  draw_info->fill=image_info->fill;
+  draw_info->stroke=image_info->stroke;
+  (void) QueryColorDatabase("none",&draw_info->box);
   draw_info->border_color=image_info->border_color;
   draw_info->tile=(Image *) NULL;
 }
@@ -2474,15 +2470,15 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
         annotate=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
         DestroyImageInfo(clone_info);
         annotate->font=AllocateString(draw_info->font);
-        annotate->stroke=draw_info->stroke;
-        annotate->fill=draw_info->fill;
-        annotate->box=AllocateString(draw_info->box);
         annotate->antialias=draw_info->antialias;
         annotate->pointsize=draw_info->pointsize;
         annotate->degrees=draw_info->rotate;
         annotate->gravity=draw_info->gravity;
         annotate->text=AllocateString(p->text);
         annotate->geometry=AllocateString("                                  ");
+        annotate->fill=draw_info->fill;
+        annotate->stroke=draw_info->stroke;
+        annotate->box=draw_info->box;
         (void) strncpy(annotate->text,p->text,r-p->text);
         annotate->text[r-p->text]='\0';
         FormatString(annotate->geometry,"%+f%+f",p->pixel.x,p->pixel.y);

@@ -194,13 +194,13 @@ Export void GetMontageInfo(const ImageInfo *image_info,
   montage_info->frame=(char *) NULL;
   montage_info->texture=(char *) NULL;
   montage_info->font=AllocateString(image_info->font);
-  montage_info->stroke=image_info->stroke;
-  montage_info->fill=image_info->fill;
   montage_info->pointsize=image_info->pointsize;
   montage_info->border_width=0;
   montage_info->gravity=CenterGravity;
   montage_info->shadow=False;
   montage_info->compose=ReplaceCompositeOp;
+  montage_info->fill=image_info->fill;
+  montage_info->stroke=image_info->stroke;
   montage_info->background_color=image_info->background_color;
   montage_info->border_color=image_info->border_color;
   montage_info->matte_color=image_info->matte_color;

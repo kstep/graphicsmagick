@@ -100,7 +100,7 @@ typedef struct _AnnotateInfo
     *geometry,
     *text,
     *font,
-    *box;
+    *font_name;
 
   unsigned int
     antialias,
@@ -111,11 +111,9 @@ typedef struct _AnnotateInfo
     degrees;
 
   PixelPacket
+    fill,
     stroke,
-    fill;
-
-  char
-    *font_name;
+    box;
 
   RectangleInfo
     bounds;
@@ -222,8 +220,8 @@ typedef struct _MontageInfo
     compose;
 
   PixelPacket
-    stroke,
     fill,
+    stroke,
     background_color,
     border_color,
     matte_color;
@@ -427,8 +425,7 @@ typedef struct _DrawInfo
 {
   char
     *primitive,
-    *font,
-    *box;
+    *font;
 
   unsigned int
     opacity,
@@ -446,8 +443,9 @@ typedef struct _DrawInfo
     rotate;
 
   PixelPacket
-    stroke,
     fill,
+    stroke,
+    box,
     border_color;
 
   Image
@@ -520,8 +518,8 @@ typedef struct _ImageInfo
     fuzz;
 
   PixelPacket
-    stroke,
     fill,
+    stroke,
     background_color,
     border_color,
     matte_color;

@@ -208,8 +208,8 @@ Export unsigned int AnnotateImage(Image *image,
     CloneString(&image_info->font,annotate_info->font);
     image_info->pointsize=annotate_info->pointsize;
     image_info->antialias=annotate_info->antialias;
-    image_info->stroke=annotate_info->stroke;
     image_info->fill=annotate_info->fill;
+    image_info->stroke=annotate_info->stroke;
     (void) strcpy(image_info->filename,label);
     annotate_image=ReadImage(image_info,&error);
     if (annotate_image == (Image *) NULL)
@@ -303,21 +303,10 @@ Export unsigned int AnnotateImage(Image *image,
         break;
       }
     }
-    if (annotate_info->box != (char *) NULL)
+    if (annotate_info->box.opacity != Transparent)
       {
-        /*
-          Surround text with a bounding box.
-        */
-        FormatString(image_info->filename,"xc:%.1024s",annotate_info->box);
-        FormatString(size,"%ux%u",annotate_image->columns,annotate_image->rows);
-        (void) CloneString(&image_info->size,size);
-        box_image=ReadImage(image_info,&error);
-        if (box_image != (Image *) NULL)
-          {
-            CompositeImage(image,ReplaceCompositeOp,box_image,
-              clone_info->bounds.x,clone_info->bounds.y);
-            DestroyImage(box_image);
-          }
+        annotate_image->background_color=annotate_info->box;
+        SetImage(annotate_image,Opaque);
       }
     CompositeImage(image,AnnotateCompositeOp,annotate_image,
       clone_info->bounds.x,clone_info->bounds.y);
@@ -385,8 +374,6 @@ Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
     clone_info->text=AllocateString(annotate_info->text);
   if (annotate_info->font != (char *) NULL)
     clone_info->font=AllocateString(annotate_info->font);
-  if (annotate_info->box != (char *) NULL)
-    clone_info->box=AllocateString(annotate_info->box);
   if (annotate_info->font_name != (char *) NULL)
     clone_info->font_name=AllocateString(annotate_info->font_name);
   return(clone_info);
@@ -425,8 +412,6 @@ Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
     FreeMemory((void **) &annotate_info->text);
   if (annotate_info->font != (char *) NULL)
     FreeMemory((void **) &annotate_info->font);
-  if (annotate_info->box != (char *) NULL)
-    FreeMemory((void **) &annotate_info->box);
   if (annotate_info->font_name != (char *) NULL)
     FreeMemory((void **) &annotate_info->font_name);
   FreeMemory((void **) &annotate_info);
@@ -481,14 +466,14 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->geometry=(char *) NULL;
   annotate_info->text=(char *) NULL;
   annotate_info->font=AllocateString(image_info->font);
-  annotate_info->box=(char *) NULL;
   annotate_info->antialias=image_info->antialias;
+  annotate_info->font_name=(char *) NULL;
   annotate_info->gravity=NorthWestGravity;
   annotate_info->pointsize=image_info->pointsize;
   annotate_info->degrees=0.0;
-  annotate_info->stroke=image_info->stroke;
   annotate_info->fill=image_info->fill;
-  annotate_info->font_name=(char *) NULL;
+  annotate_info->stroke=image_info->stroke;
+  (void) QueryColorDatabase("none",&annotate_info->box);
   annotate_info->bounds.width=ceil(image_info->pointsize);
   annotate_info->bounds.height=ceil(image_info->pointsize);
   annotate_info->bounds.x=0;
