@@ -156,8 +156,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           p=caption+strlen(caption);
         }
       if (caption == (char *) NULL)
-        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
-          image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       CloseBlob(image);
     }
   /*

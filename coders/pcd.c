@@ -182,7 +182,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   assert(chroma2 != (unsigned char *) NULL);
   buffer=(unsigned char *) AcquireMemory(0x800);
   if (buffer == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       (char *) NULL);
   sum=0;
   bits=32;
@@ -195,7 +195,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     if (pcd_table[i] == (PCDTable *) NULL)
       {
         LiberateMemory((void **) &buffer);
-        ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           (char *) NULL)
       }
     r=pcd_table[i];
@@ -422,7 +422,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   montage_image=MontageImages(image,montage_info,exception);
   DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   DestroyImage(image);
   return(montage_image);
 }
@@ -489,7 +489,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   header=(unsigned char *) AcquireMemory(3*0x800);
   if (header == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   count=ReadBlob(image,3*0x800,(char *) header);
   overview=LocaleNCompare((char *) header,"PCD_OPA",7) == 0;
   if ((count == 0) ||
@@ -547,7 +547,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   luma=(unsigned char *) AcquireMemory(number_pixels+1);
   if ((chroma1 == (unsigned char *) NULL) ||
       (chroma2 == (unsigned char *) NULL) || (luma == (unsigned char *) NULL))
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*
     Advance to image data.
   */

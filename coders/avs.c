@@ -157,8 +157,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     pixels=(unsigned char *) AcquireMemory(4*image->columns);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
-        image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     for (y=0; y < (long) image->rows; y++)
     {
       count=ReadBlob(image,4*image->columns,pixels);
@@ -354,8 +353,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     */
     pixels=(unsigned char *) AcquireMemory(image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
-        image);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     /*
       Convert MIFF to AVS raster pixels.
     */

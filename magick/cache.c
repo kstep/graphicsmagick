@@ -1841,7 +1841,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   assert(image->signature == MagickSignature);
   assert(image->cache != (void *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowBinaryException(ResourceLimitError,"No pixels defined in cache",
+    ThrowBinaryException(ResourceLimitError,"NoPixelsDefinedInCache",
       image->filename);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
@@ -1877,7 +1877,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     size+=sizeof(IndexPacket);
   offset=size*number_pixels;
   if (cache_info->columns != (offset/cache_info->rows/size))
-    ThrowBinaryException(ResourceLimitError,"Pixel cache allocation failed",
+    ThrowBinaryException(ResourceLimitError,"PixelCacheAllocationFailed",
       image->filename);
   cache_info->length=offset;
   if (cache_info->length == (size_t) cache_info->length)
@@ -1891,8 +1891,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
           {
             ReacquireMemory((void **) &cache_info->pixels,cache_info->length);
             if (cache_info->pixels == (void *) NULL)
-              ThrowBinaryException(ResourceLimitError,
-                "Memory allocation failed",image->filename);
+              ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+                image->filename);
             pixels=cache_info->pixels;
           }
         if (pixels == (PixelPacket *) NULL)
@@ -1921,7 +1921,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     Create pixel cache on disk.
   */
   if (!AcquireMagickResource(DiskResource,cache_info->length))
-    ThrowBinaryException(ResourceLimitError,"Cache resources exhausted",
+    ThrowBinaryException(ResourceLimitError,"CacheResourcesExhausted",
       image->filename);
   if (*cache_info->cache_filename == '\0')
     TemporaryFilename(cache_info->cache_filename);

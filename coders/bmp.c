@@ -834,11 +834,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           LogMagickEvent(CoderEvent,"   Reading colormap of %ld colors",
             image->colors);
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         bmp_colormap=(unsigned char *) AcquireMemory(4*image->colors);
         if (bmp_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         if ((bmp_info.size == 12) || (bmp_info.size == 64))
           packet_size=3;
@@ -871,8 +871,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixels=(unsigned char *)
       AcquireMemory(Max(bytes_per_line,image->columns+1)*image->rows);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
-        image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     if ((bmp_info.compression == BI_RGB) ||
         (bmp_info.compression == BI_BITFIELDS))
       {
@@ -1551,7 +1550,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     */
     pixels=(unsigned char *) AcquireMemory(bmp_info.image_size);
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     switch (bmp_info.bits_per_pixel)
     {
       case 1:
@@ -1838,7 +1837,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         bmp_colormap=(unsigned char *)
           AcquireMemory(4*(1 << bmp_info.bits_per_pixel));
         if (bmp_colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         q=bmp_colormap;
         for (i=0; i < (long) image->colors; i++)

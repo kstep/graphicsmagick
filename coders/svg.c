@@ -2582,7 +2582,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.text=AllocateString("");
   svg_info.scale=(double *) AcquireMemory(sizeof(double));
   if (svg_info.scale == (double *) NULL)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   IdentityAffine(&svg_info.affine);
   svg_info.affine.sx=
     image->x_resolution == 0.0 ? 1.0 : image->x_resolution/72.0;
@@ -2821,8 +2821,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   number_pixels=image->columns*image->rows;
   bitmap.bitmap=(unsigned char *) AcquireMemory(number_planes*number_pixels);
   if (bitmap.bitmap == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"Memory allocation failed",
-      image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   point=0;
   for (j=0; j < image->rows; j++)
   {
@@ -2994,9 +2993,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   */
   (void) WriteBlobString(image,"<?xml version=\"1.0\" standalone=\"no\"?>\n");
   (void) WriteBlobString(image,
-    "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20000802//EN\"\n");
+    "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n");
   (void) WriteBlobString(image,
-    "  \"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd\">\n");
+    "  \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n");
   (void) FormatString(message,"<svg width=\"%lu\" height=\"%lu\">\n",
     image->columns,image->rows);
   (void) WriteBlobString(image,message);
@@ -3007,7 +3006,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   primitive_info=(PrimitiveInfo *)
     AcquireMemory(number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   IdentityAffine(&affine);
   token=AllocateString(attribute->value);
   active=False;

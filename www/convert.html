@@ -23,7 +23,7 @@
 <body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
 <A HREF="http://promote.pair.com/direct.pl?imagemagick.org">
   <IMG SRC="../images/promote.png" ALIGN=RIGHT WIDTH=120
-    HEIGHT=60 BORDER=0></A>
+    HEIGHT=60 BORDER=0 ALT="pair.com logo"></A>
 <center>
 <img SRC="../images/magick_small.png" alt="" width=114 height=118>
 </center>
@@ -161,6 +161,12 @@ use:
 <pre>
     convert -depth 8 -size 768x512+128 gray:raw image.pgm
 </pre>
+<p>
+In this example, "raw" is the input file.  Its format is "gray" and it
+has the dimensions and number of header bytes specified by the -size
+option and the sample depth specified by the
+-depth option.  The output file is "image.pgm".  The suffix ".pgm"
+specifies its format.
 <p>
 To convert a Photo CD image to a TIFF image, use:
 <pre>
@@ -889,6 +895,17 @@ width=15><b><font face="Helvetica, Arial"
     <a href="ImageMagick.html#details-label">-label</a> <i>&lt;name&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>assign a label to an image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    -lat <i>&lt;radius&gt;x&lt;sigma&gt;</i>{<i>+-</i>}<i>&lt;offset&gt;</i>{<i>%</i>}<i></i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>perform local adaptive thresholding</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

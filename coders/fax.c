@@ -164,7 +164,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=3508;
   image->depth=8;
   if (!AllocateImageColormap(image,2))
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*
     Monochrome colormap.
   */

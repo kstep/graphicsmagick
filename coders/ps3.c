@@ -182,7 +182,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     {
       TIFFClose(tiff);
       (void) remove(filename);
-      ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         (char *) NULL)
     }
   /*
@@ -593,7 +593,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         length=4*number_pixels;
         pixels=(unsigned char *) AcquireMemory(length);
         if (pixels == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         /*
           Dump Packbit encoded pixels.
@@ -819,7 +819,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
   compressed_packets=(unsigned long) (1.001*length+12);
   compressed_pixels=(unsigned char *) AcquireMemory(compressed_packets);
   if (compressed_pixels == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       (char *) NULL);
   stream.next_in=pixels;
   stream.avail_in=(unsigned int) length;

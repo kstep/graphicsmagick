@@ -55,6 +55,12 @@ use:
     convert -depth 8 -size 768x512+128 gray:raw
             image.pgm
 
+In this example, "raw" is the input file.  Its format is "gray" and it
+has the dimensions and number of header bytes specified by the -size
+option and the sample depth specified by the
+-depth option.  The output file is "image.pgm".  The suffix ".pgm"
+specifies its format.
+
 To convert a Photo CD image to a TIFF image, use:
 
     convert -size 1536x1024 img0009.pcd image.tiff
@@ -277,6 +283,9 @@ For a more detailed description of each option, see
 .TP
 .B "-label \fI<name>"\fP
 \fRassign a label to an image
+.TP
+.B "-lat \fI<radius>x<sigma>{+-}<offset>{%}"\fP
+\fRperform local adaptive thresholding
 .TP
 .B "-level \fI<value>"\fP
 \fRadjust the level of image contrast

@@ -73,11 +73,20 @@
   <Resource>
     <Limit>
       <Error>
+        <Message name="CacheResourcesExhausted">
+          Cache resources exhausted
+        </Message>
+        <Message name="NoPixelsDefinedInCache">
+          No pixels defined in cache
+        </Message>
+        <Message name="PixelCacheAllocationFailed">
+          Pixel cache allocation failed
+        </Message>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
         </Message>
-        <Message name="UnableToCloneImage">
-          Unable to clone image
+        <Message name="UnableToManageColor">
+          Unable to manage color
         </Message>
       </Error>
     </Limit>

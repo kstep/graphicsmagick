@@ -1138,7 +1138,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
             cmsOpenProfileFromMem((unsigned char *) profile,length);
           if ((image_profile == (cmsHPROFILE) NULL) ||
               (transform_profile == (cmsHPROFILE) NULL))
-            ThrowBinaryException(ResourceLimitError,"Unable to manage color",
+            ThrowBinaryException(ResourceLimitError,"UnableToManageColor",
               "failed to open color profiles");
           switch (cmsGetColorSpace(transform_profile))
           {
@@ -1176,7 +1176,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
                   transform_profile,TYPE_RGBA_16,intent,0);
             }
           if (transform == (cmsHTRANSFORM) NULL)
-            ThrowBinaryException(ResourceLimitError,"Unable to manage color",
+            ThrowBinaryException(ResourceLimitError,"UnableToManageColor",
               "failed to create color transform");
           if (image->colorspace == CMYKColorspace)
             SetImageType(image,ColorSeparationMatteType);
@@ -1213,8 +1213,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
         {
           image->color_profile.info=(unsigned char *) AcquireMemory(length);
           if (image->color_profile.info == (unsigned char *) NULL)
-            ThrowBinaryException(ResourceLimitError,"Unable to add ICM profile",
-              "Memory allocation failed");
+            ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+              "Unable to add ICM profile");
           image->color_profile.length=length;
           (void) memcpy(image->color_profile.info,profile,length);
         }
@@ -1250,8 +1250,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
     {
       image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
       if (image->generic_profile[i].info == (unsigned char *) NULL)
-        ThrowBinaryException(ResourceLimitError,"Unable to add profile",
-          "Memory allocation failed");
+        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+          "Unable to add profile");
       image->generic_profile[i].length=length;
       (void) memcpy(image->generic_profile[i].info,profile,length);
     }

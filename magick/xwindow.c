@@ -466,8 +466,8 @@ static char **FontToList(char *font)
   fontlist=(char **) AcquireMemory((fonts+1)*sizeof(char *));
   if (fontlist == (char **) NULL)
     {
-      MagickError(ResourceLimitError,"Unable to convert font",
-        "Memory allocation failed");
+      MagickError(ResourceLimitError,"MemoryAllocationFailed",
+        "Unable to convert font");
       return((char **) NULL);
     }
   p=font;
@@ -479,8 +479,8 @@ static char **FontToList(char *font)
     fontlist[i]=(char *) AcquireMemory(q-p+1);
     if (fontlist[i] == (char *) NULL)
       {
-        MagickError(ResourceLimitError,"Unable to convert font",
-          "Memory allocation failed");
+        MagickError(ResourceLimitError,"MemoryAllocationFailed",
+          "Unable to convert font");
         return((char **) NULL);
       }
     (void) strncpy(fontlist[i],p,q-p);
@@ -642,8 +642,8 @@ MagickExport void XBestIconSize(Display *display,XWindowInfo *window,
       icon_size=XAllocIconSize();
       if (icon_size == (XIconSize *) NULL)
         {
-          MagickError(ResourceLimitError,"Unable to get best icon size",
-            "Memory allocation failed");
+          MagickError(ResourceLimitError,"Memory allocation failed",
+            "Unable to get best icon size");
           return;
         }
       icon_size->min_width=1;
@@ -1766,8 +1766,8 @@ static void XDitherImage(Image *image,XImage *ximage)
           (green_map[i][j] == (unsigned char *) NULL) ||
           (blue_map[i][j] == (unsigned char *) NULL))
         {
-          MagickError(ResourceLimitError,"Unable to dither image",
-            "Memory allocation failed");
+          MagickError(ResourceLimitError,"MemoryAllocationFailed",
+            "Unable to dither image");
           return;
         }
     }
@@ -3698,8 +3698,8 @@ static Image *XGetWindowImage(Display *display,const Window window,
     }
   if (window_info == (WindowInfo *) NULL)
     {
-      MagickError(ResourceLimitError,"Unable to read X image",
-        "Memory allocation failed");
+      MagickError(ResourceLimitError,"MemoryAllocationFailed",
+        "Unable to read X image");
       return((Image *) NULL);
     }
   id=number_windows++;
@@ -4687,8 +4687,8 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   windows=(XWindows *) AcquireMemory(sizeof(XWindows));
   if (windows == (XWindows *) NULL)
     {
-      MagickError(ResourceLimitError,"Unable to create X windows",
-        "Memory allocation failed");
+      MagickError(ResourceLimitError,"MemoryAllocationFailed",
+        "Unable to create X windows");
       return((XWindows *) NULL);
     }
   (void) memset(windows,0,sizeof(XWindows));
@@ -4700,8 +4700,8 @@ MagickExport XWindows *XInitializeWindows(Display *display,
       (windows->icon_pixel == (XPixelInfo *) NULL) ||
       (windows->icon_resources == (XResourceInfo *) NULL))
     {
-      MagickError(ResourceLimitError,"Unable to create X windows",
-        "Memory allocation failed");
+      MagickError(ResourceLimitError,"MemoryAllocationFailed",
+        "Unable to create X windows");
       return((XWindows *) NULL);
     }
   /*

@@ -138,14 +138,14 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   list=(char **) AcquireMemory(sizeof(char *));
   if (list == (char **) NULL)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   list[0]=(char *) AllocateString((char *) NULL);
   (void) strncpy(list[0],image_info->filename,MaxTextExtent-1);
   number_files=1;
   filelist=list;
   status=ExpandFilenames(&number_files,&filelist);
   if ((status == False) || (number_files == 0))
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   DestroyImage(image);
   /*
     Read each image and convert them to a tile.

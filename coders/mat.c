@@ -385,8 +385,8 @@ MATLAB_KO:  ThrowReaderException(CorruptImageError,"Not a MATLAB image file!",im
      image->colors=256;
      if (!AllocateImageColormap(image,image->colors))
            {
-NoMemory:  ThrowReaderException(ResourceLimitError,"Memory allocation failed",
-                                image)
+NoMemory:  ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+             image)
            }           
    
      for (i=0; i < (long)image->colors; i++)

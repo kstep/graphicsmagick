@@ -489,7 +489,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     Initialize image colormap.
   */
   if (bits_per_pixel < 16 && !AllocateImageColormap(image,1L << bits_per_pixel))
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
 
   if(bits_per_pixel < 8 && flags & PALM_IS_COMPRESSED_FLAG)    /* compressed size */
     {
@@ -546,7 +546,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
 
   one_row = (unsigned char *) AcquireMemory(bytes_per_row);
   if (one_row == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (compressionType == PALM_COMPRESSION_SCANLINE)
     lastrow = (unsigned char *) AcquireMemory(bytes_per_row);
 

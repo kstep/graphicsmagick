@@ -147,7 +147,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   packet_size=image->depth > 8 ? 2 : 1;
   scanline=(unsigned char *) AcquireMemory(packet_size*image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (image_info->subrange != 0)
     while (image->scene < image_info->subimage)
     {
@@ -165,8 +165,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       Convert raster image to pixel packets.
     */
     if (!AllocateImageColormap(image,1 << image->depth))
-      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
-        image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -424,8 +423,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     packet_size=image->depth > 8 ? 2: 1;
     scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
     if (scanline == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
-        image);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     /*
       Convert MIFF to GRAY raster scanline.
     */

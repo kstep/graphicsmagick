@@ -457,7 +457,7 @@ NoPalette:
    image->colors=256;
    if (!AllocateImageColormap(image,image->colors))
      {
-NoMemory:  ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+NoMemory:  ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
         image)
            }     
    

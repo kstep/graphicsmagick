@@ -229,7 +229,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         comment=(char *) AcquireMemory(tga_info.id_length+1);
         if (comment == (char *) NULL)
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         (void) ReadBlob(image,tga_info.id_length,comment);
         comment[tga_info.id_length]='\0';
@@ -244,7 +244,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read TGA raster colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         for (i=0; i < (long) image->colors; i++)
         {
@@ -711,7 +711,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         targa_colormap=(unsigned char *)
           AcquireMemory(3*targa_info.colormap_length);
         if (targa_colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         q=targa_colormap;
         for (i=0; i < (long) image->colors; i++)
@@ -730,8 +730,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     count=(long) ((targa_info.bits_per_pixel*targa_info.width) >> 3);
     targa_pixels=(unsigned char *) AcquireMemory(count);
     if (targa_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
-        image);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     for (y=(long) (image->rows-1); y >= 0; y--)
     {
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
