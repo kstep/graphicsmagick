@@ -425,7 +425,7 @@ Magick::frameImage::frameImage( const Magick::Geometry &geometry_ )
 {
 }
 Magick::frameImage::frameImage( const unsigned int width_, const unsigned int height_,
-                                const int innerBevel_ = 6, const int outerBevel_ = 6 )
+                                const int innerBevel_, const int outerBevel_ )
   : _width( width_ ),
     _height( height_ ),
     _outerBevel( outerBevel_ ),
