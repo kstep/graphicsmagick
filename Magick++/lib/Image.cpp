@@ -244,7 +244,7 @@ void Magick::Image::blur( unsigned int order_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-    BlurImage( image(), (double) order_, 1.5, &exceptionInfo);
+    BlurImage( image(), order_, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -991,6 +991,8 @@ void Magick::Image::read ( const std::string &imageSpec_ )
     ReadImage( imageInfo(), &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );
+  if ( image )
+    throwException( image->exception );
 }
 
 // Read image of specified size into current object
@@ -1012,6 +1014,8 @@ void Magick::Image::read ( const Blob &blob_ )
 		 blob_.length(), &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );
+  if ( image )
+    throwException( image->exception );
 }
 
 // Read image of specified size from in-memory BLOB
@@ -1196,8 +1200,7 @@ void Magick::Image::sharpen ( unsigned int order_ )
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     SharpenImage( image(),
-			     (double) order_,
-			     1.5,
+			     order_,
 			     &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
