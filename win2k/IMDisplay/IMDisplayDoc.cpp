@@ -118,11 +118,18 @@ BOOL CIMDisplayDoc::DoReadImage( void )
 	m_pImage->read(m_szFile.GetBuffer(MAX_PATH+1));
     }
 
-    catch(Exception e)
+    // Image may still be usable if there is a warning
+    catch(Magick::Warning warning)
+    {
+        DoDisplayError("DoReadImage",warning.what());
+    }
+
+    // Image is not usable
+    catch(Magick::Error error)
     {
 	delete m_pImage;
 	m_pImage = NULL;
-	DoDisplayError("DoReadImage",e.what());
+	DoDisplayError("DoReadImage",error.what());
 	return FALSE;
     }
 
