@@ -1363,6 +1363,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   volatile long
     image_count=0,
+    scenes_found,
     image_found;
 
   MngInfo
@@ -1580,6 +1581,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   skip_to_iend=False;
   term_chunk_found=False;
   image_found=False;
+  scenes_found=0;
   framing_mode=1;
 #ifdef MNG_INSERT_LAYERS
   mandatory_back=False;
@@ -3049,9 +3051,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
          }
       }
-    if (image_info->ping && (image_info->subrange != 0))
-      if (image->scene >= (image_info->subimage+image_info->subrange-1))
-        break;
     /*
       Read image scanlines.
     */
@@ -3067,6 +3066,26 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       scanlines[i]=png_pixels+(i*ping_info->rowbytes);
     png_read_image(ping,scanlines);
     png_read_end(ping,ping_info);
+
+    if (image_info->ping && (image_info->subrange != 0))
+      {
+        png_destroy_read_struct(&ping,&ping_info,&end_info);
+        LiberateMemory((void **) &png_pixels);
+        LiberateMemory((void **) &scanlines);
+        break;
+      }
+    if (image->delay != 0)
+      scenes_found++;
+    if (image_info->subrange != 0 && scenes_found-1 < image_info->subimage)
+      {
+        png_destroy_read_struct(&ping,&ping_info,&end_info);
+        LiberateMemory((void **) &png_pixels);
+        LiberateMemory((void **) &scanlines);
+        image->colors=2;
+        SetImage(image,TransparentOpacity);
+        continue;
+      }
+
     /*
       Convert PNG pixels to pixel packets.
     */
@@ -3978,6 +3997,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
 #endif
       CatchImageException(image);
+      if (image_info->subrange != 0)
+        {
+          if (scenes_found > image_info->subimage+image_info->subrange)
+            break;
+        }
   } while (LocaleCompare(image_info->magick,"MNG") == 0);
 #ifdef MNG_INSERT_LAYERS
   if (insert_layers && !image_found && (mng_width) && (mng_height))
@@ -4057,6 +4081,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         *next_image,
         *next;
 
+      unsigned long
+        scene;
+
+      scene=image->scene;
       next_image=CoalesceImages(image,&image->exception);
       if (next_image == (Image *) NULL)
         MagickError(image->exception.severity,image->exception.reason,
@@ -4064,14 +4092,16 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImageList(image);
       image=next_image;
 
-      for(next=image; next->next != (Image *) NULL; next=next_image)
+      for(next=image; next != (Image *) NULL; next=next_image)
       {
          next_image=next->next;
          next->page.height=mng_height;
          next->page.width=mng_height;
+         next->scene=scene++;
          if (next->delay == 0)
            {
              next_image->previous=next->previous;
+             scene--;
 
              if (next->previous == (Image *) NULL)
                image=next_image;
@@ -4150,9 +4180,18 @@ ModuleExport void RegisterPNGImage(void)
   entry->magick=IsPNG;
   entry->adjoin=False;
   entry->description=AllocateString("Portable Network Graphics");
-#if defined(PNG_LIBPNG_VER)
-  entry->version=AllocateString((char *) NULL);
-  FormatString(entry->version,"%d",PNG_LIBPNG_VER);
+#if defined(PNG_LIBPNG_VER_STRING)
+  entry->version=AllocateString(PNG_LIBPNG_VER_STRING);
+# if PNG_LIBPNG_VER > 10001
+  if (LocaleCompare(PNG_LIBPNG_VER_STRING,png_get_header_ver(NULL)) != 0)
+  {
+    /*
+      Show both compile-time and run-time library versions when they differ.
+    */
+    (void) ConcatenateString(&entry->version,",");
+    (void) ConcatenateString(&entry->version,png_get_libpng_ver(NULL));
+  }
+# endif
 #endif
   entry->module=AllocateString("PNG");
   (void) RegisterMagickInfo(entry);
