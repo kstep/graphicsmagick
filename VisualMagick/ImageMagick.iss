@@ -71,7 +71,7 @@ Source: "bin\type-ghostscript.mgk"; DestDir: "{app}"
 Source: "bin\type-windows.mgk"; DestDir: "{app}"
 Source: "bin\type.mgk"; DestDir: "{app}"
 ; Release documentation files
-Source: "..\ChangeLog"; DestDir: "{app}"
+Source: "..\ChangeLog"; DestDir: "{app}"; DestName: "ChangeLog.txt"
 Source: "..\Copyright.txt"; DestDir: "{app}"
 Source: "..\QuickStart.txt"; DestDir: "{app}"
 Source: "..\README.txt"; DestDir: "{app}"
@@ -92,7 +92,12 @@ Source: "..\www\api\*.html"; DestDir: "{app}\www\api"
 Source: "..\www\api\types\*.html"; DestDir: "{app}\www\api\types"
 ; Delegate library licenses
 Source: "..\licenses\*.txt"; DestDir: "{app}\licenses"
+; Icon file
+Source: "..\magick\ImageMagick.ico"; DestDir: "{app}"
 
 [Icons]
-Name: "{group}\ImageMagick"; Filename: "{app}\ImageMagick.html"
-Name: "{group}\ImageMagick"; Filename: "{app}\IMDisplay.exe"
+Name: "{group}\ImageMagick Web Pages"; Filename: "{app}\ImageMagick.html"
+; Name: "{group}\ImageMagick Readme"; Filename: "{app}\README.txt"
+; Name: "{group}\ImageMagick Quick Start"; Filename: "{app}\QuickStart.txt"
+; Name: "{group}\ImageMagick License"; Filename: "{app}\Copyright.txt"
+Name: "{group}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilename: "{app}\ImageMagick.ico"
