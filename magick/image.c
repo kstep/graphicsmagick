@@ -5050,7 +5050,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickSignature);
-  if (argc <= 0)
+  if ((argc <= 0) || (*argv == (char *) NULL))
     return(True);
   scene=False;
   for (i=0; i < argc; i++)
