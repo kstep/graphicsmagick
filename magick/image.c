@@ -2699,16 +2699,12 @@ MagickExport unsigned long GetImageDepth(Image *image)
 */
 MagickExport void GetImageInfo(ImageInfo *image_info)
 {
-  Image
-    *image;
-
   /*
     File and image dimension members.
   */
   assert(image_info != (ImageInfo *) NULL);
   memset(image_info,0,sizeof(ImageInfo));
   image_info->blob=CloneBlobInfo((BlobInfo *) NULL);
-  image=AllocateImage(image_info);
   UniqueImageFilename(image_info->unique);
   (void) strcat(image_info->unique,"u");
   UniqueImageFilename(image_info->zero);
@@ -2725,7 +2721,6 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->dither=True;
   image_info->preview_type=JPEGPreview;
   image_info->signature=MagickSignature;
-  DestroyImage(image);
 }
 
 /*
