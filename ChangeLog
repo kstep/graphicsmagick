@@ -1,5 +1,9 @@
 2004-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: Added the --enable-magick-compat option to install
+	compatibility links to emulate ImageMagick commands.
+	* magick/command.c: Ensure that each sub-command responds to -help
+	and -version appropriately.
 	* utilities/gm.c (main): Invoke appropriate sub-command if gm is
 	executed under a traditional alternate name such as "convert". The
 	user may create hard or symbolic links from 'gm' to a traditional

@@ -43,6 +43,29 @@ man_MANS = $(MANPAGES)
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES)
 
+# Install/Uninstall ImageMagick compatibility links
+if MAGICK_COMPAT
+MAGICKPROGRAMS=animate composite conjure convert display identify import mogrify montage
+install-exec-local:
+	$(mkdir_p) $(DESTDIR)$(bindir)
+	cd $(DESTDIR)$(bindir) ; \
+	gm=`echo "gm" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	for name in $(MAGICKPROGRAMS) ; \
+	do \
+	  target=`echo "$$name" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  rm -f $$target ; \
+	  $(LN_S) $$gm $$target ; \
+	done
+
+uninstall-local:
+	cd $(DESTDIR)$(bindir) ; \
+	for name in $(MAGICKPROGRAMS) ; \
+	do \
+	  target=`echo "$$name" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  rm -f $$target ; \
+	done
+endif # MAGICK_COMPAT
+
 clean-local:
 	rm -f *_out.miff demo.miff gm.core core
 

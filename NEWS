@@ -17,6 +17,8 @@ Significant changes associated with GraphicsMagick 1.1.1 (not yet released)
     of hard links, symbolic links, or just copying 'gm' to the desired
     sub-command name in order to achieve 100% ImageMagick 5.5.2 utility
     compatibility.
+    * Provide the --enable-magick-compat option when configuring to install
+    ImageMagick utilities compatibility links.
 
 Significant changes associated with GraphicsMagick 1.1 (released April 4, 2004)
 

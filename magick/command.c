@@ -356,9 +356,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
       }
     if (LocaleCompare("version",option+1) == 0)
       {
-        (void) fprintf(stdout,"Version: %.1024s\n",
-          GetMagickVersion((unsigned long *) NULL));
-        (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
+        (void) VersionCommand(image_info,argc,argv,metadata,exception);
         return False;
       }
   }
@@ -1446,6 +1444,19 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   status=True;
 
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      CompositeUsage();
+      ThrowException(exception,OptionError,UsageError,NULL);
+      return False;
+    }
+  if (LocaleCompare("-version",argv[1]) == 0)
+    {
+      (void) VersionCommand(image_info,argc,argv,metadata,exception);
+      return False;
+    }
+
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
@@ -1472,12 +1483,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   /*
     Check command syntax.
   */
-  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
-      LocaleCompare("-?",argv[1]) == 0)))
-    {
-      CompositeUsage();
-      ThrowCompositeException(OptionError,UsageError,NULL);
-    }
   j=1;
   for (i=1; i < (argc-1); i++)
   {
@@ -2740,6 +2745,19 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
 
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      ConvertUsage();
+      ThrowException(exception,OptionError,UsageError,NULL);
+      return False;
+    }
+  if (LocaleCompare("-version",argv[1]) == 0)
+    {
+      (void) VersionCommand(image_info,argc,argv,metadata,exception);
+      return False;
+    }
+
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
@@ -2762,12 +2780,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   */
   if ((argc > 2) && (LocaleCompare("-concatenate",argv[1]) == 0))
     return(ConcatenateImages(argc,argv,exception));
-  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
-      LocaleCompare("-?",argv[1]) == 0)))
-    {
-      ConvertUsage();
-      ThrowConvertException(OptionError,UsageError,NULL);
-    }
   j=1;
   k=0;
   for (i=1; i < (argc-1); i++)
@@ -4896,8 +4908,18 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
   unsigned int
     status;
 
-  InitializeMagick(*argv);
-  ReadCommandlLine(argc,&argv);
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      ConjureUsage();
+      ThrowException(exception,OptionError,UsageError,NULL);
+      return False;
+    }
+  if (LocaleCompare("-version",argv[1]) == 0)
+    {
+      (void) VersionCommand(image_info,argc,argv,metadata,exception);
+      return False;
+    }
 
   /*
     Expand argument list
@@ -4910,13 +4932,6 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
   /*
     Validate command list
   */
-  if (argc < 2)
-    {
-      ConjureUsage();
-      LiberateArgumentList(argc,argv);
-      return (False);
-    }
-
   image_info=CloneImageInfo((ImageInfo *) NULL);
   image_info->attributes=AllocateImage(image_info);
   status=True;
@@ -5180,6 +5195,19 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
   XrmDatabase
     resource_database;
 
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      DisplayUsage();
+      ThrowException(exception,OptionError,UsageError,NULL);
+      return False;
+    }
+  if (LocaleCompare("-version",argv[1]) == 0)
+    {
+      (void) VersionCommand(image_info,argc,argv,metadata,exception);
+      return False;
+    }
+
   /*
     Expand Argument List
   */
@@ -5228,20 +5256,6 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           MagickFatalError(OptionFatalError,MissingArgument,option);
         server_name=argv[i];
         break;
-      }
-    if (LocaleCompare("help",option+1) == 0)
-      {
-        DisplayUsage();
-        LiberateArgumentList(argc,argv);
-        return False;
-      }
-    if (LocaleCompare("version",option+1) == 0)
-      {
-        (void) fprintf(stdout,"Version: %.1024s\n",
-          GetMagickVersion((unsigned long *) NULL));
-        (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
-        LiberateArgumentList(argc,argv);
-        return False;
       }
   }
   /*
@@ -6703,6 +6717,22 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
     status;
 
   /*
+    Check for sufficient arguments
+  */  
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      IdentifyUsage();
+      ThrowException(exception,OptionError,UsageError,NULL);
+      return False;
+    }
+  if (LocaleCompare("-version",argv[1]) == 0)
+    {
+      (void) VersionCommand(image_info,argc,argv,metadata,exception);
+      return False;
+    }
+
+  /*
     Set defaults.
   */
   count=0;
@@ -6719,16 +6749,6 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
       (char *) NULL);
-
-  /*
-    Check for sufficient arguments
-  */  
-  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
-      LocaleCompare("-?",argv[1]) == 0)))
-    {
-      IdentifyUsage();
-      ThrowIdentifyException(OptionError,UsageError,NULL);
-    }
 
   for (i=1; i < argc; i++)
   {
@@ -7166,12 +7186,21 @@ MagickExport unsigned int MagickCommand(ImageInfo *image_info,
       if (LocaleCompare(commands[i].command,option) == 0)
         {
           char
-            client_name[MaxTextExtent];
+            client_name[MaxTextExtent],
+            command_name[MaxTextExtent];
 
-          FormatString(client_name,"%.1024s %s",GetClientName(),
-                       commands[i].command);
-
-          SetClientName(client_name);
+          /*
+            Append subcommand name to existing client name if existing
+            client name is not identical to subcommand name.
+          */
+          GetPathComponent(GetClientName(),BasePath,command_name);
+          if (LocaleCompare(commands[i].command,command_name) != 0)
+            {
+              FormatString(client_name,"%.1024s %s",GetClientName(),
+                           commands[i].command);
+              
+              SetClientName(client_name);
+            }
           return(commands[i].command_vector)(image_info,argc,argv,
             commands[i].pass_metadata ? metadata : (char **) NULL,exception);
         }
@@ -9741,6 +9770,22 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
     status;
 
   /*
+    Check for sufficient arguments
+  */  
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      MogrifyUsage();
+      ThrowException(exception,OptionError,UsageError,NULL);
+      return False;
+    }
+  if (LocaleCompare("-version",argv[1]) == 0)
+    {
+      (void) VersionCommand(image_info,argc,argv,metadata,exception);
+      return False;
+    }
+
+  /*
     Set defaults.
   */
   format=(char *) NULL;
@@ -9755,16 +9800,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
       (char *) NULL);
-
-  /*
-    Check for valid command line
-  */
-  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
-      LocaleCompare("-?",argv[1]) == 0)))
-    {
-      MogrifyUsage();
-      ThrowMogrifyException(OptionError,UsageError,NULL);
-    }
 
   j=1;
   k=0;
@@ -13227,9 +13262,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
       }
     if (LocaleCompare("version",option+1) == 0)
       {
-        (void) fprintf(stdout,"Version: %.1024s\n",
-          GetMagickVersion((unsigned long *) NULL));
-        (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
+        (void) VersionCommand(image_info,argc,argv,metadata,exception);
         return False;
       }
   }
