@@ -913,12 +913,6 @@ ModuleExport void RegisterBMPImage(void)
   entry->description=AllocateString("Microsoft Windows bitmap image");
   entry->module=AllocateString("BMP");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("DIB");
-  entry->decoder=ReadBMPImage;
-  entry->encoder=WriteBMPImage;
-  entry->description=AllocateString("Microsoft Windows bitmap image");
-  entry->module=AllocateString("BMP");
-  (void) RegisterMagickInfo(entry);
 }
 
 /*

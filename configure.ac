@@ -1212,7 +1212,7 @@ AC_SUBST(LIB_XML)
 #
 
 #
-# WMF2 tests should test for -lwmf and libwmf/ipa.h
+# WMF2 tests should test for -lwmf -lwmflite and libwmf/ipa.h
 #
 
 have_wmf='no'
@@ -1226,7 +1226,8 @@ then
     passed=0;
     AC_CHECK_HEADER(libwmf/ipa.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     extra_libs=`libwmf-config --libs`
-    AC_CHECK_LIB(wmf,wmf_api_create,LIBS="-lwmf $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,$extra_libs)
+    AC_CHECK_LIB(wmflite,wmf_play,LIBS="-lwmflite $LIBS";LIB_WMF="-lwmflite $LIB_WMF",$extra_libs)
+    AC_CHECK_LIB(wmf,wmf_api_create,LIBS="-lwmf $LIBS";LIB_WMF="-lwmf $LIB_WMF"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,$extra_libs)
     AC_MSG_CHECKING(if WMF package is complete)
     if test $passed -gt 0
     then
@@ -1235,8 +1236,8 @@ then
 	AC_MSG_RESULT(no -- some components failed test)
         have_wmf='no (failed tests)'
         LIBS="$OLIBS"
+        LIB_WMF=''
     else
-	LIB_WMF='-lwmf'
 	AC_DEFINE(HasWMF,,Define if you have WMF library)
 	AC_MSG_RESULT(yes)
         have_wmf='yes'

@@ -565,7 +565,7 @@ MAGICK DELEGATES
       to read the TIFF image format.  It in turn optionally requires
       the JPEG and ZLIB libraries.
 
-    o ImageMagick requires libwmf 0.2.2 (a component of wvWare) available
+    o ImageMagick requires libwmf 0.2.3 (a component of wvWare) available
       from
 
           http://sourceforge.net/projects/wvware/
@@ -580,10 +580,7 @@ MAGICK DELEGATES
       library (--with-expat) and xmlsoft's libxml (--with-xml). Since
       ImageMagick already uses libxml (for reading SVG), it is
       recommended that the options '--without-expat --with-xml' be
-      supplied to libwmf's configure script.  If you plan to limit
-      your use of libwmf to ImageMagick, and don't need libwmf's
-      utilities, you can build a smaller libwmf by configuring libwmf
-      with the '--without-layers' option.
+      supplied to libwmf's configure script.
 
       ImageMagick's WMF render provides some of the finest WMF rendering
       available due its use of antialiased drawing algorithms. You may

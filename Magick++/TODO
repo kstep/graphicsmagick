@@ -2,6 +2,8 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Extend ColorRGB constructor so that it it supports setting alpha.
+
 * Add a pixelIndex method to Image class (similar to pixelColor) which
   associates a colormap index (index used by colorMap) with an x,y
   pixel position for cache view 0 (default view).
