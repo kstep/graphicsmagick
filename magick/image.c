@@ -4449,6 +4449,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (exception.severity != UndefinedException)
               MagickWarning(exception.severity,exception.reason,
                 exception.description);
+            if (profile == (Image *) NULL)
+              continue;
             if (profile->iptc_profile.length != 0)
               (void) ProfileImage(*image,"IPTC",profile->iptc_profile.info,
                 profile->iptc_profile.length);
