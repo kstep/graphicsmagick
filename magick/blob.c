@@ -1140,7 +1140,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
         return(FileToBlob(path,length,exception));
       }
   }
-#endif
+#endif /* defined(WIN32) */
 #if defined(MagickLibPath)
   /*
     Search hard coded paths.
@@ -1150,8 +1150,8 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",
       path);
   return(FileToBlob(path,length,exception));
-#endif
-#else
+#endif /* defined(MagickLibPath) */
+#else /* !defined(UseInstalledImageMagick) */
   if (*SetClientPath((char *) NULL) != '\0')
     {
 #if defined(POSIX)
@@ -1165,10 +1165,10 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       ChopPathComponents(prefix,1);
       FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
         filename);
-#else
+#else /* defined(POSIX) */
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
         DirectorySeparator,filename);
-#endif
+#endif /* !defined(POSIX) */
       if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
@@ -1183,7 +1183,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 #else
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
         DirectorySeparator,filename);
-#endif
+#endif /* defined(POSIX) */
       if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
@@ -1204,8 +1204,8 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     return(FileToBlob(path,length,exception));
 #if defined(WIN32)
   return(NTResourceToBlob(filename));
-#endif
-#endif
+#endif /* defined(WIN32) */
+#endif /* !defined(UseInstalledImageMagick) */
   ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",path);
   return((void *) NULL);
 }
@@ -2136,10 +2136,13 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
           register size_t
             i;
 
+          register unsigned char
+            *target=(unsigned char*) data;
+
           for(i=count; i > 0; i--)
             {
-              *((unsigned char*)data)=*source;
-              data++;
+              *target=*source;
+              target++;
               source++;
             }
         }
@@ -2995,13 +2998,16 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
           register size_t
             i;
 
-          const unsigned char
+          register const unsigned char
             *source=(const unsigned char*) data;
+
+          register unsigned char
+            *target=(unsigned char*) dest;
 
           for(i=length; i > 0; i--)
             {
-              *((unsigned char*)dest)=*source;
-              dest++;
+              *target=*source;
+              target++;
               source++;
             }
         }
