@@ -602,7 +602,8 @@ MAGICK DELEGATES
       to read the JPEG image format.
 
       Apply this JPEG patch to Independent JPEG Group's source
-      distribution to read lossless jpeg-encoded DICOM (medical) images:
+      distribution if you want to read lossless jpeg-encoded DICOM
+      (medical) images:
 
           ftp://ftp.imagemagick.org/pub/ImageMagick/delegates/ljpeg-6b.tar.gz
 
