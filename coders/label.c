@@ -683,7 +683,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   }
   TT_Get_Face_Properties(face,&face_properties);
   TT_Get_Instance_Metrics(instance,&instance_metrics);
-  canvas.width=4;
+  x=0;
   for (i=0; i < length; i++)
   {
     if (glyphs[unicode[i]].z == (TT_Glyph *) NULL)
@@ -691,13 +691,12 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     TT_Get_Glyph_Metrics(glyphs[unicode[i]],&glyph_metrics);
     if (i == (length-1))
       {
-        canvas.width+=
-          (glyph_metrics.bbox.xMin+glyph_metrics.bbox.xMax) >> 6;
+        x+=glyph_metrics.bbox.xMax-glyph_metrics.bbox.xMin;
         continue;
       }
-    canvas.width+=(glyph_metrics.advance >> 6)+1;
+    x+=glyph_metrics.advance;
   }
-  canvas.width=(canvas.width+3) & -4;
+  canvas.width=(x/64+3) & -4;
   canvas.rows=instance_metrics.y_ppem*(face_properties.horizontal->Ascender-
     face_properties.horizontal->Descender)/
     face_properties.header->Units_Per_EM;

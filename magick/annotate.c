@@ -262,9 +262,9 @@ Export unsigned int AnnotateImage(Image *image,
       case CenterGravity:
       default:
       {
-        clone_info->bounds.x=(width/2)-(int) (annotate_image->columns/2)+x;
-        clone_info->bounds.y=(height/2)-(int) (number_lines*
-          clone_info->bounds.height/2)+i*clone_info->bounds.height+y;
+        clone_info->bounds.x=x+(width/2)-(int) (annotate_image->columns/2);
+        clone_info->bounds.y=y+(height/2)-(int) (number_lines*
+          clone_info->bounds.height/2)+i*clone_info->bounds.height;
         break;
       }
       case EastGravity:
