@@ -17,7 +17,7 @@
   <delegate decode="gs-color" stealth="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSColorDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
   <delegate decode="gs-mono" stealth="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSMonoDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
   <delegate decode="hpgl" command='@HPGLDecodeDelegate@ -q -m eps -f `basename "%o"` "%i"
-    mv `basename "%o"` "%o' />
+    mv -f `basename "%o"` "%o' />
   <delegate decode="htm" command='@HTMLDecodeDelegate@ -U -o "%o" "%i"' />
   <delegate decode="html" command='@HTMLDecodeDelegate@ -U -o "%o" "%i"' />
   <delegate decode="ilbm" command='@ILBMDecodeDelegate@ "%i" > "%o"' />
