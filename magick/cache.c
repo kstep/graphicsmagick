@@ -1882,6 +1882,7 @@ static void CacheSignalHandler(int status)
 MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 {
   char
+    format[MaxTextExtent],
     message[MaxTextExtent];
 
   CacheInfo
@@ -2001,12 +2002,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
                 (cache_info->colorspace == CMYKColorspace))
               cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
             (void) GetCacheThreshold(cache_info->length);
-            if ((cache_info->length/1024/1024) >= 1024)
-              FormatString(message,"open %.1024s (%.1fgb)",cache_info->filename,
-                (double) cache_info->length/1024.0/1024.0/1024.0);
-            else
-              FormatString(message,"open %.1024s (%.1fmb)",cache_info->filename,
-                (double) cache_info->length/1024.0/1024.0);
+            FormatSize(cache_info->length,format);
+            FormatString(message,"open %.1024s (%.1024s)",cache_info->filename,
+              format);
             LogMagickEvent(CacheEvent,message);
             return(True);
           }
@@ -2078,10 +2076,10 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   (void) signal(SIGBUS,CacheSignalHandler);
 #endif
   (void) GetCacheThreshold(cache_info->length);
-  FormatString(message,"open %.1024s (%.1024s, %.1024s, %lumb)",
+  FormatSize(cache_info->length,format);
+  FormatString(message,"open %.1024s (%.1024s, %.1024s, %.1024s)",
     cache_info->filename,cache_info->cache_filename,
-    cache_info->type == MemoryMappedCache ? "memory-mapped" : "disk",
-    (unsigned long) (cache_info->length/1024/1024));
+    cache_info->type == MemoryMappedCache ? "memory-mapped" : "disk",format);
   LogMagickEvent(CacheEvent,message);
   return(True);
 }

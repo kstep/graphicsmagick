@@ -903,6 +903,56 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  F o r m a t S i z e                                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  FormatSize() converts a size to a human readable format, for example,
+%  14kb, 234mb, 2.7gb, or 3.0tb.  Scaling is done by repetitively dividing by
+%  1024.
+%
+%  The format of the FormatSize method is:
+%
+%      char *FormatSize(const off_t size,char *format)
+%
+%  A description of each parameter follows:
+%
+%    o size:  convert this size to a human readable format.
+%
+%    o format:  human readable format.
+%
+%
+*/
+MagickExport FormatSize(const off_t size,char *format)
+{
+  double
+    length;
+
+  register long
+    i;
+
+  length=size;
+  for (i=0; length > 1024; i++)
+    length/=1024.0;
+  FormatString(format,"%.1f",length);
+  switch (i)
+  {
+    default: break;
+    case 0: break;
+    case 1: (void) strcat(format,"k"); break;
+    case 2: (void) strcat(format,"m"); break;
+    case 3: (void) strcat(format,"g"); break;
+    case 4: (void) strcat(format,"t"); break;
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  F o r m a t S t r i n g                                                    %
 %                                                                             %
 %                                                                             %
@@ -3701,14 +3751,11 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
     {
       case 'b':
       {
-        if ((GetBlobSize(image)/1024) >= 1024)
-          FormatString(q,"%.1fmb ",
-            (double) GetBlobSize(image)/1024.0/1024.0);
-        else
-          if (GetBlobSize(image) >= 1024)
-            FormatString(q,"%.1fkb ",(double) GetBlobSize(image)/1024.0);
-          else
-            FormatString(q,"%lub ",(unsigned long) GetBlobSize(image));
+        char
+          format[MaxTextExtent];
+
+        FormatSize(GetBlobSize(image),format);
+        (void) strcat(q,format);
         while (*q != '\0')
           q++;
         break;

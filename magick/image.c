@@ -1301,7 +1301,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   const unsigned int verbose)
 {
   char
-    color[MaxTextExtent];
+    color[MaxTextExtent],
+    format[MaxTextExtent];
 
   const ImageAttribute
     *attribute;
@@ -1358,15 +1359,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           (void) fprintf(file,"DirectClass ");
           if (image->total_colors != 0)
             {
-              if ((image->total_colors/1024) >= 1024)
-                (void) fprintf(file,"%.1fmc ",
-                  (double) image->total_colors/1024.0/1024.0);
-              else
-                if (image->total_colors >= 1024)
-                  (void) fprintf(file,"%.1fkc ",
-                    (double) image->total_colors/1024.0);
-                else
-                  (void) fprintf(file,"%luc ",image->total_colors);
+              FormatSize(image->total_colors,format);
+              (void) fprintf(file,"%.1024s ",format);
             }
         }
       else
@@ -1384,14 +1378,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       (void) fprintf(file,"%lu-bit ",image->depth);
       if (GetBlobSize(image) != 0)
         {
-          if ((GetBlobSize(image)/1024) >= 1024)
-            (void) fprintf(file,"%.1fmb ",
-              (double) GetBlobSize(image)/1024.0/1024.0);
-          else
-            if (GetBlobSize(image) >= 1024)
-              (void) fprintf(file,"%.1fkb ",(double) GetBlobSize(image)/1024.0);
-            else
-              (void) fprintf(file,"%lub ",(unsigned long) GetBlobSize(image));
+          FormatSize(GetBlobSize(image),format);
+          (void) fprintf(file,"%.1024 ",format);
         }
       (void) fprintf(file,"%.1fu %ld:%02ld\n",user_time,
         (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));
@@ -1694,16 +1682,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           else
             (void) fprintf(file,"\n");
     }
-  if ((GetBlobSize(image)/1024) >= 1024)
-    (void) fprintf(file,"  Filesize: %.1fmb\n",
-      (double) GetBlobSize(image)/1024.0/1024.0);
-  else
-    if (GetBlobSize(image) >= 1024)
-      (void) fprintf(file,"  Filesize: %.1fkb\n",
-        (double) GetBlobSize(image)/1024.0);
-    else
-      (void) fprintf(file,"  Filesize: %lub\n",(unsigned long)
-        GetBlobSize(image));
+  FormatSize(GetBlobSize(image),format);
+  (void) fprintf(file,"  Filesize: %.1024s\n",format);
   if (image->interlace == NoInterlace)
     (void) fprintf(file,"  Interlace: None\n");
   else
