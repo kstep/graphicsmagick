@@ -5,7 +5,6 @@
 #include <time.h>
 #include <sys/types.h>
 #include <magick/api.h>
-#include "magick/xwindows.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 #undef class
@@ -113,9 +112,6 @@ static unsigned char
 
 int main(int argc,char **argv)
 {
-  Display
-    *display;
-
   Image
     *image;
 
@@ -126,7 +122,6 @@ int main(int argc,char **argv)
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
@@ -135,25 +130,17 @@ int main(int argc,char **argv)
   register unsigned char
     *p;
 
-  unsigned long
-    state;
-
-  XResourceInfo
-    resource;
-
-  XrmDatabase
-    resource_database;
-
   /*
     Allocate image structure.
   */
+  InitializeMagick(*argv);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     MagickError(ResourceLimitError,"Unable to display image",
       "Memory allocation failed");
   /*
-    Initialize image attributes.
+    Initialize smiley image.
   */
   image->columns=smile_width;
   image->rows=smile_height;
@@ -175,20 +162,13 @@ int main(int argc,char **argv)
       break;
   }
   /*
-    Open X11 server.
-  */
-  display=XOpenDisplay((char *) NULL);
-  if (display == (Display *) NULL)
-    MagickError(XServerError,"Unable to display image","can't open X server");
-  XSetErrorHandler(XError);
-  resource_database=XGetResourceDatabase(display,argv[0]);
-  XGetResourceInfo(resource_database,argv[0],&resource);
-  /*
     Display smilely image.
   */
-  state=DefaultState;
-  (void) XDisplayImage(display,&resource,(char **) NULL,0,&image,&state);
-  XCloseDisplay(display);
+  DisplayImages(image_info,image);
+  /*
+    Free resources.
+  */
   DestroyImage(image);
   DestroyImageInfo(image_info);
+  DestroyMagick();
 }
