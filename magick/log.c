@@ -303,9 +303,17 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
   if (IsAccessible(path))
     return(LogToBlob(path,length,exception));
 #if defined(WIN32)
-  return(NTResourceToBlob(filename));
+  {
+    void
+      *resource;
+
+    resource=NTResourceToBlob(filename);
+    if (resource)
+      return resource;
+  }
 #endif
 #endif
+  ThrowException(exception,ConfigureError,"UnableToAccessLogFile",filename);
   return((void *) NULL);
 }
 

@@ -1206,7 +1206,14 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   if (IsAccessible(path))
     return(FileToBlob(path,length,exception));
 #if defined(WIN32)
-  return(NTResourceToBlob(filename));
+  {
+    void
+      *resource;
+
+    resource=NTResourceToBlob(filename);
+    if (resource)
+      return resource;
+  }
 #endif /* defined(WIN32) */
 #endif /* !defined(UseInstalledMagick) */
   ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",path);

@@ -196,11 +196,11 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
   (void) strncpy(path,filename,MaxTextExtent-1);
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Searching for type file \"%s\" ...",filename);
+  /*
+    Search MAGICK_FONT_PATH.
+  */
   if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
     {
-      /*
-        Search MAGICK_FONT_PATH.
-      */
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
         DirectorySeparator,filename);
       if (IsAccessible(path))
@@ -249,15 +249,16 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
 #  error MagickLibPath or WIN32 must be defined when UseInstalledMagick is defined
 # endif
 #else
+
+  /*
+    Search based on executable directory
+  */
   if (*SetClientPath((char *) NULL) != '\0')
     {
 #if defined(POSIX)
       char
         prefix[MaxTextExtent];
 
-      /*
-        Search based on executable directory if directory is known.
-      */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
       ChopPathComponents(prefix,1);
       FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
@@ -269,16 +270,41 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
       if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
+
+  /*
+    Search MAGICK_HOME.
+  */
+  if (getenv("MAGICK_HOME") != (char *) NULL)
+    {
+# if defined(POSIX)
+      FormatString(path,"%.512s/lib/%s/%.256s",getenv("MAGICK_HOME"),
+        MagickLibSubdir,filename);
+# else
+      FormatString(path,"%.512s%s%.256s",getenv("MAGICK_HOME"),
+        DirectorySeparator,filename);
+# endif /* !POSIX */
+      if (IsAccessible(path))
+        return(FileToBlob(path,length,exception));
+    }
+
   /*
     Search current directory.
   */
   if (IsAccessible(path))
     return(FileToBlob(path,length,exception));
+
 #if defined(WIN32)
-  return(NTResourceToBlob(filename));
+  {
+    void
+      *resource;
+
+    resource=NTResourceToBlob(filename);
+    if (resource)
+      return resource;
+  }
 #endif
 #endif
-  ThrowException(exception,ConfigureError,"UnableToAccessFontFile",path);
+  ThrowException(exception,ConfigureError,"UnableToAccessFontFile",filename);
   return((void *) NULL);
 }
 

@@ -234,6 +234,9 @@
       <Message name="UnableToAccessFontFile">
         Unable to access font file
       </Message>
+      <Message name="UnableToAccessLogFile">
+        Unable to access log configuration file
+      </Message>
       <Message name="UnableToAccessModuleFile">
         Unable to access module file
       </Message>

@@ -458,6 +458,9 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 22 && !LocaleNCompare(tp, "UnableToAccessFontFile", 22))
               return *np ? tag : "Unable to access font file";
             else
+            if (p - tp == 21 && !LocaleNCompare(tp, "UnableToAccessLogFile", 21))
+              return *np ? tag : "Unable to access log configuration file";
+            else
             if (p - tp == 24 && !LocaleNCompare(tp, "UnableToAccessModuleFile", 24))
               return *np ? tag : "Unable to access module file";
             else

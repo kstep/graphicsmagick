@@ -1,5 +1,17 @@
 2003-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/log.c (GetLogBlob): Return an error if log.mgk can not
+	be accessed.
+	* locale/C.mgk: Added UnableToAccessLogFile.
+	* magick/blob.c (GetConfigureBlob): Only return result of
+	NTResourceToBlob if it is non-NULL.
+	* magick/type.c (GetTypeBlob): Search $MAGICK_HOME for
+	type.mgk. Only return result of NTResourceToBlob if it is
+	non-NULL.
+	* magick/magick.c (GetMagickInfo): Return an error if GetModuleInfo
+	reports an error.
+	* magick/module.c (GetModuleInfo): Return an error if modules.txt
+	fails to load.
 	* utility.c (SubstituteString): Fixed a bug which was introduced
 	while updating the code to use the memory allocation macros.
 
