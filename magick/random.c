@@ -147,7 +147,7 @@ MagickExport void DistillRandomEvent(const unsigned char *event,
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "UnableToDistillRandomEvent");
   GetSignatureInfo(&digest_info);
-  UpdateSignature(&digest_info,(unsigned char *) reservoir->digest,
+  UpdateSignature(&digest_info,(const unsigned char *) reservoir->digest,
     sizeof(reservoir->digest));
   UpdateSignature(&digest_info,event,length);
   FinalizeSignature(&digest_info);
@@ -250,9 +250,10 @@ MagickExport void GetRandomKey(unsigned char *key,const size_t length)
   while (n > 0)
   {
     GetSignatureInfo(&digest_info);
-    UpdateSignature(&digest_info,(unsigned char *) reservoir->digest,
+    UpdateSignature(&digest_info,(const unsigned char *) reservoir->digest,
       sizeof(reservoir->digest));
-    UpdateSignature(&digest_info,(unsigned char *) roulette,sizeof(roulette));
+    UpdateSignature(&digest_info,(const unsigned char *) roulette,
+      sizeof(roulette));
     FinalizeSignature(&digest_info);
     (*roulette)++;
     memcpy(key,digest_info.digest,

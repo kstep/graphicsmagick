@@ -8,12 +8,10 @@
 extern "C" {
 #endif
 
-extern MagickExport unsigned int
-  GetRandomKey(unsigned char *,const size_t,ExceptionInfo *);
-
 extern MagickExport void
   DestroyRandomReservoir(void),
-  DistillRandomEvent(const unsigned char *,const size_t,ExceptionInfo *);
+  GetRandomKey(unsigned char *,const size_t),
+  DistillRandomEvent(const unsigned char *,const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
