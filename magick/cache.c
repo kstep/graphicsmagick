@@ -278,14 +278,11 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
           p=AcquireCacheNexus(image,Cx(x+u),Cy(y+v),1,1,image_nexus,exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          *q=(*p);
-          if (indexes != (IndexPacket *) NULL)
-            {
-              nexus_indexes=GetNexusIndexes(image->cache,image_nexus);
-              if (nexus_indexes != (IndexPacket *) NULL)
-                *indexes++=(*nexus_indexes);
-            }
-          q++;
+          *q++=(*p);
+          nexus_indexes=GetNexusIndexes(image->cache,image_nexus);
+          if ((nexus_indexes != (IndexPacket *) NULL) &&
+              (indexes != (IndexPacket *) NULL))
+            *indexes++=(*nexus_indexes);
           continue;
         }
       /*
