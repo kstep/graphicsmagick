@@ -63,7 +63,7 @@
 */
 #define Usage combine_Usage
 #define main combine_main
-#include "combine.c"
+#include "composite.c"
 #undef Usage
 #undef main
 
