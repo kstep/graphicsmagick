@@ -2876,13 +2876,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   register long
     i;
 
-  unsigned int
+  unsigned long
+    number_pixels,
     number_planes,
     point,
     thin;
-
-  unsigned long
-    number_pixels;
 
   thin=False;
   quantize_info=(QuantizeObj *) NULL;

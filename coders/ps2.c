@@ -128,8 +128,10 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     *buffer;
 
   unsigned int
+    status;
+
+  unsigned long
     *byte_count,
-    status,
     strip_size;
 
   /*

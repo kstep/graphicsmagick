@@ -288,8 +288,10 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
     *clone_info;
 
   unsigned int
-    scene,
     status;
+
+  unsigned long
+    scene;
 
   /*
     Open output image file.

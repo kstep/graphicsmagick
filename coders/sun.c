@@ -664,11 +664,11 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     sun_info;
 
   unsigned int
-    scene,
     status;
 
   unsigned long
-    number_pixels;
+    number_pixels,
+    scene;
 
   /*
     Open output image file.

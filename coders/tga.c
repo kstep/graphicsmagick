@@ -613,8 +613,10 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     *targa_pixels;
 
   unsigned int
-    scene,
     status;
+
+  unsigned long
+    scene;
 
   /*
     Open output image file.

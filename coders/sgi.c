@@ -165,7 +165,7 @@ static void SGIDecode(const unsigned long bytes_per_pixel,
     *p,
     *q;
 
-  unsigned int
+  unsigned long
     pixel;
 
   p=max_packets;
@@ -753,11 +753,11 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     *packets;
 
   unsigned int
-    scene,
     status;
 
   unsigned long
-    number_pixels;
+    number_pixels,
+    scene;
 
   /*
     Open output image file.

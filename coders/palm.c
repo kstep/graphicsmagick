@@ -435,7 +435,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     *ptr;
 
   unsigned int
-    status,
+    status;
+
+  unsigned long
     bytes_per_row,
     flags,
     bpp,
@@ -707,7 +709,9 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     *ptr;
 
   unsigned int
-    status,
+    status;
+
+  unsigned long
     count,
     bpp,
     bytes_per_row;

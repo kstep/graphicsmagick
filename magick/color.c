@@ -1195,7 +1195,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
   register long
     i;
 
-  unsigned int
+  unsigned long
     id,
     index,
     level;

@@ -611,7 +611,7 @@ MagickExport char *EscapeString(const char *source,const char escape)
   register const char
     *p;
 
-  unsigned int
+  unsigned long
     length;
 
   assert(source != (const char *) NULL);
@@ -2223,7 +2223,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
   struct dirent
     *entry;
 
-  unsigned int
+  unsigned long
     max_entries;
 
   /*

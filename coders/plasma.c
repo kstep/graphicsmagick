@@ -124,7 +124,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   SegmentInfo
     segment_info;
 
-  unsigned int
+  unsigned long
     depth,
     max_depth;
 

@@ -172,11 +172,11 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *rle_pixels;
 
   unsigned int
-    bits_per_pixel,
-    flags,
-    map_length;
+    flags;
 
   unsigned long
+    bits_per_pixel,
+    map_length,
     number_colormaps,
     number_pixels,
     number_planes;

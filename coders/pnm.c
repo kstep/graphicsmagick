@@ -137,7 +137,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
   int
     c;
 
-  unsigned int
+  unsigned long
     value;
 
   /*

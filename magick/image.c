@@ -535,14 +535,8 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
 {
 #define AverageImageText  "  Average image sequence...  "
 
-  typedef struct _SumPacket
-  {
-    double
-      red,
-      green,
-      blue,
-      opacity;
-  } SumPacket;
+  DoublePixelPacket
+    *pixels;
 
   Image
     *average_image;
@@ -550,11 +544,11 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   long
     y;
 
-  register const PixelPacket
-    *p;
-
   register const Image
     *next;
+
+  register const PixelPacket
+    *p;
 
   register long
     i,
@@ -563,13 +557,8 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  SumPacket
-    *sum;
-
-  unsigned int
-    number_scenes;
-
   unsigned long
+    number_scenes,
     number_pixels;
 
   /*
@@ -592,18 +581,19 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     Allocate sum accumulation buffer.
   */
   number_pixels=image->columns*image->rows;
-  sum=(SumPacket *) AcquireMemory(number_pixels*sizeof(SumPacket));
-  if (sum == (SumPacket *) NULL)
+  pixels=(DoublePixelPacket *)
+    AcquireMemory(number_pixels*sizeof(DoublePixelPacket));
+  if (pixels == (DoublePixelPacket *) NULL)
     ThrowImageException(ResourceLimitError,"Unable to average image sequence",
       "Memory allocation failed");
-  (void) memset(sum,0,number_pixels*sizeof(SumPacket));
+  (void) memset(pixels,0,number_pixels*sizeof(DoublePixelPacket));
   /*
     Initialize average next attributes.
   */
   average_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (average_image == (Image *) NULL)
     {
-      LiberateMemory((void **) &sum);
+      LiberateMemory((void **) &pixels);
       return((Image *) NULL);
     }
   average_image->storage_class=DirectClass;
@@ -621,10 +611,10 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
         break;
       for (x=0; x < (long) next->columns; x++)
       {
-        sum[i].red+=p->red;
-        sum[i].green+=p->green;
-        sum[i].blue+=p->blue;
-        sum[i].opacity+=p->opacity;
+        pixels[i].red+=p->red;
+        pixels[i].green+=p->green;
+        pixels[i].blue+=p->blue;
+        pixels[i].opacity+=p->opacity;
         p++;
         i++;
       }
@@ -642,10 +632,10 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
       break;
     for (x=0; x < (long) average_image->columns; x++)
     {
-      q->red=(Quantum) ((sum[i].red+number_scenes/2.0)/number_scenes);
-      q->green=(Quantum) ((sum[i].green+number_scenes/2.0)/number_scenes);
-      q->blue=(Quantum) ((sum[i].blue+number_scenes/2.0)/number_scenes);
-      q->opacity=(Quantum) ((sum[i].opacity+number_scenes/2.0)/number_scenes);
+      q->red=(Quantum) (pixels[i].red/number_scenes+0.5);
+      q->green=(Quantum) (pixels[i].green/number_scenes+0.5);
+      q->blue=(Quantum) (pixels[i].blue/number_scenes+0.5);
+      q->opacity=(Quantum) (pixels[i].opacity/number_scenes+0.5);
       q++;
       i++;
     }
@@ -654,7 +644,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     if (QuantumTick(y,average_image->rows))
       MagickMonitor(AverageImageText,y,average_image->rows);
   }
-  LiberateMemory((void **) &sum);
+  LiberateMemory((void **) &pixels);
   return(average_image);
 }
 
@@ -1314,7 +1304,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     i,
     x;
 
-  unsigned int
+  unsigned long
     count;
 
   assert(image != (Image *) NULL);
@@ -4743,11 +4733,11 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     i;
 
   unsigned int
-    scene,
     status;
 
   unsigned long
-    number_images;
+    number_images,
+    scene;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);

@@ -182,11 +182,11 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     x;
 
   unsigned int
-    characters_per_pixel,
     status,
     transparent;
 
   unsigned long
+    characters_per_pixel,
     colors,
     number_pixels;
 

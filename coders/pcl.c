@@ -219,12 +219,12 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     media_info;
 
   unsigned int
-    page_size,
-    status,
-    text_size;
+    status;
 
   unsigned long
-    density;
+    density,
+    page_size,
+    text_size;
 
   /*
     Open output image file.
@@ -284,7 +284,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     page_size=45;  /* B5 */
   if ((media_info.width == 516) && (media_info.height == 729))
     page_size=46;  /* B4 */
-  FormatString(buffer,"\033&l%uA",page_size);  /* papersize */
+  FormatString(buffer,"\033&l%luA",page_size);  /* papersize */
   (void) WriteBlobString(image,buffer);
   (void) GetGeometry("75x75",&sans_offset,&sans_offset,&density,&density);
   if (image_info->density != (char *) NULL)

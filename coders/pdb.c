@@ -290,10 +290,10 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *pixels;
 
   unsigned int
-    bits_per_pixel,
     status;
 
   unsigned long
+    bits_per_pixel,
     packets;
 
   /*
@@ -689,14 +689,14 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
-    bits_per_pixel,
-    status,
-    literal,
-    repeat;
+    status;
 
   unsigned long
+    bits_per_pixel,
+    literal,
     packet_size,
-    packets;
+    packets,
+    repeat;
 
   const ImageAttribute
     *comment;

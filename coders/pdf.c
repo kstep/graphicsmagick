@@ -234,8 +234,10 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     *buffer;
 
   unsigned int
+    status;
+
+  unsigned long
     *byte_count,
-    status,
     strip_size;
 
   /*
@@ -807,16 +809,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    scene,
-    status,
-    text_size;
+    status;
 
   unsigned long
     info_id,
     number_pixels,
     object,
     pages_id,
-    root_id;
+    root_id,
+    scene,
+    text_size;
 
   off_t
     *xref;

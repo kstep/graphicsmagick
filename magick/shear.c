@@ -919,11 +919,9 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   RectangleInfo
     border_info;
 
-  unsigned int
-    rotations;
-
   unsigned long
     height,
+    rotations,
     width,
     y_width;
 

@@ -1586,8 +1586,10 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
     timer;
 
   unsigned int
-    number_vertices,
     status;
+
+  unsigned long
+    number_vertices;
 
   assert(draw_info != (const DrawInfo *) NULL);
   if (draw_info->debug)

@@ -115,8 +115,10 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
     *scanline;
 
   unsigned int
-    packet_size,
     status;
+
+  unsigned long
+    packet_size;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);

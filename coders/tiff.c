@@ -598,7 +598,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         unsigned char
           *quantum_scanline;
 
-        unsigned int
+        unsigned long
           packet_size;
 
         /*
@@ -1364,10 +1364,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
-    scene,
     status;
 
   unsigned long
+    scene,
     strip_size;
 
   /*

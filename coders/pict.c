@@ -1437,11 +1437,11 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
-    status,
-    storage_class;
+    status;
 
   unsigned long
-    bytes_per_line;
+    bytes_per_line,
+    storage_class;
 
   unsigned short
     base_address,

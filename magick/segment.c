@@ -1121,7 +1121,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
     j,
     k;
 
-  unsigned int
+  unsigned long
     count,
     number_crossings;
 

@@ -113,8 +113,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *scanline;
 
   unsigned int
-    packet_size,
     status;
+
+  unsigned long
+    packet_size;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -514,9 +516,11 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    packet_size,
-    scene,
     status;
+
+  unsigned long
+    packet_size,
+    scene;
 
   /*
     Allocate memory for pixels.

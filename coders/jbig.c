@@ -407,12 +407,12 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     polarity;
 
   unsigned int
-    byte,
-    scene,
     status;
 
   unsigned long
-    number_packets;
+    byte,
+    number_packets,
+    scene;
 
   /*
     Open image file.

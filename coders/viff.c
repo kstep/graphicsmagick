@@ -236,10 +236,10 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     *viff_pixels;
 
   unsigned int
-    bytes_per_pixel,
     status;
 
   unsigned long
+    bytes_per_pixel,
     lsb_first,
     max_packets,
     number_pixels;
@@ -905,12 +905,12 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     *viff_pixels;
 
   unsigned int
-    scene,
     status;
 
   unsigned long
     number_pixels,
-    packets;
+    packets,
+    scene;
 
   ViffInfo
     viff_info;

@@ -803,7 +803,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     header[MaxTextExtent],
     magick[12];
 
-  unsigned int
+  unsigned long
     delay,
     dispose,
     global_colors,
@@ -1178,8 +1178,10 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     interlace,
-    scene,
     status;
+
+  unsigned long
+    scene;
 
   /*
     Open output image file.

@@ -159,15 +159,13 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   unsigned char
     *buffer;
 
-  unsigned int
+  unsigned long
     bits,
     plane,
-    sum;
-
-  unsigned long
     number_pixels,
     pcd_length[3],
-    row;
+    row,
+    sum;
 
   /*
     Initialize Huffman tables.

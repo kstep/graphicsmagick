@@ -224,10 +224,8 @@ static char *Ascii85Tuple(unsigned char *data)
     i,
     x;
 
-  unsigned int
-    code;
-
   unsigned long
+    code,
     quantum;
 
   code=(((data[0] << 8) | data[1]) << 16) | (data[2] << 8) | data[3];
@@ -696,10 +694,8 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     byte,
     *scanline;
 
-  unsigned int
-    mask;
-
   unsigned long
+    mask,
     width;
 
   /*

@@ -195,14 +195,14 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *data;
 
   unsigned int
-    byte,
-    padding,
-    status,
-    value,
-    version;
+    status;
 
   unsigned long
-    bytes_per_line;
+    byte,
+    bytes_per_line,
+    padding,
+    value,
+    version;
 
   /*
     Open image file.
@@ -482,8 +482,10 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
     polarity;
 
   unsigned int
-    count,
     status;
+
+  unsigned long
+    count;
 
   /*
     Open output image file.

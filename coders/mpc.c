@@ -157,8 +157,10 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   unsigned int
-    quantum_depth,
     status;
+
+  unsigned long
+    quantum_depth;
 
   /*
     Open image file.

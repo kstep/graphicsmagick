@@ -132,14 +132,14 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     word;
 
   unsigned int
+    status;
+
+  unsigned long
     bytes_per_line,
     height,
     image_size,
-    status,
+    pixel_mode,
     width;
-
-  unsigned long
-    pixel_mode;
 
   /*
     Open image file.

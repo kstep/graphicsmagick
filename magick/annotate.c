@@ -1625,8 +1625,10 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
     *visual_info;
 
   unsigned int
+    status;
+
+  unsigned long
     height,
-    status,
     width;
 
   if (display == (Display *) NULL)

@@ -283,7 +283,7 @@ typedef struct _CubeInfo
     x,
     y;
 
-  unsigned int
+  unsigned long
     depth;
 } CubeInfo;
 
@@ -370,7 +370,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   register PixelPacket
     *q;
 
-  unsigned int
+  unsigned long
     dither,
     id;
 
@@ -572,7 +572,7 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
   register const PixelPacket
     *p;
 
-  unsigned int
+  unsigned long
     index,
     level,
     id;
@@ -1137,7 +1137,7 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
   register long
     i;
 
-  unsigned int
+  unsigned long
     depth;
 
   /*
@@ -1198,7 +1198,7 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
 %
 */
 static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
-  unsigned int depth)
+  unsigned long depth)
 {
   CubeInfo
     *cube_info;
@@ -1993,10 +1993,10 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
     *cube_info;
 
   unsigned int
-    depth,
     status;
 
   unsigned long
+    depth,
     number_colors;
 
   assert(quantize_info != (const QuantizeInfo *) NULL);
@@ -2097,11 +2097,11 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
     i;
 
   unsigned int
-    number_images,
     status;
 
   unsigned long
-    number_colors;
+    number_colors,
+    number_images;
 
   assert(quantize_info != (const QuantizeInfo *) NULL);
   assert(quantize_info->signature == MagickSignature);

@@ -1038,8 +1038,10 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     span;
 
   unsigned int
-    quantum,
     status;
+
+  unsigned long
+    quantum;
 
   /*
     Initialize resize image attributes.

@@ -1252,11 +1252,11 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     have_color_info,
-    scene,
     status;
 
   unsigned long
-    bytes_per_line;
+    bytes_per_line,
+    scene;
 
   /*
     Open output image file.

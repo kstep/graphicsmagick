@@ -563,7 +563,7 @@ MagickExport Image *MorphImages(const Image *image,
   register PixelPacket
     *q;
 
-  unsigned int
+  unsigned long
     scene;
 
   /*

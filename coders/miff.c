@@ -1345,9 +1345,11 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
+    status;
+
+  unsigned long
     packet_size,
     scene,
-    status,
     value;
 
 #if defined(HasZLIB)

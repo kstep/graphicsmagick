@@ -116,8 +116,10 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     *scanline;
 
   unsigned int
-    packet_size,
     status;
+
+  unsigned long
+    packet_size;
 
   /*
     Open image file.

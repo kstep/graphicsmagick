@@ -943,15 +943,17 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   time_t
     timer;
 
-  unsigned int
+  unsigned char
     bit,
-    byte,
-    polarity,
+    byte;
+
+  unsigned int
     status;
 
   unsigned long
     count,
     page,
+    polarity,
     scene,
     text_size;
 

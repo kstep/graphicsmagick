@@ -129,8 +129,10 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     *buffer;
 
   unsigned int
+    status;
+
+  unsigned long
     *byte_count,
-    status,
     strip_size;
 
   /*
@@ -354,7 +356,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   unsigned char
     *pixels;
 
-  unsigned int
+  unsigned long
     page,
     scene,
     text_size;
@@ -507,7 +509,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
           }
         (void) WriteBlobString(image,"%%EndComments\n");
       }
-    FormatString(buffer,"%%%%Page:  1 %u\n",page++);
+    FormatString(buffer,"%%%%Page:  1 %lu\n",page++);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"%%%%PageBoundingBox: %ld %ld %ld %ld\n",geometry.x,
       geometry.y,geometry.x+(long) geometry.width,geometry.y+(long)

@@ -367,8 +367,10 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     x;
 
   unsigned int
-    scene,
     status;
+
+  unsigned long
+    scene;
 
   /*
     Open output image file.

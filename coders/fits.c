@@ -686,8 +686,10 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    packet_size,
     status;
+
+  unsigned long
+    packet_size;
 
   /*
     Open output image file.

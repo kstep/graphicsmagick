@@ -316,8 +316,10 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    scene,
     status;
+
+  unsigned long
+    scene;
 
   /*
     Open output image file.

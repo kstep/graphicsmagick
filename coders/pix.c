@@ -111,10 +111,10 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *q;
 
   unsigned int
-    bits_per_pixel,
     status;
 
   unsigned long
+    bits_per_pixel,
     height,
     length,
     width;
