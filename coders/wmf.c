@@ -65,13 +65,9 @@
 #if defined(HasWMF)
 #if !defined(WIN32)
 
-#ifdef abs
-#undef abs
-#endif /* abs */
-#define abs(x) ((x) >= 0 ? (x) : -(x))
-
 #define ERR(API)  ((API)->err != wmf_E_None)
-#define DIAG(API) ((API)->flags & WMF_OPT_DIAGNOSTICS)
+#define XC(x) ((double)x)
+#define YC(y) ((double)y)
 
 /* Unit conversions */
 #define TWIPS_PER_INCH        1440
@@ -236,8 +232,8 @@ static void wmf_magick_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
     }
 
   magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                    (double)rop_draw->TL.x, (double)rop_draw->TL.y,
-                    (double)rop_draw->BR.x, (double)rop_draw->BR.y);
+                    XC(rop_draw->TL.x), YC(rop_draw->TL.y),
+                    XC(rop_draw->BR.x), YC(rop_draw->BR.y));
 
   /* Restore graphic context */
   magick_mvg_printf(API, "pop graphic-context\n");
@@ -280,8 +276,8 @@ static void wmf_magick_bmp_draw(wmfAPI * API, wmfBMP_Draw_t * bmp_draw)
   }
   sprintf(imgspec, "mpr:%li", id);
 
-  width = abs(bmp_draw->pixel_width * (double) bmp_draw->crop.w);
-  height = abs(bmp_draw->pixel_height * (double) bmp_draw->crop.h);
+  width = AbsoluteValue(bmp_draw->pixel_width * (double) bmp_draw->crop.w);
+  height = AbsoluteValue(bmp_draw->pixel_height * (double) bmp_draw->crop.h);
 
 #if 0
 printf("pixel_width      = %.10g\n", (double)bmp_draw->pixel_width);
@@ -292,7 +288,7 @@ printf("bmp_draw->crop.h = %.10g\n", (double)bmp_draw->crop.h);
 
   /*   printf("x=%.10g, y=%.10g, width=%.10g, height=%.10g\n", x,y,width,height); */
   magick_mvg_printf(API, "image Copy %.10g,%.10g %.10g,%.10g '%s'\n",
-		    (double)bmp_draw->pt.x, (double)bmp_draw->pt.y, width, height, imgspec);
+		    XC(bmp_draw->pt.x), YC(bmp_draw->pt.y), width, height, imgspec);
 
   /* Restore graphic context */
   magick_mvg_printf(API, "pop graphic-context\n");
@@ -462,8 +458,8 @@ static void wmf_magick_device_begin(wmfAPI * API)
                         ddata->image->background_color.green,
                         ddata->image->background_color.blue);
       magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                        ddata->bbox.TL.x,ddata->bbox.TL.y,
-                        ddata->bbox.BR.x,ddata->bbox.BR.y);
+                        XC(ddata->bbox.TL.x),YC(ddata->bbox.TL.y),
+                        XC(ddata->bbox.BR.x),YC(ddata->bbox.BR.y));
     }
   else
     {
@@ -504,7 +500,7 @@ static void wmf_magick_flood_interior(wmfAPI * API, wmfFlood_t * flood)
 		    (int) rgb->r, (int) rgb->g, (int) rgb->b);
 
   magick_mvg_printf(API, "color %.10g,%.10g filltoborder\n",
-		    flood->pt.x, flood->pt.y);
+		    XC(flood->pt.x), YC(flood->pt.y));
 
   /* Restore graphic context */
   magick_mvg_printf(API, "pop graphic-context\n");
@@ -523,10 +519,10 @@ static void wmf_magick_flood_exterior(wmfAPI * API, wmfFlood_t * flood)
 
   if (flood->type == FLOODFILLSURFACE)
     magick_mvg_printf(API, "color %.10g,%.10g floodfill\n", flood->pt.x,
-		      flood->pt.y);
+		      YC(flood->pt.y));
   else
     magick_mvg_printf(API, "color %.10g,%.10g filltoborder\n", flood->pt.x,
-		      flood->pt.y);
+		      YC(flood->pt.y));
 
   /* Restore graphic context */
   magick_mvg_printf(API, "pop graphic-context\n");
@@ -888,7 +884,6 @@ static void wmf_magick_function(wmfAPI *API)
      Allocate device data structure
    */
   ddata = (wmf_magick_t *) wmf_malloc(API, sizeof(wmf_magick_t));
-
   if (ERR(API))
     return;
 
@@ -971,8 +966,8 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
   /* pixel_height and pixel_width provide the conversion factor from
      WMF_FONT_HEIGHT & WMF_FONT_WIDTH units to points */
-  font_height_points = abs(WMF_FONT_HEIGHT(font) * draw_text->dc->pixel_height);
-  font_width_points = abs(WMF_FONT_WIDTH(font) * draw_text->dc->pixel_width);
+  font_height_points = AbsoluteValue(WMF_FONT_HEIGHT(font) * draw_text->dc->pixel_height);
+  font_width_points = AbsoluteValue(WMF_FONT_WIDTH(font) * draw_text->dc->pixel_width);
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
@@ -1014,7 +1009,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 	   specify the hight of the ascent only so calculate final
 	   pointsize based on ratio of ascent to ascent+descent */
 	pointsize = font_height_points *
-	  ((double) font_height_points / (metrics.ascent + abs(metrics.descent)));
+	  ((double) font_height_points / (metrics.ascent + AbsoluteValue(metrics.descent)));
 	draw_info.pointsize = pointsize;
       }
       else
@@ -1088,7 +1083,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   /* Apply rotation */
   /* ImageMagick's drawing rotation is clockwise from horizontal
      while WMF drawing rotation is counterclockwise from horizontal */
-  angle = abs(RadiansToDegrees(2 * MagickPI - WMF_TEXT_ANGLE(font)));
+  angle = AbsoluteValue(RadiansToDegrees(2 * MagickPI - WMF_TEXT_ANGLE(font)));
   if (angle == 360)
     angle = 0;
   if (angle != 0)
@@ -1142,11 +1137,11 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
       line_height =
 	Max(((double) 1 / (ddata->scale_x)),
-	    ((double) abs(metrics.descent)) * 0.5);
+	    ((double) AbsoluteValue(metrics.descent)) * 0.5);
       ulTL.x = 0;
-      ulTL.y = abs(metrics.descent) - line_height;
+      ulTL.y = AbsoluteValue(metrics.descent) - line_height;
       ulBR.x = metrics.width;
-      ulBR.y = abs(metrics.descent);
+      ulBR.y = AbsoluteValue(metrics.descent);
 
       magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
 			ulTL.x, ulTL.y, ulBR.x, ulBR.y);
@@ -1164,7 +1159,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
       line_height =
 	Max(((double) 1 / (ddata->scale_x)),
-	    ((double) abs(metrics.descent)) * 0.5);
+	    ((double) AbsoluteValue(metrics.descent)) * 0.5);
       ulTL.x = 0;
       ulTL.y = -(((double) metrics.ascent) / 2 + line_height / 2);
       ulBR.x = metrics.width;
@@ -1865,7 +1860,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   /* Heuristic: guess that if the vertical coordinates mostly span
      negative values, then the image must be inverted. */
-  if( abs(bbox.BR.y) > abs(bbox.TL.y) )
+  if( AbsoluteValue(bbox.BR.y) > AbsoluteValue(bbox.TL.y) )
     {
       /* Normal (Origin at top left of image) */
       ddata->scale_y = (image_height/bounding_height);
