@@ -629,6 +629,28 @@ typedef struct _SegmentInfo
     y2;
 } SegmentInfo;
 
+typedef struct _ImageChannelStatistics
+ {
+   /* Minimum value observed */
+   double maximum;
+   /* Maximum value observed */
+   double minimum;
+   /* Average (mean) value observed */
+   double mean;
+   /* Standard deviation, sqrt(variance) */
+   double standard_deviation;
+   /* Variance */
+   double variance;
+ } ImageChannelStatistics;
+
+typedef struct _ImageStatistics
+ {
+   ImageChannelStatistics red;
+   ImageChannelStatistics green;
+   ImageChannelStatistics blue;
+   ImageChannelStatistics opacity;
+ } ImageStatistics;
+
 typedef struct _Ascii85Info _Ascii85Info_;
 
 typedef struct _BlobInfo _BlobInfo_;
@@ -1041,6 +1063,8 @@ extern MagickExport unsigned int
   TransformRGBImage(Image *,const ColorspaceType);
 
 extern MagickExport MagickPassFail
+  GetImageStatistics(const Image *image,ImageStatistics *statistics,
+    ExceptionInfo *exception),
   QuantumOperatorImage(Image *image,const ChannelType channel,
     const QuantumOperator quantum_operator,const double rvalue,
     ExceptionInfo *exception),

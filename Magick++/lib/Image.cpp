@@ -3098,6 +3098,17 @@ Magick::Geometry Magick::Image::size ( void ) const
   return Magick::Geometry( constImage()->columns, constImage()->rows );
 }
 
+// Obtain image statistics. Statistics are normalized to the range of
+// 0.0 to 1.0 and are output to the specified ImageStatistics
+// structure.
+void Magick::Image::statistics ( ImageStatistics *statistics ) const
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  GetImageStatistics( constImage(), statistics, &exceptionInfo );
+  throwException( exceptionInfo );
+}
+
 // enabled/disable stroke anti-aliasing
 void Magick::Image::strokeAntiAlias ( const bool flag_ )
 {

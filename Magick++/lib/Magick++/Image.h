@@ -963,6 +963,11 @@ namespace Magick
     void            size ( const Geometry &geometry_ );
     Geometry        size ( void ) const;
 
+    // Obtain image statistics. Statistics are normalized to the range
+    // of 0.0 to 1.0 and are output to the specified ImageStatistics
+    // structure.
+    void            statistics ( ImageStatistics *statistics ) const;
+
     // enabled/disable stroke anti-aliasing
     void            strokeAntiAlias( const bool flag_ );
     bool            strokeAntiAlias( void ) const;

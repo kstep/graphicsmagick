@@ -381,6 +381,9 @@ namespace Magick
   // IndexPacket type
   using MagickLib::IndexPacket;
 
+  // ImageStatistics type
+  using MagickLib::ImageStatistics;
+
   // StorageType type
   using MagickLib::StorageType;
   using MagickLib::CharPixel;
@@ -606,6 +609,7 @@ namespace Magick
   using MagickLib::GetImagePixels;
   using MagickLib::GetImageProfile;
   using MagickLib::GetImageQuantizeError;
+  using MagickLib::GetImageStatistics;
   using MagickLib::GetImageType;
   using MagickLib::GetIndexes;
   using MagickLib::GetMagickGeometry;

@@ -1732,6 +1732,100 @@ MagickExport unsigned int DescribeImage(Image *image,FILE *file,
         (void) fprintf(file,"    Opacity:  %u bits\n",
                        GetImageChannelDepth(image,OpacityChannel,&image->exception));
     }
+  (void) fprintf(file,"  Channel Statistics:\n");
+  {
+    ImageStatistics
+      statistics;
+
+    GetImageStatistics(image,&statistics,&image->exception);
+
+    if (image->colorspace == CMYKColorspace)
+    {
+      (void) fprintf(file,"    Cyan:\n");
+      (void) fprintf(file,"      Minimum:            %10u\n",
+               (unsigned int) RoundToQuantum(MaxRGB*statistics.red.minimum));
+      (void) fprintf(file,"      Maximum:            %10u\n",
+               (unsigned int) RoundToQuantum(MaxRGB*statistics.red.maximum));
+      (void) fprintf(file,"      Mean:               %15.4lf\n",
+               MaxRGB*statistics.red.mean);
+      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
+               MaxRGB*statistics.red.standard_deviation);
+      (void) fprintf(file,"    Magenta:\n");
+      (void) fprintf(file,"      Minimum:            %10u\n",
+               (unsigned int) RoundToQuantum(MaxRGB*statistics.green.minimum));
+      (void) fprintf(file,"      Maximum:            %10u\n",
+               (unsigned int) RoundToQuantum(MaxRGB*statistics.green.maximum));
+      (void) fprintf(file,"      Mean:               %15.4lf\n",
+               MaxRGB*statistics.green.mean);
+      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
+               MaxRGB*statistics.green.standard_deviation);
+      (void) fprintf(file,"    Yellow:\n");
+      (void) fprintf(file,"    Blue:\n");
+      (void) fprintf(file,"      Minimum:            %10u\n",
+               (unsigned int) RoundToQuantum(MaxRGB*statistics.blue.minimum));
+      (void) fprintf(file,"      Maximum:            %10u\n",
+               (unsigned int) RoundToQuantum(MaxRGB*statistics.blue.maximum));
+      (void) fprintf(file,"      Mean:               %15.4lf\n",
+               MaxRGB*statistics.blue.mean);
+      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
+               MaxRGB*statistics.blue.standard_deviation);
+      (void) fprintf(file,"    Black:\n");
+      (void) fprintf(file,"      Minimum:            %10u\n",
+              (unsigned int) RoundToQuantum(MaxRGB*statistics.opacity.minimum));
+      (void) fprintf(file,"      Maximum:            %10u\n",
+              (unsigned int) RoundToQuantum(MaxRGB*statistics.opacity.maximum));
+      (void) fprintf(file,"      Mean:               %15.4lf\n",
+              MaxRGB*statistics.opacity.mean);
+      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
+              MaxRGB*statistics.opacity.standard_deviation);
+      /*
+      if (image->matte)
+        (void) fprintf(file,"    Opacity:\n");
+      */
+    }
+  else
+    {
+      (void) fprintf(file,"    Red:\n");
+      (void) fprintf(file,"      Minimum:            %10u\n",
+               (unsigned int) RoundToQuantum(MaxRGB*statistics.red.minimum));
+      (void) fprintf(file,"      Maximum:            %10u\n",
+               (unsigned int) RoundToQuantum(MaxRGB*statistics.red.maximum));
+      (void) fprintf(file,"      Mean:               %15.4lf\n",
+               MaxRGB*statistics.red.mean);
+      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
+               MaxRGB*statistics.red.standard_deviation);
+      (void) fprintf(file,"    Green:\n");
+      (void) fprintf(file,"      Minimum:            %10u\n",
+               (unsigned int) RoundToQuantum(MaxRGB*statistics.green.minimum));
+      (void) fprintf(file,"      Maximum:            %10u\n",
+               (unsigned int) RoundToQuantum(MaxRGB*statistics.green.maximum));
+      (void) fprintf(file,"      Mean:               %15.4lf\n",
+               MaxRGB*statistics.green.mean);
+      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
+               MaxRGB*statistics.green.standard_deviation);
+      (void) fprintf(file,"    Blue:\n");
+      (void) fprintf(file,"      Minimum:            %10u\n",
+               (unsigned int) RoundToQuantum(MaxRGB*statistics.blue.minimum));
+      (void) fprintf(file,"      Maximum:            %10u\n",
+               (unsigned int) RoundToQuantum(MaxRGB*statistics.blue.maximum));
+      (void) fprintf(file,"      Mean:               %15.4lf\n",
+               MaxRGB*statistics.blue.mean);
+      (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
+               MaxRGB*statistics.blue.standard_deviation);
+      if (image->matte)
+        {
+          (void) fprintf(file,"    Opacity:\n");
+          (void) fprintf(file,"      Minimum:            %10u\n",
+                   (unsigned int) RoundToQuantum(MaxRGB*statistics.opacity.minimum));
+          (void) fprintf(file,"      Maximum:            %10u\n",
+                   (unsigned int) RoundToQuantum(MaxRGB*statistics.opacity.maximum));
+          (void) fprintf(file,"      Mean:               %15.4lf\n",
+                   MaxRGB*statistics.opacity.mean);
+          (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
+                   MaxRGB*statistics.opacity.standard_deviation);
+        }
+    }
+  }
   x=0;
   p=(Image *) NULL;
   if ((image->matte && (strcmp(image->magick,"GIF") != 0)) || image->taint)
@@ -3011,6 +3105,184 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color,&exception);
   DestroyExceptionInfo(&exception);
   image_info->signature=MagickSignature;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e S t a t i s t i c s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageStatistics computes common statistics (currently maximum, minimum,
+%  mean and standard deviation) for the available image channels. The
+%  per-channel values are returned in an ImageStatistics structure. Statistics
+%  are normalized to the range 0.0 to 1.0.  Multiply values by MaxRGB to obtain
+%  the statistics in quantum units. Statistics for non-existent channels are
+%  set to zero.
+%
+%  The format of the GetImageStatistics method is:
+%
+%      MagickPassFail GetImageStatistics(const Image *image,
+%                                        ImageStatistics *statistics
+%                                        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o statistics: An ImageStatistics structure to update with statistics.
+%
+%    o exception: Any errors are reported here.
+%
+*/
+typedef struct _StatisticsContext {
+  double samples;
+  double variance_divisor;
+  ImageStatistics *statistics;
+} StatisticsContext;
+static MagickPassFail GetImageStatisticsMean(void *user_context,
+                                             const long x,const long y,
+                                             const Image *image,
+                                             const PixelPacket *pixel,
+                                             ExceptionInfo *exception)
+{
+  StatisticsContext
+    *context=(StatisticsContext *) user_context;
+
+  ImageStatistics
+    *statistics=context->statistics;
+
+  double
+    normalized;
+
+  normalized=(double) pixel->red/MaxRGB;
+  statistics->red.mean += normalized/context->samples;
+  if (normalized > statistics->red.maximum)
+    statistics->red.maximum=normalized;
+  if (normalized <  statistics->red.minimum)
+    statistics->red.minimum=normalized;
+
+  normalized=(double) pixel->green/MaxRGB;
+  statistics->green.mean += normalized/context->samples;
+  if (normalized > statistics->green.maximum)
+    statistics->green.maximum=normalized;
+  if (normalized <  statistics->green.minimum)
+    statistics->green.minimum=normalized;
+
+
+  normalized=(double) pixel->blue/MaxRGB;
+  statistics->blue.mean += normalized/context->samples;
+  if (normalized > statistics->blue.maximum)
+    statistics->blue.maximum=normalized;
+  if (normalized <  statistics->blue.minimum)
+    statistics->blue.minimum=normalized;
+
+  if (image->matte)
+    {
+      normalized=(double) pixel->opacity/MaxRGB;
+      statistics->opacity.mean += normalized/context->samples;
+      if (normalized > statistics->opacity.maximum)
+        statistics->opacity.maximum=normalized;
+      if (normalized <  statistics->opacity.minimum)
+        statistics->opacity.minimum=normalized;
+    }
+  return MagickPass;
+}
+#define Square(x)  ((x)*(x))
+static MagickPassFail GetImageStatisticsVariance(void *user_context,
+                                                 const long x,const long y,
+                                                 const Image *image,
+                                                 const PixelPacket *pixel,
+                                                 ExceptionInfo *exception)
+{
+  StatisticsContext
+    *context=(StatisticsContext *) user_context;
+
+  ImageStatistics
+    *statistics=context->statistics;
+
+  double
+    normalized;
+
+  normalized=(double) pixel->red/MaxRGB;
+  statistics->red.variance +=
+    Square(normalized-statistics->red.mean)/context->variance_divisor;
+
+  normalized=(double) pixel->green/MaxRGB;
+  statistics->green.variance +=
+    Square(normalized-statistics->green.mean)/context->variance_divisor;
+
+  normalized=(double) pixel->blue/MaxRGB;
+  statistics->blue.variance +=
+    Square(normalized-statistics->blue.mean)/context->variance_divisor;
+
+  if (image->matte)
+    {
+      normalized=(double) pixel->opacity/MaxRGB;
+      statistics->opacity.variance +=
+        Square(normalized-statistics->opacity.mean)/context->variance_divisor;
+    }
+
+  return MagickPass;
+}
+MagickExport MagickPassFail GetImageStatistics(const Image *image,
+                                               ImageStatistics *statistics,
+                                               ExceptionInfo *exception)
+{
+  StatisticsContext
+    context;
+  
+  MagickPassFail
+    status=MagickPass;
+
+  double
+    samples;
+  
+  memset((void *) statistics, 0, sizeof(ImageStatistics));
+  statistics->red.minimum=1.0;
+  statistics->green.minimum=1.0;
+  statistics->blue.minimum=1.0;
+  if (image->matte)
+    statistics->opacity.minimum=1.0;
+
+  samples=(double) image->rows*image->columns;
+  context.statistics=statistics;
+  context.samples=samples;
+  context.variance_divisor=samples-1;
+  
+  /*
+    Compute Mean, Max, and Min
+  */
+  status &= PixelIterateMonoRead(GetImageStatisticsMean,
+                                 &context,0,0,image->columns,
+                                 image->rows,image,exception);
+  if (status != MagickPass)
+    return (status);
+
+  /*
+    Compute Variance
+  */
+  status &= PixelIterateMonoRead(GetImageStatisticsVariance,
+                                 &context,0,0,image->columns,
+                                 image->rows,image,exception);
+  if (status != MagickPass)
+    return (status);
+
+  /*
+    Compute Standard Deviation
+  */
+  statistics->red.standard_deviation=sqrt(statistics->red.variance);
+  statistics->green.standard_deviation=sqrt(statistics->green.variance);
+  statistics->blue.standard_deviation=sqrt(statistics->blue.variance);
+  if (image->matte)
+    statistics->opacity.standard_deviation=sqrt(statistics->opacity.variance);
+
+  return status;
 }
 
 /*

@@ -89,12 +89,15 @@ DESCRIPTIONS</A>
 		<LI><A HREF="#getimageexception">GetImageException</A>
 		<LI><A HREF="#getimagegeometry">GetImageGeometry</A>
 		<LI><A HREF="#getimageinfo">GetImageInfo</A>
+		<LI><A HREF="#getimagestatistics">GetImageStatistics</A>
 		<LI><A HREF="#getimagetype">GetImageType</A>
 		<LI><A HREF="#grayscalepseudoclassimage">GrayscalePseudoClassImage</A>
 		<LI><A HREF="#isimagesequal">IsImagesEqual</A>
 		<LI><A HREF="#istaintimage">IsTaintImage</A>
 		<LI><A HREF="#modifyimage">ModifyImage</A>
 		<LI><A HREF="#plasmaimage">PlasmaImage</A>
+		<LI><A HREF="#quantumoperatorimage">QuantumOperatorImage</A>
+		<LI><A HREF="#quantumoperatorregionimage">QuantumOperatorRegionImage</A>
 		<LI><A HREF="#referenceimage">ReferenceImage</A>
 		<LI><A HREF="#removedefinitions">RemoveDefinitions</A>
 		<LI><A HREF="#setimage">SetImage</A>
@@ -142,12 +145,15 @@ FILE *file, const unsigned int verbose );</P>
 <P>void  <STRONG>GetImageException</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>int  <STRONG>GetImageGeometry</STRONG>( const Image *image, const char *geometry, const unsigned int size_to_fit, RectangleInfo *region_info );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
+<P>MagickPassFail  <STRONG>GetImageStatistics</STRONG>( const Image *image, ImageStatistics *statistics ExceptionInfo *exception );</P>
 <P>ImageType  <STRONG>GetImageType</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>void  <STRONG>GrayscalePseudoClassImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, const Image *reference );</P>
 <P>unsigned int  <STRONG>IsTaintImage</STRONG>( const Image *image );</P>
 <P><STRONG>ModifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, unsigned long attenuate, unsigned long depth );</P>
+<P>MagickPassFail  <STRONG>QuantumOperatorImage</STRONG>( Image *image, ChannelType channel, QuantumOperator operator, double rvalue );</P>
+<P>MagickPassFail  <STRONG>QuantumOperatorRegionImage</STRONG>( Image *image, long x, long y, unsigned long columns, unsigned long rows, ChannelType channel, QuantumOperator quantum_operator, double rvalue );</P>
 <P>Image * <STRONG>ReferenceImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>RemoveDefinitions</STRONG>( ImageInfo *image_info, const char *options );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, const Quantum opacity );</P>
@@ -519,6 +525,25 @@ A description of each parameter follows:</P>
 The image info.
 <P></P></DL></DL>
 <P>
+<H3><A NAME="getimagestatistics">GetImageStatistics</A></H3>
+<P>GetImageStatistics computes common statistics (currently maximum, minimum, mean and standard deviation) for the available image channels.  The per-channel values are returned in an ImageStatistics structure.  Statistics are normalized to the range 0.0 to 1.0.  Multiply values by MaxRGB to obtain the statistics in quantum units.  Statistics for non-existent channels are set to zero.</P>
+<P>The format of the GetImageStatistics method is:</P>
+<blockquote>MagickPassFail GetImageStatistics ( const <A HREF="types.html#Image">Image</A> *image, ImageStatistics *statistics <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_statistics%3A">statistics:</A></STRONG><BR>
+<DD>
+An ImageStatistics structure to update with statistics.
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
+Any errors are reported here.
+<P></P></DL></DL>
+<P>
 <H3><A NAME="getimagetype">GetImageType</A></H3>
 <blockquote>GetImageType() returns the type of image: </blockquote><PRE>
       Bilevel        Grayscale       GrayscaleMatte
@@ -625,6 +650,74 @@ Define the plasma attenuation factor.
 <DD><P></P><DT><STRONG><A NAME="item_o_depth%3A">depth:</A></STRONG><BR>
 <DD>
 Limit the plasma recursion depth.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="quantumoperatorimage">QuantumOperatorImage</A></H3>
+<blockquote>QuantumOperatorImage() performs the requested integer arithmetic operation on the selected channels of the image. </blockquote><P>The format of the QuantumOperatorImage method is:</P>
+<blockquote>MagickPassFail QuantumOperatorImage ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ChannelType">ChannelType</A> channel, QuantumOperator operator, double rvalue ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<DD><P></P><DT><STRONG>channel:</STRONG><BR>
+<DD>
+Channel to operate on.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_quantum_operator%3A">quantum_operator:</A></STRONG><BR>
+<DD>
+arithmetic or bitwise operator to use (AddQuantumOp, AndQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, XorQuantumOp).
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_rvalue%3A">rvalue:</A></STRONG><BR>
+<DD>
+Operator argument.
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
+Updated with error description.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="quantumoperatorregionimage">QuantumOperatorRegionImage</A></H3>
+<blockquote>QuantumOperatorRegionImage() performs the requested integer arithmetic operation on the selected channels of the image over the specified region. </blockquote><P>The format of the QuantumOperatorRegionImage method is:</P>
+<blockquote>MagickPassFail QuantumOperatorRegionImage ( <A HREF="types.html#Image">Image</A> *image, long x, long y, unsigned long columns, unsigned long rows, <A HREF="types.html#ChannelType">ChannelType</A> channel, QuantumOperator quantum_operator, double rvalue ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<DD><P></P><DT><STRONG>channel:</STRONG><BR>
+<DD>
+Channel to operate on.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_x%3A">x:</A></STRONG><BR>
+<DD>
+Ordinate of left row of region.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_y%3A">y:</A></STRONG><BR>
+<DD>
+Orginate of top column of region.
+<P></P>
+<DD><P></P><DT><STRONG>columns:</STRONG><BR>
+<DD>
+Width of region.
+<P></P>
+<DD><P></P><DT><STRONG>rows:</STRONG><BR>
+<DD>
+Height of region.
+<P></P>
+<DD><P></P><DT><STRONG>quantum_operator:</STRONG><BR>
+<DD>
+arithmetic or bitwise operator to use (AddQuantumOp, AndQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, XorQuantumOp).
+<P></P>
+<DD><P></P><DT><STRONG>rvalue:</STRONG><BR>
+<DD>
+Operator argument.
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
+Updated with error description.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="referenceimage">ReferenceImage</A></H3>

@@ -1,3 +1,11 @@
+2004-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (GetImageStatistics): New function to obtain
+	image statistics (minimum, maximum, mean, variance, and standard
+	deviation).
+	(DescribeImage): Include image channel statistics in verbose
+	output.
+
 2004-03-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.c (DispatchImage): Removed some unreachable
