@@ -8,7 +8,6 @@ const LCID lcidDefault = 0;
 const DWORD dwErrorBase = 5000;
 
 /* #define DO_DEBUG 1 */
-#define DO_DEBUG 1
 
 /////////////////////////////////////////////////////////////////////////////
 // CMagickImage
@@ -611,7 +610,7 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
   HRESULT hr = E_INVALIDARG;
 
 #ifdef _DEBUG
-  _DbgBreak();
+  // _DbgBreak();
 #endif
 
 #ifdef DO_DEBUG
