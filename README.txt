@@ -569,8 +569,8 @@ HOW TO COMPILE
 
     PNG:
       cd ImageMagick
-      gunzip -c libpng-1.0.2.tgz | tar xvf -
-      mv libpng-1.0.2 png
+      gunzip -c libpng-1.0.3.tgz | tar xvf -
+      mv libpng-1.0.3 png
       cd png
       make
       cd ..
