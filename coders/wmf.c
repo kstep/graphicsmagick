@@ -367,8 +367,6 @@ $23 = {
 #endif /* out */
 static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
 {
-  WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]bmp_read");
-
 #if WMF_USE_NATIVE_READ
 
   ExceptionInfo
