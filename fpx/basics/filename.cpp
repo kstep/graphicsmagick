@@ -236,10 +236,10 @@ OSErr FicNom::Detruit() const
 #else
   char cname[256];
 
-  int len = nom[0]; // FIXME: Sun Forte 6.0 fails
+  int len = ((unsigned char *)nom)[0];
   cname[len] = '\0';
   for (int i = len-1; i >= 0; i--)
-    cname[i] = nom[i+1]; // FIXME: Sun Forte 6.0 fails
+    cname[i] = ((unsigned char *)nom)[i+1];
   if ((err = unlink (cname)) != 0)
     perror ("Unlink failed\n");
 #endif

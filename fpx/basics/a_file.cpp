@@ -250,11 +250,11 @@ void Fichier::Ouverture(const FicNom& fNom, mode_Ouverture mode, OSType fileSign
 
 #else
   // Convert Pascal string to C string
-  int len = fNom.nom[0];  // FIXME: Sun Forte 6.0 fails
+  int len = ((unsigned char *)fNom.nom)[0];
   cname[len] = '\0';
   int i;
   for (i = len-1; i >= 0; i--)
-    cname[i] = fNom.nom[i+1];  // FIXME: Sun Forte 6.0 fails
+    cname[i] = ((unsigned char *)fNom.nom)[i+1];
 
   // remove access path from name
   long index = 0;

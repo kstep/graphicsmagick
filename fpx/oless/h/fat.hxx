@@ -50,48 +50,43 @@ public:
     inline void SetNextFat(USHORT uSize, const SECT sect);
     inline void ByteSwap(USHORT cbSector);
     
-private:  
-
-#ifdef _MSC_VER
-#pragma warning(disable: 4200)    
-    SECT _asectEntry[];
-#pragma warning(default: 4200)    
-#else
-#  ifdef __GNUC__
-      SECT _asectEntry[0];
-#  else
-// FIXME: brain damage
-      SECT* _asectEntry;
-#  endif
-#endif
+private:
+    // GetSects() relies on the fact, that the class has no
+    // data fields...
+    inline SECT * GetSects(void) const;
 };
+
+inline SECT * CFatSect::GetSects(void) const
+{
+	return (SECT *)this;
+}
 
 inline SECT CFatSect::GetSect(const FSOFFSET sect) const
 {
-    return _asectEntry[sect];
+    return GetSects()[sect];
 }
 
 inline void CFatSect::SetSect(const FSOFFSET sect, 
                                        const SECT sectNew)
 {
-    _asectEntry[sect] = sectNew;
+    GetSects()[sect] = sectNew;
 }
 
 inline SECT CFatSect::GetNextFat(USHORT uSize) const
 {
-    return _asectEntry[uSize];
+    return GetSects()[uSize];
 }
 
 inline void CFatSect::SetNextFat(USHORT uSize, const SECT sect)
 {
-    _asectEntry[uSize] = sect;
+    GetSects()[uSize] = sect;
 }
 
 inline void CFatSect::ByteSwap(FSOFFSET cbSector)
 {
     // swap all sectors in the sector
     for (FSOFFSET i=0; i < cbSector; i++)
-        ::ByteSwap(&(_asectEntry[i]));
+        ::ByteSwap(GetSects() + i);
 }
 
 //+-------------------------------------------------------------------------

@@ -1,3 +1,9 @@
+2003-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Applied patches from Mikhail Teterin to resolve buffer alignment
+	problems under Solaris/SPARC, and to aid with compilation using
+	the Sun Forte C++ compiler.
+
 2003-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Bumped package version to 1.2.0.8.

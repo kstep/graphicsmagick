@@ -59,7 +59,7 @@ public:
     inline SID GetSid(void) const;
     inline ULONG GetOffset(void) const;
     inline SECT GetSect(void) const;
-    inline void *GetData(void) const;
+    inline BYTE *GetData(void) const;
     inline DWORD GetFlags(void) const;
     inline CPagedVector * GetVector(void) const;
 
@@ -91,21 +91,6 @@ private:
     SECT _sect;
     DWORD _dwFlags;
     LONG _cReferences;
-
-#ifdef _MSC_VER
-    // disable compiler warning C4200: nonstandard extension used : 
-    // zero-sized array in struct/union
-#pragma warning(disable: 4200)    
-    BYTE _ab[0];
-#pragma warning(default: 4200)
-#else
-#  ifdef __GNUC__
-      BYTE _ab[0];
-#  else
-      // FIXME: brain damage
-      BYTE* _ab;
-#  endif
-#endif
 };
 
 
@@ -233,9 +218,9 @@ inline DWORD CMSFPage::GetFlags(void) const
 //
 //----------------------------------------------------------------------------
 
-inline void * CMSFPage::GetData(void) const
+inline BYTE * CMSFPage::GetData(void) const
 {
-    return (void *) _ab;
+    return ((BYTE *)this) + sizeof(CMSFPage);
 }
 
 //+---------------------------------------------------------------------------

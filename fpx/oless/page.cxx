@@ -38,13 +38,13 @@ void CMSFPage::ByteSwap(void)
         switch (_sid) 
         {
         case SIDDIR:
-            ((CDirSect *)_ab)->
+            ((CDirSect *)GetData())->
                 ByteSwap( ((CDirVector*)pVect)->GetSectorSize() );        
         break;
         case SIDFAT:            
         case SIDMINIFAT:
         case SIDDIF:
-            ((CFatSect *)_ab)->
+            ((CFatSect *)GetData())->
                 ByteSwap( ((CFatVector*)pVect)->GetSectBlock() );
             break;
         default:
