@@ -803,7 +803,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if (q == (PixelPacket *) NULL)
             break;
           (void) TIFFReadScanline(tiff,(char *) scanline,(uint32) y,0);
-          if (bits_per_sample > 8)
+          if (bits_per_sample >= 16)
             {
               unsigned long
                 lsb_first;
