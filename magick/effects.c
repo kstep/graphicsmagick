@@ -485,9 +485,9 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   for (x=0; x < image->columns; x++)
   {
     q=GetImagePixels(blur_image,x,0,1,image->rows);
-    memcpy(scanline,q,image->rows*sizeof(PixelPacket));
     if (q == (PixelPacket *) NULL)
       break;
+    memcpy(scanline,q,image->rows*sizeof(PixelPacket));
     BlurScanline(kernel,width,scanline,q,image->rows);
     if (!SyncImagePixels(blur_image))
       break;

@@ -798,337 +798,348 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       code=MSBFirstReadShort(image);
     if ((code == 0xff) || (code == 0xffff))
       break;
-    if (code < 0xa2)
-      switch (code)
+    if (code > 0xa1)
       {
-        case 0x01:
+        if (image_info->verbose)
+          (void) fprintf(stdout,"%04x:\n",code);
+      }
+    else
+      {
+        if (image_info->verbose)
+          (void) fprintf(stdout,"  %04x %.1024s: %.1024s\n",code,
+            codes[code].name,codes[code].description);
+        switch (code)
         {
-          /*
-            Clipping rectangle.
-          */
-          length=MSBFirstReadShort(image);
-          if (length != 0x000a)
-            {
-              for (i=0; i < (length-2); i++)
-                (void) ReadByte(image);
-              break;
-            }
-          ReadRectangle(frame);
-          if ((frame.left & 0x8000) || (frame.top & 0x8000))
-            break;
-          image->columns=frame.right-frame.left;
-          image->rows=frame.bottom-frame.top;
-          SetImage(image,OpaqueOpacity);
-          break;
-        }
-        case 0x12:
-        case 0x13:
-        case 0x14:
-        {
-          int
-            pattern;
-
-          unsigned int
-            height,
-            width;
-
-          /*
-            Skip pattern definition.
-          */
-          pattern=MSBFirstReadShort(image);
-          for (i=0; i < 8; i++)
-            (void) ReadByte(image);
-          if (pattern == 2)
-            {
-              for (i=0; i < 5; i++)
-                (void) ReadByte(image);
-              break;
-            }
-          if (pattern != 1)
-            ThrowReaderException(CorruptImageWarning,"Unknown pattern type",
-              image);
-          length=MSBFirstReadShort(image);
-          ReadRectangle(frame);
-          ReadPixmap(pixmap);
-          (void) MSBFirstReadLong(image);
-          flags=MSBFirstReadShort(image);
-          length=MSBFirstReadShort(image);
-          for (i=0; i <= length; i++)
-            (void) MSBFirstReadLong(image);
-          width=frame.bottom-frame.top;
-          height=frame.right-frame.left;
-          image->depth=pixmap.bits_per_pixel <= 8 ? 8 : QuantumDepth;
-          if (pixmap.bits_per_pixel < 8)
-            image->depth=8;
-          if (pixmap.bits_per_pixel <= 8)
-            length&=0x7fff;
-          if (pixmap.bits_per_pixel == 16)
-            width<<=1;
-          if (length == 0)
-            length=width;
-          if (length < 8)
-            {
-              for (i=0; i < (int) (length*height); i++)
-                (void) ReadByte(image);
-            }
-          else
-            for (i=0; i < (int) height; i++)
-              if (length > 250)
-                for (i=0; i < (int) MSBFirstReadShort(image); i++)
-                  (void) ReadByte(image);
-              else
-                for (i=0; i < ReadByte(image); i++)
-                  (void) ReadByte(image);
-          break;
-        }
-        case 0x1b:
-        {
-          /*
-            Initialize image background color.
-          */
-          image->background_color.red=XDownScale(MSBFirstReadShort(image));
-          image->background_color.green=XDownScale(MSBFirstReadShort(image));
-          image->background_color.blue=XDownScale(MSBFirstReadShort(image));
-          break;
-        }
-        case 0x70:
-        case 0x71:
-        case 0x72:
-        case 0x73:
-        case 0x74:
-        case 0x75:
-        case 0x76:
-        case 0x77:
-        {
-          /*
-            Skip polygon or region.
-          */
-          length=MSBFirstReadShort(image);
-          for (i=0; i < (length-2); i++)
-            (void) ReadByte(image);
-          break;
-        }
-        case 0x90:
-        case 0x91:
-        case 0x98:
-        case 0x99:
-        case 0x9a:
-        case 0x9b:
-        {
-          int
-            bytes_per_line,
-            j;
-
-          PICTRectangle
-            destination;
-
-          register unsigned char
-            *p;
-
-          unsigned char
-            *pixels;
-
-          Image
-            *tile_image;
-
-          /*
-            Pixmap clipped by a rectangle.
-          */
-          bytes_per_line=0;
-          if ((code != 0x9a) && (code != 0x9b))
-            bytes_per_line=MSBFirstReadShort(image);
-          else
-            {
-              (void) MSBFirstReadShort(image);
-              (void) MSBFirstReadShort(image);
-              (void) MSBFirstReadShort(image);
-            }
-          ReadRectangle(frame);
-          /*
-            Initialize tile_image.
-          */
-          tile_image=image;
-          if ((frame.left != 0) || (frame.top != 0) ||
-              (frame.right != image->columns) || (frame.bottom != image->rows))
-            tile_image=CloneImage(image,frame.right-frame.left,
-              frame.bottom-frame.top,True,exception);
-          if (tile_image == (Image *) NULL)
-            return((Image *) NULL);
-          if ((code == 0x9a) || (code == 0x9b) || (bytes_per_line & 0x8000))
-            {
-              ReadPixmap(pixmap);
-              tile_image->matte=pixmap.component_count == 4;
-            }
-          if ((code != 0x9a) && (code != 0x9b))
-            {
-              /*
-                Initialize colormap.
-              */
-              tile_image->colors=2;
-              if (bytes_per_line & 0x8000)
-                {
-                  (void) MSBFirstReadLong(image);
-                  flags=MSBFirstReadShort(image);
-                  tile_image->colors=MSBFirstReadShort(image)+1;
-                }
-              if (!AllocateImageColormap(tile_image,tile_image->colors))
-                {
-                  DestroyImage(tile_image);
-                  ThrowReaderException(ResourceLimitWarning,
-                    "Memory allocation failed",image);
-                }
-              if (bytes_per_line & 0x8000)
-                {
-                  for (i=0; i < (int) tile_image->colors; i++)
-                  {
-                    j=MSBFirstReadShort(image) % tile_image->colors;
-                    if (flags & 0x8000)
-                      j=i;
-                    tile_image->colormap[j].red=
-                      XDownScale(MSBFirstReadShort(image));
-                    tile_image->colormap[j].green=
-                      XDownScale(MSBFirstReadShort(image));
-                    tile_image->colormap[j].blue=
-                      XDownScale(MSBFirstReadShort(image));
-                  }
-                }
-              else
-                {
-                  for (i=0; i < (int) tile_image->colors; i++)
-                  {
-                    tile_image->colormap[i].red=MaxRGB-
-                      tile_image->colormap[i].red;
-                    tile_image->colormap[i].green=MaxRGB-
-                      tile_image->colormap[i].green;
-                    tile_image->colormap[i].blue=MaxRGB-
-                      tile_image->colormap[i].blue;
-                  }
-                }
-            }
-          ReadRectangle(destination);
-          ReadRectangle(destination);
-          (void) MSBFirstReadShort(image);
-          if ((code == 0x91) || (code == 0x99) || (code == 0x9b))
-            {
-              /*
-                Skip region.
-              */
-              length=MSBFirstReadShort(image);
-              for (i=0; i < (length-2); i++)
-                (void) ReadByte(image);
-            }
-          if ((code != 0x9a) && (code != 0x9b) &&
-              (bytes_per_line & 0x8000) == 0)
-            pixels=DecodeImage(image_info,image,bytes_per_line,1);
-          else
-            pixels=DecodeImage(image_info,image,bytes_per_line,
-              pixmap.bits_per_pixel);
-          if (pixels == (unsigned char *) NULL)
-            {
-              DestroyImage(tile_image);
-              ThrowReaderException(ResourceLimitWarning,
-                "Memory allocation failed",image);
-            }
-          /*
-            Convert PICT tile image to pixel packets.
-          */
-          p=pixels;
-          for (y=0; y < (int) tile_image->rows; y++)
+          case 0x01:
           {
-            q=SetImagePixels(tile_image,0,y,tile_image->columns,1);
-            if (q == (PixelPacket *) NULL)
+            /*
+              Clipping rectangle.
+            */
+            length=MSBFirstReadShort(image);
+            if (length != 0x000a)
+              {
+                for (i=0; i < (length-2); i++)
+                  (void) ReadByte(image);
+                break;
+              }
+            ReadRectangle(frame);
+            if ((frame.left & 0x8000) || (frame.top & 0x8000))
               break;
-            indexes=GetIndexes(tile_image);
-            for (x=0; x < (int) tile_image->columns; x++)
-            {
-              if (tile_image->storage_class == PseudoClass)
-                {
-                  index=(*p);
-                  indexes[x]=index;
-                  q->red=tile_image->colormap[index].red;
-                  q->green=tile_image->colormap[index].green;
-                  q->blue=tile_image->colormap[index].blue;
-                }
-              else
-                {
-                  if (pixmap.bits_per_pixel == 16)
+            image->columns=frame.right-frame.left;
+            image->rows=frame.bottom-frame.top;
+            SetImage(image,OpaqueOpacity);
+            break;
+          }
+          case 0x12:
+          case 0x13:
+          case 0x14:
+          {
+            int
+              pattern;
+
+            unsigned int
+              height,
+              width;
+
+            /*
+              Skip pattern definition.
+            */
+            pattern=MSBFirstReadShort(image);
+            for (i=0; i < 8; i++)
+              (void) ReadByte(image);
+            if (pattern == 2)
+              {
+                for (i=0; i < 5; i++)
+                  (void) ReadByte(image);
+                break;
+              }
+            if (pattern != 1)
+              ThrowReaderException(CorruptImageWarning,"Unknown pattern type",
+                image);
+            length=MSBFirstReadShort(image);
+            ReadRectangle(frame);
+            ReadPixmap(pixmap);
+            (void) MSBFirstReadLong(image);
+            flags=MSBFirstReadShort(image);
+            length=MSBFirstReadShort(image);
+            for (i=0; i <= length; i++)
+              (void) MSBFirstReadLong(image);
+            width=frame.bottom-frame.top;
+            height=frame.right-frame.left;
+            image->depth=pixmap.bits_per_pixel <= 8 ? 8 : QuantumDepth;
+            if (pixmap.bits_per_pixel < 8)
+              image->depth=8;
+            if (pixmap.bits_per_pixel <= 8)
+              length&=0x7fff;
+            if (pixmap.bits_per_pixel == 16)
+              width<<=1;
+            if (length == 0)
+              length=width;
+            if (length < 8)
+              {
+                for (i=0; i < (int) (length*height); i++)
+                  (void) ReadByte(image);
+              }
+            else
+              for (i=0; i < (int) height; i++)
+                if (length > 250)
+                  for (i=0; i < (int) MSBFirstReadShort(image); i++)
+                    (void) ReadByte(image);
+                else
+                  for (i=0; i < ReadByte(image); i++)
+                    (void) ReadByte(image);
+            break;
+          }
+          case 0x1b:
+          {
+            /*
+              Initialize image background color.
+            */
+            image->background_color.red=XDownScale(MSBFirstReadShort(image));
+            image->background_color.green=XDownScale(MSBFirstReadShort(image));
+            image->background_color.blue=XDownScale(MSBFirstReadShort(image));
+            break;
+          }
+          case 0x70:
+          case 0x71:
+          case 0x72:
+          case 0x73:
+          case 0x74:
+          case 0x75:
+          case 0x76:
+          case 0x77:
+          {
+            /*
+              Skip polygon or region.
+            */
+            length=MSBFirstReadShort(image);
+            for (i=0; i < (length-2); i++)
+              (void) ReadByte(image);
+            break;
+          }
+          case 0x90:
+          case 0x91:
+          case 0x98:
+          case 0x99:
+          case 0x9a:
+          case 0x9b:
+          {
+            int
+              bytes_per_line,
+              j;
+
+            PICTRectangle
+              destination;
+
+            register unsigned char
+              *p;
+
+            unsigned char
+              *pixels;
+
+            Image
+              *tile_image;
+
+            /*
+              Pixmap clipped by a rectangle.
+            */
+            bytes_per_line=0;
+            if ((code != 0x9a) && (code != 0x9b))
+              bytes_per_line=MSBFirstReadShort(image);
+            else
+              {
+                (void) MSBFirstReadShort(image);
+                (void) MSBFirstReadShort(image);
+                (void) MSBFirstReadShort(image);
+              }
+            ReadRectangle(frame);
+            /*
+              Initialize tile_image.
+            */
+            tile_image=image;
+            if ((frame.left != 0) || (frame.top != 0) ||
+                (frame.right != image->columns) ||
+                (frame.bottom != image->rows))
+              tile_image=CloneImage(image,frame.right-frame.left,
+                frame.bottom-frame.top,True,exception);
+            if (tile_image == (Image *) NULL)
+              return((Image *) NULL);
+            if ((code == 0x9a) || (code == 0x9b) || (bytes_per_line & 0x8000))
+              {
+                ReadPixmap(pixmap);
+                tile_image->matte=pixmap.component_count == 4;
+              }
+            if ((code != 0x9a) && (code != 0x9b))
+              {
+                /*
+                  Initialize colormap.
+                */
+                tile_image->colors=2;
+                if (bytes_per_line & 0x8000)
+                  {
+                    (void) MSBFirstReadLong(image);
+                    flags=MSBFirstReadShort(image);
+                    tile_image->colors=MSBFirstReadShort(image)+1;
+                  }
+                if (!AllocateImageColormap(tile_image,tile_image->colors))
+                  {
+                    DestroyImage(tile_image);
+                    ThrowReaderException(ResourceLimitWarning,
+                      "Memory allocation failed",image);
+                  }
+                if (bytes_per_line & 0x8000)
+                  {
+                    for (i=0; i < (int) tile_image->colors; i++)
                     {
-                      i=(*p++);
-                      j=(*p);
-                      q->red=UpScale((i & 0x7c) << 1);
-                      q->green=UpScale(((i & 0x03) << 6) | ((j & 0xe0) >> 2));
-                      q->blue=UpScale((j & 0x1f) << 3);
+                      j=MSBFirstReadShort(image) % tile_image->colors;
+                      if (flags & 0x8000)
+                        j=i;
+                      tile_image->colormap[j].red=
+                        XDownScale(MSBFirstReadShort(image));
+                      tile_image->colormap[j].green=
+                        XDownScale(MSBFirstReadShort(image));
+                      tile_image->colormap[j].blue=
+                        XDownScale(MSBFirstReadShort(image));
                     }
-                  else
-                    if (!tile_image->matte)
+                  }
+                else
+                  {
+                    for (i=0; i < (int) tile_image->colors; i++)
+                    {
+                      tile_image->colormap[i].red=MaxRGB-
+                        tile_image->colormap[i].red;
+                      tile_image->colormap[i].green=MaxRGB-
+                        tile_image->colormap[i].green;
+                      tile_image->colormap[i].blue=MaxRGB-
+                        tile_image->colormap[i].blue;
+                    }
+                  }
+              }
+            ReadRectangle(destination);
+            ReadRectangle(destination);
+            (void) MSBFirstReadShort(image);
+            if ((code == 0x91) || (code == 0x99) || (code == 0x9b))
+              {
+                /*
+                  Skip region.
+                */
+                length=MSBFirstReadShort(image);
+                for (i=0; i < (length-2); i++)
+                  (void) ReadByte(image);
+              }
+            if ((code != 0x9a) && (code != 0x9b) &&
+                (bytes_per_line & 0x8000) == 0)
+              pixels=DecodeImage(image_info,image,bytes_per_line,1);
+            else
+              pixels=DecodeImage(image_info,image,bytes_per_line,
+                pixmap.bits_per_pixel);
+            if (pixels == (unsigned char *) NULL)
+              {
+                DestroyImage(tile_image);
+                ThrowReaderException(ResourceLimitWarning,
+                  "Memory allocation failed",image);
+              }
+            /*
+              Convert PICT tile image to pixel packets.
+            */
+            p=pixels;
+            for (y=0; y < (int) tile_image->rows; y++)
+            {
+              q=SetImagePixels(tile_image,0,y,tile_image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(tile_image);
+              for (x=0; x < (int) tile_image->columns; x++)
+              {
+                if (tile_image->storage_class == PseudoClass)
+                  {
+                    index=(*p);
+                    indexes[x]=index;
+                    q->red=tile_image->colormap[index].red;
+                    q->green=tile_image->colormap[index].green;
+                    q->blue=tile_image->colormap[index].blue;
+                  }
+                else
+                  {
+                    if (pixmap.bits_per_pixel == 16)
                       {
-                        q->red=UpScale(*p);
-                        q->green=UpScale(*(p+tile_image->columns));
-                        q->blue=UpScale(*(p+2*tile_image->columns));
+                        i=(*p++);
+                        j=(*p);
+                        q->red=UpScale((i & 0x7c) << 1);
+                        q->green=UpScale(((i & 0x03) << 6) | ((j & 0xe0) >> 2));
+                        q->blue=UpScale((j & 0x1f) << 3);
                       }
                     else
-                      {
-                        q->opacity=UpScale(MaxRGB-*p);
-                        q->red=UpScale(*(p+tile_image->columns));
-                        q->green=UpScale(*(p+2*tile_image->columns));
-                        q->blue=UpScale(*(p+3*tile_image->columns));
-                      }
-                }
-              p++;
-              q++;
+                      if (!tile_image->matte)
+                        {
+                          q->red=UpScale(*p);
+                          q->green=UpScale(*(p+tile_image->columns));
+                          q->blue=UpScale(*(p+2*tile_image->columns));
+                        }
+                      else
+                        {
+                          q->opacity=UpScale(MaxRGB-*p);
+                          q->red=UpScale(*(p+tile_image->columns));
+                          q->green=UpScale(*(p+2*tile_image->columns));
+                          q->blue=UpScale(*(p+3*tile_image->columns));
+                        }
+                  }
+                p++;
+                q++;
+              }
+              if (!SyncImagePixels(tile_image))
+                break;
+              if ((tile_image->storage_class == DirectClass) &&
+                  (pixmap.bits_per_pixel != 16))
+                p+=(pixmap.component_count-1)*tile_image->columns;
+              if (destination.bottom == (int) image->rows)
+                if (QuantumTick(y,tile_image->rows))
+                  MagickMonitor(LoadImageText,y,tile_image->rows);
             }
-            if (!SyncImagePixels(tile_image))
-              break;
-            if ((tile_image->storage_class == DirectClass) &&
-                (pixmap.bits_per_pixel != 16))
-              p+=(pixmap.component_count-1)*tile_image->columns;
-            if (destination.bottom == (int) image->rows)
-              if (QuantumTick(y,tile_image->rows))
-                MagickMonitor(LoadImageText,y,tile_image->rows);
+            (void) LiberateMemory((void **) &pixels);
+            if (tile_image != image)
+              {
+                CompositeImage(image,ReplaceCompositeOp,tile_image,
+                  destination.left,destination.top);
+                DestroyImage(tile_image);
+              }
+            if (destination.bottom != (int) image->rows)
+              MagickMonitor(LoadImageText,destination.bottom,image->rows);
+            break;
           }
-          (void) LiberateMemory((void **) &pixels);
-          if (tile_image != image)
-            {
-              CompositeImage(image,ReplaceCompositeOp,tile_image,
-                destination.left,destination.top);
-              DestroyImage(tile_image);
-            }
-          if (destination.bottom != (int) image->rows)
-            MagickMonitor(LoadImageText,destination.bottom,image->rows);
-          break;
-        }
-        case 0xa1:
-        {
-          char
-            *comment;
+          case 0xa1:
+          {
+            char
+              *comment;
 
-          /*
-            Comment.
-          */
-          (void) MSBFirstReadShort(image);
-          length=MSBFirstReadShort(image);
-          if (length == 0)
-            break;
-          comment=(char *) AcquireMemory(length+1);
-          if (comment == (char *) NULL)
-            break;
-          for (i=0; i < length; i++)
-            comment[i]=ReadByte(image);
-          comment[i]='\0';
-          (void) SetImageAttribute(image,"Comment",comment);
-          LiberateMemory((void **) &comment);
-          break;
-        }
-        default:
-        {
-          /*
-            Skip to next op code.
-          */
-          if (codes[code].length == -1)
+            /*
+              Comment.
+            */
             (void) MSBFirstReadShort(image);
-          else
-            for (i=0; i < codes[code].length; i++)
-              (void) ReadByte(image);
+            length=MSBFirstReadShort(image);
+            if (length == 0)
+              break;
+            comment=(char *) AcquireMemory(length+1);
+            if (comment == (char *) NULL)
+              break;
+            for (i=0; i < length; i++)
+              comment[i]=ReadByte(image);
+            comment[i]='\0';
+            (void) SetImageAttribute(image,"Comment",comment);
+            LiberateMemory((void **) &comment);
+            break;
+          }
+          default:
+          {
+            /*
+              Skip to next op code.
+            */
+            if (codes[code].length == -1)
+              (void) MSBFirstReadShort(image);
+            else
+              for (i=0; i < codes[code].length; i++)
+                (void) ReadByte(image);
+          }
         }
       }
     if (code == 0xc00)
