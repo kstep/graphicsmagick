@@ -545,6 +545,8 @@ MagickExport void MgkDrawImageFile(MgkDrawContext context,
     case XorCompositeOp:
       p = "Xor";
       break;
+    default:
+      break;
     }
 
   if (p != NULL)
