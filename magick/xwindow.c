@@ -1538,15 +1538,15 @@ MagickExport void XDisplayImageInfo(Display *display,
     c,
     length;
 
-  off_t
-    bytes,
-    number_pixels;
-
   register char
     *p;
 
   register int
     i;
+
+  size_t
+    bytes,
+    number_pixels;
 
   unsigned int
     levels;
@@ -1615,7 +1615,7 @@ MagickExport void XDisplayImageInfo(Display *display,
     undo_image=undo_image->previous;
   }
   (void) fprintf(file,"Undo Edit Cache\n  levels: %u\n",levels);
-  (void) fprintf(file,"  bytes: %umb\n",(bytes+(1 << 19)) >> 20);
+  (void) fprintf(file,"  bytes: %umb\n",(unsigned int) (bytes+(1 << 19)) >> 20);
   (void) fprintf(file,"  limit: %umb\n\n",resource_info->undo_cache);
   /*
     Write info about the image to a file.
@@ -4250,6 +4250,7 @@ MagickExport void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
       window->matte_pixmap=(Pixmap) NULL;
       window->mapped=False;
       window->stasis=False;
+      window->shared_memory=True;
 #if defined(HasSharedMemory)
       window->segment_info[0].shmid=(-1);
       window->segment_info[1].shmid=(-1);
@@ -4290,7 +4291,6 @@ MagickExport void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
   window->use_pixmap=True;
   window->immutable=False;
   window->shape=False;
-  window->shared_memory=False;
   window->data=0;
   window->mask=CWBackingStore | CWBackPixel | CWBackPixmap | CWBitGravity |
     CWBorderPixel | CWColormap | CWCursor | CWDontPropagate | CWEventMask |
@@ -5143,10 +5143,31 @@ MagickExport unsigned int XMakeImage(Display *display,
         &window->segment_info[1],width,height);
       window->segment_info[1].shmid=shmget(IPC_PRIVATE,(int)
         (ximage->bytes_per_line*ximage->height),IPC_CREAT | 0777);
-      window->shared_memory=window->segment_info[1].shmid >= 0;
+      window->shared_memory&=window->segment_info[1].shmid >= 0;
       if (window->shared_memory)
         window->segment_info[1].shmaddr=(char *)
           shmat(window->segment_info[1].shmid,0,0);
+    }
+#endif
+  /*
+    Allocate X image pixel data.
+  */
+#if defined(HasSharedMemory)
+  if (window->shared_memory)
+    {
+      XSync(display,False);
+      xerror_alert=False;
+      ximage->data=window->segment_info[1].shmaddr;
+      window->segment_info[1].readOnly=False;
+      XShmAttach(display,&window->segment_info[1]);
+      XSync(display,False);
+      if (xerror_alert)
+        {
+          window->shared_memory=False;
+          (void) shmdt(window->segment_info[1].shmaddr);
+          (void) shmctl(window->segment_info[1].shmid,IPC_RMID,0);
+          window->segment_info[1].shmid=(-1);
+        }
     }
 #endif
   if (!window->shared_memory)
@@ -5176,33 +5197,6 @@ MagickExport unsigned int XMakeImage(Display *display,
         ximage->red_mask,ximage->green_mask,ximage->blue_mask);
       (void) fprintf(stderr,"  timestamp: %ld\n",time((time_t *) NULL));
     }
-  /*
-    Allocate X image pixel data.
-  */
-#if defined(HasSharedMemory)
-  if (window->shared_memory)
-    {
-      ximage->data=window->segment_info[1].shmaddr;
-      window->segment_info[1].readOnly=False;
-      XSync(display,False);
-      xerror_alert=False;
-      XShmAttach(display,&window->segment_info[1]);
-      XSync(display,False);
-      if (xerror_alert)
-        {
-          window->shared_memory=False;
-          if (window->ximage != (XImage *) NULL)
-            {
-              XShmDetach(display,&window->segment_info[1]);
-              XSync(display,False);
-              (void) shmdt(window->segment_info[1].shmaddr);
-              (void) shmctl(window->segment_info[1].shmid,IPC_RMID,0);
-              window->segment_info[1].shmid=(-1);
-              window->ximage->data=(char *) NULL;
-            }
-        }
-    }
-#endif
   if (!window->shared_memory)
     {
       if (ximage->format == XYBitmap)

@@ -1329,7 +1329,7 @@ MagickExport Image *XAnimateImages(Display *display,
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->image);
   windows->image.shape=True;  /* non-rectangular shape hint */
-  windows->image.shared_memory=resource_info->use_shared_memory;
+  windows->image.shared_memory&=resource_info->use_shared_memory;
   if (resource_info->title != (char *) NULL)
     {
       windows->image.name=TranslateText(resource_info->image_info,

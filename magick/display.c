@@ -12142,7 +12142,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->image);
   windows->image.shape=True;  /* non-rectangular shape hint */
-  windows->image.shared_memory=resource_info->use_shared_memory;
+  windows->image.shared_memory&=resource_info->use_shared_memory;
   if ((resource_info->title != (char *) NULL) && !(*state & MontageImageState))
     {
       windows->image.name=TranslateText(resource_info->image_info,
@@ -12401,7 +12401,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     LiberateMemory((void **) &windows->magnify.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->magnify);
-  windows->magnify.shared_memory=resource_info->use_shared_memory;
+  windows->magnify.shared_memory&=resource_info->use_shared_memory;
   FormatString(resource_name,"%.1024s.magnify",resource_info->client_name);
   windows->magnify.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
