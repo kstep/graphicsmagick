@@ -2,6 +2,11 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Add support for specifying a CMS color profile (ImageInfo
+  color_profile member).
+
+* Look into adding/removing profiles via the ProfileImage function.
+
 * Extend Image constructor to allow specifying DirectClass or
   PsuedoClass representation when creating a solid-color canvas.
 
