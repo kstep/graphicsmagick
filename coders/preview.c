@@ -208,7 +208,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   /*
     Scale the image to tile size.
   */
-  TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,RGBColorspace);
   width=image->columns;
   height=image->rows;
   x=0;
@@ -250,7 +250,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         commands[argc++]=(char *) "-mattecolor";
         commands[argc++]=(char *) "#dfdfdf";
-        MogrifyImage(clone_info,argc,commands,&images[i]);
+        (void) MogrifyImage(clone_info,argc,commands,&images[i]);
         continue;
       }
     handler=SetMonitorHandler((MonitorHandler) NULL);
@@ -546,7 +546,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     sigma+=0.25;
     commands[argc++]=(char *) "-label";
     commands[argc++]=label;
-    MogrifyImage(clone_info,argc,commands,&images[i]);
+    (void) MogrifyImage(clone_info,argc,commands,&images[i]);
     (void) SetMonitorHandler(handler);
     MagickMonitor(PreviewImageText,i,NumberTiles);
   }

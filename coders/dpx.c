@@ -367,25 +367,25 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  TransformRGBImage(image,RGBColorspace);
-  WriteBlobMSBLong(image,0x53445058);
-  WriteBlobMSBLong(image,0x2000);
-  WriteBlobMSBLong(image,0x56312E30);
-  WriteBlobMSBLong(image,0x00000000);
-  WriteBlobMSBLong(image,4*image->columns*image->rows+0x2000);
-  WriteBlobMSBLong(image,0x00000001);
-  WriteBlobMSBLong(image,0x00000680);
-  WriteBlobMSBLong(image,0x00000180);
-  WriteBlobMSBLong(image,0x00001800);
+  (void) TransformRGBImage(image,RGBColorspace);
+  (void) WriteBlobMSBLong(image,0x53445058);
+  (void) WriteBlobMSBLong(image,0x2000);
+  (void) WriteBlobMSBLong(image,0x56312E30);
+  (void) WriteBlobMSBLong(image,0x00000000);
+  (void) WriteBlobMSBLong(image,4*image->columns*image->rows+0x2000);
+  (void) WriteBlobMSBLong(image,0x00000001);
+  (void) WriteBlobMSBLong(image,0x00000680);
+  (void) WriteBlobMSBLong(image,0x00000180);
+  (void) WriteBlobMSBLong(image,0x00001800);
   for (i=0; i < 124; i++)
     WriteBlobByte(image,0x00);
-  WriteBlobMSBLong(image,0x496D6167);
-  WriteBlobMSBLong(image,0x654D6167);
-  WriteBlobMSBLong(image,0x69636B20);
+  (void) WriteBlobMSBLong(image,0x496D6167);
+  (void) WriteBlobMSBLong(image,0x654D6167);
+  (void) WriteBlobMSBLong(image,0x69636B20);
   for (i=0; i < 600; i++)
     WriteBlobByte(image,0x00);
-  WriteBlobMSBLong(image,image->columns);
-  WriteBlobMSBLong(image,image->rows);
+  (void) WriteBlobMSBLong(image,image->columns);
+  (void) WriteBlobMSBLong(image,image->rows);
   for (i=0; i < 20; i++)
     WriteBlobByte(image,0x00);
   WriteBlobByte(image,RGBColorType);
@@ -407,7 +407,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       pixel=((1023*XUpScale(q->red)/MaxRGB) << 22) |
         ((1023*XUpScale(q->green)/MaxRGB) << 12) |
         ((1023*XUpScale(q->blue)/MaxRGB) << 2);
-      WriteBlobMSBLong(image,pixel);
+      (void) WriteBlobMSBLong(image,pixel);
       q++;
     }
   }

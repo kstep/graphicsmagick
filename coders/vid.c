@@ -154,7 +154,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (next_image != (Image *) NULL)
       {
         (void) SetImageAttribute(next_image,"label",DefaultTileLabel);
-        TransformImage(&next_image,(char *) NULL,
+        (void) TransformImage(&next_image,(char *) NULL,
           clone_info->size == (char *) NULL ? DefaultTileGeometry :
           clone_info->size);
         if (image == (Image *) NULL)

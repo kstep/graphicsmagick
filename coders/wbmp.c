@@ -358,7 +358,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,RGBColorspace);
   /*
     Convert image to a bi-level image.
   */
@@ -376,7 +376,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
   if (image->colors == 2)
     polarity=Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
-  WriteBlobMSBShort(image,0);
+  (void) WriteBlobMSBShort(image,0);
   WBMPWriteInteger(image,image->columns);
   WBMPWriteInteger(image,image->rows);
   for (y=0; y < (int) image->rows; y++)

@@ -178,8 +178,8 @@ NoMemory: ThrowReaderException(CorruptImageWarning,"Memory exhausted",image);
 
  for(i=0;i< (int) height;i++)
       {
-      ReadBlob(image,ldblk,(char *)BImgBuff);
-      ReadBlob(image,k,(char *)&dummy);
+      (void) ReadBlob(image,ldblk,(char *)BImgBuff);
+      (void) ReadBlob(image,k,(char *)&dummy);
       InsertRow(BImgBuff,i,image);
       }
  if(BImgBuff!=NULL) free(BImgBuff);

@@ -390,7 +390,7 @@ ErasePalette:
      
  if(palette!=NULL)
    {
-   ReadBlob(palette,2,PalHeader.FileId);
+   (void) ReadBlob(palette,2,PalHeader.FileId);
    if(strncmp(PalHeader.FileId,"AH",2)) goto ErasePalette;
    PalHeader.Version=ReadBlobLSBShort(palette);
    PalHeader.Size=ReadBlobLSBShort(palette);
@@ -402,7 +402,7 @@ ErasePalette:
    PalHeader.MaxRed=ReadBlobLSBShort(palette);
    PalHeader.MaxGreen=ReadBlobLSBShort(palette);
    PalHeader.MaxBlue=ReadBlobLSBShort(palette);
-   ReadBlob(palette,20,PalHeader.PaletteId);
+   (void) ReadBlob(palette,20,PalHeader.PaletteId);
    
    if(PalHeader.MaxIndex<1) goto ErasePalette;
    image->colors=PalHeader.MaxIndex+1;
@@ -496,7 +496,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 			memset(ptrB,RunValue,RunCountMasked);
 			}
 		else {
-		     ReadBlob(image,RunCountMasked,ptrB);
+		     (void) ReadBlob(image,RunCountMasked,ptrB);
 		     }
 		     
 		ptrB+=RunCountMasked;

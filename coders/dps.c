@@ -157,7 +157,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Set our forgiving error handler.
   */
-  XSetErrorHandler(XError);
+  (void) XSetErrorHandler(XError);
   /*
     Open image file.
   */
@@ -230,7 +230,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   dps_image=XGetImage(display,pixmap,0,0,bits_per_pixel.width,
     bits_per_pixel.height,AllPlanes,ZPixmap);
-  XFreePixmap(display,pixmap);
+  (void) XFreePixmap(display,pixmap);
   if (dps_image == (XImage *) NULL)
     {
       DestroyImage(image);
@@ -291,7 +291,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           blue=0;
       }
     }
-  XQueryColors(display,XDefaultColormap(display,visual_info->screen),colors,
+  (void) XQueryColors(display,XDefaultColormap(display,visual_info->screen),colors,
     visual_info->colormap_size);
   /*
     Convert X image to MIFF format.
@@ -455,7 +455,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           */
           matte_image=XGetImage(display,pixmap,0,0,bits_per_pixel.width,
             bits_per_pixel.height,AllPlanes,ZPixmap);
-          XFreePixmap(display,pixmap);
+          (void) XFreePixmap(display,pixmap);
           if (matte_image != (XImage *) NULL)
             {
               image->storage_class=DirectClass;

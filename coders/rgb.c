@@ -366,7 +366,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
     count=ReadBlob(image,packet_size*image->tile_info.width,scanline);
-    if (count > 0)
+    if (count != 0)
       {
         /*
           Allocate next image structure.
@@ -380,7 +380,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=image->next;
         MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
       }
-  } while (count > 0);
+  } while (count != 0);
   LiberateMemory((void **) &scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -524,7 +524,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to RGB raster pixels.
     */
-    TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,RGBColorspace);
     if (LocaleCompare(image_info->magick,"RGBA") == 0)
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);

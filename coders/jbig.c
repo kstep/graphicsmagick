@@ -407,7 +407,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate pixel data.
     */
-    TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,RGBColorspace);
     number_packets=((image->columns+7) >> 3)*image->rows;
     pixels=(unsigned char *) AcquireMemory(number_packets);
     if (pixels == (unsigned char *) NULL)
@@ -475,9 +475,9 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
         if (image_info->density != (char *) NULL)
           (void) ParseGeometry(image_info->density,&sans_offset,&sans_offset,
             &x_resolution,&y_resolution);
-        jbg_enc_lrlmax(&jbig_info,x_resolution,y_resolution);
+        (void) jbg_enc_lrlmax(&jbig_info,x_resolution,y_resolution);
       }
-    jbg_enc_lrange(&jbig_info,-1,-1);
+    (void) jbg_enc_lrange(&jbig_info,-1,-1);
     jbg_enc_options(&jbig_info,JBG_ILEAVE | JBG_SMID,JBG_TPDON | JBG_TPBON |
       JBG_DPON,-1,-1,-1);
     /*

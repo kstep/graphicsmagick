@@ -116,7 +116,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   */
   image=AllocateImage(image_info);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  QueryColorDatabase("black",&draw_info->fill);
+  (void) QueryColorDatabase("black",&draw_info->fill);
   draw_info->gravity=WestGravity;
   draw_info->text=AllocateString(image_info->filename);
   status=GetTypeMetrics(image,draw_info,&metrics);
@@ -124,7 +124,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
   image->columns=(unsigned int) metrics.width;
   image->rows=(unsigned int) metrics.height;
-  QueryColorDatabase("white",&image->background_color);
+  (void) QueryColorDatabase("white",&image->background_color);
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);
   image->matte=True;

@@ -662,7 +662,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   packets=(q-pixels);
   if (bytes_per_line > 250)
     {
-      WriteBlobMSBShort(image,(unsigned short) packets);
+      (void) WriteBlobMSBShort(image,(unsigned short) packets);
       packets+=2;
     }
   else
@@ -1107,7 +1107,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 if (!jpeg)
                   if ((code == 0x9a) || (code == 0x9b) ||
                       (bytes_per_line & 0x8000))
-                    CompositeImage(image,CopyCompositeOp,tile_image,
+                    (void) CompositeImage(image,CopyCompositeOp,tile_image,
                       destination.left,destination.top);
                 DestroyImage(tile_image);
               }
@@ -1137,7 +1137,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             info=(unsigned char *) AcquireMemory(length);
             if (info == (unsigned char *) NULL)
               break;
-            ReadBlob(image,length,info);
+            (void) ReadBlob(image,length,info);
             switch (type)
             {
               case 0xe0:
@@ -1233,8 +1233,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           continue;
         FormatString(geometry,"%ux%u",Max(image->columns,tile_image->columns),
           Max(image->rows,tile_image->rows));
-        TransformImage(&image,(char *) NULL,geometry);
-        CompositeImage(image,CopyCompositeOp,tile_image,frame.left,frame.right);
+        (void) TransformImage(&image,(char *) NULL,geometry);
+        (void) CompositeImage(image,CopyCompositeOp,tile_image,frame.left,
+          frame.right);
         DestroyImage(tile_image);
         continue;
       }
@@ -1435,7 +1436,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,RGBColorspace);
   /*
     Initialize image info.
   */
@@ -1497,56 +1498,56 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   for (i=0; i < PictInfoSize; i++)
     buffer[i]=0;
   (void) WriteBlob(image,PictInfoSize,buffer);
-  WriteBlobMSBShort(image,0);
-  WriteBlobMSBShort(image,size_rectangle.top);
-  WriteBlobMSBShort(image,size_rectangle.left);
-  WriteBlobMSBShort(image,size_rectangle.bottom);
-  WriteBlobMSBShort(image,size_rectangle.right);
-  WriteBlobMSBShort(image,PictVersion);
-  WriteBlobMSBShort(image,0x02ff);  /* version #2 */
-  WriteBlobMSBShort(image,PictInfoOp);
-  WriteBlobMSBLong(image,0xFFFE0000UL);
+  (void) WriteBlobMSBShort(image,0);
+  (void) WriteBlobMSBShort(image,size_rectangle.top);
+  (void) WriteBlobMSBShort(image,size_rectangle.left);
+  (void) WriteBlobMSBShort(image,size_rectangle.bottom);
+  (void) WriteBlobMSBShort(image,size_rectangle.right);
+  (void) WriteBlobMSBShort(image,PictVersion);
+  (void) WriteBlobMSBShort(image,0x02ff);  /* version #2 */
+  (void) WriteBlobMSBShort(image,PictInfoOp);
+  (void) WriteBlobMSBLong(image,0xFFFE0000UL);
   /*
     Write full size of the file, resolution, frame bounding box, and reserved.
   */
-  WriteBlobMSBShort(image,(unsigned short) x_resolution);
-  WriteBlobMSBShort(image,0x0000);
-  WriteBlobMSBShort(image,(unsigned short) y_resolution);
-  WriteBlobMSBShort(image,0x0000);
-  WriteBlobMSBShort(image,frame_rectangle.top);
-  WriteBlobMSBShort(image,frame_rectangle.left);
-  WriteBlobMSBShort(image,frame_rectangle.bottom);
-  WriteBlobMSBShort(image,frame_rectangle.right);
-  WriteBlobMSBLong(image,0x00000000L);
+  (void) WriteBlobMSBShort(image,(unsigned short) x_resolution);
+  (void) WriteBlobMSBShort(image,0x0000);
+  (void) WriteBlobMSBShort(image,(unsigned short) y_resolution);
+  (void) WriteBlobMSBShort(image,0x0000);
+  (void) WriteBlobMSBShort(image,frame_rectangle.top);
+  (void) WriteBlobMSBShort(image,frame_rectangle.left);
+  (void) WriteBlobMSBShort(image,frame_rectangle.bottom);
+  (void) WriteBlobMSBShort(image,frame_rectangle.right);
+  (void) WriteBlobMSBLong(image,0x00000000L);
   if (image->iptc_profile.info != (unsigned char *) NULL)
     {
-      WriteBlobMSBShort(image,0xa1);
-      WriteBlobMSBShort(image,0x1f2);
-      WriteBlobMSBShort(image,(int) (image->iptc_profile.length+4));
-      WriteBlobString(image,"8BIM");
+      (void) WriteBlobMSBShort(image,0xa1);
+      (void) WriteBlobMSBShort(image,0x1f2);
+      (void) WriteBlobMSBShort(image,(int) (image->iptc_profile.length+4));
+      (void) WriteBlobString(image,"8BIM");
       WriteBlob(image,image->iptc_profile.length,image->iptc_profile.info);
     }
   if (image->color_profile.info != (unsigned char *) NULL)
     {
-      WriteBlobMSBShort(image,0xa1);
-      WriteBlobMSBShort(image,0xe0);
-      WriteBlobMSBShort(image,(int) (image->color_profile.length+4));
-      WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBShort(image,0xa1);
+      (void) WriteBlobMSBShort(image,0xe0);
+      (void) WriteBlobMSBShort(image,(int) (image->color_profile.length+4));
+      (void) WriteBlobMSBLong(image,0x00000000UL);
       WriteBlob(image,image->color_profile.length,image->color_profile.info);
-      WriteBlobMSBShort(image,0xa1);
-      WriteBlobMSBShort(image,0xe0);
-      WriteBlobMSBShort(image,4);
-      WriteBlobMSBLong(image,0x00000002UL);
+      (void) WriteBlobMSBShort(image,0xa1);
+      (void) WriteBlobMSBShort(image,0xe0);
+      (void) WriteBlobMSBShort(image,4);
+      (void) WriteBlobMSBLong(image,0x00000002UL);
     }
   /*
     Write crop region opcode and crop bounding box.
   */
-  WriteBlobMSBShort(image,PictCropRegionOp);
-  WriteBlobMSBShort(image,0xa);
-  WriteBlobMSBShort(image,crop_rectangle.top);
-  WriteBlobMSBShort(image,crop_rectangle.left);
-  WriteBlobMSBShort(image,crop_rectangle.bottom);
-  WriteBlobMSBShort(image,crop_rectangle.right);
+  (void) WriteBlobMSBShort(image,PictCropRegionOp);
+  (void) WriteBlobMSBShort(image,0xa);
+  (void) WriteBlobMSBShort(image,crop_rectangle.top);
+  (void) WriteBlobMSBShort(image,crop_rectangle.left);
+  (void) WriteBlobMSBShort(image,crop_rectangle.bottom);
+  (void) WriteBlobMSBShort(image,crop_rectangle.right);
   if (image->compression == JPEGCompression)
     {
       size_t
@@ -1560,53 +1561,53 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       blob=ImageToBlob(image_info,image,&length,&image->exception);
       if (blob == (void *) NULL)
         return(False);
-      WriteBlobMSBShort(image,PictJPEGOp);
-      WriteBlobMSBLong(image,length+154);
-      WriteBlobMSBShort(image,0x0000);
-      WriteBlobMSBLong(image,0x00010000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00010000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x40000000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00400000UL);
-      WriteBlobMSBShort(image,0x0000);
-      WriteBlobMSBShort(image,image->rows);
-      WriteBlobMSBShort(image,image->columns);
-      WriteBlobMSBShort(image,0x0000);
-      WriteBlobMSBShort(image,768);
-      WriteBlobMSBShort(image,0x0000);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00566A70UL);
-      WriteBlobMSBLong(image,0x65670000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00000001UL);
-      WriteBlobMSBLong(image,0x00016170UL);
-      WriteBlobMSBLong(image,0x706C0000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBShort(image,768);
-      WriteBlobMSBShort(image,image->columns);
-      WriteBlobMSBShort(image,image->rows);
-      WriteBlobMSBShort(image,(unsigned short) x_resolution);
-      WriteBlobMSBShort(image,0x0000);
-      WriteBlobMSBShort(image,(unsigned short) y_resolution);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x87AC0001UL);
-      WriteBlobMSBLong(image,0x0B466F74UL);
-      WriteBlobMSBLong(image,0x6F202D20UL);
-      WriteBlobMSBLong(image,0x4A504547UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x00000000UL);
-      WriteBlobMSBLong(image,0x0018FFFFUL);
+      (void) WriteBlobMSBShort(image,PictJPEGOp);
+      (void) WriteBlobMSBLong(image,length+154);
+      (void) WriteBlobMSBShort(image,0x0000);
+      (void) WriteBlobMSBLong(image,0x00010000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00010000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x40000000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00400000UL);
+      (void) WriteBlobMSBShort(image,0x0000);
+      (void) WriteBlobMSBShort(image,image->rows);
+      (void) WriteBlobMSBShort(image,image->columns);
+      (void) WriteBlobMSBShort(image,0x0000);
+      (void) WriteBlobMSBShort(image,768);
+      (void) WriteBlobMSBShort(image,0x0000);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00566A70UL);
+      (void) WriteBlobMSBLong(image,0x65670000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00000001UL);
+      (void) WriteBlobMSBLong(image,0x00016170UL);
+      (void) WriteBlobMSBLong(image,0x706C0000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBShort(image,768);
+      (void) WriteBlobMSBShort(image,image->columns);
+      (void) WriteBlobMSBShort(image,image->rows);
+      (void) WriteBlobMSBShort(image,(unsigned short) x_resolution);
+      (void) WriteBlobMSBShort(image,0x0000);
+      (void) WriteBlobMSBShort(image,(unsigned short) y_resolution);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x87AC0001UL);
+      (void) WriteBlobMSBLong(image,0x0B466F74UL);
+      (void) WriteBlobMSBLong(image,0x6F202D20UL);
+      (void) WriteBlobMSBLong(image,0x4A504547UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x00000000UL);
+      (void) WriteBlobMSBLong(image,0x0018FFFFUL);
       WriteBlob(image,length,blob);
       if (length & 0x01)
         (void) WriteBlobByte(image,'\0');
@@ -1616,37 +1617,37 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     Write picture opcode, row bytes, and picture bounding box, and version.
   */
   if (storage_class == PseudoClass)
-    WriteBlobMSBShort(image,PictPICTOp);
+    (void) WriteBlobMSBShort(image,PictPICTOp);
   else
     {
-      WriteBlobMSBShort(image,PictPixmapOp);
-      WriteBlobMSBLong(image,(unsigned long) base_address);
+      (void) WriteBlobMSBShort(image,PictPixmapOp);
+      (void) WriteBlobMSBLong(image,(unsigned long) base_address);
     }
-  WriteBlobMSBShort(image,row_bytes | 0x8000);
-  WriteBlobMSBShort(image,bounds.top);
-  WriteBlobMSBShort(image,bounds.left);
-  WriteBlobMSBShort(image,bounds.bottom);
-  WriteBlobMSBShort(image,bounds.right);
+  (void) WriteBlobMSBShort(image,row_bytes | 0x8000);
+  (void) WriteBlobMSBShort(image,bounds.top);
+  (void) WriteBlobMSBShort(image,bounds.left);
+  (void) WriteBlobMSBShort(image,bounds.bottom);
+  (void) WriteBlobMSBShort(image,bounds.right);
   /*
     Write pack type, pack size, resolution, pixel type, and pixel size.
   */
-  WriteBlobMSBShort(image,pixmap.version);
-  WriteBlobMSBShort(image,pixmap.pack_type);
-  WriteBlobMSBLong(image,pixmap.pack_size);
-  WriteBlobMSBShort(image,(unsigned short) x_resolution);
-  WriteBlobMSBShort(image,0x0000);
-  WriteBlobMSBShort(image,(unsigned short) y_resolution);
-  WriteBlobMSBShort(image,0x0000);
-  WriteBlobMSBShort(image,pixmap.pixel_type);
-  WriteBlobMSBShort(image,pixmap.bits_per_pixel);
+  (void) WriteBlobMSBShort(image,pixmap.version);
+  (void) WriteBlobMSBShort(image,pixmap.pack_type);
+  (void) WriteBlobMSBLong(image,pixmap.pack_size);
+  (void) WriteBlobMSBShort(image,(unsigned short) x_resolution);
+  (void) WriteBlobMSBShort(image,0x0000);
+  (void) WriteBlobMSBShort(image,(unsigned short) y_resolution);
+  (void) WriteBlobMSBShort(image,0x0000);
+  (void) WriteBlobMSBShort(image,pixmap.pixel_type);
+  (void) WriteBlobMSBShort(image,pixmap.bits_per_pixel);
   /*
     Write component count, size, plane bytes, table size, and reserved.
   */
-  WriteBlobMSBShort(image,pixmap.component_count);
-  WriteBlobMSBShort(image,pixmap.component_size);
-  WriteBlobMSBLong(image,(unsigned long) pixmap.plane_bytes);
-  WriteBlobMSBLong(image,(unsigned long) pixmap.table);
-  WriteBlobMSBLong(image,(unsigned long) pixmap.reserved);
+  (void) WriteBlobMSBShort(image,pixmap.component_count);
+  (void) WriteBlobMSBShort(image,pixmap.component_size);
+  (void) WriteBlobMSBLong(image,(unsigned long) pixmap.plane_bytes);
+  (void) WriteBlobMSBLong(image,(unsigned long) pixmap.table);
+  (void) WriteBlobMSBLong(image,(unsigned long) pixmap.reserved);
   if (storage_class == PseudoClass)
     {
       unsigned short
@@ -1657,32 +1658,32 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       /*
         Write image colormap.
       */
-      WriteBlobMSBLong(image,0x00000000L);  /* color seed */
-      WriteBlobMSBShort(image,0L);  /* color flags */
-      WriteBlobMSBShort(image,(unsigned short) Max(image->colors-1,1));
+      (void) WriteBlobMSBLong(image,0x00000000L);  /* color seed */
+      (void) WriteBlobMSBShort(image,0L);  /* color flags */
+      (void) WriteBlobMSBShort(image,(unsigned short) Max(image->colors-1,1));
       for (i=0; i < (long) image->colors; i++)
       {
         red=((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
         green=((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);
         blue=((unsigned long) (image->colormap[i].blue*65535L)/MaxRGB);
-        WriteBlobMSBShort(image,(int) i);
-        WriteBlobMSBShort(image,red);
-        WriteBlobMSBShort(image,green);
-        WriteBlobMSBShort(image,blue);
+        (void) WriteBlobMSBShort(image,(int) i);
+        (void) WriteBlobMSBShort(image,red);
+        (void) WriteBlobMSBShort(image,green);
+        (void) WriteBlobMSBShort(image,blue);
       }
     }
   /*
     Write source and destination rectangle.
   */
-  WriteBlobMSBShort(image,source_rectangle.top);
-  WriteBlobMSBShort(image,source_rectangle.left);
-  WriteBlobMSBShort(image,source_rectangle.bottom);
-  WriteBlobMSBShort(image,source_rectangle.right);
-  WriteBlobMSBShort(image,destination_rectangle.top);
-  WriteBlobMSBShort(image,destination_rectangle.left);
-  WriteBlobMSBShort(image,destination_rectangle.bottom);
-  WriteBlobMSBShort(image,destination_rectangle.right);
-  WriteBlobMSBShort(image,transfer_mode);
+  (void) WriteBlobMSBShort(image,source_rectangle.top);
+  (void) WriteBlobMSBShort(image,source_rectangle.left);
+  (void) WriteBlobMSBShort(image,source_rectangle.bottom);
+  (void) WriteBlobMSBShort(image,source_rectangle.right);
+  (void) WriteBlobMSBShort(image,destination_rectangle.top);
+  (void) WriteBlobMSBShort(image,destination_rectangle.left);
+  (void) WriteBlobMSBShort(image,destination_rectangle.bottom);
+  (void) WriteBlobMSBShort(image,destination_rectangle.right);
+  (void) WriteBlobMSBShort(image,transfer_mode);
   /*
     Write picture data.
   */
@@ -1750,10 +1751,10 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       }
   if (count & 0x1)
     (void) WriteBlobByte(image,'\0');
-  WriteBlobMSBShort(image,PictEndOfPictureOp);
+  (void) WriteBlobMSBShort(image,PictEndOfPictureOp);
   offset=TellBlob(image);
   (void) SeekBlob(image,512,SEEK_SET);
-  WriteBlobMSBShort(image,(int) offset);
+  (void) WriteBlobMSBShort(image,(int) offset);
   LiberateMemory((void **) &scanline);
   LiberateMemory((void **) &packed_scanline);
   LiberateMemory((void **) &buffer);

@@ -161,7 +161,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
     if (QuantumTick(y,image->rows))
       MagickMonitor(LoadImageText,y,image->rows);
   }
-  TransformRGBImage(image,YCbCrColorspace);
+  (void) TransformRGBImage(image,YCbCrColorspace);
   if (EOFBlob(image))
     ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
@@ -294,11 +294,11 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,RGBColorspace);
   /*
     Convert to YUV, at full resolution.
   */
-  RGBTransformImage(image,YCbCrColorspace);
+  (void) RGBTransformImage(image,YCbCrColorspace);
   /*
     Accumulate two pixels, then output.
   */
@@ -334,7 +334,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
     if (QuantumTick(y,image->rows))
       MagickMonitor(SaveImageText,y,image->rows);
   }
-  TransformRGBImage(image,YCbCrColorspace);
+  (void) TransformRGBImage(image,YCbCrColorspace);
   CloseBlob(image);
   return(True);
 }

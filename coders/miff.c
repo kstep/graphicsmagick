@@ -487,8 +487,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       *geometry;
 
                     geometry=PostscriptGeometry(values);
-                    ParseImageGeometry(geometry,&image->page.x,&image->page.y,
-                      &image->page.width,&image->page.height);
+                    (void) ParseImageGeometry(geometry,&image->page.x,
+                      &image->page.y,&image->page.width,&image->page.height);
                     LiberateMemory((void **) &geometry);
                     break;
                   }
@@ -667,7 +667,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           *p++=c;
         } while (c != '\0');
       }
-    if (image->color_profile.length > 0)
+    if (image->color_profile.length != 0)
       {
         /*
           ICC profile.
@@ -680,7 +680,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         (void) ReadBlob(image,image->color_profile.length,
           image->color_profile.info);
       }
-    if (image->iptc_profile.length > 0)
+    if (image->iptc_profile.length != 0)
       {
         /*
           IPTC profile.
@@ -813,7 +813,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               }
             if (inflate(&zip_info,Z_NO_FLUSH) == Z_STREAM_END)
               break;
-          } while (zip_info.avail_out > 0);
+          } while (zip_info.avail_out != 0);
           if (y == (int) (image->rows-1))
             {
               (void) SeekBlob(image,-((off_t) zip_info.avail_in),SEEK_CUR);
@@ -847,7 +847,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 }
               if (BZ2_bzDecompress(&bzip_info) == BZ_STREAM_END)
                 break;
-            } while (bzip_info.avail_out > 0);
+            } while (bzip_info.avail_out != 0);
             if (y == (int) (image->rows-1))
               {
                 (void) SeekBlob(image,-((off_t) bzip_info.avail_in),SEEK_CUR);
@@ -1237,10 +1237,10 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (((image_info->colorspace != UndefinedColorspace) ||
          (image->colorspace != CMYKColorspace)) &&
          (image_info->colorspace != CMYKColorspace))
-      TransformRGBImage(image,RGBColorspace);
+      (void) TransformRGBImage(image,RGBColorspace);
     else
       if (image->colorspace != CMYKColorspace)
-        RGBTransformImage(image,CMYKColorspace);
+        (void) RGBTransformImage(image,CMYKColorspace);
     if (image->storage_class == DirectClass)
       packet_size=image->depth > 8 ? 6 : 3;
     else
@@ -1376,12 +1376,12 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           image->chromaticity.white_point.x,image->chromaticity.white_point.y);
         (void) WriteBlobString(image,buffer);
       }
-    if (image->color_profile.length > 0)
+    if (image->color_profile.length != 0)
       {
         FormatString(buffer,"profile-icc=%u\n",image->color_profile.length);
         (void) WriteBlobString(image,buffer);
       }
-    if (image->iptc_profile.length > 0)
+    if (image->iptc_profile.length != 0)
       {
         FormatString(buffer,"profile-iptc=%u\n",image->iptc_profile.length);
         (void) WriteBlobString(image,buffer);
@@ -1404,7 +1404,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         FormatString(buffer,"montage=%.1024s\n",image->montage);
         (void) WriteBlobString(image,buffer);
       }
-    SignatureImage(image);
+    (void) SignatureImage(image);
     attribute=GetImageAttribute(image,(char *) NULL);
     for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
     {
@@ -1432,10 +1432,10 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,strlen(image->directory),image->directory);
         (void) WriteBlobByte(image,'\0');
       }
-    if (image->color_profile.length > 0)
+    if (image->color_profile.length != 0)
       (void) WriteBlob(image,image->color_profile.length,
         (char *) image->color_profile.info);
-    if (image->iptc_profile.length > 0)
+    if (image->iptc_profile.length != 0)
       (void) WriteBlob(image,image->iptc_profile.length,
         (char *) image->iptc_profile.info);
     if (image->generic_profiles != 0)
@@ -1575,7 +1575,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               length=zip_info.next_out-compress_pixels;
               if (zip_info.next_out != compress_pixels)
                 (void) WriteBlob(image,length,compress_pixels);
-            } while (zip_info.avail_in > 0);
+            } while (zip_info.avail_in != 0);
             if (y == (int) (image->rows-1))
               {
                 for ( ; ; )
@@ -1615,7 +1615,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               length=bzip_info.next_out-(char *) compress_pixels;
               if (bzip_info.next_out != (char *) compress_pixels)
                 (void) WriteBlob(image,length,compress_pixels);
-            } while (bzip_info.avail_in > 0);
+            } while (bzip_info.avail_in != 0);
             if (y == (int) (image->rows-1))
               {
                 for ( ; ; )

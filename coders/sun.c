@@ -675,7 +675,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize SUN raster file header.
     */
-    TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,RGBColorspace);
     sun_info.magic=0x59a66a95;
     sun_info.width=image->columns;
     sun_info.height=image->rows;
@@ -718,14 +718,14 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     /*
       Write SUN header.
     */
-    WriteBlobMSBLong(image,sun_info.magic);
-    WriteBlobMSBLong(image,sun_info.width);
-    WriteBlobMSBLong(image,sun_info.height);
-    WriteBlobMSBLong(image,sun_info.depth);
-    WriteBlobMSBLong(image,sun_info.length);
-    WriteBlobMSBLong(image,sun_info.type);
-    WriteBlobMSBLong(image,sun_info.maptype);
-    WriteBlobMSBLong(image,sun_info.maplength);
+    (void) WriteBlobMSBLong(image,sun_info.magic);
+    (void) WriteBlobMSBLong(image,sun_info.width);
+    (void) WriteBlobMSBLong(image,sun_info.height);
+    (void) WriteBlobMSBLong(image,sun_info.depth);
+    (void) WriteBlobMSBLong(image,sun_info.length);
+    (void) WriteBlobMSBLong(image,sun_info.type);
+    (void) WriteBlobMSBLong(image,sun_info.maptype);
+    (void) WriteBlobMSBLong(image,sun_info.maplength);
     /*
       Convert MIFF to SUN raster pixels.
     */

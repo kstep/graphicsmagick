@@ -435,12 +435,12 @@ RewindBlob(clone_info->blob);
 TemporaryFilename((char *) clone_info->filename);
 
 if( (f=fopen(clone_info->filename,"wb"))==NULL) goto FINISH;
-SeekBlob(image,PS_Offset,SEEK_SET);
+(void) SeekBlob(image,PS_Offset,SEEK_SET);
 while(PS_Size-->0)
     {
-    fputc(ReadBlobByte(image),f);
+    (void) fputc(ReadBlobByte(image),f);
     }
-fclose(f);    
+(void) fclose(f);    
 
 if((clone_info->file=fopen(clone_info->filename,"r"))==NULL) goto FINISH_UNL;
 image2=ReadImage(clone_info,&exception);
@@ -459,7 +459,7 @@ if(image2!=NULL) 	/* Allocate next image structure. */
     }
     
 FINISH_UNL:    
-remove(clone_info->filename);/* */
+(void) remove(clone_info->filename);/* */
 FINISH:
 DestroyImageInfo(clone_info);
 return(image);
@@ -604,7 +604,7 @@ typedef struct {
     case 1:     /*WPG level 1*/
       while(!EOFBlob(image)) /* object parser loop */
        {
-       SeekBlob(image,Header.DataOffset,SEEK_SET);
+       (void) SeekBlob(image,Header.DataOffset,SEEK_SET);
        if(EOFBlob(image)) break;
 
        Rec.RecType=(i=ReadBlobByte(image));
@@ -740,7 +740,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
      while(!EOFBlob(image)) /* object parser loop */
 
        {
-       SeekBlob(image,Header.DataOffset,SEEK_SET);
+       (void) SeekBlob(image,Header.DataOffset,SEEK_SET);
        if(EOFBlob(image)) break;
 
        Rec2.Class=(i=ReadBlobByte(image)); if(i==EOF) break;
@@ -766,7 +766,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 		   image->colormap[i].red=UpScale(ReadBlobByte(image));
 		   image->colormap[i].green=UpScale(ReadBlobByte(image));
 		   image->colormap[i].blue=UpScale(ReadBlobByte(image));
-		   ReadBlobByte(image);   /*Opacity??*/
+		   (void) ReadBlobByte(image);   /*Opacity??*/
 		   }
 	     break;
 	 case 0x0E:
@@ -810,7 +810,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 
 		   for(i=0;i<(int) image->rows;i++)
 		      {
-		      ReadBlob(image,ldblk,(char *)BImgBuff);
+		      (void) ReadBlob(image,ldblk,(char *)BImgBuff);
 		      InsertRow(BImgBuff,i,image);
 		      }
 		   if(BImgBuff) free(BImgBuff);

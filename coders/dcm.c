@@ -2912,7 +2912,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((length == 1) && (quantum == 4))
           datum=ReadBlobLSBLong(image);
         else
-          if ((quantum != 0) && (length > 0))
+          if ((quantum != 0) && (length != 0))
             {
               data=(unsigned char *) AcquireMemory(quantum*(length+1));
               if (data == (unsigned char *) NULL)
@@ -3344,7 +3344,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->storage_class == PseudoClass)
           {
             if (bytes_per_pixel == 2)
-              NormalizeImage(image);
+              (void) NormalizeImage(image);
           }
       }
     if (EOFBlob(image))

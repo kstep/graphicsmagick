@@ -259,7 +259,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     }
     DestroyImage(resize_image);
-    TransformRGBImage(image,YCbCrColorspace);
+    (void) TransformRGBImage(image,YCbCrColorspace);
     if (image_info->interlace == PartitionInterlace)
       (void) strcpy(image->filename,image_info->filename);
     if (EOFBlob(image))
@@ -271,7 +271,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
     count=ReadBlob(image,image->columns,(char *) scanline);
-    if (count > 0)
+    if (count != 0)
       {
         /*
           Allocate next image structure.
@@ -285,7 +285,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=image->next;
         MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
       }
-  } while (count > 0);
+  } while (count != 0);
   LiberateMemory((void **) &scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -429,7 +429,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       Sample image to an even width and height.
     */
     image->depth=8;
-    TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,RGBColorspace);
     width=image->columns+(image->columns & 0x01);
     height=image->rows+(image->rows & 0x01);
     image->orphan=True;
@@ -438,7 +438,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     yuv_image=ZoomImage(image,width,height,&image->exception);
     if (yuv_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
-    RGBTransformImage(yuv_image,YCbCrColorspace);
+    (void) RGBTransformImage(yuv_image,YCbCrColorspace);
     /*
       Initialize Y channel.
     */
@@ -466,7 +466,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     chroma_image=ZoomImage(image,width/2,height/2,&image->exception);
     if (chroma_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
-    RGBTransformImage(chroma_image,YCbCrColorspace);
+    (void) RGBTransformImage(chroma_image,YCbCrColorspace);
     /*
       Initialize U channel.
     */

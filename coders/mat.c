@@ -221,7 +221,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read MATLAB image.
   */
-  ReadBlob(image,sizeof(MATLAB_HDR),&MATLAB_HDR);
+  (void) ReadBlob(image,sizeof(MATLAB_HDR),&MATLAB_HDR);
 
   if (strncmp(MATLAB_HDR.identific,"MATLAB",6))
 MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file",image);
@@ -243,9 +243,9 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file",i
 	}
    else goto MATLAB_KO;
 
-   ReadBlob(image,4,&size);	/*Additional object type*/
+   (void) ReadBlob(image,4,&size);	/*Additional object type*/
    if(size!=2) goto MATLAB_KO;
-   ReadBlob(image,4,&size);	/*data size*/
+   (void) ReadBlob(image,4,&size);	/*data size*/
 
    image->columns=MATLAB_HDR.SizeX;
    image->rows=MATLAB_HDR.SizeY;
@@ -278,7 +278,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 
    for(i=0;i<MATLAB_HDR.SizeY;i++)
 	{
-        ReadBlob(image,ldblk,(char *)BImgBuff);
+        (void) ReadBlob(image,ldblk,(char *)BImgBuff);
         InsertRow(BImgBuff,i,image);
 	}
   rotate=3;
@@ -335,7 +335,7 @@ ModuleExport void RegisterMATImage(void)
   entry->decoder=ReadMATImage;
   entry->description=AllocateString("MATLAB image format");
   entry->module=AllocateString("MAT");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -359,5 +359,5 @@ ModuleExport void RegisterMATImage(void)
 */
 ModuleExport void UnregisterMATImage(void)
 {
-  UnregisterMagickInfo("MAT");
+  (void) UnregisterMagickInfo("MAT");
 }

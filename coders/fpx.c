@@ -787,7 +787,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     Initialize FPX toolkit.
   */
   image->depth=8;
-  TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,RGBColorspace);
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (fpx_status != FPX_OK)

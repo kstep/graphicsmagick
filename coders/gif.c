@@ -1160,8 +1160,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,6,"GIF89a");
   if ((image->page.width != 0) && (image->page.height != 0))
     page=image->page;
-  WriteBlobLSBShort(image,page.width);
-  WriteBlobLSBShort(image,page.height);
+  (void) WriteBlobLSBShort(image,page.width);
+  (void) WriteBlobLSBShort(image,page.height);
   page.x=0;
   page.y=0;
   /*
@@ -1174,7 +1174,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
-    TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,RGBColorspace);
     if (!IsPseudoClass(image))
       {
         /*
@@ -1290,7 +1290,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         if (image->matte)
           c|=0x01;
         (void) WriteBlobByte(image,c);
-        WriteBlobLSBShort(image,(unsigned int) image->delay);
+        (void) WriteBlobLSBShort(image,(unsigned int) image->delay);
         (void) WriteBlobByte(image,(int) opacity);
         (void) WriteBlobByte(image,0x00);
         if (GetImageAttribute(image,"comment") != (ImageAttribute *) NULL)
@@ -1311,7 +1311,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobByte(image,0xfe);
             attribute=GetImageAttribute(image,"comment");
             p=attribute->value;
-            while (strlen(p) > 0)
+            while (strlen(p) != 0)
             {
               count=Min(strlen(p),255);
               (void) WriteBlobByte(image,(int) count);
@@ -1332,7 +1332,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlob(image,11,"NETSCAPE2.0");
             (void) WriteBlobByte(image,0x03);
             (void) WriteBlobByte(image,0x01);
-            WriteBlobLSBShort(image,(unsigned int) image->iterations);
+            (void) WriteBlobLSBShort(image,(unsigned int) image->iterations);
             (void) WriteBlobByte(image,0x00);
           }
       }
@@ -1350,10 +1350,10 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             page.y=0;
           }
       }
-    WriteBlobLSBShort(image,page.x);
-    WriteBlobLSBShort(image,page.y);
-    WriteBlobLSBShort(image,image->columns);
-    WriteBlobLSBShort(image,image->rows);
+    (void) WriteBlobLSBShort(image,page.x);
+    (void) WriteBlobLSBShort(image,page.y);
+    (void) WriteBlobLSBShort(image,image->columns);
+    (void) WriteBlobLSBShort(image,image->rows);
     c=0x00;
     if (interlace != NoInterlace)
       c|=0x40;  /* pixel data is interlaced */

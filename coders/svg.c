@@ -923,13 +923,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"clipPathUnits") == 0)
             {
-              CloneString(&units,value);
+              (void) CloneString(&units,value);
               (void) fprintf(svg_info->file,"clip-units %s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"color") == 0)
             {
-              CloneString(&color,value);
+              (void) CloneString(&color,value);
               break;
             }
           if (LocaleCompare(keyword,"cx") == 0)
@@ -949,7 +949,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"d") == 0)
             {
-              CloneString(&svg_info->vertices,value);
+              (void) CloneString(&svg_info->vertices,value);
               break;
             }
           break;
@@ -1016,7 +1016,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"gradientUnits") == 0)
             {
-              CloneString(&units,value);
+              (void) CloneString(&units,value);
               (void) fprintf(svg_info->file,"gradient-units %s\n",value);
               break;
             }
@@ -1032,7 +1032,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"href") == 0)
             {
-              CloneString(&svg_info->url,value);
+              (void) CloneString(&svg_info->url,value);
               break;
             }
           break;
@@ -1072,12 +1072,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"path") == 0)
             {
-              CloneString(&svg_info->url,value);
+              (void) CloneString(&svg_info->url,value);
               break;
             }
           if (LocaleCompare(keyword,"points") == 0)
             {
-              CloneString(&svg_info->vertices,value);
+              (void) CloneString(&svg_info->vertices,value);
               break;
             }
           break;
@@ -1199,13 +1199,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       }
                      if (LocaleCompare(keyword,"clipPathUnits") == 0)
                        {
-                         CloneString(&units,value);
+                         (void) CloneString(&units,value);
                         (void) fprintf(svg_info->file,"clip-units %s\n",value);
                          break;
                        }
                     if (LocaleCompare(keyword,"color") == 0)
                       {
-                        CloneString(&color,value);
+                        (void) CloneString(&color,value);
                         break;
                       }
                     break;
@@ -1573,7 +1573,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"verts") == 0)
             {
-              CloneString(&svg_info->vertices,value);
+              (void) CloneString(&svg_info->vertices,value);
               break;
             }
           if (LocaleCompare(keyword,"viewBox") == 0)
@@ -1617,7 +1617,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"xlink:href") == 0)
             {
-              CloneString(&svg_info->url,value);
+              (void) CloneString(&svg_info->url,value);
               break;
             }
           if (LocaleCompare(keyword,"x1") == 0)
@@ -1935,7 +1935,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
         }
       if (LocaleCompare((char *) name,"title") == 0)
         {
-          CloneString(&svg_info->title,svg_info->text);
+          (void) CloneString(&svg_info->title,svg_info->text);
           break;
         }
       break;
@@ -2047,7 +2047,7 @@ static void SVGComment(void *context,const xmlChar *value)
   svg_info=(SVGInfo *) context;
   if (svg_info->debug)
     (void) fprintf(stdout,"  SAX.comment(%.1024s)\n",value);
-  CloneString(&svg_info->comment,(char *) value);
+  (void) CloneString(&svg_info->comment,(char *) value);
 }
 
 static void SVGWarning(void *context,const char *format,...)
@@ -2070,7 +2070,7 @@ static void SVGWarning(void *context,const char *format,...)
   if (svg_info->debug)
     {
       (void) fprintf(stdout,"  SAX.warning: ");
-      vfprintf(stdout,format,operands);
+      (void) vfprintf(stdout,format,operands);
     }
   svg_info->exception->severity=DelegateWarning;
 #if !defined(HAVE_VSNPRINTF)
@@ -2078,7 +2078,7 @@ static void SVGWarning(void *context,const char *format,...)
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  CloneString(&svg_info->exception->reason,reason);
+  (void) CloneString(&svg_info->exception->reason,reason);
   va_end(operands);
 }
 
@@ -2110,7 +2110,7 @@ static void SVGError(void *context,const char *format,...)
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  CloneString(&svg_info->exception->reason,reason);
+  (void) CloneString(&svg_info->exception->reason,reason);
   va_end(operands);
 }
 
@@ -2138,7 +2138,7 @@ static void SVGCDataBlock(void *context,const xmlChar *value,int length)
       xmlTextConcat(child,value,length);
       return;
     }
-  xmlAddChild(parser->node,xmlNewCDataBlock(parser->myDoc,value,length));
+  (void) xmlAddChild(parser->node,xmlNewCDataBlock(parser->myDoc,value,length));
 }
 
 static void SVGExternalSubset(void *context,const xmlChar *name,
@@ -2176,7 +2176,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   input=SVGResolveEntity(context,external_id,system_id);
   if (input == NULL)
     return;
-  xmlNewDtd(svg_info->document,name,external_id,system_id);
+  (void) xmlNewDtd(svg_info->document,name,external_id,system_id);
   parser_context=(*parser);
   parser->inputTab=(xmlParserInputPtr *) xmlMalloc(5*sizeof(xmlParserInputPtr));
   if (parser->inputTab == (xmlParserInputPtr *) NULL)
@@ -2192,7 +2192,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   parser->inputMax=5;
   parser->input=NULL;
   xmlPushInput(parser,input);
-  xmlSwitchEncoding(parser,xmlDetectCharEncoding(parser->input->cur,4));
+  (void) xmlSwitchEncoding(parser,xmlDetectCharEncoding(parser->input->cur,4));
   if (input->filename == (char *) NULL)
     input->filename=(char *) xmlStrdup(system_id);
   input->line=1;
@@ -2202,7 +2202,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   input->free=NULL;
   xmlParseExternalSubset(parser,external_id,system_id);
   while (parser->inputNr > 1)
-    xmlPopInput(parser);
+    (void) xmlPopInput(parser);
   xmlFreeInputStream(parser->input);
   xmlFree(parser->inputTab);
   parser->input=parser_context.input;
@@ -2309,12 +2309,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.bounds.width=image->columns;
   svg_info.bounds.height=image->rows;
   if (image_info->size != (char *) NULL)
-    CloneString(&svg_info.size,image_info->size);
+    (void) CloneString(&svg_info.size,image_info->size);
   if (image_info->page != (char *) NULL)
-    CloneString(&svg_info.page,image_info->page);
+    (void) CloneString(&svg_info.page,image_info->page);
   if (svg_info.debug)
     (void) fprintf(stdout,"begin SAX\n");
-  xmlSubstituteEntitiesDefault(1);
+  (void) xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXModules);
   svg_info.parser=xmlCreatePushParserCtxt(SAXHandler,&svg_info,(char *) NULL,0,
     image->filename);
@@ -2345,7 +2345,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       clone_info=CloneImageInfo(image_info);
       RewindBlob(clone_info->blob);
       FormatString(geometry,"%dx%d",svg_info.width,svg_info.height);
-      CloneString(&clone_info->size,geometry);
+      (void) CloneString(&clone_info->size,geometry);
       FormatString(clone_info->filename,"mvg:%.1024s",filename);
       if (clone_info->density != (char *) NULL)
         LiberateMemory((void **) &clone_info->density);
@@ -2413,13 +2413,13 @@ ModuleExport void RegisterSVGImage(void)
   entry->encoder=WriteSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");
   entry->module=AllocateString("SVG");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("XML");
   entry->magick=IsSVG;
   entry->decoder=ReadSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");
   entry->module=AllocateString("SVG");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -2443,8 +2443,8 @@ ModuleExport void RegisterSVGImage(void)
 */
 ModuleExport void UnregisterSVGImage(void)
 {
-  UnregisterMagickInfo("SVG");
-  UnregisterMagickInfo("XML");
+  (void) UnregisterMagickInfo("SVG");
+  (void) UnregisterMagickInfo("XML");
 }
 
 #if defined(HasAUTOTRACE)
@@ -2731,16 +2731,16 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (active)
           (void) WriteBlobString(image,"\">\n");
         active=False;
-        WriteBlobString(image,"<desc>");
+        (void) WriteBlobString(image,"<desc>");
         for (q++; (*q != '\n') && (*q != '\0'); q++)
           switch (*q)
           {
-            case '<': WriteBlobString(image,"&lt;"); break;
-            case '>': WriteBlobString(image,"&gt;"); break;
-            case '&': WriteBlobString(image,"&amp;"); break;
-            default: WriteBlobByte(image,*q); break;
+            case '<': (void) WriteBlobString(image,"&lt;"); break;
+            case '>': (void) WriteBlobString(image,"&gt;"); break;
+            case '&': (void) WriteBlobString(image,"&amp;"); break;
+            default: (void) WriteBlobByte(image,*q); break;
           }
-        WriteBlobString(image,"</desc>\n");
+        (void) WriteBlobString(image,"</desc>\n");
         continue;
       }
     primitive_type=UndefinedPrimitive;
@@ -2782,7 +2782,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             GetToken(q,&q,token);
             FormatString(message,"rotate(%.1024s) ",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("arc",keyword) == 0)
@@ -2811,21 +2811,21 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             GetToken(q,&q,token);
             FormatString(message,"clip-path:url(#%.1024s);",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("clip-rule",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"clip-rule:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("clip-units",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"clipPathUnits=%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("circle",keyword) == 0)
@@ -2848,7 +2848,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             GetToken(q,&q,token);
             FormatString(message,"text-decoration:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         status=False;
@@ -2872,35 +2872,35 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             GetToken(q,&q,token);
             FormatString(message,"fill:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"fill-rule:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"fill-opacity:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"font-family:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("font-size",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"font-size:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         status=False;
@@ -2913,18 +2913,18 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             GetToken(q,&q,token);
             FormatString(message,"gradientUnits=%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("gravity",keyword) == 0)
           {
             GetToken(q,&q,token);
             if (LocaleCompare("NorthWest",token) == 0)
-              WriteBlobString(image,"text-align:left;");
+              (void) WriteBlobString(image,"text-align:left;");
             if (LocaleCompare("NorthEast",token) == 0)
-              WriteBlobString(image,"text-align:right;");
+              (void) WriteBlobString(image,"text-align:right;");
             if (LocaleCompare("North",token) == 0)
-              WriteBlobString(image,"text-align:center;");
+              (void) WriteBlobString(image,"text-align:center;");
             break;
           }
         status=False;
@@ -2971,7 +2971,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             GetToken(q,&q,token);
             FormatString(message,"opacity %.1024s ",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         status=False;
@@ -3080,7 +3080,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             GetToken(q,&q,token);
             FormatString(message,"rotate(%.1024s) ",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         status=False;
@@ -3098,35 +3098,35 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               GetToken(q,&q,token);
             affine.sy=atof(token);
             FormatString(message,"scale(%g,%g) ",affine.sx,affine.sy);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("skewX",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"skewX(%.1024s) ",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("skewY",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"skewY(%.1024s) ",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"stroke:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"stroke-antialias:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-dasharray",keyword) == 0)
@@ -3140,61 +3140,61 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 GetToken(p,&p,token);
                 for (k=0; IsGeometry(token); k++)
                   GetToken(p,&p,token);
-                WriteBlobString(image,"stroke-dasharray:");
+                (void) WriteBlobString(image,"stroke-dasharray:");
                 for (j=0; j < k; j++)
                 {
                   GetToken(q,&q,token);
                   FormatString(message,"%.1024s ",token);
-                  WriteBlobString(image,message);
+                  (void) WriteBlobString(image,message);
                 }
-                WriteBlobString(image,";");
+                (void) WriteBlobString(image,";");
                 break;
               }
             GetToken(q,&q,token);
             FormatString(message,"stroke-dasharray:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"stroke-dashoffset:%.1024;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-linecap",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"stroke-linecap:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"stroke-linejoin:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"stroke-miterlimit:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-opacity",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"stroke-opacity:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"stroke-width:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             continue;
           }
         status=False;
@@ -3212,7 +3212,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             GetToken(q,&q,token);
             FormatString(message,"text-antialias:%.1024s;",token);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("translate",keyword) == 0)
@@ -3224,7 +3224,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               GetToken(q,&q,token);
             affine.ty=atof(token);
             FormatString(message,"translate(%g,%g) ",affine.tx,affine.ty);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
             break;
           }
         status=False;

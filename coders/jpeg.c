@@ -244,7 +244,7 @@ static void InitializeSource(j_decompress_ptr cinfo)
 
 static void JPEGErrorHandler(j_common_ptr jpeg_info)
 {
-  EmitMessage(jpeg_info,0);
+  (void) EmitMessage(jpeg_info,0);
   longjmp(error_recovery,1);
 }
 
@@ -682,7 +682,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->compression=JPEGCompression;
   image->interlace=PlaneInterlace;
 #endif
-  jpeg_start_decompress(&jpeg_info);
+  (void) jpeg_start_decompress(&jpeg_info);
   image->columns=jpeg_info.output_width;
   image->rows=jpeg_info.output_height;
   image->depth=jpeg_info.data_precision <= 8 ? 8 : QuantumDepth;
@@ -960,7 +960,7 @@ static void TerminateDestination(j_compress_ptr cinfo)
     *destination;
 
   destination=(DestinationManager *) cinfo->dest;
-  if ((MaxBufferExtent-destination->manager.free_in_buffer) > 0)
+  if ((MaxBufferExtent-(int) destination->manager.free_in_buffer) > 0)
     {
       unsigned long
         number_bytes;
@@ -1133,14 +1133,14 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       jpeg_info.input_components=4;
       jpeg_info.in_color_space=JCS_CMYK;
       if (image->colorspace != CMYKColorspace)
-        RGBTransformImage(image,CMYKColorspace);
+        (void) RGBTransformImage(image,CMYKColorspace);
       break;
     }
     case YCbCrColorspace:
     {
       jpeg_info.in_color_space=JCS_YCbCr;
       if (image->colorspace != YCbCrColorspace)
-        RGBTransformImage(image,YCbCrColorspace);
+        (void) RGBTransformImage(image,YCbCrColorspace);
       break;
     }
     default:
@@ -1157,7 +1157,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           break;
         }
       if (image->colorspace != RGBColorspace)
-        TransformRGBImage(image,RGBColorspace);
+        (void) TransformRGBImage(image,RGBColorspace);
       break;
     }
   }
@@ -1237,9 +1237,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     for (i=0; i < strlen(attribute->value); i+=65533)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) attribute->value+
         i,(unsigned int) Min(strlen(attribute->value+i),65533));
-  if (image->color_profile.length > 0)
+  if (image->color_profile.length != 0)
     WriteICCProfile(&jpeg_info,image);
-  if (image->iptc_profile.length > 0)
+  if (image->iptc_profile.length != 0)
     WriteIPTCProfile(&jpeg_info,image);
   for (i=0; i < image->generic_profiles; i++)
   {
@@ -1371,10 +1371,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             /*
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
-            *q++=(JSAMPLE) MaxRGB-DownScale(p->red);
-            *q++=(JSAMPLE) MaxRGB-DownScale(p->green);
-            *q++=(JSAMPLE) MaxRGB-DownScale(p->blue);
-            *q++=(JSAMPLE) MaxRGB-DownScale(p->opacity);
+            *q++=(JSAMPLE) (MaxRGB-DownScale(p->red));
+            *q++=(JSAMPLE) (MaxRGB-DownScale(p->green));
+            *q++=(JSAMPLE) (MaxRGB-DownScale(p->blue));
+            *q++=(JSAMPLE) (MaxRGB-DownScale(p->opacity));
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);

@@ -241,7 +241,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   CloseBlob(image);
-  TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,RGBColorspace);
   *url='\0';
   if ((LocaleCompare(image_info->magick,"FTP") == 0) ||
       (LocaleCompare(image_info->magick,"HTTP") == 0))
@@ -356,7 +356,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
             }
       (void) WriteBlobString(image,"</map>\n");
       if (image->montage != (char *) NULL)
-        TransparentImage(image,GetOnePixel(image,0,0),TransparentOpacity);
+        (void) TransparentImage(image,GetOnePixel(image,0,0),TransparentOpacity);
       (void) strcpy(filename,image->filename);
       (void) WriteBlobString(image,"</center>\n");
       (void) WriteBlobString(image,"</body>\n");

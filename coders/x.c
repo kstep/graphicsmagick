@@ -225,7 +225,7 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   /*
     Set our forgiving error handler.
   */
-  XSetErrorHandler(XError);
+  (void) XSetErrorHandler(XError);
   /*
     Get user defaults from X resource database.
   */

@@ -360,7 +360,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           continue;
         }
       count=packet & 0x3f;
-      for (packet=ReadBlobByte(image); count > 0; count--)
+      for (packet=ReadBlobByte(image); count != 0; count--)
       {
         *p++=packet;
         pcx_packets--;
@@ -743,7 +743,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,RGBColorspace);
   page_table=(unsigned long *) NULL;
   if (image_info->adjoin)
     {
@@ -807,12 +807,12 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobByte(image,pcx_info.version);
     (void) WriteBlobByte(image,pcx_info.encoding);
     (void) WriteBlobByte(image,pcx_info.bits_per_pixel);
-    WriteBlobLSBShort(image,(unsigned int) pcx_info.left);
-    WriteBlobLSBShort(image,(unsigned int) pcx_info.top);
-    WriteBlobLSBShort(image,(unsigned int) pcx_info.right);
-    WriteBlobLSBShort(image,(unsigned int) pcx_info.bottom);
-    WriteBlobLSBShort(image,(unsigned int) pcx_info.horizontal_resolution);
-    WriteBlobLSBShort(image,(unsigned int) pcx_info.vertical_resolution);
+    (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.left);
+    (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.top);
+    (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.right);
+    (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.bottom);
+    (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.horizontal_resolution);
+    (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.vertical_resolution);
     /*
       Dump colormap to file.
     */
@@ -833,8 +833,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,3*16,(char *) pcx_colormap);
     (void) WriteBlobByte(image,pcx_info.reserved);
     (void) WriteBlobByte(image,pcx_info.planes);
-    WriteBlobLSBShort(image,(unsigned int) pcx_info.bytes_per_line);
-    WriteBlobLSBShort(image,(unsigned int) pcx_info.palette_info);
+    (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.bytes_per_line);
+    (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.palette_info);
     for (i=0; i < 58; i++)
       (void) WriteBlobByte(image,'\0');
     packets=image->rows*pcx_info.bytes_per_line*pcx_info.planes;

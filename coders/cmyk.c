@@ -397,7 +397,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
     count=ReadBlob(image,packet_size*image->tile_info.width,scanline);
-    if (count > 0)
+    if (count != 0)
       {
         /*
           Allocate next image structure.
@@ -411,7 +411,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         image=image->next;
         MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
       }
-  } while (count > 0);
+  } while (count != 0);
   LiberateMemory((void **) &scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -557,7 +557,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to CMYK raster pixels.
     */
-    TransformRGBImage(image,CMYKColorspace);
+    (void) TransformRGBImage(image,CMYKColorspace);
     if (LocaleCompare(image_info->magick,"CMYKA") == 0)
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);

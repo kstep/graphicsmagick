@@ -532,7 +532,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
       WriteBlobLSBLong(image,attributes.st_size+30);
       (void) fstat(fileno(tiff_file),&attributes);
       WriteBlobLSBLong(image,attributes.st_size);
-      WriteBlobLSBShort(image,0xffff);
+      (void) WriteBlobLSBShort(image,0xffff);
       for (c=fgetc(ps_file); c != EOF; c=fgetc(ps_file))
         (void) WriteBlobByte(image,c);
       for (c=fgetc(tiff_file); c != EOF; c=fgetc(tiff_file))
@@ -542,8 +542,8 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   (void) fclose(ps_file);
   (void) fclose(tiff_file);
   if (LocaleCompare(image_info->magick,"EPS") != 0)
-    remove(ps_filename);
-  remove(tiff_filename);
+    (void) remove(ps_filename);
+  (void) remove(tiff_filename);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   return(True);

@@ -476,7 +476,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     *geometry;
 
                   geometry=PostscriptGeometry(values);
-                  ParseImageGeometry(geometry,&image->page.x,&image->page.y,
+                  (void) ParseImageGeometry(geometry,&image->page.x,&image->page.y,
                     &image->page.width,&image->page.height);
                   LiberateMemory((void **) &geometry);
                   break;
@@ -697,7 +697,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) ReadBlob(image,image->color_profile.length,
         image->color_profile.info);
     }
-  if (image->iptc_profile.length > 0)
+  if (image->iptc_profile.length != 0)
     {
       /*
         IPTC profile.

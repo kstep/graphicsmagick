@@ -784,7 +784,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     /*
       Promote/Demote image based on image type.
     */
-    TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,RGBColorspace);
     if (LocaleCompare(image_info->magick,"PPM") == 0)
       image->storage_class=DirectClass;
     magick=(char *) image_info->magick;

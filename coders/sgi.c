@@ -764,7 +764,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize SGI raster file header.
     */
-    TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,RGBColorspace);
     iris_info.magic=0x01DA;
     if (image_info->compression == NoCompression)
       iris_info.storage=0x00;
@@ -788,15 +788,15 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     /*
       Write SGI header.
     */
-    WriteBlobMSBShort(image,iris_info.magic);
+    (void) WriteBlobMSBShort(image,iris_info.magic);
     (void) WriteBlobByte(image,iris_info.storage);
     (void) WriteBlobByte(image,iris_info.bytes_per_pixel);
-    WriteBlobMSBShort(image,iris_info.dimension);
-    WriteBlobMSBShort(image,iris_info.columns);
-    WriteBlobMSBShort(image,iris_info.rows);
-    WriteBlobMSBShort(image,iris_info.depth);
-    WriteBlobMSBLong(image,iris_info.minimum_value);
-    WriteBlobMSBLong(image,iris_info.maximum_value);
+    (void) WriteBlobMSBShort(image,iris_info.dimension);
+    (void) WriteBlobMSBShort(image,iris_info.columns);
+    (void) WriteBlobMSBShort(image,iris_info.rows);
+    (void) WriteBlobMSBShort(image,iris_info.depth);
+    (void) WriteBlobMSBLong(image,iris_info.minimum_value);
+    (void) WriteBlobMSBLong(image,iris_info.maximum_value);
     (void) WriteBlob(image,sizeof(iris_info.filler),
       (char *) iris_info.filler);
     /*
@@ -898,9 +898,9 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
           Write out line start and length tables and runlength-encoded pixels.
         */
         for (i=0; i < (int) (iris_info.rows*iris_info.depth); i++)
-          WriteBlobMSBLong(image,offsets[i]);
+          (void) WriteBlobMSBLong(image,offsets[i]);
         for (i=0; i < (int) (iris_info.rows*iris_info.depth); i++)
-          WriteBlobMSBLong(image,runlength[i]);
+          (void) WriteBlobMSBLong(image,runlength[i]);
         (void) WriteBlob(image,number_packets,(char *) packets);
         /*
           Free memory.

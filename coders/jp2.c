@@ -510,7 +510,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   /*
     Intialize JPEG 2000 API.
   */
-  TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,RGBColorspace);
   jas_init();
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)

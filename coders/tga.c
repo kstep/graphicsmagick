@@ -619,7 +619,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize TGA raster file header.
     */
-    TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,RGBColorspace);
     targa_info.id_length=0;
     attribute=GetImageAttribute(image,"comment");
     if (attribute != (ImageAttribute *) NULL)
@@ -659,13 +659,13 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobByte(image,targa_info.id_length);
     (void) WriteBlobByte(image,targa_info.colormap_type);
     (void) WriteBlobByte(image,targa_info.image_type);
-    WriteBlobLSBShort(image,targa_info.colormap_index);
-    WriteBlobLSBShort(image,targa_info.colormap_length);
+    (void) WriteBlobLSBShort(image,targa_info.colormap_index);
+    (void) WriteBlobLSBShort(image,targa_info.colormap_length);
     (void) WriteBlobByte(image,targa_info.colormap_size);
-    WriteBlobLSBShort(image,targa_info.x_origin);
-    WriteBlobLSBShort(image,targa_info.y_origin);
-    WriteBlobLSBShort(image,targa_info.width);
-    WriteBlobLSBShort(image,targa_info.height);
+    (void) WriteBlobLSBShort(image,targa_info.x_origin);
+    (void) WriteBlobLSBShort(image,targa_info.y_origin);
+    (void) WriteBlobLSBShort(image,targa_info.width);
+    (void) WriteBlobLSBShort(image,targa_info.height);
     (void) WriteBlobByte(image,targa_info.bits_per_pixel);
     (void) WriteBlobByte(image,targa_info.attributes);
     if (targa_info.id_length != 0)

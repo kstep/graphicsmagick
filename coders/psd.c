@@ -1025,40 +1025,40 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   (void) WriteBlob(image,4,"8BPS");
-  WriteBlobMSBShort(image,1);  /* version */
+  (void) WriteBlobMSBShort(image,1);  /* version */
   (void) WriteBlob(image,6,"      ");  /* reserved */
   if (image->storage_class == PseudoClass)
-    WriteBlobMSBShort(image,image->matte ? 2 : 1);
+    (void) WriteBlobMSBShort(image,image->matte ? 2 : 1);
   else
     if (image->colorspace != CMYKColorspace)
-      WriteBlobMSBShort(image,image->matte ? 4 : 3);
+      (void) WriteBlobMSBShort(image,image->matte ? 4 : 3);
     else
-      WriteBlobMSBShort(image,image->matte ? 5 : 4);
-  WriteBlobMSBLong(image,image->rows);
-  WriteBlobMSBLong(image,image->columns);
-  WriteBlobMSBShort(image,
+      (void) WriteBlobMSBShort(image,image->matte ? 5 : 4);
+  (void) WriteBlobMSBLong(image,image->rows);
+  (void) WriteBlobMSBLong(image,image->columns);
+  (void) WriteBlobMSBShort(image,
     (unsigned int) (image->storage_class == PseudoClass ? 8 : image->depth));
   if (((image_info->colorspace != UndefinedColorspace) ||
        (image->colorspace != CMYKColorspace)) &&
        (image_info->colorspace != CMYKColorspace))
     {
-      TransformRGBImage(image,RGBColorspace);
-      WriteBlobMSBShort(image,image->storage_class == PseudoClass ? 2 : 3);
+      (void) TransformRGBImage(image,RGBColorspace);
+      (void) WriteBlobMSBShort(image,image->storage_class == PseudoClass ? 2 : 3);
     }
   else
     {
       if (image->colorspace != CMYKColorspace)
-        RGBTransformImage(image,CMYKColorspace);
-      WriteBlobMSBShort(image,4);
+        (void) RGBTransformImage(image,CMYKColorspace);
+      (void) WriteBlobMSBShort(image,4);
     }
   if ((image->storage_class == DirectClass) || (image->colors > 256))
-    WriteBlobMSBLong(image,0);
+    (void) WriteBlobMSBLong(image,0);
   else
     {
       /*
         Write PSD raster colormap.
       */
-      WriteBlobMSBLong(image,768);
+      (void) WriteBlobMSBLong(image,768);
       for (i=0; i < (long) image->colors; i++)
         (void) WriteBlobByte(image,DownScale(image->colormap[i].red));
       for ( ; i < 256; i++)
@@ -1072,9 +1072,9 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);
     }
-  WriteBlobMSBLong(image,0);  /* image resource block */
-  WriteBlobMSBLong(image,0);  /* layer and mask block */
-  WriteBlobMSBShort(image,0);  /* compression */
+  (void) WriteBlobMSBLong(image,0);  /* image resource block */
+  (void) WriteBlobMSBLong(image,0);  /* layer and mask block */
+  (void) WriteBlobMSBShort(image,0);  /* compression */
   /*
     Write uncompressed pixel data as separate planes.
   */

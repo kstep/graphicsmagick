@@ -1703,7 +1703,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       GetImageInfo( clone_info );
       sprintf( buff, "%ix%i", (int)cstruct->realwidth, (int)cstruct->realheight );
-      CloneString(&(clone_info->size), buff);
+      (void) CloneString(&(clone_info->size), buff);
       if(image_info->texture == (char*)NULL)
         sprintf(clone_info->filename,"XC:#%02x%02x%02x%02x",
                 image_info->background_color.red,

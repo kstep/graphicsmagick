@@ -343,7 +343,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
   /*
     Determine the length of the IPTC info.
   */
-  while (length > 0)
+  while (length != 0)
   {
     c=(*p++);
     length--;

@@ -360,8 +360,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   (void) fclose(file);
   (void) strcpy(image->filename,image_info->filename);
   tiff_exception=exception;
-  TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
-  TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
+  (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
+  (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
   if (tiff == (TIFF *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
@@ -381,33 +381,33 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   {
     if (image_info->verbose)
       TIFFPrintDirectory(tiff,stderr,False);
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag);
-    TIFFGetField(tiff,TIFFTAG_IMAGEWIDTH,&width);
-    TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&height);
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_PLANARCONFIG,&interlace);
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_MINSAMPLEVALUE,&min_sample_value);
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value);
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag);
+    (void) TIFFGetField(tiff,TIFFTAG_IMAGEWIDTH,&width);
+    (void) TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&height);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PLANARCONFIG,&interlace);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MINSAMPLEVALUE,&min_sample_value);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
     if (photometric == PHOTOMETRIC_SEPARATED)
       image->colorspace=CMYKColorspace;
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
     x_resolution=image->x_resolution;
     y_resolution=image->y_resolution;
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_XRESOLUTION,&x_resolution);
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&y_resolution);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_XRESOLUTION,&x_resolution);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&y_resolution);
     image->x_resolution=x_resolution;
     image->y_resolution=y_resolution;
     chromaticity=(float *) NULL;
-    TIFFGetField(tiff,TIFFTAG_WHITEPOINT,&chromaticity);
+    (void) TIFFGetField(tiff,TIFFTAG_WHITEPOINT,&chromaticity);
     if (chromaticity != (float *) NULL)
       {
         image->chromaticity.white_point.x=chromaticity[0];
         image->chromaticity.white_point.y=chromaticity[1];
       }
     chromaticity=(float *) NULL;
-    TIFFGetField(tiff,TIFFTAG_PRIMARYCHROMATICITIES,&chromaticity);
+    (void) TIFFGetField(tiff,TIFFTAG_PRIMARYCHROMATICITIES,&chromaticity);
     if (chromaticity != (float *) NULL)
       {
         image->chromaticity.red_primary.x=chromaticity[0];
@@ -473,7 +473,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (units == RESUNIT_CENTIMETER)
       image->units=PixelsPerCentimeterResolution;
     value=image->scene;
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages);
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages);
     image->scene=value;
     if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
       (void) SetImageAttribute(image,"artist",text);
@@ -583,7 +583,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               *green_colormap,
               *red_colormap;
 
-            TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,&green_colormap,
+            (void) TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,&green_colormap,
               &blue_colormap);
             range=256L;  /* might be old style 8-bit colormap */
             for (i=0; i < (int) image->colors; i++)
@@ -734,7 +734,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image)
           }
-        TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
+        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
           &sample_info);
         image->matte=extra_samples == 1;
         for (y=0; y < (int) image->rows; y++)
@@ -807,7 +807,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
-        TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
+        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
           &sample_info);
         image->matte=
           ((extra_samples == 1) && (sample_info[0] == EXTRASAMPLE_ASSOCALPHA));
@@ -1030,7 +1030,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
       length=(image->iptc_profile.length+roundup)/4;
       if (TIFFIsByteSwapped(tiff))
         TIFFSwabArrayOfLong((uint32 *) profile,length);
-      TIFFSetField(tiff,type,(uint32) (length+roundup),(void *) profile);
+      (void) TIFFSetField(tiff,type,(uint32) (length+roundup),(void *) profile);
       LiberateMemory((void **) &profile);
       return;
     }
@@ -1051,7 +1051,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
     profile[i+12]=image->iptc_profile.info[i];
   if (roundup)
     profile[length+roundup+11]=0;
-  TIFFSetField(tiff,type,(uint32) length+roundup+12,(void *) profile);
+  (void) TIFFSetField(tiff,type,(uint32) length+roundup+12,(void *) profile);
 #else
   length=image->iptc_profile.length;
   if (length == 0)
@@ -1063,7 +1063,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
   (void) memcpy(profile,image->iptc_profile.info,length);
   if (roundup)
     profile[length+roundup]=0;
-  TIFFSetField(tiff,type,(uint32) length+roundup,(void *) profile);
+  (void) TIFFSetField(tiff,type,(uint32) length+roundup,(void *) profile);
 #endif
   LiberateMemory((void **) &profile);
 }
@@ -1257,10 +1257,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     */
     if (LocaleCompare(image_info->magick,"PTIF") == 0)
       if (image->previous != (Image *) NULL)
-        TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
-    TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
-    TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
-    TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
+        (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
+    (void) TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
+    (void) TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
+    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
     compress_tag=COMPRESSION_NONE;
     switch (image->compression)
     {
@@ -1308,9 +1308,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       {
         photometric=PHOTOMETRIC_SEPARATED;
         if (image->depth > 8)
-          TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
-        TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,4);
-        TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
+          (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
+        (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,4);
+        (void) TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
       }
     else
       if (image->storage_class == DirectClass)
@@ -1318,25 +1318,25 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           /*
             Full color TIFF raster.
           */
-          TransformRGBImage(image,RGBColorspace);
+          (void) TransformRGBImage(image,RGBColorspace);
           photometric=PHOTOMETRIC_RGB;
           if (image->depth > 8)
-            TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
-          TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
+            (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
+          (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
         }
       else
         {
           /*
             Colormapped TIFF raster.
           */
-          TransformRGBImage(image,RGBColorspace);
+          (void) TransformRGBImage(image,RGBColorspace);
           if (image->colors > 256)
-            TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
-          TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
+            (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
+          (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
           photometric=PHOTOMETRIC_PALETTE;
           if (IsMonochromeImage(image))
             {
-              TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);
+              (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);
               photometric=PHOTOMETRIC_MINISWHITE;
               compress_tag=COMPRESSION_CCITTFAX4;
             }
@@ -1344,7 +1344,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             if (IsGrayImage(image))
               {
                 if (image->depth > 8)
-                  TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
+                  (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
                 photometric=PHOTOMETRIC_MINISBLACK;
               }
         }
@@ -1360,9 +1360,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         */
         extra_samples=1;
         sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
-        TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
-        TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel+1);
-        TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,&sample_info);
+        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
+        (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel+1);
+        (void) TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,&sample_info);
       }
     switch (image_info->compression)
     {
@@ -1376,28 +1376,28 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case ZipCompression: compress_tag=COMPRESSION_ADOBE_DEFLATE; break;
       default: break;
     }
-    TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
-    TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
+    (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
+    (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
 #if defined(HOST_BIGENDIAN)
-    TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
+    (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
 #else
-    TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
+    (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
 #endif
-    TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
-    TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
+    (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
+    (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
     if (photometric == PHOTOMETRIC_RGB)
       if ((image_info->interlace == PlaneInterlace) ||
           (image_info->interlace == PartitionInterlace))
-        TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
+        (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
     strip_size=Max(TIFFDefaultStripSize(tiff,-1),1);
     if (compress_tag == COMPRESSION_JPEG)
-      TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size+(8-(strip_size % 8)));
+      (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size+(8-(strip_size % 8)));
     else
       if ((compress_tag == COMPRESSION_CCITTFAX4) ||
           (compress_tag == COMPRESSION_ADOBE_DEFLATE))
-        TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
       else
-        TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
+        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         unsigned short
@@ -1411,9 +1411,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           units=RESUNIT_INCH;
         if (image->units == PixelsPerCentimeterResolution)
           units=RESUNIT_CENTIMETER;
-        TIFFSetField(tiff,TIFFTAG_RESOLUTIONUNIT,(uint16) units);
-        TIFFSetField(tiff,TIFFTAG_XRESOLUTION,image->x_resolution);
-        TIFFSetField(tiff,TIFFTAG_YRESOLUTION,image->y_resolution);
+        (void) TIFFSetField(tiff,TIFFTAG_RESOLUTIONUNIT,(uint16) units);
+        (void) TIFFSetField(tiff,TIFFTAG_XRESOLUTION,image->x_resolution);
+        (void) TIFFSetField(tiff,TIFFTAG_YRESOLUTION,image->y_resolution);
       }
     if (image->chromaticity.white_point.x != 0.0)
       {
@@ -1429,14 +1429,14 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         chromaticity[3]=image->chromaticity.green_primary.y;
         chromaticity[4]=image->chromaticity.blue_primary.x;
         chromaticity[5]=image->chromaticity.blue_primary.y;
-        TIFFSetField(tiff,TIFFTAG_PRIMARYCHROMATICITIES,chromaticity);
+        (void) TIFFSetField(tiff,TIFFTAG_PRIMARYCHROMATICITIES,chromaticity);
         chromaticity[0]=image->chromaticity.white_point.x;
         chromaticity[1]=image->chromaticity.white_point.y;
-        TIFFSetField(tiff,TIFFTAG_WHITEPOINT,chromaticity);
+        (void) TIFFSetField(tiff,TIFFTAG_WHITEPOINT,chromaticity);
       }
 #if defined(ICC_SUPPORT)
     if (image->color_profile.length > 0)
-      TIFFSetField(tiff,TIFFTAG_ICCPROFILE,(uint32) image->color_profile.length,
+      (void) TIFFSetField(tiff,TIFFTAG_ICCPROFILE,(uint32) image->color_profile.length,
         (void *) image->color_profile.info);
 #endif
 #if defined(IPTC_SUPPORT)
@@ -1450,39 +1450,39 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #endif
     if (adjoin && (GetNumberScenes(image) > 1))
       {
-        TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
-        TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short) image->scene,
+        (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
+        (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short) image->scene,
           GetNumberScenes(image));
       }
     attribute=GetImageAttribute(image,"artist");
     if (attribute != (ImageAttribute *) NULL)
-      TIFFSetField(tiff,TIFFTAG_ARTIST,attribute->value);
+      (void) TIFFSetField(tiff,TIFFTAG_ARTIST,attribute->value);
     attribute=GetImageAttribute(image,"timeStamp");
     if (attribute != (ImageAttribute *) NULL)
-      TIFFSetField(tiff,TIFFTAG_DATETIME,attribute->value);
+      (void) TIFFSetField(tiff,TIFFTAG_DATETIME,attribute->value);
     attribute=GetImageAttribute(image,"make");
     if (attribute != (ImageAttribute *) NULL)
-      TIFFSetField(tiff,TIFFTAG_MAKE,attribute->value);
+      (void) TIFFSetField(tiff,TIFFTAG_MAKE,attribute->value);
     attribute=GetImageAttribute(image,"model");
     if (attribute != (ImageAttribute *) NULL)
-      TIFFSetField(tiff,TIFFTAG_MODEL,attribute->value);
-    TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
-    TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
+      (void) TIFFSetField(tiff,TIFFTAG_MODEL,attribute->value);
+    (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
+    (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
     attribute=GetImageAttribute(image,"copyright");
     if (attribute != (ImageAttribute *) NULL)
-      TIFFSetField(tiff,33432,attribute->value);
+      (void) TIFFSetField(tiff,33432,attribute->value);
     attribute=GetImageAttribute(image,"kodak-33423");
     if (attribute != (ImageAttribute *) NULL)
-      TIFFSetField(tiff,33423,attribute->value);
+      (void) TIFFSetField(tiff,33423,attribute->value);
     attribute=GetImageAttribute(image,"kodak-36867");
     if (attribute != (ImageAttribute *) NULL)
-      TIFFSetField(tiff,36867,attribute->value);
+      (void) TIFFSetField(tiff,36867,attribute->value);
     attribute=GetImageAttribute(image,"label");
     if (attribute != (ImageAttribute *) NULL)
-      TIFFSetField(tiff,TIFFTAG_PAGENAME,attribute->value);
+      (void) TIFFSetField(tiff,TIFFTAG_PAGENAME,attribute->value);
     attribute=GetImageAttribute(image,"comment");
     if (attribute != (ImageAttribute *) NULL)
-      TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,attribute->value);
+      (void) TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,attribute->value);
     /*
       Write image scanlines.
     */
@@ -1572,7 +1572,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           CMYK TIFF image.
         */
         if (image->colorspace != CMYKColorspace)
-          RGBTransformImage(image,CMYKColorspace);
+          (void) RGBTransformImage(image,CMYKColorspace);
         for (y=0; y < (int) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
@@ -1625,7 +1625,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           green[i]=0;
           blue[i]=0;
         }
-        TIFFSetField(tiff,TIFFTAG_COLORMAP,red,green,blue);
+        (void) TIFFSetField(tiff,TIFFTAG_COLORMAP,red,green,blue);
         LiberateMemory((void **) &red);
         LiberateMemory((void **) &green);
         LiberateMemory((void **) &blue);
@@ -1711,7 +1711,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     LiberateMemory((void **) &scanline);
     if (image_info->verbose == True)
       TIFFPrintDirectory(tiff,stderr,False);
-    TIFFWriteDirectory(tiff);
+    (void) TIFFWriteDirectory(tiff);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

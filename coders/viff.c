@@ -922,7 +922,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize VIFF image structure.
     */
-    TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,RGBColorspace);
     viff_info.identifier=(char) 0xab;
     viff_info.file_type=1;
     viff_info.release=1;
@@ -1004,29 +1004,29 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     buffer[7]=viff_info.reserve[2];
     (void) WriteBlob(image,8,(char *) buffer);
     (void) WriteBlob(image,512,(char *) viff_info.comment);
-    WriteBlobMSBLong(image,viff_info.rows);
-    WriteBlobMSBLong(image,viff_info.columns);
-    WriteBlobMSBLong(image,viff_info.subrows);
-    WriteBlobMSBLong(image,(unsigned long) viff_info.x_offset);
-    WriteBlobMSBLong(image,(unsigned long) viff_info.y_offset);
+    (void) WriteBlobMSBLong(image,viff_info.rows);
+    (void) WriteBlobMSBLong(image,viff_info.columns);
+    (void) WriteBlobMSBLong(image,viff_info.subrows);
+    (void) WriteBlobMSBLong(image,(unsigned long) viff_info.x_offset);
+    (void) WriteBlobMSBLong(image,(unsigned long) viff_info.y_offset);
     viff_info.x_bits_per_pixel=(63 << 24) | (128 << 16);
-    WriteBlobMSBLong(image,(unsigned long) viff_info.x_bits_per_pixel);
+    (void) WriteBlobMSBLong(image,(unsigned long) viff_info.x_bits_per_pixel);
     viff_info.y_bits_per_pixel=(63 << 24) | (128 << 16);
-    WriteBlobMSBLong(image,(unsigned long) viff_info.y_bits_per_pixel);
-    WriteBlobMSBLong(image,viff_info.location_type);
-    WriteBlobMSBLong(image,viff_info.location_dimension);
-    WriteBlobMSBLong(image,viff_info.number_of_images);
-    WriteBlobMSBLong(image,viff_info.number_data_bands);
-    WriteBlobMSBLong(image,viff_info.data_storage_type);
-    WriteBlobMSBLong(image,viff_info.data_encode_scheme);
-    WriteBlobMSBLong(image,viff_info.map_scheme);
-    WriteBlobMSBLong(image,viff_info.map_storage_type);
-    WriteBlobMSBLong(image,viff_info.map_rows);
-    WriteBlobMSBLong(image,viff_info.map_columns);
-    WriteBlobMSBLong(image,viff_info.map_subrows);
-    WriteBlobMSBLong(image,viff_info.map_enable);
-    WriteBlobMSBLong(image,viff_info.maps_per_cycle);
-    WriteBlobMSBLong(image,viff_info.color_space_model);
+    (void) WriteBlobMSBLong(image,(unsigned long) viff_info.y_bits_per_pixel);
+    (void) WriteBlobMSBLong(image,viff_info.location_type);
+    (void) WriteBlobMSBLong(image,viff_info.location_dimension);
+    (void) WriteBlobMSBLong(image,viff_info.number_of_images);
+    (void) WriteBlobMSBLong(image,viff_info.number_data_bands);
+    (void) WriteBlobMSBLong(image,viff_info.data_storage_type);
+    (void) WriteBlobMSBLong(image,viff_info.data_encode_scheme);
+    (void) WriteBlobMSBLong(image,viff_info.map_scheme);
+    (void) WriteBlobMSBLong(image,viff_info.map_storage_type);
+    (void) WriteBlobMSBLong(image,viff_info.map_rows);
+    (void) WriteBlobMSBLong(image,viff_info.map_columns);
+    (void) WriteBlobMSBLong(image,viff_info.map_subrows);
+    (void) WriteBlobMSBLong(image,viff_info.map_enable);
+    (void) WriteBlobMSBLong(image,viff_info.maps_per_cycle);
+    (void) WriteBlobMSBLong(image,viff_info.color_space_model);
     for (i=0; i < 420; i++)
       (void) WriteBlobByte(image,'\0');
     /*

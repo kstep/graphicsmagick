@@ -322,7 +322,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize raster file header.
     */
-    TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,RGBColorspace);
     dimensions[0]=image->rows;
     dimensions[1]=image->columns;
     dataspace=H5Screate_simple(2,dimensions,NULL);

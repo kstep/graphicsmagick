@@ -612,9 +612,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
         }
         if (LocaleCompare(image_info->magick,"PCDS") == 0)
-          TransformRGBImage(image,sRGBColorspace);
+          (void) TransformRGBImage(image,sRGBColorspace);
         else
-          TransformRGBImage(image,YCCColorspace);
+          (void) TransformRGBImage(image,YCCColorspace);
         if (j < (long) number_images)
           {
             /*
@@ -721,9 +721,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void **) &chroma1);
   LiberateMemory((void **) &luma);
   if (LocaleCompare(image_info->magick,"PCDS") == 0)
-    TransformRGBImage(image,sRGBColorspace);
+    (void) TransformRGBImage(image,sRGBColorspace);
   else
-    TransformRGBImage(image,YCCColorspace);
+    (void) TransformRGBImage(image,YCCColorspace);
   if (EOFBlob(image))
     ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   if ((rotate == 1) || (rotate == 3))
@@ -921,8 +921,8 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       DestroyImage(tile_image);
       tile_image=bordered_image;
     }
-  TransformImage(&tile_image,(char *) NULL,tile_geometry);
-  RGBTransformImage(tile_image,YCCColorspace);
+  (void) TransformImage(&tile_image,(char *) NULL,tile_geometry);
+  (void) RGBTransformImage(tile_image,YCCColorspace);
   downsampled_image=ZoomImage(tile_image,tile_image->columns/2,
     tile_image->rows/2,&image->exception);
   if (downsampled_image == (Image *) NULL)
@@ -997,7 +997,7 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,pcd_image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",pcd_image);
-  TransformRGBImage(pcd_image,RGBColorspace);
+  (void) TransformRGBImage(pcd_image,RGBColorspace);
   /*
     Write PCD image header.
   */

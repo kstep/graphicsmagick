@@ -156,7 +156,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info=CloneImageInfo(image_info);
   RewindBlob(clone_info->blob);
   FormatString(geometry,"800x480");
-  CloneString(&clone_info->size,geometry);
+  (void) CloneString(&clone_info->size,geometry);
   FormatString(clone_info->filename,"mvg:%.1024s",filename);
   image=ReadImage(clone_info,exception);
   if (image != (Image *) NULL)
