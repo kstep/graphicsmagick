@@ -1771,7 +1771,7 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
 #if !defined(TIFFDefaultStripSize)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
 #endif
-static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
+static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
   char
     filename[MaxTextExtent];
@@ -2302,21 +2302,25 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               p=AcquireImagePixels(image,0,y,image->columns,1,
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
               if (!image->matte)
                 (void) PopImagePixels(image,RGBQuantum,scanline);
               else
                 (void) PopImagePixels(image,RGBAQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  {
-                    status=MagickMonitor(SaveImageText,y,image->rows,
-                      &image->exception);
-                    if (status == False)
-                      break;
-                  }
+                  if ((status &= MagickMonitor(SaveImageText,y,image->rows,
+                                               &image->exception))
+                      == MagickFail)
+                    break;
             }
             break;
           }
@@ -2331,36 +2335,57 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               p=AcquireImagePixels(image,0,y,image->columns,1,
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
               (void) PopImagePixels(image,RedQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
             }
-            if (!MagickMonitor(SaveImageText,100,400,&image->exception))
+            if ((status &= MagickMonitor(SaveImageText,100,400,
+                                         &image->exception)) == MagickFail)
               break;
             for (y=0; y < (long) image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
               (void) PopImagePixels(image,GreenQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
             }
-            if (!MagickMonitor(SaveImageText,200,400,&image->exception))
+            if ((status &= MagickMonitor(SaveImageText,200,400,
+                                         &image->exception)) == MagickFail)
               break;
             for (y=0; y < (long) image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
-                &image->exception);
+                                   &image->exception);
               if (p == (const PixelPacket *) NULL)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
               (void) PopImagePixels(image,BlueQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
             }
-            if (!MagickMonitor(SaveImageText,300,400,&image->exception))
+            if ((status &= MagickMonitor(SaveImageText,300,400,
+                                         &image->exception)) == MagickFail)
               break;
             if (image->matte)
               for (y=0; y < (long) image->rows; y++)
@@ -2368,12 +2393,20 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 p=AcquireImagePixels(image,0,y,image->columns,1,
                   &image->exception);
                 if (p == (const PixelPacket *) NULL)
-                  break;
+                  {
+                    status=MagickFail;
+                    break;
+                  }
                 (void) PopImagePixels(image,AlphaQuantum,scanline);
                 if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
-                  break;
+                  {
+                    status=MagickFail;
+                    break;
+
+                  }
               }
-            if (!MagickMonitor(SaveImageText,400,400,&image->exception))
+            if ((status &= MagickMonitor(SaveImageText,400,400,
+                                         &image->exception)) == MagickFail)
               break;
             break;
           }
@@ -2390,16 +2423,23 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           if (!image->matte)
             (void) PopImagePixels(image,CMYKQuantum,scanline);
           else
             (void) PopImagePixels(image,CMYKAQuantum,scanline);
           if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              if ((status &= MagickMonitor(SaveImageText,y,image->rows,
+                                           &image->exception)) == MagickFail)
                 break;
         }
         break;
@@ -2414,9 +2454,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Colormapped TIFF image.
         */
-        blue=MagickAllocateMemory(unsigned short *,65536L*sizeof(unsigned short));
-        green=MagickAllocateMemory(unsigned short *,65536L*sizeof(unsigned short));
-        red=MagickAllocateMemory(unsigned short *,65536L*sizeof(unsigned short));
+        blue=MagickAllocateMemory(unsigned short *,
+                                  65536L*sizeof(unsigned short));
+        green=MagickAllocateMemory(unsigned short *,
+                                   65536L*sizeof(unsigned short));
+        red=MagickAllocateMemory(unsigned short *,
+                                 65536L*sizeof(unsigned short));
         if ((blue == (unsigned short *) NULL) ||
             (green == (unsigned short *) NULL) ||
             (red == (unsigned short *) NULL))
@@ -2460,7 +2503,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             p=AcquireImagePixels(image,0,y,image->columns,1,
                                  &image->exception);
             if (p == (const PixelPacket *) NULL)
-              break;
+              {
+                status=MagickFail;
+                break;
+              }
             BitStreamInitializeWrite(&bit_stream,scanline);
             if (photometric != PHOTOMETRIC_PALETTE)
               {
@@ -2501,15 +2547,15 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   }
               }
             if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-              break;
+              {
+                status=MagickFail;
+                break;
+              }
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                {
-                  status=MagickMonitor(SaveImageText,y,image->rows,
-                                       &image->exception);
-                  if (status == False)
-                    break;
-                }
+                if((status &= MagickMonitor(SaveImageText,y,image->rows,
+                                            &image->exception)) == MagickFail)
+                  break;
           }
         break;
       }
@@ -2517,41 +2563,38 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     MagickFreeMemory(scanline);
     if (image_info->verbose == True)
       TIFFPrintDirectory(tiff,stdout,False);
-    (void) TIFFWriteDirectory(tiff);
+    if(!TIFFWriteDirectory(tiff))
+      status=MagickFail;
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
-      &image->exception);
-    if (status == False)
+    if ((status &= MagickMonitor(SaveImagesText,scene++,
+                                 GetImageListLength(image),
+                                 &image->exception)) == MagickFail)
       break;
   } while (image_info->adjoin);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
-  if (filename_is_temporary)
-#ifdef SLOW_METHOD
+
+  if (status == MagickFail)
     {
-      FILE
-        *file;
+      /*
+        Handle Failure
+      */
+      while (image->previous != (Image *) NULL)
+        image=image->previous;
+      if (filename_is_temporary)
+        LiberateTemporaryFile(filename);
+      CloseBlob(image);
+      return (MagickFail);
+    }
 
-      int
-        c;
-
+  if (filename_is_temporary)
+    {
       /*
         Copy temporary file to image blob.
       */
-      file=fopen(filename,"rb");
-      if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-      for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) WriteBlobByte(image,c);
-      (void) fclose(file);
-      LiberateTemporaryFile(filename);
-      CloseBlob(image);
-    }
-#else
-    {
       int
         file;
 
@@ -2602,7 +2645,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           if (buffer == (unsigned char *) NULL)
             {
               (void) close(file);
-              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+                                   image);
             }
           for (i=0; i < length; i+=count)
           {
@@ -2617,7 +2661,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       (void) LiberateTemporaryFile(filename);
       CloseBlob(image);
     }
-#endif
-  return(True);
+  return(MagickPass);
 }
 #endif
