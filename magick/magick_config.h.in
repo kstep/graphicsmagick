@@ -63,9 +63,6 @@
 /* Define if you have the <lcms/lcms.h> header file. */
 #undef HAVE_LCMS_LCMS_H
 
-/* Define if you have the <libwmf/font.h> header file. */
-#undef HAVE_LIBWMF_FONT_H
-
 /* Define if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 

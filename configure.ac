@@ -1261,9 +1261,6 @@ then
 
       LIB_WMF='-lwmflite'
       LIBS="$LIB_WMF $LIBS"
-
-      # libwmf/font.h is not installed by libwmf 0.2.2
-      AC_CHECK_HEADERS(libwmf/font.h)
       have_wmf='yes'
     else
 

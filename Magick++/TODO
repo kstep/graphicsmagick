@@ -15,9 +15,6 @@ Items large and small which remain to be worked on.
 * Provide a way for the user to tailor how errors of various types are
   reported.
 
-* Come up with a way to allow the user to iterate through a list
-  of the supported image formats.
-
 * Set scene number to 1 (or 0?) in STL unlinkImages.
 
 * Add read/write methods to support user-supplied BLOBs which are
