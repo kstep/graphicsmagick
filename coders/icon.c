@@ -410,36 +410,6 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         ThrowReaderException(CorruptImageWarning,"Not a ICO image file",image)
     }
     SyncImage(image);
-    /*
-      Convert bitmap scanline to pixel packets.
-    */
-    image->storage_class=DirectClass;
-    image->matte=True;
-    for (y=image->rows-1; y >= 0; y--)
-    {
-      q=GetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      for (x=0; x < ((long) image->columns-7); x+=8)
-      {
-        byte=ReadBlobByte(image);
-        for (bit=0; bit < 8; bit++)
-          q[x+bit].opacity=(Quantum) 
-            (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
-      }
-      if ((image->columns % 8) != 0)
-        {
-          byte=ReadBlobByte(image);
-          for (bit=0; bit < (long) (image->columns % 8); bit++)
-            q[x+bit].opacity=(Quantum) 
-              (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
-        }
-      if (!SyncImagePixels(image))
-        break;
-      if (image->previous == (Image *) NULL)
-        if (QuantumTick(y,image->rows))
-          MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
-    }
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
