@@ -445,7 +445,7 @@ static int GetUnicodeCharacter(const unsigned char *text,size_t *length)
   return(c);
 }
 
-static unsigned short *ConvertTextToUnicode(const char *text,int *count)
+static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
 {
   register const char
     *p;
