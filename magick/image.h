@@ -107,39 +107,6 @@ typedef struct _RectangleInfo
     y;
 } RectangleInfo;
 
-typedef struct _AnnotateInfo
-{
-  char
-    *geometry,
-    *text,
-    *font,
-    *density;
-
-  unsigned int
-    antialias;
-
-  GravityType
-    gravity;
-
-  double
-    pointsize,
-    degrees;
-
-  AffineInfo
-    affine;
-
-  PixelPacket
-    fill,
-    stroke,
-    box;
-
-  DecorationType
-    decorate;
-
-  unsigned long
-    signature;
-} AnnotateInfo;
-
 typedef struct _BoundingBox
 {
   double
@@ -269,24 +236,6 @@ typedef struct _MontageInfo
   unsigned long
     signature;
 } MontageInfo;
-
-typedef struct _PrimitiveInfo
-{
-  PointInfo
-    point;
-
-  PrimitiveType
-    primitive;
-
-  unsigned int
-    coordinates;
-
-  PaintMethod
-    method;
-
-  char
-    *text;
-} PrimitiveInfo;
 
 typedef struct _ProfileInfo
 {
@@ -618,6 +567,9 @@ typedef struct _ImageInfo
   int
     (*fifo)(const Image *,const void *,const size_t);
 
+  void
+    *client_data;
+
   unsigned long
     signature;
 } ImageInfo;
@@ -681,9 +633,6 @@ extern MagickExport const ColorlistInfo
 /*
   Image utilities methods.
 */
-extern MagickExport AnnotateInfo
-  *CloneAnnotateInfo(const ImageInfo *,const AnnotateInfo *);
-
 extern MagickExport char 
   *GetImageMagick(const unsigned char *),
   *GetMagickConfigurePath(const char *);
@@ -780,7 +729,6 @@ extern MagickExport RectangleInfo
 extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned int),
   AnimateImages(const ImageInfo *image_info,Image *image),
-  AnnotateImage(Image *,const AnnotateInfo *),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
   ContrastImage(Image *,const unsigned int),
   DispatchImage(Image *,const int,const int,const unsigned int,
@@ -831,14 +779,12 @@ extern MagickExport void
   CompressColormap(Image *),
   CycleColormapImage(Image *,const int),
   DescribeImage(Image *,FILE *,const unsigned int),
-  DestroyAnnotateInfo(AnnotateInfo *),
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),
   (*DestroyImagePixels)(Image *),
   DestroyImages(Image *),
   DestroyMagickInfo(void),
   DestroyMontageInfo(MontageInfo *),
-  GetAnnotateInfo(const ImageInfo *,AnnotateInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(const ImageInfo *,MontageInfo *),
   GetPageInfo(RectangleInfo *),

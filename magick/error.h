@@ -13,8 +13,8 @@ extern "C" {
 */
 #define ThrowBinaryException(code,reason,description) \
 { \
-  assert(image != (Image *) NULL); \
-  ThrowException(&image->exception,code,reason,description); \
+  if (image != (Image *) NULL) \
+    ThrowException(&image->exception,code,reason,description); \
   return(False); \
 }
 #define ThrowImageException(code,reason,description) \

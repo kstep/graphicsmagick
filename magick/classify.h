@@ -64,7 +64,6 @@ typedef enum
   ReplaceMatteCompositeOp,
   BlendCompositeOp,
   DisplaceCompositeOp,
-  AnnotateCompositeOp,
   ModulateCompositeOp,
   ThresholdCompositeOp
 } CompositeOperator;
@@ -116,6 +115,7 @@ typedef enum
   StreamError = 445
 } ExceptionType;
 
+#undef EvenOddRule
 typedef enum
 {
   UndefinedRule,

@@ -498,7 +498,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     Allocate memory for pixels.
   */
   packet_size=image->depth > 8 ? 6 : 3;
-  if (image->matte || (LocaleCompare(image_info->magick,"RGBA") == 0))
+  if (LocaleCompare(image_info->magick,"RGBA") == 0)
     packet_size=image->depth > 8 ? 8 : 4;
   pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
   if (pixels == (unsigned char *) NULL)
@@ -565,7 +565,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,image->columns,pixels);
           (void) PopImagePixels(image,BlueQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
-          if (image->matte)
+          if (LocaleCompare(image_info->magick,"RGBA") == 0)
             {
               (void) PopImagePixels(image,OpacityQuantum,pixels);
               (void) WriteBlob(image,image->columns,pixels);
@@ -627,7 +627,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
           (void) PopImagePixels(image,BlueQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
-        if (image->matte)
+        if (LocaleCompare(image_info->magick,"RGBA") == 0)
           {
             MagickMonitor(SaveImageText,300,400);
             if (image_info->interlace == PartitionInterlace)

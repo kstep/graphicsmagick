@@ -92,6 +92,9 @@
 /* Define if you have FreeType (TrueType font) library */
 #undef HasTTF
 
+/* Define if you have the SFIO mmap-based stdio library emulation */
+#undef HasSFIO
+
 /* Define if you have zlib compression library */
 #undef HasZLIB
 

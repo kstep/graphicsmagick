@@ -40,9 +40,7 @@
 #  include <sys/stat.h>
 #  include <sys/time.h>
 #  include <sys/times.h>
-#if defined(HAVE_CONFIG_H)
 #  include "magick/config.h"
-#endif
 #if defined(HAVE_MMAP)
 #  include <sys/mman.h>
 #endif

@@ -5781,13 +5781,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case HueCommand:
     {
       static char
-        hue_percent[MaxTextExtent] = "0";
+        hue_percent[MaxTextExtent] = "110";
 
       /*
         Query user for percent hue change.
       */
       (void) XDialogWidget(display,windows,"Apply",
-        "Enter percent change in image hue:",hue_percent);
+        "Enter percent change in image hue (0-200):",hue_percent);
       if (*hue_percent == '\0')
         break;
       /*
@@ -5810,13 +5810,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case SaturationCommand:
     {
       static char
-        saturation_percent[MaxTextExtent] = "10";
+        saturation_percent[MaxTextExtent] = "110";
 
       /*
         Query user for percent saturation change.
       */
       (void) XDialogWidget(display,windows,"Apply",
-        "Enter percent change in color saturation:",saturation_percent);
+        "Enter percent change in color saturation (0-200):",saturation_percent);
       if (*saturation_percent == '\0')
         break;
       /*
@@ -5839,13 +5839,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case BrightnessCommand:
     {
       static char
-        brightness_percent[MaxTextExtent] = "0";
+        brightness_percent[MaxTextExtent] = "110";
 
       /*
         Query user for percent brightness change.
       */
       (void) XDialogWidget(display,windows,"Apply",
-        "Enter percent change in color brightness:",brightness_percent);
+        "Enter percent change in color brightness (0-200):",brightness_percent);
       if (*brightness_percent == '\0')
         break;
       /*

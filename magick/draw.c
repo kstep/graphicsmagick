@@ -193,6 +193,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info->tile != (Image *) NULL)
     cloned_info->tile=
       CloneImage(draw_info->tile,0,0,True,&draw_info->tile->exception);
+  if (draw_info->server_name != (char *) NULL)
+    cloned_info->server_name=AllocateString(draw_info->server_name);
   return(cloned_info);
 }
 
@@ -505,6 +507,8 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->primitive);
   if (draw_info->font != (char *) NULL)
     LiberateMemory((void **) &draw_info->font);
+  if (draw_info->density != (char *) NULL)
+    LiberateMemory((void **) &draw_info->density);
   if (draw_info->tile != (Image *) NULL)
     DestroyImage(draw_info->tile);
   if (draw_info->dash_pattern != (unsigned *) NULL)
@@ -832,6 +836,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               value[x]=(*q++);
             value[x]='\0';
             CloneString(&graphic_context[n]->font,value);
+CloneString(&graphic_context[n]->font,"@Generic.ttf");
             break;
           }
         status=True;
@@ -2276,19 +2281,21 @@ static void DestroyPolygonInfo(PolygonInfo *polygon_info)
   LiberateMemory((void **) &polygon_info);
 }
 
-static void DrawBoundingRectangles(Image *image,const PolygonInfo *polygon_info)
+static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
+  const PolygonInfo *polygon_info)
 {
   double
     mid;
 
   DrawInfo
-    *draw_info;
+    *clone_info;
 
   int
     coordinates;
 
   PointInfo
     end,
+    resolution,
     start;
 
   PrimitiveInfo
@@ -2300,9 +2307,20 @@ static void DrawBoundingRectangles(Image *image,const PolygonInfo *polygon_info)
   SegmentInfo
     bounds;
 
-  draw_info=CloneDrawInfo((const ImageInfo *) NULL,(const DrawInfo *) NULL);
-  QueryColorDatabase("none",&draw_info->fill);
-  mid=(image->x_resolution/72.0)*draw_info->linewidth/2.0;
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  QueryColorDatabase("none",&clone_info->fill);
+  resolution.x=72.0;
+  resolution.y=72.0;
+  if (clone_info->density != (char *) NULL)
+    {
+      int
+        count;
+
+      count=sscanf(clone_info->density,"%lfx%lf",&resolution.x,&resolution.y);
+      if (count != 2)
+        resolution.y=resolution.x;
+    }
+  mid=(resolution.x/72.0)*clone_info->linewidth/2.0;
   if (polygon_info != (PolygonInfo *) NULL)
     {
       bounds=polygon_info->edges[0].bounds;
@@ -2332,9 +2350,9 @@ static void DrawBoundingRectangles(Image *image,const PolygonInfo *polygon_info)
       for (i=0; i < polygon_info->number_edges; i++)
       {
         if (polygon_info->edges[i].direction)
-          QueryColorDatabase("red",&draw_info->stroke);
+          QueryColorDatabase("red",&clone_info->stroke);
         else
-          QueryColorDatabase("green",&draw_info->stroke);
+          QueryColorDatabase("green",&clone_info->stroke);
         start.x=floor(polygon_info->edges[i].bounds.x1-mid);
         start.y=floor(polygon_info->edges[i].bounds.y1-mid);
         end.x=ceil(polygon_info->edges[i].bounds.x2+mid);
@@ -2344,10 +2362,10 @@ static void DrawBoundingRectangles(Image *image,const PolygonInfo *polygon_info)
         primitive_info[0].method=ReplaceMethod;
         coordinates=primitive_info[0].coordinates;
         primitive_info[coordinates].primitive=UndefinedPrimitive;
-        DrawPrimitive(draw_info,primitive_info,image);
+        DrawPrimitive(clone_info,primitive_info,image);
       }
     }
-  QueryColorDatabase("blue",&draw_info->stroke);
+  QueryColorDatabase("blue",&clone_info->stroke);
   start.x=floor(bounds.x1-mid);
   start.y=floor(bounds.y1-mid);
   end.x=ceil(bounds.x2+mid);
@@ -2357,8 +2375,8 @@ static void DrawBoundingRectangles(Image *image,const PolygonInfo *polygon_info)
   primitive_info[0].method=ReplaceMethod;
   coordinates=primitive_info[0].coordinates;
   primitive_info[coordinates].primitive=UndefinedPrimitive;
-  DrawPrimitive(draw_info,primitive_info,image);
-  DestroyDrawInfo(draw_info);
+  DrawPrimitive(clone_info,primitive_info,image);
+  DestroyDrawInfo(clone_info);
 }
 
 static void PrintPathInfo(const PathInfo *path_info)
@@ -2652,6 +2670,8 @@ static void DrawPrimitive(const DrawInfo *draw_info,
       clone_info->antialias=draw_info->text_antialias;
       clone_info->pointsize=draw_info->pointsize;
       clone_info->affine=draw_info->affine;
+      if (draw_info->server_name != (char *) NULL)
+        clone_info->server_name=AllocateString(draw_info->server_name);
       annotate=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
       DestroyImageInfo(clone_info);
       annotate->degrees=draw_info->angle;
@@ -2767,7 +2787,7 @@ static void DrawPrimitive(const DrawInfo *draw_info,
       if (draw_info->verbose)
         PrintPolygonInfo(polygon_info);
 #ifdef DEBUG_BOUND_BOXES
-      DrawBoundingRectangles(image,polygon_info);
+      DrawBoundingRectangles(image,draw_info,polygon_info);
 #endif
       DrawPolygonPrimitive(draw_info,primitive_info,polygon_info,image);
       DestroyPolygonInfo(polygon_info);
@@ -2803,33 +2823,40 @@ static void DrawPrimitive(const DrawInfo *draw_info,
 */
 MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 {
+  ImageInfo
+    *clone_info;
+
   /*
     Initialize draw attributes.
   */
-  assert(image_info != (ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
   assert(draw_info != (DrawInfo *) NULL);
   memset(draw_info,0,sizeof(DrawInfo));
-  draw_info->affine=image_info->affine;
+  clone_info=CloneImageInfo(image_info);
+  draw_info->affine=clone_info->affine;
   draw_info->gravity=NorthWestGravity;
-  draw_info->fill=image_info->fill;
+  draw_info->fill=clone_info->fill;
   draw_info->fill_rule=EvenOddRule;
-  draw_info->stroke=image_info->stroke;
-  draw_info->stroke_antialias=image_info->antialias;
+  draw_info->stroke=clone_info->stroke;
+  draw_info->stroke_antialias=clone_info->antialias;
   draw_info->linewidth=1.0;
   draw_info->linecap=ButtCap;
   draw_info->linejoin=MiterJoin;
   draw_info->miterlimit=4;
-  draw_info->dash_pattern=(unsigned int *) NULL;
   draw_info->dash_offset=0;
   draw_info->decorate=NoDecoration;
-  draw_info->font=AllocateString(image_info->font);
-  draw_info->text_antialias=image_info->antialias;
-  draw_info->pointsize=image_info->pointsize;
+  if (clone_info->font != (char *) NULL)
+    draw_info->font=AllocateString(clone_info->font);
+  if (clone_info->density != (char *) NULL)
+    draw_info->density=AllocateString(clone_info->density);
+  draw_info->text_antialias=clone_info->antialias;
+  draw_info->pointsize=clone_info->pointsize;
   (void) QueryColorDatabase("none",&draw_info->box);
-  draw_info->border_color=image_info->border_color;
-  draw_info->verbose=image_info->verbose;
+  draw_info->border_color=clone_info->border_color;
+  draw_info->verbose=clone_info->verbose;
+  if (clone_info->server_name != (char *) NULL)
+    draw_info->server_name=AllocateString(clone_info->server_name);
   draw_info->signature=MagickSignature;
+  DestroyImageInfo(clone_info);
 }
 
 /*

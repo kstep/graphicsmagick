@@ -2006,7 +2006,7 @@ Append(ref,...)
                     SvPV(ST(i),na));
                   return;
                 }
-              continue;
+              break;
             }
           break;
         }
@@ -4461,8 +4461,6 @@ Mogrify(ref,...)
                 /*
                   Translate.
                 */
-                affine.sx=1.0;
-                affine.sy=1.0;
                 k=sscanf(value,"%lf%lf",&affine.tx,&affine.ty);
                 if (k == 1)
                   k=sscanf(value,"%lf,%lf",&affine.tx,&affine.ty);
@@ -4487,6 +4485,8 @@ Mogrify(ref,...)
                 /*
                   Rotate.
                 */
+                if (angle == 0.0)
+                  break;
                 affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
                 affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
                 affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -4498,9 +4498,7 @@ Mogrify(ref,...)
                 /*
                   SkewX.
                 */
-                affine.sx=1.0;
                 affine.ry=tan(DegreesToRadians(fmod(angle,360.0)));
-                affine.sy=1.0;
                 break;
               }
               case 16:
@@ -4508,9 +4506,7 @@ Mogrify(ref,...)
                 /*
                   SkewY.
                 */
-                affine.sx=1.0;
                 affine.rx=tan(DegreesToRadians(fmod(angle,360.0)));
-                affine.sy=1.0;
                 break;
               }
             }
@@ -4518,10 +4514,10 @@ Mogrify(ref,...)
             annotate_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
             annotate_info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
             annotate_info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-            annotate_info->affine.tx=
-              current.sx*affine.tx+current.ry*affine.ty+current.tx;
-            annotate_info->affine.ty=
-              current.rx*affine.tx+current.sy*affine.ty+current.ty;
+            annotate_info->affine.tx=current.sx*affine.tx+current.ry*affine.ty+
+              current.tx;
+            annotate_info->affine.ty=current.rx*affine.tx+current.sy*affine.ty+
+              current.ty;
           }
           if (attribute_flag[17])
             (void) QueryColorDatabase(argument_list[17].string_reference,
@@ -4796,8 +4792,6 @@ Mogrify(ref,...)
                 /*
                   Translate.
                 */
-                affine.sx=1.0;
-                affine.sy=1.0;
                 k=sscanf(value,"%lf%lf",&affine.tx,&affine.ty);
                 if (k == 1)
                   k=sscanf(value,"%lf,%lf",&affine.tx,&affine.ty);
@@ -4835,9 +4829,7 @@ Mogrify(ref,...)
                 /*
                   SkewX.
                 */
-                affine.sx=1.0;
                 affine.ry=tan(DegreesToRadians(fmod(angle,360.0)));
-                affine.sy=1.0;
                 break;
               }
               case 14:
@@ -4845,9 +4837,7 @@ Mogrify(ref,...)
                 /*
                   SkewY.
                 */
-                affine.sx=1.0;
                 affine.rx=tan(DegreesToRadians(fmod(angle,360.0)));
-                affine.sy=1.0;
                 break;
               }
             }
@@ -5430,18 +5420,18 @@ Montage(ref,...)
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),
                 &montage_info->background_color);
-              continue;
+              break;
             }
           if (strEQcase(attribute,"bordercolor"))
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),
                 &montage_info->border_color);
-              continue;
+              break;
             }
           if (strEQcase(attribute,"borderwidth"))
             {
               montage_info->border_width=SvIV(ST(i));
-              continue;
+              break;
             }
         }
         case 'C':
@@ -5455,11 +5445,11 @@ Montage(ref,...)
                 {
                   MagickWarning(OptionWarning,"Invalid composite type",
                     SvPV(ST(i),na));
-                  continue;
+                  break;
                 }
               montage_info->compose=(CompositeOperator) sp;
-              continue;
-             }
+              break;
+            }
           break;
         }
         case 'F':
@@ -5474,32 +5464,31 @@ Montage(ref,...)
               if (!IsGeometry(p))
                 {
                   MagickWarning(OptionWarning,"Invalid geometry on frame",p);
-                  continue;
+                  break;
                 }
               (void) CloneString(&montage_info->frame,p);
               if (*p == '\0')
                 montage_info->frame=(char *) NULL;
-              continue;
+              break;
             }
           if (strEQcase(attribute,"filen"))
             {
               (void) strncpy(montage_info->filename,SvPV(ST(i),na),
                 MaxTextExtent);
-              continue;
+              break;
             }
           if (strEQcase(attribute,"fill"))
             {
               if (info)
                 (void) QueryColorDatabase(SvPV(ST(i),na),
                   &info->image_info->fill);
-              (void) QueryColorDatabase(SvPV(ST(i),na),
-                &montage_info->fill);
-              continue;
+              (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->fill);
+              break;
             }
           if (strEQcase(attribute,"font"))
             {
               (void) CloneString(&montage_info->font,SvPV(ST(i),na));
-              continue;
+              break;
             }
           break;
         }
@@ -5515,12 +5504,12 @@ Montage(ref,...)
               if (!IsGeometry(p))
                 {
                   MagickWarning(OptionWarning,"Invalid geometry on geometry",p);
-                  continue;
+                  break;
                 }
              (void) CloneString(&montage_info->geometry,p);
              if (*p == '\0')
                montage_info->geometry=(char *) NULL;
-             continue;
+             break;
            }
          if (strEQcase(attribute,"gravity"))
            {
@@ -5536,7 +5525,7 @@ Montage(ref,...)
                  return;
                }
              montage_info->gravity=(GravityType) in;
-             continue;
+             break;
            }
          break;
         }
@@ -5547,7 +5536,7 @@ Montage(ref,...)
             {
               for (next=image; next; next=next->next)
                 (void) SetImageAttribute(next,"Label",SvPV(ST(i),na));
-              continue;
+              break;
             }
           break;
         }
@@ -5558,7 +5547,7 @@ Montage(ref,...)
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),
                 &montage_info->matte_color);
-              continue;
+              break;
             }
           if (strEQcase(attribute,"mode"))
             {
@@ -5597,7 +5586,7 @@ Montage(ref,...)
                   concatenate=True;
                 }
               }
-              continue;
+              break;
             }
           break;
         }
@@ -5607,7 +5596,7 @@ Montage(ref,...)
           if (strEQcase(attribute,"point"))
             {
               montage_info->pointsize=SvIV(ST(i));
-              continue;
+              break;
             }
           if (strEQcase(attribute,"pen"))
             {
@@ -5622,7 +5611,7 @@ Montage(ref,...)
                 &montage_info->fill);
               (void) QueryColorDatabase(SvPV(ST(i),na),
                 &montage_info->stroke);
-              continue;
+              break;
             }
           break;
         }
@@ -5637,10 +5626,10 @@ Montage(ref,...)
                 {
                   MagickWarning(OptionWarning,"Invalid shadow type",
                     SvPV(ST(i),na));
-                  continue;
+                  break;
                 }
              montage_info->shadow=sp;
-             continue;
+             break;
             }
           if (strEQcase(attribute,"stroke"))
             {
@@ -5649,7 +5638,7 @@ Montage(ref,...)
                   &info->image_info->stroke);
               (void) QueryColorDatabase(SvPV(ST(i),na),
                 &montage_info->stroke);
-              continue;
+              break;
             }
           break;
         }
@@ -5659,7 +5648,7 @@ Montage(ref,...)
           if (strEQcase(attribute,"texture"))
             {
               (void) CloneString(&montage_info->texture,SvPV(ST(i),na));
-              continue;
+              break;
             }
           if (strEQcase(attribute,"tile"))
             {
@@ -5667,17 +5656,17 @@ Montage(ref,...)
               if (!IsGeometry(p))
                 {
                   MagickWarning(OptionWarning,"Invalid geometry on tile",p);
-                  continue;
+                  break;
                 }
               (void) CloneString(&montage_info->tile,p);
               if (*p == '\0')
                 montage_info->tile=(char *) NULL;
-              continue;
+              break;
             }
           if (strEQcase(attribute,"title"))
             {
               (void) CloneString(&montage_info->title,SvPV(ST(i),na));
-              continue;
+              break;
             }
           if (strEQcase(attribute,"trans"))
             {
@@ -5685,7 +5674,7 @@ Montage(ref,...)
               QueryColorDatabase(SvPV(ST(i),na),&transparent_color);
               for (next=image; next; next=next->next)
                 TransparentImage(next,transparent_color);
-              continue;
+              break;
             }
           break;
         }
@@ -5827,7 +5816,7 @@ Morph(ref,...)
           if (strEQcase(attribute,"frame"))
             {
               number_frames=SvIV(ST(i));
-              continue;
+              break;
             }
           break;
         }
@@ -6094,6 +6083,227 @@ QueryColor(ref,...)
         }
       PUSHs(s);
     }
+    SvREFCNT_dec(error_list);
+    error_list=NULL;
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
+#   Q u e r y F o n t M e t r i c s                                           #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+QueryFontMetrics(ref,...)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    queryfontmetrics = 1
+  PPCODE:
+  {
+    AffineInfo
+      affine,
+      current;
+
+    AnnotateInfo
+      *annotate_info;
+
+    AV
+      *av;
+
+    char
+      *attribute,
+      message[MaxTextExtent];
+
+    double
+      x,
+      y;
+    
+    register int
+      i;
+
+    SegmentInfo
+      bounds;
+
+    struct PackageInfo
+      *info;
+
+    SV
+      *reference,  /* reference is the SV* of ref=SvIV(reference) */
+      *s;
+
+    unsigned int
+      status;
+
+    EXTEND(sp,items-1);
+    error_list=newSVpv("",0);
+    reference=SvRV(ST(0));
+    av=(AV *) reference;
+    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
+    annotate_info=CloneAnnotateInfo(info->image_info,(AnnotateInfo *) NULL);
+    current=annotate_info->affine;
+    affine.sx=1.0;
+    affine.rx=0.0;
+    affine.ry=0.0;
+    affine.sy=1.0;
+    affine.tx=0.0;
+    affine.ty=0.0;
+    bounds.x1=0.0;
+    bounds.y1=0.0;
+    bounds.x2=0.0;
+    bounds.y2=0.0;
+    x=0.0;
+    y=0.0;
+    for (i=1; i < items; i+=2)
+    {
+      attribute=(char *) SvPV(ST(i-1),na);
+      switch (*attribute)
+      {
+        case 'd':
+        case 'D':
+        {
+          if (strEQcase(attribute,"density"))
+            {
+              CloneString(&annotate_info->density,SvPV(ST(i),na));
+              break;
+            }
+          break;
+        }
+        case 'f':
+        case 'F':
+        {
+          if (strEQcase(attribute,"font"))
+            {
+              CloneString(&annotate_info->font,SvPV(ST(i),na));
+              break;
+            }
+          break;
+        }
+        case 'g':
+        case 'G':
+        {
+          if (strEQcase(attribute,"geometry"))
+            {
+              CloneString(&annotate_info->geometry,SvPV(ST(i),na));
+              break;
+            }
+          if (strEQcase(attribute,"gravity"))
+            {
+              annotate_info->gravity=(GravityType)
+                LookupStr(GravityTypes,SvPV(ST(i),na));
+              break;
+            }
+          break;
+        }
+        case 'p':
+        case 'P':
+        {
+          if (strEQcase(attribute,"pointsize"))
+            {
+              (void) sscanf(SvPV(ST(i),na),"%lf",&annotate_info->pointsize);
+              break;
+            }
+          break;
+        }
+        case 'r':
+        case 'R':
+        {
+          if (strEQcase(attribute,"rotate"))
+            {
+              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.rx,affine.ry);
+              break;
+            }
+          break;
+        }
+        case 's':
+        case 'S':
+        {
+          if (strEQcase(attribute,"scale"))
+            {
+              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.sx,affine.sy);
+              break;
+            }
+          if (strEQcase(attribute,"skew"))
+            {
+              double
+                x_angle,
+                y_angle;
+
+              x_angle=0.0;
+              y_angle=0.0;
+              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&x_angle,y_angle);
+              affine.ry=tan(DegreesToRadians(fmod(x_angle,360.0)));
+              affine.rx=tan(DegreesToRadians(fmod(y_angle,360.0)));
+              break;
+            }
+          break;
+        }
+        case 't':
+        case 'T':
+        {
+          if (strEQcase(attribute,"text"))
+            {
+              CloneString(&annotate_info->text,SvPV(ST(i),na));
+              break;
+            }
+          if (strEQcase(attribute,"translate"))
+            {
+              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.tx,affine.ty);
+              break;
+            }
+          break;
+        }
+        case 'x':
+        case 'X':
+        {
+          if (strEQcase(attribute,"x"))
+            {
+              (void) sscanf(SvPV(ST(i),na),"%lf",&x);
+              break;
+            }
+          break;
+        }
+        case 'y':
+        case 'Y':
+        {
+          if (strEQcase(attribute,"y"))
+            {
+              (void) sscanf(SvPV(ST(i),na),"%lf",&y);
+              break;
+            }
+          break;
+        }
+        default:
+          break;
+      }
+    }
+    annotate_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+    annotate_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+    annotate_info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+    annotate_info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+    annotate_info->affine.tx=current.sx*affine.tx+current.ry*affine.ty+
+      current.tx;
+    annotate_info->affine.ty=current.rx*affine.tx+current.sy*affine.ty+
+      current.ty;
+    if (annotate_info->geometry == (char *) NULL)
+      {
+        annotate_info->geometry=AllocateString((char *) NULL);
+        FormatString(annotate_info->geometry,"%f,%f",x,y);
+      }
+    status=GetFontMetrics(annotate_info,&bounds);
+    if (status != False)
+      {
+        FormatString(message,"%g,%g,%g,%g",bounds.x1,bounds.y1,
+          bounds.x2,bounds.y2);
+        s=sv_2mortal(newSVpv(message,0));
+        PUSHs(s);
+      }
+    DestroyAnnotateInfo(annotate_info);
     SvREFCNT_dec(error_list);
     error_list=NULL;
   }
@@ -6453,7 +6663,7 @@ Transform(ref,...)
           if (strEQcase(attribute,"crop"))
             {
               crop_geometry=SvPV(ST(i),na);
-              continue;
+              break;
             }
           break;
         }
@@ -6464,7 +6674,7 @@ Transform(ref,...)
           if (strEQcase(attribute,"geometry"))
             {
               geometry=SvPV(ST(i),na);
-              continue;
+              break;
             }
           break;
         }
