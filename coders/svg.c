@@ -238,7 +238,7 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
   if (LocaleNCompare(token,"em",2) == 0)
     return(svg_info->pointsize*scale*value/svg_info->scale[n]);
   if (LocaleNCompare(token,"ex",2) == 0)
-    return(svg_info->pointsize**scalevalue/svg_info->scale[n]/2.0);
+    return(svg_info->pointsize*scale*value/svg_info->scale[n]/2.0);
   if (LocaleNCompare(token,"in",2) == 0)
     return(72.0*scale*value/svg_info->scale[n]);
   if (LocaleNCompare(token,"mm",2) == 0)
