@@ -196,7 +196,9 @@ extern "C" {
 # endif
 
 # if defined(WIN32)
-#  define ApplicationDefaults  "c:\\ImageMagick\\"
+#  if !defined(ApplicationDefaults)
+#   define ApplicationDefaults  "c:\\ImageMagick\\"
+#  endif
 #  define DirectorySeparator  "\\"
 #  define DirectoryListSeparator  ';'
 #  define EditorOptions ""
