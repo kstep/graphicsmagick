@@ -198,11 +198,11 @@ typedef struct _MontageInfo
   double
     pointsize;
 
-  GravityType
-    gravity;
-
   unsigned long
     border_width;
+
+  GravityType
+    gravity;
 
   unsigned int
     shadow;

@@ -177,11 +177,11 @@ typedef struct _XDrawInfo
   XSegment
     line_info;
 
-  RectangleInfo
-    rectangle_info;
-
   unsigned int
     number_coordinates;
+
+  RectangleInfo
+    rectangle_info;
 
   XPoint
     *coordinate_info;
