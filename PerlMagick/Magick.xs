@@ -5690,7 +5690,7 @@ Montage(ref,...)
                  return;
                }
              for (next=image; next; next=next->next)
-               image->gravity=(GravityType) in;
+               next->gravity=(GravityType) in;
              break;
            }
           break;
