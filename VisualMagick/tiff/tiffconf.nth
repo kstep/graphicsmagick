@@ -77,6 +77,7 @@
 #define	YCBCR_SUPPORT
 #define	CMYK_SUPPORT
 #define JPEG_SUPPORT
+#define ZIP_SUPPORT
 #define	ICC_SUPPORT
 #define PHOTOSHOP_SUPPORT
 #define IPTC_SUPPORT
