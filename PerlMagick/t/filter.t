@@ -48,7 +48,7 @@ testFilter('input.miff', 'Colorize',
 testFilter('input.miff', 'Contrast',
   q/1/,
   'c2156d2134de57d98a03fe8ffdf0a3cd',
-  'e4dc79d4309f1c7cded302a52b57614c');
+  'e4d90d8d2af844650864c4e193acb270');
 
 ++$test;
 testFilter('input.miff', 'Crop',
@@ -59,7 +59,7 @@ testFilter('input.miff', 'Crop',
 testFilter('input.miff', 'Despeckle',
   q/ /,
   '79b2523ae5fb8d6c3219efedfc5c97f2',
-  'a0648ef96fc3a4bb20daf366d96659c6');
+  'f4e6ed6a3dd1696e78fc69a761802f01');
 
 ++$test;
 testFilter('input.miff', 'Edge',
@@ -77,7 +77,7 @@ testFilter('input.miff', 'Emboss',
 testFilter('input.miff', 'Equalize',
   q/ /,
   'e7c25176f93a087008197e82104ab3cb',
-  '658fdb444984fd0505e22649d051d8a9');
+  '4731d138fa4bf61a12911686b3bebf85');
 
 ++$test;
 testFilter('input.miff', 'Flip',
@@ -105,7 +105,7 @@ testFilter('input.miff', 'Gamma',
 testFilter('input.miff', 'Implode',
   q/60/,
   '0b86e917d3e117c0ec879d0a16d4cb3d',
-  'e801a3c7853e0e8430524dd7ce1f00c7');
+  '3199982815d5c078d647fdbe91eda550');
 
 ++$test;
 testFilter('input.miff', 'Layer',
@@ -134,7 +134,7 @@ testFilter('input.miff', 'Minify',
 testFilter('input.miff', 'Modulate',
   q/60/,
   '9f6e4d0ecb962edbc7b845d6864974eb',
-  '50dcb2e4f39f65ae5dd2b0e048845c09');
+  '0d2061b8a5221a7afcf2914107b9a9d9');
 
 ++$test;
 testFilter('input.miff', 'Negate',
