@@ -1237,71 +1237,46 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           case CirclePrimitive:
           case EllipsePrimitive:
           case PathPrimitive:
-          case PolylinePrimitive:
+/*          case PolylinePrimitive:*/
           case PolygonPrimitive:
           case RectanglePrimitive:
           case RoundRectanglePrimitive:
           {
-            opacity=MaxRGB-MaxRGB*
-              IntersectPrimitive(primitive_info,clone_info,&target,True,image);
             color=clone_info->fill;
             if (clone_info->tile != (Image *) NULL)
               color=GetOnePixel(clone_info->tile,x % clone_info->tile->columns,
                 y % clone_info->tile->rows);
-            color.opacity*=clone_info->opacity/100.0;
-            if ((opacity == TransparentOpacity) ||
-                (color.opacity == TransparentOpacity))
+            opacity=0.01*(MaxRGB-color.opacity)*clone_info->opacity*
+              IntersectPrimitive(primitive_info,clone_info,&target,True,image);
+            opacity=MaxRGB-opacity;
+            if ((int) opacity == TransparentOpacity)
               break;
             if (!clone_info->antialias)
-              opacity=OpaqueOpacity;
-            if (clone_info->opacity == 100.0)
-              {
-                q->red=alpha*(color.red*(MaxRGB-opacity)+q->red*opacity);
-                q->green=alpha*(color.green*(MaxRGB-opacity)+q->green*opacity);
-                q->blue=alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity);
-                break;
-              }
-            q->red=alpha*(color.red*(MaxRGB-color.opacity)+
-              q->red*color.opacity);
-            q->green=alpha*(color.green*(MaxRGB-color.opacity)+
-              q->green*color.opacity);
-            q->blue=alpha*(color.blue*(MaxRGB-color.opacity)+
-              q->blue*color.opacity);
-            q->opacity=alpha*(color.opacity*(MaxRGB-color.opacity)+
-              q->opacity*color.opacity);
+              opacity=OpaqueOpacity*clone_info->opacity/100.0;
+            q->red=alpha*(color.red*(MaxRGB-opacity)+q->red*opacity);
+            q->green=alpha*(color.green*(MaxRGB-opacity)+q->green*opacity);
+            q->blue=alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity);
+            q->opacity=alpha*(opacity*(MaxRGB-opacity)+q->opacity*opacity);
             break;
           }
           default:
             break;
         }
-        opacity=MaxRGB-MaxRGB*
-          IntersectPrimitive(primitive_info,clone_info,&target,False,image);
         color=clone_info->stroke;
-        color.opacity*=clone_info->opacity/100.0;
-        if ((opacity == TransparentOpacity) ||
-            (color.opacity == TransparentOpacity))
+        opacity=0.01*(MaxRGB-color.opacity)*clone_info->opacity*
+          IntersectPrimitive(primitive_info,clone_info,&target,False,image);
+        opacity=MaxRGB-opacity;
+        if ((int) opacity == TransparentOpacity)
           {
             q++;
             continue;
           }
         if (!clone_info->antialias)
-          opacity=OpaqueOpacity;
-        if (clone_info->opacity == 100.0)
-          {
-            q->red=alpha*(color.red*(MaxRGB-opacity)+q->red*opacity);
-            q->green=alpha*(color.green*(MaxRGB-opacity)+q->green*opacity);
-            q->blue=alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity);
-            q++;
-            continue;
-          }
-        q->red=alpha*(color.red*(MaxRGB-color.opacity)+
-          q->red*color.opacity);
-        q->green=alpha*(color.green*(MaxRGB-color.opacity)+
-          q->green*color.opacity);
-        q->blue=alpha*(color.blue*(MaxRGB-color.opacity)+
-          q->blue*color.opacity);
-        q->opacity=alpha*(color.opacity*(MaxRGB-color.opacity)+
-          q->opacity*color.opacity);
+          opacity=OpaqueOpacity*clone_info->opacity/100.0;
+        q->red=alpha*(color.red*(MaxRGB-opacity)+q->red*opacity);
+        q->green=alpha*(color.green*(MaxRGB-opacity)+q->green*opacity);
+        q->blue=alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity);
+        q->opacity=alpha*(opacity*(MaxRGB-opacity)+q->opacity*opacity);
         q++;
       }
       if (!SyncImagePixels(image))
@@ -2196,7 +2171,8 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
       case RoundRectanglePrimitive:
       {
         double
-          minimum_distance;
+          minimum_distance,
+	  poly_opacity;
 
         int
           crossing,
@@ -2204,9 +2180,6 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
 
         PrimitiveInfo
           *primitive_info;
-
-        unsigned int
-          poly_opacity;
 
         if (!fill)
           {
