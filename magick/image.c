@@ -754,7 +754,7 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->storage_class != DirectClass)
+  if (image->storage_class == PseudoClass)
     {
       SyncImage(image);
       image->storage_class=DirectClass;
@@ -6399,9 +6399,9 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   /*
     Check module IsImage() methods.
   */
-  p=(char *) GetImageMagick(magick,2*MaxTextExtent);
-  if (p != (char *) NULL)
-    (void) strncpy(image_info->magick,p,MaxTextExtent-1);
+/*   p=(char *) GetImageMagick(magick,2*MaxTextExtent); */
+/*   if (p != (char *) NULL) */
+/*     (void) strncpy(image_info->magick,p,MaxTextExtent-1); */
   return(True);
 }
 

@@ -1,3 +1,9 @@
+2002-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/image.c: Disabled SetImageInfo() code which uses
+	GetImageMagick() to test file magic via Is* methods so that
+	we can learn if eliminating use of these tests causes any ill
+	effects.
+
 2002-12-09 William Radcliffe <billr@corbis.com>
 	* Moved xtrn.c from contrib area into coders area so that it can
 	be used form within the COM object. This is windows only code that
