@@ -401,7 +401,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
         node_info=cube_info->root;
         for (index=MaxTreeDepth-1; (long) index > 0; index--)
         {
-          id=(unsigned int)
+          id=(unsigned long)
             (((ScaleQuantumToChar(q->red) >> index) & 0x01) << 2 |
              ((ScaleQuantumToChar(q->green) >> index) & 0x01) << 1 |
              ((ScaleQuantumToChar(q->blue) >> index) & 0x01));
@@ -417,7 +417,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
         cube_info->color.blue=q->blue;
         cube_info->distance=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
         ClosestColor(image,cube_info,node_info->parent);
-        index=(unsigned int) cube_info->color_number;
+        index=(IndexPacket) cube_info->color_number;
         for (i=0; i < count; i++)
         {
           if (image->storage_class == PseudoClass)
@@ -590,7 +590,7 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
       for (level=1; level <= cube_info->depth; level++)
       {
         bisect*=0.5;
-        id=(unsigned int)
+        id=(unsigned long)
           (((ScaleQuantumToChar(p->red) >> index) & 0x01) << 2 |
            ((ScaleQuantumToChar(p->green) >> index) & 0x01) << 1 |
            ((ScaleQuantumToChar(p->blue) >> index) & 0x01));
@@ -717,7 +717,7 @@ MagickExport QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
 static void ClosestColor(Image *image,CubeInfo *cube_info,
   const NodeInfo *node_info)
 {
-  register unsigned int
+  register unsigned long
     id;
 
   /*
@@ -831,7 +831,7 @@ MagickExport void CompressImageColormap(Image *image)
 */
 static void DefineImageColormap(Image *image,NodeInfo *node_info)
 {
-  register unsigned int
+  register unsigned long
     id;
 
   /*
@@ -1024,7 +1024,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           register NodeInfo
             *node_info;
 
-          register unsigned int
+          register unsigned long
             id;
 
           /*
@@ -1033,7 +1033,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           node_info=p->root;
           for (index=MaxTreeDepth-1; (long) index > 0; index--)
           {
-            id=(unsigned int)
+            id=(unsigned long)
               (((ScaleQuantumToChar(pixel.red) >> index) & 0x01) << 2 |
                ((ScaleQuantumToChar(pixel.green) >> index) & 0x01) << 1 |
                ((ScaleQuantumToChar(pixel.blue) >> index) & 0x01));
@@ -2208,7 +2208,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
 */
 static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
 {
-  register unsigned int
+  register unsigned long
     id;
 
   /*
