@@ -78,7 +78,8 @@ static unsigned int
 %
 %  The format of the ReadGRAYImage method is:
 %
-%      Image *ReadGRAYImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadGRAYImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -92,7 +93,8 @@ static unsigned int
 %
 %
 */
-static Image *ReadGRAYImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadGRAYImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;

@@ -71,7 +71,8 @@
 %
 %  The format of the ReadPlasmaImage method is:
 %
-%      Image *ReadPlasmaImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadPlasmaImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -85,7 +86,8 @@
 %
 %
 */
-static Image *ReadPlasmaImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadPlasmaImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
 #define PlasmaImageText  "  Applying image plasma...  "
 #define PlasmaPixel(x,y) \

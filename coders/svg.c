@@ -339,9 +339,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   double
     unit;
 
-  DrawInfo
-    *draw_info;
-
   ElementInfo
     element;
 
@@ -353,6 +350,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   Image
     *image;
+
+  ImageInfo
+    *clone_info;
 
   int
     c,
@@ -385,15 +385,11 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  image->columns=1;
-  image->rows=1;
-  SetImage(image,Opaque);
   /*
     Open draw file.
   */
-  (void) strcpy(filename,"@");
-  TemporaryFilename(filename+1);
-  file=fopen(filename+1,"w");
+  TemporaryFilename(filename);
+  file=fopen(filename,"w");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
@@ -758,18 +754,18 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   FreeMemory((void **) &keyword);
   (void) fclose(file);
   CloseBlob(image);
+  DestroyImage(image);
   /*
     Draw image.
   */
-  FormatString(geometry,"%ux%u!",width,height);
-  TransformImage(&image,(char *) NULL,geometry);
-  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  (void) CloneString(&draw_info->primitive,filename);
-  status=DrawImage(image,draw_info);
-  (void) remove(filename+1);
-  if (status == False)
-    ThrowReaderException(CorruptImageWarning,"Unable to read SVG image",image);
-  DestroyDrawInfo(draw_info);
+  clone_info=CloneImageInfo(image_info);
+  FormatString(geometry,"%ux%u",width,height);
+  CloneString(&clone_info->size,geometry);
+  FormatString(clone_info->filename,"mvg:%.1024s",filename);
+  image=ReadImage(clone_info,exception);
+  (void) remove(filename);
+  DestroyImageInfo(clone_info);
+  (void) strcpy(image->filename,image_info->filename);
   return(image);
 }
 
