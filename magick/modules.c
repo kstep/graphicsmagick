@@ -491,7 +491,9 @@ Export char **ListModules(void)
     *q;
 
   int
-    i;
+    i,
+    newentry,
+    path_index;
 #else
   char
     **module_list,
@@ -511,68 +513,85 @@ Export char **ListModules(void)
 #endif
     max_entries;
 
-  max_entries=256;
+  max_entries=255;
   entry_index=0;
-
-#if defined(_VISUALC_)
-  directory=opendir(ModuleSearchSpec);
-#else
-  directory=opendir(CoderModuleDirectory);
-#endif
-  if(directory == (DIR *) NULL)
-    return((char **) NULL);
 
   module_list=(char **) AllocateMemory((max_entries+1)*sizeof(char *));
   if(module_list == (char **)NULL)
     return((char **) NULL);
 
-  module_list[0]=(char*)NULL;
+  module_list[entry_index]=(char*)NULL;
 
-  entry=readdir(directory);
-  while (entry != (struct dirent *) NULL)
+  for( path_index=0; module_path[path_index]; ++path_index)
     {
-#if defined(HasLTDL)
-      name_length=Extent(entry->d_name);
-      p = (entry->d_name + name_length - 3);
-      if ( name_length < 4 ||
-           *p++ != '.' ||
-           *p++ != 'l' ||
-           *p != 'a' )
-        {
-          entry=readdir(directory);
-          continue;
-        }
-#endif
-      if(entry_index >= max_entries)
-        {
-          max_entries<<=1;
-          module_list_tmp=(char **)
-            ReallocateMemory((char **)module_list,max_entries*sizeof(char *));
-          if (module_list_tmp == (char **) NULL)
-            break;
-          module_list=module_list_tmp;
-        }
-#if !defined(_VISUALC_)
-      module_list[entry_index]=(char *)AllocateMemory(name_length);
-      if(module_list[entry_index] == (char *) NULL)
-        break;
-      p=module_list[entry_index];
-      q=entry->d_name;
-      for( i=name_length-3; i != 0; --i)
-        *p++=toupper((int)*q++);
-      *p=0;
+#if defined(_VISUALC_)
+      directory=opendir(ModuleSearchSpec);
 #else
-      module_list[entry_index]=AllocateString(entry->d_name);
+      directory=opendir(module_path[path_index]);
 #endif
-      ++entry_index;
-      module_list[entry_index]=(char*)NULL;
+      if(directory == (DIR *) NULL)
+        continue;
+
       entry=readdir(directory);
+      while (entry != (struct dirent *) NULL)
+        {
+#if defined(HasLTDL)
+          name_length=Extent(entry->d_name);
+          p = (entry->d_name + name_length - 3);
+          if ( name_length < 4 ||
+               *p++ != '.' ||
+               *p++ != 'l' ||
+               *p != 'a' )
+            {
+              entry=readdir(directory);
+              continue;
+            }
+#endif
+          if(entry_index >= max_entries)
+            {
+              max_entries<<=1;
+              module_list_tmp=(char **)
+                ReallocateMemory((char **)module_list,max_entries*sizeof(char *));
+              if (module_list_tmp == (char **) NULL)
+                break;
+              module_list=module_list_tmp;
+            }
+          /* Only add new module name to list */
+          newentry=True;
+          for( i=0; module_list[i]; ++i)
+            {
+              if (LocaleCompare(entry->d_name,module_list[i]) == 0)
+                {
+                  newentry=False;
+                  break;
+                }
+            }
+          if (newentry==True)
+            {
+#if !defined(_VISUALC_)
+              module_list[entry_index]=(char *)AllocateMemory(name_length);
+              if(module_list[entry_index] == (char *) NULL)
+                break;
+              p=module_list[entry_index];
+              q=entry->d_name;
+              for( i=name_length-3; i != 0; --i)
+                *p++=toupper((int)*q++);
+              *p=0;
+#else
+              module_list[entry_index]=AllocateString(entry->d_name);
+#endif
+              ++entry_index;
+              module_list[entry_index]=(char*)NULL;
+            }
+          entry=readdir(directory);
+        }
+      (void) closedir(directory);
     }
-  (void) closedir(directory);
 
   return module_list;
 }
 
+#if defined(_VISUALC_)
 #define IsTagSeparator(c)  ((c) == '_')
 static void AddModuleTag(const char *filename, char *module)
 {
@@ -612,6 +631,7 @@ static void AddModuleTag(const char *filename, char *module)
   }
   FreeMemory((void **) &basename);
 }
+#endif /* defined(_VISUALC_) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
