@@ -11886,9 +11886,6 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   CommandType
     command_type;
 
-  ErrorHandler
-    warning_handler;
-
   Image
     *displayed_image,
     *loaded_image;
@@ -11930,6 +11927,9 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
 
   unsigned int
     context_mask;
+
+  WarningHandler
+    warning_handler;
 
   Window
     root_window;
@@ -11973,14 +11973,14 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   displayed_image=(*image);
   TransformRGBImage(displayed_image,RGBColorspace);
   monitor_handler=(MonitorHandler) NULL;
-  warning_handler=(ErrorHandler) NULL;
+  warning_handler=(WarningHandler) NULL;
   windows=XSetWindows((XWindows *) ~0);
   if (windows != (XWindows *) NULL)
     {
       (void) chdir(working_directory);
       monitor_handler=SetMonitorHandler(XProgressMonitor);
       warning_handler=resource_info->display_warnings ?
-        SetWarningHandler(XWarning) : SetWarningHandler((ErrorHandler) NULL);
+        SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
       (void) signal(SIGINT,XSignalHandler);
       (void) signal(SIGSEGV,XSignalHandler);
     }
@@ -12477,9 +12477,9 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   if (monitor_handler == (MonitorHandler) NULL)
     monitor_handler=SetMonitorHandler(XProgressMonitor);
-  if (warning_handler == (ErrorHandler) NULL)
+  if (warning_handler == (WarningHandler) NULL)
     warning_handler=resource_info->display_warnings ?
-      SetWarningHandler(XWarning) : SetWarningHandler((ErrorHandler) NULL);
+      SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
   (void) signal(SIGINT,XSignalHandler);
   (void) signal(SIGSEGV,XSignalHandler);
   /*
