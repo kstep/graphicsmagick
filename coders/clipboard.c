@@ -195,10 +195,10 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
               break;
             for (x=0; x < (long) image->columns; x++)
               {
-                q->red=ScaleCharToQuantum(pBits->rgbRed);
-                q->green=ScaleCharToQuantum(pBits->rgbGreen);
-                q->blue=ScaleCharToQuantum(pBits->rgbBlue);
-                q->opacity=OpaqueOpacity;
+                q->red		= ScaleCharToQuantum(pBits->rgbRed);
+                q->green	= ScaleCharToQuantum(pBits->rgbGreen);
+                q->blue		= ScaleCharToQuantum(pBits->rgbBlue);
+                q->opacity	= OpaqueOpacity;
                 pBits++;
                 q++;
               }
@@ -255,67 +255,16 @@ static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image
   assert(image->signature == MagickSignature);
 
   {
-    unsigned long 
-      nPixels,
-      nPixelCount;
-
-    long
-      memSize;
-
-    const PixelPacket
-      *pPixels;
-
-    BITMAP
-      bitmap;
-
     HBITMAP
       bitmapH;
-
-    HANDLE
-      theBitsH;
 
     OpenClipboard( NULL );
     EmptyClipboard();
 
-    nPixels = image->columns * image->rows;
+	bitmapH = ImageToHBITMAP(image);
+	SetClipboardData(CF_BITMAP, bitmapH);
 
-    bitmap.bmType = 0;
-    bitmap.bmWidth = image->columns;
-    bitmap.bmHeight = image->rows;
-    bitmap.bmWidthBytes = bitmap.bmWidth * 4;
-    bitmap.bmPlanes = 1;
-    bitmap.bmBitsPixel = 32;
-    bitmap.bmBits = NULL;
-
-    memSize = nPixels * bitmap.bmBitsPixel;
-    theBitsH = (HANDLE) GlobalAlloc (GMEM_MOVEABLE | GMEM_DDESHARE, memSize);
-    if (theBitsH == NULL)
-      return( False );  /* DoDisplayError( "OnEditCopy", GetLastError() ); */
-    else {
-      RGBQUAD * theBits = (RGBQUAD *) GlobalLock((HGLOBAL) theBitsH);
-      RGBQUAD *pDestPixel = theBits;
-      if ( bitmap.bmBits == NULL )
-        bitmap.bmBits = theBits;
-
-      pPixels = AcquireImagePixels(image,0,0,image->columns,image->rows,&image->exception);
-      for( nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
-        {
-          pDestPixel->rgbRed      = ScaleQuantumToChar(pPixels->red);
-          pDestPixel->rgbGreen    = ScaleQuantumToChar(pPixels->green);
-          pDestPixel->rgbBlue      = ScaleQuantumToChar(pPixels->blue);
-          pDestPixel->rgbReserved = 0;
-          ++pDestPixel;
-          ++pPixels;
-        }
-
-      bitmap.bmBits = theBits;
-      bitmapH = CreateBitmapIndirect( &bitmap );
-
-      GlobalUnlock((HGLOBAL) theBitsH);
-
-      SetClipboardData(CF_BITMAP, bitmapH);
-      CloseClipboard();
-    }
+	CloseClipboard();
 
     return(True);
   }
