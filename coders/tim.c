@@ -193,11 +193,11 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         width=ReadBlobLSBShort(image);
         height=ReadBlobLSBShort(image);
         if (!AllocateImageColormap(image,pixel_mode == 1 ? 256 : 16))
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
             image);
         tim_colormap=(unsigned char *) AcquireMemory(image->colors*2);
         if (tim_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
             image);
         (void) ReadBlob(image,2*image->colors,(char *) tim_colormap);
         p=tim_colormap;

@@ -1351,8 +1351,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
 
       text=TranslateText(image_info,image,format);
       if (text == (char *) NULL)
-        ThrowCompositeException(ResourceLimitError,
-          "Unable to format image metadata","Memory allocation failed");
+        ThrowCompositeException(ResourceLimitError,"MemoryAllocationFailed",
+          "Unable to format image metadata");
       (void) ConcatenateString(&(*metadata),text);
       (void) ConcatenateString(&(*metadata),"\n");
     }
@@ -3197,8 +3197,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 
       text=TranslateText(image_info,image_list,format);
       if (text == (char *) NULL)
-        ThrowConvertException(ResourceLimitError,
-          "Unable to format image metadata","Memory allocation failed");
+        ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
+          "Unable to format image metadata");
       (void) ConcatenateString(&(*metadata),text);
       (void) ConcatenateString(&(*metadata),"\n");
     }
@@ -3343,7 +3343,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               text=TranslateText(image_info,p,format);
               if (text == (char *) NULL)
                 ThrowIdentifyException(ResourceLimitError,
-                  "Unable to format image metadata","Memory allocation failed");
+                  "MemoryAllocationFailed","Unable to format image metadata");
               (void) ConcatenateString(&(*metadata),text);
               (void) ConcatenateString(&(*metadata),"\n");
             }
@@ -6478,8 +6478,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
 
       text=TranslateText(image_info,montage_image,format);
       if (text == (char *) NULL)
-        ThrowMontageException(ResourceLimitError,
-          "Unable to format image metadata","Memory allocation failed");
+        ThrowMontageException(ResourceLimitError,"MemoryAllocationFailed",
+          "Unable to format image metadata");
       (void) ConcatenateString(&(*metadata),text);
       (void) ConcatenateString(&(*metadata),"\n");
     }

@@ -320,7 +320,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
             image);
         if (format == '7')
           {
@@ -350,7 +350,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         scale=(unsigned long *)
           AcquireMemory((max_value+1)*sizeof(unsigned long));
         if (scale == (unsigned long *) NULL)
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
             image);
         for (i=0; i <= (long) max_value; i++)
           scale[i]=(unsigned long) (((double) MaxRGB*i)/max_value);
@@ -1127,7 +1127,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         packets=image->depth <= 8 ? 3 : 6;
         pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
             image);
         /*
           Convert image to a PNM image.

@@ -769,8 +769,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   if (histogram == (unsigned long *) NULL)
     {
       DestroyImage(paint_image);
-      ThrowImageException(ResourceLimitError,"Unable to oil paint",
-        "Memory allocation failed")
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+        "Unable to oil paint");
     }
   /*
     Paint each row of the image.
@@ -1337,8 +1337,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   if (sine_map == (double *) NULL)
     {
       DestroyImage(wave_image);
-      ThrowImageException(ResourceLimitError,"Unable to wave image",
-        "Memory allocation failed")
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+        "Unable to wave image");
     }
   for (x=0; x < (long) wave_image->columns; x++)
     sine_map[x]=fabs(amplitude)+amplitude*sin((2*MagickPI*x)/wave_length);

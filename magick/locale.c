@@ -225,15 +225,33 @@ const char *GetLocaleMessage(const char *tag)
             default:
               return tag;
 
+            case 'c':  case 'C':
+              if (p - tp == 23 && !LocaleNCompare(tp, "CacheResourcesExhausted", 23))
+                return *np ? tag : "Cache resources exhausted";
+              else
+                return tag;
+
             case 'm':  case 'M':
               if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
                 return *np ? tag : "Memory allocation failed";
               else
                 return tag;
 
+            case 'n':  case 'N':
+              if (p - tp == 22 && !LocaleNCompare(tp, "NoPixelsDefinedInCache", 22))
+                return *np ? tag : "No pixels defined in cache";
+              else
+                return tag;
+
+            case 'p':  case 'P':
+              if (p - tp == 26 && !LocaleNCompare(tp, "PixelCacheAllocationFailed", 26))
+                return *np ? tag : "Pixel cache allocation failed";
+              else
+                return tag;
+
             case 'u':  case 'U':
-              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneImage", 18))
-                return *np ? tag : "Unable to clone image";
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToManageColor", 19))
+                return *np ? tag : "Unable to manage color";
               else
                 return tag;
             }
@@ -256,7 +274,7 @@ const char *GetLocaleMessage(const char *tag)
       return tag;
 
   case 'e':  case 'E':
-    if (p - tp == 5 && !LocaleNCompare(tp, "en_us", 5))
+    if (p - tp == 5 && !LocaleNCompare(tp, "en_US", 5))
       switch (*NEXT_FIELD)
       {
       default:
@@ -367,15 +385,33 @@ const char *GetLocaleMessage(const char *tag)
             default:
               return tag;
 
+            case 'c':  case 'C':
+              if (p - tp == 23 && !LocaleNCompare(tp, "CacheResourcesExhausted", 23))
+                return *np ? tag : "Cache resources exhausted";
+              else
+                return tag;
+
             case 'm':  case 'M':
               if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
                 return *np ? tag : "Memory allocation failed";
               else
                 return tag;
 
+            case 'n':  case 'N':
+              if (p - tp == 22 && !LocaleNCompare(tp, "NoPixelsDefinedInCache", 22))
+                return *np ? tag : "No pixels defined in cache";
+              else
+                return tag;
+
+            case 'p':  case 'P':
+              if (p - tp == 26 && !LocaleNCompare(tp, "PixelCacheAllocationFailed", 26))
+                return *np ? tag : "Pixel cache allocation failed";
+              else
+                return tag;
+
             case 'u':  case 'U':
-              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneImage", 18))
-                return *np ? tag : "Unable to clone image";
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToManageColor", 19))
+                return *np ? tag : "Unable to manage color";
               else
                 return tag;
             }

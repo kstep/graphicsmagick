@@ -578,7 +578,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   DestroyMontageInfo(montage_info);
   DestroyImageList(images);
   if (montage_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
       image);
   if (montage_image->montage != (char *) NULL)
     {

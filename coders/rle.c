@@ -251,7 +251,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         colormap=(unsigned char *) AcquireMemory(number_colormaps*map_length);
         if (colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
             image);
         p=colormap;
         for (i=0; i < (long) number_colormaps; i++)
@@ -272,7 +272,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         length=ReadBlobLSBShort(image);
         comment=(char *) AcquireMemory(length);
         if (comment == (char *) NULL)
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
             image);
         (void) ReadBlob(image,length-1,comment);
         comment[length-1]='\0';
@@ -292,7 +292,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     number_pixels=image->columns*image->rows;
     rle_pixels=(unsigned char *) AcquireMemory(number_pixels*number_planes);
     if (rle_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
         image);
     if ((flags & 0x01) && !(flags & 0x02))
       {
@@ -461,7 +461,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (number_colormaps == 0)
           map_length=256;
         if (!AllocateImageColormap(image,map_length))
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
             image);
         p=colormap;
         if (number_colormaps == 1)

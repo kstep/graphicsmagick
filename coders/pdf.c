@@ -184,7 +184,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     {
       TIFFClose(tiff);
       (void) remove(filename);
-      ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationError",
         (char *) NULL)
     }
   /*
@@ -785,7 +785,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   */
   xref=(off_t *) AcquireMemory(2048*sizeof(off_t));
   if (xref == (off_t *) NULL)
-    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationError",image);
   memset(xref,0,2048*sizeof(off_t));
   /*
     Write Info object.
@@ -851,7 +851,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       }
       ReacquireMemory((void **) &xref,(count+2048)*sizeof(off_t));
       if (xref == (off_t *) NULL)
-        ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
           image);
     }
   (void) WriteBlobString(image,"]\n");
@@ -1957,7 +1957,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
   compressed_packets=(unsigned long) (1.001*length+12);
   compressed_pixels=(unsigned char *) AcquireMemory(compressed_packets);
   if (compressed_pixels == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationError",
       (char *) NULL);
   stream.next_in=pixels;
   stream.avail_in=(unsigned int) length;

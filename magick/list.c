@@ -421,8 +421,8 @@ MagickExport Image **ImageListToArray(const Image *images,
   group=(Image **) AcquireMemory(GetImageListSize(images)*sizeof(Image *));
   if (group == (Image **) NULL)
     {
-      ThrowException(exception,ResourceLimitError,
-        "Unable to freate image group","Memory allocation failed");
+      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
+        "Unable to create image group");
       return((Image **) NULL);
     }
   for (i=0; i < (long) GetImageListSize(images); i++)

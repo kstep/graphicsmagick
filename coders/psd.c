@@ -585,7 +585,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (psd_info.mode == DuotoneMode))
     {
       if (!AllocateImageColormap(image,256))
-        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
           image);
       image->matte=psd_info.channels >= 2;
     }
@@ -676,7 +676,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       layer_info=(LayerInfo *) AcquireMemory(number_layers*sizeof(LayerInfo));
       if (layer_info == (LayerInfo *) NULL)
-        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
           image);
       (void) memset(layer_info,0,number_layers*sizeof(LayerInfo));
       for (i=0; i < number_layers; i++)
@@ -1343,7 +1343,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   pixels=(unsigned char *)
     AcquireMemory(packet_size*image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationError",image);
   (void) WriteBlob(image,4,"8BPS");
   (void) WriteBlobMSBShort(image,1);  /* version */
   for ( i=1; i<=6; i++)

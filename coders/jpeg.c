@@ -303,7 +303,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
     return(True);
   comment=(char *) AcquireMemory(length+1);
   if (comment == (char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationError",
       (char *) NULL);
   /*
     Read comment.
@@ -355,7 +355,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   if (image->generic_profile == (ProfileInfo *) NULL)
     {
       image->generic_profiles=0;
-      ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationError",
         (char *) NULL)
     }
   image->generic_profile[i].name=AllocateString((char *) NULL);
@@ -363,7 +363,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     jpeg_info->unread_marker-JPEG_APP0);
   image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
   if (image->generic_profile[i].info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationError",
       (char *) NULL);
   /*
     Read generic profile.
@@ -427,7 +427,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     ReacquireMemory((void **) &image->color_profile.info,
       image->color_profile.length+length);
   if (image->color_profile.info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationError",
       (char *) NULL);
   /*
     Read color profile.
@@ -533,7 +533,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
         image->iptc_profile.length=0;
     }
   if (image->iptc_profile.info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationError",
       (char *) NULL);
   /*
     Read the payload of this binary data.
@@ -929,7 +929,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->depth=jpeg_info.data_precision <= 8 ? 8 : 16;
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
     if (!AllocateImageColormap(image,1 << image->depth))
-      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
         image);
   if (image_info->ping)
     {
@@ -940,7 +940,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_pixels=(JSAMPLE *)
     AcquireMemory(jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
   /*
     Convert JPEG pixels to pixel packets.
   */
@@ -1677,7 +1677,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_pixels=(JSAMPLE *)
     AcquireMemory(jpeg_info.input_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
-    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationError",image);
   scanline[0]=(JSAMPROW) jpeg_pixels;
   if (jpeg_info.data_precision > 8)
     {

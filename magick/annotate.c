@@ -180,8 +180,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     return(False);
   text=TranslateText((ImageInfo *) NULL,image,draw_info->text);
   if (text == (char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Unable to annotate image",
-      "Memory allocation failed");
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to annotate image");
   textlist=StringToList(text);
   LiberateMemory((void **) &text);
   if (textlist == (char **) NULL)
@@ -193,8 +193,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   number_lines=i;
   text=(char *) AcquireMemory(length+MaxTextExtent);
   if (text == (char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Unable to annotate image",
-      "Memory allocation failed");
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to annotate image");
   SetGeometry(image,&geometry);
   if (draw_info->geometry != (char *) NULL)
     (void) GetGeometry(draw_info->geometry,&geometry.x,&geometry.y,
@@ -1132,7 +1132,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
     {
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
-      ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         "Memory allocation failed")
     }
   /*
@@ -1669,8 +1669,8 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       resource_info.foreground_color=AllocateString("#000000000000");
       map_info=XAllocStandardColormap();
       if (map_info == (XStandardColormap *) NULL)
-        ThrowBinaryException(ResourceLimitError,"Unable to allocate colormap",
-          "Memory allocation failed");
+        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+          "Unable to allocate colormap");
       /*
         Initialize visual info.
       */
@@ -1769,8 +1769,8 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   pixel.pen_color.blue=ScaleQuantumToShort(draw_info->fill.blue);
   status=XAnnotateImage(display,&pixel,&annotate_info,image);
   if (status == 0)
-    ThrowBinaryException(ResourceLimitError,"Unable to annotate image",
-      "Memory allocation failed");
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to annotate image");
   return(True);
 }
 #else

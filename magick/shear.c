@@ -951,8 +951,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   */
   integral_image=IntegralRotateImage(image,rotations,exception);
   if (integral_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitError,"Unable to rotate image",
-      "Memory allocation failed");
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to rotate image");
   shear.x=(-tan(DegreesToRadians(angle)/2));
   shear.y=sin(DegreesToRadians(angle));
   if ((shear.x == 0.0) || (shear.y == 0.0))
@@ -979,8 +979,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   rotate_image=BorderImage(integral_image,&border_info,exception);
   DestroyImage(integral_image);
   if (rotate_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitError,"Unable to rotate image",
-      "Memory allocation failed");
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to rotate image");
   /*
     Rotate the image.
   */
@@ -1074,8 +1074,8 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   */
   integral_image=IntegralRotateImage(image,0,exception);
   if (integral_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitError,"Unable to shear image",
-      "Memory allocation failed");
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to shear image");
   shear.x=(-tan(DegreesToRadians(x_shear)/2));
   shear.y=sin(DegreesToRadians(y_shear));
   if ((shear.x == 0.0) || (shear.y == 0.0))
@@ -1094,8 +1094,8 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   border_info.height=y_offset;
   shear_image=BorderImage(integral_image,&border_info,exception);
   if (shear_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitError,"Unable to shear image",
-      "Memory allocation failed");
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to shear image");
   DestroyImage(integral_image);
   /*
     Shear the image.

@@ -754,7 +754,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create image colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
             image);
         if (image->colors == 0)
           for (i=0; i < 256; i++)

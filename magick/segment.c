@@ -308,7 +308,7 @@ static unsigned int Classify(Image *image,short **extrema,
             head=cluster;
           }
         if (cluster == (Cluster *) NULL)
-          ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+          ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
             image->filename);
         /*
           Initialize a new class.
@@ -328,7 +328,7 @@ static unsigned int Classify(Image *image,short **extrema,
       */
       cluster=(Cluster *) AcquireMemory(sizeof(Cluster));
       if (cluster == (Cluster *) NULL)
-        ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
       /*
         Initialize a new class.
@@ -465,7 +465,7 @@ static unsigned int Classify(Image *image,short **extrema,
   */
   squares=(double *) AcquireMemory(513*sizeof(double));
   if (squares == (double *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   squares+=255;
   for (i=(-255); i <= 255; i++)
@@ -475,7 +475,7 @@ static unsigned int Classify(Image *image,short **extrema,
   */
   colormap=(PixelPacket *) AcquireMemory(number_clusters*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   image->matte=False;
   image->storage_class=PseudoClass;
@@ -1493,7 +1493,7 @@ MagickExport unsigned int SegmentImage(Image *image,
           LiberateMemory((void **) &extrema[i]);
           LiberateMemory((void **) &histogram[i]);
         }
-        ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename)
       }
   }

@@ -217,8 +217,8 @@ MagickExport unsigned int EqualizeImage(Image *image)
   if ((histogram == (DoublePixelPacket *) NULL) ||
       (map == (DoublePixelPacket *) NULL) ||
       (equalize_map == (PixelPacket *) NULL))
-    ThrowBinaryException(ResourceLimitError,"Unable to equalize image",
-      "Memory allocation failed");
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to equalize image");
   /*
     Form histogram.
   */
@@ -403,8 +403,8 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
   */
   gamma_map=(PixelPacket *) AcquireMemory(65536L*sizeof(PixelPacket));
   if (gamma_map == (PixelPacket *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Unable to gamma correct image",
-      "Memory allocation failed");
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to gamma correct image");
   (void) memset(gamma_map,0,65536L*sizeof(PixelPacket));
   for (i=0; i <= 65535L; i++)
   {
@@ -536,8 +536,8 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
     white_point=65535L-black_point;
   levels_map=(unsigned short *) AcquireMemory(65536L*sizeof(unsigned short));
   if (levels_map == (unsigned short *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Unable to level the image",
-      "Memory allocation failed");
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+      "Unable to level the image");
   for (i=0; i <= 65535L; i++)
   {
     if (i < black_point)
@@ -872,8 +872,8 @@ MagickExport unsigned int NormalizeImage(Image *image)
   normalize_map=(PixelPacket *) AcquireMemory(65536L*sizeof(PixelPacket));
   if ((histogram == (DoublePixelPacket *) NULL) ||
       (normalize_map == (PixelPacket *) NULL))
-    ThrowBinaryException(ResourceLimitError,"Unable to normalize image",
-      "Memory allocation failed");
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+      "Unable to normalize image");
   /*
     Form histogram.
   */

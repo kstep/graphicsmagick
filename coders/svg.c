@@ -2582,7 +2582,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.text=AllocateString("");
   svg_info.scale=(double *) AcquireMemory(sizeof(double));
   if (svg_info.scale == (double *) NULL)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
   IdentityAffine(&svg_info.affine);
   svg_info.affine.sx=
     image->x_resolution == 0.0 ? 1.0 : image->x_resolution/72.0;
@@ -2821,7 +2821,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   number_pixels=image->columns*image->rows;
   bitmap.bitmap=(unsigned char *) AcquireMemory(number_planes*number_pixels);
   if (bitmap.bitmap == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
       image);
   point=0;
   for (j=0; j < image->rows; j++)
@@ -3007,7 +3007,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   primitive_info=(PrimitiveInfo *)
     AcquireMemory(number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationError",image);
   IdentityAffine(&affine);
   token=AllocateString(attribute->value);
   active=False;

@@ -699,7 +699,7 @@ UnpackRaster:
          image->colors=1 << image->depth;
          if (!AllocateImageColormap(image,image->colors))
       {
-NoMemory:    ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+NoMemory:    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
            image)
       }
          }
@@ -766,7 +766,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitError,"Cannot decompress 
 
        image->colors=WPG_Palette.NumOfEntries;
        if (!AllocateImageColormap(image,image->colors))
-      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
            image);
        for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
        {

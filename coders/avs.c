@@ -354,7 +354,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     */
     pixels=(unsigned char *) AcquireMemory(image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
         image);
     /*
       Convert MIFF to AVS raster pixels.

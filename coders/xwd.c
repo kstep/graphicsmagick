@@ -228,7 +228,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   length=header.header_size-sz_XWDheader;
   comment=(char *) AcquireMemory(length+1);
   if (comment == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
   count=ReadBlob(image,length,comment);
   comment[length]='\0';
   (void) SetImageAttribute(image,"comment",comment);
@@ -241,7 +241,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   ximage=(XImage *) AcquireMemory(sizeof(XImage));
   if (ximage == (XImage *) NULL)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
   ximage->depth=(int) header.pixmap_depth;
   ximage->format=(int) header.pixmap_format;
   ximage->xoffset=(int) header.xoffset;
@@ -271,7 +271,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       colors=(XColor *) AcquireMemory(header.ncolors*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
           image);
       for (i=0; i < (long) header.ncolors; i++)
       {
@@ -307,7 +307,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length=ximage->bytes_per_line*ximage->height*ximage->depth;
   ximage->data=(char *) AcquireMemory(length);
   if (ximage->data == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
   count=ReadBlob(image,length,ximage->data);
   if (count == 0)
     ThrowReaderException(CorruptImageError,"Unable to read dump pixmap",
@@ -421,7 +421,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert X image to PseudoClass packets.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
             image);
         for (i=0; i < (long) image->colors; i++)
         {
@@ -671,7 +671,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       */
       colors=(XColor *) AcquireMemory(image->colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
           image);
       for (i=0; i < (long) image->colors; i++)
       {
@@ -704,7 +704,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   pixels=(unsigned char *)
     AcquireMemory(image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationError",image);
   /*
     Convert MIFF to XWD raster pixels.
   */

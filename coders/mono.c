@@ -143,7 +143,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
     Initialize image colormap.
   */
   if (!AllocateImageColormap(image,2))
-    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
   if (image_info->ping)
     {
       CloseBlob(image);

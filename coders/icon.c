@@ -244,11 +244,11 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         Read Icon raster colormap.
       */
       if (!AllocateImageColormap(image,1 << icon_info.bits_per_pixel))
-        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
           image);
       icon_colormap=(unsigned char *) AcquireMemory(4*image->colors);
       if (icon_colormap == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
           image);
       (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);
       p=icon_colormap;

@@ -174,7 +174,7 @@ static unsigned int ReadColorProfile(char *text,long int length,Image *image)
     }
   image->color_profile.info=(unsigned char *) AcquireMemory(length);
   if (image->color_profile.info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationError",
       image->filename);
   image->color_profile.length=length;
   (void) memcpy(image->color_profile.info,p,length);
@@ -206,7 +206,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
       length*=4;
       image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
       if (image->iptc_profile.info == (unsigned char *) NULL)
-        ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+        ThrowBinaryException(ResourceLimitError,"MemoryAllocationError",
           image->filename);
       image->iptc_profile.length=length;
       (void) memcpy(image->iptc_profile.info,p,length);
@@ -248,7 +248,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
 #endif
   image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
   if (image->iptc_profile.info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationError",
       image->filename);
   image->iptc_profile.length=length;
   (void) memcpy(image->iptc_profile.info,p,length);
@@ -599,7 +599,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             if ((image->blob->file == stdin) || image->blob->pipet)
               remove(filename);
-            ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
               image)
           }
       }
@@ -674,7 +674,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             if ((image->blob->file == stdin) || image->blob->pipet)
               remove(filename);
-            ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
               image)
           }
         /*
@@ -871,7 +871,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             if ((image->blob->file == stdin) || image->blob->pipet)
               remove(filename);
-            ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
               image)
           }
         for (y=0; y < (long) image->rows; y++)
@@ -952,7 +952,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFClose(tiff);
             if ((image->blob->file == stdin) || image->blob->pipet)
               remove(filename);
-            ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+            ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
               image)
           }
         (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,
@@ -1750,7 +1750,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     */
     scanline=(unsigned char *) AcquireMemory(8*TIFFScanlineSize(tiff));
     if (scanline == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationError",image);
     switch (photometric)
     {
       case PHOTOMETRIC_RGB:
@@ -1883,7 +1883,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         if ((blue == (unsigned short *) NULL) ||
             (green == (unsigned short *) NULL) ||
             (red == (unsigned short *) NULL))
-          ThrowWriterException(ResourceLimitError,"Memory allocation failed",
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
             image);
         /*
           Initialize TIFF colormap.

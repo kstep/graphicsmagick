@@ -75,6 +75,9 @@ static void
 /*
   Global declarations.
 */
+static const char
+  *GetLocaleExceptionMessage(const ExceptionType,const char *);
+
 static ErrorHandler
   error_handler = DefaultErrorHandler;
 
@@ -182,9 +185,10 @@ static void DefaultErrorHandler(const ExceptionType error,const char *reason,
   if (reason == (char *) NULL)
     return;
   (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
-    reason);
+    GetLocaleExceptionMessage(error,reason));
   if (description != (char *) NULL)
-    (void) fprintf(stderr," (%.1024s)",description);
+    (void) fprintf(stderr," (%.1024s)",
+      GetLocaleExceptionMessage(error,description));
   if ((error != OptionError) && errno)
     (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
   (void) fprintf(stderr,".\n");
@@ -271,9 +275,10 @@ static void DefaultWarningHandler(const ExceptionType warning,
   if (reason == (char *) NULL)
     return;
   (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
-    reason);
+    GetLocaleExceptionMessage(warning,reason));
   if (description != (char *) NULL)
-    (void) fprintf(stderr," (%.1024s)",description);
+    (void) fprintf(stderr," (%.1024s)",
+      GetLocaleExceptionMessage(warning,description));
   if ((warning != OptionWarning) && errno)
     (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
   (void) fprintf(stderr,".\n");
@@ -341,6 +346,58 @@ MagickExport void GetExceptionInfo(ExceptionInfo *exception)
   (void) memset(exception,0,sizeof(ExceptionInfo));
   SetExceptionInfo(exception,UndefinedException);
   exception->signature=MagickSignature;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t L o c a l e E x c e p t i o n M e s s a g e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetLocaleExceptionMessage() converts a enumerated exception severity and tag
+%  to a message in the current locale.
+%
+%  The format of the GetLocaleExceptionMessage method is:
+%
+%      const char *GetLocaleExceptionMessage(const ExceptionType severity,
+%        const char *tag)
+%
+%  A description of each parameter follows:
+%
+%    o severity: the severity of the exception.
+%
+%    o tag: the message tag.
+%
+%
+%
+*/
+
+static const char *ExceptionSeverityToTag(const ExceptionType severity)
+{
+  switch (severity)
+  {
+    case BlobError: return("Blob/Error/");
+    case CacheError: return("Cache/Error/");
+    case ConfigureError: return("Configure/Error/");
+    case ResourceLimitError: return("Resource/Limit/Error/");
+    default: return("");
+  }
+  return("");
+}
+
+static const char *GetLocaleExceptionMessage(const ExceptionType severity,
+  const char *tag)
+{
+  char
+    message[MaxTextExtent];
+
+  FormatString(message,"%.1024s%.1024s",ExceptionSeverityToTag(severity),tag);
+  return(GetLocaleMessage(message));
 }
 
 /*
@@ -612,62 +669,28 @@ MagickExport WarningHandler SetWarningHandler(WarningHandler handler)
 %
 %    o exception: The exception.
 %
-%    o severity: Define the severity of the exception.
+%    o severity: The severity of the exception.
 %
-%    o reason: Define the reason of the exception.
+%    o reason: The reason of the exception.
 %
-%    o description: Describe the exception.
+%    o description: The exception description.
 %
 %
 */
 MagickExport void ThrowException(ExceptionInfo *exception,
   const ExceptionType severity,const char *reason,const char *description)
 {
-  char
-    tag[MaxTextExtent];
-
-  size_t
-    length;
-
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   exception->severity=(ExceptionType) severity;
-  switch (severity)
-  {
-    case BlobError:
-    {
-      (void) strcpy(tag,"Blob/Error/");
-      break;
-    }
-    case CacheError:
-    {
-      (void) strcpy(tag,"Cache/Error/");
-      break;
-    }
-    case ConfigureError:
-    {
-      (void) strcpy(tag,"Configure/Error/");
-      break;
-    }
-    default:
-    {
-      *tag='\0';
-      break;
-    }
-  }
-  length=strlen(tag);
   if (reason == (char *) NULL)
     LiberateMemory((void **) &exception->reason);
   else
-    {
-      (void) strncpy(tag+length,reason,MaxTextExtent-length-1);
-      (void) CloneString(&exception->reason,GetLocaleMessage(tag));
-    }
+    (void) CloneString(&exception->reason,
+      GetLocaleExceptionMessage(severity,reason));
   if (description == (char *) NULL)
     LiberateMemory((void **) &exception->description);
   else
-    {
-      (void) strncpy(tag+length,description,MaxTextExtent-length-1);
-      (void) CloneString(&exception->description,GetLocaleMessage(tag));
-    }
+    (void) CloneString(&exception->description,
+      GetLocaleExceptionMessage(severity,description));
 }

@@ -602,8 +602,8 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   pixels=(DoublePixelPacket *)
     AcquireMemory(number_pixels*sizeof(DoublePixelPacket));
   if (pixels == (DoublePixelPacket *) NULL)
-    ThrowImageException(ResourceLimitError,"Unable to average image sequence",
-      "Memory allocation failed");
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to average image sequence");
   (void) memset(pixels,0,number_pixels*sizeof(DoublePixelPacket));
   /*
     Initialize average next attributes.
@@ -935,8 +935,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   assert(exception->signature == MagickSignature);
   clone_image=(Image *) AcquireMemory(sizeof(Image));
   if (clone_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitError,"Unable to clone image",
-      "Memory allocation failed");
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to clone image");
   (void) memset(clone_image,0,sizeof(Image));
   clone_image->storage_class=image->storage_class;
   clone_image->colorspace=image->colorspace;
@@ -955,8 +955,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       length=image->colors*sizeof(PixelPacket);
       clone_image->colormap=(PixelPacket *) AcquireMemory(length);
       if (clone_image->colormap == (PixelPacket *) NULL)
-        ThrowImageException(ResourceLimitError,"Unable to clone image",
-          "Memory allocation failed");
+        ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+          "Unable to clone image");
       length=image->colors*sizeof(PixelPacket);
       (void) memcpy(clone_image->colormap,image->colormap,length);
     }
@@ -975,8 +975,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       clone_image->color_profile.info=(unsigned char *)
         AcquireMemory(clone_image->color_profile.length);
       if (clone_image->color_profile.info == (unsigned char *) NULL)
-        ThrowImageException(ResourceLimitError,"Unable to clone image",
-          "Memory allocation failed");
+        ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+          "Unable to clone image");
       (void) memcpy(clone_image->color_profile.info,
         image->color_profile.info,clone_image->color_profile.length);
     }
@@ -990,8 +990,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       clone_image->iptc_profile.info=(unsigned char *)
         AcquireMemory(clone_image->iptc_profile.length);
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
-        ThrowImageException(ResourceLimitError,"Unable to clone image",
-          "Memory allocation failed");
+        ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+          "Unable to clone image");
       (void) memcpy(clone_image->iptc_profile.info,
         image->iptc_profile.info,clone_image->iptc_profile.length);
     }
@@ -1004,8 +1004,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       clone_image->generic_profile=(ProfileInfo *)
         AcquireMemory(image->generic_profiles*sizeof(ProfileInfo));
       if (clone_image->generic_profile == (ProfileInfo *) NULL)
-        ThrowImageException(ResourceLimitError,"Unable to clone image",
-          "Memory allocation failed");
+        ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+          "Unable to clone image");
       length=image->generic_profiles*sizeof(ProfileInfo);
       (void) memcpy(clone_image->generic_profile,image->generic_profile,
         length);
@@ -1019,8 +1019,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
         clone_image->generic_profile[i].info=
           (unsigned char *) AcquireMemory(length);
         if (clone_image->generic_profile[i].info == (unsigned char *) NULL)
-          ThrowImageException(ResourceLimitError,"Unable to clone image",
-            "Memory allocation failed");
+          ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+            "Unable to clone image");
         (void) memcpy(clone_image->generic_profile[i].info,
           image->generic_profile[i].info,length);
       }
@@ -5503,8 +5503,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   z_map=(double *) AcquireMemory(3*65536L*sizeof(double));
   if ((x_map == (double *) NULL) || (y_map == (double *) NULL) ||
       (z_map == (double *) NULL))
-    ThrowBinaryException(ResourceLimitError,
-      "Unable to transform color space","Memory allocation failed");
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to transform color space");
   memset(&primary_info,0,sizeof(primary_info));
   switch (colorspace)
   {
