@@ -266,6 +266,7 @@ int main(int argc,char **argv)
   display=(Display *) NULL;
   GetExceptionInfo(&exception);
   first_scene=0;
+  image=(Image *) NULL;
   image_list=(Image *) NULL;
   last_scene=0;
   server_name=(char *) NULL;

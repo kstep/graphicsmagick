@@ -23,32 +23,39 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
-2002-02-18  Cristy  &lt;cristy@mystic.es.dupont.com&gt;,
+2002-02-21  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * MPEG multi-part filenames require an embedded %d, not %lu.
+
+2002-02-20  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Annotation did not support SJIS properly (patch provided by
+    Katsutoshi Shibuya).
+
+2002-02-18  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Fixed memory overrun with -format option of the mogrify program.
 	* Labels were not positioned correctly rectly for VID format.
 
-2002-02-16  Cristy  &lt;cristy@mystic.es.dupont.com&gt;,
+2002-02-16  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Replaced -copy/-replace options with +/-write in the convert program.
   * Median filtering speed enhancement using skip list contributed by
     Mike Edmonds.
 
-2002-02-14  Cristy  &lt;cristy@mystic.es.dupont.com&gt;,
+2002-02-14  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Command line options now stay in effect for any image in command
     line order until a another option is encountered or if -noop is specified.
 
-2002-02-07  Cristy  &lt;cristy@mystic.es.dupont.com&gt;,
+2002-02-07  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * SVG coders understands inline images.
 
-2002-02-06  Cristy  &lt;cristy@mystic.es.dupont.com&gt;,
+2002-02-06  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
             Glenn Randers-Pehrson  &lt;randeg@alum.rpi.edu&gt;
   * Made -scene consistent across all utilities.  -snaps replaces previous
     functionality of -scene for import program.
 
-2002-01-30  Cristy  &lt;cristy@mystic.es.dupont.com&gt;,
+2002-01-30  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Correctly draw arc when arc end/start are not integer
     (patch contributed by Giuliano Pochini).
 
-2002-01-28  Cristy  &lt;cristy@mystic.es.dupont.com&gt;,
+2002-01-28  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
             Glenn Randers-Pehrson  &lt;randeg@alum.rpi.edu&gt;
   * Geometry strings respect -gravity (e.g. -gravity SouthWest -crop
     100x100).

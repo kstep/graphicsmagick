@@ -1,33 +1,36 @@
-2002-02-20  Cristy  <cristy@mystic.es.dupont.com>,
+2002-02-21  Cristy  <cristy@mystic.es.dupont.com>
+  * MPEG multi-part filenames require an embedded %d, not %lu.
+
+2002-02-20  Cristy  <cristy@mystic.es.dupont.com>
   * Annotation did not support SJIS properly (patch provided by
     Katsutoshi Shibuya).
 
-2002-02-18  Cristy  <cristy@mystic.es.dupont.com>,
+2002-02-18  Cristy  <cristy@mystic.es.dupont.com>
   * Fixed memory overrun with -format option of the mogrify program.
 	* Labels were not positioned correctly rectly for VID format.
 
-2002-02-16  Cristy  <cristy@mystic.es.dupont.com>,
+2002-02-16  Cristy  <cristy@mystic.es.dupont.com>
   * Replaced -copy/-replace options with +/-write in the convert program.
   * Median filtering speed enhancement using skip list contributed by
     Mike Edmonds.
 
-2002-02-14  Cristy  <cristy@mystic.es.dupont.com>,
+2002-02-14  Cristy  <cristy@mystic.es.dupont.com>
   * Command line options now stay in effect for any image in command
     line order until a another option is encountered or if -noop is specified.
 
-2002-02-07  Cristy  <cristy@mystic.es.dupont.com>,
+2002-02-07  Cristy  <cristy@mystic.es.dupont.com>
   * SVG coders understands inline images.
 
-2002-02-06  Cristy  <cristy@mystic.es.dupont.com>,
+2002-02-06  Cristy  <cristy@mystic.es.dupont.com>
             Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
   * Made -scene consistent across all utilities.  -snaps replaces previous
     functionality of -scene for import program.
 
-2002-01-30  Cristy  <cristy@mystic.es.dupont.com>,
+2002-01-30  Cristy  <cristy@mystic.es.dupont.com>
   * Correctly draw arc when arc end/start are not integer
     (patch contributed by Giuliano Pochini).
 
-2002-01-28  Cristy  <cristy@mystic.es.dupont.com>,
+2002-01-28  Cristy  <cristy@mystic.es.dupont.com>
             Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
   * Geometry strings respect -gravity (e.g. -gravity SouthWest -crop
     100x100).
