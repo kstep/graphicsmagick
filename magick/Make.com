@@ -76,7 +76,6 @@ $call Make pcx.c
 $call Make pdf.c
 $call Make pict.c
 $call Make pix.c
-$call Make pixel_cache.c
 $call Make plasma.c
 $call Make png.c
 $call Make pnm.c
@@ -132,7 +131,7 @@ $library/create libmagick.olb PreRvIcccm,animate,annotate,-
   enhance,ept,error,fax,fits,fpx,gems,gif,gradation,gray,-
   hdf, histogram,html,icc,icon,image,iptc,jbig,jpeg,label,-
   logo,magick, map,matte,memory,miff,monitor,mono,montage,mtv,-
-  pdb,pcd,pcl,pcx, pdf,pict,pix,pixel_cache,plasma,png,pnm,-
+  pdb,pcd,pcl,pcx, pdf,pict,pix,plasma,png,pnm,-
   preview,ps,ps2,ps3,psd,pwp,quantize,rgb,rla,rle,segment,-
   sct,sfw,sgi,shear,signature,stegano,stream,sun,svg,tga,tiff,-
   tile,tim,timer,transform,ttf,txt,uil,utility,uyvy,vicar,-
