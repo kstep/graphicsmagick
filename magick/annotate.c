@@ -383,7 +383,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %  The format of the GetTypeMetrics method is:
 %
 %      unsigned int GetTypeMetrics(Image *image,
-%        const DrawInfo *draw_info,TypeMetric metrics)
+%        const DrawInfo *draw_info,TypeMetric *metrics)
 %
 %  A description of each parameter follows:
 %
@@ -394,7 +394,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %
 %    o draw_info: The draw info.
 %
-%    o metrics: Method GetTypeMetrics returns the font metrics.
+%    o metrics: Updated with font metrics.
 %
 %
 */
