@@ -896,13 +896,15 @@ shifted.
 
 The events parameter specifies which events are to be logged.  It
 can be either None, All, or a comma-separated list
-consisting of
-one or more of Configure, Annotate,
-Render, Locale, Coder,
-X11, Cache, or Blob.
+consisting of one or more of the following domains: Annotate,
+Blob, Cache, Coder, Configure,
+Locale, Render, X11, or User.
 For example, to log cache and blob events, use
 
     convert -debug "Cache,Blob" rose: rose.png
+
+The "User" domain is normally empty, but developers can log "User" events
+in their private copy of ImageMagick.
 
 Use \fB+debug\fP to turn off all logging.
 .TP
