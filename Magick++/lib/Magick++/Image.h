@@ -723,21 +723,21 @@ namespace Magick
     void            strokeColor ( const Color &strokeColor_ );
     Color           strokeColor ( void ) const;
 
+    // Specify the pattern of dashes and gaps used to stroke
+    // paths. The strokeDashArray represents a zero-terminated array
+    // of numbers that specify the lengths (in pixels) of alternating
+    // dashes and gaps in user units. If an odd number of values is
+    // provided, then the list of values is repeated to yield an even
+    // number of values.  A typical strokeDashArray_ array might
+    // contain the members 5 3 2 0, where the zero value indicates the
+    // end of the pattern array.
+    void            strokeDashArray ( const unsigned int* strokeDashArray_ );
+    const unsigned int* strokeDashArray ( void ) const;
+
     // While drawing using a dash pattern, specify distance into the
     // dash pattern to start the dash (default 0).
     void            strokeDashOffset ( unsigned int strokeDashOffset_ );
     unsigned int    strokeDashOffset ( void ) const;
-    
-    // Specify the pattern of dashes and gaps used to stroke
-    // paths. The strokeDashPattern represents a zero-terminated array
-    // of numbers that specify the lengths (in pixels) of alternating
-    // dashes and gaps in user units. If an odd number of values is
-    // provided, then the list of values is repeated to yield an even
-    // number of values.  A typical strokeDashPattern_ array might
-    // contain the members 5 3 2 0, where the zero value indicates the
-    // end of the pattern array.
-    void            strokeDashPattern ( const unsigned int* strokeDashPattern_ );
-    const unsigned int* strokeDashPattern ( void ) const;
 
     // Specify the shape to be used at the end of open subpaths when
     // they are stroked. Values of LineCap are UndefinedCap, ButtCap,

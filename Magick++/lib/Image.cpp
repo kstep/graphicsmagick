@@ -1919,18 +1919,6 @@ Magick::CompressionType Magick::Image::compressType ( void ) const
   //  return constImage()->compression;
 }
 
-// dash offset for drawing vector objects (default one)
-void Magick::Image::strokeDashOffset ( unsigned int strokeDashOffset_ )
-{
-  modifyImage();
-  options()->strokeDashOffset( strokeDashOffset_ );
-}
-
-unsigned int Magick::Image::strokeDashOffset ( void ) const
-{
-  return constOptions()->strokeDashOffset( );
-}
-
 void Magick::Image::density ( const Geometry &density_ )
 {
   modifyImage();
@@ -2524,15 +2512,27 @@ Magick::Color Magick::Image::strokeColor ( void ) const
 }
 
 // dash pattern for drawing vector objects (default one)
-void Magick::Image::strokeDashPattern ( const unsigned int* strokeDashPattern_ )
+void Magick::Image::strokeDashArray ( const unsigned int* strokeDashArray_ )
 {
   modifyImage();
-  options()->strokeDashPattern( strokeDashPattern_ );
+  options()->strokeDashArray( strokeDashArray_ );
 }
 
-const unsigned int* Magick::Image::strokeDashPattern ( void ) const
+const unsigned int* Magick::Image::strokeDashArray ( void ) const
 {
-  return constOptions()->strokeDashPattern( );
+  return constOptions()->strokeDashArray( );
+}
+
+// dash offset for drawing vector objects (default one)
+void Magick::Image::strokeDashOffset ( unsigned int strokeDashOffset_ )
+{
+  modifyImage();
+  options()->strokeDashOffset( strokeDashOffset_ );
+}
+
+unsigned int Magick::Image::strokeDashOffset ( void ) const
+{
+  return constOptions()->strokeDashOffset( );
 }
 
 // Specify the shape to be used at the end of open subpaths when they

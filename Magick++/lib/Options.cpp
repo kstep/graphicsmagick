@@ -159,12 +159,12 @@ Magick::Color Magick::Options::boxColor ( void ) const
   return Magick::Color( _annotateInfo->box );
 }
 
-void Magick::Options::strokeDashPattern ( const unsigned int* strokeDashPattern_ )
+void Magick::Options::strokeDashArray ( const unsigned int* strokeDashArray_ )
 {
   delete _drawInfo->dash_pattern;
   _drawInfo->dash_pattern = 0;
 
-  if(strokeDashPattern_)
+  if(strokeDashArray_)
     {
       // Count elements
       int x;
@@ -172,11 +172,11 @@ void Magick::Options::strokeDashPattern ( const unsigned int* strokeDashPattern_
       // Allocate elements
       _drawInfo->dash_pattern=new unsigned int[x+1];
       // Copy elements
-      memcpy(_drawInfo->dash_pattern,strokeDashPattern_,
+      memcpy(_drawInfo->dash_pattern,strokeDashArray_,
              (x+1)*sizeof(unsigned int));
     }
 }
-const unsigned int* Magick::Options::strokeDashPattern ( void ) const
+const unsigned int* Magick::Options::strokeDashArray ( void ) const
 {
   return _drawInfo->dash_pattern;
 }
