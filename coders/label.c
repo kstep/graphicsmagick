@@ -151,11 +151,15 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
   FormatString(geometry,"+%g+%g",0.5*metrics.max_advance,metrics.ascent);
-  draw_info->geometry=AllocateString(geometry);
   if (image->columns == 0)
     image->columns=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
   if (image->rows == 0)
-    image->rows=(unsigned long) floor(metrics.height+0.5);
+    {
+      image->rows=(unsigned long) floor(metrics.height+0.5);
+      FormatString(geometry,"+%g+%g",image->columns/2.0-metrics.width/2.0,
+        metrics.ascent);
+    }
+  draw_info->geometry=AllocateString(geometry);
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);
   DestroyDrawInfo(draw_info);
