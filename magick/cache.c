@@ -1509,7 +1509,7 @@ static unsigned int ModifyCache(Image *image)
   Image
     *clone_image;
 
-  int
+  long
     y;
 
   register const PixelPacket

@@ -1053,7 +1053,6 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->start_loop=image->start_loop;
   GetCacheInfo(&clone_image->cache);
   clone_image->ascii85=image->ascii85;
-  clone_image->blob=ReferenceBlob(image->blob);
   clone_image->magick_columns=image->magick_columns;
   clone_image->magick_rows=image->magick_rows;
   (void) strncpy(clone_image->magick_filename,image->magick_filename,
@@ -1065,9 +1064,10 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->list=(Image *) NULL;
   clone_image->next=(Image *) NULL;
   if (orphan)
-    clone_image->blob->exempt=True;
+    clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   else
     {
+      clone_image->blob=ReferenceBlob(image->blob);
       if (image->previous != (Image *) NULL)
         clone_image->previous->next=clone_image;
       if (image->next != (Image *) NULL)
