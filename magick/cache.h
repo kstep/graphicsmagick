@@ -34,6 +34,7 @@ extern Export PixelPacket
 
 extern Export unsigned int
   GetCacheNexus(Cache),
+  IsNexusInCore(const Cache,const unsigned int),
   OpenCache(Cache,const ClassType,const unsigned int,const unsigned int),
   ReadCachePixels(Cache,const unsigned int),
   ReadCacheIndexes(Cache,const unsigned int),

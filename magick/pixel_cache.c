@@ -143,6 +143,8 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
   pixels=SetPixelCache(image,x,y,columns,rows);
   if (pixels == (PixelPacket *) NULL)
     return((PixelPacket *) NULL);
+  if (IsNexusInCore(image->cache,0))
+    return(pixels);
   status=ReadCachePixels(image->cache,0);
   if (image->class == PseudoClass)
     status|=ReadCacheIndexes(image->cache,0);
@@ -593,13 +595,15 @@ Export unsigned int SyncPixelCache(Image *image)
   if (image->cache == (Cache) NULL)
     ThrowBinaryException(CacheWarning,"pixel cache is not allocated",
       image->filename);
+  image->taint=True;
+  if (IsNexusInCore(image->cache,0))
+    return(True);
   status=WriteCachePixels(image->cache,0);
   if (image->class == PseudoClass)
     status|=WriteCacheIndexes(image->cache,0);
   if (status == False)
     ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
       image->filename);
-  image->taint=True;
   return(True);
 }
 

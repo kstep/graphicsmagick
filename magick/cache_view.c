@@ -145,6 +145,8 @@ Export PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
   pixels=SetCacheView(view,x,y,columns,rows);
   if (pixels == (PixelPacket *) NULL)
     return((PixelPacket *) NULL);
+  if (IsNexusInCore(image->cache,view->id))
+    return(pixels);
   image=view->image;
   status=ReadCachePixels(image->cache,view->id);
   if (image->class == PseudoClass)
@@ -398,12 +400,14 @@ Export unsigned int SyncCacheView(ViewInfo *view)
   if (image->cache == (Cache) NULL)
     ThrowBinaryException(CacheWarning,"pixel cache is undefined",
       image->filename);
+  image->taint=True;
+  if (IsNexusInCore(image->cache,view->id))
+    return(True);
   status=WriteCachePixels(image->cache,view->id);
   if (image->class == PseudoClass)
     status|=WriteCacheIndexes(image->cache,view->id);
   if (status == False)
     ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
       image->filename);
-  image->taint=True;
   return(True);
 }

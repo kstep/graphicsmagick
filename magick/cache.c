@@ -608,6 +608,58 @@ Export PixelPacket *GetNexusPixels(const Cache cache,const unsigned int id)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s N e x u s I n C o r e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsNexusInCore returns true if the pixels associated with the
+%  specified cache nexus is non-strided and in core.
+%
+%  The format of the IsNexusInCore method is:
+%
+%      unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method IsNexusInCore returns True if the pixels are non-strided
+%      and in core, otherwise False.
+%
+%    o id: specifies which cache nexus to return the pixels. 
+%
+%
+%
+*/
+Export unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
+{
+  CacheInfo
+    *cache_info;
+
+  off_t
+    offset;
+
+  register NexusInfo
+    *nexus;
+
+  if (cache == (Cache) NULL)
+    return(False);
+  cache_info=(CacheInfo *) cache;
+  if (cache_info->class == UndefinedClass)
+    return(False);
+  nexus=cache_info->nexus+id;
+  offset=nexus->y*cache_info->columns+nexus->x;
+  if (cache_info->type != DiskCache)
+    if (nexus->pixels == (cache_info->pixels+offset))
+      return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   O p e n C a c h e                                                         %
 %                                                                             %
 %                                                                             %
