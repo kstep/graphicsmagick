@@ -3138,8 +3138,12 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       fill_opacity=GetPixelOpacity(polygon_info,mid,fill,draw_info->fill_rule,
         x,y,&stroke_opacity);
       if (draw_info->tile != (Image *) NULL)
-        fill_color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
-          y % draw_info->tile->rows);
+        {
+          fill_color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
+            y % draw_info->tile->rows);
+          stroke_color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
+            y % draw_info->tile->rows);
+        }
       if (!draw_info->stroke_antialias)
         {
           fill_opacity=fill_opacity > 0.50 ? 1.0 : 0.0;

@@ -91,8 +91,7 @@ typedef struct _DrawInfo
     *dash_pattern;
 
   char
-    *clip_path,
-    *pattern_path;
+    *clip_path;
 
   SegmentInfo
     bounds;
