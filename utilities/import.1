@@ -216,9 +216,6 @@ image after it has been read.
 .B "-descend"
 \fRobtain image by descending window hierarchy
 .TP
-.B "-despeckle"
-\fRreduce the speckles within an image
-.TP
 .B "-display \fIhost:display[.screen]"\fP
 \fRspecifies the X server to contact
 .TP
@@ -510,35 +507,8 @@ window.  In this way, you can obtain pieces of other windows that overlap
 the specified window, and more importantly, you can capture menus or other
 popups that are independent windows but appear over the specified window.
 .TP
-.B "-select"
-\fRselect something in import
-.TP
 .B "-silent"
 \fRoperate silently
-.TP
-.B "-size \fI<width>x<height>{+offset}"\fP
-\fRwidth and height of the image
-
-Use this option to specify the width and height of raw images whose dimensions
-are unknown such as \fBGRAY\fP,
-\fBRGB\fP, or \fBCMYK\fP. In addition
-to width and height, use
-\fB-size\fP with an offset to skip any header information in
-the image or tell the number of colors in a \fBMAP\fP image
-file, (e.g. -size 640x512+256).
-
-
-For Photo CD images, choose from these sizes:
-
-     192x128
-     384x256
-     768x512
-     1536x1024
-     3072x2048
-
-Finally, use this option to choose a particular resolution layer of a JBIG
-or JPEG image (e.g. -size 1024x768).
-
 .TP
 .B "-transparent \fIcolor"\fP
 \fRmake this color transparent within the image
@@ -548,32 +518,38 @@ or JPEG image (e.g. -size 1024x768).
 .SH ENVIRONMENT
 .TP
 .B "DISPLAY"
-.SH COPYRIGHT
-Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
-to making software imaging solutions freely available.
+.SH SEE ALSO
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files ("ImageMagick"),
+animate(1), display(1), composite(1), conjure(1), convert(1), identify(1),
+mogrify(1), montage(1)
+
+.SH COPYRIGHT
+
+\fBCopyright (C) 2002 ImageMagick Studio\fP
+
+\fBPermission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files ("ImageMagick"),
 to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of ImageMagick, and to permit persons to whom the
-ImageMagick is furnished to do so, subject to the following conditions:
+and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
+is furnished to do so, subject to the following conditions:\fP
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of ImageMagick.
+\fBThe above copyright notice and this permission notice shall be included
+in all copies or substantial portions of ImageMagick.\fP
 
-The software is provided "as is", without warranty of any kind, express or
-implied, including but not limited to the warranties of merchantability,
-fitness for a particular purpose and noninfringement.  In no event shall
+\fBThe software is provided "as is", without warranty of any kind, express
+or implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and noninfringement.In no event shall
 ImageMagick Studio be liable for any claim, damages or other liability,
-whether in an action of contract, tort or otherwise, arising from, out of
-or in connection with ImageMagick or the use or other dealings in
-ImageMagick.
+whether in an action of contract, tort or otherwise, arising from, out
+of or in connection with ImageMagick or the use or other dealings in
+ImageMagick.\fP
 
-Except as contained in this notice, the name of the ImageMagick Studio
-shall not be used in advertising or otherwise to promote the sale, use or
-other dealings in ImageMagick without prior written authorization from the
-ImageMagick Studio.
-
+\fBExcept as contained in this notice, the name of the
+ImageMagick Studio LLC shall not be used in advertising or otherwise to
+promote the sale, use or other dealings in ImageMagick without prior written
+authorization from the ImageMagick Studio.\fP
 .SH AUTHORS
-John Cristy, ImageMagick Studio LLC
+
+\fIJohn Cristy, ImageMagick Studio LLC\fP.
+
