@@ -53,12 +53,13 @@
 */
 typedef enum
 {
-  RedMapQuantum,
-  GreenMapQuantum,
   BlueMapQuanum,
-  OpacityMapQuantum,
+  GreenMapQuantum,
   IntensityMapQuantum,
-  PadMapQuantum
+  OpacityInvertedMapQuantum,
+  PadMapQuantum,
+  RedMapQuantum,
+  OpacityMapQuantum,
 } MapQuantumType;
 
 static SemaphoreInfo
@@ -113,10 +114,11 @@ static Image
 %
 %    o map: This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
-%      A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or
-%      I = intensity (for grayscale). Specify "P" = pad, to skip over a
-%      quantum which is intentionally ignored. Creation of an alpha channel
-%      for CMYK images is currently not supported.
+%      A = alpha (same as Transparency), O = Opacity, T = Transparency,
+%      C = cyan, Y = yellow, M = magenta, K = black, or I = intensity
+%      (for grayscale). Specify "P" = pad, to skip over a quantum which is
+%      intentionally ignored. Creation of an alpha channel for CMYK images
+%      is currently not supported.
 %
 %    o type: Define the data type of the pixels.  Float and double types are
 %      expected to be normalized [0..1] otherwise [0..MaxRGB].  Choose from
@@ -144,6 +146,9 @@ MagickExport Image *ConstituteImage(const unsigned long width,
 
   PixelPacket
     *q;
+
+  register Quantum
+    quantum;
 
   MapQuantumType
     switch_map[MaxTextExtent/sizeof(MapQuantumType)];
@@ -236,9 +241,21 @@ MagickExport Image *ConstituteImage(const unsigned long width,
             switch_map[i]=IntensityMapQuantum;
             break;
           }
+        case 'O':
+          {
+            switch_map[i]=OpacityInvertedMapQuantum;
+            image->matte=True;
+            break;
+          }
         case 'P':
           {
             switch_map[i]=PadMapQuantum;
+            break;
+          }
+        case 'T':
+          {
+            switch_map[i]=OpacityMapQuantum;
+            image->matte=True;
             break;
           }
         default:
@@ -252,440 +269,124 @@ MagickExport Image *ConstituteImage(const unsigned long width,
   /*
     Transfer the pixels from the pixel data array to the image.
   */
-  switch (type)
-  {
-    case CharPixel:
+  for (y=0; y < (long) image->rows; y++)
     {
-      register unsigned char
-        *p;
-
-      p=(unsigned char *) pixels;
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
+      q=SetImagePixels(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      indexes=GetIndexes(image);
+      for (x=0; x < (long) image->columns; x++)
         {
 	  q->red=0;
 	  q->green=0;
 	  q->blue=0;
 	  q->opacity=OpaqueOpacity;
           for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
             {
-              case RedMapQuantum:
-              {
-                q->red=ScaleCharToQuantum(*p++);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                q->green=ScaleCharToQuantum(*p++);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                q->blue=ScaleCharToQuantum(*p++);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                q->opacity=ScaleCharToQuantum(*p++);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *indexes=ScaleQuantumToIndex(ScaleCharToQuantum(*p++));
-                VerifyColormapIndex(image,*indexes);
-                q->red=image->colormap[*indexes].red;
-                q->green=image->colormap[*indexes].green;
-                q->blue=image->colormap[*indexes].blue;
-                break;
-              }
-              case PadMapQuantum:
+              /*
+                Input a quantum
+              */
+              quantum=0U;
+              
+              switch (type)
                 {
-                  p++;
-                  break;
+                case CharPixel:
+                  {
+                    register const unsigned char *p = pixels;
+                    quantum=ScaleCharToQuantum(*p++);
+                    pixels = (const void *) p;
+                    break;
+                  }
+                case ShortPixel:
+                  {
+                    register const unsigned short *p = pixels;
+                    quantum=ScaleShortToQuantum(*p++);
+                    pixels = (const void *) p;
+                    break;
+                  }
+                case IntegerPixel:
+                  {
+                    register const unsigned int *p = pixels;
+                    quantum=ScaleLongToQuantum(*p++);
+                    pixels = (const void *) p;
+                    break;
+                  }
+                case LongPixel:
+                  {
+                    register const unsigned long *p = pixels;
+                    quantum=ScaleLongToQuantum(*p++);
+                    pixels = (const void *) p;
+                    break;
+                  }
+                case FloatPixel:
+                  {
+                    register const float *p = pixels;
+                    quantum=(Quantum) ((double) MaxRGB*(*p++)+0.5);
+                    pixels = (const void *) p;
+                    break;
+                  }
+                case DoublePixel:
+                  {
+                    register const double *p = pixels;
+                    quantum=(Quantum) ((double) MaxRGB*(*p++)+0.5);
+                    pixels = (const void *) p;
+                    break;
+                  }
                 }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionError,UnrecognizedPixelMap,map)
-              }
+              
+              /*
+                Transfer quantum to image
+              */
+              switch (switch_map[i])
+                {
+                case RedMapQuantum:
+                  {
+                    q->red=quantum;
+                    break;
+                  }
+                case GreenMapQuantum:
+                  {
+                    q->green=quantum;
+                    break;
+                  }
+                case BlueMapQuanum:
+                  {
+                    q->blue=quantum;
+                    break;
+                  }
+                case OpacityMapQuantum:
+                  {
+                    q->opacity=quantum;
+                    break;
+                  }
+                case OpacityInvertedMapQuantum:
+                  {
+                    q->opacity=MaxRGB-quantum;
+                    break;
+                  }
+                case IntensityMapQuantum:
+                  {
+                    *indexes=ScaleQuantumToIndex(quantum);
+                    VerifyColormapIndex(image,*indexes);
+                    q->red=image->colormap[*indexes].red;
+                    q->green=image->colormap[*indexes].green;
+                    q->blue=image->colormap[*indexes].blue;
+                    break;
+                  }
+                case PadMapQuantum:
+                  {
+                    /* Discard quantum */
+                    break;
+                  }
+                }
             }
-          }
           indexes++;
           q++;
         }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
+      if (!SyncImagePixels(image))
+        break;
     }
-    case ShortPixel:
-    {
-      register unsigned short
-        *p;
-
-      p=(unsigned short *) pixels;
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-	  q->red=0;
-	  q->green=0;
-	  q->blue=0;
-	  q->opacity=OpaqueOpacity;
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                q->red=ScaleShortToQuantum(*p++);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                q->green=ScaleShortToQuantum(*p++);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                q->blue=ScaleShortToQuantum(*p++);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                q->opacity=ScaleShortToQuantum(*p++);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *indexes=ScaleQuantumToIndex(ScaleShortToQuantum(*p++));
-                VerifyColormapIndex(image,*indexes);
-                q->red=image->colormap[*indexes].red;
-                q->green=image->colormap[*indexes].green;
-                q->blue=image->colormap[*indexes].blue; /* FIXME Valgrind bad read */
-                break;
-              }
-              case PadMapQuantum:
-                {
-                  p++;
-                  break;
-                }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionError,UnrecognizedPixelMap,map)
-              }
-            }
-          }
-          indexes++;
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
-    }
-    case IntegerPixel:
-    {
-      register unsigned int
-        *p;
-
-      p=(unsigned int *) pixels;
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-	  q->red=0;
-	  q->green=0;
-	  q->blue=0;
-	  q->opacity=OpaqueOpacity;
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                q->red=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                q->green=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                q->blue=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                q->opacity=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *indexes=ScaleQuantumToIndex(ScaleLongToQuantum(*p++));
-                VerifyColormapIndex(image,*indexes);
-                q->red=image->colormap[*indexes].red;
-                q->green=image->colormap[*indexes].green;
-                q->blue=image->colormap[*indexes].blue;
-                break;
-              }
-              case PadMapQuantum:
-                {
-                  p++;
-                  break;
-                }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionError,UnrecognizedPixelMap,map)
-              }
-            }
-          }
-          indexes++;
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
-    }
-    case LongPixel:
-    {
-      register unsigned long
-        *p;
-
-      p=(unsigned long *) pixels;
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-	  q->red=0;
-	  q->green=0;
-	  q->blue=0;
-	  q->opacity=OpaqueOpacity;
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                q->red=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                q->green=(Quantum) (*p++);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                q->blue=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                q->opacity=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *indexes=ScaleQuantumToIndex(ScaleLongToQuantum(*p++));
-                VerifyColormapIndex(image,*indexes);
-                q->red=image->colormap[*indexes].red;
-                q->green=image->colormap[*indexes].green;
-                q->blue=image->colormap[*indexes].blue;
-                break;
-              }
-              case PadMapQuantum:
-                {
-                  p++;
-                  break;
-                }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionError,UnrecognizedPixelMap,map)
-              }
-            }
-          }
-          indexes++;
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
-    }
-    case FloatPixel:
-    {
-      register float
-        *p;
-
-      p=(float *) pixels;
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-	  q->red=0;
-	  q->green=0;
-	  q->blue=0;
-	  q->opacity=OpaqueOpacity;
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                q->red=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                q->green=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                q->blue=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                q->opacity=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *indexes=(Quantum) ((MaxColormapSize-1)*(*p++)+0.5);
-                VerifyColormapIndex(image,*indexes);
-                q->red=image->colormap[*indexes].red;
-                q->green=image->colormap[*indexes].green;
-                q->blue=image->colormap[*indexes].blue;
-                break;
-              }
-              case PadMapQuantum:
-                {
-                  p++;
-                  break;
-                }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionError,UnrecognizedPixelMap,map)
-              }
-            }
-          }
-          indexes++;
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
-    }
-    case DoublePixel:
-    {
-      register double
-        *p;
-
-      p=(double *) pixels;
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-          q->red=0;
-	  q->green=0;
-          q->blue=0;
-          q->opacity=OpaqueOpacity;
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                q->red=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                q->green=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                q->blue=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                q->opacity=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *indexes=(Quantum) ((MaxColormapSize-1)*(*p++)+0.5);
-                VerifyColormapIndex(image,*indexes);
-                q->red=image->colormap[*indexes].red;
-                q->green=image->colormap[*indexes].green;
-                q->blue=image->colormap[*indexes].blue;
-                break;
-              }
-              case PadMapQuantum:
-                {
-                  p++;
-                  break;
-                }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionError,UnrecognizedPixelMap,map)
-              }
-            }
-          }
-          indexes++;
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
-    }
-    default:
-    {
-      DestroyImage(image);
-      ThrowImageException(OptionError,UnrecognizedPixelMap,map)
-    }
-  }
+  
   if (image->storage_class == PseudoClass)
     {
       /*
@@ -776,9 +477,10 @@ MagickExport void DestroyConstitute(void)
 %
 %    o map: This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
-%      A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or
-%      I = intensity (for grayscale). Specify "P" = pad, to output a pad
-%      quantum. Pad quantums are zero-value.
+%      A = alpha  (same as Transparency), O = Opacity, T = Transparency,
+%      C = cyan, Y = yellow, M = magenta, K = black, I = intensity (for
+%      grayscale). Specify "P" = pad, to output a pad quantum. Pad quantums
+%      are zero-value.
 %
 %    o type: Define the data type of the pixels.  Float and double types are
 %      expected to be normalized [0..1] otherwise [0..MaxRGB].  Choose from
@@ -807,6 +509,9 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
   register const PixelPacket
     *p;
 
+  register Quantum
+    quantum;
+
   MapQuantumType
     switch_map[MaxTextExtent/sizeof(MapQuantumType)];
 
@@ -821,7 +526,6 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
   /*
     Prepare a validated and more efficient version of the map.
   */
-
   for (i=0; i < (long) length; i++)
     {
       switch ((int) toupper(map[i]))
@@ -842,6 +546,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             break;
           }
         case 'A':
+        case 'T':
           {
             switch_map[i]=OpacityMapQuantum;
             break;
@@ -883,9 +588,18 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             switch_map[i]=IntensityMapQuantum;
             break;
           }
+        case 'O':
+          {
+            switch_map[i]=OpacityInvertedMapQuantum;
+            break;
+          }
         case 'P':
           {
             switch_map[i]=PadMapQuantum;
+            break;
+          }
+          {
+            switch_map[i]=OpacityMapQuantum;
             break;
           }
         default:
@@ -895,393 +609,114 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
           }
         }
     }
-
-  switch (type)
-  {
-    case CharPixel:
+  
+  for (y=0; y < (long) rows; y++)
     {
-      register unsigned char
-        *q;
-
-      q=(unsigned char *) pixels;
-      for (y=0; y < (long) rows; y++)
-      {
-        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) columns; x++)
+      p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        break;
+      for (x=0; x < (long) columns; x++)
         {
           for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
             {
-              case RedMapQuantum:
-              {
-                *q++=ScaleQuantumToChar(p->red);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                *q++=ScaleQuantumToChar(p->green);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                *q++=ScaleQuantumToChar(p->blue);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                if (image->matte)
-                  *q=ScaleQuantumToChar(p->opacity);
-                else
-                  *q=0U;
-                q++;
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
-                break;
-              }
-              case PadMapQuantum:
+              /*
+                Obtain quantum value
+              */
+              quantum=0U;
+              switch (switch_map[i])
                 {
-                  *q++=0U;
-                  break;
+                case RedMapQuantum:
+                  {
+                    quantum=p->red;
+                    break;
+                  }
+                case GreenMapQuantum:
+                  {
+                    quantum=p->green;
+                    break;
+                  }
+                case BlueMapQuanum:
+                  {
+                    quantum=p->blue;
+                    break;
+                  }
+                case IntensityMapQuantum:
+                  {
+                    quantum=PixelIntensityToQuantum(p);
+                    break;
+                  }
+                case OpacityInvertedMapQuantum:
+                  {
+                    if (image->matte)
+                      quantum=p->opacity;
+                    quantum=MaxRGB-quantum;
+                    break;
+                  }
+                case OpacityMapQuantum:
+                  {
+                    if (image->matte)
+                      quantum=p->opacity;
+                    break;
+                  }
+                case PadMapQuantum:
+                  {
+                    /* Zero quantum */
+                    break;
+                  }
                 }
-              default:
-              {
-                ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
-                return(False);
-              }
-            }
-          }
-          p++;
-        }
-      }
-      break;
-    }
-    case ShortPixel:
-    {
-      register unsigned short
-        *q;
 
-      q=(unsigned short *) pixels;
-      for (y=0; y < (long) rows; y++)
-      {
-        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) columns; x++)
-        {
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                *q++=ScaleQuantumToShort(p->red);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                *q++=ScaleQuantumToShort(p->green);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                *q++=ScaleQuantumToShort(p->blue);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                if (image->matte)
-                  *q=ScaleQuantumToShort(p->opacity);
-                else
-                  *q=0U;
-                q++;
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *q++=ScaleQuantumToShort(PixelIntensityToQuantum(p));
-                break;
-              }
-              case PadMapQuantum:
+              /*
+                Output quantum
+              */
+              switch (type)
                 {
-                  *q++=0U;
-                  break;
+                case CharPixel:
+                  {
+                    register unsigned char *q = pixels;
+                    *q++=ScaleQuantumToChar(quantum);
+                    pixels=(void *) q;
+                    break;
+                  }
+                case ShortPixel:
+                  {
+                    register unsigned short *q = pixels;
+                    *q++=ScaleQuantumToShort(quantum);
+                    pixels=(void *) q;
+                    break;
+                  }
+                case IntegerPixel:
+                  {
+                    register unsigned int *q = pixels;
+                    *q++=ScaleQuantumToLong(quantum);
+                    pixels=(void *) q;
+                    break;
+                  }
+                case LongPixel:
+                  {
+                    register unsigned long *q = pixels;
+                    *q++=ScaleQuantumToLong(quantum);
+                    pixels=(void *) q;
+                    break;
+                  }
+                case FloatPixel:
+                  {
+                    register float *q = pixels;
+                    *q++=(double) quantum/MaxRGB;
+                    pixels=(void *) q;
+                    break;
+                  }
+                case DoublePixel:
+                  {
+                    register double *q = pixels;
+                    *q++=(double) quantum/MaxRGB;
+                    pixels=(void *) q;
+                    break;
+                  }
                 }
-              default:
-              {
-                ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
-                return(False);
-              }
             }
-          }
           p++;
         }
-      }
-      break;
     }
-    case IntegerPixel:
-    {
-      register unsigned int
-        *q;
-
-      q=(unsigned int *) pixels;
-      for (y=0; y < (long) rows; y++)
-      {
-        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) columns; x++)
-        {
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(p->red);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(p->green);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                *q++=ScaleQuantumToLong(p->blue);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                if (image->matte)
-                  *q=ScaleQuantumToLong(p->opacity);
-                else
-                  *q=0U;
-                q++;
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
-                break;
-              }
-              case PadMapQuantum:
-                {
-                  *q++=0U;
-                  break;
-                }
-              default:
-              {
-                ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
-                return(False);
-              }
-            }
-          }
-          p++;
-        }
-      }
-      break;
-    }
-    case LongPixel:
-    {
-      register unsigned long
-        *q;
-
-      q=(unsigned long *) pixels;
-      for (y=0; y < (long) rows; y++)
-      {
-        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) columns; x++)
-        {
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(p->red);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(p->green);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                *q++=ScaleQuantumToLong(p->blue);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                if (image->matte)
-                  *q=ScaleQuantumToLong(p->opacity);
-                else
-                  *q=0UL;
-                q++;
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
-                break;
-              }
-              case PadMapQuantum:
-                {
-                  *q++=0UL;
-                  break;
-                }
-              default:
-              {
-                ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
-                return(False);
-              }
-            }
-          }
-          p++;
-        }
-      }
-      break;
-    }
-    case FloatPixel:
-    {
-      register float
-        *q;
-
-      q=(float *) pixels;
-      for (y=0; y < (long) rows; y++)
-      {
-        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) columns; x++)
-        {
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                *q++=(double) p->red/MaxRGB;
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                *q++=(double) p->green/MaxRGB;
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                *q++=(double) p->blue/MaxRGB;
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                if (image->matte)
-                  *q=(double) p->opacity/MaxRGB;
-                else
-                  *q=0.0;
-                q++;
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-		*q++=(double) PixelIntensity(p)/MaxRGB;
-                break;
-              }
-              case PadMapQuantum:
-                {
-                  *q++=0.0;
-                  break;
-                }
-              default:
-              {
-                ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
-                return(False);
-              }
-            }
-          }
-          p++;
-        }
-      }
-      break;
-    }
-    case DoublePixel:
-    {
-      register double
-        *q;
-
-      q=(double *) pixels;
-      for (y=0; y < (long) rows; y++)
-      {
-        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) columns; x++)
-        {
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                *q++=(double) p->red/MaxRGB;
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                *q++=(double) p->green/MaxRGB;
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                *q++=(double) p->blue/MaxRGB;
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                if (image->matte)
-                  *q=(double) p->opacity/MaxRGB;
-                else
-                  *q=0.0;
-                q++;
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *q++=(double) PixelIntensityToQuantum(p)/MaxRGB;
-                break;
-              }
-              case PadMapQuantum:
-                {
-                  *q++=0.0;
-                  break;
-                }
-              default:
-              {
-                ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
-                return(False);
-              }
-            }
-          }
-          p++;
-        }
-      }
-      break;
-    }
-    default:
-    {
-      ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
-      return(False);
-    }
-  }
   return(True);
 }
 

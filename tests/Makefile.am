@@ -237,6 +237,8 @@ CHECK_SIZED_FILE_FORMATS = \
 CHECK_CONSTITUTE_MAPS = \
 	rgb \
 	rgba \
+	rgbt \
+	rgbo \
 	prgb \
 	cmy \
 	cmyk \

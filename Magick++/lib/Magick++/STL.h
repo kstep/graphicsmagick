@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003, 2004
 //
 // Definition and implementation of template functions for using
 // Magick::Image with STL containers.
@@ -29,7 +29,7 @@ namespace Magick
 
   // Function objects provide the means to invoke an operation on one
   // or more image objects in an STL-compatable container.  The
-  // arguments to the function object constructor(s) are compatable
+  // arguments to the function object constructor(s) are compatible
   // with the arguments to the equivalent Image class method and
   // provide the means to supply these options when the function
   // object is invoked.

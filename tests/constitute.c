@@ -369,16 +369,17 @@ int main ( int argc, char **argv )
       goto program_exit;
     }
 
-  if (getenv("SHOW_RESULT") != 0)
-    DisplayImages( imageInfo, final );
-
  program_exit:
   fflush(stdout);
   if (original)
     DestroyImage( original );
   original = 0;
   if (final)
-    DestroyImage( final );
+    {
+      if (getenv("SHOW_RESULT") != 0)
+        DisplayImages( imageInfo, final );
+      DestroyImage( final );
+    }
   final = 0;
   if (pixels)
     LiberateMemory( (void**)&pixels );

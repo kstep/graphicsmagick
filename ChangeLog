@@ -1,5 +1,10 @@
 2004-03-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/constitute.c (ConstituteImage): Add support for 'T'
+	(transparency) and 'O' (opacity) map types.  Simplify
+	implementation.
+	(DispatchImage): Add support for 'T' (transparency) and 'O'
+	(opacity) map types.  Simplify implementation.
 	* config/delegates.mgk.in: Quote delegate command names so
 	that they can contain embedded spaces.
 	* VisualMagick/bin/delegates.mgk: Quote delegate command names so
