@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                                 N   N  TTTTT                                %
-%                                 NN  N    T                                  %
-%                                 N N N    T                                  %
-%                                 N  NN    T                                  %
-%                                 N   N    T                                  %
+%                                 X   X  PPPP                                 %
+%                                  X X   P   P                                %
+%                                   X    PPPP                                 %
+%                                  X X   P                                    %
+%                                 X   X  P                                    %
 %                                                                             %
 %                                                                             %
-%                  Windows NT Utility Methods for ImageMagick                 %
+%                  Windows XP Utility Methods for ImageMagick                 %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %

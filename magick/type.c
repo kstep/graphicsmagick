@@ -713,7 +713,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                 char
                   path[MaxTextExtent];
 
-                NTGhostscriptFonts(path,MaxTextExtent-2);
+                XPGhostscriptFonts(path,MaxTextExtent-2);
                 (void) strcat(path,DirectorySeparator);
                 SubstituteString(&glyphs,"@ghostscript_font_dir@",path);
               }
@@ -739,7 +739,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                 char
                   path[MaxTextExtent];
 
-                NTGhostscriptFonts(path,MaxTextExtent-2);
+                XPGhostscriptFonts(path,MaxTextExtent-2);
                 (void) strcat(path,DirectorySeparator);
                 SubstituteString(&metrics,"@ghostscript_font_dir@",path);
               }

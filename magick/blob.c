@@ -760,7 +760,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     /*
       Locate file via registry key.
     */
-    key_value=NTRegistryKeyLookup("ConfigurePath");
+    key_value=XPRegistryKeyLookup("ConfigurePath");
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
@@ -890,7 +890,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
     /*
       Locate path via registry key.
     */
-    key_value=NTRegistryKeyLookup("ModulesPath");
+    key_value=XPRegistryKeyLookup("ModulesPath");
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
@@ -1036,7 +1036,7 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
     /*
       Locate file via registry key.
     */
-    key_value=NTRegistryKeyLookup("ConfigurePath");
+    key_value=XPRegistryKeyLookup("ConfigurePath");
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
