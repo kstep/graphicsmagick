@@ -491,7 +491,6 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
 
   char
     filename[MaxTextExtent],
-    geometry[MaxTextExtent],
     *path,
     *path_end;
 
@@ -828,6 +827,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   /*
     Render label with a Postscript font.
   */
+  image=AllocateImage(image_info);
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file == (FILE *) NULL)
@@ -862,6 +862,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
     (unsigned int) ceil(2*image_info->pointsize));
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   (void) CloneString(&clone_info->page,page);
+  DestroyImage(image);
   image=ReadImage(clone_info,exception);
   (void) remove(filename);
   DestroyImageInfo(clone_info);
@@ -966,6 +967,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
   /*
     Allocate image structure.
   */
+  image=AllocateImage(image_info);
   if (display == (Display *) NULL)
     {
       /*
@@ -1059,7 +1061,6 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
   /*
     Render label with a X11 server font.
   */
-  image=AllocateImage(image_info);
   image->matte=True;
   image->columns=annotate_info.width;
   image->rows=annotate_info.height;
@@ -1106,9 +1107,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
 {
   Image
     *image;
-
-  unsigned int
-    status;
 
   /*
     Create image label.
