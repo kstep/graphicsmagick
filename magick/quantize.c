@@ -439,26 +439,20 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
   if ((cube_info->quantize_info->number_colors == 2) &&
       (cube_info->quantize_info->colorspace == GRAYColorspace))
     {
+      Quantum
+        intensity;
+
       /*
         Monochrome image.
       */
-      image->colormap[0].red=0;
-      image->colormap[0].green=0;
-      image->colormap[0].blue=0;
-      if (image->colors == 2)
-        {
-          unsigned int
-            polarity;
-
-          polarity=PixelIntensityToQuantum(&image->colormap[0]) <
-            PixelIntensityToQuantum(&image->colormap[1]);
-          image->colormap[polarity ? 0 : 1].red=0;
-          image->colormap[polarity ? 0 : 1].green=0;
-          image->colormap[polarity ? 0 : 1].blue=0;
-          image->colormap[polarity ? 1 : 0].red=MaxRGB;
-          image->colormap[polarity ? 1 : 0].green=MaxRGB;
-          image->colormap[polarity ? 1 : 0].blue=MaxRGB;
-        }
+      for (i=0; i < (long) image->colors; i++)
+      {
+        intensity=PixelIntensityToQuantum(&image->colormap[i]) <
+          (MaxRGB/2) ? 0 : MaxRGB;
+        image->colormap[i].red=intensity;
+        image->colormap[i].green=intensity;
+        image->colormap[i].blue=intensity;
+      }
     }
   if (cube_info->quantize_info->measure_error)
     {
