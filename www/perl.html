@@ -462,14 +462,6 @@ x=><i>integer</i>, y=><i>integer</i></td>
 </tr>
 
 <tr>
-<td>Clone</td>
-
-<td></td>
-
-<td>make a copy an image</td>
-</tr>
-
-<tr>
 <td>Coalesce</td>
 
 <td></td>
@@ -953,16 +945,6 @@ of a left and right image of a stereo pair</td>
 </tr>
 
 <tr>
-<td>Transform</td>
-
-<td>geometry=><i>geometry</i>, crop=><i>geometry</i>, filter=>{Point, Box,
-Triangle, Hermite, Hanning, Hamming, Blackman, Gaussian, Quadratic, Cubic,
-Catrom, Mitchell, Lanczos, Bessel, Sinc}</td>
-
-<td>crop or resize an image with a fully-qualified geometry specification</td>
-</tr>
-
-<tr>
 <td>Transparent</td>
 
 <td>color=><i>colorname</i></td>
@@ -1117,10 +1099,11 @@ And here is a list of all the image attributes you can set:
 
 <td><i>integer</i></td>
 
-<td>Image pixels are stored in memory until 80 megabytes of memory have
+<td>Image pixels are stored in memory until your computers real memory has
 been consumed. Subsequent pixel operations are cached on disk. Operations
 to memory are significantly faster but if your computer does not have a
-sufficient amount of free memory you may want to lower this threshold.</td>
+sufficient amount of free memory you may want to set this threshold to
+a small megabyte value.  Use 0 to cache all images to disk.</td>
 </tr>
 
 <tr>
@@ -1916,26 +1899,36 @@ Methods</font></font></font></b></td>
 <dd>
 The <tt>Append</tt> method append a set of images. For example,</dd>
 
-<pre>&nbsp;&nbsp;&nbsp; $x = $image->Append(stack=>{true,false});</pre>
+<pre>&nbsp;&nbsp;&nbsp; $p = $image->Append(stack=>{true,false});</pre>
 appends all the images associated with object <tt>$image</tt>. All the
 input images must have the same width or height. Images of the same width
 are stacked top-to-bottom. Images of the same height are stacked left-to-right.
 If the stack parameter is false, rectangular images are stacked left-to-right
 otherwise top-to-bottom.
 <dd>
+<p>
 The <tt>Average</tt> method averages a set of images. For example,</dd>
 
-<pre>&nbsp;&nbsp;&nbsp; $x = $image->Average();</pre>
+<pre>&nbsp;&nbsp;&nbsp; $p = $image->Average();</pre>
 averages all the images associated with object <tt>$image</tt>.
 <dd>
+<p>
+The <tt>Clone</tt> method copies a set of images. For example,</dd>
+
+<pre>&nbsp;&nbsp;&nbsp; $p = $image->Clone();</pre>
+copies all the images from object <tt>$q</tt> to <tt>$p</tt>. You can use this
+method for single or multi-image sequences.
+<dd>
+<p>
 The <tt>Morph</tt> method morphs a set of images. Both the image pixels
 and size are linearly interpolated to give the appearance of a meta-morphosis
 from one image to the next:</dd>
 
-<pre>&nbsp;&nbsp;&nbsp; $x = $image->Morph(frames=><i>integer</i>);</pre>
+<pre>&nbsp;&nbsp;&nbsp; $p = $image->Morph(frames=><i>integer</i>);</pre>
 where <i>frames</i> is the number of in-between images to generate. The
 default is 1.
-<p><tt>Mosaic</tt> create an mosaic from an image sequence.
+<p><tt>Mosaic</tt> creates an mosaic from an image sequence.
+<p>
 <p>Method <tt>Mogrify</tt> is a single entry point for the image manipulation
 methods (<a href="#mani">Manipulate an Image</a>). The parameters are the
 name of a method followed by any parameters the method may require. For
@@ -1949,28 +1942,31 @@ at location (40, 50):
 <pre>&nbsp;&nbsp;&nbsp; $image->MogrifyRegion('100x100+40+50', 'modulate', brightness=>50);</pre>
 
 <dd>
-The <tt>Clone</tt> method copies a set of images. For example,</dd>
-
-<pre>&nbsp;&nbsp;&nbsp; $p = $image->Clone();</pre>
-copies all the images from object <tt>$q</tt> to <tt>$p</tt>. You can use this
-method for single or multi-image sequences.
-<p>
 <tt>Ping</tt> accepts one or more image file names and returns their respective
 width, height, size in bytes, and format (e.g. GIF, JPEG, etc.). For example,
 <pre>&nbsp;&nbsp;&nbsp; ($width, $height, $size, $format) = split(',', $image->Ping('logo.png'));</pre>
 This is a more efficient and less memory intensive way to query if an image
 exists and what its characteristics are. Note, only information about the
 first image in a multi-frame image file is returned.
-<p>You can optionally add <tt>Image</tt> to any method name above. For
-example, <tt>PingImage</tt> is an alias for method <tt>Ping</tt>.
-<p>Use <tt>RemoteCommand</tt> to send a command to an already running <a href="display.html">display</a>
-or <a href="animate.html">animate</a> application. The only parameter is
-the name of the image file to display or animate.
-<p>Finally, for convenience, method <tt>QueryColor</tt> accepts one or
+<p>For convenience, method <tt>QueryColor</tt> accepts one or
 more color names or hex value and returns their respective red, green,
 and blue color values:
 <pre>&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = split(', ', $image->QueryColor('cyan'));
 &nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = split(', ', $image->QueryColor('#716bae'));</pre>
+<dd>
+<p>Use <tt>RemoteCommand</tt> to send a command to an already running <a href="display.html">display</a>
+or <a href="animate.html">animate</a> application. The only parameter is
+the name of the image file to display or animate.
+<dd>
+<p>
+Finally, the <tt>Transform</tt> method accepts a fully-qualified geometry
+specification for cropping or resizing one or more images.  For example,
+
+<p>You can optionally add <tt>Image</tt> to any method name above. For
+example, <tt>PingImage</tt> is an alias for method <tt>Ping</tt>.
+</dd>
+
+<pre>&nbsp;&nbsp;&nbsp; $p = $image->Transform(crop=>'100x100');</pre>
 </dl>
 <a href="#contents">Back to Contents</a>
 <br>&nbsp;

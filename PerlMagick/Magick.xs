@@ -382,7 +382,7 @@ static struct
     { "Solarize", { {"factor", DoubleReference} } },
     { "Sync", },
     { "Texture", { {"texture", ImageReference} } },
-    { "Transform", { {"geom", StringReference}, {"crop", StringReference},
+    { "Sans", { {"geom", StringReference}, {"crop", StringReference},
       {"filter", FilterTypess} } },
     { "Transparent", { {"color", StringReference} } },
     { "Threshold", { {"threshold", DoubleReference} } },
@@ -3664,8 +3664,8 @@ Mogrify(ref,...)
     SyncImage          = 106
     Texture            = 107
     TextureImage       = 108
-    Transform          = 109
-    TransformImage     = 110
+    Sans               = 109
+    SansImage          = 110
     Transparent        = 111
     TransparentImage   = 112
     Threshold          = 113
@@ -5045,20 +5045,8 @@ Mogrify(ref,...)
           TextureImage(image,argument_list[0].image_reference);
           break;
         }
-        case 55:  /* Transform */
-        {
-          if (!attribute_flag[0])
-            argument_list[0].string_reference=(char *) NULL;
-          if (!attribute_flag[1])
-            argument_list[1].string_reference=(char *) NULL;
-          if (!attribute_flag[2])
-            argument_list[2].int_reference=(int) LanczosFilter;
-          next=(Image *) NULL;
-          image->filter=(FilterTypes) argument_list[2].int_reference;
-          TransformImage(&image,argument_list[1].string_reference,
-            argument_list[0].string_reference);
+        case 55:  /* Sans */
           break;
-        }
         case 56:  /* Transparent */
         {
           PixelPacket
@@ -6297,6 +6285,161 @@ Set(ref,...)
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
     error_list=NULL;
+    XSRETURN(1);
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
+#   T r a n s f e r                                                           #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+Transform(ref,...)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    TransformImage = 1
+    transform      = 2
+    transformimage = 3
+  PPCODE:
+  {
+    AV
+      *av;
+
+    char
+      *attribute,
+      *crop_geometry,
+      *geometry;
+
+    ExceptionInfo
+      exception;
+
+    HV
+      *hv;
+
+    Image
+      *clone,
+      *next,
+      *image;
+
+    jmp_buf
+      error_jmp;
+
+    register int
+      i;
+
+    struct PackageInfo
+      *info;
+
+    SV
+      *av_reference,
+      *reference,
+      *rv,
+      *sv,
+      **reference_vector;
+
+    volatile int
+      status;
+
+    av=NULL;
+    reference_vector=NULL;
+    status=0;
+    attribute=NULL;
+    error_list=newSVpv("",0);
+    if (!sv_isobject(ST(0)))
+      {
+        MagickWarning(OptionWarning,"Reference is not my type",PackageName);
+        goto MethodException;
+      }
+    reference=SvRV(ST(0));
+    hv=SvSTASH(reference);
+    av=newAV();
+    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
+    SvREFCNT_dec(av);
+    error_jump=(&error_jmp);
+    status=setjmp(error_jmp);
+    if (status)
+      goto MethodException;
+    image=SetupList(reference,&info,&reference_vector);
+    if (!image)
+      {
+        MagickWarning(OptionWarning,"No images to montage",NULL);
+        goto MethodException;
+      }
+    info=GetPackageInfo((void *) av,info);
+    /*
+      Get attribute.
+    */
+    crop_geometry=(char *) NULL;
+    geometry=(char *) NULL;
+    for (i=2; i < items; i+=2)
+    {
+      attribute=(char *) SvPV(ST(i-1),na);
+      switch (*attribute)
+      {
+        case 'c':
+        case 'C':
+        {
+          if (strEQcase(attribute,"crop"))
+            {
+              crop_geometry=SvPV(ST(i),na);
+              continue;
+            }
+          break;
+        }
+        case 'g':
+        case 'G':
+        default:
+        {
+          if (strEQcase(attribute,"geometry"))
+            {
+              geometry=SvPV(ST(i),na);
+              continue;
+            }
+          break;
+        }
+      }
+      MagickWarning(OptionWarning,"Invalid attribute",attribute);
+    }
+    GetExceptionInfo(&exception);
+    for (next=image; next; next=next->next)
+    {
+      clone=CloneImage(next,next->columns,next->rows,False,&exception);
+      if (clone)
+        TransformImage(&clone,crop_geometry,geometry);
+      if (!image)
+        {
+          MagickWarning(exception.severity,exception.message,
+            exception.qualifier);
+          goto MethodException;
+        }
+      for (image=clone; image; image=image->next)
+      {
+        sv=newSViv((IV) image);
+        rv=newRV(sv);
+        av_push(av,sv_bless(rv,hv));
+        SvREFCNT_dec(sv);
+      }
+    }
+    ST(0)=av_reference;
+    error_jump=NULL;
+    SvREFCNT_dec(error_list);  /* can't return warning messages */
+    error_list=NULL;
+    XSRETURN(1);
+
+  MethodException:
+    error_jump=NULL;
+    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
+    SvPOK_on(error_list);
+    ST(0)=sv_2mortal(error_list);
+    error_list=NULL;
+    error_jump=NULL;
     XSRETURN(1);
   }
 
