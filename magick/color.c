@@ -448,7 +448,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
   for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
     if (LocaleCompare(colorname,p->name) == 0)
       break;
-  if (p != (ColorInfo *) NULL)
+  if (p == (ColorInfo *) NULL)
     ThrowException(exception,OptionWarning,"Unrecognized color",name);
   else
     if (p != color_list)
