@@ -156,6 +156,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  image=(Image *) NULL;
   pwp_image=AllocateImage(image_info);
   status=OpenBlob(image_info,pwp_image,ReadBinaryBlobMode,exception);
   if (status == False)
@@ -166,7 +167,6 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
-  image=(Image *) NULL;
   for ( ; ; )
   {
     for (c=ReadBlobByte(pwp_image); c != EOF; c=ReadBlobByte(pwp_image))

@@ -1,5 +1,7 @@
 2003-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pwp.c (ReadPWPImage): Ensure that image is initialized
+	before invoking ThrowReaderException.
 	* magick/image.c (CloneImage): Use CopyException.
 	* magick/error.c (CopyException): Add function to support copying
 	ExceptionInfo structures.
