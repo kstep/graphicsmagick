@@ -2554,6 +2554,24 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     else
       png_set_read_fn(ping,image,png_get_data);
+
+#if defined(PNG_USE_PNGGCCRD) && defined(PNG_ASSEMBLER_CODE_SUPPORTED) \
+  && (PNG_LIBPNG_VER >= 10200)
+    /* Disable thread-unsafe features of pnggccrd */
+    if (png_access_version() >= 10200)
+    {
+      png_uint_32 mmx_disable_mask = 0;
+      png_uint_32 asm_flags;
+
+      mmx_disable_mask |= ( PNG_ASM_FLAG_MMX_READ_COMBINE_ROW  \
+                          | PNG_ASM_FLAG_MMX_READ_FILTER_SUB   \
+                          | PNG_ASM_FLAG_MMX_READ_FILTER_AVG   \
+                          | PNG_ASM_FLAG_MMX_READ_FILTER_PAETH );
+      asm_flags = png_get_asm_flags(png_ptr);
+      png_set_asm_flags(png_ptr, asm_flags & ~mmx_disable_mask);
+    }
+#endif
+
     png_read_info(ping,ping_info);
     image->depth=ping_info->bit_depth;
     if (ping_info->bit_depth < 8)
