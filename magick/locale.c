@@ -94,13 +94,13 @@ const char *GetLocaleMessage(const char *tag)
            (!(locale = getenv("LC_ALL"))       || *locale == '\0') &&
            (!(locale = getenv("LC_CTYPE"))     || *locale == '\0') &&
            (!(locale = getenv("LANG"))         || *locale == '\0') ) )
-         || !strcasecmp(locale, "C"))
+         || !LocaleCompare(locale, "C"))
       locale = "C";
 
    tp = locale;
    p = locale + strlen(locale);
    np = tag;
-  if (strncasecmp(locale, "C", 9) || p - tp != 1)
+  if (LocaleCompare(locale, "C", 9) || p - tp != 1)
     return tag;
   else
     switch (*NEXT_FIELD)
@@ -109,11 +109,11 @@ const char *GetLocaleMessage(const char *tag)
       return tag;
 
     case 'c':  case 'C':
-      if (p - tp == 5 && !strncasecmp(tp, "Cache", 5))
-        if (strncasecmp(NEXT_FIELD, "Error", 5) || p - tp != 5)
+      if (p - tp == 5 && !LocaleNCompare(tp, "Cache", 5))
+        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
           return tag;
         else
-        if (strncasecmp(NEXT_FIELD, "PixelCacheIsNotOpen", 19) || p - tp != 19)
+        if (LocaleNCompare(NEXT_FIELD, "PixelCacheIsNotOpen", 19) || p - tp != 19)
           return tag;
         else
           return *np ? tag : "Pixel cache is not open";
@@ -121,11 +121,11 @@ const char *GetLocaleMessage(const char *tag)
         return tag;
 
     case 'r':  case 'R':
-      if (p - tp == 8 && !strncasecmp(tp, "Resource", 8))
-        if (strncasecmp(NEXT_FIELD, "Limit", 5) || p - tp != 5)
+      if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
+        if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
           return tag;
         else
-        if (strncasecmp(NEXT_FIELD, "Error", 5) || p - tp != 5)
+        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
           return tag;
         else
           switch (*NEXT_FIELD)
@@ -134,13 +134,13 @@ const char *GetLocaleMessage(const char *tag)
             return tag;
 
           case 'm':  case 'M':
-            if (p - tp == 22 && !strncasecmp(tp, "MemoryAllocationFailed", 22))
+            if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
               return *np ? tag : "Memory allocation failed";
             else
               return tag;
 
           case 'u':  case 'U':
-            if (p - tp == 18 && !strncasecmp(tp, "UnableToCloneImage", 18))
+            if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneImage", 18))
               return *np ? tag : "Unable to clone image";
             else
               return tag;
