@@ -290,7 +290,9 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
     OpenModules(exception);
 #endif
   AcquireSemaphore(&magick_semaphore);
-  if (magick_list == (MagickInfo *) NULL)
+  if (magick_list != (MagickInfo *) NULL)
+    LiberateSemaphore(&magick_semaphore);
+  else
     {
       /*
         Register image formats.
@@ -380,9 +382,9 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
       RegisterXWDImage();
       RegisterYUVImage();
 #endif
+      LiberateSemaphore(&magick_semaphore);
       atexit(DestroyMagickInfo);
     }
-  LiberateSemaphore(&magick_semaphore);
   if ((name == (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
     return(magick_list);
   /*

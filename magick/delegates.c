@@ -177,15 +177,17 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
     *p;
 
   AcquireSemaphore(&delegate_semaphore);
-  if (delegate_list == (DelegateInfo *) NULL)
+  if (delegate_list != (DelegateInfo *) NULL)
+    LiberateSemaphore(&delegate_semaphore);
+  else
     {
       /*
         Read delegates.
       */
       (void) ReadConfigurationFile(DelegateFilename,exception);
+      LiberateSemaphore(&delegate_semaphore);
       atexit(DestroyDelegateInfo);
     }
-  LiberateSemaphore(&delegate_semaphore);
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     return(delegate_list);
   /*

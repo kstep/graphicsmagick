@@ -314,15 +314,17 @@ MagickExport ColorInfo *GetColorInfo(const char *name,ExceptionInfo *exception)
     *q;
 
   AcquireSemaphore(&color_semaphore);
-  if (color_list == (ColorInfo *) NULL)
+  if (color_list != (ColorInfo *) NULL)
+    LiberateSemaphore(&color_semaphore);
+  else
     {
       /*
         Read color list.
       */
       (void) ReadConfigurationFile(ColorFilename,exception);
+      LiberateSemaphore(&color_semaphore);
       atexit(DestroyColorInfo);
     }
-  LiberateSemaphore(&color_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(color_list);
   /*

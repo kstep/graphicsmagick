@@ -167,15 +167,17 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magic,
     *p;
 
   AcquireSemaphore(&magic_semaphore);
-  if (magic_list == (MagicInfo *) NULL)
+  if (magic_list != (MagicInfo *) NULL)
+    LiberateSemaphore(&magic_semaphore);
+  else
     {
       /*
         Read magic list.
       */
       (void) ReadConfigurationFile(MagicFilename,exception);
+      LiberateSemaphore(&magic_semaphore);
       atexit(DestroyMagicInfo);
     }
-  LiberateSemaphore(&magic_semaphore);
   if ((magic == (const unsigned char *) NULL) || (length == 0))
     return(magic_list);
   /*

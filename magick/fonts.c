@@ -174,15 +174,17 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
     *p;
 
   AcquireSemaphore(&font_semaphore);
-  if (font_list == (FontInfo *) NULL)
+  if (font_list != (FontInfo *) NULL)
+    LiberateSemaphore(&font_semaphore);
+  else
     {
       /*
         Read fonts.
       */
       (void) ReadConfigurationFile(FontFilename,exception);
+      LiberateSemaphore(&font_semaphore);
       atexit(DestroyFontInfo);
     }
-  LiberateSemaphore(&font_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(font_list);
   /*
