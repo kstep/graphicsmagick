@@ -1,3 +1,10 @@
+2003-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (DisplayImageCommand): Fix
+	-dispose option processing bug reported by 
+	Felix Heimbrecht.
+	* coders/fpx.c: Check status from FPX_InitSystem().
+
 2003-04-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Define PERLMAINCC to be the C compiler

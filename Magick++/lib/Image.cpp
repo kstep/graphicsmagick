@@ -3301,10 +3301,10 @@ void Magick::Image::writePixels ( const Magick::QuantumType quantum_,
 
 
 //
-// Construct using Image and Magick::Options
+// Construct using existing image and default options
 //
 Magick::Image::Image ( MagickLib::Image* image_ )
-  : _imgRef(new ImageRef( image_, new Magick::Options() ))
+  : _imgRef(new ImageRef( image_))
 {
 }
 

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2003
 //
 // Test STL coalesceImages function
 //
@@ -37,7 +37,8 @@ int main( int /*argc*/, char ** argv)
     list<Image> imageList;
     readImages( &imageList, srcdir + "test_image_anim.miff" );
 
-    coalesceImages( imageList.begin(), imageList.end() );
+    list<Image> coalescedList;
+    coalesceImages( &coalescedList, imageList.begin(), imageList.end() );
   }
 
   catch( Exception &error_ )

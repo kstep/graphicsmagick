@@ -1,3 +1,16 @@
+2003-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (Image::Image (MagickLib::Image* image_)):
+	Incorporated recommended fix from Jukka Manner to avoid
+	a scenario which leaks an Options object.
+	* tests/coalesceImages.cpp: Updated to use modified
+	coalesceImages() interface.
+	* lib/Magick++/STL.h (coalesceImages): Replaced implementation
+	with one from Felix Heimbrecht. The template signature has
+	changed to return a new image sequence. This template API
+	silently ceased to funtion due to an ImageMagick CoalesceImages
+	API change.
+
 2003-03-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/readWriteBlob.cpp (main): Added check for

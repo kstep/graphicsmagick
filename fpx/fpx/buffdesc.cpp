@@ -872,7 +872,7 @@ FPXBaselineColorSpace AnalyseFPXColorSpace (FPXColorspace& colorSpace)
          (colorSpace.theComponents[3].myColor == ALPHA))
       spaceFound = SPACE_32_BITS_YCCA;
   }
-  
+
   assert(spaceFound != NON_AUTHORIZED_SPACE);
   return spaceFound;
 }

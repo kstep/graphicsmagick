@@ -222,6 +222,7 @@ typedef short (* FPXProgressFunction) (long totalToDo, long amountDoneSoFar);
   extern void *FitsNew(size_t /* size */,void *p);
   extern void *FitsNew(size_t size);
   extern void FitsDelete(void *ptr);
+  extern bool GtheSystemToolkitInitialized(void);
 
   // C functions used by the Toolkit (not exported):
   // -----------------------------------------------

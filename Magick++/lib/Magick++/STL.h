@@ -1688,7 +1688,7 @@ namespace Magick
 
   // Insert images in image list into existing container (appending to container)
   // The images should not be deleted since only the image ownership is passed.
-  // The options copied into the object.
+  // The options are copied into the object.
   template <class Container>
   void insertImages( Container *sequence_,
 		     MagickLib::Image* images_ ) {
@@ -1766,16 +1766,30 @@ namespace Magick
 
   // Merge a sequence of images.
   // This is useful for GIF animation sequences that have page
-  // offsets and disposal methods.
-  // The images are modified in-place. No pointer re-assignments are performed.
-  template <class InputIterator>
-  void coalesceImages( InputIterator first_,
-		       InputIterator last_ ) {
+  // offsets and disposal methods. A container to contain
+  // the updated image sequence is passed via the coalescedImages_
+  // option.
+  template <class InputIterator, class Container >
+  void coalesceImages( Container *coalescedImages_,
+                       InputIterator first_,
+                       InputIterator last_ ) {
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
+
+    // Build image list
     linkImages( first_, last_ );
-    MagickLib::CoalesceImages( first_->image(), &exceptionInfo );
+    MagickLib::Image* images = MagickLib::CoalesceImages( first_->image(),
+                                                          &exceptionInfo);
+    // Unlink image list
     unlinkImages( first_, last_ );
+
+    // Ensure container is empty
+    coalescedImages_->clear();
+
+    // Move images to container
+    insertImages( coalescedImages_, images );
+
+    // Report any error
     throwException( exceptionInfo );
   }
 

@@ -695,6 +695,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowCompositeException(OptionError,"MissingDisposeMethod",
                     option);
+                option=argv[i];
                 if ((LocaleCompare("0",option) != 0) &&
                     (LocaleCompare("1",option) != 0) &&
                     (LocaleCompare("2",option) != 0) &&
@@ -1953,6 +1954,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowConvertException(OptionError,"MissingDisposeMethod",
                     option);
+                option=argv[i];
                 if ((LocaleCompare("0",option) != 0) &&
                     (LocaleCompare("1",option) != 0) &&
                     (LocaleCompare("2",option) != 0) &&
@@ -6539,6 +6541,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowMogrifyException(OptionError,"MissingDisposeMethod",
                     option);
+                option=argv[i];
                 if ((LocaleCompare("0",option) != 0) &&
                     (LocaleCompare("1",option) != 0) &&
                     (LocaleCompare("2",option) != 0) &&
@@ -8195,6 +8198,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowMontageException(OptionError,"MissingDisposeMethod",
                     option);
+                option=argv[i];
                 if ((LocaleCompare("0",option) != 0) &&
                     (LocaleCompare("1",option) != 0) &&
                     (LocaleCompare("2",option) != 0) &&
@@ -10513,6 +10517,7 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"MissingDisposeMethod",
                     option);
+                option=argv[i];
                 if ((LocaleCompare("0",option) != 0) &&
                     (LocaleCompare("1",option) != 0) &&
                     (LocaleCompare("2",option) != 0) &&
@@ -11926,6 +11931,7 @@ MagickExport unsigned int DisplayImageCommand(int argc,char **argv)
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing method",option);
+                option=argv[i];
                 if ((LocaleCompare("0",option) != 0) &&
                     (LocaleCompare("1",option) != 0) &&
                     (LocaleCompare("2",option) != 0) &&

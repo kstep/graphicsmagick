@@ -33889,7 +33889,6 @@ _ACEOF
 	echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
 	have_jp2='yes'
-        PERLMAINCC="$CXX"
 
 for ac_header in jp2conf.h
 do

@@ -206,7 +206,11 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize FPX toolkit.
   */
-  FPX_InitSystem();
+  fpx_status=FPX_InitSystem();
+  if (fpx_status != FPX_OK)
+    {
+      ThrowReaderException(CoderError,"UnableToInitializeFPXLibrary",image);
+    }
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (fpx_status != FPX_OK)

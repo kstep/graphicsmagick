@@ -104,6 +104,16 @@ void FitsDelete(void *ptr)
   if (ptr) free(ptr);
 }
 
+/************************************************************************/
+/*  Purpose..:  Check that GtheSystemToolkit is initalized               */
+/*  Input....:                                                           */
+/*  Return...:  true if initialized (GtheSystemToolkit != NULL)          */
+/************************************************************************/
+bool GtheSystemToolkitInitialized(void)
+{
+  return (GtheSystemToolkit != NULL);
+}
+
 //  ------------------------------------------------------------------------------------------------
 //  Methods of the PToolkitObject class
 //  ------------------------------------------------------------------------------------------------

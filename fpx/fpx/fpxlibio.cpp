@@ -91,7 +91,7 @@
 
 void FPXUpdateTime (FPXfiletime* theFPXTime)
 {
-  // This has to be rewritten for UNIX...
+  // FIXME: This has to be rewritten for UNIX...
   CoFileTimeNow((FILETIME *)(theFPXTime));
 }
 
@@ -466,7 +466,7 @@ FPXStatus FPX_InitSystem ()
   HRESULT   res;
 
   // Create an instance of the Toolkit context handle
-  if (GtheSystemToolkit) {
+  if (GtheSystemToolkitInitialized()) {
     status = FPX_ClearSystem();
     if (status != FPX_OK) {
       return status;
@@ -504,7 +504,7 @@ FPXStatus FPX_SetToolkitMemoryLimit ( unsigned long * memoryLimit)
   FPXStatus status = FPX_OK;
 
   // if the GtheSystemToolkit exist yet delete it
-  if (GtheSystemToolkit)
+  if (GtheSystemToolkitInitialized())
   {
     GtheSystemToolkit->PurgeSystem();
     delete GtheSystemToolkit;
@@ -545,7 +545,8 @@ long FPX_PurgeToolkitMemory (unsigned long memoryToBePurged)
 FPXStatus FPX_ClearSystem () 
 
 {
-  GtheSystemToolkit->PurgeSystem();
+  if (GtheSystemToolkit != NULL)
+    GtheSystemToolkit->PurgeSystem();
 
   if (GtheSystemToolkit->manageOLE == TRUE)
     OLEUninit();

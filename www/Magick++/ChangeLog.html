@@ -4,6 +4,22 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2003-04-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (Image::Image (MagickLib::Image* image_)):
+        Incorporated recommended fix from Jukka Manner to avoid
+        a scenario which leaks an Options object.
+  <LI> tests/coalesceImages.cpp: Updated to use modified
+        coalesceImages() interface.<BR>
+  <LI> lib/Magick++/STL.h (coalesceImages): Replaced implementation
+        with one from Felix Heimbrecht. The template signature has
+        changed to return a new image sequence. This template API
+        silently ceased to funtion due to an ImageMagick CoalesceImages
+        API change.
+
+</UL>
+<p>
 2003-03-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
