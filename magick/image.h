@@ -625,7 +625,7 @@ extern Export unsigned int
   WriteHTMLImage(const ImageInfo *image_info,Image *image),
   WriteICCImage(const ImageInfo *image_info,Image *image),
   WriteIPTCImage(const ImageInfo *image_info,Image *image),
-  WriteImage(ImageInfo *,Image *),
+  WriteImage(const ImageInfo *,Image *),
   WriteJBIGImage(const ImageInfo *image_info,Image *image),
   WriteJPEGImage(const ImageInfo *image_info,Image *image),
   WriteLOGOImage(const ImageInfo *image_info,Image *image),

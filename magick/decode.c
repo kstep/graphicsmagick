@@ -5367,7 +5367,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   (void) jpeg_read_header(&jpeg_info,True);
   if (jpeg_info.out_color_space == JCS_CMYK)
     image->colorspace=CMYKColorspace;
-  if (jpeg_info.saw_JFIF_marker)
+  if (jpeg_info.saw_JFIF_marker && (jpeg_info.density_unit != 0))
     {
       /*
         Set image resolution.

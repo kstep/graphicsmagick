@@ -9688,6 +9688,9 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     else
       if (image->page != (char *) NULL)
         (void) ParseImageGeometry(image->page,&x,&y,&width,&height);
+      else
+        if (Latin1Compare(image_info->magick,"PS2") == 0)
+	  (void) ParseImageGeometry(PSPageGeometry,&x,&y,&width,&height);
     /*
       Scale relative to dots-per-inch.
     */
@@ -13923,10 +13926,13 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
+Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 {
   DelegateInfo
     delegate_info;
+
+  ImageInfo
+    *local_info;
 
   MagickInfo
     *magick_info;
@@ -13940,42 +13946,44 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->filename != (char *) NULL);
   assert(image != (Image *) NULL);
-  (void) strcpy(image_info->filename,image->filename);
-  (void) strcpy(image_info->magick,image->magick);
-  SetImageInfo(image_info,True);
-  (void) strcpy(image->filename,image_info->filename);
-  if ((image->next == (Image *) NULL) || image_info->adjoin)
+  local_info=CloneImageInfo(image_info);
+  (void) strcpy(local_info->filename,image->filename);
+  (void) strcpy(local_info->magick,image->magick);
+  SetImageInfo(local_info,True);
+  (void) strcpy(image->filename,local_info->filename);
+  if ((image->next == (Image *) NULL) || local_info->adjoin)
     if ((image->previous == (Image *) NULL) && !IsTainted(image))
       if (IsAccessible(image->magick_filename))
-        if (GetDelegateInfo(image->magick,image_info->magick,&delegate_info))
+        if (GetDelegateInfo(image->magick,local_info->magick,&delegate_info))
           {
             /*
               Let our bi-directional delegate process the image.
             */
             (void) strcpy(image->filename,image->magick_filename);
             status=
-              InvokeDelegate(image_info,image,image->magick,image_info->magick);
+              InvokeDelegate(local_info,image,image->magick,local_info->magick);
+            DestroyImageInfo(local_info);
             return(status);
           }
   /*
     Call appropriate image writer based on image type.
   */
   status=False;
-  magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
+  magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
   if ((magick_info != (MagickInfo *) NULL) &&
       (magick_info->encoder !=
       (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-    status=(magick_info->encoder)(image_info,image);
+    status=(magick_info->encoder)(local_info,image);
   else
-    if (!GetDelegateInfo((char *) NULL,image_info->magick,&delegate_info))
+    if (!GetDelegateInfo((char *) NULL,local_info->magick,&delegate_info))
       {
         MagickWarning(MissingDelegateWarning,
-          "no encode delegate for this image format",image_info->magick);
+          "no encode delegate for this image format",local_info->magick);
         magick_info=(MagickInfo *) GetMagickInfo(image->magick);
         if ((magick_info != (MagickInfo *) NULL) &&
             (magick_info->encoder !=
             (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-          status=(magick_info->encoder)(image_info,image);
+          status=(magick_info->encoder)(local_info,image);
         else
           MagickWarning(MissingDelegateWarning,
             "no encode delegate for this image format",image->magick);
@@ -13987,16 +13995,19 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
         */
         TemporaryFilename(image->filename);
         status=
-          InvokeDelegate(image_info,image,(char *) NULL,image_info->magick);
+          InvokeDelegate(local_info,image,(char *) NULL,local_info->magick);
         (void) remove(image->filename);
+        DestroyImageInfo(local_info);
         return(status);
       }
   if (image->status)
     {
       MagickWarning(CorruptImageWarning,"An error has occurred writing to file",
         image->filename);
+      DestroyImageInfo(local_info);
       return(False);
     }
-  (void) strcpy(image->magick,image_info->magick);
+  (void) strcpy(image->magick,local_info->magick);
+  DestroyImageInfo(local_info);
   return(status);
 }
