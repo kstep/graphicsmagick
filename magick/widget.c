@@ -263,9 +263,9 @@ static void XDrawBeveledButton(Display *display,const XWindowInfo *window_info,
   (void) XSetForeground(display,window_info->widget_context,
     window_info->pixel_info->trough_color.pixel);
   if (button_info->raised || (window_info->depth == 1))
-    (void) XDrawRectangle(display,window_info->id,window_info->widget_context,x,y,
-      button_info->width+(button_info->bevel_width << 1)+1,button_info->height+
-      (button_info->bevel_width << 1)+1);
+    (void) XDrawRectangle(display,window_info->id,window_info->widget_context,
+      x,y,button_info->width+(button_info->bevel_width << 1)+1,
+      button_info->height+(button_info->bevel_width << 1)+1);
   if (button_info->text == (char *) NULL)
     return;
   /*
@@ -470,8 +470,8 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
       /*
         No text-- just draw cursor.
       */
-      (void) XDrawLine(display,window_info->id,window_info->annotate_context,x,y+3,
-        x,y-height+3);
+      (void) XDrawLine(display,window_info->id,window_info->annotate_context,
+        x,y+3,x,y-height+3);
       return;
     }
   /*
@@ -1203,11 +1203,11 @@ static void XHighlightWidget(Display *display,const XWindowInfo *window_info,
   XSetBevelColor(display,window_info,True);
   (void) XDrawRectangle(display,window_info->id,window_info->widget_context,x,y,
     window_info->width-(x << 1),window_info->height-(y << 1));
-  (void) XDrawRectangle(display,window_info->id,window_info->widget_context,x-1,y-1,
-    window_info->width-(x << 1)+1,window_info->height-(y << 1)+1);
+  (void) XDrawRectangle(display,window_info->id,window_info->widget_context,
+    x-1,y-1,window_info->width-(x << 1)+1,window_info->height-(y << 1)+1);
   XSetBevelColor(display,window_info,False);
-  (void) XDrawRectangle(display,window_info->id,window_info->widget_context,x-1,y-1,
-    window_info->width-(x << 1),window_info->height-(y << 1));
+  (void) XDrawRectangle(display,window_info->id,window_info->widget_context,
+    x-1,y-1,window_info->width-(x << 1),window_info->height-(y << 1));
   (void) XSetFillStyle(display,window_info->widget_context,FillSolid);
 }
 
@@ -1683,8 +1683,8 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,mask,
-    &window_changes);
+  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,
+    mask,&window_changes);
   (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
   /*
@@ -4317,8 +4317,8 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,mask,
-    &window_changes);
+  (void) XReconfigureWMWindow(display,windows->widget.id,
+    windows->widget.screen,mask,&window_changes);
   (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
   /*
@@ -5518,8 +5518,8 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,mask,
-    &window_changes);
+  (void) XReconfigureWMWindow(display,windows->widget.id,
+    windows->widget.screen,mask,&window_changes);
   (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
   /*
@@ -5858,7 +5858,8 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         if (font_info != (XFontStruct *) NULL)
           {
             windows->widget.font_info=font_info;;
-            (void) XSetFont(display,windows->widget.widget_context,font_info->fid);
+            (void) XSetFont(display,windows->widget.widget_context,
+              font_info->fid);
           }
         XDrawBeveledButton(display,&windows->widget,&mode_info);
         windows->widget.font_info=save_info;
@@ -7658,11 +7659,13 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
           {
             y=title_height;
             XSetBevelColor(display,&windows->widget,False);
-            (void) XDrawLine(display,windows->widget.id,windows->widget.widget_context,
-              selection_info.x,y-1,(int) selection_info.width,y-1);
+            (void) XDrawLine(display,windows->widget.id,
+              windows->widget.widget_context,selection_info.x,y-1,
+              (int) selection_info.width,y-1);
             XSetBevelColor(display,&windows->widget,True);
-            (void) XDrawLine(display,windows->widget.id,windows->widget.widget_context,
-              selection_info.x,y,(int) selection_info.width,y);
+            (void) XDrawLine(display,windows->widget.id,
+              windows->widget.widget_context,selection_info.x,y,
+              (int) selection_info.width,y);
             (void) XSetFillStyle(display,windows->widget.widget_context,
               FillSolid);
           }
@@ -7695,11 +7698,13 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
         */
         y=top_offset+selection_info.height*(number_selections-1);
         XSetBevelColor(display,&windows->widget,False);
-        (void) XDrawLine(display,windows->widget.id,windows->widget.widget_context,
-          selection_info.x,y-1,(int) selection_info.width,y-1);
+        (void) XDrawLine(display,windows->widget.id,
+          windows->widget.widget_context,selection_info.x,y-1,
+          (int) selection_info.width,y-1);
         XSetBevelColor(display,&windows->widget,True);
-        (void) XDrawLine(display,windows->widget.id,windows->widget.widget_context,
-          selection_info.x,y,(int) selection_info.width,y);
+        (void) XDrawLine(display,windows->widget.id,
+          windows->widget.widget_context,selection_info.x,y,
+          (int) selection_info.width,y);
         (void) XSetFillStyle(display,windows->widget.widget_context,FillSolid);
       }
     /*
@@ -8554,7 +8559,8 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
               (QuantumMargin >> 1);
             y=cache_info.y+((cache_info.height-height) >> 1);
             width=XTextWidth(font_info,cache,Extent(cache));
-            (void) XClearArea(display,windows->widget.id,x,y,width,height,False);
+            (void) XClearArea(display,windows->widget.id,x,y,width,height,
+              False);
             resource_info->undo_cache<<=1;
             if (resource_info->undo_cache > 256)
               resource_info->undo_cache=1;
@@ -8883,8 +8889,8 @@ MagickExport void XTextViewWidget(Display *display,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,mask,
-    &window_changes);
+  (void) XReconfigureWMWindow(display,windows->widget.id,
+    windows->widget.screen,mask,&window_changes);
   (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
   /*
@@ -9005,8 +9011,10 @@ MagickExport void XTextViewWidget(Display *display,
               Redraw scroll bar and text.
             */
             windows->widget.font_info=text_info;
-            (void) XSetFont(display,windows->widget.annotate_context,text_info->fid);
-            (void) XSetFont(display,windows->widget.highlight_context,text_info->fid);
+            (void) XSetFont(display,windows->widget.annotate_context,
+              text_info->fid);
+            (void) XSetFont(display,windows->widget.highlight_context,
+              text_info->fid);
             selection_info.id=slider_info.id;
             selection_info.y=list_info.y+(height >> 3)+2;
             for (i=0; i < (int) visible_lines; i++)
@@ -9019,8 +9027,10 @@ MagickExport void XTextViewWidget(Display *display,
               selection_info.y+=(int) selection_info.height;
             }
             windows->widget.font_info=font_info;
-            (void) XSetFont(display,windows->widget.annotate_context,font_info->fid);
-            (void) XSetFont(display,windows->widget.highlight_context,font_info->fid);
+            (void) XSetFont(display,windows->widget.annotate_context,
+              font_info->fid);
+            (void) XSetFont(display,windows->widget.highlight_context,
+              font_info->fid);
             /*
               Update slider.
             */

@@ -947,7 +947,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   /*
     Reduce speckle in the image.
   */
-  for (layer=0; layer < 3; layer++)
+  for (layer=0; layer <= 3; layer++)
   {
     (void) memset(buffer,0,packets*sizeof(Quantum));
     (void) memset(pixels,0,packets*sizeof(Quantum));

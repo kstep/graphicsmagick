@@ -1328,7 +1328,8 @@ MagickExport unsigned int OpenCache(Image *image)
       if (cache_info->nexus_info == (NexusInfo *) NULL)
         MagickError(ResourceLimitError,"Memory allocation failed",
           "unable to allocate cache nexus_info");
-      (void) memset(cache_info->nexus_info,0,(cache_info->rows+3)*sizeof(NexusInfo));
+      (void) memset(cache_info->nexus_info,0,
+        (cache_info->rows+3)*sizeof(NexusInfo));
       for (id=1; id < (cache_info->rows+3); id++)
         cache_info->nexus_info[id].available=True;
     }

@@ -1938,8 +1938,9 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
     case PointElement:
     default:
     {
-      (void) XDrawLines(display,draw_pixmap,draw_context,draw_info->coordinate_info,
-        draw_info->number_coordinates,CoordModeOrigin);
+      (void) XDrawLines(display,draw_pixmap,draw_context,
+        draw_info->coordinate_info,draw_info->number_coordinates,
+        CoordModeOrigin);
       break;
     }
     case LineElement:
@@ -1997,8 +1998,9 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
     }
     case FillPolygonElement:
     {
-      (void) XFillPolygon(display,draw_pixmap,draw_context,draw_info->coordinate_info,
-        draw_info->number_coordinates,Complex,CoordModeOrigin);
+      (void) XFillPolygon(display,draw_pixmap,draw_context,
+        draw_info->coordinate_info,draw_info->number_coordinates,Complex,
+        CoordModeOrigin);
       break;
     }
   }
@@ -3711,8 +3713,8 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
     Cropping rectangle is relative to root window.
   */
   root_window=XRootWindow(display,XDefaultScreen(display));
-  (void) XTranslateCoordinates(display,window,root_window,0,0,&x_offset,&y_offset,
-    &child);
+  (void) XTranslateCoordinates(display,window,root_window,0,0,&x_offset,
+    &y_offset,&child);
   crop_info.x=x_offset;
   crop_info.y=y_offset;
   crop_info.width=window_attributes.width;
@@ -6780,8 +6782,9 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   if ((x != 0) || (y != 0))
     (void) XFillRectangle(display,windows->magnify.pixmap,
       windows->magnify.annotate_context,0,0,width,height);
-  (void) XPutImage(display,windows->magnify.pixmap,windows->magnify.annotate_context,
-    windows->magnify.ximage,0,0,x,y,width-x,height-y);
+  (void) XPutImage(display,windows->magnify.pixmap,
+    windows->magnify.annotate_context,windows->magnify.ximage,0,0,x,y,width-x,
+    height-y);
   if ((magnify > 1) && ((magnify <= (width >> 1)) &&
       (magnify <= (height >> 1))))
     {
@@ -6917,8 +6920,8 @@ static unsigned int XMakePixmap(Display *display,
       0,0,0,0,width,height,True);
 #endif
   if (!window->shared_memory)
-    (void) XPutImage(display,window->pixmap,window->annotate_context,window->ximage,
-      0,0,0,0,width,height);
+    (void) XPutImage(display,window->pixmap,window->annotate_context,
+      window->ximage,0,0,0,0,width,height);
   if (resource_info->debug)
     {
       (void) fprintf(stderr,"Pixmap:\n");
@@ -7406,8 +7409,8 @@ MagickExport void XMakeStandardColormap(Display *display,
               /*
                 Transfer colors from default to private colormap.
               */
-              (void) XAllocColorCells(display,colormap,False,(unsigned long *) NULL,0,
-                pixel->pixels,(int) retain_colors);
+              (void) XAllocColorCells(display,colormap,False,(unsigned long *)
+                NULL,0,pixel->pixels,(int) retain_colors);
               p=colors+image->colors;
               for (i=0; i < (long) retain_colors; i++)
               {
@@ -7418,8 +7421,8 @@ MagickExport void XMakeStandardColormap(Display *display,
                 (int) retain_colors);
               number_colors+=retain_colors;
             }
-          (void) XAllocColorCells(display,colormap,False,(unsigned long *) NULL,0,
-            pixel->pixels,(int) image->colors);
+          (void) XAllocColorCells(display,colormap,False,(unsigned long *) NULL,
+            0,pixel->pixels,(int) image->colors);
         }
       /*
         Store the image colormap.
@@ -7748,8 +7751,8 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
       mask=CWWidth | CWHeight;
       if (window_info->flags & USPosition)
         mask|=CWX | CWY;
-      (void) XReconfigureWMWindow(display,window_info->id,window_info->screen,mask,
-        &window_changes);
+      (void) XReconfigureWMWindow(display,window_info->id,window_info->screen,
+        mask,&window_changes);
     }
   if (window_info->id == (Window) NULL)
     MagickError(XServerError,"Unable to create window",window_info->name);
@@ -8073,11 +8076,12 @@ MagickExport void XRefreshWindow(Display *display,const XWindowInfo *window,
   if (window->pixmap != (Pixmap) NULL)
     {
       if (window->depth > 1)
-        (void) XCopyArea(display,window->pixmap,window->id,window->annotate_context,
-          x+window->x,y+window->y,width,height,x,y);
+        (void) XCopyArea(display,window->pixmap,window->id,
+          window->annotate_context,x+window->x,y+window->y,width,height,x,y);
       else
-        (void) XCopyPlane(display,window->pixmap,window->id,window->highlight_context,
-          x+window->x,y+window->y,width,height,x,y,1L);
+        (void) XCopyPlane(display,window->pixmap,window->id,
+          window->highlight_context,x+window->x,y+window->y,width,height,
+          x,y,1L);
     }
   else
     {
@@ -8087,8 +8091,8 @@ MagickExport void XRefreshWindow(Display *display,const XWindowInfo *window,
           window->ximage,x+window->x,y+window->y,x,y,width,height,True);
 #endif
       if (!window->shared_memory)
-        (void) XPutImage(display,window->id,window->annotate_context,window->ximage,
-          x+window->x,y+window->y,x,y,width,height);
+        (void) XPutImage(display,window->id,window->annotate_context,
+          window->ximage,x+window->x,y+window->y,x,y,width,height);
     }
   (void) XSetClipMask(display,window->annotate_context,None);
   (void) XFlush(display);
@@ -8497,10 +8501,13 @@ MagickExport void XSetCursorState(Display *display,XWindows *windows,
   assert(windows != (XWindows *) NULL);
   if (state)
     {
-      (void) XDefineCursor(display,windows->image.id,windows->image.busy_cursor);
+      (void) XDefineCursor(display,windows->image.id,
+        windows->image.busy_cursor);
       (void) XDefineCursor(display,windows->pan.id,windows->pan.busy_cursor);
-      (void) XDefineCursor(display,windows->magnify.id,windows->magnify.busy_cursor);
-      (void) XDefineCursor(display,windows->command.id,windows->command.busy_cursor);
+      (void) XDefineCursor(display,windows->magnify.id,
+        windows->magnify.busy_cursor);
+      (void) XDefineCursor(display,windows->command.id,
+        windows->command.busy_cursor);
     }
   else
     {

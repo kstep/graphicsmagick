@@ -337,8 +337,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           FormatString(command,"openURL(%.1024s,new-window,noraise)",
             "http://www.imagemagick.org/");
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
-          (void) XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,8,
-            PropModeReplace,(unsigned char *) command,(int) strlen(command));
+          (void) XChangeProperty(display,mozilla_window,mozilla_atom,
+            XA_STRING,8,PropModeReplace,(unsigned char *) command,
+            (int) strlen(command));
           XSetCursorState(display,windows,False);
           break;
         }
@@ -745,8 +746,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     Display pixmap on the window.
   */
   if ((width > window_info.width) || (height > window_info.height))
-    (void) XFillRectangle(display,window_info.pixmap,window_info.annotate_context,
-      0,0,width,height);
+    (void) XFillRectangle(display,window_info.pixmap,
+      window_info.annotate_context,0,0,width,height);
   (void) XPutImage(display,window_info.pixmap,window_info.annotate_context,
     window_info.ximage,0,0,window_info.x,window_info.y,window_info.width,
     window_info.height);
@@ -809,12 +810,13 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       Display pixmap on the window.
     */
     if ((width > window_info.width) || (height > window_info.height))
-      (void) XFillRectangle(display,window_info.pixmap,window_info.annotate_context,
-        0,0,width,height);
+      (void) XFillRectangle(display,window_info.pixmap,
+        window_info.annotate_context,0,0,width,height);
     (void) XPutImage(display,window_info.pixmap,window_info.annotate_context,
       window_info.ximage,0,0,window_info.x,window_info.y,window_info.width,
       window_info.height);
-    (void) XSetWindowBackgroundPixmap(display,window_info.id,window_info.pixmap);
+    (void) XSetWindowBackgroundPixmap(display,window_info.id,
+      window_info.pixmap);
     (void) XClearWindow(display,window_info.id);
     window_info.pixmaps[scene]=window_info.pixmap;
     window_info.matte_pixmaps[scene]=window_info.matte_pixmap;
@@ -840,7 +842,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
         }
       window_info.pixmap=window_info.pixmaps[scene];
       window_info.matte_pixmap=window_info.matte_pixmaps[scene];
-      (void) XSetWindowBackgroundPixmap(display,window_info.id,window_info.pixmap);
+      (void) XSetWindowBackgroundPixmap(display,window_info.id,
+        window_info.pixmap);
       (void) XClearWindow(display,window_info.id);
       (void) XSync(display,False);
       XDelay(display,(unsigned long) resources.delay*10*
@@ -1440,10 +1443,11 @@ MagickExport Image *XAnimateImages(Display *display,
   XMakeWindow(display,
     (Window) (resource_info->backdrop ? windows->backdrop.id : root_window),
     argv,argc,class_hints,manager_hints,&windows->image);
-  (void) XChangeProperty(display,windows->image.id,windows->im_protocols,XA_STRING,8,
-    PropModeReplace,(unsigned char *) NULL,0);
+  (void) XChangeProperty(display,windows->image.id,windows->im_protocols,
+    XA_STRING,8,PropModeReplace,(unsigned char *) NULL,0);
   if (windows->group_leader.id != (Window) NULL)
-    (void) XSetTransientForHint(display,windows->image.id,windows->group_leader.id);
+    (void) XSetTransientForHint(display,windows->image.id,
+      windows->group_leader.id);
   if (resource_info->debug)
     (void) fprintf(stderr,"Window id: 0x%lx (image)\n",windows->image.id);
   /*
@@ -1983,7 +1987,8 @@ MagickExport Image *XAnimateImages(Display *display,
           }
         if (*event.xclient.data.l != (long) windows->wm_delete_window)
           break;
-        (void) XWithdrawWindow(display,event.xclient.window,visual_info->screen);
+        (void) XWithdrawWindow(display,event.xclient.window,
+          visual_info->screen);
         if (event.xclient.window == windows->image.id)
           {
             state|=ExitState;
@@ -2240,7 +2245,8 @@ MagickExport Image *XAnimateImages(Display *display,
             (void) XSetWindowBackgroundPixmap(display,windows->icon.id,
               windows->icon.pixmap);
             (void) XClearWindow(display,windows->icon.id);
-            (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
+            (void) XWithdrawWindow(display,windows->info.id,
+              windows->info.screen);
             windows->icon.mapped=True;
             break;
           }
@@ -2340,7 +2346,8 @@ MagickExport Image *XAnimateImages(Display *display,
             if (map_info->colormap == icon_map->colormap)
               XConfigureImageColormap(display,resource_info,windows,
                 display_image);
-            (void) XFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
+            (void) XFreeStandardColormap(display,icon_visual,icon_map,
+              icon_pixel);
             windows->icon.mapped=False;
             break;
           }
@@ -2386,12 +2393,14 @@ MagickExport Image *XAnimateImages(Display *display,
       if (windows->info.mapped)
         (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
       if (windows->command.mapped)
-        (void) XWithdrawWindow(display,windows->command.id,windows->command.screen);
+        (void) XWithdrawWindow(display,windows->command.id,
+          windows->command.screen);
     }
   if (!resource_info->backdrop)
     if (windows->backdrop.mapped)
       {
-        (void) XWithdrawWindow(display,windows->backdrop.id,windows->backdrop.screen);
+        (void) XWithdrawWindow(display,windows->backdrop.id,\
+          windows->backdrop.screen);
         (void) XDestroyWindow(display,windows->backdrop.id);
         windows->backdrop.id=(Window) NULL;
         (void) XWithdrawWindow(display,windows->image.id,windows->image.screen);
