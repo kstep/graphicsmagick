@@ -1572,6 +1572,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         break;
       }
       case 'M':
+      case 'm':
       {
         n=0;
         (void) sscanf(p+1,"%lf%*[ ,]%lf%n",&point.x,&point.y,&n);

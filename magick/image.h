@@ -450,15 +450,9 @@ typedef struct _DrawInfo
   double
     opacity,
     linewidth,
-    pointsize;
-
-  PointInfo
-    translate,
-    skew;
-
-  double
-    scale,
-    angle;
+    pointsize,
+    angle,
+    transform[6];
 
   PixelPacket
     fill,
