@@ -1046,19 +1046,11 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   Image
     *image;
 
-  ImageInfo
-    *clone_info;
-
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   GetExceptionInfo(exception);
-  clone_info=CloneImageInfo(image_info);
-  clone_info->verbose=False;
-  clone_info->subimage=0;
-  clone_info->subrange=0;
-  image=ReadStream(clone_info,&StreamHandler,exception);
-  DestroyImageInfo(clone_info);
+  image=ReadStream(image_info,&StreamHandler,exception);
   return(image);
 }
 
