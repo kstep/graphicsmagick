@@ -20,7 +20,7 @@ typedef enum
 } AlignType;
 
 typedef enum
-{ 
+{
   UserSpace,
   UserSpaceOnUse,
   ObjectBoundingBox
@@ -51,7 +51,7 @@ typedef enum
 } LineCap;
 
 typedef enum
-{ 
+{
   UndefinedJoin,
   MiterJoin,
   RoundJoin,
@@ -86,9 +86,9 @@ typedef enum
   ImagePrimitive,
   PathPrimitive
 } PrimitiveType;
-  
+
 typedef enum
-{ 
+{
   UndefinedSpread,
   PadSpread,
   ReflectSpead,
