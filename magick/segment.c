@@ -417,27 +417,27 @@ static unsigned int Classify(Image *image,short **extrema,
       /*
         Print cluster statistics.
       */
-      (void) fprintf(stderr,"Fuzzy c-Means Statistics\n");
-      (void) fprintf(stderr,"===================\n\n");
-      (void) fprintf(stderr,"\tTotal Number of Clusters = %lu\n\n",
+      (void) fprintf(stdout,"Fuzzy c-Means Statistics\n");
+      (void) fprintf(stdout,"===================\n\n");
+      (void) fprintf(stdout,"\tTotal Number of Clusters = %lu\n\n",
         number_clusters);
       /*
         Print the total number of points per cluster.
       */
-      (void) fprintf(stderr,"\n\nNumber of Vectors Per Cluster\n");
-      (void) fprintf(stderr,"=============================\n\n");
+      (void) fprintf(stdout,"\n\nNumber of Vectors Per Cluster\n");
+      (void) fprintf(stdout,"=============================\n\n");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        (void) fprintf(stderr,"Cluster #%d = %ld\n",cluster->id,cluster->count);
+        (void) fprintf(stdout,"Cluster #%d = %ld\n",cluster->id,cluster->count);
       /*
         Print the cluster extents.
       */
-      (void) fprintf(stderr,
+      (void) fprintf(stdout,
         "\n\n\nCluster Extents:        (Vector Size: %d)\n",MaxDimension);
-      (void) fprintf(stderr,"================");
+      (void) fprintf(stdout,"================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
-        (void) fprintf(stderr,"\n\nCluster #%d\n\n",cluster->id);
-        (void) fprintf(stderr,"%d-%d  %d-%d  %d-%d\n",
+        (void) fprintf(stdout,"\n\nCluster #%d\n\n",cluster->id);
+        (void) fprintf(stdout,"%d-%d  %d-%d  %d-%d\n",
           cluster->red.left,cluster->red.right,
           cluster->green.left,cluster->green.right,
           cluster->blue.left,cluster->blue.right);
@@ -445,16 +445,16 @@ static unsigned int Classify(Image *image,short **extrema,
       /*
         Print the cluster center values.
       */
-      (void) fprintf(stderr,
+      (void) fprintf(stdout,
         "\n\n\nCluster Center Values:        (Vector Size: %d)\n",MaxDimension);
-      (void) fprintf(stderr,"=====================");
+      (void) fprintf(stdout,"=====================");
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
       {
-        (void) fprintf(stderr,"\n\nCluster #%d\n\n",cluster->id);
-        (void) fprintf(stderr,"%ld  %ld  %ld\n",cluster->red.center,
+        (void) fprintf(stdout,"\n\nCluster #%d\n\n",cluster->id);
+        (void) fprintf(stdout,"%ld  %ld  %ld\n",cluster->red.center,
           cluster->green.center,cluster->blue.center);
       }
-      (void) fprintf(stderr,"\n");
+      (void) fprintf(stdout,"\n");
     }
   if (number_clusters > 256)
     ThrowBinaryException(ResourceLimitError,"Unable to segment image",

@@ -437,7 +437,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   do
   {
     if (image_info->verbose)
-      TIFFPrintDirectory(tiff,stderr,False);
+      TIFFPrintDirectory(tiff,stdout,False);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag);
     (void) TIFFGetField(tiff,TIFFTAG_IMAGEWIDTH,&width);
     (void) TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&height);
@@ -1928,7 +1928,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
     LiberateMemory((void **) &scanline);
     if (image_info->verbose == True)
-      TIFFPrintDirectory(tiff,stderr,False);
+      TIFFPrintDirectory(tiff,stdout,False);
     (void) TIFFWriteDirectory(tiff);
     if (image->next == (Image *) NULL)
       break;

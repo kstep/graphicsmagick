@@ -1536,7 +1536,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         image->chromaticity.red_primary.x,image->chromaticity.red_primary.y);
       (void) fprintf(file,"    green primary: (%g,%g)\n",
         image->chromaticity.green_primary.x,
-        image->chromaticity.green_primary.y,
+        image->chromaticity.green_primary.y);
       (void) fprintf(file,"    blue primary: (%g,%g)\n",
         image->chromaticity.blue_primary.x,image->chromaticity.blue_primary.y);
       (void) fprintf(file,"    white point: (%g,%g)\n",

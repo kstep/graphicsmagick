@@ -323,7 +323,7 @@ MagickExport void closedir(DIR *entry)
 */
 MagickExport int Exit(int status)
 {
-  (void) fprintf(stderr,"Select File->Quit to exit.\n");
+  (void) fprintf(stdout,"Select File->Quit to exit.\n");
   exit(status);
   return(0);
 }

@@ -3129,6 +3129,6 @@ MagickExport unsigned int WriteImages(ImageInfo *image_info,Image *image,
       break;
   }
   if (image_info->verbose)
-    DescribeImage(image,stderr,False);
+    DescribeImage(image,stdout,False);
   return(status);
 }
