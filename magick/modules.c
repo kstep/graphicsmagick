@@ -632,7 +632,7 @@ static unsigned int ReadConfigurationFile(const char *filename)
 
   ModuleAliases
     *aliases,
-    *module_info;
+    *entry;
 
   unsigned int
     match;
@@ -646,6 +646,7 @@ static unsigned int ReadConfigurationFile(const char *filename)
   /*
     Read the module configuration files.
   */
+  module_aliases=(ModuleAliases *) NULL;
   path=GetMagickConfigurePath(filename);
   if (path == (char *) NULL)
     return(False);
@@ -659,31 +660,31 @@ static unsigned int ReadConfigurationFile(const char *filename)
     if (fscanf(file,"%s %s",alias,module) != 2)
       continue;
     match=False;
-    module_info=module_aliases;
-    while (module_info != (ModuleAliases *) NULL)
+    entry=module_aliases;
+    while (entry != (ModuleAliases *) NULL)
     {
-      if (LocaleCompare(module_info->alias,alias) == 0)
+      if (LocaleCompare(entry->alias,alias) == 0)
         {
           match=True;
           break;
         }
-      module_info=module_info->next;
+      entry=entry->next;
     }
     if (match != False)
       continue;
-    module_info=(ModuleAliases *) AcquireMemory(sizeof(ModuleAliases));
-    if (module_info == (ModuleAliases*) NULL)
+    entry=(ModuleAliases *) AcquireMemory(sizeof(ModuleAliases));
+    if (entry == (ModuleAliases*) NULL)
       continue;
-    module_info->alias=AllocateString(alias);
-    module_info->module=AllocateString(module);
-    module_info->next=(ModuleAliases *) NULL;
+    entry->alias=AllocateString(alias);
+    entry->module=AllocateString(module);
+    entry->next=(ModuleAliases *) NULL;
     if (module_aliases == (ModuleAliases *) NULL)
       {
-        module_aliases=module_info;
+        module_aliases=entry;
         aliases=module_aliases;
         continue;
       }
-    aliases->next=module_info;
+    aliases->next=entry;
     aliases=aliases->next;
   }
   (void) fclose(file);
@@ -715,7 +716,7 @@ static unsigned int ReadConfigurationFile(const char *filename)
 %    o entry: a pointer to the ModuleInfo structure to register.
 %
 */
-static ModuleInfo *RegisterModuleInfo(ModuleInfo *module_info)
+static ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
 {
   register ModuleInfo
     *p;
@@ -723,48 +724,48 @@ static ModuleInfo *RegisterModuleInfo(ModuleInfo *module_info)
   /*
     Delete any existing tag.
   */
-  assert(module_info != (ModuleInfo *) NULL);
-  assert(module_info->signature == MagickSignature);
-  UnregisterModuleInfo(module_info->tag);
-  module_info->previous=(ModuleInfo *) NULL;
-  module_info->next=(ModuleInfo *) NULL;
+  assert(entry != (ModuleInfo *) NULL);
+  assert(entry->signature == MagickSignature);
+  UnregisterModuleInfo(entry->tag);
+  entry->previous=(ModuleInfo *) NULL;
+  entry->next=(ModuleInfo *) NULL;
   if (module_list == (ModuleInfo *) NULL)
     {
       /*
         Start module list.
       */
-      module_list=module_info;
-      return(module_info);
+      module_list=entry;
+      return(entry);
     }
   /*
     Tag is added in lexographic order.
   */
   for (p=module_list; p->next != (ModuleInfo *) NULL; p=p->next)
-    if (LocaleCompare(p->tag,module_info->tag) >= 0)
+    if (LocaleCompare(p->tag,entry->tag) >= 0)
       break;
-  if (LocaleCompare(p->tag,module_info->tag) < 0)
+  if (LocaleCompare(p->tag,entry->tag) < 0)
     {
       /*
         Add entry after target.
       */
-      module_info->next=p->next;
-      p->next=module_info;
-      module_info->previous=p;
-      if (module_info->next != (ModuleInfo *) NULL)
-        module_info->next->previous=module_info;
-      return(module_info);
+      entry->next=p->next;
+      p->next=entry;
+      entry->previous=p;
+      if (entry->next != (ModuleInfo *) NULL)
+        entry->next->previous=entry;
+      return(entry);
     }
   /*
     Add entry before target.
   */
-  module_info->next=p;
-  module_info->previous=p->previous;
-  p->previous=module_info;
-  if (module_info->previous != (ModuleInfo *) NULL)
-    module_info->previous->next=module_info;
+  entry->next=p;
+  entry->previous=p->previous;
+  p->previous=entry;
+  if (entry->previous != (ModuleInfo *) NULL)
+    entry->previous->next=entry;
   if (p == module_list)
-    module_list=module_info;
-  return(module_info);
+    module_list=entry;
+  return(entry);
 }
 
 /*
@@ -798,17 +799,17 @@ static ModuleInfo *RegisterModuleInfo(ModuleInfo *module_info)
 static ModuleInfo *SetModuleInfo(const char *tag)
 {
   ModuleInfo
-    *module_info;
+    *entry;
 
   assert(tag != (const char *) NULL);
-  module_info=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
-  if (module_info == (ModuleInfo *) NULL)
+  entry=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
+  if (entry == (ModuleInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module info",
       "Memory allocation failed");
-  memset(module_info,0,sizeof(ModuleInfo));
-  module_info->tag=AllocateString(tag);
-  module_info->signature=MagickSignature;
-  return(module_info);
+  memset(entry,0,sizeof(ModuleInfo));
+  entry->tag=AllocateString(tag);
+  entry->signature=MagickSignature;
+  return(entry);
 }
 
 /*
