@@ -8,7 +8,8 @@ follows.
   In November 2002, the GraphicsMagick Group created GraphicsMagick
   from ImageMagick Studio's ImageMagick and applied a new license:
 
-  Copyright (C) 2002 GraphicsMagick Group
+  Copyright (C) 2002 GraphicsMagick Group, an organization dedicated
+  to making software imaging solutions freely available.
 
   Permission is hereby granted, free of charge, to any person obtaining a
   copy of this software and associated documentation files ("Open

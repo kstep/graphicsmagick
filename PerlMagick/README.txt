@@ -1,20 +1,20 @@
 Introduction 
 
-    PerlMagick, is an objected-oriented Perl interface to ImageMagick.
+    PerlMagick, is an objected-oriented Perl interface to GraphicsMagick.
     Use the module to read, manipulate, or write an image or image
     sequence from within a Perl script. This makes it suitable for Web
-    CGI scripts. You must have ImageMagick 1.0.0 or above installed on
+    CGI scripts. You must have GraphicsMagick 1.0.0 or above installed on
     your system for this module to work properly.
 
     See
 
-        http://www.imagemagick.org/www/perl.html
+        http://www.graphicsmagick.org/www/perl.html
 
     for additional information about PerlMagick.  See
 
-        http://www.imagemagick.org/
+        http://www.graphicsmagick.org/
 
-    for instructions about installing ImageMagick.
+    for instructions about installing GraphicsMagick.
 
 
 Installation 
@@ -29,7 +29,7 @@ Installation
     appropriate path information to the required libMagick library. You
     will also need library search paths (-L) to JPEG, PNG, TIFF,
     etc. libraries if they were included with your installed
-    version of ImageMagick. If an extension library is built as a
+    version of GraphicsMagick. If an extension library is built as a
     shared library but not installed in the system's default
     library search path, you may need to add run-path information
     (often -R or -rpath) corresponding to the equivalent library

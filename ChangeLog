@@ -1,5 +1,8 @@
 2003-01-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Updated copyright statement on source files to reflect
+ 	the GraphicsMagick Group rather than ImageMagick Studio.
+
 	* magick/constitute.c (ConstituteImage): Simplified the switch
  	statement for inner loops by creating a simplified map in advance.
 	(DispatchImage): Simplified the switch statement for inner loops
