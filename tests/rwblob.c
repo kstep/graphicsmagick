@@ -12,6 +12,10 @@
  */
 
 #include <stdio.h>
+#if defined(_VISUALC_)
+#include <stdlib.h>
+#include <sys\types.h>
+#endif
 #include <time.h>
 #include <magick/api.h>
 
