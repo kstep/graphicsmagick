@@ -2,19 +2,19 @@
 #
 #  Name of executable module (usually ../bin/ralcgm)
 #
-MODULE = /c/home/bfriesen/GraphicsMagick/ralcgm/bin/ralcgm
+MODULE = ralcgm
 #
 #  Name of callable library (Optional) (usually ../bin/libcgm.a)
 #
-LIB = /c/home/bfriesen/GraphicsMagick/ralcgm/bin/libcgm.a
+LIB = libcgm.a
 #
 #  Include file directory (usually ../include)
 #
-INCLUDE = /c/home/bfriesen/GraphicsMagick/ralcgm/include
+INCLUDE = /home/bfriesen/src/graphics/GraphicsMagick/ralcgm/include
 #
 #  Data files directory (usually ../data)
 #
-DATADIR = /c/home/bfriesen/GraphicsMagick/ralcgm/data
+DATADIR = /usr/local/share/ralcgm
 #
 #  Main Interpreter object file (usually cgmmain.o)
 #
@@ -68,7 +68,7 @@ HPGL = cgmohpgl.o
 #     $(TEK)          Tektronix 4200
 #     $(VID)          Video system
 #
-DRIVERS =  $(PS)
+DRIVERS =  $(PS) $(XW) $(HPGL)
 #
 #  Input utilities Object files
 #                These provides random access input and convenient
@@ -100,7 +100,7 @@ COLRUTILS = cgmcolr.o
 CELLUTILS = cgmcell.o
 PTSUTILS = cgmpts.o
 #
-OUTUTILS =    
+OUTUTILS =     
 #
 #  Text utility Object files
 #                 These provide software emulation of text and
@@ -133,7 +133,7 @@ HERINCLUDES = $(INCLUDE)/cgmher.h
 #             $(HERSHEY)
 #             $(BEZIER)
 #
-TXTSYS = $(BEZIER) $(HERSHEY)
+TXTSYS = 
 #
 #    TXTUTILS settings, supported text utilities are:
 #
@@ -141,7 +141,7 @@ TXTSYS = $(BEZIER) $(HERSHEY)
 #             $(BEZUTILS)
 #   List of utility modules required;
 #
-TXTUTILS =  $(BEZUTILS) $(HERUTILS)
+TXTUTILS = 
 #
 #
 CGMUTILS = $(RANUTILS)\
@@ -150,10 +150,12 @@ CGMUTILS = $(RANUTILS)\
            $(OUTUTILS)\
            $(TXTUTILS)\
            $(TEXTUTILS)\
-           $(FNTUTILS) \
+	   $(FNTUTILS) \
 	   $(ATTUTILS) \
 	   $(PTSUTILS) \
-	   $(FILUTILS)
+	   $(FILUTILS) \
+	   $(GDPUTILS) \
+	   $(COLRUTILS)
 #
 #  Set up names for the modules that make up `ralcgm' and `cgmlib'.
 #
@@ -181,7 +183,7 @@ LIBCGM = $(CGMLIB)\
 #                  (Sun 4)             -O
 #                  (Unicos)            -O            -g
 #
-CFLAGS = -c -O -DPOSTSCRIPT="" -DBEZIER="" -DHERSHEY=""
+CFLAGS = -c -O0 -DPOSTSCRIPT="" -DXW="" -I/usr/X11R6/include -DHPGL=""
 #
 #  Local flags for Linker (system dependent)
 #  For X-windows, add some extra libraries (comment out otherwise)
@@ -193,17 +195,17 @@ CFLAGS = -c -O -DPOSTSCRIPT="" -DBEZIER="" -DHERSHEY=""
 #                  (Unicos)            -lm -lX11 -lnet -lc
 #                  (Unicos - scc)      -lm -lX11 -lnet -lsc
 #
-LFLAGS = -lm
+LFLAGS = -lm -L/usr/X11R6/lib -lX11 -lc
 #
 #  Common include files
 #
 GENINCLUDES = $(INCLUDE)/cgmmach.h $(INCLUDE)/mach.h \
 	$(INCLUDE)/cgmtypes.h \
 	$(INCLUDE)/cgmstruc.h \
-       	$(INCLUDE)/cgmelem.h \
-       	$(INCLUDE)/cgmpar.h \
-       	$(INCLUDE)/cgmtran.h \
-       	$(INCLUDE)/cgmatt.h
+	$(INCLUDE)/cgmelem.h \
+	$(INCLUDE)/cgmpar.h \
+	$(INCLUDE)/cgmtran.h \
+	$(INCLUDE)/cgmatt.h
 #
 #  List of includes for the text system; must match the text utility
 #  .o files given above.
@@ -218,8 +220,8 @@ INCLUDES = $(GENINCLUDES) $(TXTINCLUDES) $(FNTINCLUDES) \
 #         all others   LINK = cc $(LFLAGS)
 #                      AR = ar rv
 #
-COMPILE = gcc
-LINK = gcc
+COMPILE = cc
+LINK = cc
 AR = ar rv
 #
 #   Main dependencies (should not need altering)
@@ -241,9 +243,11 @@ clean:
 
 $(MODULE):	$(MAIN) $(RALCGM)
 	$(LINK) $(MAIN) $(RALCGM) $(LFLAGS) -o $(MODULE)
+	chmod 755 $(MODULE)
 
 $(LIB):	$(LIBCGM)
 	$(AR) $(LIB) $(LIBCGM)
+	chmod 644 $(LIB)
 
 #  include file dependencies
 
@@ -287,6 +291,7 @@ $(BEZIER):	$(BEZLINK) \
 		$(MAKEFILE)
 	$(LINK) $(BEZLINK) $(GENUTILS) $(LFLAGS) -o $(BEZIER)
 	./$(BEZIER)
+	chmod 644 $(DATADIR)/*.bfb $(DATADIR)/fontdir.bez
 
 $(HERUTILS):	$(HERINCLUDES) \
 		$(INCLUDE)/cgmuher.h \

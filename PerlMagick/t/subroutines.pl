@@ -175,14 +175,16 @@ sub testReadCompare {
     if ("$status")
       {
         $errorinfo = "Set($read_options): $status";
+        warn("$errorinfo");
         goto COMPARE_RUNTIME_ERROR;
       }
   }
   
-  $status=$srcimage->ReadImage($srcimage_name);
+  $status=$srcimage->ReadImage("$srcimage_name");
   if ("$status")
     {
       $errorinfo = "Readimage ($srcimage_name): $status";
+      warn("$errorinfo");
       goto COMPARE_RUNTIME_ERROR;
     }
 
@@ -190,13 +192,16 @@ sub testReadCompare {
 #    $srcimage->write(filename=>"$refimage_name", compression=>'None');
 #  }
 
-#  $status=$srcimage->write(filename=>"$refimage_name", compression=>'None');
-#  warn "$status" if $status;
+  #print("writing file $refimage_name\n");
+  #$srcimage->Quantize(colors=>256);
+  #$status=$srcimage->write(filename=>"$refimage_name", compression=>'rle');
+  #warn "$status" if $status;
 
   $status=$refimage->ReadImage("$refimage_name");
   if ("$status")
     {
       $errorinfo = "Readimage ($refimage_name): $status";
+       warn("$errorinfo");
       goto COMPARE_RUNTIME_ERROR;
     }
 
@@ -214,6 +219,7 @@ sub testReadCompare {
   if ("$status")
     {
       $errorinfo = "Compare($refimage_name): $status";
+      warn("$errorinfo");
       goto COMPARE_RUNTIME_ERROR;
     }
 
@@ -222,6 +228,7 @@ sub testReadCompare {
   if ( !defined($normalized_mean_error) )
     {
       $errorinfo = "GetAttribute('mean-error') returned undefined value!";
+      warn("$errorinfo");
       goto COMPARE_RUNTIME_ERROR;
     }
   $normalized_maximum_error=0;
@@ -229,6 +236,7 @@ sub testReadCompare {
   if ( ! defined($normalized_maximum_error) )
     {
       $errorinfo = "GetAttribute('maximum-error') returned undefined value!";
+      warn("$errorinfo");
       goto COMPARE_RUNTIME_ERROR;
     }
   if ( ($normalized_mean_error > $normalized_mean_error_max) ||
@@ -246,7 +254,6 @@ sub testReadCompare {
   return 0;
 
  COMPARE_RUNTIME_ERROR:
-  warn("$errorinfo");
   undef $srcimage;
   undef $refimage;
   print "not ok $test\n";

@@ -2147,7 +2147,8 @@ AM_CONDITIONAL(WITH_PERL_STATIC, test $with_perl_static = 'yes')
 AM_CONDITIONAL(WITH_PERL_DYNAMIC, test $with_perl_dynamic = 'yes')
 
 # Determine path to pick up GraphicsMagick library from for use with building PerlMagick
-MAGICKLIB="-L${LIB_DIR} -lGraphicsMagick"
+MAGICKLIBDIR="${LIB_DIR}"
+MAGICKLIB="-L${MAGICKLIBDIR} -lGraphicsMagick"
 if test $with_perl_static = 'yes'
 then
   # Find out where libtool hides its uninstalled libraries (as libtool_objdir)
@@ -2164,9 +2165,11 @@ then
   #MAGICKLIB="${builddir}/magick/${libtool_objdir}/${library_name}"
 
   # Linker search path to library, followed by -lGraphicsMagick
-  MAGICKLIB="-L${builddir}/magick/${libtool_objdir} -lGraphicsMagick"
+  MAGICKLIBDIR="${builddir}/magick/${libtool_objdir}"
+  MAGICKLIB="-L${MAGICKLIBDIR} -lGraphicsMagick"
 fi
 AC_SUBST(MAGICKLIB)
+AC_SUBST(MAGICKLIBDIR)
 
 # Create a simple string containing format names for all delegate libraries
 DELEGATES=''

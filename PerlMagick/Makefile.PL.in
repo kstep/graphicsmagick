@@ -24,13 +24,16 @@ foreach $delegate (qw/@DELEGATES@/) {
 WriteMakefile
   (
    # Module description
-   'ABSTRACT'	=> 'ImageMagick PERL Extension',
+   'ABSTRACT'	=> 'GraphicsMagick PERL Extension',
+
+   # Perl module name is Graphics::Magick
+   'NAME'	=> 'Graphics::Magick',
 
    # Module author
-   'AUTHOR'    => 'ImageMagick Studio',
+   'AUTHOR'    => 'GraphicsMagick Group',
 
-   # Set compiler flags other than INC and OPTIMIZE
-   # 'CCFLAGS'	=> '@CFLAGS@',
+   # Module version
+   'VERSION'   => '@PACKAGE_VERSION@',
 
    # Preprocessor defines
    'DEFINE'	=> '@DEFS@',     # e.g., '-DHAVE_SOMETHING' 
@@ -38,32 +41,52 @@ WriteMakefile
    # Header search specfication and preprocessor flags
    'INC'	=> '-I../ -I@top_srcdir@ @CPPFLAGS@',
 
-   # Install PerlMagick binary into ImageMagick bin directory
+   # C pre-processor flags (e.g. -I & -D options)
+   # 'CPPFLAGS'    => "$Config{'cppflags'} @CPPFLAGS@",
+
+   # C compiler flags (e.g. -O -g)
+   # 'CCFLAGS'     => "$Config{'ccflags'} @CFLAGS@",
+
+   # Linker flags for building an executable
+   'LDFLAGS'    =>  "-L@MAGICKLIBDIR@ $Config{'ldflags'}",
+
+   # Linker flags for building a dynamically loadable module
+   'LDDLFLAGS'  => "-L@MAGICKLIBDIR@ $Config{'lddlflags'}",
+
+   # Install PerlMagick binary into GraphicsMagick bin directory
    'INSTALLBIN'	=> '@BIN_DIR@',
 
    # Library specification
-   'LIBS'	=> ['@MAGICKLIB@ @LDFLAGS@ @MAGICK_DEP_LIBS@'],
+   'LIBS'	=> ['-L@MAGICKLIBDIR@ -lGraphicsMagick @LDFLAGS@ @MAGICK_DEP_LIBS@'],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',
 
-   # Perl module name is Graphics::Magick
-   'NAME'	=> 'Graphics::Magick',
-
    # Let CFLAGS drive optimization flags by setting OPTIMIZE to empty
    # 'OPTIMIZE'	=> '',
 
-   # Use same compiler as ImageMagick
-   # 'PERLMAINCC'	=> '@CC@',
+   # Use same compiler as GraphicsMagick
+   'PERLMAINCC'	=> '@CC@',
 
-   # Set Perl installation prefix to ImageMagick installation prefix
+   # Set Perl installation prefix to GraphicsMagick installation prefix
 #   'PREFIX'	=> '@prefix@',
-
-   # File to extract PerlMagick version from
-   'VERSION_FROM' => 'Magick.pm',
 
    # Include delegate directories in tests
    test		=> { TESTS	=>	$delegate_tests},
 
    ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
 );
+
+#
+# Stinky ExtUtils::MM_Unix likes to append its own library path to $(CC),
+# prior to any user-specified library path so that an installed library is
+# used rather than the library just built.  This substitution function
+# tries to insert our library path first.
+#
+sub MY::makeaperl {
+     package MY; # so that "SUPER" works right
+     my $inherited = shift->SUPER::makeaperl(@_);
+
+     $inherited =~ s:MAP_LINKCMD\s.*\s*\$\(CC\) -:MAP_LINKCMD   = \$(CC) -L@MAGICKLIBDIR@ -: ;
+     $inherited;
+ }

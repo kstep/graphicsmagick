@@ -10,6 +10,8 @@
 #
 # Test reading CGM files
 #
+# Written by Bob Friesenhahn
+#
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
@@ -22,7 +24,5 @@ require 't/subroutines.pl';
 
 chdir 't/cgm' || die 'Cd failed';
 
-testRead( 'CGM:input.cgm',
-  'fe8a94eb6a8ecb95badb6c69e1d5c21a75fa3b97c8367eed1a3fc76a407638bb',
-  '5b0c5cb4e921b78666b19ac3fcb32d5398f3f229fe8a7b88df39d4a4ceb0033e');
+testReadCompare('CGM:input.cgm', '../reference/cgm/read.miff', q//, 5e-05, 0.05);
 

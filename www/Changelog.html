@@ -53,6 +53,22 @@
 </tr>
 </table>
 <p>
+2003-04-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> (PerlMagick/t/write.t, PerlMagick/t/montage.t,
+        PerlMagick/t/rad/read.t, PerlMagick/t/rad/write.t):
+        Fix signatures which were thrown off by previous
+        change to how signatures are specified to functions
+        in subroutines.pl.<BR>
+  <LI> PerlMagick/t/cgm/read.t: Updated to use reference
+        image.<BR>
+  <LI> PerlMagick/Makefile.PL.in: Perform substitutions
+        on generated Makefile to ensure that the proper
+        -lGraphicsMagick is used for a static build.
+
+</UL>
+<p>
 2003-04-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

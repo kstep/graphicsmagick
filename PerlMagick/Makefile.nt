@@ -27,7 +27,7 @@ use Config;
 #
 WriteMakefile(
     'ABSTRACT'  => 'GraphicsMagick PERL Extension',
-    'AUTHOR'    => 'GraphicsMagick Studio',
+    'AUTHOR'    => 'GraphicsMagick Group',
     'NAME'      => 'Graphics::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
     'LIBS'      => ['-L..\VisualMagick\lib -L..\VisualMagick\bin -lCORE_RL_magick_.lib'],
