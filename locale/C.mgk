@@ -203,7 +203,7 @@
       </Message>
     </Error>
     <Warning>
-      <Message name="Lossless to lossy JPEG conversion">
+      <Message name="LosslessToLossyJPEGConversion">
         Lossless to lossy JPEG conversion
       </Message>
     </Warning>
