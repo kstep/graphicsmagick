@@ -1181,8 +1181,8 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               opacity=Opaque;
           if (opacity != Transparent)
             {
-              color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
-                y % draw_info->tile->rows);
+              color=GetOnePixel(clone_info->tile,x % clone_info->tile->columns,
+                y % clone_info->tile->rows);
               if (!clone_info->tile->matte)
                 {
                   q->red=alpha*(color.red*opacity+q->red*(Opaque-opacity));
@@ -1210,7 +1210,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           ProgressMonitor(DrawImageText,y,image->rows);
       }
     else
-      if (draw_info->fill.opacity != Transparent)
+      if (clone_info->fill.opacity != Transparent)
         {
           color=clone_info->fill;
           color.opacity=Opaque*clone_info->opacity/100;
@@ -1262,7 +1262,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               ProgressMonitor(DrawImageText,y,image->rows);
           }
         }
-      if (draw_info->stroke.opacity != Transparent)
+      if (clone_info->stroke.opacity != Transparent)
         {
           color=clone_info->stroke;
           color.opacity=Opaque*clone_info->opacity/100;
