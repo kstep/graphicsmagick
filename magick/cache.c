@@ -110,9 +110,8 @@
 %
 */
 
-inline unsigned int MatchesLastRegionRequest(Image *image,
-  const int x,const int y,const unsigned int columns,
-  const unsigned int rows)
+inline unsigned int MatchesLastRegionRequest(Image *image,const int x,
+  const int y,const unsigned int columns,const unsigned int rows)
 {
   if ((x == image->cache_info.x) && (y == image->cache_info.y) &&
       (columns == image->cache_info.width) &&

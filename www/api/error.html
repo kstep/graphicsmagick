@@ -35,11 +35,12 @@ error - ImageMagick Error Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>MagickError</STRONG>( error, message, qualifier );
+void  <STRONG>MagickError</STRONG>( const ErrorType error, const char *message, const char
+<CODE>*qualifier</CODE> );
 
 </P>
 <P>
-void  <STRONG>MagickWarning</STRONG>( const unsigned int warning, const char *message, const char
+void  <STRONG>MagickWarning</STRONG>( const WarningType warning, const char *message, const char
 <CODE>*qualifier</CODE> );
 
 </P>
@@ -55,28 +56,6 @@ ErrorHandler  <STRONG>SetWarningHandler</STRONG>( ErrorHandler handler );
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o">warning:</A></STRONG><DD>
-<P>
-Specifies the numeric warning category.
-
-</P>
-<p><dt><STRONG>message:</STRONG><DD>
-<P>
-Specifies the message to display before terminating the program.
-
-</P>
-<p><dt><STRONG>qualifier:</STRONG><DD>
-<P>
-Specifies any qualifier to the message.
-
-</P>
-</DL></DL>
-<P>
 <HR>
 <H2><A NAME="MagickError">MagickError</A></H2>
 <P>
@@ -87,7 +66,7 @@ Method MagickError calls the error handler methods with an error message.
 The format of the MagickError method is:
 
 </P>
-<blockquote>MagickError ( error, message, qualifier ); </blockquote>
+<blockquote>void MagickError ( const ErrorType error, const char *message, const char *qualifier ); </blockquote>
 
 <P>
 
@@ -95,7 +74,7 @@ The format of the MagickError method is:
 
 </P>
 <DL><DL>
-<p><dt><STRONG>error:</STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">error:</A></STRONG><DD>
 <P>
 Specifies the numeric error category.
 
@@ -123,7 +102,7 @@ message.
 The format of the MagickWarning method is:
 
 </P>
-<blockquote>void MagickWarning ( const unsigned int warning, const char *message, const char *qualifier ); </blockquote>
+<blockquote>void MagickWarning ( const WarningType warning, const char *message, const char *qualifier ); </blockquote>
 
 <P>
 

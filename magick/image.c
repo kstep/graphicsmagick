@@ -1515,12 +1515,13 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue;
       q->opacity=(opacity < Transparent) ? Transparent :
         (opacity > Opaque) ? Opaque : opacity;
-      if ((image->class == PseudoClass) &&
-          (composite_image->class == PseudoClass))
-        image->indexes[x]=composite_image->indexes[x];
       p++;
       q++;
     }
+    if ((image->class == PseudoClass) &&
+        (composite_image->class == PseudoClass))
+      (void) memcpy(image->indexes,composite_image->indexes,
+         width*sizeof(IndexPacket));
     if (!SyncPixelCache(image))
       break;
   }

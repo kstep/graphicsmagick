@@ -742,12 +742,13 @@ Export Image *FlipImage(Image *image)
       break;
     for (x=0; x < (int) flip_image->columns; x++)
     {
-      if (flip_image->class == PseudoClass)
-        flip_image->indexes[x]=image->indexes[x];
       *q=(*p);
       p++;
       q++;
     }
+    if (flip_image->class == PseudoClass)
+      (void) memcpy(flip_image->indexes,image->indexes,
+        flip_image->columns*sizeof(IndexPacket));
     status=SyncPixelCache(flip_image);
     if (status == False)
       break;
