@@ -79,8 +79,7 @@ namespace Magick
       { }
 
     // Destructor
-    virtual ~DrawableBase ( void )
-      { }
+    virtual ~DrawableBase ( void );
 
     // Operator to invoke equivalent draw API call
     virtual void operator()( MagickLib::DrawContext ) const = 0;
@@ -133,8 +132,7 @@ namespace Magick
       { }
 
     // Destructor
-    virtual ~VPathBase ( void )
-      { }
+    virtual ~VPathBase ( void );
 
     // Assignment operator
     const VPathBase& operator= (const VPathBase& original_ );
@@ -196,17 +194,14 @@ namespace Magick
       {
       }
 
-    ~DrawableAffine( void );
+    /*virtual*/ ~DrawableAffine( void );
 
     // Operator to invoke equivalent draw API call
-    void operator()( MagickLib::DrawContext context_ ) const;
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableAffine(*this);
-      }
+    DrawableBase* copy() const;
     
     void sx( double sx_ )
       {
@@ -286,16 +281,13 @@ namespace Magick
         _endDegrees(endDegrees_)
       { }
 
-    ~DrawableArc( void );
+    /*virtual*/ ~DrawableArc( void );
 
     // Operator to invoke equivalent draw API call
-    void operator()( MagickLib::DrawContext context_ ) const;
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const
-      {
-        return new DrawableArc(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void startX( double startX_ )
       {
@@ -371,16 +363,13 @@ namespace Magick
     DrawableBezier ( const DrawableBezier& original_ );
 
     // Destructor
-    ~DrawableBezier ( void );
+    /*virtual*/ ~DrawableBezier ( void );
 
     // Operator to invoke equivalent draw API call
-    void operator()( MagickLib::DrawContext context_ ) const;
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const
-      {
-        return new DrawableBezier(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
   
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -399,17 +388,13 @@ namespace Magick
       {
       }
 
-    ~DrawableCircle ( void );
+    /*virtual*/ ~DrawableCircle ( void );
     
     // Operator to invoke equivalent draw API call
-    void operator()( MagickLib::DrawContext context_ ) const;
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableCircle(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void originX( double originX_ )
       {
@@ -465,17 +450,13 @@ namespace Magick
         _paintMethod(paintMethod_)
       { }
 
-    ~DrawableColor ( void );
+    /*virtual*/ ~DrawableColor ( void );
 
     // Operator to invoke equivalent draw API call
-    void operator()( MagickLib::DrawContext context_ ) const;
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableColor(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void x( double x_ )
       {
@@ -539,24 +520,20 @@ namespace Magick
                              const Image &image_,
                              CompositeOperator composition_ );
 
-    // Destructor
-    ~DrawableCompositeImage( void );
-
     // Copy constructor
     DrawableCompositeImage ( const DrawableCompositeImage& original_ );
+
+    // Destructor
+    /*virtual*/ ~DrawableCompositeImage( void );
 
     // Assignment operator
     DrawableCompositeImage& operator= (const DrawableCompositeImage& original_ );
 
     // Operator to invoke equivalent draw API call
-    void operator()( MagickLib::DrawContext context_ ) const;
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableCompositeImage(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
     
     void composition( CompositeOperator composition_ )
       {
@@ -637,17 +614,13 @@ namespace Magick
         _arcEnd(arcEnd_)
       { }
 
-    ~DrawableEllipse( void );
+    /*virtual*/ ~DrawableEllipse( void );
 
     // Operator to invoke equivalent draw API call
-    void operator()( MagickLib::DrawContext context_ ) const;
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableEllipse(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void originX( double originX_ )
       {
@@ -720,16 +693,13 @@ namespace Magick
 
     DrawableFillColor ( const DrawableFillColor& original_ );
 
-    ~DrawableFillColor( void );
+    /*virtual*/ ~DrawableFillColor( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const
-      {
-        return new DrawableFillColor(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void color( const Color &color_ )
       {
@@ -753,17 +723,13 @@ namespace Magick
       {
       }
 
-    ~DrawableFillRule ( void );
+    /*virtual*/ ~DrawableFillRule ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableFillRule(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void fillRule( const FillRule fillRule_ )
       {
@@ -787,17 +753,13 @@ namespace Magick
       {
       }
 
-    ~DrawableFillOpacity ( void );
+    /*virtual*/ ~DrawableFillOpacity ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableFillOpacity(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void opacity( double opacity_ )
       {
@@ -824,17 +786,13 @@ namespace Magick
                    StretchType stretch_ );
     DrawableFont ( const DrawableFont& original_ );
 
-    ~DrawableFont ( void );
+    /*virtual*/ ~DrawableFont ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableFont(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void font( const std::string &font_ )
       {
@@ -862,17 +820,13 @@ namespace Magick
       {
       }
 
-    ~DrawableGravity ( void );
+    /*virtual*/ ~DrawableGravity ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableGravity(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void gravity( GravityType gravity_ )
       {
@@ -899,16 +853,13 @@ namespace Magick
         _endY(endY_)
       { }
 
-    ~DrawableLine ( void );
+    /*virtual*/ ~DrawableLine ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const
-      {
-        return new DrawableLine(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void startX( double startX_ )
       {
@@ -964,17 +915,13 @@ namespace Magick
         _paintMethod(paintMethod_)
       { }
 
-    ~DrawableMatte ( void );
+    /*virtual*/ ~DrawableMatte ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableMatte(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void x( double x_ )
       {
@@ -1017,17 +964,13 @@ namespace Magick
 
     DrawablePath ( const DrawablePath& original_ );
 
-    ~DrawablePath ( void );
+    /*virtual*/ ~DrawablePath ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawablePath(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
   private:
     std::list<Magick::VPath> _path;
@@ -1042,17 +985,13 @@ namespace Magick
         _y(y_)
       { }
 
-    ~DrawablePoint ( void );
+    /*virtual*/ ~DrawablePoint ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawablePoint(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void x( double x_ )
       {
@@ -1085,17 +1024,13 @@ namespace Magick
       : _pointSize(pointSize_)
       { }
 
-    ~DrawablePointSize ( void );
+    /*virtual*/ ~DrawablePointSize ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawablePointSize(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void pointSize( double pointSize_ )
       {
@@ -1118,17 +1053,13 @@ namespace Magick
 
     DrawablePolygon ( const DrawablePolygon& original_ );
 
-    ~DrawablePolygon ( void );
+    /*virtual*/ ~DrawablePolygon ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawablePolygon(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -1142,17 +1073,13 @@ namespace Magick
 
     DrawablePolyline ( const DrawablePolyline& original_ );
 
-    ~DrawablePolyline ( void );
+    /*virtual*/ ~DrawablePolyline ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawablePolyline(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -1165,16 +1092,13 @@ namespace Magick
     DrawablePopGraphicContext ( void )
       { }
 
-    ~DrawablePopGraphicContext ( void );
+    /*virtual*/ ~DrawablePopGraphicContext ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const
-      {
-        return new DrawablePopGraphicContext(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
   private:
   };
@@ -1186,16 +1110,13 @@ namespace Magick
     DrawablePushGraphicContext ( void )
       { }
 
-    ~DrawablePushGraphicContext ( void );
+    /*virtual*/ ~DrawablePushGraphicContext ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const
-      {
-        return new DrawablePushGraphicContext(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
   private:
   };
@@ -1207,16 +1128,13 @@ namespace Magick
     DrawablePopPattern ( void )
       { }
 
-    ~DrawablePopPattern ( void );
+    /*virtual*/ ~DrawablePopPattern ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const
-      {
-        return new DrawablePopPattern(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
   private:
   };
@@ -1230,16 +1148,13 @@ namespace Magick
 
     DrawablePushPattern ( const DrawablePushPattern& original_ );
 
-    ~DrawablePushPattern ( void );
+    /*virtual*/ ~DrawablePushPattern ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const
-      {
-        return new DrawablePushPattern(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
   private:
     std::string         _id;
@@ -1261,17 +1176,13 @@ namespace Magick
         _lowerRightY(lowerRightY_)
       { }
 
-    ~DrawableRectangle ( void );
+    /*virtual*/ ~DrawableRectangle ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableRectangle(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void upperLeftX( double upperLeftX_ )
       {
@@ -1324,17 +1235,13 @@ namespace Magick
       : _angle( angle_ )
       { }
 
-    ~DrawableRotation ( void );
+    /*virtual*/ ~DrawableRotation ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableRotation(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void angle( double angle_ )
       {
@@ -1364,17 +1271,13 @@ namespace Magick
         _cornerHeight(cornerHeight_)
       { }
 
-    ~DrawableRoundRectangle ( void );
+    /*virtual*/ ~DrawableRoundRectangle ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableRoundRectangle(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void centerX( double centerX_ )
       {
@@ -1448,17 +1351,13 @@ namespace Magick
         _y(y_)
       { }
 
-    ~DrawableScaling ( void );
+    /*virtual*/ ~DrawableScaling ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableScaling(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void x( double x_ )
       {
@@ -1491,17 +1390,13 @@ namespace Magick
       : _angle(angle_)
       { }
 
-    ~DrawableSkewX ( void );
+    /*virtual*/ ~DrawableSkewX ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableSkewX(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void angle( double angle_ )
       {
@@ -1524,17 +1419,13 @@ namespace Magick
       : _angle(angle_)
       { }
 
-    ~DrawableSkewY ( void );
+    /*virtual*/ ~DrawableSkewY ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableSkewY(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void angle( double angle_ )
       {
@@ -1557,17 +1448,13 @@ namespace Magick
     DrawableDashArray( const unsigned int* dasharray_ ); // Deprecated
     DrawableDashArray( const Magick::DrawableDashArray &original_ );
 
-    ~DrawableDashArray( void );
+    /*virtual*/ ~DrawableDashArray( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableDashArray(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void dasharray( const double* dasharray_ );
     void dasharray( const unsigned int* dasharray_ ); // Deprecated
@@ -1591,17 +1478,13 @@ namespace Magick
       : _offset(offset_)
       { }
 
-    ~DrawableDashOffset ( void );
+    /*virtual*/ ~DrawableDashOffset ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableDashOffset(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void offset( const double offset_ )
       {
@@ -1624,17 +1507,13 @@ namespace Magick
       : _linecap(linecap_)
       { }
 
-    ~DrawableStrokeLineCap ( void );
+    /*virtual*/ ~DrawableStrokeLineCap ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableStrokeLineCap(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void linecap( LineCap linecap_ )
       {
@@ -1657,17 +1536,13 @@ namespace Magick
       : _linejoin(linejoin_)
       { }
 
-    ~DrawableStrokeLineJoin ( void );
+    /*virtual*/ ~DrawableStrokeLineJoin ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableStrokeLineJoin(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void linejoin( LineJoin linejoin_ )
       {
@@ -1690,17 +1565,13 @@ namespace Magick
       : _miterlimit(miterlimit_)
       { }
 
-    ~DrawableMiterLimit ( void );
+    /*virtual*/ ~DrawableMiterLimit ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableMiterLimit(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void miterlimit( unsigned int miterlimit_ )
       {
@@ -1724,17 +1595,13 @@ namespace Magick
       : _flag(flag_)
       { }
 
-    ~DrawableStrokeAntialias ( void );
+    /*virtual*/ ~DrawableStrokeAntialias ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableStrokeAntialias(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void flag( bool flag_ )
       {
@@ -1757,17 +1624,13 @@ namespace Magick
 
     DrawableStrokeColor ( const DrawableStrokeColor& original_ );
 
-    ~DrawableStrokeColor ( void );
+    /*virtual*/ ~DrawableStrokeColor ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableStrokeColor(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void color( const Color& color_ )
       {
@@ -1791,17 +1654,13 @@ namespace Magick
       {
       }
 
-    ~DrawableStrokeOpacity ( void );
+    /*virtual*/ ~DrawableStrokeOpacity ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableStrokeOpacity(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void opacity( double opacity_ )
       {
@@ -1824,17 +1683,13 @@ namespace Magick
       : _width(width_)
       { }
 
-    ~DrawableStrokeWidth ( void );
+    /*virtual*/ ~DrawableStrokeWidth ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableStrokeWidth(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void width( double width_ )
       {
@@ -1857,17 +1712,13 @@ namespace Magick
 
     DrawableText ( const DrawableText& original_ );
 
-    ~DrawableText ( void );
+    /*virtual*/ ~DrawableText ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableText(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void x( double x_ )
       {
@@ -1909,17 +1760,13 @@ namespace Magick
     DrawableTextAntialias ( bool flag_ )
       : _flag(flag_) { }
 
-    ~DrawableTextAntialias ( void );
+    /*virtual*/ ~DrawableTextAntialias ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableTextAntialias(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void flag( bool flag_ )
       {
@@ -1942,17 +1789,13 @@ namespace Magick
       : _decoration(decoration_)
       { }
 
-    ~DrawableTextDecoration( void );
+    /*virtual*/ ~DrawableTextDecoration( void );
 
     // Operator to invoke equivalent draw API call
-    void operator()( MagickLib::DrawContext context_ ) const;
+   /*virtual*/  void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableTextDecoration(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void decoration( DecorationType decoration_ )
       {
@@ -1976,17 +1819,13 @@ namespace Magick
         _y(y_)
       { }
 
-    ~DrawableTranslation ( void );
+    /*virtual*/ ~DrawableTranslation ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableTranslation(*this);
-      }
+    /*virtual*/ DrawableBase* copy() const;
 
     void x( double x_ )
       {
@@ -2022,17 +1861,14 @@ namespace Magick
         _x2(x2_),
         _y2(y2_) { }
 
-    ~DrawableViewbox ( void );
+    /*virtual*/ ~DrawableViewbox ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableViewbox(*this);
-      }
+    DrawableBase* copy() const;
 
     void x1( unsigned long x1_ )
       {
@@ -2184,17 +2020,13 @@ namespace Magick
     PathArcAbs ( const PathArcAbs& original_ );
 
     // Destructor
-    ~PathArcAbs ( void );
+    /*virtual*/ ~PathArcAbs ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/
-    VPathBase* copy() const
-      {
-        return new PathArcAbs(*this);
-      }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
     std::list<Magick::PathArcArgs> _coordinates;
@@ -2210,15 +2042,13 @@ namespace Magick
 
     PathArcRel ( const PathArcRel& original_ );
 
-    ~PathArcRel ( void );
+    /*virtual*/ ~PathArcRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ VPathBase* copy() const {
-      return new PathArcRel(*this);
-    }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
     std::list<Magick::PathArcArgs> _coordinates;
@@ -2231,15 +2061,13 @@ namespace Magick
     PathClosePath ( void )
       { }
 
-    ~PathClosePath ( void );
+    /*virtual*/ ~PathClosePath ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ VPathBase* copy() const {
-      return new PathClosePath(*this);
-    }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
 
@@ -2341,17 +2169,13 @@ namespace Magick
     PathCurvetoAbs ( const PathCurvetoAbs& original_ );
 
     // Destructor
-    ~PathCurvetoAbs ( void );
+    /*virtual*/ ~PathCurvetoAbs ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ 
-    VPathBase* copy() const
-      {
-        return new PathCurvetoAbs(*this);
-      }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
     std::list<Magick::PathCurvetoArgs> _args;
@@ -2368,17 +2192,13 @@ namespace Magick
     // Copy constructor
     PathCurvetoRel ( const PathCurvetoRel& original_ );
 
-    ~PathCurvetoRel ( void );
+    /*virtual*/ ~PathCurvetoRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ 
-    VPathBase* copy() const
-      {
-        return new PathCurvetoRel(*this);
-      }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
     std::list<Magick::PathCurvetoArgs> _args;
@@ -2395,17 +2215,14 @@ namespace Magick
     // Copy constructor
     PathSmoothCurvetoAbs ( const PathSmoothCurvetoAbs& original_ );
 
-    ~PathSmoothCurvetoAbs ( void );
+    /*virtual*/ ~PathSmoothCurvetoAbs ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ 
-    VPathBase* copy() const
-      {
-        return new PathSmoothCurvetoAbs(*this);
-      }
+    VPathBase* copy() const;
 
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -2423,17 +2240,14 @@ namespace Magick
     PathSmoothCurvetoRel ( const PathSmoothCurvetoRel& original_ );
 
     // Destructor
-    ~PathSmoothCurvetoRel ( void );
+    /*virtual*/ ~PathSmoothCurvetoRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
     /*virtual*/ 
-    VPathBase* copy() const
-      {
-        return new PathSmoothCurvetoRel(*this);
-      }
+    VPathBase* copy() const;
 
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -2513,17 +2327,13 @@ namespace Magick
     PathQuadraticCurvetoAbs ( const PathQuadraticCurvetoAbs& original_ );
 
     // Destructor
-    ~PathQuadraticCurvetoAbs ( void );
+    /*virtual*/ ~PathQuadraticCurvetoAbs ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ 
-    VPathBase* copy() const
-      {
-        return new PathQuadraticCurvetoAbs(*this);
-      }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
     std::list<Magick::PathQuadraticCurvetoArgs> _args;
@@ -2541,17 +2351,13 @@ namespace Magick
     PathQuadraticCurvetoRel ( const PathQuadraticCurvetoRel& original_ );
 
     // Destructor
-    ~PathQuadraticCurvetoRel ( void );
+    /*virtual*/ ~PathQuadraticCurvetoRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ 
-    VPathBase* copy() const
-      {
-        return new PathQuadraticCurvetoRel(*this);
-      }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
     std::list<Magick::PathQuadraticCurvetoArgs> _args;
@@ -2569,17 +2375,13 @@ namespace Magick
     PathSmoothQuadraticCurvetoAbs ( const PathSmoothQuadraticCurvetoAbs& original_ );
 
     // Destructor
-    ~PathSmoothQuadraticCurvetoAbs ( void );
+    /*virtual*/ ~PathSmoothQuadraticCurvetoAbs ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ 
-    VPathBase* copy() const
-      {
-        return new PathSmoothQuadraticCurvetoAbs(*this);
-      }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -2597,17 +2399,13 @@ namespace Magick
     PathSmoothQuadraticCurvetoRel ( const PathSmoothQuadraticCurvetoRel& original_ );
 
     // Destructor
-    ~PathSmoothQuadraticCurvetoRel ( void );
+    /*virtual*/ ~PathSmoothQuadraticCurvetoRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ 
-    VPathBase* copy() const
-      {
-        return new PathSmoothQuadraticCurvetoRel(*this);
-      }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -2629,15 +2427,13 @@ namespace Magick
     PathLinetoAbs ( const PathLinetoAbs& original_ );
 
     // Destructor
-    ~PathLinetoAbs ( void );
+    /*virtual*/ ~PathLinetoAbs ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ VPathBase* copy() const {
-      return new PathLinetoAbs(*this);
-    }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -2655,15 +2451,13 @@ namespace Magick
     PathLinetoRel ( const PathLinetoRel& original_ );
 
     // Destructor
-    ~PathLinetoRel ( void );
+    /*virtual*/ ~PathLinetoRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ VPathBase* copy() const {
-      return new PathLinetoRel(*this);
-    }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -2678,15 +2472,13 @@ namespace Magick
       {
       }
 
-    ~PathLinetoHorizontalAbs ( void );
+    /*virtual*/ ~PathLinetoHorizontalAbs ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ VPathBase* copy() const {
-      return new PathLinetoHorizontalAbs(*this);
-    }
+    /*virtual*/ VPathBase* copy() const;
 
     void x( double x_ )
       {
@@ -2708,15 +2500,13 @@ namespace Magick
       {
       }
 
-    ~PathLinetoHorizontalRel ( void );
+    /*virtual*/ ~PathLinetoHorizontalRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ VPathBase* copy() const {
-      return new PathLinetoHorizontalRel(*this);
-    }
+    /*virtual*/ VPathBase* copy() const;
 
     void x( double x_ )
       {
@@ -2740,15 +2530,13 @@ namespace Magick
       {
       }
 
-    ~PathLinetoVerticalAbs ( void );
+    /*virtual*/ ~PathLinetoVerticalAbs ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ VPathBase* copy() const {
-      return new PathLinetoVerticalAbs(*this);
-    }
+    /*virtual*/ VPathBase* copy() const;
 
     void y( double y_ )
       {
@@ -2770,15 +2558,13 @@ namespace Magick
       {
       }
 
-    ~PathLinetoVerticalRel ( void );
+    /*virtual*/ ~PathLinetoVerticalRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ VPathBase* copy() const {
-      return new PathLinetoVerticalRel(*this);
-    }
+    /*virtual*/ VPathBase* copy() const;
 
     void y( double y_ )
       {
@@ -2807,15 +2593,13 @@ namespace Magick
     PathMovetoAbs ( const PathMovetoAbs& original_ );
 
     // Destructor
-    ~PathMovetoAbs ( void );
+    /*virtual*/ ~PathMovetoAbs ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ VPathBase* copy() const {
-      return new PathMovetoAbs(*this);
-    }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
     std::list<Magick::Coordinate> _coordinates;
@@ -2833,15 +2617,13 @@ namespace Magick
     PathMovetoRel ( const PathMovetoRel& original_ );
 
     // Destructor
-    ~PathMovetoRel ( void );
+    /*virtual*/ ~PathMovetoRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ VPathBase* copy() const {
-      return new PathMovetoRel(*this);
-    }
+    /*virtual*/ VPathBase* copy() const;
 
   private:
     std::list<Magick::Coordinate> _coordinates;
