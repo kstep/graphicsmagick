@@ -70,9 +70,8 @@
 #include "magick/quantize.h"
 #include "magick/resize.h"
 #include "magick/utility.h"
+#include "wand/wand_api.h"
 #include "wand/magick_compat.h"
-#include "wand/magick_wand.h"
-
 
 /*
   Typedef declarations.
@@ -119,7 +118,7 @@ struct _MagickWand
 %
 %
 */
-MagickExport void DestroyMagickWand(MagickWand *wand)
+WandExport void DestroyMagickWand(MagickWand *wand)
 {
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
@@ -163,7 +162,7 @@ MagickExport void DestroyMagickWand(MagickWand *wand)
 %    o offset: The mean offset.
 %
 */
-MagickExport unsigned int MagickAdaptiveThresholdImage(MagickWand *wand,
+WandExport unsigned int MagickAdaptiveThresholdImage(MagickWand *wand,
   const unsigned long width,const unsigned long height,const long offset)
 {
   Image
@@ -207,7 +206,7 @@ MagickExport unsigned int MagickAdaptiveThresholdImage(MagickWand *wand,
 %      Impulse, Laplacian, or Poisson.
 %
 */
-MagickExport unsigned int MagickAddNoiseImage(MagickWand *wand,
+WandExport unsigned int MagickAddNoiseImage(MagickWand *wand,
   const NoiseType noise_type)
 {
   Image
@@ -251,7 +250,7 @@ MagickExport unsigned int MagickAddNoiseImage(MagickWand *wand,
 %    o draw_wand: The draw wand.
 %
 */
-MagickExport unsigned int MagickAffineTransformImage(MagickWand *wand,
+WandExport unsigned int MagickAffineTransformImage(MagickWand *wand,
   const DrawingWand *draw_wand)
 {
   const DrawInfo
@@ -301,7 +300,7 @@ MagickExport unsigned int MagickAffineTransformImage(MagickWand *wand,
 %    o draw_wand: The draw wand.
 %
 */
-MagickExport unsigned int MagickAnnotateImage(MagickWand *wand,
+WandExport unsigned int MagickAnnotateImage(MagickWand *wand,
   const DrawingWand *draw_wand)
 {
   const DrawInfo
@@ -347,7 +346,7 @@ MagickExport unsigned int MagickAnnotateImage(MagickWand *wand,
 %
 %
 */
-MagickExport unsigned int MagickAnimateImages(MagickWand *wand,
+WandExport unsigned int MagickAnimateImages(MagickWand *wand,
   const char *server_name)
 {
   unsigned int
@@ -388,7 +387,7 @@ MagickExport unsigned int MagickAnimateImages(MagickWand *wand,
 %
 */
 #if FIXME
-MagickExport unsigned int MagickBlackThresholdImage(MagickWand *wand,
+WandExport unsigned int MagickBlackThresholdImage(MagickWand *wand,
   const PixelWand *threshold)
 {
   char
@@ -440,7 +439,7 @@ MagickExport unsigned int MagickBlackThresholdImage(MagickWand *wand,
 %    o sigma: The standard deviation of the Gaussian, in pixels.
 %
 */
-MagickExport unsigned int MagickBlurImage(MagickWand *wand,const double radius,
+WandExport unsigned int MagickBlurImage(MagickWand *wand,const double radius,
   const double sigma)
 {
   Image
@@ -489,7 +488,7 @@ MagickExport unsigned int MagickBlurImage(MagickWand *wand,const double radius,
 %    o height: The border height.
 %
 */
-MagickExport unsigned int MagickBorderImage(MagickWand *wand,
+WandExport unsigned int MagickBorderImage(MagickWand *wand,
   const PixelWand *bordercolor,const unsigned long width,
   const unsigned long height)
 {
@@ -543,7 +542,7 @@ MagickExport unsigned int MagickBorderImage(MagickWand *wand,
 %      or BlackChannel.
 %
 */
-MagickExport unsigned int MagickChannelImage(MagickWand *wand,
+WandExport unsigned int MagickChannelImage(MagickWand *wand,
   const ChannelType channel)
 {
   unsigned int
@@ -585,7 +584,7 @@ MagickExport unsigned int MagickChannelImage(MagickWand *wand,
 %    o sigma: The standard deviation of the Gaussian, in pixels.
 %
 */
-MagickExport unsigned int MagickCharcoalImage(MagickWand *wand,
+WandExport unsigned int MagickCharcoalImage(MagickWand *wand,
   const double radius,const double sigma)
 {
   Image
@@ -636,7 +635,7 @@ MagickExport unsigned int MagickCharcoalImage(MagickWand *wand,
 %
 %
 */
-MagickExport unsigned int MagickChopImage(MagickWand *wand,
+WandExport unsigned int MagickChopImage(MagickWand *wand,
   const unsigned long width,const unsigned long height,const long x,
   const long y)
 {
@@ -685,7 +684,7 @@ MagickExport unsigned int MagickChopImage(MagickWand *wand,
 %
 %
 */
-MagickExport MagickWand *MagickCloneWand(const MagickWand *wand)
+WandExport MagickWand *MagickCloneWand(const MagickWand *wand)
 {
   Image
     *image;
@@ -736,7 +735,7 @@ MagickExport MagickWand *MagickCloneWand(const MagickWand *wand)
 %    o wand: The magick wand.
 %
 */
-MagickExport unsigned int MagickClipImage(MagickWand *wand)
+WandExport unsigned int MagickClipImage(MagickWand *wand)
 {
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
@@ -772,7 +771,7 @@ MagickExport unsigned int MagickClipImage(MagickWand *wand)
 %    o wand: The magick wand.
 %
 */
-MagickExport MagickWand *MagickCoalesceImages(MagickWand *wand)
+WandExport MagickWand *MagickCoalesceImages(MagickWand *wand)
 {
   Image
     *coalesce_image;
@@ -845,7 +844,7 @@ MagickExport MagickWand *MagickCoalesceImages(MagickWand *wand)
 %    o x,y: The starting location of the operation.
 %
 */
-MagickExport unsigned int MagickColorFloodfillImage(MagickWand *wand,
+WandExport unsigned int MagickColorFloodfillImage(MagickWand *wand,
   PixelWand *fill,PixelWand *bordercolor,const long x,const long y)
 {
   DrawInfo
@@ -900,7 +899,7 @@ MagickExport unsigned int MagickColorFloodfillImage(MagickWand *wand,
 %    o opacity: The opacity pixel wand.
 %
 */
-MagickExport unsigned int MagickColorizeImage(MagickWand *wand,
+WandExport unsigned int MagickColorizeImage(MagickWand *wand,
   const PixelWand *fill,const PixelWand *opacity)
 {
   char
@@ -955,7 +954,7 @@ MagickExport unsigned int MagickColorizeImage(MagickWand *wand,
 %    o comment: The image comment
 %
 */
-MagickExport unsigned int MagickCommentImage(MagickWand *wand,
+WandExport unsigned int MagickCommentImage(MagickWand *wand,
   const char *comment)
 {
   assert(wand != (void *) NULL);
@@ -1012,7 +1011,7 @@ MagickExport unsigned int MagickCommentImage(MagickWand *wand,
 %      of red, green, and blue values in your image.
 %
 */
-MagickExport unsigned int MagickCompareImage(MagickWand *wand,
+WandExport unsigned int MagickCompareImage(MagickWand *wand,
   const MagickWand *reference,double *mean_error_per_pixel,
   double *normalized_mean_error,double *normalized_maximum_error)
 {
@@ -1073,7 +1072,7 @@ MagickExport unsigned int MagickCompareImage(MagickWand *wand,
 %
 %
 */
-MagickExport unsigned int MagickCompositeImage(MagickWand *wand,
+WandExport unsigned int MagickCompositeImage(MagickWand *wand,
   const CompositeOperator compose,const MagickWand *composite_wand,
   const long x,const long y)
 {
@@ -1117,7 +1116,7 @@ MagickExport unsigned int MagickCompositeImage(MagickWand *wand,
 %
 %
 */
-MagickExport unsigned int MagickContrastImage(MagickWand *wand,
+WandExport unsigned int MagickContrastImage(MagickWand *wand,
   const unsigned int sharpen)
 {
   assert(wand != (void *) NULL);
@@ -1155,7 +1154,7 @@ MagickExport unsigned int MagickContrastImage(MagickWand *wand,
 %
 %
 */
-MagickExport unsigned int MagickConvolveImage(MagickWand *wand,
+WandExport unsigned int MagickConvolveImage(MagickWand *wand,
   const unsigned int order,const double *kernel)
 {
   Image
@@ -1208,7 +1207,7 @@ MagickExport unsigned int MagickConvolveImage(MagickWand *wand,
 %
 %
 */
-MagickExport unsigned int MagickCropImage(MagickWand *wand,
+WandExport unsigned int MagickCropImage(MagickWand *wand,
   const unsigned long width,const unsigned long height,const long x,
   const long y)
 {
@@ -1261,7 +1260,7 @@ MagickExport unsigned int MagickCropImage(MagickWand *wand,
 %    o pixel_wand: The pixel wand.
 %
 */
-MagickExport unsigned int MagickCycleColormapImage(MagickWand *wand,
+WandExport unsigned int MagickCycleColormapImage(MagickWand *wand,
   const long displace)
 {
   unsigned int
@@ -1299,7 +1298,7 @@ MagickExport unsigned int MagickCycleColormapImage(MagickWand *wand,
 %    o wand: The magick wand.
 %
 */
-MagickExport MagickWand *MagickDeconstructImages(MagickWand *wand)
+WandExport MagickWand *MagickDeconstructImages(MagickWand *wand)
 {
   Image
     *deconstruct_image;
@@ -1359,7 +1358,7 @@ MagickExport MagickWand *MagickDeconstructImages(MagickWand *wand)
 %
 %
 */
-MagickExport unsigned int MagickDescribeImage(MagickWand *wand,FILE *file)
+WandExport unsigned int MagickDescribeImage(MagickWand *wand,FILE *file)
 {
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
@@ -1390,7 +1389,7 @@ MagickExport unsigned int MagickDescribeImage(MagickWand *wand,FILE *file)
 %    o wand: The magick wand.
 %
 */
-MagickExport unsigned int MagickDespeckleImage(MagickWand *wand)
+WandExport unsigned int MagickDespeckleImage(MagickWand *wand)
 {
   Image
     *despeckle_image;
@@ -1431,7 +1430,7 @@ MagickExport unsigned int MagickDespeckleImage(MagickWand *wand)
 %    o server_name: The X server name.
 %
 */
-MagickExport unsigned int MagickDisplayImage(MagickWand *wand,
+WandExport unsigned int MagickDisplayImage(MagickWand *wand,
   const char *server_name)
 {
   Image
@@ -1479,7 +1478,7 @@ MagickExport unsigned int MagickDisplayImage(MagickWand *wand,
 %
 %
 */
-MagickExport unsigned int MagickDisplayImages(MagickWand *wand,
+WandExport unsigned int MagickDisplayImages(MagickWand *wand,
   const char *server_name)
 {
   unsigned int
@@ -1518,7 +1517,7 @@ MagickExport unsigned int MagickDisplayImages(MagickWand *wand,
 %
 */
 /* FIXME: This interface is brain-damaged */
-MagickExport unsigned int MagickDrawImage(MagickWand *wand,
+WandExport unsigned int MagickDrawImage(MagickWand *wand,
   const DrawingWand *draw_wand)
 {
   assert(wand != (void *) NULL);
@@ -1554,7 +1553,7 @@ MagickExport unsigned int MagickDrawImage(MagickWand *wand,
 %    o radius: the radius of the pixel neighborhood.
 %
 */
-MagickExport unsigned int MagickEdgeImage(MagickWand *wand,
+WandExport unsigned int MagickEdgeImage(MagickWand *wand,
   const double radius)
 {
   Image
@@ -1604,7 +1603,7 @@ MagickExport unsigned int MagickEdgeImage(MagickWand *wand,
 %    o sigma: The standard deviation of the Gaussian, in pixels.
 %
 */
-MagickExport unsigned int MagickEmbossImage(MagickWand *wand,
+WandExport unsigned int MagickEmbossImage(MagickWand *wand,
   const double radius,const double sigma)
 {
   Image
@@ -1645,7 +1644,7 @@ MagickExport unsigned int MagickEmbossImage(MagickWand *wand,
 %    o wand: The magick wand.
 %
 */
-MagickExport unsigned int MagickEnhanceImage(MagickWand *wand)
+WandExport unsigned int MagickEnhanceImage(MagickWand *wand)
 {
   Image
     *enhance_image;
@@ -1684,7 +1683,7 @@ MagickExport unsigned int MagickEnhanceImage(MagickWand *wand)
 %    o wand: The magick wand.
 %
 */
-MagickExport unsigned int MagickEqualizeImage(MagickWand *wand)
+WandExport unsigned int MagickEqualizeImage(MagickWand *wand)
 {
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
@@ -1716,7 +1715,7 @@ MagickExport unsigned int MagickEqualizeImage(MagickWand *wand)
 %    o wand: The magick wand.
 %
 */
-MagickExport MagickWand *MagickFlattenImages(MagickWand *wand)
+WandExport MagickWand *MagickFlattenImages(MagickWand *wand)
 {
   Image
     *flatten_image;
@@ -1773,7 +1772,7 @@ MagickExport MagickWand *MagickFlattenImages(MagickWand *wand)
 %    o wand: The magick wand.
 %
 */
-MagickExport unsigned int MagickFlipImage(MagickWand *wand)
+WandExport unsigned int MagickFlipImage(MagickWand *wand)
 {
   Image
     *flip_image;
@@ -1813,7 +1812,7 @@ MagickExport unsigned int MagickFlipImage(MagickWand *wand)
 %    o wand: The magick wand.
 %
 */
-MagickExport unsigned int MagickFlopImage(MagickWand *wand)
+WandExport unsigned int MagickFlopImage(MagickWand *wand)
 {
   Image
     *flop_image;
@@ -1869,7 +1868,7 @@ MagickExport unsigned int MagickFlopImage(MagickWand *wand)
 %    o outer_bevel: The outer bevel width.
 %
 */
-MagickExport unsigned int MagickFrameImage(MagickWand *wand,
+WandExport unsigned int MagickFrameImage(MagickWand *wand,
   const PixelWand *framecolor,const unsigned long width,
   const unsigned long height,const long inner_bevel,const long outer_bevel)
 {
@@ -1929,7 +1928,7 @@ MagickExport unsigned int MagickFrameImage(MagickWand *wand,
 %    o level: Define the level of gamma correction.
 %
 */
-MagickExport unsigned int MagickGammaImage(MagickWand *wand,
+WandExport unsigned int MagickGammaImage(MagickWand *wand,
   const PixelWand *level)
 {
   char
@@ -1986,7 +1985,7 @@ static const char *GetErrorMessageString(const int error_number)
   return(message);
 }
 
-MagickExport unsigned int MagickGetException(MagickWand *wand,
+WandExport unsigned int MagickGetException(MagickWand *wand,
   char **description)
 {
   assert(wand != (void *) NULL);
@@ -2041,7 +2040,7 @@ MagickExport unsigned int MagickGetException(MagickWand *wand,
 %
 %
 */
-MagickExport const char *MagickGetFilename(MagickWand *wand)
+WandExport const char *MagickGetFilename(MagickWand *wand)
 {
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
@@ -2071,7 +2070,7 @@ MagickExport const char *MagickGetFilename(MagickWand *wand)
 %    o wand: The magick wand.
 %
 */
-MagickExport const char *MagickGetImageFilename(MagickWand *wand)
+WandExport const char *MagickGetImageFilename(MagickWand *wand)
 {
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
@@ -2131,7 +2130,7 @@ MagickExport const char *MagickGetImageFilename(MagickWand *wand)
 %
 %
 */
-MagickExport unsigned int MagickGetImagePixels(MagickWand *wand,
+WandExport unsigned int MagickGetImagePixels(MagickWand *wand,
   const long x_offset,const long y_offset,const unsigned long columns,
   const unsigned long rows,const char *map,const StorageType storage,
   void *pixels)
@@ -2171,7 +2170,7 @@ MagickExport unsigned int MagickGetImagePixels(MagickWand *wand,
 %    o wand: The magick wand.
 %
 */
-MagickExport unsigned long MagickGetNumberOfImages(MagickWand *wand)
+WandExport unsigned long MagickGetNumberOfImages(MagickWand *wand)
 {
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
@@ -2207,7 +2206,7 @@ MagickExport unsigned long MagickGetNumberOfImages(MagickWand *wand)
 %    o height: The height in pixels.
 %
 */
-MagickExport void MagickGetSize(MagickWand *wand,unsigned long *columns,
+WandExport void MagickGetSize(MagickWand *wand,unsigned long *columns,
   unsigned long *rows)
 {
   RectangleInfo
@@ -2243,7 +2242,7 @@ MagickExport void MagickGetSize(MagickWand *wand,unsigned long *columns,
 %    o wand: The magick wand.
 %
 */
-MagickExport unsigned int MagickNextImage(MagickWand *wand)
+WandExport unsigned int MagickNextImage(MagickWand *wand)
 {
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
@@ -2276,7 +2275,7 @@ MagickExport unsigned int MagickNextImage(MagickWand *wand)
 %    o wand: The magick wand.
 %
 */
-MagickExport unsigned int MagickPreviousImage(MagickWand *wand)
+WandExport unsigned int MagickPreviousImage(MagickWand *wand)
 {
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
@@ -2312,7 +2311,7 @@ MagickExport unsigned int MagickPreviousImage(MagickWand *wand)
 %
 %
 */
-MagickExport unsigned int MagickReadImage(MagickWand *wand,
+WandExport unsigned int MagickReadImage(MagickWand *wand,
   const char *filename)
 {
   Image
@@ -2352,7 +2351,7 @@ MagickExport unsigned int MagickReadImage(MagickWand *wand,
 %    o wand: The magick wand.
 %
 */
-MagickExport unsigned int MagickRemoveImage(MagickWand *wand)
+WandExport unsigned int MagickRemoveImage(MagickWand *wand)
 {
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
@@ -2407,7 +2406,7 @@ MagickExport unsigned int MagickRemoveImage(MagickWand *wand)
 %
 %
 */
-MagickExport unsigned int MagickResizeImage(MagickWand *wand,
+WandExport unsigned int MagickResizeImage(MagickWand *wand,
   const unsigned long columns,const unsigned long rows,const FilterTypes filter,
   const double blur)
 {
@@ -2452,7 +2451,7 @@ MagickExport unsigned int MagickResizeImage(MagickWand *wand,
 %
 %
 */
-MagickExport unsigned int MagickRotateImage(MagickWand *wand,
+WandExport unsigned int MagickRotateImage(MagickWand *wand,
   const double degrees)
 {
   Image
@@ -2495,7 +2494,7 @@ MagickExport unsigned int MagickRotateImage(MagickWand *wand,
 %    o distance: RGB distance-squared.
 %
 */
-MagickExport void MagickSetFuzzyColorDistance(MagickWand *wand,
+WandExport void MagickSetFuzzyColorDistance(MagickWand *wand,
   const double distance)
 {
   assert(wand != (void *) NULL);
@@ -2528,7 +2527,7 @@ MagickExport void MagickSetFuzzyColorDistance(MagickWand *wand,
 %    o filename: The image filename.
 %
 */
-MagickExport void MagickSetFilename(MagickWand *wand,const char *filename)
+WandExport void MagickSetFilename(MagickWand *wand,const char *filename)
 {
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
@@ -2559,7 +2558,7 @@ MagickExport void MagickSetFilename(MagickWand *wand,const char *filename)
 %    o scene: The scene number.
 %
 */
-MagickExport unsigned int MagickSetImage(MagickWand *wand,
+WandExport unsigned int MagickSetImage(MagickWand *wand,
   const unsigned long scene)
 {
   Image
@@ -2602,7 +2601,7 @@ MagickExport unsigned int MagickSetImage(MagickWand *wand,
 %    o filename: The image filename.
 %
 */
-MagickExport unsigned int MagickSetImageFilename(MagickWand *wand,
+WandExport unsigned int MagickSetImageFilename(MagickWand *wand,
   const char *filename)
 {
   assert(wand != (void *) NULL);
@@ -2668,7 +2667,7 @@ MagickExport unsigned int MagickSetImageFilename(MagickWand *wand,
 %
 %
 */
-MagickExport unsigned int MagickSetImagePixels(MagickWand *wand,
+WandExport unsigned int MagickSetImagePixels(MagickWand *wand,
   const long x_offset,const long y_offset,const unsigned long columns,
   const unsigned long rows,const char *map,const StorageType storage,
   void *pixels)
@@ -2714,7 +2713,7 @@ MagickExport unsigned int MagickSetImagePixels(MagickWand *wand,
 %
 %
 */
-MagickExport void MagickSetSize(MagickWand *wand,const unsigned long columns,
+WandExport void MagickSetSize(MagickWand *wand,const unsigned long columns,
   const unsigned long rows)
 {
   char
@@ -2751,7 +2750,7 @@ MagickExport void MagickSetSize(MagickWand *wand,const unsigned long columns,
 %
 %
 */
-MagickExport unsigned int MagickWriteImage(MagickWand *wand,
+WandExport unsigned int MagickWriteImage(MagickWand *wand,
   const char *filename)
 {
   assert(wand != (void *) NULL);
@@ -2788,7 +2787,7 @@ MagickExport unsigned int MagickWriteImage(MagickWand *wand,
 %
 %
 */
-MagickExport unsigned int MagickWriteImages(MagickWand *wand,
+WandExport unsigned int MagickWriteImages(MagickWand *wand,
   const char *filename)
 {
   unsigned int
@@ -2821,7 +2820,7 @@ MagickExport unsigned int MagickWriteImages(MagickWand *wand,
 %
 %
 */
-MagickExport MagickWand *NewMagickWand(void)
+WandExport MagickWand *NewMagickWand(void)
 {
   MagickWand
     *wand;

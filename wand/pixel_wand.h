@@ -18,28 +18,28 @@ extern "C" {
 
 typedef struct _PixelWand PixelWand;
 
-extern MagickExport char
+extern WandExport char
   *PixelGetColorAsString(const PixelWand *);
 
-extern MagickExport double
+extern WandExport double
   PixelGetBlue(const PixelWand *),
   PixelGetGreen(const PixelWand *),
   PixelGetOpacity(const PixelWand *),
   PixelGetRed(const PixelWand *);
 
-extern MagickExport PixelWand
+extern WandExport PixelWand
   *NewPixelWand(void);
 
-extern MagickExport Quantum
+extern WandExport Quantum
   PixelGetBlueQuantum(const PixelWand *),
   PixelGetGreenQuantum(const PixelWand *),
   PixelGetOpacityQuantum(const PixelWand *),
   PixelGetRedQuantum(const PixelWand *);
 
-extern MagickExport unsigned int
+extern WandExport unsigned int
   PixelSetColor(PixelWand *,const char *);
 
-extern MagickExport void
+extern WandExport void
   DestroyPixelWand(PixelWand *),
   PixelGetQuantumColor(const PixelWand *,PixelPacket *),
   PixelSetBlue(PixelWand *,const double),

@@ -56,6 +56,7 @@
 #include "magick/constitute.h"
 #include "magick/error.h"
 #include "magick/utility.h"
+#include "wand/wand_api.h"
 #include "wand/magick_compat.h"
 
 /*
@@ -109,7 +110,7 @@
 %
 %
 */
-MagickExport unsigned int ImportImagePixels(Image *image,const long x_offset,
+WandExport unsigned int ImportImagePixels(Image *image,const long x_offset,
   const long y_offset,const unsigned long columns,const unsigned long rows,
   const char *map,const StorageType type,const void *pixels)
 {
@@ -157,7 +158,7 @@ MagickExport unsigned int ImportImagePixels(Image *image,const long x_offset,
 %
 %
 */
-MagickExport unsigned int ParseAbsoluteGeometry(const char *geometry,
+WandExport unsigned int ParseAbsoluteGeometry(const char *geometry,
   RectangleInfo *region_info)
 {
   unsigned int
@@ -198,7 +199,7 @@ MagickExport unsigned int ParseAbsoluteGeometry(const char *geometry,
 %
 %
 */
-MagickExport unsigned int ParseGeometry(const char *geometry,
+WandExport unsigned int ParseGeometry(const char *geometry,
   GeometryInfo *geometry_info)
 {
   char
@@ -405,7 +406,7 @@ MagickExport unsigned int ParseGeometry(const char *geometry,
 %
 %
 */
-MagickExport void *ResizeMagickMemory(void *memory,const size_t size)
+WandExport void *ResizeMagickMemory(void *memory,const size_t size)
 {
   void
     *allocation;

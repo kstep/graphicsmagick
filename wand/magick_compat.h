@@ -59,11 +59,11 @@ typedef struct _GeometryInfo
     psi;
 } GeometryInfo;
 
-extern MagickExport void
+extern WandExport void
   *ResizeMagickMemory(void *memory,const size_t size),
    SetGeometryInfo(GeometryInfo *geometry_info);
 
-extern MagickExport unsigned int
+extern WandExport unsigned int
   ImportImagePixels(Image *image,const long x_offset,
     const long y_offset,const unsigned long columns,const unsigned long rows,
     const char *map,const StorageType type,const void *pixels),

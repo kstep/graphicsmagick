@@ -2,6 +2,8 @@
 
 	* coders/bmp.c (ReadBMPImage): Only validate the file size value
 	for compressed BMPs.
+	* VisualMagick/wand, wand: First stab at building the Wand API
+	under Visual C++.  Still does not build as a DLL.
 
 2003-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
