@@ -144,6 +144,10 @@ magick/module.h
 magick/monitor.c
 magick/monitor.h
 magick/montage.c
+magick/nt_base.c
+magick/nt_base.h
+magick/nt_feature.c
+magick/nt_feature.h
 magick/PreRvIcccm.c
 magick/PreRvIcccm.h
 magick/quantize.c
@@ -173,10 +177,6 @@ magick/vms.c
 magick/vms.h
 magick/widget.c
 magick/widget.h
-magick/xp_base.c
-magick/xp_base.h
-magick/xp_feature.c
-magick/xp_feature.h
 magick/xwindow.c
 magick/xwindow.h
 utilities/animate.c
