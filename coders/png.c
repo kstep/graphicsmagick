@@ -3025,7 +3025,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         if (status == False)
             ThrowReaderException(FileOpenError,"UnableToOpenBlob",color_image);
 
-        if (jng_color_type >= 12)
+        if (!image_info->ping && jng_color_type >= 12)
           {
             alpha_image_info=(ImageInfo *)AcquireMemory(sizeof(ImageInfo));
             if (alpha_image_info == (ImageInfo *) NULL)
@@ -3103,17 +3103,20 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
            Copy IDAT header and chunk data to alpha_image->blob
         */
 
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    Copying IDAT chunk data to alpha_blob.");
+        if (!image_info->ping)
+          {
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    Copying IDAT chunk data to alpha_blob.");
 
-        (void) WriteBlobMSBULong(alpha_image,(unsigned long) length);
-        PNGType(data,mng_IDAT);
-        LogPNGChunk(logging,mng_IDAT,length);
-        (void) WriteBlob(alpha_image,4,(char *) data);
-        (void) WriteBlob(alpha_image,length,(char *) chunk);
-        (void) WriteBlobMSBULong(alpha_image,
-            crc32(crc32(0,data,4),chunk,length));
+            (void) WriteBlobMSBULong(alpha_image,(unsigned long) length);
+            PNGType(data,mng_IDAT);
+            LogPNGChunk(logging,mng_IDAT,length);
+            (void) WriteBlob(alpha_image,4,(char *) data);
+            (void) WriteBlob(alpha_image,length,(char *) chunk);
+            (void) WriteBlobMSBULong(alpha_image,
+                crc32(crc32(0,data,4),chunk,length));
+          }
         if (length)
           LiberateMemory((void **) &chunk);
         continue;
@@ -3125,11 +3128,14 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
            Copy chunk data to alpha_image->blob
         */
 
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    Copying JDAA chunk data to alpha_blob.");
+        if (!image_info->ping)
+          {
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "    Copying JDAA chunk data to alpha_blob.");
 
-        (void) WriteBlob(alpha_image,length,(char *) chunk);
+            (void) WriteBlob(alpha_image,length,(char *) chunk);
+          }
         if (length)
           LiberateMemory((void **) &chunk);
         continue;
@@ -3285,11 +3291,16 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Reading jng_image from color_blob.");
+
   FormatString(color_image_info->filename,"%.1024s",color_image->filename);
+
+  color_image_info->ping=False;
   jng_image=ReadImage(color_image_info,exception);
+
   (void) remove(color_image->filename);
   DestroyImage(color_image);
   DestroyImageInfo(color_image_info);
+
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Copying jng_image pixels to main image.");
@@ -3305,42 +3316,46 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       break;
   }
   DestroyImage(jng_image);
-  if (jng_color_type >= 12)
+  if (!image_info->ping)
     {
-      if (jng_alpha_compression_method == 0)
-        {
-          png_byte
-            data[5];
-          (void) WriteBlobMSBULong(alpha_image,0x00000000L);
-          PNGType(data,mng_IEND);
-          LogPNGChunk(logging,mng_IEND,0L);
-          (void) WriteBlob(alpha_image,4,(char *) data);
-          (void) WriteBlobMSBULong(alpha_image,crc32(0,data,4));
-        }
-      CloseBlob(alpha_image);
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    Reading opacity from alpha_blob.");
-
-      jng_image=ReadImage(alpha_image_info,exception);
-
-      for (y=0; y < (long) image->rows; y++)
-      {
-        s=AcquireImagePixels(jng_image,0,y,image->columns,1,&image->exception);
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (image->matte)
-          for (x=(long) image->columns; x > 0; x--,q++,s++)
-             q->opacity=(Quantum) MaxRGB-s->red;
-        else
-          for (x=(long) image->columns; x > 0; x--,q++,s++)
-          {
-             q->opacity=(Quantum) MaxRGB-s->red;
-             if (q->opacity != OpaqueOpacity)
-               image->matte=True;
-          }
-        if (!SyncImagePixels(image))
-          break;
-      }
+     if (jng_color_type >= 12)
+       {
+         if (jng_alpha_compression_method == 0)
+           {
+             png_byte
+               data[5];
+             (void) WriteBlobMSBULong(alpha_image,0x00000000L);
+             PNGType(data,mng_IEND);
+             LogPNGChunk(logging,mng_IEND,0L);
+             (void) WriteBlob(alpha_image,4,(char *) data);
+             (void) WriteBlobMSBULong(alpha_image,crc32(0,data,4));
+           }
+         CloseBlob(alpha_image);
+         if (logging)
+           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "    Reading opacity from alpha_blob.");
+   
+         jng_image=ReadImage(alpha_image_info,exception);
+   
+         for (y=0; y < (long) image->rows; y++)
+         {
+           s=AcquireImagePixels(jng_image,0,y,image->columns,1,
+              &image->exception);
+           q=GetImagePixels(image,0,y,image->columns,1);
+           if (image->matte)
+             for (x=(long) image->columns; x > 0; x--,q++,s++)
+                q->opacity=(Quantum) MaxRGB-s->red;
+           else
+             for (x=(long) image->columns; x > 0; x--,q++,s++)
+             {
+                q->opacity=(Quantum) MaxRGB-s->red;
+                if (q->opacity != OpaqueOpacity)
+                  image->matte=True;
+             }
+           if (!SyncImagePixels(image))
+             break;
+         }
+       }
 
       (void) remove(alpha_image->filename);
       DestroyImage(alpha_image);
@@ -3355,6 +3370,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   image->page.height=jng_height;
   image->page.x=mng_info->x_off[mng_info->object_id];
   image->page.y=mng_info->y_off[mng_info->object_id];
+  mng_info->image_found++;
   MagickMonitor(LoadImagesText,2*GetBlobSize(image),2*GetBlobSize(image),
       exception);
   if (logging)
@@ -5247,6 +5263,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             "  Finished reading image datastream.");
   } while (LocaleCompare(image_info->magick,"MNG") == 0);
   CloseBlob(image);
+  if (logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "  Finished reading all image datastreams.");
 #ifdef MNG_INSERT_LAYERS
   if (insert_layers && !mng_info->image_found && (mng_info->mng_width) &&
        (mng_info->mng_height))
@@ -5254,6 +5273,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Insert a background layer if nothing else was found.
       */
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "  No images found.  Inserting a background layer.");
       if (GetPixels(image) != (PixelPacket *) NULL)
         {
           /*
@@ -5264,6 +5286,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               DestroyImageList(image);
               MngInfoFreeStruct(mng_info,&have_mng_structure);
+              if (logging)
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  Allocation failed, returning NULL.");
               return((Image *) NULL);
             }
           image=SyncNextImageInList(image);
@@ -5276,7 +5301,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->page.y=0;
       image->background_color=mng_background_color;
       image->matte=False;
-      SetImage(image,OpaqueOpacity);
+      if (!image_info->ping)
+        SetImage(image,OpaqueOpacity);
       mng_info->image_found++;
     }
 #endif
@@ -5295,6 +5321,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_count++;
     if (image_count > 10*mng_info->image_found)
       {
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  No beginning");
         ThrowException(&image->exception,(ExceptionType) CoderError,
           "Linked list is corrupted, beginning of list not found",
           image_info->filename);
@@ -5302,16 +5330,27 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     image=image->previous;
     if (image->next == (Image *) NULL)
+      {
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Corrupt list");
       ThrowException(&image->exception,(ExceptionType) CoderError,
        "Linked list is corrupted; next_image is NULL",image_info->filename);
+      }
   }
   if (mng_info->ticks_per_second && mng_info->image_found > 1 && image->next ==
      (Image *) NULL)
-    ThrowException(&image->exception,(ExceptionType) CoderError,
-     "image->next for first image is NULL but shouldn't be.",
+    {
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  First image null");
+      ThrowException(&image->exception,(ExceptionType) CoderError,
+       "image->next for first image is NULL but shouldn't be.",
      image_info->filename);
+    }
   if (!mng_info->image_found)
     {
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "  No visible images found.");
       ThrowException(&image->exception,(ExceptionType) CoderError,
         "No visible images in file",image_info->filename);
       if (image != (Image *) NULL)
@@ -5329,6 +5368,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       unsigned long
         scene;
 
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Coalesce Images");
       scene=image->scene;
       next_image=CoalesceImages(image,&image->exception);
       if (next_image == (Image *) NULL)
@@ -5468,6 +5509,16 @@ ModuleExport void RegisterPNGImage(void)
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PNG24");
+  *version='\0';
+  (void) strcat(version,"zlib ");
+  (void) strncat(version,ZLIB_VERSION,MaxTextExtent-2);
+  if (LocaleCompare(ZLIB_VERSION,zlib_version) != 0)
+    {
+      (void) strcat(version,",");
+      (void) strncat(version,zlib_version,MaxTextExtent-strlen(version)-1);
+    }
+  if (*version != '\0')
+    entry->version=AcquireString(version);
 #if defined(HasPNG)
   entry->decoder=(DecoderHandler) ReadPNGImage;
   entry->encoder=(EncoderHandler) WritePNGImage;
@@ -7405,6 +7456,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
               blob,length));
         }
       /* Destroy JPEG blob, image, and image_info */
+      (void) remove(jpeg_image->filename);
       DestroyImage(jpeg_image);
       DestroyImageInfo(jpeg_image_info);
       LiberateMemory((void **) &blob);
