@@ -1237,7 +1237,7 @@ int main(int argc,char **argv)
 
         target=GetOnePixel(p,0,0);
         (void) QueryColorDatabase(transparent_color,&target);
-        TransparentImage(p,target);
+        TransparentImage(p,target,TransparentOpacity);
       }
     if (quantize_info.number_colors != 0)
       {
