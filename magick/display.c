@@ -1163,6 +1163,9 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
   char
     text[MaxTextExtent];
 
+  double
+    scale_factor;
+
   Image
     *chop_image;
 
@@ -1180,7 +1183,6 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
     width;
 
   unsigned long
-    scale_factor,
     state;
 
   XEvent
@@ -1488,14 +1490,14 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
-  scale_factor=UpShift(width)/windows->image.ximage->width;
+  scale_factor=(double) width/windows->image.ximage->width;
   chop_info.x+=x;
-  chop_info.x=DownShift(chop_info.x*scale_factor);
-  chop_info.width=DownShift(chop_info.width*scale_factor);
-  scale_factor=UpShift(height)/windows->image.ximage->height;
+  chop_info.x=scale_factor*chop_info.x;
+  chop_info.width=scale_factor*chop_info.width;
+  scale_factor=(double) height/windows->image.ximage->height;
   chop_info.y+=y;
-  chop_info.y=DownShift(chop_info.y*scale_factor);
-  chop_info.height=DownShift(chop_info.height*scale_factor);
+  chop_info.y=scale_factor*chop_info.y;
+  chop_info.height=scale_factor*chop_info.height;
   /*
     Chop image.
   */
@@ -2189,7 +2191,8 @@ static unsigned int XCompositeImage(Display *display,
     cursor;
 
   double
-    blend;
+    blend,
+    scale_factor;
 
   Image
     *composite_image;
@@ -2208,7 +2211,6 @@ static unsigned int XCompositeImage(Display *display,
     width;
 
   unsigned long
-    scale_factor,
     state;
 
   XEvent
@@ -2561,14 +2563,14 @@ static unsigned int XCompositeImage(Display *display,
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
-  scale_factor=UpShift(width)/windows->image.ximage->width;
+  scale_factor=(double) width/windows->image.ximage->width;
   composite_info.x+=x;
-  composite_info.x=DownShift(composite_info.x*scale_factor);
-  composite_info.width=DownShift(composite_info.width*scale_factor);
-  scale_factor=UpShift(height)/windows->image.ximage->height;
+  composite_info.x=scale_factor*composite_info.x;
+  composite_info.width=scale_factor*composite_info.width;
+  scale_factor=(double) height/windows->image.ximage->height;
   composite_info.y+=y;
-  composite_info.y=DownShift(composite_info.y*scale_factor);
-  composite_info.height=DownShift(composite_info.height*scale_factor);
+  composite_info.y=scale_factor*composite_info.y;
+  composite_info.height=scale_factor*composite_info.height;
   if ((composite_info.width != composite_image->columns) ||
       (composite_info.height != composite_image->rows))
     {
@@ -2741,9 +2743,9 @@ static unsigned int XConfigureImage(Display *display,
     {
       mask|=CWX | CWY;
       window_changes.x=
-        (XDisplayWidth(display,windows->image.screen) >> 1)-(width >> 1);
+        (XDisplayWidth(display,windows->image.screen) >> 1)-(width/2);
       window_changes.y=
-        (XDisplayHeight(display,windows->image.screen) >> 1)-(height >> 1);
+        (XDisplayHeight(display,windows->image.screen) >> 1)-(height/2);
     }
   XReconfigureWMWindow(display,windows->image.id,windows->image.screen,mask,
     &window_changes);
@@ -2883,6 +2885,9 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   Cursor
     cursor;
 
+  double
+    scale_factor;
+
   int
     id,
     x,
@@ -2906,7 +2911,6 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
     width;
 
   unsigned long
-    scale_factor,
     state;
 
   XEvent
@@ -3505,14 +3509,14 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
-  scale_factor=UpShift(width)/windows->image.ximage->width;
+  scale_factor=(double) width/windows->image.ximage->width;
   crop_info.x+=x;
-  crop_info.x=DownShift(crop_info.x*scale_factor);
-  crop_info.width=DownShift(crop_info.width*scale_factor);
-  scale_factor=UpShift(height)/windows->image.ximage->height;
+  crop_info.x=scale_factor*crop_info.x;
+  crop_info.width=scale_factor*crop_info.width;
+  scale_factor=(double) height/windows->image.ximage->height;
   crop_info.y+=y;
-  crop_info.y=DownShift(crop_info.y*scale_factor);
-  crop_info.height=DownShift(crop_info.height*scale_factor);
+  crop_info.y=scale_factor*crop_info.y;
+  crop_info.height=scale_factor*crop_info.height;
   crop_image=CropImage(image,&crop_info);
   XSetCursorState(display,windows,False);
   if (crop_image == (Image *) NULL)
@@ -4421,11 +4425,11 @@ static unsigned int XDrawEditImage(Display *display,
     y=0;
     if (windows->image.crop_geometry != (char *) NULL)
       (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
-    draw_info.x+=windows->image.x-(line_width >> 1);
+    draw_info.x+=windows->image.x-(line_width/2);
     if (draw_info.x < 0)
       draw_info.x=0;
     draw_info.x=width*draw_info.x/windows->image.ximage->width;
-    draw_info.y+=windows->image.y-(line_width >> 1);
+    draw_info.y+=windows->image.y-(line_width/2);
     if (draw_info.y < 0)
       draw_info.y=0;
     draw_info.y=height*draw_info.y/windows->image.ximage->height;
@@ -4447,12 +4451,12 @@ static unsigned int XDrawEditImage(Display *display,
     draw_info.stipple=stipple;
     draw_info.line_width=line_width;
     draw_info.line_info=line_info;
-    if (line_info.x1 > (int) (line_width >> 1))
-      draw_info.line_info.x1=line_width >> 1;
-    if (line_info.y1 > (int) (line_width >> 1))
-      draw_info.line_info.y1=line_width >> 1;
-    draw_info.line_info.x2=line_info.x2-line_info.x1+(line_width >> 1);
-    draw_info.line_info.y2=line_info.y2-line_info.y1+(line_width >> 1);
+    if (line_info.x1 > (int) (line_width/2))
+      draw_info.line_info.x1=line_width/2;
+    if (line_info.y1 > (int) (line_width/2))
+      draw_info.line_info.y1=line_width/2;
+    draw_info.line_info.x2=line_info.x2-line_info.x1+(line_width/2);
+    draw_info.line_info.y2=line_info.y2-line_info.y1+(line_width/2);
     if ((draw_info.line_info.x2 < 0) && (draw_info.line_info.y2 < 0))
       {
         draw_info.line_info.x2=(-draw_info.line_info.x2);
@@ -4469,10 +4473,10 @@ static unsigned int XDrawEditImage(Display *display,
         Swap(draw_info.line_info.y1,draw_info.line_info.y2);
       }
     draw_info.rectangle_info=rectangle_info;
-    if (draw_info.rectangle_info.x > (int) (line_width >> 1))
-      draw_info.rectangle_info.x=line_width >> 1;
-    if (draw_info.rectangle_info.y > (int) (line_width >> 1))
-      draw_info.rectangle_info.y=line_width >> 1;
+    if (draw_info.rectangle_info.x > (int) (line_width/2))
+      draw_info.rectangle_info.x=line_width/2;
+    if (draw_info.rectangle_info.y > (int) (line_width/2))
+      draw_info.rectangle_info.y=line_width/2;
     draw_info.number_coordinates=number_coordinates;
     draw_info.coordinate_info=coordinate_info;
     windows->pixel_info->pen_color=windows->pixel_info->pen_colors[pen_id];
@@ -4524,7 +4528,7 @@ static unsigned int XDrawEditImage(Display *display,
 */
 static void XDrawPanRectangle(Display *display,XWindows *windows)
 {
-  unsigned long
+  double
     scale_factor;
 
   RectangleInfo
@@ -4533,14 +4537,12 @@ static void XDrawPanRectangle(Display *display,XWindows *windows)
   /*
     Determine dimensions of the panning rectangle.
   */
-  scale_factor=(unsigned long)
-    (UpShift(windows->pan.width)/windows->image.ximage->width);
-  highlight_info.x=DownShift(windows->image.x*scale_factor);
-  highlight_info.width=DownShift(windows->image.width*scale_factor);
-  scale_factor=(unsigned long)
-    (UpShift(windows->pan.height)/windows->image.ximage->height);
-  highlight_info.y=DownShift(windows->image.y*scale_factor);
-  highlight_info.height=DownShift(windows->image.height*scale_factor);
+  scale_factor=(double) windows->pan.width/windows->image.ximage->width;
+  highlight_info.x=scale_factor*windows->image.x;
+  highlight_info.width=scale_factor*windows->image.width;
+  scale_factor=(double) windows->pan.height/windows->image.ximage->height;
+  highlight_info.y=scale_factor*windows->image.y;
+  highlight_info.height=scale_factor*windows->image.height;
   /*
     Display the panning rectangle.
   */
@@ -5468,8 +5470,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Half image size.
       */
-      windows->image.window_changes.width=windows->image.ximage->width >> 1;
-      windows->image.window_changes.height=windows->image.ximage->height >> 1;
+      windows->image.window_changes.width=windows->image.ximage->width/2;
+      windows->image.window_changes.height=windows->image.ximage->height/2;
       (void) XConfigureImage(display,resource_info,windows,*image);
       break;
     }
@@ -7116,8 +7118,8 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
     case XK_Home:
     case XK_KP_Home:
     {
-      windows->magnify.x=windows->image.width >> 1;
-      windows->magnify.y=windows->image.height >> 1;
+      windows->magnify.x=windows->image.width/2;
+      windows->magnify.y=windows->image.height/2;
       break;
     }
     case XK_Left:
@@ -8035,13 +8037,15 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
   Cursor
     cursor;
 
+  double
+    x_factor,
+    y_factor;
+
   RectangleInfo
     pan_info;
 
   unsigned long
-    state,
-    x_factor,
-    y_factor;
+    state;
 
   /*
     Define cursor.
@@ -8061,10 +8065,8 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
   /*
     Pan image as pointer moves until the mouse button is released.
   */
-  x_factor=(unsigned long)
-    UpShift(windows->image.ximage->width)/windows->pan.width;
-  y_factor=(unsigned long)
-    UpShift(windows->image.ximage->height)/windows->pan.height;
+  x_factor=(double) windows->image.ximage->width/windows->pan.width;
+  y_factor=(double) windows->image.ximage->height/windows->pan.height;
   pan_info.width=
     windows->pan.width*windows->image.width/windows->image.ximage->width;
   pan_info.height=
@@ -8108,20 +8110,20 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
         /*
           Check boundary conditions.
         */
-        if (pan_info.x < (int) (pan_info.width >> 1))
+        if (pan_info.x < (int) (pan_info.width/2))
           pan_info.x=0;
         else
-          pan_info.x=DownShift((pan_info.x-(pan_info.width >> 1))*x_factor);
+          pan_info.x=x_factor*(pan_info.x-(pan_info.width/2));
         if (pan_info.x < 0)
           pan_info.x=0;
         else
           if ((int) (pan_info.x+windows->image.width) >
               windows->image.ximage->width)
             pan_info.x=windows->image.ximage->width-windows->image.width;
-        if (pan_info.y < (int) (pan_info.height >> 1))
+        if (pan_info.y < (int) (pan_info.height/2))
           pan_info.y=0;
         else
-          pan_info.y=DownShift((pan_info.y-(pan_info.height >> 1))*y_factor);
+          pan_info.y=y_factor*(pan_info.y-(pan_info.height/2));
         if (pan_info.y < 0)
           pan_info.y=0;
         else
@@ -8226,6 +8228,9 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   Cursor
     cursor;
 
+  double
+    scale_factor;
+
   Image
     *paste_image;
 
@@ -8243,7 +8248,6 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
     width;
 
   unsigned long
-    scale_factor,
     state;
 
   XEvent
@@ -8386,10 +8390,10 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
         if (windows->image.crop_geometry != (char *) NULL)
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
             &width,&height);
-        scale_factor=UpShift(windows->image.ximage->width)/width;
-        paste_info.width=DownShift(paste_image->columns*scale_factor);
-        scale_factor=UpShift(windows->image.ximage->height)/height;
-        paste_info.height=DownShift(paste_image->rows*scale_factor);
+        scale_factor=(double) windows->image.ximage->width/width;
+        paste_info.width=scale_factor*paste_image->columns;
+        scale_factor=(double) windows->image.ximage->height/height;
+        paste_info.height=scale_factor*paste_image->rows;
         XDefineCursor(display,windows->image.id,cursor);
         paste_info.x=windows->image.x+event.xbutton.x;
         paste_info.y=windows->image.y+event.xbutton.y;
@@ -8515,14 +8519,14 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
-  scale_factor=UpShift(width)/windows->image.ximage->width;
+  scale_factor=(double) width/windows->image.ximage->width;
   paste_info.x+=x;
-  paste_info.x=DownShift(paste_info.x*scale_factor);
-  paste_info.width=DownShift(paste_info.width*scale_factor);
-  scale_factor=UpShift(height)/windows->image.ximage->height;
+  paste_info.x=scale_factor*paste_info.x;
+  paste_info.width=scale_factor*paste_info.width;
+  scale_factor=(double) height/windows->image.ximage->height;
   paste_info.y+=y;
-  paste_info.y=DownShift(paste_info.y*scale_factor);
-  paste_info.height=DownShift(paste_info.height*scale_factor);
+  paste_info.y=scale_factor*paste_info.y*scale_factor;
+  paste_info.height=scale_factor*paste_info.height;
   /*
     Paste image with X Image window.
   */
@@ -8884,6 +8888,9 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
   Cursor
     cursor;
 
+  double
+    scale_factor;
+
   Image
     *roi_image;
 
@@ -8906,7 +8913,6 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
     width;
 
   unsigned long
-    scale_factor,
     state;
 
   XEvent
@@ -9227,14 +9233,14 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
               if (windows->image.crop_geometry != (char *) NULL)
                 (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
                   &width,&height);
-              scale_factor=UpShift(width)/windows->image.ximage->width;
+              scale_factor=(double) width/windows->image.ximage->width;
               crop_info.x+=x;
-              crop_info.x=DownShift(crop_info.x*scale_factor);
-              crop_info.width=DownShift(crop_info.width*scale_factor);
-              scale_factor=UpShift(height)/windows->image.ximage->height;
+              crop_info.x=scale_factor*crop_info.x;
+              crop_info.width=scale_factor*crop_info.width;
+              scale_factor=(double) height/windows->image.ximage->height;
               crop_info.y+=y;
-              crop_info.y=DownShift(crop_info.y*scale_factor);
-              crop_info.height=DownShift(crop_info.height*scale_factor);
+              crop_info.y=scale_factor*crop_info.y;
+              crop_info.height=scale_factor*crop_info.height;
               roi_image=CropImage(*image,&crop_info);
               (void) SetMonitorHandler(handler);
               if (roi_image == (Image *) NULL)
@@ -10465,6 +10471,9 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
   char
     text[MaxTextExtent];
 
+  double
+    scale_factor;
+
   int
     x,
     y;
@@ -10472,9 +10481,6 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
   unsigned int
     height,
     width;
-
-  unsigned long
-    scale_factor;
 
   if (windows->info.mapped)
     {
@@ -10508,16 +10514,16 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
   /*
     Define the crop geometry string from the cropping rectangle.
   */
-  scale_factor=UpShift(width)/windows->image.ximage->width;
+  scale_factor=(double) width/windows->image.ximage->width;
   if (crop_info->x > 0)
-    x+=DownShift(crop_info->x*scale_factor);
-  width=DownShift(crop_info->width*scale_factor);
+    x+=scale_factor*crop_info->x;
+  width=scale_factor*crop_info->width;
   if (width == 0)
     width=1;
-  scale_factor=UpShift(height)/windows->image.ximage->height;
+  scale_factor=(double) height/windows->image.ximage->height;
   if (crop_info->y > 0)
-    y+=DownShift(crop_info->y*scale_factor);
-  height=DownShift(crop_info->height*scale_factor);
+    y+=scale_factor*crop_info->y*scale_factor;
+  height=scale_factor*crop_info->height;
   if (height == 0)
     height=1;
   FormatString(windows->image.crop_geometry,"%ux%u%+d%+d",width,height,x,y);
@@ -10590,6 +10596,9 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
     command[MaxTextExtent],
     filename[MaxTextExtent];
 
+  double
+    scale_factor;
+
   Image
     *tiled_image;
 
@@ -10611,9 +10620,6 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
     height,
     width;
 
-  unsigned long
-    scale_factor;
-
   /*
     Tile image is relative to montage image configuration.
   */
@@ -10623,12 +10629,12 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   height=image->rows;
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
-  scale_factor=UpShift(width)/windows->image.ximage->width;
+  scale_factor=(double) width/windows->image.ximage->width;
   event->xbutton.x+=windows->image.x;
-  event->xbutton.x=DownShift(event->xbutton.x*scale_factor)+x;
-  scale_factor=UpShift(height)/windows->image.ximage->height;
+  event->xbutton.x=scale_factor*event->xbutton.x+x;
+  scale_factor=(double) height/windows->image.ximage->height;
   event->xbutton.y+=windows->image.y;
-  event->xbutton.y=DownShift(event->xbutton.y*scale_factor)+y;
+  event->xbutton.y=scale_factor*event->xbutton.y+y;
   /*
     Determine size and location of each tile in the visual image directory.
   */
@@ -10852,8 +10858,8 @@ static void XTranslateImage(Display *display,XWindows *windows,
     case XK_Home:
     case XK_KP_Home:
     {
-      windows->image.x=windows->image.width >> 1;
-      windows->image.y=windows->image.height >> 1;
+      windows->image.x=windows->image.width/2;
+      windows->image.y=windows->image.height/2;
       break;
     }
     case XK_Left:
@@ -11423,10 +11429,10 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
       /*
         Center image on window.
       */
-      window_info.x=(window_attributes.width >> 1)-
-        (window_info.ximage->width >> 1);
-      window_info.y=(window_attributes.height >> 1)-
-        (window_info.ximage->height >> 1);
+      window_info.x=(window_attributes.width/2)-
+        (window_info.ximage->width/2);
+      window_info.y=(window_attributes.height/2)-
+        (window_info.ximage->height/2);
       width=window_attributes.width;
       height=window_attributes.height;
     }
@@ -12227,10 +12233,10 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Position image in the center the backdrop.
       */
       windows->image.flags|=USPosition;
-      windows->image.x=(XDisplayWidth(display,visual_info->screen) >> 1)-
-        (windows->image.width >> 1);
-      windows->image.y=(XDisplayHeight(display,visual_info->screen) >> 1)-
-        (windows->image.height >> 1);
+      windows->image.x=(XDisplayWidth(display,visual_info->screen)/2)-
+        (windows->image.width/2);
+      windows->image.y=(XDisplayHeight(display,visual_info->screen)/2)-
+        (windows->image.height/2);
     }
   if (resource_info->name == (char *) NULL)
     class_hints->res_name=resource_info->client_name;

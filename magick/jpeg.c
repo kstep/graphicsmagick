@@ -565,7 +565,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
     }
   if ((image->columns*image->rows) != 0)
     {
-      unsigned long
+      double
         scale_factor;
 
       /*
@@ -574,15 +574,15 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
       jpeg_calc_output_dimensions(&jpeg_info);
       image->magick_columns=jpeg_info.output_width;
       image->magick_rows=jpeg_info.output_height;
-      scale_factor=UpShift(jpeg_info.output_width)/image->columns;
-      if (scale_factor > (UpShift(jpeg_info.output_height)/image->rows))
-        scale_factor=UpShift(jpeg_info.output_height)/image->rows;
-      jpeg_info.scale_denom=DownShift(scale_factor);
+      scale_factor=(double) jpeg_info.output_width/image->columns;
+      if (scale_factor > ((double) jpeg_info.output_height/image->rows))
+        scale_factor=(double) jpeg_info.output_height/image->rows;
+      jpeg_info.scale_denom=scale_factor;
       jpeg_calc_output_dimensions(&jpeg_info);
     }
   if (image_info->subrange != 0)
     {
-      jpeg_info.scale_denom=DownShift(image_info->subrange);
+      jpeg_info.scale_denom=image_info->subrange;
       jpeg_calc_output_dimensions(&jpeg_info);
     }
 #if (JPEG_LIB_VERSION >= 61) && !defined(D_LOSSLESS_SUPPORTED)

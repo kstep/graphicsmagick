@@ -359,8 +359,8 @@ Export unsigned int XAnnotateImage(Display *display,
           /*
             Rotate 90 degrees.
           */
-          x-=annotate_image->columns >> 1;
-          y+=annotate_image->columns >> 1;
+          x-=annotate_image->columns/2;
+          y+=annotate_image->columns/2;
           break;
         }
         case 2:
@@ -376,8 +376,8 @@ Export unsigned int XAnnotateImage(Display *display,
           /*
             Rotate 270 degrees.
           */
-          x-=annotate_image->columns >> 1;
-          y-=annotate_image->rows-(annotate_image->columns >> 1);
+          x-=annotate_image->columns/2;
+          y-=annotate_image->rows-(annotate_image->columns/2);
           break;
         }
       }
@@ -603,6 +603,9 @@ Export void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
 {
 #define MaxIconSize  96
 
+  double
+    scale_factor;
+
   int
     i,
     number_sizes;
@@ -612,9 +615,6 @@ Export void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
     icon_height,
     icon_width,
     width;
-
-  unsigned long
-    scale_factor;
 
   Window
     root_window;
@@ -667,20 +667,20 @@ Export void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
   /*
     Look for an icon size that maintains the aspect ratio of image.
   */
-  scale_factor=UpShift(icon_size->max_width)/width;
-  if (scale_factor > (UpShift(icon_size->max_height)/height))
-    scale_factor=UpShift(icon_size->max_height)/height;
+  scale_factor=(double) icon_size->max_width/width;
+  if (scale_factor > ((double) icon_size->max_height/height))
+    scale_factor=(double) icon_size->max_height/height;
   icon_width=icon_size->min_width;
   while ((int) icon_width < icon_size->max_width)
   {
-    if (icon_width >= (DownShift(width*scale_factor)))
+    if (icon_width >= (scale_factor*width))
       break;
     icon_width+=icon_size->width_inc;
   }
   icon_height=icon_size->min_height;
   while ((int) icon_height < icon_size->max_height)
   {
-    if (icon_height >= (DownShift(height*scale_factor)))
+    if (icon_height >= (scale_factor*height))
       break;
     icon_height+=icon_size->height_inc;
   }
@@ -2161,8 +2161,8 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
           /*
             Rotate 90 degrees.
           */
-          x-=draw_image->columns >> 1;
-          y+=draw_image->columns >> 1;
+          x-=draw_image->columns/2;
+          y+=draw_image->columns/2;
           break;
         }
         case 2:
@@ -2178,8 +2178,8 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
           /*
             Rotate 270 degrees.
           */
-          x-=draw_image->columns >> 1;
-          y-=draw_image->rows-(draw_image->columns >> 1);
+          x-=draw_image->columns/2;
+          y-=draw_image->rows-(draw_image->columns/2);
           break;
         }
       }

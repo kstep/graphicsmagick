@@ -5464,29 +5464,29 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
     }
   if (!(flags & AspectValue))
     {
-      unsigned long
+      double
         scale_factor;
 
       /*
         Respect aspect ratio of the image.
       */
-      scale_factor=UpShift(1);
+      scale_factor=1.0;
       if ((former_width*former_height) != 0)
         {
           if (((flags & WidthValue) != 0) && (flags & HeightValue) != 0)
             {
-              scale_factor=UpShift(*width)/former_width;
-              if (scale_factor > (UpShift(*height)/former_height))
-                scale_factor=UpShift(*height)/former_height;
+              scale_factor=(double) *width/former_width;
+              if (scale_factor > ((double) *height/former_height))
+                scale_factor=(double) *height/former_height;
             }
           else
             if ((flags & WidthValue) != 0)
-              scale_factor=UpShift(*width)/former_width;
+              scale_factor=(double) *width/former_width;
             else
-              scale_factor=UpShift(*height)/former_height;
+              scale_factor=(double) *height/former_height;
         }
-      *width=Max(DownShift(former_width*scale_factor),1);
-      *height=Max(DownShift(former_height*scale_factor),1);
+      *width=Max(scale_factor*former_width,1);
+      *height=Max(scale_factor*former_height,1);
     }
   if ((flags & XValue) == 0)
     *width-=(*x) << 1;

@@ -141,7 +141,6 @@ extern "C" {
      (((int) (color).blue-(int) (target).blue)* \
       ((int) (color).blue-(int) (target).blue))) <= \
       (unsigned long) (distance*distance)))
-#define DownShift(x) (((unsigned long) ((x)+(1L << 13))) >> 14)
 #define Extent(string)  ((int) strlen(string))
 #define False  0
 #define DegreesToRadians(x) ((x)*M_PI/180.0)
@@ -172,8 +171,6 @@ extern "C" {
 #define STDIN_FILENO  0
 #endif
 #define True  1
-#define UpShift(x) ((int) (x) << 14)
-#define UpShifted(x) ((int) ((x)*(1L << 14)+0.5))
 #define WriterExit(error,message,image) \
 { \
   MagickWarning(error,message,image->filename); \
