@@ -115,8 +115,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=GetFontMetrics(image,annotate_info,&bounds);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get font metrics",image);
-  image->columns=bounds.x2-bounds.x1+1.0;
-  image->rows=bounds.y2-bounds.y1+1.0;
+  image->columns=ceil(bounds.x2-bounds.x1-0.5);
+  image->rows=ceil(bounds.y2-bounds.y1-0.5);
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,annotate_info);
   DestroyAnnotateInfo(annotate_info);
