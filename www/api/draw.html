@@ -117,7 +117,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>DrawContext  <STRONG>DrawAllocateContext</STRONG>( const DrawInfo *draw_info, Image *image );</P>
-<P>Image * <STRONG>DrawAnnotation</STRONG>( blah blah );</P>
+<P>void  <STRONG>DrawAnnotation</STRONG>( DrawContext context, const double x, const double y, const unsigned char *text );</P>
 <P>void  <STRONG>DrawArc</STRONG>( DrawContext context, const double sx, const double sy, const double ex, const double ey, const double sd, const double ed );</P>
 <P>void  <STRONG>DrawBezier</STRONG>( DrawContext context, const size_t num_coords, const PointInfo *coordinates );</P>
 <P>void  <STRONG>DrawCircle</STRONG>( DrawContext context, const double ox, const double oy, const double px, const double py );</P>
@@ -206,7 +206,7 @@
 <P>
 <H2><A NAME="drawannotation">DrawAnnotation</A></H2>
 <blockquote>DrawAnnotation() draws text on the image. </blockquote><P>The format of the DrawAnnotation method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *DrawAnnotation ( blah blah ); </blockquote><P>
+<blockquote>void DrawAnnotation ( DrawContext context, const double x, const double y, const unsigned char *text ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG><A NAME="item_o_context%3A">context:</A></STRONG><BR>
@@ -227,7 +227,7 @@ text to draw
 <P></P></DL></DL>
 <P>
 <H2><A NAME="drawsetaffine">DrawSetAffine</A></H2>
-<blockquote>DrawSetAffine() adjusts current affine transformation matrix with specified affine transformation matrix. Note that the current affine transform is adjusted rather than replaced. </blockquote><P>The format of the DrawSetAffine method is:</P>
+<blockquote>DrawSetAffine() adjusts the current affine transformation matrix with the specified affine transformation matrix. Note that the current affine transform is adjusted rather than replaced. </blockquote><P>The format of the DrawSetAffine method is:</P>
 <blockquote>void DrawSetAffine ( DrawContext context, const AffineMatrix *affine ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
@@ -878,7 +878,7 @@ x ordinate of final point
 <P></P>
 <dd><p></p><dt><STRONG>y:</STRONG><BR>
 <DD>
-y ordinate of final point */
+y ordinate of final point
 <P></P></DL></DL>
 <P><CODE>DrawPathCurveToQuadraticBezierSmoothAbsolute()</CODE> draws a quadratic Bézier curve (using relative coordinates) from the current point to (x,y). The control point is assumed to be the reflection of the control point on the previous command relative to the current point.  (If there is no previous command or if the previous command was not a DrawPathCurveToQuadraticBezierAbsolute, DrawPathCurveToQuadraticBezierRelative, DrawPathCurveToQuadraticBezierSmoothAbsolut or DrawPathCurveToQuadraticBezierSmoothRelative, assume the control point is coincident with the current point.). At the end of the command, the new current point becomes the final (x,y) coordinate pair used in the polybezier.</P>
 <P>The format of the DrawPathCurveToQuadraticBezierSmoothRelative method is:</P>
@@ -930,7 +930,6 @@ y ordinate of termination point
 <P></P></DL></DL>
 <P>
 <H2><A NAME="drawpathcurvetosmoothrelative">DrawPathCurveToSmoothRelative</A></H2>
-<P>*/</P>
 <blockquote>DrawPathCurveToSmoothRelative() draws a cubic Bézier curve from the current point to ( x, y ) using relative coordinates. The first control point is assumed to be the reflection of the second control point on the previous command relative to the current point. ( If there is no previous command or if the previous command was not an DrawPathCurveToAbsolute, DrawPathCurveToRelative, DrawPathCurveToSmoothAbsolute or DrawPathCurveToSmoothRelative, assume the first control point is coincident with the current point. ) ( x2, y2 ) is the second control point ( i.e., the control point at the end of the curve ) . At the end of the command, the new current point becomes the final ( x, y ) coordinate pair used in the polybezier. </blockquote><P>The format of the DrawPathCurveToSmoothRelative method is:</P>
 <blockquote>void DrawPathCurveToSmoothRelative ( DrawContext context, const double x2, const double y2, const double x, const double y ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -987,8 +986,7 @@ If non-zero (true) then draw the arc matching a clock-wise rotation
 <P></P></DL></DL>
 <P>
 <H2><A NAME="drawpathellipticarcrelative">DrawPathEllipticArcRelative</A></H2>
-<P>*/</P>
-<blockquote>DrawPathEllipticArcRelative() blah blah DrawPathEllipticArcRelative ( ) draws an elliptical arc from the current point to ( x, y ) using relative coordinates. The size and orientation of the ellipse are defined by two radii ( rx, ry ) and an xAxisRotation, which indicates how the ellipse as a whole is rotated relative to the current coordinate system. The center ( cx, cy ) of the ellipse is calculated automatically to satisfy the constraints imposed by the other parameters. largeArcFlag and sweepFlag contribute to the automatic calculations and help determine how the arc is drawn. If largeArcFlag is true then draw the larger of the available arcs. If sweepFlag is true, then draw the arc matching a clock-wise rotation. </blockquote><P>The format of the DrawPathEllipticArcRelative method is:</P>
+<blockquote>DrawPathEllipticArcRelative() draws an elliptical arc from the current point to ( x, y ) using relative coordinates. The size and orientation of the ellipse are defined by two radii ( rx, ry ) and an xAxisRotation, which indicates how the ellipse as a whole is rotated relative to the current coordinate system. The center ( cx, cy ) of the ellipse is calculated automatically to satisfy the constraints imposed by the other parameters. largeArcFlag and sweepFlag contribute to the automatic calculations and help determine how the arc is drawn. If largeArcFlag is true then draw the larger of the available arcs. If sweepFlag is true, then draw the arc matching a clock-wise rotation. </blockquote><P>The format of the DrawPathEllipticArcRelative method is:</P>
 <blockquote>void DrawPathEllipticArcRelative ( DrawContext context, const double rx, const double ry, const double x_axis_rotation, unsigned int large_arc_flag, unsigned int sweep_flag, const double x, const double y ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
@@ -1278,9 +1276,9 @@ string identifier to associate with the clip path for later use.
 <blockquote>void DrawPushDefs ( DrawContext context ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_blah%3A">blah:</A></STRONG><BR>
+<dd><p></p><dt><STRONG>context:</STRONG><BR>
 <DD>
-blah blah
+drawing context
 <P></P></DL></DL>
 <P>
 <H2><A NAME="drawpushgraphiccontext">DrawPushGraphicContext</A></H2>
@@ -1450,13 +1448,21 @@ number of degrees to skew the coordinates
 <P></P></DL></DL>
 <P>
 <H2><A NAME="drawsetstopcolor">DrawSetStopColor</A></H2>
-<blockquote>DrawSetStopColor() blah blah </blockquote><P>The format of the DrawSetStopColor method is:</P>
+<blockquote>DrawSetStopColor() sets the stop color and offset for gradients </blockquote><P>The format of the DrawSetStopColor method is:</P>
 <blockquote>void DrawSetStopColor ( DrawContext context, const <A HREF="types/PixelPacket.html">PixelPacket</A> *stop_color, const double offset ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>blah:</STRONG><BR>
+<dd><p></p><dt><STRONG>context:</STRONG><BR>
 <DD>
-blah blah
+drawing context
+<P></P>
+<dd><p></p><dt><STRONG>o</STRONG><BR>
+<DD>
+stop_color:
+<P></P>
+<dd><p></p><dt><STRONG>o</STRONG><BR>
+<DD>
+offset:
 <P></P></DL></DL>
 <P>
 <H2><A NAME="drawsetstrokecolor">DrawSetStrokeColor</A></H2>
