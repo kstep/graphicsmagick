@@ -3262,7 +3262,9 @@ MagickExport void TemporaryFilename(char *filename)
 {
   assert(filename != (char *) NULL);
   (void) strcpy(filename,"magic");
-#if !defined(vms) && !defined(macintosh)
+#if defined(vms) || defined(macintosh)
+  (void) tmpnam(filename);
+#else
   {
     char
       *name;
@@ -3270,12 +3272,10 @@ MagickExport void TemporaryFilename(char *filename)
     name=(char *) tempnam((char *) NULL,filename);
     if (name == (char *) NULL)
       MagickFatalError(ResourceLimitFatalError,
-        "Unable to create a name for a temporary file",(char *) NULL);
+        "Unable to create a name for a temporary file",filename);
     (void) strncpy(filename,name,MaxTextExtent-1);
     LiberateMemory((void **) &name);
   }
-#else
-  (void) tmpnam(filename);
 #endif
   (void) strncat(filename,".tmp",MaxTextExtent-strlen(filename)-1);
 }
