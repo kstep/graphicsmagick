@@ -406,11 +406,9 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  The AppendImages() method takes a set of images and appends them to each
-%  other.  Each image in the set must have the same width or height (or both)
-%  (or both).  Append() returns a single image where each image in the
-%  original set is side-by-side if all the heights are the same or stacked
-%  on top of each other if all widths are the same.   On failure, a NULL
-%  image is returned and exception describes the reason for the failure.
+%  other.  All the input images must have the same width or height. Images of
+%  the same width are stacked top-to-bottom. Images with the same height are
+%  stacked left-to-right.
 %
 %  The format of the AppendImage method is:
 %
@@ -421,8 +419,8 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
 %
 %    o image: The image sequence.
 %
-%    o stack: An unsigned value other than stacks rectangular image
-%      left-to-right.
+%    o stack: A value other than 0 stacks the images of the same width and
+%      the same height top-to-bottom.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
