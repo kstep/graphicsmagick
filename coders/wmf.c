@@ -606,54 +606,61 @@ static void WmfSetPenStyle(CSTRUCT *cstruct, LOGPEN *pen, DC *currentDC)
 
 static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  HMETAFILE file;
-  CSTRUCT rstruct;
-  CSTRUCT *cstruct = &rstruct;
+  HMETAFILE metafile;
+  CSTRUCT *cstruct;
   char buff[MaxTextExtent];
   char filename[MaxTextExtent];
-  IM* im;
   ImageInfo* local_info;
   Image* image;
+
+  wmffunctions = &WmfFunctions;
 
   image=AllocateImage(image_info);
   GetExceptionInfo(exception);
 
+  /* Allocate and initialize cstruct */
+  cstruct=(CSTRUCT *)AcquireMemory(sizeof(CSTRUCT));
+  if(cstruct == (CSTRUCT*)NULL)
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+  memset((void*)cstruct,0,sizeof(CSTRUCT));
+  cstruct->userdata = (void *)AcquireMemory(sizeof(IM));
+  if(cstruct->userdata == (void*)NULL)
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+  ((IM*)cstruct->userdata)->mvg=AllocateString("");
+  if(((IM*)cstruct->userdata)->mvg == (char*)NULL)
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+  ((IM*)cstruct->userdata)->image=(Image*)NULL;
+
   wmfinit(cstruct);
-  wmffunctions = &WmfFunctions;
 
+  /* Open metafile */
   strcpy(filename,image_info->filename);
-
-  im=AcquireMemory(sizeof(IM));
-  im->mvg=AllocateString("");
-  im->image=(Image*)NULL;
-  cstruct->userdata = (void *)&im;
-
   if (1 == FileIsPlaceable(filename))
     {
-      file = GetPlaceableMetaFile(filename);
-      if (file != NULL)
-        wmffunctions->set_pmf_size(cstruct,file);
+      metafile = GetPlaceableMetaFile(filename);
+      if (metafile != NULL)
+        wmffunctions->set_pmf_size(cstruct,metafile);
     }
   else
-    file = GetMetaFile(filename);
+    metafile = GetMetaFile(filename);
 
-  if (file == NULL)
+  if (metafile == NULL)
     {
       LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
+      LiberateMemory((void**)&(cstruct->userdata));
+      LiberateMemory((void**)&(cstruct));
       ThrowReaderException(FileOpenWarning,"Unable to open file",image);
     }
 
-  /* Inspect WMF file properties */
+  /* Parse metafile to determine properties */
   cstruct->preparse = 1;
-  PlayMetaFile((void *)cstruct,file,1,NULL);
+  PlayMetaFile((void *)cstruct,metafile,1,NULL);
 
   /* Create white canvas image */
   local_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
   if(local_info == (ImageInfo*)NULL)
-    {
-      LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-    }
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+
   GetImageInfo( local_info );
   sprintf( buff, "%ix%i", (int)cstruct->realwidth, (int)cstruct->realheight );
   CloneString(&local_info->size, buff);
@@ -662,34 +669,48 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ((IM*)cstruct->userdata)->image = ReadImage( local_info, exception );
   if(((IM*)cstruct->userdata)->image == (Image*)NULL)
     {
-      LiberateMemory((void**)&file->pmh);
-      LiberateMemory((void**)&(file->wmfheader));
-      LiberateMemory((void**)&(file));
-      LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
+      /* Destroy metafile handle (lacks a convenient Destroy function */
+      LiberateMemory((void**)&(metafile->wmfheader));
+      LiberateMemory((void**)&(metafile->pmh));
+      fclose(metafile->filein);
+      LiberateMemory((void**)&(metafile));
+
+      /* Destroy cstruct */
+      LiberateMemory((void**)&(cstruct->userdata));
+      LiberateMemory((void**)&(cstruct->dc));
+      LiberateMemory((void**)&(cstruct));
+
+      /* Destroy other allocations */
       DestroyImageInfo(local_info);
       DestroyImage(image);
       return image;
     }
 
   /* Scribble on canvas image */
-  if ( ((IM*)cstruct->userdata)->image != (Image*)NULL )
-    {
-      cstruct->preparse = 0;
-      PlayMetaFile((void *)cstruct,file,1,NULL);
-    }
+  cstruct->preparse = 0;
+  PlayMetaFile((void *)cstruct,metafile,1,NULL);
 
-  /* Preserve original filename and magick */
-  strcpy(((IM*)cstruct->userdata)->image->filename,image_info->filename);
-  strcpy(((IM*)cstruct->userdata)->image->magick,image_info->magick);
-
-  LiberateMemory((void**)&file->pmh);
-  LiberateMemory((void**)&(file->wmfheader));
-  LiberateMemory((void**)&(file));
-
-  DestroyImageInfo(local_info);
+  /* Replace temporary image with real image */
   DestroyImage(image);
+  DestroyImageInfo(local_info);
+  image=((IM*)cstruct->userdata)->image;
 
-  return ((IM*)cstruct->userdata)->image;
+  /* Restore original filename and magick */
+  strcpy(image->filename,image_info->filename);
+  strcpy(image->magick,image_info->magick);
+
+  /* Destroy metafile handle (lacks a convenient Destroy function */
+  LiberateMemory((void**)&(metafile->wmfheader));
+  LiberateMemory((void**)&(metafile->pmh));
+  fclose(metafile->filein);
+  LiberateMemory((void**)&(metafile));
+
+  /* Destroy cstruct handle */
+  LiberateMemory((void**)&(cstruct->userdata));
+  LiberateMemory((void**)&(cstruct->dc));
+  LiberateMemory((void**)&(cstruct));
+
+  return image;
 }
 #endif
 
