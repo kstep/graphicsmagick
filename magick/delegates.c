@@ -495,6 +495,8 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
     /*
       Execute delegate.
     */
+    if (!delegate->wait)
+      ConcatenateString(&command," &");
     status=SystemCommand(image_info->verbose,command);
     LiberateMemory((void **) &command);
     if (status != False)
@@ -657,6 +659,7 @@ static unsigned int ReadConfigurationFile(const char *filename)
           MagickError(ResourceLimitError,"Unable to allocate delegates",
             "Memory allocation failed");
         memset(delegate_info,0,sizeof(DelegateInfo));
+        delegate_info->wait=True;
         if (delegate_list == (DelegateInfo *) NULL)
           delegate_list=delegate_info;
         else
