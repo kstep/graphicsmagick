@@ -139,7 +139,6 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CloneString(&clone_info->size,"800x480");
   (void) strcpy(clone_info->filename,"xc:white");
   image=ReadImage(clone_info,exception);
-  image->class=DirectClass;
   if (image == (Image *) NULL)
     {
       DestroyAnnotateInfo(annotate_info);
