@@ -1894,7 +1894,8 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   if ((p > component) && (*--p == ']'))
     {
       /* Look for a '[' matching the ']' */
-      while ((p > component) && (*p != '[') && (strchr("0123456789,- ", (int)(unsigned char)*p) != 0))
+      while ((p > component) && (*p != '[') &&
+             (strchr("0123456789xX,-+ ", (int)(unsigned char)*p) != 0))
         p--;
 
       /* Copy to subimage and remove from component */

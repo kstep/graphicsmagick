@@ -1,3 +1,11 @@
+2003-11-03  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/utility.c (GetPathComponent): Added x, X, and +
+	characters to list of legal characters in subimage
+	specifications. Required by raw RGB image reader which accepts the
+	syntax "image.rgb[100x100+50+50]". Thanks to John Cristy for
+	catching that one.
+
 2003-11-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/locale.c (GetLocaleMessageFromID): Fix ID range checking
