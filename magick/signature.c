@@ -470,16 +470,17 @@ Export void SignatureImage(Image *image)
     message_digest;
 
   register int
-    i;
+    i,
+    x;
+
+  register PixelPacket
+    *p;
 
   register unsigned char
     *q;
 
   unsigned char
     *message;
-
-  unsigned int
-    packet_size;
 
   assert(image != (Image *) NULL);
   if (image->pixels == (PixelPacket *) NULL)
@@ -490,15 +491,8 @@ Export void SignatureImage(Image *image)
   if (image->signature != (char *) NULL)
     FreeMemory(image->signature);
   image->signature=(char *) AllocateMemory(33*sizeof(char));
-  if (image->colorspace == CMYKColorspace)
-    packet_size=image->depth > 8 ? 8 : 4;
-  else
-    if (!image->matte)
-      packet_size=image->depth > 8 ? 6 : 3;
-    else
-      packet_size=image->depth > 8 ? 8 : 4;
   message=(unsigned char *)
-    AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
+    AllocateMemory(8*image->columns*sizeof(unsigned char));
   if ((image->signature == (char *) NULL) ||
       (message == (unsigned char *) NULL))
     {
@@ -512,16 +506,31 @@ Export void SignatureImage(Image *image)
   InitializeMessageDigest(&message_digest);
   for (y=0; y < (int) image->rows; y++)
   {
-    if (!GetPixelCache(image,0,y,image->columns,1))
+    pGetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
       break;
-    if (image->colorspace == CMYKColorspace)
-      (void) WritePixelCache(image,CMYKQuantum,message);
-    else
-      if (!image->matte)
-        (void) WritePixelCache(image,RGBQuantum,message);
+    q=message;
+    for (x=0; x < image->columns; x++)
+    {
+      *q++=XUpScale(p->red) >> 8;
+      *q++=XUpScale(p->red);
+      *q++=XUpScale(p->green) >> 8;
+      *q++=XUpScale(p->green);
+      *q++=XUpScale(p->blue) >> 8;
+      *q++=XUpScale(p->blue);
+      if (image->matte)
+        {
+          *q++=XUpScale(p->opacity) >> 8;
+          *q++=XUpScale(p->opacity);
+        }
       else
-        (void) WritePixelCache(image,RGBAQuantum,message);
-    UpdateMessageDigest(&message_digest,message,packet_size*image->columns);
+        {
+          *q++=XUpScale(Opaque) >> 8;
+          *q++=XUpScale(Opaque) & 0xff;
+        }
+      p++;
+    }
+    UpdateMessageDigest(&message_digest,message,8*image->columns);
   }
   FreeMemory(message);
   /*
