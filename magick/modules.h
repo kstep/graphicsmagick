@@ -19,7 +19,7 @@ typedef void *ModuleHandle;
 #if defined(_DEBUG)
 #  define ModuleSearchSpec "IM_MOD_DB_*.dll"
 #else
-#  define ModuleSearchSpec "IM_MOD_*.dll"
+#  define ModuleSearchSpec "IM_MOD_RL_*.dll"
 #endif
 #endif
 #endif
