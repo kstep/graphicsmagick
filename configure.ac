@@ -415,7 +415,7 @@ do
 done
 
 # Libraries
-for dir in bzlib fpx/obj hdf/src/.libs jasper jbig/libjbig jpeg lcms/src png mpeg2/libmpeg2/.libs tiff/libtiff ttf/objs/.libs wmf/src/.libs xml/.libs zlib
+for dir in bzlib fpx/obj hdf/src jasper jbig/libjbig jpeg lcms/src png mpeg2/libmpeg2 tiff/libtiff ttf/objs wmf/src xml zlib
 do
   if test -d "$builddir/$dir"
   then
@@ -424,6 +424,15 @@ do
     if test -d "$srcdirfull/$dir"
     then
         LDFLAGS="$LDFLAGS -L$srcdirfull/$dir"
+    fi
+  fi
+  if test -d "$builddir/$dir/.libs"
+  then
+    LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
+  else
+    if test -d "$srcdirfull/$dir/.libs"
+    then
+        LDFLAGS="$LDFLAGS -L$srcdirfull/$dir/.libs"
     fi
   fi
 done
