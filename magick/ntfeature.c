@@ -224,7 +224,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
                            "Memory allocation failed");
         (void) memset(type_info,0,sizeof(TypeInfo));
 
-        type_info->filename=AcquireString("Windows Fonts");
+        type_info->path=AcquireString("Windows Fonts");
         type_info->signature=MagickSignature;
 
         /* Name */
@@ -247,7 +247,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
             strcat(buffer,value_data);
           }
         else
-          strncpy(buffer,value_dataMaxTextExtent-1);
+          strncpy(buffer,value_data,MaxTextExtent-1);
 
         LocaleLower(buffer);
         type_info->glyphs=AcquireString(buffer);
