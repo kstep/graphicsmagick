@@ -590,12 +590,6 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
       (image->rows == 0))
     ThrowReaderException(CorruptImageWarning,"Incorrect image header in file",
       image);
-  (void) strcpy(cache_info->filename,image->filename);
-  if (image_info->ping)
-    {
-      CloseBlob(image);
-      return(image);
-    }
   if (image->montage != (char *) NULL)
     {
       register char
@@ -731,10 +725,11 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
   /*
     Open cache.
   */
+  (void) strcpy(cache_info->filename,image->filename);
+  cache_info->persist=True;
   cache_info->storage_class=image->storage_class;
   cache_info->type=DiskCache;
   cache_info->offset=TellBlob(image);
-  cache_info->persist=True;
   status=OpenCache(image->cache,image->storage_class,image->columns,
     image->rows);
   if (status == False)
