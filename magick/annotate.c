@@ -1190,9 +1190,9 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       if (i != 2)
         resolution.y=resolution.x;
     }
-  (void) FT_Set_Char_Size(face,(long int) (64.0*draw_info->pointsize),
-    (long int) (64.0*draw_info->pointsize),(unsigned int) resolution.x,
-    (unsigned int) resolution.y);
+  (void) FT_Set_Char_Size(face,(FT_F26Dot6) (64.0*draw_info->pointsize),
+    (FT_F26Dot6) (64.0*draw_info->pointsize),(FT_UInt) resolution.x,
+    (FT_UInt) resolution.y);
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;
   metrics->ascent=(double) face->size->metrics.ascender/64.0;
