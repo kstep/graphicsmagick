@@ -184,15 +184,17 @@ namespace Magick
   class blurImage : public std::unary_function<Image&,void>
   {
   public:
-    blurImage( unsigned int order_ )
-      : _order( order_ ) { }
+    blurImage( const double radius_ = 1, const double sigma_ = 0.5 )
+      : _radius( radius_ ),
+        _sigma( sigma_ ){ }
 
     void operator()( Image &image_ )
       {
-	image_.blur( _order );
+	image_.blur( _radius, _sigma );
       }
   private:
-    const unsigned int _order;
+    const double _radius;
+    const double _sigma;
   };
 
   // Border image (add border to image)
@@ -214,15 +216,17 @@ namespace Magick
   class charcoalImage : public std::unary_function<Image&,void>
   {
   public:
-    charcoalImage( unsigned int order_ = 3  )
-      : _order( order_ ) { }
+    charcoalImage( const double radius_ = 1, const double sigma_ = 0.5  )
+      : _radius( radius_ ),
+        _sigma( sigma_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.charcoal( _order );
+	image_.charcoal( _radius, _sigma );
       }
   private:
-    const unsigned int _order;
+    const double _radius;
+    const double _sigma;
   };
 
   // Chop image (remove vertical or horizontal subregion of image)
@@ -422,16 +426,19 @@ namespace Magick
   {
   public:
     embossImage( void )
-      : _order(3) { }
-    embossImage( unsigned int order_ )
-      : _order(order_) { }
+      : _radius( 1 ),
+        _sigma( 0.5 ) { }
+    embossImage( const double radius_ = 1, const double sigma_ = 0.5 )
+      : _radius( radius_ ),
+        _sigma( sigma_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.emboss( _order );
+	image_.emboss( _radius, _sigma );
       }
   private:
-    const unsigned int _order;
+    const double _radius;
+    const double _sigma;
   };
 
   // Enhance image (minimize noise)
@@ -1045,15 +1052,17 @@ namespace Magick
   class sharpenImage : public std::unary_function<Image&,void>
   {
   public:
-    sharpenImage( unsigned int order_ )
-      : _order( order_ ) { }
+    sharpenImage( const double radius_ = 1, const double sigma_ = 0.5 )
+      : _radius( radius_ ),
+        _sigma( sigma_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.sharpen( _order );
+	image_.sharpen( _radius, _sigma );
       }
   private:
-    const unsigned int _order;
+    const double _radius;
+    const double _sigma;
   };
 
   // Shear image (create parallelogram by sliding image by X or Y axis)

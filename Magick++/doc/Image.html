@@ -353,9 +353,12 @@ by gravity.</font></td>
 <center><a NAME="blur"></a><font size=-1>blur</font></center>
 </td>
 
-<td><font size=-1>unsigned int order_</font></td>
+<td><font size=-1>const double radius_ = 1, const double sigma_ = 0.5</font></td>
 
-<td><font size=-1>Blur image with specified order of the pixel neighborhood</font></td>
+<td><font size=-1>Blur image. The <i>radius_ </i>parameter specifies the
+radius of the Gaussian, in pixels, not counting the center pixel.&nbsp;
+The <i>sigma_</i> parameter specifies the standard deviation of the Laplacian,
+in pixels.</font></td>
 </tr>
 
 <tr>
@@ -375,9 +378,12 @@ the border is specified by the <i>borderColor</i> attribute.</font></td>
 <center><a NAME="charcoal"></a><font size=-1>charcoal</font></center>
 </td>
 
-<td><font size=-1>unsigned int order_ = 3</font></td>
+<td><font size=-1>const double radius_ = 1, const double sigma_ = 0.5</font></td>
 
-<td><font size=-1>Charcoal effect image (looks like charcoal sketch)</font></td>
+<td><font size=-1>Charcoal effect image (looks like charcoal sketch). The
+<i>radius_</i> parameter specifies the radius of the Gaussian, in pixels,
+not counting the center pixel.&nbsp; The <i>sigma_</i> parameter specifies
+the standard deviation of the Laplacian, in pixels.</font></td>
 </tr>
 
 <tr>
@@ -538,18 +544,16 @@ and allows batching draw objects together in a list for repeated use.</font></td
 </tr>
 
 <tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<td NOSAVE>
 <center><a NAME="emboss"></a><font size=-1>emboss</font></center>
 </td>
 
-<td><font size=-1>void</font></td>
+<td><font size=-1>const double radius_ = 1, const double sigma_ = 0.5</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Emboss image (hilight edges with 3D
-effect)</font></td>
-</tr>
-
-<tr>
-<td><font size=-1>unsigned int order_</font></td>
+<td NOSAVE><font size=-1>Emboss image (hilight edges with 3D effect). The
+<i>radius_</i> parameter specifies the radius of the Gaussian, in pixels,
+not counting the center pixel.&nbsp; The <i>sigma_</i> parameter specifies
+the standard deviation of the Laplacian, in pixels.</font></td>
 </tr>
 
 <tr>
@@ -1047,10 +1051,12 @@ to <i>true</i> to shade the red, green, and blue components of the image.</font>
 <center><a NAME="sharpen"></a><font size=-1>sharpen</font></center>
 </td>
 
-<td><font size=-1>unsigned int order_</font></td>
+<td><font size=-1>const double radius_ = 1, const double sigma_ = 0.5</font></td>
 
-<td><font size=-1>Sharpen pixels in image. Order_ represents the order
-of the pixel neighborhood.</font></td>
+<td><font size=-1>Sharpen pixels in image.&nbsp; The <i>radius_</i> parameter
+specifies the radius of the Gaussian, in pixels, not counting the center
+pixel.&nbsp; The <i>sigma_</i> parameter specifies the standard deviation
+of the Laplacian, in pixels.</font></td>
 </tr>
 
 <tr>

@@ -103,14 +103,19 @@ namespace Magick
 			       GravityType gravity_ = NorthWestGravity);
     
     // Blur image with specified blur factor
-    // The order_ parameter represents the order of the pixel neighborhood.
-    void            blur ( unsigned int order_ );
+    // The radius_ parameter specifies the radius of the Gaussian, in
+    // pixels, not counting the center pixel.  The sigma_ parameter
+    // specifies the standard deviation of the Laplacian, in pixels.
+    void            blur ( const double radius_ = 1, const double sigma_ = 0.5  );
     
     // Border image (add border to image)
     void            border ( const Geometry &geometry_ = borderGeometryDefault );
     
     // Charcoal effect image (looks like charcoal sketch)
-    void            charcoal ( unsigned int order_ = 3 );
+    // The radius_ parameter specifies the radius of the Gaussian, in
+    // pixels, not counting the center pixel.  The sigma_ parameter
+    // specifies the standard deviation of the Laplacian, in pixels.
+    void            charcoal ( const double radius_ = 1, const double sigma_ = 0.5 );
     
     // Chop image (remove vertical or horizontal subregion of image)
     // FIXME: describe how geometry argument is used to select either horizontal or
@@ -162,8 +167,10 @@ namespace Magick
     void            edge ( unsigned int order_ );
     
     // Emboss image (hilight edges with 3D effect)
-    void            emboss ( void );
-    void            emboss ( unsigned int order_ );
+    // The radius_ parameter specifies the radius of the Gaussian, in
+    // pixels, not counting the center pixel.  The sigma_ parameter
+    // specifies the standard deviation of the Laplacian, in pixels.
+    void            emboss ( const double radius_ = 1, const double sigma_ = 0.5);
     
     // Enhance image (minimize noise)
     void            enhance ( void );
@@ -354,7 +361,10 @@ namespace Magick
 			    bool   colorShading_ = false );
     
     // Sharpen pixels in image
-    void            sharpen ( unsigned int order_ );
+    // The radius_ parameter specifies the radius of the Gaussian, in
+    // pixels, not counting the center pixel.  The sigma_ parameter
+    // specifies the standard deviation of the Laplacian, in pixels.
+    void            sharpen ( const double radius_ = 1, const double sigma_ = 0.5 );
     
     // Shear image (create parallelogram by sliding image by X or Y axis)
     void            shear ( double xShearAngle_,
@@ -856,13 +866,6 @@ inline Magick::Options * Magick::ImageRef::options ( void )
 //
 // Image
 //
-
-// Emboss image
-inline void Magick::Image::emboss ( void )
-{
-  // Value of three provides legacy embossing effect
-  emboss( 3 );
-}
 
 // Reduce noise in image using a noise peak elimination filter
 inline void Magick::Image::reduceNoise ( void )

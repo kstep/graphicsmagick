@@ -1,5 +1,16 @@
 This file records noteworthy changes.
 
+(5.2.3)
+  * Switched to new release numbering (match ImageMagick release number)
+  * Released with ImageMagick 5.2.2.
+  * Fixed bug in which the Image read method was not reporting
+    warnings (only errors).
+  * Parameter changes to blur, charcoal, emboss, and sharpen methods
+    of the Image class to match equivalent ImageMagick API changes.
+  * Parameter changes to blurImage, charcoalImage, embossImage, and
+    sharpenImage STL functions in order to match equivalent ImageMagick
+    API changes.
+
 (0.9.5)
   * Released with ImageMagick 5.2.2.
 

@@ -5,7 +5,7 @@
 # Copyright (C) 1996-1999,2000 Free Software Foundation, Inc.
 # Originally by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 #
-# Original C++ support by:
+# Original C++ support by:Gary V. Vaughan <gvv@techie.com>
 #    Alexandre Oliva <oliva@lsd.ic.unicamp.br>
 #    Ossama Othman <ossama@debian.org>
 #    Thomas Thanner <tanner@gmx.de>
@@ -43,16 +43,16 @@ lt_simple_compile_test_code="int some_variable = 0;"
 lt_simple_link_test_code='int main(int, char *[]) { return (0); }'
 
 # C++ compiler
-# Allow CXX to be a program name with arguments.
-set dummy $CXX
-compiler=$2
 CXX=${CXX-c++}
 
 # ltmain only uses $CC for tagged configurations so make sure $CC is set.
-set dummy $CC
 CC=${CC-"$CXX"}
 CFLAGS=${CFLAGS-"$CXXFLAGS"}
-cc_basename=`$echo X"$CC" | $Xsed -e 's%^.*/%%'`
+
+# Allow CC to be a program name with arguments.
+set dummy $CC
+compiler=$2
+cc_basename=`$echo X"$compiler" | $Xsed -e 's%^.*/%%'`
 
 # Check if we are using GNU gcc  (taken/adapted from configure script)
 # We need to check here since "--with-gcc" is set at configure time,
@@ -207,13 +207,19 @@ case "$host_os" in
       CC)
         # SGI C++
         archive_cmds='$CC -shared -all -multigot $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -soname $soname `test -n "$verstring" && echo -set_version $verstring` -update_registry ${objdir}/so_locations -o $lib'
-        ;;
+
+	# Archives containing C++ object files must be created using
+	# "CC -ar", where "CC" is the IRIX C++ compiler.  This is
+	# necessary to make sure instantiated templates are included
+	# in the archive.
+	old_archive_cmds='$CC -ar -WR,-u -o $oldlib $oldobjs'
+	;;
       *)
         if test "$with_gcc" = yes; then
           if test "$with_gnu_ld" = no; then
             archive_cmds='$CC -shared $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-soname ${wl}$soname `test -n "$verstring" && echo ${wl}-set_version ${wl}$verstring` ${wl}-update_registry ${wl}${objdir}/so_locations -o $lib'
           else
-            archive_cmds='$LD -shared $predep_objects $libobjs $deplibs $postdep_objects $linkopts -soname $soname `test -n "$verstring" && echo -set_version $verstring` -o $lib'
+            archive_cmds='$LD -shared $predep_objects $libobjs $deplibs $postdep_objects $linker_flags -soname $soname `test -n "$verstring" && echo -set_version $verstring` -o $lib'
           fi
         fi
         hardcode_libdir_flag_spec='${wl}-rpath ${wl}$libdir'
@@ -496,9 +502,9 @@ case "$host_os" in
         # GNU C++ compiler with Solaris linker
         if test "$with_gcc" = yes && test "$with_gnu_ld" = no; then
           if $CC --version | egrep -v '^2\.7' > /dev/null; then
-            archive_cmds='$LD -shared -nostdlib $LDFLAGS $predep_objects $libobjs $deplibs $postdep_objects $linkopts ${wl}-h $wl$soname -o $lib'
+            archive_cmds='$LD -shared -nostdlib $LDFLAGS $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-h $wl$soname -o $lib'
             archive_expsym_cmds='$echo "{ global:" > $lib.exp~cat $export_symbols | sed -e "s/\(.*\)/\1;/" >> $lib.exp~$echo "local: *; };" >> $lib.exp~
-		$LD -shared -nostdlib ${wl}-M $wl$lib.exp -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linkopts~$rm $lib.exp'
+		$LD -shared -nostdlib ${wl}-M $wl$lib.exp -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linker_flags~$rm $lib.exp'
 
             # Commands to make compiler produce verbose output that lists
             # what "hidden" libraries, object files and flags are used when
@@ -507,9 +513,9 @@ case "$host_os" in
           else
             # g++ 2.7 appears to require `-G' NOT `-shared' on this
             # platform.
-            archive_cmds='$LD -G -nostdlib $LDFLAGS $predep_objects $libobjs $deplibs $postdep_objects $linkopts ${wl}-h $wl$soname -o $lib'
+            archive_cmds='$LD -G -nostdlib $LDFLAGS $predep_objects $libobjs $deplibs $postdep_objects $linker_flags ${wl}-h $wl$soname -o $lib'
             archive_expsym_cmds='$echo "{ global:" > $lib.exp~cat $export_symbols | sed -e "s/\(.*\)/\1;/" >> $lib.exp~$echo "local: *; };" >> $lib.exp~
-		$LD -G -nostdlib ${wl}-M $wl$lib.exp -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linkopts~$rm $lib.exp'
+		$LD -G -nostdlib ${wl}-M $wl$lib.exp -o $lib $predep_objects $libobjs $deplibs $postdep_objects $linker_flags~$rm $lib.exp'
 
             # Commands to make compiler produce verbose output that lists
             # what "hidden" libraries, object files and flags are used when
@@ -872,48 +878,7 @@ fi
 
 $rm -f confest.$objext
 
-need_lc=yes
-if test "$enable_shared" = yes && test "$with_gcc" = yes; then
-  case "$archive_cmds" in
-  *'~'*)
-    # FIXME: we may have to deal with multi-command sequences.
-    ;;
-  '$CC '*)
-    # Test whether the compiler implicitly links with -lc since on some
-    # systems, -lgcc has to come before -lc. If gcc already passes -lc
-    # to ld, don't add -lc before -lgcc.
-    echo $ac_n "checking whether -lc is implicitly linked in... $ac_c" 1>&6
-    if eval "test \"`echo '$''{'ac_cv_cxx_archive_cmds_needs_lc'+set}'`\" = set"; then
-      echo $ac_n "(cached) $ac_c" 1>&6
-      need_lc=$ac_cv_cxx_archive_cmds_needs_lc
-    else
-      $rm conftest*
-      echo "static int dummy;" > conftest.$ac_ext
-      if { (eval echo $progname:@LINENO@: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>conftest.err; }; then
-	# Append any warnings to the config.log.
-	cat conftest.err 1>&5
-
-	soname=conftest
-	lib=conftest
-	libobjs=conftest.o
-	deplibs=
-	linkopts=-v
-	compiler_flags=-v
-	linker_flags=-v
-	verstring=
-	output_objdir=.
-	libname=conftest
-	allow_undefined_flag=
-	if { (eval echo $progname:@LINENO@: \"$archive_cmds\") 1>&5; (eval $archive_cmds) 2>&1 | grep " -lc " 1>&5 ; }; then
-	  need_lc=no
-	fi
-      else
-	cat conftest.err 1>&5
-      fi
-    fi
-    $rm conftest*
-    echo "$ac_t$need_lc" 1>&6
-    ;;
-  esac
-fi
-ac_cv_cxx_archive_cmds_needs_lc=$need_lc
+case " $postdeps " in
+*" -lc "*) need_lc=no ;;
+*) need_lc=yes ;;
+esac

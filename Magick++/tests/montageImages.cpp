@@ -39,7 +39,7 @@ int main( int /*argc*/, char **argv)
     // Default montage
     montageImages( &montage, imageList.begin(), imageList.end(), montageOpts );
 
-    if ( montage[0].montageGeometry() != Geometry( 114, 112 ) )
+    if ( montage[0].montageGeometry() != Geometry( 128, 126 ) )
       {
 	++failures;
 	cout << "Line: " << __LINE__ 
@@ -49,7 +49,7 @@ int main( int /*argc*/, char **argv)
 	     << endl;
       }
 
-    if ( montage[0].columns() != 684 || montage[0].rows() != 114 )
+    if ( montage[0].columns() != 768 || montage[0].rows() != 128 )
       {
 	++failures;
 	cout << "Line: " << __LINE__ 

@@ -239,12 +239,12 @@ void Magick::Image::annotate ( const std::string &text_,
 }
 
 // Blur image
-void Magick::Image::blur( unsigned int order_ )
+void Magick::Image::blur( const double radius_, const double sigma_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-    BlurImage( image(), order_, 1.5, &exceptionInfo);
+    BlurImage( image(), radius_, sigma_, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -265,15 +265,14 @@ void Magick::Image::border( const Geometry &geometry_ )
   throwException( exceptionInfo );
 }
 
-
 // Charcoal-effect image
-void Magick::Image::charcoal( unsigned int order_ )
+void Magick::Image::charcoal( const double radius_ = 1, const double sigma_ = 0.5 )
 {
   quantizeDither( true );
   quantizeColorSpace( GRAYColorspace );
   quantize( );
-  edge( order_ );
-  blur( order_ );
+  edge( radius_ );
+  blur( radius_, sigma_ );
   normalize( );
   negate( true );
 }
@@ -550,12 +549,12 @@ void Magick::Image::edge ( unsigned int factor_ )
 }
 
 // Emboss image (hilight edges)
-void Magick::Image::emboss ( unsigned int order_ )
+void Magick::Image::emboss ( const double radius_, const double sigma_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-    EmbossImage( image(), order_, 1.5, &exceptionInfo );
+    EmbossImage( image(), radius_, sigma_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -1194,15 +1193,15 @@ void Magick::Image::shade ( double azimuth_,
 }
 
 // Sharpen pixels in image
-void Magick::Image::sharpen ( unsigned int order_ )
+void Magick::Image::sharpen ( const double radius_, const double sigma_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     SharpenImage( image(),
-			     order_,
-			     1.5,
-			     &exceptionInfo );
+                  radius_,
+                  sigma_,
+                  &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
 }

@@ -1,3 +1,13 @@
+2000-08-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (blurImage, charcoalImage, embossImage,
+ 	sharpenImage): Expand order_ argument to radius_ & sigma_
+ 	arguments for more control (matches ImageMagick API change).
+
+	* lib/Image.cpp (blur, charcoal, emboss, sharpen): Expand order_
+ 	argument to radius_ & sigma_ arguments for more control (matches
+ 	ImageMagick API change).
+
 2000-08-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (read): Check returned Image for embedded
