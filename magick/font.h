@@ -39,7 +39,7 @@ extern MagickExport unsigned int
   ListFontInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport void
-  DestroyFontInfo(FontInfo *);
+  DestroyFontInfo(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
