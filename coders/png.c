@@ -4643,7 +4643,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           (void) GetMagickGeometry(image_info->page,&page.x,&page.y,
             &page.width,&page.height);
         }
-  if (adjoin)
+  if (write_mng)
     {
       unsigned int
         need_geom;
