@@ -1230,7 +1230,7 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("black",&clone_info->fill);
-  clone_info->clip_path=(char *) NULL;
+  LiberateMemory((void **) &clone_info->clip_path);
   status=DrawImage(clip_mask,clone_info);
   draw_info->clip_units=clone_info->clip_units;
   DestroyDrawInfo(clone_info);
