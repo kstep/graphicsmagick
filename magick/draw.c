@@ -1431,6 +1431,16 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
 %
 %
 */
+
+static inline unsigned int IsPoint(const char *point)
+{
+  char
+    *p;
+
+  (void) strtol(point,&p,10);
+  return(p != point);
+}
+
 MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 {
   AffineMatrix
@@ -2292,7 +2302,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
           }
         if (LocaleCompare("stroke-dasharray",keyword) == 0)
           {
-            if (IsGeometry(q))
+            if (IsPoint(q))
               {
                 char
                   *p;
@@ -2301,7 +2311,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 GetToken(p,&p,token);
                 if (*token == ',')
                   GetToken(p,&p,token);
-                for (x=0; IsGeometry(token); x++)
+                for (x=0; IsPoint(token); x++)
                 {
                   GetToken(p,&p,token);
                   if (*token == ',')
@@ -2496,7 +2506,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
       /*
         Define points.
       */
-      if (!IsGeometry(q))
+      if (!IsPoint(q))
         break;
       GetToken(q,&q,token);
       point.x=atof(token);
@@ -4578,7 +4588,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           TraceBezier(q,4);
           q+=q->coordinates;
           point=end;
-        } while (IsGeometry(p));
+        } while (IsPoint(p));
         break;
       }
       case 'H':
@@ -4593,7 +4603,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           point.x=attribute == 'H' ? x: point.x+x;
           TracePoint(q,point);
           q+=q->coordinates;
-        } while (IsGeometry(p));
+        } while (IsPoint(p));
         break;
       }
       case 'l':
@@ -4613,7 +4623,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           point.y=attribute == 'L' ? y : point.y+y;
           TracePoint(q,point);
           q+=q->coordinates;
-        } while (IsGeometry(p));
+        } while (IsPoint(p));
         break;
       }
       case 'M':
@@ -4639,7 +4649,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           point.y=attribute == 'M' ? y : point.y+y;
           TracePoint(q,point);
           q+=q->coordinates;
-        } while (IsGeometry(p));
+        } while (IsPoint(p));
         start=point;
         break;
       }
@@ -4673,7 +4683,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           TraceBezier(q,3);
           q+=q->coordinates;
           point=end;
-        } while (IsGeometry(p));
+        } while (IsPoint(p));
         break;
       }
       case 's':
@@ -4708,7 +4718,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           TraceBezier(q,4);
           q+=q->coordinates;
           point=end;
-        } while (IsGeometry(p));
+        } while (IsPoint(p));
         break;
       }
       case 't':
@@ -4741,7 +4751,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           TraceBezier(q,3);
           q+=q->coordinates;
           point=end;
-        } while (IsGeometry(p));
+        } while (IsPoint(p));
         break;
       }
       case 'v':
@@ -4756,7 +4766,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           point.y=attribute == 'V' ? y : point.y+y;
           TracePoint(q,point);
           q+=q->coordinates;
-        } while (IsGeometry(p));
+        } while (IsPoint(p));
         break;
       }
       case 'z':

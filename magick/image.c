@@ -2995,7 +2995,7 @@ MagickExport unsigned int IsGeometry(const char *geometry)
 
   if (geometry == (const char *) NULL)
     return(False);
-  flags=GetGeometry((char *) geometry,&x,&y,&width,&height);
+  flags=GetGeometry(geometry,&x,&y,&width,&height);
   return(flags != NoValue);
 }
 
