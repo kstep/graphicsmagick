@@ -1286,7 +1286,7 @@ MagickExport unsigned int CompositeImage(Image *image,
       p=GetImagePixels(composite_image,x-x_offset,y-y_offset,1,1);
       if (p == (PixelPacket *) NULL)
         break;
-      composite_indexes=GetIndexes(composite_images);
+      composite_indexes=GetIndexes(composite_image);
       switch (compose)
       {
         case ThresholdCompositeOp:
@@ -1562,6 +1562,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         default: (void) fprintf(file,"Undefined"); break;
       }
       (void) fprintf(file," ");
+      (void) fprintf(file,"%d ",image->depth);
       if (image->filesize != 0)
         {
           if (image->filesize >= (1 << 24))

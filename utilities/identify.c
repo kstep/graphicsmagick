@@ -57,6 +57,7 @@
 %  Where options include:
 %    -cache threshold  megabytes of memory available to the pixel cache
 %    -density geometry vertical and horizontal density of the image
+%    -depth value      depth of the image
 %    -format "string"  output formatted image characteristics
 %    -ping             efficiently determine image characteristics
 %    -size geometry    width and height of image
@@ -98,12 +99,13 @@ static void Usage()
   static const char
     *options[]=
     {
-      "-cache threshold  megabytes of memory available to the pixel cache",
-      "-density geometry vertical and horizontal density of the image",
-      "-format \"string\"  output formatted image characteristics",
-      "-ping             efficiently determine image characteristics",
-      "-size geometry    width and height of image",
-      "-verbose          print detailed information about the image",
+      "-cache threshold   megabytes of memory available to the pixel cache",
+      "-density geometry  vertical and horizontal density of the image",
+      "-depth value       depth of the image",
+      "-format \"string\"   output formatted image characteristics",
+      "-ping              efficiently determine image characteristics",
+      "-size geometry     width and height of image",
+      "-verbose           print detailed information about the image",
       (char *) NULL
     };
 
@@ -153,7 +155,8 @@ int main(int argc,char **argv)
     *image_info;
 
   int
-    number_images;
+    number_images,
+    x;
 
   register int
     i;
@@ -239,6 +242,18 @@ int main(int argc,char **argv)
                     if ((i == argc) || !IsGeometry(argv[i]))
                       MagickError(OptionError,"Missing geometry",option);
                     (void) CloneString(&image_info->density,argv[i]);
+                  }
+                break;
+              }
+            if (LocaleNCompare("depth",option+1,3) == 0)
+              {
+                image_info->depth=QuantumDepth;
+                if (*option == '-')
+                  {
+                    i++;
+                    if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                      MagickError(OptionError,"Missing image depth",option);
+                    image_info->depth=atoi(argv[i]);
                   }
                 break;
               }

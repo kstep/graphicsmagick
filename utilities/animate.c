@@ -73,6 +73,7 @@
 %    -crop geometry       preferred size and location of the cropped image
 %    -delay value         display the next image after pausing
 %    -density geometry    vertical and horizontal density of the image
+%    -depth value         depth of the image
 %    -display server      display image to this X server
 %    -dither              apply Floyd/Steinberg error diffusion to image
 %    -gamma value         level of gamma correction
@@ -157,6 +158,7 @@ static void Usage()
       "-crop geometry       preferred size and location of the cropped image",
       "-delay value         display the next image after pausing",
       "-density geometry    vertical and horizontal density of the image",
+      "-depth value         depth of the image",
       "-display server      display image to this X server",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-gamma value         level of gamma correction",
@@ -559,6 +561,18 @@ int main(int argc,char **argv)
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
                   (void) CloneString(&image_info->density,argv[i]);
+                }
+              break;
+            }
+          if (LocaleNCompare("depth",option+1,3) == 0)
+            {
+              image_info->depth=QuantumDepth;
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing image depth",option);
+                  image_info->depth=atoi(argv[i]);
                 }
               break;
             }

@@ -830,11 +830,13 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("depth",option+1,3) == 0)
             {
+              image_info->depth=QuantumDepth;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing image depth",option);
+                  image_info->depth=atoi(argv[i]);
                 }
               break;
             }

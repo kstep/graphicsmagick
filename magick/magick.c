@@ -686,7 +686,6 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
     status;
 
   assert(tag != (const char *) NULL);
-  AcquireSemaphore(&magick_semaphore);
   status=False;
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
@@ -705,6 +704,5 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
     status=True;
     break;
   }
-  LiberateSemaphore(&magick_semaphore);
   return(status);
 }

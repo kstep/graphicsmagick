@@ -59,6 +59,7 @@
 %    -comment string     annotate image with comment
 %    -compress type      type of image compression
 %    -density geometry   vertical and horizontal density of the image
+%    -depth value        depth of the image
 %    -displace geometry  shift image pixels as defined by a displacement map
 %    -display server     obtain image or font from this X server
 %    -dispose method     GIF disposal method
@@ -128,6 +129,7 @@ static void Usage()
       "-compose operator   composite operator",
       "-compress type      type of image compression",
       "-density geometry   vertical and horizontal density of the image",
+      "-depth value        depth of the image",
       "-displace geometry  shift image pixels as defined by a displacement map",
       "-display server     obtain image or font from this X server",
       "-dispose method     GIF disposal method",
@@ -510,6 +512,18 @@ int main(int argc,char **argv)
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
                   (void) CloneString(&image_info->density,argv[i]);
+                }
+              break;
+            }
+          if (LocaleNCompare("depth",option+1,3) == 0)
+            {
+              image_info->depth=QuantumDepth;
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing image depth",option);
+                  image_info->depth=atoi(argv[i]);
                 }
               break;
             }

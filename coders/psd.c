@@ -153,6 +153,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
               break;
             }
             case 3:
+            case -1:
             {
               if (image->colorspace == CMYKColorspace)
                 q->opacity=UpScale(pixel);
@@ -160,7 +161,6 @@ static unsigned int DecodeImage(Image *image,const int channel)
                 q->opacity=MaxRGB-UpScale(pixel);
             }
             case 4:
-            case -1:
             {
               if (image->colorspace == CMYKColorspace)
                 *indexes=MaxRGB-UpScale(pixel);
@@ -207,6 +207,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
           break;
         }
         case 3:
+        case -1:
         {
           if (image->colorspace == CMYKColorspace)
             q->opacity=UpScale(pixel);
@@ -215,7 +216,6 @@ static unsigned int DecodeImage(Image *image,const int channel)
           break;
         }
         case 4:
-        case -1:
         {
           if (image->colorspace == CMYKColorspace)
             *indexes=MaxRGB-UpScale(pixel);
@@ -659,6 +659,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
               case 3:
+              case -1:
               {
                 if (layer_info[i].image->colorspace == CMYKColorspace)
                   (void) PushImagePixels(layer_info[i].image,BlackQuantum,
@@ -669,7 +670,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
               case 4:
-              case -1:
               {
                 if (layer_info[i].image->colorspace == CMYKColorspace)
                   (void) PushImagePixels(layer_info[i].image,AlphaQuantum,
@@ -722,12 +722,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 layer_info[i].image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
+              indexes=GetIndexes(image);
               for (x=0; x < (int) layer_info[i].image->columns; x++)
               {
                 q->red=MaxRGB-q->red;
                 q->green=MaxRGB-q->green;
                 q->blue=MaxRGB-q->blue;
                 q->opacity=MaxRGB-q->opacity;
+                indexes[x]=MaxRGB-indexes[x];
                 q++;
               }
               if (!SyncImagePixels(layer_info[i].image))
@@ -829,12 +831,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexes(image);
         for (x=0; x < (int) image->columns; x++)
         {
           q->red=MaxRGB-q->red;
           q->green=MaxRGB-q->green;
           q->blue=MaxRGB-q->blue;
           q->opacity=MaxRGB-q->opacity;
+          indexes[x]=MaxRGB-indexes[x];
           q++;
         }
         if (!SyncImagePixels(image))

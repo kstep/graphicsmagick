@@ -78,6 +78,7 @@
 %    -crop geometry     preferred size and location of the cropped image
 %    -delay value       display the next image after pausing
 %    -density geometry  vertical and horizontal density of the image
+%    -depth value       depth of the image
 %    -despeckle         reduce the speckles within an image
 %    -display server    display image to this X server
 %    -dispose method    GIF disposal method
@@ -191,6 +192,7 @@ static void Usage()
       "-crop geometry     preferred size and location of the cropped image",
       "-delay value       display the next image after pausing",
       "-density geometry  vertical and horizontal density of the image",
+      "-depth value       depth of the image",
       "-despeckle         reduce the speckles within an image",
       "-display server    display image to this X server",
       "-dispose method    GIF disposal method",
@@ -692,6 +694,18 @@ int main(int argc,char **argv)
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
                   (void) CloneString(&image_info->density,argv[i]);
+                }
+              break;
+            }
+          if (LocaleNCompare("depth",option+1,3) == 0)
+            {
+              image_info->depth=QuantumDepth;
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing image depth",option);
+                  image_info->depth=atoi(argv[i]);
                 }
               break;
             }
