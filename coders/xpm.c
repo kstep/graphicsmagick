@@ -267,12 +267,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   if ((count != 4) || (width > 2) || (image->columns == 0) ||
       (image->rows == 0) || (image->colors == 0))
-    {
-      for (i=0; textlist[i] != (char *) NULL; i++)
-        LiberateMemory((void **) &textlist[i]);
-      LiberateMemory((void **) &textlist);
-      ThrowReaderException(CorruptImageWarning,"Not a XPM image file",image)
-    }
+    ThrowReaderException(CorruptImageWarning,"Not a XPM image file",image)
   image->depth=8;
   /*
     Remove unquoted characters.
