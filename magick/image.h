@@ -60,7 +60,7 @@ typedef unsigned int Quantum;
 #define PixelIntensity(pixel) ((unsigned long) \
   ((9798.0*(pixel)->red+19235.0*(pixel)->green+3735.0*(pixel)->blue)/32768.0))
 #define PixelIntensityToQuantum(pixel) ((Quantum) \
-  ((9798L*(pixel)->red+19235L*(pixel)->green+3735L*(pixel)->blue)/32768L))
+  ((9798.0*(pixel)->red+19235.0*(pixel)->green+3735.0*(pixel)->blue)/32768.0))
 #define TransparentOpacity  MaxRGB
 /*
   Deprecated defines.
