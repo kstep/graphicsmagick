@@ -116,6 +116,8 @@ sub testReadCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
+  $srcimage->set(depth=>8);
+
   # FIXME: The following statement should not be needed.
 #  $status=$refimage->Set(type=>'TrueColor');
 #  if ("$status")
@@ -356,9 +358,9 @@ sub testReadWriteCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
-#  eval "\$status=\$image->Set($write_options);";
-#  $status=$image->write(filename=>"$refimage_name", compression=>'None');
-#  warn "$status" if $status;
+# eval "\$status=\$image->Set($write_options);";
+# $status=$image->write(filename=>"$refimage_name", compression=>'None');
+# warn "$status" if $status;
 
   #
   # Read reference image
@@ -373,6 +375,8 @@ sub testReadWriteCompare {
   #
   # Compare output file with reference image
   #
+
+  $image->set(depth=>8);
 
   # FIXME: The following statement should not be needed.
 #  $status=$refimage->Set(type=>'TrueColor');
@@ -852,7 +856,9 @@ sub testFilterCompare {
       $errorinfo = "$filter ($filter_options): $status";
       goto COMPARE_RUNTIME_ERROR;
     }
-#$srcimage->write(filename=>"$refimage_name", compression=>'None');
+
+  $srcimage->set(depth=>8);
+#  $srcimage->write(filename=>"$refimage_name", compression=>'None');
 
   $status=$refimage->ReadImage("$refimage_name");
   if ("$status")

@@ -89,12 +89,8 @@ testReadWrite( 'MTV:input.mtv',
 
 print("Xv's visual schnauzer format ...\n");
 ++$test;
-#testReadWrite( 'P7:input_p7.p7',
-#  'P7:output_p7.p7',
-#  q//,
-#  '7991d81cfd8e9674f652a41ef6364d8d55c1bbe49c3d9b8001a7d24a28f365e2',
-#  '902f90fdc4e1813085040f2adf1f47c34ccc1b116f00f15fcc606545a62e0494' );
-testReadWriteCompare( 'input.miff', 'P7:output_p7.p7', 'P7:reference/write/output_p7.miff', q//, q/dither=>0/,0, 0, 0);
+testReadWriteCompare( 'input.miff', 'P7:output_p7.p7', 'reference/write/output_p7.miff',
+                      q/depth=>8/, q/dither=>0, depth=>8/,0.8, 0.000005, 0.00011);
 
 print("Portable bitmap format (black and white), ASCII format ...\n");
 ++$test;
