@@ -98,16 +98,18 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 <strong>composite</strong> composite images to create new images.
+<p><em>composite</em> is the base image and <em>image</em> contains the changes.
+<em>composited</em> is the result, and normally has the same dimensions
+as <em>composite</em>.
+<br>&nbsp;<br>
 <p>
-The optional <strong>mask</strong> can be used to provide matte information for
-<strong>composite</strong>
+The optional <em>mask</em> can be used to provide matte information for
+<em>composite</em>
 when it has none or if you want a different mask. A mask image is typically
-grayscale and the same size as <strong>composite</strong>. If the image is not grayscale,
+grayscale and the same size as <strong>composite</strong>. If <em>mask</em> is
+not grayscale,
 it is converted to grayscale and the resulting intensities are used as
 matte information.
-<p>
-If <em>composited</em> already exists, you will be prompted as to whether it
-should be overwritten.
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -127,7 +129,7 @@ To composite an image of a cockatoo with a perch, use:
 <p>
 To compute the difference between images in a series, use:
 <pre>
-    composite -compose difference series.1 series.2 difference.miff
+    composite -compose difference series.2 series.1 difference.miff
 </pre>
 <p>
 To composite an image of a cockatoo with a perch starting at location (100,150),
@@ -146,8 +148,8 @@ To tile a logo across your image of a cockatoo, use
 To composite a red, green, and blue color plane into a single composite image,
 try
 <pre>
-    composite -compose CopyGreen red.png green.png red-green.png
-    composite -compose CopyBlue red-green.png blue.png composite.png
+    composite -compose CopyGreen green.png red.png red-green.png
+    composite -compose CopyBlue blue.png red-green.png composite.png
 </pre>
 </td></tr></table>
      <p>

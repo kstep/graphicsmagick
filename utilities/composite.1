@@ -9,16 +9,18 @@ composite - composite images together.
 .SH DESCRIPTION
 
 \fBcomposite\fP composite images to create new images.
+\fIcomposite\fP is the base image and \fIimage\fP contains the changes.
+\fIcomposited\fP is the result, and normally has the same dimensions
+as \fIcomposite\fP.
 
-The optional \fBmask\fP can be used to provide matte information for
-\fBcomposite\fP
+
+The optional \fImask\fP can be used to provide matte information for
+\fIcomposite\fP
 when it has none or if you want a different mask. A mask image is typically
-grayscale and the same size as \fBcomposite\fP. If the image is not grayscale,
+grayscale and the same size as \fBcomposite\fP. If \fImask\fP is
+not grayscale,
 it is converted to grayscale and the resulting intensities are used as
 matte information.
-
-If \fIcomposited\fP already exists, you will be prompted as to whether it
-should be overwritten.
 .SH EXAMPLES
 
 To composite an image of a cockatoo with a perch, use:
@@ -27,7 +29,7 @@ To composite an image of a cockatoo with a perch, use:
 
 To compute the difference between images in a series, use:
 
-    composite -compose difference series.1 series.2
+    composite -compose difference series.2 series.1
               difference.miff
 
 To composite an image of a cockatoo with a perch starting at location (100,150),
@@ -45,9 +47,9 @@ To tile a logo across your image of a cockatoo, use
 To composite a red, green, and blue color plane into a single composite image,
 try
 
-    composite -compose CopyGreen red.png green.png
+    composite -compose CopyGreen green.png red.png
               red-green.png
-    composite -compose CopyBlue red-green.png blue.png
+    composite -compose CopyBlue blue.png red-green.png 
               composite.png
 .SH OPTIONS
 
