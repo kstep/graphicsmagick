@@ -105,7 +105,6 @@ endif
 CHECK_BLOB_FORMATS = \
 	AVS \
 	BMP \
-	BMP24 \
 	CMYK \
 	DIB \
 	EPT \
@@ -131,7 +130,6 @@ CHECK_BLOB_FORMATS = \
 	PCX \
 	PGM \
 	PICT \
-	PICT24 \
 	$(PNG) \
 	PNM \
 	PPM \
