@@ -18,9 +18,9 @@ extern "C" {
 #define _XOPEN_SOURCE_EXTENDED  1
 #endif
 
-#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
 #define fseek  fseeko
@@ -32,19 +32,24 @@ extern "C" {
 #include <locale.h>
 #include <errno.h>
 #include <math.h>
-#include <limits.h>
 #include <time.h>
+#include <limits.h>
 #include <assert.h>
 
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#if defined(HAVE_VARARGS_H)
-#  include "varargs.h"
-#endif
+#if !defined(vms) && !defined(macintosh)
 #  include <sys/types.h>
 #  include <sys/stat.h>
+#endif
+
+#if !defined(macintosh)
+#  include "magick/api.h"
+#else
+#  include "api.h"
+#endif
+
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #  include <sys/time.h>
 #  include <sys/times.h>
-#  include "magick/config.h"
 #if defined(HAVE_MMAP)
 #  include <sys/mman.h>
 #endif
@@ -55,13 +60,8 @@ extern "C" {
 #  include <sys/poll.h>
 #endif
 #else
-#if defined(WIN32)
-#  include <sys/types.h>
-#  include <sys/stat.h>
-#else
 #  include <types.h>
 #  include <stat.h>
-#endif
 #if defined(macintosh)
 #  include <SIOUX.h>
 #  include <console.h>
@@ -75,60 +75,14 @@ extern "C" {
 #else
 #  include <unistd.h>
 #endif
-
-/*
-  ImageMagick API headers
-*/
-#if defined(macintosh)
-#define HasJPEG
-#define HasPNG
-#define HasTIFF
-#define HasTTF
-#define HasZLIB
-#define HAVE_STRERROR
-#define QuantumLeap
-#endif
-
-#if defined(VMS)
-#define inline __inline
-#define HasJPEG
-#define HasPNG
-#define HasTIFF
-#define HasX11
-#define HasZLIB
-#define QuantumLeap
-#endif
-
-#if defined(WIN32)
-#define inline __inline
-#define HasJBIG
-#define HasJPEG
-#define HasLCMS
-#define HasPNG
-#define HasTIFF
-#define HasTTF
-#define HasX11
-#define HasZLIB
-#define HasBZLIB
-#define HasHDF
-#define HasFPX
-#define HAVE_MMAP
-#define HasXML
-#define HAVE_LIBXML_XMLERROR_H
-#define HAVE_FREETYPE_FREETYPE_H
-#define QuantumLeap
-#endif
-
-#if !defined(macintosh)
-#  include "magick/api.h"
-#else
-#  include "api.h"
-#endif
-
-#define MagickSignature  0xabacadab
-
 #undef index
 #undef pipe
+
+#if !defined(macintosh)
+#  include "magick/config.h"
+#else
+#  include "config.h"
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
