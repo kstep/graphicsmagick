@@ -1225,6 +1225,8 @@ then
     failed=0;
     passed=0;
     AC_CHECK_HEADER(libwmf/ipa.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    # libwmf/font.h is not installed by libwmf 0.2.2
+    AC_CHECK_HEADERS(libwmf/font.h)
     extra_libs=`libwmf-config --libs`
     AC_CHECK_LIB(wmflite,wmf_play,LIBS="-lwmflite $LIBS";LIB_WMF="-lwmflite $LIB_WMF",$extra_libs)
     AC_CHECK_LIB(wmf,wmf_api_create,LIBS="-lwmf $LIBS";LIB_WMF="-lwmf $LIB_WMF"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,$extra_libs)

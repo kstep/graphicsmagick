@@ -98,7 +98,9 @@
 #include "libwmf/api.h"
 #include "libwmf/defs.h"
 #include "libwmf/ipa.h"
+#if HAVE_LIBWMF_FONT_H
 #include "libwmf/font.h"
+#endif /* HAVE_LIBWMF_FONT_H */
 #include "libwmf/color.h"
 #include "libwmf/macro.h"
 
