@@ -79,12 +79,6 @@ extern "C" {
 #undef index
 #undef pipe
 
-#if !defined(macintosh)
-#  include "magick/config.h"
-#else
-#  include "config.h"
-#endif
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

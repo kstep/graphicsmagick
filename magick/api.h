@@ -72,9 +72,7 @@ extern "C" {
 #define MagickSignature  0xabacadab
 
 #if !defined(vms) && !defined(WIN32)
-#if defined(HAVE_CONFIG_H)
 #include "magick/config.h"
-#endif
 #include "magick/classify.h"
 #include "magick/image.h"
 #include "magick/draw.h"
@@ -93,6 +91,7 @@ extern "C" {
 #include "magick/error.h"
 #include "magick/version.h"
 #else
+#include "config.h"
 #include "classify.h"
 #include "image.h"
 #include "draw.h"
