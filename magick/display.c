@@ -5255,6 +5255,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 {
   char
     *argv[10],
+    filename[MaxTextExtent],
     geometry[MaxTextExtent],
     modulate_factors[MaxTextExtent];
 
@@ -6714,8 +6715,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      (void) strcpy((*image)->magick,"LAUNCH");
-      TemporaryFilename((*image)->filename);
+      TemporaryFilename(filename);
+      FormatString((*image)->filename,"launch:%s",filename);
       status=WriteImage(image_info,*image);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to launch image editor",
@@ -6726,7 +6727,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           XClientMessage(display,windows->image.id,windows->im_protocols,
             windows->im_next_image,CurrentTime);
         }
-      (void) remove((*image)->filename);
+      (void) remove(filename);
       XSetCursorState(display,windows,False);
       break;
     }
@@ -6789,10 +6790,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->preview_type=(PreviewType) (i+1);
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"Label","Preview");
-      TemporaryFilename((*image)->filename);
-      (void) strcpy((*image)->magick,"Preview");
+      TemporaryFilename(filename);
+      FormatString((*image)->filename,"preview:%s",filename);
       status=WriteImage(image_info,*image);
-      (void) strcpy((*image)->magick,"SHOW");
+      FormatString((*image)->filename,"show:%s",filename);
       status=WriteImage(image_info,*image);
       if (status)
         XNoticeWidget(display,windows,"Unable to show image preview",
@@ -6810,10 +6811,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"Label","Histogram");
-      TemporaryFilename((*image)->filename);
-      (void) strcpy((*image)->magick,"Histogram");
+      TemporaryFilename(filename);
+      FormatString((*image)->filename,"histogram:%s",filename);
       status=WriteImage(image_info,*image);
-      (void) strcpy((*image)->magick,"SHOW");
+      FormatString((*image)->filename,"show:%s",filename);
       status=WriteImage(image_info,*image);
       if (status)
         XNoticeWidget(display,windows,"Unable to show histogram",
@@ -6837,10 +6838,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"Label","Matte");
-      TemporaryFilename((*image)->filename);
-      (void) strcpy((*image)->magick,"Matte");
+      TemporaryFilename(filename);
+      FormatString((*image)->filename,"matte:%s",filename);
       status=WriteImage(image_info,*image);
-      (void) strcpy((*image)->magick,"SHOW");
+      FormatString((*image)->filename,"show:%s",filename);
       status=WriteImage(image_info,*image);
       if (status)
         XNoticeWidget(display,windows,"Unable to show histogram",
@@ -8601,6 +8602,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,Image *image)
 {
   char
+    filename[MaxTextExtent],
     geometry[MaxTextExtent];
 
   Image
@@ -8649,8 +8651,8 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
     Print image.
   */
   TemporaryFilename(print_image->magick_filename);
-  (void) strcpy(print_image->filename,"print:");
-  TemporaryFilename(print_image->filename+Extent("print:"));
+  TemporaryFilename(filename);
+  FormatString(print_image->filename,"print:%s",filename);
   status=WriteImage(image_info,print_image);
   DestroyImage(print_image);
   DestroyImageInfo(image_info);

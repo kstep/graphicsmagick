@@ -938,8 +938,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
       (void) QuantizeImage(&quantize_info,huffman_image);
     }
   TemporaryFilename(filename);
-  (void) strcpy(huffman_image->filename,filename);
-  (void) strcpy(huffman_image->magick,"TIFF");
+  FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
   status=WriteImage(clone_info,huffman_image);
