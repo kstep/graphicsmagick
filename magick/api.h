@@ -5,7 +5,7 @@
 
       #include <stdio.h>
       #include <time.h>
-      #include <sys/type.h>
+      #include <sys/types.h>
       #include <magick/api.h>
 
 */
