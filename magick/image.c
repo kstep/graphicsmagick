@@ -940,7 +940,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
         Allocate and copy the image colormap.
       */
       clone_image->colors=image->colors;
-      length=Max(image->colors,MaxRGB+1)*sizeof(PixelPacket);
+      length=Max(image->colors,MaxColormapSize)*sizeof(PixelPacket);
       clone_image->colormap=(PixelPacket *) AcquireMemory(length);
       if (clone_image->colormap == (PixelPacket *) NULL)
         ThrowImageException(ResourceLimitError,"Unable to clone image",

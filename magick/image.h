@@ -58,6 +58,7 @@ typedef unsigned int Quantum;
 #define Downscale(quantum)  ScaleQuantumToChar(quantum)
 #define Intensity(color)  \
   ((9798UL*(color)->red+19235UL*(color)->green+3735UL*(color)->blue)/32768UL)
+#define MaxColormapSize  65536UL
 #define MaxRGB  ((1UL << QuantumDepth)-1UL)
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB
