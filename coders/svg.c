@@ -515,11 +515,12 @@ void SVGAttributeDeclaration(void *context,const xmlChar *element,
   fullname=(xmlChar *) xmlSplitQName(parser,name,&prefix);
   if (parser->inSubset == 1)
     (void) xmlAddAttributeDecl(&parser->vctxt,svg_info->document->intSubset,
-      element,fullname,prefix,type,value,default_value,tree);
+      element,fullname,prefix,(xmlAttributeType) type,value,default_value,tree);
   else
     if (parser->inSubset == 2)
       (void) xmlAddAttributeDecl(&parser->vctxt,svg_info->document->extSubset,
-        element,fullname,prefix,type,value,default_value,tree);
+        element,fullname,prefix,(xmlAttributeType) type,value,default_value,
+        tree);
   if (prefix != NULL)
     xmlFree(prefix);
   if (fullname != NULL)
@@ -544,11 +545,11 @@ static void SVGElementDeclaration(void *context,const xmlChar *name,int type,
   parser=svg_info->parser;
   if (parser->inSubset == 1)
     (void) xmlAddElementDecl(&parser->vctxt,svg_info->document->intSubset,
-      name,type,content);
+      name,(xmlElementTypeVal) type,content);
   else
     if (parser->inSubset == 2)
       (void) xmlAddElementDecl(&parser->vctxt,svg_info->document->extSubset,
-        name,type,content);
+        name,(xmlElementTypeVal) type,content);
 }
 
 static void SVGNotationDeclaration(void *context,const xmlChar *name,

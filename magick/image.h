@@ -686,7 +686,8 @@ extern MagickExport AnnotateInfo
   *CloneAnnotateInfo(const ImageInfo *,const AnnotateInfo *);
 
 extern MagickExport char 
-  *GetImageMagick(const unsigned char *);
+  *GetImageMagick(const unsigned char *),
+  *GetMagickConfigurePath(const char *);
 
 extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);

@@ -12,8 +12,8 @@ extern "C" {
   Review these platform specific definitions.
 */
 #if defined(sgi)
-#if !defined(RGBColorDatabase)
-#define RGBColorDatabase  "/usr/lib/X11/rgb.txt"
+#if !defined(X11ConfigurePath)
+#define X11ConfigurePath  "/usr/lib/X11/rgb.txt"
 #endif
 #if !defined(ApplicationDefaults)
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
@@ -23,9 +23,6 @@ extern "C" {
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #if !defined(ApplicationDefaults)
 #define ApplicationDefaults  "/usr/X11R6/lib/X11/app-defaults/"
-#endif
-#if !defined(DelegatePath)
-#define DelegatePath  "/usr/local/share/ImageMagick/"
 #endif
 #define DirectorySeparator  "/"
 #define DirectoryListSeparator  ':'
@@ -39,11 +36,17 @@ extern "C" {
    (strchr(text,'}') != (char *) NULL) || \
    (strchr(text,'[') != (char *) NULL) || \
    (strchr(text,']') != (char *) NULL))
+#if !defined(MagickConfigurePath)
+#define MagickConfigurePath  "/usr/local/share/ImageMagick/"
+#endif
+#if !defined(MagickModulesPath)
+#define MagickModulesPath  "/usr/local/lib/ImageMagick/modules/"
+#endif
 #define PreferencesDefaults  "~/."
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
-#if !defined(RGBColorDatabase)
-#define RGBColorDatabase  "/usr/X11R6/lib/X11/rgb.txt"
+#if !defined(X11ConfigurePath)
+#define X11ConfigurePath  "/usr/X11R6/lib/X11/rgb.txt"
 #endif
 #define SetNotifyHandlers
 #define TemporaryTemplate  "magick"
@@ -51,7 +54,6 @@ extern "C" {
 
 #if defined(vms)
 #define ApplicationDefaults  "decw$system_defaults:"
-#define DelegatePath  "sys$login:"
 #define DirectorySeparator  ""
 #define DirectoryListSeparator  ';'
 #define EditorOptions  ""
@@ -63,18 +65,19 @@ extern "C" {
    (strchr(text,'{') != (char *) NULL) || \
    (strchr(text,'}') != (char *) NULL))
 #define j1(x)  x
+#define MagickConfigurePath  "sys$login:"
+#define MagickModulesPath  "sys$login:"
 #define PreferencesDefaults  "decw$user_defaults:"
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
-#if !defined(RGBColorDatabase)
-#define RGBColorDatabase  "sys$common:[sysmgr]decw$rgb.dat"
+#if !defined(X11ConfigurePath)
+#define X11ConfigurePath  "sys$common:[sysmgr]decw$rgb.dat"
 #endif
 #define SetNotifyHandlers
 #endif
 
 #if defined(macintosh)
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
-#define DelegatePath  ""
 #define DirectorySeparator  ":"
 #define DirectoryListSeparator  ';'
 #define EditorOptions ""
@@ -87,10 +90,12 @@ extern "C" {
    (strchr(text,'[') != (char *) NULL) || \
    (strchr(text,']') != (char *) NULL))
 #define j1(x)  x
+#define MagickConfigurePath  ""
+#define MagickModulesPath  ""
 #define PreferencesDefaults  "~/."
 #define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(MagickVersion);
-#if !defined(RGBColorDatabase)
-#define RGBColorDatabase  "../xlib/lib/X11/rgb.txt"
+#if !defined(X11ConfigurePath)
+#define X11ConfigurePath  "../xlib/lib/X11/rgb.txt"
 #endif
 #define SetNotifyHandlers \
   SetErrorHandler(MACErrorHandler); \
@@ -99,7 +104,6 @@ extern "C" {
 
 #if defined(WIN32)
 #define ApplicationDefaults  "c:\\ImageMagick\\"
-#define DelegatePath  "c:\\ImageMagick\\"
 #define DirectorySeparator  "\\"
 #define DirectoryListSeparator  ';'
 #define EditorOptions ""
@@ -114,11 +118,13 @@ extern "C" {
    (strchr(text,'[') != (char *) NULL) || \
    (strchr(text,']') != (char *) NULL))
 #define j1(x)  x
+#define MagickConfigurePath  "c:\\ImageMagick\\"
+#define MagickModulesPath  "c:\\ImageMagick\\"
 #define PreferencesDefaults  "~/."
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
-#if !defined(RGBColorDatabase)
-#define RGBColorDatabase  "c:\\ImageMagick\\rgb.txt"
+#if !defined(X11ConfigurePath)
+#define X11ConfigurePath  "c:\\ImageMagick\\rgb.txt"
 #endif
 #define SetNotifyHandlers \
   SetErrorHandler(NTErrorHandler); \

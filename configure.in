@@ -114,8 +114,8 @@ then
     DLLDFLAGS=-export-dynamic
     AC_SUBST(DLLDFLAGS)
   fi
-   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/modules/coders"
-  AC_DEFINE_UNQUOTED(CoderModuleDirectory,"$im_cv_x_coder_modules",Location of coder modules)
+   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/modules/"
+  AC_DEFINE_UNQUOTED(MagickModulesPath,"$im_cv_x_coder_modules",Location of coder modules)
 fi
 
 # Add configure option --enable-maintainer-mode which enables dependency
@@ -417,7 +417,7 @@ includedir="$includedir/magick"
 #
 # Find the X11 RGB database
 #
-AC_CACHE_CHECK(for X11 RGB database,im_cv_x_rgbdb,
+AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
 [# Look for the header file in a standard set of common directories.
 # Check X11 before X11Rn because it is often a symlink to the current release.
   for ac_dir in               \
@@ -453,16 +453,16 @@ AC_CACHE_CHECK(for X11 RGB database,im_cv_x_rgbdb,
   do
     if test -f "$ac_dir/X11/rgb.txt"
     then
-        im_cv_x_rgbdb="$ac_dir/X11/rgb.txt"
+        im_cv_x_configure="$ac_dir/X11/"
 	break
     elif test -f "$ac_dir/rgb.txt"
     then 
-        im_cv_x_rgbdb="$ac_dir/rgb.txt"
+        im_cv_x_configure="$ac_dir/"
         break
     fi
 
   done])
-AC_DEFINE_UNQUOTED(RGBColorDatabase,"$im_cv_x_rgbdb",Location of X11 RGB database)
+AC_DEFINE_UNQUOTED(X11ConfigurePath,"$im_cv_x_configure",Location of X11 configure files)
 
 #
 # Save initial user-tunable values
@@ -1103,8 +1103,8 @@ fi
 #
 
 # Define directory where ImageMagick/delegates.mgk lives. (default /usr/local/share)
-eval DelegatePath="${DATA_DIR}/ImageMagick/"
-AC_DEFINE_UNQUOTED(DelegatePath,"$DelegatePath",Define directory where ImageMagick/delegates.mgk lives.)
+eval MagickConfigurePath="${DATA_DIR}/ImageMagick/"
+AC_DEFINE_UNQUOTED(MagickConfigurePath,"$MagickConfigurePath",Define directory where ImageMagick/delegates.mgk lives.)
 
 # Locate delegates
 AC_PATH_PROG(BZIPDelegate, bzip2, bzip2)

@@ -236,7 +236,7 @@ static int GetKernelWidth(const double radius,const double sigma)
     width;
 
   if (radius > 0.0)
-    return(2*ceil(radius)+1);
+    return((int) (2.0*ceil(radius)+1.0));
   /*
     Determine optimal kernel radius.
   */

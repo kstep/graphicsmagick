@@ -66,9 +66,6 @@ const char
 /*
   Global declarations.
 */
-static char
-  **module_path = (char **) NULL;
-
 static ModuleAliases
   *module_aliases = (ModuleAliases *) NULL;
 
@@ -239,12 +236,6 @@ MagickExport void ExitModules(void)
         LiberateMemory((void **) &entry);
       }
       module_aliases=(ModuleAliases *) NULL;
-      /*
-        Free memory associated with module directory search list.
-      */
-      for (i=0; module_path[i]; i++)
-        LiberateMemory((void **) &module_path[i]);
-      LiberateMemory((void**) &module_path);
     }
   module_list=(ModuleInfo *) NULL;
 }
@@ -319,8 +310,8 @@ MagickExport void InitializeModules(void)
 
   char
     alias[MaxTextExtent],
-    filename[MaxTextExtent],
-    module[MaxTextExtent];
+    module[MaxTextExtent],
+    *path;
 
   FILE
     *file;
@@ -348,84 +339,49 @@ MagickExport void InitializeModules(void)
     MagickError(DelegateError,"failed to initialise module loader",
       lt_dlerror());
   /*
-    Read one or more module configuration files.
+    Read the module configuration files.
   */
-  i=0;
-  module_path=(char **) AcquireMemory((MaxPathElements+1)*sizeof(char *));
-  if (module_path == (char **) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate module path",
-      "Memory allocation failed");
-#if defined(CoderModuleDirectory)
-  module_path[i++]=AllocateString(CoderModuleDirectory);
-#endif
-  module_path[i++]=AllocateString(SetClientPath((char *) NULL));
-  FormatString(filename,"%s%s.magick",getenv("HOME") ? getenv("HOME") : "",
-    DirectorySeparator);
-  module_path[i++]=AllocateString(filename);
-  module_path[i++]=AllocateString("");
-  if (getenv("MAGICK_MODULE_PATH") != (char *) NULL)
-    {
-      /*
-        Add user specified path.
-      */
-      p=getenv("MAGICK_MODULE_PATH");
-      while (i < (MaxPathElements-1))
-      {
-        q=strchr(p,DirectoryListSeparator);
-        if (q == (char *) NULL)
-          {
-            module_path[i++]=AllocateString(p);
-            break;
-          }
-        (void) strncpy(filename,p,q-p);
-        filename[q-p]='\0';
-        module_path[i++]=AllocateString(filename);
-        p=q+1;
-      }
-    }
-  module_path[i]=(char *) NULL;
   module_aliases=(ModuleAliases *) NULL;
-  for (i=0; module_path[i]; i++)
+  path=GetMagickConfigurePath(ModuleFilename);
+  if (path == (char *) NULL)
+    return;
+  file=fopen(path,"r");
+  LiberateMemory((void **) &path);
+  if (file == (FILE*) NULL)
+    return;
+  while(!feof(file))
   {
-    FormatString(filename,"%s%s%s",module_path[i],DirectorySeparator,
-      ModuleFilename);
-    file=fopen(filename,"r");
-    if (file == (FILE*) NULL)
+    if (fscanf(file,"%s %s",alias,module) != 2)
       continue;
-    while(!feof(file))
+    match=False;
+    entry=module_aliases;
+    while (entry != (ModuleAliases *) NULL)
     {
-      if (fscanf(file,"%s %s",alias,module) != 2)
-        continue;
-      match=False;
-      entry=module_aliases;
-      while (entry != (ModuleAliases *) NULL)
-      {
-        if (LocaleCompare(entry->alias,alias) == 0)
-          {
-            match=True;
-            break;
-          }
-        entry=entry->next;
-      }
-      if (match != False)
-        continue;
-      entry=(ModuleAliases *) AcquireMemory(sizeof(ModuleAliases));
-      if (entry == (ModuleAliases*) NULL)
-        continue;
-      entry->alias=AllocateString(alias);
-      entry->module=AllocateString(module);
-      entry->next=(ModuleAliases *) NULL;
-      if (module_aliases == (ModuleAliases *) NULL)
+      if (LocaleCompare(entry->alias,alias) == 0)
         {
-          module_aliases=entry;
-          aliases=module_aliases;
-          continue;
+          match=True;
+          break;
         }
-      aliases->next=entry;
-      aliases=aliases->next;
+      entry=entry->next;
     }
-    (void) fclose(file);
+    if (match != False)
+      continue;
+    entry=(ModuleAliases *) AcquireMemory(sizeof(ModuleAliases));
+    if (entry == (ModuleAliases*) NULL)
+      continue;
+    entry->alias=AllocateString(alias);
+    entry->module=AllocateString(module);
+    entry->next=(ModuleAliases *) NULL;
+    if (module_aliases == (ModuleAliases *) NULL)
+      {
+        module_aliases=entry;
+        aliases=module_aliases;
+        continue;
+      }
+    aliases->next=entry;
+    aliases=aliases->next;
   }
+  (void) fclose(file);
   atexit(ExitModules);
 }
 
@@ -456,7 +412,8 @@ MagickExport void InitializeModules(void)
 MagickExport char **ListModules(void)
 {
   char
-    **module_list;
+    **module_list,
+    *path;
 
   DIR
     *directory;
@@ -471,47 +428,48 @@ MagickExport char **ListModules(void)
   unsigned int
     max_entries;
 
-  j=0;
   max_entries=255;
   module_list=(char **) AcquireMemory((max_entries+1)*sizeof(char *));
   if (module_list == (char **)NULL)
     return((char **) NULL);
-  module_list[j]=(char *) NULL;
-  for (i=0; module_path[i]; i++)
+  j=0;
+  *module_list=(char *) NULL;
+  path=GetMagickConfigurePath(ModuleFilename);
+  if (path == (char *) NULL)
+    return((char **) NULL);
+  path[strlen(path)-strlen(ModuleFilename)]='\0';
+  directory=opendir(path);
+  if (directory == (DIR *) NULL)
+    return((char **) NULL);;
+  entry=readdir(directory);
+  while (entry != (struct dirent *) NULL)
   {
-    directory=opendir(module_path[i]);
-    if (directory == (DIR *) NULL)
-      continue;
+    if (!GlobExpression(entry->d_name,ModuleGlobExpression))
+      {
+        entry=readdir(directory);
+        continue;
+      }
+    if (j >= max_entries)
+      {
+        max_entries<<=1;
+        ReacquireMemory((void **) &module_list,max_entries*sizeof(char *));
+        if (module_list == (char **) NULL)
+          break;
+      }
+    /*
+      Add new module name to list.
+    */
+    module_list[j]=BaseFilename(entry->d_name);
+    LocaleUpper(module_list[j]);
+    if (LocaleNCompare("IM_MOD_",module_list[j],7) == 0)
+      {
+        (void) strcpy(module_list[j],module_list[j]+10);
+        module_list[j][Extent(module_list[j])-1]='\0';
+      }
+    module_list[++j]=(char *) NULL;
     entry=readdir(directory);
-    while (entry != (struct dirent *) NULL)
-    {
-      if (!GlobExpression(entry->d_name,ModuleGlobExpression))
-        {
-          entry=readdir(directory);
-          continue;
-        }
-      if (j >= max_entries)
-        {
-          max_entries<<=1;
-          ReacquireMemory((void **) &module_list,max_entries*sizeof(char *));
-          if (module_list == (char **) NULL)
-            break;
-        }
-      /*
-        Add new module name to list.
-      */
-      module_list[j]=BaseFilename(entry->d_name);
-      LocaleUpper(module_list[j]);
-      if (LocaleNCompare("IM_MOD_",module_list[j],7) == 0)
-        {
-          (void) strcpy(module_list[j],module_list[j]+10);
-          module_list[j][Extent(module_list[j])-1]='\0';
-        }
-      module_list[++j]=(char *) NULL;
-      entry=readdir(directory);
-    }
-    (void) closedir(directory);
   }
+  (void) closedir(directory);
   return(module_list);
 }
 
@@ -543,9 +501,9 @@ MagickExport int OpenModule(const char *module)
   char
     message[MaxTextExtent],
     *module_file,
-    module_load_path[MaxTextExtent],
     module_name[MaxTextExtent],
-    name[MaxTextExtent];
+    name[MaxTextExtent],
+    *path;
 
   ModuleHandle
     handle;
@@ -579,27 +537,20 @@ MagickExport int OpenModule(const char *module)
   /*
     Load module file.
   */
+  handle=0;
   module_file=TagToModule(module_name);
-  handle=(ModuleHandle) NULL;
-  for (i=0; module_path[i]; i++)
-  {
-    /*
-      Only attempt to load module if module file exists.
-    */
-    (void) strcpy(module_load_path,module_path[i]);
-    (void) strcat(module_load_path,DirectorySeparator);
-    (void) strcat(module_load_path,module_file);
-    if (access(module_load_path,F_OK) != 0)
-      continue;
-    handle=lt_dlopen(module_load_path);
-    if (handle != 0)
-      break;
-    FormatString(message,"failed to load module \"%s\"",module_load_path);
-    MagickWarning(MissingDelegateWarning,message,lt_dlerror());
-    LiberateMemory((void **) &module_file);
-    return(False);
-  }
+  path=GetMagickConfigurePath(module_file);
+  if (path != (char *) NULL)
+    {
+      handle=lt_dlopen(path);
+      if (handle == 0)
+        {
+          FormatString(message,"failed to load module \"%s\"",path);
+          MagickWarning(MissingDelegateWarning,message,lt_dlerror());
+        }
+    }
   LiberateMemory((void **) &module_file);
+  LiberateMemory((void **) &path);
   if (handle == 0)
     return(False);
   /*
@@ -888,10 +839,7 @@ char *TagToModule(const char *tag)
     *module_name;
 
   assert(tag != (char *) NULL);
-  module_name=(char *) AcquireMemory(MaxTextExtent);
-  if (module_name == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to get module name",
-      "Memory allocation failed");
+  module_name=AllocateString("tag");
 #if !defined(_VISUALC_)
   (void) FormatString(module_name,"%s.la",tag);
   (void) LocaleLower(module_name);

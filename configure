@@ -2790,11 +2790,11 @@ subdirs=" ltdl"
     DLLDFLAGS=-export-dynamic
 
   fi
-   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/modules/coders"
+   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/modules/"
   #
 
 cat >>confdefs.h <<EOF
-#define CoderModuleDirectory "$im_cv_x_coder_modules"
+#define MagickModulesPath "$im_cv_x_coder_modules"
 EOF
 
 fi
@@ -3335,9 +3335,9 @@ includedir="$includedir/magick"
 #
 # Find the X11 RGB database
 #
-echo "configure:3021: checking for X11 RGB database" >&5
-echo $ECHO_N "checking for X11 RGB database... $ECHO_C" >&6
-if test "${im_cv_x_rgbdb+set}" = set; then
+echo "configure:3021: checking for X11 configure files" >&5
+echo $ECHO_N "checking for X11 configure files... $ECHO_C" >&6
+if test "${im_cv_x_configure+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   # Look for the header file in a standard set of common directories.
@@ -3375,22 +3375,22 @@ else
   do
     if test -f "$ac_dir/X11/rgb.txt"
     then
-        im_cv_x_rgbdb="$ac_dir/X11/rgb.txt"
+        im_cv_x_configure="$ac_dir/X11/"
 	break
     elif test -f "$ac_dir/rgb.txt"
     then
-        im_cv_x_rgbdb="$ac_dir/rgb.txt"
+        im_cv_x_configure="$ac_dir/"
         break
     fi
 
   done
 fi
-echo "configure:3070: result: $im_cv_x_rgbdb" >&5
-echo "$ECHO_T""$im_cv_x_rgbdb" >&6
+echo "configure:3070: result: $im_cv_x_configure" >&5
+echo "$ECHO_T""$im_cv_x_configure" >&6
 #
 
 cat >>confdefs.h <<EOF
-#define RGBColorDatabase "$im_cv_x_rgbdb"
+#define X11ConfigurePath "$im_cv_x_configure"
 EOF
 
 #
@@ -8734,11 +8734,11 @@ fi
 #
 
 # Define directory where ImageMagick/delegates.mgk lives. (default /usr/local/share)
-eval DelegatePath="${DATA_DIR}/ImageMagick/"
+eval MagickConfigurePath="${DATA_DIR}/ImageMagick/"
 #
 
 cat >>confdefs.h <<EOF
-#define DelegatePath "$DelegatePath"
+#define MagickConfigurePath "$MagickConfigurePath"
 EOF
 
 # Locate delegates

@@ -114,13 +114,13 @@ MagickExport void DestroyMagicInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d M a g i c C o n f i g u r a t i o n F i l e                       %
+%   R e a d M a g i c C o n f i g u r e F i l e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadMagicConfigurationFile reads the magic configuration file.  It
+%  Method ReadMagicConfigureFile reads the magic configuration file.  It
 %  contains one or tag and magic combinations to help identify which image
 %  format a particular image file or blob may be.  For example,
 %
@@ -128,23 +128,22 @@ MagickExport void DestroyMagicInfo(void)
 %    PNG     string(0,"\211PNG\r\n\032\n")
 %    TIFF    string(0,"\115\115\000\052")
 %
-%  The format of the ReadMagicConfigurationFile method is:
+%  The format of the ReadMagicConfigureFile method is:
 %
-%      unsigned int ReadMagicConfigurationFile(const char *filename)
+%      unsigned int ReadMagicConfigureFile()
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method ReadMagicConfigurationFile returns True if the
+%    o status:  Method ReadMagicConfigureFile returns True if the
 %      configuration file is parsed properly, otherwise False is returned.
 %
-%    o filename:  A pointer to a character string.
-%
 */
-static int ReadMagicConfigurationFile(const char *filename)
+static int ReadMagicConfigureFile()
 {
   char
     buffer[MaxTextExtent],
     *p,
+    *path,
     tag[MaxTextExtent];
 
   FILE
@@ -166,9 +165,15 @@ static int ReadMagicConfigurationFile(const char *filename)
   /*
     Allocate and initialize the format list.
   */
-  file=fopen(filename,"r");
-  if (file == (FILE *) NULL)
+  path=GetMagickConfigurePath(MagicFilename);
+  if (path == (char *) NULL)
     return(False);
+  file=fopen(path,"r");
+  if (file == (FILE *) NULL)
+    {
+      LiberateMemory((void **) &path);
+      return(False);
+    }
   magic_list=(MagicInfo **)
     AcquireMemory(MagicInfoListExtent*sizeof(MagicInfo *));
   if (magic_list == (MagicInfo **) NULL)
@@ -340,8 +345,8 @@ static int ReadMagicConfigurationFile(const char *filename)
     {
       char
         message[MaxTextExtent];
-            
-      FormatString(message,"%s:%d: syntax: \"%s\"\n",filename,line_number,p);
+
+      FormatString(message,"%s:%d: syntax: \"%s\"\n",path,line_number,p);
       MagickWarning(OptionWarning,message,(char *) NULL);
       continue;
     }
@@ -357,6 +362,7 @@ static int ReadMagicConfigurationFile(const char *filename)
     }
   }
   (void) fclose(file);
+  LiberateMemory((void **) &path);
   if (magic_list == (MagicInfo **) NULL)
     return(False);
   return(True);
@@ -398,34 +404,6 @@ static int ReadMagicConfigurationFile(const char *filename)
 %
 %
 */
-
-static unsigned int InitializeMagic(void)
-{
-  char
-    filename[MaxTextExtent];
-
-  unsigned int
-    status;
-
-  /*
-    Read one or more magic configuration files.
-  */
-  FormatString(filename,"%s%s%s",DelegatePath,DirectorySeparator,MagicFilename);
-  status=ReadMagicConfigurationFile(filename);
-  FormatString(filename,"%s%s%s",SetClientPath((char *) NULL),
-    DirectorySeparator,MagicFilename);
-  status|=ReadMagicConfigurationFile(filename);
-  FormatString(filename,"%s%s.magick%s",getenv("HOME") ? getenv("HOME") : "",
-    DirectorySeparator,MagicFilename);
-  status|=ReadMagicConfigurationFile(filename);
-  status|=ReadMagicConfigurationFile(MagicFilename);
-  FormatString(filename,"%s%s%s",
-    getenv("MAGICK_DELEGATE_PATH") ? getenv("MAGICK_DELEGATE_PATH") : "",
-    DirectorySeparator,MagicFilename);
-  status|=ReadMagicConfigurationFile(filename);
-  return(status);
-}
-
 MagickExport unsigned int SetImageMagic(const unsigned char *magick,
   const unsigned int length,char *magic)
 {
@@ -451,7 +429,7 @@ MagickExport unsigned int SetImageMagic(const unsigned char *magick,
       return(True);
     }
   if (magic_list == (MagicInfo **) NULL)
-    if (InitializeMagic() == False)
+    if (ReadMagicConfigureFile() == False)
       {
         MagickWarning(FileOpenWarning,"no magic configuration file found",
           MagicFilename);

@@ -22,6 +22,7 @@
 
 		<LI><A HREF="#destroymagickinfo">DestroyMagickInfo</A></LI>
 		<LI><A HREF="#getimagemagick">GetImageMagick</A></LI>
+		<LI><A HREF="#getmagickconfigurepath">GetMagickConfigurePath</A></LI>
 		<LI><A HREF="#getmagickinfo">GetMagickInfo</A></LI>
 		<LI><A HREF="#listmagickinfo">ListMagickInfo</A></LI>
 		<LI><A HREF="#magickincarnate">MagickIncarnate</A></LI>
@@ -44,6 +45,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>void  <STRONG>DestroyMagickInfo</STRONG>( void );</P>
 <P>char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick );</P>
+<P>char * <STRONG>GetMagickConfigurePath</STRONG>( const char *filename );</P>
 <P>MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *tag );</P>
 <P>void  <STRONG>ListMagickInfo</STRONG>( 
 <FONT SIZE=-1>FILE</FONT> *file );</P>
@@ -75,6 +77,30 @@ Method GetImageMagick returns a tag that matches the specified magick string.
 <p><dt><STRONG><A NAME="item_o_magick%3A">magick:</A></STRONG><BR>
 <DD>
 a character string that represents the image format we are looking for.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getmagickconfigurepath">GetMagickConfigurePath</A></H2>
+<P>Method GetMagickConfigurePath searches a number of pre-defined locations for the specified ImageMagick configuration file and returns the path.  The search order follows:</P>
+<PRE>
+           $HOME/.magick/
+           $MAGIC_HOME/
+           &lt;program directory&gt;/
+           MagickConfigurePath
+           MagickModulesPath
+           X11ConfigurePath</PRE>
+<P>The format of the GetMagickConfigurePath method is:</P>
+<blockquote>char *GetMagickConfigurePath ( const char *filename ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_path%3A">path:</A></STRONG><BR>
+<DD>
+Method GetMagickConfigurePath returns the path if the configuration file is found, otherwise 
+<FONT SIZE=-1>NULL</FONT> is returned.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_filename%3A">filename:</A></STRONG><BR>
+<DD>
+
+<FONT SIZE=-1>A</FONT> character string representing the desired configuration file.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getmagickinfo">GetMagickInfo</A></H2>
@@ -112,7 +138,7 @@ a character string that represents the image format we are looking for.
 <blockquote>MagickIncarnate ( const char *path ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_path%3A">path:</A></STRONG><BR>
+<p><dt><STRONG>path:</STRONG><BR>
 <DD>
 Specifies a pointer to the execution path of the current ImageMagick client.
 <P></P></DL></DL>

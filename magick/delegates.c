@@ -574,29 +574,23 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadDelegates reads one or more delegates from a file on disk
-%  specified by the given path and directory name.  True is returned if
-%  the delegates file is read and at least one delegate is noted.
+%  Method ReadDelegates reads the delegates configuration file.
 %
 %  The format of the ReadDelegates method is:
 %
-%      unsigned int ReadDelegates(const char *path,const char *directory)
+%      unsigned int ReadDelegates(void)
 %
 %  A description of each parameter follows:
 %
 %    o status: Method ReadDelegates returns True if at least one delegate
 %      can be read otherwise False.
 %
-%    o path:  The path component of the delegates filename.
-%
-%    o directory:  The directory component of the delegates filename.
-%
 %
 */
-static unsigned int ReadDelegates(const char *path,const char *directory)
+static unsigned int ReadDelegates(void)
 {
   char
-    filename[MaxTextExtent],
+    *path,
     text[MaxTextExtent];
 
   DelegateInfo
@@ -612,91 +606,85 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
     number_delegates;
 
   /*
-    Determine delegate filename.
-  */
-  *filename='\0';
-  if (path != (char *) NULL)
-    (void) strcat(filename,path);
-  if (directory != (char *) NULL)
-    (void) strcat(filename,directory);
-  (void) strcat(filename,DelegateFilename);
-  /*
     Read delegate file.
   */
   number_delegates=0;
-  file=fopen(filename,"r");
-  if (file != (FILE *) NULL)
-    {
-      while (fgets(text,MaxTextExtent,file) != (char *) NULL)
+  path=GetMagickConfigurePath(DelegateFilename);
+  if (path == (char *) NULL)
+    return(False);
+  file=fopen(path,"r");
+  LiberateMemory((void **) &path);
+  if (file == (FILE *) NULL)
+    return(False);
+  while (fgets(text,MaxTextExtent,file) != (char *) NULL)
+  {
+    if (*text == '#')
+      continue;
+    Strip(text);
+    if (*text == '\0')
+      continue;
+    *delegate_info.decode_tag='\0';
+    *delegate_info.encode_tag='\0';
+    for (p=text; (*p != '<') && (*p != '=') && (*p != '\0'); p++);
+    (void) strncpy(delegate_info.decode_tag,text,p-text);
+    delegate_info.decode_tag[p-text]='\0';
+    Strip(delegate_info.decode_tag);
+    delegate_info.direction=0;
+    if (*p == '<')
       {
-        if (*text == '#')
-          continue;
-        Strip(text);
-        if (*text == '\0')
-          continue;
-        *delegate_info.decode_tag='\0';
-        *delegate_info.encode_tag='\0';
-        for (p=text; (*p != '<') && (*p != '=') && (*p != '\0'); p++);
-        (void) strncpy(delegate_info.decode_tag,text,p-text);
-        delegate_info.decode_tag[p-text]='\0';
-        Strip(delegate_info.decode_tag);
-        delegate_info.direction=0;
-        if (*p == '<')
-          {
-            delegate_info.direction--;
-            p++;
-          }
-        if (*p == '=')
-          p++;
-        if (*p == '>')
-          {
-            delegate_info.direction++;
-            p++;
-          }
-        while (isspace((int) *p))
-          p++;
-        if (*p != '0')
-          (void) strcpy(delegate_info.encode_tag,p);
-        Strip(delegate_info.encode_tag);
-        delegate_info.commands=(char *) NULL;
-        while (fgets(text,MaxTextExtent,file) != (char *) NULL)
-        {
-          if (*text != '\t')
-            break;
-          Strip(text);
-          if (delegate_info.commands != (char *) NULL)
-            ReacquireMemory((void **) &delegate_info.commands,
-              (strlen(delegate_info.commands)+strlen(text)+3));
-          else
-            {
-              delegate_info.commands=(char *) AcquireMemory(strlen(text)+3);
-              if (delegate_info.commands != (char *) NULL)
-                *delegate_info.commands='\0';
-            }
-          if (delegate_info.commands == (char *) NULL)
-            break;
-          (void) strcat(delegate_info.commands,text);
-          if (delegate_info.commands[strlen(delegate_info.commands)-1] != '\\')
-            (void) strcat(delegate_info.commands,"\n");
-          else
-            delegate_info.commands[strlen(delegate_info.commands)-1]='\0';
-        }
-        if (delegate_info.commands == (char *) NULL)
-          MagickWarning(DelegateWarning,"no command for this delegate",
-            delegate_info.decode_tag);
-        else
-          {
-            /*
-              Add delegate to the delegate list.
-            */
-            Strip(delegate_info.commands);
-            (void) SetDelegateInfo(&delegate_info);
-            number_delegates++;
-            LiberateMemory((void **) &delegate_info.commands);
-          }
+        delegate_info.direction--;
+        p++;
       }
-      (void) fclose(file);
+    if (*p == '=')
+      p++;
+    if (*p == '>')
+      {
+        delegate_info.direction++;
+        p++;
+      }
+    while (isspace((int) *p))
+      p++;
+    if (*p != '0')
+      (void) strcpy(delegate_info.encode_tag,p);
+    Strip(delegate_info.encode_tag);
+    delegate_info.commands=(char *) NULL;
+    while (fgets(text,MaxTextExtent,file) != (char *) NULL)
+    {
+      if (*text != '\t')
+        break;
+      Strip(text);
+      if (delegate_info.commands != (char *) NULL)
+        ReacquireMemory((void **) &delegate_info.commands,
+          (strlen(delegate_info.commands)+strlen(text)+3));
+      else
+        {
+          delegate_info.commands=(char *) AcquireMemory(strlen(text)+3);
+          if (delegate_info.commands != (char *) NULL)
+            *delegate_info.commands='\0';
+        }
+      if (delegate_info.commands == (char *) NULL)
+        break;
+      (void) strcat(delegate_info.commands,text);
+      if (delegate_info.commands[strlen(delegate_info.commands)-1] != '\\')
+        (void) strcat(delegate_info.commands,"\n");
+      else
+        delegate_info.commands[strlen(delegate_info.commands)-1]='\0';
     }
+    if (delegate_info.commands == (char *) NULL)
+      MagickWarning(DelegateWarning,"no command for this delegate",
+        delegate_info.decode_tag);
+    else
+      {
+        /*
+          Add delegate to the delegate list.
+        */
+        Strip(delegate_info.commands);
+        (void) SetDelegateInfo(&delegate_info);
+        number_delegates++;
+        LiberateMemory((void **) &delegate_info.commands);
+      }
+  }
+  (void) fclose(file);
   return(number_delegates != 0);
 }
 
@@ -740,14 +728,9 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   if (delegate_info == (DelegateInfo *) NULL)
     {
       /*
-        Read one or more delegate configuration files.
+        Read delegate configuration file.
       */
-      (void) ReadDelegates(DelegatePath,(char *) NULL);
-      (void) ReadDelegates(SetClientPath((char *) NULL),DirectorySeparator);
-      (void) ReadDelegates(getenv("HOME"),"/.magick/");
-      (void) ReadDelegates((char *) NULL,(char *) NULL);
-      (void) ReadDelegates((char *) getenv("MAGICK_DELEGATE_PATH"),
-        DirectorySeparator);
+      (void) ReadDelegates();
       atexit(DestroyDelegateInfo);
       return(delegates);
     }

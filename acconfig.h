@@ -67,7 +67,7 @@
 #undef QuantumLeap
 
 /* Location of X11 RGB database */
-#undef RGBColorDatabase
+#undef X11ConfigurePath
 
 /* Define if you have the bzip2 library */
 #undef HasBZLIB
@@ -190,7 +190,7 @@
 #undef HAVE_PTMX_BSD
 
 /* Define directory where ImageMagick/delegates.h lives. (default /usr/local/share) */
-#undef DelegatePath
+#undef MagickConfigurePath
 
 /* Define location of 'bzip2' program */
 #undef BZIPDelegate

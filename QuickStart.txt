@@ -1,37 +1,52 @@
-Environment Variables:
+Configuration Files:
 
   ImageMagick depends on a number of external configuration files which
-  include delegates.mgk, magic.mgk, and modules.mgk.  ImageMagick looks
-  in the current working directory for these files or a well known
-  location depending on the operating system.  For example,
-  /usr/local/share/ImageMagick on Unix or c:\ImageMagick on Windows.
-  If you put ImageMagick files in a non-standard locations you can hint
-  to ImageMagick where to look with these environment variables:
+  include delegates.mgk, magic.mgk, and coders/modules.mgk.
+  ImageMagick searches in the following order, and will use the first
+  configuration file found:
 
-	MAGICK_DELEGATE_PATH	path to delegates.mgk and magic.mgk
-	MAGICK_MODULE_PATH	path to modules.mgk
+      $HOME/.magick/
+      $MAGIC_HOME/
+      <program execution path>/
+      MagickConfigurePath
+      MagickModulesPath/coders
+      X11ConfigurePath
 
-  Other useful enviroment variables include
+  Where MagickConfigurePath and MagickModulesPath are defined by the
+  configure program on Unix and default to
+  /usr/local/share/ImageMagick/.  X11ConfigurePath defines where to
+  find the X11 color database, rgb.txt.  It defaults to /usr/X11R6/lib
+  and is set to its actual path by the configure program.
 
-	MAGIGK_CACHE_THRESHOLD	megabytes of memory available to pixel cache
-	TMPDIR			path to store temporary files
-	LD_LIBRARY_PATH		path to libMagick.so
+  MagickConfigurePath, MagickModulesPath, and X11ConfigurePath are
+  defined under Win32, VMS, and Macintosh as c:\ImageMagick\, sys$login, 
+  and the current directory respectively.
+
+
+Environment Variables:
+
+  In addition to the MAGICK_HOME environment variable defined above, you may
+  find these variables useful:
+
+      MAGICK_CACHE_THRESHOLD	megabytes of memory available to pixel cache
+      TMPDIR			path to store temporary files
+      LD_LIBRARY_PATH		path to libMagick.so
 
 
 Unix/Linux/Cygwin Install:
 
   Download
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.2.3.tar.gz
+      ftp://www.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.2.3.tar.gz
 
   and type
 
-    gunzip -c ImageMagick-5.2.3.tar.gz | tar xvf -
-    cd ImageMagick-5.2.3
-    ./configure
-    make
-    make install
-    identify -verbose logo:
+      gunzip -c ImageMagick-5.2.3.tar.gz | tar xvf -
+      cd ImageMagick-5.2.3
+      ./configure
+      make
+      make install
+      identify -verbose logo:
 
   Alternatively, download the appropriate binary from
   ftp://www.wizards.dupont.com/pub/ImageMagick/binaries.
@@ -41,28 +56,28 @@ Win2K, NT, Win98, Win95 Install:
 
   Download
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/win2k/ImageMagick-win2k.zip
+      ftp://www.wizards.dupont.com/pub/ImageMagick/win2k/ImageMagick-win2k.zip
 
   and double click on it to extract the distribution.  Next, select
   File->New->Folder to create c:\ImageMagick.
 
   Use Copy/Paste/Rename to copy and rename 
 
-	ImageMagick-win2k\win2k.mgk to c:\ImageMagick\delegates.mgk
+      ImageMagick-win2k\win2k.mgk to c:\ImageMagick\delegates.mgk
 
   and
 
-	ImageMagick-win2k\magic.mgk to c:\ImageMagick\magic.mgk
+      ImageMagick-win2k\magic.mgk to c:\ImageMagick\magic.mgk
 
   Select Start->Programs->Command Prompt.  In the Command Prompt window type
 
-    cd ImageMagick-win2k
-    set MAGICK_MODULE_PATH=c:\ImageMagick-win2k
-    identify -verbose logo:
+      cd ImageMagick-win2k
+      set MAGICK_MODULE_PATH=c:\ImageMagick-win2k
+      identify -verbose logo:
 
   Alternatively, download the ImageMagick NT source
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/win2k/ImageMagick-5.2.3.zip
+      ftp://www.wizards.dupont.com/pub/ImageMagick/win2k/ImageMagick-5.2.3.zip
 
   and read README.txt for detailed instructions on compiling the ImageMagick
   source as well as additional details on ways to tell ImageMagick how to
@@ -73,19 +88,19 @@ MAC Install:
 
   Download
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-mac.sit.hqx
+      ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-mac.sit.hqx
 
   and double click on it to extract the distribution.   Move to the
   ImageMagick-5.2.3 directory and double click on the identify program
   icon.  Next, type
 
-    -verbose logo:
+      -verbose logo:
 
   in the command window and choose File->Quit to exit.
 
   Alternatively, download the ImageMagick MAC source
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-5.2.3.sit.hqx
+      ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-5.2.3.sit.hqx
 
   and double click on the Make AppleScript script to build from the source.
 
@@ -94,7 +109,7 @@ VMS Install:
 
   Type
 
-    unzip ImageMagick-5.2.3.zip
-    set default [.imagemagick]
-    @make
-    identify -verbose logo:
+      unzip ImageMagick-5.2.3.zip
+      set default [.imagemagick]
+      @make
+      identify -verbose logo:

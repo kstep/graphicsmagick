@@ -75,9 +75,6 @@
 /*
   Constant declaractions.
 */
-const char
-  *ColorDatabasseFilename = "rgb.mgk";
-
 static volatile unsigned int
   xerror_alert = False;
 
@@ -3488,12 +3485,18 @@ MagickExport Window XGetSubwindow(Display *display,Window window,int x,int y)
 MagickExport unsigned int XGetWindowColor(Display *display,char *name)
 {
   char
-    filename[MaxTextExtent];
+    colorname[MaxTextExtent],
+    *path,
+    text[MaxTextExtent];
 
   FILE
-    *database;
+    *file;
 
   int
+    blue,
+    count,
+    green,
+    red,
     x,
     y;
 
@@ -3558,45 +3561,31 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
   color.pixel=XGetPixel(ximage,0,0);
   XDestroyImage(ximage);
   /*
-    Query X server for pixel color.
+    Match color against the X color database.
   */
   XQueryColor(display,window_attributes.colormap,&color);
+  path=GetMagickConfigurePath("rgb.txt");
+  if (path == (char *) NULL)
+    return(False);
+  file=fopen(path,"r");
+  LiberateMemory((void **) &path);
+  if (file == (FILE *) NULL)
+    return(False);
   FormatString(name,"#%04x%04x%04x",color.red,color.green,color.blue);
-  FormatString(filename,"%s%s%s",SetClientPath((char *) NULL),
-    DirectorySeparator,ColorDatabasseFilename);
-  database=fopen(filename,"r");
-  if (database == (FILE *) NULL)
-    database=fopen(RGBColorDatabase,"r");
-  if (database != (FILE *) NULL)
-    {
-      char
-        colorname[MaxTextExtent],
-        text[MaxTextExtent];
-
-      int
-        blue,
-        count,
-        green,
-        red;
-
-      /*
-        Match color against the X color database.
-      */
-      while (fgets(text,MaxTextExtent,database) != (char *) NULL)
+  while (fgets(text,MaxTextExtent,file) != (char *) NULL)
+  {
+    count=sscanf(text,"%d %d %d %[^\n]\n",&red,&green,&blue,colorname);
+    if (count != 4)
+      continue;
+    if ((red == (int) XDownScale(color.red)) &&
+        (green == (int) XDownScale(color.green)) &&
+        (blue == (int) XDownScale(color.blue)))
       {
-        count=sscanf(text,"%d %d %d %[^\n]\n",&red,&green,&blue,colorname);
-        if (count != 4)
-          continue;
-        if ((red == (int) XDownScale(color.red)) &&
-            (green == (int) XDownScale(color.green)) &&
-            (blue == (int) XDownScale(color.blue)))
-          {
-            (void) strcpy(name,colorname);
-            break;
-          }
+        (void) strcpy(name,colorname);
+        break;
       }
-      (void) fclose(database);
-    }
+  }
+  (void) fclose(file);
   return(True);
 }
 
@@ -4136,12 +4125,6 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
           }
         }
         XDestroyImage(ximage);
-{
-ImageInfo *image_info;
-image_info=CloneImageInfo((ImageInfo *) NULL);
-FormatString(composite_image->filename,"miff:test.%d",id);
-WriteImage(image_info,composite_image);
-}
         if (image == (Image *) NULL)
           {
             image=composite_image;

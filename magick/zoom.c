@@ -1222,7 +1222,6 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
 
   int
     j,
-    k,
     y;
 
   register int

@@ -352,7 +352,7 @@ long ldblk;
 }
 
 #define InsertRByte(b) {BImgBuff[x]=b;x++;if(x>=ldblk) {InsertRow(BImgBuff,image->rows-y-1,image);x=0;y++;}}
-int UnpackWPG2Raster(Image *image)
+static int UnpackWPG2Raster(Image *image)
 {
 unsigned x,y,i;
 unsigned char bbuf,RunCount;
@@ -421,7 +421,8 @@ long ldblk;
  return(0);
 }
 
-Image *ExtractPostscript(Image *image,const ImageInfo *image_info,long PS_Offset,long PS_Size)
+static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
+  long PS_Offset,long PS_Size)
 {
 /*char Filename[MaxTextExtent];*/
 FILE *f;

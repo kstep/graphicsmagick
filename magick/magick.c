@@ -160,6 +160,80 @@ MagickExport char *GetImageMagick(const unsigned char *magick)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t M a g i c k C o n f i g u r e P a t h                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetMagickConfigurePath searches a number of pre-defined locations
+%  for the specified ImageMagick configuration file and returns the path.
+%  The search order follows:
+%
+%             $HOME/.magick/
+%             $MAGIC_HOME/
+%             <program directory>/
+%             MagickConfigurePath
+%             MagickModulesPath/coders
+%             X11ConfigurePath
+%
+%  The format of the GetMagickConfigurePath method is:
+%
+%      char *GetMagickConfigurePath(const char *filename)
+%
+%  A description of each parameter follows:
+%
+%    o path:  Method GetMagickConfigurePath returns the path if the
+%      configuration file is found, otherwise NULL is returned.
+%
+%    o filename: A character string representing the desired configuration
+%      file.
+%
+%
+*/
+MagickExport char *GetMagickConfigurePath(const char *filename)
+{
+  char
+    *path;
+
+  path=AllocateString(filename);
+  if (getenv("HOME") != (char *) NULL)
+    {
+      FormatString(path,"%s%s.magick%s%s",getenv("HOME"),
+        DirectorySeparator,DirectorySeparator,filename);
+      if (IsAccessible(path))
+        return(path);
+    }
+  if (getenv("MAGIGK_HOME") != (char *) NULL)
+    {
+      FormatString(path,"%s%s%s",getenv("MAGIGK_HOME"),DirectorySeparator,
+        filename);
+      if (IsAccessible(path))
+        return(path);
+    }
+  FormatString(path,"%s%s%s",SetClientPath((char *) NULL),DirectorySeparator,
+    filename);
+  if (IsAccessible(path))
+    return(path);
+  FormatString(path,"%s%s",MagickConfigurePath,filename);
+  if (IsAccessible(path))
+    return(path);
+  FormatString(path,"%scoders%s%s",MagickModulesPath,DirectorySeparator,
+    filename);
+  if (IsAccessible(path))
+    return(path);
+  FormatString(path,"%s%s",X11ConfigurePath,filename);
+  if (IsAccessible(path))
+    return(path);
+  LiberateMemory((void **) &path);
+  return((char *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t M a g i c k I n f o                                                 %
 %                                                                             %
 %                                                                             %

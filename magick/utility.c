@@ -1202,10 +1202,11 @@ MagickExport char **ListColors(const char *pattern,int *number_colors)
     color[MaxTextExtent],
     filename[MaxTextExtent],
     **colorlist,
+    *path,
     text[MaxTextExtent];
 
   FILE
-    *database;
+    *file;
 
   int
     blue,
@@ -1229,12 +1230,14 @@ MagickExport char **ListColors(const char *pattern,int *number_colors)
     Open database.
   */
   *number_colors=0;
-  FormatString(filename,"%s%s%s",SetClientPath((char *) NULL),
-    DirectorySeparator,"rgb.txt");
-  database=fopen(filename,"r");
-  if (database == (FILE *) NULL)
-     database=fopen(RGBColorDatabase,"r");
-  if (database == (FILE *) NULL)
+  file=(FILE *) NULL;
+  path=GetMagickConfigurePath("rgb.txt");
+  if (path != (char *) NULL)
+    {
+      file=fopen(path,"r");
+      LiberateMemory((void **) &path);
+    }
+  if (file == (FILE *) NULL)
     {
       register const ColorlistInfo
         *p;
@@ -1254,7 +1257,7 @@ MagickExport char **ListColors(const char *pattern,int *number_colors)
           }
       return(colorlist);
     }
-  while (fgets(text,MaxTextExtent,database) != (char *) NULL)
+  while (fgets(text,MaxTextExtent,file) != (char *) NULL)
   {
     count=sscanf(text,"%d %d %d %[^\n]\n",&red,&green,&blue,color);
     if (count != 4)
@@ -1267,7 +1270,7 @@ MagickExport char **ListColors(const char *pattern,int *number_colors)
             ReacquireMemory((void **) &colorlist,max_colors*sizeof(char *));
             if (colorlist == (char **) NULL)
               {
-                (void) fclose(database);
+                (void) fclose(file);
                 return((char **) NULL);
               }
           }
@@ -1278,7 +1281,7 @@ MagickExport char **ListColors(const char *pattern,int *number_colors)
         (*number_colors)++;
       }
   }
-  (void) fclose(database);
+  (void) fclose(file);
   /*
     Sort colorlist in ascending order.
   */
@@ -2089,7 +2092,7 @@ MagickExport char *SetClientName(const char *name)
 MagickExport char *SetClientPath(const char *path)
 {
   static char
-    client_path[MaxTextExtent] = DelegatePath;
+    client_path[MaxTextExtent] = MagickConfigurePath;
 
   if (path == (char *) NULL)
     return(client_path);

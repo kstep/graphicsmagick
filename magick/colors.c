@@ -1913,8 +1913,14 @@ MagickExport unsigned int IsPseudoClass(Image *image)
 MagickExport unsigned int QueryColorDatabase(const char *target,
   PixelPacket *color)
 {
+  char
+    colorname[MaxTextExtent],
+    *path,
+    text[MaxTextExtent];
+
   int
     blue,
+    count,
     green,
     left,
     mid,
@@ -1924,6 +1930,9 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
 
   register int
     i;
+
+  FILE
+    *file;
 
   /*
     Initialize color return value.
@@ -2034,7 +2043,7 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
       return(True);
     }
   /*
-    Search our internal X color database.
+    Search our internal color database.
   */
   left=0;
   right=NumberXColors-2;
@@ -2107,44 +2116,32 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
     color->opacity=OpaqueOpacity;
     return(status);
   }
-#else
-  {
-    char
-      colorname[MaxTextExtent],
-      text[MaxTextExtent];
-
-    int
-      count;
-
-    static FILE
-      *database = (FILE *) NULL;
-
-    /*
-      Match color against the X color database.
-    */
-    if (database == (FILE *) NULL)
-      database=fopen(RGBColorDatabase,"r");
-    if (database != (FILE *) NULL)
-      {
-        (void) rewind(database);
-        while (fgets(text,MaxTextExtent,database) != (char *) NULL)
-        {
-          count=sscanf(text,"%d %d %d %[^\n]\n",&red,&green,&blue,colorname);
-          if (count != 4)
-            continue;
-          if (LocaleCompare(colorname,target) == 0)
-            {
-              color->red=UpScale(red);
-              color->green=UpScale(green);
-              color->blue=UpScale(blue);
-              color->opacity=OpaqueOpacity;
-              return(True);
-            }
-        }
-      }
-    return(False);
-  }
 #endif
+  /*
+    Match color against the X color database.
+  */
+  path=GetMagickConfigurePath("rgb.txt");
+  if (path == (char *) NULL)
+    return(False);
+  file=fopen(path,"r");
+  LiberateMemory((void **) &path);  
+  if (file == (FILE *) NULL)
+    return(False);
+  while (fgets(text,MaxTextExtent,file) != (char *) NULL)
+  {
+    count=sscanf(text,"%d %d %d %[^\n]\n",&red,&green,&blue,colorname);
+    if (count != 4)
+      continue;
+    if (LocaleCompare(colorname,target) != 0)
+      continue;
+    color->red=UpScale(red);
+    color->green=UpScale(green);
+    color->blue=UpScale(blue);
+    color->opacity=OpaqueOpacity;
+    return(True);
+  }
+  (void) fclose(file);
+  return(False);
 }
 
 /*
