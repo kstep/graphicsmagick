@@ -492,7 +492,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     y;
 
   off_t
-	  offset;
+	  start,
+		stop;
 
   register const PixelPacket
     *p;
@@ -728,8 +729,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"userdict begin\n");
-    offset=TellBlob(image);
-    FormatString(buffer,"%%%%BeginData:%13d BINARY Bytes\n",0);
+    start=TellBlob(image);
+    FormatString(buffer,"%%%%BeginData:%13ld %s Bytes\n",0L,
+		  compression == NoCompression ? "ASCII" : "BINARY");
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"DisplayImage\n");
     /*
@@ -1004,14 +1006,16 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           }
         }
     (void) WriteBlobByte(image,'\n');
+    stop=TellBlob(image);
+    (void) SeekBlob(image,start,SEEK_SET);
+    FormatString(buffer,"%%%%BeginData:%13ld %s Bytes\n",(long) (stop-start+1),
+		  compression == NoCompression ? "ASCII" : "BINARY");
+    (void) WriteBlobString(image,buffer);
+    (void) SeekBlob(image,stop,SEEK_SET);
     (void) WriteBlobString(image,"%%EndData\n");
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"end\n");
     (void) WriteBlobString(image,"%%PageTrailer\n");
-    i=TellBlob(image)-offset;
-    (void) SeekBlob(image,offset,SEEK_SET);
-    FormatString(buffer,"%%%%BeginData:%13d BINARY Bytes\n",i);
-    (void) WriteBlobString(image,buffer);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
