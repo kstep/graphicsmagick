@@ -53,9 +53,6 @@ typedef struct _CacheInfo
   CacheType
     type;
 
-  unsigned int
-    persist;
-
   unsigned long
     columns,
     rows;

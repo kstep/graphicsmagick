@@ -685,8 +685,7 @@ MagickExport void DestroyCacheInfo(Cache cache)
       (void) UnmapBlob(cache_info->pixels,cache_info->length);
     case DiskCache:
     {
-      if (!cache_info->persist)
-       (void) remove(cache_info->cache_filename);
+      (void) remove(cache_info->cache_filename);
       break;
     }
     default:
@@ -1922,9 +1921,9 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
       (void) strncpy(cache_info->cache_filename,filename,MaxTextExtent-1);
       cache_info->type=DiskCache;
       cache_info->offset=(*offset);
-      cache_info->persist=True;
       if (!OpenCache(image,ReadMode))
         return(False);
+      (void) ReferenceCache(cache_info);
       *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
       return(True);
     }
@@ -1938,7 +1937,6 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   (void) strncpy(cache_info->cache_filename,filename,MaxTextExtent-1);
   cache_info->type=DiskCache;
   cache_info->offset=(*offset);
-  cache_info->persist=True;
   if (!OpenCache(clone_image,IOMode))
     return(False);
   for (y=0; y < (long) image->rows; y++)
@@ -1956,6 +1954,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
     if (!SyncImagePixels(clone_image))
       break;
   }
+  (void) ReferenceCache(cache_info);
   DestroyImage(clone_image);
   if (y < (long) image->rows)
     return(False);
