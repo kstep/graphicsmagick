@@ -214,21 +214,17 @@ void CIMDisplayView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CIMDisplayView::OnHalfsize() 
 {
-    Geometry	newGeo( 50, 50 );
-    newGeo.percent( true );
-    ScaleImage( newGeo );
+    MinifyImage( newGeo );
 }
 
 void CIMDisplayView::OnOriginalsize() 
 {
-    ScaleImage( mBaseGeo );
+    ResizeImage( mBaseGeo );
 }
 
 void CIMDisplayView::OnDoublesize() 
 {
-    Geometry	newGeo( 200, 200 );
-    newGeo.percent( true );
-    ScaleImage( newGeo );
+    MagnifyImage( newGeo );
 }
 
 void CIMDisplayView::OnResize() 
@@ -244,7 +240,7 @@ void CIMDisplayView::OnResize()
     if ( dlg.DoModal() == IDOK ) {
 	Geometry	newGeo( dlg.Width(), dlg.Height() );
 	newGeo.percent( dlg.IsPercentage() );
-	ScaleImage( newGeo );
+	ResizeImage( newGeo );
     }
 }
 
@@ -656,6 +652,75 @@ void CIMDisplayView::ScaleImage( Geometry& inGeometry )
     catch(Exception e)
     {
 	DoDisplayError("ScaleImage",e.what());
+    }
+    
+    EndWaitCursor();
+
+    UpdateTheView();
+}
+
+void CIMDisplayView::ResizeImage( Geometry& inGeometry )
+{
+    CIMDisplayDoc* pDoc = GetDocument();
+    ASSERT_VALID(pDoc);
+
+    SetupUndo();
+
+    BeginWaitCursor();
+
+    try {
+	pDoc->GetImage()->zoom( inGeometry );
+    }
+
+    catch(Exception e)
+    {
+	DoDisplayError("ResizeImage",e.what());
+    }
+    
+    EndWaitCursor();
+
+    UpdateTheView();
+}
+
+void CIMDisplayView::MagnifyImage( void )
+{
+    CIMDisplayDoc* pDoc = GetDocument();
+    ASSERT_VALID(pDoc);
+
+    SetupUndo();
+
+    BeginWaitCursor();
+
+    try {
+	pDoc->GetImage()->magify( );
+    }
+
+    catch(Exception e)
+    {
+	DoDisplayError("MagnifyImage",e.what());
+    }
+    
+    EndWaitCursor();
+
+    UpdateTheView();
+}
+
+void CIMDisplayView::MinifyImage( void )
+{
+    CIMDisplayDoc* pDoc = GetDocument();
+    ASSERT_VALID(pDoc);
+
+    SetupUndo();
+
+    BeginWaitCursor();
+
+    try {
+	pDoc->GetImage()->minify( );
+    }
+
+    catch(Exception e)
+    {
+	DoDisplayError("MinifyImage",e.what());
     }
     
     EndWaitCursor();

@@ -51,6 +51,9 @@ protected:
 	void	SetViewSize();
 	void	UpdateTheView( bool inClearTracker = true );
 	void	ScaleImage( Geometry& inGeometry );
+        void	ResizeImage( Geometry& inGeometry );
+        void    MagnifyImage( void );
+        void    MinifyImage( void );
 	void	RotateImage( double inDegrees );
 	void	SetupUndo();
 
