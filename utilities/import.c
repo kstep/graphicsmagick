@@ -19,7 +19,7 @@
 %                              July 1992                                      %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
+%  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
@@ -933,6 +933,8 @@ int main(int argc,char **argv)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
+  status=MogrifyImages(image_info,argc-1,argv,&image);
+  CatchImageException(image);
   (void) SetImageInfo(image_info,True,&image->exception);
   status=0;
   for (p=image; p != (Image *) NULL; p=p->next)

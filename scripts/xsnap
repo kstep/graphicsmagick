@@ -424,6 +424,7 @@ proc Snap {} {
   # Initialize import command.
   #
   set command import
+  set command [concat $command -depth 8]
   set option +border
   if {$snap(border)} {
     set option -border
@@ -590,8 +591,8 @@ set snap(page) Letter
 set snap(printer) lp
 set snap(scene) 0
 set snap(screen) 0
-set snap(snapshot) /tmp/snap[pid].ppm
-set snap(tile) /tmp/tile[pid].ppm
+set snap(snapshot) /tmp/snap[pid].pnm
+set snap(tile) /tmp/tile[pid].pnm
 set snap(trim) 0
 set snap(verbose) 0
 #
