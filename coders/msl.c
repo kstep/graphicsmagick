@@ -4222,7 +4222,7 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (msl_info.image == (Image **) NULL) ||
       (msl_info.attributes == (Image **) NULL) ||
       (msl_info.group_info == (MSLGroupInfo *) NULL))
-    MagickError(ResourceLimitError,"Unable to intrepret MSL image",
+    MagickError(ResourceLimitError,"Unable to interpret MSL image",
       "Memory allocation failed");
   msl_info.image_info[0]=CloneImageInfo(image_info);
   msl_info.draw_info[0]=CloneDrawInfo(image_info,(DrawInfo *) NULL);
