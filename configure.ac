@@ -313,19 +313,6 @@ AC_ARG_WITH(perl-options,
 [PERL_MAKE_OPTIONS=$withval])
 AC_SUBST(PERL_MAKE_OPTIONS)
 
-AM_CONDITIONAL(WITH_PERL, test "$with_perl" != 'no')
-with_perl_static='no'
-if test "$with_perl" != 'no' && test "$libtool_build_shared_libs" = 'no'
-then
-  with_perl_static='yes'
-fi
-with_perl_dynamic='no'
-if test "$with_perl" != 'no' && test "$libtool_build_shared_libs" = 'yes'
-then
-  with_perl_dynamic='yes'
-fi
-AM_CONDITIONAL(WITH_PERL_STATIC, test $with_perl_static = 'yes')
-AM_CONDITIONAL(WITH_PERL_DYNAMIC, test $with_perl_dynamic = 'yes')
 
 # Disable BZLIB (bzip2 library)
 AC_ARG_WITH(bzlib,
@@ -1811,7 +1798,9 @@ AC_SUBST(WMFDecodeDelegate)
 AC_SUBST(WWWDecodeDelegate)
 AC_SUBST(ZipDelegate)
 
-# Figure out what drivers Ghostscript supports (if available)
+#
+# Ghostscript related configuration.
+#
 GSColorDevice=ppmraw
 GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
@@ -1906,6 +1895,23 @@ then
         fi
     fi
 fi
+
+with_perl_static='no'
+with_perl_dynamic='no'
+if test "$have_perl" != 'no'
+then
+  if test "$with_perl" != 'no' && test "$libtool_build_shared_libs" = 'no'
+  then
+    with_perl_static='yes'
+  fi
+  if test "$with_perl" != 'no' && test "$libtool_build_shared_libs" = 'yes'
+  then
+    with_perl_dynamic='yes'
+  fi
+fi
+AM_CONDITIONAL(WITH_PERL, test "$have_perl" != 'no')
+AM_CONDITIONAL(WITH_PERL_STATIC, test $with_perl_static = 'yes')
+AM_CONDITIONAL(WITH_PERL_DYNAMIC, test $with_perl_dynamic = 'yes')
 
 # Determine path to pick up ImageMagick library from for use with building PerlMagick
 MAGICKLIB="-L${LIB_DIR} -lMagick"
