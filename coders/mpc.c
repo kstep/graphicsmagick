@@ -787,8 +787,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
-    if (image_info->ping)
-      break;
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     /*
       Attach persistent pixel cache.
     */
@@ -798,9 +799,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Proceed to next image.
     */
-    if (image_info->subrange != 0)
-      if (image->scene >= (image_info->subimage+image_info->subrange-1))
-        break;
     do
     {
       c=ReadBlobByte(image);
