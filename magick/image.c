@@ -3346,9 +3346,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   DrawInfo
     *draw_info;
 
-  ExceptionInfo
-    exception;
-
   Image
     *map_image,
     *region_image;
@@ -3579,8 +3576,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             radius=0.0;
             sigma=1.0;
             (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
-            charcoal_image=CharcoalImage(*image,radius,sigma,
-              &(*image)->exception);
+            charcoal_image=
+              CharcoalImage(*image,radius,sigma,&(*image)->exception);
             if (charcoal_image == (Image *) NULL)
               break;
             DestroyImage(*image);
@@ -4086,8 +4083,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             radius=0.0;
             sigma=1.0;
             (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
-            blur_image=GaussianBlurImage(*image,radius,sigma,
-              &(*image)->exception);
+            blur_image=
+              GaussianBlurImage(*image,radius,sigma,&(*image)->exception);
             if (blur_image == (Image *) NULL)
               break;
             DestroyImage(*image);
@@ -4234,10 +4231,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Transform image colors to match this set of colors.
             */
             (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
-            map_image=ReadImage(clone_info,&exception);
-            if (exception.severity != UndefinedException)
-              MagickWarning(exception.severity,exception.reason,
-                exception.description);
+            map_image=ReadImage(clone_info,&(*image)->exception));
             continue;
           }
         if (LocaleCompare("matte",option+1) == 0)
@@ -4324,8 +4318,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   noise_type=LaplacianNoise;
                 if (LocaleCompare("Poisson",option) == 0)
                   noise_type=PoissonNoise;
-                noisy_image=AddNoiseImage(*image,noise_type,
-                  &(*image)->exception);
+                noisy_image=
+                  AddNoiseImage(*image,noise_type,&(*image)->exception);
               }
             if (noisy_image == (Image *) NULL)
               break;
@@ -4445,10 +4439,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Add a ICM, IPTC, or generic profile to the image.
             */
             (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
-            profile=ReadImage(clone_info,&exception);
-            if (exception.severity != UndefinedException)
-              MagickWarning(exception.severity,exception.reason,
-                exception.description);
+            profile=ReadImage(clone_info,&(*image)->exception));
             if (profile == (Image *) NULL)
               continue;
             if (profile->iptc_profile.length != 0)
@@ -4861,11 +4852,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               *fill_pattern;
 
             (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
-            fill_pattern=ReadImage(clone_info,&exception);
+            fill_pattern=ReadImage(clone_info,&(*image)->exception));
             if (fill_pattern == (Image *) NULL)
               continue;
             draw_info->fill_pattern=
-              CloneImage(fill_pattern,0,0,True,&fill_pattern->exception);
+              CloneImage(fill_pattern,0,0,True,&&(*image)->exception));
             DestroyImage(fill_pattern);
             continue;
           }
