@@ -1757,7 +1757,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   /* Use ImageMagick's font map file */
   {
     char
-      *p = GetMagickConfigurePath(TypeFilename);
+      *p = GetMagickConfigurePath(TypeFilename, (FILE *) NULL );
 
     if (p != NULL)
       {
