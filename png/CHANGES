@@ -1118,13 +1118,37 @@ version 1.2.3rc6 [May 14, 2002]
   Changed "Gz" to "Gd" in projects/msvc/libpng.dsp and zlib.dsp.
   Removed leftover libpng-config "sed" script from four makefiles.
   Revised libpng-config creating script in 16 makefiles.
-version 1.2.3 [May 21, 2002]
+version 1.2.3 [May 22, 2002]
   Revised libpng-config target in makefile.cygwin.
   Removed description of png_set_mem_fn() from documentation.
   Revised makefile.freebsd.
   Minor cosmetic changes to 15 makefiles, e.g., $(DI) = $(DESTDIR)/$(INCDIR).
   Revised projects/msvc/README.txt
   Changed -lpng to -lpngNN in LDFLAGS in several makefiles.
+version 1.2.4beta1 [May 24, 2002]
+  Added libpng.pc and libpng-config to "all:" target in 16 makefiles.
+  Fixed bug in 16 makefiles: $(DESTDIR)/$(LIBPATH) to $(DESTDIR)$(LIBPATH)
+  Added missing "\" before closing double quote in makefile.gcmmx.
+  Plugged various memory leaks; added png_malloc_warn() and png_set_text_2()
+    functions.
+version 1.2.4beta2 [June 25, 2002]
+  Plugged memory leak of png_ptr->current_text (Matt Holgate).
+  Check for buffer overflow before reading CRC in pngpread.c (Warwick Allison)
+  Added -soname to the loader flags in makefile.dec, makefile.sgi, and
+    makefile.sggcc.
+  Added "test-installed" target to makefile.linux, makefile.gcmmx,
+    makefile.sgi, and makefile.sggcc.
+version 1.2.4beta3 [June 28, 2002]
+  Plugged memory leak of row_buf in pngtest.c when there is a png_error().
+  Detect buffer overflow in pngpread.c when IDAT is corrupted with extra data.
+  Added "test-installed" target to makefile.32sunu, makefile.64sunu,
+    makefile.beos, makefile.darwin, makefile.dec, makefile.macosx, 
+    makefile.solaris, makefile.hpux, makefile.hpgcc, and makefile.so9.
+version 1.2.4rc1 [July 2, 2002]
+  Added "test-installed" target to makefile.cygwin and makefile.sco.
+  Revised pnggccrd.c to be able to back out version 1.0.x via PNG_1_0_X macro.
+version 1.2.4 [July 8, 2002]
+  Changed png_warning() to png_error() when width is too large to process.
 
 Send comments/corrections/commendations to
 png-implement@ccrc.wustl.edu or to randeg@alum.rpi.edu

@@ -24,7 +24,7 @@ LDFLAGS=-L. -L$(ZLIBLIB) -lpng12 -lz -lm
 RANLIB=echo
 
 PNGMAJ = 0
-PNGMIN = 1.2.3
+PNGMIN = 1.2.4
 PNGVER = $(PNGMAJ).$(PNGMIN)
 LIBNAME = libpng12
 
@@ -39,14 +39,14 @@ BINPATH=$(prefix)/bin
 #    make install DESTDIR=/tmp/build/libpng
 #
 # If you're going to install into a temporary location
-# via DESTDIR, that location must already exist before
+# via DESTDIR, $(DESTDIR)$(prefix) must already exist before
 # you execute make install.
 DESTDIR=
 
-DB=$(DESTDIR)/$(BINPATH)
-DI=$(DESTDIR)/$(INCPATH)
-DL=$(DESTDIR)/$(LIBPATH)
-DM=$(DESTDIR)/$(MANPATH)
+DB=$(DESTDIR)$(BINPATH)
+DI=$(DESTDIR)$(INCPATH)
+DL=$(DESTDIR)$(LIBPATH)
+DM=$(DESTDIR)$(MANPATH)
 
 OBJS = png.o pngset.o pngget.o pngrutil.o pngtrans.o pngwutil.o \
 	pngread.o pngrio.o pngwio.o pngwrite.o pngrtran.o \
@@ -59,7 +59,7 @@ OBJSDLL = $(OBJS:.o=.pic.o)
 .c.pic.o:
 	$(CC) -c $(CFLAGS) -KPIC -o $@ $*.c
 
-all: libpng.a $(LIBNAME).so pngtest
+all: libpng.a $(LIBNAME).so pngtest libpng.pc libpng-config
 
 libpng.a: $(OBJS)
 	ar rc $@ $(OBJS)
@@ -94,19 +94,16 @@ pngtest: pngtest.o $(LIBNAME).so
 test: pngtest
 	./pngtest
 
-
 install-headers: png.h pngconf.h
 	-@if [ ! -d $(DI) ]; then mkdir $(DI); fi
 	-@if [ ! -d $(DI)/$(LIBNAME) ]; then mkdir $(DI)/$(LIBNAME); fi
 	-@/bin/rm -f $(DI)/png.h
 	-@/bin/rm -f $(DI)/pngconf.h
 	cp png.h pngconf.h $(DI)/$(LIBNAME)
-	chmod 644 $(DI)/$(LIBNAME)/png.h \
-	$(DI)/$(LIBNAME)/pngconf.h
+	chmod 644 $(DI)/$(LIBNAME)/png.h $(DI)/$(LIBNAME)/pngconf.h
 	-@/bin/rm -f $(DI)/png.h $(DI)/pngconf.h
 	-@/bin/rm -f $(DI)/libpng
-	(cd $(DI); ln -f -s $(LIBNAME) libpng; \
-	ln -f -s $(LIBNAME)/* .)
+	(cd $(DI); ln -f -s $(LIBNAME) libpng; ln -f -s $(LIBNAME)/* .)
 
 install-static: install-headers libpng.a
 	-@if [ ! -d $(DL) ]; then mkdir $(DL); fi
@@ -117,8 +114,7 @@ install-static: install-headers libpng.a
 
 install-shared: install-headers $(LIBNAME).so.$(PNGVER) libpng.pc
 	-@if [ ! -d $(DL) ]; then mkdir $(DL); fi
-	-@/bin/rm -f $(DL)/$(LIBNAME).so.$(PNGMAJ)* \
-	$(DL)/$(LIBNAME).so
+	-@/bin/rm -f $(DL)/$(LIBNAME).so.$(PNGMAJ)* $(DL)/$(LIBNAME).so
 	-@/bin/rm -f $(DL)/libpng.so
 	-@/bin/rm -f $(DL)/libpng.so.3
 	-@/bin/rm -f $(DL)/libpng.so.3.*
@@ -157,6 +153,20 @@ install-config: libpng-config
 	(cd $(DB); ln -sf $(LIBNAME)-config libpng-config)
 
 install: install-static install-shared install-man install-config
+
+# If you installed in $(DESTDIR), test-installed won't work until you
+# move the library to its final location.
+
+test-installed:
+	$(CC) $(CFLAGS) \
+	   `$(BINPATH)/libpng12-config --cppflags --cflags` pngtest.c \
+	   -L$(ZLIBLIB) \
+	   -o pngtesti `$(BINPATH)/libpng12-config --ldflags --libs`
+	./pngtesti pngtest.png
+
+clean:
+	/bin/rm -f *.o libpng.a pngtest pngout.png libpng.pc libpng-config \
+	$(LIBNAME).so $(LIBNAME).so.$(PNGMAJ)* pngtest-static pngtesti
 
 
 clean:
