@@ -1706,7 +1706,7 @@ fi])])
 
 # libtool.m4 - Configure libtool for the host system. -*-Autoconf-*-
 
-# serial 47 AC_PROG_LIBTOOL
+# serial 48 AC_PROG_LIBTOOL
 
 
 # AC_PROVIDE_IFELSE(MACRO-NAME, IF-PROVIDED, IF-NOT-PROVIDED)
@@ -1749,7 +1749,7 @@ define([AC_PROG_LIBTOOL], [])
 # AC_LIBTOOL_SETUP
 # ----------------
 AC_DEFUN([AC_LIBTOOL_SETUP],
-[AC_PREREQ(2.50)dnl
+[AC_PREREQ(2.56)dnl We use the new compiler based header checking in 2.56
 AC_REQUIRE([AC_ENABLE_SHARED])dnl
 AC_REQUIRE([AC_ENABLE_STATIC])dnl
 AC_REQUIRE([AC_ENABLE_FAST_INSTALL])dnl
@@ -2332,18 +2332,23 @@ AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
     ;;
 
  *)
+    # Make testring a little bigger before we do anything with it.
+    # a 1K string should be a reasonable start.
+    for i in 1 2 3 4 5 6 7 8 ; do
+      testring=$testring$testring
+    done
     # If test is not a shell built-in, we'll probably end up computing a
     # maximum length that is only half of the actual maximum length, but
     # we can't tell.
-    while (test "X"`$CONFIG_SHELL [$]0 --fallback-echo "X$testring" 2>/dev/null` \
-	       = "XX$testring") >/dev/null 2>&1 &&
-	    new_result=`expr "X$testring" : ".*" 2>&1` &&
-	    lt_cv_sys_max_cmd_len=$new_result &&
+    while (test "X"`$CONFIG_SHELL [$]0 --fallback-echo "X$testring$testring" 2>/dev/null` \
+	       = "XX$testring$testring") >/dev/null 2>&1 &&
 	    test $i != 17 # 1/2 MB should be enough
     do
       i=`expr $i + 1`
       testring=$testring$testring
     done
+    # Only check the string length outside the loop.
+    lt_cv_sys_max_cmd_len=`expr "X$testring" : ".*" 2>&1`
     testring=
     # Add a significant safety factor because C++ compilers can tack on massive
     # amounts of additional arguments before passing them to the linker.
@@ -2363,7 +2368,7 @@ fi
 # _LT_AC_CHECK_DLFCN
 # --------------------
 AC_DEFUN([_LT_AC_CHECK_DLFCN],
-[AC_CHECK_HEADERS(dlfcn.h)dnl
+[AC_CHECK_HEADERS([dlfcn.h], [], [], [AC_INCLUDES_DEFAULT])dnl
 ])# _LT_AC_CHECK_DLFCN
 
 
@@ -2833,9 +2838,13 @@ aix4* | aix5*)
   ;;
 
 amigaos*)
-  library_names_spec='$libname.ixlibrary $libname.a'
-  # Create ${libname}_ixlibrary.a entries in /sys/libs.
-  finish_eval='for lib in `ls $libdir/*.ixlibrary 2>/dev/null`; do libname=`$echo "X$lib" | $Xsed -e '\''s%^.*/\([[^/]]*\)\.ixlibrary$%\1%'\''`; test $rm /sys/libs/${libname}_ixlibrary.a; $show "cd /sys/libs && $LN_S $lib ${libname}_ixlibrary.a"; cd /sys/libs && $LN_S $lib ${libname}_ixlibrary.a || exit 1; done'
+  if test "$host_cpu" = m68k; then
+    library_names_spec='$libname.ixlibrary $libname.a'
+    # Create ${libname}_ixlibrary.a entries in /sys/libs.
+    finish_eval='for lib in `ls $libdir/*.ixlibrary 2>/dev/null`; do libname=`$echo "X$lib" | $Xsed -e '\''s%^.*/\([[^/]]*\)\.ixlibrary$%\1%'\''`; test $rm /sys/libs/${libname}_ixlibrary.a; $show "cd /sys/libs && $LN_S $lib ${libname}_ixlibrary.a"; cd /sys/libs && $LN_S $lib ${libname}_ixlibrary.a || exit 1; done'
+  else
+    dynamic_linker=no
+  fi
   ;;
 
 beos*)
@@ -3110,6 +3119,18 @@ linux*)
   # people can always --disable-shared, the test was removed, and we
   # assume the GNU/Linux dynamic linker is in use.
   dynamic_linker='GNU/Linux ld.so'
+  ;;
+
+knetbsd*-gnu)
+  version_type=linux
+  need_lib_prefix=no
+  need_version=no
+  library_names_spec='${libname}${release}${shared_ext}$versuffix ${libname}${release}${shared_ext}$major ${libname}${shared_ext}'
+  soname_spec='${libname}${release}${shared_ext}$major'
+  shlibpath_var=LD_LIBRARY_PATH
+  shlibpath_overrides_runpath=no
+  hardcode_into_libs=yes
+  dynamic_linker='GNU ld.so'
   ;;
 
 netbsd*)
@@ -3492,21 +3513,6 @@ pic_mode=ifelse($#,1,$1,default)
 ])# AC_LIBTOOL_PICMODE
 
 
-# AC_PROG_EGREP
-# -------------
-# This is predefined starting with Autoconf 2.54, so this conditional
-# definition can be removed once we require Autoconf 2.54 or later.
-m4_ifndef([AC_PROG_EGREP], [AC_DEFUN([AC_PROG_EGREP],
-[AC_CACHE_CHECK([for egrep], [ac_cv_prog_egrep],
-   [if echo a | (grep -E '(a|b)') >/dev/null 2>&1
-    then ac_cv_prog_egrep='grep -E'
-    else ac_cv_prog_egrep='egrep'
-    fi])
- EGREP=$ac_cv_prog_egrep
- AC_SUBST([EGREP])
-])])
-
-
 # AC_PATH_TOOL_PREFIX
 # -------------------
 # find a file program which can recognise shared library
@@ -3748,17 +3754,6 @@ cygwin* | mingw* | pw32*)
   ;;
 
 darwin* | rhapsody*)
-  # this will be overwritten by pass_all, but leave it in just in case
-  lt_cv_deplibs_check_method='file_magic Mach-O dynamically linked shared library'
-  lt_cv_file_magic_cmd='/usr/bin/file -L'
-  case "$host_os" in
-  rhapsody* | darwin1.[[012]])
-    lt_cv_file_magic_test_file=`/System/Library/Frameworks/System.framework/System`
-    ;;
-  *) # Darwin 1.3 on
-    lt_cv_file_magic_test_file='/usr/lib/libSystem.dylib'
-    ;;
-  esac
   lt_cv_deplibs_check_method=pass_all
   ;;
 
@@ -3801,36 +3796,27 @@ hpux10.20* | hpux11*)
   ;;
 
 irix5* | irix6* | nonstopux*)
-  case $host_os in
-  irix5* | nonstopux*)
-    # this will be overridden with pass_all, but let us keep it just in case
-    lt_cv_deplibs_check_method="file_magic ELF 32-bit MSB dynamic lib MIPS - version 1"
-    ;;
-  *)
-    case $LD in
-    *-32|*"-32 ") libmagic=32-bit;;
-    *-n32|*"-n32 ") libmagic=N32;;
-    *-64|*"-64 ") libmagic=64-bit;;
-    *) libmagic=never-match;;
-    esac
-    # this will be overridden with pass_all, but let us keep it just in case
-    lt_cv_deplibs_check_method="file_magic ELF ${libmagic} MSB mips-[[1234]] dynamic lib MIPS - version 1"
-    ;;
+  case $LD in
+  *-32|*"-32 ") libmagic=32-bit;;
+  *-n32|*"-n32 ") libmagic=N32;;
+  *-64|*"-64 ") libmagic=64-bit;;
+  *) libmagic=never-match;;
   esac
-  lt_cv_file_magic_test_file=`echo /lib${libsuff}/libc.so*`
   lt_cv_deplibs_check_method=pass_all
   ;;
 
 # This must be Linux ELF.
 linux*)
   case $host_cpu in
-  alpha* | hppa* | i*86 | ia64* | m68* | mips* | powerpc* | sparc* | s390* | sh*)
+  alpha*|hppa*|i*86|ia64*|m68*|mips*|powerpc*|sparc*|s390*|sh*)
     lt_cv_deplibs_check_method=pass_all ;;
   *)
     # glibc up to 2.1.1 does not perform some relocations on ARM
+    # this will be overridden with pass_all, but let us keep it just in case
     lt_cv_deplibs_check_method='file_magic ELF [[0-9]][[0-9]]*-bit [[LM]]SB (shared object|dynamic lib )' ;;
   esac
   lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
+  lt_cv_deplibs_check_method=pass_all
   ;;
 
 netbsd*)
@@ -3862,9 +3848,6 @@ openbsd*)
   ;;
 
 osf3* | osf4* | osf5*)
-  # this will be overridden with pass_all, but let us keep it just in case
-  lt_cv_deplibs_check_method='file_magic COFF format alpha shared library'
-  lt_cv_file_magic_test_file=/shlib/libc.so
   lt_cv_deplibs_check_method=pass_all
   ;;
 
@@ -3874,7 +3857,6 @@ sco3.2v5*)
 
 solaris*)
   lt_cv_deplibs_check_method=pass_all
-  lt_cv_file_magic_test_file=/lib/libc.so
   ;;
 
 sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
@@ -5479,7 +5461,7 @@ if test -f "$ltmain"; then
   # Now quote all the things that may contain metacharacters while being
   # careful not to overquote the AC_SUBSTed values.  We take copies of the
   # variables and quote the copies for generation of the libtool script.
-  for var in echo old_CC old_CFLAGS AR AR_FLAGS EGREP RANLIB LN_S LTCC NM SED SHELL \
+  for var in echo old_CC old_CFLAGS AR AR_FLAGS EGREP RANLIB LN_S LTCC NM SED SHELL STRIP \
     libname_spec library_names_spec soname_spec extract_expsyms_cmds \
     old_striplib striplib file_magic_cmd finish_cmds finish_eval \
     deplibs_check_method reload_flag reload_cmds need_locks \
@@ -5660,7 +5642,7 @@ LN_S=$lt_LN_S
 NM=$lt_NM
 
 # A symbol stripping program
-STRIP=$STRIP
+STRIP=$lt_STRIP
 
 # Used to examine libraries when file_magic_cmd begins "file"
 MAGIC_CMD=$MAGIC_CMD
@@ -6167,10 +6149,12 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       fi
       ;;
     amigaos*)
-      # FIXME: we need at least 68020 code to build shared libraries, but
-      # adding the `-m68020' flag to GCC prevents building anything better,
-      # like `-m68040'.
-      _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-m68020 -resident32 -malways-restore-a4'
+      if test "$host_cpu" = m68k; then
+        # FIXME: we need at least 68020 code to build shared libraries, but
+        # adding the `-m68020' flag to GCC prevents building anything better,
+        # like `-m68040'.
+        _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-m68020 -resident32 -malways-restore-a4'
+      fi
       ;;
     beos* | cygwin* | irix5* | irix6* | nonstopux* | osf3* | osf4* | osf5*)
       # PIC is the default for these OSes.
@@ -6417,10 +6401,12 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       ;;
 
     amigaos*)
-      # FIXME: we need at least 68020 code to build shared libraries, but
-      # adding the `-m68020' flag to GCC prevents building anything better,
-      # like `-m68040'.
-      _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-m68020 -resident32 -malways-restore-a4'
+      if test "$host_cpu" = m68k; then
+        # FIXME: we need at least 68020 code to build shared libraries, but
+        # adding the `-m68020' flag to GCC prevents building anything better,
+        # like `-m68040'.
+        _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-m68020 -resident32 -malways-restore-a4'
+      fi
       ;;
 
     beos* | cygwin* | irix5* | irix6* | nonstopux* | osf3* | osf4* | osf5*)
@@ -6708,9 +6694,11 @@ EOF
       ;;
 
     amigaos*)
-      _LT_AC_TAGVAR(archive_cmds, $1)='$rm $output_objdir/a2ixlibrary.data~$echo "#define NAME $libname" > $output_objdir/a2ixlibrary.data~$echo "#define LIBRARY_ID 1" >> $output_objdir/a2ixlibrary.data~$echo "#define VERSION $major" >> $output_objdir/a2ixlibrary.data~$echo "#define REVISION $revision" >> $output_objdir/a2ixlibrary.data~$AR $AR_FLAGS $lib $libobjs~$RANLIB $lib~(cd $output_objdir && a2ixlibrary -32)'
-      _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
-      _LT_AC_TAGVAR(hardcode_minus_L, $1)=yes
+      if test "$host_cpu" = m68k; then
+        _LT_AC_TAGVAR(archive_cmds, $1)='$rm $output_objdir/a2ixlibrary.data~$echo "#define NAME $libname" > $output_objdir/a2ixlibrary.data~$echo "#define LIBRARY_ID 1" >> $output_objdir/a2ixlibrary.data~$echo "#define VERSION $major" >> $output_objdir/a2ixlibrary.data~$echo "#define REVISION $revision" >> $output_objdir/a2ixlibrary.data~$AR $AR_FLAGS $lib $libobjs~$RANLIB $lib~(cd $output_objdir && a2ixlibrary -32)'
+        _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
+        _LT_AC_TAGVAR(hardcode_minus_L, $1)=yes
+      fi
 
       # Samuel A. Falvo II <kc5tja@dolphin.openprojects.net> reports
       # that the semantics of dynamic libraries on AmigaOS, at least up
@@ -6950,9 +6938,11 @@ EOF
       ;;
 
     amigaos*)
-      _LT_AC_TAGVAR(archive_cmds, $1)='$rm $output_objdir/a2ixlibrary.data~$echo "#define NAME $libname" > $output_objdir/a2ixlibrary.data~$echo "#define LIBRARY_ID 1" >> $output_objdir/a2ixlibrary.data~$echo "#define VERSION $major" >> $output_objdir/a2ixlibrary.data~$echo "#define REVISION $revision" >> $output_objdir/a2ixlibrary.data~$AR $AR_FLAGS $lib $libobjs~$RANLIB $lib~(cd $output_objdir && a2ixlibrary -32)'
-      _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
-      _LT_AC_TAGVAR(hardcode_minus_L, $1)=yes
+      if test "$host_cpu" = m68k; then
+        _LT_AC_TAGVAR(archive_cmds, $1)='$rm $output_objdir/a2ixlibrary.data~$echo "#define NAME $libname" > $output_objdir/a2ixlibrary.data~$echo "#define LIBRARY_ID 1" >> $output_objdir/a2ixlibrary.data~$echo "#define VERSION $major" >> $output_objdir/a2ixlibrary.data~$echo "#define REVISION $revision" >> $output_objdir/a2ixlibrary.data~$AR $AR_FLAGS $lib $libobjs~$RANLIB $lib~(cd $output_objdir && a2ixlibrary -32)'
+        _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
+        _LT_AC_TAGVAR(hardcode_minus_L, $1)=yes
+      fi
       # see comment about different semantics on the GNU ld section
       _LT_AC_TAGVAR(ld_shlibs, $1)=no
       ;;
@@ -7566,8 +7556,11 @@ if test "x$with_included_ltdl" != xyes; then
   AC_CHECK_HEADER([ltdl.h],
       [AC_CHECK_LIB([ltdl], [lt_dlcaller_register],
           [with_included_ltdl=no],
-          [with_included_ltdl=yes])
-  ])
+          [with_included_ltdl=yes])],
+
+      [],
+      [AC_INCLUDES_DEFAULT]
+  )
 fi
 
 if test "x$enable_ltdl_install" != xyes; then
@@ -7616,9 +7609,9 @@ AC_REQUIRE([AC_LTDL_SYS_DLOPEN_DEPLIBS])
 AC_REQUIRE([AC_LTDL_FUNC_ARGZ])
 
 AC_CHECK_HEADERS([assert.h ctype.h errno.h malloc.h memory.h stdlib.h \
-		  stdio.h unistd.h])
-AC_CHECK_HEADERS([dl.h sys/dl.h dld.h mach-o/dyld.h])
-AC_CHECK_HEADERS([string.h strings.h], [break])
+		  stdio.h unistd.h dl.h sys/dl.h dld.h mach-o/dyld.h],
+	[], [], [AC_INCLUDES_DEFAULT])
+AC_CHECK_HEADERS([string.h strings.h], [break], [], [AC_INCLUDES_DEFAULT])
 
 AC_CHECK_FUNCS([strchr index], [break])
 AC_CHECK_FUNCS([strrchr rindex], [break])
@@ -7663,11 +7656,9 @@ AC_CACHE_CHECK([whether deplibs are loaded by dlopen],
     # Assuming the user has installed a libdl from somewhere, this is true
     # If you are looking for one http://www.opendarwin.org/projects/dlcompat
     libltdl_cv_sys_dlopen_deplibs=yes
-    ;;   
-  kfreebsd*-gnu)
-    libltdl_cv_sys_dlopen_deplibs=yes
     ;;
-  gnu*)
+  gnu* | linux* | kfreebsd*-gnu | knetbsd*-gnu)
+    # GNU and its variants, using gnu ld.so (Glibc)
     libltdl_cv_sys_dlopen_deplibs=yes
     ;;
   hpux10*|hpux11*)
@@ -7681,9 +7672,6 @@ AC_CACHE_CHECK([whether deplibs are loaded by dlopen],
   irix*)
     # The case above catches anything before 6.2, and it's known that
     # at 6.2 and later dlopen does load deplibs.
-    libltdl_cv_sys_dlopen_deplibs=yes
-    ;;
-  linux*)
     libltdl_cv_sys_dlopen_deplibs=yes
     ;;
   netbsd*)
@@ -7899,15 +7887,15 @@ EOF
         if grep '^. nm_test_func ' "$ac_nlist" >/dev/null; then
 	  :
         else
-	  echo "configure: cannot find nm_test_func in $ac_nlist" >&AC_FD_CC
+	  echo "configure: cannot find nm_test_func in $ac_nlist" >&AS_MESSAGE_LOG_FD
         fi
       fi
     else
-      echo "configure: cannot run $lt_cv_sys_global_symbol_pipe" >&AC_FD_CC
+      echo "configure: cannot run $lt_cv_sys_global_symbol_pipe" >&AS_MESSAGE_LOG_FD
     fi
   else
-    echo "configure: failed program was:" >&AC_FD_CC
-    cat conftest.c >&AC_FD_CC
+    echo "configure: failed program was:" >&AS_MESSAGE_LOG_FD
+    cat conftest.c >&AS_MESSAGE_LOG_FD
   fi
   rm -rf conftest*
   ])
@@ -7943,7 +7931,7 @@ fi
 # AC_LTDL_FUNC_ARGZ
 # -----------------
 AC_DEFUN([AC_LTDL_FUNC_ARGZ],
-[AC_CHECK_HEADERS([argz.h])
+[AC_CHECK_HEADERS([argz.h], [], [], [AC_INCLUDES_DEFAULT])
 
 AC_CHECK_TYPES([error_t],
   [],

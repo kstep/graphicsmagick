@@ -402,9 +402,6 @@
 /* Command which returns total physical memory in bytes */
 #undef MAGICK_PHYSICAL_MEMORY_COMMAND
 
-/* Prefix library symbols with a common string. */
-#undef MAGICK_SYMBOL_PREFIX
-
 /* Directory where executables are installed. */
 #undef MagickBinPath
 
@@ -447,6 +444,9 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* Prefix Magick library symbols with a common string. */
+#undef PREFIX_MAGICK_SYMBOLS
 
 /* Define to the necessary symbol if this constant uses a non-standard name on
    your system. */

@@ -421,12 +421,12 @@ AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
 
 # Enable prefixing library symbols with a common string
 AC_ARG_ENABLE(symbol-prefix,
-	      [  --enable-symbol-prefix           enable prefixing library symbols with "Gm"],
+	      [  --enable-symbol-prefix  enable prefixing library symbols with "Gm"],
 	      [with_symbol_prefix=$enableval],
 	      [with_symbol_prefix='no'])
 if test "$with_symbol_prefix" != 'no'
 then
-  AC_DEFINE(MAGICK_SYMBOL_PREFIX,Gm,[Prefix library symbols with a common string.])
+  AC_DEFINE(PREFIX_MAGICK_SYMBOLS,1,[Prefix Magick library symbols with a common string.])
 fi
 
 # Number of bits in a Quantum

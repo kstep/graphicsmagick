@@ -10,6 +10,6 @@
    first (like Motorola and SPARC, unlike Intel and VAX). */
 #undef WORDS_BIGENDIAN
 
-/* Prefix library symbols with a common string. */
-#undef MAGICK_SYMBOL_PREFIX
+/* Prefix Magick library symbols with a common string. */
+#undef PREFIX_MAGICK_SYMBOLS
 

@@ -87,15 +87,25 @@ static char
 */
 typedef struct _CoderInfo
 {
+  /* Module ID tag */
   char
     *tag;
-  
+
+  /* libltdl handle */
   void
     *handle;
-  
+
+  /* Time that module was loaded */
   time_t
     load_time;
 
+  /* Address of module register function */
+  void (*register_function)(void);
+
+  /* Address of module unregister function */
+  void (*unregister_function)(void);
+
+  /* Structure validation signature */
   unsigned long
     signature;
 
@@ -347,9 +357,8 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
       (*method)(Image **,const int,char **);
 
     /* Locate module method */
-#if defined(MAGICK_SYMBOL_PREFIX)
-    FormatString(method_name,"%s%.64sImage",
-      DefineValueToString(MAGICK_SYMBOL_PREFIX),tag);
+#if defined(PREFIX_MAGICK_SYMBOLS)
+    FormatString(method_name,"Gm%.64sImage",tag);
 #else
     FormatString(method_name,"%.64sImage",tag);
 #endif
@@ -1042,9 +1051,6 @@ MagickExport unsigned int OpenModule(const char *module,
     register ModuleInfo
       *p;
 
-    void
-      (*method)(void);
-
     /*
       Assign module name from alias.
     */
@@ -1103,30 +1109,28 @@ MagickExport unsigned int OpenModule(const char *module,
     /*
       Locate and execute RegisterFORMATImage function
     */
-#if defined(MAGICK_SYMBOL_PREFIX)
-/*     { */
-/*       char */
-/*         format[MaxTextExtent]; */
-
-/*       FormatString(format,"%sRegister%%sImage", */
-/*         DefineValueToString(MAGICK_SYMBOL_PREFIX)); */
-
-/*       TagToFunctionName(module_name,format,name); */
-/*     } */
-    
-    TagToFunctionName(module_name,DefineValueToString(MAGICK_SYMBOL_PREFIX) "Register%sImage",name);
-#else
     TagToFunctionName(module_name,"Register%sImage",name);
-#endif
-    method=(void (*)(void)) lt_dlsym(handle,name);
-    if (method == (void (*)(void)) NULL)
+    coder_info->register_function=(void (*)(void)) lt_dlsym(handle,name);
+    if (coder_info->register_function == (void (*)(void)) NULL)
       {
         FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
         ThrowException(exception,ModuleError,UnableToRegisterImageFormat,
           message);
         return(False);
       }
-    method();
+    /*
+      Locate and record UnregisterFORMATImage function
+    */
+    TagToFunctionName(module_name,"Unregister%sImage",name);
+    coder_info->unregister_function=(void (*)(void)) lt_dlsym(handle,name);
+    if (coder_info->unregister_function == (void (*)(void)) NULL)
+      {
+        FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
+        ThrowException(exception,ModuleError,UnableToRegisterImageFormat,
+          message);
+        return(False);
+      }
+    coder_info->register_function();
   }
 #endif
   return(True);
@@ -1638,6 +1642,7 @@ static void TagToFilterModuleName(const char *tag, char *module_name)
 static void TagToFunctionName(const char *tag,const char *format,char *function)
 {
   char
+    extended_format[MaxTextExtent],
     function_name[MaxTextExtent];
 
   assert(tag != (const char *) NULL);
@@ -1645,7 +1650,13 @@ static void TagToFunctionName(const char *tag,const char *format,char *function)
   assert(function != (char *) NULL);
   strncpy(function_name,tag,MaxTextExtent-1);
   LocaleUpper(function_name);
-  FormatString(function,format,function_name);
+
+#if defined(PREFIX_MAGICK_SYMBOLS)
+  snprintf(extended_format,MaxTextExtent-1,"Gm%.1024s",format);
+#else
+  strncpy(extended_format,format,MaxTextExtent-1);
+#endif
+  FormatString(function,extended_format,function_name);
 }
 
 /*
@@ -1682,38 +1693,21 @@ static unsigned int UnloadModule(const CoderInfo *coder_info,
     message[MaxTextExtent],
     name[MaxTextExtent];
 
-  void
-    (*method)(void);
-
   unsigned int
     status=True;
 
-  /*
-    Locate and execute UnregisterFORMATImage function
-  */
   assert(coder_info != (const CoderInfo *) NULL);
-#if defined(MAGICK_SYMBOL_PREFIX)
-    {
-      char
-        format[MaxTextExtent];
+  assert(coder_info->unregister_function != (void (*)(void)) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
 
-      FormatString(format,"%sUnregister%%sImage",
-        DefineValueToString(MAGICK_SYMBOL_PREFIX));
+  /*
+    Invoke module unregister (UnregisterFORMATImage) function
+  */
+  coder_info->unregister_function();
 
-      TagToFunctionName(coder_info->tag,format,name);
-    }
-#else
-    TagToFunctionName(coder_info->tag,"Unregister%sImage",name);
-#endif
-  method=(void (*)(void)) lt_dlsym((ModuleHandle) coder_info->handle,name);
-  if (method == (void (*)(void)) NULL)
-    {
-      FormatString(message,"\"%.1024s: %.1024s\"",name,lt_dlerror());
-      ThrowException(exception,ModuleError,FailedToFindSymbol,message);
-      status=False;
-    }
-  else
-    method();
+  /*
+    Close module
+  */
   if(lt_dlclose((ModuleHandle) coder_info->handle))
     {
       FormatString(message,"\"%.1024s: %.1024s\"",name,lt_dlerror());

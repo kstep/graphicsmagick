@@ -12,7 +12,7 @@
 #if !defined(_MAGICK_SYMBOLS_H)
 #define _MAGICK_SYMBOLS_H
 
-#if defined(MAGICK_SYMBOL_PREFIX)
+#if defined(PREFIX_MAGICK_SYMBOLS)
 #define AccessDefinition GmAccessDefinition
 #define AcquireCacheNexus GmAcquireCacheNexus
 #define AcquireCacheView GmAcquireCacheView
@@ -911,5 +911,5 @@
 #define _MagickFatalError Gm_MagickFatalError
 #define _MagickWarning Gm_MagickWarning
 
-#endif /* defined(MAGICK_SYMBOL_PREFIX) */
+#endif /* defined(PREFIX_MAGICK_SYMBOLS) */
 #endif /* defined(_MAGICK_SYMBOLS_H) */

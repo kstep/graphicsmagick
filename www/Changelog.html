@@ -53,6 +53,25 @@
 </tr>
 </table>
 <p>
+2003-10-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/module.c (_CoderInfo): Added register_function and
+        unregister_function members to record the module's register and
+        unregister function addresses.<BR>
+        (OpenModule): Locate the module's register and unregister
+        functions and save their address to the module's CoderInfo record.
+        (UnloadModule): Invoke the module unregister function using the
+        address recorded by OpenModule().
+        (TagToFunctionName): If PREFIX_MAGICK_SYMBOLS is defined, then add
+        a "Gm" prefix to the register and unregister function names.
+  <LI> libtool: Updated libtool files to the latest CVS version.
+  <LI> configure.ac: Changed define name from MAGICK_SYMBOL_PREFIX to
+        PREFIX_MAGICK_SYMBOLS since support is not available for
+        specifying an arbitrary prefix.
+
+</UL>
+<p>
 2003-10-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
