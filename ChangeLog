@@ -1,3 +1,8 @@
+2002-11-15  Cristy  <cristy@mystic.es.dupont.com>
+  * The blob methods were enhanced to use GZip or BZip API methods to
+    compress/uncompress images (previously the external programs gunzip
+    or bunzip2 were used).
+
 2002-11-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Update to Autoconf 2.56
 
