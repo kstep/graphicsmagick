@@ -205,7 +205,7 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
     FormatString(geometry,"+50%+d",y);
     (void) CloneString(&annotate_info.geometry,geometry);
     (void) CloneString(&annotate_info.text,
-      "That which does not kill us, makes us stronger");
+      "That which does not destroy me, only makes me stronger");
     AnnotateImage(image,&annotate_info);
     if (i >= 24)
       i+=6;

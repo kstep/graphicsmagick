@@ -1,1093 +1,1229 @@
-<HTML VERSION="2.0">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+	"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
 <head>
-<TITLE>ImageMagick Animation Program for X Window System</TITLE>
-<link rev="made" href="mailto:magick@wizards.dupont.com">
-<meta name="description" content="ImageMagick, version 4.2.8, is a
-  robust collection of tools and libraries to read, write, and
-  manipulate an image in any of the more popular image formats
-  including GIF, JPEG, PNG, PDF, and Photo CD.  With ImageMagick you
-  can create GIFs dynamically making it suitable for Web applications.
-  You can also resize, rotate, sharpen, color reduce, or add special
-  effects to an image and save your completed work in the same or
-  differing image format.">
-<meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
-  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel
-  Magic, WebMagick, Web Magic, visualization, image processing,
-  software development, simulation, image, software, AniMagick,
-  Animagic, Magick++">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="ImageMagick, version 4.2.8, is a
+    robust collection of tools and libraries to read, write, and manipulate
+    an image in any of the more popular image formats including GIF, JPEG,
+    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically
+    making it suitable for Web applications.  You can also resize, rotate,
+    sharpen, color reduce, or add special effects to an image and save your
+    completed work in the same or  differing image format.">
+  <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
+    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
+    WebMagick, Web Magic, visualization, image processing, software 
+    development, simulation, image, software, AniMagick, Animagic,
+    Magick++">
+  <title>ImageMagick - X11 Image Processing and Display Package</title>
+  <link rev="made" href="mailto:magick@wizards.dupont.com">
 </head>
-<body text="#000000" link="#0062CE" vlink="#6C9EFF"
-  alink="#ff0000" background="../images/background.gif">
-<A NAME="top"></A>
+<body text="#000000" link="#0062CE" vlink="#6C9EFF" alink="#FF0000"
+  background="../images/background.gif">
+
+<a NAME="top"></a>
 <center>
-<img src="../images/animate.gif" align=bottom width=234 height=45>
+  <img SRC="../images/animate.gif" height=45 width=234 align=BOTTOM>
 </center>
-<pre>
- 
-</pre>
+
+<pre>&nbsp;</pre>
+
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Contents</font></font></font></b></td>
+</tr>
+</table>
+
+<ul>
+<li>
+<a href="#syno">Synopsis</a></li>
+
+<li>
+<a href="#desc">Description</a></li>
+
+<li>
+<a href="#exam">Examples</a></li>
+
+<li>
+<a href="#opti">Options</a></li>
+
+<li>
+<a href="#mous">Mouse Buttons</a></li>
+
+<li>
+<a href="#comm">Command Widget</a></li>
+
+<li>
+<a href="#keyb">Keyboard Accelerators</a></li>
+
+<li>
+<a href="#xres">X Resources</a></li>
+
+<li>
+<a href="#envi">Environment</a></li>
+
+<li>
+<a href="#copy">Copyright</a></li>
+
+<li>
+<a href="#ackn">Acknowledgement</a></li>
+
+<li>
+<a href="#auth">Authors</a></li>
+</ul>
 <p>
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Contents</b></big>
-  </font>
-</td></tr>
+<br>
+<dl><a NAME="syno"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Synopsis</font></font></font></b></td>
+</tr>
 </table>
 <p>
-<UL>
-<LI><A HREF="#syno">Synopsis</A>
-<LI><A HREF="#desc">Description</A>
-<LI><A HREF="#exam">Examples</A>
-<LI><A HREF="#opti">Options</A>
-<LI><A HREF="#mous">Mouse Buttons</A>
-<LI><A HREF="#comm">Command Widget</A>
-<LI><A HREF="#keyb">Keyboard Accelerators</A>
-<LI><A HREF="#xres">X Resources</A>
-<LI><A HREF="#envi">Environment</A>
-<LI><A HREF="#copy">Copyright</A>
-<LI><A HREF="#ackn">Acknowledgement</A>
-<LI><A HREF="#auth">Authors</A>
-</UL>
+<dd>
+<b>animate</b> <b>[</b> <i>options</i> <b>...]</b> <i>file</i> [ [
+<i>options</i>
+...] <i>file</i> ...]</dd>
+
+</dl>
+<i><a href="#top">Back to Contents</a></i>
 <p>
-<DL>
-<p>
-<A NAME="syno">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Synopsis</b></big>
-  </font>
-</td></tr>
+<br>
+<dl><a NAME="desc"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Description</font></font></font></b></td>
+</tr>
 </table>
 <p>
-<p>
-<DD><B>animate</B> <B>[</B> <EM>options</EM> <B>...]</B> <EM>file</EM> [ [
-<EM>options</EM> ...] <EM>file</EM> ...]
-<P>
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<p>
-<DL>
-<p>
-<A NAME="desc">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Description</b></big>
-  </font>
-</td></tr>
-</table>
-<p>
-<p>  
-<DD><B>animate</B> displays a sequence of images on any workstation
-display running an X server.  <B>animate</B> first determines the
-hardware capabilities of the workstation.  If the number of
-unique colors in an image is less than or equal to the
-number the workstation can support, the image is displayed
-in an X window.  Otherwise the number of colors in the image
-is first reduced to match the color resolution of the
-workstation before it is displayed.
-<P>
-<DD>This means that a continuous-tone 24 bits-per-pixel image
-can display on a 8 bit pseudo-color device or monochrome
-device.  In most instances the reduced color image closely
-resembles the original.  Alternatively, a monochrome or
-pseudo-color image sequence can display on a continuous-tone
-24 bits-per-pixel device.
-<P>
-<DD>To help prevent color flashing on X server visuals that have
-colormaps, <B>animate</B> creates a single colormap from the image
-sequence.  This can be rather time consuming.  You can speed
-this operation up by reducing the colors in the image before
-you `animate' them.  Use <B>mogrify</B> to color reduce the images
-to a single colormap.  See <B>mogrify(1)</B> for details.
-Alternatively, you can use a Standard Colormap; or a static,
-direct, or true color visual.  You can define a Standard
-Colormap with <EM>xstdcmap</EM>.  See <B>xstdcmap(1)</B> for details.  This
-method is recommended for colormapped X server because it
-eliminates the need to compute a global colormap.
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<p>
-<DL>
-<p>
-<A NAME="exam">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Examples</b></big>
-  </font>
-</td></tr>
-</table>
-<p>
-<p>
-<DD>To animate a set of images of a cockatoo, use:
-<p><dl>
-  <dd><tt>animate cockatoo.*</tt>
-</p></dl>
-<DD>To animate a cockatoo image sequence while using the
-Standard Colormap <i>best</i>, use:
-<p><dl>
-  <dd><tt>xstdcmap -best</tt>
-  <dd><tt>animate -map best cockatoo.*</tt>
-</p></dl>
-<DD>To animate an image of a cockatoo without a border centered
-on a backdrop, use:
-<p><dl>
-  <dd><tt>animate +borderwidth -backdrop cockatoo.*</tt>
-</p></dl>
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<p>
-<DL>
-<p>
-<A NAME="opti">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Options</b></big>
-  </font>
-</td></tr>
-</table>
-<p>
-<DD>Options are processed in command line order.  Any option you
-specify on the command line remains in effect until it is
-explicitly changed by specifying the option again with a
-different effect.
-<p>
-<DD><B>Animate</B> options can appear on the command line or in your X
-resources file. See <I>X(1)</I>. Options on the command line
-supersede values specified in your X resources file.
+<dd>
+<b>Animate</b> displays a sequence of images on any workstation display
+running an X server. <b>animate</b> first determines the hardware capabilities
+of the workstation. If the number of unique colors in an image is less
+than or equal to the number the workstation can support, the image is displayed
+in an X window. Otherwise the number of colors in the image is first reduced
+to match the color resolution of the workstation before it is displayed.</dd>
 
 <p>
-<DL>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-backdrop</B></b></big>
-  </font>
-</td></tr>
+<dd>
+This means that a continuous-tone 24 bits-per-pixel image can display on
+a 8 bit pseudo-color device or monochrome device. In most instances the
+reduced color image closely resembles the original. Alternatively, a monochrome
+or pseudo-color image sequence can display on a continuous-tone 24
+bits-per-pixel device.</dd>
+<p>
+<dd>
+To help prevent color flashing on X server visuals that have colormaps,
+<b>animate</b> creates a single colormap from the image sequence. This
+can be rather time consuming. You can speed this operation up by reducing
+the colors in the image before you `animate' them. Use <b>mogrify</b> to
+color reduce the images to a single colormap. See <b>mogrify(1)</b> for
+details. Alternatively, you can use a Standard Colormap; or a static, direct,
+or true color visual. You can define a Standard Colormap with <i>xstdcmap</i>.
+See <b>xstdcmap(1)</b> for details. This method is recommended for colormapped
+X server because it eliminates the need to compute a global colormap.</dd>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
+<p>
+<br>
+<dl><a NAME="exam"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Examples</font></font></font></b></td>
+</tr>
 </table>
-<DD>display the image centered on a backdrop.
-<P>
-<DD>This backdrop covers the entire workstation screen
-and is useful for hiding other X window activity
-while viewing the image.   The color of the backdrop
-is specified as the background color.  Refer to <A HREF="#xres">X
-Resources</A> for details.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-colormap</B> <I>type</I></b></big>
-  </font>
-</td></tr>
+<p>
+<dd>
+To animate a set of images of a cockatoo, use:</dd>
+
+<p>
+<dl>
+<dd>
+<tt>animate cockatoo.*</tt></dd>
+</dl>
+<p>
+
+<dd>
+To animate a cockatoo image sequence while using the Standard Colormap
+<i>best</i>, use:</dd>
+
+<p>
+<dl>
+<dd>
+<tt>xstdcmap -best</tt></dd>
+
+<dd>
+<tt>animate -map best cockatoo.*</tt></dd>
+</dl>
+
+<p>
+<dd>
+To animate an image of a cockatoo without a border centered on a backdrop,
+use:</dd>
+
+<p>
+<dl>
+<dd>
+<tt>animate +borderwidth -backdrop cockatoo.*</tt></dd>
+</dl>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
+<p>
+<br>
+<dl><a NAME="opti"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Options</font></font></font></b></td>
+</tr>
 </table>
-<DD>the type of colormap: <B>Shared</B> or <B>Private</B>.
-<P>
-<DD>This option only applies when the default X server
-visual is <I>PseudoColor</I> or <I>GRAYScale</I>.  Refer to <B>-visual</B>
-for more details.  By default, a shared colormap is
-allocated.  The image shares colors with other X
-clients.  Some image colors could be approximated,
-therefore your image may look very different than
-intended.  Choose <B>Private</B> and the image colors appear
-exactly as they are defined.  However, other clients
-may go <I>technicolor</I> when the image colormap is
-installed.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-colors</B> <I>value</I></b></big>
-  </font>
-</td></tr>
+<p>
+<dd>
+Options are processed in command line order. Any option you specify on
+the command line remains in effect until it is explicitly changed by specifying
+the option again with a different effect.</dd>
+<p>
+<dd>
+<b>Animate</b> options can appear on the command line or in your X resources
+file. See <i>X(1)</i>. Options on the command line supersede values specified
+in your X resources file.</dd>
+<dl>&nbsp;
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-backdrop</font></font></font></b></td>
+</tr>
 </table>
-<DD>preferred number of colors in the image.
-<P>
-<DD>The actual number of colors in the image may be less
-than your request, but never more.  Note, this is a
-color reduction option.  Images with less unique
-colors than specified with this option will have any duplicate
-or unused colors removed.
-Refer to <A HREF="../www/quantize.html">quantize</A> for
-more details.
-<P>
-Note, options <B>-dither</B>, <B>-colorspace</B>, and <B>-treedepth</B>
+
+<dd>
+display the image centered on a backdrop.</dd>
+<p>
+<dd>
+This backdrop covers the entire workstation screen and is useful for hiding
+other X window activity while viewing the image. The color of the backdrop
+is specified as the background color. Refer to <a href="#xres">X Resources</a>
+for details.</dd>
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-colormap
+<i>type</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+the type of colormap: <b>Shared</b> or <b>Private</b>.</dd>
+
+<p>
+<dd>
+This option only applies when the default X server visual is <i>PseudoColor</i>
+or <i>GRAYScale</i>. Refer to <b>-visual</b> for more details. By default,
+a shared colormap is allocated. The image shares colors with other X clients.
+Some image colors could be approximated, therefore your image may look
+very different than intended. Choose <b>Private</b> and the image colors
+appear exactly as they are defined. However, other clients may go <i>technicolor</i>
+when the image colormap is installed.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-colors
+<i>value</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+preferred number of colors in the image.</dd>
+
+<p>
+<dd>
+The actual number of colors in the image may be less than your request,
+but never more. Note, this is a color reduction option. Images with less
+unique colors than specified with this option will have any duplicate or
+unused colors removed. Refer to <a href="quantize.html">quantize</a> for
+more details.</dd>
+
+<p>Note, options <b>-dither</b>, <b>-colorspace</b>, and <b>-treedepth</b>
 affect the color reduction algorithm.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-colorspace</B> <I>value</I></b></big>
-  </font>
-</td></tr>
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-colorspace
+<i>value</i></font></font></font></b></td>
+</tr>
 </table>
-<DD>the type of colorspace: <B>GRAY</B>, <B>OHTA</B>, <B>RGB</B>,
-<B>Transparent</B>, <B>XYZ</B>, <B>YCbCr</B>, <B>YIQ</B>, <B>YPbPr</B>,
-<B>YUV</B>, or <B>CMYK</B>.
-<P>
-<DD>Color reduction, by default, takes place in the RGB
-color space.  Empirical evidence suggests that
-distances in color spaces such as YUV or YIQ
-correspond to perceptual color differences more
-closely than do distances in RGB space.  These color
-spaces may give better results when color reducing an
-image.  Refer to <A HREF="../www/quantize.html">quantize</A> for more details.
-<P>
-The <B>Transparent</B> color space behaves uniquely in that it preserves
+
+<dd>
+the type of colorspace: <b>GRAY</b>, <b>OHTA</b>, <b>RGB</b>,
+<b>Transparent</b>,
+<b>XYZ</b>, <b>YCbCr</b>, <b>YIQ</b>, <b>YPbPr</b>,
+<b>YUV</b>, or <b>CMYK</b>.</dd>
+
+<p>
+<dd>
+Color reduction, by default, takes place in the RGB color space. Empirical
+evidence suggests that distances in color spaces such as YUV or YIQ correspond
+to perceptual color differences more closely than do distances in RGB space.
+These color spaces may give better results when color reducing an image.
+Refer to <a href="quantize.html">quantize</a> for more details.</dd>
+
+<p>
+<p>The <b>Transparent</b> color space behaves uniquely in that it preserves
 the matte channel of the image if it exists.
-<P>
-The <B>-colors</B> or <B>-monochrome</B> option is required for
-this option to take effect.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-crop</B> <I>&lt;width&gt;{%}x&lt;height&gt;{%}{+-}&lt;x
-       offset&gt;{+-}&lt;y offset&gt;</I>
-     </b></big>
-  </font>
-</td></tr>
-</table>
-<DD>preferred size and location of the cropped image.
-See <I>X(1)</I> for details about the geometry
-specification.
-<P>
-<DD>To specify a percentage width or height instead,
-append <B>%</B>.  For example to crop the image by ten  
-percent on all sides of the image, use <B>-crop 10%</B>.
-<P>
-<DD>Use cropping to apply image processing options to, or
-display, a particular area of an image.
+<p>The <b>-colors</b> or <b>-monochrome</b> option is required for this
+option to take effect.
+</dl>
 <p>
-<DD>Omit the x and y offset to generate one or more subimages of a uniform size.
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-crop
+<i>&lt;width>{%}x&lt;height>{%}{+-}&lt;x offset>{+-}&lt;y offset></i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+preferred size and location of the cropped image. See <i>X(1)</i> for details
+about the geometry specification.</dd>
+
 <p>
-<DD>Use cropping to crop a particular area of an image.   Use <b>-crop
-0x0</b> to trim edges that are the background color.  Add an x and y offset
-to leave a portion of the trimmed edges with the image.
-<P>
-<DD>The equivalent X resource for this option is
-<B>cropGeometry</B> (class <B>CropGeometry</B>).  See <A HREF="#xres">X
-Resources</A> for details.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-delay</B> <I>&lt;1/100ths of a second&gt;x&lt;seconds&gt;<I></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>display the next image after pausing.
-<P>
-This option is useful for regulating the display of the
-sequence of images. <I>1/100ths of a second</I> must
-expire before the display of the next image. The
-default is 6/100th of a second between each frame of the image sequence.
-The second value is optional.  It specifies the
-number of <em>seconds</em> to pause before repeating your animation
-sequence.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-density</B> <I>&lt;width&gt;x&lt;height&gt;</I></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>vertical and horizontal resolution in pixels of the image.
-<P>
-<DD>This option specifies an image density when decoding
-a <I>PostScript</I> or Portable Document page.  The default
-is 72 pixels per inch in the horizontal and vertical
-direction.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-display</B> <I>host:display[.screen]</I></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>specifies the X server to contact; see <I>X(1)</I>.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-dither</B></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>apply Floyd/Steinberg error diffusion to the image.
-<P>
-<DD>The basic strategy of dithering is to trade intensity
-resolution for spatial resolution by averaging the
-intensities of several neighboring pixels.  Images
-which suffer from severe contouring when reducing
-colors can be improved with this option.
-<P>
-<DD>The <B>-colors</B> or <B>-monochrome</B> option is required for
-this option to take effect.
-<P>
-<DD>Use <B>+dither</B> to render Postscript without text or graphic aliasing.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-gamma</B> <I>value</I></b></big>
-  </font>
-</td></tr>
-</table>
-<DD> level of gamma correction.
-<P>
-<DD>The same color image displayed on two different
-workstations may look different due to differences in
-the display monitor.  Use gamma correction to adjust
-for this color difference.  Reasonable values extend
-from <B>0.8</B> to <B>2.3</B>.
-<P>
-<DD>You can apply separate gamma values to the red,
-green, and blue channels of the image with a gamma
-value list delineated with slashes (i.e. <B>1.7</B>,<B>2.3</B>,<B>1.2</B>).
+<dd>
+To specify a percentage width or height instead, append <b>%</b>. For example
+to crop the image by ten percent on all sides of the image, use <b>-crop
+10%</b>.</dd>
+
 <p>
-<DD>Use <b>+gamma</b> to set the image gamma level without actually adjusting
-the image pixels.  This option is useful if the image is of a known
-gamma but not set as an image attribute (e.g. PNG images).
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-geometry</B> <I>&lt;width&gt;{%}x&lt;height&gt;{%}{+-}&lt;x
-       offset&gt;{+-}&lt;yoffset&gt;{!}{&lt;}{&gt;}</I>
-     </b></big>
-  </font>
-</td></tr>
-</table>
-<DD> preferred size and location of the Image window.  See
-<I>X(1)</I> for details about the geometry specification.
-By default, the window size is the image size and the
-location is chosen by you when it is mapped.
-<P>
-<DD>By default, the width and height are maximum values.
-That is, the image is expanded or contracted to fit
-the width and height value while maintaining the
-aspect ratio of the image.  <B>Append an exclamation
-point to the geometry to force the image size to
-exactly the size you specify</B>.  For example, if you
-specify <B>640x480!</B> the image width is set to 640 pixels
-and height to 480.  If only one factor is specified,
-both the width and height assume the value.
-<P>
-<DD>To specify a percentage width or height instead,
-append <tt>%</tt>.  The image size is multiplied by the width
-and height percentages to obtain the final image
-dimensions.  To increase the size of an image, use a
-value greater than 100 (e.g. 125%).  To decrease an
-image's size, use a percentage less than 100.
-<P>
-Use <B>&gt;</B> to change the dimensions of the image <em>only</em>
-if its size exceeds the geometry specification.  <B>&lt;</B> resizes
-the image <em>only</em> if its dimensions is less than the geometry
-specification.  For example, if you specify <b>640x480&gt;</b> and the
-image size is 512x512, the image size does not change.  However, if
-the image is 1024x1024, it is resized to 640x480.
-<P>
-<DD>When displaying an image on an X server, &lt;x offset&gt;
-and &lt;y offset&gt; is relative to the root window.
-<P>
-<DD>The equivalent X resource for this option is <B>geometry</B>
-(class <B>Geometry</B>).  See <A HREF="#xres">X Resources</A> for details.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-interlace</B> <I>type</I></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>the type of interlacing scheme: <B>None</B>, <B>Line</B>, <B>Plane</B>,
-or <b>Partition</b>.  The default is <B>None</B>.
-<P>
-<DD>This option is used to specify the type of interlacing scheme for raw
-image formats such as <B>RGB</B> or <B>YUV</B>.  <B>None</B> means do not
-interlace (RGBRGBRGBRGBRGBRGB...), <B>Line</B> uses scanline interlacing
-(RRR...GGG...BBB...RRR...GGG...BBB...), and <B>Plane</B> uses plane
-interlacing (RRRRRR...GGGGGG...BBBBBB...).    <b>Partition</b> is like plane
-except the different planes are saved to individual files (e.g.  image.R,
-image.G, and image.B).
-<P>
-<DD>Use <B>Line</B>, or <B>Plane</B> to create an <B>interlaced GIF</B> 
-or <B>progressive JPEG</b> image.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-map</B> <I>type</I></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>display image using this <I>Standard Colormap</I> type.
-<P>
-<DD>Choose from these <I>Standard Colormap</I> types:
-<PRE>
-      best
-      default
-      gray
-      red
-      green
-      blue
-</PRE>
-<P>
-<DD>The <I>X server</I> must support the <I>Standard Colormap</I> you
-choose, otherwise an error occurs.  Use <B>list</B> as the type
-and <B>display</B> searches the list of colormap types in <B>top-to-bottom</B> 
-order until one is located. See <I>xstdcmap(1)</I> for
-one way of creating Standard Colormaps.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-monochrome</B></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>transform the image to black and white.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-remote</B> <I>string</I></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>execute a command in a remote display process.
-<P>
-<DD>The only command recognized at this time is the name of an image file to
-load.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-rotate</B> <I>degrees{&lt;}{&gt;}</I></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>apply Paeth image rotation to the image.
-<P>   
-<dd>Use <tt>&gt;</tt> to rotate the image </t>only</i> if its width exceeds the
-height.  <tt>&lt;</tt> rotates the image <i>only</i> if its width is less than
-the height.  For example, if you specify <tt>-90&gt;</tt> and the image size
-is 480x640, the image is not rotated by the specified angle.  However,
-if the image is 640x480, it is rotated by -90 degrees.
-<P>
-<DD>Empty triangles left over from rotating the image are
-filled with the color defined as <B>bordercolor</B> (class
-<B>borderColor</B>).  See <I>X(1)</I> for details.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-scene</B> <I>value</I></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>image scene number.
-<P>
-<DD>Use this option to specify an image sequence with a
-single filename.  See the discussion of <I>file</I> below
-for details.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-size</B> &lt;width&gt;x&lt;height>{+offset}</b></big>
-  </font>
-</td></tr>
-</table>
-<DD>width and height of the image.
-<P>
-<DD>Use this option to specify the width and height of
-raw images whose dimensions are unknown such as <B>GRAY</B>,
-<B>RGB</B>, or <B>CMYK</B>.  In addition to width and height, use
-<B>-size</B> to skip any header information in the image or tell the
-number of colors in a <B>MAP</B> image file, (e.g. -size 640x512+256).
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-title</B> <I>string</I></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>assign a title to the displayed image.
-<P>
-<DD>Use this option to assign a specific title to the image.  This is
-assigned to the image window and is typically displayed in the window
-title bar.  Optionally you can include the image
-filename, type, width, height, or other image attribute by
-embedding special format characters:
+<dd>
+Use cropping to apply image processing options to, or display, a particular
+area of an image.</dd>
+
 <p>
-<dd><pre>
-    %b   file size
-    %d   directory
-    %e   filename extension
-    %f   filename
-    %h   height
-    %m   magick
-    %p   page number
-    %s   scene number
-    %t   top of filename
-    %w   width
-    %x   x resolution
-    %y   y resolution
-    \n   newline
-    \r   carriage return
-</pre>
+<dd>
+Omit the x and y offset to generate one or more subimages of a uniform
+size.</dd>
+
 <p>
+<dd>
+Use cropping to crop a particular area of an image. Use <b>-crop 0x0</b>
+to trim edges that are the background color. Add an x and y offset to leave
+a portion of the trimmed edges with the image.</dd>
+
+<p>
+<dd>
+The equivalent X resource for this option is
+<b>cropGeometry</b> (class
+<b>CropGeometry</b>). See <a href="#xres">X Resources</a> for details.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-delay
+<i>&lt;1/100ths of a second>x&lt;seconds></i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+display the next image after pausing.</dd>
+
+<p>
+<p>This option is useful for regulating the display of the sequence
+of images. <i>1/100ths of a second</i> must expire before the display of
+the next image. The default is 6/100th of a second between each frame of
+the image sequence. The second value is optional. It specifies the number
+of <i>seconds</i> to pause before repeating your animation sequence.
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-density
+<i>&lt;width>x&lt;height></i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+vertical and horizontal resolution in pixels of the image.</dd>
+
+<p>
+<dd>
+This option specifies an image density when decoding a <i>PostScript</i>
+or Portable Document page. The default is 72 pixels per inch in the horizontal
+and vertical direction.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-display
+<i>host:display[.screen]</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+specifies the X server to contact; see <i>X(1)</i>.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-dither</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+apply Floyd/Steinberg error diffusion to the image.</dd>
+
+<p>
+<dd>
+The basic strategy of dithering is to trade intensity resolution for spatial
+resolution by averaging the intensities of several neighboring pixels.
+Images which suffer from severe contouring when reducing colors can be
+improved with this option.</dd>
+
+<p>
+<dd>
+The <b>-colors</b> or <b>-monochrome</b> option is required for this option
+to take effect.</dd>
+
+<p>
+<dd>
+Use <b>+dither</b> to render Postscript without text or graphic aliasing.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-gamma
+<i>value</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+level of gamma correction.</dd>
+
+<p>
+<dd>
+The same color image displayed on two different workstations may look different
+due to differences in the display monitor. Use gamma correction to adjust
+for this color difference. Reasonable values extend from <b>0.8</b> to
+<b>2.3</b>.</dd>
+
+<p>
+<dd>
+You can apply separate gamma values to the red, green, and blue channels
+of the image with a gamma value list delineated with slashes (i.e. <b>1.7</b>,<b>2.3</b>,<b>1.2</b>).</dd>
+
+<p>
+<dd>
+Use <b>+gamma</b> to set the image gamma level without actually adjusting
+the image pixels. This option is useful if the image is of a known gamma
+but not set as an image attribute (e.g. PNG images).</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-geometry
+<i>&lt;width>{%}x&lt;height>{%}{+-}&lt;x offset>{+-}&lt;yoffset>{!}{&lt;}{>}</i></font></font></font></b></td>
+</tr>
+</table>
+
+<p>
+<dd>
+preferred size and location of the Image window. See
+<i>X(1)</i> for details
+about the geometry specification. By default, the window size is the image
+size and the location is chosen by you when it is mapped.</dd>
+
+<p>
+<dd>
+By default, the width and height are maximum values. That is, the image
+is expanded or contracted to fit the width and height value while maintaining
+the aspect ratio of the image. <b>Append an exclamation point to the geometry
+to force the image size to exactly the size you specify</b>. For example,
+if you specify <b>640x480!</b> the image width is set to 640 pixels and
+height to 480. If only one factor is specified, both the width and height
+assume the value.</dd>
+
+<p>
+<dd>
+To specify a percentage width or height instead, append <tt>%</tt>. The
+image size is multiplied by the width and height percentages to obtain
+the final image dimensions. To increase the size of an image, use a value
+greater than 100 (e.g. 125%). To decrease an image's size, use a percentage
+less than 100.</dd>
+
+<p>Use <b>></b> to change the dimensions of the image <i>only</i> if
+its size exceeds the geometry specification. <b>&lt;</b> resizes the image
+<i>only</i> if its dimensions is less than the geometry specification.
+For example, if you specify <b>640x480></b> and the image size is 512x512,
+the image size does not change. However, if the image is 1024x1024, it
+is resized to 640x480.
+<dd>
+When displaying an image on an X server, &lt;x offset> and &lt;y offset>
+is relative to the root window.</dd>
+<p>
+<dd>
+The equivalent X resource for this option is <b>geometry</b> (class <b>Geometry</b>).
+See <a href="#xres">X Resources</a> for details.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-interlace
+<i>type</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+the type of interlacing scheme: <b>None</b>, <b>Line</b>, <b>Plane</b>,
+or <b>Partition</b>. The default is <b>None</b>.</dd>
+
+<p>
+<dd>
+This option is used to specify the type of interlacing scheme for raw image
+formats such as <b>RGB</b> or <b>YUV</b>. <b>None</b> means do not interlace
+(RGBRGBRGBRGBRGBRGB...), <b>Line</b> uses scanline interlacing (RRR...GGG...BBB...RRR...GGG...BBB...),
+and <b>Plane</b> uses plane interlacing (RRRRRR...GGGGGG...BBBBBB...).
+<b>Partition</b> is like plane except the different planes are saved to
+individual files (e.g. image.R, image.G, and image.B).</dd>
+
+<p>
+<dd>
+Use <b>Line</b>, or <b>Plane</b> to create an <b>interlaced GIF</b> or
+<b>progressive JPEG</b> image.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-map
+<i>type</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+display image using this <i>Standard Colormap</i> type.</dd>
+
+<p>
+<dd>
+Choose from these <i>Standard Colormap</i> types:</dd>
+
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; best
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; default
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gray
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; red
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; green
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; blue</pre>
+
+<p>
+<dd>
+The <i>X server</i> must support the <i>Standard Colormap</i> you choose,
+otherwise an error occurs. Use <b>list</b> as the type and <b>display</b>
+searches the list of colormap types in <b>top-to-bottom</b> order until
+one is located. See <i>xstdcmap(1)</i> for one way of creating Standard
+Colormaps.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-monochrome</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+transform the image to black and white.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-remote
+<i>string</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+execute a command in a remote display process.</dd>
+
+<p>
+<dd>
+The only command recognized at this time is the name of an image file to
+load.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-rotate
+<i>degrees{&lt;}{>}</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+apply Paeth image rotation to the image.</dd>
+
+<p>
+<dd>
+Use <tt>></tt> to rotate the image&nbsp;</t>only if its width exceeds the
+height. <tt>&lt;</tt> rotates the image <i>only</i> if its width is less
+than the height. For example, if you specify <tt>-90></tt> and the image
+size is 480x640, the image is not rotated by the specified angle. However,
+if the image is 640x480, it is rotated by -90 degrees.</dd>
+
+<p>
+<dd>
+Empty triangles left over from rotating the image are filled with the color
+defined as <b>bordercolor</b> (class
+<b>borderColor</b>). See <i>X(1)</i>
+for details.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-scene
+<i>value</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+image scene number.</dd>
+
+<p>
+<dd>
+Use this option to specify an image sequence with a single filename. See
+the discussion of <i>file</i> below for details.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-size
+&lt;width>x&lt;height>{+offset}</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+width and height of the image.</dd>
+
+<p>
+<dd>
+Use this option to specify the width and height of raw images whose dimensions
+are unknown such as <b>GRAY</b>,
+<b>RGB</b>, or <b>CMYK</b>. In addition
+to width and height, use
+<b>-size</b> to skip any header information in
+the image or tell the number of colors in a <b>MAP</b> image file, (e.g.
+-size 640x512+256).</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-title
+<i>string</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+assign a title to the displayed image.</dd>
+
+<p>
+<dd>
+Use this option to assign a specific title to the image. This is assigned
+to the image window and is typically displayed in the window title bar.
+Optionally you can include the image filename, type, width, height, or
+other image attribute by embedding special format characters:</dd>
+
+<p>
+<pre>&nbsp;&nbsp;&nbsp; %b&nbsp;&nbsp; file size
+&nbsp;&nbsp;&nbsp; %d&nbsp;&nbsp; directory
+&nbsp;&nbsp;&nbsp; %e&nbsp;&nbsp; filename extension
+&nbsp;&nbsp;&nbsp; %f&nbsp;&nbsp; filename
+&nbsp;&nbsp;&nbsp; %h&nbsp;&nbsp; height
+&nbsp;&nbsp;&nbsp; %m&nbsp;&nbsp; magick
+&nbsp;&nbsp;&nbsp; %p&nbsp;&nbsp; page number
+&nbsp;&nbsp;&nbsp; %s&nbsp;&nbsp; scene number
+&nbsp;&nbsp;&nbsp; %t&nbsp;&nbsp; top of filename
+&nbsp;&nbsp;&nbsp; %w&nbsp;&nbsp; width
+&nbsp;&nbsp;&nbsp; %x&nbsp;&nbsp; x resolution
+&nbsp;&nbsp;&nbsp; %y&nbsp;&nbsp; y resolution
+&nbsp;&nbsp;&nbsp; \n&nbsp;&nbsp; newline
+&nbsp;&nbsp;&nbsp; \r&nbsp;&nbsp; carriage return</pre>
 For example,
-<P>
-<PRE>
-      -title "%m:%f %wx%h"
-</PRE>
-<P>
-<DD>produces an image title of <tt>MIFF:bird.miff 512x480</tt> for an image
-titled <tt>bird.miff</tt> and whose width is 512 and height is 480.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-treedepth</B> <I>value</I></b></big>
-  </font>
-</td></tr>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -title "%m:%f %wx%h"</pre>
+
+<p>
+<dd>
+produces an image title of <tt>MIFF:bird.miff 512x480</tt> for an image
+titled <tt>bird.miff</tt> and whose width is 512 and height is 480.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-treedepth
+<i>value</i></font></font></font></b></td>
+</tr>
 </table>
-<DD>Normally, this integer value is zero or one.  A zero
-or one tells display to choose an optimal tree depth
-for the color reduction algorithm.
-<P>
-<DD>An optimal depth generally allows the best
-representation of the source image with the fastest
-computational speed and the least amount of memory.
-However, the default depth is inappropriate for some
-images.  To assure the best representation, try
-values between 2 and 8 for this parameter.  Refer to
- <A HREF="../www/quantize.html">quantize</A> for more details.
-<P>
-<DD>The <B>-colors</B> or <B>-monochrome</B> option is required for
-this option to take effect.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-verbose</B></b></big>
-  </font>
-</td></tr>
+
+<dd>
+Normally, this integer value is zero or one. A zero or one tells display
+to choose an optimal tree depth for the color reduction algorithm.</dd>
+
+<p>
+<dd>
+An optimal depth generally allows the best representation of the source
+image with the fastest computational speed and the least amount of memory.
+However, the default depth is inappropriate for some images. To assure
+the best representation, try values between 2 and 8 for this parameter.
+Refer to <a href="quantize.html">quantize</a> for more details.</dd>
+
+<p>
+<dd>
+The <b>-colors</b> or <b>-monochrome</b> option is required for this option
+to take effect.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-verbose</font></font></font></b></td>
+</tr>
 </table>
-<DD>print detailed information about the image.
-<P>
-<DD>This information is printed: image scene number;
-image name;  image size; the image class (<I>DirectClass</I>
-or <I>PseudoClass</I>);  the total number of unique colors;
-and the number of seconds to read and transform the
-image.  Refer to <A HREF="../www/miff.html">miff</A> for a description
-of the image class.
-<P>
-<DD>If <B>-colors</B> is also specified, the total unique colors
-in the image and color reduction error values are
-printed.  Refer to <A HREF="../www/quantize.html">quantize</A> for a
-description of these values.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-visual</B> <I>type</I></b></big>
-  </font>
-</td></tr>
+
+<dd>
+print detailed information about the image.</dd>
+
+<p>
+<dd>
+This information is printed: image scene number; image name; image size;
+the image class (<i>DirectClass</i> or <i>PseudoClass</i>); the total number
+of unique colors; and the number of seconds to read and transform the image.
+Refer to <a href="miff.html">miff</a> for a description of the image class.</dd>
+
+<p>
+<dd>
+If <b>-colors</b> is also specified, the total unique colors in the image
+and color reduction error values are printed. Refer to <a href="quantize.html">quantize</a>
+for a description of these values.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-visual
+<i>type</i></font></font></font></b></td>
+</tr>
 </table>
-<DD>display image using this visual type.
-<P>
-<DD>Choose from these visual classes:
-<PRE>
-      StaticGray
-      GrayScale
-      StaticColor
-      PseudoColor
-      TrueColor
-      DirectColor
-      default
-      <I>visual id</I>
-</PRE>
-<DD>The <I>X server</I> must support the visual you choose, otherwise
-an error occurs.  If a visual is not specified, the visual
-class that can display the most simultaneous colors on the
-default <I>X server</I> screen is chosen.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-window</B> <I>id</I></b></big>
-  </font>
-</td></tr>
+
+<dd>
+display image using this visual type.</dd>
+
+<p>
+<dd>
+Choose from these visual classes:</dd>
+
+<p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StaticGray
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GrayScale
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StaticColor
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PseudoColor
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TrueColor
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DirectColor
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; default
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i>visual id</i></pre>
+
+<p>
+<dd>
+The <i>X server</i> must support the visual you choose, otherwise an error
+occurs. If a visual is not specified, the visual class that can display
+the most simultaneous colors on the default <i>X server</i> screen is chosen.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-window
+<i>id</i></font></font></font></b></td>
+</tr>
 </table>
-<DD>set the background pixmap of this window to the
-image.
-<P>
-<DD><I>id</I> can be a window id or name.  Specify <B>root</B> to
-select X's root window as the target window.
-<P>
-<DD>By default the image is tiled onto the background of
-the target window.   If <B>-backdrop</B> or <B>-geometry</B> are
-specified, the image is surrounded by the background
-color.  Refer to <A HREF="#xres">X Resources</A> for details.
-<P>
-<DD>The image will not display on the root window if the
-image has more unique colors than the target window
-colormap allows.  Use <B>-colors</B> to reduce the number of
-colors.
-</DL>
-<P>
-<DD>In addition to those listed above, you can specify these
-standard X resources as command line options:  <B>-background</B>,
-<B>-bordercolor</B>, <B>-borderwidth</B>,  <B>-font</B>, <B>-foreground</B>,
-<B>-iconGeometry</B>, <B>-iconic</B>, <B>-mattecolor</B>, <B>-name</B>, or <B>-title</B>.  See
-<B>X</B> <B>Resources</B> for details.
-<P>
-<DD>Any option you specify on the command line remains in effect
-until it is explicitly changed by specifying the option
-again with a different effect.  For example, to animate two
-images, the first with 32 colors and the second with only 16
-colors, use:
-<PRE>
-  animate -colors 32 cockatoo.1 -colors 16 cockatoo.2
-</PRE>
-<P>
-<DD>By default, the image format is determined by its magic
-number. To specify a particular image format, precede the
-filename with an image format name and a colon (i.e.
-ps:image) or specify the image type as the filename suffix
-(i.e. image.ps).  See <B>convert(1)</B> for a list of valid image
-formats.
-<P>
-<DD>When you specify <B>X</B> as your image type, the filename has
-special meaning.  It specifies an X window by id, name, or
-<B>root</B>.  If no filename is specified, the window is selected
-by clicking the mouse in the desired window.
-<P>
-<DD>Specify <EM>file</EM> as - for standard input, If <EM>file</EM> has the
-extension <B>.Z</B> or <B>.gz</B>, the file is uncompressed with
-<B>uncompress</B> or <B>gunzip</B> respectively. Precede the image file
-name with | to pipe from a system command.
-<P>
-<DD>Use an optional index enclosed in brackets after a file name to specify
-a desired subimage of a multi-resolution image format like Photo CD
-(e.g. img0001.pcd[4]) or a range for MPEG images (e.g. video.mpg[50-75]).
-A subimage specification can be disjoint (e.g. image.tiff[2,7,4]).
-For raw images, specify a subimage with a geometry (e.g.  -size 640x512
-image.rgb[320x256+50+50]).
-<P>
-<DD>Single images are read with the filename you specify.
-Alternatively, you can animate an image sequence with a
-single filename.  Define the range of the image sequence
-with -<EM>scene</EM>.  Each image in the range is read with the
-filename followed by a period (<B>.</B>)  and the scene number.
-You can change this behavior by embedding a <B>printf</B> format
-specification in the file name.  For example,
-<PRE>
-  -scene 0-9 image%02d.miff
-</PRE>
+
+<dd>
+set the background pixmap of this window to the image.</dd>
+
+<p>
+<dd>
+<i>id</i> can be a window id or name. Specify <b>root</b> to select X's
+root window as the target window.</dd>
+
+<p>
+<dd>
+By default the image is tiled onto the background of the target window.
+If <b>-backdrop</b> or <b>-geometry</b> are specified, the image is surrounded
+by the background color. Refer to <a href="#xres">X Resources</a> for details.</dd>
+
+<p>
+<dd>
+The image will not display on the root window if the image has more unique
+colors than the target window colormap allows. Use <b>-colors</b> to reduce
+the number of colors.</dd>
+</dl>
+
+<p>
+<dd>
+In addition to those listed above, you can specify these standard X resources
+as command line options: <b>-background</b>,
+<b>-bordercolor</b>, <b>-borderwidth</b>,
+<b>-font</b>, <b>-foreground</b>,
+<b>-iconGeometry</b>, <b>-iconic</b>,
+<b>-mattecolor</b>, <b>-name</b>, or <b>-title</b>. See
+<b>X</b> <b>Resources</b>
+for details.</dd>
+
+<p>
+<dd>
+Any option you specify on the command line remains in effect until it is
+explicitly changed by specifying the option again with a different effect.
+For example, to animate two images, the first with 32 colors and the second
+with only 16 colors, use:</dd>
+
+<p>
+<pre>&nbsp; animate -colors 32 cockatoo.1 -colors 16 cockatoo.2</pre>
+
+<p>
+<dd>
+By default, the image format is determined by its magic number. To specify
+a particular image format, precede the filename with an image format name
+and a colon (i.e. ps:image) or specify the image type as the filename suffix
+(i.e. image.ps). See <b>convert(1)</b> for a list of valid image formats.</dd>
+
+<p>
+<dd>
+When you specify <b>X</b> as your image type, the filename has special
+meaning. It specifies an X window by id, name, or
+<b>root</b>. If no filename
+is specified, the window is selected by clicking the mouse in the desired
+window.</dd>
+
+<p>
+<dd>
+Specify <i>file</i> as - for standard input, If <i>file</i> has the extension
+<b>.Z</b> or <b>.gz</b>, the file is uncompressed with
+<b>uncompress</b>
+or <b>gunzip</b> respectively. Precede the image file name with | to pipe
+from a system command.</dd>
+
+<p>
+<dd>
+Use an optional index enclosed in brackets after a file name to specify
+a desired subimage of a multi-resolution image format like Photo CD (e.g.
+img0001.pcd[4]) or a range for MPEG images (e.g. video.mpg[50-75]). A subimage
+specification can be disjoint (e.g. image.tiff[2,7,4]). For raw images,
+specify a subimage with a geometry (e.g. -size 640x512 image.rgb[320x256+50+50]).</dd>
+
+<p>
+<dd>
+Single images are read with the filename you specify. Alternatively, you
+can animate an image sequence with a single filename. Define the range
+of the image sequence with -<i>scene</i>. Each image in the range is read
+with the filename followed by a period (<b>.</b>) and the scene number.
+You can change this behavior by embedding a <b>printf</b> format specification
+in the file name. For example,</dd>
+
+<p>
+<pre>&nbsp; -scene 0-9 image%02d.miff</pre>
 animates files image00.miff, image01.miff, through image09.miff.
-<P>
-<DD>Image filenames may appear in any order on the command line
-if the image format is <EM>MIFF</EM> (refer to <B>miff(5)</B> and the
-<B>scene</B> keyword is specified in the image.  Otherwise the images
-will display in the order they appear on the command line.
-<P>
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
+<dd>
 <p>
-<DL>
-<p>
-<A NAME="mous">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Mouse Buttons</b></big>
-  </font>
-</td></tr>
-</table>
-<p>
-<p>
-<DD>Press any button to map or unmap the Command widget.  See
-the next section for more information about the Command
-widget.
-</DL>
-<P>
-<A HREF="#top">Back to Contents</A>
-<p>
-<DL>
-<p>
-<A NAME="comm">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Command Widget</b></big>
-  </font>
-</td></tr>
-</table>
-<p>
-<p>
-<DD>The Command widget lists a number of sub-menus and commands.
-They are
-<P>
-<UL>
-<LI><B>Animate</B>
-    <UL>
-        <LI>Open
-        <LI>Play
-        <LI>Step
-        <LI>Repeat
-        <LI>Auto Reverse
-     </UL>
-<LI><B>Speed</B>
-    <UL>
-        <LI>Faster
-        <LI>Slower
-    </UL>
-<LI><B>Direction</B>
-    <UL>
-        <LI>Forward
-        <LI>Reverse
-    </UL>
-<LI><B>Image Info</B>
-<LI><B>Help</B>
-<LI><B>Quit</B>
-</UL>
-<P>
-<DD>Menu items with a indented triangle have a sub-menu.  They
-are represented above as the indented items.  To access a
-sub-menu item, move the pointer to the appropriate menu and
-press a button and drag.  When you find the desired sub-menu
-item, release the button and the command is executed.  Move
-the pointer away from the sub-menu if you decide not to
-execute a particular command.
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<p>
-<DL>
-<p>
-<A NAME="keyb">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Keyboard Accelerators</b></big>
-  </font>
-</td></tr>
-</table>
-<p>
-<p>
-<PRE>
-   Ctl+O     Press to <A HREF="#imlo">load</A> an image from a file.
-   <B>space</B>    Press to display the next image in the sequence.
+Image filenames may appear in any order on the command line if the image
+format is <i>MIFF</i> (refer to <b>miff(5)</b> and the
+<b>scene</b> keyword
+is specified in the image. Otherwise the images will display in the order
+they appear on the command line.</dd>
 
-   <B>&lt;</B>    Press to speed-up the display of the images.  Refer to
-        <B>-delay</B> for more information.
+</dl>
+<i><a href="#top">Back to Contents</a></i>
+<p>
+<br>
+<dl><a NAME="mous"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Mouse
+Buttons</font></font></font></b></td>
+</tr>
+</table>
 
-   <B>&gt;</B>    Press to slow the display of the images.  Refer to
-        <B>-delay</B> for more information.
+<p>
+<dd>
+Press any button to map or unmap the Command widget. See the next section
+for more information about the Command widget.</dd>
+</dl>
+<a href="#top">Back to Contents</a>
+<p>
+<br>
+<dl><a NAME="comm"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Command
+Widget</font></font></font></b></td>
+</tr>
+</table>
 
-   <B>?</B>    Press to display information about the image.  Press
-        any key or button to erase the information.
+<p>
+<dd>
+The Command widget lists a number of sub-menus and commands. They are</dd>
 
-        This information is printed: image name;  image size;
-        and the total number of unique colors in the image.
+<ul>
+<li>
+<b>Animate</b></li>
 
-   <B>F1</B>    Press to display helpful information about <B>animate(1)</B>.
+<ul>
+<li>
+Open</li>
 
-   <B>Ctl-q</B>    Press to discard all images and exit program.
-</PRE>
-</DL>
-<P>  
-<A HREF="#top">Back to Contents</A>
+<li>
+Play</li>
+
+<li>
+Step</li>
+
+<li>
+Repeat</li>
+
+<li>
+Auto Reverse</li>
+</ul>
+
+<li>
+<b>Speed</b></li>
+
+<ul>
+<li>
+Faster</li>
+
+<li>
+Slower</li>
+</ul>
+
+<li>
+<b>Direction</b></li>
+
+<ul>
+<li>
+Forward</li>
+
+<li>
+Reverse</li>
+</ul>
+
+<li>
+<b>Image Info</b></li>
+
+<li>
+<b>Help</b></li>
+
+<li>
+<b>Quit</b></li>
+</ul>
+
 <p>
-<DL>
+<dd>
+Menu items with a indented triangle have a sub-menu. They are represented
+above as the indented items. To access a sub-menu item, move the pointer
+to the appropriate menu and press a button and drag. When you find the
+desired sub-menu item, release the button and the command is executed.
+Move the pointer away from the sub-menu if you decide not to execute a
+particular command.</dd>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
 <p>
-<A NAME="xres">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">X Resources</b></big>
-  </font>
-</td></tr>
+<br>
+<dl><a NAME="keyb"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Keyboard
+Accelerators</font></font></font></b></td>
+</tr>
 </table>
+
+<pre>&nbsp;&nbsp; Ctl+O&nbsp;&nbsp;&nbsp;&nbsp; Press to <a href="#imlo">load</a> an image from a file.
+&nbsp;&nbsp; <b>space</b>&nbsp;&nbsp;&nbsp; Press to display the next image in the sequence.
+
+&nbsp;&nbsp; <b>&lt;</b>&nbsp;&nbsp;&nbsp; Press to speed-up the display of the images.&nbsp; Refer to
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>-delay</b> for more information.
+
+&nbsp;&nbsp; <b>></b>&nbsp;&nbsp;&nbsp; Press to slow the display of the images.&nbsp; Refer to
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>-delay</b> for more information.
+
+&nbsp;&nbsp; <b>?</b>&nbsp;&nbsp;&nbsp; Press to display information about the image.&nbsp; Press
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; any key or button to erase the information.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This information is printed: image name;&nbsp; image size;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and the total number of unique colors in the image.
+
+&nbsp;&nbsp; <b>F1</b>&nbsp;&nbsp;&nbsp; Press to display helpful information about <b>animate(1)</b>.
+
+&nbsp;&nbsp; <b>Ctl-q</b>&nbsp;&nbsp;&nbsp; Press to discard all images and exit program.</pre>
+</dl>
+<a href="#top">Back to Contents</a>
 <p>
-<p>
-<DD><B>animate</B> options can appear on the command line or in your X
-resource file.  Options on the command line supersede values
-specified in your X resource file.  See <B>X(1)</B> for more
-information on X resources.
-<P>
-<DD>All <B>animate</B> options have a corresponding X resource.  In
-addition, the <B>animate</B> program uses the following X
-resources:
-<P>
-<DL>
-<DL>
-<B>background</B> <B>(</B><EM>class</EM> <B>Background)</B>
-<DD>Specifies the preferred color to use for the Image window background. 
-The default is #ccc.
-</DL>
-<P>
-<DL>
-<B>borderColor</B> <B>(</B><EM>class</EM> <B>BorderColor)</B>
-<DD>Specifies the preferred color to use for the Image window border.  The
-default is #ccc.
-</DL>
-<P>
-<DL>
-<B>borderWidth</B> <B>(</B><EM>class</EM> <B>BorderWidth)</B>
-<DD>Specifies the width in pixels of the Image window border.  The default is 2.
-</DL>
-<P>
-<DL>
-<B>font</B> <B>(</B><EM>class</EM> <B>Font</B> <B>or</B> <B>FontList)</B>
-<DD>Specifies the name of the preferred font to use in normal formatted text. 
-The default is 14 point <EM>Helvetica</EM>.
-</DL>
-<P>
-<DL>
-<B>foreground</B> <B>(</B><EM>class</EM> <B>Foreground)</B>
-<DD>Specifies the preferred color to use for text within the Image window.  The
-default is black.
-</DL>
-<P>
-<DL>
-<B>geometry</B> <B>(</B><EM>class</EM> <B>geometry)</B>
-<DD>Specifies the preferred size and position of the image window.  It is not
-necessarily obeyed by all window managers.
-</DL>
-<P>
-<DL>
-<B>iconGeometry</B> <B>(</B><EM>class</EM> <B>IconGeometry)</B>
-<DD>Specifies the preferred size and position of the application when
-iconified.  It is not necessarily obeyed by all window managers.
-</DL>
-<P>
-<DL>
-<B>iconic</B> <B>(</B><EM>class</EM> <B>Iconic)</B>
-<DD>This resource indicates that you would prefer that the
-application's windows initially not be visible as if
-the windows had be immediately iconified by you.
-Window managers may choose not to honor the
-application's request.
-</DL>
-<P>
-<DL>
-<B>matteColor</B> <B>(</B><EM>class</EM> <B>MatteColor)</B>
-<DD>Specify the color of windows.  It is used for the
-backgrounds of windows, menus, and notices.  A  3D
-effect  is achieved  by using highlight and shadow
-colors derived from this color.  Default value: #ddd.
-</DL>
-<P>
-<DL>
-<B>name</B> <B>(</B><EM>class</EM> <B>Name)</B>
-<DD>This resource specifies the name under which resources
-for the application should be found.  This resource is
-useful in shell aliases to distinguish between
-invocations of an application, without resorting to
-creating links to alter the executable file name.  The
-default is the application name.
-</DL>
-<P>
-<DL>
-<B>sharedMemory</B> <B>(</B><EM>class</EM> <B>SharedMemory)</B>
-<DD>This resource specifies whether animate should attempt
-use shared memory for pixmaps.  ImageMagick must be
-compiled with shared memory support, and the display
-must support the MIT-SHM extension.  Otherwise, this
-resource is ignored.  The default is True.
-</DL>
-<P>
-<DL>
-<B>text_font</B> <B>(</B><EM>class</EM> <B>textFont)</B>
-<DD>Specifies the name of the preferred font to use in
-fixed (typewriter style) formatted text.  The default
-is 14 point <EM>Courier</EM>.
-</DL>
-<P>
-<DL>
-<B>title</B> <B>(</B><EM>class</EM> <B>Title)</B>
-<DD>This resource specifies the title to be used for the
-Image window.  This information is sometimes used by a
-window manager to provide some sort of header
-identifying the window.  The default is the image file
-name.
-</DL>
-</DL>
-</DL>
-<P> 
-<A HREF="#top"><I>Back to Contents</I></A>
-<p>
-<DL>
-<p>
-<A NAME="envi">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Environment</b></big>
-  </font>
-</td></tr>
+<br>
+<dl><a NAME="xres"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>X
+Resources</font></font></font></b></td>
+</tr>
 </table>
+
 <p>
-<p>   
-<DL>
-<table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>DISPLAY</B></b></big>
-  </font>
-</td></tr>
+<dd>
+<b>Animate</b> options can appear on the command line or in your X resource
+file. Options on the command line supersede values specified in your X
+resource file. See <b>X(1)</b> for more information on X resources.</dd>
+
+<p>
+<dd>
+All <b>animate</b> options have a corresponding X resource. In addition,
+the <b>animate</b> program uses the following X resources:</dd>
+<p>
+
+<dl>
+<dl><b>background</b> <b>(</b><i>class</i> <b>Background)</b>
+<dd>
+Specifies the preferred color to use for the Image window background. The
+default is #ccc.</dd>
+</dl>
+<p>
+
+<dl><b>borderColor</b> <b>(</b><i>class</i> <b>BorderColor)</b>
+<dd>
+Specifies the preferred color to use for the Image window border. The default
+is #ccc.</dd>
+</dl>
+<p>
+
+<dl><b>borderWidth</b> <b>(</b><i>class</i> <b>BorderWidth)</b>
+<dd>
+Specifies the width in pixels of the Image window border. The default is
+2.</dd>
+</dl>
+<p>
+
+<dl><b>font</b> <b>(</b><i>class</i> <b>Font</b> <b>or</b> <b>FontList)</b>
+<dd>
+Specifies the name of the preferred font to use in normal formatted text.
+The default is 14 point <i>Helvetica</i>.</dd>
+</dl>
+<p>
+
+<dl><b>foreground</b> <b>(</b><i>class</i> <b>Foreground)</b>
+<dd>
+Specifies the preferred color to use for text within the Image window.
+The default is black.</dd>
+</dl>
+<p>
+
+<dl><b>geometry</b> <b>(</b><i>class</i> <b>geometry)</b>
+<dd>
+Specifies the preferred size and position of the image window. It is not
+necessarily obeyed by all window managers.</dd>
+</dl>
+<p>
+
+<dl><b>iconGeometry</b> <b>(</b><i>class</i> <b>IconGeometry)</b>
+<dd>
+Specifies the preferred size and position of the application when iconified.
+It is not necessarily obeyed by all window managers.</dd>
+</dl>
+<p>
+
+<dl><b>iconic</b> <b>(</b><i>class</i> <b>Iconic)</b>
+<dd>
+This resource indicates that you would prefer that the application's windows
+initially not be visible as if the windows had be immediately iconified
+by you. Window managers may choose not to honor the application's request.</dd>
+</dl>
+<p>
+
+<dl><b>matteColor</b> <b>(</b><i>class</i> <b>MatteColor)</b>
+<dd>
+Specify the color of windows. It is used for the backgrounds of windows,
+menus, and notices. A 3D effect is achieved by using highlight and shadow
+colors derived from this color. Default value: #ddd.</dd>
+</dl>
+<p>
+
+<dl><b>name</b> <b>(</b><i>class</i> <b>Name)</b>
+<dd>
+This resource specifies the name under which resources for the application
+should be found. This resource is useful in shell aliases to distinguish
+between invocations of an application, without resorting to creating links
+to alter the executable file name. The default is the application name.</dd>
+</dl>
+<p>
+
+<dl><b>sharedMemory</b> <b>(</b><i>class</i> <b>SharedMemory)</b>
+<dd>
+This resource specifies whether animate should attempt use shared memory
+for pixmaps. ImageMagick must be compiled with shared memory support, and
+the display must support the MIT-SHM extension. Otherwise, this resource
+is ignored. The default is True.</dd>
+</dl>
+<p>
+
+<dl><b>text_font</b> <b>(</b><i>class</i> <b>textFont)</b>
+<dd>
+Specifies the name of the preferred font to use in fixed (typewriter style)
+formatted text. The default is 14 point <i>Courier</i>.</dd>
+</dl>
+<p>
+
+<dl><b>title</b> <b>(</b><i>class</i> <b>Title)</b>
+<dd>
+This resource specifies the title to be used for the Image window. This
+information is sometimes used by a window manager to provide some sort
+of header identifying the window. The default is the image file name.</dd>
+</dl>
+</dl>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
+<p>
+<br>
+<dl><a NAME="envi"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Environment</font></font></font></b></td>
+</tr>
 </table>
-<DD>To get the default host, display number, and screen.
-</DL>
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<p>
-<DL>
-<p>
-<A NAME="ackn">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Acknowledgements</b></big>
-  </font>
-</td></tr>
+
+<dl>&nbsp;
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>DISPLAY</font></font></font></b></td>
+</tr>
 </table>
+
+<dd>
+To get the default host, display number, and screen.</dd>
+</dl>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
 <p>
-<p>
-<DD>The <B>MIT X Consortium</B> for making network transparent
-graphics a reality.
-<P>
-<DD><I>Michael Halle</I>, <B>Spatial Imaging Group at MIT</B>, for the
-initial implementation of Alan Paeth's image rotation   
-algorithm.
-<P>  
-<DD><I>David Pensak</I>, <B>E. I. du Pont de Nemours and Company</B>, for
-providing a computing environment that made this program
-possible.
-<P> 
-<I>Paul Raveling</I>, <B>USC Information Sciences Institute</B>. The
-spacial subdivision color reduction algorithm is based on
-his Img software.
-</DL>
-<P>  
-<A HREF="#top">Back to Contents</A>
-<p>
-<DL>
-<p>
-<A NAME="auth">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Authors</b></big>
-  </font>
-</td></tr>
+<br>
+<dl><a NAME="ackn"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Acknowledgements</font></font></font></b></td>
+</tr>
 </table>
+
 <p>
+<dd>
+The <b>MIT X Consortium</b> for making network transparent graphics a reality.</dd>
+
 <p>
-<DD><I>John Cristy</I>, <A HREF="mailto:magick@wizards.dupont.com">
- <I>magick@wizards.dupont.com</I></A> <B>E.I. du Pont de Nemours and Company
-Incorporated</B>.
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<DL>
+<dd>
+<i>Michael Halle</i>, <b>Spatial Imaging Group at MIT</b>, for the initial
+implementation of Alan Paeth's image rotation algorithm.</dd>
+
 <p>
-<A NAME="copy">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Copyright   </b></big>
-  </font>
-</td></tr>
+<dd>
+<i>David Pensak</i>, <b>E. I. du Pont de Nemours and Company</b>, for providing
+a computing environment that made this program possible.</dd>
+
+<p><i>Paul Raveling</i>, <b>USC Information Sciences Institute</b>.
+The spacial subdivision color reduction algorithm is based on his Img software.</dl>
+<a href="#top">Back to Contents</a>
+<p>
+<br>
+<dl><a NAME="auth"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Authors</font></font></font></b></td>
+</tr>
 </table>
+
 <p>
+<dd>
+<i>John Cristy</i>, <i><a href="mailto:magick@wizards.dupont.com">magick@wizards.dupont.com</a></i>
+<b>E.I. du Pont de Nemours and Company Incorporated</b>.</dd>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
 <p>
-<B>
-<dd>Copyright 1999 E. I. du Pont de Nemours and Company
+<br>
+<dl><a NAME="copy"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Copyright&nbsp;</font></font></font></b></td>
+</tr>
+</table>
+
 <p>
-<dd>Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files ("ImageMagick"),
-to deal in ImageMagick without restriction, including without limitation 
-the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-and/or sell copies of ImageMagick, and to permit persons to whom the 
-ImageMagick is furnished to do so, subject to the following conditions:
+<dd>
+<b>Copyright 1999 E. I. du Pont de Nemours and Company</b></dd>
+
 <p>
-<dd>The above copyright notice and this permission notice shall be included in 
-all copies or substantial portions of ImageMagick. 
+<dd>
+<b>Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files ("ImageMagick"),
+to deal in ImageMagick without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
+is furnished to do so, subject to the following conditions:</b></dd>
+
 <p>
-<dd>The software is provided "as is", without warranty of any kind, express or 
-implied, including but not limited to the warranties of merchantability, 
-fitness for a particular purpose and noninfringement.In no event shall 
-E. I. du Pont de Nemours and Company be liable for any claim, damages or 
-other liability, whether in an action of contract, tort or otherwise,
-arising from, out of or in connection with ImageMagick or the use or other 
-dealings in ImageMagick. 
+<dd>
+<b>The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of ImageMagick.</b></dd>
+
 <p>
-<dd>Except as contained in this notice, the name of the E. I. du Pont de 
-Nemours and Company shall not be used in advertising or otherwise to 
-promote the sale, use or other dealings in ImageMagick without prior 
-written authorization from the E. I. du Pont de Nemours and Company. 
-</B>
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
+<dd>
+<b>The software is provided "as is", without warranty of any kind, express
+or implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and noninfringement.In no event shall
+E. I. du Pont de Nemours and Company be liable for any claim, damages or
+other liability, whether in an action of contract, tort or otherwise, arising
+from, out of or in connection with ImageMagick or the use or other dealings
+in ImageMagick.</b></dd>
+
 <p>
-<p><hr><p>
-<a href="../ImageMagick.html"><img alt="Home Page"
-  src="../images/home.gif" width=40 height=40 align=middle border=0></a>
-<font size="-2">Image manipulation software that works like magic.</font>
+<dd>
+<b>Except as contained in this notice, the name of the E. I. du Pont de
+Nemours and Company shall not be used in advertising or otherwise to promote
+the sale, use or other dealings in ImageMagick without prior written authorization
+from the E. I. du Pont de Nemours and Company.</b></dd>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
+<p>
+<hr>
+<p><a href="../ImageMagick.html"><img SRC="../images/home.gif" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2> Image
+manipulation software that works like magic.</font>
 </body>
 </html>

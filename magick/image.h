@@ -362,11 +362,7 @@ typedef struct _Image
   char
     magick[MaxTextExtent],
     *comments,
-    *label,
-    *text;
-
-  IdType
-    id;
+    *label;
 
   ClassType
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -458,9 +454,7 @@ typedef struct _Image
   unsigned int
     dispose,
     delay,
-    iterations,
-    coalesce_frames,
-    insert_backdrops;
+    iterations;
 
   int
     fuzz;

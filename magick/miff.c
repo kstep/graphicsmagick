@@ -92,6 +92,7 @@
 Export Image *ReadMIFFImage(const ImageInfo *image_info)
 {
   char
+    id[MaxTextExtent],
     keyword[MaxTextExtent],
     value[MaxTextExtent];
 
@@ -139,6 +140,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
       DestroyImage(image);
       return((Image *) NULL);
     }
+  *id='\0';
   do
   {
     /*
@@ -302,12 +304,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
                 &image->chromaticity.green_primary.x,
                 &image->chromaticity.green_primary.y);
             if (Latin1Compare(keyword,"id") == 0)
-              {
-                if (Latin1Compare(value,"ImageMagick") == 0)
-                  image->id=ImageMagickId;
-                else
-                  image->id=UndefinedId;
-              }
+              (void) strcpy(id,value);
             if (Latin1Compare(keyword,"iterations") == 0)
               {
                 if (image_info->iterations == (char *) NULL)
@@ -393,7 +390,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
     /*
       Verify that required image information is defined.
     */
-    if ((image->id == UndefinedId) || (image->class == UndefinedClass) ||
+    if ((strcmp(id,"ImageMagick") == 0) || (image->class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
       ReaderExit(CorruptImageWarning,"Incorrect image header in file",image);

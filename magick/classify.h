@@ -125,12 +125,6 @@ typedef enum
 
 typedef enum
 {
-  UndefinedId,
-  ImageMagickId
-} IdType;
-
-typedef enum
-{
   UndefinedType,
   BilevelType,
   GrayscaleType,

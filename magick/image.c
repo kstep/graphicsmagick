@@ -146,8 +146,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   (void) strcpy(allocated_image->magick,"MIFF");
   allocated_image->comments=(char *) NULL;
   allocated_image->label=(char *) NULL;
-  allocated_image->text=(char *) NULL;
-  allocated_image->id=UndefinedId;
   allocated_image->class=DirectClass;
   allocated_image->matte=False;
   allocated_image->compression=RunlengthEncodedCompression;
