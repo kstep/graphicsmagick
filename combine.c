@@ -881,11 +881,11 @@ int main(int argc,char **argv)
   if (stegano != 0)
     {
       image->offset=stegano-1;
-      combined_image=SteganoImage(image,composite_image);
+      combined_image=SteganoImage(image,composite_image,&exception);
     }
   else
     if (stereo)
-      combined_image=StereoImage(image,composite_image);
+      combined_image=StereoImage(image,composite_image,&exception);
     else
       if (tile)
         {

@@ -440,6 +440,9 @@ Export void XAnimateBackgroundImage(Display *display,
   static XWindowInfo
     window_info;
 
+  ExceptionInfo
+    exception;
+
   Image
     *displayed_image,
     **images;
@@ -543,12 +546,11 @@ Export void XAnimateBackgroundImage(Display *display,
       Image
         *coalesce_image;
 
-      coalesce_image=CoalesceImages(image);
-      if (coalesce_image != (Image *) NULL)
-        {
-          DestroyImages(image);
-          image=coalesce_image;
-        }
+      coalesce_image=CoalesceImages(image,&exception);
+      if (coalesce_image == (Image *) NULL)
+        MagickError(exception.severity,exception.message,exception.qualifier);
+      DestroyImages(image);
+      image=coalesce_image;
     }
   if (resources.map_type == (char *) NULL)
     if ((visual_info->class != TrueColor) &&
@@ -967,6 +969,9 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   CommandType
     command_type;
 
+  ExceptionInfo
+    exception;
+
   Image
     *displayed_image,
     **images,
@@ -1124,12 +1129,11 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       Image
         *coalesce_image;
 
-      coalesce_image=CoalesceImages(image);
-      if (coalesce_image != (Image *) NULL)
-        {
-          DestroyImages(image);
-          image=coalesce_image;
-        }
+      coalesce_image=CoalesceImages(image,&exception);
+      if (coalesce_image == (Image *) NULL)
+        MagickError(exception.severity,exception.message,exception.qualifier);
+      DestroyImages(image);
+      image=coalesce_image;
     }
   if (resource_info->map_type == (char *) NULL)
     if ((visual_info->class != TrueColor) &&

@@ -470,6 +470,9 @@ int main(int argc,char **argv)
         next_image=ReadImage(image_info,&exception);
         if (next_image == (Image *) NULL)
           {
+            if (exception.severity >= FatalException)
+              MagickError(exception.severity,exception.message,
+                exception.qualifier);
             MagickWarning(exception.severity,exception.message,
               exception.qualifier);
             if (exception.severity > severity)
@@ -1658,89 +1661,80 @@ int main(int argc,char **argv)
     }
   while (image->previous != (Image *) NULL)
     image=image->previous;
+  GetExceptionInfo(&exception);
   if (append != 0)
     {
       Image
-        *appended_image;
+        *append_image;
 
       /*
         Append an image sequence.
       */
-      appended_image=AppendImages(image,append == 1);
-      if (appended_image == (Image *) NULL)
-        CatchImageException(image,&severity);
-      else
+      append_image=AppendImages(image,append == 1,&exception);
+      if (append_image != (Image *) NULL)
         {
           DestroyImages(image);
-          image=appended_image;
+          image=append_image;
         }
     }
   if (average)
     {
       Image
-        *averaged_image;
+        *average_image;
 
       /*
         Average an image sequence.
       */
-      averaged_image=AverageImages(image);
-      if (averaged_image == (Image *) NULL)
-        CatchImageException(image,&severity);
-      else
+      average_image=AverageImages(image,&exception);
+      if (average_image != (Image *) NULL)
         {
           DestroyImages(image);
-          image=averaged_image;
+          image=average_image;
         }
     }
   if (coalesce)
     {
       Image
-        *coalesced_image;
+        *coalesce_image;
 
       /*
         Coalesce an image sequence.
       */
-      coalesced_image=CoalesceImages(image);
-      if (coalesced_image == (Image *) NULL)
-        CatchImageException(image,&severity);
-      else
+      coalesce_image=CoalesceImages(image,&exception);
+      if (coalesce_image != (Image *) NULL)
         {
           DestroyImages(image);
-          image=coalesced_image;
+          image=coalesce_image;
         }
     }
   if (deconstruct)
     {
       Image
-        *deconstructed_image;
+        *deconstruct_image;
 
       /*
         Deconstruct an image sequence.
       */
-      deconstructed_image=DeconstructImages(image);
-      if (deconstructed_image == (Image *) NULL)
-        CatchImageException(image,&severity);
-      else
+      deconstruct_image=DeconstructImages(image,&exception);
+      if (deconstruct_image != (Image *) NULL)
         {
           DestroyImages(image);
-          image=deconstructed_image;
+          image=deconstruct_image;
         }
     }
   if (morph != 0)
     {
       Image
-        *morphed_image;
+        *morph_image;
 
       /*
         Morph an image sequence.
       */
-      morphed_image=MorphImages(image,morph);
-      if (morphed_image == (Image *) NULL)
-        CatchImageException(image,&severity);
-      else
+      morph_image=MorphImages(image,morph,&exception);
+      if (morph_image != (Image *) NULL)
         {
           DestroyImages(image);
-          image=morphed_image;
+          image=morph_image;
         }
     }
   if (mosaic)
@@ -1751,14 +1745,18 @@ int main(int argc,char **argv)
       /*
         Create an image mosaic.
       */
-      mosaic_image=MosaicImages(image);
-      if (mosaic_image == (Image *) NULL)
-        CatchImageException(image,&severity);
-      else
+      mosaic_image=MosaicImages(image,&exception);
+      if (mosaic_image != (Image *) NULL)
         {
           DestroyImages(image);
           image=mosaic_image;
         }
+    }
+  if (exception.severity != UndefinedException)
+    {
+      if (exception.severity >= FatalException)
+        MagickError(exception.severity,exception.message,exception.qualifier);
+      MagickWarning(exception.severity,exception.message,exception.qualifier);
     }
   if (global_colormap)
     (void) MapImages(image,(Image *) NULL,image_info->dither);

@@ -1163,7 +1163,7 @@ int main(int argc,char **argv)
     Create composite image.
   */
   (void) strcpy(montage_info.filename,argv[argc-1]);
-  montage_image=MontageImages(image,&montage_info);
+  montage_image=MontageImages(image,&montage_info,&exception);
   if (montage_image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImages(image);

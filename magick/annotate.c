@@ -220,12 +220,12 @@ Export unsigned int AnnotateImage(Image *image,
         /*
           Rotate text.
         */
-        rotated_image=RotateImage(annotate_image,annotate_info->degrees);
-        if (rotated_image != (Image *) NULL)
-          {
-            DestroyImage(annotate_image);
-            annotate_image=rotated_image;
-          }
+        rotated_image=RotateImage(annotate_image,annotate_info->degrees,
+          &image->exception);
+        if (rotated_image == (Image *) NULL)
+          return(False);
+        DestroyImage(annotate_image);
+        annotate_image=rotated_image;
         clone_info->bounds.height=annotate_image->rows;
       }
     /*
@@ -360,6 +360,9 @@ Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
   AnnotateInfo
     *cloned_info;
 
+  ExceptionInfo
+    exception;
+
   cloned_info=(AnnotateInfo *) AllocateMemory(sizeof(AnnotateInfo));
   if (cloned_info == (AnnotateInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone annotate info",
@@ -381,8 +384,13 @@ Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
   if (annotate_info->font_name != (char *) NULL)
     cloned_info->font_name=AllocateString(annotate_info->font_name);
   if (annotate_info->tile != (Image *) NULL)
-    cloned_info->tile=CloneImage(annotate_info->tile,
-      annotate_info->tile->columns,annotate_info->tile->rows,False);
+    {
+      cloned_info->tile=CloneImage(annotate_info->tile,
+        annotate_info->tile->columns,annotate_info->tile->rows,False,
+	&exception);
+      if (cloned_info->tile == (Image *) NULL)
+        MagickError(exception.severity,exception.message,exception.qualifier);
+    }
   return(cloned_info);
 }
 

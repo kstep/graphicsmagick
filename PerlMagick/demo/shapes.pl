@@ -29,10 +29,8 @@ $image->Annotate(pen=>'blue',geometry=>'+150+28',font=>'@Generic.ttf',
 #
 # Write rotated text.
 #
-$image->Rotate(90);
-$image->Annotate(pen=>'black',geometry=>'+20+280',font=>'@Generic.ttf',
-  pointsize=>10,text=>"I'm climbing the wall!");
-$image->Rotate(-90);
+$image->Annotate(pen=>'black',geometry=>'+280+150',font=>'@Generic.ttf',
+  pointsize=>10,text=>"I'm climbing the wall!",degrees=>90.0);
 #
 # Write image.
 #

@@ -1837,6 +1837,9 @@ Append(ref,...)
       *attribute,
       *p;
 
+    ExceptionInfo
+      exception;
+
     ExceptionType
       severity;
 
@@ -1923,7 +1926,7 @@ Append(ref,...)
       }
       MagickWarning(OptionWarning,"Invalid attribute",attribute);
     }
-    next=AppendImages(image,stack);
+    next=AppendImages(image,stack,&exception);
     CatchImageException(image,&severity);
     if (!next)
       goto MethodException;
@@ -1974,6 +1977,9 @@ Average(ref)
     AV
       *av;
 
+    ExceptionInfo
+      exception;
+
     ExceptionType
       severity;
 
@@ -2020,7 +2026,7 @@ Average(ref)
         MagickWarning(OptionWarning,"No images to average",NULL);
         goto MethodException;
       }
-    next=AverageImages(image);
+    next=AverageImages(image,&exception);
     CatchImageException(image,&severity);
     if (!next)
       goto MethodException;
@@ -2223,6 +2229,9 @@ Copy(ref)
     AV
       *av;
 
+    ExceptionInfo
+      exception;
+
     ExceptionType
       severity;
 
@@ -2274,7 +2283,7 @@ Copy(ref)
     SvREFCNT_dec(av);
     for (next=image; next; next=next->next)
     {
-      image=CloneImage(next,next->columns,next->rows,False);
+      image=CloneImage(next,next->columns,next->rows,False,&exception);
       if (!image)
         {
           CatchImageException(next,&severity);
@@ -3522,6 +3531,9 @@ Mogrify(ref,...)
       *commands[10],
       message[MaxTextExtent];
 
+    ExceptionInfo
+      exception;
+
     ExceptionType
       severity;
 
@@ -3724,7 +3736,7 @@ Mogrify(ref,...)
       if ((region_info.width*region_info.height) != 0)
         {
           region_image=image;
-          image=CropImage(image,&region_info);
+          image=CropImage(image,&region_info,&exception);
           if (!image)
             continue;
         }
@@ -3758,7 +3770,8 @@ Mogrify(ref,...)
         {
           if (!attribute_flag[0])
             argument_list[0].int_reference=UniformNoise;
-          image=AddNoiseImage(image,(NoiseType) argument_list[0].int_reference);
+          image=AddNoiseImage(image,(NoiseType) argument_list[0].int_reference,
+            &exception);
           break;
         }
         case 4:  /* Colorize */
@@ -3768,7 +3781,7 @@ Mogrify(ref,...)
           if (!attribute_flag[1])
             argument_list[1].string_reference="100";
           image=ColorizeImage(image,argument_list[1].string_reference,
-            argument_list[0].string_reference);
+            argument_list[0].string_reference,&exception);
           break;
         }
         case 5:  /* Border */
@@ -3795,14 +3808,14 @@ Mogrify(ref,...)
             }
           if (attribute_flag[3])
             image->border_color=border_color;
-          image=BorderImage(image,&rectangle_info);
+          image=BorderImage(image,&rectangle_info,&exception);
           break;
         }
         case 6:  /* Blur */
         {
           if (!attribute_flag[0])
             argument_list[0].double_reference=50.0;
-          image=BlurImage(image,argument_list[0].double_reference);
+          image=BlurImage(image,argument_list[0].double_reference,&exception);
           break;
         }
         case 7:  /* Chop */
@@ -3823,7 +3836,7 @@ Mogrify(ref,...)
             rectangle_info.x=argument_list[3].int_reference;
           if (attribute_flag[4])
             rectangle_info.y=argument_list[4].int_reference;
-          image=ChopImage(image,&rectangle_info);
+          image=ChopImage(image,&rectangle_info,&exception);
           break;
         }
         case 59:  /* Trim */
@@ -3849,39 +3862,39 @@ Mogrify(ref,...)
             rectangle_info.x=argument_list[3].int_reference;
           if (attribute_flag[4])
             rectangle_info.y=argument_list[4].int_reference;
-          image=CropImage(image,&rectangle_info);
+          image=CropImage(image,&rectangle_info,&exception);
           break;
         }
         case 9:  /* Despeckle */
         {
-          image=DespeckleImage(image);
+          image=DespeckleImage(image,&exception);
           break;
         }
         case 10:  /* Edge */
         {
           if (!attribute_flag[0])
             argument_list[0].double_reference=50.0;
-          image=EdgeImage(image,argument_list[0].double_reference);
+          image=EdgeImage(image,argument_list[0].double_reference,&exception);
           break;
         }
         case 11:  /* Emboss */
         {
-          image=EmbossImage(image);
+          image=EmbossImage(image,&exception);
           break;
         }
         case 12:  /* Enhance */
         {
-          image=EnhanceImage(image);
+          image=EnhanceImage(image,&exception);
           break;
         }
         case 13:  /* Flip */
         {
-          image=FlipImage(image);
+          image=FlipImage(image,&exception);
           break;
         }
         case 14:  /* Flop */
         {
-          image=FlopImage(image);
+          image=FlopImage(image,&exception);
           break;
         }
         case 15:  /* Frame */
@@ -3921,43 +3934,45 @@ Mogrify(ref,...)
           frame_info.height=image->rows+(frame_info.y << 1);
           if (attribute_flag[5])
             image->matte_color=pen_color;
-          image=FrameImage(image,&frame_info);
+          image=FrameImage(image,&frame_info,&exception);
           break;
         }
         case 16:  /* Implode */
         {
           if (!attribute_flag[0])
             argument_list[0].double_reference=30.0;
-          image=ImplodeImage(image,argument_list[0].double_reference);
+          image=
+            ImplodeImage(image,argument_list[0].double_reference,&exception);
           break;
         }
         case 17:  /* Magnify */
         {
-          image=MagnifyImage(image);
+          image=MagnifyImage(image,&exception);
           break;
         }
         case 18:  /* MedianFilter */
         {
           if (!attribute_flag[0])
             argument_list[0].int_reference=3;
-          image=MedianFilterImage(image,argument_list[0].int_reference);
+          image=
+            MedianFilterImage(image,argument_list[0].int_reference,&exception);
           break;
         }
         case 19:  /* Minify */
         {
-          image=MinifyImage(image);
+          image=MinifyImage(image,&exception);
           break;
         }
         case 20:  /* OilPaint */
         {
           if (!attribute_flag[0])
             argument_list[0].int_reference=3;
-          image=OilPaintImage(image,argument_list[0].int_reference);
+          image=OilPaintImage(image,argument_list[0].int_reference,&exception);
           break;
         }
         case 21:  /* ReduceNoise */
         {
-          image=ReduceNoiseImage(image);
+          image=ReduceNoiseImage(image,&exception);
           break;
         }
         case 22:  /* Roll */
@@ -3970,14 +3985,14 @@ Mogrify(ref,...)
             (void) ParseGeometry(argument_list[0].string_reference,
               &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
               &rectangle_info.height);
-          image=RollImage(image,rectangle_info.x,rectangle_info.y);
+          image=RollImage(image,rectangle_info.x,rectangle_info.y,&exception);
           break;
         }
         case 23:  /* Rotate */
         {
           if (!attribute_flag[0])
             argument_list[0].double_reference=90.0;
-          image=RotateImage(image,argument_list[0].double_reference);
+          image=RotateImage(image,argument_list[0].double_reference,&exception);
           break;
         }
         case 24:  /* Sample */
@@ -3990,7 +4005,8 @@ Mogrify(ref,...)
             (void) ParseImageGeometry(argument_list[0].string_reference,
               &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
               &rectangle_info.height);
-          image=SampleImage(image,rectangle_info.width,rectangle_info.height);
+          image=SampleImage(image,rectangle_info.width,rectangle_info.height,
+            &exception);
           break;
         }
         case 25:  /* Scale */
@@ -4003,7 +4019,8 @@ Mogrify(ref,...)
             (void) ParseImageGeometry(argument_list[0].string_reference,
               &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
               &rectangle_info.height);
-          image=ScaleImage(image,rectangle_info.width,rectangle_info.height);
+          image=ScaleImage(image,rectangle_info.width,rectangle_info.height,
+            &exception);
           break;
         }
         case 26:  /* Shade */
@@ -4022,14 +4039,15 @@ Mogrify(ref,...)
             (void) sscanf(argument_list[0].string_reference,"%lfx%lf",&azimuth,
               &elevation);
           image=ShadeImage(image,argument_list[3].int_reference,azimuth,
-            elevation);
+            elevation,&exception);
           break;
         }
         case 27:  /* Sharpen */
         {
           if (!attribute_flag[0])
             argument_list[0].double_reference=30.0;
-          image=SharpenImage(image,argument_list[0].double_reference);
+          image=
+            SharpenImage(image,argument_list[0].double_reference,&exception);
           break;
         }
         case 28:  /* Shear */
@@ -4047,21 +4065,21 @@ Mogrify(ref,...)
           if (attribute_flag[0])
             (void) sscanf(argument_list[0].string_reference,"%lfx%lf",&x_shear,
               &y_shear);
-          image=ShearImage(image,x_shear,y_shear);
+          image=ShearImage(image,x_shear,y_shear,&exception);
           break;
         }
         case 29:  /* Spread */
         {
           if (!attribute_flag[0])
             argument_list[0].int_reference=3;
-          image=SpreadImage(image,argument_list[0].int_reference);
+          image=SpreadImage(image,argument_list[0].int_reference,&exception);
           break;
         }
         case 30:  /* Swirl */
         {
           if (!attribute_flag[0])
             argument_list[0].double_reference=50.0;
-          image=SwirlImage(image,argument_list[0].double_reference);
+          image=SwirlImage(image,argument_list[0].double_reference,&exception);
           break;
         }
         case 31:  /* Zoom */
@@ -4078,7 +4096,8 @@ Mogrify(ref,...)
             image->filter=(FilterType) argument_list[3].int_reference;
           if (attribute_flag[4])
             image->blur=argument_list[4].double_reference;
-          image=ZoomImage(image,rectangle_info.width,rectangle_info.height);
+          image=ZoomImage(image,rectangle_info.width,rectangle_info.height,
+            &exception);
           break;
         }
         case 32:  /* IsGrayImage */
@@ -4606,7 +4625,7 @@ Mogrify(ref,...)
           if (attribute_flag[0])
             (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
               &amplitude,&wavelength);
-          image=WaveImage(image,amplitude,wavelength);
+          image=WaveImage(image,amplitude,wavelength,&exception);
           break;
         }
         case 61:  /* Layer */
@@ -4623,7 +4642,7 @@ Mogrify(ref,...)
               MagickWarning(OptionWarning,"Missing image in stereo",NULL);
               goto ReturnIt;
             }
-          image=StereoImage(image,argument_list[0].image_reference);
+          image=StereoImage(image,argument_list[0].image_reference,&exception);
           break;
         }
         case 64:  /* Stegano */
@@ -4636,17 +4655,17 @@ Mogrify(ref,...)
               goto ReturnIt;
             }
           image->offset=argument_list[1].int_reference;
-          image=SteganoImage(image,argument_list[0].image_reference);
+          image=SteganoImage(image,argument_list[0].image_reference,&exception);
           break;
         }
         case 65:  /* Coalesce */
         {
-          image=CoalesceImages(image);
+          image=CoalesceImages(image,&exception);
           break;
         }
         case 66:  /* Deconstruct */
         {
-          image=DeconstructImages(image);
+          image=DeconstructImages(image,&exception);
           break;
         }
       }
@@ -4728,6 +4747,9 @@ Montage(ref,...)
       *attribute,
       *p,
       *transparent_color;
+
+    ExceptionInfo
+      exception;
 
     ExceptionType
       severity;
@@ -5051,7 +5073,7 @@ Montage(ref,...)
       MagickWarning(OptionWarning,"Invalid attribute",attribute);
     }
     CatchImageException(image,&severity);
-    image=MontageImages(image,&montage_info);
+    image=MontageImages(image,&montage_info,&exception);
     CatchImageException(image,&severity);
     DestroyMontageInfo(&montage_info);
     if (!image)
@@ -5109,6 +5131,9 @@ Morph(ref,...)
 
     char
       *attribute;
+
+    ExceptionInfo
+      exception;
 
     ExceptionType
       severity;
@@ -5190,7 +5215,7 @@ Morph(ref,...)
       }
       MagickWarning(OptionWarning,"Invalid attribute",attribute);
     }
-    image=MorphImages(image,number_frames);
+    image=MorphImages(image,number_frames,&exception);
     CatchImageException(image,&severity);
     if (!image)
       goto MethodException;
@@ -5244,6 +5269,9 @@ Mosaic(ref)
     char
       *p;
 
+    ExceptionInfo
+      exception;
+
     ExceptionType
       severity;
 
@@ -5286,7 +5314,7 @@ Mosaic(ref)
         MagickWarning(OptionWarning,"No images to average",NULL);
         goto MethodException;
       }
-    image=MosaicImages(image);
+    image=MosaicImages(image,&exception);
     CatchImageException(image,&severity);
     if (!image)
       goto MethodException;
