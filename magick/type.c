@@ -231,34 +231,59 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   const StyleType style,const StretchType stretch,const unsigned long weight,
   ExceptionInfo *exception)
 {
+  const TypeInfo
+    *type_info;
+
   register const TypeInfo
     *p;
+
+  unsigned long
+    max_score,
+    score;
 
   /*
     Search for requested type.
   */
+  max_score=0;
+  type_info=(TypeInfo *) NULL;
   (void) GetTypeInfo("*",exception);
   for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
   {
+    score=0;
     if (p->family == (char *) NULL)
       continue;
     if (family == (char *) NULL)
       {
-        if (LocaleCompare(p->family,"helvetica") != 0)
-          continue;
+        if (LocaleCompare(p->family,"helvetica") == 0)
+          score+=64;
       }
     else
-      if (LocaleCompare(p->family,family) != 0)
-        continue;
-    if (p->style != style)
-      continue;
-    if (p->stretch != stretch)
-      continue;
+      if (LocaleCompare(p->family,family) == 0)
+        score+=64;
+    if (p->style == style)
+      score+=32;
+    else
+      if ((style == ItalicStyle) && (p->style == ObliqueStyle))
+        score+=16;
     if (p->weight != weight)
-      continue;
-    break;
+      score+=8;
+    else
+      if (AbsoluteValue(weight-(long) p->weight) <= 200)
+        score+=4;
+			else
+        if (AbsoluteValue(weight-(long) p->weight) <= 400)
+          score+=2;
+    if (p->stretch == stretch)
+      score+=1;
+    if (score > max_score)
+      {
+        max_score=score;
+        type_info=p;
+      }
   }
-  return(p);
+  if (max_score < 41)
+    return((TypeInfo *) NULL);
+  return(type_info);
 }
 
 /*
