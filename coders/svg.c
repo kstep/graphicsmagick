@@ -2787,6 +2787,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     AcquireMemory(number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+  IdentityAffine(&affine);
   token=AllocateString(attribute->value);
   active=False;
   n=0;
@@ -2805,7 +2806,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           Comment.
         */
         if (active)
-          (void) WriteBlobString(image,"\">\n");
+          {
+            FormatString(message,
+              "\" transform=\"matrix(%g %g %g %g %g %g)\">\n",affine.sx,
+              affine.rx,affine.ry,affine.sy,affine.tx,affine.ty);
+            (void) WriteBlobString(image,message);
+          }
         active=False;
         (void) WriteBlobString(image,"<desc>");
         (void) WriteBlobString(image,keyword+1);
@@ -3131,7 +3137,13 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               {
                 n++;
                 if (active)
-                  (void) WriteBlobString(image,"\">\n");
+                  {
+                    FormatString(message,
+                      "\" transform=\"matrix(%g %g %g %g %g %g)\">\n",
+                      affine.sx,affine.rx,affine.ry,affine.sy,affine.tx,
+                      affine.ty);
+                    (void) WriteBlobString(image,message);
+                  }
                 (void) WriteBlobString(image,"<g style=\"");
                 active=True;
               }
@@ -3200,8 +3212,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (*token == ',')
               GetToken(q,&q,token);
             affine.sy=atof(token);
-            FormatString(message,"scale(%g,%g) ",affine.sx,affine.sy);
-            (void) WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("skewX",keyword) == 0)
@@ -3326,8 +3336,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (*token == ',')
               GetToken(q,&q,token);
             affine.ty=atof(token);
-            FormatString(message,"translate(%g,%g) ",affine.tx,affine.ty);
-            (void) WriteBlobString(image,message);
             break;
           }
         status=False;
@@ -3407,6 +3415,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     primitive_info[j].text=(char *) NULL;
     if (active)
       (void) WriteBlobString(image,"\">\n");
+      {
+        FormatString(message,"\" transform=\"matrix(%g %g %g %g %g %g)\">\n",
+          affine.sx,affine.rx,affine.ry,affine.sy,affine.tx,affine.ty);
+       (void) WriteBlobString(image,message);
+     }
     active=False;
     switch (primitive_type)
     {
