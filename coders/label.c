@@ -58,16 +58,9 @@
 #include "xwindows.h"
 #endif
 #if defined(HasTTF)
-#if defined(HAVE_FREETYPE_FREETYPE_H)
 #include "freetype/freetype.h"
 #if FREETYPE_MAJOR > 1
 #include "freetype/ftglyph.h"
-#endif
-#else
-#include "freetype.h"
-#if FREETYPE_MAJOR > 1
-#include "ftglyph.h"
-#endif
 #endif
 #endif
 
