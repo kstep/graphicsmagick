@@ -52,29 +52,50 @@ MANPAGES = $(STDMANPAGES)
 endif
 bin_PROGRAMS = combine convert identify iptcutil mogrify montage $(X11PROGRAMS)
 
-# Per-executable sources
-display_SOURCES  = display.c
-animate_SOURCES  = animate.c
-import_SOURCES   = import.c
-iptcutil_SOURCES = iptcutil.c
-montage_SOURCES  = montage.c
-convert_SOURCES  = convert.c
-mogrify_SOURCES  = mogrify.c
-identify_SOURCES = identify.c
-combine_SOURCES  = combine.c
-
-# Temporary for magic testing
-#noinst_PROGRAMS  = magic
-#magic_SOURCES    = magic.c
-
-# Libtool libraries, dependencies, and linker flags used by all executables
+# Libtool libraries, dependencies, and linker flags used by most executables
 if WITH_MODULES
-LDADD		 = $(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
-LDFLAGS          = @LDFLAGS@ @DLLDFLAGS@
+COMMONLDADD	= $(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
+COMMONLDFLAGS	= @LDFLAGS@ @DLLDFLAGS@
 else
-LDADD		 = $(MAGICK_LIB)
-LDFLAGS	         = @LDFLAGS@
+COMMONLDADD	= $(MAGICK_LIB)
+COMMONLDFLAGS	= @LDFLAGS@
 endif # WITH_MODULES
+
+display_SOURCES   = display.c
+display_LDADD     = $(COMMONLDADD)
+display_LDFLAGS   = $(COMMONLDFLAGS)
+
+animate_SOURCES   = animate.c
+animate_LDADD     = $(COMMONLDADD)
+animate_LDFLAGS   = $(COMMONLDFLAGS)
+
+import_SOURCES    = import.c
+import_LDADD      = $(COMMONLDADD)
+import_LDFLAGS    = $(COMMONLDFLAGS)
+
+iptcutil_SOURCES  = iptcutil.c
+iptcutil_LDADD    = # Don't use ImageMagick LIBS
+iptcutil_LDFLAGS  = # Don't use ImageMagick LDFLAGS
+
+montage_SOURCES   = montage.c
+montage_LDADD     = $(COMMONLDADD)
+montage_LDFLAGS   = $(COMMONLDFLAGS)
+
+convert_SOURCES   = convert.c
+convert_LDADD     = $(COMMONLDADD)
+convert_LDFLAGS   = $(COMMONLDFLAGS)
+
+mogrify_SOURCES   = mogrify.c
+mogrify_LDADD     = $(COMMONLDADD)
+mogrify_LDFLAGS   = $(COMMONLDFLAGS)
+
+identify_SOURCES  = identify.c
+identify_LDADD    = $(COMMONLDADD)
+identify_LDFLAGS  = $(COMMONLDFLAGS)
+
+combine_SOURCES   = combine.c
+combine_LDADD     = $(COMMONLDADD)
+combine_LDFLAGS   = $(COMMONLDFLAGS)
 
 # Manual pages to install
 man_MANS = $(MANPAGES)

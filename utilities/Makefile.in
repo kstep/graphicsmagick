@@ -215,21 +215,46 @@ ALLMANPAGES = $(STDMANPAGES) $(X11MANPAGES)
 @HasX11_TRUE@MANPAGES = @HasX11_TRUE@$(ALLMANPAGES)
 @HasX11_FALSE@MANPAGES = @HasX11_FALSE@$(STDMANPAGES)
 bin_PROGRAMS = combine convert identify iptcutil mogrify montage $(X11PROGRAMS)
+@WITH_MODULES_TRUE@COMMONLDADD = @WITH_MODULES_TRUE@$(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@COMMONLDADD = @WITH_MODULES_FALSE@$(MAGICK_LIB)
+@WITH_MODULES_TRUE@COMMONLDFLAGS = @WITH_MODULES_TRUE@@LDFLAGS@ @DLLDFLAGS@
+@WITH_MODULES_FALSE@COMMONLDFLAGS = @WITH_MODULES_FALSE@@LDFLAGS@
 
-# Per-executable sources
 display_SOURCES = display.c
+display_LDADD = $(COMMONLDADD)
+display_LDFLAGS = $(COMMONLDFLAGS)
+
 animate_SOURCES = animate.c
+animate_LDADD = $(COMMONLDADD)
+animate_LDFLAGS = $(COMMONLDFLAGS)
+
 import_SOURCES = import.c
+import_LDADD = $(COMMONLDADD)
+import_LDFLAGS = $(COMMONLDFLAGS)
+
 iptcutil_SOURCES = iptcutil.c
+iptcutil_LDADD = # Don't use ImageMagick LIBS
+iptcutil_LDFLAGS = # Don't use ImageMagick LDFLAGS
+
 montage_SOURCES = montage.c
+montage_LDADD = $(COMMONLDADD)
+montage_LDFLAGS = $(COMMONLDFLAGS)
+
 convert_SOURCES = convert.c
+convert_LDADD = $(COMMONLDADD)
+convert_LDFLAGS = $(COMMONLDFLAGS)
+
 mogrify_SOURCES = mogrify.c
+mogrify_LDADD = $(COMMONLDADD)
+mogrify_LDFLAGS = $(COMMONLDFLAGS)
+
 identify_SOURCES = identify.c
+identify_LDADD = $(COMMONLDADD)
+identify_LDFLAGS = $(COMMONLDFLAGS)
+
 combine_SOURCES = combine.c
-@WITH_MODULES_TRUE@LDADD = @WITH_MODULES_TRUE@$(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@LDADD = @WITH_MODULES_FALSE@$(MAGICK_LIB)
-@WITH_MODULES_TRUE@LDFLAGS = @WITH_MODULES_TRUE@@LDFLAGS@ @DLLDFLAGS@
-@WITH_MODULES_FALSE@LDFLAGS = @WITH_MODULES_FALSE@@LDFLAGS@
+combine_LDADD = $(COMMONLDADD)
+combine_LDFLAGS = $(COMMONLDFLAGS)
 
 # Manual pages to install
 man_MANS = $(MANPAGES)
@@ -252,73 +277,54 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../magick
 CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 am_animate_OBJECTS =  animate.$(OBJEXT)
 animate_OBJECTS =  $(am_animate_OBJECTS)
-animate_LDADD = $(LDADD)
 @WITH_MODULES_FALSE@animate_DEPENDENCIES =  ../magick/libMagick.la
 @WITH_MODULES_TRUE@animate_DEPENDENCIES =  ../magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-animate_LDFLAGS = 
 am_combine_OBJECTS =  combine.$(OBJEXT)
 combine_OBJECTS =  $(am_combine_OBJECTS)
-combine_LDADD = $(LDADD)
 @WITH_MODULES_FALSE@combine_DEPENDENCIES =  ../magick/libMagick.la
 @WITH_MODULES_TRUE@combine_DEPENDENCIES =  ../magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-combine_LDFLAGS = 
 am_convert_OBJECTS =  convert.$(OBJEXT)
 convert_OBJECTS =  $(am_convert_OBJECTS)
-convert_LDADD = $(LDADD)
 @WITH_MODULES_FALSE@convert_DEPENDENCIES =  ../magick/libMagick.la
 @WITH_MODULES_TRUE@convert_DEPENDENCIES =  ../magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-convert_LDFLAGS = 
 am_display_OBJECTS =  display.$(OBJEXT)
 display_OBJECTS =  $(am_display_OBJECTS)
-display_LDADD = $(LDADD)
 @WITH_MODULES_FALSE@display_DEPENDENCIES =  ../magick/libMagick.la
 @WITH_MODULES_TRUE@display_DEPENDENCIES =  ../magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-display_LDFLAGS = 
 am_identify_OBJECTS =  identify.$(OBJEXT)
 identify_OBJECTS =  $(am_identify_OBJECTS)
-identify_LDADD = $(LDADD)
 @WITH_MODULES_FALSE@identify_DEPENDENCIES =  ../magick/libMagick.la
 @WITH_MODULES_TRUE@identify_DEPENDENCIES =  ../magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-identify_LDFLAGS = 
 am_import_OBJECTS =  import.$(OBJEXT)
 import_OBJECTS =  $(am_import_OBJECTS)
-import_LDADD = $(LDADD)
 @WITH_MODULES_FALSE@import_DEPENDENCIES =  ../magick/libMagick.la
 @WITH_MODULES_TRUE@import_DEPENDENCIES =  ../magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-import_LDFLAGS = 
 am_iptcutil_OBJECTS =  iptcutil.$(OBJEXT)
 iptcutil_OBJECTS =  $(am_iptcutil_OBJECTS)
-iptcutil_LDADD = $(LDADD)
-@WITH_MODULES_FALSE@iptcutil_DEPENDENCIES =  ../magick/libMagick.la
-@WITH_MODULES_TRUE@iptcutil_DEPENDENCIES =  ../magick/libMagick.la \
-@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-iptcutil_LDFLAGS = 
+iptcutil_DEPENDENCIES = 
 am_mogrify_OBJECTS =  mogrify.$(OBJEXT)
 mogrify_OBJECTS =  $(am_mogrify_OBJECTS)
-mogrify_LDADD = $(LDADD)
 @WITH_MODULES_FALSE@mogrify_DEPENDENCIES =  ../magick/libMagick.la
 @WITH_MODULES_TRUE@mogrify_DEPENDENCIES =  ../magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-mogrify_LDFLAGS = 
 am_montage_OBJECTS =  montage.$(OBJEXT)
 montage_OBJECTS =  $(am_montage_OBJECTS)
-montage_LDADD = $(LDADD)
 @WITH_MODULES_FALSE@montage_DEPENDENCIES =  ../magick/libMagick.la
 @WITH_MODULES_TRUE@montage_DEPENDENCIES =  ../magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-montage_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CFLAGS = @CFLAGS@
