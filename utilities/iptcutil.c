@@ -28,7 +28,6 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <string.h>
-#include <memory.h>
 #include <ctype.h>
 
 #ifdef _VISUALC_
