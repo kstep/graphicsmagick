@@ -513,9 +513,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   length=ReadBlobMSBLong(image);
   if (length == 8)
     length=ReadBlobMSBLong(image);
-  if (length == 0)
-    length=ReadBlobMSBLong(image);
-  else
+  if (length != 0)
     {
       /*
         Layer and mask block.
@@ -774,6 +772,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return(image);
     }
   compression=ReadBlobMSBShort(image);
+  if (compression == 0)
+    compression=ReadBlobMSBShort(image);
   if (compression == 1)
     {
       /*
