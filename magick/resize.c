@@ -1675,7 +1675,7 @@ MagickExport Image *ThumbnailImage(const Image *image,
   sample_image=SampleImage(image,5*columns,5*rows,exception);
   if (sample_image == (Image *) NULL)
     return((Image *) NULL);
-  thumbnail_image=ScaleImage(sample_image,columns,rows,exception);
+  thumbnail_image=ZoomImage(sample_image,columns,rows,exception);
   DestroyImage(sample_image);
   return(thumbnail_image);
 }
