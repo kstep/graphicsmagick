@@ -685,6 +685,7 @@ void Magick::DrawableRectangle::print (ostream& stream_) const
 {
   stream_ << "rectangle "
           << Coordinate( _upperLeftX, _upperLeftY )
+          << " "
           << Coordinate( _lowerRightX, _lowerRightY );
 }
 // Return polymorphic copy of object
