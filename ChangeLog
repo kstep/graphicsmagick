@@ -1,5 +1,6 @@
 2003-07-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/programming.html: Update Rmagick URL.
 	* GraphicsMagick.spec.in : Update according to instructions from
 	Troy Edwards.
 
