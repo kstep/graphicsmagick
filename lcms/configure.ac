@@ -9,7 +9,7 @@ AC_PREREQ(2.57)
 #
 # Set the package name and version
 #
-AC_INIT(lcms,1.13)
+AC_INIT(lcms,1.14)
 
 #
 # Libtool library revision control info
@@ -32,7 +32,7 @@ AC_INIT(lcms,1.13)
 #  6. If any interfaces have been removed since the last public release,
 #     then set age to 0.
 LIBRARY_CURRENT=1
-LIBRARY_REVISION=13
+LIBRARY_REVISION=14
 LIBRARY_AGE=0
 
 

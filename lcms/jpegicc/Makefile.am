@@ -1,7 +1,7 @@
 #
 # Makefile for building jpegicc
 # Written by Bob Friesenhahn, June 2003
-#
+# Bugs introduced by Marti Maria on October 2004
 
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.7 foreign
@@ -16,6 +16,7 @@ endif
 
 jpegicc_LDADD = $(top_builddir)/src/liblcms.la @JPEGICC_DEPLIBS@
 jpegicc_LDFLAGS = @LDFLAGS@
-jpegicc_SOURCES = jpegicc.c iccjpeg.c getopt.c
+jpegicc_SOURCES = jpegicc.c iccjpeg.c ../samples/xgetopt.c ../samples/vprf.c
+man_MANS = jpegicc.1
 
-EXTRA_DIST = iccjpeg.h jccolor.c jdcolor.c
+EXTRA_DIST = iccjpeg.h $(man_MANS)

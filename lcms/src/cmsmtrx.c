@@ -158,7 +158,8 @@ Fixed32 FixedMul(Fixed32 a, Fixed32 b)
 {
 #ifdef USE_INT64
        LONGLONG l = (LONGLONG) a * b + (LONGLONG) 0x8000;
-       return (Fixed32) (l >> 16);
+       l >>= 16;
+       return (Fixed32) l;
 #else
        return DOUBLE_TO_FIXED(FIXED_TO_DOUBLE(a) * FIXED_TO_DOUBLE(b));
 #endif
@@ -585,6 +586,8 @@ void MAT3evalW(LPWVEC3 r_, LPWMAT3 a_, LPWVEC3 v_)
 
 
 #else
+
+
 void MAT3evalW(LPWVEC3 r, LPWMAT3 a, LPWVEC3 v)
 {
     r->n[VX] = FixedMul(a->v[0].n[0], v->n[0]) +

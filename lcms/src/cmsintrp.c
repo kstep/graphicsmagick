@@ -532,6 +532,12 @@ WORD cmsReverseLinearInterpLUT16(WORD Value, WORD LutTable[], LPL16PARAMS p)
         while (LutTable[NumZeroes] == 0 && NumZeroes < p -> Domain)
                         NumZeroes++;
 
+        // There are no zeros at the beginning and we are trying to find a zero, so
+        // return anything. It seems zero would be the less destructive choice
+
+        if (NumZeroes == 0 && Value == 0)
+            return 0;
+
         NumPoles = 0;
         while (LutTable[p -> Domain - NumPoles] == 0xFFFF && NumPoles < p -> Domain)
                         NumPoles++;

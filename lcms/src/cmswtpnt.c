@@ -22,10 +22,14 @@
 
 #include "lcms.h"
 
+// Uncomment this line if you want lcms to use the black point tag in profile, 
+// if commented, lcms will compute the black point by its own. 
+// It is safer to leve it commented out
+// #define HONOR_BLACK_POINT_TAG
 
 // Conversions
 
-void LCMSEXPORT cmsXYZ2xyY(LPcmsCIExyY Dest, const LPcmsCIEXYZ Source)
+void LCMSEXPORT cmsXYZ2xyY(LPcmsCIExyY Dest, const cmsCIEXYZ* Source)
 {
        double ISum;
 
@@ -37,7 +41,7 @@ void LCMSEXPORT cmsXYZ2xyY(LPcmsCIExyY Dest, const LPcmsCIEXYZ Source)
 }
 
 
-void LCMSEXPORT cmsxyY2XYZ(LPcmsCIEXYZ Dest, const LPcmsCIExyY Source)
+void LCMSEXPORT cmsxyY2XYZ(LPcmsCIEXYZ Dest, const cmsCIExyY* Source)
 {
 
         Dest -> X = (Source -> x / Source -> y) * Source -> Y;
@@ -210,7 +214,7 @@ void ComputeChromaticAdaptation(LPMAT3 Conversion,
 }
 
 
-// Returns the final chrmatic adaptation from illuminant FromIll to Illuminant ToIll
+// Returns the final chromatic adaptation from illuminant FromIll to Illuminant ToIll
 // The cone matrix can be specified in ConeMatrix. If NULL, Bradford is assumed
 
 BOOL cmsAdaptationMatrix(LPMAT3 r, LPMAT3 ConeMatrix, LPcmsCIEXYZ FromIll, LPcmsCIEXYZ ToIll)
@@ -513,7 +517,7 @@ int BlackPointAsDarkerColorant(cmsHPROFILE hInput,
     
     cmsDoTransform(xform, Black, &Lab, 1);
 
-    // Force it to be neutral
+    // Force it to be neutral, clip to max. L* of 50
 
     Lab.a = Lab.b = 0;
     if (Lab.L > 50) Lab.L = 50;
@@ -618,7 +622,6 @@ int GetV4PerceptualBlack(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, DWORD dwF
             D50BlackPoint.X = PERCEPTUAL_BLACK_X; 
             D50BlackPoint.Y = PERCEPTUAL_BLACK_Y;
             D50BlackPoint.Z = PERCEPTUAL_BLACK_Z;
-
             cmsAdaptToIlluminant(BlackPoint, cmsD50_XYZ(), &MediaWhite, &D50BlackPoint);
         }
 
@@ -647,8 +650,10 @@ int cmsDetectBlackPoint(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, int Intent
        return GetV4PerceptualBlack(BlackPoint, hProfile, dwFlags);
     }
 
-    // v2, v4 rel/abs colorimetric
 
+#ifdef HONOR_BLACK_POINT_TAG
+
+    // v2, v4 rel/abs colorimetric
     if (cmsIsTag(hProfile, icSigMediaBlackPointTag) && 
                     Intent == INTENT_RELATIVE_COLORIMETRIC) {
 
@@ -680,13 +685,14 @@ int cmsDetectBlackPoint(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, int Intent
                     *BlackPoint = TrustedBlackPoint;
     }
 
+#endif
     
     // If output profile, discount ink-limiting
 
     if (Intent == INTENT_RELATIVE_COLORIMETRIC && 
             (cmsGetDeviceClass(hProfile) == icSigOutputClass) &&
-            (cmsGetColorSpace(hProfile) == icSigCmykData) )
-            return BlackPointUsingPerceptualBlack(BlackPoint, hProfile, dwFlags);
+            (cmsGetColorSpace(hProfile) == icSigCmykData))
+                return BlackPointUsingPerceptualBlack(BlackPoint, hProfile, dwFlags);
 
     // Nope, compute BP using current intent.
 

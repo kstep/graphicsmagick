@@ -36,19 +36,29 @@ int    cdecl xgetopt(int argc, char *argv[], char *optionS);
 
 // ------------------------------------------------------------------------
 
-static BOOL InHexa = FALSE;
-static BOOL InPer100 = FALSE;
-static int  Verbose = 0;
-static char *cInProf = NULL;
-static char *cOutProf = NULL;
-static int Intent = INTENT_PERCEPTUAL;
+// Stock profiles function
+extern cmsHPROFILE OpenStockProfile(const char* File);
+
+
+static BOOL InHexa          = FALSE;
+static BOOL Verbose         = FALSE;
+static BOOL GamutCheck      = FALSE;
+
+static char *cInProf   = NULL;
+static char *cOutProf  = NULL;
+static char *cProofing = NULL;
+
+static int Intent           = INTENT_PERCEPTUAL;
+static int ProofingIntent   = INTENT_PERCEPTUAL;
+
 static BOOL Width16 = FALSE;
-static BOOL WhiteBlackCompensation = FALSE;
+static BOOL BlackPointCompensation = FALSE;
+
 static int PrecalcMode             = 0;
 static BOOL lIsDeviceLink          = FALSE;
 static BOOL lTerse     = FALSE;
 
-static cmsHPROFILE hInput, hOutput, hLab, hXYZ;
+static cmsHPROFILE hInput, hOutput, hProof, hLab, hXYZ;
 static cmsHTRANSFORM hTrans, hTransXYZ, hTransLab;
 
 static icColorSpaceSignature InputColorSpace, OutputColorSpace;
@@ -91,17 +101,13 @@ void HandleSwitches(int argc, char *argv[])
 {
        int s;
       
-       while ((s = xgetopt(argc,argv,"%C:c:VvWwxXhHbBnNI:i:O:o:T:t:L:l:")) != EOF) {
+       while ((s = xgetopt(argc,argv,"%C:c:VvWwxXhHbBnNI:i:O:o:T:t:L:l:p:P:m:M:gG")) != EOF) {
 
        switch (s){
-
-       case '%' : 
-           InPer100 = TRUE;
-           break;
-
+       
        case 'b':
        case 'B': 
-           WhiteBlackCompensation = TRUE;
+           BlackPointCompensation = TRUE;
            break;
 
      
@@ -157,9 +163,27 @@ void HandleSwitches(int argc, char *argv[])
 
        case 'l':
        case 'L': 
-                cInProf = xoptarg;
-                lIsDeviceLink = TRUE;
-                break;
+            cInProf = xoptarg;
+            lIsDeviceLink = TRUE;
+            break;
+
+
+       case 'p':
+       case 'P':
+           cProofing = xoptarg;
+           break;
+
+       case 'm':
+       case 'M':
+            ProofingIntent = atoi(xoptarg);
+            if (ProofingIntent > 3) ProofingIntent = 3;
+            if (ProofingIntent < 0) ProofingIntent = 0;
+            break;
+
+        case 'g':
+        case 'G':
+            GamutCheck = TRUE;
+            break;
 
   default:
 
@@ -171,28 +195,8 @@ void HandleSwitches(int argc, char *argv[])
 
 
 
-static
-cmsHPROFILE OpenProfile(const char* File)
-{   
-       if (!File) 
-            return cmsCreate_sRGBProfile();    
-       
-       if (stricmp(File, "*Lab") == 0)
-                return cmsCreateLabProfile(NULL);
-       
-       if (stricmp(File, "*LabD65") == 0) {
 
-           cmsCIExyY D65xyY;
-           
-           cmsWhitePointFromTemp(6504, &D65xyY);           
-           return cmsCreateLabProfile(&D65xyY);
-       }
 
-       if (stricmp(File, "*XYZ") == 0)
-                return cmsCreateXYZProfile();
-           
-        return cmsOpenProfileFromFile(File, "r");
-}
 
 static
 void OpenTransforms(void)
@@ -200,6 +204,9 @@ void OpenTransforms(void)
 
     DWORD dwIn, dwOut, dwFlags;
 
+    dwFlags = 0;
+    
+    
     if (lIsDeviceLink) {
 
             hInput  = cmsOpenProfileFromFile(cInProf, "r");
@@ -211,8 +218,15 @@ void OpenTransforms(void)
        }
     else {
 
-            hInput  = OpenProfile(cInProf);
-            hOutput = OpenProfile(cOutProf);    
+            hInput  = OpenStockProfile(cInProf);
+            hOutput = OpenStockProfile(cOutProf);    
+            hProof  = NULL;
+
+            if (cProofing != NULL) {
+
+                   hProof = OpenStockProfile(cProofing);
+                   dwFlags |= cmsFLAGS_SOFTPROOFING;
+            }
 
             InputColorSpace   = cmsGetColorSpace(hInput);
             OutputColorSpace  = cmsGetColorSpace(hOutput);
@@ -234,14 +248,10 @@ void OpenTransforms(void)
             if (hOutput) printf("To  : %s\n\n", cmsTakeProductName(hOutput));
        }
 
-
       
-
        dwIn  = BYTES_SH(2) | CHANNELS_SH(_cmsChannelsOf(InputColorSpace));
        dwOut = BYTES_SH(2) | CHANNELS_SH(_cmsChannelsOf(OutputColorSpace));
-
-       dwFlags = 0; 
-       
+              
        switch (PrecalcMode) {
            
        case 0: dwFlags |= cmsFLAGS_NOTPRECALC; break;
@@ -253,21 +263,38 @@ void OpenTransforms(void)
        }
        
        
-       if (WhiteBlackCompensation) 
-            dwFlags |= cmsFLAGS_WHITEBLACKCOMPENSATION;
+       if (BlackPointCompensation) 
+            dwFlags |= cmsFLAGS_BLACKPOINTCOMPENSATION;
 
-       hTrans     = cmsCreateTransform(hInput,  dwIn,
-                                       hOutput, dwOut,
-                                        Intent, dwFlags);
+       if (GamutCheck) {
 
+            if (hProof == NULL)
+                FatalError("I need proofing profile -p for gamut checking!");
+
+            cmsSetAlarmCodes(0xFF, 0xFF, 0xFF);
+            dwFlags |= cmsFLAGS_GAMUTCHECK;            
+       }
+
+       if (cmsGetDeviceClass(hInput) == icSigNamedColorClass) {
+           dwIn = TYPE_NAMED_COLOR_INDEX;
+       }
+
+       hTrans     = cmsCreateProofingTransform(hInput,  dwIn,
+                                               hOutput, dwOut,
+                                               hProof,
+                                               Intent, ProofingIntent, dwFlags);
+
+
+       
+       
        hTransXYZ = NULL; hTransLab = NULL;
        if (hOutput && Verbose) {
 
-       hTransXYZ = cmsCreateTransform(hInput, dwIn,
+            hTransXYZ = cmsCreateTransform(hInput, dwIn,
                                       hXYZ,  TYPE_XYZ_16,
                                       Intent, cmsFLAGS_NOTPRECALC);
 
-       hTransLab = cmsCreateTransform(hInput, dwIn,
+            hTransLab = cmsCreateTransform(hInput, dwIn,
                                       hLab,  TYPE_Lab_16,
                                       Intent, cmsFLAGS_NOTPRECALC);    
        }
@@ -282,7 +309,8 @@ void CloseTransforms(void)
        if (hTransLab) cmsDeleteTransform(hTransLab);
        if (hTransXYZ) cmsDeleteTransform(hTransXYZ);
        cmsCloseProfile(hInput);
-       if (hOutput) cmsCloseProfile(hOutput);      
+       if (hOutput) cmsCloseProfile(hOutput); 
+       if (hProof) cmsCloseProfile(hProof);
        cmsCloseProfile(hXYZ);
        cmsCloseProfile(hLab);
 
@@ -290,7 +318,7 @@ void CloseTransforms(void)
 
 
 static
-void PrintOne(const char* C, double v)
+void PrintRange(const char* C, double v, double Range)
 {
     char Prefix[20];
 
@@ -308,13 +336,24 @@ void PrintOne(const char* C, double v)
     }
     else
     {       
-        if (InPer100)
-            printf("%s%.2f%% ", Prefix, ((v * 100.) / 65535.));
-        else
-            printf("%s%.2f ", Prefix, v / 257.);
+
+        double out = (v * Range) / 65535.0;        
+        printf("%s%.2f ", Prefix, out);
     }
 }
 
+
+static
+void PrintOne(const char* C, double v)
+{
+       PrintRange(C, v, 255.0);
+}
+
+static
+void Print100(const char* C, double v)
+{
+       PrintRange(C, v, 100.0);
+}
 
 static
 void PrintCooked(const char* C, double v)
@@ -335,56 +374,81 @@ void PrintResults(WORD Encoded[], icColorSpaceSignature ColorSpace)
 
     case icSigXYZData:
                     cmsXYZEncoded2Float(&xyz, Encoded);
-                    PrintCooked("X", xyz.X * 100.); PrintCooked("Y", xyz.Y * 100.); PrintCooked("Z", xyz.Z * 100.);
+                    PrintCooked("X", xyz.X * 100.); 
+                    PrintCooked("Y", xyz.Y * 100.); 
+                    PrintCooked("Z", xyz.Z * 100.);
                     break;
 
     case icSigLabData:
                     cmsLabEncoded2Float(&Lab, Encoded);
-                    PrintCooked("L*", Lab.L); PrintCooked("a*", Lab.a); PrintCooked("b*", Lab.b);
+                    PrintCooked("L*", Lab.L); 
+                    PrintCooked("a*", Lab.a); 
+                    PrintCooked("b*", Lab.b);
                     break;
 
     case icSigLuvData:
-                    PrintOne("L", Encoded[0]); PrintOne("u", Encoded[1]); PrintOne("v", Encoded[2]);
+                    PrintOne("L", Encoded[0]); 
+                    PrintOne("u", Encoded[1]); 
+                    PrintOne("v", Encoded[2]);
                     break;
 
     case icSigYCbCrData:
-                    PrintOne("Y", Encoded[0]); PrintOne("Cb", Encoded[1]); PrintOne("Cr", Encoded[2]);
+                    PrintOne("Y", Encoded[0]); 
+                    PrintOne("Cb", Encoded[1]); 
+                    PrintOne("Cr", Encoded[2]);
                     break;
 
 
     case icSigYxyData:
-                    PrintOne("Y", Encoded[0]); PrintOne("x", Encoded[1]); PrintOne("y", Encoded[2]);
+                    PrintOne("Y", Encoded[0]); 
+                    PrintOne("x", Encoded[1]); 
+                    PrintOne("y", Encoded[2]);
                     break;
 
     case icSigRgbData:
-                    PrintOne("R", Encoded[0]); PrintOne("G", Encoded[1]); PrintOne("B", Encoded[2]);
+                    PrintOne("R", Encoded[0]); 
+                    PrintOne("G", Encoded[1]); 
+                    PrintOne("B", Encoded[2]);
                     break;
 
     case icSigGrayData:
-                    PrintOne("L", Encoded[0]); 
+                    PrintOne("G", Encoded[0]); 
                     break;
 
     case icSigHsvData:
-                    PrintOne("H", Encoded[0]); PrintOne("s", Encoded[1]); PrintOne("v", Encoded[2]);
+                    PrintOne("H", Encoded[0]); 
+                    PrintOne("s", Encoded[1]); 
+                    PrintOne("v", Encoded[2]);
                     break;
 
     case icSigHlsData:
-                    PrintOne("H", Encoded[0]); PrintOne("l", Encoded[1]); PrintOne("s", Encoded[2]);
+                    PrintOne("H", Encoded[0]); 
+                    PrintOne("l", Encoded[1]); 
+                    PrintOne("s", Encoded[2]);
                     break;
 
     case icSigCmykData:
-                    PrintOne("C", Encoded[0]); PrintOne("M", Encoded[1]); PrintOne("Y", Encoded[2]); PrintOne("K", Encoded[3]);
+                    Print100("C", Encoded[0]); 
+                    Print100("M", Encoded[1]); 
+                    Print100("Y", Encoded[2]); 
+                    Print100("K", Encoded[3]);
                     break;
 
     case icSigCmyData:                        
-                    PrintOne("C", Encoded[0]); PrintOne("M", Encoded[1]); PrintOne("Y", Encoded[2]); 
+                    Print100("C", Encoded[0]); 
+                    Print100("M", Encoded[1]); 
+                    Print100("Y", Encoded[2]); 
                     break;
 
     case icSigHexachromeData:
     case icSig6colorData:
                             
-                    PrintOne("C", Encoded[0]); PrintOne("M", Encoded[1]); PrintOne("Y", Encoded[2]); 
-                    PrintOne("K", Encoded[3]); PrintOne("c", Encoded[1]); PrintOne("m", Encoded[2]); 
+                    Print100("C", Encoded[0]); 
+                    Print100("M", Encoded[1]); 
+                    Print100("Y", Encoded[2]); 
+                    Print100("K", Encoded[3]); 
+                    Print100("c", Encoded[1]); 
+                    Print100("m", Encoded[2]); 
                     break;
 
     default:
@@ -396,144 +460,203 @@ void PrintResults(WORD Encoded[], icColorSpaceSignature ColorSpace)
             PrintOne(Buffer, Encoded[i]);           
         }   
     }
+
+
+
 }
 
 
-static 
-int GetVal(const char* AskFor)
-{
-    char Buffer[256];
-    double tmp;
-    int tmp_hexa;
-    char *Max;
-    char* MaxTbl[] = { "255",
-                     "65535",
-                     "FF",
-                     "FFFF" };
 
-    Max = MaxTbl[InHexa * 2 + Width16];
-
-    if (InPer100) Max = "100";
-
-    if (xisatty(stdin))
-           printf("%s (0..%s)? ", AskFor, Max);
-
+static
+void GetLine(char* Buffer)
+{    
     scanf("%s", Buffer);
+    
+    if (toupper(Buffer[0]) == 'Q') { // Quit?
 
-    // Quit?
-
-    if (toupper(Buffer[0]) == 'Q') {
         CloseTransforms();
 
         if (xisatty(stdin))  
             printf("Done.\n");
 
-        exit(0);
-        
+        exit(0);        
     }
 
+}
 
-    if (InHexa) {
-        sscanf(Buffer, "%x", &tmp_hexa);
-        tmp = (double) tmp_hexa;
+
+static
+double GetAnswer(const char* Prompt, double Range)
+{
+    char Buffer[4096];
+    double val = 0.0;
+    
+    
+    if (Range == 0.0) {              // Range 0 means double value
+        
+        if (xisatty(stdin)) printf("%s? ", Prompt);
+        GetLine(Buffer);
+        return atof(Buffer);
+        
     }
     else {
+        
+        if (InHexa) {   // Hexadecimal
+            
+            int hexa;
+            
+            if (Width16)
+                Range = 0xFFFF;
+            else
+                Range = 0xFF;
+            
+            if (xisatty(stdin)) printf("%s (0..%X)? ", Prompt, (int) Range);
+            GetLine(Buffer);
+            sscanf(Buffer, "%x", &hexa);
+            val = hexa;
+        }
+        else {                      // Normal usage
+            
+            if (xisatty(stdin)) printf("%s (0..%d)? ", Prompt, (int) Range);
+            GetLine(Buffer);
+            sscanf(Buffer, "%lf", &val);
+        }
+        
+        // Normalize to 0..0xffff
+        
+        return floor((val * 65535.0) / Range + 0.5);            
+    }    
+}
 
-        sscanf(Buffer, "%lf", &tmp);
-    }
 
-    if (!Width16)
-        tmp *= 257.0;
-
-    if (InPer100)
-        tmp *= (255. / 100.);
-
-    return (int) floor(tmp + 0.5);
+static
+WORD Get100(const char* AskFor)
+{
+    return (WORD) GetAnswer(AskFor, 100.0);
 }
 
 
 static 
+WORD GetVal(const char* AskFor)
+{
+    return (WORD) GetAnswer(AskFor, 255.0);
+}
+
+
+static
 double GetDbl(const char* AskFor)
 {
-  char Buffer[256];
-  
-  if (xisatty(stdin))
-           printf("%s? ", AskFor);
+    return GetAnswer(AskFor, 0.0);
+}
 
-    scanf("%s", Buffer);
 
-    // Quit?
+static
+WORD GetIndex(void)
+{
+    char Buffer[4096], Name[40], Prefix[40], Suffix[40];
+    int index, max;
 
-    if (toupper(Buffer[0]) == 'Q') {
-        CloseTransforms();
+    max = cmsNamedColorCount(hTrans)-1;
 
-        if (xisatty(stdin))  
-            printf("Done.\n");
+    if (xisatty(stdin)) printf("Color index (0..%d)? ", max);
 
-        exit(0);
-        
-    }
+    GetLine(Buffer);
+    index = atoi(Buffer);
 
-   
-    return atof(Buffer);
+    if (index > max)
+            FatalError("Named color %d out of range!", index);
+
+    cmsNamedColorInfo(hTrans, index, Name, Prefix, Suffix);
+
+    printf("\n%s %s %s: ", Prefix, Name, Suffix);
+
+    return index;
 }
 
 
 static
 void TakeValues(WORD Encoded[])
 {
+
+    if (cmsGetDeviceClass(hInput) == icSigNamedColorClass) {
+        Encoded[0] = GetIndex();
+        return;
+    }
+       
     switch (InputColorSpace) {
 
     case icSigXYZData:
-                    xyz.X = GetDbl("X"); xyz.Y = GetDbl("Y"); xyz.Z = GetDbl("Z");
+                    xyz.X = GetDbl("X"); 
+                    xyz.Y = GetDbl("Y"); 
+                    xyz.Z = GetDbl("Z");
                     cmsFloat2XYZEncoded(Encoded, &xyz);                 
                     break;
 
     case icSigLabData:
-                    Lab.L= GetDbl("L*"); Lab.a= GetDbl("a*"); Lab.b = GetDbl("b*");
+                    Lab.L = GetDbl("L*"); 
+                    Lab.a = GetDbl("a*"); 
+                    Lab.b = GetDbl("b*");
                     cmsFloat2LabEncoded(Encoded, &Lab);                 
                     break;
 
     case icSigLuvData:
-                    Encoded[0] = GetVal("L"); Encoded[1] = GetVal("u"); Encoded[2] = GetVal("v"); 
+                    Encoded[0] = GetVal("L"); 
+                    Encoded[1] = GetVal("u"); 
+                    Encoded[2] = GetVal("v"); 
                     break;
 
     case icSigYCbCrData:
-                    Encoded[0] = GetVal("Y"); Encoded[1] = GetVal("Cb"); Encoded[2] = GetVal("Cr"); 
+                    Encoded[0] = GetVal("Y"); 
+                    Encoded[1] = GetVal("Cb"); 
+                    Encoded[2] = GetVal("Cr"); 
                     break;
 
 
     case icSigYxyData:
-                    Encoded[0] = GetVal("Y"); Encoded[1] = GetVal("x"); Encoded[2] = GetVal("y"); 
+                    Encoded[0] = GetVal("Y"); 
+                    Encoded[1] = GetVal("x"); 
+                    Encoded[2] = GetVal("y"); 
                     break;
 
     case icSigRgbData:
-                    Encoded[0] = GetVal("R"); Encoded[1] = GetVal("G"); Encoded[2] = GetVal("B"); 
+                    Encoded[0] = GetVal("R"); 
+                    Encoded[1] = GetVal("G"); 
+                    Encoded[2] = GetVal("B"); 
                     break;
 
     case icSigGrayData:
-                    Encoded[0] = GetVal("L");
+                    Encoded[0] = GetVal("G");
                     break;
 
     case icSigHsvData:
-                    Encoded[0] = GetVal("H"); Encoded[1] = GetVal("s"); Encoded[2] = GetVal("v"); 
+                    Encoded[0] = GetVal("H"); 
+                    Encoded[1] = GetVal("s"); 
+                    Encoded[2] = GetVal("v"); 
                     break;
 
     case icSigHlsData:
-                    Encoded[0] = GetVal("H"); Encoded[1] = GetVal("l"); Encoded[2] = GetVal("s"); 
+                    Encoded[0] = GetVal("H"); 
+                    Encoded[1] = GetVal("l"); 
+                    Encoded[2] = GetVal("s"); 
                     break;
 
     case icSigCmykData:
-                    Encoded[0] = GetVal("C"); Encoded[1] = GetVal("M"); Encoded[2] = GetVal("Y"); Encoded[3] = GetVal("K"); 
+                    Encoded[0] = Get100("C"); 
+                    Encoded[1] = Get100("M"); 
+                    Encoded[2] = Get100("Y"); 
+                    Encoded[3] = Get100("K"); 
                     break;
 
     case icSigCmyData:                        
-                    Encoded[0] = GetVal("C"); Encoded[1] = GetVal("M"); Encoded[2] = GetVal("Y"); 
+                    Encoded[0] = Get100("C"); 
+                    Encoded[1] = Get100("M"); 
+                    Encoded[2] = Get100("Y"); 
                     break;
 
     case icSigHexachromeData:    
-                    Encoded[0] = GetVal("C"); Encoded[1] = GetVal("M"); Encoded[2] = GetVal("Y"); Encoded[3] = GetVal("K"); 
-                    Encoded[4] = GetVal("c"); Encoded[5] = GetVal("m");                                       
+                    Encoded[0] = Get100("C"); Encoded[1] = Get100("M"); 
+                    Encoded[2] = Get100("Y"); Encoded[3] = Get100("K"); 
+                    Encoded[4] = Get100("c"); Encoded[5] = Get100("m");                                       
                     break;
 
     case icSigHeptachromeData:
@@ -581,13 +704,16 @@ void Help(void)
 
      fprintf(stderr, "%ct<0,1,2,3> - Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute)\n", SW);    
      
-     fprintf(stderr, "%cw - use 16 bits\n", SW);
-     fprintf(stderr, "%c%% - use percent %% of ink\n", SW);
+     fprintf(stderr, "%cw - use 16 bits\n", SW);     
      fprintf(stderr, "%cx - Hexadecimal\n\n", SW);
      fprintf(stderr, "%cb - Black point compensation\n", SW);
      fprintf(stderr, "%cc<0,1,2,3> - Precalculates transform (0=Off, 1=Normal, 2=Hi-res, 3=LoRes) [defaults to 0]\n", SW);     
      fprintf(stderr, "%cn - Terse output, intended for pipe usage\n\n", SW);
 
+     fprintf(stderr, "%cp<profile> - Soft proof profile\n", SW);
+     fprintf(stderr, "%cm<0,1,2,3> - Soft proof intent\n", SW);
+     fprintf(stderr, "%cg - Marks out-of-gamut colors on softproof\n\n", SW);
+     
      fprintf(stderr, "This program is intended to be a demo of the little cms\n"
                      "engine. Both lcms and this program are freeware. You can\n"
                      "obtain both in source code at http://www.littlecms.com\n"
@@ -604,11 +730,10 @@ int main(int argc, char *argv[])
     WORD Input[MAXCHANNELS], Output[MAXCHANNELS], PCSLab[MAXCHANNELS], PCSxyz[MAXCHANNELS];
 
     
-    fprintf(stderr, "little cms ColorSpace conversion calculator - v1.7\n\n");
+    fprintf(stderr, "little cms ColorSpace conversion calculator - v1.8\n\n");
 
       if (argc == 1)  
               Help();              
-
 
       HandleSwitches(argc, argv);
 
@@ -632,11 +757,10 @@ int main(int argc, char *argv[])
             if (hTransXYZ) cmsDoTransform(hTransXYZ, Input, PCSxyz, 1);
             if (hTransLab) cmsDoTransform(hTransLab, Input, PCSLab, 1);
           }
-
+                    
           if (xisatty(stdin))
-                printf("\n\n");
-
-          
+                printf("\n");
+         
           PrintResults(Output, OutputColorSpace); printf("\n");
 
           if (Verbose && hTransXYZ && hTransLab) {

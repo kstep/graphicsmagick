@@ -156,7 +156,7 @@ double f(double t)
 }
 
 
-void LCMSEXPORT cmsXYZ2Lab(LPcmsCIEXYZ WhitePoint, LPcmsCIELab Lab, const LPcmsCIEXYZ xyz)
+void LCMSEXPORT cmsXYZ2Lab(LPcmsCIEXYZ WhitePoint, LPcmsCIELab Lab, const cmsCIEXYZ* xyz)
 {
        double fx, fy, fz;
 
@@ -255,7 +255,7 @@ double f_1(double t)
 
 
 
-void LCMSEXPORT cmsLab2XYZ(LPcmsCIEXYZ WhitePoint, LPcmsCIEXYZ xyz,  const LPcmsCIELab Lab)
+void LCMSEXPORT cmsLab2XYZ(LPcmsCIEXYZ WhitePoint, LPcmsCIEXYZ xyz,  const cmsCIELab* Lab)
 {
         double x, y, z;
 
@@ -402,7 +402,7 @@ void LCMSEXPORT cmsLabEncoded2Float4(LPcmsCIELab Lab, const WORD wLab[3])
 }
 
 
-void LCMSEXPORT cmsFloat2LabEncoded(WORD wLab[3], const LPcmsCIELab fLab)
+void LCMSEXPORT cmsFloat2LabEncoded(WORD wLab[3], const cmsCIELab* fLab)
 {
     cmsCIELab Lab;
 
@@ -427,7 +427,7 @@ void LCMSEXPORT cmsFloat2LabEncoded(WORD wLab[3], const LPcmsCIELab fLab)
 }
 
 
-void LCMSEXPORT cmsFloat2LabEncoded4(WORD wLab[3], const LPcmsCIELab fLab)
+void LCMSEXPORT cmsFloat2LabEncoded4(WORD wLab[3], const cmsCIELab* fLab)
 {
     cmsCIELab Lab;
 
@@ -454,13 +454,17 @@ void LCMSEXPORT cmsFloat2LabEncoded4(WORD wLab[3], const LPcmsCIELab fLab)
 
 
 
-void LCMSEXPORT cmsLab2LCh(LPcmsCIELCh LCh, const LPcmsCIELab Lab)
+void LCMSEXPORT cmsLab2LCh(LPcmsCIELCh LCh, const cmsCIELab* Lab)
 {
 
     LCh -> L = Lab -> L;
     LCh -> C = pow(Lab -> a * Lab -> a + Lab -> b * Lab -> b, 0.5);
 
-    LCh -> h = atan2(Lab -> b, Lab -> a);
+    if (Lab -> a == 0 && Lab -> b == 0)
+            LCh -> h   = 0;
+    else
+            LCh -> h = atan2(Lab -> b, Lab -> a);
+    
 
     LCh -> h *= (180. / M_PI);
 
@@ -473,7 +477,7 @@ void LCMSEXPORT cmsLab2LCh(LPcmsCIELCh LCh, const LPcmsCIELab Lab)
 
 }
 
-void LCMSEXPORT cmsLCh2Lab(LPcmsCIELab Lab, const LPcmsCIELCh LCh)
+void LCMSEXPORT cmsLCh2Lab(LPcmsCIELab Lab, const cmsCIELCh* LCh)
 {
     double h = LCh -> h;        
     double tanh = tan((h * M_PI) / 180.0);       
@@ -533,7 +537,7 @@ WORD XYZ2Fix(double d)
 }
 
 
-void LCMSEXPORT cmsFloat2XYZEncoded(WORD XYZ[3], const LPcmsCIEXYZ fXYZ)
+void LCMSEXPORT cmsFloat2XYZEncoded(WORD XYZ[3], const cmsCIEXYZ* fXYZ)
 {
     cmsCIEXYZ xyz;
     

@@ -25,6 +25,10 @@
 // #define ICM_COMPARATIVE      1
 //#define CHECK_SPEED          1
 
+#ifdef __BORLANDC__
+#     include <condefs.h>
+#endif
+
 #include "lcms.h"
 #include <time.h>
 #include <stdio.h>
@@ -585,7 +589,7 @@ BOOL TestReverseLinearInterpolation(void)
 
         cmsCalcL16Params(16, &p);
 
-        for (i=0; i < 16; i++) Tab[i] = i * 0x1111;
+        for (i=0; i < 16; i++) Tab[i] = (WORD) i * 0x1111;
 
         printf("\ton normal monotonic curve...");
         for (i=0; i < 16; i++)
@@ -899,9 +903,10 @@ int TestFullSpectrum(cmsHTRANSFORM xform, int nRedInterv, int MaxErr)
 
                             for (b=0; b < 256; b++)
                             {
-                            bin[b].r = r << 8;          // For L 0nly to 0xFF00
+                            bin[b].r = (WORD) r << 8;          // For L 0nly to 0xFF00
                             bin[b].g = RGB_8_TO_16(g);
                             bin[b].b = RGB_8_TO_16(b);
+                            bin[b].a = 0;
                             }
 
                             cmsDoTransform(xform, bin, bout, 256);
@@ -963,7 +968,7 @@ int TestInducedError(DWORD Type)
                                   INTENT_RELATIVE_COLORIMETRIC, 0);
               
 
-       nMaxError = TestFullSpectrum(xform, 31, 0x1000L);
+       nMaxError = TestFullSpectrum(xform, 31, 0x800);
 
        printf("\n");
 
@@ -1034,6 +1039,7 @@ int CompareTransforms(cmsHTRANSFORM xform1, cmsHTRANSFORM xform2,
                             bin[b].r = RGB_8_TO_16(r);
                             bin[b].g = RGB_8_TO_16(g);
                             bin[b].b = RGB_8_TO_16(b);
+                            bin[b].a = 0;
                             }
 
                             cmsDoTransform(xform1, bin, bout1, 256);

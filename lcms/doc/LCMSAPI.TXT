@@ -1,6 +1,6 @@
 
 
-                     little cms Engine 1.13
+                     little cms Engine 1.14
 
                          API Definition
 
@@ -25,6 +25,7 @@
         12 - Named color functions
         13 - PostScript
         14 - CGATS.13 - 200
+
 
 1 - Profile & Transform functions
 _________________________________
@@ -192,10 +193,13 @@ Parameters:
                              of "impedance" between profiles.
 
 
-        cmsFLAGS_LOWRESPRECALC: Use lower resolution table. Usefull when
-                            memory is a preciated resource.
+        cmsFLAGS_LOWRESPRECALC: Use lower resolution table. 
 
         cmsFLAGS_BLACKPOINTCOMPENSATION: Use BPC algorithm.
+
+        cmsFLAGS_GRIDPOINTS(n): You can specify the desired number of gridpoints 
+                            in devicelink by using this macro in the flags.
+
 
 Returns:
 
@@ -494,6 +498,13 @@ ________________________________________________________________________________
 void cmsSetLanguage(int LanguageCode, int CountryCode);
 _________________________________________________________________________________
 
+  This function applies only to v4 profiles, which may have multilocalized 
+  strings for information functions. Using cmsSetLanguage(), you set the preferred 
+  language and country in what you want the information. All strings are searched 
+  for an exact match of language and country. In none found, then another search 
+  is done for same language, ignoring country. If no matching is found, the first 
+  string in table is returned.
+
 
 Parameters:
     LanguageCode: first name language code from ISO-639. 
@@ -531,7 +542,9 @@ ________________________________________________________________________________
 Parameters:
             hProfile: Handle to an open profile
 
-
+Returns:
+            Product description in a static buffer overwritten in each 
+            call to this function.
 
 _________________________________________________________________________________
 
@@ -545,11 +558,14 @@ ________________________________________________________________________________
 Parameters:
             hProfile: Handle to an open profile
 
+Returns:
+            Product info in a static buffer overwritten in each 
+            call to this function.
 
 
 _________________________________________________________________________________
 
-const char*   LCMSEXPORT cmsTakeManufacturer(cmsHPROFILE hProfile);
+const char* cmsTakeManufacturer(cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
   Returns a pointer to a string containing uncooked info about
@@ -559,6 +575,9 @@ ________________________________________________________________________________
 Parameters:
             hProfile: Handle to an open profile
 
+Returns:
+            Manufacturer in a static buffer overwritten in each 
+            call to this function.
 
 _________________________________________________________________________________
 
@@ -572,6 +591,9 @@ ________________________________________________________________________________
 Parameters:
             hProfile: Handle to an open profile
 
+Returns:
+            Model description in a static buffer overwritten in each 
+            call to this function.
 
 _________________________________________________________________________________
 
@@ -585,6 +607,9 @@ ________________________________________________________________________________
 Parameters:
             hProfile: Handle to an open profile
 
+Returns:
+            Copyright info in a static buffer overwritten in each 
+            call to this function.
 
 _________________________________________________________________________________
 
@@ -621,8 +646,18 @@ ________________________________________________________________________________
 DWORD cmsGetProfileICCversion(cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
+    Returns the ICC version as stated in the header of the profile.
 
+ Examples:
 
+    V2 profiles:  0x2000000
+    V4 profiles:  0x4000000
+
+Parameters:
+                hProfile: Handle to an open profile
+
+Returns:
+                The profile version stamp
 
 
 _________________________________________________________________________________
@@ -664,7 +699,8 @@ ________________________________________________________________________________
 BOOL cmsTakeMediaBlackPoint(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
-This function takes the black point of hProfile if present.
+This function takes the contents of black point tag of hProfile if present.
+
 
 Parameters:
                 Dest: a pointer to an cmsCIEXYZ struct that will
@@ -674,6 +710,10 @@ Parameters:
 
 Returns:
                 FALSE on error, TRUE on success
+
+NOTES: Most profiles have garbage in this tag, for a suitable black point 
+detection use cmsDetectBlackPoint() instead.
+
 
 _________________________________________________________________________________
 
@@ -692,8 +732,7 @@ Returns:
 
  Notes: ICC states that profile illuminants MUST be D50. However,
  in real world, each manufacturer uses an illuminant value that
- differs slightly of D50. lcms takes this variation in account
- and does the necessary scaling.
+ differs slightly of D50. lcms forces it to D50 to prevent errors.
 
 
 _________________________________________________________________________________
@@ -704,10 +743,18 @@ ________________________________________________________________________________
  This function takes the value of colorant matrix of hProfile if
  present.
 
- Notes: A lot of manufacturers includes colorants even if a CLUT
- is present. Often this colorants are private values, true
- primaries or negative values. Interpretation of these
- undocumented values is out of scope of lcms.
+Parameters:
+                hProfile: Handle to an open profile
+                Dest: a pointer to an cmsCIEXYZ struct that will
+                      hold the illuminant white point
+
+Returns:
+                FALSE on error, TRUE on success
+
+
+ Notes: Some profiles includes colorants even if a CLUT is already present. 
+ Often this colorants are private values, or a way to allow the profile 
+ operate in reverse direction.
 
 
 _________________________________________________________________________________
@@ -715,7 +762,7 @@ ________________________________________________________________________________
 BOOL  cmsIsTag(cmsHPROFILE hProfile, icTagSignature sig);
 _________________________________________________________________________________
 
- Tests if a particular tag is present in hProfile.
+ Tests whatever a particular tag is present in hProfile.
 
 Parameters:
                 hProfile: Handle to an open profile
@@ -729,7 +776,8 @@ ________________________________________________________________________________
 int  cmsTakeRenderingIntent(cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
-Returns the rendering intent field of the header.
+Returns the rendering intent field of the header. This field is informative and not
+used by the CMM for any purpose.
 
 Parameters:
                 hProfile: Handle to an open profile
@@ -741,13 +789,28 @@ Returns:        one of the following values:
               INTENT_SATURATION                                 2
               INTENT_ABSOLUTE_COLORIMETRIC                      3
 
-
 _________________________________________________________________________________
 
 int  cmsTakeHeaderFlags(cmsHPROFILE hProfile);
 _________________________________________________________________________________
 
+Returns the flags field of the ICC profile header. These are flags to indicate 
+various hints for the CMM such as distributed processing and caching options.
+The least significant 16 bits are reserved for the ICC.
 
+ Currently (v4.2) there are only two ICC flags defined:
+
+  Bit  Meaning 
+  ---  -------------------------------------------------------------
+  0    Embedded Profile (0 if not embedded, 1 if embedded in file) 
+  1    Profile cannot be used independently from the embedded color data
+       (set to 1 if true, 0 if false)
+
+Parameters:
+                hProfile: Handle to an open profile
+
+Returns: 
+            The header flags
 
 
 
@@ -833,7 +896,14 @@ ________________________________________________________________________________
    Returns the 16-bytes profile ID (version 4 only). The ProfileID is holded in 
    a static buffer overwritten in each call to this function.
 
+Parameters:
 
+        hProfile: Handle to an open profile
+
+Returns:
+        A pointer to a static buffer holding the 16 bytes ID. This buffer 
+        is overwritten in each function call.
+    
 
 _________________________________________________________________________________
 
@@ -848,23 +918,49 @@ ________________________________________________________________________________
 _________________________________________________________________________________
 
 void _cmsSetLUTdepth(cmsHPROFILE hProfile, int depth);
+_________________________________________________________________________________
+
+  INTERNAL, USE WITH CAUTION.
+
+   Used to inform the profile writting logic that all LUTS should be written 
+   in 8-bit resolution. lcms currently allows to write profiles with same 
+   resolution in all LUTS. Incoming versions may fix that.
+
+Parameters:
+
+        hProfile: Handle to an open profile
+
+        depth: either 8 or 16
+
+
+
+_________________________________________________________________________________
 
 BOOL _cmsSaveProfile(cmsHPROFILE hProfile, const char* FileName);
 BOOL _cmsSaveProfileToMem(cmsHPROFILE hProfile, void *MemPtr, size_t* BytesNeeded);
 _________________________________________________________________________________
 
+  INTERNAL, USE WITH CAUTION.
+
+  Dumps the contents of a profile FULLY GENERATED BY USING VIRTUAL PROFILES to disk
+  or memory. Disk based profiles are not suitable for these functions.
+
+  DEPRECATED, use cmsOpenProfileFromFile() with a "w" as access mode instead.
+
 
 
 
 _________________________________________________________________________________
 
-3 - On-the-fly profile creation functions
+3 - On-the-fly (virtual) profile creation functions
 _________________________________________________________________________________
 
   These function gives the ability of create virtual profiles.
   These profiles are often used in modelling monitors, but can
   also be used as any input or output device. Once created, you
   can use the profile handle like another file-based profile.
+
+
 
 _________________________________________________________________________________
 
@@ -910,6 +1006,7 @@ Parameters:
                    gamma handling functions for obtaining these
                    tables
 
+
 _________________________________________________________________________________
 
 cmmHPROFILE cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD dwFlags);
@@ -939,7 +1036,8 @@ ________________________________________________________________________________
         cmsFLAGS_LOWRESPRECALC: Use lower resolution table. Usefull when
                             memory is a preciated resource.
 
-
+        cmsFLAGS_GRIDPOINTS(n): You can specify the desired number of gridpoints 
+                            in devicelink by using this macro in the flags.
 
 _________________________________________________________________________________
 
@@ -1017,8 +1115,18 @@ cmsHPROFILE  cmsCreateLabProfile(LPcmsCIExyY WhitePoint);
 _________________________________________________________________________________
 
   Creates a virtual profile of CIE Lab. If WhitePoint is NULL, 
-  then D50 is assumed.
+  then D50 is assumed. It uses v2 PCS encoding.
   
+
+_________________________________________________________________________________
+
+cmsHPROFILE  cmsCreateLab4Profile(LPcmsCIExyY WhitePoint);
+_________________________________________________________________________________
+
+  Creates a virtual profile of CIE Lab operanting in v4 PCS encoding. 
+  If WhitePoint is NULL, then D50 is assumed.
+
+
 
 _________________________________________________________________________________
 
@@ -1035,7 +1143,14 @@ ________________________________________________________________________________
 
   Creates a virtual profile of sRGB standard colorspace.
 
+_________________________________________________________________________________
 
+cmsHPROFILE   LCMSEXPORT cmsCreateAppleRGB(void);
+cmsHPROFILE   LCMSEXPORT cmsCreateAdobe1998RGB(void);
+cmsHPROFILE   LCMSEXPORT cmsCreateColormatchRGB(void);
+_________________________________________________________________________________
+
+  Creates a virtual profile of such standard colorspaces.
 
 
 _________________________________________________________________________________
@@ -1229,20 +1344,20 @@ ________________________________________________________________________________
 
 LPGAMMATABLE  cmsReadICCGamma(cmsHPROFILE hProfile, icTagSignature sig);
 LPGAMMATABLE  cmsReadICCGammaReversed(cmsHPROFILE hProfile, icTagSignature sig);
-LCMSAPI int           LCMSEXPORT cmsReadICCText(cmsHPROFILE hProfile, icTagSignature sig, char *Text);
-LCMSAPI LPcmsSEQ LCMSEXPORT cmsReadProfileSequenceDescription(cmsHPROFILE hProfile);
+int           cmsReadICCText(cmsHPROFILE hProfile, icTagSignature sig, char *Text);
+LPcmsSEQ      cmsReadProfileSequenceDescription(cmsHPROFILE hProfile);
 
 _________________________________________________________________________________
 
 
 _________________________________________________________________________________
 
-LCMSAPI void LCMSEXPORT cmsSetUserFormatters(cmsHTRANSFORM hTransform, DWORD dwInput,  cmsFORMATTER Input,
-                                                               DWORD dwOutput, cmsFORMATTER Output);
+void cmsSetUserFormatters(cmsHTRANSFORM hTransform, DWORD dwInput,  cmsFORMATTER Input,
+                          DWORD dwOutput, cmsFORMATTER Output);
 
-LCMSAPI void LCMSEXPORT cmsGetUserFormatters(cmsHTRANSFORM hTransform, 
-                                                               LPDWORD InputFormat, cmsFORMATTER* Input, 
-                                                               LPDWORD OutputFormat, cmsFORMATTER* Output);
+void cmsGetUserFormatters(cmsHTRANSFORM hTransform, 
+                          LPDWORD InputFormat, cmsFORMATTER* Input, 
+                          LPDWORD OutputFormat, cmsFORMATTER* Output);
 
 _________________________________________________________________________________
 
@@ -1965,7 +2080,7 @@ ________________________________________________________________________________
 
 
  cmsGetPostScriptCRDEx allows black point compensation using 
- cmsFLAGS_WHITEBLACKCOMPENSATION in flags field.
+ cmsFLAGS_BLACKPOINTCOMPENSATION in flags field.
 
  PostScrip colorflow is often done in a different way. Insted of creating a 
  transform, it is sometimes desirable to delegate the color management to 
@@ -2037,6 +2152,16 @@ coordinator of graphic arts standards activities.
 CGATS recommends the adoption and use of this standard by the graphic
 arts industry and its suppliers at their earliest convenience.
  
+
+lcms parser has following additions:
+
+.INCLUDE directive
+------------------
+
+Works like #include in C language. 
+
+LABEL special keyword
+---------------------
 
 
 _________________________________________________________________________________
@@ -2216,9 +2341,8 @@ ________________________________________________________________________________
   Properties
 _________________________________________________________________________________
 
- Each table may contain any number of properties. 
-
-
+Properties are pairs <identifier> <value>.  Each table may contain any number of 
+properties.  Its primary purpose is store simpler settings.
 
 
 _________________________________________________________________________________
@@ -2226,7 +2350,7 @@ ________________________________________________________________________________
  BOOL cmsIT8SetPropertyStr(LCMSHANDLE hIT8, const char* cProp, const char *Str);
  BOOL cmsIT8SetPropertyDbl(LCMSHANDLE hIT8, const char* cProp, double Val);
  BOOL cmsIT8SetPropertyHex(LCMSHANDLE hIT8, const char* cProp, int Val);
- BOOL cmsIT8SetPropertyF(LCMSHANDLE hIT8, const char* Key, const char* Frm, ...);
+ BOOL cmsIT8SetPropertyUncooked(LCMSHANDLE hIT8, const char* Key, const char* Buffer);
 _________________________________________________________________________________
 
  Parameters:
@@ -2270,7 +2394,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- const char*      cmsIT8GetDataSetByPos(LCMSHANDLE IT8, int col, int row);                                                
+ const char*      cmsIT8GetDataRowCol(LCMSHANDLE IT8, int row, int col);                                                
 _________________________________________________________________________________
 
  Parameters:
@@ -2282,7 +2406,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- double           cmsIT8GetDataSetByPosDbl(LCMSHANDLE IT8, int col, int row);
+ double           cmsIT8GetDataRowColDbl(LCMSHANDLE IT8, int row, int col);
 _________________________________________________________________________________
 
  Parameters:
@@ -2294,7 +2418,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL             cmsIT8SetDataSetByPos(LCMSHANDLE hIT8, int col, int row, 
+ BOOL             cmsIT8SetDataRowCol(LCMSHANDLE hIT8, int row, int col, 
                                                 const char* Val);
 _________________________________________________________________________________
 
@@ -2307,7 +2431,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL             cmsIT8SetDataSetByPosDbl(LCMSHANDLE hIT8, int col, int row, 
+ BOOL             cmsIT8SetDataRowColDbl(LCMSHANDLE hIT8, int row, int col, 
                                                 double Val);
 _________________________________________________________________________________
 
@@ -2320,7 +2444,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- const char*  cmsIT8GetDataSet(LCMSHANDLE IT8, const char* cPatch, 
+ const char*  cmsIT8GetData(LCMSHANDLE IT8, const char* cPatch, 
                                                const char* cSample);                                                
 _________________________________________________________________________________
 
@@ -2333,7 +2457,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- double  cmsIT8GetDataSetDbl(LCMSHANDLE IT8, const char* cPatch, 
+ double  cmsIT8GetDataDbl(LCMSHANDLE IT8, const char* cPatch, 
                                              const char* cSample);
 _________________________________________________________________________________
 
@@ -2346,7 +2470,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL  cmsIT8SetDataSet(LCMSHANDLE IT8, const char* cPatch,
+ BOOL  cmsIT8SetData(LCMSHANDLE IT8, const char* cPatch,
                                         const char* cSample,
                                         char *Val);
 _________________________________________________________________________________
@@ -2360,7 +2484,7 @@ ________________________________________________________________________________
 
 _________________________________________________________________________________
 
- BOOL             cmsIT8SetDataSetDbl(LCMSHANDLE hIT8, const char* cPatch,
+ BOOL             cmsIT8SetDataDbl(LCMSHANDLE hIT8, const char* cPatch,
                                                 const char* cSample,
                                                 double Val);
 _________________________________________________________________________________
@@ -2389,11 +2513,16 @@ ________________________________________________________________________________
  int              cmsIT8EnumDataFormat(LCMSHANDLE IT8, char ***SampleNames);
 _________________________________________________________________________________
 
+ Returns an array with pointers to the column names of currect table.
+
  Parameters:
 
        hIT8: The CGATS.13 parser handle
+       SampleNames: A pointer to a variable of type char** which will hold the table.
 
  Returns:
+
+       The number of column names in table.
 
 
 _________________________________________________________________________________
@@ -2402,10 +2531,18 @@ ________________________________________________________________________________
 _________________________________________________________________________________
 
 
+ Fills buffer with the contents of SAMPLE_ID column for the set given in nPatch. 
+ That usually corresponds to patch name.
+
  Parameters:
 
        hIT8: The CGATS.13 parser handle
+       nPatch : patch number to retreive name
+       buffer: A memory buffer to recivepatch name, or NULL to allow function to 
+       allocate it own buffer.
 
  Returns:
-
+        
+      A pointer to the patch name, either the user-supplied buffer or an internal
+      memory block.
 

@@ -1,11 +1,11 @@
 
-  LittleCMS 1.13 - Installation guide
+  LittleCMS 1.14 - Installation guide
+
 
   Configuration
-  =============
-
-  
-  All configuration is done by the configure script.
+  *************
+ 
+  All configuration is done by the configure script on linux. 
   
   If you want to fine-tune the library, this can be done by
   touching lcms.h
@@ -20,7 +20,10 @@
 
 
   Installation 
-  ============
+  *************
+
+  Linux/Mac/unices
+  ================
 
   Unpack & untar the tarball (you already did!) and then type 
 
@@ -53,12 +56,20 @@
       clean:   Deletes object & binary files
 
 
+  Windows
+  =======
+
+  There are projects for most popular environments in the 
+  'Projects' folder. Just locate which one you want to use.
+    
+
+
   Tifficc & jpegicc
   =================
   automake will try to detect whatever you have libtiff and
-  libjpeg and if found build these utilities
+  libjpeg and if found build these additional utilities.
 
-  makefile.simple:
+  Only if you are using makefile.simple:
 
   If you have libz, libtiff and libjpeg installed, there are
   some additional utilities for converting images using icc profiles.

@@ -24,7 +24,6 @@
 
 
 #include "lcms.h"
-#include <time.h>
 
 cmsHPROFILE   LCMSEXPORT cmsOpenProfileFromFile(const char *ICCProfile, const char *sAccess);
 cmsHPROFILE   LCMSEXPORT cmsOpenProfileFromMem(LPVOID MemPtr, DWORD dwSize);
@@ -48,11 +47,13 @@ BOOL          LCMSEXPORT cmsTakeIluminant(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile
 BOOL          LCMSEXPORT cmsTakeColorants(LPcmsCIEXYZTRIPLE Dest, cmsHPROFILE hProfile);
 BOOL          LCMSEXPORT cmsIsTag(cmsHPROFILE hProfile, icTagSignature sig);
 
+BOOL          LCMSEXPORT cmsTakeCreationDateTime(struct tm *Dest, cmsHPROFILE hProfile);
+BOOL          LCMSEXPORT cmsTakeCalibrationDateTime(struct tm *Dest, cmsHPROFILE hProfile);
 const char*   LCMSEXPORT cmsTakeManufacturer(cmsHPROFILE hProfile);
 const char*   LCMSEXPORT cmsTakeModel(cmsHPROFILE hProfile);
 
 void          LCMSEXPORT cmsSetProfileID(cmsHPROFILE hProfile, LPBYTE ProfileID);
-const LPBYTE  LCMSEXPORT cmsTakeProfileID(cmsHPROFILE hProfile);
+const BYTE*   LCMSEXPORT cmsTakeProfileID(cmsHPROFILE hProfile);
 
 const char*   LCMSEXPORT cmsTakeProductName(cmsHPROFILE hProfile);
 
@@ -172,6 +173,29 @@ void AdjustEndianessArray16(LPWORD p, size_t num_words)
 #endif
 
 
+
+// Transports to properly encoded values - note that icc profiles does use
+// big endian notation.
+
+static
+icInt32Number TransportValue32(icInt32Number Value)
+{
+       icInt32Number Temp = Value;
+
+       AdjustEndianess32((LPBYTE) &Temp);
+       return Temp;
+}
+
+static
+WORD TransportValue16(WORD Value)
+{
+       WORD Temp = Value;
+
+       AdjustEndianess16((LPBYTE) &Temp);
+       return Temp;
+}
+
+
 // Fixed point conversion
 
 static
@@ -205,6 +229,32 @@ double Convert15Fixed16(icS15Fixed16Number fix32)
     floater = (double) Whole + mid;
 
     return sign * floater;
+}
+
+
+static
+void DecodeDateTimeNumber(const icDateTimeNumber *Source, struct tm *Dest)
+{
+	Dest->tm_sec   = TransportValue16(Source->seconds);
+	Dest->tm_min   = TransportValue16(Source->minutes);
+	Dest->tm_hour  = TransportValue16(Source->hours);
+	Dest->tm_mday  = TransportValue16(Source->day);
+	Dest->tm_mon   = TransportValue16(Source->month) - 1;
+	Dest->tm_year  = TransportValue16(Source->year) - 1900;
+	Dest->tm_wday  = -1;
+	Dest->tm_yday  = -1;
+	Dest->tm_isdst = 0;
+}
+
+static
+void EncodeDateTimeNumber(icDateTimeNumber *Dest, const struct tm *Source)
+{
+	Dest->seconds = TransportValue16((WORD) Source->tm_sec);
+	Dest->minutes = TransportValue16((WORD) Source->tm_min);
+	Dest->hours   = TransportValue16((WORD) Source->tm_hour);
+	Dest->day     = TransportValue16((WORD) Source->tm_mday);
+	Dest->month   = TransportValue16((WORD) (Source->tm_mon + 1));
+	Dest->year    = TransportValue16((WORD) (Source->tm_year + 1900));
 }
 
 
@@ -488,6 +538,8 @@ LPLCMSICCPROFILE CreateICCProfileHandler(LPVOID ICCfile,
        AdjustEndianess32((LPBYTE) &Header.flags);
        AdjustEndianess32((LPBYTE) &Header.renderingIntent);
 
+
+
        // Validate it
 
        if (Header.magic != icMagicNumber) goto ErrorCleanup;
@@ -507,7 +559,11 @@ LPLCMSICCPROFILE CreateICCProfileHandler(LPVOID ICCfile,
        Icc -> Illuminant.Y    = Convert15Fixed16(Header.illuminant.Y);
        Icc -> Illuminant.Z    = Convert15Fixed16(Header.illuminant.Z);
        Icc -> Version         = Header.version;
-       
+
+       // Get creation date/time
+
+       DecodeDateTimeNumber(&Header.date, &Icc ->Created);
+
        // Fix illuminant, some profiles are broken in this field!
        
        Icc ->Illuminant = *cmsD50_XYZ();
@@ -570,7 +626,7 @@ icInt32Number  SearchTag(LPLCMSICCPROFILE Profile, icTagSignature sig)
 // Search for a particular tag, replace if found or add new one else
 
 static
-LPVOID InitTag(LPLCMSICCPROFILE Icc, icTagSignature sig, size_t size, const LPVOID Init)
+LPVOID InitTag(LPLCMSICCPROFILE Icc, icTagSignature sig, size_t size, const void* Init)
 {
        LPVOID Ptr;
        icInt32Number i;
@@ -583,6 +639,10 @@ LPVOID InitTag(LPLCMSICCPROFILE Icc, icTagSignature sig, size_t size, const LPVO
        else  {
              i = Icc -> TagCount;
              Icc -> TagCount++;
+             if (Icc ->TagCount >= MAX_TABLE_TAG) {
+                 cmsSignalError(LCMS_ERRC_ABORTED, "Too many tags (%d)", MAX_TABLE_TAG);
+                 Icc ->TagCount = MAX_TABLE_TAG-1;
+             }
              }
 
 
@@ -685,6 +745,34 @@ void FixLUT8(LPLUT Lut, icTagSignature sig, size_t nTabSize)
     }
     
 }
+
+// On Lab -> Lab abstract or Lab identities, fix both sides of LUT
+
+static
+void FixLUT8bothSides(LPLUT Lut, size_t nTabSize)
+{
+    MAT3 Fixup, Original, Result;
+    LPWORD PtrW;
+    size_t i;
+
+        VEC3init(&Fixup.v[0], (double) 0xFFFF/0xFF00, 0, 0);
+        VEC3init(&Fixup.v[1], 0, (double) 0xFFFF/0xFF00, 0);
+        VEC3init(&Fixup.v[2], 0, 0, (double) 0xFFFF/0xFF00);
+                  
+
+        MAT3fromFix(&Original, &Lut->Matrix);               
+        MAT3per(&Result, &Original, &Fixup);
+        MAT3toFix(&Lut->Matrix, &Result);
+
+        Lut -> wFlags |= LUT_HASMATRIX;
+        PtrW = Lut -> T;
+        for (i = 0; i < nTabSize; i++) {
+
+                     *PtrW++ &= 0xFF00;
+        }
+    
+}
+
 
 // The infamous LUT 8
 
@@ -821,8 +909,17 @@ void ReadLUT8(LPLCMSICCPROFILE Icc, LPLUT NewLUT, icTagSignature sig)
                                                   NewLUT -> OutputChan,
                                                  &NewLUT -> CLut16params);
        // Fixup
-       if (Icc ->PCS == icSigLabData) 
+       
+       if (Icc ->PCS == icSigLabData) {
+           
+           // Abstract or Lab identity
+
+           if (Icc -> ColorSpace == icSigLabData) 
+
+                FixLUT8bothSides(NewLUT, nTabSize);
+           else
                 FixLUT8(NewLUT, sig, nTabSize);
+       }
 
 }
 
@@ -1242,6 +1339,17 @@ BOOL ReadCLUT(LPLCMSICCPROFILE Icc, size_t Offset, LPLUT NewLUT)
     return TRUE;
 }
 
+
+static
+void SkipAlignment(LPLCMSICCPROFILE Icc)
+{
+    BYTE Buffer[4];
+    int At = Icc ->Tell(Icc ->stream);
+    int BytesToNextAlignedPos = (At % 4);
+    
+    Icc ->Read(Buffer, 1, BytesToNextAlignedPos, Icc ->stream);                        
+}
+
 // Read a set of curves from specific offset
 static
 BOOL ReadSetOfCurves(LPLCMSICCPROFILE Icc, size_t Offset, LPLUT NewLUT, int nLocation)
@@ -1259,7 +1367,10 @@ BOOL ReadSetOfCurves(LPLCMSICCPROFILE Icc, size_t Offset, LPLUT NewLUT, int nLoc
         nCurves = NewLUT ->OutputChan;    
 
     for (i=0; i < nCurves; i++) {
-        Curves[i] = ReadCurve((LPLCMSICCPROFILE) Icc);                     
+        Curves[i] = ReadCurve((LPLCMSICCPROFILE) Icc);             
+        
+    SkipAlignment(Icc);
+    
     }
     
     NewLUT = cmsAllocLinearTable(NewLUT, Curves, nLocation);
@@ -1854,14 +1965,11 @@ void LCMSEXPORT cmsSetHeaderFlags(cmsHPROFILE hProfile, DWORD Flags)
 
 // ProfileID (v4) -- take a local copy from header
 
-const LPBYTE LCMSEXPORT cmsTakeProfileID(cmsHPROFILE hProfile)
+const BYTE* LCMSEXPORT cmsTakeProfileID(cmsHPROFILE hProfile)
 {
-    static BYTE ProfileID[16];
     LPLCMSICCPROFILE  Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
-
-    CopyMemory(ProfileID, Icc ->ProfileID, 16);
-
-    return ProfileID;
+    
+    return Icc ->ProfileID;
 }
 
 void LCMSEXPORT cmsSetProfileID(cmsHPROFILE hProfile, LPBYTE ProfileID)
@@ -2388,6 +2496,48 @@ BOOL LCMSEXPORT cmsTakeCharTargetData(cmsHPROFILE hProfile, char** Data, size_t*
 }
 
 
+// CreationDateTime & Calibration DateTime. 
+
+BOOL LCMSEXPORT cmsTakeCreationDateTime(struct tm *Dest, cmsHPROFILE hProfile)
+{
+    LPLCMSICCPROFILE  Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
+	
+    CopyMemory(Dest, &Icc ->Created, sizeof(struct tm));    
+	return TRUE;
+}
+
+
+BOOL LCMSEXPORT cmsTakeCalibrationDateTime(struct tm *Dest, cmsHPROFILE hProfile)
+{
+    LPLCMSICCPROFILE  Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;	
+	int n;
+	
+    n = SearchTag(Icc, icSigCalibrationDateTimeTag);
+    if (n < 0) return FALSE;
+	
+	if (!Icc ->stream)
+	{
+		CopyMemory(Dest, Icc ->TagPtrs[n],  sizeof(struct tm));
+	}
+	else
+	{
+        icDateTimeNumber timestamp;
+
+		if (Icc -> Seek(Icc ->stream, Icc -> TagOffsets[n] + sizeof(icTagBase)))
+			return FALSE;
+		
+		if (Icc ->Read(&timestamp, 1, sizeof(icDateTimeNumber), Icc ->stream) != sizeof(icDateTimeNumber))
+			return FALSE;
+        
+        DecodeDateTimeNumber(&timestamp, Dest);
+	}
+
+	
+	return TRUE;
+}
+
+
+
 
 // PSEQ Tag, used in devicelink profiles
 
@@ -2683,28 +2833,6 @@ BOOL LCMSEXPORT cmsCloseProfile(cmsHPROFILE hProfile)
 
 // Write profile ------------------------------------------------------------
 
-// Transports to properly encoded values - note that icc profiles does use
-// big endian notation.
-
-static
-icInt32Number TransportValue32(icInt32Number Value)
-{
-       icInt32Number Temp = Value;
-
-       AdjustEndianess32((LPBYTE) &Temp);
-       return Temp;
-}
-
-static
-WORD TransportValue16(WORD Value)
-{
-       WORD Temp = Value;
-
-       AdjustEndianess16((LPBYTE) &Temp);
-       return Temp;
-}
-
-
 
 
 static
@@ -2722,25 +2850,7 @@ BOOL SaveWordsTable(FILE* OutStream, int nEntries, LPWORD Tab, LPLCMSICCPROFILE 
    return TRUE;
 }
 
-// Encodes now to date/time field
 
-static
-void EncodeDateTime(icDateTimeNumber* DateTime)
-{
-       time_t timer;
-       struct tm *tmstr;
-
-       time(&timer);
-       tmstr = localtime(&timer);
-
-       DateTime -> year    = TransportValue16((WORD) (tmstr -> tm_year + 1900));
-       DateTime -> month   = TransportValue16((WORD) (tmstr -> tm_mon + 1));
-       DateTime -> day     = TransportValue16((WORD) tmstr -> tm_mday);
-       DateTime -> hours   = TransportValue16((WORD) tmstr -> tm_hour);
-       DateTime -> minutes = TransportValue16((WORD) tmstr -> tm_min);
-       DateTime -> seconds = TransportValue16((WORD) tmstr -> tm_sec);
-
-}
 
 
 
@@ -2750,7 +2860,8 @@ static
 BOOL SaveHeader(void *OutStream, LPLCMSICCPROFILE Icc)
 {
   icHeader Header;
-
+  time_t now = time(NULL);
+  
        Header.size        = TransportValue32((icInt32Number) UsedSpace);
        Header.cmmId       = TransportValue32(lcmsSignature);
        Header.version     = TransportValue32((icInt32Number) 0x02300000);
@@ -2758,10 +2869,16 @@ BOOL SaveHeader(void *OutStream, LPLCMSICCPROFILE Icc)
        Header.colorSpace  = (icColorSpaceSignature) TransportValue32(Icc -> ColorSpace);
        Header.pcs         = (icColorSpaceSignature) TransportValue32(Icc -> PCS);
 
-       EncodeDateTime(&Header.date);
+	   //	NOTE: in v4 Timestamp must be in UTC rather than in local time
+	   EncodeDateTimeNumber(&Header.date, gmtime(&now));
 
        Header.magic       = TransportValue32(icMagicNumber);
-       Header.platform    = (icPlatformSignature)TransportValue32(icSigMicrosoft);  // Sorry, I must put something here
+
+#ifdef NON_WINDOWS
+       Header.platform    = (icPlatformSignature)TransportValue32(icSigMacintosh);  
+#else
+       Header.platform    = (icPlatformSignature)TransportValue32(icSigMicrosoft);  
+#endif
 
        Header.flags        = TransportValue32(Icc -> flags);
        Header.manufacturer = TransportValue32(lcmsSignature);
@@ -2983,6 +3100,21 @@ BOOL SaveSequenceDescriptionTag(FILE *OutStream, LPcmsSEQ seq, LPLCMSICCPROFILE 
 }
 
 
+// Saves a timestamp tag
+
+static
+BOOL SaveDateTimeNumber(FILE *OutStream, const struct tm *DateTime, LPLCMSICCPROFILE Icc)
+{
+    icDateTimeNumber Dest;
+
+	if (!SetupBase(OutStream, icSigDateTimeType, Icc)) return FALSE;
+    EncodeDateTimeNumber(&Dest, DateTime);
+	if (!Icc ->Write(OutStream, sizeof(icDateTimeNumber), &Dest)) return FALSE;
+
+	return TRUE;
+}
+
+
 // Saves a named color list into a named color profile
 static
 BOOL SaveNamedColorList(FILE* OutStream, LPcmsNAMEDCOLORLIST NamedColorList, LPLCMSICCPROFILE Icc)
@@ -3047,7 +3179,7 @@ BOOL SaveNamedColorList(FILE* OutStream, LPcmsNAMEDCOLORLIST NamedColorList, LPL
 // of nodes on LUT8. Anyway, this should be regarded more carefully
 
 static
-BOOL SaveLUT(FILE* OutStream, const LPLUT NewLUT, LPLCMSICCPROFILE Icc)
+BOOL SaveLUT(FILE* OutStream, const LUT* NewLUT, LPLCMSICCPROFILE Icc)
 {
        icLut16 LUT16;
        unsigned int i;
@@ -3139,7 +3271,7 @@ BOOL SaveLUT(FILE* OutStream, const LPLUT NewLUT, LPLCMSICCPROFILE Icc)
 // Special case: Saves a LUT8 ver2 -- This is used only for making smaller profiles
 
 static
-BOOL SaveLUT8(FILE* OutStream, const LPLUT NewLUT, LPLCMSICCPROFILE Icc)
+BOOL SaveLUT8(FILE* OutStream, const LUT* NewLUT, LPLCMSICCPROFILE Icc)
 {
        icLut8 LUT8;
        unsigned int i, j;
@@ -3399,6 +3531,10 @@ BOOL SaveTags(void *OutStream, LPLCMSICCPROFILE Icc)
              break;
 
 
+	   case icSigCalibrationDateTimeTag:
+             if (!SaveDateTimeNumber((FILE*) OutStream, (struct tm *) Data, Icc)) return FALSE;              
+             break;
+
        default:
               return FALSE;
        }
@@ -3411,7 +3547,7 @@ BOOL SaveTags(void *OutStream, LPLCMSICCPROFILE Icc)
        return TRUE;
 }
 
-BOOL LCMSEXPORT _cmsAddXYZTag(cmsHPROFILE hProfile, icTagSignature sig, const LPcmsCIEXYZ XYZ)
+BOOL LCMSEXPORT _cmsAddXYZTag(cmsHPROFILE hProfile, icTagSignature sig, const cmsCIEXYZ* XYZ)
 {
        LPLCMSICCPROFILE Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
        
@@ -3463,6 +3599,8 @@ BOOL LCMSEXPORT _cmsAddLUTTag(cmsHPROFILE hProfile, icTagSignature sig, LPVOID l
        
        Stored -> T     = (LPWORD) DupBlock(Icc, (LPWORD) Orig ->T, Orig -> Tsize);
 
+       // Zero any additional pointer
+       Stored ->CLut16params.p8 = NULL;
        return TRUE;
 }
 
@@ -3504,6 +3642,15 @@ BOOL LCMSEXPORT _cmsAddNamedColorTag(cmsHPROFILE hProfile, icTagSignature sig, L
 }
 
 
+BOOL LCMSEXPORT _cmsAddDateTimeTag(cmsHPROFILE hProfile, icTagSignature sig, struct tm *DateTime)
+{
+    LPLCMSICCPROFILE Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
+	
+	InitTag(Icc, sig, sizeof(struct tm), DateTime);
+    return FALSE;
+}
+
+
 
 // Add tags to profile structure
 
@@ -3526,7 +3673,7 @@ BOOL LCMSEXPORT cmsAddTag(cmsHPROFILE hProfile, icTagSignature sig, LPVOID Tag)
        case icSigBlueColorantTag:
        case icSigMediaWhitePointTag:
        case icSigMediaBlackPointTag:           
-              rc = _cmsAddXYZTag(hProfile, sig, (const LPcmsCIEXYZ) Tag);
+              rc = _cmsAddXYZTag(hProfile, sig, (const cmsCIEXYZ*) Tag);
               break; 
 
        case icSigRedTRCTag:
@@ -3561,6 +3708,10 @@ BOOL LCMSEXPORT cmsAddTag(cmsHPROFILE hProfile, icTagSignature sig, LPVOID Tag)
               rc = _cmsAddNamedColorTag(hProfile, sig, (LPcmsNAMEDCOLORLIST) Tag);
              break;
 
+	   case icSigCalibrationDateTimeTag:
+              rc = _cmsAddDateTimeTag(hProfile, sig, (struct tm*) Tag);
+              break;
+				
        default:
             cmsSignalError(LCMS_ERRC_ABORTED, "cmsAddTag: Tag '%x' is unsupported", sig);
             return FALSE;
