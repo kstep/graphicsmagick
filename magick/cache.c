@@ -661,8 +661,6 @@ static void DestroyCacheInfo(Cache cache)
       (void) UnmapBlob(cache_info->pixels,length);
     case DiskCache:
     {
-      if (cache_info->persist)
-        break;
       (void) remove(cache_info->cache_filename);
       break;
     }
@@ -1530,9 +1528,9 @@ static unsigned int ModifyCache(Image *image)
   register PixelPacket
     *q;
 
-  cache_info=(CacheInfo *) image->cache;
-  if (cache_info->type == UndefinedCache)
+  if (SyncCache(image) == False)
     return(True);
+  cache_info=(CacheInfo *) image->cache;
   AcquireSemaphoreInfo(&cache_info->semaphore);
   if (cache_info->reference_count <= 1)
     {
@@ -1721,8 +1719,9 @@ MagickExport unsigned int OpenCache(Image *image)
     }
   /*
     Create pixel cache on disk.
-  */
   if (cache_info->storage_class == UndefinedClass)
+  */
+  if (*cache_info->cache_filename == '\0')
     TemporaryFilename(cache_info->cache_filename);
   file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
   if (file == -1)
@@ -1752,6 +1751,124 @@ MagickExport unsigned int OpenCache(Image *image)
         cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
     }
   (void) close(file);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   P e r s i s t C a c h e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PersistCache() attaches to or initializes a persistent pixel cache.  A
+%  persistent pixel cache is one that resides on disk and is not destroyed
+%  when the program exits.
+%
+%  The format of the PersistCache() method is:
+%
+%      unsigned int PersistCache(Image *image,const char *filename,
+%        const unsigned int attach,off_t *offset,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o status: PersistCache() returns True if the persistent pixel cache is
+%      attached or initialized successfully otherwise False.
+%
+%    o image: The image.
+%
+%    o filename: The persistent pixel cache filename.
+%
+%    o initialize: A value other than zero initializes the persistent pixel
+%      cache.
+%
+%    o offset: The offset in the persistent cache to store pixels.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int PersistCache(Image *image,const char *filename,
+  const unsigned int attach,off_t *offset,ExceptionInfo *exception)
+{
+  CacheInfo
+    *cache_info;
+
+  Image
+    *clone_image;
+
+  IndexPacket
+    *clone_indexes,
+    *indexes;
+
+  long
+    y;
+
+  register const PixelPacket
+    *p;
+
+  register long
+    x;
+
+  register PixelPacket
+    *q;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image->cache != (void *) NULL);
+  assert(filename != (const char *) NULL);
+  assert(offset != (off_t *) NULL);
+  if (attach)
+    {
+      /*
+        Attach persistent pixel cache.
+      */
+      cache_info=(CacheInfo *) image->cache;
+      (void) strncpy(cache_info->cache_filename,filename,MaxTextExtent-1);
+      cache_info->type=DiskCache;
+      cache_info->offset=(*offset);
+      if (!OpenCache(image))
+        return(False);
+      (void) ReferenceCache(cache_info);
+      *offset+=cache_info->length;
+      return(True);
+    }
+  /*
+    Initialize persistent pixel cache.
+  */
+  clone_image=CloneImage(image,image->columns,image->rows,True,exception);
+  if (clone_image == (Image *) NULL)
+    return(False);
+  cache_info=(CacheInfo *) clone_image->cache;
+  (void) strncpy(cache_info->cache_filename,filename,MaxTextExtent-1);
+  cache_info->type=DiskCache;
+  cache_info->offset=(*offset);
+  if (!OpenCache(clone_image))
+    return(False);
+  for (y=0; y < (long) image->rows; y++)
+  {
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+    clone_indexes=GetIndexes(clone_image);
+    indexes=GetIndexes(image);
+    if ((clone_indexes != (IndexPacket *) NULL) &&
+        (indexes != (IndexPacket *) NULL))
+      (void) memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
+    if (!SyncImagePixels(clone_image))
+      break;
+  }
+  (void) ReferenceCache(cache_info);
+  DestroyImage(clone_image);
+  if (y < (long) image->rows)
+    return(False);
+  *offset+=cache_info->length;
   return(True);
 }
 
@@ -2076,8 +2193,6 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
   assert(image->cache != (Cache) NULL);
   assert(image->signature == MagickSignature);
   if (ModifyCache(image) == False)
-    return((PixelPacket *) NULL);
-  if (SyncCache(image) == False)
     return((PixelPacket *) NULL);
   /*
     Validate pixel cache geometry.
@@ -2414,7 +2529,7 @@ static unsigned int SyncCache(Image *image)
   assert(cache_info->signature == MagickSignature);
   if ((image->storage_class != cache_info->storage_class) ||
       (image->colorspace != cache_info->colorspace))
-    if (OpenCache(image) == False)
+    if (!OpenCache(image))
       return(False);
   return(True);
 }

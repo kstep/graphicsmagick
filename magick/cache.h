@@ -140,6 +140,7 @@ extern MagickExport PixelPacket
 
 extern MagickExport unsigned int
   OpenCache(Image *),
+  PersistCache(Image *,const char *,const unsigned int,off_t *,ExceptionInfo *),
   SyncCacheNexus(Image *,const unsigned long);
 
 extern MagickExport unsigned long

@@ -136,19 +136,20 @@ static unsigned int IsMPC(const unsigned char *magick,const size_t length)
 static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
+    filename[MaxTextExtent],
     id[MaxTextExtent],
     keyword[MaxTextExtent],
     *values;
-
-  CacheInfo
-    *cache_info;
 
   Image
     *image;
 
   int
-    c,
-    length;
+    c;
+
+  off_t
+    length,
+    offset;
 
   register long
     i;
@@ -181,6 +182,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   *id='\0';
+  offset=0;
   do
   {
     /*
@@ -783,21 +785,13 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
-      Initialize cache.
+      Attach persistent pixel cache.
     */
-    GetCacheInfo(&image->cache);
-    cache_info=(CacheInfo *) image->cache;
-    (void) strncpy(cache_info->cache_filename,image->filename,MaxTextExtent-1);
-    cache_info->storage_class=image->storage_class;
-    cache_info->colorspace=image->colorspace;
-    cache_info->type=DiskCache;
-    cache_info->persist=True;
-    cache_info->offset=TellBlob(image);
-    status=OpenCache(image);
+    (void) strncpy(filename,image->filename,MaxTextExtent-1);
+    AppendImageFormat("cache",filename);
+    status=PersistCache(image,filename,True,&offset,exception);
     if (status == False)
-      ThrowReaderException(CacheWarning,"Unable to open peristent cache",image);
-    (void) ReferenceCache(image->cache);
-    (void) SeekBlob(image,cache_info->length,SEEK_CUR);
+      ThrowReaderException(CacheWarning,"Unable to perist pixel cache",image);
     /*
       Proceed to next image.
     */
@@ -861,7 +855,6 @@ ModuleExport void RegisterMPCImage(void)
   entry->decoder=ReadMPCImage;
   entry->encoder=WriteMPCImage;
   entry->magick=IsMPC;
-  entry->blob_support=False;
   entry->description=AcquireString("Magick Persistent Cache image format");
   entry->module=AcquireString("MPC");
   (void) RegisterMagickInfo(entry);
@@ -922,31 +915,19 @@ ModuleExport void UnregisterMPCImage(void)
 */
 static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
 {
-  CacheInfo
-    *cache_info;
-
   char
-    buffer[MaxTextExtent];
+    buffer[MaxTextExtent],
+    filename[MaxTextExtent];
 
   const ImageAttribute
     *attribute;
 
-  Image
-    *clone_image;
-
-  register const PixelPacket
-    *p;
-
-  register IndexPacket
-    *clone_indexes,
-    *indexes;
+  off_t
+    offset;
 
   register long
     i,
     y;
-
-  register PixelPacket
-   *q;
 
   unsigned int
     status;
@@ -965,6 +946,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   scene=0;
+  offset=0;
   do
   {
     /*
@@ -1256,44 +1238,13 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
         LiberateMemory((void **) &colormap);
       }
     /*
-      Clone pixel cache.
+      Initialize persistent pixel cache.
     */
-    clone_image=CloneImage(image,image->columns,image->rows,True,
-      &image->exception);
-    if (clone_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-        image);
-    GetCacheInfo(&clone_image->cache);
-    cache_info=(CacheInfo *) clone_image->cache;
-    (void) strncpy(cache_info->cache_filename,image->filename,MaxTextExtent-1);
-    cache_info->storage_class=image->storage_class;
-    cache_info->colorspace=image->colorspace;
-    cache_info->type=DiskCache;
-    cache_info->persist=True;
-    cache_info->offset=TellBlob(image);
-    status=OpenCache(clone_image);
+    (void) strncpy(filename,image->filename,MaxTextExtent-1);
+    AppendImageFormat("cache",filename);
+    status=PersistCache(image,filename,False,&offset,&image->exception);
     if (status == False)
-      ThrowWriterException(CacheWarning,"Unable to open persistent cache",
-        image);
-    for (y=0; y < (long) image->rows; y++)
-    {
-      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-      q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
-      if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-        break;
-      (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
-      clone_indexes=GetIndexes(clone_image);
-      indexes=GetIndexes(image);
-      if ((clone_indexes != (IndexPacket *) NULL) &&
-          (indexes != (IndexPacket *) NULL))
-        (void) memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
-      if (!SyncImagePixels(clone_image))
-        break;
-    }
-    if (y < (long) image->rows)
-      ThrowWriterException(CacheWarning,"Unable to clone image",image);
-    DestroyImage(clone_image);
-    (void) SeekBlob(image,cache_info->length,SEEK_CUR);
+      ThrowWriterException(CacheWarning,"Unable to perist pixel cache",image);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
