@@ -431,7 +431,16 @@ static void UpdateSignature(SignatureInfo *signature_info,
 */
 MagickExport unsigned int SignatureImage(Image *image)
 {
-#define Normalize(quantum)  ((quantum) << (32-QuantumDepth))
+#if (QuantumDepth == 8)
+#define Normalize(quantum) \
+  (((quantum) << 24) | ((quantum) << 16) | ((quantum) << 8) | (quantum))
+#elif (QuantumDepth == 16)
+#define Normalize(quantum)  (((quantum) << 16) | (quantum))
+#elif (QuantumDepth == 32)
+#define Normalize(quantum)  (quantum)
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
 
   char
     signature[MaxTextExtent];

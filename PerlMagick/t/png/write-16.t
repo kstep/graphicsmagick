@@ -20,7 +20,7 @@ chdir 't/png' || die 'Cd failed';
 testReadWrite( 'input_256.png',
   'output_256.png',
   q/quality=>54/,
-  '852777db495289e4e42f98fd0136d4831caed8f23ef7f56503698b24d90467ce' );
+  'd1340caccc7351834f1ca9693489ee780ac326a0d6bb660cd550c5c28711b2fe' );
 
 #
 # 2) Test truecolor image
@@ -29,7 +29,7 @@ testReadWrite( 'input_256.png',
 testReadWrite( 'input_truecolor.png',
   'output_truecolor.png',
   q/quality=>55/,
-  'f3a02ab84dc50e6d4f57f4dbfd801d565391809e9affb95271a1a2393d2d50ef' );
+  'b84c31bbe78d84d0432c7414b25c58599484aa2c7174af8332509966d07f265b' );
 
 #
 # 3) Test monochrome image
@@ -37,7 +37,7 @@ testReadWrite( 'input_truecolor.png',
 ++$test;
 testReadWrite( 'input_mono.png',
   'output_mono.png', '',
-  '064000205c670c86e2e7521c7c5a437278da6b72e66173ee2c9cd33f27626907' );
+  '19da3123692c66d023074dd1e272119ab2357b9a34855a393ad18c88af01ae86' );
 
 #
 # 4) Test Multiple-image Network Graphics
@@ -46,7 +46,7 @@ testReadWrite( 'input_mono.png',
 testReadWrite( 'input.mng',
   'output.mng',
   q/quality=>55/,
-  '1d76d4e1f1e085147a7a3379fc8df0413b2c7072ef247f7c52024f4104068919' );
+  'eb089161ebc5ab3964cdec1b72628c4d1c29ebd78f333a3d4a0d47c614fb3897' );
 
 #
 # 5) Test 16-bit Portable Network Graphics
@@ -55,7 +55,7 @@ testReadWrite( 'input.mng',
 testReadWrite( 'input_16.png',
   'output_16.png',
   q/quality=>55/,
-  '415303615a36716dd3c7aade7b0d991b4fe04178f48c1725e01675226c1647de',
+  'c87cc12715f3e0619d6fe871bd8132f88facffb3d38dd8869cb262ec6b9c4cef',
   '4eeef86b727f91d7f4bddfe8edbd7264ab835208c1b4edb199fdb40c1cdcba9f');
 
 

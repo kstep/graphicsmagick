@@ -18,7 +18,7 @@ $image=Image::Magick->new( magick=>'MIFF' );
 $image->BlobToImage( @blob );
 
 if ($image->Get('signature') ne 
-    'b4be64ae0b32a51a62ef1e7001f454b613c9cc2ca2fca1db2331690538f26d8c')
+    '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f')
   { print "not ok $test\n"; }
 else
   { print "ok $test\n"; }

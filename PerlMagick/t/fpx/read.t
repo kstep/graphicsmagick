@@ -19,7 +19,7 @@ chdir 't/fpx' || die 'Cd failed';
 # 
 print( "1-bit grayscale FPX ...\n" );
 testRead( 'input_bw.fpx',
-  '2dbce2cb797dfcc2ba56ecc98d71d8a886fd3671499bc89def53f4dfd7cb5a27' );
+  'f3afd8f931e3be3ddd7e99c43bd5d854257dee6726cdc546962d60c5d9405047' );
 
 #
 # 2) Test Monochrome FPX
@@ -27,7 +27,7 @@ testRead( 'input_bw.fpx',
 ++$test;
 print( "8-bit grayscale FPX ...\n" );
 testRead( 'input_mono.fpx',
-  '2dbce2cb797dfcc2ba56ecc98d71d8a886fd3671499bc89def53f4dfd7cb5a27' );
+  'f3afd8f931e3be3ddd7e99c43bd5d854257dee6726cdc546962d60c5d9405047' );
 
 #
 # 3) Test 256 color pseudocolor FPX
@@ -35,7 +35,7 @@ testRead( 'input_mono.fpx',
 ++$test;
 print( "8-bit indexed-color FPX ...\n" );
 testRead( 'input_256.fpx',
-  '04b59abb64be8a20693101544c92ad1db9ef62acbed03e4439daea1886176673' );
+  'd120f2f0f295b506a92070051dd8e7b4a83f777909fd4e73d75bd55c53a55a95' );
 
 #
 # 4) Test TrueColor FPX
@@ -43,7 +43,7 @@ testRead( 'input_256.fpx',
 ++$test;
 print( "24-bit Truecolor FPX ...\n" );
 testRead( 'input_truecolor.fpx',
-  'b4be64ae0b32a51a62ef1e7001f454b613c9cc2ca2fca1db2331690538f26d8c' );
+  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f' );
 
 #
 # 5) Test JPEG FPX
@@ -51,5 +51,5 @@ testRead( 'input_truecolor.fpx',
 ++$test;
 print( "24-bit JPEG FPX ...\n" );
 testRead( 'input_jpeg.fpx',
-  '3b107cc41f45d34500335cf22a7aea3551d24530a214cbac995b6596ec127f03' );
+  '45a41e0ef7ad4b2ab890978457f1c51919139d6036bbf27f3e0adfb7732c0b48' );
 

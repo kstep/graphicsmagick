@@ -43,7 +43,7 @@ int main( int /*argc*/, char ** argv)
     appendImages( &appended, imageList.begin(), imageList.end() );
     // appended.display();
     if (( appended.signature() != "3a90bb0bb8f69f6788ab99e9e25598a0d6c5cdbbb797f77ad68011e0a8b1689d" ) &&
-     ( appended.signature() != "0c2eaf1bed46526e089cfb7359a46ae0606acafd06e059657d4014e02d5b12b8" ))
+     ( appended.signature() != "7b8f52c6331487119eeda8063887a85650f76b86a3dce7086bf93d8b49e6ddc3" ))
       {
 	++failures;
 	cout << "Line: " << __LINE__
@@ -56,7 +56,7 @@ int main( int /*argc*/, char ** argv)
     // Vertical
     appendImages( &appended, imageList.begin(), imageList.end(), true );
     if (( appended.signature() != "d73d25ccd6011936d08b6d0d89183b7a61790544c2195269aff4db2f782ffc08" ) &&
-       ( appended.signature() != "c27dc6a04aed2170524abc7211f2b8c5321e5440b068a162f4a14e143a9f454a" ))
+       ( appended.signature() != "d0bbbb124a690fc7a275b19a9116fd7e1079786d97e02da319122617b3416de2" ))
       {
 	++failures;
 	cout << "Line: " << __LINE__

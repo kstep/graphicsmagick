@@ -21,7 +21,7 @@ print("PsuedoColor image ...\n");
 testReadWrite( 'input_256.tiff',
   'output_256.tiff',
   q/quality=>54/,
-  '23ff59c59294aa8e8ee53c9769a0f09127968478dcbacc44b7a77bab44bf5afc');
+  'a570df6d4c214d08bccaaee856f617883fee4f96494af6ef5e25c76d86ea0e0a');
 
 #
 # 2) Test truecolor image
@@ -31,7 +31,7 @@ print("TrueColor image ...\n");
 testReadWrite( 'input_truecolor.tiff',
   'output_truecolor.tiff',
   q/quality=>55/,
-  '1144b91e9575def0065c904809a952e9a412203dff46d8d02b68060c9bf580cc' );
+  '326599218925e7aa27c735d482332744cccf41f460a1ba2d276a2d172f2b3de0' );
 
 #
 # 3) Test monochrome image
@@ -41,4 +41,4 @@ print("Monochrome image ...\n");
 testReadWrite(  'input_mono.tiff',
   'output_mono.tiff',
   q//,
-  'b7ff35dedb72b47cd178219ed30a2380da9f900306ffbe79222827259382be54' );
+  '2b48bcf7d93cc31a8deb3026d872f1bb0a300b0f4e177423e5301adc638179e4' );

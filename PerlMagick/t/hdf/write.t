@@ -20,7 +20,7 @@ chdir 't/hdf' || die 'Cd failed';
 testReadWrite( 'input_256.hdf',
    'output_256.hdf',
    q/quality=>54/,
-   'b4be64ae0b32a51a62ef1e7001f454b613c9cc2ca2fca1db2331690538f26d8c' );
+   '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f' );
 
 #
 # 2) Test truecolor image
@@ -29,4 +29,4 @@ testReadWrite( 'input_256.hdf',
 testReadWrite( 'input_truecolor.hdf',
    'output_truecolor.hdf',
    q/quality=>55/,
-   'b4be64ae0b32a51a62ef1e7001f454b613c9cc2ca2fca1db2331690538f26d8c' );
+   '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f' );
