@@ -43,6 +43,7 @@
 #include "magick/compress.h"
 #include "magick/constitute.h"
 #include "magick/magick.h"
+#include "magick/map.h"
 #include "magick/monitor.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -986,6 +987,10 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       "  currentfile buffer readline pop",
       "  token pop /alpha exch def pop",
       "",
+      "  % STENCIL MASK?",
+      "  currentfile buffer readline pop",
+      "  token pop /stencil exch def pop",
+      "",
       "  % IMAGE CLASS (DIRECT/PSEUDO)",
       "  currentfile buffer readline pop",
       "  token pop /class exch def pop",
@@ -998,11 +1003,11 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       "  /pixel_stream currentfile columns rows compression",
       "    ByteStreamDecodeFilter def",
       "  clipped {ClipImage} if",
-      "  alpha",
+      "  alpha stencil not and",
       "  { MaskedImageDict mask_stream resetfile }",
       "  { NonMaskedImageDict }",
       "  ifelse",
-      "  image",
+      "  stencil {0 setgray imagemask} {image} ifelse",
       "  grestore",
       "  sp {showpage} if",
       "} bind def",
@@ -1063,8 +1068,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   unsigned long
     page,
     scene,
-    text_size,
-    gm_version;
+    text_size;
 
   /*
     Open output image file.
@@ -1182,10 +1186,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
 
         /* Creator */
-        (void)GetMagickVersion(&gm_version);
-        FormatString(buffer,"%%%%Creator: GraphicsMagick %lu.%lu.%lu\n",
-          (gm_version & 0xFF0000)>>16, (gm_version & 0x00FF00)>>8,
-          (gm_version & 0x0000FF));
+        FormatString(buffer,"%%%%Creator: GraphicsMagick %s\n", MagickLibVersionText);
         (void) WriteBlobString(image,buffer);
 
         /* Title */
@@ -1217,7 +1218,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
               floor(bounds.x1+0.5),floor(bounds.y1+0.5),ceil(bounds.x2-0.5),
               ceil(bounds.y2-0.5));
             (void) WriteBlobString(image,buffer);
-            FormatString(buffer,"%%%%HiResBoundingBox: %.4g %.4g %.4g %.4g\n",
+            FormatString(buffer,"%%%%HiResBoundingBox: %.8g %.8g %.8g %.8g\n",
               bounds.x1,bounds.y1,bounds.x2,bounds.y2);
             (void) WriteBlobString(image,buffer);
 
@@ -1394,11 +1395,20 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       }
 
     /* Photoshop clipping path active? */
-    if ((image->clip_mask != (Image *) NULL) && (LocaleNCompare("8BIM:",image->clip_mask->magick_filename,5) == 0))
+    if ((image->clip_mask != (Image *) NULL) &&
+      (LocaleNCompare("8BIM:",image->clip_mask->magick_filename,5) == 0))
+      {
         (void) WriteBlobString(image,"true\n");
-      else
+      }
+    else
+      {
         (void) WriteBlobString(image,"false\n");
+      }
     
+    /* Compression seems to take precedence over anyting */
+    if (compression == FaxCompression)
+      SetImageType(image, BilevelType);
+
     /* Showpage for non-EPS. */
     (void) WriteBlobString(image,LocaleCompare(image_info->magick,"PS3") == 0 ?
       "true\n" : "false\n");
@@ -1412,9 +1422,19 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     /* Masked image? */
     (void) WriteBlobString(image,image->matte ? "true\n" : "false\n");
 
-    /* Compression seems to take precedence over anyting */
-    if (compression == FaxCompression)
-      SetImageType(image, BilevelType);
+    /* render with imagemask operator? */
+    if (image_info->coder_options != 0)
+    {
+      const char
+        *value;
+
+      value=MagickMapAccessEntry(image_info->coder_options,"ps:image",0);
+      if ((value != 0) && (LocaleCompare(value,"imagemask") == 0) &&
+          IsMonochromeImage(image,&image->exception))
+        (void) WriteBlobString(image,"true\n");
+      else
+        (void) WriteBlobString(image,"false\n");
+    }
 
     /*
       Output data in one of three ways:
@@ -1690,7 +1710,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         floor(bounds.x1+0.5),floor(bounds.y1+0.5),ceil(bounds.x2-0.5),
         ceil(bounds.y2-0.5));
       (void) WriteBlobString(image,buffer);
-      FormatString(buffer,"%%%%HiResBoundingBox: %.4g %.4g %.4g %.4g\n",
+      FormatString(buffer,"%%%%HiResBoundingBox: %.8g %.8g %.8g %.8g\n",
         bounds.x1,bounds.y1,bounds.x2,bounds.y2);
       (void) WriteBlobString(image,buffer);
     }

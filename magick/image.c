@@ -50,6 +50,7 @@
 #include "magick/log.h"
 #include "magick/magic.h"
 #include "magick/magick.h"
+#include "magick/map.h"
 #include "magick/monitor.h"
 #include "magick/module.h"
 #include "magick/quantize.h"
@@ -82,6 +83,71 @@ const unsigned long
 
 /* Round floating value to an integer */
 #define RndToInt(value) ((int)((value)+0.5))
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%   A d d C o d e r O p t i o n s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AddCoderOptions() adds options from a key/value based string to the current
+%  map of coder options in ImageInfo. Coder options may be used by coders/decoders
+%  that read and write images.
+%
+%  The format of the SetImage method is:
+%
+%      void AddCoderOptions(ImageInfo *image_info,const char *options)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o options: List of key/value pairs to put in the coder options map. The
+%      format of the string is "key1=value1,key2=value2,...".
+%
+*/
+MagickExport unsigned int
+  AddCoderOptions(ImageInfo *image_info,const char *options)
+{
+  char
+    key[MaxTextExtent],
+    value[MaxTextExtent];
+
+  int
+    i,
+    j;
+
+  size_t
+    length;
+
+  if (image_info->coder_options == 0)
+    image_info->coder_options=MagickMapAllocateMap(MagickMapCopyString,
+      MagickMapDeallocateString);
+
+  length=strlen(options);
+  i=0;
+  while (i < length)
+  {
+    for (j=0; (i < length) && (options[i] != '='); i++,j++)
+      key[j]=options[i];
+    key[j]='\0';
+    i++;
+    for (j=0; (i < length) && (options[i] != ','); i++,j++)
+      value[j]=options[i];
+    value[j]='\0';
+    i++;
+    /* Accepts zero length values */
+    if (strlen(key) > 0)
+      MagickMapAddEntry(image_info->coder_options,key,value,0);
+    else
+      return(False);
+  }
+  return(True);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1303,6 +1369,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   if (image_info->attributes != (Image *) NULL)
     clone_info->attributes=CloneImage(image_info->attributes,0,0,True,
       &image_info->attributes->exception);
+  if (image_info->coder_options != (MagickMap) NULL)
+    clone_info->coder_options=MagickMapCloneMap(image_info->coder_options);
   clone_info->client_data=image_info->client_data;
   clone_info->cache=image_info->cache;
   if (image_info->cache != (void *) NULL)
@@ -2154,6 +2222,8 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
     DestroyImage(image_info->attributes);
   if (image_info->cache != (void *) NULL)
     DestroyCacheInfo(image_info->cache);
+  if (image_info->coder_options != (MagickMap) NULL)
+    MagickMapDeallocateMap(image_info->coder_options);
   memset((void *)image_info,0xbf,sizeof(ImageInfo));
   MagickFreeMemory(image_info);
 }

@@ -1,3 +1,18 @@
+2003-09-22  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* coders/ps3.c: Changed %%Creator version to use
+	MagickLibVersionText, increased precision in HiResBoundingBox,
+	added a coder specific option for rendering bilevel images with
+	the PS imagemask operator indstead of the image operator.  
+	* magick/command.c: Added "-coder-options" command line argument
+	to all relevant command line utilities. Option argument to
+	-coder-options is a list of comma separated key-value pairs that
+	are saved in a MagickMap in ImageInfo for (de-)coders to use. See
+	PS3 coder for an example that checks for: -coder-options
+	"ps:image=imagemask"
+	* magick/image.c, magick/image.h: Added function AddCoderOptions().
+	* magick/map.c, magick/map.h: removed MS-DOS line terminators.
+
 2003-09-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/maptest.c (main): Test/demo program for key,value map API.

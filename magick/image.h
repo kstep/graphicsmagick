@@ -22,6 +22,7 @@ extern "C" {
 #include "magick/semaphore.h"
 #include "magick/error.h"
 #include "magick/timer.h"
+#include "magick/map.h"
 
 /*
   Define declarations.
@@ -855,6 +856,9 @@ typedef struct _ImageInfo
   void
     *client_data;            /* User-specified data to pass to coder */
 
+  MagickMap
+    coder_options;          /* Map of coder specific options passed by user */
+
   void
     *cache;                  /* Private. Used to pass image via open cache */
 
@@ -931,6 +935,7 @@ extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *exception);
 
 extern MagickExport unsigned int
+  AddCoderOptions(ImageInfo *image_info,const char *options),
   AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
   ChannelImage(Image *,const ChannelType),
