@@ -42,8 +42,10 @@ int main ( int argc, char **argv )
 
   int
     arg = 1,
+    exit_status = 0,
     rows = 0,
-    columns = 0;
+    columns = 0,
+    pause = 0;
 
   double
     fuzz_factor = 0;
@@ -102,23 +104,31 @@ int main ( int argc, char **argv )
               if ((arg == argc) || !sscanf(argv[arg],"%ld",&imageInfo.depth))
                 {
                   printf("-depth argument missing or not integer\n");
-                  exit (1);
+                  fflush(stdout);
+                  exit_status = 1;
+                  goto program_exit;
                 }
               if(imageInfo.depth != 8 && imageInfo.depth != 16 && imageInfo.depth != 32)
                 {
                   printf("-depth (%ld) not 8, 16, or 32\n", imageInfo.depth);
-                  exit (1);
+                  fflush(stdout);
+                  exit_status = 1;
+                  goto program_exit;
                 }
             }
           else if (LocaleCompare("log",option+1) == 0)
               (void) SetLogFormat(argv[++arg]);
+          else if (LocaleCompare("pause",option+1) == 0)
+              pause=1;
           else if (LocaleCompare("size",option+1) == 0)
             {
               arg++;
               if ((arg == argc) || !IsGeometry(argv[arg]))
                 {
                   printf("-size argument missing or not geometry\n");
-                  exit (1);
+                  fflush(stdout);
+                  exit_status = 1;
+                  goto program_exit;
                 }
               (void) CloneString(&imageInfo.size,argv[arg]);
             }
@@ -130,7 +140,9 @@ int main ( int argc, char **argv )
     {
       printf("arg=%d, argc=%d\n", arg, argc);
       printf ( "Usage: %s [-compress algorithm -debug events -depth integer -log format -size geometry] infile format\n", argv[0] );
-      exit( 1 );
+      fflush(stdout);
+      exit_status = 1;
+      goto program_exit;
     }
 
   strncpy(infile, argv[arg], MaxTextExtent-1 );
@@ -157,7 +169,9 @@ int main ( int argc, char **argv )
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read original image %s\n", imageInfo.filename );
-      exit(1);
+      fflush(stdout);
+      exit_status = 1;
+      goto program_exit;
     }
 
   /*
@@ -183,7 +197,9 @@ int main ( int argc, char **argv )
   if ( blob == NULL )
     {
       printf ( "Failed to write BLOB in format %s\n", imageInfo.magick );
-      exit(1);
+      fflush(stdout);
+      exit_status = 1;
+      goto program_exit;
     }
   imageInfo.depth=original->depth;
   DestroyImage( original );
@@ -202,7 +218,9 @@ int main ( int argc, char **argv )
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read image from BLOB in format %s\n",imageInfo.magick );
-      exit(1);
+      fflush(stdout);
+      exit_status = 1;
+      goto program_exit;
     }
   LiberateMemory( (void**)&blob );
 
@@ -220,7 +238,9 @@ int main ( int argc, char **argv )
   if ( blob == NULL )
     {
       printf ( "Failed to write BLOB in format %s\n", imageInfo.magick );
-      exit(1);
+      fflush(stdout);
+      exit_status = 1;
+      goto program_exit;
     }
 
   /*
@@ -238,7 +258,9 @@ int main ( int argc, char **argv )
   if ( final == (Image *)NULL )
     {
       printf ( "Failed to read image from BLOB in format %s\n",imageInfo.magick );
-      exit(1);
+      fflush(stdout);
+      exit_status = 1;
+      goto program_exit;
     }
   LiberateMemory( (void**)&blob );
 
@@ -265,11 +287,15 @@ int main ( int argc, char **argv )
        (original->error.normalized_mean_error > fuzz_factor) )
     {
       printf( "R/W file check for format \"%s\" failed: %u/%.6f/%.6fe\n",
-        format,(unsigned int) original->error.mean_error_per_pixel,original->error.normalized_mean_error,
-        original->error.normalized_maximum_error);
+              format,(unsigned int) original->error.mean_error_per_pixel,
+              original->error.normalized_mean_error,
+              original->error.normalized_maximum_error);
       fflush(stdout);
+      exit_status = 1;
+      goto program_exit;
     }
 
+ program_exit:
   DestroyImage( original );
   original = (Image*)NULL;
   DestroyImage( final );
@@ -277,5 +303,7 @@ int main ( int argc, char **argv )
 
   DestroyMagick();
 
-  return 0;
+  if (pause)
+    getc(stdin);
+  return exit_status;
 }

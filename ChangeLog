@@ -1,3 +1,10 @@
+2003-03-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/rwblob.c (main): Add -pause option to require keypress to
+	exit program. Clean-up to avoid any appearance of leaks.
+	* tests/rwfile.c (main): Add -pause option to require keypress to
+	exit program. Clean-up to avoid any appearance of leaks.
+
 2003-03-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jp2.c (WriteJP2Image): Improved -quality rate estimation
