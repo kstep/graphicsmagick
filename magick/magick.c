@@ -141,9 +141,6 @@ Export MagickInfo *GetMagickInfo(const char *tag)
   if (magick_info == (MagickInfo *) NULL)
     {
 #if defined(HasLTDL)
-      /* Cache format is treated specially */
-      RegisterCACHEImage();
-
       /* Initialize ltdl */
       InitializeModules();
 
