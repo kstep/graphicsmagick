@@ -2612,7 +2612,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->page.x=0;
                 image->page.y=0;
                 image->orphan=True;
-                p=CropImage(image,&crop_info);
+                p=CropImage(image,&crop_info,exception);
                 if (p != (Image *) NULL)
                   {
                     p->orphan=True;
@@ -3697,6 +3697,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                     (unsigned short) DownScale(image->colormap[i].blue);
                 }
                 png_set_PLTE(ping, ping_info, palette, num_palette);
+#if (PNG_LIBPNG_VER >= 10100)
+                FreeMemory(palette);
+#endif
               }
             ping_info->bit_depth=1;
             while ((1 << ping_info->bit_depth) < (int) image->colors)

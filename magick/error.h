@@ -39,7 +39,7 @@ extern int
 }
 #define ThrowImageException(code,reason,description) \
 { \
-  ThrowException(&image->exception,code,reason,description); \
+  ThrowException(exception,code,reason,description); \
   return((Image *) NULL); \
 }
 #define ThrowReaderException(code,reason,image) \

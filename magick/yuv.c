@@ -184,9 +184,11 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == False)
           ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       }
-    chroma_image=CloneImage(image,image->columns/2,image->rows/2,True);
+    chroma_image=
+      CloneImage(image,image->columns/2,image->rows/2,True,exception);
     if (chroma_image == (Image *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+	image);
     for (y=0; y < (int) chroma_image->rows; y++)
     {
       (void) ReadBlob(image,chroma_image->columns,scanline);
@@ -231,10 +233,11 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Scale image.
     */
     chroma_image->orphan=True;
-    zoom_image=SampleImage(chroma_image,image->columns,image->rows);
+    zoom_image=SampleImage(chroma_image,image->columns,image->rows,exception);
     DestroyImage(chroma_image);
     if (zoom_image == (Image *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     for (y=0; y < (int) image->rows; y++)
     {
       q=GetPixelCache(image,0,y,image->columns,1);
@@ -398,7 +401,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     width=image->columns+(image->columns & 0x01);
     height=image->rows+(image->rows & 0x01);
     image->orphan=True;
-    yuv_image=SampleImage(image,width,height);
+    yuv_image=SampleImage(image,width,height,&image->exception);
     if (yuv_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to zoom image",image);
     RGBTransformImage(yuv_image,YCbCrColorspace);
@@ -424,7 +427,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       Downsample image.
     */
     image->orphan=True;
-    chroma_image=SampleImage(image,width/2,height/2);
+    chroma_image=SampleImage(image,width/2,height/2,&image->exception);
     if (chroma_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to zoom image",image);
     RGBTransformImage(chroma_image,YCbCrColorspace);

@@ -338,7 +338,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Rotate image.
         */
         image->orphan=True;
-        rotated_image=RotateImage(image,90);
+        rotated_image=RotateImage(image,90,exception);
         if (rotated_image != (Image *) NULL)
           {
             DestroyImage(image);
@@ -863,7 +863,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             Write image to temporary file in JPEG format.
           */
           TemporaryFilename(filename);
-          jpeg_image=CloneImage(image,image->columns,image->rows,True);
+          jpeg_image=
+            CloneImage(image,image->columns,image->rows,True,&image->exception);
           if (jpeg_image == (Image *) NULL)
             ThrowWriterException(DelegateWarning,"Unable to clone image",image);
           (void) FormatString(jpeg_image->filename,"jpeg:%s",filename);
@@ -1169,11 +1170,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) ParseImageGeometry("106x106+0+0>",&x,&y,&width,&height);
     image->orphan=True;
     if (image->class == PseudoClass)
-      tile_image=SampleImage(image,width,height);
+      tile_image=SampleImage(image,width,height,&image->exception);
     else
-      tile_image=ZoomImage(image,width,height);
+      tile_image=ZoomImage(image,width,height,&image->exception);
     if (tile_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     xref[object++]=TellBlob(image);
     (void) sprintf(buffer,"%u 0 obj\n",object);
     (void) WriteBlob(image,strlen(buffer),buffer);

@@ -206,7 +206,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Page is full-- allocate next image structure.
     */
-    image->next=CloneImage(image,image->columns,image->rows,True);
+    image->next=CloneImage(image,image->columns,image->rows,True,exception);
     if (image->next == (Image *) NULL)
       {
         DestroyAnnotateInfo(annotate_info);

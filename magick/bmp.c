@@ -589,13 +589,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         /*
           Read BMP raster colormap.
         */
         bmp_colormap=(unsigned char *) AllocateMemory(4*image->colors);
         if (bmp_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         packet_size=4;
         if (bmp_header.size == 12)
           packet_size=3;
@@ -623,7 +625,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_size=bytes_per_line*image->rows;
     pixels=(unsigned char *) AllocateMemory(image_size);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     if ((bmp_header.compression == 0) || (bmp_header.compression == 3))
       (void) ReadBlob(image,image_size,(char *) pixels);
     else
@@ -634,7 +637,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         status=DecodeImage(image,(unsigned int) bmp_header.compression,
           (unsigned int) bmp_header.width,image->rows,pixels);
         if (status == False)
-          ThrowReaderException(CorruptImageWarning,"runlength decoding failed",image);
+          ThrowReaderException(CorruptImageWarning,"runlength decoding failed",
+            image);
       }
     /*
       Initialize image structure.
@@ -826,12 +830,14 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Correct image orientation.
         */
-        flipped_image=FlipImage(image);
-        if (flipped_image != (Image *) NULL)
+        flipped_image=FlipImage(image,exception);
+        if (flipped_image == (Image *) NULL)
           {
-            DestroyImage(image);
-            image=flipped_image;
+            DestroyImages(image);
+            return((Image *) NULL);
           }
+        DestroyImage(image);
+        image=flipped_image;
       }
     /*
       Proceed to next image.

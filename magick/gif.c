@@ -76,7 +76,8 @@ static unsigned int
 %
 %  The format of the DecodeImage method is:
 %
-%      unsigned int DecodeImage(Image *image,const int opacity)
+%      unsigned int DecodeImage(Image *image,const int opacity,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -88,9 +89,12 @@ static unsigned int
 %    o opacity:  The colormap index associated with the transparent
 %      color.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-static unsigned int DecodeImage(Image *image,const int opacity)
+static unsigned int DecodeImage(Image *image,const int opacity,
+  ExceptionInfo *exception)
 {
 #define MaxStackSize  4096
 #define NullCode  (-1)
@@ -307,7 +311,8 @@ static unsigned int DecodeImage(Image *image,const int opacity)
       /*
         Interlace image.
       */
-      interlace_image=CloneImage(image,image->columns,image->rows,True);
+      interlace_image=
+        CloneImage(image,image->columns,image->rows,True,exception);
       if (interlace_image == (Image *) NULL)
         return(False);
       i=0;
@@ -940,7 +945,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Decode image.
     */
-    status=DecodeImage(image,opacity);
+    status=DecodeImage(image,opacity,exception);
     if (status == False)
       ThrowBinaryException(CorruptImageWarning,"Corrupt GIF image",
         image->filename);
@@ -1343,7 +1348,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         /*
           Interlace image.
         */
-        interlace_image=CloneImage(image,image->columns,image->rows,True);
+        interlace_image=CloneImage(image,image->columns,image->rows,True,
+          &image->exception);
         if (interlace_image == (Image *) NULL)
           {
             FreeMemory(global_colormap);

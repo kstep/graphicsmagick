@@ -1166,6 +1166,9 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
   double
     scale_factor;
 
+  ExceptionInfo
+    exception;
+
   Image
     *chop_image;
 
@@ -1501,7 +1504,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
   /*
     Chop image.
   */
-  chop_image=ChopImage(*image,&chop_info);
+  chop_image=ChopImage(*image,&chop_info,&exception);
   XSetCursorState(display,windows,False);
   if (chop_image == (Image *) NULL)
     return(False);
@@ -2197,7 +2200,7 @@ static unsigned int XCompositeImage(Display *display,
     scale_factor;
 
   ExceptionInfo
-    error;
+    exception;
 
   Image
     *composite_image;
@@ -2233,7 +2236,7 @@ static unsigned int XCompositeImage(Display *display,
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   (void) strcpy(resource_info->image_info->filename,filename);
-  composite_image=ReadImage(resource_info->image_info,&error);
+  composite_image=ReadImage(resource_info->image_info,&exception);
   XSetCursorState(display,windows,False);
   if (composite_image == (Image *) NULL)
     {
@@ -2270,7 +2273,7 @@ static unsigned int XCompositeImage(Display *display,
           (void) CloneString(&image_info->size,size);
           FormatString(image_info->size,"%ux%u",composite_image->columns,
             composite_image->rows);
-          mask_image=ReadImage(image_info,&error);
+          mask_image=ReadImage(image_info,&exception);
           XSetCursorState(display,windows,False);
           if (mask_image == (Image *) NULL)
             {
@@ -2586,7 +2589,7 @@ static unsigned int XCompositeImage(Display *display,
         Scale composite image.
       */
       zoomed_image=ZoomImage(composite_image,composite_info.width,
-        composite_info.height);
+        composite_info.height,&exception);
       DestroyImage(composite_image);
       if (zoomed_image == (Image *) NULL)
         {
@@ -2893,6 +2896,9 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
 
   double
     scale_factor;
+
+  ExceptionInfo
+    exception;
 
   int
     id,
@@ -3523,7 +3529,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   crop_info.y+=y;
   crop_info.y=scale_factor*crop_info.y;
   crop_info.height=scale_factor*crop_info.height;
-  crop_image=CropImage(image,&crop_info);
+  crop_image=CropImage(image,&crop_info,&exception);
   XSetCursorState(display,windows,False);
   if (crop_image == (Image *) NULL)
     return(False);
@@ -3831,7 +3837,7 @@ static unsigned int XDrawEditImage(Display *display,
             case DrawStippleCommand:
             {
               ExceptionInfo
-                error;
+                exception;
 
               Image
                 *stipple_image;
@@ -3924,7 +3930,7 @@ static unsigned int XDrawEditImage(Display *display,
               XCheckRefreshWindows(display,windows);
               image_info=CloneImageInfo((ImageInfo *) NULL);
               (void) strcpy(image_info->filename,filename);
-              stipple_image=ReadImage(image_info,&error);
+              stipple_image=ReadImage(image_info,&exception);
               XSetCursorState(display,windows,False);
               if (stipple_image == (Image *) NULL)
                 {
@@ -4709,6 +4715,9 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
     case SaveToUndoBufferCommand:
     case RedoCommand:
     {
+      ExceptionInfo
+        exception;
+
       Image
         *previous_image;
 
@@ -4762,8 +4771,8 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
         break;
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      cache_image->list=
-        CloneImage(*image,(*image)->columns,(*image)->rows,True);
+      cache_image->list=CloneImage(*image,(*image)->columns,(*image)->rows,
+	True,&exception);
       XSetCursorState(display,windows,False);
       if (cache_image->list == (Image *) NULL)
         {
@@ -5276,7 +5285,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     modulate_factors[MaxTextExtent];
 
   ExceptionInfo
-    error;
+    exception;
 
   Image
     *loaded_image;
@@ -5411,7 +5420,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       FormatString(image_info->filename,"%.1024s:%.1024s",format,color);
       (void) CloneString(&image_info->size,geometry);
-      loaded_image=ReadImage(image_info,&error);
+      loaded_image=ReadImage(image_info,&exception);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
@@ -6719,7 +6728,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           (char *) NULL);
       else
         {
-          loaded_image=ReadImage(resource_info->image_info,&error);
+          loaded_image=ReadImage(resource_info->image_info,&exception);
           XClientMessage(display,windows->image.id,windows->im_protocols,
             windows->im_next_image,CurrentTime);
         }
@@ -6854,7 +6863,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=XBackgroundImage(display,resource_info,windows,image);
       if (status == False)
         break;
-      loaded_image=CloneImage(*image,(*image)->columns,(*image)->rows,True);
+      loaded_image=
+        CloneImage(*image,(*image)->columns,(*image)->rows,True,&exception);
       if (loaded_image != (Image *) NULL)
         XClientMessage(display,windows->image.id,windows->im_protocols,
           windows->im_next_image,CurrentTime);
@@ -6886,7 +6896,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=XPreferencesWidget(display,resource_info,windows);
       if (status == False)
         break;
-      loaded_image=CloneImage(*image,(*image)->columns,(*image)->rows,True);
+      loaded_image=
+        CloneImage(*image,(*image)->columns,(*image)->rows,True,&exception);
       if (loaded_image != (Image *) NULL)
         XClientMessage(display,windows->image.id,windows->im_protocols,
           windows->im_next_image,CurrentTime);
@@ -7836,7 +7847,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,const unsigned int command)
 {
   ExceptionInfo
-    error;
+    exception;
 
   Image
     *loaded_image;
@@ -7951,7 +7962,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   handler=(MonitorHandler) NULL;
   if (Latin1Compare(image_info->magick,"X") == 0)
     handler=SetMonitorHandler((MonitorHandler) NULL);
-  loaded_image=ReadImage(image_info,&error);
+  loaded_image=ReadImage(image_info,&exception);
   if (Latin1Compare(image_info->magick,"X") == 0)
     (void) SetMonitorHandler(handler);
   XSetCursorState(display,windows,False);
@@ -8256,6 +8267,9 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   double
     scale_factor;
 
+  ExceptionInfo
+    exception;
+
   Image
     *paste_image;
 
@@ -8284,7 +8298,8 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   if (resource_info->copy_image == (Image *) NULL)
     return(False);
   paste_image=CloneImage(resource_info->copy_image,
-    resource_info->copy_image->columns,resource_info->copy_image->rows,True);
+    resource_info->copy_image->columns,resource_info->copy_image->rows,True,
+    &exception);
   /*
     Map Command widget.
   */
@@ -8608,6 +8623,9 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   char
     geometry[MaxTextExtent];
 
+  ExceptionInfo
+    exception;
+
   Image
     *print_image;
 
@@ -8634,7 +8652,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  print_image=CloneImage(image,image->columns,image->rows,True);
+  print_image=CloneImage(image,image->columns,image->rows,True,&exception);
   if (print_image == (Image *) NULL)
     return(True);
   FormatString(geometry,"%dx%d!",windows->image.ximage->width,
@@ -8915,6 +8933,9 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
 
   double
     scale_factor;
+
+  ExceptionInfo
+    exception;
 
   Image
     *roi_image;
@@ -9266,7 +9287,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
               crop_info.y+=y;
               crop_info.y=scale_factor*crop_info.y;
               crop_info.height=scale_factor*crop_info.height;
-              roi_image=CropImage(*image,&crop_info);
+              roi_image=CropImage(*image,&crop_info,&exception);
               (void) SetMonitorHandler(handler);
               if (roi_image == (Image *) NULL)
                 continue;
@@ -9591,6 +9612,9 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
 
   double
     normalized_degrees;
+
+  ExceptionInfo
+    exception;
 
   Image
     *rotated_image;
@@ -9940,7 +9964,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
   (*image)->border_color.blue=
     XDownScale(windows->pixel_info->pen_colors[pen_id].blue);
   (*image)->border_color.opacity=Transparent;
-  rotated_image=RotateImage(*image,degrees);
+  rotated_image=RotateImage(*image,degrees,&exception);
   XSetCursorState(display,windows,False);
   if (rotated_image == (Image *) NULL)
     return(False);
@@ -10065,6 +10089,9 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
     filename[MaxTextExtent],
     geometry[MaxTextExtent];
 
+  ExceptionInfo
+    exception;
+
   Image
     *save_image;
 
@@ -10154,7 +10181,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  save_image=CloneImage(image,image->columns,image->rows,True);
+  save_image=CloneImage(image,image->columns,image->rows,True,&exception);
   if (save_image == (Image *) NULL)
     return(False);
   FormatString(geometry,"%dx%d!",windows->image.ximage->width,
@@ -10622,7 +10649,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
     scale_factor;
 
   ExceptionInfo
-    error;
+    exception;
 
   Image
     *tiled_image;
@@ -10723,7 +10750,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       (void) strcpy(resource_info->image_info->magick,"MIFF");
       (void) strcpy(resource_info->image_info->filename,filename);
-      tiled_image=ReadImage(resource_info->image_info,&error);
+      tiled_image=ReadImage(resource_info->image_info,&exception);
       XWithdrawWindow(display,windows->info.id,windows->info.screen);
       break;
     }
@@ -11141,7 +11168,7 @@ static Image *XVisualDirectoryImage(Display *display,
     window_id[MaxTextExtent];
 
   ExceptionInfo
-    error;
+    exception;
 
   Image
     *image,
@@ -11231,7 +11258,7 @@ static Image *XVisualDirectoryImage(Display *display,
     (void) strcpy(clone_info->filename,filelist[i]);
     *clone_info->magick='\0';
     (void) CloneString(&clone_info->size,DefaultTileGeometry);
-    next_image=ReadImage(clone_info,&error);
+    next_image=ReadImage(clone_info,&exception);
     if (filelist[i] != filenames)
       FreeMemory(filelist[i]);
     if (next_image != (Image *) NULL)
@@ -11273,7 +11300,7 @@ static Image *XVisualDirectoryImage(Display *display,
   (void) strcpy(montage_info.filename,filename);
   (void) CloneString(&montage_info.font,resource_info->image_info->font);
   montage_info.pointsize=resource_info->image_info->pointsize;
-  montage_image=MontageImages(image,&montage_info);
+  montage_image=MontageImages(image,&montage_info,&exception);
   DestroyMontageInfo(&montage_info);
   DestroyImages(image);
   XSetCursorState(display,windows,False);
@@ -12585,7 +12612,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                   if (update_time != file_info.st_mtime)
                     {
                       ExceptionInfo
-                        error;
+                        exception;
 
                       /*
                         Redisplay image.
@@ -12593,7 +12620,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                       FormatString(resource_info->image_info->filename,
                         "%.1024s:%.1024s",displayed_image->magick,
                         displayed_image->filename);
-                      loaded_image=ReadImage(resource_info->image_info,&error);
+                      loaded_image=
+                        ReadImage(resource_info->image_info,&exception);
                       if (loaded_image != (Image *) NULL)
                         *state|=NextImageState | ExitState;
                     }
@@ -12888,7 +12916,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               type;
 
             ExceptionInfo
-              error;
+              exception;
 
             int
               format;
@@ -12933,7 +12961,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 (void) strcpy(resource_info->image_info->filename,
                   ((char *) data)+5);
               }
-            loaded_image=ReadImage(resource_info->image_info,&error);
+            loaded_image=ReadImage(resource_info->image_info,&exception);
             if (loaded_image != (Image *) NULL)
               *state|=NextImageState | ExitState;
             XFree((void *) data);
@@ -13350,7 +13378,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           type;
 
         ExceptionInfo
-          error;
+          exception;
 
         int
           format;
@@ -13376,7 +13404,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         if ((status != Success) || (length == 0))
           break;
         (void) strcpy(resource_info->image_info->filename,(char *) data);
-        loaded_image=ReadImage(resource_info->image_info,&error);
+        loaded_image=ReadImage(resource_info->image_info,&exception);
         if (loaded_image != (Image *) NULL)
           *state|=NextImageState | ExitState;
         XFree((void *) data);

@@ -78,7 +78,8 @@
 %
 %  The format of the IntegralRotateImage method is:
 %
-%      Image *IntegralRotateImage(Image *image,unsigned int rotations)
+%      Image *IntegralRotateImage(Image *image,unsigned int rotations,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -91,7 +92,8 @@
 %
 %
 */
-static Image *IntegralRotateImage(Image *image,unsigned int rotations)
+static Image *IntegralRotateImage(Image *image,unsigned int rotations,
+  ExceptionInfo *exception)
 {
 #define RotateImageText  "  Rotating image...  "
 
@@ -118,9 +120,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
   page=image->page;
   rotations%=4;
   if ((rotations == 1) || (rotations == 3))
-    rotate_image=CloneImage(image,image->rows,image->columns,False);
+    rotate_image=CloneImage(image,image->rows,image->columns,False,exception);
   else
-    rotate_image=CloneImage(image,image->columns,image->rows,False);
+    rotate_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (rotate_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
       "Memory allocation failed");
@@ -746,7 +748,8 @@ static void YShearImage(Image *image,const double degrees,
 %
 %  The format of the RotateImage method is:
 %
-%      Image *RotateImage(Image *image,const double degrees)
+%      Image *RotateImage(Image *image,const double degrees,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -758,9 +761,12 @@ static void YShearImage(Image *image,const double degrees,
 %
 %    o degrees: Specifies the number of degrees to rotate the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *RotateImage(Image *image,const double degrees)
+Export Image *RotateImage(Image *image,const double degrees,
+  ExceptionInfo *exception)
 {
   double
     angle;
@@ -801,7 +807,7 @@ Export Image *RotateImage(Image *image,const double degrees)
   /*
     Calculate shear equations.
   */
-  integral_image=IntegralRotateImage(image,rotations);
+  integral_image=IntegralRotateImage(image,rotations,exception);
   if (integral_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
       "Memory allocation failed");
@@ -830,7 +836,7 @@ Export Image *RotateImage(Image *image,const double degrees)
   integral_image->border_color.opacity=Transparent;
   border_info.width=x_offset;
   border_info.height=y_offset;
-  rotate_image=BorderImage(integral_image,&border_info);
+  rotate_image=BorderImage(integral_image,&border_info,exception);
   DestroyImage(integral_image);
   if (rotate_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
@@ -878,7 +884,8 @@ Export Image *RotateImage(Image *image,const double degrees)
 %
 %  The format of the ShearImage method is:
 %
-%      Image *ShearImage(Image *image,const double x_shear,const double y_shear)
+%      Image *ShearImage(Image *image,const double x_shear,const double y_shear,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -890,9 +897,12 @@ Export Image *RotateImage(Image *image,const double degrees)
 %
 %    o x_shear, y_shear: Specifies the number of degrees to shear the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *ShearImage(Image *image,const double x_shear,const double y_shear)
+Export Image *ShearImage(Image *image,const double x_shear,const double y_shear,
+  ExceptionInfo *exception)
 {
   Image
     *integral_image,
@@ -921,7 +931,7 @@ Export Image *ShearImage(Image *image,const double x_shear,const double y_shear)
   /*
     Initialize shear angle.
   */
-  integral_image=IntegralRotateImage(image,0);
+  integral_image=IntegralRotateImage(image,0,exception);
   if (integral_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to shear image",
       "Memory allocation failed");
@@ -943,7 +953,7 @@ Export Image *ShearImage(Image *image,const double x_shear,const double y_shear)
   integral_image->border_color.opacity=Transparent;
   border_info.width=x_offset;
   border_info.height=y_offset;
-  shear_image=BorderImage(integral_image,&border_info);
+  shear_image=BorderImage(integral_image,&border_info,exception);
   if (shear_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to shear image",
       "Memory allocation failed");

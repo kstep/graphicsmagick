@@ -1,23 +1,28 @@
 <HTML>
 <HEAD>
 <TITLE>montage - Methods to Create a Montage.</TITLE>
-<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
+<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A></LI>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A></LI>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#DestroyMontageInfo">DestroyMontageInfo</A></LI>
-		<LI><A HREF="#GetMontageInfo">GetMontageInfo</A></LI>
-		<LI><A HREF="#MontageImages">MontageImages</A></LI>
+		<LI><A HREF="#destroymontageinfo">DestroyMontageInfo</A></LI>
+		<LI><A HREF="#getmontageinfo">GetMontageInfo</A></LI>
+		<LI><A HREF="#montageimages">MontageImages</A></LI>
 	</UL>
 
 </UL>
@@ -25,111 +30,65 @@
 
 <HR>
 <P>
-<H1><A NAME="NAME">NAME</A></H1>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>montage - Methods to Create a Montage.</P>
 <P>
-montage - Methods to Create a Montage.
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>void  <STRONG>DestroyMontageInfo</STRONG>( MontageInfo *montage_info );</P>
+<P>void  <STRONG>GetMontageInfo</STRONG>( MontageInfo *montage_info );</P>
+<P>Image * <STRONG>MontageImages</STRONG>( Image *image, const MontageInfo *montage_info, ExceptionInfo *exception );</P>
 <P>
-void  <STRONG>DestroyMontageInfo</STRONG>( MontageInfo <CODE>*montage_info</CODE> );
-
-</P>
-<P>
-void  <STRONG>GetMontageInfo</STRONG>( MontageInfo <CODE>*montage_info</CODE> );
-
-</P>
-<P>
-Image * <STRONG>MontageImages</STRONG>( const Image *images, const MontageInfo <CODE>*montage_info</CODE> );
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
-<HR>
-<H2><A NAME="DestroyMontageInfo">DestroyMontageInfo</A></H2>
-<P>
-Method DestroyMontageInfo deallocates memory associated with an MontageInfo
-structure.
-
-</P>
-<P>
-The format of the DestroyMontageInfo method is:
-
-</P>
-<blockquote>void DestroyMontageInfo ( MontageInfo *montage_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="destroymontageinfo">DestroyMontageInfo</A></H2>
+<P>Method DestroyMontageInfo deallocates memory associated with an MontageInfo structure.</P>
+<P>The format of the DestroyMontageInfo method is:</P>
+<blockquote>void DestroyMontageInfo ( MontageInfo *montage_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o">montage_info:</A></STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_montage_info%3A">montage_info:</A></STRONG><BR>
+<DD>
 Specifies a pointer to an MontageInfo structure.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="GetMontageInfo">GetMontageInfo</A></H2>
-<P>
-Method GetMontageInfo initializes the MontageInfo structure.
-
-</P>
-<P>
-The format of the GetMontageInfo method is:
-
-</P>
-<blockquote>void GetMontageInfo ( MontageInfo *montage_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="getmontageinfo">GetMontageInfo</A></H2>
+<P>Method GetMontageInfo initializes the MontageInfo structure.</P>
+<P>The format of the GetMontageInfo method is:</P>
+<blockquote>void GetMontageInfo ( MontageInfo *montage_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>montage_info:</STRONG><DD>
-<P>
+<p><dt><STRONG>montage_info:</STRONG><BR>
+<DD>
 Specifies a pointer to a MontageInfo structure.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="MontageImages">MontageImages</A></H2>
-<P>
-Method MontageImages creates a composite image by combining several
-separate images.
-
-</P>
-<P>
-The format of the MontageImages method is:
-
-</P>
-<blockquote><A HREF="types/Image.html">Image</A> *MontageImages ( const <A HREF="types/Image.html">Image</A> *images, const MontageInfo *montage_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="montageimages">MontageImages</A></H2>
+<P>Method MontageImages creates a composite image by combining several separate images.</P>
+<P>The format of the MontageImages method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *MontageImages ( <A HREF="types/Image.html">Image</A> *image, const MontageInfo *montage_info, ExceptionInfo *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>images:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 Specifies a pointer to an array of Image structures.
-
-</P>
-<p><dt><STRONG>montage_info:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG>montage_info:</STRONG><BR>
+<DD>
 Specifies a pointer to a MontageInfo structure.
-
-</P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
 </DL></DL>
+<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 
 </BODY>
 

@@ -950,9 +950,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Create preview image.
             */
-            preview_image=CloneImage(image,image->columns,image->rows,True);
+            preview_image=CloneImage(image,image->columns,image->rows,True,
+              &image->exception);
             if (preview_image == (Image *) NULL)
-              ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+              ThrowWriterException(ResourceLimitWarning,
+                "Memory allocation failed",image);
             /*
               Dump image as bitmap.
             */
@@ -1161,7 +1163,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     i++;
                     if (i == 9)
                       {
-                        (void) strcpy(buffer,"\n");
+                        (void) WriteByte(image,'\n');
                         i=0;
                       }
                     length=0;
@@ -1208,7 +1210,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             break;
           }
         }
-        (void) strcpy(buffer,"\n");
+        (void) WriteByte(image,'\n');
       }
     else
       if (IsGrayImage(image))

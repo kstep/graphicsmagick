@@ -182,7 +182,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   else
     (void) ParseGeometry(HistogramDensity,&sans_offset,&sans_offset,
       &width,&height);
-  histogram_image=CloneImage(image,width,height,True);
+  histogram_image=CloneImage(image,width,height,True,&image->exception);
   if (histogram_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   histogram_image->class=DirectClass;

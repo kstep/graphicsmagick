@@ -1,25 +1,30 @@
 <HTML>
 <HEAD>
 <TITLE>draw - Methods to Draw on an Image</TITLE>
-<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
+<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A></LI>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A></LI>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#ColorFloodfillImage">ColorFloodfillImage</A></LI>
-		<LI><A HREF="#DrawImage">DrawImage</A></LI>
-		<LI><A HREF="#MatteFloodfillImage">MatteFloodfillImage</A></LI>
-		<LI><A HREF="#OpaqueImage">OpaqueImage</A></LI>
-		<LI><A HREF="#TransparentImage">TransparentImage</A></LI>
+		<LI><A HREF="#colorfloodfillimage">ColorFloodfillImage</A></LI>
+		<LI><A HREF="#drawimage">DrawImage</A></LI>
+		<LI><A HREF="#mattefloodfillimage">MatteFloodfillImage</A></LI>
+		<LI><A HREF="#opaqueimage">OpaqueImage</A></LI>
+		<LI><A HREF="#transparentimage">TransparentImage</A></LI>
 	</UL>
 
 </UL>
@@ -27,240 +32,134 @@
 
 <HR>
 <P>
-<H1><A NAME="NAME">NAME</A></H1>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>draw - Methods to Draw on an Image</P>
 <P>
-draw - Methods to Draw on an Image
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>unsigned int  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const PixelPacket *target, Image *tile, const int x_offset, const int y_offset, const PaintMethod method );</P>
+<P>unsigned int  <STRONG>DrawImage</STRONG>( Image *image, const AnnotateInfo *annotate_info );</P>
+<P>unsigned int  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const PixelPacket *target, const unsigned int matte, const int x_offset, const int y_offset, const PaintMethod method );</P>
+<P>unsigned int  <STRONG>OpaqueImage</STRONG>( Image *image, const char *opaque_color, const char *pen_color );</P>
+<P>unsigned int  <STRONG>TransparentImage</STRONG>( Image *image, const char *color );</P>
 <P>
-void  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const PixelPacket *target, Image *tile, const int x_offset,
-const int y_offset, const PaintMethod method );
-
-</P>
-<P>
-void  <STRONG>DrawImage</STRONG>( Image *image, const AnnotateInfo <CODE>*annotate_info</CODE> );
-
-</P>
-<P>
-void  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const PixelPacket *target, const unsigned int matte, const
-int x_offset, const int y_offset, const PaintMethod method );
-
-</P>
-<P>
-void  <STRONG>OpaqueImage</STRONG>( Image *image, const char *opaque_color, const char
-<CODE>*pen_color</CODE> );
-
-</P>
-<P>
-void  <STRONG>TransparentImage</STRONG>( Image *image, const char <CODE>*color</CODE> );
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
-<HR>
-<H2><A NAME="ColorFloodfillImage">ColorFloodfillImage</A></H2>
-<P>
-Method ColorFloodfillImage floodfills the designated area with a color. The
-floodfill algorithm is strongly based on a similar algorithm in ``Graphics
-Gems'' by Paul Heckbert.
-
-</P>
-<P>
-The format of the ColorFloodfillImage method is:
-
-</P>
-<blockquote>void ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *target, <A HREF="types/Image.html">Image</A> *tile, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="colorfloodfillimage">ColorFloodfillImage</A></H2>
+<P>Method ColorFloodfillImage floodfills the designated area with a color.  The floodfill algorithm is strongly based on a similar algorithm in ``Graphics Gems'' by Paul Heckbert.</P>
+<P>The format of the ColorFloodfillImage method is:</P>
+<blockquote>unsigned int ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *target, <A HREF="types/Image.html">Image</A> *tile, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o">image:</A></STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 The address of a structure of type Image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_target%3A">target:</A></STRONG><BR>
+<DD>
 
-</P>
-<p><dt><STRONG>target:</STRONG><DD>
-<P>
-
-<FONT SIZE=-1>A</FONT> PixelPacket structure. This is the 
+<FONT SIZE=-1>A</FONT> PixelPacket structure.  This is the 
 <FONT SIZE=-1>RGB</FONT> value of the target color.
-
-
-</P>
-<p><dt><STRONG>tile:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_tile%3A">tile:</A></STRONG><BR>
+<DD>
 An image representing the image to tile onto the floodplane.
-
-</P>
-<p><dt><STRONG>x,y:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_x%2Cy%3A">x,y:</A></STRONG><BR>
+<DD>
 Unsigned integers representing the current location of the pen.
-
-</P>
-<p><dt><STRONG>method:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_method%3A">method:</A></STRONG><BR>
+<DD>
 drawing method of type PrimitiveType: floodfill or fill to border.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="DrawImage">DrawImage</A></H2>
-<P>
-Method DrawImage draws a primitive (line, rectangle, ellipse) on the image.
-
-</P>
-<P>
-The format of the DrawImage method is:
-
-</P>
-<blockquote>void DrawImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="drawimage">DrawImage</A></H2>
+<P>Method DrawImage draws a primitive (line, rectangle, ellipse) on the image.</P>
+<P>The format of the DrawImage method is:</P>
+<blockquote>unsigned int DrawImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image.
-
-</P>
-<p><dt><STRONG>annotate_info:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_annotate_info%3A">annotate_info:</A></STRONG><BR>
+<DD>
 The address of a DrawInfo structure.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="MatteFloodfillImage">MatteFloodfillImage</A></H2>
-<P>
-Method MatteFloodfillImage floodfills the designated area with a matte
-value. The floodfill algorithm is strongly based on a similar algorithm in
-``Graphics Gems'' by Paul Heckbert.
-
-</P>
-<P>
-The format of the MatteFloodfillImage method is:
-
-</P>
-<blockquote>void MatteFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *target, const unsigned int matte, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="mattefloodfillimage">MatteFloodfillImage</A></H2>
+<P>Method MatteFloodfillImage floodfills the designated area with a matte value.  The floodfill algorithm is strongly based on a similar algorithm in ``Graphics Gems'' by Paul Heckbert.</P>
+<P>The format of the MatteFloodfillImage method is:</P>
+<blockquote>unsigned int MatteFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *target, const unsigned int matte, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image.
+<P></P>
+<p><dt><STRONG>target:</STRONG><BR>
+<DD>
 
-</P>
-<p><dt><STRONG>target:</STRONG><DD>
-<P>
-
-<FONT SIZE=-1>A</FONT> PixelPacket structure. This is the 
+<FONT SIZE=-1>A</FONT> PixelPacket structure.  This is the 
 <FONT SIZE=-1>RGB</FONT> value of the target color.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_matte%3A">matte:</A></STRONG><BR>
+<DD>
 
-
-</P>
-<p><dt><STRONG>matte:</STRONG><DD>
-<P>
-
-<FONT SIZE=-1>A</FONT> integer value representing the amount of
-transparency.
-
-</P>
-<p><dt><STRONG>x,y:</STRONG><DD>
-<P>
+<FONT SIZE=-1>A</FONT> integer value representing the amount of transparency.
+<P></P>
+<p><dt><STRONG>x,y:</STRONG><BR>
+<DD>
 Unsigned integers representing the current location of the pen.
-
-</P>
-<p><dt><STRONG>method:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG>method:</STRONG><BR>
+<DD>
 drawing method of type PrimitiveType: floodfill or fill to border.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="OpaqueImage">OpaqueImage</A></H2>
-<P>
-Method OpaqueImage changes the color of an opaque pixel to the pen color.
-
-</P>
-<P>
-The format of the OpaqueImage method is:
-
-</P>
-<blockquote>void OpaqueImage ( <A HREF="types/Image.html">Image</A> *image, const char *opaque_color, const char *pen_color ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="opaqueimage">OpaqueImage</A></H2>
+<P>Method OpaqueImage changes the color of an opaque pixel to the pen color.</P>
+<P>The format of the OpaqueImage method is:</P>
+<blockquote>unsigned int OpaqueImage ( <A HREF="types/Image.html">Image</A> *image, const char *opaque_color, const char *pen_color ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image; returned from ReadImage.
-
-</P>
-<p><dt><STRONG>opaque_color, pen_color:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_opaque_color%2C_pen_color%3A">opaque_color, pen_color:</A></STRONG><BR>
+<DD>
 
 <FONT SIZE=-1>A</FONT> character string that contain an 
 <FONT SIZE=-1>X11</FONT> color string.
-
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="TransparentImage">TransparentImage</A></H2>
-<P>
-Method TransparentImage creates a matte image associated with the image.
-All pixel locations are initially set to opaque. Any pixel that matches the
-specified color are set to transparent.
-
-</P>
-<P>
-The format of the TransparentImage method is:
-
-</P>
-<blockquote>void TransparentImage ( <A HREF="types/Image.html">Image</A> *image, const char *color ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="transparentimage">TransparentImage</A></H2>
+<P>Method TransparentImage creates a matte image associated with the image.  All pixel locations are initially set to opaque.  Any pixel that matches the specified color are set to transparent.</P>
+<P>The format of the TransparentImage method is:</P>
+<blockquote>unsigned int TransparentImage ( <A HREF="types/Image.html">Image</A> *image, const char *color ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image; returned from ReadImage.
-
-</P>
-<p><dt><STRONG>color:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_color%3A">color:</A></STRONG><BR>
+<DD>
 
 <FONT SIZE=-1>A</FONT> character string that contain an 
 <FONT SIZE=-1>X11</FONT> color string.
-
-
-</P>
 </DL></DL>
+<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 
 </BODY>
 

@@ -1,22 +1,27 @@
 <HTML>
 <HEAD>
 <TITLE>animate - Methods to Interactively Animate an Image Sequence</TITLE>
-<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
+<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A></LI>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A></LI>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#XAnimateBackgroundImage">XAnimateBackgroundImage</A></LI>
-		<LI><A HREF="#XAnimateImage">XAnimateImage</A></LI>
+		<LI><A HREF="#xanimatebackgroundimage">XAnimateBackgroundImage</A></LI>
+		<LI><A HREF="#xanimateimage">XAnimateImage</A></LI>
 	</UL>
 
 </UL>
@@ -24,111 +29,76 @@
 
 <HR>
 <P>
-<H1><A NAME="NAME">NAME</A></H1>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>animate - Methods to Interactively Animate an Image Sequence</P>
 <P>
-animate - Methods to Interactively Animate an Image Sequence
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>void  <STRONG>XAnimateBackgroundImage</STRONG>( Display *display, XResourceInfo *resource_info, Image *image );</P>
 <P>
-void  <STRONG>XAnimateBackgroundImage</STRONG>( Display *display, XResourceInfo *resource_info, Image <CODE>*image</CODE>
-);
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
-<HR>
-<H2><A NAME="XAnimateBackgroundImage">XAnimateBackgroundImage</A></H2>
-<P>
-Method XAnimateBackgroundImage animates an image sequence in the background
-of a window.
-
-</P>
-<P>
-The format of the XAnimateBackgroundImage method is:
-
-</P>
-<blockquote>void XAnimateBackgroundImage ( Display *display, XResourceInfo *resource_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="xanimatebackgroundimage">XAnimateBackgroundImage</A></H2>
+<P>Method XAnimateBackgroundImage animates an image sequence in the background of a window.</P>
+<P>The format of the XAnimateBackgroundImage method is:</P>
+<blockquote>void XAnimateBackgroundImage ( Display *display, XResourceInfo *resource_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o">display:</A></STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_display%3A">display:</A></STRONG><BR>
+<DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
-
-</P>
-<p><dt><STRONG>resource_info:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_resource_info%3A">resource_info:</A></STRONG><BR>
+<DD>
 Specifies a pointer to a 
 <FONT SIZE=-1>X11</FONT> XResourceInfo structure.
-
-</P>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 Specifies a pointer to a Image structure; returned from ReadImage.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="XAnimateImage">XAnimateImage</A></H2>
+<H2><A NAME="xanimateimage">XAnimateImage</A></H2>
+<P>Method XAnimateImages displays an image via 
+<FONT SIZE=-1>X11.</FONT></P>
+<P>The format of the XAnimateImages method is:</P>
+<PRE>
+    Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
+      char **argv,const int argc,Image *image)</PRE>
 <P>
-Method XAnimateImages displays an image via 
-<FONT SIZE=-1>X11.</FONT>
-
-</P>
-<P>
-The format of the XAnimateImages method is:
-
-</P>
-<P>
-<PRE>    Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
-      char **argv,const int argc,Image *image)
-</PRE>
-</P>
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>display:</STRONG><DD>
-<P>
+<p><dt><STRONG>display:</STRONG><BR>
+<DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
-
-</P>
-<p><dt><STRONG>resource_info:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG>resource_info:</STRONG><BR>
+<DD>
 Specifies a pointer to a 
 <FONT SIZE=-1>X11</FONT> XResourceInfo structure.
-
-</P>
-<p><dt><STRONG>argv:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_argv%3A">argv:</A></STRONG><BR>
+<DD>
 Specifies the application's argument list.
-
-</P>
-<p><dt><STRONG>argc:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_argc%3A">argc:</A></STRONG><BR>
+<DD>
 Specifies the number of arguments.
-
-</P>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 Specifies a pointer to a Image structure; returned from ReadImage.
-
-</P>
 </DL></DL>
+<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 
 </BODY>
 

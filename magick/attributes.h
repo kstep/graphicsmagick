@@ -15,7 +15,7 @@ extern "C" {
   Exported text attribute methods.
 */
 extern Export ImageAttribute
-  *GetImageAttribute(const Image *,const char *);
+  *GetImageAttribute(Image *,const char *);
 
 extern Export unsigned int
   SetImageAttribute(Image *,const char *,const char *);

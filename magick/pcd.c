@@ -379,8 +379,9 @@ static unsigned int IsPCD(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-static Image *OverviewImage(const ImageInfo *image_info,ExceptionInfo *exception,
-  Image *image)
+
+static Image *OverviewImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   char
     *commands[3];
@@ -412,7 +413,7 @@ static Image *OverviewImage(const ImageInfo *image_info,ExceptionInfo *exception
   (void) strcpy(montage_info.filename,image_info->filename);
   (void) CloneString(&montage_info.font,image_info->font);
   montage_info.pointsize=image_info->pointsize;
-  montage_image=MontageImages(image,&montage_info);
+  montage_image=MontageImages(image,&montage_info,exception);
   DestroyMontageInfo(&montage_info);
   if (montage_image == (Image *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
@@ -633,7 +634,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       FreeMemory(luma);
       while (image->previous != (Image *) NULL)
         image=image->previous;
-      overview_image=OverviewImage(image_info,exception,image);
+      overview_image=OverviewImage(image_info,image,exception);
       return(overview_image);
     }
   /*
@@ -734,7 +735,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       degrees=rotate == 1 ? -90.0 : 90.0;
       image->orphan=True;
-      rotated_image=RotateImage(image,degrees);
+      rotated_image=RotateImage(image,degrees,exception);
       if (rotated_image != (Image *) NULL)
         {
           DestroyImage(image);
@@ -866,9 +867,9 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   if ((height % 2) != 0)
     height--;
   image->orphan=True;
-  tile_image=ZoomImage(image,width,height);
+  tile_image=ZoomImage(image,width,height,&image->exception);
   if (tile_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Unable to scale image",image);
+    return(False);
   (void) sscanf(geometry,"%ux%u",&width,&height);
   if ((tile_image->columns != width) || (tile_image->rows != height))
     {
@@ -883,18 +884,18 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       */
       border_info.width=(width-tile_image->columns+1) >> 1;
       border_info.height=(height-tile_image->rows+1) >> 1;
-      bordered_image=BorderImage(tile_image,&border_info);
+      bordered_image=BorderImage(tile_image,&border_info,&image->exception);
       if (bordered_image == (Image *) NULL)
-        ThrowWriterException(ResourceLimitWarning,"Unable to border image",image);
+        return(False);
       DestroyImage(tile_image);
       tile_image=bordered_image;
     }
   TransformImage(&tile_image,(char *) NULL,tile_geometry);
   RGBTransformImage(tile_image,YCCColorspace);
-  downsampled_image=
-    ZoomImage(tile_image,tile_image->columns >> 1,tile_image->rows >> 1);
+  downsampled_image=ZoomImage(tile_image,tile_image->columns >> 1,
+    tile_image->rows >> 1,&image->exception);
   if (downsampled_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Unable to down sample image",image);
+    return(False);
   /*
     Write tile to PCD file.
   */
@@ -955,9 +956,9 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
         Rotate portrait to landscape.
       */
       image->orphan=True;
-      rotated_image=RotateImage(image,90.0);
+      rotated_image=RotateImage(image,90.0,&image->exception);
       if (rotated_image == (Image *) NULL)
-        ThrowWriterException(ResourceLimitWarning,"Unable to rotate image",image);
+        return(False);
       pcd_image=rotated_image;
     }
   /*

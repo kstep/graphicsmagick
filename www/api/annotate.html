@@ -1,24 +1,29 @@
 <HTML>
 <HEAD>
 <TITLE>annotate - Methods to Annotate an Image</TITLE>
-<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
+<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A></LI>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A></LI>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#AnnotateImage">AnnotateImage</A></LI>
-		<LI><A HREF="#CloneAnnotateInfo">CloneAnnotateInfo</A></LI>
-		<LI><A HREF="#DestroyAnnotateInfo">DestroyAnnotateInfo</A></LI>
-		<LI><A HREF="#GetAnnotateInfo">GetAnnotateInfo</A></LI>
+		<LI><A HREF="#annotateimage">AnnotateImage</A></LI>
+		<LI><A HREF="#cloneannotateinfo">CloneAnnotateInfo</A></LI>
+		<LI><A HREF="#destroyannotateinfo">DestroyAnnotateInfo</A></LI>
+		<LI><A HREF="#getannotateinfo">GetAnnotateInfo</A></LI>
 	</UL>
 
 </UL>
@@ -26,161 +31,87 @@
 
 <HR>
 <P>
-<H1><A NAME="NAME">NAME</A></H1>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>annotate - Methods to Annotate an Image</P>
 <P>
-annotate - Methods to Annotate an Image
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>unsigned int  <STRONG>AnnotateImage</STRONG>( Image *image, const AnnotateInfo *annotate_info );</P>
+<P>AnnotateInfo * <STRONG>CloneAnnotateInfo</STRONG>( const ImageInfo *image_info, const AnnotateInfo *annotate_info );</P>
+<P>void  <STRONG>DestroyAnnotateInfo</STRONG>( AnnotateInfo *annotate_info );</P>
+<P>void  <STRONG>GetAnnotateInfo</STRONG>( const ImageInfo *image_info, AnnotateInfo *annotate_info );</P>
 <P>
-void  <STRONG>AnnotateImage</STRONG>( Image *image, const AnnotateInfo <CODE>*annotate_info</CODE> );
-
-</P>
-<P>
-AnnotateInfo * <STRONG>CloneAnnotateInfo</STRONG>( const ImageInfo *image_info, const AnnotateInfo
-<CODE>*annotate_info</CODE> );
-
-</P>
-<P>
-void  <STRONG>DestroyAnnotateInfo</STRONG>( AnnotateInfo <CODE>*annotate_info</CODE> );
-
-</P>
-<P>
-void  <STRONG>GetAnnotateInfo</STRONG>( const ImageInfo *image_info, AnnotateInfo <CODE>*annotate_info</CODE> );
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
-<HR>
-<H2><A NAME="AnnotateImage">AnnotateImage</A></H2>
-<P>
-Method AnnotateImage annotates an image with text. Optionally the
-annotation can include the image filename, type, width, height, or scene
-number by embedding special format characters.
-
-</P>
-<P>
-The format of the AnnotateImage method is:
-
-</P>
-<blockquote>void AnnotateImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="annotateimage">AnnotateImage</A></H2>
+<P>Method AnnotateImage annotates an image with text.  Optionally the annotation can include the image filename, type, width, height, or scene number by embedding special format characters.</P>
+<P>The format of the AnnotateImage method is:</P>
+<blockquote>unsigned int AnnotateImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o">image:</A></STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 The address of a structure of type Image.
-
-</P>
-<p><dt><STRONG>annotate_info:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_annotate_info%3A">annotate_info:</A></STRONG><BR>
+<DD>
 The address of a AnnotateInfo structure.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="CloneAnnotateInfo">CloneAnnotateInfo</A></H2>
-<P>
-Method CloneAnnotateInfo makes a duplicate of the given annotate info, or if annotate info is 
-<FONT SIZE=-1>NULL,</FONT> a new one.
-
-
-</P>
-<P>
-The format of the CloneAnnotateInfo method is:
-
-</P>
-<blockquote><A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *CloneAnnotateInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="cloneannotateinfo">CloneAnnotateInfo</A></H2>
+<P>Method CloneAnnotateInfo makes a duplicate of the given annotate info, or if annotate info is 
+<FONT SIZE=-1>NULL,</FONT> a new one.</P>
+<P>The format of the CloneAnnotateInfo method is:</P>
+<blockquote><A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *CloneAnnotateInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>cloned_info:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_cloned_info%3A">cloned_info:</A></STRONG><BR>
+<DD>
 Method CloneAnnotateInfo returns a duplicate of the given annotate info, or if annotate info is 
 <FONT SIZE=-1>NULL</FONT> a new one.
-
-
-</P>
-<p><dt><STRONG>image_info:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
+<DD>
 a structure of type info.
-
-</P>
-<p><dt><STRONG>annotate_info:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG>annotate_info:</STRONG><BR>
+<DD>
 a structure of type info.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="DestroyAnnotateInfo">DestroyAnnotateInfo</A></H2>
-<P>
-Method DestroyAnnotateInfo deallocates memory associated with an
-AnnotateInfo structure.
-
-</P>
-<P>
-The format of the DestroyAnnotateInfo method is:
-
-</P>
-<blockquote>void DestroyAnnotateInfo ( <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="destroyannotateinfo">DestroyAnnotateInfo</A></H2>
+<P>Method DestroyAnnotateInfo deallocates memory associated with an AnnotateInfo structure.</P>
+<P>The format of the DestroyAnnotateInfo method is:</P>
+<blockquote>void DestroyAnnotateInfo ( <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>annotate_info:</STRONG><DD>
-<P>
+<p><dt><STRONG>annotate_info:</STRONG><BR>
+<DD>
 Specifies a pointer to an AnnotateInfo structure.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="GetAnnotateInfo">GetAnnotateInfo</A></H2>
-<P>
-Method GetAnnotateInfo initializes the AnnotateInfo structure.
-
-</P>
-<P>
-The format of the GetAnnotateInfo method is:
-
-</P>
-<blockquote>void GetAnnotateInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="getannotateinfo">GetAnnotateInfo</A></H2>
+<P>Method GetAnnotateInfo initializes the AnnotateInfo structure.</P>
+<P>The format of the GetAnnotateInfo method is:</P>
+<blockquote>void GetAnnotateInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image_info:</STRONG><DD>
-<P>
+<p><dt><STRONG>image_info:</STRONG><BR>
+<DD>
 Specifies a pointer to an ImageInfo structure.
-
-</P>
-<p><dt><STRONG>annotate_info:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG>annotate_info:</STRONG><BR>
+<DD>
 Specifies a pointer to a AnnotateInfo structure.
-
-</P>
 </DL></DL>
+<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 
 </BODY>
 

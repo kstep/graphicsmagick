@@ -89,7 +89,7 @@
 static Image *ReadTILEImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
-    *cloned_image,
+    *clone_image,
     *image,
     *tiled_image;
 
@@ -118,12 +118,13 @@ static Image *ReadTILEImage(const ImageInfo *image_info,ExceptionInfo *exception
   DestroyImageInfo(clone_info);
   if (tiled_image == (Image *) NULL)
     return((Image *) NULL);
-  cloned_image=CloneImage(tiled_image,image->columns,image->rows,True);
+  clone_image=
+    CloneImage(tiled_image,image->columns,image->rows,True,exception);
   DestroyImage(image);
-  if (cloned_image == (Image *) NULL)
+  if (clone_image == (Image *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
       tiled_image);
-  image=cloned_image;
+  image=clone_image;
   (void) strcpy(image->filename,image_info->filename);
   /*
     Tile texture onto image.

@@ -1,22 +1,27 @@
 <HTML>
 <HEAD>
 <TITLE>monitor - ImageMagick Progress Monitor Methods</TITLE>
-<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
+<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A></LI>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A></LI>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#ProgressMonitor">ProgressMonitor</A></LI>
-		<LI><A HREF="#SetMonitorHandler">SetMonitorHandler</A></LI>
+		<LI><A HREF="#progressmonitor">ProgressMonitor</A></LI>
+		<LI><A HREF="#setmonitorhandler">SetMonitorHandler</A></LI>
 	</UL>
 
 </UL>
@@ -24,83 +29,49 @@
 
 <HR>
 <P>
-<H1><A NAME="NAME">NAME</A></H1>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>monitor - ImageMagick Progress Monitor Methods</P>
 <P>
-monitor - ImageMagick Progress Monitor Methods
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>void  <STRONG>ProgressMonitor</STRONG>( const char *text, const off_t quantum, const off_t span );</P>
+<P>MonitorHandler  <STRONG>SetMonitorHandler</STRONG>( MonitorHandler handler );</P>
 <P>
-void  <STRONG>ProgressMonitor</STRONG>( const char *text, const off_t quantum, const off_t span );
-
-</P>
-<P>
-MonitorHandler  <STRONG>SetMonitorHandler</STRONG>( MonitorHandler handler );
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
-<HR>
-<H2><A NAME="ProgressMonitor">ProgressMonitor</A></H2>
-<P>
-Method ProgressMonitor calls the monitor handler methods with a text string
-that describes the task and a measure of completion.
-
-</P>
-<P>
-The format of the ProgressMonitor method is:
-
-</P>
-<blockquote>void ProgressMonitor ( const char *text, const off_t quantum, const off_t span ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="progressmonitor">ProgressMonitor</A></H2>
+<P>Method ProgressMonitor calls the monitor handler methods with a text string that describes the task and a measure of completion.</P>
+<P>The format of the ProgressMonitor method is:</P>
+<blockquote>void ProgressMonitor ( const char *text, const off_t quantum, const off_t span ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o">quantum:</A></STRONG><DD>
-<P>
-Specifies the quantum position within the span which represents how much
-progress has been made in completing a task.
-
-</P>
-<p><dt><STRONG>span:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
+<DD>
+Specifies the quantum position within the span which represents how much progress has been made in completing a task.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
+<DD>
 Specifies the span relative to completing a task.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="SetMonitorHandler">SetMonitorHandler</A></H2>
-<P>
-Method SetMonitorHandler sets the monitor handler to the specified method
-and returns the previous monitor handler.
-
-</P>
-<P>
-The format of the SetMonitorHandler method is:
-
-</P>
-<blockquote>MonitorHandler SetMonitorHandler ( MonitorHandler handler ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="setmonitorhandler">SetMonitorHandler</A></H2>
+<P>Method SetMonitorHandler sets the monitor handler to the specified method and returns the previous monitor handler.</P>
+<P>The format of the SetMonitorHandler method is:</P>
+<blockquote>MonitorHandler SetMonitorHandler ( MonitorHandler handler ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>handler:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_handler%3A">handler:</A></STRONG><BR>
+<DD>
 Specifies a pointer to a method to handle monitors.
-
-</P>
 </DL></DL>
+<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 
 </BODY>
 

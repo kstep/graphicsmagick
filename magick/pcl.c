@@ -386,9 +386,10 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
             Scale image.
           */
           image->orphan=True;
-          monochrome_image=ZoomImage(image,width,height);
+          monochrome_image=ZoomImage(image,width,height,&image->exception);
           if (monochrome_image == (Image *) NULL)
-            ThrowWriterException(ResourceLimitWarning,"Unable to scale image",image);
+            ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
+              image);
         }
       if (!IsMonochromeImage(monochrome_image))
         {

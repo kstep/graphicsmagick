@@ -315,7 +315,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Correct image orientation.
   */
-  flipped_image=FlipImage(image);
+  flipped_image=FlipImage(image,exception);
   if (flipped_image == (Image *) NULL)
     return(image);
   DestroyImage(image);

@@ -166,13 +166,16 @@ Export void GetMontageInfo(MontageInfo *montage_info)
 %
 %  The format of the MontageImages method is:
 %
-%      Image *MontageImages(Image *image,const MontageInfo *montage_info)
+%      Image *MontageImages(Image *image,const MontageInfo *montage_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: Specifies a pointer to an array of Image structures.
 %
 %    o montage_info: Specifies a pointer to a MontageInfo structure.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
@@ -238,7 +241,8 @@ static int SceneCompare(const void *x,const void *y)
   return((int) (*image_1)->scene-(int) (*image_2)->scene);
 }
 
-Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
+Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
+  ExceptionInfo *exception)
 {
 #define MontageImageText  "  Creating visual next directory...  "
 #define TileImageText  "  Creating next tiles...  "
@@ -326,7 +330,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
     y=0;
     (void) ParseImageGeometry(montage_info->geometry,&x,&y,&width,&height);
     next_list[tile]->orphan=True;
-    tiled_next=ZoomImage(next_list[tile],width,height);
+    tiled_next=ZoomImage(next_list[tile],width,height,exception);
     if (tiled_next == (Image *) NULL)
       {
         for (i=0; i < (int) tile; i++)
@@ -599,7 +603,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
               border_info.height=(height-next->rows+1) >> 1;
             }
           next->orphan=True;
-          bordered_next=BorderImage(next,&border_info);
+          bordered_next=BorderImage(next,&border_info,exception);
           if (bordered_next != (Image *) NULL)
             {
               DestroyImage(next);
@@ -687,7 +691,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
           if (attribute != (ImageAttribute *) NULL)
             tile_info.height+=(font_height+4)*MultilineCensus(attribute->value);
           next->orphan=True;
-          framed_next=FrameImage(next,&tile_info);
+          framed_next=FrameImage(next,&tile_info,exception);
           if (framed_next != (Image *) NULL)
             {
               DestroyImage(next);

@@ -137,6 +137,9 @@ format.
 
 &nbsp;&nbsp;&nbsp; int main(int argc,char **argv)
 &nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ExceptionInfo
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exception;
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Image
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *image,
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *scaled_image;
@@ -149,18 +152,17 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GetImageInfo(&amp;image_info);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image_info.filename,"image.jpg");
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=ReadImage(&amp;image_info);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=ReadImage(&amp;image_info,&exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (image == (Image *) NULL)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit(1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.message,exception.qualifier);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn the image into a thumbnail.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; scaled_image=ZoomImage(image,106,80);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (scaled_image != (Image *) NULL)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=scaled_image;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; scaled_image=ZoomImage(image,106,80,exception);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (scaled_image == (Image *) NULL)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.message,exception.qualifier);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=scaled_image;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Write the image as PNG and destroy it.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */

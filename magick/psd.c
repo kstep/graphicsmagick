@@ -517,13 +517,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Allocate layered image.
         */
-        layer_info[i].image=
-          CloneImage(image,layer_info[i].width,layer_info[i].height,True);
+        layer_info[i].image=CloneImage(image,layer_info[i].width,
+          layer_info[i].height,True,&image->exception);
         if (layer_info[i].image == (Image *) NULL)
           {
             for (j=0; j < i; j++)
               DestroyImage(layer_info[j].image);
-            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image);
           }
         if (psd_header.mode == CMYKMode)
           layer_info[i].image->colorspace=CMYKColorspace;

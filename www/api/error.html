@@ -1,25 +1,31 @@
 <HTML>
 <HEAD>
 <TITLE>error - ImageMagick Error Methods</TITLE>
-<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
+<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A></LI>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A></LI>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#GetErrorInfo">GetErrorInfo</A></LI>
-		<LI><A HREF="#MagickError">MagickError</A></LI>
-		<LI><A HREF="#MagickWarning">MagickWarning</A></LI>
-		<LI><A HREF="#SetErrorHandler">SetErrorHandler</A></LI>
-		<LI><A HREF="#SetWarningHandler">SetWarningHandler</A></LI>
+		<LI><A HREF="#catchimageexception">CatchImageException</A></LI>
+		<LI><A HREF="#geterrorinfo">GetErrorInfo</A></LI>
+		<LI><A HREF="#magickerror">MagickError</A></LI>
+		<LI><A HREF="#magickwarning">MagickWarning</A></LI>
+		<LI><A HREF="#seterrorhandler">SetErrorHandler</A></LI>
+		<LI><A HREF="#setwarninghandler">SetWarningHandler</A></LI>
 	</UL>
 
 </UL>
@@ -27,187 +33,114 @@
 
 <HR>
 <P>
-<H1><A NAME="NAME">NAME</A></H1>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>error - ImageMagick Error Methods</P>
 <P>
-error - ImageMagick Error Methods
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P><STRONG>CatchImageException</STRONG>( Image *image, ExceptionType *severity );</P>
+<P>void  <STRONG>MagickError</STRONG>( const ExceptionType error, const char *message, const char *qualifier );</P>
+<P>void  <STRONG>MagickWarning</STRONG>( const ExceptionType warning, const char *message, const char *qualifier );</P>
+<P>ErrorHandler  <STRONG>SetErrorHandler</STRONG>( ErrorHandler handler );</P>
+<P>ErrorHandler  <STRONG>SetWarningHandler</STRONG>( ErrorHandler handler );</P>
 <P>
-<STRONG>GetErrorInfo</STRONG>( ErrorInfo <CODE>*error_info</CODE> );
-
-</P>
-<P>
-void  <STRONG>MagickError</STRONG>( const ErrorType error, const char *message, const char
-<CODE>*qualifier</CODE> );
-
-</P>
-<P>
-void  <STRONG>MagickWarning</STRONG>( const WarningType warning, const char *message, const char
-<CODE>*qualifier</CODE> );
-
-</P>
-<P>
-ErrorHandler  <STRONG>SetErrorHandler</STRONG>( ErrorHandler handler );
-
-</P>
-<P>
-ErrorHandler  <STRONG>SetWarningHandler</STRONG>( ErrorHandler handler );
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
-<HR>
-<H2><A NAME="GetErrorInfo">GetErrorInfo</A></H2>
-<P>
-Method GetErrorInfo initializes the ErrorInfo structure.
-
-</P>
-<P>
-The format of the GetErrorInfo method is:
-
-</P>
-<blockquote>GetErrorInfo ( ErrorInfo *error_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="catchimageexception">CatchImageException</A></H2>
+<P>Method CatchImageException traverses an image sequence and calls methods <CODE>MagickWarning</CODE> or <CODE>MagickError</CODE> if it discovers any thrown exceptions.</P>
+<P>The format of the CatchImageException method is:</P>
+<blockquote>CatchImageException ( <A HREF="types/Image.html">Image</A> *image, ExceptionType *severity ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o">error_info:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a list of one or more images.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_severity%3A">severity:</A></STRONG><BR>
+<DD>
+return the highest severity exception.
+<P></P></DL></DL>
 <P>
-Specifies a pointer to a ErrorInfo structure.
-
-</P>
-</DL></DL>
+<H2><A NAME="geterrorinfo">GetErrorInfo</A></H2>
+<P>Method GetExceptionInfo initializes the ExceptionInfo structure.</P>
+<P>The format of the GetExceptionInfo method is:</P>
+<PRE>
+    GetExceptionInfo(ExceptionInfo *exception_info)</PRE>
 <P>
-<HR>
-<H2><A NAME="MagickError">MagickError</A></H2>
-<P>
-Method MagickError calls the error handler methods with an error message.
-
-</P>
-<P>
-The format of the MagickError method is:
-
-</P>
-<blockquote>void MagickError ( const ErrorType error, const char *message, const char *qualifier ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>error:</STRONG><DD>
+<p><dt><STRONG><A NAME="item_o_error_info%3A">error_info:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a ExceptionInfo structure.
+<P></P></DL></DL>
 <P>
+<H2><A NAME="magickerror">MagickError</A></H2>
+<P>Method MagickError calls the error handler methods with an error message.</P>
+<P>The format of the MagickError method is:</P>
+<blockquote>void MagickError ( const ExceptionType error, const char *message, const char *qualifier ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
 Specifies the numeric error category.
-
-</P>
-<p><dt><STRONG>message:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_message%3A">message:</A></STRONG><BR>
+<DD>
 Specifies the message to display before terminating the program.
-
-</P>
-<p><dt><STRONG>qualifier:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_qualifier%3A">qualifier:</A></STRONG><BR>
+<DD>
 Specifies any qualifier to the message.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="MagickWarning">MagickWarning</A></H2>
-<P>
-Method MagickWarning calls the warning handler methods with a warning
-message.
-
-</P>
-<P>
-The format of the MagickWarning method is:
-
-</P>
-<blockquote>void MagickWarning ( const WarningType warning, const char *message, const char *qualifier ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="magickwarning">MagickWarning</A></H2>
+<P>Method MagickWarning calls the warning handler methods with a warning message.</P>
+<P>The format of the MagickWarning method is:</P>
+<blockquote>void MagickWarning ( const ExceptionType warning, const char *message, const char *qualifier ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>warning:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_warning%3A">warning:</A></STRONG><BR>
+<DD>
 Specifies the numeric warning category.
-
-</P>
-<p><dt><STRONG>message:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG>message:</STRONG><BR>
+<DD>
 Specifies the message to display before terminating the program.
-
-</P>
-<p><dt><STRONG>qualifier:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG>qualifier:</STRONG><BR>
+<DD>
 Specifies any qualifier to the message.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="SetErrorHandler">SetErrorHandler</A></H2>
-<P>
-Method SetErrorHandler sets the error handler to the specified method and
-returns the previous error handler.
-
-</P>
-<P>
-The format of the SetErrorHandler method is:
-
-</P>
-<blockquote>ErrorHandler SetErrorHandler ( ErrorHandler handler ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="seterrorhandler">SetErrorHandler</A></H2>
+<P>Method SetErrorHandler sets the error handler to the specified method and returns the previous error handler.</P>
+<P>The format of the SetErrorHandler method is:</P>
+<blockquote>ErrorHandler SetErrorHandler ( ErrorHandler handler ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>handler:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_handler%3A">handler:</A></STRONG><BR>
+<DD>
 Specifies a pointer to a method to handle errors.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="SetWarningHandler">SetWarningHandler</A></H2>
-<P>
-Method SetWarningHandler sets the warning handler to the specified method
-and returns the previous warning handler.
-
-</P>
-<P>
-The format of the SetWarningHandler method is:
-
-</P>
-<blockquote>ErrorHandler SetWarningHandler ( ErrorHandler handler ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="setwarninghandler">SetWarningHandler</A></H2>
+<P>Method SetWarningHandler sets the warning handler to the specified method and returns the previous warning handler.</P>
+<P>The format of the SetWarningHandler method is:</P>
+<blockquote>ErrorHandler SetWarningHandler ( ErrorHandler handler ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>handler:</STRONG><DD>
-<P>
+<p><dt><STRONG>handler:</STRONG><BR>
+<DD>
 Specifies a pointer to a method to handle warnings.
-
-</P>
 </DL></DL>
+<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 
 </BODY>
 

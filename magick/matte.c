@@ -138,11 +138,12 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
     status;
 
   if (!image->matte)
-    ThrowWriterException(ResourceLimitWarning,"Image does not have a matte channel",
-      image);
-  matte_image=CloneImage(image,image->columns,image->rows,True);
+    ThrowWriterException(ResourceLimitWarning,
+      "Image does not have a matte channel",image);
+  matte_image=
+    CloneImage(image,image->columns,image->rows,True,&image->exception);
   if (matte_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    return(False);
   matte_image->class=PseudoClass;
   matte_image->colors=(Opaque-Transparent)+1;
   matte_image->colormap=(PixelPacket *)

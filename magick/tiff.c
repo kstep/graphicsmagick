@@ -139,7 +139,8 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image != (Image *) NULL);
-  huffman_image=CloneImage(image,image->columns,image->rows,True);
+  huffman_image=CloneImage(image,image->columns,image->rows,True,
+    &image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
   if (!IsMonochromeImage(huffman_image))
@@ -1306,9 +1307,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       do
       {
         image->orphan=True;
-        next_image=ZoomImage(image,width,height);
+        next_image=ZoomImage(image,width,height,&image->exception);
         if (next_image == (Image *) NULL)
-          ThrowWriterException(FileOpenWarning,"Unable to pyramid encode image",image);
+          ThrowWriterException(FileOpenWarning,
+            "Unable to pyramid encode image",image);
         next_image->next=(Image *) NULL;
         if (pyramid_image == (Image *) NULL)
           pyramid_image=next_image;

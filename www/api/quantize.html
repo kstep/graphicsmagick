@@ -1,27 +1,32 @@
 <HTML>
 <HEAD>
 <TITLE>quantize - Methods to Reduce the Number of Unique Colors in an Image</TITLE>
-<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
+<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A></LI>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A></LI>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#CloneQuantizeInfo">CloneQuantizeInfo</A></LI>
-		<LI><A HREF="#GetQuantizeInfo">GetQuantizeInfo</A></LI>
-		<LI><A HREF="#MapImage">MapImage</A></LI>
-		<LI><A HREF="#MapImages">MapImages</A></LI>
-		<LI><A HREF="#QuantizationError">QuantizationError</A></LI>
-		<LI><A HREF="#QuantizeImage">QuantizeImage</A></LI>
-		<LI><A HREF="#QuantizeImages">QuantizeImages</A></LI>
+		<LI><A HREF="#clonequantizeinfo">CloneQuantizeInfo</A></LI>
+		<LI><A HREF="#getquantizeinfo">GetQuantizeInfo</A></LI>
+		<LI><A HREF="#mapimage">MapImage</A></LI>
+		<LI><A HREF="#mapimages">MapImages</A></LI>
+		<LI><A HREF="#quantizationerror">QuantizationError</A></LI>
+		<LI><A HREF="#quantizeimage">QuantizeImage</A></LI>
+		<LI><A HREF="#quantizeimages">QuantizeImages</A></LI>
 	</UL>
 
 </UL>
@@ -29,298 +34,149 @@
 
 <HR>
 <P>
-<H1><A NAME="NAME">NAME</A></H1>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>quantize - Methods to Reduce the Number of Unique Colors in an Image</P>
 <P>
-quantize - Methods to Reduce the Number of Unique Colors in an Image
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>QuantizeInfo * <STRONG>CloneQuantizeInfo</STRONG>( const QuantizeInfo *quantize_info );</P>
+<P><STRONG>GetQuantizeInfo</STRONG>( QuantizeInfo *quantize_info );</P>
+<P>unsigned int  <STRONG>MapImage</STRONG>( Image *image, Image *map_image, const unsigned int dither );</P>
+<P>unsigned int  <STRONG>MapImages</STRONG>( Image *images, Image *map_image, const unsigned int dither );</P>
+<P>unsigned int  <STRONG>QuantizationError</STRONG>( Image *image );</P>
+<P>unsigned int  <STRONG>QuantizeImage</STRONG>( const QuantizeInfo *quantize_info, Image *image );</P>
+<P>unsigned int  <STRONG>QuantizeImages</STRONG>( const QuantizeInfo *quantize_info, Image *images );</P>
 <P>
-QuantizeInfo * <STRONG>CloneQuantizeInfo</STRONG>( const QuantizeInfo <CODE>*quantize_info</CODE> );
-
-</P>
-<P>
-<STRONG>GetQuantizeInfo</STRONG>( QuantizeInfo <CODE>*quantize_info</CODE> );
-
-</P>
-<P>
-unsigned int  <STRONG>MapImage</STRONG>( Image *image, Image *map_image, const unsigned int dither );
-
-</P>
-<P>
-unsigned int  <STRONG>MapImages</STRONG>( Image *images, Image *map_image, const unsigned int dither );
-
-</P>
-<P>
-unsigned int  <STRONG>QuantizationError</STRONG>( Image <CODE>*image</CODE> );
-
-</P>
-<P>
-unsigned int  <STRONG>QuantizeImage</STRONG>( const QuantizeInfo *quantize_info, Image <CODE>*image</CODE> );
-
-</P>
-<P>
-unsigned int  <STRONG>QuantizeImages</STRONG>( const QuantizeInfo *quantize_info, Image <CODE>*images</CODE> );
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
-<HR>
-<H2><A NAME="CloneQuantizeInfo">CloneQuantizeInfo</A></H2>
-<P>
-Method CloneQuantizeInfo makes a duplicate of the given quantize info, or if quantize info is 
-<FONT SIZE=-1>NULL,</FONT> a new one.
-
-
-</P>
-<P>
-The format of the CloneQuantizeInfo method is:
-
-</P>
-<blockquote>QuantizeInfo *CloneQuantizeInfo ( const QuantizeInfo *quantize_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="clonequantizeinfo">CloneQuantizeInfo</A></H2>
+<P>Method CloneQuantizeInfo makes a duplicate of the given quantize info, or if quantize info is 
+<FONT SIZE=-1>NULL,</FONT> a new one.</P>
+<P>The format of the CloneQuantizeInfo method is:</P>
+<blockquote>QuantizeInfo *CloneQuantizeInfo ( const QuantizeInfo *quantize_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o">cloned_info:</A></STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_cloned_info%3A">cloned_info:</A></STRONG><BR>
+<DD>
 Method CloneQuantizeInfo returns a duplicate of the given quantize info, or if image info is 
 <FONT SIZE=-1>NULL</FONT> a new one.
-
-
-</P>
-<p><dt><STRONG>quantize_info:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_quantize_info%3A">quantize_info:</A></STRONG><BR>
+<DD>
 a structure of type info.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="GetQuantizeInfo">GetQuantizeInfo</A></H2>
-<P>
-Method GetQuantizeInfo initializes the QuantizeInfo structure.
-
-</P>
-<P>
-The format of the GetQuantizeInfo method is:
-
-</P>
-<blockquote>GetQuantizeInfo ( QuantizeInfo *quantize_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="getquantizeinfo">GetQuantizeInfo</A></H2>
+<P>Method GetQuantizeInfo initializes the QuantizeInfo structure.</P>
+<P>The format of the GetQuantizeInfo method is:</P>
+<blockquote>GetQuantizeInfo ( QuantizeInfo *quantize_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>quantize_info:</STRONG><DD>
-<P>
+<p><dt><STRONG>quantize_info:</STRONG><BR>
+<DD>
 Specifies a pointer to a QuantizeInfo structure.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="MapImage">MapImage</A></H2>
-<P>
-MapImage replaces the colors of an image with the closest color from a
-reference image.
-
-</P>
-<P>
-The format of the MapImage method is:
-
-</P>
-<blockquote>unsigned int MapImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *map_image, const unsigned int dither ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="mapimage">MapImage</A></H2>
+<P>MapImage replaces the colors of an image with the closest color from a reference image.</P>
+<P>The format of the MapImage method is:</P>
+<blockquote>unsigned int MapImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *map_image, const unsigned int dither ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 Specifies a pointer to an Image structure.
-
-</P>
-<p><dt><STRONG>map_image:</STRONG><DD>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_map_image%3A">map_image:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a Image structure.  Reduce image to a set of colors represented by this image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_dither%3A">dither:</A></STRONG><BR>
+<DD>
+Set this integer value to something other than zero to dither the quantized image.
+<P></P></DL></DL>
 <P>
-Specifies a pointer to a Image structure. Reduce image to a set of colors
-represented by this image.
-
-</P>
-<p><dt><STRONG>dither:</STRONG><DD>
-<P>
-Set this integer value to something other than zero to dither the quantized
-image.
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="MapImages">MapImages</A></H2>
-<P>
-MapImages replaces the colors of a sequence of images with the closest
-color from a reference image.
-
-</P>
-<P>
-The format of the MapImage method is:
-
-</P>
-<blockquote>unsigned int MapImages ( <A HREF="types/Image.html">Image</A> *images, <A HREF="types/Image.html">Image</A> *map_image, const unsigned int dither ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="mapimages">MapImages</A></H2>
+<P>MapImages replaces the colors of a sequence of images with the closest color from a reference image.</P>
+<P>The format of the MapImage method is:</P>
+<blockquote>unsigned int MapImages ( <A HREF="types/Image.html">Image</A> *images, <A HREF="types/Image.html">Image</A> *map_image, const unsigned int dither ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 Specifies a pointer to a set of Image structures.
-
-</P>
-<p><dt><STRONG>map_image:</STRONG><DD>
+<P></P>
+<p><dt><STRONG>map_image:</STRONG><BR>
+<DD>
+Specifies a pointer to a Image structure.  Reduce image to a set of colors represented by this image.
+<P></P>
+<p><dt><STRONG>dither:</STRONG><BR>
+<DD>
+Set this integer value to something other than zero to dither the quantized image.
+<P></P></DL></DL>
 <P>
-Specifies a pointer to a Image structure. Reduce image to a set of colors
-represented by this image.
-
-</P>
-<p><dt><STRONG>dither:</STRONG><DD>
-<P>
-Set this integer value to something other than zero to dither the quantized
-image.
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="QuantizationError">QuantizationError</A></H2>
-<P>
-Method QuantizationError measures the difference between the original and quantized images. This difference is the total quantization error. The error is computed by summing over all pixels in an image the distance squared in 
-<FONT SIZE=-1>RGB</FONT> space between each reference pixel value and its quantized value. These values are computed:
-
-
-</P>
+<H2><A NAME="quantizationerror">QuantizationError</A></H2>
+<P>Method QuantizationError measures the difference between the original and quantized images.  This difference is the total quantization error.  The error is computed by summing over all pixels in an image the distance squared in 
+<FONT SIZE=-1>RGB</FONT> space between each reference pixel value and its quantized value.  These values are computed:</P>
 <DL><DL>
-<p><dt><STRONG>mean_error_per_pixel:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_mean_error_per_pixel%3A">mean_error_per_pixel:</A></STRONG><BR>
+<DD>
 This value is the mean error for any single pixel in the image.
-
-</P>
-<p><dt><STRONG>normalized_mean_square_error:</STRONG><DD>
-<P>
-This value is the normalized mean quantization error for any single pixel
-in the image. This distance measure is normalized to a range between 0 and
-1. It is independent of the range of red, green, and blue values in the
-image.
-
-</P>
-<p><dt><STRONG>normalized_maximum_square_error:</STRONG><DD>
-<P>
-Thsi value is the normalized maximum quantization error for any single
-pixel in the image. This distance measure is normalized to a range between
-0 and 1. It is independent of the range of red, green, and blue values in
-your image.
-
-</P>
-</DL></DL>
-<P>
-The format of the QuantizationError method is:
-
-</P>
-<blockquote>unsigned int QuantizationError ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows.
-
-</P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_normalized_mean_square_error%3A">normalized_mean_square_error:</A></STRONG><BR>
+<DD>
+This value is the normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_normalized_maximum_square_error%3A">normalized_maximum_square_error:</A></STRONG><BR>
+<DD>
+Thsi value is the normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.
+<P></P></DL></DL>
+<P>The format of the QuantizationError method is:</P>
+<blockquote>unsigned int QuantizationError ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a byte (8 bits) array of run-length encoded pixel data of your reference image.  The sum of the run-length counts in the reference image must be equal to or exceed the number of pixels.
+<P></P></DL></DL>
 <P>
-The address of a byte (8 bits) array of run-length encoded pixel data of
-your reference image. The sum of the run-length counts in the reference
-image must be equal to or exceed the number of pixels.
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="QuantizeImage">QuantizeImage</A></H2>
-<P>
-Method QuantizeImage analyzes the colors within a reference image and
-chooses a fixed number of colors to represent the image. The goal of the
-algorithm is to minimize the difference between the input and output image
-while minimizing the processing time.
-
-</P>
-<P>
-The format of the QuantizeImage method is:
-
-</P>
-<blockquote>unsigned int QuantizeImage ( const QuantizeInfo *quantize_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="quantizeimage">QuantizeImage</A></H2>
+<P>Method QuantizeImage analyzes the colors within a reference image and chooses a fixed number of colors to represent the image.  The goal of the algorithm is to minimize the difference between the input and output image while minimizing the processing time.</P>
+<P>The format of the QuantizeImage method is:</P>
+<blockquote>unsigned int QuantizeImage ( const QuantizeInfo *quantize_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>quantize_info:</STRONG><DD>
-<P>
+<p><dt><STRONG>quantize_info:</STRONG><BR>
+<DD>
 Specifies a pointer to an QuantizeInfo structure.
-
-</P>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 Specifies a pointer to a Image structure.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="QuantizeImages">QuantizeImages</A></H2>
-<P>
-QuantizeImages analyzes the colors within a set of reference images and
-chooses a fixed number of colors to represent the set. The goal of the
-algorithm is to minimize the difference between the input and output images
-while minimizing the processing time.
-
-</P>
-<P>
-The format of the QuantizeImages method is:
-
-</P>
-<blockquote>unsigned int QuantizeImages ( const QuantizeInfo *quantize_info, <A HREF="types/Image.html">Image</A> *images ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="quantizeimages">QuantizeImages</A></H2>
+<P>QuantizeImages analyzes the colors within a set of reference images and chooses a fixed number of colors to represent the set.  The goal of the algorithm is to minimize the difference between the input and output images while minimizing the processing time.</P>
+<P>The format of the QuantizeImages method is:</P>
+<blockquote>unsigned int QuantizeImages ( const QuantizeInfo *quantize_info, <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>quantize_info:</STRONG><DD>
-<P>
+<p><dt><STRONG>quantize_info:</STRONG><BR>
+<DD>
 Specifies a pointer to an QuantizeInfo structure.
-
-</P>
-<p><dt><STRONG>images:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_images%3A">images:</A></STRONG><BR>
+<DD>
 Specifies a pointer to a list of Image structures.
-
-</P>
 </DL></DL>
+<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 
 </BODY>
 

@@ -74,6 +74,7 @@
 %  The format of the ChopImage method is:
 %
 %      Image *ChopImage(Image *image,const RectangleInfo *chop_info)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -86,9 +87,12 @@
 %    o chop_info: Specifies a pointer to a RectangleInfo which defines the
 %      region of the image to crop.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
+Export Image *ChopImage(Image *image,const RectangleInfo *chop_info,
+  ExceptionInfo *exception)
 {
 #define ChopImageText  "  Chopping image...  "
 
@@ -143,7 +147,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
     Initialize chop image attributes.
   */
   chop_image=CloneImage(image,image->columns-clone_info.width,
-    image->rows-clone_info.height,False);
+    image->rows-clone_info.height,False,exception);
   if (chop_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to chop image",
       "Memory allocation failed");
@@ -220,7 +224,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
 %
 %  The format of the CoalesceImages method is:
 %
-%      Image *CoalesceImages(Image *image)
+%      Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -228,8 +232,10 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
 %      ReadImage.  It points to the first image in the group to be
 %      coalesced.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-Export Image *CoalesceImages(Image *image)
+Export Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 {
   Image
     *coalesce_image;
@@ -247,7 +253,7 @@ Export Image *CoalesceImages(Image *image)
   /*
     Clone first next in sequence.
   */
-  coalesce_image=CloneImage(image,image->columns,image->rows,True);
+  coalesce_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
   GetPageInfo(&coalesce_image->page);
@@ -257,7 +263,7 @@ Export Image *CoalesceImages(Image *image)
   for (next=image->next; next != (Image *) NULL; next=next->next)
   {
     coalesce_image->next=CloneImage(coalesce_image,coalesce_image->columns,
-      coalesce_image->rows,True);
+      coalesce_image->rows,True,exception);
     if (coalesce_image->next == (Image *) NULL)
       {
         DestroyImages(coalesce_image);
@@ -294,7 +300,8 @@ Export Image *CoalesceImages(Image *image)
 %
 %  The format of the CropImage method is:
 %
-%      Image *CropImage(Image *image,const RectangleInfo *crop_info)
+%      Image *CropImage(Image *image,const RectangleInfo *crop_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -307,9 +314,12 @@ Export Image *CoalesceImages(Image *image)
 %    o crop_info: Specifies a pointer to a RectangleInfo which defines the
 %      region of the image to crop.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
+Export Image *CropImage(Image *image,const RectangleInfo *crop_info,
+  ExceptionInfo *exception)
 {
 #define CropImageText  "  Cropping image...  "
 
@@ -459,7 +469,7 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
   /*
     Initialize crop image attributes.
   */
-  crop_image=CloneImage(image,page.width,page.height,False);
+  crop_image=CloneImage(image,page.width,page.height,False,exception);
   if (crop_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to crop image",
       "Memory allocation failed");
@@ -505,7 +515,7 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
 %
 %  The format of the DeconstructImages method is:
 %
-%      Image *DeconstructImages(Image *image)
+%      Image *DeconstructImages(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -513,8 +523,11 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
 %      ReadImage.  It points to the first next in the group to be
 %      deconstructed.
 %
+%    o exception: return any errors or warnings in this structure.
+%
+%
 */
-Export Image *DeconstructImages(Image *image)
+Export Image *DeconstructImages(Image *image,ExceptionInfo *exception)
 {
   Image
     *crop_next,
@@ -640,7 +653,7 @@ Export Image *DeconstructImages(Image *image)
   /*
     Clone first next in sequence.
   */
-  deconstruct_image=CloneImage(image,image->columns,image->rows,True);
+  deconstruct_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (deconstruct_image == (Image *) NULL)
     {
       FreeMemory(bounding_box);
@@ -653,7 +666,7 @@ Export Image *DeconstructImages(Image *image)
   for (next=image->next; next != (Image *) NULL; next=next->next)
   {
     next->orphan=True;
-    crop_next=CropImage(next,&bounding_box[i++]);
+    crop_next=CropImage(next,&bounding_box[i++],exception);
     if (crop_next == (Image *) NULL)
       break;
     deconstruct_image->next=crop_next;
@@ -683,7 +696,7 @@ Export Image *DeconstructImages(Image *image)
 %
 %  The format of the FlipImage method is:
 %
-%      Image *FlipImage(Image *image)
+%      Image *FlipImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -693,9 +706,11 @@ Export Image *DeconstructImages(Image *image)
 %
 %    o image: The address of a structure of type Image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *FlipImage(Image *image)
+Export Image *FlipImage(Image *image,ExceptionInfo *exception)
 {
 #define FlipImageText  "  Flipping image...  "
 
@@ -719,7 +734,7 @@ Export Image *FlipImage(Image *image)
     Initialize flip image attributes.
   */
   assert(image != (Image *) NULL);
-  flip_image=CloneImage(image,image->columns,image->rows,False);
+  flip_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (flip_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to flip image",
       "Memory allocation failed");
@@ -767,7 +782,7 @@ Export Image *FlipImage(Image *image)
 %
 %  The format of the FlopImage method is:
 %
-%      Image *FlopImage(Image *image)
+%      Image *FlopImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -777,9 +792,11 @@ Export Image *FlipImage(Image *image)
 %
 %    o image: The address of a structure of type Image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *FlopImage(Image *image)
+Export Image *FlopImage(Image *image,ExceptionInfo *exception)
 {
 #define FlopImageText  "  Flopping image...  "
 
@@ -803,7 +820,7 @@ Export Image *FlopImage(Image *image)
     Initialize flop image attributes.
   */
   assert(image != (Image *) NULL);
-  flop_image=CloneImage(image,image->columns,image->rows,False);
+  flop_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (flop_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to flop image",
       "Memory allocation failed");
@@ -851,7 +868,8 @@ Export Image *FlopImage(Image *image)
 %
 %  The format of the RollImage method is:
 %
-%      Image *RollImage(Image *image,const int x_offset,const int y_offset)
+%      Image *RollImage(Image *image,const int x_offset,const int y_offset,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -866,9 +884,12 @@ Export Image *FlopImage(Image *image)
 %    o y_offset: An integer that specifies the number of rows to roll in the
 %      vertical direction.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *RollImage(Image *image,const int x_offset,const int y_offset)
+Export Image *RollImage(Image *image,const int x_offset,const int y_offset,
+  ExceptionInfo *exception)
 {
 #define RollImageText  "  Rolling image...  "
 
@@ -892,7 +913,7 @@ Export Image *RollImage(Image *image,const int x_offset,const int y_offset)
     Initialize roll image attributes.
   */
   assert(image != (Image *) NULL);
-  roll_image=CloneImage(image,image->columns,image->rows,False);
+  roll_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (roll_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to roll image",
       "Memory allocation failed");
@@ -1043,7 +1064,7 @@ Export void TransformImage(Image **image,const char *crop_geometry,
       crop_info.height=height;
       if ((width == 0) || (height == 0) ||
           ((flags & XValue) != 0) || ((flags & YValue) != 0))
-        crop_image=CropImage(transformed_image,&crop_info);
+        crop_image=CropImage(transformed_image,&crop_info,&(*image)->exception);
       else
         {
           Image
@@ -1062,7 +1083,8 @@ Export void TransformImage(Image **image,const char *crop_geometry,
               crop_info.height=height;
               crop_info.x=x;
               crop_info.y=y;
-              next_image=CropImage(transformed_image,&crop_info);
+              next_image=
+                CropImage(transformed_image,&crop_info,&(*image)->exception);
               if (next_image == (Image *) NULL)
                 break;
               if (crop_image == (Image *) NULL)
@@ -1103,9 +1125,8 @@ Export void TransformImage(Image **image,const char *crop_geometry,
       /*
         Zoom image.
       */
-      zoomed_image=ZoomImage(transformed_image,width,height);
-      if (zoomed_image == (Image *) NULL)
-        zoomed_image=ScaleImage(transformed_image,width,height);
+      zoomed_image=
+        ZoomImage(transformed_image,width,height,&(*image)->exception);
       if (zoomed_image != (Image *) NULL)
         {
           DestroyImage(transformed_image);

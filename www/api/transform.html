@@ -1,28 +1,33 @@
 <HTML>
 <HEAD>
 <TITLE>transform - Methods to Transform an Image</TITLE>
-<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
+<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A></LI>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A></LI>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#ChopImage">ChopImage</A></LI>
-		<LI><A HREF="#CoalesceImages">CoalesceImages</A></LI>
-		<LI><A HREF="#CropImage">CropImage</A></LI>
-		<LI><A HREF="#DeconstructImages">DeconstructImages</A></LI>
-		<LI><A HREF="#FlipImage">FlipImage</A></LI>
-		<LI><A HREF="#FlopImage">FlopImage</A></LI>
-		<LI><A HREF="#RollImage">RollImage</A></LI>
-		<LI><A HREF="#TransformImage">TransformImage</A></LI>
+		<LI><A HREF="#chopimage">ChopImage</A></LI>
+		<LI><A HREF="#coalesceimages">CoalesceImages</A></LI>
+		<LI><A HREF="#cropimage">CropImage</A></LI>
+		<LI><A HREF="#deconstructimages">DeconstructImages</A></LI>
+		<LI><A HREF="#flipimage">FlipImage</A></LI>
+		<LI><A HREF="#flopimage">FlopImage</A></LI>
+		<LI><A HREF="#rollimage">RollImage</A></LI>
+		<LI><A HREF="#transformimage">TransformImage</A></LI>
 	</UL>
 
 </UL>
@@ -30,357 +35,201 @@
 
 <HR>
 <P>
-<H1><A NAME="NAME">NAME</A></H1>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>transform - Methods to Transform an Image</P>
 <P>
-transform - Methods to Transform an Image
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>Image * <STRONG>ChopImage</STRONG>( Image *image, const RectangleInfo *chop_info );</P>
+<P>Image * <STRONG>CoalesceImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>CropImage</STRONG>( Image *image, const RectangleInfo *crop_info, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>DeconstructImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>FlipImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>FlopImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>RollImage</STRONG>( Image *image, const int x_offset, const int y_offset, ExceptionInfo *exception );</P>
+<P>void  <STRONG>TransformImage</STRONG>( Image ** image, const char *crop_geometry, const char *image_geometry );</P>
 <P>
-Image * <STRONG>ChopImage</STRONG>( Image *image, const RectangleInfo <CODE>*chop_info</CODE> );
-
-</P>
-<P>
-Image * <STRONG>CoalesceImages</STRONG>( Image <CODE>*images</CODE> );
-
-</P>
-<P>
-Image * <STRONG>CropImage</STRONG>( Image *image, const RectangleInfo <CODE>*crop_info</CODE> );
-
-</P>
-<P>
-Image * <STRONG>DeconstructImages</STRONG>( Image <CODE>*images</CODE> );
-
-</P>
-<P>
-Image * <STRONG>FlipImage</STRONG>( Image <CODE>*image</CODE> );
-
-</P>
-<P>
-Image * <STRONG>FlopImage</STRONG>( Image <CODE>*image</CODE> );
-
-</P>
-<P>
-Image * <STRONG>RollImage</STRONG>( Image *image, const int x_offset, const int y_offset );
-
-</P>
-<P>
-void  <STRONG>TransformImage</STRONG>( Image ** image, const char *crop_geometry, const char
-<CODE>*image_geometry</CODE> );
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
-<HR>
-<H2><A NAME="ChopImage">ChopImage</A></H2>
+<H2><A NAME="chopimage">ChopImage</A></H2>
+<P>Method ChopImage creates a new image that is a subregion of an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>The format of the ChopImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ChopImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *chop_info ); </blockquote><PRE>
+      ExceptionInfo *exception)</PRE>
 <P>
-Method ChopImage creates a new image that is a subregion of an existing
-one. It allocates the memory necessary for the new Image structure and
-returns a pointer to the new image.
-
-</P>
-<P>
-The format of the ChopImage method is:
-
-</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ChopImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *chop_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o">chop_image:</A></STRONG><DD>
-<P>
-Method ChopImage returns a pointer to the chop image. 
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
-or if the image width or height is zero.
-
-</P>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_chop_image%3A">chop_image:</A></STRONG><BR>
+<DD>
+Method ChopImage returns a pointer to the chop image.  
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image width or height is zero.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 The address of a structure of type Image.
-
-</P>
-<p><dt><STRONG>chop_info:</STRONG><DD>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_chop_info%3A">chop_info:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a RectangleInfo which defines the region of the image to crop.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
+<P></P></DL></DL>
 <P>
-Specifies a pointer to a RectangleInfo which defines the region of the
-image to crop.
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="CoalesceImages">CoalesceImages</A></H2>
-<P>
-Method CoalesceImages merges a sequence of images. This is useful for 
+<H2><A NAME="coalesceimages">CoalesceImages</A></H2>
+<P>Method CoalesceImages merges a sequence of images.  This is useful for 
 <FONT SIZE=-1>GIF</FONT> and 
-<FONT SIZE=-1>MNG</FONT> animation sequences that have page offsets and disposal methods.
-
-
-</P>
-<P>
-The format of the CoalesceImages method is:
-
-</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CoalesceImages ( <A HREF="types/Image.html">Image</A> *images ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<FONT SIZE=-1>MNG</FONT> animation sequences that have page offsets and disposal methods.</P>
+<P>The format of the CoalesceImages method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *CoalesceImages ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image; returned from ReadImage.  It points to the first image in the group to be coalesced.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
+<P></P></DL></DL>
 <P>
-The address of a structure of type Image; returned from ReadImage. It
-points to the first image in the group to be coalesced.
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="CropImage">CropImage</A></H2>
-<P>
-Method CropImage creates a new image that is a subregion of an existing
-one. It allocates the memory necessary for the new Image structure and
-returns a pointer to the new image. This method is optimized to preserve
-the runlength encoding. That is, the crop image will always use less memory
-than the original.
-
-</P>
-<P>
-The format of the CropImage method is:
-
-</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="cropimage">CropImage</A></H2>
+<P>Method CropImage creates a new image that is a subregion of an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  This method is optimized to preserve the runlength encoding.  That is, the crop image will always use less memory than the original.</P>
+<P>The format of the CropImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info, ExceptionInfo *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>crop_image:</STRONG><DD>
-<P>
-Method CropImage returns a pointer to the crop image. 
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
-or if the image width or height is zero.
-
-</P>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_crop_image%3A">crop_image:</A></STRONG><BR>
+<DD>
+Method CropImage returns a pointer to the crop image.  
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image width or height is zero.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image.
-
-</P>
-<p><dt><STRONG>crop_info:</STRONG><DD>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_crop_info%3A">crop_info:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a RectangleInfo which defines the region of the image to crop.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
+<P></P></DL></DL>
 <P>
-Specifies a pointer to a RectangleInfo which defines the region of the
-image to crop.
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="DeconstructImages">DeconstructImages</A></H2>
-<P>
-Method DeconstructImages breaks down an image sequence into constituent parts. This is useful for creating 
+<H2><A NAME="deconstructimages">DeconstructImages</A></H2>
+<P>Method DeconstructImages breaks down an image sequence into constituent parts.  This is useful for creating 
 <FONT SIZE=-1>GIF</FONT> or 
-<FONT SIZE=-1>MNG</FONT> animation sequences.
-
-
-</P>
-<P>
-The format of the DeconstructImages method is:
-
-</P>
-<blockquote><A HREF="types/Image.html">Image</A> *DeconstructImages ( <A HREF="types/Image.html">Image</A> *images ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<FONT SIZE=-1>MNG</FONT> animation sequences.</P>
+<P>The format of the DeconstructImages method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *DeconstructImages ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>images:</STRONG><DD>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image; returned from ReadImage.  It points to the first next in the group to be deconstructed.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
+<P></P></DL></DL>
 <P>
-The address of a structure of type Image; returned from ReadImage. It
-points to the first image in the group to be deconstructed.
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="FlipImage">FlipImage</A></H2>
-<P>
-Method FlipImage creates a new image that reflects each scanline in the
-vertical direction It allocates the memory necessary for the new Image
-structure and returns a pointer to the new image.
-
-</P>
-<P>
-The format of the FlipImage method is:
-
-</P>
-<blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="flipimage">FlipImage</A></H2>
+<P>Method FlipImage creates a new image that reflects each scanline in the vertical direction It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>The format of the FlipImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>flip_image:</STRONG><DD>
-<P>
-Method FlipImage returns a pointer to the image after reflecting. 
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
-shortage.
-
-</P>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_flip_image%3A">flip_image:</A></STRONG><BR>
+<DD>
+Method FlipImage returns a pointer to the image after reflecting.  
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image.
-
-</P>
-</DL></DL>
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="FlopImage">FlopImage</A></H2>
-<P>
-Method FlopImage creates a new image that reflects each scanline in the
-horizontal direction It allocates the memory necessary for the new Image
-structure and returns a pointer to the new image.
-
-</P>
-<P>
-The format of the FlopImage method is:
-
-</P>
-<blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="flopimage">FlopImage</A></H2>
+<P>Method FlopImage creates a new image that reflects each scanline in the horizontal direction It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>The format of the FlopImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( <A HREF="types/Image.html">Image</A> *image, ExceptionInfo *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>flop_image:</STRONG><DD>
-<P>
-Method FlopImage returns a pointer to the image after reflecting. 
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
-shortage.
-
-</P>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_flop_image%3A">flop_image:</A></STRONG><BR>
+<DD>
+Method FlopImage returns a pointer to the image after reflecting.  
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image.
-
-</P>
-</DL></DL>
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="RollImage">RollImage</A></H2>
-<P>
-Method RollImage rolls an image vertically and horizontally. It allocates
-the memory necessary for the new Image structure and returns a pointer to
-the new image.
-
-</P>
-<P>
-The format of the RollImage method is:
-
-</P>
-<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( <A HREF="types/Image.html">Image</A> *image, const int x_offset, const int y_offset ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="rollimage">RollImage</A></H2>
+<P>Method RollImage rolls an image vertically and horizontally.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>The format of the RollImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( <A HREF="types/Image.html">Image</A> *image, const int x_offset, const int y_offset, ExceptionInfo *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>roll_image:</STRONG><DD>
-<P>
-Method RollImage returns a pointer to the image after rolling. 
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory
-shortage.
-
-</P>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_roll_image%3A">roll_image:</A></STRONG><BR>
+<DD>
+Method RollImage returns a pointer to the image after rolling.  
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image.
-
-</P>
-<p><dt><STRONG>x_offset:</STRONG><DD>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_x_offset%3A">x_offset:</A></STRONG><BR>
+<DD>
+An integer that specifies the number of columns to roll in the horizontal direction.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_y_offset%3A">y_offset:</A></STRONG><BR>
+<DD>
+An integer that specifies the number of rows to roll in the vertical direction.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
+<P></P></DL></DL>
 <P>
-An integer that specifies the number of columns to roll in the horizontal
-direction.
-
-</P>
-<p><dt><STRONG>y_offset:</STRONG><DD>
-<P>
-An integer that specifies the number of rows to roll in the vertical
-direction.
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="TransformImage">TransformImage</A></H2>
-<P>
-Method TransformImage creates a new image that is a transformed size of of
-existing one as specified by the crop and image geometries. It allocates
-the memory necessary for the new Image structure and returns a pointer to
-the new image.
-
-</P>
-<P>
-If a crop geometry is specified a subregion of the image is obtained. If
-the specified image size, as defined by the image and scale geometries, is
-smaller than the actual image size, the image is first minified to an
-integral of the specified image size with an antialias digital filter. The
-image is then scaled to the exact specified image size with pixel
-replication. If the specified image size is greater than the actual image
-size, the image is first enlarged to an integral of the specified image
-size with bilinear interpolation. The image is then scaled to the exact
-specified image size with pixel replication.
-
-</P>
-<P>
-The format of the TransformImage method is:
-
-</P>
-<blockquote>void TransformImage ( <A HREF="types/Image.html">Image</A> **image, const char *crop_geometry, const char *image_geometry ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="transformimage">TransformImage</A></H2>
+<P>Method TransformImage creates a new image that is a transformed size of of existing one as specified by the crop and image geometries.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>If a crop geometry is specified a subregion of the image is obtained.  If the specified image size, as defined by the image and scale geometries, is smaller than the actual image size, the image is first minified to an integral of the specified image size with an antialias digital filter.  The image is then scaled to the exact specified image size with pixel replication.  If the specified image size is greater than the actual image size, the image is first enlarged to an integral of the specified image size with bilinear interpolation.  The image is then scaled to the exact specified image size with pixel replication.</P>
+<P>The format of the TransformImage method is:</P>
+<blockquote>void TransformImage ( <A HREF="types/Image.html">Image</A> **image, const char *crop_geometry, const char *image_geometry ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
-The address of an address of a structure of type Image. The transformed
-image is returned as this parameter.
-
-</P>
-<p><dt><STRONG>crop_geometry:</STRONG><DD>
-<P>
-Specifies a pointer to a crop geometry string. This geometry defines a
-subregion of the image.
-
-</P>
-<p><dt><STRONG>image_geometry:</STRONG><DD>
-<P>
-Specifies a pointer to a image geometry string. The specified width and
-height of this geometry string are absolute.
-
-</P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of an address of a structure of type Image.  The transformed image is returned as this parameter.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_crop_geometry%3A">crop_geometry:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a crop geometry string.  This geometry defines a subregion of the image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_image_geometry%3A">image_geometry:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a image geometry string.  The specified width and height of this geometry string are absolute.
 </DL></DL>
+<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 
 </BODY>
 

@@ -72,7 +72,8 @@
 %
 %  The format of the AddNoiseImage method is:
 %
-%      Image *AddNoiseImage(Image *image,const NoiseType noise_type)
+%      Image *AddNoiseImage(Image *image,const NoiseType noise_type,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -86,9 +87,12 @@
 %    o noise_type:  The type of noise: Gaussian, multiplicative Gaussian,
 %      impulse, laplacian, or Poisson.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *AddNoiseImage(Image *image,const NoiseType noise_type)
+Export Image *AddNoiseImage(Image *image,const NoiseType noise_type,
+  ExceptionInfo *exception)
 {
 #define AddNoiseImageText  "  Adding noise to the image...  "
 
@@ -109,10 +113,9 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type)
     Initialize noisy image attributes.
   */
   assert(image != (Image *) NULL);
-  noisy_image=CloneImage(image,image->columns,image->rows,False);
+  noisy_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (noisy_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to add noise",
-      "Memory allocation failed");
+    return((Image *) NULL);
   noisy_image->class=DirectClass;
   /*
     Add noise in each row.
@@ -164,7 +167,8 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type)
 %
 %  The format of the BlurImage method is:
 %
-%      Image *BlurImage(Image *image,const double factor)
+%      Image *BlurImage(Image *image,const double factor,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -178,9 +182,12 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type)
 %    o factor:  An double value reflecting the percent weight to give to the
 %      center pixel of the neighborhood.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *BlurImage(Image *image,const double factor)
+Export Image *BlurImage(Image *image,const double factor,
+  ExceptionInfo *exception)
 {
 #define Blur(weight) \
   total_red+=(weight)*s->red; \
@@ -212,16 +219,15 @@ Export Image *BlurImage(Image *image,const double factor)
     *q,
     *s;
 
+  /*
+    Initialize blurred image attributes.
+  */
   assert(image != (Image *) NULL);
   if ((image->columns < 3) || (image->rows < 3))
     return((Image *) NULL);
-  /*
-    Initialize blured image attributes.
-  */
-  blur_image=CloneImage(image,image->columns,image->rows,False);
+  blur_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (blur_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to blur image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   blur_image->class=DirectClass;
   /*
     Blur image.
@@ -287,7 +293,7 @@ Export Image *BlurImage(Image *image,const double factor)
 %  The format of the ColorizeImage method is:
 %
 %      Image *ColorizeImage(Image *image,const char *opacity,
-%        const char *pen_color)
+%        const char *pen_color,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -299,10 +305,12 @@ Export Image *BlurImage(Image *image,const double factor)
 %
 %      pen_color: A color string.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
 Export Image *ColorizeImage(Image *image,const char *opacity,
-  const char *pen_color)
+  const char *pen_color,ExceptionInfo *exception)
 {
 #define ColorizeImageText  "  Colorizing the image...  "
 
@@ -332,10 +340,9 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
     Allocate colorized image.
   */
   assert(image != (Image *) NULL);
-  colorize_image=CloneImage(image,image->columns,image->rows,False);
+  colorize_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (colorize_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to colorize image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   colorize_image->class=DirectClass;
   /*
     Determine RGB values of the pen color.
@@ -400,7 +407,7 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
 %
 %  The format of the DespeckleImage method is:
 %
-%      Image *DespeckleImage(Image *image)
+%      Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -411,9 +418,11 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *DespeckleImage(Image *image)
+Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 {
 #define DespeckleImageText  "  Despeckling image...  "
 
@@ -450,10 +459,9 @@ Export Image *DespeckleImage(Image *image)
     Allocate despeckled image.
   */
   assert(image != (Image *) NULL);
-  despeckle_image=CloneImage(image,image->columns,image->rows,False);
+  despeckle_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (despeckle_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to despeckle image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   despeckle_image->class=DirectClass;
   /*
     Allocate image buffers.
@@ -603,7 +611,8 @@ Export Image *DespeckleImage(Image *image)
 %
 %  The format of the EdgeImage method is:
 %
-%      Image *EdgeImage(Image *image,const double factor)
+%      Image *EdgeImage(Image *image,const double factor,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -617,9 +626,12 @@ Export Image *DespeckleImage(Image *image)
 %    o factor:  An double value reflecting the percent weight to give to the
 %      center pixel of the neighborhood.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *EdgeImage(Image *image,const double factor)
+Export Image *EdgeImage(Image *image,const double factor,
+  ExceptionInfo *exception)
 {
 #define Edge(weight) \
   total_red+=(weight)*s->red; \
@@ -650,16 +662,15 @@ Export Image *EdgeImage(Image *image,const double factor)
     *q,
     *s;
 
-  assert(image != (Image *) NULL);
-  if ((image->columns < 3) || (image->rows < 3))
-    return((Image *) NULL);
   /*
     Initialize edge image attributes.
   */
-  edge_image=CloneImage(image,image->columns,image->rows,False);
+  assert(image != (Image *) NULL);
+  if ((image->columns < 3) || (image->rows < 3))
+    return((Image *) NULL);
+  edge_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (edge_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to detect edges",
-      "Memory allocation failed");
+    return((Image *) NULL);
   edge_image->class=DirectClass;
   /*
     Edge detect image.
@@ -740,7 +751,7 @@ Export Image *EdgeImage(Image *image,const double factor)
 %
 %  The format of the EmbossImage method is:
 %
-%      Image *EmbossImage(Image *image)
+%      Image *EmbossImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -751,9 +762,11 @@ Export Image *EdgeImage(Image *image,const double factor)
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *EmbossImage(Image *image)
+Export Image *EmbossImage(Image *image,ExceptionInfo *exception)
 {
 #define EmbossImageText  "  Embossing image...  "
 #define Emboss(weight) \
@@ -781,16 +794,15 @@ Export Image *EmbossImage(Image *image)
     *q,
     *s;
 
-  assert(image != (Image *) NULL);
-  if ((image->columns < 3) || (image->rows < 3))
-    return((Image *) NULL);
   /*
     Initialize embossed image attributes.
   */
-  emboss_image=CloneImage(image,image->columns,image->rows,False);
+  assert(image != (Image *) NULL);
+  if ((image->columns < 3) || (image->rows < 3))
+    return((Image *) NULL);
+  emboss_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (emboss_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to enhance image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   emboss_image->class=DirectClass;
   /*
     Emboss image.
@@ -874,7 +886,7 @@ Export Image *EmbossImage(Image *image)
 %
 %  The format of the EnhanceImage method is:
 %
-%      Image *EnhanceImage(Image *image)
+%      Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -885,9 +897,11 @@ Export Image *EmbossImage(Image *image)
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *EnhanceImage(Image *image)
+Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 {
 #define Enhance(weight) \
   mean=(int) (s->red+red)/2; \
@@ -944,16 +958,15 @@ Export Image *EnhanceImage(Image *image)
   register unsigned int
     *squares;
 
-  assert(image != (Image *) NULL);
-  if ((image->columns < 5) || (image->rows < 5))
-    return((Image *) NULL);
   /*
     Initialize enhanced image attributes.
   */
-  enhance_image=CloneImage(image,image->columns,image->rows,False);
+  assert(image != (Image *) NULL);
+  if ((image->columns < 5) || (image->rows < 5))
+    return((Image *) NULL);
+  enhance_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (enhance_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to enhance image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   enhance_image->class=DirectClass;
   /*
     Allocate the squares buffer.
@@ -1049,7 +1062,8 @@ Export Image *EnhanceImage(Image *image)
 %
 %  The format of the ImplodeImage method is:
 %
-%      Image *ImplodeImage(Image *image,const double factor)
+%      Image *ImplodeImage(Image *image,const double factor,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1062,9 +1076,12 @@ Export Image *EnhanceImage(Image *image)
 %
 %    o factor:  A double value that defines the extent of the implosion.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *ImplodeImage(Image *image,const double factor)
+Export Image *ImplodeImage(Image *image,const double factor,
+  ExceptionInfo *exception)
 {
 #define ImplodeImageText  "  Imploding image...  "
 
@@ -1098,10 +1115,9 @@ Export Image *ImplodeImage(Image *image,const double factor)
   assert(image != (Image *) NULL);
   if (!image->matte)
     MatteImage(image,Opaque);
-  implode_image=CloneImage(image,image->columns,image->rows,False);
+  implode_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (implode_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to implode image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   /*
     Compute scaling factor.
   */
@@ -1181,7 +1197,8 @@ Export Image *ImplodeImage(Image *image,const double factor)
 %
 %  The format of the MedianFilterImage method is:
 %
-%      Image *MedianFilterImage(Image *image,const unsigned int radius)
+%      Image *MedianFilterImage(Image *image,const unsigned int radius,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1194,6 +1211,8 @@ Export Image *ImplodeImage(Image *image,const double factor)
 %
 %    o radius: An unsigned int that is the radius of the circular
 %      neighborhood.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
@@ -1209,7 +1228,8 @@ static int MedianCompare(const void *x,const void *y)
   return((int) Intensity(*color_1)-(int) Intensity(*color_2));
 }
 
-Export Image *MedianFilterImage(Image *image,const unsigned int radius)
+Export Image *MedianFilterImage(Image *image,const unsigned int radius,
+  ExceptionInfo *exception)
 {
 #define MedianFilterImageText  "  Filtering image with neighborhood ranking...  "
 
@@ -1235,17 +1255,16 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
   unsigned int
     length;
 
+  /*
+    Initialize median image attributes.
+  */
   assert(image != (Image *) NULL);
   if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
     ThrowImageException(ResourceLimitWarning,"Unable to median filter",
       "image smaller than radius");
-  /*
-    Initialize median image attributes.
-  */
-  median_image=CloneImage(image,image->columns,image->rows,False);
+  median_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (median_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to reduce noise",
-      "Memory allocation failed");
+    return((Image *) NULL);
   median_image->class=DirectClass;
   /*
     Allocate neighbors and scanline.
@@ -1319,7 +1338,8 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
 %
 %  The format of the MorphImage method is:
 %
-%      Image *MorphImages(Image *image,const unsigned int number_frames)
+%      Image *MorphImages(Image *image,const unsigned int number_frames,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1333,9 +1353,12 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
 %      image to generate.  The more in-between frames, the smoother
 %      the morph.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *MorphImages(Image *image,const unsigned int number_frames)
+Export Image *MorphImages(Image *image,const unsigned int number_frames,
+  ExceptionInfo *exception)
 {
 #define MorphImageText  "  Morphing next sequence...  "
 
@@ -1367,17 +1390,16 @@ Export Image *MorphImages(Image *image,const unsigned int number_frames)
   unsigned int
     scene;
 
+  /*
+    Clone first frame in sequence.
+  */
   assert(image != (Image *) NULL);
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to morph image sequence",
       "next sequence required");
-  /*
-    Clone first frame in sequence.
-  */
-  morph_images=CloneImage(image,image->columns,image->rows,True);
+  morph_images=CloneImage(image,image->columns,image->rows,True,exception);
   if (morph_images == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,
-      "Unable to morph image sequence","Memory allocation failed");
+    return((Image *) NULL);
   /*
     Morph next.
   */
@@ -1392,23 +1414,21 @@ Export Image *MorphImages(Image *image,const unsigned int number_frames)
       next->orphan=True;
       morph_images->next=ZoomImage(next,
         (unsigned int) (alpha*next->columns+beta*next->next->columns+0.5),
-        (unsigned int) (alpha*next->rows+beta*next->next->rows+0.5));
+        (unsigned int) (alpha*next->rows+beta*next->next->rows+0.5),exception);
       if (morph_images->next == (Image *) NULL)
         {
           DestroyImages(morph_images);
-          ThrowImageException(ResourceLimitWarning,
-            "Unable to morph image sequence","Memory allocation failed");
+          return((Image *) NULL);
         }
       morph_images->next->previous=morph_images;
       morph_images=morph_images->next;
       next->next->orphan=True;
-      morph_image=
-        ZoomImage(next->next,morph_images->columns,morph_images->rows);
+      morph_image=ZoomImage(next->next,morph_images->columns,
+        morph_images->rows,exception);
       if (morph_image == (Image *) NULL)
         {
           DestroyImages(morph_images);
-          ThrowImageException(ResourceLimitWarning,
-            "Unable to morph image sequence","Memory allocation failed");
+          return((Image *) NULL);
         }
       morph_images->class=DirectClass;
       for (y=0; y < (int) morph_images->rows; y++)
@@ -1434,13 +1454,12 @@ Export Image *MorphImages(Image *image,const unsigned int number_frames)
     /*
       Clone last frame in sequence.
     */
-    morph_images->next=
-      CloneImage(next->next,next->next->columns,next->next->rows,True);
+    morph_images->next=CloneImage(next->next,next->next->columns,
+      next->next->rows,True,exception);
     if (morph_images->next == (Image *) NULL)
       {
         DestroyImages(morph_images);
-        ThrowImageException(ResourceLimitWarning,
-          "Unable to morph image sequence","Memory allocation failed");
+        return((Image *) NULL);
       }
     morph_images->next->previous=morph_images;
     morph_images=morph_images->next;
@@ -1474,7 +1493,8 @@ Export Image *MorphImages(Image *image,const unsigned int number_frames)
 %
 %  The format of the OilPaintImage method is:
 %
-%      Image *OilPaintImage(Image *image,const unsigned int radius)
+%      Image *OilPaintImage(Image *image,const unsigned int radius,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1488,9 +1508,12 @@ Export Image *MorphImages(Image *image,const unsigned int number_frames)
 %    o radius: An unsigned int that is the radius of the circular
 %      neighborhood.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *OilPaintImage(Image *image,const unsigned int radius)
+Export Image *OilPaintImage(Image *image,const unsigned int radius,
+  ExceptionInfo *exception)
 {
 #define OilPaintImageText  "  Oil painting image...  "
 
@@ -1515,17 +1538,16 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
   unsigned int
     *histogram;
 
+  /*
+    Initialize painted image attributes.
+  */
   assert(image != (Image *) NULL);
   if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
     ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
       "image smaller than radius");
-  /*
-    Initialize painted image attributes.
-  */
-  paint_image=CloneImage(image,image->columns,image->rows,False);
+  paint_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (paint_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
-      "Memory allocation failed");
+    return((Image *) NULL);
   paint_image->class=DirectClass;
   /*
     Allocate histogram and scanline.
@@ -1849,7 +1871,7 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %  The format of the ReduceNoiseImage method is:
 %
-%      Image *ReduceNoiseImage(Image *image)
+%      Image *ReduceNoiseImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1859,6 +1881,8 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
@@ -1874,7 +1898,7 @@ static int ReduceNoiseCompare(const void *x,const void *y)
   return((int) Intensity(*color_1)-(int) Intensity(*color_2));
 }
 
-Export Image *ReduceNoiseImage(Image *image)
+Export Image *ReduceNoiseImage(Image *image,ExceptionInfo *exception)
 {
 #define ReduceNoiseImageText  "  Reducing the image noise...  "
 
@@ -1897,16 +1921,15 @@ Export Image *ReduceNoiseImage(Image *image)
     pixel,
     window[9];
 
-  assert(image != (Image *) NULL);
-  if ((image->columns < 3) || (image->rows < 3))
-    return((Image *) NULL);
   /*
     Initialize noisy image attributes.
   */
-  noisy_image=CloneImage(image,image->columns,image->rows,False);
+  assert(image != (Image *) NULL);
+  if ((image->columns < 3) || (image->rows < 3))
+    return((Image *) NULL);
+  noisy_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (noisy_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to reduce noise",
-      "Memory allocation failed");
+    return((Image *) NULL);
   noisy_image->class=DirectClass;
   /*
     Reduce noise in image.
@@ -1996,7 +2019,7 @@ Export Image *ReduceNoiseImage(Image *image)
 %  The format of the ShadeImage method is:
 %
 %      Image *ShadeImage(Image *image,const unsigned int color_shading,
-%        double azimuth,double elevation)
+%        double azimuth,double elevation,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2013,10 +2036,12 @@ Export Image *ReduceNoiseImage(Image *image)
 %    o azimuth, elevation:  A double value that indicates the light source
 %      direction.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
 Export Image *ShadeImage(Image *image,const unsigned int color_shading,
-  double azimuth,double elevation)
+  double azimuth,double elevation,ExceptionInfo *exception)
 {
 #define ShadeImageText  "  Shading image...  "
 
@@ -2049,10 +2074,9 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
     Initialize shaded image attributes.
   */
   assert(image != (Image *) NULL);
-  shade_image=CloneImage(image,image->columns,image->rows,False);
+  shade_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (shade_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to shade image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   shade_image->class=DirectClass;
   /*
     Compute the light vector.
@@ -2158,7 +2182,8 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
 %
 %  The format of the SharpenImage method is:
 %
-%      Image *SharpenImage(Image *image,const double factor)
+%      Image *SharpenImage(Image *image,const double factor,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2172,9 +2197,12 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
 %    o factor:  An double value reflecting the percent weight to give to the
 %      center pixel of the neighborhood.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *SharpenImage(Image *image,const double factor)
+Export Image *SharpenImage(Image *image,const double factor,
+  ExceptionInfo *exception)
 {
 #define Sharpen(weight) \
   total_red+=(weight)*s->red; \
@@ -2212,10 +2240,9 @@ Export Image *SharpenImage(Image *image,const double factor)
   /*
     Initialize sharpened image attributes.
   */
-  sharpen_image=CloneImage(image,image->columns,image->rows,False);
+  sharpen_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (sharpen_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to sharpen image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   sharpen_image->class=DirectClass;
   /*
     Sharpen image.
@@ -2397,7 +2424,8 @@ Export void SolarizeImage(Image *image,const double factor)
 %
 %  The format of the SpreadImage method is:
 %
-%      Image *SpreadImage(Image *image,const unsigned int amount)
+%      Image *SpreadImage(Image *image,const unsigned int amount,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2411,9 +2439,12 @@ Export void SolarizeImage(Image *image,const double factor)
 %    o amount:  An unsigned value constraining the "vicinity" for choosing
 %      a random pixel to swap.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *SpreadImage(Image *image,const unsigned int amount)
+Export Image *SpreadImage(Image *image,const unsigned int amount,
+  ExceptionInfo *exception)
 {
 #define SpreadImageText  "  Spreading image...  "
 
@@ -2441,10 +2472,9 @@ Export Image *SpreadImage(Image *image,const unsigned int amount)
   /*
     Initialize spread image attributes.
   */
-  spread_image=CloneImage(image,image->columns,image->rows,False);
+  spread_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (spread_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to spread image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   spread_image->class=DirectClass;
   /*
     Convolve each row.
@@ -2488,7 +2518,8 @@ Export Image *SpreadImage(Image *image,const unsigned int amount)
 %
 %  The format of the SteganoImage method is:
 %
-%      Image *SteganoImage(Image *image,Image *watermark)
+%      Image *SteganoImage(Image *image,Image *watermark,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2500,9 +2531,12 @@ Export Image *SpreadImage(Image *image,const unsigned int amount)
 %
 %    o watermark: The address of a structure of type Image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *SteganoImage(Image *image,Image *watermark)
+Export Image *SteganoImage(Image *image,Image *watermark,
+  ExceptionInfo *exception)
 {
 #define EmbedBit(byte) \
 { \
@@ -2543,10 +2577,9 @@ Export Image *SteganoImage(Image *image,Image *watermark)
   */
   assert(image != (Image *) NULL);
   assert(watermark != (Image *) NULL);
-  stegano_image=CloneImage(image,image->columns,image->rows,False);
+  stegano_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (stegano_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to create steganograph image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   if (stegano_image->class == PseudoClass)
     {
       if (stegano_image->colors > ((MaxRGB+1) >> 1))
@@ -2637,7 +2670,8 @@ Export Image *SteganoImage(Image *image,Image *watermark)
 %
 %  The format of the StereoImage method is:
 %
-%      Image *StereoImage(Image *image,Image *offset_image)
+%      Image *StereoImage(Image *image,Image *offset_image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2648,9 +2682,12 @@ Export Image *SteganoImage(Image *image,Image *watermark)
 %
 %    o offset_image: The address of a structure of type Image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *StereoImage(Image *image,Image *offset_image)
+Export Image *StereoImage(Image *image,Image *offset_image,
+  ExceptionInfo *exception)
 {
 #define StereoImageText  "  Stereo image...  "
 
@@ -2678,10 +2715,9 @@ Export Image *StereoImage(Image *image,Image *offset_image)
     Initialize stereo image attributes.
   */
   stereo_image=
-    CloneImage(image,image->columns,image->rows,False);
+    CloneImage(image,image->columns,image->rows,False,exception);
   if (stereo_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to create stereo image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   stereo_image->class=DirectClass;
   /*
     Copy left image to red channel and right image to blue channel.
@@ -2729,7 +2765,7 @@ Export Image *StereoImage(Image *image,Image *offset_image)
 %
 %  The format of the SwirlImage method is:
 %
-%      Image *SwirlImage(Image *image,double degrees)
+%      Image *SwirlImage(Image *image,double degrees,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2742,9 +2778,11 @@ Export Image *StereoImage(Image *image,Image *offset_image)
 %
 %    o degrees:  An double value that defines the tightness of the swirling.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *SwirlImage(Image *image,double degrees)
+Export Image *SwirlImage(Image *image,double degrees,ExceptionInfo *exception)
 {
 #define SwirlImageText  "  Swirling image...  "
 
@@ -2780,10 +2818,9 @@ Export Image *SwirlImage(Image *image,double degrees)
   assert(image != (Image *) NULL);
   if (!image->matte)
     MatteImage(image,Opaque);
-  swirl_image=CloneImage(image,image->columns,image->rows,False);
+  swirl_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (swirl_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to swirl image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   /*
     Compute scaling factor.
   */
@@ -2939,7 +2976,7 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
 %  The format of the WaveImage method is:
 %
 %      Image *WaveImage(Image *image,const double amplitude,
-%        const double wavelength)
+%        const double wavelength,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2953,10 +2990,12 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
 %    o amplitude, frequency:  A double value that indicates the amplitude
 %      and wavelength of the sine wave.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
 Export Image *WaveImage(Image *image,const double amplitude,
-  const double wavelength)
+  const double wavelength,ExceptionInfo *exception)
 {
 #define WaveImageText  "  Waving image...  "
 
@@ -2982,10 +3021,9 @@ Export Image *WaveImage(Image *image,const double amplitude,
   if (!image->matte)
     MatteImage(image,Opaque);
   wave_image=CloneImage(image,image->columns,image->rows+
-    (int) (2*AbsoluteValue(amplitude)),False);
+    (int) (2*AbsoluteValue(amplitude)),False,exception);
   if (wave_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to wave image",
-      "Memory allocation failed");
+    return((Image *) NULL);
   /*
     Allocate sine map.
   */

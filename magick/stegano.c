@@ -120,7 +120,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,ExceptionInfo *except
     *p;
 
   Image
-    *cloned_image,
+    *clone_image,
     *image,
     *stegano_image;
 
@@ -138,12 +138,13 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,ExceptionInfo *except
   DestroyImageInfo(clone_info);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
-  cloned_image=CloneImage(stegano_image,image->columns,image->rows,True);
+  clone_image=
+    CloneImage(stegano_image,image->columns,image->rows,True,exception);
   DestroyImage(image);
-  if (cloned_image == (Image *) NULL)
+  if (clone_image == (Image *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
       stegano_image);
-  image=cloned_image;
+  image=clone_image;
   image->class=PseudoClass;
   image->colors=1 << QuantumDepth;
   image->colormap=(PixelPacket *)

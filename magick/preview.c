@@ -188,9 +188,9 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   y=0;
   (void) ParseImageGeometry(DefaultPreviewGeometry,&x,&y,&width,&height);
   image->orphan=True;
-  preview_image=ZoomImage(image,width,height);
+  preview_image=ZoomImage(image,width,height,&image->exception);
   if (preview_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    return(False);
   preview_image->exempt=True;
   (void) SetImageAttribute(preview_image,"Label",DefaultTileLabel);
   /*
@@ -211,12 +211,12 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   for (i=0; i < NumberTiles; i++)
   {
     images[i]=CloneImage(preview_image,preview_image->columns,
-      preview_image->rows,True);
+      preview_image->rows,True,&image->exception);
     if (images[i] == (Image *) NULL)
       {
         for (x=0;  x < i; x++)
           DestroyImage(images[x]);
-        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+        return(False);
       }
     argc=1;
     if (i == (NumberTiles >> 1))
@@ -537,7 +537,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   (void) CloneString(&montage_info.tile,"3x3");
   (void) CloneString(&montage_info.geometry,DefaultPreviewGeometry);
   (void) CloneString(&montage_info.frame,DefaultTileFrame);
-  montage_image=MontageImages(*images,&montage_info);
+  montage_image=MontageImages(*images,&montage_info,&image->exception);
   DestroyMontageInfo(&montage_info);
   DestroyImages(*images);
   if (montage_image == (Image *) NULL)

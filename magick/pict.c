@@ -937,9 +937,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
             Initialize tile_image.
           */
           tile_image=CloneImage(image,frame.right-frame.left,
-            frame.bottom-frame.top,True);
+            frame.bottom-frame.top,True,exception);
           if (tile_image == (Image *) NULL)
-            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image);
           if ((code == 0x9a) || (bytes_per_line & 0x8000))
             {
               ReadPixmap(pixmap);

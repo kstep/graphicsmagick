@@ -120,7 +120,7 @@ Export void CatchImageException(Image *image,ExceptionType *severity)
       continue;
     if (next->exception.severity > *severity)
       *severity=image->exception.severity;
-    if (next->exception.severity < ResourceLimitError)
+    if (next->exception.severity < FatalException)
       {
         MagickWarning(next->exception.severity,next->exception.message,
           next->exception.qualifier);
@@ -166,7 +166,7 @@ static void DefaultErrorHandler(const ExceptionType error,const char *message,
 {
   DestroyDelegateInfo();
   if (message == (char *) NULL)
-    Exit(error % 100);
+    Exit(error);
   (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
     message);
   if (qualifier != (char *) NULL)
@@ -174,7 +174,7 @@ static void DefaultErrorHandler(const ExceptionType error,const char *message,
   if ((error != OptionError) && errno)
     (void) fprintf(stderr," [%.1024s]",strerror(errno));
   (void) fprintf(stderr,".\n");
-  Exit(error % 100);
+  Exit(error);
 }
 
 /*

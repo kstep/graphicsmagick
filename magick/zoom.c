@@ -284,7 +284,7 @@ static double BesselOrderOne(double x)
 %
 %  The format of the MagnifyImage method is:
 %
-%      magnify_image=MagnifyImage(image)
+%      magnify_image=MagnifyImage(image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -294,9 +294,11 @@ static double BesselOrderOne(double x)
 %
 %    o image: The address of a structure of type Image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *MagnifyImage(Image *image)
+Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
 {
 #define MagnifyImageText  "  Magnifying the image...  "
 
@@ -322,7 +324,8 @@ Export Image *MagnifyImage(Image *image)
     Initialize magnify image attributes.
   */
   assert(image != (Image *) NULL);
-  magnify_image=CloneImage(image,image->columns << 1,image->rows << 1,False);
+  magnify_image=
+    CloneImage(image,image->columns << 1,image->rows << 1,False,exception);
   if (magnify_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to magnify image",
       "Memory allocation failed");
@@ -470,7 +473,7 @@ Export Image *MagnifyImage(Image *image)
 %
 %  The format of the MinifyImage method is:
 %
-%      Image *MinifyImage(Image *image)
+%      Image *MinifyImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -478,11 +481,13 @@ Export Image *MagnifyImage(Image *image)
 %      after reducing.  A null image is returned if there is a memory
 %      shortage or if the image size is less than IconSize*2.
 %
-%    o image: The address of a structure of type Image.
+%    o image: The address of a structur  of type Image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-Export Image *MinifyImage(Image *image)
+Export Image *MinifyImage(Image *image,ExceptionInfo *exception)
 {
 #define Minify(weight) \
   total_red+=(weight)*(s->red); \
@@ -512,13 +517,14 @@ Export Image *MinifyImage(Image *image)
     total_opacity,
     total_red;
 
-  assert(image != (Image *) NULL);
-  if ((image->columns < 4) || (image->rows < 4))
-    return((Image *) NULL);
   /*
     Initialize minified image.
   */
-  minify_image=CloneImage(image,image->columns >> 1,image->rows >> 1,False);
+  assert(image != (Image *) NULL);
+  if ((image->columns < 4) || (image->rows < 4))
+    return((Image *) NULL);
+  minify_image=
+    CloneImage(image,image->columns >> 1,image->rows >> 1,False,exception);
   if (minify_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to minify image",
       "Memory allocation failed");
@@ -584,7 +590,7 @@ Export Image *MinifyImage(Image *image)
 %  The format of the SampleImage method is:
 %
 %      Image *SampleImage(Image *image,const unsigned int columns,
-%        const unsigned int rows)
+%        const unsigned int rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -599,10 +605,12 @@ Export Image *MinifyImage(Image *image)
 %    o rows: An integer that specifies the number of rows in the sampled
 %      image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
 Export Image *SampleImage(Image *image,const unsigned int columns,
-  const unsigned int rows)
+  const unsigned int rows,ExceptionInfo *exception)
 {
 #define SampleImageText  "  Sampling image...  "
 
@@ -631,16 +639,16 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
   PixelPacket
     *pixels;
 
+  /*
+    Initialize sampled image attributes.
+  */
   assert(image != (Image *) NULL);
   if ((columns == 0) || (rows == 0))
     ThrowImageException(OptionWarning,"Unable to resize image",
       "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows))
-    return(CloneImage(image,columns,rows,False));
-  /*
-    Initialize sampled image attributes.
-  */
-  sample_image=CloneImage(image,columns,rows,False);
+    return(CloneImage(image,columns,rows,False,exception));
+  sample_image=CloneImage(image,columns,rows,False,exception);
   if (sample_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to sample image",
       "Memory allocation failed");
@@ -737,7 +745,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
 %  The format of the ScaleImage method is:
 %
 %      Image *ScaleImage(Image *image,const unsigned int columns,
-%        const unsigned int rows)
+%        const unsigned int rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -752,10 +760,12 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
 %    o rows: An integer that specifies the number of rows in the scaled
 %      image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
 Export Image *ScaleImage(Image *image,const unsigned int columns,
-  const unsigned int rows)
+  const unsigned int rows,ExceptionInfo *exception)
 {
 #define ScaleImageText  "  Scaling image...  "
 
@@ -807,13 +817,13 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
     next_column,
     next_row;
 
-  assert(image != (Image *) NULL);
-  if ((columns == 0) || (rows == 0))
-    return((Image *) NULL);
   /*
     Initialize scaled image attributes.
   */
-  scale_image=CloneImage(image,columns,rows,False);
+  assert(image != (Image *) NULL);
+  if ((columns == 0) || (rows == 0))
+    return((Image *) NULL);
+  scale_image=CloneImage(image,columns,rows,False,exception);
   if (scale_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to scale image",
       "Memory allocation failed");
@@ -1097,7 +1107,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
 %  The format of the ZoomImage method is:
 %
 %      Image *ZoomImage(Image *image,const unsigned int columns,
-%        const unsigned int rows)
+%        const unsigned int rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1111,6 +1121,8 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
 %
 %    o rows: An integer that specifies the number of rows in the scaled
 %      image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
@@ -1471,7 +1483,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
 }
 
 Export Image *ZoomImage(Image *image,const unsigned int columns,
-  const unsigned int rows)
+  const unsigned int rows,ExceptionInfo *exception)
 {
   ContributionInfo
     *contribution;
@@ -1514,24 +1526,26 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
     span,
     status;
 
+  /*
+    Initialize zoom image attributes.
+  */
   assert(image != (Image *) NULL);
   assert((image->filter >= 0) && (image->filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
     ThrowImageException(OptionWarning,"Unable to zoom image",
       "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows))
-    return(CloneImage(image,columns,rows,False));
-  /*
-    Initialize zoom image attributes.
-  */
-  zoom_image=CloneImage(image,columns,rows,False);
+    return(CloneImage(image,columns,rows,False,exception));
+  zoom_image=CloneImage(image,columns,rows,False,exception);
   if (zoom_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to zoom image",
       "Memory allocation failed");
   if (zoom_image->rows >= image->rows)
-    source_image=CloneImage(image,zoom_image->columns,image->rows,True);
+    source_image=
+      CloneImage(image,zoom_image->columns,image->rows,True,exception);
   else
-    source_image=CloneImage(image,image->columns,zoom_image->rows,True);
+    source_image=
+      CloneImage(image,image->columns,zoom_image->rows,True,exception);
   if (source_image == (Image *) NULL)
     {
       DestroyImage(zoom_image);

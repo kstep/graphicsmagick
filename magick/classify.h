@@ -93,6 +93,7 @@ typedef enum
   FileOpenWarning = 330,
   BlobWarning = 335,
   CacheWarning = 340,
+  FatalException = 400,
   ResourceLimitError = 400,
   XServerError = 405,
   OptionError = 410,

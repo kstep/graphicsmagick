@@ -1,26 +1,31 @@
 <HTML>
 <HEAD>
 <TITLE>enhance - Methods to Enhance an Image</TITLE>
-<LINK REV="made" HREF="mailto:tkevans@fantasia.es.dupont.com">
+<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
 <UL>
 
-	<LI><A HREF="#NAME">NAME</A></LI>
-	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A></LI>
-	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></LI>
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A></LI>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#ContrastImage">ContrastImage</A></LI>
-		<LI><A HREF="#EqualizeImage">EqualizeImage</A></LI>
-		<LI><A HREF="#GammaImage">GammaImage</A></LI>
-		<LI><A HREF="#ModulateImage">ModulateImage</A></LI>
-		<LI><A HREF="#NegateImage">NegateImage</A></LI>
-		<LI><A HREF="#NormalizeImage">NormalizeImage</A></LI>
+		<LI><A HREF="#contrastimage">ContrastImage</A></LI>
+		<LI><A HREF="#equalizeimage">EqualizeImage</A></LI>
+		<LI><A HREF="#gammaimage">GammaImage</A></LI>
+		<LI><A HREF="#modulateimage">ModulateImage</A></LI>
+		<LI><A HREF="#negateimage">NegateImage</A></LI>
+		<LI><A HREF="#normalizeimage">NormalizeImage</A></LI>
 	</UL>
 
 </UL>
@@ -28,216 +33,107 @@
 
 <HR>
 <P>
-<H1><A NAME="NAME">NAME</A></H1>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>enhance - Methods to Enhance an Image</P>
 <P>
-enhance - Methods to Enhance an Image
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>unsigned int  <STRONG>ContrastImage</STRONG>( Image *image, const unsigned int sharpen );</P>
+<P>unsigned int  <STRONG>EqualizeImage</STRONG>( Image *image );</P>
+<P>unsigned int  <STRONG>GammaImage</STRONG>( Image *image, const char *gamma );</P>
+<P>unsigned int  <STRONG>ModulateImage</STRONG>( Image *image, const char *modulate );</P>
+<P>unsigned int  <STRONG>NegateImage</STRONG>( Image *image, const unsigned int grayscale );</P>
+<P>unsigned int  <STRONG>NormalizeImage</STRONG>( Image *image );</P>
 <P>
-void  <STRONG>ContrastImage</STRONG>( Image *image, const unsigned int sharpen );
-
-</P>
-<P>
-void  <STRONG>EqualizeImage</STRONG>( Image <CODE>*image</CODE> );
-
-</P>
-<P>
-void  <STRONG>GammaImage</STRONG>( Image *image, const char <CODE>*gamma</CODE> );
-
-</P>
-<P>
-void  <STRONG>ModulateImage</STRONG>( Image *image, const char <CODE>*modulate</CODE> );
-
-</P>
-<P>
-void  <STRONG>NegateImage</STRONG>( Image *image, const unsigned int grayscale );
-
-</P>
-<P>
-void  <STRONG>NormalizeImage</STRONG>( Image <CODE>*image</CODE> );
-
-</P>
-<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
-<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
-<HR>
-<H2><A NAME="ContrastImage">ContrastImage</A></H2>
-<P>
-Method ContrastImage enhances the intensity differences between the lighter
-and darker elements of the image.
-
-</P>
-<P>
-The format of the ContrastImage method is:
-
-</P>
-<blockquote>void ContrastImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int sharpen ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="contrastimage">ContrastImage</A></H2>
+<P>Method ContrastImage enhances the intensity differences between the lighter and darker elements of the image.</P>
+<P>The format of the ContrastImage method is:</P>
+<blockquote>unsigned int ContrastImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int sharpen ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o">image:</A></STRONG><DD>
-<P>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 The address of a structure of type Image; returned from ReadImage.
-
-</P>
-<p><dt><STRONG>sharpen:</STRONG><DD>
-<P>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_sharpen%3A">sharpen:</A></STRONG><BR>
+<DD>
 If True, the intensity is increased otherwise it is decreased.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="EqualizeImage">EqualizeImage</A></H2>
-<P>
-Method EqualizeImage performs histogram equalization on the reference
-image.
-
-</P>
-<P>
-The format of the EqualizeImage method is:
-
-</P>
-<blockquote>void EqualizeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="equalizeimage">EqualizeImage</A></H2>
+<P>Method EqualizeImage performs histogram equalization on the reference image.</P>
+<P>The format of the EqualizeImage method is:</P>
+<blockquote>unsigned int EqualizeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image; returned from ReadImage.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="GammaImage">GammaImage</A></H2>
-<P>
-Method GammaImage converts the reference image to gamma corrected colors.
-
-</P>
-<P>
-The format of the GammaImage method is:
-
-</P>
-<blockquote>void GammaImage ( <A HREF="types/Image.html">Image</A> *image, const char *gamma ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="gammaimage">GammaImage</A></H2>
+<P>Method GammaImage converts the reference image to gamma corrected colors.</P>
+<P>The format of the GammaImage method is:</P>
+<blockquote>unsigned int GammaImage ( <A HREF="types/Image.html">Image</A> *image, const char *gamma ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image; returned from ReadImage.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_gamma%3A">gamma:</A></STRONG><BR>
+<DD>
 
-</P>
-<p><dt><STRONG>gamma:</STRONG><DD>
+<FONT SIZE=-1>A</FONT> character string indicating the level of gamma correction.
+<P></P></DL></DL>
 <P>
-
-<FONT SIZE=-1>A</FONT> character string indicating the level of gamma
-correction.
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="ModulateImage">ModulateImage</A></H2>
-<P>
-Method ModulateImage modulates the hue, saturation, and brightness of an
-image.
-
-</P>
-<P>
-The format of the ModulateImage method is:
-
-</P>
-<blockquote>void ModulateImage ( <A HREF="types/Image.html">Image</A> *image, const char *modulate ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="modulateimage">ModulateImage</A></H2>
+<P>Method ModulateImage modulates the hue, saturation, and brightness of an image.</P>
+<P>The format of the ModulateImage method is:</P>
+<blockquote>unsigned int ModulateImage ( <A HREF="types/Image.html">Image</A> *image, const char *modulate ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image; returned from ReadImage.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_modulate%3A">modulate:</A></STRONG><BR>
+<DD>
 
-</P>
-<p><dt><STRONG>modulate:</STRONG><DD>
+<FONT SIZE=-1>A</FONT> character string indicating the percent change in brightness, saturation, and hue in floating point notation separated by commas (e.g.  10.1,0.0,3.1).
+<P></P></DL></DL>
 <P>
-
-<FONT SIZE=-1>A</FONT> character string indicating the percent change in
-brightness, saturation, and hue in floating point notation separated by
-commas (e.g. 10.1,0.0,3.1).
-
-</P>
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="NegateImage">NegateImage</A></H2>
-<P>
-Method NegateImage negates the colors in the reference image. The Grayscale
-option means that only grayscale values within the image are negated.
-
-</P>
-<P>
-The format of the NegateImage method is:
-
-</P>
-<blockquote>void NegateImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int grayscale ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="negateimage">NegateImage</A></H2>
+<P>Method NegateImage negates the colors in the reference image.  The Grayscale option means that only grayscale values within the image are negated.</P>
+<P>The format of the NegateImage method is:</P>
+<blockquote>unsigned int NegateImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int grayscale ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image; returned from ReadImage.
-
-</P>
-</DL></DL>
+<P></P></DL></DL>
 <P>
-<HR>
-<H2><A NAME="NormalizeImage">NormalizeImage</A></H2>
-<P>
-Method NormalizeImage normalizes the pixel values to span the full range of
-color values. This is a contrast enhancement technique.
-
-</P>
-<P>
-The format of the NormalizeImage method is:
-
-</P>
-<blockquote>void NormalizeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
-
-<P>
-
-<FONT SIZE=-1>A</FONT> description of each parameter follows:
-
-</P>
+<H2><A NAME="normalizeimage">NormalizeImage</A></H2>
+<P>Method NormalizeImage normalizes the pixel values to span the full range of color values.  This is a contrast enhancement technique.</P>
+<P>The format of the NormalizeImage method is:</P>
+<blockquote>unsigned int NormalizeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><DD>
-<P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
 The address of a structure of type Image; returned from ReadImage.
-
-</P>
 </DL></DL>
+<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 
 </BODY>
 

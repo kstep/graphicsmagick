@@ -181,7 +181,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) strcpy(montage_info.filename,image_info->filename);
   (void) CloneString(&montage_info.font,image_info->font);
   montage_info.pointsize=image_info->pointsize;
-  montage_image=MontageImages(image,&montage_info);
+  montage_image=MontageImages(image,&montage_info,exception);
   DestroyMontageInfo(&montage_info);
   if (montage_image == (Image *) NULL)
     ThrowReaderException(CorruptImageWarning,"unable to read VID image",image);

@@ -73,7 +73,8 @@
 %
 %  The format of the BorderImage method is:
 %
-%      Image *BorderImage(const Image *image,const RectangleInfo *border_info)
+%      Image *BorderImage(const Image *image,const RectangleInfo *border_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -85,8 +86,12 @@
 %    o border_info: Specifies a pointer to a structure of type Rectangle which
 %      defines the border region.
 %
+%    o exception: return any errors or warnings in this structure.
+%
+%
 */
-Export Image *BorderImage(Image *image,const RectangleInfo *border_info)
+Export Image *BorderImage(Image *image,const RectangleInfo *border_info,
+  ExceptionInfo *exception)
 {
   PixelPacket
     matte_color;
@@ -107,7 +112,7 @@ Export Image *BorderImage(Image *image,const RectangleInfo *border_info)
   frame_info.outer_bevel=0;
   matte_color=image->matte_color;
   image->matte_color=image->border_color;
-  bordered_image=FrameImage(image,&frame_info);
+  bordered_image=FrameImage(image,&frame_info,exception);
   bordered_image->matte_color=matte_color;
   image->matte_color=matte_color;
   return(bordered_image);
@@ -130,7 +135,8 @@ Export Image *BorderImage(Image *image,const RectangleInfo *border_info)
 %
 %  The format of the FrameImage method is:
 %
-%      Image *FrameImage(Image *image,const FrameInfo *frame_info)
+%      Image *FrameImage(Image *image,const FrameInfo *frame_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -142,9 +148,12 @@ Export Image *BorderImage(Image *image,const RectangleInfo *border_info)
 %    o frame_info: Specifies a pointer to a FrameInfo structure which
 %      defines the framed region.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
+Export Image *FrameImage(Image *image,const FrameInfo *frame_info,
+  ExceptionInfo *exception)
 {
 #define FrameImageText  "  Adding frame to image...  "
 
@@ -178,6 +187,7 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
   */
   assert(image != (Image *) NULL);
   assert(frame_info != (FrameInfo *) NULL);
+  GetExceptionInfo(exception);
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
     ThrowImageException(OptionWarning,"Unable to frame image",
       "bevel width is negative");
@@ -190,10 +200,10 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
   /*
     Initialize framed image attributes.
   */
-  frame_image=CloneImage(image,frame_info->width,frame_info->height,False);
+  frame_image=
+    CloneImage(image,frame_info->width,frame_info->height,False,exception);
   if (frame_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to frame image",
-      "Memory allocation failed");
+    return(False);
   frame_image->class=DirectClass;
   /*
     Initialize 3D effects color.

@@ -325,6 +325,9 @@ Export unsigned int XAnnotateImage(Display *display,
       double
         normalized_degrees;
 
+      ExceptionInfo
+        exception;
+
       Image
         *rotate_image;
 
@@ -334,7 +337,8 @@ Export unsigned int XAnnotateImage(Display *display,
       /*
         Rotate image.
       */
-      rotate_image=RotateImage(annotate_image,annotate_info->degrees);
+      rotate_image=
+        RotateImage(annotate_image,annotate_info->degrees,&exception);
       if (rotate_image == (Image *) NULL)
         return(False);
       DestroyImage(annotate_image);
@@ -2119,6 +2123,9 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
       double
         normalized_degrees;
 
+      ExceptionInfo
+        exception;
+
       Image
         *rotate_image;
 
@@ -2128,7 +2135,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
       /*
         Rotate image.
       */
-      rotate_image=RotateImage(draw_image,draw_info->degrees);
+      rotate_image=RotateImage(draw_image,draw_info->degrees,&exception);
       if (rotate_image == (Image *) NULL)
         return(False);
       DestroyImage(draw_image);
@@ -4675,6 +4682,9 @@ Export Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
       (void) strcpy(image->filename,image_info->filename);
       if ((crop_info.width != 0) && (crop_info.height != 0))
         {
+          ExceptionInfo
+            exception;
+
           Image
             *crop_image;
 
@@ -4682,7 +4692,7 @@ Export Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
             Crop image as defined by the cropping rectangle.
           */
           image->orphan=True;
-          crop_image=CropImage(image,&crop_info);
+          crop_image=CropImage(image,&crop_info,&exception);
           if (crop_image != (Image *) NULL)
             {
               DestroyImage(image);
@@ -5046,6 +5056,9 @@ Export unsigned int XMakeImage(Display *display,
   const XResourceInfo *resource_info,XWindowInfo *window,Image *image,
   unsigned int width,unsigned int height)
 {
+  ExceptionInfo
+    exception;
+
   Image
     *transformed_image;
 
@@ -5075,6 +5088,9 @@ Export unsigned int XMakeImage(Display *display,
     {
       if (window->crop_geometry)
         {
+          ExceptionInfo
+            exception;
+
           Image
             *crop_image;
 
@@ -5091,7 +5107,7 @@ Export unsigned int XMakeImage(Display *display,
           (void) XParseGeometry(window->crop_geometry,&crop_info.x,
             &crop_info.y,&crop_info.width,&crop_info.height);
           transformed_image->orphan=True;
-          crop_image=CropImage(transformed_image,&crop_info);
+          crop_image=CropImage(transformed_image,&crop_info,&exception);
           if (crop_image != (Image *) NULL)
             {
               if (transformed_image != image)
@@ -5110,12 +5126,13 @@ Export unsigned int XMakeImage(Display *display,
           */
           transformed_image->orphan=True;
           if ((window->pixel_info->colors != 0) || transformed_image->matte)
-            zoomed_image=SampleImage(transformed_image,width,height);
+            zoomed_image=SampleImage(transformed_image,width,height,&exception);
           else
             if ((width <= 160) && (height <= 160))
-              zoomed_image=ScaleImage(transformed_image,width,height);
+              zoomed_image=
+                ScaleImage(transformed_image,width,height,&exception);
             else
-              zoomed_image=ZoomImage(transformed_image,width,height);
+              zoomed_image=ZoomImage(transformed_image,width,height,&exception);
           if (zoomed_image != (Image *) NULL)
             {
               if (transformed_image != image)

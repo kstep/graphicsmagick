@@ -400,7 +400,8 @@ Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
 %
 %  The format of the AppendImage method is:
 %
-%      Image *AppendImages(Image *image,const unsigned int stack)
+%      Image *AppendImages(Image *image,const unsigned int stack,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -410,9 +411,12 @@ Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
 %    o stack: An unsigned value other than stacks rectangular image
 %      top-to-bottom otherwise left-to-right.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *AppendImages(Image *image,const unsigned int stack)
+Export Image *AppendImages(Image *image,const unsigned int stack,
+  ExceptionInfo *exception)
 {
 #define AppendImageText  "  Appending image sequence...  "
 
@@ -453,9 +457,9 @@ Export Image *AppendImages(Image *image,const unsigned int stack)
     Initialize append next attributes.
   */
   if ((image->columns != image->next->columns) || !stack)
-    append_image=CloneImage(image,width,image->rows,True);
+    append_image=CloneImage(image,width,image->rows,True,exception);
   else
-    append_image=CloneImage(image,image->columns,height,True);
+    append_image=CloneImage(image,image->columns,height,True,exception);
   if (append_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to append image sequence",
       "Memory allocation failed");
@@ -541,7 +545,7 @@ Export Image *AppendImages(Image *image,const unsigned int stack)
 %
 %  The format of the AverageImage method is:
 %
-%      Image *AverageImages(const Image *image)
+%      Image *AverageImages(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -551,9 +555,11 @@ Export Image *AppendImages(Image *image,const unsigned int stack)
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *AverageImages(Image *image)
+Export Image *AverageImages(Image *image,ExceptionInfo *exception)
 {
 #define AverageImageText  "  Average image sequence...  "
 
@@ -589,13 +595,13 @@ Export Image *AverageImages(Image *image)
   unsigned int
     number_scenes;
 
+  /*
+    Ensure the image are the same size.
+  */
   assert(image != (Image *) NULL);
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to average image sequence",
       "image sequence required");
-  /*
-    Ensure the image are the same size.
-  */
   for (next=image; next != (Image *) NULL; next=next->next)
   {
     if ((next->columns != image->columns) || (next->rows != image->rows))
@@ -620,7 +626,7 @@ Export Image *AverageImages(Image *image)
   /*
     Initialize average next attributes.
   */
-  average_image=CloneImage(image,image->columns,image->rows,True);
+  average_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (average_image == (Image *) NULL)
     {
       FreeMemory(sum);
@@ -699,7 +705,8 @@ Export Image *AverageImages(Image *image)
 %  The format of the CloneImage method is:
 %
 %      Image *CloneImage(Image *image,const unsigned int columns,
-%        const unsigned int rows,const unsigned int orphan)
+%        const unsigned int rows,const unsigned int orphan,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -716,10 +723,12 @@ Export Image *AverageImages(Image *image)
 %
 %    o orphan:  if true, consider this image an orphan.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
 Export Image *CloneImage(Image *image,const unsigned int columns,
-  const unsigned int rows,const unsigned int orphan)
+  const unsigned int rows,const unsigned int orphan,ExceptionInfo *exception)
 {
   Image
     *clone_image;
@@ -751,7 +760,8 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       length=image->colors*sizeof(PixelPacket);
       clone_image->colormap=(PixelPacket *) AllocateMemory(length);
       if (clone_image->colormap == (PixelPacket *) NULL)
-        return((Image *) NULL);
+        ThrowImageException(ResourceLimitWarning,"Unable to clone image",
+          "Memory allocation failed");
       (void) memcpy(clone_image->colormap,image->colormap,length);
     }
   if (image->color_profile.length > 0)
@@ -762,7 +772,8 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       length=image->color_profile.length;
       clone_image->color_profile.info=(unsigned char *) AllocateMemory(length);
       if (clone_image->color_profile.info == (unsigned char *) NULL)
-        return((Image *) NULL);
+        ThrowImageException(ResourceLimitWarning,"Unable to clone image",
+          "Memory allocation failed");
       (void) memcpy(clone_image->color_profile.info,image->color_profile.info,
         length);
     }
@@ -774,7 +785,8 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       length=image->iptc_profile.length;
       clone_image->iptc_profile.info=(unsigned char *) AllocateMemory(length);
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
-        return((Image *) NULL);
+        ThrowImageException(ResourceLimitWarning,"Unable to clone image",
+          "Memory allocation failed");
       (void) memcpy(clone_image->iptc_profile.info,image->iptc_profile.info,
         length);
     }
@@ -817,6 +829,9 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         if (!SyncPixelCache(clone_image))
           break;
       }
+      if (y < image->rows)
+        ThrowImageException(CacheWarning,"Unable to clone image",
+          "could not get image cache");
       if (image->montage != (char *) NULL)
         (void) CloneString(&clone_image->montage,image->montage);
       if (image->directory != (char *) NULL)
@@ -1048,10 +1063,9 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
         Allocate the displace image.
       */
       displace_image=CloneImage(composite_image,composite_image->columns,
-        composite_image->rows,True);
+        composite_image->rows,True,&image->exception);
       if (displace_image == (Image *) NULL)
-        ThrowBinaryException(ResourceLimitWarning,"Unable to composite image",
-          "Memory allocation failed");
+        return(False);
       horizontal_scale=20.0;
       vertical_scale=20.0;
       if (composite_image->geometry != (char *) NULL)
@@ -1501,12 +1515,13 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
 %  example, to create a 640x480 image from unsigned red-green-blue character
 %  data, use
 %
-%      image=CreateImage(640,480,"RGB",0,pixels);
+%      image=CreateImage(640,480,"RGB",0,pixels,&exception);
 %
 %  The format of the CreateImage method is:
 %
 %      Image *CreateImage(const unsigned int width,const unsigned int height,
-%        const char *map,const StorageType type,const void *pixels)
+%        const char *map,const StorageType type,const void *pixels,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1532,10 +1547,13 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
 %      equal the area specified by the width and height values and type
 %      parameters.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
 Export Image *CreateImage(const unsigned int width,const unsigned int height,
-  const char *map,const StorageType type,const void *pixels)
+  const char *map,const StorageType type,const void *pixels,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -3948,12 +3966,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           Blur an image.
         */
         factor=atof(argv[++i]);
-        blurred_image=BlurImage(*image,factor);
-        if (blurred_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=blurred_image;
-          }
+        blurred_image=BlurImage(*image,factor,&(*image)->exception);
+        if (blurred_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=blurred_image;
         continue;
       }
     if (Latin1Compare("-border",option) == 0)
@@ -3975,13 +3992,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           &border_info.width,&border_info.height);
         if ((flags & HeightValue) == 0)
           border_info.height=border_info.width;
-        bordered_image=BorderImage(*image,&border_info);
-        if (bordered_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            bordered_image->class=DirectClass;
-            *image=bordered_image;
-          }
+        bordered_image=BorderImage(*image,&border_info,&(*image)->exception);
+        if (bordered_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        bordered_image->class=DirectClass;
+        *image=bordered_image;
         continue;
       }
     if (strncmp("-bordercolor",option,8) == 0)
@@ -4031,12 +4047,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         /*
           Colorize the image.
         */
-        colorized_image=ColorizeImage(*image,argv[++i],clone_info->pen);
-        if (colorized_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=colorized_image;
-          }
+        colorized_image=
+          ColorizeImage(*image,argv[++i],clone_info->pen,&(*image)->exception);
+        if (colorized_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=colorized_image;
         continue;
       }
     if (strncmp("-compress",option,6) == 0)
@@ -4167,12 +4183,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         /*
           Reduce the speckles within an image.
         */
-        despeckled_image=DespeckleImage(*image);
-        if (despeckled_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=despeckled_image;
-          }
+        despeckled_image=DespeckleImage(*image,&(*image)->exception);
+        if (despeckled_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=despeckled_image;
         continue;
       }
     if (strncmp("-display",option,6) == 0)
@@ -4216,12 +4231,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           Detect edges in the image.
         */
         factor=atof(argv[++i]);
-        edged_image=EdgeImage(*image,factor);
-        if (edged_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=edged_image;
-          }
+        edged_image=EdgeImage(*image,factor,&(*image)->exception);
+        if (edged_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=edged_image;
         continue;
       }
     if (strncmp("-emboss",option,3) == 0)
@@ -4232,12 +4246,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         /*
           Emboss image.
         */
-        embossed_image=EmbossImage(*image);
-        if (embossed_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=embossed_image;
-          }
+        embossed_image=EmbossImage(*image,&(*image)->exception);
+        if (embossed_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=embossed_image;
         continue;
       }
     if (strncmp("-enhance",option,3) == 0)
@@ -4248,12 +4261,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         /*
           Enhance image.
         */
-        enhanced_image=EnhanceImage(*image);
-        if (enhanced_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=enhanced_image;
-          }
+        enhanced_image=EnhanceImage(*image,&(*image)->exception);
+        if (enhanced_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=enhanced_image;
         continue;
       }
     if (strncmp("-equalize",option,3) == 0)
@@ -4315,12 +4327,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         /*
           Flip image scanlines.
         */
-        flipped_image=FlipImage(*image);
-        if (flipped_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=flipped_image;
-          }
+        flipped_image=FlipImage(*image,&(*image)->exception);
+        if (flipped_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=flipped_image;
         continue;
       }
     if (strncmp("-flop",option,4) == 0)
@@ -4331,12 +4342,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         /*
           Flop image scanlines.
         */
-        flopped_image=FlopImage(*image);
-        if (flopped_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=flopped_image;
-          }
+        flopped_image=FlopImage(*image,&(*image)->exception);
+        if (flopped_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=flopped_image;
         continue;
       }
     if (Latin1Compare("-frame",option) == 0)
@@ -4366,13 +4376,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         frame_info.y=frame_info.height;
         frame_info.width=(*image)->columns+(frame_info.width << 1);
         frame_info.height=(*image)->rows+(frame_info.height << 1);
-        framed_image=FrameImage(*image,&frame_info);
-        if (framed_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            framed_image->class=DirectClass;
-            *image=framed_image;
-          }
+        framed_image=FrameImage(*image,&frame_info,&(*image)->exception);
+        if (framed_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        framed_image->class=DirectClass;
+        *image=framed_image;
         continue;
       }
     if (strncmp("-fuzz",option,3) == 0)
@@ -4407,12 +4416,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         y=0;
         (void) CloneString(&geometry,argv[++i]);
         (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-        zoom_image=ZoomImage(*image,width,height);
-        if (zoom_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=zoom_image;
-          }
+        zoom_image=ZoomImage(*image,width,height,&(*image)->exception);
+        if (zoom_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=zoom_image;
         continue;
       }
     if (strncmp("gravity",option+1,2) == 0)
@@ -4454,12 +4462,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           Implode image.
         */
         amount=atof(argv[++i]);
-        imploded_image=ImplodeImage(*image,amount);
-        if (imploded_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=imploded_image;
-          }
+        imploded_image=ImplodeImage(*image,amount,&(*image)->exception);
+        if (imploded_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=imploded_image;
         continue;
       }
     if (strncmp("label",option+1,3) == 0)
@@ -4528,12 +4535,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         /*
           Median filter image.
         */
-        median_image=MedianFilterImage(*image,atoi(argv[++i]));
-        if (median_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=median_image;
-          }
+        median_image=
+          MedianFilterImage(*image,atoi(argv[++i]),&(*image)->exception);
+        if (median_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=median_image;
         continue;
       }
     if (strncmp("-modulate",option,4) == 0)
@@ -4563,7 +4570,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           Reduce noise in image.
         */
         if (*option == '-')
-          noisy_image=ReduceNoiseImage(*image);
+          noisy_image=ReduceNoiseImage(*image,&(*image)->exception);
         else
           {
             NoiseType
@@ -4581,13 +4588,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
               noise_type=LaplacianNoise;
             if (Latin1Compare("Poisson",option) == 0)
               noise_type=PoissonNoise;
-            noisy_image=AddNoiseImage(*image,noise_type);
+            noisy_image=AddNoiseImage(*image,noise_type,&(*image)->exception);
           }
-        if (noisy_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=noisy_image;
-          }
+        if (noisy_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=noisy_image;
         continue;
       }
     if (strncmp("-normalize",option,4) == 0)
@@ -4608,12 +4614,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         /*
           Oil paint image.
         */
-        paint_image=OilPaintImage(*image,atoi(argv[++i]));
-        if (paint_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=paint_image;
-          }
+        paint_image=OilPaintImage(*image,atoi(argv[++i]),&(*image)->exception);
+        if (paint_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=paint_image;
         continue;
       }
     if (Latin1Compare("-pen",option) == 0)
@@ -4745,9 +4750,9 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         region_info.y=0;
         (void) ParseGeometry(argv[++i],&region_info.x,&region_info.y,
           &region_info.width,&region_info.height);
-        cropped_image=CropImage(*image,&region_info);
+        cropped_image=CropImage(*image,&region_info,&(*image)->exception);
         if (cropped_image == (Image *) NULL)
-          continue;
+          return(False);
         region_image=(*image);
         *image=cropped_image;
         continue;
@@ -4763,12 +4768,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         x=0;
         y=0;
         flags=ParseGeometry(argv[++i],&x,&y,&width,&height);
-        rolled_image=RollImage(*image,x,y);
-        if (rolled_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=rolled_image;
-          }
+        rolled_image=RollImage(*image,x,y,&(*image)->exception);
+        if (rolled_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=rolled_image;
         continue;
       }
     if (strncmp("-rotate",option,4) == 0)
@@ -4793,12 +4797,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           Rotate image.
         */
         degrees=atof(argv[i]);
-        rotated_image=RotateImage(*image,degrees);
-        if (rotated_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=rotated_image;
-          }
+        rotated_image=RotateImage(*image,degrees,&(*image)->exception);
+        if (rotated_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=rotated_image;
         continue;
       }
     if (strncmp("-sample",option,3) == 0)
@@ -4814,12 +4817,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         x=0;
         y=0;
         (void) ParseImageGeometry(argv[++i],&x,&y,&width,&height);
-        sampled_image=SampleImage(*image,width,height);
-        if (sampled_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=sampled_image;
-          }
+        sampled_image=SampleImage(*image,width,height,&(*image)->exception);
+        if (sampled_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=sampled_image;
         continue;
       }
     if (strncmp("sans",option+1,2) == 0)
@@ -4839,12 +4841,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         y=0;
         (void) CloneString(&geometry,argv[++i]);
         (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-        scale_image=ScaleImage(*image,width,height);
-        if (scale_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=scale_image;
-          }
+        scale_image=ScaleImage(*image,width,height,&(*image)->exception);
+        if (scale_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=scale_image;
         continue;
       }
     if (Latin1Compare("-scene",option) == 0)
@@ -4876,7 +4877,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           elevation;
 
         Image
-          *shaded_image;
+          *shade_image;
 
         /*
           Shade image.
@@ -4884,13 +4885,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         azimuth=30.0;
         elevation=30.0;
         (void) sscanf(argv[++i],"%lfx%lf",&azimuth,&elevation);
-        shaded_image=ShadeImage(*image,*option == '-',(double) azimuth,
-          (double) elevation);
-        if (shaded_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=shaded_image;
-          }
+        shade_image=ShadeImage(*image,*option == '-',(double) azimuth,
+          (double) elevation,&(*image)->exception);
+        if (shade_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=shade_image;
         continue;
       }
     if (strncmp("-sharpen",option,5) == 0)
@@ -4899,18 +4899,17 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           factor;
 
         Image
-          *sharpened_image;
+          *sharpen_image;
 
         /*
           Sharpen an image.
         */
         factor=atof(argv[++i]);
-        sharpened_image=SharpenImage(*image,factor);
-        if (sharpened_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=sharpened_image;
-          }
+        sharpen_image=SharpenImage(*image,factor,&(*image)->exception);
+        if (sharpen_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=sharpen_image;
         continue;
       }
     if (strncmp("-shear",option,4) == 0)
@@ -4928,13 +4927,13 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         x_shear=0.0;
         y_shear=0.0;
         (void) sscanf(argv[++i],"%lfx%lf",&x_shear,&y_shear);
-        shear_image=ShearImage(*image,(double) x_shear,(double) y_shear);
-        if (shear_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            shear_image->class=DirectClass;
-            *image=shear_image;
-          }
+        shear_image=ShearImage(*image,(double) x_shear,(double) y_shear,
+          &(*image)->exception);
+        if (shear_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        shear_image->class=DirectClass;
+        *image=shear_image;
         continue;
       }
     if (strncmp("-solarize",option,3) == 0)
@@ -4954,12 +4953,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           Spread an image.
         */
         amount=atoi(argv[++i]);
-        spread_image=SpreadImage(*image,amount);
-        if (spread_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=spread_image;
-          }
+        spread_image=SpreadImage(*image,amount,&(*image)->exception);
+        if (spread_image == (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=spread_image;
         continue;
       }
     if (strncmp("-swirl",option,3) == 0)
@@ -4968,18 +4966,17 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           degrees;
 
         Image
-          *swirled_image;
+          *swirl_image;
 
         /*
           Swirl image.
         */
         degrees=atof(argv[++i]);
-        swirled_image=SwirlImage(*image,degrees);
-        if (swirled_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=swirled_image;
-          }
+        swirl_image=SwirlImage(*image,degrees,&(*image)->exception);
+        if (swirl_image != (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=swirl_image;
         continue;
       }
     if (strncmp("-threshold",option,3) == 0)
@@ -5030,7 +5027,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           wavelength;
 
         Image
-          *waved_image;
+          *wave_image;
 
         /*
           Wave image.
@@ -5039,12 +5036,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         wavelength=150.0;
         if (*option == '-')
           (void) sscanf(argv[++i],"%lfx%lf",&amplitude,&wavelength);
-        waved_image=WaveImage(*image,(double) amplitude,(double) wavelength);
-        if (waved_image != (Image *) NULL)
-          {
-            DestroyImage(*image);
-            *image=waved_image;
-          }
+        wave_image=WaveImage(*image,(double) amplitude,(double) wavelength,
+          &(*image)->exception);
+        if (wave_image != (Image *) NULL)
+          return(False);
+        DestroyImage(*image);
+        *image=wave_image;
         continue;
       }
   }
@@ -5191,16 +5188,18 @@ Export unsigned int MogrifyImages(const ImageInfo *next_info,const int argc,
 %
 %  The format of the MosaicImage method is:
 %
-%      Image *MosaicImages(const Image *image)
+%      Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-Export Image *MosaicImages(Image *image)
+Export Image *MosaicImages(Image *image,ExceptionInfo *exception)
 {
 #define MosaicImageText  "  Creating an image mosaic...  "
 
@@ -5225,13 +5224,13 @@ Export Image *MosaicImages(Image *image)
   unsigned int
     scene;
 
+  /*
+    Determine next bounding box.
+  */
   assert(image != (Image *) NULL);
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to create image mosaic",
       "image sequence required");
-  /*
-    Determine next bounding box.
-  */
   page.width=image->columns;
   page.height=image->rows;
   page.x=0;
@@ -5671,7 +5670,7 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
               Clone this subimage.
             */
             clone_image=CloneImage(next,next->columns,
-              next->rows,True);
+              next->rows,True,exception);
             if (clone_image == (Image *) NULL)
               {
                 ThrowException(exception,MissingDelegateWarning,

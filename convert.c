@@ -443,6 +443,7 @@ int main(int argc,char **argv)
   average=False;
   coalesce=False;
   deconstruct=False;
+  GetExceptionInfo(&exception);
   morph=0;
   mosaic=False;
   filename=(char *) NULL;
@@ -1661,7 +1662,6 @@ int main(int argc,char **argv)
     }
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  GetExceptionInfo(&exception);
   if (append != 0)
     {
       Image
@@ -1757,6 +1757,8 @@ int main(int argc,char **argv)
       if (exception.severity >= FatalException)
         MagickError(exception.severity,exception.message,exception.qualifier);
       MagickWarning(exception.severity,exception.message,exception.qualifier);
+      if (exception.severity > severity)
+        severity=exception.severity;
     }
   if (global_colormap)
     (void) MapImages(image,(Image *) NULL,image_info->dither);

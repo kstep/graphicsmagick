@@ -711,7 +711,8 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
       /*
         Convert image to monochrome.
       */
-      huffman_image=CloneImage(image,image->columns,image->rows,True);
+      huffman_image=
+        CloneImage(image,image->columns,image->rows,True,&image->exception);
       if (huffman_image == (Image *) NULL)
         return(False);
       GetQuantizeInfo(&quantize_info);
