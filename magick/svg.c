@@ -55,7 +55,6 @@
 #include "magick.h"
 #include "defines.h"
 
-
 /*
   Forward declarations.
 */
@@ -279,6 +278,7 @@ Export char **StringToTokens(const char *text,int *number_tokens)
   return(tokens);
 }
 
+#define SMOOTHING_STUFF_
 #define BezierCoordinates  4
       
 static void ReflectPoint(PointInfo *input, PointInfo *output)
@@ -456,7 +456,7 @@ static char *TraversePath(const char *data)
         BezierSmoothPoints(pixels, newpixels, BezierQuantum);
         for (i=0; i < BezierCoordinates; i++)
         {
-          (void) FormatString(points,"%g,%g ",pixels[i].x,pixels[i].y);
+          (void) FormatString(points,"%g,%g ",newpixels[i].x,newpixels[i].y);
           if (!ConcatenateString(&path,points))
             return((char *) NULL);
         }
