@@ -1050,7 +1050,7 @@ ModuleExport void RegisterMIFFImage(void)
 		(void) strncat(version,ZLIB_VERSION,MaxTextExtent-strlen(version)-1);
 #endif
 #if defined(HasBZLIB)
-		(void) strcat(version," with BZlib");
+		(void) strcat(version," and BZlib");
 #endif
     entry->version=AcquireString(version);
   }
