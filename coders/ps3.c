@@ -1282,7 +1282,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     FormatString(page_geometry,"%lux%lu",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
       {
-        (void) strncpy(page_geometry,image_info->page,MaxTextExtent-1);
+        (void) strlcpy(page_geometry,image_info->page,MaxTextExtent);
       }
     else
       {
@@ -1364,7 +1364,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         /* File creation timestamp */
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
-        (void) strncpy(date,ctime(&timer),MaxTextExtent-1);
+        (void) strlcpy(date,ctime(&timer),MaxTextExtent);
         date[strlen(date)-1]='\0';
         FormatString(buffer,"%%%%CreationDate: %.1024s\n",date);
         (void) WriteBlobString(image,buffer);

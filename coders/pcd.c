@@ -404,7 +404,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
     Create the PCD Overview image.
   */
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
-  (void) strncpy(montage_info->filename,image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(montage_info->filename,image_info->filename,MaxTextExtent);
   montage_image=MontageImages(image,montage_info,exception);
   DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)

@@ -473,7 +473,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     }
   FormatString(coalesce_image->filename,"%.1024s",basename);
   clone_info=CloneImageInfo(image_info);
-  (void) strncpy(clone_info->unique,basename,MaxTextExtent-1);
+  (void) strlcpy(clone_info->unique,basename,MaxTextExtent);
   status=WriteMPEGParameterFiles(clone_info,coalesce_image);
   if (status == False)
     {
@@ -553,7 +553,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Convert YUV to MPEG.
   */
-  (void) strncpy(coalesce_image->filename,clone_info->unique,MaxTextExtent-1);
+  (void) strlcpy(coalesce_image->filename,clone_info->unique,MaxTextExtent);
   status=InvokeDelegate(clone_info,coalesce_image,(char *) NULL,"mpeg-encode",
     &image->exception);
   DestroyImageInfo(clone_info);
@@ -568,7 +568,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
       FormatString(p->filename,"%.1024s.%lu.yuv",basename,count++);
       (void) remove(p->filename);
     }
-    (void) strncpy(p->filename,image_info->filename,MaxTextExtent-1);
+    (void) strlcpy(p->filename,image_info->filename,MaxTextExtent);
   }
   FormatString(filename,"%.1024s.iqm",basename);
   (void) remove(filename);

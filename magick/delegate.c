@@ -371,7 +371,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           return(False);
         }
     }
-  (void) strncpy(filename,image->filename,MaxTextExtent-1);
+  (void) strlcpy(filename,image->filename,MaxTextExtent);
   delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (DelegateInfo *) NULL)
     {
@@ -447,14 +447,14 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           }
         LocaleUpper(magick);
         clone_info=CloneImageInfo(image_info);
-        (void) strncpy((char *) clone_info->magick,magick,MaxTextExtent-1);
-        (void) strncpy(image->magick,magick,MaxTextExtent-1);
+        (void) strlcpy((char *) clone_info->magick,magick,MaxTextExtent);
+        (void) strlcpy(image->magick,magick,MaxTextExtent);
         MagickFreeMemory(magick);
-        (void) strncpy(filename,image->filename,MaxTextExtent-1);
+        (void) strlcpy(filename,image->filename,MaxTextExtent);
         FormatString(clone_info->filename,"%.1024s:",delegate_info->decode);
         (void) SetImageInfo(clone_info,True,exception);
-        (void) strncpy(clone_info->filename,image_info->filename,
-          MaxTextExtent-1);
+        (void) strlcpy(clone_info->filename,image_info->filename,
+          MaxTextExtent);
         for (p=image; p != (Image *) NULL; p=p->next)
         {
           FormatString(p->filename,"%.1024s:%.1024s",delegate_info->decode,
@@ -481,7 +481,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   /*
     Invoke delegate.
   */
-  (void) strncpy(image->filename,filename,MaxTextExtent-1);
+  (void) strlcpy(image->filename,filename,MaxTextExtent);
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
@@ -704,7 +704,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
       continue;
     *delegate='\0';
     if (p->encode != (char *) NULL)
-      (void) strncpy(delegate,p->encode,MaxTextExtent-1);
+      (void) strlcpy(delegate,p->encode,MaxTextExtent);
     (void) strcat(delegate,"        ");
     delegate[8]='\0';
     commands=StringToList(p->commands);
@@ -835,7 +835,7 @@ static unsigned int ReadConfigureFile(const char *basename,
       GetToken(q,&q,token);
       if (*token == '\0')
         break;
-      (void) strncpy(keyword,token,MaxTextExtent-1);
+      (void) strlcpy(keyword,token,MaxTextExtent);
       if (LocaleNCompare(keyword,"<!--",4) == 0)
         {
           /*
@@ -852,7 +852,7 @@ static unsigned int ReadConfigureFile(const char *basename,
           */
           while ((*token != '>') && (*q != '\0'))
             {
-              (void) strncpy(keyword,token,MaxTextExtent-1);
+              (void) strlcpy(keyword,token,MaxTextExtent);
               GetToken(q,&q,token);
               if (*token != '=')
                 continue;
@@ -868,9 +868,8 @@ static unsigned int ReadConfigureFile(const char *basename,
 
                       GetPathComponent(path,HeadPath,filename);
                       if (*filename != '\0')
-                        (void) strcat(filename,DirectorySeparator);
-                      (void) strncat(filename,token,MaxTextExtent-
-                                     strlen(filename)-1);
+                        (void) strlcat(filename,DirectorySeparator,MaxTextExtent);
+                      (void) strlcat(filename,token,MaxTextExtent);
                       (void) ReadConfigureFile(filename,depth+1,exception);
                     }
                   if (delegate_list != (DelegateInfo *) NULL)

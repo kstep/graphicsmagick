@@ -281,9 +281,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image);
           }
-        (void) strncpy(label,(char *) summary_info.title.ptr,
-          summary_info.title.length);
-        label[summary_info.title.length]='\0';
+        (void) strlcpy(label,(char *) summary_info.title.ptr,
+          summary_info.title.length+1);
         (void) SetImageAttribute(image,"label",label);
         MagickFreeMemory(label);
       }
@@ -304,9 +303,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image);
           }
-        (void) strncpy(comments,(char *) summary_info.comments.ptr,
-          summary_info.comments.length);
-        comments[summary_info.comments.length]='\0';
+        (void) strlcpy(comments,(char *) summary_info.comments.ptr,
+          summary_info.comments.length+1);
         (void) SetImageAttribute(image,"comment",comments);
         MagickFreeMemory(comments);
       }
@@ -890,8 +888,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       summary_info.title.ptr=MagickAllocateMemory(unsigned char *,
         strlen(label->value)+1);
       if (summary_info.title.ptr != (unsigned char *) NULL)
-        (void) strncpy((char *) summary_info.title.ptr,label->value,
-          MaxTextExtent-1);
+        (void) strlcpy((char *) summary_info.title.ptr,label->value,
+          MaxTextExtent);
       else
         ThrowWriterException(CoderError,UnableToSetImageTitle,image);
     }

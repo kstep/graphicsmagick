@@ -161,7 +161,7 @@ static unsigned int GenerateIPTCAttribute(Image *image,const char *key)
     attribute=MagickAllocateMemory(char *,length+MaxTextExtent);
     if (attribute == (char *) NULL)
       continue;
-    (void) strncpy(attribute,(char *) profile+i+5,length);
+    (void) strlcpy(attribute,(char *) profile+i+5,length);
     attribute[length]='\0';
     (void) SetImageAttribute(image,key,(const char *) attribute);
     MagickFreeMemory(attribute);
@@ -1470,7 +1470,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
       if (LocaleNCompare("base",key,2) == 0)
         {
           GetPathComponent(image->magick_filename,BasePath,filename);
-          (void) strncpy(attribute,filename,MaxTextExtent-1);
+          (void) strlcpy(attribute,filename,MaxTextExtent);
           break;
         }
       break;
@@ -1485,7 +1485,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
       if (LocaleNCompare("directory",key,2) == 0)
         {
           GetPathComponent(image->magick_filename,HeadPath,filename);
-          (void) strncpy(attribute,filename,MaxTextExtent-1);
+          (void) strlcpy(attribute,filename,MaxTextExtent);
           break;
         }
       break;
@@ -1495,7 +1495,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
       if (LocaleNCompare("extension",key,2) == 0)
         {
           GetPathComponent(image->magick_filename,ExtensionPath,filename);
-          (void) strncpy(attribute,filename,MaxTextExtent-1);
+          (void) strlcpy(attribute,filename,MaxTextExtent);
           break;
         }
       break;
@@ -1523,7 +1523,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("input",key,2) == 0)
         {
-          (void) strncpy(attribute,image->filename,MaxTextExtent-1);
+          (void) strlcpy(attribute,image->filename,MaxTextExtent);
           break;
         }
       break;
@@ -1532,7 +1532,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("magick",key,2) == 0)
         {
-          (void) strncpy(attribute,image->magick,MaxTextExtent-1);
+          (void) strlcpy(attribute,image->magick,MaxTextExtent);
           break;
         }
       break;
@@ -1541,7 +1541,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("name",key,2) == 0)
         {
-          (void) strncpy(attribute,filename,MaxTextExtent-1);
+          (void) strlcpy(attribute,filename,MaxTextExtent);
           break;
         }
      break;
@@ -1575,7 +1575,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("output",key,2) == 0)
         {
-          (void) strncpy(attribute,image_info->filename,MaxTextExtent-1);
+          (void) strlcpy(attribute,image_info->filename,MaxTextExtent);
           break;
         }
      break;
@@ -1602,11 +1602,11 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("unique",key,2) == 0)
         {
-          (void) strncpy(filename,image_info->unique,MaxTextExtent-1);
+          (void) strlcpy(filename,image_info->unique,MaxTextExtent);
           if (*filename == '\0')
             if(!AcquireTemporaryFileName(filename))
               return((ImageAttribute *) NULL);
-          (void) strncpy(attribute,filename,MaxTextExtent-1);
+          (void) strlcpy(attribute,filename,MaxTextExtent);
           break;
         }
       break;
@@ -1643,11 +1643,11 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("zero",key,2) == 0)
         {
-          (void) strncpy(filename,image_info->zero,MaxTextExtent-1);
+          (void) strlcpy(filename,image_info->zero,MaxTextExtent);
           if (*filename == '\0')
             if(!AcquireTemporaryFileName(filename))
               return((ImageAttribute *) NULL);
-          (void) strncpy(attribute,filename,MaxTextExtent-1);
+          (void) strlcpy(attribute,filename,MaxTextExtent);
           break;
         }
       break;

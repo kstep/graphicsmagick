@@ -139,7 +139,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
     GetToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) strncpy(keyword,token,MaxTextExtent-1);
+    (void) strlcpy(keyword,token,MaxTextExtent);
     if (LocaleNCompare(keyword,"<!--",4) == 0)
       {
         char
@@ -165,7 +165,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
         */
         while ((*token != '>') && (*q != '\0'))
         {
-          (void) strncpy(keyword,token,MaxTextExtent-1);
+          (void) strlcpy(keyword,token,MaxTextExtent);
           GetToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -197,15 +197,15 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
         */
         while ((*token != '>') && (*q != '\0'))
         {
-          (void) strncpy(keyword,token,MaxTextExtent-1);
+          (void) strlcpy(keyword,token,MaxTextExtent);
           GetToken(q,&q,token);
           if (*token != '=')
             continue;
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"name") == 0)
             {
-              (void) strncpy(locale,token,MaxTextExtent-2);
-              (void) strcat(locale,"/");
+              (void) strlcpy(locale,token,MaxTextExtent);
+              (void) strlcat(locale,"/",MaxTextExtent);
             }
         }
         continue;
@@ -227,7 +227,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
         */
         while ((*token != '>') && (*q != '\0'))
         {
-          (void) strncpy(keyword,token,MaxTextExtent-1);
+          (void) strlcpy(keyword,token,MaxTextExtent);
           GetToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -958,14 +958,14 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
             if (LocaleCompare(severity,last2) != 0)
               {
                 severityindex++;
-                (void) strncpy(last2,severity,MaxTextExtent-1);
+                (void) strlcpy(last2,severity,MaxTextExtent);
               }
            if (LocaleCompare(category,last) != 0)
               {
                 FormatString(text, "    { \"%s%s%s\", %d },", fields[0],
                   strlen(fields[0]) ? "/" : "", fields[1], severityindex-1);
                 WriteBlobStringWithEOL(image,text);
-                (void) strncpy(last,category,MaxTextExtent-1);
+                (void) strlcpy(last,category,MaxTextExtent);
               }
           }
       }
@@ -1012,7 +1012,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
                   strlen(fields[0]) ? "/" : "", fields[1], fields[2], i,
                   severity);
                 WriteBlobStringWithEOL(image,text);
-                (void) strncpy(last,severity,MaxTextExtent-1);
+                (void) strlcpy(last,severity,MaxTextExtent);
               }
           }
       }

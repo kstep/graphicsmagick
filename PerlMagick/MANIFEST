@@ -31,7 +31,6 @@ Makefile.nt
 Makefile.PL
 Makefile.PL.in
 MANIFEST
-MANIFEST.old
 MANIFEST.SKIP
 README.txt
 t/blob.t

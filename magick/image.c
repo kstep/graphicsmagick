@@ -288,10 +288,10 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
     Transfer image info.
   */
   SetBlobClosable(allocate_image,(image_info->file == NULL));
-  (void) strncpy(allocate_image->filename,image_info->filename,MaxTextExtent-1);
-  (void) strncpy(allocate_image->magick_filename,image_info->filename,
-    MaxTextExtent-1);
-  (void) strncpy(allocate_image->magick,image_info->magick,MaxTextExtent-1);
+  (void) strlcpy(allocate_image->filename,image_info->filename,MaxTextExtent);
+  (void) strlcpy(allocate_image->magick_filename,image_info->filename,
+    MaxTextExtent);
+  (void) strlcpy(allocate_image->magick,image_info->magick,MaxTextExtent);
   if (image_info->size != (char *) NULL)
     {
       (void) GetGeometry(image_info->size,&allocate_image->tile_info.x,
@@ -447,9 +447,9 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
   image->next=AllocateImage(image_info);
   if (image->next == (Image *) NULL)
     return;
-  (void) strncpy(image->next->filename,image->filename,MaxTextExtent-1);
+  (void) strlcpy(image->next->filename,image->filename,MaxTextExtent);
   if (image_info != (ImageInfo *) NULL)
-    (void) strncpy(image->next->filename,image_info->filename,MaxTextExtent-1);
+    (void) strlcpy(image->next->filename,image_info->filename,MaxTextExtent);
   DestroyBlob(image->next);
   image->next->blob=ReferenceBlob(image->blob);
   image->next->scene=image->scene+1;
@@ -1167,10 +1167,10 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->ascii85=0; /* Don't copy  ascii85 huffman support structure */
   clone_image->magick_columns=image->magick_columns;
   clone_image->magick_rows=image->magick_rows;
-  (void) strncpy(clone_image->magick_filename,image->magick_filename,
-    MaxTextExtent-1);
-  (void) strncpy(clone_image->magick,image->magick,MaxTextExtent-1);
-  (void) strncpy(clone_image->filename,image->filename,MaxTextExtent-1);
+  (void) strlcpy(clone_image->magick_filename,image->magick_filename,
+    MaxTextExtent);
+  (void) strlcpy(clone_image->magick,image->magick,MaxTextExtent);
+  (void) strlcpy(clone_image->filename,image->filename,MaxTextExtent);
   clone_image->reference_count=1;
   clone_image->previous=(Image *) NULL;
   clone_image->list=(Image *) NULL;
@@ -1303,10 +1303,10 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->stream=image_info->stream;
   clone_info->blob=image_info->blob;
   clone_info->length=image_info->length;
-  (void) strncpy(clone_info->magick,image_info->magick,MaxTextExtent-1);
-  (void) strncpy(clone_info->unique,image_info->unique,MaxTextExtent-1);
-  (void) strncpy(clone_info->zero,image_info->zero,MaxTextExtent-1);
-  (void) strncpy(clone_info->filename,image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(clone_info->magick,image_info->magick,MaxTextExtent);
+  (void) strlcpy(clone_info->unique,image_info->unique,MaxTextExtent);
+  (void) strlcpy(clone_info->zero,image_info->zero,MaxTextExtent);
+  (void) strlcpy(clone_info->filename,image_info->filename,MaxTextExtent);
   clone_info->signature=image_info->signature;
   return(clone_info);
 }
@@ -2768,9 +2768,9 @@ MagickExport int GetImageGeometry(const Image *image,const char *geometry,
   region_info->height=image->rows;
   region_info->x=0;
   region_info->y=0;
-  (void) strncpy(region_geometry,geometry,MaxTextExtent-2);
+  (void) strlcpy(region_geometry,geometry,MaxTextExtent);
   if (!size_to_fit)
-    (void) strcat(region_geometry,"!");
+    (void) strlcat(region_geometry,"!",MaxTextExtent);
   flags=GetMagickGeometry(region_geometry,&region_info->x,&region_info->y,
     &region_info->width,&region_info->height);
   switch (image->gravity)
@@ -3713,8 +3713,8 @@ MagickExport unsigned int IsTaintImage(const Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  (void) strncpy(magick,image->magick,MaxTextExtent-1);
-  (void) strncpy(filename,image->filename,MaxTextExtent-1);
+  (void) strlcpy(magick,image->magick,MaxTextExtent);
+  (void) strlcpy(filename,image->filename,MaxTextExtent);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     if (p->taint)
@@ -5830,7 +5830,7 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
       /*
         User specified image format.
       */
-      (void) strncpy(magic,p+1,MaxTextExtent-1);
+      (void) strlcpy(magic,p+1,MaxTextExtent);
       for (q=magic; *q != '\0'; q++)
         if (*q == '.')
           {
@@ -5844,7 +5844,7 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
       if (((LocaleNCompare(image_info->magick,"SGI",3) != 0) ||
           (LocaleCompare(magic,"RGB") != 0)) &&
           (LocaleCompare(magic,"TMP") != 0))
-        (void) strncpy(image_info->magick,magic,MaxTextExtent-1);
+        (void) strlcpy(image_info->magick,magic,MaxTextExtent);
     }
   /*
     Look for explicit 'format:image' in filename.
@@ -5885,10 +5885,10 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
           */
           char base_filename[MaxTextExtent];
           p++;
-          (void) strncpy(base_filename,p,MaxTextExtent-1);
+          (void) strlcpy(base_filename,p,MaxTextExtent);
           (void) strcpy(image_info->filename,base_filename);
-          (void) strncpy(magic,format,MaxTextExtent-1);
-          (void) strncpy(image_info->magick,magic,MaxTextExtent-1);
+          (void) strlcpy(magic,format,MaxTextExtent);
+          (void) strlcpy(image_info->magick,magic,MaxTextExtent);
           if (LocaleCompare(magic,"TMP") != 0)
             image_info->affirm=True;
           else
@@ -5921,7 +5921,7 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return(False);
-  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFail)
     {
@@ -5963,7 +5963,7 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
       (magic_info->name != (char *) NULL) &&
       (exception->severity == UndefinedException))
     {
-      (void) strncpy(image_info->magick,magic_info->name,MaxTextExtent-1);
+      (void) strlcpy(image_info->magick,magic_info->name,MaxTextExtent);
       return(MagickPass);
     }
   return(MagickFail);

@@ -134,7 +134,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   list[0]=(char *) AllocateString((char *) NULL);
-  (void) strncpy(list[0],image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(list[0],image_info->filename,MaxTextExtent);
   number_files=1;
   filelist=list;
   status=ExpandFilenames(&number_files,&filelist);
@@ -158,7 +158,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"name: %.1024s",
       filelist[i]);
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    (void) strncpy(clone_info->filename,filelist[i],MaxTextExtent-1);
+    (void) strlcpy(clone_info->filename,filelist[i],MaxTextExtent);
     *clone_info->magick='\0';
     next_image=ReadImage(clone_info,exception);
     MagickFreeMemory(filelist[i]);

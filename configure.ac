@@ -941,8 +941,8 @@ AC_SUBST(UINT64_T)
 GM_FUNC_MMAP_FILEIO
 AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp \
   _pclose pclose poll _popen popen pread pwrite putc_unlocked raise \
-  rand_r select tempnam times sigemptyset sigaction strerror strlcpy \
-  sysconf vsprintf vsnprintf])
+  rand_r select tempnam times sigemptyset sigaction strerror strlcat \
+  strlcpy sysconf vsprintf vsnprintf])
 
 ########
 #
@@ -2316,7 +2316,8 @@ else
     # Check ${prefix}/share/ghostscript/fonts first
     # Red Hat Linux puts Ghostscript fonts in /usr/share/fonts/default/Type1
     # Recent Cygwin puts Ghostscript fonts in /usr/share/ghostscript/fonts
-    for font_dir in "${prefix}/share/ghostscript/fonts/" '/usr/share/fonts/default/Type1/' '/usr/share/ghostscript/fonts/'
+    # Recent Gentoo Linux puts Ghostscript fonts in /usr/share/fonts/ghostscript
+    for font_dir in "${prefix}/share/ghostscript/fonts/" '/usr/share/fonts/default/Type1/' '/usr/share/ghostscript/fonts/' '/usr/share/fonts/ghostscript/'
     do
       if test -f "${font_dir}a010013l.pfb"
       then

@@ -111,7 +111,7 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   clone_info->border_color=montage_info->border_color;
   clone_info->matte_color=montage_info->matte_color;
   clone_info->gravity=montage_info->gravity;
-  (void) strncpy(clone_info->filename,montage_info->filename,MaxTextExtent-1);
+  (void) strlcpy(clone_info->filename,montage_info->filename,MaxTextExtent);
   return(clone_info);
 }
 
@@ -190,7 +190,7 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(montage_info != (MontageInfo *) NULL);
   (void) memset(montage_info,0,sizeof(MontageInfo));
-  (void) strncpy(montage_info->filename,image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(montage_info->filename,image_info->filename,MaxTextExtent);
   montage_info->geometry=AllocateString(DefaultTileGeometry);
   montage_info->gravity=CenterGravity;
   montage_info->tile=AllocateString("6x4");
@@ -478,8 +478,8 @@ MagickExport Image *MontageImages(const Image *images,
   texture=(Image *) NULL;
   if (montage_info->texture != (char *) NULL)
     {
-      (void) strncpy(image_info->filename,montage_info->texture,
-        MaxTextExtent-1);
+      (void) strlcpy(image_info->filename,montage_info->texture,
+        MaxTextExtent);
       texture=ReadImage(image_info,exception);
     }
   /*
@@ -542,7 +542,7 @@ MagickExport Image *MontageImages(const Image *images,
     /*
       Initialize montage image.
     */
-    (void) strncpy(montage->filename,montage_info->filename,MaxTextExtent-1);
+    (void) strlcpy(montage->filename,montage_info->filename,MaxTextExtent);
     montage->columns=bounds.width;
     montage->rows=bounds.height;
     SetImage(montage,OpaqueOpacity);
@@ -568,8 +568,8 @@ MagickExport Image *MontageImages(const Image *images,
     *montage->directory='\0';
     for (tile=0; tile < tiles_per_page; tile++)
     {
-      (void) strncat(montage->directory,image_list[tile]->filename,
-        MaxTextExtent-strlen(montage->directory)-1);
+      (void) strlcat(montage->directory,image_list[tile]->filename,
+        MaxTextExtent);
       (void) strcat(montage->directory,"\n");
     }
     handler=SetMonitorHandler((MonitorHandler) NULL);

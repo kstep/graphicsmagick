@@ -173,7 +173,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       {
         if (number_files > 5)
           handler=SetMonitorHandler((MonitorHandler) NULL);
-        (void) strncpy(clone_info->filename,filelist[i],MaxTextExtent-1);
+        (void) strlcpy(clone_info->filename,filelist[i],MaxTextExtent);
         *clone_info->magick='\0';
         next=ReadImage(clone_info,&exception);
         if (exception.severity != UndefinedException)
@@ -1406,7 +1406,7 @@ MagickExport Image *XAnimateImages(Display *display,
       GetPathComponent(display_image->filename,TailPath,filename);
       FormatString(windows->image.name,"GraphicsMagick: %.1024s[%lu of %lu]",
         filename,display_image->scene,number_scenes);
-      (void) strncpy(windows->image.icon_name,filename,MaxTextExtent-1);
+      (void) strlcpy(windows->image.icon_name,filename,MaxTextExtent);
     }
   if (resource_info->immutable)
     windows->image.immutable=True;
@@ -1876,7 +1876,7 @@ MagickExport Image *XAnimateImages(Display *display,
         id=XCommandWidget(display,windows,CommandMenu,&event);
         if (id < 0)
           continue;
-        (void) strncpy(command,CommandMenu[id],MaxTextExtent-1);
+        (void) strlcpy(command,CommandMenu[id],MaxTextExtent);
         command_type=CommandMenus[id];
         if (id < MagickMenus)
           {
@@ -1890,7 +1890,7 @@ MagickExport Image *XAnimateImages(Display *display,
               command);
             if (entry < 0)
               continue;
-            (void) strncpy(command,Menus[id][entry],MaxTextExtent-1);
+            (void) strlcpy(command,Menus[id][entry],MaxTextExtent);
             command_type=Commands[id][entry];
           }
         if (command_type != NullCommand)
@@ -2031,8 +2031,8 @@ MagickExport Image *XAnimateImages(Display *display,
                 /*
                   Offix DND.
                 */
-                (void) strncpy(resource_info->image_info->filename,
-                  (char *) data,MaxTextExtent-1);
+                (void) strlcpy(resource_info->image_info->filename,
+                  (char *) data,MaxTextExtent);
               }
             else
               {
@@ -2044,8 +2044,8 @@ MagickExport Image *XAnimateImages(Display *display,
                     (void) XFree((void *) data);
                     break;
                   }
-                (void) strncpy(resource_info->image_info->filename,
-                  ((char *) data)+5,MaxTextExtent-1);
+                (void) strlcpy(resource_info->image_info->filename,
+                  ((char *) data)+5,MaxTextExtent);
               }
             nexus=ReadImage(resource_info->image_info,&image->exception);
             if (image->exception.severity != UndefinedException)
@@ -2396,8 +2396,8 @@ MagickExport Image *XAnimateImages(Display *display,
           &type,&format,&length,&after,&data);
         if ((status != Success) || (length == 0))
           break;
-        (void) strncpy(resource_info->image_info->filename,(char *) data,
-          MaxTextExtent-1);
+        (void) strlcpy(resource_info->image_info->filename,(char *) data,
+          MaxTextExtent);
         nexus=ReadImage(resource_info->image_info,&image->exception);
         if (image->exception.severity != UndefinedException)
           MagickError2(image->exception.severity,image->exception.reason,

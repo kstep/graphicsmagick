@@ -321,17 +321,17 @@ MagickExport TypeInfo* NTGetTypeList( void )
   *font_root='\0';
   if ( getenv("SystemRoot") != (char *) NULL)
     {
-      strncpy(buffer,getenv("SystemRoot"),sizeof(buffer)-1);
-      strcat(buffer,"\\fonts\\arial.ttf");
+      strlcpy(buffer,getenv("SystemRoot"),sizeof(buffer));
+      strlcat(buffer,"\\fonts\\arial.ttf",sizeof(buffer));
       if (IsAccessible(buffer))
         {
-          strncpy(font_root,getenv("SystemRoot"),sizeof(buffer)-1);
-          strcat(font_root,"\\fonts\\");
+          strlcpy(font_root,getenv("SystemRoot"),sizeof(buffer));
+          strlcat(font_root,"\\fonts\\",sizeof(buffer));
         }
       else
         {
-          strncpy(font_root,getenv("SystemRoot"),sizeof(buffer)-1);
-          strcat(font_root,"\\");
+          strlcpy(font_root,getenv("SystemRoot"),sizeof(buffer));
+          strlcat(font_root,"\\",sizeof(buffer));
         }
     }
 
@@ -378,7 +378,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
         type_info->signature=MagickSignature;
 
         /* Name */
-        strncpy(buffer,value_name,MaxTextExtent-1);
+        strlcpy(buffer,value_name,MaxTextExtent);
         for(pos = buffer; *pos != 0 ; pos++)
           if (*pos == ' ')
             *pos = '-';
@@ -393,11 +393,11 @@ MagickExport TypeInfo* NTGetTypeList( void )
         /* Glyphs */
         if (strchr(value_data,'\\') == (char *) NULL)
           {
-            strncpy(buffer,font_root,MaxTextExtent-1);
-            strcat(buffer,value_data);
+            strlcpy(buffer,font_root,MaxTextExtent);
+            strlcat(buffer,value_data,MaxTextExtent);
           }
         else
-          strncpy(buffer,value_data,MaxTextExtent-1);
+          strlcpy(buffer,value_data,MaxTextExtent);
 
         LocaleLower(buffer);
         type_info->glyphs=AcquireString(buffer);
@@ -527,7 +527,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
               }
           }
 
-        strncpy(buffer,value_name,family_extent-value_name);
+        strncpy(buffer,value_name,family_extent-value_name+1);
         buffer[family_extent-value_name]='\0';
         type_info->family=AcquireString(buffer);
 

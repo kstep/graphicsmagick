@@ -677,7 +677,7 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
     GetToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) strncpy(keyword,token,MaxTextExtent-1);
+    (void) strlcpy(keyword,token,MaxTextExtent);
     if (LocaleNCompare(keyword,"<!--",4) == 0)
       {
         /*
@@ -694,7 +694,7 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
         */
         while ( (*token != '/' && *(token+1)  != '>') && (*q != '\0'))
         {
-          (void) strncpy(keyword,token,MaxTextExtent-1);
+          (void) strlcpy(keyword,token,MaxTextExtent);
           GetToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -710,10 +710,8 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
 
                   GetPathComponent(path,HeadPath,filename);
                   if (filename[0] != '\0')
-                    (void) strcat(filename,DirectorySeparator);
-                  (void) strncat(filename,token,MaxTextExtent-
-                    strlen(filename)-1);
-                  filename[sizeof(filename)-1]='\0';
+                    (void) strlcat(filename,DirectorySeparator,sizeof(filename));
+                  (void) strlcat(filename,token,sizeof(filename));
                   (void) ReadTypeConfigureFile(filename,depth+1,exception);
                 }
               if (type_list != (TypeInfo *) NULL)

@@ -329,7 +329,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->colorspace=YCbCrColorspace;
     (void) TransformColorspace(image,RGBColorspace);
     if (interlace == PartitionInterlace)
-      (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+      (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
     if (EOFBlob(image))
       {
         ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
@@ -664,7 +664,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       }
     DestroyImage(chroma_image);
     if (interlace == PartitionInterlace)
-      (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+      (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

@@ -442,7 +442,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->authenticate != (char *) NULL)
     FormatString(options+strlen(options)," -sPDFPassword=%.1024s",
       image_info->authenticate);
-  (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(filename,image_info->filename,MaxTextExtent);
   clone_info=CloneImageInfo(image_info);
   if (!AcquireTemporaryFileName(clone_info->filename))
     {
@@ -473,7 +473,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   do
   {
     (void) strcpy(image->magick,"PDF");
-    (void) strncpy(image->filename,filename,MaxTextExtent-1);
+    (void) strlcpy(image->filename,filename,MaxTextExtent);
     if (!image_info->ping && !portrait)
       {
         Image
@@ -851,7 +851,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     geometry.y=(long) text_size;
     FormatString(page_geometry,"%lux%lu",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
-      (void) strncpy(page_geometry,image_info->page,MaxTextExtent-1);
+      (void) strlcpy(page_geometry,image_info->page,MaxTextExtent);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
         (void) FormatString(page_geometry,"%lux%lu%+ld%+ld",image->page.width,

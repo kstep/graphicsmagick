@@ -67,7 +67,7 @@ extern MagickExport MagickPassFail
   ImportImagePixelArea(Image *image,const QuantumType quantum_type,
     const unsigned int quantum_size,const unsigned char *source),
   WriteImage(const ImageInfo *image_info,Image *image),
-  WriteImages(ImageInfo *image_info,Image *image,const char *filename,
+  WriteImages(const ImageInfo *image_info,Image *image,const char *filename,
     ExceptionInfo *exception);
 
 extern MagickExport void

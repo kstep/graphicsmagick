@@ -6,7 +6,6 @@ Immediate Bugs
 ==============
 
  o SegmentImage is producing black images in some cases.
- o Fix scanf's in the form "%lfx%lf" which break under Linux.
 
 For Next Release
 ===============
@@ -18,10 +17,6 @@ For Next Release
 
 For Future Release
 ==================
-
-Utilities
-
-  * Write documentation for the iptcutil and cgimagick utilities.
 
 Library
 

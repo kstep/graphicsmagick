@@ -577,7 +577,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           break;
         case 0xFD:
 	  RunCount=ReadBlobByte(image);   /* EXT */
-	  for(i=0; i<= (int) RunCount;i++)
+	  for(i=0; i<= RunCount;i++)
             for(bbuf=0; bbuf < SampleSize; bbuf++)
               InsertRByte(SampleBuffer[bbuf]);          
           break;
@@ -614,7 +614,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             {  
               for(i=0; i < SampleSize; i++)
                 SampleBuffer[i]=ReadBlobByte(image);
-              for(i=0;i<=(int)RunCount;i++)
+              for(i=0;i<=RunCount;i++)
                 for(bbuf=0;bbuf<SampleSize;bbuf++)
                   InsertRByte(SampleBuffer[bbuf]);
             }
@@ -682,7 +682,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   if(exception->severity != UndefinedException) goto FINISH_UNL;     
   if(magic_info->name == (char *) NULL) goto FINISH_UNL;
     
-  (void) strncpy(clone_info->magick,magic_info->name,MaxTextExtent-1);
+  (void) strlcpy(clone_info->magick,magic_info->name,MaxTextExtent);
   
     /* Read nested image */
   /*FormatString(clone_info->filename,"%s:%.1024s",magic_info->name,postscript_file);*/
@@ -696,9 +696,9 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     Replace current image with new image while copying base image
     attributes.
   */
-  (void) strncpy(image2->filename,image->filename,MaxTextExtent-1);
-  (void) strncpy(image2->magick_filename,image->magick_filename,MaxTextExtent-1);
-  (void) strncpy(image2->magick,image->magick,MaxTextExtent-1);
+  (void) strlcpy(image2->filename,image->filename,MaxTextExtent);
+  (void) strlcpy(image2->magick_filename,image->magick_filename,MaxTextExtent);
+  (void) strlcpy(image2->magick,image->magick,MaxTextExtent);
   image2->depth=image->depth;
   DestroyBlob(image2);
   image2->blob=ReferenceBlob(image->blob);

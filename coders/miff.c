@@ -966,7 +966,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"id") == 0)
                   {
-                    (void) strncpy(id,values,MaxTextExtent-1);
+                    (void) strlcpy(id,values,MaxTextExtent);
                     break;
                   }
                 if (LocaleCompare(keyword,"iterations") == 0)
@@ -1604,13 +1604,13 @@ ModuleExport void RegisterMIFFImage(void)
 
   *version='\0';
 #if defined(MagickLibVersionText)
-  (void) strncpy(version,MagickLibVersionText,MaxTextExtent-1);
+  (void) strlcpy(version,MagickLibVersionText,MaxTextExtent);
 #if defined(ZLIB_VERSION)
-  (void) strncat(version," with Zlib ",MaxTextExtent-strlen(version)-1);
-  (void) strncat(version,ZLIB_VERSION,MaxTextExtent-strlen(version)-1);
+  (void) strlcat(version," with Zlib ",MaxTextExtent);
+  (void) strlcat(version,ZLIB_VERSION,MaxTextExtent);
 #endif
 #if defined(HasBZLIB)
-  (void) strncat(version," and BZlib",MaxTextExtent-strlen(version)-1);
+  (void) strlcat(version," and BZlib",MaxTextExtent);
 #endif
 #endif
   entry=SetMagickInfo("MIFF");

@@ -934,11 +934,8 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     *viff_info.comment='\0';
     attribute=GetImageAttribute(image,"comment");
     if (attribute != (const ImageAttribute *) NULL)
-      {
-        (void) strncpy(viff_info.comment,attribute->value,
-          Min(strlen(attribute->value),511));
-        viff_info.comment[Min(strlen(attribute->value),511)]='\0';
-      }
+      (void) strlcpy(viff_info.comment,attribute->value,
+                     sizeof(viff_info.comment));
     viff_info.rows=image->columns;
     viff_info.columns=image->rows;
     viff_info.subrows=0;

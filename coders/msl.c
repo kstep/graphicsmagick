@@ -1680,7 +1680,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         keyword=(const char *) attributes[i++];
         (void) CloneString(&value,(char *) attributes[i]);
-        (void) strncpy(key,value,MaxTextExtent-1);
+        (void) strlcpy(key,value,MaxTextExtent);
         switch (*keyword)
         {
           case 'B':
@@ -1746,7 +1746,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
             keyword=(const char *) attributes[i++];
             (void) CloneString(&value,(char *) attributes[i]);
-            (void) strncpy(key,value,MaxTextExtent-1);
+            (void) strlcpy(key,value,MaxTextExtent);
             switch (*keyword)
             {
               case 'H':
@@ -3592,7 +3592,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               {
                 if (LocaleCompare(keyword,"filename") == 0)
                   {
-                    (void) strncpy(msl_info->image[n]->filename,value,
+                    (void) strlcpy(msl_info->image[n]->filename,value,
                       MaxTextExtent);
                     (void) WriteImage(msl_info->image_info[n],
                       msl_info->image[n]);

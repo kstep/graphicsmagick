@@ -665,7 +665,7 @@ MagickExport void InitializeMagickClientPathAndName(const char *ARGUNUSED(path))
             - we call getcwd and sling whatever seems to be a filename
             passed by the caller onto the end and see if that works
           */
-          (void) strncpy(execution_path,path,MaxTextExtent-1);
+          (void) strlcpy(execution_path,path,MaxTextExtent);
           if (GetExecutionPathUsingName(execution_path))
             {
               (void) DefineClientPathAndName(execution_path);
@@ -690,7 +690,7 @@ MagickExport void InitializeMagickClientPathAndName(const char *ARGUNUSED(path))
         This is the easy one. The caller gave us the correct and
         working path to the application, so we just use it
       */
-      (void) strncpy(execution_path,path,MaxTextExtent-1);
+      (void) strlcpy(execution_path,path,MaxTextExtent);
       (void) DefineClientPathAndName(execution_path);
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"Valid path \"%s\"",spath);
     }

@@ -164,7 +164,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
-  (void) strncpy(cache_filename,image->filename,MaxTextExtent-1);
+  (void) strlcpy(cache_filename,image->filename,MaxTextExtent);
   AppendImageFormat("cache",cache_filename);
   c=ReadBlobByte(image);
   if (c == EOF)
@@ -422,7 +422,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"id") == 0)
                   {
-                    (void) strncpy(id,values,MaxTextExtent-1);
+                    (void) strlcpy(id,values,MaxTextExtent);
                     break;
                   }
                 if (LocaleCompare(keyword,"iterations") == 0)
@@ -948,7 +948,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-  (void) strncpy(cache_filename,image->filename,MaxTextExtent-1);
+  (void) strlcpy(cache_filename,image->filename,MaxTextExtent);
   AppendImageFormat("cache",cache_filename);
   scene=0;
   offset=0;

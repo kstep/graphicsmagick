@@ -319,7 +319,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
-      (void) strncpy(buffer,symbol,MaxTextExtent-1);
+      (void) strlcpy(buffer,symbol,MaxTextExtent);
       (void) WriteBlobString(image,buffer);
       p++;
     }

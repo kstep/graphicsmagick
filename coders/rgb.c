@@ -370,7 +370,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 scanline);
           }
         if (image_info->interlace == PartitionInterlace)
-          (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+          (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
         break;
       }
     }
@@ -708,7 +708,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             }
           }
         if (image_info->interlace == PartitionInterlace)
-          (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+          (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
         if (!MagickMonitor(SaveImageText,400,400,&image->exception))
           break;
         break;

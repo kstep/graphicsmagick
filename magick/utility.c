@@ -221,7 +221,7 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
         message[MaxTextExtent];
 
       FormatString(message,"%.1024s:%.1024s",format,filename);
-      (void) strncpy(filename,message,MaxTextExtent-1);
+      (void) strlcpy(filename,message,MaxTextExtent);
       return;
     }
   GetPathComponent(filename,RootPath,root);
@@ -761,7 +761,7 @@ MagickExport void ExpandFilename(char *filename)
     return;
   if (*filename != '~')
     return;
-  (void) strncpy(expanded_filename,filename,MaxTextExtent-1);
+  (void) strlcpy(expanded_filename,filename,MaxTextExtent);
   if (*(filename+1) == '/')
     {
       /*
@@ -770,9 +770,8 @@ MagickExport void ExpandFilename(char *filename)
       p=(char *) getenv("HOME");
       if (p == (char *) NULL)
         p=(char *) ".";
-      (void) strncpy(expanded_filename,p,MaxTextExtent-1);
-      (void) strncat(expanded_filename,filename+1,MaxTextExtent-
-        strlen(expanded_filename)-1);
+      (void) strlcpy(expanded_filename,p,MaxTextExtent);
+      (void) strlcat(expanded_filename,filename+1,MaxTextExtent);
     }
   else
     {
@@ -786,7 +785,7 @@ MagickExport void ExpandFilename(char *filename)
       /*
         Substitute ~ with home directory from password file.
       */
-      (void) strncpy(username,filename+1,MaxTextExtent-2);
+      (void) strlcpy(username,filename+1,MaxTextExtent);
       p=strchr(username,'/');
       if (p != (char *) NULL)
         *p='\0';
@@ -797,12 +796,11 @@ MagickExport void ExpandFilename(char *filename)
       if (p != (char *) NULL)
         {
           (void) strcat(expanded_filename,"/");
-          (void) strncat(expanded_filename,p+1,MaxTextExtent-
-            strlen(expanded_filename)-1);
+          (void) strlcat(expanded_filename,p+1,MaxTextExtent);
         }
 #endif
     }
-  (void) strncpy(filename,expanded_filename,MaxTextExtent-1);
+  (void) strlcpy(filename,expanded_filename,MaxTextExtent);
 }
 
 /*
@@ -1146,7 +1144,7 @@ MagickExport unsigned int GetExecutionPath(char *path)
             (void) getcwd(path,MaxTextExtent-1);
             (void) strcat(path,"/");
           }
-        (void) strncat(path,execution_path,MaxTextExtent-strlen(path)-1);
+        (void) strlcat(path,execution_path,MaxTextExtent);
         if (IsAccessible(path))
           return(True);
       }
@@ -1205,20 +1203,18 @@ MagickExport unsigned int GetExecutionPathUsingName(char *path)
               char
                 *p;
 
-              (void) strncpy(execution_path,path,sizeof(execution_path)-1);
+              (void) strlcpy(execution_path,path,sizeof(execution_path));
               p=strrchr(execution_path,DirectorySeparator[0]);
               if (p)
                 *p='\0';
               if (chdir(execution_path) == 0)
-                {
-                  (void) getcwd(execution_path,sizeof(execution_path)-2);
-                }
+                (void) getcwd(execution_path,sizeof(execution_path)-2);
             }
           (void) chdir(current_directory);
           if (execution_path[0] != '\0')
             {
-              (void) strcat(execution_path,DirectorySeparator);
-              (void) strcpy(path,execution_path);
+              (void) strlcat(execution_path,DirectorySeparator,sizeof(execution_path));
+              (void) strlcpy(path,execution_path,MaxTextExtent);
               (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
                                     "Path \"%.1024s\" is usable.",path);
               errno=0;
@@ -1926,9 +1922,9 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
         /*
           Replace mneumonic with the equivalent size in dots-per-inch.
         */
-        (void) strncpy(page,PageSizes[i][1],MaxTextExtent-1);
-        (void) strncat(page,page_geometry+strlen(PageSizes[i][0]),
-          MaxTextExtent-strlen(page)-2);
+        (void) strlcpy(page,PageSizes[i][1],MaxTextExtent);
+        (void) strlcat(page,page_geometry+strlen(PageSizes[i][0]),
+          MaxTextExtent);
         flags=GetGeometry(page,&geometry.x,&geometry.y,&geometry.width,
           &geometry.height);
         if (!(flags & GreaterValue))
@@ -1992,7 +1988,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   */
   assert(path != (const char *) NULL);
   assert(component != (const char *) NULL);
-  (void) strncpy(component,path,MaxTextExtent-1);
+  (void) strlcpy(component,path,MaxTextExtent);
   if (*path == '\0')
     return;
   subimage[0]=magick[0]='\0';
@@ -2089,9 +2085,8 @@ MagickExport void GetPathComponent(const char *path,PathType type,
           char
             scratch[MaxTextExtent];
 
-          (void) strncpy(scratch,p+1,MaxTextExtent-1);
-          scratch[MaxTextExtent-1]='\0';
-          (void) strcpy(component,scratch);
+          (void) strlcpy(scratch,p+1,MaxTextExtent);
+          (void) strlcpy(component,scratch,MaxTextExtent);
         }
       break;
     }
@@ -2103,9 +2098,8 @@ MagickExport void GetPathComponent(const char *path,PathType type,
           char
             scratch[MaxTextExtent];
 
-          (void) strncpy(scratch,p+1,MaxTextExtent-1);
-          scratch[MaxTextExtent-1]='\0';
-          (void) strcpy(component,scratch);
+          (void) strlcpy(scratch,p+1,MaxTextExtent);
+          (void) strlcpy(component,scratch,MaxTextExtent);
         }
       for (p=component+strlen(component); p > component; p--)
         if (*p == '.')
@@ -2123,9 +2117,8 @@ MagickExport void GetPathComponent(const char *path,PathType type,
           char
             scratch[MaxTextExtent];
 
-          (void) strncpy(scratch,p+1,MaxTextExtent-1);
-          scratch[MaxTextExtent-1]='\0';
-          (void) strcpy(component,scratch);
+          (void) strlcpy(scratch,p+1,MaxTextExtent);
+          (void) strlcpy(component,scratch,MaxTextExtent);
         }
       for (p=component+strlen(component); p > component; p--)
         if (*p == '.')
@@ -2136,9 +2129,8 @@ MagickExport void GetPathComponent(const char *path,PathType type,
           char
             scratch[MaxTextExtent];
 
-          (void) strncpy(scratch,p+1,MaxTextExtent-1);
-          scratch[MaxTextExtent-1]='\0';
-          (void) strcpy(component,scratch);
+          (void) strlcpy(scratch,p+1,MaxTextExtent);
+          (void) strlcpy(component,scratch,MaxTextExtent);
         }
       break;
     }
@@ -2257,7 +2249,7 @@ MagickExport void GetToken(const char *start,char **end,char *token)
   if (LocaleNCompare(token,"url(#",5) == 0)
     {
       i=(long) strlen(token);
-      (void) strncpy(token,token+5,MaxTextExtent-1);
+      (void) strlcpy(token,token+5,MaxTextExtent);
       token[i-6]='\0';
     }
   if (end != (char **) NULL)
@@ -2316,7 +2308,7 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
         Determine if pattern is a subimage, i.e. img0001.pcd[2].
       */
       image_info=CloneImageInfo((ImageInfo *) NULL);
-      (void) strncpy(image_info->filename,pattern,MaxTextExtent-1);
+      (void) strlcpy(image_info->filename,pattern,MaxTextExtent);
       GetExceptionInfo(&exception);
       (void) SetImageInfo(image_info,True,&exception);
       DestroyExceptionInfo(&exception);
@@ -2921,7 +2913,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
           strlen(entry->d_name)+MaxTextExtent);
         if (filelist[*number_entries] == (char *) NULL)
           break;
-        (void) strncpy(filelist[*number_entries],entry->d_name,MaxTextExtent-1);
+        (void) strlcpy(filelist[*number_entries],entry->d_name,MaxTextExtent);
         if (IsDirectory(entry->d_name) > 0)
           (void) strcat(filelist[*number_entries],DirectorySeparator);
         (*number_entries)++;
@@ -3125,6 +3117,148 @@ MagickExport void LocaleUpper(char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  M a g i c k S t r l C a t                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickStrlCat appends the NULL-terminated string src to the end
+%  of dst.  It will append at most size - strlen(dst) - 1 bytes, NULL-
+%  terminating the result. The total length of the string which would have
+%  been created given sufficient buffer size (may be longer than size) is
+%  returned.  This function substitutes for strlcat() which is available
+%  under FreeBSD and Solaris 9.
+%
+%  Buffer overflow can be checked as  follows:
+%
+%    if (MagickStrlCat(dst, src, dstsize) >= dstsize)
+%      return -1;
+%
+%  The format of the MagickStrlCat method is:
+%
+%      size_t MagickStrlCat(char *dst, const char *src, size_t size)
+%
+%  A description of each parameter follows.
+%
+%   o  dst:  Destination string.
+%
+%   o  src:  Source string.
+%
+%   o  size: Maximum string length, including the terminating null.
+%
+*/
+MagickExport size_t MagickStrlCat(char *dst, const char *src, const size_t size)
+{
+  size_t
+    length;
+
+  char
+    *p;
+
+  const char
+    *q;
+
+  assert(dst != NULL);
+  assert(src != (const char *) NULL);
+  assert(size >= 1);
+
+  length=strlen(dst);
+
+  /*
+    Copy remaining characters from src while constraining length to
+    size - 1.
+  */
+  for ( p = dst + length, q = src;
+        (*q != 0) && (length < size - 1) ;
+        length++, p++, q++ )
+    *p = *q;
+
+  dst[length]='\0';
+
+  /*
+    Add remaining length of src to length.
+  */
+  while (*q++)
+    length++;
+
+  return length;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M a g i c k S t r l C p y                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickStrlCpy copies up to size - 1 characters from the NULL-
+%  terminated string src to dst, NULL-terminating the result. The total
+%  length of the string which would have been created given sufficient
+%  buffer size (may be longer than size) is returned. This function
+%  substitutes for strlcpy() which is available under FreeBSD and Solaris 9.
+%
+%  Buffer overflow can be checked as  follows:
+%
+%    if (MagickStrlCpy(dst, src, dstsize) >= dstsize)
+%      return -1;
+%
+%  The format of the MagickStrlCpy method is:
+%
+%      size_t MagickStrlCpy(char *dst, const char *src, size_t size)
+%
+%  A description of each parameter follows.
+%
+%   o  dst:  Destination string.
+%
+%   o  src:  Source string.
+%
+%   o  size: Maximum string length, including the terminating null.
+%
+*/
+MagickExport size_t MagickStrlCpy(char *dst, const char *src, const size_t size)
+{
+  size_t
+    length=0;
+
+  char
+    *p;
+
+  const char
+    *q;
+
+  assert(dst != NULL);
+  assert(src != (const char *) NULL);
+  assert(size >= 1);
+
+  /*
+    Copy src to dst within bounds of size-1.
+  */
+  for ( p=dst, q=src, length=0 ;
+        (*q != 0) && (length < size-1) ;
+        length++, p++, q++ )
+    *p = *q;
+
+  dst[length]='\0';
+
+  /*
+    Add remaining length of src to length.
+  */
+  while (*q++)
+    length++;
+
+  return length;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  M u l t i l i n e C e n s u s                                              %
 %                                                                             %
 %                                                                             %
@@ -3200,8 +3334,7 @@ MagickExport const char *SetClientFilename(const char *name)
 
   if ((name != (char *) NULL) && (*name != '\0'))
     {
-      (void) strncpy(client_filename,name,sizeof(client_filename)-1);
-      client_filename[sizeof(client_filename)-1]='\0';
+      (void) strlcpy(client_filename,name,sizeof(client_filename));
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
         "Client Filename was set to: %s",client_filename);
     }
@@ -3246,8 +3379,7 @@ MagickExport char *SetClientName(const char *name)
 
   if ((name != (char *) NULL) && (*name != '\0'))
     {
-      (void) strncpy(client_name,name,sizeof(client_name)-1);
-      client_name[sizeof(client_name)-1]='\0';
+      (void) strlcpy(client_name,name,sizeof(client_name));
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
         "Client Name was set to: %s",client_name);
     }
@@ -3293,8 +3425,7 @@ MagickExport const char *SetClientPath(const char *path)
 
   if ((path != (char *) NULL) && (*path != '\0'))
     {
-      (void) strncpy(client_path,path,sizeof(client_path)-1);
-      client_path[sizeof(client_path)-1]='\0';
+      (void) strlcpy(client_path,path,sizeof(client_path));
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
         "Client Path was set to: %s",path);
     }
@@ -3443,8 +3574,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
         MagickFreeMemory(argv);
         return((char **) NULL);
       }
-    (void) strncpy(argv[i],p,q-p);
-    argv[i][q-p]='\0';
+    (void) strlcpy(argv[i],p,q-p+1);
     p=q;
     while (!isspace((int)(unsigned char) (*p)) && (*p != '\0'))
       p++;
@@ -3571,8 +3701,7 @@ MagickExport char **StringToList(const char *text)
         if (textlist[i] == (char *) NULL)
           MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
             UnableToConvertText);
-        (void) strncpy(textlist[i],p,q-p);
-        textlist[i][q-p]='\0';
+        (void) strlcpy(textlist[i],p,q-p+1);
         if (*q == '\r')
           q++;
         p=q+1;
@@ -3606,7 +3735,7 @@ MagickExport char **StringToList(const char *text)
         for (j=1; j <= (long) Min(strlen(p),0x14); j++)
         {
           FormatString(hex_string,"%02x",*(p+j));
-          (void) strncpy(q,hex_string,MaxTextExtent-1);
+          (void) strlcpy(q,hex_string,MaxTextExtent);
           q+=2;
           if ((j % 0x04) == 0)
             *q++=' ';
@@ -3766,9 +3895,8 @@ MagickExport int SubstituteString(char **buffer,const char *search,
               MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
               UnableToAllocateString);
           }
-        (void) strncpy(destination,source,copy_length);
+        (void) strlcpy(destination,source,copy_length+1);
         destination+=copy_length;
-        *destination='\0';
       }
       /*
         Copy replacement.
@@ -4345,7 +4473,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         attribute=GetImageAttribute(image,"comment");
         if (attribute == (ImageAttribute *) NULL)
           break;
-        (void) strncpy(q,attribute->value,MaxTextExtent-1);
+        (void) strlcpy(q,attribute->value,MaxTextExtent);
         q+=strlen(attribute->value);
         break;
       }
@@ -4364,28 +4492,28 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
           case 'd':
           {
             GetPathComponent(image->magick_filename,HeadPath,filename);
-            (void) strncpy(q,filename,MaxTextExtent-1);
+            (void) strlcpy(q,filename,MaxTextExtent);
             q+=strlen(filename);
             break;
           }
           case 'e':
           {
             GetPathComponent(image->magick_filename,ExtensionPath,filename);
-            (void) strncpy(q,filename,MaxTextExtent-1);
+            (void) strlcpy(q,filename,MaxTextExtent);
             q+=strlen(filename);
             break;
           }
           case 'f':
           {
             GetPathComponent(image->magick_filename,TailPath,filename);
-            (void) strncpy(q,filename,MaxTextExtent-1);
+            (void) strlcpy(q,filename,MaxTextExtent);
             q+=strlen(filename);
             break;
           }
           case 't':
           {
             GetPathComponent(image->magick_filename,BasePath,filename);
-            (void) strncpy(q,filename,MaxTextExtent-1);
+            (void) strlcpy(q,filename,MaxTextExtent);
             q+=strlen(filename);
             break;
           }
@@ -4408,7 +4536,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'i':
       {
-        (void) strncpy(q,image->filename,MaxTextExtent-1);
+        (void) strlcpy(q,image->filename,MaxTextExtent);
         q+=strlen(image->filename);
         break;
       }
@@ -4425,13 +4553,13 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         attribute=GetImageAttribute(image,"label");
         if (attribute == (ImageAttribute *) NULL)
           break;
-        (void) strncpy(q,attribute->value,MaxTextExtent-1);
+        (void) strlcpy(q,attribute->value,MaxTextExtent);
         q+=strlen(attribute->value);
         break;
       }
       case 'm':
       {
-        (void) strncpy(q,image->magick,MaxTextExtent-1);
+        (void) strlcpy(q,image->magick,MaxTextExtent);
         q+=strlen(image->magick);
         break;
       }
@@ -4444,7 +4572,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'o':
       {
-        (void) strncpy(q,clone_info->filename,MaxTextExtent-1);
+        (void) strlcpy(q,clone_info->filename,MaxTextExtent);
         q+=strlen(clone_info->filename);
         break;
       }
@@ -4504,11 +4632,11 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'u':
       {
-        (void) strncpy(filename,clone_info->unique,MaxTextExtent-1);
+        (void) strlcpy(filename,clone_info->unique,MaxTextExtent);
         if (*filename == '\0')
           if (!AcquireTemporaryFileName(filename))
             break;
-        (void) strncpy(q,filename,MaxTextExtent-1);
+        (void) strlcpy(q,filename,MaxTextExtent);
         q+=strlen(filename);
         break;
       }
@@ -4536,11 +4664,11 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'z':
       {
-        (void) strncpy(filename,clone_info->zero,MaxTextExtent-1);
+        (void) strlcpy(filename,clone_info->zero,MaxTextExtent);
         if (*filename == '\0')
           if (!AcquireTemporaryFileName(filename))
             break;
-        (void) strncpy(q,filename,MaxTextExtent-1);
+        (void) strlcpy(q,filename,MaxTextExtent);
         q+=strlen(filename);
         break;
       }
@@ -4596,7 +4724,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         attribute=GetImageAttribute(image,"signature");
         if (attribute == (ImageAttribute *) NULL)
           break;
-        (void) strncpy(q,attribute->value,MaxTextExtent-1);
+        (void) strlcpy(q,attribute->value,MaxTextExtent);
         q+=strlen(attribute->value);
         break;
       }

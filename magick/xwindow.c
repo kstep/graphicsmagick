@@ -823,8 +823,7 @@ static char **FontToList(char *font)
           UnableToConvertFont);
         return((char **) NULL);
       }
-    (void) strncpy(fontlist[i],p,q-p);
-    fontlist[i][q-p]='\0';
+    (void) strlcpy(fontlist[i],p,q-p+1);
     p=q+1;
   }
   fontlist[i]=(char *) NULL;
@@ -4995,7 +4994,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
     MagickError(XServerError,UnableToReadXWindowImage,image_info->filename);
   else
     {
-      (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+      (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
       if ((crop_info.width != 0) && (crop_info.height != 0))
         {
           Image
@@ -5025,8 +5024,8 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
               /*
                 Initialize image filename.
               */
-              (void) strncpy(image->filename,(char *) window_name.value,
-                (int) window_name.nitems);
+              (void) strlcpy(image->filename,(char *) window_name.value,
+                (int) window_name.nitems+1);
               image->filename[window_name.nitems]='\0';
             }
           (void) XFree((void *) window_name.value);
@@ -8150,7 +8149,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
       */
       FormatString(default_geometry,"%dx%d",size_hints->width,
         size_hints->height);
-      (void) strncpy(geometry,window_info->geometry,MaxTextExtent-1);
+      (void) strlcpy(geometry,window_info->geometry,MaxTextExtent);
       p=geometry;
       while (strlen(p) != 0)
       {
@@ -9163,8 +9162,8 @@ MagickExport void XWarning(const ExceptionType ARGUNUSED(warning),
 
   if (reason == (char *) NULL)
     return;
-  (void) strncpy(text,reason,MaxTextExtent-1);
-  (void) strcat(text,":");
+  (void) strlcpy(text,reason,MaxTextExtent);
+  (void) strlcat(text,":",MaxTextExtent);
   windows=XSetWindows((XWindows *) ~0);
   XNoticeWidget(windows->display,windows,text,(char *) description);
 }

@@ -2236,9 +2236,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                   segment;
 
                 GetToken(q,&q,token);
-                (void) strncpy(name,token,MaxTextExtent-1);
+                (void) strlcpy(name,token,MaxTextExtent);
                 GetToken(q,&q,token);
-                (void) strncpy(type,token,MaxTextExtent-1);
+                (void) strlcpy(type,token,MaxTextExtent);
                 GetToken(q,&q,token);
                 segment.x1=atof(token);
 /*                 element.cx=atof(token); */
@@ -2305,7 +2305,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                   bounds;
 
                 GetToken(q,&q,token);
-                (void) strncpy(name,token,MaxTextExtent-1);
+                (void) strlcpy(name,token,MaxTextExtent);
                 GetToken(q,&q,token);
                 bounds.x=(long) ceil(atof(token)-0.5);
                 GetToken(q,&q,token);
@@ -3845,8 +3845,8 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
           &image->exception);
       else
         {
-          (void) strncpy(clone_info->filename,primitive_info->text,
-            MaxTextExtent-1);
+          (void) strlcpy(clone_info->filename,primitive_info->text,
+            MaxTextExtent);
           composite_image=ReadImage(clone_info,&image->exception);
         }
       if (image->exception.severity != UndefinedException)

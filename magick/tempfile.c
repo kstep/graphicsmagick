@@ -324,7 +324,7 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
         fd=open(name,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
         if (fd != -1)
           {
-            (void) strncpy(filename,name,MaxTextExtent-1);
+            (void) strlcpy(filename,name,MaxTextExtent);
             AddTemporaryFileToList(filename);
           }
         else
@@ -333,11 +333,11 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
               path[MaxTextExtent];
 
             /* Try to report a useful pathname for error reports */
-            (void) strncpy(path,tempdir,MaxTextExtent-strlen(filename)-2);
+            (void) strlcpy(path,tempdir,MaxTextExtent);
             if (tempdir[strlen(path)-1] != DirectorySeparator[0])
-              strcat(path,DirectorySeparator);
-            strcat(path,filename);
-            (void) strncpy(filename,path,MaxTextExtent-1);
+              strlcat(path,DirectorySeparator,MaxTextExtent);
+            strlcat(path,filename,MaxTextExtent);
+            (void) strlcpy(filename,path,MaxTextExtent);
           }
 
         MagickFreeMemory(name);

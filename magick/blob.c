@@ -500,9 +500,9 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       */
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
         "Using native BLOB support");
-      (void) strncpy(clone_info->filename,image_info->filename,
-        MaxTextExtent-1);
-      (void) strncpy(clone_info->magick,image_info->magick,MaxTextExtent-1);
+      (void) strlcpy(clone_info->filename,image_info->filename,
+        MaxTextExtent);
+      (void) strlcpy(clone_info->magick,image_info->magick,MaxTextExtent);
       image=ReadImage(clone_info,exception);
       if (image != (Image *) NULL)
         DetachBlob(image->blob);
@@ -1441,7 +1441,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 
   logging=IsEventLogging();
 
-  (void) strncpy(path,filename,MaxTextExtent-1);
+  (void) strlcpy(path,filename,MaxTextExtent);
   path_map=MagickMapAllocateMap(MagickMapCopyString,MagickMapDeallocateString);
 
   {
@@ -1565,7 +1565,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       /*
         Search based on executable directory if directory is known.
       */
-      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
+      (void) strlcpy(prefix,SetClientPath((char *) NULL),MaxTextExtent);
       ChopPathComponents(prefix,1);
 
       FormatString(path,"%.1024s/lib/%s/",prefix,MagickLibConfigSubDir);
@@ -1734,7 +1734,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),"Entering ImageToBlob");
   SetExceptionInfo(exception,UndefinedException);
   clone_info=CloneImageInfo(image_info);
-  (void) strncpy(clone_info->magick,image->magick,MaxTextExtent-1);
+  (void) strlcpy(clone_info->magick,image->magick,MaxTextExtent);
   magick_info=GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (const MagickInfo *) NULL)
      {
@@ -1784,7 +1784,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   /*
     Write file to disk in blob image format.
   */
-  (void) strncpy(filename,image->filename,MaxTextExtent-1);
+  (void) strlcpy(filename,image->filename,MaxTextExtent);
   if(!AcquireTemporaryFileName(unique))
     {
       ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,
@@ -1808,7 +1808,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   */
   blob=(unsigned char *) FileToBlob(image->filename,length,exception);
   (void) LiberateTemporaryFile(image->filename);
-  (void) strncpy(image->filename,filename,MaxTextExtent-1);
+  (void) strlcpy(image->filename,filename,MaxTextExtent);
   if (blob == (unsigned char ) NULL)
     {
       ThrowException(exception,BlobError,UnableToReadFile,filename);
@@ -2136,7 +2136,7 @@ static void FormMultiPartFilename(Image *image, const ImageInfo *image_info)
   /*
     Form filename for multi-part images.
   */
-  (void) strncpy(filename,image->filename,MaxTextExtent-1);
+  (void) strlcpy(filename,image->filename,MaxTextExtent);
   for (p=strchr(filename,'%'); p != (char *) NULL; p=strchr(p+1,'%'))
     {
       char
@@ -2150,7 +2150,7 @@ static void FormMultiPartFilename(Image *image, const ImageInfo *image_info)
           char
             format[MaxTextExtent];
 
-          (void) strncpy(format,p,MaxTextExtent-1);
+          (void) strlcpy(format,p,MaxTextExtent);
           FormatString(p,format,GetImageIndexInList(image));
           break;
         }
@@ -2163,10 +2163,10 @@ static void FormMultiPartFilename(Image *image, const ImageInfo *image_info)
           FormatString(filename,"%.1024s.%lu",image->filename,
                        GetImageIndexInList(image));
         if (image->next != (Image *) NULL)
-          (void) strncpy(image->next->magick,image->magick,
-                         MaxTextExtent-1);
+          (void) strlcpy(image->next->magick,image->magick,
+                         MaxTextExtent);
       }
-  (void) strncpy(image->filename,filename,MaxTextExtent-1);
+  (void) strlcpy(image->filename,filename,MaxTextExtent);
 }
 
 MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
@@ -2232,7 +2232,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   /*
     Open image file.
   */
-  (void) strncpy(filename,image->filename,MaxTextExtent-1);
+  (void) strlcpy(filename,image->filename,MaxTextExtent);
   if (LocaleCompare(filename,"-") == 0)
     {
       /*

@@ -268,7 +268,7 @@ ModuleExport void RegisterJBIGImage(void)
 
   *version='\0';
 #if defined(JBG_VERSION)
-  (void) strncpy(version,JBG_VERSION,MaxTextExtent-1);
+  (void) strlcpy(version,JBG_VERSION,MaxTextExtent);
 #endif
   entry=SetMagickInfo("BIE");
 #if defined(HasJBIG)

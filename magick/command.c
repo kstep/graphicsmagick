@@ -434,7 +434,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
           /*
             Read image.
           */
-          (void) strncpy(image_info->filename,option,MaxTextExtent-1);
+          (void) strlcpy(image_info->filename,option,MaxTextExtent);
           if (first_scene != last_scene)
             {
               char
@@ -447,7 +447,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
               if (LocaleCompare(filename,image_info->filename) == 0)
                 FormatString(filename,"%.1024s[%lu]",image_info->filename,
                   scene);
-              (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+              (void) strlcpy(image_info->filename,filename,MaxTextExtent);
             }
           image_info->colorspace=quantize_info->colorspace;
           image_info->dither=quantize_info->dither;
@@ -1472,7 +1472,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   format=(char *) NULL;
   option_info.geometry=(char *) NULL;
   image=NewImageList();
-  (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
+  (void) strlcpy(image_info->filename,argv[argc-1],MaxTextExtent);
   (void) SetImageInfo(image_info,True,exception);
   mask_image=NewImageList();
   option_info.stegano=0;
@@ -1494,7 +1494,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           Read input images.
         */
         filename=argv[i];
-        (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+        (void) strlcpy(image_info->filename,filename,MaxTextExtent);
         if (composite_image == (Image *) NULL)
           {
             composite_image=ReadImage(image_info,exception);
@@ -2771,7 +2771,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   format=(char *) NULL;
   image=NewImageList();
   image_list=(Image *) NULL;
-  (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
+  (void) strlcpy(image_info->filename,argv[argc-1],MaxTextExtent);
   (void) SetImageInfo(image_info,True,exception);
   ping=False;
   option=(char *) NULL;
@@ -2793,7 +2793,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         */
         k=i;
         filename=argv[i];
-        (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+        (void) strlcpy(image_info->filename,filename,MaxTextExtent);
         if (ping)
           next_image=PingImage(image_info,exception);
         else
@@ -5335,7 +5335,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           /*
             Read image.
           */
-          (void) strncpy(image_info->filename,option,MaxTextExtent-1);
+          (void) strlcpy(image_info->filename,option,MaxTextExtent);
           if (first_scene != last_scene)
             {
               char
@@ -5347,7 +5347,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               FormatString(filename,image_info->filename,scene);
               if (LocaleCompare(filename,image_info->filename) == 0)
                 FormatString(filename,"%.1024s.%lu",image_info->filename,scene);
-              (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+              (void) strlcpy(image_info->filename,filename,MaxTextExtent);
             }
           (void) strcpy(image_info->magick,"MIFF");
           image_info->colorspace=quantize_info->colorspace;
@@ -5427,8 +5427,8 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                 /*
                   Write image.
                 */
-                (void) strncpy(image->filename,resource_info.write_filename,
-                  MaxTextExtent-1);
+                (void) strlcpy(image->filename,resource_info.write_filename,
+                  MaxTextExtent);
                 (void) SetImageInfo(image_info,True,&image->exception);
                 status&=WriteImage(image_info,image);
                 (void) CatchImageException(image);
@@ -6783,7 +6783,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
         /*
           Identify image.
         */
-        (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
+        (void) strlcpy(image_info->filename,argv[i],MaxTextExtent);
         if (format != (char *) NULL)
           for (q=strchr(format,'%'); q != (char *) NULL; q=strchr(q+1,'%'))
             if ((*(q+1) == 'k') || (*(q+1) == 'q') || (*(q+1) == '#'))
@@ -8338,7 +8338,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             if (*option == '+')
               continue;
-            (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
+            (void) strlcpy(clone_info->filename,argv[++i],MaxTextExtent);
             map_image=ReadImage(clone_info,&(*image)->exception);
             continue;
           }
@@ -8367,7 +8367,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Set the image clip mask.
             */
-            (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
+            (void) strlcpy(clone_info->filename,argv[++i],MaxTextExtent);
             mask=ReadImage(clone_info,&(*image)->exception);
             if (mask == (Image *) NULL)
               continue;
@@ -8658,7 +8658,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               
               client_data=clone_info->client_data;
               clone_info->client_data=(void *) &(*image)->iptc_profile;
-              (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
+              (void) strlcpy(clone_info->filename,argv[++i],MaxTextExtent);
               profile_image=ReadImage(clone_info,&(*image)->exception);
               if (profile_image == (Image *) NULL)
                 continue;
@@ -9144,7 +9144,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             Image
               *fill_pattern;
 
-            (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
+            (void) strlcpy(clone_info->filename,argv[++i],MaxTextExtent);
             fill_pattern=ReadImage(clone_info,&(*image)->exception);
             if (fill_pattern == (Image *) NULL)
               continue;
@@ -9871,7 +9871,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           Option is a file name: begin by reading image from specified file.
         */
         k=i;
-        (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
+        (void) strlcpy(image_info->filename,argv[i],MaxTextExtent);
         image=ReadImage(image_info,exception);
         status&=(image != (Image *) NULL) &&
           (exception->severity < ErrorException);
@@ -9895,8 +9895,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 FormatString(image_info->filename,"%.1024s:%.1024s",format,
                   image->filename);
-                (void) strncpy(image->filename,image_info->filename,
-                  MaxTextExtent-1);
+                (void) strlcpy(image->filename,image_info->filename,
+                  MaxTextExtent);
               }
           }
         /*
@@ -9913,7 +9913,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         else
           if (LocaleCompare(image_info->filename,"-") != 0)
             {
-              (void) strncpy(filename,image->filename,MaxTextExtent-1);
+              (void) strlcpy(filename,image->filename,MaxTextExtent);
               AppendImageFormat("tmp",image->filename);
               if (IsAccessible(image->filename))
                 {
@@ -10510,7 +10510,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&format,argv[i]);
-                (void) strncpy(image_info->filename,format,MaxTextExtent-1);
+                (void) strlcpy(image_info->filename,format,MaxTextExtent);
                 (void) strcat(image_info->filename,":");
                 (void) SetImageInfo(image_info,False,exception);
                 if (*image_info->magick == '\0')
@@ -11897,7 +11897,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       ThrowMontageException(OptionError,UsageError,NULL);
     }
 
-  (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
+  (void) strlcpy(image_info->filename,argv[argc-1],MaxTextExtent);
   (void) SetImageInfo(image_info,True,exception);
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
@@ -11919,7 +11919,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
           /*
             Option is a file name: begin by reading image from specified file.
           */
-          (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
+          (void) strlcpy(image_info->filename,argv[i],MaxTextExtent);
           if (first_scene != last_scene)
             {
               char
@@ -11931,7 +11931,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               FormatString(filename,image_info->filename,scene);
               if (LocaleCompare(filename,image_info->filename) == 0)
                 FormatString(filename,"%.1024s.%lu",image_info->filename,scene);
-              (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+              (void) strlcpy(image_info->filename,filename,MaxTextExtent);
             }
           (void) CloneString(&image_info->font,montage_info->font);
           image_info->colorspace=quantize_info.colorspace;
@@ -13052,7 +13052,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       image=NewImageList();
       j=i;
     }
-  (void) strncpy(montage_info->filename,argv[argc-1],MaxTextExtent-1);
+  (void) strlcpy(montage_info->filename,argv[argc-1],MaxTextExtent);
   montage_image=MontageImages(image_list,montage_info,exception);
   if (montage_image == (Image *) NULL)
     ThrowMontageException(OptionError,MissingAnImageFilename,(char *) NULL);
@@ -13062,8 +13062,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   */
   status&=MogrifyImages(image_info,i-j,argv+j,&montage_image);
   GetImageException(montage_image,exception);
-  (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
-  (void) strncpy(montage_image->magick_filename,argv[argc-1],MaxTextExtent-1);
+  (void) strlcpy(image_info->filename,argv[argc-1],MaxTextExtent);
+  (void) strlcpy(montage_image->magick_filename,argv[argc-1],MaxTextExtent);
   status&=WriteImages(image_info,montage_image,argv[argc-1],exception);
   if (metadata != (char **) NULL)
     {
@@ -14108,7 +14108,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
     Read image from X server.
   */
   if (target_window != (char *) NULL)
-    (void) strncpy(image_info->filename,target_window,MaxTextExtent-1);
+    (void) strlcpy(image_info->filename,target_window,MaxTextExtent);
   image_info->colorspace=quantize_info->colorspace;
   image_info->dither=quantize_info->dither;
   image=(Image *) NULL;
@@ -14119,7 +14119,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
     status&=next_image != (Image *) NULL;
     if (next_image == (Image *) NULL)
       continue;
-    (void) strncpy(next_image->filename,filename,MaxTextExtent-1);
+    (void) strlcpy(next_image->filename,filename,MaxTextExtent);
     (void) strcpy(next_image->magick,"PS");
     next_image->scene=i;
     next_image->previous=image;

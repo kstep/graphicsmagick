@@ -314,7 +314,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   if (image_info->subrange != 0)
     FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
-  (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(filename,image_info->filename,MaxTextExtent);
   if (image_info->temporary)
     (void) LiberateTemporaryFile((char *) image_info->filename);
   if(!AcquireTemporaryFileName((char *)image_info->filename))
@@ -363,7 +363,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   do
   {
     (void) strcpy(image->magick,"PS");
-    (void) strncpy(image->filename,filename,MaxTextExtent-1);
+    (void) strlcpy(image->filename,filename,MaxTextExtent);
     next_image=SyncNextImageInList(image);
     if (next_image != (Image *) NULL)
       image=next_image;
@@ -513,8 +513,8 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
 
   logging=IsEventLogging();
 
-  (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  (void) strncpy(ps_filename,image->magick_filename,MaxTextExtent-1);
+  (void) strlcpy(filename,image->filename,MaxTextExtent);
+  (void) strlcpy(ps_filename,image->magick_filename,MaxTextExtent);
   if (LocaleCompare(image_info->magick,"EPS") != 0)
     {
       /*
@@ -562,7 +562,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   /*
     Write EPT image.
   */
-  (void) strncpy(image->filename,filename,MaxTextExtent-1);
+  (void) strlcpy(image->filename,filename,MaxTextExtent);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   ps_file=fopen(ps_filename,"rb");
   status&=ps_file != (FILE *) NULL;

@@ -21,6 +21,31 @@
 </tr>
 </table>
 <p>
+2004-11-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (MagickStrlCat): New function which is
+        equivalent to to OpenBSD's strlcat() function.  Concatenates one
+        string onto another within a fixed size buffer while ensuring null
+        termination.<BR>
+        (MagickStrlCpy): New function which is equivalent to OpenBSD's
+        strlcpy() function.  Copies a string into a fixed size buffer
+        while ensuring null termination.
+  <LI> coders/gif.c (DecodeImage): Improve handling of corrupt GIF
+        files.  Resolves SourceForge bug #1042904.  Also, eliminate a
+        potential memory leak.<BR>
+  <LI> magick/constitute.c (WriteImages): ImageInfo argument is now a
+        const pointer.
+
+</UL>
+<p>
+2004-10-26 Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+
+<UL>
+  <LI> magick/render.c (TracePath): Applied bugfix from Cristy.
+
+</UL>
+<p>
 2004-10-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

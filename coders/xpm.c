@@ -321,7 +321,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         while (!isspace((int) (*q)) && (*q != '\0'))
           q++;
-        (void) strncpy(target,q,MaxTextExtent-1);
+        (void) strlcpy(target,q,MaxTextExtent);
         q=ParseColor(target);
         if (q != (char *) NULL)
           *q='\0';
@@ -734,7 +734,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
-      (void) strncpy(buffer,symbol,MaxTextExtent-1);
+      (void) strlcpy(buffer,symbol,MaxTextExtent);
       (void) WriteBlobString(image,buffer);
     }
     FormatString(buffer,"\"%.1024s\n",
@@ -954,7 +954,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
-      (void) strncpy(buffer,symbol,MaxTextExtent-1);
+      (void) strlcpy(buffer,symbol,MaxTextExtent);
       (void) WriteBlobString(image,buffer);
     }
     FormatString(buffer,"\"%.1024s\n",

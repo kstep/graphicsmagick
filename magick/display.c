@@ -2239,7 +2239,7 @@ static unsigned int XCompositeImage(Display *display,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  (void) strncpy(resource_info->image_info->filename,filename,MaxTextExtent-1);
+  (void) strlcpy(resource_info->image_info->filename,filename,MaxTextExtent);
   composite_image=ReadImage(resource_info->image_info,&image->exception);
   if (image->exception.severity != UndefinedException)
     MagickError2(image->exception.severity,image->exception.reason,
@@ -2273,7 +2273,7 @@ static unsigned int XCompositeImage(Display *display,
           XSetCursorState(display,windows,True);
           XCheckRefreshWindows(display,windows);
           image_info=CloneImageInfo((ImageInfo *) NULL);
-          (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+          (void) strlcpy(image_info->filename,filename,MaxTextExtent);
           (void) CloneString(&image_info->size,size);
           FormatString(image_info->size,"%lux%lu",composite_image->columns,
             composite_image->rows);
@@ -3956,7 +3956,7 @@ static unsigned int XDrawEditImage(Display *display,
               XSetCursorState(display,windows,True);
               XCheckRefreshWindows(display,windows);
               image_info=CloneImageInfo((ImageInfo *) NULL);
-              (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+              (void) strlcpy(image_info->filename,filename,MaxTextExtent);
               stipple_image=ReadImage(image_info,&(*image)->exception);
               if ((*image)->exception.severity != UndefinedException)
                 MagickError2((*image)->exception.severity,
@@ -4814,8 +4814,8 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       if (windows->image.crop_geometry != (char *) NULL)
         {
           cache_image->geometry=AllocateString((char *) NULL);
-          (void) strncpy(cache_image->geometry,windows->image.crop_geometry,
-            MaxTextExtent-1);
+          (void) strlcpy(cache_image->geometry,windows->image.crop_geometry,
+            MaxTextExtent);
         }
       if (undo_image == (Image *) NULL)
         {
@@ -5870,9 +5870,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      (void) strcpy(modulate_factors,"100.0/100.0/");
-      (void) strncat(modulate_factors,hue_percent,MaxTextExtent-
-        strlen(modulate_factors)-1);
+      (void) strlcpy(modulate_factors,"100.0/100.0/",MaxTextExtent);
+      (void) strlcat(modulate_factors,hue_percent,MaxTextExtent);
       (void) ModulateImage(*image,modulate_factors);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -5898,9 +5897,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      (void) strcpy(modulate_factors,"100.0/");
-      (void) strncat(modulate_factors,saturation_percent,MaxTextExtent-
-        strlen(modulate_factors)-1);
+      (void) strlcpy(modulate_factors,"100.0/",MaxTextExtent);
+      (void) strlcat(modulate_factors,saturation_percent,MaxTextExtent);
       (void) ModulateImage(*image,modulate_factors);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -5926,7 +5924,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      (void) strncpy(modulate_factors,brightness_percent,MaxTextExtent-1);
+      (void) strlcpy(modulate_factors,brightness_percent,MaxTextExtent);
       (void) ModulateImage(*image,modulate_factors);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -8092,7 +8090,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   if (*filename == '\0')
     return((Image *) NULL);
   image_info=CloneImageInfo(resource_info->image_info);
-  (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+  (void) strlcpy(image_info->filename,filename,MaxTextExtent);
   GetExceptionInfo(&exception);
   (void) SetImageInfo(image_info,False,&exception);
   if (LocaleCompare(image_info->magick,"X") == 0)
@@ -8130,7 +8128,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       */
       (void) strcpy(geometry,"512x512");
       if (image_info->size != (char *) NULL)
-        (void) strncpy(geometry,image_info->size,MaxTextExtent-1);
+        (void) strlcpy(geometry,image_info->size,MaxTextExtent);
       (void) XDialogWidget(display,windows,"Load","Enter the image geometry:",
         geometry);
       (void) CloneString(&image_info->size,geometry);
@@ -8140,7 +8138,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+  (void) strlcpy(image_info->filename,filename,MaxTextExtent);
   handler=(MonitorHandler) NULL;
   if (LocaleCompare(image_info->magick,"X") == 0)
     handler=SetMonitorHandler((MonitorHandler) NULL);
@@ -8798,7 +8796,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   image_info=CloneImageInfo(resource_info->image_info);
   FormatString(geometry,"Letter");
   if (image_info->page != (char *) NULL)
-    (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
+    (void) strlcpy(geometry,image_info->page,MaxTextExtent);
   XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
     "Select Postscript Page Geometry:",geometry);
   if (*geometry == '\0')
@@ -9493,7 +9491,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           id=XCommandWidget(display,windows,ApplyMenu,&event);
           if (id >= 0)
             {
-              (void) strncpy(command,ApplyMenu[id],MaxTextExtent-1);
+              (void) strlcpy(command,ApplyMenu[id],MaxTextExtent);
               command_type=ApplyCommands[id];
               if (id < ApplyMenus)
                 {
@@ -9504,7 +9502,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
                     (const char **) Menus[id],command);
                   if (entry >= 0)
                     {
-                      (void) strncpy(command,Menus[id][entry],MaxTextExtent-1);
+                      (void) strlcpy(command,Menus[id][entry],MaxTextExtent);
                       command_type=Commands[id][entry];
                     }
                 }
@@ -10272,7 +10270,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
     Request file name from user.
   */
   if (resource_info->write_filename != (char *) NULL)
-    (void) strncpy(filename,resource_info->write_filename,MaxTextExtent-1);
+    (void) strlcpy(filename,resource_info->write_filename,MaxTextExtent);
   else
     {
       char
@@ -10295,7 +10293,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
         return(True);
     }
   image_info=CloneImageInfo(resource_info->image_info);
-  (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+  (void) strlcpy(image_info->filename,filename,MaxTextExtent);
   (void) SetImageInfo(image_info,False,&image->exception);
   if ((LocaleCompare(image_info->magick,"JPEG") == 0) ||
       (LocaleCompare(image_info->magick,"JPG") == 0))
@@ -10329,7 +10327,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       if (LocaleCompare(image_info->magick,"PDF") == 0)
         FormatString(geometry,"%.1024s",PSPageGeometry);
       if (image_info->page != (char *) NULL)
-        (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
+        (void) strlcpy(geometry,image_info->page,MaxTextExtent);
       XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
         "Select page geometry:",geometry);
       if (*geometry != '\0')
@@ -10349,7 +10347,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
   /*
     Write image.
   */
-  (void) strncpy(save_image->filename,filename,MaxTextExtent-1);
+  (void) strlcpy(save_image->filename,filename,MaxTextExtent);
   status=WriteImage(image_info,save_image);
   if (status != False)
     image->taint=False;
@@ -10889,8 +10887,8 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       */
       XCheckRefreshWindows(display,windows);
       (void) strcpy(resource_info->image_info->magick,"MIFF");
-      (void) strncpy(resource_info->image_info->filename,filename,
-        MaxTextExtent-1);
+      (void) strlcpy(resource_info->image_info->filename,filename,
+                     MaxTextExtent);
       tile_image=ReadImage(resource_info->image_info,&image->exception);
       if (image->exception.severity != UndefinedException)
         MagickError2(image->exception.severity,image->exception.reason,
@@ -11391,7 +11389,7 @@ static Image *XVisualDirectoryImage(Display *display,
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    (void) strncpy(clone_info->filename,filelist[i],MaxTextExtent-1);
+    (void) strlcpy(clone_info->filename,filelist[i],MaxTextExtent);
     *clone_info->magick='\0';
     (void) CloneString(&clone_info->size,DefaultTileGeometry);
     next_image=ReadImage(clone_info,&exception);
@@ -11448,7 +11446,7 @@ static Image *XVisualDirectoryImage(Display *display,
   montage_info=CloneMontageInfo(resource_info->image_info,(MontageInfo *) NULL);
   if (resource_info->font != (char *) NULL)
     (void) CloneString(&montage_info->font,resource_info->font);
-  (void) strncpy(montage_info->filename,filename,MaxTextExtent-1);
+  (void) strlcpy(montage_info->filename,filename,MaxTextExtent);
   montage_image=MontageImages(image,montage_info,&image->exception);
   DestroyMontageInfo(montage_info);
   DestroyImageList(image);
@@ -12452,7 +12450,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           (display_image->next == (Image *) NULL) &&
           (display_image->scene == 0))
         FormatString(windows->image.name,"GraphicsMagick: %.1024s",filename);
-      (void) strncpy(windows->image.icon_name,filename,MaxTextExtent-1);
+      (void) strlcpy(windows->image.icon_name,filename,MaxTextExtent);
     }
   if (resource_info->immutable)
     windows->image.immutable=True;
@@ -12872,7 +12870,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         id=XCommandWidget(display,windows,CommandMenu,&event);
         if (id < 0)
           continue;
-        (void) strncpy(command,CommandMenu[id],MaxTextExtent-1);
+        (void) strlcpy(command,CommandMenu[id],MaxTextExtent);
         command_type=CommandMenus[id];
         if (id < MagickMenus)
           {
@@ -12883,7 +12881,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               command);
             if (entry < 0)
               continue;
-            (void) strncpy(command,Menus[id][entry],MaxTextExtent-1);
+            (void) strlcpy(command,Menus[id][entry],MaxTextExtent);
             command_type=Commands[id][entry];
           }
         if (command_type != NullCommand)
@@ -13165,8 +13163,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 /*
                   Offix DND.
                 */
-                (void) strncpy(resource_info->image_info->filename,
-                  (char *) data,MaxTextExtent-1);
+                (void) strlcpy(resource_info->image_info->filename,
+                  (char *) data,MaxTextExtent);
               }
             else
               {
@@ -13178,8 +13176,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                     (void) XFree((void *) data);
                     break;
                   }
-                (void) strncpy(resource_info->image_info->filename,
-                  ((char *) data)+5,MaxTextExtent-1);
+                (void) strlcpy(resource_info->image_info->filename,
+                  ((char *) data)+5,MaxTextExtent);
               }
             nexus=
               ReadImage(resource_info->image_info,&display_image->exception);
@@ -13641,8 +13639,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           &type,&format,&length,&after,&data);
         if ((status != Success) || (length == 0))
           break;
-        (void) strncpy(resource_info->image_info->filename,(char *) data,
-          MaxTextExtent-1);
+        (void) strlcpy(resource_info->image_info->filename,(char *) data,
+          MaxTextExtent);
         nexus=ReadImage(resource_info->image_info,&display_image->exception);
         if (display_image->exception.severity != UndefinedException)
           MagickError2(display_image->exception.severity,

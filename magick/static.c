@@ -230,7 +230,9 @@ MagickExport void RegisterStaticModules(void)
   RegisterWBMPImage();
   RegisterWMFImage();
   RegisterWPGImage();
+#if defined(HasX11)
   RegisterXImage();
+#endif /* defined(HasX11) */
   RegisterXBMImage();
   RegisterXCImage();
   RegisterXCFImage();
@@ -238,7 +240,9 @@ MagickExport void RegisterStaticModules(void)
 #if defined(_VISUALC_)
   RegisterXTRNImage();
 #endif /* defined(_VISUALC_) */
+#if defined(HasX11)
   RegisterXWDImage();
+#endif /* defined(HasX11) */
   RegisterYUVImage();
 #endif /* !defined(BuildMagickModules) */
 }
@@ -368,7 +372,9 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterWBMPImage();
   UnregisterWMFImage();
   UnregisterWPGImage();
+#if defined(HasX11)
   UnregisterXImage();
+#endif /* defined(HasX11) */
   UnregisterXBMImage();
   UnregisterXCImage();
   UnregisterXCFImage();
@@ -376,7 +382,9 @@ MagickExport void UnregisterStaticModules(void)
 #if defined(_VISUALC_)
   UnregisterXTRNImage();
 #endif /* defined(_VISUALC_) */
+#if defined(HasX11)
   UnregisterXWDImage();
+#endif /* defined(HasX11) */
   UnregisterYUVImage();
 #endif /* !defined(BuildMagickModules) */
 }

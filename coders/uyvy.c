@@ -117,7 +117,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,MustSpecifyImageSize,image);
-  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image)

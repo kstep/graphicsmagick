@@ -522,7 +522,7 @@ static MagickPassFail FindMagickModule(const char *filename,
   assert(filename != (const char *) NULL);
   assert(path != (char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  (void) strncpy(path,filename,MaxTextExtent-1);
+  (void) strlcpy(path,filename,MaxTextExtent);
   
   if (InitializeModuleSearchPath(module_type,exception) == MagickFail)
     return (status);
@@ -1059,7 +1059,7 @@ MagickPassFail InitializeModuleSearchPath(MagickModuleType module_type,
           break;
         }
 
-      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
+      (void) strlcpy(prefix,SetClientPath((char *) NULL),MaxTextExtent);
       ChopPathComponents(prefix,1);
       FormatString(path,"%.512s/lib/%s/modules-Q%d/%s/",prefix,
         MagickLibSubdir,QuantumDepth,module_subdir);
@@ -1271,12 +1271,12 @@ MagickExport unsigned int OpenModule(const char *module,
       Assign module name from alias.
     */
     assert(module != (const char *) NULL);
-    (void) strncpy(module_name,module,MaxTextExtent-1);
+    (void) strlcpy(module_name,module,MaxTextExtent);
     if (module_list != (ModuleInfo *) NULL)
       for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
         if (LocaleCompare(p->magick,module) == 0)
           {
-            (void) strncpy(module_name,p->name,MaxTextExtent-1);
+            (void) strlcpy(module_name,p->name,MaxTextExtent);
             break;
           }
     /*
@@ -1301,8 +1301,8 @@ MagickExport unsigned int OpenModule(const char *module,
     if ((module_list != (ModuleInfo *) NULL) &&
         (module_list->path != (char *) NULL))
       GetPathComponent(module_list->path,HeadPath,path);
-    (void) strcat(path,DirectorySeparator);
-    (void) strncat(path,module_file,MaxTextExtent-strlen(path)-1);
+    (void) strlcat(path,DirectorySeparator,MaxTextExtent);
+    (void) strlcat(path,module_file,MaxTextExtent);
 #endif
     /*
       Load module
@@ -1498,7 +1498,7 @@ static unsigned int ReadModuleConfigureFile(const char *basename,
     GetToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) strncpy(keyword,token,MaxTextExtent-1);
+    (void) strlcpy(keyword,token,MaxTextExtent);
     if (LocaleNCompare(keyword,"<!--",4) == 0)
       {
         /*
@@ -1515,7 +1515,7 @@ static unsigned int ReadModuleConfigureFile(const char *basename,
         */
         while ((*token != '>') && (*q != '\0'))
         {
-          (void) strncpy(keyword,token,MaxTextExtent-1);
+          (void) strlcpy(keyword,token,MaxTextExtent);
           GetToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -1531,9 +1531,8 @@ static unsigned int ReadModuleConfigureFile(const char *basename,
 
                   GetPathComponent(path,HeadPath,filename);
                   if (*filename != '\0')
-                    (void) strcat(filename,DirectorySeparator);
-                  (void) strncat(filename,token,MaxTextExtent-
-                    strlen(filename)-1);
+                    (void) strlcat(filename,DirectorySeparator,MaxTextExtent);
+                  (void) strlcat(filename,token,MaxTextExtent);
                   (void) ReadModuleConfigureFile(filename,depth+1,exception);
                 }
               if (module_list != (ModuleInfo *) NULL)
@@ -1791,7 +1790,7 @@ static void TagToCoderModuleName(const char *tag,char *module_name)
 #else
 #if defined(WIN32)
   if (LocaleNCompare("IM_MOD_",tag,7) == 0)
-    (void) strncpy(module_name,tag,MaxTextExtent-1);
+    (void) strlcpy(module_name,tag,MaxTextExtent);
   else
     {
 #  if defined(_DEBUG)
@@ -1878,13 +1877,14 @@ static void TagToFunctionName(const char *tag,const char *format,char *function)
   assert(tag != (const char *) NULL);
   assert(format != (const char *) NULL);
   assert(function != (char *) NULL);
-  (void) strncpy(function_name,tag,MaxTextExtent-1);
+  (void) strlcpy(function_name,tag,MaxTextExtent);
   LocaleUpper(function_name);
 
 #if defined(PREFIX_MAGICK_SYMBOLS)
-  (void) snprintf(extended_format,MaxTextExtent-1,"Gm%.1024s",format);
+  (void) strlcpy(extended_format,"Gm",MaxTextExtent);
+  (void) strlcat(extended_format,format,MaxTextExtent);
 #else
-  (void) strncpy(extended_format,format,MaxTextExtent-1);
+  (void) strlcpy(extended_format,format,MaxTextExtent);
 #endif
   FormatString(function,extended_format,function_name);
 }

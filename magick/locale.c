@@ -67,7 +67,7 @@ AllocateManagedString(const char *s)
   if (index >= MAX_CACHE_SIZE)
     index=0;
   cs=&cache[MaxTextExtent * index];
-  (void) strncpy(cs,s,MaxTextExtent-1);
+  (void) strlcpy(cs,s,MaxTextExtent);
   SPINLOCK_RELEASE;
   return cs;
 }
@@ -196,13 +196,13 @@ GetLocaleMessageFromTag(const char *tag)
     j,
     k;
 
-  (void) strncpy(category,tag,MaxTextExtent-1);
+  (void) strlcpy(category,tag,MaxTextExtent);
   ChopLocaleComponents(category,2);
   for (k=0; category_map[k].name != 0; k++)
     {
       if (LocaleCompare(category,category_map[k].name) == 0)
         {
-          (void) strncpy(severity,tag,MaxTextExtent-1);
+          (void) strlcpy(severity,tag,MaxTextExtent);
           ChopLocaleComponents(severity,1);
           for (j=category_map[k].offset; j < category_map[k+1].offset; j++)
             {

@@ -400,7 +400,7 @@ const char *lt_dlerror(void)
   last_error[0]='\0';
   error=NTGetLastError();
   if (error)
-    strncpy(last_error,error,MaxTextExtent-1);
+    strlcpy(last_error,error,MaxTextExtent);
   MagickFreeMemory(error);
   return (last_error);
 }
@@ -515,17 +515,17 @@ void *lt_dlopen(const char *filename)
           q=strchr(p,DirectoryListSeparator);
           if (q == (char *) NULL)
             {
-              (void) strncpy(buffer,p,MaxTextExtent-strlen(buffer)-1);
-              (void) strcat(buffer,"\\");
-              (void) strncat(buffer,filename,MaxTextExtent-strlen(buffer)-1);
+              (void) strlcpy(buffer,p,MaxTextExtent);
+              (void) strlcat(buffer,"\\",MaxTextExtent);
+              (void) strlcat(buffer,filename,MaxTextExtent);
               handle=(void *) LoadLibrary(buffer);
               break;
             }
           i=q-p;
           (void) strncpy(buffer,p,i);
           buffer[i]='\0';
-          (void) strcat(buffer,"\\");
-          (void) strncat(buffer,filename,MaxTextExtent-strlen(buffer)-1);
+          (void) strlcat(buffer,"\\",MaxTextExtent);
+          (void) strlcat(buffer,filename,MaxTextExtent);
           handle=(void *) LoadLibrary(buffer);
           if (handle)
             break;
@@ -1271,7 +1271,7 @@ MagickExport int NTGhostscriptDLL(char *path, int path_length)
   if (!NTGhostscriptGetString(gsver, "GS_DLL", buf, sizeof(buf)))
     return FALSE;
 
-  strncpy(path, buf, path_length-1);
+  strlcpy(path, buf, path_length);
   return TRUE;
 }
 
@@ -1430,14 +1430,13 @@ MagickExport int NTGhostscriptFonts(char *path, int path_length)
         else
           length=end-start;
         if (length > MaxTextExtent-1)
-          length = MaxTextExtent-1;
-        strncpy(font_dir,start,length);
+          length = MaxTextExtent;
+        strlcpy(font_dir,start,length);
         font_dir[length]='\0';
         FormatString(font_dir_file,"%.1024s%sfonts.dir",font_dir,DirectorySeparator);
         if (IsAccessible(font_dir_file))
           {
-            strncpy(path,font_dir,path_length-1);
-            path[path_length-1]='\0';
+            strlcpy(path,font_dir,path_length);
             (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),
                                   "Ghostscript fonts in directory \"%s\"",
                                   path);
@@ -1839,7 +1838,7 @@ MagickExport int NTSystemComman(const char *command)
   GetStartupInfo(&startup_info);
   startup_info.dwFlags=STARTF_USESHOWWINDOW;
   startup_info.wShowWindow=SW_SHOWMINNOACTIVE;
-  (void) strncpy(local_command,command,MaxTextExtent-1);
+  (void) strlcpy(local_command,command,MaxTextExtent);
   background_process=command[strlen(command)-1] == '&';
   if (background_process)
     local_command[strlen(command)-1]='\0';
@@ -2027,7 +2026,7 @@ MagickExport DIR *opendir(char *path)
     *entry;
 
   assert(path != (char *) NULL);
-  (void) strncpy(file_specification,path,MaxTextExtent-1);
+  (void) strlcpy(file_specification,path,MaxTextExtent);
   (void) strcat(file_specification,DirectorySeparator);
   entry=MagickAllocateMemory(DIR *,sizeof(DIR));
   if (entry != (DIR *) NULL)
@@ -2087,8 +2086,8 @@ MagickExport struct dirent *readdir(DIR *entry)
         return((struct dirent *) NULL);
     }
   entry->firsttime=FALSE;
-  (void) strncpy(entry->file_info.d_name,entry->Win32FindData.cFileName,
-    MaxTextExtent-1);
+  (void) strlcpy(entry->file_info.d_name,entry->Win32FindData.cFileName,
+    MaxTextExtent);
   entry->file_info.d_namlen=strlen(entry->file_info.d_name);
   return(&entry->file_info);
 }

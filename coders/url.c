@@ -137,10 +137,10 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImageInfo(clone_info);
       ThrowReaderTemporaryFileException(filename)
     }
-  (void) strncpy(filename,image_info->magick,MaxTextExtent-1);
-  (void) strcat(filename,":");
+  (void) strlcpy(filename,image_info->magick,MaxTextExtent);
+  (void) strlcat(filename,":",MaxTextExtent);
   LocaleLower(filename);
-  (void) strcat(filename,image_info->filename);
+  (void) strlcat(filename,image_info->filename,MaxTextExtent);
   if (LocaleCompare(clone_info->magick,"ftp") != 0)
     {
       char

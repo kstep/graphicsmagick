@@ -514,7 +514,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
   /*
     Search for named color.
   */
-  (void) strncpy(colorname,name,MaxTextExtent-1);
+  (void) strlcpy(colorname,name,MaxTextExtent);
   for (q=colorname; *q != '\0'; q++)
   {
     if (*q != ' ')
@@ -1839,7 +1839,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
             (p->color.blue != color->blue) ||
             (p->color.opacity != color->opacity))
           continue;
-        (void) strncpy(name,p->name,MaxTextExtent-1);
+        (void) strlcpy(name,p->name,MaxTextExtent);
         return(True);
       }
     }
@@ -1911,7 +1911,7 @@ static unsigned int ReadColorConfigureFile(const char *basename,
     GetToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) strncpy(keyword,token,MaxTextExtent-1);
+    (void) strlcpy(keyword,token,MaxTextExtent);
     if (LocaleNCompare(keyword,"<!--",4) == 0)
       {
         /*
@@ -1928,7 +1928,7 @@ static unsigned int ReadColorConfigureFile(const char *basename,
         */
         while ((*token != '>') && (*q != '\0'))
         {
-          (void) strncpy(keyword,token,MaxTextExtent-1);
+          (void) strlcpy(keyword,token,MaxTextExtent);
           GetToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -1944,9 +1944,8 @@ static unsigned int ReadColorConfigureFile(const char *basename,
 
                   GetPathComponent(path,HeadPath,filename);
                   if (*filename != '\0')
-                    (void) strcat(filename,DirectorySeparator);
-                  (void) strncat(filename,token,MaxTextExtent-
-                    strlen(filename)-1);
+                    (void) strlcat(filename,DirectorySeparator,MaxTextExtent);
+                  (void) strlcat(filename,token,MaxTextExtent);
                   (void) ReadColorConfigureFile(filename,depth+1,exception);
                 }
               if (color_list != (ColorInfo *) NULL)

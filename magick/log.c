@@ -814,7 +814,7 @@ static MagickPassFail ReadLogConfigureFile(const char *basename,
     GetToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) strncpy(keyword,token,MaxTextExtent-1);
+    (void) strlcpy(keyword,token,MaxTextExtent);
     if (LocaleNCompare(keyword,"<!--",4) == 0)
       {
         /*
@@ -831,7 +831,7 @@ static MagickPassFail ReadLogConfigureFile(const char *basename,
         */
         while ((*token != '>') && (*q != '\0'))
         {
-          (void) strncpy(keyword,token,MaxTextExtent-1);
+          (void) strlcpy(keyword,token,MaxTextExtent);
           GetToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -848,9 +848,8 @@ static MagickPassFail ReadLogConfigureFile(const char *basename,
 
                   GetPathComponent(path,HeadPath,filename);
                   if (*filename != '\0')
-                    (void) strcat(filename,DirectorySeparator);
-                  (void) strncat(filename,token,MaxTextExtent-
-                    strlen(filename)-1);
+                    (void) strlcat(filename,DirectorySeparator,MaxTextExtent);
+                  (void) strlcat(filename,token,MaxTextExtent);
                   status &= ReadLogConfigureFile(filename,depth+1,exception);
                   if (status != MagickPass)
                     {

@@ -266,7 +266,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       clone_info=CloneImageInfo(image_info);
       clone_info->blob=(void *) NULL;
       clone_info->length=0;
-      (void) strncpy(clone_info->filename,image_info->texture,MaxTextExtent-1);
+      (void) strlcpy(clone_info->filename,image_info->texture,MaxTextExtent);
       texture=ReadImage(clone_info,exception);
       DestroyImageInfo(clone_info);
     }
@@ -282,7 +282,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
     ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
-  (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(filename,image_info->filename,MaxTextExtent);
   if (draw_info->text != '\0')
     *draw_info->text='\0';
   p=ReadBlobString(image,text);
@@ -333,7 +333,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->next->columns=image->columns;
     image->next->rows=image->rows;
     image=SyncNextImageInList(image);
-    (void) strncpy(image->filename,filename,MaxTextExtent-1);
+    (void) strlcpy(image->filename,filename,MaxTextExtent);
     SetImage(image,OpaqueOpacity);
     if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
       break;

@@ -617,7 +617,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       if (TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text) == 1)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "ICC ICM embedded profile with length %u bytes",length);
+                                "ICC ICM embedded profile with length %lu bytes",
+                                (unsigned long)length);
           SetImageProfile(image,"ICM",(unsigned char *) text,(size_t) length);
         }
 #endif /* defined(TIFFTAG_ICCPROFILE) */
@@ -629,7 +630,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       if (TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text) == 1)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "Photoshop embedded profile with length %u bytes",length);
+                                "Photoshop embedded profile with length %lu bytes",
+                                (unsigned long) length);
           (void) ReadNewsProfile(text,(long) length,image,TIFFTAG_PHOTOSHOP);
         }
 #elif defined(TIFFTAG_RICHTIFFIPTC)
@@ -651,7 +653,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (TIFFGetField(tiff,TIFFTAG_XMLPACKET,&length,&text) == 1)
       {
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "XMP embedded profile with length %u bytes",length);
+                                "XMP embedded profile with length %lu bytes",
+                              (unsigned long) length);
         SetImageProfile(image,"XMP",(unsigned char *) text,(size_t) length);
       }
 #endif
@@ -1541,8 +1544,8 @@ static void WriteNewsProfile(TIFF *tiff,
 
       /* Tag is type TIFF_LONG so byte length is divided by four */
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "TIFFSetField(tiff=0x%p,tag=%d,length=%u,data=0x%p)",
-                            tiff,profile_tag,(uint32) length/4,profile);
+                            "TIFFSetField(tiff=0x%p,tag=%d,length=%lu,data=0x%p)",
+                            tiff,profile_tag,(unsigned long) length/4,profile);
       (void) TIFFSetField(tiff,profile_tag,(uint32) length/4,(void *) profile);
     }
   else if (profile_tag == TIFFTAG_PHOTOSHOP)
@@ -1571,8 +1574,8 @@ static void WriteNewsProfile(TIFF *tiff,
       (void) memcpy(profile,profile_data,profile_length);
 #endif
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "TIFFSetField(tiff=0x%p,tag=%d,length=%u,data=0x%p)",
-                            tiff,profile_tag,(uint32) length,profile);
+                            "TIFFSetField(tiff=0x%p,tag=%d,length=%lu,data=0x%p)",
+                            tiff,profile_tag,(unsigned long) length,profile);
       (void) TIFFSetField(tiff,profile_tag,(uint32) length,(void *) profile);
     }
 
@@ -1724,7 +1727,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
   tiff_exception=(&image->exception);
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  (void) strncpy(filename,image->filename,MaxTextExtent-1);
+  (void) strlcpy(filename,image->filename,MaxTextExtent);
   if (!(GetBlobFileHandle(image)))
     {
       /*

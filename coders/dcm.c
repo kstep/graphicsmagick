@@ -2787,7 +2787,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((group == dicom_info[i].group) &&
           (element == dicom_info[i].element))
         break;
-    (void) strncpy(implicit_vr,dicom_info[i].vr,MaxTextExtent-1);
+    (void) strlcpy(implicit_vr,dicom_info[i].vr,MaxTextExtent);
     count=ReadBlob(image,2,(char *) explicit_vr);
     /*
       Check for "explicitness", but meta-file headers always explicit.
@@ -2797,7 +2797,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         isupper((int) *(explicit_vr+1));
     use_explicit=((group == 0x0002) || explicit_file);
     if (use_explicit && (strcmp(implicit_vr,"xs") == 0))
-      (void) strncpy(implicit_vr,explicit_vr,MaxTextExtent-1);
+      (void) strlcpy(implicit_vr,explicit_vr,MaxTextExtent);
     if (!use_explicit || (strcmp(implicit_vr,"!!") == 0))
       {
         (void) SeekBlob(image,(ExtendedSignedIntegralType) -2,SEEK_CUR);
@@ -2907,7 +2907,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Transfer Syntax.
             */
-            (void) strncpy(transfer_syntax,(char *) data,MaxTextExtent-1);
+            (void) strlcpy(transfer_syntax,(char *) data,MaxTextExtent);
             if (strcmp(transfer_syntax,"1.2.840.10008.1.2.2") == 0)
               ThrowReaderException(CoderError,MSBByteOrderNotSupported,
                 image);

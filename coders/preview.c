@@ -578,8 +578,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
             Image
               *quality_image;
 
-            (void) strncpy(clone_info->filename,preview_image->filename,
-              MaxTextExtent-1);
+            (void) strlcpy(clone_info->filename,preview_image->filename,
+              MaxTextExtent);
             quality_image=ReadImage(clone_info,&image->exception);
             if (quality_image != (Image *) NULL)
               {
@@ -619,7 +619,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     Create the montage.
   */
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
-  (void) strncpy(montage_info->filename,image->filename,MaxTextExtent-1);
+  (void) strlcpy(montage_info->filename,image->filename,MaxTextExtent);
   montage_info->shadow=True;
   (void) CloneString(&montage_info->tile,"3x3");
   (void) CloneString(&montage_info->geometry,DefaultPreviewGeometry);

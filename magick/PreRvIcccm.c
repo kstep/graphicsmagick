@@ -306,7 +306,7 @@ int XStringListToTextProperty(char **argv,int argc,XTextProperty *property)
           *buffer++='\0';
         else
           {
-            (void) strncpy(buffer,argument,MaxTextExtent-1);
+            (void) strlcpy(buffer,argument,MaxTextExtent);
             buffer+=(strlen(argument)+1);
           }
       }

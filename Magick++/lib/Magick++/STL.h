@@ -2244,7 +2244,7 @@ namespace Magick
     MagickLib::GetExceptionInfo( &exceptionInfo );
 
     linkImages( first_, last_ );
-    int errorStat = MagickLib::WriteImages( first_->imageInfo(),
+    int errorStat = MagickLib::WriteImages( first_->constImageInfo(),
                                             first_->image(),
                                             imageSpec_.c_str(),
                                             &exceptionInfo );

@@ -879,7 +879,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
         if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
           break;
   }
-  (void) strncpy(magick,image_info->magick,MaxTextExtent-1);
+  (void) strlcpy(magick,image_info->magick,MaxTextExtent);
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
 

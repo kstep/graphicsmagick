@@ -101,7 +101,7 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
     image->columns=1;
   if (image->rows == 0)
     image->rows=1;
-  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
   status=QueryColorDatabase((char *) image_info->filename,
     &image->background_color,exception);
   if (status == False)

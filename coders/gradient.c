@@ -99,8 +99,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,MustSpecifyImageSize,image);
   SetImage(image,OpaqueOpacity);
-  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-  (void) strncpy(colorname,image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
+  (void) strlcpy(colorname,image_info->filename,MaxTextExtent);
   (void) sscanf(image_info->filename,"%[^-]",colorname);
   if (!QueryColorDatabase(colorname,&start_color,exception))
     {

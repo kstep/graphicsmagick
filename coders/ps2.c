@@ -594,7 +594,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     geometry.y=(long) text_size;
     FormatString(page_geometry,"%lux%lu",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
-      (void) strncpy(page_geometry,image_info->page,MaxTextExtent-1);
+      (void) strlcpy(page_geometry,image_info->page,MaxTextExtent);
     else
       if ((image->page.width != 0) && (image->page.height != 0))
         (void) FormatString(page_geometry,"%lux%lu%+ld%+ld",image->page.width,
@@ -640,7 +640,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
-        (void) strncpy(date,ctime(&timer),MaxTextExtent-1);
+        (void) strlcpy(date,ctime(&timer),MaxTextExtent);
         date[strlen(date)-1]='\0';
         FormatString(buffer,"%%%%CreationDate: (%.1024s)\n",date);
         (void) WriteBlobString(image,buffer);

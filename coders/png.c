@@ -5643,14 +5643,13 @@ ModuleExport void RegisterPNGImage(void)
 
   *version='\0';
 #if defined(PNG_LIBPNG_VER_STRING)
-  (void) strcat(version,"libpng ");
-  (void) strncat(version,PNG_LIBPNG_VER_STRING,MaxTextExtent-2);
+  (void) strlcat(version,"libpng ",MaxTextExtent);
+  (void) strlcat(version,PNG_LIBPNG_VER_STRING,MaxTextExtent);
 #if (PNG_LIBPNG_VER > 10005)
   if (LocaleCompare(PNG_LIBPNG_VER_STRING,png_get_header_ver(NULL)) != 0)
     {
-      (void) strcat(version,",");
-      (void) strncat(version,png_get_libpng_ver(NULL),MaxTextExtent-
-        strlen(version)-1);
+      (void) strlcat(version,",",MaxTextExtent);
+      (void) strlcat(version,png_get_libpng_ver(NULL),MaxTextExtent);
     }
 #endif
 #endif
@@ -5700,12 +5699,12 @@ ModuleExport void RegisterPNGImage(void)
   entry=SetMagickInfo("PNG24");
   *version='\0';
 #if defined(ZLIB_VERSION)
-  (void) strcat(version,"zlib ");
-  (void) strncat(version,ZLIB_VERSION,MaxTextExtent-2);
+  (void) strlcat(version,"zlib ",MaxTextExtent);
+  (void) strlcat(version,ZLIB_VERSION,MaxTextExtent);
   if (LocaleCompare(ZLIB_VERSION,zlib_version) != 0)
     {
-      (void) strcat(version,",");
-      (void) strncat(version,zlib_version,MaxTextExtent-strlen(version)-1);
+      (void) strlcat(version,",",MaxTextExtent);
+      (void) strlcat(version,zlib_version,MaxTextExtent);
     }
 #endif
   if (*version != '\0')
@@ -7389,8 +7388,8 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
                 "  Creating PNG blob.");
           length=0;
 
-          (void) strncpy(jpeg_image_info->magick,"PNG",MaxTextExtent-1);
-          (void) strncpy(jpeg_image->magick,"PNG",MaxTextExtent-1);
+          (void) strlcpy(jpeg_image_info->magick,"PNG",MaxTextExtent);
+          (void) strlcpy(jpeg_image->magick,"PNG",MaxTextExtent);
           jpeg_image_info->interlace=NoInterlace;
 
           blob=(char *) ImageToBlob(jpeg_image_info,jpeg_image,&length,
@@ -7409,8 +7408,8 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
           status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
             &image->exception);
 
-          (void) strncpy(jpeg_image_info->magick,"JPEG",MaxTextExtent-1);
-          (void) strncpy(jpeg_image->magick,"JPEG",MaxTextExtent-1);
+          (void) strlcpy(jpeg_image_info->magick,"JPEG",MaxTextExtent);
+          (void) strlcpy(jpeg_image->magick,"JPEG",MaxTextExtent);
           jpeg_image_info->interlace=NoInterlace;
           if (logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7710,8 +7709,8 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   if (jng_color_type == 8 || jng_color_type == 12)
     jpeg_image_info->type=GrayscaleType;
   jpeg_image_info->quality=jng_quality%1000;
-  (void) strncpy(jpeg_image_info->magick,"JPEG",MaxTextExtent-1);
-  (void) strncpy(jpeg_image->magick,"JPEG",MaxTextExtent-1);
+  (void) strlcpy(jpeg_image_info->magick,"JPEG",MaxTextExtent);
+  (void) strlcpy(jpeg_image->magick,"JPEG",MaxTextExtent);
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Creating blob.");

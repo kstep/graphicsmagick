@@ -762,7 +762,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"id") == 0)
             {
-              (void) strncpy(id,value,MaxTextExtent-1);
+              (void) strlcpy(id,value,MaxTextExtent);
               break;
             }
           break;
@@ -2720,7 +2720,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=ReadImage(clone_info,exception);
       DestroyImageInfo(clone_info);
       if (image != (Image *) NULL)
-        (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+        (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
     }
   /*
     Free resources.
@@ -2775,7 +2775,7 @@ ModuleExport void RegisterSVGImage(void)
 
   *version='\0';
 #if defined(LIBXML_DOTTED_VERSION)
-  (void) strncpy(version,"XML " LIBXML_DOTTED_VERSION,MaxTextExtent-1);
+  (void) strlcpy(version,"XML " LIBXML_DOTTED_VERSION,MaxTextExtent);
 #endif
   entry=SetMagickInfo("SVG");
 #if defined(HasXML)
@@ -3474,9 +3474,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (LocaleCompare("gradient",token) == 0)
               {
                 GetToken(q,&q,token);
-                (void) strncpy(name,token,MaxTextExtent-1);
+                (void) strlcpy(name,token,MaxTextExtent);
                 GetToken(q,&q,token);
-                (void) strncpy(type,token,MaxTextExtent-1);
+                (void) strlcpy(type,token,MaxTextExtent);
                 GetToken(q,&q,token);
                 svg_info.segment.x1=atof(token);
                 svg_info.element.cx=atof(token);
@@ -3528,7 +3528,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (LocaleCompare("pattern",token) == 0)
               {
                 GetToken(q,&q,token);
-                (void) strncpy(name,token,MaxTextExtent-1);
+                (void) strlcpy(name,token,MaxTextExtent);
                 GetToken(q,&q,token);
                 svg_info.bounds.x=atof(token);
                 GetToken(q,&q,token);
@@ -3611,7 +3611,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               color[MaxTextExtent];
 
             GetToken(q,&q,token);
-            (void) strncpy(color,token,MaxTextExtent-1);
+            (void) strlcpy(color,token,MaxTextExtent);
             GetToken(q,&q,token);
             FormatString(message,
               "  <stop offset=\"%s\" stop-color=\"%s\" />\n",token,color);

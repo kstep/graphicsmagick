@@ -2089,16 +2089,16 @@ static wmfFontMap WMFFontMap[] = {
 
 /* Mapping between base name and Ghostscript family name */
 static wmfMapping SubFontMap[] = {
-  { "Arial",      "Helvetica",	FT_ENCODING_NONE },
-  { "Courier",    "Courier",    FT_ENCODING_NONE },
-  { "Fixed",      "Courier",    FT_ENCODING_NONE },
-  { "Helvetica",  "Helvetica",  FT_ENCODING_NONE },
-  { "Sans",       "Helvetica",  FT_ENCODING_NONE },
-  { "Sym",        "Symbol",     FT_ENCODING_NONE },
-  { "Terminal",   "Courier",    FT_ENCODING_NONE },
-  { "Times",      "Times",      FT_ENCODING_NONE },
-  { "Wingdings",  "Symbol",     FT_ENCODING_NONE },
-  {  NULL,        NULL,         FT_ENCODING_NONE }
+  { "Arial",      "Helvetica",	0 },
+  { "Courier",    "Courier",    0 },
+  { "Fixed",      "Courier",    0 },
+  { "Helvetica",  "Helvetica",  0 },
+  { "Sans",       "Helvetica",  0 },
+  { "Sym",        "Symbol",     0 },
+  { "Terminal",   "Courier",    0 },
+  { "Times",      "Times",      0 },
+  { "Wingdings",  "Symbol",     0 },
+  {  NULL,        NULL,         0 }
 };
 
 static void lite_font_map( wmfAPI* API, wmfFont* font)

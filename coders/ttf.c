@@ -188,8 +188,8 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!SyncImagePixels(image))
       break;
   }
-  (void) strncpy(image->magick,image_info->magick,MaxTextExtent-1);
-  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+  (void) strlcpy(image->magick,image_info->magick,MaxTextExtent);
+  (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
   /*
     Prepare drawing commands
   */
