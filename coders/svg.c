@@ -2695,7 +2695,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     GetToken(q,&q,keyword);
     if (*keyword == '\0')
       break;
-puts(keyword);
     if (*keyword == '#')
       {
         /*

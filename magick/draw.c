@@ -103,7 +103,7 @@ typedef struct _PathInfo
   Forward declarations.
 */
 static unsigned int
-  DrawPrimitive(const DrawInfo *,const PrimitiveInfo *,Image *),
+  DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
   TracePath(PrimitiveInfo *,const char *);
 
 static void
@@ -136,28 +136,26 @@ static void
 %
 %  The format of the ClipImage method is:
 %
-%      ClipImage(Image *image,Image *composite,const char *clip_path)
+%      ClipImage(Image *image,const DrawInfo *draw_info)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
-%    o composite: The composite image.
-%
-%    o clip_path: The clip path name.
+%    o draw_info: The draw info.
 %
 %
 */
-static unsigned int ClipImage(Image *image,Image *composite,
-  const char *clip_path)
+static unsigned int ClipImage(Image *image,const DrawInfo *draw_info)
 {
   char
     name[MaxTextExtent];
 
   DrawInfo
-    *draw_info;
+    *clone_info;
 
   Image
+    *composite,
     *mask;
 
   ImageAttribute
@@ -174,6 +172,9 @@ static unsigned int ClipImage(Image *image,Image *composite,
     *q,
     *r;
 
+  TimerInfo
+    timer;
+
   unsigned int
     status,
     sync;
@@ -181,15 +182,21 @@ static unsigned int ClipImage(Image *image,Image *composite,
   /*
     Allocate image mask.
   */
+  assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(composite != (Image *) NULL);
-  assert(composite->signature == MagickSignature);
+  composite=draw_info->canvas;
   if ((composite->columns != image->columns) ||
       (composite->rows != image->rows))
     ThrowBinaryException(OptionWarning,"Unable to clip image",
       "images are not the same size");
-  FormatString(name,"[%.1024s]",clip_path);
+  if (draw_info->debug)
+    {
+      GetTimerInfo(&timer);
+      (void) fprintf(stdout,"  begin clip-image\n");
+    }
+  FormatString(name,"[%.1024s]",draw_info->clip_path);
   attribute=GetImageAttribute(image,name);
   if (attribute == (ImageAttribute *) NULL)
     return(False);
@@ -200,10 +207,10 @@ static unsigned int ClipImage(Image *image,Image *composite,
   /*
     Draw clip path.
   */
-  draw_info=CloneDrawInfo((ImageInfo *) NULL,(DrawInfo *) NULL);
-  draw_info->primitive=AllocateString(attribute->value);
-  (void) QueryColorDatabase("black",&draw_info->fill);
-  status=DrawImage(mask,draw_info);
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  CloneString(&clone_info->primitive,attribute->value);
+  (void) QueryColorDatabase("black",&clone_info->fill);
+  status=DrawImage(mask,clone_info);
   if (status == False)
     {
       DestroyImage(mask);
@@ -237,6 +244,8 @@ static unsigned int ClipImage(Image *image,Image *composite,
         break;
   }
   DestroyImage(mask);
+  if (draw_info->debug)
+    (void) fprintf(stdout,"  end clip-image (%.2fu)\n",GetUserTime(&timer));
   return(True);
 }
 
@@ -673,11 +682,11 @@ static void PrintPolygonInfo(const PolygonInfo *polygon_info)
     i,
     j;
 
-  (void) fprintf(stdout,"  begin active-edge\n");
+  (void) fprintf(stdout,"    begin active-edge\n");
   p=polygon_info->edges;
   for (i=0; i < polygon_info->number_edges; i++)
   {
-    (void) fprintf(stdout,"    edge %d:\n      direction: %s\n      "
+    (void) fprintf(stdout,"      edge %d:\n      direction: %s\n      "
       "ghostline: %s\n      bounds: %g,%g - %g,%g\n",i,
       p->direction ? "down" : "up",p->ghostline ? "transparent" : "opaque",
       p->bounds.x1,p->bounds.y1,p->bounds.x2,p->bounds.y2);
@@ -685,7 +694,7 @@ static void PrintPolygonInfo(const PolygonInfo *polygon_info)
       (void) fprintf(stdout,"        %g,%g\n",p->points[j].x,p->points[j].y);
     p++;
   }
-  (void) fprintf(stdout,"  end active-edge\n");
+  (void) fprintf(stdout,"    end active-edge\n");
 }
 
 static void ReversePoints(PointInfo *points,const int number_points)
@@ -929,13 +938,13 @@ static void PrintPathInfo(const PathInfo *path_info)
   register const PathInfo
     *p;
 
-  (void) fprintf(stdout,"  begin vector-path\n");
+  (void) fprintf(stdout,"    begin vector-path\n");
   for (p=path_info; p->code != EndCode; p++)
-    (void) fprintf(stdout,"    %g,%g %s\n",p->point.x,p->point.y,
+    (void) fprintf(stdout,"      %g,%g %s\n",p->point.x,p->point.y,
       p->code == GhostlineCode ? "moveto ghostline" :
       p->code == OpenCode ? "moveto open" : p->code == MoveToCode ? "moveto" :
       p->code == LineToCode ? "lineto" : "?");
-  (void) fprintf(stdout,"  end vector-path\n");
+  (void) fprintf(stdout,"    end vector-path\n");
 }
 
 static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
@@ -1282,7 +1291,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
         primitive_info[0].method=ReplaceMethod;
         coordinates=primitive_info[0].coordinates;
         primitive_info[coordinates].primitive=UndefinedPrimitive;
-        (void) DrawPrimitive(clone_info,primitive_info,image);
+        (void) DrawPrimitive(image,clone_info,primitive_info);
       }
     }
   (void) QueryColorDatabase("blue",&clone_info->stroke);
@@ -1295,7 +1304,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
   primitive_info[0].method=ReplaceMethod;
   coordinates=primitive_info[0].coordinates;
   primitive_info[coordinates].primitive=UndefinedPrimitive;
-  (void) DrawPrimitive(clone_info,primitive_info,image);
+  (void) DrawPrimitive(image,clone_info,primitive_info);
   DestroyDrawInfo(clone_info);
 }
 
@@ -1355,9 +1364,17 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
   register int
     i;
 
+  TimerInfo
+    timer;
+
   unsigned int
     number_vertices;
 
+  if (draw_info->debug)
+    {
+      GetTimerInfo(&timer);
+      (void) fprintf(stdout,"    begin draw-dash\n");
+    }
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->miterlimit=0;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
@@ -1451,6 +1468,8 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
   }
   LiberateMemory((void **) &dash_polygon);
   DestroyDrawInfo(clone_info);
+  if (draw_info->debug)
+    (void) fprintf(stdout,"    end draw-dash (%.2fu)\n",GetUserTime(&timer));
 }
 
 /*
@@ -1525,6 +1544,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   size_t
     length;
 
+  TimerInfo
+    timer;
+
   unsigned int
     status;
 
@@ -1538,6 +1560,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   assert(draw_info->primitive != (char *) NULL);
   if (*draw_info->primitive == '\0')
     return(False);
+  if (draw_info->debug)
+    {
+      GetTimerInfo(&timer);
+      (void) fprintf(stdout,"begin draw-image\n");
+    }
   if (*draw_info->primitive != '@')
     primitive=TranslateText((ImageInfo *) NULL,image,draw_info->primitive);
   else
@@ -1555,10 +1582,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       LiberateMemory((void **) &text);
     }
   (void) SetImageAttribute(image,"[MVG]",primitive);
+  n=0;
   /*
     Allocate primitive info memory.
   */
-  n=0;
   graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
   if (graphic_context == (DrawInfo **) NULL)
     {
@@ -1580,8 +1607,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     }
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   graphic_context[n]->canvas=image;
-  if (graphic_context[n]->debug)
-    (void) fprintf(stdout,"begin vector-graphics\n");
   token=AllocateString(primitive);
   status=True;
   for (q=primitive; *q != '\0'; )
@@ -1589,7 +1614,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     /*
       Interpret graphic primitive.
     */
-    p=q;
     GetToken(q,&q,keyword);
     if (*keyword == '\0')
       break;
@@ -1602,6 +1626,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           q++;
         continue;
       }
+    p=q-Extent(keyword);
     primitive_type=UndefinedPrimitive;
     current=graphic_context[n]->affine;
     IdentityAffine(&affine);
@@ -1680,20 +1705,33 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             if (LocaleCompare("evenodd",token) == 0)
-              graphic_context[n]->fill_rule=EvenOddRule;
+              {
+                graphic_context[n]->fill_rule=EvenOddRule;
+                break;
+              }
             if (LocaleCompare("nonzero",token) == 0)
-              graphic_context[n]->fill_rule=NonZeroRule;
+              {
+                graphic_context[n]->fill_rule=NonZeroRule;
+                break;
+              }
             break;
           }
         if (LocaleCompare("clip-units",keyword) == 0)
           {
             GetToken(q,&q,token);
-            if (LocaleCompare("userSpace",token) == 0)
-              graphic_context[n]->clip_units=UserSpaceOnUse;
-            if (LocaleCompare("objectBoundingBox",token) == 0)
-              graphic_context[n]->clip_units=ObjectBoundingBox;
             if (LocaleCompare("userSpaceOnUse",token) == 0)
-              graphic_context[n]->clip_units=UserSpaceOnUse;
+              {
+                graphic_context[n]->clip_units=UserSpaceOnUse;
+                break;
+              }
+            if (LocaleCompare("objectBoundingBox",token) == 0)
+              {
+                affine.sx=draw_info->bounds.x2;
+                affine.sy=draw_info->bounds.y2;
+                affine.tx=draw_info->bounds.x1;
+                affine.ty=draw_info->bounds.y1;
+                break;
+              }
             break;
           }
         if (LocaleCompare("circle",keyword) == 0)
@@ -1716,13 +1754,25 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             if (LocaleCompare("#000000ff",token) == 0)
-              graphic_context[n]->decorate=NoDecoration;
+              {
+                graphic_context[n]->decorate=NoDecoration;
+                break;
+              }
             if (LocaleCompare("underline",token) == 0)
-              graphic_context[n]->decorate=UnderlineDecoration;
+              {
+                graphic_context[n]->decorate=UnderlineDecoration;
+                break;
+              }
             if (LocaleCompare("overline",token) == 0)
-              graphic_context[n]->decorate=OverlineDecoration;
+              {
+                graphic_context[n]->decorate=OverlineDecoration;
+                break;
+              }
             if (LocaleCompare("line-through",token) == 0)
-              graphic_context[n]->decorate=LineThroughDecoration;
+              {
+                graphic_context[n]->decorate=LineThroughDecoration;
+                break;
+              }
             break;
           }
         status=False;
@@ -1754,9 +1804,15 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             if (LocaleCompare("evenodd",token) == 0)
-              graphic_context[n]->fill_rule=EvenOddRule;
+              {
+                graphic_context[n]->fill_rule=EvenOddRule;
+                break;
+              }
             if (LocaleCompare("nonzero",token) == 0)
-              graphic_context[n]->fill_rule=NonZeroRule;
+              {
+                graphic_context[n]->fill_rule=NonZeroRule;
+                break;
+              }
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
@@ -1791,23 +1847,47 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             if (LocaleCompare("NorthWest",token) == 0)
-              graphic_context[n]->gravity=NorthWestGravity;
+              {
+                graphic_context[n]->gravity=NorthWestGravity;
+                break;
+              }
             if (LocaleCompare("North",token) == 0)
-              graphic_context[n]->gravity=NorthGravity;
+              {
+                graphic_context[n]->gravity=NorthGravity;
+                break;
+              }
             if (LocaleCompare("NorthEast",token) == 0)
-              graphic_context[n]->gravity=NorthEastGravity;
+              {
+                graphic_context[n]->gravity=NorthEastGravity;
+                break;
+              }
             if (LocaleCompare("West",token) == 0)
-              graphic_context[n]->gravity=WestGravity;
+              {
+                graphic_context[n]->gravity=WestGravity;
+                break;
+              }
             if (LocaleCompare("Center",token) == 0)
               graphic_context[n]->gravity=CenterGravity;
             if (LocaleCompare("East",token) == 0)
-              graphic_context[n]->gravity=EastGravity;
+              {
+                graphic_context[n]->gravity=EastGravity;
+                break;
+              }
             if (LocaleCompare("SouthWest",token) == 0)
-              graphic_context[n]->gravity=SouthWestGravity;
+              {
+                graphic_context[n]->gravity=SouthWestGravity;
+                break;
+              }
             if (LocaleCompare("South",token) == 0)
-              graphic_context[n]->gravity=SouthGravity;
+              {
+                graphic_context[n]->gravity=SouthGravity;
+                break;
+              }
             if (LocaleCompare("SouthEast",token) == 0)
-              graphic_context[n]->gravity=SouthEastGravity;
+              {
+                graphic_context[n]->gravity=SouthEastGravity;
+                break;
+              }
             break;
           }
         status=False;
@@ -1820,41 +1900,95 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             if (LocaleCompare("Over",token) == 0)
-              graphic_context[n]->compose=OverCompositeOp;
+              {
+                graphic_context[n]->compose=OverCompositeOp;
+                break;
+              }
             if (LocaleCompare("In",token) == 0)
-              graphic_context[n]->compose=InCompositeOp;
+              {
+                graphic_context[n]->compose=InCompositeOp;
+                break;
+              }
             if (LocaleCompare("Out",token) == 0)
-              graphic_context[n]->compose=OutCompositeOp;
+              {
+                graphic_context[n]->compose=OutCompositeOp;
+                break;
+              }
             if (LocaleCompare("Atop",token) == 0)
-              graphic_context[n]->compose=AtopCompositeOp;
+              {
+                graphic_context[n]->compose=AtopCompositeOp;
+                break;
+              }
             if (LocaleCompare("Xor",token) == 0)
-              graphic_context[n]->compose=XorCompositeOp;
+              {
+                graphic_context[n]->compose=XorCompositeOp;
+                break;
+              }
             if (LocaleCompare("Plus",token) == 0)
-              graphic_context[n]->compose=PlusCompositeOp;
+              {
+                graphic_context[n]->compose=PlusCompositeOp;
+                break;
+              }
             if (LocaleCompare("Minus",token) == 0)
-              graphic_context[n]->compose=MinusCompositeOp;
+              {
+                graphic_context[n]->compose=MinusCompositeOp;
+                break;
+              }
             if (LocaleCompare("Add",token) == 0)
-              graphic_context[n]->compose=AddCompositeOp;
+              {
+                graphic_context[n]->compose=AddCompositeOp;
+                break;
+              }
             if (LocaleCompare("Subtract",token) == 0)
-              graphic_context[n]->compose=SubtractCompositeOp;
+              {
+                graphic_context[n]->compose=SubtractCompositeOp;
+                break;
+              }
             if (LocaleCompare("Difference",token) == 0)
-              graphic_context[n]->compose=DifferenceCompositeOp;
+              {
+                graphic_context[n]->compose=DifferenceCompositeOp;
+                break;
+              }
             if (LocaleCompare("Multiply",token) == 0)
-              graphic_context[n]->compose=MultiplyCompositeOp;
+              {
+                graphic_context[n]->compose=MultiplyCompositeOp;
+                break;
+              }
             if (LocaleCompare("Bumpmap",token) == 0)
-              graphic_context[n]->compose=BumpmapCompositeOp;
+              {
+                graphic_context[n]->compose=BumpmapCompositeOp;
+                break;
+              }
             if (LocaleCompare("Copy",token) == 0)
-              graphic_context[n]->compose=CopyCompositeOp;
+              {
+                graphic_context[n]->compose=CopyCompositeOp;
+                break;
+              }
             if (LocaleCompare("CopyRed",token) == 0)
-              graphic_context[n]->compose=CopyRedCompositeOp;
+              {
+                graphic_context[n]->compose=CopyRedCompositeOp;
+                break;
+              }
             if (LocaleCompare("CopyGreen",token) == 0)
-              graphic_context[n]->compose=CopyGreenCompositeOp;
+              {
+                graphic_context[n]->compose=CopyGreenCompositeOp;
+                break;
+              }
             if (LocaleCompare("CopyBlue",token) == 0)
-              graphic_context[n]->compose=CopyBlueCompositeOp;
+              {
+                graphic_context[n]->compose=CopyBlueCompositeOp;
+                break;
+              }
             if (LocaleCompare("CopyOpacity",token) == 0)
-              graphic_context[n]->compose=CopyOpacityCompositeOp;
+              {
+                graphic_context[n]->compose=CopyOpacityCompositeOp;
+                break;
+              }
             if (LocaleCompare("Clear",token) == 0)
-              graphic_context[n]->compose=ClearCompositeOp;
+              {
+                graphic_context[n]->compose=ClearCompositeOp;
+                break;
+              }
             primitive_type=ImagePrimitive;
             break;
           }
@@ -1933,8 +2067,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               {
                 if (graphic_context[n]->clip_path != (char *) NULL)
                   {
-                    ClipImage(graphic_context[n-1]->canvas,
-                      graphic_context[n]->canvas,graphic_context[n]->clip_path);
+                    ClipImage(graphic_context[n-1]->canvas,graphic_context[n]);
                     DestroyImage(graphic_context[n]->canvas);
                   }
                 DestroyDrawInfo(graphic_context[n]);
@@ -2106,22 +2239,40 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             if (LocaleCompare("butt",token) == 0)
-              graphic_context[n]->linecap=ButtCap;
+              {
+                graphic_context[n]->linecap=ButtCap;
+                break;
+              }
             if (LocaleCompare("round",token) == 0)
-              graphic_context[n]->linecap=RoundCap;
+              {
+                graphic_context[n]->linecap=RoundCap;
+                break;
+              }
             if (LocaleCompare("square",token) == 0)
-              graphic_context[n]->linecap=SquareCap;
+              {
+                graphic_context[n]->linecap=SquareCap;
+                break;
+              }
             break;
           }
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
           {
             GetToken(q,&q,token);
             if (LocaleCompare("butt",token) == 0)
-              graphic_context[n]->linejoin=MiterJoin;
+              {
+                graphic_context[n]->linejoin=MiterJoin;
+                break;
+              }
             if (LocaleCompare("round",token) == 0)
-              graphic_context[n]->linejoin=RoundJoin;
+              {
+                graphic_context[n]->linejoin=RoundJoin;
+                break;
+              }
             if (LocaleCompare("square",token) == 0)
-              graphic_context[n]->linejoin=BevelJoin;
+              {
+                graphic_context[n]->linejoin=BevelJoin;
+                break;
+              }
             break;
           }
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
@@ -2467,14 +2618,23 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         graphic_context[n]->affine.ry*point.y+graphic_context[n]->affine.tx;
       primitive_info[i].point.y=graphic_context[n]->affine.rx*point.x+
         graphic_context[n]->affine.sy*point.y+graphic_context[n]->affine.ty;
+      point=primitive_info[i].point;
+      if (point.x < graphic_context[n]->bounds.x1)
+        graphic_context[n]->bounds.x1=point.x;
+      if (point.y < graphic_context[n]->bounds.y1)
+        graphic_context[n]->bounds.y1=point.y;
+      if (point.x > graphic_context[n]->bounds.x2)
+        graphic_context[n]->bounds.x2=point.x;
+      if (point.y > graphic_context[n]->bounds.y2)
+        graphic_context[n]->bounds.y2=point.y;
     }
-    (void) DrawPrimitive(graphic_context[n],primitive_info,
-      graphic_context[n]->canvas);
+    (void) DrawPrimitive(graphic_context[n]->canvas,
+      graphic_context[n],primitive_info);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
   }
   if (graphic_context[n]->debug)
-    (void) fprintf(stdout,"end vector-graphics\n");
+    (void) fprintf(stdout,"end draw-image (%.2fu)\n",GetUserTime(&timer));
   /*
     Free resources.
   */
@@ -2638,6 +2798,9 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   SegmentInfo
     bounds;
 
+  TimerInfo
+    timer;
+
   /*
     Compute bounding box.
   */
@@ -2646,6 +2809,11 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   assert(draw_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (draw_info->debug)
+    {
+      GetTimerInfo(&timer);
+      (void) fprintf(stdout,"    begin draw-polygon\n");
+    }
   fill=(primitive_info->method == FillToBorderMethod) ||
     (primitive_info->method == FloodfillMethod);
   fill_color=draw_info->fill;
@@ -2844,6 +3012,8 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
     if (!SyncImagePixels(image))
       break;
   }
+  if (draw_info->debug)
+    (void) fprintf(stdout,"    end draw-polygon (%.2fu)\n",GetUserTime(&timer));
 }
 
 /*
@@ -2862,16 +3032,16 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
 %
 %  The format of the DrawPrimitive method is:
 %
-%      void DrawPrimitive(const DrawInfo *draw_info,
-%        PrimitiveInfo *primitive_info,Image *image)
+%      void DrawPrimitive(Image *image,const DrawInfo *draw_info,
+%        PrimitiveInfo *primitive_info)
 %
 %  A description of each parameter follows:
+%
+%    o image: The image.
 %
 %    o draw_info: The draw info.
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
-%
-%    o image: The image.
 %
 %
 */
@@ -2946,15 +3116,15 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
     if (coordinates <= 0)
       {
         coordinates=primitive_info[i].coordinates;
-        (void) fprintf(stdout,"  begin open (%d)\n",coordinates);
+        (void) fprintf(stdout,"    begin open (%d)\n",coordinates);
         p=point;
       }
     point=primitive_info[i].point;
     if ((fabs(q.x-point.x) > MagickEpsilon) ||
         (fabs(q.y-point.y) > MagickEpsilon))
-      (void) fprintf(stdout,"    %d: %g,%g\n",coordinates,point.x,point.y);
+      (void) fprintf(stdout,"      %d: %g,%g\n",coordinates,point.x,point.y);
     else
-      (void) fprintf(stdout,"    %d: %g,%g (duplicate)\n",coordinates,point.x,
+      (void) fprintf(stdout,"      %d: %g,%g (duplicate)\n",coordinates,point.x,
         point.y);
     q=point;
     coordinates--;
@@ -2962,14 +3132,14 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
       continue;
     if ((fabs(p.x-point.x) > MagickEpsilon) ||
         (fabs(p.y-point.y) > MagickEpsilon))
-      (void) fprintf(stdout,"  end q (%d)\n",coordinates);
+      (void) fprintf(stdout,"    end q (%d)\n",coordinates);
     else
-      (void) fprintf(stdout,"  end open (%d)\n",coordinates);
+      (void) fprintf(stdout,"    end open (%d)\n",coordinates);
   }
 }
 
-static unsigned int DrawPrimitive(const DrawInfo *draw_info,
-  const PrimitiveInfo *primitive_info,Image *image)
+static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
+  const PrimitiveInfo *primitive_info)
 {
   int
     y;
@@ -2981,9 +3151,17 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
   register PixelPacket
     *q;
 
+  TimerInfo
+    timer;
+
   unsigned int
     status;
 
+  if (draw_info->debug)
+    {
+      GetTimerInfo(&timer);
+      (void) fprintf(stdout,"  begin draw-primitive\n");
+    }
   status=True;
   x=(int) ceil(primitive_info->point.x-0.5);
   y=(int) ceil(primitive_info->point.y-0.5);
@@ -3324,6 +3502,8 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
       break;
     }
   }
+  if (draw_info->debug)
+    (void) fprintf(stdout,"  end draw-primitive (%.2fu)\n",GetUserTime(&timer));
   return(status);
 }
 
@@ -3447,12 +3627,20 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
   register int
     i;
 
+  TimerInfo
+    timer;
+
   unsigned int
     number_vertices;
 
   /*
     Clone the polygon primitive.
   */
+  if (draw_info->debug)
+    {
+      GetTimerInfo(&timer);
+      (void) fprintf(stdout,"    begin draw-stroke-polygon\n");
+    }
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
   closed_path=(primitive_info[i-1].point.x == primitive_info[0].point.x) &&
     (primitive_info[i-1].point.y == primitive_info[0].point.y);
@@ -3932,6 +4120,9 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
       DrawRoundLinecap(draw_info,&polygon_primitive[number_vertices-1],image);
     }
   LiberateMemory((void **) &polygon_primitive);
+  if (draw_info->debug)
+    (void) fprintf(stdout,"    end draw-stroke-polygon (%.2fu)\n",
+      GetUserTime(&timer));
 }
 
 /*

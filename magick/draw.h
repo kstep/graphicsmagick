@@ -10,9 +10,8 @@ extern "C" {
 
 typedef enum
 {
-  UserSpace,
-  ObjectBoundingBox,
-  UserSpaceOnUse
+  UserSpaceOnUse,
+  ObjectBoundingBox
 } DrawUnits;
 
 /*
@@ -118,6 +117,9 @@ typedef struct _DrawInfo
 
   char
     *clip_path;
+
+  SegmentInfo
+    bounds;
 
   Image
     *canvas;
