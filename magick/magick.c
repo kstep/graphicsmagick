@@ -346,6 +346,8 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
     }
   entry->previous=p;
   entry->next=p->next;
+  if (p->next != (MagickInfo *) NULL)
+    p->next->previous=entry;
   p->next=entry;
   return(entry);
 }
@@ -433,32 +435,27 @@ Export MagickInfo *SetMagickInfo(const char *tag)
 Export unsigned int UnregisterMagickInfo(const char *tag)
 {
   MagickInfo
-    *magick_info;
-
-  register MagickInfo
     *p;
 
-  for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
-    {
-      if (LocaleCompare(p->tag,tag) == 0)
-        {
-          FreeMemory((void **) &p->tag);
-          FreeMemory((void **) &p->description);
-          FreeMemory((void **) &p->module);
-          if (p->previous != (MagickInfo *) NULL)
-            p->previous->next=p->next;
-          else
-            {
-              magick_info=p->next;
-              if (p->next != (MagickInfo *) NULL)
-                p->next->previous=(MagickInfo *) NULL;
-            }
-          if (p->next != (MagickInfo *) NULL)
-            p->next->previous=p->previous;
-          magick_info=p;
-          FreeMemory((void **) &magick_info);
-          return(True);
-        }
-    }
+  p=magick_info_list;
+  while ( p != (MagickInfo *) NULL )
+  {
+    if (LocaleCompare(p->tag,tag) == 0)
+      {
+        if (p->next != (MagickInfo *) NULL)
+          p->next->previous=p->previous;
+        if (p->previous != (MagickInfo *) NULL)
+          p->previous->next=p->next;
+        else
+          magick_info_list=p->next;
+
+        FreeMemory((void **) &p->tag);
+        FreeMemory((void **) &p->description);
+        FreeMemory((void **) &p->module);
+        FreeMemory((void **) &p);
+        return(True);
+      }
+    p=p->next;
+  }
   return(False);
 }
