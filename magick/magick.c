@@ -281,7 +281,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
 #endif
     }
   if ((tag == (char *) NULL) || (*tag == '\0'))
-    return((MagickInfo *) NULL);
+    return(magick_list);
   /*
     Find tag in list
   */

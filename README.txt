@@ -423,7 +423,7 @@ MAGICK DELEGATES
 
     o ImageMagick requires the LCMS library available from
 
-          ttp://www.abaforum.es/martim/lcms.htm
+          http://www.abaforum.es/martim/lcms.htm
 
       to perform color management.
 

@@ -447,22 +447,16 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         image->chromaticity.blue_primary.x=chromaticity[4];
         image->chromaticity.blue_primary.y=chromaticity[5];
       }
-    length=0;
-    text=(char *) NULL;
 #if defined(ICC_SUPPORT)
-    TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text);
-    ReadColorProfile(text,length,image);
+    if (TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text) == 1)
+      ReadColorProfile(text,length,image);
 #endif
 #if defined(IPTC_SUPPORT)
-    length=0;
-    text=(char *) NULL;
 #if defined(PHOTOSHOP_SUPPORT)
-    TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text);
-    if (length > 0)
+    if (TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text) == 1)
       ReadNewsProfile(text,length,image,TIFFTAG_PHOTOSHOP);
 #else
-    TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&text);
-    if (length > 0)
+    if (TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&text) == 1)
       {
         if (TIFFIsByteSwapped(tiff))
           TIFFSwabArrayOfLong((uint32 *) text,length);
@@ -516,13 +510,27 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     value=0;
     TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages);
     image->scene=value;
-    text=(char *) NULL;
-    TIFFGetField(tiff,TIFFTAG_PAGENAME,&text);
-    if (text != (char *) NULL)
+    if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
+      (void) SetImageAttribute(image,"Artist",text);
+    if (TIFFGetField(tiff,TIFFTAG_DATETIME,&text) == 1)
+      (void) SetImageAttribute(image,"TimeStamp",text);
+    if (TIFFGetField(tiff,TIFFTAG_SOFTWARE,&text) == 1)
+      (void) SetImageAttribute(image,"Software",text);
+    if (TIFFGetField(tiff,TIFFTAG_DOCUMENTNAME,&text) == 1)
+      (void) SetImageAttribute(image,"Document",text);
+    if (TIFFGetField(tiff,TIFFTAG_MAKE,&text) == 1)
+      (void) SetImageAttribute(image,"Make",text);
+    if (TIFFGetField(tiff,TIFFTAG_MODEL,&text) == 1)
+      (void) SetImageAttribute(image,"Model",text);
+    if (TIFFGetField(tiff,33432,&text) == 1)
+      (void) SetImageAttribute(image,"Copyright",text);
+    if (TIFFGetField(tiff,33423,&text) == 1)
+      (void) SetImageAttribute(image,"Kodak-33423",text);
+    if (TIFFGetField(tiff,36867,&text) == 1)
+      (void) SetImageAttribute(image,"Kodak-36867",text);
+    if (TIFFGetField(tiff,TIFFTAG_PAGENAME,&text) == 1)
       (void) SetImageAttribute(image,"Label",text);
-    text=(char *) NULL;
-    TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text);
-    if (text != (char *) NULL)
+    if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)
       (void) SetImageAttribute(image,"Comment",text);
     if (range < 0)
       range=max_sample_value;
@@ -1507,14 +1515,35 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       WriteNewsProfile(tiff,TIFFTAG_RICHTIFFIPTC,image);
 #endif
 #endif
-    TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
-    TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
     if (GetNumberScenes(image) > 1)
       {
         TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
         TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short) image->scene,
           GetNumberScenes(image));
       }
+    attribute=GetImageAttribute(image,"Artist");
+    if (attribute != (ImageAttribute *) NULL)
+      TIFFSetField(tiff,TIFFTAG_ARTIST,attribute->value);
+    attribute=GetImageAttribute(image,"TimeStamp");
+    if (attribute != (ImageAttribute *) NULL)
+      TIFFSetField(tiff,TIFFTAG_DATETIME,attribute->value);
+    attribute=GetImageAttribute(image,"Make");
+    if (attribute != (ImageAttribute *) NULL)
+      TIFFSetField(tiff,TIFFTAG_MAKE,attribute->value);
+    attribute=GetImageAttribute(image,"Model");
+    if (attribute != (ImageAttribute *) NULL)
+      TIFFSetField(tiff,TIFFTAG_MODEL,attribute->value);
+    TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
+    TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
+    attribute=GetImageAttribute(image,"Copyright");
+    if (attribute != (ImageAttribute *) NULL)
+      TIFFSetField(tiff,33432,attribute->value);
+    attribute=GetImageAttribute(image,"Kodak-33423");
+    if (attribute != (ImageAttribute *) NULL)
+      TIFFSetField(tiff,33423,attribute->value);
+    attribute=GetImageAttribute(image,"Kodak-36867");
+    if (attribute != (ImageAttribute *) NULL)
+      TIFFSetField(tiff,36867,attribute->value);
     attribute=GetImageAttribute(image,"Label");
     if (attribute != (ImageAttribute *) NULL)
       TIFFSetField(tiff,TIFFTAG_PAGENAME,attribute->value);
