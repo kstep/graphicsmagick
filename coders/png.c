@@ -4281,9 +4281,9 @@ ModuleExport void UnregisterPNGImage(void)
 %    Improve selection of color type (use indexed-colour or indexed-colour
 %    with tRNS when 256 or fewer unique RGBA values are present).
 %
-%    Figure out what to do with "dispose=<restore-to-previous>" (dispose==3)
+%    Figure out what to do with "dispose=<restore-to-previous>" (dispose==4)
 %    This will be complicated if we limit ourselves to generating MNG-LC
-%    files.  For now we ignore disposal method 3 and simply overlay the next
+%    files.  For now we ignore disposal method 4 and simply overlay the next
 %    image on it.
 %
 %    Check for identical PLTE's or PLTE/tRNS combinations and use a
@@ -4803,7 +4803,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         ../glennrp Feb 99.
      */
      /*
-        Write the MNG version 0.96 signature and MHDR chunk.
+        Write the MNG version 1.0 signature and MHDR chunk.
      */
      (void) WriteBlob(image,8,"\212MNG\r\n\032\n");
      (void) WriteBlobMSBULong(image,28L);  /* chunk data length=28 */
@@ -5649,6 +5649,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       }
     ping_info->interlace_type=image_info->interlace != NoInterlace;
 
+    if (image->dispose == 4)
+       framing_mode=3;
+
     if (need_fram && adjoin && ((image->delay != delay) ||
         (framing_mode != old_framing_mode)))
       {
@@ -5943,9 +5946,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         else
           framing_mode=3;
       }
-    if (need_fram && (image->dispose == 3))
+    if (!need_fram && (image->dispose >= 3))
        ThrowException(&image->exception,(ExceptionType) DelegateError,
-         "Cannot convert GIF with disposal method 3 to MNG-LC",(char *) NULL);
+         "Cannot convert GIF with disposal method 4 to MNG-LC",(char *) NULL);
     image->depth=save_image_depth;
     /*
       Free PNG resources.
