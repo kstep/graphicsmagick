@@ -1074,7 +1074,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       normalize_map[i].opacity=0;
     else
       if (i > (long) high.opacity)
-        normalize_map[i].opacity=65535L;
+        normalize_map[i].opacity=(Quantum) 65535L;
       else
         if (low.opacity != high.opacity)
           normalize_map[i].opacity=ScaleShortToQuantum(
