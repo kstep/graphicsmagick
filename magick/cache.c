@@ -145,10 +145,9 @@ static SyncPixelHandler
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquireCacheNexus() acquires pixels from the in-memory or disk
-%  pixel cache as defined by the geometry parameters.   A pointer to the
-%  pixels is returned if the pixels are transferred, otherwise a NULL is
-%  returned.
+%  AcquireCacheNexus() acquires pixels from the in-memory or disk pixel cache
+%  as defined by the geometry parameters.   A pointer to the pixels is
+%  returned if the pixels are transferred, otherwise a NULL is returned.
 %
 %  The format of the AcquireCacheNexus() method is:
 %
