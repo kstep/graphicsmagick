@@ -58,12 +58,17 @@
 #if defined(HasZLIB)
 #include "zlib.h"
 #endif
+^L
+/*
+  Define declarations.
+*/
+#define DefaultCacheMemory  ((1UL << (8*sizeof(off_t)-1))-1)
 
 /*
   Global declarations.
 */
 static off_t
-  free_memory = ~0;
+  cache_memory = DefaultCacheMemory;
 
 static SemaphoreInfo
   *cache_semaphore = (SemaphoreInfo *) NULL;
@@ -403,7 +408,7 @@ static void DestroyCacheInfo(Cache cache)
     case MemoryCache:
     {
       LiberateMemory((void **) &cache_info->pixels);
-      (void) GetCacheMemory(length);
+      (void) GetCacheMemory(-length);
       break;
     }
     case MemoryMappedCache:
@@ -668,8 +673,8 @@ MagickExport void GetCacheInfo(Cache *cache)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCacheMemory() adjusts the amount of free cache memory and then
-%  returns the resulting value.
+%  Method GetCacheMemory() acquires memory from, or returns memory to, the
+%  cache memory pool.  The method returns the available memory in cache pool.
 %
 %  The format of the GetCacheMemory() method is:
 %
@@ -677,17 +682,17 @@ MagickExport void GetCacheInfo(Cache *cache)
 %
 %  A description of each parameter follows:
 %
-%    o memory: Specifies the adjustment to the cache memory.  Use 0 to
-%      return the current free memory in the cache.
+%    o memory: Specifies how much memory to acquire from, or return to, the
+%      cache memory pool.
 %
 %
 */
 static off_t GetCacheMemory(const off_t memory)
 {
   AcquireSemaphoreInfo(&cache_semaphore);
-  free_memory+=memory;
+  cache_memory-=memory;
   LiberateSemaphoreInfo(&cache_semaphore);
-  return(free_memory);
+  return(cache_memory);
 }
 
 /*
@@ -1279,7 +1284,7 @@ MagickExport unsigned int OpenCache(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (void *) NULL);
-  if (free_memory == ~0)
+  if (cache_memory == DefaultCacheMemory)
     {
       char
         *threshold;
@@ -1293,6 +1298,7 @@ MagickExport unsigned int OpenCache(Image *image)
       threshold=getenv("MAGICK_CACHE_THRESHOLD");
       if (threshold != (char *) NULL)
         SetCacheThreshold(atol(threshold));
+      (void) GetCacheMemory(1);
     }
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
@@ -1307,7 +1313,7 @@ MagickExport unsigned int OpenCache(Image *image)
         Free memory-based cache resources.
       */
       if (cache_info->type == MemoryCache)
-        (void) GetCacheMemory(length);
+        (void) GetCacheMemory(-length);
       if (cache_info->type == MemoryMappedCache)
         (void) UnmapBlob(cache_info->pixels,length);
     }
@@ -1356,7 +1362,7 @@ MagickExport unsigned int OpenCache(Image *image)
           /*
             Create in-memory pixel cache.
           */
-          (void) GetCacheMemory(-length);
+          (void) GetCacheMemory(length);
           cache_info->storage_class=image->storage_class;
           cache_info->colorspace=image->colorspace;
           cache_info->type=MemoryCache;
@@ -1761,7 +1767,7 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 */
 MagickExport void SetCacheThreshold(const long threshold)
 {
-  free_memory=1024*1024*threshold;
+  cache_memory=1024*1024*threshold;
 }
 
 /*
