@@ -335,7 +335,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
     *file,
     *parameter_file;
 
-  int
+  long
     quant,
     vertical_factor;
 
@@ -390,8 +390,8 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
           q=Max((DefaultCompressionQuality-image_info->quality)/8.0,1.0);
           for (i=0; i < 64; i++)
           {
-            quant=(int) Min(Max(q*q_matrix[i]+0.5,1.0),255.0);
-            (void) fprintf(parameter_file," %d",quant);
+            quant=(long) Min(Max(q*q_matrix[i]+0.5,1.0),255.0);
+            (void) fprintf(parameter_file," %ld",quant);
             if ((i % 8) == 7)
               (void) fprintf(parameter_file,"\n");
           }
@@ -401,8 +401,8 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
           q=Max((image_info->quality-DefaultCompressionQuality)*2.0,1.0);
           for (i=0; i < 64; i++)
           {
-            quant=(int) Min(Max(q_matrix[i]/q,1.0),255.0);
-            (void) fprintf(parameter_file," %d",quant);
+            quant=(long) Min(Max(q_matrix[i]/q,1.0),255.0);
+            (void) fprintf(parameter_file," %ld",quant);
             if ((i % 8) == 7)
               (void) fprintf(parameter_file,"\n");
           }
@@ -463,34 +463,30 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   vertical_factor=2;
   if (image_info->sampling_factor != (char *) NULL)
     {
-    long
-      factors;
+      long
+        count,
+        horizontal_factor;
 
-    int
-      horizontal_factor;
-
-    horizontal_factor=2;
-    factors=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
-      &vertical_factor);
-    if (factors != 2)
-      vertical_factor=horizontal_factor;
-    if (mpeg)
-      {
-        if ((horizontal_factor != 2) || (vertical_factor != 2))
+      horizontal_factor=2;
+      count=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
+        &vertical_factor);
+      if (count != 2)
+        vertical_factor=horizontal_factor;
+      if (mpeg)
+        {
+          if ((horizontal_factor != 2) || (vertical_factor != 2))
+            {
+              (void) fclose(file);
+              return(False);
+            }
+        }
+      else
+        if ((horizontal_factor != 2) ||
+            ((vertical_factor != 1) && (vertical_factor != 2)))
           {
-            fclose(file);
+            (void) fclose(file);
             return(False);
           }
-      }
-    else
-      {
-        if ((horizontal_factor != 2) || ((vertical_factor != 1) &&
-            (vertical_factor != 2)))
-          {
-            fclose(file);
-            return(False);
-          }
-      }
     }
   (void) fprintf(file,"%d\n",vertical_factor==2 ? 1 : 2); /* chroma format */
   (void) fprintf(file,"%d\n",mpeg ? 1 : 2);  /* video format */
@@ -599,7 +595,6 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   clone_info=CloneImageInfo(image_info);
   (void) strncpy(clone_info->unique,basename,MaxTextExtent-1);
   status=WriteMPEGParameterFiles(clone_info,coalesce_image);
-
   if (status == False)
     {
       if (coalesce_image != image)
@@ -615,7 +610,6 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(DelegateWarning,"Unable to write MPEG parameters",
         image)
     }
-
   count=0;
   clone_info->interlace=PlaneInterlace;
   for (p=coalesce_image; p != (Image *) NULL; p=p->next)
@@ -640,7 +634,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
         default:
         {
           FormatString(filename,"%.1024s.%lu.yuv",basename,p->scene);
-    file=open(filename,O_WRONLY | O_CREAT | O_BINARY,0777);
+          file=open(filename,O_WRONLY | O_CREAT | O_BINARY,0777);
           if (file == -1)
             break;
           (void) write(file,blob,length);
