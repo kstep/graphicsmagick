@@ -3277,10 +3277,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("comment",option+1) == 0)
           {
+            (void) SetImageAttribute(*image,"comment",(char *) NULL);
             if (*option == '-')
               (void) SetImageAttribute(*image,"comment",argv[++i]);
-            else
-              (void) SetImageAttribute(*image,"comment",(char *) NULL);
             continue;
           }
         if (LocaleCompare("compose",option+1) == 0)
