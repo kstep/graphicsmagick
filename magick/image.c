@@ -6204,15 +6204,19 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           blue=red_map[q->red+B]+green_map[q->green+B]+blue_map[q->blue+B];
           if (colorspace == sRGBColorspace)
             {
-              red=sRGBMap[Min((int) DownScale(red),350)];
-              green=sRGBMap[Min((int) DownScale(green),350)];
-              blue=sRGBMap[Min((int) DownScale(blue),350)];
+              red=sRGBMap[(red < 0) ? 0 : (red > 350) ? 350 : (int) (red+0.5)];
+              green=sRGBMap[
+                (green < 0) ? 0 : (green > 350) ? 350 : (int) (green+0.5)];
+              blue=
+                sRGBMap[(blue < 0) ? 0 : (blue > 350) ? 350 : (int) (blue+0.5)];
             }
           if (colorspace == YCCColorspace)
             {
-              red=YCCMap[Min((int) DownScale(red),350)];
-              green=YCCMap[Min((int) DownScale(green),350)];
-              blue=YCCMap[Min((int) DownScale(blue),350)];
+              red=YCCMap[(red < 0) ? 0 : (red > 350) ? 350 : (int) (red+0.5)];
+              green=YCCMap[
+                (green < 0) ? 0 : (green > 350) ? 350 : (int) (green+0.5)];
+              blue=
+                YCCMap[(blue < 0) ? 0 : (blue > 350) ? 350 : (int) (blue+0.5)];
             }
           q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
           q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
@@ -6244,15 +6248,18 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           blue_map[image->colormap[i].blue+B];
         if (colorspace == sRGBColorspace)
           {
-            red=sRGBMap[(int) DownScale(red)];
-            green=sRGBMap[(int) DownScale(green)];
-            blue=sRGBMap[(int) DownScale(blue)];
+            red=sRGBMap[(red < 0) ? 0 : (red > 350) ? 350 : (int) (red+0.5)];
+            green=sRGBMap[
+              (green < 0) ? 0 : (green > 350) ? 350 : (int) (green+0.5)];
+            blue=
+              sRGBMap[(blue < 0) ? 0 : (blue > 350) ? 350 : (int) (blue+0.5)];
           }
         if (colorspace == YCCColorspace)
           {
-            red=YCCMap[(int) DownScale(red)];
-            green=YCCMap[(int) DownScale(green)];
-            blue=YCCMap[(int) DownScale(blue)];
+            red=YCCMap[(red < 0) ? 0 : (red > 350) ? 350 : (int) (red+0.5)];
+            green=
+              YCCMap[(green < 0) ? 0 : (green > 350) ? 350 : (int) (green+0.5)];
+            blue=YCCMap[(blue < 0) ? 0 : (blue > 350) ? 350 : (int) (blue+0.5)];
           }
         image->colormap[i].red=
           (red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
