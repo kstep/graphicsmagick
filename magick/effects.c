@@ -206,7 +206,7 @@ Export Image *BlurImage(Image *image,const unsigned int order,
       i++;
     }
   }
-  kernel[i/2]=0.5*order;
+  kernel[i/2]=13.0/order;
   blur_image=ConvolveImage(image,order,kernel,exception);
   FreeMemory((void *) &kernel);
   return(blur_image);
@@ -2471,7 +2471,7 @@ Export Image *SharpenImage(Image *image,const unsigned int order,
       i++;
     }
   }
-  kernel[i/2]=0.5*order;
+  kernel[i/2]=13.0/order;
   sharpen_image=ConvolveImage(image,order,kernel,exception);
   FreeMemory((void *) &kernel);
   return(sharpen_image);
