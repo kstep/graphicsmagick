@@ -851,7 +851,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           format=4;
           if ((image->storage_class == DirectClass) ||
               !IsMonochromeImage(image,&image->exception))
-  			    SetImageType(image,BilevelType);
+            SetImageType(image,BilevelType);
         }
       else
         if ((LocaleCompare(image_info->magick,"PNM") == 0) &&
@@ -908,8 +908,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PBM image.
         */
-    	  polarity=PixelIntensityToQuantum(&image->colormap[0]) < (0.5*MaxRGB);
-  		  if (image->colors == 2)
+        polarity=PixelIntensityToQuantum(&image->colormap[0]) < (0.5*MaxRGB);
+        if (image->colors == 2)
           polarity=PixelIntensityToQuantum(&image->colormap[0]) <
             PixelIntensityToQuantum(&image->colormap[1]);
         i=0;
@@ -1248,7 +1248,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                 ((ScaleQuantumToChar(p->green) & 0xe0) >> 3) |
                 ((ScaleQuantumToChar(p->blue) & 0xc0) >> 6));
             else
-              pixel=(Quantum) ((red_map[i][j][ScaleQuantumToChar(p->red)] & 0xe0) |
+              pixel=(Quantum)
+                ((red_map[i][j][ScaleQuantumToChar(p->red)] & 0xe0) |
                 ((green_map[i][j][ScaleQuantumToChar(p->green)] & 0xe0) >> 3) |
                 ((blue_map[i][j][ScaleQuantumToChar(p->blue)] & 0xc0) >> 6));
             (void) WriteBlobByte(image,pixel);
