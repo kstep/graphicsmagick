@@ -133,7 +133,7 @@ typedef struct _PrimitiveInfo
   PrimitiveType
     primitive;
 
-  unsigned int
+  unsigned long
     coordinates;
 
   PaintMethod

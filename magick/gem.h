@@ -13,7 +13,7 @@ extern "C" {
 */
 extern MagickExport double
   ExpandAffine(const AffineMatrix *),
-  Permutate(int,int);
+  Permutate(long,long);
 
 extern MagickExport int
   GetOptimalKernelWidth(const double,const double),

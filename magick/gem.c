@@ -773,7 +773,7 @@ MagickExport void Modulate(double percent_hue,double percent_saturation,
 %
 %  The format of the Permutate method is:
 %
-%      void Permutate(int n,int k)
+%      void Permutate(long n,long k)
 %
 %  A description of each parameter follows:
 %
@@ -783,7 +783,7 @@ MagickExport void Modulate(double percent_hue,double percent_saturation,
 %
 %
 */
-MagickExport double Permutate(int n,int k)
+MagickExport double Permutate(long n,long k)
 {
   double
     r;

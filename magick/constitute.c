@@ -127,12 +127,14 @@ MagickExport Image *ConstituteImage(const unsigned int width,
   int
     y;
 
-  register int
-    i,
-    x;
-
   PixelPacket
     *q;
+
+  register int
+    x;
+
+  register size_t
+    i;
 
   /*
     Allocate image structure.
@@ -628,11 +630,13 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p;
+
+  register size_t
+    i;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
