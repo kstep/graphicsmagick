@@ -330,13 +330,13 @@ Export void ColorFloodfillImage(Image *image,const PixelPacket *target,
             *q=(*p);
           else
             {
-              q->red=(Quantum) ((unsigned long) (p->red*p->opacity+
+              q->red=((unsigned long) (p->red*p->opacity+
                 q->red*(Opaque-p->opacity))/Opaque);
-              q->green=(Quantum) ((unsigned long) (p->green*p->opacity+
+              q->green=((unsigned long) (p->green*p->opacity+
                 q->green*(Opaque-p->opacity))/Opaque);
-              q->blue=(Quantum) ((unsigned long) (p->blue*p->opacity+
+              q->blue=((unsigned long) (p->blue*p->opacity+
                 q->blue*(Opaque-p->opacity))/Opaque);
-              q->opacity=(Quantum) ((unsigned long) (p->opacity*
+              q->opacity=((unsigned long) (p->opacity*
                 p->opacity+q->opacity*(Opaque-p->opacity))/Opaque);
             }
         }
