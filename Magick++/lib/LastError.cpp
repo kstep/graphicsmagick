@@ -2,7 +2,7 @@
 //
 // Copyright Bob Friesenhahn, 1999, 2000
 //
-// Implementation of MagickError (ImageMagick error handler)
+// Implementation of LastError (ImageMagick error handler)
 //
 
 #define MAGICK_IMPLEMENTATION
@@ -15,138 +15,142 @@
 
 using namespace std;
 
+#include "Magick++/Thread.h"
 #include "Magick++/LastError.h"
 #include "Magick++/Exception.h"
 
 // Magick++ error/warning callback functions
 namespace Magick
 {
-    extern "C" {
-    void LastErrorHandler( const MagickLib::ErrorType error_,
+  extern "C" {
+  void LastErrorHandler( const MagickLib::ErrorType error_,
+			 const char *message_ ,
+			 const char *qualifier_ );
+  void LastWarningHandler( const MagickLib::WarningType warning_,
 			   const char *message_ ,
 			   const char *qualifier_ );
-    void LastWarningHandler( const MagickLib::WarningType warning_,
-			     const char *message_ ,
-			     const char *qualifier_ );
-    }
+#if defined(HasPTHREADS)
+  void LastErrorThreadSpecificDestructor ( void * tsd_ );
+  void LastErrorOnce( void );
+#endif
+  }
 
-    // Format and throw exception
-    void throwException( LastErrorBase &lastError_ );
+  // Format and throw exception
+  void throwException( LastErrorBase &lastError_ );
 
-    //
-    // Singleton class for single-threaded use
-    //
-    class LastErrorST : public LastErrorBase
-    {
-	// Accessed only via LastError
-	friend class LastError;
+  //
+  // Class to contain actual error data
+  //
+  class LastErrorData : public LastErrorBase
+  {
+    // Accessed only via LastError
+    friend class LastError;
 
-	private:
+  public:
+    // Destructor
+    ~LastErrorData( void );
 
-	LastErrorST( void );
-	~LastErrorST( void );
+  private:
 
-	// Test to see if error or warning is set
-	bool                   isError( void ) const;
+    // Constructor
+    LastErrorData( void );
+
+    // Test to see if error or warning is set
+    bool                   isError( void ) const;
     
-	// Clear out existing error info
-	void                   clear ( void );
+    // Clear out existing error info
+    void                   clear ( void );
     
-	// Error code
-	void                   error ( MagickLib::ErrorType error_ );
-	MagickLib::ErrorType   error ( void ) const;
+    // Error code
+    void                   error ( MagickLib::ErrorType error_ );
+    MagickLib::ErrorType   error ( void ) const;
 
-	// Warning code
-	void                   warning ( MagickLib::WarningType warning_ );
-	MagickLib::WarningType warning ( void ) const;
+    // Warning code
+    void                   warning ( MagickLib::WarningType warning_ );
+    MagickLib::WarningType warning ( void ) const;
     
-	// System errno
-	void                   syserror ( int syserror_ );
-	int                    syserror ( void ) const;
+    // System errno
+    void                   syserror ( int syserror_ );
+    int                    syserror ( void ) const;
     
-	// Error message
-	void                   message ( std::string message_ );
-	std::string            message ( void ) const;
+    // Error message
+    void                   message ( std::string message_ );
+    std::string            message ( void ) const;
     
-	// Error qualifier
-	void                   qualifier ( std::string qualifier_ );
-	std::string            qualifier ( void ) const;
+    // Error qualifier
+    void                   qualifier ( std::string qualifier_ );
+    std::string            qualifier ( void ) const;
     
-	// Throw exception corresponding to error (if any)
-	void                   throwException( void );
+    // Throw exception corresponding to error (if any)
+    void                   throwException( void );
 
-	private:
+  private:
 
-	// Don't support copy constructor
-	LastErrorST ( const LastErrorST& original_ );
+    // Don't support copy constructor
+    LastErrorData ( const LastErrorData& original_ );
     
-	// Don't support assignment
-	LastErrorST& operator = ( const LastErrorST& original_ );
+    // Don't support assignment
+    LastErrorData& operator = ( const LastErrorData& original_ );
     
-	MagickLib::ErrorType   _error;
-	MagickLib::WarningType _warning;
-	int                    _syserror;
-	std::string            _message;
-	std::string            _qualifier;
-    };
+    MagickLib::ErrorType   _error;
+    MagickLib::WarningType _warning;
+    int                    _syserror;
+    std::string            _message;
+    std::string            _qualifier;
+  };
 
-    // Destruction guard class.  Calls doDelete() if program exits
-    class LastErrorGuard
-    {
-	public:
-	LastErrorGuard( void )
-	{
-	}
-	~LastErrorGuard( void )
-	{
-	    _singleton.doDelete();
-	}
-	private:
-	LastError _singleton;
-    };
+  // Destruction guard class.  Calls doDelete() if program exits
+  class LastErrorGuard
+  {
+  public:
+    LastErrorGuard( void )
+      {
+      }
+    ~LastErrorGuard( void )
+      {
+	_singleton.doDelete();
+      }
+  private:
+    LastError _singleton;
+  };
 }
-
-// Initialize LastError static members
-Magick::LastErrorBase* Magick::LastError::_instance = 0;     // LastErrorST pointer
-unsigned               Magick::LastError::_refCount = 0;     // Reference counter
-bool                   Magick::LastError::_doDelete = false; // Object is to be deleted
 
 // Allocate static guard class in this translation unit
 // Static guard class is destroyed when program exits.
 static Magick::LastErrorGuard LastErrorGuard_inst;
 
 // Constructor
-Magick::LastErrorST::LastErrorST( void )
+Magick::LastErrorData::LastErrorData( void )
   : _error(MagickLib::UndefinedError),
     _warning(MagickLib::UndefinedWarning),
     _syserror(0),
     _message(),
     _qualifier()
 {
-    // Register error callback function with ImageMagick
-    MagickLib::SetErrorHandler( LastErrorHandler );
-    MagickLib::SetWarningHandler( LastWarningHandler );
+  // Register error callback function with ImageMagick
+  MagickLib::SetErrorHandler( LastErrorHandler );
+  MagickLib::SetWarningHandler( LastWarningHandler );
 }
 
 // Destructor
-Magick::LastErrorST::~LastErrorST( void )
+Magick::LastErrorData::~LastErrorData( void )
 {
   // Nothing to do
 }
 
 //
-// LastErrorST (Single Thread) implementation
+// LastErrorData (Single Thread) implementation
 //
 
 // Test to see if object contains error
-bool Magick::LastErrorST::isError( void ) const
+bool Magick::LastErrorData::isError( void ) const
 {
   return ( _error   != MagickLib::UndefinedError ||
 	   _warning != MagickLib::UndefinedWarning );
 }
 
 // Clear out existing error info
-void Magick::LastErrorST::clear ( void )
+void Magick::LastErrorData::clear ( void )
 {
   _error     = MagickLib::UndefinedError;
   _warning   = MagickLib::UndefinedWarning;
@@ -156,58 +160,58 @@ void Magick::LastErrorST::clear ( void )
 }
 
 // Error code
-void Magick::LastErrorST::error ( MagickLib::ErrorType error_ )
+void Magick::LastErrorData::error ( MagickLib::ErrorType error_ )
 {
   _error = error_;
 }
-MagickLib::ErrorType Magick::LastErrorST::error ( void ) const
+MagickLib::ErrorType Magick::LastErrorData::error ( void ) const
 {
   return _error;
 }
 
 // Warning code
-void Magick::LastErrorST::warning ( MagickLib::WarningType warning_ )
+void Magick::LastErrorData::warning ( MagickLib::WarningType warning_ )
 {
   _warning = warning_;
 }
-MagickLib::WarningType Magick::LastErrorST::warning ( void ) const
+MagickLib::WarningType Magick::LastErrorData::warning ( void ) const
 {
   return _warning;
 }
 
 // System error
-void Magick::LastErrorST::syserror ( int syserror_ )
+void Magick::LastErrorData::syserror ( int syserror_ )
 {
   _syserror = syserror_;
 }
-int Magick::LastErrorST::syserror ( void ) const
+int Magick::LastErrorData::syserror ( void ) const
 {
   return _syserror;
 }
   
 // Error message
-void Magick::LastErrorST::message ( std::string message_ )
+void Magick::LastErrorData::message ( std::string message_ )
 {
   _message = message_;
 }
-std::string Magick::LastErrorST::message ( void ) const
+std::string Magick::LastErrorData::message ( void ) const
 {
   return _message;
 }
 
 // Error qualifier
-void  Magick::LastErrorST::qualifier ( std::string qualifier_ )
+void  Magick::LastErrorData::qualifier ( std::string qualifier_ )
 {
   _qualifier = qualifier_;
 }
-std::string Magick::LastErrorST::qualifier ( void ) const
+std::string Magick::LastErrorData::qualifier ( void ) const
 {
   return _qualifier;
 }
 
 // Throw exception corresponding to error (if any)
 // Clears error info before throw.
-void Magick::LastErrorST::throwException( void )
+void Magick::LastErrorData::throwException( void )
 {
   if ( !isError() )
     return;
@@ -219,45 +223,259 @@ void Magick::LastErrorST::throwException( void )
 // LastError (interface class) implementation
 //
 
-// Default constructor
-Magick::LastError::LastError( void )
-{
-    if ( _instance == 0 )
-	{
-	    _instance = new LastErrorST;
-	    ++_refCount;
-	}
-}
-
-// Destructor
-Magick::LastError::~LastError( void )
-{
-    if ( --_refCount == 0 && _doDelete )
-	delete _instance;
-}
-
 // Assignment operator
 Magick::LastError& Magick::LastError::operator=(const Magick::LastError& value_)
 {
-    // Nothing to assign.
-    return *this;
+  // Nothing to assign.
+  return *this;
 }
 
 // Copy constructor
 Magick::LastError::LastError( const Magick::LastError& value_ )
 {
-    // Increase reference count
-    ++value_._refCount;
+  // Increase reference count
+  value_._mutexLock->lock();
+  ++value_._refCount;
+  value_._mutexLock->unlock();
+}
+
+//
+// Pass-through methods to singleton implementation
+//
+
+// Test to see if error or warning is set
+bool Magick::LastError::isError( void ) const
+{
+  return instance()->isError();
+}
+    
+// Clear out existing error info
+void Magick::LastError::clear ( void )
+{
+  instance()->clear();
+}
+    
+// Error code
+void Magick::LastError::error ( MagickLib::ErrorType error_ )
+{
+  instance()->error(error_);
+}
+MagickLib::ErrorType Magick::LastError::error ( void ) const 
+{
+  return instance()->error();
+}
+
+// Warning code
+void Magick::LastError::warning ( MagickLib::WarningType warning_ )
+{
+  instance()->warning( warning_ );
+}
+MagickLib::WarningType Magick::LastError::warning ( void ) const
+{
+  return instance()->warning();
+}
+    
+// System errno
+void Magick::LastError::syserror ( int syserror_ )
+{
+  instance()->syserror( syserror_ );
+}
+int Magick::LastError::syserror ( void ) const
+{
+  return instance()->syserror();
+}
+    
+// Error message
+void Magick::LastError::message ( std::string message_ )
+{
+  instance()->message( message_ );
+}
+std::string Magick::LastError::message ( void ) const
+{
+  return instance()->message();
+}
+    
+// Error qualifier
+void Magick::LastError::qualifier ( std::string qualifier_ )
+{
+  instance()->qualifier( qualifier_ );
+}
+std::string Magick::LastError::qualifier ( void ) const
+{
+  return instance()->qualifier();
+}
+
+// Throw exception corresponding to error (if any)
+void Magick::LastError::throwException( void )
+{
+  instance()->throwException();
+}
+
+namespace Magick
+{
+#if defined(HasPTHREADS)
+  // Pthreads TSD
+  static pthread_key_t tsd_key;
+  static pthread_once_t key_once = PTHREAD_ONCE_INIT;
+#else
+  // Not threaded
+  static LastErrorBase* LastErrorDataInst = 0;
+#endif
+}
+// Initialize LastError static members
+Magick::MutexLock*     Magick::LastError::_mutexLock = 0;    // Mutex lock
+unsigned               Magick::LastError::_refCount = 0;     // Reference counter
+bool                   Magick::LastError::_doDelete = false; // Object is to be deleted
+
+#if defined(HasPTHREADS)
+// Destroy thread specific data for a thread
+void Magick::LastErrorThreadSpecificDestructor ( void * tsd_ )
+{
+  Magick::LastErrorData *p = (Magick::LastErrorData *)tsd_;
+  delete p;
+}
+// Called just once to initialize thread specific data key
+void Magick::LastErrorOnce( void )
+{
+  // Pthreads TSD
+  int status = pthread_key_create( &Magick::tsd_key, LastErrorThreadSpecificDestructor );
+  if ( status != 0 )
+    {
+      switch ( status )
+	{
+	case EAGAIN :
+	case ENOMEM :
+	  throw Magick::ErrorResourceLimit( "pthread_key_create() failed" );
+	case EINVAL :
+	  throw Magick::ErrorOption( "pthread_key_create() failed" );
+	default :
+	  {
+	    throw Magick::ErrorResourceLimit( "pthread_key_create() failed" );
+	  } 
+	}
+    }
+  Magick::LastError::_mutexLock = new MutexLock;
+}
+#endif
+
+// Default constructor
+Magick::LastError::LastError( void )
+{
+#if defined(HasPTHREADS)
+  // Pthreads TSD
+  int status = pthread_once ( &key_once, LastErrorOnce );
+  if ( status != 0 )
+    throw Magick::ErrorOption( "pthread_once() failed" );
+  LastErrorBase* data = (LastErrorBase*) pthread_getspecific( tsd_key );
+  if ( data == 0 )
+    {
+      data = new LastErrorData;
+      status = pthread_setspecific( tsd_key, data );
+      if ( status != 0 )
+	{
+	  switch ( status )
+	    {
+	    case ENOMEM :
+	      throw Magick::ErrorResourceLimit( "pthread_key_create() failed" );
+	    case EINVAL :
+	      throw Magick::ErrorOption( "pthread_key_create() failed" );
+	    default :
+	      {
+		throw Magick::ErrorResourceLimit( "pthread_key_create() failed" );
+	      } 
+	    }
+	}
+    }
+  _mutexLock->lock();
+  ++_refCount;
+  _mutexLock->unlock();
+#else
+  // Not threaded
+  if ( Magick::LastErrorDataInst == 0 )
+    {
+      Magick::LastErrorDataInst = new LastErrorData;
+      _mutexLock = new MutexLock;
+    }
+  ++_refCount;
+#endif
+}
+
+// Destructor
+Magick::LastError::~LastError( void )
+{
+#if defined(HasPTHREADS)
+  // Pthreads TSD
+  bool doDelete = false;
+  {
+    _mutexLock->lock();
+    if ( --_refCount == 0 && _doDelete )
+      doDelete = true;
+    _mutexLock->unlock();
+  }
+  if ( doDelete )
+    {
+      pthread_key_delete( tsd_key );
+      delete _mutexLock;
+      _mutexLock = 0;
+    }
+#else
+  // Not threaded
+  if ( --_refCount == 0 && _doDelete )
+    {
+      delete Magick::LastErrorDataInst;
+      delete _mutexLock;
+      _mutexLock = 0;
+    }
+#endif
+}
+
+// Access error data
+Magick::LastErrorBase* Magick::LastError::instance()
+{
+#if defined(HasPTHREADS)
+  // Pthreads TSD
+  LastErrorBase* data = (LastErrorBase*) pthread_getspecific( tsd_key );
+  return (Magick::LastErrorBase*)data;
+#else
+  // Not threaded
+  return Magick::LastErrorDataInst;
+#endif
+}
+const Magick::LastErrorBase* Magick::LastError::instance() const
+{
+#if defined(HasPTHREADS)
+  // Pthreads TSD
+  LastErrorBase* data = (LastErrorBase*) pthread_getspecific( tsd_key );
+  return (Magick::LastErrorBase*)data;
+#else
+  // Not threaded
+  return Magick::LastErrorDataInst;
+#endif
 }
 
 // Indicate that destruction is desired
 void Magick::LastError::doDelete()
 {
-    _doDelete = true;
-    if ( _refCount == 0 )
-	delete _instance;
+#if defined(HasPTHREADS)
+  // Pthreads TSD
+  _doDelete = true;
+  if ( _refCount == 0 )
+    {
+      ::pthread_key_delete( tsd_key );
+      delete _mutexLock;
+      _mutexLock = 0;
+    }
+#else
+  // Not threaded
+  _doDelete = true;
+  if ( _refCount == 0 )
+    {
+      delete Magick::LastErrorDataInst;
+      delete _mutexLock;
+      _mutexLock = 0;
+    }
+#endif
 }
-
 
 //
 // Magick++ error callback function
@@ -266,20 +484,20 @@ void Magick::LastErrorHandler( const MagickLib::ErrorType error_,
 			       const char *message_ ,
 			       const char *qualifier_)
 {
-    LastError err;
-    err.error( error_ );
-    err.syserror( errno );
-    if ( message_ )
-	err.message( message_ );
-    else
-	err.message( "" );
-    if ( qualifier_ )
-	err.qualifier( qualifier_ );
-    else
-	err.qualifier( "" );
+  LastError err;
+  err.error( error_ );
+  err.syserror( errno );
+  if ( message_ )
+    err.message( message_ );
+  else
+    err.message( "" );
+  if ( qualifier_ )
+    err.qualifier( qualifier_ );
+  else
+    err.qualifier( "" );
 
-    // Clear out system errno now that it has been collected.
-    errno = 0;
+  // Clear out system errno now that it has been collected.
+  errno = 0;
 }
 
 //
@@ -289,20 +507,20 @@ void Magick::LastWarningHandler( const MagickLib::WarningType warning_,
 				 const char *message_ ,
 				 const char *qualifier_)
 {
-    LastError err;
-    err.warning( warning_ );
-    err.syserror( errno );
-    if ( message_ )
-	err.message( message_ );
-    else
-	err.message( "" );
-    if ( qualifier_ )
-	err.qualifier( qualifier_ );
-    else
-	err.qualifier( "" );
+  LastError err;
+  err.warning( warning_ );
+  err.syserror( errno );
+  if ( message_ )
+    err.message( message_ );
+  else
+    err.message( "" );
+  if ( qualifier_ )
+    err.qualifier( qualifier_ );
+  else
+    err.qualifier( "" );
 
-    // Clear out system errno now that it has been collected.
-    errno = 0;
+  // Clear out system errno now that it has been collected.
+  errno = 0;
 }
 
 // Format and throw exception

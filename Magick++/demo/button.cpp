@@ -1,8 +1,7 @@
-// !/usr/local/bin/perl
 //
 // Magick++ demo to generate a simple text button
 //
-// Bob Friesenhahn, 1999
+// Bob Friesenhahn, 1999, 2000
 // 
 
 #include <string>

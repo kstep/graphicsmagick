@@ -9,7 +9,6 @@
 #define Drawable_header
 
 #include <string>
-#include <iostream>
 #include <list>
 
 #include "Magick++/Color.h"

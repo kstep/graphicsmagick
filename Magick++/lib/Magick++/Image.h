@@ -19,6 +19,7 @@
 #include "Magick++/Options.h"
 #include "Magick++/LastError.h"
 #include "Magick++/Include.h"
+#include "Magick++/Thread.h"
 
 namespace Magick
 {
@@ -768,7 +769,8 @@ namespace Magick
 
   private:
 
-    ImageRef *      _imgRef;
+    ImageRef *        _imgRef;
+    mutable LastError _lastError;
   };
 
 
@@ -801,6 +803,7 @@ namespace Magick
     MagickLib::Image *   _image;    // ImageMagick Image
     Options *            _options;  // User-specified options
     int                  _refCount; // Reference count
+    MutexLock            _mutexLock;// Mutex lock
   };
 
 } // end of namespace Magick

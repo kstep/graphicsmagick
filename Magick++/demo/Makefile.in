@@ -265,33 +265,33 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 button.o: button.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
-	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
-	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
-	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
-	../lib/Magick++/Functions.h
+	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
+	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
+	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
+	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
 demo.o: demo.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
-	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
-	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
-	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
-	../lib/Magick++/Functions.h
+	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
+	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
+	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
+	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
 flip.o: flip.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
-	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
-	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
-	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
-	../lib/Magick++/Functions.h
+	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
+	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
+	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
+	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
 shapes.o: shapes.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
-	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
-	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
-	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
-	../lib/Magick++/Functions.h
+	../lib/Magick++/Blob.h ../lib/Magick++/Thread.h \
+	../lib/Magick++/Include.h ../lib/Magick++/Color.h \
+	../lib/Magick++/Drawable.h ../lib/Magick++/Geometry.h \
+	../lib/Magick++/Exception.h ../lib/Magick++/Options.h \
+	../lib/Magick++/LastError.h ../lib/Magick++/STL.h \
+	../lib/Magick++/Montage.h ../lib/Magick++/Functions.h
 
 info-am:
 info: info-am

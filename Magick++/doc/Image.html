@@ -2562,20 +2562,20 @@ image from</font></td>
 <center>
 <h3>
 Image Pixel Access</h3></center>
-Image pixels (of type <i>PixelPacket</i>) may be accessed directly via
-the <i>Image Pixel Cache</i>.&nbsp; The image pixel cache is a rectangular
-window into the actual image pixels (which may be in memory, memory-mapped
-from a disk file, or entirely on disk). Obtain existing image pixels via
-<i>getPixels()</i>. Create a new pixel region using <i>setPixels().</i>&nbsp;
-Depending on the capabilities of the operating system, and the relationship
-of the window to the image, the pixel cache may be a copy of the pixels
-in the selected window, or it may be the actual image pixels. In any case
-calling <i>syncPixels()</i> updates the image with the contents of the
-modified pixel cache. The method <i>readPixels()</i> supports copying foreign
-pixel data formats into the pixel cache according to the <i>QuantumTypes</i>.
-The method <i>writePixels()</i> supports copying the pixels in the cache
-to a foreign pixel representation according to the format specified by
-<i>QuantumTypes</i>.
+Image pixels (of type <i><a href="PixelPacket.html">PixelPacket</a></i>)
+may be accessed directly via the <i>Image Pixel Cache</i>.&nbsp; The image
+pixel cache is a rectangular window into the actual image pixels (which
+may be in memory, memory-mapped from a disk file, or entirely on disk).
+Obtain existing image pixels via <i>getPixels()</i>. Create a new pixel
+region using <i>setPixels().</i>&nbsp; Depending on the capabilities of
+the operating system, and the relationship of the window to the image,
+the pixel cache may be a copy of the pixels in the selected window, or
+it may be the actual image pixels. In any case calling <i>syncPixels()</i>
+updates the image with the contents of the modified pixel cache. The method
+<i>readPixels()</i> supports copying foreign pixel data formats into the
+pixel cache according to the <i>QuantumTypes</i>. The method <i>writePixels()</i>
+supports copying the pixels in the cache to a foreign pixel representation
+according to the format specified by <i>QuantumTypes</i>.
 <br>&nbsp;
 <table BORDER WIDTH="100%" NOSAVE >
 <caption>Image Cache Methods</caption>
@@ -2645,7 +2645,8 @@ the pixel cache to the image via syncPixels.</td>
 
 <td>void</td>
 
-<td>QuantumTypes quantum_, unsigned char *source_,</td>
+<td><a href="Enumerations.html#QuantumTypes">QuantumTypes</a> quantum_,
+unsigned char *source_,</td>
 
 <td>Transfers one or more pixel components from a buffer or file into the
 image pixel cache of an image. Typically used to support image decoders.</td>
@@ -2658,7 +2659,8 @@ image pixel cache of an image. Typically used to support image decoders.</td>
 
 <td>void</td>
 
-<td>QuantumTypes quantum_, unsigned char *destination_</td>
+<td><a href="Enumerations.html#QuantumTypes">QuantumTypes</a> quantum_,
+unsigned char *destination_</td>
 
 <td>Transfers one or more pixel components from the image pixel cache to
 a buffer or file. Typically used to support image encoders.</td>

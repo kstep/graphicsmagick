@@ -8,6 +8,8 @@
 #if !defined(Blob_header)
 #define Blob_header
 
+#include "Magick++/Thread.h"
+
 namespace Magick
 {
   // Forward decl
@@ -79,6 +81,7 @@ namespace Magick
     void *        _data;     // Blob data
     size_t        _length;   // Blob length
     int           _refCount; // Reference count
+    MutexLock     _mutexLock;// Mutex lock
   };
 
 } // namespace Magick

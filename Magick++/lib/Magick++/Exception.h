@@ -14,7 +14,6 @@
 
 #include <string>
 #include <exception>
-#include <iostream>
 
 namespace Magick
 {
