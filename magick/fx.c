@@ -56,6 +56,7 @@
 #include "studio.h"
 #include "cache.h"
 #include "gem.h"
+#include "log.h"
 #include "monitor.h"
 #include "utility.h"
 
@@ -308,6 +309,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     *q;
 
   unsigned int
+    logging,
     range_check;
 
   /*
@@ -351,6 +353,37 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     if (normal_kernel[i] <= 0.0)
       range_check=True;
   }
+
+  logging=LogMagickEvent(TransformEvent,GetMagickModule(),
+        "  ConvolveImage with %dx%d kernel:",width,width);
+  if (logging)
+    {
+      char
+        cell_text[13],
+        row_text[65];
+
+      k=kernel;
+      for (v=0; v<width; v++)
+      {
+         *row_text='\0';
+         for (u=0; u<width; u++)
+         {
+           FormatString(cell_text,"%#12.4g",*k++);
+           (void) strncat(row_text,cell_text,12);
+           if (u%5 == 4)
+             {
+                (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                    "   %.64s", row_text);
+                *row_text='\0';
+             }
+         }
+         if (u > 5)
+           (void) strcat(row_text,"\n");
+         if (row_text[0] != '\0')
+           (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+               "   %.64s", row_text);
+      }
+    }
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) convolve_image->rows; y++)
   {
@@ -414,10 +447,10 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
         q++;
       }
     if (!SyncImagePixels(convolve_image))
-       break;
+      break;
     if (QuantumTick(y,convolve_image->rows))
       if (!MagickMonitor(ConvolveImageText,y,convolve_image->rows,exception))
-         break;
+        break;
   }
   LiberateMemory((void **) &normal_kernel);
   return(convolve_image);
