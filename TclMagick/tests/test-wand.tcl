@@ -563,12 +563,12 @@ proc FrameImage {img} {
     magick delete $frm $wand
 }
 proc FxImage {img} {
-    set wand [$img FxImage "x/4"]
+    set wand [$img FxImage "r/2"]
     $wand WriteImage "$::TMP/x-Fx.jpg"
     magick delete $wand
 }
 proc FxImageChannel {img} {
-    set wand [$img FxImageChannel blue "x/4"]
+    set wand [$img FxImageChannel blue "b/4"]
     $wand WriteImage "$::TMP/x-FxChannel.jpg"
     magick delete $wand
 }
