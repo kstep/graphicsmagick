@@ -4689,13 +4689,17 @@ MagickExport void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   unsigned long
     arc_segments;
 
-  radii=arc;
-  if (radii.x == 0.0)
-    radii.x=MagickEpsilon;
-  if (radii.y == 0.0)
-    radii.y=MagickEpsilon;
-  cosine=cos(DegreesToRadians(angle));
-  sine=sin(DegreesToRadians(angle));
+  if ((start.x == end.x) && (start.y == end.y))
+    return;
+  radii.x=fabs(arc.x);
+  radii.y=fabs(arc.y);
+  if ((radii.x == 0.0) && (radii.y == 0.0))
+    {
+      TraceLine(primitive_info,start,end);
+      return;
+    }
+  cosine=cos(DegreesToRadians(fmod(angle,360.0)));
+  sine=sin(DegreesToRadians(fmod(angle,360.0)));
   points[0].x=cosine*start.x/radii.x+sine*start.y/radii.x;
   points[0].y=cosine*start.y/radii.y-sine*start.x/radii.y;
   points[1].x=cosine*end.x/radii.x+sine*end.y/radii.x;
@@ -4711,8 +4715,8 @@ MagickExport void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
       if (sweep == large_arc)
         factor=(-factor);
     }
-  center.x=0.5*(points[0].x+points[1].x)-factor*beta;
-  center.y=0.5*(points[0].y+points[1].y)+factor*alpha;
+  center.x=(points[0].x+points[1].x)/2-factor*beta;
+  center.y=(points[0].y+points[1].y)/2+factor*alpha;
   alpha=atan2(points[0].y-center.y,points[0].x-center.x);
   theta=atan2(points[1].y-center.y,points[1].x-center.x)-alpha;
   if ((theta < 0.0) && sweep)
