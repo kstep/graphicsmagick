@@ -110,6 +110,8 @@ Export Image *ReadMAPImage(const ImageInfo *image_info)
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
+  if ((image->columns == 0) || (image->rows == 0))
+    ReaderExit(OptionWarning,"must specify image size",image);
   /*
     Open image file.
   */
@@ -121,7 +123,7 @@ Export Image *ReadMAPImage(const ImageInfo *image_info)
   */
   image->class=PseudoClass;
   image->compression=NoCompression;
-  image->colors=image->offset;
+  image->colors=image->offset ? image->offset : 256;
   image->packets=image->columns*image->rows;
   packet_size=3*(image->depth >> 3);
   colormap=(unsigned char *)
