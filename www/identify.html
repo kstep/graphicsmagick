@@ -124,6 +124,54 @@ amount of free memory you may want to adjust this threshold value.</dd>
 <dl>&nbsp;
 <table BORDER=0 WIDTH="65%" >
 <tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-format
+<i>string</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+output formated image characteristics.</dd>
+
+<dd>
+Use this option to print information about the image in a format of your
+choosing.  You can include the image filename, type, width, height,
+or other image attributes by embedding special format characters: </dd>
+
+<pre>&nbsp;&nbsp;&nbsp; %b&nbsp;&nbsp; file size
+&nbsp;&nbsp;&nbsp; %d&nbsp;&nbsp; directory
+&nbsp;&nbsp;&nbsp; %e&nbsp;&nbsp; filename extention
+&nbsp;&nbsp;&nbsp; %f&nbsp;&nbsp; filename
+&nbsp;&nbsp;&nbsp; %h&nbsp;&nbsp; height
+&nbsp;&nbsp;&nbsp; %i&nbsp;&nbsp; input filename
+&nbsp;&nbsp;&nbsp; %l&nbsp;&nbsp; label
+&nbsp;&nbsp;&nbsp; %m&nbsp;&nbsp; magick
+&nbsp;&nbsp;&nbsp; %n&nbsp;&nbsp; number of scenes
+&nbsp;&nbsp;&nbsp; %o&nbsp;&nbsp; output filename
+&nbsp;&nbsp;&nbsp; %p&nbsp;&nbsp; page number
+&nbsp;&nbsp;&nbsp; %q&nbsp;&nbsp; quantum depth
+&nbsp;&nbsp;&nbsp; %s&nbsp;&nbsp; scene number
+&nbsp;&nbsp;&nbsp; %t&nbsp;&nbsp; top of filename
+&nbsp;&nbsp;&nbsp; %u&nbsp;&nbsp; unique temporary filename
+&nbsp;&nbsp;&nbsp; %w&nbsp;&nbsp; width
+&nbsp;&nbsp;&nbsp; %x&nbsp;&nbsp; x resolution
+&nbsp;&nbsp;&nbsp; %y&nbsp;&nbsp; y resolution
+&nbsp;&nbsp;&nbsp; \\n&nbsp;&nbsp; newline
+&nbsp;&nbsp;&nbsp; \\r&nbsp;&nbsp; carriage return</pre>
+For example,
+<pre>&nbsp; -format "%m:%f %wx%h"</pre>
+
+<dd>
+display <b>MIFF:bird.miff 512x480</b> for an image
+titled <b>bird.miff</b> and whose width is 512 and height is 480.</dd>
+
+<dd>
+If the first character of <i>string</i> is <i>@</i>, the image comment
+is read from a file titled by the remaining characters in the string.</dd>
+</dl>
+
+<dl>&nbsp;
+<table BORDER=0 WIDTH="65%" >
+<tr>
 <td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-ping</font></font></font></b></td>
 </tr>
 </table>

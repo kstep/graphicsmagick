@@ -112,51 +112,7 @@ static void
   GeneratePath(PrimitiveInfo *,const char *),
   GeneratePoint(PrimitiveInfo *,PointInfo),
   GenerateRectangle(PrimitiveInfo *,PointInfo,PointInfo),
-  GenerateRoundRectangle(PrimitiveInfo *,PointInfo,PointInfo,PointInfo),
-  ReflectPoint(const PointInfo *,PointInfo *);
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   B e z i e r 4                                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method Bezier4 returns a point for a given set of control points and mu.
-%
-%  The format of the Bezier4 method is:
-%
-%      PointInfo *Bezier4(const PointInfo *pixels,const double mu)
-%
-%
-*/
-static PointInfo Bezier4(const PointInfo *points,const double mu)
-{
-  double
-    alpha,
-    beta,
-    gamma;
-
-  PointInfo
-    point;
-
-  register const PointInfo
-    *p;
-
-  beta=1.0-mu;
-  alpha=beta*beta*beta;
-  gamma=mu*mu*mu;
-  p=points;
-  point.x=
-    alpha*p->x+3.0*mu*beta*beta*(p+1)->x+3.0*mu*mu*beta*(p+2)->x+gamma*(p+3)->x;
-  point.y=
-    alpha*p->y+3.0*mu*beta*beta*(p+1)->y+3.0*mu*mu*beta*(p+2)->y+gamma*(p+3)->y;
-  return(point);
-}
+  GenerateRoundRectangle(PrimitiveInfo *,PointInfo,PointInfo,PointInfo);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1483,20 +1439,19 @@ static void GenerateLine(PrimitiveInfo *primitive_info,PointInfo start,
 
 static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
 {
-#define BezierCoordinates  4
-
   double
+    reflect,
     x,
     y;
-
   int
     attribute,
     n;
 
   PointInfo
     last,
-    pixels[BezierCoordinates],
+    pixels[4],
     point,
+    reflected_pixels[4],
     start;
 
   register const char
@@ -1519,6 +1474,33 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
     q->primitive=primitive_info->primitive;
     switch (attribute)
     {
+      case 'a':
+      case 'A':
+      {
+        double
+          large_arc,
+          rotate,
+          sweep;
+
+        PointInfo
+          arc;
+
+        /*
+          Compute arc points.
+        */
+        n=0;
+        (void) sscanf(p+1,"%lf%lf%lf%lf%lf%lf%lf%n",&arc.x,&arc.y,&rotate,
+          &large_arc,&sweep,&x,&y,&n);
+        if (n == 0)
+          (void) sscanf(p+1,"%lf,%lf,%lf,%lf,%lf,%lf,%lf%n",&arc.x,&arc.y,&x,
+            &large_arc,&sweep,&x,&y,&n);
+        p+=n;
+        last.x=attribute == 'A' ? x : point.x+x;
+        last.y=attribute == 'A' ? y : point.y+y;
+        GenerateArc(q,point,last,arc);
+        q+=q->coordinates;
+        break;
+      }
       case 'c':
       case 'C':
       {
@@ -1527,7 +1509,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         */
         p++;
         pixels[0]=point;
-        for (i=1; i < BezierCoordinates; i++)
+        for (i=1; i < 4; i++)
         {
           n=0;
           if ((*p == ',') || isspace(*p))
@@ -1542,65 +1524,22 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           last.y=attribute == 'C' ? y : point.y+y;
           pixels[i]=last;
         }
-        p--;
-        for (i=0; i <= (BezierCoordinates*BezierQuantum); i++)
-        {
-          last=Bezier4(pixels,(double) i/(BezierCoordinates*BezierQuantum));
-          q->primitive=primitive_info->primitive;
-          q->pixel=last;
-          q++;
-        }
         point=last;
+        p--;
+        for (i=0; i < 4; i++)
+          (q+i)->pixel=pixels[i];
+        q->coordinates=4;
+        GenerateBezier(q);
+        q+=q->coordinates;
         break;
       }
-      case 's':
-      case 'S':
-      {
-        PointInfo
-          reflected_pixels[BezierCoordinates];
-
-        /*
-          Compute bezier points.
-        */
-        p++;
-        reflected_pixels[0]=pixels[3];
-        for (i=2; i < BezierCoordinates; i++)
-        {
-          n=0;
-          if ((*p == ',') || isspace(*p))
-            p++;
-          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
-          if (n == 0)
-            break;
-          p+=n;
-          last.x=attribute == 'S' ? x : point.x+x;
-          last.y=attribute == 'S' ? y : point.y+y;
-          reflected_pixels[i]=last;
-        }
-        p--;
-        ReflectPoint(pixels,reflected_pixels);
-        for (i=0; i < BezierCoordinates; i++)
-          pixels[i]=reflected_pixels[i];
-        for (i=0; i <= BezierCoordinates; i++)
-        {
-          last=Bezier4(reflected_pixels,(double) i/BezierCoordinates);
-          q->primitive=primitive_info->primitive;
-          q->pixel=last;
-          q++;
-        }
-        point=last;
-        break;
-      }
-      case 'h':
       case 'H':
       {
         (void) sscanf(p+1,"%lf%n",&x,&n);
         p+=n;
         point.x=attribute == 'H' ? x: point.x+x;
-        q->pixel=point;
-        q++;
+        GeneratePoint(q,point);
+        q+=q->coordinates;
         break;
       }
       case 'l':
@@ -1616,8 +1555,8 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           p+=n;
           point.x=attribute == 'L' ? x : point.x+x;
           point.y=attribute == 'L' ? y : point.y+y;
-          q->pixel=point;
-          q++;
+          GeneratePoint(q,point);
+          q+=q->coordinates;
         }
         break;
       }
@@ -1628,29 +1567,166 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         if (n == 0)
           (void) sscanf(p+1,"%lf,%lf%n",&point.x,&point.y,&n);
         p+=n;
-        q->pixel=point;
-        q++;
-        start.x=point.x;
-        start.y=point.y;
+        GeneratePoint(q,point);
+        q+=q->coordinates;
+        start=point;
         break;
       }
+      case 'q':
+      case 'Q':
+      {
+        /*
+          Compute bezier points.
+        */
+        p++;
+        pixels[0]=point;
+        for (i=1; i < 3; i++)
+        {
+          n=0;
+          if ((*p == ',') || isspace(*p))
+            p++;
+          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
+          if (n == 0)
+            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
+          if (n == 0)
+            break;
+          p+=n;
+          last.x=attribute == 'Q' ? x : point.x+x;
+          last.y=attribute == 'Q' ? y : point.y+y;
+          pixels[i]=last;
+        }
+        point=last;
+        p--;
+        for (i=0; i < 3; i++)
+          (q+i)->pixel=pixels[i];
+        q->coordinates=3;
+        GenerateBezier(q);
+        q+=q->coordinates;
+        break;
+      }
+      case 's':
+      case 'S':
+      {
+        /*
+          Compute bezier points.
+        */
+        p++;
+        reflected_pixels[0]=pixels[3];
+        for (i=2; i < 4; i++)
+        {
+          n=0;
+          if ((*p == ',') || isspace(*p))
+            p++;
+          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
+          if (n == 0)
+            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
+          if (n == 0)
+            break;
+          p+=n;
+          last.x=attribute == 'S' ? x : point.x+x;
+          last.y=attribute == 'S' ? y : point.y+y;
+          reflected_pixels[i]=last;
+        }
+        point=last;
+        p--;
+        /*
+          Reflect the x control pixel.
+        */
+        reflect=pixels[3].x-pixels[0].x;
+        if (!reflect)
+          reflect=1.0;
+        reflect=(pixels[3].x-pixels[2].x)/reflect;
+        reflect=reflect*(reflected_pixels[3].x-pixels[3].x);
+        reflected_pixels[1].x=reflect+pixels[3].x;
+        /*
+          Reflect the y control pixel.
+        */
+        reflect=pixels[3].y-pixels[0].y;
+        if (!reflect)
+          reflect=1.0;
+        reflect=(pixels[3].y-pixels[2].y)/reflect;
+        reflect=reflect*(reflected_pixels[3].y-pixels[3].y);
+        reflected_pixels[1].y=reflect+pixels[3].y;
+        for (i=0; i < 4; i++)
+        {
+          pixels[i]=reflected_pixels[i];
+          (q+i)->pixel=pixels[i];
+        }
+        q->coordinates=4;
+        GenerateBezier(q);
+        q+=q->coordinates;
+        break;
+      }
+      case 't':
+      case 'T':
+      {
+        /*
+          Compute bezier points.
+        */
+        p++;
+        reflected_pixels[0]=pixels[2];
+        for (i=2; i < 3; i++)
+        {
+          n=0;
+          if ((*p == ',') || isspace(*p))
+            p++;
+          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
+          if (n == 0)
+            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
+          if (n == 0)
+            break;
+          p+=n;
+          last.x=attribute == 'T' ? x : point.x+x;
+          last.y=attribute == 'T' ? y : point.y+y;
+          reflected_pixels[i]=last;
+        }
+        point=last;
+        p--;
+        /*
+          Reflect the x control pixel.
+        */
+        reflect=pixels[2].x-pixels[0].x;
+        if (!reflect)
+          reflect=1.0;
+        reflect=(pixels[2].x-pixels[1].x)/reflect;
+        reflect=reflect*(reflected_pixels[2].x-pixels[2].x);
+        reflected_pixels[1].x=reflect+pixels[2].x;
+        /*
+          Reflect the y control pixel.
+        */
+        reflect=pixels[2].y-pixels[0].y;
+        if (!reflect)
+          reflect=1.0;
+        reflect=(pixels[2].y-pixels[1].y)/reflect;
+        reflect=reflect*(reflected_pixels[2].y-pixels[2].y);
+        reflected_pixels[1].y=reflect+pixels[2].y;
+        for (i=0; i < 3; i++)
+        {
+          pixels[i]=reflected_pixels[i];
+          (q+i)->pixel=pixels[i];
+        }
+        q->coordinates=3;
+        GenerateBezier(q);
+        q+=q->coordinates;
+        break;
+      }
+      case 'h':
       case 'v':
       case 'V':
       {
         (void) sscanf(p+1,"%lf%n",&y,&n);
         p+=n;
         point.y=attribute == 'V' ? y : point.y+y;
-        q->pixel=point;
-        q++;
+        GeneratePoint(q,point);
+        q+=q->coordinates;
         break;
       }
       case 'z':
       case 'Z':
       {
-        point.x=start.x;
-        point.y=start.y;
-        q->pixel=start;
-        q++;
+        point=start;
+        GeneratePoint(q,point);
+        q+=q->coordinates;
         break;
       }
       default:
@@ -2604,51 +2680,6 @@ Export unsigned int OpaqueImage(Image *image,const PixelPacket target,
     }
   }
   return(True);
-}
-
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e f l e c t P o i n t                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReflectPoint reflects a given point.
-%
-%  The format of the ReflectPoint method is:
-%
-%      void *ReflectPoint(const PointInfo *points,PointInfo *reflected_points)
-%
-%
-*/
-static void ReflectPoint(const PointInfo *points,PointInfo *reflected_points)
-{
-  double
-    reflect;
-
-  /*
-    Reflect the x control point.
-  */
-  reflect=points[3].x-points[0].x;
-  if (!reflect)
-    reflect=1.0;
-  reflect=(points[3].x-points[2].x)/reflect;
-  reflect=reflect*(reflected_points[3].x-points[3].x);
-  reflected_points[1].x=reflect+points[3].x;
-  /*
-    Reflect the y control point.
-  */
-  reflect=points[3].y-points[0].y;
-  if (!reflect)
-    reflect=1.0;
-  reflect=(points[3].y-points[2].y)/reflect;
-  reflect=reflect*(reflected_points[3].y-points[3].y);
-  reflected_points[1].y=reflect+points[3].y;
 }
 
 /*

@@ -49,6 +49,48 @@ Operations to memory are significantly faster but if your computer does not
 have a sufficient amount of free memory you may want to adjust this threshold
 value.
 .TP
+.B "-format \fIstring\fP"
+output formatted image characteristics.
+
+Use this option to print information about the image in a format of your
+choosing.  You can include the image filename, type, width, height,
+or other image attributes by embedding special format characters:
+
+.nf
+    %b   file size
+    %d   directory
+    %e   filename extention
+    %f   filename
+    %h   height
+    %i   input filename
+    %l   label
+    %m   magick
+    %n   number of scenes
+    %o   output filename
+    %p   page number
+    %q   quantum depth
+    %s   scene number
+    %t   top of filename
+    %u   unique temporary filename
+    %w   width
+    %x   x resolution
+    %y   y resolution
+    \\n   newline
+    \\r   carriage return
+.fi
+
+For example,
+
+.nf
+     -format "%m:%f %wx%h"
+.fi
+
+displays \fBMIFF:bird.miff 512x480\fP for an image
+titled \fBbird.miff\fP and whose width is 512 and height is 480.
+
+If the first character of \fIstring\fP is \fB@\fP, the image comment is read
+from a file titled by the remaining characters in the string.
+.TP
 .B "-ping"
 efficiently determine image characteristics.
 

@@ -56,7 +56,7 @@
 %
 %  Where options include:
 %    -cache threshold  megabytes of memory available to the pixel cache
-%    -format "string"  output formated image characteristics
+%    -format "string"  output formatted image characteristics
 %    -ping             efficiently determine image characteristics
 %    -size geometry    width and height of image
 %    -verbose          print detailed information about the image
@@ -101,7 +101,7 @@ static void Usage(const char *client_name)
     *options[]=
     {
       "-cache threshold  megabytes of memory available to the pixel cache",
-      "-format \"string\"  output formated image characteristics",
+      "-format \"string\"  output formatted image characteristics",
       "-ping             efficiently determine image characteristics",
       "-size geometry    width and height of image",
       "-verbose          print detailed information about the image",
