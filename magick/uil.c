@@ -168,7 +168,7 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
@@ -331,6 +331,6 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SaveImageText,y,image->rows);
   }
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

@@ -120,7 +120,7 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -138,7 +138,7 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
     image->rows=rows;
     if (image_info->ping)
       {
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     packets=0;
@@ -203,7 +203,7 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
   } while (count > 0);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -266,7 +266,7 @@ Export unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   scene=0;
@@ -320,6 +320,6 @@ Export unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

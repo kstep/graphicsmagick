@@ -122,6 +122,9 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
     *image,
     *next_image;
 
+  ImageInfo
+    *local_info;
+
   int
     c,
     count,
@@ -166,7 +169,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -258,10 +261,10 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
     */
     FormatString(translate_geometry,"%f %f translate\n",-bounding_box.x1,
       -bounding_box.y1);
-    width=(unsigned int) (bounding_box.x2-bounding_box.x1+1);
+    width=(unsigned int) (bounding_box.x2-bounding_box.x1);
     if ((float) ((int) bounding_box.x2) != bounding_box.x2)
       width++;
-    height=(unsigned int) (bounding_box.y2-bounding_box.y1+1);
+    height=(unsigned int) (bounding_box.y2-bounding_box.y1);
     if ((float) ((int) bounding_box.y2) != bounding_box.y2)
       height++;
     if ((width <= box.width) && (height <= box.height))
@@ -275,9 +278,9 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
   if (image_info->page != (char *) NULL)
     (void) ParseImageGeometry(image_info->page,&page_info.x,&page_info.y,
       &page_info.width,&page_info.height);
-  FormatString(geometry,"%ux%u",(unsigned int) (((page_info.width*
-    image->x_resolution)/dx_resolution)+0.5),(unsigned int)
-    (((page_info.height*image->y_resolution)/dy_resolution)+0.5));
+  FormatString(geometry,"%ux%u",(unsigned int) ((page_info.width*
+    image->x_resolution)/dx_resolution),(unsigned int)
+    ((page_info.height*image->y_resolution)/dy_resolution));
   if (ferror(file))
     {
       MagickWarning(FileOpenWarning,"An error has occurred writing to file",
@@ -288,7 +291,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
   (void) fseek(file,0L,SEEK_SET);
   (void) fputs(translate_geometry,file);
   (void) fclose(file);
-  CloseImage(image);
+  CloseBlob(image);
   filesize=image->filesize;
   DestroyImage(image);
   /*
@@ -332,7 +335,10 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
         image_info->filename);
       return((Image *) NULL);
     }
-  image=ReadPNMImage(image_info);
+  local_info=CloneImageInfo(image_info);
+  GetBlobInfo(&local_info->blob);
+  image=ReadPNMImage(local_info);
+  DestroyImageInfo(local_info);
   (void) remove(image_info->filename);
   if (image == (Image *) NULL)
     {
@@ -699,7 +705,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   page=1;
@@ -742,9 +748,9 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           y_resolution=x_resolution;
       }
     x_scale=(width*dx_resolution)/x_resolution;
-    width=(unsigned int) (x_scale+0.5);
+    width=(unsigned int) x_scale;
     y_scale=(height*dy_resolution)/y_resolution;
-    height=(unsigned int) (y_scale+0.5);
+    height=(unsigned int) y_scale;
     if (page == 1)
       {
         /*
@@ -1276,6 +1282,6 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     }
   (void) strcpy(buffer,"%%EOF\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

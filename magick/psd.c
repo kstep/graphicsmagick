@@ -337,7 +337,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -428,7 +428,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
   }
   if (image_info->ping)
     {
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   layer_info=(LayerInfo *) NULL;
@@ -747,7 +747,7 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   (void) WriteBlob(image,4,"8BPS");
@@ -851,6 +851,6 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
           p++;
         }
     }
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

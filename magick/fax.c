@@ -100,7 +100,7 @@ Export Image *ReadFAXImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -132,7 +132,7 @@ Export Image *ReadFAXImage(const ImageInfo *image_info)
   status=HuffmanDecodeImage(image);
   if (status == False)
     ReaderExit(CorruptImageWarning,"Unable to read image data",image);
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -175,7 +175,7 @@ Export unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   (void) strcpy((char *) image_info->magick,"FAX");
@@ -196,6 +196,6 @@ Export unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(status);
 }

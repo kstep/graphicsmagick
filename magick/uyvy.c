@@ -115,7 +115,7 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
     Open image file.
   */
   (void) strcpy(image->filename,image_info->filename);
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image)
   for (i=0; i < image->offset; i++)
@@ -159,7 +159,7 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
   FreeMemory((char *) uyvy_pixels);
   TransformRGBImage(image,YCbCrColorspace);
   CondenseImage(image);
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -215,7 +215,7 @@ Export unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   */
   if (!UncondenseImage(image))
     return(False);
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
@@ -258,6 +258,6 @@ Export unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
       ProgressMonitor(SaveImageText,i,image->packets);
   }
   TransformRGBImage(image,YCbCrColorspace);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

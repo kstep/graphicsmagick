@@ -109,7 +109,7 @@ Export Image *ReadICCImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -138,7 +138,7 @@ Export Image *ReadICCImage(const ImageInfo *image_info)
   image->color_profile.length=0;
   if (image->color_profile.info != (unsigned char *) NULL)
     image->color_profile.length=q-image->color_profile.info;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -181,11 +181,11 @@ Export unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   (void) WriteBlob(image,(int) image->color_profile.length,
     (char *) image->color_profile.info);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

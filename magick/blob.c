@@ -80,7 +80,7 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o blob: The address of a character stream in one of the image formats 
+%    o blob: The address of a character stream in one of the image formats
 %      understood by ImageMagick.
 %
 %    o length: This unsigned integer reflects the length in bytes of the blob.
@@ -108,7 +108,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   if (magick_info == (MagickInfo *) NULL)
     {
       MagickWarning(FileOpenWarning,"Unrecognized image format",
-        image_info->magick);
+        local_info->magick);
       DestroyImageInfo(local_info);
       return((Image *) NULL);
     }
@@ -149,6 +149,134 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l o s e B l o b                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CloseBlob closes a file associated with the image.  If the
+%  filename prefix is '|', the file is a pipe and is closed with PipeClose.
+%
+%  The format of the CloseBlob routine is:
+%
+%      CloseBlob(image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export void CloseBlob(Image *image)
+{
+  /*
+    Close image file.
+  */
+  assert(image != (Image *) NULL);
+  if (image->blob.data != (char *) NULL)
+    {
+      image->filesize=image->blob.length;
+      return;
+    }
+  if (image->file == (FILE *) NULL)
+    return;
+  (void) FlushBlob(image);
+  image->status=ferror(image->file);
+  (void) SeekBlob(image,0L,SEEK_END);
+  image->filesize=TellBlob(image);
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+  if (image->pipe)
+    (void) pclose(image->file);
+  else
+#endif
+    if (!image->exempt)
+      (void) fclose(image->file);
+  image->file=(FILE *) NULL;
+  if (!image->orphan)
+    {
+      while (image->previous != (Image *) NULL)
+        image=image->previous;
+      for ( ; image != (Image *) NULL; image=image->next)
+        image->file=(FILE *) NULL;
+    }
+  errno=0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  E O F B l o b                                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method EOFBlob returns a non-zero value when EOF has been detected reading
+%  from a blob or file.
+%
+%  The format of the EOFBlob routine is:
+%
+%      status=EOFBlob(image)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method EOFBlob returns 0 on success; otherwise,  it
+%      returns -1 and set errno to indicate the error.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export int EOFBlob(const Image *image)
+{
+  assert(image != (Image *) NULL);
+  if (image->blob.data == (char *) NULL)
+    return(feof(image->file));
+  return(image->blob.offset > image->blob.length);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  F l u s h B l o b                                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method FlushBlob flushes the datastream if it is a file.
+%
+%  The format of the FlushBlob routine is:
+%
+%      status=FlushBlob(image)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method FlushBlob returns 0 on success; otherwise,  it
+%      returns -1 and set errno to indicate the error.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export int FlushBlob(const Image *image)
+{
+  assert(image != (Image *) NULL);
+  if (image->blob.data == (char *) NULL)
+    return(fflush(image->file));
+  return(0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t B l o b I n f o                                                     %
 %                                                                             %
 %                                                                             %
@@ -173,6 +301,55 @@ Export void GetBlobInfo(BlobInfo *blob_info)
   blob_info->data=(char *) NULL;
   blob_info->offset=0;
   blob_info->length=0;
+  blob_info->extent=0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t S t r i n g B l o b                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetStringBlob reads characters from a blob or file until a newline
+%  character is read or an end-of-file  condition is encountered.
+%  from a blob or file.
+%
+%  The format of the GetStringBlob routine is:
+%
+%      status=GetStringBlob(image,string)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method GetStringBlob returns the string on success, otherwise,
+%      a null is returned.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o string: The address of a character buffer.
+%
+%
+*/
+Export char *GetStringBlob(Image *image,char *string)
+{
+  register int
+    i;
+
+  assert(image != (Image *) NULL);
+  if (image->blob.data == (char *) NULL)
+    return(fgets((char *) string,MaxTextExtent,image->file));
+  for (i=0; i < (MaxTextExtent-1); i++)
+  {
+    string[i]=ReadByte(image);
+    if ((string[i] == '\n') || (string[i] == '\r'))
+      break;
+  }
+  string[i]='\0';
+  return(string);
 }
 
 /*
@@ -221,9 +398,34 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
   ImageInfo
     *local_info;
 
+  MagickInfo
+    *magick_info;
+
   unsigned int
     status;
 
+  local_info=CloneImageInfo(image_info);
+  SetImageInfo(local_info,False);
+  magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
+  if (magick_info->blob_support)
+    {
+      /*
+        Native blob support for this image format.
+      */
+      local_info->blob.data=AllocateMemory(MaxTextExtent);
+      local_info->blob.offset=0;
+      local_info->blob.length=0;
+      status=WriteImage(local_info,image);
+      DestroyImageInfo(local_info);
+      if (status == False)
+        {
+          MagickWarning(FileOpenWarning,"Unable to convert image to a blob",
+            local_info->magick);
+          return((char *) NULL);
+        }
+      *length=image->blob.length;
+      return(image->blob.data);
+    }
   /*
     Write file to disk in blob image format.
   */
@@ -263,6 +465,193 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
       "Memory allocation failed");
   (void) fclose(file);
   return(blob);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   O p e n B l o b                                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method OpenBlob open a file associated with the image.  A file name of
+%  '-' sets the file to stdin for type 'r' and stdout for type 'w'.  If the
+%  filename suffix is '.gz' or '.Z', the image is decompressed for type 'r'
+%  and compressed for type 'w'.  If the filename prefix is '|', it is piped
+%  to or from a system command.
+%
+%  The format of the OpenBlob routine is:
+%
+%      status=OpenBlob(image_info,image,type)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method OpenBlob returns True if the file is successfully
+%      opened otherwise False.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o type: 'r' for reading; 'w' for writing.
+%
+*/
+Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
+  const char *type)
+{
+  char
+    filename[MaxTextExtent];
+
+  register char
+    *p;
+
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image != (Image *) NULL);
+  assert(type != (char *) NULL);
+  if (image_info->blob.data != (char *) NULL)
+    {
+      image->blob=image_info->blob;
+      return(True);
+    }
+  image->exempt=False;
+  if (image_info->file != (FILE *) NULL)
+    {
+      /*
+        Use previously opened filehandle.
+      */
+      image->file=image_info->file;
+      image->exempt=True;
+      return(True);
+    }
+  (void) strcpy(filename,image->filename);
+  p=(char *) NULL;
+  if (*filename != '|')
+    {
+      if ((Extent(filename) > 4) &&
+          (Latin1Compare(filename+Extent(filename)-4,".pgp") == 0))
+        {
+          /*
+            Decrypt image file with PGP encryption utilities.
+          */
+          if (*type == 'r')
+            p=GetDelegateCommand(image_info,image,"pgp",(char *) NULL);
+        }
+      else
+        if ((Extent(filename) > 4) &&
+            (Latin1Compare(filename+Extent(filename)-4,".bz2") == 0))
+          {
+            /*
+              Uncompress/compress image file with BZIP compress utilities.
+            */
+            if (*type == 'r')
+              p=GetDelegateCommand(image_info,image,"bzip",(char *) NULL);
+            else
+              p=GetDelegateCommand(image_info,image,(char *) NULL,"bzip");
+          }
+        else
+          if ((Extent(filename) > 3) &&
+              (Latin1Compare(filename+Extent(filename)-3,".gz") == 0))
+            {
+              /*
+                Uncompress/compress image file with GNU compress utilities.
+              */
+              if (*type == 'r')
+                p=GetDelegateCommand(image_info,image,"zip",(char *) NULL);
+              else
+                p=GetDelegateCommand(image_info,image,(char *) NULL,"zip");
+            }
+          else
+            if ((Extent(filename) > 2) &&
+                (Latin1Compare(filename+Extent(filename)-2,".Z") == 0))
+              {
+                /*
+                  Uncompress/compress image file with UNIX compress utilities.
+                */
+                if (*type == 'r')
+                  p=GetDelegateCommand(image_info,image,"compress",
+                    (char *) NULL);
+                else
+                  p=GetDelegateCommand(image_info,image,(char *) NULL,
+                    "compress");
+              }
+    }
+  if (p != (char *) NULL)
+    {
+      (void) strcpy(filename,p);
+      FreeMemory((char *) p);
+    }
+  /*
+    Open image file.
+  */
+  image->pipe=False;
+  if (Latin1Compare(filename,"-") == 0)
+    {
+      image->file=(*type == 'r') ? stdin : stdout;
+      image->exempt=True;
+    }
+  else
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+    if (*filename == '|')
+      {
+        char
+          mode[MaxTextExtent];
+
+        /*
+          Pipe image to or from a system command.
+        */
+        if (*type == 'w')
+          (void) signal(SIGPIPE,SIG_IGN);
+        (void) strncpy(mode,type,1);
+        mode[1]='\0';
+        image->file=(FILE *) popen(filename+1,mode);
+        image->pipe=True;
+        image->exempt=True;
+      }
+    else
+#endif
+      {
+        if (*type == 'w')
+          {
+            /*
+              Form filename for multi-part images.
+            */
+            FormatString(filename,image->filename,image->scene);
+            if (!image_info->adjoin)
+              if ((image->previous != (Image *) NULL) ||
+                  (image->next != (Image *) NULL))
+                {
+                  if ((Latin1Compare(filename,image->filename) == 0) ||
+                      (strchr(filename,'%') != (char *) NULL))
+                    FormatString(filename,"%.1024s.%u",image->filename,
+                      image->scene);
+                  if (image->next != (Image *) NULL)
+                    (void) strcpy(image->next->magick,image->magick);
+                }
+            (void) strcpy(image->filename,filename);
+          }
+#if defined(macintosh)
+        if (*type == 'w')
+          SetApplicationType(filename,image_info->magick,'8BIM');
+#endif
+        image->file=(FILE *) fopen(filename,type);
+        if (image->file != (FILE *) NULL)
+          {
+            (void) SeekBlob(image,0L,SEEK_END);
+            image->filesize=TellBlob(image);
+            (void) SeekBlob(image,0L,SEEK_SET);
+          }
+      }
+  image->status=False;
+  if (*type == 'r')
+    {
+      image->next=(Image *) NULL;
+      image->previous=(Image *) NULL;
+    }
+  return(image->file != (FILE *) NULL);
 }
 
 /*
@@ -372,6 +761,7 @@ Export unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
 */
 Export int SeekBlob(Image *image,const long offset,const int whence)
 {
+  assert(image != (Image *) NULL);
   if (image->blob.data == (char *) NULL)
     return(fseek(image->file,offset,whence));
   switch(whence)
@@ -436,6 +826,7 @@ Export int SeekBlob(Image *image,const long offset,const int whence)
 */
 Export int TellBlob(const Image *image)
 {
+  assert(image != (Image *) NULL);
   if (image->blob.data == (char *) NULL)
     return(ftell(image->file));
   return(image->blob.offset);
@@ -484,6 +875,25 @@ Export unsigned long WriteBlob(Image *image,const unsigned long number_bytes,
 
   assert(image != (Image *) NULL);
   assert(data != (const char *) NULL);
-  count=(long) fwrite((char *) data,1,number_bytes,image->file);
-  return(count);
+  if (image->blob.data == (char *) NULL)
+    {
+      count=(long) fwrite((char *) data,1,number_bytes,image->file);
+      return(count);
+    }
+  if (number_bytes > (image->blob.extent-image->blob.offset))
+    {
+      image->blob.extent+=number_bytes+MaxBlobExtent;
+      image->blob.data=
+        ReallocateMemory(image->blob.data,image->blob.extent);
+      if (image->blob.data == (char *) NULL)
+        {
+          image->blob.extent=0;
+          return(0);
+        }
+    }
+  memcpy(image->blob.data+image->blob.offset,data,number_bytes);
+  image->blob.offset+=number_bytes;
+  if (image->blob.offset > image->blob.length)
+    image->blob.length=image->blob.offset;
+  return(number_bytes);
 }

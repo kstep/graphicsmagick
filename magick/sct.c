@@ -113,7 +113,7 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -147,7 +147,7 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
   (void) ReadBlob(image,768,(char *) buffer);
   if (image_info->ping)
     {
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   /*

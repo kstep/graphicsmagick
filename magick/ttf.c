@@ -122,7 +122,7 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   magick=MSBFirstReadLong(image);
@@ -148,7 +148,7 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
     {
       DestroyAnnotateInfo(&annotate_info);
       DestroyImageInfo(local_info);
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   DestroyImage(image);

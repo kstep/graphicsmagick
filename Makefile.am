@@ -145,8 +145,8 @@ check-perl: $(PERLMAKEFILE)
 	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
 
 clean-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' clean && $(RM) -f  Makefile.old PerlMagick
-	$(RM) -f perl-sources
+	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' clean && rm -f  Makefile.old PerlMagick
+	rm -f perl-sources
 
 distclean-perl: clean-perl
 

@@ -1506,7 +1506,7 @@ static CommandType
 static Image
   *XMagickCommand(Display *,XResourceInfo *,XWindows *,const CommandType,
     Image **),
-  *XOpenImage(Display *,XResourceInfo *,XWindows *,const unsigned int),
+  *XOpenBlob(Display *,XResourceInfo *,XWindows *,const unsigned int),
   *XTileImage(Display *,XResourceInfo *,XWindows *,Image *,XEvent *),
   *XVisualDirectoryImage(Display *,XResourceInfo *,XWindows *);
 

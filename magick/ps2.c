@@ -301,7 +301,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   compression=image_info->compression;
@@ -562,7 +562,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               status=PackbitsEncodeImage(image,number_packets,pixels);
           if (!status)
             {
-              CloseImage(image);
+              CloseBlob(image);
               return(False);
             }
           FreeMemory((char *) pixels);
@@ -735,7 +735,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               FreeMemory((char *) pixels);
               if (!status)
                 {
-                  CloseImage(image);
+                  CloseBlob(image);
                   return(False);
                 }
               break;
@@ -789,6 +789,6 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     }
   (void) strcpy(buffer,"%%EOF\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

@@ -5903,7 +5903,7 @@ Export unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   status=WriteGIFImage(image_info,image);
   if (status == False)
     return(status);
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   (void) remove(image->filename);
@@ -5913,7 +5913,7 @@ Export unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
     Write logo image.
   */
   (void) strcpy(image->filename,filename);
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   (void) strcpy(buffer,"/*\n");
@@ -5948,6 +5948,6 @@ Export unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(buffer,"\n  };\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) fclose(file);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

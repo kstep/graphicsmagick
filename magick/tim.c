@@ -141,7 +141,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -359,6 +359,6 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
   } while (tim_header.id == 0x00000010);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }

@@ -209,7 +209,7 @@ extern "C" {
   if (image_info->adjoin) \
     while (image->previous != (Image *) NULL) \
       image=image->previous; \
-  CloseImage(image); \
+  CloseBlob(image); \
   return(False); \
 }
 

@@ -123,7 +123,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
       /*
         Open image file.
       */
-      status=OpenImage(image_info,image,ReadBinaryType);
+      status=OpenBlob(image_info,image,ReadBinaryType);
       if (status == False)
         ReaderExit(FileOpenWarning,"Unable to open file",image);
       for (i=0; i < image->offset; i++)
@@ -155,7 +155,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     if (image_info->interlace == PartitionInterlace)
       {
         AppendImageFormat("Y",image->filename);
-        status=OpenImage(image_info,image,ReadBinaryType);
+        status=OpenBlob(image_info,image,ReadBinaryType);
         if (status == False)
           ReaderExit(FileOpenWarning,"Unable to open file",image);
       }
@@ -179,9 +179,9 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     }
     if (image_info->interlace == PartitionInterlace)
       {
-        CloseImage(image);
+        CloseBlob(image);
         AppendImageFormat("U",image->filename);
-        status=OpenImage(image_info,image,ReadBinaryType);
+        status=OpenBlob(image_info,image,ReadBinaryType);
         if (status == False)
           ReaderExit(FileOpenWarning,"Unable to open file",image);
       }
@@ -201,9 +201,9 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     }
     if (image_info->interlace == PartitionInterlace)
       {
-        CloseImage(image);
+        CloseBlob(image);
         AppendImageFormat("V",image->filename);
-        status=OpenImage(image_info,image,ReadBinaryType);
+        status=OpenBlob(image_info,image,ReadBinaryType);
         if (status == False)
           ReaderExit(FileOpenWarning,"Unable to open file",image);
       }
@@ -272,7 +272,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
   FreeMemory((char *) scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -331,14 +331,14 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       /*
         Open output image file.
       */
-      status=OpenImage(image_info,image,WriteBinaryType);
+      status=OpenBlob(image_info,image,WriteBinaryType);
       if (status == False)
         WriterExit(FileOpenWarning,"Unable to open file",image);
     }
   if (image_info->interlace == PartitionInterlace)
     {
       AppendImageFormat("Y",image->filename);
-      status=OpenImage(image_info,image,WriteBinaryType);
+      status=OpenBlob(image_info,image,WriteBinaryType);
       if (status == False)
         WriterExit(FileOpenWarning,"Unable to open file",image);
     }
@@ -389,9 +389,9 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       ProgressMonitor(SaveImageText,200,400);
     if (image_info->interlace == PartitionInterlace)
       {
-        CloseImage(image);
+        CloseBlob(image);
         AppendImageFormat("U",image->filename);
-        status=OpenImage(image_info,image,WriteBinaryType);
+        status=OpenBlob(image_info,image,WriteBinaryType);
         if (status == False)
           WriterExit(FileOpenWarning,"Unable to open file",image);
       }
@@ -410,9 +410,9 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       ProgressMonitor(SaveImageText,300,400);
     if (image_info->interlace == PartitionInterlace)
       {
-        CloseImage(image);
+        CloseBlob(image);
         AppendImageFormat("V",image->filename);
-        status=OpenImage(image_info,image,WriteBinaryType);
+        status=OpenBlob(image_info,image,WriteBinaryType);
         if (status == False)
           WriterExit(FileOpenWarning,"Unable to open file",image);
       }
@@ -437,6 +437,6 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

@@ -2697,7 +2697,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -2860,15 +2860,16 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
         if ((length == 1) && (quantum == 4))
           datum=LSBFirstReadLong(image);
         else
-          {
-            data=(unsigned char *)
-              AllocateMemory(quantum*(length+1)*sizeof(unsigned char));
-            if (data == (unsigned char *) NULL)
-              ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
-            (void) ReadBlob(image,quantum*length,(char *) data);
-            data[length*quantum]=0;
-          }
+          if (quantum != 0)
+            {
+              data=(unsigned char *)
+                AllocateMemory(quantum*(length+1)*sizeof(unsigned char));
+              if (data == (unsigned char *) NULL)
+                ReaderExit(ResourceLimitWarning,"Memory allocation failed",
+                  image);
+              (void) ReadBlob(image,quantum*length,(char *) data);
+              data[length*quantum]=0;
+            }
     switch (group)
     {
       case 0x0002:
@@ -3060,7 +3061,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
                 datum=0;
                 for (i=length-1; i >= 0; i--)
                   datum=256*datum+data[i];
-                  (void) fprintf(stdout,"%lu",datum);
+                (void) fprintf(stdout,"%lu",datum);
               }
             else
               for (i=0; i < length; i++)
@@ -3166,7 +3167,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if (image_info->ping)
       {
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     if ((samples_per_pixel > 1) && (image->interlace == PlaneInterlace))
@@ -3312,7 +3313,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
     /*
       Proceed to next image.
     */
-    if (feof(image->file))
+    if (EOFBlob(image))
       break;
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -3340,6 +3341,6 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
     FreeMemory((char *) scale);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }

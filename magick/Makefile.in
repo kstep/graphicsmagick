@@ -187,7 +187,7 @@ EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = classify.h compress.h config.h defines.h delegates.h error.h 	gems.h image.h magick.h memory.h monitor.h PreRvIcccm.h quantize.h 	utility.h version.h widget.h xwindows.h api.h blob.h
+include_HEADERS = api.h classify.h compress.h config.h defines.h delegates.h error.h 	gems.h image.h magick.h memory.h monitor.h PreRvIcccm.h quantize.h 	utility.h version.h widget.h xwindows.h api.h blob.h
 
 
 # Headers which are not installed but which are distributed
@@ -516,7 +516,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 # Ensure that configuration header is not distributed
 dist-hook:
-	$(RM) $(distdir)/config.h
+	-rm $(distdir)/config.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

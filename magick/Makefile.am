@@ -61,7 +61,7 @@ EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = classify.h compress.h config.h defines.h delegates.h error.h \
+include_HEADERS = api.h classify.h compress.h config.h defines.h delegates.h error.h \
 	gems.h image.h magick.h memory.h monitor.h PreRvIcccm.h quantize.h \
 	utility.h version.h widget.h xwindows.h api.h blob.h
 
@@ -73,6 +73,6 @@ EXTRA_DIST = Imakefile Magick-config.in Make.com
 
 # Ensure that configuration header is not distributed
 dist-hook:
-	$(RM) $(distdir)/config.h
+	-rm $(distdir)/config.h
 
 DEFS = @DEFS@ -I../

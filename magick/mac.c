@@ -1070,7 +1070,7 @@ Image *ReadPICTImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
   picture_handle=(PicHandle)
@@ -1241,7 +1241,7 @@ Image *ReadPICTImage(const ImageInfo *image_info)
   if (picture_info.theColorTable != nil)
     DisposeHandle((Handle) picture_info.theColorTable);
   DisposeGWorld(graphic_world);
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 

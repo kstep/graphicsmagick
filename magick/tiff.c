@@ -297,7 +297,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
   /*
     Open image.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   if ((image->file == stdin) || image->pipe)
@@ -325,7 +325,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
       (void) strcpy(image->filename,image_info->filename);
       image->temporary=True;
     }
-  CloseImage(image);
+  CloseBlob(image);
   TIFFSetErrorHandler(TIFFWarningHandler);
   TIFFSetWarningHandler(TIFFWarningHandler);
   tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
@@ -430,7 +430,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     if (image_info->ping)
       {
         TIFFClose(tiff);
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     if (units == RESUNIT_INCH)
@@ -1182,7 +1182,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   /*
     Open TIFF file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   if ((image->file != stdout) && !image->pipe)
@@ -1196,7 +1196,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       TemporaryFilename(image->filename);
       image->temporary=True;
     }
-  CloseImage(image);
+  CloseBlob(image);
   tiff=TIFFOpen(image->filename,WriteBinaryType);
   if (tiff == (TIFF *) NULL)
     return(False);
@@ -1737,7 +1737,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       (void) fclose(file);
       (void) remove(image->filename);
       image->temporary=False;
-      CloseImage(&encode_image);
+      CloseBlob(&encode_image);
     }
   if (Latin1Compare(image_info->magick,"PTIF") == 0)
     DestroyImages(image);

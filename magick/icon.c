@@ -174,7 +174,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   icon_file.reserved=LSBFirstReadShort(image);
@@ -217,7 +217,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
     image->colors=image->colors=1 << icon_header.bits_per_pixel;
     if (image_info->ping)
       {
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     /*
@@ -446,6 +446,6 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
   }
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }

@@ -732,7 +732,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -763,7 +763,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
   image->rows=frame.bottom-frame.top;
   if (image_info->ping)
     {
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   image->packets=((Max(image->columns*image->rows,1)-1)/(MaxRunlength+1))+1;
@@ -1326,7 +1326,7 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
@@ -1572,6 +1572,6 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   FreeMemory((char *) scanline);
   FreeMemory((char *) packed_scanline);
   FreeMemory((char *) buffer);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

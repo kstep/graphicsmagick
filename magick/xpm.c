@@ -411,7 +411,7 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,"r");
+  status=OpenBlob(image_info,image,"r");
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -421,7 +421,7 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
   xpm_buffer=(char *) AllocateMemory(length*sizeof(char));
   p=xpm_buffer;
   if (xpm_buffer != (char *) NULL)
-    while (fgets(p,MaxTextExtent,image->file) != (char *) NULL)
+    while (GetStringBlob(image,p) != (char *) NULL)
     {
       if (*p == '#')
         if ((p == xpm_buffer) || (*(p-1) == '\n'))
@@ -562,7 +562,7 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
     }
   if (image_info->ping)
     {
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   /*
@@ -623,7 +623,7 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
     FreeMemory((char *) textlist[i]);
   FreeMemory((char *) textlist);
   CondenseImage(image);
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -704,7 +704,7 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
@@ -867,6 +867,6 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   }
   (void) strcpy(buffer,"};\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

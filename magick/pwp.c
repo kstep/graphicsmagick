@@ -126,7 +126,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,pwp_image,ReadBinaryType);
+  status=OpenBlob(image_info,pwp_image,ReadBinaryType);
   if (pwp_image->file == (FILE *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",pwp_image);
   status=ReadBlob(pwp_image,5,(char *) magick);
@@ -189,7 +189,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
   }
   (void) remove(local_info->filename);
   DestroyImageInfo(local_info);
-  CloseImage(pwp_image);
+  CloseBlob(pwp_image);
   DestroyImage(pwp_image);
   return(image);
 }

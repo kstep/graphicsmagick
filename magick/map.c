@@ -113,7 +113,7 @@ Export Image *ReadMAPImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -165,7 +165,7 @@ Export Image *ReadMAPImage(const ImageInfo *image_info)
       DestroyImages(image);
       return((Image *) NULL);
     }
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -221,7 +221,7 @@ Export unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
@@ -266,6 +266,6 @@ Export unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   packets=RunlengthEncodeImage(image);
   (void) WriteBlob(image,image->packet_size*packets,
     (char *) image->packed_pixels);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

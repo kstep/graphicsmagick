@@ -170,7 +170,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -246,7 +246,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
         FreeMemory((char *) pcx_colormap);
         if (page_table != (unsigned long *) NULL)
           FreeMemory((char *) page_table);
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     image->colormap=(ColorPacket *) AllocateMemory(256*sizeof(ColorPacket));
@@ -553,7 +553,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     FreeMemory((char *) page_table);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -650,7 +650,7 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
@@ -936,6 +936,6 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         LSBFirstWriteLong(image,page_table[i]);
       FreeMemory((char *) page_table);
     }
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

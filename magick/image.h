@@ -57,7 +57,8 @@ typedef struct _BlobInfo
 
   long
     offset,
-    length;
+    length,
+    extent;
 } BlobInfo;
 
 typedef struct _ColorlistInfo
@@ -707,7 +708,6 @@ extern Export unsigned int
   IsPseudoClass(Image *),
   IsSubimage(const char *,const unsigned int),
   IsTainted(const Image *),
-  OpenImage(const ImageInfo *,Image *,const char *),
   PlasmaImage(Image *,const SegmentInfo *,int,int),
   QueryColorDatabase(const char *,ColorPacket *),
   UncondenseImage(Image *),
@@ -766,7 +766,6 @@ extern Export unsigned int
 extern Export void
   AllocateNextImage(const ImageInfo *,Image *),
   AnnotateImage(Image *,const AnnotateInfo *),
-  CloseImage(Image *),
   CoalesceImages(Image *),
   ColorFloodfillImage(Image *,const RunlengthPacket *,Image *,const int x,
     const int y,const PaintMethod),

@@ -127,7 +127,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   for (i=0; i < image->offset; i++)
@@ -212,7 +212,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
     for (y=0; y < count; y++)
       (void) ReadBlob(image,packet_size*image->tile_info.width,
         (char *) scanline);
-    if (feof(image->file))
+    if (EOFBlob(image))
       MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
     SetRunlengthPackets(image,packets);
     SyncImage(image);
@@ -243,7 +243,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
   FreeMemory((char *) scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -306,7 +306,7 @@ Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -360,6 +360,6 @@ Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

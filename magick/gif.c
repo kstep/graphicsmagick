@@ -693,7 +693,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -865,7 +865,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
       {
         if (transparency_index >= 0)
           image->class=DirectClass;
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     if ((image->columns == 0) || (image->rows == 0))
@@ -976,7 +976,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
       image);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -1048,7 +1048,7 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -1351,6 +1351,6 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

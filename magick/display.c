@@ -5264,7 +5264,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Load image.
       */
-      loaded_image=XOpenImage(display,resource_info,windows,False);
+      loaded_image=XOpenBlob(display,resource_info,windows,False);
       break;
     }
     case NextCommand:
@@ -5291,7 +5291,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Select image.
       */
       (void) chdir(resource_info->home_directory);
-      loaded_image=XOpenImage(display,resource_info,windows,True);
+      loaded_image=XOpenBlob(display,resource_info,windows,True);
       break;
     }
     case SaveCommand:
@@ -7740,15 +7740,15 @@ static unsigned int XMatteEditImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XOpenImage loads an image from a file.
+%  Method XOpenBlob loads an image from a file.
 %
-%  The format of the XOpenImage routine is:
+%  The format of the XOpenBlob routine is:
 %
-%    loaded_image=XOpenImage(display,resource_info,windows,command)
+%    loaded_image=XOpenBlob(display,resource_info,windows,command)
 %
 %  A description of each parameter follows:
 %
-%    o loaded_image: Method XOpenImage returns an image if can be loaded
+%    o loaded_image: Method XOpenBlob returns an image if can be loaded
 %      successfully.  Otherwise a null image is returned.
 %
 %    o display: Specifies a connection to an X server; returned from
@@ -7763,7 +7763,7 @@ static unsigned int XMatteEditImage(Display *display,
 %
 %
 */
-static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
+static Image *XOpenBlob(Display *display,XResourceInfo *resource_info,
   XWindows *windows,const unsigned int command)
 {
   Image
@@ -13203,7 +13203,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             if (Latin1Compare(displayed_image->magick,"LOGO") == 0)
               {
                 if (Latin1Compare(displayed_image->filename,"Untitled") == 0)
-                  loaded_image=XOpenImage(display,resource_info,windows,False);
+                  loaded_image=XOpenBlob(display,resource_info,windows,False);
                 else
                   *state|=NextImageState | ExitState;
               }

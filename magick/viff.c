@@ -194,7 +194,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -546,7 +546,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
     image->rows=(unsigned int) viff_header.columns;
     if (image_info->ping)
       {
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     image->packets=image->columns*image->rows;
@@ -682,7 +682,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
   } while ((status == True) && (viff_header.identifier == 0xab));
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -797,7 +797,7 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   scene=0;
@@ -1065,6 +1065,6 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

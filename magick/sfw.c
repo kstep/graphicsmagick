@@ -195,7 +195,7 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -208,7 +208,7 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
   status=ReadBlob(image,image->filesize,(char *) buffer);
   if ((status == False) || (strncmp((char *) buffer,"SFW",3) != 0))
     ReaderExit(CorruptImageWarning,"Not a SFW image file",image);
-  CloseImage(image);
+  CloseBlob(image);
   DestroyImage(image);
   /*
     Find the start of the JFIF data

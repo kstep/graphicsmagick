@@ -84,7 +84,7 @@
 */
 Export void *AllocateMemory(const size_t size)
 {
-  assert(size);
+  assert(size > 0);
   return(malloc(size));
 }
 

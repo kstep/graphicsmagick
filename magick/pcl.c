@@ -152,7 +152,7 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
@@ -382,6 +382,6 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"\033E");  /* portrait orientation */
   (void) WriteBlob(image,strlen(buffer),buffer);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

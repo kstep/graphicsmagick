@@ -138,7 +138,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -158,7 +158,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
     image->rows=LSBFirstReadShort(image);
     if (image_info->ping)
       {
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     image->packets=image->columns*image->rows;
@@ -509,6 +509,6 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
   } while ((status == True) && (strncmp(magick,"\122\314",2) == 0));
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }

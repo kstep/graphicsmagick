@@ -132,7 +132,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,"r");
+  status=OpenBlob(image_info,image,"r");
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -202,7 +202,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     /*
       Annotate image with text.
     */
-    p=fgets(text,MaxTextExtent,image->file);
+    p=GetStringBlob(image,text);
     if (p == (char *) NULL)
       break;
     if (Extent(text) > 0)
@@ -269,7 +269,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
   (void) IsPseudoClass(image);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -325,7 +325,7 @@ Export unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   scene=0;
@@ -378,6 +378,6 @@ Export unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

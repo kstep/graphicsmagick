@@ -137,7 +137,7 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -152,7 +152,7 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
   image->colors=2;
   if (image_info->ping)
     {
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   /*
@@ -264,7 +264,7 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
   */
   jbg_dec_free(&jbig_info);
   FreeMemory((char *) buffer);
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 #else
@@ -349,7 +349,7 @@ Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   scene=0;
@@ -458,7 +458,7 @@ Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }
 #else

@@ -163,18 +163,18 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Read X bitmap header.
   */
-  while (fgets(buffer,MaxTextExtent,image->file) != (char *) NULL)
+  while (GetStringBlob(image,buffer) != (char *) NULL)
     if (sscanf(buffer,"#define %s %u",name,&image->columns) == 2)
       if ((strlen(name) >= 6) &&
           (Latin1Compare(name+strlen(name)-6,"_width") == 0))
           break;
-  while (fgets(buffer,MaxTextExtent,image->file) != (char *) NULL)
+  while (GetStringBlob(image,buffer) != (char *) NULL)
     if (sscanf(buffer,"#define %s %u",name,&image->rows) == 2)
       if ((strlen(name) >= 7) &&
           (Latin1Compare(name+strlen(name)-7,"_height") == 0))
@@ -183,14 +183,14 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
   image->colors=2;
   if (image_info->ping)
     {
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   /*
     Scan until hex digits.
   */
   version=11;
-  while (fgets(buffer,MaxTextExtent,image->file) != (char *) NULL)
+  while (GetStringBlob(image,buffer) != (char *) NULL)
   {
     if (sscanf(buffer,"static short %s = {",name) == 1)
       version=10;
@@ -210,7 +210,7 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
     if (Latin1Compare("bits[]",(char *) p) == 0)
       break;
   }
-  if ((image->columns == 0) || (image->rows == 0) || feof(image->file))
+  if ((image->columns == 0) || (image->rows == 0) || EOFBlob(image))
     ReaderExit(CorruptImageWarning,"XBM file is not in the correct format",
       image);
   /*
@@ -325,7 +325,7 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
   FreeMemory((char *) data);
   SetRunlengthPackets(image,packets);
   SyncImage(image);
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -390,7 +390,7 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
@@ -493,6 +493,6 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   }
   (void) strcpy(buffer,"};\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

@@ -161,7 +161,7 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -199,7 +199,7 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
       }
     if (image_info->ping)
       {
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     image->packets=image->columns*image->rows;
@@ -401,7 +401,7 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
           base++;
           offset=base;
         }
-      if (feof(image->file))
+      if (EOFBlob(image))
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
@@ -439,7 +439,7 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
   } while (status == True);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -538,7 +538,7 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   scene=0;
@@ -835,6 +835,6 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

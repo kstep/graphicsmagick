@@ -163,7 +163,7 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     return((Image *) NULL);
   /*
@@ -489,7 +489,7 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
   */
   XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
     (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 #else

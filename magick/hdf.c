@@ -135,10 +135,10 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
-  CloseImage(image);
+  CloseBlob(image);
   /*
     Read HDF image.
   */
@@ -164,7 +164,7 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
       image->colors=256;
     if (image_info->ping)
       {
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     image->packets=image->columns*image->rows;
@@ -389,10 +389,10 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  CloseImage(image);
+  CloseBlob(image);
   scene=0;
   do
   {

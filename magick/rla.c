@@ -189,7 +189,7 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   rla_header.window.left=MSBFirstReadShort(image);
@@ -245,7 +245,7 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
   image->packets=image->columns*image->rows;
   if (image_info->ping)
     {
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   scanlines=(long *) AllocateMemory(image->rows*sizeof(long));
@@ -376,6 +376,6 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
   for ( ;  (q-image->pixels) < (int) image->packets; q++)
     q->length=0;
   CondenseImage(image);
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }

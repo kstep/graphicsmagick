@@ -994,65 +994,6 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l o s e I m a g e                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method CloseImage closes a file associated with the image.  If the
-%  filename prefix is '|', the file is a pipe and is closed with PipeClose.
-%
-%  The format of the CloseImage routine is:
-%
-%      CloseImage(image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-Export void CloseImage(Image *image)
-{
-  /*
-    Close image file.
-  */
-  assert(image != (Image *) NULL);
-  if (image->blob.data != (char *) NULL)
-    {
-      image->filesize=image->blob.length;
-      return;
-    }
-  if (image->file == (FILE *) NULL)
-    return;
-  (void) fflush(image->file);
-  image->status=ferror(image->file);
-  (void) SeekBlob(image,0L,SEEK_END);
-  image->filesize=TellBlob(image);
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-  if (image->pipe)
-    (void) pclose(image->file);
-  else
-#endif
-    if (!image->exempt)
-      (void) fclose(image->file);
-  image->file=(FILE *) NULL;
-  if (!image->orphan)
-    {
-      while (image->previous != (Image *) NULL)
-        image=image->previous;
-      for ( ; image != (Image *) NULL; image=image->next)
-        image->file=(FILE *) NULL;
-    }
-  errno=0;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   C o m m e n t I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -2404,7 +2345,7 @@ Export void DestroyImage(Image *image)
   assert(image != (Image *) NULL);
   if (image->file != (FILE *) NULL)
     {
-      CloseImage(image);
+      CloseBlob(image);
       if (image->temporary)
         (void) remove(image->filename);
     }
@@ -4743,193 +4684,6 @@ Export void MogrifyImages(const ImageInfo *image_info,const int argc,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   O p e n I m a g e                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method OpenImage open a file associated with the image.  A file name of
-%  '-' sets the file to stdin for type 'r' and stdout for type 'w'.  If the
-%  filename suffix is '.gz' or '.Z', the image is decompressed for type 'r'
-%  and compressed for type 'w'.  If the filename prefix is '|', it is piped
-%  to or from a system command.
-%
-%  The format of the OpenImage routine is:
-%
-%      status=OpenImage(image_info,image,type)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method OpenImage returns True if the file is successfully
-%      opened otherwise False.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o type: 'r' for reading; 'w' for writing.
-%
-*/
-Export unsigned int OpenImage(const ImageInfo *image_info,Image *image,
-  const char *type)
-{
-  char
-    filename[MaxTextExtent];
-
-  register char
-    *p;
-
-  assert(image_info != (ImageInfo *) NULL);
-  assert(image != (Image *) NULL);
-  assert(type != (char *) NULL);
-  if (image_info->blob.data != (char *) NULL)
-    {
-      image->blob=image_info->blob;
-      return(True);
-    }
-  image->exempt=False;
-  if (image_info->file != (FILE *) NULL)
-    {
-      /*
-        Use previously opened filehandle.
-      */
-      image->file=image_info->file;
-      image->exempt=True;
-      return(True);
-    }
-  (void) strcpy(filename,image->filename);
-  p=(char *) NULL;
-  if (*filename != '|')
-    {
-      if ((Extent(filename) > 4) &&
-          (Latin1Compare(filename+Extent(filename)-4,".pgp") == 0))
-        {
-          /*
-            Decrypt image file with PGP encryption utilities.
-          */
-          if (*type == 'r')
-            p=GetDelegateCommand(image_info,image,"pgp",(char *) NULL);
-        }
-      else
-        if ((Extent(filename) > 4) &&
-            (Latin1Compare(filename+Extent(filename)-4,".bz2") == 0))
-          {
-            /*
-              Uncompress/compress image file with BZIP compress utilities.
-            */
-            if (*type == 'r')
-              p=GetDelegateCommand(image_info,image,"bzip",(char *) NULL);
-            else
-              p=GetDelegateCommand(image_info,image,(char *) NULL,"bzip");
-          }
-        else
-          if ((Extent(filename) > 3) &&
-              (Latin1Compare(filename+Extent(filename)-3,".gz") == 0))
-            {
-              /*
-                Uncompress/compress image file with GNU compress utilities.
-              */
-              if (*type == 'r')
-                p=GetDelegateCommand(image_info,image,"zip",(char *) NULL);
-              else
-                p=GetDelegateCommand(image_info,image,(char *) NULL,"zip");
-            }
-          else
-            if ((Extent(filename) > 2) &&
-                (Latin1Compare(filename+Extent(filename)-2,".Z") == 0))
-              {
-                /*
-                  Uncompress/compress image file with UNIX compress utilities.
-                */
-                if (*type == 'r')
-                  p=GetDelegateCommand(image_info,image,"compress",
-                    (char *) NULL);
-                else
-                  p=GetDelegateCommand(image_info,image,(char *) NULL,
-                    "compress");
-              }
-    }
-  if (p != (char *) NULL)
-    {
-      (void) strcpy(filename,p);
-      FreeMemory((char *) p);
-    }
-  /*
-    Open image file.
-  */
-  image->pipe=False;
-  if (Latin1Compare(filename,"-") == 0)
-    {
-      image->file=(*type == 'r') ? stdin : stdout;
-      image->exempt=True;
-    }
-  else
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-    if (*filename == '|')
-      {
-        char
-          mode[MaxTextExtent];
-
-        /*
-          Pipe image to or from a system command.
-        */
-        if (*type == 'w')
-          (void) signal(SIGPIPE,SIG_IGN);
-        (void) strncpy(mode,type,1);
-        mode[1]='\0';
-        image->file=(FILE *) popen(filename+1,mode);
-        image->pipe=True;
-        image->exempt=True;
-      }
-    else
-#endif
-      {
-        if (*type == 'w')
-          {
-            /*
-              Form filename for multi-part images.
-            */
-            FormatString(filename,image->filename,image->scene);
-            if (!image_info->adjoin)
-              if ((image->previous != (Image *) NULL) ||
-                  (image->next != (Image *) NULL))
-                {
-                  if ((Latin1Compare(filename,image->filename) == 0) ||
-                      (strchr(filename,'%') != (char *) NULL))
-                    FormatString(filename,"%.1024s.%u",image->filename,
-                      image->scene);
-                  if (image->next != (Image *) NULL)
-                    (void) strcpy(image->next->magick,image->magick);
-                }
-            (void) strcpy(image->filename,filename);
-          }
-#if defined(macintosh)
-        if (*type == 'w')
-          SetApplicationType(filename,image_info->magick,'8BIM');
-#endif
-        image->file=(FILE *) fopen(filename,type);
-        if (image->file != (FILE *) NULL)
-          {
-            (void) SeekBlob(image,0L,SEEK_END);
-            image->filesize=TellBlob(image);
-            (void) SeekBlob(image,0L,SEEK_SET);
-          }
-      }
-  image->status=False;
-  if (*type == 'r')
-    {
-      image->next=(Image *) NULL;
-      image->previous=(Image *) NULL;
-    }
-  return(image->file != (FILE *) NULL);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   P a r s e I m a g e G e o m e t r y                                       %
 %                                                                             %
 %                                                                             %
@@ -6230,7 +5984,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
     Determine the image format from the first few bytes of the file.
   */
   (void) strcpy(image->filename,image_info->filename);
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     return;
   if ((image->blob.data != (char *) NULL)  || !image->exempt)

@@ -126,7 +126,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -209,7 +209,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
   image->colors=256;
   if (image_info->ping)
     {
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   /*
@@ -276,7 +276,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
   FreeMemory((char *) vicar_pixels);
   SyncImage(image);
   CondenseImage(image);
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -347,7 +347,7 @@ Export unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
@@ -408,6 +408,6 @@ Export unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     p++;
   }
   FreeMemory((char *) pixels);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

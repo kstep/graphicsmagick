@@ -126,7 +126,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   image->depth=8;
@@ -398,7 +398,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
       ReaderExit(CorruptImageWarning,"Incorrect image header in file",image);
     if (image_info->ping)
       {
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     if (image->montage != (char *) NULL)
@@ -653,7 +653,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
   } while (c != EOF);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -689,6 +689,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
 Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 {
   char
+    buffer[MaxTextExtent],
     color[MaxTextExtent];
 
   CompressionType
@@ -707,7 +708,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   CondenseImage(image);
@@ -831,29 +832,32 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Write header to file.
     */
-    (void) fprintf(image->file,"id=ImageMagick\n");
+    (void) strcpy(buffer,"id=ImageMagick\n");
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->class == PseudoClass)
-      (void) fprintf(image->file,"class=PseudoClass  colors=%u\n",
-        image->colors);
+      (void) sprintf(buffer,"class=PseudoClass  colors=%u\n",image->colors);
     else
       if (image->matte)
-        (void) fprintf(image->file,"class=DirectClass  matte=True\n");
+        (void) strcpy(buffer,"class=DirectClass  matte=True\n");
       else
         if (image->colorspace == CMYKColorspace)
-          (void) fprintf(image->file,"class=DirectClass  colorspace=CMYK\n");
+          (void) strcpy(buffer,"class=DirectClass  colorspace=CMYK\n");
         else
-          (void) fprintf(image->file,"class=DirectClass\n");
+          (void) strcpy(buffer,"class=DirectClass\n");
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->compression == RunlengthEncodedCompression)
-      (void) fprintf(image->file,"compression=RunlengthEncoded  packets=%lu\n",
+      (void) sprintf(buffer,"compression=RunlengthEncoded  packets=%lu\n",
         packets);
     else
       if (image->compression == BZipCompression)
-        (void) fprintf(image->file,"compression=BZip  packets=%lu\n",packets);
+        (void) sprintf(buffer,"compression=BZip  packets=%lu\n",packets);
       else
         if (image->compression != NoCompression)
-          (void) fprintf(image->file,"compression=Zip  packets=%lu\n",packets);
-    (void) fprintf(image->file,"columns=%u  rows=%u  depth=%u\n",image->columns,
+          (void) sprintf(buffer,"compression=Zip  packets=%lu\n",packets);
+    (void) WriteBlob(image,strlen(buffer),buffer);
+    (void) sprintf(buffer,"columns=%u  rows=%u  depth=%u\n",image->columns,
       image->rows,image->depth);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         char
@@ -867,82 +871,127 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           (void) strcpy(units,"pixels-per-inch");
         if (image->units == PixelsPerCentimeterResolution)
           (void) strcpy(units,"pixels-per-centimeter");
-        (void) fprintf(image->file,"resolution=%gx%g  units=%.1024s\n",
+        (void) sprintf(buffer,"resolution=%gx%g  units=%.1024s\n",
           image->x_resolution,image->y_resolution,units);
+        (void) WriteBlob(image,strlen(buffer),buffer);
       }
     SignatureImage(image);
     if (image->signature != (char *) NULL)
-      (void) fprintf(image->file,"signature=%.1024s\n",image->signature);
+      {
+        (void) sprintf(buffer,"signature=%.1024s\n",image->signature);
+        (void) WriteBlob(image,strlen(buffer),buffer);
+      }
     if (image->page != (char *) NULL)
-      (void) fprintf(image->file,"page=%.1024s\n",image->page);
+      {
+        (void) sprintf(buffer,"page=%.1024s\n",image->page);
+        (void) WriteBlob(image,strlen(buffer),buffer);
+      }
     (void) QueryColorName(&image->background_color,color);
-    (void) fprintf(image->file,"background-color=%.1024s  ",color);
+    (void) sprintf(buffer,"background-color=%.1024s  ",color);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) QueryColorName(&image->border_color,color);
-    (void) fprintf(image->file,"border-color=%.1024s  ",color);
+    (void) sprintf(buffer,"border-color=%.1024s  ",color);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     (void) QueryColorName(&image->matte_color,color);
-    (void) fprintf(image->file,"matte-color=%.1024s\n",color);
+    (void) sprintf(buffer,"matte-color=%.1024s\n",color);
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
-      (void) fprintf(image->file,
-        "scene=%u  iterations=%u  delay=%u  dispose=%u\n",
-        image->scene,image->iterations,image->delay,image->dispose);
+      {
+        (void) sprintf(buffer,"scene=%u  iterations=%u  delay=%u  dispose=%u\n",
+          image->scene,image->iterations,image->delay,image->dispose);
+        (void) WriteBlob(image,strlen(buffer),buffer);
+      }
     else
       {
         if (image->scene != 0)
-          (void) fprintf(image->file,"scene=%u\n",image->scene);
+          {
+            (void) sprintf(buffer,"scene=%u\n",image->scene);
+            (void) WriteBlob(image,strlen(buffer),buffer);
+          }
         if (image->iterations != 1)
-          (void) fprintf(image->file,"iterations=%u\n",image->iterations);
+          {
+            (void) sprintf(buffer,"iterations=%u\n",image->iterations);
+            (void) WriteBlob(image,strlen(buffer),buffer);
+          }
         if (image->delay != 0)
-          (void) fprintf(image->file,"delay=%u\n",image->delay);
+          {
+            (void) sprintf(buffer,"delay=%u\n",image->delay);
+            (void) WriteBlob(image,strlen(buffer),buffer);
+          }
         if (image->dispose != 0)
-          (void) fprintf(image->file,"dispose=%u\n",image->dispose);
+          {
+            (void) sprintf(buffer,"dispose=%u\n",image->dispose);
+            (void) WriteBlob(image,strlen(buffer),buffer);
+          }
       }
     if (image->rendering_intent != UndefinedIntent)
       {
         if (image->rendering_intent == SaturationIntent)
-          (void) fprintf(image->file,"rendering-intent=saturation\n");
+          (void) strcpy(buffer,"rendering-intent=saturation\n");
         else
           if (image->rendering_intent == PerceptualIntent)
-            (void) fprintf(image->file,"rendering-intent=perceptual\n");
+            (void) strcpy(buffer,"rendering-intent=perceptual\n");
           else
             if (image->rendering_intent == AbsoluteIntent)
-              (void) fprintf(image->file,"rendering-intent=absolute\n");
+              (void) strcpy(buffer,"rendering-intent=absolute\n");
             else
-              (void) fprintf(image->file,"rendering-intent=relative\n");
+              (void) strcpy(buffer,"rendering-intent=relative\n");
+        (void) WriteBlob(image,strlen(buffer),buffer);
       }
     if (image->gamma != 0.0)
-      (void) fprintf(image->file,"gamma=%g\n",image->gamma);
+      {
+        (void) sprintf(buffer,"gamma=%g\n",image->gamma);
+        (void) WriteBlob(image,strlen(buffer),buffer);
+      }
     if (image->chromaticity.white_point.x != 0.0)
       {
         /*
           Note chomaticity points.
         */
-        (void) fprintf(image->file,
+        (void) sprintf(buffer,
           "red-primary=%g,%g  green-primary=%g,%g  blue-primary=%g,%g\n",
           image->chromaticity.red_primary.x,image->chromaticity.red_primary.y,
           image->chromaticity.green_primary.x,
           image->chromaticity.green_primary.y,
           image->chromaticity.blue_primary.x,
           image->chromaticity.blue_primary.y);
-        (void) fprintf(image->file,"white-point=%g,%g\n",
+        (void) WriteBlob(image,strlen(buffer),buffer);
+        (void) sprintf(buffer,"white-point=%g,%g\n",
           image->chromaticity.white_point.x,image->chromaticity.white_point.y);
+        (void) WriteBlob(image,strlen(buffer),buffer);
       }
     if (image->color_profile.length > 0)
-      (void) fprintf(image->file,"color-profile=%u\n",
-        image->color_profile.length);
+      {
+        (void) sprintf(buffer,"color-profile=%u\n",image->color_profile.length);
+        (void) WriteBlob(image,strlen(buffer),buffer);
+      }
     if (image->montage != (char *) NULL)
-      (void) fprintf(image->file,"montage=%.1024s\n",image->montage);
+      {
+        (void) sprintf(buffer,"montage=%.1024s\n",image->montage);
+        (void) WriteBlob(image,strlen(buffer),buffer);
+      }
     if (image->label != (char *) NULL)
-      (void) fprintf(image->file,"label=\"%.1024s\"\n",image->label);
+      {
+        (void) sprintf(buffer,"label=\"%.1024s\"\n",image->label);
+        (void) WriteBlob(image,strlen(buffer),buffer);
+      }
     if (image->comments != (char *) NULL)
-      (void) fprintf(image->file,"{%s}\n",image->comments);
-    (void) fprintf(image->file,"\f\n:\032");
+      {
+        (void) sprintf(buffer,"{%s}\n",image->comments);
+        (void) WriteBlob(image,strlen(buffer),buffer);
+      }
+    (void) strcpy(buffer,"\f\n:\032");
+    (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->montage != (char *) NULL)
       {
         /*
           Write montage tile directory.
         */
         if (image->directory != (char *) NULL)
-          (void) fprintf(image->file,"%s",image->directory);
+          {
+            (void) sprintf(buffer,"%s",image->directory);
+            (void) WriteBlob(image,strlen(buffer),buffer);
+          }
         (void) WriteByte(image,'\0');
       }
     if (image->color_profile.length > 0)
@@ -998,6 +1047,6 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

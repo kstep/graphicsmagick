@@ -45,6 +45,10 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% This software is based in part on the work of the Independent JPEG Group.
+% See ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz for copyright and
+% licensing restrictions.  Blob support contributed by Glenn Randers-Pehrson.
+%
 %
 */
 
@@ -59,11 +63,39 @@
 */
 #define ICC_MARKER  (JPEG_APP0+2)
 #define IPTC_MARKER  (JPEG_APP0+13)
+#define MaxBufferExtent  8192
 
 #if defined(HasJPEG)
 #include <setjmp.h>
 #include "jpeglib.h"
 #include "jerror.h"
+
+typedef struct _DestinationManager
+{
+  struct jpeg_destination_mgr
+    manager;
+
+  Image
+    *image;
+
+  JOCTET
+    *buffer;
+} DestinationManager;
+
+typedef struct _SourceManager
+{
+  struct jpeg_source_mgr
+    manager;
+
+  Image
+    *image;
+
+  JOCTET
+    *buffer;
+
+  boolean
+    start_of_blob;
+} SourceManager;
 
 static Image
   *image;
@@ -106,32 +138,56 @@ static void EmitMessage(j_common_ptr jpeg_info,int level)
   char
     message[JMSG_LENGTH_MAX];
 
-  struct jpeg_error_mgr
-    *jpeg_error;
-
-  jpeg_error=jpeg_info->err;
-  (jpeg_error->format_message) (jpeg_info,message);
+  (jpeg_info->err->format_message)(jpeg_info,message);
   if (level < 0)
     {
-      if ((jpeg_error->num_warnings == 0) || (jpeg_error->trace_level >= 3))
+      if ((jpeg_info->err->num_warnings == 0) ||
+          (jpeg_info->err->trace_level >= 3))
         MagickWarning(DelegateWarning,(char *) message,image->filename);
-      jpeg_error->num_warnings++;
+      jpeg_info->err->num_warnings++;
     }
   else
-    if (jpeg_error->trace_level >= level)
+    if (jpeg_info->err->trace_level >= level)
       MagickWarning(DelegateWarning,(char *) message,image->filename);
+}
+
+static boolean FillInputBuffer(j_decompress_ptr cinfo)
+{
+  SourceManager
+    *source;
+
+  source=(SourceManager *) cinfo->src;
+  source->manager.bytes_in_buffer=
+    ReadBlob(source->image,MaxBufferExtent,(char *) source->buffer);
+  if (source->manager.bytes_in_buffer <= 0)
+    {
+      if (source->start_of_blob)
+        ERREXIT(cinfo,JERR_INPUT_EMPTY);
+      WARNMS(cinfo,JWRN_JPEG_EOF);
+      source->buffer[0]=(JOCTET) 0xff;
+      source->buffer[1]=(JOCTET) JPEG_EOI;
+      source->manager.bytes_in_buffer=2;
+    }
+  source->manager.next_input_byte=source->buffer;
+  source->start_of_blob=FALSE;
+  return(TRUE);
 }
 
 static unsigned int GetCharacter(j_decompress_ptr jpeg_info)
 {
-  struct jpeg_source_mgr
-    *data;
+  if (jpeg_info->src->bytes_in_buffer == 0)
+    (*jpeg_info->src->fill_input_buffer)(jpeg_info);
+  jpeg_info->src->bytes_in_buffer--;
+  return(GETJOCTET(*jpeg_info->src->next_input_byte++));
+}
 
-  data=jpeg_info->src;
-  if (data->bytes_in_buffer == 0)
-    (*data->fill_input_buffer) (jpeg_info);
-  data->bytes_in_buffer--;
-  return(GETJOCTET(*data->next_input_byte++));
+static void InitializeSource(j_decompress_ptr cinfo)
+{
+  SourceManager
+    *source;
+
+  source=(SourceManager *) cinfo->src;
+  source->start_of_blob=TRUE;
 }
 
 static void JPEGErrorHandler(j_common_ptr jpeg_info)
@@ -293,6 +349,51 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
   return(True);
 }
 
+static void SkipInputData(j_decompress_ptr cinfo,long number_bytes)
+{
+  SourceManager
+    *source;
+
+  if (number_bytes <= 0)
+    return;
+  source=(SourceManager *) cinfo->src;
+  while (number_bytes > (long) source->manager.bytes_in_buffer)
+  {
+    number_bytes-=(long) source->manager.bytes_in_buffer;
+    (void) FillInputBuffer(cinfo);
+  }
+  source->manager.next_input_byte+=(size_t) number_bytes;
+  source->manager.bytes_in_buffer-=(size_t) number_bytes;
+}
+
+static void TerminateSource(j_decompress_ptr cinfo)
+{
+}
+
+static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
+{
+  SourceManager
+    *source;
+
+  if (cinfo->src == (JOCTET) NULL)
+    {
+      cinfo->src=(struct jpeg_source_mgr *) (*cinfo->mem->alloc_small)
+        ((j_common_ptr) cinfo,JPOOL_PERMANENT,sizeof(SourceManager));
+      source=(SourceManager *) cinfo->src;
+      source->buffer=(JOCTET *) (*cinfo->mem->alloc_small)
+        ((j_common_ptr) cinfo,JPOOL_PERMANENT,MaxBufferExtent*sizeof(JOCTET));
+    }
+  source=(SourceManager *) cinfo->src;
+  source->manager.init_source=InitializeSource;
+  source->manager.fill_input_buffer=FillInputBuffer;
+  source->manager.skip_input_data=SkipInputData;
+  source->manager.resync_to_restart=jpeg_resync_to_restart;
+  source->manager.term_source=TerminateSource;
+  source->manager.bytes_in_buffer=0;
+  source->manager.next_input_byte=NULL;
+  source->image=image;
+}
+
 Export Image *ReadJPEGImage(const ImageInfo *image_info)
 {
   int
@@ -313,6 +414,12 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   register int
     i;
 
+  struct jpeg_decompress_struct
+    jpeg_info;
+
+  struct jpeg_error_mgr
+    jpeg_error;
+
   register JSAMPLE
     *p;
 
@@ -321,12 +428,6 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
 
   register RunlengthPacket
     *q;
-
-  struct jpeg_decompress_struct
-    jpeg_info;
-
-  struct jpeg_error_mgr
-    jpeg_error;
 
   unsigned int
     status;
@@ -343,7 +444,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -366,7 +467,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
       return((Image *) NULL);
     }
   jpeg_create_decompress(&jpeg_info);
-  jpeg_stdio_src(&jpeg_info,image->file);
+  JPEGSourceManager(&jpeg_info,image);
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
   jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ReadColorProfile);
   jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,ReadNewsProfile);
@@ -421,7 +522,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   if (image_info->ping)
     {
       jpeg_destroy_decompress(&jpeg_info);
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
@@ -533,7 +634,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   (void) jpeg_finish_decompress(&jpeg_info);
   jpeg_destroy_decompress(&jpeg_info);
   FreeMemory((char *) jpeg_pixels);
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 #else
@@ -578,25 +679,68 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
 %
 */
 
+static boolean EmptyOutputBuffer(j_compress_ptr cinfo)
+{
+  DestinationManager
+    *destination;
+
+  destination=(DestinationManager *) cinfo->dest;
+  destination->manager.free_in_buffer=WriteBlob(destination->image,
+    MaxBufferExtent,(char *) destination->buffer);
+  if (destination->manager.free_in_buffer != MaxBufferExtent)
+    ERREXIT(cinfo,JERR_FILE_WRITE);
+  destination->manager.next_output_byte=destination->buffer;
+  return(TRUE);
+}
+
+static void InitializeDestination(j_compress_ptr cinfo)
+{
+  DestinationManager
+    *destination;
+
+  destination=(DestinationManager *) cinfo->dest;
+  destination->buffer=(JOCTET *) (*cinfo->mem->alloc_small)
+    ((j_common_ptr) cinfo,JPOOL_IMAGE,MaxBufferExtent*sizeof(JOCTET));
+  destination->manager.next_output_byte=destination->buffer;
+  destination->manager.free_in_buffer=MaxBufferExtent;
+}
+
 static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
 {
   char
     message[JMSG_LENGTH_MAX];
 
-  struct jpeg_error_mgr
-    *jpeg_error;
-
-  jpeg_error=jpeg_info->err;
-  (jpeg_error->format_message) (jpeg_info,message);
+  (jpeg_info->err->format_message)(jpeg_info,message);
   if (level < 0)
     {
-      if (jpeg_error->num_warnings == 0 || jpeg_error->trace_level >= 3)
+      if ((jpeg_info->err->num_warnings == 0) ||
+          (jpeg_info->err->trace_level >= 3))
         MagickWarning(DelegateWarning,(char *) message,(char *) NULL);
-      jpeg_error->num_warnings++;
+      jpeg_info->err->num_warnings++;
     }
   else
-    if (jpeg_error->trace_level >= level)
+    if (jpeg_info->err->trace_level >= level)
       MagickWarning(DelegateWarning,(char *) message,(char *) NULL);
+}
+
+static void TerminateDestination(j_compress_ptr cinfo)
+{
+  DestinationManager
+    *destination;
+
+  destination=(DestinationManager *) cinfo->dest;
+  if ((MaxBufferExtent-destination->manager.free_in_buffer) > 0)
+    {
+      unsigned long
+        number_bytes;
+
+      number_bytes=WriteBlob(destination->image,MaxBufferExtent-
+        destination->manager.free_in_buffer,(char *) destination->buffer);
+      if (number_bytes != (MaxBufferExtent-destination->manager.free_in_buffer))
+        ERREXIT(cinfo,JERR_FILE_WRITE);
+    }
+  if (FlushBlob(destination->image))
+    ERREXIT(cinfo,JERR_FILE_WRITE);
 }
 
 static void WriteColorProfile(j_compress_ptr jpeg_info,Image *image)
@@ -670,6 +814,21 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
   }
 }
 
+static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
+{
+  DestinationManager
+    *destination;
+
+  if (cinfo->dest == (JOCTET) NULL)
+    cinfo->dest=(struct jpeg_destination_mgr *) (*cinfo->mem->alloc_small)
+      ((j_common_ptr) cinfo,JPOOL_PERMANENT,sizeof(DestinationManager));
+  destination=(DestinationManager *) cinfo->dest;
+  destination->manager.init_destination=InitializeDestination;
+  destination->manager.empty_output_buffer=EmptyOutputBuffer;
+  destination->manager.term_destination=TerminateDestination;
+  destination->image=image;
+}
+
 Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
   int
@@ -709,7 +868,7 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -718,7 +877,7 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=JPEGWarningHandler;
   jpeg_create_compress(&jpeg_info);
-  jpeg_stdio_dest(&jpeg_info,image->file);
+  JPEGDestinationManager(&jpeg_info,image);
   jpeg_info.image_width=image->columns;
   jpeg_info.image_height=image->rows;
   jpeg_info.input_components=3;
@@ -935,7 +1094,7 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   */
   jpeg_destroy_compress(&jpeg_info);
   FreeMemory((char *) jpeg_pixels);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }
 #else
@@ -946,3 +1105,4 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   return(False);
 }
 #endif
+

@@ -2130,7 +2130,6 @@ BlobToImage(ref,...)
     error_jump=(&error_jmp);
     if (setjmp(error_jmp))
       goto ReturnIt;
-    ExpandFilenames(&n,&list);
     for (i=number_images=0; i < n; i++)
     {
       for (image=BlobToImage(info->image_info,list[i],length[i]); image;

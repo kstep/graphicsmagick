@@ -160,7 +160,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
   /*
     Open image.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   if ((image->file == stdin) || image->pipe)
@@ -188,7 +188,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
       (void) strcpy(image->filename,image_info->filename);
       image->temporary=True;
     }
-  CloseImage(image);
+  CloseBlob(image);
   /*
     Initialize FPX toolkit.
   */
@@ -205,9 +205,9 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
       fsspec;
 
     FilenameToFSSpec(image->filename,&fsspec);
-    status=FPX_OpenImageByFilename((const FSSpec &) fsspec,
+    status=FPX_OpenBlobByFilename((const FSSpec &) fsspec,
 #else
-    status=FPX_OpenImageByFilename(image->filename,
+    status=FPX_OpenBlobByFilename(image->filename,
 #endif
       NULL,&width,&height,&tile_width,&tile_height,&colorspace,&flashpix);
   }
@@ -331,7 +331,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
     }
   if (image_info->ping)
     {
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   /*
@@ -346,7 +346,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
       (scanline == (unsigned char *) NULL))
     {
       FPX_ClearSystem();
-      (void) FPX_CloseImage(flashpix);
+      (void) FPX_CloseBlob(flashpix);
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     }
   /*
@@ -402,7 +402,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
         if (status == FPX_LOW_MEMORY_ERROR)
           {
             FreeMemory((char *) scanline);
-            (void) FPX_CloseImage(flashpix);
+            (void) FPX_CloseBlob(flashpix);
             FPX_ClearSystem();
             ReaderExit(ResourceLimitWarning,"Memory allocation failed",
               image);
@@ -456,7 +456,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
   }
   SetRunlengthPackets(image,packets);
   FreeMemory((char *) scanline);
-  (void) FPX_CloseImage(flashpix);
+  (void) FPX_CloseBlob(flashpix);
   FPX_ClearSystem();
   if (image->temporary)
     {
@@ -748,7 +748,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   /*
     Open input file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   if ((image->file != stdout) && !image->pipe)
@@ -762,7 +762,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       TemporaryFilename(image->filename);
       image->temporary=True;
     }
-  CloseImage(image);
+  CloseBlob(image);
   TransformRGBImage(image,RGBColorspace);
   /*
     Initialize FPX toolkit.
@@ -873,7 +873,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     image->columns*sizeof(unsigned char));
   if (pixels == (unsigned char *) NULL)
     {
-      (void) FPX_CloseImage(flashpix);
+      (void) FPX_CloseBlob(flashpix);
       FPX_ClearSystem();
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     }
@@ -1062,7 +1062,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
               (char *) NULL);
         }
     }
-  (void) FPX_CloseImage(flashpix);
+  (void) FPX_CloseBlob(flashpix);
   FPX_ClearSystem();
   FreeMemory((char *) pixels);
   if (image->temporary)
@@ -1084,7 +1084,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       (void) fclose(file);
       (void) remove(image->filename);
       image->temporary=False;
-      CloseImage(&fpx_image);
+      CloseBlob(&fpx_image);
     }
   return(True);
 }

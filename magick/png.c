@@ -87,8 +87,8 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%  To do, more or less in chronological order (as of version 4.2.7,
-%    22 June 1999 -- glennrp -- see also "To do" under WritePNGImage):
+%  To do, more or less in chronological order (as of version 4.2.8,
+%    26 June 1999 -- glennrp -- see also "To do" under WritePNGImage):
 %
 %    (At this point, PNG decoding is supposed to be in full MNG-LC compliance)
 %
@@ -162,9 +162,9 @@
   proposal, they "exist" when the DEFI chunk is found and the object
   attributes for object 0 persist until redefined.)
 
-  As of June 22, 1999, version 0.95a is the latest approved version.  Version
-  0.95b is being voted on, and versions 0.95c and 0.95d are being discussed
-  and will probably be voted on by the PNG Development Group in July.
+  As of June 26, 1999, version 0.95b is the latest approved version.
+  Versions 0.95c and 0.95d are being discussed and will probably be voted
+  on by the PNG Development Group in July.
 
   MNG_LEVEL 9501: MNG-0.95a
   MNG_LEVEL 9502: MNG-0.95b
@@ -186,7 +186,7 @@
 /*
   Don't try to define PNG_READ|WRITE_EMPTY_PLTE_SUPPORTED here.  Make sure
   it's defined in libpng/pngconf.h, version 1.0.3a or later.  It won't work
-  with earlier versions of libpng.  As of June 16, 1999, libpng-1.0.3a has
+  with earlier versions of libpng.  As of June 26, 1999, libpng-1.0.3a has
   not yet been released by the PNG group.
 */
 
@@ -301,9 +301,6 @@ typedef struct _Mng
     image;
 
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
-  FILE *
-    file;
-
   png_byte
      read_buffer[8];
 
@@ -390,9 +387,7 @@ static void
 png_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
   Image *
-    image;
-
-  image=(Image *) png_ptr->io_ptr;
+     image=(Image *) png_get_io_ptr(png_ptr);
 
   /* fread() returns 0 on error, so it is OK to store this in a png_size_t
    * instead of an int, which is what fread() actually returns.
@@ -411,17 +406,14 @@ static void
 mng_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
   Mng *
-     m;
+     m=(Mng *) png_get_io_ptr(png_ptr);
 
   Image *
-    image;
-
+     image=(Image *) m->image;
 
   png_size_t check;
   int i = 0;
 
-  m=(Mng *) png_ptr->io_ptr;
-  image=(Image *) m->image;
 
   /* fread() returns 0 on error, so it is OK to store this in a png_size_t
    * instead of an int, which is what fread() actually returns.
@@ -484,9 +476,7 @@ static void
 png_put_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
   Image *
-    image;
-
-  image=(Image *) png_ptr->io_ptr;
+    image=(Image *) png_get_io_ptr(png_ptr);
 
   if (length)
     {
@@ -500,16 +490,10 @@ png_put_data(png_structp png_ptr, png_bytep data, png_size_t length)
 static void
 png_flush_data(png_structp png_ptr)
 {
-  FILE *io_ptr;
-
   Image *
-    image;
+    image=(Image *) png_get_io_ptr(png_ptr);
 
-  image=(Image *) png_ptr->io_ptr;
-
-  io_ptr = (FILE *)CVT_PTR((image->file));
-   if (io_ptr != NULL)
-      fflush(io_ptr);
+  FlushBlob(image);
 }
 
 #endif
@@ -716,6 +700,25 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
      return;
 }
 
+#ifdef PNG_USER_MEM_SUPPORTED
+extern PNG_EXPORT(png_voidp,png_IM_malloc) PNGARG((png_structp png_ptr,
+   png_uint_32 size));
+extern PNG_EXPORT(png_free_ptr,png_IM_free) PNGARG((png_structp png_ptr,
+   png_voidp ptr));
+png_voidp
+png_IM_malloc(png_structp png_ptr, png_uint_32 size)
+{
+  return(png_voidp) AllocateMemory((size_t)size);
+}
+
+/* Free a pointer.  It is removed from the list at the same time. */
+png_free_ptr
+png_IM_free(png_structp png_ptr, png_voidp ptr)
+{
+  FreeMemory(ptr);
+  return(png_free_ptr) NULL;
+}
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
@@ -838,7 +841,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
 
@@ -874,9 +877,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         ReaderExit(ResourceLimitWarning,"b. Memory allocation failed", image);
       have_mng_structure=True;
       m->verbose = image_info->verbose;
-#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
-      m->file = image->file;
-#endif
+      m->image = image;
 #ifdef MNG_ALWAYS_VERBOSE
       m->verbose = True;
 #endif
@@ -1949,8 +1950,14 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     /*
       Allocate the PNG structures
     */
+#ifdef PNG_USER_MEM_SUPPORTED
+   ping = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (void *) NULL,
+      PNGErrorHandler,PNGWarningHandler, (void *) NULL,
+      (png_malloc_ptr) png_IM_malloc, (png_free_ptr) png_IM_free);
+#else
     ping=png_create_read_struct(PNG_LIBPNG_VER_STRING,(void *) NULL,
       PNGErrorHandler,PNGWarningHandler);
+#endif
     if (ping == (png_struct *) NULL)
       ReaderExit(ResourceLimitWarning,"g. Memory allocation failed",image);
     ping_info=png_create_info_struct(ping);
@@ -1978,7 +1985,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           FreeMemory((char *) scanlines);
         if (png_pixels != (unsigned char *) NULL)
           FreeMemory((char *) png_pixels);
-        CloseImage(image);
+        CloseBlob(image);
         if ((image->columns == 0) || (image->rows == 0))
           {
             DestroyImage(image);
@@ -2224,7 +2231,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     if (image_info->ping)
       {
         png_destroy_read_struct(&ping,&ping_info,&end_info);
-        CloseImage(image);
+        CloseBlob(image);
         MngFreeStruct(m,&have_mng_structure);
         return(image);
       }
@@ -2853,7 +2860,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   if (image_info->verbose)
 #endif
     printf("Finished loading %d visible images.\n",image_found);
-  CloseImage(image);
+  CloseBlob(image);
   MngFreeStruct(m,&have_mng_structure);
   have_mng_structure=False;
   return(image);
@@ -2899,7 +2906,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %    o image:  A pointer to an Image structure.
 %
 %
-%  To do (as of version 4.2.7, 22 June 1999 -- glennrp -- see also
+%  To do (as of version 4.2.8, 26 June 1999 -- glennrp -- see also
 %    "To do" under ReadPNGImage):
 %
 %    Preserve all unknown and not-yet-handled known chunks found in input
@@ -3056,7 +3063,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     Open image file.
   */
   mng_level=MNG_LEVEL;
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   if (image_info->verbose)
@@ -3462,8 +3469,14 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       Allocate the PNG structures
     */
     TransformRGBImage(image,RGBColorspace);
+#ifdef PNG_USER_MEM_SUPPORTED
+    ping = png_create_write_struct_2(PNG_LIBPNG_VER_STRING, (void *) NULL,
+      PNGErrorHandler,PNGWarningHandler, (void *) NULL,
+      (png_malloc_ptr) png_IM_malloc,  (png_free_ptr) png_IM_free);
+#else
     ping=png_create_write_struct(PNG_LIBPNG_VER_STRING,(void *) NULL,
       PNGErrorHandler,PNGWarningHandler);
+#endif
     if (ping == (png_struct *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     ping_info=png_create_info_struct(ping);
@@ -3486,7 +3499,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           FreeMemory((char *) scanlines);
         if (png_pixels != (unsigned char *) NULL)
           FreeMemory((char *) png_pixels);
-        CloseImage(image);
+        CloseBlob(image);
         return(False);
       }
     /*
@@ -3972,7 +3985,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   /*
     Free memory.
   */
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }
 #else

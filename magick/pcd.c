@@ -111,7 +111,7 @@ static unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
     bits+=8; \
     p++; \
   } \
-  if (feof(image->file)) \
+  if (EOFBlob(image)) \
     break; \
 }
 
@@ -437,7 +437,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -496,7 +496,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
     {
       if ((rotate == 1) || (rotate == 3))
         Swap(image->columns,image->rows);
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   /*
@@ -737,7 +737,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   image->chromaticity.white_point.y=0.3290f;
   image->gamma=0.5;
   CondenseImage(image);
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -903,7 +903,7 @@ Export unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,pcd_image,WriteBinaryType);
+  status=OpenBlob(image_info,pcd_image,WriteBinaryType);
   if (pcd_image->file == (FILE *) NULL)
     WriterExit(FileOpenWarning,"Unable to open file",pcd_image);
   TransformRGBImage(image,RGBColorspace);
@@ -946,7 +946,7 @@ Export unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   status=WritePCDTile(image_info,pcd_image,"768x512>","192x128");
   status|=WritePCDTile(image_info,pcd_image,"768x512>","384x256");
   status|=WritePCDTile(image_info,pcd_image,"768x512>","768x512");
-  CloseImage(pcd_image);
+  CloseBlob(pcd_image);
   if (image->columns < image->rows)
     DestroyImage(pcd_image);
   return(status);

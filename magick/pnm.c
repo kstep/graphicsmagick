@@ -220,7 +220,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -253,7 +253,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
       }
     if (image_info->ping)
       {
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     if ((image->columns*image->rows) == 0)
@@ -540,7 +540,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
     }
     if (scale != (Quantum *) NULL)
       FreeMemory((char *) scale);
-    if (feof(image->file))
+    if (EOFBlob(image))
       MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
     SetRunlengthPackets(image,packets);
     if (image->class == PseudoClass)
@@ -580,7 +580,7 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
   } while ((status == True) && (format == 'P'));
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -646,7 +646,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   scene=0;
@@ -1082,6 +1082,6 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

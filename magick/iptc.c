@@ -109,7 +109,7 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -138,7 +138,7 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
   image->iptc_profile.length=0;
   if (image->iptc_profile.info != (unsigned char *) NULL)
     image->iptc_profile.length=q-image->iptc_profile.info;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -181,11 +181,11 @@ Export unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   (void) WriteBlob(image,(int) image->iptc_profile.length,
     (char *) image->iptc_profile.info);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

@@ -389,7 +389,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
   mask>>=1;  \
   if (bit)  \
     runlength=0;  \
-  if (feof(image->file))  \
+  if (EOFBlob(image))  \
     break;  \
 }
 

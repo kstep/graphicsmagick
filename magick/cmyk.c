@@ -125,7 +125,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
       /*
         Open image file.
       */
-      status=OpenImage(image_info,image,ReadBinaryType);
+      status=OpenBlob(image_info,image,ReadBinaryType);
       if (status == False)
         ReaderExit(FileOpenWarning,"Unable to open file",image);
       for (i=0; i < image->offset; i++)
@@ -270,7 +270,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
         if (image_info->interlace == PartitionInterlace)
           {
             AppendImageFormat("C",image->filename);
-            status=OpenImage(image_info,image,ReadBinaryType);
+            status=OpenBlob(image_info,image,ReadBinaryType);
             if (status == False)
               ReaderExit(FileOpenWarning,"Unable to open file",image);
           }
@@ -303,9 +303,9 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
             (char *) scanline);
         if (image_info->interlace == PartitionInterlace)
           {
-            CloseImage(image);
+            CloseBlob(image);
             AppendImageFormat("M",image->filename);
-            status=OpenImage(image_info,image,ReadBinaryType);
+            status=OpenBlob(image_info,image,ReadBinaryType);
             if (status == False)
               ReaderExit(FileOpenWarning,"Unable to open file",image);
           }
@@ -334,9 +334,9 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
             (char *) scanline);
         if (image_info->interlace == PartitionInterlace)
           {
-            CloseImage(image);
+            CloseBlob(image);
             AppendImageFormat("Y",image->filename);
-            status=OpenImage(image_info,image,ReadBinaryType);
+            status=OpenBlob(image_info,image,ReadBinaryType);
             if (status == False)
               ReaderExit(FileOpenWarning,"Unable to open file",image);
           }
@@ -365,9 +365,9 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
             (char *) scanline);
         if (image_info->interlace == PartitionInterlace)
           {
-            CloseImage(image);
+            CloseBlob(image);
             AppendImageFormat("K",image->filename);
-            status=OpenImage(image_info,image,ReadBinaryType);
+            status=OpenBlob(image_info,image,ReadBinaryType);
             if (status == False)
               ReaderExit(FileOpenWarning,"Unable to open file",image);
           }
@@ -400,7 +400,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
       }
     }
     CondenseImage(image);
-    if (feof(image->file))
+    if (EOFBlob(image))
       MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -428,7 +428,7 @@ Export Image *ReadCMYKImage(const ImageInfo *image_info)
   FreeMemory((char *) scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -485,7 +485,7 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
       /*
         Open output image file.
       */
-      status=OpenImage(image_info,image,WriteBinaryType);
+      status=OpenBlob(image_info,image,WriteBinaryType);
       if (status == False)
         WriterExit(FileOpenWarning,"Unable to open file",image);
     }
@@ -597,7 +597,7 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         if (image_info->interlace == PartitionInterlace)
           {
             AppendImageFormat("C",image->filename);
-            status=OpenImage(image_info,image,WriteBinaryType);
+            status=OpenBlob(image_info,image,WriteBinaryType);
             if (status == False)
               WriterExit(FileOpenWarning,"Unable to open file",image);
           }
@@ -610,9 +610,9 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         }
         if (image_info->interlace == PartitionInterlace)
           {
-            CloseImage(image);
+            CloseBlob(image);
             AppendImageFormat("M",image->filename);
-            status=OpenImage(image_info,image,WriteBinaryType);
+            status=OpenBlob(image_info,image,WriteBinaryType);
             if (status == False)
               WriterExit(FileOpenWarning,"Unable to open file",image);
           }
@@ -626,9 +626,9 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         }
         if (image_info->interlace == PartitionInterlace)
           {
-            CloseImage(image);
+            CloseBlob(image);
             AppendImageFormat("Y",image->filename);
-            status=OpenImage(image_info,image,WriteBinaryType);
+            status=OpenBlob(image_info,image,WriteBinaryType);
             if (status == False)
               WriterExit(FileOpenWarning,"Unable to open file",image);
           }
@@ -644,9 +644,9 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         p=image->pixels;
         if (image_info->interlace == PartitionInterlace)
           {
-            CloseImage(image);
+            CloseBlob(image);
             AppendImageFormat("K",image->filename);
-            status=OpenImage(image_info,image,WriteBinaryType);
+            status=OpenBlob(image_info,image,WriteBinaryType);
             if (status == False)
               WriterExit(FileOpenWarning,"Unable to open file",image);
           }
@@ -671,6 +671,6 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

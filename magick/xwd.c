@@ -132,7 +132,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -253,7 +253,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
     {
       if (header.ncolors != 0)
         FreeMemory((char *) colors);
-      CloseImage(image);
+      CloseBlob(image);
       return(image);
     }
   packets=0;
@@ -452,7 +452,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
     FreeMemory((char *) colors);
   FreeMemory(ximage->data);
   FreeMemory(ximage);
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 #else
@@ -532,7 +532,7 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
@@ -662,7 +662,7 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     p++;
   }
   FreeMemory((char *) pixels);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }
 #else

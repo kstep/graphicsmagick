@@ -159,7 +159,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  status=OpenImage(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
@@ -282,7 +282,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
     image->scene=scene;
     if (image_info->ping)
       {
-        CloseImage(image);
+        CloseBlob(image);
         return(image);
       }
     image->colormap=(ColorPacket *)
@@ -412,7 +412,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
     /*
       Proceed to next image.
     */
-    if (feof(image->file))
+    if (EOFBlob(image))
       break;
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -435,7 +435,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
   }
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -497,7 +497,7 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
@@ -547,6 +547,6 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
       ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
   }
   FreeMemory((char *) pixels);
-  CloseImage(image);
+  CloseBlob(image);
   return(True);
 }

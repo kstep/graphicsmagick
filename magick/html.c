@@ -112,10 +112,10 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Open image.
   */
-  status=OpenImage(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  CloseImage(image);
+  CloseBlob(image);
   TransformRGBImage(image,RGBColorspace);
   *url='\0';
   if ((Latin1Compare(image_info->magick,"FTP") == 0) ||
@@ -153,7 +153,7 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       /*
         Open output image file.
       */
-      status=OpenImage(image_info,image,WriteBinaryType);
+      status=OpenBlob(image_info,image,WriteBinaryType);
       if (status == False)
         WriterExit(FileOpenWarning,"Unable to open file",image);
       /*
@@ -248,7 +248,7 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"</html>\n");
       status=WriteBlob(image,strlen(buffer),buffer);
-      CloseImage(image);
+      CloseBlob(image);
       /*
         Write the image as transparent GIF.
       */
@@ -274,7 +274,7 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Open image map.
   */
-  status=OpenImage(local_info,image,WriteBinaryType);
+  status=OpenBlob(local_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   DestroyImageInfo(local_info);
@@ -323,7 +323,7 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
         }
   (void) strcpy(buffer,"</map>\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  CloseImage(image);
+  CloseBlob(image);
   (void) strcpy(image->filename,filename);
   return(status);
 }
