@@ -21,7 +21,7 @@ extern MagickExport unsigned int
 extern MagickExport void
   AcquireSemaphoreInfo(SemaphoreInfo **),
   DestroySemaphore(void),
-  DestroySemaphoreInfo(SemaphoreInfo *),
+  DestroySemaphoreInfo(SemaphoreInfo **),
   InitializeSemaphore(void),
   LiberateSemaphoreInfo(SemaphoreInfo **);
 

@@ -138,7 +138,7 @@ MagickExport void DestroyMagickInfo(void)
     LiberateMemory((void **) &magick_info);
   }
   magick_list=(MagickInfo *) NULL;
-  DestroySemaphoreInfo(magick_semaphore);
+  DestroySemaphoreInfo(&magick_semaphore);
 }
 
 /*

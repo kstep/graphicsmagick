@@ -185,7 +185,7 @@ MagickExport void DestroyModuleInfo(void)
     LiberateMemory((void **) &module_list);
   }
   module_list=(ModuleInfo *) NULL;
-  DestroySemaphoreInfo(module_semaphore);
+  DestroySemaphoreInfo(&module_semaphore);
 }
 
 /*

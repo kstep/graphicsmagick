@@ -2410,7 +2410,7 @@ MagickExport void DestroyImage(Image *image)
   DestroyExceptionInfo(&image->exception);
   DestroyBlobInfo(image->blob);
   if (image->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(image->semaphore);
+    DestroySemaphoreInfo(&image->semaphore);
   if (!image->orphan)
     {
       /*

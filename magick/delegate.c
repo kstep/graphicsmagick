@@ -134,7 +134,7 @@ MagickExport void DestroyDelegateInfo(void)
     LiberateMemory((void **) &delegate);
   }
   delegate_list=(DelegateInfo *) NULL;
-  DestroySemaphoreInfo(delegate_semaphore);
+  DestroySemaphoreInfo(&delegate_semaphore);
 }
 
 /*

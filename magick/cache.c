@@ -586,7 +586,7 @@ static unsigned int ClipCacheNexus(Image *image,const unsigned long nexus)
 MagickExport void DestroyCache(void)
 {
   AcquireSemaphoreInfo(&cache_semaphore);
-  DestroySemaphoreInfo(cache_semaphore);
+  DestroySemaphoreInfo(&cache_semaphore);
 }
 
 /*
@@ -673,7 +673,7 @@ static void DestroyCacheInfo(Cache cache)
       LiberateMemory((void **) &cache_info->nexus_info);
     }
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(cache_info->semaphore);
+    DestroySemaphoreInfo(&cache_info->semaphore);
   LiberateMemory((void **) &cache_info);
 }
 

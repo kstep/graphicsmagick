@@ -263,7 +263,7 @@ MagickExport void DestroySemaphore(void)
 %
 %  The format of the DestroySemaphoreInfo method is:
 %
-%      DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
+%      DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 %
 %  A description of each parameter follows:
 %
@@ -271,20 +271,20 @@ MagickExport void DestroySemaphore(void)
 %
 %
 */
-MagickExport void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
+MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
-  assert(semaphore_info != (SemaphoreInfo *) NULL);
-  assert(semaphore_info->signature == MagickSignature);
-  if (semaphore_info == (SemaphoreInfo *) NULL)
+  assert(semaphore_info != (SemaphoreInfo **) NULL);
+  assert((*semaphore_info)->signature == MagickSignature);
+  if (*semaphore_info == (SemaphoreInfo *) NULL)
     return;
-  (void) UnlockSemaphoreInfo(semaphore_info);
+  (void) UnlockSemaphoreInfo(*semaphore_info);
 #if defined(HasPTHREADS)
-  (void) pthread_mutex_destroy(&semaphore_info->id);
+  (void) pthread_mutex_destroy(&(*semaphore_info)->id);
 #endif
 #if defined(WIN32) && defined(_MT)
-  CloseHandle(semaphore_info->id);
+  CloseHandle((*semaphore_info)->id);
 #endif
-  LiberateMemory((void **) &semaphore_info);
+  LiberateMemory((void **) semaphore_info);
 }
 
 /*

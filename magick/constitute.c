@@ -633,7 +633,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
 MagickExport void DestroyConstitute(void)
 {
   AcquireSemaphoreInfo(&constitute_semaphore);
-  DestroySemaphoreInfo(constitute_semaphore);
+  DestroySemaphoreInfo(&constitute_semaphore);
 }
 
 /*
