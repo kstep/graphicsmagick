@@ -290,49 +290,61 @@ MagickExport unsigned int ConcatenateString(char **destination,
 %
 */
 
-static int InterpretUnicode(const char *code,const int n)
+static int GetUnicodeCharacter(const unsigned char *text,int *length)
 {
-  int
-    total,
-    value;
-
-  register char
+  unsigned int
     c;
 
-  register int
-    i;
-
-  if (!code)
+  if (*length < 1)
     return(-1);
-  if (n >= (int) (2*sizeof(int)))
-    return(-1);
-  total=0;
-  value=0;
-  for (i=0; i < n; i++)
-  {
-    c=code[i];
-    if (c == '\0')
+  c=text[0];
+  if (!(c & 0x80))
+    {
+      *length=1;
+      return(c);
+    }
+  if ((*length < 2) || ((text[1] & 0xc0) != 0x80))
+    {
+      *length=0;
       return(-1);
-    if ((c >= '0') && (c <= '9'))
-      value=(unsigned char) c-48;
-    else
-      if ((c >= 'A') && (c <= 'F'))
-        value=(unsigned char) c-65+10;
-      else
-        if ((c >= 'a') && (c <= 'f'))
-          value=(unsigned char) c-97+10;
-        else
-          return(-1);
-    total*=16;
-    total+=value;
-  }
-  return(total);
+    }
+  if ((c & 0xe0) != 0xe0)
+    {
+      *length=2;
+      c=(text[0] & 0x1f) << 6;
+      c|=text[1] & 0x3f;
+      return(c);
+    }
+  if ((*length < 3) || ((text[2] & 0xc0) != 0x80))
+    {
+      *length=0;
+      return(-1);
+    }
+  if ((c & 0xf0) != 0xf0)
+    {
+      *length=3;
+      c=(text[0] & 0xf) << 12;
+      c|=(text[1] & 0x3f) << 6;
+      c|=text[2] & 0x3f;
+      return(c);
+    }
+  if ((*length < 4) || ((c & 0xf8) != 0xf0) || ((text[3] & 0xc0) != 0x80))
+    {
+      *length=0;
+      return(-1);
+    }
+  *length=4;
+  c=(text[0] & 0x7) << 18;
+  c|=(text[1] & 0x3f) << 12;
+  c|=(text[2] & 0x3f) << 6;
+  c|=text[3] & 0x3f;
+  return(c);
 }
 
 MagickExport unsigned short *ConvertTextToUnicode(const char *text,int *count)
 {
   int
-    value;
+    length;
 
   register const char
     *p;
@@ -351,24 +363,13 @@ MagickExport unsigned short *ConvertTextToUnicode(const char *text,int *count)
   if (unicode == (unsigned short *) NULL)
     MagickError(ResourceLimitError,"Unable to convert text to Unicode",
       "Memory allocation failed");
-  p=text;
   q=unicode;
-  while (*p != '\0')
+  for (p=text; ; p+=length)
   {
-    *q=(unsigned char) (*p);
-    if (LocaleNCompare(p,"\\0x",3) == 0)
-      {
-        p+=3;
-        value=InterpretUnicode(p,4);
-        if (value < 0)
-          {
-            LiberateMemory((void **) &unicode);
-            return((unsigned short *) NULL);
-          }
-        *q=(unsigned short) value;
-        p+=3;
-      }
-    p++;
+    length=Extent(p);
+    *q=GetUnicodeCharacter(p,&length);
+    if (length == 0)
+      break;
     q++;
   }
   *count=q-unicode;
