@@ -1,3 +1,7 @@
+2004-04-19  Patrick Welche  <prlw1@newn.cam.ac.uk>
+
+	* www/header.html: HTML syntax fixes.
+
 2004-04-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* : Change web pages to a frames-based design.
