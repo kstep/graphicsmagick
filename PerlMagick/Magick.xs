@@ -815,7 +815,7 @@ static struct PackageInfo *GetPackageInfo(void *reference,
       return(oldinfo);
     }
   if (SvREFCNT(sv) == 0)
-    SvREFCNT_inc(sv);
+    (void) SvREFCNT_inc(sv);
   if (SvIOKp(sv) && (info=(struct PackageInfo *) SvIV(sv)))
     return(info);
   info=ClonePackageInfo(oldinfo);
@@ -1629,7 +1629,7 @@ static int strEQcase(const char *p,const char *q)
   register int
     i;
 
-  for (i=0 ; c=(*q); i++)
+  for (i=0 ; (c=(*q)); i++)
   {
     if ((isUPPER(c) ? toLOWER(c) : c) != (isUPPER(*p) ? toLOWER(*p) : *p))
       return(0);
@@ -2202,9 +2202,6 @@ Copy(ref)
     AV
       *av;
 
-    char
-      *p;
-
     HV
       *hv;
 
@@ -2461,9 +2458,6 @@ Get(ref,...)
     int
       j;
 
-    IV
-      iv;
-
     register int
       i;
 
@@ -2595,7 +2589,7 @@ Get(ref,...)
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(ClassTypes)-1))
                 {
-                  sv_setpv(s,ClassTypes[j]);
+                  (void) sv_setpv(s,ClassTypes[j]);
                   SvIOK_on(s);
                 }
               break;
@@ -2609,7 +2603,7 @@ Get(ref,...)
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(CompressionTypes)-1))
                 {
-                  sv_setpv(s,CompressionTypes[j]);
+                  (void) sv_setpv(s,CompressionTypes[j]);
                   SvIOK_on(s);
                 }
               break;
@@ -2620,7 +2614,7 @@ Get(ref,...)
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(ColorspaceTypes)-1))
                 {
-                  sv_setpv(s,ColorspaceTypes[j]);
+                  (void) sv_setpv(s,ColorspaceTypes[j]);
                   SvIOK_on(s);
                 }
               break;
@@ -2734,7 +2728,7 @@ Get(ref,...)
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(FilterTypes)-1))
                 {
-                  sv_setpv(s,FilterTypes[j]);
+                  (void) sv_setpv(s,FilterTypes[j]);
                   SvIOK_on(s);
                 }
               break;
@@ -2827,7 +2821,7 @@ Get(ref,...)
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(InterlaceTypes)-1))
                 {
-                  sv_setpv(s,InterlaceTypes[j]);
+                  (void) sv_setpv(s,InterlaceTypes[j]);
                   SvIOK_on(s);
                 }
               break;
@@ -2999,7 +2993,7 @@ Get(ref,...)
               if ((info->image_info->preview_type >= 0) &&
                   (info->image_info->preview_type < NumberOf(PreviewTypes)-1))
                 {
-                  sv_setpv(s,PreviewTypes[info->image_info->preview_type]);
+                  (void) sv_setpv(s,PreviewTypes[info->image_info->preview_type]);
                   SvIOK_on(s);
                 }
               break;
@@ -3026,7 +3020,7 @@ Get(ref,...)
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(IntentTypes)-1))
                 {
-                  sv_setpv(s,IntentTypes[j]);
+                  (void) sv_setpv(s,IntentTypes[j]);
                   SvIOK_on(s);
                 }
               break;
@@ -3127,7 +3121,7 @@ Get(ref,...)
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(ImageTypes)-1))
                 {
-                  sv_setpv(s,ImageTypes[j]);
+                  (void) sv_setpv(s,ImageTypes[j]);
                   SvIOK_on(s);
                 }
               break;
@@ -3537,6 +3531,7 @@ Mogrify(ref,...)
         goto ReturnIt;
       }
     reference=SvRV(ST(0));
+    annotate_info=(AnnotateInfo *) NULL;
     region_info.width=0;
     region_info.height=0;
     region_info.x=0;
@@ -4088,9 +4083,6 @@ Mogrify(ref,...)
             *pixel,
             target;
 
-          register PixelPacket
-            *p;
-
           if (first)
             {
               package_info=ClonePackageInfo(info);
@@ -4323,8 +4315,7 @@ Mogrify(ref,...)
             target;
 
           unsigned int
-            matte,
-            status;
+            matte;
 
           if (first)
             {
@@ -5065,9 +5056,6 @@ Morph(ref,...)
     int
       number_frames;
 
-    register char
-      *p;
-
     register int
       i;
 
@@ -5294,11 +5282,6 @@ Ping(ref,...)
     SV
       *reference,  /* reference is the SV* of ref=SvIV(reference) */
       *s;
-
-    unsigned int
-      columns,
-      filesize,
-      rows;
 
     EXTEND(sp,items-1);
     error_list=newSVpv("",0);
@@ -5539,17 +5522,11 @@ Remote(ref,...)
     AV
       *av;
 
-    register int
-      i;
-
     SV
       *reference;
 
     struct PackageInfo
       *info;
-
-    SV
-      *s;
 
     EXTEND(sp,items-1);
     error_list=newSVpv("",0);
@@ -5560,6 +5537,9 @@ Remote(ref,...)
     {
       Display
         *display;
+
+      register int
+        i;
 
       display=XOpenDisplay(info->image_info->server_name);
       for (i=1; i < items; i++)
