@@ -398,9 +398,6 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       Image
         *image;
 
-      register RegistryInfo
-        *p;
-
       image=(Image *) blob;
       if (length != sizeof(Image))
         {
