@@ -15,13 +15,15 @@ ImageMagick Image Structure</h1></center>
 The Image structure represents an ImageMagick image. It is initially allocated
 by <a href="../image.html#AllocateImage">AllocateImage()</a> and deallocated
 by <a href="../image.html#DestroyImage">DestroyImage()</a>. The functions
-<a href="../image.html#ReadImage">ReadImage()</a>, <a href="../image.html#ReadImages">ReadImages()</a>,
-<a href="../blob.html#BlobToImage">BlobToImage()</a> and <a href="../image.html#CreateImage">CreateImage()</a>
-return a new image. Use <a href="../image.html#CloneImage">CloneImage()</a>
-to copy an image.
+<a href="../image.html#ReadImage">ReadImage()</a>,
+<a href="../image.html#ReadImages">ReadImages()</a>,
+<a href="../blob.html#BlobToImage">BlobToImage()</a>
+and <a href="../image.html#CreateImage">CreateImage()</a> return a new
+image. Use <a href="../image.html#CloneImage">CloneImage()</a> to copy
+an image.
 <p>The members of the Image structure are shown in the following table:
 <br>&nbsp;
-<table BORDER CELLSPACING=0 CELLPADDING=5 WIDTH="100%" NOSAVE >
+<table BORDER CELLSPACING=0 CELLPADDING=5 WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
 <caption><b>Image Structure Members</b></caption>
 
 <tr ALIGN=CENTER NOSAVE>
@@ -43,7 +45,7 @@ to copy an image.
 <tr NOSAVE>
 <td NOSAVE><a NAME="blur"></a><font size=-1>blur</font></td>
 
-<td><font size=-1>double</font></td>
+<td NOSAVE><font size=-1>double</font></td>
 
 <td><font size=-1>Blur factor to apply to the image when zooming. Default
 is 1.0 (no blur).</font></td>

@@ -13,12 +13,16 @@
 <h1>
 ImageMagick ImageInfo Structure</h1></center>
 The ImageInfo structure is used to supply option information to the functions
-<a href="../image.html#AllocateImage">AllocateImage()</a>, <a href="../image.html#AnimateImages">AnimateImages()</a>,
-<a href="../blob.html#BlobToImage">BlobToImage()</a>, <a href="../annotate.html#CloneAnnotateInfo">CloneAnnotateInfo()</a>,
-<a href="../image.html#DisplayImages">DisplayImages()</a>, <a href="../annotate.html#GetAnnotateInfo">GetAnnotateInfo()</a>,
-<a href="../blob.html#ImageToBlob">ImageToBlob()</a>, <a href="../image.html#PingImage">PingImage()</a>,
-<a href="../image.html#ReadImage">ReadImage()</a>, <a href="../image.html#ReadImages">ReadImages()</a>,
-and,
+<a href="../image.html#AllocateImage">AllocateImage()</a>,
+<a href="../image.html#AnimateImages">AnimateImages()</a>,
+<a href="../blob.html#BlobToImage">BlobToImage()</a>,
+<a href="../annotate.html#CloneAnnotateInfo">CloneAnnotateInfo()</a>,
+<a href="../image.html#DisplayImages">DisplayImages()</a>,
+<a href="../annotate.html#GetAnnotateInfo">GetAnnotateInfo()</a>,
+<a href="../blob.html#ImageToBlob">ImageToBlob()</a>,
+<a href="../image.html#PingImage">PingImage()</a>,
+<a href="../image.html#ReadImage">ReadImage()</a>,
+<a href="../image.html#ReadImages">ReadImages()</a>, and,
 <br><a href="../image.html#WriteImage">WriteImage()</a>.&nbsp; These functions
 update information in ImageInfo to reflect attributes of the current image.
 <p>Use <a href="../image.html#CloneImageInfo">CloneImageInfo()</a> to duplicate
@@ -32,7 +36,7 @@ image type information in the ImageInfo structure based on an existing
 image.
 <p>The members of the ImageInfo structure are shown in the following table:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
 <caption><b>ImageInfo Structure Members</b></caption>
 
 <tr>
@@ -65,13 +69,13 @@ image.
 <td><font size=-1>???</font></td>
 </tr>
 
-<tr>
+<tr NOSAVE>
 <td><b><font size=-1>antialias</font></b></td>
 
 <td><font size=-1>unsigned int</font></td>
 
-<td><font size=-1>Control antialiasing of rendered Postscript and Postscript
-or TrueType fonts. Enabled by default.</font></td>
+<td NOSAVE><font size=-1>Control antialiasing of rendered Postscript and
+Postscript or TrueType fonts. Enabled by default.</font></td>
 </tr>
 
 <tr>

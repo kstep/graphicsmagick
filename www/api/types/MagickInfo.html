@@ -26,31 +26,31 @@ may be printed to file descriptor by calling <a href="../magick.html#ListMagickI
 length)</tt>
 <br><tt>{</tt>
 <br><tt>&nbsp; [ test image header for supported magick ... ]</tt>
-<br><tt>}</tt><tt></tt>
+<br><tt>}</tt>
 <p><tt>export Image *ReadGIFImage(const ImageInfo *image_info)</tt>
 <br><tt>{</tt>
 <br><tt>&nbsp; [ decode the image ... ]</tt>
-<br><tt>}</tt><tt></tt>
+<br><tt>}</tt>
 <p><tt>export unsigned int WriteGIFImage(const ImageInfo *image_info,Image
 *image)</tt>
 <br><tt>{</tt>
 <br><tt>&nbsp; [ encode the image ... ]</tt>
-<br><tt>}</tt><tt></tt>
+<br><tt>}</tt>
 <p><tt>#include &lt;stdio.h></tt>
 <br><tt>int main( void )</tt>
 <br><tt>{</tt>
-<br><tt>&nbsp; struct MagickInfo info;</tt><tt></tt>
+<br><tt>&nbsp; struct MagickInfo info;</tt>
 <p><tt>&nbsp; (void) RegisterMagickInfo("GIF",ReadGIFImage,WriteGIFImage,IsGIF,True,</tt>
 <br><tt>&nbsp;&nbsp;&nbsp;&nbsp; True,"CompuServe graphics interchange
-format");</tt><tt></tt>
+format");</tt>
 <p><tt>&nbsp; info = GetMagickInfo("GIF");</tt>
-<br><tt>&nbsp; [ do something with info ... ]</tt><tt></tt>
+<br><tt>&nbsp; [ do something with info ... ]</tt>
 <p><tt>&nbsp; ListMagickInfo( stdout );</tt>
 <br><tt>&nbsp; return;</tt>
 <br><tt>}</tt>
 <p>The members of the MagickInfo structure are shown in the following table:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
 <caption><b>MagickInfo Structure Members</b></caption>
 
 <tr>
@@ -75,10 +75,10 @@ format");</tt><tt></tt>
 <td>Magick string (e.g. "GIF") to call this format.</td>
 </tr>
 
-<tr>
+<tr NOSAVE>
 <td>decoder</td>
 
-<td><a href="Image.html">Image</a> *(*decoder)(const <a href="ImageInfo.html">ImageInfo</a>
+<td NOSAVE><a href="Image.html">Image</a> *(*decoder)(const <a href="ImageInfo.html">ImageInfo</a>
 *)</td>
 
 <td>Function to decode image data and return ImageMagick Image.</td>
