@@ -236,9 +236,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MonitorHandler
     handler;
 
-  Quantum
-    *scale;
-
   register IndexPacket
     *indexes;
 
@@ -266,7 +263,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned long
     max_value,
-    packets;
+    packets,
+    *scale;
+
 
   /*
     Open image file.
@@ -312,7 +311,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (number_pixels == 0)
       ThrowReaderException(CorruptImageError,
         "Unable to read image: image dimensions are zero",image);
-    scale=(Quantum *) NULL;
+    scale=(unsigned long *) NULL;
     if (image->storage_class == PseudoClass)
       {
         /*
@@ -346,12 +345,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Compute pixel scaling table.
         */
-        scale=(Quantum *) AcquireMemory((max_value+1)*sizeof(Quantum));
-        if (scale == (Quantum *) NULL)
+        scale=(unsigned long *)
+          AcquireMemory((max_value+1)*sizeof(unsigned long));
+        if (scale == (unsigned long *) NULL)
           ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         for (i=0; i <= (long) max_value; i++)
-          scale[i]=(Quantum) ((double) (MaxRGB*i)/max_value+MagickEpsilon);
+          scale[i]=(unsigned long) ((double) MaxRGB*i/max_value);
       }
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -409,7 +409,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (long) image->columns; x++)
           {
             intensity=PNMInteger(image,10);
-            if (scale != (Quantum *) NULL)
+            if (scale != (unsigned long *) NULL)
               intensity=scale[intensity];
             index=intensity;
             if (index >= image->colors)
@@ -444,7 +444,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             red=PNMInteger(image,10);
             green=PNMInteger(image,10);
             blue=PNMInteger(image,10);
-            if (scale != (Quantum *) NULL)
+            if (scale != (unsigned long *) NULL)
               {
                 red=scale[red];
                 green=scale[green];
@@ -592,7 +592,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 blue=(*p++) << 8;
                 blue|=(*p++);
               }
-            if (scale != (Quantum *) NULL)
+            if (scale != (unsigned long *) NULL)
               {
                 red=scale[red];
                 green=scale[green];
@@ -620,7 +620,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default:
         ThrowReaderException(CorruptImageError,"Not a PNM image file",image)
     }
-    if (scale != (Quantum *) NULL)
+    if (scale != (unsigned long *) NULL)
       LiberateMemory((void **) &scale);
     /*
       Proceed to next image.
