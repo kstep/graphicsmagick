@@ -124,7 +124,8 @@ static unsigned int IsMIFF(const unsigned char *magick,
 %
 %  The format of the ReadMIFFImage method is:
 %
-%      Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadMIFFImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  Decompression code contributed by Kyle Shorter.
 %

@@ -113,9 +113,9 @@ static unsigned int IsCACHE(const unsigned char *magick,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadCACHEImage reads an Magick Persistent Cache image file and returns
-%  it.  It allocates the memory necessary for the new Image structure and 
-%  returns a pointer to the new image.
+%  Method ReadCACHEImage reads an Magick Persistent Cache image file and
+%  returns it.  It allocates the memory necessary for the new Image structure
+%  and returns a pointer to the new image.
 %
 %  The format of the ReadCACHEImage method is:
 %
@@ -186,620 +186,560 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   *id='\0';
-  do
+  /*
+    Decode image header;  header terminates one character beyond a ':'.
+  */
+  length=MaxTextExtent;
+  values=AllocateString((char *) NULL);
+  GetCacheInfo(&image->cache);
+  cache_info=(CacheInfo *) image->cache;
+  image->depth=8;
+  image->compression=NoCompression;
+  while (isgraph(c) && (c != ':'))
   {
-    /*
-      Decode image header;  header terminates one character beyond a ':'.
-    */
-    length=MaxTextExtent;
-    values=AllocateString((char *) NULL);
-    GetCacheInfo(&image->cache);
-    cache_info=(CacheInfo *) image->cache;
-    image->depth=8;
-    image->compression=NoCompression;
-    while (isgraph(c) && (c != ':'))
+    register char
+      *p;
+
+    if (c == '{')
+      {
+        char
+          *comment;
+
+        /*
+          Read comment-- any text between { }.
+        */
+        length=MaxTextExtent;
+        comment=AllocateString((char *) NULL);
+        p=comment;
+        for ( ; comment != (char *) NULL; p++)
+        {
+          c=ReadByte(image);
+          if ((c == EOF) || (c == '}'))
+            break;
+          if ((p-comment+1) >= (int) length)
+            {
+              *p='\0';
+              length<<=1;
+              ReacquireMemory((void **) &comment,length);
+              if (comment == (char *) NULL)
+                break;
+              p=comment+Extent(comment);
+            }
+          *p=c;
+        }
+        if (comment == (char *) NULL)
+          ThrowReaderException(ResourceLimitWarning,
+            "Memory allocation failed",image);
+        *p='\0';
+        (void) SetImageAttribute(image,"Comment",comment);
+        LiberateMemory((void **) &comment);
+        c=ReadByte(image);
+      }
+    else
+      if (isalnum(c))
+        {
+          /*
+            Determine a keyword and its value.
+          */
+          p=keyword;
+          do
+          {
+            if ((p-keyword) < (MaxTextExtent-1))
+              *p++=c;
+            c=ReadByte(image);
+          } while (isalnum(c) || (c == '-'));
+          *p='\0';
+          while (isspace(c) || (c == '='))
+            c=ReadByte(image);
+          p=values;
+          while ((c != '}') && (c != EOF))
+          {
+            if ((p-values+1) >= (int) length)
+              {
+                *p='\0';
+                length<<=1;
+                ReacquireMemory((void **) &values,length);
+                if (values == (char *) NULL)
+                  break;
+                p=values+Extent(values);
+              }
+            if (values == (char *) NULL)
+              ThrowReaderException(ResourceLimitWarning,
+                "Memory allocation failed",image);
+            *p++=c;
+            c=ReadByte(image);
+            if (*values != '{')
+              if (isspace(c))
+                break;
+          }
+          *p='\0';
+          /*
+            Assign a value to the specified keyword.
+          */
+          switch (*keyword)
+          {
+            case 'b':
+            case 'B':
+            {
+              if (LocaleCompare(keyword,"Background-color") == 0)
+                {
+                  (void) QueryColorDatabase(values,&image->background_color);
+                  break;
+                }
+              if (LocaleCompare(keyword,"Blue-primary") == 0)
+                {
+                  (void) sscanf(values,"%lf,%lf",
+                    &image->chromaticity.blue_primary.x,
+                    &image->chromaticity.blue_primary.y);
+                  break;
+                }
+              if (LocaleCompare(keyword,"Border-color") == 0)
+                {
+                  (void) QueryColorDatabase(values,&image->border_color);
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+            case 'c':
+            case 'C':
+            {
+              if (LocaleCompare(keyword,"Class") == 0)
+                {
+                  if (LocaleCompare(values,"PseudoClass") == 0)
+                    image->storage_class=PseudoClass;
+                  else
+                    if (LocaleCompare(values,"DirectClass") == 0)
+                      image->storage_class=DirectClass;
+                    else
+                      image->storage_class=UndefinedClass;
+                  break;
+                }
+              if (LocaleCompare(keyword,"Colors") == 0)
+                {
+                  image->colors=(unsigned int) atoi(values);
+                  break;
+                }
+              if (LocaleCompare(keyword,"Colorspace") == 0)
+                {
+                  if (LocaleCompare(values,"CMYK") == 0)
+                    image->colorspace=CMYKColorspace;
+                  else
+                    if (LocaleCompare(values,"RGB") == 0)
+                      image->colorspace=RGBColorspace;
+                  break;
+                }
+              if (LocaleCompare(keyword,"Compression") == 0)
+                {
+                  if (LocaleCompare(values,"Zip") == 0)
+                    image->compression=ZipCompression;
+                  else
+                    if (LocaleCompare(values,"BZip") == 0)
+                      image->compression=BZipCompression;
+                    else
+                      if (LocaleCompare(values,"RunlengthEncoded") == 0)
+                        image->compression=RunlengthEncodedCompression;
+                      else
+                        image->compression=UndefinedCompression;
+                  break;
+                }
+              if (LocaleCompare(keyword,"Columns") == 0)
+                {
+                  image->columns=(unsigned int) atoi(values);
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+            case 'd':
+            case 'D':
+            {
+              if (LocaleCompare(keyword,"Delay") == 0)
+                {
+                  if (image_info->delay == (char *) NULL)
+                    image->delay=atoi(values);
+                  break;
+                }
+              if (LocaleCompare(keyword,"Depth") == 0)
+                {
+                  image->depth=atoi(values) <= 8 ? 8 : 16;
+                  break;
+                }
+              if (LocaleCompare(keyword,"Dispose") == 0)
+                {
+                  if (image_info->dispose == (char *) NULL)
+                    image->dispose=atoi(values);
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+            case 'g':
+            case 'G':
+            {
+              if (LocaleCompare(keyword,"Gamma") == 0)
+                {
+                  image->gamma=atof(values);
+                  break;
+                }
+              if (LocaleCompare(keyword,"Green-primary") == 0)
+                {
+                  (void) sscanf(values,"%lf,%lf",
+                    &image->chromaticity.green_primary.x,
+                    &image->chromaticity.green_primary.y);
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+            case 'i':
+            case 'I':
+            {
+              if (LocaleCompare(keyword,"Id") == 0)
+                {
+                  (void) strcpy(id,values);
+                  break;
+                }
+              if (LocaleCompare(keyword,"Iterations") == 0)
+                {
+                  if (image_info->iterations == (char *) NULL)
+                    image->iterations=atoi(values);
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+            case 'm':
+            case 'M':
+            {
+              if (LocaleCompare(keyword,"Matte") == 0)
+                {
+                  image->matte=(LocaleCompare(values,"True") == 0) ||
+                    (LocaleCompare(values,"true") == 0);
+                  break;
+                }
+              if (LocaleCompare(keyword,"Matte-color") == 0)
+                {
+                  (void) QueryColorDatabase(values,&image->matte_color);
+                  break;
+                }
+              if (LocaleCompare(keyword,"Montage") == 0)
+                {
+                  (void) CloneString(&image->montage,values);
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+            case 'p':
+            case 'P':
+            {
+              if (LocaleCompare(keyword,"Page") == 0)
+                {
+                  ParseImageGeometry(PostscriptGeometry(values),
+                    &image->page.x,&image->page.y,
+                    &image->page.width,&image->page.height);
+                  break;
+                }
+              if (LocaleNCompare(keyword,"Profile-",8) == 0)
+                {
+                  if (LocaleCompare(keyword,"Profile-icc") == 0)
+                    {
+                      image->color_profile.length=atoi(values);
+                      break;
+                    }
+                  if (LocaleCompare(keyword,"Profile-iptc") == 0)
+                    {
+                      image->iptc_profile.length=atoi(values);
+                      break;
+                    }
+                  i=image->generic_profiles;
+                  if (image->generic_profile == (ProfileInfo *) NULL)
+                    image->generic_profile=(ProfileInfo *)
+                      AcquireMemory(sizeof(ProfileInfo));
+                  else
+                    ReacquireMemory((void **) &image->generic_profile,
+                      (i+1)*sizeof(ProfileInfo));
+                  if (image->generic_profile == (ProfileInfo *) NULL)
+                    ThrowReaderException(ResourceLimitWarning,
+                      "Memory allocation failed",image);
+                  image->generic_profile[i].name=AllocateString(keyword+8);
+                  image->generic_profile[i].length=atoi(values);
+                  image->generic_profile[i].info=(unsigned char *) NULL;
+                  image->generic_profiles++;
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+            case 'r':
+            case 'R':
+            {
+              if (LocaleCompare(keyword,"Red-primary") == 0)
+                {
+                  (void) sscanf(values,"%lf,%lf",
+                    &image->chromaticity.red_primary.x,
+                    &image->chromaticity.red_primary.y);
+                  break;
+                }
+              if (LocaleCompare(keyword,"Rendering-intent") == 0)
+                {
+                  if (LocaleCompare(values,"Saturation") == 0)
+                    image->rendering_intent=SaturationIntent;
+                  else
+                    if (LocaleCompare(values,"perceptual") == 0)
+                      image->rendering_intent=PerceptualIntent;
+                    else
+                      if (LocaleCompare(values,"absolute") == 0)
+                        image->rendering_intent=AbsoluteIntent;
+                      else
+                        if (LocaleCompare(values,"relative") == 0)
+                          image->rendering_intent=RelativeIntent;
+                        else
+                          image->rendering_intent=UndefinedIntent;
+                  break;
+                }
+              if (LocaleCompare(keyword,"Resolution") == 0)
+                {
+                  (void) sscanf(values,"%lfx%lf",&image->x_resolution,
+                    &image->y_resolution);
+                  break;
+                }
+              if (LocaleCompare(keyword,"Rows") == 0)
+                {
+                  image->rows=(unsigned int) atoi(values);
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+            case 's':
+            case 'S':
+            {
+              if (LocaleCompare(keyword,"Scene") == 0)
+                {
+                  image->scene=(unsigned int) atoi(values);
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+            case 'u':
+            case 'U':
+            {
+              if (LocaleCompare(keyword,"Units") == 0)
+                {
+                  if (LocaleCompare(values,"undefined") == 0)
+                    image->units=UndefinedResolution;
+                  else
+                    if (LocaleCompare(values,"pixels-per-inch") == 0)
+                      image->units=PixelsPerInchResolution;
+                    else
+                      if (LocaleCompare(values,"pixels-per-centimeter") == 0)
+                        image->units=PixelsPerCentimeterResolution;
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+            case 'w':
+            case 'W':
+            {
+              if (LocaleCompare(keyword,"White-point") == 0)
+                {
+                  (void) sscanf(values,"%lf,%lf",
+                    &image->chromaticity.white_point.x,
+                    &image->chromaticity.white_point.y);
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+            default:
+            {
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
+          }
+        }
+      else
+        c=ReadByte(image);
+    while (isspace(c))
+      c=ReadByte(image);
+  }
+  LiberateMemory((void **) &values);
+  (void) ReadByte(image);
+  /*
+    Verify that required image information is defined.
+  */
+  if ((LocaleCompare(id,"MagickCache") != 0) ||
+      (image->storage_class == UndefinedClass) ||
+      (image->compression == UndefinedCompression) || (image->columns == 0) ||
+      (image->rows == 0))
+    ThrowReaderException(CorruptImageWarning,"Incorrect image header in file",
+      image);
+  (void) strcpy(cache_info->filename,image->filename);
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
+  if (image->montage != (char *) NULL)
     {
       register char
         *p;
 
-      if (c == '{')
-        {
-          char
-            *comment;
-
-          /*
-            Read comment-- any text between { }.
-          */
-          length=MaxTextExtent;
-          comment=AllocateString((char *) NULL);
-          p=comment;
-          for ( ; comment != (char *) NULL; p++)
+      /*
+        Image directory.
+      */
+      image->directory=AllocateString((char *) NULL);
+      if (image->directory == (char *) NULL)
+        ThrowReaderException(CorruptImageWarning,"Unable to read image data",
+          image);
+      p=image->directory;
+      do
+      {
+        *p='\0';
+        if (((Extent(image->directory)+1) % MaxTextExtent) == 0)
           {
-            c=ReadByte(image);
-            if ((c == EOF) || (c == '}'))
-              break;
-            if ((p-comment+1) >= (int) length)
-              {
-                *p='\0';
-                length<<=1;
-                ReacquireMemory((void **) &comment,length);
-                if (comment == (char *) NULL)
-                  break;
-                p=comment+Extent(comment);
-              }
-            *p=c;
+            /*
+              Allocate more memory for the image directory.
+            */
+            ReacquireMemory((void **) &image->directory,
+              (Extent(image->directory)+MaxTextExtent+1));
+            if (image->directory == (char *) NULL)
+              ThrowReaderException(CorruptImageWarning,
+                "Unable to read image data",image);
+            p=image->directory+Extent(image->directory);
           }
-          if (comment == (char *) NULL)
-            ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image);
-          *p='\0';
-          (void) SetImageAttribute(image,"Comment",comment);
-          LiberateMemory((void **) &comment);
-          c=ReadByte(image);
+        c=ReadByte(image);
+        *p++=c;
+      } while (c != '\0');
+    }
+  if (image->color_profile.length > 0)
+    {
+      /*
+        Color profile.
+      */
+      image->color_profile.info=(unsigned char *)
+        AcquireMemory(image->color_profile.length);
+      if (image->color_profile.info == (unsigned char *) NULL)
+        ThrowReaderException(CorruptImageWarning,
+          "Unable to read color profile",image);
+      (void) ReadBlob(image,image->color_profile.length,
+        image->color_profile.info);
+    }
+  if (image->iptc_profile.length > 0)
+    {
+      /*
+        IPTC profile.
+      */
+      image->iptc_profile.info=(unsigned char *)
+        AcquireMemory(image->iptc_profile.length);
+      if (image->iptc_profile.info == (unsigned char *) NULL)
+        ThrowReaderException(CorruptImageWarning,
+          "Unable to read IPTC profile",image);
+      (void) ReadBlob(image,image->iptc_profile.length,
+        image->iptc_profile.info);
+    }
+  if (image->generic_profiles != 0)
+    {
+      /*
+        Generic profile.
+      */
+      for (i=0; i < image->generic_profiles; i++)
+      {
+        if (image->generic_profile[i].length == 0)
+          continue;
+        image->generic_profile[i].info=(unsigned char *)
+          AcquireMemory(image->generic_profile[i].length);
+        if (image->generic_profile[i].info == (unsigned char *) NULL)
+          ThrowReaderException(CorruptImageWarning,
+            "Unable to read generic profile",image);
+        (void) ReadBlob(image,image->generic_profile[i].length,
+          image->generic_profile[i].info);
+      }
+    }
+  if (image->storage_class == PseudoClass)
+    {
+      /*
+        Create image colormap.
+      */
+      if (!AllocateImageColormap(image,image->colors))
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
+      if (image->colors == 0)
+        for (i=0; i < 256; i++)
+        {
+          image->colormap[i].red=UpScale(i);
+          image->colormap[i].green=UpScale(i);
+          image->colormap[i].blue=UpScale(i);
+          image->colors++;
         }
       else
-        if (isalnum(c))
-          {
-            /*
-              Determine a keyword and its value.
-            */
-            p=keyword;
-            do
-            {
-              if ((p-keyword) < (MaxTextExtent-1))
-                *p++=c;
-              c=ReadByte(image);
-            } while (isalnum(c) || (c == '-'));
-            *p='\0';
-            while (isspace(c) || (c == '='))
-              c=ReadByte(image);
-            p=values;
-            while ((c != '}') && (c != EOF))
-            {
-              if ((p-values+1) >= (int) length)
-                {
-                  *p='\0';
-                  length<<=1;
-                  ReacquireMemory((void **) &values,length);
-                  if (values == (char *) NULL)
-                    break;
-                  p=values+Extent(values);
-                }
-              if (values == (char *) NULL)
-                ThrowReaderException(ResourceLimitWarning,
-                  "Memory allocation failed",image);
-              *p++=c;
-              c=ReadByte(image);
-              if (*values != '{')
-                if (isspace(c))
-                  break;
-            }
-            *p='\0';
-            /*
-              Assign a value to the specified keyword.
-            */
-            switch (*keyword)
-            {
-              case 'b':
-              case 'B':
-              {
-                if (LocaleCompare(keyword,"Background-color") == 0)
-                  {
-                    (void) QueryColorDatabase(values,&image->background_color);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Blue-primary") == 0)
-                  {
-                    (void) sscanf(values,"%lf,%lf",
-                      &image->chromaticity.blue_primary.x,
-                      &image->chromaticity.blue_primary.y);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Border-color") == 0)
-                  {
-                    (void) QueryColorDatabase(values,&image->border_color);
-                    break;
-                  }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-              case 'c':
-              case 'C':
-              {
-                if (LocaleCompare(keyword,"Cache") == 0)
-                  {
-                    (void) strcpy(cache_info->filename,values);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Class") == 0)
-                  {
-                    if (LocaleCompare(values,"PseudoClass") == 0)
-                      image->storage_class=PseudoClass;
-                    else
-                      if (LocaleCompare(values,"DirectClass") == 0)
-                        image->storage_class=DirectClass;
-                      else
-                        image->storage_class=UndefinedClass;
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Colors") == 0)
-                  {
-                    image->colors=(unsigned int) atoi(values);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Colorspace") == 0)
-                  {
-                    if (LocaleCompare(values,"CMYK") == 0)
-                      image->colorspace=CMYKColorspace;
-                    else
-                      if (LocaleCompare(values,"RGB") == 0)
-                        image->colorspace=RGBColorspace;
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Compression") == 0)
-                  {
-                    if (LocaleCompare(values,"Zip") == 0)
-                      image->compression=ZipCompression;
-                    else
-                      if (LocaleCompare(values,"BZip") == 0)
-                        image->compression=BZipCompression;
-                      else
-                        if (LocaleCompare(values,"RunlengthEncoded") == 0)
-                          image->compression=RunlengthEncodedCompression;
-                        else
-                          image->compression=UndefinedCompression;
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Columns") == 0)
-                  {
-                    image->columns=(unsigned int) atoi(values);
-                    break;
-                  }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-              case 'd':
-              case 'D':
-              {
-                if (LocaleCompare(keyword,"Delay") == 0)
-                  {
-                    if (image_info->delay == (char *) NULL)
-                      image->delay=atoi(values);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Depth") == 0)
-                  {
-                    image->depth=atoi(values) <= 8 ? 8 : 16;
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Dispose") == 0)
-                  {
-                    if (image_info->dispose == (char *) NULL)
-                      image->dispose=atoi(values);
-                    break;
-                  }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-              case 'g':
-              case 'G':
-              {
-                if (LocaleCompare(keyword,"Gamma") == 0)
-                  {
-                    image->gamma=atof(values);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Green-primary") == 0)
-                  {
-                    (void) sscanf(values,"%lf,%lf",
-                      &image->chromaticity.green_primary.x,
-                      &image->chromaticity.green_primary.y);
-                    break;
-                  }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-              case 'i':
-              case 'I':
-              {
-                if (LocaleCompare(keyword,"Id") == 0)
-                  {
-                    (void) strcpy(id,values);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Iterations") == 0)
-                  {
-                    if (image_info->iterations == (char *) NULL)
-                      image->iterations=atoi(values);
-                    break;
-                  }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-              case 'm':
-              case 'M':
-              {
-                if (LocaleCompare(keyword,"Matte") == 0)
-                  {
-                    image->matte=(LocaleCompare(values,"True") == 0) ||
-                      (LocaleCompare(values,"true") == 0);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Matte-color") == 0)
-                  {
-                    (void) QueryColorDatabase(values,&image->matte_color);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Montage") == 0)
-                  {
-                    (void) CloneString(&image->montage,values);
-                    break;
-                  }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-              case 'p':
-              case 'P':
-              {
-                if (LocaleCompare(keyword,"Page") == 0)
-                  {
-                    ParseImageGeometry(PostscriptGeometry(values),
-                      &image->page.x,&image->page.y,
-                      &image->page.width,&image->page.height);
-                    break;
-                  }
-                if (LocaleNCompare(keyword,"Profile-",8) == 0)
-                  {
-                    if (LocaleCompare(keyword,"Profile-icc") == 0)
-                      {
-                        image->color_profile.length=atoi(values);
-                        break;
-                      }
-                    if (LocaleCompare(keyword,"Profile-iptc") == 0)
-                      {
-                        image->iptc_profile.length=atoi(values);
-                        break;
-                      }
-                    i=image->generic_profiles;
-                    if (image->generic_profile == (ProfileInfo *) NULL)
-                      image->generic_profile=(ProfileInfo *)
-                        AcquireMemory(sizeof(ProfileInfo));
-                    else
-                      ReacquireMemory((void **) &image->generic_profile,
-                        (i+1)*sizeof(ProfileInfo));
-                    if (image->generic_profile == (ProfileInfo *) NULL)
-                      ThrowReaderException(ResourceLimitWarning,
-                        "Memory allocation failed",image);
-                    image->generic_profile[i].name=AllocateString(keyword+8);
-                    image->generic_profile[i].length=atoi(values);
-                    image->generic_profile[i].info=(unsigned char *) NULL;
-                    image->generic_profiles++;
-                    break;
-                  }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-              case 'r':
-              case 'R':
-              {
-                if (LocaleCompare(keyword,"Red-primary") == 0)
-                  {
-                    (void) sscanf(values,"%lf,%lf",
-                      &image->chromaticity.red_primary.x,
-                      &image->chromaticity.red_primary.y);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Rendering-intent") == 0)
-                  {
-                    if (LocaleCompare(values,"Saturation") == 0)
-                      image->rendering_intent=SaturationIntent;
-                    else
-                      if (LocaleCompare(values,"perceptual") == 0)
-                        image->rendering_intent=PerceptualIntent;
-                      else
-                        if (LocaleCompare(values,"absolute") == 0)
-                          image->rendering_intent=AbsoluteIntent;
-                        else
-                          if (LocaleCompare(values,"relative") == 0)
-                            image->rendering_intent=RelativeIntent;
-                          else
-                            image->rendering_intent=UndefinedIntent;
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Resolution") == 0)
-                  {
-                    (void) sscanf(values,"%lfx%lf",&image->x_resolution,
-                      &image->y_resolution);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"Rows") == 0)
-                  {
-                    image->rows=(unsigned int) atoi(values);
-                    break;
-                  }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-              case 's':
-              case 'S':
-              {
-                if (LocaleCompare(keyword,"Scene") == 0)
-                  {
-                    image->scene=(unsigned int) atoi(values);
-                    break;
-                  }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-              case 'u':
-              case 'U':
-              {
-                if (LocaleCompare(keyword,"Units") == 0)
-                  {
-                    if (LocaleCompare(values,"undefined") == 0)
-                      image->units=UndefinedResolution;
-                    else
-                      if (LocaleCompare(values,"pixels-per-inch") == 0)
-                        image->units=PixelsPerInchResolution;
-                      else
-                        if (LocaleCompare(values,"pixels-per-centimeter") == 0)
-                          image->units=PixelsPerCentimeterResolution;
-                    break;
-                  }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-              case 'w':
-              case 'W':
-              {
-                if (LocaleCompare(keyword,"White-point") == 0)
-                  {
-                    (void) sscanf(values,"%lf,%lf",
-                      &image->chromaticity.white_point.x,
-                      &image->chromaticity.white_point.y);
-                    break;
-                  }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-              default:
-              {
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
-            }
-          }
-        else
-          c=ReadByte(image);
-      while (isspace(c))
-        c=ReadByte(image);
-    }
-    LiberateMemory((void **) &values);
-    (void) ReadByte(image);
-    /*
-      Verify that required image information is defined.
-    */
-    if ((LocaleCompare(id,"MagickCache") != 0) ||
-        (image->storage_class == UndefinedClass) ||
-        (image->compression == UndefinedCompression) || (image->columns == 0) ||
-        (image->rows == 0) || (*cache_info->filename == '\0'))
-      ThrowReaderException(CorruptImageWarning,
-        "Incorrect image header in file",image);
-    if (image_info->ping)
-      {
-        CloseBlob(image);
-        return(image);
-      }
-    if (image->montage != (char *) NULL)
-      {
-        register char
-          *p;
+        {
+          unsigned char
+            *colormap;
 
-        /*
-          Image directory.
-        */
-        image->directory=AllocateString((char *) NULL);
-        if (image->directory == (char *) NULL)
-          ThrowReaderException(CorruptImageWarning,"Unable to read image data",
-            image);
-        p=image->directory;
-        do
-        {
-          *p='\0';
-          if (((Extent(image->directory)+1) % MaxTextExtent) == 0)
+          unsigned int
+            packet_size;
+
+          /*
+            Read image colormap from file.
+          */
+          packet_size=image->colors > 256 ? 6 : 3;
+          colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
+          if (colormap == (unsigned char *) NULL)
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image);
+          (void) ReadBlob(image,packet_size*image->colors,colormap);
+          p=colormap;
+          if (image->colors <= 256)
+            for (i=0; i < (int) image->colors; i++)
             {
-              /*
-                Allocate more memory for the image directory.
-              */
-              ReacquireMemory((void **) &image->directory,
-                (Extent(image->directory)+MaxTextExtent+1));
-              if (image->directory == (char *) NULL)
-                ThrowReaderException(CorruptImageWarning,
-                  "Unable to read image data",image);
-              p=image->directory+Extent(image->directory);
+              image->colormap[i].red=UpScale(*p++);
+              image->colormap[i].green=UpScale(*p++);
+              image->colormap[i].blue=UpScale(*p++);
             }
-          c=ReadByte(image);
-          *p++=c;
-        } while (c != '\0');
-      }
-    if (image->color_profile.length > 0)
-      {
-        /*
-          Color profile.
-        */
-        image->color_profile.info=(unsigned char *)
-          AcquireMemory(image->color_profile.length);
-        if (image->color_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageWarning,
-            "Unable to read color profile",image);
-        (void) ReadBlob(image,image->color_profile.length,
-          image->color_profile.info);
-      }
-    if (image->iptc_profile.length > 0)
-      {
-        /*
-          IPTC profile.
-        */
-        image->iptc_profile.info=(unsigned char *)
-          AcquireMemory(image->iptc_profile.length);
-        if (image->iptc_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageWarning,
-            "Unable to read IPTC profile",image);
-        (void) ReadBlob(image,image->iptc_profile.length,
-          image->iptc_profile.info);
-      }
-    if (image->generic_profiles != 0)
-      {
-        /*
-          Generic profile.
-        */
-        for (i=0; i < image->generic_profiles; i++)
-        {
-          if (image->generic_profile[i].length == 0)
-            continue;
-          image->generic_profile[i].info=(unsigned char *)
-            AcquireMemory(image->generic_profile[i].length);
-          if (image->generic_profile[i].info == (unsigned char *) NULL)
-            ThrowReaderException(CorruptImageWarning,
-              "Unable to read generic profile",image);
-          (void) ReadBlob(image,image->generic_profile[i].length,
-            image->generic_profile[i].info);
+          else
+            for (i=0; i < (int) image->colors; i++)
+            {
+              image->colormap[i].red=(*p++ << 8);
+              image->colormap[i].red|=(*p++);
+              image->colormap[i].green=(*p++ << 8);
+              image->colormap[i].green|=(*p++);
+              image->colormap[i].blue=(*p++ << 8);
+              image->colormap[i].blue|=(*p++);
+            }
+          LiberateMemory((void **) &colormap);
         }
-      }
-    if (image->storage_class == PseudoClass)
-      {
-        /*
-          Create image colormap.
-        */
-        if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-            image);
-        if (image->colors == 0)
-          for (i=0; i < 256; i++)
-          {
-            image->colormap[i].red=UpScale(i);
-            image->colormap[i].green=UpScale(i);
-            image->colormap[i].blue=UpScale(i);
-            image->colors++;
-          }
-        else
-          {
-            unsigned char
-              *colormap;
-
-            unsigned int
-              packet_size;
-
-            /*
-              Read image colormap from file.
-            */
-            packet_size=image->colors > 256 ? 6 : 3;
-            colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
-            if (colormap == (unsigned char *) NULL)
-              ThrowReaderException(ResourceLimitWarning,
-                "Memory allocation failed",image);
-            (void) ReadBlob(image,packet_size*image->colors,colormap);
-            p=colormap;
-            if (image->colors <= 256)
-              for (i=0; i < (int) image->colors; i++)
-              {
-                image->colormap[i].red=UpScale(*p++);
-                image->colormap[i].green=UpScale(*p++);
-                image->colormap[i].blue=UpScale(*p++);
-              }
-            else
-              for (i=0; i < (int) image->colors; i++)
-              {
-                image->colormap[i].red=(*p++ << 8);
-                image->colormap[i].red|=(*p++);
-                image->colormap[i].green=(*p++ << 8);
-                image->colormap[i].green|=(*p++);
-                image->colormap[i].blue=(*p++ << 8);
-                image->colormap[i].blue|=(*p++);
-              }
-            LiberateMemory((void **) &colormap);
-          }
-      }
-    /*
-      Initialize cache.
-    */
-    cache_info->storage_class=image->storage_class;
-    cache_info->type=DiskCache;
-    cache_info->rows=image->rows;
-    cache_info->columns=image->columns;
-    cache_info->persist=True;
-    allocation=MapBlob(cache_info->file,IOMode,&offset);
-    if (allocation != (void *) NULL)
-      {
-        /*
-          Create memory-mapped pixel cache.
-        */
-        cache_info->type=MemoryMappedCache;
-        cache_info->pixels=(PixelPacket *) allocation;
-        if (cache_info->storage_class == PseudoClass)
-          cache_info->indexes=(IndexPacket *)
-            (cache_info->pixels+cache_info->columns*cache_info->rows);
-      }
-    /*
-      Initialize cache nexus.
-    */
-    cache_info->nexus=(NexusInfo *)
-      AcquireMemory((cache_info->rows+1)*sizeof(NexusInfo));
-    if (cache_info->nexus == (NexusInfo *) NULL)
-      MagickError(ResourceLimitError,"Memory allocation failed",
-        "unable to allocate cache nexus");
-    for (i=0; i <= cache_info->rows; i++)
-    {
-      cache_info->nexus[i].available=True;
-      cache_info->nexus[i].columns=0;
-      cache_info->nexus[i].rows=0;
-      cache_info->nexus[i].x=0;
-      cache_info->nexus[i].y=0;
-      cache_info->nexus[i].length=0;
-      cache_info->nexus[i].line=(void *) NULL;
-      cache_info->nexus[i].pixels=(PixelPacket *) NULL;
-      cache_info->nexus[i].indexes=(IndexPacket *) NULL;
     }
-    cache_info->nexus[0].available=False;
-    /*
-      Proceed to next image.
-    */
-    if (image_info->subrange != 0)
-      if (image->scene >= (image_info->subimage+image_info->subrange-1))
-        break;
-    do
-    {
-      c=ReadByte(image);
-    } while (!isgraph(c) && (c != EOF));
-    if (c != EOF)
-      {
-        /*
-          Allocate next image structure.
-        */
-        AllocateNextImage(image_info,image);
-        if (image->next == (Image *) NULL)
-          {
-            DestroyImages(image);
-            return((Image *) NULL);
-          }
-        image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
-      }
-  } while (c != EOF);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  for (i=TellBlob(image); (i % 2048) != 0; i++)
+    (void) ReadByte(image);
+  /*
+    Open cache.
+  */
+  cache_info->storage_class=image->storage_class;
+  cache_info->type=DiskCache;
+  cache_info->offset=TellBlob(image);
+  cache_info->persist=True;
+  status=OpenCache(image->cache,image->storage_class,image->columns,
+    image->rows);
+  if (status == False)
+    ThrowReaderException(CacheWarning,"Unable to open pixel cache",image);
+  AllocateCacheNexus(cache_info);
   CloseBlob(image);
   return(image);
 }
@@ -836,6 +776,7 @@ ModuleExport void RegisterCACHEImage(void)
   entry->decoder=ReadCACHEImage;
   entry->encoder=WriteCACHEImage;
   entry->magick=IsCACHE;
+  entry->adjoin=False;
   entry->description=AllocateString("Magick Persistent Cache image format");
   entry->module=AllocateString("CACHE");
   RegisterMagickInfo(entry);
@@ -898,9 +839,6 @@ ModuleExport void UnregisterCACHEImage(void)
 */
 static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
 {
-  CacheInfo
-    *cache_info;
-
   char
     buffer[MaxTextExtent],
     color[MaxTextExtent];
@@ -911,8 +849,14 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
   ImageAttribute
     *attribute;
 
+  int
+    y;
+
   register int
     i;
+
+  register PixelPacket
+    *p;
 
   register unsigned char
     *q;
@@ -939,10 +883,6 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
     /*
       Write Cache header.
     */
-    cache_info=(CacheInfo *) image->cache;
-    if (cache_info->type == MemoryCache)
-      ThrowWriterException(CacheWarning,"Cache must be out-of-core",image);
-    cache_info->persist=True;
     if (((image_info->colorspace != UndefinedColorspace) ||
          (image->colorspace != CMYKColorspace)) &&
          (image_info->colorspace != CMYKColorspace))
@@ -951,8 +891,6 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
       if (image->colorspace != CMYKColorspace)
         RGBTransformImage(image,CMYKColorspace);
     (void) strcpy(buffer,"Id=MagickCache\n");
-    (void) WriteBlob(image,strlen(buffer),buffer);
-    FormatString(buffer,"Cache=%.1024s\n",cache_info->filename);
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->storage_class == PseudoClass)
       FormatString(buffer,"Class=PseudoClass  Colors=%u  Matte=%s\n",
@@ -1188,6 +1126,33 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
           }
         (void) WriteBlob(image,packet_size*image->colors,colormap);
         LiberateMemory((void **) &colormap);
+      }
+    for (i=TellBlob(image); (i % 2048) != 0; i++)
+      (void) WriteByte(image,'\0');
+    /*
+      Write image pixels.
+    */
+    for (y=0; y < (int) image->rows; y++)
+    {
+      p=GetImagePixels(image,0,y,image->columns,1);
+      if (p == (PixelPacket *) NULL)
+        break;
+      (void) WriteBlob(image,(int) image->columns*sizeof(PixelPacket),
+        (char *) p);
+    }
+    if (image->storage_class == PseudoClass)
+      {
+        /*
+          Write image colormap indexes.
+        */
+        for (y=0; y < (int) image->rows; y++)
+        {
+          p=GetImagePixels(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          (void) WriteBlob(image,(int) image->columns*sizeof(IndexPacket),
+            (char *) GetIndexes(image));
+        }
       }
     if (image->next == (Image *) NULL)
       break;
