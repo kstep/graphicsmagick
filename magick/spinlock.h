@@ -1,3 +1,18 @@
+/*
+  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2002 ImageMagick Studio
+ 
+  This program is covered by multiple licenses, which are described in
+  Copyright.txt. You should have received a copy of Copyright.txt with this
+  package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+ 
+  ImageMagick Spinlock  Methods. These are highly lightweight functions that
+  are used to prevent deadlocks on access to global data when the normal
+  semaphore system has not yet been initialized. They are intended to only
+  be used to protect operations that are very fast - like a flag that tells
+  you that something has been inited, or bumping a counter. Do NOT use this
+  for protecting an operation that will take any significant amount of time.
+*/
 #ifndef _SPINLOCKS_H
 #define _SPINLOCKS_H
 
