@@ -1327,11 +1327,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
             (image->magick_rows != image->rows))
           (void) fprintf(file,"%lux%lu=>",image->magick_columns,
             image->magick_rows);
-      if ((image->page.width <= 1) || (image->page.height <= 1))
-        (void) fprintf(file,"%lux%lu ",image->columns,image->rows);
-      else
-        (void) fprintf(file,"%lux%lu%+ld%+ld ",image->page.width,
-          image->page.height,image->page.x,image->page.y);
+      (void) fprintf(file,"%lux%lu%+ld%+ld ",image->columns,image->rows,
+        image->page.x,image->page.y);
       if (image->storage_class == DirectClass)
         {
           (void) fprintf(file,"DirectClass ");
