@@ -748,10 +748,10 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedBitsPerPixel", 24))
                   return *np ? tag : "Unrecognized bits per pixel";
                 else
-                if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedImageCompression", 20))
+                if (p - tp == 28 && !LocaleNCompare(tp, "UnrecognizedImageCompression", 28))
                   return *np ? tag : "Unrecognized compression";
                 else
-                if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedImageCompressionMethod", 26))
+                if (p - tp == 34 && !LocaleNCompare(tp, "UnrecognizedImageCompressionMethod", 34))
                   return *np ? tag : "Unrecognized compression method";
                 else
                 if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedNumerOfColors", 25))
@@ -1301,6 +1301,12 @@ const char *GetLocaleMessage(const char *tag)
             else
               return tag;
 
+          case 'c':  case 'C':
+            if (p - tp == 22 && !LocaleNCompare(tp, "CompositeImageRequired", 22))
+              return *np ? tag : "Composite image required";
+            else
+              return tag;
+
           case 'f':  case 'F':
             if (p - tp == 24 && !LocaleNCompare(tp, "FrameIsLessThanImageSize", 24))
               return *np ? tag : "frame is less than image size";
@@ -1344,6 +1350,9 @@ const char *GetLocaleMessage(const char *tag)
               return tag;
 
           case 'm':  case 'M':
+            if (p - tp == 16 && !LocaleNCompare(tp, "MapImageRequired", 16))
+              return *np ? tag : "Map image required";
+            else
             if (p - tp == 19 && !LocaleNCompare(tp, "MissingAffineMatrix", 19))
               return *np ? tag : "Missing affine matrix";
             else
@@ -1521,6 +1530,9 @@ const char *GetLocaleMessage(const char *tag)
               return tag;
 
           case 'n':  case 'N':
+            if (p - tp == 13 && !LocaleNCompare(tp, "NoBlobDefined", 13))
+              return *np ? tag : "No Binary Large OBjects defined";
+            else
             if (p - tp == 15 && !LocaleNCompare(tp, "NoImagesDefined", 15))
               return *np ? tag : "No images defined";
             else
@@ -1535,7 +1547,22 @@ const char *GetLocaleMessage(const char *tag)
             else
               return tag;
 
+          case 'r':  case 'R':
+            if (p - tp == 22 && !LocaleNCompare(tp, "ReferenceImageRequired", 22))
+              return *np ? tag : "Reference image required";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "ReferenceIsNotMyType", 20))
+              return *np ? tag : "Reference is not my type";
+            else
+              return tag;
+
           case 's':  case 'S':
+            if (p - tp == 20 && !LocaleNCompare(tp, "SteganoImageRequired", 20))
+              return *np ? tag : "Stegano image required";
+            else
+            if (p - tp == 19 && !LocaleNCompare(tp, "StereoImageRequired", 19))
+              return *np ? tag : "Stereo image required";
+            else
             if (p - tp == 36 && !LocaleNCompare(tp, "SubimageSpecificationReturnsNoImages", 36))
               return *np ? tag : "Subimage specification returns no images profile name was given";
             else
@@ -1602,9 +1629,6 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 27 && !LocaleNCompare(tp, "UnrecognizedComposeOperator", 27))
               return *np ? tag : "Unrecognized compose operator";
             else
-            if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedImageCompression", 20))
-              return *np ? tag : "Unrecognized image compression";
-            else
             if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedDisposeMethod", 25))
               return *np ? tag : "Unrecognized dispose method";
             else
@@ -1617,11 +1641,14 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedGravityType", 23))
               return *np ? tag : "Unrecognized gravity type";
             else
+            if (p - tp == 28 && !LocaleNCompare(tp, "UnrecognizedImageCompression", 28))
+              return *np ? tag : "Unrecognized image compression";
+            else
             if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedImageFilter", 23))
               return *np ? tag : "Unrecognized image filter";
             else
-            if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedInterlaceType", 26))
-              return *np ? tag : "Unrecognized image interlace";
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedImageFormat", 23))
+              return *np ? tag : "Unrecognized image format";
             else
             if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedImageMode", 21))
               return *np ? tag : "Unrecognized image mode";
@@ -1632,11 +1659,20 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedIntentType", 22))
               return *np ? tag : "Unrecognized intent type";
             else
+            if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedInterlaceType", 25))
+              return *np ? tag : "Unrecognized interlace type";
+            else
             if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedListType", 20))
               return *np ? tag : "Unrecognized list type";
             else
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedModeType", 20))
+              return *np ? tag : "Unrecognized mode type";
+            else
             if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
               return *np ? tag : "Unrecognized option";
+            else
+            if (p - tp == 28 && !LocaleNCompare(tp, "UnrecognizedPerlMagickMethod", 28))
+              return *np ? tag : "Unrecognized PerlMagick method";
             else
             if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedPixelMap", 20))
               return *np ? tag : "Unrecognized pixel map";
@@ -1645,7 +1681,7 @@ const char *GetLocaleMessage(const char *tag)
               return *np ? tag : "Unrecognized resource type";
             else
             if (p - tp == 16 && !LocaleNCompare(tp, "UnrecognizedType", 16))
-              return *np ? tag : "Unrecognized list type";
+              return *np ? tag : "Unrecognized type";
             else
             if (p - tp == 30 && !LocaleNCompare(tp, "UnrecognizedVirtualPixelMethod", 30))
               return *np ? tag : "Unrecognized virtual pixel method";
@@ -1782,6 +1818,9 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 19 && !LocaleNCompare(tp, "UnableToConvertFont", 19))
                   return *np ? tag : "unable to convert font";
                 else
+                if (p - tp == 29 && !LocaleNCompare(tp, "UnableToConvertStringToTokens", 29))
+                  return *np ? tag : "unable to convert strings to tokens";
+                else
                 if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateColormap", 22))
                   return *np ? tag : "Unable to create colormap";
                 else
@@ -1841,6 +1880,9 @@ const char *GetLocaleMessage(const char *tag)
                 else
                 if (p - tp == 23 && !LocaleNCompare(tp, "UnableToGetFromRegistry", 23))
                   return *np ? tag : "unable to get from registry";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToGetPackageInfo", 22))
+                  return *np ? tag : "Unable to get package info";
                 else
                 if (p - tp == 18 && !LocaleNCompare(tp, "UnableToLevelImage", 18))
                   return *np ? tag : "unable to level image";
@@ -1939,6 +1981,9 @@ const char *GetLocaleMessage(const char *tag)
                   return tag;
 
               case 'u':  case 'U':
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateColormap", 22))
+                  return *np ? tag : "unable to create colormap";
+                else
                 if (p - tp == 20 && !LocaleNCompare(tp, "UnableToDisplayImage", 20))
                   return *np ? tag : "unable to display image";
                 else
@@ -2046,9 +2091,6 @@ const char *GetLocaleMessage(const char *tag)
       if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedColorspaceType", 26))
         return *np ? tag : "Unrecognized colorspace type";
       else
-      if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedImageCompressionType", 24))
-        return *np ? tag : "unrecognized compression type";
-      else
       if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedDisposeMethod", 25))
         return *np ? tag : "unrecognized dispose method";
       else
@@ -2057,6 +2099,9 @@ const char *GetLocaleMessage(const char *tag)
       else
       if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedFilterType", 22))
         return *np ? tag : "Unrecognized filter type";
+      else
+      if (p - tp == 32 && !LocaleNCompare(tp, "UnrecognizedImageCompressionType", 32))
+        return *np ? tag : "unrecognized compression type";
       else
       if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedImageType", 21))
         return *np ? tag : "Unrecognized image type";
@@ -2113,6 +2158,9 @@ const char *GetLocaleMessage(const char *tag)
               else
               if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateBitmap", 20))
                 return *np ? tag : "Unable to create bitmap";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateColormap", 22))
+                return *np ? tag : "Unable to create colormap";
               else
               if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreatePixmap", 20))
                 return *np ? tag : "Unable to create pixmap";

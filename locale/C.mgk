@@ -746,6 +746,9 @@
       <Message name="BevelWidthIsNegative">
         bevel width is negative
       </Message>
+      <Message name="CompositeImageRequired">
+        Composite image required
+      </Message>
       <Message name="FrameIsLessThanImageSize">
         frame is less than image size
       </Message>
@@ -775,6 +778,9 @@
       </Message>
       <Message name="KernelWidthMustBeAnOddNumber">
         kernel width must be an odd number
+      </Message>
+      <Message name="MapImageRequired">
+        Map image required
       </Message>
       <Message name="MissingAffineMatrix">
         Missing affine matrix
@@ -950,6 +956,9 @@
       <Message name="MustSpecifyImageSize">
         Must specify image size
       </Message>
+      <Message name="NoBlobDefined">
+        No Binary Large OBjects defined
+      </Message>
       <Message name="NoImagesDefined">
         No images defined
       </Message>
@@ -962,8 +971,17 @@
       <Message name="NoProfileNameWasGiven">
         No profile name was given
       </Message>
+      <Message name="ReferenceImageRequired">
+        Reference image required
+      </Message>
       <Message name="ReferenceIsNotMyType">
         Reference is not my type
+      </Message>
+      <Message name="SteganoImageRequired">
+        Stegano image required
+      </Message>
+      <Message name="StereoImageRequired">
+        Stereo image required
       </Message>
       <Message name="SubimageSpecificationReturnsNoImages">
         Subimage specification returns no images profile name was given
@@ -1063,6 +1081,9 @@
       </Message>
       <Message name="UnrecognizedListType">
         Unrecognized list type
+      </Message>
+      <Message name="UnrecognizedModeType">
+        Unrecognized mode type
       </Message>
       <Message name="UnrecognizedPerlMagickMethod">
         Unrecognized PerlMagick method

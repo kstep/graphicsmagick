@@ -2482,7 +2482,7 @@ BlobToImage(ref,...)
     hv=SvSTASH(reference);
     if (SvTYPE(reference) != SVt_PVAV)
       {
-        MagickError(OptionError,"to read into a single image",NULL);
+        MagickError(OptionError,"ReferenceIsNotMyType",NULL);
         goto ReturnIt;
       }
     av=(AV *) reference;
@@ -2490,7 +2490,7 @@ BlobToImage(ref,...)
     n=1;
     if (items <= 1)
       {
-        MagickError(OptionError,"no blobs to convert",NULL);
+        MagickError(OptionError,"NoBlobsDefined",NULL);
         goto ReturnIt;
       }
     for (n=0, i=0; i < ac; i++)
@@ -2774,7 +2774,7 @@ DESTROY(ref)
       *reference;
 
     if (!sv_isobject(ST(0)))
-      croak("reference is not my type");
+      croak("ReferenceIsNotMyType");
     reference=SvRV(ST(0));
     switch (SvTYPE(reference))
     {
@@ -2884,7 +2884,7 @@ Display(ref,...)
     image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (image == (Image *) NULL)
       {
-        MagickError(OptionError,"No images to display",NULL);
+        MagickError(OptionError,"NoImagesDefined",NULL);
         goto MethodException;
       }
     package_info=ClonePackageInfo(info);
@@ -2975,7 +2975,7 @@ Flatten(ref)
     image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
-        MagickError(OptionError,"No images to flatten",NULL);
+        MagickError(OptionError,"NoImagesDefined",NULL);
         goto MethodException;
       }
     GetExceptionInfo(&exception);
@@ -3066,7 +3066,7 @@ Get(ref,...)
     image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image && !info)
       {
-        MagickError(OptionError,"Nothing to get attributes from",NULL);
+        MagickError(OptionError,"ReferenceIsNotMyType",NULL);
         XSRETURN_EMPTY;
       }
     EXTEND(sp,items);
@@ -4462,7 +4462,7 @@ Mogrify(ref,...)
         }
       if (pp == (Arguments *) NULL)
         {
-          MagickError(OptionError,"Unrecognized option",attribute);
+          MagickError(OptionError,"UnrecognizedOption",attribute);
           goto continue_outer_loop;
         }
       al=(&argument_list[pp-rp->arguments]);
@@ -4531,7 +4531,7 @@ Mogrify(ref,...)
         default:
         {
           FormatString(message,"%d",(long) ix);
-          MagickError(OptionError,"Routine value out of range",message);
+          MagickError(OptionError,"UnrecognizedPerlMagickMethod",message);
           goto ReturnIt;
         }
         case 1:  /* Comment */
@@ -5117,7 +5117,7 @@ Mogrify(ref,...)
             composite_image=argument_list[0].image_reference;
           else
             {
-              MagickError(OptionError,"Missing image in composite",NULL);
+              MagickError(OptionError,"CompositeImageRequired",NULL);
               goto ReturnIt;
             }
           if (attribute_flag[1])
@@ -5427,7 +5427,7 @@ Mogrify(ref,...)
             argument_list[1].int_reference=1;
           if (!attribute_flag[0])
             {
-              MagickError(OptionError,"Missing image in map",NULL);
+              MagickError(OptionError,"MapImageRequired",NULL);
               goto ReturnIt;
             }
           (void) MapImages(image,argument_list[0].image_reference,
@@ -5705,7 +5705,7 @@ Mogrify(ref,...)
         {
           if (!attribute_flag[0])
             {
-              MagickError(OptionError,"Missing image in stereo",NULL);
+              MagickError(OptionError,"StereoImageRequired",NULL);
               goto ReturnIt;
             }
           image=StereoImage(image,argument_list[0].image_reference,&exception);
@@ -5717,7 +5717,7 @@ Mogrify(ref,...)
             argument_list[1].int_reference=0;
           if (!attribute_flag[0])
             {
-              MagickError(OptionError,"Missing image in stegano",NULL);
+              MagickError(OptionError,"SteganoImageRequired",NULL);
               goto ReturnIt;
             }
           image->offset=argument_list[1].int_reference;
@@ -5975,7 +5975,7 @@ Mogrify(ref,...)
         {
           if (!attribute_flag[0])
             {
-              MagickError(OptionError,"Missing reference image",NULL);
+              MagickError(OptionError,"ReferenceImageRequired",NULL);
               goto ReturnIt;
             }
           (void) IsImagesEqual(image,argument_list[0].image_reference);
@@ -6140,7 +6140,7 @@ Montage(ref,...)
     image=SetupList(aTHX_ reference,&info,&reference_vector);
     if (!image)
       {
-        MagickError(OptionError,"No images to montage",NULL);
+        MagickError(OptionError,"NoImagesDefined",NULL);
         goto MethodException;
       }
     /*
@@ -6220,7 +6220,7 @@ Montage(ref,...)
               p=SvPV(ST(i),na);
               if (!IsGeometry(p))
                 {
-                  MagickError(OptionError,"Invalid geometry on frame",p);
+                  MagickError(OptionError,"MissingGeometry",p);
                   break;
                 }
               (void) CloneString(&montage_info->frame,p);
@@ -6242,7 +6242,7 @@ Montage(ref,...)
               p=SvPV(ST(i),na);
               if (!IsGeometry(p))
                 {
-                  MagickError(OptionError,"Invalid geometry on geometry",p);
+                  MagickError(OptionError,"MissingGeometry",p);
                   break;
                 }
              (void) CloneString(&montage_info->geometry,p);
@@ -6302,7 +6302,8 @@ Montage(ref,...)
               {
                 default:
                 {
-                  MagickError(OptionError,"Invalid mode value",SvPV(ST(i),na));
+                  MagickError(OptionError,"UnrecognizedModeType",
+                    SvPV(ST(i),na));
                   break;
                 }
                 case FrameMode:
@@ -6379,7 +6380,7 @@ Montage(ref,...)
               char *p=SvPV(ST(i),na);
               if (!IsGeometry(p))
                 {
-                  MagickError(OptionError,"Invalid geometry on tile",p);
+                  MagickError(OptionError,"MissingGeometry",p);
                   break;
                 }
               (void) CloneString(&montage_info->tile,p);
@@ -6522,7 +6523,7 @@ Morph(ref,...)
     image=SetupList(aTHX_ reference,&info,&reference_vector);
     if (!image)
       {
-        MagickError(OptionError,"No images to morph",NULL);
+        MagickError(OptionError,"NoImagesDefined",NULL);
         goto MethodException;
       }
     info=GetPackageInfo(aTHX_ (void *) av,info);
@@ -6645,7 +6646,7 @@ Mosaic(ref)
     image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
-        MagickError(OptionError,"No images to mosaic",NULL);
+        MagickError(OptionError,"NoImagesDefined",NULL);
         goto MethodException;
       }
     GetExceptionInfo(&exception);
@@ -6793,7 +6794,7 @@ Ping(ref,...)
     status=ExpandFilenames(&n,&list);
     if (status == False)
       {
-        MagickError(ResourceLimitError,"Memory allocation failed",NULL);
+        MagickError(ResourceLimitError,"MemoryAllocationFailed",NULL);
         goto ReturnIt;
       }
     count=0;
@@ -7153,7 +7154,7 @@ QueryFontMetrics(ref,...)
     image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
-        MagickError(OptionError,"No image to query",NULL);
+        MagickError(OptionError,"NoImagesDefined",NULL);
         goto MethodException;
       }
     draw_info=CloneDrawInfo(info->image_info,info->draw_info);
@@ -7529,7 +7530,7 @@ Read(ref,...)
     hv=SvSTASH(reference);
     if (SvTYPE(reference) != SVt_PVAV)
       {
-        MagickError(OptionError,"Unable to read into a single image",NULL);
+        MagickError(OptionError,"ReferenceIsNotMyType",NULL);
         goto ReturnIt;
       }
     av=(AV *) reference;
@@ -7570,7 +7571,7 @@ Read(ref,...)
     status=ExpandFilenames(&n,&list);
     if (status == False)
       {
-        MagickError(ResourceLimitError,"Memory allocation failed",NULL);
+        MagickError(ResourceLimitError,"MemoryAllocationFailed",NULL);
         goto ReturnIt;
       }
     GetExceptionInfo(&exception);
