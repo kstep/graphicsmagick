@@ -1432,6 +1432,168 @@ Export Image *ImplodeImage(Image *image,const double factor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     M o r p h I m a g e s                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MorphImages morphs a set of images.  both the image pixels and size
+%  are linearly interpolated to give the appearance of a meta-morphosis from
+%  one image to the next.
+%
+%  The format of the MorphImage routine is:
+%
+%      morphed_image=MorphImages(images,number_frames)
+%
+%  A description of each parameter follows:
+%
+%    o morphed_image: Method MorphImages returns an image sequence that
+%      has linearly interpolated pixels and size between two input images.
+%
+%    o images: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%    o number_frames:  This unsigned integer reflects the number of in-between
+%      images to generate.  The more in-between frames, the smoother
+%      the morph.
+%
+%
+*/
+Export Image *MorphImages(Image *images,const unsigned int number_frames)
+{
+#define MorphImageText  "  Morphing image sequence...  "
+
+  double
+    alpha,
+    beta;
+
+  Image
+    *image,
+    *morphed_image,
+    *morphed_images;
+
+  MonitorHandler
+    handler;
+
+  register int
+    i,
+    j;
+
+  register RunlengthPacket
+    *p,
+    *q;
+
+  unsigned int
+    scene;
+
+  assert(images != (Image *) NULL);
+  if (images->next == (Image *) NULL)
+    {
+      MagickWarning(OptionWarning,"Unable to morph image",
+        "image sequence required");
+      return((Image *) NULL);
+    }
+  /*
+    Clone first frame in sequence.
+  */
+  ((Image *) images)->orphan=True;
+  morphed_images=CloneImage(images,images->columns,images->rows,True);
+  ((Image *) images)->orphan=False;
+  if (morphed_images == (Image *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
+        "Memory allocation failed");
+      return((Image *) NULL);
+    }
+  /*
+    Morph image.
+  */
+  scene=0;
+  for (image=images; image->next != (Image *) NULL; image=image->next)
+  {
+    handler=SetMonitorHandler((MonitorHandler) NULL);
+    for (i=0; i < (int) number_frames; i++)
+    {
+      beta=(double) (i+1.0)/(number_frames+1.0);
+      alpha=1.0-beta;
+      ((Image *) image)->orphan=True;
+      morphed_images->next=ZoomImage(image,
+        (unsigned int) (alpha*image->columns+beta*image->next->columns+0.5),
+        (unsigned int) (alpha*image->rows+beta*image->next->rows+0.5));
+      ((Image *) image)->orphan=False;
+      if (morphed_images->next == (Image *) NULL)
+        {
+          MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
+            "Memory allocation failed");
+          break;
+        }
+      morphed_images->next->previous=morphed_images;
+      morphed_images=morphed_images->next;
+      image->next->orphan=True;
+      morphed_image=ZoomImage(image->next,morphed_images->columns,
+        morphed_images->rows);
+      image->next->orphan=False;
+      if (morphed_image == (Image *) NULL)
+        {
+          MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
+            "Memory allocation failed");
+          break;
+        }
+      if (!UncondenseImage(morphed_images) || !UncondenseImage(morphed_image))
+        {
+          MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
+            "Memory allocation failed");
+          break;
+        }
+      morphed_images->class=DirectClass;
+      p=morphed_image->pixels;
+      q=morphed_images->pixels;
+      for (j=0; j < (int) morphed_images->packets; j++)
+      {
+        q->red=(Quantum) (alpha*q->red+beta*p->red+0.5);
+        q->green=(Quantum) (alpha*q->green+beta*p->green+0.5);
+        q->blue=(Quantum) (alpha*q->blue+beta*p->blue+0.5);
+        q->index=(unsigned short) (alpha*q->index+beta*p->index+0.5);
+        p++;
+        q++;
+      }
+      DestroyImage(morphed_image);
+      CondenseImage(morphed_images);
+    }
+    /*
+      Clone last frame in sequence.
+    */
+    image->next->orphan=True;
+    morphed_images->next=
+      CloneImage(image->next,image->next->columns,image->next->rows,True);
+    image->next->orphan=False;
+    if (morphed_images->next == (Image *) NULL)
+      {
+        MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
+          "Memory allocation failed");
+        break;
+      }
+    morphed_images->next->previous=morphed_images;
+    morphed_images=morphed_images->next;
+    (void) SetMonitorHandler(handler);
+    ProgressMonitor(MorphImageText,scene,GetNumberScenes(images));
+    scene++;
+  }
+  while (morphed_images->previous != (Image *) NULL)
+    morphed_images=morphed_images->previous;
+  if (image->next != (Image *) NULL)
+    {
+      DestroyImages(morphed_images);
+      return((Image *) NULL);
+    }
+  return(morphed_images);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     O i l P a i n t I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -1765,176 +1927,6 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
       ((segment_info->y2-segment_info->y1) < 3.0))
     return(True);
   return(False);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R a i s e I m a g e                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method RaiseImage lightens and darkens the edges of an image to give a
-%  3-D raised or lower effect.
-%
-%  The format of the RaiseImage routine is:
-%
-%      RaiseImage(image,raise_info,raised)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image.
-%
-%    o raise_info: Specifies a pointer to a XRectangle which defines the
-%      raised region.
-%
-%    o raised: A value other than zero causes the image to have a 3-D raised
-%      effect, otherwise it has a lowered effect.
-%
-%
-*/
-Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
-  const int raised)
-{
-#define AccentuateFactor  UpScale(135)
-#define HighlightFactor  UpScale(190)
-#define ShadowFactor  UpScale(190)
-#define RaiseImageText  "  Raising image...  "
-#define TroughFactor  UpScale(135)
-
-  Quantum
-    foreground,
-    background;
-
-  register int
-    x,
-    y;
-
-  register RunlengthPacket
-    *p;
-
-  unsigned int
-    height;
-
-  assert(image != (Image *) NULL);
-  assert(raise_info != (RectangleInfo *) NULL);
-  if ((image->columns <= (raise_info->width << 1)) ||
-      (image->rows <= (raise_info->height << 1)))
-    {
-      MagickWarning(OptionWarning,"Unable to raise image",
-        "image size must exceed bevel width");
-      return;
-    }
-  if (!UncondenseImage(image))
-    return;
-  foreground=MaxRGB;
-  background=0;
-  if (!raised)
-    {
-      foreground=0;
-      background=MaxRGB;
-    }
-  image->class=DirectClass;
-  p=image->pixels;
-  for (y=0; y < (int) raise_info->height; y++)
-  {
-    for (x=0; x < y; x++)
-    {
-      p->red=(Quantum) ((unsigned long)
-        (p->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-        (p->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-        (p->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p++;
-    }
-    for (x=0; x < (int) (image->columns-(y << 1)); x++)
-    {
-      p->red=(Quantum) ((unsigned long)
-        (p->red*AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long) (p->green*
-        AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-        (p->blue*AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
-      p++;
-    }
-    for (x=0; x < y; x++)
-    {
-      p->red=(Quantum) ((unsigned long)
-        (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-        (p->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-        (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p++;
-    }
-  }
-  height=image->rows-(raise_info->height << 1);
-  for (y=0; y < (int) height; y++)
-  {
-    for (x=0; x < (int) raise_info->width; x++)
-    {
-      p->red=(Quantum) ((unsigned long)
-	(p->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-	(p->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-	(p->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p++;
-    }
-    for (x=0; x < (int) (image->columns-(raise_info->width << 1)); x++)
-      p++;
-    for (x=0; x < (int) raise_info->width; x++)
-    {
-      p->red=(Quantum) ((unsigned long)
-        (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-        (p->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-        (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p++;
-    }
-    if (QuantumTick(y,height))
-      ProgressMonitor(RaiseImageText,y,height);
-  }
-  for (y=0; y < (int) raise_info->height; y++)
-  {
-    for (x=0; x < (int) (raise_info->width-y); x++)
-    {
-      p->red=(Quantum) ((unsigned long)
-	(p->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-	(p->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-	(p->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p++;
-    }
-    for (x=0; x < (int) (image->columns-((raise_info->width-y) << 1)); x++)
-    {
-      p->red=(Quantum) ((unsigned long)
-        (p->red*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-        (p->green*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-        (p->blue*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
-      p++;
-    }
-    for (x=0; x < (int) (raise_info->width-y); x++)
-    {
-      p->red=(Quantum) ((unsigned long)
-        (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-        (p->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-        (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p++;
-    }
-  }
-  return;
 }
 
 /*
@@ -2797,6 +2789,255 @@ Export Image *SpreadImage(Image *image,const unsigned int amount)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
+%   S t e g a n o I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SteganoImage hides a digital watermark within the image.
+%
+%  The format of the SteganoImage routine is:
+%
+%      stegano_image=SteganoImage(image,watermark)
+%
+%  A description of each parameter follows:
+%
+%    o stegano_image: Method SteganoImage returns a pointer to the
+%      steganographic image with the watermark hidden.  A null image is
+%      returned if there is a memory shortage.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o watermark: The address of a structure of type Image.
+%
+%
+*/
+Export Image *SteganoImage(Image *image,Image *watermark)
+{
+#define EmbedBit(byte) \
+{ \
+  byte&=(~0x01); \
+  byte|=(Intensity(*r) >> shift) & 0x01; \
+  r++; \
+  if (r >= (watermark->pixels+watermark->packets-1)) \
+    { \
+      r=watermark->pixels; \
+      shift--; \
+      if (shift < 0) \
+        break; \
+    } \
+}
+#define SteganoImageText  "  Hiding image...  "
+
+  Image
+    *stegano_image;
+
+  int
+    shift;
+
+  register int
+    i;
+
+  register RunlengthPacket
+    *p,
+    *q,
+    *r;
+
+  assert(image != (Image *) NULL);
+  assert(watermark != (Image *) NULL);
+  if (!UncondenseImage(image))
+    return((Image *) NULL);
+  if (!UncondenseImage(watermark))
+    return((Image *) NULL);
+  /*
+    Initialize steganographic image attributes.
+  */
+  stegano_image=CloneImage(image,image->columns,image->rows,True);
+  if (stegano_image == (Image *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,
+        "Unable to create steganographic image","Memory allocation failed");
+      return((Image *) NULL);
+    }
+  if (stegano_image->class == PseudoClass)
+    {
+      if (stegano_image->colors > ((MaxRGB+1) >> 1))
+        stegano_image->class=DirectClass;
+      else
+        {
+          /*
+            Shift colormap to make room for information hiding.
+          */
+          stegano_image->colors<<=1;
+          stegano_image->colormap=(ColorPacket *) ReallocateMemory((char *)
+            stegano_image->colormap,stegano_image->colors*sizeof(ColorPacket));
+          if (stegano_image->colormap == (ColorPacket *) NULL)
+            {
+              MagickWarning(ResourceLimitWarning,
+                "Unable to create steganographic image",
+                "Memory allocation failed");
+              DestroyImage(stegano_image);
+              return((Image *) NULL);
+            }
+          for (i=stegano_image->colors-1; i >= 0; i--)
+            stegano_image->colormap[i]=stegano_image->colormap[i >> 1];
+          q=stegano_image->pixels;
+          for (i=0; i < (int) stegano_image->packets; i++)
+          {
+            q->index<<=1;
+            q++;
+          }
+        }
+    }
+  /*
+    Hide watermark in low-order bits of image.
+  */
+  shift=QuantumDepth-1;
+  p=image->pixels+(image->offset % image->packets);
+  q=stegano_image->pixels+(stegano_image->offset % stegano_image->packets);
+  r=watermark->pixels;
+  for (i=0; i < (int) image->packets; i++)
+  {
+    if (stegano_image->class == PseudoClass)
+      EmbedBit(q->index)
+    else
+      {
+        EmbedBit(q->red);
+        EmbedBit(q->green);
+        EmbedBit(q->blue);
+      }
+    p++;
+    q++;
+    if (p >= (image->pixels+image->packets-1))
+      {
+        p=image->pixels;
+        q=stegano_image->pixels;
+      }
+    if (QuantumTick(i,image->packets))
+      ProgressMonitor(SteganoImageText,i,image->packets);
+  }
+  return(stegano_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S t e r e o I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method StereoImage combines two images and produces a single image that
+%  is the composite of a left and right image of a stereo pair.  The left
+%  image is converted to gray scale and written to the red channel of the
+%  stereo image.  The right image is converted to gray scale and written to the
+%  blue channel of the stereo image.  View the composite image with red-blue
+%  glasses to create a stereo effect.
+%
+%  The format of the StereoImage routine is:
+%
+%      stereo_image=StereoImage(left_image,right_image)
+%
+%  A description of each parameter follows:
+%
+%    o stereo_image: Method StereoImage returns a pointer to the stereo
+%      image.  A null image is returned if there is a memory shortage.
+%
+%    o left_image: The address of a structure of type Image.
+%
+%    o right_image: The address of a structure of type Image.
+%
+%
+*/
+Export Image *StereoImage(Image *left_image,const Image *right_image)
+{
+#define StereoImageText  "  Stereo image...  "
+
+  Image
+    *stereo_image;
+
+  int
+    y;
+
+  register int
+    left_runlength,
+    right_runlength,
+    x;
+
+  register RunlengthPacket
+    *p,
+    *q,
+    *r;
+
+  assert(left_image != (Image *) NULL);
+  assert(right_image != (Image *) NULL);
+  if ((left_image->columns != right_image->columns) ||
+      (left_image->rows != right_image->rows))
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to create stereo image",
+        "left and right image sizes differ");
+      return((Image *) NULL);
+    }
+  /*
+    Initialize stereo image attributes.
+  */
+  stereo_image=
+    CloneImage(left_image,left_image->columns,left_image->rows,False);
+  if (stereo_image == (Image *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to create stereo image",
+        "Memory allocation failed");
+      return((Image *) NULL);
+    }
+  stereo_image->class=DirectClass;
+  /*
+    Copy left image to red channel and right image to blue channel.
+  */
+  p=left_image->pixels;
+  left_runlength=p->length+1;
+  q=right_image->pixels;
+  right_runlength=q->length+1;
+  r=stereo_image->pixels;
+  for (y=0; y < (int) stereo_image->rows; y++)
+  {
+    for (x=0; x < (int) stereo_image->columns; x++)
+    {
+      if (left_runlength != 0)
+        left_runlength--;
+      else
+        {
+          p++;
+          left_runlength=p->length;
+        }
+      if (right_runlength != 0)
+        right_runlength--;
+      else
+        {
+          q++;
+          right_runlength=q->length;
+        }
+      r->red=Intensity(*p);
+      r->green=0;
+      r->blue=Intensity(*q);
+      r->index=0;
+      r->length=0;
+      r++;
+    }
+    if (QuantumTick(y,stereo_image->rows))
+      ProgressMonitor(StereoImageText,y,stereo_image->rows);
+  }
+  return(stereo_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     S w i r l I m a g e                                                     %
 %                                                                             %
 %                                                                             %
@@ -2931,6 +3172,77 @@ Export Image *SwirlImage(Image *image,double degrees)
       ProgressMonitor(SwirlImageText,y,image->rows);
   }
   return(swirled_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     T h r e s h o l d I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ThresholdImage thresholds the reference image.
+%
+%  The format of the ThresholdImage routine is:
+%
+%      ThresholdImage(image,threshold)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%    o threshold: A double indicating the threshold value.
+%
+%
+*/
+Export void ThresholdImage(Image *image,const double threshold)
+{
+#define ThresholdImageText  "  Threshold the image...  "
+
+  ColorPacket
+    *colormap;
+
+  register int
+    i;
+
+  register RunlengthPacket
+    *p;
+
+  /*
+    Threshold image.
+  */
+  assert(image != (Image *) NULL);
+  colormap=(ColorPacket *) AllocateMemory(2*sizeof(ColorPacket));
+  if (colormap == (ColorPacket *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to allocate image",
+        "Memory allocation failed");
+      return;
+    }
+  if (image->colormap != (ColorPacket *) NULL)
+    FreeMemory((char *) image->colormap);
+  image->class=PseudoClass;
+  image->colors=2;
+  image->colormap=colormap;
+  image->colormap[0].red=0;
+  image->colormap[0].green=0;
+  image->colormap[0].blue=0;
+  image->colormap[1].red=MaxRGB;
+  image->colormap[1].green=MaxRGB;
+  image->colormap[1].blue=MaxRGB;
+  p=image->pixels;
+  for (i=0; i < (int) image->packets; i++)
+  {
+    p->index=Intensity(*p) < threshold ? 0 : 1;
+    p++;
+    if (QuantumTick(i,image->packets))
+      ProgressMonitor(ThresholdImageText,i,image->packets);
+  }
+  SyncImage(image);
 }
 
 /*

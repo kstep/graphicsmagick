@@ -51,15 +51,32 @@ SO_REQLIBS= -lX11 -lc
 #endif
 
 HEADERS = magick.h classify.h image.h gems.h compress.h monitor.h error.h \
-  utility.h quantize.h X.h widget.h PreRvIcccm.h memory.h delegates.h \
+  utility.h quantize.h xwindows.h widget.h PreRvIcccm.h memory.h delegates.h \
   version.h defines.h
 
-SRCS = image.c effects.c shear.c segment.c quantize.c colors.c gems.c \
-  signature.c decode.c encode.c compress.c utility.c monitor.c error.c \
-  delegates.c magick.c X.c display.c animate.c widget.c PreRvIcccm.c memory.c
-OBJS = image.o effects.o shear.o segment.o quantize.o colors.o gems.o \
-  signature.o decode.o encode.o compress.o utility.o monitor.o error.o \
-  delegates.o magick.o X.o display.o animate.o widget.o PreRvIcccm.o memory.o
+SRCS = PreRvIcccm.c animate.c annotate.c avs.c bmp.c cmyk.c colors.c \
+  compress.c dcm.c decorate.c delegates.c display.c dps.c draw.c \
+  effects.c enhance.c ept.c error.c fax.c fits.c fpx.c gems.c gif.c \
+  gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c image.c \
+  iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c \
+  miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c \
+  pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c psd.c \
+  pwp.c quantize.c rgb.c rla.c rle.c segment.c sfw.c sgi.c shear.c \
+  signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c transform.c \
+  ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c widget.c x.c \
+  xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c
+
+OBJS = PreRvIcccm.o animate.o annotate.o avs.o bmp.o cmyk.o colors.o \
+  compress.o dcm.o decorate.o delegates.o display.o dps.o draw.o \
+  effects.o enhance.o ept.o error.o fax.o fits.o fpx.o gems.o gif.o \
+  gradation.o gray.o hdf.o histogram.o html.o icc.o icon.o image.o \
+  iptc.o jbig.o jpeg.o label.o logo.o magick.o map.o matte.o memory.o \
+  miff.o monitor.o mono.o montage.o mtv.o null.o pcd.o pcl.o pcx.o \
+  pdf.o pict.o pix.o plasma.o png.o pnm.o preview.o ps.o ps2.o psd.o \
+  pwp.o quantize.o rgb.o rla.o rle.o segment.o sfw.o sgi.o shear.o \
+  signature.o stegano.o sun.o tga.o tiff.o tile.o tim.o transform.o \
+  ttf.o txt.o uil.o utility.o uyvy.o vicar.o vid.o viff.o widget.o x.o \
+  xbm.o xc.o xpm.o xwd.o xwindows.o yuv.o zoom.o
 
 #ifdef HPArchitecture
 
@@ -107,7 +124,7 @@ clean::
 #define IncSubdir magick
 
 #ifndef SGIArchitecture
-SOMAGICKLIBREV= 4.0.25
+SOMAGICKLIBREV= 4.0.26
 #endif
 
 #if (ProjectX < 5)

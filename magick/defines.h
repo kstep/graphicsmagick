@@ -147,6 +147,12 @@ extern "C" {
 #define QuantumTick(i,span) \
   (((~((span)-i-1) & ((span)-i-2))+1) == ((span)-i-1))
 #define RadiansToDegrees(x) ((x)*180/M_PI)
+#define ReaderExit(warning,message,image) \
+{ \
+  MagickWarning(warning,message,image->filename); \
+  DestroyImages(image); \
+  return((Image *) NULL); \
+}
 #define ReadQuantum(quantum,p)  \
 {  \
   if (image->depth <= 8) \
@@ -165,6 +171,7 @@ extern "C" {
   else \
     quantum=MSBFirstReadShort(image->file) >> (image->depth-QuantumDepth); \
 }
+#define RenderPostscriptText  "  Rendering postscript...  "
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #if !defined(STDIN_FILENO)
 #define STDIN_FILENO  0
@@ -195,6 +202,15 @@ extern "C" {
       MSBFirstWriteShort((quantum)*257,image->file); \
     else \
       MSBFirstWriteShort(quantum,image->file); \
+}
+#define WriterExit(error,message,image) \
+{ \
+  MagickWarning(error,message,image->filename); \
+  if (image_info->adjoin) \
+    while (image->previous != (Image *) NULL) \
+      image=image->previous; \
+  CloseImage(image); \
+  return(False); \
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

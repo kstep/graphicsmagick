@@ -497,14 +497,17 @@ typedef struct _AnnotateInfo
 extern const char
   *Alphabet,
   *DefaultPointSize,
-  *DefaultImageQuality,
   *DefaultTileFrame,
   *DefaultTileGeometry,
   *DefaultTileLabel,
+  *LoadImageText,
+  *LoadImagesText,
   *PSDensityGeometry,
   *PSPageGeometry,
   *ReadBinaryType,
   *ReadBinaryUnbufferedType,
+  *SaveImageText,
+  *SaveImagesText,
   *WriteBinaryType;
 
 /*
@@ -557,6 +560,7 @@ extern Export Image
   *ReadICCImage(const ImageInfo *image_info),
   *ReadICONImage(const ImageInfo *image_info),
   *ReadImage(ImageInfo *),
+  *ReadImages(ImageInfo *),
   *ReadIPTCImage(const ImageInfo *image_info),
   *ReadJBIGImage(const ImageInfo *image_info),
   *ReadJPEGImage(const ImageInfo *image_info),

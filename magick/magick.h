@@ -104,7 +104,7 @@ extern "C" {
 #include <magick/utility.h>
 #include <magick/monitor.h>
 #include <magick/error.h>
-#include <magick/X.h>
+#include <magick/xwindows.h>
 #include <magick/widget.h>
 #include <magick/PreRvIcccm.h>
 #include <magick/memory.h>
@@ -122,7 +122,7 @@ extern "C" {
 #if defined(_VISUALC_)
 #define INT32  X11_INT32
 #endif
-#include "X.h"
+#include "xwindows.h"
 #include "widget.h"
 #include "PreRvIcccm.h"
 #include "memory.h"
