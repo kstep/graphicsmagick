@@ -748,6 +748,86 @@ do_it_again:
   }
 }
 
+
+void AddExtraLibs(std::string &name,
+      std::list<std::string> &libs_list_release,
+      std::list<std::string> &libs_list_debug)
+{
+  std::string libpath;
+	WIN32_FIND_DATA	libdata;
+  bool gotRelease, gotDebug;
+
+  gotRelease=gotDebug=false;
+
+  // look for release libs that exist and add them into the module
+  libpath = "..\\..\\";
+  libpath += name;
+  libpath += "\\";
+  libpath += name;
+  libpath += "Release.lib";
+	HANDLE libhandle = FindFirstFile(libpath.c_str(), &libdata);
+	if (libhandle != INVALID_HANDLE_VALUE)
+  {
+    std::string extralibrary;
+	  do
+	  {
+      extralibrary = "..\\..\\";
+      extralibrary += name;
+      extralibrary += "\\";
+      extralibrary += libdata.cFileName;
+		  libs_list_release.push_back(extralibrary);
+      gotRelease=true;
+	  } while (FindNextFile(libhandle, &libdata));
+    FindClose(libhandle);
+  }
+
+  // look for debug libs that exist and add them into the module
+  libpath = "..\\..\\";
+  libpath += name;
+  libpath += "\\";
+  libpath += name;
+  libpath += "Debug.lib";
+	libhandle = FindFirstFile(libpath.c_str(), &libdata);
+	if (libhandle != INVALID_HANDLE_VALUE)
+  {
+    std::string extralibrary;
+	  do
+	  {
+      extralibrary = "..\\..\\";
+      extralibrary += name;
+      extralibrary += "\\";
+      extralibrary += libdata.cFileName;
+		  libs_list_debug.push_back(extralibrary);
+      gotDebug=true;
+	  } while (FindNextFile(libhandle, &libdata));
+    FindClose(libhandle);
+  }
+
+  if (gotRelease==false || gotDebug==false)
+  {
+    // look for ANY libs that exist and add them into the module
+    libpath = "..\\..\\";
+    libpath += name;
+    libpath += "\\*.lib";
+	  libhandle = FindFirstFile(libpath.c_str(), &libdata);
+	  if (libhandle != INVALID_HANDLE_VALUE)
+    {
+      std::string extralibrary;
+	    do
+	    {
+        extralibrary = "..\\..\\";
+        extralibrary += name;
+        extralibrary += "\\";
+        extralibrary += libdata.cFileName;
+		    libs_list_release.push_back(extralibrary);
+		    libs_list_debug.push_back(extralibrary);
+	    } while (FindNextFile(libhandle, &libdata));
+      FindClose(libhandle);
+    }
+  }
+}
+
+
 void CConfigureApp::process_module(ofstream &dsw,
   WIN32_FIND_DATA	&data, const char *filename,
     int runtime, int project_type)
@@ -838,6 +918,7 @@ void CConfigureApp::process_module(ofstream &dsw,
     }
   }
 
+#ifdef OLD_METHOD
   // look for any libs that exist and add them into the module
   libpath = "..\\..\\";
   libpath += name;
@@ -857,6 +938,9 @@ void CConfigureApp::process_module(ofstream &dsw,
 	  } while (FindNextFile(libhandle, &libdata));
     FindClose(libhandle);
   }
+#else
+  AddExtraLibs(name,libs_list_release,libs_list_debug);
+#endif
 
   std::string envpath;
   envpath = "..\\";
