@@ -67,7 +67,6 @@
 #include "freetype/ftglyph.h"
 #endif
 #endif
-#endif
 
 /*
   Font declaration.
