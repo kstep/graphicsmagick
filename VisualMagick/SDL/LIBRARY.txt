@@ -16,3 +16,9 @@ EXCLUDE = hello.cpp
 EXCLUDE = keyboard.cpp
 EXCLUDE = okay.c
 EXCLUDE = genimage.c
+EXCLUDE = chat.cpp
+EXCLUDE = chat.h
+EXCLUDE = chatd.c
+EXCLUDE = showimage.c
+EXCLUDE = IMG_xxx.c
+
