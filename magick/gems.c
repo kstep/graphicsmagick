@@ -333,14 +333,11 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
     }
     case DissolveCompositeOp:
     {
-      color.red=(unsigned long)
-        (((MaxRGB-alpha)*p->red+(MaxRGB-beta)*q->red)/MaxRGB);
+      color.red=(unsigned long) ((alpha*p->red+(MaxRGB-beta)*q->red)/MaxRGB);
       color.green=(unsigned long)
-        (((MaxRGB-alpha)*p->green+(MaxRGB-beta)*q->green)/MaxRGB);
-      color.blue=(unsigned long)
-        (((MaxRGB-alpha)*p->blue+(MaxRGB-beta)*q->blue)/MaxRGB);
-      color.opacity=(unsigned long)
-        (((MaxRGB-alpha)*alpha+(MaxRGB-beta)*beta)/MaxRGB);
+        ((alpha*p->green+(MaxRGB-beta)*q->green)/MaxRGB);
+      color.blue=(unsigned long) ((alpha*p->blue+(MaxRGB-beta)*q->blue)/MaxRGB);
+      color.opacity=(unsigned long) ((alpha*alpha+(MaxRGB-beta)*beta)/MaxRGB);
       return(color);
     }
     case DisplaceCompositeOp:
