@@ -574,13 +574,13 @@ static unsigned int FindMagickModule(const char *filename,
 # if !defined(MagickCoderModulesPath) && !defined(WIN32)
 #  error MagickCoderModulesPath or WIN32 must be defined when UseInstalledMagick is defined
 # endif
-#else
+#else /* end defined(UseInstalledMagick) */
   if (*SetClientPath((char *) NULL) != '\0')
     {
       /*
         Search based on executable directory if directory is known.
       */
-#if defined(POSIX)
+# if defined(POSIX)
       char
         *module_subdir=NULL,
         prefix[MaxTextExtent];
@@ -600,10 +600,10 @@ static unsigned int FindMagickModule(const char *filename,
       ChopPathComponents(prefix,1);
       FormatString(path,"%.512s/lib/%s/modules-Q%d/%s/%.256s",prefix,
         MagickLibSubdir,QuantumDepth,module_subdir,filename);
-#else
+# else /* end defined(POSIX) */
       FormatString(path,"%.512s%s%.256s",SetClientPath((char *) NULL),
         DirectorySeparator,filename);
-#endif
+# endif /* !POSIX */
       if (IsAccessible(path))
         return(True);
     }
@@ -612,7 +612,7 @@ static unsigned int FindMagickModule(const char *filename,
       /*
         Search MAGICK_HOME.
       */
-#if defined(POSIX)
+# if defined(POSIX)
       char
         *subdir=NULL;
 
@@ -629,10 +629,10 @@ static unsigned int FindMagickModule(const char *filename,
 
       FormatString(path,"%.512s/lib/%s/%.256s",getenv("MAGICK_HOME"),
         subdir,filename);
-#else
+# else
       FormatString(path,"%.512s%s%.256s",getenv("MAGICK_HOME"),
         DirectorySeparator,filename);
-#endif
+# endif /* !POSIX */
       if (IsAccessible(path))
         return(True);
     }
@@ -651,8 +651,9 @@ static unsigned int FindMagickModule(const char *filename,
   */
   if (IsAccessible(path))
     return(True);
-#endif
-  ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",path);
+#endif /* End defined(UseInstalledMagick) */
+  if (exception->severity < ConfigureError)
+    ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",path);
   return(False);
 }
 
