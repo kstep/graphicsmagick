@@ -7,12 +7,27 @@
 This file records noteworthy changes in Magick++
 
 <p>
+(5.2.5)<BR>
+<UL>
+  <LI> Released with ImageMagick 5.2.5.
+  <LI> Completely re-wrote drawable object classes in order to support
+    all current ImageMagick drawing capabilities using a list-based paradigm.
+    New drawing capabilities include coordinate transformations and the
+    currently undocumented (but quite powerful) path capabilities.
+
+</UL>
+<p>
 (5.2.4)<BR>
 <UL>
   <LI> Released with ImageMagick 5.2.4.
   <LI> Magick++ is now built by the regular ImageMagick build process.
     when --with-magick_plus_plus is specified to configure.
   <LI> Fixed bug with setting text drawing options.
+  <LI> Fixed API bug with colorize.  Options adjusted to match ImageMagick
+    API change (API change was long ago).
+  <LI> Library compiles using Sun Workshop 5.0 compiler.  Linkage problems with
+    some demos/tests due to libtool-related compiler/linker bug.
+  <LI> Compiles using Sun Forte 6.0 compiler.
 
 </UL>
 <p>
