@@ -19,10 +19,10 @@ for ($i=0; $i < 300; $i+=10)
 #
 # Draw rounded rectangle.
 #
-$image->Draw(primitve=>'fillRoundRectangle',points=>'65,65 70,70 10,10',
-  pen=>blue);
-$image->Draw(primitve=>'roundRectangle',points=>'65,65 70,70 10,10',
-  pen=>maroon,linewidth=>4);
+$image->Draw(pen=>blue,primitve=>'RoundRectangle',fill=>'True',
+  points=>'65,65 70,70 10,10');
+$image->Draw(pen=>maroon,primitve=>'roundRectangle',points=>'65,65 70,70 10,10',
+  linewidth=>4);
 #
 # Draw curve.
 #
@@ -35,11 +35,13 @@ $image->Draw(primitive=>'line',points=>"10,200 20,190",pen=>red);
 #
 # Draw arc within a circle.
 #
-$image->Draw(primitive=>'fillcircle',points=>"160,70 200,70",pen=>yellow);
-$image->Draw(primitve=>'fillArc',points=>'120,30 200,100 45,90',pen=>blue);
-$image->Draw(primitve=>'Arc',points=>'120,30 200,100 45,90',pen=>navy,
+$image->Draw(pen=>yellow,primitive=>'circle',fill=>'True',
+  points=>"160,70 200,70");
+$image->Draw(pen=>blue,primitve=>'Arc',fill=>'True',
+  points=>'120,30 200,100 45,90');
+$image->Draw(pen=>navy,primitve=>'Arc',points=>'120,30 200,100 45,90',
   linewidth=>4);
-$image->Draw(primitive=>'circle',points=>"160,70 200,70",pen=>black,
+$image->Draw(pen=>black,primitive=>'circle',points=>"160,70 200,70",
   linewidth=>4);
 #
 # Draw pentogram.

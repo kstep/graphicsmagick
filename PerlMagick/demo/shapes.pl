@@ -12,9 +12,9 @@ $image->Read('xc:white');
 #
 # Draw shapes.
 #
-$image->Draw(pen=>'@tile.gif',primitive=>'FillPolygon',
+$image->Draw(pen=>'@tile.gif',primitive=>'Polygon',fill=>'True',
   points=>'30,30 100,10 190,290 30,290');
-$image->Draw(pen=>'red',primitive=>'FillEllipse',
+$image->Draw(pen=>'red',primitive=>'Ellipse',fill=>'True',
   points=>'100,100 100,150 0,360');
 $image->Draw(pen=>'black',primitive=>'Ellipse',
   points=>'100,100 100,150 0,360',linewidth=>5);
