@@ -2261,7 +2261,6 @@ MagickExport void DestroyImage(Image *image)
   /*
     Destroy image.
   */
-  image->exempt=False;
   CloseBlob(image);
   DestroyImagePixels(image);
   if (image->clip_mask != (Image *) NULL)
