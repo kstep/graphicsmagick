@@ -71,8 +71,6 @@ t/input_70x46.rgba
 t/input_70x46.uyvy
 t/input_70x46.yuv
 t/input_p1.pbm
-t/input_p1.pgm
-t/input_p1.ppm
 t/input_p2.pgm
 t/input_p3.ppm
 t/input_p4.pbm
