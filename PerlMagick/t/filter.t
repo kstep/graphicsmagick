@@ -60,7 +60,7 @@ testFilter('input.miff', 'Despeckle',
 ++$test;
 testFilter('input.miff', 'Edge',
   q/60/,
-  '60c956dcc6cd627cdd583a6d3c3686dc');
+  '3e8c5c72a869f1158141bf0da0a2e25c');
 
 ++$test;
 testFilter('input.miff', 'Emboss',
