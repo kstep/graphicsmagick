@@ -34,7 +34,7 @@
 #endif
   
 #ifndef Compresseur_h
-  #include  "compress.h"
+  #include  "fpxcompress.h"
 #endif
 
 #ifndef OLECommun_h

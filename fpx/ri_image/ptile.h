@@ -25,7 +25,7 @@
   #include  "ri_sys.h"
 #endif
 #ifndef Compresseur_h
-  #include  "compress.h"    // for TLC_IdCodec
+  #include  "fpxcompress.h"    // for TLC_IdCodec
 #endif
 
 #ifndef FPXBaselineIO_h

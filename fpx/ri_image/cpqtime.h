@@ -28,7 +28,7 @@
     #include    <QDOffscreen.h>
 #endif
 
-  #include  "compress.h"
+  #include  "fpxcompress.h"
 
 //  Constants
 //  ---------

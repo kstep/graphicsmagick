@@ -24,7 +24,7 @@
   #include  "olecomm.h"
   #include  "fpxjpeg.h"
     #include  "buffdesc.h"
-  #include  "compress.h"
+  #include  "fpxcompress.h"
   
 //  Constants
 //  ---------

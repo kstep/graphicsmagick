@@ -28,7 +28,7 @@
   #include  "a_file.h"  // just for Mode
 #endif
 #ifndef Compresseur_h
-  #include  "compress.h"
+  #include  "fpxcompress.h"
 #endif
 
 #ifndef FPXBaselineIO_h

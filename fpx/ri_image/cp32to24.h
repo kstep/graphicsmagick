@@ -22,7 +22,7 @@
 //  Includes
 //  --------
 
-  #include  "compress.h"
+  #include  "fpxcompress.h"
 
 //  Constants
 //  ---------

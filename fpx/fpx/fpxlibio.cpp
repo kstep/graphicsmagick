@@ -47,7 +47,7 @@
 #endif
 
 #ifndef Compresseur_h
-  #include "compress.h"
+  #include "fpxcompress.h"
 #endif
 #ifndef CompressorJPEG_h
   #include "cp_jpeg.h"
