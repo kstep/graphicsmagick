@@ -1325,6 +1325,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     *p,
     *q;
 
+  destination->storage_class=source->storage_class;
   if ((source->columns == destination->columns) &&
       (source->rows == destination->rows))
     {
@@ -1338,6 +1339,11 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,source->columns*sizeof(PixelPacket));
+        source_indexes=GetIndexes(source);
+        destination_indexes=GetIndexes(destination);
+        if (source->storage_class == PseudoClass)
+          memcpy(destination_indexes,source_indexes,
+            source->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(destination))
           break;
         if (QuantumTick(*quantum,span))
@@ -1351,7 +1357,6 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
   */
   scale_factor=source->blur*Max(1.0/x_factor,1.0);
   support=Max(scale_factor*filter_info->support,0.5);
-  destination->storage_class=source->storage_class;
   if (support > 0.5)
     destination->storage_class=DirectClass;
   else
@@ -1410,11 +1415,11 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         }
       q->red=(Quantum)
         ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-      q->green=(Quantum) 
+      q->green=(Quantum)
         ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum) 
+      q->blue=(Quantum)
         ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-      q->opacity=(Quantum) 
+      q->opacity=(Quantum)
         ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
     }
@@ -1463,6 +1468,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     *p,
     *q;
 
+  destination->storage_class=source->storage_class;
   if ((source->columns == destination->columns) &&
       (source->rows == destination->rows))
     {
@@ -1476,6 +1482,11 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,source->columns*sizeof(PixelPacket));
+        source_indexes=GetIndexes(source);
+        destination_indexes=GetIndexes(destination);
+        if (source->storage_class == PseudoClass)
+          memcpy(destination_indexes,source_indexes,
+            source->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(destination))
           break;
         if (QuantumTick(*quantum,span))
@@ -1489,7 +1500,6 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
   */
   scale_factor=source->blur*Max(1.0/y_factor,1.0);
   support=Max(scale_factor*filter_info->support,0.5);
-  destination->storage_class=source->storage_class;
   if (support > 0.5)
     destination->storage_class=DirectClass;
   else

@@ -1035,7 +1035,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Colormapped BMP raster.
         */
         bmp_info.bits_per_pixel=8;
-        bytes_per_line=image->columns+(image->columns % 2 ? 1 : 0);
+        bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
         if (IsMonochromeImage(image))
           {
             bmp_info.bits_per_pixel=1;

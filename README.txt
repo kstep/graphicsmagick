@@ -285,7 +285,7 @@ UNIX/Cygwin COMPILATION
 
   Building under Cygwin
 
-    ImageMagick may be built under the Windows NT/'9X Cygwin
+    ImageMagick may be built under the Windows Win2K/'9X Cygwin
     Unix-emulation environment which may be downloaded from
     http://sourceware.cygnus.com/cygwin/. Pre-compiled X11R6.4
     libraries for Cygwin are available from
@@ -586,9 +586,9 @@ VMS COMPILATION
   TIFF libraries.
 
 
-Windows NT/95 VISUAL C++ 6.0 COMPILATION
+Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
 
-  The Visual C++ distribution targeted at Windows NT or Windows 95
+  The Visual C++ distribution targeted at Windows Win2K or Windows 95
   does not provide any stock workspace (DSW) or project files (DSP)
   except for those included with third party libraries. Instead, there
   is a "configure" program that must be built and run that creates
@@ -881,7 +881,7 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
   Autoexec.bat), otherwise, you will be unable to browse the ImageMagick
   documentation.
 
-  The NT executables will work under Windows 95/98.
+  The Win2K executables will work under Windows 95/98.
 
 
 MACINTOSH COMPILATION
@@ -906,7 +906,7 @@ Magick++
   instructions in the INSTALL file in the Magick++ subdirectory.
   Magick++ is currently supported using the egcs 1.1.2 version of GNU
   g++ (or later) under Unix and Microsoft Visual C++ 6.0 under Windows
-  NT or Windows 95/98.
+  Win2K or Windows 95/98.
 
 
 COPYRIGHT

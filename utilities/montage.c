@@ -125,7 +125,7 @@
 %    -texture filename   name of texture to tile onto the image background
 %    -tile geometry      number of tiles per row and column
 %    -transparent color  make this color transparent within the image
-%    -treedepth value    depth of the color storage_class tree
+%    -treedepth value    depth of the color color tree
 %    -verbose            print detailed information about the image
 %
 %  In addition to those listed above, you can specify these standard X
@@ -210,7 +210,7 @@ static void Usage()
       "-texture filename   name of texture to tile onto the image background",
       "-tile geometry      number of tiles per row and column",
       "-transparent color  make this color transparent within the image",
-      "-treedepth value    depth of the color storage_class tree",
+      "-treedepth value    depth of the color color tree",
       "-verbose            print detailed information about the image",
       (char *) NULL
     };

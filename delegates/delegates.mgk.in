@@ -84,26 +84,26 @@ browse=>
 	@BrowseDelegate@ http://www.wizards.dupont.com/cristy/ImageMagick.html &
 
 bzip=>
-	|@BZIPDelegate@ -cd %i
+	|@BZIPDelegate@ -cd "%i"
 
 cgm=>
-	@CGMDecodeDelegate@ -d ps %i %o %u
+	@CGMDecodeDelegate@ -d ps "%i" %o %u
 	@ConvertDelegate@ -concatenate %o*.ps %o
 
 compress=>
-	|@LZWDecodeDelegate@ -c %i
+	|@LZWDecodeDelegate@ -c "%i"
 
 dot=>
-	@DOTDecodeDelegate@ -Tps %i -o %o 
+	@DOTDecodeDelegate@ -Tps "%i" -o %o 
 
 dvi=>
-	@DVIDecodeDelegate@ -q -o %o %i
+	@DVIDecodeDelegate@ -q -o %o "%i"
 
 edit=>
 	@EditorDelegate@ -title "Edit Image Comment" -e vi %o
 
 emf=>
-	@WMFDecodeDelegate@ %i %o
+	@WMFDecodeDelegate@ "%i" %o
 
 eps<=>pdf
 	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSPDFDevice@ -q -dNOPAUSE -dSAFER \
@@ -114,13 +114,13 @@ eps<=>ps
 	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
-	@WWWDecodeDelegate@ --quiet --output-document=%o %m:%i
+	@WWWDecodeDelegate@ --quiet --output-document=%o "%m:%i"
 
 fig=>
-	@FIGDecodeDelegate@ -L ps %i %o
+	@FIGDecodeDelegate@ -L ps "%i" %o
 
 ftp=>
-	@WWWDecodeDelegate@ --quiet --output-document=%o %m:%i
+	@WWWDecodeDelegate@ --quiet --output-document=%o "%m:%i"
 
 # Gnuplot format (rendered as Postscript)
 # Add additional gnuplot commands to the input file to adjust output.
@@ -139,30 +139,30 @@ gs-mono=>
 	  -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
-	@HPGLDecodeDelegate@ -q -m eps -f `basename %o` %i
+	@HPGLDecodeDelegate@ -q -m eps -f `basename %o` "%i"
 	mv `basename %o` %o
 
 htm=>
-	@HTMLDecodeDelegate@ -U -o %o %i
+	@HTMLDecodeDelegate@ -U -o %o "%i"
 
 html=>
-	@HTMLDecodeDelegate@ -U -o %o %i
+	@HTMLDecodeDelegate@ -U -o %o "%i"
 
 http=>
-	@WWWDecodeDelegate@ --quiet --output-document=%o %m:%i
+	@WWWDecodeDelegate@ --quiet --output-document=%o "%m:%i"
 
 ilbm=>
-	@ILBMDecodeDelegate@ %i > %o 
+	@ILBMDecodeDelegate@ "%i" > %o 
 
 man=>
-	@MANDelegate@ -man -Tps %i > %o
+	@MANDelegate@ -man -Tps "%i" > %o
 
 mpg=>
-	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%05d
+	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 %o%%05d
 	@ConvertDelegate@ -concatenate %o*.ppm %o
 
 m2v=>
-	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%05d
+	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 %o%%05d
 	@ConvertDelegate@ -concatenate %o*.ppm %o
 
 pdf<=>eps
@@ -174,19 +174,19 @@ pdf<=>ps
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pgp=>
-	@PGPDecodeDelegate@ -fq %i
+	@PGPDecodeDelegate@ -fq "%i"
 
 pnm<=ilbm
-	@ILBMEncodeDelegate@ -24if %i > %o
+	@ILBMEncodeDelegate@ -24if "%i" > %o
 
 pnm<=launch
-	@LaunchDelegate@ %i
+	@LaunchDelegate@ "%i"
 
 pnm<=win
-	@ShowImageDelegate@ -immutable %i
+	@ShowImageDelegate@ -immutable "%i"
 
 pov=>
-	@POVDelegate@ +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
+	@POVDelegate@ "+i%i" +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
 	@ConvertDelegate@ -concatenate %o*.png %o
 
 ps<=>eps
@@ -198,37 +198,37 @@ ps<=>pdf
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=print
-	@PrintDelegate@ %i
+	@PrintDelegate@ "%i"
 
 rad=>
-	@RADDecodeDelegate@ -g 1.0 %i %o
+	@RADDecodeDelegate@ -g 1.0 "%i" %o
 
 rgba<=rle
-	@MogrifyDelegate@ -flip -size %wx%h rgba:%i
-	@RLEEncodeDelegate@ -w %w -h %h -n 4 -o %o %i
+	@MogrifyDelegate@ -flip -size %wx%h "rgba:%i"
+	@RLEEncodeDelegate@ -w %w -h %h -n 4 -o %o "%i"
 
 scan=>
-	@SCANDecodeDelegate@ -d %i > %o
+	@SCANDecodeDelegate@ -d "%i" > %o
 
 shtml=>
-	@HTMLDecodeDelegate@ -U -o %o %i
+	@HTMLDecodeDelegate@ -U -o %o "%i"
 
 txt<=>ps
-	@TXTDelegate@ -o %o %i
+	@TXTDelegate@ -o %o "%i"
 
 wmf=>
-	@WMFDecodeDelegate@ %i %o
+	@WMFDecodeDelegate@ "%i" %o
 
 xcf=>
-	@XCFDecodeDelegate@ %i > %o 
+	@XCFDecodeDelegate@ "%i" > %o 
 
 yuv<=m2v
 	@MPEGEncodeDelegate@ %u %o
-	@ConvertDelegate@ -concatenate %i*.yuv %u
+	@ConvertDelegate@ -concatenate "%i*.yuv" %u
 
 yuv<=mpg
 	@MPEGEncodeDelegate@ %u %o
-	@ConvertDelegate@ -concatenate %i*.yuv %u
+	@ConvertDelegate@ -concatenate "%i*.yuv" %u
 
 zip=>
-	|@ZipDelegate@ -cdfq %i
+	|@ZipDelegate@ -cdfq "%i"

@@ -503,7 +503,7 @@ value is changed for any neighbor pixel that is not that color.</td>
 
 <td>compose=>{Over, In, Out, Atop, Xor, Plus, Minus, Add, Subtract, Difference,
 Bumpmap, Replace, ReplaceRed, ReplaceGreen, ReplaceBlue, ReplaceMatte,
-Blend, Displace, Annotate, Modulate}, image=><i>image-handle,
+Blend, Displace, Annotate, Modulate, Threshold}, image=><i>image-handle,
 geometry=>geometry, x=>integer, y=>integer, gravity=>{NorthWest, North,
 NorthEast, West, Center, East, SouthWest, South, SouthEast}</i>,
 opacity=><i>float</i></td>
@@ -945,7 +945,7 @@ of a left and right image of a stereo pair</td>
 <tr>
 <td>Transform</td>
 
-<td>crop=><i>geometry</i>, geometry=><i>geometry</i>, filter=>{Point, Box,
+<td>geometry=><i>geometry</i>, crop=><i>geometry</i>, filter=>{Point, Box,
 Triangle, Hermite, Hanning, Hamming, Blackman, Gaussian, Quadratic, Cubic,
 Catrom, Mitchell, Lanczos, Bessel, Sinc}</td>
 

@@ -103,6 +103,9 @@ static double
   IntersectPrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,
     const int,Image *);
 
+static unsigned int
+  GeneratePath(PrimitiveInfo *,const char *);
+
 static void
   GenerateArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
@@ -110,7 +113,6 @@ static void
   GenerateEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,
     const PointInfo),
   GenerateLine(PrimitiveInfo *,const PointInfo,const PointInfo),
-  GeneratePath(PrimitiveInfo *,const char *),
   GeneratePoint(PrimitiveInfo *,const PointInfo),
   GenerateRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
   GenerateRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,
@@ -1023,8 +1025,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                   "Unable to draw image","Memory allocation failed");
               }
           }
-        GeneratePath(primitive_info+j,path);
-        i=j+primitive_info[j].coordinates;
+        i=j+GeneratePath(primitive_info+j,path);
         break;
       }
       case ColorPrimitive:
@@ -1620,7 +1621,7 @@ static void GenerateLine(PrimitiveInfo *primitive_info,const PointInfo start,
   primitive_info->coordinates=2;
 }
 
-static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
+static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
 {
   char
     *p;
@@ -1638,16 +1639,24 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
     point,
     start;
 
+  PrimitiveType
+    primitive_type;
+
   register int
     i;
 
   register PrimitiveInfo
     *q;
 
+  unsigned int
+    number_coordinates;
+
   point.x=0;
   point.y=0;
-  p=(char *) path;
+  number_coordinates=0;
+  primitive_type=primitive_info->primitive;
   q=primitive_info;
+  p=(char *) path;
   while (*p != '\0')
   {
     while (isspace((int) *p))
@@ -1754,17 +1763,32 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         } while (IsGeometry(p));
         break;
       }
-      case 'M':
       case 'm':
       {
-        x=strtod(p,&p);
-        if (*p == ',')
-          p++;
-        y=strtod(p,&p);
-        point.x=attribute == 'M' ? x : point.x+x;
-        point.y=attribute == 'M' ? y : point.y+y;
-        GeneratePoint(q,point);
-        q+=q->coordinates;
+        primitive_info->coordinates=q-primitive_info;
+        for (i=0; i < primitive_info->coordinates; i++)
+        {
+          q->primitive=primitive_info->primitive;
+          q--;
+        }
+        number_coordinates+=primitive_info->coordinates;
+        primitive_info+=primitive_info->coordinates;
+        primitive_info->primitive=primitive_type;
+        q=primitive_info;
+      }
+      case 'M':
+      {
+        do
+        {
+          x=strtod(p,&p);
+          if (*p == ',')
+            p++;
+          y=strtod(p,&p);
+          point.x=attribute == 'M' ? x : point.x+x;
+          point.y=attribute == 'M' ? y : point.y+y;
+          GeneratePoint(q,point);
+          q+=q->coordinates;
+        } while (IsGeometry(p));
         start=point;
         break;
       }
@@ -1887,12 +1911,19 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       }
     }
   }
+  if ((attribute != 'z') && (attribute != 'Z'))
+    {
+      GeneratePoint(q,point);
+      q+=q->coordinates;
+    }
   primitive_info->coordinates=q-primitive_info;
+  number_coordinates+=primitive_info->coordinates;
   for (i=0; i < primitive_info->coordinates; i++)
   {
     q->primitive=primitive_info->primitive;
     q--;
   }
+  return(number_coordinates);
 }
 
 static void GeneratePoint(PrimitiveInfo *primitive_info,const PointInfo start)

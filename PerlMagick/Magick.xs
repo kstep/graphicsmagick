@@ -184,7 +184,7 @@ static char
     "Undefined", "Over", "In", "Out", "Atop", "Xor", "Plus", "Minus",
     "Add", "Subtract", "Difference", "Bumpmap", "Replace",
     "ReplaceRed", "ReplaceGreen", "ReplaceBlue", "ReplaceMatte",
-    "Blend", "Displace", "Annotate", "Modulate", (char *) NULL
+    "Blend", "Displace", "Annotate", "Modulate", "Threshold", (char *) NULL
   },
   *CompressionTypes[] =
   {

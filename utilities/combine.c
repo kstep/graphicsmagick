@@ -79,7 +79,7 @@
 %    -stegano offset     hide watermark within an image
 %    -stereo             combine two image to create a stereo anaglyph
 %    -tile               repeat composite operation across image
-%    -treedepth value    depth of the color storage_class tree
+%    -treedepth value    depth of the color color tree
 %    -verbose            print detailed information about the image
 %
 %
@@ -145,7 +145,7 @@ static void Usage()
       "-stegano offset     hide watermark within an image",
       "-stereo             combine two image to create a stereo anaglyph",
       "-tile               repeat composite operation across image",
-      "-treedepth value    depth of the color storage_class tree",
+      "-treedepth value    depth of the color color tree",
       "-verbose            print detailed information about the image",
       (char *) NULL
     };

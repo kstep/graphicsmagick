@@ -112,7 +112,9 @@ static unsigned int DecodeImage(Image *image,const int opacity,
     count,
     end_of_information,
     in_code,
+    offset,
     old_code,
+    pass,
     y;
 
   register IndexPacket
@@ -179,10 +181,12 @@ static unsigned int DecodeImage(Image *image,const int opacity,
   c=0;
   count=0;
   first=0;
+  offset=0;
+  pass=0;
   top_stack=pixel_stack;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,offset,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -279,6 +283,48 @@ static unsigned int DecodeImage(Image *image,const int opacity,
       x++;
       q++;
     }
+    if (image->interlace == NoInterlace)
+      offset++;
+    else
+      switch (pass)
+      {
+        case 0:
+        default:
+        {
+          offset+=8;
+          if (offset >= image->rows)
+            {
+              pass++;
+              offset=4;
+            }
+          break;
+        }
+        case 1:
+        {
+          offset+=8;
+          if (offset >= image->rows)
+            {
+              pass++;
+              offset=2;
+            }
+          break;
+        }
+        case 2:
+        {
+          offset+=4;
+          if (offset >= image->rows)
+            {
+              pass++;
+              offset=1;
+            }
+          break;
+        }
+        case 3:
+        {
+          offset+=2;
+          break;
+        }
+      }
     if (!SyncImagePixels(image))
       break;
     if (x < image->columns)
@@ -296,56 +342,6 @@ static unsigned int DecodeImage(Image *image,const int opacity,
   if (y < image->rows)
     ThrowBinaryException(CorruptImageWarning,"Corrupt GIF image",
       image->filename);
-  if (image->interlace != NoInterlace)
-    {
-      Image
-        *interlace_image;
-
-      int
-        pass,
-        y;
-
-      register IndexPacket
-        *interlace_indexes;
-
-      register PixelPacket
-        *p,
-        *q;
-
-      static const int
-        interlace_rate[4] = { 8, 8, 4, 2 },
-        interlace_start[4] = { 0, 4, 2, 1 };
-
-      /*
-        Interlace image.
-      */
-      interlace_image=
-        CloneImage(image,image->columns,image->rows,True,exception);
-      if (interlace_image == (Image *) NULL)
-        return(False);
-      i=0;
-      for (pass=0; pass < 4; pass++)
-      {
-        y=interlace_start[pass];
-        while (y < (int) image->rows)
-        {
-          p=GetImagePixels(interlace_image,0,i,interlace_image->columns,1);
-          q=SetImagePixels(image,0,y,image->columns,1);
-          if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-            break;
-          indexes=GetIndexes(image);
-          interlace_indexes=GetIndexes(interlace_image);
-          memcpy(indexes,interlace_indexes,
-            image->columns*sizeof(IndexPacket));
-          memcpy(q,p,image->columns*sizeof(PixelPacket));
-          if (!SyncImagePixels(image))
-            break;
-          i++;
-          y+=interlace_rate[pass];
-        }
-      }
-      DestroyImage(interlace_image);
-    }
   return(True);
 }
 
@@ -433,6 +429,8 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     k,
     next_pixel,
     number_bits,
+    offset,
+    pass,
     y;
 
   long
@@ -491,10 +489,12 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
   /*
     Encode pixels.
   */
+  offset=0;
+  pass=0;
   waiting_code=0;
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
+    p=GetImagePixels(image,0,offset,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
@@ -565,6 +565,48 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
         }
       waiting_code=index;
     }
+    if (image_info->interlace == NoInterlace)
+      offset++;
+    else
+      switch (pass)
+      {
+        case 0:
+        default:
+        {
+          offset+=8;
+          if (offset >= image->rows)
+            {
+              pass++;
+              offset=4;
+            }
+          break;
+        }
+        case 1:
+        {
+          offset+=8;
+          if (offset >= image->rows)
+            {
+              pass++;
+              offset=2;
+            }
+          break;
+        }
+        case 2:
+        {
+          offset+=4;
+          if (offset >= image->rows)
+            {
+              pass++;
+              offset=1;
+            }
+          break;
+        }
+        case 3:
+        {
+          offset+=2;
+          break;
+        }
+      }
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         ProgressMonitor(SaveImageText,y,image->rows);
@@ -1361,63 +1403,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     */
     c=Max(bits_per_pixel,2);
     (void) WriteByte(image,c);
-    if (interlace == NoInterlace)
-      status=EncodeImage(image_info,image,Max(bits_per_pixel,2)+1);
-    else
-      {
-        Image
-          *interlace_image;
-
-        int
-          pass;
-
-        register IndexPacket
-          *interlace_indexes;
-
-        register PixelPacket
-          *q;
-
-        static const int
-          interlace_rate[4] = { 8, 8, 4, 2 },
-          interlace_start[4] = { 0, 4, 2, 1 };
-
-        /*
-          Interlace image.
-        */
-        interlace_image=CloneImage(image,image->columns,image->rows,True,
-          &image->exception);
-        if (interlace_image == (Image *) NULL)
-          {
-            LiberateMemory((void **) &global_colormap);
-            LiberateMemory((void **) &colormap);
-            return(False);
-          }
-        i=0;
-        for (pass=0; pass < 4; pass++)
-        {
-          y=interlace_start[pass];
-          while (y < (int) image->rows)
-          {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            q=SetImagePixels(interlace_image,0,i,interlace_image->columns,1);
-            if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-              break;
-            indexes=GetIndexes(image);
-            interlace_indexes=GetIndexes(interlace_image);
-            memcpy(interlace_indexes,indexes,
-              image->columns*sizeof(IndexPacket));
-            memcpy(q,p,image->columns*sizeof(PixelPacket));
-            if (!SyncImagePixels(interlace_image))
-              break;
-            i++;
-            y+=interlace_rate[pass];
-          }
-        }
-        interlace_image->file=image->file;
-        status=EncodeImage(image_info,interlace_image,Max(bits_per_pixel,2)+1);
-        interlace_image->file=(FILE *) NULL;
-        DestroyImage(interlace_image);
-      }
+    status=EncodeImage(image_info,image,Max(bits_per_pixel,2)+1);
     if (status == False)
       {
         LiberateMemory((void **) &global_colormap);

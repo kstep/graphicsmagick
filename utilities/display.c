@@ -109,7 +109,7 @@
 %    -sharpen factor    apply a filter to sharpen the image
 %    -size geometry     width and height of image
 %    -texture filename  name of texture to tile onto the image background
-%    -treedepth value   depth of the color storage_class tree
+%    -treedepth value   depth of the color color tree
 %    -update seconds    detect when image file is modified and redisplay
 %    -verbose           print detailed information about the image
 %    -visual type       display image using this visual type
@@ -222,7 +222,7 @@ static void Usage()
       "-sharpen factor    apply a filter to sharpen the image",
       "-size geometry     width and height of image",
       "-texture filename  name of texture to tile onto the image background",
-      "-treedepth value   depth of the color storage_class tree",
+      "-treedepth value   depth of the color color tree",
       "-update seconds    detect when image file is modified and redisplay",
       "-verbose           print detailed information about the image",
       "-visual type       display image using this visual type",
