@@ -78,7 +78,6 @@ typedef struct _DrawInfo
 
   unsigned int
     miterlimit,
-    *dash_pattern,
     dash_offset;
 
   DecorationType
@@ -103,6 +102,9 @@ typedef struct _DrawInfo
 
   char
     *server_name;
+
+  unsigned int
+    *dash_pattern;
 
   PolygonInfo
     clip_path;

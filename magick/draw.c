@@ -171,6 +171,15 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     clone_info->text=AllocateString(draw_info->text);
   if (draw_info->geometry != (char *) NULL)
     clone_info->geometry=AllocateString(draw_info->geometry);
+  if (draw_info->font != (char *) NULL)
+    clone_info->font=AllocateString(draw_info->font);
+  if (draw_info->density != (char *) NULL)
+    clone_info->density=AllocateString(draw_info->density);
+  if (draw_info->tile != (Image *) NULL)
+    clone_info->tile=
+      CloneImage(draw_info->tile,0,0,True,&draw_info->tile->exception);
+  if (draw_info->server_name != (char *) NULL)
+    clone_info->server_name=AllocateString(draw_info->server_name);
   if (draw_info->dash_pattern != (unsigned int *) NULL)
     {
       register int
@@ -185,15 +194,6 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       memcpy(clone_info->dash_pattern,draw_info->dash_pattern,
         (x+1)*sizeof(unsigned int));
     }
-  if (draw_info->font != (char *) NULL)
-    clone_info->font=AllocateString(draw_info->font);
-  if (draw_info->density != (char *) NULL)
-    clone_info->density=AllocateString(draw_info->density);
-  if (draw_info->tile != (Image *) NULL)
-    clone_info->tile=
-      CloneImage(draw_info->tile,0,0,True,&draw_info->tile->exception);
-  if (draw_info->server_name != (char *) NULL)
-    clone_info->server_name=AllocateString(draw_info->server_name);
   if (draw_info->clip_path.number_edges != 0)
     {
       clone_info->clip_path.edges=(EdgeInfo *)
@@ -954,8 +954,6 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->text);
   if (draw_info->geometry != (char *) NULL)
     LiberateMemory((void **) &draw_info->geometry);
-  if (draw_info->dash_pattern != (unsigned *) NULL)
-    LiberateMemory((void **) &draw_info->dash_pattern);
   if (draw_info->font != (char *) NULL)
     LiberateMemory((void **) &draw_info->font);
   if (draw_info->density != (char *) NULL)
@@ -964,6 +962,8 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     DestroyImage(draw_info->tile);
   if (draw_info->server_name != (char *) NULL)
     LiberateMemory((void **) &draw_info->server_name);
+  if (draw_info->dash_pattern != (unsigned *) NULL)
+    LiberateMemory((void **) &draw_info->dash_pattern);
   if (draw_info->clip_path.edges != (EdgeInfo *) NULL)
     LiberateMemory((void **) &draw_info->clip_path.edges);
   LiberateMemory((void **) &draw_info);
