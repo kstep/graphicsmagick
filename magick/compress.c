@@ -753,7 +753,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     indexes=GetIndexes(huffman_image);
     for (x=0; x < (long) huffman_image->columns; x++)
     {
-      *q=(indexes[x] == polarity ? (int) polarity : (int) !polarity);
+      *q=(indexes[x] == polarity ? (long) polarity : (long) !polarity);
       q++;
     }
     /*
@@ -1123,7 +1123,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
                 break;
             }
             i-=count;
-            (void) WriteBlobByte(image,(int) ((256-count)+1));
+            (void) WriteBlobByte(image,(long) ((256-count)+1));
             (void) WriteBlobByte(image,*pixels);
             pixels+=count;
             break;

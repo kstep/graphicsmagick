@@ -349,12 +349,12 @@ static unsigned int Classify(Image *image,short **extrema,
     for (x=0; x < (long) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        if (((int) Downscale(p->red) >= (cluster->red.left-SafeMargin)) &&
-            ((int) Downscale(p->red) <= (cluster->red.right+SafeMargin)) &&
-            ((int) Downscale(p->green) >= (cluster->green.left-SafeMargin)) &&
-            ((int) Downscale(p->green) <= (cluster->green.right+SafeMargin)) &&
-            ((int) Downscale(p->blue) >= (cluster->blue.left-SafeMargin)) &&
-            ((int) Downscale(p->blue) <= (cluster->blue.right+SafeMargin)))
+        if (((long) Downscale(p->red) >= (cluster->red.left-SafeMargin)) &&
+            ((long) Downscale(p->red) <= (cluster->red.right+SafeMargin)) &&
+            ((long) Downscale(p->green) >= (cluster->green.left-SafeMargin)) &&
+            ((long) Downscale(p->green) <= (cluster->green.right+SafeMargin)) &&
+            ((long) Downscale(p->blue) >= (cluster->blue.left-SafeMargin)) &&
+            ((long) Downscale(p->blue) <= (cluster->blue.right+SafeMargin)))
           {
             /*
               Count this pixel.
@@ -465,7 +465,7 @@ static unsigned int Classify(Image *image,short **extrema,
     ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       image->filename);
   squares+=Downscale(MaxRGB);
-  for (i=(-(int) Downscale(MaxRGB)); i <= (int) Downscale(MaxRGB); i++)
+  for (i=(-(long) Downscale(MaxRGB)); i <= (long) Downscale(MaxRGB); i++)
     squares[i]=i*i;
   /*
     Allocate image colormap.
@@ -501,12 +501,12 @@ static unsigned int Classify(Image *image,short **extrema,
     for (x=0; x < (long) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        if (((int) Downscale(q->red) >= (cluster->red.left-SafeMargin)) &&
-            ((int) Downscale(q->red) <= (cluster->red.right+SafeMargin)) &&
-            ((int) Downscale(q->green) >= (cluster->green.left-SafeMargin)) &&
-            ((int) Downscale(q->green) <= (cluster->green.right+SafeMargin)) &&
-            ((int) Downscale(q->blue) >= (cluster->blue.left-SafeMargin)) &&
-            ((int) Downscale(q->blue) <= (cluster->blue.right+SafeMargin)))
+        if (((long) Downscale(q->red) >= (cluster->red.left-SafeMargin)) &&
+            ((long) Downscale(q->red) <= (cluster->red.right+SafeMargin)) &&
+            ((long) Downscale(q->green) >= (cluster->green.left-SafeMargin)) &&
+            ((long) Downscale(q->green) <= (cluster->green.right+SafeMargin)) &&
+            ((long) Downscale(q->blue) >= (cluster->blue.left-SafeMargin)) &&
+            ((long) Downscale(q->blue) <= (cluster->blue.right+SafeMargin)))
           {
             /*
               Classify this pixel.
@@ -525,17 +525,17 @@ static unsigned int Classify(Image *image,short **extrema,
             sum=0.0;
             p=image->colormap+j;
             distance_squared=
-              squares[(int) Downscale(q->red)-(int) Downscale(p->red)]+
-              squares[(int) Downscale(q->green)-(int) Downscale(p->green)]+
-              squares[(int) Downscale(q->blue)-(int) Downscale(p->blue)];
+              squares[(long) Downscale(q->red)-(long) Downscale(p->red)]+
+              squares[(long) Downscale(q->green)-(long) Downscale(p->green)]+
+              squares[(long) Downscale(q->blue)-(long) Downscale(p->blue)];
             numerator=sqrt(distance_squared);
             for (k=0; k < (long) image->colors; k++)
             {
               p=image->colormap+k;
               distance_squared=
-                squares[(int) Downscale(q->red)-(int) Downscale(p->red)]+
-                squares[(int) Downscale(q->green)-(int) Downscale(p->green)]+
-                squares[(int) Downscale(q->blue)-(int) Downscale(p->blue)];
+                squares[(long) Downscale(q->red)-(long) Downscale(p->red)]+
+                squares[(long) Downscale(q->green)-(long) Downscale(p->green)]+
+                squares[(long) Downscale(q->blue)-(long) Downscale(p->blue)];
               ratio=numerator/sqrt(distance_squared);
               sum+=pow(ratio,(double) (2.0/(weighting_exponent-1.0)));
             }
@@ -565,7 +565,7 @@ static unsigned int Classify(Image *image,short **extrema,
     next_cluster=cluster->next;
     LiberateMemory((void **) &cluster);
   }
-  squares-=(int) Downscale(MaxRGB);
+  squares-=(long) Downscale(MaxRGB);
   free_squares=squares;
   LiberateMemory((void **) &free_squares);
   return(True);
@@ -619,7 +619,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
     Consolidate zero crossings.
   */
   for (i=number_crossings-1; i >= 0; i--)
-    for (j=0; j <= (int) Downscale(MaxRGB); j++)
+    for (j=0; j <= (long) Downscale(MaxRGB); j++)
     {
       if (zero_crossing[i].crossings[j] == 0)
         continue;
@@ -633,10 +633,10 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
           break;
       left=Max(k,0);
       center=j;
-      for (k=j+1; k < (int) Downscale(MaxRGB); k++)
+      for (k=j+1; k < (long) Downscale(MaxRGB); k++)
         if (zero_crossing[i+1].crossings[k] != 0)
           break;
-      right=Min(k,(int) Downscale(MaxRGB));
+      right=Min(k,(long) Downscale(MaxRGB));
       /*
         K is the zero crossing just left of j.
       */
@@ -733,16 +733,16 @@ static int DefineRegion(const short *extrema,ExtentPacket *extents)
   /*
     Find the left side (maxima).
   */
-  for ( ; extents->index <= (int) Downscale(MaxRGB); extents->index++)
+  for ( ; extents->index <= (long) Downscale(MaxRGB); extents->index++)
     if (extrema[extents->index] > 0)
       break;
-  if (extents->index > (int) Downscale(MaxRGB))
+  if (extents->index > (long) Downscale(MaxRGB))
     return(False);  /* no left side - no region exists */
   extents->left=extents->index;
   /*
     Find the right side (minima).
   */
-  for ( ; extents->index <= (int) Downscale(MaxRGB); extents->index++)
+  for ( ; extents->index <= (long) Downscale(MaxRGB); extents->index++)
     if (extrema[extents->index] < 0)
       break;
   extents->right=extents->index-1;
@@ -977,7 +977,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   root->tau=0.0;
   root->left=0;
   root->right=Downscale(MaxRGB);
-  for (i=(-1); i < (int) number_crossings; i++)
+  for (i=(-1); i < (long) number_crossings; i++)
   {
     /*
       Initialize list with all nodes with no children.
@@ -1142,7 +1142,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
   zero_crossing=(ZeroCrossing *) AcquireMemory(count*sizeof(ZeroCrossing));
   if (zero_crossing == (ZeroCrossing *) NULL)
     return(0.0);
-  for (i=0; i < (int) count; i++)
+  for (i=0; i < (long) count; i++)
     zero_crossing[i].tau=(-1);
   /*
     Initialize zero crossing list.
@@ -1167,7 +1167,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
     Add an entry for the original histogram.
   */
   zero_crossing[i].tau=0.0;
-  for (j=0; j <= (int) Downscale(MaxRGB); j++)
+  for (j=0; j <= (long) Downscale(MaxRGB); j++)
     zero_crossing[i].histogram[j]=(double) histogram[j];
   DerivativeHistogram(zero_crossing[i].histogram,derivative);
   DerivativeHistogram(derivative,second_derivative);
@@ -1183,13 +1183,13 @@ static double OptimalTau(const long *histogram,const double max_tau,
   /*
     Force endpoints to be included in the interval.
   */
-  for (i=0; i <= (int) number_crossings; i++)
+  for (i=0; i <= (long) number_crossings; i++)
   {
-    for (j=0; j < (int) Downscale(MaxRGB); j++)
+    for (j=0; j < (long) Downscale(MaxRGB); j++)
       if (zero_crossing[i].crossings[j] != 0)
         break;
     zero_crossing[i].crossings[0]=(-zero_crossing[i].crossings[j]);
-    for (j=(int) Downscale(MaxRGB); j > 0; j--)
+    for (j=(long) Downscale(MaxRGB); j > 0; j--)
       if (zero_crossing[i].crossings[j] != 0)
         break;
     zero_crossing[i].crossings[Downscale(MaxRGB)]=
@@ -1210,7 +1210,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
   /*
     Initialize extrema.
   */
-  for (i=0; i <= (int) Downscale(MaxRGB); i++)
+  for (i=0; i <= (long) Downscale(MaxRGB); i++)
     extrema[i]=0;
   for (i=0; i < number_nodes; i++)
   {
@@ -1219,7 +1219,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
     */
     k=0;
     node=list[i];
-    for (j=0; j <= (int) number_crossings; j++)
+    for (j=0; j <= (long) number_crossings; j++)
       if (zero_crossing[j].tau == node->tau)
         k=j;
     /*
@@ -1316,18 +1316,18 @@ static void ScaleSpace(const long *histogram,const double tau,
       "Memory allocation failed");
   alpha=1.0/(tau*sqrt((double) (2.0*MagickPI)));
   beta=(-1.0/(2.0*tau*tau));
-  for (x=0; x <= (int) Downscale(MaxRGB); x++)
+  for (x=0; x <= (long) Downscale(MaxRGB); x++)
     gamma[x]=0.0;
-  for (x=0; x <= (int) Downscale(MaxRGB); x++)
+  for (x=0; x <= (long) Downscale(MaxRGB); x++)
   {
     gamma[x]=exp(beta*x*x);
     if (gamma[x] < MagickEpsilon)
       break;
   }
-  for (x=0; x <= (int) Downscale(MaxRGB); x++)
+  for (x=0; x <= (long) Downscale(MaxRGB); x++)
   {
     sum=0.0;
-    for (u=0; u <= (int) Downscale(MaxRGB); u++)
+    for (u=0; u <= (long) Downscale(MaxRGB); u++)
       sum+=(double) histogram[u]*gamma[AbsoluteValue(x-u)];
     scaled_histogram[x]=alpha*sum;
   }
@@ -1378,7 +1378,7 @@ static void ZeroCrossHistogram(double *second_derivative,
   /*
     Merge low numbers to zero to help prevent noise.
   */
-  for (i=0; i <= (int) Downscale(MaxRGB); i++)
+  for (i=0; i <= (long) Downscale(MaxRGB); i++)
     if ((second_derivative[i] < smoothing_threshold) &&
         (second_derivative[i] >= -smoothing_threshold))
       second_derivative[i]=0.0;
@@ -1386,7 +1386,7 @@ static void ZeroCrossHistogram(double *second_derivative,
     Mark zero crossings.
   */
   parity=0;
-  for (i=0; i <= (int) Downscale(MaxRGB); i++)
+  for (i=0; i <= (long) Downscale(MaxRGB); i++)
   {
     crossings[i]=0;
     if (second_derivative[i] < 0.0)

@@ -854,13 +854,13 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
           {
             case EXIF_FMT_SBYTE:
             {
-              FormatString(s,"%d",(int)(*(char *) pval));
+              FormatString(s,"%ld",(long) (*(char *) pval));
               value=AllocateString(s);
               break;
             }
             case EXIF_FMT_BYTE:
             {
-              FormatString(s,"%d",(int)(*(unsigned char *) pval));
+              FormatString(s,"%ld",(long) (*(unsigned char *) pval));
               value=AllocateString(s);
               break;
             }

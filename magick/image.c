@@ -1728,10 +1728,10 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case ModulateCompositeOp:
         {
-          int
+          long
             offset;
 
-          offset=(int) (Intensity(&source)-midpoint);
+          offset=(long) (Intensity(&source)-midpoint);
           if (offset == 0)
             break;
           TransformHSL(destination.red,destination.green,destination.blue,
@@ -2074,8 +2074,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
             else
               (void) fprintf(file,"%lub ",(unsigned long) GetBlobSize(image));
         }
-      (void) fprintf(file,"%.1fu %d:%02d\n",user_time,(int) (elapsed_time/60.0),
-        (int) ceil(fmod(elapsed_time,60.0)));
+      (void) fprintf(file,"%.1fu %ld:%02ld\n",user_time,
+        (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));
       return;
     }
   /*
@@ -2502,8 +2502,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   if (user_time != 0.0)
     (void) fprintf(file,"  User Time: %.1fu\n",user_time);
   if (elapsed_time != 0.0)
-    (void) fprintf(file,"  Elapsed Time: %d:%02d\n",
-      (int) (elapsed_time/60.0),(int) ceil(fmod(elapsed_time,60.0)));
+    (void) fprintf(file,"  Elapsed Time: %ld:%02ld\n",
+      (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));
   (void) fflush(file);
 }
 
@@ -5871,7 +5871,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       ty=Upscale(156);
       tz=Upscale(137);
-      for (i=0; i <= (int) (0.018*MaxRGB); i++)
+      for (i=0; i <= (long) (0.018*MaxRGB); i++)
       {
         x_map[i+X]=0.003962014134275617*MaxRGB*i;
         y_map[i+X]=0.007778268551236748*MaxRGB*i;
@@ -5961,7 +5961,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       ty=Upscale(156);
       tz=Upscale(137);
-      for (i=0; i <= (int) (0.018*MaxRGB); i++)
+      for (i=0; i <= (long) (0.018*MaxRGB); i++)
       {
         x_map[i+X]=0.003962014134275617*MaxRGB*i;
         y_map[i+X]=0.007778268551236748*MaxRGB*i;
@@ -6465,7 +6465,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     {
       p--;
     } while ((*p != '.') && (p > (image_info->filename+1)));
-  if ((*p == '.') && (strlen(p) < (int) sizeof(magic)))
+  if ((*p == '.') && (strlen(p) < (long) sizeof(magic)))
     {
       /*
         User specified image format.
@@ -6497,7 +6497,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   if (*(p+1) == ':')
     p+=2;  /* skip DECnet node spec */
 #endif
-  if ((*p == ':') && ((p-image_info->filename) < (int) sizeof(magic)))
+  if ((*p == ':') && ((p-image_info->filename) < (long) sizeof(magic)))
     {
       char
         format[MaxTextExtent];

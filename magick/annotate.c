@@ -422,7 +422,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %
 */
 
-static int GetOneCharacter(const unsigned char *text,size_t *length)
+static long GetOneCharacter(const unsigned char *text,size_t *length)
 {
   unsigned int
     c;
@@ -441,7 +441,7 @@ static int GetOneCharacter(const unsigned char *text,size_t *length)
       return(-1);
     }
   *length=2;
-  c=((int) (text[0]) << 8);
+  c=((long) (text[0]) << 8);
   c|=text[1];
   return(c);
 }
@@ -1749,9 +1749,9 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
         annotate_info.degrees=(180.0/MagickPI)*
           atan2(draw_info->affine.rx,draw_info->affine.sx);
     }
-  FormatString(annotate_info.geometry,"%ux%u+%d+%d",width,height,
-    (int) ceil(offset->x-0.5),
-    (int) ceil(offset->y-metrics->ascent-metrics->descent-0.5));
+  FormatString(annotate_info.geometry,"%ux%u+%ld+%ld",width,height,
+    (long) ceil(offset->x-0.5),
+    (long) ceil(offset->y-metrics->ascent-metrics->descent-0.5));
   pixel.pen_color.red=XUpscale(draw_info->fill.red);
   pixel.pen_color.green=XUpscale(draw_info->fill.green);
   pixel.pen_color.blue=XUpscale(draw_info->fill.blue);

@@ -1422,9 +1422,9 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
 
       scale=strchr(name,'%') == (char *) NULL ? 1.0 : Downscale(MaxRGB)/100.0;
       (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf",&red,&green,&blue);
-      color->red=Upscale((int) (scale*red+0.5));
-      color->green=Upscale((int) (scale*green+0.5));
-      color->blue=Upscale((int) (scale*blue+0.5));
+      color->red=Upscale((long) (scale*red+0.5));
+      color->green=Upscale((long) (scale*green+0.5));
+      color->blue=Upscale((long) (scale*blue+0.5));
       color->opacity=OpaqueOpacity;
       return(True);
     }
@@ -1440,10 +1440,10 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       scale=strchr(name,'%') == (char *) NULL ? 1.0 : Downscale(MaxRGB)/100.0;
       (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf",&red,&green,
         &blue,&opacity);
-      color->red=Upscale((int) (scale*red+0.5));
-      color->green=Upscale((int) (scale*green+0.5));
-      color->blue=Upscale((int) (scale*blue+0.5));
-      color->opacity=Upscale((int) (scale*opacity+0.5));
+      color->red=Upscale((long) (scale*red+0.5));
+      color->green=Upscale((long) (scale*green+0.5));
+      color->blue=Upscale((long) (scale*blue+0.5));
+      color->opacity=Upscale((long) (scale*opacity+0.5));
       return(True);
     }
   p=GetColorInfo(name,exception);

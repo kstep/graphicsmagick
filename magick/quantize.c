@@ -414,7 +414,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
           if (!ColorMatch(q,q+count))
             break;
         node_info=cube_info->root;
-        for (index=MaxTreeDepth-1; (int) index > 0; index--)
+        for (index=MaxTreeDepth-1; (long) index > 0; index--)
         {
           id=(unsigned int) (((Downscale(q->red) >> index) & 0x01) << 2 |
              ((Downscale(q->green) >> index) & 0x01) << 1 |
@@ -1051,7 +1051,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
             Identify the deepest node containing the pixel's color.
           */
           node_info=p->root;
-          for (index=MaxTreeDepth-1; (int) index > 0; index--)
+          for (index=MaxTreeDepth-1; (long) index > 0; index--)
           {
             id=(unsigned int) (((Downscale(red) >> index) & 0x01) << 2 |
                ((Downscale(green) >> index) & 0x01) << 1 |

@@ -384,7 +384,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 
       last_kernel=(double *) NULL;
       width=GetBlurKernel(3,sigma,&kernel);
-      while ((int) (MaxRGB*kernel[0]) > 0)
+      while ((long) (MaxRGB*kernel[0]) > 0)
       {
         if (last_kernel != (double *)NULL)
           LiberateMemory((void **) &last_kernel);
@@ -1093,19 +1093,19 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
 #define Enhance(weight) \
-  mean=(int) (r->red+pixel.red)/2; \
-  distance=r->red-(int) pixel.red; \
+  mean=(long) (r->red+pixel.red)/2; \
+  distance=r->red-(long) pixel.red; \
   distance_squared= \
     (double) (2.0*(MaxRGB+1)+mean)*distance*distance/MaxRGB; \
-  mean=(int) (r->green+pixel.green)/2; \
-  distance=r->green-(int) pixel.green; \
+  mean=(long) (r->green+pixel.green)/2; \
+  distance=r->green-(long) pixel.green; \
   distance_squared+=4.0*distance*distance; \
-  mean=(int) (r->blue+pixel.blue)/2; \
-  distance=r->blue-(int) pixel.blue; \
+  mean=(long) (r->blue+pixel.blue)/2; \
+  distance=r->blue-(long) pixel.blue; \
   distance_squared+= \
     (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
-  mean=(int) (r->opacity+pixel.opacity)/2; \
-  distance=r->opacity-(int) pixel.opacity; \
+  mean=(long) (r->opacity+pixel.opacity)/2; \
+  distance=r->opacity-(long) pixel.opacity; \
   distance_squared+= \
     (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
   if (distance_squared < ((double) MaxRGB*MaxRGB/25.0)) \
@@ -2031,7 +2031,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
       last_kernel=(double *) NULL;
       width=GetMotionBlurKernel(3,sigma,&kernel);
-      while ((int) (MaxRGB*kernel[width-1]) > 0)
+      while ((long) (MaxRGB*kernel[width-1]) > 0)
       {
         if (last_kernel != (double *)NULL)
           LiberateMemory((void **) &last_kernel);
@@ -2064,8 +2064,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   blur_image->storage_class=DirectClass;
-  x=(int) (width*sin(DegreesToRadians(angle)));
-  y=(int) (width*cos(DegreesToRadians(angle)));
+  x=(long) (width*sin(DegreesToRadians(angle)));
+  y=(long) (width*cos(DegreesToRadians(angle)));
   for (i=0; i < width; i++)
   {
     offsets[i].x=i*x/sqrt(x*x+y*y);
@@ -3517,22 +3517,22 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      red=p->red-(int) q->red;
+      red=p->red-(long) q->red;
       if (AbsoluteValue(2.0*red) < (MaxRGB*threshold))
         red=p->red;
       else
         red=p->red+(red*amount);
-      green=p->green-(int) q->green;
+      green=p->green-(long) q->green;
       if (AbsoluteValue(2.0*green) < (MaxRGB*threshold))
         green=p->green;
       else
         green=p->green+(green*amount);
-      blue=p->blue-(int) q->blue;
+      blue=p->blue-(long) q->blue;
       if (AbsoluteValue(2.0*blue) < (MaxRGB*threshold))
         blue=p->blue;
       else
         blue=p->blue+(blue*amount);
-      opacity=p->opacity-(int) q->opacity;
+      opacity=p->opacity-(long) q->opacity;
       if (AbsoluteValue(2.0*opacity) < (MaxRGB*threshold))
         opacity=p->opacity;
       else
@@ -3611,8 +3611,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  wave_image=CloneImage(image,image->columns,(int)
-    (int) (image->rows+2.0*fabs(amplitude)),False,exception);
+  wave_image=CloneImage(image,image->columns,(long)
+    (image->rows+2.0*fabs(amplitude)),False,exception);
   if (wave_image == (Image *) NULL)
     return((Image *) NULL);
   SetImageType(wave_image,wave_image->background_color.opacity !=

@@ -324,10 +324,10 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     *pattern;
 
   int
-    offset,
     skip;
 
   long
+    offset,
     start,
     x1,
     x2,
@@ -392,7 +392,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     s--;
     x1=(long) s->x1;
     x2=(long) s->x2;
-    offset=(int) s->y2;
+    offset=(long) s->y2;
     y=(long) s->y1+offset;
     /*
       Recolor neighboring pixels.
@@ -1634,7 +1634,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
     n++;
   }
   status=True;
-  for (i=1; i < (int) number_vertices; i++)
+  for (i=1; i < (long) number_vertices; i++)
   {
     dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
     dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
@@ -4395,10 +4395,10 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   const long y_offset,const PaintMethod method)
 {
   int
-    offset,
     skip;
 
   long
+    offset,
     start,
     x1,
     x2,
@@ -4457,7 +4457,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
     s--;
     x1=(long) s->x1;
     x2=(long) s->x2;
-    offset=(int) s->y2;
+    offset=(long) s->y2;
     y=(long) s->y1+offset;
     /*
       Recolor neighboring points.
