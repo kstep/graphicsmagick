@@ -117,8 +117,8 @@ MagickExport void CatchImageException(Image *image)
   if (exception.severity == UndefinedException)
     return;
   if (exception.severity >= FatalException)
-    MagickError(exception.severity,exception.message,exception.qualifier);
-  MagickWarning(exception.severity,exception.message,exception.qualifier);
+    MagickError(exception.severity,exception.reason,exception.description);
+  MagickWarning(exception.severity,exception.reason,exception.description);
 }
 
 /*
@@ -132,35 +132,35 @@ MagickExport void CatchImageException(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DefaultErrorHandler displays an error message and then terminates
+%  Method DefaultErrorHandler displays an error reason and then terminates
 %  the program.
 %
 %  The format of the DefaultErrorHandler method is:
 %
-%      void MagickError(const ExceptionType error,const char *message,
-%        const char *qualifier)
+%      void MagickError(const ExceptionType error,const char *reason,
+%        const char *description)
 %
 %  A description of each parameter follows:
 %
 %    o exception: Specifies the numeric error category.
 %
-%    o message: Specifies the message to display before terminating the
+%    o reason: Specifies the reason to display before terminating the
 %      program.
 %
-%    o qualifier: Specifies any qualifier to the message.
+%    o description: Specifies any description to the reason.
 %
 %
 */
-static void DefaultErrorHandler(const ExceptionType error,const char *message,
-  const char *qualifier)
+static void DefaultErrorHandler(const ExceptionType error,const char *reason,
+  const char *description)
 {
   DestroyDelegateInfo();
-  if (message == (char *) NULL)
+  if (reason == (char *) NULL)
     Exit(error);
   (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
-    message);
-  if (qualifier != (char *) NULL)
-    (void) fprintf(stderr," (%.1024s)",qualifier);
+    reason);
+  if (description != (char *) NULL)
+    (void) fprintf(stderr," (%.1024s)",description);
   if ((error != OptionError) && errno)
     (void) fprintf(stderr," [%.1024s]",strerror(errno));
   (void) fprintf(stderr,".\n");
@@ -178,33 +178,33 @@ static void DefaultErrorHandler(const ExceptionType error,const char *message,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DefaultWarningHandler displays a warning message.
+%  Method DefaultWarningHandler displays a warning reason.
 %
 %  The format of the DefaultWarningHandler method is:
 %
 %      void DefaultWarningHandler(const ExceptionType warning,
-%        const char *message,const char *qualifier)
+%        const char *reason,const char *description)
 %
 %  A description of each parameter follows:
 %
 %    o warning: Specifies the numeric warning category.
 %
-%    o message: Specifies the message to display before terminating the
+%    o reason: Specifies the reason to display before terminating the
 %      program.
 %
-%    o qualifier: Specifies any qualifier to the message.
+%    o description: Specifies any description to the reason.
 %
 %
 */
 static void DefaultWarningHandler(const ExceptionType warning,
-  const char *message,const char *qualifier)
+  const char *reason,const char *description)
 {
-  if (message == (char *) NULL)
+  if (reason == (char *) NULL)
     return;
   (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
-    message);
-  if (qualifier != (char *) NULL)
-    (void) fprintf(stderr," (%.1024s)",qualifier);
+    reason);
+  if (description != (char *) NULL)
+    (void) fprintf(stderr," (%.1024s)",description);
   if ((warning != OptionWarning) && errno)
     (void) fprintf(stderr," [%.1024s]",strerror(errno));
   (void) fprintf(stderr,".\n");
@@ -238,10 +238,10 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (exception->message != (char *) NULL)
-    LiberateMemory((void **) &exception->message);
-  if (exception->qualifier != (char *) NULL)
-    LiberateMemory((void **) &exception->qualifier);
+  if (exception->reason != (char *) NULL)
+    LiberateMemory((void **) &exception->reason);
+  if (exception->description != (char *) NULL)
+    LiberateMemory((void **) &exception->description);
 }
 
 /*
@@ -316,7 +316,7 @@ MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
       continue;
     if (next->exception.severity > exception->severity)
       ThrowException(exception,next->exception.severity,
-        next->exception.message,next->exception.qualifier);
+        next->exception.reason,next->exception.description);
   }
 }
 
@@ -331,29 +331,29 @@ MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MagickError calls the error handler methods with an error message.
+%  Method MagickError calls the error handler methods with an error reason.
 %
 %  The format of the MagickError method is:
 %
-%      void MagickError(const ExceptionType error,const char *message,
-%        const char *qualifier)
+%      void MagickError(const ExceptionType error,const char *reason,
+%        const char *description)
 %
 %  A description of each parameter follows:
 %
 %    o exception: Specifies the numeric error category.
 %
-%    o message: Specifies the message to display before terminating the
+%    o reason: Specifies the reason to display before terminating the
 %      program.
 %
-%    o qualifier: Specifies any qualifier to the message.
+%    o description: Specifies any description to the reason.
 %
 %
 */
-MagickExport void MagickError(const ExceptionType error,const char *message,
-  const char *qualifier)
+MagickExport void MagickError(const ExceptionType error,const char *reason,
+  const char *description)
 {
   if (error_handler != (ErrorHandler) NULL)
-    (*error_handler)(error,message,qualifier);
+    (*error_handler)(error,reason,description);
   errno=0;
 }
 
@@ -369,29 +369,29 @@ MagickExport void MagickError(const ExceptionType error,const char *message,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method MagickWarning calls the warning handler methods with a warning
-%  message.
+%  reason.
 %
 %  The format of the MagickWarning method is:
 %
-%      void MagickWarning(const ExceptionType warning,const char *message,
-%        const char *qualifier)
+%      void MagickWarning(const ExceptionType warning,const char *reason,
+%        const char *description)
 %
 %  A description of each parameter follows:
 %
 %    o warning: Specifies the numeric warning category.
 %
-%    o message: Specifies the message to display before terminating the
+%    o reason: Specifies the reason to display before terminating the
 %      program.
 %
-%    o qualifier: Specifies any qualifier to the message.
+%    o description: Specifies any description to the reason.
 %
 %
 */
-MagickExport void MagickWarning(const ExceptionType warning,const char *message,
-  const char *qualifier)
+MagickExport void MagickWarning(const ExceptionType warning,const char *reason,
+  const char *description)
 {
   if (warning_handler != (WarningHandler) NULL)
-    (*warning_handler)(warning,message,qualifier);
+    (*warning_handler)(warning,reason,description);
 }
 
 /*
@@ -460,4 +460,50 @@ MagickExport WarningHandler SetWarningHandler(WarningHandler handler)
   previous_handler=warning_handler;
   warning_handler=handler;
   return(previous_handler);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   T h r o w E x c e p t i o n                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ThrowException throws an exception with the specified severity code,
+%  reason, and optional description.
+%
+%  The format of the ThrowException method is:
+%
+%      void ThrowException(ExceptionInfo *exception,
+%        const ExceptionType severity,const char *reason,
+%        const char *description)
+%
+%  A description of each parameter follows:
+%
+%    o exception: Specifies a pointer to the ExceptionInfo structure.
+%
+%    o severity: This ExceptionType declares the severity of the exception.
+%
+%    o reason: Specifies the reason to display before terminating the
+%      program.
+%
+%    o description: Specifies any description to the reason.
+%
+%
+*/
+MagickExport void ThrowException(ExceptionInfo *exception,
+  const ExceptionType severity,const char *reason,const char *description)
+{
+  assert(exception != (ExceptionInfo *) NULL);
+  if (severity < exception->severity)
+    return;
+  exception->severity=(ExceptionType) severity;
+  CloneString(&exception->reason,reason);
+  CloneString(&exception->description,description);
+  exception->message=exception->reason;
+  exception->qualifier=exception->description;
 }

@@ -2574,6 +2574,110 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e B o u n d i n g B o x                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetImageBoundingBox returns the bounding box of an image canvas.
+%
+%  The format of the GetImageBoundingBox method is:
+%
+%      RectangleInfo GetImageBoundingBox(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o bounds: Method GetImageBoundingBox returns the bounding box of an
+%      image canvas.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+MagickExport RectangleInfo GetImageBoundingBox(Image *image)
+{
+  int
+    y;
+
+  PixelPacket
+    corners[3];
+
+  RectangleInfo
+    bounds;
+
+  register int
+    x;
+
+  register PixelPacket
+    *p;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  bounds.width=0;
+  bounds.height=0;
+  bounds.x=image->columns;
+  bounds.y=image->rows;
+  corners[0]=GetOnePixel(image,0,0);
+  corners[1]=GetOnePixel(image,image->columns-1,0);
+  corners[2]=GetOnePixel(image,0,image->rows-1);
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    if (image->matte)
+      for (x=0; x < (int) image->columns; x++)
+      {
+        if (p->opacity != corners[0].opacity)
+          if (x < bounds.x)
+            bounds.x=x;
+        if (p->opacity != corners[1].opacity)
+          if (x > (int) bounds.width)
+            bounds.width=x;
+        if (p->opacity != corners[0].opacity)
+          if (y < bounds.y)
+            bounds.y=y;
+        if (p->opacity != corners[2].opacity)
+          if (y > (int) bounds.height)
+            bounds.height=y;
+        p++;
+      }
+    else
+      for (x=0; x < (int) image->columns; x++)
+      {
+        if (!ColorMatch(*p,corners[0],image->fuzz))
+          if (x < bounds.x)
+            bounds.x=x;
+        if (!ColorMatch(*p,corners[1],image->fuzz))
+          if (x > (int) bounds.width)
+            bounds.width=x;
+        if (!ColorMatch(*p,corners[0],image->fuzz))
+          if (y < bounds.y)
+            bounds.y=y;
+        if (!ColorMatch(*p,corners[2],image->fuzz))
+          if (y > (int) bounds.height)
+            bounds.height=y;
+        p++;
+      }
+  }
+  if ((bounds.width != 0) || (bounds.height != 0))
+    {
+      bounds.width-=bounds.x-1;
+      bounds.height-=bounds.y-1;
+    }
+  if (bounds.x < 0)
+    bounds.x=0;
+  if (bounds.y < 0)
+    bounds.y=0;
+  return(bounds);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e I n f o                                                   %
 %                                                                             %
 %                                                                             %

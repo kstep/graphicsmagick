@@ -980,10 +980,12 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   (void) fclose(file);
   clone_info=CloneImageInfo(image_info);
   FormatString(geometry,"%dx%d+0+0!",(int) ceil(extent.x),(int) ceil(extent.y));
+puts(geometry);
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   (void) CloneString(&clone_info->page,geometry);
   DestroyImage(image);
   image=ReadImage(clone_info,exception);
+puts(filename);if (0)
   (void) remove(filename);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
@@ -995,36 +997,12 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
       char
         geometry[MaxTextExtent];
 
-      PixelPacket
-        target;
-
       RectangleInfo
         crop_info;
 
-      register PixelPacket
-        *p;
-
-      crop_info.width=0;
+      crop_info=GetImageBoundingBox(image);
       crop_info.height=(unsigned int) ceil(extent.y/1.75);
-      crop_info.x=0;
       crop_info.y=(int) floor(extent.y/8.0);
-      if (image == (Image *) NULL)
-        return(image);
-      target=GetOnePixel(image,0,0);
-      for (y=0; y < (int) image->rows; y++)
-      {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (int) image->columns; x++)
-        {
-          if (!ColorMatch(*p,target,0))
-            if (x > (int) crop_info.width)
-              crop_info.width=x;
-          p++;
-        }
-      }
-      crop_info.width++;
       (void) FormatString(geometry,"%ux%u%+d%+d",crop_info.width,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&image,geometry,(char *) NULL);

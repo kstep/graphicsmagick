@@ -782,8 +782,8 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
                 image=CloneImage(image,0,0,False,&exception);
                 if (image == (Image *) NULL)
                   {
-                    MagickWarning(exception.severity,exception.message,
-                      exception.qualifier);
+                    MagickWarning(exception.severity,exception.reason,
+                      exception.description);
                     return(NULL);
                   }
               }
@@ -1249,6 +1249,37 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'I':
     case 'i':
     {
+      if (strEQcase(attribute,"index"))
+        {
+          int
+            index,
+            x,
+            y;
+
+          IndexPacket
+            *indexes;
+
+          PixelPacket
+            *pixel;
+
+          for ( ; image; image=image->next)
+          {
+            if (image->class != PseudoClass)
+              continue;
+            x=0;
+            y=0;
+            (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
+            pixel=GetImagePixels(image,x % image->columns,y % image->rows,1,1);
+            if (pixel == (PixelPacket *) NULL)
+              break;
+            indexes=GetIndexes(image);
+            (void) sscanf(SvPV(sval,na),"%d",&index);
+            if ((index >= 0) && (index < image->colors))
+              *indexes=index;
+            (void) SyncImagePixels(image);
+          }
+          return;
+        }
       if (strEQcase(attribute,"iterat"))
         {
   iterations:
@@ -1985,8 +2016,8 @@ Append(ref,...)
     next=AppendImages(image,stack,&image->exception);
     if (!next)
       {
-        MagickWarning(image->exception.severity,image->exception.message,
-          image->exception.qualifier);
+        MagickWarning(image->exception.severity,image->exception.reason,
+          image->exception.description);
         goto MethodException;
       }
     for ( ; next; next=next->next)
@@ -2082,8 +2113,8 @@ Average(ref)
     next=AverageImages(image,&image->exception);
     if (!next)
       {
-        MagickWarning(image->exception.severity,image->exception.message,
-          image->exception.qualifier);
+        MagickWarning(image->exception.severity,image->exception.reason,
+          image->exception.description);
         goto MethodException;
       }
     /*
@@ -2223,7 +2254,7 @@ BlobToImage(ref,...)
 
       image=BlobToImage(info->image_info,list[i],length[i],&exception);
       if (image == (Image *) NULL)
-        MagickWarning(exception.severity,exception.message,exception.qualifier);
+        MagickWarning(exception.severity,exception.reason,exception.description);
       for ( ; image; image=image->next)
       {
         sv=newSViv((IV) image);
@@ -2328,7 +2359,7 @@ Coalesce(ref)
     image=CoalesceImages(image,&exception);
     if (!image)
       {
-        MagickWarning(exception.severity,exception.message,exception.qualifier);
+        MagickWarning(exception.severity,exception.reason,exception.description);
         goto MethodException;
       }
     /*
@@ -2438,8 +2469,8 @@ Copy(ref)
       image=CloneImage(next,0,0,False,&next->exception);
       if (!image)
         {
-          MagickWarning(next->exception.severity,next->exception.message,
-            next->exception.qualifier);
+          MagickWarning(next->exception.severity,next->exception.reason,
+            next->exception.description);
           continue;
         }
       sv=newSViv((IV) image);
@@ -3008,6 +3039,34 @@ Get(ref,...)
         case 'I':
         case 'i':
         {
+          if (strEQcase(attribute,"index"))
+            {
+              char
+                name[MaxTextExtent];
+
+              int
+                x,
+                y;
+
+              IndexPacket
+                *indexes;
+
+              PixelPacket
+                pixel;
+
+              if (!image)
+                break;
+              if (image->class != PseudoClass)
+                break;
+              x=0;
+              y=0;
+              (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
+              pixel=GetOnePixel(image,x % image->columns,y % image->rows);
+              indexes=GetIndexes(image);
+              FormatString(name,"%u",*indexes);
+              s=newSVpv(name,0);
+              break;
+            }
           if (strEQcase(attribute,"iterat"))  /* same as loop */
             {
               if (info && info->image_info->iterations)
@@ -3523,8 +3582,8 @@ ImageToBlob(ref,...)
       length=0;
       blob=ImageToBlob(package_info->image_info,next,&length,&exception);
       if (blob == (void *) NULL)
-        MagickWarning(exception.severity,exception.message,
-          exception.qualifier);
+        MagickWarning(exception.severity,exception.reason,
+          exception.description);
       if (blob != (char *) NULL)
         {
           PUSHs(sv_2mortal(newSVpv(blob,length)));
@@ -3917,8 +3976,8 @@ Mogrify(ref,...)
           image=CropImage(image,&region_info,&exception);
           if (!image)
             {
-              MagickWarning(exception.severity,exception.message,
-                exception.qualifier);
+              MagickWarning(exception.severity,exception.reason,
+                exception.description);
               continue;
             }
         }
@@ -5212,7 +5271,7 @@ Mogrify(ref,...)
         }
       }
       if (image == (Image *) NULL)
-        MagickWarning(exception.severity,exception.message,exception.qualifier);
+        MagickWarning(exception.severity,exception.reason,exception.description);
       else
         if (next != (Image *) NULL)
           CatchImageException(next);
@@ -5638,7 +5697,7 @@ Montage(ref,...)
     DestroyMontageInfo(montage_info);
     if (!image)
       {
-        MagickWarning(exception.severity,exception.message,exception.qualifier);
+        MagickWarning(exception.severity,exception.reason,exception.description);
         goto MethodException;
       }
     if (transparent_color.opacity != TransparentOpacity)
@@ -5779,7 +5838,7 @@ Morph(ref,...)
     image=MorphImages(image,number_frames,&exception);
     if (!image)
       {
-        MagickWarning(exception.severity,exception.message,exception.qualifier);
+        MagickWarning(exception.severity,exception.reason,exception.description);
         goto MethodException;
       }
     for (next=image; next; next=next->next)
@@ -5878,7 +5937,7 @@ Mosaic(ref)
     image=MosaicImages(image,&exception);
     if (!image)
       {
-        MagickWarning(exception.severity,exception.message,exception.qualifier);
+        MagickWarning(exception.severity,exception.reason,exception.description);
         goto MethodException;
       }
     /*
@@ -5970,8 +6029,8 @@ Ping(ref,...)
       image=PingImage(info->image_info,&exception);
       if (image == (Image *) NULL)
         {
-          MagickWarning(exception.severity,exception.message,
-            exception.qualifier);
+          MagickWarning(exception.severity,exception.reason,
+            exception.description);
           s=(&sv_undef);
         }
       else
@@ -6154,7 +6213,7 @@ Read(ref,...)
       (void) strncpy(info->image_info->filename,list[i],MaxTextExtent-1);
       image=ReadImage(info->image_info,&exception);
       if (image == (Image *) NULL)
-        MagickWarning(exception.severity,exception.message,exception.qualifier);
+        MagickWarning(exception.severity,exception.reason,exception.description);
       for ( ; image; image=image->next)
       {
         sv=newSViv((IV) image);
@@ -6420,8 +6479,8 @@ Transform(ref,...)
         TransformImage(&clone,crop_geometry,geometry);
       if (!image)
         {
-          MagickWarning(exception.severity,exception.message,
-            exception.qualifier);
+          MagickWarning(exception.severity,exception.reason,
+            exception.description);
           goto MethodException;
         }
       for (image=clone; image; image=image->next)

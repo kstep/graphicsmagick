@@ -1661,7 +1661,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     if (!GetDelegateInfo(clone_info->magick,(char *) NULL,&delegate_info))
       {
         ThrowException(exception,MissingDelegateWarning,
-          "no delegate for this image format",clone_info->filename)
+          "no delegate for this image format",clone_info->filename);
         DestroyImageInfo(clone_info);
         return((Image *) NULL);
       }
@@ -1681,7 +1681,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         status=
           InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
         ThrowException(exception,image->exception.severity,
-           image->exception.message,image->exception.qualifier);
+           image->exception.reason,image->exception.description);
         DestroyImages(image);
         image=(Image *) NULL;
         if (status != False)

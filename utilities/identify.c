@@ -302,8 +302,8 @@ int main(int argc,char **argv)
         image=ReadImage(image_info,&exception);
         if (image == (Image *) NULL)
           {
-            MagickWarning(exception.severity,exception.message,
-              exception.qualifier);
+            MagickWarning(exception.severity,exception.reason,
+              exception.description);
             continue;
           }
         if (format == (char *) NULL)
@@ -325,7 +325,7 @@ int main(int argc,char **argv)
     image=ReadImage(image_info,&exception);
     if (image == (Image *) NULL)
       {
-        MagickWarning(exception.severity,exception.message,exception.qualifier);
+        MagickWarning(exception.severity,exception.reason,exception.description);
         continue;
       }
     for (p=image; p != (Image *) NULL; p=p->next)

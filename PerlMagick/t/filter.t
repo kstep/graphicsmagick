@@ -255,7 +255,7 @@ testFilter('input.miff', 'Trim',
 testFilter('input.miff', 'Wave',
   q/25x157/,
   '9ba42ce9f7e5559c696519f4e792981b',
-  '59444de9684faa8ef8a8287c2c17f7f3');
+  '4119725772b4aaeb5ebaf8ec285ab55b');
 
 ++$test;
 

@@ -677,6 +677,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
   const xmlChar **attributes)
 {
   char
+    *color,
     *font_family,
     *font_style,
     *font_weight,
@@ -711,6 +712,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
       "Memory allocation failed");
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
   (void) fprintf(svg_info->file,"push graphic-context\n");
+  color=AllocateString("none");
   font_family=(char *) NULL;
   font_style=(char *) NULL;
   font_weight=(char *) NULL;
@@ -740,6 +742,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
         case 'C':
         case 'c':
         {
+          if (LocaleCompare(keyword,"color") == 0)
+            {
+              CloneString(&color,value);
+              break;
+            }
           if (LocaleCompare(keyword,"cx") == 0)
             {
               svg_info->element.cx=GetUserSpaceCoordinateValue(svg_info,value);
@@ -767,6 +774,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"fill") == 0)
             {
+              if (LocaleCompare(value,"currentColor") == 0)
+                {
+                  (void) fprintf(svg_info->file,"fill %s\n",color);
+                  break;
+                }
               (void) fprintf(svg_info->file,"fill %s\n",value);
               break;
             }
@@ -907,6 +919,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"stroke") == 0)
             {
+              if (LocaleCompare(value,"currentColor") == 0)
+                {
+                  (void) fprintf(svg_info->file,"stroke %s\n",color);
+                  break;
+                }
               (void) fprintf(svg_info->file,"stroke %s\n",value);
               break;
             }
@@ -966,11 +983,26 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   (void) fprintf(stdout,"    %s: %s\n",keyword,value);
                 switch (*keyword)
                 {
+                  case 'C':
+                  case 'c':
+                  {
+                    if (LocaleCompare(keyword,"color") == 0)
+                      {
+                        CloneString(&color,value);
+                        break;
+                      }
+                    break;
+                  }
                   case 'F':
                   case 'f':
                   {
                     if (LocaleCompare(keyword,"fill") == 0)
                       {
+                         if (LocaleCompare(value,"currentColor") == 0)
+                           {
+                             (void) fprintf(svg_info->file,"fill %s\n",color);
+                             break;
+                           }
                         (void) fprintf(svg_info->file,"fill %s\n",value);
                         break;
                       }
@@ -1035,6 +1067,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"stroke") == 0)
                       {
+                         if (LocaleCompare(value,"currentColor") == 0)
+                           {
+                             (void) fprintf(svg_info->file,"stroke %s\n",color);
+                             break;
+                           }
                         (void) fprintf(svg_info->file,"stroke %s\n",value);
                         break;
                       }
@@ -1089,8 +1126,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       }
                     break;
                   }
-                  case 'T':
                   case 't':
+                  case 'T':
                   {
                     if (LocaleCompare(keyword,"text-align") == 0)
                       {
@@ -1473,6 +1510,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
           svg_info->height=page.height;
         }
     }
+  if (color != (char *) NULL)
+    LiberateMemory((void **) &color);
 }
 
 static void SVGEndElement(void *context,const xmlChar *name)
@@ -1740,7 +1779,7 @@ static void SVGComment(void *context,const xmlChar *value)
 static void SVGWarning(void *context,const char *format,...)
 {
   char
-    message[MaxTextExtent];
+    reason[MaxTextExtent];
 
   SVGInfo
     *svg_info;
@@ -1761,18 +1800,18 @@ static void SVGWarning(void *context,const char *format,...)
     }
   svg_info->exception->severity=DelegateWarning;
 #if !defined(HAVE_VSNPRINTF)
-  (void) vsprintf(message,format,operands);
+  (void) vsprintf(reason,format,operands);
 #else
-  (void) vsnprintf(message,MaxTextExtent,format,operands);
+  (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  CloneString(&svg_info->exception->message,message);
+  CloneString(&svg_info->exception->reason,reason);
   va_end(operands);
 }
 
 static void SVGError(void *context,const char *format,...)
 {
   char
-    message[MaxTextExtent];
+    reason[MaxTextExtent];
 
   SVGInfo
     *svg_info;
@@ -1793,11 +1832,11 @@ static void SVGError(void *context,const char *format,...)
     }
   svg_info->exception->severity=DelegateError;
 #if !defined(HAVE_VSNPRINTF)
-  (void) vsprintf(message,format,operands);
+  (void) vsprintf(reason,format,operands);
 #else
-  (void) vsnprintf(message,MaxTextExtent,format,operands);
+  (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  CloneString(&svg_info->exception->message,message);
+  CloneString(&svg_info->exception->reason,reason);
   va_end(operands);
 }
 

@@ -288,8 +288,8 @@ int main(int argc,char **argv)
           {
             image=ReadImage(image_info,&exception);
             if (image == (Image *) NULL)
-              MagickError(exception.severity,exception.message,
-                exception.qualifier);
+              MagickError(exception.severity,exception.reason,
+                exception.description);
             continue;
           }
         if (mask_image != (Image *) NULL)
@@ -298,13 +298,13 @@ int main(int argc,char **argv)
           {
             composite_image=ReadImage(image_info,&exception);
             if (composite_image == (Image *) NULL)
-              MagickError(exception.severity,exception.message,
-                exception.qualifier);
+              MagickError(exception.severity,exception.reason,
+                exception.description);
             continue;
           }
         mask_image=ReadImage(image_info,&exception);
         if (mask_image == (Image *) NULL)
-          MagickError(exception.severity,exception.message,exception.qualifier);
+          MagickError(exception.severity,exception.reason,exception.description);
       }
     else
       switch(*(option+1))

@@ -195,6 +195,10 @@ typedef struct _ExceptionInfo
     severity;
 
   char
+    *reason,
+    *description;
+
+  char
     *message,
     *qualifier;
 
@@ -769,6 +773,9 @@ extern MagickExport PixelPacket
   *(*GetPixels)(const Image *),
   *(*SetImagePixels)
     (Image *,const int,const int,const unsigned int,const unsigned int);
+
+extern MagickExport RectangleInfo
+  GetImageBoundingBox(Image *);
 
 extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned int),

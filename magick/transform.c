@@ -392,76 +392,16 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
     }
   else
     {
-      int
-        x_border,
-        y_border;
-
-      PixelPacket
-        corners[3];
-
       /*
         Set bounding box to the image dimensions.
       */
-      x_border=page.x;
-      y_border=page.y;
-      page.width=0;
-      page.height=0;
-      page.x=image->columns;
-      page.y=image->rows;
-      corners[0]=GetOnePixel(image,0,0);
-      corners[1]=GetOnePixel(image,image->columns-1,0);
-      corners[2]=GetOnePixel(image,0,image->rows-1);
-      for (y=0; y < (int) image->rows; y++)
-      {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
-          break;
-        if (image->matte)
-          for (x=0; x < (int) image->columns; x++)
-          {
-            if (p->opacity != corners[0].opacity)
-              if (x < page.x)
-                page.x=x;
-            if (p->opacity != corners[1].opacity)
-              if (x > (int) page.width)
-                page.width=x;
-            if (p->opacity != corners[0].opacity)
-              if (y < page.y)
-                page.y=y;
-            if (p->opacity != corners[2].opacity)
-              if (y > (int) page.height)
-                page.height=y;
-            p++;
-          }
-        else
-          for (x=0; x < (int) image->columns; x++)
-          {
-            if (!ColorMatch(*p,corners[0],image->fuzz))
-              if (x < page.x)
-                page.x=x;
-            if (!ColorMatch(*p,corners[1],image->fuzz))
-              if (x > (int) page.width)
-                page.width=x;
-            if (!ColorMatch(*p,corners[0],image->fuzz))
-              if (y < page.y)
-                page.y=y;
-            if (!ColorMatch(*p,corners[2],image->fuzz))
-              if (y > (int) page.height)
-                page.height=y;
-            p++;
-          }
-      }
-      if ((page.width != 0) || (page.height != 0))
-        {
-          page.width-=page.x-1;
-          page.height-=page.y-1;
-        }
-      page.width+=x_border*2;
-      page.height+=y_border*2;
-      page.x-=x_border;
+      page=GetImageBoundingBox(image);
+      page.width+=crop_info->x*2;
+      page.height+=crop_info->y*2;
+      page.x-=crop_info->x;
       if (page.x < 0)
         page.x=0;
-      page.y-=y_border;
+      page.y-=crop_info->y;
       if (page.y < 0)
         page.y=0;
       if ((((int) page.width+page.x) > (int) image->columns) ||

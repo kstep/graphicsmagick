@@ -1336,8 +1336,8 @@ int main(int argc,char **argv)
           image=ReadImage(image_info,&exception);
           if (image == (Image *) NULL)
             {
-              MagickWarning(exception.severity,exception.message,
-                exception.qualifier);
+              MagickWarning(exception.severity,exception.reason,
+                exception.description);
               continue;
             }
           do

@@ -932,8 +932,8 @@ int main(int argc,char **argv)
           next_image=ReadImage(image_info,&exception);
           if (next_image == (Image *) NULL)
             {
-              MagickWarning(exception.severity,exception.message,
-                exception.qualifier);
+              MagickWarning(exception.severity,exception.reason,
+                exception.description);
               continue;
             }
           status=MogrifyImages(image_info,i,argv,&next_image);

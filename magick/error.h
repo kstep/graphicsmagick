@@ -11,16 +11,6 @@ extern "C" {
 /*
   Exception define definitions.
 */
-#define ThrowException(exception,code,reason,description) \
-{ \
-  assert(exception != (ExceptionInfo *) NULL); \
-  if (code >= (exception)->severity) \
-    { \
-      (exception)->severity=code; \
-      CloneString(&(exception)->message,reason); \
-      CloneString(&(exception)->qualifier,description); \
-    } \
-}
 #define ThrowBinaryException(code,reason,description) \
 { \
   assert(image != (Image *) NULL); \
@@ -35,7 +25,7 @@ extern "C" {
 #define ThrowReaderException(code,reason,image) \
 { \
   if (image == (Image *) NULL) \
-    ThrowException(exception,code,reason,(char *) NULL) \
+    ThrowException(exception,code,reason,(char *) NULL); \
   else \
     { \
       ThrowException(exception,code,reason,image->filename); \
@@ -75,7 +65,8 @@ extern MagickExport void
   GetImageException(Image *,ExceptionInfo *),
   GetExceptionInfo(ExceptionInfo *),
   MagickError(const ExceptionType,const char *,const char *),
-  MagickWarning(const ExceptionType,const char *,const char *);
+  MagickWarning(const ExceptionType,const char *,const char *),
+  ThrowException(ExceptionInfo *,const ExceptionType,const char *,const char *);
 
 extern MagickExport WarningHandler
   SetWarningHandler(WarningHandler);
