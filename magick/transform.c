@@ -1347,6 +1347,10 @@ MagickExport Image *ShaveImage(const Image *image,
   RectangleInfo
     geometry;
 
+  if (((2*shave_info->width) >= image->columns) ||
+      ((2*shave_info->height) >= image->rows))
+    ThrowImageException(OptionWarning,"Unable to shave image",
+      "geometry does not contain image");
   SetGeometry(image,&geometry);
   geometry.width-=2*shave_info->width;
   geometry.height-=2*shave_info->height;

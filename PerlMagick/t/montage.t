@@ -111,7 +111,7 @@ testMontage( q//,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+3+3>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  '038a185074078a4d56f2e289e459cc4cc285b267a9e3509b078961c106d64c69');
+  '23e9c5449b506127e004ef0ae46e61bc2510192a5d75cfdab1b2d0f3fee2f225');
 
 #
 # 12) Test Framed Montage with drop-shadows
@@ -120,7 +120,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
-  '37ecaf451aff096149feb31d580ab3ba1a1889eeb2c032224e5969c70aed953d');
+  '295a2166340b2801de45fef944a76c047b8e1d736e9707078b9fd6395c47992d');
 
 #
 # 13) Test Framed Montage with drop-shadows and background texture
@@ -129,7 +129,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
-  '1b921e8d1eb226cb3f47dafa541930bb029f229ba9899f3f50ad45643c319cc2');
+  'b280d470e329d9ec062a9395f1a2aa18f74c9164f6c4afe95bfa21c221ac5649');
 
 #
 # 14) Test Un-bordered, Un-framed Montage
