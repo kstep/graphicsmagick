@@ -9,8 +9,8 @@
 
 #include <string>
 
-#include <Magick++/Montage.h>
-#include <Magick++/Functions.h>
+#include "Magick++/Montage.h"
+#include "Magick++/Functions.h"
 
 
 void Magick::Montage::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ ) const

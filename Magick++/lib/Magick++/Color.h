@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include <Magick++/Include.h>
+#include "Magick++/Include.h"
 
 #define ScaleDoubleToQuantum(quantum) ((unsigned int)(quantum * MaxRGB))
 #define ScaleQuantumToDouble(quantum) (((double)quantum)/MaxRGB)

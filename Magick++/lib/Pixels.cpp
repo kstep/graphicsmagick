@@ -7,7 +7,7 @@
 
 #define MAGICK_IMPLEMENTATION
 
-#include <Magick++/Pixels.h>
+#include "Magick++/Pixels.h"
 
 namespace Magick
 {

@@ -11,7 +11,7 @@
 
 using namespace std;
 
-#include <Magick++/Exception.h>
+#include "Magick++/Exception.h"
 
 // Construct with message string
 Magick::Exception::Exception( const std::string& what_ )

@@ -12,9 +12,9 @@
 #include <string>
 #include <cstdlib>
 #include <iostream>
-#include <Magick++/Options.h>
-#include <Magick++/Functions.h>
-#include <Magick++/Include.h>
+#include "Magick++/Options.h"
+#include "Magick++/Functions.h"
+#include "Magick++/Include.h"
 
 // Constructor
 Magick::Options::Options( void )

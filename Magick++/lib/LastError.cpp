@@ -11,12 +11,12 @@
 
 #include <errno.h>
 
-#include <Magick++/Include.h>
+#include "Magick++/Include.h"
 
 using namespace std;
 
-#include <Magick++/LastError.h>
-#include <Magick++/Exception.h>
+#include "Magick++/LastError.h"
+#include "Magick++/Exception.h"
 
 // Magick++ error/warning callback functions
 namespace Magick

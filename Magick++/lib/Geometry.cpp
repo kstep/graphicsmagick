@@ -14,8 +14,8 @@
 
 using namespace std;
 
-#include <Magick++/Geometry.h>
-#include <Magick++/Functions.h>
+#include "Magick++/Geometry.h"
+#include "Magick++/Functions.h"
 
 int Magick::operator == ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )

@@ -12,9 +12,9 @@
 #include <iostream>
 #include <list>
 
-#include <Magick++/Color.h>
-#include <Magick++/Geometry.h>
-#include <Magick++/Include.h>
+#include "Magick++/Color.h"
+#include "Magick++/Geometry.h"
+#include "Magick++/Include.h"
 
 namespace Magick
 {

@@ -11,9 +11,9 @@
 #if !defined(Pixels_header)
 #define Pixels_header
 
-#include <Magick++/Include.h>
-#include <Magick++/Color.h>
-#include <Magick++/Image.h>
+#include "Magick++/Include.h"
+#include "Magick++/Color.h"
+#include "Magick++/Image.h"
 
 // Class representing a pixel color. The Color class contains a
 // pointer to PixelPacket where it stores its RGBA information.

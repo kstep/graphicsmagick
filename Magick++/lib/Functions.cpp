@@ -12,8 +12,8 @@
 
 using namespace std;
 
-#include <Magick++/Functions.h>
-#include <Magick++/Include.h>
+#include "Magick++/Functions.h"
+#include "Magick++/Include.h"
 
 // Clone C++ string as allocated C string, de-allocating any existing string
 void Magick::CloneString( char **destination_, const std::string &source_ )

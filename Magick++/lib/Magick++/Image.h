@@ -12,14 +12,14 @@
 #include <string>
 #include <list>
 
-#include <Magick++/Blob.h>
-#include <Magick++/Color.h>
-#include <Magick++/Drawable.h>
-#include <Magick++/Exception.h>
-#include <Magick++/Geometry.h>
-#include <Magick++/Options.h>
-#include <Magick++/LastError.h>
-#include <Magick++/Include.h>
+#include "Magick++/Blob.h"
+#include "Magick++/Color.h"
+#include "Magick++/Drawable.h"
+#include "Magick++/Exception.h"
+#include "Magick++/Geometry.h"
+#include "Magick++/Options.h"
+#include "Magick++/LastError.h"
+#include "Magick++/Include.h"
 
 namespace Magick
 {

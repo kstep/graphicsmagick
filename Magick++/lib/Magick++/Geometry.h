@@ -13,7 +13,7 @@
 #include <string>
 #include <iostream>
 
-#include <Magick++/Include.h>
+#include "Magick++/Include.h"
 
 namespace Magick
 {
