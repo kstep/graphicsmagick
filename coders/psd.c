@@ -398,6 +398,7 @@ static unsigned long CompositeOperatorToPSDBlendMode(CompositeOperator inOp)
     return(OverCompositeOp);
 
 */
+		default: break;
 	}
 
 	return outMode;
