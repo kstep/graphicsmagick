@@ -210,7 +210,7 @@ testFilter('input.miff', 'Transform',
 ++$test;
 testFilter('input.miff', 'Threshold',
   q/128/,
-  'b3afb90c9902a65b84107daa197828de');
+  'ad5daf059a1f4dcd132f8aeed878611d');
 
 ++$test;
 testFilter('input.miff', 'Trim',

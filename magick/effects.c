@@ -2851,7 +2851,7 @@ Export void ThresholdImage(Image *image,const double threshold)
   image->colormap[1].blue=MaxRGB;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=GetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) image->columns; x++)
