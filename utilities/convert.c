@@ -2015,7 +2015,7 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True,&image->exception);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    status=WriteImage(image_info,image);
+    status=WriteImage(image_info,p);
     if (status == False)
       CatchImageException(p);
     if (image_info->adjoin)
