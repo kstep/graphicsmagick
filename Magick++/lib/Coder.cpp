@@ -9,11 +9,14 @@
 
 #define MAGICK_IMPLEMENTATION
 
-using namespace std;
-
 #include "Magick++/Include.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Coder.h"
+#include "Magick++/Options.h"
+
+#include <ctype.h>
+
+using namespace std;
 
 //
 // Implementation of Magick::Coder
@@ -45,42 +48,36 @@ bool Magick::Coder::encoder ( const Image& image_ )
 // Magick method (callback).
 // Returns true if magick format is supported by the decoder.
 /* virtual */
-bool Magick::Coder::magick ( const unsigned char *magick_,
-			     const unsigned int length_ )
-{
-  return false;
-};
+// bool Magick::Coder::magick ( const unsigned char *magick_,
+// 			     const unsigned int length_ )
+// {
+//   return false;
+// };
 
 extern "C" {
   static MagickLib::Image *decoder( const MagickLib::ImageInfo *imageInfo_,
                                     MagickLib::ExceptionInfo *exception_ );
   static unsigned int encoder( const MagickLib::ImageInfo *imageInfo_,
 			       MagickLib::Image *image_);
-  static unsigned int magick( const unsigned char *magick_,
-			      const unsigned int length_ );
+//   static unsigned int magick( const unsigned char *magick_,
+// 			      const unsigned int length_ );
 }
 
 // Image decoder callback (C linkage)
 static MagickLib::Image *decoder( const MagickLib::ImageInfo *imageInfo_,
                                   MagickLib::ExceptionInfo *exception_ )
 {
-
-  Magick::Image image;
-  MagickLib::MagickInfo* info = 0; // FIXME!
-
-  if ( info->data == 0 )
+  if ( imageInfo_->client_data == 0 )
     return 0;
 
-  // The decoder may modify ImageInfo so the original ImageInfo struct
-  // must be updated for the caller (no copy can be made).
+  Magick::Options* options = new Magick::Options(imageInfo_,0,0,0);
+  Magick::Image image(image_, options);
 
-  MagickLib::QuantizeInfo* quantizeInfo = 
-    reinterpret_cast<MagickLib::QuantizeInfo*>(MagickLib::AcquireMemory(sizeof(MagickLib::QuantizeInfo)));
-  MagickLib::GetQuantizeInfo( quantizeInfo );
-
-  Magick::Coder* coder = static_cast<Magick::Coder*>(info->data);
-  //  coder->decoder( Magick::Options( imageInfo_, quantizeInfo ) );
-  coder->decoder( image );
+  Magick::Coder* coder = static_cast<Magick::Coder*>(imageInfo_->client_data);
+  image = coder->decoder( image );
+  MagickLib::Image* final = image.image();
+  image.image() = 0; // Ensure that image is not freed after return
+  return final;
 }
 
 // Image encoder callback (C linkage)
@@ -88,29 +85,29 @@ static MagickLib::Image *decoder( const MagickLib::ImageInfo *imageInfo_,
 static unsigned int encoder( const MagickLib::ImageInfo *imageInfo_,
 			     MagickLib::Image *image_)
 {
-  MagickLib::MagickInfo* info = 0; // FIXME!
-
-  if ( info->data == 0 )
+  if ( imageInfo_->client_data == 0 )
     return 0;
 
-  Magick::Coder* coder = static_cast<Magick::Coder*>(info->data);
-//   return static_cast<unsigned int>
-//     (coder->encoder(Magick::Image( imageInfo_, image_ )));
+  Magick::Options* options = new Magick::Options(imageInfo_,0,0,0);
+  Magick::Image image(image_, options);
+
+  Magick::Coder* coder = static_cast<Magick::Coder*>(imageInfo_->client_data);
+  return static_cast<unsigned int>(coder->encoder(image));
 }
 
 // Image magick callback (C linkage)
 // Returns True on success
-static unsigned int magick( const unsigned char *magick_,
-                            const unsigned int length_ )
-{
-  MagickLib::MagickInfo* info = 0; // FIXME!
+// static unsigned int magick( const unsigned char *magick_,
+//                             const unsigned int length_ )
+// {
+//   MagickLib::MagickInfo* info = 0; // FIXME!
 
-  if ( info->data == 0 )
-    return 0;
+//   if ( info->data == 0 )
+//     return 0;
 
-  Magick::Coder* coder = static_cast<Magick::Coder*>(info->data);
-  return static_cast<unsigned int>(coder->magick( magick_, length_ ));
-}
+//   Magick::Coder* coder = static_cast<Magick::Coder*>(info->data);
+//   return static_cast<unsigned int>(coder->magick( magick_, length_ ));
+// }
 
 
 // Constructor.

@@ -719,13 +719,13 @@ int main( int /*argc*/, char ** argv)
     // fontPointsize
     //
     // Test default
-    if ( image.fontPointsize() != 13 )
+    if ( image.fontPointsize() != 12 )
       {
 	++failures;
 	cout << "Line: " << __LINE__
              << ", fontPointsize ("
              << image.fontPointsize()
-             << ") is not default of 13 as expected"
+             << ") is not default of 12 as expected"
              << endl;
       }
 

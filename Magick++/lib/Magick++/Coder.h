@@ -37,8 +37,8 @@ namespace Magick
 
     // Magick method (callback).
     // Returns true if magick format is supported by the decoder.
-    virtual bool magick ( const unsigned char *magick_,
-			  const unsigned int length_ );
+//     virtual bool magick ( const unsigned char *magick_,
+// 			  const unsigned int length_ );
 
   protected:
 

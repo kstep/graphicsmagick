@@ -215,6 +215,21 @@ namespace Magick
     MagickLib::ImageInfo *     imageInfo( void );
     MagickLib::QuantizeInfo *  quantizeInfo( void );
 
+    Options( const MagickLib::ImageInfo* imageInfo_,
+             const MagickLib::QuantizeInfo* quantizeInfo_,
+             const MagickLib::AnnotateInfo* annotateInfo_,
+             const MagickLib::DrawInfo* drawInfo_ )
+      : _imageInfo(0),
+        _quantizeInfo(0),
+        _annotateInfo(0),
+        _drawInfo(0)
+      {
+        _imageInfo = CloneImageInfo(imageInfo_);
+        _quantizeInfo = CloneQuantizeInfo(quantizeInfo_);
+        _annotateInfo = CloneAnnotateInfo(imageInfo_,annotateInfo_);
+        _drawInfo = CloneDrawInfo(imageInfo_,drawInfo_);
+      }
+
   protected:
 
   private:

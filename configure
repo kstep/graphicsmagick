@@ -3478,7 +3478,7 @@ case "$host" in
   # Find out which ABI we are using.
   echo '#line 3479 "configure"' > conftest.$ac_ext
   if { (eval echo configure:3480: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; }; then
-    case "`/usr/bin/file conftest.o`" in
+    case "`/usr/bin/file conftest.$ac_objext`" in
     *32-bit*)
       LD="${LD-ld} -32"
       ;;
@@ -4136,7 +4136,7 @@ builddir=`pwd`
 #
 # Most delegates have includes in the same directory as the library
 #
-for dir in bzlib hdf/hdf/src jbig/libjbig jpeg lcms/source  png tiff/libtiff ttf ttf/include ttf/lib/.libs ttf/obj/.libs xml xml/.libs zlib
+for dir in bzlib hdf/hdf/src jbig/libjbig jpeg lcms/source  png tiff/libtiff ttf/obj/.libs ttf/include xml xml/.libs zlib
 do
   if test -d "$builddir/$dir"
   then
