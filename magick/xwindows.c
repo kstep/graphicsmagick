@@ -3124,7 +3124,7 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     (char *) "displayWarnings",(char *) "True");
   resource_info->display_warnings=IsTrue(resource_value);
   resource_info->font=XGetResourceClass(database,client_name,(char *) "font",
-    (char *) NULL);
+    "-*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-*");
   resource_info->font=XGetResourceClass(database,client_name,
     (char *) "fontList",resource_info->font);
   resource_info->font_name[0]=XGetResourceClass(database,client_name,

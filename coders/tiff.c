@@ -854,16 +854,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
-        status=TIFFReadRGBAImage(tiff,image->columns,image->rows,
+        (void) TIFFReadRGBAImage(tiff,image->columns,image->rows,
           pixels+image->columns*sizeof(uint32),0);
-        if (status == False)
-          {
-            LiberateMemory((void **) &pixels);
-            TIFFClose(tiff);
-            LiberateSemaphore(tiff_semaphore);
-            ThrowReaderException(CorruptImageWarning,"Unable to read image",
-              image);
-          }
         /*
           Convert image to DirectClass pixel packets.
         */

@@ -11251,6 +11251,8 @@ static Image *XVisualDirectoryImage(Display *display,
     Create the Visual Image Directory.
   */
   montage_info=CloneMontageInfo(resource_info->image_info,(MontageInfo *) NULL);
+  if (resource_info->font != (char *) NULL)
+    CloneString(&montage_info->font,resource_info->font);
   (void) strcpy(montage_info->filename,filename);
   montage_image=MontageImages(image,montage_info,&image->exception);
   DestroyMontageInfo(montage_info);
