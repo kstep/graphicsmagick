@@ -1,3 +1,8 @@
+2001-09-25  Cristy  <cristy@mystic.es.dupont.com>
+	* Removed most lint complaints from the source.
+	* strtod() returns different results on Linux and Solaris for 0x13.
+	* Added a MATLAB encoder contributed by Jaroslav Fojtik.
+
 2001-09-21  Cristy  <cristy@mystic.es.dupont.com>
 	* Replaced TemporaryFilename() with UniqueImageFilename().
 	* ImageMagick CORE API is not 64-bit clean.

@@ -83,7 +83,7 @@
 <P>void  <STRONG>DestroyImageInfo</STRONG>( ImageInfo *image_info );</P>
 <P>void  <STRONG>DestroyImages</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
-<P>unsigned int  <STRONG>GetImageDepth</STRONG>( Image *image );</P>
+<P>unsigned long  <STRONG>GetImageDepth</STRONG>( Image *image );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
 <P>ImageType  <STRONG>GetImageType</STRONG>( Image *image );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( Image *image );</P>
@@ -95,7 +95,7 @@
 <P>Image * <STRONG>ReferenceImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, const Quantum opacity );</P>
 <P>unsigned int  <STRONG>SetImageClipMask</STRONG>( Image *image, Image *clip_mask );</P>
-<P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned int depth );</P>
+<P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned long depth );</P>
 <P>void  <STRONG>SetImageOpacity</STRONG>( Image *image, const unsigned int opacity );</P>
 <P><STRONG>SetImageType</STRONG>( Image *image, const ImageType image_type );</P>
 <P>void  <STRONG>TextureImage</STRONG>( Image *image, Image *texture );</P>
@@ -361,7 +361,7 @@ The image.
 <P>
 <H2><A NAME="getimagedepth">GetImageDepth</A></H2>
 <blockquote>GetImageDepth ( ) returns the depth of the image, either 8 or 16 bits. Bydefault, pixels components are stored as 16-bit two byte unsigned shortintegers that range in value from 0 to 65535. However, if all the pixelshave lower-order bytes of zero, the image is considered to have a depth of8-bit.; </blockquote><P>The format of the GetImageDepth method is:</P>
-<blockquote>unsigned int GetImageDepth ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned long GetImageDepth ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -454,7 +454,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="listtogroupimage">ListToGroupImage</A></H2>
-<blockquote>ListToGroupImage ( ) is a convenience method that converts a linked list ofimages to a sequential array. For example, ; </blockquote><blockquote>images = ListToGroupImage ( image_list, \&n ); for ( i=0; i < n; i++ ) puts ( images[i]->filename ) ;; </blockquote><P>The format of the ListToGroupImage method is:</P>
+<blockquote>ListToGroupImage ( ) is a convenience method that converts a linked list ofimages to a sequential array. For example, ; </blockquote><blockquote>images = ListToGroupImage ( image_list, &n ); for ( i=0; i < n; i++ ) puts ( images[i]->filename ) ;; </blockquote><P>The format of the ListToGroupImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> **ListToGroupImage ( <A HREF="types/Image.html">Image</A> *image, unsigned int *number_images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -521,7 +521,7 @@ The image clip mask.
 <P>
 <H2><A NAME="setimagedepth">SetImageDepth</A></H2>
 <blockquote>SetImageDepth ( ) sets the depth of the image, either 8 or 16. Some imageformats support both 8 and 16-bits per color component ( e.g. PNG ) . UseSetImageDepth ( ) to specify your preference. A value other than 0 isreturned if the depth is set.; </blockquote><P>The format of the SetImageDepth method is:</P>
-<blockquote>unsigned int SetImageDepth ( <A HREF="types/Image.html">Image</A> *image, const unsigned int depth ); </blockquote><P>
+<blockquote>unsigned int SetImageDepth ( <A HREF="types/Image.html">Image</A> *image, const unsigned long depth ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
