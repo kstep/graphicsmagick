@@ -742,10 +742,10 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     /*
       Define XPM color.
     */
-    color.red=DownScale(image->colormap[i].red);
-    color.green=DownScale(image->colormap[i].green);
-    color.blue=DownScale(image->colormap[i].blue);
-    color.opacity=DownScale(image->colormap[i].opacity);
+    color.red=UpScale(DownScale(image->colormap[i].red));
+    color.green=UpScale(DownScale(image->colormap[i].green));
+    color.blue=UpScale(DownScale(image->colormap[i].blue));
+    color.opacity=UpScale(DownScale(image->colormap[i].opacity));
     (void) QueryColorName(&color,name);
     if (transparent)
       {
