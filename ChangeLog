@@ -1,5 +1,6 @@
 2003-02-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* NEWS: Added news for GraphicsMagick 1.0.0.
 	* magick/locale.c: Added error messages to support JP2.
 	* locale/C.mgk: Added error messages to support JP2.
 	* locale/locale.mgk: Update to GraphicsMagick copyright.

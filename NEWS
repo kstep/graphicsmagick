@@ -1,5 +1,79 @@
-In late November 2002, GraphicsMagick was created as a fork of
-ImageMagick several days before the ImageMagick 5.5.2 release.
+Major changes associated with GraphicsMagick 1.0.0
+
+  GraphicsMagick support services:
+    * Master web site at "http://www.GraphicsMagick.org/".
+    * Mailing lists, bug tracking, and forums available via
+    "http://sourceforge.net/projects/graphicsmagick/".
+    * CVSWeb via "http://cvs.graphicsmagick.org/cgi-bin/cvsweb.cgi/".
+    * CVS via cvs.graphicsmagick.org (find instructions at
+    "http://www.graphicsmagick.org/www/cvs.html").
+    * FTP via "ftp://ftp.graphicsmagick.org/pub/GraphicsMagick".
+
+  Project maintenance improvements:
+    * ChangeLog conforms to the GNU standard and all CVS commits include
+    useful log messages.
+    * CVS commit messages posted to graphicsmagick-commit mail list.
+    * CVS commit messages contain CVSWeb URL references.
+
+  Footprint changes from ImageMagick:
+    * Library -lMagick renamed to -lGraphicsMagick.
+    * Library -lMagick++ renamed to -lGraphicsMagick++.
+    * Utilities consolidated into a single 'gm' utility (e.g. use 'gm
+    convert').
+    * Script Magick-config renamed to GraphicsMagick-config.
+    * Script Magick++-config renamed to GraphicsMagick++-config.
+    * Headers installed under ${PREFIX}/include/GraphicsMagick.
+    * PerlMagick namespace renamed from "Image::Magick" to
+    "Graphics::Magick".
+
+  Many performance enhancements:
+    * Default QuantumDepth is 8 since this is adequate for most purposes
+    and more efficient than 16.
+    * The Magick++ demo (compiled with QuantumDepth=8 and -O2) runs about
+    1.8X faster under SPARC/Solaris than the same demo with ImageMagick
+    5.5.4.
+    * Colorspace transformations are much faster.
+    * Grayscale/monochrome image handling is much faster.
+    * PseudoClass image handling is faster.
+    * Text annotations using FreeType are much faster.
+    * Image file I/O is much faster.
+    * RLE-compressed MIFF reading much faster.
+
+  Code structure enhancements:
+    * All utility support functions moved to magick/command.c.
+    * Use of MogrifyImage() elminated except for by utilities.
+    * Re-builds due to changes to <magick/image.h> reduced by splitting the
+    header into multiple headers.
+    * ISO C '99 typedefs (gm_int16_t, gm_uint16_t, gm_int32_t, gm_uint32_t,
+    gm_int64_t, gm_uint64_t) are available for use.
+
+  Feature enhancements:
+    * Module loader always enabled for shared builds to allow extension.
+    * SVG coder allows specifying size and initial background color.
+    * JPEG-2000 coder (JP2) updated to work with Jasper 1.7.
+    * HWB and HSL image colorspace translation support.
+    * JNG/MNG/PNG format support tracks ImageMagick version.
+    * BMP encoder can write 16-color indexed BMPs now as well as 2-color
+    BMPs (not restricted to monochrome).
+
+  Major bug fixes:
+    * When dithering is disabled, don't dither when converting to a
+    PseudoClass, grayscale, or monochrome image. Disabling dithering
+    may cause these translations to be much faster.
+    * PICON format works with BLOBs.
+    * No longer removes input file when pinging a FlashPIX file.
+    * Arc drawing fixes from ImageMagick.
+
+  Windows platform enhancements:
+    * Configure updated for Visual C++ 7.0.
+    * OLE object (ImageMagickObject) re-written to work with Visual C++ 7.0
+    * New function, CropImageToHBITMAP(), to return a region of the image
+    as a Windows HBITMAP.
+    * Use vsnprintf to format strings under Windows (safer).
+
+==============================================================
+On November 19, 2002, GraphicsMagick was created as a fork of
+ImageMagick, several days before the ImageMagick 5.5.2 release.
 
 The objectives of GraphicsMagick are to:
 
