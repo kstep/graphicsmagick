@@ -85,8 +85,8 @@
 %    o beta: The opacity value associated with pixel q.
 %
 */
-MagickExport PixelPacket AlphaComposite(const PixelPacket *p,
-  const unsigned long alpha,const PixelPacket *q,const unsigned long beta)
+MagickExport PixelPacket AlphaComposite(const PixelPacket *p,const double alpha,
+  const PixelPacket *q,const double beta)
 {
   double
     gamma;
