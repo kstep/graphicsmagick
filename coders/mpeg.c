@@ -100,8 +100,8 @@ static unsigned int IsMPEG(const unsigned char *magick,const size_t length)
 
 #if defined(HasMPEG2)
 #include <inttypes.h>
-#include "video_out.h"
-#include "mpeg2.h"
+#include "mpeg2dec/video_out.h"
+#include "mpeg2dec/mpeg2.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
