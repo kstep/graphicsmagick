@@ -334,13 +334,20 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     break;
   }
   if (type_info != (TypeInfo *) NULL)
-    return(type_info);
+    {
+      ThrowException(exception,TypeWarning,
+        "Unable to get font; substitute found",type_info->family);
+      return(type_info);
+    }
   /*
     Default to Helvetica.
   */
   if (LocaleCompare(family,"helvetica") == 0)
     return((TypeInfo *) NULL);
   type_info=GetTypeInfoByFamily("helvetica",style,stretch,weight,exception);
+  if (type_info != (TypeInfo *) NULL)
+    ThrowException(exception,TypeWarning,
+      "Unable to get font; substitute found",type_info->family);
   return(type_info);
 }
 

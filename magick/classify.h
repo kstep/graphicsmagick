@@ -133,7 +133,7 @@ typedef enum
 {
   UndefinedException,
   ResourceLimitWarning = 300,
-  XServerWarning = 305,
+  TypeWarning = 305,
   OptionWarning = 310,
   DelegateWarning = 315,
   MissingDelegateWarning = 320,
@@ -142,11 +142,12 @@ typedef enum
   BlobWarning = 335,
   StreamWarning = 340,
   CacheWarning = 345,
+  XServerWarning = 385,
   RegistryWarning = 390,
   ConfigurationWarning = 395,
   FatalException = 400,
   ResourceLimitError = 400,
-  XServerError = 405,
+  TypeError = 405,
   OptionError = 410,
   DelegateError = 415,
   MissingDelegateError = 420,
@@ -155,6 +156,7 @@ typedef enum
   BlobError = 435,
   StreamError = 440,
   CacheError = 445,
+  XServerError = 485,
   RegistryError = 490,
   ConfigurationError = 495
 } ExceptionType;
