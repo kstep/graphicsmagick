@@ -2953,6 +2953,10 @@ MagickExport int SubstituteString(char** buffer, const char* search, const char 
     *match,
     *source;
 
+  assert(buffer != (char**) NULL);
+  assert(search != (const char*) NULL);
+  assert(replace != (const char*) NULL);
+
   source=*buffer;
   match = strstr(source, search);
   if (match == (char *) NULL)
@@ -2964,9 +2968,9 @@ MagickExport int SubstituteString(char** buffer, const char* search, const char 
                      "Memory allocation failed");
   *result='\0';
   result_length=0;
+  dest=result;
   replace_length=strlen(replace);
   search_length=strlen(search);
-  dest=result;
 
   while (match != (char*) NULL)
     {
