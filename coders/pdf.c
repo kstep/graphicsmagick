@@ -855,6 +855,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   xref=(off_t *) AcquireMemory(2048*sizeof(off_t));
   if (xref == (off_t *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+  for (i=0;i<2048;i++)
+    xref[i] = 0;	/* zero it out! */
   /*
     Write Info object.
   */
@@ -1001,6 +1003,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/MediaBox [0 0 %ld %d]\n",
       media_info.width,media_info.height);
+    (void) WriteBlobString(image,buffer);
+    FormatString(buffer,"/CropBox [%ld %ld %ld %d]\n",
+      x, y, image->columns + x, image->rows + y);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Contents %lu 0 R\n",object+1);
     (void) WriteBlobString(image,buffer);
@@ -1732,8 +1737,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"0000000000 65535 f \n");
   for (i=0; i < (long) object; i++)
   {
+	  /*	LDR: for some reason this is always failing on Windows!
     if (xref[i] > (off_t) 0xffffffffUL)
       ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+	  */
     FormatString(buffer,"%010lu 00000 n \n",(unsigned long) xref[i]);
     (void) WriteBlobString(image,buffer);
   }
