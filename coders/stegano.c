@@ -165,7 +165,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     image->colormap[i].green=((unsigned long) (MaxRGB*i)/(image->colors-1));
     image->colormap[i].blue=((unsigned long) (MaxRGB*i)/(image->colors-1));
   }
-  SetImage(image,Opaque);
+  SetImage(image,OpaqueOpacity);
   /*
     Grab embedded watermark.
   */

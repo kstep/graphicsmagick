@@ -260,7 +260,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const DrawInfo *draw_info,
   /*
     Track "hot" pixels with the image index packets.
   */
-  alpha=1.0/Opaque;
+  alpha=1.0/OpaqueOpacity;
   image->class=PseudoClass;
   for (y=0; y < (int) image->rows; y++)
   {
@@ -422,13 +422,13 @@ Export unsigned int ColorFloodfillImage(Image *image,const DrawInfo *draw_info,
             else
               {
                 q->red=alpha*(color.red*color.opacity+
-                  q->red*(Opaque-color.opacity));
+                  q->red*(OpaqueOpacity-color.opacity));
                 q->green=alpha*(color.green*color.opacity+
-                  q->green*(Opaque-color.opacity));
+                  q->green*(OpaqueOpacity-color.opacity));
                 q->blue=alpha*(color.blue*color.opacity+
-                  q->blue*(Opaque-color.opacity));
+                  q->blue*(OpaqueOpacity-color.opacity));
                 q->opacity=alpha*(color.opacity*
-                  color.opacity+q->opacity*(Opaque-color.opacity));
+                  color.opacity+q->opacity*(OpaqueOpacity-color.opacity));
               }
           }
         q++;
@@ -1152,7 +1152,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     bounds.y2+=mid;
     if (bounds.y2 >= image->rows)
       bounds.y2=image->rows-1.0;
-    alpha=1.0/Opaque;
+    alpha=1.0/OpaqueOpacity;
     image->class=DirectClass;
     for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
     {
@@ -1186,25 +1186,29 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               color=GetOnePixel(clone_info->tile,x % clone_info->tile->columns,
                 y % clone_info->tile->rows);
             color.opacity*=clone_info->opacity/100.0;
-            if ((opacity == Transparent) || (color.opacity == Transparent))
+            if ((opacity == TransparentOpacity) ||
+                (color.opacity == TransparentOpacity))
               break;
             if (!clone_info->antialias)
-              opacity=Opaque;
+              opacity=OpaqueOpacity;
             if (clone_info->opacity == 100.0)
               {
-                q->red=alpha*(color.red*opacity+q->red*(Opaque-opacity));
-                q->green=alpha*(color.green*opacity+q->green*(Opaque-opacity));
-                q->blue=alpha*(color.blue*opacity+q->blue*(Opaque-opacity));
+                q->red=alpha*(color.red*opacity+
+                  q->red*(OpaqueOpacity-opacity));
+                q->green=alpha*(color.green*opacity+
+                  q->green*(OpaqueOpacity-opacity));
+                q->blue=alpha*(color.blue*opacity+
+                  q->blue*(OpaqueOpacity-opacity));
                 break;
               }
             q->red=alpha*(color.red*color.opacity+
-              q->red*(Opaque-color.opacity));
+              q->red*(OpaqueOpacity-color.opacity));
             q->green=alpha*(color.green*color.opacity+
-              q->green*(Opaque-color.opacity));
+              q->green*(OpaqueOpacity-color.opacity));
             q->blue=alpha*(color.blue*color.opacity+
-              q->blue*(Opaque-color.opacity));
+              q->blue*(OpaqueOpacity-color.opacity));
             q->opacity=alpha*(color.opacity*color.opacity+
-              q->opacity*(Opaque-color.opacity));
+              q->opacity*(OpaqueOpacity-color.opacity));
             break;
           }
           default:
@@ -1213,27 +1217,33 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         opacity=InsidePrimitive(primitive_info,clone_info,&target,False,image);
         color=clone_info->stroke;
         color.opacity*=clone_info->opacity/100.0;
-        if ((opacity == Transparent) || (color.opacity == Transparent))
+        if ((opacity == TransparentOpacity) ||
+            (color.opacity == TransparentOpacity))
           {
             q++;
             continue;
           }
         if (!clone_info->antialias)
-          opacity=Opaque;
+          opacity=OpaqueOpacity;
         if (clone_info->opacity == 100.0)
           {
-            q->red=alpha*(color.red*opacity+q->red*(Opaque-opacity));
-            q->green=alpha*(color.green*opacity+q->green*(Opaque-opacity));
-            q->blue=alpha*(color.blue*opacity+q->blue*(Opaque-opacity));
+            q->red=alpha*(color.red*opacity+
+              q->red*(OpaqueOpacity-opacity));
+            q->green=alpha*(color.green*opacity+
+              q->green*(OpaqueOpacity-opacity));
+            q->blue=alpha*(color.blue*opacity+
+              q->blue*(OpaqueOpacity-opacity));
             q++;
             continue;
           }
-        q->red=alpha*(color.red*color.opacity+q->red*(Opaque-color.opacity));
-        q->green=
-          alpha*(color.green*color.opacity+q->green*(Opaque-color.opacity));
-        q->blue=alpha*(color.blue*color.opacity+q->blue*(Opaque-color.opacity));
-        q->opacity=
-          alpha*(color.opacity*color.opacity+q->opacity*(Opaque-color.opacity));
+        q->red=alpha*(color.red*color.opacity+
+          q->red*(OpaqueOpacity-color.opacity));
+        q->green=alpha*(color.green*color.opacity+
+          q->green*(OpaqueOpacity-color.opacity));
+        q->blue=alpha*(color.blue*color.opacity+
+          q->blue*(OpaqueOpacity-color.opacity));
+        q->opacity=alpha*(color.opacity*color.opacity+
+          q->opacity*(OpaqueOpacity-color.opacity));
         q++;
       }
       if (!SyncImagePixels(image))
@@ -1935,8 +1945,8 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method InsidePrimitive returns the opacity of the pen at the (x,y) position
-%  of the image.  The opacity is Opaque if the (x,y) position is within the
-%  primitive as defined in primitive_info.  A value less than fully opaque
+%  of the image.  The opacity is OpaqueOpacity if the (x,y) position is within
+%  the primitive as defined in primitive_info.  A value less than fully opaque
 %  and greater than fully transparent is returned for a primitive edge pixel
 %  to allow for anti-aliasing.  Otherwise fully transparent is returned.
 %
@@ -2001,19 +2011,19 @@ static double PixelOnLine(const PointInfo *pixel,const PointInfo *p,
     alpha,
     distance;
 
-  if ((mid == 0) || (opacity == Opaque))
+  if ((mid == 0) || (opacity == OpaqueOpacity))
     return(opacity);
   if ((p->x == q->x) && (p->y == q->y))
-    return((pixel->x == p->x) && (pixel->y == p->y) ? Opaque : opacity);
+    return((pixel->x == p->x) && (pixel->y == p->y) ? OpaqueOpacity : opacity);
   distance=DistanceToLine(pixel,p,q);
   alpha=mid-0.5;
   if (distance <= (alpha*alpha))
-    return(Opaque);
+    return(OpaqueOpacity);
   alpha=mid+0.5;
   if (distance <= (alpha*alpha))
     {
       alpha=sqrt(distance)-mid-0.5;
-      return(Max(opacity,Opaque*alpha*alpha));
+      return(Max(opacity,OpaqueOpacity*alpha*alpha));
     }
   return(opacity);
 }
@@ -2042,7 +2052,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
   assert(primitive_info != (PrimitiveInfo *) NULL);
   assert(draw_info != (DrawInfo *) NULL);
   assert(image != (Image *) NULL);
-  opacity=Transparent;
+  opacity=TransparentOpacity;
   mid=draw_info->linewidth/2.0;
   p=primitive_info;
   while (p->primitive != UndefinedPrimitive)
@@ -2055,7 +2065,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
       {
         if ((pixel->x == (int) (p->pixel.x+0.5)) &&
             (pixel->y == (int) (p->pixel.y+0.5)))
-          opacity=Opaque;
+          opacity=OpaqueOpacity;
         break;
       }
       case LinePrimitive:
@@ -2071,7 +2081,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
                 (pixel->x <= (int) (Max(p->pixel.x,q->pixel.x)+0.5)) &&
                 (pixel->y >= (int) (Min(p->pixel.y,q->pixel.y)+0.5)) &&
                 (pixel->y <= (int) (Max(p->pixel.y,q->pixel.y)+0.5)))
-              opacity=Opaque;
+              opacity=OpaqueOpacity;
             break;
           }
         if (((pixel->x >= (int) (Min(p->pixel.x-mid,q->pixel.x+mid)+0.5)) &&
@@ -2082,7 +2092,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
              (pixel->x < (int) (Max(p->pixel.x+mid,q->pixel.x-mid)+0.5)) &&
              (pixel->y >= (int) (Min(p->pixel.y+mid,q->pixel.y-mid)+0.5)) &&
              (pixel->y < (int) (Max(p->pixel.y+mid,q->pixel.y-mid)+0.5))))
-          opacity=Opaque;
+          opacity=OpaqueOpacity;
         break;
       }
       case CirclePrimitive:
@@ -2096,23 +2106,23 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
         if (fill)
           {
             if (distance <= (radius-1.0))
-              opacity=Opaque;
+              opacity=OpaqueOpacity;
             else
               if (distance < (radius+1.0))
                 {
                   alpha=(radius-distance+1.0)/2.0;
-                  opacity=Max(opacity,Opaque*alpha*alpha);
+                  opacity=Max(opacity,OpaqueOpacity*alpha*alpha);
                 }
             break;
           }
         if (fabs(distance-radius) < (mid+0.5))
           {
             if (fabs(distance-radius) <= (mid-0.5))
-              opacity=Opaque;
+              opacity=OpaqueOpacity;
             else
               {
                 alpha=mid-fabs(distance-radius)+0.5;
-                opacity=Max(opacity,Opaque*alpha*alpha);
+                opacity=Max(opacity,OpaqueOpacity*alpha*alpha);
               }
           }
         break;
@@ -2137,8 +2147,8 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
 
         if (!fill)
           {
-            poly_opacity=Transparent;
-            for ( ; (p < q) && (poly_opacity != Opaque); p++)
+            poly_opacity=TransparentOpacity;
+            for ( ; (p < q) && (poly_opacity != OpaqueOpacity); p++)
               poly_opacity=PixelOnLine(pixel,&p->pixel,&(p+1)->pixel,mid,
                 Max(opacity,poly_opacity));
             opacity=Max(opacity,poly_opacity);
@@ -2197,20 +2207,20 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
         minimum_distance=sqrt(minimum_distance);
         if (crossings & 0x01)
           {
-            poly_opacity=Opaque;
+            poly_opacity=OpaqueOpacity;
             if (minimum_distance < 0.5)
               {
                 alpha=0.5+minimum_distance;
-                poly_opacity=Opaque*alpha*alpha;
+                poly_opacity=OpaqueOpacity*alpha*alpha;
               }
             opacity=Max(opacity,poly_opacity);
             break;
           }
-        poly_opacity=Transparent;
+        poly_opacity=TransparentOpacity;
         if (minimum_distance < 0.5)
           {
             alpha=0.5-minimum_distance;
-            poly_opacity=Opaque*alpha*alpha;
+            poly_opacity=OpaqueOpacity*alpha*alpha;
           }
         opacity=Max(opacity,poly_opacity);
         break;
@@ -2225,7 +2235,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->pixel.x+0.5)) ||
                 (pixel->y != (int) (p->pixel.y+0.5)))
               break;
-            opacity=Opaque;
+            opacity=OpaqueOpacity;
             break;
           }
           case ReplaceMethod:
@@ -2239,7 +2249,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
             target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
             color=GetOnePixel(image,(int) pixel->x,(int) pixel->y);
             if (ColorMatch(color,target,(int) image->fuzz))
-              opacity=Opaque;
+              opacity=OpaqueOpacity;
             break;
           }
           case FloodfillMethod:
@@ -2260,7 +2270,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
           }
           case ResetMethod:
           {
-            opacity=Opaque;
+            opacity=OpaqueOpacity;
             break;
           }
         }
@@ -2272,7 +2282,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
           *q;
 
         if (!image->matte)
-          MatteImage(image,Opaque);
+          MatteImage(image,OpaqueOpacity);
         switch (p->method)
         {
           case PointMethod:
@@ -2284,7 +2294,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
             q=GetImagePixels(image,(int) pixel->x,(int) pixel->y,1,1);
             if (q != (PixelPacket *) NULL)
               {
-                q->opacity=Transparent;
+                q->opacity=TransparentOpacity;
                 (void) SyncImagePixels(image);
               }
             break;
@@ -2303,7 +2313,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
               break;
             q=GetImagePixels(image,(int) pixel->x,(int) pixel->y,1,1);
             if (q != (PixelPacket *) NULL)
-              q->opacity=Transparent;
+              q->opacity=TransparentOpacity;
             (void) SyncImagePixels(image);
             break;
           }
@@ -2319,7 +2329,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
                 border_color=draw_info->border_color;
                 target=border_color;
               }
-            (void) MatteFloodfillImage(image,target,Transparent,
+            (void) MatteFloodfillImage(image,target,TransparentOpacity,
               (int) pixel->x,(int) pixel->y,p->method);
             break;
           }
@@ -2328,7 +2338,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
             q=GetImagePixels(image,(int) pixel->x,(int) pixel->y,1,1);
             if (q != (PixelPacket *) NULL)
               {
-                q->opacity=Opaque;
+                q->opacity=OpaqueOpacity;
                 (void) SyncImagePixels(image);
               }
             break;
@@ -2395,7 +2405,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
       case ImagePrimitive:
         break;
     }
-    if (opacity == Opaque)
+    if (opacity == OpaqueOpacity)
       return(opacity);
     p=q+1;
   }
@@ -2491,7 +2501,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket target,
   */
   image->class=DirectClass;
   if (!image->matte)
-    MatteImage(image,Opaque);
+    MatteImage(image,OpaqueOpacity);
   x=x_offset;
   y=y_offset;
   start=0;
@@ -2726,7 +2736,7 @@ Export unsigned int TransparentImage(Image *image,const PixelPacket target)
   */
   assert(image != (Image *) NULL);
   if (!image->matte)
-    MatteImage(image,Opaque);
+    MatteImage(image,OpaqueOpacity);
   for (y=0; y < (int) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
@@ -2735,7 +2745,7 @@ Export unsigned int TransparentImage(Image *image,const PixelPacket target)
     for (x=0; x < (int) image->columns; x++)
     {
       if (ColorMatch(*q,target,image->fuzz))
-        q->opacity=Transparent;
+        q->opacity=TransparentOpacity;
       q++;
     }
     if (!SyncImagePixels(image))

@@ -1615,7 +1615,7 @@ Export unsigned int IsMatteImage(Image *image)
       return(False);
     for (x=0; x < (int) image->columns; x++)
     {
-      if (p->opacity != Opaque)
+      if (p->opacity != OpaqueOpacity)
         return(True);
       p++;
     }
@@ -1999,7 +1999,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
       color->red=((unsigned long) (MaxRGB*red)/((1 << n)-1));
       color->green=((unsigned long) (MaxRGB*green)/((1 << n)-1));
       color->blue=((unsigned long) (MaxRGB*blue)/((1 << n)-1));
-      color->opacity=Opaque;
+      color->opacity=OpaqueOpacity;
       if (opacity >= 0)
         color->opacity=((unsigned long) (MaxRGB*opacity)/((1 << n)-1));
       return(True);
@@ -2009,7 +2009,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
       color->red=0;
       color->green=0;
       color->blue=0;
-      color->opacity=Transparent;
+      color->opacity=TransparentOpacity;
       return(True);
     }
   if (LocaleNCompare(target,"rgb",3) == 0)
@@ -2018,7 +2018,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
       color->red=UpScale(red);
       color->green=UpScale(green);
       color->blue=UpScale(blue);
-      color->opacity=Opaque;
+      color->opacity=OpaqueOpacity;
       return(True);
     }
   /*
@@ -2046,7 +2046,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
     color->red=XColorlist[mid].red;
     color->green=XColorlist[mid].green;
     color->blue=XColorlist[mid].blue;
-    color->opacity=Opaque;
+    color->opacity=OpaqueOpacity;
     return(True);
   }
   /*
@@ -2074,7 +2074,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
     color->red=XPMColorlist[mid].red;
     color->green=XPMColorlist[mid].green;
     color->blue=XPMColorlist[mid].blue;
-    color->opacity=Opaque;
+    color->opacity=OpaqueOpacity;
     return(True);
   }
 #if defined(HasX11)
@@ -2092,7 +2092,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
     color->red=XDownScale(xcolor.red);
     color->green=XDownScale(xcolor.green);
     color->blue=XDownScale(xcolor.blue);
-    color->opacity=Opaque;
+    color->opacity=OpaqueOpacity;
     return(status);
   }
 #else
@@ -2125,7 +2125,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
               color->red=UpScale(red);
               color->green=UpScale(green);
               color->blue=UpScale(blue);
-              color->opacity=Opaque;
+              color->opacity=OpaqueOpacity;
               return(True);
             }
         }

@@ -581,7 +581,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
     (void) strcpy(montage_next->filename,montage_info->filename);
     montage_next->columns=bounding_box.width;
     montage_next->rows=bounding_box.height;
-    SetImage(montage_next,Opaque);
+    SetImage(montage_next,OpaqueOpacity);
     /*
       Set montage geometry.
     */

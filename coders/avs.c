@@ -169,7 +169,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q->red=UpScale(*p++);
         q->green=UpScale(*p++);
         q->blue=UpScale(*p++);
-        image->matte|=q->opacity != Opaque;
+        image->matte|=q->opacity != OpaqueOpacity;
         q++;
       }
       if (!SyncImagePixels(image))
@@ -350,7 +350,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
       q=pixels;
       for (x=0; x < (int) image->columns; x++)
       {
-        *q++=DownScale(image->matte ? p->opacity : Opaque);
+        *q++=DownScale(image->matte ? p->opacity : OpaqueOpacity);
         *q++=DownScale(p->red);
         *q++=DownScale(p->green);
         *q++=DownScale(p->blue);

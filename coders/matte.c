@@ -170,12 +170,12 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
   if (matte_image == (Image *) NULL)
     return(False);
   matte_image->class=PseudoClass;
-  matte_image->colors=(Opaque-Transparent)+1;
+  matte_image->colors=(OpaqueOpacity-TransparentOpacity)+1;
   matte_image->colormap=(PixelPacket *)
     AllocateMemory(matte_image->colors*sizeof(PixelPacket));
   if (matte_image->colormap == (PixelPacket *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
-  for (i=Transparent; i <= Opaque; i++)
+  for (i=TransparentOpacity; i <= OpaqueOpacity; i++)
   {
     matte_image->colormap[i].red=(Quantum) i;
     matte_image->colormap[i].green=(Quantum) i;

@@ -402,7 +402,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->class == PseudoClass)
         indexes[x]=j;
       *r=image->colormap[j];
-      r->opacity=j == none ? Transparent : Opaque;
+      r->opacity=j == none ? TransparentOpacity : OpaqueOpacity;
       r++;
       p+=width;
     }
@@ -596,8 +596,8 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
               break;
             for (x=0; x < (int) image->columns; x++)
             {
-              p->opacity=p->opacity == Transparent;
-              if (p->opacity == Transparent)
+              p->opacity=p->opacity == TransparentOpacity;
+              if (p->opacity == TransparentOpacity)
                 transparent=True;
               p++;
             }

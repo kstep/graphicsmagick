@@ -159,7 +159,7 @@ static Image *Read8BIMImage(const ImageInfo *image_info,
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   image->columns=1;
   image->rows=1;
-  SetImage(image,Opaque);
+  SetImage(image,OpaqueOpacity);
   /*
     Read 8BIM image.
   */

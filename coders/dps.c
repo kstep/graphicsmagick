@@ -470,9 +470,9 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 for (x=0; x < (int) image->columns; x++)
                 {
-                  q->opacity=Opaque;
+                  q->opacity=OpaqueOpacity;
                   if (!XGetPixel(matte_image,x,y))
-                    q->opacity=Transparent;
+                    q->opacity=TransparentOpacity;
                   q++;
                 }
                 if (!SyncImagePixels(image))

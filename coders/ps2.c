@@ -654,7 +654,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               break;
             for (x=0; x < (int) image->columns; x++)
             {
-              if (image->matte && (p->opacity == Transparent))
+              if (image->matte && (p->opacity == TransparentOpacity))
                 {
                   *q++=DownScale(MaxRGB);
                   *q++=DownScale(MaxRGB);
@@ -709,7 +709,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               break;
             for (x=0; x < (int) image->columns; x++)
             {
-              if (image->matte && (p->opacity == Transparent))
+              if (image->matte && (p->opacity == TransparentOpacity))
                 {
                   Ascii85Encode(image,DownScale(MaxRGB));
                   Ascii85Encode(image,DownScale(MaxRGB));

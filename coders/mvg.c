@@ -104,7 +104,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=640;
   if (image->rows == 0)
     image->rows=480;
-  SetImage(image,Opaque);
+  SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) strcpy(filename,"@");
   (void) strcat(filename,image_info->filename);

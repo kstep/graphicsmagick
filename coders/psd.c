@@ -649,7 +649,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           }
         else
-          if (layer_info[i].opacity != Opaque)
+          if (layer_info[i].opacity != OpaqueOpacity)
             {
               /*
                 Correct for opacity level.
@@ -662,7 +662,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 for (x=0; x < (int) layer_info[i].image->columns; x++)
                 {
-                  q->opacity=(int) (q->opacity*layer_info[i].opacity)/Opaque;
+                  q->opacity=(int) (q->opacity*layer_info[i].opacity)/OpaqueOpacity;
                   q++;
                 }
                 if (!SyncImagePixels(layer_info[i].image))
@@ -678,7 +678,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Convert pixels to Runlength encoded.
   */
   compression=MSBFirstReadShort(image);
-  SetImage(image,Opaque);
+  SetImage(image,OpaqueOpacity);
   if (compression != 0)
     {
       /*
@@ -752,7 +752,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       }
       if (image->matte && (number_layers != 0))
-        MatteImage(image,Transparent);
+        MatteImage(image,TransparentOpacity);
       FreeMemory((void **) &scanline);
     }
   if (image->colorspace == CMYKColorspace)

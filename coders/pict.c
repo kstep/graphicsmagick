@@ -817,7 +817,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             break;
           image->columns=frame.right-frame.left;
           image->rows=frame.bottom-frame.top;
-          SetImage(image,Opaque);
+          SetImage(image,OpaqueOpacity);
           break;
         }
         case 0x12:

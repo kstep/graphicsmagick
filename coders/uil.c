@@ -236,7 +236,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
               break;
             for (x=0; x < (int) image->columns; x++)
             {
-              matte_image[i]=p->opacity == Transparent;
+              matte_image[i]=p->opacity == TransparentOpacity;
               if (matte_image[i])
                 transparent=True;
               i++;

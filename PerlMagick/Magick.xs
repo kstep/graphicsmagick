@@ -175,7 +175,7 @@ static char
   },
   *ColorspaceTypes[] =
   {
-    "Undefined", "RGB", "Gray", "Transparent", "OHTA", "XYZ", "YCbCr",
+    "Undefined", "RGB", "Gray", "TransparentOpacity", "OHTA", "XYZ", "YCbCr",
     "YCC", "YIQ", "YPbPr", "YUV", "CMYK", "sRGB", (char *) NULL
   },
   *CompositeTypes[] =
@@ -368,7 +368,7 @@ static struct
     { "Texture", { {"texture", ImageReference} } },
     { "Transform", { {"crop", StringReference}, {"geom", StringReference},
       {"filter", FilterTypes} } },
-    { "Transparent", { {"color", StringReference} } },
+    { "TransparentOpacity", { {"color", StringReference} } },
     { "Threshold", { {"threshold", DoubleReference} } },
     { "Charcoal", { {"factor", StringReference} } },
     { "Trim", },
@@ -529,7 +529,7 @@ static double constant(char *name,int sans)
     case 'O':
     {
       if (strEQ(name,"Opaque"))
-        return(Opaque);
+        return(OpaqueOpacity);
       if (strEQ(name,"OptionError"))
         return(OptionError);
       if (strEQ(name,"OptionWarning"))
@@ -559,7 +559,7 @@ static double constant(char *name,int sans)
     case 'T':
     {
       if (strEQ(name,"Transparent"))
-        return(Transparent);
+        return(TransparentOpacity);
       break;
     }
     case 'X':
@@ -1368,8 +1368,9 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                   ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green);
                 pixel->blue=(Quantum)
                   ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
-                pixel->opacity=(unsigned short) ((opacity < Transparent) ?
-                  Transparent : (opacity > Opaque) ? Opaque : opacity);
+                pixel->opacity=((opacity < TransparentOpacity) ?
+                  TransparentOpacity : (opacity > OpaqueOpacity) ?
+                  OpaqueOpacity : opacity);
               }
             (void) SyncImagePixels(image);
           }
@@ -3537,7 +3538,7 @@ Mogrify(ref,...)
     TextureImage       = 108
     Transform          = 109
     TransformImage     = 110
-    Transparent        = 111
+    TransparentOpacity        = 111
     TransparentImage   = 112
     Threshold          = 113
     ThresholdImage     = 114
@@ -4467,11 +4468,11 @@ Mogrify(ref,...)
                 QueryColorDatabase(argument_list[4].string_reference,
                   &border_color);
             }
-          matte=Transparent;
+          matte=TransparentOpacity;
           if (attribute_flag[3])
             matte=argument_list[3].int_reference;
           if (!image->matte)
-            MatteImage(image,Opaque);
+            MatteImage(image,OpaqueOpacity);
           pixel=GetImagePixels(image,rectangle_info.x % image->columns,
             rectangle_info.y % image->rows,1,1);
           if (pixel != (PixelPacket *) NULL)
@@ -4651,7 +4652,7 @@ Mogrify(ref,...)
             argument_list[1].string_reference);
           break;
         }
-        case 56:  /* Transparent */
+        case 56:  /* TransparentOpacity */
         {
           PixelPacket
             target;

@@ -521,7 +521,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     TransformRGBImage(image,RGBColorspace);
     if (LocaleCompare(image_info->magick,"RGBA") == 0)
       if (!image->matte)
-        MatteImage(image,Opaque);
+        MatteImage(image,OpaqueOpacity);
     switch (image_info->interlace)
     {
       case NoInterlace:

@@ -1196,7 +1196,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   length++;
                 else
                   {
-                    if (image->matte && (p->opacity == Transparent))
+                    if (image->matte && (p->opacity == TransparentOpacity))
                       FormatString(buffer,"ffffff%02x",(unsigned int)
                         Min(length,0xff));
                     else
@@ -1234,7 +1234,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (int) image->columns; x++)
               {
-                if (image->matte && (p->opacity == Transparent))
+                if (image->matte && (p->opacity == TransparentOpacity))
                   (void) strcpy(buffer,"ffffff");
                 else
                   FormatString(buffer,"%02lx%02lx%02lx",

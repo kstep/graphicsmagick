@@ -275,7 +275,7 @@ static unsigned int DecodeImage(Image *image,const int opacity,
       index=(*top_stack);
       indexes[x]=index;
       *q=image->colormap[index];
-      q->opacity=index == opacity ? Transparent : Opaque;
+      q->opacity=index == opacity ? TransparentOpacity : OpaqueOpacity;
       x++;
       q++;
     }
@@ -1206,7 +1206,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
               indexes=GetIndexes(image);
               for (x=0; x < (int) image->columns; x++)
               {
-                if (p->opacity == Transparent)
+                if (p->opacity == TransparentOpacity)
                   indexes[x]=opacity;
                 p++;
               }
@@ -1229,7 +1229,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
-              if (p->opacity == Transparent)
+              if (p->opacity == TransparentOpacity)
                 {
                   opacity=indexes[x];
                   break;

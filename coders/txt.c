@@ -180,7 +180,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Annotate the text image.
   */
-  SetImage(image,Opaque);
+  SetImage(image,OpaqueOpacity);
   annotate_info=
     CloneAnnotateInfo((ImageInfo *) image_info,(AnnotateInfo *) NULL);
   (void) strcpy(filename,image_info->filename);

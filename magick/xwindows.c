@@ -264,7 +264,7 @@ Export unsigned int XAnnotateImage(Display *display,
     for (x=0; x < (int) annotate_image->columns; x++)
     {
       q->opacity=(Quantum) XGetPixel(annotate_ximage,x,y);
-      if (q->opacity == Transparent)
+      if (q->opacity == TransparentOpacity)
         {
           /*
             Set this pixel to the background color.
@@ -272,11 +272,11 @@ Export unsigned int XAnnotateImage(Display *display,
           q->red=XDownScale(pixel->box_color.red);
           q->green=XDownScale(pixel->box_color.green);
           q->blue=XDownScale(pixel->box_color.blue);
-          q->opacity=Opaque;
+          q->opacity=OpaqueOpacity;
           if (annotate_info->stencil == ForegroundStencil)
             {
               *q=annotate_image->background_color;
-              q->opacity=Transparent;
+              q->opacity=TransparentOpacity;
             }
         }
       else
@@ -287,11 +287,11 @@ Export unsigned int XAnnotateImage(Display *display,
           q->red=XDownScale(pixel->pen_color.red);
           q->green=XDownScale(pixel->pen_color.green);
           q->blue=XDownScale(pixel->pen_color.blue);
-          q->opacity=Opaque;
+          q->opacity=OpaqueOpacity;
           if (annotate_info->stencil == BackgroundStencil)
             {
               *q=annotate_image->background_color;
-              q->opacity=Transparent;
+              q->opacity=TransparentOpacity;
             }
         }
       q++;
@@ -389,8 +389,8 @@ Export unsigned int XAnnotateImage(Display *display,
       break;
     for (x=0; x < (int) annotate_image->columns; x++)
     {
-      if (q->opacity != Transparent)
-        q->opacity=Opaque;
+      if (q->opacity != TransparentOpacity)
+        q->opacity=OpaqueOpacity;
       q++;
     }
   }
@@ -2072,7 +2072,8 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
             Set this pixel to the background color.
           */
           *q=draw_image->background_color;
-          q->opacity=draw_info->stencil == OpaqueStencil ? Transparent : Opaque;
+          q->opacity=draw_info->stencil == OpaqueStencil ?
+            TransparentOpacity : OpaqueOpacity;
         }
       else
         {
@@ -2082,7 +2083,8 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
           q->red=XDownScale(pixel->pen_color.red);
           q->green=XDownScale(pixel->pen_color.green);
           q->blue=XDownScale(pixel->pen_color.blue);
-          q->opacity=draw_info->stencil == OpaqueStencil ? Opaque : Transparent;
+          q->opacity=draw_info->stencil == OpaqueStencil ?
+            OpaqueOpacity : TransparentOpacity;
         }
       q++;
     }
@@ -2178,8 +2180,8 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
       break;
     for (x=0; x < (int) draw_image->columns; x++)
     {
-      if (q->opacity != Transparent)
-        q->opacity=Opaque;
+      if (q->opacity != TransparentOpacity)
+        q->opacity=OpaqueOpacity;
       q++;
     }
     if (!SyncImagePixels(draw_image))
@@ -4061,7 +4063,7 @@ Export Image *XGetWindowImage(Display *display,const Window window,
                   q->green=XDownScale(colors[index].green);
                   index=(pixel >> blue_shift) & blue_mask;
                   q->blue=XDownScale(colors[index].blue);
-                  q->opacity=Transparent;
+                  q->opacity=TransparentOpacity;
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
@@ -4082,7 +4084,7 @@ Export Image *XGetWindowImage(Display *display,const Window window,
                   q->green=XDownScale((color*65535L)/green_mask);
                   color=(pixel >> blue_shift) & blue_mask;
                   q->blue=XDownScale((color*65535L)/blue_mask);
-                  q->opacity=Transparent;
+                  q->opacity=TransparentOpacity;
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
@@ -5874,7 +5876,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         for (x=0; x < (int) image->columns; x++)
         {
           byte>>=1;
-          if (p->opacity == Transparent)
+          if (p->opacity == TransparentOpacity)
             byte|=0x80;
           bit++;
           if (bit == 8)
@@ -6407,7 +6409,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         for (x=0; x < (int) image->columns; x++)
         {
           byte<<=1;
-          if (p->opacity == Transparent)
+          if (p->opacity == TransparentOpacity)
             byte|=0x01;
           bit++;
           if (bit == 8)
@@ -7101,7 +7103,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
                   if (map_info->blue_max != 0)
                     q->blue=(Quantum)
                       (((i % map_info->green_mult)*MaxRGB)/map_info->blue_max);
-                  q->opacity=Transparent;
+                  q->opacity=TransparentOpacity;
                   q++;
                 }
                 (void) SyncImagePixels(map_image);

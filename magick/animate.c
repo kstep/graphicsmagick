@@ -605,7 +605,7 @@ Export void XAnimateBackgroundImage(Display *display,
       break;
   if (scene == (int) number_scenes)
     qsort((void *) images,number_scenes,sizeof(Image *),
-      (int (*)(const void *, const void *)) SceneCompare);
+      (int (*)(const void *,const void *)) SceneCompare);
   /*
     Initialize Standard Colormap.
   */
@@ -1189,7 +1189,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       break;
   if (scene == (int) number_scenes)
     qsort((void *) images,number_scenes,sizeof(Image *),
-      (int (*)(const void *, const void *)) SceneCompare);
+      (int (*)(const void *,const void *)) SceneCompare);
   /*
     Initialize Standard Colormap.
   */

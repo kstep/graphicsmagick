@@ -440,7 +440,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   */
   image->columns=(origin.x/64+3) & -4;
   image->rows-=descent;
-  SetImage(image,Transparent);
+  SetImage(image,TransparentOpacity);
   for (i=0; i < length; i++)
   {
     if (glyphs[i].image == (FT_Glyph) NULL)
@@ -462,10 +462,10 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
         if (*p != 0)
           {
             *q=image_info->fill;
-            if (image_info->stroke.opacity != Transparent)
+            if (image_info->stroke.opacity != TransparentOpacity)
               if (*p < (NumberGrays/8))
                 *q=image_info->stroke;
-            q->opacity=(Opaque*(*p+1)+NumberGrays/2)/NumberGrays;
+            q->opacity=(OpaqueOpacity*(*p+1)+NumberGrays/2)/NumberGrays;
           }
         p++;
         q++;
@@ -746,13 +746,13 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     for (x=0; x < (int) image->columns; x++)
     {
       *q=image_info->fill;
-      if ((image_info->stroke.opacity != Transparent) && (*p <= 1))
+      if ((image_info->stroke.opacity != TransparentOpacity) && (*p <= 1))
         *q=image_info->stroke;
       if (image_info->antialias)
-        q->opacity=(int) (Opaque*Min(*p,4))/4;
+        q->opacity=(int) (OpaqueOpacity*Min(*p,4))/4;
       else
-        q->opacity=(*p) > 0 ? Opaque : Transparent;
-      if (q->opacity == Transparent)
+        q->opacity=(*p) > 0 ? OpaqueOpacity : TransparentOpacity;
+      if (q->opacity == TransparentOpacity)
         {
           q->red=(~q->red);
           q->green=(~q->green);
@@ -906,7 +906,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
       q->red=image_info->fill.red;
       q->green=image_info->fill.green;
       q->blue=image_info->fill.blue;
-      if (q->opacity == Transparent)
+      if (q->opacity == TransparentOpacity)
         {
           q->red=(~q->red);
           q->green=(~q->green);
@@ -1080,7 +1080,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
       q->red=image_info->fill.red;
       q->green=image_info->fill.green;
       q->blue=image_info->fill.blue;
-      if (q->opacity == Transparent)
+      if (q->opacity == TransparentOpacity)
         {
           q->red=(~q->red);
           q->green=(~q->green);

@@ -155,7 +155,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
   for (i=0; i < number_colors; i++)
   {
     marker[i]=False;
-    opacity[i]=Opaque;
+    opacity[i]=OpaqueOpacity;
   }
   for (y=0; y < (int) image->rows; y++)
   {
@@ -190,10 +190,10 @@ static unsigned int CompressColormapTransFirst(Image *image)
     if (marker[i])
       {
         image->colors++;
-        if (opacity[i] != Opaque)
+        if (opacity[i] != OpaqueOpacity)
           have_transparency=True;
       }
-  if ((!have_transparency || (opacity[0] == Transparent)) &&
+  if ((!have_transparency || (opacity[0] == TransparentOpacity)) &&
       ((int) image->colors == number_colors))
     {
       /*
@@ -260,14 +260,14 @@ static unsigned int CompressColormapTransFirst(Image *image)
       }
   }
   FreeMemory((void **) &marker);
-  if (have_transparency && opacity[0] != Transparent)
+  if (have_transparency && opacity[0] != TransparentOpacity)
     {
       /*
         Move the first transparent color to palette entry 0.
       */
       for (i=1; i < image->colors; i++)
       {
-        if (opacity[i] == Transparent)
+        if (opacity[i] == TransparentOpacity)
           {
             PixelPacket
               temp_colormap;
@@ -1777,7 +1777,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->page.y=clip.top;
                 image->background_color=mng_background_color;
                 image->matte=False;
-                SetImage(image,Transparent);
+                SetImage(image,TransparentOpacity);
                 image->delay=delay;
               }
           }
@@ -1808,7 +1808,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->background_color=mng_background_color;
                 image->matte=False;
                 image->delay=delay;
-                SetImage(image,Transparent);
+                SetImage(image,TransparentOpacity);
               }
           }
         first_mng_object=0;
@@ -2437,7 +2437,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               IndexPacket
                 index;
 
-              q->opacity=Opaque;
+              q->opacity=OpaqueOpacity;
               if (class == PseudoClass)
                 {
                   index=indexes[x];
@@ -2455,14 +2455,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (ping_info->color_type != PNG_COLOR_TYPE_PALETTE)
                   {
                     if (q->red == transparent_color.opacity)
-                      q->opacity=Transparent;
+                      q->opacity=TransparentOpacity;
                   }
                 }
               else
                 if (q->red == transparent_color.red &&
                     q->green == transparent_color.green &&
                     q->blue == transparent_color.blue)
-                   q->opacity=Transparent;
+                   q->opacity=TransparentOpacity;
               q++;
             }
             if (!SyncImagePixels(image))
@@ -2662,7 +2662,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->rows=(unsigned int) 1;
                 image->matte=True;
                 image->colors=2;
-                SetImage(image,Transparent);
+                SetImage(image,TransparentOpacity);
                 image->page.width=1;
                 image->page.height=1;
                 image->page.x=0;
@@ -2708,7 +2708,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->page.y=0;
       image->background_color=mng_background_color;
       image->matte=False;
-      SetImage(image,Transparent);
+      SetImage(image,TransparentOpacity);
       image_found++;
     }
   if (ticks_per_second)
@@ -3619,7 +3619,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            if (p->opacity != Opaque)
+            if (p->opacity != OpaqueOpacity)
               break;
             p++;
           }
@@ -3659,7 +3659,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (int) image->columns; x++)
               {
-                if (p->opacity != Opaque)
+                if (p->opacity != OpaqueOpacity)
                   {
                     if (!ColorMatch(ping_info->trans_values,*p,0))
                        break;  /* Can't use RGB + tRNS for multiple transparent
@@ -3755,7 +3755,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
             for (i=0; i < (int) image->colors; i++)
-               ping_info->trans[i]=(png_byte) DownScale(Opaque);
+               ping_info->trans[i]=(png_byte) DownScale(OpaqueOpacity);
             for (y=0; y < (int) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
@@ -3764,7 +3764,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               indexes=GetIndexes(image);
               for (x=0; x < (int) image->columns; x++)
               {
-                if (p->opacity != Opaque)
+                if (p->opacity != OpaqueOpacity)
                   {
                     IndexPacket
                       index;
@@ -3777,7 +3777,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             }
             ping_info->num_trans=0;
             for (i=0; i < (int) image->colors; i++)
-              if (ping_info->trans[i] != (png_byte) DownScale(Opaque))
+              if (ping_info->trans[i] != (png_byte) DownScale(OpaqueOpacity))
                 ping_info->num_trans=i+1;
             if (ping_info->num_trans == 0)
               ping_info->valid&=(~PNG_INFO_tRNS);

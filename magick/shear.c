@@ -838,8 +838,8 @@ Export Image *RotateImage(Image *image,const double degrees,
     Surround image with a border.
   */
   if (!integral_image->matte)
-    MatteImage(integral_image,Opaque);
-  integral_image->border_color.opacity=Transparent;
+    MatteImage(integral_image,OpaqueOpacity);
+  integral_image->border_color.opacity=TransparentOpacity;
   border_info.width=x_offset;
   border_info.height=y_offset;
   rotate_image=BorderImage(integral_image,&border_info,exception);
@@ -952,8 +952,8 @@ Export Image *ShearImage(Image *image,const double x_shear,const double y_shear,
     Surround image with border.
   */
   if (!integral_image->matte)
-    MatteImage(integral_image,Opaque);
-  integral_image->border_color.opacity=Transparent;
+    MatteImage(integral_image,OpaqueOpacity);
+  integral_image->border_color.opacity=TransparentOpacity;
   border_info.width=x_offset;
   border_info.height=y_offset;
   shear_image=BorderImage(integral_image,&border_info,exception);

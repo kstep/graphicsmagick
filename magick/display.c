@@ -2609,7 +2609,7 @@ static unsigned int XCompositeImage(Display *display,
         Create mattes for blending.
       */
       opacity=(Quantum) (((int) DownScale(MaxRGB)*blend)/100);
-      MatteImage(composite_image,Opaque);
+      MatteImage(composite_image,OpaqueOpacity);
       opacity=(Quantum)
         ((int) DownScale(MaxRGB)-((int) DownScale(MaxRGB)*blend)/100);
       image->class=DirectClass;
@@ -3537,7 +3537,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   */
   image->class=DirectClass;
   if (!image->matte)
-    MatteImage(image,Opaque);
+    MatteImage(image,OpaqueOpacity);
   for (y=0; y < (int) crop_info.height; y++)
   {
     q=GetImagePixels(image,crop_info.x,y+crop_info.y,crop_info.width,1);
@@ -3545,7 +3545,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
       break;
     for (x=0; x < (int) crop_info.width; x++)
     {
-      q->opacity=Transparent;
+      q->opacity=TransparentOpacity;
       q++;
     }
     if (!SyncImagePixels(image))
@@ -7720,7 +7720,7 @@ static unsigned int XMatteEditImage(Display *display,
           continue;
         (*image)->class=DirectClass;
         if (!(*image)->matte)
-          MatteImage(*image,Opaque);
+          MatteImage(*image,OpaqueOpacity);
         switch (method)
         {
           case PointMethod:
@@ -7800,7 +7800,7 @@ static unsigned int XMatteEditImage(Display *display,
               if (!SyncImagePixels(*image))
                 break;
             }
-            if ((atoi(matte) & 0xff) == Opaque)
+            if ((atoi(matte) & 0xff) == OpaqueOpacity)
               (*image)->matte=False;
             break;
           }
@@ -9969,7 +9969,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
     XDownScale(windows->pixel_info->pen_colors[pen_id].green);
   (*image)->border_color.blue=
     XDownScale(windows->pixel_info->pen_colors[pen_id].blue);
-  (*image)->border_color.opacity=Transparent;
+  (*image)->border_color.opacity=TransparentOpacity;
   rotate_image=RotateImage(*image,degrees,&exception);
   XSetCursorState(display,windows,False);
   if (rotate_image == (Image *) NULL)

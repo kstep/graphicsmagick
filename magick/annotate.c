@@ -291,10 +291,10 @@ Export unsigned int AnnotateImage(Image *image,
         break;
       }
     }
-    if (annotate_info->box.opacity != Transparent)
+    if (annotate_info->box.opacity != TransparentOpacity)
       {
         annotate_image->background_color=annotate_info->box;
-        SetImage(annotate_image,Opaque);
+        SetImage(annotate_image,OpaqueOpacity);
       }
     CompositeImage(image,AnnotateCompositeOp,annotate_image,
       clone_info->bounds.x,clone_info->bounds.y);

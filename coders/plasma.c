@@ -142,7 +142,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->opacity=(Opaque-Transparent) >> 1;
+      q->opacity=(OpaqueOpacity-TransparentOpacity) >> 1;
       q++;
     }
     if (!SyncImagePixels(image))

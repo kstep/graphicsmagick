@@ -1303,7 +1303,7 @@ Export Image *ImplodeImage(Image *image,const double factor,
   */
   assert(image != (Image *) NULL);
   if (!image->matte)
-    MatteImage(image,Opaque);
+    MatteImage(image,OpaqueOpacity);
   implode_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
@@ -2981,7 +2981,7 @@ Export Image *SwirlImage(Image *image,double degrees,ExceptionInfo *exception)
   */
   assert(image != (Image *) NULL);
   if (!image->matte)
-    MatteImage(image,Opaque);
+    MatteImage(image,OpaqueOpacity);
   swirl_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
@@ -3186,7 +3186,7 @@ Export Image *WaveImage(Image *image,const double amplitude,
   */
   assert(image != (Image *) NULL);
   if (!image->matte)
-    MatteImage(image,Opaque);
+    MatteImage(image,OpaqueOpacity);
   wave_image=CloneImage(image,image->columns,image->rows+
     (int) (2*AbsoluteValue(amplitude)),False,exception);
   if (wave_image == (Image *) NULL)

@@ -523,8 +523,8 @@ Export unsigned int SignatureImage(Image *image)
         }
       else
         {
-          *q++=XUpScale(Opaque) >> 8;
-          *q++=XUpScale(Opaque) & 0xff;
+          *q++=XUpScale(OpaqueOpacity) >> 8;
+          *q++=XUpScale(OpaqueOpacity) & 0xff;
         }
       p++;
     }
