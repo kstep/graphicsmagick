@@ -58,6 +58,7 @@
 #include "delegate.h"
 #include "log.h"
 #include "monitor.h"
+#include "paint.h"
 #include "render.h"
 #include "utility.h"
 #include "version.h"

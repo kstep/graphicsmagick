@@ -59,6 +59,7 @@
 #include "blob.h"
 #include "log.h"
 #include "magick.h"
+#include "paint.h"
 #include "render.h"
 #include "utility.h"
 #if defined(HasXML)

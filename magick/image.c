@@ -63,6 +63,7 @@
 #include "magick.h"
 #include "module.h"
 #include "monitor.h"
+#include "paint.h"
 #include "quantize.h"
 #include "render.h"
 #include "signature.h"

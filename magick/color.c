@@ -254,7 +254,7 @@ MagickExport void DestroyColorInfo(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyCubeInfo deallocates memory associated with an image.
+%  DestroyCubeInfo() deallocates memory associated with a CubeInfo structure.
 %
 %  The format of the DestroyCubeInfo method is:
 %

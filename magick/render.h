@@ -244,7 +244,7 @@ typedef struct _DrawInfo
     bounds;
 
   GradientInfo
-    gradient;
+    *gradient;
 
   ClipPathUnits
     clip_units;
@@ -367,17 +367,13 @@ extern MagickExport DrawInfo
 
 extern MagickExport unsigned int
   AnnotateImage(Image *,const DrawInfo *),
-  ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const long,
-    const long,const PaintMethod),
   DrawAffineImage(Image *,const Image *,const AffineMatrix *),
   DrawClipPath(Image *,const DrawInfo *,const char *),
   DrawImage(Image *,const DrawInfo *),
   DrawPatternPath(Image *,const DrawInfo *,const char *,Image **),
   DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
   GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
-  ListTypeInfo(FILE *,ExceptionInfo *),
-  MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const long,
-    const long,const PaintMethod);
+  ListTypeInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport unsigned long
   TracePath(PrimitiveInfo *,const char *);

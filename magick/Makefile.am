@@ -53,7 +53,7 @@ AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
 	constitute.c image.c composite.c list.c color.c quantize.c segment.c \
 	resize.c transform.c shear.c enhance.c effect.c fx.c decorate.c \
-	annotate.c type.c draw.c render.c montage.c semaphore.c attribute.c \
+	annotate.c type.c draw.c render.c paint.c montage.c semaphore.c attribute.c \
 	signature.c random.c compress.c command.c gem.c registry.c magic.c magick.c \
 	delegate.c module.c static.c resource.c log.c timer.c utility.c cache_view.c \
 	stream.c version.c animate.c display.c widget.c xwindow.c PreRvIcccm.c \
@@ -88,9 +88,9 @@ bin_SCRIPTS = Magick-config
 include_HEADERS = api.h attribute.h blob.h cache.h \
   cache_view.h command.h compress.h magick_config.h delegate.h \
   draw.h render.h error.h gem.h image.h list.h log.h magic.h magick.h \
-  module.h monitor.h quantize.h random.h resource.h registry.h semaphore.h \
-	signature.h timer.h utility.h version.h widget.h xwindow.h PreRvIcccm.h \
-	deprecate.h
+  module.h monitor.h quantize.h paint.h random.h resource.h registry.h \
+	semaphore.h signature.h timer.h utility.h version.h widget.h xwindow.h \
+	PreRvIcccm.h deprecate.h
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = animate.h display.h mac.h nt_base.h nt_feature.h studio.h vms.h
