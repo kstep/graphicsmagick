@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 2001
+// Copyright Bob Friesenhahn, 2001, 2002
 //
 // Test Magick::CoderInfo class and Magick::coderInfoList
 //
@@ -15,7 +15,9 @@ using namespace std;
 
 using namespace Magick;
 
-int test( MatchType isReadable_, MatchType isWritable_, MatchType isMultiFrame_ )
+int test( CoderInfo::MatchType isReadable_,
+          CoderInfo::MatchType isWritable_,
+          CoderInfo::MatchType isMultiFrame_ )
 {
   int result = 0;
   list<CoderInfo> coderList;
@@ -24,9 +26,9 @@ int test( MatchType isReadable_, MatchType isWritable_, MatchType isMultiFrame_ 
   while( entry != coderList.end() )
     {
       // Readable
-      if ( isReadable_ != AnyMatch &&
-           (( entry->isReadable() && isReadable_ != TrueMatch ) ||
-            ( !entry->isReadable() && isReadable_ != FalseMatch )) )
+      if ( isReadable_ != CoderInfo::AnyMatch &&
+           (( entry->isReadable() && isReadable_ != CoderInfo::TrueMatch ) ||
+            ( !entry->isReadable() && isReadable_ != CoderInfo::FalseMatch )) )
         {
           cout << "Entry \""
                << entry->name()
@@ -38,9 +40,9 @@ int test( MatchType isReadable_, MatchType isWritable_, MatchType isMultiFrame_ 
         }
 
       // Writable
-      if ( isWritable_ != AnyMatch &&
-           (( entry->isWritable() && isWritable_ != TrueMatch ) ||
-            ( !entry->isWritable() && isWritable_ != FalseMatch )) )
+      if ( isWritable_ != CoderInfo::AnyMatch &&
+           (( entry->isWritable() && isWritable_ != CoderInfo::TrueMatch ) ||
+            ( !entry->isWritable() && isWritable_ != CoderInfo::FalseMatch )) )
         {
           cout << "Entry \""
                << entry->name()
@@ -52,9 +54,9 @@ int test( MatchType isReadable_, MatchType isWritable_, MatchType isMultiFrame_ 
         }
 
       // MultiFrame
-      if ( isMultiFrame_ != AnyMatch &&
-           (( entry->isMultiFrame() && isMultiFrame_ != TrueMatch ) ||
-            ( !entry->isMultiFrame() && isMultiFrame_ != FalseMatch )) )
+      if ( isMultiFrame_ != CoderInfo::AnyMatch &&
+           (( entry->isMultiFrame() && isMultiFrame_ != CoderInfo::TrueMatch ) ||
+            ( !entry->isMultiFrame() && isMultiFrame_ != CoderInfo::FalseMatch )) )
         {
           cout << "Entry \""
                << entry->name()
@@ -100,17 +102,17 @@ int main( int /*argc*/, char **argv)
         ++failures;
       }
 
-    failures += test(AnyMatch,AnyMatch,AnyMatch);
-    failures += test(FalseMatch,FalseMatch,FalseMatch);
+    failures += test(CoderInfo::AnyMatch,CoderInfo::AnyMatch,CoderInfo::AnyMatch);
+    failures += test(CoderInfo::FalseMatch,CoderInfo::FalseMatch,CoderInfo::FalseMatch);
 
-    failures += test(TrueMatch,AnyMatch,AnyMatch);
-    failures += test(FalseMatch,AnyMatch,AnyMatch);
+    failures += test(CoderInfo::TrueMatch,CoderInfo::AnyMatch,CoderInfo::AnyMatch);
+    failures += test(CoderInfo::FalseMatch,CoderInfo::AnyMatch,CoderInfo::AnyMatch);
 
-    failures += test(AnyMatch,TrueMatch,AnyMatch);
-    failures += test(AnyMatch,FalseMatch,AnyMatch);
+    failures += test(CoderInfo::AnyMatch,CoderInfo::TrueMatch,CoderInfo::AnyMatch);
+    failures += test(CoderInfo::AnyMatch,CoderInfo::FalseMatch,CoderInfo::AnyMatch);
 
-    failures += test(AnyMatch,AnyMatch,TrueMatch);
-    failures += test(AnyMatch,AnyMatch,FalseMatch);
+    failures += test(CoderInfo::AnyMatch,CoderInfo::AnyMatch,CoderInfo::TrueMatch);
+    failures += test(CoderInfo::AnyMatch,CoderInfo::AnyMatch,CoderInfo::FalseMatch);
   }
   catch( Exception &error_ )
     {

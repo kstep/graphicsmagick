@@ -2031,22 +2031,42 @@ multiple frames for the format. A wildcard specifier is supported for any
 for preparing GUI dialog boxes or for deciding which output format to write
 based on support within the ImageMagick build.
 <p>The definition of coderInfoList is:
+<p><tt><font color="#000066">&nbsp; class CoderInfo</font></tt>
+<br><tt><font color="#000066">&nbsp; {</font></tt>
+<br><tt><font color="#000066">&nbsp; public:</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; enum MatchType {</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AnyMatch,&nbsp;
+// match any coder</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TrueMatch,
+// match coder if true</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FalseMatch
+// match coder if false</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; };</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; [ remaining CoderInfo methods
+]</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp; }</font></tt>
 <p><tt><font color="#000066">&nbsp; template &lt;class Container ></font></tt>
 <br><tt><font color="#000066">&nbsp; void coderInfoList( Container *container_,</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-MatchType isReadable_ = AnyMatch,</font></tt>
+CoderInfo::MatchType isReadable_&nbsp;&nbsp; = CoderInfo::AnyMatch,</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-MatchType isWritable_ = AnyMatch,</font></tt>
+CoderInfo::MatchType isWritable_&nbsp;&nbsp; = CoderInfo::AnyMatch,</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-MatchType isMultiFrame_ = AnyMatch</font></tt>
+CoderInfo::MatchType isMultiFrame_ = CoderInfo::AnyMatch</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 );</font></tt>
 <p>The following example shows how to retrieve a list of all of the coders
 which support reading images and print the coder attributes (all listed
-coders will be readable):
+formats will be readable):
 <p><tt><font color="#000066">&nbsp; list&lt;CoderInfo> coderList;</font></tt>
-<br><tt><font color="#000066">&nbsp; coderInfoList( &amp;coderList, TrueMatch,
-AnyMatch, AnyMatch);</font></tt>
+<br><tt><font color="#000066">&nbsp; coderInfoList( &amp;coderList,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Reference to output list</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CoderInfo::TrueMatch, // Match readable formats</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CoderInfo::AnyMatch,&nbsp; // Don't care about writable formats</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CoderInfo::AnyMatch); // Don't care about multi-frame support</font></tt>
 <br><tt><font color="#000066">&nbsp; list&lt;CoderInfo>::iterator entry
 = coderList.begin();</font></tt>
 <br><tt><font color="#000066">&nbsp; while( entry != coderList.end() )</font></tt>

@@ -1,3 +1,14 @@
+2002-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/CoderInfo.h (MatchType): Scope the MatchType
+ 	enumeration to the CoderInfo class so these enumeration names can
+ 	be re-used elsewhere without conflict.  This results in a minor
+ 	API change to the coderInfoList() templated function since
+ 	enumerations must be specified like "CoderInfo::TrueMatch" rather
+ 	than just "TrueMatch".  Hopefully not a problem since this
+ 	function and class were not documented outside of the headers
+ 	until this release.
+
 2002-02-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (coderInfoList): Finally wrote some

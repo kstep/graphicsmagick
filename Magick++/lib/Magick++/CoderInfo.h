@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 2001
+// Copyright Bob Friesenhahn, 2001, 2002
 //
 // CoderInfo Definition
 //
@@ -15,15 +15,15 @@
 
 namespace Magick
 {
-  enum MatchType {
-    AnyMatch,	// match any coder
-    TrueMatch,	// match coder if true
-    FalseMatch	// match coder if false
-  };
-
   class CoderInfo
   {
   public:
+
+    enum MatchType {
+      AnyMatch,		// match any coder
+      TrueMatch,	// match coder if true
+      FalseMatch	// match coder if false
+    };
 
     CoderInfo ( const std::string &name_ );
     ~CoderInfo ( void );

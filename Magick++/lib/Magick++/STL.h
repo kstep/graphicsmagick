@@ -2197,13 +2197,13 @@ namespace Magick
   //
   // For example, to return all readable formats:
   //  list<CoderInfo> coderList;
-  //  coderInfoList( &coderList, TrueMatch, AnyMatch, AnyMatch)
+  //  coderInfoList( &coderList, CoderInfo::TrueMatch, CoderInfo::AnyMatch, CoderInfo::AnyMatch)
   //
   template <class Container >
   void coderInfoList( Container *container_,
-                      MatchType isReadable_ = AnyMatch,
-                      MatchType isWritable_ = AnyMatch,
-                      MatchType isMultiFrame_ = AnyMatch
+                      CoderInfo::MatchType isReadable_ = CoderInfo::AnyMatch,
+                      CoderInfo::MatchType isWritable_ = CoderInfo::AnyMatch,
+                      CoderInfo::MatchType isMultiFrame_ = CoderInfo::AnyMatch
                       ) {
     // Obtain first entry in MagickInfo list
     MagickLib::ExceptionInfo exceptionInfo;
@@ -2227,21 +2227,21 @@ namespace Magick
         CoderInfo coderInfo( magickInfo );
 
         // Test isReadable_
-        if ( isReadable_ != AnyMatch &&
-             (( coderInfo.isReadable() && isReadable_ != TrueMatch ) ||
-              ( !coderInfo.isReadable() && isReadable_ != FalseMatch )) )
+        if ( isReadable_ != CoderInfo::AnyMatch &&
+             (( coderInfo.isReadable() && isReadable_ != CoderInfo::TrueMatch ) ||
+              ( !coderInfo.isReadable() && isReadable_ != CoderInfo::FalseMatch )) )
           continue;
 
         // Test isWritable_
-        if ( isWritable_ != AnyMatch &&
-             (( coderInfo.isWritable() && isWritable_ != TrueMatch ) ||
-              ( !coderInfo.isWritable() && isWritable_ != FalseMatch )) )
+        if ( isWritable_ != CoderInfo::AnyMatch &&
+             (( coderInfo.isWritable() && isWritable_ != CoderInfo::TrueMatch ) ||
+              ( !coderInfo.isWritable() && isWritable_ != CoderInfo::FalseMatch )) )
           continue;
 
         // Test isMultiFrame_
-        if ( isMultiFrame_ != AnyMatch &&
-             (( coderInfo.isMultiFrame() && isMultiFrame_ != TrueMatch ) ||
-              ( !coderInfo.isMultiFrame() && isMultiFrame_ != FalseMatch )) )
+        if ( isMultiFrame_ != CoderInfo::AnyMatch &&
+             (( coderInfo.isMultiFrame() && isMultiFrame_ != CoderInfo::TrueMatch ) ||
+              ( !coderInfo.isMultiFrame() && isMultiFrame_ != CoderInfo::FalseMatch )) )
           continue;
 
         // Append matches to container
