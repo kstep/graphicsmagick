@@ -891,8 +891,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         polarity=ScaleIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
         if (image->colors == 2)
-          polarity=
-            ScaleIntensityToQuantum(&image->colormap[0]) > ScaleIntensityToQuantum(&image->colormap[1]);
+          polarity=ScaleIntensityToQuantum(&image->colormap[0]) >
+            ScaleIntensityToQuantum(&image->colormap[1]);
         i=0;
         for (y=0; y < (long) image->rows; y++)
         {
@@ -1004,8 +1004,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         polarity=ScaleIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
         if (image->colors == 2)
-          polarity=
-            ScaleIntensityToQuantum(&image->colormap[0]) > ScaleIntensityToQuantum(&image->colormap[1]);
+          polarity=ScaleIntensityToQuantum(&image->colormap[0]) >
+            ScaleIntensityToQuantum(&image->colormap[1]);
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -1062,9 +1062,6 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       }
       case 6:
       {
-        register unsigned char
-          *q;
-
         size_t
           length;
 
@@ -1089,15 +1086,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          q=pixels;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            *q++=ScaleQuantumToChar(p->red);
-            *q++=ScaleQuantumToChar(p->green);
-            *q++=ScaleQuantumToChar(p->blue);
-            p++;
-          }
-          (void) WriteBlob(image,q-pixels,(char *) pixels);
+          (void) PushImagePixels(image,RGBQuantum,pixels);
+          (void) WriteBlob(image,3*image->columns,(char *) pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
@@ -1199,9 +1189,10 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                 ((ScaleQuantumToChar(p->green) & 0xe0) >> 3) |
                 ((ScaleQuantumToChar(p->blue) & 0xc0) >> 6));
             else
-              pixel=(Quantum) ((red_map[i][j][ScaleQuantumToChar(p->red)] & 0xe0) |
-                ((green_map[i][j][ScaleQuantumToChar(p->green)] & 0xe0) >> 3) |
-                ((blue_map[i][j][ScaleQuantumToChar(p->blue)] & 0xc0) >> 6));
+              pixel=(Quantum)
+                ((red_map[i][j][ScaleQuantumToChar(p->red)] & 0xe0) |
+                 ((green_map[i][j][ScaleQuantumToChar(p->green)] & 0xe0) >> 3) |
+                 ((blue_map[i][j][ScaleQuantumToChar(p->blue)] & 0xc0) >> 6));
             (void) WriteBlobByte(image,pixel);
             p++;
             j++;
