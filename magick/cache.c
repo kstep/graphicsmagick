@@ -1731,8 +1731,7 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const unsigned int id,
   nexus_info->indexes=(IndexPacket *) NULL;
   if ((cache_info->storage_class == PseudoClass) ||
       (cache_info->colorspace == CMYKColorspace))
-    nexus_info->indexes=(IndexPacket *)
-      (nexus_info->pixels+nexus_info->columns*nexus_info->rows);
+    nexus_info->indexes=(IndexPacket *) (nexus_info->pixels+number_pixels);
   return(nexus_info->pixels);
 }
 
