@@ -556,11 +556,11 @@ MagickExport unsigned int CheckFileAccessability(const char *filename,
 */
 MagickExport void ChopPathComponents(char *path,const unsigned long components)
 {
-  register char
-    *p;
-
   long
     count;
+
+  register char
+    *p;
 
   size_t
     length;
