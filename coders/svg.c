@@ -91,9 +91,8 @@ typedef struct _SVGInfo
   ExceptionInfo
     *exception;
 
-  double
-    x_resolution,
-    y_resolution;
+  AffineInfo
+    affine;
 
   int
     width,
@@ -230,7 +229,13 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
   p=(char *) string;
   value=strtod(p,&p);
   if (*p == '%')
-    return(value*svg_info->width/svg_info->scale[n]/100.0);
+    {
+      double
+        scale;
+
+      scale=ExpandAffine(&svg_info->affine);
+      return(value*svg_info->width/svg_info->scale[n]/scale/100.0);
+    }
   if (LocaleNCompare(p,"cm",2) == 0)
     return(72.0/2.54*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"em",2) == 0)
@@ -1212,12 +1217,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 current,
                 transform;
 
-              transform.sx=1.0;
-              transform.rx=0.0;
-              transform.ry=0.0;
-              transform.sy=1.0;
-              transform.tx=0.0;
-              transform.ty=0.0;
+              IdentityAffine(&transform);
               if (svg_info->verbose)
                 (void) fprintf(stdout,"  \n");
               tokens=GetTransformTokens(value,&number_tokens);
@@ -1228,12 +1228,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 if (svg_info->verbose)
                   (void) fprintf(stdout,"    %s: %s\n",keyword,value);
                 current=transform;
-                affine.sx=1.0;
-                affine.rx=0.0;
-                affine.ry=0.0;
-                affine.sy=1.0;
-                affine.tx=0.0;
-                affine.ty=0.0;
+                IdentityAffine(&affine);
                 switch (*keyword)
                 {
                   case 'M':
@@ -1291,25 +1286,25 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         affine.sy=affine.sx;
                         if (*p != '\0')
                           affine.sy=GetUserSpaceCoordinateValue(svg_info,p+1);
-                        svg_info->scale[svg_info->n]=affine.sx;
+                        svg_info->scale[svg_info->n]=ExpandAffine(&affine);
                         break;
                       }
                     if (LocaleCompare(keyword,"skewX") == 0)
                       {
-                        affine.sx=svg_info->x_resolution/72.0;
+                        affine.sx=svg_info->affine.sx;
                         affine.ry=tan(DegreesToRadians(fmod(
                           GetUserSpaceCoordinateValue(svg_info,value),
                           360.0)));
-                        affine.sy=svg_info->y_resolution/72.0;
+                        affine.sy=svg_info->affine.sy;
                         break;
                       }
                     if (LocaleCompare(keyword,"skewY") == 0)
                       {
-                        affine.sx=svg_info->x_resolution/72.0;
+                        affine.sx=svg_info->affine.sx;
                         affine.rx=tan(DegreesToRadians(fmod(
                           GetUserSpaceCoordinateValue(svg_info,value),
                           360.0)));
-                        affine.sy=svg_info->y_resolution/72.0;
+                        affine.sy=svg_info->affine.sy;
                         break;
                       }
                     break;
@@ -1493,12 +1488,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 &page.width,&page.height);
               DestroyPostscriptGeometry(geometry);
             }
-          if (svg_info->x_resolution != 0.0)
+          if (svg_info->affine.sx != 1.0)
             page.width=(unsigned int)
-              ceil(((page.width*svg_info->x_resolution)/72.0)-0.5);
-          if (svg_info->y_resolution != 0.0)
+              ceil(ExpandAffine(&svg_info->affine)*page.width-0.5);
+          if (svg_info->affine.sy != 0.0)
             page.height=(unsigned int)
-              ceil(((page.height*svg_info->y_resolution)/72.0)-0.5);
+              ceil(ExpandAffine(&svg_info->affine)*page.height-0.5);
           (void) fprintf(svg_info->file,"viewbox %g %g %g %g\n",
             svg_info->view_box.x,svg_info->view_box.y,svg_info->view_box.width,
             svg_info->view_box.height);
@@ -2027,8 +2022,11 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     MagickError(ResourceLimitError,"Unable to convert SVG image",
       "Memory allocation failed");
   svg_info.scale[0]=1.0;
-  svg_info.x_resolution=image->x_resolution == 0.0 ? 72.0 : image->x_resolution;
-  svg_info.y_resolution=image->y_resolution == 0.0 ? 72.0 : image->y_resolution;
+  IdentityAffine(&svg_info.affine);
+  svg_info.affine.sx=
+    image->x_resolution == 0.0 ? 1.0 : image->x_resolution/72.0;
+  svg_info.affine.sy=
+    image->y_resolution == 0.0 ? 1.0 : image->y_resolution/72.0;
   svg_info.bounds.width=image->columns;
   svg_info.bounds.height=image->rows;
   if (image_info->size != (char *) NULL)
