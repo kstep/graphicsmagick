@@ -624,8 +624,6 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   exception->severity=(ExceptionType) severity;
-  if (severity == UndefinedException)
-    return;
   switch (severity)
   {
     case CacheError:
@@ -640,12 +638,16 @@ MagickExport void ThrowException(ExceptionInfo *exception,
     }
   }
   length=strlen(tag);
-  if (reason != (char *) NULL)
+  if (reason == (char *) NULL)
+    LiberateMemory((void **) &exception->reason);
+  else
     {
       (void) strncpy(tag+length,reason,MaxTextExtent-length-1);
       (void) CloneString(&exception->reason,GetLocaleMessage(tag));
     }
-  if (description != (char *) NULL)
+  if (description == (char *) NULL)
+    LiberateMemory((void **) &exception->description);
+  else
     {
       (void) strncpy(tag+length,description,MaxTextExtent-length-1);
       (void) CloneString(&exception->description,GetLocaleMessage(tag));

@@ -519,14 +519,23 @@ MagickExport char *Base64Encode(const unsigned char *blob,
 MagickExport unsigned int CloneString(char **destination,const char *source)
 {
   assert(destination != (char **) NULL);
-  if (*destination != (char *) NULL)
-    LiberateMemory((void **) &*destination);
   if (source == (const char *) NULL)
     {
+      if (*destination != (char *) NULL)
+        LiberateMemory((void **) &*destination);
       *destination=(char *) NULL;
       return(True);
     }
-  *destination=AllocateString(source);
+  if (*destination == (char *) NULL)
+    {
+      *destination=AllocateString(source);
+      return(True);
+    }
+  ReacquireMemory((void **) &(*destination),strlen(source)+MaxTextExtent);
+  if (*destination == (char *) NULL)
+    MagickFatalError(ResourceLimitFatalError,"Unable to clone string",
+      "Memory allocation failed");
+  (void) strcpy(*destination,source);
   return(True);
 }
 
@@ -566,7 +575,10 @@ MagickExport unsigned int ConcatenateString(char **destination,
   if (source == (const char *) NULL)
     return(True);
   if (*destination == (char *) NULL)
-    return(CloneString(destination,source));
+    {
+      *destination=AllocateString(source);
+      return(True);
+    }
   ReacquireMemory((void **) &(*destination),
     strlen(*destination)+strlen(source)+MaxTextExtent);
   if (*destination == (char *) NULL)
