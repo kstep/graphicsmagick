@@ -55,179 +55,280 @@
 */
 #include "studio.h"
 
-#define PALM_IS_COMPRESSED_FLAG    0x8000
-#define PALM_HAS_COLORMAP_FLAG    0x4000
+#define PALM_IS_COMPRESSED_FLAG  0x8000
+#define PALM_HAS_COLORMAP_FLAG  0x4000
 #define PALM_HAS_TRANSPARENCY_FLAG  0x2000
-#define PALM_IS_INDIRECT      0x1000
-#define PALM_IS_FOR_SCREEN      0x0800
-#define PALM_IS_DIRECT_COLOR    0x0400
+#define PALM_IS_INDIRECT  0x1000
+#define PALM_IS_FOR_SCREEN  0x0800
+#define PALM_IS_DIRECT_COLOR  0x0400
 #define PALM_HAS_FOUR_BYTE_FIELD  0x0200
 #define PALM_COMPRESSION_SCANLINE  0x00
-#define PALM_COMPRESSION_RLE    0x01
-#define PALM_COMPRESSION_NONE    0xFF
+#define PALM_COMPRESSION_RLE  0x01
+#define PALM_COMPRESSION_NONE  0xFF
 
-#if QuantumDepth == 16
 /*
- The 8bit-256 color system palette for Palm Computing Devices.
- the 16-bit version.
+ The 256 color system palette for Palm Computing Devices.
 */
-int PalmPalette8bpp[256][3] = 
-{{ 65535,  65535,  65535}, { 65535,  52428,  65535}, { 65535,  39321,  65535},
- { 65535,  26214,  65535}, { 65535,  13107,  65535}, { 65535,      0,  65535},
- { 65535,  65535,  52428}, { 65535,  52428,  52428}, { 65535,  39321,  52428},
- { 65535,  26214,  52428}, { 65535,  13107,  52428}, { 65535,      0,  52428},
- { 65535,  65535,  39321}, { 65535,  52428,  39321}, { 65535,  39321,  39321},
- { 65535,  26214,  39321}, { 65535,  13107,  39321}, { 65535,      0,  39321},
- { 52428,  65535,  65535}, { 52428,  52428,  65535}, { 52428,  39321,  65535},
- { 52428,  26214,  65535}, { 52428,  13107,  65535}, { 52428,      0,  65535},
- { 52428,  65535,  52428}, { 52428,  52428,  52428}, { 52428,  39321,  52428},
- { 52428,  26214,  52428}, { 52428,  13107,  52428}, { 52428,      0,  52428},
- { 52428,  65535,  39321}, { 52428,  52428,  39321}, { 52428,  39321,  39321},
- { 52428,  26214,  39321}, { 52428,  13107,  39321}, { 52428,      0,  39321},
- { 39321,  65535,  65535}, { 39321,  52428,  65535}, { 39321,  39321,  65535},
- { 39321,  26214,  65535}, { 39321,  13107,  65535}, { 39321,      0,  65535},
- { 39321,  65535,  52428}, { 39321,  52428,  52428}, { 39321,  39321,  52428},
- { 39321,  26214,  52428}, { 39321,  13107,  52428}, { 39321,      0,  52428},
- { 39321,  65535,  39321}, { 39321,  52428,  39321}, { 39321,  39321,  39321},
- { 39321,  26214,  39321}, { 39321,  13107,  39321}, { 39321,      0,  39321},
- { 26214,  65535,  65535}, { 26214,  52428,  65535}, { 26214,  39321,  65535},
- { 26214,  26214,  65535}, { 26214,  13107,  65535}, { 26214,      0,  65535},
- { 26214,  65535,  52428}, { 26214,  52428,  52428}, { 26214,  39321,  52428},
- { 26214,  26214,  52428}, { 26214,  13107,  52428}, { 26214,      0,  52428},
- { 26214,  65535,  39321}, { 26214,  52428,  39321}, { 26214,  39321,  39321},
- { 26214,  26214,  39321}, { 26214,  13107,  39321}, { 26214,      0,  39321},
- { 13107,  65535,  65535}, { 13107,  52428,  65535}, { 13107,  39321,  65535},
- { 13107,  26214,  65535}, { 13107,  13107,  65535}, { 13107,      0,  65535},
- { 13107,  65535,  52428}, { 13107,  52428,  52428}, { 13107,  39321,  52428},
- { 13107,  26214,  52428}, { 13107,  13107,  52428}, { 13107,      0,  52428},
- { 13107,  65535,  39321}, { 13107,  52428,  39321}, { 13107,  39321,  39321},
- { 13107,  26214,  39321}, { 13107,  13107,  39321}, { 13107,      0,  39321},
- {     0,  65535,  65535}, {     0,  52428,  65535}, {     0,  39321,  65535},
- {     0,  26214,  65535}, {     0,  13107,  65535}, {     0,      0,  65535},
- {     0,  65535,  52428}, {     0,  52428,  52428}, {     0,  39321,  52428},
- {     0,  26214,  52428}, {     0,  13107,  52428}, {     0,      0,  52428},
- {     0,  65535,  39321}, {     0,  52428,  39321}, {     0,  39321,  39321},
- {     0,  26214,  39321}, {     0,  13107,  39321}, {     0,      0,  39321},
- { 65535,  65535,  26214}, { 65535,  52428,  26214}, { 65535,  39321,  26214},
- { 65535,  26214,  26214}, { 65535,  13107,  26214}, { 65535,      0,  26214},
- { 65535,  65535,  13107}, { 65535,  52428,  13107}, { 65535,  39321,  13107},
- { 65535,  26214,  13107}, { 65535,  13107,  13107}, { 65535,      0,  13107},
- { 65535,  65535,      0}, { 65535,  52428,      0}, { 65535,  39321,      0},
- { 65535,  26214,      0}, { 65535,  13107,      0}, { 65535,      0,      0},
- { 52428,  65535,  26214}, { 52428,  52428,  26214}, { 52428,  39321,  26214},
- { 52428,  26214,  26214}, { 52428,  13107,  26214}, { 52428,      0,  26214},
- { 52428,  65535,  13107}, { 52428,  52428,  13107}, { 52428,  39321,  13107},
- { 52428,  26214,  13107}, { 52428,  13107,  13107}, { 52428,      0,  13107},
- { 52428,  65535,      0}, { 52428,  52428,      0}, { 52428,  39321,      0},
- { 52428,  26214,      0}, { 52428,  13107,      0}, { 52428,      0,      0},
- { 39321,  65535,  26214}, { 39321,  52428,  26214}, { 39321,  39321,  26214},
- { 39321,  26214,  26214}, { 39321,  13107,  26214}, { 39321,      0,  26214},
- { 39321,  65535,  13107}, { 39321,  52428,  13107}, { 39321,  39321,  13107},
- { 39321,  26214,  13107}, { 39321,  13107,  13107}, { 39321,      0,  13107},
- { 39321,  65535,      0}, { 39321,  52428,      0}, { 39321,  39321,      0},
- { 39321,  26214,      0}, { 39321,  13107,      0}, { 39321,      0,      0},
- { 26214,  65535,  26214}, { 26214,  52428,  26214}, { 26214,  39321,  26214},
- { 26214,  26214,  26214}, { 26214,  13107,  26214}, { 26214,      0,  26214},
- { 26214,  65535,  13107}, { 26214,  52428,  13107}, { 26214,  39321,  13107},
- { 26214,  26214,  13107}, { 26214,  13107,  13107}, { 26214,      0,  13107},
- { 26214,  65535,      0}, { 26214,  52428,      0}, { 26214,  39321,      0},
- { 26214,  26214,      0}, { 26214,  13107,      0}, { 26214,      0,      0},
- { 13107,  65535,  26214}, { 13107,  52428,  26214}, { 13107,  39321,  26214},
- { 13107,  26214,  26214}, { 13107,  13107,  26214}, { 13107,      0,  26214},
- { 13107,  65535,  13107}, { 13107,  52428,  13107}, { 13107,  39321,  13107},
- { 13107,  26214,  13107}, { 13107,  13107,  13107}, { 13107,      0,  13107},
- { 13107,  65535,      0}, { 13107,  52428,      0}, { 13107,  39321,      0},
- { 13107,  26214,      0}, { 13107,  13107,      0}, { 13107,      0,      0},
- {     0,  65535,  26214}, {     0,  52428,  26214}, {     0,  39321,  26214},
- {     0,  26214,  26214}, {     0,  13107,  26214}, {     0,      0,  26214},
- {     0,  65535,  13107}, {     0,  52428,  13107}, {     0,  39321,  13107},
- {     0,  26214,  13107}, {     0,  13107,  13107}, {     0,      0,  13107},
- {     0,  65535,      0}, {     0,  52428,      0}, {     0,  39321,      0},
- {     0,  26214,      0}, {     0,  13107,      0}, {  4369,   4369,   4369},
- {  8738,   8738,   8738}, { 17476,  17476,  17476}, { 21845,  21845,  21845},
- { 30583,  30583,  30583}, { 34952,  34952,  34952}, { 43690,  43690,  43690},
- { 48059,  48059,  48059}, { 56797,  56797,  56797}, { 61166,  61166,  61166},
- { 49344,  49344,  49344}, { 32896,      0,      0}, { 32896,      0,  32896},
- {     0,  32896,      0}, {     0,  32896,  32896}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}};
-#else
-/*
- The 8bit-256 color system palette for Palm Computing Devices.
-*/
-static int PalmPalette8bpp[256][3] = 
- {{ 255, 255, 255 }, { 255, 204, 255 }, { 255, 153, 255 }, { 255, 102, 255 }, 
-  { 255,  51, 255 }, { 255,   0, 255 }, { 255, 255, 204 }, { 255, 204, 204 }, 
-  { 255, 153, 204 }, { 255, 102, 204 }, { 255,  51, 204 }, { 255,   0, 204 }, 
-  { 255, 255, 153 }, { 255, 204, 153 }, { 255, 153, 153 }, { 255, 102, 153 }, 
-  { 255,  51, 153 }, { 255,   0, 153 }, { 204, 255, 255 }, { 204, 204, 255 },
-  { 204, 153, 255 }, { 204, 102, 255 }, { 204,  51, 255 }, { 204,   0, 255 },
-  { 204, 255, 204 }, { 204, 204, 204 }, { 204, 153, 204 }, { 204, 102, 204 },
-  { 204,  51, 204 }, { 204,   0, 204 }, { 204, 255, 153 }, { 204, 204, 153 },
-  { 204, 153, 153 }, { 204, 102, 153 }, { 204,  51, 153 }, { 204,   0, 153 },
-  { 153, 255, 255 }, { 153, 204, 255 }, { 153, 153, 255 }, { 153, 102, 255 },
-  { 153,  51, 255 }, { 153,   0, 255 }, { 153, 255, 204 }, { 153, 204, 204 },
-  { 153, 153, 204 }, { 153, 102, 204 }, { 153,  51, 204 }, { 153,   0, 204 },
-  { 153, 255, 153 }, { 153, 204, 153 }, { 153, 153, 153 }, { 153, 102, 153 },
-  { 153,  51, 153 }, { 153,   0, 153 }, { 102, 255, 255 }, { 102, 204, 255 },
-  { 102, 153, 255 }, { 102, 102, 255 }, { 102,  51, 255 }, { 102,   0, 255 },
-  { 102, 255, 204 }, { 102, 204, 204 }, { 102, 153, 204 }, { 102, 102, 204 },
-  { 102,  51, 204 }, { 102,   0, 204 }, { 102, 255, 153 }, { 102, 204, 153 },
-  { 102, 153, 153 }, { 102, 102, 153 }, { 102,  51, 153 }, { 102,   0, 153 },
-  {  51, 255, 255 }, {  51, 204, 255 }, {  51, 153, 255 }, {  51, 102, 255 },
-  {  51,  51, 255 }, {  51,   0, 255 }, {  51, 255, 204 }, {  51, 204, 204 },
-  {  51, 153, 204 }, {  51, 102, 204 }, {  51,  51, 204 }, {  51,   0, 204 },
-  {  51, 255, 153 }, {  51, 204, 153 }, {  51, 153, 153 }, {  51, 102, 153 },
-  {  51,  51, 153 }, {  51,   0, 153 }, {   0, 255, 255 }, {   0, 204, 255 },
-  {   0, 153, 255 }, {   0, 102, 255 }, {   0,  51, 255 }, {   0,   0, 255 },
-  {   0, 255, 204 }, {   0, 204, 204 }, {   0, 153, 204 }, {   0, 102, 204 },
-  {   0,  51, 204 }, {   0,   0, 204 }, {   0, 255, 153 }, {   0, 204, 153 },
-  {   0, 153, 153 }, {   0, 102, 153 }, {   0,  51, 153 }, {   0,   0, 153 },
-  { 255, 255, 102 }, { 255, 204, 102 }, { 255, 153, 102 }, { 255, 102, 102 },
-  { 255,  51, 102 }, { 255,   0, 102 }, { 255, 255,  51 }, { 255, 204,  51 },
-  { 255, 153,  51 }, { 255, 102,  51 }, { 255,  51,  51 }, { 255,   0,  51 },
-  { 255, 255,   0 }, { 255, 204,   0 }, { 255, 153,   0 }, { 255, 102,   0 },
-  { 255,  51,   0 }, { 255,   0,   0 }, { 204, 255, 102 }, { 204, 204, 102 },
-  { 204, 153, 102 }, { 204, 102, 102 }, { 204,  51, 102 }, { 204,   0, 102 },
-  { 204, 255,  51 }, { 204, 204,  51 }, { 204, 153,  51 }, { 204, 102,  51 },
-  { 204,  51,  51 }, { 204,   0,  51 }, { 204, 255,   0 }, { 204, 204,   0 },
-  { 204, 153,   0 }, { 204, 102,   0 }, { 204,  51,   0 }, { 204,   0,   0 },
-  { 153, 255, 102 }, { 153, 204, 102 }, { 153, 153, 102 }, { 153, 102, 102 },
-  { 153,  51, 102 }, { 153,   0, 102 }, { 153, 255,  51 }, { 153, 204,  51 },
-  { 153, 153,  51 }, { 153, 102,  51 }, { 153,  51,  51 }, { 153,   0,  51 },
-  { 153, 255,   0 }, { 153, 204,   0 }, { 153, 153,   0 }, { 153, 102,   0 },
-  { 153,  51,   0 }, { 153,   0,   0 }, { 102, 255, 102 }, { 102, 204, 102 },
-  { 102, 153, 102 }, { 102, 102, 102 }, { 102,  51, 102 }, { 102,   0, 102 },
-  { 102, 255,  51 }, { 102, 204,  51 }, { 102, 153,  51 }, { 102, 102,  51 },
-  { 102,  51,  51 }, { 102,   0,  51 }, { 102, 255,   0 }, { 102, 204,   0 },
-  { 102, 153,   0 }, { 102, 102,   0 }, { 102,  51,   0 }, { 102,   0,   0 },
-  {  51, 255, 102 }, {  51, 204, 102 }, {  51, 153, 102 }, {  51, 102, 102 },
-  {  51,  51, 102 }, {  51,   0, 102 }, {  51, 255,  51 }, {  51, 204,  51 },
-  {  51, 153,  51 }, {  51, 102,  51 }, {  51,  51,  51 }, {  51,   0,  51 },
-  {  51, 255,   0 }, {  51, 204,   0 }, {  51, 153,   0 }, {  51, 102,   0 },
-  {  51,  51,   0 }, {  51,   0,   0 }, {   0, 255, 102 }, {   0, 204, 102 },
-  {   0, 153, 102 }, {   0, 102, 102 }, {   0,  51, 102 }, {   0,   0, 102 },
-  {   0, 255,  51 }, {   0, 204,  51 }, {   0, 153,  51 }, {   0, 102,  51 },
-  {   0,  51,  51 }, {   0,   0,  51 }, {   0, 255,   0 }, {   0, 204,   0 },
-  {   0, 153,   0 }, {   0, 102,   0 }, {   0,  51,   0 }, {  17,  17,  17 },
-  {  34,  34,  34 }, {  68,  68,  68 }, {  85,  85,  85 }, { 119, 119, 119 },
-  { 136, 136, 136 }, { 170, 170, 170 }, { 187, 187, 187 }, { 221, 221, 221 },
-  { 238, 238, 238 }, { 192, 192, 192 }, { 128,   0,   0 }, { 128,   0, 128 },
-  {   0, 128,   0 }, {   0, 128, 128 }, {   0,   0,   0 }, {   0,   0,   0 },
-  {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 },
-  {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 },
-  {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 },
-  {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 },
-  {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 },
-  {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 }};
-#endif
+static int
+  PalmPalette[256][3] = 
+  {
+    { Upscale(255), Upscale(255), Upscale(255) },
+    { Upscale(255), Upscale(204), Upscale(255) },
+    { Upscale(255), Upscale(153), Upscale(255) },
+    { Upscale(255), Upscale(102), Upscale(255) },
+    { Upscale(255), Upscale( 51), Upscale(255) },
+    { Upscale(255), Upscale(  0), Upscale(255) },
+    { Upscale(255), Upscale(255), Upscale(204) },
+    { Upscale(255), Upscale(204), Upscale(204) },
+    { Upscale(255), Upscale(153), Upscale(204) },
+    { Upscale(255), Upscale(102), Upscale(204) },
+    { Upscale(255), Upscale( 51), Upscale(204) },
+    { Upscale(255), Upscale(  0), Upscale(204) },
+    { Upscale(255), Upscale(255), Upscale(153) },
+    { Upscale(255), Upscale(204), Upscale(153) },
+    { Upscale(255), Upscale(153), Upscale(153) },
+    { Upscale(255), Upscale(102), Upscale(153) },
+    { Upscale(255), Upscale( 51), Upscale(153) },
+    { Upscale(255), Upscale(  0), Upscale(153) },
+    { Upscale(204), Upscale(255), Upscale(255) },
+    { Upscale(204), Upscale(204), Upscale(255) },
+    { Upscale(204), Upscale(153), Upscale(255) },
+    { Upscale(204), Upscale(102), Upscale(255) },
+    { Upscale(204), Upscale( 51), Upscale(255) },
+    { Upscale(204), Upscale(  0), Upscale(255) },
+    { Upscale(204), Upscale(255), Upscale(204) },
+    { Upscale(204), Upscale(204), Upscale(204) },
+    { Upscale(204), Upscale(153), Upscale(204) },
+    { Upscale(204), Upscale(102), Upscale(204) },
+    { Upscale(204), Upscale( 51), Upscale(204) },
+    { Upscale(204), Upscale(  0), Upscale(204) },
+    { Upscale(204), Upscale(255), Upscale(153) },
+    { Upscale(204), Upscale(204), Upscale(153) },
+    { Upscale(204), Upscale(153), Upscale(153) },
+    { Upscale(204), Upscale(102), Upscale(153) },
+    { Upscale(204), Upscale( 51), Upscale(153) },
+    { Upscale(204), Upscale(  0), Upscale(153) },
+    { Upscale(153), Upscale(255), Upscale(255) },
+    { Upscale(153), Upscale(204), Upscale(255) },
+    { Upscale(153), Upscale(153), Upscale(255) },
+    { Upscale(153), Upscale(102), Upscale(255) },
+    { Upscale(153), Upscale( 51), Upscale(255) },
+    { Upscale(153), Upscale(  0), Upscale(255) },
+    { Upscale(153), Upscale(255), Upscale(204) },
+    { Upscale(153), Upscale(204), Upscale(204) },
+    { Upscale(153), Upscale(153), Upscale(204) },
+    { Upscale(153), Upscale(102), Upscale(204) },
+    { Upscale(153), Upscale( 51), Upscale(204) },
+    { Upscale(153), Upscale(  0), Upscale(204) },
+    { Upscale(153), Upscale(255), Upscale(153) },
+    { Upscale(153), Upscale(204), Upscale(153) },
+    { Upscale(153), Upscale(153), Upscale(153) },
+    { Upscale(153), Upscale(102), Upscale(153) },
+    { Upscale(153), Upscale( 51), Upscale(153) },
+    { Upscale(153), Upscale(  0), Upscale(153) },
+    { Upscale(102), Upscale(255), Upscale(255) },
+    { Upscale(102), Upscale(204), Upscale(255) },
+    { Upscale(102), Upscale(153), Upscale(255) },
+    { Upscale(102), Upscale(102), Upscale(255) },
+    { Upscale(102), Upscale( 51), Upscale(255) },
+    { Upscale(102), Upscale(  0), Upscale(255) },
+    { Upscale(102), Upscale(255), Upscale(204) },
+    { Upscale(102), Upscale(204), Upscale(204) },
+    { Upscale(102), Upscale(153), Upscale(204) },
+    { Upscale(102), Upscale(102), Upscale(204) },
+    { Upscale(102), Upscale( 51), Upscale(204) },
+    { Upscale(102), Upscale(  0), Upscale(204) },
+    { Upscale(102), Upscale(255), Upscale(153) },
+    { Upscale(102), Upscale(204), Upscale(153) },
+    { Upscale(102), Upscale(153), Upscale(153) },
+    { Upscale(102), Upscale(102), Upscale(153) },
+    { Upscale(102), Upscale( 51), Upscale(153) },
+    { Upscale(102), Upscale(  0), Upscale(153) },
+    { Upscale( 51), Upscale(255), Upscale(255) },
+    { Upscale( 51), Upscale(204), Upscale(255) },
+    { Upscale( 51), Upscale(153), Upscale(255) },
+    { Upscale( 51), Upscale(102), Upscale(255) },
+    { Upscale( 51), Upscale( 51), Upscale(255) },
+    { Upscale( 51), Upscale(  0), Upscale(255) },
+    { Upscale( 51), Upscale(255), Upscale(204) },
+    { Upscale( 51), Upscale(204), Upscale(204) },
+    { Upscale( 51), Upscale(153), Upscale(204) },
+    { Upscale( 51), Upscale(102), Upscale(204) },
+    { Upscale( 51), Upscale( 51), Upscale(204) },
+    { Upscale( 51), Upscale(  0), Upscale(204) },
+    { Upscale( 51), Upscale(255), Upscale(153) },
+    { Upscale( 51), Upscale(204), Upscale(153) },
+    { Upscale( 51), Upscale(153), Upscale(153) },
+    { Upscale( 51), Upscale(102), Upscale(153) },
+    { Upscale( 51), Upscale( 51), Upscale(153) },
+    { Upscale( 51), Upscale(  0), Upscale(153) },
+    { Upscale(  0), Upscale(255), Upscale(255) },
+    { Upscale(  0), Upscale(204), Upscale(255) },
+    { Upscale(  0), Upscale(153), Upscale(255) },
+    { Upscale(  0), Upscale(102), Upscale(255) },
+    { Upscale(  0), Upscale( 51), Upscale(255) },
+    { Upscale(  0), Upscale(  0), Upscale(255) },
+    { Upscale(  0), Upscale(255), Upscale(204) },
+    { Upscale(  0), Upscale(204), Upscale(204) },
+    { Upscale(  0), Upscale(153), Upscale(204) },
+    { Upscale(  0), Upscale(102), Upscale(204) },
+    { Upscale(  0), Upscale( 51), Upscale(204) },
+    { Upscale(  0), Upscale(  0), Upscale(204) },
+    { Upscale(  0), Upscale(255), Upscale(153) },
+    { Upscale(  0), Upscale(204), Upscale(153) },
+    { Upscale(  0), Upscale(153), Upscale(153) },
+    { Upscale(  0), Upscale(102), Upscale(153) },
+    { Upscale(  0), Upscale( 51), Upscale(153) },
+    { Upscale(  0), Upscale(  0), Upscale(153) },
+    { Upscale(255), Upscale(255), Upscale(102) },
+    { Upscale(255), Upscale(204), Upscale(102) },
+    { Upscale(255), Upscale(153), Upscale(102) },
+    { Upscale(255), Upscale(102), Upscale(102) },
+    { Upscale(255), Upscale( 51), Upscale(102) },
+    { Upscale(255), Upscale(  0), Upscale(102) },
+    { Upscale(255), Upscale(255), Upscale( 51) },
+    { Upscale(255), Upscale(204), Upscale( 51) },
+    { Upscale(255), Upscale(153), Upscale( 51) },
+    { Upscale(255), Upscale(102), Upscale( 51) },
+    { Upscale(255), Upscale( 51), Upscale( 51) },
+    { Upscale(255), Upscale(  0), Upscale( 51) },
+    { Upscale(255), Upscale(255), Upscale(  0) },
+    { Upscale(255), Upscale(204), Upscale(  0) },
+    { Upscale(255), Upscale(153), Upscale(  0) },
+    { Upscale(255), Upscale(102), Upscale(  0) },
+    { Upscale(255), Upscale( 51), Upscale(  0) },
+    { Upscale(255), Upscale(  0), Upscale(  0) },
+    { Upscale(204), Upscale(255), Upscale(102) },
+    { Upscale(204), Upscale(204), Upscale(102) },
+    { Upscale(204), Upscale(153), Upscale(102) },
+    { Upscale(204), Upscale(102), Upscale(102) },
+    { Upscale(204), Upscale( 51), Upscale(102) },
+    { Upscale(204), Upscale(  0), Upscale(102) },
+    { Upscale(204), Upscale(255), Upscale( 51) },
+    { Upscale(204), Upscale(204), Upscale( 51) },
+    { Upscale(204), Upscale(153), Upscale( 51) },
+    { Upscale(204), Upscale(102), Upscale( 51) },
+    { Upscale(204), Upscale( 51), Upscale( 51) },
+    { Upscale(204), Upscale(  0), Upscale( 51) },
+    { Upscale(204), Upscale(255), Upscale(  0) },
+    { Upscale(204), Upscale(204), Upscale(  0) },
+    { Upscale(204), Upscale(153), Upscale(  0) },
+    { Upscale(204), Upscale(102), Upscale(  0) },
+    { Upscale(204), Upscale( 51), Upscale(  0) },
+    { Upscale(204), Upscale(  0), Upscale(  0) },
+    { Upscale(153), Upscale(255), Upscale(102) },
+    { Upscale(153), Upscale(204), Upscale(102) },
+    { Upscale(153), Upscale(153), Upscale(102) },
+    { Upscale(153), Upscale(102), Upscale(102) },
+    { Upscale(153), Upscale( 51), Upscale(102) },
+    { Upscale(153), Upscale(  0), Upscale(102) },
+    { Upscale(153), Upscale(255), Upscale( 51) },
+    { Upscale(153), Upscale(204), Upscale( 51) },
+    { Upscale(153), Upscale(153), Upscale( 51) },
+    { Upscale(153), Upscale(102), Upscale( 51) },
+    { Upscale(153), Upscale( 51), Upscale( 51) },
+    { Upscale(153), Upscale(  0), Upscale( 51) },
+    { Upscale(153), Upscale(255), Upscale(  0) },
+    { Upscale(153), Upscale(204), Upscale(  0) },
+    { Upscale(153), Upscale(153), Upscale(  0) },
+    { Upscale(153), Upscale(102), Upscale(  0) },
+    { Upscale(153), Upscale( 51), Upscale(  0) },
+    { Upscale(153), Upscale(  0), Upscale(  0) },
+    { Upscale(102), Upscale(255), Upscale(102) },
+    { Upscale(102), Upscale(204), Upscale(102) },
+    { Upscale(102), Upscale(153), Upscale(102) },
+    { Upscale(102), Upscale(102), Upscale(102) },
+    { Upscale(102), Upscale( 51), Upscale(102) },
+    { Upscale(102), Upscale(  0), Upscale(102) },
+    { Upscale(102), Upscale(255), Upscale( 51) },
+    { Upscale(102), Upscale(204), Upscale( 51) },
+    { Upscale(102), Upscale(153), Upscale( 51) },
+    { Upscale(102), Upscale(102), Upscale( 51) },
+    { Upscale(102), Upscale( 51), Upscale( 51) },
+    { Upscale(102), Upscale(  0), Upscale( 51) },
+    { Upscale(102), Upscale(255), Upscale(  0) },
+    { Upscale(102), Upscale(204), Upscale(  0) },
+    { Upscale(102), Upscale(153), Upscale(  0) },
+    { Upscale(102), Upscale(102), Upscale(  0) },
+    { Upscale(102), Upscale( 51), Upscale(  0) },
+    { Upscale(102), Upscale(  0), Upscale(  0) },
+    { Upscale( 51), Upscale(255), Upscale(102) },
+    { Upscale( 51), Upscale(204), Upscale(102) },
+    { Upscale( 51), Upscale(153), Upscale(102) },
+    { Upscale( 51), Upscale(102), Upscale(102) },
+    { Upscale( 51), Upscale( 51), Upscale(102) },
+    { Upscale( 51), Upscale(  0), Upscale(102) },
+    { Upscale( 51), Upscale(255), Upscale( 51) },
+    { Upscale( 51), Upscale(204), Upscale( 51) },
+    { Upscale( 51), Upscale(153), Upscale( 51) },
+    { Upscale( 51), Upscale(102), Upscale( 51) },
+    { Upscale( 51), Upscale( 51), Upscale( 51) },
+    { Upscale( 51), Upscale(  0), Upscale( 51) },
+    { Upscale( 51), Upscale(255), Upscale(  0) },
+    { Upscale( 51), Upscale(204), Upscale(  0) },
+    { Upscale( 51), Upscale(153), Upscale(  0) },
+    { Upscale( 51), Upscale(102), Upscale(  0) },
+    { Upscale( 51), Upscale( 51), Upscale(  0) },
+    { Upscale( 51), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(255), Upscale(102) },
+    { Upscale(  0), Upscale(204), Upscale(102) },
+    { Upscale(  0), Upscale(153), Upscale(102) },
+    { Upscale(  0), Upscale(102), Upscale(102) },
+    { Upscale(  0), Upscale( 51), Upscale(102) },
+    { Upscale(  0), Upscale(  0), Upscale(102) },
+    { Upscale(  0), Upscale(255), Upscale( 51) },
+    { Upscale(  0), Upscale(204), Upscale( 51) },
+    { Upscale(  0), Upscale(153), Upscale( 51) },
+    { Upscale(  0), Upscale(102), Upscale( 51) },
+    { Upscale(  0), Upscale( 51), Upscale( 51) },
+    { Upscale(  0), Upscale(  0), Upscale( 51) },
+    { Upscale(  0), Upscale(255), Upscale(  0) },
+    { Upscale(  0), Upscale(204), Upscale(  0) },
+    { Upscale(  0), Upscale(153), Upscale(  0) },
+    { Upscale(  0), Upscale(102), Upscale(  0) },
+    { Upscale(  0), Upscale( 51), Upscale(  0) },
+    { Upscale( 17), Upscale( 17), Upscale( 17) },
+    { Upscale( 34), Upscale( 34), Upscale( 34) },
+    { Upscale( 68), Upscale( 68), Upscale( 68) },
+    { Upscale( 85), Upscale( 85), Upscale( 85) },
+    { Upscale(119), Upscale(119), Upscale(119) },
+    { Upscale(136), Upscale(136), Upscale(136) },
+    { Upscale(170), Upscale(170), Upscale(170) },
+    { Upscale(187), Upscale(187), Upscale(187) },
+    { Upscale(221), Upscale(221), Upscale(221) },
+    { Upscale(238), Upscale(238), Upscale(238) },
+    { Upscale(192), Upscale(192), Upscale(192) },
+    { Upscale(128), Upscale(  0), Upscale(  0) },
+    { Upscale(128), Upscale(  0), Upscale(128) },
+    { Upscale(  0), Upscale(128), Upscale(  0) },
+    { Upscale(  0), Upscale(128), Upscale(128) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) },
+    { Upscale(  0), Upscale(  0), Upscale(  0) }
+  };
 
 /*
   Forward declarations.
@@ -247,7 +348,7 @@ static unsigned int
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method FindColor returns the index of the matching entry from
-%  PalmPalette8bpp for a given PixelPacket.
+%  PalmPalette for a given PixelPacket.
 %
 %  The format of the FindColor method is:
 %
@@ -266,12 +367,12 @@ static int FindColor(PixelPacket *pixel)
   register int
     i;
 
-  for(i = 0; i < 256; i++)
-    if (pixel->red == PalmPalette8bpp[i][0] &&
-        pixel->green == PalmPalette8bpp[i][1] &&
-        pixel->blue == PalmPalette8bpp[i][2])
-      return i;
-  return -1;
+  for (i=0; i < 256; i++)
+    if ((pixel->red == PalmPalette[i][0]) &&
+        (pixel->green == PalmPalette[i][1]) &&
+        (pixel->blue == PalmPalette[i][2]))
+      return(i);
+  return(-1);
 }
 
 /*
@@ -315,13 +416,13 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   IndexPacket
     index;
 
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -353,10 +454,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     Open image file.
   */
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info, image, ReadBinaryType, exception);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
-
   image->columns = ReadBlobMSBShort(image);
   image->rows = ReadBlobMSBShort(image);
   bytes_per_row = ReadBlobMSBShort(image);
@@ -398,9 +498,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       }
     for(; i < (long) (1 << bpp); i++)
       {
-      image->colormap[255 - i].red = PalmPalette8bpp[i][0];
-      image->colormap[255 - i].green = PalmPalette8bpp[i][1];
-      image->colormap[255 - i].blue = PalmPalette8bpp[i][2];
+      image->colormap[255 - i].red = PalmPalette[i][0];
+      image->colormap[255 - i].green = PalmPalette[i][1];
+      image->colormap[255 - i].blue = PalmPalette[i][2];
       }
     }
 
@@ -698,7 +798,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     else  /* Map colors to Palm standard colormap */
       {
       map = ConstituteImage(256, 1, "RGB", IntegerPixel,
-                      &PalmPalette8bpp, &exception);
+                      &PalmPalette, &exception);
       SetImageType(map, PaletteType);
       MapImage(image, map, False);
       for(y = 0; y < (long) image->rows; y++)
