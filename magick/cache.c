@@ -1877,7 +1877,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if (cache_info->length == (size_t) cache_info->length)
     if ((cache_info->type == MemoryCache) ||
         ((cache_info->type == UndefinedCache) &&
-         ((AcquireMagickResource(MemoryResource,0) == ~0) ||
+         ((AcquireMagickResource(MemoryResource,0) == ResourceInfinity) ||
           (cache_info->length <= AcquireMagickResource(MemoryResource,0)))))
       {
         if (cache_info->storage_class == UndefinedClass)
@@ -1914,7 +1914,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   /*
     Create pixel cache on disk.
   */
-  if ((AcquireMagickResource(DiskResource,0) == ~0) ||
+  if ((AcquireMagickResource(DiskResource,0) == ResourceInfinity) ||
       (cache_info->length <= AcquireMagickResource(DiskResource,0)))
     ThrowBinaryException(ResourceLimitError,"Cache resources exhausted",
       image->filename);
@@ -1957,7 +1957,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info->type=DiskCache;
   if ((cache_info->length > MinBlobExtent) &&
       (cache_info->length == (size_t) cache_info->length) &&
-      ((AcquireMagickResource(MemoryMapResource,0) == ~0) ||
+      ((AcquireMagickResource(MemoryMapResource,0) == ResourceInfinity) ||
        (cache_info->length <= AcquireMagickResource(MemoryMapResource,0))))
     {
       pixels=(PixelPacket *)

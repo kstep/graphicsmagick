@@ -72,7 +72,7 @@ typedef struct _ResourceInfo
   Global declarations.
 */
 static ResourceInfo
-  resource_info = { ~0, ~0, ~0};
+  resource_info = { ResourceInfinity, ResourceInfinity, ResourceInfinity};
 
 static SemaphoreInfo
   *resource_semaphore = (SemaphoreInfo *) NULL;
@@ -116,7 +116,7 @@ MagickExport unsigned int AcquireMagickResource(const ResourceType type,
   {
     case MemoryResource:
     {
-      if (resource_info.memory == ~0)
+      if (resource_info.memory == ResourceInfinity)
         break;
       resource_info.memory-=size;
       status=resource_info.memory > 0;
@@ -124,7 +124,7 @@ MagickExport unsigned int AcquireMagickResource(const ResourceType type,
     }
     case DiskResource:
     {
-      if (resource_info.disk == ~0)
+      if (resource_info.disk == ResourceInfinity)
         break;
       resource_info.disk-=size;
       status=resource_info.disk > 0;
@@ -132,7 +132,7 @@ MagickExport unsigned int AcquireMagickResource(const ResourceType type,
     }
     case MemoryMapResource:
     {
-      if (resource_info.memory_map == ~0)
+      if (resource_info.memory_map == ResourceInfinity)
         break;
       resource_info.memory_map-=size;
       status=resource_info.memory_map > 0;
@@ -245,21 +245,21 @@ MagickExport void LiberateMagickResource(const ResourceType type,
   {
     case MemoryResource:
     {
-      if (resource_info.memory == ~0)
+      if (resource_info.memory == ResourceInfinity)
         break;
       resource_info.memory+=size;
       break;
     }
     case DiskResource:
     {
-      if (resource_info.disk == ~0)
+      if (resource_info.disk == ResourceInfinity)
         break;
       resource_info.disk+=size;
       break;
     }
     case MemoryMapResource:
     {
-      if (resource_info.memory_map == ~0)
+      if (resource_info.memory_map == ResourceInfinity)
         break;
       resource_info.memory_map+=size; break;
     }

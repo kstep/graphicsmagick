@@ -8,6 +8,8 @@
 extern "C" {
 #endif
 
+#define ResourceInfinity  (~0)
+
 /*
   Typedef declarations.
 */

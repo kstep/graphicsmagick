@@ -1272,7 +1272,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
   */
   if (file == -1)
     return((void *) NULL);
-  if ((AcquireMagickResource(MemoryMapResource,0) != ~0) &&
+  if ((AcquireMagickResource(MemoryMapResource,0) != ResourceInfinity) &&
 			(length > AcquireMagickResource(MemoryMapResource,0)))
     return((void *) NULL);
   switch (mode)
