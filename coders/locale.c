@@ -913,7 +913,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
                   index++;
                 }
             }
-            FormatString(text, "#define %s%s%s%s %ld",fields[0],fields[1],fields[2],fields[3],i+1);
+            FormatString(text, "#define MGK_%s%s%s%s %ld",fields[0],fields[1],fields[2],fields[3],i+1);
             WriteBlobStringWithEOL(image,text);
           }
       }
