@@ -1,6 +1,6 @@
 /*  FPXBaselineView.h
  *
- *  Copyright (c) 1999 Digital Imaging Group
+ *  Copyright (c) 1999 Digital Imaging Group, Inc.
  *  For conditions of distribution and use, see copyright notice
  *  in Flashpix.h
  *
@@ -38,7 +38,7 @@ extern "C" {
 // allows for simple rotation. Auto scales to maximize rotated 
 // image size in page without crop.
 
-FPXStatus FPX_SetPageSetup (
+FPXEXPORT FPXStatus FPX_SetPageSetup (
               FPXImageHandle* theFPX, 
               FPXPage**       thePage, 
               long            width, 
@@ -48,16 +48,16 @@ FPXStatus FPX_SetPageSetup (
               FPXBackground   backgroundColor);
              
                         
-FPXStatus FPX_ClosePage (
+FPXEXPORT FPXStatus FPX_ClosePage (
               FPXPage*      thePage);
              
                         
-FPXStatus FPX_ReadPage (
+FPXEXPORT FPXStatus FPX_ReadPage (
               FPXPage*      thePage, 
               FPXImageDesc* renderingBuffer);
 
                         
-FPXStatus FPX_ReadPageLine (
+FPXEXPORT FPXStatus FPX_ReadPageLine (
               FPXPage*      thePage, 
               long          lineNumber, 
               FPXImageDesc* renderingBuffer);
@@ -69,14 +69,14 @@ extern "C" {
 
 // World tools :
                         
-FPXStatus FPX_CreateWorld (
+FPXEXPORT FPXStatus FPX_CreateWorld (
               FPXWorld**    theWorld, 
               float         width, 
               float         height,
               FPXColorspace backgroundColorspace,
               FPXBackground backgroundColor);
             
-FPXStatus FPX_DeleteWorld (
+FPXEXPORT FPXStatus FPX_DeleteWorld (
               FPXWorld*     theWorld);
         
 // the following several functions are for managing multiple images
@@ -86,7 +86,7 @@ FPXStatus FPX_DeleteWorld (
 
 // List of images management :
 
-FPXStatus FPX_AddImage (
+FPXEXPORT FPXStatus FPX_AddImage (
               FPXWorld*         theWorld, 
               FPXImageInWorld** theImage,
               FPXImageHandle*   theFPX);
@@ -96,7 +96,7 @@ FPXStatus FPX_AddImage (
 // The image is placed as specified by the affine 
 // matrix in it's view.
                                 
-FPXStatus FPX_DeleteImage (
+FPXEXPORT FPXStatus FPX_DeleteImage (
               FPXWorld*        theWorld, 
               FPXImageInWorld* theImage);
                 
@@ -104,31 +104,31 @@ FPXStatus FPX_DeleteImage (
 // does not remove associated window created at 
 // FPX_AddImage time.
                 
-FPXStatus FPX_GetFirstImage (
+FPXEXPORT FPXStatus FPX_GetFirstImage (
               FPXWorld*         theWorld, 
               FPXImageInWorld** theImage);
                 
 // get first image from world image list.
                                 
-FPXStatus FPX_GetLastImage (
+FPXEXPORT FPXStatus FPX_GetLastImage (
               FPXWorld*         theWorld, 
               FPXImageInWorld** theImage);
                 
 // get last image from world image list.
                                 
-FPXStatus FPX_GetCurrentImage (
+FPXEXPORT FPXStatus FPX_GetCurrentImage (
               FPXWorld*         theWorld, 
               FPXImageInWorld** theImage);
                 
 // get current image from world image list.
                 
-FPXStatus FPX_NextImage (
+FPXEXPORT FPXStatus FPX_NextImage (
               FPXWorld*         theWorld, 
               FPXImageInWorld** theImage);
                 
 // get the next image in the list. becomes current.
                                 
-FPXStatus FPX_PreviousImage (
+FPXEXPORT FPXStatus FPX_PreviousImage (
               FPXWorld*         theWorld, 
               FPXImageInWorld** theImage);
 
@@ -138,7 +138,7 @@ FPXStatus FPX_PreviousImage (
 // misc.
 
 // Image position tools :
-FPXStatus FPX_SetImageSize (
+FPXEXPORT FPXStatus FPX_SetImageSize (
               FPXImageInWorld* theImage, 
               float            width, 
               float            height);
@@ -146,14 +146,14 @@ FPXStatus FPX_SetImageSize (
 // Set width and height of image in world coord.s
 // I.e. scale in x and y.
 
-FPXStatus FPX_SetImageTransform (
+FPXEXPORT FPXStatus FPX_SetImageTransform (
               FPXImageInWorld* theImage, 
               float x0,  float y0, 
               float m11, float m12, float m21, float m22);
                     
 // Set full 2D affine in one swell foop.
         
-FPXStatus FPX_ApplyImageTransform (
+FPXEXPORT FPXStatus FPX_ApplyImageTransform (
               FPXImageInWorld* theImage, 
               float x0,  float y0, 
               float m11, float m12, float m21, float m22);
@@ -161,14 +161,14 @@ FPXStatus FPX_ApplyImageTransform (
 // Compose the specified affine with the existing affine xfrm 
 // of the image.
         
-FPXStatus FPX_TranslateImage (
+FPXEXPORT FPXStatus FPX_TranslateImage (
               FPXImageInWorld* theImage, 
               float dx, float dy);
            
 // Move the image in world coord.s. will form new rendering xform.
 // Composed with existing xform.
         
-FPXStatus FPX_RotateImage (
+FPXEXPORT FPXStatus FPX_RotateImage (
               FPXImageInWorld* theImage, 
               float x0, float y0,
               float theta);
@@ -177,7 +177,7 @@ FPXStatus FPX_RotateImage (
 // Implemented as xlate of said point to origin, rotate, 
 // xlate back.
         
-FPXStatus FPX_ScaleImage (
+FPXEXPORT FPXStatus FPX_ScaleImage (
               FPXImageInWorld* theImage, 
               float x0, float y0,
               float sx, float sy);
@@ -186,7 +186,7 @@ FPXStatus FPX_ScaleImage (
 // Implemented as xlation of said point to origin, scale, 
 // xlate back.
 
-FPXStatus FPX_ShearHorizontal (
+FPXEXPORT FPXStatus FPX_ShearHorizontal (
               FPXImageInWorld* theImage, 
               float x0, float y0, 
               float sh);
@@ -195,7 +195,7 @@ FPXStatus FPX_ShearHorizontal (
 // Shear is wrt a given point. Implemented by translation of
 // said point to the origin, shear, translation back.
         
-FPXStatus FPX_ShearVertical (
+FPXEXPORT FPXStatus FPX_ShearVertical (
               FPXImageInWorld* theImage, 
               float x0, float y0, 
               float sh);
@@ -204,7 +204,7 @@ FPXStatus FPX_ShearVertical (
 // Shear is wrt a given point. Implemented by translation of
 // said point to the origin, shear, translation back.
         
-FPXStatus FPX_FlipHorizontal (
+FPXEXPORT FPXStatus FPX_FlipHorizontal (
               FPXImageInWorld* theImage, 
               float x0, float y0);
            
@@ -213,7 +213,7 @@ FPXStatus FPX_FlipHorizontal (
 // Implemented by xlate of point to origin, scale x by -1, 
 // xlate back.
 
-FPXStatus FPX_FlipVertical (
+FPXEXPORT FPXStatus FPX_FlipVertical (
               FPXImageInWorld* theImage, 
               float x0, float y0);
            
@@ -222,7 +222,7 @@ FPXStatus FPX_FlipVertical (
 // Implemented by xlate of point to origin, scale x by -1, 
 // xlate back.
         
-FPXStatus FPX_GetOutlineParallelogram (
+FPXEXPORT FPXStatus FPX_GetOutlineParallelogram (
               FPXImageInWorld* theImage, 
               float* x0, float* y0, 
               float* x1, float* y1,
@@ -232,7 +232,7 @@ FPXStatus FPX_GetOutlineParallelogram (
 // Return corners of an image as rendered.
 // The bounding box including shear and rotation and crop (ROI).
         
-FPXStatus FPX_GetOutlineRectangle (
+FPXEXPORT FPXStatus FPX_GetOutlineRectangle (
               FPXImageInWorld* theImage, 
               float* x0, float* y0, 
               float* x1, float* y1);
@@ -240,7 +240,7 @@ FPXStatus FPX_GetOutlineRectangle (
 // Get the corners of a 0 rotation rectangle which bounds the 
 // image. Conventional bounding box.
         
-FPXStatus FPX_GetOrigin (
+FPXEXPORT FPXStatus FPX_GetOrigin (
               FPXImageInWorld* theImage, 
               float* x0, float* y0);
            
@@ -248,7 +248,7 @@ FPXStatus FPX_GetOrigin (
 // == translation values from xfrm. I.e. location of the 
 // upper left.
         
-FPXStatus FPX_SetImageCrop (
+FPXEXPORT FPXStatus FPX_SetImageCrop (
               FPXImageInWorld* theImage, 
               float x0, float y0, 
               float x1, float y1);
@@ -256,7 +256,7 @@ FPXStatus FPX_SetImageCrop (
 // Set Region of Interest (ROI) on image.
 // Coords. are in world coords.
         
-FPXStatus FPX_ResetImageCrop (
+FPXEXPORT FPXStatus FPX_ResetImageCrop (
               FPXImageInWorld* theImage);
 
 // Set ROI to full image.
@@ -264,12 +264,12 @@ FPXStatus FPX_ResetImageCrop (
 // Viewing options: this concern the usage of the alpha channel stored along
 // with the image in the composition:
 
-FPXStatus FPX_UseAlphaChannel (
+FPXEXPORT FPXStatus FPX_UseAlphaChannel (
               FPXImageInWorld* theImage,
               FPXbool          useAlphaChannel);
 // The alpha channel is taken into account if (useAlphaChannel == true)
 
-FPXStatus FPX_InvertAlphaChannel (
+FPXEXPORT FPXStatus FPX_InvertAlphaChannel (
               FPXImageInWorld* theImage,
               FPXbool          inverseAlpha);
 // The opacity is inversed prior composition if (inverseAlpha == true)
@@ -278,17 +278,17 @@ FPXStatus FPX_InvertAlphaChannel (
 // An FPX window is really a viewport on the world.
 // It establishes resolution and hence pixels.
                         
-FPXStatus FPX_CreateWindow (
+FPXEXPORT FPXStatus FPX_CreateWindow (
               FPXWorld*    theWorld, 
               FPXWindow**  theWindow, 
               float x0,    float y0, 
               float width, float height, 
               float resolution);
                                   
-FPXStatus FPX_DeleteWindow (
+FPXEXPORT FPXStatus FPX_DeleteWindow (
               FPXWindow* theWindow);
 
-FPXStatus FPX_ReadWindowSample (
+FPXEXPORT FPXStatus FPX_ReadWindowSample (
               FPXWindow*    theWindow, 
               long x0,      long y0,
               FPXImageDesc* windowBufferInfo);
@@ -297,7 +297,7 @@ FPXStatus FPX_ReadWindowSample (
 // This is a 4x4 square about the specified point (in pixels) 
 // in the window.
                         
-FPXStatus FPX_RefreshWindow (
+FPXEXPORT FPXStatus FPX_RefreshWindow (
               FPXWindow*    theWindow, 
               FPXImageDesc* windowBufferInfo);
            
@@ -305,28 +305,28 @@ FPXStatus FPX_RefreshWindow (
 // Includes a progress Function, as rendering may take a while, 
 // especially at high res.
         
-FPXStatus FPX_TranslateWindow (
+FPXEXPORT FPXStatus FPX_TranslateWindow (
               FPXWindow* theWindow, 
               float  dx, float  dy);
            
 // Move a window in world coords.
 // Changes xform associated with window.
         
-FPXStatus FPX_ResizeWindow (
+FPXEXPORT FPXStatus FPX_ResizeWindow (
               FPXWindow*   theWindow, 
               float width, float height);
            
 // Crop or enlarge a window, without changing resolution.
 // I.e. no zooming, just a bigger window with more pixels in it.
         
-FPXStatus FPX_ZoomWindow (
+FPXEXPORT FPXStatus FPX_ZoomWindow (
               FPXWindow* theWindow, 
               float      zoomRatio);
            
 // Change window dimensions and resolution inversely so as 
 // to zoom/dezoom.
         
-FPXStatus FPX_GetWindowDefinition (
+FPXEXPORT FPXStatus FPX_GetWindowDefinition (
               FPXWindow*    theWindow, 
               float* x0,    float* y0, 
               float* width, float* height, 
@@ -335,14 +335,14 @@ FPXStatus FPX_GetWindowDefinition (
 // Get vital statistics about a window: location, size, 
 // resolution.
         
-FPXStatus FPX_WindowToWorld (
+FPXEXPORT FPXStatus FPX_WindowToWorld (
               FPXWindow* theWindow, 
               long i,    long j, 
               float* x,  float* y);
                                    
 // Xform point from window (pixels) to world coords.
         
-FPXStatus FPX_WorldToWindow (
+FPXEXPORT FPXStatus FPX_WorldToWindow (
               FPXWindow* theWindow, 
               float x, float y, 
               long* i, long* j);
@@ -358,11 +358,11 @@ FPXStatus FPX_WorldToWindow (
         Contrast Adjustment
 */
 
-FPXStatus FPX_SetImageInWorldContrastAdjustment (
+FPXEXPORT FPXStatus FPX_SetImageInWorldContrastAdjustment (
               FPXImageInWorld*       theImage,
               FPXContrastAdjustment* theContrastAdjustment);
         
-FPXStatus FPX_GetImageInWorldContrastAdjustment (
+FPXEXPORT FPXStatus FPX_GetImageInWorldContrastAdjustment (
               FPXImageInWorld*       theImage,
               FPXContrastAdjustment* theContrastAdjustment);
         
@@ -372,11 +372,11 @@ FPXStatus FPX_GetImageInWorldContrastAdjustment (
 /*
         ColorTwist Matrix */
 
-FPXStatus FPX_SetImageInWorldColorTwistMatrix (
+FPXEXPORT FPXStatus FPX_SetImageInWorldColorTwistMatrix (
               FPXImageInWorld*     theImage,
               FPXColorTwistMatrix* theColorTwistMatrix);
         
-FPXStatus FPX_GetImageInWorldColorTwistMatrix (
+FPXEXPORT FPXStatus FPX_GetImageInWorldColorTwistMatrix (
               FPXImageInWorld*     theImage,
               FPXColorTwistMatrix* theColorTwistMatrix);
         
@@ -388,23 +388,23 @@ FPXStatus FPX_GetImageInWorldColorTwistMatrix (
 
 /*        Filtering. */
 
-FPXStatus FPX_SetImageInWorldFilteringValue (
+FPXEXPORT FPXStatus FPX_SetImageInWorldFilteringValue (
               FPXImageInWorld*   theImage,
               FPXFilteringValue* theFiltering);
         
-FPXStatus FPX_GetImageInWorldFilteringValue (
+FPXEXPORT FPXStatus FPX_GetImageInWorldFilteringValue (
               FPXImageInWorld*   theImage,
               FPXFilteringValue* theFiltering);
 
 /* Get current Image in World Affine Matrix */
 
-FPXStatus FPX_GetImageInWorldAffineMatrix (
+FPXEXPORT FPXStatus FPX_GetImageInWorldAffineMatrix (
 			FPXImageInWorld*   	theImage,
 			FPXAffineMatrix* 	mat);
 			
 /* Set current Image in World Affine Matrix */
 
-FPXStatus FPX_SetImageInWorldAffineMatrix (
+FPXEXPORT FPXStatus FPX_SetImageInWorldAffineMatrix (
 			FPXImageInWorld*   	theImage,
 			FPXAffineMatrix* 	mat);
 
