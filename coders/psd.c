@@ -316,13 +316,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   typedef struct _LayerInfo
   {
-    unsigned int
-      width,
-      height;
-
-    int
-      x,
-      y;
+    RectangleInfo
+      page;
 
     unsigned short
       channels;
@@ -500,10 +495,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image);
       for (i=0; i < number_layers; i++)
       {
-        layer_info[i].y=ReadBlobMSBLong(image);
-        layer_info[i].x=ReadBlobMSBLong(image);
-        layer_info[i].height=ReadBlobMSBLong(image)-layer_info[i].y;
-        layer_info[i].width=ReadBlobMSBLong(image)-layer_info[i].x;
+        layer_info[i].page.y=ReadBlobMSBLong(image);
+        layer_info[i].page.x=ReadBlobMSBLong(image);
+        layer_info[i].page.height=ReadBlobMSBLong(image)-layer_info[i].page.y;
+        layer_info[i].page.width=ReadBlobMSBLong(image)-layer_info[i].page.x;
         layer_info[i].channels=ReadBlobMSBShort(image);
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
@@ -525,8 +520,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Allocate layered image.
         */
-        layer_info[i].image=CloneImage(image,layer_info[i].width,
-          layer_info[i].height,True,&image->exception);
+        layer_info[i].image=CloneImage(image,layer_info[i].page.width,
+          layer_info[i].page.height,True,&image->exception);
         if (layer_info[i].image == (Image *) NULL)
           {
             for (j=0; j < i; j++)
@@ -776,20 +771,22 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
     }
-  (void) IsOpaqueImage(image);
-  for (i=0; i < number_layers; i++)
-  {
-    /*
-      Composite layer onto image.
-    */
-    if ((layer_info[i].width != 0) && (layer_info[i].height != 0))
-      CompositeImage(image,image->matte ? OverCompositeOp : CopyCompositeOp,
-        layer_info[i].image,layer_info[i].x,layer_info[i].y);
-    DestroyImage(layer_info[i].image);
-  }
-  image->matte=False;
-  if (image->colorspace != CMYKColorspace)
-    image->matte=psd_info.channels >= 4;
+  if (number_layers != 0)
+    {
+      Image
+        *coalesce_image;
+
+      image->next=layer_info[0].image;
+      for (i=0; i < number_layers; i++)
+      {
+        if (i > 0)
+          layer_info[i].image->previous=layer_info[i-1].image;
+        if (i < (number_layers-1))
+          layer_info[i].image->next=layer_info[i+1].image;
+        layer_info[i].image->page=layer_info[i].page;
+      }
+      LiberateMemory((void **) &layer_info);
+    }
   CloseBlob(image);
   return(image);
 }

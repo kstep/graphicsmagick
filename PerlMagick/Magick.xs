@@ -2681,6 +2681,110 @@ Display(ref,...)
 #                                                                             #
 #                                                                             #
 #                                                                             #
+#   F l a t t e n                                                             #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+Flatten(ref)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    FlattenImage   = 1
+    flatten        = 2
+    flattenimage   = 3
+  PPCODE:
+  {
+    AV
+      *av;
+
+    char
+      *p;
+
+    ExceptionInfo
+      exception;
+
+    HV
+      *hv;
+
+    jmp_buf
+      error_jmp;
+
+    Image
+      *image;
+
+    struct PackageInfo
+      *info;
+
+    SV
+      *reference,
+      *rv,
+      *sv;
+
+    volatile int
+      status;
+
+    status=0;
+    error_list=newSVpv("",0);
+    if (!sv_isobject(ST(0)))
+      {
+        MagickWarning(OptionWarning,"Reference is not my type",PackageName);
+        goto MethodException;
+      }
+    reference=SvRV(ST(0));
+    hv=SvSTASH(reference);
+    error_jump=(&error_jmp);
+    status=setjmp(error_jmp);
+    if (status)
+      goto MethodException;
+    image=SetupList(reference,&info,(SV ***) NULL);
+    if (!image)
+      {
+        MagickWarning(OptionWarning,"No images to flatten",NULL);
+        goto MethodException;
+      }
+    GetExceptionInfo(&exception);
+    image=FlattenImages(image,&exception);
+    if (!image)
+      {
+        MagickWarning(exception.severity,exception.reason,exception.description);
+        goto MethodException;
+      }
+    /*
+      Create blessed Perl array for the returned image.
+    */
+    av=newAV();
+    ST(0)=sv_2mortal(sv_bless(newRV((SV *) av),hv));
+    SvREFCNT_dec(av);
+    sv=newSViv((IV) image);
+    rv=newRV(sv);
+    av_push(av,sv_bless(rv,hv));
+    SvREFCNT_dec(sv);
+    info=GetPackageInfo((void *) av,info);
+    FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
+      ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
+    (void) strcpy(image->filename,info->image_info->filename);
+    SetImageInfo(info->image_info,False);
+    SvREFCNT_dec(error_list);
+    error_jump=NULL;
+    XSRETURN(1);
+
+  MethodException:
+    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
+    SvPOK_on(error_list);  /* return messages in string context */
+    ST(0)=sv_2mortal(error_list);
+    error_list=NULL;
+    error_jump=NULL;
+    XSRETURN(1);
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
 #   G e t                                                                     #
 #                                                                             #
 #                                                                             #

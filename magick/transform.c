@@ -256,7 +256,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
     *next;
 
   /*
-    Coalesce the next sequence.
+    Coalesce the image sequence.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -264,9 +264,9 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to coalesce image",
-      "next sequence required");
+      "image sequence required");
   /*
-    Clone first next in sequence.
+    Clone first image in sequence.
   */
   coalesce_image=CloneImage(image,0,0,True,exception);
   if (coalesce_image == (Image *) NULL)
@@ -471,7 +471,7 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image;  returned from
-%      ReadImage.  It points to the first next in the group to be
+%      ReadImage.  It points to the first image in the group to be
 %      deconstructed.
 %
 %    o exception: return any errors or warnings in this structure.
@@ -607,7 +607,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     CloseImagePixels(next->previous);
   }
   /*
-    Clone first next in sequence.
+    Clone first image in sequence.
   */
   deconstruct_image=CloneImage(image,0,0,True,exception);
   if (deconstruct_image == (Image *) NULL)
@@ -616,7 +616,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   /*
-    Deconstruct the next sequence.
+    Deconstruct the image sequence.
   */
   i=0;
   for (next=image->next; next != (Image *) NULL; next=next->next)
@@ -633,6 +633,68 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
   while (deconstruct_image->previous != (Image *) NULL)
     deconstruct_image=deconstruct_image->previous;
   return(deconstruct_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     F l a t t e n I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method FlattenImage merges a sequence of images.  This is useful for GIF
+%  and MNG animation sequences that have page offsets and disposal methods.
+%
+%  The format of the FlattenImage method is:
+%
+%      Image *FlattenImage(Image *image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.  It points to the first image in the group to be
+%      coalesced.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
+{
+  Image
+    *flatten_image;
+
+  register Image
+    *next;
+
+  /*
+    Flatten the image sequence.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  if (image->next == (Image *) NULL)
+    ThrowImageException(OptionWarning,"Unable to flatten image",
+      "image sequence required");
+  /*
+    Clone first image in sequence.
+  */
+  flatten_image=CloneImage(image,0,0,True,exception);
+  if (flatten_image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Flatten image.
+  */
+  for (next=image->next; next != (Image *) NULL; next=next->next)
+  {
+    CompositeImage(flatten_image,next->matte ? OverCompositeOp :
+      CopyCompositeOp,next,next->page.x,next->page.y);
+    CloseImagePixels(next);
+  }
+  return(flatten_image);
 }
 
 /*

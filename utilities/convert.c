@@ -89,6 +89,7 @@
 %    -equalize            perform histogram equalization to an image
 %    -fill color          color to use when filling a graphic primitive
 %    -filter type         use this filter when resizing an image
+%    -flatten             flatten a sequence of images
 %    -flip                flip image in the vertical direction
 %    -flop                flop image in the horizontal direction
 %    -font name           X11 font for displaying text
@@ -289,6 +290,7 @@ static void Usage()
       "-equalize            perform histogram equalization to an image",
       "-fill color          color to use when filling a graphic primitive",
       "-filter type         use this filter when resizing an image",
+      "-flatten             flatten a sequence of images",
       "-flip                flip image in the vertical direction",
       "-flop                flop image in the horizontal direction",
       "-font name           X11 font for displaying text",
@@ -426,6 +428,7 @@ int main(int argc,char **argv)
     average,
     coalesce,
     deconstruct,
+    flatten,
     morph,
     mosaic,
     global_colormap,
@@ -470,6 +473,7 @@ int main(int argc,char **argv)
   average=False;
   coalesce=False;
   deconstruct=False;
+  flatten=False;
   GetExceptionInfo(&exception);
   morph=0;
   mosaic=False;
@@ -962,6 +966,11 @@ int main(int argc,char **argv)
                   if (filter == UndefinedFilter)
                     MagickError(OptionError,"Invalid filter type",option);
                 }
+              break;
+            }
+          if (LocaleNCompare("flatten",option+1,3) == 0)
+            {
+              flatten=(*option == '-');
               break;
             }
           if (LocaleNCompare("flip",option+1,3) == 0)
@@ -1946,6 +1955,21 @@ int main(int argc,char **argv)
         {
           DestroyImages(image);
           image=deconstruct_image;
+        }
+    }
+  if (flatten)
+    {
+      Image
+        *flatten_image;
+
+      /*
+        Flatten an image sequence.
+      */
+      flatten_image=FlattenImages(image,&exception);
+      if (flatten_image != (Image *) NULL)
+        {
+          DestroyImages(image);
+          image=flatten_image;
         }
     }
   if (morph != 0)

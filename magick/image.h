@@ -636,6 +636,7 @@ extern MagickExport Image
   *EdgeImage(Image *,const double,ExceptionInfo *),
   *EmbossImage(Image *,const double,const double,ExceptionInfo *),
   *EnhanceImage(Image *,ExceptionInfo *),
+  *FlattenImages(Image *,ExceptionInfo *),
   *FlipImage(Image *,ExceptionInfo *),
   *FlopImage(Image *,ExceptionInfo *),
   *FrameImage(Image *,const FrameInfo *,ExceptionInfo *),
