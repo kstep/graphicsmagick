@@ -47,6 +47,9 @@ typedef struct _MagickInfo
 /*
   Magick method declaractions.
 */
+extern MagickExport char
+  *MagickToMime(const char *);
+
 extern const MagickExport MagickInfo
   *GetMagickInfo(const char *,ExceptionInfo *exception);
 

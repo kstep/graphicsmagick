@@ -650,6 +650,87 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  M a g i c k T o M i m e                                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickToMime returns the officially registered (or de facto) MIME
+%  mediatype corresponding to a magick string. If there is no registered
+%  mediatype, then the string "image/x-magick" (all lower case) is returned.
+%  The returned string must be deallocated by the user.
+%
+%  The format of the MagickToMime method is:
+%
+%      char *MagickToMime(const char *magick)
+%
+%  A description of each parameter follows.
+%
+%   o  magick:  ImageMagick format specification "magick" tag.
+%
+%
+*/
+MagickExport char *MagickToMime(const char *magick)
+{
+  typedef struct _MimeTypes
+  {
+    const char
+      *magick,
+      *media_type;
+  } MimeTypes;
+
+  char
+    mime[MaxTextExtent];
+
+  MimeTypes
+    *entry;
+
+  static MimeTypes
+    MimeList[] =
+    {
+      { "avi",   "video/avi" },
+      { "cgm",   "image/cgm;Version=4;ProfileId=WebCGM" }, /* W3 WebCGM */
+      { "dcm",   "application/dicom" }, /* Incomplete.  See RFC 3240 */
+      { "epdf",  "application/pdf" },
+      { "epi",   "application/postscript" },
+      { "eps",   "application/postscript" },
+      { "eps2",  "application/postscript" },
+      { "eps3",  "application/postscript" },
+      { "epsf",  "application/postscript" },
+      { "ept",   "application/postscript" },
+      { "fax",   "image/g3fax" },
+      { "fpx",   "image/vnd.fpx" },
+      { "g3",    "image/g3fax" },
+      { "gif",   "image/gif" },
+      { "gif87", "image/gif" },
+      { "jpeg",  "image/jpeg" },
+      { "mng",   "video/x-mng" },
+      { "mpeg",  "video/mpeg" },
+      { "png",   "image/png" },
+      { "pdf",   "application/pdf" },
+      { "ps",    "application/postscript" },
+      { "ps2",   "application/postscript" },
+      { "ps3",   "application/postscript" },
+      { "svg",   "svg+xml" },
+      { "tif",   "image/tiff" },
+      { "tiff",  "image/tiff" },
+      { "wbmp",  "image/vnd.wap.wbmp" },
+      { (char *) NULL, (char *) NULL }
+    };
+
+  for (entry=MimeList; entry->magick != (char *) NULL; entry++)
+    if (LocaleCompare(entry->magick,magick) == 0)
+      return(AllocateString(entry->media_type));
+  FormatString(mime,"image/x-%.1024s",magick);
+  return(AllocateString(mime));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e g i s t e r M a g i c k I n f o                                       %
 %                                                                             %
 %                                                                             %

@@ -36,7 +36,6 @@ extern MagickExport char
   *GetExecutionPath(const char *),
   *GetPageGeometry(const char *),
   **ListFiles(const char *,const char *,long *),
-  *MagickToMime(const char *),
   *PostscriptGeometry(const char *),
   *SetClientName(const char *),
   *SetClientPath(const char *),

@@ -310,6 +310,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
+    filename[MaxTextExtent],
     *text;
 
   float
@@ -381,9 +382,27 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   tiff_exception=exception;
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  tiff=TIFFClientOpen(image->filename,ReadBinaryUnbufferedType,
-    (thandle_t) image,TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,
-    TIFFGetBlobSize,TIFFMapBlob,TIFFUnmapBlob);
+  if ((image->blob->file != stdin) && !image->blob->pipet)
+    tiff=TIFFClientOpen(image->filename,ReadBinaryUnbufferedType,
+      (thandle_t) image,TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,
+      TIFFGetBlobSize,TIFFMapBlob,TIFFUnmapBlob);
+  else
+    {
+      FILE
+        *file;
+
+      int
+        c;
+
+      TemporaryFilename(filename);
+      file=fopen(filename,WriteBinaryType);
+      if (file == (FILE *) NULL)
+        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+      for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
+        (void) fputc(c,file);
+      (void) fclose(file);
+      tiff=TIFFOpen(filename,ReadBinaryType);
+    }
   if (tiff == (TIFF *) NULL)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
   if (image_info->subrange != 0)
@@ -894,6 +913,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
   } while (status == True);
   TIFFClose(tiff);
+  if ((image->blob->file == stdin) || image->blob->pipet)
+    remove(filename);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   return(image);
