@@ -1,4 +1,7 @@
 2002-11-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Updated CVS to Jasper 1.600.0.
+
+2002-11-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Verify sanity of sysconf(_SC_PAGE_SIZE) and sysconf(_SC_PHYS_PAGES)
     before using their values.
 
