@@ -1191,6 +1191,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
     *cube_info;
 
   double
+    sum,
     weight;
 
   register int
@@ -1244,8 +1245,13 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   weight=0.0;
   for (i=0; i < ExceptionQueueLength; i++)
     weight+=cube_info->weights[i];
+  sum=0.0;
   for (i=0; i < ExceptionQueueLength; i++)
+  {
     cube_info->weights[i]/=weight;
+    sum+=cube_info->weights[i];
+  }
+  cube_info->weights[0]+=1.0-sum;
   return(cube_info);
 }
 
