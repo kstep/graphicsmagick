@@ -1,5 +1,10 @@
 2003-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/delegates.mgk.in: Ralcgm was appending ".ps" to the
+	provided output file name, so change cgm delegate command so that
+	the input file is delivered via standard input, output is
+	re-directed to a file, and anything printed to stderr (such as
+	the Ralcgm program name and version) is sent to /dev/null.
 	* INSTALL-unix.txt: Added/corrected/improved documentation
 	regarding --disable-installed, --enable-shared, and
 	--with-modules.
