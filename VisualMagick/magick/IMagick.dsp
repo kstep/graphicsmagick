@@ -172,7 +172,7 @@ SOURCE=..\..\magick\avs.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\magick\BIM.c
+SOURCE=..\..\magick\8bim.c
 # End Source File
 # Begin Source File
 
