@@ -6209,7 +6209,7 @@ QueryFontMetrics(ref,...)
         {
           if (strEQcase(attribute,"rotate"))
             {
-              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.rx,affine.ry);
+              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.rx,&affine.ry);
               break;
             }
           break;
@@ -6219,7 +6219,7 @@ QueryFontMetrics(ref,...)
         {
           if (strEQcase(attribute,"scale"))
             {
-              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.sx,affine.sy);
+              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.sx,&affine.sy);
               break;
             }
           if (strEQcase(attribute,"skew"))
@@ -6230,7 +6230,7 @@ QueryFontMetrics(ref,...)
 
               x_angle=0.0;
               y_angle=0.0;
-              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&x_angle,y_angle);
+              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&x_angle,&y_angle);
               affine.ry=tan(DegreesToRadians(fmod(x_angle,360.0)));
               affine.rx=tan(DegreesToRadians(fmod(y_angle,360.0)));
               break;
@@ -6247,7 +6247,7 @@ QueryFontMetrics(ref,...)
             }
           if (strEQcase(attribute,"translate"))
             {
-              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.tx,affine.ty);
+              (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.tx,&affine.ty);
               break;
             }
           break;
