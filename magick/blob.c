@@ -150,7 +150,9 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
 
   assert(filename != (const char *) NULL);
   assert(blob != (const void *) NULL);
-  file=open(filename,O_WRONLY | O_CREAT | O_EXCL | O_BINARY,0777);
+  file=open(filename,O_WRONLY | O_CREAT | O_BINARY | O_EXCL,0777);
+  if (file == -1)
+    file=open(filename,O_WRONLY | O_CREAT | O_BINARY,0777);
   if (file == -1)
     {
       ThrowException(exception,BlobError,"Unable to write blob to a file",

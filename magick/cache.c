@@ -3038,7 +3038,9 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   /*
     Write indexes to disk.
   */
-  file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
+  file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,0777);
+  if (file == -1)
+    file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
   if (file == -1)
     return(False);
   number_pixels=cache_info->columns*cache_info->rows;
@@ -3145,7 +3147,9 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   /*
     Write pixels to disk.
   */
-  file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
+  file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,0777);
+  if (file == -1)
+    file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
   if (file == -1)
     return(False);
   length=nexus_info->columns*sizeof(PixelPacket);
