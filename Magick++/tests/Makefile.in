@@ -581,8 +581,9 @@ uninstall-am: uninstall-info-am
 
 
 check:
-	env srcdir=$(srcdir) ./appendImages
+	env srcdir=$(srcdir) ./exceptions
 	env srcdir=$(srcdir) ./attributes
+	env srcdir=$(srcdir) ./appendImages
 	env srcdir=$(srcdir) ./averageImages
 	env srcdir=$(srcdir) ./coalesceImages
 	env srcdir=$(srcdir) ./coderInfo
@@ -591,7 +592,6 @@ check:
 	env srcdir=$(srcdir) ./morphImages
 	env srcdir=$(srcdir) ./readWriteBlob
 	env srcdir=$(srcdir) ./readWriteImages
-	env srcdir=$(srcdir) ./exceptions
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

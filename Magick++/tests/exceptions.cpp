@@ -16,62 +16,57 @@ using namespace Magick;
 
 int main( int /*argc*/, char ** argv)
 {
-
   // Initialize ImageMagick install location for Windows
   InitializeMagick(*argv);
-
+      
   int failures=0;
-
+      
+  cout << "Checking for working exceptions (may crash) ... ";
+      
+  // Basic exception test
   try
     {
+      failures++;
       throw int(100);
     }
   catch ( int value_ )
     {
-      cout << "Caught integer exception with value " << value_ << endl;
+      failures--;
     }
-
-  try {
-    throw WarningResourceLimit("How now brown cow?");
-  }
+      
+  // Throw a Magick++ exception class.
+  try
+    {
+      failures++;
+      throw WarningResourceLimit("How now brown cow?");
+    }
   catch( Exception &error_ )
     {
-      cout << "Caught exception: " << error_.what() << endl;
+      failures--;
     }
-
-  try {
-
-    unsigned int columns = 640;
-    unsigned int rows = 480;
-    Geometry geometry(columns,rows);
-    Color canvasColor( "red" );
-    Image image( geometry, canvasColor);
-
+      
+  // A more complex test
+  try
     {
-      // Since this is not a montage image, simply verify error report
-      cout << "Checking for working exceptions (may crash) ... ";
-      bool caughtException = false;
-      try
-	{
-	  image.directory();
-	}
-      catch ( Exception& error_ )
-	{
-	  caughtException = true;
-	}
-      if ( caughtException != true )
-	{
-	  ++failures;
-          cout << "failed to catch exception!" << endl;
-	}
-      else
-        {
-          cout << "exceptions are working!" << endl;
-        }
-
+      unsigned int columns = 640;
+      unsigned int rows = 480;
+      Geometry geometry(columns,rows);
+      Color canvasColor( "red" );
+      Image image( geometry, canvasColor);
+          
+      {
+        try
+          {
+            failures++;
+            image.directory();
+          }
+        catch ( Exception& error_ )
+          {
+            failures--;
+          }
+      }
+          
     }
-
-  }
   catch( Exception &error_ )
     {
       cout << "Caught exception: " << error_.what() << endl;

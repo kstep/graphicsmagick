@@ -7,8 +7,11 @@
 # configuration information is presented instead so that it may be used more
 # effictively in configure scripts.
 #
-usage="\
-Usage: Magick++-config [--cppflags] [--cxxflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]"
+usage='Usage: Magick++-config [--cppflags] [--cxxflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]
+
+ For example, "example.cpp" may be compiled to produce "example" as follows:
+
+  "c++ -o example example.cpp `Magick++-config --cppflags --cxxflags --ldflags --libs`"'
 
 if test $# -eq 0; then
       echo "${usage}" 1>&2

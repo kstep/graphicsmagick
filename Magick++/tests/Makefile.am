@@ -43,8 +43,9 @@ EXTRA_DIST = \
 CLEANFILES = testmagick_anim_out.miff
 
 check:
-	env srcdir=$(srcdir) ./appendImages
+	env srcdir=$(srcdir) ./exceptions
 	env srcdir=$(srcdir) ./attributes
+	env srcdir=$(srcdir) ./appendImages
 	env srcdir=$(srcdir) ./averageImages
 	env srcdir=$(srcdir) ./coalesceImages
 	env srcdir=$(srcdir) ./coderInfo
@@ -53,5 +54,4 @@ check:
 	env srcdir=$(srcdir) ./morphImages
 	env srcdir=$(srcdir) ./readWriteBlob
 	env srcdir=$(srcdir) ./readWriteImages
-	env srcdir=$(srcdir) ./exceptions
 
