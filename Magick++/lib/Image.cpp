@@ -2751,7 +2751,7 @@ Magick::Color Magick::Image::strokeColor ( void ) const
 }
 
 // dash pattern for drawing vector objects (default one)
-void Magick::Image::strokeDashArray ( const unsigned int* strokeDashArray_ )
+void Magick::Image::strokeDashArray ( const double* strokeDashArray_ )
 {
   modifyImage();
   options()->strokeDashArray( strokeDashArray_ );

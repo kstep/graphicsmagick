@@ -1311,7 +1311,8 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
   if (dash_polygon == (PrimitiveInfo *) NULL)
     return(False);
   scale=ExpandAffine(&draw_info->affine);
-  dash_offset=draw_info->dash_offset != 0 ? scale*draw_info->dash_offset : 0.0;
+  dash_offset=draw_info->dash_offset != 0.0 ?
+    scale*draw_info->dash_offset : 0.0;
   distance=0.0;
   for (n=(-1); dash_offset > 0.0; )
   {
@@ -2223,7 +2224,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
           {
             GetToken(q,&q,token);
-            graphic_context[n]->dash_offset=atol(token);
+            graphic_context[n]->dash_offset=atof(token);
             break;
           }
         if (LocaleCompare("stroke-linecap",keyword) == 0)
