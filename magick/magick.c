@@ -378,7 +378,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
           return(path);
         }
       ConcatenateString(&search_path,"; Registry[");
-      ConcatenateString(&search_path, registry_path_keys[i]);
+      ConcatenateString(&search_path,registry_path_keys[i]);
       ConcatenateString(&search_path,"]:");
       ConcatenateString(&search_path,path);
     }
