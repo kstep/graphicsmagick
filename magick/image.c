@@ -3637,7 +3637,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         quantize_info.tree_depth=8;
         quantize_info.colorspace=GRAYColorspace;
       }
-  SetGeometry(image,&region_geometry);
+  SetGeometry(*image,&region_geometry);
   region_image=(Image *) NULL;
   /*
     Transmogrify the image.
