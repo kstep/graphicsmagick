@@ -873,6 +873,9 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* outL
 */
 static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  char
+    magick[14];
+
   Image
     *image;
 
@@ -881,10 +884,13 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned long
     i,
-  image_type;
+    image_type;
 
   int
     foundPropEnd = 0;
+
+  size_t
+    count;
 
   XCFDocInfo
     doc_info;
@@ -900,11 +906,10 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
-
-  /* skip over "gimp xcf ..." */
-  for (i=0; i < 14; i++)
-    (void) ReadBlobByte(image);
-
+  count=ReadBlob(image,14,(char *) magick);
+  if ((count == 0) ||
+      (LocaleNCompare((char *) magick,"gimp xcf file",14) != 0))
+		ThrowReaderException(CorruptImageError,"Not a XCF image file",image);
   /* clear the docinfo stuff */
   memset( &doc_info, 0, sizeof(XCFDocInfo));
   doc_info.exception = exception;
@@ -925,7 +930,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(FileOpenError,"Indexed colors not currently supported",image);
   SetImage(image,OpaqueOpacity);  /* until we know otherwise...*/
   image->matte=True;  /* XCF always has a matte! */
-
 
   /* read properties */
   while ( !foundPropEnd ) {
