@@ -726,8 +726,8 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
           LiberateMemory((void **) &colormap);
         }
     }
-  for (i=TellBlob(image); (i % 2048) != 0; i++)
-    (void) ReadByte(image);
+  for (i=TellBlob(image); (i % 8) != 0; i++)
+    (void) ReadByte(image);  /* alignment */
   /*
     Open cache.
   */
@@ -1127,8 +1127,8 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlob(image,packet_size*image->colors,colormap);
         LiberateMemory((void **) &colormap);
       }
-    for (i=TellBlob(image); (i % 2048) != 0; i++)
-      (void) WriteByte(image,'\0');
+    for (i=TellBlob(image); (i % 8) != 0; i++)
+      (void) WriteByte(image,'\0');  /* alignment */
     /*
       Write image pixels.
     */
