@@ -2295,9 +2295,9 @@ BOOL CConfigureApp::InitInstance()
 
         BOOL result = TRUE;
 
-        filename = bin_loc + "fonts.mgk";
-	      ofstream fontmap(filename);
-        fontmap << "<?xml version=\"1.0\"?>" << endl;
+        filename = bin_loc + "type.mgk";
+	      ofstream typemap(filename);
+        typemap << "<?xml version=\"1.0\"?>" << endl;
         for (int index=0; index<registry.GetNumberOfValues(); index++)
         {
           CStringEx name_of_value;
@@ -2331,18 +2331,18 @@ BOOL CConfigureApp::InitInstance()
               //  version="0.1"
               //  alias="NimbusSanL-BoldCond"
               //
-              fontmap << "<fontmap>" << endl;
-              fontmap << "  <font"
+              typemap << "<typemap>" << endl;
+              typemap << "  <type"
                       << " format=\"truetype\""
                       << " glyphs=\"c:\\Windows\\Fonts\\" << data_buffer << "\""
                       << " fullname=\"" << font_full_name << "\""
                       << " name=\"" << font_name << "\""
                       << " />" << endl;
-              fontmap << "</fontmap>" << endl;
+              typemap << "</typemap>" << endl;
             }
           }
         }
-        fontmap << "</xml>" << endl;
+        typemap << "</xml>" << endl;
         registry.Close();
       }
     }

@@ -73,11 +73,11 @@ static char
 /*
   Static declarations.
 */
-static TypeInfo
-  *type_list = (TypeInfo *) NULL;
-
 static SemaphoreInfo
   *type_semaphore = (SemaphoreInfo *) NULL;
+
+static TypeInfo
+  *type_list = (TypeInfo *) NULL;
 
 /*
   Forward declarations.
