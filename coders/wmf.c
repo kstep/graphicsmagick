@@ -99,11 +99,11 @@ struct _wmf_magick_t
 
   /* Scale and translation factors */
   double
-    bbox_to_pixels_scale_x,
-    bbox_to_pixels_scale_y,
-    bbox_to_pixels_translate_x,
-    bbox_to_pixels_translate_y,
-    bbox_to_pixels_rotate;
+    scale_x,
+    scale_y,
+    translate_x,
+    translate_y,
+    rotate;
 
   /* MVG output */
   char
@@ -437,14 +437,14 @@ static void wmf_magick_device_begin(wmfAPI * API)
 
   /* Scale width and height to image */
   magick_mvg_printf(API, "scale %.10g,%.10g\n",
-		    ddata->bbox_to_pixels_scale_x, ddata->bbox_to_pixels_scale_y);
+		    ddata->scale_x, ddata->scale_y);
   /* Translate to TL corner of bounding box */
   magick_mvg_printf(API, "translate %.10g,%.10g\n",
-		    ddata->bbox_to_pixels_translate_x,
-		    ddata->bbox_to_pixels_translate_y);
+		    ddata->translate_x,
+		    ddata->translate_y);
 
   /* Apply rotation */
-  magick_mvg_printf(API, "rotate %.10g\n", ddata->bbox_to_pixels_rotate);
+  magick_mvg_printf(API, "rotate %.10g\n", ddata->rotate);
 
   if(ddata->image_info->texture == NULL)
     {
@@ -1038,7 +1038,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
               text_width;
 
 	    text_width = metrics.width
-	      * (ddata->bbox_to_pixels_scale_y / ddata->bbox_to_pixels_scale_x);
+	      * (ddata->scale_y / ddata->scale_x);
 
 	    point.x += bbox_width / 2 - text_width / 2;
 	  }
@@ -1082,7 +1082,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
   /* Transform horizontal scale to draw text at 1:1 ratio */
   magick_mvg_printf(API, "scale %.10g,%.10g\n",
-		    ddata->bbox_to_pixels_scale_y / ddata->bbox_to_pixels_scale_x,
+		    ddata->scale_y / ddata->scale_x,
 		    1.0);
 
   /* Apply rotation */
@@ -1141,7 +1141,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 	ulTL;			/* top left of underline rectangle */
 
       line_height =
-	Max(((double) 1 / (ddata->bbox_to_pixels_scale_x)),
+	Max(((double) 1 / (ddata->scale_x)),
 	    ((double) abs(metrics.descent)) * 0.5);
       ulTL.x = 0;
       ulTL.y = abs(metrics.descent) - line_height;
@@ -1163,7 +1163,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 	ulTL;			/* top left of strikeout rectangle */
 
       line_height =
-	Max(((double) 1 / (ddata->bbox_to_pixels_scale_x)),
+	Max(((double) 1 / (ddata->scale_x)),
 	    ((double) abs(metrics.descent)) * 0.5);
       ulTL.x = 0;
       ulTL.y = -(((double) metrics.ascent) / 2 + line_height / 2);
@@ -1493,8 +1493,8 @@ static void magick_pen(wmfAPI * API, wmfDC * dc)
   pen_width = (WMF_PEN_WIDTH(pen) + WMF_PEN_HEIGHT(pen)) / 2;
 
   /* Pixel width is inverse of pixel scale */
-  pixel_width = (((double) 1 / (ddata->bbox_to_pixels_scale_x)) +
-		 ((double) 1 / (ddata->bbox_to_pixels_scale_y))) / 2;
+  pixel_width = (((double) 1 / (ddata->scale_x)) +
+		 ((double) 1 / (ddata->scale_y))) / 2;
 
   /* Don't allow pen_width to be less than pixel_width in order to
      avoid dissapearing or spider-web lines */
@@ -1859,23 +1859,23 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   bounding_width  = bbox.BR.x - bbox.TL.x;
   bounding_height = bbox.BR.y - bbox.TL.y;
 
-  ddata->bbox_to_pixels_scale_x = image_width/bounding_width;
-  ddata->bbox_to_pixels_translate_x = 0-bbox.TL.x;
-  ddata->bbox_to_pixels_rotate = 0;
+  ddata->scale_x = image_width/bounding_width;
+  ddata->translate_x = 0-bbox.TL.x;
+  ddata->rotate = 0;
 
   /* Heuristic: guess that if the vertical coordinates mostly span
      negative values, then the image must be inverted. */
   if( abs(bbox.BR.y) > abs(bbox.TL.y) )
     {
       /* Normal (Origin at top left of image) */
-      ddata->bbox_to_pixels_scale_y = (image_height/bounding_height);
-      ddata->bbox_to_pixels_translate_y = 0-bbox.TL.y;
+      ddata->scale_y = (image_height/bounding_height);
+      ddata->translate_y = 0-bbox.TL.y;
     }
   else
     {
       /* Inverted (Origin at bottom left of image) */
-      ddata->bbox_to_pixels_scale_y = (-image_height/bounding_height);
-      ddata->bbox_to_pixels_translate_y = 0-bbox.BR.y;
+      ddata->scale_y = (-image_height/bounding_height);
+      ddata->translate_y = 0-bbox.BR.y;
     }
 
 #if 0
@@ -1887,9 +1887,9 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   printf("Output resolution:           %.10gx%.10g\n", resolution_x, resolution_y);
   printf("Image size:                  %.10gx%.10g\n", image_width, image_height);
   printf("Bounding box scale factor:   %.10g,%.10g\n",
-         ddata->bbox_to_pixels_scale_x, ddata->bbox_to_pixels_scale_y);
+         ddata->scale_x, ddata->scale_y);
   printf("Translation:                 %.10g,%.10g\n",
-	 ddata->bbox_to_pixels_translate_x, ddata->bbox_to_pixels_translate_y);
+	 ddata->translate_x, ddata->translate_y);
 
 
 #if 0
