@@ -204,7 +204,7 @@ jpeg_la_LIBADD      = ../magick/libMagick.la @LIB_JPEG@
 # LABEL module
 label_la_SOURCES     = label.c
 label_la_LDFLAGS     = -no-undefined -module -avoid-version
-label_la_LIBADD      = ../magick/libMagick.la @LIB_TTF@ @LIB_X11@
+label_la_LIBADD      = ../magick/libMagick.la
 
 # LOGO module
 logo_la_SOURCES     = logo.c
@@ -394,7 +394,7 @@ tim_la_LIBADD       = ../magick/libMagick.la
 # TTF module
 ttf_la_SOURCES      = ttf.c
 ttf_la_LDFLAGS      = -no-undefined -module -avoid-version
-ttf_la_LIBADD       = ../magick/libMagick.la @LIB_TTF@
+ttf_la_LIBADD       = ../magick/libMagick.la
 
 # TXT module
 txt_la_SOURCES      = txt.c
