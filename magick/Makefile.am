@@ -30,11 +30,14 @@
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.2 foreign
 
+
 lib_LTLIBRARIES = libMagick.la
 
 MAJOR_VERSION=@MAJOR_VERSION@
 MINOR_VERSION=@MINOR_VERSION@
 MICRO_VERSION=@MICRO_VERSION@
+
+INCLUDES = -I$(top_srcdir)
 
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
@@ -65,7 +68,4 @@ EXTRA_DIST = Imakefile Magick-config.in Make.com
 dist-hook:
 	$(RM) $(distdir)/config.h
 
-INCLUDES = #$(X_CFLAGS)
-
-# Since we are building a library, no need for LIBS
-#LIBS =
+DEFS = @DEFS@ -I../

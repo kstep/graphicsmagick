@@ -171,6 +171,8 @@ MAJOR_VERSION = @MAJOR_VERSION@
 MINOR_VERSION = @MINOR_VERSION@
 MICRO_VERSION = @MICRO_VERSION@
 
+INCLUDES = -I$(top_srcdir)
+
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 # Library sources
@@ -194,14 +196,12 @@ noinst_HEADERS = animate.h dicom.h display.h logo.h mac.h nt.h pict.h 	proxy.h v
 # Additional files to distribute
 EXTRA_DIST = Imakefile Magick-config.in Make.com
 
-INCLUDES = #$(X_CFLAGS)
+DEFS = @DEFS@ -I../
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =  Magick-config
 LTLIBRARIES =  $(lib_LTLIBRARIES)
 
-
-DEFS = @DEFS@ -I. -I$(srcdir) -I.
 LIBS = @LIBS@
 libMagick_la_LIBADD = 
 libMagick_la_OBJECTS =  PreRvIcccm.lo X.lo animate.lo colors.lo \
@@ -502,9 +502,6 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 # Ensure that configuration header is not distributed
 dist-hook:
 	$(RM) $(distdir)/config.h
-
-# Since we are building a library, no need for LIBS
-#LIBS =
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
