@@ -2021,7 +2021,6 @@ int main(int argc,char **argv)
   }
   if (image_info->verbose)
     DescribeImage(image,stderr,False);
-
   attribute=GetImageAttribute(image,"ReceiveMode");
   if ((attribute != (ImageAttribute *) NULL) &&
       (LocaleCompare("XTRNIMAGE",attribute->value) == 0))
@@ -2036,10 +2035,8 @@ int main(int argc,char **argv)
       DestroyImageInfo(image_info);
       return(True);
     }
-
   DestroyImages(image);
   DestroyImageInfo(image_info);
-
   if (doexit == False)
     return(True);
   LiberateMemory((void **) &argv);
