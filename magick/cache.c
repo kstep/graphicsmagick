@@ -974,10 +974,9 @@ MagickExport void GetCacheInfo(Cache *cache)
   cache_info->colorspace=RGBColorspace;
   cache_info->reference_count=1;
   cache_info->signature=MagickSignature;
-  SetPixelCacheMethods(cache_info,AcquirePixelCache,
-    GetPixelCache,SetPixelCache,SyncPixelCache,GetPixelsFromCache,
-    GetIndexesFromCache,AcquireOnePixelFromCache,GetOnePixelFromCache,
-    DestroyPixelCache);
+  SetPixelCacheMethods(cache_info,AcquirePixelCache,GetPixelCache,
+    SetPixelCache,SyncPixelCache,GetPixelsFromCache,GetIndexesFromCache,
+    AcquireOnePixelFromCache,GetOnePixelFromCache,DestroyPixelCache);
   *cache=cache_info;
 }
 

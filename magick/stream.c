@@ -476,10 +476,9 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   clone_info=CloneImageInfo(image_info);
   GetCacheInfo(&clone_info->cache);
-  SetPixelCacheMethods(clone_info->cache,AcquirePixelStream,
-    GetPixelStream,SetPixelStream,SyncPixelStream,GetPixelsFromStream,
-    GetIndexesFromStream,AcquireOnePixelFromStream,GetOnePixelFromStream,
-    DestroyPixelStream);
+  SetPixelCacheMethods(clone_info->cache,AcquirePixelStream,GetPixelStream,
+    SetPixelStream,SyncPixelStream,GetPixelsFromStream,GetIndexesFromStream,
+    AcquireOnePixelFromStream,GetOnePixelFromStream,DestroyPixelStream);
   clone_info->fifo=fifo;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
