@@ -54,6 +54,14 @@ Operations to memory are significantly faster but if your computer does not
 have a sufficient amount of free memory you may want to adjust this threshold
 value.
 .TP
+.B "-channel \fItype\fP"
+the type of channel: \fBRed\fP, \fBGreen\fP, \fBBlue\fP, or
+\fBMatte\fP.
+
+Use this option to extract a particular \fIchannel\fP from the image.
+\fBMatte\fP, for example, is useful for extracting the opacity values
+from an image.
+.TP
 .B "-charcoal \fIradius\fP"
 simulate a charcoal drawing.
 .TP
@@ -529,14 +537,6 @@ from a file titled by the remaining characters in the string.
 
 When converting to Postscript, use this option to specify a header string
 to print above the image. Specify the label font with \fB-font\fP.
-.TP
-.B "-layer \fItype\fP"
-the type of layer: \fBRed\fP, \fBGreen\fP, \fBBlue\fP, or
-\fBMatte\fP.
-
-Use this option to extract a particular \fIlayer\fP from the image.
-\fBMatte\fP, for example, is useful for extracting the opacity values
-from an image.
 .TP
 .B "-loop \fIiterations\fP"
 add Netscape loop extension to your GIF animation.
