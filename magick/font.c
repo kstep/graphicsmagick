@@ -302,7 +302,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
   /*
     Read the font configuration file.
   */
-  path=GetMagickConfigurePath(filename);
+  path=GetMagickConfigurePath(basename);
   if (path == (char *) NULL)
     return(False);
   FormatString(filename,"%.1024s",path);

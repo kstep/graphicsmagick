@@ -14,6 +14,7 @@ extern "C" {
 typedef struct _FontInfo
 {  
   char
+    *filename,
     *name,
     *family,
     *alias,

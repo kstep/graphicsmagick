@@ -22,9 +22,6 @@ extern "C" {
 #else
 #  include <direct.h>
 #  define HAVE_STRERROR
-#if defined(_DEBUG)
-#  include <crtdbg.h>
-#endif
 #endif
 
 #if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64

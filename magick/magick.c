@@ -256,48 +256,6 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I s M a g i c k C o n f l i c t                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method IsMagickConflict returns true if the image format conflicts with
-%  a logical drive (.e.g. X:).
-%
-%  The format of the IsMagickConflict method is:
-%
-%      unsigned int IsMagickConflict(const char *magick)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method IsMagickConflict returns true if the image format
-%      conflicts with a logical drive.
-%
-%    o magick: Specifies the image format.
-%
-%
-*/
-MagickExport int unsigned IsMagickConflict(const char *magick)
-{
-  assert(magick != (char *) NULL);
-#if defined(macintosh)
-  return(MACIsMagickConflict(magick));
-#endif
-#if defined(vms)
-  return(VMSIsMagickConflict(magick));
-#endif
-#if defined(WIN32)
-  return(NTIsMagickConflict(magick));
-#endif
-  return(False);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t M a g i c k I n f o                                                 %
 %                                                                             %
 %                                                                             %
@@ -421,8 +379,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag,ExceptionInfo *exception)
 #endif
       atexit(DestroyMagickInfo);
     }
-  else
-    LiberateSemaphore(&magick_semaphore);
+  LiberateSemaphore(&magick_semaphore);
   if ((tag == (const char *) NULL) || (*tag == '\0'))
     return(magick_list);
   /*
@@ -492,6 +449,48 @@ MagickExport char *GetMagickVersion(unsigned int *version)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s M a g i c k C o n f l i c t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsMagickConflict returns true if the image format conflicts with
+%  a logical drive (.e.g. X:).
+%
+%  The format of the IsMagickConflict method is:
+%
+%      unsigned int IsMagickConflict(const char *magick)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method IsMagickConflict returns true if the image format
+%      conflicts with a logical drive.
+%
+%    o magick: Specifies the image format.
+%
+%
+*/
+MagickExport int unsigned IsMagickConflict(const char *magick)
+{
+  assert(magick != (char *) NULL);
+#if defined(macintosh)
+  return(MACIsMagickConflict(magick));
+#endif
+#if defined(vms)
+  return(VMSIsMagickConflict(magick));
+#endif
+#if defined(WIN32)
+  return(NTIsMagickConflict(magick));
+#endif
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  L i s t M a g i c k I n f o                                                %
 %                                                                             %
 %                                                                             %
@@ -534,7 +533,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (p->stealth != True)
-      (void) fprintf(file,"%10s%c  %c%c%c  %.1024s\n",p->tag ? p->tag : "",
+      (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
         p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',
         p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-',
         p->description ? p->description : "");

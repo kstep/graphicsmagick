@@ -54,6 +54,11 @@
 #include "magick.h"
 #include "defines.h"
 
+/*  
+  Define declarations.
+*/
+#define MagicFilename  "magic.mgk"
+
 /*
   Static declarations.
 */
@@ -170,10 +175,10 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magic,
       /*
         Read magic list.
       */
-      status=ReadConfigurationFile("magic.mgk");
+      status=ReadConfigurationFile(MagicFilename);
       if (status == False)
         ThrowException(exception,FileOpenWarning,
-          "Unable to read magic configuration file","magic.mgk");
+          "Unable to read magic configuration file",MagicFilename);
       atexit(DestroyMagicInfo);
     }
   LiberateSemaphore(&magic_semaphore);
@@ -223,13 +228,15 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"ImageMagick understands these magic strings:\n\n");
-  (void) fprintf(file,"Name      Offset Target\n");
-  (void) fprintf(file,"-------------------------------------------------------"
-    "------------------------\n");
+  (void) fprintf(file,"ImageMagick understands these magic strings.\n");
   p=GetMagicInfo((unsigned char *) NULL,0,exception);
   if (p == (MagicInfo *) NULL)
     return(False);
+  if (magic_list->filename != (char *) NULL)
+    (void) fprintf(file,"\nFilename: %.1024s\n\n",magic_list->filename);
+  (void) fprintf(file,"Name      Offset Target\n");
+  (void) fprintf(file,"-------------------------------------------------------"
+    "------------------------\n");
   for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
@@ -260,20 +267,21 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 %
 %  The format of the ReadConfigurationFile method is:
 %
-%      unsigned int ReadConfigurationFile(const char *filename)
+%      unsigned int ReadConfigurationFile(const char *basename)
 %
 %  A description of each parameter follows:
 %
 %    o status: Method ReadConfigurationFile returns True if at least one magic
 %      is defined otherwise False.
 %
-%    o filename:  The magic configuration filename.
+%    o basename:  The magic configuration filename.
 %
 %
 */
-static unsigned int ReadConfigurationFile(const char *filename)
+static unsigned int ReadConfigurationFile(const char *basename)
 {
   char
+    filename[MaxTextExtent],
     keyword[MaxTextExtent],
     *path,
     value[MaxTextExtent];
@@ -290,11 +298,12 @@ static unsigned int ReadConfigurationFile(const char *filename)
   /*
     Read the magic configuration file.
   */
-  path=GetMagickConfigurePath(filename);
+  path=GetMagickConfigurePath(basename);
   if (path == (char *) NULL)
     return(False);
-  file=fopen(path,"r");
+  FormatString(filename,"%.1024s",path);
   LiberateMemory((void **) &path);
+  file=fopen(filename,"r");
   if (file == (FILE *) NULL)
     return(False);
   for (c=fgetc(file); c != EOF; c=fgetc(file))
@@ -326,7 +335,10 @@ static unsigned int ReadConfigurationFile(const char *filename)
             "Memory allocation failed");
         memset(magic_info,0,sizeof(MagicInfo));
         if (magic_list == (MagicInfo *) NULL)
-          magic_list=magic_info;
+          {
+            magic_list->filename=AllocateString(filename);
+            magic_list=magic_info;
+          }
         else
           {
             magic_list->next=magic_info;
