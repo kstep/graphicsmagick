@@ -269,7 +269,7 @@ MagickExport unsigned int VMSIsMagickConflict(const char *magick)
 
   assert(magick != (char *) NULL);
   device.dsc$w_length=strlen(magick);
-  device.dsc$a_pointer=magick;
+  device.dsc$a_pointer=(char *) magick;
   device.dsc$b_class=DSC$K_CLASS_S;
   device.dsc$b_dtype=DSC$K_DTYPE_T;
   item_list[0].ile3$w_length=sizeof(device_class);
