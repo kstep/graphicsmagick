@@ -786,7 +786,7 @@ typedef struct _Image
 
   char
     filename[MaxTextExtent], /* Output filename */
-    magick_filename[MaxTextExtent], /* Base image filename (before transformations) */
+    magick_filename[MaxTextExtent], /* Original image filename */
     magick[MaxTextExtent];   /* Output format */
 
   unsigned long

@@ -13,6 +13,22 @@
 </tr>
 </table>
 <p>
+2003-03-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> utilities/Makefile.am (ALLMANPAGES): Install gm.1 rather than
+        old utility manual pages.
+
+</UL>
+<p>
+2003-03-09  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> www/gm.html, utilities/gm.1, guide/gm.tex: First cut at
+        manpage for gm, to replace individual utility manpages.
+
+</UL>
+<p>
 2003-03-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -26,6 +42,9 @@
         used to initialize logging.<BR>
         (IsLogAccessible): No longer need this duplicate of IsAccessible().
         (SetLogEventMask): Use  InitializeLogInfo().
+  <LI> coders/fpx.c (ReadFPXImage): FlashPIX library does not support
+        BLOB I/O so don't use OpenBlob/CloseBlob.  Opening the blob caused
+        a conflict when the FlashPIX library attempted to open the file.
 
 </UL>
 <p>

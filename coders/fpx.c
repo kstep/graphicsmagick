@@ -808,9 +808,6 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   unsigned char
     *pixels;
 
-  unsigned int
-    status;
-
   unsigned long
     memory_limit,
     tile_height,
@@ -823,11 +820,6 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-#if 0
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
-  if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-#endif
   /*
     Initialize FPX toolkit.
   */
@@ -1114,9 +1106,6 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
   LiberateMemory((void **) &pixels);
-#if 0
-  CloseBlob(image);
-#endif
   return(True);
 }
 #else

@@ -34,9 +34,8 @@ AUTOMAKE_OPTIONS = 1.7 foreign
 MAGICK_LIB	= ../magick/libGraphicsMagick.la # libtool library name
 INCLUDES	=  -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
 
-STDMANPAGES = ImageMagick.1  composite.1 conjure.1 convert.1  identify.1 \
-   miff.4 mogrify.1 montage.1 quantize.5
-X11MANPAGES = animate.1 display.1 import.1
+STDMANPAGES = gm.1 miff.4 quantize.5
+X11MANPAGES = 
 ALLMANPAGES = $(STDMANPAGES) $(X11MANPAGES)
 
 
