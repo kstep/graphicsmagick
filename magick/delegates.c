@@ -302,7 +302,7 @@ Export unsigned int GetDelegateInfo(const char *decode_tag,
       delegate_info.commands=(char *) NULL;
       (void) SetDelegateInfo(&delegate_info);
       (void) ReadDelegates(DelegatePath,(char *) NULL);
-      (void) ReadDelegates((char *) getenv("DELEGATE_PATH"),"/");
+      (void) ReadDelegates((char *) getenv("DELEGATE_PATH"),DirectorySeparator);
       (void) ReadDelegates((char *) getenv("HOME"),"/.magick/");
       (void) ReadDelegates((char *) NULL,(char *) NULL);
       delegates=SetDelegateInfo((DelegateInfo *) NULL);
