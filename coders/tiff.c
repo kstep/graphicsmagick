@@ -584,10 +584,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           case PHOTOMETRIC_MINISWHITE:
           default:
           {
-            unsigned long
-              colors;
-
-            colors=image->colors;
             for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=(Quantum) (MaxRGB-
