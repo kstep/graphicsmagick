@@ -858,7 +858,10 @@ int main(int argc,char **argv)
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
-    if ((status == False) || image_info->adjoin)
+    if (status == False)
+      MagickWarning(image->error.type,image->error.message,
+        image->error.qualifier);
+    if (image_info->adjoin)
       break;
   }
   if (image_info->verbose)

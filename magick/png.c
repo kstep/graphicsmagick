@@ -414,6 +414,8 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
 %  To do, more or less in chronological order (as of version 5.1.1,
 %   January 25, 2000 -- glennrp -- see also "To do" under WritePNGImage):
 %
@@ -910,14 +912,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
   reduction_warning=False;
 #endif
   /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
     Open image file.
   */
+  image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);

@@ -98,6 +98,8 @@ Export const char
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
 %
 */
 
@@ -272,14 +274,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
     corner;
 
   /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
     Create image label.
   */
+  image=AllocateImage(image_info);
   clone_info=CloneImageInfo(image_info);
   if (clone_info->font == (char *) NULL)
     (void) CloneString(&clone_info->font,DefaultXFont);

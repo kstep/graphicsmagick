@@ -119,7 +119,7 @@ static unsigned short
 %
 %  The format of the ColorFloodfillImage method is:
 %
-%      void ColorFloodfillImage(Image *image,const PixelPacket *target,
+%      unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
 %        Image *tile,const int x_offset,const int y_offset,
 %        const PaintMethod method)
 %
@@ -139,7 +139,7 @@ static unsigned short
 %
 %
 */
-Export void ColorFloodfillImage(Image *image,const PixelPacket *target,
+Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
   Image *tile,const int x_offset,const int y_offset,const PaintMethod method)
 {
   PixelPacket
@@ -188,11 +188,7 @@ Export void ColorFloodfillImage(Image *image,const PixelPacket *target,
   segment_stack=(SegmentInfo *)
     AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to floodfill image",
-        "Memory allocation failed");
-      return;
-    }
+    return(False);
   /*
     Track "hot" pixels with the image index packets.
   */
@@ -348,6 +344,7 @@ Export void ColorFloodfillImage(Image *image,const PixelPacket *target,
   }
   image->class=DirectClass;
   FreeMemory(segment_stack);
+  return(True);
 }
 
 /*
@@ -366,7 +363,7 @@ Export void ColorFloodfillImage(Image *image,const PixelPacket *target,
 %
 %  The format of the DrawImage method is:
 %
-%      void DrawImage(Image *image,const AnnotateInfo *annotate_info)
+%      unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
 %
 %  A description of each parameter follows:
 %
@@ -376,7 +373,7 @@ Export void ColorFloodfillImage(Image *image,const PixelPacket *target,
 %
 %
 */
-Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
+Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
 {
 #define DrawImageText  "  Drawing on image...  "
 
@@ -434,7 +431,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
   assert(annotate_info->primitive != (char *) NULL);
   assert(annotate_info->tile != (Image *) NULL);
   if (*annotate_info->primitive == '\0')
-    return;
+    return(False);
   clone_info=CloneAnnotateInfo(annotate_info->image_info,annotate_info);
   primitive=clone_info->primitive;
   indirection=(*primitive == '@');
@@ -458,7 +455,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
           MagickWarning(FileOpenWarning,"Unable to read primitive file",
             primitive+1);
           DestroyAnnotateInfo(clone_info);
-          return;
+          return(False);
         }
       length=MaxTextExtent;
       primitive=(char *) AllocateMemory(length);
@@ -495,7 +492,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
           MagickWarning(ResourceLimitWarning,"Unable to draw image",
             "Memory allocation failed");
           DestroyAnnotateInfo(clone_info);
-          return;
+          return(False);
         }
       *q='\0';
     }
@@ -516,7 +513,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
       if (indirection)
         FreeMemory(primitive);
       DestroyAnnotateInfo(clone_info);
-      return;
+      return(False);
     }
   /*
     Parse the primitive attributes.
@@ -625,7 +622,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
       if (indirection)
         FreeMemory(primitive);
       DestroyAnnotateInfo(clone_info);
-      return;
+      return(False);
     }
     primitive_info[j].coordinates=x;
     primitive_info[j].method=FloodfillMethod;
@@ -884,7 +881,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
       if (indirection)
         FreeMemory(primitive);
       DestroyAnnotateInfo(clone_info);
-      return;
+      return(False);
     }
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
     if ((primitive_info[i].method == ReplaceMethod) ||
@@ -974,6 +971,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
   if (indirection)
     FreeMemory(primitive);
   DestroyAnnotateInfo(clone_info);
+  return(True);
 }
 
 /*
@@ -1346,7 +1344,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
                 target.green=border_color.green;
                 target.blue=border_color.blue;
               }
-            ColorFloodfillImage(image,&target,annotate_info->tile,
+            (void) ColorFloodfillImage(image,&target,annotate_info->tile,
               (int) pixel->x,(int) pixel->y,p->method);
             break;
           }
@@ -1421,7 +1419,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
                 target.green=border_color.green;
                 target.blue=border_color.blue;
               }
-            MatteFloodfillImage(image,&target,Transparent,(int) pixel->x,
+            (void) MatteFloodfillImage(image,&target,Transparent,(int) pixel->x,
               (int) pixel->y,p->method);
             break;
           }
@@ -1501,7 +1499,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 %
 %  The format of the MatteFloodfillImage method is:
 %
-%      void MatteFloodfillImage(Image *image,const PixelPacket *target,
+%      unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
 %        const unsigned int matte,const int x_offset,const int y_offset,
 %        const PaintMethod method)
 %
@@ -1521,7 +1519,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 %
 %
 */
-Export void MatteFloodfillImage(Image *image,const PixelPacket *target,
+Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
   const unsigned int matte,const int x_offset,const int y_offset,
   const PaintMethod method)
 {
@@ -1557,20 +1555,16 @@ Export void MatteFloodfillImage(Image *image,const PixelPacket *target,
     return;
   q=GetPixelCache(image,x_offset,y_offset,1,1);
   if (q == (PixelPacket *) NULL)
-    return;
+    return(False);
   if (q->opacity == matte)
-    return;
+    return(False);
   /*
     Allocate segment stack.
   */
   segment_stack=(SegmentInfo *)
     AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to recolor image",
-        "Memory allocation failed");
-      return;
-    }
+    return(False);
   /*
     Push initial segment on stack.
   */
@@ -1674,6 +1668,7 @@ Export void MatteFloodfillImage(Image *image,const PixelPacket *target,
     } while (x <= x2);
   }
   FreeMemory(segment_stack);
+  return(True);
 }
 
 /*

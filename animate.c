@@ -933,6 +933,7 @@ int main(int argc,char **argv)
           next_image=ReadImage(image_info,&error);
           if (next_image == (Image *) NULL)
             {
+              MagickWarning(error.type,error.message,error.qualifier);
               if (*option == '-')
                 break;
               else

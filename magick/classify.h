@@ -83,6 +83,30 @@ typedef enum
 
 typedef enum
 {
+  UndefinedError,
+  UndefinedWarning,
+  ResourceLimitWarning = 300,
+  XServerWarning = 305,
+  OptionWarning = 310,
+  DelegateWarning = 315,
+  MissingDelegateWarning = 320,
+  CorruptImageWarning = 325,
+  FileOpenWarning = 330,
+  BlobWarning = 335,
+  CacheWarning = 340,
+  ResourceLimitError = 400,
+  XServerError = 405,
+  OptionError = 410,
+  DelegateError = 415,
+  MissingDelegateError = 420,
+  CorruptImageError = 425,
+  FileOpenError = 430,
+  BlobError = 435,
+  CacheError = 440
+} ErrorType;
+
+typedef enum
+{
   UndefinedFilter,
   PointFilter,
   BoxFilter,
@@ -333,37 +357,6 @@ typedef enum
   UpdateConfigurationState = 0x0080,
   UpdateRegionState = 0x0100
 } XState;
-
-/*
-  Classify errors and warnings.
-*/
-typedef enum
-{
-  UndefinedError,
-  ResourceLimitError = 400,
-  XServerError = 405,
-  OptionError = 410,
-  DelegateError = 415,
-  MissingDelegateError = 420,
-  CorruptImageError = 425,
-  FileOpenError = 430,
-  BlobError = 435,
-  CacheError = 440
-} ErrorType;
-
-typedef enum
-{
-  UndefinedWarning,
-  ResourceLimitWarning = 300,
-  XServerWarning = 305,
-  OptionWarning = 310,
-  DelegateWarning = 315,
-  MissingDelegateWarning = 320,
-  CorruptImageWarning = 325,
-  FileOpenWarning = 330,
-  BlobWarning = 335,
-  CacheWarning = 340
-} WarningType;
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -44,7 +44,7 @@ typedef void
   (*ErrorHandler)(const ErrorType,const char *,const char *);
 
 typedef void
-  (*WarningHandler)(const WarningType,const char *,const char *);
+  (*WarningHandler)(const ErrorType,const char *,const char *);
 
 /*
   Error declarations.
@@ -55,7 +55,7 @@ extern Export ErrorHandler
 extern Export void
   GetErrorInfo(ErrorInfo *),
   MagickError(const ErrorType,const char *,const char *),
-  MagickWarning(const WarningType,const char *,const char *);
+  MagickWarning(const ErrorType,const char *,const char *);
 
 extern Export WarningHandler
   SetWarningHandler(WarningHandler);

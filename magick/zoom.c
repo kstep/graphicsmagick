@@ -324,11 +324,8 @@ Export Image *MagnifyImage(Image *image)
   assert(image != (Image *) NULL);
   magnify_image=CloneImage(image,image->columns << 1,image->rows << 1,False);
   if (magnify_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to magnify image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to magnify image",
+      "Memory allocation failed");
   magnify_image->class=DirectClass;
   /*
     Allocate image buffer and scanline buffer for 4 rows of the image.
@@ -337,10 +334,9 @@ Export Image *MagnifyImage(Image *image)
     AllocateMemory(magnify_image->columns*sizeof(PixelPacket));
   if (scanline == (PixelPacket *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to magnify image",
-        "Memory allocation failed");
       DestroyImage(magnify_image);
-      return((Image *) NULL);
+      ImageExit(ResourceLimitWarning,"Unable to magnify image",
+        "Memory allocation failed");
     }
   /*
     Initialize zoom image pixels.
@@ -524,11 +520,8 @@ Export Image *MinifyImage(Image *image)
   */
   minify_image=CloneImage(image,image->columns >> 1,image->rows >> 1,False);
   if (minify_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to minify image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to minify image",
+      "Memory allocation failed");
   minify_image->class=DirectClass;
   /*
     Reduce each row.
@@ -640,11 +633,8 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
 
   assert(image != (Image *) NULL);
   if ((columns == 0) || (rows == 0))
-    {
-      MagickWarning(OptionWarning,"Unable to resize image",
-        "image dimensions are zero");
-      return((Image *) NULL);
-    }
+    ImageExit(OptionWarning,"Unable to resize image",
+      "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,columns,rows,False));
   /*
@@ -652,11 +642,8 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
   */
   sample_image=CloneImage(image,columns,rows,False);
   if (sample_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to sample image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to sample image",
+      "Memory allocation failed");
   /*
     Allocate scan line buffer and column offset buffers.
   */
@@ -669,10 +656,9 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
   if ((pixels == (PixelPacket *) NULL) || (indexes == (IndexPacket *) NULL) ||
       (x_offset == (double *) NULL) || (y_offset == (double *) NULL))
     {
-      MagickWarning(ResourceLimitWarning,"Unable to sample image",
-        "Memory allocation failed");
       DestroyImage(sample_image);
-      return((Image *) NULL);
+      ImageExit(ResourceLimitWarning,"Unable to sample image",
+        "Memory allocation failed");
     }
   /*
     Initialize pixel offsets.
@@ -829,11 +815,8 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   */
   scale_image=CloneImage(image,columns,rows,False);
   if (scale_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to scale image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to scale image",
+      "Memory allocation failed");
   scale_image->class=DirectClass;
   /*
     Allocate memory.
@@ -851,10 +834,9 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
       (x_vector == (ScaledPacket *) NULL) ||
       (y_vector == (ScaledPacket *) NULL))
     {
-      MagickWarning(ResourceLimitWarning,"Unable to scale image",
-        "Memory allocation failed");
       DestroyImage(scale_image);
-      return((Image *) NULL);
+      ImageExit(ResourceLimitWarning,"Unable to scale image",
+        "Memory allocation failed");
     }
   /*
     Scale image.
@@ -1536,11 +1518,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   assert(image != (Image *) NULL);
   assert((image->filter >= 0) && (image->filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
-    {
-      MagickWarning(OptionWarning,"Unable to zoom image",
-        "image dimensions are zero");
-      return((Image *) NULL);
-    }
+    ImageExit(OptionWarning,"Unable to zoom image","image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,columns,rows,False));
   /*
@@ -1548,21 +1526,17 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   */
   zoom_image=CloneImage(image,columns,rows,False);
   if (zoom_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to zoom image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to zoom image",
+      "Memory allocation failed");
   if (zoom_image->rows >= image->rows)
     source_image=CloneImage(image,zoom_image->columns,image->rows,True);
   else
     source_image=CloneImage(image,image->columns,zoom_image->rows,True);
   if (source_image == (Image *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to zoom image",
-        "Memory allocation failed");
       DestroyImage(zoom_image);
-      return((Image *) NULL);
+      ImageExit(ResourceLimitWarning,"Unable to zoom image",
+        "Memory allocation failed");
     }
   /*
     Allocate the range table.
@@ -1570,11 +1544,10 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   range_table=(Quantum *) AllocateMemory(3*(MaxRGB+1)*sizeof(Quantum));
   if (range_table == (Quantum *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to zoom image",
-        "Memory allocation failed");
       DestroyImage(source_image);
       DestroyImage(zoom_image);
-      return((Image *) NULL);
+      ImageExit(ResourceLimitWarning,"Unable to zoom image",
+        "Memory allocation failed");
     }
   /*
     Pre-compute conversion tables.
@@ -1599,12 +1572,11 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
     AllocateMemory((int) (support*2+3)*sizeof(ContributionInfo));
   if (contribution_info == (ContributionInfo *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to zoom image",
-        "Memory allocation failed");
-      FreeMemory(range_table);
       DestroyImage(source_image);
       DestroyImage(zoom_image);
-      return((Image *) NULL);
+      FreeMemory(range_table);
+      ImageExit(ResourceLimitWarning,"Unable to zoom image",
+        "Memory allocation failed");
     }
   /*
     Zoom image.
@@ -1627,7 +1599,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
         &filters[image->filter],contribution_info,range_limit,span,&quantum);
     }
   if (status == False)
-    MagickWarning(CacheWarning,"Unable to zoom image",(char *) NULL);
+    ImageExit(CacheWarning,"Unable to zoom image",(char *) NULL);
   /*
     Free allocated memory.
   */

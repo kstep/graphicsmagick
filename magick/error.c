@@ -65,7 +65,7 @@ extern "C" {
 
 static void
   DefaultErrorHandler(const ErrorType,const char *,const char *),
-  DefaultWarningHandler(const WarningType,const char *,const char *);
+  DefaultWarningHandler(const ErrorType,const char *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
@@ -141,7 +141,7 @@ static void DefaultErrorHandler(const ErrorType error,const char *message,
 %
 %  The format of the DefaultWarningHandler method is:
 %
-%      void DefaultWarningHandler(const WarningType warning,const char *message,
+%      void DefaultWarningHandler(const ErrorType warning,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
@@ -155,7 +155,7 @@ static void DefaultErrorHandler(const ErrorType error,const char *message,
 %
 %
 */
-static void DefaultWarningHandler(const WarningType warning,const char *message,
+static void DefaultWarningHandler(const ErrorType warning,const char *message,
   const char *qualifier)
 {
   if (message == (char *) NULL)
@@ -251,7 +251,7 @@ Export void MagickError(const ErrorType error,const char *message,
 %
 %  The format of the MagickWarning method is:
 %
-%      void MagickWarning(const WarningType warning,const char *message,
+%      void MagickWarning(const ErrorType warning,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
@@ -265,7 +265,7 @@ Export void MagickError(const ErrorType error,const char *message,
 %
 %
 */
-Export void MagickWarning(const WarningType warning,const char *message,
+Export void MagickWarning(const ErrorType warning,const char *message,
   const char *qualifier)
 {
   if (warning_handler != (WarningHandler) NULL)

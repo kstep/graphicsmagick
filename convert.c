@@ -465,7 +465,10 @@ int main(int argc,char **argv)
         (void) strcpy(image_info->filename,filename);
         next_image=ReadImage(image_info,&error);
         if (next_image == (Image *) NULL)
-          continue;
+          {
+            MagickWarning(error.type,error.message,error.qualifier);
+            continue;
+          }
         MogrifyImages(image_info,i,argv,&next_image);
         if (image == (Image *) NULL)
           image=next_image;
@@ -1748,7 +1751,10 @@ int main(int argc,char **argv)
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
-    if ((status == False) || image_info->adjoin)
+    if (status == False)
+      MagickWarning(image->error.type,image->error.message,
+        image->error.qualifier);
+    if (image_info->adjoin)
       break;
   }
   if (image_info->verbose)

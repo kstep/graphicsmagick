@@ -121,6 +121,8 @@ static unsigned int IsPWP(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
 %
 */
 static Image *ReadPWPImage(const ImageInfo *image_info,ErrorInfo *error)
@@ -158,14 +160,9 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ErrorInfo *error)
     status;
 
   /*
-    Allocate image structure.
-  */
-  pwp_image=AllocateImage(image_info);
-  if (pwp_image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
     Open image file.
   */
+  pwp_image=AllocateImage(image_info);
   status=OpenBlob(image_info,pwp_image,ReadBinaryType);
   if (pwp_image->file == (FILE *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",pwp_image);

@@ -123,11 +123,8 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   */
   allocated_image=(Image *) AllocateMemory(sizeof(Image));
   if (allocated_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to allocate image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    MagickError(ResourceLimitError,"Unable to allocate image",
+      "Memory allocation failed");
   /*
     Initialize Image structure.
   */
@@ -5597,7 +5594,7 @@ Export Image *PingImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: Specifies a pointer to an ErrorInfo structure.
+%    o error: return any errors or warnings in this structure.
 %
 %
 */

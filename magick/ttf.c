@@ -83,6 +83,8 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
 %
 */
 static Image *ReadTTFImage(const ImageInfo *image_info,ErrorInfo *error)
@@ -114,14 +116,9 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ErrorInfo *error)
     status;
 
   /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
     Open image file.
   */
+  image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);

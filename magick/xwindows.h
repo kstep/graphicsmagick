@@ -546,7 +546,7 @@ extern Export void
   XUserPreferences(XResourceInfo *),
   XSetCursorState(Display *,XWindows *,const unsigned int),
   XSignalHandler(int),
-  XWarning(const WarningType,const char *,const char *);
+  XWarning(const ErrorType,const char *,const char *);
 
 extern Export Window
   XClientWindow(Display *,Window),

@@ -1336,6 +1336,7 @@ int main(int argc,char **argv)
           image=ReadImage(image_info,&error);
           if (image == (Image *) NULL)
             {
+              MagickWarning(error.type,error.message,error.qualifier);
               if ((i < (argc-1)) || (scene < last_scene))
                 continue;
               else
@@ -1419,7 +1420,10 @@ int main(int argc,char **argv)
                 */
                 (void) strcpy(image->filename,resource_info.write_filename);
                 SetImageInfo(image_info,True);
-                (void) WriteImage(image_info,image);
+                status=WriteImage(image_info,image);
+                if (status == False)
+                  MagickWarning(image->error.type,image->error.message,
+                    image->error.qualifier);
               }
             if (image_info->verbose)
               DescribeImage(image,stderr,False);

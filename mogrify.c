@@ -1401,6 +1401,7 @@ int main(int argc,char **argv)
         image=ReadImage(image_info,&error);
         if (image == (Image *) NULL)
           {
+            MagickWarning(error.type,error.message,error.qualifier);
             if (*option == '-')
               break;
             else
@@ -1455,7 +1456,10 @@ int main(int argc,char **argv)
         for (p=image; p != (Image *) NULL; p=p->next)
         {
           status=WriteImage(image_info,p);
-          if ((status == False) || image_info->adjoin)
+          if (status == False)
+            MagickWarning(image->error.type,image->error.message,
+              image->error.qualifier);
+          if (image_info->adjoin)
             break;
         }
         for (p=image; p != (Image *) NULL; p=p->next)

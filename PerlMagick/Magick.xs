@@ -1669,7 +1669,7 @@ static int strEQcase(const char *p,const char *q)
 %
 %
 */
-static void warninghandler(const WarningType warning,const char *message,
+static void warninghandler(const ErrorType warning,const char *message,
   const char *qualifier)
 {
   char
@@ -5500,12 +5500,16 @@ Read(ref,...)
       (void) strncpy(info->image_info->filename,list[i],MaxTextExtent-1);
       for (image=ReadImage(info->image_info,&error); image; image=image->next)
       {
+        if (error.type != UndefinedError)
+          MagickWarning(error.type,error.message,error.qualifier);
         sv=newSViv((IV) image);
         rv=newRV(sv);
         av_push(av,sv_bless(rv,hv));
         SvREFCNT_dec(sv);
         number_images++;
       }
+      if (error.type != UndefinedError)
+        MagickWarning(error.type,error.message,error.qualifier);
     }
     /*
       Free resources.
@@ -5679,6 +5683,9 @@ Write(ref,...)
     SV
       *reference;
 
+    unsigned int
+      status;
+
     volatile int
       number_images;
 
@@ -5717,8 +5724,11 @@ Write(ref,...)
     SetImageInfo(package_info->image_info,True);
     for (next=image; next; next=next->next)
     {
-      if (WriteImage(package_info->image_info,next))
-        number_images++;
+      status=WriteImage(package_info->image_info,next);
+      if (status == False)
+        MagickWarning(next->error.type,next->error.message,
+          next->error.qualifier);
+      number_images++;
       if (package_info->image_info->adjoin)
         break;
     }

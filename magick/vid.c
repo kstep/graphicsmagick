@@ -82,6 +82,8 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
 %
 */
 static Image *ReadVIDImage(const ImageInfo *image_info,ErrorInfo *error)

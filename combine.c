@@ -267,8 +267,7 @@ int main(int argc,char **argv)
           {
             image=ReadImage(image_info,&error);
             if (image == (Image *) NULL)
-              MagickError(OptionError,"Missing an image file name",
-                (char *) NULL);
+              MagickWarning(error.type,error.message,error.qualifier);
             continue;
           }
         if (mask_image != (Image *) NULL)
@@ -277,13 +276,12 @@ int main(int argc,char **argv)
           {
             composite_image=ReadImage(image_info,&error);
             if (composite_image == (Image *) NULL)
-              MagickError(OptionError,"Missing an image file name",
-                (char *) NULL);
+              MagickWarning(error.type,error.message,error.qualifier);
             continue;
           }
         mask_image=ReadImage(image_info,&error);
         if (mask_image == (Image *) NULL)
-          MagickError(OptionError,"Missing an image file name",(char *) NULL);
+          MagickWarning(error.type,error.message,error.qualifier);
       }
     else
       switch(*(option+1))
@@ -968,6 +966,9 @@ int main(int argc,char **argv)
   (void) strcpy(combined_image->filename,write_filename);
   SetImageInfo(image_info,True);
   status=WriteImage(image_info,combined_image);
+  if (status == False)
+    MagickWarning(image->error.type,image->error.message,
+      image->error.qualifier);
   if (image_info->verbose)
     DescribeImage(combined_image,stderr,False);
   DestroyImages(combined_image);

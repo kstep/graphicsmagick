@@ -111,11 +111,8 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type)
   assert(image != (Image *) NULL);
   noisy_image=CloneImage(image,image->columns,image->rows,False);
   if (noisy_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to reduce noise",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to add noise",
+      "Memory allocation failed");
   noisy_image->class=DirectClass;
   /*
     Add noise in each row.
@@ -223,11 +220,8 @@ Export Image *BlurImage(Image *image,const double factor)
   */
   blur_image=CloneImage(image,image->columns,image->rows,False);
   if (blur_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to blur image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to blur image",
+      "Memory allocation failed");
   blur_image->class=DirectClass;
   /*
     Blur image.
@@ -340,11 +334,8 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
   assert(image != (Image *) NULL);
   colorize_image=CloneImage(image,image->columns,image->rows,False);
   if (colorize_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to colorized image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to colorize image",
+      "Memory allocation failed");
   colorize_image->class=DirectClass;
   /*
     Determine RGB values of the pen color.
@@ -461,11 +452,8 @@ Export Image *DespeckleImage(Image *image)
   assert(image != (Image *) NULL);
   despeckle_image=CloneImage(image,image->columns,image->rows,False);
   if (despeckle_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to despeckle image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to despeckle image",
+      "Memory allocation failed");
   despeckle_image->class=DirectClass;
   /*
     Allocate image buffers.
@@ -482,10 +470,9 @@ Export Image *DespeckleImage(Image *image)
       (matte_channel == (Quantum *) NULL) ||
       (buffer == (Quantum *) NULL))
     {
-      MagickWarning(ResourceLimitWarning,"Unable to despeckle image",
-        "Memory allocation failed");
       DestroyImage(despeckle_image);
-      return((Image *) NULL);
+      ImageExit(ResourceLimitWarning,"Unable to despeckle image",
+        "Memory allocation failed");
     }
   /*
     Zero image buffers.
@@ -671,11 +658,8 @@ Export Image *EdgeImage(Image *image,const double factor)
   */
   edge_image=CloneImage(image,image->columns,image->rows,False);
   if (edge_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to detect edges",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to detect edges",
+      "Memory allocation failed");
   edge_image->class=DirectClass;
   /*
     Edge detect image.
@@ -805,11 +789,8 @@ Export Image *EmbossImage(Image *image)
   */
   emboss_image=CloneImage(image,image->columns,image->rows,False);
   if (emboss_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to enhance image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to enhance image",
+      "Memory allocation failed");
   emboss_image->class=DirectClass;
   /*
     Emboss image.
@@ -971,11 +952,8 @@ Export Image *EnhanceImage(Image *image)
   */
   enhance_image=CloneImage(image,image->columns,image->rows,False);
   if (enhance_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to enhance image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to enhance image",
+      "Memory allocation failed");
   enhance_image->class=DirectClass;
   /*
     Allocate the squares buffer.
@@ -984,10 +962,9 @@ Export Image *EnhanceImage(Image *image)
     AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(unsigned int));
   if (squares == (unsigned int *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to enhance image",
-        "Memory allocation failed");
       DestroyImage(enhance_image);
-      return((Image *) NULL);
+      ImageExit(ResourceLimitWarning,"Unable to enhance image",
+        "Memory allocation failed");
     }
   squares+=MaxRGB;
   for (i=(-MaxRGB); i <= MaxRGB; i++)
@@ -1123,11 +1100,8 @@ Export Image *ImplodeImage(Image *image,const double factor)
     MatteImage(image,Opaque);
   implode_image=CloneImage(image,image->columns,image->rows,False);
   if (implode_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to implode image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to implode image",
+      "Memory allocation failed");
   /*
     Compute scaling factor.
   */
@@ -1263,21 +1237,15 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
 
   assert(image != (Image *) NULL);
   if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to median filter",
-        "image smaller than radius");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to median filter",
+      "image smaller than radius");
   /*
     Initialize median image attributes.
   */
   median_image=CloneImage(image,image->columns,image->rows,False);
   if (median_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to reduce noise",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to reduce noise",
+      "Memory allocation failed");
   median_image->class=DirectClass;
   /*
     Allocate neighbors and scanline.
@@ -1286,10 +1254,9 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
   neighbors=(PixelPacket *) AllocateMemory(length*sizeof(PixelPacket));
   if (neighbors == (PixelPacket *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to reduce noise",
-        "Memory allocation failed");
       DestroyImage(median_image);
-      return((Image *) NULL);
+      ImageExit(ResourceLimitWarning,"Unable to reduce noise",
+        "Memory allocation failed");
     }
   /*
     Paint each row of the image.
@@ -1400,21 +1367,14 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
 
   assert(images != (Image *) NULL);
   if (images->next == (Image *) NULL)
-    {
-      MagickWarning(OptionWarning,"Unable to morph image",
-        "image sequence required");
-      return((Image *) NULL);
-    }
+    ImageExit(OptionWarning,"Unable to morph image","image sequence required");
   /*
     Clone first frame in sequence.
   */
   morph_images=CloneImage(images,images->columns,images->rows,True);
   if (morph_images == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to morph image sequence",
+      "Memory allocation failed");
   /*
     Morph image.
   */
@@ -1432,9 +1392,9 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
         (unsigned int) (alpha*image->rows+beta*image->next->rows+0.5));
       if (morph_images->next == (Image *) NULL)
         {
-          MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
+          DestroyImages(morph_images);
+          ImageExit(ResourceLimitWarning,"Unable to morph image sequence",
             "Memory allocation failed");
-          break;
         }
       morph_images->next->previous=morph_images;
       morph_images=morph_images->next;
@@ -1443,9 +1403,9 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
         ZoomImage(image->next,morph_images->columns,morph_images->rows);
       if (morph_image == (Image *) NULL)
         {
-          MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
+          DestroyImages(morph_images);
+          ImageExit(ResourceLimitWarning,"Unable to morph image sequence",
             "Memory allocation failed");
-          break;
         }
       morph_images->class=DirectClass;
       for (y=0; y < (int) morph_images->rows; y++)
@@ -1475,9 +1435,9 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
       CloneImage(image->next,image->next->columns,image->next->rows,True);
     if (morph_images->next == (Image *) NULL)
       {
-        MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
+        DestroyImages(morph_images);
+        ImageExit(ResourceLimitWarning,"Unable to morph image sequence",
           "Memory allocation failed");
-        break;
       }
     morph_images->next->previous=morph_images;
     morph_images=morph_images->next;
@@ -1554,21 +1514,15 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
 
   assert(image != (Image *) NULL);
   if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to oil paint",
-        "image smaller than radius");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to oil paint",
+      "image smaller than radius");
   /*
     Initialize painted image attributes.
   */
   paint_image=CloneImage(image,image->columns,image->rows,False);
   if (paint_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to oil paint",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to oil paint",
+      "Memory allocation failed");
   paint_image->class=DirectClass;
   /*
     Allocate histogram and scanline.
@@ -1576,10 +1530,9 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
   histogram=(unsigned int *) AllocateMemory((MaxRGB+1)*sizeof(unsigned int));
   if (histogram == (unsigned int *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to oil paint",
-        "Memory allocation failed");
       DestroyImage(paint_image);
-      return((Image *) NULL);
+      ImageExit(ResourceLimitWarning,"Unable to oil paint",
+        "Memory allocation failed");
     }
   /*
     Paint each row of the image.
@@ -1721,7 +1674,7 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
   if (depth != 0)
     {
       SegmentInfo
-        clone_info;
+        local_info;
 
       /*
         Divide the area into quadrants and recurse.
@@ -1730,22 +1683,22 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       attenuate++;
       x_mid=(segment->x1+segment->x2)/2;
       y_mid=(segment->y1+segment->y2)/2;
-      clone_info=(*segment);
-      clone_info.x2=x_mid;
-      clone_info.y2=y_mid;
-      (void) PlasmaImage(image,&clone_info,attenuate,depth);
-      clone_info=(*segment);
-      clone_info.y1=y_mid;
-      clone_info.x2=x_mid;
-      (void) PlasmaImage(image,&clone_info,attenuate,depth);
-      clone_info=(*segment);
-      clone_info.x1=x_mid;
-      clone_info.y2=y_mid;
-      (void) PlasmaImage(image,&clone_info,attenuate,depth);
-      clone_info=(*segment);
-      clone_info.x1=x_mid;
-      clone_info.y1=y_mid;
-      return(PlasmaImage(image,&clone_info,attenuate,depth));
+      local_info=(*segment);
+      local_info.x2=x_mid;
+      local_info.y2=y_mid;
+      (void) PlasmaImage(image,&local_info,attenuate,depth);
+      local_info=(*segment);
+      local_info.y1=y_mid;
+      local_info.x2=x_mid;
+      (void) PlasmaImage(image,&local_info,attenuate,depth);
+      local_info=(*segment);
+      local_info.x1=x_mid;
+      local_info.y2=y_mid;
+      (void) PlasmaImage(image,&local_info,attenuate,depth);
+      local_info=(*segment);
+      local_info.x1=x_mid;
+      local_info.y1=y_mid;
+      return(PlasmaImage(image,&local_info,attenuate,depth));
     }
   x_mid=(segment->x1+segment->x2)/2;
   y_mid=(segment->y1+segment->y2)/2;
@@ -1949,11 +1902,8 @@ Export Image *ReduceNoiseImage(Image *image)
   */
   noisy_image=CloneImage(image,image->columns,image->rows,False);
   if (noisy_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to reduce noise",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to reduce noise",
+      "Memory allocation failed");
   noisy_image->class=DirectClass;
   /*
     Reduce noise in image.
@@ -2098,11 +2048,8 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
   assert(image != (Image *) NULL);
   shade_image=CloneImage(image,image->columns,image->rows,False);
   if (shade_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to shade image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to shade image",
+      "Memory allocation failed");
   shade_image->class=DirectClass;
   /*
     Compute the light vector.
@@ -2264,11 +2211,8 @@ Export Image *SharpenImage(Image *image,const double factor)
   */
   sharpen_image=CloneImage(image,image->columns,image->rows,False);
   if (sharpen_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to sharpen image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to sharpen image",
+      "Memory allocation failed");
   sharpen_image->class=DirectClass;
   /*
     Sharpen image.
@@ -2496,11 +2440,8 @@ Export Image *SpreadImage(Image *image,const unsigned int amount)
   */
   spread_image=CloneImage(image,image->columns,image->rows,False);
   if (spread_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to enhance image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to spread image",
+      "Memory allocation failed");
   spread_image->class=DirectClass;
   /*
     Convolve each row.
@@ -2601,11 +2542,8 @@ Export Image *SteganoImage(Image *image,Image *watermark)
   assert(watermark != (Image *) NULL);
   stegano_image=CloneImage(image,image->columns,image->rows,False);
   if (stegano_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,
-        "Unable to create steganographic image","Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to create steganograph image",
+      "Memory allocation failed");
   if (stegano_image->class == PseudoClass)
     {
       if (stegano_image->colors > ((MaxRGB+1) >> 1))
@@ -2620,11 +2558,10 @@ Export Image *SteganoImage(Image *image,Image *watermark)
             stegano_image->colormap,stegano_image->colors*sizeof(PixelPacket));
           if (stegano_image->colormap == (PixelPacket *) NULL)
             {
-              MagickWarning(ResourceLimitWarning,
-                "Unable to create steganographic image",
-                "Memory allocation failed");
               DestroyImage(stegano_image);
-              return((Image *) NULL);
+              ImageExit(ResourceLimitWarning,
+                "Unable to create steganograph image",
+                "Memory allocation failed");
             }
           for (i=stegano_image->colors-1; i >= 0; i--)
             stegano_image->colormap[i]=stegano_image->colormap[i >> 1];
@@ -2697,20 +2634,20 @@ Export Image *SteganoImage(Image *image,Image *watermark)
 %
 %  The format of the StereoImage method is:
 %
-%      Image *StereoImage(Image *left_image,Image *right_image)
+%      Image *StereoImage(Image *image,Image *offset_image)
 %
 %  A description of each parameter follows:
 %
 %    o stereo_image: Method StereoImage returns a pointer to the stereo
 %      image.  A null image is returned if there is a memory shortage.
 %
-%    o left_image: The address of a structure of type Image.
+%    o image: The address of a structure of type Image.
 %
-%    o right_image: The address of a structure of type Image.
+%    o offset_image: The address of a structure of type Image.
 %
 %
 */
-Export Image *StereoImage(Image *left_image,Image *right_image)
+Export Image *StereoImage(Image *image,Image *offset_image)
 {
 #define StereoImageText  "  Stereo image...  "
 
@@ -2728,34 +2665,28 @@ Export Image *StereoImage(Image *left_image,Image *right_image)
     *q,
     *r;
 
-  assert(left_image != (Image *) NULL);
-  assert(right_image != (Image *) NULL);
-  if ((left_image->columns != right_image->columns) ||
-      (left_image->rows != right_image->rows))
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to create stereo image",
-        "left and right image sizes differ");
-      return((Image *) NULL);
-    }
+  assert(image != (Image *) NULL);
+  assert(offset_image != (Image *) NULL);
+  if ((image->columns != offset_image->columns) ||
+      (image->rows != offset_image->rows))
+    ImageExit(ResourceLimitWarning,"Unable to create stereo image",
+      "left and right image sizes differ");
   /*
     Initialize stereo image attributes.
   */
   stereo_image=
-    CloneImage(left_image,left_image->columns,left_image->rows,False);
+    CloneImage(image,image->columns,image->rows,False);
   if (stereo_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to create stereo image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to create stereo image",
+      "Memory allocation failed");
   stereo_image->class=DirectClass;
   /*
     Copy left image to red channel and right image to blue channel.
   */
   for (y=0; y < (int) stereo_image->rows; y++)
   {
-    p=GetPixelCache(left_image,0,y,left_image->columns,1);
-    q=GetPixelCache(right_image,0,y,right_image->columns,1);
+    p=GetPixelCache(image,0,y,image->columns,1);
+    q=GetPixelCache(offset_image,0,y,offset_image->columns,1);
     r=SetPixelCache(stereo_image,0,y,stereo_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
         (r == (PixelPacket *) NULL))
@@ -2848,11 +2779,8 @@ Export Image *SwirlImage(Image *image,double degrees)
     MatteImage(image,Opaque);
   swirl_image=CloneImage(image,image->columns,image->rows,False);
   if (swirl_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to swirl image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to swirl image",
+      "Memory allocation failed");
   /*
     Compute scaling factor.
   */
@@ -2922,7 +2850,7 @@ Export Image *SwirlImage(Image *image,double degrees)
 %
 %  The format of the ThresholdImage method is:
 %
-%      void ThresholdImage(Image *image,const double threshold)
+%      unsigned int ThresholdImage(Image *image,const double threshold)
 %
 %  A description of each parameter follows:
 %
@@ -2933,7 +2861,7 @@ Export Image *SwirlImage(Image *image,double degrees)
 %
 %
 */
-Export void ThresholdImage(Image *image,const double threshold)
+Export unsigned int ThresholdImage(Image *image,const double threshold)
 {
 #define ThresholdImageText  "  Threshold the image...  "
 
@@ -2959,9 +2887,10 @@ Export void ThresholdImage(Image *image,const double threshold)
   colormap=(PixelPacket *) AllocateMemory(2*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to allocate image",
-        "Memory allocation failed");
-      return;
+      image->error.type=ResourceLimitWarning;
+      image->error.message="Unable to threshold image";
+      image->error.qualifier="Memory allocation failed";
+      return(False);
     }
   if (image->colormap != (PixelPacket *) NULL)
     FreeMemory(image->colormap);
@@ -2990,6 +2919,7 @@ Export void ThresholdImage(Image *image,const double threshold)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(ThresholdImageText,y,image->rows);
   }
+  return(True);
 }
 
 /*
@@ -3055,21 +2985,17 @@ Export Image *WaveImage(Image *image,const double amplitude,
   wave_image=CloneImage(image,image->columns,image->rows+
     (int) (2*AbsoluteValue(amplitude)),False);
   if (wave_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to wave image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ImageExit(ResourceLimitWarning,"Unable to wave image",
+      "Memory allocation failed");
   /*
     Allocate sine map.
   */
   sine_map=(double *) AllocateMemory(wave_image->columns*sizeof(double));
   if (sine_map == (double *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to wave image",
-        "Memory allocation failed");
       DestroyImage(wave_image);
-      return((Image *) NULL);
+      ImageExit(ResourceLimitWarning,"Unable to wave image",
+        "Memory allocation failed");
     }
   for (x=0; x < (int) wave_image->columns; x++)
     sine_map[x]=AbsoluteValue(amplitude)+amplitude*sin((2*M_PI*x)/wavelength);

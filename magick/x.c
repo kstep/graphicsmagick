@@ -86,6 +86,9 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
+%
 */
 static Image *ReadXImage(const ImageInfo *image_info,ErrorInfo *error)
 {

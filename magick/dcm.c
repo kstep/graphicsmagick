@@ -2665,6 +2665,8 @@ static unsigned int IsDCM(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
 %
 */
 static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
@@ -2727,14 +2729,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
     *graymap;
 
   /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
     Open image file.
   */
+  image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
@@ -3119,9 +3116,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
   if ((strcmp(transfer_syntax,"1.2.840.10008.1.2.4.50") == 0) ||
       (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0))
     {
-      ErrorInfo
-        error;
-
       FILE
         *file;
 
@@ -3152,7 +3146,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
       }
       (void) fclose(file);
       DestroyImage(image);
-      image=ReadImage(clone_info,&error);
+      image=ReadImage(clone_info,error);
       (void) remove(clone_info->filename);
       DestroyImageInfo(clone_info);
       return(image);

@@ -487,12 +487,6 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     Allocate image structure.
   */
   montage_image=AllocateImage(clone_info);
-  if (montage_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to montage image_list",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
   montage_image->scene=1;
   images_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
   tiles=0;

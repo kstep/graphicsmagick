@@ -1384,7 +1384,8 @@ Export char **ListColors(const char *pattern,int *number_colors)
 %
 %  The format of the ListFiles function is:
 %
-%      filelist=ListFiles(directory,pattern,number_entries)
+%      char **ListFiles(const char *directory,const char *pattern,
+%        int *number_entries)
 %
 %  A description of each parameter follows:
 %
@@ -1414,10 +1415,12 @@ static int FileCompare(const void *x,const void *y)
   return(Latin1Compare(*p,*q));
 }
 
-Export char **ListFiles(char *directory,const char *pattern,int *number_entries)
+Export char **ListFiles(const char *directory,const char *pattern,
+  int *number_entries)
 {
   char
-    **filelist;
+    **filelist,
+    filename[MaxTextExtent];
 
   DIR
     *current_directory;
@@ -1434,17 +1437,18 @@ Export char **ListFiles(char *directory,const char *pattern,int *number_entries)
   /*
     Open directory.
   */
-  assert(directory != (char *) NULL);
+  assert(directory != (const char *) NULL);
   assert(pattern != (char *) NULL);
   assert(number_entries != (int *) NULL);
   *number_entries=0;
   status=chdir(directory);
   if (status != 0)
     return((char **) NULL);
-  (void) getcwd(directory,MaxTextExtent-1);
-  current_directory=opendir(directory);
+  (void) getcwd(filename,MaxTextExtent-1);
+  current_directory=opendir(filename);
   if (current_directory == (DIR *) NULL)
     return((char **) NULL);
+  (void) chdir(filename);
   /*
     Allocate filelist.
   */
@@ -1458,7 +1462,6 @@ Export char **ListFiles(char *directory,const char *pattern,int *number_entries)
   /*
     Save the current and change to the new directory.
   */
-  (void) chdir(directory);
   entry=readdir(current_directory);
   while (entry != (struct dirent *) NULL)
   {

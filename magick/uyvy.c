@@ -88,6 +88,8 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
 %
 */
 static Image *ReadUYVYImage(const ImageInfo *image_info,ErrorInfo *error)
@@ -115,17 +117,11 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,ErrorInfo *error)
     status;
 
   /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"Must specify image size",image);
-  image->depth=8;
-  /*
     Open image file.
   */
+  image=AllocateImage(image_info);
+  if ((image->columns == 0) || (image->rows == 0))
+    ReaderExit(OptionWarning,"Must specify image size",image);
   (void) strcpy(image->filename,image_info->filename);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
@@ -135,6 +131,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,ErrorInfo *error)
   /*
     Accumulate UYVY, then unpack into two pixels.
   */
+  image->depth=8;
   for (y=0; y < (int) image->rows; y++)
   {
     q=SetPixelCache(image,0,y,image->columns,1);

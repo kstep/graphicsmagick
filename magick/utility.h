@@ -49,7 +49,7 @@ extern Export char
   *AllocateString(const char *),
   *BaseFilename(const char *),
   **ListColors(const char *,int *),
-  **ListFiles(char *,const char *,int *),
+  **ListFiles(const char *,const char *,int *),
   *PostscriptGeometry(const char *),
   *SetClientName(const char *),
   **StringToArgv(const char *,int *),

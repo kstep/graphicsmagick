@@ -82,6 +82,8 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
 %
 */
 static Image *ReadTILEImage(const ImageInfo *image_info,ErrorInfo *error)
@@ -101,18 +103,13 @@ static Image *ReadTILEImage(const ImageInfo *image_info,ErrorInfo *error)
     x;
 
   /*
-    Allocate image structure.
+    Initialize Image structure.
   */
   image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
     ReaderExit(OptionWarning,"Must specify image size",image);
   if (*image_info->filename == '\0')
     ReaderExit(OptionWarning,"must specify an image name",image);
-  /*
-    Initialize Image structure.
-  */
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);

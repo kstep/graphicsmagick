@@ -83,6 +83,8 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
 %
 */
 static Image *ReadGRADATIONImage(const ImageInfo *image_info,ErrorInfo *error)
@@ -114,14 +116,9 @@ static Image *ReadGRADATIONImage(const ImageInfo *image_info,ErrorInfo *error)
     *q;
 
   /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
     Initialize Image structure.
   */
+  image=AllocateImage(image_info);
   (void) strcpy(image->filename,image_info->filename);
   if (image->columns == 0)
     image->columns=512;

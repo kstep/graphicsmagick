@@ -82,6 +82,8 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
 %
 */
 static Image *ReadSTEGANOImage(const ImageInfo *image_info,ErrorInfo *error)
@@ -123,16 +125,11 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,ErrorInfo *error)
     *stegano_image;
 
   /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"Must specify image size",image);
-  /*
     Initialize Image structure.
   */
+  image=AllocateImage(image_info);
+  if ((image->columns == 0) || (image->rows == 0))
+    ReaderExit(OptionWarning,"Must specify image size",image);
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);

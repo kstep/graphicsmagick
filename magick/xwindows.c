@@ -8652,7 +8652,7 @@ Export char *XVisualClassName(const int class)
 %
 %
 */
-Export void XWarning(const WarningType warning,const char *message,
+Export void XWarning(const ErrorType warning,const char *message,
   const char *qualifier)
 {
   char

@@ -71,7 +71,7 @@
 %
 %  The format of the ContrastImage method is:
 %
-%      void ContrastImage(Image *image,const unsigned int sharpen)
+%      unsigned int ContrastImage(Image *image,const unsigned int sharpen)
 %
 %  A description of each parameter follows:
 %
@@ -83,7 +83,7 @@
 %
 %
 */
-Export void ContrastImage(Image *image,const unsigned int sharpen)
+Export unsigned int ContrastImage(Image *image,const unsigned int sharpen)
 {
 #define DullContrastImageText  "  Dulling image contrast...  "
 #define SharpenContrastImageText  "  Sharpening image contrast...  "
@@ -155,6 +155,7 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
       break;
     }
   }
+  return(False);
 }
 
 /*
@@ -172,7 +173,7 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
 %
 %  The format of the EqualizeImage method is:
 %
-%      void EqualizeImage(Image *image)
+%      unsigned int EqualizeImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -181,7 +182,7 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
 %
 %
 */
-Export void EqualizeImage(Image *image)
+Export unsigned int EqualizeImage(Image *image)
 {
 #define EqualizeImageText  "  Equalizing image...  "
 
@@ -216,9 +217,10 @@ Export void EqualizeImage(Image *image)
   if ((histogram == (unsigned int *) NULL) || (map == (unsigned int *) NULL) ||
       (equalize_map == (Quantum *) NULL))
     {
-      MagickWarning(ResourceLimitWarning,"Unable to equalize image",
-        "Memory allocation failed");
-      return;
+      image->error.type=ResourceLimitWarning;
+      image->error.message="Unable to equalize image";
+      image->error.qualifier="Memory allocation failed";
+      return(False);
     }
   /*
     Form histogram.
@@ -307,6 +309,7 @@ Export void EqualizeImage(Image *image)
     }
   }
   FreeMemory(equalize_map);
+  return(True);
 }
 
 /*
@@ -323,7 +326,7 @@ Export void EqualizeImage(Image *image)
 %
 %  The format of the GammaImage method is:
 %
-%      void GammaImage(Image *image,const char *gamma)
+%      unsigned int GammaImage(Image *image,const char *gamma)
 %
 %  A description of each parameter follows:
 %
@@ -334,7 +337,7 @@ Export void EqualizeImage(Image *image)
 %
 %
 */
-Export void GammaImage(Image *image,const char *gamma)
+Export unsigned int GammaImage(Image *image,const char *gamma)
 {
 #define GammaImageText  "  Gamma correcting the image...  "
 
@@ -382,9 +385,10 @@ Export void GammaImage(Image *image,const char *gamma)
   gamma_map=(PixelPacket *) AllocateMemory((MaxRGB+1)*sizeof(PixelPacket));
   if (gamma_map == (PixelPacket *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to gamma correct image",
-        "Memory allocation failed");
-      return;
+      image->error.type=ResourceLimitWarning;
+      image->error.message="Unable to gamma correct image";
+      image->error.qualifier="Memory allocation failed";
+      return(False);
     }
   for (i=0; i <= MaxRGB; i++)
   {
@@ -457,6 +461,7 @@ Export void GammaImage(Image *image,const char *gamma)
   if (image->gamma != 0.0)
     image->gamma*=(red_gamma+green_gamma+blue_gamma)/3.0;
   FreeMemory(gamma_map);
+  return(True);
 }
 
 /*
@@ -474,7 +479,7 @@ Export void GammaImage(Image *image,const char *gamma)
 %
 %  The format of the ModulateImage method is:
 %
-%      void ModulateImage(Image *image,const char *modulate)
+%      unsigned int ModulateImage(Image *image,const char *modulate)
 %
 %  A description of each parameter follows:
 %
@@ -487,7 +492,7 @@ Export void GammaImage(Image *image,const char *gamma)
 %
 %
 */
-Export void ModulateImage(Image *image,const char *modulate)
+Export unsigned int ModulateImage(Image *image,const char *modulate)
 {
 #define ModulateImageText  "  Modulating image...  "
 
@@ -511,7 +516,7 @@ Export void ModulateImage(Image *image,const char *modulate)
   */
   assert(image != (Image *) NULL);
   if (modulate == (char *) NULL)
-    return;
+    return(False);
   percent_hue=0.0;
   percent_brightness=0.0;
   percent_saturation=0.0;
@@ -570,6 +575,7 @@ Export void ModulateImage(Image *image,const char *modulate)
       break;
     }
   }
+  return(True);
 }
 
 /*
@@ -588,7 +594,7 @@ Export void ModulateImage(Image *image,const char *modulate)
 %
 %  The format of the NegateImage method is:
 %
-%      void NegateImage(Image *image,const unsigned int grayscale)
+%      unsigned int NegateImage(Image *image,const unsigned int grayscale)
 %
 %  A description of each parameter follows:
 %
@@ -597,7 +603,7 @@ Export void ModulateImage(Image *image,const char *modulate)
 %
 %
 */
-Export void NegateImage(Image *image,const unsigned int grayscale)
+Export unsigned int NegateImage(Image *image,const unsigned int grayscale)
 {
 #define NegateImageText  "  Negating the image colors...  "
 
@@ -665,6 +671,7 @@ Export void NegateImage(Image *image,const unsigned int grayscale)
       break;
     }
   }
+  return(True);
 }
 
 /*
@@ -682,7 +689,7 @@ Export void NegateImage(Image *image,const unsigned int grayscale)
 %
 %  The format of the NormalizeImage method is:
 %
-%      void NormalizeImage(Image *image)
+%      unsigned int NormalizeImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -691,7 +698,7 @@ Export void NegateImage(Image *image,const unsigned int grayscale)
 %
 %
 */
-Export void NormalizeImage(Image *image)
+Export unsigned int NormalizeImage(Image *image)
 {
 #define NormalizeImageText  "  Normalizing image...  "
 
@@ -725,9 +732,10 @@ Export void NormalizeImage(Image *image)
   normalize_map=(Quantum *) AllocateMemory((MaxRGB+1)*sizeof(Quantum));
   if ((histogram == (int *) NULL) || (normalize_map == (Quantum *) NULL))
     {
-      MagickWarning(ResourceLimitWarning,"Unable to normalize image",
-        "Memory allocation failed");
-      return;
+      image->error.type=ResourceLimitWarning;
+      image->error.message="Unable to normalize image";
+      image->error.qualifier="Memory allocation failed";
+      return(False);
     }
   /*
     Form histogram.
@@ -845,4 +853,5 @@ Export void NormalizeImage(Image *image)
   }
   FreeMemory(normalize_map);
   FreeMemory(histogram);
+  return(True);
 }

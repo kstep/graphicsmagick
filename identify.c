@@ -272,7 +272,10 @@ int main(int argc,char **argv)
       }
     image=ReadImage(image_info,&error);
     if (image == (Image *) NULL)
-      continue;
+      {
+        MagickWarning(error.type,error.message,error.qualifier);
+        continue;
+      }
     for (p=image; p != (Image *) NULL; p=p->next)
     {
       if (p->scene == 0)

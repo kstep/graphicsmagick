@@ -89,6 +89,8 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
 %
 */
 static Image *ReadXCImage(const ImageInfo *image_info,ErrorInfo *error)
@@ -106,18 +108,13 @@ static Image *ReadXCImage(const ImageInfo *image_info,ErrorInfo *error)
     *q;
 
   /*
-    Allocate image structure.
+    Initialize Image structure.
   */
   image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
   if (image->columns == 0)
     image->columns=1;
   if (image->rows == 0)
     image->rows=1;
-  /*
-    Initialize Image structure.
-  */
   (void) strcpy(image->filename,image_info->filename);
   image->class=PseudoClass;
   image->colors=1;

@@ -453,7 +453,7 @@ static void UpdateMessageDigest(MessageDigest *message_digest,
 %
 %  The format of the SignatureImage method is:
 %
-%      void SignatureImage(Image *image)
+%      unsigned int SignatureImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -462,7 +462,7 @@ static void UpdateMessageDigest(MessageDigest *message_digest,
 %
 %
 */
-Export void SignatureImage(Image *image)
+Export unsigned int SignatureImage(Image *image)
 {
   const char
     hex[] = "0123456789abcdef";
@@ -497,9 +497,10 @@ Export void SignatureImage(Image *image)
   message=(unsigned char *) AllocateMemory(8*image->columns);
   if ((signature == (char *) NULL) || (message == (unsigned char *) NULL))
     {
-      MagickWarning(ResourceLimitWarning,"Unable to compute digital signature",
-        "Memory allocation failed");
-      return;
+      image->error.type=ResourceLimitWarning;
+      image->error.message="Unable to compute digital signature";
+      image->error.qualifier="Memory allocation failed";
+      return(False);
     }
   /*
     Compute image digital signature.
@@ -547,4 +548,5 @@ Export void SignatureImage(Image *image)
   (void) SetImageAttribute(image,"Signature",signature);
   FreeMemory(signature);
   FreeMemory(message);
+  return(True);
 }

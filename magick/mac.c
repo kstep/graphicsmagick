@@ -780,7 +780,7 @@ Export int MACSystemCommand(const char * command)
 %
 %  The format of the MACWarningHandler method is:
 %
-+      void MACWarningHandler(const WarningType warning,const char *message,
++      void MACWarningHandler(const ErrorType warning,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
@@ -794,7 +794,7 @@ Export int MACSystemCommand(const char * command)
 %
 %
 */
-Export void MACWarningHandler(const WarningType warning,const char *message,
+Export void MACWarningHandler(const ErrorType warning,const char *message,
   const char *qualifier)
 {
   char
@@ -1002,6 +1002,8 @@ Export struct dirent *readdir(DIR *entry)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
+%    o error: return any errors or warnings in this structure.
+%
 %
 */
 static Image *ReadPICTImage(const ImageInfo *image_info,ErrorInfo *error)
@@ -1058,14 +1060,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ErrorInfo *error)
     colormap_id;
 
   /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
     Open image file.
   */
+  image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
