@@ -1751,6 +1751,7 @@ MagickExport void GetToken(const char *start,char **end,char *token)
               }
           token[i++]=(*p);
         }
+        Strip(token);
         break;
       }
       default:

@@ -1291,14 +1291,14 @@
         <Message name="UnableToBlurImage">
           unable to blur image
         </Message>
+        <Message name="UnableToCoalesceImage">
+          unable to coalesce image
+        </Message>
         <Message name="UnableToChopImage">
           unable to chop image
         </Message>
         <Message name="UnableToCloneImage">
           unable to clone image
-        </Message>
-        <Message name="UnableToCoalesceImage">
-          unable to coalesce image
         </Message>
         <Message name="UnableToComputeImageSignature">
           unable to compute image signature
@@ -1308,6 +1308,9 @@
         </Message>
         <Message name="UnableToConvertFont">
           unable to convert font
+        </Message>
+        <Message name="UnableToConvertStringToTokens">
+          unable to convert strings to tokens
         </Message>
         <Message name="UnableToCreateColormap">
           Unable to create colormap
