@@ -55,6 +55,7 @@
 #include "studio.h"
 #include "attribute.h"
 #include "blob.h"
+#include "log.h"
 #include "magick.h"
 #include "monitor.h"
 #include "utility.h"
@@ -134,17 +135,24 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  LogMagickEvent(CoderEvent,"(ReadVIDImage) enter");
   image=AllocateImage(image_info);
   list=(char **) AcquireMemory(sizeof(char *));
   if (list == (char **) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    {
+      LogMagickEvent(CoderEvent,"(ReadVIDImage) return");
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    }
   list[0]=(char *) AllocateString((char *) NULL);
   (void) strncpy(list[0],image_info->filename,MaxTextExtent-1);
   number_files=1;
   filelist=list;
   status=ExpandFilenames(&number_files,&filelist);
   if ((status == False) || (number_files == 0))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    {
+      LogMagickEvent(CoderEvent,"(ReadVIDImage) return");
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    }
   DestroyImage(image);
   /*
     Read each image and convert them to a tile.
@@ -159,6 +167,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ( clone_info->size == (char *) NULL )
       CloneString(&clone_info->size,DefaultTileGeometry );
     (void) strncpy(clone_info->filename,filelist[i],MaxTextExtent-1);
+    LogMagickEvent(CoderEvent,"(ReadVIDImage) reading %s", clone_info->filename);
     next_image=ReadImage(clone_info,exception);
     LiberateMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)
@@ -167,33 +176,46 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           x,
           y;
 
-        double
-          scale_factor;
-
         unsigned long
-          height,
-          width;
+          final_height,
+          final_width,
+          sampled_height,
+          sampled_width;
+
+        const double
+          oversample=3,
+          oversample_threshold=2;
+
+        LogMagickEvent(CoderEvent,"(ReadVIDImage) original size %ldx%ld",
+                       next_image->columns, next_image->rows);
 
         (void) SetImageAttribute(next_image,"label",DefaultTileLabel);
-        width=next_image->columns;
-        height=next_image->rows;
-        GetMagickGeometry(clone_info->size,&x,&y,&width,&height);
-        scale_factor=((double) width*height)/
-          ((double) next_image->columns*next_image->rows);
-        if (scale_factor < 0.01)
+        final_width=next_image->columns;
+        final_height=next_image->rows;
+        GetMagickGeometry(clone_info->size,&x,&y,&final_width,&final_height);
+
+        sampled_width=(long)final_width*oversample;
+        sampled_height=(long)final_height*oversample;
+
+        if ( (next_image->columns > (sampled_width*oversample_threshold)) ||
+             (next_image->rows > (sampled_height*oversample_threshold)) )
           {
             Image
               *sample_image;
 
-            sample_image=SampleImage(next_image,5*width,5*height,exception);
+            LogMagickEvent(CoderEvent,"(ReadVIDImage) sampling to %ldx%ld",
+                           (long)sampled_width, (long)sampled_height);
+            sample_image=SampleImage(next_image,(long)sampled_width,
+                                     (long)sampled_height,exception);
             if (sample_image != (Image *) NULL)
               {
                 DestroyImage(next_image);
                 next_image=sample_image;
               }
           }
-        (void) TransformImage(&next_image,(char *) NULL,clone_info->size ==
-          (char *) NULL ? DefaultTileGeometry : clone_info->size);
+        LogMagickEvent(CoderEvent,"(ReadVIDImage) zooming to %ldx%ld",
+                       (long)final_width,(long)final_height);
+        (void) TransformImage(&next_image,(char *) NULL, clone_info->size);
         if (image == (Image *) NULL)
           image=next_image;
         else
@@ -210,20 +232,28 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DestroyImageInfo(clone_info);
   LiberateMemory((void **) &filelist);
   if (image == (Image *) NULL)
-    ThrowReaderException(CorruptImageError,"UnableToReadVIDImage",image);
+    {
+      LogMagickEvent(CoderEvent,"(ReadVIDImage) return");
+      ThrowReaderException(CorruptImageError,"UnableToReadVIDImage",image);
+    }
   while (image->previous != (Image *) NULL)
     image=image->previous;
   /*
     Create the visual image directory.
   */
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
+  LogMagickEvent(CoderEvent,"(ReadVIDImage) creating montage");
   montage_image=MontageImages(image,montage_info,exception);
   DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
-    ThrowReaderException(CorruptImageError,"UnableToReadVIDImage",image);
+    {
+      LogMagickEvent(CoderEvent,"(ReadVIDImage) return");
+      ThrowReaderException(CorruptImageError,"UnableToReadVIDImage",image);
+    }
   DestroyImageList(image);
   LiberateMemory((void **) &list[0]);
   LiberateMemory((void **) &list);
+  LogMagickEvent(CoderEvent,"(ReadVIDImage) return");
   return(montage_image);
 }
 
