@@ -760,7 +760,8 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       Define XPM color.
     */
     image->colormap[i].opacity=OpaqueOpacity;
-    (void) QueryColorname(image,image->colormap+i,X11Compliance,name);
+    (void) QueryColorname(image,image->colormap+i,X11Compliance,name,
+      &image->exception);
     if (transparent)
       {
         if (i == (long) (colors-1))

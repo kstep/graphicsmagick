@@ -52,7 +52,7 @@
 <P>unsigned int  <STRONG>ListColorInfo</STRONG>( 
 <FONT SIZE=-1>FILE</FONT> *file, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>QueryColorDatabase</STRONG>( const char *name, PixelPacket *color );</P>
-<P>unsigned int  <STRONG>QueryColorname</STRONG>( const Image *image, const PixelPacket *color, ComplianceType compliance, char *name );</P>
+<P>unsigned int  <STRONG>QueryColorname</STRONG>( const Image *image, const PixelPacket *color, ComplianceType compliance, char *name, ExceptionInfo *exception );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -86,23 +86,21 @@ This integer returns the number of colors in the list.
 <blockquote>unsigned long GetNumberColors ( const <A HREF="types/Image.html">Image</A> *image, FILE *file, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
-<p><dt><STRONG>number_colors:</STRONG><BR>
-<DD>
-Method GetNumberColors returns the number of unique colors in the specified image.
-<P></P>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
-The address of a byte (8 bits) array of run-length encoded pixel data of your source image.  The sum of the run-length counts in the source image must be equal to or exceed the number of pixels.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_file%3A">file:</A></STRONG><BR>
 <DD>
-An pointer to a 
-<FONT SIZE=-1>FILE.</FONT>  If it is non-null a list of unique pixel field values and the number of times each occurs in the image is written to the file.
+Write a histogram of the color distribution to this file handle.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="isgrayimage">IsGrayImage</A></H2>
-<P>Method IsGrayImage returns True if the image is grayscale otherwise False is returned.</P>
-<P>The format of the IsGrayImage method is:</P>
+<blockquote>IsGrayImage ( ) returns True if all the pixels in the image have the samered, green, and blue intensities.; </blockquote><P>The format of the IsGrayImage method is:</P>
 <blockquote>unsigned int IsGrayImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -114,21 +112,16 @@ Method IsGrayImage returns True if the image is grayscale otherwise False is ret
 <DD>
 The image.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="ismonochromeimage">IsMonochromeImage</A></H2>
-<P>Method IsMonochromeImage returns True if the image is monochrome otherwise False is returned.  If the image is DirectClass and grayscale (including monochrome), it is demoted to PseudoClass.</P>
-<P>The format of the IsMonochromeImage method is:</P>
+<blockquote>IsMonochromeImage ( ) returns True if all the pixels in the image havethe same red, green, and blue intensities and the intensity is either0 or MaxRGB.; </blockquote><P>The format of the IsMonochromeImage method is:</P>
 <blockquote>unsigned int IsMonochromeImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method IsMonochromeImage returns True if the image is monochrome otherwise False is returned.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
@@ -139,8 +132,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="isopaqueimage">IsOpaqueImage</A></H2>
-<P>Method IsOpaqueImage returns False if the image has one or more pixels that are transparent otherwise True is returned.</P>
-<P>The format of the IsOpaqueImage method is:</P>
+<blockquote>IsOpaqueImage ( ) returns True if any of the pixels in the image have anopacity value other than opaque ( 0 ) .; </blockquote><P>The format of the IsOpaqueImage method is:</P>
 <blockquote>unsigned int IsOpaqueImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -177,15 +169,13 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="listcolorinfo">ListColorInfo</A></H2>
-<P>Method ListColorInfo lists the color info to a file.</P>
-<P>The format of the ListColorInfo method is:</P>
+<blockquote>ListColorInfo ( ) lists color names to the specified file. Color names are a convenience. Rather than defining a color by its red, green, andblue intensities just use a color name such as white, blue, or yellow.; </blockquote><P>The format of the ListColorInfo method is:</P>
 <blockquote>unsigned int ListColorInfo ( FILE *file, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
 <p><dt><STRONG>file:</STRONG><BR>
 <DD>
-An pointer to a 
-<FONT SIZE=-1>FILE.</FONT>
+List color names to this file handle.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -193,51 +183,46 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="querycolordatabase">QueryColorDatabase</A></H2>
-<P>Method QueryColorDatabase looks up a 
-<FONT SIZE=-1>RGB</FONT> values for a given color name.</P>
-<P>The format of the QueryColorDatabase method is:</P>
+<blockquote>QueryColorDatabase ( ) returns the red, green, blue, and opacity intensitiesfor a given color name.; </blockquote><P>The format of the QueryColorDatabase method is:</P>
 <blockquote>unsigned int QueryColorDatabase ( const char *name, <A HREF="types/PixelPacket.html">PixelPacket</A> *color ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method QueryColorDatabase returns True if the 
-<FONT SIZE=-1>RGB</FONT> values of the target color is defined, otherwise False is returned.
-<P></P>
 <p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
 <DD>
-Specifies the color to lookup in the 
-<FONT SIZE=-1>X</FONT> color database.
+The color name (e.g.  white, blue, yellow).
 <P></P>
 <p><dt><STRONG><A NAME="item_o_color%3A">color:</A></STRONG><BR>
 <DD>
-
-<FONT SIZE=-1>A</FONT> pointer to an PixelPacket structure.  The 
-<FONT SIZE=-1>RGB</FONT> value of the target color is returned as this value.
+The red, green, blue, and opacity intensities values of the named color in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="querycolorname">QueryColorname</A></H2>
-<P>Method QueryColorname returns the name of the color that is closest to the supplied color in 
-<FONT SIZE=-1>RGB</FONT> space.</P>
+<P><CODE>QueryColorName()</CODE> returns a named color for the given color intensity.  If an exact match is not found, a hex value is return instead.  For example an intensity of rgb:(0,0,0) returns black whereas rgb:(223,223,223) returns #dfdfdf.</P>
 <P>The format of the QueryColorname method is:</P>
-<blockquote>unsigned int QueryColorname ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *color, ComplianceType compliance, char *name ); </blockquote><P>
+<blockquote>unsigned int QueryColorname ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *color, ComplianceType compliance, char *name, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method QueryColorname returns True if the color is matched exactly, otherwise False.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
 <p><dt><STRONG>color:</STRONG><BR>
 <DD>
-This is a pointer to a PixelPacket structure that contains the color we are searching for.
+The color intensities.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_Compliance%3A">Compliance:</A></STRONG><BR>
+<DD>
+Adhere to this color standard: 
+<FONT SIZE=-1>SVG</FONT> or 
+<FONT SIZE=-1>X11.</FONT>
 <P></P>
 <p><dt><STRONG>name:</STRONG><BR>
 <DD>
-The name of the color that is closest to the supplied color is returned in this character buffer.
+Return the color name or hex value.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 </DL></DL>
 
 </BODY>

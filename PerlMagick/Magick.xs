@@ -6412,7 +6412,8 @@ QueryColorname(ref,...)
     for (i=1; i < items; i++)
     {
       (void) QueryColorDatabase(SvPV(ST(i),na),&target_color);
-      (void) QueryColorname(image,&target_color,AllCompliance,message);
+      (void) QueryColorname(image,&target_color,AllCompliance,message,
+        &image->exception);
       PUSHs(sv_2mortal(newSVpv(message,0)));
     }
     SvREFCNT_dec(error_list);

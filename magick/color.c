@@ -156,7 +156,7 @@ static unsigned int
 
 static void
   DestroyColorList(const NodeInfo *),
-  Histogram(const Image *,CubeInfo *,const NodeInfo *,FILE *);
+  Histogram(const Image *,CubeInfo *,const NodeInfo *,FILE *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -646,7 +646,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   }
   if (file != (FILE *) NULL)
     {
-      Histogram(image,cube_info,cube_info->root,file);
+      Histogram(image,cube_info,cube_info->root,file,exception);
       (void) fflush(file);
     }
   number_colors=cube_info->colors;
@@ -670,8 +670,8 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
 %
 %  The format of the Histogram method is:
 %
-%      void Histogram(Image *image,CubeInfo *cube_info,
-%        const NodeInfo *node_info,FILE *file)
+%      void Histogram(const Image *image,CubeInfo *cube_info,
+%        const NodeInfo *node_info,FILE *file,ExceptionInfo *exception
 %
 %  A description of each parameter follows.
 %
@@ -683,7 +683,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
 %
 */
 static void Histogram(const Image *image,CubeInfo *cube_info,
-  const NodeInfo *node_info,FILE *file)
+  const NodeInfo *node_info,FILE *file,ExceptionInfo *exception)
 {
 #define HistogramImageText  "  Compute image histogram...  "
 
@@ -695,7 +695,7 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
   */
   for (id=0; id < 8; id++)
     if (node_info->child[id] != (NodeInfo *) NULL)
-      Histogram(image,cube_info,node_info->child[id],file);
+      Histogram(image,cube_info,node_info->child[id],file,exception);
   if (node_info->level == MaxTreeDepth)
     {
       char
@@ -719,7 +719,7 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
         color.red=p->red;
         color.green=p->green;
         color.blue=p->blue;
-        (void) QueryColorname(image,&color,AllCompliance,name);
+        (void) QueryColorname(image,&color,AllCompliance,name,exception);
         (void) fprintf(file,"%.1024s",name);
         (void) fprintf(file,"\n");
         p++;
@@ -1093,7 +1093,9 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ListColorInfo lists the color info to a file.
+%  ListColorInfo() lists color names to the specified file.  Color names 
+%  are a convenience.  Rather than defining a color by its red, green, and
+%  blue intensities just use a color name such as white, blue, or yellow.
 %
 %  The format of the ListColorInfo method is:
 %
@@ -1101,7 +1103,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
 %
 %  A description of each parameter follows.
 %
-%    o file:  An pointer to a FILE.
+%    o file:  List color names to this file handle.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -1161,7 +1163,8 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method QueryColorDatabase looks up a RGB values for a given color name.
+%  QueryColorDatabase() returns the red, green, blue, and opacity intensities
+%  for a given color name.
 %
 %  The format of the QueryColorDatabase method is:
 %
@@ -1169,13 +1172,10 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method QueryColorDatabase returns True if the RGB values
-%      of the target color is defined, otherwise False is returned.
+%    o name: The color name (e.g. white, blue, yellow).
 %
-%    o name: Specifies the color to lookup in the X color database.
-%
-%    o color: A pointer to an PixelPacket structure.  The RGB value of the
-%      target color is returned as this value.
+%    o color: The red, green, blue, and opacity intensities values of the
+%      named color in this structure.
 %
 %
 */
@@ -1327,42 +1327,39 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method QueryColorname returns the name of the color that is closest to the
-%  supplied color in RGB space.
+%  QueryColorname() returns a named color for the given color intensity.  If
+%  an exact match is not found, a hex value is return instead.  For example
+%  an intensity of rgb:(0,0,0) returns black whereas rgb:(223,223,223)
+%  returns #dfdfdf.
 %
 %  The format of the QueryColorname method is:
 %
 %      unsigned int QueryColorname(const Image *image,const PixelPacket *color,
-%        ComplianceType compliance,char *name)
+%        ComplianceType compliance,char *name,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
-%    o status: Method QueryColorname returns True if the color is matched
-%      exactly, otherwise False.
-%
 %    o image: The image.
 %
-%    o color: This is a pointer to a PixelPacket structure that contains the
-%      color we are searching for.
+%    o color: The color intensities.
 %
-%    o name: The name of the color that is closest to the supplied color is
-%      returned in this character buffer.
+%    o Compliance: Adhere to this color standard: SVG or X11.
+%
+%    o name: Return the color name or hex value.
+%
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
 MagickExport unsigned int QueryColorname(const Image *image,
-  const PixelPacket *color,const ComplianceType compliance,char *name)
+  const PixelPacket *color,const ComplianceType compliance,char *name,
+  ExceptionInfo *exception)
 {
-
-  ExceptionInfo
-    exception;
-
   register const ColorInfo
     *p;
 
   *name='\0';
-  GetExceptionInfo(&exception);
-  p=GetColorInfo("*",&exception);
+  p=GetColorInfo("*",exception);
   if (p != (const ColorInfo *) NULL)
     {
       double
