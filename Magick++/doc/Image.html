@@ -46,7 +46,7 @@ name or add the statement "<tt>using namespace Magick;</tt>" after including
 the <tt>Magick++.h </tt>header.
 <p>Image is very easy to use. For example, here is a the source to a program
 which reads an image, crops it, and writes it to a new file (the exception
-handling is optional):
+handling is optional but strongly recommended):
 <blockquote><tt><font color="#000066">#include &lt;Magick++.h></font></tt>
 <br><tt><font color="#000066">#include &lt;iostream></font></tt>
 <br><tt><font color="#000066">using namespace std;</font></tt>
@@ -60,8 +60,10 @@ and read an image</font></tt>
 );</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Crop the image to specified
 size</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // (Geometry implicitly
+initialized by char *)</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.crop("100x100+100+100"
-); // Geometry implicitly initialized by char *</font></tt>
+);</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Write the image to a
 file</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.write( "x.gif" );</font></tt>
@@ -75,8 +77,9 @@ file</font></tt>
 <br><tt><font color="#000066">&nbsp; return 0;</font></tt>
 <br><tt><font color="#000066">}</font></tt></blockquote>
 The following is the source to a program which illustrates the use of Magick++'s
-efficient reference-counted assignment and copy-constructor operation which
-minimizes use of memory and eliminates unncessary copy operations.&nbsp;
+efficient reference-counted assignment and copy-constructor operations
+which minimize use of memory and eliminate unncessary copy operations (allowing
+Image objects to be efficiently assigned, and copied into containers).&nbsp;
 The program accomplishes the following:
 <ol>
 <li>
@@ -107,18 +110,16 @@ Write the third image to a file.</li>
 <br><tt><font color="#000066">using namespace Magick;</font></tt>
 <br><tt><font color="#000066">int main(int argc,char **argv)</font></tt>
 <br><tt><font color="#000066">{</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Magick::Image master("horse.jpg");</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Magick::Image second =
-master;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image master("horse.jpg");</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image second = master;</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; second.zoom("640x480");</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Magick::Image third =
-master;</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image third = master;</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; third.zoom("800x600");</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; second.write("horse640x480.jpg");</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; third.write("horse800x600.jpg");</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; return 0;</font></tt>
 <br><tt><font color="#000066">}</font></tt></blockquote>
-During the entire operation, a maximum of three images exists in memory
+During the entire operation, a maximum of three images exist in memory
 and the image data is never copied.
 <p>The following is the source for another simple program which creates
 a 100 by 100 pixel white image with a red pixel in the center and writes
@@ -181,19 +182,21 @@ format) here ]</font></tt>
 
 <p><br>likewise, to read an image from a Blob, you could use one of the
 following examples:
-<p>[ Entry condition for the following examples is that <i>data</i> is
-pointer to encoded image data and <i>length</i> represents the size of
-the data ]
+<p>[ <font color="#000000">Entry condition for the following examples is
+that <i>data</i> is pointer to encoded image data and <i>length</i> represents
+the size of the data</font> ]
 <blockquote><tt><font color="#000066">Blob blob( data, length );</font></tt>
 <br><tt><font color="#000066">Image image( blob );</font></tt></blockquote>
 or
 <blockquote><tt><font color="#000066">Blob blob( data, length );</font></tt>
 <br><tt><font color="#000066">Image image;</font></tt>
 <br><tt><font color="#000066">image.read( blob);</font></tt></blockquote>
-some images do not contain their size so the size must be specified seperately:
+some images do not contain their size or format so the size and format
+must be specified in advance:
 <blockquote><tt><font color="#000066">Blob blob( data, length );</font></tt>
 <br><tt><font color="#000066">Image image;</font></tt>
 <br><tt><font color="#000066">image.size( "640x480")</font></tt>
+<br><tt><font color="#000066">image.magick( "RGBA" );</font></tt>
 <br><tt><font color="#000066">image.read( blob);</font></tt></blockquote>
 
 <center>
@@ -240,41 +243,47 @@ color</font></td>
 
 <td ROWSPAN="5" NOSAVE><font size=-1>Construct Image by reading from encoded
 image data contained in an in-memory <a href="Blob.html">BLOB</a>. Depending
-on the constructor arguments, the Blob size, depth, and format may also
-be specified. Some image formats require that size be specified. The default
-ImageMagick uses for depth depends on the Quantum size (8 or 16).&nbsp;
-If ImageMagick's Quantum size does not match that of the image, the depth
-may need to be specified. ImageMagick can usually automatically detect
-the image's format. When a format can't be automatically detected, the
-format must be specified.</font></td>
+on the constructor arguments, the Blob <a href="#size">size</a>, <a href="#depth">depth</a>,
+<a href="#magick">magick</a> (format) may also be specified. Some image
+formats require that size be specified. The default ImageMagick uses for
+depth depends on the compiled-in Quantum size (8 or 16).&nbsp; If ImageMagick's
+Quantum size does not match that of the image, the depth may need to be
+specified. ImageMagick can usually automatically detect the image's format.
+When a format can't be automatically detected, the format (<a href="#magick">magick</a>)
+must be specified.</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>const Blob &amp;blob_, const Geometry &amp;size_</font></td>
+<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
+<a href="Geometry.html">Geometry</a> &amp;size_</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>const Blob &amp;blob_, const Geometry &amp;size, unsigned
-int depth</font></td>
+<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
+<a href="Geometry.html">Geometry</a> &amp;size, unsigned int depth</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>const Blob &amp;blob_, const Geometry &amp;size, unsigned
-int depth_, const string &amp;magick_</font></td>
-</tr>
-
-<tr>
-<td><font size=-1>const Blob &amp;blob_, const Geometry &amp;size, const
+<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
+<a href="Geometry.html">Geometry</a> &amp;size, unsigned int depth_, const
 string &amp;magick_</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
+<a href="Geometry.html">Geometry</a> &amp;size, const string &amp;magick_</font></td>
 </tr>
 </table>
 
 <center>
 <h3>
 <a NAME="Image Manipulation Methods"></a>Image Manipulation Methods</h3></center>
-Image supports access to all the single-image (versus image-list) manipulation
-operations provided by the ImageMagick library. These operations are shown
-in the following table:
+<i>Image</i> supports access to all the single-image (versus image-list)
+manipulation operations provided by the ImageMagick library. If you must
+process a multi-image file (such as an animation), the <a href="STL.html">STL
+interface</a>, which provides a multi-image abstraction on top of <i>Image</i>,
+must be used.
+<p>The operations supported by Image are shown in the following table:
 <br>&nbsp;
 <table BORDER NOSAVE >
 <caption>Image Image Manipulation Methods</caption>
