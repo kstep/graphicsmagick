@@ -1179,11 +1179,12 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if (image->units == PixelsPerCentimeterResolution)
         jpeg_info.density_unit=2;
     }
-  for (i=0; i < MAX_COMPONENTS; i++)
-  {
-    jpeg_info.comp_info[i].h_samp_factor=1;
-    jpeg_info.comp_info[i].v_samp_factor=1;
-  }
+  if (image_info->quality >= 75)
+    for (i=0; i < MAX_COMPONENTS; i++)
+    {
+      jpeg_info.comp_info[i].h_samp_factor=1;
+      jpeg_info.comp_info[i].v_samp_factor=1;
+    }
   jpeg_info.dct_method=JDCT_FLOAT;
   jpeg_info.optimize_coding=True;
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
