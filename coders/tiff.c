@@ -1467,7 +1467,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               {
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
                 photometric=PHOTOMETRIC_MINISBLACK;
-                if (IsMonochromeImage(image,&image->exception))
+                if ((image->storage_class == PseudoClass) &&
+                    IsMonochromeImage(image,&image->exception))
                   {
                     (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);
                     photometric=PHOTOMETRIC_MINISWHITE;
