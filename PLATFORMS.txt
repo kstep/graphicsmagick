@@ -8,12 +8,13 @@ SGI Irix
 
   Problem
 
-    How to successfully configure ImageMagick using SGI' commercial
+    How to successfully configure ImageMagick using SGI's commercial
     compiler (e.g. IRIX C/C++ v7.3.1.X)?
 
   Indications
 
-    None
+    Compiling C++ code fails with the error:
+    #error directive:  This header file requires the -LANG:std option
 
   Solution
 
