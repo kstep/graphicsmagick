@@ -1037,6 +1037,7 @@ MagickExport Image *XAnimateImages(Display *display,
 
   long
     first_scene,
+    iterations,
     scene;
 
   KeySym
@@ -1724,6 +1725,7 @@ MagickExport Image *XAnimateImages(Display *display,
   nexus=(Image *) NULL;
   scene=0;
   first_scene=0;
+  iterations=0;
   image=image_list[0];
   state=ForwardAnimationState | RepeatAnimationState;
   (void) XMagickCommand(display,resource_info,windows,PlayCommand,&images,
@@ -1741,18 +1743,26 @@ MagickExport Image *XAnimateImages(Display *display,
               if (scene < ((long) number_scenes-1))
                 scene++;
               else
-                if (state & AutoReverseAnimationState)
-                  {
-                    state&=(~ForwardAnimationState);
-                    scene--;
-                  }
-                else
-                  {
-                    if (!(state & RepeatAnimationState))
-                      state&=(~PlayAnimationState);
-                    scene=first_scene;
-                    (void) sleep(resource_info->pause);
-                  }
+                {
+                  iterations++;
+                  if (iterations == image_list[0]->iterations)
+                    {
+                      iterations=0;
+                      state&=(~RepeatAnimationState);
+                    }
+                  if (state & AutoReverseAnimationState)
+                    {
+                      state&=(~ForwardAnimationState);
+                      scene--;
+                    }
+                  else
+                    {
+                      if (!(state & RepeatAnimationState))
+                        state&=(~PlayAnimationState);
+                      scene=first_scene;
+                      (void) sleep(resource_info->pause);
+                    }
+                }
             }
           else
             {
@@ -1762,18 +1772,26 @@ MagickExport Image *XAnimateImages(Display *display,
               if (scene > first_scene)
                 scene--;
               else
-                if (state & AutoReverseAnimationState)
-                  {
-                    state|=ForwardAnimationState;
-                    scene=first_scene;
-                    (void) sleep(resource_info->pause);
-                  }
-                else
-                  {
-                    if (!(state & RepeatAnimationState))
-                      state&=(~PlayAnimationState);
-                    scene=(long) number_scenes-1;
-                  }
+                {
+                  iterations++;
+                  if (iterations == image_list[0]->iterations)
+                    {
+                      iterations=0;
+                      state&=(~RepeatAnimationState);
+                    }
+                  if (state & AutoReverseAnimationState)
+                    {
+                      state|=ForwardAnimationState;
+                      scene=first_scene;
+                      (void) sleep(resource_info->pause);
+                    }
+                  else
+                    {
+                      if (!(state & RepeatAnimationState))
+                        state&=(~PlayAnimationState);
+                      scene=(long) number_scenes-1;
+                    }
+                }
             }
           image=image_list[scene];
           if ((image != (Image *) NULL) && image->start_loop)
