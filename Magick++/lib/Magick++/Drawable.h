@@ -523,6 +523,32 @@ namespace Magick
     /*virtual*/ DrawableBase* copy() const;
   };
 
+  // Apply Skew in X direction
+  class DrawableSkewX : public DrawableAffine
+  {
+  public:
+    DrawableSkewX ( double angle_ );
+
+    // Support a polymorphic print-to-stream operator
+    /*virtual*/ void print (ostream& stream_) const;
+
+    // Return polymorphic copy of object
+    /*virtual*/ DrawableBase* copy() const;
+  };
+
+  // Apply Skew in Y direction
+  class DrawableSkewY : public DrawableAffine
+  {
+  public:
+    DrawableSkewY ( double angle_ );
+
+    // Support a polymorphic print-to-stream operator
+    /*virtual*/ void print (ostream& stream_) const;
+
+    // Return polymorphic copy of object
+    /*virtual*/ DrawableBase* copy() const;
+  };
+
   // Stroke color
   class DrawableStrokeColor : public DrawableBase
   {

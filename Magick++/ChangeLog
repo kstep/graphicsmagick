@@ -1,3 +1,8 @@
+2000-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableSkewX): New object to apply skew in X direction.
+	(DrawableSkewY): New object to apply skew in Y direction.
+
 2000-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (edge): Change argument from 'unsigned int' to

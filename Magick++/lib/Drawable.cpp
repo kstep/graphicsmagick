@@ -768,6 +768,44 @@ Magick::DrawableBase* Magick::DrawableScaling::copy() const
   return new DrawableScaling(*this);
 }
 
+// Apply Skew in the X direction
+Magick::DrawableSkewX::DrawableSkewX ( double angle_ )
+  : DrawableAffine( 1.0, 1.0,
+                    0, tan(DegreesToRadians(fmod(angle_,360.0))),
+                    0, 0 )
+{
+  // FIXME, should be based on defaults from ImageInfo?
+}
+// Support a polymorphic print-to-stream operator
+void Magick::DrawableSkewX::print (ostream& stream_) const
+{
+  DrawableAffine::print( stream_ );
+}
+// Return polymorphic copy of object
+Magick::DrawableBase* Magick::DrawableSkewX::copy() const
+{
+  return new DrawableSkewX(*this);
+}
+
+// Apply Skew in the Y direction
+Magick::DrawableSkewY::DrawableSkewY ( double angle_ )
+  : DrawableAffine( 1.0, 1.0,
+                    tan(DegreesToRadians(fmod(angle_,360.0))),0,
+                    0, 0 )
+{
+  // FIXME, should be based on defaults from ImageInfo?
+}
+// Support a polymorphic print-to-stream operator
+void Magick::DrawableSkewY::print (ostream& stream_) const
+{
+  DrawableAffine::print( stream_ );
+}
+// Return polymorphic copy of object
+Magick::DrawableBase* Magick::DrawableSkewY::copy() const
+{
+  return new DrawableSkewY(*this);
+}
+
 // Stroke color
 Magick::DrawableStrokeColor::DrawableStrokeColor ( const Magick::Color &color_ )
   : _color(color_)
