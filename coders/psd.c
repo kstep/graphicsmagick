@@ -513,7 +513,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   length=ReadBlobMSBLong(image);
   if (length == 8)
     length=ReadBlobMSBLong(image);
-  if (length != 0)
+  if (length == 0)
+    length=ReadBlobMSBLong(image);
+  else
     {
       /*
         Layer and mask block.
@@ -644,7 +646,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               layer_info[i].image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(layer_info[i].image);
             (void) ReadBlob(layer_info[i].image,packet_size*
               layer_info[i].image->columns,(char *) scanline);
             indexes=GetIndexes(layer_info[i].image);
@@ -812,12 +813,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            long
-              channel;
-
             pixel=scanline[x];
-            channel=i;
-            switch (image->matte ? channel-1 : channel)
+            switch (image->matte ? i-1 : i)
             {
               case -1:
               {
@@ -890,11 +887,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!SyncImagePixels(image))
           break;
       }
-    }
-  if (number_layers > 0)
-    {
-      image->next=layer_info[0].image;
-      LiberateMemory((void **) &layer_info);
     }
   CloseBlob(image);
   return(image);
@@ -1078,7 +1070,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   if (image->storage_class == PseudoClass)
     for (y=0; y < (long) image->rows; y++)
     {
-      if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+      if (!GetImagePixels(image,0,y,image->columns,1))
         break;
       if (!image->matte)
         (void) PopImagePixels(image,IndexQuantum,pixels);
@@ -1091,21 +1083,21 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
       packet_size=image->depth > 8 ? 2 : 1;
       for (y=0; y < (long) image->rows; y++)
       {
-        if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+        if (!GetImagePixels(image,0,y,image->columns,1))
           break;
         (void) PopImagePixels(image,RedQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       for (y=0; y < (long) image->rows; y++)
       {
-        if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+        if (!GetImagePixels(image,0,y,image->columns,1))
           break;
         (void) PopImagePixels(image,GreenQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       for (y=0; y < (long) image->rows; y++)
       {
-        if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+        if (!GetImagePixels(image,0,y,image->columns,1))
           break;
         (void) PopImagePixels(image,BlueQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
@@ -1113,7 +1105,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
       if (image->colorspace == CMYKColorspace)
         for (y=0; y < (long) image->rows; y++)
         {
-          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+          if (!GetImagePixels(image,0,y,image->columns,1))
             break;
           (void) PopImagePixels(image,BlackQuantum,pixels);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
@@ -1121,7 +1113,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
       if (image->matte)
         for (y=0; y < (long) image->rows; y++)
         {
-          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+          if (!GetImagePixels(image,0,y,image->columns,1))
             break;
           (void) PopImagePixels(image,AlphaQuantum,pixels);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
