@@ -5907,7 +5907,7 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
     {
       if (image->colorspace == CMYKColorspace)
         {
-	  indexes[x]=opacity;
+          indexes[x]=opacity;
           continue;
         }
       q->opacity=opacity;
