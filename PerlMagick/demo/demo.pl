@@ -142,7 +142,7 @@ $example->MedianFilter();
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Modulate');
-$example->Modulate(brightness=>-3,saturation=>-3,hue=>-3);
+$example->Modulate(brightness=>110,saturation=>110,hue=>110);
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Monochrome');

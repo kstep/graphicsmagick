@@ -4,30 +4,31 @@
 #ifndef _MAGICK_H
 #define _MAGICK_H
 
-#define __EXTENSIONS__  1
-#define _POSIX_C_SOURCE  199506L
-#define _XOPEN_SOURCE  500
-#define _XOPEN_SOURCE_EXTENDED  1
-
 /*
   System include declarations.
 */
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-
-#if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
-#define fseek  fseeko
-#define ftell  ftello
-#endif
 
 #if defined(_VISUALC_)
 #  include <direct.h>
 #  define HAVE_STRERROR
 #else
 #  include <unistd.h>
+#endif
+
+#define __EXTENSIONS__  1
+#define _POSIX_C_SOURCE  199506L
+#define _XOPEN_SOURCE  500
+#define _XOPEN_SOURCE_EXTENDED  1
+
+#include <stdarg.h>
+#include <string.h>
+
+#if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
+#define fseek  fseeko
+#define ftell  ftello
 #endif
 
 #include <ctype.h>

@@ -1374,7 +1374,8 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
       /*
         Allocate pixel cache.
       */
-      status=OpenCache(image->cache,image->storage_class,image->columns,image->rows);
+      status=
+        OpenCache(image->cache,image->storage_class,image->columns,image->rows);
       if (status == False)
         {
           ThrowException(&image->exception,CacheWarning,

@@ -98,7 +98,7 @@ MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  alpha=0.500000000001;
+  alpha=0.5;
   brightness+=alpha*sign*(alpha*(sin(M_PI*(brightness-alpha))+1.0)-brightness);
   if (brightness > 1.0)
     brightness=1.0;

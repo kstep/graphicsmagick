@@ -4925,13 +4925,13 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       {
         x_map[i+X]=0.299*i;
         y_map[i+X]=0.587*i;
-        z_map[i+X]=0.1140000000000001*i;
+        z_map[i+X]=0.114*i;
         x_map[i+Y]=0.299*i;
         y_map[i+Y]=0.587*i;
-        z_map[i+Y]=0.1140000000000001*i;
+        z_map[i+Y]=0.114*i;
         x_map[i+Z]=0.299*i;
         y_map[i+Z]=0.587*i;
-        z_map[i+Z]=0.1140000000000001*i;
+        z_map[i+Z]=0.114*i;
       }
       break;
     }
@@ -5043,7 +5043,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       {
         x_map[i+X]=0.299*i;
         y_map[i+X]=0.587*i;
-        z_map[i+X]=0.1140000000000001*i;
+        z_map[i+X]=0.114*i;
         x_map[i+Y]=(-0.16873)*i;
         y_map[i+Y]=(-0.331264)*i;
         z_map[i+Y]=0.500000*i;
@@ -5110,7 +5110,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       {
         x_map[i+X]=0.299*i;
         y_map[i+X]=0.587*i;
-        z_map[i+X]=0.1140000000000001*i;
+        z_map[i+X]=0.114*i;
         x_map[i+Y]=0.596*i;
         y_map[i+Y]=(-0.274)*i;
         z_map[i+Y]=(-0.322)*i;
@@ -5138,7 +5138,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       {
         x_map[i+X]=0.299*i;
         y_map[i+X]=0.587*i;
-        z_map[i+X]=0.1140000000000001*i;
+        z_map[i+X]=0.114*i;
         x_map[i+Y]=(-0.168736)*i;
         y_map[i+Y]=(-0.331264)*i;
         z_map[i+Y]=0.5*i;
@@ -5167,7 +5167,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       {
         x_map[i+X]=0.299*i;
         y_map[i+X]=0.587*i;
-        z_map[i+X]=0.1140000000000001*i;
+        z_map[i+X]=0.114*i;
         x_map[i+Y]=(-0.1474)*i;
         y_map[i+Y]=(-0.2895)*i;
         z_map[i+Y]=0.4369*i;

@@ -56,6 +56,13 @@
 #include "defines.h"
 
 /*
+  Define declarations.
+*/
+#define RIFF_RIFF 0x52494646
+#define RIFF_LIST 0x4C495354
+#define RIFF_movi 0x6D6F7669
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -128,11 +135,22 @@ static unsigned int IsAVI(const unsigned char *magick,
 */
 static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  char
+    id[5];
+
   Image
     *image;
 
+  off_t
+    chunk_size,
+    movi_offset,
+    riff_size;
+
   unsigned int
     status;
+
+  unsigned long
+    use_index_flag;
 
   /*
     Open image file.
@@ -141,8 +159,65 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  ThrowReaderException(CorruptImageWarning,"AVI support not yet available",
-    image);
+  id[4]='\0';
+  movi_offset=0;
+  riff_size=1;
+  use_index_flag=False;
+  while ((riff_size > 0) && !EOFBlob(image))
+  {
+    (void) ReadBlob(image,4,id);
+    chunk_size=LSBFirstReadLong(image);
+    riff_size-=8;
+    if (image_info->verbose)
+      {
+        (void) fprintf(stdout,"AVI cid %s\n",id);
+        (void) fprintf(stdout,"  chunk size %08llx\n",chunk_size);
+      }
+    if (LocaleCompare(id,"RIFF") == 0)
+      {
+        (void) ReadBlob(image,4,id);
+        riff_size=2*chunk_size-4;
+        if (image_info->verbose)
+          (void) fprintf(stdout,"  RIFF form type %s\n",id);
+        continue;
+      }
+    if (LocaleCompare(id,"LIST") == 0)
+      {
+        (void) ReadBlob(image,4,id);
+        if ((LocaleCompare(id,"movi") == 0) || !use_index_flag)
+          riff_size+=(chunk_size-4);  /* don't count LISTs */
+        else
+          {
+            off_t
+              offset;
+
+            movi_offset=TellBlob(image)-4;
+            (void) SeekBlob(image,0,SEEK_END);
+            offset=TellBlob(image);
+            if (image_info->verbose)
+              (void) fprintf(stdout,
+                "movi LIST: eof %d movi_offset %d ck_size %d\n",
+                offset,movi_offset,chunk_size);
+            if (offset >= (movi_offset+chunk_size))
+              {
+                if (chunk_size & 0x01)
+                  chunk_size++;
+                (void) SeekBlob(image,movi_offset+chunk_size,SEEK_SET);
+              }
+            else
+              {
+                use_index_flag=False;
+                (void) SeekBlob(image,movi_offset+4,SEEK_SET);
+                riff_size+=chunk_size-4;
+              }
+          }
+        if (image_info->verbose)
+          (void) fprintf(stdout,"  List type %s\n",id);
+        continue;
+      }
+    ThrowReaderException(CorruptImageWarning,
+      "AVI support for this chunk not yet available",image);
+  }
   CloseBlob(image);
   return(image);
 }

@@ -1365,8 +1365,7 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
           */
           factor=1.0;
           if (distance > 0.0)
-            factor=
-              pow(sin(0.5000000000000001*M_PI*sqrt(distance)/radius),-amount);
+            factor=pow(sin(0.5*M_PI*sqrt(distance)/radius),-amount);
           *q=InterpolateColor(image,factor*x_distance/x_scale+x_center,
             factor*y_distance/y_scale+y_center);
         }

@@ -867,7 +867,7 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
       SetImageInfo(image_info,True);
       exempt=(LocaleCompare(image_info->magick,"VID") == 0) ||
         (image_info->subimage &&
-         (LocaleCompare(expression,image_info->filename) == 0));
+        (LocaleCompare(expression,image_info->filename) == 0));
       DestroyImageInfo(image_info);
       if (exempt)
         return(False);
