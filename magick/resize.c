@@ -1072,7 +1072,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (image->filter != UndefinedFilter)
     i=(long) image->filter;
   else
-    if ((x_factor*y_factor) > 1.0)
+    if ((image->storage_class == PseudoClass) || image->matte ||
+        ((x_factor*y_factor) > 1.0))
       i=(long) MitchellFilter;
   x_support=blur*Max(1.0/x_factor,1.0)*filters[i].support;
   y_support=blur*Max(1.0/y_factor,1.0)*filters[i].support;
