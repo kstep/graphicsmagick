@@ -242,9 +242,9 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ColorFloodfill() changes the color value of any pixel that matches
-%  target and is an immediate neighbor.  If the method is
-%  FillToBorderMethod is specified, the color value is changed for any
-%  neighbor pixel that does not match the bordercolor member of image.
+%  target and is an immediate neighbor.  If the method FillToBorderMethod is
+%  specified, the color value is changed for any neighbor pixel that does not
+%  match the bordercolor member of image.
 %
 %  By default target must match a particular pixel color exactly.
 %  However, in many cases two colors may differ by a small amount.  The
@@ -1412,11 +1412,11 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawImage() allows you to draw a graphic primitive on your image.  The
-%  primitive may be represented as a string or filename.  Precede the
-%  filename with an ampersand (@) and the contents of the file are drawn
-%  on the image.  image.   You can affect how text is drawn by setting one
-%  or more members of the draw info structure.
+%  Use DrawImage() to draw a graphic primitive on your image.  The primitive
+%  may be represented as a string or filename.  Precede the filename with an
+%  ampersand (@) and the contents of the file are drawn on the image.  You can
+%  affect how text is drawn by setting one or more members of the draw info
+%  structure.
 %
 %  The format of the DrawImage method is:
 %
