@@ -2713,7 +2713,8 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   if (image->matte)
     normalize=4.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
   image->error.mean_error_per_pixel=total_error/image->columns/image->rows;
-  image->error.normalized_mean_error=error->mean_error_per_pixel/normalize;
+  image->error.normalized_mean_error=
+    image->error.mean_error_per_pixel/normalize;
   image->error.normalized_maximum_error=maximum_error_per_pixel/normalize;
   return(image->error.normalized_mean_error == 0.0);
 }
