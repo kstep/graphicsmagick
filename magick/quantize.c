@@ -353,12 +353,14 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
     index;
 
   int
+    count,
     y;
 
   register IndexPacket
     *indexes;
 
   register int
+    i,
     x;
 
   register const NodeInfo
@@ -403,11 +405,14 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (int) image->columns; x+=count)
       {
         /*
           Identify the deepest node containing the pixel's color.
         */
+        for (count=1; (x+count) < (int) image->columns; count++)
+          if (!ColorMatch(*q,*(q+count),0))
+            break;
         node_info=cube_info->root;
         for (index=MaxTreeDepth-1; (int) index > 0; index--)
         {
@@ -427,15 +432,18 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
         cube_info->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
         ClosestColor(cube_info,node_info->parent);
         index=cube_info->color_number;
-        if (image->storage_class == PseudoClass)
-          indexes[x]=index;
-        if (!cube_info->quantize_info->measure_error)
-          {
-            q->red=image->colormap[index].red;
-            q->green=image->colormap[index].green;
-            q->blue=image->colormap[index].blue;
-          }
-        q++;
+        for (i=0; i < count; i++)
+        {
+          if (image->storage_class == PseudoClass)
+            indexes[x+i]=index;
+          if (!cube_info->quantize_info->measure_error)
+            {
+              q->red=image->colormap[index].red;
+              q->green=image->colormap[index].green;
+              q->blue=image->colormap[index].blue;
+            }
+          q++;
+        }
       }
       if (!SyncImagePixels(image))
         break;
@@ -539,6 +547,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
     mid_blue;
 
   int
+    count,
     y;
 
   NodeInfo
@@ -573,11 +582,14 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
         PruneLevel(cube_info,cube_info->root);
         cube_info->depth--;
       }
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (int) image->columns; x+=count)
     {
       /*
         Start at the root and descend the color cube tree.
       */
+      for (count=1; (x+count) < (int) image->columns; count++)
+        if (!ColorMatch(*p,*(p+count),0))
+          break;
       index=MaxTreeDepth-1;
       bisect=(MaxRGB+1.0)/2.0;
       mid_red=MaxRGB/2.0;
@@ -613,18 +625,19 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
         red=(double) p->red-mid_red;
         green=(double) p->green-mid_green;
         blue=(double) p->blue-mid_blue;
-        node_info->quantize_error+=red*red+green*green+blue*blue;
+        node_info->quantize_error+=
+          count*red*red+count*green*green+count*blue*blue;
         cube_info->root->quantize_error+=node_info->quantize_error;
         index--;
       }
       /*
         Sum RGB for this leaf for later derivation of the mean cube color.
       */
-      node_info->number_unique++;
-      node_info->total_red+=p->red;
-      node_info->total_green+=p->green;
-      node_info->total_blue+=p->blue;
-      p++;
+      node_info->number_unique+=count;
+      node_info->total_red+=count*p->red;
+      node_info->total_green+=count*p->green;
+      node_info->total_blue+=count*p->blue;
+      p+=count;
     }
     if (QuantumTick(y,image->rows))
       MagickMonitor(ClassifyImageText,y,image->rows);
