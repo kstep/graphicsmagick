@@ -143,7 +143,6 @@ static unsigned int
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *);
 
 static void
-  DrawBoundingRectangles(Image *,const DrawInfo *,const PolygonInfo *),
   TraceSquareLinecap(PrimitiveInfo *,const unsigned long,const double);
 
 /*
@@ -3590,6 +3589,8 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   LiberateMemory((void **) &path_info);
   if (polygon_info == (PolygonInfo *) NULL)
     return(False);
+  if (0)
+    DrawBoundingRectangles(image,draw_info,polygon_info);
   LogMagickEvent(RenderEvent,"    begin draw-polygon");
   fill=(primitive_info->method == FillToBorderMethod) ||
     (primitive_info->method == FloodfillMethod);
