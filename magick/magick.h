@@ -45,6 +45,7 @@
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #  include <sys/types.h>
 #  include <sys/stat.h>
+#  include <sys/time.h>
 #  include <sys/times.h>
 #if defined(HAVE_CONFIG_H)
 #  include "magick/config.h"
