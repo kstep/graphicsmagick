@@ -212,7 +212,7 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
   register MagicInfo
     *p;
 
-  register int
+  register size_t
     i;
 
   if (file == (const FILE *) NULL)
