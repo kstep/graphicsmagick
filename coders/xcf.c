@@ -984,6 +984,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	} else if ( image_type == GIMP_INDEXED )
 		ThrowReaderException(FileOpenWarning,"Indexed colors not currently supported",image);
 	SetImage(image,OpaqueOpacity);	/* until we know otherwise...*/
+	image->matte=True;	/* XCF always has a matte! */
 
 
   /* read properties */
