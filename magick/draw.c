@@ -1236,9 +1236,7 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info,
   attribute=GetImageAttribute(image,clip_path);
   if (attribute == (ImageAttribute *) NULL)
     return(False);
-  if (image->clip_mask != (Image *) NULL)
-    ModifyImage(&image->clip_mask,&image->exception);
-  else
+  if (image->clip_mask == (Image *) NULL)
     {
       Image
         *clip_mask;
