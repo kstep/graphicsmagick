@@ -1,4 +1,5 @@
 .TH montage 1 "Date: 2002/01/01 01:00:00" "ImageMagick"
+<title>Montage</title>
 .SH NAME
 
 montage - create a composite image by combining several separate images
@@ -1245,6 +1246,9 @@ images (i.e. a multi-page PostScript document with \fB+adjoin\fP specified)
 are written with the filename followed by a period (\fB.\fP) and the scene
 number. You can change this behavior by embedding a \fBprintf\fP format
 specification in the file name. For example,
+
+    image%02d.miff
+
 montages files image00.miff, image01.miff, etc.
 
 Prepend an at sign @ to a filename to read a list of image

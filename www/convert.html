@@ -24,6 +24,7 @@
 <center>
 <img SRC="../images/magick_small.png" alt="" width=114 height=118>
 </center>
+<br>&nbsp;<br>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
 <td ALIGN=LEFT BGCOLOR="#52799E"><img 
@@ -36,7 +37,7 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 convert - convert an image or sequence of images
-</p>
+<br>&nbsp;<br>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -93,7 +94,7 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 <strong>convert</strong> <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>input_file output_file</em>
-</p>
+<br>&nbsp;<br>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -110,7 +111,7 @@ color="#FFFFFF"><font size="+1">
 file with a differing image format. In addition, various types of image
 processing can be performed on the converted image during the conversion
 process. <strong>Convert</strong> recognizes the following image formats:
-</p>
+<br>&nbsp;<br>
 <table border="0" cellspacing="0" cellpadding="2">
 <p>
 <tr><td></td><td><strong>Name</strong></td><td><strong>Mode</strong></td><td><strong>Description</strong></td></tr>
@@ -283,17 +284,17 @@ process. <strong>Convert</strong> recognizes the following image formats:
 <tr><td></td><td></td><td>r</td><td>Read</td></tr>
 <tr><td></td><td></td><td>w</td><td>Write</td></tr>
 <tr><td></td><td></td><td>+</td><td>Multi-image</td></tr>
-</p>
+<br>&nbsp;<br>
 </table>
 <p>
 <em>Support for some of these formats require additional programs or libraries.
 <a href="install.html">README</a>
-tells where to find this software</em>.</p>
+tells where to find this software</em>.
 <p>
 Note, a format delineated with <tt>+</tt> means that if more than one
 image is specified, it is composited into a single multi-image file. Use
 <strong>+adjoin</strong>
-if you want a single image produced for each frame.</p>
+if you want a single image produced for each frame.
 <p>
 Your installation might not support all of the formats in the list.  To get
 an up-to-date listing of the formats supported by your particular
@@ -304,7 +305,7 @@ is compiled in 16-bit mode. Here, the raw data is expected to be stored
 two bytes per pixel in most-significant-byte-first order.
 You can tell if <strong>ImageMagick</strong> was compiled in 16-bit mode by typing
 "convert" without any options, and looking for "Q:16" in the first line of
-output.</p>
+output.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -320,58 +321,58 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-To convert a <em>MIFF</em> image of a cockatoo to a SUN raster image, use:</p>
+To convert a <em>MIFF</em> image of a cockatoo to a SUN raster image, use:
 <pre>
     convert cockatoo.miff sun:cockatoo.ras
 </pre>
 <p>
 To convert a multi-page <em>PostScript</em> document to individual FAX pages,
-use:</p>
+use:
 <pre>
     convert -monochrome document.ps fax:page
 </pre>
 <p>
 To convert a TIFF image to a <em>PostScript</em> A4 page with the image in
-the lower left-hand corner, use:</p>
+the lower left-hand corner, use:
 <pre>
     convert -page A4+0+0 image.tiff document.ps
 </pre>
 <p>
 To convert a raw Gray image with a 128 byte header to a portable graymap,
-use:</p>
+use:
 <pre>
     convert -depth 8 -size 768x512+128 gray:raw image.pgm
 </pre>
 <p>
-To convert a Photo CD image to a TIFF image, use:</p>
+To convert a Photo CD image to a TIFF image, use:
 <pre>
     convert -size 1536x1024 img0009.pcd image.tiff
     convert img0009.pcd[4] image.tiff
 </pre>
 <p>
-To create a visual image directory of all your JPEG images, use:</p>
+To create a visual image directory of all your JPEG images, use:
 <pre>
     convert 'vid:*.jpg' directory.miff
 </pre>
 <p>
 To annotate an image with blue text using font 12x24 at position (100,100),
-use:</p>
+use:
 <pre>
     convert -font helvetica -fill blue -draw "text 100,100 Cockatoo" \
             bird.jpg bird.miff
 </pre>
 <p>
-To tile a 640x480 image with a JPEG texture with bumps use:</p>
+To tile a 640x480 image with a JPEG texture with bumps use:
 <pre>
     convert -size 640x480 tile:bumps.jpg tiled.png
 </pre>
 <p>
-To surround an icon with an ornamental border to use with Mosaic(1), use:</p>
+To surround an icon with an ornamental border to use with Mosaic(1), use:
 <pre>
     convert -mattecolor "#697B8F" -frame 6x6 bird.jpg icon.png
 </pre>
 <p>
-To create a MNG animation from a DNA molecule sequence, use:</p>
+To create a MNG animation from a DNA molecule sequence, use:
 <pre>
     convert -delay 20 dna.* dna.mng
 </pre>
@@ -392,7 +393,7 @@ color="#FFFFFF"><font size="+1">
 <p>
 Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect.</p>
+the option again with a different effect.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2878,7 +2879,7 @@ Options are processed in command line order.  Any option you
 specify on the command line remains in effect until it is
 explicitly changed by specifying the option again with a
 different effect.  Some options only affect the decoding of
-images and others only the encoding.</p>
+images and others only the encoding.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -2897,13 +2898,13 @@ color="#FFFFFF"><font size="+1">
 By default, the image format is determined by its magic number. To specify
 a particular image format, precede the filename with an image format name
 and a colon (<em>i.e.</em><strong>ps:image</strong>) or specify the image type as the
-filename suffix</p>
+filename suffix
 <p>
 When you specify <strong>X</strong> as your image type, the filename has special
 meaning. It specifies an X window by <strong>id, name</strong>, or
 <strong>root</strong>. If
 no filename is specified, the window is selected by clicking the mouse
-in the desired window.</p>
+in the desired window.
 <p>
 Specify <em>input_file</em> as - for standard input,
 <em>output_file</em>
@@ -2914,7 +2915,7 @@ respectively. If <em>output_file</em> has the extension <strong>.Z</strong> or
 <strong>.gz</strong>,
 the file size is compressed using with <strong>compress</strong> or <strong>gzip</strong>
 respectively.  Finally, precede the image file name with | to pipe to or
-from a system command.</p>
+from a system command.
 <p>
 Use an optional index enclosed in brackets after a file name to specify
 a desired subimage of a multi-resolution image format like Photo CD (e.g.
@@ -2925,7 +2926,7 @@ specify a subimage with a geometry (e.g. -size 640x512 image.rgb[320x256+50+50])
 images (i.e. a multi-page PostScript document with <strong>+adjoin</strong> specified)
 are written with the filename followed by a period (<strong>.</strong>) and the scene
 number. You can change this behavior by embedding a <strong>printf</strong> format
-specification in the file name. For example,</p>
+specification in the file name. For example,
 <pre>
     image%02d.miff
 </pre>
@@ -2934,7 +2935,7 @@ converts files image00.miff, image01.miff, etc.
 <p>
 Prepend an at sign <tt>@</tt> to a filename to read a list of image
 filenames from that file. This is convenient in the event you have too
-many image filenames to fit on the command line.</p>
+many image filenames to fit on the command line.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -2957,21 +2958,21 @@ of the three color components of the image and identifies a set of classes.
 The extents of each class is used to coarsely segment the image with thresholding.
 The color associated with each class is determined by the mean color of
 all pixels within the extents of a particular class. Finally, any unclassified
-pixels are assigned to the closest class with the fuzzy c-means technique.</p>
+pixels are assigned to the closest class with the fuzzy c-means technique.
 <p>
 The fuzzy c-Means algorithm can be summarized as follows:
 <ul>
 <li>
 Build a histogram, one for each color component of the image.
 <li>
-For each histogram, successively apply the scale- space filter and build
+For each histogram, successively apply the scale-space filter and build
 an interval tree of zero crossings in the second derivative at each scale.
-Analyze this scale-space ``fingerprint'' to determine which peaks or valleys
+Analyze this scale-space "fingerprint" to determine which peaks or valleys
 in the histogram are most predominant.
 <li>
 The fingerprint defines intervals on the axis of the histogram. Each interval
 contains either a minima or a maxima in the original signal. If each color
-component lies within the maxima interval, that pixel is considered ``classified''
+component lies within the maxima interval, that pixel is considered "classified"
 and is assigned an unique class number.
 <li>
 Any pixel that fails to be classified in the above thresholding pass is
@@ -2988,7 +2989,7 @@ For additional information see:
 <blockquote><em>Young Won Lim, Sang Uk Lee</em>, "<strong>On The Color Image Segmentation
 Algorithm Based on the Thresholding and the Fuzzy c-Means Techniques</strong>",
 Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</blockquote>
-</p>
+<br>&nbsp;<br>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -3030,7 +3031,7 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 <em>John Cristy</em>, <em><a href="mailto:magick-users@imagemagick.org">
-magick-users@imagemagick.org</a>, ImageMagick Studio LLC</em>.</p>
+magick-users@imagemagick.org</a>, ImageMagick Studio LLC</em>.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -3046,17 +3047,17 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>Copyright (C) 2002 ImageMagick Studio</strong></p>
+<strong>Copyright (C) 2002 ImageMagick Studio</strong>
 <p>
 <strong>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files ("ImageMagick"),
 to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
-is furnished to do so, subject to the following conditions:</strong></p>
+is furnished to do so, subject to the following conditions:</strong>
 <p>
 <strong>The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of ImageMagick.</strong></p>
+in all copies or substantial portions of ImageMagick.</strong>
 <p>
 <strong>The software is provided "as is", without warranty of any kind, express
 or implied, including but not limited to the warranties of merchantability,
@@ -3064,12 +3065,12 @@ fitness for a particular purpose and noninfringement.In no event shall
 ImageMagick Studio be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out
 of or in connection with ImageMagick or the use or other dealings in
-ImageMagick.</strong></p>
+ImageMagick.</strong>
 <p>
 <strong>Except as contained in this notice, the name of the
 ImageMagick Studio LLC shall not be used in advertising or otherwise to
 promote the sale, use or other dealings in ImageMagick without prior written
-authorization from the ImageMagick Studio.</strong></p>
+authorization from the ImageMagick Studio.</strong>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 

@@ -24,6 +24,7 @@
 <center>
 <img SRC="../images/magick_small.png" alt="" width=114 height=118>
 </center>
+<br>&nbsp;<br>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
 <td ALIGN=LEFT BGCOLOR="#52799E"><img 
@@ -38,7 +39,7 @@ conjure - process a Magick Scripting Language (MSL) script
 <p>
 <strong>WARNING: Conjure and MSL are in very early development and the
 syntax is subject to change!</strong>
-</p>
+<br>&nbsp;<br>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -83,7 +84,7 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 <strong>conjure</strong> [ options ] script.msl imagefiles
-</p>
+<br>&nbsp;<br>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -101,7 +102,7 @@ benefit those that want to accomplish custom image processing tasks but
 do not wish to program, or those that do not have access to a Perl
 interpreter or a compiler.  The interpreter is called conjure and here
 is an example script:
-</p>
+<br>&nbsp;<br>
 <pre>
     &lt;?xml version="1.0" encoding="UTF-8"?&gt;
     &lt;image size="400x400" &gt;
@@ -117,25 +118,25 @@ is an example script:
 </pre>
 <p>
 invoked with
-</p>
+<br>&nbsp;<br>
 <pre>
     conjure -dimensions 400x400 incantation.msl
 </pre>
 <p>
 All operations will closely follow the key/value pairs defined in
 PerlMagick, unless otherwise noted.
-</p>
+<br>&nbsp;<br>
 <p>
 <strong>Conjure</strong> is in the early stages of development as of
 December 2001.
-</p>
+<br>&nbsp;<br>
 <p>
 This early announcement is to allow ImageMagick users to contribute ideas 
 early in the process so when the scripting language is released it will
 be useful/stable from the get-go!  If you want to contribute suggestions
 about the Magick scripting langauge (MSL), post them to
 magick-developers@imagemagick.org.
-</p>
+<br>&nbsp;<br>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -155,7 +156,7 @@ Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
 the option again with a different effect, or if it is changed by a statement
 in the scripting language.
-</p>
+<br>&nbsp;<br>
 <p>
 You can define your own keyword/value pairs on the command line.
 The script can then use this information when setting values by including
@@ -179,7 +180,7 @@ space and special symbols.
 <p>
 Keywords and values are case dependent.  "Key", "key", and "KEY" would
 be three different keywords.
-</p>
+<br>&nbsp;<br>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -254,7 +255,7 @@ another. For example:
     &lt;image size="400x400" /&gt;
 </pre>
 </dd>
-<dt>&lt;group&gt;
+<dt>&lt;group&gt;</dt>
 <dd>Define a new group of image objects.
 By default, images are only valid for the life of
 their <strong>&lt;image&gt;</strong>element.
@@ -283,7 +284,7 @@ around for the life of the group:
     &lt;/group&gt;                          -- dispose of both images
 </pre>
 </dd>
-<dt>&lt;read&gt;
+<dt>&lt;read&gt;</dt>
 <dd>Read a new image from a disk file.
 </dd>
 <dd>
@@ -299,7 +300,7 @@ around for the life of the group:
     &lt;read filename="image.png /&gt;
 </pre>
 </dd>
-<dt>&lt;write&gt;
+<dt>&lt;write&gt;</dt>
 <dd>Write the image(s) to disk, either as
 a single multiple-image file or multiple ones if necessary.
 </dd>
@@ -307,7 +308,7 @@ a single multiple-image file or multiple ones if necessary.
 <pre>
      &lt;write filename=image.tiff" /&gt;
 </pre>
-<dt>&lt;get&gt;
+<dt>&lt;get&gt;</dt>
 <dd>Get any attribute recognized by
 PerlMagick's GetAttribute() and stores it as an image attribute for later
 use. Currently only <em>width</em> and <em>height</em> are supported.</dd>
@@ -383,11 +384,11 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 <em>John Cristy</em>, <em><a href="mailto:magick-users@imagemagick.org">
-magick-users@imagemagick.org</a>, ImageMagick Studio LLC</em>.</p>
+magick-users@imagemagick.org</a>, ImageMagick Studio LLC</em>.
 <p>
 <em>Leonard Rosenthol</em>, <em>&lt;a href="mailto:magick-users@imagemagick.org"
 &gt;leonardr@lazerware.com</a>, ImageMagick Studio</em>.
-</p>
+<br>&nbsp;<br>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -403,17 +404,17 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>Copyright (C) 2002 ImageMagick Studio</strong></p>
+<strong>Copyright (C) 2002 ImageMagick Studio</strong>
 <p>
 <strong>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files ("ImageMagick"),
 to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
-is furnished to do so, subject to the following conditions:</strong></p>
+is furnished to do so, subject to the following conditions:</strong>
 <p>
 <strong>The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of ImageMagick.</strong></p>
+in all copies or substantial portions of ImageMagick.</strong>
 <p>
 <strong>The software is provided "as is", without warranty of any kind, express
 or implied, including but not limited to the warranties of merchantability,
@@ -421,12 +422,12 @@ fitness for a particular purpose and noninfringement.In no event shall
 ImageMagick Studio be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out
 of or in connection with ImageMagick or the use or other dealings in
-ImageMagick.</strong></p>
+ImageMagick.</strong>
 <p>
 <strong>Except as contained in this notice, the name of the
 ImageMagick Studio LLC shall not be used in advertising or otherwise to
 promote the sale, use or other dealings in ImageMagick without prior written
-authorization from the ImageMagick Studio.</strong></p>
+authorization from the ImageMagick Studio.</strong>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 

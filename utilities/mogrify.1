@@ -1,4 +1,5 @@
 .TH mogrify 1 "Date: 2002/01/01 01:00:00" "ImageMagick"
+<title>Mogrify</title>
 .SH NAME
 mogrify - mogrify an image
 .SH SYNOPSIS
@@ -12,7 +13,7 @@ include image scaling, image rotation, color reduction, and others. The
 transmogrified image overwrites the original image. 
 
 The graphics formats supported by \fBmogrify\fP are the same as those
-supported by \fBconvert\fP.
+supported by convert.
 .SH EXAMPLES
 
 To convert all the TIFF files in a particular directory to JPEG, use:
@@ -1328,14 +1329,14 @@ The fuzzy c-Means algorithm can be summarized as follows:
     
 Build a histogram, one for each color component of the image.
     
-For each histogram, successively apply the scale- space filter and build
+For each histogram, successively apply the scale-space filter and build
 an interval tree of zero crossings in the second derivative at each scale.
-Analyze this scale-space ``fingerprint'' to determine which peaks or valleys
+Analyze this scale-space "fingerprint" to determine which peaks or valleys
 in the histogram are most predominant.
     
 The fingerprint defines intervals on the axis of the histogram. Each interval
 contains either a minima or a maxima in the original signal. If each color
-component lies within the maxima interval, that pixel is considered ``classified''
+component lies within the maxima interval, that pixel is considered "classified"
 and is assigned an unique class number.
     
 Any pixel that fails to be classified in the above thresholding pass is

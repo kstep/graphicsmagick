@@ -1,4 +1,5 @@
 .TH animate 1 "Date: 2002/01/01 01:00:00" "ImageMagick"
+<title>Animate</title>
 .SH NAME
 animate - animate a sequence of images
 .SH SYNOPSIS
@@ -25,7 +26,7 @@ To help prevent color flashing on X server visuals that have colormaps,
 \fBanimate\fP
 creates a single colormap from the image sequence. This can be rather time
 consuming. You can speed this operation up by reducing the colors in the
-image before you `animate' them. Use \fBmogrify\fP to color reduce the
+image before you "animate" them. Use \fBmogrify\fP to color reduce the
 images to a single colormap. See \fBmogrify(1)\fP for details. Alternatively,
 you can use a Standard Colormap; or a static, direct, or true color visual.
 You can define a Standard Colormap with \fIxstdcmap\fP. See \fBxstdcmap(1)\fP
@@ -901,25 +902,39 @@ of header identifying the window. The default is the image file name.
 .SH ACKNOWLEDGEMENTS
 .in 15
 
+.in 15
 .in 20
-
+.B ""
+.in 20
+ \fR
 The \fBMIT X Consortium\fP for making network transparent graphics a
 reality.
 .in 15
+.in 15
 .in 20
-
+.B ""
+.in 20
+ \fR
 \fIMichael Halle\fP, \fBSpatial Imaging Group at MIT\fP, for the initial
 implementation of Alan Paeth's image rotation algorithm.
 .in 15
+.in 15
 .in 20
-
+.B ""
+.in 20
+ \fR
 \fIDavid Pensak\fP, \fBduPont\fP, for providing a computing
 environment that made this program possible.
 .in 15
+.in 15
 .in 20
-\fIPaul Raveling\fP, \fBUSC Information Sciences Institute\fP.
+.B ""\fIPaul Raveling\fP, \fBUSC Information Sciences Institute\fP.
+.in 20
+ \fR
 The spatial subdivision color reduction algorithm is based on his Img
 software.
+.in 15
+
 .SH SEE ALSO
 
 display(1), composite(1), conjure(1), convert(1), identify(1),

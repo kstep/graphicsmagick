@@ -24,6 +24,7 @@
 <center>
 <img SRC="../images/magick_small.png" alt="" width=114 height=118>
 </center>
+<br>&nbsp;<br>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
 <td ALIGN=LEFT BGCOLOR="#52799E"><img 
@@ -79,7 +80,7 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>import</strong> <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>file</em></p>
+<strong>import</strong> <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>file</em>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -97,14 +98,14 @@ outputs it as an image file. You can capture a single window, the entire
 screen, or any rectangular portion of the screen.
 Use <em><a href="display.html">display</a></em>
 for redisplay, printing, editing, formatting, archiving, image processing,
-etc. of the captured image.</p>
+etc. of the captured image.
 <p>
 The target window can be specified by id, name, or may be selected
 by clicking the mouse in the desired window. If you press a button and
 then drag, a rectangle will form which expands and contracts as the mouse
 moves. To save the portion of the screen defined by the rectangle, just
 release the button. The keyboard bell is rung once at the beginning of
-the screen capture and twice when it completes.</p>
+the screen capture and twice when it completes.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -121,19 +122,19 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 To select an X window or an area of the screen with the mouse and save it
-in the MIFF image format to a file entitled window.miff, use:</p>
+in the MIFF image format to a file entitled window.miff, use:
 <pre>
     import window.miff
 </pre>
 <p>
 To select an X window or an area of the screen with the mouse and save it
-in the Encapsulated Postscript format to include in another document, use:</p>
+in the Encapsulated Postscript format to include in another document, use:
 <pre>
     import figure.eps
 </pre>
 <p>
 To capture the entire X server screen in the JPEG image format in a file
-entitled root.jpeg, without using the mouse, use:</p>
+entitled root.jpeg, without using the mouse, use:
 <pre>
     import -window root root.jpeg
 </pre>
@@ -144,7 +145,7 @@ entitled root.jpeg, without using the mouse, use:</p>
 <p>
 To capture the 512x256 area at the upper right corner of the X server
 screen in the PNG image format in a well-compressed file entitled corner.png,
-without using the mouse,  use:</p>
+without using the mouse,  use:
 <pre>
     import -window root -crop 512x256-0+0 -quality 90 corner.png
 </pre>
@@ -165,11 +166,11 @@ color="#FFFFFF"><font size="+1">
 <p>
 Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect.</p>
+the option again with a different effect.
 <p>
 <strong>Import</strong> options can appear on the command line or in your
 X resources file. See <em>X(1)</em>. Options on the command line supersede
-values specified in your X resources file.</p>
+values specified in your X resources file.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -969,7 +970,7 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 <em>John Cristy</em>, <em><a href="mailto:magick-users@imagemagick.org">
-magick-users@imagemagick.org</a>, ImageMagick Studio LLC</em>.</p>
+magick-users@imagemagick.org</a>, ImageMagick Studio LLC</em>.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -985,17 +986,17 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>Copyright (C) 2002 ImageMagick Studio</strong></p>
+<strong>Copyright (C) 2002 ImageMagick Studio</strong>
 <p>
 <strong>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files ("ImageMagick"),
 to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
-is furnished to do so, subject to the following conditions:</strong></p>
+is furnished to do so, subject to the following conditions:</strong>
 <p>
 <strong>The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of ImageMagick.</strong></p>
+in all copies or substantial portions of ImageMagick.</strong>
 <p>
 <strong>The software is provided "as is", without warranty of any kind, express
 or implied, including but not limited to the warranties of merchantability,
@@ -1003,12 +1004,12 @@ fitness for a particular purpose and noninfringement.In no event shall
 ImageMagick Studio be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out
 of or in connection with ImageMagick or the use or other dealings in
-ImageMagick.</strong></p>
+ImageMagick.</strong>
 <p>
 <strong>Except as contained in this notice, the name of the
 ImageMagick Studio LLC shall not be used in advertising or otherwise to
 promote the sale, use or other dealings in ImageMagick without prior written
-authorization from the ImageMagick Studio.</strong></p>
+authorization from the ImageMagick Studio.</strong>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 

@@ -24,6 +24,7 @@
 <center>
 <img SRC="../images/magick_small.png" alt="" width=114 height=118>
 </center>
+<br>&nbsp;<br>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
 <td ALIGN=LEFT BGCOLOR="#52799E"><img 
@@ -82,7 +83,7 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 <strong>composite</strong> [ <em>options</em> ... ] <em>imagecomposite</em> [ <em>mask</em>
-] <em>composited</em></p>
+] <em>composited</em>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -95,7 +96,7 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>composite</strong> composite images to create new images.</p>
+<strong>composite</strong> composite images to create new images.
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -108,23 +109,23 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-To composite an image of a cockatoo with a perch, use:</p>
+To composite an image of a cockatoo with a perch, use:
 <pre>
     composite cockatoo.miff perch.ras composite.miff
 </pre>
 <p>
-To compute the difference between images in a series, use:</p>
+To compute the difference between images in a series, use:
 <pre>
     composite -compose difference series.1 series.2 difference.miff
 </pre>
 <p>
 To composite an image of a cockatoo with a perch starting at location (100,150),
-use:</p>
+use:
 <pre>
     composite -geometry +100+150 cockatoo.miff perch.ras composite.miff
 </pre>
 <p>
-To tile a logo across your image of a cockatoo, use</p>
+To tile a logo across your image of a cockatoo, use
 <pre>
     convert +shade 30x60 cockatoo.miff mask.miff
     composite -compose bumpmap -tile logo.png cockatoo.miff \
@@ -132,7 +133,7 @@ To tile a logo across your image of a cockatoo, use</p>
 </pre>
 <p>
 To composite a red, green, and blue color plane into a single composite image,
-try</p>
+try
 <pre>
     composite -compose CopyGreen red.png green.png red-green.png
     composite -compose CopyBlue red-green.png blue.png composite.png
@@ -154,7 +155,7 @@ color="#FFFFFF"><font size="+1">
 <p>
 Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
-the option again with a different effect.</p>
+the option again with a different effect.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1314,13 +1315,13 @@ color="#FFFFFF"><font size="+1">
 By default, the image format is determined by its magic number. To specify
 a particular image format, precede the filename with an image format name
 and a colon (i.e. ps:image) or specify the image type as the filename suffix
-(i.e. image.ps). See <strong>convert(1)</strong> for a list of valid image formats.</p>
+(i.e. image.ps). See <strong>convert(1)</strong> for a list of valid image formats.
 <p>
 When you specify <strong>X</strong> as your image type, the filename has special
 meaning. It specifies an X window by id, name, or
 <strong>root</strong>. If no filename
 is specified, the window is selected by clicking the mouse in the desired
-window.</p>
+window.
 <p>
 Specify <em>image</em> as - for standard input,
 <em>composited</em> as - for
@@ -1330,24 +1331,24 @@ the file is uncompressed with
 If <em>composited</em> has the extension <strong>.Z</strong> or <strong>.gz</strong>, the file
 size is compressed using with <strong>compress</strong> or <strong>gzip</strong> respectively.
 Finally, precede the image file name with | to pipe to or from a system
-command.</p>
+command.
 <p>
 Use an optional index enclosed in brackets after a file name to specify
 a desired subimage of a multi-resolution image format like Photo CD (e.g.
 img0001.pcd[4]) or a range for MPEG images (e.g. video.mpg[50-75]). A subimage
 specification can be disjoint (e.g. image.tiff[2,7,4]). For raw images,
 specify a subimage with a geometry
-(e.g. -size 640x512 image.rgb[320x256+50+50]).</p>
+(e.g. -size 640x512 image.rgb[320x256+50+50]).
 <p>
 The optional <strong>mask</strong> can be used to provide matte information for
 <strong>composite</strong>
 when it has none or if you want a different mask. A mask image is typically
 grayscale and the same size as <strong>composite</strong>. If the image is not grayscale,
 it is converted to grayscale and the resulting intensities are used as
-matte information.</p>
+matte information.
 <p>
 If <em>composited</em> already exists, you will be prompted as to whether it
-should be overwritten.</p>
+should be overwritten.
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -1386,7 +1387,7 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 <em>John Cristy</em>, <em><a href="mailto:magick-users@imagemagick.org">
-magick-users@imagemagick.org</a>, ImageMagick Studio LLC</em>.</p>
+magick-users@imagemagick.org</a>, ImageMagick Studio LLC</em>.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -1402,17 +1403,17 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>Copyright (C) 2002 ImageMagick Studio</strong></p>
+<strong>Copyright (C) 2002 ImageMagick Studio</strong>
 <p>
 <strong>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files ("ImageMagick"),
 to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
-is furnished to do so, subject to the following conditions:</strong></p>
+is furnished to do so, subject to the following conditions:</strong>
 <p>
 <strong>The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of ImageMagick.</strong></p>
+in all copies or substantial portions of ImageMagick.</strong>
 <p>
 <strong>The software is provided "as is", without warranty of any kind, express
 or implied, including but not limited to the warranties of merchantability,
@@ -1420,12 +1421,12 @@ fitness for a particular purpose and noninfringement.In no event shall
 ImageMagick Studio be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out
 of or in connection with ImageMagick or the use or other dealings in
-ImageMagick.</strong></p>
+ImageMagick.</strong>
 <p>
 <strong>Except as contained in this notice, the name of the
 ImageMagick Studio LLC shall not be used in advertising or otherwise to
 promote the sale, use or other dealings in ImageMagick without prior written
-authorization from the ImageMagick Studio.</strong></p>
+authorization from the ImageMagick Studio.</strong>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 

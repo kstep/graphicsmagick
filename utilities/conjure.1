@@ -1,4 +1,5 @@
 .TH conjure 1 "Date: 2002/01/01 01:00:00" "ImageMagick"
+<title>Conjure</title>
 .SH NAME
 conjure - process a Magick Scripting Language (MSL) script
 
@@ -126,7 +127,9 @@ another. For example:
 
 .in 15
 .in 15
-.B "<group>
+.B "<group>"
+.in 20
+ \fR
 .in 20
 Define a new group of image objects.
 By default, images are only valid for the life of
@@ -162,7 +165,9 @@ around for the life of the group:
 
 .in 15
 .in 15
-.B "<read>
+.B "<read>"
+.in 20
+ \fR
 .in 20
 Read a new image from a disk file.
 
@@ -185,7 +190,9 @@ To read two images use
 
 .in 15
 .in 15
-.B "<write>
+.B "<write>"
+.in 20
+ \fR
 .in 20
 Write the image(s) to disk, either as
 a single multiple-image file or multiple ones if necessary.
@@ -196,7 +203,9 @@ a single multiple-image file or multiple ones if necessary.
 
      <write filename=image.tiff" />
 .in 15
-.B "<get>
+.B "<get>"
+.in 20
+ \fR
 .in 20
 Get any attribute recognized by
 PerlMagick's GetAttribute() and stores it as an image attribute for later
@@ -434,5 +443,5 @@ authorization from the ImageMagick Studio.\fP
 \fIJohn Cristy, ImageMagick Studio LLC\fP.
 
 
-\fILeonard Rosenthol\fP, ImageMagick Studio LLC\fP.
+\fILeonard Rosenthol, ImageMagick Studio LLC\fP.
 

@@ -3,6 +3,7 @@
 .in 15
 .in 15
 .in 20
+<title>Convert</title>
 .SH NAME
 
 convert - convert an image or sequence of images
@@ -1936,14 +1937,14 @@ The fuzzy c-Means algorithm can be summarized as follows:
     
 Build a histogram, one for each color component of the image.
     
-For each histogram, successively apply the scale- space filter and build
+For each histogram, successively apply the scale-space filter and build
 an interval tree of zero crossings in the second derivative at each scale.
-Analyze this scale-space ``fingerprint'' to determine which peaks or valleys
+Analyze this scale-space "fingerprint" to determine which peaks or valleys
 in the histogram are most predominant.
     
 The fingerprint defines intervals on the axis of the histogram. Each interval
 contains either a minima or a maxima in the original signal. If each color
-component lies within the maxima interval, that pixel is considered ``classified''
+component lies within the maxima interval, that pixel is considered "classified"
 and is assigned an unique class number.
     
 Any pixel that fails to be classified in the above thresholding pass is
