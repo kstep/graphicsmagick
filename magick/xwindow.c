@@ -6814,13 +6814,25 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   */
   color=GetOnePixel(windows->image.image,windows->magnify.x,windows->magnify.y);
   if (windows->image.image->matte)
-    FormatString(text," %+d%+d  (%u,%u,%u,%u) ",windows->magnify.x,
-      windows->magnify.y,color.red,color.green,color.blue,color.opacity);
+    {
+      if (windows->image.image->depth > 8)
+        FormatString(text," %+d%+d  (%u,%u,%u,%u) ",windows->magnify.x,
+          windows->magnify.y,color.red,color.green,color.blue,color.opacity);
+      else
+        FormatString(text," %+d%+d  (%lu,%lu,%lu,%lu) ",windows->magnify.x,
+          windows->magnify.y,Downscale(color.red),Downscale(color.green),
+          Downscale(color.blue),Downscale(color.opacity));
+    }
   else
     {
       color.opacity=OpaqueOpacity;
-      FormatString(text," %+d%+d  (%u,%u,%u) ",windows->magnify.x,
-        windows->magnify.y,color.red,color.green,color.blue);
+      if (windows->image.image->depth > 8)
+        FormatString(text," %+d%+d  (%u,%u,%u) ",windows->magnify.x,
+          windows->magnify.y,color.red,color.green,color.blue);
+      else
+        FormatString(text," %+d%+d  (%lu,%lu,%lu) ",windows->magnify.x,
+          windows->magnify.y,Downscale(color.red),Downscale(color.green),
+          Downscale(color.blue));
     }
   height=windows->magnify.font_info->ascent+windows->magnify.font_info->descent;
   x=windows->magnify.font_info->max_bounds.width >> 1;
