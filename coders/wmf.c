@@ -1550,6 +1550,7 @@ static void WmfSetPenStyle(CSTRUCT *cstruct, LOGPEN *pen, DC *currentDC)
     case PS_ENDCAP_FLAT:
       break;
     case PS_ENDCAP_ROUND:
+      break;
     default:
     }
 
@@ -1560,6 +1561,7 @@ static void WmfSetPenStyle(CSTRUCT *cstruct, LOGPEN *pen, DC *currentDC)
     case PS_JOIN_MITER:
       break;
     case PS_JOIN_ROUND:
+      break;
     default:
     }
 
