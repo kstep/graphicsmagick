@@ -1078,6 +1078,7 @@ ModuleExport void RegisterJPEGImage(void)
     *entry;
 
   entry=SetMagickInfo("JPEG");
+  entry->thread_support=False;
 #if defined(HasJPEG)
   entry->decoder=(DecoderHandler) ReadJPEGImage;
   entry->encoder=(EncoderHandler) WriteJPEGImage;
@@ -1416,7 +1417,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           jpeg_info.input_components=4;
           jpeg_info.in_color_space=JCS_CMYK;
         }
-      if (image->colorspace == CMYKColorspace)
+      if (image->colorspace == YCbCrColorspace)
         jpeg_info.in_color_space=JCS_YCbCr;
       if (image->colorspace != RGBColorspace)
         (void) TransformRGBImage(image,RGBColorspace);
@@ -1542,6 +1543,15 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         jpeg_info.comp_info[i].h_samp_factor=(int) horizontal_factor;
         jpeg_info.comp_info[i].v_samp_factor=(int) vertical_factor;
       }
+    }
+   else
+    {
+      if (image_info->quality >= 90)
+        for (i=0; i < MAX_COMPONENTS; i++)
+        {
+          jpeg_info.comp_info[i].h_samp_factor=1;
+          jpeg_info.comp_info[i].v_samp_factor=1;
+        }
     }
   jpeg_start_compress(&jpeg_info,True);
   if (logging)
