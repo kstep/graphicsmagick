@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2002
 //
 // PerlMagick "piddle" demo re-implemented using Magick++ methods.
 // The PerlMagick "piddle" demo is written by John Cristy
@@ -37,6 +37,10 @@ int main( int /*argc*/, char ** argv)
 
     // Drawing list
     std::list<Magick::Drawable> drawList;
+
+    // Start drawing by pushing a drawing context with specified viewbox size
+    drawList.push_back(DrawablePushGraphicContext());
+    drawList.push_back(DrawableViewbox(0,0,image.columns(),image.rows()));
 
     //
     // Draw blue grid
@@ -145,6 +149,9 @@ int main( int /*argc*/, char ** argv)
     drawList.push_back(DrawableRotation(45.0));
     drawList.push_back(DrawableText(0,0,"This is a test!"));
 
+    // Finish drawing by popping back to base context.
+    drawList.push_back(DrawablePopGraphicContext());
+
     // Draw everything using completed drawing list
     image.draw(drawList);
 
@@ -153,6 +160,8 @@ int main( int /*argc*/, char ** argv)
     cout << "Writing image \"piddle_out.miff\" ..." << endl;
     image.compressType( RunlengthEncodedCompression );
     image.write( "piddle_out.miff" );
+    cout << "Writing MVG metafile \"piddle_out.mvg\" ..." << endl;
+    image.write( "piddle_out.mvg" );
 
 //     cout << "Display image..." << endl;
 //     image.display( );

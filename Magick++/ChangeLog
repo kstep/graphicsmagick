@@ -1,3 +1,11 @@
+2002-03-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableViewbox): MVG syntax wasn't correct.
+
+	* lib/Image.cpp (draw): Fix algorithm used to append newlines to
+ 	MVG commands so that draw() may be invoked multiple times while
+ 	still producing valid MVG.
+
 2002-03-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableViewbox): New class to allow setting

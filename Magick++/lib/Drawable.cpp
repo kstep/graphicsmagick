@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Implementation of Drawable (Graphic objects)
 //
@@ -883,9 +883,10 @@ void Magick::DrawableTextAntialias::print (std::ostream& stream_) const
 void Magick::DrawableViewbox::print (std::ostream& stream_) const
 {
   stream_ << "viewbox "
-          << Coordinate( _x1, _y1 )
-          << " "
-          << Coordinate( _x2, _y2 );
+          << _x1 << " "
+          << _y1 << " "
+          << _x2 << " "
+          << _y2;
 }
 
 //

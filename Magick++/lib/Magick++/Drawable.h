@@ -1983,7 +1983,7 @@ class DrawableViewbox : public DrawableBase
 {
 public:
   DrawableViewbox(unsigned long x1_, unsigned long y1_,
-                        unsigned long x2_, unsigned long y2_)
+                  unsigned long x2_, unsigned long y2_)
     : _x1(x1_),
       _y1(y1_),
       _x2(x2_),

@@ -648,21 +648,14 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
     = options()->drawInfo();
 
   ostrstream primitive;
-  bool firstPrimitive = true;
 
   std::list<Magick::Drawable>::const_iterator p = drawable_.begin();
-  while ( p != drawable_.end() )
-    {
-      if ( !firstPrimitive )
-	primitive << endl;
-      primitive << *p;
-      firstPrimitive = false;
-      ++p;
-    }
+  while( p != drawable_.end() )
+    primitive << *p++ << endl;
   primitive << ends;
 
   drawInfo->primitive = primitive.str();
-//   cout << drawInfo->primitive << endl;
+  // cout << drawInfo->primitive;
   DrawImage( image(), drawInfo );
 
   delete drawInfo->primitive; // Frozen dynamic arrays must be deleted

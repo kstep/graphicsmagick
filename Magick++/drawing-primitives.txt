@@ -7,7 +7,6 @@ Locations 0 & 3 are scaling for x,y; 1 & 2 are rotation for x,y; 4 & 5
 are translation. Affine is equivalent to the SVG matrix command."
 
 affine scaleX,rotationX,rotationY,scaleY,translationX,translationY
-angle angle
 arc startX,startY endX,endY startDegrees,endDegrees
 bezier x1,y1, x2,y2, x3,y3, ..., xN,yN
 circle originX,originY perimX,perimY
