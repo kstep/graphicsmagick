@@ -21,6 +21,8 @@ extern "C" {
 #define Upscale(quantum)  ((long) (quantum))
 #define XDownscale(color)  ((color)/257L)
 #define XUpscale(color)  (257L*(color))
+#define NormalizeSignature(quantum) \
+  (((quantum) << 24) | ((quantum) << 16) | ((quantum) << 8) | (quantum))
 
 typedef unsigned char Quantum;
 #elif (QuantumDepth == 16)
@@ -31,6 +33,7 @@ typedef unsigned char Quantum;
 #define Upscale(quantum)  (257L*(quantum))
 #define XDownscale(color)  ((long) (color))
 #define XUpscale(color)  ((long) (color))
+#define NormalizeSignature(quantum) (((quantum) << 16) | (quantum))
 
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
@@ -41,6 +44,7 @@ typedef unsigned short Quantum;
 #define Upscale(quantum)  (16777217L*(quantum))
 #define XDownscale(color)  (65537L*(color))
 #define XUpscale(color)  ((color)/65537L)
+#define NormalizeSignature(quantum)  (quantum)
 
 typedef unsigned int Quantum;
 #else

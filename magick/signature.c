@@ -431,17 +431,6 @@ static void UpdateSignature(SignatureInfo *signature_info,
 */
 MagickExport unsigned int SignatureImage(Image *image)
 {
-#if (QuantumDepth == 8)
-#define Normalize(quantum) \
-  (((quantum) << 24) | ((quantum) << 16) | ((quantum) << 8) | (quantum))
-#elif (QuantumDepth == 16)
-#define Normalize(quantum)  (((quantum) << 16) | (quantum))
-#elif (QuantumDepth == 32)
-#define Normalize(quantum)  (quantum)
-#else
-# error "Specified value of QuantumDepth is not supported"
-#endif
-
   char
     signature[MaxTextExtent];
 
@@ -491,17 +480,17 @@ MagickExport unsigned int SignatureImage(Image *image)
     q=message;
     for (x=0; x < (long) image->columns; x++)
     {
-      quantum=Normalize(p->red);
+      quantum=NormalizeSignature(p->red);
       *q++=(unsigned char) (quantum >> 24);
       *q++=(unsigned char) (quantum >> 16);
       *q++=(unsigned char) (quantum >> 8);
       *q++=(unsigned char) quantum;
-      quantum=Normalize(p->green);
+      quantum=NormalizeSignature(p->green);
       *q++=(unsigned char) (quantum >> 24);
       *q++=(unsigned char) (quantum >> 16);
       *q++=(unsigned char) (quantum >> 8);
       *q++=(unsigned char) quantum;
-      quantum=Normalize(p->blue);
+      quantum=NormalizeSignature(p->blue);
       *q++=(unsigned char) (quantum >> 24);
       *q++=(unsigned char) (quantum >> 16);
       *q++=(unsigned char) (quantum >> 8);
@@ -510,13 +499,13 @@ MagickExport unsigned int SignatureImage(Image *image)
         {
           if (image->colorspace == CMYKColorspace)
             {
-              quantum=Normalize(p->opacity);
+              quantum=NormalizeSignature(p->opacity);
               *q++=(unsigned char) (quantum >> 24);
               *q++=(unsigned char) (quantum >> 16);
               *q++=(unsigned char) (quantum >> 8);
               *q++=(unsigned char) quantum;
             }
-          quantum=Normalize(OpaqueOpacity);
+          quantum=NormalizeSignature(OpaqueOpacity);
           *q++=(unsigned char) (quantum >> 24);
           *q++=(unsigned char) (quantum >> 16);
           *q++=(unsigned char) (quantum >> 8);
@@ -524,14 +513,14 @@ MagickExport unsigned int SignatureImage(Image *image)
         }
       else
         {
-          quantum=Normalize(p->opacity);
+          quantum=NormalizeSignature(p->opacity);
           *q++=(unsigned char) (quantum >> 24);
           *q++=(unsigned char) (quantum >> 16);
           *q++=(unsigned char) (quantum >> 8);
           *q++=(unsigned char) quantum;
           if (image->colorspace == CMYKColorspace)
             {
-              quantum=Normalize(indexes[x]);
+              quantum=NormalizeSignature(indexes[x]);
               *q++=(unsigned char) (quantum >> 24);
               *q++=(unsigned char) (quantum >> 16);
               *q++=(unsigned char) (quantum >> 8);
