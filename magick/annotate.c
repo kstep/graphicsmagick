@@ -275,6 +275,25 @@ MagickExport unsigned int AnnotateImage(Image *image,
         break;
       }
     }
+    if (annotate_info->box.opacity != TransparentOpacity)
+      {
+        Image
+          *box_image;
+
+        /*
+          Surround text with a border.
+        */
+        box_image=CloneImage(image,(int) ceil(font_width-0.5),
+          (int) ceil(font_height-0.5),True,&image->exception);
+        if (box_image != (Image *) NULL)
+          {
+            box_image->background_color=annotate_info->box;
+            SetImage(box_image,OpaqueOpacity);
+            CompositeImage(image,ReplaceCompositeOp,box_image,(int)
+              ceil(offset.x-0.5),(int) ceil(offset.y-3.0*font_height/4.0-0.5));
+            DestroyImage(box_image);
+          }
+      }
     /*
       Annotate image with text.
     */
@@ -818,6 +837,7 @@ static unsigned int RenderTruetype(Image *image,
   /*
     Render label.
   */
+  image->storage_class=DirectClass;
   alpha=1.0/MaxRGB;
   box_color=annotate_info->box;
   fill_color=annotate_info->fill;
