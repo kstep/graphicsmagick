@@ -157,7 +157,6 @@ int main(int argc,char **argv)
     status=SetImageAttribute(image_info->attributes,argv[i]+1,argv[i+1]);
     if (status == False)
       MagickError(ResourceLimitError,"Unable to persist key",argv[i]);
-    i+=2;
   }
   /*
     Interpret MSL script.
