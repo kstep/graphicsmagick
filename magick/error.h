@@ -4,6 +4,10 @@
 #ifndef _ERROR_H
 #define _ERROR_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Exception define definitions.
 */
@@ -66,5 +70,9 @@ extern MagickExport void
 
 extern MagickExport WarningHandler
   SetWarningHandler(WarningHandler);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

@@ -4,6 +4,10 @@
 #ifndef _WIDGET_H
 #define _WIDGET_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Typedef declarations.
 */
@@ -59,5 +63,9 @@ extern MagickExport void
   XNoticeWidget(Display *,XWindows *,const char *,const char *),
   XTextViewWidget(Display *,const XResourceInfo *,XWindows *,const unsigned int,
     const char *,char const **);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

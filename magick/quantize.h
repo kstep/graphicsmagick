@@ -4,6 +4,10 @@
 #ifndef _QUANTIZE_H
 #define _QUANTIZE_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Define declarations.
 */
@@ -55,5 +59,9 @@ extern MagickExport unsigned long
 extern MagickExport void
   DestroyQuantizeInfo(QuantizeInfo *),
   GetQuantizeInfo(QuantizeInfo *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

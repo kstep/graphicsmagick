@@ -4,6 +4,10 @@
 #ifndef _MODULES_H
 #define _MODULES_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Define declarations.
 */

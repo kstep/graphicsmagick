@@ -4,6 +4,10 @@
 #ifndef _DISPLAY_H
 #define _DISPLAY_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Define declarations.
 */
@@ -1533,5 +1537,9 @@ static void
   XSetCropGeometry(Display *,XWindows *,RectangleInfo *,Image *),
   XScreenEvent(Display *,XWindows *,XEvent *),
   XTranslateImage(Display *,XWindows *,Image *,const KeySym);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

@@ -4,6 +4,10 @@
 #ifndef _BLOBS_H
 #define _BLOBS_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 #if !defined(BlobQuantum)
 #define BlobQuantum  65535
 #endif
@@ -58,5 +62,9 @@ extern MagickExport void
   MSBFirstOrderShort(char *,const size_t),
   GetBlobInfo(BlobInfo *),
   SetBlobQuantum(BlobInfo *,const size_t);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

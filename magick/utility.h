@@ -4,6 +4,10 @@
 #ifndef _UTILITY_H
 #define _UTILITY_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #if HAVE_SYS_NDIR_H || HAVE_SYS_DIR_H || HAVE_NDIR_H
 # define dirent direct
@@ -107,5 +111,9 @@ extern MagickExport void
   ReacquireMemory(void **,const size_t),
   Strip(char *),
   TemporaryFilename(char *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

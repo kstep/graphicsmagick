@@ -4,6 +4,10 @@
 #ifndef _CACHE_H
 #define _CACHE_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 #if !defined(PixelCacheThreshold)
 #define PixelCacheThreshold  2047  /* megabytes */
 #endif
@@ -98,5 +102,9 @@ extern MagickExport void
   GetCacheInfo(Cache *),
   SetCacheThreshold(const off_t),
   SetPixelCacheMethods(void);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

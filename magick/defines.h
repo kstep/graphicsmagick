@@ -4,6 +4,10 @@
 #ifndef _DEFINES_H
 #define _DEFINES_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Review these platform specific definitions.
 */
@@ -179,6 +183,10 @@
 
 #if !defined(MAP_FAILED)
 #define MAP_FAILED      ((void *) -1)
+#endif
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
 #endif
 
 #endif

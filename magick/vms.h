@@ -4,6 +4,10 @@
 #ifndef _VMS_H
 #define _VMS_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 #if defined(__DECC) || defined(__DECCXX)
 #  include <lib$routines.h>
 #  include <starlet.h>
@@ -80,5 +84,9 @@ extern void
 
 extern MagickExport int
   ImageFormatConflict(char *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

@@ -4,6 +4,10 @@
 #ifndef _SEMAPHORE_H
 #define _SEMAPHORE_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Define declarations.
 */
@@ -41,5 +45,9 @@ extern MagickExport SemaphoreInfo
 
 extern MagickExport void
   DestroySemaphoreInfo(SemaphoreInfo *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

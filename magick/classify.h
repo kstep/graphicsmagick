@@ -4,6 +4,10 @@
 #ifndef _CLASSIFY_H
 #define _CLASSIFY_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Classify image attributes.
 */
@@ -414,5 +418,9 @@ typedef enum
   UpdateConfigurationState = 0x0080,
   UpdateRegionState = 0x0100
 } XState;
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

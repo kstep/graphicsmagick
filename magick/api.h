@@ -14,6 +14,10 @@
 #define _MAGICK_API_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+#if defined(__cplusplus) || defined(c_plusplus)
 #define storage_class  c_class
 #else
 #define storage_class  class
@@ -106,6 +110,11 @@
 #include "monitor.h"
 #include "error.h"
 #include "version.h"
+#endif
+
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
 #endif
 
 #endif

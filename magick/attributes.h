@@ -4,6 +4,10 @@
 #ifndef _ATTRIBUTES_H
 #define _ATTRIBUTES_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   MagickExported text attribute methods.
 */
@@ -17,5 +21,9 @@ extern MagickExport unsigned int
 extern MagickExport void
   DestroyImageAttributes(Image *),
   StoreImageAttribute(Image *,char *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

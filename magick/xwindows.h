@@ -4,6 +4,10 @@
 #ifndef _XWINDOWS_H
 #define _XWINDOWS_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 #undef False
 #undef True
 #define XLIB_ILLEGAL_ACCESS  1
@@ -508,6 +512,9 @@ extern MagickExport Image
   *XGetWindowImage(Display *,const Window,const unsigned int,
     const unsigned int);
 
+extern MagickExport int
+  XError(Display *,XErrorEvent *);
+
 extern MagickExport unsigned int
   IsTrue(const char *),
   XAnnotateImage(Display *,const XPixelInfo *,XAnnotateInfo *,Image *),
@@ -555,8 +562,9 @@ extern MagickExport void
   XRefreshWindow(Display *,const XWindowInfo *,const XEvent *),
   XRemoteCommand(Display *,const char *,const char *),
   XRetainWindowColors(Display *,const Window),
-  XUserPreferences(XResourceInfo *),
+  XSignalHandler(int),
   XSetCursorState(Display *,XWindows *,const unsigned int),
+  XUserPreferences(XResourceInfo *),
   XWarning(const ExceptionType,const char *,const char *);
 
 extern MagickExport Window
@@ -579,19 +587,7 @@ extern MagickExport XVisualInfo
 extern MagickExport XWindows
   *XInitializeWindows(Display *,XResourceInfo *),
   *XSetWindows(XWindows *);
-
-/*
-  Language dependant methods.
-*/
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
 
-extern MagickExport int
-  XError(Display *,XErrorEvent *);
-
-extern MagickExport void
-  XSignalHandler(int);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
@@ -618,5 +614,9 @@ extern MagickExport void
 #define PRE_R4_ICCCM
 #endif
 #include "widget.h"
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

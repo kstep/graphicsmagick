@@ -4,6 +4,10 @@
 #ifndef _MAC_H
 #define _MAC_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 #include <locale.h>
 #include <stat.h>
 #include <errno.h>
@@ -67,5 +71,9 @@ extern MagickExport void
   ProcessPendingEvents(const char *),
   seekdir(DIR *,long),
   SetApplicationType(const char *,const char *,OSType);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

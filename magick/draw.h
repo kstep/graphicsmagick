@@ -4,6 +4,10 @@
 #ifndef _DRAW_H
 #define _DRAW_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Typedef declarations.
 */
@@ -154,5 +158,9 @@ extern MagickExport void
   DestroyDrawInfo(DrawInfo *),
   GetAnnotateInfo(const ImageInfo *,AnnotateInfo *),
   GetDrawInfo(const ImageInfo *,DrawInfo *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

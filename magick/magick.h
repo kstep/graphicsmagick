@@ -4,6 +4,10 @@
 #ifndef _MAGICK_H
 #define _MAGICK_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   System include declarations.
 */
@@ -119,5 +123,9 @@
 
 #undef index
 #undef pipe
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

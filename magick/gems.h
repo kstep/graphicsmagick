@@ -4,6 +4,10 @@
 #ifndef _GEMS_H
 #define _GEMS_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Graphic gems define declarations.
 */
@@ -33,5 +37,9 @@ extern MagickExport void
     double *),
   Upsample(const unsigned int,const unsigned int,const unsigned int,
     unsigned char *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

@@ -4,6 +4,10 @@
 #ifndef _MONITOR_H
 #define _MONITOR_H
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /*
   Monitor typedef declarations.
 */
@@ -18,5 +22,9 @@ extern MagickExport MonitorHandler
 
 extern MagickExport void
   MagickMonitor(const char *,const off_t,const off_t);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif
