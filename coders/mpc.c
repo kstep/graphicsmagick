@@ -602,7 +602,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image->depth != QuantumDepth)
     ThrowReaderException(CacheWarning,"Inconsistent peristent cache depth",
       image);
-  if (!Isaccessible(cache_info->cache_filename))
+  if (!IsAccessible(cache_info->cache_filename))
     ThrowReaderException(CorruptImageWarning,"Unable to open peristent cache",
       image);
   if (image->montage != (char *) NULL)
