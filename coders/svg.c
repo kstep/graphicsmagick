@@ -967,9 +967,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((char *) name,"pattern") == 0)
         {
-          (void) fprintf(svg_info->file,"push pattern %s '%gx%g%+g%+g'\n",id,
-            svg_info->bounds.width,svg_info->bounds.height,svg_info->bounds.x,
-            svg_info->bounds.y);
+          (void) fprintf(svg_info->file,"push pattern %s %g,%g %g,%g\n",id,
+            svg_info->bounds.x,svg_info->bounds.y,svg_info->bounds.width,
+            svg_info->bounds.height);
           break;
         }
       if (LocaleCompare((char *) name,"polygon") == 0)
@@ -3241,8 +3241,19 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 GetToken(q,&q,token);
                 (void) strncpy(name,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
-                (void) ParseGeometry(token,&bounds.x,&bounds.y,&bounds.width,
-                  &bounds.height);
+                bounds.x=atof(token);
+                GetToken(q,&q,token);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                bounds.y=atof(token);
+                GetToken(q,&q,token);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                bounds.width=atof(token);
+                GetToken(q,&q,token);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                bounds.height=atof(token);
                 FormatString(message,"<pattern id=\"%s\" x=\"%ld\" y=\"%ld\" "
                   "width=\"%lu\" height=\"%lu\">\n",name,bounds.x,bounds.y,
                   bounds.width,bounds.height);
