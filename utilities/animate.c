@@ -292,9 +292,9 @@ int main(int argc,char **argv)
   */
   ReadCommandlLine(argc,&argv);
   if (LocaleCompare("animate",argv[0]) == 0)
-    MagickIncarnate(GetExecutionPath(argv[0]));
+    InitializeMagick(GetExecutionPath(argv[0]));
   else
-    MagickIncarnate(*argv);
+    InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
@@ -1001,6 +1001,7 @@ int main(int argc,char **argv)
       }
     }
   LiberateMemory((void **) &argv);
+  DestroyMagick();
   Exit(0);
 #endif
   return(False);

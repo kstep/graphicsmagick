@@ -54,6 +54,9 @@ extern MagickExport unsigned int
   OpenModule(const char *,ExceptionInfo *),
   OpenModules(ExceptionInfo *);
 
+extern MagickExport void
+  DestroyModuleInfo(void);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

@@ -287,6 +287,31 @@ static unsigned int CompressCache(Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y C a c h e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyCache destroys the cache environment.
+%
+%  The format of the DestroyCache method is:
+%
+%      DestroyCache(void)
+%
+%
+*/
+MagickExport void DestroyCache(void)
+{
+  AcquireSemaphoreInfo(&cache_semaphore);
+  DestroySemaphoreInfo(cache_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e s t r o y C a c h e I n f o                                           %
 %                                                                             %
 %                                                                             %
@@ -582,26 +607,11 @@ MagickExport void GetCacheInfo(Cache *cache)
 %
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static void DestroyCache(void)
-{
-  AcquireSemaphore(&cache_semaphore,(void (*)(void)) NULL);
-  DestroySemaphore(cache_semaphore);
-}
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
 static off_t GetCacheMemory(const off_t memory)
 {
-  AcquireSemaphore(&cache_semaphore,DestroyCache);
+  AcquireSemaphoreInfo(&cache_semaphore);
   free_memory+=memory;
-  LiberateSemaphore(&cache_semaphore);
+  LiberateSemaphoreInfo(&cache_semaphore);
   return(free_memory);
 }
 

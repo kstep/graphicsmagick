@@ -93,17 +93,12 @@ static unsigned int
 %
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 MagickExport void DestroyMagicInfo(void)
 {
   register MagicInfo
     *p;
 
-  AcquireSemaphore(&magic_semaphore,(void (*)(void)) NULL);
+  AcquireSemaphoreInfo(&magic_semaphore);
   for (p=magic_list; p != (MagicInfo *) NULL; )
   {
     if (p->filename != (char *) NULL)
@@ -119,12 +114,8 @@ MagickExport void DestroyMagicInfo(void)
     LiberateMemory((void **) &magic_list);
   }
   magic_list=(MagicInfo *) NULL;
-  DestroySemaphore(magic_semaphore);
+  DestroySemaphoreInfo(magic_semaphore);
 }
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -166,10 +157,10 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magic,
   register MagicInfo
     *p;
 
-  AcquireSemaphore(&magic_semaphore,DestroyMagicInfo);
+  AcquireSemaphoreInfo(&magic_semaphore);
   if (magic_list == (MagicInfo *) NULL)
     (void) ReadConfigurationFile(MagicFilename,exception);
-  LiberateSemaphore(&magic_semaphore);
+  LiberateSemaphoreInfo(&magic_semaphore);
   if ((magic == (const unsigned char *) NULL) || (length == 0))
     return(magic_list);
   /*

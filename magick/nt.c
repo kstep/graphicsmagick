@@ -586,7 +586,10 @@ MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
     buffer[3*MaxTextExtent];
 
   if (reason == (char *) NULL)
-    Exit(0);
+    {
+      DestroyMagick();
+      Exit(0);
+    }
   if ((description != (char *) NULL) && errno)
     FormatString(buffer,"%.1024s: %.1024s (%.1024s) [%.1024s].\n",
       SetClientName((char *) NULL),reason,description,strerror(errno));
@@ -603,6 +606,7 @@ MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
           reason);
   (void) MessageBox(NULL,buffer,"ImageMagick Exception",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONEXCLAMATION);
+  DestroyMagick();
   Exit(0);
 }
 

@@ -107,6 +107,7 @@ extern MagickExport unsigned int
 
 extern MagickExport void
   AllocateCacheNexus(CacheInfo *),
+  DestoryCache(void),
   DestroyCacheNexus(Cache,const unsigned int),
   GetCacheInfo(Cache *),
   SetCacheThreshold(const off_t),

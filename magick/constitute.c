@@ -550,6 +550,31 @@ MagickExport Image *ConstituteImage(const unsigned int width,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y C o n s t i t u t e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyConstitute destroys the constitute environment.
+%
+%  The format of the DestroyConstitute method is:
+%
+%      DestroyConstitute(void)
+%
+%
+*/
+MagickExport void DestroyConstitute(void)
+{
+  AcquireSemaphoreInfo(&constitute_semaphore);
+  DestroySemaphoreInfo(constitute_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D i s p a t c h I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -1758,21 +1783,6 @@ MagickExport unsigned int PushImagePixels(Image *image,
 %
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static void DestroyConstituteInfo(void)
-{
-  AcquireSemaphore(&constitute_semaphore,(void (*)(void)) NULL);
-  DestroySemaphore(constitute_semaphore);
-}
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
 MagickExport Image *ReadImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -1818,11 +1828,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
     {
       if (!magick_info->thread_support)
-        AcquireSemaphore(&constitute_semaphore,DestroyConstituteInfo);
+        AcquireSemaphoreInfo(&constitute_semaphore);
       clone_info->client_data=magick_info->client_data;
       image=(magick_info->decoder)(clone_info,exception);
       if (!magick_info->thread_support)
-        LiberateSemaphore(&constitute_semaphore);
+        LiberateSemaphoreInfo(&constitute_semaphore);
     }
   else
     {
@@ -1875,10 +1885,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           return((Image *) NULL);
         }
       if (!magick_info->thread_support)
-        AcquireSemaphore(&constitute_semaphore,DestroyConstituteInfo);
+        AcquireSemaphoreInfo(&constitute_semaphore);
       image=(magick_info->decoder)(clone_info,exception);
       if (!magick_info->thread_support)
-        LiberateSemaphore(&constitute_semaphore);
+        LiberateSemaphoreInfo(&constitute_semaphore);
     }
   if (clone_info->temporary)
     {
@@ -2209,11 +2219,11 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
         (unsigned int (*)(const ImageInfo *,Image *)) NULL))
     {
       if (!magick_info->thread_support)
-        AcquireSemaphore(&constitute_semaphore,DestroyConstituteInfo);
+        AcquireSemaphoreInfo(&constitute_semaphore);
       clone_info->client_data=magick_info->client_data;
       status=(magick_info->encoder)(clone_info,image);
       if (!magick_info->thread_support)
-        LiberateSemaphore(&constitute_semaphore);
+        LiberateSemaphoreInfo(&constitute_semaphore);
     }
   else
     {
@@ -2247,10 +2257,10 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
             "no encode delegate for this image format",clone_info->magick);
         }
       if (!magick_info->thread_support)
-        AcquireSemaphore(&constitute_semaphore,DestroyConstituteInfo);
+        AcquireSemaphoreInfo(&constitute_semaphore);
       status=(magick_info->encoder)(clone_info,image);
       if (!magick_info->thread_support)
-        LiberateSemaphore(&constitute_semaphore);
+        LiberateSemaphoreInfo(&constitute_semaphore);
     }
   (void) strcpy(image->magick,clone_info->magick);
   DestroyImageInfo(clone_info);

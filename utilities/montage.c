@@ -305,9 +305,9 @@ int main(int argc,char **argv)
   */
   ReadCommandlLine(argc,&argv);
   if (LocaleCompare("montage",argv[0]) == 0)
-    MagickIncarnate(GetExecutionPath(argv[0]));
+    InitializeMagick(GetExecutionPath(argv[0]));
   else
-    MagickIncarnate(*argv);
+    InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
@@ -1287,6 +1287,8 @@ int main(int argc,char **argv)
   DestroyImages(montage_image);
   DestroyMontageInfo(montage_info);
   DestroyImageInfo(image_info);
+  DestroyMagick();
   LiberateMemory((void **) &argv);
+  Exit(0);
   return(False);
 }

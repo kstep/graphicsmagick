@@ -170,9 +170,9 @@ int main(int argc,char **argv)
   */
   ReadCommandlLine(argc,&argv);
   if (LocaleCompare("identify",argv[0]) == 0)
-    MagickIncarnate(GetExecutionPath(argv[0]));
+    InitializeMagick(GetExecutionPath(argv[0]));
   else
-    MagickIncarnate(*argv);
+    InitializeMagick(*argv);
   format=(char *) NULL;
   for (i=1; i < argc; i++)
   {
@@ -401,6 +401,7 @@ int main(int argc,char **argv)
   if ((i != argc) || (number_images == 0))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImageInfo(image_info);
+  DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(0);
   return(False);

@@ -352,9 +352,9 @@ int main(int argc,char **argv)
   */
   ReadCommandlLine(argc,&argv);
   if (LocaleCompare("mogrify",argv[0]) == 0)
-    MagickIncarnate(GetExecutionPath(argv[0]));
+    InitializeMagick(GetExecutionPath(argv[0]));
   else
-    MagickIncarnate(*argv);
+    InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
@@ -1060,6 +1060,7 @@ int main(int argc,char **argv)
                   if (exception.severity != UndefinedException)
                     MagickError(exception.severity,exception.reason,
                       exception.description);
+                  DestroyMagick();
                   Exit(0);
                 }
               break;
@@ -1704,6 +1705,7 @@ int main(int argc,char **argv)
   if ((i != argc) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImageInfo(image_info);
+  DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(0);
   return(False);

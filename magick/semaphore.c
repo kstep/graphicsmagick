@@ -101,17 +101,17 @@ struct SemaphoreInfo
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e S e m a p h o r e                                           %
+%   A c q u i r e S e m a p h o r e I n f o                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquireSemaphore acquires a semaphore.
+%  Method AcquireSemaphoreInfo acquires a semaphore.
 %
-%  The format of the AcquireSemaphore method is:
+%  The format of the AcquireSemaphoreInfo method is:
 %
-%      AcquireSemaphore(SemaphoreInfo **semaphore_info,void (*exit)(void)))
+%      AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
 %
 %  A description of each parameter follows:
 %
@@ -121,8 +121,7 @@ struct SemaphoreInfo
 %
 %
 */
-MagickExport void AcquireSemaphore(SemaphoreInfo **semaphore_info,
-  void (*exit)(void))
+MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
 #if defined(HasPTHREADS)
   (void) pthread_mutex_lock(&semaphore_mutex);
@@ -131,12 +130,8 @@ MagickExport void AcquireSemaphore(SemaphoreInfo **semaphore_info,
   EnterCriticalSection(&critical_section);
 #endif
   if (*semaphore_info == (SemaphoreInfo *) NULL)
-    {
-      *semaphore_info=AllocateSemaphoreInfo();
-      if (exit != (void (*)(void)) NULL)
-        atexit(exit);
-    }
-  (void) LockSemaphore(*semaphore_info);
+    *semaphore_info=AllocateSemaphoreInfo();
+  (void) LockSemaphoreInfo(*semaphore_info);
 #if defined(HasPTHREADS)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
@@ -229,11 +224,40 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroySemaphore destroys a semaphore.
+%  Method DestroySemaphore destroys the semaphore environment.
 %
-%  The format of the DestroySemaphore method is:
+%  The format of the InitializeSemaphore method is:
 %
-%      DestroySemaphore(SemaphoreInfo *semaphore_info)
+%      DestroySemaphore(void)
+%
+%
+*/
+MagickExport void DestroySemaphore(void)
+{
+#if defined(HasPTHREADS)
+  (void) pthread_mutex_destroy(&semaphore_mutex);
+#endif
+#if defined(WIN32)
+  DeleteCriticalSection(&critical_section);
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y S e m a p h o r e I n f o                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroySemaphoreInfo destroys a semaphore.
+%
+%  The format of the DestroySemaphoreInfo method is:
+%
+%      DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
 %
 %  A description of each parameter follows:
 %
@@ -241,13 +265,13 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 %
 %
 */
-MagickExport void DestroySemaphore(SemaphoreInfo *semaphore_info)
+MagickExport void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
   if (semaphore_info == (SemaphoreInfo *) NULL)
     return;
-  (void) UnlockSemaphore(semaphore_info);
+  (void) UnlockSemaphoreInfo(semaphore_info);
 #if defined(HasPTHREADS)
   (void) pthread_mutex_destroy(&semaphore_info->id);
 #endif
@@ -291,17 +315,17 @@ MagickExport void InitializeSemaphore(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L i b e r a t e S e m a p h o r e                                         %
+%   L i b e r a t e S e m a p h o r e I n f o                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LiberateSemaphore liberates a semaphore.
+%  Method LiberateSemaphoreInfo liberates a semaphore.
 %
-%  The format of the LiberateSemaphore method is:
+%  The format of the LiberateSemaphoreInfo method is:
 %
-%      LiberateSemaphore(SemaphoreInfo **semaphore_info)
+%      LiberateSemaphoreInfo(SemaphoreInfo **semaphore_info)
 %
 %  A description of each parameter follows:
 %
@@ -309,13 +333,13 @@ MagickExport void InitializeSemaphore(void)
 %
 %
 */
-MagickExport void LiberateSemaphore(SemaphoreInfo **semaphore_info)
+MagickExport void LiberateSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
   assert((*semaphore_info)->signature == MagickSignature);
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     return;
-  (void) UnlockSemaphore(*semaphore_info);
+  (void) UnlockSemaphoreInfo(*semaphore_info);
 }
 
 /*
@@ -323,28 +347,28 @@ MagickExport void LiberateSemaphore(SemaphoreInfo **semaphore_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L o c k S e m a p h o r e                                                 %
+%   L o c k S e m a p h o r e I n f o                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LockSemaphore locks a semaphore.
+%  Method LockSemaphoreInfo locks a semaphore.
 %
-%  The format of the LockSemaphore method is:
+%  The format of the LockSemaphoreInfo method is:
 %
-%      unsigned int LockSemaphore(SemaphoreInfo *semaphore_info)
+%      unsigned int LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method LockSemaphore returns True on success otherwise
+%    o status:  Method LockSemaphoreInfo returns True on success otherwise
 %      False.
 %
 %    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
 %
 %
 */
-MagickExport unsigned int LockSemaphore(SemaphoreInfo *semaphore_info)
+MagickExport unsigned int LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   int
     status;
@@ -370,28 +394,28 @@ MagickExport unsigned int LockSemaphore(SemaphoreInfo *semaphore_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n l o c k S e m a p h o r e                                             %
+%   U n l o c k S e m a p h o r e I n f o                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnlockSemaphore unlocks a semaphore.
+%  Method UnlockSemaphoreInfo unlocks a semaphore.
 %
-%  The format of the LockSemaphore method is:
+%  The format of the LockSemaphoreInfo method is:
 %
-%      unsigned int UnlockSemaphore(SemaphoreInfo *semaphore_info)
+%      unsigned int UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method UnlockSemaphore returns True on success otherwise
+%    o status:  Method UnlockSemaphoreInfo returns True on success otherwise
 %      False.
 %
 %    o semaphore_info: Specifies a pointer to an SemaphoreInfo structure.
 %
 %
 */
-MagickExport unsigned int UnlockSemaphore(SemaphoreInfo *semaphore_info)
+MagickExport unsigned int UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   int
     status;

@@ -454,9 +454,9 @@ int main(int argc,char **argv)
       doexit=True;
       ReadCommandlLine(argc,&argv);
       if (LocaleNCompare("convert",argv[0],7) == 0)
-        MagickIncarnate(GetExecutionPath(argv[0]));
+        InitializeMagick(GetExecutionPath(argv[0]));
       else
-        MagickIncarnate(*argv);
+        InitializeMagick(*argv);
       status=ExpandFilenames(&argc,&argv);
       if (status == False)
         MagickError(ResourceLimitError,"Memory allocation failed",
@@ -1231,6 +1231,7 @@ int main(int argc,char **argv)
                   if (exception.severity != UndefinedException)
                     MagickError(exception.severity,exception.reason,
                       exception.description);
+                  DestroyMagick();
                   Exit(0);
                 }
               break;
@@ -2048,6 +2049,7 @@ int main(int argc,char **argv)
     }
   DestroyImages(image);
   DestroyImageInfo(image_info);
+  DestroyMagick();
   if (doexit == False)
     return(True);
   LiberateMemory((void **) &argv);

@@ -54,12 +54,21 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasGS)
+#include "ps/iapi.h"
+#include "ps/errors.h"
+#endif
 
 /*
   Forward declaration.
 */
 static int
   IsDirectory(const char *);
+
+#if defined(HasGS)
+static SemaphoreInfo
+  *ps_semaphore = (SemaphoreInfo *) NULL;
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -398,29 +407,6 @@ MagickExport unsigned short *ConvertTextToUnicode(const char *text,int *count)
 %      
 %
 */
-
-#if defined(HasGS)
-#include "ps/iapi.h"
-#include "ps/errors.h"
-
-static SemaphoreInfo
-  *ps_semaphore = (SemaphoreInfo *) NULL;
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static void DestroyUtility(void)
-{
-  AcquireSemaphore(&ps_semaphore,(void (*)(void)) NULL);
-  DestroySemaphore(&ps_semaphore);
-}
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-#endif
-
 MagickExport unsigned int ExecutePostscriptInterpreter(const unsigned int
   verbose,const char *command)
 {
@@ -439,13 +425,13 @@ MagickExport unsigned int ExecutePostscriptInterpreter(const unsigned int
   register int
     i;
 
-  AcquireSemaphore(&ps_semaphore,DestroyUtility);
+  AcquireSemaphoreInfo(&ps_semaphore);
   if (verbose)
     (void) fputs(command,stdout);
   status=gsapi_new_instance(&interpreter,(void *) NULL);
   if (status < 0)
     {
-      LiberateSemaphore(&ps_semaphore);
+      LiberateSemaphoreInfo(&ps_semaphore);
       return(False);
     }
   argv=StringToArgv(command,&argc);
@@ -454,7 +440,7 @@ MagickExport unsigned int ExecutePostscriptInterpreter(const unsigned int
     status=gsapi_run_string(interpreter,"systemdict /start get exec\n",0,&code);
   gsapi_exit(interpreter);
   gsapi_delete_instance(interpreter);
-  LiberateSemaphore(&ps_semaphore);
+  LiberateSemaphoreInfo(&ps_semaphore);
   for (i=0; i < argc; i++)
     LiberateMemory((void **) &argv[i]);
   LiberateMemory((void **) &argv);

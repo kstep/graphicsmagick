@@ -100,12 +100,7 @@ static unsigned int
 %      DestroyDelegateInfo(void)
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static void DestroyDelegateInfo(void)
+MagickExport void DestroyDelegateInfo(void)
 {
   DelegateInfo
     *delegate;
@@ -113,7 +108,7 @@ static void DestroyDelegateInfo(void)
   register DelegateInfo
     *p;
 
-  AcquireSemaphore(&delegate_semaphore,(void (*)(void)) NULL);
+  AcquireSemaphoreInfo(&delegate_semaphore);
   for (p=delegate_list; p != (DelegateInfo *) NULL; )
   {
     if (p->filename != (char *) NULL)
@@ -129,12 +124,8 @@ static void DestroyDelegateInfo(void)
     LiberateMemory((void **) &delegate);
   }
   delegate_list=(DelegateInfo *) NULL;
-  DestroySemaphore(delegate_semaphore);
+  DestroySemaphoreInfo(delegate_semaphore);
 }
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -176,10 +167,10 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
   register DelegateInfo
     *p;
 
-  AcquireSemaphore(&delegate_semaphore,DestroyDelegateInfo);
+  AcquireSemaphoreInfo(&delegate_semaphore);
   if (delegate_list == (DelegateInfo *) NULL)
     (void) ReadConfigurationFile(DelegateFilename,exception);
-  LiberateSemaphore(&delegate_semaphore);
+  LiberateSemaphoreInfo(&delegate_semaphore);
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     return(delegate_list);
   /*

@@ -247,9 +247,9 @@ int main(int argc,char **argv)
       doexit=True;
       ReadCommandlLine(argc,&argv);
       if (LocaleNCompare("composite",argv[0],9) == 0)
-        MagickIncarnate(GetExecutionPath(argv[0]));
+        InitializeMagick(GetExecutionPath(argv[0]));
       else
-        MagickIncarnate(*argv);
+        InitializeMagick(*argv);
       status=ExpandFilenames(&argc,&argv);
       if (status == False)
         MagickError(ResourceLimitError,"Memory allocation failed",
@@ -1107,6 +1107,7 @@ int main(int argc,char **argv)
     }
   DestroyImages(combine_image);
   DestroyImageInfo(image_info);
+  DestroyMagick();
   if (doexit == False)
     return(True);
   LiberateMemory((void **) &argv);

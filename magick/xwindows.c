@@ -8458,6 +8458,7 @@ void XSignalHandler(int status)
       (void) shmctl(windows->magnify.segment_info[0].shmid,IPC_RMID,0);
     }
 #endif
+  DestroyMagick();
   Exit(status);
 }
 

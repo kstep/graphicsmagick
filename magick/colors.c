@@ -162,17 +162,12 @@ static void
 %
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 MagickExport void DestroyColorInfo(void)
 {
   register ColorInfo
     *p;
 
-  AcquireSemaphore(&color_semaphore,(void (*)(void)) NULL);
+  AcquireSemaphoreInfo(&color_semaphore);
   for (p=color_list; p != (ColorInfo *) NULL; )
   {
     if (p->filename != (char *) NULL)
@@ -184,12 +179,8 @@ MagickExport void DestroyColorInfo(void)
     LiberateMemory((void **) &color_list);
   }
   color_list=(ColorInfo *) NULL;
-  DestroySemaphore(color_semaphore);
+  DestroySemaphoreInfo(color_semaphore);
 }
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -314,10 +305,10 @@ MagickExport ColorInfo *GetColorInfo(const char *name,ExceptionInfo *exception)
   register char
     *q;
 
-  AcquireSemaphore(&color_semaphore,DestroyColorInfo);
+  AcquireSemaphoreInfo(&color_semaphore);
   if (color_list == (ColorInfo *) NULL)
     (void) ReadConfigurationFile(ColorFilename,exception);
-  LiberateSemaphore(&color_semaphore);
+  LiberateSemaphoreInfo(&color_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(color_list);
   /*

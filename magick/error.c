@@ -147,7 +147,10 @@ static void DefaultErrorHandler(const ExceptionType error,const char *reason,
   const char *description)
 {
   if (reason == (char *) NULL)
-    Exit(error);
+    {
+      DestroyMagick();
+      Exit(error);
+    }
   (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
     reason);
   if (description != (char *) NULL)
@@ -155,6 +158,7 @@ static void DefaultErrorHandler(const ExceptionType error,const char *reason,
   if ((error != OptionError) && errno)
     (void) fprintf(stderr," [%.1024s]",strerror(errno));
   (void) fprintf(stderr,".\n");
+  DestroyMagick();
   Exit(error);
 }
 

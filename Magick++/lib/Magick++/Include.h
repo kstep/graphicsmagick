@@ -79,7 +79,7 @@ namespace Magick
   using MagickLib::Quantum;
 
   // ImageMagick library initialization routine
-  using MagickLib::MagickIncarnate;
+  using MagickLib::InitializeMagick;
 
   // Image class types
   using MagickLib::ClassType;

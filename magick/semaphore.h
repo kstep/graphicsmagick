@@ -12,8 +12,7 @@ extern "C" {
 /*
   Typedef declarations.
 */
-struct
-  SemaphoreInfo;
+struct SemaphoreInfo;
 
 typedef struct SemaphoreInfo SemaphoreInfo;
 
@@ -25,14 +24,15 @@ extern MagickExport SemaphoreInfo
   *AllocateSemaphoreInfo(void);
 
 extern MagickExport unsigned int
-  LockSemaphore(SemaphoreInfo *),
-  UnlockSemaphore(SemaphoreInfo *);
+  LockSemaphoreInfo(SemaphoreInfo *),
+  UnlockSemaphoreInfo(SemaphoreInfo *);
 
 extern MagickExport void
-  AcquireSemaphore(SemaphoreInfo **,void (*)(void)),
-  DestroySemaphore(SemaphoreInfo *),
+  AcquireSemaphoreInfo(SemaphoreInfo **),
+  DestroySemaphore(void),
+  DestroySemaphoreInfo(SemaphoreInfo *),
   InitializeSemaphore(void),
-  LiberateSemaphore(SemaphoreInfo **);
+  LiberateSemaphoreInfo(SemaphoreInfo **);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

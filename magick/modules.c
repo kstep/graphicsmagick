@@ -128,12 +128,7 @@ static unsigned int
 %      void DestroyModuleInfo(void)
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static void DestroyModuleInfo(void)
+MagickExport void DestroyModuleInfo(void)
 {
   ModuleInfo
     *module_info;
@@ -157,7 +152,7 @@ static void DestroyModuleInfo(void)
   /*
     Free module list and aliases.
   */
-  AcquireSemaphore(&module_semaphore,(void (*)(void)) NULL);
+  AcquireSemaphoreInfo(&module_semaphore);
   for (q=module_aliases; q != (ModuleAlias *) NULL; )
   {
     if (q->filename != (char *) NULL)
@@ -180,12 +175,8 @@ static void DestroyModuleInfo(void)
     LiberateMemory((void **) &module_list);
   }
   module_list=(ModuleInfo *) NULL;
-  DestroySemaphore(module_semaphore);
+  DestroySemaphoreInfo(module_semaphore);
 }
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -300,7 +291,7 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
   register ModuleAlias
     *p;
 
-  AcquireSemaphore(&module_semaphore,DestroyModuleInfo);
+  AcquireSemaphoreInfo(&module_semaphore);
   if (module_aliases == (ModuleAlias *) NULL)
     {
       /*
@@ -314,7 +305,7 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
       */
       (void) ReadConfigurationFile("modules.mgk",exception);
     }
-  LiberateSemaphore(&module_semaphore);
+  LiberateSemaphoreInfo(&module_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(module_aliases);
   for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
@@ -361,7 +352,7 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
     *p;
 
   (void) GetMagicInfo((unsigned char *) NULL,0,exception);
-  AcquireSemaphore(&module_semaphore,DestroyModuleInfo);
+  AcquireSemaphoreInfo(&module_semaphore);
   if (module_list == (ModuleInfo *) NULL)
     {
       /*
@@ -375,7 +366,7 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
       */
       (void) ReadConfigurationFile("modules.mgk",exception);
     }
-  LiberateSemaphore(&module_semaphore);
+  LiberateSemaphoreInfo(&module_semaphore);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
     return(module_list);
   for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)

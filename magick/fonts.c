@@ -94,17 +94,12 @@ static unsigned int
 %
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 MagickExport void DestroyFontInfo(void)
 {
   register FontInfo
     *p;
 
-  AcquireSemaphore(&font_semaphore,(void (*)(void)) NULL);
+  AcquireSemaphoreInfo(&font_semaphore);
   for (p=font_list; p != (FontInfo *) NULL; )
   {
     if (p->filename != (char *) NULL)
@@ -132,12 +127,8 @@ MagickExport void DestroyFontInfo(void)
     LiberateMemory((void **) &font_list);
   }
   font_list=(FontInfo *) NULL;
-  DestroySemaphore(font_semaphore);
+  DestroySemaphoreInfo(font_semaphore);
 }
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -173,10 +164,10 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
   register FontInfo
     *p;
 
-  AcquireSemaphore(&font_semaphore,DestroyFontInfo);
+  AcquireSemaphoreInfo(&font_semaphore);
   if (font_list == (FontInfo *) NULL)
     (void) ReadConfigurationFile(FontFilename,exception);
-  LiberateSemaphore(&font_semaphore);
+  LiberateSemaphoreInfo(&font_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(font_list);
   /*

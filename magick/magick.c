@@ -74,6 +74,38 @@ static SemaphoreInfo *
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y M a g i c k                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeMagick destroys the ImageMagick environment.
+%
+%  The format of the DestroyMagick function is:
+%
+%      DestroyMagick(void)
+%
+%
+*/
+MagickExport void DestroyMagick(void)
+{
+  DestroyColorInfo();
+  DestroyDelegateInfo();
+  DestroyFontInfo();
+  DestroyModuleInfo();
+  DestroyMagicInfo();
+  DestroyMagickInfo();
+  DestroyConstitute();
+  DestroyCache();
+  DestroySemaphore();
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y M a g i c k I n f o                                         %
 %                                                                             %
 %                                                                             %
@@ -87,12 +119,7 @@ static SemaphoreInfo *
 %      void DestroyMagickInfo(void)
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static void DestroyMagickInfo(void)
+MagickExport void DestroyMagickInfo(void)
 {
   MagickInfo
     *magick_info;
@@ -100,7 +127,7 @@ static void DestroyMagickInfo(void)
   register MagickInfo
     *p;
 
-  AcquireSemaphore(&magick_semaphore,(void (*)(void)) NULL);
+  AcquireSemaphoreInfo(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; )
   {
     magick_info=p;
@@ -114,12 +141,8 @@ static void DestroyMagickInfo(void)
     LiberateMemory((void **) &magick_info);
   }
   magick_list=(MagickInfo *) NULL;
-  DestroySemaphore(magick_semaphore);
+  DestroySemaphoreInfo(magick_semaphore);
 }
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,11 +183,11 @@ MagickExport char *GetImageMagick(const unsigned char *magick,
     *p;
 
   assert(magick != (const unsigned char *) NULL);
-  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
+  AcquireSemaphoreInfo(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (p->magick && p->magick(magick,length))
       break;
-  LiberateSemaphore(&magick_semaphore);
+  LiberateSemaphoreInfo(&magick_semaphore);
   if (p != (MagickInfo *) NULL)
     return(p->name);
   return((char *) NULL);
@@ -289,15 +312,15 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
   if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
     OpenModules(exception);
 #endif
-  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
+  AcquireSemaphoreInfo(&magick_semaphore);
   if (magick_list != (MagickInfo *) NULL)
-    LiberateSemaphore(&magick_semaphore);
+    LiberateSemaphoreInfo(&magick_semaphore);
   else
     {
       /*
         Register image formats.
       */
-      LiberateSemaphore(&magick_semaphore);
+      LiberateSemaphoreInfo(&magick_semaphore);
 #if defined(HasMODULES)
       (void) GetModuleInfo((char *) NULL,exception);
 #else
@@ -382,36 +405,36 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
       RegisterXWDImage();
       RegisterYUVImage();
 #endif
-      LiberateSemaphore(&magick_semaphore);
+      LiberateSemaphoreInfo(&magick_semaphore);
     }
   if ((name == (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
     return(magick_list);
   /*
     Find name in list
   */
-  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
+  AcquireSemaphoreInfo(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->name,name) == 0)
       break;
   if (p != (MagickInfo *) NULL)
     {
-      LiberateSemaphore(&magick_semaphore);
+      LiberateSemaphoreInfo(&magick_semaphore);
       return(p);
     }
-  LiberateSemaphore(&magick_semaphore);
+  LiberateSemaphoreInfo(&magick_semaphore);
 #if defined(HasMODULES)
   (void) OpenModule(name,exception);
-  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
+  AcquireSemaphoreInfo(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->name,name) == 0)
       break;
   if (p != (MagickInfo *) NULL)
     {
-      LiberateSemaphore(&magick_semaphore);
+      LiberateSemaphoreInfo(&magick_semaphore);
       return(p);
     }
 #endif
-  LiberateSemaphore(&magick_semaphore);
+  LiberateSemaphoreInfo(&magick_semaphore);
   return((MagickInfo *) NULL);
 }
 
@@ -446,6 +469,48 @@ MagickExport char *GetMagickVersion(unsigned int *version)
   assert(version != (unsigned int *) NULL);
   *version=MagickLibVersion;
   return(MagickVersion);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I n i t i a l i z e M a g i c k                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method InitializeMagick initializes the ImageMagick environment.
+%
+%  The format of the InitializeMagick function is:
+%
+%      InitializeMagick(const char *path)
+%
+%  A description of each parameter follows:
+%
+%    o path: Specifies a pointer to the execution path of the current
+%      ImageMagick client.
+%
+%
+*/
+MagickExport void InitializeMagick(const char *path)
+{
+  char
+    directory[MaxTextExtent],
+    filename[MaxTextExtent];
+
+  assert(path != (const char *) NULL);
+  InitializeSemaphore();
+  (void) getcwd(directory,MaxTextExtent);
+  (void) SetClientPath(directory);
+  GetPathComponent(path,HeadPath,filename);
+  SetClientPath(filename);
+  GetPathComponent(path,BasePath,filename);
+  SetClientName(filename);
+  (void) setlocale(LC_ALL,"");
+  (void) setlocale(LC_NUMERIC,"C");
 }
 
 /*
@@ -531,59 +596,17 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   p=GetMagickInfo("*",exception);
   if (p == (MagickInfo *) NULL)
     return(False);
-  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
+  AcquireSemaphoreInfo(&magick_semaphore);
   for ( ; p != (MagickInfo *) NULL; p=p->next)
     if (p->stealth != True)
       (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->name ? p->name : "",
         p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',
         p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-',
         p->description ? p->description : "");
-  LiberateSemaphore(&magick_semaphore);
+  LiberateSemaphoreInfo(&magick_semaphore);
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k I n c a r n a t e                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method MagickIncarnate initializes the ImageMagick environment.
-%
-%  The format of the MagickIncarnate function is:
-%
-%      MagickIncarnate(const char *path)
-%
-%  A description of each parameter follows:
-%
-%    o path: Specifies a pointer to the execution path of the current
-%      ImageMagick client.
-%
-%
-*/
-MagickExport void MagickIncarnate(const char *path)
-{
-  char
-    directory[MaxTextExtent],
-    filename[MaxTextExtent];
-
-  assert(path != (const char *) NULL);
-  (void) getcwd(directory,MaxTextExtent);
-  (void) SetClientPath(directory);
-  GetPathComponent(path,HeadPath,filename);
-  SetClientPath(filename);
-  GetPathComponent(path,BasePath,filename);
-  SetClientName(filename);
-  InitializeSemaphore();
-  (void) setlocale(LC_ALL,"");
-  (void) setlocale(LC_NUMERIC,"C");
 }
 
 /*
@@ -626,7 +649,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
   UnregisterMagickInfo(magick_info->name);
-  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
+  AcquireSemaphoreInfo(&magick_semaphore);
   magick_info->previous=(MagickInfo *) NULL;
   magick_info->next=(MagickInfo *) NULL;
   if (magick_list == (MagickInfo *) NULL)
@@ -635,7 +658,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
         Start magick list.
       */
       magick_list=magick_info;
-      LiberateSemaphore(&magick_semaphore);
+      LiberateSemaphoreInfo(&magick_semaphore);
       return(magick_info);
     }
   /*
@@ -654,7 +677,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
       magick_info->previous=p;
       if (magick_info->next != (MagickInfo *) NULL)
         magick_info->next->previous=magick_info;
-      LiberateSemaphore(&magick_semaphore);
+      LiberateSemaphoreInfo(&magick_semaphore);
       return(magick_info);
     }
   /*
@@ -667,7 +690,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
     magick_info->previous->next=magick_info;
   if (p == magick_list)
     magick_list=magick_info;
-  LiberateSemaphore(&magick_semaphore);
+  LiberateSemaphoreInfo(&magick_semaphore);
   return(magick_info);
 }
 
@@ -1014,7 +1037,7 @@ MagickExport unsigned int UnregisterMagickInfo(const char *name)
 
   assert(name != (const char *) NULL);
   status=False;
-  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
+  AcquireSemaphoreInfo(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->name,name) != 0)
@@ -1032,6 +1055,6 @@ MagickExport unsigned int UnregisterMagickInfo(const char *name)
     status=True;
     break;
   }
-  LiberateSemaphore(&magick_semaphore);
+  LiberateSemaphoreInfo(&magick_semaphore);
   return(status);
 }
