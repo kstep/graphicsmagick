@@ -532,30 +532,6 @@ Export void RegisterSGIImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r S G I I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterSGIImage removes format registrations made by the
-%  SGI module from the list of supported formats.
-%
-%  The format of the UnregisterSGIImage method is:
-%
-%      UnregisterSGIImage(void)
-%
-*/
-Export void UnregisterSGIImage(void)
-{
-  UnregisterMagickInfo("SGI");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e S G I I m a g e                                                 %
 %                                                                             %
 %                                                                             %

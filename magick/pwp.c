@@ -265,27 +265,3 @@ Export void RegisterPWPImage(void)
   entry->description=AllocateString("Seattle Film Works");
   RegisterMagickInfo(entry);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r P W P I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterPWPImage removes format registrations made by the
-%  PWP module from the list of supported formats.
-%
-%  The format of the UnregisterPWPImage method is:
-%
-%      UnregisterPWPImage(void)
-%
-*/
-Export void UnregisterPWPImage(void)
-{
-  UnregisterMagickInfo("PWP");
-}

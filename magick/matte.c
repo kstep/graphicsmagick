@@ -59,7 +59,7 @@
   Forward declarations.
 */
 static unsigned int
-  WriteMATTEImage(const ImageInfo *,Image *);
+  WriteMatteImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -72,52 +72,28 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterMATTEImage adds attributes for the MATTE image format to
+%  Method RegisterMatteImage adds attributes for the Matte image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterMATTEImage method is:
+%  The format of the RegisterMatteImage method is:
 %
-%      RegisterMATTEImage(void)
+%      RegisterMatteImage(void)
 %
 */
-Export void RegisterMATTEImage(void)
+Export void RegisterMatteImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("MATTE");
-  entry->encoder=WriteMATTEImage;
+  entry=SetMagickInfo("Matte");
+  entry->encoder=WriteMatteImage;
   entry->raw=True;
-  entry->description=AllocateString("MATTE format");
+  entry->description=AllocateString("Matte format");
   RegisterMagickInfo(entry);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r M A T T E I m a g e                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterMATTEImage removes format registrations made by the
-%  MATTE module from the list of supported formats.
-%
-%  The format of the UnregisterMATTEImage method is:
-%
-%      UnregisterMATTEImage(void)
-%
-*/
-Export void UnregisterMATTEImage(void)
-{
-  UnregisterMagickInfo("MATTE");
 }
 
 /*
@@ -131,16 +107,16 @@ Export void UnregisterMATTEImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Function WriteMATTEImage writes an image of matte bytes to a file.  It
+%  Function WriteMatteImage writes an image of matte bytes to a file.  It
 %  consists of data from the matte component of the image [0..255].
 %
-%  The format of the WriteMATTEImage method is:
+%  The format of the WriteMatteImage method is:
 %
-%      unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
+%      unsigned int WriteMatteImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o status: Function WriteMATTEImage return True if the image is written.
+%    o status: Function WriteMatteImage return True if the image is written.
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
@@ -150,7 +126,7 @@ Export void UnregisterMATTEImage(void)
 %
 %
 */
-static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteMatteImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *matte_image;

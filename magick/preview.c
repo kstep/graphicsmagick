@@ -108,30 +108,6 @@ Export void RegisterPREVIEWImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r P R E V I E W I m a g e                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterPREVIEWImage removes format registrations made by the
-%  PREVIEW module from the list of supported formats.
-%
-%  The format of the UnregisterPREVIEWImage method is:
-%
-%      UnregisterPREVIEWImage(void)
-%
-*/
-Export void UnregisterPREVIEWImage(void)
-{
-  UnregisterMagickInfo("PREVIEW");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e P R E V I E W I m a g e                                         %
 %                                                                             %
 %                                                                             %

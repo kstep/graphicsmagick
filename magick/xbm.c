@@ -404,30 +404,6 @@ Export void RegisterXBMImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r X B M I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterXBMImage removes format registrations made by the
-%  XBM module from the list of supported formats.
-%
-%  The format of the UnregisterXBMImage method is:
-%
-%      UnregisterXBMImage(void)
-%
-*/
-Export void UnregisterXBMImage(void)
-{
-  UnregisterMagickInfo("XBM");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e X B M I m a g e                                                 %
 %                                                                             %
 %                                                                             %

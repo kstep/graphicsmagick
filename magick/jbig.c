@@ -301,32 +301,6 @@ Export void RegisterJBIGImage(void)
 #endif
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r J B I G I m a g e                                        %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterJBIGImage removes format registrations made by the
-%  JBIG module from the list of supported formats.
-%
-%  The format of the UnregisterJBIGImage method is:
-%
-%      UnregisterJBIGImage(void)
-%
-*/
-Export void UnregisterJBIGImage(void)
-{
-  UnregisterMagickInfo("BIE");
-  UnregisterMagickInfo("JBG");
-  UnregisterMagickInfo("JBIG");
-}
-
 #if defined(HasJBIG)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

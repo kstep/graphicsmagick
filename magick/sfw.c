@@ -357,27 +357,3 @@ Export void RegisterSFWImage(void)
   entry->description=AllocateString("Seattle Film Works");
   RegisterMagickInfo(entry);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r S F W I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterSFWImage removes format registrations made by the
-%  SFW module from the list of supported formats.
-%
-%  The format of the UnregisterSFWImage method is:
-%
-%      UnregisterSFWImage(void)
-%
-*/
-Export void UnregisterSFWImage(void)
-{
-  UnregisterMagickInfo("SFW");
-}

@@ -577,31 +577,6 @@ Export void RegisterSUNImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r S U N I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterSUNImage removes format registrations made by the
-%  SUN module from the list of supported formats.
-%
-%  The format of the UnregisterSUNImage method is:
-%
-%      UnregisterSUNImage(void)
-%
-*/
-Export void UnregisterSUNImage(void)
-{
-  UnregisterMagickInfo("RAS");
-  UnregisterMagickInfo("SUN");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e S U N I m a g e                                                 %
 %                                                                             %
 %                                                                             %

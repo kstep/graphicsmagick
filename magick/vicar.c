@@ -372,30 +372,6 @@ Export void RegisterVICARImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r V I C A R I m a g e                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterVICARImage removes format registrations made by the
-%  VICAR module from the list of supported formats.
-%
-%  The format of the UnregisterVICARImage method is:
-%
-%      UnregisterVICARImage(void)
-%
-*/
-Export void UnregisterVICARImage(void)
-{
-  UnregisterMagickInfo("VICAR");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e V I C A R I m a g e                                             %
 %                                                                             %
 %                                                                             %

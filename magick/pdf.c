@@ -402,31 +402,6 @@ Export void RegisterPDFImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r P D F I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterPDFImage removes format registrations made by the
-%  PDF module from the list of supported formats.
-%
-%  The format of the UnregisterPDFImage method is:
-%
-%      UnregisterPDFImage(void)
-%
-*/
-Export void UnregisterPDFImage(void)
-{
-  UnregisterMagickInfo("EPDF");
-  UnregisterMagickInfo("PDF");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e P D F I m a g e                                                 %
 %                                                                             %
 %                                                                             %

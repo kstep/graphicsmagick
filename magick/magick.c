@@ -55,9 +55,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HasLTDL)
-#  include "modules.h"
-#endif
 
 /*
   Global declarations.
@@ -142,32 +139,99 @@ Export MagickInfo *GetMagickInfo(const char *tag)
     {
 #if defined(HasLTDL)
       char
-        **module_list,
-	**p;
+        **file_list,
+        *coder_dir,
+        *func_name,
+	*base_name,
+	current_directory[MaxTextExtent];
 
       int
-	i;
+        i,
+        number_files;
 
-      /* Initialize ltdl */
-      InitializeModules();
+      lt_dlhandle
+        handle;
 
-      /* Load all modules */
-      module_list = ListModules();
-      if(module_list == (char**)NULL)
-	return (MagickInfo *)NULL;
+      number_files = 256;
 
-      p = module_list;
-      while(*p)
-	LoadModule(*p++);
+      /*
+	Initialize ltdl
+      */
+      if( lt_dlinit() != 0 )
+        {
+          const char *dlerror = lt_dlerror();
+          printf("ERROR: failed to initialise ltdl: %s\n", dlerror);
+          exit(1);
+        }
 
-      /* Free list memory */
-      i=0;
-      while(module_list[i])
-	FreeMemory((void**)&module_list[i++]);
-      FreeMemory((void **) &module_list);
+      coder_dir=AllocateMemory(MaxTextExtent-1);
+      strcpy(coder_dir, CoderModuleDirectory);
 
-      /* Cache format is treated specially */
-      RegisterCacheImage();
+      /* Set ltdl module search path */
+      lt_dlsetsearchpath( coder_dir );
+
+      /*
+	List module files
+      */
+      (void) getcwd(current_directory,MaxTextExtent-1);
+      file_list=ListFiles(coder_dir,
+			  "*.la", &number_files);
+      (void) chdir(current_directory);
+      if (file_list == (char **) NULL)
+        {
+          FreeMemory((void **) &coder_dir);
+          return (MagickInfo *)NULL;
+        }
+
+      func_name=AllocateMemory(MaxTextExtent-1);
+      for ( i = 0; i < number_files; ++i )
+        {
+          void (*func)(void);
+
+	  /*
+	    Load module
+	  */
+	  /* printf("Loading %s\n", file_list[i]); */
+	  if( ( handle=lt_dlopen(file_list[i]) ) == 0)
+	    {
+	      printf("WARNING: failed to load module \"%s\": %s\n",
+		     file_list[i], lt_dlerror());
+	      continue;
+	      /*exit(1);*/
+	    }
+
+	  /*
+	    Locate and execute RegisterFORMATImage function
+	  */
+	  strcpy(func_name, "Register");
+	  // The result from BaseFilename() should not be freed!
+	  base_name = BaseFilename( file_list[i] );
+	  Latin1Upper(base_name);
+
+	  /* Hack due to 8BIM vs bim.c naming difference */
+	  if(!strcmp("BIM", base_name))
+	     strcat(func_name,"8");
+
+	  strcat(func_name,base_name);
+	  strcat(func_name, "Image");
+
+	  func=(void (*)(void))lt_dlsym(handle, func_name);
+	  if (func == NULL)
+	    {
+	      printf("WARNING: failed to find symbol : %s\n",
+		     lt_dlerror());
+	      continue;
+	    }
+	  func();
+        }
+      FreeMemory((void **) &func_name);
+      FreeMemory((void **) &coder_dir);
+
+      for (i=0; i < number_files; i++)
+          FreeMemory((void **) &file_list[i]);
+      if (file_list != (char **) NULL)
+          FreeMemory((void **) &file_list);
+
 #else
       Register8BIMImage();
       RegisterAVSImage();
@@ -180,19 +244,19 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterFPXImage();
       RegisterGIFImage();
       RegisterGRAYImage();
-      RegisterGRADATIONImage();
+      RegisterGradationImage();
       RegisterHDFImage();
-      RegisterHISTOGRAMImage();
+      RegisterHistogramImage();
       RegisterHTMLImage();
       RegisterICCImage();
       RegisterICONImage();
       RegisterIPTCImage();
       RegisterJBIGImage();
       RegisterJPEGImage();
-      RegisterLABELImage();
+      RegisterLabelImage();
       RegisterLOGOImage();
       RegisterMAPImage();
-      RegisterMATTEImage();
+      RegisterMatteImage();
       RegisterMIFFImage();
       RegisterMONOImage();
       RegisterMTVImage();
@@ -217,7 +281,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterRLEImage();
       RegisterSCTImage();
       RegisterSGIImage();
-      RegisterSTEGANOImage();
+      RegisterSteganoImage();
       RegisterSUNImage();
       RegisterSVGImage();
       RegisterTGAImage();

@@ -328,30 +328,6 @@ Export void RegisterYUVImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r Y U V I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterYUVImage removes format registrations made by the
-%  YUV module from the list of supported formats.
-%
-%  The format of the UnregisterYUVImage method is:
-%
-%      UnregisterYUVImage(void)
-%
-*/
-Export void UnregisterYUVImage(void)
-{
-  UnregisterMagickInfo("YUV");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e Y U V I m a g e                                                 %
 %                                                                             %
 %                                                                             %

@@ -253,30 +253,6 @@ Export void RegisterGRAYImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r G R A Y I m a g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterGRAYImage removes format registrations made by the
-%  GRAY module from the list of supported formats.
-%
-%  The format of the UnregisterGRAYImage method is:
-%
-%      UnregisterGRAYImage(void)
-%
-*/
-Export void UnregisterGRAYImage(void)
-{
-  UnregisterMagickInfo("GRAY");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e G R A Y I m a g e                                               %
 %                                                                             %
 %                                                                             %

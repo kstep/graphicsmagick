@@ -221,27 +221,3 @@ Export void RegisterVIDImage(void)
   entry->description=AllocateString("Visual Image Directory");
   RegisterMagickInfo(entry);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r V I D I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterVIDImage removes format registrations made by the
-%  VID module from the list of supported formats.
-%
-%  The format of the UnregisterVIDImage method is:
-%
-%      UnregisterVIDImage(void)
-%
-*/
-Export void UnregisterVIDImage(void)
-{
-  UnregisterMagickInfo("VID");
-}

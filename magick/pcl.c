@@ -182,30 +182,6 @@ Export void RegisterPCLImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r P C L I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterPCLImage removes format registrations made by the
-%  PCL module from the list of supported formats.
-%
-%  The format of the UnregisterPCLImage method is:
-%
-%      UnregisterPCLImage(void)
-%
-*/
-Export void UnregisterPCLImage(void)
-{
-  UnregisterMagickInfo("PCL");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e P C L I m a g e                                                 %
 %                                                                             %
 %                                                                             %

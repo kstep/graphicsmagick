@@ -244,30 +244,6 @@ Export void RegisterMAPImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r M A P I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterMAPImage removes format registrations made by the
-%  MAP module from the list of supported formats.
-%
-%  The format of the UnregisterMAPImage method is:
-%
-%      UnregisterMAPImage(void)
-%
-*/
-Export void UnregisterMAPImage(void)
-{
-  UnregisterMagickInfo("MAP");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e M A P I m a g e                                                 %
 %                                                                             %
 %                                                                             %

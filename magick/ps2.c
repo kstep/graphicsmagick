@@ -110,31 +110,6 @@ Export void RegisterPS2Image(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r P S 2 I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterPS2Image removes format registrations made by the
-%  PS2 module from the list of supported formats.
-%
-%  The format of the UnregisterPS2Image method is:
-%
-%      UnregisterPS2Image(void)
-%
-*/
-Export void UnregisterPS2Image(void)
-{
-  UnregisterMagickInfo("EPS2");
-  UnregisterMagickInfo("PS2");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e P S 2 I m a g e                                                 %
 %                                                                             %
 %                                                                             %

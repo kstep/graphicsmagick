@@ -1073,35 +1073,6 @@ Export void RegisterTIFFImage(void)
 #endif
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r T I F F I m a g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterTIFFImage removes format registrations made by the
-%  TIFF module from the list of supported formats.
-%
-%  The format of the UnregisterTIFFImage method is:
-%
-%      UnregisterTIFFImage(void)
-%
-*/
-Export void UnregisterTIFFImage(void)
-{
-#if defined(HasTIFF)
-  UnregisterMagickInfo("PTIF");
-  UnregisterMagickInfo("TIF");
-  UnregisterMagickInfo("TIFF");
-  UnregisterMagickInfo("TIFF24");
-#endif
-}
-
 #if defined(HasTIFF)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

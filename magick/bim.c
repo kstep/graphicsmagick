@@ -228,30 +228,6 @@ Export void Register8BIMImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r 8 B I M I m a g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterBIMImage removes format registrations made by the
-%  BIM module from the list of supported formats.
-%
-%  The format of the UnregisterBIMImage method is:
-%
-%      UnregisterBIMImage(void)
-%
-*/
-Export void UnregisterBIMImage(void)
-{
-  UnregisterMagickInfo("8BIM");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e 8 B I M I m a g e                                               %
 %                                                                             %
 %                                                                             %

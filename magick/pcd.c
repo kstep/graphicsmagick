@@ -804,31 +804,6 @@ Export void RegisterPCDImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r P C D I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterPCDImage removes format registrations made by the
-%  PCD module from the list of supported formats.
-%
-%  The format of the UnregisterPCDImage method is:
-%
-%      UnregisterPCDImage(void)
-%
-*/
-Export void UnregisterPCDImage(void)
-{
-  UnregisterMagickInfo("PCD");
-  UnregisterMagickInfo("PCDS");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e P C D I m a g e                                                 %
 %                                                                             %
 %                                                                             %

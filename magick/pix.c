@@ -281,27 +281,3 @@ Export void RegisterPIXImage(void)
   entry->description=AllocateString("Alias/Wavefront RLE image format");
   RegisterMagickInfo(entry);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r P I X I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterPIXImage removes format registrations made by the
-%  PIX module from the list of supported formats.
-%
-%  The format of the UnregisterPIXImage method is:
-%
-%      UnregisterPIXImage(void)
-%
-*/
-Export void UnregisterPIXImage(void)
-{
-  UnregisterMagickInfo("PIX");
-}

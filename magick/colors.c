@@ -125,7 +125,7 @@ typedef struct _CubeInfo
 /*
   Color list.
 */
-#define NumberXColors  761
+#define NumberXColors  758
 
 const ColorlistInfo
   XColorlist[NumberXColors] =
@@ -138,8 +138,6 @@ const ColorlistInfo
     { "antiquewhite2", UpScale(238), UpScale(223), UpScale(204) },
     { "antiquewhite3", UpScale(205), UpScale(192), UpScale(176) },
     { "antiquewhite4", UpScale(139), UpScale(131), UpScale(120) },
-    { "aqua", UpScale(0), UpScale(255), UpScale(255) },
-    { "aquamarine", UpScale(127), UpScale(255), UpScale(212) },
     { "aquamarine", UpScale(127), UpScale(255), UpScale(212) },
     { "aquamarine1", UpScale(127), UpScale(255), UpScale(212) },
     { "aquamarine2", UpScale(118), UpScale(238), UpScale(198) },
@@ -638,7 +636,6 @@ const ColorlistInfo
     { "lightyellow2", UpScale(238), UpScale(238), UpScale(209) },
     { "lightyellow3", UpScale(205), UpScale(205), UpScale(180) },
     { "lightyellow4", UpScale(139), UpScale(139), UpScale(122) },
-    { "lime", UpScale(0), UpScale(255), UpScale(0) },
     { "lime green", UpScale(50), UpScale(205), UpScale(50) },
     { "limegreen", UpScale(50), UpScale(205), UpScale(50) },
     { "linen", UpScale(250), UpScale(240), UpScale(230) },

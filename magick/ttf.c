@@ -255,29 +255,3 @@ Export void RegisterTTFImage(void)
   RegisterMagickInfo(entry);
 #endif
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r T T F I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterTTFImage removes format registrations made by the
-%  TTF module from the list of supported formats.
-%
-%  The format of the UnregisterTTFImage method is:
-%
-%      UnregisterTTFImage(void)
-%
-*/
-Export void UnregisterTTFImage(void)
-{
-#if defined(HasTTF)
-  UnregisterMagickInfo("TTF");
-#endif
-}

@@ -186,30 +186,6 @@ Export void RegisterICCImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r I C C I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterICCImage removes format registrations made by the
-%  ICC module from the list of supported formats.
-%
-%  The format of the UnregisterICCImage method is:
-%
-%      UnregisterICCImage(void)
-%
-*/
-Export void UnregisterICCImage(void)
-{
-  UnregisterMagickInfo("ICC");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e I C C I m a g e                                                 %
 %                                                                             %
 %                                                                             %

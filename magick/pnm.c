@@ -692,34 +692,6 @@ Export void RegisterPNMImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r P N M I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterPNMImage removes format registrations made by the
-%  PNM module from the list of supported formats.
-%
-%  The format of the UnregisterPNMImage method is:
-%
-%      UnregisterPNMImage(void)
-%
-*/
-Export void UnregisterPNMImage(void)
-{
-  UnregisterMagickInfo("P7");
-  UnregisterMagickInfo("PBM");
-  UnregisterMagickInfo("PGM");
-  UnregisterMagickInfo("PNM");
-  UnregisterMagickInfo("PPM");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e P N M I m a g e                                                 %
 %                                                                             %
 %                                                                             %

@@ -59,7 +59,7 @@
   Forward declarations.
 */
 static unsigned int
-  WriteHISTOGRAMImage(const ImageInfo *,Image *);
+  WriteHistogramImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -72,52 +72,28 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterHISTOGRAMImage adds attributes for the Histogram image format
+%  Method RegisterHistogramImage adds attributes for the Histogram image format
 %  to the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterHISTOGRAMImage method is:
+%  The format of the RegisterHistogramImage method is:
 %
-%      RegisterHISTOGRAMImage(void)
+%      RegisterHistogramImage(void)
 %
 */
-Export void RegisterHISTOGRAMImage(void)
+Export void RegisterHistogramImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("HISTOGRAM");
-  entry->encoder=WriteHISTOGRAMImage;
+  entry=SetMagickInfo("Histogram");
+  entry->encoder=WriteHistogramImage;
   entry->adjoin=False;
   entry->description=AllocateString("Histogram of the image");
   RegisterMagickInfo(entry);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r H I S T O G R A M I m a g e                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterHISTOGRAMImage removes format registrations made by the
-%  HISTOGRAM module from the list of supported formats.
-%
-%  The format of the UnregisterHISTOGRAMImage method is:
-%
-%      UnregisterHISTOGRAMImage(void)
-%
-*/
-Export void UnregisterHISTOGRAMImage(void)
-{
-  UnregisterMagickInfo("HISTOGRAM");
 }
 
 /*
@@ -131,7 +107,7 @@ Export void UnregisterHISTOGRAMImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteHISTOGRAMImage writes an image to a file in Histogram format.
+%  Method WriteHistogramImage writes an image to a file in Histogram format.
 %  The image shows a histogram of the color (or gray) values in the image.  The
 %  image consists of three overlaid histograms:  a red one for the red channel,
 %  a green one for the green channel, and a blue one for the blue channel.  The
@@ -141,14 +117,14 @@ Export void UnregisterHISTOGRAMImage(void)
 %  This method is strongly based on a similar one written by
 %  muquit@warm.semcor.com which in turn is based on ppmhistmap of netpbm.
 %
-%  The format of the WriteHISTOGRAMImage method is:
+%  The format of the WriteHistogramImage method is:
 %
-%      unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
+%      unsigned int WriteHistogramImage(const ImageInfo *image_info,
 %        Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o status: Method WriteHISTOGRAMImage return True if the image is written.
+%    o status: Method WriteHistogramImage return True if the image is written.
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
@@ -158,7 +134,7 @@ Export void UnregisterHISTOGRAMImage(void)
 %
 %
 */
-static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
+static unsigned int WriteHistogramImage(const ImageInfo *image_info,
   Image *image)
 {
 #define HistogramDensity  "256x200"

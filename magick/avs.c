@@ -248,30 +248,6 @@ Export void RegisterAVSImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r A V S I m a g e                                        %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterAVSImage removes format registrations made by the
-%  AVS module from the list of supported formats.
-%
-%  The format of the UnregisterAVSImage method is:
-%
-%      UnregisterAVSImage(void)
-%
-*/
-Export void UnregisterAVSImage(void)
-{
-  UnregisterMagickInfo("AVS");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e A V S I m a g e                                                 %
 %                                                                             %
 %                                                                             %

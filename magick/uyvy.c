@@ -204,30 +204,6 @@ Export void RegisterUYVYImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r U Y V Y I m a g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterUYVYImage removes format registrations made by the
-%  UYVY module from the list of supported formats.
-%
-%  The format of the UnregisterUYVYImage method is:
-%
-%      UnregisterUYVYImage(void)
-%
-*/
-Export void UnregisterUYVYImage(void)
-{
-  UnregisterMagickInfo("UYVY");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e U Y V Y I m a g e                                               %
 %                                                                             %
 %                                                                             %

@@ -145,30 +145,6 @@ Export void RegisterXImage(void)
 #endif
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r X I m a g e                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterXImage removes format registrations made by the
-%  X module from the list of supported formats.
-%
-%  The format of the UnregisterXImage method is:
-%
-%      UnregisterXImage(void)
-%
-*/
-Export void UnregisterXImage(void)
-{
-  UnregisterMagickInfo("X");
-}
-
 #if defined(HasX11)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

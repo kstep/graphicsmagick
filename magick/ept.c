@@ -142,30 +142,6 @@ Export void RegisterEPTImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r E P T I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterEPTImage removes format registrations made by the
-%  EPT module from the list of supported formats.
-%
-%  The format of the UnregisterEPTImage method is:
-%
-%      UnregisterEPTImage(void)
-%
-*/
-Export void UnregisterEPTImage(void)
-{
-  UnregisterMagickInfo("EPT");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e E P T I m a g e                                                 %
 %                                                                             %
 %                                                                             %

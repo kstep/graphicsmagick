@@ -422,30 +422,6 @@ Export void RegisterHDFImage(void)
 #endif
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r H D F I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterHDFImage removes format registrations made by the
-%  HDF module from the list of supported formats.
-%
-%  The format of the UnregisterHDFImage method is:
-%
-%      UnregisterHDFImage(void)
-%
-*/
-Export void UnregisterHDFImage(void)
-{
-  UnregisterMagickInfo("HDF");
-}
-
 #if defined(HasHDF)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

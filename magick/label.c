@@ -82,17 +82,17 @@ Export const char
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadLABELImage reads a LABEL image file and returns it.  It
+%  Method ReadLabelImage reads a Label image file and returns it.  It
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadLABELImage method is:
+%  The format of the ReadLabelImage method is:
 %
-%      Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadLabelImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadLABELImage returns a pointer to the image after
+%    o image:  Method ReadLabelImage returns a pointer to the image after
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
@@ -235,7 +235,7 @@ static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
 }
 #endif
 
-static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadLabelImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define MaxGlyphs  65535
 
@@ -853,50 +853,26 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterLABELImage adds attributes for the LABEL image format to
+%  Method RegisterLabelImage adds attributes for the Label image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterLABELImage method is:
+%  The format of the RegisterLabelImage method is:
 %
-%      RegisterLABELImage(void)
+%      RegisterLabelImage(void)
 %
 */
-Export void RegisterLABELImage(void)
+Export void RegisterLabelImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("LABEL");
-  entry->decoder=ReadLABELImage;
+  entry=SetMagickInfo("Label");
+  entry->decoder=ReadLabelImage;
   entry->adjoin=False;
   entry->description=AllocateString("Text image format");
   RegisterMagickInfo(entry);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r L A B E L I m a g e                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterLABELImage removes format registrations made by the
-%  LABEL module from the list of supported formats.
-%
-%  The format of the UnregisterLABELImage method is:
-%
-%      UnregisterLABELImage(void)
-%
-*/
-Export void UnregisterLABELImage(void)
-{
-  UnregisterMagickInfo("LABEL");
 }

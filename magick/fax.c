@@ -224,31 +224,6 @@ Export void RegisterFAXImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r F A X I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterFAXImage removes format registrations made by the
-%  FAX module from the list of supported formats.
-%
-%  The format of the UnregisterFAXImage method is:
-%
-%      UnregisterFAXImage(void)
-%
-*/
-Export void UnregisterFAXImage(void)
-{
-  UnregisterMagickInfo("FAX");
-  UnregisterMagickInfo("G3");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e F A X I m a g e                                                 %
 %                                                                             %
 %                                                                             %

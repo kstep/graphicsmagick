@@ -532,30 +532,6 @@ Export void RegisterFITSImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r F I T S I m a g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterFITSImage removes format registrations made by the
-%  FITS module from the list of supported formats.
-%
-%  The format of the UnregisterFITSImage method is:
-%
-%      UnregisterFITSImage(void)
-%
-*/
-Export void UnregisterFITSImage(void)
-{
-  UnregisterMagickInfo("FITS");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e F I T S I m a g e                                               %
 %                                                                             %
 %                                                                             %

@@ -252,30 +252,6 @@ Export void RegisterWBMPImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r W B M P I m a g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterWBMPImage removes format registrations made by the
-%  WBMP module from the list of supported formats.
-%
-%  The format of the UnregisterWBMPImage method is:
-%
-%      UnregisterWBMPImage(void)
-%
-*/
-Export void UnregisterWBMPImage(void)
-{
-  UnregisterMagickInfo("WBMP");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e W B M P I m a g e                                               %
 %                                                                             %
 %                                                                             %

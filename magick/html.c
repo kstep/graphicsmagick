@@ -155,32 +155,6 @@ Export void RegisterHTMLImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r H T M L I m a g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterHTMLImage removes format registrations made by the
-%  HTML module from the list of supported formats.
-%
-%  The format of the UnregisterHTMLImage method is:
-%
-%      UnregisterHTMLImage(void)
-%
-*/
-Export void UnregisterHTMLImage(void)
-{
-  UnregisterMagickInfo("HTM");
-  UnregisterMagickInfo("HTML");
-  UnregisterMagickInfo("SHTML");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e H T M L I m a g e                                               %
 %                                                                             %
 %                                                                             %

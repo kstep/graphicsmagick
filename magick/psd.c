@@ -835,30 +835,6 @@ Export void RegisterPSDImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r P S D I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterPSDImage removes format registrations made by the
-%  PSD module from the list of supported formats.
-%
-%  The format of the UnregisterPSDImage method is:
-%
-%      UnregisterPSDImage(void)
-%
-*/
-Export void UnregisterPSDImage(void)
-{
-  UnregisterMagickInfo("PSD");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e P S D I m a g e                                                 %
 %                                                                             %
 %                                                                             %

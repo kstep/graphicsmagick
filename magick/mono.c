@@ -217,30 +217,6 @@ Export void RegisterMONOImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r M O N O I m a g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterMONOImage removes format registrations made by the
-%  MONO module from the list of supported formats.
-%
-%  The format of the UnregisterMONOImage method is:
-%
-%      UnregisterMONOImage(void)
-%
-*/
-Export void UnregisterMONOImage(void)
-{
-  UnregisterMagickInfo("MONO");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e M O N O I m a g e                                               %
 %                                                                             %
 %                                                                             %

@@ -799,31 +799,6 @@ Export void RegisterMIFFImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r M I F F I m a g e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterMIFFImage removes format registrations made by the
-%  MIFF module from the list of supported formats.
-%
-%  The format of the UnregisterMIFFImage method is:
-%
-%      UnregisterMIFFImage(void)
-%
-*/
-Export void UnregisterMIFFImage(void)
-{
-  UnregisterMagickInfo("IMPLICIT");
-  UnregisterMagickInfo("MIFF");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e M I F F I m a g e                                               %
 %                                                                             %
 %                                                                             %

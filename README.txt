@@ -114,10 +114,15 @@ UNIX/Cygwin COMPILATION
 
     If you are not happy with configure's choice of compiler,
     compilation flags, or libraries, you can give `configure' initial
-    values for variables by specifying them on the configure command
-    line, e.g.:
+    values for variables by setting them in the environment.  Using a
+    Bourne-compatible shell, you can do that on the command line like
+    this:
 
-        ./configure CC=c89 CFLAGS=-O2 LIBS=-lposix
+        CC=c89 CFLAGS=-O2 LIBS=-lposix ./configure
+
+    Or on systems that have the `env' program, you can do it like this:
+
+        env CPPFLAGS=-I/usr/local/include LDFLAGS=-s ./configure
 
     The configure variables you should be aware of are:
 
@@ -150,38 +155,36 @@ UNIX/Cygwin COMPILATION
     equivalent to --with-something=no.  The configure options are as
     follows (execute 'configure --help' to see all options).
 
-      --enable-shared[=PKGS]  build shared libraries [default=no]
-      --enable-static[=PKGS]  build static libraries [default=yes]
-      --enable-lzw            enable LZW support (default is no)
-      --enable-16bit-pixel    enable 16 bit/quantum pixels (default is no)
-      --with-cache            set pixel cache threshhold (default 80MB)
-      --without-frozenpaths   disable frozen delegate paths
-      --without-largefiles    disable support for large (64 bit) file offsets
-      --without-perl          disable build/install of PerlMagick
-      --without-bzlib         disable BZLIB support
-      --without-dps           disable Display Postscript support
-      --without-fpx           disable FlashPIX support
-      --without-hdf           disable HDF support
-      --without-jbig          disable JBIG support
-      --without-jpeg          disable JPEG support
-      --without-png           disable PNG support
-      --without-tiff          disable TIFF support
-      --without-ttf           disable TrueType support
-      --with-ttf-fontpath     set default TrueType font path (default none)
-      --without-zlib          disable ZLIB support
-      --with-x                use the X Window System
+      --enable-shared      build shared libraries (default is no)
+      --enable-static      build static libraries (default is yes)
+      --enable-lzw         enable LZW support (default is no)
+      --enable-16bit-pixel enable 16 bit pixels (default is no)
+      --enable-socks       enable use of SOCKS 5 library and 'rftp'
+      --with-frozenpaths   enable frozen delegate paths (default is yes)
+      --with-perl          enable build/install of PerlMagick (default is yes)
+      --with-bzlib         enable BZlib (default is yes)
+      --with-dps           enable Display Postscript (default is yes)
+      --with-fpx           enable FlashPIX (default is yes)
+      --with-hdf           enable HDF (default is yes)
+      --with-jbig          enable JBIG (default is yes)
+      --with-jpeg          enable JPEG (default is yes)
+      --with-png           enable PNG (default is yes)
+      --with-tiff          enable TIFF (default is yes)
+      --with-ttf           enable TrueType (default is yes)
+      --with-zlib          enable Zlib (default is yes)
+      --with-x             use the X Window System
 
-    ImageMagick options represent either features to be enabled, disabled,
-    or packages to be included in the build.  When a feature is enabled
+    ImageMagick options represent either features to be enabled or
+    packages to be included in the build.  When a feature is enabled
     (via --enable-something), it enables code already present in
     ImageMagick.  When a package is enabled (via --with-something), the
     configure script will search for it, and if is is properly
     installed and ready to use (headers and built libraries are found
     by compiler) it will be included in the build.  The configure script
-    is delivered with all features disabled and all packages enabled. In
-    general, the only reason to disable a package is if a package exists
-    but it is unsuitable for the build (perhaps an old version or not
-    compiled with the right compilation flags).
+    is delivered with all features disabled and all packages enabled
+    (except for PERL). In general, the only reason to disable a package
+    is if a package exists but it is unsuitable for the build (perhaps
+    an old version or not compiled with the right compilation flags).
 
     Several configure options require special note:
 
@@ -210,26 +213,6 @@ UNIX/Cygwin COMPILATION
         3) building PIC versions of the delegate libraries may take
         additional expertise and effort; 4) you are unable to build
         shared libraries.
-
-      o --enable-lzw: Unisys claims a patent on the algorithm supporting
-        LZW compression (e.g. used by GIF and TIFF).  To avoid infringing
-        on this patent, support for LZW is disabled by default.  With
-        LZW support, GIF files written by ImageMagick will be much larger
-        than expected.  Obtain a license from Unisys to use LZW compression
-        if LZW is important to your application, or, even better, use a
-        format like PNG which does not suffer from these problems.
-
-      o --enable-16bit-pixel: By default ImageMagick represents images
-        internally using an eight-bit pixel quantum (red, green, blue, and
-        alpha component).  Scientific applications, or other specialized
-        applications, which must ensure that the full dynamic range of
-        the image pixels is preserved across operations, or which must
-        process an image format that can represent deep pixels, may want
-        to enable support for sixteen-bit pixel quantums. When this option
-        is specified, the definition QuantumLeap is applied when
-        ImageMagick is built, allowing RGBA values to range from 0 to
-        65535 rather than 0 to 255.  Enabling this option will cause
-        ImageMagick to run about 30% slower.
 
       o --without-frozenpaths: By default, the configure script will
         determine the location of all delegates (external programs) and

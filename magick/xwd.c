@@ -500,32 +500,6 @@ Export void RegisterXWDImage(void)
 #endif
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r X W D I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterXWDImage removes format registrations made by the
-%  XWD module from the list of supported formats.
-%
-%  The format of the UnregisterXWDImage method is:
-%
-%      UnregisterXWDImage(void)
-%
-*/
-Export void UnregisterXWDImage(void)
-{
-#if defined(HasX11)
-  UnregisterMagickInfo("XWD");
-#endif
-}
-
 #if defined(HasX11)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

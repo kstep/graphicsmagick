@@ -101,30 +101,6 @@ Export void RegisterUILImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r U I L I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterUILImage removes format registrations made by the
-%  UIL module from the list of supported formats.
-%
-%  The format of the UnregisterUILImage method is:
-%
-%      UnregisterUILImage(void)
-%
-*/
-Export void UnregisterUILImage(void)
-{
-  UnregisterMagickInfo("UIL");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   W r i t e U I L I m a g e                                                 %
 %                                                                             %
 %                                                                             %

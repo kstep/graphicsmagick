@@ -567,27 +567,3 @@ Export void RegisterPDBImage(void)
   entry->description=AllocateString("Pilot Image Format");
   RegisterMagickInfo(entry);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r P D B I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterPDBImage removes format registrations made by the
-%  PDB module from the list of supported formats.
-%
-%  The format of the UnregisterPDBImage method is:
-%
-%      UnregisterPDBImage(void)
-%
-*/
-Export void UnregisterPDBImage(void)
-{
-  UnregisterMagickInfo("PDB");
-}
