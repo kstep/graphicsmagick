@@ -70,13 +70,20 @@
 /*
   Typedef declaractions.
 */
+typedef struct _MSLGroupInfo
+{
+	unsigned long
+		numImages;	/* how many images are in this group */
+} MSLGroupInfo;
+
 typedef struct _MSLInfo
 {
   ExceptionInfo
     exception;
 
   long
-    n;
+    n,
+	nGroups;
 
   ImageInfo
     **image_info;
@@ -84,6 +91,9 @@ typedef struct _MSLInfo
   Image
     **attributes,
     **image;
+
+  MSLGroupInfo
+	  *group_info;
 
   unsigned int
     debug;
@@ -449,7 +459,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
     *msl_info;
 
   register int
-    i;
+    i, j;
 
   unsigned long
     height,
@@ -838,6 +848,99 @@ static void MSLStartElement(void *context,const xmlChar *name,
 			  }
 
 			  break;
+			}
+			else if (LocaleCompare(name, "composite") == 0 )
+			{
+				Image *
+					srcImage = (Image*)NULL;
+				CompositeOperator
+					compositeOp = OverCompositeOp;
+				x = y = 0;
+
+				if (msl_info->image[n] == (Image *) NULL)
+				{
+					ThrowException(&msl_info->exception,OptionWarning,
+									"no images defined",name);
+					break;
+				}
+				if (attributes == (const xmlChar **) NULL)
+					break;
+				for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+				{
+					keyword=(const char *) attributes[i++];
+					CloneString(&value,TranslateText(msl_info->image_info[n],
+									msl_info->attributes[n],attributes[i]));
+					switch (*keyword)
+					{
+						case 'I':
+						case 'i':
+						{
+							if (LocaleCompare(keyword,"image") == 0)
+							{
+								for (j=0; j<msl_info->n;j++)
+								{
+									ImageAttribute *
+										theAttr = GetImageAttribute(msl_info->attributes[j], "id");
+									if (theAttr && LocaleCompare(theAttr->value, value) == 0)
+									{
+										srcImage = msl_info->image[j];
+										break;
+									}
+								}
+								break;
+							}
+							ThrowException(&msl_info->exception,OptionWarning,
+											"Unrecognized attribute",keyword);
+							break;
+						}
+						case 'X':
+						case 'x':
+						{
+							if (LocaleCompare(keyword,"x") == 0)
+							{
+								x = atoi( value );
+								break;
+							}
+							ThrowException(&msl_info->exception,OptionWarning,
+											"Unrecognized attribute",keyword);
+							break;
+						}
+						case 'Y':
+						case 'y':
+						{
+							if (LocaleCompare(keyword,"y") == 0)
+							{
+								y = atoi( value );
+								break;
+							}
+							ThrowException(&msl_info->exception,OptionWarning,
+											"Unrecognized attribute",keyword);
+							break;
+						}
+						default:
+						{
+							ThrowException(&msl_info->exception,OptionWarning,
+											"Unrecognized attribute",keyword);
+							break;
+						}
+					}
+
+					/*
+						process image.
+					*/
+					if (srcImage != (Image*)NULL)
+					{
+						unsigned int
+								result;
+						
+						result = CompositeImage(msl_info->image[n], compositeOp, srcImage, x, y);
+						break;
+					} else 
+						ThrowException(&msl_info->exception,OptionWarning,
+										"no composite image defined",name);
+
+				}
+				break;
 			}
 		  else if (LocaleCompare(name,"crop") == 0)
 			{
@@ -1370,6 +1473,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
           }
           break;
         }
+	  else if (LocaleCompare(name, "group") == 0) 
+	  {
+			msl_info->nGroups++;
+			ReacquireMemory((void**) &msl_info->group_info, (msl_info->nGroups+1)*sizeof(MSLGroupInfo));
+			break;
+	  }
       ThrowException(&msl_info->exception,OptionError,
         "Unrecognized element",(const char *) name);
     }
@@ -1400,6 +1509,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               (msl_info->attributes[n] == (Image *) NULL))
             ThrowException(&msl_info->exception,ResourceLimitError,
               "Unable to allocate image","Memory allocation failed");
+		  msl_info->group_info[msl_info->nGroups-1].numImages++;
           attribute=GetImageAttribute(msl_info->attributes[n-1],(char *) NULL);
           while (attribute != (const ImageAttribute *) NULL)
           {
@@ -1416,6 +1526,71 @@ static void MSLStartElement(void *context,const xmlChar *name,
               msl_info->attributes[n],attributes[i]));
             switch (*keyword)
             {
+			case 'B':
+			case 'b':
+				{
+					if (LocaleCompare(keyword,"background") == 0)
+					{
+						(void) QueryColorDatabase(value,
+											&msl_info->image_info[n]->background_color);
+						break;
+					}
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				}
+
+			case 'C':
+			case 'c':
+				{
+					if (LocaleCompare(keyword,"color") == 0)
+					{
+						Image
+						  *next_image;
+
+						(void) strcpy(msl_info->image_info[n]->filename,"xc:");
+						(void) strcat(msl_info->image_info[n]->filename,value);
+						next_image=ReadImage(msl_info->image_info[n],&exception);
+						if (exception.severity != UndefinedException)
+						  MagickWarning(exception.severity,exception.reason,
+							exception.description);
+						if (next_image == (Image *) NULL)
+						  continue;
+						if (msl_info->image[n] == (Image *) NULL)
+						  msl_info->image[n]=next_image;
+						else
+						  {
+							register Image
+							  *p;
+
+							/*
+							  Link image into image list.
+							*/
+							p=msl_info->image[n];
+							for ( ; p->next != (Image *) NULL; p=p->next);
+							next_image->previous=p;
+							p->next=next_image;
+						  }
+						break;
+					}
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				}
+
+			case 'I':
+			case 'i':
+				{
+					if (LocaleCompare(keyword,"id") == 0)
+					{
+						(void) SetImageAttribute(msl_info->attributes[n],keyword,NULL);	/* make sure to clear it! */
+						(void) SetImageAttribute(msl_info->attributes[n],keyword,value);
+						break;
+					}
+					ThrowException(&msl_info->exception,OptionWarning,
+					  "Unrecognized attribute",keyword);
+					break;
+				}
               case 'S':
               case 's':
               {
@@ -1491,6 +1666,15 @@ static void MSLStartElement(void *context,const xmlChar *name,
 					msl_info->image[n]=newImage;
 					break;
 				}
+			} 
+			else if (LocaleCompare(name, "msl") == 0 )
+			{
+				/* 
+					This is our base element.
+						at the moment we don't do anything special
+						but someday we might!
+				*/
+				break;
 			}
 			ThrowException(&msl_info->exception,OptionError,
 							"Unrecognized element",(const char *) name);
@@ -2640,29 +2824,76 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
 static void MSLEndElement(void *context,const xmlChar *name)
 {
-  MSLInfo
-    *msl_info;
+	MSLInfo
+		*msl_info;
 
-  /*
-    Called when the end of an element has been detected.
-  */
-  msl_info=(MSLInfo *) context;
-  if (msl_info->debug)
-    (void) fprintf(stdout,"  SAX.endElement(%.1024s)\n",(char *) name);
-  switch (*name)
-  {
-    case 'I':
-    case 'i':
-    {
-      if (msl_info->image[msl_info->n] != (Image *) NULL)
-        DestroyImage(msl_info->image[msl_info->n]);
-      DestroyImage(msl_info->attributes[msl_info->n]);
-      DestroyImageInfo(msl_info->image_info[msl_info->n]);
-      msl_info->n--;
-    }
-    default:
-      break;
-  }
+	/*
+		Called when the end of an element has been detected.
+	*/
+	msl_info=(MSLInfo *) context;
+	if (msl_info->debug)
+		(void) fprintf(stdout,"  SAX.endElement(%.1024s)\n",(char *) name);
+	switch (*name)
+	{
+		case 'G':
+		case 'g':
+		{
+			if (LocaleCompare(name, "group") == 0 )
+			{
+				if (msl_info->group_info[msl_info->nGroups-1].numImages > 0 ) 
+				{
+					int	i = msl_info->group_info[msl_info->nGroups-1].numImages;
+					while ( i-- ) 
+					{
+						if (msl_info->image[msl_info->n] != (Image *) NULL)
+							DestroyImage(msl_info->image[msl_info->n]);
+						DestroyImage(msl_info->attributes[msl_info->n]);
+						DestroyImageInfo(msl_info->image_info[msl_info->n]);
+						msl_info->n--;
+					}
+				}
+				msl_info->nGroups--;
+			}
+		}
+		break;
+
+		case 'I':
+		case 'i':
+		{
+			if (LocaleCompare(name, "image") == 0)
+			{
+				/*
+					only dispose of images when they aren't in a group
+				*/
+				if ( msl_info->nGroups == 0 )
+				{
+					if (msl_info->image[msl_info->n] != (Image *) NULL)
+						DestroyImage(msl_info->image[msl_info->n]);
+					DestroyImage(msl_info->attributes[msl_info->n]);
+					DestroyImageInfo(msl_info->image_info[msl_info->n]);
+					msl_info->n--;
+				}
+			}
+		}
+		break;
+
+		case 'M':
+		case 'm':
+		{
+			if (LocaleCompare(name, "msl") == 0 )
+			{
+				/* 
+					This is our base element.
+						at the moment we don't do anything special
+						but someday we might!
+				*/
+			}
+		}
+		break;
+
+		default:
+		break;
+	}
 }
 
 static void MSLCharacters(void *context,const xmlChar *c,int length)
@@ -3040,14 +3271,17 @@ int main(int argc,char **argv)
   msl_info.image_info=(ImageInfo **) AcquireMemory(sizeof(ImageInfo *));
   msl_info.image=(Image **) AcquireMemory(sizeof(Image *));
   msl_info.attributes=(Image **) AcquireMemory(sizeof(Image *));
+  msl_info.group_info=(MSLGroupInfo *) AcquireMemory(sizeof(MSLGroupInfo));
   if ((msl_info.image_info == (ImageInfo **) NULL) ||
       (msl_info.image == (Image **) NULL) ||
-      (msl_info.attributes == (Image **) NULL))
+      (msl_info.attributes == (Image **) NULL) ||
+	  (msl_info.group_info == (MSLGroupInfo *) NULL))
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
   msl_info.image_info[0]=CloneImageInfo((ImageInfo *) NULL);
   msl_info.attributes[0]=AllocateImage(msl_info.image_info[0]);
   msl_info.image[0]=AllocateImage(msl_info.image_info[0]);
+  msl_info.group_info[0].numImages = 0;
   if ((msl_info.image_info[0] == (ImageInfo *) NULL) ||
       (msl_info.attributes[0] == (Image *) NULL) ||
       (msl_info.image[0] == (Image *) NULL))
@@ -3133,6 +3367,7 @@ int main(int argc,char **argv)
 
 	DestroyImage(*msl_info.image);
 	DestroyMagick();
+	LiberateMemory(&msl_info.group_info);
 	LiberateMemory((void **) &argv);
 	Exit(0);
 	return(False);
