@@ -209,7 +209,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info->text != (char *) NULL)
     clone_info->text=AllocateString(draw_info->text);
   if (draw_info->font != (char *) NULL)
-    clone_info->font=AllocateString(draw_info->font);
+    CloneString(&clone_info->font,draw_info->font);
   if (draw_info->family != (char *) NULL)
     clone_info->family=AllocateString(draw_info->family);
   clone_info->style=draw_info->style;
@@ -219,12 +219,12 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     clone_info->encoding=AllocateString(draw_info->encoding);
   clone_info->pointsize=draw_info->pointsize;
   if (draw_info->density != (char *) NULL)
-    clone_info->density=AllocateString(draw_info->density);
+    CloneString(&clone_info->density,draw_info->density);
   clone_info->align=draw_info->align;
   clone_info->undercolor=draw_info->undercolor;
   clone_info->border_color=draw_info->border_color;
   if (draw_info->server_name != (char *) NULL)
-    clone_info->server_name=AllocateString(draw_info->server_name);
+    CloneString(&clone_info->server_name,draw_info->server_name);
   if (draw_info->dash_pattern != (double *) NULL)
     {
       register long

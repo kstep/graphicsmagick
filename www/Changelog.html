@@ -56,6 +56,8 @@
 2004-01-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/render.c (CloneDrawInfo): Fixed nasty memory leak which
+        becomes painfully evident when using Magick++.
   <LI> magick/type.c (ReadTypeConfigureFile): Fix problem with parsing
         &lt;include&gt; directive.<BR>
   <LI> configure.ac: The type.mgk generated had a syntax error.
