@@ -1,8 +1,10 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Implementation of Coder, a image encode/decode wrapper.
+//
+// NOTE: This is a work in progress and is not expected to work -- yet.
 //
 
 #define MAGICK_IMPLEMENTATION

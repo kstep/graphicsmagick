@@ -1,8 +1,10 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Base class for image format encoders and decoders.
+//
+// NOTE: This is a work in progress and is not expected to work -- yet.
 //
 // The methods decoder, encoder, and magick are callbacks which are
 // invoked by the library to decode, encode, or identify an image.
