@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Description of MagickInfo structure members.">
    <title>ImageMagick MagickInfo Structure</title>
@@ -30,19 +30,10 @@ an image format directly from within their program.
 <h3>
 Sample Module:</h3>
 The following shows sample code for a module called "GIF" (gif.c). Note
-that the names of the Register and <tt>Unregister call-back routines are
-calculated at run-time, and therefore must follow the rigid naming scheme
-RegisterFORMATImage and UnregisterFORMATImage, respectively, where FORMAT
-is the upper-cased name of the module file</tt>:
-<p>/* Test file header to see if it is of my type */
-<br><tt>unsigned int IsGIF(const unsigned char *magick,unsigned int length)</tt>
-<br><tt>{</tt>
-<br><tt>&nbsp; if (length &lt; 4)</tt>
-<br><tt>&nbsp;&nbsp;&nbsp; return(False);</tt>
-<br><tt>&nbsp; if (strncmp((char *) magick,"GIF8",4) == 0)</tt>
-<br><tt>&nbsp;&nbsp;&nbsp; return(True);</tt>
-<br><tt>&nbsp; return(False);</tt>
-<br><tt>}</tt>
+that the names of the Register and Unregister call-back routines are calculated
+at run-time, and therefore must follow the rigid naming scheme <tt>RegisterFORMATImage</tt>
+and <tt>UnregisterFORMATImage</tt>, respectively, where FORMAT is the upper-cased
+name of the module file:
 <p>/* Read image */
 <br><tt>Image *ReadGIFImage(const ImageInfo *image_info)</tt>
 <br><tt>{</tt>
@@ -52,16 +43,15 @@ is the upper-cased name of the module file</tt>:
 <br><tt>unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)</tt>
 <br><tt>{</tt>
 <br><tt>&nbsp; [ encode the image ... ]</tt>
-<br><tt>}</tt><tt></tt>
+<br><tt>}</tt>
 <p><tt>/* Module call-back to register support for formats */</tt>
 <br><tt>void RegisterGIFImage(void)</tt>
 <br><tt>{</tt>
 <br><tt>&nbsp; MagickInfo</tt>
-<br><tt>&nbsp;&nbsp;&nbsp; *entry;</tt><tt></tt>
+<br><tt>&nbsp;&nbsp;&nbsp; *entry;</tt>
 <p><tt>&nbsp; entry=SetMagickInfo("GIF");</tt>
 <br><tt>&nbsp; entry->decoder=ReadGIFImage;</tt>
 <br><tt>&nbsp; entry->encoder=WriteGIFImage;</tt>
-<br><tt>&nbsp; entry->magick=IsGIF;</tt>
 <br><tt>&nbsp; entry->description=AllocateString("CompuServe graphics interchange
 format");</tt>
 <br><tt>&nbsp; entry->module=AllocateString("GIF");</tt>
@@ -76,7 +66,7 @@ format");</tt>
 format (version 87a)");</tt>
 <br><tt>&nbsp; entry->module=AllocateString("GIF");</tt>
 <br><tt>&nbsp; RegisterMagickInfo(entry);</tt>
-<br><tt>}</tt><tt></tt>
+<br><tt>}</tt>
 <p><tt>/* Module call-back to unregister support for formats */</tt>
 <br><tt>Export void UnregisterGIFImage(void)</tt>
 <br><tt>{</tt>
@@ -89,15 +79,6 @@ Image format support provided within the user's application does not need
 to implement the RegisterFORMATImage and UnregisterFORMATImage call-back
 routines. Instead, the application takes responsibility for the registration
 itself. An example follows:
-<p>/* Test file header to see if it is of my type */
-<br><tt>unsigned int IsGIF(const unsigned char *magick,unsigned int length)</tt>
-<br><tt>{</tt>
-<br><tt>&nbsp; if (length &lt; 4)</tt>
-<br><tt>&nbsp;&nbsp;&nbsp; return(False);</tt>
-<br><tt>&nbsp; if (strncmp((char *) magick,"GIF8",4) == 0)</tt>
-<br><tt>&nbsp;&nbsp;&nbsp; return(True);</tt>
-<br><tt>&nbsp; return(False);</tt>
-<br><tt>}</tt>
 <p>/* Read image */
 <br><tt>Image *ReadGIFImage(const ImageInfo *image_info)</tt>
 <br><tt>{</tt>
@@ -117,7 +98,6 @@ itself. An example follows:
 <br><tt>&nbsp;&nbsp;&nbsp; exit(1);</tt>
 <p><tt>&nbsp; info->decoder = ReadGIFImage;</tt>
 <br><tt>&nbsp; info->encoder = WriteGIFImage;</tt>
-<br><tt>&nbsp; info->magick&nbsp; = IsGIF;</tt>
 <br><tt>&nbsp; info->adjoin&nbsp; = False;</tt>
 <br><tt>&nbsp; info->description = AllocateString("CompuServe graphics
 interchange format");</tt>
@@ -174,15 +154,6 @@ The members of the MagickInfo structure are shown in the following table:
 
 <td>Function to encode image data with options passed via <a href="ImageInfo.html">ImageInfo</a>
 and image represented by <a href="Image.html">Image</a>.</td>
-</tr>
-
-<tr>
-<td>magick</td>
-
-<td>unsigned int (*magick)(const unsigned char *,const unsigned int)</td>
-
-<td>Function to test file magick based on bytes starting at the specified
-pointer with specified size. Returns non-zero (True) if file type is supported.</td>
 </tr>
 
 <tr>
