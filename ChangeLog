@@ -1,6 +1,6 @@
 2004-08-24  Glenn Randers-Pehrson <glennrp@glennrp.com>
 	* coders/bmp.c is said to have a potential buffer overrun.
-	Patch from Cristy applied.
+	Patch from Cristy applied (also to avi.c and dib.c).
 
 2004-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

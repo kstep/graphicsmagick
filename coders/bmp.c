@@ -163,15 +163,15 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
     count,
     y;
 
-  unsigned char
-    *end;
-
   register long
     i,
     x;
 
   register unsigned char
     *q;
+
+  unsigned char
+    *end;
 
   assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);

@@ -154,17 +154,24 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
   register unsigned char
     *q;
 
+  unsigned char
+    *end;
+
   (void) memset(pixels,0,image->columns*image->rows);
   byte=0;
   x=0;
   q=pixels;
+  end=pixels + (size_t) image->columns*image->rows;
   for (y=0; y < (long) image->rows; )
   {
+    if (q < pixels || q  >= end)
+      break;
     count=ReadBlobByte(image);
     if (count == EOF)
       break;
     if (count != 0)
       {
+        count=Min(count, end - q);
         /*
           Encoded mode.
         */
@@ -214,6 +221,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             /*
               Absolute mode.
             */
+      	    count=Min(count, end - q);
             for (i=0; i < count; i++)
             {
               if (compression == 1)
