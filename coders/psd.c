@@ -543,19 +543,20 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     count,
     length,
-	combinedlength,
+  	combinedlength,
     size;
 
   ExtendedSignedIntegralType
-  offset,
-  diff_offset;
+    offset,
+    diff_offset;
 
   unsigned char
     *data;
 
   unsigned int
+  	logging,
+    mask_size,
     packet_size,
-  mask_size,
     skip_first_alpha = 0,
     status;
 
@@ -564,10 +565,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned long
     pixel;
-
-  int
-	logging,
-	padBytes;
 
 
   /*

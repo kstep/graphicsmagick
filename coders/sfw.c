@@ -247,10 +247,10 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image into a buffer.
   */
-  buffer=(unsigned char *) AcquireMemory(GetBlobSize(image));
+  buffer=(unsigned char *) AcquireMemory((size_t) GetBlobSize(image));
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
-  count=ReadBlob(image,GetBlobSize(image),(char *) buffer);
+  count=ReadBlob(image,(size_t) GetBlobSize(image),(char *) buffer);
   if ((count == 0) || (LocaleNCompare((char *) buffer,"SFW",3) != 0))
     ThrowReaderException(CorruptImageError,"NotASFWImageFile",image);
   CloseBlob(image);

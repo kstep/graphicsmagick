@@ -1691,7 +1691,7 @@ static int format8BIM(Image *ifile, Image *ofile)
     Size = ReadBlobMSBLong(ifile);
     if (Size < 0) return -1;
     /* make a buffer to hold the data and snag it from the input stream */
-    str=(unsigned char *) AcquireMemory(Size);
+    str=(unsigned char *) AcquireMemory((size_t) Size);
     if (str == (unsigned char *) NULL)
       {
         printf("MemoryAllocationFailed");

@@ -1,4 +1,4 @@
-/*
+long
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -303,7 +303,7 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string)
 
 
 static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo, 
-            XCFLayerInfo*  inLayerInfo, int data_length)
+            XCFLayerInfo*  inLayerInfo, size_t data_length)
 {
   int i, nmemb_read_successfully;
   PixelPacket*  q;
@@ -595,12 +595,12 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
       switch (inDocInfo->compression)
       {
         case COMPRESS_NONE:
-          if (!load_tile (image,tile_image,inDocInfo,inLayerInfo,offset2-offset))
+          if (!load_tile (image,tile_image,inDocInfo,inLayerInfo,(size_t) (offset2-offset)))
             fail = True;
           break;
         case COMPRESS_RLE:
           if (!load_tile_rle (image,tile_image,inDocInfo,inLayerInfo,
-              offset2-offset))
+              (size_t) (offset2-offset)))
             fail = True;
           break;
         case COMPRESS_ZLIB:

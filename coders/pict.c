@@ -1788,7 +1788,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBShort(image,PictEndOfPictureOp);
   offset=TellBlob(image);
   (void) SeekBlob(image,512,SEEK_SET);
-  (void) WriteBlobMSBShort(image,offset);
+  (void) WriteBlobMSBShort(image,(unsigned long) offset);
   LiberateMemory((void **) &scanline);
   LiberateMemory((void **) &packed_scanline);
   LiberateMemory((void **) &buffer);

@@ -329,7 +329,7 @@ extern "C" {
   I/O defines.
 */
 #if defined(WIN32) && !defined(Windows95)
-#define MagickSeek(file,offset,whence)  lseeki64(file,offset,whence)
+#define MagickSeek(file,offset,whence)  _lseeki64(file,offset,whence)
 #else
 #define MagickSeek(file,offset,whence)  lseek(file,offset,whence)
 #endif
