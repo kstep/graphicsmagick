@@ -1,0 +1,404 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "Convert++"=".\Convert++\Convert++.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name MagickArgs
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "IM_MOD_BMP"=.\modules\IM_MOD_BMP.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "IM_MOD_CACHE"=.\modules\IM_MOD_CACHE.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "IM_MOD_JPEG"=.\modules\IM_MOD_JPEG.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "IM_MOD_TIFF"=.\modules\IM_MOD_TIFF.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "IMagickMOD"=.\magick\IMagickMOD.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name X11Stubs
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Magick++"=".\Magick++\Magick++.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagick
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "MagickArgs"=.\MagickArgs\MagickArgs.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Magick++
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "MagickBZIP"=.\bzip\MagickBZIP.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MagickFPX"=.\fpx\MagickFPX.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name MagickFPXjpeg
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "MagickFPXjpeg"=.\fpx\MagickFPXjpeg.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MagickHDF"=.\hdf\MagickHDF.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name MagickJPEG
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickZIP
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "MagickJBIG"=.\jbig\MagickJBIG.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MagickJPEG"=.\jpeg\MagickJPEG.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MagickPNG"=.\png\MagickPNG.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name MagickZIP
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "MagickTIFF"=.\tiff\MagickTIFF.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name MagickZIP
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MagickJPEG
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "MagickZIP"=.\zlib\MagickZIP.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Magickttf"=.\ttf\Magickttf.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "X11Stubs"=.\magick\X11stubs.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "combine"=.\utilities\combine.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "convert"=.\utilities\convert.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "identify"=.\utilities\identify.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "iptcutil"=.\iptcutils\iptcutil.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "mogrify"=.\utilities\mogrify.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "montage"=.\utilities\montage.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "rwblob"=.\tests\rwblob.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "rwfile"=.\tests\rwfile.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IMagickMOD
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+
