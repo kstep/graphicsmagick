@@ -135,12 +135,13 @@ MagickExport void DestroyImageAttributes(Image *image)
 %
 */
 
-static void GenerateIPTCAttribute(Image *image,const char *key)
+static int GenerateIPTCAttribute(Image *image,const char *key)
 {
   char
     *attribute;
 
   int
+    foundit,
     count,
     dataset,
     record;
@@ -148,14 +149,15 @@ static void GenerateIPTCAttribute(Image *image,const char *key)
   register int
     i;
 
-  unsigned short
+  unsigned int
     length;
 
   if (image->iptc_profile.length == 0)
-    return;
+    return False;
   count=sscanf(key,"IPTC:%d:%d",&dataset,&record);
   if (count != 2)
-    return;
+    return False;
+  foundit=False;
   for (i=0; i < image->iptc_profile.length; i++)
   {
     if (image->iptc_profile.info[i] != 0x1c)
@@ -173,7 +175,263 @@ static void GenerateIPTCAttribute(Image *image,const char *key)
     attribute[length]='\0';
     SetImageAttribute(image,key,(const char *) attribute);
     LiberateMemory((void **) &attribute);
+    foundit=True;
   }
+  return foundit;
+}
+
+static long readLongFromBuffer(char **s, unsigned int *len)
+{
+  unsigned char
+    buffer[4];
+
+  int
+    i,
+    c;
+
+  if (*len < 4) return -1;
+  for (i=0; i<4; i++)
+  {
+    c = *(*s)++; (*len)--;
+    buffer[i] = c;
+  }
+  return (((long) buffer[ 0 ]) << 24) |
+         (((long) buffer[ 1 ]) << 16) | 
+	       (((long) buffer[ 2 ]) <<  8) |
+         (((long) buffer[ 3 ]));
+}
+
+static int readWordFromBuffer(char **s, unsigned int *len)
+{
+  unsigned char
+    buffer[2];
+
+  int
+    i,
+    c;
+
+  if (*len < 2) return -1;
+  for (i=0; i<2; i++)
+  {
+    c = *(*s)++; (*len)--;
+    buffer[i] = c;
+  }
+  return (((int) buffer[ 0 ]) <<  8) |
+         (((int) buffer[ 1 ]));
+}
+
+static unsigned char readByteFromBuffer(char **s, unsigned int *len)
+{
+  unsigned char
+    c;
+
+  if (*len < 1) return 0xff;
+  c = *(*s)++; (*len)--;
+  return c;
+}
+
+static char *GenerateClippingPath(char *s, unsigned int len,
+    int columns, int rows)
+{
+  char
+    *outs;
+
+  long
+    x,
+    y;
+
+  int
+    i,
+    first,
+    length,
+    selector;
+  
+  double
+    fx[3],
+    fy[3],
+    first_fx[3],
+    first_fy[3],
+    previ_fx[3],
+    previ_fy[3];
+
+  outs=AllocateString((char *) NULL);
+  if (outs == (char *) NULL)
+    return outs;
+  while (len > 0)
+  {
+    char
+      *temp;
+
+    selector = readWordFromBuffer(&s, &len);
+	  if (selector != 6) /* Path fill record */
+    {
+      s += 24;
+      len -= 24;
+      continue;
+    }
+    s += 24;
+    len -= 24;
+    temp=AllocateString((char *) NULL);
+    FormatString(temp,"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
+    ConcatenateString(&outs,temp);
+    FormatString(temp,"<svg width=\"%d\" height=\"%d\">\n",columns,rows);
+    ConcatenateString(&outs,temp);
+    FormatString(temp,"<g>\n");
+    ConcatenateString(&outs,temp);
+    FormatString(temp,"<path style=\"fill:#000000;stroke:none\" d=\"\n");
+    ConcatenateString(&outs,temp);
+    while (len > 0)
+    {
+      selector = readWordFromBuffer(&s, &len);
+	    if ((selector != 0) && (selector != 3))
+        break;
+      length = readWordFromBuffer(&s, &len);
+      s += 22;
+      len -= 22;
+
+      first=1;
+      while (length > 0)
+      {
+        selector = readWordFromBuffer(&s, &len);
+	      if ((selector == 1) || (selector == 2) ||
+            (selector == 4) || (selector == 5))
+        {
+			    for(i=0;i<3;i++)
+				  {
+            y = readLongFromBuffer(&s, &len);
+            x = readLongFromBuffer(&s, &len);
+            fy[i] = ((double)y * (double)rows)/16777216.0;
+            fx[i] = ((double)x * (double)columns)/16777216.0;
+				  }
+          if (first)
+          {
+            FormatString(temp, "M %.1f,%.1f\n",fx[1],fy[1]);
+			      for(i=0;i<3;i++)
+				    {
+              previ_fx[i] = first_fx[i] = fx[i];
+              previ_fy[i] = first_fy[i] = fy[i];
+				    }
+          }
+          else
+          {
+            FormatString(temp, "C %.1f,%.1f %.1f,%.1f %.1f,%.1f\n",
+              previ_fx[2],previ_fy[2],fx[0],fy[0],fx[1],fy[1]);
+			      for(i=0;i<3;i++)
+				    {
+              previ_fx[i] = fx[i];
+              previ_fy[i] = fy[i];
+				    }
+          }
+          ConcatenateString(&outs,temp);
+          first=0;
+          length--;
+        }
+      }
+      FormatString(temp, "C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",
+        previ_fx[2],previ_fy[2],first_fx[0],first_fy[0],first_fx[1],first_fy[1]);
+      ConcatenateString(&outs,temp);
+    }
+    FormatString(temp,"\"/>\n");
+    ConcatenateString(&outs,temp);
+    FormatString(temp,"</g>\n");
+    ConcatenateString(&outs,temp);
+    FormatString(temp,"</svg>\n");
+    ConcatenateString(&outs,temp);
+    LiberateMemory((void **) &temp);
+    break;
+  }
+  return outs;
+}
+
+static int Generate8BIMAttribute(Image *image,const char *key)
+{
+  char
+    *attribute,
+    *PString;
+
+  int
+    count,
+    foundit,
+    i,
+    ID,
+    IDstart,
+    IDend;
+
+  unsigned int
+    length;
+
+  long
+    Size;
+
+  unsigned char
+    c,
+    plen,
+    *string;
+
+  if (image->iptc_profile.length == 0)
+    return False;
+  count=sscanf(key,"8BIM:%d,%d",&IDstart,&IDend);
+  if (count != 2)
+    return False;
+  foundit=False;
+  length=image->iptc_profile.length;
+  string=image->iptc_profile.info;
+  while (length > 0)
+  {
+    if (readByteFromBuffer(&string,&length) != '8')
+      continue;
+    if (readByteFromBuffer(&string,&length) != 'B')
+      continue;
+    if (readByteFromBuffer(&string,&length) != 'I')
+      continue;
+    if (readByteFromBuffer(&string,&length) != 'M')
+      continue;
+    ID=readWordFromBuffer(&string,&length);
+    if (ID < IDstart)
+      continue;
+    if (ID > IDend)
+      continue;
+    plen = readByteFromBuffer(&string,&length);
+    PString=(char *) NULL;
+    if ((plen > 0) && (plen <= length))
+      {
+        PString=(char *) AcquireMemory(plen+1);
+        if (PString != (char *) NULL)
+          {
+            for (i=0; i<plen; i++)
+              PString[i]=(char)readByteFromBuffer(&string,&length);
+            PString[ plen ] = 0;
+            LiberateMemory((void **) &PString);
+          }
+      }
+    if (!(plen&1))
+      c=readByteFromBuffer(&string,&length);
+    Size=readLongFromBuffer(&string,&length);
+    attribute=(char *) AcquireMemory(Size+1);
+    if (attribute != (char *) NULL)
+      {
+        (void) memcpy(attribute,(char *) string,Size);
+        attribute[Size]='\0';
+        string+=Size;
+        length-=Size;
+        if ((ID > 1999) && (ID <2999))
+          {
+            char
+              *text;
+
+            text=GenerateClippingPath(attribute,Size,
+              image->columns,image->rows);
+            SetImageAttribute(image,key,(const char *) text);
+            //SetImageAttribute(image,key,(const char *) "This is simply a test!");
+            LiberateMemory((void **) &text);
+          }
+        else
+          SetImageAttribute(image,key,(const char *) attribute);
+        foundit=True;
+        LiberateMemory((void **) &attribute);
+      }
+  }
+  return foundit;
 }
 
 MagickExport ImageAttribute *GetImageAttribute(const Image *image,
@@ -191,8 +449,13 @@ MagickExport ImageAttribute *GetImageAttribute(const Image *image,
       return(p);
   if (LocaleNCompare("IPTC:",key,5) == 0)
     {
-      GenerateIPTCAttribute((Image *) image, key);
-      return(GetImageAttribute(image,key));
+      if (GenerateIPTCAttribute((Image *) image, key) == True)
+        return(GetImageAttribute(image,key));
+    }
+  if (LocaleNCompare("8BIM:",key,5) == 0)
+    {
+      if (Generate8BIMAttribute((Image *) image, key) == True)
+        return(GetImageAttribute(image,key));
     }
   return(p);
 }
@@ -538,7 +801,11 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
   if (attribute == (ImageAttribute *) NULL)
     return(False);
   attribute->key=AllocateString(key);
-  attribute->value=TranslateText((ImageInfo *) NULL,image,value);
+  if ((LocaleNCompare(key,"IPTC",4) == 0) ||
+      (LocaleNCompare(key,"8BIM",4) == 0))
+    attribute->value=AllocateString(value);
+  else
+    attribute->value=TranslateText((ImageInfo *) NULL,image,value);
   attribute->compression=False;
   attribute->previous=(ImageAttribute *) NULL;
   attribute->next=(ImageAttribute *) NULL;
