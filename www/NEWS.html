@@ -141,6 +141,7 @@ Major changes associated with GraphicsMagick 1.0.0
 <p>
   Major bug fixes:<BR>
 <UL>
+  <LI> 100% successful test completion at all quantum depths (8/16/32).
   <LI> A temporary file management subsystem is added to ensure that all
     temporary files are removed before program exit. Temporary files are
     created and used in a secure fashion to avoid the possibility that a
@@ -157,6 +158,8 @@ Major changes associated with GraphicsMagick 1.0.0
   <LI> No longer removes input file when pinging a FlashPIX file.
   <LI> Arc drawing and texture fill fixes from ImageMagick.
   <LI> Sample, scale and affine fixes from ImageMagick.
+  <LI> MIFF colormaps are now scaled properly while reading.
+  <LI> CMYK translation works for QuantumDepth=32.
 
 </UL>
 <p>

@@ -126,19 +126,19 @@ PERLSTATICNAME=PerlMagick
 $(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
 	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME) $(PERL_MAKE_OPTIONS)
 
-$(PERLMAGICK)/$(PERLMAGICK): $(PERLMAKEFILE)
-	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME) )
+$(PERLMAGICK)/$(PERLSTATICNAME): $(PERLMAKEFILE) magick/libGraphicsMagick.la
+	( rm -f $(PERLMAGICK)/$(PERLSTATICNAME) ; cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME) )
 
-all-perl: $(PERLMAGICK)/$(PERLMAGICK)
+all-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 
-install-exec-perl: $(PERLMAGICK)/$(PERLMAGICK)
+install-exec-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 	( cd $(PERLMAGICK) && \
 	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) )
 
 uninstall-exec-perl:
 	rm -f '@BIN_DIR@/$(PERLSTATICNAME)'
 
-check-perl: $(PERLMAGICK)/$(PERLMAGICK)
+check-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
 
 endif # WITH_PERL_STATIC

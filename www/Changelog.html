@@ -56,6 +56,9 @@
 2003-04-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> Makefile.am ($(PERLMAGICK)/$(PERLSTATICNAME)): Add
+        rules to make sure that static PerlMagick is linked
+        against the current GraphicsMagick library.
   <LI> coders/miff.c (ReadMIFFImage): Properly scale
         colormap entries.<BR>
   <LI> magick/image.c (TransformRGBImage): Eliminate 32-bit
