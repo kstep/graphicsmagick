@@ -98,8 +98,70 @@ typedef struct _PrimitiveInfo
   Forward declarations
 */
 static unsigned int
-  InsidePrimitive(PrimitiveInfo *,const AnnotateInfo *,const PointInfo *,
-    Image *);
+  InsidePrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,Image *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C l o n e D r a w I n f o                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CloneDrawInfo makes a duplicate of the given annotate info, or if
+%  annotate info is NULL, a new one.
+%
+%  The format of the CloneDrawInfo method is:
+%
+%      DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
+%        const DrawInfo *draw_info)
+%
+%  A description of each parameter follows:
+%
+%    o cloned_info: Method CloneDrawInfo returns a duplicate of the given
+%      annotate info, or if annotate info is NULL a new one.
+%
+%    o image_info: a structure of type ImageInfo.
+%
+%    o draw_info: a structure of type DrawInfo.
+%
+%
+*/
+Export DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
+  const DrawInfo *draw_info)
+{
+  DrawInfo
+    *cloned_info;
+
+  ExceptionInfo
+    exception;
+
+  cloned_info=(DrawInfo *) AllocateMemory(sizeof(DrawInfo));
+  if (cloned_info == (DrawInfo *) NULL)
+    MagickError(ResourceLimitError,"Unable to clone annotate info",
+      "Memory allocation failed");
+  if (draw_info == (DrawInfo *) NULL)
+    {
+      GetDrawInfo(image_info,cloned_info);
+      return(cloned_info);
+    }
+  *cloned_info=(*draw_info);
+  if (draw_info->primitive != (char *) NULL)
+    cloned_info->primitive=AllocateString(draw_info->primitive);
+  if (draw_info->pen != (char *) NULL)
+    cloned_info->pen=AllocateString(draw_info->pen);
+  if (draw_info->tile != (Image *) NULL)
+    {
+      cloned_info->tile=CloneImage(draw_info->tile,draw_info->tile->columns,
+        draw_info->tile->rows,False,&exception);
+      if (cloned_info->tile == (Image *) NULL)
+        MagickError(exception.severity,exception.message,exception.qualifier);
+    }
+  return(cloned_info);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -359,6 +421,45 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y D r a w I n f o                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyDrawInfo deallocates memory associated with an
+%  DrawInfo structure.
+%
+%  The format of the DestroyDrawInfo method is:
+%
+%      void DestroyDrawInfo(DrawInfo *draw_info)
+%
+%  A description of each parameter follows:
+%
+%    o draw_info: Specifies a pointer to an DrawInfo structure.
+%
+%
+*/
+Export void DestroyDrawInfo(DrawInfo *draw_info)
+{
+  assert(draw_info != (DrawInfo *) NULL);
+  if (draw_info->primitive != (char *) NULL)
+    FreeMemory(draw_info->primitive);
+  draw_info->primitive=(char *) NULL;
+  if (draw_info->pen != (char *) NULL)
+    FreeMemory(draw_info->pen);
+  draw_info->pen=(char *) NULL;
+  if (draw_info->tile != (Image *) NULL)
+    DestroyImage(draw_info->tile);
+  draw_info->tile=(Image *) NULL;
+  FreeMemory(draw_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w I m a g e                                                         %
 %                                                                             %
 %                                                                             %
@@ -370,21 +471,21 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
 %
 %  The format of the DrawImage method is:
 %
-%      unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
+%      unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image.
 %
-%    o annotate_info: The address of a DrawInfo structure.
+%    o draw_info: The address of a DrawInfo structure.
 %
 %
 */
-Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
+Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
 #define DrawImageText  "  Drawing on image...  "
 
-  AnnotateInfo
+  DrawInfo
     *clone_info;
 
   char
@@ -434,12 +535,12 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
     Ensure the annotation info is valid.
   */
   assert(image != (Image *) NULL);
-  assert(annotate_info != (AnnotateInfo *) NULL);
-  assert(annotate_info->primitive != (char *) NULL);
-  assert(annotate_info->tile != (Image *) NULL);
-  if (*annotate_info->primitive == '\0')
+  assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->primitive != (char *) NULL);
+  assert(draw_info->tile != (Image *) NULL);
+  if (*draw_info->primitive == '\0')
     return(False);
-  clone_info=CloneAnnotateInfo(annotate_info->image_info,annotate_info);
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   primitive=clone_info->primitive;
   indirection=(*primitive == '@');
   if (indirection)
@@ -459,7 +560,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       file=(FILE *) fopen(primitive+1,"r");
       if (file == (FILE *) NULL)
         {
-          DestroyAnnotateInfo(clone_info);
+          DestroyDrawInfo(clone_info);
           ThrowBinaryException(FileOpenWarning,"Unable to read primitive file",
             primitive+1);
         }
@@ -495,7 +596,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       (void) fclose(file);
       if (primitive == (char *) NULL)
         {
-          DestroyAnnotateInfo(clone_info);
+          DestroyDrawInfo(clone_info);
           ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
             "Memory allocation failed");
         }
@@ -507,15 +608,11 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
   number_coordinates=2048;
   primitive_info=(PrimitiveInfo *)
     AllocateMemory(number_coordinates*sizeof(PrimitiveInfo));
-  clone_info->geometry=(char *) AllocateMemory(MaxTextExtent);
-  clone_info->text=(char *) AllocateMemory(Extent(primitive));
-  if ((primitive_info == (PrimitiveInfo *) NULL) ||
-      (clone_info->geometry == (char *) NULL) ||
-      (clone_info->text == (char *) NULL))
+  if (primitive_info == (PrimitiveInfo *) NULL)
     {
       if (indirection)
         FreeMemory(primitive);
-      DestroyAnnotateInfo(clone_info);
+      DestroyDrawInfo(clone_info);
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
@@ -619,7 +716,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
         continue;
       if (indirection)
         FreeMemory(primitive);
-      DestroyAnnotateInfo(clone_info);
+      DestroyDrawInfo(clone_info);
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
@@ -659,8 +756,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
         */
         x=(int) (primitive_info[j+1].pixel.x-primitive_info[j].pixel.x);
         y=(int) (primitive_info[j+1].pixel.y-primitive_info[j].pixel.y);
-        radius=
-          sqrt((double) (x*x+y*y))+clone_info->image_info->linewidth/2.0+0.5;
+        radius=sqrt((double) (x*x+y*y))+clone_info->linewidth/2.0+0.5;
         pixel.x=Max(primitive_info[j].pixel.x-radius,0);
         pixel.y=Max(primitive_info[j].pixel.y-radius,0);
         if (pixel.x < bounds.x1)
@@ -875,7 +971,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       FreeMemory(primitive_info);
       if (indirection)
         FreeMemory(primitive);
-      DestroyAnnotateInfo(clone_info);
+      DestroyDrawInfo(clone_info);
       ThrowBinaryException(OptionWarning,
         "Non-conforming drawing primitive definition",keyword);
     }
@@ -894,7 +990,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
   /*
     Account for linewidth.
   */
-  mid=clone_info->image_info->linewidth/2.0;
+  mid=clone_info->linewidth/2.0;
   if ((bounds.x1 != bounds.x2) || (bounds.y1 != bounds.y2))
     {
       bounds.x1=Max(bounds.x1-mid,0);
@@ -916,7 +1012,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
     {
       target.x=x;
       opacity=InsidePrimitive(primitive_info,clone_info,&target,image);
-      if (!clone_info->image_info->antialias)
+      if (!clone_info->antialias)
         if (opacity != Transparent)
           opacity=Opaque;
       if (opacity != Transparent)
@@ -958,7 +1054,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
   }
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
     if ((primitive_info[i].primitive == MattePrimitive) &&
-	(primitive_info[i].method == ResetMethod))
+        (primitive_info[i].method == ResetMethod))
       image->matte=False;
   /*
     Free resources.
@@ -966,8 +1062,68 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
   FreeMemory(primitive_info);
   if (indirection)
     FreeMemory(primitive);
-  DestroyAnnotateInfo(clone_info);
+  DestroyDrawInfo(clone_info);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t D r a w I n f o                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetDrawInfo initializes the DrawInfo structure.
+%
+%  The format of the GetDrawInfo method is:
+%
+%      void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o draw_info: Specifies a pointer to a DrawInfo structure.
+%
+%
+*/
+Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
+{
+  ExceptionInfo
+    error;
+
+  ImageAttribute
+    *attribute;
+
+  Image
+    *draw_image;
+
+  ImageInfo
+    *clone_info;
+
+  assert(draw_info != (DrawInfo *) NULL);
+  clone_info=CloneImageInfo(image_info);
+  draw_info->primitive=(char *) NULL;
+  draw_info->pen=AllocateString(clone_info->pen);
+  draw_info->linewidth=clone_info->linewidth;
+  draw_info->antialias=clone_info->antialias;
+  draw_info->border_color=clone_info->border_color;
+  /*
+    Get tile.
+  */
+  if (draw_info->pen == (char *) NULL)
+    (void) strcpy(clone_info->filename,"xc:black");
+  else
+    if (*draw_info->pen == '@')
+      (void) strcpy(clone_info->filename,draw_info->pen+1);
+    else
+      (void) FormatString(clone_info->filename,"xc:%.1024s",draw_info->pen);
+  draw_info->tile=ReadImage(clone_info,&error);
+  DestroyImageInfo(clone_info);
 }
 
 /*
@@ -992,7 +1148,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
 %  The format of the InsidePrimitive method is:
 %
 %      unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
-%        const AnnotateInfo *annotate_info,const PointInfo *pixel,Image *image)
+%        const DrawInfo *draw_info,const PointInfo *pixel,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1001,7 +1157,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
-%    o annotate_info: Specifies a pointer to a AnnotateInfo structure.
+%    o draw_info: Specifies a pointer to a DrawInfo structure.
 %
 %    o target: PointInfo representing the (x,y) location in the image.
 %
@@ -1061,7 +1217,7 @@ static unsigned int PixelOnLine(const PointInfo *pixel,const PointInfo *p,
 }
 
 static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
-  const AnnotateInfo *annotate_info,const PointInfo *pixel,Image *image)
+  const DrawInfo *draw_info,const PointInfo *pixel,Image *image)
 {
   PixelPacket
     border_color;
@@ -1084,10 +1240,10 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
     target;
 
   assert(primitive_info != (PrimitiveInfo *) NULL);
-  assert(annotate_info != (AnnotateInfo *) NULL);
+  assert(draw_info != (DrawInfo *) NULL);
   assert(image != (Image *) NULL);
   opacity=Transparent;
-  mid=annotate_info->image_info->linewidth/2.0;
+  mid=draw_info->linewidth/2.0;
   p=primitive_info;
   while (p->primitive != UndefinedPrimitive)
   {
@@ -1300,12 +1456,12 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
             if (p->method == FillToBorderMethod)
               {
-                border_color=annotate_info->image_info->border_color;
+                border_color=draw_info->border_color;
                 target.red=border_color.red;
                 target.green=border_color.green;
                 target.blue=border_color.blue;
               }
-            (void) ColorFloodfillImage(image,&target,annotate_info->tile,
+            (void) ColorFloodfillImage(image,&target,draw_info->tile,
               (int) pixel->x,(int) pixel->y,p->method);
             break;
           }
@@ -1369,7 +1525,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
             if (p->method == FillToBorderMethod)
               {
-                border_color=annotate_info->image_info->border_color;
+                border_color=draw_info->border_color;
                 target.red=border_color.red;
                 target.green=border_color.green;
                 target.blue=border_color.blue;
@@ -1393,6 +1549,9 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case TextPrimitive:
       {
+        AnnotateInfo
+          *annotate;
+
         register char
           *r;
 
@@ -1421,11 +1580,13 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             for (r++;  *r != '\0'; r++)
               if (isspace((int) *r) && (*(r-1) != '\\'))
                 break;
-        (void) strncpy(annotate_info->text,p->text,r-p->text);
-        annotate_info->text[r-p->text]='\0';
-        FormatString(annotate_info->geometry,"%+d%+d",(int) p->pixel.x,
-          (int) p->pixel.y);
-        AnnotateImage(image,annotate_info);
+        annotate=CloneAnnotateInfo((ImageInfo *) NULL,(AnnotateInfo *) NULL);
+/*        annotate->pen=AllocateString(draw_info->pen);*/
+        (void) strncpy(annotate->text,p->text,r-p->text);
+        annotate->text[r-p->text]='\0';
+        FormatString(annotate->geometry,"%+f%+f",p->pixel.x,p->pixel.y);
+        AnnotateImage(image,annotate);
+        DestroyAnnotateInfo(annotate);
         break;
       }
       case ImagePrimitive:

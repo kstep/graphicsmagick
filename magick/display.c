@@ -2054,8 +2054,8 @@ static unsigned int XColorEditImage(Display *display,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            AnnotateInfo
-              *annotate_info;
+            DrawInfo
+              *draw_info;
 
             ImageInfo
               *image_info;
@@ -2076,10 +2076,10 @@ static unsigned int XColorEditImage(Display *display,
             image_info=CloneImageInfo(resource_info->image_info);
             (void) CloneString(&image_info->pen,
               resource_info->pen_colors[pen_id]);
-            annotate_info=CloneAnnotateInfo(image_info,(AnnotateInfo *) NULL);
-            ColorFloodfillImage(*image,&target,annotate_info->tile,x_offset,
+            draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+            ColorFloodfillImage(*image,&target,draw_info->tile,x_offset,
               y_offset,method);
-            DestroyAnnotateInfo(annotate_info);
+            DestroyDrawInfo(draw_info);
             DestroyImageInfo(image_info);
             break;
           }

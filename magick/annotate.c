@@ -110,6 +110,9 @@ Export unsigned int AnnotateImage(Image *image,
     *box_image,
     *annotate_image;
 
+  ImageInfo
+    *image_info;
+
   int
     x,
     y;
@@ -136,7 +139,7 @@ Export unsigned int AnnotateImage(Image *image,
   /*
     Translate any embedded format characters (e.g. %f).
   */
-  clone_info=CloneAnnotateInfo(annotate_info->image_info,annotate_info);
+  clone_info=CloneAnnotateInfo((ImageInfo *) NULL,annotate_info);
   text=TranslateText((ImageInfo *) NULL,image,clone_info->text);
   if (text == (char *) NULL)
     {
@@ -201,8 +204,12 @@ Export unsigned int AnnotateImage(Image *image,
     */
     FormatString(label,"label:%.1024s",textlist[i]);
     FreeMemory(textlist[i]);
-    (void) strcpy(clone_info->image_info->filename,label);
-    annotate_image=ReadImage(clone_info->image_info,&error);
+    image_info=CloneImageInfo((ImageInfo *) NULL);
+    CloneString(&image_info->pen,annotate_info->pen);
+    CloneString(&image_info->font,annotate_info->font);
+    image_info->pointsize=annotate_info->pointsize;
+    (void) strcpy(image_info->filename,label);
+    annotate_image=ReadImage(image_info,&error);
     if (annotate_image == (Image *) NULL)
       {
         for (i++ ; textlist[i] != (char *) NULL; i++)
@@ -294,16 +301,15 @@ Export unsigned int AnnotateImage(Image *image,
         break;
       }
     }
-    if (clone_info->image_info->box != (char *) NULL)
+    if (clone_info->box != (char *) NULL)
       {
         /*
           Surround text with a bounding box.
         */
-        FormatString(clone_info->image_info->filename,"xc:%.1024s",
-          clone_info->image_info->box);
+        FormatString(image_info->filename,"xc:%.1024s",clone_info->box);
         FormatString(size,"%ux%u",annotate_image->columns,annotate_image->rows);
-        (void) CloneString(&clone_info->image_info->size,size);
-        box_image=ReadImage(clone_info->image_info,&error);
+        (void) CloneString(&image_info->size,size);
+        box_image=ReadImage(image_info,&error);
         if (box_image != (Image *) NULL)
           {
             CompositeImage(image,ReplaceCompositeOp,box_image,
@@ -317,6 +323,7 @@ Export unsigned int AnnotateImage(Image *image,
   }
   image->matte=matte;
   DestroyAnnotateInfo(clone_info);
+  DestroyImageInfo(image_info);
   FreeMemory(text);
   for ( ; textlist[i] != (char *) NULL; i++)
     FreeMemory(textlist[i]);
@@ -373,24 +380,18 @@ Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
       return(cloned_info);
     }
   *cloned_info=(*annotate_info);
-  if (annotate_info->image_info != (ImageInfo *) NULL)
-    cloned_info->image_info=CloneImageInfo(annotate_info->image_info);
   if (annotate_info->geometry != (char *) NULL)
     cloned_info->geometry=AllocateString(annotate_info->geometry);
+  if (annotate_info->font != (char *) NULL)
+    cloned_info->font=AllocateString(annotate_info->font);
+  if (annotate_info->pen != (char *) NULL)
+    cloned_info->pen=AllocateString(annotate_info->pen);
+  if (annotate_info->box != (char *) NULL)
+    cloned_info->box=AllocateString(annotate_info->box);
   if (annotate_info->text != (char *) NULL)
     cloned_info->text=AllocateString(annotate_info->text);
-  if (annotate_info->primitive != (char *) NULL)
-    cloned_info->primitive=AllocateString(annotate_info->primitive);
   if (annotate_info->font_name != (char *) NULL)
     cloned_info->font_name=AllocateString(annotate_info->font_name);
-  if (annotate_info->tile != (Image *) NULL)
-    {
-      cloned_info->tile=CloneImage(annotate_info->tile,
-        annotate_info->tile->columns,annotate_info->tile->rows,False,
-	&exception);
-      if (cloned_info->tile == (Image *) NULL)
-        MagickError(exception.severity,exception.message,exception.qualifier);
-    }
   return(cloned_info);
 }
 
@@ -421,22 +422,24 @@ Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
 Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 {
   assert(annotate_info != (AnnotateInfo *) NULL);
-  DestroyImageInfo(annotate_info->image_info);
   if (annotate_info->geometry != (char *) NULL)
     FreeMemory(annotate_info->geometry);
   annotate_info->geometry=(char *) NULL;
+  if (annotate_info->font != (char *) NULL)
+    FreeMemory(annotate_info->font);
+  annotate_info->font=(char *) NULL;
+  if (annotate_info->pen != (char *) NULL)
+    FreeMemory(annotate_info->pen);
+  annotate_info->pen=(char *) NULL;
+  if (annotate_info->box != (char *) NULL)
+    FreeMemory(annotate_info->box);
+  annotate_info->box=(char *) NULL;
   if (annotate_info->text != (char *) NULL)
     FreeMemory(annotate_info->text);
   annotate_info->text=(char *) NULL;
-  if (annotate_info->primitive != (char *) NULL)
-    FreeMemory(annotate_info->primitive);
-  annotate_info->primitive=(char *) NULL;
   if (annotate_info->font_name != (char *) NULL)
     FreeMemory(annotate_info->font_name);
   annotate_info->font_name=(char *) NULL;
-  if (annotate_info->tile != (Image *) NULL)
-    DestroyImage(annotate_info->tile);
-  annotate_info->tile=(Image *) NULL;
   FreeMemory(annotate_info);
 }
 
@@ -478,39 +481,33 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
   Image
     *annotate_image;
 
+  ImageInfo
+    *clone_info;
+
   assert(image_info != (ImageInfo *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
-  annotate_info->image_info=CloneImageInfo(image_info);
-  annotate_info->gravity=NorthWestGravity;
   annotate_info->geometry=(char *) NULL;
+  annotate_info->font=AllocateString(image_info->font);
+  annotate_info->pen=AllocateString(image_info->pen);
+  annotate_info->box=AllocateString(image_info->box);
   annotate_info->text=(char *) NULL;
-  annotate_info->primitive=(char *) NULL;
-  annotate_info->font_name=(char *) NULL;
+  annotate_info->gravity=NorthWestGravity;
+  annotate_info->pointsize=image_info->pointsize;
   annotate_info->degrees=0.0;
-  annotate_info->bounds.width=ceil(annotate_info->image_info->pointsize);
-  annotate_info->bounds.height=ceil(annotate_info->image_info->pointsize);
+  annotate_info->font_name=(char *) NULL;
+  annotate_info->bounds.width=ceil(image_info->pointsize);
+  annotate_info->bounds.height=ceil(image_info->pointsize);
   annotate_info->bounds.x=0;
   annotate_info->bounds.y=0;
-  /*
-    Get tile.
-  */
-  if (annotate_info->image_info->pen == (char *) NULL)
-    (void) strcpy(annotate_info->image_info->filename,"xc:black");
-  else
-    if (*annotate_info->image_info->pen == '@')
-      (void) strcpy(annotate_info->image_info->filename,
-        annotate_info->image_info->pen+1);
-    else
-      (void) FormatString(annotate_info->image_info->filename,"xc:%.1024s",
-        annotate_info->image_info->pen);
-  annotate_info->tile=ReadImage(annotate_info->image_info,&error);
-  if (annotate_info->image_info->font == (char *) NULL)
+  if (annotate_info->font == (char *) NULL)
     return;
   /*
     Get font bounds.
   */
-  FormatString(annotate_info->image_info->filename,"label:%.1024s",Alphabet);
-  annotate_image=ReadImage(annotate_info->image_info,&error);
+  clone_info=CloneImageInfo(image_info);
+  FormatString(clone_info->filename,"label:%.1024s",Alphabet);
+  annotate_image=ReadImage(clone_info,&error);
+  DestroyImageInfo(clone_info);
   if (annotate_image == (Image *) NULL)
     return;
   attribute=GetImageAttribute(annotate_image,"label");

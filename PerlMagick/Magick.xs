@@ -3530,6 +3530,9 @@ Mogrify(ref,...)
       *commands[10],
       message[MaxTextExtent];
 
+    DrawInfo
+      *draw_info;
+
     ExceptionInfo
       exception;
 
@@ -3591,6 +3594,7 @@ Mogrify(ref,...)
       }
     reference=SvRV(ST(0));
     annotate_info=(AnnotateInfo *) NULL;
+    draw_info=(DrawInfo *) NULL;
     region_info.width=0;
     region_info.height=0;
     region_info.x=0;
@@ -4175,8 +4179,8 @@ Mogrify(ref,...)
               if (attribute_flag[4])
                 QueryColorDatabase(argument_list[4].string_reference,
                   &border_color);
-              annotate_info=CloneAnnotateInfo(package_info->image_info,
-                (AnnotateInfo *) NULL);
+              draw_info=CloneDrawInfo(package_info->image_info,
+                (DrawInfo *) NULL);
             }
           pixel=GetPixelCache(image,rectangle_info.x % image->columns,
             rectangle_info.y % image->rows,1,1);
@@ -4184,9 +4188,9 @@ Mogrify(ref,...)
             target=(*pixel);
           if (attribute_flag[4])
             target=border_color;
-          ColorFloodfillImage(image,&target,annotate_info->tile,
-            rectangle_info.x,rectangle_info.y,attribute_flag[4] ?
-            FillToBorderMethod : FloodfillMethod);
+          ColorFloodfillImage(image,&target,draw_info->tile,
+            rectangle_info.x,rectangle_info.y,
+            attribute_flag[4] ? FillToBorderMethod : FloodfillMethod);
           break;
         }
         case 35:  /* Composite */
@@ -4321,26 +4325,26 @@ Mogrify(ref,...)
               if (attribute_flag[6])
                 (void) QueryColorDatabase(argument_list[6].string_reference,
                   &package_info->image_info->border_color);
-              annotate_info=CloneAnnotateInfo(package_info->image_info,
-                (AnnotateInfo *) NULL);
+              draw_info=CloneDrawInfo(package_info->image_info,
+                (DrawInfo *) NULL);
             }
-          (void) CloneString(&annotate_info->primitive,"Point");
+          (void) CloneString(&draw_info->primitive,"Point");
           if (attribute_flag[0] && (argument_list[0].int_reference > 0))
-            (void) CloneString(&annotate_info->primitive,
+            (void) CloneString(&draw_info->primitive,
               PrimitiveTypes[argument_list[0].int_reference]);
           if (attribute_flag[1])
             {
-              (void) strcat(annotate_info->primitive," ");
-              (void) strcat(annotate_info->primitive,
+              (void) strcat(draw_info->primitive," ");
+              (void) strcat(draw_info->primitive,
                 argument_list[1].string_reference);
             }
           if (attribute_flag[2])
             {
-              (void) strcat(annotate_info->primitive," ");
-              (void) strcat(annotate_info->primitive,
+              (void) strcat(draw_info->primitive," ");
+              (void) strcat(draw_info->primitive,
                 MethodTypes[argument_list[2].int_reference]);
             }
-          DrawImage(image,annotate_info);
+          DrawImage(image,draw_info);
           break;
         }
         case 39:  /* Equalize */
@@ -4675,7 +4679,7 @@ Mogrify(ref,...)
             width,
             sigma;
 
-          width=1.0;
+          width=3.0;
           sigma=1.0;
           if (attribute_flag[1])
             width=argument_list[1].double_reference;
@@ -4723,11 +4727,12 @@ Mogrify(ref,...)
       if (*pv)
         pv++;
     }
+    if (annotate_info)
+      DestroyAnnotateInfo(annotate_info);
+    if (draw_info)
+      DestroyDrawInfo(draw_info);
     if (package_info)
-      {
-        DestroyAnnotateInfo(annotate_info);
-        DestroyPackageInfo(package_info);
-      }
+      DestroyPackageInfo(package_info);
 
   ReturnIt:
     if (reference_vector)

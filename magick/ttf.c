@@ -166,14 +166,14 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   y=10;
   if (annotate_info->font_name != (char *) NULL)
     {
-      annotate_info->image_info->pointsize=30;
+      annotate_info->pointsize=30;
       FormatString(geometry,"+10%+d",y);
       (void) CloneString(&annotate_info->geometry,geometry);
       (void) CloneString(&annotate_info->text,annotate_info->font_name);
       AnnotateImage(image,annotate_info);
       y+=42;
     }
-  annotate_info->image_info->pointsize=18;
+  annotate_info->pointsize=18;
   FormatString(geometry,"+10%+d",y);
   (void) CloneString(&annotate_info->geometry,geometry);
   (void) CloneString(&annotate_info->text,"abcdefghijklmnopqrstuvwxyz");
@@ -192,13 +192,13 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (i=12; i <= 72; i+=6)
   {
     y+=i+6;
-    annotate_info->image_info->pointsize=18;
+    annotate_info->pointsize=18;
     FormatString(geometry,"+10%+d",y);
     (void) CloneString(&annotate_info->geometry,geometry);
     FormatString(text,"%d",i);
     (void) CloneString(&annotate_info->text,text);
     AnnotateImage(image,annotate_info);
-    annotate_info->image_info->pointsize=i;
+    annotate_info->pointsize=i;
     FormatString(geometry,"+50%+d",y);
     (void) CloneString(&annotate_info->geometry,geometry);
     (void) CloneString(&annotate_info->text,

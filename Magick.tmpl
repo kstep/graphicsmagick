@@ -39,7 +39,7 @@ XCOMM
 #ifdef RsArchitecture
 XCOMM EXTENSIONS_DEFINES= -DHasLZW -DHasShape
 #else
-XCOMM EXTENSIONS_DEFINES= -DHasLZW -DHasShape -DHasSharedMemory
+EXTENSIONS_DEFINES= -DHasLZW -DHasShape -DHasSharedMemory
 #endif
 
 XCOMM Set DoSharedLib to HasSharedLibraries to build ImageMagick with shared
@@ -61,21 +61,21 @@ XCOMM extension (and you don't have Ghostscript installed).  If you have one
 XCOMM of these optional delegates, uncomment the respective define.  Make sure
 XCOMM the path names are correct.  See README for more details.
 XCOMM
-XCOMM #define HasBZLIB
+#define HasBZLIB
 XCOMM #define HasDPS
 XCOMM #define HasFPX
 XCOMM #define HasHDF
-XCOMM #define HasJBIG
-XCOMM #define HasJPEG
-XCOMM #define HasPNG
-XCOMM #define HasTIFF
-XCOMM #define HasTTF
-XCOMM #define HasZLIB
+#define HasJBIG
+#define HasJPEG
+#define HasPNG
+#define HasTIFF
+#define HasTTF
+#define HasZLIB
 
 #ifdef HasBZLIB
 BZLIB_DEFINES= -DHasBZLIB
-BZLIB_INCLUDES= -I$(TOP)/bzlib
-BZLIB_FLAGS= -L$(TOP)/bzlib
+BZLIB_INCLUDES= -I/opt/bzip2/include
+BZLIB_FLAGS= -L/opt/bzip2/lib
 BZLIB_LIBRARIES= -lbz2
 #endif
 
@@ -102,45 +102,45 @@ HDF_LIBRARIES= -ldf
 
 #ifdef HasJBIG
 JBIG_DEFINES= -DHasJBIG
-JBIG_INCLUDES= -I$(TOP)/jbig/libjbig
-JBIG_FLAGS= -L$(TOP)/jbig/libjbig
+JBIG_INCLUDES= -I/opt/jbigkit/include
+JBIG_FLAGS= -L/opt/jbigkit/lib
 JBIG_LIBRARIES= -ljbig
 #endif
 
 #ifdef HasJPEG
 JPEG_DEFINES= -DHasJPEG
-JPEG_INCLUDES= -I$(TOP)/jpeg
-JPEG_FLAGS= -L$(TOP)/jpeg
+JPEG_INCLUDES= -I/opt/jpeg-6/include
+JPEG_FLAGS= -L/opt/jpeg-6/lib
 JPEG_LIBRARIES= -ljpeg
 #endif
 
 #ifdef HasPNG
 XCOMM Use libpng-1.00 or above.  You must also link with Zlib.
 PNG_DEFINES= -DHasPNG
-PNG_INCLUDES= -I$(TOP)/png
-PNG_FLAGS= -L$(TOP)/png
+PNG_INCLUDES= -I/opt/libpng/include
+PNG_FLAGS= -L/opt/libpng/lib
 PNG_LIBRARIES= -lpng
 #endif
 
 #ifdef HasTIFF
 XCOMM Tiff library requires Jpeg and Zlib libraries.
 TIFF_DEFINES= -DHasTIFF
-TIFF_INCLUDES= -I$(TOP)/tiff/libtiff
-TIFF_FLAGS= -L$(TOP)/tiff/libtiff
+TIFF_INCLUDES= -I/opt/tiff-3.5/include
+TIFF_FLAGS= -L/opt/tiff-3.5/lib
 TIFF_LIBRARIES= -ltiff
 #endif
 
 #ifdef HasTTF
 TTF_DEFINES= -DHasTTF
-TTF_INCLUDES= -I$(TOP)/ttf -I$(TOP)/ttf/lib/
-TTF_FLAGS= -L$(TOP)/ttf/lib/.libs
+TTF_INCLUDES= -I/opt/freetype/include
+TTF_FLAGS= -L/opt/freetype/lib
 TTF_LIBRARIES= -lttf
 #endif
 
 #ifdef HasZLIB
 ZLIB_DEFINES= -DHasZLIB
-ZLIB_INCLUDES= -I$(TOP)/zlib
-ZLIB_FLAGS= -L$(TOP)/zlib
+ZLIB_INCLUDES= -I/opt/zlib/include
+ZLIB_FLAGS= -L/opt/zlib/lib
 ZLIB_LIBRARIES= -lz
 #endif
 
@@ -157,10 +157,10 @@ XCOMM ImageMagick has an include file named X.h.  Do not set LOCALINC to
 XCOMM the top level X11 include directory or X11/X.h will be overwritten.
 
 #ifndef PREFIX
-PREFIX= /usr/local
+PREFIX=/opt/ImageMagick
 #endif
 
-DelegatePath= -DDelegatePath=\"$(PREFIX)/share/ImageMagick/\"
+DelegatePath= -DDelegatePath=\"$(PREFIX)/lib/\"
 LOCALDIR= $(PREFIX)/bin
 LOCALINC= $(PREFIX)/include
 LOCALLIB= $(PREFIX)/lib
@@ -168,7 +168,7 @@ LOCALMAN1= $(PREFIX)/man/man1
 LOCALMAN4= $(PREFIX)/man/man4
 LOCALMAN5= $(PREFIX)/man/man5
 
-MAGICKDIR= $(TOP)/magick
+MAGICKDIR= $(LOCALLIB)
 MAGICK_DEFINES= -DHasX11
 MAGICK_INCLUDES= -I$(TOP)
 MAGICK_FLAGS= -L$(MAGICKDIR)

@@ -83,7 +83,7 @@ man_MANS = $(MANPAGES)
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) Magick.tmpl Manifest.ps ImageMagick.html Imakefile \
 	Magickshr.opt Make.com README.txt Copyright.txt acconfig.h \
-	QuickStart.txt lndir.sh
+	QuickStart.txt lndir.sh ltcf-c.sh
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = images scenes scripts www PerlMagick Magick++

@@ -51,33 +51,35 @@ REQUIREDLIBS= $(REQUIRED_LIBRARIES) $(LDPRELIB) -lXext -lX11
 SO_REQLIBS= -lX11 -lc
 #endif
 
-HEADERS = magick.h api.h classify.h image.h quantize.h gems.h blob.h \
-	compress.h utility.h pixel_cache.h cache_view.h cache.h monitor.h \
-	error.h memory.h delegates.h timer.h version.h xwindows.h config.h
+HEADERS = api.h blob.h cache.h classify.h compress.h delegates.h error.h \
+  gems.h image.h magick.h memory.h monitor.h quantize.h timer.h utility.h \
+  version.h xwindows.h
 
-SRCS = PreRvIcccm.c animate.c annotate.c attributes.c avs.c blob.c bim.c bmp.c \
-  cache.c cache_view.c cmyk.c colors.c compress.c dcm.c decorate.c delegates.c \
-  display.c dps.c draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c \
-  gems.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c \
-  image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c \
-  miff.c monitor.c mono.c montage.c mtv.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c \
-  pix.c pixel_cache.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
-  pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c shear.c \
-  signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c transform.c \
-  ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c wbmp.c widget.c x.c \
-  xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c
+SRCS = PreRvIcccm.c animate.c annotate.c attributes.c avs.c bim.c blob.c bmp.c \
+  cache.c cache_view.c cmyk.c colors.c compress.c dcm.c decorate.c \
+  delegates.c display.c dps.c draw.c effects.c enhance.c ept.c error.c \
+  fax.c fits.c fpx.c gems.c gif.c gradation.c gray.c hdf.c histogram.c \
+  html.c icc.c icon.c image.c iptc.c jbig.c jpeg.c label.c logo.c mac.c \
+  magick.c map.c matte.c memory.c miff.c monitor.c mono.c montage.c mtv.c \
+  nt.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c pixel_cache.c plasma.c \
+  png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c quantize.c rgb.c \
+  rla.c rle.c sct.c segment.c sfw.c sgi.c shear.c signature.c stegano.c \
+  sun.c tga.c tiff.c tile.c tim.c timer.c transform.c ttf.c txt.c uil.c \
+  utility.c uyvy.c vicar.c vid.c viff.c vms.c wbmp.c widget.c x.c xbm.c \
+  xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c
 
-OBJS = PreRvIcccm.o animate.o annotate.o attributes.o avs.o blob.o bim.o bmp.o \
-  cache.o cache_io.o cmyk.o colors.o compress.o dcm.o decorate.o delegates.o \
-  display.o dps.o draw.o effects.o enhance.o ept.o error.o fax.o fits.o fpx.o \
-  gems.o gif.o gradation.o gray.o hdf.o histogram.o html.o icc.o icon.o \
-  image.o iptc.o jbig.o jpeg.o label.o logo.o magick.o map.o matte.o memory.o \
-  miff.o monitor.o mono.o montage.o mtv.o pcd.o pcl.o pcx.o \
-  pdb.o pdf.o pict.o pix.o plasma.o png.o pnm.o preview.o ps.o ps2.o ps3.o \
-  psd.o pwp.o quantize.o rgb.o rla.o rle.o segment.o sct.o sfw.o sgi.o shear.o \
-  signature.o stegano.o sun.o tga.o tiff.o tile.o tim.o timer.o transform.o \
-  ttf.o txt.o uil.o utility.o uyvy.o vicar.o vid.o viff.o wbmp.o widget.o x.o \
-  xbm.o xc.o xpm.o xwd.o xwindows.o yuv.o zoom.o
+OBJS = PreRvIcccm.o animate.o annotate.o attributes.o avs.o bim.o blob.o bmp.o \
+  cache.o cache_view.o cmyk.o colors.o compress.o dcm.o decorate.o \
+  delegates.o display.o dps.o draw.o effects.o enhance.o ept.o error.o \
+  fax.o fits.o fpx.o gems.o gif.o gradation.o gray.o hdf.o histogram.o \
+  html.o icc.o icon.o image.o iptc.o jbig.o jpeg.o label.o logo.o mac.o \
+  magick.o map.o matte.o memory.o miff.o monitor.o mono.o montage.o mtv.o \
+  nt.o pcd.o pcl.o pcx.o pdb.o pdf.o pict.o pix.o pixel_cache.o plasma.o \
+  png.o pnm.o preview.o ps.o ps2.o ps3.o psd.o pwp.o quantize.o rgb.o \
+  rla.o rle.o sct.o segment.o sfw.o sgi.o shear.o signature.o stegano.o \
+  sun.o tga.o tiff.o tile.o tim.o timer.o transform.o ttf.o txt.o uil.o \
+  utility.o uyvy.o vicar.o vid.o viff.o vms.o wbmp.o widget.o x.o xbm.o \
+  xc.o xpm.o xwd.o xwindows.o yuv.o zoom.o
 
 #ifdef HPArchitecture
 
@@ -117,6 +119,8 @@ install:: all
 
 install:: all
 
+install:: all
+
 clean::
 	-$(RM) $(ARLIB) $(SHLIB)
 
@@ -129,7 +133,7 @@ clean::
 #define IncSubdir magick
 
 #ifndef SGIArchitecture
-SOMAGICKLIBREV= 5.0.20
+SOMAGICKLIBREV= 5.0.11
 #endif
 
 #if (ProjectX < 5)

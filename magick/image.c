@@ -4209,20 +4209,16 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (strncmp("-draw",option,3) == 0)
       {
-        AnnotateInfo
-          *annotate_info;
+        DrawInfo
+          *draw_info;
 
         /*
           Draw image.
         */
-        annotate_info=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
-        (void) CloneString(&annotate_info->primitive,argv[++i]);
-        if (geometry != (char *) NULL)
-          (void) CloneString(&annotate_info->geometry,geometry);
-        if (gravity != ForgetGravity)
-          annotate_info->gravity=gravity;
-        DrawImage(*image,annotate_info);
-        DestroyAnnotateInfo(annotate_info);
+        draw_info=CloneDrawInfo(clone_info,(DrawInfo *) NULL);
+        (void) CloneString(&draw_info->primitive,argv[++i]);
+        DrawImage(*image,draw_info);
+        DestroyDrawInfo(draw_info);
         continue;
       }
     if (strncmp("-edge",option,3) == 0)
@@ -4420,7 +4416,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         /*
           Gaussian blur image.
         */
-        width=1.0;
+        width=3.0;
         sigma=1.0;
         if (*option == '-')
           (void) sscanf(argv[++i],"%lfx%lf",&width,&sigma);

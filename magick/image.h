@@ -50,30 +50,39 @@ typedef unsigned char Quantum;
 /*
   Typedef declarations.
 */
-typedef struct _PixelPacket
+typedef struct _RectangleInfo
 {
-#if defined(WORDS_BIGENDIAN)
-  Quantum
-    red,
-    green,
-    blue,
-    opacity;
-#else
-#if defined(WIN32)
-  Quantum
-    blue,
-    green,
-    red,
-    opacity;
-#else
-  Quantum
-    opacity,
-    red,
-    green,
-    blue;
-#endif
-#endif
-} PixelPacket;
+  unsigned int
+    width,
+    height;
+
+  int
+    x,
+    y;
+} RectangleInfo;
+
+typedef struct _AnnotateInfo
+{
+  char
+    *geometry,
+    *text,
+    *font,
+    *pen,
+    *box;
+
+  unsigned int
+    pointsize,
+    gravity;
+
+  double
+    degrees;
+
+  char
+    *font_name;
+
+  RectangleInfo
+    bounds;
+} AnnotateInfo;
 
 typedef struct _BlobInfo
 {
@@ -145,6 +154,31 @@ typedef struct _ImageAttribute
 } ImageAttribute;
 
 typedef unsigned short IndexPacket;
+
+typedef struct _PixelPacket
+{
+#if defined(WORDS_BIGENDIAN)
+  Quantum
+    red,
+    green,
+    blue,
+    opacity;
+#else
+#if defined(WIN32)
+  Quantum
+    blue,
+    green,
+    red,
+    opacity;
+#else
+  Quantum
+    opacity,
+    red,
+    green,
+    blue;
+#endif
+#endif
+} PixelPacket;
 
 typedef struct _ImageInfo
 {
@@ -313,17 +347,6 @@ typedef struct _ProfileInfo
   unsigned char
     *info;
 } ProfileInfo;
-
-typedef struct _RectangleInfo
-{
-  unsigned int
-    width,
-    height;
-
-  int
-    x,
-    y;
-} RectangleInfo;
 
 typedef struct _SegmentInfo
 {
@@ -507,29 +530,22 @@ typedef struct _Image
     *next;
 } Image;
 
-typedef struct _AnnotateInfo
+typedef struct _DrawInfo
 {
-  ImageInfo
-    *image_info;
+  char
+    *primitive,
+    *pen;
 
   unsigned int
-    gravity;
+    linewidth,
+    antialias;
 
-  char
-    *geometry,
-    *text,
-    *primitive,
-    *font_name;
-
-  double
-    degrees;
+  PixelPacket
+    border_color;
 
   Image
     *tile;
-
-  RectangleInfo
-    bounds;
-} AnnotateInfo;
+} DrawInfo;
 
 typedef struct _MagickInfo
 {
@@ -555,7 +571,6 @@ typedef struct _MagickInfo
   struct _MagickInfo
     *previous,
     *next;
-
 } MagickInfo;
 
 /*
@@ -591,6 +606,9 @@ extern const ColorlistInfo
 */
 extern Export AnnotateInfo
   *CloneAnnotateInfo(const ImageInfo *,const AnnotateInfo *);
+
+extern Export DrawInfo
+  *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
 
 extern Export Image
   *AddNoiseImage(Image *,const NoiseType,ExceptionInfo *),
@@ -667,12 +685,12 @@ extern Export unsigned int
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
   ContrastImage(Image *,const unsigned int),
   DisplayImages(const ImageInfo *image_info,Image *image),
-  DrawImage(Image *,const AnnotateInfo *),
+  DrawImage(Image *,const DrawInfo *),
   EqualizeImage(Image *),
   GammaImage(Image *,const char *),
   GetNumberScenes(const Image *),
-  GetImagePixels(Image *,const int,const int,const unsigned int,const unsigned int,
-    const char *,const StorageType,void *),
+  GetImagePixels(Image *,const int,const int,const unsigned int,
+    const unsigned int,const char *,const StorageType,void *),
   IsGeometry(const char *),
   IsGrayImage(Image *),
   IsMatteImage(Image *),
@@ -713,6 +731,7 @@ extern Export void
   DestroyMagickInfo(),
   DestroyMontageInfo(MontageInfo *),
   GetAnnotateInfo(const ImageInfo *,AnnotateInfo *),
+  GetDrawInfo(const ImageInfo *,DrawInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(MontageInfo *),
   GetPageInfo(RectangleInfo *),
