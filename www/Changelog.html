@@ -53,6 +53,17 @@
 </tr>
 </table>
 <p>
+2004-03-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> version.sh (LIBRARY_REVISION): Bump library revision.
+  <LI> magick/nt_base.c (NTSystemComman): Use
+        MsgWaitForMultipleObjects() rather than WaitForSingleObject() in
+        order to avoid possible deadlock when application code directly or
+        indirectly creates windows.
+
+</UL>
+<p>
 2004-02-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
