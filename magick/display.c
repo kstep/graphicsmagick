@@ -2765,7 +2765,8 @@ static unsigned int XConfigureImage(Display *display,
   */
   windows->pan.crop_geometry=windows->image.crop_geometry;
   XBestIconSize(display,&windows->pan,image);
-  while ((windows->pan.width < 96) && (windows->pan.height < 96))
+  while ((windows->pan.width < MaxIconSize) &&
+	 (windows->pan.height < MaxIconSize))
   {
     windows->pan.width<<=1;
     windows->pan.height<<=1;

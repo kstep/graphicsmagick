@@ -13,6 +13,13 @@ extern "C" {
 */
 typedef enum
 {
+  UndefinedCache,
+  MemoryCache,
+  DiskCache
+} CacheType;
+
+typedef enum
+{
   UndefinedClass,
   DirectClass,
   PseudoClass

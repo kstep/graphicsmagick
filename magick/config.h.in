@@ -164,6 +164,12 @@
 /* Pixel cache threshold (default 80MB)*/
 #undef PixelCacheThreshold
 
+/* The number of bytes in a int.  */
+#undef SIZEOF_INT
+
+/* The number of bytes in a long long.  */
+#undef SIZEOF_LONG_LONG
+
 /* Define if you have the getcwd function.  */
 #undef HAVE_GETCWD
 

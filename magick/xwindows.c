@@ -599,8 +599,6 @@ Export XFontStruct *XBestFont(Display *display,
 */
 Export void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
 {
-#define MaxIconSize  96
-
   double
     scale_factor;
 
@@ -5118,7 +5116,10 @@ Export unsigned int XMakeImage(Display *display,
           if ((window->pixel_info->colors != 0) || transformed_image->matte)
             zoomed_image=SampleImage(transformed_image,width,height);
           else
-            zoomed_image=ZoomImage(transformed_image,width,height);
+            if ((width <= 160) && (height <= 160))
+              zoomed_image=ScaleImage(transformed_image,width,height);
+            else
+              zoomed_image=ZoomImage(transformed_image,width,height);
           if (zoomed_image != (Image *) NULL)
             {
               if (transformed_image != image)

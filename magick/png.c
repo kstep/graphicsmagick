@@ -1784,32 +1784,32 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
                      mng_info->have_saved_bkgd_index ||
 #endif
-                     ping_info->valid & PNG_INFO_bKGD)
-                  {
-                    png_color_16
-                       background;
+			 ping_info->valid & PNG_INFO_bKGD)
+		      {
+			png_color_16
+			   background;
 
-#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
-                    if (mng_info->have_saved_bkgd_index)
-                      background.index=mng_info->saved_bkgd_index;
-                    else
-#endif
-                      background.index=ping_info->background.index;
-                    background.red=
-                       (png_uint_16) mng_info->global_plte[background.index].red;
-                    background.green=
-                       (png_uint_16) mng_info->global_plte[background.index].green;
-                    background.blue =
-                       (png_uint_16) mng_info->global_plte[background.index].blue;
-                    png_set_bKGD(ping,ping_info,&background);
-                  }
-#endif
-              }
-            else
-              MagickWarning(DelegateWarning,
-                "No global PLTE in file",image_info->filename);
-          }
-      }
+    #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
+			if (mng_info->have_saved_bkgd_index)
+			  background.index=mng_info->saved_bkgd_index;
+			else
+    #endif
+			  background.index=ping_info->background.index;
+			background.red=
+			  (png_uint_16) mng_info->global_plte[background.index].red;
+			background.green= (png_uint_16)
+			  mng_info->global_plte[background.index].green;
+			background.blue=(png_uint_16)
+			  mng_info->global_plte[background.index].blue;
+			png_set_bKGD(ping,ping_info,&background);
+		      }
+    #endif
+		  }
+		else
+		  MagickWarning(DelegateWarning,
+		    "No global PLTE in file",image_info->filename);
+	      }
+	  }
 
 #if defined(PNG_READ_bKGD_SUPPORTED)
     if (have_global_bkgd && !(ping_info->valid & PNG_INFO_bKGD))
@@ -3204,19 +3204,20 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               (100.0*image->y_resolution);
           }
       }
-    if (!image_info->adjoin || !equal_backgrounds)
-      {
-        ping_info->valid|=PNG_INFO_bKGD;
-        ping_info->background.red=
-          (unsigned short) DownScale(image->background_color.red);
-        ping_info->background.green=
-          (unsigned short) DownScale(image->background_color.green);
-        ping_info->background.blue=
-          (unsigned short) DownScale(image->background_color.blue);
-        ping_info->background.gray=
-          (unsigned short) DownScale(Intensity(image->background_color));
-        ping_info->background.index=ping_info->background.gray;
-      }
+    if (image->matte)
+      if (!image_info->adjoin || !equal_backgrounds)
+        {
+          ping_info->valid|=PNG_INFO_bKGD;
+          ping_info->background.red=
+            (unsigned short) DownScale(image->background_color.red);
+          ping_info->background.green=
+            (unsigned short) DownScale(image->background_color.green);
+          ping_info->background.blue=
+            (unsigned short) DownScale(image->background_color.blue);
+          ping_info->background.gray=
+            (unsigned short) DownScale(Intensity(image->background_color));
+          ping_info->background.index=ping_info->background.gray;
+        }
     /*
       Select the color type.
     */

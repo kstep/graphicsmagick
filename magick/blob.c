@@ -144,7 +144,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
     Write blob to a temporary file on disk.
   */
   TemporaryFilename(local_info->filename);
-  file=open(local_info->filename,O_WRONLY | O_CREAT,0644);
+  file=open(local_info->filename,O_WRONLY | O_CREAT | O_EXCL,0777);
   if (file == -1)
     {
       MagickWarning(BlobWarning,"Unable to convert blob to an image",
@@ -496,7 +496,7 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
   /*
     Read image from disk as blob.
   */
-  file=open(image->filename,O_RDONLY);
+  file=open(image->filename,O_RDONLY,0777);
   DestroyImageInfo(local_info);
   if (file == -1)
     {
@@ -749,9 +749,9 @@ Export void *MapBlob(const char *filename,const MapMode mode,size_t *length)
   switch (mode)
   {
     default:
-    case ReadMode: file=open(filename,O_RDONLY); break;
-    case WriteMode: file=open(filename,O_WRONLY); break;
-    case IOMode: file=open(filename,O_RDWR); break;
+    case ReadMode: file=open(filename,O_RDONLY,0777); break;
+    case WriteMode: file=open(filename,O_WRONLY,0777); break;
+    case IOMode: file=open(filename,O_RDWR,0777); break;
   }
   if (file == -1)
     return((void *) NULL);

@@ -5728,7 +5728,7 @@ Export Image *ReadImage(ImageInfo *image_info)
   else
     if (!GetDelegateInfo(image_info->magick,(char *) NULL,&delegate_info))
       MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->magick);
+        image_info->filename);
     else
       {
         unsigned int
@@ -5755,7 +5755,7 @@ Export Image *ReadImage(ImageInfo *image_info)
           image=(magick_info->decoder)(image_info);
         else
           MagickWarning(MissingDelegateWarning,
-            "no delegate for this image format",image_info->magick);
+            "no delegate for this image format",image_info->filename);
       }
   if (image_info->temporary)
     {

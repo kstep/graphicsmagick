@@ -875,8 +875,8 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
   primitive_info[i].primitive=UndefinedPrimitive;
   if (primitive_type == UndefinedPrimitive)
     {
-      MagickWarning(OptionWarning,
-        "Non-conforming drawing primitive definition",keyword);
+      MagickWarning(OptionWarning,"Non-conforming drawing primitive definition",
+        keyword);
       FreeMemory(primitive_info);
       if (indirection)
         FreeMemory(primitive);
@@ -913,6 +913,9 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
   for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
   {
     target.y=y;
+    q=GetPixelCache(image,(int) bounds.x1,y,(int) (bounds.x2-bounds.x1+1.0),1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
     {
       target.x=x;
@@ -927,33 +930,33 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
 
           p=GetPixelCache(local_info->tile,x % local_info->tile->columns,
             y % local_info->tile->rows,1,1);
-          q=GetPixelCache(image,x,y,1,1);
-          if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          if (p == (PixelPacket *) NULL)
             break;
           if (!local_info->tile->matte)
             {
-              q->red=(Quantum) ((unsigned long)
+              q->red=((unsigned long)
                 (p->red*opacity+q->red*(Opaque-opacity))/Opaque);
-              q->green=(Quantum) ((unsigned long)
+              q->green=((unsigned long)
                 (p->green*opacity+q->green*(Opaque-opacity))/Opaque);
-              q->blue=(Quantum) ((unsigned long)
+              q->blue=((unsigned long)
                 (p->blue*opacity+q->blue*(Opaque-opacity))/Opaque);
             }
           else
             {
-              q->red=(Quantum) ((unsigned long)
+              q->red=((unsigned long)
                 (p->red*p->opacity+q->red*(Opaque-p->opacity))/Opaque);
-              q->green=(Quantum) ((unsigned long) (p->green*p->opacity+
-                q->green*(Opaque-p->opacity))/Opaque);
-              q->blue=(Quantum) ((unsigned long) (p->blue*p->opacity+
-                q->blue*(Opaque-p->opacity))/Opaque);
-              q->opacity=(Quantum) ((unsigned long) (p->opacity*
-                p->opacity+q->opacity*(Opaque-p->opacity))/Opaque);
+              q->green=((unsigned long)
+                (p->green*p->opacity+q->green*(Opaque-p->opacity))/Opaque);
+              q->blue=((unsigned long)
+                (p->blue*p->opacity+q->blue*(Opaque-p->opacity))/Opaque);
+              q->opacity=((unsigned long)
+                (p->opacity*p->opacity+q->opacity*(Opaque-p->opacity))/Opaque);
             }
-          if (!SyncPixelCache(image))
-            break;
         }
+      q++;
     }
+    if (!SyncPixelCache(image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(DrawImageText,y,image->rows);
   }

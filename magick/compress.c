@@ -680,6 +680,9 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
     n,
     x;
 
+  register PixelPacket
+    *p;
+
   register unsigned char
     *q;
 
@@ -753,7 +756,8 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
   q=scanline;
   for (y=0; y < (int) huffman_image->rows; y++)
   {
-    if (!GetPixelCache(huffman_image,0,y,huffman_image->columns,1))
+    p=GetPixelCache(huffman_image,0,y,huffman_image->columns,1);
+    if (p == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) huffman_image->columns; x++)
     {

@@ -77,6 +77,9 @@ typedef struct _CacheInfo
   int
     file;
 
+  CacheType
+    type;
+
   ClassType
 #if defined(__cplusplus) || defined(c_plusplus)
     c_class;
@@ -174,7 +177,7 @@ Export unsigned int AllocateCache(Cache cache,const ClassType type,
       length=cache_info->number_pixels*sizeof(PixelPacket);
       if (type == PseudoClass)
         length+=cache_info->number_pixels*sizeof(IndexPacket);
-      if (length <= GetCacheMemory(0))
+      if ((cache_info->type != DiskCache) || (length <= GetCacheMemory(0)))
         {
           /*
             Create in-memory pixel cache.
@@ -491,6 +494,7 @@ Export void GetCacheInfo(Cache *cache)
   cache_info=(CacheInfo *) AllocateMemory(sizeof(CacheInfo));
   *cache_info->filename='\0';
   cache_info->file=(-1);
+  cache_info->type=UndefinedCache;
   cache_info->class=UndefinedClass;
   cache_info->mapped=False;
   cache_info->pixels=(PixelPacket *) NULL;
@@ -858,7 +862,8 @@ Export unsigned int ReadCachePixels(Cache cache,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetCacheClassType sets the cache type:  DirectClass or PseudoClass.
+%  Method SetCacheClassType sets the cache class type:  DirectClass or
+%  PseudoClass.
 %
 %  The format of the SetCacheClassType method is:
 %
@@ -916,6 +921,41 @@ Export void SetCacheThreshold(const off_t threshold)
   offset=1024*1024*(cache_threshold-threshold);
   (void) GetCacheMemory(-offset);
   cache_threshold=threshold;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t C a c h e T y p e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetCacheType sets the cache type:  MemoryCache or DiskCache.
+%
+%  The format of the SetCacheType method is:
+%
+%      void SetCacheType(Cache cache,const CacheType type)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%    o type: The pixel cache type MemoryCache or DiskCache.
+%
+%
+*/
+Export void SetCacheType(Cache cache,const CacheType type)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  cache_info->type=type;
 }
 
 /*
