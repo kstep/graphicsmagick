@@ -1,3 +1,6 @@
+2002-03-05  Cristy  <cristy@mystic.es.dupont.com>
+  * Memory overrun when drawing large circles.
+
 2002-03-04  Cristy  <cristy@mystic.es.dupont.com>
   * Removed bug introduced into Bob's Base64Encode() method.
 
