@@ -1520,7 +1520,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
   if (!image->matte || (color->opacity == OpaqueOpacity))
     {
       if (image->depth <= 8)
-        FormatString(name,"#%02x%02x%02x",Downscale(color->red),
+        FormatString(name,"#%02lx%02lx%02lx",Downscale(color->red),
           Downscale(color->green),Downscale(color->blue));
       else
         FormatString(name,"#%04x%04x%04x",(unsigned int) color->red,
@@ -1528,7 +1528,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
       return(False);
     }
   if (image->depth <= 8)
-    FormatString(name,"#%02x%02x%02x%02x",Downscale(color->red),
+    FormatString(name,"#%02lx%02lx%02lx%02lx",Downscale(color->red),
       Downscale(color->green),Downscale(color->blue),
       Downscale(color->opacity));
   else
