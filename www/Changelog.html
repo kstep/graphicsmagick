@@ -23,6 +23,16 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-03-26  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Added preliminary version of C API for vector drawing commands
+    (draw.h & draw.c).  This interface is subject to change, and
+    has not even been tested yet so it should not be used to support
+    production code. The previous draw.h and draw.c have been renamed
+    to render.h and render.c respectively.
+
+2002-03-25  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
+  * Fixed bugs related to layered CMYK PSD images.
+
 2002-03-13  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
   * PSD coder now saves layer information (name, offset & opacity)
     in hidden attributes.
