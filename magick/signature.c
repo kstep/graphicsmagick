@@ -364,8 +364,8 @@ static void TransformSignature(SignatureInfo *signature_info)
 %
 %
 */
-static void UpdateSignature(SignatureInfo *signature_info,
-  unsigned char *message,size_t length)
+static void UpdateSignature(SignatureInfo *signature_info,unsigned char *message,
+  size_t length)
 {
   register int
     i;
