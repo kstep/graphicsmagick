@@ -27,6 +27,7 @@ sub MY::test
    #  =======   ======================	======================================
    #   bzlib    BZip compression        BZip library
    #   cgm	CGM format		'ralcgm' program
+   #   fpx      FlashPix format         FlashPix library
    #   hdf	HDF format		HDF library
    #   jbig	JBIG format		JBIG library
    #   jpeg 	JPEG format		JPEG library
