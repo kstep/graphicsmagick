@@ -109,7 +109,6 @@ int main ( int argc, char **argv )
   Image *final = (Image *)NULL;
   char infile[80];
   char format[80];
-  char scratch[80];
   char *size = NULL;
   int rows, columns = 0;
   char filename[80];
@@ -173,8 +172,6 @@ int main ( int argc, char **argv )
   strcpy( original->magick, format );
   strcpy( original->filename, filename );
   original->delay = 10;
-  FormatString( scratch, "%d", 10 );
-  CloneString( &imageInfo.delay, scratch );
   WriteImage ( &imageInfo, original );
   DestroyImage( original );
   original = (Image*)NULL;
@@ -201,8 +198,6 @@ int main ( int argc, char **argv )
   strcpy( original->magick, format );
   strcpy( original->filename, filename );
   original->delay = 10;
-  FormatString( scratch, "%d", 10 );
-  CloneString( &imageInfo.delay, scratch );
   WriteImage ( &imageInfo, original );
 
   /*
