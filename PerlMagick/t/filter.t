@@ -37,7 +37,7 @@ testFilter('input.miff', 'ColorFloodfill',
 
 ++$test;
 testFilter('input.miff', 'Colorize',
-  q/fill=>'red',opacity=>50/,
+  q/red/,
   '62907fa59892a6241e81fa10cd513ef2',
   '2ffd120c34e437df526227b1dcd83f7d');
 
@@ -231,13 +231,13 @@ testFilter('input.miff', 'Swirl',
 
 ++$test;
 testFilter('input.miff', 'Texture',
-  q/filename=>granite:/,
+  q/granite:/,
   'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 ++$test;
 testFilter('input.miff', 'Transform',
-  q/geometry=>50x60/,
-  'eb4d6e084afe2835a1ad28ad7fc12ced');
+  q/50x60/,
+  '3978d936c56107752e690c6107cafdbe');
 
 ++$test;
 testFilter('input.miff', 'Threshold',
@@ -258,8 +258,8 @@ testFilter('input.miff', 'Wave',
 
 ++$test;
 testFilter('input.miff', 'Zoom',
-  q/geometry=>50%,filter=>Point/,
-  '06d1e8f076fecb9a4b121b7f1d8f6057',
+  q/50%/,
+  'b3a770742494edc995abc2b6e6a7faec',
   '9e78d6fcaf019530500dff7078a23efc');
 
 ++$test;

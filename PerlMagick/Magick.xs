@@ -377,7 +377,7 @@ static struct
     { "Solarize", { {"factor", DoubleReference} } },
     { "Sync", },
     { "Texture", { {"texture", ImageReference} } },
-    { "Transform", { {"crop", StringReference}, {"geom", StringReference},
+    { "Transform", { {"geom", StringReference}, {"crop", StringReference},
       {"filter", FilterTypess} } },
     { "Transparent", { {"color", StringReference} } },
     { "Threshold", { {"threshold", DoubleReference} } },
@@ -5001,11 +5001,11 @@ Mogrify(ref,...)
           if (!attribute_flag[1])
             argument_list[1].string_reference=(char *) NULL;
           if (!attribute_flag[2])
-            argument_list[2].int_reference=(int) MitchellFilter;
+            argument_list[2].int_reference=(int) LanczosFilter;
           next=(Image *) NULL;
           image->filter=(FilterTypes) argument_list[2].int_reference;
-          TransformImage(&image,argument_list[0].string_reference,
-            argument_list[1].string_reference);
+          TransformImage(&image,argument_list[1].string_reference,
+            argument_list[0].string_reference);
           break;
         }
         case 56:  /* Transparent */
