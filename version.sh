@@ -13,7 +13,7 @@ PACKAGE_VERSION='1.0.4'
 
 #
 # Formal Package release date
-PACKAGE_RELEASE_DATE="unreleased"
+PACKAGE_RELEASE_DATE="December 6, 2003"
 
 #
 # Package version addendum.  This is an arbitrary suffix (if any)
