@@ -101,7 +101,7 @@ static void ChopPathComponents(char *path,const unsigned long components)
   register char
     *p;
 
-  if (*path == '\0') 
+  if (*path == '\0')
     return;
   p=path+strlen(path)-1;
   if (*p == '/')
