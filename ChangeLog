@@ -1,3 +1,8 @@
+2004-09-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/miff.c (WriteMIFFImage): Ensure that MIFF files are never
+	written with bogus compression values.
+
 2004-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (TIFFErrors): Prevent possible stack overflow on

@@ -1903,14 +1903,26 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           image->matte ? "True" : "False");
     (void) WriteBlobString(image,buffer);
     *buffer='\0';
-    if (compression == RLECompression)
-      FormatString(buffer,"compression=RLE\n");
-    else
-      if (compression == BZipCompression)
+    switch(compression)
+      {
+      case NoCompression:
+      default:
+        compression=NoCompression;
+        break;
+      case RLECompression:
+        FormatString(buffer,"compression=RLE\n");
+        break;
+#if defined(HasBZLIB)
+      case BZipCompression:
         FormatString(buffer,"compression=BZip\n");
-      else
-        if (compression == ZipCompression)
-          FormatString(buffer,"compression=Zip\n");
+        break;
+#endif /* defined(HasBZLIB) */
+#if defined(HasZLIB)
+      case ZipCompression:
+        FormatString(buffer,"compression=Zip\n");
+        break;
+#endif /* defined(HasZLIB) */
+      }
     if (*buffer != '\0')
       (void) WriteBlobString(image,buffer);
     FormatString(buffer,"columns=%lu  rows=%lu  depth=%lu\n",image->columns,
