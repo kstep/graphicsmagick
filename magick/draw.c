@@ -54,7 +54,15 @@
 */
 #include "magick.h"
 #include "define.h"
-
+
+/*
+  Define declarations.
+*/
+#define AccessContext(c) ((struct _MgkDrawContext *)c)
+
+/*
+  Typedef declarations.
+*/
 typedef enum
 {
   PathDefaultOperation,
@@ -101,7 +109,13 @@ struct _MgkDrawContext
   PathMode
     path_mode;
 };
-
+
+/*
+  Forward declarations.
+*/
+static int
+  MgkDrawPrintf(MgkDrawContext context, const char *format, ...);
+
 MagickExport void MgkDrawSetAffine(MgkDrawContext context, const double sx,
                                    const double rx, const double ry, const double sy,
                                    const double tx, const double ty)
@@ -782,7 +796,7 @@ MagickExport void MgkDrawPopPattern(MgkDrawContext context)
   AccessContext(context)->indention_depth--;
   MgkDrawPrintf(context, "pop pattern\n");
 }
-MagickExport int MgkDrawPrintf(MgkDrawContext context, const char *format, ...)
+static int MgkDrawPrintf(MgkDrawContext context, const char *format, ...)
 {
   const size_t alloc_size = MaxTextExtent * 20; /* 40K */
 

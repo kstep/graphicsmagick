@@ -1,7 +1,7 @@
 /*
   ImageMagick Drawing API.
 
-  For internal use only!
+  For internal use only!  Subject to change!
 
 */
 
@@ -12,8 +12,7 @@ extern MagickExport MgkDrawContext
 
 extern MagickExport int
   MgkDrawRender(Image * image, const ImageInfo * image_info,
-                const MgkDrawContext context),
-  MgkDrawPrintf(MgkDrawContext context, const char *format, ...);
+                const MgkDrawContext context);
 
 extern MagickExport void
   MgkDrawArc(MgkDrawContext context,
