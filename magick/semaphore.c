@@ -278,6 +278,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
 #if defined(WIN32) && defined(_MT)
   CloseHandle(semaphore_info->id);
 #endif
+  LiberateMemory((void **) &semaphore_info);
 }
 
 /*
