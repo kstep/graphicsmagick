@@ -2293,9 +2293,6 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   register IndexPacket
     index;
 
-  register Quantum
-    quantum;
-
   long
     y;
 

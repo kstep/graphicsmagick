@@ -68,6 +68,207 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C r o p I m a g e T o H B i t m a p                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CropImageToHBITMAP extracts a specified region of the image and
+%  returns it as a Windows HBITMAP. While the same functionality can be
+%  accomplished by invoking CropImage() followed by ImageToHBITMAP(), this
+%  method is more efficient since it copies pixels directly to the HBITMAP.
+%
+%  The format of the CropImageToHBITMAP method is:
+%
+%      HBITMAP CropImageToHBITMAP(Image* image,const RectangleInfo *geometry,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o geometry: Define the region of the image to crop with members
+%      x, y, width, and height.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport void *CropImageToHBITMAP(const Image *image,
+  const RectangleInfo *geometry,ExceptionInfo *exception)
+{
+#define CropImageText  "  Crop image...  "
+
+  Image
+    *crop_image;
+
+  long
+    y;
+
+  RectangleInfo
+    page;
+
+  register const PixelPacket
+    *p;
+
+  register IndexPacket
+    *crop_indexes,
+    *indexes;
+
+  BITMAP
+    bitmap;
+
+  HBITMAP
+    bitmapH;
+
+  HANDLE
+    bitmap_bitsH;
+
+  register RGBQUAD
+    *q;
+
+  RGBQUAD
+    *bitmap_bits;
+
+  /*
+    Check crop geometry.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(geometry != (const RectangleInfo *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  if ((geometry->width != 0) || (geometry->height != 0))
+    {
+      if (((geometry->x+(long) geometry->width) < 0) ||
+          ((geometry->y+(long) geometry->height) < 0) ||
+          (geometry->x >= (long) image->columns) ||
+          (geometry->y >= (long) image->rows))
+        ThrowImageException(OptionError,"GeometryDoesNotContainImage",
+          "UnableToCropImage");
+    }
+  page=(*geometry);
+  if ((page.width != 0) || (page.height != 0))
+    {
+      if ((page.x+(long) page.width) > (long) image->columns)
+        page.width=image->columns-page.x;
+      if ((page.y+(long) page.height) > (long) image->rows)
+        page.height=image->rows-page.y;
+      if (page.x < 0)
+        {
+          page.width+=page.x;
+          page.x=0;
+        }
+      if (page.y < 0)
+        {
+          page.height+=page.y;
+          page.y=0;
+        }
+    }
+  else
+    {
+      /*
+        Set bounding box to the image dimensions.
+      */
+      page=GetImageBoundingBox(image,exception);
+      page.width+=geometry->x*2;
+      page.height+=geometry->y*2;
+      page.x-=geometry->x;
+      if (page.x < 0)
+        page.x=0;
+      page.y-=geometry->y;
+      if (page.y < 0)
+        page.y=0;
+      if ((((long) page.width+page.x) > (long) image->columns) ||
+          (((long) page.height+page.y) > (long) image->rows))
+        ThrowImageException(OptionError,"GeometryDoesNotContainImage",
+          "UnableToCropImage");
+    }
+  if ((page.width == 0) || (page.height == 0))
+    ThrowImageException(OptionError,"GeometryDimensionsAreZero",
+      "UnableToCropImage");
+  /*
+    Initialize crop image attributes.
+  */
+  bitmap.bmType         = 0;
+  bitmap.bmWidth        = page.width;
+  bitmap.bmHeight       = page.height;
+  bitmap.bmWidthBytes   = bitmap.bmWidth * 4;
+  bitmap.bmPlanes       = 1;
+  bitmap.bmBitsPixel    = 32;
+  bitmap.bmBits         = NULL;
+
+  bitmap_bitsH = (HANDLE) GlobalAlloc (GMEM_MOVEABLE | GMEM_DDESHARE,
+               page.width*page.height*bitmap.bmBitsPixel);
+  if (bitmap_bitsH == NULL)
+    return( NULL ); 
+
+  bitmap_bits = (RGBQUAD *) GlobalLock((HGLOBAL) bitmap_bitsH);
+
+  if ( bitmap.bmBits == NULL )
+    bitmap.bmBits = bitmap_bits;
+
+  if (image->colorspace != RGBColorspace)
+    (void) TransformRGBImage(image,image->colorspace);
+
+  /*
+    Extract crop image.
+  */
+  q = bitmap_bits;
+
+  for (y=0; y < (long) page.height; y++)
+  {
+    p=AcquireImagePixels(image,page.x,page.y+y,page.width,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+
+#if QuantumDepth == 8
+      /* Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8 */
+      memcpy((void*)q,(const void*)p,page.width*sizeof(PixelPacket));
+      q += page.width;
+
+#else  /* 16 or 32 bit Quantum */
+      {
+        long
+          x;
+
+        /* Transfer pixels, scaling to Quantum */
+        for( x=page.width ; x> 0 ; x-- )
+          {
+            q->rgbRed = ScaleQuantumToChar(p->red);
+            q->rgbGreen = ScaleQuantumToChar(p->green);
+            q->rgbBlue = ScaleQuantumToChar(p->blue);
+            q->rgbReserved = 0;
+            ++q;
+            ++p;
+          }
+      }
+#endif
+    if (QuantumTick(y,page.height))
+      if (!MagickMonitor(CropImageText,y,page.height-1,exception))
+        break;
+  }
+  if (y < (long) page.height)
+    {
+      GlobalUnlock((HGLOBAL) bitmap_bitsH);
+      GlobalFree((HGLOBAL) bitmap_bitsH);
+      return((void *) NULL);
+    }
+
+  bitmap.bmBits = bitmap_bits;
+  bitmapH = CreateBitmapIndirect( &bitmap );
+
+  GlobalUnlock((HGLOBAL) bitmap_bitsH);
+
+  return (void *)bitmapH;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I s M a g i c k C o n f l i c t                                           %
 %                                                                             %
 %                                                                             %
@@ -470,11 +671,11 @@ MagickExport void *ImageToHBITMAP(Image* image)
     bitmapH;
 
   HANDLE
-    theBitsH;
+    bitmap_bitsH;
 
   RGBQUAD
     *pDestPixel,
-    *theBits;
+    *bitmap_bits;
 
   nPixels = image->columns * image->rows;
 
@@ -487,16 +688,16 @@ MagickExport void *ImageToHBITMAP(Image* image)
   bitmap.bmBits         = NULL;
 
   memSize = nPixels * bitmap.bmBitsPixel;
-  theBitsH = (HANDLE) GlobalAlloc (GMEM_MOVEABLE | GMEM_DDESHARE, memSize);
+  bitmap_bitsH = (HANDLE) GlobalAlloc (GMEM_MOVEABLE | GMEM_DDESHARE, memSize);
 
-  if (theBitsH == NULL)
+  if (bitmap_bitsH == NULL)
     return( NULL ); 
   
-  theBits = (RGBQUAD *) GlobalLock((HGLOBAL) theBitsH);
-  pDestPixel = theBits;
+  bitmap_bits = (RGBQUAD *) GlobalLock((HGLOBAL) bitmap_bitsH);
+  pDestPixel = bitmap_bits;
 
   if ( bitmap.bmBits == NULL )
-    bitmap.bmBits = theBits;
+    bitmap.bmBits = bitmap_bits;
 
   (void) TransformRGBImage(image,image->colorspace);
   for( row = 0 ; row < image->rows ; row++ )
@@ -527,10 +728,10 @@ MagickExport void *ImageToHBITMAP(Image* image)
 #endif
     }
 
-  bitmap.bmBits = theBits;
+  bitmap.bmBits = bitmap_bits;
   bitmapH = CreateBitmapIndirect( &bitmap );
 
-  GlobalUnlock((HGLOBAL) theBitsH);
+  GlobalUnlock((HGLOBAL) bitmap_bitsH);
 
   return (void *)bitmapH;
 }

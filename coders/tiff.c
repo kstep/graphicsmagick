@@ -831,7 +831,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             }
             case 8:
             {
-              for (x=0; x < (long) width; x++)
+              for (x=(long) width; x > 0; x--)
                 *r++=(*p++);
               break;
             }
