@@ -121,36 +121,24 @@ typedef struct {
 } XCFDocInfo;
 
 typedef struct {
-  char
-    name[1024];
-
-  unsigned int
-    active;
-
-  unsigned long
-    width,
-    height,
-    type,
-    opacity,
-    visible,
-    linked,
-    preserve_trans,
-    apply_mask,
-    show_mask,
-    edit_mask,
-    floating_offset;
-
-  long
-    offset_x,
-    offset_y;
-
-  unsigned long
-    mode,
-    tattoo;
-
-  Image
-    *image;
-
+  char      name[1024];
+  unsigned int  active;
+  unsigned long  width,
+          height,
+          type,
+          opacity,
+          visible,
+          linked,
+          preserve_trans,
+          apply_mask,
+          show_mask,
+          edit_mask,
+          floating_offset;
+  long offset_x,
+          offset_y;
+  unsigned long mode,
+          tattoo;
+  Image*      image;
 } XCFLayerInfo;
 
 #define TILE_WIDTH   64
@@ -343,8 +331,7 @@ static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo,
       q->red    = ScaleCharToQuantum(xcfdata->red);
       q->green  = ScaleCharToQuantum(xcfdata->green);
       q->blue    = ScaleCharToQuantum(xcfdata->blue);
-      q->opacity  = (Quantum) (xcfdata->opacity==0 ? TransparentOpacity :
-         ScaleCharToQuantum(255-inLayerInfo->opacity)); 
+      q->opacity  = (Quantum) (xcfdata->opacity==0 ? TransparentOpacity : ScaleCharToQuantum(255-inLayerInfo->opacity)); 
 
       xcfdata++;
     };
@@ -359,28 +346,15 @@ static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo,
 static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo, 
               XCFLayerInfo*  inLayerInfo, int data_length)
 {
-  unsigned char
-    data,
-    val;
-
-  off_t
-    size;
-
-  int
-    count,
-    length,
-    bpp,    /* BYTES per pixel! */
-    i,
-    j,
-    nmemb_read_successfully;
-
-  unsigned char
-    *xcfdata,
-    *xcfodata,
-    *xcfdatalimit;
-
-  PixelPacket
-    *q;
+  unsigned char data, val;
+  off_t size;
+  int count;
+  int length;
+  int bpp;    /* BYTES per pixel! */
+  int i, j;
+  int nmemb_read_successfully;
+  unsigned char *xcfdata, *xcfodata, *xcfdatalimit;
+  PixelPacket*  q;
 
   bpp = (int) inDocInfo->bpp;
  
@@ -439,11 +413,18 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
               switch (i) {
                 case 0:  
                 q->red    = ScaleCharToQuantum(data);  
-                if ( inDocInfo->image_type == GIMP_GRAY ) {
-                  q->green  = ScaleCharToQuantum(data);
-                  q->blue    = ScaleCharToQuantum(data);
-                  q->opacity  = ScaleCharToQuantum(255-inLayerInfo->opacity);
-                }
+                if ( inDocInfo->image_type == GIMP_GRAY )
+                  {
+                    q->green  = ScaleCharToQuantum(data);
+                    q->blue    = ScaleCharToQuantum(data);
+                    q->opacity  = ScaleCharToQuantum(255-inLayerInfo->opacity);
+                  }
+                else
+                  {
+                    q->green  = q->red;
+                    q->blue    = q->red;
+                    q->opacity  = ScaleCharToQuantum(255-inLayerInfo->opacity);
+                  }
                 break;
                 case 1:  q->green  = ScaleCharToQuantum(data);  break;
                 case 2:  q->blue    = ScaleCharToQuantum(data);  break;
@@ -494,6 +475,12 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
                     {
                       q->green  = ScaleCharToQuantum(data);
                       q->blue    = ScaleCharToQuantum(data);
+                      q->opacity  = ScaleCharToQuantum(255-inLayerInfo->opacity);
+                    }
+                  else
+                    {
+                      q->green  = q->red;
+                      q->blue    = q->red;
                       q->opacity  = ScaleCharToQuantum(255-inLayerInfo->opacity);
                     }
                   break;
@@ -662,14 +649,14 @@ static int load_hierarchy (Image *image, XCFDocInfo* inDocInfo, XCFLayerInfo*
     inLayer)
 {
   off_t
-    saved_pos,
-    offset,
-    junk;
+  saved_pos,
+  offset,
+  junk;
 
   unsigned long
-    junk_width,
-    junk_height,
-    junk_bpp;
+  junk_width,
+  junk_height,
+  junk_bpp;
 
   junk_width = ReadBlobMSBLong(image);
   junk_height = ReadBlobMSBLong(image);
@@ -1026,8 +1013,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (doc_info.compression != COMPRESS_RLE) &&
         (doc_info.compression != COMPRESS_ZLIB) &&
         (doc_info.compression != COMPRESS_FRACTAL))
-          ThrowReaderException(CorruptImageError,
-            "Unknown compression type",image);
+          ThrowReaderException(CorruptImageError,"Unknown compression type",image);
       }
       break;
 
@@ -1147,24 +1133,18 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->ping && (image_info->subrange != 0)) {
   ; /* do nothing, we were just pinging! */
   } else {
-    XCFLayerInfo
-      *layer_info;
-
-    int
-      number_layers = 0,
-
+    XCFLayerInfo*  layer_info;
+      int  number_layers = 0,
       current_layer = 0,
       foundAllLayers = False;
 
       /* BIG HACK
-        Because XCF doesn't include the layer count, and we
+        because XCF doesn't include the layer count, and we
         want to know it in advance in order to allocate memory,
         we have to scan the layer offset list, and then reposition
-        the read pointer.
+        the read pointer
     */
-    off_t
-      oldPos = TellBlob(image);
-
+    off_t  oldPos = TellBlob(image);
     do {
       long  offset = (long) ReadBlobMSBLong(image);
       if ( offset == 0 )
@@ -1186,7 +1166,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       off_t
         offset,
         saved_pos;
-
       int
         layer_ok;
 
