@@ -1,5 +1,6 @@
 2003-07-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/nt_base.h: Add a typedef for ssize_t
 	* magick/deprecate.h: ExtendedSignedIntegralType and
 	ExtendedUnsignedIntegralType are now deprecated types so they are
 	moved to deprecate.h. Existing code which uses these types should

@@ -85,6 +85,9 @@ struct dirent
     d_namlen;
 };
 
+/* ssize_t is the type returned by _read and _write */
+typedef int ssize_t;
+
 typedef struct _DIR
 {
   HANDLE
