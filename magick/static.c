@@ -194,6 +194,9 @@ MagickExport void RegisterStaticModules(void)
   RegisterXCFImage();
   RegisterXPMImage();
   RegisterXWDImage();
+#if defined(_VISUALC_)
+  RegisterXTRNImage();
+#endif /* defined(_VISUALC_) */
   RegisterYUVImage();
 #endif /* !defined(BuildMagickModules) */
 }

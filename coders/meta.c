@@ -785,6 +785,7 @@ static int jpeg_transfer_1(Image *ifile, Image *ofile)
   return c;
 }
 
+#if 0
 static int jpeg_skip_1(Image *ifile)
 {
   int c;
@@ -794,6 +795,7 @@ static int jpeg_skip_1(Image *ifile)
     return EOF;
   return c;
 }
+#endif
 
 static int jpeg_read_remaining(Image *ifile, Image *ofile)
 {
@@ -868,6 +870,7 @@ static int jpeg_nextmarker(Image *ifile, Image *ofile)
   return c;
 }
 
+#if 0
 static int jpeg_skip_till_marker(Image *ifile, int marker)
 {
   int c, i;
@@ -894,6 +897,7 @@ static int jpeg_skip_till_marker(Image *ifile, int marker)
   } while (c != marker);
   return c;
 }
+#endif
 
 static char psheader[] = "\xFF\xED\0\0Photoshop 3.0\08BIM\x04\x04\0\0\0\0";
 
@@ -967,6 +971,7 @@ static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
   return 1;
 }
 
+#if 0
 /* handle stripping the APP13 data out of a JPEG */
 static void jpeg_strip(Image *ifile, Image *ofile)
 {
@@ -1003,6 +1008,7 @@ static int jpeg_extract(Image *ifile, Image *ofile)
   }
   return 1;
 }
+#endif /* NOTUSED */
 
 static Image *ReadMETAImage(const ImageInfo *image_info,
   ExceptionInfo *exception)

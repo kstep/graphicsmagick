@@ -1,3 +1,11 @@
+2003-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/meta.c: Eliminated some compiler warnings.
+	* magick/transform.c (ProfileImage): Eliminated some compiler
+	warnings.
+	* magick/static.c (RegisterStaticModules): Invoke
+	RegisterXTRNImage if _VISUALC_ is defined.
+
 2003-06-02  William Radcliffe  <billr@corbis.com>
 
 	* utilities/gm.c: made -format work again but had to add off flag

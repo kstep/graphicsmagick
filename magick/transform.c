@@ -1100,8 +1100,9 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
     }
   if (LocaleCompare("icm",name) == 0)
     {
-      (void) LogMagickEvent(TransformEvent,GetMagickModule(),"Profile1: %ld bytes, Profile2: %ld bytes",
-                length,image->color_profile.length);
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Profile1: %ld bytes, Profile2: %ld bytes",
+                            (long)length,(long)image->color_profile.length);
       /* check for missing or identical input and output profilea */
       if ((length != 0) && (image->color_profile.length != 0) &&
         (image->color_profile.length != length) &&

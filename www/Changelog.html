@@ -53,6 +53,37 @@
 </tr>
 </table>
 <p>
+2003-06-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/meta.c: Eliminated some compiler warnings.
+  <LI> magick/transform.c (ProfileImage): Eliminated some compiler
+        warnings.<BR>
+  <LI> magick/static.c (RegisterStaticModules): Invoke
+        RegisterXTRNImage if _VISUALC_ is defined.
+
+</UL>
+<p>
+2003-06-02  William Radcliffe  &lt;billr@corbis.com&gt;
+
+<UL>
+  <LI> utilities/gm.c: made -format work again but had to add off flag
+        to MagickCommand to maintain backward compatability with previous
+        versions of GM.<BR>
+  <LI> magick/command.c: Added flag to tell MagickCommand whether GM is
+        expected to process metadata requests. The COM object *always* does.
+  <LI> magick/transform.c: Added error handling, memory leak avoidance
+        and performanc enhancment.
+
+</UL>
+<p>
+2003-06-01  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> NEWS: Added Bug Fixes item with info about the JNG encoder fix.
+
+</UL>
+<p>
 2003-06-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
