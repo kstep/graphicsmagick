@@ -899,6 +899,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
     (long) (rotate_image->columns-y_width+1)/2,0);
   (void) memset(&rotate_image->page,0,sizeof(RectangleInfo));
+  TransformImage(&rotate_image,"0x0",(char *) NULL);
   return(rotate_image);
 }
 
@@ -1013,5 +1014,6 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   YShearImage(shear_image,shear.y,y_width,image->rows,
     (long) (shear_image->columns-y_width+1)/2,y_offset);
   (void) memset(&shear_image->page,0,sizeof(RectangleInfo));
+  TransformImage(&shear_image,"0x0",(char *) NULL);
   return(shear_image);
 }

@@ -4718,8 +4718,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             rotate_image=RotateImage(*image,degrees,&(*image)->exception);
             if (rotate_image == (Image *) NULL)
               break;
-            if (*option == '-')
-              TransformImage(&rotate_image,"0x0",(char *) NULL);
             DestroyImage(*image);
             *image=rotate_image;
             continue;
@@ -4879,8 +4877,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             shear_image=ShearImage(*image,x_shear,y_shear,&(*image)->exception);
             if (shear_image == (Image *) NULL)
               break;
-            if (*option == '-')
-              TransformImage(&shear_image,"0x0",(char *) NULL);
             DestroyImage(*image);
             *image=shear_image;
             continue;
