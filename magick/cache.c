@@ -174,7 +174,7 @@ static SyncPixelHandler
 */
 MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   const long x,const long y,const unsigned long columns,
-	const unsigned long rows,const unsigned long nexus,ExceptionInfo *exception)
+  const unsigned long rows,const unsigned long nexus,ExceptionInfo *exception)
 {
 #define Cx(x) ((x) < 0 ? 0 : (x) >= (long) cache_info->columns ? \
   (long) cache_info->columns-1 : (x))
