@@ -1,165 +1,213 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>enhance - Methods to Enhance an Image</title>
-<link rel="StyleSheet" href="../magick.css" type="text/css" />
-</head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+<STYLE>
+<!--
+@page { size: 8.5in 11in }
+TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+H2 { color: #000000 }
+A:link { color: #0085c0 }
+A:visited { color: #800080 }
+-->
+</STYLE>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080"> <A HREF="http://promote.pair.com/direct.pl?imagemagick.org"> <IMG SRC="../../images/promote.png" ALT="Pair" ALIGN=RIGHT WIDTH=120 HEIGHT=60 BORDER=0></A> <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<TITLE>enhance - Methods to Enhance an Image</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+</HEAD>
 
-<p><a name="__index__"></a></p>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+        <INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+        <INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+        <TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+                <COL WIDTH=208*>
+                <COL WIDTH=48*>
+                <TR>
+                        <TD WIDTH=81%>
+                                <P ALIGN=LEFT>[<A HREF="../../index.html">Home</A>] [<A HREF="../mission.html">Mission
+                                Statement</A>] [<A HREF="../development.html">Development Process</A>] [<A HREF="../download.html">Download</A>]
+                                [<A HREF="../install.html">Installation</A>] [<A HREF="../cvs.html">CVS</A>]
+                                [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+                                Lists</A>] [<A HREF="../FAQ.html">FAQ</A>] [<A HREF="../formats.html">Formats</A>]
+                                [<A HREF="../NEWS.html">News</A> ] [<A HREF="../Changelog.html"><SPAN LANG="en-US">ChangeLog</SPAN></A>]
+                                [<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+                                Bugs</A>] [<A HREF="../utilities.html">Utilities</A>] [<A HREF="../programming.html">Programming</A>]
+                                [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
+                        </TD>
+                        <TD ROWSPAN=2 WIDTH=19%>
+                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                        </TD>
+                </TR>
+                <TR>
+                        <TD WIDTH=81%>
+                                <DIV ALIGN=CENTER>
+                                        <P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=20 MAXLENGTH=255>
+                                        <INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+                                        </P>
+                                </DIV>
+                        </TD>
+                </TR>
+        </TABLE>
+</FORM>
+
+
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
-<ul>
+<UL>
 
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
+	<LI><A HREF="#name">
+NAME</A>
+	<LI><A HREF="#synopsis">
+SYNOPSIS</A>
+	<LI><A HREF="#function descriptions">
+FUNCTION 
+DESCRIPTIONS</A>
+	<UL>
 
-		<li><a href="#contrastimage">ContrastImage</a></li>
-		<li><a href="#equalizeimage">EqualizeImage</a></li>
-		<li><a href="#gammaimage">GammaImage</a></li>
-		<li><a href="#levelimage">LevelImage</a></li>
-		<li><a href="#modulateimage">ModulateImage</a></li>
-		<li><a href="#negateimage">NegateImage</a></li>
-		<li><a href="#normalizeimage">NormalizeImage</a></li>
-	</ul>
+		<LI><A HREF="#contrastimage">ContrastImage</A>
+		<LI><A HREF="#equalizeimage">EqualizeImage</A>
+		<LI><A HREF="#gammaimage">GammaImage</A>
+		<LI><A HREF="#levelimage">LevelImage</A>
+		<LI><A HREF="#levelimagechannel">LevelImageChannel</A>
+		<LI><A HREF="#modulateimage">ModulateImage</A>
+		<LI><A HREF="#negateimage">NegateImage</A>
+		<LI><A HREF="#normalizeimage">NormalizeImage</A>
+	</UL>
 
-</ul>
+</UL>
 <!-- INDEX END -->
 
-<hr />
-<p>
-</p>
-<h1><a name="name">NAME</a></h1>
-<p>enhance - Methods to Enhance an Image</p>
-<p>
-</p>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>unsigned int  <strong>ContrastImage</strong>( Image *image, const unsigned int sharpen );</p>
-<p>unsigned int  <strong>EqualizeImage</strong>( Image *image );</p>
-<p>unsigned int  <strong>GammaImage</strong>( Image *image, const char *level );</p>
-<p>unsigned int  <strong>LevelImage</strong>( Image *image, const char *level );</p>
-<p>unsigned int  <strong>ModulateImage</strong>( Image *image, const char *modulate );</p>
-<p>unsigned int  <strong>NegateImage</strong>( Image *image, const unsigned int grayscale );</p>
-<p>unsigned int  <strong>NormalizeImage</strong>( Image *image );</p>
-<p>
-</p>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<p>
-</p>
-<h2><a name="contrastimage">ContrastImage</a></h2>
-<blockquote>ContrastImage() enhances the intensity differences between the lighter and darker elements of the image. Set sharpen to a value other than 0 to increase the image contrast otherwise the contrast is reduced. </blockquote><p>The format of the ContrastImage method is:</p>
-<blockquote>unsigned int ContrastImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int sharpen ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_image%3a">o image:</a></strong><br />
-</dt>
-<dd>
+<HR>
+<P>
+<H2><A NAME="name">
+NAME</A></H2>
+<P>enhance - Methods to Enhance an Image</P>
+<P>
+<HR>
+<H2><A NAME="synopsis">
+SYNOPSIS</A></H2>
+<P>unsigned int  <STRONG>ContrastImage</STRONG>( Image *image, const unsigned int sharpen );</P>
+<P>unsigned int  <STRONG>EqualizeImage</STRONG>( Image *image );</P>
+<P>unsigned int  <STRONG>GammaImage</STRONG>( Image *image, const char *level );</P>
+<P>unsigned int  <STRONG>LevelImage</STRONG>( Image *image, const char *level );</P>
+<P>unsigned int  <STRONG>LevelImageChannel</STRONG>( Image *image, const char *level, const ChannelType channel, const double black_point, const double mid_point, const double white_point );</P>
+<P>unsigned int  <STRONG>ModulateImage</STRONG>( Image *image, const char *modulate );</P>
+<P>unsigned int  <STRONG>NegateImage</STRONG>( Image *image, const unsigned int grayscale );</P>
+<P>unsigned int  <STRONG>NormalizeImage</STRONG>( Image *image );</P>
+<P>
+<HR>
+<H2><A NAME="function descriptions">
+FUNCTION 
+DESCRIPTIONS</A></H2>
+<P>
+<H3><A NAME="contrastimage">ContrastImage</A></H3>
+<blockquote>ContrastImage() enhances the intensity differences between the lighter and darker elements of the image. Set sharpen to a value other than 0 to increase the image contrast otherwise the contrast is reduced. </blockquote><P>The format of the ContrastImage method is:</P>
+<blockquote>unsigned int ContrastImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int sharpen ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_sharpen%3a">o sharpen:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_sharpen%3A">sharpen:</A></STRONG><BR>
+<DD>
 Increase or decrease image contrast.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="equalizeimage">EqualizeImage</a></h2>
-<blockquote>EqualizeImage() applies a histogram equalization to the image. </blockquote><p>The format of the EqualizeImage method is:</p>
-<blockquote>unsigned int EqualizeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="equalizeimage">EqualizeImage</A></H3>
+<blockquote>EqualizeImage() applies a histogram equalization to the image. </blockquote><P>The format of the EqualizeImage method is:</P>
+<blockquote>unsigned int EqualizeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="gammaimage">GammaImage</a></h2>
-<blockquote>Use GammaImage() to gamma-correct an image. The same image viewed on different devices will have perceptual differences in the way the image's intensities are represented on the screen. Specify individual gamma levels for the red, green, and blue channels, or adjust all three with the gamma parameter. Values typically range from 0.8 to 2.3. </blockquote><p>You can also reduce the influence of a particular channel with a gamma value of 0.</p>
-<p>The format of the GammaImage method is:</p>
-<blockquote>unsigned int GammaImage ( <A HREF="types/Image.html">Image</A> *image, const char *level ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="gammaimage">GammaImage</A></H3>
+<blockquote>Use GammaImage() to gamma-correct an image. The same image viewed on different devices will have perceptual differences in the way the image's intensities are represented on the screen. Specify individual gamma levels for the red, green, and blue channels, or adjust all three with the gamma parameter. Values typically range from 0.8 to 2.3. </blockquote><P>You can also reduce the influence of a particular channel with a gamma value of 0.</P>
+<P>The format of the GammaImage method is:</P>
+<blockquote>unsigned int GammaImage ( <A HREF="types/Image.html">Image</A> *image, const char *level ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_level%3a">o level:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_level%3A">level:</A></STRONG><BR>
+<DD>
 Define the level of gamma correction.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="levelimage">LevelImage</a></h2>
-<blockquote>LevelImage() adjusts the levels of an image given these points: black, mid, and white. </blockquote><p>The format of the LevelImage method is:</p>
-<blockquote>unsigned int LevelImage ( <A HREF="types/Image.html">Image</A> *image, const char *level ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="levelimage">LevelImage</A></H3>
+<blockquote>LevelImage() adjusts the levels of an image by scaling the colors falling between specified white and black points to the full available quantum range. The parameters provided represent the black, mid, and white points. The black point specifies the darkest color in the image. Colors darker than the black point are set to zero. Mid point specifies a gamma correction to apply to the image. White point specifies the lightest color in the image. Colors brighter than the white point are set to the maximum quantum value. </blockquote><P>The format of the LevelImage method is:</P>
+<blockquote>unsigned int LevelImage ( <A HREF="types/Image.html">Image</A> *image, const char *level ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_levels%3a">o levels:</a></strong><br />
-</dt>
-<dd>
-Define the levels.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="modulateimage">ModulateImage</a></h2>
-<blockquote>ModulateImage() lets you control the brightness, saturation, and hue of an image. Modulate represents the brightness, saturation, and hue as one parameter ( e.g. 90, 150, 100 ) . </blockquote><p>The format of the ModulateImage method is:</p>
-<blockquote>unsigned int ModulateImage ( <A HREF="types/Image.html">Image</A> *image, const char *modulate ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_levels%3A">levels:</A></STRONG><BR>
+<DD>
+Specify the levels as a string of the form ``black/mid/white'' (e.g.  ``10,1.0,65000) where black and white have the range of 0-MaxRGB, and mid has the range 0-10.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="levelimagechannel">LevelImageChannel</A></H3>
+<blockquote>LevelImageChannel() adjusts the levels of a particular image channel by scaling the colors falling between specified white and black points to the full available quantum range. The parameters provided represent the black, mid, and white points. The black point specifies the darkest color in the image. Colors darker than the black point are set to zero. Mid point specifies a gamma correction to apply to the image. White point specifies the lightest color in the image. Colors brighter than the white point are set to the maximum quantum value. </blockquote><P>The format of the LevelImage method is:</P>
+<blockquote>unsigned int LevelImageChannel ( <A HREF="types/Image.html">Image</A> *image, const char *level, const ChannelType channel, const double black_point, const double mid_point, const double white_point ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_modulate%3a">o modulate:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_channel%3A">channel:</A></STRONG><BR>
+<DD>
+Identify which channel to extract: Red, Cyan, Green, Magenta, Blue, Yellow, or Opacity.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_black_point%2C_mid_point%2C_white_point%3A">black_point, mid_point, white_point:</A></STRONG><BR>
+<DD>
+Specify the levels where the black and white points have the range of 0-MaxRGB, and mid has the range 0-10.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="modulateimage">ModulateImage</A></H3>
+<blockquote>ModulateImage() lets you control the brightness, saturation, and hue of an image. Modulate represents the brightness, saturation, and hue as one parameter ( e.g. 90, 150, 100 ) . </blockquote><P>The format of the ModulateImage method is:</P>
+<blockquote>unsigned int ModulateImage ( <A HREF="types/Image.html">Image</A> *image, const char *modulate ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_modulate%3A">modulate:</A></STRONG><BR>
+<DD>
 Define the percent change in brightness, saturation, and hue.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="negateimage">NegateImage</a></h2>
-<p>Method NegateImage negates the colors in the reference image.  The Grayscale option means that only grayscale values within the image are negated.</p>
-<p>The format of the NegateImage method is:</p>
-<blockquote>unsigned int NegateImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int grayscale ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="negateimage">NegateImage</A></H3>
+<P>Method NegateImage negates the colors in the reference image.  The Grayscale option means that only grayscale values within the image are negated.</P>
+<P>The format of the NegateImage method is:</P>
+<blockquote>unsigned int NegateImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int grayscale ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="normalizeimage">NormalizeImage</a></h2>
-<blockquote>The NormalizeImage() method enhances the contrast of a color image by adjusting the pixels color to span the entire range of colors available. </blockquote><p>The format of the NormalizeImage method is:</p>
-<blockquote>unsigned int NormalizeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="normalizeimage">NormalizeImage</A></H3>
+<blockquote>The NormalizeImage() method enhances the contrast of a color image by adjusting the pixels color to span the entire range of colors available. </blockquote><P>The format of the NormalizeImage method is:</P>
+<blockquote>unsigned int NormalizeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-</dl>
+</DL></DL>
 
-</body>
+</BODY>
 
-</html>
+</HTML>

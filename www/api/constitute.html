@@ -1,319 +1,325 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>constitute - Methods to Constitute an Image</title>
-<link rel="StyleSheet" href="../magick.css" type="text/css" />
-</head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+<STYLE>
+<!--
+@page { size: 8.5in 11in }
+TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+H2 { color: #000000 }
+A:link { color: #0085c0 }
+A:visited { color: #800080 }
+-->
+</STYLE>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080"> <A HREF="http://promote.pair.com/direct.pl?imagemagick.org"> <IMG SRC="../../images/promote.png" ALT="Pair" ALIGN=RIGHT WIDTH=120 HEIGHT=60 BORDER=0></A> <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<TITLE>constitute - Methods to Constitute an Image</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+</HEAD>
 
-<p><a name="__index__"></a></p>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+        <INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+        <INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+        <TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+                <COL WIDTH=208*>
+                <COL WIDTH=48*>
+                <TR>
+                        <TD WIDTH=81%>
+                                <P ALIGN=LEFT>[<A HREF="../../index.html">Home</A>] [<A HREF="../mission.html">Mission
+                                Statement</A>] [<A HREF="../development.html">Development Process</A>] [<A HREF="../download.html">Download</A>]
+                                [<A HREF="../install.html">Installation</A>] [<A HREF="../cvs.html">CVS</A>]
+                                [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+                                Lists</A>] [<A HREF="../FAQ.html">FAQ</A>] [<A HREF="../formats.html">Formats</A>]
+                                [<A HREF="../NEWS.html">News</A> ] [<A HREF="../Changelog.html"><SPAN LANG="en-US">ChangeLog</SPAN></A>]
+                                [<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+                                Bugs</A>] [<A HREF="../utilities.html">Utilities</A>] [<A HREF="../programming.html">Programming</A>]
+                                [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
+                        </TD>
+                        <TD ROWSPAN=2 WIDTH=19%>
+                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                        </TD>
+                </TR>
+                <TR>
+                        <TD WIDTH=81%>
+                                <DIV ALIGN=CENTER>
+                                        <P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=20 MAXLENGTH=255>
+                                        <INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+                                        </P>
+                                </DIV>
+                        </TD>
+                </TR>
+        </TABLE>
+</FORM>
+
+
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
-<ul>
+<UL>
 
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
+	<LI><A HREF="#name">
+NAME</A>
+	<LI><A HREF="#synopsis">
+SYNOPSIS</A>
+	<LI><A HREF="#function descriptions">
+FUNCTION 
+DESCRIPTIONS</A>
+	<UL>
 
-		<li><a href="#constituteimage">ConstituteImage</a></li>
-		<li><a href="#destroyconstitute">DestroyConstitute</a></li>
-		<li><a href="#dispatchimage">DispatchImage</a></li>
-		<li><a href="#pingimage">PingImage</a></li>
-		<li><a href="#popimagepixels">PopImagePixels</a></li>
-		<li><a href="#pushimagepixels">PushImagePixels</a></li>
-		<li><a href="#readimage">ReadImage</a></li>
-		<li><a href="#readinlineimage">ReadInlineImage</a></li>
-		<li><a href="#writeimage">WriteImage</a></li>
-		<li><a href="#writeimages">WriteImages</a></li>
-	</ul>
+		<LI><A HREF="#constituteimage">ConstituteImage</A>
+		<LI><A HREF="#destroyconstitute">DestroyConstitute</A>
+		<LI><A HREF="#dispatchimage">DispatchImage</A>
+		<LI><A HREF="#pingimage">PingImage</A>
+		<LI><A HREF="#popimagepixels">PopImagePixels</A>
+		<LI><A HREF="#pushimagepixels">PushImagePixels</A>
+		<LI><A HREF="#readimage">ReadImage</A>
+		<LI><A HREF="#readinlineimage">ReadInlineImage</A>
+		<LI><A HREF="#writeimage">WriteImage</A>
+		<LI><A HREF="#writeimages">WriteImages</A>
+	</UL>
 
-</ul>
+</UL>
 <!-- INDEX END -->
 
-<hr />
-<p>
-</p>
-<h1><a name="name">NAME</a></h1>
-<p>constitute - Methods to Constitute an Image</p>
-<p>
-</p>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>Image * <strong>ConstituteImage</strong>( const unsigned long width, const unsigned long height, const char *map, const StorageType type, const void *pixels, ExceptionInfo *exception );</p>
-<p><strong>DestroyConstitute</strong>( void );</p>
-<p>unsigned int  <strong>DispatchImage</strong>( const Image *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const StorageType type, void *pixels, ExceptionInfo *exception );</p>
-<p>Image * <strong>PingImage</strong>( const ImageInfo *image_info, ExceptionInfo *exception );</p>
-<p>unsigned int  <strong>PopImagePixels</strong>( const Image *, const QuantumType quantum, unsigned char *destination );</p>
-<p>unsigned int  <strong>PushImagePixels</strong>( Image *image, const QuantumType quantum, const unsigned char *source );</p>
-<p>Image * <strong>ReadImage</strong>( const ImageInfo *image_info, ExceptionInfo *exception );</p>
-<p>Image * <strong>ReadInlineImage</strong>( const ImageInfo *image_info, const char *content, ExceptionInfo *exception );</p>
-<p>unsigned int  <strong>WriteImage</strong>( const ImageInfo *image_info, Image *image );</p>
-<p>unsigned int  <strong>WriteImages</strong>( const ImageInfo *image_info, Image *image, const char *filename, ExceptionInfo *exception );</p>
-<p>
-</p>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<p>
-</p>
-<h2><a name="constituteimage">ConstituteImage</a></h2>
-<blockquote>ConstituteImage() returns an image from the the pixel data you supply. The pixel data must be in scanline order top-to-bottom. The data can be char, short int, int, float, or double. Float and double require the pixels to be normalized [0..1], otherwise [0..MaxRGB]. For example, to create a 640x480 image from unsigned red-green-blue character data, use </blockquote><blockquote>image=ConstituteImage ( 640, 480, "RGB", CharPixel, pixels, &exception );; </blockquote><p>The format of the Constitute method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *ConstituteImage ( const unsigned long width, const unsigned long height, const char *map, const StorageType type, const void *pixels, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_width%3a">o width:</a></strong><br />
-</dt>
-<dd>
+<HR>
+<P>
+<H2><A NAME="name">
+NAME</A></H2>
+<P>constitute - Methods to Constitute an Image</P>
+<P>
+<HR>
+<H2><A NAME="synopsis">
+SYNOPSIS</A></H2>
+<P>Image * <STRONG>ConstituteImage</STRONG>( const unsigned long width, const unsigned long height, const char *map, const StorageType type, const void *pixels, ExceptionInfo *exception );</P>
+<P><STRONG>DestroyConstitute</STRONG>( void );</P>
+<P>unsigned int  <STRONG>DispatchImage</STRONG>( const Image *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const StorageType type, void *pixels, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>PingImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>PopImagePixels</STRONG>( const Image *, const QuantumType quantum, unsigned char *destination );</P>
+<P>unsigned int  <STRONG>PushImagePixels</STRONG>( Image *image, const QuantumType quantum_type, const unsigned char *source );</P>
+<P>Image * <STRONG>ReadImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ReadInlineImage</STRONG>( const ImageInfo *image_info, const char *content, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>WriteImage</STRONG>( const ImageInfo *image_info, Image *image );</P>
+<P>unsigned int  <STRONG>WriteImages</STRONG>( const ImageInfo *image_info, Image *image, const char *filename, ExceptionInfo *exception );</P>
+<P>
+<HR>
+<H2><A NAME="function descriptions">
+FUNCTION 
+DESCRIPTIONS</A></H2>
+<P>
+<H3><A NAME="constituteimage">ConstituteImage</A></H3>
+<blockquote>ConstituteImage() returns an image from the the pixel data you supply. The pixel data must be in scanline order top-to-bottom. The data can be char, short int, int, float, or double. Float and double require the pixels to be normalized [0..1], otherwise [0..MaxRGB]. For example, to create a 640x480 image from unsigned red-green-blue character data, use </blockquote><blockquote>image=ConstituteImage ( 640, 480, "RGB", CharPixel, pixels, &exception );; </blockquote><P>The format of the Constitute method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ConstituteImage ( const unsigned long width, const unsigned long height, const char *map, const StorageType type, const void *pixels, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_width%3A">width:</A></STRONG><BR>
+<DD>
 width in pixels of the image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_height%3a">o height:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_height%3A">height:</A></STRONG><BR>
+<DD>
 height in pixels of the image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_map%3a">o map:</a></strong><br />
-</dt>
-<dd>
-This string reflects the expected ordering of the pixel array.  It can be any combination or order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or I = intensity (for grayscale).
-</dd>
-<p></p>
-<dt><strong><a name="item_o_type%3a">o type:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_map%3A">map:</A></STRONG><BR>
+<DD>
+This string reflects the expected ordering of the pixel array.  It can be any combination or order of 
+R = red, 
+G = green, 
+B = blue, 
+A = alpha, 
+C = cyan, 
+Y = yellow, 
+M = magenta, 
+K = black, or 
+I = intensity (for grayscale). Creation of an alpha channel for 
+CMYK images is currently not supported.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
+<DD>
 Define the data type of the pixels.  Float and double types are expected to be normalized [0..1] otherwise [0..MaxRGB]. Choose from these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or DoublePixel.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_pixels%3a">o pixels:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
+<DD>
 This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_exception%3a">o exception:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="destroyconstitute">DestroyConstitute</a></h2>
-<blockquote>DestroyConstitute() destroys the constitute environment. </blockquote><p>The format of the DestroyConstitute method is:</p>
-<blockquote>DestroyConstitute ( void ); </blockquote><p>
-</p>
-<h2><a name="dispatchimage">DispatchImage</a></h2>
-<blockquote>DispatchImage() extracts pixel data from an image and returns it to you. The method returns False on success otherwise True if an error is encountered. The data is returned as char, short int, int, long, float, or double in the order specified by map. </blockquote><p>Suppose we want want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</p>
-<blockquote>DispatchImage ( image, 0, 0, 640, 1, "RGB", 0, pixels, exception );; </blockquote><p>The format of the DispatchImage method is:</p>
-<blockquote>unsigned int DispatchImage ( const <A HREF="types/Image.html">Image</A> *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const StorageType type, void *pixels, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_image%3a">o image:</a></strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="destroyconstitute">DestroyConstitute</A></H3>
+<blockquote>DestroyConstitute() destroys the constitute environment. </blockquote><P>The format of the DestroyConstitute method is:</P>
+<blockquote>DestroyConstitute ( void ); </blockquote><P>
+<H3><A NAME="dispatchimage">DispatchImage</A></H3>
+<blockquote>DispatchImage() extracts pixel data from an image and returns it to you. The method returns False on success or True if an error is encountered. The data is returned as char, short int, int, long, float, or double in the order specified by map. </blockquote><P>Suppose we want want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</P>
+<blockquote>DispatchImage ( image, 0, 0, 640, 1, "RGB", 0, pixels, exception );; </blockquote><P>The format of the DispatchImage method is:</P>
+<blockquote>unsigned int DispatchImage ( const <A HREF="types/Image.html">Image</A> *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const StorageType type, void *pixels, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_x_offset%2c_y_offset%2c_columns%2c_rows%3a">o x_offset, y_offset, columns, rows:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_x_offset%2C_y_offset%2C_columns%2C_rows%3A">x_offset, y_offset, columns, rows:</A></STRONG><BR>
+<DD>
 These values define the perimeter of a region of pixels you want to extract.
-</dd>
-<p></p>
-<dt><strong>o map:</strong><br />
-</dt>
-<dd>
-This string reflects the expected ordering of the pixel array.  It can be any combination or order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or I = intensity (for grayscale).
-</dd>
-<p></p>
-<dt><strong>o type:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>map:</STRONG><BR>
+<DD>
+This string reflects the expected ordering of the pixel array.  It can be any combination or order of 
+R = red, 
+G = green, 
+B = blue, 
+A = alpha, 
+C = cyan, 
+Y = yellow, 
+M = magenta, 
+K = black, or 
+I = intensity (for grayscale).
+<P></P>
+<DD><P></P><DT><STRONG>type:</STRONG><BR>
+<DD>
 Define the data type of the pixels.  Float and double types are normalized to [0..1] otherwise [0..MaxRGB]. Choose from these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or DoublePixel.
-</dd>
-<p></p>
-<dt><strong>o pixels:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>pixels:</STRONG><BR>
+<DD>
 This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, map, and type.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="pingimage">PingImage</a></h2>
-<blockquote>PingImage() returns all the attributes of an image or image sequence except for the pixels. It is much faster and consumes far less memory than ReadImage ( ) . On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><p>The format of the PingImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *PingImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_image_info%3a">o image_info:</a></strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="pingimage">PingImage</A></H3>
+<blockquote>PingImage() returns all the attributes of an image or image sequence except for the pixels. It is much faster and consumes far less memory than ReadImage ( ) . On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the PingImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *PingImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
+<DD>
 Ping the image defined by the file or filename members of this structure.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="popimagepixels">PopImagePixels</a></h2>
-<blockquote>PopImagePixels() transfers one or more pixel components from the image pixel cache to a user supplied buffer. True is returned if the pixels are successfully transferred, otherwise False. </blockquote><p>The format of the PopImagePixels method is:</p>
-<blockquote>unsigned int PopImagePixels ( const <A HREF="types/Image.html">Image</A> *, const QuantumType quantum, unsigned char *destination ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_status%3a">o status:</a></strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="popimagepixels">PopImagePixels</A></H3>
+<blockquote>PopImagePixels() transfers one or more pixel components from the image pixel cache to a user supplied buffer. True is returned if the pixels are successfully transferred, otherwise False. </blockquote><P>The format of the PopImagePixels method is:</P>
+<blockquote>unsigned int PopImagePixels ( const <A HREF="types/Image.html">Image</A> *, const QuantumType quantum, unsigned char *destination ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
+<DD>
 Method PopImagePixels returns True if the pixels are successfully transferred, otherwise False.
-</dd>
-<p></p>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_quantum%3a">o quantum:</a></strong><br />
-</dt>
-<dd>
-Declare which pixel components to transfer (RGB, RGBA, etc).
-</dd>
-<p></p>
-<dt><strong><a name="item_o_destination%3a">o destination:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
+<DD>
+Declare which pixel components to transfer 
+(RGB, 
+RGBA, etc).
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_destination%3A">destination:</A></STRONG><BR>
+<DD>
 The components are transferred to this buffer.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="pushimagepixels">PushImagePixels</a></h2>
-<blockquote>PushImagePixels() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image. It returns True if the pixels are successfully transferred, otherwise False. </blockquote><p>The format of the PushImagePixels method is:</p>
-<blockquote>unsigned int PushImagePixels ( <A HREF="types/Image.html">Image</A> *image, const QuantumType quantum, const unsigned char *source ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o status:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="pushimagepixels">PushImagePixels</A></H3>
+<blockquote>PushImagePixels() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image. It returns True if the pixels are successfully transferred, otherwise False. </blockquote><P>The format of the PushImagePixels method is:</P>
+<blockquote>unsigned int PushImagePixels ( <A HREF="types/Image.html">Image</A> *image, const QuantumType quantum_type, const unsigned char *source ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>status:</STRONG><BR>
+<DD>
 Method PushImagePixels returns True if the pixels are successfully transferred, otherwise False.
-</dd>
-<p></p>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o quantum:</strong><br />
-</dt>
-<dd>
-Declare which pixel components to transfer (red, green, blue, opacity, RGB, or RGBA).
-</dd>
-<p></p>
-<dt><strong><a name="item_o_source%3a">o source:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_quantum_type%3A">quantum_type:</A></STRONG><BR>
+<DD>
+Declare which pixel components to transfer (red, green, blue, opacity, 
+RGB, or 
+RGBA).
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_source%3A">source:</A></STRONG><BR>
+<DD>
 The pixel components are transferred from this buffer.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="readimage">ReadImage</a></h2>
-<blockquote>ReadImage() reads an image or image sequence from a file or file handle. The method returns a NULL if there is a memory shortage or if the image cannot be read. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><p>The format of the ReadImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image_info:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="readimage">ReadImage</A></H3>
+<blockquote>ReadImage() reads an image or image sequence from a file or file handle. The method returns a NULL if there is a memory shortage or if the image cannot be read. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the ReadImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<DD>
 Read the image defined by the file or filename members of this structure.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="readinlineimage">ReadInlineImage</a></h2>
-<blockquote>ReadInlineImage() reads a Base64-encoded inline image or image sequence. The method returns a NULL if there is a memory shortage or if the image cannot be read. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><p>The format of the ReadInlineImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadInlineImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const char *content, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image_info:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="readinlineimage">ReadInlineImage</A></H3>
+<blockquote>ReadInlineImage() reads a Base64-encoded inline image or image sequence. The method returns a NULL if there is a memory shortage or if the image cannot be read. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the ReadInlineImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadInlineImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const char *content, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<DD>
 The image info.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_content%3a">o content:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_content%3A">content:</A></STRONG><BR>
+<DD>
 The image encoded in Base64.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="writeimage">WriteImage</a></h2>
-<p>Use <code>Write()</code> to write an image or an image sequence to a file or filehandle.  If writing to a file on disk, the name is defined by the filename member of the image structure.  <code>Write()</code> returns 0 is there is a memory shortage or if the image cannot be written.  Check the exception member of image to determine the cause for any failure.</p>
-<p>The format of the WriteImage method is:</p>
-<blockquote>unsigned int WriteImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image_info:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="writeimage">WriteImage</A></H3>
+<P>Use <CODE>Write()</CODE> to write an image or an image sequence to a file or filehandle.  If writing to a file on disk, the name is defined by the filename member of the image structure.  <CODE>Write()</CODE> returns 0 is there is a memory shortage or if the image cannot be written.  Check the exception member of image to determine the cause for any failure.</P>
+<P>The format of the WriteImage method is:</P>
+<blockquote>unsigned int WriteImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<DD>
 The image info.
-</dd>
-<p></p>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="writeimages">WriteImages</a></h2>
-<blockquote>WriteImages() writes an image sequence. </blockquote><p>The format of the WriteImages method is:</p>
-<blockquote>unsigned int WriteImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, const char *filename, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image_info:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="writeimages">WriteImages</A></H3>
+<blockquote>WriteImages() writes an image sequence. </blockquote><P>The format of the WriteImages method is:</P>
+<blockquote>unsigned int WriteImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, const char *filename, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<DD>
 The image info.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_images%3a">o images:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_images%3A">images:</A></STRONG><BR>
+<DD>
 The image list.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_filename%3a">o filename:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_filename%3A">filename:</A></STRONG><BR>
+<DD>
 The image filename.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-</dl>
+</DL></DL>
 
-</body>
+</BODY>
 
-</html>
+</HTML>

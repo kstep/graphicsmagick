@@ -1,197 +1,219 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>cache_view - ImageMagick Cache Views Methods</title>
-<link rel="StyleSheet" href="../magick.css" type="text/css" />
-</head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+<STYLE>
+<!--
+@page { size: 8.5in 11in }
+TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+H2 { color: #000000 }
+A:link { color: #0085c0 }
+A:visited { color: #800080 }
+-->
+</STYLE>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080"> <A HREF="http://promote.pair.com/direct.pl?imagemagick.org"> <IMG SRC="../../images/promote.png" ALT="Pair" ALIGN=RIGHT WIDTH=120 HEIGHT=60 BORDER=0></A> <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<TITLE>cache_view - GraphicsMagick Cache Views Methods</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+</HEAD>
 
-<p><a name="__index__"></a></p>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+        <INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+        <INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+        <TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+                <COL WIDTH=208*>
+                <COL WIDTH=48*>
+                <TR>
+                        <TD WIDTH=81%>
+                                <P ALIGN=LEFT>[<A HREF="../../index.html">Home</A>] [<A HREF="../mission.html">Mission
+                                Statement</A>] [<A HREF="../development.html">Development Process</A>] [<A HREF="../download.html">Download</A>]
+                                [<A HREF="../install.html">Installation</A>] [<A HREF="../cvs.html">CVS</A>]
+                                [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+                                Lists</A>] [<A HREF="../FAQ.html">FAQ</A>] [<A HREF="../formats.html">Formats</A>]
+                                [<A HREF="../NEWS.html">News</A> ] [<A HREF="../Changelog.html"><SPAN LANG="en-US">ChangeLog</SPAN></A>]
+                                [<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+                                Bugs</A>] [<A HREF="../utilities.html">Utilities</A>] [<A HREF="../programming.html">Programming</A>]
+                                [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
+                        </TD>
+                        <TD ROWSPAN=2 WIDTH=19%>
+                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                        </TD>
+                </TR>
+                <TR>
+                        <TD WIDTH=81%>
+                                <DIV ALIGN=CENTER>
+                                        <P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=20 MAXLENGTH=255>
+                                        <INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+                                        </P>
+                                </DIV>
+                        </TD>
+                </TR>
+        </TABLE>
+</FORM>
+
+
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
-<ul>
+<UL>
 
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
+	<LI><A HREF="#name">
+NAME</A>
+	<LI><A HREF="#synopsis">
+SYNOPSIS</A>
+	<LI><A HREF="#function descriptions">
+FUNCTION 
+DESCRIPTIONS</A>
+	<UL>
 
-		<li><a href="#acquirecacheview">AcquireCacheView</a></li>
-		<li><a href="#closecacheview">CloseCacheView</a></li>
-		<li><a href="#getcacheview">GetCacheView</a></li>
-		<li><a href="#getcacheviewindexes">GetCacheViewIndexes</a></li>
-		<li><a href="#getcacheviewpixels">GetCacheViewPixels</a></li>
-		<li><a href="#opencacheview">OpenCacheView</a></li>
-		<li><a href="#setcacheview">SetCacheView</a></li>
-		<li><a href="#synccacheview">SyncCacheView</a></li>
-	</ul>
+		<LI><A HREF="#acquirecacheview">AcquireCacheView</A>
+		<LI><A HREF="#closecacheview">CloseCacheView</A>
+		<LI><A HREF="#getcacheview">GetCacheView</A>
+		<LI><A HREF="#getcacheviewindexes">GetCacheViewIndexes</A>
+		<LI><A HREF="#getcacheviewpixels">GetCacheViewPixels</A>
+		<LI><A HREF="#opencacheview">OpenCacheView</A>
+		<LI><A HREF="#setcacheview">SetCacheView</A>
+		<LI><A HREF="#synccacheview">SyncCacheView</A>
+	</UL>
 
-</ul>
+</UL>
 <!-- INDEX END -->
 
-<hr />
-<p>
-</p>
-<h1><a name="name">NAME</a></h1>
-<p>cache_view - ImageMagick Cache Views Methods</p>
-<p>
-</p>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>const PixelPacket * <strong>AcquireCacheView</strong>( const ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</p>
-<p>void  <strong>CloseCacheView</strong>( ViewInfo *view );</p>
-<p>PixelPacket * <strong>GetCacheView</strong>( ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows );</p>
-<p>IndexPacket * <strong>GetCacheViewIndexes</strong>( const ViewInfo *view );</p>
-<p>PixelPacket * <strong>GetCacheViewPixels</strong>( const ViewInfo *view );</p>
-<p>ViewInfo * <strong>OpenCacheView</strong>( Image *image );</p>
-<p>PixelPacket * <strong>SetCacheView</strong>( ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows );</p>
-<p>unsigned int  <strong>SyncCacheView</strong>( ViewInfo *view );</p>
-<p>
-</p>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<p>
-</p>
-<h2><a name="acquirecacheview">AcquireCacheView</a></h2>
-<p>Method AcquireCacheView gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.  A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</p>
-<p>The format of the AcquireCacheView method is:</p>
-<blockquote>const <A HREF="types/PixelPacket.html">PixelPacket</A> *AcquireCacheView ( const <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_pixels%3a">o pixels:</a></strong><br />
-</dt>
-<dd>
+<HR>
+<P>
+<H2><A NAME="name">
+NAME</A></H2>
+<P>cache_view - GraphicsMagick Cache Views Methods</P>
+<P>
+<HR>
+<H2><A NAME="synopsis">
+SYNOPSIS</A></H2>
+<P>const PixelPacket * <STRONG>AcquireCacheView</STRONG>( const ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
+<P>void  <STRONG>CloseCacheView</STRONG>( ViewInfo *view );</P>
+<P>PixelPacket * <STRONG>GetCacheView</STRONG>( ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
+<P>IndexPacket * <STRONG>GetCacheViewIndexes</STRONG>( const ViewInfo *view );</P>
+<P>PixelPacket * <STRONG>GetCacheViewPixels</STRONG>( const ViewInfo *view );</P>
+<P>ViewInfo * <STRONG>OpenCacheView</STRONG>( Image *image );</P>
+<P>PixelPacket * <STRONG>SetCacheView</STRONG>( ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
+<P>unsigned int  <STRONG>SyncCacheView</STRONG>( ViewInfo *view );</P>
+<P>
+<HR>
+<H2><A NAME="function descriptions">
+FUNCTION 
+DESCRIPTIONS</A></H2>
+<P>
+<H3><A NAME="acquirecacheview">AcquireCacheView</A></H3>
+<P>Method AcquireCacheView gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.  
+A pointer to the pixels is returned if the pixels are transferred, otherwise a 
+NULL is returned.</P>
+<P>The format of the AcquireCacheView method is:</P>
+<blockquote>const <A HREF="types/PixelPacket.html">PixelPacket</A> *AcquireCacheView ( const <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
+<DD>
 Method GetCacheView returns a null pointer if an error occurs, otherwise a pointer to the view pixels.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_view%3a">o view:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_view%3A">view:</A></STRONG><BR>
+<DD>
 The address of a structure of type ViewInfo.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_x%2cy%2ccolumns%2crows%3a">o x,y,columns,rows:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_x%2Cy%2Ccolumns%2Crows%3A">x,y,columns,rows:</A></STRONG><BR>
+<DD>
 These values define the perimeter of a region of pixels.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_exception%3a">o exception:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="closecacheview">CloseCacheView</a></h2>
-<blockquote>CloseCacheView() closes the specified view returned by a previous call to OpenCacheView ( ) . </blockquote><p>The format of the CloseCacheView method is:</p>
-<blockquote>void CloseCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o view:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="closecacheview">CloseCacheView</A></H3>
+<blockquote>CloseCacheView() closes the specified view returned by a previous call to OpenCacheView ( ) . </blockquote><P>The format of the CloseCacheView method is:</P>
+<blockquote>void CloseCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>view:</STRONG><BR>
+<DD>
 The address of a structure of type ViewInfo.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="getcacheview">GetCacheView</a></h2>
-<blockquote>GetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><p>The format of the GetCacheView method is:</p>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o pixels:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="getcacheview">GetCacheView</A></H3>
+<blockquote>GetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><P>The format of the GetCacheView method is:</P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>pixels:</STRONG><BR>
+<DD>
 Method GetCacheView returns a null pointer if an error occurs, otherwise a pointer to the view pixels.
-</dd>
-<p></p>
-<dt><strong>o view:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>view:</STRONG><BR>
+<DD>
 The address of a structure of type ViewInfo.
-</dd>
-<p></p>
-<dt><strong>o x,y,columns,rows:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>x,y,columns,rows:</STRONG><BR>
+<DD>
 These values define the perimeter of a region of pixels.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="getcacheviewindexes">GetCacheViewIndexes</a></h2>
-<p>Method GetCacheViewIndexes returns the indexes associated with the specified view.</p>
-<p>The format of the GetCacheViewIndexes method is:</p>
-<blockquote>IndexPacket *GetCacheViewIndexes ( const <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_indexes%3a">o indexes:</a></strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="getcacheviewindexes">GetCacheViewIndexes</A></H3>
+<P>Method GetCacheViewIndexes returns the indexes associated with the specified view.</P>
+<P>The format of the GetCacheViewIndexes method is:</P>
+<blockquote>IndexPacket *GetCacheViewIndexes ( const <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_indexes%3A">indexes:</A></STRONG><BR>
+<DD>
 Method GetCacheViewIndexes returns the indexes associated with the specified view.
-</dd>
-<p></p>
-<dt><strong>o view:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>view:</STRONG><BR>
+<DD>
 The address of a structure of type ViewInfo.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="getcacheviewpixels">GetCacheViewPixels</a></h2>
-<blockquote>GetCacheViewPixels() returns the pixels associated with the specified specified view. </blockquote><p>The format of the GetCacheViewPixels method is:</p>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetCacheViewPixels ( const <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o view:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="getcacheviewpixels">GetCacheViewPixels</A></H3>
+<blockquote>GetCacheViewPixels() returns the pixels associated with the specified specified view. </blockquote><P>The format of the GetCacheViewPixels method is:</P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetCacheViewPixels ( const <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>view:</STRONG><BR>
+<DD>
 The address of a structure of type ViewInfo.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="opencacheview">OpenCacheView</a></h2>
-<blockquote>OpenCacheView() opens a view into the pixel cache. </blockquote><p>The format of the OpenCacheView method is:</p>
-<blockquote><A HREF="types/ViewInfo.html">ViewInfo</A> *OpenCacheView ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_image%3a">o image:</a></strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="opencacheview">OpenCacheView</A></H3>
+<blockquote>OpenCacheView() opens a view into the pixel cache. </blockquote><P>The format of the OpenCacheView method is:</P>
+<blockquote><A HREF="types/ViewInfo.html">ViewInfo</A> *OpenCacheView ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="setcacheview">SetCacheView</a></h2>
-<blockquote>SetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><p>The format of the SetCacheView method is:</p>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o view:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="setcacheview">SetCacheView</A></H3>
+<blockquote>SetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><P>The format of the SetCacheView method is:</P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>view:</STRONG><BR>
+<DD>
 The address of a structure of type ViewInfo.
-</dd>
-<p></p>
-<dt><strong>o x,y,columns,rows:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>x,y,columns,rows:</STRONG><BR>
+<DD>
 These values define the perimeter of a region of pixels.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="synccacheview">SyncCacheView</a></h2>
-<blockquote>SyncCacheView() saves the view pixels to the in-memory or disk cache. The method returns True if the pixel region is synced, otherwise False. </blockquote><p>The format of the SyncCacheView method is:</p>
-<blockquote>unsigned int SyncCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o view:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="synccacheview">SyncCacheView</A></H3>
+<blockquote>SyncCacheView() saves the view pixels to the in-memory or disk cache. The method returns True if the pixel region is synced, otherwise False. </blockquote><P>The format of the SyncCacheView method is:</P>
+<blockquote>unsigned int SyncCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>view:</STRONG><BR>
+<DD>
 The address of a structure of type ViewInfo.
-</dd>
-</dl>
+</DL></DL>
 
-</body>
+</BODY>
 
-</html>
+</HTML>

@@ -953,6 +953,9 @@ $(top_srcdir)/www/INSTALL-vms.html: $(top_srcdir)/INSTALL-vms.txt
 # Build HTML version of INSTALL-windows.txt
 $(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
 	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' Windows Installation' < $(top_srcdir)/INSTALL-windows.txt > $(top_srcdir)/www/INSTALL-windows.html
+
+format_c_api_docs:
+	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -1,528 +1,490 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>effect - ImageMagick Image Effects Methods</title>
-<link rel="StyleSheet" href="../magick.css" type="text/css" />
-</head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+<STYLE>
+<!--
+@page { size: 8.5in 11in }
+TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+H2 { color: #000000 }
+A:link { color: #0085c0 }
+A:visited { color: #800080 }
+-->
+</STYLE>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080"> <A HREF="http://promote.pair.com/direct.pl?imagemagick.org"> <IMG SRC="../../images/promote.png" ALT="Pair" ALIGN=RIGHT WIDTH=120 HEIGHT=60 BORDER=0></A> <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<TITLE>effect - GraphicsMagick Image Effects Methods</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+</HEAD>
 
-<p><a name="__index__"></a></p>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+        <INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+        <INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+        <TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+                <COL WIDTH=208*>
+                <COL WIDTH=48*>
+                <TR>
+                        <TD WIDTH=81%>
+                                <P ALIGN=LEFT>[<A HREF="../../index.html">Home</A>] [<A HREF="../mission.html">Mission
+                                Statement</A>] [<A HREF="../development.html">Development Process</A>] [<A HREF="../download.html">Download</A>]
+                                [<A HREF="../install.html">Installation</A>] [<A HREF="../cvs.html">CVS</A>]
+                                [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+                                Lists</A>] [<A HREF="../FAQ.html">FAQ</A>] [<A HREF="../formats.html">Formats</A>]
+                                [<A HREF="../NEWS.html">News</A> ] [<A HREF="../Changelog.html"><SPAN LANG="en-US">ChangeLog</SPAN></A>]
+                                [<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+                                Bugs</A>] [<A HREF="../utilities.html">Utilities</A>] [<A HREF="../programming.html">Programming</A>]
+                                [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
+                        </TD>
+                        <TD ROWSPAN=2 WIDTH=19%>
+                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                        </TD>
+                </TR>
+                <TR>
+                        <TD WIDTH=81%>
+                                <DIV ALIGN=CENTER>
+                                        <P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=20 MAXLENGTH=255>
+                                        <INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+                                        </P>
+                                </DIV>
+                        </TD>
+                </TR>
+        </TABLE>
+</FORM>
+
+
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
-<ul>
+<UL>
 
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
+	<LI><A HREF="#name">
+NAME</A>
+	<LI><A HREF="#synopsis">
+SYNOPSIS</A>
+	<LI><A HREF="#function descriptions">
+FUNCTION 
+DESCRIPTIONS</A>
+	<UL>
 
-		<li><a href="#adaptivethresholdimage">AdaptiveThresholdImage</a></li>
-		<li><a href="#addnoiseimage">AddNoiseImage</a></li>
-		<li><a href="#blurimage">BlurImage</a></li>
-		<li><a href="#channelthresholdimage">ChannelThresholdImage</a></li>
-		<li><a href="#despeckleimage">DespeckleImage</a></li>
-		<li><a href="#edgeimage">EdgeImage</a></li>
-		<li><a href="#embossimage">EmbossImage</a></li>
-		<li><a href="#enhanceimage">EnhanceImage</a></li>
-		<li><a href="#gaussianblurimage">GaussianBlurImage</a></li>
-		<li><a href="#medianfilterimage">MedianFilterImage</a></li>
-		<li><a href="#motionblurimage">MotionBlurImage</a></li>
-		<li><a href="#reducenoiseimage">ReduceNoiseImage</a></li>
-		<li><a href="#shadeimage">ShadeImage</a></li>
-		<li><a href="#sharpenimage">SharpenImage</a></li>
-		<li><a href="#spreadimage">SpreadImage</a></li>
-		<li><a href="#thresholdimage">ThresholdImage</a></li>
-		<li><a href="#unsharpmaskimage">UnsharpMaskImage</a></li>
-	</ul>
+		<LI><A HREF="#adaptivethresholdimage">AdaptiveThresholdImage</A>
+		<LI><A HREF="#addnoiseimage">AddNoiseImage</A>
+		<LI><A HREF="#blurimage">BlurImage</A>
+		<LI><A HREF="#channelthresholdimage">ChannelThresholdImage</A>
+		<LI><A HREF="#despeckleimage">DespeckleImage</A>
+		<LI><A HREF="#edgeimage">EdgeImage</A>
+		<LI><A HREF="#embossimage">EmbossImage</A>
+		<LI><A HREF="#enhanceimage">EnhanceImage</A>
+		<LI><A HREF="#gaussianblurimage">GaussianBlurImage</A>
+		<LI><A HREF="#medianfilterimage">MedianFilterImage</A>
+		<LI><A HREF="#motionblurimage">MotionBlurImage</A>
+		<LI><A HREF="#randomchannelthresholdimage">RandomChannelThresholdImage</A>
+		<LI><A HREF="#reducenoiseimage">ReduceNoiseImage</A>
+		<LI><A HREF="#shadeimage">ShadeImage</A>
+		<LI><A HREF="#sharpenimage">SharpenImage</A>
+		<LI><A HREF="#spreadimage">SpreadImage</A>
+		<LI><A HREF="#thresholdimage">ThresholdImage</A>
+		<LI><A HREF="#unsharpmaskimage">UnsharpMaskImage</A>
+	</UL>
 
-</ul>
+</UL>
 <!-- INDEX END -->
 
-<hr />
-<p>
-</p>
-<h1><a name="name">NAME</a></h1>
-<p>effect - ImageMagick Image Effects Methods</p>
-<p>
-</p>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>Image * <strong>AdaptiveThresholdImage</strong>( Image *image, const unsigned long width, const unsigned long height, const unsigned long unsigned long, ExceptionInfo *exception );</p>
-<p>Image * <strong>AddNoiseImage</strong>( const Image *image, const NoiseType noise_type, ExceptionInfo *exception );</p>
-<p>Image * <strong>BlurImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</p>
-<p>unsigned int  <strong>ChannelThresholdImage</strong>( Image *image, const char *threshold );</p>
-<p>Image * <strong>DespeckleImage</strong>( const Image *image, ExceptionInfo *exception );</p>
-<p>Image * <strong>EdgeImage</strong>( const Image *image, const double radius, ExceptionInfo *exception );</p>
-<p>Image * <strong>EmbossImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</p>
-<p>Image * <strong>EnhanceImage</strong>( const Image *image, ExceptionInfo *exception );</p>
-<p>Image * <strong>GaussianBlurImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</p>
-<p>Image * <strong>MedianFilterImage</strong>( const Image *image, const double radius, ExceptionInfo *exception );</p>
-<p>Image * <strong>MotionBlurImage</strong>( const Image *image, const double radius, const double sigma, const double angle, ExceptionInfo *exception );</p>
-<p>Image * <strong>ReduceNoiseImage</strong>( const Image *image, const double radius, ExceptionInfo *exception );</p>
-<p>Image * <strong>ShadeImage</strong>( const Image *image, const unsigned int gray, double azimuth, double elevation, ExceptionInfo *exception );</p>
-<p>Image * <strong>SharpenImage</strong>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</p>
-<p>Image * <strong>SpreadImage</strong>( const Image *image, const unsigned int radius, ExceptionInfo *exception );</p>
-<p>unsigned int  <strong>ThresholdImage</strong>( Image *image, const double threshold );</p>
-<p>Image * <strong>UnsharpMaskImage</strong>( const Image *image, const double radius, const double sigma, const double amount, const double threshold, ExceptionInfo *exception );</p>
-<p>
-</p>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<p>
-</p>
-<h2><a name="adaptivethresholdimage">AdaptiveThresholdImage</a></h2>
-<blockquote>AdaptiveThresholdImage() selects an individual threshold for each pixel based on the range of intensity values in its local neighborhood. This allows for thresholding of an image whose global intensity histogram doesn't contain distinctive peaks. </blockquote><p>The format of the AdaptiveThresholdImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *AdaptiveThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long width, const unsigned long height, const unsigned long unsigned long, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_image%3a">o image:</a></strong><br />
-</dt>
-<dd>
+<HR>
+<P>
+<H2><A NAME="name">
+NAME</A></H2>
+<P>effect - GraphicsMagick Image Effects Methods</P>
+<P>
+<HR>
+<H2><A NAME="synopsis">
+SYNOPSIS</A></H2>
+<P>Image * <STRONG>AdaptiveThresholdImage</STRONG>( Image *image, const unsigned long width, const unsigned long height, const unsigned long unsigned long, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>AddNoiseImage</STRONG>( const Image *image, const NoiseType noise_type, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>BlurImage</STRONG>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>ChannelThresholdImage</STRONG>( Image *image, const char *threshold );</P>
+<P>Image * <STRONG>DespeckleImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>EdgeImage</STRONG>( const Image *image, const double radius, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>EmbossImage</STRONG>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>EnhanceImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>GaussianBlurImage</STRONG>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>MedianFilterImage</STRONG>( const Image *image, const double radius, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>MotionBlurImage</STRONG>( const Image *image, const double radius, const double sigma, const double angle, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>RandomChannelThresholdImage</STRONG>( Image *image, const char *channel, const char *thresholds, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ReduceNoiseImage</STRONG>( const Image *image, const double radius, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ShadeImage</STRONG>( const Image *image, const unsigned int gray, double azimuth, double elevation, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>SharpenImage</STRONG>( const Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>SpreadImage</STRONG>( const Image *image, const unsigned int radius, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>ThresholdImage</STRONG>( Image *image, const double threshold );</P>
+<P>Image * <STRONG>UnsharpMaskImage</STRONG>( const Image *image, const double radius, const double sigma, const double amount, const double threshold, ExceptionInfo *exception );</P>
+<P>
+<HR>
+<H2><A NAME="function descriptions">
+FUNCTION 
+DESCRIPTIONS</A></H2>
+<P>
+<H3><A NAME="adaptivethresholdimage">AdaptiveThresholdImage</A></H3>
+<blockquote>AdaptiveThresholdImage() selects an individual threshold for each pixel based on the range of intensity values in its local neighborhood. This allows for thresholding of an image whose global intensity histogram doesn't contain distinctive peaks. </blockquote><P>The format of the AdaptiveThresholdImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *AdaptiveThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long width, const unsigned long height, const unsigned long unsigned long, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_width%3a">o width:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_width%3A">width:</A></STRONG><BR>
+<DD>
 The width of the local neighborhood.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_height%3a">o height:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_height%3A">height:</A></STRONG><BR>
+<DD>
 The height of the local neighborhood.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_offset%3a">o offset:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_offset%3A">offset:</A></STRONG><BR>
+<DD>
 The mean offset.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_exception%3a">o exception:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="addnoiseimage">AddNoiseImage</a></h2>
-<blockquote>AddNoiseImage() adds random noise to the image. </blockquote><p>The format of the AddNoiseImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *AddNoiseImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="addnoiseimage">AddNoiseImage</A></H3>
+<blockquote>AddNoiseImage() adds random noise to the image. </blockquote><P>The format of the AddNoiseImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *AddNoiseImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_noise_type%3a">o noise_type:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_noise_type%3A">noise_type:</A></STRONG><BR>
+<DD>
 The type of noise: Uniform, Gaussian, Multiplicative, Impulse, Laplacian, or Poisson.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="blurimage">BlurImage</a></h2>
-<blockquote>BlurImage() blurs an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, the radius should be larger than sigma. Use a radius of 0 and BlurImage ( ) selects a suitable radius for you. </blockquote><p>The format of the BlurImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_radius%3a">o radius:</a></strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="blurimage">BlurImage</A></H3>
+<blockquote>BlurImage() blurs an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, the radius should be larger than sigma. Use a radius of 0 and BlurImage ( ) selects a suitable radius for you. </blockquote><P>The format of the BlurImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_radius%3A">radius:</A></STRONG><BR>
+<DD>
 The radius of the Gaussian, in pixels, not counting the center pixel.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_sigma%3a">o sigma:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_sigma%3A">sigma:</A></STRONG><BR>
+<DD>
 The standard deviation of the Gaussian, in pixels.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="channelthresholdimage">ChannelThresholdImage</a></h2>
-<blockquote>ChannelThresholdImage() changes the value of individual pixels based on the intensity of each pixel channel. The result is a high-contrast image. </blockquote><p>The format of the ChannelThresholdImage method is:</p>
-<blockquote>unsigned int ChannelThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const char *threshold ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="channelthresholdimage">ChannelThresholdImage</A></H3>
+<blockquote>ChannelThresholdImage() changes the value of individual pixels based on the intensity of each pixel channel. The result is a high-contrast image. </blockquote><P>The format of the ChannelThresholdImage method is:</P>
+<blockquote>unsigned int ChannelThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const char *threshold ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_threshold%3a">o threshold:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_threshold%3A">threshold:</A></STRONG><BR>
+<DD>
 define the threshold values.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="despeckleimage">DespeckleImage</a></h2>
-<p><code>Despeckle()</code> reduces the speckle noise in an image while perserving the edges of the original image.</p>
-<p>The format of the DespeckleImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *DespeckleImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="despeckleimage">DespeckleImage</A></H3>
+<P><CODE>Despeckle()</CODE> reduces the speckle noise in an image while perserving the edges of the original image.</P>
+<P>The format of the DespeckleImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *DespeckleImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="edgeimage">EdgeImage</a></h2>
-<blockquote>EdgeImage() finds edges in an image. Radius defines the radius of the convolution filter. Use a radius of 0 and Edge ( ) selects a suitable radius for you. </blockquote><p>The format of the EdgeImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *EdgeImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="edgeimage">EdgeImage</A></H3>
+<blockquote>EdgeImage() finds edges in an image. Radius defines the radius of the convolution filter. Use a radius of 0 and Edge ( ) selects a suitable radius for you. </blockquote><P>The format of the EdgeImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *EdgeImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o radius:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>radius:</STRONG><BR>
+<DD>
 the radius of the pixel neighborhood.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="embossimage">EmbossImage</a></h2>
-<blockquote>EmbossImage() returns a grayscale image with a three-dimensional effect. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and Emboss ( ) selects a suitable radius for you. </blockquote><p>The format of the EmbossImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *EmbossImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="embossimage">EmbossImage</A></H3>
+<blockquote>EmbossImage() returns a grayscale image with a three-dimensional effect. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and Emboss ( ) selects a suitable radius for you. </blockquote><P>The format of the EmbossImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *EmbossImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o radius:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>radius:</STRONG><BR>
+<DD>
 the radius of the pixel neighborhood.
-</dd>
-<p></p>
-<dt><strong>o sigma:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>sigma:</STRONG><BR>
+<DD>
 The standard deviation of the Gaussian, in pixels.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="enhanceimage">EnhanceImage</a></h2>
-<blockquote>EnhanceImage() applies a digital filter that improves the quality of a noisy image. </blockquote><p>The format of the EnhanceImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="enhanceimage">EnhanceImage</A></H3>
+<blockquote>EnhanceImage() applies a digital filter that improves the quality of a noisy image. </blockquote><P>The format of the EnhanceImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="gaussianblurimage">GaussianBlurImage</a></h2>
-<blockquote>GaussianBlurImage() blurs an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, the radius should be larger than sigma. Use a radius of 0 and GaussianBlurImage ( ) selects a suitable radius for you </blockquote><p>The format of the BlurImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *GaussianBlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_blur_image%3a">o blur_image:</a></strong><br />
-</dt>
-<dd>
-Method GaussianBlurImage returns a pointer to the image after it is blur.  A null image is returned if there is a memory shortage.
-</dd>
-<p></p>
-<dt><strong>o radius:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="gaussianblurimage">GaussianBlurImage</A></H3>
+<blockquote>GaussianBlurImage() blurs an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, the radius should be larger than sigma. Use a radius of 0 and GaussianBlurImage ( ) selects a suitable radius for you </blockquote><P>The format of the BlurImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *GaussianBlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_blur_image%3A">blur_image:</A></STRONG><BR>
+<DD>
+Method GaussianBlurImage returns a pointer to the image after it is blur.  
+A null image is returned if there is a memory shortage.
+<P></P>
+<DD><P></P><DT><STRONG>radius:</STRONG><BR>
+<DD>
 the radius of the Gaussian, in pixels, not counting the center pixel.
-</dd>
-<p></p>
-<dt><strong>o sigma:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>sigma:</STRONG><BR>
+<DD>
 the standard deviation of the Gaussian, in pixels.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="medianfilterimage">MedianFilterImage</a></h2>
-<blockquote>MedianFilterImage() applies a digital filter that improves the quality of a noisy image. Each pixel is replaced by the median in a set of neighboring pixels as defined by radius. </blockquote><p>The algorithm was contributed by Mike Edmonds and implements an insertion sort for selecting median color-channel values.  For more on this algorithm see ``Skip Lists: A probabilistic Alternative to Balanced Trees'' by William Pugh in the June 1990 of Communications of the ACM.</p>
-<p>The format of the MedianFilterImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *MedianFilterImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="medianfilterimage">MedianFilterImage</A></H3>
+<blockquote>MedianFilterImage() applies a digital filter that improves the quality of a noisy image. Each pixel is replaced by the median in a set of neighboring pixels as defined by radius. </blockquote><P>The algorithm was contributed by Mike Edmonds and implements an insertion sort for selecting median color-channel values.  For more on this algorithm see ``Skip Lists: 
+A probabilistic Alternative to Balanced Trees'' by William Pugh in the June 1990 of Communications of the 
+ACM.</P>
+<P>The format of the MedianFilterImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *MedianFilterImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o radius:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>radius:</STRONG><BR>
+<DD>
 The radius of the pixel neighborhood.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="motionblurimage">MotionBlurImage</a></h2>
-<blockquote>MotionBlurImage() simulates motion blur. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and MotionBlurImage ( ) selects a suitable radius for you. Angle gives the angle of the blurring motion. </blockquote><p>Andrew Protano contributed this effect.</p>
-<p>The format of the MotionBlurImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *MotionBlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double angle, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="motionblurimage">MotionBlurImage</A></H3>
+<blockquote>MotionBlurImage() simulates motion blur. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and MotionBlurImage ( ) selects a suitable radius for you. Angle gives the angle of the blurring motion. </blockquote><P>Andrew Protano contributed this effect.</P>
+<P>The format of the MotionBlurImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *MotionBlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double angle, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o radius:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>radius:</STRONG><BR>
+<DD>
 The radius of the Gaussian, in pixels, not counting the center pixel.
-</dd>
-<p></p>
-<dt><strong>o sigma:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>sigma:</STRONG><BR>
+<DD>
 The standard deviation of the Gaussian, in pixels.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_angle%3a">o angle:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_angle%3A">angle:</A></STRONG><BR>
+<DD>
 Apply the effect along this angle.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="reducenoiseimage">ReduceNoiseImage</a></h2>
-<blockquote>ReduceNoiseImage() smooths the contours of an image while still preserving edge information. The algorithm works by replacing each pixel with its neighbor closest in value. A neighbor is defined by radius. Use a radius of 0 and ReduceNoise ( ) selects a suitable radius for you. </blockquote><p>The format of the ReduceNoiseImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="randomchannelthresholdimage">RandomChannelThresholdImage</A></H3>
+<blockquote>RandomChannelThresholdImage() changes the value of individual pixels based on the intensity of each pixel compared to a random threshold. The result is a low-contrast, two color image. </blockquote><P>The format of the RandomChannelThresholdImage method is:</P>
+<blockquote>unsigned int RandomChannelThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const char *channel, const char *thresholds, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o radius:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_channel%3A">channel:</A></STRONG><BR>
+<DD>
+The channel or channels to be thresholded.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_thresholds%3A">thresholds:</A></STRONG><BR>
+<DD>
+a geometry string containing LOWxHIGH thresholds.  If the string contains 2x2, 3x3, or 4x4, then an ordered dither of order 2, 3, or 4 will be performed instead.
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="reducenoiseimage">ReduceNoiseImage</A></H3>
+<blockquote>ReduceNoiseImage() smooths the contours of an image while still preserving edge information. The algorithm works by replacing each pixel with its neighbor closest in value. A neighbor is defined by radius. Use a radius of 0 and ReduceNoise ( ) selects a suitable radius for you. </blockquote><P>The format of the ReduceNoiseImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<DD><P></P><DT><STRONG>radius:</STRONG><BR>
+<DD>
 The radius of the pixel neighborhood.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="shadeimage">ShadeImage</a></h2>
-<blockquote>ShadeImage() shines a distant light on an image to create a three-dimensional effect. You control the positioning of the light with azimuth and elevation; azimuth is measured in degrees off the x axis and elevation is measured in pixels above the Z axis. </blockquote><p>The format of the ShadeImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *ShadeImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int gray, double azimuth, double elevation, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="shadeimage">ShadeImage</A></H3>
+<blockquote>ShadeImage() shines a distant light on an image to create a three-dimensional effect. You control the positioning of the light with azimuth and elevation; azimuth is measured in degrees off the x axis and elevation is measured in pixels above the Z axis. </blockquote><P>The format of the ShadeImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ShadeImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int gray, double azimuth, double elevation, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_gray%3a">o gray:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_gray%3A">gray:</A></STRONG><BR>
+<DD>
+
 A value other than zero shades the intensity of each pixel.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_azimuth%2c_elevation%3a">o azimuth, elevation:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_azimuth%2C_elevation%3A">azimuth, elevation:</A></STRONG><BR>
+<DD>
 Define the light source direction.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="sharpenimage">SharpenImage</a></h2>
-<blockquote>SharpenImage() sharpens an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and SharpenImage ( ) selects a suitable radius for you. </blockquote><p>The format of the SharpenImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *SharpenImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="sharpenimage">SharpenImage</A></H3>
+<blockquote>SharpenImage() sharpens an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and SharpenImage ( ) selects a suitable radius for you. </blockquote><P>The format of the SharpenImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *SharpenImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o radius:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>radius:</STRONG><BR>
+<DD>
 The radius of the Gaussian, in pixels, not counting the center pixel.
-</dd>
-<p></p>
-<dt><strong>o sigma:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>sigma:</STRONG><BR>
+<DD>
 The standard deviation of the Laplacian, in pixels.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="spreadimage">SpreadImage</a></h2>
-<blockquote>SpreadImage() is a special effects method that randomly displaces each pixel in a block defined by the radius parameter. </blockquote><p>The format of the SpreadImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *SpreadImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="spreadimage">SpreadImage</A></H3>
+<blockquote>SpreadImage() is a special effects method that randomly displaces each pixel in a block defined by the radius parameter. </blockquote><P>The format of the SpreadImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *SpreadImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o radius:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>radius:</STRONG><BR>
+<DD>
 Choose a random pixel in a neighborhood of this extent.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="thresholdimage">ThresholdImage</a></h2>
-<blockquote>ThresholdImage() changes the value of individual pixels based on the intensity of each pixel compared to threshold. The result is a high-contrast, two color image. </blockquote><p>The format of the ThresholdImage method is:</p>
-<blockquote>unsigned int ThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const double threshold ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="thresholdimage">ThresholdImage</A></H3>
+<blockquote>ThresholdImage() changes the value of individual pixels based on the intensity of each pixel compared to threshold. The result is a high-contrast, two color image. </blockquote><P>The format of the ThresholdImage method is:</P>
+<blockquote>unsigned int ThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const double threshold ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o threshold:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>threshold:</STRONG><BR>
+<DD>
 Define the threshold value
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="unsharpmaskimage">UnsharpMaskImage</a></h2>
-<blockquote>UnsharpMaskImage() sharpens an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and UnsharpMaskImage ( ) selects a suitable radius for you. </blockquote><p>The format of the UnsharpMaskImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *UnsharpMaskImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double amount, const double threshold, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="unsharpmaskimage">UnsharpMaskImage</A></H3>
+<blockquote>UnsharpMaskImage() sharpens an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and UnsharpMaskImage ( ) selects a suitable radius for you. </blockquote><P>The format of the UnsharpMaskImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *UnsharpMaskImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double amount, const double threshold, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o radius:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>radius:</STRONG><BR>
+<DD>
 The radius of the Gaussian, in pixels, not counting the center pixel.
-</dd>
-<p></p>
-<dt><strong>o sigma:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>sigma:</STRONG><BR>
+<DD>
 The standard deviation of the Gaussian, in pixels.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_amount%3a">o amount:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_amount%3A">amount:</A></STRONG><BR>
+<DD>
 The percentage of the difference between the original and the blur image that is added back into the original.
-</dd>
-<p></p>
-<dt><strong>o threshold:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>threshold:</STRONG><BR>
+<DD>
 The threshold in pixels needed to apply the diffence amount.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-</dl>
+</DL></DL>
 
-</body>
+</BODY>
 
-</html>
+</HTML>

@@ -1,3 +1,13 @@
+2003-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/api.html: Updated to reflect GraphicsMagick
+	* www/*.html: Updated with format_c_api_docs script.
+	* Makefile.am (format_c_api_docs): Add a target to update
+	the C API documentation.
+	* scripts/format_c_api_docs: Add script which extracts and
+	formats the C API documentation into HTML files in the www/api
+	subdirectory.
+
 2003-04-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh (PACKAGE_VERSION): Update release version ID.

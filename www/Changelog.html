@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.0.0 ChangeLog</TITLE>
+<TITLE>GraphicsMagick 1.0 ChangeLog</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -49,13 +49,28 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0.0 ChangeLog</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0 ChangeLog</font></font></font></b></td>
 </tr>
 </table>
+<p>
+2003-04-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> www/api.html: Updated to reflect GraphicsMagick
+  <LI> www/*.html: Updated with format_c_api_docs script.
+  <LI> Makefile.am (format_c_api_docs): Add a target to update
+        the C API documentation.<BR>
+  <LI> scripts/format_c_api_docs: Add script which extracts and
+        formats the C API documentation into HTML files in the www/api
+        subdirectory.
+
+</UL>
 <p>
 2003-04-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> version.sh (PACKAGE_VERSION): Update release version ID.
+  <LI> magick/version.h (MagickReleaseDate): Update release date.
   <LI> magick/constitute.c (ConstituteImage): Fixed problems with
         reading intensity (gray) pixel arrays.
   <LI> magick/image.c (GrayscalePseudoClassImage): Use

@@ -1,346 +1,332 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>transform - Methods to Transform an Image</title>
-<link rel="StyleSheet" href="../magick.css" type="text/css" />
-</head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+<STYLE>
+<!--
+@page { size: 8.5in 11in }
+TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+H2 { color: #000000 }
+A:link { color: #0085c0 }
+A:visited { color: #800080 }
+-->
+</STYLE>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080"> <A HREF="http://promote.pair.com/direct.pl?imagemagick.org"> <IMG SRC="../../images/promote.png" ALT="Pair" ALIGN=RIGHT WIDTH=120 HEIGHT=60 BORDER=0></A> <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<TITLE>transform - Methods to Transform an Image</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+</HEAD>
 
-<p><a name="__index__"></a></p>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+        <INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+        <INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+        <TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+                <COL WIDTH=208*>
+                <COL WIDTH=48*>
+                <TR>
+                        <TD WIDTH=81%>
+                                <P ALIGN=LEFT>[<A HREF="../../index.html">Home</A>] [<A HREF="../mission.html">Mission
+                                Statement</A>] [<A HREF="../development.html">Development Process</A>] [<A HREF="../download.html">Download</A>]
+                                [<A HREF="../install.html">Installation</A>] [<A HREF="../cvs.html">CVS</A>]
+                                [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+                                Lists</A>] [<A HREF="../FAQ.html">FAQ</A>] [<A HREF="../formats.html">Formats</A>]
+                                [<A HREF="../NEWS.html">News</A> ] [<A HREF="../Changelog.html"><SPAN LANG="en-US">ChangeLog</SPAN></A>]
+                                [<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+                                Bugs</A>] [<A HREF="../utilities.html">Utilities</A>] [<A HREF="../programming.html">Programming</A>]
+                                [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
+                        </TD>
+                        <TD ROWSPAN=2 WIDTH=19%>
+                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                        </TD>
+                </TR>
+                <TR>
+                        <TD WIDTH=81%>
+                                <DIV ALIGN=CENTER>
+                                        <P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=20 MAXLENGTH=255>
+                                        <INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+                                        </P>
+                                </DIV>
+                        </TD>
+                </TR>
+        </TABLE>
+</FORM>
+
+
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
-<ul>
+<UL>
 
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
+	<LI><A HREF="#name">
+NAME</A>
+	<LI><A HREF="#synopsis">
+SYNOPSIS</A>
+	<LI><A HREF="#function descriptions">
+FUNCTION 
+DESCRIPTIONS</A>
+	<UL>
 
-		<li><a href="#chopimage">ChopImage</a></li>
-		<li><a href="#coalesceimages">CoalesceImages</a></li>
-		<li><a href="#cropimage">CropImage</a></li>
-		<li><a href="#deconstructimages">DeconstructImages</a></li>
-		<li><a href="#flattenimage">FlattenImage</a></li>
-		<li><a href="#flipimage">FlipImage</a></li>
-		<li><a href="#flopimage">FlopImage</a></li>
-		<li><a href="#mosaicimages">MosaicImages</a></li>
-		<li><a href="#profileimage">ProfileImage</a></li>
-		<li><a href="#rollimage">RollImage</a></li>
-		<li><a href="#shaveimage">ShaveImage</a></li>
-		<li><a href="#transformimage">TransformImage</a></li>
-	</ul>
+		<LI><A HREF="#chopimage">ChopImage</A>
+		<LI><A HREF="#coalesceimages">CoalesceImages</A>
+		<LI><A HREF="#cropimage">CropImage</A>
+		<LI><A HREF="#deconstructimages">DeconstructImages</A>
+		<LI><A HREF="#flattenimage">FlattenImage</A>
+		<LI><A HREF="#flipimage">FlipImage</A>
+		<LI><A HREF="#flopimage">FlopImage</A>
+		<LI><A HREF="#mosaicimages">MosaicImages</A>
+		<LI><A HREF="#profileimage">ProfileImage</A>
+		<LI><A HREF="#rollimage">RollImage</A>
+		<LI><A HREF="#shaveimage">ShaveImage</A>
+		<LI><A HREF="#transformimage">TransformImage</A>
+	</UL>
 
-</ul>
+</UL>
 <!-- INDEX END -->
 
-<hr />
-<p>
-</p>
-<h1><a name="name">NAME</a></h1>
-<p>transform - Methods to Transform an Image</p>
-<p>
-</p>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>Image * <strong>ChopImage</strong>( const Image *image, const RectangleInfo *chop_info );</p>
-<p>Image * <strong>CoalesceImages</strong>( const Image *image, ExceptionInfo *exception );</p>
-<p>Image * <strong>CropImage</strong>( const Image *image, const RectangleInfo *geometry, ExceptionInfo *exception );</p>
-<p>Image * <strong>DeconstructImages</strong>( const Image *image, ExceptionInfo *exception );</p>
-<p>Image * <strong>FlattenImage</strong>( const Image *image, ExceptionInfo *exception );</p>
-<p>Image * <strong>FlipImage</strong>( const Image *image, ExceptionInfo *exception );</p>
-<p>Image * <strong>FlopImage</strong>( const Image *image, ExceptionInfo *exception );</p>
-<p>Image * <strong>MosaicImages</strong>( const Image *image, ExceptionInfo *exception );</p>
-<p>unsigned int  <strong>ProfileImage</strong>( Image *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone );</p>
-<p>Image * <strong>RollImage</strong>( const Image *image, const long x_offset, const long y_offset, ExceptionInfo *exception );</p>
-<p>Image * <strong>ShaveImage</strong>( const Image *image, const RectangleInfo *shave_info, ExceptionInfo *exception );</p>
-<p>void  <strong>TransformImage</strong>( Image ** image, const char *crop_geometry, const char *image_geometry );</p>
-<p>
-</p>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<p>
-</p>
-<h2><a name="chopimage">ChopImage</a></h2>
-<p><code>Chop()</code> removes a region of an image and collapses the image to occupy the removed portion.</p>
-<p>The format of the ChopImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *ChopImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *chop_info ); </blockquote><pre>
-      ExceptionInfo *exception)</pre>
-<p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_image%3a">o image:</a></strong><br />
-</dt>
-<dd>
+<HR>
+<P>
+<H2><A NAME="name">
+NAME</A></H2>
+<P>transform - Methods to Transform an Image</P>
+<P>
+<HR>
+<H2><A NAME="synopsis">
+SYNOPSIS</A></H2>
+<P>Image * <STRONG>ChopImage</STRONG>( const Image *image, const RectangleInfo *chop_info );</P>
+<P>Image * <STRONG>CoalesceImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>CropImage</STRONG>( const Image *image, const RectangleInfo *geometry, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>DeconstructImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>FlattenImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>FlipImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>FlopImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>MosaicImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone );</P>
+<P>Image * <STRONG>RollImage</STRONG>( const Image *image, const long x_offset, const long y_offset, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ShaveImage</STRONG>( const Image *image, const RectangleInfo *shave_info, ExceptionInfo *exception );</P>
+<P>void  <STRONG>TransformImage</STRONG>( Image ** image, const char *crop_geometry, const char *image_geometry );</P>
+<P>
+<HR>
+<H2><A NAME="function descriptions">
+FUNCTION 
+DESCRIPTIONS</A></H2>
+<P>
+<H3><A NAME="chopimage">ChopImage</A></H3>
+<P><CODE>Chop()</CODE> removes a region of an image and collapses the image to occupy the removed portion.</P>
+<P>The format of the ChopImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ChopImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *chop_info ); </blockquote><PRE>
+      ExceptionInfo *exception)</PRE>
+<P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_chop_info%3a">o chop_info:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_chop_info%3A">chop_info:</A></STRONG><BR>
+<DD>
 Define the region of the image to chop.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_exception%3a">o exception:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="coalesceimages">CoalesceImages</a></h2>
-<blockquote>CoalesceImages() composites a set of images while respecting any page offsets and disposal methods. GIF, MIFF, and MNG animation sequences typically start with an image background and each subsequent image varies in size and offset. CoalesceImages ( ) returns a new sequence where each image in the sequence is the same size as the first and composited with the next image in the sequence. </blockquote><p>The format of the CoalesceImages method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *CoalesceImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="coalesceimages">CoalesceImages</A></H3>
+<blockquote>CoalesceImages() composites a set of images while respecting any page offsets and disposal methods. GIF, MIFF, and MNG animation sequences typically start with an image background and each subsequent image varies in size and offset. CoalesceImages ( ) returns a new sequence where each image in the sequence is the same size as the first and composited with the next image in the sequence. </blockquote><P>The format of the CoalesceImages method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *CoalesceImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image sequence.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="cropimage">CropImage</a></h2>
-<blockquote>Use CropImage() to extract a region of the image starting at the offset defined by geometry. </blockquote><p>The format of the CropImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *geometry, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="cropimage">CropImage</A></H3>
+<blockquote>Use CropImage() to extract a region of the image starting at the offset defined by geometry. </blockquote><P>The format of the CropImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *geometry, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_geometry%3a">o geometry:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_geometry%3A">geometry:</A></STRONG><BR>
+<DD>
 Define the region of the image to crop with members x, y, width, and height.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="deconstructimages">DeconstructImages</a></h2>
-<blockquote>DeconstructImages() compares each image with the next in a sequence and returns the maximum bounding region of any pixel differences it discovers. </blockquote><p>The format of the DeconstructImages method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *DeconstructImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="deconstructimages">DeconstructImages</A></H3>
+<blockquote>DeconstructImages() compares each image with the next in a sequence and returns the maximum bounding region of any pixel differences it discovers. </blockquote><P>The format of the DeconstructImages method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *DeconstructImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="flattenimage">FlattenImage</a></h2>
-<p>Method FlattenImage merges a sequence of images.  This is useful for combining Photoshop layers into a single image.</p>
-<p>The format of the FlattenImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *FlattenImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="flattenimage">FlattenImage</A></H3>
+<P>Method FlattenImage merges a sequence of images.  This is useful for combining Photoshop layers into a single image.</P>
+<P>The format of the FlattenImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *FlattenImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image sequence.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="flipimage">FlipImage</a></h2>
-<blockquote>FlipImage() creates a vertical mirror image by reflecting the pixels around the central x-axis. </blockquote><p>The format of the FlipImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="flipimage">FlipImage</A></H3>
+<blockquote>FlipImage() creates a vertical mirror image by reflecting the pixels around the central x-axis. </blockquote><P>The format of the FlipImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="flopimage">FlopImage</a></h2>
-<blockquote>FlopImage() creates a horizontal mirror image by reflecting the pixels around the central y-axis. </blockquote><p>The format of the FlopImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="flopimage">FlopImage</A></H3>
+<blockquote>FlopImage() creates a horizontal mirror image by reflecting the pixels around the central y-axis. </blockquote><P>The format of the FlopImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="mosaicimages">MosaicImages</a></h2>
-<blockquote>MosaicImages() inlays an image sequence to form a single coherent picture. It returns a single image with each image in the sequence composited at the location defined by the page member of the image structure. </blockquote><p>The format of the MosaicImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *MosaicImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="mosaicimages">MosaicImages</A></H3>
+<blockquote>MosaicImages() inlays an image sequence to form a single coherent picture. It returns a single image with each image in the sequence composited at the location defined by the page member of the image structure. </blockquote><P>The format of the MosaicImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *MosaicImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="profileimage">ProfileImage</a></h2>
-<blockquote>ProfileImage() adds or removes a ICM, IPTC, or generic profile from an image. If the profile is NULL, it is removed from the image otherwise added. Use a name of ' *' and a profile of NULL to remove all profiles from the image. Ownership of the profile is transferred to ImageMagick ( it should not be altered or deallocated ) unless the clone option is set to True. </blockquote><p>The format of the ProfileImage method is:</p>
-<blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="profileimage">ProfileImage</A></H3>
+<blockquote>ProfileImage() adds or removes a ICM, IPTC, or generic profile from an image. If the profile is NULL, it is removed from the image otherwise added. Use a name of ' *' and a profile of NULL to remove all profiles from the image. Ownership of the profile is transferred to GraphicsMagick ( it should not be altered or deallocated ) unless the clone option is set to True. </blockquote><P>The format of the ProfileImage method is:</P>
+<blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_name%3a">o name:</a></strong><br />
-</dt>
-<dd>
-Name of profile to add or remove: ICM, IPTC, or generic profile.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_profile%3a">o profile:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
+<DD>
+Name of profile to add or remove: 
+ICM, 
+IPTC, or generic profile.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_profile%3A">profile:</A></STRONG><BR>
+<DD>
 The profile.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_length%3a">o length:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
+<DD>
 The length of the profile.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_clone%3a">o clone:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_clone%3A">clone:</A></STRONG><BR>
+<DD>
 If set True, then copy the profile rather than taking ownership of it.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="rollimage">RollImage</a></h2>
-<blockquote>RollImage() offsets an image as defined by x_offset and y_offset. </blockquote><p>The format of the RollImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( const <A HREF="types/Image.html">Image</A> *image, const long x_offset, const long y_offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="rollimage">RollImage</A></H3>
+<blockquote>RollImage() offsets an image as defined by x_offset and y_offset. </blockquote><P>The format of the RollImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( const <A HREF="types/Image.html">Image</A> *image, const long x_offset, const long y_offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_x_offset%3a">o x_offset:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_x_offset%3A">x_offset:</A></STRONG><BR>
+<DD>
 The number of columns to roll in the horizontal direction.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_y_offset%3a">o y_offset:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_y_offset%3A">y_offset:</A></STRONG><BR>
+<DD>
 The number of rows to roll in the vertical direction.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="shaveimage">ShaveImage</a></h2>
-<p>Method ShaveImage shaves pixels from the image edges.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
-<p>The format of the ShaveImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *ShaveImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *shave_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_shave_image%3a">o shave_image:</a></strong><br />
-</dt>
-<dd>
-Method ShaveImage returns a pointer to the shaved image.  A null image is returned if there is a memory shortage or if the image width or height is zero.
-</dd>
-<p></p>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="shaveimage">ShaveImage</A></H3>
+<P>Method ShaveImage shaves pixels from the image edges.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>The format of the ShaveImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ShaveImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *shave_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_shave_image%3A">shave_image:</A></STRONG><BR>
+<DD>
+Method ShaveImage returns a pointer to the shaved image.  
+A null image is returned if there is a memory shortage or if the image width or height is zero.
+<P></P>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_shave_info%3a">o shave_info:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_shave_info%3A">shave_info:</A></STRONG><BR>
+<DD>
 Specifies a pointer to a RectangleInfo which defines the region of the image to crop.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="transformimage">TransformImage</a></h2>
-<blockquote>TransformImage() is a convenience method that behaves like ResizeImage ( ) or CropImage ( ) but accepts scaling and/or cropping information as a region geometry specification. If the operation fails, the original image handle is returned. </blockquote><p>The format of the TransformImage method is:</p>
-<blockquote>void TransformImage ( <A HREF="types/Image.html">Image</A> **image, const char *crop_geometry, const char *image_geometry ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="transformimage">TransformImage</A></H3>
+<blockquote>TransformImage() is a convenience method that behaves like ResizeImage ( ) or CropImage ( ) but accepts scaling and/or cropping information as a region geometry specification. If the operation fails, the original image handle is returned. </blockquote><P>The format of the TransformImage method is:</P>
+<blockquote>void TransformImage ( <A HREF="types/Image.html">Image</A> **image, const char *crop_geometry, const char *image_geometry ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image The transformed image is returned as this parameter.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_crop_geometry%3a">o crop_geometry:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_crop_geometry%3A">crop_geometry:</A></STRONG><BR>
+<DD>
+
 A crop geometry string.  This geometry defines a subregion of the image to crop.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_image_geometry%3a">o image_geometry:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_image_geometry%3A">image_geometry:</A></STRONG><BR>
+<DD>
 An image geometry string.  This geometry defines the final size of the image.
-</dd>
-</dl>
+</DL></DL>
 
-</body>
+</BODY>
 
-</html>
+</HTML>

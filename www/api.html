@@ -9,12 +9,42 @@
    <link rel="StyleSheet" href="magick.css" type="text/css">
 </head>
 <body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+		<COL WIDTH=208*>
+		<COL WIDTH=48*>
+		<TR>
+			<TD WIDTH=81%>
+				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission
+				Statement</A>] [<A HREF="development.html">Development Process</A>]
+				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
+				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
+				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
+				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+				Bugs</A>] [<A HREF="utilities.html">Utilities</A>] [<A HREF="programming.html">Programming</A>]
+				[<A HREF="books.html">Books</A>] [<A HREF="links.html">Links</A>]</P>
+			</TD>
+			<TD ROWSPAN=2 WIDTH=19%>
+				<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=81%>
+				<DIV ALIGN=CENTER>
+					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+					</P>
+				</DIV>
+			</TD>
+		</TR>
+	</TABLE>
+</FORM>
 
-
-<center><img SRC="../images/magick_small.png" alt="" width=114 height=118></center>
-
-<p><br>
-<br>
+<p>
 <p><b>GraphicsMagick</b> has a number of functions that allow you to read,
 manipulate, write, or display an image. These functions are accessible
 through the various <a href="programming.html">tools</a> or the object-oriented
@@ -22,7 +52,7 @@ Perl interface, <a href="perl.html">PerlMagick</a>. However, you can also
 access the functions directly from your program through the Magick Application
 Programmer Interface. To invoke the functions, write your program in your
 favorite language while making calls to the Magick image functions and
-link with <tt>libMagick.a</tt>, <tt>libMagick.so</tt>, or <tt>Magick.dll</tt>
+link with <tt>libGraphicsMagick.a</tt>, <tt>libGraphicsMagick.so</tt>, or <tt>Magick.dll</tt>
 depending on your system.
 <p>The API is divided into a number of categories:
 <dl>
@@ -233,13 +263,13 @@ Now we need to compile. On Unix, the command would look something like
 this:
 <pre>
 &nbsp;&nbsp;&nbsp; setenv LD_LIBRARY_PATH /usr/local/lib
-&nbsp;&nbsp;&nbsp; gcc `Magick-config --cflags --cppflags` demo.c `Magick-config --ldflags --libs`
+&nbsp;&nbsp;&nbsp; gcc `GraphicsMagick-config --cflags --cppflags` demo.c `GraphicsMagick-config --ldflags --libs`
 </pre>
 Another example is <a href="smile.c">smile.c</a>. Compile and excute it
 to display a smiley face on your X server.
 <p>
 For C++, use:
-<pre>&nbsp;&nbsp;&nbsp; g++ `Magick++-config --cxxflags --cppflags` demo.cpp `Magick++-config --ldflags --libs`</pre>
+<pre>&nbsp;&nbsp;&nbsp; g++ `GraphicsMagick++-config --cxxflags --cppflags` demo.cpp `GraphicsMagick++-config --ldflags --libs`</pre>
 <hr>
 <p><a href="../index.html"><img SRC="../images/home.png"
 ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
