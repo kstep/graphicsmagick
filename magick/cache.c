@@ -2513,18 +2513,21 @@ static unsigned int WriteCacheInfo(Image *image)
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
   if (image->color_profile.length > 0)
-    (void) fprintf(file,"profile-icc=%u\n",image->color_profile.length);
+    (void) fprintf(file,"profile-icc=%lu\n",(unsigned long)
+      image->color_profile.length);
   if (image->iptc_profile.length > 0)
-    (void) fprintf(file,"profile-iptc=%u\n",image->iptc_profile.length);
+    (void) fprintf(file,"profile-iptc=%lu\n",(unsigned long)
+      image->iptc_profile.length);
   if (image->generic_profiles != 0)
     {
       /*
         Generic profile.
       */
       for (i=0; i < (int) image->generic_profiles; i++)
-        (void) fprintf(file,"profile-%s=%u\n",
+        (void) fprintf(file,"profile-%s=%lu\n",
           image->generic_profile[i].name == (char *) NULL ? "generic" :
-          image->generic_profile[i].name,image->generic_profile[i].length);
+          image->generic_profile[i].name,(unsigned long)
+          image->generic_profile[i].length);
     }
   if (image->montage != (char *) NULL)
     (void) fprintf(file,"montage=%.1024s\n",image->montage);
