@@ -6,5 +6,5 @@ EXCLUDE = testSAX.c
 EXCLUDE = testURI.c
 EXCLUDE = testXPath.c
 EXCLUDE = slashrdf.c
-EXCLUDE = xmllink.c
+EXCLUDE = xmllint.c
 EXCLUDE = debugXML.c
