@@ -116,7 +116,7 @@ extern MagickExport unsigned char
   *NTResourceToBlob(const char *);
 
 extern MagickExport unsigned int
-  *NTGetExecutionPath(char *);
+  NTGetExecutionPath(char *);
 
 extern MagickExport void
   closedir(DIR *),
