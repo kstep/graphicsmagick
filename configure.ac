@@ -130,6 +130,9 @@ then
       CFLAGS="${CFLAGS} -Wp,-H30000"
       CXX="${CXX} -AA"
       ;;
+    *-dec-osf5.* )
+      # Compaq alphaev68-dec-osf5.1 compiler
+      CXXFLAGS="${CXXFLAGS} -std strict_ansi -noimplicit_include"
   esac
 else
   CFLAGS="${CFLAGS} -Wall"
@@ -813,6 +816,8 @@ then
      DEF_THREAD="-D_REENTRANT"],,)
   LIBS="$LIB_THREAD $LIBS"
   CPPFLAGS="$DEF_THREAD $CPPFLAGS"
+else
+  CFLAGS="${CFLAGS} -Wall"
 fi
 AC_SUBST(LIB_THREAD)
 
