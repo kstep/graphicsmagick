@@ -130,7 +130,7 @@ typedef struct _PathInfo
   Forward declarations.
 */
 MagickExport inline unsigned int
-	ColorMatch(const PixelPacket *,const PixelPacket *,const double);
+  ColorMatch(const PixelPacket *,const PixelPacket *,const double);
 
 static PrimitiveInfo
   *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
@@ -1605,6 +1605,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 
   long
     j,
+    k,
     n;
 
   PointInfo
@@ -1619,15 +1620,15 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
   PrimitiveType
     primitive_type;
 
-  RectangleInfo
-    bounds;
-
   register char
     *p;
 
   register long
     i,
     x;
+
+  SegmentInfo
+    bounds;
 
   size_t
     length;
@@ -2302,7 +2303,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                   element;
 
                 SegmentInfo
-                  bounds,
                   segment;
 
                 GetToken(q,&q,token);
@@ -2371,6 +2371,9 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               }
             if (LocaleCompare("pattern",token) == 0)
               {
+                RectangleInfo
+                  bounds;
+
                 GetToken(q,&q,token);
                 (void) strncpy(name,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
@@ -2767,8 +2770,24 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
     /*
       Circumscribe primitive within a circle.
     */
-    alpha=primitive_info[i-1].point.x-primitive_info[j].point.x;
-    beta=primitive_info[i-1].point.y-primitive_info[j].point.y;
+    bounds.x1=primitive_info[j].point.x;
+    bounds.y1=primitive_info[j].point.y;
+    bounds.x2=primitive_info[j].point.x;
+    bounds.y2=primitive_info[j].point.y;
+    for (k=1; k < primitive_info[j].coordinates; k++)
+    {
+      point=primitive_info[j+k].point;
+      if (point.x < bounds.x1)
+        bounds.x1=point.x;
+      if (point.y < bounds.y1)
+        bounds.y1=point.y;
+      if (point.x > bounds.x2)
+        bounds.x2=point.x;
+      if (point.y > bounds.y2)
+        bounds.y2=point.y;
+    }
+    alpha=bounds.x2-bounds.x1;
+    beta=bounds.y2-bounds.y1;
     radius=sqrt(alpha*alpha+beta*beta);
     length=2*ceil(MagickPI*radius)+6*BezierQuantum+360;
     if (i >= (long) (number_points-length))
