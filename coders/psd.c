@@ -158,12 +158,13 @@ static unsigned int DecodeImage(Image *image,const int channel)
               break;
             }
             case 3:
-            default:
             {
               if (image->colorspace == CMYKColorspace)
-                indexes=UpScale(pixel);
+                *indexes=UpScale(pixel);
               break;
             }
+            default:
+              break;
           }
           if (!SyncImagePixels(image))
             break;
@@ -208,12 +209,13 @@ static unsigned int DecodeImage(Image *image,const int channel)
           break;
         }
         case 3:
-        default:
         {
           if (image->colorspace == CMYKColorspace)
-            indexes=UpScale(pixel);
+            *indexes=UpScale(pixel);
           break;
         }
+        default:
+          break;
       }
       if (!SyncImagePixels(image))
         break;
@@ -703,13 +705,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
               case 3:
-              default:
               {
                 if (layer_info[i].image->colorspace == CMYKColorspace)
                   (void) PushImagePixels(layer_info[i].image,BlackQuantum,
                     scanline);
                 break;
               }
+              default:
+                break;
             }
             if (!SyncImagePixels(layer_info[i].image))
               break;
@@ -729,7 +732,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 layer_info[i].image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
+              indexes=GetIndexes(layer_info[i].image);
               for (x=0; x < (int) layer_info[i].image->columns; x++)
               {
                 q->red=MaxRGB-q->red;
@@ -833,12 +836,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             }
             case 3:
-            default:
             {
               if (image->colorspace == CMYKColorspace)
                 (void) PushImagePixels(image,BlackQuantum,scanline);
               break;
             }
+            default:
+              break;
           }
           if (!SyncImagePixels(image))
             break;
