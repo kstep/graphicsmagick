@@ -3517,7 +3517,7 @@ Mogrify(ref,...)
     Deconstruct        = 131
     DeconstructImage   = 132
     GaussianBlur       = 133
-    GaussianBlurImage  = 133
+    GaussianBlurImage  = 134
     MogrifyRegion      = 666
   PPCODE:
   {
