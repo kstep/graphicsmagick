@@ -1093,8 +1093,10 @@ MagickExport PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
 static CacheThreshold GetCacheThreshold(const off_t memory)
 {
   AcquireSemaphoreInfo(&cache_semaphore);
-  cache_threshold.minimum-=memory;
-  cache_threshold.maximum-=memory;
+  if (cache_threshold.minimum != ~0)
+    cache_threshold.minimum-=memory;
+  if (cache_threshold.maximum != ~0)
+    cache_threshold.maximum-=memory;
   LiberateSemaphoreInfo(&cache_semaphore);
   return(cache_threshold);
 }
@@ -1907,13 +1909,26 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
       /*
         Set cache memory threshold.
       */
-      SetCacheThreshold(((size_t) 1L) << (8*sizeof(size_t)-21),~0);
 #if defined(PixelCacheThreshold)
       SetCacheThreshold(PixelCacheThreshold,~0);
 #endif
       threshold=getenv("MAGICK_CACHE_THRESHOLD");
       if (threshold != (char *) NULL)
-        SetCacheThreshold(atol(threshold),~0);
+        {
+          int
+            count;
+
+          double
+            maximum,
+            minimum;
+
+          minimum=0.0;
+          maximum=0.0;
+          count=sscanf(threshold,"%lfx%lf",&minimum,&maximum);
+          if (count == 1)
+            maximum=minimum;
+          SetCacheThreshold((size_t) minimum,(size_t) maximum);
+        }
     }
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);

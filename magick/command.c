@@ -3095,9 +3095,6 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
     *option,
     *q;
 
-  double
-    sans;
-
   Image
     *image;
 
@@ -4952,7 +4949,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                     "Invalid virtual pixel method",option);
               }
             break;
-					}
+          }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
       }
       case 'w':
