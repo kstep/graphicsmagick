@@ -372,7 +372,8 @@ line or curve operations) are possible to allow effects such as
 "donut holes" in objects.
 
 
-Use \fBcolor\fP to change the color of a pixel. Follow the pixel coordinate
+Use \fBcolor\fP to change the color of a pixel to the fill color (see
+\fB-fill\fP. Follow the pixel coordinate
 with a method:
 
 
@@ -435,11 +436,11 @@ If the first character of \fIstring\fP is \fI@\fP, the text is read from
 a file titled by the remaining characters in the string.
 
 
-You can set the primitive color, font color, and font bounding box
+You can set the primitive color, font, and font bounding box
 color with
 \fB-fill\fP, \fB-font\fP, and \fB-box\fP respectively. Options
-are processed in command line order so be sure to use \fB-fill\fP \fIbefore\fP
-the \fB-draw\fP option.
+are processed in command line order so be sure to use these
+options \fIbefore\fP the \fB-draw\fP option.
 
 .TP
 .B "-edge \fI<order>"\fP
