@@ -111,7 +111,7 @@ DESCRIPTIONS</A></H2>
 <H3><A NAME="charcoalimage">CharcoalImage</A></H3>
 <P>Method CharcoalImage creates a new image that is a copy of an existing one with the edge highlighted.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the CharcoalImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CharcoalImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *CharcoalImage ( const <A HREF="types.html#Image">Image</A> *image, const double radius, const double sigma, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_charcoal_image%3A">charcoal_image:</A></STRONG><BR>
@@ -138,7 +138,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="colorizeimage">ColorizeImage</A></H3>
 <blockquote>ColorizeImage() blends the fill color with each pixel in the image. A percentage blend is specified with opacity. Control the application of different color components by specifying a different percentage for </blockquote><P>The format of the ColorizeImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ColorizeImage ( const <A HREF="types/Image.html">Image</A> *image, const char *opacity, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *ColorizeImage ( const <A HREF="types.html#Image">Image</A> *image, const char *opacity, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -162,7 +162,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="convolveimage">ConvolveImage</A></H3>
 <blockquote>ConvolveImage() applies a custom convolution kernel to the image. </blockquote><P>The format of the ConvolveImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ConvolveImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int order, const double *kernel, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *ConvolveImage ( const <A HREF="types.html#Image">Image</A> *image, const unsigned int order, const double *kernel, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -185,7 +185,7 @@ Return any errors or warnings in this structure.
 <H3><A NAME="implodeimage">ImplodeImage</A></H3>
 <P>Method ImplodeImage creates a new image that is a copy of an existing one with the image pixels ``implode'' by the specified percentage.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the ImplodeImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ImplodeImage ( const <A HREF="types/Image.html">Image</A> *image, const double amount, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *ImplodeImage ( const <A HREF="types.html#Image">Image</A> *image, const double amount, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_implode_image%3A">implode_image:</A></STRONG><BR>
@@ -208,7 +208,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="morphimages">MorphImages</A></H3>
 <blockquote>The MorphImages() method requires a minimum of two images. The first image is transformed into the second by a number of intervening images as specified by frames. </blockquote><P>The format of the MorphImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *MorphImages ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long number_frames, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *MorphImages ( const <A HREF="types.html#Image">Image</A> *image, const unsigned long number_frames, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -226,7 +226,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="oilpaintimage">OilPaintImage</A></H3>
 <blockquote>OilPaintImage() applies a special effect filter that simulates an oil painting. Each pixel is replaced by the most frequent color occurring in a circular region defined by radius. </blockquote><P>The format of the OilPaintImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *OilPaintImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *OilPaintImage ( const <A HREF="types.html#Image">Image</A> *image, const double radius, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -244,7 +244,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="solarizeimage">SolarizeImage</A></H3>
 <blockquote>SolarizeImage() applies a special effect to the image, similar to the effect achieved in a photo darkroom by selectively exposing areas of photo sensitive paper to light. Threshold ranges from 0 to MaxRGB and is a measure of the extent of the solarization. </blockquote><P>The format of the SolarizeImage method is:</P>
-<blockquote>void SolarizeImage ( <A HREF="types/Image.html">Image</A> *image, const double threshold ); </blockquote><P>
+<blockquote>void SolarizeImage ( <A HREF="types.html#Image">Image</A> *image, const double threshold ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -258,7 +258,7 @@ Define the extent of the solarization.
 <P>
 <H3><A NAME="steganoimage">SteganoImage</A></H3>
 <blockquote>Use SteganoImage() to hide a digital watermark within the image. Recover the hidden watermark later to prove that the authenticity of an image. Offset defines the start position within the image to hide the watermark. </blockquote><P>The format of the SteganoImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *SteganoImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *watermark, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *SteganoImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#Image">Image</A> *watermark, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -276,7 +276,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="stereoimage">StereoImage</A></H3>
 <blockquote>StereoImage() combines two images and produces a single image that is the composite of a left and right image of a stereo pair. Special red-green stereo glasses are required to view this effect. </blockquote><P>The format of the StereoImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *StereoImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Image.html">Image</A> *offset_image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *StereoImage ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *offset_image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_stereo_image%3A">stereo_image:</A></STRONG><BR>
@@ -299,7 +299,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="swirlimage">SwirlImage</A></H3>
 <blockquote>SwirlImage() swirls the pixels about the center of the image, where degrees indicates the sweep of the arc through which each pixel is moved. You get a more dramatic effect as the degrees move from 1 to 360. </blockquote><P>The format of the SwirlImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *SwirlImage ( const <A HREF="types/Image.html">Image</A> *image, double degrees, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *SwirlImage ( const <A HREF="types.html#Image">Image</A> *image, double degrees, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -317,7 +317,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="waveimage">WaveImage</A></H3>
 <blockquote>The WaveImage() filter creates a "ripple" effect in the image by shifting the pixels vertically along a sine wave whose amplitude and wavelength is specified by the given parameters. </blockquote><P>The format of the WaveImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *WaveImage ( const <A HREF="types/Image.html">Image</A> *image, const double amplitude, const double wave_length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *WaveImage ( const <A HREF="types.html#Image">Image</A> *image, const double amplitude, const double wave_length, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>

@@ -98,7 +98,7 @@ FUNCTION
 DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="acquiremagickresource">AcquireMagickResource</A></H3>
-<blockquote>AcquireMagickResource() acquires resources of the specified type. True is returned if the specified resource is available otherwise False. </blockquote><blockquote>The format of the AcquireMagickResource() method is: </blockquote><blockquote>unsigned int AcquireMagickResource ( const ResourceType type, const ExtendedSignedIntegralType size ); </blockquote><P>
+<blockquote>AcquireMagickResource() acquires resources of the specified type. True is returned if the specified resource is available otherwise False. </blockquote><blockquote>The format of the AcquireMagickResource() method is: </blockquote><blockquote>unsigned int AcquireMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const ExtendedSignedIntegralType size ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
@@ -111,7 +111,7 @@ The number of bytes needed from for this resource.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="getmagickresource">GetMagickResource</A></H3>
-<blockquote>GetMagickResource() returns the the specified resource in megabytes. </blockquote><blockquote>The format of the GetMagickResource() method is: </blockquote><blockquote>unsigned long GetMagickResource ( const ResourceType type ); </blockquote><P>
+<blockquote>GetMagickResource() returns the the specified resource in megabytes. </blockquote><blockquote>The format of the GetMagickResource() method is: </blockquote><blockquote>unsigned long GetMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>type:</STRONG><BR>
@@ -120,7 +120,7 @@ The type of resource.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="liberatemagickresource">LiberateMagickResource</A></H3>
-<blockquote>LiberateMagickResource() liberates resources of the specified type. </blockquote><blockquote>The format of the LiberateMagickResource() method is: </blockquote><blockquote>void LiberateMagickResource ( const ResourceType type, const ExtendedSignedIntegralType size ); </blockquote><P>
+<blockquote>LiberateMagickResource() liberates resources of the specified type. </blockquote><blockquote>The format of the LiberateMagickResource() method is: </blockquote><blockquote>void LiberateMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const ExtendedSignedIntegralType size ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>type:</STRONG><BR>
@@ -135,7 +135,7 @@ The size of the resource.
 <H3><A NAME="listmagickresourceinfo">ListMagickResourceInfo</A></H3>
 <P>Method ListMagickResourceInfo lists the resource info to a file.</P>
 <P>The format of the ListMagickResourceInfo method is:</P>
-<blockquote>unsigned int ListMagickResourceInfo ( FILE *file, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>unsigned int ListMagickResourceInfo ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows.</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_file%3A">file:</A></STRONG><BR>
@@ -149,7 +149,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="setmagickresourcelimit">SetMagickResourceLimit</A></H3>
-<blockquote>SetMagickResourceLimit() sets the limit for a particular resource in megabytes. </blockquote><blockquote>The format of the SetMagickResourceLimit() method is: </blockquote><blockquote>void SetMagickResourceLimit ( const ResourceType type, const unsigned long limit ); </blockquote><P>
+<blockquote>SetMagickResourceLimit() sets the limit for a particular resource in megabytes. </blockquote><blockquote>The format of the SetMagickResourceLimit() method is: </blockquote><blockquote>void SetMagickResourceLimit ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const unsigned long limit ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>type:</STRONG><BR>

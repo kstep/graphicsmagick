@@ -1964,7 +1964,7 @@ MagickExport void DestroyImage(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImageInfo() deallocates memory associated with an ImageInfo
+%  DestroyImageInfo() deallocates memory associated with a ImageInfo
 %  structure.
 %
 %  The format of the DestroyImageInfo method is:
@@ -2349,7 +2349,7 @@ MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
 %  The format of the GetImageGeometry method is:
 %
 %      int GetImageGeometry(const Image *image,const char *geometry,
-%        const unsigned int size_to_fit,RectangeInfo *region_info)
+%        const unsigned int size_to_fit,RectangleInfo *region_info)
 %
 %  A description of each parameter follows:
 %
@@ -4997,7 +4997,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
 %
 %  A description of each parameter follows:
 %
-%    o image: A pointer to a Image structure.
+%    o image: A pointer to an Image structure.
 %
 %
 */

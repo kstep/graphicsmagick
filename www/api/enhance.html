@@ -104,7 +104,7 @@ DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="contrastimage">ContrastImage</A></H3>
 <blockquote>ContrastImage() enhances the intensity differences between the lighter and darker elements of the image. Set sharpen to a value other than 0 to increase the image contrast otherwise the contrast is reduced. </blockquote><P>The format of the ContrastImage method is:</P>
-<blockquote>unsigned int ContrastImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int sharpen ); </blockquote><P>
+<blockquote>unsigned int ContrastImage ( <A HREF="types.html#Image">Image</A> *image, const unsigned int sharpen ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -118,7 +118,7 @@ Increase or decrease image contrast.
 <P>
 <H3><A NAME="equalizeimage">EqualizeImage</A></H3>
 <blockquote>EqualizeImage() applies a histogram equalization to the image. </blockquote><P>The format of the EqualizeImage method is:</P>
-<blockquote>unsigned int EqualizeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int EqualizeImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -129,7 +129,7 @@ The image.
 <H3><A NAME="gammaimage">GammaImage</A></H3>
 <blockquote>Use GammaImage() to gamma-correct an image. The same image viewed on different devices will have perceptual differences in the way the image's intensities are represented on the screen. Specify individual gamma levels for the red, green, and blue channels, or adjust all three with the gamma parameter. Values typically range from 0.8 to 2.3. </blockquote><P>You can also reduce the influence of a particular channel with a gamma value of 0.</P>
 <P>The format of the GammaImage method is:</P>
-<blockquote>unsigned int GammaImage ( <A HREF="types/Image.html">Image</A> *image, const char *level ); </blockquote><P>
+<blockquote>unsigned int GammaImage ( <A HREF="types.html#Image">Image</A> *image, const char *level ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -143,7 +143,7 @@ Define the level of gamma correction.
 <P>
 <H3><A NAME="levelimage">LevelImage</A></H3>
 <blockquote>LevelImage() adjusts the levels of an image by scaling the colors falling between specified white and black points to the full available quantum range. The parameters provided represent the black, mid, and white points. The black point specifies the darkest color in the image. Colors darker than the black point are set to zero. Mid point specifies a gamma correction to apply to the image. White point specifies the lightest color in the image. Colors brighter than the white point are set to the maximum quantum value. </blockquote><P>The format of the LevelImage method is:</P>
-<blockquote>unsigned int LevelImage ( <A HREF="types/Image.html">Image</A> *image, const char *level ); </blockquote><P>
+<blockquote>unsigned int LevelImage ( <A HREF="types.html#Image">Image</A> *image, const char *level ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -157,7 +157,7 @@ Specify the levels as a string of the form ``black/mid/white'' (e.g.  ``10,1.0,6
 <P>
 <H3><A NAME="levelimagechannel">LevelImageChannel</A></H3>
 <blockquote>LevelImageChannel() adjusts the levels of a particular image channel by scaling the colors falling between specified white and black points to the full available quantum range. The parameters provided represent the black, mid, and white points. The black point specifies the darkest color in the image. Colors darker than the black point are set to zero. Mid point specifies a gamma correction to apply to the image. White point specifies the lightest color in the image. Colors brighter than the white point are set to the maximum quantum value. </blockquote><P>The format of the LevelImage method is:</P>
-<blockquote>unsigned int LevelImageChannel ( <A HREF="types/Image.html">Image</A> *image, const char *level, const ChannelType channel, const double black_point, const double mid_point, const double white_point ); </blockquote><P>
+<blockquote>unsigned int LevelImageChannel ( <A HREF="types.html#Image">Image</A> *image, const char *level, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const double black_point, const double mid_point, const double white_point ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -175,7 +175,7 @@ Specify the levels where the black and white points have the range of 0-MaxRGB, 
 <P>
 <H3><A NAME="modulateimage">ModulateImage</A></H3>
 <blockquote>ModulateImage() lets you control the brightness, saturation, and hue of an image. Modulate represents the brightness, saturation, and hue as one parameter ( e.g. 90, 150, 100 ) . </blockquote><P>The format of the ModulateImage method is:</P>
-<blockquote>unsigned int ModulateImage ( <A HREF="types/Image.html">Image</A> *image, const char *modulate ); </blockquote><P>
+<blockquote>unsigned int ModulateImage ( <A HREF="types.html#Image">Image</A> *image, const char *modulate ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -190,7 +190,7 @@ Define the percent change in brightness, saturation, and hue.
 <H3><A NAME="negateimage">NegateImage</A></H3>
 <P>Method NegateImage negates the colors in the reference image.  The Grayscale option means that only grayscale values within the image are negated.</P>
 <P>The format of the NegateImage method is:</P>
-<blockquote>unsigned int NegateImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int grayscale ); </blockquote><P>
+<blockquote>unsigned int NegateImage ( <A HREF="types.html#Image">Image</A> *image, const unsigned int grayscale ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -200,7 +200,7 @@ The image.
 <P>
 <H3><A NAME="normalizeimage">NormalizeImage</A></H3>
 <blockquote>The NormalizeImage() method enhances the contrast of a color image by adjusting the pixels color to span the entire range of colors available. </blockquote><P>The format of the NormalizeImage method is:</P>
-<blockquote>unsigned int NormalizeImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int NormalizeImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>

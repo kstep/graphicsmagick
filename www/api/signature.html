@@ -100,7 +100,7 @@ DESCRIPTIONS</A></H2>
 <P>Method FinalizeSignature finalizes the 
 SHA message digest computation.</P>
 <P>The format of the FinalizeSignature method is:</P>
-<blockquote>FinalizeSignature ( SignatureInfo *signature_info ); </blockquote><P>
+<blockquote>FinalizeSignature ( <A HREF="types.html#SignatureInfo">SignatureInfo</A> *signature_info ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_signature_info%3A">signature_info:</A></STRONG><BR>
@@ -112,7 +112,7 @@ The address of a structure of type SignatureInfo.
 <P>Method GetSignatureInfo initializes the 
 SHA message digest structure.</P>
 <P>The format of the GetSignatureInfo method is:</P>
-<blockquote>GetSignatureInfo ( SignatureInfo *signature_info ); </blockquote><P>
+<blockquote>GetSignatureInfo ( <A HREF="types.html#SignatureInfo">SignatureInfo</A> *signature_info ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>signature_info:</STRONG><BR>
@@ -122,7 +122,7 @@ The address of a structure of type SignatureInfo.
 <P>
 <H3><A NAME="signatureimage">SignatureImage</A></H3>
 <blockquote>SignatureImage() computes a message digest from an image pixel stream with an implementation of the NIST SHA-256 Message Digest algorithm. This signature uniquely identifies the image and is convenient for determining if an image has been modified or whether two images are identical. </blockquote><P>The format of the SignatureImage method is:</P>
-<blockquote>unsigned int SignatureImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int SignatureImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -132,7 +132,7 @@ The image.
 <P>
 <H3><A NAME="transformsignature">TransformSignature</A></H3>
 <blockquote>TransformSignature() transforms the SHA message digest. </blockquote><P>The format of the TransformSignature method is:</P>
-<blockquote>TransformSignature ( SignatureInfo *signature_info ); </blockquote><P>
+<blockquote>TransformSignature ( <A HREF="types.html#SignatureInfo">SignatureInfo</A> *signature_info ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>signature_info:</STRONG><BR>
@@ -142,7 +142,7 @@ The address of a structure of type SignatureInfo.
 <P>
 <H3><A NAME="updatesignature">UpdateSignature</A></H3>
 <blockquote>UpdateSignature() updates the SHA message digest. </blockquote><P>The format of the UpdateSignature method is:</P>
-<blockquote>UpdateSignature ( SignatureInfo *signature_info, const unsigned char *message, const size_t length ); </blockquote><P>
+<blockquote>UpdateSignature ( <A HREF="types.html#SignatureInfo">SignatureInfo</A> *signature_info, const unsigned char *message, const size_t length ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>signature_info:</STRONG><BR>

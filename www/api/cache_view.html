@@ -107,7 +107,7 @@ DESCRIPTIONS</A></H2>
 A pointer to the pixels is returned if the pixels are transferred, otherwise a 
 NULL is returned.</P>
 <P>The format of the AcquireCacheView method is:</P>
-<blockquote>const <A HREF="types/PixelPacket.html">PixelPacket</A> *AcquireCacheView ( const <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>const <A HREF="types.html#PixelPacket">PixelPacket</A> *AcquireCacheView ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
@@ -129,7 +129,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="closecacheview">CloseCacheView</A></H3>
 <blockquote>CloseCacheView() closes the specified view returned by a previous call to OpenCacheView ( ) . </blockquote><P>The format of the CloseCacheView method is:</P>
-<blockquote>void CloseCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><P>
+<blockquote>void CloseCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>view:</STRONG><BR>
@@ -139,7 +139,7 @@ The address of a structure of type ViewInfo.
 <P>
 <H3><A NAME="getcacheview">GetCacheView</A></H3>
 <blockquote>GetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><P>The format of the GetCacheView method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
+<blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *GetCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>pixels:</STRONG><BR>
@@ -158,7 +158,7 @@ These values define the perimeter of a region of pixels.
 <H3><A NAME="getcacheviewindexes">GetCacheViewIndexes</A></H3>
 <P>Method GetCacheViewIndexes returns the indexes associated with the specified view.</P>
 <P>The format of the GetCacheViewIndexes method is:</P>
-<blockquote>IndexPacket *GetCacheViewIndexes ( const <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><P>
+<blockquote>IndexPacket *GetCacheViewIndexes ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_indexes%3A">indexes:</A></STRONG><BR>
@@ -172,7 +172,7 @@ The address of a structure of type ViewInfo.
 <P>
 <H3><A NAME="getcacheviewpixels">GetCacheViewPixels</A></H3>
 <blockquote>GetCacheViewPixels() returns the pixels associated with the specified specified view. </blockquote><P>The format of the GetCacheViewPixels method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetCacheViewPixels ( const <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><P>
+<blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *GetCacheViewPixels ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>view:</STRONG><BR>
@@ -182,7 +182,7 @@ The address of a structure of type ViewInfo.
 <P>
 <H3><A NAME="opencacheview">OpenCacheView</A></H3>
 <blockquote>OpenCacheView() opens a view into the pixel cache. </blockquote><P>The format of the OpenCacheView method is:</P>
-<blockquote><A HREF="types/ViewInfo.html">ViewInfo</A> *OpenCacheView ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote><A HREF="types.html#ViewInfo">ViewInfo</A> *OpenCacheView ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -192,7 +192,7 @@ The image.
 <P>
 <H3><A NAME="setcacheview">SetCacheView</A></H3>
 <blockquote>SetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><P>The format of the SetCacheView method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
+<blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *SetCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>view:</STRONG><BR>
@@ -206,7 +206,7 @@ These values define the perimeter of a region of pixels.
 <P>
 <H3><A NAME="synccacheview">SyncCacheView</A></H3>
 <blockquote>SyncCacheView() saves the view pixels to the in-memory or disk cache. The method returns True if the pixel region is synced, otherwise False. </blockquote><P>The format of the SyncCacheView method is:</P>
-<blockquote>unsigned int SyncCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view ); </blockquote><P>
+<blockquote>unsigned int SyncCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>view:</STRONG><BR>

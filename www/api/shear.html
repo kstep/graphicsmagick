@@ -93,8 +93,8 @@ FUNCTION
 DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="affinetransformimage">AffineTransformImage</A></H3>
-<blockquote>AffineTransformImage() transforms an image as dictated by the affine matrix. It allocates the memory necessary for the new <A HREF="types/Image.html">Image</A> structure and returns a pointer to the new image. </blockquote><P>The format of the AffineTransformImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *AffineTransformImage ( const <A HREF="types/Image.html">Image</A> *image, AffineMatrix *affine, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>AffineTransformImage() transforms an image as dictated by the affine matrix. It allocates the memory necessary for the new <A HREF="types.html#Image">Image</A> structure and returns a pointer to the new image. </blockquote><P>The format of the AffineTransformImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *AffineTransformImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#AffineMatrix">AffineMatrix</A> *affine, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -118,7 +118,7 @@ X axis.  Empty triangles left over from shearing the image are filled with the c
 W.  Paeth.  RotateImage is adapted from a similar method based on the Paeth paper written by Michael Halle of the Spatial Imaging Group, 
 MIT Media Lab.</P>
 <P>The format of the RotateImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *RotateImage ( const <A HREF="types/Image.html">Image</A> *image, const double degrees, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *RotateImage ( const <A HREF="types.html#Image">Image</A> *image, const double degrees, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows.</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
@@ -155,7 +155,7 @@ X axis.  Empty triangles left over from shearing the image are filled with the c
 ``A Fast Algorithm for General Raster Rotatation'' by Alan 
 W.  Paeth.</P>
 <P>The format of the ShearImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ShearImage ( const <A HREF="types/Image.html">Image</A> *image, const double x_shear, const double y_shear, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *ShearImage ( const <A HREF="types.html#Image">Image</A> *image, const double x_shear, const double y_shear, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows.</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>status:</STRONG><BR>

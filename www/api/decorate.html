@@ -94,7 +94,7 @@ DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="borderimage">BorderImage</A></H3>
 <blockquote>BorderImage() surrounds the image with a border of the color defined by the bordercolor member of the image structure. The width and height of the border are defined by the corresponding members of the border_info structure. </blockquote><P>The format of the BorderImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *BorderImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *border_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *BorderImage ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#RectangleInfo">RectangleInfo</A> *border_info, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -112,7 +112,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="frameimage">FrameImage</A></H3>
 <blockquote>FrameImage() adds a simulated three-dimensional border around the image. The color of the border is defined by the matte_color member of image. Members width and height of frame_info specify the border width of the vertical and horizontal sides of the frame. Members inner and outer indicate the width of the inner and outer shadows of the frame. </blockquote><P>The format of the FrameImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *FrameImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/FrameInfo.html">FrameInfo</A> *frame_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *FrameImage ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#FrameInfo">FrameInfo</A> *frame_info, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -130,7 +130,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="raiseimage">RaiseImage</A></H3>
 <blockquote>RaiseImage() creates a simulated three-dimensional button-like effect by lightening and darkening the edges of the image. Members width and height of raise_info define the width of the vertical and horizontal edge of the effect. </blockquote><P>The format of the RaiseImage method is:</P>
-<blockquote>unsigned int RaiseImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *raise_info, const int raise ); </blockquote><P>
+<blockquote>unsigned int RaiseImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#RectangleInfo">RectangleInfo</A> *raise_info, const int raise ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>

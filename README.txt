@@ -270,9 +270,11 @@ MAGICK DELEGATES
       example, "-background '#ffffffff'" renders on a transparent
       background while "-texture plasma:fractal" renders on a fractal image.
 
-      The WMF renderer is not capable of using Windows fonts with libwmf
-      0.2.2. Windows fonts are fully supported when using libwmf 0.2.5 or
-      later.
+       A free set of Microsoft Windows fonts may be retrieved from
+       "http://sourceforge.net/projects/corefonts/". Note that the license
+       for these fonts requires that they be distributed in the original
+       .exe form, but the Linux folks have found ways to deal with that on
+       non-Windows systems.
 
     o GraphicsMagick requires the FlashPIX library version 1.2.0 from the
       Digital Imaging Group in order to support the FlashPIX format. The

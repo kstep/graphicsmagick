@@ -559,7 +559,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 %      reading. A null image is returned if there is a memory shortage or if
 %      the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %

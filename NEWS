@@ -1,4 +1,4 @@
-Major changes associated with GraphicsMagick 1.0.0
+Major changes associated with GraphicsMagick 1.0 (as of April, 2003)
 
   GraphicsMagick support services:
     * Master web site at "http://www.GraphicsMagick.org/".
@@ -26,8 +26,8 @@ Major changes associated with GraphicsMagick 1.0.0
     * PerlMagick namespace renamed from "Image::Magick" to "Graphics::Magick".
     * Pkgconfig files GraphicsMagick.pc and GraphicsMagick++.pc are
     installed in $libdir/pkgconfig to assist pkg-config users.
-    * Coder modules installed to lib/GraphicsMagick-1.0.0/modules-Q8/coders.
-    * Filter modules installed to lib/GraphicsMagick-1.0.0/modules-Q8/filters.
+    * Coder modules installed to lib/GraphicsMagick-1.0/modules-Q8/coders.
+    * Filter modules installed to lib/GraphicsMagick-1.0/modules-Q8/filters.
 
   Many performance enhancements:
     * Default QuantumDepth is 8 since this is adequate for most purposes
@@ -43,7 +43,9 @@ Major changes associated with GraphicsMagick 1.0.0
     * RLE-compressed MIFF reading much faster.
 
   Code structure enhancements:
-    * All utility support functions moved to magick/command.c.
+    * All utility support functions moved to magick/command.c in order to
+    significantly reduce link dependencies, allowing statically-linked
+    programs to be smaller.
     * Use of MogrifyImage() elminated except for by utilities.
     * Re-builds due to changes to <magick/image.h> reduced by splitting the
     header into multiple headers.
@@ -85,6 +87,11 @@ Major changes associated with GraphicsMagick 1.0.0
     * Sample, scale and affine fixes from ImageMagick.
     * MIFF colormaps are now scaled properly while reading.
     * CMYK translation works for QuantumDepth=32.
+    * ConstituteImage now works properly for grayscale images.
+    * Built-in tilde expansion and filename globbing now works properly.
+    * InitializeMagick now registers signal handlers to ensure that
+    resources are released before program exit.  This helps avoid
+    temporary file leaks due to the user using "CONTROL-C".
 
   Windows platform enhancements:
     * Configure updated for Visual C++ 7.0.

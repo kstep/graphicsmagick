@@ -1689,7 +1689,7 @@ static void HilbertCurve(CubeInfo *cube_info,Image *image,
 %
 %    o image: Specifies a pointer to an Image structure.
 %
-%    o map_image: Specifies a pointer to a Image structure.  Reduce
+%    o map_image: Specifies a pointer to an Image structure.  Reduce
 %      image to a set of colors represented by this image.
 %
 %    o dither: Set this integer value to something other than zero to
@@ -1760,7 +1760,7 @@ MagickExport unsigned int MapImage(Image *image,const Image *map_image,
 %
 %    o image: Specifies a pointer to a set of Image structures.
 %
-%    o map_image: Specifies a pointer to a Image structure.  Reduce
+%    o map_image: Specifies a pointer to an Image structure.  Reduce
 %      image to a set of colors represented by this image.
 %
 %    o dither: Set this integer value to something other than zero to
@@ -2082,7 +2082,7 @@ static void PruneToCubeDepth(CubeInfo *cube_info,const NodeInfo *node_info)
 %
 %    o quantize_info: Specifies a pointer to an QuantizeInfo structure.
 %
-%    o image: Specifies a pointer to a Image structure.
+%    o image: Specifies a pointer to an Image structure.
 %
 */
 MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,

@@ -76,7 +76,7 @@
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure;  XMagickCommand
+%    o image: Specifies a pointer to an Image structure;  XMagickCommand
 %      may transform the image and return a new image pointer.
 %
 %    o state: Specifies an unsigned int;  XMagickCommand may return a

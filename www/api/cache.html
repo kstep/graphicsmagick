@@ -114,7 +114,7 @@ FUNCTION
 DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="acquireimagepixels">AcquireImagePixels</A></H3>
-<blockquote>AcquireImagePixels() acquires pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixel is returned if the pixels are transferred, otherwise a NULL is returned. If you plan to modify the pixels, use GetImagePixels ( ) instead. </blockquote><blockquote>The format of the AcquireImagePixels() method is: </blockquote><blockquote>const <A HREF="types/PixelPacket.html">PixelPacket</A> *AcquireImagePixels ( const <A HREF="types/Image.html">Image</A> *image, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>AcquireImagePixels() acquires pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixel is returned if the pixels are transferred, otherwise a NULL is returned. If you plan to modify the pixels, use GetImagePixels ( ) instead. </blockquote><blockquote>The format of the AcquireImagePixels() method is: </blockquote><blockquote>const <A HREF="types.html#PixelPacket">PixelPacket</A> *AcquireImagePixels ( const <A HREF="types.html#Image">Image</A> *image, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
@@ -136,7 +136,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="acquireonepixel">AcquireOnePixel</A></H3>
-<blockquote>AcquireOnePixel() returns a single pixel at the specified ( x, y ) location. The image background color is returned if an error occurs. If you plan to modify the pixel, use GetOnePixel ( ) instead. </blockquote><blockquote>The format of the AcquireOnePixel() method is: </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> AcquireOnePixel ( const <A HREF="types/Image.html">Image</A> image, const long x, const long y, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> exception ); </blockquote><P>
+<blockquote>AcquireOnePixel() returns a single pixel at the specified ( x, y ) location. The image background color is returned if an error occurs. If you plan to modify the pixel, use GetOnePixel ( ) instead. </blockquote><blockquote>The format of the AcquireOnePixel() method is: </blockquote><blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> AcquireOnePixel ( const <A HREF="types.html#Image">Image</A> image, const long x, const long y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
@@ -157,7 +157,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="destroycacheinfo">DestroyCacheInfo</A></H3>
-<blockquote>DestroyCacheInfo() deallocates memory associated with the pixel cache. </blockquote><blockquote>The format of the DestroyCacheInfo() method is: </blockquote><blockquote>void DestroyCacheInfo ( Cache cache ); </blockquote><P>
+<blockquote>DestroyCacheInfo() deallocates memory associated with the pixel cache. </blockquote><blockquote>The format of the DestroyCacheInfo() method is: </blockquote><blockquote>void DestroyCacheInfo ( <A HREF="types.html#Cache">Cache</A> cache ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_cache%3A">cache:</A></STRONG><BR>
@@ -166,7 +166,7 @@ Specifies a pointer to a Cache structure.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="destroyimagepixels">DestroyImagePixels</A></H3>
-<blockquote>DestroyImagePixels() deallocates memory associated with the pixel cache. </blockquote><blockquote>The format of the DestroyImagePixels() method is: </blockquote><blockquote>void DestroyImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>DestroyImagePixels() deallocates memory associated with the pixel cache. </blockquote><blockquote>The format of the DestroyImagePixels() method is: </blockquote><blockquote>void DestroyImagePixels ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -175,7 +175,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="getimagepixels">GetImagePixels</A></H3>
-<blockquote>GetImagePixels() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><blockquote>The format of the GetImagePixels() method is: </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
+<blockquote>GetImagePixels() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><blockquote>The format of the GetImagePixels() method is: </blockquote><blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *GetImagePixels ( <A HREF="types.html#Image">Image</A> *image, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>status:</STRONG><BR>
@@ -193,7 +193,7 @@ These values define the perimeter of a region of pixels.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="getimagevirtualpixelmethod">GetImageVirtualPixelMethod</A></H3>
-<blockquote>GetImageVirtualPixelMethod() gets the "virtual pixels" method for the image. A virtual pixel is any pixel access that is outside the boundaries of the image cache. </blockquote><blockquote>The format of the GetImageVirtualPixelMethod() method is: </blockquote><blockquote>VirtualPixelMethod GetImageVirtualPixelMethod ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>GetImageVirtualPixelMethod() gets the "virtual pixels" method for the image. A virtual pixel is any pixel access that is outside the boundaries of the image cache. </blockquote><blockquote>The format of the GetImageVirtualPixelMethod() method is: </blockquote><blockquote><A HREF="types.html#VirtualPixelMethod">VirtualPixelMethod</A> GetImageVirtualPixelMethod ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -202,7 +202,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="getindexes">GetIndexes</A></H3>
-<blockquote>GetIndexes() returns the indexes associated with the last call to SetImagePixels ( ) or GetImagePixels ( ) . </blockquote><blockquote>The format of the GetIndexes() method is: </blockquote><blockquote>IndexPacket *GetIndexes ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>GetIndexes() returns the indexes associated with the last call to SetImagePixels ( ) or GetImagePixels ( ) . </blockquote><blockquote>The format of the GetIndexes() method is: </blockquote><blockquote>IndexPacket *GetIndexes ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_indexes%3A">indexes:</A></STRONG><BR>
@@ -215,7 +215,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="getonepixel">GetOnePixel</A></H3>
-<blockquote>GetOnePixel() returns a single pixel at the specified ( x, y ) location. The image background color is returned if an error occurs. </blockquote><blockquote>The format of the GetOnePixel() method is: </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetOnePixel ( const <A HREF="types/Image.html">Image</A> image, const long x, const long y ); </blockquote><P>
+<blockquote>GetOnePixel() returns a single pixel at the specified ( x, y ) location. The image background color is returned if an error occurs. </blockquote><blockquote>The format of the GetOnePixel() method is: </blockquote><blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *GetOnePixel ( const <A HREF="types.html#Image">Image</A> image, const long x, const long y ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -228,7 +228,7 @@ These values define the location of the pixel to return.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="getpixels">GetPixels</A></H3>
-<blockquote>GetPixels() returns the pixels associated with the last call to SetImagePixels ( ) or GetImagePixels ( ) . </blockquote><blockquote>The format of the GetPixels() method is: </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetPixels ( const <A HREF="types/Image.html">Image</A> image ); </blockquote><P>
+<blockquote>GetPixels() returns the pixels associated with the last call to SetImagePixels ( ) or GetImagePixels ( ) . </blockquote><blockquote>The format of the GetPixels() method is: </blockquote><blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *GetPixels ( const <A HREF="types.html#Image">Image</A> image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>pixels:</STRONG><BR>
@@ -242,7 +242,7 @@ The image.
 <P>
 <H3><A NAME="modifycache">ModifyCache</A></H3>
 <blockquote>ModifyCache() ensures that there is only a single reference to the pixel cache to be modified, updating the provided cache pointer to point to a clone of the original pixel cache if necessary. </blockquote><P>The format of the ModifyCache method is:</P>
-<blockquote>unsigned int ModifyCache ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int ModifyCache ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -252,7 +252,7 @@ The image.
 <P>
 <H3><A NAME="referencecache">ReferenceCache</A></H3>
 <blockquote>ReferenceCache() increments the reference count associated with the pixel cache returning a pointer to the cache. </blockquote><P>The format of the ReferenceCache method is:</P>
-<blockquote>Cache ReferenceCache ( Cache cache_info ); </blockquote><P>
+<blockquote><A HREF="types.html#Cache">Cache</A> ReferenceCache ( <A HREF="types.html#Cache">Cache</A> cache_info ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_cache_info%3A">cache_info:</A></STRONG><BR>
@@ -261,7 +261,7 @@ The cache_info.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="setimagepixels">SetImagePixels</A></H3>
-<blockquote>SetImagePixels() allocates an area to store image pixels as defined by the region rectangle and returns a pointer to the area. This area is subsequently transferred from the pixel cache with SyncImagePixels ( ) . A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><blockquote>The format of the SetImagePixels() method is: </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
+<blockquote>SetImagePixels() allocates an area to store image pixels as defined by the region rectangle and returns a pointer to the area. This area is subsequently transferred from the pixel cache with SyncImagePixels ( ) . A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><blockquote>The format of the SetImagePixels() method is: </blockquote><blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *SetImagePixels ( <A HREF="types.html#Image">Image</A> *image, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>pixels:</STRONG><BR>
@@ -279,7 +279,7 @@ These values define the perimeter of a region of pixels.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="setimagevirtualpixelmethod">SetImageVirtualPixelMethod</A></H3>
-<blockquote>SetImageVirtualPixelMethod() sets the "virtual pixels" method for the image. A virtual pixel is any pixel access that is outside the boundaries of the image cache. </blockquote><blockquote>The format of the SetImageVirtualPixelMethod() method is: </blockquote><blockquote>SetImageVirtualPixelMethod ( const <A HREF="types/Image.html">Image</A> *image, const VirtualPixelMethod method ); </blockquote><P>
+<blockquote>SetImageVirtualPixelMethod() sets the "virtual pixels" method for the image. A virtual pixel is any pixel access that is outside the boundaries of the image cache. </blockquote><blockquote>The format of the SetImageVirtualPixelMethod() method is: </blockquote><blockquote>SetImageVirtualPixelMethod ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#VirtualPixelMethod">VirtualPixelMethod</A> method ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -300,7 +300,7 @@ choose from these access types:
       ConstantVPType:  every value outside the image is a constant as
       defines by the pixel parameter.
 =head2 SyncImagePixels</PRE>
-<blockquote>SyncImagePixels() saves the image pixels to the in-memory or disk cache. The method returns True if the pixel region is synced, otherwise False. </blockquote><blockquote>The format of the SyncImagePixels() method is: </blockquote><blockquote>unsigned int SyncImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>SyncImagePixels() saves the image pixels to the in-memory or disk cache. The method returns True if the pixel region is synced, otherwise False. </blockquote><blockquote>The format of the SyncImagePixels() method is: </blockquote><blockquote>unsigned int SyncImagePixels ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>status:</STRONG><BR>

@@ -108,7 +108,7 @@ DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="constituteimage">ConstituteImage</A></H3>
 <blockquote>ConstituteImage() returns an image from the the pixel data you supply. The pixel data must be in scanline order top-to-bottom. The data can be char, short int, int, float, or double. Float and double require the pixels to be normalized [0..1], otherwise [0..MaxRGB]. For example, to create a 640x480 image from unsigned red-green-blue character data, use </blockquote><blockquote>image=ConstituteImage ( 640, 480, "RGB", CharPixel, pixels, &exception );; </blockquote><P>The format of the Constitute method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ConstituteImage ( const unsigned long width, const unsigned long height, const char *map, const StorageType type, const void *pixels, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *ConstituteImage ( const unsigned long width, const unsigned long height, const char *map, const <A HREF="types.html#StorageType">StorageType</A> type, const void *pixels, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_width%3A">width:</A></STRONG><BR>
@@ -152,7 +152,7 @@ Return any errors or warnings in this structure.
 <H3><A NAME="dispatchimage">DispatchImage</A></H3>
 <blockquote>DispatchImage() extracts pixel data from an image and returns it to you. The method returns False on success or True if an error is encountered. The data is returned as char, short int, int, long, float, or double in the order specified by map. </blockquote><P>Suppose we want want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</P>
 <blockquote>DispatchImage ( image, 0, 0, 640, 1, "RGB", 0, pixels, exception );; </blockquote><P>The format of the DispatchImage method is:</P>
-<blockquote>unsigned int DispatchImage ( const <A HREF="types/Image.html">Image</A> *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const StorageType type, void *pixels, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>unsigned int DispatchImage ( const <A HREF="types.html#Image">Image</A> *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const <A HREF="types.html#StorageType">StorageType</A> type, void *pixels, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -191,7 +191,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="pingimage">PingImage</A></H3>
 <blockquote>PingImage() returns all the attributes of an image or image sequence except for the pixels. It is much faster and consumes far less memory than ReadImage ( ) . On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the PingImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *PingImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *PingImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
@@ -205,7 +205,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="popimagepixels">PopImagePixels</A></H3>
 <blockquote>PopImagePixels() transfers one or more pixel components from the image pixel cache to a user supplied buffer. True is returned if the pixels are successfully transferred, otherwise False. </blockquote><P>The format of the PopImagePixels method is:</P>
-<blockquote>unsigned int PopImagePixels ( const <A HREF="types/Image.html">Image</A> *, const QuantumType quantum, unsigned char *destination ); </blockquote><P>
+<blockquote>unsigned int PopImagePixels ( const <A HREF="types.html#Image">Image</A> *, const <A HREF="types.html#QuantumType">QuantumType</A> quantum, unsigned char *destination ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
@@ -229,7 +229,7 @@ The components are transferred to this buffer.
 <P>
 <H3><A NAME="pushimagepixels">PushImagePixels</A></H3>
 <blockquote>PushImagePixels() transfers one or more pixel components from a user supplied buffer into the image pixel cache of an image. It returns True if the pixels are successfully transferred, otherwise False. </blockquote><P>The format of the PushImagePixels method is:</P>
-<blockquote>unsigned int PushImagePixels ( <A HREF="types/Image.html">Image</A> *image, const QuantumType quantum_type, const unsigned char *source ); </blockquote><P>
+<blockquote>unsigned int PushImagePixels ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#QuantumType">QuantumType</A> quantum_type, const unsigned char *source ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>status:</STRONG><BR>
@@ -253,7 +253,7 @@ The pixel components are transferred from this buffer.
 <P>
 <H3><A NAME="readimage">ReadImage</A></H3>
 <blockquote>ReadImage() reads an image or image sequence from a file or file handle. The method returns a NULL if there is a memory shortage or if the image cannot be read. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the ReadImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *ReadImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image_info:</STRONG><BR>
@@ -267,7 +267,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="readinlineimage">ReadInlineImage</A></H3>
 <blockquote>ReadInlineImage() reads a Base64-encoded inline image or image sequence. The method returns a NULL if there is a memory shortage or if the image cannot be read. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the ReadInlineImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadInlineImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const char *content, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *ReadInlineImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const char *content, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image_info:</STRONG><BR>
@@ -286,7 +286,7 @@ Return any errors or warnings in this structure.
 <H3><A NAME="writeimage">WriteImage</A></H3>
 <P>Use <CODE>Write()</CODE> to write an image or an image sequence to a file or filehandle.  If writing to a file on disk, the name is defined by the filename member of the image structure.  <CODE>Write()</CODE> returns 0 is there is a memory shortage or if the image cannot be written.  Check the exception member of image to determine the cause for any failure.</P>
 <P>The format of the WriteImage method is:</P>
-<blockquote>unsigned int WriteImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int WriteImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image_info:</STRONG><BR>
@@ -300,7 +300,7 @@ The image.
 <P>
 <H3><A NAME="writeimages">WriteImages</A></H3>
 <blockquote>WriteImages() writes an image sequence. </blockquote><P>The format of the WriteImages method is:</P>
-<blockquote>unsigned int WriteImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, const char *filename, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>unsigned int WriteImages ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image, const char *filename, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image_info:</STRONG><BR>

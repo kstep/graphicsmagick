@@ -1,3 +1,13 @@
+2003-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/api/types.html: Documentation for GraphicsMagick API types
+	moved from www/api/types/*.html into this one file.  Types
+	documentation is still very much under development.
+	* README.txt: Added note regarding the download location for free
+	Windows fonts which are kindly made available by Microsoft.
+	* VisualMagick/installer/gm-dynamic-full-*.iss: Install
+	nt_base.h and nt_feature.h.
+
 2003-04-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/windows.html: Updated for GraphicsMagick 1.0 and to

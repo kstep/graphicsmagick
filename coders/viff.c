@@ -114,7 +114,7 @@ static unsigned int IsVIFF(const unsigned char *magick,const size_t length)
 %      reading.  A null image is returned if there is a memory shortage or if
 %      the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -809,9 +809,9 @@ ModuleExport void UnregisterVIFFImage(void)
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
-%    o image:  A pointer to a Image structure.
+%    o image:  A pointer to an Image structure.
 %
 %
 */

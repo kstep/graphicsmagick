@@ -92,7 +92,7 @@ DESCRIPTIONS</A></H2>
 <P>Method SegmentImage segment an image by analyzing the histograms of the color components and identifying units that are homogeneous with the fuzzy c-means technique.</P>
 <P>Specify cluster threshold as the number of pixels in each cluster must exceed the the cluster threshold to be considered valid.  Smoothing threshold eliminates noise in the second derivative of the histogram.  As the value is increased, you can expect a smoother second derivative.  The default is 1.5.</P>
 <P>The format of the SegmentImage method is:</P>
-<blockquote>unsigned int SegmentImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#ColorspaceType">ColorspaceType</A> colorspace, const unsigned int verbose, const double cluster_threshold, const double smoothing_threshold ); </blockquote><P>
+<blockquote>unsigned int SegmentImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ColorspaceType">ColorspaceType</A> colorspace, const unsigned int verbose, const double cluster_threshold, const double smoothing_threshold ); </blockquote><P>
 A description of each parameter follows.</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_colors%3A">colors:</A></STRONG><BR>

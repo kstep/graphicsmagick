@@ -128,7 +128,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="getmagickregistry">GetMagickRegistry</A></H3>
 <blockquote>GetMagickRegistry() gets a blob from the registry as defined by the id. If the blob that matches the id is not found, NULL is returned. </blockquote><P>The format of the GetMagickRegistry method is:</P>
-<blockquote>const void *GetMagickRegistry ( const long id, RegistryType *type, size_t *length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>const void *GetMagickRegistry ( const long id, <A HREF="types.html#RegistryType">RegistryType</A> *type, size_t *length, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>id:</STRONG><BR>
@@ -150,7 +150,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="setmagickregistry">SetMagickRegistry</A></H3>
 <blockquote>SetMagickRegistry() sets a blob into the registry and returns a unique ID. If an error occurs, -1 is returned. </blockquote><P>The format of the SetMagickRegistry method is:</P>
-<blockquote>long SetMagickRegistry ( const RegistryType type, const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>long SetMagickRegistry ( const <A HREF="types.html#RegistryType">RegistryType</A> type, const void *blob, const size_t length, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>type:</STRONG><BR>

@@ -96,7 +96,7 @@ DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="clonemontageinfo">CloneMontageInfo</A></H3>
 <blockquote>CloneMontageInfo() makes a copy of the given montage info structure. If NULL is specified, a new image info structure is created initialized to default values. </blockquote><P>The format of the CloneMontageInfo method is:</P>
-<blockquote><A HREF="types/MontageInfo.html">MontageInfo</A> *CloneMontageInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/MontageInfo.html">MontageInfo</A> *montage_info ); </blockquote><P>
+<blockquote><A HREF="types.html#MontageInfo">MontageInfo</A> *CloneMontageInfo ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const <A HREF="types.html#MontageInfo">MontageInfo</A> *montage_info ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
@@ -110,7 +110,7 @@ The montage info.
 <P>
 <H3><A NAME="destroymontageinfo">DestroyMontageInfo</A></H3>
 <blockquote>DestroyMontageInfo() deallocates memory associated with montage_info. </blockquote><P>The format of the DestroyMontageInfo method is:</P>
-<blockquote>void DestroyMontageInfo ( <A HREF="types/MontageInfo.html">MontageInfo</A> *montage_info ); </blockquote><P>
+<blockquote>void DestroyMontageInfo ( <A HREF="types.html#MontageInfo">MontageInfo</A> *montage_info ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>montage_info:</STRONG><BR>
@@ -120,7 +120,7 @@ Specifies a pointer to an MontageInfo structure.
 <P>
 <H3><A NAME="getmontageinfo">GetMontageInfo</A></H3>
 <blockquote>GetMontageInfo() initializes montage_info to default values. </blockquote><P>The format of the GetMontageInfo method is:</P>
-<blockquote>void GetMontageInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/MontageInfo.html">MontageInfo</A> *montage_info ); </blockquote><P>
+<blockquote>void GetMontageInfo ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#MontageInfo">MontageInfo</A> *montage_info ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image_info:</STRONG><BR>
@@ -135,7 +135,7 @@ Specifies a pointer to a MontageInfo structure.
 <H3><A NAME="montageimages">MontageImages</A></H3>
 <P><CODE>Montageimages()</CODE> is a layout manager that lets you tile one or more thumbnails across an image canvas.</P>
 <P>The format of the MontageImages method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *MontageImages ( const <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/MontageInfo.html">MontageInfo</A> *montage_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *MontageImages ( const <A HREF="types.html#Image">Image</A> *images, const <A HREF="types.html#MontageInfo">MontageInfo</A> *montage_info, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_images%3A">images:</A></STRONG><BR>

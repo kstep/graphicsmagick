@@ -97,7 +97,7 @@ static const int
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure; returned from
+%    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 */
@@ -1064,7 +1064,7 @@ static unsigned int XAnnotateEditImage(Display *display,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -1137,7 +1137,7 @@ static unsigned int XBackgroundImage(Display *display,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -1558,7 +1558,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure; returned from
+%    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 */
@@ -2158,7 +2158,7 @@ static unsigned int XColorEditImage(Display *display,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure; returned from
+%    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 */
@@ -2696,7 +2696,7 @@ static unsigned int XCompositeImage(Display *display,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -2867,7 +2867,7 @@ static unsigned int XConfigureImage(Display *display,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure; returned from
+%    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 %    o mode: This unsigned value specified whether the image should be
@@ -3623,7 +3623,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -4623,7 +4623,7 @@ static void XDrawPanRectangle(Display *display,XWindows *windows)
 %
 %    o command: Specifies a command to perform.
 %
-%    o image: Specifies a pointer to a Image structure;  XImageCache
+%    o image: Specifies a pointer to an Image structure;  XImageCache
 %      may transform the image and return a new image pointer.
 %
 %
@@ -4895,7 +4895,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
 %
 %    o key_symbol: Specifies a command to perform.
 %
-%    o image: Specifies a pointer to a Image structure;  XImageWIndowCommand
+%    o image: Specifies a pointer to an Image structure;  XImageWIndowCommand
 %      may transform the image and return a new image pointer.
 %
 %
@@ -5295,7 +5295,7 @@ static CommandType XImageWindowCommand(Display *display,
 %
 %    o command: Specifies a command to perform.
 %
-%    o image: Specifies a pointer to a Image structure;  XMagickCommand
+%    o image: Specifies a pointer to an Image structure;  XMagickCommand
 %      may transform the image and return a new image pointer.
 %
 %
@@ -7394,7 +7394,7 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -7452,7 +7452,7 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure; returned from
+%    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 */
@@ -8375,7 +8375,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure; returned from
+%    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 */
@@ -8759,7 +8759,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -8861,7 +8861,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure; returned from
+%    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 %
@@ -9724,7 +9724,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
 %
 %    o degrees: Specifies the number of degrees to rotate the image.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -10235,7 +10235,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -10650,7 +10650,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
 %    o crop_info:  A pointer to a RectangleInfo that defines a region of the
 %      Image window to crop.
 %
-%    o image: Specifies a pointer to a Image structure.
+%    o image: Specifies a pointer to an Image structure.
 %
 %
 */
@@ -10740,7 +10740,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure; returned from
+%    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 %    o event: Specifies a pointer to a XEvent structure.  If it is NULL,
@@ -11016,7 +11016,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %    o key_symbol: Specifies a KeySym which indicates which side of the image
@@ -11141,7 +11141,7 @@ static void XTranslateImage(Display *display,XWindows *windows,
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure.
+%    o image: Specifies a pointer to an Image structure.
 %
 %
 */
@@ -11474,7 +11474,7 @@ static Image *XVisualDirectoryImage(Display *display,
 %
 %    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
 %
-%    o image: Specifies a pointer to a Image structure; returned from
+%    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 %

@@ -1,14 +1,24 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
 <HEAD>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <title>C API: GraphicsMagick - Image Processing and Display Package</title>
-   <meta name="description" content="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
-   <meta name="keywords" content="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-   <link rel="StyleSheet" href="magick.css" type="text/css">
-</head>
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>C API: GraphicsMagick - Image Processing and Display Package</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="CREATED" CONTENT="20030425;16380900">
+	<META NAME="CHANGED" CONTENT="16010101;0">
+	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+	<STYLE>
+	<!--
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		DD { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		PRE { color: #000000 }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
 <FORM ACTION="http://www.google.com/search">
 	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
@@ -43,240 +53,216 @@
 		</TR>
 	</TABLE>
 </FORM>
+<P><B>GraphicsMagick</B> has a number of functions that allow you to
+read, manipulate, write, or display an image. These functions are
+accessible through the various <A HREF="programming.html">tools</A>
+or the object-oriented Perl interface, <A HREF="perl.html">PerlMagick</A>.
+However, you can also access the functions directly from your program
+through the Magick Application Programmer Interface. To invoke the
+functions, write your program in your favorite language while making
+calls to the Magick image functions and link with
+<TT>libGraphicsMagick.a</TT>, <TT>libGraphicsMagick.so</TT>, or
+<TT>Magick.dll</TT> depending on your system. 
+</P>
+<P>The API is divided into a number of categories: 
+</P>
+<DL>
+	<DD><IMG SRC="../images/ball.png" NAME="Graphic1" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/constitute.html">GraphicsMagick Methods to Constitute
+	an Image</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic3" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/composite.html">GraphicsMagick Methods to Composite an
+	Image</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic4" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/image.html">GraphicsMagick Image Methods</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic5" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/color.html">Methods to Count the Colors in an Image</A>
+		</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic6" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/quantize.html">Methods to Reduce the Number of Unique
+	Colors in an Image</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic7" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/segment.html">Methods to Segment an Image with
+	Thresholding Fuzzy c-Means</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic8" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/resize.html">Methods to Resize an Image</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic9" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/transform.html">Methods to Transform an Image</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic10" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/shear.html">Methods to Shear or Rotate an Image by an
+	Arbitrary Angle</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic11" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/enhance.html">Methods to Enhance an Image</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic12" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/effect.html">GraphicsMagick Image Effects Methods</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic13" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/fx.html">GraphicsMagick Special Effects Methods</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic14" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/decorate.html">GraphicsMagick Image Decoration Methods</A>
+		</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic15" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/attribute.html">Image Text Attributes Methods</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic16" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/annotate.html">Methods to Annotate an Image</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic17" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/paint.html">Methods to Paint on an Image</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic18" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/render.html">Methods to Draw on an Image</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic19" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/draw.html">Image Vector Drawing Methods </A>
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic20" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/montage.html">GraphicsMagick Methods to Create Image
+	Thumbnails</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic21" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/display.html">Methods to Interactively Display and Edit
+	an Image</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic22" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/animate.html">Methods to Interactively Animate an Image
+	Sequence</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic23" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/cache.html">Methods to Get or Set Image Pixels</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic24" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/list.html">Working with Image Lists</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic25" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/cache_view.html">GraphicsMagick Cache Views Methods</A>
+		</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic26" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/stream.html">Image Pixel FIFO</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic27" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/blob.html">Methods to Read or Write Binary Large
+	OBjects</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic28" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/magick.html">Methods to Read or List GraphicsMagick
+	Image formats</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic29" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/signature.html">Methods to Compute a Message Digest for
+	an Image</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic30" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/registry.html">GraphicsMagick Registry Methods</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic31" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/error.html">GraphicsMagick Error Methods</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic32" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/memory.html">GraphicsMagick Memory Allocation Methods</A>
+		</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic33" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/resource.html">GraphicsMagick Resource Consumption
+	Methods</A> 
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic34" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+	<A HREF="api/monitor.html">GraphicsMagick Progress Monitor Methods</A>
+		</DD></DL>
+<P>
+<BR><BR>
+</P>
+<P>Here is a sample program to get you started. To find out about all
+the functions that are available, read the source code. Each function
+is delineated with a full rows of percent signs with comments
+describing the parameters required for the function and what it does.
+For ease in finding a function, they are sorted in alphabetical
+order. Most of the image functions are found in <TT>image.c</TT> and
+<TT>effects.c</TT>. 
+</P>
+<P>Here is a full example of a program, <TT>demo.c</TT>, that reads a
+JPEG image, creates a thumbnail, and writes it to disk in the PNG
+image format. 
+</P>
+<PRE> #include &lt;stdio.h&gt;
+ #include &lt;string.h&gt;
+ #include &lt;time.h&gt;
+ #include &lt;sys/types.h&gt;
+ #include &lt;magick/api.h&gt;
 
-<p>
-<p><b>GraphicsMagick</b> has a number of functions that allow you to read,
-manipulate, write, or display an image. These functions are accessible
-through the various <a href="programming.html">tools</a> or the object-oriented
-Perl interface, <a href="perl.html">PerlMagick</a>. However, you can also
-access the functions directly from your program through the Magick Application
-Programmer Interface. To invoke the functions, write your program in your
-favorite language while making calls to the Magick image functions and
-link with <tt>libGraphicsMagick.a</tt>, <tt>libGraphicsMagick.so</tt>, or <tt>Magick.dll</tt>
-depending on your system.
-<p>The API is divided into a number of categories:
-<dl>
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/constitute.html">GraphicsMagick
-Methods to Constitute an Image</a></dd>
+ int main(int argc,char **argv)
+ {
+ ExceptionInfo
+ exception;
 
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/composite.html">GraphicsMagick
-Methods to Composite an Image</a></dd>
+ Image
+ *image,
+ *images,
+ *resize_image,
+ *thumbnails;
 
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/image.html">GraphicsMagick
-Image Methods</a></dd>
+ ImageInfo
+ *image_info;
 
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/color.html">Methods
-to Count the Colors in an Image</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/quantize.html">Methods
-to Reduce the Number of Unique Colors in an Image</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/segment.html">Methods
-to Segment an Image with Thresholding Fuzzy c-Means</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/resize.html">Methods
-to Resize an Image</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/transform.html">Methods
-to Transform an Image</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/shear.html">Methods
-to Shear or Rotate an Image by an Arbitrary Angle</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/enhance.html">Methods
-to Enhance an Image</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/effect.html">GraphicsMagick
-Image Effects Methods</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/fx.html">GraphicsMagick
-Special Effects Methods</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/decorate.html">GraphicsMagick
-Image Decoration Methods</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/attribute.html">Image
-Text Attributes Methods</a></dd>
-
-<dd>
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/annotate.html">Methods
-to Annotate an Image</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/paint.html">Methods
-to Paint on an Image</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/render.html">Methods
-to Draw on an Image</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/draw.html">Image Vector Drawing Methods </a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/montage.html">GraphicsMagick
-Methods to Create Image Thumbnails</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/display.html">Methods
-to Interactively Display and Edit an Image</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/animate.html">Methods
-to Interactively Animate an Image Sequence</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/cache.html">Methods
-to Get or Set Image Pixels</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/list.html">Working
-with Image Lists</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/cache_view.html">GraphicsMagick
-Cache Views Methods</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/stream.html">Image
-Pixel FIFO</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/blob.html">Methods
-to Read or Write Binary Large OBjects</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/magick.html">Methods
-to Read or List GraphicsMagick Image formats</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/signature.html">Methods
-to Compute a Message Digest for an Image</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/registry.html">GraphicsMagick
-Registry Methods</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/error.html">GraphicsMagick
-Error Methods</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/memory.html">GraphicsMagick
-Memory Allocation Methods</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/resource.html">GraphicsMagick
-Resource Consumption Methods</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/monitor.html">GraphicsMagick
-Progress Monitor Methods</a></dd>
-
-<dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> <a href="api/deprecate.html">GraphicsMagick
-Deprecated Methods</a></dd>
-</dl>
-<p>
-
-Here is a sample program to get you started. To find out about all the
-functions that are available, read the source code. Each function is delineated
-with a full rows of percent signs with comments describing the parameters
-required for the function and what it does. For ease in finding a function,
-they are sorted in alphabetical order. Most of the image functions are
-found in <tt>image.c</tt> and <tt>effects.c</tt>.
-<p>Here is a full example of a program, <tt>demo.c</tt>, that reads
-a JPEG image, creates a thumbnail, and writes it to disk in the PNG image
-format.
-<pre>&nbsp;&nbsp;&nbsp; #include &lt;stdio.h>
-&nbsp;&nbsp;&nbsp; #include &lt;string.h>
-&nbsp;&nbsp;&nbsp; #include &lt;time.h>
-&nbsp;&nbsp;&nbsp; #include &lt;sys/types.h>
-&nbsp;&nbsp;&nbsp; #include &lt;magick/api.h>
-
-&nbsp;&nbsp;&nbsp; int main(int argc,char **argv)
-&nbsp;&nbsp;&nbsp; {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ExceptionInfo
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exception;
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Image
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *image,
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *images,
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *resize_image,
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *thumbnails;
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ImageInfo
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *image_info;
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Initialize the image info structure and read an image.
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeMagick(*argv);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GetExceptionInfo(&exception);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image_info=CloneImageInfo((ImageInfo *) NULL);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image_info->filename,"image.gif");
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; images=ReadImage(image_info,&amp;exception);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (exception.severity != UndefinedException)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CatchException(&amp;exception);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (images == (Image *) NULL)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit(1);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn the images into a thumbnail sequence.
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; thumbnails=NewImageList();
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while ((image=RemoveFirstImageFromList(&images)) != (Image *) NULL)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resize_image=ResizeImage(image,106,80,Lanczos,1.0,&amp;exception);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (resize_image == (Image *) NULL)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.reason,exception.description);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) AppendImageToList(&thumbnails,resize_image,&exception);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(resize_image);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Write the image as MIFF and destroy it.
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(thumbnails->filename,"image.miff");
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WriteImage(image_info,thumbnails);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImageList(thumbnails);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImageInfo(image_info);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyExceptionInfo(&exception);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyMagick();
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return(0);
-&nbsp;&nbsp;&nbsp; }</pre>
-Now we need to compile. On Unix, the command would look something like
-this:
-<pre>
-&nbsp;&nbsp;&nbsp; setenv LD_LIBRARY_PATH /usr/local/lib
-&nbsp;&nbsp;&nbsp; gcc `GraphicsMagick-config --cflags --cppflags` demo.c `GraphicsMagick-config --ldflags --libs`
-</pre>
-Another example is <a href="smile.c">smile.c</a>. Compile and excute it
-to display a smiley face on your X server.
-<p>
-For C++, use:
-<pre>&nbsp;&nbsp;&nbsp; g++ `GraphicsMagick++-config --cxxflags --cppflags` demo.cpp `GraphicsMagick++-config --ldflags --libs`</pre>
-<hr>
-<p><a href="../index.html"><img SRC="../images/home.png"
-ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><a 
-href="mailto:webmaster@graphicsmagick.org"><img SRC="../images/mail.png"
-ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><font size="-2">
-Image manipulation software that works like magic.</font>
-</body>
-</html>
+ /*
+ Initialize the image info structure and read an image.
+ */
+ InitializeMagick(*argv);
+ GetExceptionInfo(&amp;exception);
+ image_info=CloneImageInfo((ImageInfo *) NULL);
+ (void) strcpy(image_info-&gt;filename,&quot;image.gif&quot;);
+ images=ReadImage(image_info,&amp;exception);
+ if (exception.severity != UndefinedException)
+ CatchException(&amp;exception);
+ if (images == (Image *) NULL)
+ exit(1);
+ /*
+ Turn the images into a thumbnail sequence.
+ */
+ thumbnails=NewImageList();
+ while ((image=RemoveFirstImageFromList(&image;s)) != (Image *) NULL)
+ {
+ resize_image=ResizeImage(image,106,80,Lanczos,1.0,&amp;exception);
+ if (resize_image == (Image *) NULL)
+ MagickError(exception.severity,exception.reason,exception.description);
+ (void) AppendImageToList(&amp;thumbnails,resize_image,&amp;exception);
+ DestroyImage(image);
+ DestroyImage(resize_image);
+ }
+ /*
+ Write the image as MIFF and destroy it.
+ */
+ (void) strcpy(thumbnails-&gt;filename,&quot;image.miff&quot;);
+ WriteImage(image_info,thumbnails);
+ DestroyImageList(thumbnails);
+ DestroyImageInfo(image_info);
+ DestroyExceptionInfo(&amp;exception);
+ DestroyMagick();
+ return(0);
+ }</PRE><P>
+Now we need to compile. On Unix, the command would look something
+like this: 
+</P>
+<PRE> setenv LD_LIBRARY_PATH /usr/local/lib
+ gcc `GraphicsMagick-config --cflags --cppflags` demo.c `GraphicsMagick-config --ldflags --libs`</PRE><P>
+Another example is <A HREF="smile.c">smile.c</A>. Compile and excute
+it to display a smiley face on your X server. 
+</P>
+<P>For C++, use: 
+</P>
+<PRE STYLE="margin-bottom: 0.2in"> g++ `GraphicsMagick++-config --cxxflags --cppflags` demo.cpp `GraphicsMagick++-config --ldflags --libs`</PRE>
+<HR>
+<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic36" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic37" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>
+Image manipulation software that works like magic.</FONT> 
+</P>
+</BODY>
+</HTML>

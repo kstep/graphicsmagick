@@ -90,7 +90,7 @@ DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="compositeimage">CompositeImage</A></H3>
 <blockquote>CompositeImage() returns the second image composited onto the first at the specified offsets. </blockquote><P>The format of the CompositeImage method is:</P>
-<blockquote>unsigned int CompositeImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#CompositeOperator">CompositeOperator</A> compose, const <A HREF="types/Image.html">Image</A> *composite_image, const long x_offset, const long y_offset ); </blockquote><P>
+<blockquote>unsigned int CompositeImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#CompositeOperator">CompositeOperator</A> compose, const <A HREF="types.html#Image">Image</A> *composite_image, const long x_offset, const long y_offset ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -99,16 +99,8 @@ The image.
 <P></P>
 <DD><P></P><DT><STRONG><A NAME="item_o_compose%3A">compose:</A></STRONG><BR>
 <DD>
-This operator affects how the composite is applied to the image.  The default is Over.  Choose from these operators:
-<P></P></DL></DL>
-<PRE>
-      OverCompositeOp       InCompositeOp         OutCompositeOP
-      AtopCompositeOP       XorCompositeOP        PlusCompositeOP
-      MinusCompositeOP      AddCompositeOP        SubtractCompositeOP
-      DifferenceCompositeOP BumpmapCompositeOP    CopyCompositeOP
-      DisplaceCompositeOP
-=over 4</PRE>
-<DL><DT><DD><DL>
+This operator affects how the composite is applied to the image.  The default is Over.  Choose from one of these operators: OverCompositeOp, InCompositeOp, OutCompositeOP, AtopCompositeOP, XorCompositeOP, PlusCompositeOP, MinusCompositeOP, AddCompositeOP, SubtractCompositeOP, DifferenceCompositeOP, BumpmapCompositeOP, CopyCompositeOP, DisplaceCompositeOP.
+<P></P>
 <DD><P></P><DT><STRONG><A NAME="item_o_composite_image%3A">composite_image:</A></STRONG><BR>
 <DD>
 The composite image.

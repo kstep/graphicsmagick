@@ -5667,7 +5667,7 @@ MagickExport char *DrawGetTextEncoding(DrawContext context)
 %
 %    o encoding: character string specifying text encoding
 %
-% */
+*/
 MagickExport void DrawSetTextEncoding(DrawContext context, const char* encoding)
 {
   assert(context != (DrawContext)NULL);

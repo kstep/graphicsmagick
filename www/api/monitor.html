@@ -92,7 +92,7 @@ DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="magickmonitor">MagickMonitor</A></H3>
 <blockquote>MagickMonitor() calls the monitor handler method with a text string that describes the task and a measure of completion. The method returns True on success otherwise False if an error is encountered, e.g. if there was a user interrupt. </blockquote><P>The format of the MagickMonitor method is:</P>
-<blockquote>unsigned int MagickMonitor ( const char *text, const ExtendedSignedIntegralType quantum, const ExtendedUnsignedIntegralType span, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>unsigned int MagickMonitor ( const char *text, const ExtendedSignedIntegralType quantum, const ExtendedUnsignedIntegralType span, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
@@ -110,7 +110,7 @@ Return any errors or warnings in this structure.
 <P>
 <H3><A NAME="setmonitorhandler">SetMonitorHandler</A></H3>
 <blockquote>SetMonitorHandler() sets the monitor handler to the specified method and returns the previous monitor handler. </blockquote><P>The format of the SetMonitorHandler method is:</P>
-<blockquote>MonitorHandler SetMonitorHandler ( MonitorHandler handler ); </blockquote><P>
+<blockquote><A HREF="types.html#MonitorHandler">MonitorHandler</A> SetMonitorHandler ( <A HREF="types.html#MonitorHandler">MonitorHandler</A> handler ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_handler%3A">handler:</A></STRONG><BR>

@@ -64,13 +64,11 @@
 %    o image: The image.
 %
 %    o compose: This operator affects how the composite is applied to
-%      the image.  The default is Over.  Choose from these operators:
-%
-%        OverCompositeOp       InCompositeOp         OutCompositeOP
-%        AtopCompositeOP       XorCompositeOP        PlusCompositeOP
-%        MinusCompositeOP      AddCompositeOP        SubtractCompositeOP
-%        DifferenceCompositeOP BumpmapCompositeOP    CopyCompositeOP
-%        DisplaceCompositeOP
+%      the image.  The default is Over.  Choose from one of these
+%      operators: OverCompositeOp, InCompositeOp, OutCompositeOP,
+%      AtopCompositeOP, XorCompositeOP, PlusCompositeOP, MinusCompositeOP,
+%      AddCompositeOP, SubtractCompositeOP, DifferenceCompositeOP,
+%      BumpmapCompositeOP, CopyCompositeOP, DisplaceCompositeOP.
 %
 %    o composite_image: The composite image.
 %

@@ -113,7 +113,7 @@ DESCRIPTIONS</A></H2>
 <blockquote>DestroyMagick() destroys the GraphicsMagick environment. </blockquote><P>The format of the DestroyMagick function is:</P>
 <blockquote>DestroyMagick ( void ); </blockquote><P>
 <H3><A NAME="destroymagickinfo">DestroyMagickInfo</A></H3>
-<blockquote>DestroyMagickInfo() deallocates memory associated <A HREF="types/MagickInfo.html">MagickInfo</A> list. </blockquote><P>The format of the DestroyMagickInfo method is:</P>
+<blockquote>DestroyMagickInfo() deallocates memory associated <A HREF="types.html#MagickInfo">MagickInfo</A> list. </blockquote><P>The format of the DestroyMagickInfo method is:</P>
 <blockquote>void DestroyMagickInfo ( void ); </blockquote><P>
 <H3><A NAME="getimagemagick">GetImageMagick</A></H3>
 <blockquote>GetImageMagick() searches for an image format that matches the specified magick string. If one is found the name is returned otherwise NULL. </blockquote><P>The format of the GetImageMagick method is:</P>
@@ -130,8 +130,8 @@ The length of the binary string.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="getmagickinfo">GetMagickInfo</A></H3>
-<blockquote>GetMagickInfo() returns a pointer <A HREF="types/MagickInfo.html">MagickInfo</A> structure that matches the specified name. If name is NULL, the head of the image format list is returned. </blockquote><P>The format of the GetMagickInfo method is:</P>
-<blockquote>const <A HREF="types/MagickInfo.html">MagickInfo</A> *GetMagickInfo ( const char *name, Exception *exception ); </blockquote><P>
+<blockquote>GetMagickInfo() returns a pointer <A HREF="types.html#MagickInfo">MagickInfo</A> structure that matches the specified name. If name is NULL, the head of the image format list is returned. </blockquote><P>The format of the GetMagickInfo method is:</P>
+<blockquote>const <A HREF="types.html#MagickInfo">MagickInfo</A> *GetMagickInfo ( const char *name, Exception *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
@@ -171,7 +171,7 @@ Specifies the image format.
 <P>
 <H3><A NAME="listmagickinfo">ListMagickInfo</A></H3>
 <blockquote>ListMagickInfo() lists the image formats to a file. </blockquote><P>The format of the ListMagickInfo method is:</P>
-<blockquote>unsigned int ListMagickInfo ( FILE *file, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>unsigned int ListMagickInfo ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows.</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_file%3A">file:</A></STRONG><BR>
@@ -198,7 +198,7 @@ GraphicsMagick format specification ``magick'' tag.
 <P>
 <H3><A NAME="registermagickinfo">RegisterMagickInfo</A></H3>
 <blockquote>RegisterMagickInfo() adds attributes for a particular image format to the list of supported formats. The attributes include the image format name, a method to read and/or write the format, whether the format supports the saving of more than one frame to the same file or blob, whether the format supports native in-memory I/O, and a brief description of the format. </blockquote><P>The format of the RegisterMagickInfo method is:</P>
-<blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *RegisterMagickInfo ( <A HREF="types/MagickInfo.html">MagickInfo</A> *magick_info ); </blockquote><P>
+<blockquote><A HREF="types.html#MagickInfo">MagickInfo</A> *RegisterMagickInfo ( <A HREF="types.html#MagickInfo">MagickInfo</A> *magick_info ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_magick_info%3A">magick_info:</A></STRONG><BR>
@@ -209,7 +209,7 @@ The magick info.
 <H3><A NAME="setmagickinfo">SetMagickInfo</A></H3>
 <P>Method SetMagickInfo allocates a MagickInfo structure and initializes the members to default values.</P>
 <P>The format of the SetMagickInfo method is:</P>
-<blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *SetMagickInfo ( const char *name ); </blockquote><P>
+<blockquote><A HREF="types.html#MagickInfo">MagickInfo</A> *SetMagickInfo ( const char *name ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>magick_info:</STRONG><BR>

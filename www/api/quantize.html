@@ -108,7 +108,7 @@ DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="clonequantizeinfo">CloneQuantizeInfo</A></H3>
 <blockquote>CloneQuantizeInfo() makes a duplicate of the given quantize info structure, or if quantize info is NULL, a new one. </blockquote><P>The format of the CloneQuantizeInfo method is:</P>
-<blockquote><A HREF="types/QuantizeInfo.html">QuantizeInfo</A> *CloneQuantizeInfo ( const <A HREF="types/QuantizeInfo.html">QuantizeInfo</A> *quantize_info ); </blockquote><P>
+<blockquote><A HREF="types.html#QuantizeInfo">QuantizeInfo</A> *CloneQuantizeInfo ( const <A HREF="types.html#QuantizeInfo">QuantizeInfo</A> *quantize_info ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_clone_info%3A">clone_info:</A></STRONG><BR>
@@ -123,7 +123,7 @@ a structure of type info.
 <P>
 <H3><A NAME="compressimagecolormap">CompressImageColormap</A></H3>
 <blockquote>CompressImageColormap() compresses an image colormap by removing any duplicate or unused color entries. </blockquote><P>The format of the CompressImageColormap method is:</P>
-<blockquote>void CompressImageColormap ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>void CompressImageColormap ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -132,8 +132,8 @@ The image.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="destroyquantizeinfo">DestroyQuantizeInfo</A></H3>
-<blockquote>DestroyQuantizeInfo() deallocates memory associated with an <A HREF="types/QuantizeInfo.html">QuantizeInfo</A> structure. </blockquote><P>The format of the DestroyQuantizeInfo method is:</P>
-<blockquote>DestroyQuantizeInfo ( <A HREF="types/QuantizeInfo.html">QuantizeInfo</A> *quantize_info ); </blockquote><P>
+<blockquote>DestroyQuantizeInfo() deallocates memory associated with an <A HREF="types.html#QuantizeInfo">QuantizeInfo</A> structure. </blockquote><P>The format of the DestroyQuantizeInfo method is:</P>
+<blockquote>DestroyQuantizeInfo ( <A HREF="types.html#QuantizeInfo">QuantizeInfo</A> *quantize_info ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>quantize_info:</STRONG><BR>
@@ -156,7 +156,7 @@ This value is the normalized mean quantization error for any single pixel in the
 Thsi value is the normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.
 <P></P></DL></DL>
 <P>The format of the GetImageQuantizeError method is:</P>
-<blockquote>unsigned int GetImageQuantizeError ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int GetImageQuantizeError ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows.</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -165,8 +165,8 @@ Specifies a pointer to an Image structure; returned from ReadImage.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="getquantizeinfo">GetQuantizeInfo</A></H3>
-<blockquote>GetQuantizeInfo() initializes the <A HREF="types/QuantizeInfo.html">QuantizeInfo</A> structure. </blockquote><P>The format of the GetQuantizeInfo method is:</P>
-<blockquote>GetQuantizeInfo ( <A HREF="types/QuantizeInfo.html">QuantizeInfo</A> *quantize_info ); </blockquote><P>
+<blockquote>GetQuantizeInfo() initializes the <A HREF="types.html#QuantizeInfo">QuantizeInfo</A> structure. </blockquote><P>The format of the GetQuantizeInfo method is:</P>
+<blockquote>GetQuantizeInfo ( <A HREF="types.html#QuantizeInfo">QuantizeInfo</A> *quantize_info ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>quantize_info:</STRONG><BR>
@@ -176,7 +176,7 @@ Specifies a pointer to a QuantizeInfo structure.
 <P>
 <H3><A NAME="mapimage">MapImage</A></H3>
 <blockquote>MapImage() replaces the colors of an image with the closest color from a reference image. </blockquote><P>The format of the MapImage method is:</P>
-<blockquote>unsigned int MapImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Image.html">Image</A> *map_image, const unsigned int dither ); </blockquote><P>
+<blockquote>unsigned int MapImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *map_image, const unsigned int dither ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -185,7 +185,7 @@ Specifies a pointer to an Image structure.
 <P></P>
 <DD><P></P><DT><STRONG><A NAME="item_o_map_image%3A">map_image:</A></STRONG><BR>
 <DD>
-Specifies a pointer to a Image structure.  Reduce image to a set of colors represented by this image.
+Specifies a pointer to an Image structure.  Reduce image to a set of colors represented by this image.
 <P></P>
 <DD><P></P><DT><STRONG><A NAME="item_o_dither%3A">dither:</A></STRONG><BR>
 <DD>
@@ -194,7 +194,7 @@ Set this integer value to something other than zero to dither the quantized imag
 <P>
 <H3><A NAME="mapimages">MapImages</A></H3>
 <blockquote>MapImages() replaces the colors of a sequence of images with the closest color from a reference image. </blockquote><P>The format of the MapImage method is:</P>
-<blockquote>unsigned int MapImages ( <A HREF="types/Image.html">Image</A> *images, <A HREF="types/Image.html">Image</A> *map_image, const unsigned int dither ); </blockquote><P>
+<blockquote>unsigned int MapImages ( <A HREF="types.html#Image">Image</A> *images, <A HREF="types.html#Image">Image</A> *map_image, const unsigned int dither ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -203,7 +203,7 @@ Specifies a pointer to a set of Image structures.
 <P></P>
 <DD><P></P><DT><STRONG>map_image:</STRONG><BR>
 <DD>
-Specifies a pointer to a Image structure.  Reduce image to a set of colors represented by this image.
+Specifies a pointer to an Image structure.  Reduce image to a set of colors represented by this image.
 <P></P>
 <DD><P></P><DT><STRONG>dither:</STRONG><BR>
 <DD>
@@ -212,7 +212,7 @@ Set this integer value to something other than zero to dither the quantized imag
 <P>
 <H3><A NAME="orderedditherimage">OrderedDitherImage</A></H3>
 <blockquote>OrderedDitherImage() uses the ordered dithering technique of reducing color images to monochrome using positional information to retain as much information as possible. </blockquote><P>The format of the OrderedDitherImage method is:</P>
-<blockquote>unsigned int OrderedDitherImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int OrderedDitherImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows.</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
@@ -222,7 +222,7 @@ Specifies a pointer to an Image structure; returned from ReadImage.
 <P>
 <H3><A NAME="quantizeimage">QuantizeImage</A></H3>
 <blockquote>QuantizeImage() analyzes the colors within a reference image and chooses a fixed number of colors to represent the image. The goal of the algorithm is to minimize the color difference between the input and output image while minimizing the processing time. </blockquote><P>The format of the QuantizeImage method is:</P>
-<blockquote>unsigned int QuantizeImage ( const <A HREF="types/QuantizeInfo.html">QuantizeInfo</A> *quantize_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int QuantizeImage ( const <A HREF="types.html#QuantizeInfo">QuantizeInfo</A> *quantize_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>quantize_info:</STRONG><BR>
@@ -231,12 +231,12 @@ Specifies a pointer to an QuantizeInfo structure.
 <P></P>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
 <DD>
-Specifies a pointer to a Image structure.
+Specifies a pointer to an Image structure.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="quantizeimages">QuantizeImages</A></H3>
 <blockquote>QuantizeImages() analyzes the colors within a set of reference images and chooses a fixed number of colors to represent the set. The goal of the algorithm is to minimize the color difference between the input and output images while minimizing the processing time. </blockquote><P>The format of the QuantizeImages method is:</P>
-<blockquote>unsigned int QuantizeImages ( const <A HREF="types/QuantizeInfo.html">QuantizeInfo</A> *quantize_info, <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
+<blockquote>unsigned int QuantizeImages ( const <A HREF="types.html#QuantizeInfo">QuantizeInfo</A> *quantize_info, <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>quantize_info:</STRONG><BR>

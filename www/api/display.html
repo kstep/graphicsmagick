@@ -92,7 +92,7 @@ DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="xdisplaybackgroundimage">XDisplayBackgroundImage</A></H3>
 <blockquote>XDisplayBackgroundImage() displays an image in the background of a window. </blockquote><P>The format of the XDisplayBackgroundImage method is:</P>
-<blockquote>unsigned int XDisplayBackgroundImage ( Display *display, <A HREF="types/XResourceInfo.html">XResourceInfo</A> *resource_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int XDisplayBackgroundImage ( Display *display, <A HREF="types.html#XResourceInfo">XResourceInfo</A> *resource_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_display%3A">display:</A></STRONG><BR>
@@ -107,12 +107,12 @@ X11 XResourceInfo structure.
 <P></P>
 <DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
-Specifies a pointer to a Image structure; returned from ReadImage.
+Specifies a pointer to an Image structure; returned from ReadImage.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="xdisplayimage">XDisplayImage</A></H3>
 <blockquote>XDisplayImage() displays an image via X11. A new image is created and returned if the user interactively transforms the displayed image. </blockquote><P>The format of the XDisplayImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *XDisplayImage ( Display *display, <A HREF="types/XResourceInfo.html">XResourceInfo</A> *resource_info, char **argv, int argc, <A HREF="types/Image.html">Image</A> **image, unsigned long *state ); </blockquote><P>
+<blockquote><A HREF="types.html#Image">Image</A> *XDisplayImage ( Display *display, <A HREF="types.html#XResourceInfo">XResourceInfo</A> *resource_info, char **argv, int argc, <A HREF="types.html#Image">Image</A> **image, unsigned long *state ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_nexus%3A">nexus:</A></STRONG><BR>
