@@ -7710,7 +7710,7 @@ static unsigned int XMatteEditImage(Display *display,
             q=GetImagePixels(*image,x_offset,y_offset,1,1);
             if (q == (PixelPacket *) NULL)
               break;
-            q->opacity=atoi(matte) & 0xff;
+            q->opacity=atoi(matte);
             (void) SyncImagePixels(*image);
             break;
           }
@@ -7731,7 +7731,7 @@ static unsigned int XMatteEditImage(Display *display,
               for (x=0; x < (int) (*image)->columns; x++)
               {
                 if (ColorMatch(*q,target,(*image)->fuzz))
-                  q->opacity=atoi(matte) & 0xff;
+                  q->opacity=atoi(matte);
                 q++;
               }
               if (!SyncImagePixels(*image))
@@ -7755,8 +7755,8 @@ static unsigned int XMatteEditImage(Display *display,
                 target.green=XDownScale(border_color.green);
                 target.blue=XDownScale(border_color.blue);
               }
-            MatteFloodfillImage(*image,target,atoi(matte) & 0xff,x_offset,
-              y_offset,method);
+            MatteFloodfillImage(*image,target,atoi(matte),x_offset,y_offset,
+              method);
             break;
           }
           case ResetMethod:
@@ -7772,13 +7772,13 @@ static unsigned int XMatteEditImage(Display *display,
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
               {
-                q->opacity=atoi(matte) & 0xff;
+                q->opacity=atoi(matte);
                 q++;
               }
               if (!SyncImagePixels(*image))
                 break;
             }
-            if ((atoi(matte) & 0xff) == OpaqueOpacity)
+            if (atoi(matte) == OpaqueOpacity)
               (*image)->matte=False;
             break;
           }
