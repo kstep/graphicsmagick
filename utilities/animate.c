@@ -271,7 +271,7 @@ int main(int argc,char **argv)
   /*
     Check for server name specified on the command line.
   */
-  for (i=1; i <= argc; i++)
+  for (i=1; i < argc; i++)
   {
     /*
       Check command line for server name.
@@ -334,7 +334,7 @@ int main(int argc,char **argv)
   */
   j=1;
   k=0;
-  for (i=1; i < argc; i++)
+  for (i=1; i <= argc; i++)
   {
     if (i < argc)
       option=argv[i];
