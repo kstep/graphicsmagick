@@ -38,7 +38,7 @@ testSetAttribute('input.miff','compress','JPEG');
 testSetAttribute('input.miff','compress','LZW');
 
 ++$test;
-testSetAttribute('input.miff','compress','Runlength');
+testSetAttribute('input.miff','compress','RLE');
 
 ++$test;
 testSetAttribute('input.miff','compress','Zip');
