@@ -94,18 +94,6 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   Image
     *image;
 
-  int
-    y;
-
-  register IndexPacket
-    *indexes;
-
-  register int
-    x;
-
-  register PixelPacket
-    *q;
-
   /*
     Initialize Image structure.
   */
@@ -115,28 +103,12 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   if (image->rows == 0)
     image->rows=1;
   (void) strcpy(image->filename,image_info->filename);
+  (void) QueryColorDatabase((char *) image_info->filename,
+    &image->background_color);
   if (!AllocateImageColormap(image,1))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  /*
-    Initialize colormap.
-  */
-  (void) QueryColorDatabase((char *) image_info->filename,&image->colormap[0]);
-  for (y=0; y < (int) image->rows; y++)
-  {
-    q=SetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
-    {
-      indexes[x]=0;
-      *q=image->colormap[0];
-      q->opacity=image->colormap[0].opacity;
-      q++;
-    }
-    if (!SyncImagePixels(image))
-      break;
-  }
+  image->colormap[0]=image->background_color;
+  SetImage(image,image->background_color.opacity);
   return(image);
 }
 
