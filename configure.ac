@@ -330,7 +330,7 @@ AC_ARG_WITH(wmf,
 AC_ARG_WITH(gs-font-dir,
 	      [  --with-gs-font-dir      directory containing Ghostscript fonts],
 	      [with_gs_font_dir=$withval],
-	      [with_gs_font_dir='no'])
+	      [with_gs_font_dir='default'])
 
 # Set Windows font directory
 AC_ARG_WITH(windows-font-dir,
@@ -1463,7 +1463,7 @@ case $host_os in
 esac
 
 # Ghostscript
-if test "$with_gs_font_dir" != 'no'
+if test "$with_gs_font_dir" != 'default'
 then
   ghostscript_font_dir="$with_gs_font_dir"
 else
@@ -1472,7 +1472,6 @@ else
   then
     ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`
   fi
-  with_gs_font_dir="''"
 fi
 type_include_files="$type_include_files "'file="type-ghostscript.mgk"'
 AC_SUBST(ghostscript_font_dir)
@@ -1838,15 +1837,16 @@ echo "-----------------------------------------------------------------"
 echo "Shared libraries  --enable-shared=$enable_shared    	$libtool_build_shared_libs"
 echo "Static libraries  --enable-static=$enable_static    	$libtool_build_static_libs"
 echo "GNU ld            --with-gnu-ld=$with_gnu_ld        	$lt_cv_prog_gnu_ld"
-echo "Ghostscript       None                   	$PSDelegate"
-echo "Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir         $ghostscript_font_dir"
 echo "LZW support       --enable-lzw=$with_lzw            	$with_lzw"
 echo "16 bit pixels     --enable-16bit-pixel=$with_16_bit_pixel 	$with_16_bit_pixel"
-echo "Magick++          --with-magick-plus-plus=$with_magick_plus_plus 	$have_magick_plus_plus"
-echo "PERL              --with-perl=$with_perl            	$have_perl"
+echo ""
+echo "Delegate Configuration:"
 echo "BZLIB             --with-bzlib=$with_bzlib          	$have_bzlib"
 echo "DPS               --with-dps=$with_dps              	$have_dps"
 echo "FlashPIX          --with-fpx=$with_fpx              	$have_fpx"
+echo "FreeType 2.0      --with-ttf=$with_ttf          	$have_ttf"
+echo "Ghostscript       None                   	$PSDelegate"
+echo "Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir    $ghostscript_font_dir"
 echo "Ghostscript lib   --with-gslib=$with_gslib       	$have_gslib"
 echo "HDF               --with-hdf=$with_hdf          	$have_hdf"
 echo "JBIG              --with-jbig=$with_jbig        	$have_jbig"
@@ -1854,13 +1854,14 @@ echo "JPEG v1           --with-jpeg=$with_jpeg        	$have_jpeg"
 echo "JPEG v2           --with-jp2=$with_jp2          	$have_jp2"
 echo "LCMS              --with-lcms=$with_lcms        	$have_lcms"
 echo "MPEG v2           --with-mpeg2=$with_mpeg2      	$have_mpeg2"
+echo "Magick++          --with-magick-plus-plus=$with_magick_plus_plus 	$have_magick_plus_plus"
+echo "PERL              --with-perl=$with_perl            	$have_perl"
 echo "PNG               --with-png=$with_png          	$have_png"
 echo "TIFF              --with-tiff=$with_tiff        	$have_tiff"
-echo "FreeType 2.0      --with-ttf=$with_ttf          	$have_ttf"
-echo "XML               --with-xml=$with_xml          	$have_xml"
 echo "WMF               --with-wmf=$with_wmf          	$have_wmf"
-echo "ZLIB              --with-zlib=$with_zlib        	$have_zlib"
 echo "X11               --with-x=$with_x             	$have_x"
+echo "XML               --with-xml=$with_xml          	$have_xml"
+echo "ZLIB              --with-zlib=$with_zlib        	$have_zlib"
 echo ""
 echo "X11 Configuration:"
 if test "$have_x" != 'no'
