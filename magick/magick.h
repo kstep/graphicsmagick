@@ -12,17 +12,11 @@
 /*
   System include declarations.
 */
-#if defined(__cplusplus) || defined(c_plusplus)
-#  include <cstdio>
-#  include <cstdlib>
-#  include <cstdarg>
-#  include <cstring>
-#else
-#  include <stdio.h>
-#  include <stdlib.h>
-#  include <stdarg.h>
-#  include <string.h>
-#endif
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
 
 #if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
 #define fseek  fseeko
