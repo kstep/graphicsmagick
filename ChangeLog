@@ -1,8 +1,13 @@
 2003-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (MontageImageCommand): Pass exception rather
+	than &image->exception because image may be null, and it is
+	pointless to store the exception where it will not be reported to
+	the user anyway.
 	* utilities/Makefile.am (check): Ported Glenn Randers-Pehrson's
 	utilities demo script into the Makefile to serve as a check
 	target.
+	(check): Add definition to find Generic.ttf.
 	* locale/C.mgk: Fixed syntax error in <Option><FatalError>
 	section.
 	* www/development.html: New file to describe development

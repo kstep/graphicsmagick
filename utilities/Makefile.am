@@ -44,16 +44,17 @@ man_MANS = $(MANPAGES)
 EXTRA_DIST = $(ALLMANPAGES)
 
 clean-local:
-	$(RM) -f *_out.miff core
+	$(RM) -f *_out.miff gm.core core
 
-GM=gm
+GM=./gm
 MODEL_MIFF=$(top_srcdir)/Magick++/demo/model.miff
 SMILE_MIFF=$(top_srcdir)/Magick++/demo/smile.miff
+GENERIC_TTF=$(top_srcdir)/PerlMagick/demo/Generic.ttf
 
 check:
 	${GM} convert $(MODEL_MIFF) +noise Laplacian              -label AddNoise AddNoise_out.miff
 	${GM} convert $(MODEL_MIFF) -fill gold \
-	        -pointsize 14 -font Generic.ttf \
+	        -pointsize 14 -font $(GENERIC_TTF) \
 	        -draw "gravity North text 0,20 'Magick'" -label Annotate Annotate_out.miff
 	${GM} convert $(MODEL_MIFF) -blur 0.0x1.0                 -label Blur Blur_out.miff
 	${GM} convert $(MODEL_MIFF) -bordercolor gold -border 6x6 -label Border Border_out.miff
@@ -110,5 +111,5 @@ check:
 	        -wave 25x150                             -label Wave Wave_out.miff
 	${GM} montage -geometry '130x194+10+5>' -gravity 'Center' \
 	  -bordercolor 'green' -borderwidth 1x1 -tile '5x1000' -compose 'over' \
-	  -background '#ffffff' -font 'Generic.ttf' -pointsize 18 -fill '#600' \
+	  -background '#ffffff' -font $(GENERIC_TTF) -pointsize 18 -fill '#600' \
 	  -stroke 'none' null: null: null: null: null: [A-Z]*_out.miff demo_out.miff

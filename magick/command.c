@@ -9022,7 +9022,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   (void) CatchImageException(montage_image);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) strncpy(montage_image->magick_filename,argv[argc-1],MaxTextExtent-1);
-  status&=WriteImages(image_info,montage_image,argv[argc-1],&image->exception);
+  status&=WriteImages(image_info,montage_image,argv[argc-1],exception);
+#if 0
   if (metadata != (char **) NULL)
     {
       char
@@ -9036,6 +9037,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       (void) ConcatenateString(&(*metadata),"\n");
       LiberateMemory((void **) &text);
     }
+#endif
   DestroyImageList(montage_image);
   DestroyMontageInfo(montage_info);
   LiberateArgumentList(argc,argv);
