@@ -152,9 +152,6 @@ sub testReadCompare {
       $errorinfo = "GetAttribute('maximum-error') returned undefined value!";
       goto COMPARE_RUNTIME_ERROR;
     }
-  print("mean_error_per_pixel=$mean_error_per_pixel\n");
-  print("normalized_mean_error=$normalized_mean_error\n");
-  print("normalized_maximum_error=$normalized_maximum_error\n");
   if ( ($mean_error_per_pixel > $mean_error_per_pixel_max) ||
        ($normalized_mean_error > $normalized_mean_error_max) ||
        ($normalized_maximum_error > $normalized_maximum_error_max) )
@@ -413,9 +410,7 @@ sub testReadWriteCompare {
       $errorinfo = "GetAttribute('maximum-error') returned undefined value!";
       goto COMPARE_RUNTIME_ERROR;
     }
-  print("mean_error_per_pixel=$mean_error_per_pixel\n");
-  print("normalized_mean_error=$normalized_mean_error\n");
-  print("normalized_maximum_error=$normalized_maximum_error\n");
+
   if ( ($mean_error_per_pixel > $mean_error_per_pixel_max) ||
        ($normalized_mean_error > $normalized_mean_error_max) ||
        ($normalized_maximum_error > $normalized_maximum_error_max) )
@@ -902,9 +897,6 @@ sub testFilterCompare {
       $errorinfo = "GetAttribute('maximum-error') returned undefined value!";
       goto COMPARE_RUNTIME_ERROR;
     }
-  print("mean_error_per_pixel=$mean_error_per_pixel\n");
-  print("normalized_mean_error=$normalized_mean_error\n");
-  print("normalized_maximum_error=$normalized_maximum_error\n");
   if ( ($mean_error_per_pixel > $mean_error_per_pixel_max) ||
        ($normalized_mean_error > $normalized_mean_error_max) ||
        ($normalized_maximum_error > $normalized_maximum_error_max) )
