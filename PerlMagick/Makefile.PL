@@ -73,7 +73,7 @@ WriteMakefile
    # 'OPTIMIZE'	=> '',
 
    # Use same compiler as ImageMagick
-   # 'PERLMAINCC'	=> 'gcc',
+   # 'PERLMAINCC'	=> 'gcc -L/home/cristy/ImageMagick-5.4.9/ttf/objs',
 
    # Set Perl installation prefix to ImageMagick installation prefix
 #   'PREFIX'	=> '/usr/local',

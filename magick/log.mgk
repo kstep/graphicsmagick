@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<magicklog>
+  <log events="None" />
+  <log output="stdout" />
+  <log filename="Magick-%d.log" />
+  <log generations="3" />
+  <log limit="2000" />
+</magicklog>
