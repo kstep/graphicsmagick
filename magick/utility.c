@@ -2320,14 +2320,10 @@ Export int SystemCommand(const unsigned int verbose,const char *command)
 */
 Export void TemporaryFilename(char *filename)
 {
-  register int
-    i;
-
   assert(filename != (char *) NULL);
   *filename='\0';
-  for (i=0; i < 256; i++)
-  {
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+  {
     register char
       *p;
 
@@ -2337,20 +2333,17 @@ Export void TemporaryFilename(char *filename)
         (void) strcpy(filename,p);
         free((char *) p);
       }
+  }
 #else
 #if defined(WIN32)
-    (void) NTTemporaryFilename(filename);
+  (void) NTTemporaryFilename(filename);
 #else
 #if defined(macintosh)
-    (void) getcwd(filename,MaxTextExtent >> 1);
+  (void) getcwd(filename,MaxTextExtent >> 1);
 #endif
-    (void) tmpnam(filename+strlen(filename));
+  (void) tmpnam(filename+strlen(filename));
 #endif
 #endif
-    if ((strchr(filename,'%') == (char *) NULL) &&
-        (strchr(filename,'.') == (char *) NULL))
-      break;
-  }
 }
 
 /*

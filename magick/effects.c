@@ -1132,16 +1132,14 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 Export Image *GaussianBlurImage(Image *image,const double width,
   const double sigma,ExceptionInfo *exception)
 {
-#define LeftStop(x)  (((x) < 0) ? (x)+radius : x)
 #define GaussianBlurImageText  "  Gaussian blur image...  "
-#define RightStop(x)  (((x) >= radius) ? (x)-radius : x)
 
   double
     blue,
     green,
     *mask,
-    red,
-    total;
+    normalize,
+    red;
 
   Image
     *blur_image;
@@ -1188,13 +1186,13 @@ Export Image *GaussianBlurImage(Image *image,const double width,
     mask[i]=exp(-((double) i*i)/(2*sigma*sigma));
   if (width < radius)
     mask[radius]*=(width-(double) radius+1.0); /* adjust partial pixels */
-  total=0.0;
+  normalize=0.0;
   for (i=0; i < (radius+1); i++)
-    total+=mask[i];
+    normalize+=mask[i];
   for (i=1; i < (radius+1); i++)
-    total+=mask[i];
+    normalize+=mask[i];
   for (i=0; i < (radius+1); i++)
-    mask[i]/=total;
+    mask[i]/=normalize;
   /*
     Blur each row.
   */
@@ -1213,13 +1211,17 @@ Export Image *GaussianBlurImage(Image *image,const double width,
       red=mask[0]*p->red;
       green=mask[0]*p->green;
       blue=mask[0]*p->blue;
-      k=LeftStop(j-1);
+      k=j-1;
+      if (k < 0)
+        k+=radius;
       for (i=1; i < (radius+1); i++)
       {
 	red+=mask[i]*scanline[k].red;
 	green+=mask[i]*scanline[k].green;
 	blue+=mask[i]*scanline[k].blue;
-	k=LeftStop(k-1);
+        k--;
+        if (k < 0)
+          k+=radius;
       }
       for (i=1; i < (radius+1); i++)
       {
@@ -1230,10 +1232,12 @@ Export Image *GaussianBlurImage(Image *image,const double width,
         blue+=mask[i]*p[i].blue;
       }
       scanline[j]=(*p);
+      j++;
+      if (j >= radius)
+        j-=radius;
       p->red=red+0.5;
       p->green=green+0.5;
       p->blue=blue+0.5;
-      j=RightStop(j+1);
       p++;
     }
     if (!SyncPixelCache(blur_image))
@@ -1260,13 +1264,17 @@ Export Image *GaussianBlurImage(Image *image,const double width,
       red=mask[0]*p->red;
       green=mask[0]*p->green;
       blue=mask[0]*p->blue;
-      k=LeftStop(j-1);
+      k=j-1;
+      if (k < 0)
+        k+=radius;
       for (i=1; i < (radius+1); i++)
       {
 	red+=mask[i]*scanline[k].red;
 	green+=mask[i]*scanline[k].green;
 	blue+=mask[i]*scanline[k].blue;
-	k=LeftStop(k-1);
+        k--;
+        if (k < 0)
+          k+=radius;
       }
       for (i=1; i < (radius+1); i++)
       {
@@ -1277,10 +1285,12 @@ Export Image *GaussianBlurImage(Image *image,const double width,
         blue+=mask[i]*p[i].blue;
       }
       scanline[j]=(*p);
+      j++;
+      if (j >= radius)
+        j-=radius;
       p->red=red+0.5;
       p->green=green+0.5;
       p->blue=blue+0.5;
-      j=RightStop(j+1);
       p++;
     }
     if (!SyncPixelCache(blur_image))
