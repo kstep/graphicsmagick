@@ -562,7 +562,7 @@ LZWDecodeCompat(TIFF* tif, tidata_t op0, tsize_t occ0, tsample_t s)
 			NextCode(tif, sp, bp, code, GetNextCodeCompat);
 			if (code == CODE_EOI)
 				break;
-			*op++ = code, occ--;
+			*op++ = (char) code, occ--;
 			oldcodep = sp->dec_codetab + code;
 			continue;
 		}
@@ -614,7 +614,7 @@ LZWDecodeCompat(TIFF* tif, tidata_t op0, tsize_t occ0, tsample_t s)
 				*--tp = codep->value;
 			} while( (codep = codep->next) != NULL);
 		} else
-			*op++ = code, occ--;
+			*op++ = (char) code, occ--;
 	}
 
 	tif->tif_rawcp = (tidata_t) bp;
