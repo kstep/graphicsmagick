@@ -129,7 +129,7 @@ $(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
 	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME) $(PERL_MAKE_OPTIONS)
 
 $(PERLMAGICK)/$(PERLMAGICK): $(PERLMAKEFILE)
-	rm -f @BIN_DIR@/$(PERLSTATICNAME)
+	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME) )
 
 install-exec-perl: $(PERLMAGICK)/$(PERLMAGICK)
 	( cd $(PERLMAGICK) && \
@@ -137,8 +137,8 @@ install-exec-perl: $(PERLMAGICK)/$(PERLMAGICK)
 	$(MAKE) -f Makefile.aperl map_clean && \
 	$(MAKE) clean && rm -f  Makefile.old )
 
-uninstall-exec-perl: $(PERLMAKEFILE)
-	( cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl uninstall MAP_TARGET=$(PERLSTATICNAME) )
+uninstall-exec-perl:
+	rm -f '@BIN_DIR@/$(PERLSTATICNAME)'
 
 check-perl: $(PERLMAGICK)/$(PERLMAGICK)
 	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test

@@ -240,22 +240,20 @@ AUTOMAKE_OPTIONS = 1.6 foreign
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
-@HasWINGDI32_TRUE@MAGICK_GDI32_SRCS = clipboard.c emf.c
-@HasWINGDI32_FALSE@MAGICK_GDI32_SRCS = 
 @HasWINGDI32_TRUE@MAGICK_GDI32_MODULES = clipboard.la emf.la
 @HasWINGDI32_FALSE@MAGICK_GDI32_MODULES = 
 
 MAGICK_CODER_SRCS = \
-  art.c avi.c avs.c bmp.c caption.c cmyk.c cut.c dcm.c dib.c dps.c dpx.c \
-  ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c \
-  histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c logo.c \
-  map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c mpr.c msl.c \
-  mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c \
-  pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
+  art.c avi.c avs.c bmp.c caption.c clipboard.c cmyk.c cut.c dcm.c \
+  dib.c dps.c dpx.c emf.c ept.c fax.c fits.c fpx.c gif.c gradient.c \
+  gray.c hdf.c histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c \
+  logo.c map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c mpr.c \
+  msl.c mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c \
+  pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
   tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c url.c uyvy.c vicar.c \
   vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c xc.c xcf.c xpm.c xwd.c \
-  yuv.c $(MAGICK_GDI32_SRCS)
+  yuv.c
 
 @WITH_MODULES_TRUE@noinst_LTLIBRARIES = 
 @WITH_MODULES_FALSE@noinst_LTLIBRARIES = libCoders.la
@@ -858,20 +856,18 @@ am_label_la_OBJECTS = label.lo
 label_la_OBJECTS = $(am_label_la_OBJECTS)
 libCoders_la_LDFLAGS =
 libCoders_la_LIBADD =
-@HasWINGDI32_TRUE@am__objects_2 = clipboard.lo emf.lo
-@HasWINGDI32_FALSE@am__objects_2 =
-am__objects_1 = art.lo avi.lo avs.lo bmp.lo caption.lo cmyk.lo cut.lo \
-	dcm.lo dib.lo dps.lo dpx.lo ept.lo fax.lo fits.lo fpx.lo gif.lo \
-	gradient.lo gray.lo hdf.lo histogram.lo html.lo icon.lo jbig.lo \
-	jp2.lo jpeg.lo label.lo logo.lo map.lo mat.lo matte.lo meta.lo \
-	miff.lo mono.lo mpc.lo mpeg.lo mpr.lo msl.lo mtv.lo mvg.lo \
-	null.lo otb.lo palm.lo pcd.lo pcl.lo pcx.lo pdb.lo pdf.lo \
-	pict.lo pix.lo plasma.lo png.lo pnm.lo preview.lo ps.lo ps2.lo \
-	ps3.lo psd.lo pwp.lo rgb.lo rla.lo rle.lo sct.lo sfw.lo sgi.lo \
-	stegano.lo sun.lo svg.lo tga.lo tiff.lo tile.lo tim.lo ttf.lo \
-	txt.lo uil.lo url.lo uyvy.lo vicar.lo vid.lo viff.lo wbmp.lo \
-	wmf.lo wpg.lo x.lo xbm.lo xc.lo xcf.lo xpm.lo xwd.lo yuv.lo \
-	$(am__objects_2)
+am__objects_1 = art.lo avi.lo avs.lo bmp.lo caption.lo clipboard.lo \
+	cmyk.lo cut.lo dcm.lo dib.lo dps.lo dpx.lo emf.lo ept.lo fax.lo \
+	fits.lo fpx.lo gif.lo gradient.lo gray.lo hdf.lo histogram.lo \
+	html.lo icon.lo jbig.lo jp2.lo jpeg.lo label.lo logo.lo map.lo \
+	mat.lo matte.lo meta.lo miff.lo mono.lo mpc.lo mpeg.lo mpr.lo \
+	msl.lo mtv.lo mvg.lo null.lo otb.lo palm.lo pcd.lo pcl.lo \
+	pcx.lo pdb.lo pdf.lo pict.lo pix.lo plasma.lo png.lo pnm.lo \
+	preview.lo ps.lo ps2.lo ps3.lo psd.lo pwp.lo rgb.lo rla.lo \
+	rle.lo sct.lo sfw.lo sgi.lo stegano.lo sun.lo svg.lo tga.lo \
+	tiff.lo tile.lo tim.lo ttf.lo txt.lo uil.lo url.lo uyvy.lo \
+	vicar.lo vid.lo viff.lo wbmp.lo wmf.lo wpg.lo x.lo xbm.lo xc.lo \
+	xcf.lo xpm.lo xwd.lo yuv.lo
 @WITH_MODULES_FALSE@am_libCoders_la_OBJECTS = $(am__objects_1)
 libCoders_la_OBJECTS = $(am_libCoders_la_OBJECTS)
 logo_la_DEPENDENCIES = ../magick/libMagick.la

@@ -33,24 +33,22 @@ AUTOMAKE_OPTIONS = 1.6 foreign
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
 if HasWINGDI32
-MAGICK_GDI32_SRCS    = clipboard.c emf.c
 MAGICK_GDI32_MODULES = clipboard.la emf.la
 else
-MAGICK_GDI32_SRCS    =
 MAGICK_GDI32_MODULES =
 endif
 
 MAGICK_CODER_SRCS = \
-  art.c avi.c avs.c bmp.c caption.c cmyk.c cut.c dcm.c dib.c dps.c dpx.c \
-  ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c \
-  histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c logo.c \
-  map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c mpr.c msl.c \
-  mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c \
-  pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
+  art.c avi.c avs.c bmp.c caption.c clipboard.c cmyk.c cut.c dcm.c \
+  dib.c dps.c dpx.c emf.c ept.c fax.c fits.c fpx.c gif.c gradient.c \
+  gray.c hdf.c histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c \
+  logo.c map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c mpr.c \
+  msl.c mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c \
+  pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
   tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c url.c uyvy.c vicar.c \
   vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c xc.c xcf.c xpm.c xwd.c \
-  yuv.c $(MAGICK_GDI32_SRCS)
+  yuv.c
 
 MAJOR_VERSION=@MAJOR_VERSION@
 MINOR_VERSION=@MINOR_VERSION@

@@ -108,13 +108,13 @@ case "${host_os}" in
     LIB_GDI32='-lgdi32'
     ;;
 esac
-if test -n "$LIB_GDI32"
+if test "${LIB_GDI32}x" != 'x'
 then
   AC_DEFINE(HasWINGDI32,1,Define to use the Windows GDI32 library)
 fi
 AC_SUBST(LIB_GDI32)
-AM_CONDITIONAL(HasWINGDI32, test -n "$LIB_GDI32" )
-AM_CONDITIONAL(WIN32_NATIVE, test "$native_win32_build" != 'no' )
+AM_CONDITIONAL(HasWINGDI32, test "${LIB_GDI32}x" != 'x' )
+AM_CONDITIONAL(WIN32_NATIVE, test "${native_win32_build}" = 'yes' )
 
 #
 # Compiler flags tweaks
@@ -472,9 +472,9 @@ AC_PROG_GCC_TRADITIONAL
 #  executable/Magick++: _DLL _MAGICKMOD_
 MODULE_EXTRA_CPPFLAGS=''
 LIBRARY_EXTRA_CPPFLAGS=''
-if test "$native_win32_build" = 'yes'
+if test "${native_win32_build}" = 'yes'
 then
-  if test "$libtool_build_shared_libs" = 'yes'
+  if test "${libtool_build_shared_libs}" = 'yes'
   then
     CPPFLAGS="$CPPFLAGS -D_DLL"
     LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKLIB_"
