@@ -131,6 +131,11 @@ typedef unsigned int Quantum;
 #define PixelIntensityToQuantum(pixel) ((Quantum)PixelIntensity(pixel))
 
 /*
+  Maximum RGB value which fits in the specified bits
+*/
+#define MaxRGBGivenBits(bits) ((0x01U << (bits-1)) +((0x01U << (bits-1))-1))
+
+/*
   Deprecated defines.
 */
 #define Downscale(quantum)  ScaleQuantumToChar(quantum)

@@ -24,6 +24,16 @@
 2004-12-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/tiff.c (ReadTIFFImage): Fix overflow while computing
+        colormap size.<BR>
+  <LI> magick/image.h (MaxRGBGivenBits): New macro to obtain maximum
+        value represented in a given number of bits.
+
+</UL>
+<p>
+2004-12-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
   <LI> coders/tiff.c (WriteTIFFImage): TrueColor 16-bits/sample RGB
         images were being written incorrectly on little-endian CPUs.
         Added byte swapping to fix this problem.
