@@ -71,7 +71,7 @@ typedef struct _ContributionInfo
 typedef struct _FilterInfo
 {
   double
-    (*function)(double),
+    (*function)(const double),
     support;
 } FilterInfo;
 
@@ -596,134 +596,148 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %
 */
 
-static double Box(double x)
+static double Box(const double x)
 {
-  if ((x >= -0.5) && (x < 0.5))
+  if (AbsoluteValue(x-MagickEpsilon) <= 0.5)
     return(1.0);
   return(0.0);
 }
 
-static double Bessel(double x)
+static double Bessel(const double x)
 {
   if (x == 0.0)
     return(MagickPI/4.0);
   return(BesselOrderOne(MagickPI*x)/(2.0*x));
 }
 
-static double Blackman(double x)
+static double Blackman(const double x)
 {
   return(0.42+0.50*cos(MagickPI*x)+0.08*cos(2.0*MagickPI*x));
 }
 
-static double Catrom(double x)
+static double Catrom(const double x)
 {
-  if (x < 0.0)
-    x=(-x);
-  if (x < 1.0)
-    return(0.5*(2.0+x*x*(-5.0+x*3.0)));
-  if (x < 2.0)
-    return(0.5*(4.0+x*(-8.0+x*(5.0-x))));
+  double
+    v;
+
+  v=x < 0.0 ? -x : x;
+  if (v < 1.0)
+    return(0.5*(2.0+v*v*(3.0*v-5.0)));
+  if (v < 2.0)
+    return(0.5*(4.0+v*(-8.0+(5.0-v)*v)));
   return(0.0);
 }
 
-static double Cubic(double x)
+static double Cubic(const double x)
 {
-  if (x < 0.0)
-    x=(-x);
-  if (x < 1.0)
-    return((0.5*x*x*x)-x*x+(2.0/3.0));
-  if (x < 2.0)
+  double
+    v;
+
+  v=x < 0.0 ? -x : x;
+  if (v < 1.0)
+    return((0.5*v*v*v)-v*v+(2.0/3.0));
+  if (v < 2.0)
     {
-      x=2.0-x;
-      return((1.0/6.0)*x*x*x);
+      v=2.0-v;
+      return((1.0/6.0)*v*v*v);
     }
   return(0.0);
 }
 
-static double Gaussian(double x)
+static double Gaussian(const double x)
 {
   return(exp(-2.0*x*x)*sqrt(2.0/MagickPI));
 }
 
-static double Hanning(double x)
+static double Hanning(const double x)
 {
   return(0.5+0.5*cos(MagickPI*x));
 }
 
-static double Hamming(double x)
+static double Hamming(const double x)
 {
   return(0.54+0.46*cos(MagickPI*x));
 }
 
-static double Hermite(double x)
+static double Hermite(const double x)
 {
-  if (x < 0.0)
-    x=(-x);
-  if (x < 1.0)
-    return((2.0*x-3.0)*x*x+1.0);
+  double
+    v;
+
+  v=x < 0.0 ? -x : x;
+  if (v < 1.0)
+    return((2.0*v-3.0)*v*v+1.0);
   return(0.0);
 }
 
-static double Sinc(double x)
+static double Sinc(const double x)
 {
   if (x != 0.0)
     return(sin(MagickPI*x)/(MagickPI*x));
   return(1.0);
 }
 
-static double Lanczos(double x)
+static double Lanczos(const double x)
 {
-  if (x < 0.0)
-    x=(-x);
-  if (x < 3.0)
-    return(Sinc(x)*Sinc(x/3.0));
+  double
+    v;
+
+  v=x < 0.0 ? -x : x;
+  if (v < 3.0)
+    return(Sinc(v)*Sinc(v/3.0));
   return(0.0);
 }
 
-static double Mitchell(double x)
+static double Mitchell(const double x)
 {
   double
     b,
-    c;
+    c,
+    v;
 
   b=1.0/3.0;
   c=1.0/3.0;
-  if (x < 0.0)
-    x=(-x);
-  if (x < 1.0)
+  v=x < 0.0 ? -x : x;
+  if (v < 1.0)
     {
-      x=((12.0-9.0*b-6.0*c)*(x*x*x))+((-18.0+12.0*b+6.0*c)*x*x)+(6.0-2.0*b);
-      return(x/6.0);
+      v=((12.0-9.0*b-6.0*c)*(v*v*v))+((-18.0+12.0*b+6.0*c)*v*v)+(6.0-2.0*b);
+      return(v/6.0);
     }
- if (x < 2.0)
+ if (v < 2.0)
    {
-     x=((-1.0*b-6.0*c)*(x*x*x))+((6.0*b+30.0*c)*x*x)+((-12.0*b-48.0*c)*x)+
+     v=((-1.0*b-6.0*c)*(v*v*v))+((6.0*b+30.0*c)*v*v)+((-12.0*b-48.0*c)*v)+
        (8.0*b+24.0*c);
-     return(x/6.0);
+     return(v/6.0);
    }
   return(0.0);
 }
 
-static double Quadratic(double x)
+static double Quadratic(const double x)
 {
-  if (x < 0.0)
-    x=(-x);
-  if (x < 0.5)
-    return(0.75-x*x);
-  if (x < 1.5)
+  double
+    v;
+
+  v=x < 0.0 ? -x : x;
+  if (v < 0.5)
+    return(0.75-v*v);
+  if (v < 1.5)
     {
-      x-=1.5;
-      return(0.5*x*x);
+      v-=1.5;
+      return(0.5*v*v);
     }
   return(0.0);
 }
 
-static double Triangle(double x)
+static double Triangle(const double x)
 {
-  if (x < 0.0)
-    x=(-x);
-  if (x < 1.0)
-    return(1.0-x);
+  double
+    v;
+
+  v=x < 0.0 ? -x : x;
+  if (v < 0.0)
+    v=(-v);
+  if (v < 1.0)
+    return(1.0-v);
   return(0.0);
 }
 
@@ -777,7 +791,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  mid=(scale >= 1.0 ? 1.0 : -1.0)*(0.5-MagickEpsilon);
+  mid=(scale >= 1.0 ? 1.0 : -1.0)*0.5;
   for (x=0; x < (long) destination->columns; x++)
   {
     center=(double) x/x_factor;
@@ -891,7 +905,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  mid=(scale >= 1.0 ? 1.0 : -1.0)*(0.5-MagickEpsilon);
+  mid=(scale >= 1.0 ? 1.0 : -1.0)*0.5;
   for (y=0; y < (long) destination->rows; y++)
   {
     center=(double) y/y_factor;
