@@ -164,6 +164,7 @@ int main(int argc,char **argv)
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   image_info->attributes=AllocateImage(image_info);
+	status=True;
   for (i=1; i < argc; i++)
   {
     option=argv[i];
@@ -199,14 +200,15 @@ int main(int argc,char **argv)
     /*
       Interpret MSL script.
     */
-    status=SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
-    status=SetImageAttribute(image_info->attributes,"filename",argv[i]);
+    status&=SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
+    status&=SetImageAttribute(image_info->attributes,"filename",argv[i]);
     if (status == False)
       MagickError(ResourceLimitError,"Unable to persist key",argv[i]);
     (void) FormatString(image_info->filename,"msl:%.1024s",argv[i]);
     image=ReadImage(image_info,&exception);
     if (exception.severity != UndefinedException)
       MagickWarning(exception.severity,exception.reason,exception.description);
+    status&=image != (Image *) NULL;
     if (image != (Image *) NULL)
       DestroyImageList(image);
   }

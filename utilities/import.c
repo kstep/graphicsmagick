@@ -365,6 +365,7 @@ int main(int argc,char **argv)
     XGetResourceInstance(resource_database,client_name,"dither","True");
   quantize_info->dither=IsTrue(resource_value);
   number_scenes=1;
+	status=True;
   /*
     Check command syntax.
   */
@@ -929,6 +930,7 @@ int main(int argc,char **argv)
   for (i=0; i < (long) Max(number_scenes,1); i++)
   {
     next_image=XImportImage(image_info,&ximage_info);
+		status&=next_image != (Image *) NULL;
     if (next_image == (Image *) NULL)
       continue;
     (void) strncpy(next_image->filename,filename,MaxTextExtent-1);
@@ -944,13 +946,12 @@ int main(int argc,char **argv)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  status=MogrifyImages(image_info,argc-1,argv,&image);
+  status&=MogrifyImages(image_info,argc-1,argv,&image);
   (void) CatchImageException(image);
   (void) SetImageInfo(image_info,True,&image->exception);
-  status=0;
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    status=WriteImage(image_info,p);
+    status&=WriteImage(image_info,p);
     (void) CatchImageException(p);
     if (image_info->adjoin)
       break;

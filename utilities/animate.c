@@ -382,6 +382,7 @@ int main(int argc,char **argv)
   /*
     Parse command line.
   */
+	status=True;
   j=0;
   for (i=1; i <= argc; i++)
   {
@@ -972,9 +973,10 @@ int main(int argc,char **argv)
           if (exception.severity != UndefinedException)
             MagickWarning(exception.severity,exception.reason,
               exception.description);
+          status&=next_image != (Image *) NULL;
           if (next_image == (Image *) NULL)
             continue;
-          status=MogrifyImages(image_info,i,argv,&next_image);
+          status&=MogrifyImages(image_info,i,argv,&next_image);
           (void) CatchImageException(next_image);
           if (image == (Image *) NULL)
             image=next_image;
@@ -995,7 +997,7 @@ int main(int argc,char **argv)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  status=MogrifyImages(image_info,argc-j-1,argv+j,&image);
+  status&=MogrifyImages(image_info,argc-j-1,argv+j,&image);
   (void) CatchImageException(image);
   if (resource_info.window_id != (char *) NULL)
     XAnimateBackgroundImage(display,&resource_info,image);
@@ -1008,7 +1010,7 @@ int main(int argc,char **argv)
       while (loaded_image != (Image *) NULL)
       {
         image=loaded_image;
-        status=MogrifyImage(image_info,argc-1,argv,&image);
+        status&=MogrifyImage(image_info,argc-1,argv,&image);
         (void) CatchImageException(image);
         loaded_image=XAnimateImages(display,&resource_info,argv,argc,image);
       }

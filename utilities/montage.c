@@ -335,6 +335,7 @@ int main(int argc,char **argv)
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=0;
   scene=0;
+	status=True;
   transparent_color=(char *) NULL;
   /*
     Parse command line.
@@ -1229,9 +1230,10 @@ int main(int argc,char **argv)
         if (exception.severity != UndefinedException)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
+        status&=next_image != (Image *) NULL;
         if (next_image == (Image *) NULL)
           continue;
-        status=MogrifyImages(image_info,i,argv,&next_image);
+        status&=MogrifyImages(image_info,i,argv,&next_image);
         (void) CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
@@ -1250,7 +1252,7 @@ int main(int argc,char **argv)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  status=MogrifyImages(image_info,argc-j-1,argv+j,&image);
+  status&=MogrifyImages(image_info,argc-j-1,argv+j,&image);
   (void) CatchImageException(image);
   /*
     Create composite image.
@@ -1293,7 +1295,7 @@ int main(int argc,char **argv)
   (void) SetImageInfo(image_info,True,&image->exception);
   for (p=montage_image; p != (Image *) NULL; p=p->next)
   {
-    status=WriteImage(image_info,p);
+    status&=WriteImage(image_info,p);
     (void) CatchImageException(p);
     if (image_info->adjoin)
       break;

@@ -392,7 +392,7 @@ int main(int argc,char **argv)
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   scene=0;
-  status=False;
+  status=True;
   /*
     Parse command line.
   */
@@ -1686,6 +1686,7 @@ int main(int argc,char **argv)
         if (exception.severity != UndefinedException)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
+        status&=image != (Image *) NULL;
         if (image == (Image *) NULL)
           continue;
         if (scene != 0)
@@ -1715,7 +1716,7 @@ int main(int argc,char **argv)
         /*
           Transmogrify image as defined by the image processing options.
         */
-        status=MogrifyImages(image_info,i,argv,&image);
+        status&=MogrifyImages(image_info,i,argv,&image);
         (void) CatchImageException(image);
         if (global_colormap)
           (void) MapImages(image,(Image *) NULL,image_info->dither);
@@ -1745,7 +1746,7 @@ int main(int argc,char **argv)
         (void) SetImageInfo(image_info,True,&image->exception);
         for (p=image; p != (Image *) NULL; p=p->next)
         {
-          status=WriteImage(image_info,p);
+          status&=WriteImage(image_info,p);
           (void) CatchImageException(p);
           if (image_info->adjoin)
             break;

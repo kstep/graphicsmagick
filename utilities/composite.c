@@ -287,7 +287,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,Image **image,
               for (y=0; y < (long) (*image)->rows; y+=composite_image->rows)
                 for (x=0; x < (long) (*image)->columns; x+=composite_image->columns)
                 {
-                  status=CompositeImage(*image,option_info->compose,
+                  status&=CompositeImage(*image,option_info->compose,
                     composite_image,x,y);
                   (void) CatchImageException(*image);
                 }
@@ -369,7 +369,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,Image **image,
                   break;
                 }
               }
-              status=CompositeImage(*image,option_info->compose,
+              status&=CompositeImage(*image,option_info->compose,
                 composite_image,x,y);
               (void) CatchImageException(*image);
             }
@@ -384,7 +384,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,Image **image,
   (void) SetImageInfo(image_info,True,exception);
   for (p=(*image); p != (Image *) NULL; p=p->next)
   {
-    status=WriteImage(image_info,p);
+    status&=WriteImage(image_info,p);
     (void) CatchImageException(p);
   }
   if (image_info->verbose)
@@ -570,6 +570,7 @@ int main(int argc,char **argv)
   option_info.tile=False;
   option_info.watermark_geometry=(char *) NULL;
   option_info.unsharp_geometry=(char *) NULL;
+	status=True;
   write_filename=argv[argc-1];
   /*
     Check command syntax.
@@ -599,7 +600,7 @@ int main(int argc,char **argv)
                 exception.description);
             if (composite_image == (Image *) NULL)
               continue;
-            status=MogrifyImages(image_info,i-k,argv+k,&composite_image);
+            status&=MogrifyImages(image_info,i-k,argv+k,&composite_image);
             (void) CatchImageException(composite_image);
             continue;
           }
@@ -624,9 +625,10 @@ int main(int argc,char **argv)
         if (exception.severity != UndefinedException)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
+        status&=mask_image != (Image *) NULL;
         if (mask_image == (Image *) NULL)
           continue;
-        status=MogrifyImages(image_info,i-k,argv+k,&mask_image);
+        status&=MogrifyImages(image_info,i-k,argv+k,&mask_image);
         (void) CatchImageException(mask_image);
       }
     else
@@ -828,7 +830,7 @@ int main(int argc,char **argv)
                   if (clone_image == (Image *) NULL)
                     MagickError(OptionError,"Missing an image file name",
                       (char *) NULL);
-                  status=CompositeImages(clone_info,&clone_image,&option_info,
+                  status&=CompositeImages(clone_info,&clone_image,&option_info,
                     i-j+2,argv+j-1,composite_image,mask_image,&exception);
                   if (composite_image != (Image *) NULL)
                     {
@@ -1191,7 +1193,7 @@ int main(int argc,char **argv)
                   if (image == (Image *) NULL)
                     MagickError(OptionError,"Missing source image",
                       (char *) NULL);
-                  status=CompositeImages(image_info,&image,&option_info,i-j+2,
+                  status&=CompositeImages(image_info,&image,&option_info,i-j+2,
                     argv+j-1,composite_image,mask_image,&exception);
                   if (composite_image != (Image *) NULL)
                     {
@@ -1395,7 +1397,7 @@ int main(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status=CompositeImages(image_info,&image,&option_info,argc-j+1,argv+j-1,
+  status&=CompositeImages(image_info,&image,&option_info,argc-j+1,argv+j-1,
     composite_image,mask_image,&exception);
   if (option_info.displace_geometry != (char *) NULL)
     LiberateMemory((void **) &option_info.displace_geometry);

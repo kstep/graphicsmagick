@@ -206,6 +206,7 @@ int main(int argc,char **argv)
   image_info=CloneImageInfo((ImageInfo *) NULL);
   image=(Image *) NULL;
   number_images=0;
+	status=True;
   /*
     Identify an image.
   */
@@ -350,6 +351,7 @@ int main(int argc,char **argv)
     if (exception.severity != UndefinedException)
       MagickWarning(exception.severity,exception.reason,
         exception.description);
+    status&=image != (Image *) NULL;
     if (image == (Image *) NULL)
       continue;
     for (p=image; p != (Image *) NULL; p=p->next)

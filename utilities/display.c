@@ -452,6 +452,7 @@ int main(int argc,char **argv)
   /*
     Parse command line.
   */
+	status=True;
   for (i=1; ((i <= argc) && !(state & ExitState)); i++)
   {
     if (i < argc)
@@ -1356,6 +1357,7 @@ int main(int argc,char **argv)
           if (exception.severity != UndefinedException)
             MagickWarning(exception.severity,exception.reason,
               exception.description);
+          status&=image != (Image *) NULL;
           if (image == (Image *) NULL)
             continue;
           do
@@ -1364,7 +1366,7 @@ int main(int argc,char **argv)
               Transmogrify image as defined by the image processing options.
             */
             resource_info.quantum=1;
-            status=MogrifyImage(image_info,i,argv,&image);
+            status&=MogrifyImage(image_info,i,argv,&image);
             (void) CatchImageException(image);
             if (first_scene != last_scene)
               image->scene=scene;
@@ -1376,8 +1378,7 @@ int main(int argc,char **argv)
                 /*
                   Display image to a specified X window.
                 */
-                status=XDisplayBackgroundImage(display,&resource_info,image);
-                if (status)
+                if (XDisplayBackgroundImage(display,&resource_info,image))
                   state|=RetainColorsState;
               }
             else
@@ -1404,7 +1405,7 @@ int main(int argc,char **argv)
                       image=nexus;
                       break;
                     }
-                  status=MogrifyImage(image_info,i,argv,&nexus);
+                  status&=MogrifyImage(image_info,i,argv,&nexus);
                   (void) CatchImageException(nexus);
                   if (first_scene != last_scene)
                     image->scene=scene;
@@ -1433,7 +1434,7 @@ int main(int argc,char **argv)
                 (void) strncpy(image->filename,resource_info.write_filename,
                   MaxTextExtent-1);
                 (void) SetImageInfo(image_info,True,&image->exception);
-                status=WriteImage(image_info,image);
+                status&=WriteImage(image_info,image);
                 (void) CatchImageException(image);
               }
             if (image_info->verbose)
