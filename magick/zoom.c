@@ -786,8 +786,8 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
     blue,
     green,
     red,
-    x_scale,
-    x_span;
+    y_scale,
+    y_span;
 
   Image
     *scale_image;
@@ -812,7 +812,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
     *t;
 
   ScaledPacket
-    *scaled_scanline,
+    *scale_scanline,
     *scanline,
     *x_vector,
     *y_vector;
@@ -841,13 +841,13 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   scanline=x_vector;
   if (scale_image->rows != image->rows)
     scanline=(ScaledPacket *)
-      AllocateMemory(image->columns*sizeof(ScaledPacket));
-  scaled_scanline=(ScaledPacket *)
-    AllocateMemory((scale_image->columns+1)*sizeof(ScaledPacket));
+      AllocateMemory(2*image->columns*sizeof(ScaledPacket));
+  scale_scanline=(ScaledPacket *)
+    AllocateMemory(2*scale_image->columns*sizeof(ScaledPacket));
   y_vector=(ScaledPacket *) AllocateMemory(image->columns*sizeof(ScaledPacket));
-  if ((x_vector == (ScaledPacket *) NULL) ||
-      (scanline == (ScaledPacket *) NULL) ||
-      (scaled_scanline == (ScaledPacket *) NULL) ||
+  if ((scanline == (ScaledPacket *) NULL) ||
+      (scale_scanline == (ScaledPacket *) NULL) ||
+      (x_vector == (ScaledPacket *) NULL) ||
       (y_vector == (ScaledPacket *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to scale image",
@@ -861,8 +861,8 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   opacity=0;
   number_rows=0;
   next_row=True;
-  x_span=1.0;
-  x_scale=(double) scale_image->rows/image->rows;
+  y_span=1.0;
+  y_scale=(double) scale_image->rows/image->rows;
   for (x=0; x < (int) image->columns; x++)
   {
     y_vector[x].red=0;
@@ -898,7 +898,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         /*
           Scale Y direction.
         */
-        while (x_scale < x_span)
+        while (y_scale < y_span)
         {
           if (next_row && (number_rows < (int) image->rows))
             {
@@ -920,13 +920,13 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
             }
           for (x=0; x < (int) image->columns; x++)
           {
-            y_vector[x].red+=x_scale*x_vector[x].red;
-            y_vector[x].green+=x_scale*x_vector[x].green;
-            y_vector[x].blue+=x_scale*x_vector[x].blue;
-            y_vector[x].opacity+=x_scale*x_vector[x].opacity;
+            y_vector[x].red+=y_scale*x_vector[x].red;
+            y_vector[x].green+=y_scale*x_vector[x].green;
+            y_vector[x].blue+=y_scale*x_vector[x].blue;
+            y_vector[x].opacity+=y_scale*x_vector[x].opacity;
           }
-          x_span-=x_scale;
-          x_scale=(double) scale_image->rows/image->rows;
+          y_span-=y_scale;
+          y_scale=(double) scale_image->rows/image->rows;
           next_row=True;
         }
         if (next_row && (number_rows < (int) image->rows))
@@ -951,10 +951,10 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         s=scanline;
         for (x=0; x < (int) image->columns; x++)
         {
-          red=y_vector[x].red+x_span*x_vector[x].red;
-          green=y_vector[x].green+x_span*x_vector[x].green;
-          blue=y_vector[x].blue+x_span*x_vector[x].blue;
-          opacity=y_vector[x].opacity+x_span*x_vector[x].opacity;
+          red=y_vector[x].red+y_span*x_vector[x].red;
+          green=y_vector[x].green+y_span*x_vector[x].green;
+          blue=y_vector[x].blue+y_span*x_vector[x].blue;
+          opacity=y_vector[x].opacity+y_span*x_vector[x].opacity;
           s->red=red > MaxRGB ? MaxRGB : red;
           s->green=green > MaxRGB ? MaxRGB : green;
           s->blue=blue > MaxRGB ? MaxRGB : blue;
@@ -965,13 +965,13 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
           y_vector[x].blue=0;
           y_vector[x].opacity=0;
         }
-        x_scale-=x_span;
-        if (x_scale == 0)
+        y_scale-=y_span;
+        if (y_scale <= 0)
           {
-            x_scale=(double) scale_image->rows/image->rows;
+            y_scale=(double) scale_image->rows/image->rows;
             next_row=True;
           }
-        x_span=1.0;
+        y_span=1.0;
       }
     if (scale_image->columns == image->columns)
       {
@@ -992,8 +992,8 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
     else
       {
         double
-          y_scale,
-          y_span;
+          x_scale,
+          x_span;
 
         int
           next_column;
@@ -1005,13 +1005,13 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         green=0;
         blue=0;
         next_column=False;
-        y_span=1.0;
+        x_span=1.0;
         s=scanline;
-        t=scaled_scanline;
+        t=scale_scanline;
         for (x=0; x < (int) image->columns; x++)
         {
-          y_scale=(double) scale_image->columns/image->columns;
-          while (y_scale >= y_span)
+          x_scale=(double) scale_image->columns/image->columns;
+          while (x_scale >= x_span)
           {
             if (next_column)
               {
@@ -1021,19 +1021,19 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
                 opacity=0;
                 t++;
               }
-            red=red+y_span*s->red;
-            green=green+y_span*s->green;
-            blue=blue+y_span*s->blue;
-            opacity=opacity+y_span*s->opacity;
+            red=red+x_span*s->red;
+            green=green+x_span*s->green;
+            blue=blue+x_span*s->blue;
+            opacity=opacity+x_span*s->opacity;
             t->red=red > MaxRGB ? MaxRGB : red;
             t->green=green > MaxRGB ? MaxRGB : green;
             t->blue=blue > MaxRGB ? MaxRGB : blue;
             t->opacity=opacity > MaxRGB ? MaxRGB : opacity;
-            y_scale-=y_span;
-            y_span=1.0;
+            x_scale-=x_span;
+            x_span=1.0;
             next_column=True;
           }
-        if (y_scale > 0)
+        if (x_scale > 0)
           {
             if (next_column)
               {
@@ -1044,24 +1044,25 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
                 next_column=False;
                 t++;
               }
-            red+=y_scale*s->red;
-            green+=y_scale*s->green;
-            blue+=y_scale*s->blue;
-            opacity+=y_scale*s->opacity;
-            y_span-=y_scale;
+            red+=x_scale*s->red;
+            green+=x_scale*s->green;
+            blue+=x_scale*s->blue;
+            opacity+=x_scale*s->opacity;
+            x_span-=x_scale;
           }
         s++;
       }
-      if (y_span > 0)
+      if (x_span > 0)
         {
           s--;
-          red+=y_span*s->red;
-          green+=y_span*s->green;
-          blue+=y_span*s->blue;
-          opacity+=y_span*s->opacity;
+          red+=x_span*s->red;
+          green+=x_span*s->green;
+          blue+=x_span*s->blue;
+          opacity+=x_span*s->opacity;
         }
       if (!next_column)
         {
+          t--;
           t->red=red > MaxRGB ? MaxRGB : red;
           t->green=green > MaxRGB ? MaxRGB : green;
           t->blue=blue > MaxRGB ? MaxRGB : blue;
@@ -1070,7 +1071,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
       /*
         Transfer scanline to scaled image.
       */
-      t=scaled_scanline;
+      t=scale_scanline;
       for (x=0; x < (int) scale_image->columns; x++)
       {
         q->red=t->red;
@@ -1090,8 +1091,8 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
     Free allocated memory.
   */
   FreeMemory(y_vector);
-  FreeMemory(scaled_scanline);
-  if (scanline != x_vector)
+  FreeMemory(scale_scanline);
+  if (scale_image->rows != image->rows)
     FreeMemory(scanline);
   FreeMemory(x_vector);
   return(scale_image);
