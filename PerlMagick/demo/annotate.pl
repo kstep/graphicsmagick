@@ -14,8 +14,7 @@ for ($angle=0; $angle < 360; $angle+=30)
   my ($label);
 
   print "angle $angle\n";
-  $label=Image::Magick->new(size=>"600x600",pointsize=>24,font=>$font,
-    fill=>'black');
+  $label=Image::Magick->new(size=>"600x600",pointsize=>24,font=>$font);
   $label->Read("xc:white");
   $label->Draw(primitive=>'line',points=>"300,100 300,500",stroke=>'#600');
   $label->Draw(primitive=>'line',points=>"100,300 500,300",stroke=>'#600');
