@@ -356,6 +356,7 @@
 #define GetLocaleMessageFromTag GmGetLocaleMessageFromTag
 #define GetMagicInfo GmGetMagicInfo
 #define GetMagickCopyright GmGetMagickCopyright
+#define GetMagickDimension GmGetMagickDimension
 #define GetMagickGeometry GmGetMagickGeometry
 #define GetMagickInfo GmGetMagickInfo
 #define GetMagickInfoArray GmGetMagickInfoArray

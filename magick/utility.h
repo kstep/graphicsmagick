@@ -83,6 +83,7 @@ extern MagickExport int
   GlobExpression(const char *,const char *),
   LocaleNCompare(const char *,const char *,const size_t),
   LocaleCompare(const char *,const char *),
+  GetMagickDimension(const char *str,double *width,double *height),
   GetMagickGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
   SubstituteString(char **,const char*,const char *),
   SystemCommand(const unsigned int,const char *),

@@ -42,8 +42,8 @@ Containers like STL &lt;<a href="http://www.sgi.com/tech/stl/Vector.html">vector
 &gt; which have a given default <i>capacity</i> may need to have their <i>
 capacity</i> adjusted via r<i>eserve() </i>to a larger <i>capacity</i>
 in order to support the expected final <i>size</i> . Since Magick++
-images are very small, it is likely that the default capacity of STL
-&lt;<a href="http://www.sgi.com/tech/stl/Vector.html"> vector</a> &gt; is
+images are very small, it is likely that the default capacity of STL &lt;<a
+ href="http://www.sgi.com/tech/stl/Vector.html"> vector</a> &gt; is
 sufficient for most situations.</blockquote>
   <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
   <blockquote>An input iterator used to express a position in a
@@ -164,8 +164,8 @@ first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</
 last_</font></td>
       <td><font size="-1">Break down an image sequence into constituent
 parts.&nbsp; This is useful for creating GIF or MNG animation sequences.
-The input sequence  is specified by <i>first_</i> and <i>last_</i>,
-and the deconstruted images  are returned via <i>deconstructedImages_</i>.</font></td>
+The input sequence  is specified by <i>first_</i> and <i>last_</i>, and
+the deconstruted images  are returned via <i>deconstructedImages_</i>.</font></td>
     </tr>
     <tr>
       <td>
@@ -745,8 +745,8 @@ you can include  the image filename, type, width, height, or scene
 number in the label by embedding&nbsp; <a href="FormatCharacters.html">special
 format characters.</a> If the first character of string is @, the image
 label is read from a file titled by the remaining characters in the
-string. When converting to Postscript,  use this&nbsp; option to
-specify a header string to print above the image.</font></td>
+string. When converting to Postscript,  use this&nbsp; option to specify
+a header string to print above the image.</font></td>
     </tr>
     <tr>
       <td>
@@ -844,7 +844,7 @@ normalizing the  pixel values to span the full range of color values).</font></t
       <td><font size="-1">unsigned int opacity_</font></td>
       <td><font size="-1">Set or attenuate the opacity channel in the
 image. If the image pixels are opaque then they are set to the specified
-opacity  value, otherwise they are blended with the supplied opacity
+opacity value, otherwise they are blended with the supplied opacity
 value.&nbsp; The value of opacity_ ranges from 0 (completely opaque) to <i>MaxRGB</i>.
 The defines <i>OpaqueOpacity</i> and <i>TransparentOpacity</i> are
 available to specify completely opaque or completely transparent,
@@ -981,8 +981,8 @@ edge along the Y axis.&nbsp; The amount of the shear is controlled by a
 shear angle.&nbsp; For X direction&nbsp; shears,&nbsp;  x&nbsp; degrees
 is measured relative to the Y axis, and similarly, for Y direction
 shears&nbsp; y&nbsp; degrees is measured relative to the X axis. Empty
-triangles left over from shearing the&nbsp; image&nbsp; are
-filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.&nbsp;</font></td>
+triangles left over from shearing the&nbsp; image&nbsp; are filled&nbsp;
+with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.&nbsp;</font></td>
     </tr>
     <tr>
       <td>
@@ -1275,8 +1275,8 @@ for the case  of CMY(K).</font></td>
       <td><font size="-1"><a href="Enumerations.html#CompositeOperator">CompositeOperator</a> </font></td>
       <td><font size="-1"><a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_</font></td>
-      <td><font size="-1">Composition operator to be used when composition is implicitly used
-(such as for image flattening).</font></td>
+      <td><font size="-1">Composition operator to be used when
+composition is implicitly used (such as for image flattening).</font></td>
     </tr>
     <tr>
       <td>
@@ -1565,7 +1565,7 @@ results when color reducing an image.</font></td>
       <td><font size="-1">bool flag_</font></td>
       <td><font size="-1">Apply Floyd/Steinberg error diffusion to the
 image. The basic strategy of dithering is to&nbsp; trade&nbsp; intensity
-resolution&nbsp;  for&nbsp; spatial&nbsp; resolution&nbsp; by&nbsp;
+resolution&nbsp; for&nbsp; spatial&nbsp; resolution&nbsp; by&nbsp;
 averaging the intensities&nbsp;  of&nbsp; several&nbsp;
 neighboring&nbsp; pixels. Images which&nbsp; suffer&nbsp;  from&nbsp;
 severe&nbsp; contouring&nbsp; when&nbsp; reducing colors can be improved
@@ -1704,9 +1704,9 @@ supported by GraphicsMagick. Support for image formats in GraphicsMagick
 is provided by modules known as "coders". A user-provided container is
 updated based on a boolean truth-table match. The truth-table supports
 matching based on whether GraphicsMagick can read the format, write the
-format, or supports multiple frames for the format. A wildcard
-specifier is supported for any "don't care" field. The data obtained
-via coderInfoList() may be useful for preparing GUI dialog boxes or for
+format, or supports multiple frames for the format. A wildcard specifier
+is supported for any "don't care" field. The data obtained via
+coderInfoList() may be useful for preparing GUI dialog boxes or for
 deciding which output format to write based on support within the
 GraphicsMagick build.
 <p>The definition of coderInfoList is: </p>
@@ -1784,15 +1784,16 @@ entry-&gt;isMultiframe() )</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
 "false";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; endl;</font></tt> <br>
+<tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; endl;<br>
+&nbsp; &nbsp; entry ++;</font></tt><br>
 <tt><font color="#000066">&nbsp;&nbsp; }</font></tt>&nbsp;</p>
 <h3 style="text-align: center;">Obtaining A Color Histogram&nbsp; </h3>
 <p> &nbsp;Magick++ provides the <a name="colorHistogram"></a><span
  style="font-weight: bold;">colorHistogram</span> template function to
 retrieve a color histogram from an image. A color histogram provides a
-count of how many times each color occurs in the image. The histogram
-is written into a user-provided container, which (for example) could be
-a <span style="font-style: italic;">&lt;vector&gt;</span> or a <span
+count of how many times each color occurs in the image. The histogram is
+written into a user-provided container, which (for example) could be a <span
+ style="font-style: italic;">&lt;vector&gt;</span> or a <span
  style="font-style: italic;">&lt;map&gt;</span>. &nbsp;When a
 &lt;map&gt; is used, the <span style="font-style: italic;">Color</span>
 is used as the key so that quick lookups of usage counts for colors may
@@ -1846,8 +1847,8 @@ while (p != histogram.end())</span><br
 &lt;&lt; ": ("</span><br
  style="color: rgb(51, 51, 153); font-family: monospace;">
 <span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt;
-setw(quantum_width) &lt;&lt; (int)p-&gt;first.redQuantum() &lt;&lt; ","</span><br
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quantum_width)
+&lt;&lt; (int)p-&gt;first.redQuantum() &lt;&lt; ","</span><br
  style="color: rgb(51, 51, 153); font-family: monospace;">
 <span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quant</span><span
@@ -1855,8 +1856,8 @@ setw(quantum_width) &lt;&lt; (int)p-&gt;first.redQuantum() &lt;&lt; ","</span><b
 &lt;&lt; (int)p-&gt;first.greenQuantum() &lt;&lt; ","</span><br
  style="color: rgb(51, 51, 153); font-family: monospace;">
 <span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt;
-setw(quantum_width) &lt;&lt; (int)p-&gt;first.blueQuantum() &lt;&lt; ")"</span><br
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quantum_width)
+&lt;&lt; (int)p-&gt;first.blueQuantum() &lt;&lt; ")"</span><br
  style="color: rgb(51, 51, 153); font-family: monospace;">
 <span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; endl;</span><br
@@ -1879,8 +1880,8 @@ std::vector&lt;std::pair&lt;Color,unsigned long&gt; &gt; histogram;</span><br
 colorHistogram( &amp;histogram, image );</span><br
  style="color: rgb(51, 51, 153); font-family: monospace;">
 <span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-std::vector&lt;std::pair&lt;Color,unsigned long&gt;
-&gt;::const_iterator p=histogram.begin();</span><br
+std::vector&lt;std::pair&lt;Color,unsigned long&gt; &gt;::const_iterator
+p=histogram.begin();</span><br
  style="color: rgb(51, 51, 153); font-family: monospace;">
 <span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
 while (p != histogram.end())</span><br
@@ -1893,16 +1894,16 @@ while (p != histogram.end())</span><br
 &lt;&lt; ": ("</span><br
  style="color: rgb(51, 51, 153); font-family: monospace;">
 <span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt;
-setw(quantum_width) &lt;&lt; (int)p-&gt;first.redQuantum() &lt;&lt; ","</span><br
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quantum_width)
+&lt;&lt; (int)p-&gt;first.redQuantum() &lt;&lt; ","</span><br
  style="color: rgb(51, 51, 153); font-family: monospace;">
 <span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt;
-setw(quantum_width) &lt;&lt; (int)p-&gt;first.greenQuantum() &lt;&lt;
-","</span><br style="color: rgb(51, 51, 153); font-family: monospace;">
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quantum_width)
+&lt;&lt; (int)p-&gt;first.greenQuantum() &lt;&lt; ","</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
 <span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt;
-setw(quantum_width) &lt;&lt; (int)p-&gt;first.blueQuantum() &lt;&lt; ")"</span><br
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quantum_width)
+&lt;&lt; (int)p-&gt;first.blueQuantum() &lt;&lt; ")"</span><br
  style="color: rgb(51, 51, 153); font-family: monospace;">
 <span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; endl;</span><br

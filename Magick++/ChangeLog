@@ -1,3 +1,8 @@
+2004-04-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/CoderInfo.cpp (CoderInfo): Sense of isReadable() and
+	isWritable() was inverted.
+
 2004-04-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h: <inttypes.h> is not used. Inclusion

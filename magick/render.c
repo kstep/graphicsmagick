@@ -1175,7 +1175,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       int
         count;
 
-      count=sscanf(clone_info->density,"%lfx%lf",&resolution.x,&resolution.y);
+      count=GetMagickDimension(clone_info->density,&resolution.x,&resolution.y);
       if (count != 2)
         resolution.y=resolution.x;
     }
