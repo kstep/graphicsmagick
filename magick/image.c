@@ -4469,13 +4469,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'r':
       {
-        if (LocaleCompare("-raise",option) == 0)
+        if (LocaleCompare("raise",option+1) == 0)
           {
             RectangleInfo
               raise_info;
 
             /*
-              Surround image with a raise of solid color.
+              Lighten or darken image edges.
             */
             (void) memset(&raise_info,0,sizeof(RectangleInfo));
             flags=ParseGeometry(argv[++i],&raise_info.x,&raise_info.y,
