@@ -56,11 +56,6 @@
 #include "defines.h"
 
 #if defined(HasTTF)
-#if defined(HAVE_FREETYPE_FREETYPE_H)
-#include "freetype/freetype.h"
-#else
-#include "freetype.h"
-#endif
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
