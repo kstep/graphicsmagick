@@ -3877,7 +3877,6 @@ ModuleExport void RegisterLOGOImage(void)
   entry->description=AllocateString("Granite texture");
   entry->module=AllocateString("LOGO");
   RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("H");
   entry->decoder=ReadLOGOImage;
   entry->encoder=WriteLOGOImage;
@@ -3885,7 +3884,6 @@ ModuleExport void RegisterLOGOImage(void)
   entry->description=AllocateString("Internal format");
   entry->module=AllocateString("LOGO");
   RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("LOGO");
   entry->decoder=ReadLOGOImage;
   entry->encoder=WriteLOGOImage;
@@ -3893,7 +3891,6 @@ ModuleExport void RegisterLOGOImage(void)
   entry->description=AllocateString("ImageMagick Logo");
   entry->module=AllocateString("LOGO");
   RegisterMagickInfo(entry);
-
   entry=SetMagickInfo("NETSCAPE");
   entry->decoder=ReadLOGOImage;
   entry->adjoin=False;
