@@ -100,18 +100,18 @@ static WarningHandler
 MagickExport ExceptionType CatchImageException(Image *image)
 {
   ExceptionInfo
-    exception;
+    *exception;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  GetExceptionInfo(&exception);
-  GetImageException(image,&exception);
-  if (exception.severity == UndefinedException)
-    return(exception.severity);
-  if (exception.severity >= FatalException)
-    MagickError(exception.severity,exception.reason,exception.description);
-  MagickWarning(exception.severity,exception.reason,exception.description);
-  return(exception.severity);
+  exception=(&image->exception);
+  GetImageException(image,exception);
+  if (exception->severity == UndefinedException)
+    return(exception->severity);
+  if (exception->severity >= FatalException)
+    MagickError(exception->severity,exception->reason,exception->description);
+  MagickWarning(exception->severity,exception->reason,exception->description);
+  return(exception->severity);
 }
 
 /*
