@@ -4,9 +4,10 @@
 #ifndef _MAGICK_H
 #define _MAGICK_H
 
-#define _POSIX_C_SOURCE  1
+#define _POSIX_SOURCE  1
 #define _XOPEN_SOURCE  1
 #define _GNU_SOURCE  1
+#define __EXTENSIONS__  1
 
 /*
   System include declarations.
