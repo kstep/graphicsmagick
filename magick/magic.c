@@ -13,8 +13,8 @@
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
-%                                 July 1992                                   %
+%                              Bob Friesenhahn                                %
+%                                 July 2000                                   %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
