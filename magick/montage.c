@@ -458,9 +458,8 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   clone_info->background_color=montage_info->background_color;
   clone_info->border_color=montage_info->border_color;
   annotate_info=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
-  annotate_info->gravity=NorthGravity;
-  font_height=ExpandAffine(&annotate_info->affine)*
-    annotate_info->pointsize;
+  annotate_info->gravity=CenterGravity;
+  font_height=ExpandAffine(&annotate_info->affine)*annotate_info->pointsize;
   texture=(Image *) NULL;
   if (montage_info->texture != (char *) NULL)
     {
