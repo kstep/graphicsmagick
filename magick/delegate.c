@@ -593,7 +593,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
   NTGhostscriptEXE(gsexe,sizeof(gsexe));
 #endif
   FormatString(filename,"%.1024s",basename);
-  path=GetMagickConfigurePath(basename,exception);
+  path=GetMagickConfigurePath(basename,False,exception);
   if (path != (char *) NULL)
     {
       FormatString(filename,"%.1024s",path);

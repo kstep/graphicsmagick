@@ -527,7 +527,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
   (void) strcat(gsfonts,DirectorySeparator);
 #endif /* WIN32 */
   FormatString(filename,"%.1024s",basename);
-  path=GetMagickConfigurePath(filename,exception);
+  path=GetMagickConfigurePath(filename,True,exception);
   if (path != (char *) NULL)
     {
       FormatString(filename,"%.1024s",path);

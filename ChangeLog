@@ -1,3 +1,7 @@
+2002-07-31  Cristy  <cristy@mystic.es.dupont.com>
+  * Delegates/modules are restricted to hard-coded search paths (a
+    security feature suggested by Bob Friesenhahn).
+
 2002-07-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added SubstituteString to utility.c for performing substitions
     on strings.
