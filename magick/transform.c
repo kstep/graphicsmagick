@@ -455,7 +455,7 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
   /*
     Initialize crop image attributes.
   */
-  crop_image=CloneImage(image,page_info.width,page_info.height,True);
+  crop_image=CloneImage(image,page_info.width,page_info.height,False);
   if (crop_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to crop image",
