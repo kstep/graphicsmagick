@@ -105,6 +105,290 @@ static unsigned int IsEPT(const unsigned char *magick,const unsigned int length)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e a d E P T I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadEPTImage reads a binary Adobe Postscript image file and returns
+%  it.  It allocates the memory necessary for the new Image structure and
+%  returns a pointer to the new image.
+%
+%  The format of the ReadEPTImage method is:
+%
+%      Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image:  Method ReadEPTImage returns a pointer to the image after
+%      reading.  A null image is returned if there is a memory shortage or
+%      if the image cannot be read.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
+{
+#define BoundingBox  "%%BoundingBox:"
+#define DocumentMedia  "%%DocumentMedia:"
+#define PageBoundingBox  "%%PageBoundingBox:"
+#define PostscriptLevel  "%!PS-"
+#define ShowPage  "showpage"
+
+  char
+    density[MaxTextExtent],
+    command[MaxTextExtent],
+    filename[MaxTextExtent],
+    geometry[MaxTextExtent],
+    options[MaxTextExtent],
+    postscript_filename[MaxTextExtent],
+    translate_geometry[MaxTextExtent];
+
+  DelegateInfo
+    delegate_info;
+
+  double
+    dx_resolution,
+    dy_resolution;
+
+  FILE
+    *file;
+
+  Image
+    *image,
+    *next_image;
+
+  ImageInfo
+    *clone_info;
+
+  int
+    c,
+    count,
+    status;
+
+  long int
+    filesize;
+
+  RectangleInfo
+    box,
+    page;
+
+  register char
+    *p;
+
+  register int
+    i;
+
+  SegmentInfo
+    bounds;
+
+  unsigned int
+    eps_level,
+    height,
+    level,
+    width;
+
+  if (image_info->monochrome)
+    {
+      if (!GetDelegateInfo("gs-mono",(char *) NULL,&delegate_info))
+        return((Image *) NULL);
+    }
+  else
+    if (!GetDelegateInfo("gs-color",(char *) NULL,&delegate_info))
+      return((Image *) NULL);
+  /*
+    Open image file.
+  */
+  image=AllocateImage(image_info);
+  status=OpenBlob(image_info,image,ReadBinaryType);
+  if (status == False)
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  /*
+    Open temporary output file.
+  */
+  TemporaryFilename(postscript_filename);
+  file=fopen(postscript_filename,WriteBinaryType);
+  if (file == (FILE *) NULL)
+    ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+  FormatString(translate_geometry,"%f %f translate\n              ",0.0,0.0);
+  (void) fputs(translate_geometry,file);
+  /*
+    Set the page geometry.
+  */
+  dx_resolution=72.0;
+  dy_resolution=72.0;
+  if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
+    {
+      (void) strcpy(density,PSDensityGeometry);
+      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
+      if (count != 2)
+        image->y_resolution=image->x_resolution;
+    }
+  FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
+  page.width=612;
+  page.height=792;
+  page.x=0;
+  page.y=0;
+  (void) ParseImageGeometry(PSPageGeometry,&page.x,&page.y,
+    &page.width,&page.height);
+  /*
+    Determine page geometry from the Postscript bounding box.
+  */
+  (void) LSBFirstReadLong(image);
+  count=LSBFirstReadLong(image);
+  filesize=LSBFirstReadLong(image);
+  for (i=0; i < (count-12); i++)
+    (void) ReadByte(image);
+  /*
+    Copy Postscript to temporary file.
+  */
+  box.width=0;
+  box.height=0;
+  level=0;
+  eps_level=0;
+  p=command;
+  for (i=0; i < filesize; i++)
+  {
+    c=ReadByte(image);
+    if (c == EOF)
+      break;
+    (void) fputc(c,file);
+    *p++=c;
+    if ((c != '\n') && (c != '\r') && ((p-command) < (MaxTextExtent-1)))
+      continue;
+    *p='\0';
+    p=command;
+    if (LocaleNCompare(PostscriptLevel,command,Extent(PostscriptLevel)) == 0)
+      (void) sscanf(command,"%%!PS-Adobe-%d.0 EPSF-%d.0",&level,&eps_level);
+    if (LocaleNCompare(ShowPage,command,Extent(ShowPage)) == 0)
+      eps_level=0;
+    /*
+      Parse a bounding box statement.
+    */
+    count=0;
+    if (LocaleNCompare(BoundingBox,command,Extent(BoundingBox)) == 0)
+      count=sscanf(command,"%%%%BoundingBox: %lf %lf %lf %lf",&bounds.x1,
+        &bounds.y1,&bounds.x2,&bounds.y2);
+    if (LocaleNCompare(DocumentMedia,command,Extent(DocumentMedia)) == 0)
+      count=sscanf(command,"%%%%DocumentMedia: %*s %lf %lf",&bounds.x2,
+        &bounds.y2)+2;
+    if (LocaleNCompare(PageBoundingBox,command,Extent(PageBoundingBox)) == 0)
+      count=sscanf(command,"%%%%PageBoundingBox: %lf %lf %lf %lf",
+        &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
+    if (count != 4)
+      continue;
+    if ((bounds.x1 > bounds.x2) ||
+        (bounds.y1 > bounds.y2))
+      continue;
+    /*
+      Set Postscript render geometry.
+    */
+    FormatString(translate_geometry,"%f %f translate\n",-bounds.x1,
+      -bounds.y1);
+    width=(unsigned int) (bounds.x2-bounds.x1);
+    if ((float) ((int) bounds.x2) != bounds.x2)
+      width++;
+    height=(unsigned int) (bounds.y2-bounds.y1);
+    if ((float) ((int) bounds.y2) != bounds.y2)
+      height++;
+    if ((width <= box.width) && (height <= box.height))
+      continue;
+    page.width=width;
+    page.height=height;
+    box=page;
+  }
+  if (eps_level != 0)
+    (void) fputs("showpage\n",file);
+  if (image_info->page != (char *) NULL)
+    (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
+      &page.width,&page.height);
+  FormatString(geometry,"%ux%u",
+    (unsigned int) ((page.width*image->x_resolution+0.5)/dx_resolution),
+    (unsigned int) ((page.height*image->y_resolution+0.5)/dy_resolution));
+  if (ferror(file))
+    {
+      (void) fclose(file);
+      ThrowReaderException(FileOpenWarning,
+        "An error has occurred writing to file",image);
+    }
+  (void) rewind(file);
+  (void) fputs(translate_geometry,file);
+  (void) fclose(file);
+  CloseBlob(image);
+  filesize=image->filesize;
+  DestroyImage(image);
+  /*
+    Use Ghostscript to convert Postscript image.
+  */
+  *options='\0';
+  if (image_info->subrange != 0)
+    FormatString(options,"-dFirstPage=%u -dLastPage=%u",
+      image_info->subimage+1,image_info->subimage+image_info->subrange);
+  (void) strcpy(filename,image_info->filename);
+  TemporaryFilename((char *) image_info->filename);
+  FormatString(command,delegate_info.commands,image_info->antialias ? 4 : 1,
+    image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
+    postscript_filename);
+  MagickMonitor(RenderPostscriptText,0,8);
+  status=SystemCommand(image_info->verbose,command);
+  if (!IsAccessible(image_info->filename))
+    {
+      /*
+        Ghostscript requires a showpage operator.
+      */
+      file=fopen(postscript_filename,AppendBinaryType);
+      if (file == (FILE *) NULL)
+        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+      (void) fputs("showpage\n",file);
+      (void) fclose(file);
+      status=SystemCommand(image_info->verbose,command);
+    }
+  (void) remove(postscript_filename);
+  MagickMonitor(RenderPostscriptText,7,8);
+  if (status)
+    {
+      /*
+        Ghostscript has failed-- try the Display Postscript Extension.
+      */
+      (void) FormatString((char *) image_info->filename,"dps:%s",filename);
+      image=ReadImage((ImageInfo *) image_info,exception);
+      if (image != (Image *) NULL)
+        return(image);
+      ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
+        image);
+    }
+  clone_info=CloneImageInfo(image_info);
+  GetBlobInfo(&(clone_info->blob));
+  image=ReadImage(clone_info,exception);
+  DestroyImageInfo(clone_info);
+  (void) remove(image_info->filename);
+  if (image == (Image *) NULL)
+    ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
+      image);
+  (void) strcpy((char *) image_info->filename,filename);
+  do
+  {
+    (void) strcpy(image->magick,"PS");
+    (void) strcpy(image->filename,image_info->filename);
+    image->filesize=filesize;
+    next_image=image->next;
+    if (next_image != (Image *) NULL)
+      image=next_image;
+  } while (next_image != (Image *) NULL);
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e g i s t e r E P T I m a g e                                           %
 %                                                                             %
 %                                                                             %
@@ -129,6 +413,7 @@ ModuleExport void RegisterEPTImage(void)
     *entry;
 
   entry=SetMagickInfo("EPT");
+  entry->decoder=ReadEPTImage;
   entry->encoder=WriteEPTImage;
   entry->magick=IsEPT;
   entry->adjoin=False;

@@ -99,8 +99,6 @@ static unsigned int IsPS(const unsigned char *magick,const unsigned int length)
     return(True);
   if (memcmp(magick,"\004%!",3) == 0)
     return(True);
-  if (memcmp(magick,"\305\320\323\306",4) == 0)
-    return(True);
   return(False);
 }
 
@@ -256,9 +254,6 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   box.width=0;
   box.height=0;
-  /*
-    Copy Postscript to temporary file.
-  */
   level=0;
   eps_level=0;
   p=command;
