@@ -694,8 +694,10 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
 
         for (p=module+strlen(module)-1; p > module; p--)
           if (*p == *DirectorySeparator)
-            break;
-        p++;
+            {
+              p++;
+              break;
+            }
         (void) fprintf(stdout,"%.1024s",p);
         break;
       }
