@@ -15,9 +15,8 @@ require 't/subroutines.pl';
 chdir 't/jbig' || die 'Cd failed';
 
 testReadWrite( 'input.jbig',
-               'output.jbig',
-               '',
-               'd93259fc2d6fddfe939c0d3601a78f4a',
-               '9967d7d781c6e3792b2f63128ff6369c' );
+  'output.jbig',
+  '',
+  'f0ae406bc61e37ad3d9110633aaf9befde1d69599b7488caa472e9c330f89fee' );
 
 $test=0; # Keep perl from complaining

@@ -19,8 +19,7 @@ chdir 't/fpx' || die 'Cd failed';
 # 
 print( "1-bit grayscale FPX ...\n" );
 testReadWrite( 'input_bw.fpx', 'output_bw.fpx', q/quality=>95/,
-               '00706f70fcdc65b7e1d81db2641c28fc',
-	       'afb455dbd27d0bdb2d9b07187f029b0f');
+   '25b14945dc0131b7010b1fadb5249ad38ad9b8fdc3e0c7a9c56590940fd9734a');
 
 #
 # 2) Test monochrome image
@@ -28,24 +27,23 @@ testReadWrite( 'input_bw.fpx', 'output_bw.fpx', q/quality=>95/,
 ++$test;
 print( "8-bit grayscale FPX ...\n" );
 testReadWrite( 'input_mono.fpx',
-	       'output_mono.fpx', '',
-	       '4812f6adde914192a77b356c41bf6b99',
-	       'afb455dbd27d0bdb2d9b07187f029b0f');
+   'output_mono.fpx', '',
+   '25b14945dc0131b7010b1fadb5249ad38ad9b8fdc3e0c7a9c56590940fd9734a');
 #
 # 3) Test pseudocolor image
 #
 ++$test;
 print( "8-bit indexed-color FPX ...\n" );
 testReadWrite( 'input_256.fpx',
-	       'output_256.fpx',
-	       q/quality=>54/,
-	       'e0f8e869fe62dccde1d29ecb75a618c5' );
+   'output_256.fpx',
+   q/quality=>54/,
+   '25b14945dc0131b7010b1fadb5249ad38ad9b8fdc3e0c7a9c56590940fd9734a' );
 #
 # 4) Test truecolor image
 #
 ++$test;
 print( "24-bit Truecolor FPX ...\n" );
 testReadWrite( 'input_truecolor.fpx',
-	       'output_truecolor.fpx',
-	       q/quality=>55/,
-	       'eb4d6e084afe2835a1ad28ad7fc12ced' );
+   'output_truecolor.fpx',
+   q/quality=>55/,
+   '25b14945dc0131b7010b1fadb5249ad38ad9b8fdc3e0c7a9c56590940fd9734a' );

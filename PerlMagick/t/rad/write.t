@@ -18,8 +18,8 @@ require 't/subroutines.pl';
 chdir 't/rad' || die 'Cd failed';
 
 testReadWrite( 'RAD:input.rad',
-               'MIFF:output.rad',
-               q//,
-               '722852451d8612f2b7fd8a3c0fa834a3',
-               'ada489ea3efaf7a6e6b087fc73b2bfca' );
+  'MIFF:output.rad',
+  q//,
+  '25b14945dc0131b7010b1fadb5249ad38ad9b8fdc3e0c7a9c56590940fd9734a' );
+
 1;

@@ -14,8 +14,8 @@ require 't/subroutines.pl';
 
 chdir 't/wmf' || die 'Cd failed';
 
-testRead( 'input.wmf', '46865d9c4b573aac82dd56aad0851bb7',
-                       '9b2b478351f12b76b8fa95a531666434' );
+testRead( 'input.wmf',
+  '25b14945dc0131b7010b1fadb5249ad38ad9b8fdc3e0c7a9c56590940fd9734a' );
 
 
 
