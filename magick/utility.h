@@ -61,7 +61,6 @@ extern Export int
   GlobExpression(const char *,const char *),
   Latin1Compare(const char *,const char *),
   MultilineCensus(const char *),
-  ReadByte(Image *),
   SystemCommand(const unsigned int,const char *);
 
 extern Export unsigned int
@@ -70,20 +69,8 @@ extern Export unsigned int
   IsAccessible(const char *),
   IsDirectory(const char *);
 
-extern Export unsigned long
-  LSBFirstReadLong(Image *),
-  LSBFirstWriteLong(Image *,const unsigned long),
-  LSBFirstWriteShort(Image *,const unsigned short),
-  MSBFirstReadLong(Image *),
-  MSBFirstWriteLong(Image *,const unsigned long),
-  MSBFirstWriteShort(Image *,const unsigned short),
-  ReadBlobBlock(Image *,char *),
-  WriteByte(Image *,const char value);
-
 extern Export unsigned short
-  *ConvertTextToUnicode(const char *,int *),
-  LSBFirstReadShort(Image *),
-  MSBFirstReadShort(Image *);
+  *ConvertTextToUnicode(const char *,int *);
 
 extern Export void
   AppendImageFormat(const char *,char *),
@@ -92,8 +79,6 @@ extern Export void
   FormatString(char *,const char *,...),
   Latin1Upper(char *),
   LocaleFilename(char *),
-  MSBFirstOrderLong(char *,const unsigned int),
-  MSBFirstOrderShort(char *,const unsigned int),
   Strip(char *),
   TemporaryFilename(char *);
 
