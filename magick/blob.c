@@ -323,7 +323,7 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   clone_info->pipet=blob_info->pipet;
   clone_info->temporary=blob_info->temporary;
   clone_info->file=blob_info->file;
-  clone_info->fifo=blob_info->fifo;
+  clone_info->stream=blob_info->stream;
   clone_info->reference_count=1;
   clone_info->semaphore=(SemaphoreInfo *) NULL;
   return(clone_info);
@@ -380,11 +380,11 @@ MagickExport void CloseBlob(Image *image)
           image->blob->file=(FILE *) NULL;
         }
     }
-  if (image->blob->fifo)
+  if (image->blob->stream != (StreamHandler) NULL)
     {
-      (void) image->blob->fifo(image,(const void *) NULL,0);
+      (void) image->blob->stream(image,(const void *) NULL,0);
       if (!image->blob->exempt)
-        image->blob->fifo=NULL;
+        image->blob->stream=(StreamHandler) NULL;
     }
 }
 
@@ -1456,9 +1456,9 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
     case WriteBlobMode: type=(char *) "w"; break;
     case WriteBinaryBlobMode: type=(char *) "wb"; break;
   }
-  if (image_info->fifo)
+  if (image_info->stream != (StreamHandler) NULL)
     {
-      image->blob->fifo=image_info->fifo;  /* image stream */
+      image->blob->stream=image_info->stream;
       if (*type == 'w')
         return(True);
     }
@@ -1705,7 +1705,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 extern "C" {
 #endif
 
-static int StreamHandler(const Image *image,const void *pixels,
+static unsigned int PingStream(const Image *image,const void *pixels,
   const size_t columns)
 {
   return(True);
@@ -1740,7 +1740,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   clone_info->ping=True;
   if (clone_info->size == (char *) NULL)
     clone_info->size=AllocateString(DefaultTileGeometry);
-  image=ReadStream(clone_info,&StreamHandler,exception);
+  image=ReadStream(clone_info,&PingStream,exception);
   DestroyImageInfo(clone_info);
   return(image);
 }
@@ -2368,8 +2368,8 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(data != (const char *) NULL);
-  if (image->blob->fifo)
-    return(image->blob->fifo(image,data,length));
+  if (image->blob->stream != (StreamHandler) NULL)
+    return(image->blob->stream(image,data,length));
   if (image->blob->data != (unsigned char *) NULL)
     {
       if ((image->blob->offset+length) >= image->blob->extent)

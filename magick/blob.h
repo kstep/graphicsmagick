@@ -8,6 +8,8 @@
 extern "C" {
 #endif
 
+#include "image.h"
+
 /*
   Define declarations.
 */
@@ -35,6 +37,9 @@ typedef enum
 /*
   Typedef declarations.
 */
+typedef int
+  *(*BlobFifo)(const Image *,const void *,const size_t);
+
 typedef struct _BlobInfo
 {
   size_t
@@ -62,8 +67,8 @@ typedef struct _BlobInfo
   FILE
     *file;
 
-  int
-    (*fifo)(const Image *,const void *,const size_t);
+  StreamHandler
+    stream;
 
   SemaphoreInfo
     *semaphore;

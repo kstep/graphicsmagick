@@ -1194,7 +1194,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
 extern "C" {
 #endif
 
-static int StreamHandler(const Image *image,const void *pixels,
+static unsigned int PingStream(const Image *image,const void *pixels,
   const size_t columns)
 {
   return(True);
@@ -1219,7 +1219,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   SetExceptionInfo(exception,UndefinedException);
   clone_info=CloneImageInfo(image_info);
   clone_info->ping=True;
-  image=ReadStream(clone_info,StreamHandler,exception);
+  image=ReadStream(clone_info,&PingStream,exception);
   DestroyImageInfo(clone_info);
   return(image);
 }

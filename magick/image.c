@@ -1189,8 +1189,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->cache=image_info->cache;
   if (image_info->cache != (void *) NULL)
     clone_info->cache=ReferenceCache(image_info->cache);
-  clone_info->fifo=image_info->fifo;
   clone_info->file=image_info->file;
+  clone_info->stream=image_info->stream;
   clone_info->blob=image_info->blob;
   clone_info->length=image_info->length;
   (void) strncpy(clone_info->magick,image_info->magick,MaxTextExtent-1);

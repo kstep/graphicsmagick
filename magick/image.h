@@ -752,6 +752,9 @@ typedef struct _Image
     *next;
 } Image;
 
+typedef unsigned int
+  (*StreamHandler)(const Image *,const void *,const size_t);
+
 typedef struct _ImageInfo
 {
   CompressionType
@@ -837,8 +840,8 @@ typedef struct _ImageInfo
   void
     *cache;
 
-  int
-    (*fifo)(const Image *,const void *,const size_t);
+  StreamHandler
+    stream;
 
   FILE
     *file;
@@ -943,8 +946,7 @@ extern MagickExport Image
   *PingImage(const ImageInfo *,ExceptionInfo *),
   *ReadImage(const ImageInfo *,ExceptionInfo *),
   *ReadInlineImage(const ImageInfo *,const char *,ExceptionInfo *),
-  *ReadStream(const ImageInfo *,
-    int (*)(const Image *,const void *,const size_t),ExceptionInfo *),
+  *ReadStream(const ImageInfo *,StreamHandler,ExceptionInfo *),
   *ReduceNoiseImage(const Image *,const double,ExceptionInfo *),
   *ReferenceImage(Image *),
   *ResizeImage(const Image *,const unsigned long,const unsigned long,
@@ -1055,8 +1057,7 @@ extern MagickExport unsigned int
   UnregisterMagickInfo(const char *),
   WriteImage(const ImageInfo *,Image *),
   WriteImages(ImageInfo *,Image *,const char *,ExceptionInfo *),
-  WriteStream(const ImageInfo *,Image *,
-    int (*)(const Image *,const void *,const size_t));
+  WriteStream(const ImageInfo *,Image *,StreamHandler);
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *),

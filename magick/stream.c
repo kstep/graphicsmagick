@@ -447,8 +447,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %
 %  The format of the ReadStream() method is:
 %
-%      Image *ReadStream(const ImageInfo *image_info,
-%        void (*Stream)(const Image *,const void *,const size_t),
+%      Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -461,8 +460,8 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %
 %
 */
-MagickExport Image *ReadStream(const ImageInfo *image_info,
-  int (*fifo)(const Image *,const void *,const size_t),ExceptionInfo *exception)
+MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -482,7 +481,7 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
   SetPixelCacheMethods(clone_info->cache,AcquirePixelStream,GetPixelStream,
     SetPixelStream,SyncPixelStream,GetPixelsFromStream,GetIndexesFromStream,
     AcquireOnePixelFromStream,GetOnePixelFromStream,DestroyPixelStream);
-  clone_info->fifo=fifo;
+  clone_info->stream=stream;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   return(image);
@@ -545,11 +544,10 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
         "Unable to set pixel stream","image does not contain the geometry");
       return((PixelPacket *) NULL);
     }
-  if (image->blob->fifo ==
-       (int (*)(const Image *,const void *,const size_t)) NULL)
+  if (image->blob->stream == (StreamHandler) NULL)
     {
       ThrowException(&image->exception,StreamError,
-        "Unable to set pixel stream","no fifo is defined");
+        "Unable to set pixel stream","no stream handler is defined");
       return((PixelPacket *) NULL);
     }
   stream_info=(StreamInfo *) image->cache;
@@ -558,7 +556,8 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
       (image->colorspace != GetCacheColorspace(image->cache)))
     {
       if (GetCacheClass(image->cache) == UndefinedClass)
-        (void) image->blob->fifo(image,(const void *) NULL,stream_info->columns);
+        (void) image->blob->stream(image,(const void *) NULL,
+          stream_info->columns);
       stream_info->storage_class=image->storage_class;
       stream_info->colorspace=image->colorspace;
       stream_info->columns=image->columns;
@@ -632,14 +631,13 @@ static unsigned int SyncPixelStream(Image *image)
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
-  if (image->blob->fifo ==
-       (int (*)(const Image *,const void *,const size_t)) NULL)
+  if (image->blob->stream == (StreamHandler) NULL)
     {
       ThrowException(&image->exception,StreamError,
-        "Unable to sync pixel stream","no fifo is defined");
+        "Unable to sync pixel stream","no stream handler is defined");
       return(False);
     }
-  return(image->blob->fifo(image,stream_info->pixels,stream_info->columns));
+  return(image->blob->stream(image,stream_info->pixels,stream_info->columns));
 }
 
 /*
@@ -660,7 +658,7 @@ static unsigned int SyncPixelStream(Image *image)
 %  The format of the WriteStream() method is:
 %
 %      unsigned int WriteStream(const ImageInfo *image_info,Image *,
-%        int (*Stream)(const Image *,const void *,const size_t))
+%        StreamHandler stream)
 %
 %  A description of each parameter follows:
 %
@@ -671,7 +669,7 @@ static unsigned int SyncPixelStream(Image *image)
 %
 */
 MagickExport unsigned int WriteStream(const ImageInfo *image_info,Image *image,
-  int (*fifo)(const Image *,const void *,const size_t))
+  StreamHandler stream)
 {
   ImageInfo
     *clone_info;
@@ -684,7 +682,7 @@ MagickExport unsigned int WriteStream(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   clone_info=CloneImageInfo(image_info);
-  clone_info->fifo=fifo;
+  clone_info->stream=stream;
   status=WriteImage(clone_info,image);
   DestroyImageInfo(clone_info);
   return(status);
