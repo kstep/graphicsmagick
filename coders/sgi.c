@@ -461,11 +461,11 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->red=(Quantum) XDownScale((*(p+0) << 8) | (*(p+1)));
-                q->green=(Quantum) XDownScale((*(p+2) << 8) | (*(p+3)));
-                q->blue=(Quantum) XDownScale((*(p+4) << 8) | (*(p+5)));
+                q->red=(Quantum) XDownscale((*(p+0) << 8) | (*(p+1)));
+                q->green=(Quantum) XDownscale((*(p+2) << 8) | (*(p+3)));
+                q->blue=(Quantum) XDownscale((*(p+4) << 8) | (*(p+5)));
                 q->opacity=(Quantum)
-                  (MaxRGB-XDownScale((*(p+6) << 8) | (*(p+7))));
+                  (MaxRGB-XDownscale((*(p+6) << 8) | (*(p+7))));
                 p+=8;
                 q++;
               }
@@ -485,10 +485,10 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              q->red=(Quantum) UpScale(*p);
-              q->green=(Quantum) UpScale(*(p+1));
-              q->blue=(Quantum) UpScale(*(p+2));
-              q->opacity=(Quantum) (MaxRGB-UpScale(*(p+3)));
+              q->red=Upscale(*p);
+              q->green=Upscale(*(p+1));
+              q->blue=Upscale(*(p+2));
+              q->opacity=(Quantum) (MaxRGB-Upscale(*(p+3)));
               p+=4;
               q++;
             }
@@ -797,7 +797,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         iris_info.depth=1;
       }
     iris_info.minimum_value=0;
-    iris_info.maximum_value=DownScale(MaxRGB);
+    iris_info.maximum_value=Downscale(MaxRGB);
     for (i=0; i < (int) sizeof(iris_info.filler); i++)
       iris_info.filler[i]=0;
     /*
@@ -833,10 +833,10 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       q=iris_pixels+((iris_info.rows-1)-y)*(iris_info.columns*4);
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=DownScale(p->red);
-        *q++=DownScale(p->green);
-        *q++=DownScale(p->blue);
-        *q++=MaxRGB-DownScale(p->opacity);
+        *q++=Downscale(p->red);
+        *q++=Downscale(p->green);
+        *q++=Downscale(p->blue);
+        *q++=MaxRGB-Downscale(p->opacity);
         p++;
       }
       if (image->previous == (Image *) NULL)

@@ -251,7 +251,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=colormap;
         for (i=0; i < (long) number_colormaps; i++)
           for (x=0; x < (long) map_length; x++)
-            *p++=XDownScale(ReadBlobLSBShort(image));
+            *p++=XDownscale(ReadBlobLSBShort(image));
       }
     if (flags & 0x08)
       {
@@ -433,11 +433,11 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=(Quantum) UpScale(*p++);
-            q->green=(Quantum) UpScale(*p++);
-            q->blue=(Quantum) UpScale(*p++);
+            q->red=Upscale(*p++);
+            q->green=Upscale(*p++);
+            q->blue=Upscale(*p++);
             if (image->matte)
-              q->opacity=(Quantum) (MaxRGB-UpScale(*p++));
+              q->opacity=(Quantum) (MaxRGB-Upscale(*p++));
             q++;
           }
           if (!SyncImagePixels(image))
@@ -464,17 +464,17 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Pseudocolor.
             */
-            image->colormap[i].red=(Quantum) UpScale(i);
-            image->colormap[i].green=(Quantum) UpScale(i);
-            image->colormap[i].blue=(Quantum) UpScale(i);
+            image->colormap[i].red=Upscale(i);
+            image->colormap[i].green=Upscale(i);
+            image->colormap[i].blue=Upscale(i);
           }
         else
           if (number_colormaps > 1)
             for (i=0; i < (long) image->colors; i++)
             {
-              image->colormap[i].red=(Quantum) UpScale(*p);
-              image->colormap[i].green=(Quantum) UpScale(*(p+map_length));
-              image->colormap[i].blue=(Quantum) UpScale(*(p+map_length*2));
+              image->colormap[i].red=Upscale(*p);
+              image->colormap[i].green=Upscale(*(p+map_length));
+              image->colormap[i].blue=Upscale(*(p+map_length*2));
               p++;
             }
         p=rle_pixels;
@@ -514,7 +514,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 q->red=image->colormap[*p++].red;
                 q->green=image->colormap[*p++].green;
                 q->blue=image->colormap[*p++].blue;
-                q->opacity=(Quantum) (MaxRGB-UpScale(*p++));
+                q->opacity=(Quantum) (MaxRGB-Upscale(*p++));
                 q++;
               }
               if (!SyncImagePixels(image))

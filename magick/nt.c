@@ -1375,9 +1375,9 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
   {
     for (x=0; x < (long) image->columns; x++)
     {
-      pBits->rgbRed=DownScale(image->background_color.red);
-      pBits->rgbGreen=DownScale(image->background_color.green);
-      pBits->rgbBlue=DownScale(image->background_color.blue);
+      pBits->rgbRed=Downscale(image->background_color.red);
+      pBits->rgbGreen=Downscale(image->background_color.green);
+      pBits->rgbBlue=Downscale(image->background_color.blue);
       pBits++;
     }
   }
@@ -1397,9 +1397,9 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->red=UpScale(pBits->rgbRed);
-      q->green=UpScale(pBits->rgbGreen);
-      q->blue=UpScale(pBits->rgbBlue);
+      q->red=Upscale(pBits->rgbRed);
+      q->green=Upscale(pBits->rgbGreen);
+      q->blue=Upscale(pBits->rgbBlue);
       q->opacity=OpaqueOpacity;
       pBits++;
       q++;

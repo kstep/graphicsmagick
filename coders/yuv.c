@@ -180,7 +180,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (long) image->columns; x++)
       {
-        q->red=(Quantum) UpScale(*p++);
+        q->red=Upscale(*p++);
         q->green=0;
         q->blue=0;
         q++;
@@ -212,7 +212,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (x=0; x < (long) chroma_image->columns; x++)
       {
         q->red=0;
-        q->green=(Quantum) UpScale(*p++);
+        q->green=Upscale(*p++);
         q->blue=0;
         q++;
       }
@@ -236,7 +236,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (long) chroma_image->columns; x++)
       {
-        q->blue=(Quantum) UpScale(*p++);
+        q->blue=Upscale(*p++);
         q++;
       }
       if (!SyncImagePixels(chroma_image))
@@ -474,7 +474,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         break;
       for (x=0; x < (long) yuv_image->columns; x++)
       {
-        (void) WriteBlobByte(image,DownScale(p->red));
+        (void) WriteBlobByte(image,Downscale(p->red));
         p++;
       }
       if (image->previous == (Image *) NULL)
@@ -514,7 +514,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         break;
       for (x=0; x < (long) chroma_image->columns; x++)
       {
-        (void) WriteBlobByte(image,DownScale(p->green));
+        (void) WriteBlobByte(image,Downscale(p->green));
         p++;
       }
     }
@@ -537,7 +537,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         break;
       for (x=0; x < (long) chroma_image->columns; x++)
       {
-        (void) WriteBlobByte(image,DownScale(p->blue));
+        (void) WriteBlobByte(image,Downscale(p->blue));
         p++;
       }
     }

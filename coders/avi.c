@@ -587,9 +587,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 word=(*p++);
                 word|=(*p++ << 8);
-                q->red=(Quantum) UpScale(ScaleColor5to8((word >> 11) & 0x1f));
-                q->green=(Quantum) UpScale(ScaleColor6to8((word >> 5) & 0x3f));
-                q->blue=(Quantum) UpScale(ScaleColor5to8(word & 0x1f));
+                q->red=Upscale(ScaleColor5to8((word >> 11) & 0x1f));
+                q->green=Upscale(ScaleColor6to8((word >> 5) & 0x3f));
+                q->blue=Upscale(ScaleColor5to8(word & 0x1f));
                 q++;
               }
               if (!SyncImagePixels(image))
@@ -615,11 +615,11 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->blue=(Quantum) UpScale(*p++);
-                q->green=(Quantum) UpScale(*p++);
-                q->red=(Quantum) UpScale(*p++);
+                q->blue=Upscale(*p++);
+                q->green=Upscale(*p++);
+                q->red=Upscale(*p++);
                 if (image->matte)
-                  q->opacity=(Quantum) UpScale(*p++);
+                  q->opacity=Upscale(*p++);
                 q++;
               }
               if (!SyncImagePixels(image))
@@ -740,9 +740,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     "Memory allocation failed",image);
                 for (i=0; i < (long) number_colors; i++)
                 {
-                  colormap[i].blue=(Quantum) UpScale(ReadBlobByte(image));
-                  colormap[i].green=(Quantum) UpScale(ReadBlobByte(image));
-                  colormap[i].red=(Quantum) UpScale(ReadBlobByte(image));
+                  colormap[i].blue=Upscale(ReadBlobByte(image));
+                  colormap[i].green=Upscale(ReadBlobByte(image));
+                  colormap[i].red=Upscale(ReadBlobByte(image));
                   (void) ReadBlobByte(image);
                   chunk_size-=4;
                 }

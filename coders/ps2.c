@@ -832,23 +832,23 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               {
                 if (image->matte && (p->opacity == TransparentOpacity))
                   {
-                    *q++=DownScale(MaxRGB);
-                    *q++=DownScale(MaxRGB);
-                    *q++=DownScale(MaxRGB);
+                    *q++=Downscale(MaxRGB);
+                    *q++=Downscale(MaxRGB);
+                    *q++=Downscale(MaxRGB);
                   }
                 else
                   if (image->colorspace != CMYKColorspace)
                     {
-                      *q++=DownScale(p->red);
-                      *q++=DownScale(p->green);
-                      *q++=DownScale(p->blue);
+                      *q++=Downscale(p->red);
+                      *q++=Downscale(p->green);
+                      *q++=Downscale(p->blue);
                     }
                   else
                     {
-                      *q++=DownScale(p->red);
-                      *q++=DownScale(p->green);
-                      *q++=DownScale(p->blue);
-                      *q++=DownScale(p->opacity);
+                      *q++=Downscale(p->red);
+                      *q++=Downscale(p->green);
+                      *q++=Downscale(p->blue);
+                      *q++=Downscale(p->opacity);
                     }
                 p++;
               }
@@ -884,23 +884,23 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               {
                 if (image->matte && (p->opacity == TransparentOpacity))
                   {
-                    Ascii85Encode(image,DownScale(MaxRGB));
-                    Ascii85Encode(image,DownScale(MaxRGB));
-                    Ascii85Encode(image,DownScale(MaxRGB));
+                    Ascii85Encode(image,Downscale(MaxRGB));
+                    Ascii85Encode(image,Downscale(MaxRGB));
+                    Ascii85Encode(image,Downscale(MaxRGB));
                   }
                 else
                   if (image->colorspace != CMYKColorspace)
                     {
-                      Ascii85Encode(image,DownScale(p->red));
-                      Ascii85Encode(image,DownScale(p->green));
-                      Ascii85Encode(image,DownScale(p->blue));
+                      Ascii85Encode(image,Downscale(p->red));
+                      Ascii85Encode(image,Downscale(p->green));
+                      Ascii85Encode(image,Downscale(p->blue));
                     }
                   else
                     {
-                      Ascii85Encode(image,DownScale(p->red));
-                      Ascii85Encode(image,DownScale(p->green));
-                      Ascii85Encode(image,DownScale(p->blue));
-                      Ascii85Encode(image,DownScale(p->opacity));
+                      Ascii85Encode(image,Downscale(p->red));
+                      Ascii85Encode(image,Downscale(p->green));
+                      Ascii85Encode(image,Downscale(p->blue));
+                      Ascii85Encode(image,Downscale(p->opacity));
                     }
                 p++;
               }
@@ -922,9 +922,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           for (i=0; i < (long) image->colors; i++)
           {
             FormatString(buffer,"%02lx%02lx%02lx\n",
-              DownScale(image->colormap[i].red),
-              DownScale(image->colormap[i].green),
-              DownScale(image->colormap[i].blue));
+              Downscale(image->colormap[i].red),
+              Downscale(image->colormap[i].green),
+              Downscale(image->colormap[i].blue));
             (void) WriteBlobString(image,buffer);
           }
           switch (compression)

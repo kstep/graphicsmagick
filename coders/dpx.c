@@ -417,9 +417,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      pixel=((1023*XUpScale(p->red)/MaxRGB) << 22) |
-        ((1023*XUpScale(p->green)/MaxRGB) << 12) |
-        ((1023*XUpScale(p->blue)/MaxRGB) << 2);
+      pixel=((1023*XUpscale(p->red)/MaxRGB) << 22) |
+        ((1023*XUpscale(p->green)/MaxRGB) << 12) |
+        ((1023*XUpscale(p->blue)/MaxRGB) << 2);
       (void) WriteBlobMSBLong(image,pixel);
       p++;
     }

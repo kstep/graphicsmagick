@@ -134,12 +134,12 @@ static unsigned int DecodeImage(Image *image,const int channel)
           {
             case -1:
             {
-              q->opacity=(Quantum) (MaxRGB-UpScale(pixel));
+              q->opacity=(Quantum) (MaxRGB-Upscale(pixel));
               break;
             }
             case 0:
             {
-              q->red=(Quantum) UpScale(pixel);
+              q->red=Upscale(pixel);
               if (image->storage_class == PseudoClass)
                 {
                   *indexes=pixel;
@@ -150,25 +150,25 @@ static unsigned int DecodeImage(Image *image,const int channel)
             case 1:
             {
               if (image->storage_class == PseudoClass)
-                q->opacity=(Quantum) UpScale(pixel);
+                q->opacity=Upscale(pixel);
               else
-                q->green=(Quantum) UpScale(pixel);
+                q->green=Upscale(pixel);
               break;
             }
             case 2:
             {
-              q->blue=(Quantum) UpScale(pixel);
+              q->blue=Upscale(pixel);
               break;
             }
             case 3:
             {
-              q->opacity=(Quantum) UpScale(pixel);
+              q->opacity=Upscale(pixel);
               break;
             }
             case 4:
             {
               if (image->colorspace == CMYKColorspace)
-                *indexes=(Quantum) UpScale(pixel);
+                *indexes=Upscale(pixel);
               break;
             }
             default:
@@ -193,12 +193,12 @@ static unsigned int DecodeImage(Image *image,const int channel)
       {
         case -1:
         {
-          q->opacity=(Quantum) (MaxRGB-UpScale(pixel));
+          q->opacity=(Quantum) (MaxRGB-Upscale(pixel));
           break;
         }
         case 0:
         {
-          q->red=(Quantum) UpScale(pixel);
+          q->red=Upscale(pixel);
           if (image->storage_class == PseudoClass)
             {
               *indexes=pixel;
@@ -209,25 +209,25 @@ static unsigned int DecodeImage(Image *image,const int channel)
         case 1:
         {
           if (image->storage_class == PseudoClass)
-            q->opacity=(Quantum) UpScale(pixel);
+            q->opacity=Upscale(pixel);
           else
-            q->green=(Quantum) UpScale(pixel);
+            q->green=Upscale(pixel);
           break;
         }
         case 2:
         {
-          q->blue=(Quantum) UpScale(pixel);
+          q->blue=Upscale(pixel);
           break;
         }
         case 3:
         {
-          q->opacity=(Quantum) UpScale(pixel);
+          q->opacity=Upscale(pixel);
           break;
         }
         case 4:
         {
           if (image->colorspace == CMYKColorspace)
-            *indexes=(Quantum) UpScale(pixel);
+            *indexes=Upscale(pixel);
           break;
         }
         default:
@@ -481,11 +481,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
       for (i=0; i < (long) image->colors; i++)
-        image->colormap[i].red=(Quantum) UpScale(ReadBlobByte(image));
+        image->colormap[i].red=Upscale(ReadBlobByte(image));
       for (i=0; i < (long) image->colors; i++)
-        image->colormap[i].green=(Quantum) UpScale(ReadBlobByte(image));
+        image->colormap[i].green=Upscale(ReadBlobByte(image));
       for (i=0; i < (long) image->colors; i++)
-        image->colormap[i].blue=(Quantum) UpScale(ReadBlobByte(image));
+        image->colormap[i].blue=Upscale(ReadBlobByte(image));
       image->matte=psd_info.channels >= 2;
     }
   length=ReadBlobMSBLong(image);
@@ -550,7 +550,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageWarning,"Not a PSD image file",
             image);
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
-        layer_info[i].opacity=(Quantum) (MaxRGB-UpScale(ReadBlobByte(image)));
+        layer_info[i].opacity=(Quantum) (MaxRGB-Upscale(ReadBlobByte(image)));
         layer_info[i].clipping=ReadBlobByte(image);
         layer_info[i].flags=ReadBlobByte(image);
         (void) ReadBlobByte(image);  /* filler */
@@ -650,9 +650,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (x=0; x < (long) layer_info[i].image->columns; x++)
             {
               if (packet_size == 1)
-                pixel=(Quantum) UpScale(ReadBlobByte(layer_info[i].image));
+                pixel=Upscale(ReadBlobByte(layer_info[i].image));
               else
-                pixel=XUpScale(ReadBlobMSBShort(layer_info[i].image));
+                pixel=XUpscale(ReadBlobMSBShort(layer_info[i].image));
               switch (layer_info[i].channel_info[j].type)
               {
                 case -1:
@@ -665,7 +665,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   q->red=pixel;
                   if (layer_info[i].image->storage_class == PseudoClass)
                     {
-                      indexes[x]=(IndexPacket) DownScale(pixel);
+                      indexes[x]=(IndexPacket) Downscale(pixel);
                       *q=layer_info[i].image->colormap[indexes[x]];
                     }
                   break;
@@ -809,9 +809,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (long) image->columns; x++)
           {
             if (packet_size == 1)
-              pixel=(Quantum) UpScale(ReadBlobByte(image));
+              pixel=Upscale(ReadBlobByte(image));
             else
-              pixel=XUpScale(ReadBlobMSBShort(image));
+              pixel=XUpscale(ReadBlobMSBShort(image));
             switch (image->matte ? i-1 : i)
             {
               case -1:
@@ -824,7 +824,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 q->red=pixel;
                 if (image->storage_class == PseudoClass)
                   {
-                    indexes[x]=(IndexPacket) DownScale(pixel);
+                    indexes[x]=(IndexPacket) Downscale(pixel);
                     *q=image->colormap[indexes[x]];
                   }
                 break;
@@ -1053,15 +1053,15 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
       */
       (void) WriteBlobMSBLong(image,768);
       for (i=0; i < (long) image->colors; i++)
-        (void) WriteBlobByte(image,DownScale(image->colormap[i].red));
+        (void) WriteBlobByte(image,Downscale(image->colormap[i].red));
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);
       for (i=0; i < (long) image->colors; i++)
-        (void) WriteBlobByte(image,DownScale(image->colormap[i].green));
+        (void) WriteBlobByte(image,Downscale(image->colormap[i].green));
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);
       for (i=0; i < (long) image->colors; i++)
-        (void) WriteBlobByte(image,DownScale(image->colormap[i].blue));
+        (void) WriteBlobByte(image,Downscale(image->colormap[i].blue));
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);
     }

@@ -185,11 +185,11 @@ else \
 /*
   3D effects.
 */
-#define AccentuateModulate  UpScale(80)
-#define HighlightModulate  UpScale(125)
-#define ShadowModulate  UpScale(135)
-#define DepthModulate  UpScale(185)
-#define TroughModulate  UpScale(110)
+#define AccentuateModulate  Upscale(80)
+#define HighlightModulate  Upscale(125)
+#define ShadowModulate  Upscale(135)
+#define DepthModulate  Upscale(185)
+#define TroughModulate  Upscale(110)
 
 /*
   Define system symbols if not already defined.

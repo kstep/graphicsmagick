@@ -473,30 +473,30 @@ MagickExport unsigned int SignatureImage(Image *image)
     q=message;
     for (x=0; x < (long) image->columns; x++)
     {
-      *q++=XUpScale(p->red) >> 8;
-      *q++=XUpScale(p->red);
-      *q++=XUpScale(p->green) >> 8;
-      *q++=XUpScale(p->green);
-      *q++=XUpScale(p->blue) >> 8;
-      *q++=XUpScale(p->blue);
+      *q++=XUpscale(p->red) >> 8;
+      *q++=XUpscale(p->red);
+      *q++=XUpscale(p->green) >> 8;
+      *q++=XUpscale(p->green);
+      *q++=XUpscale(p->blue) >> 8;
+      *q++=XUpscale(p->blue);
       if (!image->matte)
         {
           if (image->colorspace == CMYKColorspace)
             {
-              *q++=XUpScale(p->opacity) >> 8;
-              *q++=XUpScale(p->opacity);
+              *q++=XUpscale(p->opacity) >> 8;
+              *q++=XUpscale(p->opacity);
             }
-          *q++=XUpScale(OpaqueOpacity) >> 8;
-          *q++=XUpScale(OpaqueOpacity) & 0xff;
+          *q++=XUpscale(OpaqueOpacity) >> 8;
+          *q++=XUpscale(OpaqueOpacity) & 0xff;
         }
       else
         {
-          *q++=XUpScale(p->opacity) >> 8;
-          *q++=XUpScale(p->opacity);
+          *q++=XUpscale(p->opacity) >> 8;
+          *q++=XUpscale(p->opacity);
           if (image->colorspace == CMYKColorspace)
             {
-              *q++=XUpScale(indexes[x]) >> 8;
-              *q++=XUpScale(indexes[x]);
+              *q++=XUpscale(indexes[x]) >> 8;
+              *q++=XUpscale(indexes[x]);
             }
         }
       p++;

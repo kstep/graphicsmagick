@@ -403,11 +403,11 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 MagickExport unsigned int RaiseImage(Image *image,
   const RectangleInfo *raise_info,const int raised)
 {
-#define AccentuateFactor  UpScale(135)
-#define HighlightFactor  UpScale(190)
-#define ShadowFactor  UpScale(190)
+#define AccentuateFactor  Upscale(135)
+#define HighlightFactor  Upscale(190)
+#define ShadowFactor  Upscale(190)
 #define RaiseImageText  "  Raise image...  "
-#define TroughFactor  UpScale(135)
+#define TroughFactor  Upscale(135)
 
   long
     y;

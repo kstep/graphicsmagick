@@ -252,9 +252,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      red[(int) DownScale(p->red)]++;
-      green[(int) DownScale(p->green)]++;
-      blue[(int) DownScale(p->blue)]++;
+      red[(int) Downscale(p->red)]++;
+      green[(int) Downscale(p->green)]++;
+      blue[(int) Downscale(p->blue)]++;
       p++;
     }
   }

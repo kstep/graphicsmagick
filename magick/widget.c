@@ -1494,8 +1494,8 @@ static void XSetTextColor(Display *display,const XWindowInfo *window_info,
       return;
     }
   foreground=(int)
-    XDownScale(Intensity(window_info->pixel_info->foreground_color));
-  matte=(int) XDownScale(Intensity(window_info->pixel_info->matte_color));
+    XDownscale(Intensity(window_info->pixel_info->foreground_color));
+  matte=(int) XDownscale(Intensity(window_info->pixel_info->matte_color));
   if (AbsoluteValue(foreground-matte) > (MaxRGB >> 3))
     (void) XSetForeground(display,window_info->widget_context,
       window_info->pixel_info->foreground_color.pixel);
@@ -2007,9 +2007,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           &windows->widget.pixel_info->matte_color);
         mode_info.text=colorname;
         FormatString(mode_info.text,"#%02x%02x%02x",
-          XDownScale(windows->widget.pixel_info->matte_color.red),
-          XDownScale(windows->widget.pixel_info->matte_color.green),
-          XDownScale(windows->widget.pixel_info->matte_color.blue));
+          XDownscale(windows->widget.pixel_info->matte_color.red),
+          XDownscale(windows->widget.pixel_info->matte_color.green),
+          XDownscale(windows->widget.pixel_info->matte_color.blue));
         XDrawBeveledButton(display,&windows->widget,&mode_info);
         windows->widget.pixel_info->matte_color=color;
         state&=(~RedrawActionState);

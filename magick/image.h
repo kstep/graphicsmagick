@@ -10,28 +10,12 @@ extern "C" {
 
 #if !defined(QuantumDepth)
 # define QuantumDepth 16
+# define QuantumLeap
 #endif
 
 #if QuantumDepth == 8
-/*
-  Color quantum is [0..255].
-*/
-#define DownScale(quantum)  (quantum)
-#define UpScale(quantum)  (quantum)
-#define XDownScale(color)  ((color)/257L)
-#define XUpScale(color)  (257L*(color))
-
 typedef unsigned char Quantum;
 #elif QuantumDepth == 16
-/*
-  Color quantum is [0..65535].
-*/
-#define QuantumLeap
-#define DownScale(quantum)  ((quantum)/257L)
-#define UpScale(quantum)  (257L*(quantum))
-#define XDownScale(color)  (color)
-#define XUpScale(color)  (color)
-
 typedef unsigned short Quantum;
 #else
 # error "Specified value of QuantumDepth is not supported"

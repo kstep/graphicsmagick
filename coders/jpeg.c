@@ -754,11 +754,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=(Quantum) UpScale(GETJSAMPLE(*p++));
-            q->green=(Quantum) UpScale(GETJSAMPLE(*p++));
-            q->blue=(Quantum) UpScale(GETJSAMPLE(*p++));
+            q->red=Upscale(GETJSAMPLE(*p++));
+            q->green=Upscale(GETJSAMPLE(*p++));
+            q->blue=Upscale(GETJSAMPLE(*p++));
             if (image->colorspace == CMYKColorspace)
-              q->opacity=(IndexPacket) UpScale(GETJSAMPLE(*p++));
+              q->opacity=(IndexPacket) Upscale(GETJSAMPLE(*p++));
             q++;
           }
         }
@@ -1345,7 +1345,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         q=jpeg_pixels;
         for (x=0; x < (long) image->columns; x++)
         {
-          *q++=(JSAMPLE) DownScale(Intensity(*p));
+          *q++=(JSAMPLE) Downscale(Intensity(*p));
           p++;
         }
         (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -1363,9 +1363,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           q=jpeg_pixels;
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=(JSAMPLE) DownScale(p->red);
-            *q++=(JSAMPLE) DownScale(p->green);
-            *q++=(JSAMPLE) DownScale(p->blue);
+            *q++=(JSAMPLE) Downscale(p->red);
+            *q++=(JSAMPLE) Downscale(p->green);
+            *q++=(JSAMPLE) Downscale(p->blue);
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -1384,10 +1384,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             /*
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
-            *q++=(JSAMPLE) (MaxRGB-DownScale(p->red));
-            *q++=(JSAMPLE) (MaxRGB-DownScale(p->green));
-            *q++=(JSAMPLE) (MaxRGB-DownScale(p->blue));
-            *q++=(JSAMPLE) (MaxRGB-DownScale(p->opacity));
+            *q++=(JSAMPLE) (MaxRGB-Downscale(p->red));
+            *q++=(JSAMPLE) (MaxRGB-Downscale(p->green));
+            *q++=(JSAMPLE) (MaxRGB-Downscale(p->blue));
+            *q++=(JSAMPLE) (MaxRGB-Downscale(p->opacity));
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);

@@ -2666,14 +2666,14 @@ MagickExport unsigned long GetImageDepth(const Image *image,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      if (p->red != (Quantum) UpScale(DownScale(p->red)))
+      if (p->red != Upscale(Downscale(p->red)))
         return(QuantumDepth);
-      if (p->green != (Quantum) UpScale(DownScale(p->green)))
+      if (p->green != Upscale(Downscale(p->green)))
         return(QuantumDepth);
-      if (p->blue != (Quantum) UpScale(DownScale(p->blue)))
+      if (p->blue != Upscale(Downscale(p->blue)))
         return(QuantumDepth);
       if (image->matte)
-        if (p->opacity != (Quantum) UpScale(DownScale(p->opacity)))
+        if (p->opacity != Upscale(Downscale(p->opacity)))
           return(QuantumDepth);
       p++;
     }
@@ -5416,8 +5416,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 
         sRGB is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      ty=UpScale(156);
-      tz=UpScale(137);
+      ty=Upscale(156);
+      tz=Upscale(137);
       for (i=0; i <= (int) (0.018*MaxRGB); i++)
       {
         x_map[i+X]=0.003962014134275617*MaxRGB*i;
@@ -5506,8 +5506,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 
         YCC is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      ty=UpScale(156);
-      tz=UpScale(137);
+      ty=Upscale(156);
+      tz=Upscale(137);
       for (i=0; i <= (int) (0.018*MaxRGB); i++)
       {
         x_map[i+X]=0.003962014134275617*MaxRGB*i;
@@ -5858,10 +5858,10 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->red=(Quantum) UpScale(DownScale(q->red));
-      q->green=(Quantum) UpScale(DownScale(q->green));
-      q->blue=(Quantum) UpScale(DownScale(q->blue));
-      q->opacity=(Quantum) UpScale(DownScale(q->opacity));
+      q->red=Upscale(Downscale(q->red));
+      q->green=Upscale(Downscale(q->green));
+      q->blue=Upscale(Downscale(q->blue));
+      q->opacity=Upscale(Downscale(q->opacity));
       q++;
     }
     if (!SyncImagePixels(image))
@@ -5875,10 +5875,10 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
       q=image->colormap;
       for (i=0; i < (long) image->colors; i++)
       {
-        q->red=(Quantum) UpScale(DownScale(q->red));
-        q->green=(Quantum) UpScale(DownScale(q->green));
-        q->blue=(Quantum) UpScale(DownScale(q->blue));
-        q->opacity=(Quantum) UpScale(DownScale(q->opacity));
+        q->red=Upscale(Downscale(q->red));
+        q->green=Upscale(Downscale(q->green));
+        q->blue=Upscale(Downscale(q->blue));
+        q->opacity=Upscale(Downscale(q->opacity));
         q++;
       }
     }
@@ -6393,151 +6393,61 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   static const Quantum
     sRGBMap[351] =
     {
-      UpScale(0), UpScale(1), UpScale(2), UpScale(3), UpScale(4),
-      UpScale(5), UpScale(6), UpScale(7), UpScale(8), UpScale(9),
-      UpScale(10), UpScale(11), UpScale(12), UpScale(13), UpScale(14),
-      UpScale(15), UpScale(16), UpScale(17), UpScale(18), UpScale(19),
-      UpScale(20), UpScale(21), UpScale(22), UpScale(23), UpScale(24),
-      UpScale(25), UpScale(26), UpScale(27), UpScale(28), UpScale(29),
-      UpScale(29), UpScale(30), UpScale(31), UpScale(32), UpScale(33),
-      UpScale(34), UpScale(35), UpScale(36), UpScale(37), UpScale(38),
-      UpScale(39), UpScale(40), UpScale(41), UpScale(42), UpScale(43),
-      UpScale(44), UpScale(45), UpScale(46), UpScale(47), UpScale(48),
-      UpScale(49), UpScale(50), UpScale(51), UpScale(52), UpScale(53),
-      UpScale(54), UpScale(55), UpScale(56), UpScale(57), UpScale(58),
-      UpScale(59), UpScale(60), UpScale(61), UpScale(62), UpScale(63),
-      UpScale(65), UpScale(66), UpScale(67), UpScale(68), UpScale(69),
-      UpScale(70), UpScale(71), UpScale(72), UpScale(73), UpScale(74),
-      UpScale(75), UpScale(76), UpScale(77), UpScale(78), UpScale(79),
-      UpScale(80), UpScale(81), UpScale(82), UpScale(83), UpScale(84),
-      UpScale(85), UpScale(86), UpScale(87), UpScale(88), UpScale(89),
-      UpScale(90), UpScale(91), UpScale(92), UpScale(93), UpScale(95),
-      UpScale(96), UpScale(97), UpScale(98), UpScale(99), UpScale(100),
-      UpScale(101), UpScale(102), UpScale(103), UpScale(104), UpScale(105),
-      UpScale(106), UpScale(107), UpScale(108), UpScale(109), UpScale(110),
-      UpScale(111), UpScale(112), UpScale(114), UpScale(115), UpScale(116),
-      UpScale(117), UpScale(118), UpScale(119), UpScale(120), UpScale(121),
-      UpScale(122), UpScale(123), UpScale(124), UpScale(125), UpScale(126),
-      UpScale(127), UpScale(128), UpScale(129), UpScale(130), UpScale(131),
-      UpScale(132), UpScale(133), UpScale(135), UpScale(136), UpScale(137),
-      UpScale(138), UpScale(139), UpScale(140), UpScale(141), UpScale(142),
-      UpScale(143), UpScale(144), UpScale(145), UpScale(146), UpScale(147),
-      UpScale(148), UpScale(149), UpScale(150), UpScale(151), UpScale(152),
-      UpScale(153), UpScale(154), UpScale(155), UpScale(156), UpScale(157),
-      UpScale(158), UpScale(159), UpScale(160), UpScale(161), UpScale(162),
-      UpScale(163), UpScale(164), UpScale(165), UpScale(166), UpScale(167),
-      UpScale(168), UpScale(169), UpScale(170), UpScale(171), UpScale(172),
-      UpScale(173), UpScale(174), UpScale(175), UpScale(175), UpScale(176),
-      UpScale(177), UpScale(178), UpScale(179), UpScale(180), UpScale(181),
-      UpScale(182), UpScale(183), UpScale(184), UpScale(185), UpScale(186),
-      UpScale(187), UpScale(187), UpScale(188), UpScale(189), UpScale(190),
-      UpScale(191), UpScale(192), UpScale(193), UpScale(194), UpScale(194),
-      UpScale(195), UpScale(196), UpScale(197), UpScale(198), UpScale(199),
-      UpScale(199), UpScale(200), UpScale(201), UpScale(202), UpScale(203),
-      UpScale(203), UpScale(204), UpScale(205), UpScale(206), UpScale(207),
-      UpScale(207), UpScale(208), UpScale(209), UpScale(210), UpScale(210),
-      UpScale(211), UpScale(212), UpScale(213), UpScale(213), UpScale(214),
-      UpScale(215), UpScale(215), UpScale(216), UpScale(217), UpScale(218),
-      UpScale(218), UpScale(219), UpScale(220), UpScale(220), UpScale(221),
-      UpScale(222), UpScale(222), UpScale(223), UpScale(223), UpScale(224),
-      UpScale(225), UpScale(225), UpScale(226), UpScale(227), UpScale(227),
-      UpScale(228), UpScale(228), UpScale(229), UpScale(229), UpScale(230),
-      UpScale(230), UpScale(231), UpScale(232), UpScale(232), UpScale(233),
-      UpScale(233), UpScale(234), UpScale(234), UpScale(235), UpScale(235),
-      UpScale(235), UpScale(236), UpScale(236), UpScale(237), UpScale(237),
-      UpScale(238), UpScale(238), UpScale(238), UpScale(239), UpScale(239),
-      UpScale(240), UpScale(240), UpScale(240), UpScale(241), UpScale(241),
-      UpScale(242), UpScale(242), UpScale(242), UpScale(243), UpScale(243),
-      UpScale(243), UpScale(243), UpScale(244), UpScale(244), UpScale(244),
-      UpScale(245), UpScale(245), UpScale(245), UpScale(245), UpScale(246),
-      UpScale(246), UpScale(246), UpScale(247), UpScale(247), UpScale(247),
-      UpScale(247), UpScale(247), UpScale(248), UpScale(248), UpScale(248),
-      UpScale(248), UpScale(249), UpScale(249), UpScale(249), UpScale(249),
-      UpScale(249), UpScale(249), UpScale(250), UpScale(250), UpScale(250),
-      UpScale(250), UpScale(250), UpScale(250), UpScale(251), UpScale(251),
-      UpScale(251), UpScale(251), UpScale(251), UpScale(251), UpScale(252),
-      UpScale(252), UpScale(252), UpScale(252), UpScale(252), UpScale(252),
-      UpScale(252), UpScale(252), UpScale(252), UpScale(253), UpScale(253),
-      UpScale(253), UpScale(253), UpScale(253), UpScale(253), UpScale(253),
-      UpScale(253), UpScale(253), UpScale(254), UpScale(254), UpScale(254),
-      UpScale(254), UpScale(254), UpScale(254), UpScale(254), UpScale(254),
-      UpScale(254), UpScale(254), UpScale(254), UpScale(254), UpScale(255),
-      UpScale(255), UpScale(255), UpScale(255), UpScale(255), UpScale(255),
-      UpScale(255)
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+      19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 29, 30, 31, 32, 33,
+      34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+      50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 65, 66,
+      67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82,
+      83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 95, 96, 97, 98, 99,
+      100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
+      114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126,
+      127, 128, 129, 130, 131, 132, 133, 135, 136, 137, 138, 139, 140,
+      141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153,
+      154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166,
+      167, 168, 169, 170, 171, 172, 173, 174, 175, 175, 176, 177, 178,
+      179, 180, 181, 182, 183, 184, 185, 186, 187, 187, 188, 189, 190,
+      191, 192, 193, 194, 194, 195, 196, 197, 198, 199, 199, 200, 201,
+      202, 203, 203, 204, 205, 206, 207, 207, 208, 209, 210, 210, 211,
+      212, 213, 213, 214, 215, 215, 216, 217, 218, 218, 219, 220, 220,
+      221, 222, 222, 223, 223, 224, 225, 225, 226, 227, 227, 228, 228,
+      229, 229, 230, 230, 231, 232, 232, 233, 233, 234, 234, 235, 235,
+      235, 236, 236, 237, 237, 238, 238, 238, 239, 239, 240, 240, 240,
+      241, 241, 242, 242, 242, 243, 243, 243, 243, 244, 244, 244, 245,
+      245, 245, 245, 246, 246, 246, 247, 247, 247, 247, 247, 248, 248,
+      248, 248, 249, 249, 249, 249, 249, 249, 250, 250, 250, 250, 250,
+      250, 251, 251, 251, 251, 251, 251, 252, 252, 252, 252, 252, 252,
+      252, 252, 252, 253, 253, 253, 253, 253, 253, 253, 253, 253, 254,
+      254, 254, 254, 254, 254, 254, 254, 254, 254, 254, 254, 255, 255,
+      255, 255, 255, 255, 255
     },
     YCCMap[351] =  /* Photo CD information beyond 100% white, Gamma 2.2 */
     {
-      UpScale(0), UpScale(1), UpScale(2), UpScale(3), UpScale(4),
-      UpScale(5), UpScale(6), UpScale(7), UpScale(8), UpScale(9),
-      UpScale(10), UpScale(11), UpScale(12), UpScale(13), UpScale(14),
-      UpScale(15), UpScale(16), UpScale(17), UpScale(18), UpScale(19),
-      UpScale(20), UpScale(21), UpScale(22), UpScale(23), UpScale(24),
-      UpScale(25), UpScale(26), UpScale(27), UpScale(28), UpScale(29),
-      UpScale(30), UpScale(32), UpScale(33), UpScale(34), UpScale(35),
-      UpScale(36), UpScale(37), UpScale(38), UpScale(39), UpScale(40),
-      UpScale(41), UpScale(42), UpScale(43), UpScale(45), UpScale(46),
-      UpScale(47), UpScale(48), UpScale(49), UpScale(50), UpScale(51),
-      UpScale(52), UpScale(53), UpScale(54), UpScale(56), UpScale(57),
-      UpScale(58), UpScale(59), UpScale(60), UpScale(61), UpScale(62),
-      UpScale(63), UpScale(64), UpScale(66), UpScale(67), UpScale(68),
-      UpScale(69), UpScale(70), UpScale(71), UpScale(72), UpScale(73),
-      UpScale(74), UpScale(76), UpScale(77), UpScale(78), UpScale(79),
-      UpScale(80), UpScale(81), UpScale(82), UpScale(83), UpScale(84),
-      UpScale(86), UpScale(87), UpScale(88), UpScale(89), UpScale(90),
-      UpScale(91), UpScale(92), UpScale(93), UpScale(94), UpScale(95),
-      UpScale(97), UpScale(98), UpScale(99), UpScale(100), UpScale(101),
-      UpScale(102), UpScale(103), UpScale(104), UpScale(105), UpScale(106),
-      UpScale(107), UpScale(108), UpScale(110), UpScale(111), UpScale(112),
-      UpScale(113), UpScale(114), UpScale(115), UpScale(116), UpScale(117),
-      UpScale(118), UpScale(119), UpScale(120), UpScale(121), UpScale(122),
-      UpScale(123), UpScale(124), UpScale(125), UpScale(126), UpScale(127),
-      UpScale(129), UpScale(130), UpScale(131), UpScale(132), UpScale(133),
-      UpScale(134), UpScale(135), UpScale(136), UpScale(137), UpScale(138),
-      UpScale(139), UpScale(140), UpScale(141), UpScale(142), UpScale(143),
-      UpScale(144), UpScale(145), UpScale(146), UpScale(147), UpScale(148),
-      UpScale(149), UpScale(150), UpScale(151), UpScale(152), UpScale(153),
-      UpScale(154), UpScale(155), UpScale(156), UpScale(157), UpScale(158),
-      UpScale(159), UpScale(160), UpScale(161), UpScale(162), UpScale(163),
-      UpScale(164), UpScale(165), UpScale(166), UpScale(167), UpScale(168),
-      UpScale(169), UpScale(170), UpScale(171), UpScale(172), UpScale(173),
-      UpScale(174), UpScale(175), UpScale(176), UpScale(176), UpScale(177),
-      UpScale(178), UpScale(179), UpScale(180), UpScale(181), UpScale(182),
-      UpScale(183), UpScale(184), UpScale(185), UpScale(186), UpScale(187),
-      UpScale(188), UpScale(189), UpScale(190), UpScale(191), UpScale(192),
-      UpScale(193), UpScale(193), UpScale(194), UpScale(195), UpScale(196),
-      UpScale(197), UpScale(198), UpScale(199), UpScale(200), UpScale(201),
-      UpScale(201), UpScale(202), UpScale(203), UpScale(204), UpScale(205),
-      UpScale(206), UpScale(207), UpScale(207), UpScale(208), UpScale(209),
-      UpScale(210), UpScale(211), UpScale(211), UpScale(212), UpScale(213),
-      UpScale(214), UpScale(215), UpScale(215), UpScale(216), UpScale(217),
-      UpScale(218), UpScale(218), UpScale(219), UpScale(220), UpScale(221),
-      UpScale(221), UpScale(222), UpScale(223), UpScale(224), UpScale(224),
-      UpScale(225), UpScale(226), UpScale(226), UpScale(227), UpScale(228),
-      UpScale(228), UpScale(229), UpScale(230), UpScale(230), UpScale(231),
-      UpScale(232), UpScale(232), UpScale(233), UpScale(234), UpScale(234),
-      UpScale(235), UpScale(236), UpScale(236), UpScale(237), UpScale(237),
-      UpScale(238), UpScale(238), UpScale(239), UpScale(240), UpScale(240),
-      UpScale(241), UpScale(241), UpScale(242), UpScale(242), UpScale(243),
-      UpScale(243), UpScale(244), UpScale(244), UpScale(245), UpScale(245),
-      UpScale(245), UpScale(246), UpScale(246), UpScale(247), UpScale(247),
-      UpScale(247), UpScale(248), UpScale(248), UpScale(248), UpScale(249),
-      UpScale(249), UpScale(249), UpScale(249), UpScale(250), UpScale(250),
-      UpScale(250), UpScale(250), UpScale(251), UpScale(251), UpScale(251),
-      UpScale(251), UpScale(251), UpScale(252), UpScale(252), UpScale(252),
-      UpScale(252), UpScale(252), UpScale(253), UpScale(253), UpScale(253),
-      UpScale(253), UpScale(253), UpScale(253), UpScale(253), UpScale(253),
-      UpScale(253), UpScale(253), UpScale(253), UpScale(253), UpScale(253),
-      UpScale(254), UpScale(254), UpScale(254), UpScale(254), UpScale(254),
-      UpScale(254), UpScale(254), UpScale(254), UpScale(254), UpScale(254),
-      UpScale(254), UpScale(254), UpScale(254), UpScale(254), UpScale(254),
-      UpScale(254), UpScale(254), UpScale(254), UpScale(254), UpScale(255),
-      UpScale(255), UpScale(255), UpScale(255), UpScale(255), UpScale(255),
-      UpScale(255), UpScale(255), UpScale(255), UpScale(255), UpScale(255),
-      UpScale(255), UpScale(255), UpScale(255), UpScale(255), UpScale(255),
-      UpScale(255), UpScale(255), UpScale(255), UpScale(255), UpScale(255),
-      UpScale(255), UpScale(255), UpScale(255), UpScale(255), UpScale(255),
-      UpScale(255), UpScale(255), UpScale(255), UpScale(255), UpScale(255),
-      UpScale(255)
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+      19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 33, 34, 35,
+      36, 37, 38, 39, 40, 41, 42, 43, 45, 46, 47, 48, 49, 50, 51, 52,
+      53, 54, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70,
+      71, 72, 73, 74, 76, 77, 78, 79, 80, 81, 82, 83, 84, 86, 87, 88,
+      89, 90, 91, 92, 93, 94, 95, 97, 98, 99, 100, 101, 102, 103, 104,
+      105, 106, 107, 108, 110, 111, 112, 113, 114, 115, 116, 117, 118,
+      119, 120, 121, 122, 123, 124, 125, 126, 127, 129, 130, 131, 132,
+      133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145,
+      146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158,
+      159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171,
+      172, 173, 174, 175, 176, 176, 177, 178, 179, 180, 181, 182, 183,
+      184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 193, 194, 195,
+      196, 197, 198, 199, 200, 201, 201, 202, 203, 204, 205, 206, 207,
+      207, 208, 209, 210, 211, 211, 212, 213, 214, 215, 215, 216, 217,
+      218, 218, 219, 220, 221, 221, 222, 223, 224, 224, 225, 226, 226,
+      227, 228, 228, 229, 230, 230, 231, 232, 232, 233, 234, 234, 235,
+      236, 236, 237, 237, 238, 238, 239, 240, 240, 241, 241, 242, 242,
+      243, 243, 244, 244, 245, 245, 245, 246, 246, 247, 247, 247, 248,
+      248, 248, 249, 249, 249, 249, 250, 250, 250, 250, 251, 251, 251,
+      251, 251, 252, 252, 252, 252, 252, 253, 253, 253, 253, 253, 253,
+      253, 253, 253, 253, 253, 253, 253, 254, 254, 254, 254, 254, 254,
+      254, 254, 254, 254, 254, 254, 254, 254, 254, 254, 254, 254, 254,
+      255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+      255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+      255, 255, 255, 255, 255, 255
     };
 
   double
@@ -6653,12 +6563,12 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       {
         red_map[i+R]=1.40200*i;
         green_map[i+R]=0.0;
-        blue_map[i+R]=1.88000*(i-UpScale(137));
+        blue_map[i+R]=1.88000*(i-Upscale(137));
         red_map[i+G]=1.40200*i;
-        green_map[i+G]=(-0.444066)*(i-UpScale(156));
-        blue_map[i+G]=(-0.95692)*(i-UpScale(137));
+        green_map[i+G]=(-0.444066)*(i-Upscale(156));
+        blue_map[i+G]=(-0.95692)*(i-Upscale(137));
         red_map[i+B]=1.40200*i;
-        green_map[i+B]=2.28900*(i-UpScale(156));
+        green_map[i+B]=2.28900*(i-Upscale(156));
         blue_map[i+B]=0.0;
       }
       break;
@@ -6727,12 +6637,12 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       {
         red_map[i+R]=1.3584*i;
         green_map[i+R]=0.0;
-        blue_map[i+R]=1.8215*(i-UpScale(137));
+        blue_map[i+R]=1.8215*(i-Upscale(137));
         red_map[i+G]=1.3584*i;
-        green_map[i+G]=(-0.4302726)*(i-UpScale(156));
-        blue_map[i+G]=(-0.9271435)*(i-UpScale(137));
+        green_map[i+G]=(-0.4302726)*(i-Upscale(156));
+        blue_map[i+G]=(-0.9271435)*(i-Upscale(137));
         red_map[i+B]=1.3584*i;
-        green_map[i+B]=2.2179*(i-UpScale(156));
+        green_map[i+B]=2.2179*(i-Upscale(156));
         blue_map[i+B]=0.0;
       }
       break;
@@ -6843,21 +6753,21 @@ MagickExport unsigned int TransformRGBImage(Image *image,
             case sRGBColorspace:
             case YCCColorspace:
             {
-              red=(red < 0) ? 0 : (red > UpScale(350)) ? UpScale(350) : red+0.5;
-              green=(green < 0) ? 0 : (green > UpScale(350)) ? UpScale(350) :
+              red=(red < 0) ? 0 : (red > Upscale(350)) ? Upscale(350) : red+0.5;
+              green=(green < 0) ? 0 : (green > Upscale(350)) ? Upscale(350) :
                 green+0.5;
-              blue=(blue < 0) ? 0 : (blue > UpScale(350)) ? UpScale(350) :
+              blue=(blue < 0) ? 0 : (blue > Upscale(350)) ? Upscale(350) :
                 blue+0.5;
               if (colorspace == sRGBColorspace)
                 {
-                  q->red=sRGBMap[DownScale((int) red)];
-                  q->green=sRGBMap[DownScale((int) green)];
-                  q->blue=sRGBMap[DownScale((int) blue)];
+                  q->red=Upscale(sRGBMap[Downscale(red)]);
+                  q->green=Upscale(sRGBMap[Downscale(green)]);
+                  q->blue=Upscale(sRGBMap[Downscale(blue)]);
                   break;
                 }
-              q->red=(Quantum) YCCMap[DownScale((int) red)];
-              q->green=(Quantum) YCCMap[DownScale((int) green)];
-              q->blue=(Quantum) YCCMap[DownScale((int) blue)];
+              q->red=Upscale(YCCMap[Downscale(red)]);
+              q->green=Upscale(YCCMap[Downscale(green)]);
+              q->blue=Upscale(YCCMap[Downscale(blue)]);
               break;
             }
             default:
@@ -6901,21 +6811,21 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           case sRGBColorspace:
           case YCCColorspace:
           {
-            red=(red < 0) ? 0 : (red > UpScale(350)) ? UpScale(350) : red+0.5;
-            green=(green < 0) ? 0 : (green > UpScale(350)) ? UpScale(350) :
+            red=(red < 0) ? 0 : (red > Upscale(350)) ? Upscale(350) : red+0.5;
+            green=(green < 0) ? 0 : (green > Upscale(350)) ? Upscale(350) :
               green+0.5;
-            blue=(blue < 0) ? 0 : (blue > UpScale(350)) ? UpScale(350) :
+            blue=(blue < 0) ? 0 : (blue > Upscale(350)) ? Upscale(350) :
               blue+0.5;
             if (colorspace == sRGBColorspace)
               {
-                image->colormap[i].red=sRGBMap[DownScale((int) red)];
-                image->colormap[i].green=sRGBMap[DownScale((int) green)];
-                image->colormap[i].blue=sRGBMap[DownScale((int) blue)];
+                image->colormap[i].red=Upscale(sRGBMap[Downscale(red)]);
+                image->colormap[i].green=Upscale(sRGBMap[Downscale(green)]);
+                image->colormap[i].blue=Upscale(sRGBMap[Downscale(blue)]);
                 break;
               }
-            image->colormap[i].red=YCCMap[DownScale((int) red)];
-            image->colormap[i].green=YCCMap[DownScale((int) green)];
-            image->colormap[i].blue=YCCMap[DownScale((int) blue)];
+            image->colormap[i].red=Upscale(YCCMap[Downscale(red)]);
+            image->colormap[i].green=Upscale(YCCMap[Downscale(green)]);
+            image->colormap[i].blue=Upscale(YCCMap[Downscale(blue)]);
             break;
           }
           default:

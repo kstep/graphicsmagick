@@ -341,9 +341,9 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
           break;
         for (x=0; x < (long) image->columns; x++)
         {
-          FormatString(buffer,"%c%c%c",(unsigned char) DownScale(p->red),
-            (unsigned char) DownScale(p->green),(unsigned char)
-            DownScale(p->blue));
+          FormatString(buffer,"%c%c%c",(unsigned char) Downscale(p->red),
+            (unsigned char) Downscale(p->green),(unsigned char)
+            Downscale(p->blue));
           (void) WriteBlobString(image,buffer);
           p++;
         }

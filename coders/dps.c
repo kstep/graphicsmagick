@@ -367,11 +367,11 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             pixel=XGetPixel(dps_image,x,y);
             index=(pixel >> red_shift) & red_mask;
-            q->red=XDownScale(colors[index].red);
+            q->red=XDownscale(colors[index].red);
             index=(pixel >> green_shift) & green_mask;
-            q->green=XDownScale(colors[index].green);
+            q->green=XDownscale(colors[index].green);
             index=(pixel >> blue_shift) & blue_mask;
-            q->blue=XDownScale(colors[index].blue);
+            q->blue=XDownscale(colors[index].blue);
             q++;
           }
           if (!SyncImagePixels(image))
@@ -389,11 +389,11 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             pixel=XGetPixel(dps_image,x,y);
             color=(pixel >> red_shift) & red_mask;
-            q->red=XDownScale((color*65535L)/red_mask);
+            q->red=XDownscale((color*65535L)/red_mask);
             color=(pixel >> green_shift) & green_mask;
-            q->green=XDownScale((color*65535L)/green_mask);
+            q->green=XDownscale((color*65535L)/green_mask);
             color=(pixel >> blue_shift) & blue_mask;
-            q->blue=XDownScale((color*65535L)/blue_mask);
+            q->blue=XDownscale((color*65535L)/blue_mask);
             q++;
           }
           if (!SyncImagePixels(image))
@@ -419,9 +419,9 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       for (i=0; i < (long) image->colors; i++)
       {
-        image->colormap[colors[i].pixel].red=XDownScale(colors[i].red);
-        image->colormap[colors[i].pixel].green=XDownScale(colors[i].green);
-        image->colormap[colors[i].pixel].blue=XDownScale(colors[i].blue);
+        image->colormap[colors[i].pixel].red=XDownscale(colors[i].red);
+        image->colormap[colors[i].pixel].green=XDownscale(colors[i].green);
+        image->colormap[colors[i].pixel].blue=XDownscale(colors[i].blue);
       }
       /*
         Convert X image to PseudoClass packets.

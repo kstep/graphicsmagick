@@ -599,8 +599,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   if (image->matte && (p->opacity == TransparentOpacity)) \
     FormatString(buffer,"ffffff%02x",(unsigned int) Min(length,0xff)); \
   else \
-    FormatString(buffer,"%02lx%02lx%02lx%02lx",DownScale(pixel.red), \
-      DownScale(pixel.green),DownScale(pixel.blue), \
+    FormatString(buffer,"%02lx%02lx%02lx%02lx",Downscale(pixel.red), \
+      Downscale(pixel.green),Downscale(pixel.blue), \
       (unsigned long) Min(length,0xff)); \
   (void) WriteBlobString(image,buffer); \
 }
@@ -1266,7 +1266,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   (void) strcpy(buffer,"ffffff");
                 else
                   FormatString(buffer,"%02lx%02lx%02lx",
-                    DownScale(p->red),DownScale(p->green),DownScale(p->blue));
+                    Downscale(p->red),Downscale(p->green),Downscale(p->blue));
                 (void) WriteBlobString(image,buffer);
                 i++;
                 if (i == 12)
@@ -1306,7 +1306,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   break;
                 for (x=0; x < (long) image->columns; x++)
                 {
-                  FormatString(buffer,"%02lx",DownScale(Intensity(*p)));
+                  FormatString(buffer,"%02lx",Downscale(Intensity(*p)));
                   (void) WriteBlobString(image,buffer);
                   i++;
                   if (i == 36)
@@ -1401,9 +1401,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           for (i=0; i < (long) image->colors; i++)
           {
             FormatString(buffer,"%02lx%02lx%02lx\n",
-              DownScale(image->colormap[i].red),
-              DownScale(image->colormap[i].green),
-              DownScale(image->colormap[i].blue));
+              Downscale(image->colormap[i].red),
+              Downscale(image->colormap[i].green),
+              Downscale(image->colormap[i].blue));
             (void) WriteBlobString(image,buffer);
           }
           switch (image_info->compression)

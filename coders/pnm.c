@@ -934,7 +934,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PGM image.
         */
         FormatString(buffer,"%ld\n",
-          image->depth > 8 ? MaxRGB : DownScale(MaxRGB));
+          image->depth > 8 ? MaxRGB : Downscale(MaxRGB));
         (void) WriteBlobString(image,buffer);
         i=0;
         for (y=0; y < (long) image->rows; y++)
@@ -946,7 +946,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           {
             index=Intensity(*p);
             FormatString(buffer," %d",
-              image->depth > 8 ? index : DownScale(index));
+              image->depth > 8 ? index : Downscale(index));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 12)
@@ -968,7 +968,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a PNM image.
         */
         FormatString(buffer,"%ld\n",
-          image->depth > 8 ? MaxRGB : DownScale(MaxRGB));
+          image->depth > 8 ? MaxRGB : Downscale(MaxRGB));
         (void) WriteBlobString(image,buffer);
         i=0;
         for (y=0; y < (long) image->rows; y++)
@@ -979,9 +979,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             FormatString(buffer," %d %d %d",
-              image->depth > 8 ? p->red : DownScale(p->red),
-              image->depth > 8 ? p->green : DownScale(p->green),
-              image->depth > 8 ? p->blue : DownScale(p->blue));
+              image->depth > 8 ? p->red : Downscale(p->red),
+              image->depth > 8 ? p->green : Downscale(p->green),
+              image->depth > 8 ? p->blue : Downscale(p->blue));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 4)
@@ -1046,7 +1046,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        FormatString(buffer,"%lu\n",DownScale(MaxRGB));
+        FormatString(buffer,"%lu\n",Downscale(MaxRGB));
         (void) WriteBlobString(image,buffer);
         for (y=0; y < (long) image->rows; y++)
         {
@@ -1055,7 +1055,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            index=DownScale((int) Intensity(*p));
+            index=Downscale((int) Intensity(*p));
             (void) WriteBlobByte(image,index);
             p++;
           }
@@ -1087,7 +1087,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        FormatString(buffer,"%lu\n",DownScale(MaxRGB));
+        FormatString(buffer,"%lu\n",Downscale(MaxRGB));
         (void) WriteBlobString(image,buffer);
         for (y=0; y < (long) image->rows; y++)
         {
@@ -1097,9 +1097,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           q=pixels;
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=DownScale(p->red);
-            *q++=DownScale(p->green);
-            *q++=DownScale(p->blue);
+            *q++=Downscale(p->red);
+            *q++=Downscale(p->green);
+            *q++=Downscale(p->blue);
             p++;
           }
           (void) WriteBlob(image,q-pixels,(char *) pixels);
@@ -1200,13 +1200,13 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             if (!image_info->dither)
-              pixel=(Quantum) ((DownScale(p->red) & 0xe0) |
-                ((DownScale(p->green) & 0xe0) >> 3) |
-                ((DownScale(p->blue) & 0xc0) >> 6));
+              pixel=(Quantum) ((Downscale(p->red) & 0xe0) |
+                ((Downscale(p->green) & 0xe0) >> 3) |
+                ((Downscale(p->blue) & 0xc0) >> 6));
             else
-              pixel=(Quantum) ((red_map[i][j][DownScale(p->red)] & 0xe0) |
-                ((green_map[i][j][DownScale(p->green)] & 0xe0) >> 3) |
-                ((blue_map[i][j][DownScale(p->blue)] & 0xc0) >> 6));
+              pixel=(Quantum) ((red_map[i][j][Downscale(p->red)] & 0xe0) |
+                ((green_map[i][j][Downscale(p->green)] & 0xe0) >> 3) |
+                ((blue_map[i][j][Downscale(p->blue)] & 0xc0) >> 6));
             (void) WriteBlobByte(image,pixel);
             p++;
             j++;

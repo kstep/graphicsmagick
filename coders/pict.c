@@ -905,11 +905,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               Initialize image background color.
             */
             image->background_color.red=(Quantum)
-              XDownScale(ReadBlobMSBShort(image));
+              XDownscale(ReadBlobMSBShort(image));
             image->background_color.green=(Quantum)
-              XDownScale(ReadBlobMSBShort(image));
+              XDownscale(ReadBlobMSBShort(image));
             image->background_color.blue=(Quantum)
-              XDownScale(ReadBlobMSBShort(image));
+              XDownscale(ReadBlobMSBShort(image));
             break;
           }
           case 0x70:
@@ -1010,11 +1010,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       if (flags & 0x8000)
                         j=i;
                       tile_image->colormap[j].red=(Quantum)
-                        XDownScale(ReadBlobMSBShort(image));
+                        XDownscale(ReadBlobMSBShort(image));
                       tile_image->colormap[j].green=(Quantum)
-                        XDownScale(ReadBlobMSBShort(image));
+                        XDownscale(ReadBlobMSBShort(image));
                       tile_image->colormap[j].blue=(Quantum)
-                        XDownScale(ReadBlobMSBShort(image));
+                        XDownscale(ReadBlobMSBShort(image));
                     }
                   }
                 else
@@ -1080,24 +1080,24 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       {
                         i=(*p++);
                         j=(*p);
-                        q->red=(Quantum) UpScale((i & 0x7c) << 1);
-                        q->green=(Quantum) UpScale(((i & 0x03) << 6) | ((j & 0xe0) >> 2));
-                        q->blue=(Quantum) UpScale((j & 0x1f) << 3);
+                        q->red=Upscale((i & 0x7c) << 1);
+                        q->green=Upscale(((i & 0x03) << 6) | ((j & 0xe0) >> 2));
+                        q->blue=Upscale((j & 0x1f) << 3);
                       }
                     else
                       if (!tile_image->matte)
                         {
-                          q->red=(Quantum) UpScale(*p);
-                          q->green=(Quantum) UpScale(*(p+tile_image->columns));
-                          q->blue=(Quantum) UpScale(*(p+2*tile_image->columns));
+                          q->red=Upscale(*p);
+                          q->green=Upscale(*(p+tile_image->columns));
+                          q->blue=Upscale(*(p+2*tile_image->columns));
                         }
                       else
                         {
-                          q->opacity=(Quantum) (MaxRGB-UpScale(*p));
-                          q->red=(Quantum) UpScale(*(p+tile_image->columns));
+                          q->opacity=(Quantum) (MaxRGB-Upscale(*p));
+                          q->red=Upscale(*(p+tile_image->columns));
                           q->green=(Quantum)
-                            UpScale(*(p+2*tile_image->columns));
-                          q->blue=(Quantum) UpScale(*(p+3*tile_image->columns));
+                            Upscale(*(p+2*tile_image->columns));
+                          q->blue=Upscale(*(p+3*tile_image->columns));
                         }
                   }
                 p++;
@@ -1757,11 +1757,11 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
             }
           for (x=0; x < (long) image->columns; x++)
           {
-            *red++=DownScale(p->red);
-            *green++=DownScale(p->green);
-            *blue++=DownScale(p->blue);
+            *red++=Downscale(p->red);
+            *green++=Downscale(p->green);
+            *blue++=Downscale(p->blue);
             if (image->matte)
-              *opacity++=MaxRGB-DownScale(p->opacity);
+              *opacity++=MaxRGB-Downscale(p->opacity);
             p++;
           }
           count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);

@@ -860,11 +860,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           q+=image->columns-1;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=(Quantum) UpScale(TIFFGetR(*p));
-            q->green=(Quantum) UpScale(TIFFGetG(*p));
-            q->blue=(Quantum) UpScale(TIFFGetB(*p));
+            q->red=Upscale(TIFFGetR(*p));
+            q->green=Upscale(TIFFGetG(*p));
+            q->blue=Upscale(TIFFGetB(*p));
             if (image->matte)
-              q->opacity=(Quantum) (MaxRGB-UpScale(TIFFGetA(*p)));
+              q->opacity=(Quantum) (MaxRGB-Upscale(TIFFGetA(*p)));
             p--;
             q--;
           }

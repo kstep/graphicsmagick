@@ -594,9 +594,9 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
       index=MaxTreeDepth-1;
       for (level=1; level <= MaxTreeDepth; level++)
       {
-        id=(unsigned int) (((DownScale(p->red) >> index) & 0x01) << 2 |
-           ((DownScale(p->green) >> index) & 0x01) << 1 |
-           ((DownScale(p->blue) >> index) & 0x01));
+        id=(unsigned int) (((Downscale(p->red) >> index) & 0x01) << 2 |
+           ((Downscale(p->green) >> index) & 0x01) << 1 |
+           ((Downscale(p->blue) >> index) & 0x01));
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
             node_info->child[id]=GetNodeInfo(cube_info,level);
@@ -1029,9 +1029,9 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
       index=MaxTreeDepth-1;
       for (level=1; level < MaxTreeDepth; level++)
       {
-        id=(unsigned int) (((DownScale(p->red) >> index) & 0x01) << 2 |
-           ((DownScale(p->green) >> index) & 0x01) << 1 |
-           ((DownScale(p->blue) >> index) & 0x01));
+        id=(unsigned int) (((Downscale(p->red) >> index) & 0x01) << 2 |
+           ((Downscale(p->green) >> index) & 0x01) << 1 |
+           ((Downscale(p->blue) >> index) & 0x01));
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
             node_info->child[id]=GetNodeInfo(cube_info,level);
@@ -1298,11 +1298,11 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
         red,
         scale;
 
-      scale=strchr(name,'%') == (char *) NULL ? 1.0 : DownScale(MaxRGB)/100.0;
+      scale=strchr(name,'%') == (char *) NULL ? 1.0 : Downscale(MaxRGB)/100.0;
       (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf",&red,&green,&blue);
-      color->red=(Quantum) UpScale((int) (scale*red+0.5));
-      color->green=(Quantum) UpScale((int) (scale*green+0.5));
-      color->blue=(Quantum) UpScale((int) (scale*blue+0.5));
+      color->red=Upscale((int) (scale*red+0.5));
+      color->green=Upscale((int) (scale*green+0.5));
+      color->blue=Upscale((int) (scale*blue+0.5));
       color->opacity=OpaqueOpacity;
       return(True);
     }
@@ -1315,13 +1315,13 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
         red,
         scale;
 
-      scale=strchr(name,'%') == (char *) NULL ? 1.0 : DownScale(MaxRGB)/100.0;
+      scale=strchr(name,'%') == (char *) NULL ? 1.0 : Downscale(MaxRGB)/100.0;
       (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf",&red,&green,
         &blue,&opacity);
-      color->red=(Quantum) UpScale((int) (scale*red+0.5));
-      color->green=(Quantum) UpScale((int) (scale*green+0.5));
-      color->blue=(Quantum) UpScale((int) (scale*blue+0.5));
-      color->opacity=(Quantum) UpScale((int) (scale*opacity+0.5));
+      color->red=Upscale((int) (scale*red+0.5));
+      color->green=Upscale((int) (scale*green+0.5));
+      color->blue=Upscale((int) (scale*blue+0.5));
+      color->opacity=Upscale((int) (scale*opacity+0.5));
       return(True);
     }
   GetExceptionInfo(&exception);
@@ -1403,17 +1403,17 @@ MagickExport unsigned int QueryColorname(const Image *image,
   if (!image->matte || (color->opacity == OpaqueOpacity))
     {
       if (image->depth <= 8)
-        FormatString(name,"#%02x%02x%02x",DownScale(color->red),
-          DownScale(color->green),DownScale(color->blue));
+        FormatString(name,"#%02x%02x%02x",Downscale(color->red),
+          Downscale(color->green),Downscale(color->blue));
       else
         FormatString(name,"#%04x%04x%04x",(unsigned int) color->red,
           (unsigned int) color->green,(unsigned int) color->blue);
       return(False);
     }
   if (image->depth <= 8)
-    FormatString(name,"#%02x%02x%02x%02x",DownScale(color->red),
-      DownScale(color->green),DownScale(color->blue),
-      DownScale(color->opacity));
+    FormatString(name,"#%02x%02x%02x%02x",Downscale(color->red),
+      Downscale(color->green),Downscale(color->blue),
+      Downscale(color->opacity));
   else
     FormatString(name,"#%04x%04x%04x%04x",(unsigned int) color->red,
       (unsigned int) color->green,(unsigned int) color->blue,
@@ -1535,7 +1535,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"blue") == 0)
           {
-            color_list->color.blue=(Quantum) UpScale(atol(token));
+            color_list->color.blue=Upscale(atol(token));
             break;
           }
         break;
@@ -1561,7 +1561,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"green") == 0)
           {
-            color_list->color.green=(Quantum) UpScale(atol(token));
+            color_list->color.green=Upscale(atol(token));
             break;
           }
         break;
@@ -1581,7 +1581,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"opacity") == 0)
           {
-            color_list->color.opacity=(Quantum) UpScale(atol(token));
+            color_list->color.opacity=Upscale(atol(token));
             break;
           }
         break;
@@ -1591,7 +1591,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"red") == 0)
           {
-            color_list->color.red=(Quantum) UpScale(atol(token));
+            color_list->color.red=Upscale(atol(token));
             break;
           }
         break;

@@ -250,9 +250,9 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       p=icon_colormap;
       for (i=0; i < (long) image->colors; i++)
       {
-        image->colormap[i].blue=(Quantum) UpScale(*p++);
-        image->colormap[i].green=(Quantum) UpScale(*p++);
-        image->colormap[i].red=(Quantum) UpScale(*p++);
+        image->colormap[i].blue=Upscale(*p++);
+        image->colormap[i].green=Upscale(*p++);
+        image->colormap[i].red=Upscale(*p++);
         p++;
       }
       LiberateMemory((void **) &icon_colormap);
@@ -391,11 +391,11 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->blue=(Quantum) UpScale(ReadBlobByte(image));
-            q->green=(Quantum) UpScale(ReadBlobByte(image));
-            q->red=(Quantum) UpScale(ReadBlobByte(image));
+            q->blue=Upscale(ReadBlobByte(image));
+            q->green=Upscale(ReadBlobByte(image));
+            q->red=Upscale(ReadBlobByte(image));
             if (image->matte)
-              q->opacity=(Quantum) UpScale(ReadBlobByte(image));
+              q->opacity=Upscale(ReadBlobByte(image));
             q++;
           }
           if (!SyncImagePixels(image))

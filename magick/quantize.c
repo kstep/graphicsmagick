@@ -417,9 +417,9 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
         node_info=cube_info->root;
         for (index=MaxTreeDepth-1; (int) index > 0; index--)
         {
-          id=(unsigned int) (((DownScale(q->red) >> index) & 0x01) << 2 |
-             ((DownScale(q->green) >> index) & 0x01) << 1 |
-             ((DownScale(q->blue) >> index) & 0x01));
+          id=(unsigned int) (((Downscale(q->red) >> index) & 0x01) << 2 |
+             ((Downscale(q->green) >> index) & 0x01) << 1 |
+             ((Downscale(q->blue) >> index) & 0x01));
           if ((node_info->census & (1 << id)) == 0)
             break;
           node_info=node_info->child[id];
@@ -602,9 +602,9 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
       for (level=1; level <= cube_info->depth; level++)
       {
         bisect*=0.5;
-        id=(unsigned int) (((DownScale(p->red) >> index) & 0x01) << 2 |
-           ((DownScale(p->green) >> index) & 0x01) << 1 |
-           ((DownScale(p->blue) >> index) & 0x01));
+        id=(unsigned int) (((Downscale(p->red) >> index) & 0x01) << 2 |
+           ((Downscale(p->green) >> index) & 0x01) << 1 |
+           ((Downscale(p->blue) >> index) & 0x01));
         mid_red+=id & 4 ? bisect : -bisect;
         mid_green+=id & 2 ? bisect : -bisect;
         mid_blue+=id & 1 ? bisect : -bisect;
@@ -1037,9 +1037,9 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           node_info=p->root;
           for (index=MaxTreeDepth-1; (int) index > 0; index--)
           {
-            id=(unsigned int) (((DownScale(red) >> index) & 0x01) << 2 |
-               ((DownScale(green) >> index) & 0x01) << 1 |
-               ((DownScale(blue) >> index) & 0x01));
+            id=(unsigned int) (((Downscale(red) >> index) & 0x01) << 2 |
+               ((Downscale(green) >> index) & 0x01) << 1 |
+               ((Downscale(blue) >> index) & 0x01));
             if ((node_info->census & (1 << id)) == 0)
               break;
             node_info=node_info->child[id];
@@ -1667,22 +1667,14 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
   static Quantum
     DitherMatrix[8][8] =
     {
-      { UpScale(  0), UpScale(192), UpScale( 48), UpScale(240),
-        UpScale( 12), UpScale(204), UpScale( 60), UpScale(252) },
-      { UpScale(128), UpScale( 64), UpScale(176), UpScale(112),
-        UpScale(140), UpScale( 76), UpScale(188), UpScale(124) },
-      { UpScale( 32), UpScale(224), UpScale( 16), UpScale(208),
-        UpScale( 44), UpScale(236), UpScale( 28), UpScale(220) },
-      { UpScale(160), UpScale( 96), UpScale(144), UpScale( 80),
-        UpScale(172), UpScale(108), UpScale(156), UpScale( 92) },
-      { UpScale(  8), UpScale(200), UpScale( 56), UpScale(248),
-        UpScale(  4), UpScale(196), UpScale( 52), UpScale(244) },
-      { UpScale(136), UpScale( 72), UpScale(184), UpScale(120),
-        UpScale(132), UpScale( 68), UpScale(180), UpScale(116) },
-      { UpScale( 40), UpScale(232), UpScale( 24), UpScale(216),
-        UpScale( 36), UpScale(228), UpScale( 20), UpScale(212) },
-      { UpScale(168), UpScale(104), UpScale(152), UpScale( 88),
-        UpScale(164), UpScale(100), UpScale(148), UpScale( 84) }
+      {   0, 192,  48, 240,  12, 204,  60, 252 },
+      { 128,  64, 176, 112, 140,  76, 188, 124 },
+      {  32, 224,  16, 208,  44, 236,  28, 220 },
+      { 160,  96, 144,  80, 172, 108, 156,  92 },
+      {   8, 200,  56, 248,   4, 196,  52, 244 },
+      { 136,  72, 184, 120, 132,  68, 180, 116 },
+      {  40, 232,  24, 216,  36, 228,  20, 212 },
+      { 168, 104, 152,  88, 164, 100, 148,  84 }
     };
 
   IndexPacket
@@ -1718,7 +1710,8 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=(Quantum) Intensity(*q) > DitherMatrix[y & 0x07][x & 0x07] ? 1 : 0;
+      index=(Quantum)
+        Intensity(*q) > Upscale(DitherMatrix[y & 0x07][x & 0x07]) ? 1 : 0;
       indexes[x]=index;
       q->red=image->colormap[index].red;
       q->green=image->colormap[index].green;

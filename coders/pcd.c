@@ -605,9 +605,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=(Quantum) UpScale(*yy++);
-            q->green=(Quantum) UpScale(*c1++);
-            q->blue=(Quantum) UpScale(*c2++);
+            q->red=Upscale(*yy++);
+            q->green=Upscale(*c1++);
+            q->blue=Upscale(*c2++);
             q++;
           }
           if (!SyncImagePixels(image))
@@ -709,9 +709,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->red=(Quantum) UpScale(*yy++);
-      q->green=(Quantum) UpScale(*c1++);
-      q->blue=(Quantum) UpScale(*c2++);
+      q->red=Upscale(*yy++);
+      q->green=Upscale(*c1++);
+      q->blue=Upscale(*c2++);
       q++;
     }
     if (!SyncImagePixels(image))
@@ -947,7 +947,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       break;
     for (x=0; x < (long) (tile_image->columns << 1); x++)
     {
-      (void) WriteBlobByte(image,DownScale(p->red));
+      (void) WriteBlobByte(image,Downscale(p->red));
       p++;
     }
     q=AcquireImagePixels(downsample_image,0,y >> 1,downsample_image->columns,
@@ -956,7 +956,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       break;
     for (x=0; x < (long) downsample_image->columns; x++)
     {
-      (void) WriteBlobByte(image,DownScale(q->green));
+      (void) WriteBlobByte(image,Downscale(q->green));
       q++;
     }
     q=AcquireImagePixels(downsample_image,0,y >> 1,downsample_image->columns,
@@ -965,7 +965,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       break;
     for (x=0; x < (long) downsample_image->columns; x++)
     {
-      (void) WriteBlobByte(image,DownScale(q->blue));
+      (void) WriteBlobByte(image,Downscale(q->blue));
       q++;
     }
     if (QuantumTick(y,tile_image->rows))

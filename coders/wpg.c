@@ -263,9 +263,9 @@ register IndexPacket *indexes;
 	    break;
           for (x=0; x < (long) image->columns; x++)
              {
-             q->red=(Quantum) UpScale(*p++);
-             q->green=(Quantum) UpScale(*p++);
-             q->blue=(Quantum) UpScale(*p++);
+             q->red=Upscale(*p++);
+             q->green=Upscale(*p++);
+             q->blue=Upscale(*p++);
              q++;
              }
           if (!SyncImagePixels(image))
@@ -649,9 +649,9 @@ typedef struct {
 			goto NoMemory;
 		 for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
 		   {
-		   image->colormap[i].red=(Quantum) UpScale(ReadBlobByte(image));
-		   image->colormap[i].green=(Quantum) UpScale(ReadBlobByte(image));
-		   image->colormap[i].blue=(Quantum) UpScale(ReadBlobByte(image));
+		   image->colormap[i].red=Upscale(ReadBlobByte(image));
+		   image->colormap[i].green=Upscale(ReadBlobByte(image));
+		   image->colormap[i].blue=Upscale(ReadBlobByte(image));
 		   }
 		 break;
 		 
@@ -713,7 +713,7 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 				{  /*fix crippled monochrome palette*/
 				image->colormap[1].red =
 				image->colormap[1].green =
-				image->colormap[1].blue = UpScale(255);
+				image->colormap[1].blue = Upscale(255);
 				}
 		       }      
 
@@ -767,9 +767,9 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 					 image);
 	     for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
 		   {
-		   image->colormap[i].red=(Quantum) UpScale(ReadBlobByte(image));
-		   image->colormap[i].green=(Quantum) UpScale(ReadBlobByte(image));
-		   image->colormap[i].blue=(Quantum) UpScale(ReadBlobByte(image));
+		   image->colormap[i].red=Upscale(ReadBlobByte(image));
+		   image->colormap[i].green=Upscale(ReadBlobByte(image));
+		   image->colormap[i].blue=Upscale(ReadBlobByte(image));
 		   (void) ReadBlobByte(image);   /*Opacity??*/
 		   }
 	     break;

@@ -156,13 +156,13 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
       y1=ReadBlobByte(image);
       v=ReadBlobByte(image);
       y2=ReadBlobByte(image);
-      q->red=(Quantum) UpScale(y1);
-      q->green=(Quantum) UpScale(u);
-      q->blue=(Quantum) UpScale(v);
+      q->red=Upscale(y1);
+      q->green=Upscale(u);
+      q->blue=Upscale(v);
       q++;
-      q->red=(Quantum) UpScale(y2);
-      q->green=(Quantum) UpScale(u);
-      q->blue=(Quantum) UpScale(v);
+      q->red=Upscale(y2);
+      q->green=Upscale(u);
+      q->blue=Upscale(v);
       q++;
     }
     if (!SyncImagePixels(image))
@@ -329,10 +329,10 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
     {
       if (full)
         {
-          (void) WriteBlobByte(image,DownScale((u+p->green) >> 1));
-          (void) WriteBlobByte(image,DownScale(y1));
-          (void) WriteBlobByte(image,DownScale((v+p->blue) >> 1));
-          (void) WriteBlobByte(image,DownScale(p->red));
+          (void) WriteBlobByte(image,Downscale((u+p->green) >> 1));
+          (void) WriteBlobByte(image,Downscale(y1));
+          (void) WriteBlobByte(image,Downscale((v+p->blue) >> 1));
+          (void) WriteBlobByte(image,Downscale(p->red));
           full=False;
         }
       else

@@ -226,10 +226,10 @@ static int GetCutColors(Image *image)
 {
 int MaxColor,x,y;
 PixelPacket *q;
-int UpScale16;
+int Upscale16;
 
 /*This procedure computes number of colors in Grayed R[i]=G[i]=B[i] image*/
-UpScale16=(Quantum) UpScale(16);
+Upscale16=Upscale(16);
 MaxColor=0;
  for (y=0; y < (long)image->rows; y++)  
 	{
@@ -237,12 +237,12 @@ MaxColor=0;
 	for (x=0; x < (long)image->columns; x++)  
              {  	   
 	     if(MaxColor<q->red) MaxColor=q->red;
-	     if(MaxColor>=(Quantum) UpScale16) return(255);	
+	     if(MaxColor>=Upscale16) return(255);	
 	     q++;	
 	     }	
 	}
-if(MaxColor<UpScale(2)) MaxColor=2;		
-else if(MaxColor<UpScale(16)) MaxColor=16;		
+if(MaxColor<Upscale(2)) MaxColor=2;		
+else if(MaxColor<Upscale(16)) MaxColor=16;		
 return(MaxColor);
 }
 
@@ -461,9 +461,9 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    
    for (i=0; i < (long)image->colors; i++)
 	   {
-	   image->colormap[i].red=(Quantum) UpScale(i);
-	   image->colormap[i].green=(Quantum) UpScale(i);
-	   image->colormap[i].blue=(Quantum) UpScale(i);
+	   image->colormap[i].red=Upscale(i);
+	   image->colormap[i].green=Upscale(i);
+	   image->colormap[i].blue=Upscale(i);
 	   }
    }
 
@@ -525,7 +525,7 @@ if(palette==NULL)
          {
 	 for (i=0; i < (long)image->colors; i++)
 	   {
-	   j=(Quantum) UpScale(i);
+	   j=Upscale(i);
 	   if(image->colormap[i].red!=(Quantum) j) goto Finish;
 	   if(image->colormap[i].green!=(Quantum) j) goto Finish;
 	   if(image->colormap[i].blue!=(Quantum) j) goto Finish;
@@ -537,7 +537,7 @@ if(palette==NULL)
 	   q=SetImagePixels(image,0,i,image->columns,1);  
 	   for (j=0; j < (long)image->columns; j++)  
              {  	   
-	     if(q->red==(Quantum) UpScale(1))
+	     if(q->red==Upscale(1))
 	        {
 	        q->red=q->green=q->blue=MaxRGB;
 	        }

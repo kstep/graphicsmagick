@@ -169,9 +169,9 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (long) image->columns; x++)
       {
-        q->red=(Quantum) UpScale(*p++);
-        q->green=(Quantum) UpScale(*p++);
-        q->blue=(Quantum) UpScale(*p++);
+        q->red=Upscale(*p++);
+        q->green=Upscale(*p++);
+        q->blue=Upscale(*p++);
         q++;
       }
       if (!SyncImagePixels(image))
@@ -362,9 +362,9 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
       q=pixels;
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=DownScale(p->red);
-        *q++=DownScale(p->green);
-        *q++=DownScale(p->blue);
+        *q++=Downscale(p->red);
+        *q++=Downscale(p->green);
+        *q++=Downscale(p->blue);
         p++;
       }
       (void) WriteBlob(image,q-pixels,(char *) pixels);

@@ -167,10 +167,10 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (long) image->columns; x++)
       {
-        q->opacity=(Quantum) (MaxRGB-UpScale(*p++));
-        q->red=(Quantum) UpScale(*p++);
-        q->green=(Quantum) UpScale(*p++);
-        q->blue=(Quantum) UpScale(*p++);
+        q->opacity=(Quantum) (MaxRGB-Upscale(*p++));
+        q->red=Upscale(*p++);
+        q->green=Upscale(*p++);
+        q->blue=Upscale(*p++);
         image->matte|=(q->opacity != OpaqueOpacity);
         q++;
       }
@@ -357,10 +357,10 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
       q=pixels;
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=MaxRGB-DownScale((image->matte ? p->opacity : OpaqueOpacity));
-        *q++=DownScale(p->red);
-        *q++=DownScale(p->green);
-        *q++=DownScale(p->blue);
+        *q++=MaxRGB-Downscale((image->matte ? p->opacity : OpaqueOpacity));
+        *q++=Downscale(p->red);
+        *q++=Downscale(p->green);
+        *q++=Downscale(p->blue);
         p++;
       }
       (void) WriteBlob(image,q-pixels,(char *) pixels);

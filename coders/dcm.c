@@ -3085,11 +3085,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               index=ValidateColormapIndex(image,*p | *(p+1) << 8);
               if (element == 0x1201)
-                image->colormap[i].red=(Quantum) XDownScale(index);
+                image->colormap[i].red=(Quantum) XDownscale(index);
               if (element == 0x1202)
-                image->colormap[i].green=(Quantum) XDownScale(index);
+                image->colormap[i].green=(Quantum) XDownscale(index);
               if (element == 0x1203)
-                image->colormap[i].blue=(Quantum) XDownScale(index);
+                image->colormap[i].blue=(Quantum) XDownscale(index);
               p+=2;
             }
             break;
@@ -3228,11 +3228,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               switch ((int) i)
               {
-                case 0: q->red=(Quantum) UpScale(ReadBlobByte(image)); break;
-                case 1: q->green=(Quantum) UpScale(ReadBlobByte(image)); break;
-                case 2: q->blue=(Quantum) UpScale(ReadBlobByte(image)); break;
+                case 0: q->red=Upscale(ReadBlobByte(image)); break;
+                case 1: q->green=Upscale(ReadBlobByte(image)); break;
+                case 2: q->blue=Upscale(ReadBlobByte(image)); break;
                 case 3: q->opacity=(Quantum)
-                  (MaxRGB-UpScale(ReadBlobByte(image))); break;
+                  (MaxRGB-Upscale(ReadBlobByte(image))); break;
                 default: break;
               }
               q++;

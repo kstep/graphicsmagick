@@ -278,9 +278,9 @@ MagickExport unsigned int XAnnotateImage(Display *display,
           /*
             Set this pixel to the background color.
           */
-          q->red=(Quantum) XDownScale(pixel->box_color.red);
-          q->green=(Quantum) XDownScale(pixel->box_color.green);
-          q->blue=(Quantum) XDownScale(pixel->box_color.blue);
+          q->red=(Quantum) XDownscale(pixel->box_color.red);
+          q->green=(Quantum) XDownscale(pixel->box_color.green);
+          q->blue=(Quantum) XDownscale(pixel->box_color.blue);
           if ((annotate_info->stencil == ForegroundStencil) ||
               (annotate_info->stencil == OpaqueStencil))
             q->opacity=TransparentOpacity;
@@ -290,9 +290,9 @@ MagickExport unsigned int XAnnotateImage(Display *display,
           /*
             Set this pixel to the pen color.
           */
-          q->red=(Quantum) XDownScale(pixel->pen_color.red);
-          q->green=(Quantum) XDownScale(pixel->pen_color.green);
-          q->blue=(Quantum) XDownScale(pixel->pen_color.blue);
+          q->red=(Quantum) XDownscale(pixel->pen_color.red);
+          q->green=(Quantum) XDownscale(pixel->pen_color.green);
+          q->blue=(Quantum) XDownscale(pixel->pen_color.blue);
           if (annotate_info->stencil == BackgroundStencil)
             q->opacity=TransparentOpacity;
         }
@@ -2058,9 +2058,9 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
           /*
             Set this pixel to the pen color.
           */
-          q->red=(Quantum) XDownScale(pixel->pen_color.red);
-          q->green=(Quantum) XDownScale(pixel->pen_color.green);
-          q->blue=(Quantum) XDownScale(pixel->pen_color.blue);
+          q->red=(Quantum) XDownscale(pixel->pen_color.red);
+          q->green=(Quantum) XDownscale(pixel->pen_color.green);
+          q->blue=(Quantum) XDownscale(pixel->pen_color.blue);
           q->opacity=(Quantum) (draw_info->stencil == OpaqueStencil ?
             OpaqueOpacity : TransparentOpacity);
         }
@@ -3580,9 +3580,9 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
     count=sscanf(text,"%d %d %d %[^\n]\n",&red,&green,&blue,colorname);
     if (count != 4)
       continue;
-    if ((red == (int) XDownScale(color.red)) &&
-        (green == (int) XDownScale(color.green)) &&
-        (blue == (int) XDownScale(color.blue)))
+    if ((red == (int) XDownscale(color.red)) &&
+        (green == (int) XDownscale(color.green)) &&
+        (blue == (int) XDownscale(color.blue)))
       {
         (void) strncpy(name,colorname,MaxTextExtent-1);
         break;
@@ -4054,11 +4054,11 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
                 {
                   pixel=XGetPixel(ximage,x,y);
                   index=(pixel >> red_shift) & red_mask;
-                  q->red=(Quantum) XDownScale(colors[index].red);
+                  q->red=(Quantum) XDownscale(colors[index].red);
                   index=(pixel >> green_shift) & green_mask;
-                  q->green=(Quantum) XDownScale(colors[index].green);
+                  q->green=(Quantum) XDownscale(colors[index].green);
                   index=(pixel >> blue_shift) & blue_mask;
-                  q->blue=(Quantum) XDownScale(colors[index].blue);
+                  q->blue=(Quantum) XDownscale(colors[index].blue);
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
@@ -4074,11 +4074,11 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
                 {
                   pixel=XGetPixel(ximage,x,y);
                   color=(pixel >> red_shift) & red_mask;
-                  q->red=(Quantum) XDownScale((color*65535L)/red_mask);
+                  q->red=(Quantum) XDownscale((color*65535L)/red_mask);
                   color=(pixel >> green_shift) & green_mask;
-                  q->green=(Quantum) XDownScale((color*65535L)/green_mask);
+                  q->green=(Quantum) XDownscale((color*65535L)/green_mask);
                   color=(pixel >> blue_shift) & blue_mask;
-                  q->blue=(Quantum) XDownScale((color*65535L)/blue_mask);
+                  q->blue=(Quantum) XDownscale((color*65535L)/blue_mask);
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
@@ -4100,11 +4100,11 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
             for (i=0; i < (int) composite_image->colors; i++)
             {
               composite_image->colormap[colors[i].pixel].red=(Quantum)
-                XDownScale(colors[i].red);
+                XDownscale(colors[i].red);
               composite_image->colormap[colors[i].pixel].green=(Quantum)
-                XDownScale(colors[i].green);
+                XDownscale(colors[i].green);
               composite_image->colormap[colors[i].pixel].blue=(Quantum)
-                XDownScale(colors[i].blue);
+                XDownscale(colors[i].blue);
             }
             /*
               Convert X image to PseudoClass packets.
@@ -5773,9 +5773,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                   break;
                 for (x=0; x < (long) image->columns; x++)
                 {
-                  *q++=DownScale(gamma_map[p->blue].blue);
-                  *q++=DownScale(gamma_map[p->green].green);
-                  *q++=DownScale(gamma_map[p->red].red);
+                  *q++=Downscale(gamma_map[p->blue].blue);
+                  *q++=Downscale(gamma_map[p->green].green);
+                  *q++=Downscale(gamma_map[p->red].red);
                   *q++=0;
                   p++;
                 }
@@ -5798,9 +5798,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
-                    *q++=DownScale(gamma_map[p->red].red);
-                    *q++=DownScale(gamma_map[p->green].green);
-                    *q++=DownScale(gamma_map[p->blue].blue);
+                    *q++=Downscale(gamma_map[p->red].red);
+                    *q++=Downscale(gamma_map[p->green].green);
+                    *q++=Downscale(gamma_map[p->blue].blue);
                     *q++=0;
                     p++;
                   }
@@ -6310,9 +6310,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                 for (x=0; x < (long) image->columns; x++)
                 {
                   *q++=0;
-                  *q++=DownScale(gamma_map[p->red].red);
-                  *q++=DownScale(gamma_map[p->green].green);
-                  *q++=DownScale(gamma_map[p->blue].blue);
+                  *q++=Downscale(gamma_map[p->red].red);
+                  *q++=Downscale(gamma_map[p->green].green);
+                  *q++=Downscale(gamma_map[p->blue].blue);
                   p++;
                 }
               }
@@ -6335,9 +6335,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                   for (x=0; x < (long) image->columns; x++)
                   {
                     *q++=0;
-                    *q++=DownScale(gamma_map[p->blue].blue);
-                    *q++=DownScale(gamma_map[p->green].green);
-                    *q++=DownScale(gamma_map[p->red].red);
+                    *q++=Downscale(gamma_map[p->blue].blue);
+                    *q++=Downscale(gamma_map[p->green].green);
+                    *q++=Downscale(gamma_map[p->red].red);
                     p++;
                   }
                 }
@@ -7186,9 +7186,9 @@ MagickExport void XMakeStandardColormap(Display *display,
       if (visual_info->storage_class == StaticColor)
         for (i=0; i < (long) image->colors; i++)
         {
-          color.red=XUpScale(gamma_map[image->colormap[i].red].red);
-          color.green=XUpScale(gamma_map[image->colormap[i].green].green);
-          color.blue=XUpScale(gamma_map[image->colormap[i].blue].blue);
+          color.red=XUpscale(gamma_map[image->colormap[i].red].red);
+          color.green=XUpscale(gamma_map[image->colormap[i].green].green);
+          color.blue=XUpscale(gamma_map[image->colormap[i].blue].blue);
           status=XAllocColor(display,colormap,&color);
           if (status == 0)
             {
@@ -7203,9 +7203,9 @@ MagickExport void XMakeStandardColormap(Display *display,
         {
           gray_value=(short unsigned int)
             Intensity(gamma_map[(int) Intensity(image->colormap[i])]);
-          color.red=XUpScale(gray_value);
-          color.green=XUpScale(gray_value);
-          color.blue=XUpScale(gray_value);
+          color.red=XUpscale(gray_value);
+          color.green=XUpscale(gray_value);
+          color.blue=XUpscale(gray_value);
           status=XAllocColor(display,colormap,&color);
           if (status == 0)
             {
@@ -7314,10 +7314,10 @@ MagickExport void XMakeStandardColormap(Display *display,
             for (i=0; i < (long) image->colors; i++)
             {
               index=diversity[i].index;
-              color.red=XUpScale(gamma_map[image->colormap[index].red].red);
+              color.red=XUpscale(gamma_map[image->colormap[index].red].red);
               color.green=
-                XUpScale(gamma_map[image->colormap[index].green].green);
-              color.blue=XUpScale(gamma_map[image->colormap[index].blue].blue);
+                XUpscale(gamma_map[image->colormap[index].green].green);
+              color.blue=XUpscale(gamma_map[image->colormap[index].blue].blue);
               status=XAllocColor(display,colormap,&color);
               if (status == 0)
                 break;
@@ -7330,9 +7330,9 @@ MagickExport void XMakeStandardColormap(Display *display,
               index=diversity[i].index;
               gray_value=(short unsigned int)
                 Intensity(gamma_map[(int) Intensity(image->colormap[index])]);
-              color.red=XUpScale(gray_value);
-              color.green=XUpScale(gray_value);
-              color.blue=XUpScale(gray_value);
+              color.red=XUpscale(gray_value);
+              color.green=XUpscale(gray_value);
+              color.blue=XUpscale(gray_value);
               status=XAllocColor(display,colormap,&color);
               if (status == 0)
                 break;
@@ -7358,10 +7358,10 @@ MagickExport void XMakeStandardColormap(Display *display,
             for (; i < (long) image->colors; i++)
             {
               index=diversity[i].index;
-              color.red=XUpScale(gamma_map[image->colormap[index].red].red);
+              color.red=XUpscale(gamma_map[image->colormap[index].red].red);
               color.green=
-                XUpScale(gamma_map[image->colormap[index].green].green);
-              color.blue=XUpScale(gamma_map[image->colormap[index].blue].blue);
+                XUpscale(gamma_map[image->colormap[index].green].green);
+              color.blue=XUpscale(gamma_map[image->colormap[index].blue].blue);
               XBestPixel(display,colormap,server_colors,(unsigned int)
                 visual_info->colormap_size,&color);
               pixel->pixels[index]=color.pixel;
@@ -7373,9 +7373,9 @@ MagickExport void XMakeStandardColormap(Display *display,
               index=diversity[i].index;
               gray_value=(short unsigned int)
                 Intensity(gamma_map[(int) Intensity(image->colormap[index])]);
-              color.red=XUpScale(gray_value);
-              color.green=XUpScale(gray_value);
-              color.blue=XUpScale(gray_value);
+              color.red=XUpscale(gray_value);
+              color.green=XUpscale(gray_value);
+              color.blue=XUpscale(gray_value);
               XBestPixel(display,colormap,server_colors,(unsigned int)
                 visual_info->colormap_size,&color);
               pixel->pixels[index]=color.pixel;
@@ -7452,9 +7452,9 @@ MagickExport void XMakeStandardColormap(Display *display,
       if (visual_info->storage_class == PseudoColor)
         for (i=0; i < (long) image->colors; i++)
         {
-          color.red=XUpScale(gamma_map[image->colormap[i].red].red);
-          color.green=XUpScale(gamma_map[image->colormap[i].green].green);
-          color.blue=XUpScale(gamma_map[image->colormap[i].blue].blue);
+          color.red=XUpscale(gamma_map[image->colormap[i].red].red);
+          color.green=XUpscale(gamma_map[image->colormap[i].green].green);
+          color.blue=XUpscale(gamma_map[image->colormap[i].blue].blue);
           color.pixel=pixel->pixels[i];
           *p++=color;
         }
@@ -7463,9 +7463,9 @@ MagickExport void XMakeStandardColormap(Display *display,
         {
           gray_value=(short unsigned int)
             Intensity(gamma_map[(int) Intensity(image->colormap[i])]);
-          color.red=XUpScale(gray_value);
-          color.green=XUpScale(gray_value);
-          color.blue=XUpScale(gray_value);
+          color.red=XUpscale(gray_value);
+          color.green=XUpscale(gray_value);
+          color.blue=XUpscale(gray_value);
           color.pixel=pixel->pixels[i];
           *p++=color;
         }

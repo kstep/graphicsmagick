@@ -57,6 +57,42 @@
 #include "define.h"
 
 /*
+  Inline pixel scaling methods.
+*/
+MagickExport inline Quantum Downscale(const unsigned long quantum)
+{
+#if QuantumDepth == 8
+  return(quantum);
+#else
+  return((Quantum) (quantum/257L));
+#endif
+}
+MagickExport inline Quantum Upscale(const unsigned long quantum)
+{
+#if QuantumDepth == 8
+  return(quantum);
+#else
+  return((Quantum) (257L*quantum));
+#endif
+}
+MagickExport inline unsigned short XDownscale(const unsigned long quantum)
+{
+#if QuantumDepth == 8
+  return((unsigned short) (quantum/257L));
+#else
+  return(quantum);
+#endif
+}
+MagickExport inline unsigned short XUpscale(const unsigned long quantum)
+{
+#if QuantumDepth == 8
+  return((unsigned short) (257L*quantum));
+#else
+  return(quantum);
+#endif
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

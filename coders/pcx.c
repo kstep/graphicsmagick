@@ -334,9 +334,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     p=pcx_colormap;
     for (i=0; i < (long) image->colors; i++)
     {
-      image->colormap[i].red=(Quantum) UpScale(*p++);
-      image->colormap[i].green=(Quantum) UpScale(*p++);
-      image->colormap[i].blue=(Quantum) UpScale(*p++);
+      image->colormap[i].red=Upscale(*p++);
+      image->colormap[i].green=Upscale(*p++);
+      image->colormap[i].blue=Upscale(*p++);
     }
     pcx_info.bytes_per_line=ReadBlobLSBShort(image);
     pcx_info.palette_info=ReadBlobLSBShort(image);
@@ -412,9 +412,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 p=pcx_colormap;
                 for (i=0; i < (long) image->colors; i++)
                 {
-                  image->colormap[i].red=(Quantum) UpScale(*p++);
-                  image->colormap[i].green=(Quantum) UpScale(*p++);
-                  image->colormap[i].blue=(Quantum) UpScale(*p++);
+                  image->colormap[i].red=Upscale(*p++);
+                  image->colormap[i].green=Upscale(*p++);
+                  image->colormap[i].blue=Upscale(*p++);
                 }
             }
           LiberateMemory((void **) &pcx_colormap);
@@ -440,23 +440,23 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               case 0:
               {
-                *r=(Quantum) UpScale(*p++);
+                *r=Upscale(*p++);
                 break;
               }
               case 1:
               {
-                *r=(Quantum) UpScale(*p++);
+                *r=Upscale(*p++);
                 break;
               }
               case 2:
               {
-                *r=(Quantum) UpScale(*p++);
+                *r=Upscale(*p++);
                 break;
               }
               case 3:
               default:
               {
-                *r=(Quantum) UpScale(*p++);
+                *r=Upscale(*p++);
                 break;
               }
             }
@@ -553,11 +553,11 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes[x]=(*r++);
         else
           {
-            q->red=(Quantum) UpScale(*r++);
-            q->green=(Quantum) UpScale(*r++);
-            q->blue=(Quantum) UpScale(*r++);
+            q->red=Upscale(*r++);
+            q->green=Upscale(*r++);
+            q->blue=Upscale(*r++);
             if (image->matte)
-              q->opacity=(Quantum) (MaxRGB-UpScale(*r++));
+              q->opacity=(Quantum) (MaxRGB-Upscale(*r++));
           }
         q++;
       }
@@ -840,9 +840,9 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     if (image->storage_class == PseudoClass)
       for (i=0; i < (long) image->colors; i++)
       {
-        *q++=DownScale(image->colormap[i].red);
-        *q++=DownScale(image->colormap[i].green);
-        *q++=DownScale(image->colormap[i].blue);
+        *q++=Downscale(image->colormap[i].red);
+        *q++=Downscale(image->colormap[i].green);
+        *q++=Downscale(image->colormap[i].blue);
       }
     (void) WriteBlob(image,3*16,(char *) pcx_colormap);
     (void) WriteBlobByte(image,pcx_info.reserved);
@@ -876,23 +876,23 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 case 0:
                 {
-                  *q++=DownScale(p->red);
+                  *q++=Downscale(p->red);
                   break;
                 }
                 case 1:
                 {
-                  *q++=DownScale(p->green);
+                  *q++=Downscale(p->green);
                   break;
                 }
                 case 2:
                 {
-                  *q++=DownScale(p->blue);
+                  *q++=Downscale(p->blue);
                   break;
                 }
                 case 3:
                 default:
                 {
-                  *q++=MaxRGB-DownScale(p->opacity);
+                  *q++=MaxRGB-Downscale(p->opacity);
                   break;
                 }
               }
