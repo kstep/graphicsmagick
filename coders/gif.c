@@ -820,28 +820,15 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read Comment extension.
             */
-            comments=(char *) NULL;
+            comments=AllocateString((char *) NULL);
             for ( ; ; )
             {
               length=ReadBlobBlock(image,header);
               if (length <= 0)
                 break;
-              if (comments != (char *) NULL)
-                ReacquireMemory((void **) &comments,Extent(comments)+length+1);
-              else
-                {
-                  comments=(char *) AcquireMemory(length+1);
-                  if (comments != (char *) NULL)
-                    *comments='\0';
-                }
-              if (comments == (char *) NULL)
-                ThrowReaderException(ResourceLimitWarning,
-                  "Memory allocation failed",image);
               header[length]='\0';
-              (void) strcat(comments,(char *) header);
+              (void) ConcatenateString(&comments,(const char *) header);
             }
-            if (comments == (char *) NULL)
-              break;
             (void) SetImageAttribute(image,"comment",comments);
             LiberateMemory((void **) &comments);
             break;
