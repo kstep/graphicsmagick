@@ -586,7 +586,6 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           if (jpeg_image == (Image *) NULL)
             ThrowWriterException(DelegateWarning,"Unable to clone image",image);
           (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
-          jpeg_image->depth=8;
           status=WriteImage(image_info,jpeg_image);
           DestroyImage(jpeg_image);
           if (status == False)
