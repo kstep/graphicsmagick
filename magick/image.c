@@ -2262,6 +2262,7 @@ MagickExport void DestroyImage(Image *image)
     Destroy image.
   */
   CloseBlob(image);
+  DestroyImagePixels(image);
   if (image->clip_mask != (Image *) NULL)
     DestroyImage(image->clip_mask);
   if (image->montage != (char *) NULL)
@@ -2290,7 +2291,6 @@ MagickExport void DestroyImage(Image *image)
       LiberateMemory((void **) &image->generic_profile);
     }
   DestroyImageAttributes(image);
-  DestroyImagePixels(image);
   DestroyExceptionInfo(&image->exception);
   DestroyBlobInfo(image->blob);
   if (image->semaphore != (SemaphoreInfo *) NULL)
