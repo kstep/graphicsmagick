@@ -1094,18 +1094,18 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
 #define Enhance(weight) \
   mean=(long) (r->red+pixel.red)/2; \
-  distance=r->red-(long) pixel.red; \
+  distance=r->red-(double) pixel.red; \
   distance_squared= \
     (double) (2.0*(MaxRGB+1)+mean)*distance*distance/MaxRGB; \
   mean=(long) (r->green+pixel.green)/2; \
-  distance=r->green-(long) pixel.green; \
+  distance=r->green-(double) pixel.green; \
   distance_squared+=4.0*distance*distance; \
   mean=(long) (r->blue+pixel.blue)/2; \
-  distance=r->blue-(long) pixel.blue; \
+  distance=r->blue-(double) pixel.blue; \
   distance_squared+= \
     (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
   mean=(long) (r->opacity+pixel.opacity)/2; \
-  distance=r->opacity-(long) pixel.opacity; \
+  distance=r->opacity-(double) pixel.opacity; \
   distance_squared+= \
     (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
   if (distance_squared < ((double) MaxRGB*MaxRGB/25.0)) \
@@ -2711,12 +2711,13 @@ MagickExport Image *ShadeImage(const Image *image,
         Determine the surface normal and compute shading.
       */
       normal.x=PixelIntensityToQuantum(s0-1)+PixelIntensityToQuantum(s1-1)+
-        PixelIntensityToQuantum(s2-1)-(long) PixelIntensityToQuantum(s0+1)-
-        (long) PixelIntensityToQuantum(s1+1)-
-        (long) PixelIntensityToQuantum(s2+1);
+        PixelIntensityToQuantum(s2-1)-(double) PixelIntensityToQuantum(s0+1)-
+        (double) PixelIntensityToQuantum(s1+1)-
+        (double) PixelIntensityToQuantum(s2+1);
       normal.y=PixelIntensityToQuantum(s2-1)+PixelIntensityToQuantum(s2)+
-        PixelIntensityToQuantum(s2+1)-(long) PixelIntensityToQuantum(s0-1)-
-        (long) PixelIntensityToQuantum(s0)-(long) PixelIntensityToQuantum(s0+1);
+        PixelIntensityToQuantum(s2+1)-(double) PixelIntensityToQuantum(s0-1)-
+        (double) PixelIntensityToQuantum(s0)-
+        (double) PixelIntensityToQuantum(s0+1);
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else
@@ -2739,9 +2740,9 @@ MagickExport Image *ShadeImage(const Image *image,
         }
       else
         {
-          q->red=(Quantum) ((unsigned long) (shade*s1->red)/MaxRGB);
-          q->green=(Quantum) ((unsigned long) (shade*s1->green)/MaxRGB);
-          q->blue=(Quantum) ((unsigned long) (shade*s1->blue)/MaxRGB);
+          q->red=(Quantum) ((double) (shade*s1->red)/MaxRGB);
+          q->green=(Quantum) ((double) (shade*s1->green)/MaxRGB);
+          q->blue=(Quantum) ((double) (shade*s1->blue)/MaxRGB);
         }
       q->opacity=s1->opacity;
       s0++;
@@ -3524,22 +3525,22 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      red=p->red-(long) q->red;
+      red=p->red-(double) q->red;
       if (AbsoluteValue(2.0*red) < (MaxRGB*threshold))
         red=p->red;
       else
         red=p->red+(red*amount);
-      green=p->green-(long) q->green;
+      green=p->green-(double) q->green;
       if (AbsoluteValue(2.0*green) < (MaxRGB*threshold))
         green=p->green;
       else
         green=p->green+(green*amount);
-      blue=p->blue-(long) q->blue;
+      blue=p->blue-(double) q->blue;
       if (AbsoluteValue(2.0*blue) < (MaxRGB*threshold))
         blue=p->blue;
       else
         blue=p->blue+(blue*amount);
-      opacity=p->opacity-(long) q->opacity;
+      opacity=p->opacity-(double) q->opacity;
       if (AbsoluteValue(2.0*opacity) < (MaxRGB*threshold))
         opacity=p->opacity;
       else
