@@ -9,8 +9,8 @@ extern "C" {
 #endif
 
 #if !defined(QuantumDepth)
-# define QuantumDepth 16
-# define QuantumLeap
+#define QuantumDepth  16
+#define QuantumLeap
 #endif
 
 #if QuantumDepth == 8

@@ -136,7 +136,6 @@ extern "C" {
 #define MagickEpsilon  1.0e-12
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
-#define MaxApplicationProfiles  16
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
 #define QuantumTick(i,span) \
   (((~((span)-i-1) & ((span)-i-2))+1) == ((span)-i-1))
