@@ -280,7 +280,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
       {
         coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
         if (coalesce_image->next != (Image *) NULL)
-          previous_image=coalesce_image;
+          previous_image=coalesce_image->next;
         break;
       }
       case BackgroundDispose:
