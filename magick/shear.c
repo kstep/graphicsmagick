@@ -859,6 +859,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   if (integral_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
       "Memory allocation failed");
+  SetImageType(integral_image,integral_image->background_color.opacity !=
+    OpaqueOpacity ? TrueColorMatteType : TrueColorType);
   shear.x=(-tan(0.5*DegreesToRadians(angle)));
   shear.y=sin(DegreesToRadians(angle));
   if ((shear.x == 0.0) || (shear.y == 0.0))
@@ -880,8 +882,6 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
     Surround image with a border.
   */
   integral_image->border_color=integral_image->background_color;
-  SetImageType(integral_image,integral_image->border_color.opacity !=
-    OpaqueOpacity ? TrueColorMatteType : TrueColorType);
   border_info.width=x_offset;
   border_info.height=y_offset;
   rotate_image=BorderImage(integral_image,&border_info,exception);
@@ -982,6 +982,8 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   if (integral_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to shear image",
       "Memory allocation failed");
+  SetImageType(integral_image,integral_image->background_color.opacity !=
+    OpaqueOpacity ?  TrueColorMatteType : TrueColorType);
   shear.x=(-tan(0.5*DegreesToRadians(x_shear)));
   shear.y=sin(DegreesToRadians(y_shear));
   if ((shear.x == 0.0) || (shear.y == 0.0))
@@ -997,8 +999,6 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     Surround image with border.
   */
   integral_image->border_color=integral_image->background_color;
-  SetImageType(integral_image,integral_image->border_color.opacity !=
-    OpaqueOpacity ?  TrueColorMatteType : TrueColorType);
   border_info.width=x_offset;
   border_info.height=y_offset;
   shear_image=BorderImage(integral_image,&border_info,exception);

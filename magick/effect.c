@@ -3552,7 +3552,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   if (wave_image == (Image *) NULL)
     return((Image *) NULL);
   SetImageType(wave_image,wave_image->background_color.opacity !=
-    OpaqueOpacity ?  TrueColorMatteType : TrueColorType);
+    OpaqueOpacity ? TrueColorMatteType : TrueColorType);
   /*
     Allocate sine map.
   */
