@@ -23,6 +23,7 @@
 
 # Written by Per Bothner <bothner@cygnus.com>.
 # The master version of this file is at the FSF in /home/gd/gnu/lib.
+# Please send patches to the Autoconf mailing list <autoconf@gnu.org>.
 #
 # This script attempts to guess a canonical system name similar to
 # config.sub.  If it succeeds, it prints the system name on stdout, and
@@ -34,6 +35,20 @@
 # Only a few systems have been added to this list; please add others
 # (but try to keep the structure clean).
 #
+
+# Use $HOST_CC if defined. $CC may point to a cross-compiler
+if test x"$CC_FOR_BUILD" = x; then
+  if test x"$HOST_CC" != x; then
+    CC_FOR_BUILD="$HOST_CC"
+  else
+    if test x"$CC" != x; then
+      CC_FOR_BUILD="$CC"
+    else
+      CC_FOR_BUILD=cc
+    fi
+  fi
+fi
+
 
 # This is needed to find uname on a Pyramid OSx when run in the BSD universe.
 # (ghazi@noc.rutgers.edu 8/24/94.)
@@ -77,7 +92,7 @@ main:
 	ret \$31,(\$26),1
 	.end main
 EOF
-	${CC-cc} $dummy.s -o $dummy 2>/dev/null
+	$CC_FOR_BUILD $dummy.s -o $dummy 2>/dev/null
 	if test "$?" = 0 ; then
 		./$dummy
 		case "$?" in
@@ -151,7 +166,7 @@ EOF
 		echo pyramid-pyramid-bsd
 	fi
 	exit 0 ;;
-    NILE:*:*:dcosx)
+    NILE*:*:*:dcosx)
 	echo pyramid-pyramid-svr4
 	exit 0 ;;
     sun4H:SunOS:5.*:*)
@@ -202,6 +217,32 @@ EOF
     atari*:OpenBSD:*:*)
 	echo m68k-unknown-openbsd${UNAME_RELEASE}
 	exit 0 ;;
+    # The situation for MiNT is a little confusing.  The machine name
+    # can be virtually everything (everything which is not
+    # "atarist" or "atariste" at least should have a processor 
+    # > m68000).  The system name ranges from "MiNT" over "FreeMiNT"
+    # to the lowercase version "mint" (or "freemint").  Finally
+    # the system name "TOS" denotes a system which is actually not
+    # MiNT.  But MiNT is downward compatible to TOS, so this should
+    # be no problem.
+    atarist[e]:*MiNT:*:* | atarist[e]:*mint:*:* | atarist[e]:*TOS:*:*)
+        echo m68k-atari-mint${UNAME_RELEASE}
+	exit 0 ;;
+    atari*:*MiNT:*:* | atari*:*mint:*:* | atarist[e]:*TOS:*:*)
+	echo m68k-atari-mint${UNAME_RELEASE}
+        exit 0 ;;
+    *falcon*:*MiNT:*:* | *falcon*:*mint:*:* | *falcon*:*TOS:*:*)
+        echo m68k-atari-mint${UNAME_RELEASE}
+	exit 0 ;;
+    milan*:*MiNT:*:* | milan*:*mint:*:* | *milan*:*TOS:*:*)
+        echo m68k-milan-mint${UNAME_RELEASE}
+        exit 0 ;;
+    hades*:*MiNT:*:* | hades*:*mint:*:* | *hades*:*TOS:*:*)
+        echo m68k-hades-mint${UNAME_RELEASE}
+        exit 0 ;;
+    *:*MiNT:*:* | *:*mint:*:* | *:*TOS:*:*)
+        echo m68k-unknown-mint${UNAME_RELEASE}
+        exit 0 ;;
     sun3*:NetBSD:*:*)
 	echo m68k-sun-netbsd${UNAME_RELEASE}
 	exit 0 ;;
@@ -235,12 +276,16 @@ EOF
     VAX*:ULTRIX*:*:*)
 	echo vax-dec-ultrix${UNAME_RELEASE}
 	exit 0 ;;
-    2020:CLIX:*:*)
+    2020:CLIX:*:* | 2430:CLIX:*:*)
 	echo clipper-intergraph-clix${UNAME_RELEASE}
 	exit 0 ;;
     mips:*:*:UMIPS | mips:*:*:RISCos)
 	sed 's/^	//' << EOF >$dummy.c
-	int main (argc, argv) int argc; char **argv; {
+#ifdef __cplusplus
+	int main (int argc, char *argv[]) {
+#else
+	int main (argc, argv) int argc; char *argv[]; {
+#endif
 	#if defined (host_mips) && defined (MIPSEB)
 	#if defined (SYSTYPE_SYSV)
 	  printf ("mips-mips-riscos%ssysv\n", argv[1]); exit (0);
@@ -255,7 +300,7 @@ EOF
 	  exit (-1);
 	}
 EOF
-	${CC-cc} $dummy.c -o $dummy \
+	$CC_FOR_BUILD $dummy.c -o $dummy \
 	  && ./$dummy `echo "${UNAME_RELEASE}" | sed -n 's/\([0-9]*\).*/\1/p'` \
 	  && rm $dummy.c $dummy && exit 0
 	rm -f $dummy.c $dummy
@@ -321,7 +366,7 @@ EOF
 			exit(0);
 			}
 EOF
-		${CC-cc} $dummy.c -o $dummy && ./$dummy && rm $dummy.c $dummy && exit 0
+		$CC_FOR_BUILD $dummy.c -o $dummy && ./$dummy && rm $dummy.c $dummy && exit 0
 		rm -f $dummy.c $dummy
 		echo rs6000-ibm-aix3.2.5
 	elif grep bos324 /usr/include/stdio.h >/dev/null 2>&1; then
@@ -369,25 +414,25 @@ EOF
 	case "${UNAME_MACHINE}" in
 	    9000/31? )            HP_ARCH=m68000 ;;
 	    9000/[34]?? )         HP_ARCH=m68k ;;
-	    9000/6?? | 9000/7?? | 9000/80[24] | 9000/8?[13679] | 9000/892 )
+	    9000/6?? | 9000/7?? | 9000/80[024] | 9000/8?[136790] | 9000/892 )
               sed 's/^              //' << EOF >$dummy.c
               #include <stdlib.h>
               #include <unistd.h>
-              
+
               int main ()
               {
               #if defined(_SC_KERNEL_BITS)
                   long bits = sysconf(_SC_KERNEL_BITS);
-              #endif 
+              #endif
                   long cpu  = sysconf (_SC_CPU_VERSION);
-              
-                  switch (cpu) 
+
+                  switch (cpu)
               	{
               	case CPU_PA_RISC1_0: puts ("hppa1.0"); break;
               	case CPU_PA_RISC1_1: puts ("hppa1.1"); break;
-              	case CPU_PA_RISC2_0: 
+              	case CPU_PA_RISC2_0:
               #if defined(_SC_KERNEL_BITS)
-              	    switch (bits) 
+              	    switch (bits)
               		{
               		case 64: puts ("hppa2.0w"); break;
               		case 32: puts ("hppa2.0n"); break;
@@ -395,13 +440,13 @@ EOF
               		} break;
               #else  /* !defined(_SC_KERNEL_BITS) */
               	    puts ("hppa2.0"); break;
-              #endif 
+              #endif
               	default: puts ("hppa1.0"); break;
               	}
                   exit (0);
               }
 EOF
-	(${CC-cc} $dummy.c -o $dummy 2>/dev/null ) && HP_ARCH=`./$dummy`
+	($CC_FOR_BUILD $dummy.c -o $dummy 2>/dev/null ) && HP_ARCH=`./$dummy`
 	rm -f $dummy.c $dummy
 	esac
 	HPUX_REV=`echo ${UNAME_RELEASE}|sed -e 's/[^.]*.[0B]*//'`
@@ -433,7 +478,7 @@ EOF
 	  exit (0);
 	}
 EOF
-	${CC-cc} $dummy.c -o $dummy && ./$dummy && rm $dummy.c $dummy && exit 0
+	$CC_FOR_BUILD $dummy.c -o $dummy && ./$dummy && rm $dummy.c $dummy && exit 0
 	rm -f $dummy.c $dummy
 	echo unknown-hitachi-hiuxwe2
 	exit 0 ;;
@@ -442,6 +487,9 @@ EOF
 	exit 0 ;;
     9000/8??:4.3bsd:*:*)
 	echo hppa1.0-hp-bsd
+	exit 0 ;;
+    *9??*:MPE*:*:*)
+	echo hppa1.0-hp-mpeix
 	exit 0 ;;
     hp7??:OSF1:*:* | hp8?[79]:OSF1:*:* )
 	echo hppa1.1-hp-osf
@@ -521,6 +569,12 @@ EOF
 	echo ${UNAME_MACHINE}-unknown-bsdi${UNAME_RELEASE}
 	exit 0 ;;
     *:FreeBSD:*:*)
+	if test -x /usr/bin/objformat; then
+	    if test "elf" = "`/usr/bin/objformat`"; then
+		echo ${UNAME_MACHINE}-unknown-freebsdelf`echo ${UNAME_RELEASE}|sed -e 's/[-_].*//'`
+		exit 0
+	    fi
+	fi
 	echo ${UNAME_MACHINE}-unknown-freebsd`echo ${UNAME_RELEASE}|sed -e 's/[-(].*//'`
 	exit 0 ;;
     *:NetBSD:*:*)
@@ -548,12 +602,14 @@ EOF
 	# uname on the ARM produces all sorts of strangeness, and we need to
 	# filter it out.
 	case "$UNAME_MACHINE" in
+	  armv*)		      UNAME_MACHINE=$UNAME_MACHINE ;;
 	  arm* | sa110*)	      UNAME_MACHINE="arm" ;;
 	esac
 
 	# The BFD linker knows what the default object file format is, so
-	# first see if it will tell us.
-	ld_help_string=`ld --help 2>&1`
+	# first see if it will tell us. cd to the root directory to prevent
+	# problems with other programs or directories called `ld' in the path.
+	ld_help_string=`cd /; ld --help 2>&1`
 	ld_supported_emulations=`echo $ld_help_string \
 			 | sed -ne '/supported emulations:/!d
 				    s/[ 	][ 	]*/ /g
@@ -588,7 +644,7 @@ EOF
 		.end main
 EOF
 		LIBC=""
-		${CC-cc} $dummy.s -o $dummy 2>/dev/null
+		$CC_FOR_BUILD $dummy.s -o $dummy 2>/dev/null
 		if test "$?" = 0 ; then
 			./$dummy
 			case "$?" in
@@ -607,22 +663,23 @@ EOF
 			16)
 				UNAME_MACHINE="alphaev6"
 				;;
-			esac	
+			esac
 
 			objdump --private-headers $dummy | \
 			  grep ld.so.1 > /dev/null
 			if test "$?" = 0 ; then
 				LIBC="libc1"
 			fi
-		fi	
+		fi
 		rm -f $dummy.s $dummy
 		echo ${UNAME_MACHINE}-unknown-linux-gnu${LIBC} ; exit 0
 	elif test "${UNAME_MACHINE}" = "mips" ; then
 	  cat >$dummy.c <<EOF
-main(argc, argv)
-     int argc;
-     char *argv[];
-{
+#ifdef __cplusplus
+	int main (int argc, char *argv[]) {
+#else
+	int main (argc, argv) int argc; char *argv[]; {
+#endif
 #ifdef __MIPSEB__
   printf ("%s-unknown-linux-gnu\n", argv[1]);
 #endif
@@ -632,7 +689,7 @@ main(argc, argv)
   return 0;
 }
 EOF
-	  ${CC-cc} $dummy.c -o $dummy 2>/dev/null && ./$dummy "${UNAME_MACHINE}" && rm $dummy.c $dummy && exit 0
+	  $CC_FOR_BUILD $dummy.c -o $dummy 2>/dev/null && ./$dummy "${UNAME_MACHINE}" && rm $dummy.c $dummy && exit 0
 	  rm -f $dummy.c $dummy
 	else
 	  # Either a pre-BFD a.out linker (linux-gnuoldld)
@@ -654,10 +711,11 @@ EOF
 	  # Determine whether the default compiler is a.out or elf
 	  cat >$dummy.c <<EOF
 #include <features.h>
-main(argc, argv)
-     int argc;
-     char *argv[];
-{
+#ifdef __cplusplus
+	int main (int argc, char *argv[]) {
+#else
+	int main (argc, argv) int argc; char *argv[]; {
+#endif
 #ifdef __ELF__
 # ifdef __GLIBC__
 #  if __GLIBC__ >= 2
@@ -674,7 +732,7 @@ main(argc, argv)
   return 0;
 }
 EOF
-	  ${CC-cc} $dummy.c -o $dummy 2>/dev/null && ./$dummy "${UNAME_MACHINE}" && rm $dummy.c $dummy && exit 0
+	  $CC_FOR_BUILD $dummy.c -o $dummy 2>/dev/null && ./$dummy "${UNAME_MACHINE}" && rm $dummy.c $dummy && exit 0
 	  rm -f $dummy.c $dummy
 	fi ;;
 # ptx 4.0 does uname -s correctly, with DYNIX/ptx in there.  earlier versions
@@ -759,7 +817,7 @@ EOF
     mc68030:UNIX_System_V:4.*:*)
 	echo m68k-atari-sysv4
 	exit 0 ;;
-    i?86:LynxOS:2.*:*)
+    i?86:LynxOS:2.*:* | i?86:LynxOS:3.[01]*:*)
 	echo i386-unknown-lynxos${UNAME_RELEASE}
 	exit 0 ;;
     TSUNAMI:LynxOS:2.*:*)
@@ -770,6 +828,9 @@ EOF
 	exit 0 ;;
     SM[BE]S:UNIX_SV:*:*)
 	echo mips-dde-sysv${UNAME_RELEASE}
+	exit 0 ;;
+    RM*:ReliantUNIX-*:*:*)
+	echo mips-sni-sysv4
 	exit 0 ;;
     RM*:SINIX-*:*:*)
 	echo mips-sni-sysv4
@@ -801,7 +862,7 @@ EOF
     news*:NEWS-OS:*:6*)
 	echo mips-sony-newsos6
 	exit 0 ;;
-    R3000:*System_V*:*:* | R4000:UNIX_SYSV:*:* | R4000:UNIX_SV:*:*)
+    R[34]000:*System_V*:*:* | R4000:UNIX_SYSV:*:* | R4000:UNIX_SV:*:*)
 	if [ -d /usr/nec ]; then
 	        echo mips-nec-sysv${UNAME_RELEASE}
 	else
@@ -935,7 +996,7 @@ main ()
 }
 EOF
 
-${CC-cc} $dummy.c -o $dummy 2>/dev/null && ./$dummy && rm $dummy.c $dummy && exit 0
+$CC_FOR_BUILD $dummy.c -o $dummy 2>/dev/null && ./$dummy && rm $dummy.c $dummy && exit 0
 rm -f $dummy.c $dummy
 
 # Apollos put the system type in the environment.
