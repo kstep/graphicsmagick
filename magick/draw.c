@@ -900,16 +900,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       while (primitive != (char *) NULL)
       {
         c=fgetc(file);
-        if (c == '#')
-          {
-            /*
-              Eat comments.
-            */
-            for (c=fgetc(file); c != EOF; c=fgetc(file))
-              if ((c == '\r') || (c == '\n'))
-                break;
-            continue;
-          }
         if (c == EOF)
           break;
         if ((q-primitive+1) >= (int) length)
@@ -954,7 +944,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     primitive_type=UndefinedPrimitive;
     while (isspace((int) (*p)))
       p++;
-    for (x=0; isalpha((int) (*p)); x++)
+    for (x=0; !isspace((int) (*p)); x++)
       keyword[x]=(*p++);
     keyword[x]='\0';
     if (*keyword == '\0')
@@ -988,7 +978,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (Latin1Compare("pen",keyword) == 0)
       {
-        for (x=0; isalpha((int) (*p)); x++)
+        for (x=0; !isspace((int) (*p)); x++)
           keyword[x]=(*p++);
         keyword[x]='\0';
         CloneString(&clone_info->pen,keyword);

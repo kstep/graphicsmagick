@@ -810,10 +810,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) CloneString(&draw_info->primitive,filename);
   status=DrawImage(image,draw_info);
+  (void) remove(filename+1);
   if (status == False)
     ThrowReaderException(CorruptImageWarning,"Unable to read SVG image",image);
   DestroyDrawInfo(draw_info);
-  remove(filename+1);
   return(image);
 }
 
