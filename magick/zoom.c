@@ -856,7 +856,6 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   /*
     Scale image.
   */
-  opacity=0;
   number_rows=0;
   next_row=True;
   y_span=1.0;
@@ -956,7 +955,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
           s->red=red > MaxRGB ? MaxRGB : red;
           s->green=green > MaxRGB ? MaxRGB : green;
           s->blue=blue > MaxRGB ? MaxRGB : blue;
-          s->opacity=opacity > MaxRGB ? MaxRGB : opacity;
+          s->opacity=opacity > Opaque ? Opaque : opacity;
           s++;
           y_vector[x].red=0;
           y_vector[x].green=0;
@@ -1002,6 +1001,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         red=0;
         green=0;
         blue=0;
+        opacity=0;
         next_column=False;
         x_span=1.0;
         s=scanline;
@@ -1026,7 +1026,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
             t->red=red > MaxRGB ? MaxRGB : red;
             t->green=green > MaxRGB ? MaxRGB : green;
             t->blue=blue > MaxRGB ? MaxRGB : blue;
-            t->opacity=opacity > MaxRGB ? MaxRGB : opacity;
+            t->opacity=opacity > Opaque ? Opaque : opacity;
             x_scale-=x_span;
             x_span=1.0;
             next_column=True;
@@ -1064,7 +1064,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
           t->red=red > MaxRGB ? MaxRGB : red;
           t->green=green > MaxRGB ? MaxRGB : green;
           t->blue=blue > MaxRGB ? MaxRGB : blue;
-          t->opacity=opacity > MaxRGB ? MaxRGB : opacity;
+          t->opacity=opacity > Opaque ? Opaque : opacity;
         }
       /*
         Transfer scanline to scaled image.
