@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<locale name="en_US">
+  <Cache>
+    <Error>
+      <Message name="PixelCacheIsNotOpen">
+        Pixel cache is not open
+      </Message>
+    </Error>
+  </Cache>
+  <Resource>
+    <Limit>
+      <Error>
+        <Message name="MemoryAllocationFailed">
+          Memory allocation failed
+        </Message>
+        <Message name="UnableToCloneImage">
+          Unable to clone image
+        </Message>
+      </Error>
+    </Limit>
+  </Resource>
+</locale>
