@@ -1944,7 +1944,7 @@ MagickExport int LocaleCompare(const char *p,const char *q)
 MagickExport void LocaleLower(char *string)
 {
   register char
-	  *q;
+    *q;
 
   assert(string != (char *) NULL);
   for (q=string; *q != '\0'; q++)
@@ -1974,7 +1974,7 @@ MagickExport void LocaleLower(char *string)
 %
 %  The format of the LocaleNCompare method is:
 %
-%      int LocaleNCompare(const char *p,const char *q,size_t length)
+%      int LocaleNCompare(const char *p,const char *q,const size_t n)
 %
 %  A description of each parameter follows:
 %
@@ -1986,7 +1986,7 @@ MagickExport void LocaleLower(char *string)
 %
 %
 */
-MagickExport int LocaleNCompare(const char *p,const char *q,size_t length)
+MagickExport int LocaleNCompare(const char *p,const char *q,const size_t length)
 {
   register size_t
     n;
@@ -1999,14 +1999,14 @@ MagickExport int LocaleNCompare(const char *p,const char *q,size_t length)
     return(1);
   for (n=length; (*p != '\0') && (*q != '\0'); n--)
   {
-    if (n == 0)
-      break;
     if (toupper((int) *p) != toupper((int) *q))
+      break;
+    if (n <= 1)
       break;
     p++;
     q++;
   }
-  return(toupper(*p)-toupper(*q));
+  return(toupper((int) *p)-toupper((int) *q));
 }
 
 /*
@@ -2037,7 +2037,7 @@ MagickExport int LocaleNCompare(const char *p,const char *q,size_t length)
 MagickExport void LocaleUpper(char *string)
 {
   register char
-	  *q;
+    *q;
 
   assert(string != (char *) NULL);
   for (q=string; *q != '\0'; q++)
