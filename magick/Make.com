@@ -1,6 +1,7 @@
 $!
 $! Make ImageMagick image utilities for VMS.
 $!
+$ copy config_vms.h config.h
 $
 $if (f$trnlnm("X11") .eqs. "") then define/nolog X11 decw$include:
 $compile_options="/nodebug/optimize"
@@ -14,7 +15,7 @@ $endif
 $if (f$getsyi("HW_MODEL") .gt. 1023)
 $then     ! Alpha with DEC C
 $  define/nolog sys decc$library_include
-$  compile_options="/nodebug/optimize/prefix=all/warning=(disable=rightshiftovr)"
+$  compile_options="/list/show=all/nodebug/optimize/prefix=all/warning=(disable=rightshiftovr)/name=(as_is,short)"
 $endif
 $
 $write sys$output "Making Magick..."
@@ -58,7 +59,7 @@ $call Make xwindows.c
 $call Make zoom.c
 $library/create libMagick.olb PreRvIcccm,animate,annotate,attributes,blob, -
   cache,cache_view,colors,compress,constitute,decorate,delegates,display,draw, -
-  effects,enhance,error,gems,image,magic,magick,memory,modules, -
+  effects,enhance,error,gems,image,magic,magick.obj,memory,modules, -
   monitor,montage,quantize,segment,semaphore,shear,signature,stream,timer, -
   transform,utility,vms,widget,xwindows,zoom
 $exit

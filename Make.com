@@ -48,7 +48,7 @@ $endif
 $if (f$getsyi("HW_MODEL") .gt. 1023)
 $then       ! Alpha with DEC C compiler
 $  define/nolog sys decc$library_include
-$  compile_options="/nodebug/optimize/prefix=all"
+$  compile_options="/nodebug/optimize/prefix=all/name=(as_is,short)"
 $  library_options="_axp"
 $  share := 'share'y
 $else
@@ -69,28 +69,36 @@ $ then
 $    write sys$output "Making shareable image"
 $    link/share/exe=magickshr.exe   [.magick]libMagick.olb/lib, -
   [.coders]libCoders.olb/lib, -
-  [.jpeg]libjpeg.olb'library_options'/lib, -
-  [.png]libpng.olb'library_options'/lib, -
-  [.tiff]libtiff.olb'library_options'/lib, -
-  [.ttf]libttf.olb'library_options'/lib, -
-  [.zlib]libz.olb'library_options'/lib, -
+  $disk2:[joukj.public.freetype.freetype.freetype2.lib]freetype.olb/lib, -
+  sys$library:libjpeg.olb/lib, -
+  sys$library:libpng.olb/lib, -
+  sys$library:tiff.olb/lib, -
+  sys$library:libz.olb/lib, -
+  sys$library:libbz2.olb/lib, -
+  sys$library:df.olb/lib, -
+  sys$library:libjbig.olb/lib, -
   []magickshr.opt/opt
 $ libr/crea/share/log magickshr.olb magickshr.exe
 $    set file/trunc magickshr.olb
 $    purge magickshr.olb
-$    link_libraries := magickshr.olb/lib
+$    link_libraries := [-]magickshr.olb/lib
 $    define/nolog magickshr 'f$environment("default")'magickshr.exe
 $    write sys$output "Shareable image logical MAGICKSHR defined:"
 $    show logi magickshr
 $ else
 $    link_libraries := [.magick]libMagick.olb/lib, -
   [.coders]libCoders.olb/lib, -
-  [.jpeg]libjpeg.olb'library_options'/lib, -
-  [.png]libpng.olb'library_options'/lib, -
-  [.tiff]libtiff.olb'library_options'/lib, -
-  [.ttf]libttf.olb'library_options'/lib, -
-  [.zlib]libz.olb'library_options'/lib
+  sys$library:libjpeg.olb/lib, -
+  sys$library:libpng.olb/lib, -
+  sys$library:tiff.olb/lib, -
+  $disk2:[joukj.public.freetype.freetype.freetype2.lib]freetype.olb/l, -
+  sys$library:libz.olb/lib,-
+  sys$library:df.olb/lib, -
+  sys$library:libjbig.olb/lib, -
+  sys$library:libbz2.olb/lib
 $ endif
+$ define magick [-.magick]
+$ set def [.utilities]
 $if ((p1 .nes. "") .and. (p1 .nes. "DISPLAY")) then goto SkipDisplay
 $write sys$output "Making Display..."
 $call Make display.c
@@ -173,8 +181,8 @@ $
 $identify:==$'f$environment("default")'identify
 $write sys$output "..symbol IDENTIFY defined."
 $SkipIdentify:
-$if ((p1 .nes. "") .and. (p1 .nes. "COMBINE")) then goto SkipCombine
-$write sys$output "Making Combine..."
+$if ((p1 .nes. "") .and. (p1 .nes. "COMPOSITE")) then goto SkipComposite
+$write sys$output "Making Composite..."
 $call Make composite.c
 $
 $link'link_options' composite.obj, -
@@ -182,9 +190,11 @@ $link'link_options' composite.obj, -
   sys$share:decw$xlibshr.exe/share
 $
 $composite:==$'f$environment("default")'composite
-$write sys$output "..symbol COMBINE defined."
-$SkipCombine:
-copy [.delegates]vms.mgk sys$login:delegates.mgk
+$write sys$output "..symbol COMPOSITE defined."
+$SkipComposite:
+$set def [-]
+$copy [.delegates]vms.mgk sys$login:delegates.mgk
+$copy [.delegates]magic.mgk sys$login:magic.mgk
 $type sys$input
 
 Use this command to specify which X server to contact:
