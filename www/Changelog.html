@@ -53,18 +53,12 @@
 </tr>
 </table>
 <p>
-2003-04-30  William Radcliffe &lt;billr@corbis.com&gt;
-<UL>
-  <LI> magick/command.c: Changes from 2003-04-19 to free the arg
-        list when it was still pointed to by the option arg and accessed
-        on an exception. This caused gm to crash on any erroneous command
-        line argument.
-
-</UL>
-<p>
 2003-04-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/jpeg.c (WriteJPEGImage): If the image resolution is
+        overwritten with 72DPI, make sure that the resolution units are
+        set to PixelsPerInchResolution.
   <LI> coders/jpeg.c (WriteJPEGImage): Don't overwrite the image
         resolution if it is valid.<BR>
   <LI> magick/command.c (MogrifyImageCommand): Added -resample
@@ -73,6 +67,16 @@
         for Visual C++ 6.0 so that configure links.  The code which
         needs these interfaces is to support Visual C++ 7.0 XML-style
         project files.
+
+</UL>
+<p>
+2003-04-30  William Radcliffe &lt;billr@corbis.com&gt;
+
+<UL>
+  <LI> magick/command.c: Changes from 2003-04-19 to free the arg
+        list when it was still pointed to by the option arg and accessed
+        on an exception. This caused gm to crash on any erroneous command
+        line argument.
 
 </UL>
 <p>

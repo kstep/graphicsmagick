@@ -819,14 +819,14 @@ uninstall-man: uninstall-man1 uninstall-man4 uninstall-man5
 
 
 clean-local:
-	$(RMDelegate) -f *_out.miff gm.core core
+	$(RMDelegate) -f *_out.miff demo.miff gm.core core
 
 check:
 	$(RMDelegate) -f *_out.miff
 	${GM} convert $(MODEL_MIFF) +noise Laplacian              -label AddNoise AddNoise_out.miff
 	${GM} convert $(MODEL_MIFF) -fill gold \
 	        -pointsize 14 -font $(GENERIC_TTF) \
-	        -draw "gravity North text 0,20 'Magick'" -label Annotate Annotate_out.miff
+	        -draw 'gravity North text 0,20 "Magick"' -label Annotate Annotate_out.miff
 	${GM} convert $(MODEL_MIFF) -blur 0.0x1.0                 -label Blur Blur_out.miff
 	${GM} convert $(MODEL_MIFF) -bordercolor gold -border 6x6 -label Border Border_out.miff
 	${GM} convert $(MODEL_MIFF)                               -label Channel Channel_out.miff
@@ -837,7 +837,7 @@ check:
 	${GM} convert $(MODEL_MIFF) -despeckle                    -label Despeckle Despeckle_out.miff
 	${GM} convert $(MODEL_MIFF) -crop '80x80+25+50'           -label Crop Crop_out.miff
 	${GM} convert $(MODEL_MIFF) -fill none -stroke gold \
-	        -draw "circle 60,90 60,120"              -label Draw Draw_out.miff
+	        -draw 'circle 60,90 60,120'              -label Draw Draw_out.miff
 	${GM} convert $(MODEL_MIFF) -edge 0x1                     -label Edge Edge_out.miff
 	${GM} convert $(MODEL_MIFF) -emboss 0x1                   -label Emboss Emboss_out.miff
 	${GM} convert $(MODEL_MIFF) -equalize                     -label Equalize Equalize_out.miff
@@ -875,21 +875,22 @@ check:
 	        -transparent black                       -label Shear Shear_out.miff
 	${GM} convert $(MODEL_MIFF) -spread 3                     -label Spread Spread_out.miff
 	${GM} convert $(MODEL_MIFF) -solarize 50%                 -label Solarize Solar_out.miff
-	${GM} convert $(MODEL_MIFF) -background "#000000FF" \
+	${GM} convert $(MODEL_MIFF) -background '#000000FF' \
 	        -swirl 90                                -label Swirl Swirl_out.miff
 	${GM} convert $(MODEL_MIFF) -unsharp 0.0x1.0              -label UnsharpMask Unsharp_out.miff
-	${GM} convert $(MODEL_MIFF) -background "#000000FF" \
+	${GM} convert $(MODEL_MIFF) -background '#000000FF' \
 	        -wave 25x150                             -label Wave Wave_out.miff
 	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 2x2 -label Ordered2x2 Ordered2_out.miff
 	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 3x3 -label Ordered3x3 Ordered3_out.miff
 	${GM} convert $(MODEL_MIFF) -equalize -ordered-dither intensity 4x4 -label Ordered4x4 Ordered4_out.miff
-	${GM} convert $(MODEL_MIFF) -equalize -random-threshold intensity 10% -label Random10% Random10_out.miff
+	${GM} convert $(MODEL_MIFF) -equalize -random-threshold intensity '10%' -label 'Random10%' Random10_out.miff
 	${GM} montage -geometry '130x194+10+5>' -gravity 'Center' \
 	  -bordercolor 'green' -borderwidth 1x1 -tile '5x1000' -compose 'over' \
 	  -background '#ffffff' -font $(GENERIC_TTF) -pointsize 18 -fill '#600' \
-	  -stroke 'none' null: null: null: null: null: [A-Z]*_out.miff montage_out.miff
-	${GM} convert logo: -resize 40% logo.miff
-	${GM} composite logo.miff -gravity north montage_out.miff demo_out.miff
+	  -stroke 'none' null: null: null: null: null: 'tmp:[A-Z]*_out.miff' \
+	  -compress rle montage_out.miff
+	${GM} convert logo: -resize 40% logo_out.miff
+	${GM} composite 'tmp:logo_out.miff' -gravity north 'tmp:montage_out.miff' demo.miff
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

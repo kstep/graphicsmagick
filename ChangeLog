@@ -1,5 +1,10 @@
 2003-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* utilities/Makefile.am (check): Cleaned up the utilities
+	test/demo a bit as well as using the undocumented "tmp:" prefix to
+	cause GraphicsMagick to remove temporary input files once they
+	have been read.  This leaves just the final output file
+	"demo.miff" when the test completes.
 	* coders/jpeg.c (WriteJPEGImage): If the image resolution is
 	overwritten with 72DPI, make sure that the resolution units are
 	set to PixelsPerInchResolution.	
