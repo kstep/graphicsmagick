@@ -720,7 +720,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     normalize+=kernel[i];
   for (y=0; y < (long) convolve_image->rows; y++)
   {
-    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns,width,
+    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
       exception);
     q=SetImagePixels(convolve_image,0,y,convolve_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -730,9 +730,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
       (void) memset(&aggregate,0,sizeof(AggregatePacket));
       r=p;
       k=kernel;
-      for (v=(-width/2); v <= (width/2); v++)
+      for (v=0; v < width; v++)
       {
-        for (u=(-width/2); u <= (width/2); u++)
+        for (u=0; u < width; u++)
         {
           aggregate.red+=(*k)*r[u].red;
           aggregate.green+=(*k)*r[u].green;
@@ -740,7 +740,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
           aggregate.opacity+=(*k)*r[u].opacity;
           k++;
         }
-        r+=image->columns;
+        r+=image->columns+width;
       }
       if ((normalize != 0.0) && (normalize != 1.0))
         {
@@ -1568,7 +1568,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   center=width*width/2;
   for (y=0; y < (long) median_image->rows; y++)
   {
-    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns,width,
+    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
       exception);
     q=SetImagePixels(median_image,0,y,median_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -1581,7 +1581,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
       {
         for (u=0; u < width; u++)
           *w++=r[u];
-        r+=image->columns;
+        r+=image->columns+width;
       }
       qsort((void *) window,width*width,sizeof(PixelPacket),RedCompare);
       q->red=window[center].red;
@@ -2064,7 +2064,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns,width,
+    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
       exception);
     q=SetImagePixels(paint_image,0,y,paint_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -2077,9 +2077,9 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       count=0;
       (void) memset(histogram,0,(MaxRGB+1)*sizeof(unsigned long));
       r=p;
-      for (v=(-width/2); v <= (width/2); v++)
+      for (v=0; v < width; v++)
       {
-        for (u=(-width/2); u <= (width/2); u++)
+        for (u=0; u < width; u++)
         {
           k=Intensity(r+u);
           histogram[k]++;
@@ -2090,7 +2090,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
             }
           k++;
         }
-        r+=image->columns;
+        r+=image->columns+width;
       }
       p++;
       q++;
@@ -2382,7 +2382,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   center=width*width/2;
   for (y=0; y < (long) noise_image->rows; y++)
   {
-    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns,width,
+    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
       exception);
     q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -2391,11 +2391,11 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
     {
       r=p;
       w=window;
-      for (v=(-width/2); v <= (width/2); v++)
+      for (v=0; v < width; v++)
       {
-        for (u=(-width/2); u <= (width/2); u++)
+        for (u=0; u < width; u++)
           *w++=r[u];
-        r+=image->columns;
+        r+=image->columns+width;
       }
       qsort((void *) window,width*width,sizeof(PixelPacket),RedCompare);
       pixel=window[center];

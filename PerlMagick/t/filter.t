@@ -52,8 +52,8 @@ testFilter('input.miff', 'Contrast',
 ++$test;
 testFilter('input.miff', 'Convolve',
   [1, 2, 1, 2, 4, 2, 1, 2, 1],
-  'a1d263752e2d4081ba1c4e5ca5be3283d9d662c96e43328c33cba8451fcaaa2f',
-  '9011f3b5c1b0a2a359c3ccbe09198faf2e41bc3eb7fabf93e51361339c6e96bc');
+  'a0e5624d4bc5b48a62abf0a80f2d77808b5462955e80227c1af8c7efe5f8c6df',
+  '39adcbabb6f04c63f4a6ff7df27472ce3dfa2271252b618750b8e283b5fd8124');
 
 ++$test;
 testFilter('input.miff', 'Crop',
@@ -70,13 +70,13 @@ testFilter('input.miff', 'Despeckle',
 testFilter('input.miff', 'Edge',
   q/3/,
   '077ae4e1fa8db5e76a60a5764faf3b50fb15a9db0a3eb6d93f50bdbb3455f361',
-  'a90f7f767d8140d5f6f673d73af8b8e8431b1e7d1319efe9992f9b7d64b3c2fa');
+  '400576abfb90419a7d1fa40febff664150397f3e272c87a2113ac056cbc1ccbe');
 
 ++$test;
 testFilter('input.miff', 'Emboss',
   q/3/,
-  'd68ffa55a526c6cef59cfa18866a1a617b1065eb5a2975106b191d0535b0b477',
-  '8e542985d42162bc21e9caa078e73b7286bc15169d86e8cabca3a595dd9a1551');
+  '2d69baf1dd0c3f6bf4bae4e6956f540641f380072a36d7d41084a26e84bf8944',
+  'f8e18973054fc25d4b93d895216ca9783ca0cea4d06e8132fb08774bff27015e');
 
 ++$test;
 testFilter('input.miff', 'Equalize',
@@ -150,8 +150,8 @@ testFilter('input.miff', 'Normalize',
 ++$test;
 testFilter('input.miff', 'OilPaint',
   q/3/,
-  '37f7a9d971106e992136897715b56654226d7a0ddf88dcc926f0e4b36a1cf280',
-  '7e89a7332a7ac691a1f28ef17f906e2a67fd4cb40e0db1c228a196da1e59fad7');
+  '55968aaed92f68054b058b1e69e569464441a25c9db3973dc0f7202199856440',
+  'be9d900c168711ced80fece0a8a7f9b51aba59322f8e23810155abf72886ec14');
 
 ++$test;
 testFilter('input.miff', 'Opaque',
@@ -184,7 +184,7 @@ testFilter('input.miff', 'Roll',
 ++$test;
 testFilter('input.miff', 'Rotate',
   q/10/,
-  'e6edc84899ad7506cd939cb36f028b34af20ae88bda7307673259880c439b460',
+  'cf2020a876d33aca25fe75210890e2f621a510e8e167ae750c26a13db92a9c31',
   '21579b7545e251c5d5a52e0911874577392d7b28004dbf4042ec04a53be0798c');
 
 ++$test;
@@ -212,8 +212,8 @@ testFilter('input.miff', 'Shade',
 ++$test;
 testFilter('input.miff', 'Sharpen',
   q/0.0x1.0/,
-  'eaeea39e3b2a33b9d8761a70a57717214fd4b39944df47bd21a776f4ac2dfa58',
-  '7a4f60a4108acb7edc76df9313e185af93c1ff39def0553eabe7fa46a4a63cc2');
+  '5de54151157c7a7f0ee5dae746f8a122c304e4c262b1e656b04277c1f54c780a',
+  '5704ba4b386315c284371eff8ba549896181d35948ae29dcdc11e923e040b786');
 
 ++$test;
 testFilter('input.miff', 'Shave',
@@ -223,7 +223,7 @@ testFilter('input.miff', 'Shave',
 ++$test;
 testFilter('input.miff', 'Shear',
   q/10/,
-  '961cbb9642ee5499af3e7e43be214e6ddbd2cfe00c6f239a2236895b4864c21d',
+  '70f708b88623141ad6ce1d98dd83ece931bfdc62e48f77a5416f115f8bf3abe3',
   '7194a11c4b46dfae686578212df14f0fe3fdc30b4bb83b9ef003fadd637b2481');
 
 ++$test;
