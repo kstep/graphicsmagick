@@ -762,7 +762,7 @@ MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
       /*
         Output white run.
       */
-      for (runlength=0; ((*q == polarity) && (n > 0)); n--)
+      for (runlength=0; ((n > 0) && (*q == polarity)); n--)
       {
         q++;
         runlength++;

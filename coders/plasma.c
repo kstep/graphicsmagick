@@ -240,5 +240,6 @@ ModuleExport void RegisterPLASMAImage(void)
 */
 ModuleExport void UnregisterPLASMAImage(void)
 {
+  (void) UnregisterMagickInfo("FRACTAL");
   (void) UnregisterMagickInfo("PLASMA");
 }

@@ -21,14 +21,14 @@ int main( int /*argc*/, char ** argv)
   // Initialize ImageMagick install location for Windows
   InitializeMagick(*argv);
 
-  string srcdir("");
-  if(getenv("SRCDIR") != 0)
-    srcdir = getenv("SRCDIR");
-
-  // Common font to use.
-  string font = "Helvetica";
-
   try {
+
+    string srcdir("");
+    if(getenv("SRCDIR") != 0)
+      srcdir = getenv("SRCDIR");
+
+    // Common font to use.
+    string font = "Helvetica";
 
     //
     // Create a 300x300 white canvas.

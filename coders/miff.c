@@ -2275,9 +2275,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           length=255;
           for (x=0; x < (long) image->columns; x++)
           {
-            if ((p->red == pixel.red) && (p->green == pixel.green) &&
-                (p->blue == pixel.blue) && (p->opacity == pixel.opacity) &&
-                (length < 255) && (x < (long) (image->columns-1)))
+            if ((length < 255) && (x < (long) (image->columns-1)) &&
+                ColorMatch(p,(&pixel)) &&
+                ((image->matte == False) || (p->opacity == pixel.opacity)))
               length++;
             else
               {

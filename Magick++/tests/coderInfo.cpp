@@ -83,7 +83,7 @@ int main( int /*argc*/, char **argv)
   try {
 
     CoderInfo coderInfo("GIF");
-    if( coderInfo.name() != string("GIF") )
+    if ( coderInfo.name() != string("GIF") )
       {
         cout << "Unexpected coder name \""
              << coderInfo.name()

@@ -4990,6 +4990,9 @@ MagickExport unsigned int XMakeImage(Display *display,
     depth,
     format;
 
+  size_t
+    length;
+
   XImage
     *matte_image,
     *ximage;
@@ -5079,7 +5082,7 @@ MagickExport unsigned int XMakeImage(Display *display,
       segment_info=(XShmSegmentInfo *) window->segment_info;
       ximage=XShmCreateImage(display,window->visual,depth,format,(char *) NULL,
         &segment_info[1],width,height);
-      segment_info[1].shmid=shmget(IPC_PRIVATE,(int)
+      segment_info[1].shmid=shmget(IPC_PRIVATE,(size_t)
         (ximage->bytes_per_line*ximage->height),IPC_CREAT | 0777);
       window->shared_memory&=segment_info[1].shmid >= 0;
       if (window->shared_memory)
@@ -5167,37 +5170,38 @@ MagickExport unsigned int XMakeImage(Display *display,
       /*
         Destroy previous X image.
       */
+      length=(size_t) window->ximage->bytes_per_line*window->ximage->height;
 #if defined(HasSharedMemory)
-      {
-        XShmSegmentInfo
-          *segment_info;
+      if (window->segment_info != (XShmSegmentInfo *) NULL)
+        {
+          XShmSegmentInfo
+            *segment_info;
 
-        segment_info=(XShmSegmentInfo *) window->segment_info;
-        if (segment_info[0].shmid >= 0)
-          {
-            (void) XSync(display,False);
-            (void) XShmDetach(display,&segment_info[0]);
-            (void) XSync(display,False);
-            (void) shmdt(segment_info[0].shmaddr);
-            (void) shmctl(segment_info[0].shmid,IPC_RMID,0);
-            segment_info[0].shmid=(-1);
-            window->ximage->data=(char *) NULL;
+          segment_info=(XShmSegmentInfo *) window->segment_info;
+          if (segment_info[0].shmid >= 0)
+            {
+              (void) XSync(display,False);
+              (void) XShmDetach(display,&segment_info[0]);
+              (void) XSync(display,False);
+              (void) shmdt(segment_info[0].shmaddr);
+              (void) shmctl(segment_info[0].shmid,IPC_RMID,0);
+              segment_info[0].shmid=(-1);
+              window->ximage->data=(char *) NULL;
+            }
         }
-      }
 #endif
-      if (window->ximage->data != (char *) NULL)
-        MagickFreeMemory(window->ximage->data);
-      window->ximage->data=(char *) NULL;
+      MagickFreeMemory(window->ximage->data);
       XDestroyImage(window->ximage);
     }
 #if defined(HasSharedMemory)
-  {
-    XShmSegmentInfo
-      *segment_info;
-
-    segment_info=(XShmSegmentInfo *) window->segment_info;
-    segment_info[0]=segment_info[1];
-  }
+  if (window->segment_info != (XShmSegmentInfo *) NULL)
+    {
+      XShmSegmentInfo
+        *segment_info;
+      
+      segment_info=(XShmSegmentInfo *) window->segment_info;
+      segment_info[0]=segment_info[1];
+    }
 #endif
   window->ximage=ximage;
   matte_image=(XImage *) NULL;
@@ -5219,9 +5223,6 @@ MagickExport unsigned int XMakeImage(Display *display,
           }
         if (matte_image != (XImage *) NULL)
           {
-            size_t
-              length;
-
             /*
               Allocate matte image pixel data.
             */
@@ -5240,9 +5241,7 @@ MagickExport unsigned int XMakeImage(Display *display,
       /*
         Free matte image.
       */
-      if (window->matte_image->data != (char *) NULL)
-        MagickFreeMemory(window->matte_image->data);
-      window->matte_image->data=(char *) NULL;
+      MagickFreeMemory(window->matte_image->data);
       XDestroyImage(window->matte_image);
     }
   window->matte_image=matte_image;

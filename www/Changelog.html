@@ -53,6 +53,55 @@
 </tr>
 </table>
 <p>
+2004-02-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/png.c (UnregisterPNGImage): Destroy PNG semaphore.
+  <LI> magick/image.c (SetImageInfo): Since we don't know what the
+        "IMPLICIT" specifier is supposed to do, support for it is
+        removed. Perhaps by removing support for it, we will be reminded
+        why it exists.<BR>
+  <LI> magick/magick.c (DestroyMagickInfo): Invoke
+        UnregisterStaticModules().<BR>
+        (GetMagickInfo): Remove registration for "IMPLICIT" format since
+        its purpose is presumed bogus.<BR>
+  <LI> magick/static.c (UnregisterStaticModules): New function so we
+        can unregister static modules.<BR>
+  <LI> coders/plasma.c (UnregisterPLASMAImage): Unregister FRACTAL.
+  <LI> coders/icon.c (UnregisterICONImage): Unregister CUR.
+  <LI> coders/bmp.c (UnregisterBMPImage): Unregister BMP2 and BMP3.
+  <LI> coders/meta.c (UnregisterMETAImage): Unregister APP1JPEG, IPTC,
+        IPTCTEXT, IPTCWTEXT, and PICON.
+  <LI> coders/miff.c: Check for run-length termination before testing
+        memory and only check opacity channel if matte is valid.
+  <LI> magick/compress.c: Check for run-length termination before
+        testing memory (bad read error).
+
+</UL>
+<p>
+2004-02-07  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/bmp.c: Fix off-by-one error while initializing padding bytes.
+  <LI> coders/dib.c: Fix off-by-one error while initializing padding bytes.
+  <LI> magick/enhance.c: MaxMap vs MaxRGB error fixed.  Reported by Cristy.
+
+</UL>
+<p>
+2004-02-04  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> magick/compress.c:  avoid a reference to uninitialized data.
+
+</UL>
+<p>
+2004-02-04  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/dib.c: initialize padding bytes.
+
+</UL>
+<p>
 2004-02-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

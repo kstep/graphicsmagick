@@ -1,6 +1,29 @@
+2004-02-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/png.c (UnregisterPNGImage): Destroy PNG semaphore.
+	* magick/image.c (SetImageInfo): Since we don't know what the
+	"IMPLICIT" specifier is supposed to do, support for it is
+	removed. Perhaps by removing support for it, we will be reminded
+	why it exists.
+	* magick/magick.c (DestroyMagickInfo): Invoke
+	UnregisterStaticModules().
+	(GetMagickInfo): Remove registration for "IMPLICIT" format since
+	its purpose is presumed bogus.
+	* magick/static.c (UnregisterStaticModules): New function so we
+	can unregister static modules.
+	* coders/plasma.c (UnregisterPLASMAImage): Unregister FRACTAL.
+	* coders/icon.c (UnregisterICONImage): Unregister CUR.
+	* coders/bmp.c (UnregisterBMPImage): Unregister BMP2 and BMP3.
+	* coders/meta.c (UnregisterMETAImage): Unregister APP1JPEG, IPTC,
+	IPTCTEXT, IPTCWTEXT, and PICON.
+	* coders/miff.c: Check for run-length termination before testing
+	memory and only check opacity channel if matte is valid.
+	* magick/compress.c: Check for run-length termination before
+	testing memory (bad read error).
+
 2004-02-07  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
-	* coders/bpp.c: Fix off-by-one error while initializing padding bytes.
+	* coders/bmp.c: Fix off-by-one error while initializing padding bytes.
 	* coders/dib.c: Fix off-by-one error while initializing padding bytes.
 	* magick/enhance.c: MaxMap vs MaxRGB error fixed.  Reported by Cristy.
 

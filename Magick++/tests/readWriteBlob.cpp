@@ -51,16 +51,13 @@ int main( int /*argc*/, char ** argv)
 
   int failures=0;
 
-  string srcdir;
-  if(getenv("SRCDIR") != 0)
-    srcdir = getenv("SRCDIR");
-  else
-    srcdir = "";
-
-  string testimage;
-
   try
     {
+      string srcdir("");
+      if(getenv("SRCDIR") != 0)
+        srcdir = getenv("SRCDIR");
+
+      string testimage;
     
       //
       // Test reading BLOBs

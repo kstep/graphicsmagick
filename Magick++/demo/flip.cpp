@@ -24,11 +24,12 @@ int main( int /*argc*/, char ** argv)
   // Initialize ImageMagick install location for Windows
   InitializeMagick(*argv);
 
-  string srcdir("");
-  if(getenv("SRCDIR") != 0)
-    srcdir = getenv("SRCDIR");
 
   try {
+
+    string srcdir("");
+    if(getenv("SRCDIR") != 0)
+      srcdir = getenv("SRCDIR");
 
     // Read images into STL list
     list<Image> imageList;

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003, 2004
 //
 // Definition of Image, the representation of a single image in Magick++
 //
@@ -24,9 +24,12 @@ namespace Magick
   class Options;
   class ImageRef;
 
-  extern MagickDLLDecl const std::string borderGeometryDefault;
-  extern MagickDLLDecl const std::string frameGeometryDefault;
-  extern MagickDLLDecl const std::string raiseGeometryDefault;
+//   extern MagickDLLDecl const std::string borderGeometryDefault;
+//   extern MagickDLLDecl const std::string frameGeometryDefault;
+//   extern MagickDLLDecl const std::string raiseGeometryDefault;
+  extern MagickDLLDecl const char *borderGeometryDefault;
+  extern MagickDLLDecl const char *frameGeometryDefault;
+  extern MagickDLLDecl const char *raiseGeometryDefault;
 
   // Compare two Image objects regardless of LHS/RHS
   // Image sizes and signatures are used as basis of comparison

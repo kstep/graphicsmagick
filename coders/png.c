@@ -5704,6 +5704,10 @@ ModuleExport void RegisterPNGImage(void)
   entry->module=AcquireString("PNG");
   entry->note=AcquireString(JNGNote);
   (void) RegisterMagickInfo(entry);
+
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+  png_semaphore=AllocateSemaphoreInfo();
+#endif
 }
 
 /*
@@ -5734,6 +5738,10 @@ ModuleExport void UnregisterPNGImage(void)
   (void) UnregisterMagickInfo("PNG32");
 #if defined(JNG_SUPPORTED)
   (void) UnregisterMagickInfo("JNG");
+#endif
+
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+  DestroySemaphoreInfo(&png_semaphore);
 #endif
 }
 

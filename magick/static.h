@@ -154,6 +154,7 @@ extern ModuleExport void
   UnregisterBIEImage(void),
   UnregisterBMPImage(void),
   UnregisterCAPTIONImage(void),
+  UnregisterCINEONImage(void),
   UnregisterCLIPBOARDImage(void),
   UnregisterCMYKImage(void),
   UnregisterCUTImage(void),

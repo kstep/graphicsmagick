@@ -23,11 +23,11 @@ int main( int /*argc*/, char ** argv)
 
   int failures=0;
 
-  string srcdir("");
-  if(getenv("SRCDIR") != 0)
-    srcdir = getenv("SRCDIR");
-
   try {
+
+    string srcdir("");
+    if(getenv("SRCDIR") != 0)
+      srcdir = getenv("SRCDIR");
 
     //
     // Test readImages and writeImages

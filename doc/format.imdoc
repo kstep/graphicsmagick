@@ -61,7 +61,6 @@
 <o>ICM      <|>*rw-<|>ICC Color Profile
 <o>ICO      <|>*r--<|>Microsoft icon
 <o>ICON     <|>*r--<|>Microsoft icon
-<o>IMPLICIT <|>*---<|>
 <o>IPTC     <|>*rw-<|>IPTC Newsphoto
 <o>JBG      <|>*rw+<|>Joint Bi-level Image experts Group
 < >         <|>    <|>interchange format

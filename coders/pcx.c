@@ -229,7 +229,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned char
     packet,
-    *pcx_colormap,
+    *pcx_colormap = 0,
     *pcx_pixels,
     *scanline;
 
@@ -575,6 +575,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (image->storage_class == PseudoClass)
       SyncImage(image);
+    MagickFreeMemory(pcx_colormap);
     MagickFreeMemory(scanline);
     MagickFreeMemory(pcx_pixels);
     if (EOFBlob(image))

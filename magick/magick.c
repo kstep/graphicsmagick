@@ -105,20 +105,20 @@ MagickExport void DestroyMagick(void)
   DestroyColorInfo();
   DestroyDelegateInfo();
   DestroyTypeInfo();
-#if defined(SupportMagickModules)
-  DestroyMagickModules();
-#endif /* defined(SupportMagickModules) */
   DestroyMagicInfo();
   DestroyMagickInfo();
-  DestroyLogInfo();
   DestroyConstitute();
   DestroyMagickRegistry();
   DestroyMagickResources();
   DestroyTemporaryFiles();
-  DestroySemaphore();
 #if defined(WIN32)
   NTGhostscriptUnLoadDLL();
-#endif
+#endif /* defined(WIN32) */
+  /*
+    Destroy logging last since some components log their destruction.
+  */
+  DestroyLogInfo();
+  DestroySemaphore();
 
   MagickInitialized=InitUninitialized;
 }
@@ -149,21 +149,31 @@ MagickExport void DestroyMagickInfo(void)
   register MagickInfo
     *p;
 
+#if defined(SupportMagickModules)
+  DestroyMagickModules();
+#endif /* defined(SupportMagickModules) */
+
+#if !defined(BuildMagickModules)
+  UnregisterStaticModules();
+#endif /* !defined(BuildMagickModules) */
+
+  /*
+    At this point, the list should be empty, but check for remaining
+    entries anyway.
+  */
   AcquireSemaphoreInfo(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; )
   {
     magick_info=p;
     p=p->next;
-    if (magick_info->name != (char *) NULL)
-      MagickFreeMemory(magick_info->name);
-    if (magick_info->description != (char *) NULL)
-      MagickFreeMemory(magick_info->description);
-    if (magick_info->version != (char *) NULL)
-      MagickFreeMemory(magick_info->version);
-    if (magick_info->note != (char *) NULL)
-      MagickFreeMemory(magick_info->note);
-    if (magick_info->module != (char *) NULL)
-      MagickFreeMemory(magick_info->module);
+
+    printf("Warning: module registration for \"%s\" from module \"%s\" still present!\n",
+           magick_info->name, magick_info->module);
+    MagickFreeMemory(magick_info->name);
+    MagickFreeMemory(magick_info->description);
+    MagickFreeMemory(magick_info->version);
+    MagickFreeMemory(magick_info->note);
+    MagickFreeMemory(magick_info->module);
     MagickFreeMemory(magick_info);
   }
   magick_list=(MagickInfo *) NULL;
@@ -268,16 +278,10 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
     LiberateSemaphoreInfo(&magick_semaphore);
   else
     {
-      MagickInfo
-        *entry;
-
       /*
         Register image formats.
       */
       LiberateSemaphoreInfo(&magick_semaphore);
-      entry=SetMagickInfo("IMPLICIT");
-      entry->stealth=True;
-      (void) RegisterMagickInfo(entry);
 
 #if defined(SupportMagickModules)
       /*

@@ -20,14 +20,14 @@ int main( int /*argc*/, char ** argv)
   // Initialize ImageMagick install location for Windows
   InitializeMagick(*argv);
 
-  string srcdir("");
-  if(getenv("SRCDIR") != 0)
-    srcdir = getenv("SRCDIR");
-
-  // Common font to use.
-  string font = "Helvetica";
-
   try {
+
+    string srcdir("");
+    if(getenv("SRCDIR") != 0)
+      srcdir = getenv("SRCDIR");
+
+    // Common font to use.
+    string font = "Helvetica";
 
     //
     // Create a 300x300 white canvas.
@@ -156,7 +156,7 @@ int main( int /*argc*/, char ** argv)
     //    image.debug(true);
     image.draw(drawList);
 
-//     image.write( "piddle.mvg" );
+    //     image.write( "piddle.mvg" );
 
     cout << "Writing image \"piddle_out.miff\" ..." << endl;
     image.compressType( RunlengthEncodedCompression );
@@ -164,8 +164,8 @@ int main( int /*argc*/, char ** argv)
     cout << "Writing MVG metafile \"piddle_out.mvg\" ..." << endl;
     image.write( "piddle_out.mvg" );
 
-//     cout << "Display image..." << endl;
-//     image.display( );
+    //     cout << "Display image..." << endl;
+    //     image.display( );
 
   }
   catch( exception &error_ )

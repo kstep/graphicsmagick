@@ -226,3 +226,125 @@ MagickExport void RegisterStaticModules(void)
   RegisterYUVImage();
 #endif /* !defined(BuildMagickModules) */
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r S t a t i c M o d u l e s                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  UnregisterStaticModules() statically unregisters all the available module
+%  handlers. This allows allocated resources to be freed.
+%
+%  The format of the UnRegisterStaticModules method is:
+%
+%      UnRegisterStaticModules(void)
+%
+%
+*/
+MagickExport void UnregisterStaticModules(void)
+{
+#if !defined(BuildMagickModules)
+  UnregisterARTImage();
+  UnregisterAVIImage();
+  UnregisterAVSImage();
+  UnregisterBMPImage();
+  UnregisterCAPTIONImage();
+  UnregisterCINEONImage();
+  UnregisterCLIPBOARDImage();
+  UnregisterCMYKImage();
+  UnregisterCUTImage();
+  UnregisterDCMImage();
+  UnregisterDIBImage();
+  UnregisterDPSImage();
+  UnregisterDPXImage();
+  UnregisterEMFImage();
+  UnregisterEPTImage();
+  UnregisterFAXImage();
+  UnregisterFITSImage();
+  UnregisterFPXImage();
+  UnregisterGIFImage();
+  UnregisterGRAYImage();
+  UnregisterGRADIENTImage();
+  UnregisterHISTOGRAMImage();
+  UnregisterHTMLImage();
+  UnregisterICONImage();
+  UnregisterJBIGImage();
+  UnregisterJPEGImage();
+  UnregisterJP2Image();
+  UnregisterLABELImage();
+  UnregisterLOCALEImage();
+  UnregisterLOGOImage();
+  UnregisterMAPImage();
+  UnregisterMATImage();
+  UnregisterMATTEImage();
+  UnregisterMETAImage();
+  UnregisterMIFFImage();
+  UnregisterMONOImage();
+  UnregisterMPCImage();
+  UnregisterMPEGImage();
+  UnregisterMPRImage();
+  UnregisterMSLImage();
+  UnregisterMTVImage();
+  UnregisterMVGImage();
+  UnregisterNULLImage();
+  UnregisterOTBImage();
+  UnregisterPALMImage();
+  UnregisterPCDImage();
+  UnregisterPCLImage();
+  UnregisterPCXImage();
+  UnregisterPDBImage();
+  UnregisterPDFImage();
+  UnregisterPICTImage();
+  UnregisterPIXImage();
+  UnregisterPLASMAImage();
+  UnregisterPNGImage();
+  UnregisterPNMImage();
+  UnregisterPREVIEWImage();
+  UnregisterPSImage();
+  UnregisterPS2Image();
+  UnregisterPS3Image();
+  UnregisterPSDImage();
+  UnregisterPWPImage();
+  UnregisterRGBImage();
+  UnregisterRLAImage();
+  UnregisterRLEImage();
+  UnregisterSCTImage();
+  UnregisterSFWImage();
+  UnregisterSGIImage();
+  UnregisterSTEGANOImage();
+  UnregisterSUNImage();
+  UnregisterSVGImage();
+  UnregisterTGAImage();
+  UnregisterTIFFImage();
+  UnregisterTILEImage();
+  UnregisterTIMImage();
+  UnregisterTOPOLImage();
+  UnregisterTTFImage();
+  UnregisterTXTImage();
+  UnregisterUILImage();
+  UnregisterURLImage();
+  UnregisterUYVYImage();
+  UnregisterVICARImage();
+  UnregisterVIDImage();
+  UnregisterVIFFImage();
+  UnregisterWBMPImage();
+  UnregisterWMFImage();
+  UnregisterWPGImage();
+  UnregisterXImage();
+  UnregisterXBMImage();
+  UnregisterXCImage();
+  UnregisterXCFImage();
+  UnregisterXPMImage();
+#if defined(_VISUALC_)
+  UnregisterXTRNImage();
+#endif /* defined(_VISUALC_) */
+  UnregisterXWDImage();
+  UnregisterYUVImage();
+#endif /* !defined(BuildMagickModules) */
+}

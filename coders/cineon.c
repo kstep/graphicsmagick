@@ -76,7 +76,6 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
-#include "magick/static.h"
 #include "magick/utility.h"
 
 /*

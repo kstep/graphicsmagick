@@ -23,9 +23,13 @@ using namespace std;
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 
-MagickDLLDeclExtern const std::string Magick::borderGeometryDefault = "6x6+0+0";
-MagickDLLDeclExtern const std::string Magick::frameGeometryDefault  = "25x25+6+6";
-MagickDLLDeclExtern const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
+// MagickDLLDeclExtern const std::string Magick::borderGeometryDefault = "6x6+0+0";
+// MagickDLLDeclExtern const std::string Magick::frameGeometryDefault  = "25x25+6+6";
+// MagickDLLDeclExtern const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
+
+MagickDLLDeclExtern const char *Magick::borderGeometryDefault = "6x6+0+0";
+MagickDLLDeclExtern const char *Magick::frameGeometryDefault  = "25x25+6+6";
+MagickDLLDeclExtern const char *Magick::raiseGeometryDefault  = "6x6+0+0";
 
 static bool magick_initialized=false;
 

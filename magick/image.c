@@ -5426,15 +5426,12 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
           (void) strncpy(base_filename,p,MaxTextExtent-1);
           (void) strcpy(image_info->filename,base_filename);
           (void) strncpy(magic,format,MaxTextExtent-1);
-          if (LocaleCompare(magic,"IMPLICIT") != 0)
-            {
-              (void) strncpy(image_info->magick,magic,MaxTextExtent-1);
-              if (LocaleCompare(magic,"TMP") != 0)
-                image_info->affirm=True;
-              else
-                /* input file will be automatically removed */
-                image_info->temporary=True;
-            }
+          (void) strncpy(image_info->magick,magic,MaxTextExtent-1);
+          if (LocaleCompare(magic,"TMP") != 0)
+            image_info->affirm=True;
+          else
+            /* input file will be automatically removed */
+            image_info->temporary=True;
         }
     }
   if (rectify)
