@@ -317,7 +317,7 @@ ModuleExport void RegisterMATImage(void)
 
   entry=SetMagickInfo("MAT");
   entry->decoder=ReadMATImage;
-  entry->description=AllocateString("MATLAB");
+  entry->description=AllocateString("MATLAB image format");
   entry->module=AllocateString("MAT");
   RegisterMagickInfo(entry);
 }
