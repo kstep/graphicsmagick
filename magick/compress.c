@@ -988,7 +988,7 @@ MagickExport unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   return(True);
 }
 #else
-MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
+MagickExport unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   Image *image)
 {
   assert(image != (Image *) NULL);
