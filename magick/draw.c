@@ -1493,7 +1493,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
   q->primitive=PolygonPrimitive;
   while (*p != '\0')
   {
-    while (isspace(*p))
+    while (isspace((int) *p))
       p++;
     attribute=(*p);
     q->primitive=primitive_info->primitive;
@@ -1538,7 +1538,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         pixels[0]=point;
         for (i=1; i < 4; i++)
         {
-          if ((*p == ',') || isspace(*p))
+          if ((*p == ',') || isspace((int) *p))
             p++;
           n=0;
           (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
@@ -1612,7 +1612,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         pixels[0]=point;
         for (i=1; i < 3; i++)
         {
-          if ((*p == ',') || isspace(*p))
+          if ((*p == ',') || isspace((int) *p))
             p++;
           n=0;
           (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
@@ -1644,7 +1644,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         reflected_pixels[0]=pixels[3];
         for (i=2; i < 4; i++)
         {
-          if ((*p == ',') || isspace(*p))
+          if ((*p == ',') || isspace((int) *p))
             p++;
           n=0;
           (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
@@ -1697,7 +1697,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         reflected_pixels[0]=pixels[2];
         for (i=2; i < 3; i++)
         {
-          if ((*p == ',') || isspace(*p))
+          if ((*p == ',') || isspace((int) *p))
             p++;
           n=0;
           (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
@@ -1983,7 +1983,7 @@ static double DistanceToLine(const PointInfo *pixel,const PointInfo *p,
   double
     dot_product,
     gamma,
-    v;
+    phi;
 
   register double
     alpha,
@@ -1994,9 +1994,9 @@ static double DistanceToLine(const PointInfo *pixel,const PointInfo *p,
   dot_product=alpha*(q->x-p->x)+beta*(q->y-p->y);
   if (dot_product <= 0)
     return(alpha*alpha+beta*beta);
-  v=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
-  gamma=dot_product*dot_product/v;
-  if (gamma <= v)
+  phi=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
+  gamma=dot_product*dot_product/phi;
+  if (gamma <= phi)
     return(alpha*alpha+beta*beta-gamma);
   alpha=pixel->x-q->x;
   beta=pixel->y-q->y;
@@ -2144,6 +2144,9 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
           crossing,
           crossings;
 
+        PrimitiveInfo
+          *primitive_info;
+
         unsigned int
           poly_opacity;
 
@@ -2156,7 +2159,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
             opacity=Max(opacity,poly_opacity);
             break;
           }
-        minimum_distance=DistanceToLine(pixel,&p->pixel,&q->pixel);
+        primitive_info=p;
         crossings=0;
         if ((pixel->y < q->pixel.y) != (pixel->y < p->pixel.y))
           {
@@ -2170,9 +2173,6 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
           }
         for (p++; p <= q; p++)
         {
-          distance=DistanceToLine(pixel,&(p-1)->pixel,&p->pixel);
-          if (distance < minimum_distance)
-            minimum_distance=distance;
           if (pixel->y < (p-1)->pixel.y)
             {
               while ((p <= q) && (pixel->y < p->pixel.y))
@@ -2200,29 +2200,24 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
             if (crossing)
               crossings++;
         }
+        poly_opacity=TransparentOpacity;
+        if (crossings & 0x01)
+          poly_opacity=OpaqueOpacity;
+        p=primitive_info;
+        minimum_distance=DistanceToLine(pixel,&q->pixel,&p->pixel);
         for (p++ ; p <= q; p++)
         {
           distance=DistanceToLine(pixel,&(p-1)->pixel,&p->pixel);
           if (distance < minimum_distance)
             minimum_distance=distance;
         }
-        minimum_distance=sqrt(minimum_distance);
-        if (crossings & 0x01)
+        if (minimum_distance < (0.5*0.5))
           {
-            poly_opacity=OpaqueOpacity;
-            if (minimum_distance < 0.5)
-              {
-                alpha=0.5+minimum_distance;
-                poly_opacity=OpaqueOpacity*alpha*alpha;
-              }
-            opacity=Max(opacity,poly_opacity);
-            break;
-          }
-        poly_opacity=TransparentOpacity;
-        if (minimum_distance < 0.5)
-          {
-            alpha=0.5-minimum_distance;
-            poly_opacity=OpaqueOpacity*alpha*alpha;
+            if (crossings & 0x01)
+              alpha=0.5+sqrt(minimum_distance);
+            else
+              alpha=0.5-sqrt(minimum_distance);
+            poly_opacity=alpha*alpha*OpaqueOpacity;
           }
         opacity=Max(opacity,poly_opacity);
         break;
