@@ -122,7 +122,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
       DestroyImageInfo(clone_info);
       ThrowReaderException(FileOpenWarning,"No filename specified",image);
     }
-  DebugString("ReadXTRN CODER: %s\n",clone_info->filename);
+  /* DebugString("ReadXTRN CODER: %s\n",clone_info->filename); */
   if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)
     {
       image=ReadImage(clone_info,exception);
@@ -267,7 +267,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
       bstr = (BSTR) param1;
       blob_length = SysStringLen(bstr) * 2;
       blob_data = (char *)bstr;
-      DebugString("XTRN CODER: 0x%04lx (%ld)\n",(unsigned long)blob_data,blob_length);
+      /* DebugString("XTRN CODER: 0x%04lx (%ld)\n",(unsigned long)blob_data,blob_length); */
       if ((blob_data != (char *)NULL) && (blob_length>0))
         {
           if (filename[0] != '\0')
