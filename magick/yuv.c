@@ -228,6 +228,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     DestroyImage(chroma_image);
     if (zoom_image == (Image *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    zoom_image->exempt=True;
     for (y=0; y < (int) image->rows; y++)
     {
       q=GetPixelCache(image,0,y,image->columns,1);
@@ -356,6 +357,7 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     yuv_image=SampleImage(image,width,height);
     if (yuv_image == (Image *) NULL)
       WriterExit(ResourceLimitWarning,"Unable to zoom image",image);
+    yuv_image->exempt=True;
     RGBTransformImage(yuv_image,YCbCrColorspace);
     /*
       Initialize Y channel.
@@ -381,6 +383,7 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     chroma_image=SampleImage(image,width/2,height/2);
     if (chroma_image == (Image *) NULL)
       WriterExit(ResourceLimitWarning,"Unable to zoom image",image);
+    chroma_image->exempt=True;
     RGBTransformImage(chroma_image,YCbCrColorspace);
     /*
       Initialize U channel.
