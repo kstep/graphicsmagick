@@ -70,7 +70,7 @@ DESCRIPTIONS</A>
 		<LI><A HREF="#destroymagickinfo">DestroyMagickInfo</A>
 		<LI><A HREF="#getimagemagick">GetImageMagick</A>
 		<LI><A HREF="#getmagickinfo">GetMagickInfo</A>
-		<LI><A HREF="#getmagickarray">GetMagickArray</A>
+		<LI><A HREF="#getmagickinfoarray">GetMagickInfoArray</A>
 		<LI><A HREF="#initializemagick">InitializeMagick</A>
 		<LI><A HREF="#ismagickconflict">IsMagickConflict</A>
 		<LI><A HREF="#listmagickinfo">ListMagickInfo</A>
@@ -97,6 +97,7 @@ SYNOPSIS</A></H2>
 <P>void  <STRONG>DestroyMagickInfo</STRONG>( void );</P>
 <P>const char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick, const size_t length );</P>
 <P>const MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *name, ExceptionInfo *exception );</P>
+<P>const MagickInfo **  <STRONG>GetMagickInfoArray</STRONG>( ExceptionInfo *exception );</P>
 <P><STRONG>InitializeMagick</STRONG>( const char *path );</P>
 <P>unsigned int  <STRONG>IsMagickConflict</STRONG>( const char *magick );</P>
 <P>unsigned int  <STRONG>ListMagickInfo</STRONG>( 
@@ -147,12 +148,9 @@ The image format we are looking for.
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
-<H3><A NAME="getmagickarray">GetMagickArray</A></H3>
-<P><CODE>GetMagickInfoArray()</CODE> returns a sorted null-terminated array of MagickInfo pointers corresponding to the available format registrations.  If necessarly all modules are loaded in order to return a complete list.  This function should be used to access the entire list rather than GetMagickInfo since the list returned by GetMagickInfo may be re-ordered every time it is invoked.</P>
-<P>The format of the GetMagickList method is:</P>
-<PRE>
-    const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)</PRE>
-<P>
+<H3><A NAME="getmagickinfoarray">GetMagickInfoArray</A></H3>
+<blockquote>GetMagickInfoArray() returns a sorted null-terminated array of <A HREF="types.html#MagickInfo">MagickInfo</A> pointers corresponding to the available format registrations. If necessarly all modules are loaded in order to return a complete list. This function should be used to access the entire list rather than GetMagickInfo since the list returned by GetMagickInfo may be re-ordered every time it is invoked. </blockquote><P>The format of the GetMagickList method is:</P>
+<blockquote>const <A HREF="types.html#MagickInfo">MagickInfo</A> **GetMagickInfoArray ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>exception:</STRONG><BR>

@@ -581,7 +581,7 @@ ErasePalette:
     {
     ldblk=ReadBlobByte(palette);		/*size of palette*/
     if(ldblk==EOF) goto ErasePalette;
-    image->colors=ldblk+1;    
+    image->colors=ldblk+1;    
     if (!AllocateImageColormap(image, image->colors)) goto NoMemory;
     
     for(i=0;i<=ldblk;i++)

@@ -2282,17 +2282,156 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e C h a n n e l D e p t h                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageChannelDepth() returns the minimum bit depth required to store
+%  the specified image channel without actual loss of color resolution.
+%  Pixel components are stored in a Quantum, which is 8, 16, or 32 bits
+%  depending on the QuantumDepth value set when the software is compiled.
+%  GetImageChannelDepth() returns the smallest modulus storage size which
+%  supports the scale of the pixel within the range (i.e. no information is
+%  lost). As an example, the value one is returned for a bilevel channel
+%  since only one bit of resolution is required to represent a bilevel channel.
+%
+%  The format of the GetImageChannelDepth method is:
+%
+%      unsigned long GetImageChannelDepth(const Image *image,
+%                      const ChannelType channel,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o channel: Channel to test.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+#define COMPUTE_CHANNEL_DEPTH(depth,parameter) \
+{ \
+  long \
+    y; \
+\
+  depth=1; \
+  for (y=0; y < (long) image->rows; y++) \
+    { \
+      register const PixelPacket \
+        *p; \
+\
+      register long \
+        x; \
+\
+      register IndexPacket \
+        *indexes; \
+\
+      register unsigned int \
+        scale; \
+\
+      p=AcquireImagePixels(image,0,y,image->columns,1,exception); \
+      if (p == (const PixelPacket *) NULL) \
+        break; \
+      indexes=GetIndexes(image); \
+      scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth)); \
+      x=(long) image->columns; \
+      while(x > 0) \
+        { \
+          if ((parameter) != scale*((parameter)/scale)) \
+            { \
+              depth++; \
+              if (depth == QuantumDepth) \
+                break; \
+              scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth)); \
+              continue; \
+            } \
+          p++; \
+          indexes++; \
+          x--; \
+        } \
+      if (depth == QuantumDepth) \
+        break; \
+    } \
+}
+
+MagickExport unsigned long GetImageChannelDepth(const Image *image,
+  const ChannelType channel, ExceptionInfo *exception)
+{
+  unsigned int
+    depth=0;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  switch (channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      {
+        COMPUTE_CHANNEL_DEPTH(depth,p->red);
+        break;
+      }
+    case GreenChannel:
+    case MagentaChannel:
+      {
+        COMPUTE_CHANNEL_DEPTH(depth,p->green);
+        break;
+      }
+    case BlueChannel:
+    case YellowChannel:
+      {
+        COMPUTE_CHANNEL_DEPTH(depth,p->blue);
+        break;
+      }
+    case OpacityChannel:
+      {
+        if (image->colorspace == CMYKColorspace)
+          {
+            COMPUTE_CHANNEL_DEPTH(depth,*indexes);
+          }
+        else
+          {
+            COMPUTE_CHANNEL_DEPTH(depth,p->opacity);
+          }
+        break;
+      }
+    case BlackChannel:
+    case MatteChannel:
+      {
+        COMPUTE_CHANNEL_DEPTH(depth,p->opacity);
+        break;
+      }
+    default:
+      {
+      }
+    }
+
+  return depth;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e D e p t h                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageDepth() returns the depth of the image, either 8, 16, or 32 bits.
+%  GetImageDepth() returns the minimum bit depth of the image required to
+%  ensure that data is not lost in the red, green, blue, and opacity, channels.
 %  Pixel components are stored in a Quantum, which is 8, 16, or 32 bits
 %  depending on the QuantumDepth value set when the software is compiled.
-%  GetImageDepth() returns the smallest modulo-8 storage size which supports
+%  GetImageDepth() returns the smallest modulus storage size which supports
 %  the scale of the pixel within the range (i.e. no information is lost).
+%  As an example, the value one is returned for a black and white image
+%  since only one bit of resolution is required to represent a black and white
+%  image.
 %
 %  The format of the GetImageDepth method is:
 %
@@ -2309,56 +2448,54 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 MagickExport unsigned long GetImageDepth(const Image *image,
   ExceptionInfo *exception)
 {
+  long
+    y;
+
+  register const PixelPacket
+    *p;
+
+  register long
+    x;
+
+  register unsigned int
+    scale;
+
   unsigned int
-    depth;
+    depth=1;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
-  depth=8;
-#if (QuantumDepth > 8)
-  {
-    long
-      y;
+  for (y=0; y < (long) image->rows; y++)
+    {
+      p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        break;
+      scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
+      x=(long) image->columns;
+      while(x > 0)
+        {
+          if ((p->red != scale*(p->red/scale)) ||
+              (p->green != scale*(p->green/scale)) ||
+              (p->blue != scale*(p->blue/scale)) ||
+              (image->matte &&
+               (p->opacity != scale*((p->opacity/scale)))))
+            {
+              depth++;
+              if (depth == QuantumDepth)
+                break;
+              scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
+              continue;
+            }
+          p++;
+          x--;
+        }
+      if (depth == QuantumDepth)
+        break;
+    }
 
-    register const PixelPacket
-      *p;
-
-    register long
-      x;
-
-    register unsigned int
-      scale;
-
-    for (y=0; y < (long) image->rows; y++)
-      {
-        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
-        for (x=(long) image->columns; x > 0; x--)
-          {
-            if ((p->red != scale*(p->red/scale)) ||
-                (p->green != scale*(p->green/scale)) ||
-                (p->blue != scale*(p->blue/scale)) ||
-                (image->matte &&
-                 (p->opacity != scale*((Quantum)(p->opacity/scale)))))
-              {
-                depth*=2;
-                if (depth == QuantumDepth)
-                  break;
-                scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
-              }
-            p++;
-          }
-        if (depth == QuantumDepth)
-          break;
-      }
-  }
-#endif /* QuantumDepth > 8 */
   return depth;
 }
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -4430,11 +4567,19 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
   long
     y;
 
+  unsigned long
+    current_depth,
+    desired_depth;
+
   register long
     x;
 
+  register unsigned long
+    scale;
+
   unsigned int
-    is_grayscale;
+    is_grayscale,
+    status;
 
   register PixelPacket
     *q;
@@ -4442,86 +4587,72 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
-  image->depth=GetImageDepth(image,&image->exception);
-  if (image->depth == depth)
-    return(True);
-  if (depth <= 8)
+  status=False;
+
+  desired_depth=depth;
+  if (desired_depth > QuantumDepth)
+    desired_depth=QuantumDepth;
+
+  current_depth=GetImageDepth(image,&image->exception);
+
+  if (current_depth > desired_depth)
     {
+      status=True;
+      scale=MaxRGB / (MaxRGB >> (QuantumDepth-desired_depth));
+
       for (y=0; y < (long) image->rows; y++)
-      {
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) image->columns; x++)
         {
-          q->red=ScaleCharToQuantum(ScaleQuantumToChar(q->red));
-          q->green=ScaleCharToQuantum(ScaleQuantumToChar(q->green));
-          q->blue=ScaleCharToQuantum(ScaleQuantumToChar(q->blue));
-          q->opacity=ScaleCharToQuantum(ScaleQuantumToChar(q->opacity));
-          q++;
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (long) image->columns; x++)
+            {
+              q->red=scale*(q->red/scale);
+              q->green=scale*(q->green/scale);
+              q->blue=scale*(q->blue/scale);
+              q->opacity=scale*(q->opacity/scale);
+              q++;
+            }
+          if (!SyncImagePixels(image))
+            break;
         }
-        if (!SyncImagePixels(image))
-          break;
-      }
+
+      /*
+        Note that this approach may lead to multiple occurances of the
+        same color in the colormap.
+      */
       if (image->storage_class == PseudoClass)
         {
           register long
             i;
-
+      
           q=image->colormap;
           for (i=0; i < (long) image->colors; i++)
-          {
-            q->red=ScaleCharToQuantum(ScaleQuantumToChar(q->red));
-            q->green=ScaleCharToQuantum(ScaleQuantumToChar(q->green));
-            q->blue=ScaleCharToQuantum(ScaleQuantumToChar(q->blue));
-            q->opacity=ScaleCharToQuantum(ScaleQuantumToChar(q->opacity));
-            q++;
-          }
+            {
+              q->red=scale*(q->red/scale);
+              q->green=scale*(q->green/scale);
+              q->blue=scale*(q->blue/scale);
+              q->opacity=scale*(q->opacity/scale);
+              q++;
+            }
         }
-      image->depth=8;
-      image->is_grayscale=is_grayscale;
-      return(True);
     }
-  if (depth <= 16)
-    {
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) image->columns; x++)
-        {
-          q->red=ScaleShortToQuantum(ScaleQuantumToShort(q->red));
-          q->green=ScaleShortToQuantum(ScaleQuantumToShort(q->green));
-          q->blue=ScaleShortToQuantum(ScaleQuantumToShort(q->blue));
-          q->opacity=ScaleShortToQuantum(ScaleQuantumToShort(q->opacity));
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      if (image->storage_class == PseudoClass)
-        {
-          register long
-            i;
 
-          q=image->colormap;
-          for (i=0; i < (long) image->colors; i++)
-          {
-            q->red=ScaleShortToQuantum(ScaleQuantumToShort(q->red));
-            q->green=ScaleShortToQuantum(ScaleQuantumToShort(q->green));
-            q->blue=ScaleShortToQuantum(ScaleQuantumToShort(q->blue));
-            q->opacity=ScaleShortToQuantum(ScaleQuantumToShort(q->opacity));
-            q++;
-          }
-        }
-      image->depth=16;
-      image->is_grayscale=is_grayscale;
-      return(True);
-    }
-  image->depth=32;
+  image->depth=desired_depth;
+
+  /*
+    Ensure that image->depth is 8/16/32 until such time that the rest
+    of the code handles arbitrary depth.
+  */
+  if (image->depth < 8)
+    image->depth=8;
+  else if (image->depth > 8 && image->depth < 16)
+    image->depth=16;
+  else if (image->depth > 16 && image->depth < 32)
+    image->depth=32;
+
   image->is_grayscale=is_grayscale;
-  return(True);
+  return(status);
 }
 
 /*

@@ -82,6 +82,7 @@ DESCRIPTIONS</A>
 		<LI><A HREF="#destroyimage">DestroyImage</A>
 		<LI><A HREF="#destroyimageinfo">DestroyImageInfo</A>
 		<LI><A HREF="#displayimages">DisplayImages</A>
+		<LI><A HREF="#getimagechanneldepth">GetImageChannelDepth</A>
 		<LI><A HREF="#getimagedepth">GetImageDepth</A>
 		<LI><A HREF="#getimageexception">GetImageException</A>
 		<LI><A HREF="#getimagegeometry">GetImageGeometry</A>
@@ -130,6 +131,7 @@ FILE *file, const unsigned int verbose );</P>
 <P>void  <STRONG>DestroyImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>DestroyImageInfo</STRONG>( ImageInfo *image_info );</P>
 <P>unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
+<P>unsigned long  <STRONG>GetImageChannelDepth</STRONG>( const Image *image, const ChannelType channel, ExceptionInfo *exception );</P>
 <P>unsigned long  <STRONG>GetImageDepth</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>void  <STRONG>GetImageException</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>int  <STRONG>GetImageGeometry</STRONG>( const Image *image, const char *geometry, const unsigned int size_to_fit, RectangleInfo *region_info );</P>
@@ -385,8 +387,26 @@ The image info.
 The image.
 <P></P></DL></DL>
 <P>
+<H3><A NAME="getimagechanneldepth">GetImageChannelDepth</A></H3>
+<blockquote>GetImageChannelDepth() returns the minimum bit depth required to store the specified image channel without actual loss of color resolution. Pixel components are stored in a <A HREF="types.html#Quantum">Quantum</A>, which is 8, 16, or 32 bits depending on the QuantumDepth value set when the software is compiled. GetImageChannelDepth ( ) returns the smallest modulus storage size which supports the scale of the pixel within the range ( i.e. no information is lost ) . As an example, the value one is returned for a bilevel channel since only one bit of resolution is required to represent a bilevel channel. </blockquote><P>The format of the GetImageChannelDepth method is:</P>
+<blockquote>unsigned long GetImageChannelDepth ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<DD><P></P><DT><STRONG>channel:</STRONG><BR>
+<DD>
+Channel to test.
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
 <H3><A NAME="getimagedepth">GetImageDepth</A></H3>
-<blockquote>GetImageDepth() returns the depth of the image, either 8, 16, or 32 bits. Pixel components are stored in a <A HREF="types.html#Quantum">Quantum</A>, which is 8, 16, or 32 bits depending on the QuantumDepth value set when the software is compiled. GetImageDepth ( ) returns the smallest modulo-8 storage size which supports the scale of the pixel within the range ( i.e. no information is lost ) . </blockquote><P>The format of the GetImageDepth method is:</P>
+<blockquote>GetImageDepth() returns the minimum bit depth of the image required to ensure that data is not lost in the red, green, blue, and opacity, channels. Pixel components are stored in a <A HREF="types.html#Quantum">Quantum</A>, which is 8, 16, or 32 bits depending on the QuantumDepth value set when the software is compiled. GetImageDepth ( ) returns the smallest modulus storage size which supports the scale of the pixel within the range ( i.e. no information is lost ) . As an example, the value one is returned for a black and white image since only one bit of resolution is required to represent a black and white image. </blockquote><P>The format of the GetImageDepth method is:</P>
 <blockquote>unsigned long GetImageDepth ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>

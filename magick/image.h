@@ -947,6 +947,8 @@ extern MagickExport unsigned int
   TransformRGBImage(Image *,const ColorspaceType);
 
 extern MagickExport unsigned long
+  GetImageChannelDepth(const Image *image,
+    const ChannelType channel, ExceptionInfo *exception),
   GetImageDepth(const Image *,ExceptionInfo *);
 
 extern MagickExport void

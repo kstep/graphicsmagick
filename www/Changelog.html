@@ -53,6 +53,23 @@
 </tr>
 </table>
 <p>
+2003-08-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (GetImageDepth): Extend so that the actual
+        minimum depth required to represent the image is
+        returned. Previously only the values 8, 16, and 32 were
+        returned. This means that a value of one is returned for a
+        monochrome image. Also fixed a bug in that the pixels were
+        incremented while the depth was incremented, resulting in the
+        first image pixels not being properly evaluated for depth.
+        (SetImageDepth): Extend to support converting the image to
+        arbitrary modulus depths.<BR>
+        (GetImageChannelDepth): New function to obtain the modulus depth
+        for a specified image channel.
+
+</UL>
+<p>
 2003-08-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
