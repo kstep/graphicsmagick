@@ -738,11 +738,11 @@ int main( int /*argc*/, char ** /*argv*/)
     //
     // format
     //
-    if ( image.format() != "Constant image of X server color" )
+    if ( image.format() != "Constant image uniform color" )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", format does not report expected value" << endl;
+             << ", format (" << image.format() << ") is not expected value" << endl;
       }
 
     //

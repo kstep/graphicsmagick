@@ -302,9 +302,9 @@ int main( int /*argc*/, char ** /*argv*/)
     title.size( "550x90" );
     title.read( "xc:black" );
 
-    title.density( "300x300" );
+    title.density( "72x72" );
     title.font( "@Generic.ttf" );
-    title.fontPointsize( 18 );
+    title.fontPointsize( 80 );
     title.strokeColor( "white" );
     title.fillColor( "white" );
     title.annotate( "Magick++", "+1+1", CenterGravity );
@@ -332,6 +332,7 @@ int main( int /*argc*/, char ** /*argv*/)
     montageOpts.font( "@Generic.ttf" );
     montageOpts.geometry( "130x194+10+5>" );
     montageOpts.gravity( CenterGravity );
+    montageOpts.pointSize( 18 );
     montageOpts.penColor( "#600" );
     montageOpts.texture( "granite:" );
     montageOpts.tile( "5x1000" );
@@ -342,7 +343,7 @@ int main( int /*argc*/, char ** /*argv*/)
     final.composite( title, "+90+50", OverCompositeOp );
 
     final.font( "@Generic.ttf" );
-    final.fontPointsize( 11 );
+    final.fontPointsize( 18 );
     final.strokeColor( "#600" );
     final.annotate( "Every thing you see on this page was created with the "\
 		    "Magick++ and ImageMagick libraries.",
