@@ -60,20 +60,20 @@
 
 #if defined(HasWMF)
 
-#ifdef MAX
-#undef MAX
-#endif
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#ifdef  min
+#undef  min
+#endif  /* min */
+#define min(a, b) ((a) < (b) ? (a) : (b))
 
-#ifdef MIN
-#undef MIN
-#endif
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#ifdef  max
+#undef  max
+#endif  /* max */
+#define max(a, b) ((a) < (b) ? (b) : (a))
 
-#ifdef ABS
-#undef ABS
-#endif /* ABS */
-#define ABS(X) (((X) < 0) ? (-(X)) : (X))
+#ifdef abs
+#undef abs
+#endif /* abs */
+#define abs(x) ((x) >= 0 ? (x) : -(x))
 
 #define ERR(API)  ((API)->err != wmf_E_None)
 #define DIAG(API) ((API)->flags & WMF_OPT_DIAGNOSTICS)
@@ -93,24 +93,23 @@ typedef struct _wmf_magick_t wmf_magick_t;
 
 struct _wmf_magick_t
 {
-  /* other */
-
+  /* Bounding box */
   wmfD_Rect bbox;
 
-  wmfStream* out;   /* Output stream */
+  /* Output stream */
+  wmfStream* out;
 
-  unsigned int width;
-  unsigned int height;
-  Image *magick_image;  /* ImageMagick image */
+  /* ImageMagick image */
+  Image *image;
 
-  /* Magick device layer writes raster images as PNG */
-  struct _wmf_magick_image
-  {
-    void* context;
-    char* (*name) (void*); /* takes context; returns file name */
-  } image;
+  /* Maximum number of temporary files */
+  int max_temp_file_index;
 
-  unsigned long flags;
+  /* Current number of temporary files */
+  int cur_temp_file_index;
+
+  /* Temporary file names */
+  char **temp_files;
 };
 
 #define WMF_MAGICK_GetData(Z) ((wmf_magick_t*)((Z)->device_data))
@@ -127,12 +126,12 @@ typedef struct _magickPoint magickPoint;
 
 struct _magickPoint
 {
-  float x;
-  float y;
+  double x;
+  double y;
 };
 
-static float magick_height(wmfAPI *API, float wmf_height);
-static float magick_width(wmfAPI *API, float wmf_width);
+static double magick_height(wmfAPI *API, double wmf_height);
+static double magick_width(wmfAPI *API, double wmf_width);
 static magickPoint magick_translate(wmfAPI *API, wmfD_Coord d_pt);
 static void magick_brush(wmfAPI *API, wmfDC *dc);
 static void magick_draw_arc(wmfAPI *API, wmfDrawArc_t *draw_arc,
@@ -186,12 +185,12 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 {
   wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
-  float
+  double
     height,
     width;
 
   char
-    *name = 0;
+    *tmpname;
 
   magickPoint
     pt;
@@ -205,35 +204,34 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 
   if (bmp_draw->bmp.data == 0) return;
 
-  if (ddata->image.name == 0) return;
+  tmpname = (char*)AcquireMemory(MaxTextExtent*sizeof(char));
+  *tmpname = '\0';
+  TemporaryFilename(tmpname);
+  (ddata->temp_files)[ddata->cur_temp_file_index] = tmpname;
+  ++ddata->cur_temp_file_index;
+  if(ddata->cur_temp_file_index == ddata->max_temp_file_index)
+    {
+      ddata->max_temp_file_index += 2048;
+      ReacquireMemory((void **) &ddata->temp_files, ddata->max_temp_file_index*sizeof(char *));
+    }
 
-  name = ddata->image.name (ddata->image.context);
-
-  if (name == 0) return;
-
-  wmf_ipa_bmp_png (API,bmp_draw,name);
+  wmf_ipa_bmp_png (API,bmp_draw,tmpname);
 
   if (ERR (API))
     {	WMF_DEBUG (API,"bailing...");
     return;
     }
 
-  /* Okay, if we've got this far then "name" is the filename of an png
+  /* Okay, if we've got this far then "tmpname" is the filename of an png
      (cropped) image */
 
   pt = magick_translate (API,bmp_draw->pt);
 
-  width  = (float) (bmp_draw->pixel_width  * (double) bmp_draw->crop.w);
-  height = (float) (bmp_draw->pixel_height * (double) bmp_draw->crop.h);
+  width  = ceil(abs(magick_width(API,bmp_draw->pixel_width*(double)bmp_draw->crop.w)));
+  height = ceil(abs(magick_height(API,bmp_draw->pixel_height*(double)bmp_draw->crop.h)));
 
-  width  = magick_width  (API,width);
-  height = magick_height (API,height);
-
-  width  = ABS (width);
-  height = ABS (height);
-
-  wmf_stream_printf (API,out,"image Copy %f,%f %f,%f %s\n",
-                     pt.x,pt.y,width,height,name);
+  wmf_stream_printf (API,out,"image Copy %f,%f %i,%i '%s'\n",
+                     pt.x,pt.y,(int)width,(int)height,tmpname);
 }
 
 static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
@@ -266,11 +264,23 @@ static void wmf_magick_device_open (wmfAPI* API)
  */
 static void wmf_magick_device_close (wmfAPI* API)
 {
-/*   wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
+  int
+    index;
+
+  wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
   WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]device_close");
 
-	
+  /* Remove any temporary files */
+  if(ddata->temp_files != (char **)NULL)
+    {
+      for( index=0; index<ddata->cur_temp_file_index; index++ )
+        {
+          remove((ddata->temp_files)[index]);
+          LiberateMemory((void**)&(ddata->temp_files)[index]);
+        }
+      LiberateMemory((void**)&ddata->temp_files);
+    }
 }
 
 /* This is called from the beginning of each play for initial page setup
@@ -302,13 +312,11 @@ static void wmf_magick_device_begin (wmfAPI* API)
       return;
     }
 
-  if ((ddata->width == 0) || (ddata->height == 0))
-    {
-      ddata->width = (unsigned int) ceil (ddata->bbox.BR.x - ddata->bbox.TL.x);
-      ddata->height= (unsigned int) ceil (ddata->bbox.BR.y - ddata->bbox.TL.y);
-    }
-
-  wmf_stream_printf (API,out,"viewbox 0 0 %u %u\n",ddata->width,ddata->height);
+  ddata->max_temp_file_index = 2048;
+  ddata->cur_temp_file_index = 0;
+  ddata->temp_files = (char**)AcquireMemory(ddata->max_temp_file_index*sizeof(char *));
+  
+  wmf_stream_printf (API,out,"viewbox 0 0 %u %u\n",ddata->image->columns,ddata->image->rows);
 }
 
 /* This is called from the end of each play for page termination
@@ -337,40 +345,40 @@ static magickPoint magick_translate (wmfAPI* API,wmfD_Coord d_pt)
 
   x = ((double) d_pt.x - (double) ddata->bbox.TL.x);
   x /= ((double) ddata->bbox.BR.x - (double) ddata->bbox.TL.x);
-  x *= (double) ddata->width;
+  x *= (double) ddata->image->columns;
 
   y = ((double) d_pt.y - (double) ddata->bbox.TL.y);
   y /= ((double) ddata->bbox.BR.y - (double) ddata->bbox.TL.y);
-  y *= (double) ddata->height;
+  y *= (double) ddata->image->rows;
 
-  g_pt.x = (float) x;
-  g_pt.y = (float) y;
+  g_pt.x = x;
+  g_pt.y = y;
 
   return (g_pt);
 }
 
-static float magick_width (wmfAPI* API,float wmf_width)
+static double magick_width (wmfAPI* API,double wmf_width)
 {
   wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
   double width;
 
-  width = (double) wmf_width * (double) ddata->width;
+  width = wmf_width * ddata->image->columns;
   width /= ((double) ddata->bbox.BR.x - (double) ddata->bbox.TL.x);
 
-  return ((float) width);
+  return (width);
 }
 
-static float magick_height (wmfAPI* API,float wmf_height)
+static double magick_height (wmfAPI* API,double wmf_height)
 {
   wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
   double height;
 
-  height = (double) wmf_height * (double) ddata->height;
+  height = wmf_height * ddata->image->rows;
   height /= ((double) ddata->bbox.BR.y - (double) ddata->bbox.TL.y);
 
-  return ((float) height);
+  return (height);
 }
 
 static void wmf_magick_flood_interior (wmfAPI* API,wmfFlood_t* flood)
@@ -427,8 +435,8 @@ static void wmf_magick_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
 
   magickPoint pt;
 
-  float width;
-  float height;
+  double width;
+  double height;
 
   wmfStream* out = ddata->out;
 
@@ -438,8 +446,8 @@ static void wmf_magick_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
 
   pt = magick_translate (API,draw_pixel->pt);
 
-  width  = magick_width  (API,(float) draw_pixel->pixel_width );
-  height = magick_height (API,(float) draw_pixel->pixel_height);
+  width  = magick_width  (API,draw_pixel->pixel_width);
+  height = magick_height (API,draw_pixel->pixel_height);
 
   wmf_stream_printf (API,out,"stroke none\n");
 
@@ -508,11 +516,11 @@ static void magick_draw_arc (wmfAPI* API,
   magickPoint start;
   magickPoint end;
 
-  float phi_s = 0;
-  float phi_e = 360;
+  double phi_s = 0;
+  double phi_e = 360;
 
-  float Rx;
-  float Ry;
+  double Rx;
+  double Ry;
 
   wmfStream* out = ddata->out;
 
@@ -556,8 +564,8 @@ static void magick_draw_arc (wmfAPI* API,
           end.x -= O.x;
           end.y -= O.y;
 
-          phi_s = (float)(atan2((double)start.y,(double) start.x)*180/MagickPI);
-          phi_e = (float)(atan2((double)end.y,(double)end.x)*180/MagickPI);
+          phi_s = atan2((double)start.y,(double) start.x)*180/MagickPI;
+          phi_e = atan2((double)end.y,(double)end.x)*180/MagickPI;
 
           if (phi_e <= phi_s) phi_e += 360;
         }
@@ -685,8 +693,8 @@ static void wmf_magick_draw_rectangle (wmfAPI* API,
   magickPoint TL;
   magickPoint BR;
 
-  float width;
-  float height;
+  double width;
+  double height;
 
   wmfStream* out = ddata->out;
 
@@ -803,10 +811,7 @@ static void wmf_magick_function (wmfAPI* API)
 
   ddata->out = 0;
 
-  ddata->width = 0;
-  ddata->height = 0;
-
-  ddata->flags = 0;
+  ddata->image = 0;
 }
 
 static void wmf_magick_draw_text (wmfAPI* API,
@@ -882,7 +887,7 @@ static void wmf_magick_draw_text (wmfAPI* API,
   /* Set font size */
   /*   printf("========= Font Height  : %i\n", (int)WMF_FONT_HEIGHT(font)); */
   /*   printf("========= Font Width   : %i\n", (int)WMF_FONT_WIDTH(font)); */
-  pointsize = ceil((((double)2.54*ddata->magick_image->y_resolution*WMF_FONT_HEIGHT(font)))/TWIPS_INCH);
+  pointsize = ceil((((double)2.54*ddata->image->y_resolution*WMF_FONT_HEIGHT(font)))/TWIPS_INCH);
   /*   printf("========= Pointsize    : %i\n", (int)pointsize); */
   wmf_stream_printf (API,out,"font-size %i\n", pointsize);
 
@@ -1172,7 +1177,7 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
 
   wmfRGB* pen_color = 0;
 
-  float pen_width;
+  double pen_width;
 
   unsigned int pen_style;
   unsigned int pen_endcap;
@@ -1189,8 +1194,8 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
 
   pen_color = WMF_PEN_COLOR (pen);
 
-  pen_width = ( magick_width  (API,(float) WMF_PEN_WIDTH  (pen)) +
-                magick_height (API,(float) WMF_PEN_HEIGHT (pen)) ) / 2;
+  pen_width = ( magick_width  (API, WMF_PEN_WIDTH  (pen)) +
+                magick_height (API, WMF_PEN_HEIGHT (pen)) ) / 2;
 
   pen_style  = (unsigned int) WMF_PEN_STYLE (pen);
   pen_endcap = (unsigned int) WMF_PEN_ENDCAP (pen);
@@ -1203,7 +1208,7 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
       return;
     }
 
-  wmf_stream_printf (API,out,"stroke-width %f\n",MAX (0,pen_width));
+  wmf_stream_printf (API,out,"stroke-width %f\n", max(0,pen_width));
 
   switch (pen_endcap)
     {
@@ -1426,8 +1431,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
 
   ddata = WMF_MAGICK_GetData (API);
   ddata->bbox = bounding_box;
-  ddata->width  = (unsigned int) wmf_width;
-  ddata->height = (unsigned int) wmf_height;
 
   /* Create canvas image */
   clone_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
@@ -1458,10 +1461,10 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
     }
   strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   strncpy(image->magick,image_info->magick,MaxTextExtent-1);
-  ddata->magick_image = image;
-  ddata->magick_image->x_resolution = x_resolution;
-  ddata->magick_image->y_resolution = y_resolution;
-  ddata->magick_image->units = PixelsPerInchResolution;
+  ddata->image = image;
+  ddata->image->x_resolution = x_resolution;
+  ddata->image->y_resolution = y_resolution;
+  ddata->image->units = PixelsPerInchResolution;
 
   /* Create MVG drawing commands*/
   ddata->out = wmf_stream_create (API,0);
