@@ -3207,8 +3207,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             char
               *value;
 
-            printf("Read text key=%s\n",text[i].key);
-
             length=text[i].text_length;
             value=(char *) AcquireMemory(length+1);
             if (value == (char *) NULL)
