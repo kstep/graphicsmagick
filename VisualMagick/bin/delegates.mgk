@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <delegatemap>
 <delegate decode="autotrace" stealth="True" command='autotrace -output-format svg -output-file "%o" "%i"' />
-  <delegate decode="bmp" encode="launch" mode="encode" command='c:\WINNT\system32\mspaint.exe "%i."' />
-  <delegate decode="bmp" encode="win" mode="encode" command='c:\WINNT\system32\mspaint.exe "%i."' />
+  <delegate decode="bmp" encode="launch" mode="encode" command='c:\ImageMagick\imdisplay.exe "%i."' />
+  <delegate decode="bmp" encode="win" mode="encode" command='c:\ImageMagick\imdisplay.exe "%i."' />
   <delegate decode="browse" restrain="True" spawn="True" command='cmd /C start http://www.imagemagick.org/ImageMagick/'  />
   <delegate decode="bzip" restrain="True" command='|bzip2 -cd "%i"' />
   <delegate decode="cgm" command='ralcgm -d ps "%i" "%o" %u
