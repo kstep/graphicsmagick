@@ -8353,7 +8353,7 @@ static Window XSelectWindow(Display *display,RectangleInfo *crop_info)
   {
     if ((crop_info->width*crop_info->height) >= MinimumCropArea)
       (void) XDrawRectangle(display,root_window,annotate_context,
-	(int) crop_info->x,(int) crop_info->y,(unsigned int) crop_info->width-1,
+        (int) crop_info->x,(int) crop_info->y,(unsigned int) crop_info->width-1,
         (unsigned int) crop_info->height-1);
     /*
       Allow another event.

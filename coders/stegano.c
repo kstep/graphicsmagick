@@ -157,17 +157,17 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
         switch (c)
         {
           case 0:
-	  {
+          {
             SetBit(*indexes,i,GetBit(pixel.red,j));
             break;
           }
           case 1:
-	  {
+          {
             SetBit(*indexes,i,GetBit(pixel.green,j));
             break;
           }
           case 2:
-	  {
+          {
             SetBit(*indexes,i,GetBit(pixel.blue,j));
             break;
           }

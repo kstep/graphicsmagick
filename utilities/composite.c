@@ -957,8 +957,7 @@ int main(int argc,char **argv)
         if (!SyncImagePixels(composite_image))
           break;
       }
-      composite_image->storage_class=DirectClass;
-      composite_image->matte=True;
+      SetImageType(composite_image,TrueColorMatteType);
     }
   if (compose == DisplaceCompositeOp)
     (void) CloneString(&composite_image->geometry,displace_geometry);

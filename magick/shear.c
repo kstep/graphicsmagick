@@ -469,7 +469,7 @@ static void XShearImage(Image *image,const double degrees,
           q->blue=(Quantum)
             ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
           q->opacity=(Quantum)
-	    ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+            ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
           pixel=(*p);
         }
         /*

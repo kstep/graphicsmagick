@@ -3149,7 +3149,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   stegano_image=CloneImage(image,0,0,False,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
-  stegano_image->class=DirectClass;
+  SetImageType(stegano_image,TrueColorType);
   stegano_image->depth=QuantumDepth;
   /*
     Hide watermark in low-order bits of image.
@@ -3172,17 +3172,17 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
         switch (c)
         {
           case 0:
-	  {
+          {
             SetBit(q->red,j,GetBit(Intensity(pixel),i));
             break;
           }
           case 1:
-	  {
+          {
             SetBit(q->green,j,GetBit(Intensity(pixel),i));
             break;
           }
           case 2:
-	  {
+          {
             SetBit(q->blue,j,GetBit(Intensity(pixel),i));
             break;
           }

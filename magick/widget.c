@@ -490,7 +490,7 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
     {
       text=text_info->marker;
       if (XTextWidth(font_info,(char *) text,(int) (text_info->cursor-text)) >
-	  (int) width)
+          (int) width)
         {
           text=text_info->text;
           for (i=0; i < Extent(text); i++)
