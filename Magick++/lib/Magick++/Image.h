@@ -588,7 +588,7 @@ namespace Magick
     // Associate a clip mask with the image. The clip mask must be the
     // same dimensions as the image. Pass an invalid image to unset an
     // existing clip mask.
-    void            clipMask ( const Image clipMask_ );
+    void            clipMask ( const Image & clipMask_ );
     Image           clipMask ( void  ) const;
     
     // Colors within this distance are considered equal

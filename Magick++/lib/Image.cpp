@@ -1883,7 +1883,7 @@ Magick::ClassType Magick::Image::classType ( void ) const
 // Associate a clip mask with the image. The clip mask must be the
 // same dimensions as the image. Pass an invalid image to unset an
 // existing clip mask.
-void Magick::Image::clipMask ( const Magick::Image clipMask_ )
+void Magick::Image::clipMask ( const Magick::Image & clipMask_ )
 {
   modifyImage();
 
