@@ -5596,7 +5596,6 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image,
   if (next->next == (Image *) NULL)
     return(False);
   next->next->previous=next;
-  next->next->next=NewImageList();
   return(True);
 }
 
@@ -5659,7 +5658,6 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
   if (next->next == (Image *) NULL)
     return(False);
   next->next->previous=next;
-  next->next->next=NewImageList();
   return(True);
 }
 
