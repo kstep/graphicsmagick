@@ -69,8 +69,8 @@ libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_XEXT@ @LIB_XT@ \
 else
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_CODER_SRCS)
 libMagick_la_LIBADD = @LIB_JBIG@ @LIB_HDF@ @LIB_TIFF@ @LIB_TTF@ @LIB_JPEG@ \
-  @LIB_PNG@ @LIB_FPX@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ \
-  @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@
+  @LIB_PNG@ @LIB_FPX@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ \
+  @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@
 endif # WITH_MODULES
 
 # Binary scripts
@@ -102,14 +102,15 @@ pkgdir            = $(libdir)/ImageMagick/modules/coders
 
 # Modules which are to be built
 if WITH_MODULES
-pkg_LTLIBRARIES   = avs.la bmp.la cmyk.la dcm.la dps.la ept.la fax.la fpx.la \
-  fits.la gif.la gray.la gradation.la hdf.la histogram.la html.la icc.la \
-  icon.la iptc.la jbig.la jpeg.la label.la logo.la map.la matte.la miff.la \
-  mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la png.la pix.la \
-  plasma.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la \
-  rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la \
-  tiff.la tile.la tim.la ttf.la txt.la uil.la uyvy.la vicar.la vid.la \
-  viff.la wbmp.la x.la xbm.la xc.la xpm.la xwd.la yuv.la bim.la
+pkg_LTLIBRARIES   = avs.la bmp.la cache.la cmyk.la dcm.la dps.la ept.la \
+  fax.la fpx.la fits.la gif.la gray.la gradation.la hdf.la histogram.la \
+  html.la icc.la icon.la iptc.la jbig.la jpeg.la label.la logo.la map.la \
+  matte.la miff.la mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la \
+  pict.la png.la pix.la plasma.la pnm.la preview.la ps.la ps2.la ps3.la \
+  psd.la pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la \
+  sun.la svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la \
+  uyvy.la vicar.la vid.la viff.la wbmp.la x.la xbm.la xc.la xpm.la \
+  xwd.la yuv.la bim.la
 else
 pkg_LTLIBRARIES   =
 endif # WITH_MODULES
@@ -128,6 +129,11 @@ bim_la_LIBADD      = libMagick.la
 bmp_la_SOURCES      = bmp.c
 bmp_la_LDFLAGS      = -no-undefined -module -avoid-version
 bmp_la_LIBADD       = libMagick.la
+
+# CACHE module
+cache_la_SOURCES    = cache.c
+cache_la_LDFLAGS    = -no-undefined -module -avoid-version
+cache_la_LIBADD     = libMagick.la
 
 # CMYK module
 cmyk_la_SOURCES     = cmyk.c
