@@ -12,9 +12,6 @@ For 1.1 Release
  o Fix retrieving specified frames from an MPEG file.
  o Update Windows libtiff to version 3.6.1.
  o Fix broken web page links.
- o Support Ghostcript installed under a directory which contains a space.
- o For Magick++, add the ability to access the Image 'compose' attribute, or
-   fix flattenImages() so that this attribute is passed as a parameter.
  o Add image pixel iterators.
 
 For Future Release

@@ -1,3 +1,11 @@
+2004-03-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/filter.t: Fix Solarize test case.
+	* PerlMagick/t/wmf/read.t: Added another WMF test case.
+	* coders/wmf.c: Resolve WMF rendering bug with black color.
+	* magick/utility.c (StringToArgv): Free argv data prior to error
+	return.
+
 2004-03-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jpeg.c (WriteJPEGImage): If image_info->colorspace is set

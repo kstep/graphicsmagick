@@ -13,7 +13,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
-BEGIN { $| = 1; $test=1; print "1..2\n"; }
+BEGIN { $| = 1; $test=1; print "1..4\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -27,4 +27,10 @@ testReadCompare('wizard.wmf', '../reference/wmf/wizard.miff',
 ++$test;
 testReadCompare('clock.wmf', '../reference/wmf/clock.miff',
                 q//, 0.0002, 0.004);
+++$test;
+testReadCompare('ski.wmf', '../reference/wmf/ski.miff',
+                q//, 0.0002, 0.008);
+++$test;
+testReadCompare('fjftest.wmf', '../reference/wmf/fjftest.miff',
+                q//, 0.0003, 0.13);
 

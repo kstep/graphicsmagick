@@ -164,7 +164,7 @@ uninstall-exec-perl:
 	rm -f '$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)'
 
 check-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
-	-cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
+	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
 
 endif # WITH_PERL_STATIC
 endif # WTIH_PERL_DYNAMIC

@@ -185,7 +185,7 @@ testFilterCompare('input.miff', q//, 'reference/filter/Shear.miff', 'Shear',
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Solarize.miff', 'Solarize',
-  q/60/, 0.14, 0.60);
+  0.40*MaxRGB, 0.003, 0.004);
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Swirl.miff', 'Swirl',

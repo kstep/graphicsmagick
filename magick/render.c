@@ -4081,9 +4081,9 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   clone_info=CloneImageInfo(image_info);
   IdentityAffine(&draw_info->affine);
   draw_info->gravity=NorthWestGravity;
-  draw_info->opacity=OpaqueOpacity;
-  draw_info->fill.opacity=OpaqueOpacity;
-  draw_info->stroke.opacity=TransparentOpacity;
+  draw_info->opacity=OpaqueOpacity; /* 0UL */
+  draw_info->fill.opacity=OpaqueOpacity; /* 0UL */
+  draw_info->stroke.opacity=TransparentOpacity; /* MaxRGB */
   draw_info->stroke_antialias=clone_info->antialias;
   draw_info->stroke_width=1.0;
   draw_info->fill_rule=EvenOddRule;

@@ -3281,10 +3281,18 @@ MagickExport char **StringToArgv(const char *text,int *argc)
     argv[i]=MagickAllocateMemory(char *,q-p+MaxTextExtent);
     if (argv[i] == (char *) NULL)
       {
+        int
+          j;
+
         MagickError3(ResourceLimitError,MemoryAllocationFailed,
           UnableToConvertStringToTokens);
-        /* NOTE: This should try to delete all the strings it has
-           already allocated to avoid a leak */
+
+        /*
+          Deallocate allocated data and return.
+        */
+        for (j=0; j<i; j++)
+          MagickFreeMemory(argv[j]);
+        MagickFreeMemory(argv);
         return((char **) NULL);
       }
     (void) strncpy(argv[i],p,q-p);

@@ -1408,7 +1408,9 @@ MagickExport void DrawSetFillColor(DrawContext context,
   assert(fill_color != (const PixelPacket *) NULL);
 
   new_fill = *fill_color;
-  if(new_fill.opacity != TransparentOpacity)
+
+  /* Inherit base opacity */
+  if(new_fill.opacity == OpaqueOpacity)
     new_fill.opacity = CurrentContext->opacity;
 
   current_fill = &CurrentContext->fill;
@@ -1511,6 +1513,7 @@ MagickExport void DrawSetFillPatternURL(DrawContext context, const char* fill_ur
 #if DRAW_BINARY_IMPLEMENTATION
       DrawPatternPath(context->image,CurrentContext,pattern_spec,&CurrentContext->fill_pattern);
 #endif
+      /* Inherit base opacity */
       if (CurrentContext->fill.opacity != TransparentOpacity)
         CurrentContext->fill.opacity=CurrentContext->opacity;
 
@@ -4641,7 +4644,9 @@ MagickExport void DrawSetStrokeColor(DrawContext context,
   assert(stroke_color != (const PixelPacket *) NULL);
 
   new_stroke = *stroke_color;
-  if(new_stroke.opacity != TransparentOpacity)
+
+  /* Inherit base opacity */
+  if(new_stroke.opacity == OpaqueOpacity)
     new_stroke.opacity = CurrentContext->opacity;
 
   current_stroke = &CurrentContext->stroke;
@@ -4742,7 +4747,8 @@ MagickExport void DrawSetStrokePatternURL(DrawContext context,
 #if DRAW_BINARY_IMPLEMENTATION
       DrawPatternPath(context->image,CurrentContext,pattern_spec,&CurrentContext->stroke_pattern);
 #endif
-      if (CurrentContext->stroke.opacity != TransparentOpacity)
+      /* Inherit base opacity */
+      if (CurrentContext->stroke.opacity == OpaqueOpacity)
         CurrentContext->stroke.opacity=CurrentContext->opacity;
 
       MvgPrintf(context, "stroke %s\n",pattern_spec);
@@ -5371,7 +5377,7 @@ MagickExport double DrawGetStrokeOpacity(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  return (1.0-(((double)CurrentContext->stroke.opacity)/MaxRGB));
+  return (((double)(MaxRGB-CurrentContext->stroke.opacity))/MaxRGB);
 }
 
 /*
