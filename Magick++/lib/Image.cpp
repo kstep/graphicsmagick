@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Implementation of Image
 //
@@ -2183,6 +2183,7 @@ std::string Magick::Image::directory ( void ) const
 // formats which support endian-specific options.
 void Magick::Image::endian ( Magick::EndianType endian_ )
 {
+  modifyImage();
   options()->endian( endian_ );
   image()->endian = endian_;
 }
