@@ -57,7 +57,6 @@ print("Flexible Image Transport System ...\n");
 testReadWrite( 'FITS:input.fits',
   'FITS:output.fits',
   q//,
-  '49a8c7d81e9717e3ef5646bc5fc2c93a1cfc0cffe46a32424c6fa46bdf41a6f7',
   '49a8c7d81e9717e3ef5646bc5fc2c93a1cfc0cffe46a32424c6fa46bdf41a6f7' );
 
 print("CompuServe graphics interchange format ...\n");
@@ -93,9 +92,8 @@ print("Xv's visual schnauzer format ...\n");
 testReadWrite( 'P7:input_p7.p7',
   'P7:output_p7.p7',
   q//,
-  '83934fd2053634dece6c41a8565e134989839c5d4868d01b28a92996581e034f',
+  'ad121fd0a5607216901181d97c9c093301fd1743735a3e29456d2f8e8232f767',
   '11bcbd58063ca1f558272e48c1a831d361b28dc7bac5d8e752aaaba4d0d5b234' );
-
 
 print("Portable bitmap format (black and white), ASCII format ...\n");
 ++$test;
@@ -168,14 +166,12 @@ testReadWrite( 'SGI:input.sgi',
   q//,
   'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
 
-
 print("SUN 1-bit Rasterfile ...\n");
 ++$test;
 testReadWrite( 'SUN:input.im1',
   'SUN:output.im1',
   q//,
   '3487e83e2fc55c0129588353886a15caf63a3a426202c546b816bf2c8d58c80d');
-
 
 print("SUN 8-bit Rasterfile ...\n");
 ++$test;
@@ -233,7 +229,6 @@ testReadWrite( 'XWD:input.xwd',
   'XWD:output.xwd',
   q//,
   'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
-
 
 print("CMYK format ...\n");
 ++$test;

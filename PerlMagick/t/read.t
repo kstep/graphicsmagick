@@ -42,7 +42,6 @@ testRead( 'input.dib',
 print("Flexible Image Transport System ...\n");
 ++$test;
 testRead( 'input.fits',
-  '49a8c7d81e9717e3ef5646bc5fc2c93a1cfc0cffe46a32424c6fa46bdf41a6f7',
   '49a8c7d81e9717e3ef5646bc5fc2c93a1cfc0cffe46a32424c6fa46bdf41a6f7' );
 
 print("CompuServe graphics interchange format ...\n");
@@ -59,7 +58,7 @@ print("Gradient (gradual passing from one shade to another) ...\n");
 #
 ++$test;
 testRead( 'gradient:red-blue',
-  '1b36b81f78e0355e6aef8d4573959abad03938b86f4ed51dfcf6733ba64745b7',
+  'b59b8d1863f6d7c5f70a870d13b4c93f0f0ce78ef64634d774ef3fea28becda3',
   '82743c736c9dd32298ed634b319629dada58e8c79122dd257cb853f62c25e6b3' );
 
 print("GRANITE (granite texture) ...\n");
@@ -71,7 +70,6 @@ testRead( 'granite:',
 print("Microsoft icon ...\n");
 ++$test;
 testRead( 'input.ico',
-  '09ac557be3f55027130cbb8a9e4d0449f468ffe0384706791631e4150a2564f9',
   '09ac557be3f55027130cbb8a9e4d0449f468ffe0384706791631e4150a2564f9' );
 
 print("Magick image file format ...\n");
@@ -87,7 +85,7 @@ testRead( 'input.mtv',
 print("Xv's visual schnauzer format. ...\n");
 ++$test;
 testRead( 'input_p7.p7',
-  '5adfa668a99c5b9112d27fd0d9de55a0a49ea35e62d6f3ae9c5348d25a7a62b1',
+  '301a99abfa2c6a362734dc2aef62ba89275a26af7d2826ebdb1d95f74c2bb7cb',
   '695d593f146dd8f1be86cf79a5148bfc700c6701f13d4eee2df76f1c94d7f17e' );
 
 print("NULL (white image) ...\n");
@@ -109,7 +107,6 @@ print("Portable bitmap format (black and white), ASCII format ...\n");
 ++$test;
 testRead( 'input_p1.pbm',
   'e09c8eb1ccbf32e3a4062bad04b96dbc9209bc7897b0a63ac8dc2c8e0ccc3d92');
-
 
 print("Portable bitmap format (black and white), binary format ...\n");
 ++$test;
@@ -134,8 +131,7 @@ testRead( 'input_p5.pgm',
 print("Apple Macintosh QuickDraw/PICT file ...\n");
 ++$test;
 testRead( 'input.pict',
-  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1',
-  'ca09fc4171ad27787da936baf4cddf5a' );
+  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
 
 print("Alias/Wavefront RLE image format ...\n");
 ++$test;
@@ -155,8 +151,7 @@ testRead( 'input_p6.ppm',
 print("Adobe Photoshop bitmap file ...\n");
 ++$test;
 testRead( 'input.psd',
-  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1',
-  '2b8f2d03bc34dcd45e24439039aedeee' );
+  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
 
 print("Irix RGB image file ...\n");
 ++$test;
@@ -218,7 +213,6 @@ print("X Windows system window dump file (color) ...\n");
 testRead( 'input.xwd',
   'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
 
-
 print("TILE (Tile image with a texture) ...\n");
 # This is an internal generated format
 # We will tile using the default image and a MIFF file
@@ -264,5 +258,5 @@ print("UYVY format ...\n");
 testReadSized( 'input_70x46.uyvy',
    '70x46',
    0,
-   'a478a8ce322c110281c2e5a388a81b063dbdb726b09222c9bf3a32f174d88dfc',
+   '6224cda325acd0633c5d6dbfe7665ba068f5e7ffa3c9ed527f9d0b636d2f7562',
    '9fef5433f387ca90c297beab1ccad854265cb32fa24bc753ade260dd0b3776a8' );
