@@ -2472,6 +2472,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               ProgressMonitor(LoadImageText,y,image->rows);
         }
         FreeMemory(quantum_scanline);
+      }
         if (image->class == PseudoClass)
           SyncImage(image);
         if (ping_info->valid & PNG_INFO_tRNS)
@@ -2510,19 +2511,23 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                         if (index < ping_info->num_trans)
                           q->opacity=(Quantum) UpScale(ping_info->trans[index]);
                       }
+                  if (ping_info->color_type != PNG_COLOR_TYPE_PALETTE)
+                    {
+                      if (q->red == transparent_color.opacity)
+                        q->opacity=Transparent;
+                    }
                   }
-                if (ping_info->color_type != PNG_COLOR_TYPE_PALETTE)
-                  {
-                    if (q->red == transparent_color.opacity)
-                      q->opacity=Transparent;
-                  }
+                else
+                  if (q->red == transparent_color.red &&
+                      q->green == transparent_color.green &&
+                      q->blue == transparent_color.blue)
+                     q->opacity=Transparent;
                 q++;
               }
               if (!SyncPixelCache(image))
                 break;
             }
           }
-      }
 #if (QuantumDepth == 8)
     if (image->depth > 8)
       image->depth = 8;
@@ -3859,7 +3864,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.gray*=0x0101;
           }
       }
-    image->matte=matte;
+    /* image->matte=matte; */
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
     if (!have_write_global_srgb &&
         ((image->rendering_intent != UndefinedIntent) ||
@@ -3963,17 +3968,17 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if (image->depth == 8)
       {
         if (IsGrayImage(image))
-          rowbytes*=(matte ? 2 : 1);
+          rowbytes*=(image->matte ? 2 : 1);
         else
           if (!IsPseudoClass(image))
-            rowbytes*=(matte ? 4 : 3);
+            rowbytes*=(image->matte ? 4 : 3);
       }
     else if (image->depth == 16)
       {
         if (IsGrayImage(image))
-          rowbytes*=(matte ? 4 : 2);
+          rowbytes*=(image->matte ? 4 : 2);
         else
-          rowbytes*=(matte ? 8 : 6);
+          rowbytes*=(image->matte ? 8 : 6);
       }
     png_pixels=(unsigned char *)
       AllocateMemory(rowbytes*image->rows*sizeof(Quantum));
@@ -4003,6 +4008,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         }
       }
     else
+      {
       if ((!image->matte || ping_info->bit_depth >= 8) && IsGrayImage(image))
         {
           for (y=0; y < (int) image->rows; y++)
@@ -4053,6 +4059,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 ProgressMonitor(SaveImageText,y,image->rows);
           }
        }
+    }
     png_write_image(ping,scanlines);
     /*
       Generate text chunks.
