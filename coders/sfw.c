@@ -265,7 +265,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   TranslateSFWMarker(header);  /* translate soi and app tags */
   TranslateSFWMarker(header+2);
-  (void) memcpy(header+6,"JFIF\0\001\0",7);  /* JFIF magic */
+  (void) CloneMemory(header+6,"JFIF\0\001\0",7);  /* JFIF magic */
   /*
     Translate remaining markers.
   */
@@ -362,8 +362,8 @@ ModuleExport void RegisterSFWImage(void)
   entry->decoder=ReadSFWImage;
   entry->magick=IsSFW;
   entry->adjoin=False;
-  entry->description=AllocateString("Seattle Film Works");
-  entry->module=AllocateString("SFW");
+  entry->description=AcquireString("Seattle Film Works");
+  entry->module=AcquireString("SFW");
   (void) RegisterMagickInfo(entry);
 }
 

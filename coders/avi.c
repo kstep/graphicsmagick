@@ -441,7 +441,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitWarning,
             "Memory allocation failed",image);
         if (number_colors != 0)
-          (void) memcpy(image->colormap,colormap,
+          (void) CloneMemory(image->colormap,colormap,
             number_colors*sizeof(PixelPacket));
         if (image_info->ping && (image_info->subrange != 0))
           if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -851,8 +851,8 @@ ModuleExport void RegisterAVIImage(void)
   entry=SetMagickInfo("AVI");
   entry->decoder=ReadAVIImage;
   entry->magick=IsAVI;
-  entry->description=AllocateString("Audio/Visual Interleaved");
-  entry->module=AllocateString("AVI");
+  entry->description=AcquireString("Audio/Visual Interleaved");
+  entry->module=AcquireString("AVI");
   (void) RegisterMagickInfo(entry);
 }
 

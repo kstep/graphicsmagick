@@ -401,8 +401,8 @@ ModuleExport void RegisterXBMImage(void)
   entry->magick=IsXBM;
   entry->adjoin=False;
   entry->description=
-    AllocateString("X Windows system bitmap (black and white)");
-  entry->module=AllocateString("XBM");
+    AcquireString("X Windows system bitmap (black and white)");
+  entry->module=AcquireString("XBM");
   (void) RegisterMagickInfo(entry);
 }
 

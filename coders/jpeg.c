@@ -324,7 +324,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
       ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
         (char *) NULL)
     }
-  image->generic_profile[i].name=AllocateString((char *) NULL);
+  image->generic_profile[i].name=GetString((char *) NULL);
   FormatString(image->generic_profile[i].name,"APP%d",
     jpeg_info->unread_marker-JPEG_APP0);
   image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
@@ -841,9 +841,9 @@ ModuleExport void RegisterJPEGImage(void)
   entry->magick=IsJPEG;
   entry->adjoin=False;
   entry->description=
-    AllocateString("Joint Photographic Experts Group JFIF format");
+    AcquireString("Joint Photographic Experts Group JFIF format");
 #if defined(JPEG_LIB_VERSION)
-  entry->version=AllocateString((char *) NULL);
+  entry->version=AcquireString((char *) NULL);
   FormatString(entry->version,"%d",JPEG_LIB_VERSION);
 #endif
   (void) RegisterMagickInfo(entry);
@@ -852,8 +852,8 @@ ModuleExport void RegisterJPEGImage(void)
   entry->encoder=WriteJPEGImage;
   entry->adjoin=False;
   entry->description=
-    AllocateString("Joint Photographic Experts Group JFIF format");
-  entry->module=AllocateString("JPEG");
+    AcquireString("Joint Photographic Experts Group JFIF format");
+  entry->module=AcquireString("JPEG");
   (void) RegisterMagickInfo(entry);
 }
 
@@ -1046,15 +1046,15 @@ static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
     if (profile == (unsigned char *) NULL)
       break;
 #ifdef GET_ONLY_IPTC_DATA
-    (void) memcpy(profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
+    (void) CloneMemory(profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
     profile[13]=0x00;
     profile[24]=length >> 8;
     profile[25]=length & 0xff;
 #else
-    (void) memcpy(profile,"Photoshop 3.0 ",14);
+    (void) CloneMemory(profile,"Photoshop 3.0 ",14);
     profile[13]=0x00;
 #endif
-    (void) memcpy(&(profile[tag_length]),&(image->iptc_profile.info[i]),length);
+    (void) CloneMemory(&(profile[tag_length]),&(image->iptc_profile.info[i]),length);
     if (roundup)
       profile[length+tag_length]=0;
     jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int)

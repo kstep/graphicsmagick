@@ -887,7 +887,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read Comment extension.
             */
-            comments=AllocateString((char *) NULL);
+            comments=GetString((char *) NULL);
             for ( ; ; )
             {
               count=ReadBlobBlock(image,header);
@@ -1066,8 +1066,8 @@ ModuleExport void RegisterGIFImage(void)
   entry->decoder=ReadGIFImage;
   entry->encoder=WriteGIFImage;
   entry->magick=IsGIF;
-  entry->description=AllocateString("CompuServe graphics interchange format");
-  entry->module=AllocateString("GIF");
+  entry->description=AcquireString("CompuServe graphics interchange format");
+  entry->module=AcquireString("GIF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("GIF87");
   entry->decoder=ReadGIFImage;
@@ -1075,8 +1075,8 @@ ModuleExport void RegisterGIFImage(void)
   entry->magick=IsGIF;
   entry->adjoin=False;
   entry->description=
-    AllocateString("CompuServe graphics interchange format (version 87a)");
-  entry->module=AllocateString("GIF");
+    AcquireString("CompuServe graphics interchange format (version 87a)");
+  entry->module=AcquireString("GIF");
   (void) RegisterMagickInfo(entry);
 }
 

@@ -58,7 +58,7 @@ typedef struct _DIR
 struct dirent
 {
   char
-     d_name[2048];
+    d_name[2048];
 
   int
     d_namlen;

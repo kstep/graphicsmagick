@@ -340,8 +340,8 @@ ModuleExport void RegisterYUVImage(void)
   entry->encoder=WriteYUVImage;
   entry->adjoin=False;
   entry->raw=True;
-  entry->description=AllocateString("CCIR 601 4:1:1");
-  entry->module=AllocateString("YUV");
+  entry->description=AcquireString("CCIR 601 4:1:1");
+  entry->module=AcquireString("YUV");
   (void) RegisterMagickInfo(entry);
 }
 

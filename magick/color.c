@@ -427,7 +427,7 @@ MagickExport char **GetColorList(const char *pattern,int *number_colors)
   i=0;
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
     if (GlobExpression(p->name,pattern))
-      colorlist[i++]=AllocateString(p->name);
+      colorlist[i++]=GetString(p->name);
   *number_colors=i;
   return(colorlist);
 }
@@ -1528,8 +1528,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=AllocateString(ColorMap);
-  token=AllocateString(xml);
+    xml=GetString(ColorMap);
+  token=GetString(xml);
   for (q=xml; *q != '\0'; )
   {
     /*
@@ -1582,7 +1582,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickError(ResourceLimitError,"Unable to allocate colors",
             "Memory allocation failed");
         (void) memset(color_info,0,sizeof(ColorInfo));
-        color_info->filename=AllocateString(filename);
+        color_info->filename=AcquireString(filename);
         color_info->signature=MagickSignature;
         if (color_list == (ColorInfo *) NULL)
           {
@@ -1644,7 +1644,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
-            color_list->name=AllocateString(token);
+            color_list->name=AcquireString(token);
             break;
           }
         break;

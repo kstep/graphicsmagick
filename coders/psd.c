@@ -1072,9 +1072,8 @@ ModuleExport void RegisterPSDImage(void)
   entry->decoder=ReadPSDImage;
   entry->encoder=WritePSDImage;
   entry->magick=IsPSD;
-/*  entry->adjoin=False;  -- not any more, we can do multiple layers!! */
-  entry->description=AllocateString("Adobe Photoshop bitmap");
-  entry->module=AllocateString("PSD");
+  entry->description=AcquireString("Adobe Photoshop bitmap");
+  entry->module=AcquireString("PSD");
   (void) RegisterMagickInfo(entry);
 }
 

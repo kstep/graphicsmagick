@@ -4305,7 +4305,7 @@ Mogrify(ref,...)
             (void) QueryColorDatabase(argument_list[0].string_reference,
               &target);
           if (!attribute_flag[1])
-            argument_list[1].string_reference=AllocateString("100");
+            argument_list[1].string_reference="100";
           image=ColorizeImage(image,argument_list[1].string_reference,target,
             exception);
           break;
@@ -4367,7 +4367,7 @@ Mogrify(ref,...)
           if (attribute_flag[0])
             image->fuzz=argument_list[0].double_reference;
           attribute_flag[0]++;
-          argument_list[0].string_reference=AllocateString("0x0");
+          argument_list[0].string_reference="0x0";
         }
         case 8:  /* Crop */
         {
@@ -5091,7 +5091,7 @@ Mogrify(ref,...)
                 argument_list[1].double_reference,
                 argument_list[2].double_reference,
                 argument_list[3].double_reference);
-              argument_list[0].string_reference=AllocateString(message);
+              argument_list[0].string_reference=message;
             }
           GammaImage(image,argument_list[0].string_reference);
           break;
@@ -5154,7 +5154,7 @@ Mogrify(ref,...)
             argument_list[2].double_reference,
             argument_list[3].double_reference);
           if (!attribute_flag[0])
-            argument_list[0].string_reference=AllocateString(message);
+            argument_list[0].string_reference=message;
           ModulateImage(image,argument_list[0].string_reference);
           break;
         }
@@ -5439,7 +5439,7 @@ Mogrify(ref,...)
         case 68:  /* Profile */
         {
           if (!attribute_flag[0])
-            argument_list[0].string_reference=AllocateString("*");
+            argument_list[0].string_reference="*";
           if (!attribute_flag[1])
             argument_list[1].string_reference=(char *) NULL;
           (void) ProfileImage(image,argument_list[0].string_reference,
@@ -5525,7 +5525,7 @@ Mogrify(ref,...)
                 argument_list[1].double_reference,
                 argument_list[2].double_reference,
                 argument_list[3].double_reference);
-              argument_list[0].string_reference=AllocateString(message);
+              argument_list[0].string_reference=message;
             }
           LevelImage(image,argument_list[0].string_reference);
           break;
@@ -6773,7 +6773,7 @@ QueryFontMetrics(ref,...)
     draw_info->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
     if (draw_info->geometry == (char *) NULL)
       {
-        draw_info->geometry=AllocateString((char *) NULL);
+        draw_info->geometry=GetString((char *) NULL);
         FormatString(draw_info->geometry,"%g,%g",x,y);
       }
     status=GetTypeMetrics(image,draw_info,&metrics);

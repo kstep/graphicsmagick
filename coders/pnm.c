@@ -692,33 +692,33 @@ ModuleExport void RegisterPNMImage(void)
   entry=SetMagickInfo("P7");
   entry->decoder=ReadPNMImage;
   entry->encoder=WritePNMImage;
-  entry->description=AllocateString("Xv thumbnail format");
-  entry->module=AllocateString("PNM");
+  entry->description=AcquireString("Xv thumbnail format");
+  entry->module=AcquireString("PNM");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PBM");
   entry->decoder=ReadPNMImage;
   entry->encoder=WritePNMImage;
-  entry->description=AllocateString("Portable bitmap format (black and white)");
-  entry->module=AllocateString("PNM");
+  entry->description=AcquireString("Portable bitmap format (black and white)");
+  entry->module=AcquireString("PNM");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PGM");
   entry->decoder=ReadPNMImage;
   entry->encoder=WritePNMImage;
-  entry->description=AllocateString("Portable graymap format (gray scale)");
-  entry->module=AllocateString("PNM");
+  entry->description=AcquireString("Portable graymap format (gray scale)");
+  entry->module=AcquireString("PNM");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PNM");
   entry->decoder=ReadPNMImage;
   entry->encoder=WritePNMImage;
   entry->magick=IsPNM;
-  entry->description=AllocateString("Portable anymap");
-  entry->module=AllocateString("PNM");
+  entry->description=AcquireString("Portable anymap");
+  entry->module=AcquireString("PNM");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PPM");
   entry->decoder=ReadPNMImage;
   entry->encoder=WritePNMImage;
-  entry->description=AllocateString("Portable pixmap format (color)");
-  entry->module=AllocateString("PNM");
+  entry->description=AcquireString("Portable pixmap format (color)");
+  entry->module=AcquireString("PNM");
   (void) RegisterMagickInfo(entry);
 }
 

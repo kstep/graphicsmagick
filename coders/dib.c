@@ -824,8 +824,8 @@ ModuleExport void RegisterDIBImage(void)
   entry->adjoin=False;
   entry->stealth=True;
   entry->description=
-    AllocateString("Microsoft Windows 3.X Packed Device-Independent Bitmap");
-  entry->module=AllocateString("DIB");
+    AcquireString("Microsoft Windows 3.X Packed Device-Independent Bitmap");
+  entry->module=AcquireString("DIB");
   (void) RegisterMagickInfo(entry);
 }
 

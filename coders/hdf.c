@@ -423,8 +423,8 @@ ModuleExport void RegisterHDFImage(void)
   entry->encoder=WriteHDFImage;
   entry->magick=IsHDF;
   entry->blob_support=False;
-  entry->description=AllocateString("Hierarchical Data Format");
-  entry->module=AllocateString("HDF");
+  entry->description=AcquireString("Hierarchical Data Format");
+  entry->module=AcquireString("HDF");
   (void) RegisterMagickInfo(entry);
 }
 

@@ -351,7 +351,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             one_row[i + bit] = lastrow[i + bit];
           }
         }
-      memcpy(lastrow, one_row, bytes_per_row);
+      CloneMemory(lastrow, one_row, bytes_per_row);
       }
     else
       {
@@ -420,8 +420,8 @@ ModuleExport void RegisterPALMImage(void)
   entry->decoder=ReadPALMImage;
   entry->encoder=WritePALMImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Palm pixmap");
-  entry->module=AllocateString("PALM");
+  entry->description=AcquireString("Palm pixmap");
+  entry->module=AcquireString("PALM");
   (void) RegisterMagickInfo(entry);
 }
 
@@ -690,7 +690,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image, byte);
         (void) WriteBlob(image, tptr - tmpbuf, tmpbuf);
        }
-      memcpy (lastrow, one_row, bytes_per_row);
+      CloneMemory (lastrow, one_row, bytes_per_row);
       }
     else
       {

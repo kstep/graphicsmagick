@@ -230,18 +230,18 @@ ModuleExport void RegisterURLImage(void)
 
   entry=SetMagickInfo("HTTP");
   entry->decoder=ReadURLImage;
-  entry->description=AllocateString("Uniform Resource Locator");
-  entry->module=AllocateString("URL");
+  entry->description=AcquireString("Uniform Resource Locator");
+  entry->module=AcquireString("URL");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("FTP");
   entry->decoder=ReadURLImage;
-  entry->description=AllocateString("Uniform Resource Locator");
-  entry->module=AllocateString("URL");
+  entry->description=AcquireString("Uniform Resource Locator");
+  entry->module=AcquireString("URL");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("FILE");
   entry->decoder=ReadURLImage;
-  entry->description=AllocateString("Uniform Resource Locator");
-  entry->module=AllocateString("URL");
+  entry->description=AcquireString("Uniform Resource Locator");
+  entry->module=AcquireString("URL");
   (void) RegisterMagickInfo(entry);
 }
 

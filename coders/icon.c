@@ -503,14 +503,14 @@ ModuleExport void RegisterICONImage(void)
   entry=SetMagickInfo("ICO");
   entry->decoder=ReadIconImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Microsoft icon");
-  entry->module=AllocateString("ICON");
+  entry->description=AcquireString("Microsoft icon");
+  entry->module=AcquireString("ICON");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ICON");
   entry->decoder=ReadIconImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Microsoft icon");
-  entry->module=AllocateString("ICON");
+  entry->description=AcquireString("Microsoft icon");
+  entry->module=AcquireString("ICON");
   (void) RegisterMagickInfo(entry);
 }
 

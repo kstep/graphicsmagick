@@ -514,8 +514,8 @@ ModuleExport void RegisterMATImage(void)
 
   entry=SetMagickInfo("MAT");
   entry->decoder=ReadMATImage;
-  entry->description=AllocateString("MATLAB image format");
-  entry->module=AllocateString("MAT");
+  entry->description=AcquireString("MATLAB image format");
+  entry->module=AcquireString("MAT");
   (void) RegisterMagickInfo(entry);
 }
 

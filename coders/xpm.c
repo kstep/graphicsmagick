@@ -437,23 +437,23 @@ ModuleExport void RegisterXPMImage(void)
   entry->decoder=ReadXPMImage;
   entry->encoder=WritePICONImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Personal Icon");
-  entry->module=AllocateString("PICON");
+  entry->description=AcquireString("Personal Icon");
+  entry->module=AcquireString("PICON");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PM");
   entry->decoder=ReadXPMImage;
   entry->encoder=WriteXPMImage;
   entry->adjoin=False;
-  entry->description=AllocateString("X Windows system pixmap (color)");
-  entry->module=AllocateString("XPM");
+  entry->description=AcquireString("X Windows system pixmap (color)");
+  entry->module=AcquireString("XPM");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("XPM");
   entry->decoder=ReadXPMImage;
   entry->encoder=WriteXPMImage;
   entry->magick=IsXPM;
   entry->adjoin=False;
-  entry->description=AllocateString("X Windows system pixmap (color)");
-  entry->module=AllocateString("XPM");
+  entry->description=AcquireString("X Windows system pixmap (color)");
+  entry->module=AcquireString("XPM");
   (void) RegisterMagickInfo(entry);
 }
 

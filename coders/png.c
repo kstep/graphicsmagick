@@ -1345,7 +1345,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
          ReacquireMemory((void **) &image->generic_profile,
             (i+1)*sizeof(ProfileInfo));
        image->generic_profile[i].length=length;
-       image->generic_profile[i].name=AllocateString(&text[ii].key[17]);
+       image->generic_profile[i].name=GetString(&text[ii].key[17]);
        image->generic_profile[i].info=info;
        image->generic_profiles++;
        if (image_info->verbose)
@@ -2749,7 +2749,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->color_profile.length)
           {
 #ifdef PNG_FREE_ME_SUPPORTED
-            image->color_profile.name=AllocateString("icm");
+            image->color_profile.name=GetString("icm");
             image->color_profile.info=(unsigned char *) info;
             png_data_freer(ping, ping_info, PNG_USER_WILL_FREE_DATA,
                PNG_FREE_ICCP);
@@ -2764,9 +2764,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             else
               {
-                 (void) memcpy(image->color_profile.info,
+                 (void) CloneMemory(image->color_profile.info,
                     (unsigned char *) info,length);
-                 image->color_profile.name=AllocateString("icm");
+                 image->color_profile.name=GetString("icm");
                  /* Note that the PNG iCCP profile name gets lost. */
               }
 #endif
@@ -3693,7 +3693,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                        "Memory allocation failed while magnifying",image)
                   }
                 n=GetImagePixels(image,0,0,image->columns,1);
-                (void) memcpy(next,n,length);
+                (void) CloneMemory(next,n,length);
                 for (y=0; y < (long) image->rows; y++)
                 {
                   if (y == 0)
@@ -3712,7 +3712,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (y < (long) image->rows-1)
                     {
                       n=GetImagePixels(image,0,y+1,image->columns,1);
-                      (void) memcpy(next,n,length);
+                      (void) CloneMemory(next,n,length);
                     }
                   for (i=0; i<m; i++, yy++)
                   {
@@ -4200,29 +4200,37 @@ ModuleExport void RegisterPNGImage(void)
   entry->decoder=ReadPNGImage;
   entry->encoder=WritePNGImage;
   entry->magick=IsMNG;
-  entry->description=AllocateString("Multiple-image Network Graphics");
-  entry->module=AllocateString("PNG");
+  entry->description=AcquireString("Multiple-image Network Graphics");
+  entry->module=AcquireString("PNG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PNG");
   entry->decoder=ReadPNGImage;
   entry->encoder=WritePNGImage;
   entry->magick=IsPNG;
   entry->adjoin=False;
-  entry->description=AllocateString("Portable Network Graphics");
+  entry->description=AcquireString("Portable Network Graphics");
 #if defined(PNG_LIBPNG_VER_STRING)
-  entry->version=AllocateString(PNG_LIBPNG_VER_STRING);
+{
+  char
+    *version;
+
+  version=GetString(PNG_LIBPNG_VER_STRING);
 # if PNG_LIBPNG_VER > 10001
   if (LocaleCompare(PNG_LIBPNG_VER_STRING,png_get_header_ver(NULL)) != 0)
   {
     /*
       Show both compile-time and run-time library versions when they differ.
     */
-    (void) ConcatenateString(&entry->version,",");
-    (void) ConcatenateString(&entry->version,png_get_libpng_ver(NULL));
+    (void) ConcatenateString(&version,",");
+    (void) ConcatenateString(&version,png_get_libpng_ver(NULL));
+
   }
+  entry->version=AcquireString(version);
+  LiberateMemory((void **) &version);
 # endif
+}
 #endif
-  entry->module=AllocateString("PNG");
+  entry->module=AcquireString("PNG");
   (void) RegisterMagickInfo(entry);
 }
 
@@ -4367,7 +4375,7 @@ static void PNGShort(png_bytep p,png_uint_16 value)
 
 static void PNGType(png_bytep p,png_bytep type)
 {
-  (void) memcpy(p,type,4*sizeof(png_byte));
+  (void) CloneMemory(p,type,4*sizeof(png_byte));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

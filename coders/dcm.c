@@ -3510,8 +3510,8 @@ ModuleExport void RegisterDCMImage(void)
   entry->magick=IsDCM;
   entry->adjoin=False;
   entry->description=
-    AllocateString("Digital Imaging and Communications in Medicine image");
-  entry->module=AllocateString("DCM");
+    AcquiteString("Digital Imaging and Communications in Medicine image");
+  entry->module=AcquireString("DCM");
   (void) RegisterMagickInfo(entry);
 }
 

@@ -520,7 +520,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     if (image->generic_profile == (ProfileInfo *) NULL)
                       ThrowReaderException(ResourceLimitWarning,
                         "Memory allocation failed",image);
-                    image->generic_profile[i].name=AllocateString(keyword+8);
+                    image->generic_profile[i].name=GetString(keyword+8);
                     image->generic_profile[i].length=atol(values);
                     image->generic_profile[i].info=(unsigned char *) NULL;
                     image->generic_profiles++;
@@ -1038,11 +1038,11 @@ ModuleExport void RegisterMIFFImage(void)
   entry->decoder=ReadMIFFImage;
   entry->encoder=WriteMIFFImage;
   entry->magick=IsMIFF;
-  entry->description=AllocateString("Magick image format");
+  entry->description=AcquireString("Magick Image File Format");
 #if defined(MagickLibVersionText)
-  entry->version=AllocateString(MagickLibVersionText);
+  entry->version=AcquireString(MagickLibVersionText);
 #endif
-  entry->module=AllocateString("MIFF");
+  entry->module=AcquireString("MIFF");
   (void) RegisterMagickInfo(entry);
 }
 

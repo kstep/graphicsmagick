@@ -272,8 +272,8 @@ ModuleExport void RegisterPWPImage(void)
   entry=SetMagickInfo("PWP");
   entry->decoder=ReadPWPImage;
   entry->magick=IsPWP;
-  entry->description=AllocateString("Seattle Film Works");
-  entry->module=AllocateString("PWP");
+  entry->description=AcquireString("Seattle Film Works");
+  entry->module=AcquireString("PWP");
   (void) RegisterMagickInfo(entry);
 }
 

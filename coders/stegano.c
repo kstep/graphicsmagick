@@ -230,8 +230,8 @@ ModuleExport void RegisterSTEGANOImage(void)
 
   entry=SetMagickInfo("STEGANO");
   entry->decoder=ReadSTEGANOImage;
-  entry->description=AllocateString("Steganographic image");
-  entry->module=AllocateString("STEGANO");
+  entry->description=AcquireString("Steganographic image");
+  entry->module=AcquireString("STEGANO");
   (void) RegisterMagickInfo(entry);
 }
 

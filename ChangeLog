@@ -1,3 +1,6 @@
+2002-03-11  Cristy  <cristy@mystic.es.dupont.com>
+  * Added AcquireString() to allocate read-only strings.
+
 2002-03-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * coders/null.c (WriteNULLImage): Support writing "null:" image type
     for use when profiling or testing ImageMagick.

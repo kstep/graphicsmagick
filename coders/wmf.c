@@ -2735,22 +2735,22 @@ ModuleExport void RegisterWMFImage(void)
 
   entry = SetMagickInfo("WMF");
   entry->decoder = ReadWMFImage;
-  entry->description = AllocateString("Windows Meta File");
+  entry->description = AcquireString("Windows Meta File");
   entry->blob_support = False;
-  entry->module = AllocateString("WMF");
+  entry->module = AcquireString("WMF");
   (void) RegisterMagickInfo(entry);
 #if defined(HasWIN32WMFAPI)
   entry = SetMagickInfo("EMF");
   entry->decoder = ReadEMFImage;
-  entry->description = AllocateString("Windows WIN32 API renderred Enhanced Meta File");
+  entry->description = AcquireString("Windows WIN32 API rendered Enhanced Meta File");
   entry->blob_support = False;
-  entry->module = AllocateString("WMF");
+  entry->module = AcquireString("WMF");
   (void) RegisterMagickInfo(entry);
   entry = SetMagickInfo("WMFWIN32");
   entry->decoder = ReadEMFImage;
-  entry->description = AllocateString("Windows WIN32 API renderred Meta File");
+  entry->description = AcquireString("Windows WIN32 API rendered Meta File");
   entry->blob_support = False;
-  entry->module = AllocateString("WMFWIN32");
+  entry->module = AcquireString("WMFWIN32");
   (void) RegisterMagickInfo(entry);
 #endif
 #endif /* HasWMF || HasWMFlite */

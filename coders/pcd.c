@@ -802,15 +802,15 @@ ModuleExport void RegisterPCDImage(void)
   entry->encoder=WritePCDImage;
   entry->magick=IsPCD;
   entry->adjoin=False;
-  entry->description=AllocateString("Photo CD");
-  entry->module=AllocateString("PCD");
+  entry->description=AcquireString("Photo CD");
+  entry->module=AcquireString("PCD");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PCDS");
   entry->decoder=ReadPCDImage;
   entry->encoder=WritePCDImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Photo CD");
-  entry->module=AllocateString("PCD");
+  entry->description=AcquireString("Photo CD");
+  entry->module=AcquireString("PCD");
   (void) RegisterMagickInfo(entry);
 }
 

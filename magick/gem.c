@@ -944,5 +944,5 @@ MagickExport void Upsample(const unsigned long width,const unsigned long height,
   }
   p=pixels+(2*height-2)*scaled_width;
   q=pixels+(2*height-1)*scaled_width;
-  (void) memcpy(q,p,2*width);
+  (void) CloneMemory(q,p,2*width);
 }

@@ -1174,8 +1174,8 @@ ModuleExport void RegisterBMPImage(void)
   entry->decoder=ReadBMPImage;
   entry->encoder=WriteBMPImage;
   entry->magick=IsBMP;
-  entry->description=AllocateString("Microsoft Windows bitmap image");
-  entry->module=AllocateString("BMP");
+  entry->description=AcquireString("Microsoft Windows bitmap image");
+  entry->module=AcquireString("BMP");
   (void) RegisterMagickInfo(entry);
 }
 

@@ -265,8 +265,8 @@ ModuleExport void RegisterPIXImage(void)
 
   entry=SetMagickInfo("PIX");
   entry->decoder=ReadPIXImage;
-  entry->description=AllocateString("Alias/Wavefront RLE image format");
-  entry->module=AllocateString("PIX");
+  entry->description=AcquireString("Alias/Wavefront RLE image format");
+  entry->module=AcquireString("PIX");
   (void) RegisterMagickInfo(entry);
 }
 

@@ -495,24 +495,24 @@ ModuleExport void RegisterPSImage(void)
   entry->magick=IsPS;
   entry->adjoin=False;
   entry->description=
-    AllocateString("Adobe Encapsulated PostScript Interchange format");
-  entry->module=AllocateString("PS");
+    AcquireString("Adobe Encapsulated PostScript Interchange format");
+  entry->module=AcquireString("PS");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("EPS");
   entry->decoder=ReadPSImage;
   entry->encoder=WritePSImage;
   entry->magick=IsPS;
   entry->adjoin=False;
-  entry->description=AllocateString("Adobe Encapsulated PostScript");
-  entry->module=AllocateString("PS");
+  entry->description=AcquireString("Adobe Encapsulated PostScript");
+  entry->module=AcquireString("PS");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("EPSF");
   entry->decoder=ReadPSImage;
   entry->encoder=WritePSImage;
   entry->magick=IsPS;
   entry->adjoin=False;
-  entry->description=AllocateString("Adobe Encapsulated PostScript");
-  entry->module=AllocateString("PS");
+  entry->description=AcquireString("Adobe Encapsulated PostScript");
+  entry->module=AcquireString("PS");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("EPSI");
   entry->decoder=ReadPSImage;
@@ -520,15 +520,15 @@ ModuleExport void RegisterPSImage(void)
   entry->magick=IsPS;
   entry->adjoin=False;
   entry->description=
-    AllocateString("Adobe Encapsulated PostScript Interchange format");
-  entry->module=AllocateString("PS");
+    AcquireString("Adobe Encapsulated PostScript Interchange format");
+  entry->module=AcquireString("PS");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PS");
   entry->decoder=ReadPSImage;
   entry->encoder=WritePSImage;
   entry->magick=IsPS;
-  entry->description=AllocateString("Adobe PostScript");
-  entry->module=AllocateString("PS");
+  entry->description=AcquireString("Adobe PostScript");
+  entry->module=AcquireString("PS");
   (void) RegisterMagickInfo(entry);
 }
 

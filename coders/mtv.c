@@ -244,8 +244,8 @@ ModuleExport void RegisterMTVImage(void)
   entry=SetMagickInfo("MTV");
   entry->decoder=ReadMTVImage;
   entry->encoder=WriteMTVImage;
-  entry->description=AllocateString("MTV Raytracing image format");
-  entry->module=AllocateString("MTV");
+  entry->description=AcquireString("MTV Raytracing image format");
+  entry->module=AcquireString("MTV");
   (void) RegisterMagickInfo(entry);
 }
 

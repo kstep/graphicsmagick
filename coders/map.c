@@ -243,8 +243,8 @@ ModuleExport void RegisterMAPImage(void)
   entry->encoder=WriteMAPImage;
   entry->adjoin=False;
   entry->raw=True;
-  entry->description=AllocateString("Colormap intensities and indices");
-  entry->module=AllocateString("MAP");
+  entry->description=AcquireString("Colormap intensities and indices");
+  entry->module=AcquireString("MAP");
   (void) RegisterMagickInfo(entry);
 }
 

@@ -185,7 +185,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Decode image header;  header terminates one character beyond a ':'.
   */
   length=MaxTextExtent;
-  values=AllocateString((char *) NULL);
+  values=GetString((char *) NULL);
   GetCacheInfo(&image->cache);
   cache_info=(CacheInfo *) image->cache;
   (void) strncpy(cache_info->meta_filename,image_info->filename,
@@ -207,7 +207,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read comment-- any text between { }.
         */
         length=MaxTextExtent;
-        comment=AllocateString((char *) NULL);
+        comment=GetString((char *) NULL);
         p=comment;
         for ( ; comment != (char *) NULL; p++)
         {
@@ -509,7 +509,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (image->generic_profile == (ProfileInfo *) NULL)
                     ThrowReaderException(ResourceLimitWarning,
                       "Memory allocation failed",image);
-                  image->generic_profile[i].name=AllocateString(keyword+8);
+                  image->generic_profile[i].name=GetString(keyword+8);
                   image->generic_profile[i].length=atol(values);
                   image->generic_profile[i].info=(unsigned char *) NULL;
                   image->generic_profiles++;
@@ -666,7 +666,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Image directory.
       */
-      image->directory=AllocateString((char *) NULL);
+      image->directory=GetString((char *) NULL);
       if (image->directory == (char *) NULL)
         ThrowReaderException(CorruptImageWarning,"Unable to read image data",
           image);
@@ -844,8 +844,8 @@ ModuleExport void RegisterMPCImage(void)
   entry->magick=IsMPC;
   entry->adjoin=False;
   entry->blob_support=False;
-  entry->description=AllocateString("Magick Persistent Cache image format");
-  entry->module=AllocateString("MPC");
+  entry->description=AcquireString("Magick Persistent Cache image format");
+  entry->module=AcquireString("MPC");
   (void) RegisterMagickInfo(entry);
 }
 
@@ -959,10 +959,10 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+    (void) CloneMemory(q,p,image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(clone_image);
     if (indexes != (IndexPacket *) NULL)
-      (void) memcpy(indexes,GetIndexes(image),
+      (void) CloneMemory(indexes,GetIndexes(image),
         image->columns*sizeof(IndexPacket));
     if (!SyncImagePixels(clone_image))
       break;

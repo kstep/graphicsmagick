@@ -566,8 +566,8 @@ ModuleExport void RegisterPDBImage(void)
   entry=SetMagickInfo("PDB");
   entry->decoder=ReadPDBImage;
   entry->magick=IsPDB;
-  entry->description=AllocateString("Pilot Image Format");
-  entry->module=AllocateString("PDB");
+  entry->description=AcquireString("Pilot Image Format");
+  entry->module=AcquireString("PDB");
   (void) RegisterMagickInfo(entry);
 }
 

@@ -118,7 +118,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  draw_info->text=AllocateString(image_info->filename);
+  draw_info->text=GetString(image_info->filename);
   if ((image->columns != 0) || (image->rows != 0))
     {
       /*
@@ -159,7 +159,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       FormatString(geometry,"+%g+%g",image->columns/2.0-metrics.width/2.0,
         metrics.ascent);
     }
-  draw_info->geometry=AllocateString(geometry);
+  draw_info->geometry=GetString(geometry);
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);
   DestroyDrawInfo(draw_info);
@@ -197,8 +197,8 @@ ModuleExport void RegisterLABELImage(void)
   entry=SetMagickInfo("LABEL");
   entry->decoder=ReadLABELImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Image label");
-  entry->module=AllocateString("LABEL");
+  entry->description=AcquireString("Image label");
+  entry->module=AcquireString("LABEL");
   (void) RegisterMagickInfo(entry);
 }
 

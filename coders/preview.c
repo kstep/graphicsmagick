@@ -99,8 +99,8 @@ ModuleExport void RegisterPREVIEWImage(void)
   entry->encoder=WritePreviewImage;
   entry->adjoin=False;
   entry->description=
-    AllocateString("Show a preview an image enhancement, effect, or f/x");
-  entry->module=AllocateString("PREVIEW");
+    AcquireString("Show a preview an image enhancement, effect, or f/x");
+  entry->module=AcquireString("PREVIEW");
   (void) RegisterMagickInfo(entry);
 }
 

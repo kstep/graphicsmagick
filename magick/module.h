@@ -10,7 +10,7 @@ extern "C" {
 
 typedef struct _CoderInfo
 {
-  char
+  const char
     *tag;
   
   void
@@ -29,7 +29,7 @@ typedef struct _CoderInfo
 
 typedef struct _ModuleInfo
 {
-  char
+  const char
     *filename,
     *magick,
     *name;

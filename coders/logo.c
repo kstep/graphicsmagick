@@ -5384,37 +5384,37 @@ ModuleExport void RegisterLOGOImage(void)
   entry=SetMagickInfo("GRANITE");
   entry->decoder=ReadLOGOImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Granite texture");
-  entry->module=AllocateString("LOGO");
+  entry->description=AcquireString("Granite texture");
+  entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("H");
   entry->decoder=ReadLOGOImage;
   entry->encoder=WriteLOGOImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AllocateString("Internal format");
-  entry->module=AllocateString("LOGO");
+  entry->description=AcquireString("Internal format");
+  entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("LOGO");
   entry->decoder=ReadLOGOImage;
   entry->encoder=WriteLOGOImage;
   entry->adjoin=False;
-  entry->description=AllocateString("ImageMagick Logo");
-  entry->module=AllocateString("LOGO");
+  entry->description=AcquireString("ImageMagick Logo");
+  entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("NETSCAPE");
   entry->decoder=ReadLOGOImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Netscape 216 color cube");
-  entry->module=AllocateString("LOGO");
+  entry->description=AcquireString("Netscape 216 color cube");
+  entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ROSE");
   entry->decoder=ReadLOGOImage;
   entry->encoder=WriteLOGOImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AllocateString("70x46 Truecolor rose");
-  entry->module=AllocateString("LOGO");
+  entry->description=AcquireString("70x46 Truecolor rose");
+  entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
 }
 

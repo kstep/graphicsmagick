@@ -248,8 +248,8 @@ ModuleExport void RegisterWBMPImage(void)
   entry->decoder=ReadWBMPImage;
   entry->encoder=WriteWBMPImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Wireless Bitmap (level 0) image");
-  entry->module=AllocateString("WBMP");
+  entry->description=AcquireString("Wireless Bitmap (level 0) image");
+  entry->module=AcquireString("WBMP");
   (void) RegisterMagickInfo(entry);
 }
 

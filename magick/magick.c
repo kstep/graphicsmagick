@@ -239,10 +239,10 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  path=AllocateString(filename);
+  path=GetString(filename);
   if (IsAccessible(path))
     return(path);
-  search_path=AllocateString(path);
+  search_path=GetString(path);
   FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
     DirectorySeparator,filename);
   if (IsAccessible(path))
@@ -767,7 +767,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
   (void) memset(magick_info,0,sizeof(MagickInfo));
-  magick_info->name=AllocateString(name);
+  magick_info->name=AcquireString(name);
   magick_info->adjoin=True;
   magick_info->blob_support=True;
   magick_info->thread_support=True;

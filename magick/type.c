@@ -503,8 +503,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=AllocateString(TypeMap);
-  token=AllocateString(xml);
+    xml=GetString(TypeMap);
+  token=GetString(xml);
   for (q=xml; *q != '\0'; )
   {
     /*
@@ -557,7 +557,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickError(ResourceLimitError,"Unable to allocate fonts",
             "Memory allocation failed");
         (void) memset(type_info,0,sizeof(TypeInfo));
-        type_info->filename=AllocateString(filename);
+        type_info->filename=AcquireString(filename);
         type_info->signature=MagickSignature;
         if (type_list == (TypeInfo *) NULL)
           {
@@ -583,7 +583,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"encoding") == 0)
           {
-            type_list->encoding=AllocateString(token);
+            type_list->encoding=AcquireString(token);
             break;
           }
         break;
@@ -593,22 +593,22 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"family") == 0)
           {
-            type_list->family=AllocateString(token);
+            type_list->family=AcquireString(token);
             break;
           }
         if (LocaleCompare((char *) keyword,"format") == 0)
           {
-            type_list->format=AllocateString(token);
+            type_list->format=AcquireString(token);
             break;
           }
         if (LocaleCompare((char *) keyword,"foundry") == 0)
           {
-            type_list->foundry=AllocateString(token);
+            type_list->foundry=AcquireString(token);
             break;
           }
         if (LocaleCompare((char *) keyword,"fullname") == 0)
           {
-            type_list->description=AllocateString(token);
+            type_list->description=AcquireString(token);
             break;
           }
         break;
@@ -618,7 +618,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"glyphs") == 0)
           {
-            type_list->glyphs=AllocateString(token);
+            type_list->glyphs=AcquireString(token);
             break;
           }
         break;
@@ -628,7 +628,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"metrics") == 0)
           {
-            type_list->metrics=AllocateString(token);
+            type_list->metrics=AcquireString(token);
             break;
           }
         break;
@@ -638,7 +638,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
-            type_list->name=AllocateString(token);
+            type_list->name=AcquireString(token);
             break;
           }
         break;

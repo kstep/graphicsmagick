@@ -240,7 +240,7 @@ void lt_dlsetsearchpath(char *path)
       lt_slsearchpath=(char *) NULL;
     }
   if (path != (char *) NULL)
-    lt_slsearchpath=AllocateString(path);
+    lt_slsearchpath=GetString(path);
 }
 
 /*
@@ -634,7 +634,7 @@ MagickExport char *NTGetExecutionPath(void)
   char
     *path;
 
-  path=AllocateString((char *) NULL);
+  path=GetString((char *) NULL);
   GetModuleFileName(0,path,MaxTextExtent);
   return(path);
 }
@@ -674,10 +674,10 @@ char *NTGetLastError(void)
     FORMAT_MESSAGE_FROM_SYSTEM,NULL,GetLastError(),
     MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),(LPTSTR) &buffer,0,NULL);
   if (!status)
-    reason=AllocateString("An unknown error occurred");
+    reason=GetString("An unknown error occurred");
   else
     {
-      reason=AllocateString(buffer);
+      reason=GetString(buffer);
       LocalFree(buffer);
     }
   return(reason);
@@ -755,7 +755,7 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
   blob=(unsigned char *) AcquireMemory(length+1);
   if (blob != (unsigned char *) NULL)
     {
-      (void) memcpy(blob,value,length);
+      (void) CloneMemory(blob,value,length);
       blob[length]='\0';
     }
   UnlockResource(global);

@@ -415,8 +415,8 @@ ModuleExport void RegisterJP2Image(void)
     *entry;
 
   entry=SetMagickInfo("JP2");
-  entry->description=AllocateString("JPEG-2000 JP2 File Format Syntax");
-  entry->module=AllocateString("JP2");
+  entry->description=AcquireString("JPEG-2000 JP2 File Format Syntax");
+  entry->module=AcquireString("JP2");
   entry->magick=IsJP2;
   entry->adjoin=False;
   entry->thread_support=False;
@@ -424,8 +424,8 @@ ModuleExport void RegisterJP2Image(void)
   entry->encoder=WriteJP2Image;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPC");
-  entry->description=AllocateString("JPEG-2000 Code Stream Syntax");
-  entry->module=AllocateString("JPC");
+  entry->description=AcquireString("JPEG-2000 Code Stream Syntax");
+  entry->module=AcquireString("JPC");
   entry->magick=IsJPC;
   entry->adjoin=False;
   entry->thread_support=False;

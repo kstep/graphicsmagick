@@ -589,8 +589,8 @@ ModuleExport void RegisterCUTImage(void)
 
   entry=SetMagickInfo("CUT");
   entry->decoder=ReadCUTImage;
-  entry->description=AllocateString("DR Hallo");
-  entry->module=AllocateString("CUT");
+  entry->description=AcquireString("DR Hallo");
+  entry->module=AcquireString("CUT");
   (void) RegisterMagickInfo(entry);
 }
 

@@ -494,8 +494,8 @@ ModuleExport void RegisterEPTImage(void)
   entry->adjoin=False;
   entry->blob_support=False;
   entry->description=
-    AllocateString("Adobe Encapsulated PostScript with TIFF preview");
-  entry->module=AllocateString("EPT");
+    AcquireString("Adobe Encapsulated PostScript with TIFF preview");
+  entry->module=AcquireString("EPT");
   (void) RegisterMagickInfo(entry);
 }
 

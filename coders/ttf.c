@@ -257,26 +257,26 @@ ModuleExport void RegisterTTFImage(void)
   entry->decoder=ReadTTFImage;
   entry->magick=IsTTF;
   entry->adjoin=False;
-  entry->description=AllocateString("TrueType font");
+  entry->description=AcquireString("TrueType font");
 #if defined(FREETYPE_MAJOR) && defined(FREETYPE_MINOR)
-  entry->version=AllocateString((char *) NULL);
+  entry->version=AcquireString((char *) NULL);
   FormatString(entry->version,"%d.%d",FREETYPE_MAJOR,FREETYPE_MINOR);
 #endif
-  entry->module=AllocateString("TTF");
+  entry->module=AcquireString("TTF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFA");
   entry->decoder=ReadTTFImage;
   entry->magick=IsPFA;
   entry->adjoin=False;
-  entry->description=AllocateString("TrueType font");
-  entry->module=AllocateString("TTF");
+  entry->description=AcquireString("TrueType font");
+  entry->module=AcquireString("TTF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFB");
   entry->decoder=ReadTTFImage;
   entry->magick=IsPFA;
   entry->adjoin=False;
-  entry->description=AllocateString("TrueType font");
-  entry->module=AllocateString("TTF");
+  entry->description=AcquireString("TrueType font");
+  entry->module=AcquireString("TTF");
   (void) RegisterMagickInfo(entry);
 }
 

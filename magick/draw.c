@@ -256,9 +256,9 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     }
   *clone_info=(*draw_info);
   if (draw_info->primitive != (char *) NULL)
-    clone_info->primitive=AllocateString(draw_info->primitive);
+    clone_info->primitive=GetString(draw_info->primitive);
   if (draw_info->geometry != (char *) NULL)
-    clone_info->geometry=AllocateString(draw_info->geometry);
+    clone_info->geometry=GetString(draw_info->geometry);
   if (draw_info->fill_pattern != (Image *) NULL)
     clone_info->fill_pattern=CloneImage(draw_info->fill_pattern,0,0,True,
       &draw_info->fill_pattern->exception);
@@ -273,17 +273,17 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     clone_info->stroke_pattern=CloneImage(draw_info->stroke_pattern,0,0,True,
       &draw_info->stroke_pattern->exception);
   if (draw_info->text != (char *) NULL)
-    clone_info->text=AllocateString(draw_info->text);
+    clone_info->text=GetString(draw_info->text);
   if (draw_info->font != (char *) NULL)
-    clone_info->font=AllocateString(draw_info->font);
+    clone_info->font=GetString(draw_info->font);
   if (draw_info->family != (char *) NULL)
-    clone_info->family=AllocateString(draw_info->family);
+    clone_info->family=GetString(draw_info->family);
   if (draw_info->encoding != (char *) NULL)
-    clone_info->encoding=AllocateString(draw_info->encoding);
+    clone_info->encoding=GetString(draw_info->encoding);
   if (draw_info->density != (char *) NULL)
-    clone_info->density=AllocateString(draw_info->density);
+    clone_info->density=GetString(draw_info->density);
   if (draw_info->server_name != (char *) NULL)
-    clone_info->server_name=AllocateString(draw_info->server_name);
+    clone_info->server_name=GetString(draw_info->server_name);
   if (draw_info->dash_pattern != (double *) NULL)
     {
       register long
@@ -294,11 +294,11 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       if (clone_info->dash_pattern == (double *) NULL)
         MagickError(ResourceLimitError,"Unable to clone dash pattern",
           "Memory allocation failed");
-      (void) memcpy(clone_info->dash_pattern,draw_info->dash_pattern,
+      (void) CloneMemory(clone_info->dash_pattern,draw_info->dash_pattern,
         (x+1)*sizeof(double));
     }
   if (draw_info->clip_path != (char *) NULL)
-    clone_info->clip_path=AllocateString(draw_info->clip_path);
+    clone_info->clip_path=GetString(draw_info->clip_path);
   return(clone_info);
 }
 
@@ -1135,7 +1135,7 @@ static long DestroyEdge(PolygonInfo *polygon_info,const long edge)
   LiberateMemory((void **) &polygon_info->edges[edge].points);
   polygon_info->number_edges--;
   if (edge < polygon_info->number_edges)
-    (void) memcpy(polygon_info->edges+edge,polygon_info->edges+edge+1,
+    (void) CloneMemory(polygon_info->edges+edge,polygon_info->edges+edge+1,
       (polygon_info->number_edges-edge)*sizeof(EdgeInfo));
   return(polygon_info->number_edges);
 }
@@ -1702,7 +1702,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         "Memory allocation failed")
     }
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  token=AllocateString(primitive);
+  token=GetString(primitive);
   (void) QueryColorDatabase("black",&start_color);
   status=True;
   for (q=primitive; *q != '\0'; )
@@ -1787,7 +1787,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               Create clip mask.
             */
             GetToken(q,&q,token);
-            graphic_context[n]->clip_path=AllocateString(token);
+            graphic_context[n]->clip_path=GetString(token);
             (void) DrawClipPath(image,graphic_context[n],
               graphic_context[n]->clip_path);
             break;
@@ -2991,7 +2991,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             break;
           }
         GetToken(q,&q,token);
-        primitive_info[j].text=AllocateString(token);
+        primitive_info[j].text=GetString(token);
         break;
       }
       case ImagePrimitive:
@@ -3002,7 +3002,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             break;
           }
         GetToken(q,&q,token);
-        primitive_info[j].text=AllocateString(token);
+        primitive_info[j].text=GetString(token);
         primitive_info[j+1].point.x-=current.tx;
         primitive_info[j+1].point.y-=current.ty;
         break;
@@ -3128,7 +3128,7 @@ static unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info,
   if ((*pattern) != (Image *) NULL)
     DestroyImage(*pattern);
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  image_info->size=AllocateString(geometry->value);
+  image_info->size=GetString(geometry->value);
   *pattern=AllocateImage(image_info);
   DestroyImageInfo(image_info);
   (void) QueryColorDatabase("none",&(*pattern)->background_color);
@@ -4176,16 +4176,16 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->miterlimit=10;
   draw_info->decorate=NoDecoration;
   if (clone_info->font != (char *) NULL)
-    draw_info->font=AllocateString(clone_info->font);
+    draw_info->font=GetString(clone_info->font);
   if (clone_info->density != (char *) NULL)
-    draw_info->density=AllocateString(clone_info->density);
+    draw_info->density=GetString(clone_info->density);
   draw_info->text_antialias=clone_info->antialias;
   draw_info->pointsize=clone_info->pointsize;
   draw_info->box.opacity=TransparentOpacity;
   draw_info->border_color=clone_info->border_color;
   draw_info->compose=CopyCompositeOp;
   if (clone_info->server_name != (char *) NULL)
-    draw_info->server_name=AllocateString(clone_info->server_name);
+    draw_info->server_name=GetString(clone_info->server_name);
   draw_info->debug=clone_info->debug;
   draw_info->signature=MagickSignature;
   DestroyImageInfo(clone_info);
@@ -5315,7 +5315,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL) ||
       (polygon_primitive == (PrimitiveInfo *) NULL))
     return((PrimitiveInfo *) NULL);
-  (void) memcpy(polygon_primitive,primitive_info,number_vertices*
+  (void) CloneMemory(polygon_primitive,primitive_info,number_vertices*
     sizeof(PrimitiveInfo));
   closed_path=
     (primitive_info[number_vertices-1].point.x == primitive_info[0].point.x) &&

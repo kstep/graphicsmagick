@@ -2364,7 +2364,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               {
                 if (LocaleCompare(keyword,"size") == 0)
                   {
-                    msl_info->image_info[n]->size=AllocateString(value);
+                    msl_info->image_info[n]->size=GetString(value);
                     break;
                   }
                 ThrowException(msl_info->exception,OptionWarning,
@@ -4339,8 +4339,8 @@ ModuleExport void RegisterMSLImage(void)
   entry=SetMagickInfo("MSL");
   entry->decoder=ReadMSLImage;
   entry->encoder=WriteMSLImage;
-  entry->description=AllocateString("Magick Scripting Language");
-  entry->module=AllocateString("MSL");
+  entry->description=AcquireString("Magick Scripting Language");
+  entry->module=AcquireString("MSL");
   (void) RegisterMagickInfo(entry);
 }
 

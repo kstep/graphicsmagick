@@ -229,8 +229,8 @@ ModuleExport void RegisterMVGImage(void)
   entry->encoder=WriteMVGImage;
   entry->magick=IsMVG;
   entry->adjoin=False;
-  entry->description=AllocateString("Magick Vector Graphics");
-  entry->module=AllocateString("MVG");
+  entry->description=AcquireString("Magick Vector Graphics");
+  entry->module=AcquireString("MVG");
   (void) RegisterMagickInfo(entry);
 }
 

@@ -217,7 +217,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           ThrowReaderException(FileOpenWarning,"Memory allocation failed",image)
         }
       image->generic_profiles++;
-      image->generic_profile[i].name=AllocateString((char *) NULL);
+      image->generic_profile[i].name=GetString((char *) NULL);
       FormatString(image->generic_profile[i].name,"APP%d",1);
       image->generic_profile[i].info=(unsigned char *) AcquireMemory(length+2);
       for (q=image->generic_profile[i].info; image->generic_profile[i].info; q++)
@@ -279,7 +279,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       if (data == (unsigned char *) NULL)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      (void) memcpy(data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
+      (void) CloneMemory(data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
       q=data;
       q+=tag_length;
       for ( ; ; )
@@ -345,31 +345,31 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=WriteMETAImage;
   entry->magick=IsMETA;
   entry->adjoin=False;
-  entry->description=AllocateString("Photoshop resource format");
-  entry->module=AllocateString("8BIM");
+  entry->description=AcquireString("Photoshop resource format");
+  entry->module=AcquireString("8BIM");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("APP1");
   entry->decoder=ReadMETAImage;
   entry->encoder=WriteMETAImage;
   entry->magick=IsMETA;
   entry->adjoin=False;
-  entry->description=AllocateString("Photoshop resource format");
-  entry->module=AllocateString("APP1");
+  entry->description=AcquireString("Photoshop resource format");
+  entry->module=AcquireString("APP1");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ICM");
   entry->decoder=ReadMETAImage;
   entry->encoder=WriteMETAImage;
   entry->adjoin=False;
-  entry->description=AllocateString("ICC Color Profile");
-  entry->module=AllocateString("ICM");
+  entry->description=AcquireString("ICC Color Profile");
+  entry->module=AcquireString("ICM");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("IPTC");
   entry->decoder=ReadMETAImage;
   entry->encoder=WriteMETAImage;
   entry->magick=IsMETA;
   entry->adjoin=False;
-  entry->description=AllocateString("IPTC Newsphoto");
-  entry->module=AllocateString("IPTC");
+  entry->description=AcquireString("IPTC Newsphoto");
+  entry->module=AcquireString("IPTC");
   (void) RegisterMagickInfo(entry);
 }
 

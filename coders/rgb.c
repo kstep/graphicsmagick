@@ -436,15 +436,15 @@ ModuleExport void RegisterRGBImage(void)
   entry->decoder=ReadRGBImage;
   entry->encoder=WriteRGBImage;
   entry->raw=True;
-  entry->description=AllocateString("Raw red, green, and blue samples");
-  entry->module=AllocateString("RGB");
+  entry->description=AcquireString("Raw red, green, and blue samples");
+  entry->module=AcquireString("RGB");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("RGBA");
   entry->decoder=ReadRGBImage;
   entry->encoder=WriteRGBImage;
   entry->raw=True;
-  entry->description=AllocateString("Raw red, green, blue, and matte samples");
-  entry->module=AllocateString("RGB");
+  entry->description=AcquireString("Raw red, green, blue, and matte samples");
+  entry->module=AcquireString("RGB");
   (void) RegisterMagickInfo(entry);
 }
 

@@ -133,7 +133,7 @@ typedef struct _DrawInfo
 
 typedef struct _TypeInfo
 {
-  char
+  const char
     *filename,
     *name,
     *description,
@@ -148,7 +148,7 @@ typedef struct _TypeInfo
   unsigned long
     weight;
 
-  char
+  const char
     *encoding,
     *foundry,
     *format,

@@ -135,7 +135,7 @@ typedef struct _ChromaticityInfo
 
 typedef struct _ColorInfo
 {
-  char
+  const char
     *filename,
     *name;
 
@@ -558,10 +558,8 @@ typedef struct _ImageInfo
 
 typedef struct _MagickInfo
 {
-  char
-    *name;
-
-  char
+  const char
+    *name,
     *description,
     *version,
     *module;

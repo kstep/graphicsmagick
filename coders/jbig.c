@@ -285,25 +285,25 @@ ModuleExport void RegisterJBIGImage(void)
   entry->encoder=WriteJBIGImage;
   entry->adjoin=False;
   entry->description=
-    AllocateString("Joint Bi-level Image experts Group interchange format");
-  entry->module=AllocateString("JBIG");
+    AcquireString("Joint Bi-level Image experts Group interchange format");
+  entry->module=AcquireString("JBIG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JBG");
   entry->decoder=ReadJBIGImage;
   entry->encoder=WriteJBIGImage;
   entry->description=
-    AllocateString("Joint Bi-level Image experts Group interchange format");
-  entry->module=AllocateString("JBIG");
+    AcquireString("Joint Bi-level Image experts Group interchange format");
+  entry->module=AcquireString("JBIG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JBIG");
   entry->decoder=ReadJBIGImage;
   entry->encoder=WriteJBIGImage;
   entry->description=
-    AllocateString("Joint Bi-level Image experts Group interchange format");
+    AcquireString("Joint Bi-level Image experts Group interchange format");
 #if defined(JBG_VERSION)
-  entry->version=AllocateString(JBG_VERSION);
+  entry->version=AcquireString(JBG_VERSION);
 #endif
-  entry->module=AllocateString("JBIG");
+  entry->module=AcquireString("JBIG");
   (void) RegisterMagickInfo(entry);
 }
 

@@ -321,8 +321,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=AllocateString(MagicMap);
-  token=AllocateString(xml);
+    xml=GetString(MagicMap);
+  token=GetString(xml);
   for (q=xml; *q != '\0'; )
   {
     /*
@@ -375,7 +375,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickError(ResourceLimitError,"Unable to allocate magics",
             "Memory allocation failed");
         (void) memset(magic_info,0,sizeof(MagicInfo));
-        magic_info->filename=AllocateString(filename);
+        magic_info->filename=AcquireString(filename);
         magic_info->signature=MagickSignature;
         if (magic_list == (MagicInfo *) NULL)
           {
@@ -401,7 +401,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
-            magic_list->name=AllocateString(token);
+            magic_list->name=AcquireString(token);
             break;
           }
         break;
@@ -431,14 +431,14 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"target") == 0)
           {
-            char
+            const char
               *p;
 
             register unsigned char
               *q;
 
-            magic_list->target=AllocateString(token);
-            magic_list->magic=(unsigned char *) AllocateString(token);
+            magic_list->target=AcquireString(token);
+            magic_list->magic=(unsigned char *) GetString(token);
             q=magic_list->magic;
             for (p=magic_list->target; *p != '\0'; )
             {

@@ -618,8 +618,8 @@ ModuleExport void RegisterSGIImage(void)
   entry->decoder=ReadSGIImage;
   entry->encoder=WriteSGIImage;
   entry->magick=IsSGI;
-  entry->description=AllocateString("Irix RGB image");
-  entry->module=AllocateString("SGI");
+  entry->description=AcquireString("Irix RGB image");
+  entry->module=AcquireString("SGI");
   (void) RegisterMagickInfo(entry);
 }
 

@@ -961,9 +961,9 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
       length=image->colors*sizeof(PixelPacket);
-      (void) memcpy(clone_image->colormap,image->colormap,length);
+      (void) CloneMemory(clone_image->colormap,image->colormap,length);
     }
-  clone_image->color_profile.name=AllocateString(image->color_profile.name);
+  clone_image->color_profile.name=GetString(image->color_profile.name);
   if (image->color_profile.length != 0)
     {
       /*
@@ -974,10 +974,10 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       if (clone_image->color_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
-      (void) memcpy(clone_image->color_profile.info,image->color_profile.info,
-        length);
+      (void) CloneMemory(clone_image->color_profile.info,
+        image->color_profile.info,length);
     }
-  clone_image->iptc_profile.name=AllocateString(image->iptc_profile.name);
+  clone_image->iptc_profile.name=GetString(image->iptc_profile.name);
   if (image->iptc_profile.length != 0)
     {
       /*
@@ -988,8 +988,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
-      (void) memcpy(clone_image->iptc_profile.info,image->iptc_profile.info,
-        length);
+      (void) CloneMemory(clone_image->iptc_profile.info,
+        image->iptc_profile.info,length);
     }
   if (image->generic_profiles != 0)
     {
@@ -1002,11 +1002,12 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
       length=image->generic_profiles*sizeof(ProfileInfo);
-      (void) memcpy(clone_image->generic_profile,image->generic_profile,length);
+      (void) CloneMemory(clone_image->generic_profile,image->generic_profile,
+        length);
       for (i=0; i < (long) image->generic_profiles; i++)
       {
         clone_image->generic_profile[i].name=
-          AllocateString(image->generic_profile[i].name);
+          GetString(image->generic_profile[i].name);
         if (image->generic_profile[i].length == 0)
           continue;
         length=image->generic_profile[i].length;
@@ -1015,7 +1016,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
         if (clone_image->generic_profile[i].info == (unsigned char *) NULL)
           ThrowImageException(ResourceLimitWarning,"Unable to clone image",
             "Memory allocation failed");
-        (void) memcpy(clone_image->generic_profile[i].info,
+        (void) CloneMemory(clone_image->generic_profile[i].info,
           image->generic_profile[i].info,length);
       }
     }
@@ -1094,21 +1095,21 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     }
   *clone_info=(*image_info);
   if (image_info->size != (char *) NULL)
-    clone_info->size=AllocateString(image_info->size);
+    clone_info->size=GetString(image_info->size);
   if (image_info->tile != (char *) NULL)
-    clone_info->tile=AllocateString(image_info->tile);
+    clone_info->tile=GetString(image_info->tile);
   if (image_info->page != (char *) NULL)
-    clone_info->page=AllocateString(image_info->page);
+    clone_info->page=GetString(image_info->page);
   if (image_info->server_name != (char *) NULL)
-    clone_info->server_name=AllocateString(image_info->server_name);
+    clone_info->server_name=GetString(image_info->server_name);
   if (image_info->font != (char *) NULL)
-    clone_info->font=AllocateString(image_info->font);
+    clone_info->font=GetString(image_info->font);
   if (image_info->texture != (char *) NULL)
-    clone_info->texture=AllocateString(image_info->texture);
+    clone_info->texture=GetString(image_info->texture);
   if (image_info->density != (char *) NULL)
-    clone_info->density=AllocateString(image_info->density);
+    clone_info->density=GetString(image_info->density);
   if (image_info->view != (char *) NULL)
-    clone_info->view=AllocateString(image_info->view);
+    clone_info->view=GetString(image_info->view);
   if (image_info->attributes != (Image *) NULL)
     clone_info->attributes=CloneImage(image_info->attributes,0,0,True,
       &image_info->attributes->exception);

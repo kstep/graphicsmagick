@@ -560,14 +560,14 @@ ModuleExport void RegisterSUNImage(void)
   entry->decoder=ReadSUNImage;
   entry->encoder=WriteSUNImage;
   entry->magick=IsSUN;
-  entry->description=AllocateString("SUN Rasterfile");
-  entry->module=AllocateString("SUN");
+  entry->description=AcquireString("SUN Rasterfile");
+  entry->module=AcquireString("SUN");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("SUN");
   entry->decoder=ReadSUNImage;
   entry->encoder=WriteSUNImage;
-  entry->description=AllocateString("SUN Rasterfile");
-  entry->module=AllocateString("SUN");
+  entry->description=AcquireString("SUN Rasterfile");
+  entry->module=AcquireString("SUN");
   (void) RegisterMagickInfo(entry);
 }
 

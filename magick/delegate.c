@@ -595,8 +595,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=AllocateString(DelegateMap);
-  token=AllocateString(xml);
+    xml=GetString(DelegateMap);
+  token=GetString(xml);
   for (q=xml; *q != '\0'; )
   {
     /*
@@ -649,7 +649,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickError(ResourceLimitError,"Unable to allocate delegate",
             "Memory allocation failed");
         (void) memset(delegate_info,0,sizeof(DelegateInfo));
-        delegate_info->filename=AllocateString(filename);
+        delegate_info->filename=AcquireString(filename);
         delegate_info->signature=MagickSignature;
         if (delegate_list == (DelegateInfo *) NULL)
           {
@@ -675,7 +675,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"command") == 0)
           {
-            delegate_list->commands=AllocateString(token);
+            delegate_list->commands=AcquireString(token);
             break;
           }
         break;
@@ -685,7 +685,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"decode") == 0)
           {
-            delegate_list->decode=AllocateString(token);
+            delegate_list->decode=AcquireString(token);
             delegate_list->mode=1;
             break;
           }
@@ -696,7 +696,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"encode") == 0)
           {
-            delegate_list->encode=AllocateString(token);
+            delegate_list->encode=AcquireString(token);
             delegate_list->mode=(-1);
             break;
           }
@@ -790,21 +790,12 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   delegate=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
   if (delegate == (DelegateInfo *) NULL)
     return(delegate_list);
-  (void) strncpy(delegate->decode,delegate_info->decode,MaxTextExtent-1);
-  (void) strncpy(delegate->encode,delegate_info->encode,MaxTextExtent-1);
+  delegate->decode=AcquireString(delegate_info->decode);
+  delegate->encode=AcquireString(delegate_info->encode);
   delegate->mode=delegate_info->mode;
   delegate->commands=(char *) NULL;
   if (delegate_info->commands != (char *) NULL)
-    {
-      /*
-        Note commands associated with this delegate.
-      */
-      delegate->commands=(char *)
-        AcquireMemory(strlen(delegate_info->commands)+1);
-      if (delegate->commands == (char *) NULL)
-        return(delegate_list);
-      (void) strcpy(delegate->commands,delegate_info->commands);
-    }
+    delegate->commands=AcquireString(delegate_info->commands);
   delegate->previous=(DelegateInfo *) NULL;
   delegate->next=(DelegateInfo *) NULL;
   if (delegate_list == (DelegateInfo *) NULL)

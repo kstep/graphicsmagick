@@ -409,8 +409,8 @@ ModuleExport void RegisterRLAImage(void)
   entry=SetMagickInfo("RLA");
   entry->decoder=ReadRLAImage;
   entry->adjoin=False;
-  entry->description=AllocateString("Alias/Wavefront image");
-  entry->module=AllocateString("RLA");
+  entry->description=AcquireString("Alias/Wavefront image");
+  entry->module=AcquireString("RLA");
   (void) RegisterMagickInfo(entry);
 }
 

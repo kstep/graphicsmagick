@@ -31,10 +31,10 @@ typedef struct _TokenInfo
   Utilities methods.
 */
 extern MagickExport char
-  *AllocateString(const char *),
   *Base64Encode(const unsigned char *,const size_t),
   *GetExecutionPath(const char *),
   *GetPageGeometry(const char *),
+  *GetString(const char *),
   **ListFiles(const char *,const char *,long *),
   *PostscriptGeometry(const char *),
   *SetClientName(const char *),
@@ -42,6 +42,9 @@ extern MagickExport char
   **StringToArgv(const char *,int *),
   **StringToList(const char *),
   *TranslateText(const ImageInfo *,Image *,const char *);
+
+extern MagickExport const char
+  *AcquireString(const char *);
 
 extern MagickExport double
   StringToDouble(const char *,const double);

@@ -517,8 +517,8 @@ ModuleExport void RegisterFITSImage(void)
   entry->encoder=WriteFITSImage;
   entry->magick=IsFITS;
   entry->adjoin=False;
-  entry->description=AllocateString("Flexible Image Transport System");
-  entry->module=AllocateString("FITS");
+  entry->description=AcquireString("Flexible Image Transport System");
+  entry->module=AcquireString("FITS");
   (void) RegisterMagickInfo(entry);
 }
 

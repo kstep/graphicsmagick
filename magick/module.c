@@ -427,7 +427,7 @@ static char **GetModuleList(ExceptionInfo *exception)
     /*
       Add new module name to list.
     */
-    modules[i]=AllocateString((char *) NULL);
+    modules[i]=GetString((char *) NULL);
     GetPathComponent(entry->d_name,BasePath,modules[i]);
     LocaleUpper(modules[i]);
     if (LocaleNCompare("IM_MOD_",modules[i],7) == 0)
@@ -617,7 +617,7 @@ static void ModuleToTag(const char *filename,const char *format,char *module)
   assert(filename != (const char *) NULL);
   assert(format != (const char *) NULL);
   assert(module != (char *) NULL);
-  module_name=AllocateString(filename);
+  module_name=GetString(filename);
   LocaleUpper(module_name);
   FormatString(module,format,module_name);
   LiberateMemory((void **) &module_name);
@@ -848,8 +848,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=AllocateString(ModuleMap);
-  token=AllocateString(xml);
+    xml=GetString(ModuleMap);
+  token=GetString(xml);
   for (q=xml; *q != '\0'; )
   {
     /*
@@ -902,7 +902,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
           MagickError(ResourceLimitError,"Unable to allocate module magick",
             "Memory allocation failed");
         (void) memset(module_info,0,sizeof(ModuleInfo));
-        module_info->filename=AllocateString(filename);
+        module_info->filename=AcquireString(filename);
         module_info->signature=MagickSignature;
         if (module_list == (ModuleInfo *) NULL)
           {
@@ -928,7 +928,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"magick") == 0)
           {
-            module_list->magick=AllocateString(token);
+            module_list->magick=AcquireString(token);
             break;
           }
         break;
@@ -938,7 +938,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
-            module_list->name=AllocateString(token);
+            module_list->name=AcquireString(token);
             break;
           }
         break;
@@ -1090,7 +1090,7 @@ static CoderInfo *SetCoderInfo(const char *tag)
     MagickError(ResourceLimitError,"Unable to allocate module info",
       "Memory allocation failed");
   (void) memset(entry,0,sizeof(CoderInfo));
-  entry->tag=AllocateString(tag);
+  entry->tag=AcquireString(tag);
   entry->signature=MagickSignature;
   return(entry);
 }
@@ -1125,7 +1125,7 @@ static char *TagToProcess(const char *tag)
     *module_name;
 
   assert(tag != (char *) NULL);
-  module_name=AllocateString((char *) NULL);
+  module_name=GetString((char *) NULL);
 #if !defined(WIN32)
   (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);
@@ -1165,7 +1165,7 @@ MagickExport char *TagToModule(const char *tag)
     *module_name;
 
   assert(tag != (char *) NULL);
-  module_name=AllocateString("tag");
+  module_name=GetString("tag");
 #if !defined(WIN32)
   (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);

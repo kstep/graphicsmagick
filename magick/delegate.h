@@ -13,7 +13,7 @@ extern "C" {
 */
 typedef struct _DelegateInfo
 {
-  char
+  const char
     *filename,
     *decode,
     *encode,

@@ -139,8 +139,8 @@ ModuleExport void RegisterXImage(void)
   entry->decoder=ReadXImage;
   entry->encoder=WriteXImage;
   entry->adjoin=False;
-  entry->description=AllocateString("X Image");
-  entry->module=AllocateString("X");
+  entry->description=AcquireString("X Image");
+  entry->module=AcquireString("X");
   (void) RegisterMagickInfo(entry);
 }
 

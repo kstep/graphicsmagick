@@ -927,7 +927,7 @@ typedef struct _ile3
 struct dirent
 {
   char
-     d_name[255];
+    d_name[255];
 
   int
     d_namlen;

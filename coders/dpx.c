@@ -294,8 +294,8 @@ ModuleExport void RegisterDPXImage(void)
   entry->decoder=ReadDPXImage;
   entry->encoder=WriteDPXImage;
   entry->magick=IsDPX;
-  entry->description=AllocateString("Digital Moving Picture Exchange");
-  entry->module=AllocateString("DPX");
+  entry->description=AcquireString("Digital Moving Picture Exchange");
+  entry->module=AcquireString("DPX");
   (void) RegisterMagickInfo(entry);
 }
 
