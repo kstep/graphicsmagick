@@ -1731,7 +1731,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
 
       green=0;
       blue=0;
-      opacity=Opaque;
+      opacity=(-1);
       target++;
       n=Extent(target);
       if ((n == 3) || (n == 6) || (n == 9) || (n == 12))
@@ -1776,7 +1776,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
               red=green;
               green=blue;
               blue=opacity;
-              opacity=Opaque;
+              opacity=0;
               for (i=(int) n-1; i >= 0; i--)
               {
                 c=(*target++);
@@ -1798,7 +1798,9 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
       color->red=((unsigned long) (MaxRGB*red)/((1 << n)-1));
       color->green=((unsigned long) (MaxRGB*green)/((1 << n)-1));
       color->blue=((unsigned long) (MaxRGB*blue)/((1 << n)-1));
-      color->opacity=((unsigned long) (MaxRGB*opacity)/((1 << n)-1));
+      color->opacity=Opaque;
+      if (opacity >= 0)
+        color->opacity=((unsigned long) (MaxRGB*opacity)/((1 << n)-1));
       return(True);
     }
   if (database == (FILE *) NULL)
