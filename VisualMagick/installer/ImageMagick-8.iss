@@ -52,9 +52,9 @@
 AppName=GraphicsMagick 1.0.0 Q:8
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=GraphicsMagick 1.0.0 Q:8 Beta (December 13, 2002)
+AppVerName=GraphicsMagick 1.0.0 Q:8 Beta (March 3, 2003)
 AppVersion=1.0.0
-AppCopyright=Copyright (C) 2002 GraphicsMagick Group
+AppCopyright=Copyright (C) 2003 GraphicsMagick Group
 AppPublisher=GraphicsMagick Group
 AppPublisherURL=http://www.GraphicsMagick.org/
 AppSupportURL=http://www.GraphicsMagick.org/www/magick-list.html
@@ -123,9 +123,9 @@ Root: HKCR; Subkey: ".avs\OpenWithProgids\Magick.AVSFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.AVSFile"; ValueType: string; ValueName: ""; ValueData: "AVS X Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.AVSFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.AVSFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.AVSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.AVSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.AVSFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.AVSFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.AVSFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; BMP (.bmp)
 Root: HKCR; Subkey: ".bmp"; ValueType: string; ValueName: ""; ValueData: "Magick.BMPFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -134,9 +134,9 @@ Root: HKCR; Subkey: ".bmp\OpenWithProgids\Magick.BMPFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.BMPFile"; ValueType: string; ValueName: ""; ValueData: "Windows Bitmap Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.BMPFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.BMPFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.BMPFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.BMPFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.BMPFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.BMPFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.BMPFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; CGM (.cgm)
 Root: HKCR; Subkey: ".cgm"; ValueType: string; ValueName: ""; ValueData: "Magick.CGMFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -145,7 +145,7 @@ Root: HKCR; Subkey: ".cgm\OpenWithProgids\Magick.CGMFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.CGMFile"; ValueType: string; ValueName: ""; ValueData: "Computer Graphics Metafile"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.CGMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.CGMFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.CGMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.CGMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; CUT (.cut)
 Root: HKCR; Subkey: ".cut"; ValueType: string; ValueName: ""; ValueData: "Magick.CUTFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -154,7 +154,7 @@ Root: HKCR; Subkey: ".cut\OpenWithProgids\Magick.CUTFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.CUTFile"; ValueType: string; ValueName: ""; ValueData: "DR Halo Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.CUTFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.CUTFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.CUTFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.CUTFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; DCX (.DCX)
 Root: HKCR; Subkey: ".dcx"; ValueType: string; ValueName: ""; ValueData: "Magick.DCXFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -163,9 +163,9 @@ Root: HKCR; Subkey: ".dcx\OpenWithProgids\Magick.DCXFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.DCXFile"; ValueType: string; ValueName: ""; ValueData: "ZSoft Paintbrush Multi-Page Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.DCXFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.DCXFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.DCXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.DCXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.DCXFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.DCXFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.DCXFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; DIB (.dib)
 Root: HKCR; Subkey: ".dib"; ValueType: string; ValueName: ""; ValueData: "Magick.DIBFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -174,9 +174,9 @@ Root: HKCR; Subkey: ".dib\OpenWithProgids\Magick.DIBFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.DIBFile"; ValueType: string; ValueName: ""; ValueData: "Windows Device Independent Bitmap"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.DIBFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.DIBFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.DIBFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.DIBFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.DIBFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.DIBFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.DIBFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; DICOM (.dcm, .dicom)
 Root: HKCR; Subkey: ".dcm"; ValueType: string; ValueName: ""; ValueData: "Magick.DICOMFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -188,7 +188,7 @@ Root: HKCR; Subkey: ".dicom\OpenWithProgids\Magick.DICOMFile"; ValueType: none; 
 Root: HKCR; Subkey: "Magick.DICOMFile"; ValueType: string; ValueName: ""; ValueData: "DICOM Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.DICOMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.DICOMFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.DICOMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.DICOMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; DPX (.dpx)
 Root: HKCR; Subkey: ".dpx"; ValueType: string; ValueName: ""; ValueData: "Magick.DPXFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -197,9 +197,9 @@ Root: HKCR; Subkey: ".dpx\OpenWithProgids\Magick.DPXFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.DPXFile"; ValueType: string; ValueName: ""; ValueData: "Digital Moving Picture Exchange"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.DPXFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.DPXFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.DPXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.DPXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.DPXFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.DPXFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.DPXFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; EMF (.emf)
 Root: HKCR; Subkey: ".emf"; ValueType: string; ValueName: ""; ValueData: "Magick.EMFFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -208,7 +208,7 @@ Root: HKCR; Subkey: ".emf\OpenWithProgids\Magick.EMFFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.EMFFile"; ValueType: string; ValueName: ""; ValueData: "Windows Ehanced Meta File"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.EMFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.EMFFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.EMFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.EMFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; EPS (.eps)
 Root: HKCR; Subkey: ".eps"; ValueType: string; ValueName: ""; ValueData: "Magick.EPSFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -217,9 +217,9 @@ Root: HKCR; Subkey: ".eps\OpenWithProgids\Magick.EPSFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.EPSFile"; ValueType: string; ValueName: ""; ValueData: "Encapsulated Postscript File"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.EPSFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.EPSFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.EPSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.EPSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.EPSFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.EPSFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.EPSFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; FlashPIX (.fpx)
 Root: HKCR; Subkey: ".fpx"; ValueType: string; ValueName: ""; ValueData: "Magick.FPXFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -228,9 +228,9 @@ Root: HKCR; Subkey: ".fpx\OpenWithProgids\Magick.FPXFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.FPXFile"; ValueType: string; ValueName: ""; ValueData: "FlashPIX Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.FPXFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.FPXFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.FPXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.FPXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.FPXFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.FPXFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.FPXFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; GIF (.gif)
 Root: HKCR; Subkey: ".gif"; ValueType: string; ValueName: ""; ValueData: "Magick.GIFFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -239,9 +239,9 @@ Root: HKCR; Subkey: ".gif\OpenWithProgids\Magick.GIFFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.GIFFile"; ValueType: string; ValueName: ""; ValueData: "Compuserv GIF Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.GIFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.GIFFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.GIFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.GIFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.GIFFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.GIFFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.GIFFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; HPGL (.hp, .hpgl)
 Root: HKCR; Subkey: ".hp"; ValueType: string; ValueName: ""; ValueData: "Magick.HPGLFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -253,7 +253,7 @@ Root: HKCR; Subkey: ".hpgl\OpenWithProgids\Magick.HPGLFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.HPGLFile"; ValueType: string; ValueName: ""; ValueData: "HP-GL Plotter File"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.HPGLFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.HPGLFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.HPGLFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.HPGLFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; JBIG (.bie, .jbg, .jbig)
 Root: HKCR; Subkey: ".bie"; ValueType: string; ValueName: ""; ValueData: "Magick.JBIGFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -268,9 +268,9 @@ Root: HKCR; Subkey: ".jbig\OpenWithProgids\Magick.JBIGFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.JBIGFile"; ValueType: string; ValueName: ""; ValueData: "JBIG Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.JBIGFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.JBIGFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.JBIGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.JBIGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.JBIGFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.JBIGFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.JBIGFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; JPEG (.jpg, .jpeg)
 Root: HKCR; Subkey: ".jpg"; ValueType: string; ValueName: ""; ValueData: "Magick.JPEGFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -282,9 +282,9 @@ Root: HKCR; Subkey: ".jpeg\OpenWithProgids\Magick.JPEGFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.JPEGFile"; ValueType: string; ValueName: ""; ValueData: "JPEG Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.JPEGFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.JPEGFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.JPEGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.JPEGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.JPEGFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.JPEGFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.JPEGFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; KHOROS (.viff, .xv)
 Root: HKCR; Subkey: ".viff"; ValueType: string; ValueName: ""; ValueData: "Magick.KHOROSFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -296,9 +296,9 @@ Root: HKCR; Subkey: ".xv\OpenWithProgids\Magick.KHOROSFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.KHOROSFile"; ValueType: string; ValueName: ""; ValueData: "Khoros Visualization Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.KHOROSFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.KHOROSFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.KHOROSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.KHOROSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.KHOROSFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.KHOROSFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.KHOROSFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; MNG (.mng)
 Root: HKCR; Subkey: ".mng"; ValueType: string; ValueName: ""; ValueData: "Magick.MNGFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -307,9 +307,9 @@ Root: HKCR; Subkey: ".mng\OpenWithProgids\Magick.MNGFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.MNGFile"; ValueType: string; ValueName: ""; ValueData: "Multiple-image Network Graphics Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.MNGFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.MNGFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.MNGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.MNGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.MNGFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.MNGFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.MNGFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; MPC (.mpc)
 Root: HKCR; Subkey: ".mpc"; ValueType: string; ValueName: ""; ValueData: "Magick.MPCFile"
@@ -318,7 +318,7 @@ Root: HKCR; Subkey: ".mpc\OpenWithProgids\Magick.MPCFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.MPCFile"; ValueType: string; ValueName: ""; ValueData: "Magick Persistent Cache Image"; Flags: uninsdeletekey
 Root: HKCR; Subkey: "Magick.MPCFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
 Root: HKCR; Subkey: "Magick.MPCFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "Magick.MPCFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+Root: HKCR; Subkey: "Magick.MPCFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""
 
 ; MIFF (.miff)
 Root: HKCR; Subkey: ".miff"; ValueType: string; ValueName: ""; ValueData: "Magick.MIFFFile"
@@ -327,9 +327,9 @@ Root: HKCR; Subkey: ".miff\OpenWithProgids\Magick.MIFFFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.MIFFFile"; ValueType: string; ValueName: ""; ValueData: "Magick Image File Image"; Flags: uninsdeletekey
 Root: HKCR; Subkey: "Magick.MIFFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
 Root: HKCR; Subkey: "Magick.MIFFFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "Magick.MIFFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+Root: HKCR; Subkey: "Magick.MIFFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""
 Root: HKCR; Subkey: "Magick.MIFFFile\shell\edit"; ValueType: none
-Root: HKCR; Subkey: "Magick.MIFFFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+Root: HKCR; Subkey: "Magick.MIFFFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""
 
 ; MSL (.msl)
 Root: HKCR; Subkey: ".msl"; ValueType: string; ValueName: ""; ValueData: "Magick.MSLFile"
@@ -338,7 +338,7 @@ Root: HKCR; Subkey: ".msl\OpenWithProgids\Magick.MSLFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.MSLFile"; ValueType: string; ValueName: ""; ValueData: "Magick Scripting Language Script"; Flags: uninsdeletekey
 Root: HKCR; Subkey: "Magick.MSLFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
 Root: HKCR; Subkey: "Magick.MSLFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "Magick.MSLFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+Root: HKCR; Subkey: "Magick.MSLFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""
 
 ; MVG (.mvg)
 Root: HKCR; Subkey: ".mvg"; ValueType: string; ValueName: ""; ValueData: "Magick.MVGFile"
@@ -347,7 +347,7 @@ Root: HKCR; Subkey: ".mvg\OpenWithProgids\Magick.MVGFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.MVGFile"; ValueType: string; ValueName: ""; ValueData: "Magick Vector Graphics File"; Flags: uninsdeletekey
 Root: HKCR; Subkey: "Magick.MVGFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"
 Root: HKCR; Subkey: "Magick.MVGFile\shell\open"; ValueType: none
-Root: HKCR; Subkey: "Magick.MVGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""
+Root: HKCR; Subkey: "Magick.MVGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""
 
 ; PBM (.pbm)
 Root: HKCR; Subkey: ".pbm"; ValueType: string; ValueName: ""; ValueData: "Magick.PBMFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -356,9 +356,9 @@ Root: HKCR; Subkey: ".pbm\OpenWithProgids\Magick.PBMFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.PBMFile"; ValueType: string; ValueName: ""; ValueData: "Portable Bitmap File"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PBMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PBMFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PBMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PBMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PBMFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PBMFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PBMFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PGM (.pgm)
 Root: HKCR; Subkey: ".pgm"; ValueType: string; ValueName: ""; ValueData: "Magick.PGMFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -367,9 +367,9 @@ Root: HKCR; Subkey: ".pgm\OpenWithProgids\Magick.PGMFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.PGMFile"; ValueType: string; ValueName: ""; ValueData: "Portable Graymap File"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PGMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PGMFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PGMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PGMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PGMFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PGMFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PGMFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PPM (.ppm)
 Root: HKCR; Subkey: ".ppm"; ValueType: string; ValueName: ""; ValueData: "Magick.PPMFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -378,9 +378,9 @@ Root: HKCR; Subkey: ".ppm\OpenWithProgids\Magick.PPMFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.PPMFile"; ValueType: string; ValueName: ""; ValueData: "Portable Pixmap File"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PPMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PPMFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PPMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PPMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PPMFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PPMFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PPMFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PNG (.png)
 Root: HKCR; Subkey: ".png"; ValueType: string; ValueName: ""; ValueData: "Magick.PNGFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -389,9 +389,9 @@ Root: HKCR; Subkey: ".png\OpenWithProgids\Magick.PNGFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.PNGFile"; ValueType: string; ValueName: ""; ValueData: "Portable Network Graphics Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PNGFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PNGFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PNGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PNGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PNGFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PNGFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PNGFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PTIF (.ptif)
 Root: HKCR; Subkey: ".ptif"; ValueType: string; ValueName: ""; ValueData: "Magick.PTIFFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -400,9 +400,9 @@ Root: HKCR; Subkey: ".ptif\OpenWithProgids\Magick.PTIFFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.PTIFFile"; ValueType: string; ValueName: ""; ValueData: "Pyramid encoded TIFF Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PTIFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PTIFFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PTIFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PTIFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PTIFFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PTIFFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PTIFFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; TIFF (.fax, .g3, .tif, .tiff)
 Root: HKCR; Subkey: ".fax"; ValueType: string; ValueName: ""; ValueData: "Magick.TIFFFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -420,9 +420,9 @@ Root: HKCR; Subkey: ".tiff\OpenWithProgids\Magick.TIFFFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.TIFFFile"; ValueType: string; ValueName: ""; ValueData: "Tagged Image File Format"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.TIFFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.TIFFFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.TIFFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.TIFFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.TIFFFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.TIFFFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.TIFFFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PCX (.pcx)
 Root: HKCR; Subkey: ".pcx"; ValueType: string; ValueName: ""; ValueData: "Magick.PCXFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -431,9 +431,9 @@ Root: HKCR; Subkey: ".pcx\OpenWithProgids\Magick.PCXFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.PCXFile"; ValueType: string; ValueName: ""; ValueData: "ZSoft Paintbrush Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PCXFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PCXFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PCXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PCXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PCXFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PCXFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PCXFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; FITS (.fits)
 Root: HKCR; Subkey: ".fits"; ValueType: string; ValueName: ""; ValueData: "Magick.FITSFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -442,9 +442,9 @@ Root: HKCR; Subkey: ".fits\OpenWithProgids\Magick.FITSFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.FITSFile"; ValueType: string; ValueName: ""; ValueData: "Flexible Image Transport System Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.FITSFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.FITSFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.FITSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.FITSFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.FITSFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.FITSFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.FITSFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; TARGA (.icb, .tga, .vda, .vst)
 Root: HKCR; Subkey: ".icb"; ValueType: string; ValueName: ""; ValueData: "Magick.TARGAFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -462,9 +462,9 @@ Root: HKCR; Subkey: ".vst\OpenWithProgids\Magick.TARGAFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.TARGAFile"; ValueType: string; ValueName: ""; ValueData: "Truevision Targa Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.TARGAFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.TARGAFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.TARGAFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.TARGAFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.TARGAFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.TARGAFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.TARGAFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; ICON (.ico, .icon)
 Root: HKCR; Subkey: ".ico"; ValueType: string; ValueName: ""; ValueData: "Magick.ICONFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -476,7 +476,7 @@ Root: HKCR; Subkey: ".icon\OpenWithProgids\Magick.ICONFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.ICONFile"; ValueType: string; ValueName: ""; ValueData: "Microsoft Windows Icon"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.ICONFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.ICONFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.ICONFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.ICONFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; MATLAB (.mat)
 Root: HKCR; Subkey: ".mat"; ValueType: string; ValueName: ""; ValueData: "Magick.MATLABFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -485,7 +485,7 @@ Root: HKCR; Subkey: ".mat\OpenWithProgids\Magick.MATLABFile"; ValueType: none; F
 Root: HKCR; Subkey: "Magick.MATLABFile"; ValueType: string; ValueName: ""; ValueData: "MATLAB Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.MATLABFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.MATLABFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.MATLABFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.MATLABFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; MTV (.mtv)
 Root: HKCR; Subkey: ".mtv"; ValueType: string; ValueName: ""; ValueData: "Magick.MTVFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -494,9 +494,9 @@ Root: HKCR; Subkey: ".mtv\OpenWithProgids\Magick.MTVFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.MTVFile"; ValueType: string; ValueName: ""; ValueData: "MTV Raytrace Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.MTVFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.MTVFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.MTVFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.MTVFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.MTVFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.MTVFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.MTVFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; OTB (.otb)
 Root: HKCR; Subkey: ".otb"; ValueType: string; ValueName: ""; ValueData: "Magick.OTBFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -505,9 +505,9 @@ Root: HKCR; Subkey: ".otb\OpenWithProgids\Magick.OTBFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.OTBFile"; ValueType: string; ValueName: ""; ValueData: "On The Air Bitmap Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.OTBFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.OTBFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.OTBFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.OTBFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.OTBFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.OTBFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.OTBFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PALM (.palm)
 Root: HKCR; Subkey: ".palm"; ValueType: string; ValueName: ""; ValueData: "Magick.PALMFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -516,9 +516,9 @@ Root: HKCR; Subkey: ".palm\OpenWithProgids\Magick.PALMFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.PALMFile"; ValueType: string; ValueName: ""; ValueData: "Palm Pixmap Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PALMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PALMFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PALMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PALMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PALMFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PALMFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PALMFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PCD (.pcd)
 Root: HKCR; Subkey: ".pcd"; ValueType: string; ValueName: ""; ValueData: "Magick.PCDFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -527,9 +527,9 @@ Root: HKCR; Subkey: ".pcd\OpenWithProgids\Magick.PCDFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.PCDFile"; ValueType: string; ValueName: ""; ValueData: "Photo CD Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PCDFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PCDFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PCDFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PCDFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PCDFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PCDFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PCDFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PDF (.pdf)
 Root: HKCR; Subkey: ".pdf"; ValueType: string; ValueName: ""; ValueData: "Magick.PDFFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -538,9 +538,9 @@ Root: HKCR; Subkey: ".pdf\OpenWithProgids\Magick.PDFFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.PDFFile"; ValueType: string; ValueName: ""; ValueData: "Portable Document Format File"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PDFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PDFFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PDFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PDFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PDFFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PDFFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PDFFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PICT (.pct, .pict )
 Root: HKCR; Subkey: ".pct"; ValueType: string; ValueName: ""; ValueData: "Magick.PICTFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -552,9 +552,9 @@ Root: HKCR; Subkey: ".pict\OpenWithProgids\Magick.PICTFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.PICTFile"; ValueType: string; ValueName: ""; ValueData: "Apple Mac QuickDraw/PICT Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PICTFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PICTFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PICTFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PICTFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PICTFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PICTFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PICTFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PICON (.picon)
 Root: HKCR; Subkey: ".picon"; ValueType: string; ValueName: ""; ValueData: "Magick.PICONFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -563,9 +563,9 @@ Root: HKCR; Subkey: ".picon\OpenWithProgids\Magick.PICONFile"; ValueType: none; 
 Root: HKCR; Subkey: "Magick.PICONFile"; ValueType: string; ValueName: ""; ValueData: "Personal Icon"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PICONFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PICONFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PICONFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PICONFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PICONFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PICONFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PICONFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PIX (.pix, .rla)
 Root: HKCR; Subkey: ".pix"; ValueType: string; ValueName: ""; ValueData: "Magick.PIXFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -577,7 +577,7 @@ Root: HKCR; Subkey: ".rla\OpenWithProgids\Magick.PIXFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.PIXFile"; ValueType: string; ValueName: ""; ValueData: "Alias/Wavefront RLE Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PIXFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PIXFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PIXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PIXFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PSD (.psd)
 Root: HKCR; Subkey: ".psd"; ValueType: string; ValueName: ""; ValueData: "Magick.PSDFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -586,9 +586,9 @@ Root: HKCR; Subkey: ".psd\OpenWithProgids\Magick.PSDFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.PSDFile"; ValueType: string; ValueName: ""; ValueData: "Adobe Photoshop Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PSDFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PSDFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PSDFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PSDFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PSDFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PSDFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PSDFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; Postscript (.ps)
 Root: HKCR; Subkey: ".ps"; ValueType: string; ValueName: ""; ValueData: "Magick.PostscriptFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -597,9 +597,9 @@ Root: HKCR; Subkey: ".ps\OpenWithProgids\Magick.PostscriptFile"; ValueType: none
 Root: HKCR; Subkey: "Magick.PostscriptFile"; ValueType: string; ValueName: ""; ValueData: "Postscript File"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PostscriptFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PostscriptFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PostscriptFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PostscriptFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PostscriptFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PostscriptFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PostscriptFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; PSFONT (.pfa, .pfb)
 Root: HKCR; Subkey: ".pfa"; ValueType: string; ValueName: ""; ValueData: "Magick.PSFONTFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -611,7 +611,7 @@ Root: HKCR; Subkey: ".pfb\OpenWithProgids\Magick.PSFONTFile"; ValueType: none; F
 Root: HKCR; Subkey: "Magick.PSFONTFile"; ValueType: string; ValueName: ""; ValueData: "Postscript Font"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PSFONTFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PSFONTFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PSFONTFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PSFONTFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; SFW (.pwp, .sfw)
 Root: HKCR; Subkey: ".pwp"; ValueType: string; ValueName: ""; ValueData: "Magick.PWPFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -623,7 +623,7 @@ Root: HKCR; Subkey: ".sfw\OpenWithProgids\Magick.PWPFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.PWPFile"; ValueType: string; ValueName: ""; ValueData: "Seattle File Works Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PWPFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.PWPFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.PWPFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.PWPFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; TIM (.tim)
 Root: HKCR; Subkey: ".tim"; ValueType: string; ValueName: ""; ValueData: "Magick.TIMFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -632,7 +632,7 @@ Root: HKCR; Subkey: ".tim\OpenWithProgids\Magick.TIMFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.TIMFile"; ValueType: string; ValueName: ""; ValueData: "PSX TIM Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.TIMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.TIMFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.TIMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.TIMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; TTF (.ttf)
 Root: HKCR; Subkey: ".ttf"; ValueType: string; ValueName: ""; ValueData: "Magick.TTFFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -641,7 +641,7 @@ Root: HKCR; Subkey: ".ttf\OpenWithProgids\Magick.TTFFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.TTFFile"; ValueType: string; ValueName: ""; ValueData: "TrueType Font"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.TTFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.TTFFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.TTFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.TTFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; VICAR (.vicar)
 Root: HKCR; Subkey: ".vicar"; ValueType: string; ValueName: ""; ValueData: "Magick.VICARFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -650,9 +650,9 @@ Root: HKCR; Subkey: ".vicar\OpenWithProgids\Magick.VICARFile"; ValueType: none; 
 Root: HKCR; Subkey: "Magick.VICARFile"; ValueType: string; ValueName: ""; ValueData: "VICAR Rasterfile Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.VICARFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.VICARFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.VICARFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.VICARFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.VICARFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.VICARFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.VICARFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; WBMP (.wbmp)
 Root: HKCR; Subkey: ".wbmp"; ValueType: string; ValueName: ""; ValueData: "Magick.WBMPFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -661,9 +661,9 @@ Root: HKCR; Subkey: ".wbmp\OpenWithProgids\Magick.WBMPFile"; ValueType: none; Fl
 Root: HKCR; Subkey: "Magick.WBMPFile"; ValueType: string; ValueName: ""; ValueData: "Wireless Bitmap (Level 0) Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.WBMPFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.WBMPFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.WBMPFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.WBMPFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.WBMPFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.WBMPFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.WBMPFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; WMF (.wmf)
 Root: HKCR; Subkey: ".wmf"; ValueType: string; ValueName: ""; ValueData: "Magick.WMFFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -672,7 +672,7 @@ Root: HKCR; Subkey: ".wmf\OpenWithProgids\Magick.WMFFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.WMFFile"; ValueType: string; ValueName: ""; ValueData: "Windows Meta File"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.WMFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.WMFFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.WMFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.WMFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; XBM (.xbm)
 Root: HKCR; Subkey: ".xbm"; ValueType: string; ValueName: ""; ValueData: "Magick.XBMFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -681,9 +681,9 @@ Root: HKCR; Subkey: ".xbm\OpenWithProgids\Magick.XBMFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.XBMFile"; ValueType: string; ValueName: ""; ValueData: "X Windows Bitmap Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XBMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XBMFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.XBMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.XBMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XBMFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.XBMFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.XBMFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; XCF (.xcf)
 Root: HKCR; Subkey: ".xcf"; ValueType: string; ValueName: ""; ValueData: "Magick.XCFFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -692,7 +692,7 @@ Root: HKCR; Subkey: ".xcf\OpenWithProgids\Magick.XCFFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.XCFFile"; ValueType: string; ValueName: ""; ValueData: "GIMP Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XCFFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XCFFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.XCFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.XCFFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; XFIG (.fig)
 Root: HKCR; Subkey: ".fig"; ValueType: string; ValueName: ""; ValueData: "Magick.XFIGFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -701,7 +701,7 @@ Root: HKCR; Subkey: ".fig\OpenWithProgids\Magick.XFIGFile"; ValueType: none; Fla
 Root: HKCR; Subkey: "Magick.XFIGFile"; ValueType: string; ValueName: ""; ValueData: "Xfig File"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XFIGFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XFIGFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.XFIGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.XFIGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; XPM (.xpm)
 Root: HKCR; Subkey: ".xpm"; ValueType: string; ValueName: ""; ValueData: "Magick.XPMFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -710,9 +710,9 @@ Root: HKCR; Subkey: ".xmp\OpenWithProgids\Magick.XPMFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.XPMFile"; ValueType: string; ValueName: ""; ValueData: "X Windows Pixmap Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XPMFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XPMFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.XPMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.XPMFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XPMFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.XPMFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.XPMFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 ; XWD (.xwd)
 Root: HKCR; Subkey: ".xwd"; ValueType: string; ValueName: ""; ValueData: "Magick.XWDFile"; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: associate_extensions
@@ -721,9 +721,9 @@ Root: HKCR; Subkey: ".xwd\OpenWithProgids\Magick.XWDFile"; ValueType: none; Flag
 Root: HKCR; Subkey: "Magick.XWDFile"; ValueType: string; ValueName: ""; ValueData: "X Window Dump Image"; Flags: uninsdeletekey; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XWDFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ImageMagick.ico,1"; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XWDFile\shell\open"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.XWDFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.XWDFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 Root: HKCR; Subkey: "Magick.XWDFile\shell\edit"; ValueType: none; Tasks: associate_extensions
-Root: HKCR; Subkey: "Magick.XWDFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
+Root: HKCR; Subkey: "Magick.XWDFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\gmdisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 [Files]
 ; Compiler-dependent DLLs
@@ -731,23 +731,15 @@ Source: "..\bin\msvcr70.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\msvcp70.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\mfc70.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 ; Executables
-Source: "..\bin\IMDisplay.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "..\bin\animate.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "..\bin\composite.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "..\bin\conjure.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "..\bin\convert.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "..\bin\display.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+Source: "..\bin\imdisplay.exe"; DestDir: "{app}"; DestName: "gmdisplay.exe"; CopyMode: alwaysoverwrite
 Source: "..\bin\gm.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\hp2xx.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "..\bin\identify.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "..\bin\import.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "..\bin\mogrify.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "..\bin\montage.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\mpeg2dec.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\mpeg2enc.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 ; DLLs
 Source: "..\bin\CORE_RL*.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\IM_MOD_RL*.dll"; DestDir: "{app}\modules\coders"; CopyMode: alwaysoverwrite
+Source: "..\bin\analyze.dll"; DestDir: "{app}\modules\filters"; CopyMode: alwaysoverwrite
 Source: "..\bin\X11.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\Xext.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 ; Configuration files
@@ -786,8 +778,8 @@ Source: "..\..\magick\ImageMagick.ico"; DestDir: "{app}"; CopyMode: alwaysoverwr
 Source: "..\..\contrib\win32\PathTool\PathTool.exe"; DestDir: "{app}\uninstall"; CopyMode: alwaysoverwrite
 Source: "..\..\contrib\win32\PathTool\PathTool.pdf"; DestDir: "{app}\uninstall"; CopyMode: alwaysoverwrite
 ; PerlMagick Perl module
-Source: "..\..\PerlMagick\Image-Magick.ppd"; DestDir: "{app}\PerlMagick"; CopyMode: alwaysoverwrite
-Source: "..\..\PerlMagick\Image-Magick.tar.gz"; DestDir: "{app}\PerlMagick\x86"; CopyMode: alwaysoverwrite
+Source: "..\..\PerlMagick\Graphics-Magick.ppd"; DestDir: "{app}\PerlMagick"; CopyMode: alwaysoverwrite
+Source: "..\..\PerlMagick\Graphics-Magick.tar.gz"; DestDir: "{app}\PerlMagick\x86"; CopyMode: alwaysoverwrite
 Source: "..\..\PerlMagick\demo\*"; DestDir: "{app}\PerlMagick\demo"; CopyMode: alwaysoverwrite
 Source: "PerlMagick-PPM.txt"; DestDir: "{app}\PerlMagick"; CopyMode: alwaysoverwrite; DestName: "README.txt"
 ; ImageMagickObject DLL (usable from Visual Basic and WSH)
@@ -875,20 +867,20 @@ Name: "{group}\GraphicsMagick Windows Setup"; Filename: "{app}\www\windows.html"
 ; Name: "{group}\GraphicsMagick Readme"; Filename: "{app}\README.txt"
 ; Name: "{group}\GraphicsMagick Quick Start"; Filename: "{app}\QuickStart.txt"
 ; Name: "{group}\GraphicsMagick License"; Filename: "{app}\Copyright.txt"
-Name: "{group}\GraphicsMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilename: "{app}\ImageMagick.ico"
-Name: "{userdesktop}\GraphicsMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilename: "{app}\ImageMagick.ico"; Tasks: desktop_icon; MinVersion: 4,4
+Name: "{group}\GraphicsMagick Display"; Filename: "{app}\gmdisplay.exe"; IconFilename: "{app}\ImageMagick.ico"
+Name: "{userdesktop}\GraphicsMagick Display"; Filename: "{app}\gmdisplay.exe"; IconFilename: "{app}\ImageMagick.ico"; Tasks: desktop_icon; MinVersion: 4,4
 
 [Run]
 ; Add -debug to parameters to enable debugging
 Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -a:""{app}"""; StatusMsg: "Updating environment variables..."; Tasks: update_path
-Filename: "ppm"; Parameters: "install Image-Magick.ppd"; WorkingDir: "{app}\PerlMagick"; StatusMsg: "Installing PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
+Filename: "ppm"; Parameters: "install Graphics-Magick.ppd"; WorkingDir: "{app}\PerlMagick"; StatusMsg: "Installing PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
 ; Add /s to regsvr32 for silent operation
 ;Filename: "regsvr32"; Parameters: "/c /s""{app}\ImageMagickObject.dll"""; StatusMsg: "Registering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
 
 [UninstallRun]
 ; Add -debug to parameters to enable debugging
 Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -r:""{app}"""; StatusMsg: "Restoring environment variables..."; Tasks: update_path
-Filename: "ppm"; Parameters: "remove Image-Magick"; StatusMsg: "Uninstalling PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
+Filename: "ppm"; Parameters: "remove Graphics-Magick"; StatusMsg: "Uninstalling PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
 ; Add /s to regsvr32 for silent operation
 ;Filename: "regsvr32"; Parameters: "/u /s""{app}\ImageMagickObject.dll"""; StatusMsg: "Unregistering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
 

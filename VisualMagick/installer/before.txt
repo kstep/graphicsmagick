@@ -23,7 +23,7 @@ Before You Start
 
   Before installing GraphicsMagick, please make sure that you are installing the
   current release version. The current release version is posted to the site
-  "http://www.imagemagick.org". Before submitting a bug report please ensure
+  "http://www.GraphicsMagick.org/". Before submitting a bug report please ensure
   that you are using the current release version.
   
   While it is not a requirement, it is recommended that the Ghostscript
@@ -50,7 +50,7 @@ Installation Steps
     Specify what drive and directory to install GraphicsMagick into.
     Approximately 14MB of free disk space is required to install GraphicsMagick.
     The default installation directory is similar to
-    "C:\Program Files\GraphicsMagick-1.0.0-Q16". Once you have entered the
+    "C:\Program Files\GraphicsMagick-1.0.0-Q8". Once you have entered the
     desired installation directory, then select "Next>" to continue.
   
   Select Start Menu Folder
@@ -121,8 +121,8 @@ Installation Steps
   
     Select "Command Prompt" from the Windows Start menu. Within the window type
     
-      convert logo: logo.miff
-      imdisplay logo.miff
+      gm convert logo: logo.miff
+      gmdisplay logo.miff
     
     and the GraphicsMagick logo should be displayed in a window.
 

@@ -46,16 +46,16 @@ use Config;
 #   libpth='"C:\Program Files\Microsoft Visual Studio .NET\vc7\lib" "C:\Perl\lib\CORE"'
 #
 WriteMakefile(
-    'ABSTRACT'  => 'ImageMagick PERL Extension',
-    'AUTHOR'    => 'ImageMagick Studio',
+    'ABSTRACT'  => 'GraphicsMagick PERL Extension',
+    'AUTHOR'    => 'GraphicsMagick Studio',
     'NAME'      => 'Graphics::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
     'LIBS'      => ['-L..\VisualMagick\lib -L..\VisualMagick\bin -lCORE_RL_magick_.lib'],
     'DEFINE'    => '-D_VISUALC_ -D_WINDOWS',     # e.g., '-DHAVE_SOMETHING' 
     'INC'       => '-I.. -I..\xlib\include',
-    'BINARY_LOCATION'  => 'x86/Image-Magick.tar.gz',
+    'BINARY_LOCATION'  => 'x86/Graphics-Magick.tar.gz',
     'dist' => {ZIP => "zip.exe", ZIPFLAGS=>"-r"},
-    'clean' => {FILES => "Image-Magick.ppd Image-Magick.tar.gz PerlMagick.zip " },
+    'clean' => {FILES => "Graphics-Magick.ppd Graphics-Magick.tar.gz PerlMagick.zip " },
     ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
 );
 
@@ -70,47 +70,47 @@ WriteMakefile(
 # Make sure tar.exe, gzip.exe and zip.exe are in your system path
 #
 # 'nmake ppm' will include only the PerlMagick module
-# 'nmake ppm-full' also includes all ImageMagick DLLs and MGK files
+# 'nmake ppm-full' also includes all GraphicsMagick DLLs and MGK files
 
 sub MY::postamble
 {
         '
-Image-Magick.tar.gz: ppd pure_all #htmlifypods manifypods
-	if exist Image-Magick.tar.gz del Image-Magick.tar.gz
-	if exist Image-Magick.tar del Image-Magick.tar
-        $(TAR) $(TARFLAGS) Image-Magick.tar blib
-        $(COMPRESS) -q Image-Magick.tar
+Graphics-Magick.tar.gz: ppd pure_all #htmlifypods manifypods
+	if exist Graphics-Magick.tar.gz del Graphics-Magick.tar.gz
+	if exist Graphics-Magick.tar del Graphics-Magick.tar
+        $(TAR) $(TARFLAGS) Graphics-Magick.tar blib
+        $(COMPRESS) -q Graphics-Magick.tar
 
-release: Image-Magick.tar.gz
+release: Graphics-Magick.tar.gz
 
 ppm: ppd pure_all htmlifypods manifypods
         if exist PerlMagick.zip del PerlMagick.zip
-        $(TAR) $(TARFLAGS) Image-Magick.tar blib
-        $(COMPRESS) -q Image-Magick.tar
+        $(TAR) $(TARFLAGS) Graphics-Magick.tar blib
+        $(COMPRESS) -q Graphics-Magick.tar
         if exist x86 del x86 /f /q
         if exist x86 rd x86
         md x86
-        copy Image-Magick.tar$(SUFFIX) x86
-        del Image-Magick.tar$(SUFFIX)
+        copy Graphics-Magick.tar$(SUFFIX) x86
+        del Graphics-Magick.tar$(SUFFIX)
         if exist ppm-readme.txt copy ppm-readme.txt readme
-        $(ZIP) $(ZIPFLAGS) PerlMagick.zip readme Image-Magick.ppd x86/Image-Magick.tar$(SUFFIX)
-        del x86\Image-Magick.tar$(SUFFIX)
+        $(ZIP) $(ZIPFLAGS) PerlMagick.zip readme Graphics-Magick.ppd x86/Graphics-Magick.tar$(SUFFIX)
+        del x86\Graphics-Magick.tar$(SUFFIX)
         rd x86
 
 ppm-full: ppd pure_all htmlifypods manifypods
         if exist PerlMagick-full.zip del PerlMagick-full.zip
         copy ..\VisualMagick\bin\*.dll blib\arch\auto\Image\Magick
         copy ..\VisualMagick\bin\*.mgk blib\arch\auto\Image\Magick
-        $(TAR) $(TARFLAGS) Image-Magick.tar blib
-        $(COMPRESS) -q Image-Magick.tar
+        $(TAR) $(TARFLAGS) Graphics-Magick.tar blib
+        $(COMPRESS) -q Graphics-Magick.tar
         if exist x86 del x86 /f /q
         if exist x86 rd x86
         md x86
-        copy Image-Magick.tar$(SUFFIX) x86
-        del Image-Magick.tar$(SUFFIX)
+        copy Graphics-Magick.tar$(SUFFIX) x86
+        del Graphics-Magick.tar$(SUFFIX)
         if exist ppm-readme.txt copy ppm-readme.txt readme
-        $(ZIP) $(ZIPFLAGS) PerlMagick-full.zip readme Image-Magick.ppd x86/Image-Magick.tar$(SUFFIX)
-        del x86\Image-Magick.tar$(SUFFIX)
+        $(ZIP) $(ZIPFLAGS) PerlMagick-full.zip readme Graphics-Magick.ppd x86/Graphics-Magick.tar$(SUFFIX)
+        del x86\Graphics-Magick.tar$(SUFFIX)
         rd x86
         '
 }
@@ -121,7 +121,7 @@ ppm-full: ppd pure_all htmlifypods manifypods
 sub MY::test
 {
    #
-   # List any ImageMagick features derived from add-on libraries
+   # List any GraphicsMagick features derived from add-on libraries
    # or programs you would like to test.
    #
    # Valid choices are:
