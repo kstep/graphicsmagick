@@ -154,7 +154,7 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
       break;
   }
   (void) close(file);
-  return(i == length);
+  return(i != length);
 }
 
 /*
@@ -576,7 +576,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
         if (count <= 0)
           break;
       }
-      if (i != *length)
+      if (i < *length)
         {
           (void) close(file);
           LiberateMemory((void **) &blob);
