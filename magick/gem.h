@@ -21,22 +21,10 @@ extern MagickExport int
   GetOptimalKernelWidth2D(const double,const double);
 
 extern MagickExport PixelPacket
-  AlphaComposite(const PixelPacket *,const unsigned long,const PixelPacket *,
-    const unsigned long),
   InterpolateColor(const Image *,const double,const double,ExceptionInfo *);
 
 extern MagickExport Quantum
-  Downscale(const unsigned long),
-  GenerateNoise(const Quantum,const NoiseType),
-  Intensity(const PixelPacket *),
-  Upscale(const unsigned long);
-
-extern MagickExport unsigned int
-  ColorMatch(const PixelPacket *,const PixelPacket *,const double);
-
-extern MagickExport unsigned short
-  XDownscale(const unsigned long),
-  XUpscale(const unsigned long);
+  GenerateNoise(const Quantum,const NoiseType);
 
 extern MagickExport void
   Contrast(const int,Quantum *,Quantum *,Quantum *),
