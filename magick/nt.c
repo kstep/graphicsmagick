@@ -1151,18 +1151,18 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,int *width,
         16bit windows metafile.
       */
       dwSize=GetMetaFileBitsEx(hOld,0,NULL);
-      if(dwSize == 0)
+      if (dwSize == 0)
         {
           DeleteMetaFile(hOld);
           return((HENHMETAFILE) NULL);
         }
       pBits=(LPBYTE) AcquireMemory(dwSize);
-      if(pBits == (LPBYTE) NULL)
+      if (pBits == (LPBYTE) NULL)
         {
           DeleteMetaFile(hOld);
           return((HENHMETAFILE) NULL);
         }
-      if(GetMetaFileBitsEx(hOld,dwSize,pBits) == 0)
+      if (GetMetaFileBitsEx(hOld,dwSize,pBits) == 0)
         {
           LiberateMemory((void **) &pBits);
           DeleteMetaFile(hOld);
