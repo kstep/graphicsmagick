@@ -166,9 +166,9 @@ void Magick::Options::strokeDashArray ( const unsigned int* strokeDashArray_ )
 
   if(strokeDashArray_)
     {
-      // Count elements
+      // Count elements in dash array
       int x;
-      for (x=0; _drawInfo->dash_pattern[x]; x++);
+      for (x=0; strokeDashArray_[x]; x++);
       // Allocate elements
       _drawInfo->dash_pattern=new unsigned int[x+1];
       // Copy elements

@@ -782,6 +782,38 @@ namespace Magick
     Color _color;
   };
 
+  // Specify fill rule (fill-rule) FIXME
+  class DrawableFillRule : public DrawableBase
+  {
+  public:
+    DrawableFillRule ( FillRule fillRule_ )
+      : _fillRule(fillRule_)
+      {
+      }
+
+    // Support a polymorphic print-to-stream operator
+    /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Return polymorphic copy of object
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableFillRule(*this);
+      }
+
+    void fillRule( FillRule fillRule_ )
+      {
+        _fillRule = fillRule_;
+      }
+    FillRule fillRule( void ) const
+      {
+        return _fillRule;
+      }
+
+  private:
+    FillRule _fillRule;
+  };
+
   // Specify drawing fill opacity
   class DrawableFillOpacity : public DrawableBase
   {
@@ -1461,6 +1493,157 @@ namespace Magick
     double _angle;
   };
 
+  // Stroke dasharray
+  class DrawableDashArray : public DrawableBase
+  {
+  public:
+    DrawableDashArray ( const unsigned int* dasharray_ );
+
+    // Support a polymorphic print-to-stream operator
+    /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Return polymorphic copy of object
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableDashArray(*this);
+      }
+
+    void dasharray( const unsigned int* dasharray_ );
+
+    const unsigned int* dasharray( void ) const
+      {
+        return _dasharray;
+      }
+
+  private:
+    unsigned int* _dasharray;
+  };
+
+  // Stroke dashoffset
+  class DrawableDashOffset : public DrawableBase
+  {
+  public:
+    DrawableDashOffset ( unsigned int offset_ )
+      : _offset(offset_)
+      { }
+
+    // Support a polymorphic print-to-stream operator
+    /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Return polymorphic copy of object
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableDashOffset(*this);
+      }
+
+    void offset( unsigned int offset_ )
+      {
+        _offset = offset_;
+      }
+    unsigned int offset( void ) const
+      {
+        return _offset;
+      }
+
+  private:
+    unsigned int _offset;
+  };
+
+  // Stroke linecap
+  class DrawableStrokeLineCap : public DrawableBase
+  {
+  public:
+    DrawableStrokeLineCap ( LineCap linecap_ )
+      : _linecap(linecap_)
+      { }
+
+    // Support a polymorphic print-to-stream operator
+    /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Return polymorphic copy of object
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableStrokeLineCap(*this);
+      }
+
+    void linecap( LineCap linecap_ )
+      {
+        _linecap = linecap_;
+      }
+    LineCap linecap( void ) const
+      {
+        return _linecap;
+      }
+
+  private:
+    LineCap _linecap;
+  };
+
+  // Stroke linejoin
+  class DrawableStrokeLineJoin : public DrawableBase
+  {
+  public:
+    DrawableStrokeLineJoin ( LineJoin linejoin_ )
+      : _linejoin(linejoin_)
+      { }
+
+    // Support a polymorphic print-to-stream operator
+    /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Return polymorphic copy of object
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableStrokeLineJoin(*this);
+      }
+
+    void linejoin( LineJoin linejoin_ )
+      {
+        _linejoin = linejoin_;
+      }
+    LineJoin linejoin( void ) const
+      {
+        return _linejoin;
+      }
+
+  private:
+    LineJoin _linejoin;
+  };
+
+  // Stroke miterlimit
+  class DrawableMiterLimit : public DrawableBase
+  {
+  public:
+    DrawableMiterLimit ( unsigned int miterlimit_ )
+      : _miterlimit(miterlimit_)
+      { }
+
+    // Support a polymorphic print-to-stream operator
+    /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Return polymorphic copy of object
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableMiterLimit(*this);
+      }
+
+    void miterlimit( unsigned int miterlimit_ )
+      {
+        _miterlimit = miterlimit_;
+      }
+    unsigned int miterlimit( void ) const
+      {
+        return _miterlimit;
+      }
+
+  private:
+    unsigned int _miterlimit;
+  };
+
 
   // Stroke antialias
   class DrawableStrokeAntialias : public DrawableBase
@@ -1523,8 +1706,6 @@ namespace Magick
   private:
     Color _color;
   };
-
-  // stroke-dash value FIXME!
 
   // Stroke opacity
   class DrawableStrokeOpacity : public DrawableBase

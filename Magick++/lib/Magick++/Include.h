@@ -139,6 +139,12 @@ namespace Magick
   using MagickLib::LZWCompression;
   using MagickLib::RunlengthEncodedCompression;
   using MagickLib::ZipCompression;
+
+  // Fill rules
+  using MagickLib::FillRule;
+  using MagickLib::UndefinedRule;
+  using MagickLib::EvenOddRule;
+  using MagickLib::NonZeroRule;
   
   // Filter types
   using MagickLib::FilterTypes;

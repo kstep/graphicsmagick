@@ -64,19 +64,19 @@ shows how to draw the same figure using the </font>list-based approach
 <p><tt><font color="#000066">#include &lt;string></font></tt>
 <br><tt><font color="#000066">#include &lt;iostream></font></tt>
 <br><tt><font color="#000066">#include &lt;list></font></tt>
-<br><tt><font color="#000066">#include &lt;Magick++.h></font></tt><tt><font color="#000066"></font></tt>
+<br><tt><font color="#000066">#include &lt;Magick++.h></font></tt>
 <p><tt><font color="#000066">using namespace std;</font></tt>
-<br><tt><font color="#000066">using namespace Magick;</font></tt><tt><font color="#000066"></font></tt>
+<br><tt><font color="#000066">using namespace Magick;</font></tt>
 <p><tt><font color="#000066">int main(int /*argc*/,char **/*argv*/)</font></tt>
 <br><tt><font color="#000066">{</font></tt>
 <br><tt><font color="#000066">&nbsp; try {</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Create base image (white
 image of 300 by 200 pixels)</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image image( Geometry(300,200),
-Color("white") );</font></tt><tt><font color="#000066"></font></tt>
+Color("white") );</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Construct drawing list</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; std::list&lt;Magick::Drawable>
-drawList;</font></tt><tt><font color="#000066"></font></tt>
+drawList;</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Add some drawing options
 to drawing list</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableStrokeColor("red"));
@@ -84,18 +84,18 @@ to drawing list</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableStrokeWidth(5));
 // Stroke width</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableFillColor("green"));
-// Fill color</font></tt><tt><font color="#000066"></font></tt>
+// Fill color</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Add a Circle to drawing
 list</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableCircle(100,100,
-50,100));</font></tt><tt><font color="#000066"></font></tt>
+50,100));</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Add a Rectangle to drawing
 list</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; drawList.push_back(DrawableRectangle(200,100,
-270,170));</font></tt><tt><font color="#000066"></font></tt>
+270,170));</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Draw everything using
 completed drawing list</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.draw(drawList);</font></tt><tt><font color="#000066"></font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.draw(drawList);</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Display the result</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.display( );</font></tt>
 <br><tt><font color="#000066">&nbsp; }</font></tt>
@@ -104,7 +104,7 @@ completed drawing list</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
 "Caught exception: " &lt;&lt; error_.what() &lt;&lt; endl;</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; }</font></tt><tt><font color="#000066"></font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; }</font></tt>
 <p><tt><font color="#000066">&nbsp; return 0;</font></tt>
 <br><tt><font color="#000066">}</font></tt>
 <p><font color="#000000">Drawable depends on the simple Coordinate structure
@@ -301,6 +301,34 @@ reduction.</font></td>
 
 <tr>
 <td>
+<center><a NAME="DrawableDashArray"></a><font size=-1>DrawableDashArray</font></center>
+</td>
+
+<td><font size=-1>const unsigned int* dasharray_</font></td>
+
+<td><font size=-1>Specify the pattern of dashes and gaps used to stroke
+paths. The strokeDashArray represents a zero-terminated array of numbers
+that specify the lengths of alternating dashes and gaps in pixels. If an
+odd number of values is provided, then the list of values is repeated to
+yield an even number of values.&nbsp; A typical strokeDashArray_ array
+might contain the members 5 3 2 0, where the zero value indicates the end
+of the pattern array.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableDashOffset"></a><font size=-1>DrawableDashOffset</font></center>
+</td>
+
+<td><font size=-1>unsigned int offset_</font></td>
+
+<td><font size=-1>Specify the distance into the dash pattern to start the
+dash. See documentation on SVG's <a href="http://www.w3.org/TR/2000/CR-SVG-20000802/painting.html#StrokeDashoffsetProperty">stroke-dashoffset</a>
+property for usage details.</font></td>
+</tr>
+
+<tr>
+<td>
 <center><a NAME="DrawableEllipse"></a><font size=-1>DrawableEllipse</font></center>
 </td>
 
@@ -321,6 +349,19 @@ is filled.</font></td>
 <td><font size=-1>const Magick::Color &amp;color_</font></td>
 
 <td><font size=-1>Set drawing object fill color.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableFillRule"></a><font size=-1>DrawableFillRule</font></center>
+</td>
+
+<td><font size=-1>FillRule fillRule_</font></td>
+
+<td><font size=-1>Specify the algorithm which is to be used to determine
+what parts of the canvas are included inside the shape. See documentation
+on SVG's <a href="http://www.w3.org/TR/2000/CR-SVG-20000802/painting.html#FillRuleProperty">fill-rule</a>&nbsp;
+property for usage details.</font></td>
 </tr>
 
 <tr>
@@ -380,6 +421,20 @@ pixel. Floodfill changes the matte value of any pixel that matches the
 color of the target pixel and is a neighbor, whereas filltoborder changes
 the matte value of any neighbor pixel that is not the border color, Finally
 reset changes the matte value of all pixels.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableMiterLimit"></a><font size=-1>DrawableMiterLimit</font></center>
+</td>
+
+<td><font size=-1>unsigned int miterLimit_</font></td>
+
+<td><font size=-1>Specify miter limit. When two line segments meet at a
+sharp angle and miter joins have been specified for 'lineJoin', it is possible
+for the miter to extend far beyond the thickness of the line stroking the
+path. The miterLimit' imposes a limit on the ratio of the miter length
+to the 'lineWidth'. The default value of this parameter is 4.</font></td>
 </tr>
 
 <tr>
@@ -552,6 +607,30 @@ specified, then the object is filled.</font></td>
 <td><font size=-1>const Color &amp;color_</font></td>
 
 <td><font size=-1>Set color to use when drawing lines or object outlines.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableStrokeLineCap"></a><font size=-1>DrawableStrokeLineCap</font></center>
+</td>
+
+<td><font size=-1>LineCap linecap_</font></td>
+
+<td><font size=-1>Specify the shape to be used at the end of open subpaths
+when they are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap,
+and SquareCap.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableStrokeLineJoin"></a><font size=-1>DrawableStrokeLineJoin</font></center>
+</td>
+
+<td><font size=-1>Linejoin linejoin_</font></td>
+
+<td><font size=-1>Specify the shape to be used at the corners of paths
+(or other vector shapes) when they are stroked. Values of LineJoin are
+UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.</font></td>
 </tr>
 
 <tr>
@@ -876,10 +955,10 @@ double x_, double y_ );</tt>
 from the current point to (x,y) using (x1,y1) as the control point at the
 beginning of the curve and (x2,y2) as the control point at the end of the
 curve. <i>PathCurvetoAbs</i> indicates that absolutecoordinates will follow;
-<i>PathCurvetoRel</i> indicates that relative coordinates will follow.
-Multiple sets of coordinates may be specified to draw a polybezier. At
-the end of the command, the new current point becomes the final (x,y) coordinate
-pair used in the polybezier.</font></td>
+<i>PathCurvetoRel</i>
+indicates that relative coordinates will follow. Multiple sets of coordinates
+may be specified to draw a polybezier. At the end of the command, the new
+current point becomes the final (x,y) coordinate pair used in the polybezier.</font></td>
 </tr>
 
 <tr>

@@ -725,12 +725,12 @@ namespace Magick
 
     // Specify the pattern of dashes and gaps used to stroke
     // paths. The strokeDashArray represents a zero-terminated array
-    // of numbers that specify the lengths (in pixels) of alternating
-    // dashes and gaps in user units. If an odd number of values is
-    // provided, then the list of values is repeated to yield an even
-    // number of values.  A typical strokeDashArray_ array might
-    // contain the members 5 3 2 0, where the zero value indicates the
-    // end of the pattern array.
+    // of numbers that specify the lengths of alternating dashes and
+    // gaps in pixels. If an odd number of values is provided, then
+    // the list of values is repeated to yield an even number of
+    // values.  A typical strokeDashArray_ array might contain the
+    // members 5 3 2 0, where the zero value indicates the end of the
+    // pattern array.
     void            strokeDashArray ( const unsigned int* strokeDashArray_ );
     const unsigned int* strokeDashArray ( void ) const;
 

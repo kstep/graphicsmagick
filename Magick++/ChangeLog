@@ -1,3 +1,18 @@
+2000-11-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableFillRule): New class to specify fill
+ 	rule (see SVG's fill-rule).
+	(DrawableDashOffset): New class to specify initial offset in dash
+ 	array.
+	(DrawableDashArray): New class to specify a stroke dash pattern.
+	(DrawableStrokeLineCap): New class to specify the shape to be used
+ 	at the end of open subpaths when they are stroked.
+	(DrawableStrokeLineJoin): New class to specify the shape to be
+ 	used at the corners of paths (or other vector shapes) when they
+ 	are stroked.
+	(DrawableMiterLimit): New class to specify extension limit for
+ 	miter joins.
+
 2000-11-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (annotate): Reimplement text rotation using affine

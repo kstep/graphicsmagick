@@ -210,6 +210,30 @@ void Magick::DrawableFillColor::print (std::ostream& stream_) const
           << string(_color);
 }
 
+// Specify drawing fill fule
+void Magick::DrawableFillRule::print (std::ostream& stream_) const
+{
+  stream_ << "fill-rule ";
+
+  switch (_fillRule)
+    {
+    case EvenOddRule :
+      {
+        stream_ << "evenodd";
+        break;
+      }
+    case NonZeroRule :
+      {
+        stream_ << "nonzero";
+        break;
+      }
+    default :
+      {
+        stream_ << "none";
+      }
+    }
+}
+
 // Specify drawing fill opacity
 void Magick::DrawableFillOpacity::print (std::ostream& stream_) const
 {
@@ -445,6 +469,108 @@ void Magick::DrawableSkewX::print (std::ostream& stream_) const
 void Magick::DrawableSkewY::print (std::ostream& stream_) const
 {
   stream_ << "skewY " << _angle;
+}
+
+// Stroke dasharray
+Magick::DrawableDashArray::DrawableDashArray( const unsigned int* dasharray_ )
+  : _dasharray(0)
+{
+  dasharray( dasharray_ );
+}
+void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
+{
+  delete _dasharray;
+  _dasharray = 0;
+
+  if(dasharray_)
+    {
+      // Count elements in dash array
+      int x;
+      for (x=0; dasharray_[x]; x++);
+      // Allocate elements
+      _dasharray=new unsigned int[x+1];
+      // Copy elements
+      memcpy(_dasharray,dasharray_,
+             (x+1)*sizeof(unsigned int));
+    }
+}
+void Magick::DrawableDashArray::print (std::ostream& stream_) const
+{
+  stream_ << "stroke-dasharray ";
+  if( _dasharray )
+    {
+      int x;
+      for (x=0; _dasharray[x]; x++)
+        {
+          if(x)
+            stream_ << ",";
+          stream_ << _dasharray[x];
+        }
+    }
+  else
+    {
+      stream_ << "none";
+    }
+}
+
+// Stroke dashoffset
+void Magick::DrawableDashOffset::print (std::ostream& stream_) const
+{
+  stream_ << "stroke-dashoffset " << _offset;
+}
+
+// Stroke linecap
+void Magick::DrawableStrokeLineCap::print (std::ostream& stream_) const
+{
+  stream_ << "stroke-linecap ";
+
+  switch( _linecap )
+    {
+    case ButtCap :
+      stream_ << "butt";
+      break;
+    case RoundCap :
+      stream_ << "round";
+      break;
+    case SquareCap :
+      stream_ << "square";
+      break;
+    case UndefinedCap :
+    default :
+      {
+        stream_ << "none";
+      }
+    }
+}
+
+// Stroke linejoin
+void Magick::DrawableStrokeLineJoin::print (std::ostream& stream_) const
+{
+  stream_ << "stroke-linejoin ";
+
+  switch( _linejoin )
+    {
+    case MiterJoin :
+      stream_ << "miter";
+      break;
+    case RoundJoin :
+      stream_ << "round";
+      break;
+    case BevelJoin :
+      stream_ << "bevel";
+      break;
+    case UndefinedJoin :
+    default :
+      {
+        stream_ << "none";
+      }
+    }
+}
+
+// Stroke miterlimit
+void Magick::DrawableMiterLimit::print (std::ostream& stream_) const
+{
+  stream_ << "stroke-miterlimit " << _miterlimit;
 }
 
 // Stroke color
