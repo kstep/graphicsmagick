@@ -1934,6 +1934,12 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   register NexusInfo
     *nexus_info;
 
+  register size_t
+    i;
+
+  size_t
+    length;
+
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
@@ -1966,14 +1972,20 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   if (file == -1)
     return(False);
   number_pixels=cache_info->columns*cache_info->rows;
+  length=nexus_info->columns*sizeof(IndexPacket);
   for (y=0; y < (long) nexus_info->rows; y++)
   {
     count=lseek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=read(file,(char *) indexes,nexus_info->columns*sizeof(IndexPacket));
-    if (count != (off_t) (nexus_info->columns*sizeof(IndexPacket)))
+    for (i=0; i < length; i+=count)
+    {
+      count=read(file,(char *) indexes+i,length-i);
+      if (count <= 0)
+        break;
+    }
+    if (i < length)
       return(False);
     indexes+=nexus_info->columns;
     offset+=cache_info->columns;
@@ -2032,6 +2044,12 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
   register PixelPacket
     *pixels;
 
+  register size_t
+	  i;
+
+  size_t
+    length;
+
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
@@ -2060,13 +2078,19 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
   file=open(cache_info->cache_filename,O_RDONLY | O_BINARY,0777);
   if (file == -1)
     return(False);
+  length=nexus_info->columns*sizeof(PixelPacket);
   for (y=0; y < (long) nexus_info->rows; y++)
   {
     count=lseek(file,cache_info->offset+offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=read(file,(char *) pixels,nexus_info->columns*sizeof(PixelPacket));
-    if (count != (off_t) (nexus_info->columns*sizeof(PixelPacket)))
+    for (i=0; i < length; i+=count)
+    {
+      count=read(file,(char *) pixels+i,length-i);
+      if (count <= 0)
+        break;
+    }
+    if (i < length)
       return(False);
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;
@@ -2714,6 +2738,12 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   register NexusInfo
     *nexus_info;
 
+  register size_t
+    i;
+
+  size_t
+    length;
+
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
@@ -2746,14 +2776,20 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   if (file == -1)
     return(False);
   number_pixels=cache_info->columns*cache_info->rows;
+  length=nexus_info->columns*sizeof(IndexPacket);
   for (y=0; y < (long) nexus_info->rows; y++)
   {
     count=lseek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=write(file,(char *) indexes,nexus_info->columns*sizeof(IndexPacket));
-    if (count != (off_t) (nexus_info->columns*sizeof(IndexPacket)))
+    for (i=0; i < length; i+=count)
+    {
+      count=write(file,(char *) indexes+i,length-i);
+      if (count <= 0)
+        break;
+    }
+    if (i < length)
       return(False);
     indexes+=nexus_info->columns;
     offset+=cache_info->columns;
@@ -2812,6 +2848,12 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   register PixelPacket
     *pixels;
 
+  register size_t
+	  i;
+
+  size_t
+    length;
+
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
@@ -2840,13 +2882,19 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
   if (file == -1)
     return(False);
+  length=nexus_info->columns*sizeof(PixelPacket);
   for (y=0; y < (long) nexus_info->rows; y++)
   {
     count=lseek(file,cache_info->offset+offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
-    count=write(file,(char *) pixels,nexus_info->columns*sizeof(PixelPacket));
-    if (count != (off_t) (nexus_info->columns*sizeof(PixelPacket)))
+    for (i=0; i < length; i+=count)
+    {
+      count=write(file,(char *) pixels+i,length-i);
+      if (count <= 0)
+        break;
+    }
+    if (i < length)
       return(False);
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;

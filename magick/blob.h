@@ -44,6 +44,7 @@ extern MagickExport size_t
   WriteBlobString(Image *,const char *);
 
 extern MagickExport unsigned int
+  BlobToFile(const char *,const void *,const size_t,ExceptionInfo *),
   OpenBlob(const ImageInfo *,Image *,const char *,ExceptionInfo *),
   UnmapBlob(void *,const size_t);
 
