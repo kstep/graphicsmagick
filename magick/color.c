@@ -1080,7 +1080,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
     }
   }
   DestroyCubeInfo(cube_info);
-  return((image->storage_class == PseudoClass) && (cube_info->colors <= 256));
+  return(cube_info->colors <= 256);
 }
 
 /*
