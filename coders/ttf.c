@@ -158,12 +158,18 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   long
     y;
 
+  PixelPacket
+    background_color;
+
   register long
-    i;
+    i,
+    x;
+
+  register PixelPacket
+    *q;
 
   unsigned int
     status;
-
 
   /*
     Open image file.
@@ -172,7 +178,6 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     ThrowReaderException(ResourceLimitError,"Unable to allocate image",image);
@@ -184,72 +189,52 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
-
   /*
     Color canvas with background color
   */
+  background_color=image_info->background_color;
+  for (y=0; y < (long) image->rows; y++)
   {
-    unsigned long
-      column,
-      row;
-
-    PixelPacket
-      *pixel,
-      background_color;
-    
-    background_color = image_info->background_color;
-    for (row=0; row < image->rows; row++)
-      {
-        pixel=SetImagePixels(image,0,row,image->columns,1);
-        if (pixel == (PixelPacket *) NULL)
-          break;
-        for (column=image->columns; column; column--)
-          *pixel++ = background_color;
-        if (!SyncImagePixels(image))
-          break;
-      }
+    q=SetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (long) image->columns; x++)
+      *q++=background_color;
+    if (!SyncImagePixels(image))
+      break;
   }
-
   (void) strncpy(image->magick,image_info->magick,MaxTextExtent-1);
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-
   /*
     Prepare drawing commands
   */
-  context = DrawAllocateContext(draw_info, image);
   y=20;
+  context=DrawAllocateContext(draw_info,image);
   (void) DrawPushGraphicContext(context);
   (void) DrawSetViewbox(context,0,0,image->columns,image->rows);
-  (void) DrawSetFont(context, image_info->filename);
-  (void) DrawSetFontSize(context, 18);
+  (void) DrawSetFont(context,image_info->filename);
+  (void) DrawSetFontSize(context,18);
   (void) DrawAnnotation(context,10,y,Text);
   y+=20*MultilineCensus(Text)+20;
   for (i=12; i <= 72; i+=6)
   {
     y+=i+12;
-    (void) DrawSetFontSize(context, 18);
-    (void) FormatString(buffer,"'%ld'", i);
+    (void) DrawSetFontSize(context,18);
+    (void) FormatString(buffer,"'%ld'",i);
     (void) DrawAnnotation(context,10,y,buffer);
-    (void) DrawSetFontSize(context, i);
+    (void) DrawSetFontSize(context,i);
     (void) DrawAnnotation(context,50,y,
-                          "That which does not destroy me, only makes me stronger.");
+      "That which does not destroy me, only makes me stronger.");
     if (i >= 24)
       i+=6;
   }
   (void) DrawPopGraphicContext(context);
-
   /*
-    Draw on image
-  */
-  DrawRender(context);
-
-  /*
-    Cleanup
+    Free resources.
   */
   DestroyDrawInfo(draw_info);
   DrawDestroyContext(context);
   CloseBlob(image);
-
   return(image);
 }
 
