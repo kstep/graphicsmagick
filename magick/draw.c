@@ -129,10 +129,10 @@ typedef struct _PolygonInfo
   Forward declarations.
 */
 static unsigned int
+  DrawPrimitive(const DrawInfo *,const PrimitiveInfo *,Image *),
   TracePath(PrimitiveInfo *,const char *);
 
 static void
-  DrawPrimitive(const DrawInfo *,const PrimitiveInfo *,Image *),
   DrawStrokePolygon(const DrawInfo *,const PrimitiveInfo *,Image *),
   TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
@@ -651,7 +651,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
         primitive_info[0].method=ReplaceMethod;
         coordinates=primitive_info[0].coordinates;
         primitive_info[coordinates].primitive=UndefinedPrimitive;
-        DrawPrimitive(clone_info,primitive_info,image);
+        (void) DrawPrimitive(clone_info,primitive_info,image);
       }
     }
   QueryColorDatabase("blue",&clone_info->stroke);
@@ -664,7 +664,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
   primitive_info[0].method=ReplaceMethod;
   coordinates=primitive_info[0].coordinates;
   primitive_info[coordinates].primitive=UndefinedPrimitive;
-  DrawPrimitive(clone_info,primitive_info,image);
+  (void) DrawPrimitive(clone_info,primitive_info,image);
   DestroyDrawInfo(clone_info);
 }
 
@@ -980,7 +980,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
-  status=False;
+  status=True;
   (void) SetImageAttribute(image,"[MVG]",primitive);
   if (graphic_context[n]->verbose)
     (void) fprintf(stdout,"begin vector-graphics\n");
@@ -1039,7 +1039,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=ArcPrimitive;
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'b':
@@ -1050,7 +1050,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=BezierPrimitive;
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'c':
@@ -1066,7 +1066,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=ColorPrimitive;
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'd':
@@ -1087,7 +1087,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               graphic_context[n]->decorate=LineThroughDecoration;
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'e':
@@ -1098,7 +1098,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=EllipsePrimitive;
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'f':
@@ -1132,7 +1132,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("fill-opacity",keyword) == 0)
           {
             graphic_context[n]->fill.opacity=(Quantum)
-              ceil(MaxRGB*strtod(q,&q)/100.0+0.5);
+              ceil(MaxRGB*strtod(q,&q)/100.0-0.5);
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
@@ -1145,7 +1145,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             CloneString(&graphic_context[n]->font,value);
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'g':
@@ -1176,7 +1176,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               graphic_context[n]->gravity=SouthEastGravity;
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'i':
@@ -1187,7 +1187,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=ImagePrimitive;
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'l':
@@ -1198,7 +1198,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=LinePrimitive;
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'm':
@@ -1209,7 +1209,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=MattePrimitive;
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'o':
@@ -1218,12 +1218,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("opacity",keyword) == 0)
           {
             graphic_context[n]->opacity=(Quantum)
-              ceil(MaxRGB*strtod(q,&q)/100.0+0.5);
+              ceil(MaxRGB*strtod(q,&q)/100.0-0.5);
             graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'p':
@@ -1281,7 +1281,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               CloneDrawInfo((ImageInfo *) NULL,graphic_context[n-1]);
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'r':
@@ -1306,7 +1306,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 's':
@@ -1424,7 +1424,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("stroke-opacity",keyword) == 0)
           {
             graphic_context[n]->stroke.opacity=(Quantum)
-              ceil(MaxRGB*strtod(q,&q)/100.0+0.5);
+              ceil(MaxRGB*strtod(q,&q)/100.0-0.5);
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
@@ -1432,7 +1432,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             graphic_context[n]->linewidth=strtod(q,&q);
             continue;
           }
-        status=True;
+        status=False;
         break;
       }
       case 't':
@@ -1456,7 +1456,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             affine.ty=strtod(q,&q);
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       case 'v':
@@ -1476,16 +1476,16 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             (void) strtod(q,&q);
             break;
           }
-        status=True;
+        status=False;
         break;
       }
       default:
       {
-        status=True;
+        status=False;
         break;
       }
     }
-    if (status)
+    if (status == False)
       break;
     if ((affine.sx != 1.0) || (affine.rx != 0.0) || (affine.ry != 0.0) ||
         (affine.sy != 1.0) || (affine.tx != 0.0) || (affine.ty != 0.0))
@@ -1557,7 +1557,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 1)
           {
-            status=True;
+            status=False;
             break;
           }
         TracePoint(primitive_info+j,primitive_info[j].point);
@@ -1568,7 +1568,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 2)
           {
-            status=True;
+            status=False;
             break;
           }
         TraceLine(primitive_info+j,primitive_info[j].point,
@@ -1580,7 +1580,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 2)
           {
-            status=True;
+            status=False;
             break;
           }
         TraceRectangle(primitive_info+j,primitive_info[j].point,
@@ -1592,7 +1592,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 3)
           {
-            status=True;
+            status=False;
             break;
           }
         TraceRoundRectangle(primitive_info+j,primitive_info[j].point,
@@ -1604,7 +1604,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 3)
           {
-            status=True;
+            status=False;
             break;
           }
         TraceArc(primitive_info+j,primitive_info[j].point,
@@ -1616,7 +1616,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 3)
           {
-            status=True;
+            status=False;
             break;
           }
         TraceEllipse(primitive_info+j,primitive_info[j].point,
@@ -1628,7 +1628,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 2)
           {
-            status=True;
+            status=False;
             break;
           }
         TraceCircle(primitive_info+j,primitive_info[j].point,
@@ -1640,7 +1640,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates < 2)
           {
-            status=True;
+            status=False;
             break;
           }
         break;
@@ -1649,7 +1649,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates < 3)
           {
-            status=True;
+            status=False;
             break;
           }
         primitive_info[i]=primitive_info[j];
@@ -1662,7 +1662,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates < 3)
           {
-            status=True;
+            status=False;
             break;
           }
         TraceBezier(primitive_info+j,primitive_info[j].coordinates);
@@ -1737,7 +1737,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (primitive_info[j].coordinates != 1)
           {
-            status=True;
+            status=False;
             break;
           }
         /*
@@ -1763,7 +1763,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 if (LocaleCompare("reset",keyword) == 0)
                   primitive_info[j].method=ResetMethod;
                 else
-                  status=True;
+                  status=False;
         break;
       }
       case TextPrimitive:
@@ -1773,7 +1773,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
         if (primitive_info[j].coordinates != 1)
           {
-            status=True;
+            status=False;
             break;
           }
         if (*q == '\0')
@@ -1813,7 +1813,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
         if (primitive_info[j].coordinates != 2)
           {
-            status=True;
+            status=False;
             break;
           }
         if (*q == '\0')
@@ -1851,7 +1851,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       break;
     if (graphic_context[n]->verbose)
       (void) fprintf(stdout,"  %.*s\n",q-p,p);
-    if (status)
+    if (status == False)
       break;
     if ((*q == '"') || (*q == '\''))
       q++;
@@ -1869,9 +1869,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_info[i].point.y=graphic_context[n]->affine.rx*point.x+
         graphic_context[n]->affine.sy*point.y+graphic_context[n]->affine.ty;
     }
-    DrawPrimitive(graphic_context[n],primitive_info,image);
+    status=DrawPrimitive(graphic_context[n],primitive_info,image);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
+    if (status == False)
+      break;
   }
   if (graphic_context[n]->verbose)
     (void) fprintf(stdout,"end vector-graphics\n");
@@ -1885,12 +1887,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   for ( ; n >= 0; n--)
     DestroyDrawInfo(graphic_context[n]);
   LiberateMemory((void **) &graphic_context);
-  if (status)
+  if (status == False)
     ThrowBinaryException(OptionWarning,
       "Non-conforming drawing primitive definition",keyword);
   image->storage_class=DirectClass;
   (void) IsMatteImage(image);
-  return(True);
+  return(status);
 }
 
 /*
@@ -2753,7 +2755,7 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
   }
 }
 
-static void DrawPrimitive(const DrawInfo *draw_info,
+static unsigned int DrawPrimitive(const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info,Image *image)
 {
   int
@@ -2766,6 +2768,10 @@ static void DrawPrimitive(const DrawInfo *draw_info,
   register PixelPacket
     *q;
 
+  unsigned int
+    status;
+
+  status=True;
   x=(int) ceil(primitive_info->point.x-0.5);
   y=(int) ceil(primitive_info->point.y-0.5);
   switch (primitive_info->primitive)
@@ -2931,7 +2937,7 @@ static void DrawPrimitive(const DrawInfo *draw_info,
       CloneString(&annotate->text,primitive_info->text);
       FormatString(annotate->geometry,"%+g%+g",primitive_info->point.x,
         primitive_info->point.y);
-      AnnotateImage(image,annotate);
+      status=AnnotateImage(image,annotate);
       DestroyAnnotateInfo(annotate);
       break;
     }
@@ -3105,6 +3111,7 @@ static void DrawPrimitive(const DrawInfo *draw_info,
       break;
     }
   }
+  return(status);
 }
 
 /*
@@ -3503,7 +3510,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(left_points[2].y-center.y,left_points[2].x-center.x);
           if (theta.q < theta.p)
             theta.q+=2.0*M_PI;
-          arc_segments=ceil((theta.q-theta.p)/(2.0*sqrt(1.0/mid)));
+          arc_segments=ceil((theta.q-theta.p)/(2.0*sqrt(1.0/mid))-0.5);
           left_strokes[l].x=left_points[1].x;
           left_strokes[l].y=left_points[1].y;
           l++;
@@ -3607,7 +3614,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(right_points[2].y-center.y,right_points[2].x-center.x);
           if (theta.p < theta.q)
             theta.p+=2.0*M_PI;
-          arc_segments=ceil((theta.p-theta.q)/(2.0*sqrt(1.0/mid)));
+          arc_segments=ceil((theta.p-theta.q)/(2.0*sqrt(1.0/mid))-0.5);
           right_strokes[r].x=right_points[1].x;
           right_strokes[r].y=right_points[1].y;
           r++;
@@ -4129,7 +4136,7 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   else
     if ((theta > 0.0) && !sweep)
       theta-=2.0*M_PI;
-  arc_segments=ceil(fabs(theta/(0.5*M_PI+MagickEpsilon)));
+  arc_segments=ceil(fabs(theta/(0.5*M_PI+MagickEpsilon))-0.5);
   p=primitive_info;
   for (i=0; i < arc_segments; i++)
   {

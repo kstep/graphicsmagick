@@ -102,7 +102,7 @@
 <P>unsigned int  <STRONG>IsTainted</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>LayerImage</STRONG>( Image *image, const LayerType layer );</P>
 <P>Image **  <STRONG>ListToGroupImage</STRONG>( Image *image, unsigned int *number_images );</P>
-<P>void  <STRONG>MatteImage</STRONG>( Image *image, Quantum opacity );</P>
+<P>void  <STRONG>MatteImage</STRONG>( Image *image, const unsigned int opacity );</P>
 <P>unsigned int  <STRONG>MogrifyImage</STRONG>( const ImageInfo *image_info, const int argc, char ** argv, Image ** image );</P>
 <P>unsigned int  <STRONG>MogrifyImages</STRONG>( const ImageInfo *next_info, const int argc, char ** argv, Image ** image );</P>
 <P>Image * <STRONG>MosaicImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
@@ -573,9 +573,9 @@ The address of a structure of type Image; returned from ReadImage.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="matteimage">MatteImage</A></H2>
-<P>Method MatteImage initializes the matte channel of the reference image to opaque.</P>
+<P>Method MatteImage initializes the matte channel of the reference image to the specified value.  If the image already has a matte channel it is attenuated with the opacity value.</P>
 <P>The format of the MatteImage method is:</P>
-<blockquote>void MatteImage ( <A HREF="types/Image.html">Image</A> *image, Quantum opacity ); </blockquote><P>
+<blockquote>void MatteImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int opacity ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>

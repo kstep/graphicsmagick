@@ -43,7 +43,7 @@
 <P>AnnotateInfo * <STRONG>CloneAnnotateInfo</STRONG>( const ImageInfo *image_info, const AnnotateInfo *annotate_info );</P>
 <P>void  <STRONG>DestroyAnnotateInfo</STRONG>( AnnotateInfo *annotate_info );</P>
 <P>void  <STRONG>GetAnnotateInfo</STRONG>( const ImageInfo *image_info, AnnotateInfo *annotate_info );</P>
-<P>void  <STRONG>GetFontMetrics</STRONG>( const AnnotateInfo *annotate_info, SegmentInfo bounds );</P>
+<P>unsigned int  <STRONG>GetFontMetrics</STRONG>( Image *image, const AnnotateInfo *annotate_info, SegmentInfo bounds );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -119,9 +119,17 @@ Specifies a pointer to a AnnotateInfo structure.
 <H2><A NAME="getfontmetrics">GetFontMetrics</A></H2>
 <P>Method GetFontMetrics returns the bounding box of the specified font and text.</P>
 <P>The format of the GetFontMetrics method is:</P>
-<blockquote>void GetFontMetrics ( const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info, SegmentInfo bounds ); </blockquote><P>
+<blockquote>unsigned int GetFontMetrics ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info, SegmentInfo bounds ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
+<p><dt><STRONG>status:</STRONG><BR>
+<DD>
+Method GetFontMetrics returns True if the metrics are available otherwise False.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P>
 <p><dt><STRONG>annotate_info:</STRONG><BR>
 <DD>
 Specifies a pointer to a AnnotateInfo structure.

@@ -146,7 +146,7 @@ extern MagickExport unsigned int
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const int x,
     const int y,const PaintMethod),
   DrawImage(Image *,const DrawInfo *),
-  GetFontMetrics(const AnnotateInfo *,SegmentInfo *),
+  GetFontMetrics(Image *,const AnnotateInfo *,SegmentInfo *),
   MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const int x,
     const int y,const PaintMethod);
 

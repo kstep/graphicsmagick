@@ -1034,7 +1034,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     if (LocaleCompare(keyword,"fill-opacity") == 0)
                       {
                         (void) fprintf(svg_info->file,"fill-opacity %g\n",
-                          atof(value)*(strchr(value,'%') == (char *) NULL ?
+                          atof(value)*(strchr(value,'%') != (char *) NULL ?
                           1.0 : 100.0));
                         break;
                       }
@@ -1129,7 +1129,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     if (LocaleCompare(keyword,"stroke-opacity") == 0)
                       {
                         (void) fprintf(svg_info->file,"stroke-opacity %g\n",
-                          atof(value)*(strchr(value,'%') == (char *) NULL ?
+                          atof(value)*(strchr(value,'%') != (char *) NULL ?
                           1.0 : 100.0));
                         break;
                       }

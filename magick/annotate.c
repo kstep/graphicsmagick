@@ -67,7 +67,8 @@
   Forward declarations.
 */
 static unsigned int
-  RenderFont(Image *,const AnnotateInfo *,const PointInfo *,SegmentInfo *);
+  RenderFont(Image *,const AnnotateInfo *,const PointInfo *,
+    const unsigned int,SegmentInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -191,6 +192,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
   clone_info=CloneAnnotateInfo((ImageInfo *) NULL,annotate_info);
   font_height=ExpandAffine(&annotate_info->affine)*annotate_info->pointsize;
   matte=image->matte;
+  status=True;
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
     if (*textlist[i] == '\0')
@@ -199,9 +201,9 @@ MagickExport unsigned int AnnotateImage(Image *image,
       Position text relative to image.
     */
     (void) CloneString(&clone_info->text,textlist[i]);
-    status=GetFontMetrics(clone_info,&bounds);
+    status=GetFontMetrics(image,clone_info,&bounds);
     if (status == False)
-      continue;
+      break;
     font_width=bounds.x2-bounds.x1;
     offset.x=x;
     offset.y=y+i*font_height;
@@ -290,9 +292,9 @@ MagickExport unsigned int AnnotateImage(Image *image,
     /*
       Annotate image with text.
     */
-    status=RenderFont(image,clone_info,&offset,&bounds);
+    status=RenderFont(image,clone_info,&offset,True,&bounds);
     if (status == False)
-      continue;
+      break;
     if (clone_info->decorate == NoDecoration)
       continue;
     /*
@@ -323,7 +325,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
   for (i=0; textlist[i] != (char *) NULL; i++)
     LiberateMemory((void **) &textlist[i]);
   LiberateMemory((void **) &textlist);
-  return(True);
+  return(status);
 }
 
 /*
@@ -499,9 +501,15 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
 %
 %  The format of the GetFontMetrics method is:
 %
-%      void GetFontMetrics(const AnnotateInfo *annotate_info,SegmentInfo bounds)
+%      unsigned int GetFontMetrics(Image *image,
+%        const AnnotateInfo *annotate_info,SegmentInfo bounds)
 %
 %  A description of each parameter follows:
+%
+%    o status: Method GetFontMetrics returns True if the metrics are
+%      available otherwise False.
+%
+%    o image: The address of a structure of type Image.
 %
 %    o annotate_info: Specifies a pointer to a AnnotateInfo structure.
 %
@@ -509,8 +517,8 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
 %
 %
 */
-MagickExport unsigned int GetFontMetrics(const AnnotateInfo *annotate_info,
-  SegmentInfo *bounds)
+MagickExport unsigned int GetFontMetrics(Image *image,
+  const AnnotateInfo *annotate_info,SegmentInfo *bounds)
 {
   PointInfo
     offset;
@@ -523,7 +531,7 @@ MagickExport unsigned int GetFontMetrics(const AnnotateInfo *annotate_info,
   assert(annotate_info->signature == MagickSignature);
   offset.x=0.0;
   offset.y=0.0;
-  status=RenderFont((Image *) NULL,annotate_info,&offset,bounds);
+  status=RenderFont(image,annotate_info,&offset,False,bounds);
   return(status);
 }
 
@@ -544,7 +552,7 @@ MagickExport unsigned int GetFontMetrics(const AnnotateInfo *annotate_info,
 %  The format of the RenderFont method is:
 %
 %      unsigned int RenderFont(Image *image,AnnotateInfo *annotate_info,
-%        const PointInfo *offset,SegmentInfo *bounds)
+%        const PointInfo *offset,const unsigned int render,SegmentInfo *bounds)
 %
 %  A description of each parameter follows:
 %
@@ -556,6 +564,9 @@ MagickExport unsigned int GetFontMetrics(const AnnotateInfo *annotate_info,
 %    o annotate_info: The address of a AnnotateInfo structure.
 %
 %    o offset: (x,y) location of text relative to image.
+%
+%    o render: a value other than zero renders the text otherwise just the
+%      font metric is returned.
 %
 %    o bounds: bounding box of text.
 %
@@ -593,7 +604,8 @@ static char *EscapeParenthesis(const char *text)
 
 #if defined(HasTTF)
 static unsigned int RenderTruetype(Image *image,
-  const AnnotateInfo *annotate_info,const PointInfo *offset,SegmentInfo *bounds)
+  const AnnotateInfo *annotate_info,const PointInfo *offset,
+  const unsigned int render,SegmentInfo *bounds)
 {
   typedef struct TGlyph_
   {
@@ -822,7 +834,7 @@ static unsigned int RenderTruetype(Image *image,
   }
   glyph->id=0;
   LiberateMemory((void **) &unicode);
-  if (image == (Image *) NULL)
+  if (!render)
     {
       for (glyph=glyphs; glyph->id != 0; glyph++)
         FT_Done_Glyph(glyph->image);
@@ -891,7 +903,8 @@ static unsigned int RenderTruetype(Image *image,
 }
 #else
 static unsigned int RenderTruetype(Image *image,
-  const AnnotateInfo *annotate_info,const PointInfo *offset,SegmentInfo *bounds)
+  const AnnotateInfo *annotate_info,const PointInfo *offset,
+  const unsigned int render,SegmentInfo *bounds)
 {
   ThrowBinaryException(MissingDelegateWarning,
     "FreeType library is not available",annotate_info->font);
@@ -899,7 +912,8 @@ static unsigned int RenderTruetype(Image *image,
 #endif
 
 static unsigned int RenderPostscript(Image *image,
-  const AnnotateInfo *annotate_info,const PointInfo *offset,SegmentInfo *bounds)
+  const AnnotateInfo *annotate_info,const PointInfo *offset,
+  const unsigned int render,SegmentInfo *bounds)
 {
   char
     filename[MaxTextExtent],
@@ -1025,7 +1039,7 @@ static unsigned int RenderPostscript(Image *image,
   bounds->y1=(font_height/-4.0)+1.5;
   bounds->x2=annotate_image->columns;
   bounds->y2=(3.0*font_height/4.0)-1.5;
-  if (image == (Image *) NULL)
+  if (!render)
     {
       DestroyImage(annotate_image);
       return(True);
@@ -1040,7 +1054,7 @@ static unsigned int RenderPostscript(Image *image,
     for (x=0; x < (int) annotate_image->columns; x++)
     {
       opacity=(MaxRGB-Intensity(*q))*fill_color.opacity/MaxRGB;
-      q->opacity=(Quantum) (MaxRGB-ceil(opacity+0.5));
+      q->opacity=(Quantum) ceil(MaxRGB-opacity-0.5);
       q->red=fill_color.red;
       q->green=fill_color.green;
       q->blue=fill_color.blue;
@@ -1057,7 +1071,7 @@ static unsigned int RenderPostscript(Image *image,
 
 #if defined(HasX11)
 static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
-  const PointInfo *offset,SegmentInfo *bounds)
+  const PointInfo *offset,const unsigned int render,SegmentInfo *bounds)
 {
   int
     y;
@@ -1191,7 +1205,7 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
   bounds->y1=(-font_info->descent);
   bounds->x2=xannotate_info.width;
   bounds->y2=font_info->ascent;
-  if (image == (Image *) NULL)
+  if (!render)
     return(True);
   /*
     Render label with a X11 server font.
@@ -1218,7 +1232,7 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
 }
 #else
 static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
-  const PointInfo *offset,SegmentInfo *bounds)
+  const PointInfo *offset,const unsigned int render,SegmentInfo *bounds)
 {
   ThrowBinaryException(MissingDelegateWarning,
     "X11 library is not available",annotate_info->font);
@@ -1226,7 +1240,7 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
 #endif
 
 static unsigned int RenderFont(Image *image,const AnnotateInfo *annotate_info,
-  const PointInfo *offset,SegmentInfo *bounds)
+  const PointInfo *offset,const unsigned int render,SegmentInfo *bounds)
 {
   AnnotateInfo
     *clone_info;
@@ -1238,7 +1252,7 @@ static unsigned int RenderFont(Image *image,const AnnotateInfo *annotate_info,
     status;
 
   if (annotate_info->font == (char *) NULL)
-    return(RenderPostscript(image,annotate_info,offset,bounds));
+    return(RenderPostscript(image,annotate_info,offset,render,bounds));
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strcpy(image_info->filename,annotate_info->font);
   (void) strcpy(image_info->magick,"PS");
@@ -1253,15 +1267,15 @@ static unsigned int RenderFont(Image *image,const AnnotateInfo *annotate_info,
   else
     CloneString(&clone_info->font,image_info->filename+1);
   if (LocaleCompare(image_info->magick,"ps") == 0)
-    status=RenderPostscript(image,clone_info,offset,bounds);
+    status=RenderPostscript(image,clone_info,offset,render,bounds);
   else
     if (LocaleCompare(image_info->magick,"ttf") == 0)
-      status=RenderTruetype(image,clone_info,offset,bounds);
+      status=RenderTruetype(image,clone_info,offset,render,bounds);
     else
       if (LocaleCompare(image_info->magick,"x") == 0)
-        status=RenderX11(image,clone_info,offset,bounds);
+        status=RenderX11(image,clone_info,offset,render,bounds);
       else
-        status=RenderPostscript(image,clone_info,offset,bounds);
+        status=RenderPostscript(image,clone_info,offset,render,bounds);
   DestroyAnnotateInfo(clone_info);
   DestroyImageInfo(image_info);
   return(status);
