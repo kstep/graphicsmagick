@@ -352,7 +352,7 @@ MAGICK DELEGATES
 
     o ImageMagick requires ralcgm from
 
-          http://www.agocg.ac.uk/Graphics/CGM/ralcgm.html
+          http://www.agocg.ac.uk/train/cgm/ralcgm.htm
 
       to read the Computer Graphics Metafile image format (may not compile
       under linux).  You also need Ghostscript (see below).

@@ -519,8 +519,8 @@ static unsigned char* DecodeImage(const Image *image,int bytes_per_line,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method EncodeImage compresses an image via Macintosh pack bits
-%  encoding for Macintosh PICT images.
+%  Method EncodeImage compresses an image via Macintosh pack bits encoding
+%  for Macintosh PICT images.
 %
 %  The format of the EncodeImage routine is:
 %
@@ -535,13 +535,15 @@ static unsigned char* DecodeImage(const Image *image,int bytes_per_line,
 %
 %    o scanline: A pointer to an array of characters to pack.
 %
+%    o bytes_per_line: The number of bytes in a scanlin.e
+%
 %    o pixels: A pointer to an array of characters where the packed
 %      characters are stored.
 %
 %
 */
 static unsigned int EncodeImage(Image *image,const unsigned char *scanline,
-  unsigned char *pixels)
+  int bytes_per_line,unsigned char *pixels)
 {
 #define MaxCount  128
 #define MaxPackbitsRunlength  128
@@ -566,18 +568,12 @@ static unsigned int EncodeImage(Image *image,const unsigned char *scanline,
   unsigned char
     index;
 
-  unsigned int
-    bytes_per_line;
-
   /*
     Pack scanline.
   */
   assert(image != (Image *) NULL);
   assert(scanline != (unsigned char *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  bytes_per_line=image->columns;
-  if (image->class == DirectClass)
-    bytes_per_line*=image->matte ? 4 : 3;
   count=0;
   runlength=0;
   p=scanline+(bytes_per_line-1);
@@ -1087,10 +1083,10 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
                     }
                   else
                     {
-                      index=UpScale(*p);
-                      red=UpScale(*(p+tiled_image->columns));
-                      green=UpScale(*(p+2*tiled_image->columns));
-                      blue=UpScale(*(p+3*tiled_image->columns));
+                      red=UpScale(*p);
+                      green=UpScale(*(p+tiled_image->columns));
+                      blue=UpScale(*(p+2*tiled_image->columns));
+                      index=UpScale(*(p+3*tiled_image->columns));
                     }
                   p++;
                 }
@@ -1515,7 +1511,7 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
           x++;
           if (x == (int) image->columns)
             {
-              count+=EncodeImage(image,scanline,packed_scanline);
+              count+=EncodeImage(image,scanline,bytes_per_line,packed_scanline);
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);
               index=scanline;
@@ -1556,7 +1552,7 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
               green=scanline+image->columns;
               blue=scanline+2*image->columns;
               index=scanline+3*image->columns;
-              count+=EncodeImage(image,scanline,packed_scanline);
+              count+=EncodeImage(image,scanline,bytes_per_line,packed_scanline);
               x=0;
               y++;
             }
