@@ -5840,6 +5840,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
               (void) PopImagePixels(image,(QuantumType) GrayQuantum,
                 scanlines[y]);
+            elseif (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+              (void) PopImagePixels(image,(QuantumType) GrayAlphaQuantum,
+                scanlines[y]);
             else
               (void) PopImagePixels(image,(QuantumType) IndexQuantum,
                 scanlines[y]);
