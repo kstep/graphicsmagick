@@ -13,14 +13,14 @@
 #   %e   filename extention
 #   %f   filename
 #   %h   height
-#   "%i"   input filename
+#   %i   input filename
 #   %l   label
 #   %m   magick
 #   %n   number of scenes
-#   "%o"   output filename
+#   %o   output filename
 #   %p   page number
 #   %q   quantum depth
-#   "%s"   scene number
+#   %s   scene number
 #   %t   top of filename
 #   %u   unique temporary filename
 #   %w   width
@@ -105,11 +105,11 @@ edit=>
 	notepad "%o"
 
 eps<=>pdf
-	gswin32c -dBATCH -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 eps<=>ps
-	gswin32c -dBATCH -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
@@ -128,12 +128,12 @@ gplt=>
 	gnuplot %u
 
 gs-color=>
-	gswin32c -dBATCH -dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pnmraw \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
-	gswin32c -dBATCH -dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pbmraw \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
@@ -161,11 +161,11 @@ pcl<=print
 	print "%i"
 
 pdf<=>eps
-	gswin32c -dBATCH -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pdf<=>ps
-	gswin32c -dBATCH -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pgp=>
@@ -176,11 +176,11 @@ pov=>
 	convert -concatenate "%o*.png" "%o"
 
 ps<=>eps
-	gswin32c -dBATCH -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=>pdf
-	gswin32c -dBATCH -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 rad=>
