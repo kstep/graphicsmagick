@@ -57,6 +57,7 @@
 #include "studio.h"
 #include "module.h"
 #include "static.h"
+#include "utility.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,6 +91,10 @@
 MagickExport unsigned int ExecuteStaticModuleProcess(const char *tag,
   Image **image,const int argc,char **argv)
 {
+#if !defined(BuildMagickModules)
+  if (LocaleCompare("analyze",tag) == 0)
+    return AnalyzeImage(image,argc,argv);
+#endif
   return(False);
 }
 

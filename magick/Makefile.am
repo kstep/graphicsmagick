@@ -90,7 +90,7 @@ libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
 libGraphicsMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIB_LTDL)
 else
 libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-libGraphicsMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@ $(LIB_LTDL)
+libGraphicsMagick_la_LIBADD = ../coders/libCoders.la ../filters/libFilters.la @MAGICK_DEP_LIBS@ $(LIB_LTDL)
 endif # WITH_MODULES
 
 # Binary scripts

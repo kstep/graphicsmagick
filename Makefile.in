@@ -237,8 +237,9 @@ MODULE_EXTRA_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
 MVDelegate = @MVDelegate@
+MagickCoderModulesPath = @MagickCoderModulesPath@
+MagickFilterModulesPath = @MagickFilterModulesPath@
 MagickLibPath = @MagickLibPath@
-MagickModulesPath = @MagickModulesPath@
 MagickSharePath = @MagickSharePath@
 MogrifyDelegate = @MogrifyDelegate@
 OBJDUMP = @OBJDUMP@
@@ -260,6 +261,7 @@ POVDelegate = @POVDelegate@
 PREFIX_DIR = @PREFIX_DIR@
 PSDelegate = @PSDelegate@
 PrintDelegate = @PrintDelegate@
+QuantumDepth = @QuantumDepth@
 RADDecodeDelegate = @RADDecodeDelegate@
 RANLIB = @RANLIB@
 RLEEncodeDelegate = @RLEEncodeDelegate@
@@ -359,9 +361,9 @@ DIST_SUBDIRS = ltdl coders magick utilities tests Magick++
 
 @WITH_LTDL_TRUE@LTDL = ltdl
 @WITH_LTDL_FALSE@LTDL = 
-@WITH_MODULES_FALSE@SUBDIRS = $(LTDL) coders magick $(MAGICK_PLUS_PLUS) utilities tests
+@WITH_MODULES_FALSE@SUBDIRS = $(LTDL) coders filters magick $(MAGICK_PLUS_PLUS) utilities tests
 
-@WITH_MODULES_TRUE@SUBDIRS = $(LTDL) magick coders $(MAGICK_PLUS_PLUS) utilities tests
+@WITH_MODULES_TRUE@SUBDIRS = $(LTDL) magick coders filters $(MAGICK_PLUS_PLUS) utilities tests
 pkgdata_DATA = Copyright.txt QuickStart.txt
 
 # Additional files to distribute

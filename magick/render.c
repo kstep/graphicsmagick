@@ -139,7 +139,9 @@ static unsigned long
   TracePath(PrimitiveInfo *,const char *);
 
 static void
+#if FUNCTION_UNUSED
   DestroyGradientInfo(GradientInfo *),
+#endif
   TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
   TraceBezier(PrimitiveInfo *,const unsigned long),
@@ -816,6 +818,7 @@ static long DestroyEdge(PolygonInfo *polygon_info,const long edge)
 %
 %
 */
+#if FUNCTION_UNUSED
 static void DestroyGradientInfo(GradientInfo *gradient_info)
 {
   register GradientInfo
@@ -831,6 +834,7 @@ static void DestroyGradientInfo(GradientInfo *gradient_info)
     LiberateMemory((void **) &gradient_info);
   }
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

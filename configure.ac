@@ -339,6 +339,7 @@ case "${with_quantum_depth}" in
 esac
 QuantumDepth="$with_quantum_depth"
 AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum (8/16/32)])
+AC_SUBST(QuantumDepth)dnl
 
 # Set pixel cache threshold
 AC_ARG_WITH(cache,
@@ -1689,21 +1690,34 @@ fi
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPathDefine",Directory where architecture-dependent files live.)
 AC_SUBST(MagickLibPath)
 
-# Subdirectory under lib to place GraphicsMagick module files
-MagickModulesSubdir="${MagickLibSubdir}/modules/coders"
-AC_DEFINE_UNQUOTED(MagickModulesSubdir,"$MagickModulesSubdir",Subdirectory of lib where GraphicsMagick modules are installed)
-
-# Path to GraphicsMagick coder module files
-MagickModulesPath="${LIB_DIR}/${MagickModulesSubdir}"
-MagickModulesPathDefine="${MagickModulesPath}/"
+#
+# Subdirectory under lib to place GraphicsMagick coder module files
+MagickCoderModulesSubdir="${MagickLibSubdir}/modules-Q${QuantumDepth}/coders"
+AC_DEFINE_UNQUOTED(MagickCoderModulesSubdir,"$MagickCoderModulesSubdir",Subdirectory of lib where GraphicsMagick coder modules are installed)
+MagickCoderModulesPath="${LIB_DIR}/${MagickCoderModulesSubdir}"
+MagickCoderModulesPathDefine="${MagickCoderModulesPath}/"
 if test "$native_win32_build" = 'yes'
 then
-  MagickModulesPathDefine=`$WinPathScript "$MagickModulesPathDefine" 1`
+  MagickCoderModulesPathDefine=`$WinPathScript "$MagickCoderModulesPathDefine" 1`
 fi
-AC_DEFINE_UNQUOTED(MagickModulesPath,"$MagickModulesPathDefine",Location of coder modules)
-AC_SUBST(MagickModulesPath)
+AC_DEFINE_UNQUOTED(MagickCoderModulesPath,"$MagickCoderModulesPathDefine",Location of coder modules)
+AC_SUBST(MagickCoderModulesPath)
 
-# Path to GraphicsMagick share files]
+#
+# Subdirectory under lib to place GraphicsMagick filter module files
+MagickFilterModulesSubdir="${MagickLibSubdir}/modules-Q${QuantumDepth}/filters"
+AC_DEFINE_UNQUOTED(MagickFilterModulesSubdir,"$MagickFilterModulesSubdir",Subdirectory of lib where GraphicsMagick filter modules are installed)
+MagickFilterModulesPath="${LIB_DIR}/${MagickFilterModulesSubdir}"
+MagickFilterModulesPathDefine="${MagickFilterModulesPath}/"
+if test "$native_win32_build" = 'yes'
+then
+  MagickFilterModulesPathDefine=`$WinPathScript "$MagickFilterModulesPathDefine" 1`
+fi
+AC_DEFINE_UNQUOTED(MagickFilterModulesPath,"$MagickFilterModulesPathDefine",Location of filter modules)
+AC_SUBST(MagickFilterModulesPath)
+
+#
+# Path to GraphicsMagick share files
 MagickShareSubdir="${PACKAGE_NAME}-${PACKAGE_VERSION}"
 MagickSharePath="${DATA_DIR}/${MagickShareSubdir}"
 MagickSharePathDefine="${MagickSharePath}/"
@@ -2234,6 +2248,7 @@ AC_OUTPUT( \
         coders/type-solaris.mgk \
         coders/type-windows.mgk \
         coders/type.mgk \
+        filters/Makefile \
         ltdl/Makefile \
         magick/GraphicsMagick-config \
         magick/GraphicsMagick.pc \
@@ -2278,7 +2293,7 @@ echo "Ghostscript lib   --with-gslib=$with_gslib       	$have_gslib"
 # echo "HDF               --with-hdf=$with_hdf          	$have_hdf"
 echo "JBIG              --with-jbig=$with_jbig        	$have_jbig"
 echo "JPEG v1           --with-jpeg=$with_jpeg        	$have_jpeg"
-echo "JPEG v2           --with-jp2=$with_jp2          	$have_jp2"
+echo "JPEG-2000         --with-jp2=$with_jp2          	$have_jp2"
 echo "LCMS              --with-lcms=$with_lcms        	$have_lcms"
 # echo "MPEG v2           --with-mpeg2=$with_mpeg2      	$have_mpeg2"
 echo "Magick++          --with-magick-plus-plus=$with_magick_plus_plus 	$have_magick_plus_plus"

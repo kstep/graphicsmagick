@@ -327,18 +327,24 @@
 /* Define to prepend to default font search path. */
 #undef MAGICK_FONT_PATH
 
+/* Location of coder modules */
+#undef MagickCoderModulesPath
+
+/* Subdirectory of lib where GraphicsMagick coder modules are installed */
+#undef MagickCoderModulesSubdir
+
+/* Location of filter modules */
+#undef MagickFilterModulesPath
+
+/* Subdirectory of lib where GraphicsMagick filter modules are installed */
+#undef MagickFilterModulesSubdir
+
 /* Directory where architecture-dependent files live. */
 #undef MagickLibPath
 
 /* Subdirectory of lib where GraphicsMagick architecture dependent files are
    installed */
 #undef MagickLibSubdir
-
-/* Location of coder modules */
-#undef MagickModulesPath
-
-/* Subdirectory of lib where GraphicsMagick modules are installed */
-#undef MagickModulesSubdir
 
 /* Directory where architecture-independent files live. */
 #undef MagickSharePath

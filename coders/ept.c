@@ -60,7 +60,6 @@
 #include "magick.h"
 #include "monitor.h"
 #include "render.h"
-#include "static.h"
 #include "utility.h"
 
 /*

@@ -59,7 +59,6 @@
 #include "list.h"
 #include "log.h"
 #include "magick.h"
-#include "static.h"
 #include "utility.h"
 
 /*

@@ -14,40 +14,43 @@
 
 @SET_MAKE@
 
-#  Makefile for building ImageMagick library
+#  Makefile for building GraphicsMagick filter modules
 #
-# Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
+# Copyright (C) 2002 GraphicsMagick Group, an organization dedicated
 # to making software imaging solutions freely available.
 #
-# Permission is hereby granted, free of charge, to any person obtaining a
-# copy of this software and associated documentation files ("ImageMagick"),
-# to deal in ImageMagick without restriction, including without limitation
-# the rights to use, copy, modify, merge, publish, distribute, sublicense
-# and/or sell copies of ImageMagick, and to permit persons to whom the
-# ImageMagick is furnished to do so, subject to the following conditions:
+# Copyright (C) 2002 GraphicsMagick Group, an organization dedicated
+# to making software imaging solutions freely available.
 #
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of ImageMagick.
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files
+# ("GraphicsMagick"), to deal in GraphicsMagick without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of GraphicsMagick,
+# and to permit persons to whom GraphicsMagick is furnished to do so,
+# subject to the following conditions:
 #
-# The software is provided "as is", without warranty of any kind, express or
-# implied, including but not limited to the warranties of merchantability,
-# fitness for a particular purpose and noninfringement.  In no event shall
-# ImageMagick Studio be liable for any claim, damages or other liability,
-# whether in an action of contract, tort or otherwise, arising from, out of
-# or in connection with ImageMagick or the use or other dealings in
-# ImageMagick.
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of GraphicsMagick.
 #
-# Except as contained in this notice, the name of the ImageMagick Studio
-# shall not be used in advertising or otherwise to promote the sale, use or
-# other dealings in ImageMagick without prior written authorization from the
-# ImageMagick Studio.
+# The software is provided "as is", without warranty of any kind, express
+# or implied, including but not limited to the warranties of
+# merchantability, fitness for a particular purpose and noninfringement.
+# In no event shall GraphicsMagick Group be liable for any claim,
+# damages or other liability, whether in an action of contract, tort or
+# otherwise, arising from, out of or in connection with GraphicsMagick
+# or the use or other dealings in GraphicsMagick.
+#
+# Except as contained in this notice, the name of the GraphicsMagick
+# Group shall not be used in advertising or otherwise to promote the
+# sale, use or other dealings in GraphicsMagick without prior written
+# authorization from the GraphicsMagick Group.
 #
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
-pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
 top_builddir = ..
 
@@ -67,6 +70,9 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+
+# Where config files get installed
+pkglibdir = @MagickLibPath@
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -99,7 +105,8 @@ CYGWIN_BUILD_TRUE = @CYGWIN_BUILD_TRUE@
 CatDelegate = @CatDelegate@
 ConvertDelegate = @ConvertDelegate@
 DATA_DIR = @DATA_DIR@
-DEFS = @DEFS@
+
+DEFS = @DEFS@ -I../
 DELEGATES = @DELEGATES@
 DEPDIR = @DEPDIR@
 DLLDFLAGS = @DLLDFLAGS@
@@ -343,43 +350,74 @@ type_include_files = @type_include_files@
 windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
 
-AUTOMAKE_OPTIONS = 1.6.2 foreign nostdinc
+# Don't require all the GNU mandated files
+AUTOMAKE_OPTIONS = 1.7 foreign
 
-@INSTALL_LTDL_TRUE@@WITH_LTDL_TRUE@include_HEADERS = ltdl.h
-@INSTALL_LTDL_TRUE@@WITH_LTDL_TRUE@lib_LTLIBRARIES = libltdl.la
-@INSTALL_LTDL_FALSE@@WITH_LTDL_TRUE@noinst_HEADERS = ltdl.h
+INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
 
-@CONVENIENCE_LTDL_TRUE@@WITH_LTDL_TRUE@noinst_LTLIBRARIES = libltdlc.la
+MAGICK_FILTER_SRCS = \
+  analyze.c
 
-EXTRA_DIST = ltdl.h
-INCLUDES = -I. -I$(top_builddir)
+@WITH_MODULES_FALSE@noinst_LTLIBRARIES = libFilters.la
 
-CLEANFILES = libltdl.la libltdlc.la
+@WITH_MODULES_TRUE@noinst_LTLIBRARIES = 
+@WITH_MODULES_FALSE@libFilters_la_SOURCES = $(MAGICK_FILTER_SRCS)
+@WITH_MODULES_FALSE@EXTRA_libFilters_la_SOURCES = # Platform dependent modules
 
-libltdl_la_SOURCES = ltdl.c
-libltdl_la_LDFLAGS = -no-undefined -version-info 4:0:1
-libltdl_la_LIBADD = $(LIBADD_DL)
+# Additional files to distribute
+EXTRA_DIST = 
 
-libltdlc_la_SOURCES = ltdl.c
-libltdlc_la_LIBADD = $(LIBADD_DL)
-subdir = ltdl
+# Headers which are not installed but which are distributed
+noinst_HEADERS = 
+
+# Location of libGraphicsMagick.la
+LIBMAGICK = ../magick/libGraphicsMagick.la
+
+# Where filter modules are installed
+pkgdir = @MagickFilterModulesPath@
+
+# Architecture-dependent data files installed with modules
+pkg_DATA = 
+
+# Architecture independent data files installed into GraphicsMagick/share
+pkgdata_DATA = 
+@WITH_MODULES_FALSE@pkg_LTLIBRARIES = 
+
+# Modules which are to be built
+@WITH_MODULES_TRUE@pkg_LTLIBRARIES = \
+@WITH_MODULES_TRUE@  analyze.la
+
+@WITH_MODULES_FALSE@MODULECOMMONFLAGS = 
+@WITH_MODULES_TRUE@MODULECOMMONFLAGS = -no-undefined -module -avoid-version
+
+#AM_CFLAGS = @MODULE_EXTRA_CPPFLAGS@
+AM_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
+
+# Analyze module
+analyze_la_SOURCES = analyze.c
+analyze_la_LDFLAGS = $(MODULECOMMONFLAGS)
+analyze_la_LIBADD = $(LIBMAGICK)
+subdir = filters
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES =
-LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
+LTLIBRARIES = $(noinst_LTLIBRARIES) $(pkg_LTLIBRARIES)
 
-libltdl_la_DEPENDENCIES =
-am_libltdl_la_OBJECTS = ltdl.lo
-libltdl_la_OBJECTS = $(am_libltdl_la_OBJECTS)
-libltdlc_la_LDFLAGS =
-libltdlc_la_DEPENDENCIES =
-am_libltdlc_la_OBJECTS = ltdl.lo
-libltdlc_la_OBJECTS = $(am_libltdlc_la_OBJECTS)
+analyze_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
+am_analyze_la_OBJECTS = analyze.lo
+analyze_la_OBJECTS = $(am_analyze_la_OBJECTS)
+libFilters_la_LDFLAGS =
+libFilters_la_LIBADD =
+am__libFilters_la_SOURCES_DIST = analyze.c
+am__objects_1 = analyze.lo
+@WITH_MODULES_FALSE@am_libFilters_la_OBJECTS = $(am__objects_1)
+am__EXTRA_libFilters_la_SOURCES_DIST =
+libFilters_la_OBJECTS = $(am_libFilters_la_OBJECTS)
 
-DEFAULT_INCLUDES = 
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ltdl.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/analyze.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -387,12 +425,14 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libltdl_la_SOURCES) $(libltdlc_la_SOURCES)
-HEADERS = $(include_HEADERS) $(noinst_HEADERS)
+DIST_SOURCES = $(analyze_la_SOURCES) $(am__libFilters_la_SOURCES_DIST) \
+	$(am__EXTRA_libFilters_la_SOURCES_DIST)
+DATA = $(pkg_DATA) $(pkgdata_DATA)
 
-DIST_COMMON = README $(include_HEADERS) $(noinst_HEADERS) COPYING.LIB \
-	Makefile.am Makefile.in
-SOURCES = $(libltdl_la_SOURCES) $(libltdlc_la_SOURCES)
+HEADERS = $(noinst_HEADERS)
+
+DIST_COMMON = $(noinst_HEADERS) Makefile.am Makefile.in
+SOURCES = $(analyze_la_SOURCES) $(libFilters_la_SOURCES) $(EXTRA_libFilters_la_SOURCES)
 
 all: all-am
 
@@ -400,37 +440,9 @@ all: all-am
 .SUFFIXES: .c .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  ltdl/Makefile
+	  $(AUTOMAKE) --foreign  filters/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-libLTLIBRARIES_INSTALL = $(INSTALL)
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    f="`echo $$p | sed -e 's|^.*/||'`"; \
-	    echo " $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$f"; \
-	    $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$f; \
-	  else :; fi; \
-	done
-
-uninstall-libLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	    p="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p"; \
-	  $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
-	done
-
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test "$$dir" = "$$p" && dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
 
 clean-noinstLTLIBRARIES:
 	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
@@ -440,10 +452,38 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libltdl.la: $(libltdl_la_OBJECTS) $(libltdl_la_DEPENDENCIES) 
-	$(LINK) -rpath $(libdir) $(libltdl_la_LDFLAGS) $(libltdl_la_OBJECTS) $(libltdl_la_LIBADD) $(LIBS)
-libltdlc.la: $(libltdlc_la_OBJECTS) $(libltdlc_la_DEPENDENCIES) 
-	$(LINK)  $(libltdlc_la_LDFLAGS) $(libltdlc_la_OBJECTS) $(libltdlc_la_LIBADD) $(LIBS)
+pkgLTLIBRARIES_INSTALL = $(INSTALL)
+install-pkgLTLIBRARIES: $(pkg_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgdir)
+	@list='$(pkg_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    f="`echo $$p | sed -e 's|^.*/||'`"; \
+	    echo " $(LIBTOOL) --mode=install $(pkgLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(pkgdir)/$$f"; \
+	    $(LIBTOOL) --mode=install $(pkgLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(pkgdir)/$$f; \
+	  else :; fi; \
+	done
+
+uninstall-pkgLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(pkg_LTLIBRARIES)'; for p in $$list; do \
+	    p="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(pkgdir)/$$p"; \
+	  $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(pkgdir)/$$p; \
+	done
+
+clean-pkgLTLIBRARIES:
+	-test -z "$(pkg_LTLIBRARIES)" || rm -f $(pkg_LTLIBRARIES)
+	@list='$(pkg_LTLIBRARIES)'; for p in $$list; do \
+	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+	  test "$$dir" = "$$p" && dir=.; \
+	  echo "rm -f \"$${dir}/so_locations\""; \
+	  rm -f "$${dir}/so_locations"; \
+	done
+analyze.la: $(analyze_la_OBJECTS) $(analyze_la_DEPENDENCIES) 
+	$(LINK) -rpath $(pkgdir) $(analyze_la_LDFLAGS) $(analyze_la_OBJECTS) $(analyze_la_LIBADD) $(LIBS)
+libFilters.la: $(libFilters_la_OBJECTS) $(libFilters_la_DEPENDENCIES) 
+	$(LINK)  $(libFilters_la_LDFLAGS) $(libFilters_la_OBJECTS) $(libFilters_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -451,7 +491,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ltdl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/analyze.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -498,23 +538,41 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-includeHEADERS_INSTALL = $(INSTALL_HEADER)
-install-includeHEADERS: $(include_HEADERS)
+pkgDATA_INSTALL = $(INSTALL_DATA)
+install-pkgDATA: $(pkg_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	@list='$(include_HEADERS)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(pkgdir)
+	@list='$(pkg_DATA)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(includeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(includedir)/$$f"; \
-	  $(includeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(includedir)/$$f; \
+	  echo " $(pkgDATA_INSTALL) $$d$$p $(DESTDIR)$(pkgdir)/$$f"; \
+	  $(pkgDATA_INSTALL) $$d$$p $(DESTDIR)$(pkgdir)/$$f; \
 	done
 
-uninstall-includeHEADERS:
+uninstall-pkgDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(include_HEADERS)'; for p in $$list; do \
+	@list='$(pkg_DATA)'; for p in $$list; do \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(includedir)/$$f"; \
-	  rm -f $(DESTDIR)$(includedir)/$$f; \
+	  echo " rm -f $(DESTDIR)$(pkgdir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgdir)/$$f; \
+	done
+pkgdataDATA_INSTALL = $(INSTALL_DATA)
+install-pkgdataDATA: $(pkgdata_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
+	@list='$(pkgdata_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(pkgdataDATA_INSTALL) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f"; \
+	  $(pkgdataDATA_INSTALL) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f; \
+	done
+
+uninstall-pkgdataDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(pkgdata_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(pkgdatadir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgdatadir)/$$f; \
 	done
 
 ETAGS = etags
@@ -604,10 +662,10 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir)
+	$(mkinstalldirs) $(DESTDIR)$(pkgdir) $(DESTDIR)$(pkgdir) $(DESTDIR)$(pkgdatadir)
 
 install: install-am
 install-exec: install-exec-am
@@ -626,7 +684,6 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
@@ -636,8 +693,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-noinstLTLIBRARIES mostlyclean-am
+clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
+	clean-pkgLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 
@@ -652,9 +709,10 @@ info: info-am
 
 info-am:
 
-install-data-am: install-includeHEADERS
+install-data-am: install-pkgDATA install-pkgLTLIBRARIES \
+	install-pkgdataDATA
 
-install-exec-am: install-libLTLIBRARIES
+install-exec-am:
 
 install-info: install-info-am
 
@@ -679,22 +737,22 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-includeHEADERS uninstall-info-am \
-	uninstall-libLTLIBRARIES
+uninstall-am: uninstall-info-am uninstall-pkgDATA \
+	uninstall-pkgLTLIBRARIES uninstall-pkgdataDATA
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-noinstLTLIBRARIES \
+	clean-libtool clean-noinstLTLIBRARIES clean-pkgLTLIBRARIES \
 	ctags distclean distclean-compile distclean-depend \
 	distclean-generic distclean-libtool distclean-tags distdir dvi \
 	dvi-am info info-am install install-am install-data \
-	install-data-am install-exec install-exec-am \
-	install-includeHEADERS install-info install-info-am \
-	install-libLTLIBRARIES install-man install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-man install-pkgDATA \
+	install-pkgLTLIBRARIES install-pkgdataDATA install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-includeHEADERS \
-	uninstall-info-am uninstall-libLTLIBRARIES
+	tags uninstall uninstall-am uninstall-info-am uninstall-pkgDATA \
+	uninstall-pkgLTLIBRARIES uninstall-pkgdataDATA
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

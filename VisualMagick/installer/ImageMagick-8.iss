@@ -92,7 +92,9 @@ Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:8"; ValueType: none; Flags:
 Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:8"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
 Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:8"; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"
 Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:8"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
-Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:8"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"
+Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:8"; ValueType: string; ValueName: "CoderModulesPath"; ValueData: "{app}\modules\coders"
+Root: HKLM; Subkey: "Software\GraphicsMagick\1.0.0\Q:8"; ValueType: string; ValueName: "FilterModulesPath"; ValueData: "{app}\modules\filters"
+
 
 Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: none; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "Version"; ValueData: "1.0.0"
@@ -101,7 +103,8 @@ Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: dword; ValueNa
 Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
 Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"
 Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
-Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"
+Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "CoderModulesPath"; ValueData: "{app}\modules\coders"
+Root: HKLM; Subkey: "Software\GraphicsMagick\Current"; ValueType: string; ValueName: "FilterModulesPath"; ValueData: "{app}\modules\filters"
 
 ;
 ; Tell windows to use our convert.exe
@@ -744,7 +747,7 @@ Source: "..\bin\mpeg2dec.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\mpeg2enc.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 ; DLLs
 Source: "..\bin\CORE_RL*.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "..\bin\IM_MOD_RL*.dll"; DestDir: "{app}\modules"; CopyMode: alwaysoverwrite
+Source: "..\bin\IM_MOD_RL*.dll"; DestDir: "{app}\modules\coders"; CopyMode: alwaysoverwrite
 Source: "..\bin\X11.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\Xext.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 ; Configuration files
@@ -752,7 +755,7 @@ Source: "..\..\magick\colors.mgk"; DestDir: "{app}\config"; CopyMode: alwaysover
 Source: "..\..\magick\log.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
 Source: "..\bin\delegates.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\magic.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
-Source: "..\..\coders\modules.mgk"; DestDir: "{app}\modules"; CopyMode: alwaysoverwrite
+Source: "..\..\coders\modules.mgk"; DestDir: "{app}\modules\coders"; CopyMode: alwaysoverwrite
 Source: "..\bin\type-ghostscript.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
 Source: "..\bin\type.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
 ; Release documentation files

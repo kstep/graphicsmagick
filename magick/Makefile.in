@@ -234,8 +234,9 @@ MODULE_EXTRA_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
 MVDelegate = @MVDelegate@
+MagickCoderModulesPath = @MagickCoderModulesPath@
+MagickFilterModulesPath = @MagickFilterModulesPath@
 MagickLibPath = @MagickLibPath@
-MagickModulesPath = @MagickModulesPath@
 MagickSharePath = @MagickSharePath@
 MogrifyDelegate = @MogrifyDelegate@
 OBJDUMP = @OBJDUMP@
@@ -256,6 +257,7 @@ POVDelegate = @POVDelegate@
 PREFIX_DIR = @PREFIX_DIR@
 PSDelegate = @PSDelegate@
 PrintDelegate = @PrintDelegate@
+QuantumDepth = @QuantumDepth@
 RADDecodeDelegate = @RADDecodeDelegate@
 RANLIB = @RANLIB@
 RLEEncodeDelegate = @RLEEncodeDelegate@
@@ -390,7 +392,7 @@ EXTRA_libGraphicsMagick_la_SOURCES = nt_base.c nt_feature.c
 @WITH_MODULES_FALSE@libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
 
 @WITH_MODULES_TRUE@libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-@WITH_MODULES_FALSE@libGraphicsMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@ $(LIB_LTDL)
+@WITH_MODULES_FALSE@libGraphicsMagick_la_LIBADD = ../coders/libCoders.la ../filters/libFilters.la @MAGICK_DEP_LIBS@ $(LIB_LTDL)
 @WITH_MODULES_TRUE@libGraphicsMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIB_LTDL)
 
 # Binary scripts
@@ -485,10 +487,12 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 @WITH_LTDL_FALSE@@WITH_MODULES_TRUE@libGraphicsMagick_la_DEPENDENCIES =
 @WITH_LTDL_FALSE@@WITH_MODULES_FALSE@libGraphicsMagick_la_DEPENDENCIES = \
-@WITH_LTDL_FALSE@@WITH_MODULES_FALSE@	../coders/libCoders.la
+@WITH_LTDL_FALSE@@WITH_MODULES_FALSE@	../coders/libCoders.la \
+@WITH_LTDL_FALSE@@WITH_MODULES_FALSE@	../filters/libFilters.la
 @WITH_LTDL_TRUE@@WITH_MODULES_TRUE@libGraphicsMagick_la_DEPENDENCIES =
 @WITH_LTDL_TRUE@@WITH_MODULES_FALSE@libGraphicsMagick_la_DEPENDENCIES = \
-@WITH_LTDL_TRUE@@WITH_MODULES_FALSE@	../coders/libCoders.la
+@WITH_LTDL_TRUE@@WITH_MODULES_FALSE@	../coders/libCoders.la \
+@WITH_LTDL_TRUE@@WITH_MODULES_FALSE@	../filters/libFilters.la
 am__libGraphicsMagick_la_SOURCES_DIST = memory.c blob.c cache.c locale.c \
 	error.c monitor.c constitute.c image.c composite.c list.c \
 	color.c quantize.c segment.c resize.c transform.c shear.c \

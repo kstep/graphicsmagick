@@ -58,6 +58,7 @@
 # include "nt_feature.h"
 #endif
 #include "blob.h"
+#include "log.h"
 #include "render.h"
 #include "utility.h"
 
@@ -88,6 +89,10 @@ static TypeInfo
 /*
   Forward declarations.
 */
+static void
+  *GetTypeBlob(const char *filename,char *path,size_t *length,
+    ExceptionInfo *exception);
+
 static unsigned int
   ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
@@ -145,6 +150,143 @@ MagickExport void DestroyTypeInfo(void)
   }
   type_list=(TypeInfo *) NULL;
   DestroySemaphoreInfo(&type_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  G e t T y p e B l o b                                                      %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetTypeBlob() returns the specified font file as a blob.
+%
+%  The format of the GetTypeBlob method is:
+%
+%      void *GetTypeBlob(const char *filename,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o filename: The font file name.
+%
+%    o path: return the full path information of the font file.
+%
+%    o length: This pointer to a size_t integer sets the initial length of the
+%      blob.  On return, it reflects the actual length of the blob.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+#if !defined(UseInstalledImageMagick) && defined(POSIX)
+static void ChopPathComponents(char *path,const unsigned long components)
+{
+  long
+    count;
+
+  register char
+    *p;
+
+  if (*path == '\0')
+    return;
+  p=path+strlen(path);
+  if (*p == *DirectorySeparator)
+    *p='\0';
+  for (count=0; (count < (long) components) && (p > path); p--)
+    if (*p == *DirectorySeparator)
+      {
+        *p='\0';
+        count++;
+      }
+}
+#endif
+
+static void *GetTypeBlob(const char *filename,char *path,size_t *length,
+  ExceptionInfo *exception)
+{
+  assert(filename != (const char *) NULL);
+  assert(path != (char *) NULL);
+  assert(length != (size_t *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  (void) strncpy(path,filename,MaxTextExtent-1);
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+    "Searching for type file \"%s\" ...",filename);
+  if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
+    {
+      /*
+        Search MAGICK_FONT_PATH.
+      */
+      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
+        DirectorySeparator,filename);
+      if (IsAccessible(path))
+        return(FileToBlob(path,length,exception));
+    }
+#if defined(UseInstalledImageMagick)
+#if defined(WIN32)
+  {
+    char
+      *key_value;
+
+    /*
+      Locate file via registry key.
+    */
+    key_value=NTRegistryKeyLookup("ConfigurePath");
+    if (key_value != (char *) NULL)
+      {
+        FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
+          filename);
+        if (!IsAccessible(path))
+          ThrowException(exception,ConfigureError,"UnableToAccessFontFile",
+            path);
+        return(FileToBlob(path,length,exception));
+      }
+  }
+#endif
+#if defined(MagickLibPath)
+  /*
+    Search hard coded paths.
+  */
+  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
+  if (!IsAccessible(path))
+    ThrowException(exception,ConfigureError,"UnableToAccessFontFile",path);
+  return(FileToBlob(path,length,exception));
+#endif
+#else
+  if (*SetClientPath((char *) NULL) != '\0')
+    {
+#if defined(POSIX)
+      char
+        prefix[MaxTextExtent];
+
+      /*
+        Search based on executable directory if directory is known.
+      */
+      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
+      ChopPathComponents(prefix,1);
+      FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
+        filename);
+#else
+      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
+        DirectorySeparator,filename);
+#endif
+      if (IsAccessible(path))
+        return(FileToBlob(path,length,exception));
+    }
+  /*
+    Search current directory.
+  */
+  if (IsAccessible(path))
+    return(FileToBlob(path,length,exception));
+#if defined(WIN32)
+  return(NTResourceToBlob(filename));
+#endif
+#endif
+  ThrowException(exception,ConfigureError,"UnableToAccessFontFile",path);
+  return((void *) NULL);
 }
 
 /*

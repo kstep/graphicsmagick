@@ -99,6 +99,9 @@
 // #define MagickSharePath     "c:\\ImageMagick\\"
 
 // Optional: Specify where coder modules (DLLs) are installed
-// #define MagickModulesPath   "c:\\ImageMagick\\"
+// #define MagickCoderModulesPath   "c:\\ImageMagick\\"
+
+// Optional: Specify where filter modules (DLLs) are installed
+// #define MagickFilterModulesPath   "c:\\ImageMagick\\"
 
 #endif

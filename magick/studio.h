@@ -1,5 +1,5 @@
 /*
-  ImageMagick Application Programming Interface declarations.
+  GraphicsMagick Application Programming Interface declarations.
 */
 #ifndef _MAGICK_STUDIO_H
 #define _MAGICK_STUDIO_H
@@ -224,7 +224,8 @@ extern "C" {
 #  define Exit  exit
 #  define IsBasenameSeparator(c)  (((c) == ']') || ((c) == ':') || ((c) == '/'))
 #  define MagickLibPath  "sys$login:"
-#  define MagickModulesPath  "sys$login:"
+#  define MagickCoderModulesPath  "sys$login:"
+#  define MagickFilterModulesPath  "sys$login:"
 #  define MagickSharePath  "sys$login:"
 #  define PreferencesDefaults  "decw$user_defaults:"
 #  define ProcessPendingEvents(text)
@@ -239,7 +240,8 @@ extern "C" {
 #  define EditorOptions ""
 #  define IsBasenameSeparator(c)  ((c) == ':')
 #  define MagickLibPath  ""
-#  define MagickModulesPath  ""
+#  define MagickCoderModulesPath  ""
+#  define MagickFilterModulesPath  ""
 #  define MagickSharePath  ""
 #  define PreferencesDefaults  "~/."
 #  define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(MagickVersion);

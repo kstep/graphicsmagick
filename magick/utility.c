@@ -2136,8 +2136,11 @@ MagickExport unsigned int IsAccessible(const char *filename)
   status=stat(filename,&file_info);
   if (status != 0)
     return(False);
-  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%.1024s [%.1024s]",
+  if (errno)
+    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%.1024s [%.1024s]",
     filename,strerror(errno));
+  else
+    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%.1024s",filename);
   return(S_ISREG(file_info.st_mode));
 }
 

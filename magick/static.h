@@ -262,6 +262,10 @@ extern ModuleExport void
   UnregisterXVImage(void),
   UnregisterXWDImage(void),
   UnregisterYUVImage(void);
+
+extern unsigned int
+  AnalyzeImage(Image **image,const int,char**);
+
 #endif /* !defined(BuildMagickModules) */
 
 #if defined(__cplusplus) || defined(c_plusplus)

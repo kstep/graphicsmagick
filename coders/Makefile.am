@@ -71,8 +71,8 @@ noinst_HEADERS =
 # Location of libGraphicsMagick.la
 LIBMAGICK = ../magick/libGraphicsMagick.la
 
-# Where modules are installed
-pkgdir = @MagickModulesPath@
+# Where coder modules are installed
+pkgdir = @MagickCoderModulesPath@
 
 # Where config files get installed
 pkglibdir = @MagickLibPath@
@@ -274,7 +274,7 @@ meta_la_LIBADD      = $(LIBMAGICK)
 # MIFF module
 miff_la_SOURCES     = miff.c
 miff_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-miff_la_LIBADD      = $(LIBMAGICK) @LIB_ZLIB@  @LIB_BZLIB@ @LIB_JPEG@
+miff_la_LIBADD      = $(LIBMAGICK) @LIB_ZLIB@  @LIB_BZLIB@
 
 # MONO module
 mono_la_SOURCES     = mono.c
@@ -364,7 +364,7 @@ pix_la_LIBADD       = $(LIBMAGICK)
 # PNG module
 png_la_SOURCES      = png.c
 png_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-png_la_LIBADD       = $(LIBMAGICK) @LIB_PNG@ @LIB_ZLIB@ $(LIB_MATH)
+png_la_LIBADD       = $(LIBMAGICK) @LIB_PNG@ @LIB_JPEG@ @LIB_ZLIB@ $(LIB_MATH)
 
 # PLASMA module
 plasma_la_SOURCES   = plasma.c

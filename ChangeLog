@@ -1,7 +1,39 @@
+2003-03-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/module.c (ExecuteModuleProcess): Updated to support locating
+	filter modules based on search rules.
+	(CoderInfo): Declare only in module.c since use is private to this
+	module.
+	(GetCoderInfo): Made static and commented out since currently unused.
+	(FindMagickModule): New function to search for a module.
+	(GetModuleBlob): Moved from blob.c, made static, and re-implemented
+	based on FindMagickModule.
+
+	* magick/blob.c: Moved GetTypeBlob() to type.c and made it static.
+	Moved GetModuleBlob() to module.c and made it static.
+
+2003-03-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/Makefile.am: MIFF module does not depend on -ljpeg, but
+	PNG module does (for JNG).
+	* filters/analyze.c (AnalyzeImage): Bugfix, image should be passed
+	as Image** rather than Image*.
+	* magick/utility.c (IsAccessible): Don't log errno if errno==0.
+
 2003-03-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/Makefile.am: Link with libFilters convenience library.
+	* VisualMagick/magick/magick_config.h.in: Change MagickModulesPath
+	to MagickCoderModulesPath and add a MagickFilterModulesPath to
+	locate filter modules.
+	* filters/Makefile.am: New makefile to build filter modules.
 	* configure.ac: Configure magick/GraphicsMagick.pc and
-	Magick++/lib/GraphicsMagick++.pc.
+ 	Magick++/lib/GraphicsMagick++.pc.
+	(MagickModulesSubdir): Add quantum depth to modules path to ensure that
+	modules with the correct depth are loaded.  The modules path is now
+	${libdir}/GraphicsMagick-${PACKAGE_VERSION}/modules-Q${QuantumDepth}/coders.
+	(MagickCoderModulesPath):  Rename MagickModulesPath to MagickCoderModulesPath.
+	(MagickFilterModulesPath): Define to location of filter modules.
 	* magick/Makefile.am: Added rules to install GraphicsMagick.pc.
 	* magick/GraphicsMagick.pc.in: Added pkgconfig file for
 	-lGraphicsMagick.

@@ -62,7 +62,6 @@
 #include "compress.h"
 #include "magick.h"
 #include "monitor.h"
-#include "static.h"
 #include "utility.h"
 #if defined(HasTIFF)
 #define CCITTParam  "-1"

@@ -734,6 +734,9 @@
   </Missing>
   <Module>
     <Error>
+      <Message name="FailedToFindSymbol"">
+        Failed to find symbol
+      </Message>
       <Message name="UnableToLoadModule">
         Unable to load module
       </Message>

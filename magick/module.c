@@ -56,6 +56,7 @@
 */
 #include "studio.h"
 #include "blob.h"
+#include "log.h"
 #include "magic.h"
 #include "magick.h"
 #include "module.h"
@@ -92,6 +93,32 @@ static char
     "  <module />"
     "</modulemap>";
 #endif /* defined(SupportMagickModules) */
+
+/*
+  Coder module list
+  Maintains a loader handle corresponding to each module tag.
+  Used to support coder_list, which is initialized as coders are
+  loaded, and used to obtain the handle when the coder is unloaded.
+*/
+typedef struct _CoderInfo
+{
+  const char
+    *tag;
+  
+  void
+    *handle;
+  
+  time_t
+    load_time;
+
+  unsigned long
+    signature;
+
+  struct _CoderInfo
+    *previous,
+    *next;
+} CoderInfo;
+
 
 /*
   Global declarations.
@@ -109,37 +136,32 @@ static ModuleInfo
   Forward declarations.
 */
 #if defined(SupportMagickModules)
-static char
-  *TagToProcess(const char *);
+static void
+  *GetModuleBlob(const char *filename,char *path,size_t *length,
+    ExceptionInfo *exception),
+  TagToCoderModuleName(const char *tag,char *module_name),
+  TagToFilterModuleName(const char *tag, char *module_name),
+  TagToFunctionName(const char *tag,const char *format,char *function);
+
+static unsigned int
+  FindMagickModule(const char *filename,MagickModuleType module_type,
+    char *path,ExceptionInfo *exception);
 
 static CoderInfo
   *RegisterModule(CoderInfo *,ExceptionInfo *),
   *SetCoderInfo(const char *);
+
+#if FUNCTION_UNUSED
+static const CoderInfo
+  *GetCoderInfo(const char *,ExceptionInfo *);
+#endif
+
 #endif /* defined(SupportMagickModules) */
 
 static unsigned int
   ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *),
   UnloadModule(const CoderInfo *,ExceptionInfo *),
   UnregisterModule(const char *,ExceptionInfo *);
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D e s t r o y M o d u l e I n f o                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyModuleInfo() deallocates memory associated with the ModuleInfo list.
-%
-%  The format of the DestroyModuleInfo method is:
-%
-%      void DestroyModuleInfo(void)
-%
-*/
 
 #if !defined(SupportMagickModules)
 #if !defined(WIN32)
@@ -175,6 +197,26 @@ static void *lt_dlsym(void *handle,char *symbol)
 }
 #endif
 #endif
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y M o d u l e I n f o                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyModuleInfo() deallocates memory associated with the ModuleInfo list.
+%
+%  The format of the DestroyModuleInfo method is:
+%
+%      void DestroyModuleInfo(void)
+%
+*/
 
 MagickExport void DestroyModuleInfo(void)
 {
@@ -263,45 +305,57 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
   const int argc,char **argv)
 {
 #if defined(SupportMagickModules)
-  char
-    *module_name;
-
   ModuleHandle
     handle;
 
   unsigned int
-    (*method)(Image **,const int,char **),
     status;
 
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
   status=False;
-  module_name=TagToProcess(tag);
-  handle=lt_dlopen(module_name);
-  if (handle == (ModuleHandle) NULL)
-    {
-      module_name=TagToModule(tag);
-      handle=lt_dlopen(module_name);
-      if (handle == (ModuleHandle) NULL)
-        {
-          char
-            message[MaxTextExtent];
+  {
+    char
+      module_name[MaxTextExtent],
+      module_path[MaxTextExtent];
 
-          FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
-          ThrowException(&(*image)->exception,ModuleError,"UnableToLoadModule",
-            message);
-          LiberateMemory((void **) &module_name);
-          return(status);
-        }
-    }
-  (void) strncpy(module_name,tag,MaxTextExtent-1);
-  (void) strcat(module_name,"Image");
-  method=(unsigned int (*)(Image **,const int,char **))
-    lt_dlsym(handle,module_name);
-  if (method != (unsigned int (*)(Image **,const int,char **)) NULL)
-    status=(*method)(image,argc,argv);
+    /* Find the module */
+    TagToFilterModuleName(tag,module_name);
+    if (!FindMagickModule(module_name,MagickFilterModule,module_path,
+      &(*image)->exception))
+      return( False);
+
+    /* Open the module */
+    handle=lt_dlopen(module_path);
+    if (handle == (ModuleHandle) NULL)
+      {
+        char
+          message[MaxTextExtent];
+        
+        FormatString(message,"\"%.256s: %.256s\"",module_path,lt_dlerror());
+        ThrowException(&(*image)->exception,ModuleError,"UnableToLoadModule",
+          message);
+        return(status);
+      }
+  }
+  {
+    char
+      method_name[MaxTextExtent];
+
+    unsigned int
+      (*method)(Image **,const int,char **);
+
+    /* Locate module method */
+    FormatString(method_name,"%.64sImage",tag);
+    method=(unsigned int (*)(Image **,const int,char **))
+      lt_dlsym(handle,method_name);
+
+    /* Execute module method */
+    if (method != (unsigned int (*)(Image **,const int,char **)) NULL)
+      status=(*method)(image,argc,argv);
+  }
+  /* Close the module */
   (void) lt_dlclose(handle);
-  LiberateMemory((void **) &module_name);
   return(status);
 #else
   return(ExecuteStaticModuleProcess(tag,image,argc,argv));
@@ -340,7 +394,8 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
 %
 %
 */
-MagickExport const CoderInfo *GetCoderInfo(const char *tag,
+#if FUNCTION_UNUSED
+static const CoderInfo *GetCoderInfo(const char *tag,
   ExceptionInfo *exception)
 {
   register CoderInfo
@@ -371,6 +426,211 @@ MagickExport const CoderInfo *GetCoderInfo(const char *tag,
         coder_list=p;
       }
   return((const CoderInfo *) p);
+}
+#endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  F i n d M a g i c k M o d u l e                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  FindMagickModule() finds a module with the specified module type and
+%  file name. The buffer pointed to by 'path' is updated with the file path
+%  if the file is found. True is returned if the module is found.
+%
+%  The format of the FindMagickModule method is:
+%
+%      unsigned int FindMagickModule(const char *filename,
+%        MagickModuleType module_type,char *path,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o filename: The module file name.
+%
+%    o module_type: The module type (MagickCoderModule or MagickFilterModule)
+
+%    o path: A pointer to the buffer to place the path to the module file. The
+%            buffer must be at least MaxTextExtent characters in size.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+#if !defined(UseInstalledImageMagick) && defined(POSIX)
+static void ChopPathComponents(char *path,const unsigned long components)
+{
+  long
+    count;
+
+  register char
+    *p;
+
+  if (*path == '\0')
+    return;
+  p=path+strlen(path);
+  if (*p == *DirectorySeparator)
+    *p='\0';
+  for (count=0; (count < (long) components) && (p > path); p--)
+    if (*p == *DirectorySeparator)
+      {
+        *p='\0';
+        count++;
+      }
+}
+#endif
+
+MagickExport unsigned int FindMagickModule(const char *filename,
+  MagickModuleType module_type,char *path,ExceptionInfo *exception)
+{
+  assert(filename != (const char *) NULL);
+  assert(path != (char *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  (void) strncpy(path,filename,MaxTextExtent-1);
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+    "Searching for module file \"%s\" ...",filename);
+#if defined(UseInstalledImageMagick)
+#if defined(WIN32)
+  {
+    char
+      *key=NULL,
+      *key_value;
+
+    switch (module_type)
+      {
+      case MagickCoderModule:
+      default:
+        key="CoderModulesPath";
+        break;
+      case MagickFilterModule:
+        key="FilterModulesPath";
+        break;
+      }
+
+    /*
+      Locate path via registry key.
+    */
+    key_value=NTRegistryKeyLookup(key);
+    if (key_value != (char *) NULL)
+      {
+        FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
+          filename);
+        if (!IsAccessible(path))
+          ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",
+            path);
+        return(True);
+      }
+  }
+#endif
+#if defined(MagickCoderModulesPath)
+  {
+    char
+      *module_directory=NULL;
+
+    switch (module_type)
+      {
+      case MagickCoderModule:
+      default:
+        module_directory=MagickCoderModulesPath;
+        break;
+      case MagickFilterModule:
+        module_directory=MagickFilterModulesPath;
+        break;
+      }
+
+  /*
+    Search hard coded paths.
+  */
+  FormatString(path,"%.1024s%.1024s",module_directory,filename);
+  if (!IsAccessible(path))
+    ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",path);
+  return(True);
+  }
+#endif
+#else
+  if (*SetClientPath((char *) NULL) != '\0')
+    {
+#if defined(POSIX)
+      char
+        *format=NULL,
+        prefix[MaxTextExtent];
+      
+      switch (module_type)
+        {
+        case MagickCoderModule:
+        default:
+          format="%.1024s/lib/%s/modules-Q%d/coders/%.1024s";
+          break;
+        case MagickFilterModule:
+          format="%.1024s/lib/%s/modules-Q%d/filters/%.1024s";
+          break;
+        }
+
+      /*
+        Search based on executable directory if directory is known.
+      */
+      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
+      ChopPathComponents(prefix,1);
+      FormatString(path,format,prefix,MagickLibSubdir,QuantumDepth,filename);
+#else
+      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
+        DirectorySeparator,filename);
+#endif
+      if (IsAccessible(path))
+        return(True);
+    }
+  if (getenv("MAGICK_HOME") != (char *) NULL)
+    {
+      /*
+        Search MAGICK_HOME.
+      */
+#if defined(POSIX)
+      char
+        *subdir=NULL;
+
+      switch (module_type)
+        {
+        case MagickCoderModule:
+        default:
+          subdir=MagickCoderModulesSubdir;
+          break;
+        case MagickFilterModule:
+          subdir=MagickFilterModulesSubdir;
+          break;
+        }
+
+      FormatString(path,"%.1024s/lib/%s/%.1024s",getenv("MAGICK_HOME"),
+        subdir,filename);
+#else
+      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
+        DirectorySeparator,filename);
+#endif
+      if (IsAccessible(path))
+        return(True);
+    }
+  if (getenv("HOME") != (char *) NULL)
+    {
+      /*
+        Search $HOME/.magick.
+      */
+      FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
+        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
+      if (IsAccessible(path))
+        return(True);
+    }
+  /*
+    Search current directory.
+  */
+  if (IsAccessible(path))
+    return(True);
+#endif
+  ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",path);
+  return(False);
 }
 
 /*
@@ -462,6 +722,68 @@ static char **GetModuleList(ExceptionInfo *exception)
   return(modules);
 }
 #endif /* defined(SupportMagickModules) */
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  G e t M o d u l e B l o b                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetModuleBlob() returns the specified file from the coder modules
+%  directory as a blob.
+%
+%  The format of the GetModuleBlob method is:
+%
+%      void *GetModuleBlob(const char *filename,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o filename: The module file name.
+%
+%    o path: return the full path information of the module file.
+%
+%    o length: This pointer to a size_t integer sets the initial length of the
+%      blob.  On return, it reflects the actual length of the blob.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static void *GetModuleBlob(const char *filename,char *path,size_t *length,
+  ExceptionInfo *exception)
+{
+  assert(filename != (const char *) NULL);
+  assert(path != (char *) NULL);
+  assert(length != (size_t *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  /*
+    Search for the file
+  */
+  if(FindMagickModule(filename,MagickCoderModule,path,exception))
+    return(FileToBlob(path,length,exception));
+#if defined(WIN32)
+  {
+    unsigned char
+      *blob;
+
+    /*
+      Try to obtain the file from a Windows resource
+    */
+    DestroyExceptionInfo(exception);
+    if ((blob=NTResourceToBlob(filename)) != (unsigned char *)NULL)
+      return blob;
+    else
+      ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",
+        filename);
+  }
+#endif
+  return((void *) NULL);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -611,47 +933,6 @@ MagickExport unsigned int ListModuleInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M o d u l e T o T a g                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ModuleToTag() parser a file system module name into the basic name of the
-%  module.
-%
-%  The format of the ModuleToTag method is:
-%
-%      ModuleToTag(const char *filename, const char *format, char *module)
-%
-%  A description of each parameter follows:
-%
-%    o filename: the filesystem name of the module.
-%
-%    o format: a string used to format the result of the parsing.
-%
-%    o module: pointer to a destination buffer for the formatted result.
-%
-*/
-static void ModuleToTag(const char *filename,const char *format,char *module)
-{
-  char
-    *module_name;
-
-  assert(filename != (const char *) NULL);
-  assert(format != (const char *) NULL);
-  assert(module != (char *) NULL);
-  module_name=AllocateString(filename);
-  LocaleUpper(module_name);
-  FormatString(module,format,module_name);
-  LiberateMemory((void **) &module_name);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   O p e n M o d u l e                                                       %
 %                                                                             %
 %                                                                             %
@@ -683,7 +964,7 @@ MagickExport unsigned int OpenModule(const char *module,
   {
     char
       message[MaxTextExtent],
-      *module_file,
+      module_file[MaxTextExtent],
       module_name[MaxTextExtent],
       name[MaxTextExtent],
       path[MaxTextExtent];
@@ -713,27 +994,34 @@ MagickExport unsigned int OpenModule(const char *module,
             break;
           }
     /*
-      Load module file.
+      Find module file.
     */
     handle=(ModuleHandle) NULL;
-    module_file=TagToModule(module_name);
+    TagToCoderModuleName(module_name,module_file);
     *path='\0';
+#if 1
+  if (!FindMagickModule(module_file,MagickCoderModule,path,exception))
+    return(False);
+#else
     if ((module_list != (ModuleInfo *) NULL) &&
         (module_list->path != (char *) NULL))
       GetPathComponent(module_list->path,HeadPath,path);
     (void) strcat(path,DirectorySeparator);
     (void) strncat(path,module_file,MaxTextExtent-strlen(path)-1);
+#endif
+    /*
+      Load module
+    */
     handle=lt_dlopen(path);
     if (handle == (ModuleHandle) NULL)
       {
         FormatString(message,"\"%.1024s: %.1024s\"",path,lt_dlerror());
         ThrowException(exception,ModuleError,"UnableToLoadModule",message);
       }
-    LiberateMemory((void **) &module_file);
     if (handle == (ModuleHandle) NULL)
       return(False);
     /*
-      Add module to module list.
+      Add module to coder module list.
     */
     coder_info=SetCoderInfo(module_name);
     if (coder_info == (CoderInfo*) NULL)
@@ -748,7 +1036,7 @@ MagickExport unsigned int OpenModule(const char *module,
     /*
       Locate and execute RegisterFORMATImage function
     */
-    ModuleToTag(module_name,"Register%sImage",name);
+    TagToFunctionName(module_name,"Register%sImage",name);
     method=(void (*)(void)) lt_dlsym(handle,name);
     if (method == (void (*)(void)) NULL)
       {
@@ -938,7 +1226,7 @@ static unsigned int ReadConfigureFile(const char *basename,
           *module_info;
 
         /*
-          Allocate memory for the font list.
+          Allocate memory for the module list.
         */
         module_info=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
         if (module_info == (ModuleInfo *) NULL)
@@ -1154,32 +1442,31 @@ static CoderInfo *SetCoderInfo(const char *tag)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  T a g T o M o d u l e                                                      %
+%  T a g T o C o d e r M o d u l e N a m e                                    %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  TagToModule() takes a module "name" and returnes a complete file system
-%  dynamic module name.
+%  TagToCoderModuleName() takes a module tag and obtains the filename of the
+%  corresponding coder module.
 %
-%  The format of the TagToModule method is:
+%  The format of the TagToCoderModuleName method is:
 %
-%      char *TagToModule(const char *tag)
+%      char *TagToCoderModuleName(const char *tag)
 %
 %  A description of each parameter follows:
 %
-%    o tag: a character string that represents the name of the particular
-%      module.
+%    o tag: a character string representing the module tag.
+%
+%    o module_name: A buffer to write the module name.  Should be at least
+%      MaxTextExtent long.
 %
 */
-MagickExport char *TagToModule(const char *tag)
+static void TagToCoderModuleName(const char *tag,char *module_name)
 {
-  char
-    *module_name;
-
   assert(tag != (char *) NULL);
-  module_name=AllocateString(tag);
+  assert(module_name != (char *) NULL);
 #if defined(HasLTDL)
   (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);
@@ -1189,15 +1476,14 @@ MagickExport char *TagToModule(const char *tag)
     (void) strncpy(module_name,tag,MaxTextExtent-1);
   else
     {
-#if defined(_DEBUG)
+#  if defined(_DEBUG)
       FormatString(module_name,"IM_MOD_DB_%.1024s_.dll",tag);
-#else
+#  else
       FormatString(module_name,"IM_MOD_RL_%.1024s_.dll",tag);
-#endif
+#  endif /* defined(_DEBUG) */
     }
-#endif
-#endif
-  return(module_name);
+#endif  /* defined(WIN32) */
+#endif /* defined(HasLTDL) */
 }
 
 /*
@@ -1205,42 +1491,81 @@ MagickExport char *TagToModule(const char *tag)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  T a g T o P r o c e s s                                                    %
+%  T a g T o F i l t e r M o d u l e N a m e                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method TagToProcess takes a module "name" and returnes a complete file
-%  system dynamic module name.
+%  TagToFilterModuleName takes a module tag and returns the filename of the
+%  corresponding filter module.
 %
-%  The format of the TagToProcess method is:
+%  The format of the TagToFilterModuleName method is:
 %
-%      void TagToProcess(const char *tag)
+%      void TagToFilterModuleName(const char *tag)
 %
 %  A description of each parameter follows:
 %
-%    o tag: a character string that represents the name of the particular
-%      processing dynamically loadable module.
+%    o tag: a character string representing the module tag.
 %
 */
 #if defined(SupportMagickModules)
-static char *TagToProcess(const char *tag)
+static void TagToFilterModuleName(const char *tag, char *module_name)
 {
-  char
-    *module_name;
-
   assert(tag != (char *) NULL);
-  module_name=AllocateString((char *) NULL);
+  assert(module_name != (char *) NULL);
 #if defined(HasLTDL)
   (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);
 #else
   (void) FormatString(module_name,"%.1024s.dll",tag);
 #endif
-  return(module_name);
 }
 #endif /* defined(SupportMagickModules) */
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   T a g T o F u n c t i o n N a m e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  TagToFunctionName() formats the module tag name to a string using the
+%  upper-case tag name as the input string, and a user-provided format.
+%  This function is used to prepare the RegisterTAGImage and UnregisterTAGImage
+%  function names passed lt_dlsym.
+%
+%  The format of the TagToFunctionName method is:
+%
+%      TagToFunctionName(const char *tag, const char *format, char *function)
+%
+%  A description of each parameter follows:
+%
+%    o tag: the module tag.
+%
+%    o format: a sprintf-compatible format string containing %s where the
+%              upper-case tag name is to be inserted.
+%
+%    o function: pointer to a destination buffer for the formatted result.
+%
+*/
+static void TagToFunctionName(const char *tag,const char *format,char *function)
+{
+  char
+    *function_name;
+
+  assert(tag != (const char *) NULL);
+  assert(format != (const char *) NULL);
+  assert(function != (char *) NULL);
+  function_name=AllocateString(tag);
+  LocaleUpper(function_name);
+  FormatString(function,format,function_name);
+  LiberateMemory((void **) &function_name);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1282,10 +1607,10 @@ static unsigned int UnloadModule(const CoderInfo *coder_info,
     Locate and execute UnregisterFORMATImage function
   */
   assert(coder_info != (const CoderInfo *) NULL);
-  ModuleToTag(coder_info->tag,"Unregister%sImage",name);
+  TagToFunctionName(coder_info->tag,"Unregister%sImage",name);
   method=(void (*)(void)) lt_dlsym((ModuleHandle) coder_info->handle,name);
   if (method == (void (*)(void)) NULL)
-    MagickError(ModuleError,"Failedto find symbol",lt_dlerror());
+    MagickError(ModuleError,"FailedToFindSymbol",lt_dlerror());
   else
     method();
   (void) lt_dlclose((ModuleHandle) coder_info->handle);

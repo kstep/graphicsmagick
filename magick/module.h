@@ -1,5 +1,5 @@
 /*
-  ImageMagick Modules Methods.
+  GraphicsMagick Modules Methods.
 */
 #ifndef _MAGICK_MODULE_H
 #define _MAGICK_MODULE_H
@@ -8,25 +8,12 @@
 extern "C" {
 #endif
 
-typedef struct _CoderInfo
-{
-  const char
-    *tag;
-  
-  void
-    *handle;
-  
-  time_t
-    load_time;
-
-  unsigned long
-    signature;
-
-  struct _CoderInfo
-    *previous,
-    *next;
-} CoderInfo;
-
+/*
+  Module list entry
+  Maintains modules.mkg path, and the module name corresponding
+  to each magick tag.
+  Used to support module_list, which is intialized by reading modules.mgk,
+*/
 typedef struct _ModuleInfo
 {
   const char
@@ -44,16 +31,16 @@ typedef struct _ModuleInfo
     *previous,
     *next;
 } ModuleInfo;
+
+typedef enum
+{
+  MagickCoderModule,
+  MagickFilterModule
+} MagickModuleType;
 
 /*
   Modules declarations.
 */
-extern MagickExport char
-  *TagToModule(const char *);
-
-extern MagickExport const CoderInfo
-  *GetCoderInfo(const char *,ExceptionInfo *);
-
 extern MagickExport const ModuleInfo
   *GetModuleInfo(const char *,ExceptionInfo *);
 

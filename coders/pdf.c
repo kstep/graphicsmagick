@@ -64,7 +64,6 @@
 #include "magick.h"
 #include "monitor.h"
 #include "shear.h"
-#include "static.h"
 #include "resize.h"
 #include "utility.h"
 #include "version.h"
