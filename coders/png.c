@@ -3997,7 +3997,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                       "    Delete original image");
 
-                DeleteImageFromList(&image);
+                DeleteImageFromList(&image,GetImageIndexInList(image));
 
                 image=large_image;
 
