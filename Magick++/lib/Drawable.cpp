@@ -17,6 +17,7 @@
 using namespace std;
 
 #define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
+#define RadiansToDegrees(x) (180.0*(x)/3.14159265358979323846)
 
 //Write Coordinate to stream
 std::ostream& operator<<( std::ostream& stream_,

@@ -140,22 +140,14 @@ int main( int /*argc*/, char ** argv)
     drawList.push_back(DrawableFillColor("green"));
     drawList.push_back(DrawableStrokeColor("green"));
     drawList.push_back(DrawablePointSize(24));
-//     drawList.push_back(DrawableRotation(-45.0));
-//     drawList.push_back(DrawableTranslation(30,40));
-    drawList.push_back(DrawableAffine(0.707107,0.707107,0.707107,-0.707107,30.000000,140.000000));
+    drawList.push_back(DrawableTranslation(30,140));
+    drawList.push_back(DrawableRotation(45.0));
     drawList.push_back(DrawableText(0,0,"This is a test!"));
-    
+
+    // Draw everything using completed drawing list
     image.draw(drawList);
 
-//     image.font(font);
-//     image.fillColor("green");
-//     image.strokeColor("green");
-//     image.fontPointsize(24);
-//     image.transformRotation(-45.0);
-//     image.annotate( "This is a test!", "+30+140");
-
-
-    image.write( "piddle.mvg" );
+//     image.write( "piddle.mvg" );
 
     cout << "Writing image \"piddle.miff\" ..." << endl;
     image.write( "piddle.miff" );
