@@ -1,11 +1,10 @@
-
+ 
 Items large and small which remain to be worked on.
 See website for "wish list".
 --------------------------------------------------------------------
 
 For 1.2 Branch
 ==============
-
 
   o Update to libtool 2.0 (partially done in sandbox).
 

@@ -122,7 +122,7 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
 
 </UL>
 <p>
-  Windows-specific improvements:
+  Windows-specific improvements/changes:
 
 <UL>
   <LI> For the MinGW and Cygwin builds, the Magick++ library is forced to
@@ -134,7 +134,12 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
   <LI> Use GlobalMemoryStatusEx(), if available, to determine how much physical
     memory is available.  Important for large-memory machines.
   <LI> Fixed opendir() emulation function so it can't overwrite the stack.
+  <UL>
+    <LI> FlashPIX library sources are no longer distributed in the Windows
+    source package and building FlashPIX is disabled by default.  FlashPIX
+    may still be built by adding the library (separately distributed).
 
+  </UL>
 </UL>
 <p>
 Significant changes associated with GraphicsMagick 1.1 (Released April 4, 2004)

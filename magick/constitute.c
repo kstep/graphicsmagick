@@ -1086,7 +1086,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   else if (QuantumDepth < quantum_size)
     {
       /* Multiply to scale up */
-      sample_scale=(MaxRGBGivenBits(quantum_size)/ MaxRGB);
+      sample_scale=(MaxValueGivenBits(quantum_size)/ MaxRGB);
     }
 
   number_pixels=(long) GetPixelCacheArea(image);
@@ -2432,7 +2432,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   assert(source != (const unsigned char *) NULL);
 
   /* Maximum value which may be represented by a sample */
-  maximum_sample_value=MaxRGBGivenBits(quantum_size);
+  maximum_sample_value=MaxValueGivenBits(quantum_size);
 
   if (QuantumDepth == quantum_size)
     {

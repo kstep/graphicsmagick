@@ -1,5 +1,9 @@
 2005-01-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/tiff.c (WriteTIFFImage): Re-wrote TIFF writing code.
+	* magick/image.h (MaxValueGivenBits): Renamed MaxRGBGivenBits
+	macro to MaxValueGivenBits.
+	* magick/constitute.h (enum QuantumType): Added UndefinedQuantum.
 	* magick/static.c (RegisterStaticModules): Support compiling
 	without PNG.
 

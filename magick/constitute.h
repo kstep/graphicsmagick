@@ -17,6 +17,7 @@ extern "C" {
 
 typedef enum
 {
+  UndefinedQuantum,
   IndexQuantum,
   GrayQuantum,
   IndexAlphaQuantum,
