@@ -52,8 +52,7 @@
 /*
   Include declarations.
 */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 #if defined(HasBZLIB)
 #include "bzlib.h"
 #endif

@@ -48,8 +48,7 @@
 /*
   Include declarations.
 */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 
 /* Auto coloring method, sorry this creates some artefact inside data
 MinReal+j*MaxComplex = red  MaxReal+j*MaxComplex = black

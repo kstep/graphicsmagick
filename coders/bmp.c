@@ -53,8 +53,7 @@
 /*
   Include declarations.
 */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 
 /*
   Macro definitions (from Windows wingdi.h).

@@ -52,8 +52,7 @@
 /*
   Include declarations.
 */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 #if defined(HasTIFF)
 #if defined(HAVE_TIFFCONF_H)
 #include "tiffconf.h"

@@ -8,6 +8,45 @@
 extern "C" {
 #endif
 
+typedef struct _BlobInfo
+{
+  size_t
+    length,
+    extent,
+    quantum;
+
+  unsigned int
+    mapped,
+    eof;
+
+  unsigned char
+    *data;
+
+  off_t
+    offset,
+    size;
+
+  unsigned int
+    exempt,
+    status,
+    pipet,
+    temporary;
+
+  FILE
+    *file;
+
+  int
+    (*fifo)(const Image *,const void *,const size_t);
+
+  SemaphoreInfo
+    *semaphore;
+
+  long
+    reference_count;
+
+  unsigned long
+    signature;
+} BlobInfo;
 
 /*
   Blob methods.

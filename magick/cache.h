@@ -41,12 +41,6 @@ typedef struct _NexusInfo
 
 typedef struct _CacheInfo
 {
-  SemaphoreInfo
-    *semaphore;
-
-  long
-    reference_count;
-
   NexusInfo
     *nexus_info;
 
@@ -78,6 +72,12 @@ typedef struct _CacheInfo
 
   char
     cache_filename[MaxTextExtent];
+
+  long
+    reference_count;
+
+  SemaphoreInfo
+    *semaphore;
 
   unsigned long
     signature;

@@ -55,8 +55,7 @@
 /*
  * Include declarations.
  */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 #if defined(WIN32)
 #define M_PI MagickPI
 #endif

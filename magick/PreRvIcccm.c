@@ -49,8 +49,7 @@
 %
 */
 
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 #if defined(HasX11)
 #include "xwindow.h"
 

@@ -69,8 +69,7 @@
 /*
   Include declarations.
 */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 #if defined(HasPNG)
 #include "png.h"
 #include "zlib.h"

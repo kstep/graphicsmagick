@@ -8,6 +8,20 @@
 extern "C" {
 #endif
 
+typedef struct _ImageAttribute
+{
+  char
+    *key,
+    *value;
+
+  unsigned int
+    compression;
+
+  struct _ImageAttribute
+    *previous,
+    *next;
+} ImageAttribute;
+
 /*
   MagickExported text attribute methods.
 */

@@ -53,8 +53,7 @@
 /*
   Include declarations.
 */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 
 #define PALM_IS_COMPRESSED_FLAG    0x8000
 #define PALM_HAS_COLORMAP_FLAG    0x4000
