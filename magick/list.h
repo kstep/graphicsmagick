@@ -10,7 +10,7 @@ extern "C" {
 
 extern MagickExport Image
   *CloneImageList(const Image *,ExceptionInfo *),
-  *GetImageList(Image *,const unsigned long,ExceptionInfo *),
+  *GetImageList(const Image *,const unsigned long,ExceptionInfo *),
 	*GetNextImage(Image *),
   **ListToGroupImage(const Image *,unsigned long *),
   *NewImageList(void),

@@ -8,9 +8,7 @@
   * Fixed some bugs in XCF.
 
 2002-01-11  Cristy  <cristy@mystic.es.dupont.com>
-  * Added image list methods to the API: CloneImageList(), GetImageList(),
-    GetImageListSize(), NewImageList(), PopImageList(), PushImageList(),
-    and SetImageList().
+  * Added image list methods to the API.
 
 2002-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * configure.ac : Renamed configure option --with-ttf-fontpath to

@@ -613,7 +613,7 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ShiftImageList() removes the first image in the list and returns it.
+%  ShiftImageList() takes off the beginning of the image list.
 %
 %  The format of the ShiftImageList method is:
 %
