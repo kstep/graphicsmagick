@@ -5,6 +5,8 @@
 	(LocaleCompare): Documented that comparison is case-insensitive.
 	* magick/log.c (ParseEvents): LocaleNCompare already does
 	case-insensitive compare so lower-casing is not necessary.
+	* Magick++: Updates to cause exceptions to be thrown if a bad
+	geometry specification is supplied.
 
 2003-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
