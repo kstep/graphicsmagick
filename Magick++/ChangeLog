@@ -1,3 +1,9 @@
+2002-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (draw): Use draw.h drawing APIs to draw on image.
+  	This means that MVG output no longer comes from code in
+ 	Drawable.cpp.
+
 2002-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/STL.cpp: Moved function object implementations from STL.h to

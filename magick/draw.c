@@ -145,7 +145,11 @@ struct _DrawContext
   Forward declarations.
 */
 static int
-  MvgPrintf(DrawContext context, const char *format, ...);
+  MvgPrintf(DrawContext context, const char *format, ...)
+#if defined(__GNUC__)
+__attribute__ ((format (printf, 2, 3)))
+#endif
+;
 static void
   MvgAppendColor(DrawContext context, const PixelPacket *color);
 
@@ -265,26 +269,26 @@ static void MvgAppendColor(DrawContext context, const PixelPacket *color)
     {
       MvgPrintf(context,
 #if QuantumDepth == 8
-                "#%02x%02x%02x",
+                "#%02X%02X%02X",
 #elif QuantumDepth == 16
-                "#%04x%04x%04x",
+                "#%04X%04X%04X",
 #endif
                 color->red, color->green, color->blue);
 
       if (color->opacity != OpaqueOpacity)
         MvgPrintf(context,
 #if QuantumDepth == 8
-                  "%02x",
+                  "%02X",
 #elif QuantumDepth == 16
-                  "%04x",
+                  "%04X",
 #endif
                   color->opacity);
     }
 }
 
 static void MvgAppendPointsCommand(DrawContext context, const char* command,
-                            const size_t num_coords,
-                            const PointInfo * coordinates)
+                                   const size_t num_coords,
+                                   const PointInfo * coordinates)
 {
   const PointInfo
     *coordinate;
@@ -1339,7 +1343,7 @@ MagickExport void DrawPathFinish(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  MvgPrintf(context, "\"\n");
+  MvgPrintf(context, "'\n");
   context->path_operation = PathDefaultOperation;
   context->path_mode = DefaultPathMode;
 }
@@ -1488,7 +1492,7 @@ MagickExport void DrawPathStart(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  MvgPrintf(context, "path d=\"");
+  MvgPrintf(context, "path '");
   context->path_operation = PathDefaultOperation;
   context->path_mode = DefaultPathMode;
 }
@@ -1650,7 +1654,8 @@ MagickExport int DrawRender(const DrawContext context)
   draw_info = (DrawInfo *) AcquireMemory(sizeof(DrawInfo));
   GetDrawInfo(context->image_info, draw_info);
   draw_info->primitive = context->mvg;
-  /* puts(draw_info->primitive); */
+  if(context->image_info->debug != False)
+    printf("MVG:\n'%s\n'",draw_info->primitive);
   DrawImage(context->image, draw_info);
   draw_info->primitive = (char *) NULL;
   DestroyDrawInfo(draw_info);
@@ -1984,7 +1989,7 @@ MagickExport void DrawSetStrokeMiterLimit(DrawContext context,
     {
       CurrentContext->miterlimit = miterlimit;
 
-      MvgPrintf(context, "stroke-miterlimit %u\n", miterlimit);
+      MvgPrintf(context, "stroke-miterlimit %lu\n", miterlimit);
     }
 }
 

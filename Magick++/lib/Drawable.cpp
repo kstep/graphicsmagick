@@ -123,14 +123,18 @@ void Magick::DrawableBezier::print (std::ostream& stream_) const
 }
 void Magick::DrawableBezier::operator()( MagickLib::DrawContext context_ ) const
 {
-  size_t num_coords=_coordinates.size();
+  size_t num_coords = _coordinates.size();
   PointInfo *coordinates = new PointInfo[num_coords];
-  
+
+  PointInfo *q = coordinates;
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
-  for( unsigned int i=0; p != _coordinates.end(); p++ )
+
+  while( p != _coordinates.end() )
     {
-      coordinates[i].x = p->x();
-      coordinates[i].y = p->y();
+      q->x = p->x();
+      q->y = p->y();
+      q++;
+      p++;
     }
 
   DrawBezier( context_, num_coords, coordinates );
@@ -202,13 +206,10 @@ void Magick::DrawablePath::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawPathStart( context_ );
 
-  // for_each ( _path.begin(), _path.end(), ??? );
-
-  // FIXME
-//   for( std::list<Magick::VPath>::const_iterator p = _path.begin();
-//        p != _path.end();
-//        p++ )
-//     p->operator()( context_ );
+  // FIXME, improve access syntax
+  for( std::list<Magick::VPath>::const_iterator p = _path.begin();
+       p != _path.end(); p++ )
+    p->dp->operator()( context_ );
 
   DrawPathFinish( context_ );
 }
@@ -829,14 +830,18 @@ void Magick::DrawablePolygon::print (std::ostream& stream_) const
 }
 void Magick::DrawablePolygon::operator()( MagickLib::DrawContext context_ ) const
 {
-  size_t num_coords=_coordinates.size();
+  size_t num_coords = _coordinates.size();
   PointInfo *coordinates = new PointInfo[num_coords];
-  
+
+  PointInfo *q = coordinates;
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
-  for( unsigned int i=0; p != _coordinates.end(); p++ )
+
+  while( p != _coordinates.end() )
     {
-      coordinates[i].x = p->x();
-      coordinates[i].y = p->y();
+      q->x = p->x();
+      q->y = p->y();
+      q++;
+      p++;
     }
 
   DrawPolygon( context_, num_coords, coordinates );
@@ -858,14 +863,18 @@ void Magick::DrawablePolyline::print (std::ostream& stream_) const
 }
 void Magick::DrawablePolyline::operator()( MagickLib::DrawContext context_ ) const
 {
-  size_t num_coords=_coordinates.size();
+  size_t num_coords = _coordinates.size();
   PointInfo *coordinates = new PointInfo[num_coords];
-  
+
+  PointInfo *q = coordinates;
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
-  for( unsigned int i=0; p != _coordinates.end(); p++ )
+
+  while( p != _coordinates.end() )
     {
-      coordinates[i].x = p->x();
-      coordinates[i].y = p->y();
+      q->x = p->x();
+      q->y = p->y();
+      q++;
+      p++;
     }
 
   DrawPolyline( context_, num_coords, coordinates );

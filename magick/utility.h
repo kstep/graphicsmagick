@@ -81,7 +81,11 @@ extern MagickExport void
   ExpandFilename(char *),
   GetPathComponent(const char *,PathType,char *),
   GetToken(const char *,char **,char *),
-  FormatString(char *,const char *,...),
+  FormatString(char *,const char *,...)
+#if defined(__GNUC__)
+__attribute__ ((format (printf, 2, 3)))
+#endif
+  ,
   LiberateMemory(void **),
   LocaleLower(char *),
   LocaleUpper(char *),

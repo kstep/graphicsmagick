@@ -614,6 +614,12 @@ void Magick::Image::draw ( const Magick::Drawable &drawable_ )
 {
   modifyImage();
 
+#if 1
+  DrawContext context = DrawAllocateContext( options()->imageInfo(), image());
+  drawable_.dp->operator()(context);
+  DrawRender(context);
+  DrawDestroyContext(context);
+#else
   DrawInfo *drawInfo
     = options()->drawInfo();
 
@@ -626,6 +632,7 @@ void Magick::Image::draw ( const Magick::Drawable &drawable_ )
 
   delete drawInfo->primitive; // Frozen dynamic arrays must be deleted
   drawInfo->primitive = 0;
+#endif
 
   throwImageException();
 }
@@ -635,6 +642,14 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
 {
   modifyImage();
 
+#if 1
+  DrawContext context = DrawAllocateContext( options()->imageInfo(), image());
+  for( std::list<Magick::Drawable>::const_iterator p = drawable_.begin();
+       p != drawable_.end(); p++ )
+    p->dp->operator()(context);
+  DrawRender(context);
+  DrawDestroyContext(context);
+#else
   DrawInfo *drawInfo
     = options()->drawInfo();
 
@@ -651,6 +666,7 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
 
   delete drawInfo->primitive; // Frozen dynamic arrays must be deleted
   drawInfo->primitive = 0;
+#endif
 
   throwImageException();
 }
