@@ -841,7 +841,7 @@ static void InitializeHistogram(Image *image,long **histogram)
   /*
     Initialize histogram.
   */
-  for (i=0; i <= (int) Downscale(MaxRGB); i++)
+  for (i=0; i <= (long) Downscale(MaxRGB); i++)
   {
     histogram[Red][i]=0;
     histogram[Green][i]=0;
