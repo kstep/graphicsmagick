@@ -230,7 +230,7 @@ testFilter('input.miff', 'Wave',
 ++$test;
 testFilter('input.miff', 'Zoom',
   q/geometry=>50%,filter=>Mitchell/,
-  '134d44d8737e0c6e3953e4536eae08d8');
+  '1b082e8a4461c3b4ccebc0d114a66cc2');
 
 ++$test;
 

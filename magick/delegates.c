@@ -710,7 +710,7 @@ Export void ListDelegateInfo(FILE *file)
     }
   if (delegates == (DelegateInfo *) NULL)
     return;
-  (void) fprintf(file,"\nImageMagick uses there delegates to read or write "
+  (void) fprintf(file,"\nImageMagick uses these delegates to read or write "
     "image formats it does not\ndirectly support:\n\n");
   (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
   (void) fprintf(file,"--------------------------------------------------------"

@@ -12935,10 +12935,10 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
     {
       j=i;
       if (j < 0)
-        j=(-j);
+        j=0;
       else
         if (j >= (int) source->columns)
-          j=(source->columns << 1)-j-1;
+          j=source->columns-1;
       contribution_info[n].pixel=j;
       contribution_info[n].weight=filter_info->function(
         ((double) i-center+0.5)/scale_factor)/scale_factor;
@@ -13036,10 +13036,10 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
     {
       j=i;
       if (j < 0)
-        j=(-j);
+        j=0;
       else
         if (j >= (int) source->rows)
-          j=(source->rows << 1)-j-1;
+          j=source->rows-1;
       contribution_info[n].pixel=j;
       contribution_info[n].weight=filter_info->function(
         ((double) i-center+0.5)/scale_factor)/scale_factor;
