@@ -105,9 +105,6 @@ static Image *ReadREGISTRYImage(const ImageInfo *image_info,
   size_t
     length;
  
-  void
-    *blob;
- 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
