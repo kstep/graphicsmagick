@@ -10,8 +10,17 @@ INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = color attributes appendImages averageImages coalesceImages \
-	montageImages morphImages readWriteImages readWriteBlob
+check_PROGRAMS =  \
+	appendImages \
+	attributes \
+	averageImages \
+	coalesceImages \
+	coderInfo \
+	color \
+	montageImages \
+	morphImages \
+	readWriteBlob \
+	readWriteImages
 
 LDADD = ../lib/libMagick++.la ../../magick/libMagick.la
 
@@ -19,11 +28,12 @@ appendImages_SOURCES	= appendImages.cpp
 attributes_SOURCES	= attributes.cpp
 averageImages_SOURCES	= averageImages.cpp
 coalesceImages_SOURCES	= coalesceImages.cpp
+coderInfo_SOURCES	= coderInfo.cpp
 color_SOURCES		= color.cpp
 montageImages_SOURCES	= montageImages.cpp
 morphImages_SOURCES	= morphImages.cpp
-readWriteImages_SOURCES = readWriteImages.cpp
 readWriteBlob_SOURCES	= readWriteBlob.cpp
+readWriteImages_SOURCES = readWriteImages.cpp
 
 EXTRA_DIST = \
 	Generic.ttf test_image.miff test_image_anim.miff
@@ -31,13 +41,14 @@ EXTRA_DIST = \
 CLEANFILES = testmagick_anim_out.miff
 
 check:
-	env srcdir=$(srcdir) ./color
-	env srcdir=$(srcdir) ./attributes
 	env srcdir=$(srcdir) ./appendImages
+	env srcdir=$(srcdir) ./attributes
 	env srcdir=$(srcdir) ./averageImages
 	env srcdir=$(srcdir) ./coalesceImages
+	env srcdir=$(srcdir) ./coderInfo
+	env srcdir=$(srcdir) ./color
 	env srcdir=$(srcdir) ./montageImages
 	env srcdir=$(srcdir) ./morphImages
-	env srcdir=$(srcdir) ./readWriteImages
 	env srcdir=$(srcdir) ./readWriteBlob
+	env srcdir=$(srcdir) ./readWriteImages
 

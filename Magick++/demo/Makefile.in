@@ -158,6 +158,7 @@ PSDelegate = @PSDelegate@
 PrintDelegate = @PrintDelegate@
 RADDecodeDelegate = @RADDecodeDelegate@
 RANLIB = @RANLIB@
+RC = @RC@
 RLEEncodeDelegate = @RLEEncodeDelegate@
 RMDelegate = @RMDelegate@
 SCANDecodeDelegate = @SCANDecodeDelegate@

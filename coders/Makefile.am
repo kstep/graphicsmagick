@@ -71,7 +71,7 @@ pkgdata_DATA =
 pkg_LTLIBRARIES   = 8bim.la art.la avi.la avs.la bmp.la cmyk.la cut.la \
   dcm.la dps.la dpx.la ept.la fax.la fpx.la fits.la gif.la gray.la gradient.la \
   hdf.la histogram.la html.la icm.la icon.la iptc.la jbig.la jpeg.la jp2.la \
-  label.la logo.la map.la map.la matte.la miff.la mono.la mpc.la mtv.la mvg.la \
+  label.la logo.la map.la mat.la matte.la miff.la mono.la mpc.la mtv.la mvg.la \
   null.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la pix.la plasma.la \
   png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la rla.la \
   rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la tiff.la \

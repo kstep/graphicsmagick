@@ -158,6 +158,7 @@ PSDelegate = @PSDelegate@
 PrintDelegate = @PrintDelegate@
 RADDecodeDelegate = @RADDecodeDelegate@
 RANLIB = @RANLIB@
+RC = @RC@
 RLEEncodeDelegate = @RLEEncodeDelegate@
 RMDelegate = @RMDelegate@
 SCANDecodeDelegate = @SCANDecodeDelegate@
@@ -185,8 +186,17 @@ INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = color attributes appendImages averageImages coalesceImages \
-	montageImages morphImages readWriteImages readWriteBlob
+check_PROGRAMS = \
+	appendImages \
+	attributes \
+	averageImages \
+	coalesceImages \
+	coderInfo \
+	color \
+	montageImages \
+	morphImages \
+	readWriteBlob \
+	readWriteImages
 
 
 LDADD = ../lib/libMagick++.la ../../magick/libMagick.la
@@ -195,11 +205,12 @@ appendImages_SOURCES = appendImages.cpp
 attributes_SOURCES = attributes.cpp
 averageImages_SOURCES = averageImages.cpp
 coalesceImages_SOURCES = coalesceImages.cpp
+coderInfo_SOURCES = coderInfo.cpp
 color_SOURCES = color.cpp
 montageImages_SOURCES = montageImages.cpp
 morphImages_SOURCES = morphImages.cpp
-readWriteImages_SOURCES = readWriteImages.cpp
 readWriteBlob_SOURCES = readWriteBlob.cpp
+readWriteImages_SOURCES = readWriteImages.cpp
 
 EXTRA_DIST = \
 	Generic.ttf test_image.miff test_image_anim.miff
@@ -210,11 +221,11 @@ subdir = Magick++/tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/config.h
 CONFIG_CLEAN_FILES =
-check_PROGRAMS = color$(EXEEXT) attributes$(EXEEXT) \
-	appendImages$(EXEEXT) averageImages$(EXEEXT) \
-	coalesceImages$(EXEEXT) montageImages$(EXEEXT) \
-	morphImages$(EXEEXT) readWriteImages$(EXEEXT) \
-	readWriteBlob$(EXEEXT)
+check_PROGRAMS = appendImages$(EXEEXT) attributes$(EXEEXT) \
+	averageImages$(EXEEXT) coalesceImages$(EXEEXT) \
+	coderInfo$(EXEEXT) color$(EXEEXT) montageImages$(EXEEXT) \
+	morphImages$(EXEEXT) readWriteBlob$(EXEEXT) \
+	readWriteImages$(EXEEXT)
 am_appendImages_OBJECTS = appendImages.$(OBJEXT)
 appendImages_OBJECTS = $(am_appendImages_OBJECTS)
 appendImages_LDADD = $(LDADD)
@@ -239,6 +250,11 @@ coalesceImages_LDADD = $(LDADD)
 coalesceImages_DEPENDENCIES = ../lib/libMagick++.la \
 	../../magick/libMagick.la
 coalesceImages_LDFLAGS =
+am_coderInfo_OBJECTS = coderInfo.$(OBJEXT)
+coderInfo_OBJECTS = $(am_coderInfo_OBJECTS)
+coderInfo_LDADD = $(LDADD)
+coderInfo_DEPENDENCIES = ../lib/libMagick++.la ../../magick/libMagick.la
+coderInfo_LDFLAGS =
 am_color_OBJECTS = color.$(OBJEXT)
 color_OBJECTS = $(am_color_OBJECTS)
 color_LDADD = $(LDADD)
@@ -277,9 +293,9 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 @AMDEP_TRUE@DEP_FILES = $(DEPDIR)/appendImages.Po \
 @AMDEP_TRUE@	$(DEPDIR)/attributes.Po $(DEPDIR)/averageImages.Po \
-@AMDEP_TRUE@	$(DEPDIR)/coalesceImages.Po $(DEPDIR)/color.Po \
-@AMDEP_TRUE@	$(DEPDIR)/montageImages.Po $(DEPDIR)/morphImages.Po \
-@AMDEP_TRUE@	$(DEPDIR)/readWriteBlob.Po \
+@AMDEP_TRUE@	$(DEPDIR)/coalesceImages.Po $(DEPDIR)/coderInfo.Po \
+@AMDEP_TRUE@	$(DEPDIR)/color.Po $(DEPDIR)/montageImages.Po \
+@AMDEP_TRUE@	$(DEPDIR)/morphImages.Po $(DEPDIR)/readWriteBlob.Po \
 @AMDEP_TRUE@	$(DEPDIR)/readWriteImages.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -292,11 +308,11 @@ CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 CXXFLAGS = @CXXFLAGS@
 DIST_SOURCES = $(appendImages_SOURCES) $(attributes_SOURCES) \
 	$(averageImages_SOURCES) $(coalesceImages_SOURCES) \
-	$(color_SOURCES) $(montageImages_SOURCES) \
+	$(coderInfo_SOURCES) $(color_SOURCES) $(montageImages_SOURCES) \
 	$(morphImages_SOURCES) $(readWriteBlob_SOURCES) \
 	$(readWriteImages_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(appendImages_SOURCES) $(attributes_SOURCES) $(averageImages_SOURCES) $(coalesceImages_SOURCES) $(color_SOURCES) $(montageImages_SOURCES) $(morphImages_SOURCES) $(readWriteBlob_SOURCES) $(readWriteImages_SOURCES)
+SOURCES = $(appendImages_SOURCES) $(attributes_SOURCES) $(averageImages_SOURCES) $(coalesceImages_SOURCES) $(coderInfo_SOURCES) $(color_SOURCES) $(montageImages_SOURCES) $(morphImages_SOURCES) $(readWriteBlob_SOURCES) $(readWriteImages_SOURCES)
 
 all: all-am
 
@@ -333,6 +349,9 @@ averageImages$(EXEEXT): $(averageImages_OBJECTS) $(averageImages_DEPENDENCIES)
 coalesceImages$(EXEEXT): $(coalesceImages_OBJECTS) $(coalesceImages_DEPENDENCIES) 
 	@rm -f coalesceImages$(EXEEXT)
 	$(CXXLINK) $(coalesceImages_LDFLAGS) $(coalesceImages_OBJECTS) $(coalesceImages_LDADD) $(LIBS)
+coderInfo$(EXEEXT): $(coderInfo_OBJECTS) $(coderInfo_DEPENDENCIES) 
+	@rm -f coderInfo$(EXEEXT)
+	$(CXXLINK) $(coderInfo_LDFLAGS) $(coderInfo_OBJECTS) $(coderInfo_LDADD) $(LIBS)
 color$(EXEEXT): $(color_OBJECTS) $(color_DEPENDENCIES) 
 	@rm -f color$(EXEEXT)
 	$(CXXLINK) $(color_LDFLAGS) $(color_OBJECTS) $(color_LDADD) $(LIBS)
@@ -359,6 +378,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/attributes.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/averageImages.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/coalesceImages.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/coderInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/color.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/montageImages.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/morphImages.Po@am__quote@
@@ -523,15 +543,16 @@ uninstall-am: uninstall-info-am
 
 
 check:
-	env srcdir=$(srcdir) ./color
-	env srcdir=$(srcdir) ./attributes
 	env srcdir=$(srcdir) ./appendImages
+	env srcdir=$(srcdir) ./attributes
 	env srcdir=$(srcdir) ./averageImages
 	env srcdir=$(srcdir) ./coalesceImages
+	env srcdir=$(srcdir) ./coderInfo
+	env srcdir=$(srcdir) ./color
 	env srcdir=$(srcdir) ./montageImages
 	env srcdir=$(srcdir) ./morphImages
-	env srcdir=$(srcdir) ./readWriteImages
 	env srcdir=$(srcdir) ./readWriteBlob
+	env srcdir=$(srcdir) ./readWriteImages
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
