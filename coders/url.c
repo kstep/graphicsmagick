@@ -137,7 +137,10 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   TemporaryFilename(clone_info->filename);
   file=fopen(clone_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    {
+      DestroyImageInfo(clone_info);
+      ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    }
   (void) strcpy(filename,image_info->magick);
   (void) strcat(filename,":");
   LocaleLower(filename);
@@ -165,19 +168,15 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (context != (void *) NULL)
         {
           if (xmlNanoFTPConnect(context) >= 0)
-            {
-              xmlNanoFTPGet(context,GetFTPData,(void *) file,(char *) NULL);
-              xmlNanoFTPClose(context);
-            }
+            xmlNanoFTPGet(context,GetFTPData,(void *) file,(char *) NULL);
+          xmlNanoFTPClose(context);
         }
     }
   (void) fclose(file);
-  if (context != (void *) NULL)
-    image=ReadImage(clone_info,exception);
+  *clone_info->magick='\0';
+  image=ReadImage(clone_info,exception);
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
-  if (context == (void *) NULL)
-    ThrowReaderException(DelegateWarning,"Not a valid URL",image);
   return(image);
 }
 #else
