@@ -1238,7 +1238,10 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
             for (y=0; y < (long) bitmap->bitmap.rows; y++)
             {
               if ((unsigned long) ceil(point.y+y-0.5) >= image->rows)
-                break;
+                {
+                  p+=bitmap->bitmap.width;
+                  continue;
+                }
               if ((unsigned long) ceil(point.y+y-0.5) < 0)
                 {
                   p+=bitmap->bitmap.width;
@@ -1274,7 +1277,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                 if (q == (PixelPacket *) NULL)
                   {
                     p++;
-                    break;
+                    q++;
+                    continue;
                   }
                 *q=AlphaComposite(&fill_color,opacity,q,q->opacity);
                 if (!active)
