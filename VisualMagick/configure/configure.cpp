@@ -888,6 +888,8 @@ void CConfigureApp::process_module(ofstream &dsw,
   {
 		includes_list.push_back("..\\..\\libxml");
 		includes_list.push_back("..\\..\\libxml\\include");
+    if (doesDirExist("..\\..\\autotrace"))
+		  includes_list.push_back("..\\..\\autotrace");
   }
 
   // generate the includes paths required for this module
@@ -1042,6 +1044,8 @@ void CConfigureApp::process_module(ofstream &dsw,
         if (name.compare("svg") == 0)
         {
 		      add_project_dependency(dsw, "CORE_libxml");
+          if (doesDirExist("..\\..\\autotrace"))
+		        add_project_dependency(dsw, "CORE_autotrace");
         }
       }
 	    end_project(dsw);
