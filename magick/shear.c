@@ -328,6 +328,8 @@ static void XShearImage(Image *image,const double degrees,
             /*
               Transfer pixels left-to-right.
             */
+            if (step > x_offset)
+              break;
             p=GetPixelCache(image,0,y_offset,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
@@ -378,6 +380,8 @@ static void XShearImage(Image *image,const double degrees,
         /*
           Transfer pixels left-to-right.
         */
+        if (step > x_offset)
+          break;
         p=GetPixelCache(image,0,y_offset,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
@@ -560,6 +564,8 @@ static void YShearImage(Image *image,const double degrees,
             /*
               Transfer pixels top-to-bottom.
             */
+            if (step > y_offset)
+              break;
             p=GetPixelCache(image,x_offset,0,1,image->rows);
             if (p == (PixelPacket *) NULL)
               break;
@@ -610,6 +616,8 @@ static void YShearImage(Image *image,const double degrees,
         /*
           Transfer pixels top-to-bottom.
         */
+        if (step > y_offset)
+          break;
         p=GetPixelCache(image,x_offset,0,1,image->rows);
         if (p == (PixelPacket *) NULL)
           break;
