@@ -14,72 +14,114 @@
 
 <h3>
 <a href="../ImageMagick.html">ImageMagick</a> 5.2.0, June 1, 2000</h3>
+<h4>
+&nbsp;<a NAME="User Visible Changes"></a>User Visible Changes</h4>
+
+<blockquote>
+<li>
+Under Unix, format "coder" modules may be built and installed (by default)
+to <tt>/usr/local/lib/ImageMagick/modules/coders</tt> when <i>configure</i>
+option '<tt>--with-modules</tt>' is specified. Coder modules are detected
+and loaded at run-time. Use of coder modules removes knowledge of specific
+image formats from the ImageMagick library, decreases installation dependencies,
+and allows users to add support for new formats without re-compiling ImageMagick.
+ImageMagick currently has a total of 72 coder modules. ImageMagick looks
+for modules in its installation directory, in the sub-directory ".<tt>magick</tt>"
+in the user's home directory, and in the list of directories specified
+by the environment variable <tt>MAGICK_MODULE_PATH</tt>.</li>
+
+<li>
+Module loading is also fully supported under Microsoft Windows.</li>
+
+<li>
+Image file identification based on the file header (magic) is now programmed
+via a text file (magic.mgk) rather than embedded in the C code. This allows
+extending ImageMagick's knowledge of file types without modifying ImageMagick
+itself.</li>
+
+<li>
+XML files conforming to the <a href="http://www.w3.org/Graphics/SVG/">W3C
+SVG DTD</a> are now rendered directly by ImageMagick. Support is exploratory
+at this time, and will likely be re-implemented later.</li>
+
+<li>
+The drawing primitives have been extended to support drawing bezier curves,
+rounded rectangles, and arcs. There is now support for drawing compound
+objects (a sequence of objects) using drawing paths. The concept of a drawing
+"<i>pen</i>" has been split into "<i>stroke</i>" (for the outline) and
+"<i>fill</i>" for the objects internal color. If <i>fill</i> is not defined,
+then only the object outline is drawn. This substantial change results
+in the existing drawing commands for filled objects (<i>fillEllipse</i>,
+<i>fillRectangle</i>, <i>fillCircle</i>, and <i>fillPolygon</i>) being
+deprecated.</li>
+
+<li>
+ImageMagick now supports writing a "cache" format which is a snapshot of
+ImageMagick's disk-backed pixel cache (disk usage is approximately&nbsp;
+rows x columns x 4 x sizeof(Quantum)). Use of the native cache format avoids
+the image decode step entirely (image pixels are memory-mapped, and accessed
+as required) and can be used to&nbsp; accelerate repeated accesses to a
+large image.</li>
+
+<li>
+The build environment for Windows NT is entirely re-done.&nbsp; There is
+now a "configure" program which generates a set of Visual C++ project files
+which satisfy a set of reqirements (e.g. DLL, multi-thread, X11). These
+project files are then used to build ImageMagick.</li>
+</blockquote>
+
+<h4>
+&nbsp;<a NAME="C API Changes"></a>C API Changes</h4>
+
+<blockquote>There have been substantial C API changes in order to support
+thread-safety through API reentrancy, improvements to the interface, and
+support for multiple pixel views.
+<p>API changes include:</blockquote>
 
 <ul>
+<ul>
+<li>
+The addition of an <i>ExceptionInfo</i> parameter for methods which return
+an image, which records any reported error.</li>
 
 <li>
-ImageMagick has a new logo (contributed by Ofer Tenenbaum).</li>
+The addition of an exception member (of type <i>ExceptionInfo</i>) to the
+Image structure to record any reported error for methods which update the
+image.</li>
 
 <li>
-Requests for all or part of a pixel row, or multiple complete pixel
-rows, are mapped directly to the underlying image in memory, or
-memory mapped from a disk file, avoiding performance-robbing pixel
-copying. Requested rectangular regions which are narrower than the
-image width must still be copied to a scratch space.</li>
+New method <i>GetImageException()</i> supports retrieving any reported
+errors from an Image sequence.</li>
 
 <li>
-Support for WBMP, Wireless Bitmap (level 0) images (contributed by
-Milan Votava)</li>
+Existing methods <i>BlurImage()</i>, <i>EdgeImage()</i>, <i>EmbossImage()</i>,
+<i>ReduceNoiseImage()</i>,
+and <i>SharpenImage()</i> take an entirely different form of specifying
+the degree of sharpening or blurring (based on the radius of the pixel
+region rather than a meaningless percentage).</li>
 
 <li>
-Image sizes are limited by physical memory plus available disk space on
-the machine, or the file addressing limits of the operating system, whichever
-comes first. This means that if you can figure out how to build a big enough
-machine (and have plenty of time) terabyte images can be processed.</li>
+New method <i>GaussianBlurImage()</i> added to Gaussian blur an image.</li>
 
 <li>
-An image cache subsystem and API are provided to map portions (as small
-as one pixel or as large as the entire image) of images into memory and
-to save any updates.</li>
+New methods <i>OpenCacheView()</i>, <i>CloseCacheView()</i>, <i>GetCacheView()</i>,
+<i>SetCacheView()</i>,
+and <i>SyncCacheView()</i> added in order to support manipulating multiple
+pixel views.</li>
+</ul>
+</ul>
+
+<h4>
+<a NAME="Implementation Changes"></a>Implementation Changes</h4>
+
+<ul>
+<li>
+The Image cache subsystem is re-worked in order to improve performance
+and to support multiple pixel views.</li>
 
 <li>
-Memory mapping is used to access files. This is the most efficient access
-mechanism available.</li>
-
-<li>
-DirectColor pixels are now stored in an efficient 32-bit structure (or
-64-bit when QuantumLeap is enabled).</li>
-
-<li>
-PseudoColor indices are now stored separately from the DirectColor pixels
-(PseudoColor and DirectColor representations are still available simultaneously).</li>
-
-<li>
-In-memory run-length encoding is eliminated.</li>
-
-<li>
-Compressed images are decompressed and compressed incrementally in order
-to limit memory consumption.</li>
-
-<li>
-Lots of minor C API fixes and improvements.</li>
-
-<li>
-Cache threshold setting for setting the boundary between use of RAM or
-RAM + disk when processing an image:</li>
-
-<p>- Use the --enable-cache option (e.g. --enable-cache=160) to set
-the compiled-in default when running the configure script.
-<p>- Use -cache for ImageMagick utilities
-<p>- Set the cache_threshold attribute in PerlMagick
-<p>- Set the cacheThreshold attribute in Magick++
-<p>
-<li>
-The identify utility now displays precise read-time values.</li>
-
-<li>
-The Win32 build environment (now called "VisualMagick") is completely re-done
-and supports building both multi-thread DLL as well as static libraries.</li>
+The primary mechanism for reporting errors is different in order to support
+thread safety via re-entrancy.</li>
 </ul>
 
 <br>&nbsp;

@@ -21,6 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#catchimageexception">CatchImageException</A></LI>
+		<LI><A HREF="#destroyexceptioninfo">DestroyExceptionInfo</A></LI>
 		<LI><A HREF="#getexceptioninfo">GetExceptionInfo</A></LI>
 		<LI><A HREF="#getimageexception">GetImageException</A></LI>
 		<LI><A HREF="#magickerror">MagickError</A></LI>
@@ -43,6 +44,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P><STRONG>CatchImageException</STRONG>( Image *image );</P>
+<P>void  <STRONG>DestroyExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
 <P><STRONG>GetExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
 <P><STRONG>GetImageException</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>void  <STRONG>MagickError</STRONG>( const ExceptionType error, const char *message, const char *qualifier );</P>
@@ -67,6 +69,17 @@
 Specifies a pointer to a list of one or more images.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="destroyexceptioninfo">DestroyExceptionInfo</A></H2>
+<P>Method DestroyExceptionInfo deallocates memory associated with an ExceptionInfo structure.</P>
+<P>The format of the DestroyExceptionInfo method is:</P>
+<blockquote>void DestroyExceptionInfo ( <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Specifies a pointer to an ExceptionInfo structure.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="getexceptioninfo">GetExceptionInfo</A></H2>
 <P>Method GetExceptionInfo initializes the ExceptionInfo structure.</P>
 <P>The format of the GetExceptionInfo method is:</P>
@@ -88,7 +101,7 @@ Specifies a pointer to a ExceptionInfo structure.
 <DD>
 Specifies a pointer to a list of one or more images.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 return the highest severity exception.
 <P></P></DL></DL>

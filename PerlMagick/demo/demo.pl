@@ -46,7 +46,7 @@ $example=$model->Clone();
 $example=$model->Clone();
 $example->Label('Annotate');
 $example->Annotate(text=>'Magick',geometry=>'+0+10',font=>'@Generic.ttf',
-  stroke=>'gold',gravity=>'North');
+  fill=>'gold',gravity=>'North');
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Blur');
@@ -233,7 +233,7 @@ push(@$images,$example);
 print "Montage image...\n";
 $montage=$images->Montage(filename=>'PerlMagick',geometry=>'130x194+10+5>',
   gravity=>'Center',bordercolor=>'green',borderwidth=>1,tile=>'5x1000',
-  compose=>'over',background=>'#ffffff',font=>'@Generic.ttf',stroke=>'#600');
+  compose=>'over',background=>'#ffffff',font=>'@Generic.ttf',fill=>'#600');
 $logo=Image::Magick->new();
 $logo->Read('logo:');
 $logo->Crop('461x455+98+0');

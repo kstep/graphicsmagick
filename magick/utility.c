@@ -258,7 +258,10 @@ Export unsigned int CloneString(char **destination,const char *source)
   assert(destination != (char **) NULL);
   FreeMemory((void **) &*destination);
   if (source == (const char *) NULL)
-    return(True);
+    {
+      *destination=(char *) NULL;
+      return(True);
+    }
   *destination=AllocateString(source);
   return(True);
 }

@@ -44,7 +44,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>DrawInfo * <STRONG>CloneDrawInfo</STRONG>( const ImageInfo *image_info, const DrawInfo *draw_info );</P>
-<P>unsigned int  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const PixelPacket target, Image *tile, const int x_offset, const int y_offset, const PaintMethod method );</P>
+<P>unsigned int  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const DrawInfo *draw_info, const PixelPacket target, const int x_offset, const int y_offset, const PaintMethod method );</P>
 <P>void  <STRONG>DestroyDrawInfo</STRONG>( DrawInfo *draw_info );</P>
 <P>unsigned int  <STRONG>DrawImage</STRONG>( Image *image, const DrawInfo *draw_info );</P>
 <P>void  <STRONG>GetDrawInfo</STRONG>( const ImageInfo *image_info, DrawInfo *draw_info );</P>
@@ -82,22 +82,22 @@ a structure of type DrawInfo.
 <H2><A NAME="colorfloodfillimage">ColorFloodfillImage</A></H2>
 <P>Method ColorFloodfillImage floodfills the designated area with a color.  The floodfill algorithm is strongly based on a similar algorithm in ``Graphics Gems'' by Paul Heckbert.</P>
 <P>The format of the ColorFloodfillImage method is:</P>
-<blockquote>unsigned int ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, <A HREF="types/Image.html">Image</A> *tile, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
+<blockquote>unsigned int ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 The address of a structure of type Image.
 <P></P>
+<p><dt><STRONG>draw_info:</STRONG><BR>
+<DD>
+a structure of type DrawInfo.
+<P></P>
 <p><dt><STRONG><A NAME="item_o_target%3A">target:</A></STRONG><BR>
 <DD>
 
 <FONT SIZE=-1>A</FONT> PixelPacket structure.  This is the 
 <FONT SIZE=-1>RGB</FONT> value of the target color.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_tile%3A">tile:</A></STRONG><BR>
-<DD>
-An image representing the image to tile onto the floodplane.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_x%2Cy%3A">x,y:</A></STRONG><BR>
 <DD>

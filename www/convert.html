@@ -319,6 +319,9 @@ Language a with client-side image map.</dd>
 <img SRC="../images/ball.png" ALT="*" ><b>SUN+</b> - SUN Rasterfile.</dd>
 
 <dd>
+<img SRC="../images/ball.png" ALT="*" ><b>SVG+</b> - Scalable Vector Graphics.</dd>
+
+<dd>
 <img SRC="../images/ball.png" ALT="*" ><b>TEXT</b> - raw text file; read
 only.</dd>
 
@@ -408,6 +411,7 @@ two bytes per pixel in most-significant-byte-first order.</dl>
 </tr>
 </table>
 
+<p>
 <dd>
 To convert a <i>MIFF</i> image of a cockatoo to a SUN raster image, use:</dd>
 
@@ -415,7 +419,7 @@ To convert a <i>MIFF</i> image of a cockatoo to a SUN raster image, use:</dd>
 <dd>
 <tt>convert cockatoo.miff sun:cockatoo.ras</tt></dd>
 </dl>
-
+<p>
 <dd>
 To convert a multi-page <i>PostScript</i> document to individual FAX pages,
 use:</dd>
@@ -425,6 +429,7 @@ use:</dd>
 <tt>convert -monochrome document.ps fax:page</tt></dd>
 </dl>
 
+<p>
 <dd>
 To convert a TIFF image to a <i>PostScript</i> A4 page with the image in
 the lower left-hand corner, use:</dd>
@@ -433,18 +438,23 @@ the lower left-hand corner, use:</dd>
 <dd>
 <tt>convert -page A4+0+0 image.tiff document.ps</tt></dd>
 </dl>
+<p>
 To convert a raw Gray image with a 128 byte header to a portable graymap,
 use:
-<dl><tt>convert -size 768x512"+1"28 gray:raw image.pgm</tt></dl>
+<dl>
+<dd>
+<tt>convert -size 768x512+128 gray:raw image.pgm</tt></dd></dl>
 
 <dd>
+<p>
 To convert a Photo CD image to a TIFF image, use:</dd>
 
-<dl><tt>convert -size 1536x1024 img0009.pcd image.tiff</tt>
+<dl>
 <dd>
+<tt>convert -size 1536x1024 img0009.pcd image.tiff</tt><br>
 <tt>convert img0009.pcd[4] image.tiff</tt></dd>
 </dl>
-
+<p>
 <dd>
 To create a visual image directory of all your JPEG images, use:</dd>
 
@@ -453,6 +463,7 @@ To create a visual image directory of all your JPEG images, use:</dd>
 <tt>convert 'vid:*.jpg' directory.miff</tt></dd>
 </dl>
 
+<p>
 <dd>
 To annotate an image with blue text using font 12x24 at position (100,100),
 use:</dd>
@@ -463,6 +474,7 @@ use:</dd>
 bird.miff</tt></dd>
 </dl>
 
+<p>
 <dd>
 To tile a 640x480 image with a JPEG texture with bumps use:</dd>
 
@@ -471,6 +483,7 @@ To tile a 640x480 image with a JPEG texture with bumps use:</dd>
 <tt>convert -size 640x480 tile:bumps.jpg tiled.png</tt></dd>
 </dl>
 
+<p>
 <dd>
 To surround an icon with an ornamental border to use with Mosaic(1), use:</dd>
 
@@ -479,6 +492,7 @@ To surround an icon with an ornamental border to use with Mosaic(1), use:</dd>
 <tt>convert -mattecolor #697B8F -frame 6x6 bird.jpg icon.png</tt></dd>
 </dl>
 
+<p>
 <dd>
 To create a GIF animation from a DNA molecule sequence, use:</dd>
 
@@ -813,6 +827,7 @@ offset>{+-}&lt;y offset>{%}</i></font></font></font></b></td>
 preferred size and location of the cropped image. See <i>X(1)</i> for details
 about the geometry specification.</dd>
 
+<p>
 <dd>
 To specify a percentage width or height instead, append <b>%</b>. For example
 to crop the image by ten percent on all sides of the image, use <b>-crop
@@ -2040,7 +2055,7 @@ The default is 1.5. See <a href="#segm">Image Segmentation</a> for details.</dd>
 
 <dd>
 shade the image using a distant light source.</dd>
-
+<p>
 <dd>
 Specify <i>azimuth</i> and <i>elevation</i> as the position of the light
 source. Use <b>+shade</b> to return the shading results as a grayscale
@@ -2134,6 +2149,7 @@ or JPEG image (e.g. -size 1024x768).</dd>
 negate all pixels above the threshold level. Specify <i>factor</i> as the
 percent threshold of the intensity (0 - 99.9%).</dd>
 
+<p>
 <dd>
 This option produces a <i>solarization</i> effect seen when exposing a
 photographic film to light during the development process.</dd>
@@ -2149,7 +2165,7 @@ photographic film to light during the development process.</dd>
 
 <dd>
 displace image pixels by a random amount.</dd>
-
+<p>
 <dd>
 <i>Amount</i> defines the size of the neighborhood around each pixel to
 choose a candidate pixel to swap.</dd>
@@ -2178,7 +2194,7 @@ details.</dd>
 
 <dd>
 swirl image pixels about the center.</dd>
-
+<p>
 <dd>
 <i>Degrees</i> defines the tightness of the swirl.</dd>
 </dl>
@@ -2217,7 +2233,7 @@ name of texture to tile onto the image background.</dd>
 
 <dd>
 threshold the image.</dd>
-
+<p>
 <dd>
 Create a bi-level image such that any pixel intensity that is equal or
 exceeds the threshold is reassigned the maximum intensity otherwise the
@@ -2243,7 +2259,7 @@ However, the default depth is inappropriate for some images. To assure
 the best representation, try values between 2 and 8 for this parameter.
 Refer to
 <a href="quantize.html">quantize</a> for more details.</dd>
-
+<p>
 <dd>
 The <b>-colors</b> or <b>-monochrome</b> option is required for this option
 to take effect.</dd>
@@ -2271,12 +2287,13 @@ the type of image resolution: <b>Undefined</b>, <b>PixelsPerInch</b>, or
 
 <dd>
 print detailed information about the image.</dd>
-
+<p>
 <dd>
 This information is printed: image scene number; image name; image size;
 the image class (<i>DirectClass</i> or <i>PseudoClass</i>); the total number
 of unique colors; and the number of seconds to read and transform the image.
 Refer to <a href="miff.html">miff</a> for a description of the image class.</dd>
+<p>
 
 <dd>
 If <b>-colors</b> is also specified, the total unique colors in the image
@@ -2310,14 +2327,14 @@ alter an image along a sine wave.</dd>
 <dd>
 Specify <i>amplitude</i> and <i>wavelength</i> to effect the characteristics
 of the wave.</dd>
-
+<p>
 <dt>
 By default, the image format is determined by its magic number. To specify
 a particular image format, precede the filename with an image format name
 and a colon (<i>i.e.</i><b>ps:image</b>) or specify the image type as the
 filename suffix</dt>
 
-<p><br>When you specify <b>X</b> as your image type, the filename has special
+<p>When you specify <b>X</b> as your image type, the filename has special
 meaning. It specifies an X window by <b>id, name</b>, or
 <b>root</b>. If
 no filename is specified, the window is selected by clicking the mouse
@@ -2374,7 +2391,7 @@ The color associated with each class is determined by the mean color of
 all pixels within the extents of a particular class. Finally, any unclassified
 pixels are assigned to the closest class with the fuzzy c-means technique.</dd>
 
-<p><br>The fuzzy c-Means algorithm can be summarized as follows:
+<p>The fuzzy c-Means algorithm can be summarized as follows:
 <ul>
 <li>
 Build a histogram, one for each color component of the image.</li>
@@ -2396,6 +2413,7 @@ Any pixel that fails to be classified in the above thresholding pass is
 classified using the fuzzy c-Means technique. It is assigned to one of
 the classes discovered in the histogram analysis phase.</li>
 </ul>
+<p>
 The fuzzy c-Means technique attempts to cluster a pixel by finding the
 local minima of the generalized within group sum of squared error objective
 function. A pixel is assigned to the closest class of which the fuzzy membership
@@ -2452,7 +2470,7 @@ Studio</b>.</dd>
 
 <dd>
 <b>Copyright (C) 2000 ImageMagick Studio</b></dd>
-
+<p>
 <dd>
 <b>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files ("ImageMagick"),
@@ -2460,10 +2478,12 @@ to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
 is furnished to do so, subject to the following conditions:</b></dd>
+<p>
 
 <dd>
 <b>The above copyright notice and this permission notice shall be included
 in all copies or substantial portions of ImageMagick.</b></dd>
+<p>
 
 <dd>
 <b>The software is provided "as is", without warranty of any kind, express
@@ -2473,6 +2493,7 @@ ImageMagick Studio be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out
 of or in connection with ImageMagick or the use or other dealings in ImageMagick.</b></dd>
 
+<p>
 <dd>
 <b>Except as contained in this notice, the name of the E. I. du Pont de
 Nemours and Company shall not be used in advertising or otherwise to promote

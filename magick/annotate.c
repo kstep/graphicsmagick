@@ -136,7 +136,8 @@ Export unsigned int AnnotateImage(Image *image,
   /*
     Translate any embedded format characters (e.g. %f).
   */
-  clone_info=CloneAnnotateInfo((ImageInfo *) NULL,annotate_info);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  clone_info=CloneAnnotateInfo(image_info,annotate_info);
   text=TranslateText((ImageInfo *) NULL,image,clone_info->text);
   if (text == (char *) NULL)
     {
@@ -189,6 +190,11 @@ Export unsigned int AnnotateImage(Image *image,
     Annotate image.
   */
   matte=image->matte;
+  image_info->font=AllocateString(annotate_info->font);
+  image_info->pointsize=annotate_info->pointsize;
+  image_info->antialias=annotate_info->antialias;
+  image_info->fill=annotate_info->fill;
+  image_info->stroke=annotate_info->stroke;
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
     if (*textlist[i] == '\0')
@@ -201,22 +207,10 @@ Export unsigned int AnnotateImage(Image *image,
     */
     FormatString(label,"label:%.1024s",textlist[i]);
     FreeMemory((void **) &textlist[i]);
-    image_info=CloneImageInfo((ImageInfo *) NULL);
-    CloneString(&image_info->font,annotate_info->font);
-    image_info->pointsize=annotate_info->pointsize;
-    image_info->antialias=annotate_info->antialias;
-    image_info->fill=annotate_info->fill;
-    image_info->stroke=annotate_info->stroke;
     (void) strcpy(image_info->filename,label);
     annotate_image=ReadImage(image_info,&image->exception);
     if (annotate_image == (Image *) NULL)
-      {
-        for (i++ ; textlist[i] != (char *) NULL; i++)
-          FreeMemory((void **) &textlist[i]);
-        FreeMemory((void **) &textlist);
-        DestroyAnnotateInfo(clone_info);
-        return(False);
-      }
+      break;
     if (annotate_info->degrees != 0.0)
       {
         Image
@@ -309,8 +303,8 @@ Export unsigned int AnnotateImage(Image *image,
     DestroyImage(annotate_image);
   }
   image->matte=matte;
-  DestroyAnnotateInfo(clone_info);
   DestroyImageInfo(image_info);
+  DestroyAnnotateInfo(clone_info);
   FreeMemory((void **) &text);
   for ( ; textlist[i] != (char *) NULL; i++)
     FreeMemory((void **) &textlist[i]);

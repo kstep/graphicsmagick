@@ -332,8 +332,8 @@ If the first character of \fIstring\fP is \fB@\fP, the text is read
 from a file titled by the remaining characters in the string.
 
 You can set the primitive color, font color, and font bounding box color with
-\fB-fill\fP, \fB-font\fP, and \fB-box\fP respectively.  Options are
-processed in command line order so be sure to use \fB-fill\fP
+\fB-pen\fP, \fB-font\fP, and \fB-box\fP respectively.  Options are
+processed in command line order so be sure to use \fB-pen\fP
 \fIbefore\fP the \fB-draw\fP option.
 .TP
 .B "-edge \fIfactor\fP"
@@ -352,9 +352,8 @@ apply a digital filter to enhance a noisy image.
 .B "-equalize"
 perform histogram equalization to the image.
 .TP
-.B "-fill \fIcolor\fP"
-color to use when filling a graphic primitive.  See \fB-draw\fP for further
-details.
+.B "-fill
+paint the interior of a drawing primitive.
 .TP
 .B "-filter \fIvalue\fP"
 use this type of filter when resizing an image.
@@ -609,7 +608,7 @@ transform image to span the full range of color values.
 This is a contrast enhancement technique.
 .TP
 .B "-opaque \fIcolor\fP"
-change this color to the pen color within the image.  See \fB-fill\fP for
+change this color to the pen color within the image.  See \fB-pen\fP for
 more details.
 .TP
 .B "-page \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
@@ -681,6 +680,13 @@ simulate an oil painting.
 
 Each pixel is replaced by the most frequent color in a circular neighborhood
 whose width is specified with \fIradius\fP.
+.TP
+.B "-pen \fIcolor\fP"
+set the color of the font or opaque color.  See \fB-draw\fP for further details.
+
+See \fBX(1)\fP for details about the color specification.  A pen can also
+be an image.  Specify the pen color as an image name preceded by a \fB@\fP
+(e.g. @tile.gif).
 .TP
 .B "-pointsize \fIvalue\fP"
 pointsize of the Postscript font.
@@ -827,10 +833,6 @@ displace image pixels by a random amount.
 
 \fIAmount\fP defines the size of the neighborhood around each pixel to
 choose a candidate pixel to swap.
-.TP
-.B "-stroke \fIcolor\fP"
-color to use when stroking a graphic primitive.  See \fB-draw\fP for further
-details.
 .TP
 .B "-swirl \fIdegrees\fP"
 swirl image pixels about the center.

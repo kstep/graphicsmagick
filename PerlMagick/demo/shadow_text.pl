@@ -4,7 +4,7 @@
 #
 use Image::Magick;
 
-$image=Image::Magick->new(size=>'300x100');
+$image=Image::Magick->new(size=>'300x120');
 $image->Read('xc:white');
 $image->Annotate(font=>'@Generic.ttf', pen=>'black',pointsize=>60,
   gravity=>'Center',text=>'Magick');

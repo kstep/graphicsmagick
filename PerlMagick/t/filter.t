@@ -44,7 +44,7 @@ testFilter('input.miff', 'Colorize',
 ++$test;
 testFilter('input.miff', 'Contrast',
   q/1/,
-  'c2156d2134de57d98a03fe8ffdf0a3cd',
+  'ade6d7be494f4d3437c7f9a3fa008adc',
   'e4d90d8d2af844650864c4e193acb270');
 
 ++$test;
@@ -136,7 +136,7 @@ testFilter('input.miff', 'Minify',
 ++$test;
 testFilter('input.miff', 'Modulate',
   q/60/,
-  '9f6e4d0ecb962edbc7b845d6864974eb',
+  '65f8486a7df15abe362e4252b7294e6a',
   '37f5e04c9ea0c788680c4353ed1d4060');
 
 ++$test;

@@ -4157,9 +4157,6 @@ Mogrify(ref,...)
           AnnotateInfo
             *annotate_info;
 
-          if (attribute_flag[1])
-            (void) CloneString(&info->image_info->font,
-              argument_list[1].string_reference);
           if (attribute_flag[2])
             info->image_info->pointsize=argument_list[2].double_reference;
           if (attribute_flag[3])
@@ -4173,6 +4170,9 @@ Mogrify(ref,...)
           if (attribute_flag[0])
             (void) CloneString(&annotate_info->text,
               argument_list[0].string_reference);
+          if (attribute_flag[1])
+            (void) CloneString(&annotate_info->font,
+              argument_list[1].string_reference);
           if (attribute_flag[4])
             (void) QueryColorDatabase(argument_list[4].string_reference,
               &annotate_info->box);
@@ -5003,6 +5003,8 @@ Montage(ref,...)
               if (info)
                 (void) QueryColorDatabase(SvPV(ST(i),na),
                   &info->image_info->fill);
+              (void) QueryColorDatabase(SvPV(ST(i),na),
+                &montage_info->fill);
               continue;
             }
           if (strEQcase(attribute,"font"))
@@ -5118,6 +5120,21 @@ Montage(ref,...)
               montage_info->pointsize=SvIV(ST(i));
               continue;
             }
+          if (strEQcase(attribute,"pen"))
+            {
+              if (info)
+                {
+                  (void) QueryColorDatabase(SvPV(ST(i),na),
+                    &info->image_info->fill);
+                  (void) QueryColorDatabase(SvPV(ST(i),na),
+                    &info->image_info->stroke);
+                }
+              (void) QueryColorDatabase(SvPV(ST(i),na),
+                &montage_info->fill);
+              (void) QueryColorDatabase(SvPV(ST(i),na),
+                &montage_info->stroke);
+              continue;
+            }
           break;
         }
         case 'S':
@@ -5141,6 +5158,8 @@ Montage(ref,...)
               if (info)
                 (void) QueryColorDatabase(SvPV(ST(i),na),
                   &info->image_info->stroke);
+              (void) QueryColorDatabase(SvPV(ST(i),na),
+                &montage_info->stroke);
               continue;
             }
           break;
