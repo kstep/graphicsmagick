@@ -1,3 +1,14 @@
+2002-12-12 William Radcliffe <billr@corbis.com>
+	* utilities/gm.c
+	Fixes a crashing bug in gm.c caused by an attempt tp free a bad
+	pointer. Added comments to the code that explain why this happens
+	so that future developers don't fall into the same trap.
+	* win2k/IMDisplay/IMDisplay.rc
+	Modified some of the string resources that define supported file
+	formats that were in error. One exmaple was eps with had a *.eps
+	in the string instead of just .eps. This caused the document
+	class to ASSERT under the debug build.
+
 2002-12-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* Enable the module loading code for shared/DLL builds
 	regardless of whether the build is a "modules" build. This
