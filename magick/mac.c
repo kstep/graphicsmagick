@@ -1061,9 +1061,11 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
+  int
     depth,
-    status,
+    status;
+
+  long
     y;
 
   PicHandle
