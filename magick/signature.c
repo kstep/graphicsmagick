@@ -380,7 +380,8 @@ static void UpdateSignature(SignatureInfo *signature_info,
       i=SignatureSize-signature_info->offset;
       if (i > (long) length)
         i=(long) length;
-      (void) CloneMemory(signature_info->message+signature_info->offset,message,i);
+      (void) CloneMemory(signature_info->message+signature_info->offset,
+        message,i);
       length-=i;
       message+=i;
       signature_info->offset+=i;
