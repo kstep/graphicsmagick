@@ -68,9 +68,9 @@ JBIG=
 endif
 
 if HasJPEG
-JPG=JPG
+JPEG=JPEG
 else
-JPG=
+JPEG=
 endif
 
 if HasPNG
