@@ -273,7 +273,7 @@ int main(int argc,char **argv)
   /*
     Check for server name specified on the command line.
   */
-  server_name=(char *) NULL;
+  server_name=AllocateString(":0");
   for (i=1; i < argc; i++)
   {
     /*
