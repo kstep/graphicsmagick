@@ -76,6 +76,9 @@ static void PrintUsage(void)
 
 int main(int argc,char **argv)
 {
+  char
+    *text;
+
   ExceptionInfo
     exception;
 
@@ -101,7 +104,14 @@ int main(int argc,char **argv)
 
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  status=MagickCommand(image_info,argc,argv,(char **) NULL,&exception);
+  text=(char *) NULL;
+  status=MagickCommand(image_info,argc,argv,&text,&exception);
+  if (text != (char *) NULL)
+    {
+      (void) fputs(text,stdout);
+      (void) fputc('\n',stdout);
+      LiberateMemory((void **) &text);
+    }
   if (exception.severity != UndefinedException)
     CatchException(&exception);
   DestroyImageInfo(image_info);
