@@ -53,6 +53,40 @@
 </tr>
 </table>
 <p>
+2003-10-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Updated to use GNU Automake 1.7.8 and the very
+        latest CVS libtool.
+
+</UL>
+<p>
+2003-10-07  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> Revised ScaleColor5to8 and ScaleColor6to8 macros again, to
+        fill the low bits correctly.
+
+</UL>
+<p>
+2003-10-06  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/png.c (ReadOnePNGImage): PNG decoder would exit too
+        early when reading image.png[0].
+
+</UL>
+<p>
+2003-10-04  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> Revised ScaleColor5to8 and ScaleColor6to8 macros to fill in
+        the low bytes.<BR>
+  <LI> coders/bmp.c (ReadBMPImage): scaling of 5-5-5-bit, 5-6-5-bit
+        and 8-8-8-8-bit images was slightly incorrect.
+
+</UL>
+<p>
 2003-10-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
