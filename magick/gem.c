@@ -106,8 +106,8 @@ MagickExport PixelPacket AlphaComposite(const PixelPacket *p,
     (double) alpha*(MaxRGB-beta)*q->green/MaxRGB)+0.5);
   composite.blue=(Quantum) (gamma*((double) (MaxRGB-alpha)*p->blue+
     (double) alpha*(MaxRGB-beta)*q->blue/MaxRGB)+0.5);
-  composite.opacity=(Quantum) (gamma*((double) (MaxRGB-alpha)*MaxRGB+
-    (double) alpha*(MaxRGB-beta)*MaxRGB/MaxRGB)+0.5);
+  composite.opacity=(Quantum) (((double) (MaxRGB-alpha)+
+    (double) alpha*(MaxRGB-beta)/MaxRGB)+0.5);
   return(composite);
 }
 
