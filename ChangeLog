@@ -1,5 +1,7 @@
 2003-08-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Copyright.txt: Added missing copyright notice which is required
+	due to copying the rlecomp manual page into ImageMagick.
 	* doc/config_files.imdoc: Started documentation for configuration
 	files.
 	* magick/xwindow.c (XSignalHandler): Ensure that segment_info is
