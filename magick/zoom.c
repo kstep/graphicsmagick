@@ -841,9 +841,9 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   scanline=x_vector;
   if (scale_image->rows != image->rows)
     scanline=(ScaledPacket *)
-      AllocateMemory(2*image->columns*sizeof(ScaledPacket));
+      AllocateMemory(image->columns*sizeof(ScaledPacket));
   scale_scanline=(ScaledPacket *)
-    AllocateMemory(2*scale_image->columns*sizeof(ScaledPacket));
+    AllocateMemory(scale_image->columns*sizeof(ScaledPacket));
   y_vector=(ScaledPacket *) AllocateMemory(image->columns*sizeof(ScaledPacket));
   if ((scanline == (ScaledPacket *) NULL) ||
       (scale_scanline == (ScaledPacket *) NULL) ||
