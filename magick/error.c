@@ -146,6 +146,18 @@ MagickExport ExceptionType CatchImageException(Image *image)
 %
 %
 */
+
+static const char *GetErrorMessageString(const int error_number)
+{
+	const char
+		*message;
+
+  message=strerror(error_number);
+  if (message == (const char *) NULL)
+    return("Error number is out of range");
+  return(message);
+}
+
 static void DefaultErrorHandler(const ExceptionType error,const char *reason,
   const char *description)
 {
@@ -159,7 +171,7 @@ static void DefaultErrorHandler(const ExceptionType error,const char *reason,
   if (description != (char *) NULL)
     (void) fprintf(stderr," (%.1024s)",description);
   if ((error != OptionError) && errno)
-    (void) fprintf(stderr," [%.1024s]",strerror(errno));
+    (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
   (void) fprintf(stderr,".\n");
   DestroyMagick();
   Exit(error);
@@ -204,7 +216,7 @@ static void DefaultWarningHandler(const ExceptionType warning,
   if (description != (char *) NULL)
     (void) fprintf(stderr," (%.1024s)",description);
   if ((warning != OptionWarning) && errno)
-    (void) fprintf(stderr," [%.1024s]",strerror(errno));
+    (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
   (void) fprintf(stderr,".\n");
 }
 
