@@ -1,8 +1,11 @@
 2003-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* images: The logo image was determined to have a copyright
-	problem so replace with blank images until a replacement is
-	available.
+	* index.html: Adjust width setting for magick.png.
+	* coders/logo.c: Update to use temporary frog logo image
+	until official logo image is available.
+	* magick/magick_config_api.h.in: Add HasX11 so installed
+	xwindow.h works.
+	* images: Replace logo images with temporary frog logo image.
 
 2003-05-17  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
