@@ -777,7 +777,7 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
                   exception;
 
                 GetExceptionInfo(&exception);
-                image=CloneImage(image,0,0,False,&exception);
+                image=CloneImage(image,0,0,True,&exception);
                 if (image == (Image *) NULL)
                   {
                     MagickWarning(exception.severity,exception.reason,
@@ -2488,7 +2488,7 @@ Copy(ref)
     SvREFCNT_dec(av);
     for (next=image; next; next=next->next)
     {
-      image=CloneImage(next,0,0,False,&next->exception);
+      image=CloneImage(next,0,0,True,&next->exception);
       if (!image)
         {
           MagickWarning(next->exception.severity,next->exception.reason,
@@ -6686,7 +6686,7 @@ Transform(ref,...)
     GetExceptionInfo(&exception);
     for (next=image; next; next=next->next)
     {
-      clone=CloneImage(next,0,0,False,&exception);
+      clone=CloneImage(next,0,0,True,&exception);
       if (clone)
         TransformImage(&clone,crop_geometry,geometry);
       if (!image)
