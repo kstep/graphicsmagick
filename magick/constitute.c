@@ -2143,12 +2143,10 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteImage writes an image to a file as defined by image->filename.
-%  You can specify a particular image format by prefixing the file with the
-%  image type and a colon (i.e. ps:image) or specify the image type as the
-%  filename suffix (i.e. image.ps).  The image may be modified to adapt it
-%  to the requirements of the image format.  For example, DirectClass images
-%  must be color-reduced to PseudoClass if the format is GIF.
+%  Write() allows you to write a single or image or a sequence to a file or
+%  filehandle.  Write() returns a value other than 0 if the image is written.
+%  If 0 is returned, check the exception member of image to determine why the
+%  image failed to write.
 %
 %  The format of the WriteImage method is:
 %
@@ -2156,11 +2154,8 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method WriteImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Write the image defined by the file or filename members of
+%      this structure.
 %
 %    o image: A pointer to a Image structure.
 %
@@ -2200,7 +2195,8 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     {
       delegate_info=GetDelegateInfo(image->magick,clone_info->magick,
         &image->exception);
-      if ((delegate_info != (DelegateInfo *) NULL) && (delegate_info->mode == 0))
+      if ((delegate_info != (DelegateInfo *) NULL) &&
+          (delegate_info->mode == 0))
         {
           /*
             Let our bi-modal delegate process the image.
@@ -2216,7 +2212,8 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     Call appropriate image writer based on image type.
   */
   status=False;
-  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,&image->exception);
+  magick_info=(MagickInfo *)
+    GetMagickInfo(clone_info->magick,&image->exception);
   if ((magick_info != (MagickInfo *) NULL) &&
       (magick_info->encoder !=
         (unsigned int (*)(const ImageInfo *,Image *)) NULL))
