@@ -657,8 +657,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
       "/%.1024s-ISO dup /%.1024s ReencodeFont findfont setfont\n",
       draw_info->font,draw_info->font);
   (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",draw_info->affine.sx,
-    -draw_info->affine.rx,-draw_info->affine.ry,
-    draw_info->affine.sy);
+    -draw_info->affine.rx,-draw_info->affine.ry,draw_info->affine.sy);
   text=EscapeParenthesis(draw_info->text);
   if (!identity)
     (void) fprintf(file,"(%.1024s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
