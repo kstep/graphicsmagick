@@ -1197,14 +1197,22 @@ static void SVGEndElement(void *context,const xmlChar *name)
     }
   if (LocaleCompare((char *) name,"text") == 0)
     {
+      Strip(svg_info->text);
       (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->page.x,
         svg_info->page.y,svg_info->text);
+      *svg_info->text='\0';
       return;
     }
+
+  if (svg_info->text != (char *) NULL)
+    *svg_info->text='\0';
 }
 
 static void SVGCharacters(void *context,const xmlChar *c,int length)
 {
+  register char
+    *p;
+
   register int
     i;
 
@@ -1222,16 +1230,20 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
         (void) fprintf(stdout,"%c",c[i]);
       (void) fprintf(stdout,", %d)\n",length);
     }
-  if (svg_info->text == (char *) NULL)
-    svg_info->text=(char *) AcquireMemory(length+1);
+  if (svg_info->text != (char *) NULL)
+    ReacquireMemory((void **) &svg_info->text,strlen(svg_info->text)+length+1);
   else
-    ReacquireMemory((void **) &svg_info->text,length+1);
+    {
+      svg_info->text=(char *) AcquireMemory(length+1);
+      if (svg_info->text != (char *) NULL)
+        *svg_info->text='\0';
+    }
   if (svg_info->text == (char *) NULL)
     return;
+  p=svg_info->text+strlen(svg_info->text);
   for (i=0; i < length; i++)
-    svg_info->text[i]=c[i];
-  svg_info->text[i]='\0';
-  Strip(svg_info->text);
+    *p++=c[i];
+  *p='\0';
 }
 
 static void SVGReference(void *context,const xmlChar *name)
