@@ -6635,7 +6635,7 @@ else
   cat >conftest.$ac_ext <<_ACEOF
 #line 6636 "configure"
 #include "confdefs.h"
-#include <lcms/lcms.h>
+#include <lcms.h>
 _ACEOF
 if { (eval echo "$as_me:6640: \"$ac_cpp conftest.$ac_ext >/dev/null\"") >&5
   (eval $ac_cpp conftest.$ac_ext >/dev/null) 2>conftest.er1
