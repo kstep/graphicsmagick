@@ -949,7 +949,7 @@ namespace Magick
 
     // Transfers read-only pixels from the image to the pixel cache as
     // defined by the specified region
-    const PixelPacket* getConstPixels ( const unsigned int x_, const unsigned int y_,
+    const PixelPacket* getConstPixels ( const int x_, const int y_,
                                         const unsigned int columns_,
                                         const unsigned int rows_ ) const;
 
@@ -962,13 +962,13 @@ namespace Magick
     // by the specified region. Modified pixels may be subsequently
     // transferred back to the image via syncPixels.
     // This method is valid for DirectClass images
-    PixelPacket* getPixels ( const unsigned int x_, const unsigned int y_,
+    PixelPacket* getPixels ( const int x_, const int y_,
 			     const unsigned int columns_, const unsigned int rows_ );
 
     // Allocates a pixel cache region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel cache to the image via syncPixels.
-    PixelPacket* setPixels ( const unsigned int x_, const unsigned int y_,
+    PixelPacket* setPixels ( const int x_, const int y_,
 			     unsigned int columns_, unsigned int rows_ );
 
     // Transfers the image cache pixels to the image.
@@ -1016,7 +1016,7 @@ namespace Magick
     void            modifyImage ( void );
 
     // Test for ImageMagick error and throw exception if error
-    void            throwImageException( void );
+    void            throwImageException( void ) const;
 
     // Register image with image registry or obtain registration id
     long            registerId( void );

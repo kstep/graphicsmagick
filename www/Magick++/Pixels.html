@@ -1,7 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
@@ -50,23 +49,28 @@ an image similar to the one on the right (minus lines and text):
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;
-</font><font color="#FF0000">// Create base image</font></font></font>
+</font><font color="#FF0000">//
+Create base image</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
 Image image(Geometry(254,218), "white");</font></font></font>
 <p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;
-</font><font color="#FF0000">// Set image pixels to DirectClass representation</font></font></font>
+</font><font color="#FF0000">//
+Set image pixels to DirectClass representation</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
 image.classType( DirectClass );</font></font></font>
 <p><font face="Courier New,Courier"><font size=-1>&nbsp;&nbsp; <font color="#FF0000">//
 Ensure that there is only one reference to underlying image</font></font></font>
+<br><font face="Courier New,Courier"><font color="#FF0000"><font size=-1>&nbsp;&nbsp;
+// If this is not done, then image pixels will not be modified.</font></font></font>
 <br><font face="Courier New,Courier"><font size=-1>&nbsp;&nbsp; <font color="#000099">image.modifyImage();</font></font></font>
 <p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;
-</font><font color="#FF0000">// Allocate pixel view</font></font></font>
+</font><font color="#FF0000">//
+Allocate pixel view</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
 Pixels view(image);</font></font></font>
 <p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;
-</font><font color="#FF0000">// Set all pixels in region anchored at 38x36,
-with size 160x230 to green.</font></font></font>
+</font><font color="#FF0000">//
+Set all pixels in region anchored at 38x36, with size 160x230 to green.</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
 unsigned int columns = 196; unsigned int rows = 162;</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
@@ -74,16 +78,16 @@ Color green("green");</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
 PixelPacket *pixels = view.get(38,36,columns,rows);</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
-for ( unsigned int row = 0; row &lt; rows ; ++row )</font></font></font>
+for ( int row = 0; row &lt; rows ; ++row )</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;
-for ( unsigned int column = 0; column &lt; columns ; ++column )</font></font></font>
+for ( int column = 0; column &lt; columns ; ++column )</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 *pixels++=green;</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
 view.sync();</font></font></font>
 <p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;
-</font><font color="#FF0000">// Set all pixels in region anchored at 86x72,
-with size 108x67 to yellow.</font></font></font>
+</font><font color="#FF0000">//
+Set all pixels in region anchored at 86x72, with size 108x67 to yellow.</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
 columns = 108; rows = 67;</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
@@ -91,15 +95,16 @@ Color yellow("yellow");</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
 pixels = view.get(86,72,columns,rows);</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
-for ( unsigned int row = 0; row &lt; rows ; ++row )</font></font></font>
+for ( int row = 0; row &lt; rows ; ++row )</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-for ( unsigned int column = 0; column &lt; columns ; ++column )</font></font></font>
+for ( int column = 0; column &lt; columns ; ++column )</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 *pixels++=yellow;</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;&nbsp;
 view.sync();</font></font></font>
 <p><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;
-</font><font color="#FF0000">// Set pixel at position 108,94 to red</font></font></font>
+</font><font color="#FF0000">//
+Set pixel at position 108,94 to red</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
 *(view.get(108,94,1,1)) = Color("red");</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
@@ -139,12 +144,27 @@ view.sync();</font></font></font></td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
 
-<td><font size=-1>int x_, int y_, unsigned int columns_, unsigned int rows_</font></td>
+<td><font size=-1>const int x_, const int y_, const unsigned const int
+columns_, const unsigned int rows_</font></td>
 
-<td><font size=-1>Transfers pixels from the image to the pixel cache as
-defined by the specified rectangular region. Modified pixels may be subsequently
-transferred back to the image via <i>sync</i>. The value returned is intended
-for pixel access only. It should never be deallocated.</font></td>
+<td><font size=-1>Transfers read-write pixels from the image to the pixel
+cache as defined by the specified rectangular region. Modified pixels may
+be subsequently transferred back to the image via <i>sync</i>. The value
+returned is intended for pixel access only. It should never be deallocated.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="getConst"></a><font size=-1>getConst</font></center>
+</td>
+
+<td><font size=-1>const <a href="PixelPacket.html">PixelPacket</a>*</font></td>
+
+<td><font size=-1>const int x_, const int y_, const unsigned int columns_,
+const unsigned int rows_</font></td>
+
+<td><font size=-1>Transfers read-only pixels from the image to the pixel
+cache as defined by the specified rectangular region.</font></td>
 </tr>
 
 <tr>
@@ -154,8 +174,8 @@ for pixel access only. It should never be deallocated.</font></td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
 
-<td><font size=-1>int x_, int y_, unsigned int columns_, unsigned
-int rows_</font></td>
+<td><font size=-1>const int x_, const int y_, const unsigned int columns_,
+const unsigned int rows_</font></td>
 
 <td><font size=-1>Allocates a pixel cache region to store image pixels
 as defined by the region rectangle.&nbsp; This area is subsequently transferred
@@ -185,15 +205,16 @@ intended for pixel access only. It should never be deallocated.</font></td>
 <td><font size=-1>void</font></td>
 
 <td><font size=-1>Returns the PsuedoColor pixel indexes corresponding to
-the pixel region defined by the last <a href="#get">get</a> or <a href="#set">set</a>
-call. Only valid for PseudoColor and CMYKA images. The pixel indexes (an
-array of type <i>IndexPacket</i>, which is typedef <i>Quantum</i>, which
-is itself typedef <i>unsigned char</i>, or <i>unsigned short</i>, depending
-on the value of the <i>QuantumDepth
-</i>define) provide the colormap index
-(see <a href="Image.html#colorMap">colorMap</a>) for each pixel in the
-image. For CMYKA images, the indexes represent the matte channel. The value
-returned is intended for pixel access only. It should never be deallocated.</font></td>
+the pixel region defined by the last <a href="#get">get</a> , <a href="#getConst">getConst</a>,
+or <a href="#set">set</a> call. Only valid for PseudoColor and CMYKA images.
+The pixel indexes (an array of type <i>IndexPacket</i>, which is typedef
+<i>Quantum</i>, which is itself typedef <i>unsigned char</i>, or <i>unsigned
+short</i>, depending on the value of the <i>QuantumDepth
+</i>define) provide
+the colormap index (see <a href="Image.html#colorMap">colorMap</a>) for
+each pixel in the image. For CMYKA images, the indexes represent the matte
+(alpha) channel. The value returned is intended for pixel access only.
+It should never be deallocated.</font></td>
 </tr>
 
 <tr>
@@ -201,7 +222,7 @@ returned is intended for pixel access only. It should never be deallocated.</fon
 <center><a NAME="x"></a><font size=-1>x</font></center>
 </td>
 
-<td><font size=-1>unsigned int</font></td>
+<td><font size=-1>int</font></td>
 
 <td><font size=-1>void</font></td>
 
@@ -213,7 +234,7 @@ returned is intended for pixel access only. It should never be deallocated.</fon
 <center><a NAME="y"></a><font size=-1>y</font></center>
 </td>
 
-<td><font size=-1>unsigned int</font></td>
+<td><font size=-1>int</font></td>
 
 <td><font size=-1>void</font></td>
 

@@ -174,7 +174,7 @@ namespace Magick
   //
 
   // Throw exception based on raw data
-  void throwExceptionExplicit( MagickLib::ExceptionType severity_,
+  void throwExceptionExplicit( const MagickLib::ExceptionType severity_,
 			       const char* reason_,
 			       const char* description_ = 0 );
 

@@ -154,7 +154,7 @@ Magick::ErrorCache::ErrorCache ( const std::string& what_ )
 }
 
 // Format and throw exception
-void Magick::throwExceptionExplicit( ExceptionType severity_,
+void Magick::throwExceptionExplicit( const ExceptionType severity_,
 				     const char* reason_,
 				     const char* description_)
 {

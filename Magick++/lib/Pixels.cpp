@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Pixels Implementation
 //
@@ -21,14 +21,14 @@ namespace Magick
 // Construct pixel view using specified image.
 Magick::Pixels::Pixels( Magick::Image &image_ )
   : _image(image_),
-    _view(OpenCacheView(image_.image())),
+    _view(OpenCacheView(_image.image())),
     _x(0),
     _y(0),
     _columns(0),
     _rows(0)
 {
   if (!_view)
-    throwExceptionExplicit( ResourceLimitError, "Out of pixel views" );
+    _image.throwImageException();
 }
 
 // Destroy pixel view
@@ -41,49 +41,64 @@ Magick::Pixels::~Pixels( void )
 // Transfer pixels from the image to the pixel view as defined by
 // the specified region. Modified pixels may be subsequently
 // transferred back to the image via sync.
-    
-Magick::PixelPacket* Magick::Pixels::get ( const unsigned int x_,
-					   const unsigned int y_,
+Magick::PixelPacket* Magick::Pixels::get ( const int x_,
+					   const int y_,
 					   const unsigned int columns_,
 					   const unsigned int rows_ )
 {
-  if ( ( x_ + columns_ > _image.columns()) ||
-       ( y_ + rows_ > _image.rows()) )
-    throwExceptionExplicit( MagickLib::OptionError,
-			    "View requested outside of image" );
   _x = x_;
   _y = y_;
   _columns = columns_;
   _rows = rows_;
 
-  PixelPacket* pixels = GetCacheView( _view, static_cast<long>(x_), static_cast<long>(y_),
-                                      columns_, rows_ );
-  if ( pixels == 0 )
-    throwExceptionExplicit( OptionError, "Failed to get pixels" );
+  PixelPacket* pixels = GetCacheView( _view, x_, y_, columns_, rows_ );
+
+  if ( !pixels )
+    _image.throwImageException();
   
   return pixels;
+}
+
+// Transfer read-only pixels from the image to the pixel view as
+// defined by the specified region.
+const Magick::PixelPacket* Magick::Pixels::getConst ( const int x_, const int y_,
+                                                      const unsigned int columns_,
+                                                      const unsigned int rows_ )
+{
+  _x = x_;
+  _y = y_;
+  _columns = columns_;
+  _rows = rows_;
+
+  ExceptionInfo exception;
+  GetExceptionInfo( &exception );
+
+  const PixelPacket* pixels =
+    AcquireCacheView(_view, x_, y_, columns_, rows_, &exception );
+
+  if ( !pixels )
+    throwException( exception );
+
+  DestroyExceptionInfo( &exception );
+
+    return pixels;
 }
 
 // Transfers the image view pixels to the image.
 void Magick::Pixels::sync ( void )
 {
   if( !SyncCacheView( _view ) )
-    throwExceptionExplicit( OptionError, "Failed to sync pixels" );
+    _image.throwImageException();
 }
     
 // Allocate a pixel view region to store image pixels as defined
 // by the region rectangle.  This area is subsequently transferred
 // from the pixel view to the image via 'sync'.
-Magick::PixelPacket* Magick::Pixels::set ( const unsigned int x_,
-					   const unsigned int y_,
+Magick::PixelPacket* Magick::Pixels::set ( const int x_,
+					   const int y_,
 					   const unsigned int columns_,
 					   const unsigned int rows_ )
 {
-  if ( ( x_ + columns_ > _image.columns()) ||
-       ( y_ + rows_ > _image.rows()) )
-    throwExceptionExplicit( OptionError,
-			    "View requested outside of image" );
-
   _x = x_;
   _y = y_;
   _columns = columns_;
@@ -92,7 +107,7 @@ Magick::PixelPacket* Magick::Pixels::set ( const unsigned int x_,
   PixelPacket* pixels = SetCacheView( _view, static_cast<long>(x_), static_cast<long>(y_),
                                       columns_, rows_ );
   if ( !pixels )
-    throwExceptionExplicit( OptionError, "Failed to set pixels" );
+    _image.throwImageException();
   
   return pixels;
 }
@@ -103,8 +118,7 @@ Magick::IndexPacket* Magick::Pixels::indexes ( void )
   IndexPacket* pixel_indexes = GetCacheViewIndexes( _view );
 
   if ( !pixel_indexes )
-    throwExceptionExplicit( OptionError,
-			    "Image does not contain index channel");
+    _image.throwImageException();
 
   return pixel_indexes;
 }

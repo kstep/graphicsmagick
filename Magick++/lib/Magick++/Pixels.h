@@ -26,9 +26,14 @@ namespace Magick
     // Transfer pixels from the image to the pixel view as defined by
     // the specified region. Modified pixels may be subsequently
     // transferred back to the image via sync.
-    
-    PixelPacket* get ( const unsigned int x_, const unsigned int y_,
+    PixelPacket* get ( const int x_, const int y_,
 		       const unsigned int columns_,const  unsigned int rows_ );
+
+    // Transfer read-only pixels from the image to the pixel view as
+    // defined by the specified region.
+    const PixelPacket* getConst ( const int x_, const int y_,
+                                  const unsigned int columns_,
+                                  const unsigned int rows_ );
     
     // Transfers the image view pixels to the image.
     void sync ( void );
@@ -36,17 +41,17 @@ namespace Magick
     // Allocate a pixel view region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel view to the image via sync.
-    PixelPacket* set ( const unsigned int x_, const unsigned int y_,
+    PixelPacket* set ( const int x_, const int y_,
 		       const unsigned int columns_, const unsigned int rows_ );
 
     // Return pixel colormap index array
     IndexPacket* indexes ( void );
 
     // Left ordinate of view
-    unsigned int x ( void ) const;
+    int x ( void ) const;
 
     // Top ordinate of view
-    unsigned int y ( void ) const;
+    int y ( void ) const;
 
     // Width of view
     unsigned int columns ( void ) const;
@@ -80,8 +85,8 @@ namespace Magick
 
     Magick::Image          _image;   // Image reference
     MagickLib::ViewInfo*   _view;    // Image view handle
-    unsigned int           _x;       // Left ordinate of view
-    unsigned int           _y;       // Top ordinate of view
+    int                    _x;       // Left ordinate of view
+    int                    _y;       // Top ordinate of view
     unsigned int           _columns; // Width of view
     unsigned int           _rows;    // Height of view
 
@@ -94,13 +99,13 @@ namespace Magick
 //
 
 // Left ordinate of view
-inline unsigned int Magick::Pixels::x ( void ) const
+inline int Magick::Pixels::x ( void ) const
 {
   return _x;
 }
 
 // Top ordinate of view
-inline unsigned int Magick::Pixels::y ( void ) const
+inline int Magick::Pixels::y ( void ) const
 {
   return _y;
 }

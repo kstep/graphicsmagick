@@ -1,3 +1,15 @@
+2002-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (getConstPixels): Changed offset parameter type
+ 	from 'unsigned int' to 'int'.
+	(getPixels): Changed offset parameter type from 'unsigned int' to
+ 	'int'.
+	(setPixels): Changed offset parameter type from 'unsigned int' to
+ 	'int'.
+
+	* lib/Pixels.cpp (getConst): New method to return read-only pixels.
+	(get): Offset parameter types changed from 'unsigned int' to 'int'.
+
 2002-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Drawable.h (DrawableDashOffset): Change dashoffset

@@ -360,6 +360,7 @@ namespace Magick
   //
   // ImageMagick symbols used in implementation code
   //
+  using MagickLib::AcquireCacheView;
   using MagickLib::AcquireImagePixels;
   using MagickLib::AcquireMemory;
   using MagickLib::AddNoiseImage;

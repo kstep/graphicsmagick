@@ -3099,7 +3099,7 @@ Magick::Image& Magick::Image::operator=( const Magick::Image &image_ )
 
 // Transfers read-only pixels from the image to the pixel cache as
 // defined by the specified region
-const Magick::PixelPacket* Magick::Image::getConstPixels ( const unsigned int x_, const unsigned int y_,
+const Magick::PixelPacket* Magick::Image::getConstPixels ( const int x_, const int y_,
                                                            const unsigned int columns_,
                                                            const unsigned int rows_ ) const
 {
@@ -3116,43 +3116,57 @@ const Magick::PixelPacket* Magick::Image::getConstPixels ( const unsigned int x_
 // Obtain read-only pixel indexes (valid for PseudoClass images)
 const Magick::IndexPacket* Magick::Image::getConstIndexes ( void ) const
 {
-  return GetIndexes( constImage() );
+  const Magick::IndexPacket* result = GetIndexes( constImage() );
+
+  if( !result )
+    throwImageException();
+
+  return result;
 }
 
 // Obtain image pixel indexes (valid for PseudoClass images)
 Magick::IndexPacket* Magick::Image::getIndexes ( void ) const
 {
-  return GetIndexes( constImage() );
+  Magick::IndexPacket* result = GetIndexes( constImage() );
+
+  if( !result )
+    throwImageException();
+
+  return ( result );
 }
 
 // Transfers pixels from the image to the pixel cache as defined
 // by the specified region. Modified pixels may be subsequently
 // transferred back to the image via syncPixels.
-Magick::PixelPacket* Magick::Image::getPixels ( const unsigned int x_, const unsigned int y_,
+Magick::PixelPacket* Magick::Image::getPixels ( const int x_, const int y_,
 						const unsigned int columns_,
 						const unsigned int rows_ )
 {
   modifyImage();
-  PixelPacket* p = (*GetImagePixels)( image(),
-                                      x_, y_,
-                                      columns_, rows_ );
-  throwImageException();
-  return p;
+  PixelPacket* result = (*GetImagePixels)( image(),
+                                           x_, y_,
+                                           columns_, rows_ );
+  if( !result )
+    throwImageException();
+
+  return result;
 }
 
 // Allocates a pixel cache region to store image pixels as defined
 // by the region rectangle.  This area is subsequently transferred
 // from the pixel cache to the image via syncPixels.
-Magick::PixelPacket* Magick::Image::setPixels ( const unsigned int x_, const unsigned int y_,
+Magick::PixelPacket* Magick::Image::setPixels ( const int x_, const int y_,
 						const unsigned int columns_,
 						const unsigned int rows_ )
 {
   modifyImage();
-  PixelPacket* p = (*SetImagePixels)( image(),
-                                      x_, y_,
-                                      columns_, rows_ );
-  throwImageException();
-  return p;
+  PixelPacket* result = (*SetImagePixels)( image(),
+                                           x_, y_,
+                                           columns_, rows_ );
+  if( !result )
+    throwImageException();
+
+  return result;
 }
 
 // Transfers the image cache pixels to the image.
@@ -3261,7 +3275,7 @@ void Magick::Image::modifyImage( void )
 // Test for an ImageMagick reported error and throw exception if one
 // has been reported.
 //
-void Magick::Image::throwImageException( void )
+void Magick::Image::throwImageException( void ) const
 {
   if ( constImage()->exception.severity == UndefinedException )
     return;
@@ -3269,13 +3283,13 @@ void Magick::Image::throwImageException( void )
   // Save ImageMagick exception
   ExceptionInfo exception;
   ThrowException( &exception,
-                  image()->exception.severity,
-                  image()->exception.reason,
-                  image()->exception.description );
+                  constImage()->exception.severity,
+                  constImage()->exception.reason,
+                  constImage()->exception.description );
 
   // Reset Image exception to defaults
-  DestroyExceptionInfo( &image()->exception );
-  GetExceptionInfo( &image()->exception );
+  DestroyExceptionInfo( const_cast<ExceptionInfo*>(&constImage()->exception) );
+  GetExceptionInfo( const_cast<ExceptionInfo*>(&constImage()->exception) );
 
   // Throw C++ exception
   throwException( exception );

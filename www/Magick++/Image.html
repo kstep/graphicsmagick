@@ -2668,7 +2668,8 @@ units_</font></td>
 <td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Image MD5 signature. Set force_ to 'true' to force re-computation
-of signature.</font></td>
+of
+signature.</font></td>
 </tr>
 
 <tr>
@@ -3060,8 +3061,8 @@ Save updated pixel cache back to underlying image</font></font></font>
 
 <td><font size=-1>const <a href="PixelPacket.html">PixelPacket</a>*</font></td>
 
-<td><font size=-1>unsigned int x_, unsigned int y_, unsigned int columns_,
-unsigned int rows_</font></td>
+<td><font size=-1>const int x_, const int y_, const unsigned int columns_,
+const unsigned int rows_</font></td>
 
 <td><font size=-1>Transfers pixels from the image to the pixel cache as
 defined by the specified rectangular region.&nbsp;</font></td>
@@ -3111,8 +3112,8 @@ channel.</font></td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
 
-<td><font size=-1>unsigned int x_, unsigned int y_, unsigned int columns_,
-unsigned int rows_</font></td>
+<td><font size=-1>const int x_, const int y_, const unsigned int columns_,
+const unsigned int rows_</font></td>
 
 <td><font size=-1>Transfers pixels from the image to the pixel cache as
 defined by the specified rectangular region. Modified pixels may be subsequently
@@ -3126,8 +3127,8 @@ transferred back to the image via syncPixels.</font></td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
 
-<td><font size=-1>unsigned int x_, unsigned int y_, unsigned int columns_,
-unsigned int rows_</font></td>
+<td><font size=-1>const int x_, const int y_, const unsigned int columns_,
+const unsigned int rows_</font></td>
 
 <td><font size=-1>Allocates a pixel cache region to store image pixels
 as defined by the region rectangle.&nbsp; This area is subsequently transferred
