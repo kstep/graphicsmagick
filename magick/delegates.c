@@ -549,7 +549,8 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
   (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------\n");
-  for (p=GetDelegateInfo("*","*"); p != (DelegateInfo *) NULL; p=p->next)
+  (void) GetDelegateInfo("*","*");
+  for (p=delegates; p != (DelegateInfo *) NULL; p=p->next)
   {
     i=0;
     if (p->commands != (char *) NULL)
