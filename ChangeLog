@@ -1,3 +1,9 @@
+2004-12-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): TrueColor 16-bits/sample RGB
+	images were being written incorrectly on little-endian CPUs.
+	Added byte swapping to fix this problem.
+
 2004-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/operator.c: New file for quantum operator implementation.

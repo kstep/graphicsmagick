@@ -1473,6 +1473,11 @@ BIG5, GB2312, Latin 2, None, SJIScode, Symbol, Unicode, Wansung.</i></pp>
 <abs>specify endianness (MSB or LSB) of output image</abs>
 
 <pp>
+MSB indicates big-endian (e.g. SPARC, Motorola 68K) while LSB
+indicates little-endian (e.g. Intel 'x86, VAX) byte ordering. This
+option currently only influences the output of the TIFF writer.</pp>
+
+<pp>
 Use <s>+endian</s> to revert to unspecified endianness.</pp>
 
 </utils>
