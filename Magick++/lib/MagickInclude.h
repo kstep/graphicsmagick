@@ -232,6 +232,21 @@ namespace Magick
     StaticGravity	// 10
   };
 
+  enum GeometryFlags
+  {
+    NoValue = 0x0000,
+    XValue = 0x0001,
+    YValue = 0x0002,
+    WidthValue = 0x0004,
+    HeightValue = 0x0008,
+    AllValues = 0x000F,
+    XNegative = 0x0010,
+    YNegative = 0x0020,
+    AspectValue = 0x2000,
+    GreaterValue = 0x8000,
+    LessValue = 0x4000,
+    PercentValue = 0x1000
+  };
 }
 
 #endif // MagickInclude_header

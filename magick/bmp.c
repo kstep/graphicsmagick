@@ -900,7 +900,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Colormapped BMP raster.
         */
         bmp_header.bit_count=8;
-        bytes_per_line=image->columns+(4-(image->columns % 4));
+        bytes_per_line=image->columns+(image->columns % 2 ? 1 : 0);
         if (IsMonochromeImage(image))
           {
             bmp_header.bit_count=1;
