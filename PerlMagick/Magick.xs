@@ -1328,6 +1328,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             info->image_info->file=(FILE *) IoIFP(sv_2io(sval));
           return;
         }
+      if (LocaleCompare(attribute,"fill") == 0)
+        {
+          if (info)
+            (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->pen);
+          return;
+        }
       if (LocaleCompare(attribute,"font") == 0)
         {
           if (info)
@@ -1646,6 +1652,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 }
               (void) CloneString(&info->image_info->size,SvPV(sval,na));
             }
+          return;
+        }
+      if (LocaleCompare(attribute,"stroke") == 0)
+        {
+          if (info)
+            (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->pen);
           return;
         }
       break;
@@ -4634,6 +4646,8 @@ Mogrify(ref,...)
 
           draw_info=CloneDrawInfo(info ? info->image_info :
             (ImageInfo *) NULL,(DrawInfo *) NULL);
+          draw_info->fill=info->image_info->pen;
+          (void) QueryColorDatabase("#000000ff",&draw_info->stroke);
           if (attribute_flag[1])
             (void) CloneString(&draw_info->font,
               argument_list[1].string_reference);
@@ -4924,6 +4938,9 @@ Mogrify(ref,...)
 
           draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
             (DrawInfo *) NULL);
+          (void) QueryColorDatabase("#000000ff",&draw_info->fill);
+          if (info)
+            draw_info->stroke=info->image_info->pen;
           (void) CloneString(&draw_info->primitive,"Point");
           if (attribute_flag[0] && (argument_list[0].int_reference > 0))
             (void) CloneString(&draw_info->primitive,
