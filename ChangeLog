@@ -1,5 +1,9 @@
 2003-06-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/t/bzlib/read.t: Add test for reading BZipped file.
+	* PerlMagick/t/subroutines.pl (testRead): Skip testing reads
+	of compressed BLOBs because reading compressed BLOBs is not
+	supported yet.
 	* coders/bmp.c (ReadBMPImage): Only validate the file size value
 	for compressed BMPs.
 	* VisualMagick/wand, wand: First stab at building the Wand API

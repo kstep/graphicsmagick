@@ -253,6 +253,7 @@ sub testRead {
   #
   # Test reading from blob
   #
+  if (!($infile =~ /\.bz2$/) && !($infile =~ /\.gz$/) && !($infile =~ /\.Z$/))
   {
     my(@blob, $blob_length, $image, $signature, $status);
 

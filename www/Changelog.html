@@ -56,8 +56,14 @@
 2003-06-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> PerlMagick/t/bzlib/read.t: Add test for reading BZipped file.
+  <LI> PerlMagick/t/subroutines.pl (testRead): Skip testing reads
+        of compressed BLOBs because reading compressed BLOBs is not
+        supported yet.<BR>
   <LI> coders/bmp.c (ReadBMPImage): Only validate the file size value
-        for compressed BMPs.
+        for compressed BMPs.<BR>
+  <LI> VisualMagick/wand, wand: First stab at building the Wand API
+        under Visual C++.  Still does not build as a DLL.
 
 </UL>
 <p>
