@@ -69,7 +69,7 @@
 /*
  The 256 color system palette for Palm Computing Devices.
 */
-static int
+static Quantum
   PalmPalette[256][3] = 
   {
     { Upscale(255), Upscale(255), Upscale(255) },
