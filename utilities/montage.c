@@ -662,12 +662,14 @@ MagickExport unsigned int MontageUtility(int argc,char **argv)
         {
           if (LocaleCompare("fill",option+1) == 0)
             {
+              (void) QueryColorDatabase("none",&image_info->pen);
               (void) QueryColorDatabase("none",&montage_info->fill);
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing fill color",option);
+                  (void) QueryColorDatabase(argv[i],&image_info->pen);
                   (void) QueryColorDatabase(argv[i],&montage_info->fill);
                 }
               break;
@@ -1333,7 +1335,7 @@ int main(int argc,char **argv)
     Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
-  InitializeMagick(*argv);
+  InitializeMagick((const char *) NULL);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);

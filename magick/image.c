@@ -982,8 +982,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->directory=(char *) NULL;
   clone_image->semaphore=(SemaphoreInfo *) NULL;
   clone_image->clip_mask=(Image *) NULL;
-  ThrowException(&clone_image->exception,image->exception.severity,
-	  image->exception.reason,image->exception.description);
+  GetExceptionInfo(&clone_image->exception);
   clone_image->reference_count=1;
   GetCacheInfo(&clone_image->cache);
   clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
@@ -1820,6 +1819,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     elapsed_time,
     user_time;
 
+  ExceptionInfo
+    exception;
+
   Image
     *p;
 
@@ -1911,7 +1913,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   (void) SignatureImage(image);
   image->total_colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
   (void) fprintf(file,"Image: %.1024s\n",image->filename);
-  magick_info=GetMagickInfo(image->magick,&image->exception);
+  GetExceptionInfo(&exception);
+  magick_info=GetMagickInfo(image->magick,&exception);
   if ((magick_info == (const MagickInfo *) NULL) ||
       (*magick_info->description == '\0'))
     (void) fprintf(file,"  Format: %.1024s\n",image->magick);
@@ -2259,6 +2262,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     (void) fprintf(file,"  Montage: %.1024s\n",image->montage);
   if (image->directory != (char *) NULL)
     {
+      ExceptionInfo
+        exception;
+
       Image
         *tile;
 
@@ -2288,10 +2294,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         p=q;
         (void) fprintf(file,"    %.1024s",image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
-        tile=ReadImage(image_info,&image->exception);
-        if (image->exception.severity != UndefinedException)
-          MagickWarning(image->exception.severity,image->exception.reason,
-            image->exception.description);
+        tile=ReadImage(image_info,&exception);
+        if (exception.severity != UndefinedException)
+          MagickWarning(exception.severity,exception.reason,
+            exception.description);
         (void) SetWarningHandler(handler);
         if (tile == (Image *) NULL)
           {
@@ -4344,7 +4350,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-pen",option) == 0)
           {
-            (void) QueryColorDatabase(argv[++i],&clone_info->pen);
+            (void) QueryColorDatabase(argv[i],&clone_info->pen);
+            (void) QueryColorDatabase(argv[i],&draw_info->fill);
+            i++;
             continue;
           }
         if (LocaleCompare("-pointsize",option) == 0)
@@ -4824,10 +4832,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             Image
               *fill_pattern;
 
-            i++;
-            if (IsGeometry(argv[i]))
-              continue;
-            (void) strncpy(clone_info->filename,argv[i],MaxTextExtent-1);
+            (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
             fill_pattern=ReadImage(clone_info,&(*image)->exception);
             if (fill_pattern == (Image *) NULL)
               continue;
@@ -5056,40 +5061,48 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     *image,
     *mogrify_images;
 
-  register int
-    i;
+  int
+    scene;
 
   MonitorHandler
     handler;
 
   unsigned int
+    number_images,
     status;
-
-  unsigned long
-		length;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickSignature);
-  length=GetImageListSize(*images);
-  if (length == 1)
+  number_images=GetImageListSize(*images);
+  if (number_images == 1)
     return(MogrifyImage(image_info,argc,argv,images));
-  status=True;
-  mogrify_images=NewImageList();
-  for (i=0; i < length; i++)
+  MagickMonitor(MogrifyImageText,0,number_images);
+  handler=SetMonitorHandler((MonitorHandler) NULL);
+  status=MogrifyImage(image_info,argc,argv,images);
+  (void) SetMonitorHandler(handler);
+  if (status == False)
+    return(False);
+  if (image_info->verbose)
+    DescribeImage(*images,stdout,False);
+  mogrify_images=(*images);
+  image=(*images)->next;
+  for (scene=1; scene < (int) number_images; scene++)
   {
-    image=ShiftImageList(images);
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    status&=MogrifyImage(image_info,argc,argv,&image);
+    status=MogrifyImage(image_info,argc,argv,&image);
     (void) SetMonitorHandler(handler);
+    if (status == False)
+      break;
+    mogrify_images->next=image;
+    mogrify_images->next->previous=mogrify_images;
+    mogrify_images=mogrify_images->next;
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
-    PushImageList(&mogrify_images,image,&image->exception);
-    DestroyImage(image);
-    MagickMonitor(MogrifyImageText,i,length);
+    image=image->next;
+    MagickMonitor(MogrifyImageText,scene,number_images);
   }
-	*images=mogrify_images;
   return(status);
 }
 
