@@ -720,7 +720,7 @@ MagickExport char *MagickToMime(const char *magick)
     };
 
   for (entry=MediaTypes; entry->magick != (char *) NULL; entry++)
-    if (LocaleCompare(magick,entry->magick) == 0)
+    if (LocaleCompare(entry->magick,magick) == 0)
       return(AllocateString(entry->media));
   FormatString(media,"image/x-%.1024s",magick);
   return(AllocateString(media));
