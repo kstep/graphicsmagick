@@ -1,8 +1,17 @@
+2002-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Added DrawSetTextEncoding() function to specify text
+    encoding (e.g. "UTF-8").
+
+2002-08-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Extend 'convert -list type' output so it prints more details.
+  * Fix draw.c problem when specifying font family names that
+    contain spaces.
+
 2002-08-15  Cristy  <cristy@mystic.es.dupont.com>
   * Finished 32-Bit QuantumDepth support.
-	* Subimage memory leak fixed (bug report by William Radcliffe).
-	* Fixed subimage specification memory overrun.
-	* Subimage specification did not work properly under Windows.
+  * Subimage memory leak fixed (bug report by William Radcliffe).
+  * Fixed subimage specification memory overrun.
+  * Subimage specification did not work properly under Windows.
 
 2002-08-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Fix problem with TEXT encoder.  It was prepending the
