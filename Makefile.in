@@ -373,7 +373,7 @@ EXTRA_DIST = ChangeLog Copyright.txt INSTALL-mac.txt INSTALL-unix.txt \
 
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = guide images locale scenes scripts www PerlMagick
+DISTDIRS = images locale scenes scripts www PerlMagick
 
 #
 # Additional install rules
@@ -414,9 +414,9 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	all-recursive install-data-recursive install-exec-recursive \
 	installdirs-recursive install-recursive uninstall-recursive \
 	check-recursive installcheck-recursive
-DIST_COMMON = ChangeLog Makefile.am Makefile.in NEWS acinclude.m4 \
-	aclocal.m4 config.guess config.sub configure configure.ac \
-	depcomp install-sh ltmain.sh missing mkinstalldirs
+DIST_COMMON = AUTHORS ChangeLog Makefile.am Makefile.in NEWS \
+	acinclude.m4 aclocal.m4 config.guess config.sub configure \
+	configure.ac depcomp install-sh ltmain.sh missing mkinstalldirs
 all: all-recursive
 
 .SUFFIXES:

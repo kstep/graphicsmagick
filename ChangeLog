@@ -1,5 +1,7 @@
 2003-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Makefile.am (DISTDIRS): Don't distribute the 'guide'
+	subdirectory. It is available for checkout from CVS.
 	* www: Utilities documentation is updated from <imdoc> masters.
 	Formatting could be improved, but the content seems ok.
 	* doc/environment.imdoc: New file to describe environment

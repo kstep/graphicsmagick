@@ -39,7 +39,7 @@ Leonard Rosenthol
 		execution environment. Provided MacOS support. Authored
 		the CLIPBOARD, XCF, and PSD coders.  Postscript and PDF expertise.
 		Significant drawing enhancements including support for
-		clipping masks and a mask image.
+		dash patterns, linecap stroking, clipping masks and a mask image.
 
 Jaroslav Fojtik
 		Authored the CUT, ART, and MATLAB coder modules.
@@ -58,6 +58,10 @@ Kyle Shorter
 
 Markus Friedl
 		Original author of Base64 encode/decode sources.
+
+David Harr
+		Contributed (with Leonard Rosenthol) dash pattern, linecap stroking
+		algorithm, and minor rendering improvements.
 
 Additional Acknowledgements
 ===========================
