@@ -54,21 +54,12 @@
 */
 #include "magick.h"
 #include "define.h"
-#if defined(HasGS)
-#include "ps/iapi.h"
-#include "ps/errors.h"
-#endif
 
 /*
   Forward declaration.
 */
 static int
   IsDirectory(const char *);
-
-#if defined(HasGS)
-static SemaphoreInfo
-  *ps_semaphore = (SemaphoreInfo *) NULL;
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -253,83 +244,6 @@ MagickExport unsigned int ConcatenateString(char **destination,
       "Memory allocation failed");
   (void) strcat(*destination,source);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   E x e c u t e P o s t I n t e r p r e t e r                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ExecutePostscriptInterpreter executes the postscript interpreter
-%  with the specified command.
-%
-%  The format of the ExecutePostscriptInterpreter method is:
-%
-%      unsigned int ExecutePostscriptInterpreter(const unsigned int verbose,
-%        const char *command)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method ExecutePostscriptInterpreter returns True is the command
-%      is successfully executed, otherwise False.
-%
-%    o verbose: A value other than zero displays the command prior to
-%      executing it.
-%
-%    o command: The address of a character string containing the command to
-%      execute.
-%
-%
-*/
-MagickExport unsigned int ExecutePostscriptInterpreter(
-  const unsigned int verbose,const char *command)
-{
-#if defined(HasGS)
-  char
-    **argv;
-
-  gs_main_instance
-    *interpreter;
-
-  int
-    argc,
-    code,
-    status;
-
-  register int
-    i;
-
-  AcquireSemaphoreInfo(&ps_semaphore);
-  if (verbose)
-    (void) fputs(command,stdout);
-  status=gsapi_new_instance(&interpreter,(void *) NULL);
-  if (status < 0)
-    {
-      LiberateSemaphoreInfo(&ps_semaphore);
-      return(False);
-    }
-  argv=StringToArgv(command,&argc);
-  status=gsapi_init_with_args(interpreter,argc-1,argv+1);
-  if (status == 0)
-    status=gsapi_run_string(interpreter,"systemdict /start get exec\n",0,&code);
-  gsapi_exit(interpreter);
-  gsapi_delete_instance(interpreter);
-  LiberateSemaphoreInfo(&ps_semaphore);
-  for (i=0; i < argc; i++)
-    LiberateMemory((void **) &argv[i]);
-  LiberateMemory((void **) &argv);
-  if ((status == 0) || (status == e_Quit))
-    return(False);
-  return(True);
-#else
-  return(SystemCommand(verbose,command));
-#endif
 }
 
 /*
