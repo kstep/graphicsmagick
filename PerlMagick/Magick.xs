@@ -96,6 +96,16 @@ extern "C" {
 #define StringReference  (char **) 0
 
 /*
+  Perl 5.006 no longer defines na and sv_undef.
+*/
+#ifndef PL_na
+#define PL_na na
+#endif
+#ifndef PL_sv_undef
+#define PL_sv_undef sv_undef
+#endif
+
+/*
   Typedef and structure declarations.
 */
 typedef void
