@@ -293,7 +293,7 @@ static void meta_arc (wmfAPI* API,wmfRecord* Record)
 	char Qs;
 	char Qe;
 
-	float scope;
+	float scope = 0;
 
 	if (SCAN (API) && DIAG (API))
 	{	fprintf (stderr,"\t[0x%04x]",Record->function);
@@ -785,6 +785,7 @@ static void meta_polygons (wmfAPI* API,wmfRecord* Record)
 	wmfD_Coord d_pt;
 
 	wmfPolyLine_t polyline;
+	wmfPolyPoly_t polypoly;
 
 	wmfRecord Polygon;
 
@@ -793,10 +794,6 @@ static void meta_polygons (wmfAPI* API,wmfRecord* Record)
 	U16 par_U16_x;
 	U16 par_U16_y;
 
-	U16 count;
-	U16 count_max;
-
-	U16 num_poly;
 	U16 num_pars;
 
 	U16 i;
@@ -806,31 +803,68 @@ static void meta_polygons (wmfAPI* API,wmfRecord* Record)
 
 	float scope;
 
+	int skip_record;
+
 	if (SCAN (API) && DIAG (API))
 	{	fprintf (stderr,"\t[0x%04x]",Record->function);
 		fprintf (stderr,"\t#par=%lu; max. index = 0",Record->size);
 	}
 
-	num_poly = ParU16 (API,Record,0);
+	polypoly.npoly = ParU16 (API,Record,0);
 
-	if (num_poly == 0) return;
-
-	if (SCAN (API) && DIAG (API))
-	{	fprintf (stderr,",%lu",(unsigned long) num_poly);
-	}
-
-	num_pars = 0; /* counting pairs */
-	count_max = 0;
-	for (i = 0; i < num_poly; i++)
-	{	count = ParU16 (API,Record,(unsigned long) (1 + i));
-		num_pars += count;
-		if (count_max < count) count_max = count;
-	}
-
-	if (count_max == 0) return;
+	if (polypoly.npoly == 0) return;
 
 	if (SCAN (API) && DIAG (API))
-	{	fprintf (stderr,",%lu",(unsigned long) (num_poly + 2 * num_pars));
+	{	fprintf (stderr,",%lu",(unsigned long) polypoly.npoly);
+	}
+
+	polypoly.pt = (wmfD_Coord**) wmf_malloc (API, polypoly.npoly * sizeof (wmfD_Coord*));
+
+	if (ERR (API))
+	{	WMF_DEBUG (API,"bailing...");
+		return;
+	}
+
+	polypoly.count = (U16*) wmf_malloc (API, polypoly.npoly * sizeof (U16));
+
+	if (ERR (API))
+	{	WMF_DEBUG (API,"bailing...");
+		return;
+	}
+
+	num_pars = 0;
+	skip_record = 0;
+	for (i = 0; i < polypoly.npoly; i++)
+	{	polypoly.count[i] = ParU16 (API,Record,(unsigned long) (1 + i));
+		num_pars += polypoly.count[i];
+		if ((polypoly.count[i] < 3) && (skip_record == 0))
+		{	WMF_DEBUG (API,"strange polygon in polypolygon list; skipping record...");
+			skip_record = 1;
+		}
+		if (skip_record)
+		{	polypoly.pt[i] = 0;
+		}
+		else
+		{	polypoly.pt[i] = (wmfD_Coord*) wmf_malloc (API, polypoly.count[i] * sizeof (wmfD_Coord));
+			if (ERR (API)) break;
+		}
+	}
+	if (skip_record)
+	{
+		for (i = 0; i < polypoly.npoly; i++)
+		{	if (polypoly.pt[i]) wmf_free (API, polypoly.pt[i]);
+		}
+		wmf_free (API, polypoly.pt);
+		wmf_free (API, polypoly.count);
+		return;
+	}
+	if (ERR (API))
+	{	WMF_DEBUG (API,"bailing...");
+		return;
+	}
+
+	if (SCAN (API) && DIAG (API))
+	{	fprintf (stderr,",%lu",(unsigned long) (polypoly.npoly + 2 * num_pars));
 	}
 
 	if (SCAN (API))
@@ -838,7 +872,7 @@ static void meta_polygons (wmfAPI* API,wmfRecord* Record)
 
 		scope = (float) (MAX (WMF_PEN_WIDTH (pen),WMF_PEN_HEIGHT (pen))) / 2;
 
-		index = 1 + num_poly;
+		index = 1 + polypoly.npoly;
 		for (i = 0; i < num_pars; i++)
 		{	par_U16_x = ParU16 (API,Record,index);
 			index++;
@@ -851,19 +885,12 @@ static void meta_polygons (wmfAPI* API,wmfRecord* Record)
 		return;
 	}
 
-	polyline.pt = (wmfD_Coord*) wmf_malloc (API,count_max * sizeof (wmfD_Coord));
+	polypoly.dc = P->dc;
 
-	if (ERR (API))
-	{	WMF_DEBUG (API,"bailing...");
-		return;
-	}
+	Polygon = OffsetRecord (API,Record,(unsigned long) (1 + polypoly.npoly));
 
-	polyline.dc = P->dc;
-
-	Polygon = OffsetRecord (API,Record,(unsigned long) (1 + num_poly));
-
-	for (i = 0; i < num_poly; i++)
-	{	polyline.count = ParU16 (API,Record,(unsigned long) (1 + i));
+	for (i = 0; i < polypoly.npoly; i++)
+	{	polyline.count = polypoly.count[i];
 		index = 0;
 		for (j = 0; j < polyline.count; j++)
 		{	par_U16_x = ParU16 (API,&Polygon,index);
@@ -871,15 +898,28 @@ static void meta_polygons (wmfAPI* API,wmfRecord* Record)
 			par_U16_y = ParU16 (API,&Polygon,index);
 			index++;
 			l_pt = L_Coord (API,par_U16_x,par_U16_y);
-			polyline.pt[j] = wmf_D_Coord_translate (API,l_pt);
+			polypoly.pt[i][j] = wmf_D_Coord_translate (API,l_pt);
 		}
-
-		if (FR->draw_polygon) FR->draw_polygon (API,&polyline);
-
 		Polygon = OffsetRecord (API,&Polygon,index);
 	}
 
-	wmf_free (API,polyline.pt);
+	if (FR->draw_polypolygon)
+	{	FR->draw_polypolygon (API,&polypoly);
+	}
+	else if (FR->draw_polygon)
+	{	for (i = 0; i < polypoly.npoly; i++)
+		{	polyline.dc = polypoly.dc;
+			polyline.pt = polypoly.pt[i];
+			polyline.count = polypoly.count[i];
+			if ((polyline.count > 2) && polyline.pt) FR->draw_polygon (API,&polyline);
+		}
+	}
+
+	for (i = 0; i < polypoly.npoly; i++)
+	{	if (polypoly.pt[i]) wmf_free (API, polypoly.pt[i]);
+	}
+	wmf_free (API, polypoly.pt);
+	wmf_free (API, polypoly.count);
 }
 
 static void meta_round (wmfAPI* API,wmfRecord* Record)
@@ -2419,7 +2459,6 @@ static void meta_text (wmfAPI* API,wmfRecord* Record)
 		if (length == 0) break;
 
 		bbox_info = ParU16 (API,Record,3);
-
 		if (bbox_info)
 		{	if (SCAN (API) && DIAG (API))
 			{	fprintf (stderr,",7");
@@ -2477,7 +2516,10 @@ static void meta_text (wmfAPI* API,wmfRecord* Record)
 
 	font = WMF_DC_FONT (P->dc);
 
+        /* FIXME: bug here?  Negative font height is supposed to represent absolute font pointsize */
 	drawtext.font_height = (double) WMF_FONT_HEIGHT (font) * ABS (P->dc->pixel_height);
+
+        /* FIXME: bug here, WMF_FONT_WIDTH and  WMF_FONT_HEIGHT do not necessarily have same scale! */
 	drawtext.font_ratio = (double) WMF_FONT_WIDTH (font) / (double) WMF_FONT_HEIGHT (font);
 
 	par_U16 = 0;

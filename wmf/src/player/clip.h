@@ -73,7 +73,7 @@ static void Clipping (wmfAPI* API,wmfRegion* clip,wmfRegion* vis,wmfD_Rect* rect
 		}
 	}
 
-	WMFLibCombineRgn (API,&rgn,clip,&rgn,((flags & CLIP_EXCLUDE) ? RGN_DIFF : RGN_AND));
+	WMFLibCombineRgn (API,&rgn,clip,&rgn,((flags & CLIP_EXCLUDE) ? (U16)RGN_DIFF : (U16)RGN_AND));
 
 	if (ERR (API))
 	{	WMF_DEBUG (API,"bailing...");
