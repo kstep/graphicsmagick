@@ -46,15 +46,8 @@ extern "C" {
 # include <keysym.h>
 # include <XWDFile.h>
 #endif
-#if defined(HasShape)
-# include <X11/extensions/shape.h>
-#endif
 #if defined(HasSharedMemory)
 # include <X11/extensions/XShm.h>
-#endif
-#if defined(HasDPS)
-# include <DPS/dpsXclient.h>
-# include <DPS/dpsXpreview.h>
 #endif
 #include "magick/quantize.h"
 #include "magick/PreRvIcccm.h"

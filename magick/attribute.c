@@ -175,7 +175,7 @@ static unsigned char ReadByte(char **p,size_t *length)
   return(c);
 }
 
-static long ReadMSBLong(char **p,size_t *length)
+static long ReadMSBLong(unsigned char **p,size_t *length)
 {
   int
     c;
@@ -204,7 +204,7 @@ static long ReadMSBLong(char **p,size_t *length)
   return(value);
 }
 
-static int ReadMSBShort(char **p,size_t *length)
+static int ReadMSBShort(unsigned char **p,size_t *length)
 {
   int
     c,
@@ -229,8 +229,8 @@ static int ReadMSBShort(char **p,size_t *length)
   return(value);
 }
 
-static char *TraceClippingPath(char *blob,size_t length,unsigned long columns,
-  unsigned long rows)
+static char *TraceClippingPath(unsigned char *blob,size_t length,
+  unsigned long columns,unsigned long rows)
 {
   char
     *path,
@@ -253,90 +253,128 @@ static char *TraceClippingPath(char *blob,size_t length,unsigned long columns,
     i;
 
   unsigned int
-    status;
+    in_subpath;
 
-  path=AllocateString((char *) NULL);
+  path=AcquireString((char *) NULL);
   if (path == (char *) NULL)
     return((char *) NULL);
-  message=AllocateString((char *) NULL);
-  while (length != 0)
+  message=AcquireString((char *) NULL);
+
+  FormatString(message,"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"<svg width=\"%lu\" height=\"%lu\">\n",columns,rows);
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"<g>\n");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"<path style=\"fill:#ffffff;stroke:none\" d=\"\n");
+  (void) ConcatenateString(&path,message);
+
+  count=0;
+  in_subpath=False;
+
+  while (length > 0)
+  {
+    selector=ReadMSBShort(&blob,&length);
+    switch (selector)
     {
-      selector=ReadMSBShort(&blob,&length);
-      if (selector == 6)
+      case 0:
+      case 3:
+      {
+        if (count == 0)
+          {
+            /*
+              Expected subpath length record
+            */
+            count=ReadMSBShort(&blob,&length);
+            blob+=22;
+            length-=22;
+          }
+        else
+          {
+            blob+=24;
+            length-=24;
+          }	  
+        break;
+      }
+      case 1:
+      case 2:
+      case 4:
+      case 5:
+      {
+        if (count == 0)
+          {
+            /*
+              Unexpected subpath knot
+            */
+            blob+=24;
+            length-=24;
+          }
+        else
+          {
+            /*
+              Add sub-path knot
+            */
+            for (i=0; i < 3; i++)
+              {
+                y=ReadMSBLong(&blob,&length);
+                x=ReadMSBLong(&blob,&length);
+                point[i].x=(double) x*columns/4096/4096;
+                point[i].y=(double) y*rows/4096/4096;
+              }
+            if (!in_subpath)
+              {
+                FormatString(message,"M %.1f,%.1f\n",point[1].x,point[1].y);
+                for (i=0; i < 3; i++)
+                {
+                  first[i]=point[i];
+                  last[i]=point[i];
+                }
+              }
+            else
+              {
+                FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f\n",
+                  last[2].x,last[2].y,point[0].x,point[0].y,point[1].x,
+                  point[1].y);
+                for (i=0; i < 3; i++)
+                  last[i]=point[i];
+              }
+            (void) ConcatenateString(&path,message);
+            in_subpath=True;
+            count--;
+            /*
+              Close the subpath if there are no more knots.
+            */
+            if (count == 0)
+              {
+                FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",last[2].x,
+                  last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
+                (void) ConcatenateString(&path,message);
+                in_subpath=False;
+              }
+          }
+          break;
+      }
+      case 6:
+      case 7:
+      case 8:
+      default:
         {
-          /*
-            Path fill record.
-          */
           blob+=24;
           length-=24;
-          continue;
+          break;
         }
-      FormatString(message,"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
-      (void) ConcatenateString(&path,message);
-      FormatString(message,"<svg width=\"%lu\" height=\"%lu\">\n",columns,rows);
-      (void) ConcatenateString(&path,message);
-      FormatString(message,"<g>\n");
-      (void) ConcatenateString(&path,message);
-      FormatString(message,"<path style=\"fill:#ffffff;stroke:none\" d=\"\n");
-      (void) ConcatenateString(&path,message);
-      while (length != 0)
-        {
-          if (selector > 8)
-            break;
-          count=ReadMSBShort(&blob,&length);
-          blob+=22;
-          length-=22;
-          status=True;
-          while (count > 0 && length > 0)
-            {
-              selector=ReadMSBShort(&blob,&length);
-              if ((selector == 1) || (selector == 2) || (selector == 4) ||
-                  (selector == 5))
-                {
-                  for (i=0; i < 3; i++)
-                    {
-                      y=ReadMSBLong(&blob,&length);
-                      x=ReadMSBLong(&blob,&length);
-                      point[i].x=(double) x*columns/4096/4096;
-                      point[i].y=(double) y*rows/4096/4096;
-                    }
-                  if (status)
-                    {
-                      FormatString(message,"M %.1f,%.1f\n",point[1].x,point[1].y);
-                      for (i=0; i < 3; i++)
-                        {
-                          first[i]=point[i];
-                          last[i]=point[i];
-                        }
-                    }
-                  else
-                    {
-                      FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f\n",
-                                   last[2].x,last[2].y,point[0].x,point[0].y,point[1].x,
-                                   point[1].y);
-                      for (i=0; i < 3; i++)
-                        last[i]=point[i];
-                    }
-                  (void) ConcatenateString(&path,message);
-                  status=False;
-                  count--;
-                }
-            }
-          if (!status)
-            {
-              FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",last[2].x,
-                           last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
-              (void) ConcatenateString(&path,message);
-            }
-        }
-      FormatString(message,"\"/>\n");
-      (void) ConcatenateString(&path,message);
-      FormatString(message,"</g>\n");
-      (void) ConcatenateString(&path,message);
-      FormatString(message,"</svg>\n");
-      (void) ConcatenateString(&path,message);
-      break;
     }
+  }
+  /*
+    Returns an empty SVG image, not an empty string,
+    if the path for some reason have no knots.
+  */
+  FormatString(message,"\"/>\n");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"</g>\n");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"</svg>\n");
+  (void) ConcatenateString(&path,message);
   MagickFreeMemory(message);
   return(path);
 }
@@ -385,7 +423,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
       continue;
     if (ReadByte((char **) &info,&length) != 'M')
       continue;
-    id=ReadMSBShort((char **) &info,&length);
+    id=ReadMSBShort((unsigned char **) &info,&length);
     if (id < start)
       continue;
     if (id > stop)
@@ -405,7 +443,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
       }
     if (!(count & 0x01))
       (void) ReadByte((char **) &info,&length);
-    count=ReadMSBLong((char **) &info,&length);
+    count=ReadMSBLong((unsigned char **) &info,&length);
     attribute=MagickAllocateMemory(char *,count+MaxTextExtent);
     if (attribute != (char *) NULL)
       {

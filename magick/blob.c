@@ -1155,26 +1155,6 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 #  error MagickLibPath or WIN32 must be defined when UseInstalledMagick is defined
 # endif
 #else /* !defined(UseInstalledMagick) */
-  if (*SetClientPath((char *) NULL) != '\0')
-    {
-#if defined(POSIX)
-      char
-        prefix[MaxTextExtent];
-
-      /*
-        Search based on executable directory if directory is known.
-      */
-      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopPathComponents(prefix,1);
-      FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
-        filename);
-#else /* defined(POSIX) */
-      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-        DirectorySeparator,filename);
-#endif /* !defined(POSIX) */
-      if (IsAccessible(path))
-        return(FileToBlob(path,length,exception));
-    }
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
       /*
@@ -1200,6 +1180,26 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
+  if (*SetClientPath((char *) NULL) != '\0')
+    {
+#if defined(POSIX)
+      char
+        prefix[MaxTextExtent];
+
+      /*
+        Search based on executable directory if directory is known.
+      */
+      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
+      ChopPathComponents(prefix,1);
+      FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
+        filename);
+#else /* defined(POSIX) */
+      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
+        DirectorySeparator,filename);
+#endif /* !defined(POSIX) */
+      if (IsAccessible(path))
+        return(FileToBlob(path,length,exception));
+    }
   /*
     Search current directory.
   */
@@ -1216,7 +1216,8 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   }
 #endif /* defined(WIN32) */
 #endif /* !defined(UseInstalledMagick) */
-  ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",path);
+  ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",
+    filename);
   return 0;
 }
 

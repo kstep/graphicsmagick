@@ -288,6 +288,13 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
     {
       if (*name != '\0')
         {
+#if 0
+          /* Pass all exceptions up */
+          LiberateSemaphoreInfo(&magick_semaphore);
+          (void) OpenModule(name,exception);
+          AcquireSemaphoreInfo(&magick_semaphore);
+#else
+          /* Throw away all exceptions */
           ExceptionInfo
             module_exception;
 
@@ -296,6 +303,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
           (void) OpenModule(name,&module_exception);
           DestroyExceptionInfo(&module_exception);
           AcquireSemaphoreInfo(&magick_semaphore);
+#endif
         }
       for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
         if (LocaleCompare(p->name,name) == 0)

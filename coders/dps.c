@@ -44,6 +44,8 @@
 #include "magick/utility.h"
 #include "magick/xwindow.h"
 #if defined(HasDPS)
+# include <DPS/dpsXclient.h>
+# include <DPS/dpsXpreview.h>
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -60,6 +60,9 @@
 #endif
 #include "magick/xwindow.h"
 #if defined(HasX11)
+#if defined(HasShape)
+# include <X11/extensions/shape.h>
+#endif
 
 /*
   X defines.

@@ -1,3 +1,27 @@
+2003-07-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick_config_api.h.in: XWindowInfo structure in
+	xwindow.h needs HasSharedMemory define.
+	* magick/xwindow.c, magick/xwindow.h: Move inclusion of
+	<X11/extensions/shape.h> to xwindow.c.
+	* coders/dps.c, magick/xwindow.h: Move DPS includes to
+	coders/dps.c
+	* coders/Makefile.am: Substituted values are also set as
+	make variables, so use variables rather than substitutions.
+	* magick/log.c (GetLogBlob): MAGICK_HOME needs to take
+	precedence over the client path for the uninstalled build.
+	* magick/type.c (GetTypeBlob): MAGICK_HOME needs to take
+	precedence over the client path for the uninstalled build.
+	* magick/blob.c (GetConfigureBlob): MAGICK_HOME needs to take
+	precedence over the client path for the uninstalled build.
+	* magick/module.c (FindMagickModule): MAGICK_HOME needs to take
+	precedence over the client path for the uninstalled build.
+
+2003-07-24  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/attribute.c (TraceClippingPath): Improvements to clipping
+	path parsing.
+
 2003-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/cache.c: Disable the Windows open() extensions when

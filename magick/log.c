@@ -309,31 +309,12 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
 #  error MagickLibPath or WIN32 must be defined when UseInstalledMagick is defined
 # endif
 #else
-  if (*SetClientPath((char *) NULL) != '\0')
-    {
-#if defined(POSIX)
-      char
-        prefix[MaxTextExtent];
 
-      /*
-        Search based on executable directory if directory is known.
-      */
-      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopPathComponents(prefix,1);
-      FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
-        filename);
-#else
-      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-        DirectorySeparator,filename);
-#endif
-      if (IsAccessible(path))
-        return(LogToBlob(path,length,exception));
-    }
+  /*
+    Search MAGICK_HOME.
+  */
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
-      /*
-        Search MAGICK_HOME.
-      */
 #if defined(POSIX)
       FormatString(path,"%.1024s/lib/%s/%.1024s",getenv("MAGICK_HOME"),
         MagickLibSubdir,filename);
@@ -344,13 +325,34 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
       if (IsAccessible(path))
         return(LogToBlob(path,length,exception));
     }
+
+  /*
+    Search $HOME/.magick.
+  */
   if (getenv("HOME") != (char *) NULL)
     {
-      /*
-        Search $HOME/.magick.
-      */
       FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
         *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
+      if (IsAccessible(path))
+        return(LogToBlob(path,length,exception));
+    }
+
+  /*
+    Search based on executable directory if directory is known.
+  */
+  if (*SetClientPath((char *) NULL) != '\0')
+    {
+#if defined(POSIX)
+      char
+        prefix[MaxTextExtent];
+      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
+      ChopPathComponents(prefix,1);
+      FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
+        filename);
+#else
+      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
+        DirectorySeparator,filename);
+#endif
       if (IsAccessible(path))
         return(LogToBlob(path,length,exception));
     }

@@ -59,7 +59,7 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadConfigureFile() reads the color configuration file which maps color
+%  ReadConfigureFile() reads the locale configuration file which maps color
 %  strings with a particular image format.
 %
 %  The format of the ReadConfigureFile method is:

@@ -252,6 +252,22 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
 #else
 
   /*
+    Search MAGICK_HOME.
+  */
+  if (getenv("MAGICK_HOME") != (char *) NULL)
+    {
+# if defined(POSIX)
+      FormatString(path,"%.512s/lib/%s/%.256s",getenv("MAGICK_HOME"),
+        MagickLibSubdir,filename);
+# else
+      FormatString(path,"%.512s%s%.256s",getenv("MAGICK_HOME"),
+        DirectorySeparator,filename);
+# endif /* !POSIX */
+      if (IsAccessible(path))
+        return(FileToBlob(path,length,exception));
+    }
+
+  /*
     Search based on executable directory
   */
   if (*SetClientPath((char *) NULL) != '\0')
@@ -268,22 +284,6 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
         DirectorySeparator,filename);
 #endif
-      if (IsAccessible(path))
-        return(FileToBlob(path,length,exception));
-    }
-
-  /*
-    Search MAGICK_HOME.
-  */
-  if (getenv("MAGICK_HOME") != (char *) NULL)
-    {
-# if defined(POSIX)
-      FormatString(path,"%.512s/lib/%s/%.256s",getenv("MAGICK_HOME"),
-        MagickLibSubdir,filename);
-# else
-      FormatString(path,"%.512s%s%.256s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
-# endif /* !POSIX */
       if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }

@@ -579,6 +579,35 @@ static unsigned int FindMagickModule(const char *filename,
 #  error MagickCoderModulesPath or WIN32 must be defined when UseInstalledMagick is defined
 # endif
 #else /* end defined(UseInstalledMagick) */
+  if (getenv("MAGICK_HOME") != (char *) NULL)
+    {
+      /*
+        Search MAGICK_HOME.
+      */
+# if defined(POSIX)
+      char
+        *subdir=NULL;
+
+      switch (module_type)
+        {
+        case MagickCoderModule:
+        default:
+          subdir=MagickCoderModulesSubdir;
+          break;
+        case MagickFilterModule:
+          subdir=MagickFilterModulesSubdir;
+          break;
+        }
+
+      FormatString(path,"%.512s/lib/%s/%.256s",getenv("MAGICK_HOME"),
+        subdir,filename);
+# else
+      FormatString(path,"%.512s%s%.256s",getenv("MAGICK_HOME"),
+        DirectorySeparator,filename);
+# endif /* !POSIX */
+      if (IsAccessible(path))
+        return(True);
+    }
   if (*SetClientPath((char *) NULL) != '\0')
     {
       /*
@@ -611,35 +640,6 @@ static unsigned int FindMagickModule(const char *filename,
       if (IsAccessible(path))
         return(True);
     }
-  if (getenv("MAGICK_HOME") != (char *) NULL)
-    {
-      /*
-        Search MAGICK_HOME.
-      */
-# if defined(POSIX)
-      char
-        *subdir=NULL;
-
-      switch (module_type)
-        {
-        case MagickCoderModule:
-        default:
-          subdir=MagickCoderModulesSubdir;
-          break;
-        case MagickFilterModule:
-          subdir=MagickFilterModulesSubdir;
-          break;
-        }
-
-      FormatString(path,"%.512s/lib/%s/%.256s",getenv("MAGICK_HOME"),
-        subdir,filename);
-# else
-      FormatString(path,"%.512s%s%.256s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
-# endif /* !POSIX */
-      if (IsAccessible(path))
-        return(True);
-    }
   if (getenv("HOME") != (char *) NULL)
     {
       /*
@@ -657,7 +657,8 @@ static unsigned int FindMagickModule(const char *filename,
     return(True);
 #endif /* End defined(UseInstalledMagick) */
   if (exception->severity < ConfigureError)
-    ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",path);
+    ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",
+      filename);
   return(False);
 }
 #endif /* #if defined(SupportMagickModules) */
@@ -1058,6 +1059,10 @@ MagickExport unsigned int OpenModule(const char *module,
     TagToCoderModuleName(module_name,module_file);
     *path='\0';
 #if 1
+    /*
+      FindMagickModule returns a ConfigureError if the module is not
+      found.
+    */
   if (!FindMagickModule(module_file,MagickCoderModule,path,exception))
     return(False);
 #else
