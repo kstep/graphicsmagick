@@ -1003,6 +1003,37 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleCompare("copy",option+1) == 0)
+            {
+              if (*option == '-')
+                {
+                  Image
+                    *clone_image;
+
+                  ImageInfo
+                    *clone_info;
+
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing output filename",
+                      option);
+                  if (image == (Image *) NULL)
+                    MagickError(OptionError,"Missing source image",
+                      (char *) NULL);
+                  clone_info=CloneImageInfo(image_info);
+                  clone_image=CloneImage(image,0,0,False,
+                    &(image->exception));
+                  if (clone_image == (Image *) NULL)
+                    MagickError(OptionError,"Missing an image file name",
+                      (char *) NULL);
+                  status=ConvertImages(clone_info,&option_info,i-j+2,
+                    argv+j-1,&clone_image);
+                  DestroyImages(clone_image);
+                  DestroyImageInfo(clone_info);
+                  j=i+1;
+                }
+              break;
+            }
           if (LocaleCompare("cycle",option+1) == 0)
             {
               if (*option == '-')
@@ -1793,6 +1824,23 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleCompare("replace",option+1) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing output filename",
+                      option);
+                  if (image == (Image *) NULL)
+                    MagickError(OptionError,"Missing source image",
+                      (char *) NULL);
+                  status=ConvertImages(image_info,&option_info,i-j+2,
+                    argv+j-1,&image);
+                  j=i+1;
+                }
+              break;
+            }
           if (LocaleCompare("roll",option+1) == 0)
             {
               if (*option == '-')
@@ -1929,57 +1977,6 @@ int main(int argc,char **argv)
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing amount",option);
                 }
-              break;
-            }
-          if (LocaleCompare("stack",option+1) == 0)
-            {
-              if (LocaleCompare("stackdrop",option+1) == 0)
-                {
-                  if (*option == '-')
-                    {
-                      Image
-                        *clone_image;
-
-                      ImageInfo
-                        *clone_info;
-
-                      i++;
-                      if (i == argc)
-                        MagickError(OptionError,"Missing output filename",
-                          option);
-                      if (image == (Image *) NULL)
-                        MagickError(OptionError,"Missing source image",
-                          (char *) NULL);
-                      clone_info=CloneImageInfo(image_info);
-                      clone_image=
-                        CloneImage(image,0,0,True,&(image->exception));
-                      if (clone_image == (Image *) NULL)
-                        MagickError(OptionError,"Missing an image file name",
-                          (char *) NULL);
-                      status=ConvertImages(clone_info,&option_info,i-j+2,
-                        argv+j-1,&clone_image);
-                      DestroyImages(clone_image);
-                      DestroyImageInfo(clone_info);
-                      j=i+1;
-                    }
-                }
-              else
-                if (LocaleCompare("stackreplace",option+1) == 0)
-                  {
-                    if (*option == '-')
-                      {
-                        i++;
-                        if (i == argc)
-                          MagickError(OptionError,"Missing output filename",
-                            option);
-                        if (image == (Image *) NULL)
-                          MagickError(OptionError,"Missing source image",
-                            (char *) NULL);
-                        status=ConvertImages(image_info,&option_info,i-j+2,
-                          argv+j-1,&image);
-                        j=i+1;
-                      }
-                  }
               break;
             }
           if (LocaleCompare("stroke",option+1) == 0)
