@@ -366,7 +366,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     number_pixels=image->columns*image->rows;
     fits_pixels=(unsigned char *) AcquireMemory(packet_size*number_pixels);
     if (fits_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     /*
       Convert FITS pixels to pixel packets.
     */
@@ -716,7 +716,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   fits_info=(char *) AcquireMemory(2880);
   pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
   if ((fits_info == (char *) NULL) || (pixels == (unsigned char *) NULL))
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationError",image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*
     Initialize image header.
   */

@@ -6232,7 +6232,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           ping_info->text=(png_text *) AcquireMemory(256*sizeof(png_text));
           if (ping_info->text == (png_text *) NULL)
             ThrowException(&image->exception,(ExceptionType)
-              ResourceLimitError,"MemoryAllocationError",image->filename);
+              ResourceLimitError,"MemoryAllocationFailed",image->filename);
         }
       i=ping_info->num_text++;
       if (i > 255)

@@ -176,7 +176,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
   if (!AllocateImageColormap(image,2))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (image_info->ping)
     {
       CloseBlob(image);

@@ -1528,7 +1528,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if ((buffer == (unsigned char *) NULL) ||
       (packed_scanline == (unsigned char *) NULL) ||
       (scanline == (unsigned char *) NULL))
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationError",image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   /*
     Write header, header size, size bounding box, version, and reserved.
   */

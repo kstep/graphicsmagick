@@ -455,7 +455,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         pixels=(unsigned char *)
           AcquireMemory(Max(bytes_per_line,image->columns+1)*image->rows);
         if (pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         if (LocaleCompare(id,"00db") == 0)
           (void) ReadBlob(image,bytes_per_line*image->rows,(char *) pixels);

@@ -161,7 +161,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     pixels=(unsigned char *) AcquireMemory(3*image->columns);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
         image);
     for (y=0; y < (long) image->rows; y++)
     {
@@ -357,7 +357,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     pixels=(unsigned char *)
       AcquireMemory(image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
         image);
     /*
       Initialize raster file header.

@@ -118,7 +118,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   if (!AllocateImageColormap(image,1))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   image->colormap[0]=image->background_color;
   SetImage(image,image->background_color.opacity);
   return(image);

@@ -315,7 +315,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     iris_pixels=(unsigned char *)
       AcquireMemory(4*bytes_per_pixel*number_pixels);
     if (iris_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
         image);
     if (iris_info.storage != 0x01)
       {
@@ -328,7 +328,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         scanline=(unsigned char *)
           AcquireMemory(bytes_per_pixel*iris_info.columns);
         if (scanline == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         for (z=0; z < (int) iris_info.depth; z++)
         {
@@ -378,7 +378,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((offsets == (unsigned long *) NULL) ||
             (max_packets == (unsigned char *) NULL) ||
             (runlength == (unsigned long *) NULL))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         for (i=0; i < (int) (iris_info.rows*iris_info.depth); i++)
           offsets[i]=ReadBlobMSBLong(image);
@@ -511,7 +511,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create grayscale map.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         /*
           Convert SGI image to PseudoClass pixel packets.
@@ -829,7 +829,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     number_pixels=image->columns*image->rows;
     iris_pixels=(unsigned char *) AcquireMemory(4*number_pixels);
     if (iris_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
         image);
     /*
       Convert image pixels to uncompressed SGI pixels.
@@ -863,7 +863,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         */
         scanline=(unsigned char *) AcquireMemory(iris_info.columns);
         if (scanline == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         for (z=0; z < (int) iris_info.depth; z++)
         {
@@ -901,7 +901,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         if ((offsets == (unsigned long *) NULL) ||
             (packets == (unsigned char *) NULL) ||
             (runlength == (unsigned long *) NULL))
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         offset=512+4*2*(iris_info.rows*iris_info.depth);
         number_packets=0;

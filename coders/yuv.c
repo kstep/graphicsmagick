@@ -191,13 +191,13 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     scanline=(unsigned char *) AcquireMemory(image->columns);
   if (scanline == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   do
   {
     chroma_image=CloneImage(image,image->columns/horizontal_factor,
       image->rows/vertical_factor,True,exception);
     if (chroma_image == (Image *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
         image);
     /*
       Convert raster image to pixel packets.
@@ -324,7 +324,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       TriangleFilter,1.0,exception);
     DestroyImage(chroma_image);
     if (resize_image == (Image *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
         image);
     for (y=0; y < (long) image->rows; y++)
     {

@@ -230,7 +230,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     hdf_pixels=(unsigned char *)
       AcquireMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
         image);
     if (image->storage_class == PseudoClass)
       {
@@ -241,11 +241,11 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         hdf_palette=(unsigned char *) AcquireMemory(768);
         if (hdf_palette == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         (void) DFR8getimage(image->filename,hdf_pixels,(int) image->columns,
           (int) image->rows,hdf_palette);
@@ -547,7 +547,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     hdf_pixels=(unsigned char *)
       AcquireMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
         image);
     if (image->storage_class == DirectClass)
       {

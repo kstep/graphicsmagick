@@ -340,11 +340,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read SUN raster colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         sun_colormap=(unsigned char *) AcquireMemory(image->colors);
         if (sun_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (long) image->colors; i++)
@@ -368,7 +368,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         sun_colormap=(unsigned char *) AcquireMemory(sun_info.maplength);
         if (sun_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         (void) ReadBlob(image,sun_info.maplength,(char *) sun_colormap);
         LiberateMemory((void **) &sun_colormap);
@@ -388,7 +388,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     sun_data=(unsigned char *) AcquireMemory(sun_info.length);
     if (sun_data == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
         image);
     count=ReadBlob(image,sun_info.length,(char *) sun_data);
     if ((count == 0) && (sun_info.type != RT_ENCODED))
@@ -407,7 +407,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bytes_per_line=2*(sun_info.width*sun_info.depth+15)/16;
         sun_pixels=(unsigned char *) AcquireMemory(bytes_per_line*height);
         if (sun_pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         (void) DecodeImage(sun_data,sun_info.length,sun_pixels);
         LiberateMemory((void **) &sun_data);
@@ -768,7 +768,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         length=image->columns*sizeof(PixelPacket);
         pixels=(unsigned char *) AcquireMemory(length);
         if (pixels == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationError",
+          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
             image);
         /*
           Convert DirectClass packet to SUN RGB pixel.

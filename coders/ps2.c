@@ -181,7 +181,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     {
       TIFFClose(tiff);
       (void) remove(filename);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationError",
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         (char *) NULL)
     }
   /*

@@ -387,7 +387,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->storage_class=PseudoClass;
   bits_per_pixel=pdb_image.type == 0 ? 2 : pdb_image.type == 2 ? 4 : 1;
   if (!AllocateImageColormap(image,1 << bits_per_pixel))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -557,7 +557,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           c=ReadBlobByte(image);
         }
       if (comment == (char *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationError",
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
           image);
       (void) SetImageAttribute(image,"comment",comment);
       LiberateMemory((void **) &comment);

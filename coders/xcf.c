@@ -1158,7 +1158,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /* allocate our array of layer info blocks */
     layer_info=(XCFLayerInfo *) AcquireMemory(number_layers*sizeof(XCFLayerInfo));
     if (layer_info == (XCFLayerInfo *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationError", image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed", image);
     (void) memset(layer_info,0,number_layers*sizeof(XCFLayerInfo));
 
     for ( ; ; )

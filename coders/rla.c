@@ -260,7 +260,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   scanlines=(long *) AcquireMemory(image->rows*sizeof(long));
   if (scanlines == (long *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (*rla_info.description != '\0')
     (void) SetImageAttribute(image,"comment",rla_info.description);
   /*

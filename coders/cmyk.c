@@ -155,7 +155,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
   scanline=(unsigned char *)
     AcquireMemory(packet_size*image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationError",image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (image_info->subrange != 0)
     while (image->scene < image_info->subimage)
     {
@@ -581,7 +581,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
     packet_size=image->depth > 8 ? 10 : 8;
   pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
   if (pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationError",image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   if (image_info->interlace != PartitionInterlace)
     {
       /*
