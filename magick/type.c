@@ -233,12 +233,6 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   const char *style,const char *stretch,const char *weight,
   ExceptionInfo *exception)
 {
-  const char
-    *type_family,
-    *type_stretch,
-    *type_style,
-    *type_weight;
-
   register const TypeInfo
     *p;
 
@@ -246,34 +240,62 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     Search for requested type.
   */
   (void) GetTypeInfo("*",exception);
-  type_family="Helvetica";
-  if (family != (const char *) NULL)
-    type_family=family;
-  type_style="normal";
-  if (style != (const char *) NULL)
-    type_style=style;
-  type_stretch="normal";
-  if (stretch != (const char *) NULL)
-    type_stretch=stretch;
-  type_weight="400";
-  if (weight != (const char *) NULL)
-    {
-      type_weight=weight;
-      if (LocaleCompare(weight,"normal") == 0)
-        type_weight="400";
-      if (LocaleCompare(weight,"bold") == 0)
-        type_weight="700";
-    }
   for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
   {
-    if ((p->family == (char *) NULL) || (p->style == (char *) NULL) ||
-        (p->stretch == (char *) NULL) || (p->weight == (char *) NULL))
+    if (p->family == (char *) NULL
       continue;
-    if ((LocaleCompare(p->family,type_family) == 0) &&
-        (LocaleCompare(p->style,type_style) == 0) &&
-        (LocaleCompare(p->stretch,type_stretch) == 0) &&
-        (LocaleCompare(p->weight,type_weight) == 0))
-      break;
+    if (family == (char *) NULL)
+      {
+        if (LocaleCompare(p->family,"helvetica") != 0)
+          continue;
+      }
+    else
+      if (LocaleCompare(p->family,family) != 0)
+        continue;
+    if (p->style != (char *) NULL
+      {
+        if (style == (char *) NULL)
+          {
+            if (LocaleCompare(p->style,"normal") != 0)
+              continue;
+          }
+        else
+          if (LocaleCompare(p->style,style) != 0)
+            continue;
+      }
+    if (p->stretch != (char *) NULL
+      {
+        if (stretch == (char *) NULL)
+          {
+            if (LocaleCompare(p->stretch,"normal") != 0)
+              continue;
+          }
+        else
+          if (LocaleCompare(p->stretch,stretch) != 0)
+            continue;
+      }
+    if (p->weight != (char *) NULL
+      {
+        if (weight == (char *) NULL)
+          {
+            if (LocaleCompare(p->weight,"400") != 0)
+              continue;
+          }
+        else
+          {
+            if ((LocaleCompare(weight,"normal") == 0) &&
+                (LocaleCompare(p->weight,"400") != 0))
+              continue;
+            else
+              if ((LocaleCompare(weight,"bold") == 0) &&
+                  (LocaleCompare(p->weight,"700") != 0))
+                continue;
+              else
+                if (LocaleCompare(p->weight,weight) != 0)
+                  continue;
+          }
+      }
+    break;
   }
   return(p);
 }
