@@ -565,25 +565,68 @@ VMS COMPILATION
 Windows NT/95 VISUAL C++ 6.0 COMPILATION
 
   The Visual C++ distribution targeted at Windows NT or Windows 95
-  is provided in the "VisualMagick" subdirectory of the distribution.
-  There are two workspaces (DSW files) that can be used to do the
-  complete build:
+  does not provide any stock workspace (DSW) or project files (DSP)
+  except for those included with third party libraries. Instead, there
+  is a "configure" program that must be built and run that creates
+  an environment that meets your particular needs.
 
-    VisualMagick.dsw : The one used to build everything as DLL's
-    VisualMagickX11.dsw : The one used to build everything as DLL's
-                          but enabling X11 support using the DLL's
-                          and libraries supplied with the distribution
-    VisualMagickStatic.dsw: The one used to build everything as
-                            static standalone executable
+  The issue with the Visual C++ working environement is that there
+  are a fairly large number of mutually exclusive options that must
+  all be used in a coherent manner, or problems result.
 
-  A complete build can be accomplished by simply doing:
+  The Visual C++ system provides three different types of "runtimes"
+  that must match across all application, library, and DLL code that
+  is built. The "configure" program creates a set of build files that
+  are consistent for a specific runtime selection.
 
-    Build: Batch Build: Clean
-    Build: Batch Build: Build
+  The three options for runtime support are:
+
+    1) Multi-threaded DLL runtimes
+    2) Single-threaded library runtimes
+    3) Multi-threaded library runtimes
+
+  In addition to these runtimes, the VisualMagick build environement
+  allows you to select the way the ImageMagick components will be built.
+  The three options for this are:
+
+    1) Everything as DLL's - using real X11 libraries
+    2) Everything as DLL's - using stubbed out X11 libraries
+    3) Everything as static libraries - always using stubbed out X11.
+
+  This leads to five different possible build options, which should
+  cover almost any particular situation. The default binary distribution
+  is built using #1 from the first list and #1 from the second list.
+  This results in an X11 compatible build using all DLL's for everything
+  and multi-threaded support (the only option for DLL's).
+
+  To do a build for your requirements, simply go to the configure sub-
+  directory under VisualMagick and open the configure.dsw workspace.
+  Set the build configuration to "Release" under the
+
+      "Build..., Set Active Configuration..."  menu
+
+  Build and execute the configure program and follow the instructions.
+  You should probably not change any of the defaults unless you have a
+  specific reason to do so.
+
+  After creating you build environment you can proceed to open the DSW
+  file that was generated and build everything from there.
+
+  In the final DSW file you will find a project call "All". In order to
+  build everything in the distribution, select this project and make it
+  the "active" project. Set the build configuration to the desired one
+  (Debug, or Release) and do a "clean" followed by a "build". You should
+  do the build in a specific way:
+
+    1) Make the "All" prkect the active project (Bold)
+       Right click on the All project and select "Set As Active Project"
+    2) Select "Build..., Clean"
+    3) Select "Build..., Build"
+    4) Go get some coffee unless you have a very fast machine.
 
   The "Clean" step is needed in order to make sure that all of the
   target support libraries are updated with any patches needed to
-  get them to compile properly on Windows.
+  get them to compile properly under Visual C++.
 
   All of the required files that are needed to run any of the command
   line tools will be found in the "bin" subdirectory of the VisualMagick
@@ -592,8 +635,8 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
   move anything to any of the global SYSTEM or SYSTEM32 areas in the
   operating system installation.
 
-  NOTE: The two utilities "display" and "animate" will only be compiled
-  when using the VisualMagickX11 workspace. The other build environments
+  NOTE: The two utilities "display" and "animate" will only be usable
+  when the real X11 libraries are included. The other build environments
   uses the X11 stubs to supply non-functional stubs for the X-Window
   functionality. There is no support for a "static" build of the X11
   support because the build procedures for the X11 libraries do not seem
@@ -612,7 +655,6 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
   documentation.
 
   The NT executables will work under Windows 95/98.
-
 
 MACINTOSH COMPILATION
 
