@@ -524,7 +524,7 @@ static unsigned char* DecodeImage(Image *image,int bytes_per_line,
 %
 %  The format of the EncodeImage routine is:
 %
-%      status=EncodeImage(image,scanline,pixels)
+%      status=EncodeImage(image,scanline,bytes_per_line,bits_per_pixel,pixels)
 %
 %  A description of each parameter follows:
 %
@@ -537,13 +537,15 @@ static unsigned char* DecodeImage(Image *image,int bytes_per_line,
 %
 %    o bytes_per_line: The number of bytes in a scanline.
 %
+%    o bits_per_pixel: The number of bits in a pixel.
+%
 %    o pixels: A pointer to an array of characters where the packed
 %      characters are stored.
 %
 %
 */
 static unsigned int EncodeImage(Image *image,const unsigned char *scanline,
-  int bytes_per_line,unsigned char *pixels)
+  const int bytes_per_line,const bits_per_pixel,unsigned char *pixels)
 {
 #define MaxCount  128
 #define MaxPackbitsRunlength  128
@@ -650,7 +652,7 @@ static unsigned int EncodeImage(Image *image,const unsigned char *scanline,
     Write the number of and the packed packets.
   */
   packets=(int) (q-pixels);
-  if (bytes_per_line > 250)
+  if ((bytes_per_line > 250) || (bits_per_pixel > 8))
     {
       MSBFirstWriteShort(image,(unsigned short) packets);
       packets+=2;
@@ -1343,8 +1345,8 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     Allocate memory.
   */
   bytes_per_line=image->columns;
-  if ((Latin1Compare(image_info->magick,"PICT24") == 0) ||
-      !IsPseudoClass(image))
+  if (!IsPseudoClass(image) ||
+      (Latin1Compare(image_info->magick,"PICT24") == 0))
     bytes_per_line*=image->matte ? 4 : 3;
   buffer=(unsigned char *)
     AllocateMemory(PictHeaderSize*sizeof(unsigned char));
@@ -1370,27 +1372,34 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   horizontal_resolution=0x00480000;
   vertical_resolution=0x00480000;
   base_address=0xff;
-  row_bytes=((image->class == DirectClass ? 4 : 1)*image->columns) | 0x8000;
+  row_bytes=image->columns | 0x8000;
   bounds.top=0;
   bounds.left=0;
   bounds.right=image->rows;
   bounds.bottom=image->columns;
   pixmap.version=0;
-  pixmap.pack_type=(image->class == DirectClass ? 0x4 : 0x0);
+  pixmap.pack_type=0;
   pixmap.pack_size=0;
   pixmap.horizontal_resolution=horizontal_resolution;
   pixmap.vertical_resolution=vertical_resolution;
-  pixmap.pixel_type=(image->class == DirectClass ? 16 : 0);
-  pixmap.bits_per_pixel=(image->class == DirectClass ? 32 : 8);
+  pixmap.pixel_type=0;
+  pixmap.bits_per_pixel=8;
   pixmap.component_count=1;
-  if ((Latin1Compare(image_info->magick,"PICT24") == 0) ||
-      (image->class == DirectClass))
-    pixmap.component_count=image->matte ? 4 : 3;
   pixmap.component_size=8;
   pixmap.plane_bytes=0;
   pixmap.table=0;
   pixmap.reserved=0;
-  transfer_mode=(image->class == DirectClass ? 0x40 : 0);
+  transfer_mode=0;
+  if ((Latin1Compare(image_info->magick,"PICT24") == 0) ||
+      (image->class == DirectClass))
+    {
+      pixmap.component_count=image->matte ? 4 : 3;
+      pixmap.pixel_type=16;
+      pixmap.bits_per_pixel=32;
+      pixmap.pack_type=0x04;
+      transfer_mode=0x40;
+      row_bytes=(4*image->columns) | 0x8000;
+    }
   /*
     Write header, header size, size bounding box, version, and reserved.
   */
@@ -1518,7 +1527,8 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
           x++;
           if (x == (int) image->columns)
             {
-              count+=EncodeImage(image,scanline,bytes_per_line,packed_scanline);
+              count+=EncodeImage(image,scanline,bytes_per_line,
+                pixmap.bits_per_pixel,packed_scanline);
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);
               index=scanline;
@@ -1572,7 +1582,8 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
                   green=scanline+2*image->columns;
                   blue=scanline+3*image->columns;
                 }
-              count+=EncodeImage(image,scanline,bytes_per_line,packed_scanline);
+              count+=EncodeImage(image,scanline,bytes_per_line,
+                pixmap.bits_per_pixel,packed_scanline);
               x=0;
               y++;
             }

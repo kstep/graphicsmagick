@@ -689,12 +689,12 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 #if defined(HasTIFF)
       (void) RegisterMagickInfo("TIF",ReadTIFFImage,WriteTIFFImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Tagged Image File Format");
+        True,Flase,"Tagged Image File Format");
       (void) RegisterMagickInfo("TIFF",ReadTIFFImage,WriteTIFFImage,IsTIFF,
-        True,True,"Tagged Image File Format");
+        True,Flase,"Tagged Image File Format");
       (void) RegisterMagickInfo("TIFF24",ReadTIFFImage,WriteTIFFImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"24-bit Tagged Image File Format");
+        True,Flase,"24-bit Tagged Image File Format");
 #endif
       (void) RegisterMagickInfo("TILE",ReadTILEImage,
         (unsigned int (*)(const ImageInfo *,Image *)) NULL,
