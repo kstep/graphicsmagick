@@ -2150,18 +2150,8 @@ Export char *PostscriptGeometry(const char *page)
     Comparison is case insensitive.
   */
   (void) strcpy(geometry,page);
-  if (!isdigit((int) (*geometry)))
-    for (p=geometry; *p != '\0'; p++)
-    {
-      c=(*p);
-      if (islower((int) c))
-        *p=toupper(c);
-    }
-  /*
-    Comparison is case insensitive.
-  */
   for (i=0; *PageSizes[i] != (char *) NULL; i++)
-    if (strncmp(PageSizes[i][0],geometry,Extent(PageSizes[i][0])) == 0)
+    if (Latin1Compare(page,PageSizes[i][0]) == 0)
       {
         /*
           Replace mneumonic with the equivalent size in dots-per-inch.
