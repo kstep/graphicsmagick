@@ -624,7 +624,7 @@ extern MagickExport char
   *GetMagickVersion(unsigned int *);
 
 extern MagickExport ColorInfo
-  GetColorInfo(const char *,ExceptionInfo *);
+  *GetColorInfo(const char *,ExceptionInfo *);
 
 extern MagickExport Image
   *AddNoiseImage(Image *,const NoiseType,ExceptionInfo *),
