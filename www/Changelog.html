@@ -22,6 +22,12 @@ ImageMagick Changes</font></font></font></b></td>
 </table>
 <dl>
 <p>
+<dd>
+JPEG images are now compressed with the default downsampling method
+chosen by the jpeg library (typically 2x2), when "quality" is less
+than 75.  Previously, no images were downsampled.
+</dd>
+<p>
 <dd>A number of memory leaks were fixed
 (thanks to William Anderson).</dd>
 <p>
