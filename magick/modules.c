@@ -672,7 +672,7 @@ Export int LoadDynamicModule(const char* module)
   char
     *module_file,
     module_name[MaxTextExtent],
-    module_load_path[MaxTextExtent];
+    module_load_path[MaxTextExtent],
     name[MaxTextExtent];
 
   int
