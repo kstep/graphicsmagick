@@ -54,7 +54,38 @@
 */
 #include "magick.h"
 #include "defines.h"
+
+/*
+  Typedef declarations.
+*/
+typedef struct _PCXHeader
+{
+  unsigned char
+    identifier,
+    version,
+    encoding,
+    bits_per_pixel;
 
+  short int
+    left,
+    top,
+    right,
+    bottom,
+    horizontal_resolution,
+    vertical_resolution;
+
+  unsigned char
+    reserved,
+    planes;
+
+  short int
+    bytes_per_line,
+    palette_info;
+
+  unsigned char
+    colormap_signature;
+} PCXHeader;
+
 /*
   Forward declarations.
 */
@@ -174,37 +205,6 @@ static unsigned int IsPCX(const unsigned char *magick,const unsigned int length)
 */
 static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  typedef struct _PCXHeader
-  {
-    unsigned char
-      identifier,
-      version,
-      encoding,
-      bits_per_pixel;
-
-    short int
-      left,
-      top,
-      right,
-      bottom,
-      horizontal_resolution,
-      vertical_resolution;
-
-    unsigned char
-      reserved,
-      planes;
-
-    short int
-      bytes_per_line,
-      palette_info;
-
-    unsigned char
-      colormap_signature;
-  } PCXHeader;
-
-  PCXHeader
-    pcx_header;
-
   Image
     *image;
 
@@ -215,6 +215,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     mask,
     pcx_packets,
     y;
+
+  PCXHeader
+    pcx_header;
 
   register IndexPacket
     *indexes;
@@ -314,7 +317,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_header.reserved=ReadByte(image);
     pcx_header.planes=ReadByte(image);
     if ((pcx_header.bits_per_pixel != 8) || (pcx_header.planes == 1))
-      if ((pcx_header.version == 3) || (pcx_header.version == 5))
+      if ((pcx_header.version == 3) || (pcx_header.version == 5) ||
+	  ((pcx_header.bits_per_pixel*pcx_header.planes) == 1))
         image->colors=1 << (pcx_header.bits_per_pixel*pcx_header.planes);
     if (!AllocateImageColormap(image,image->colors))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -375,7 +379,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->class == DirectClass)
       image->matte=pcx_header.planes > 3;
     else
-      if (pcx_header.version == 5)
+      if ((pcx_header.version == 5) ||
+	  ((pcx_header.bits_per_pixel*pcx_header.planes) == 1))
         {
           /*
             Initialize image colormap.
@@ -702,34 +707,6 @@ ModuleExport void UnregisterPCXImage(void)
 */
 static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 {
-  typedef struct _PCXHeader
-  {
-    unsigned char
-      identifier,
-      version,
-      encoding,
-      bits_per_pixel;
-
-    short int
-      left,
-      top,
-      right,
-      bottom,
-      horizontal_resolution,
-      vertical_resolution;
-
-    unsigned char
-      reserved,
-      planes;
-
-    short int
-      bytes_per_line,
-      palette_info;
-
-    unsigned char
-      colormap_signature;
-  } PCXHeader;
-
   int
     y;
 
