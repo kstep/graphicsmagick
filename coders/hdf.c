@@ -53,6 +53,7 @@
   Include declarations.
 */
 #include "studio.h"
+#if defined(HasHDF)
 
 /*
   Forward declarations.
@@ -98,7 +99,6 @@ static unsigned int IsHDF(const unsigned char *magick,const size_t length)
   return(False);
 }
 
-#if defined(HasHDF)
 #if defined(HAVE_HDF_HDF_H)
 #include "hdf/hdf.h"
 #else
@@ -380,13 +380,6 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CloseBlob(image);
   return(image);
 }
-#else
-static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  ThrowException(exception,MissingDelegateError,
-    "HDF library is not available",image_info->filename);
-  return((Image *) NULL);
-}
 #endif
 
 /*
@@ -414,10 +407,10 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterHDFImage(void)
 {
+#if defined(HasHDF)
   MagickInfo
     *entry;
 
-#if defined(HasHDF)
   entry=SetMagickInfo("HDF");
   entry->decoder=ReadHDFImage;
   entry->encoder=WriteHDFImage;
@@ -450,7 +443,9 @@ ModuleExport void RegisterHDFImage(void)
 */
 ModuleExport void UnregisterHDFImage(void)
 {
+#if defined(HasHDF)
   (void) UnregisterMagickInfo("HDF");
+#endif /* HasHDF */
 }
 
 #if defined(HasHDF)
@@ -760,10 +755,4 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
       image=image->previous;
   return(status != -1);
 }
-#else
-static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
-{
-  ThrowBinaryException(MissingDelegateError,"HDF library is not available",
-    image->filename)
-}
-#endif
+#endif /* HasHDF */
