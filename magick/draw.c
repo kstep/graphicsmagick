@@ -159,60 +159,6 @@ static void
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   A l p h a C o m p o s i t e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AlphaComposite() composites pixel p "over" pixel q.
-%
-%  The format of the AlphaComposite method is:
-%
-%      PixelPacket AlphaComposite(const PixelPacket *p,const double alpha,
-%        const PixelPacket *q,const double beta)
-%
-%  A description of each parameter follows:
-%
-%    o p: Pixel p.
-%
-%    o alpha: The opacity value associated with pixel p.
-%
-%    o q: Pixel q.
-%
-%    o beta: The opacity value associated with pixel q.
-%
-%
-*/
-static inline PixelPacket AlphaComposite(const PixelPacket *p,
-  const double alpha,const PixelPacket *q,const double beta)
-{
-  register double
-    opacity;
-
-  PixelPacket
-    composite;
-
-  if (alpha == OpaqueOpacity)
-    return(*p);
-  if (alpha == TransparentOpacity)
-    return(*q);
-  opacity=(MaxRGB-alpha)+alpha*(MaxRGB-beta)/MaxRGB;
-  composite.red=(Quantum)
-    (((MaxRGB-alpha)*p->red+alpha*(MaxRGB-beta)*q->red/MaxRGB)/opacity+0.5);
-  composite.green=(Quantum)
-    (((MaxRGB-alpha)*p->green+alpha*(MaxRGB-beta)*q->green/MaxRGB)/opacity+0.5);
-  composite.blue=(Quantum)
-    (((MaxRGB-alpha)*p->blue+alpha*(MaxRGB-beta)*q->blue/MaxRGB)/opacity+0.5);
-  composite.opacity=(Quantum) (MaxRGB-opacity+0.5);
-  return(composite);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   C l o n e D r a w I n f o                                                 %
 %                                                                             %
 %                                                                             %
@@ -342,6 +288,58 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 %
 */
+
+static inline PixelPacket AlphaComposite(const PixelPacket *p,
+  const double alpha,const PixelPacket *q,const double beta)
+{
+  register double
+    opacity;
+
+  PixelPacket
+    composite;
+
+  if (alpha == OpaqueOpacity)
+    return(*p);
+  if (alpha == TransparentOpacity)
+    return(*q);
+  opacity=(MaxRGB-alpha)+alpha*(MaxRGB-beta)/MaxRGB;
+  composite.red=(Quantum)
+    (((MaxRGB-alpha)*p->red+alpha*(MaxRGB-beta)*q->red/MaxRGB)/opacity+0.5);
+  composite.green=(Quantum)
+    (((MaxRGB-alpha)*p->green+alpha*(MaxRGB-beta)*q->green/MaxRGB)/opacity+0.5);
+  composite.blue=(Quantum)
+    (((MaxRGB-alpha)*p->blue+alpha*(MaxRGB-beta)*q->blue/MaxRGB)/opacity+0.5);
+  composite.opacity=(Quantum) (MaxRGB-opacity+0.5);
+  return(composite);
+}
+
+static inline unsigned int FuzzyColorMatch(const PixelPacket *p,
+  const PixelPacket *q,const double fuzz)
+{
+  register double
+    blue,
+    distance,
+    green,
+    red;
+
+  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
+      (p->blue == q->blue))
+    return(True);
+  red=(double) (p->red-q->red);
+  distance=red*red;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  green=(double) (p->green-q->green);
+  distance+=green*green;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  blue=(double) (p->blue-q->blue);
+  distance+=blue*blue;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  return(True);
+}
+
 MagickExport unsigned int ColorFloodfillImage(Image *image,
   const DrawInfo *draw_info,const PixelPacket target,const long x_offset,
   const long y_offset,const PaintMethod method)

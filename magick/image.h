@@ -752,7 +752,6 @@ extern MagickExport unsigned int
     const unsigned long,const char *,const StorageType,void *,ExceptionInfo *),
   DisplayImages(const ImageInfo *image_info,Image *image),
   EqualizeImage(Image *),
-	FuzzyColorMatch(const PixelPacket *,const PixelPacket *,const double),
   GammaImage(Image *,const char *),
   GetNumberScenes(const Image *),
   GradientImage(Image *,const PixelPacket *,const PixelPacket *),

@@ -413,6 +413,33 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %
 */
 
+static inline unsigned int FuzzyColorMatch(const PixelPacket *p,
+  const PixelPacket *q,const double fuzz)
+{
+  register double
+    blue,
+    distance,
+    green,
+    red;
+
+  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
+      (p->blue == q->blue))
+    return(True);
+  red=(double) (p->red-q->red);
+  distance=red*red;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  green=(double) (p->green-q->green);
+  distance+=green*green;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  blue=(double) (p->blue-q->blue);
+  distance+=blue*blue;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  return(True);
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

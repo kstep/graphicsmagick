@@ -326,62 +326,6 @@ static void DestroyColorList(const NodeInfo *node_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   F u z z y C o l o r M a t c h                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  FuzzyColorMatch() returns true if two pixels are identical in color.
-%
-%  The format of the FuzzyColorMatch method is:
-%
-%      void FuzzyColorMatch(const PixelPacket *p,const PixelPacket *q,
-%        const double fuzz)
-%
-%  A description of each parameter follows:
-%
-%    o p: Pixel p.
-%
-%    o q: Pixel q.
-%
-%    o distance:  Define how much tolerance is acceptable to consider
-%      two colors as the same.
-%
-%
-*/
-MagickExport unsigned int FuzzyColorMatch(const PixelPacket *p,
-  const PixelPacket *q,const double fuzz)
-{
-  register double
-    blue,
-    distance,
-    green,
-    red;
-
-  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
-      (p->blue == q->blue))
-    return(True);
-  red=(double) (p->red-q->red);
-  distance=red*red;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  green=(double) (p->green-q->green);
-  distance+=green*green;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  blue=(double) (p->blue-q->blue);
-  distance+=blue*blue;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   G e t C o l o r I n f o                                                   %
 %                                                                             %
 %                                                                             %
@@ -654,6 +598,34 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %
 %
 */
+
+static inline unsigned int FuzzyColorMatch(const PixelPacket *p,
+  const PixelPacket *q,const double fuzz)
+{
+  register double
+    blue,
+    distance,
+    green,
+    red;
+
+  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
+      (p->blue == q->blue))
+    return(True);
+  red=(double) (p->red-q->red);
+  distance=red*red;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  green=(double) (p->green-q->green);
+  distance+=green*green;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  blue=(double) (p->blue-q->blue);
+  distance+=blue*blue;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  return(True);
+}
+
 MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   ExceptionInfo *exception)
 {

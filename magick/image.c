@@ -312,60 +312,6 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
   image->next->previous=image;
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   A l p h a C o m p o s i t e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AlphaComposite() composites pixel p "over" pixel q.
-%
-%  The format of the AlphaComposite method is:
-%
-%      PixelPacket AlphaComposite(const PixelPacket *p,const double alpha,
-%        const PixelPacket *q,const double beta)
-%
-%  A description of each parameter follows:
-%
-%    o p: Pixel p.
-%
-%    o alpha: The opacity value associated with pixel p.
-%
-%    o q: Pixel q.
-%
-%    o beta: The opacity value associated with pixel q.
-%
-%
-*/
-static inline PixelPacket AlphaComposite(const PixelPacket *p,
-  const double alpha,const PixelPacket *q,const double beta)
-{
-  register double
-    opacity;
-
-  PixelPacket
-    composite;
-
-  if (alpha == OpaqueOpacity)
-    return(*p);
-  if (alpha == TransparentOpacity)
-    return(*q);
-  opacity=(MaxRGB-alpha)+alpha*(MaxRGB-beta)/MaxRGB;
-  composite.red=(Quantum)
-    (((MaxRGB-alpha)*p->red+alpha*(MaxRGB-beta)*q->red/MaxRGB)/opacity+0.5);
-  composite.green=(Quantum)
-    (((MaxRGB-alpha)*p->green+alpha*(MaxRGB-beta)*q->green/MaxRGB)/opacity+0.5);
-  composite.blue=(Quantum)
-    (((MaxRGB-alpha)*p->blue+alpha*(MaxRGB-beta)*q->blue/MaxRGB)/opacity+0.5);
-  composite.opacity=(Quantum) (MaxRGB-opacity+0.5);
-  return(composite);
-}
-
 #if defined(HasX11)
 #include "xwindow.h"
 /*
@@ -1157,6 +1103,31 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %
 */
+
+static inline PixelPacket AlphaComposite(const PixelPacket *p,
+  const double alpha,const PixelPacket *q,const double beta)
+{
+  register double
+    opacity;
+
+  PixelPacket
+    composite;
+
+  if (alpha == OpaqueOpacity)
+    return(*p);
+  if (alpha == TransparentOpacity)
+    return(*q);
+  opacity=(MaxRGB-alpha)+alpha*(MaxRGB-beta)/MaxRGB;
+  composite.red=(Quantum)
+    (((MaxRGB-alpha)*p->red+alpha*(MaxRGB-beta)*q->red/MaxRGB)/opacity+0.5);
+  composite.green=(Quantum)
+    (((MaxRGB-alpha)*p->green+alpha*(MaxRGB-beta)*q->green/MaxRGB)/opacity+0.5);
+  composite.blue=(Quantum)
+    (((MaxRGB-alpha)*p->blue+alpha*(MaxRGB-beta)*q->blue/MaxRGB)/opacity+0.5);
+  composite.opacity=(Quantum) (MaxRGB-opacity+0.5);
+  return(composite);
+}
+
 MagickExport unsigned int CompositeImage(Image *image,
   const CompositeOperator compose,const Image *composite_image,
   const long x_offset,const long y_offset)
@@ -2653,6 +2624,34 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 %
 %
 */
+
+static inline unsigned int FuzzyColorMatch(const PixelPacket *p,
+  const PixelPacket *q,const double fuzz)
+{
+  register double
+    blue,
+    distance,
+    green,
+    red;
+
+  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
+      (p->blue == q->blue))
+    return(True);
+  red=(double) (p->red-q->red);
+  distance=red*red;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  green=(double) (p->green-q->green);
+  distance+=green*green;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  blue=(double) (p->blue-q->blue);
+  distance+=blue*blue;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  return(True);
+}
+
 MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   ExceptionInfo *exception)
 {
