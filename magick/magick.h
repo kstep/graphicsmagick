@@ -58,6 +58,7 @@ extern "C" {
 #if defined(WIN32)
 #  include <sys/types.h>
 #  include <sys/stat.h>
+#  include "magick/config.h"
 #else
 #  include <types.h>
 #  include <stat.h>
@@ -96,26 +97,6 @@ extern "C" {
 #define HasTIFF
 #define HasX11
 #define HasZLIB
-#define QuantumLeap
-#endif
-
-#if defined(WIN32)
-#define inline __inline
-#define HasJBIG
-#define HasJPEG
-#define HasLCMS
-#define HasPNG
-#define HasTIFF
-#define HasTTF
-#define HasX11
-#define HasZLIB
-#define HasBZLIB
-#define HasHDF
-#define HasFPX
-#define HAVE_MMAP
-#define HasXML
-#define HAVE_LIBXML_XMLERROR_H
-#define HAVE_FREETYPE_FREETYPE_H
 #define QuantumLeap
 #endif
 
