@@ -1,3 +1,9 @@
+2003-06-07  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* magick/image.c (GetImageGeometry) Y was a function of width
+	instead of height when processing EastGravity or WestGravity
+	(bug report from Cristy).
+
 2003-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/log.c (ReadConfigureFile): Move event parsing to
