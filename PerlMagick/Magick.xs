@@ -6346,84 +6346,145 @@ Ping(ref,...)
       *av;
 
     char
+      **keep,
+      **list,
       message[MaxTextExtent];
 
     ExceptionInfo
       exception;
 
+    HV
+      *hv;
+
     Image
       *image;
 
-    ImageInfo
-      *clone_info;
-
     int
-      count;
+      ac,
+      n;
 
-    register Image
-      *p;
+    jmp_buf
+      error_jmp;
+
+    register char
+      **p;
 
     register int
       i;
 
     struct PackageInfo
-      *info;
+      *info,
+      *package_info;
 
     SV
-      *reference;  /* reference is the SV* of ref=SvIV(reference) */
+      *reference,
+      *rv,
+      *sv;
 
+    unsigned int
+      status;
+
+    unsigned long
+      count;
+
+    package_info=(struct PackageInfo *) NULL;
     error_list=newSVpv("",0);
+    ac=(items < 2) ? 1 : items-1;
+    list=(char **) AcquireMemory((ac+1)*sizeof(*list));
+    if (!sv_isobject(ST(0)))
+      {
+        MagickError(OptionError,"Reference is not my type",PackageName);
+        goto ReturnIt;
+      }
     reference=SvRV(ST(0));
+    hv=SvSTASH(reference);
+    if (SvTYPE(reference) != SVt_PVAV)
+      {
+        MagickError(OptionError,"Unable to read into a single image",NULL);
+        goto ReturnIt;
+      }
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
-    count=0;
-    GetExceptionInfo(&exception);
-    for (i=1; i < items; i++)
-    {
-      clone_info=CloneImageInfo(info->image_info);
-      (void) strncpy(clone_info->filename,(char *) SvPV(ST(i),na),
-        MaxTextExtent-1);
-      if ((items >= 3) && strEQcase(clone_info->filename,"filename"))
-        continue;
-      if ((items >= 3) && strEQcase(clone_info->filename,"file"))
-        {
-          i++;
-          clone_info->file=(FILE *) IoIFP(sv_2io(ST(i)));
-        }
-      if ((items >= 3) && strEQcase(clone_info->filename,"blob"))
-        {
-          STRLEN
-            length;
+    package_info=ClonePackageInfo(info);
+    n=1;
+    if (items <= 1)
+      *list=(char *) (*package_info->image_info->filename ?
+        package_info->image_info->filename : "XC:black");
+    else
+      for (n=0, i=0; i < ac; i++)
+      {
+        list[n]=(char *) SvPV(ST(i+1),na);
+        if ((items >= 3) &&
+            strEQcase(package_info->image_info->filename,"blob"))
+          {
+            STRLEN
+              length;
 
-          i++;
-          clone_info->blob=(void *) (SvPV(ST(i),length));
-          clone_info->length=length;
-        }
-      image=PingImage(clone_info,&exception);
-      if (image == (Image *) NULL)
-        {
-          MagickError(exception.severity,exception.reason,
-            exception.description);
-          PUSHs(&sv_undef);
-          DestroyImageInfo(clone_info);
+            i++;
+            package_info->image_info->blob=(void *) (SvPV(ST(i),length));
+            package_info->image_info->length=length;
+          }
+        if ((items >= 3) && strEQcase(list[n],"filename"))
           continue;
-        }
+        if ((items >= 3) && strEQcase(list[n],"file"))
+          {
+            package_info->image_info->file=(FILE *) IoIFP(sv_2io(ST(i+2)));
+            continue;
+          }
+        n++;
+      }
+    list[n]=(char *) NULL;
+    keep=list;
+    error_jump=(&error_jmp);
+    if (setjmp(error_jmp))
+      goto ReturnIt;
+    status=ExpandFilenames(&n,&list);
+    if (status == False)
+      {
+        MagickError(ResourceLimitError,"Memory allocation failed",NULL);
+        goto ReturnIt;
+      }
+    GetExceptionInfo(&exception);
+    count=0;
+    for (i=0; i < n; i++)
+    {
+      (void) strncpy(package_info->image_info->filename,list[i],
+        MaxTextExtent-1);
+      image=PingImage(package_info->image_info,&exception);
+      if (exception.severity != UndefinedException)
+        MagickError(exception.severity,exception.reason,
+          exception.description);
       count+=GetImageListSize(image);
       EXTEND(sp,4*count);
-      for (p=image ; p != (Image *) NULL; p=p->next)
+      for ( ; image; image=image->next)
       {
-        FormatString(message,"%u",p->columns);
+        FormatString(message,"%u",image->columns);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        FormatString(message,"%u",p->rows);
+        FormatString(message,"%u",image->rows);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        FormatString(message,"%lu",(unsigned long) GetBlobSize(p));
+        FormatString(message,"%lu",(unsigned long) GetBlobSize(image));
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        PUSHs(sv_2mortal(newSVpv(p->magick,0)));
+        PUSHs(sv_2mortal(newSVpv(image->magick,0)));
       }
       DestroyImageList(image);
-      DestroyImageInfo(clone_info);
     }
-    DestroyExceptionInfo(&exception);
+    /*
+      Free resources.
+    */
+    GetExceptionInfo(&exception);
+    for (i=0; i < n; i++)
+      if (list[i])
+        for (p=keep; list[i] != *p++; )
+          if (*p == NULL)
+            {
+              LiberateMemory((void **) &list[i]);
+              break;
+            }
+
+  ReturnIt:
+    if (package_info)
+      DestroyPackageInfo(package_info);
+    LiberateMemory((void **) &list);
     SvREFCNT_dec(error_list);  /* throw away all errors */
     error_list=NULL;
   }
@@ -7127,6 +7188,16 @@ Read(ref,...)
       for (n=0, i=0; i < ac; i++)
       {
         list[n]=(char *) SvPV(ST(i+1),na);
+        if ((items >= 3) &&
+            strEQcase(package_info->image_info->filename,"blob"))
+          {
+            STRLEN
+              length;
+
+            i++;
+            package_info->image_info->blob=(void *) (SvPV(ST(i),length));
+            package_info->image_info->length=length;
+          }
         if ((items >= 3) && strEQcase(list[n],"filename"))
           continue;
         if ((items >= 3) && strEQcase(list[n],"file"))
