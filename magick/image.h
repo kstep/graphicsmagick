@@ -17,33 +17,33 @@ extern "C" {
 /*
   Color quantum is [0..255].
 */
-#define ScaleQuantumToByte(quantum)  (quantum)
 #define ScaleByteToQuantum(value)  (value)
-#define ScaleShortToQuantum(value)  ((value)/257)
+#define ScaleQuantumToByte(quantum)  (quantum)
 #define ScaleQuantumToShort(quantum)  (257*(quantum))
 #define ScaleQuantumToUnsignedLong(quantum) (16843009UL*(quantum))
+#define ScaleShortToQuantum(value)  ((value)/257)
 
 typedef unsigned char Quantum;
 #elif (QuantumDepth == 16)
 /*
   Color quantum is [0..65535].
 */
-#define ScaleQuantumToByte(quantum)  ((quantum)/257)
 #define ScaleByteToQuantum(value)  (257*(value))
-#define ScaleShortToQuantum(value)  (value)
+#define ScaleQuantumToByte(quantum)  ((quantum)/257)
 #define ScaleQuantumToShort(quantum)  (quantum)
 #define ScaleQuantumToUnsignedLong(quantum) (65537UL*(quantum))
+#define ScaleShortToQuantum(value)  (value)
 
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
 /*
   Experimental: Color quantum is [0..4294967295].
 */
-#define ScaleQuantumToByte(quantum)  ((quantum)/16843009L)
 #define ScaleByteToQuantum(value)  (16843009L*(value))
-#define ScaleShortToQuantum(value)  (65537L*(value))
+#define ScaleQuantumToByte(quantum)  ((quantum)/16843009L)
 #define ScaleQuantumToShort(quantum)  ((quantum)/65537L)
 #define ScaleQuantumToUnsignedLong(quantum)  (quantum)
+#define ScaleShortToQuantum(value)  (65537L*(value))
 
 typedef unsigned int Quantum;
 #else
@@ -52,15 +52,15 @@ typedef unsigned int Quantum;
 
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
-#define Downscale(quantum) ScaleQuantumToByte(quantum)
+#define Downscale(quantum)  ScaleQuantumToByte(quantum)
 #define Intensity(color)  \
   ((9798L*(color)->red+19235L*(color)->green+3735L*(color)->blue)/32768L)
 #define MaxRGB  ((1 << QuantumDepth)-1)
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB
-#define Upscale(value) ScaleByteToQuantum(value)
-#define XDownscale(quantum) ScaleShortToQuantum(quantum)
-#define XUpscale(value) ScaleQuantumToShort(value)
+#define Upscale(value)  ScaleByteToQuantum(value)
+#define XDownscale(quantum)  ScaleShortToQuantum(quantum)
+#define XUpscale(value)  ScaleQuantumToShort(value)
 
 /*
   Typedef declarations.
