@@ -23,6 +23,12 @@ AM_CONFIG_HEADER(magick/config.h)
 
 AM_INIT_AUTOMAKE(ImageMagick,$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION, ' ')
 
+# Set default CFLAGS (if not already set)
+if test "${CFLAGS}x" = 'x';
+then
+  CFLAGS='-O'
+fi
+
 # Check for programs
 AC_PROG_CC
 AC_PROG_CPP

@@ -360,13 +360,13 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
 %
 %  Method AnimateImages displays one or more images to an X window.
 %
-%  The format of the AllocateNextImage method is:
+%  The format of the AnimateImages method is:
 %
 %      unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method DisplayImages returns True if the images are displayed
+%    o status: Method AnimateImages returns True if the images are displayed
 %      in an X window, otherwise False is returned.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
