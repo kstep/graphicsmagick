@@ -1695,9 +1695,9 @@ Boolean PTileFlashPix::WriteHeader(PFlashPixFile* filePtr,
   OLEProperty*  aProp;
   OLEBlob     jpegTable; 
 
-  // Get jpeg table index and make sure it is in 0 - 255 range
-  unsigned char JPEGtableSelector =
-    (((PResolutionFlashPix*)fatherSubImage)->compressTableGroup >255) ? 255 : JPEGtableSelector; 
+  // Get jpeg table index.
+  // compressTableGroup is type unsigned char so it has a range of 0 - 255
+  unsigned char JPEGtableSelector = ((PResolutionFlashPix*)fatherSubImage)->compressTableGroup;
 
   // If jpeg table index is 0, then the header is stored with tile data
   if ( !JPEGtableSelector )

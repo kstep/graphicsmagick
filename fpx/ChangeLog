@@ -1,5 +1,9 @@
 2003-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* fpx/ptil_fpx.cpp (WriteHeader): One of the BSD patches had
+	wrong code. The type of compressTableGroup is 'unsigned int' so
+	it is pointless to range-check for values outside of 0-255 at
+	all.  The bad patch failed to assign a value.
 	* fpxlib.h: Borland C already has typedefs for WCHAR.
 
 2003-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
