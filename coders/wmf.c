@@ -16,7 +16,7 @@
 %                              Software Design                                %
 %                              Bob Friesenhahn                                %
 %                            Dec 2000 - May 2001                              %
-%                            Oct 2001 - Mar 2002                              %
+%                            Oct 2001 - Apr 2002                              %
 %                                                                             %
 %                           Port to libwmf 0.2 API                            %
 %                            Francis J. Franklin                              %
@@ -397,28 +397,28 @@ static void draw_pattern_push( wmfAPI* API,
 
 static void draw_rectangle( wmfAPI* API, double x1, double y1, double x2, double y2 )
 {
-  util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n", x1,y1, x2,y2);
+  util_append_mvg(API, "rectangle %.4g,%.4g %.4g,%.4g\n", x1,y1, x2,y2);
 }
 
 static void draw_round_rectangle( wmfAPI* API, double x1, double y1, double x2, double y2, double rx, double ry )
 {
-  util_append_mvg(API, "roundrectangle %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+  util_append_mvg(API, "roundrectangle %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
                   x1,y1, x2,y2, rx,ry );
 }
 
 static void draw_rotate(wmfAPI* API, double degrees)
 {
-  util_append_mvg(API, "rotate %.10g\n", degrees);
+  util_append_mvg(API, "rotate %.4g\n", degrees);
 }
 
 static void draw_scale(wmfAPI* API, double x, double y)
 {
-  util_append_mvg(API, "scale %.10g,%.10g\n", x, y);
+  util_append_mvg(API, "scale %.4g,%.4g\n", x, y);
 }
 
 static void  draw_translate(wmfAPI* API, double x, double y)
 {
-  util_append_mvg(API, "translate %.10g,%.10g\n", x, y);
+  util_append_mvg(API, "translate %.4g,%.4g\n", x, y);
 }
 
 static void draw_viewbox(wmfAPI* API, unsigned long x1, unsigned long y1, unsigned long x2, unsigned long y2)
@@ -604,7 +604,7 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
   height = AbsoluteValue(bmp_draw->pixel_height * (double) bmp_draw->crop.h);
 
   if( *id > -1 )
-    util_append_mvg(API, "image Copy %.10g,%.10g %.10g,%.10g 'mpri:%li'\n",
+    util_append_mvg(API, "image Copy %.4g,%.4g %.4g,%.4g 'mpri:%li'\n",
                       XC(bmp_draw->pt.x), YC(bmp_draw->pt.y), width, height, *id);
   else
     ThrowException(&ddata->image->exception,exception.severity,
@@ -613,8 +613,8 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
 #if 0
   printf("bmp_draw->bmp.data   = 0x%lx\n", (long)bmp_draw->bmp.data);
   printf("registry id          = %li\n", id);
-  /* printf("pixel_width          = %.10g\n", bmp_draw->pixel_width); */
-  /* printf("pixel_height         = %.10g\n", bmp_draw->pixel_height); */
+  /* printf("pixel_width          = %.4g\n", bmp_draw->pixel_width); */
+  /* printf("pixel_height         = %.4g\n", bmp_draw->pixel_height); */
   printf("bmp_draw->bmp WxH    = %ix%i\n", bmp_draw->bmp.width, bmp_draw->bmp.height);
   printf("bmp_draw->crop WxH   = %ix%i\n", bmp_draw->crop.w, bmp_draw->crop.h);
   printf("bmp_draw->crop x,y   = %i,%i\n", bmp_draw->crop.x, bmp_draw->crop.y);
@@ -847,7 +847,7 @@ static void ipa_flood_interior(wmfAPI * API, wmfFlood_t * flood)
 
   draw_color_fill_rgb(API,&(flood->color));
 
-  util_append_mvg(API, "color %.10g,%.10g filltoborder\n",
+  util_append_mvg(API, "color %.4g,%.4g filltoborder\n",
                   XC(flood->pt.x), YC(flood->pt.y));
 
   /* Restore graphic context */
@@ -862,10 +862,10 @@ static void ipa_flood_exterior(wmfAPI * API, wmfFlood_t * flood)
   draw_color_fill_rgb(API,&(flood->color));
 
   if (flood->type == FLOODFILLSURFACE)
-    util_append_mvg(API, "color %.10g,%.10g floodfill\n",
+    util_append_mvg(API, "color %.4g,%.4g floodfill\n",
                     XC(flood->pt.x),YC(flood->pt.y));
   else
-    util_append_mvg(API, "color %.10g,%.10g filltoborder\n",
+    util_append_mvg(API, "color %.4g,%.4g filltoborder\n",
                     XC(flood->pt.x), YC(flood->pt.y));
 
   /* Restore graphic context */
@@ -983,20 +983,20 @@ static void util_draw_arc(wmfAPI * API,
         util_set_brush(API, draw_arc->dc, BrushApplyFill);
 
       if (finish == magick_arc_ellipse)
-        util_append_mvg(API, "ellipse %.10g,%.10g %.10g,%.10g 0,360\n",
+        util_append_mvg(API, "ellipse %.4g,%.4g %.4g,%.4g 0,360\n",
                         XC(O.x), YC(O.y), Rx, Ry);
       else if (finish == magick_arc_pie)
-        util_append_mvg(API, "ellipse %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+        util_append_mvg(API, "ellipse %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
                         XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
       else if (finish == magick_arc_chord)
         {
-          util_append_mvg(API, "arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+          util_append_mvg(API, "arc %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
                           XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
-          util_append_mvg(API, "line %.10g,%.10g %.10g,%.10g\n",
+          util_append_mvg(API, "line %.4g,%.4g %.4g,%.4g\n",
                           XC(start.x), YC(start.y), XC(end.x), YC(end.y));
         }
       else      /* if (finish == magick_arc_open) */
-        util_append_mvg(API, "arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+        util_append_mvg(API, "arc %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
                         XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
     }
 
@@ -1012,7 +1012,7 @@ static void ipa_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line)
   if (TO_DRAW(draw_line))
     {
       util_set_pen(API, draw_line->dc);
-      util_append_mvg(API, "line %.10g,%.10g %.10g,%.10g\n",
+      util_append_mvg(API, "line %.4g,%.4g %.4g,%.4g\n",
                       XC(draw_line->from.x), YC(draw_line->from.y),
                       XC(draw_line->to.x), YC(draw_line->to.y));
     }
@@ -1041,7 +1041,7 @@ static void ipa_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line)
 
       for (i = 0; i < poly_line->count; i++)
         {
-          util_append_mvg(API, " %.10g,%.10g",
+          util_append_mvg(API, " %.4g,%.4g",
                           XC(poly_line->pt[i].x),
                           YC(poly_line->pt[i].y));
         }
@@ -1073,7 +1073,7 @@ static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
 
       for (i = 0; i < poly_line->count; i++)
         {
-          util_append_mvg(API, " %.10g,%.10g",
+          util_append_mvg(API, " %.4g,%.4g",
                           XC(poly_line->pt[i].x),
                           YC(poly_line->pt[i].y));
         }
@@ -1331,11 +1331,11 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   printf("Text                    = \"%s\"\n", draw_text->str);
   /* printf("WMF_FONT_NAME:          = \"%s\"\n", WMF_FONT_NAME(font)); */
   printf("WMF_FONT_PSNAME:        = \"%s\"\n", WMF_FONT_PSNAME(font));
-  printf("Bounding box            TL=%.10g,%.10g BR=%.10g,%.10g\n",
+  printf("Bounding box            TL=%.4g,%.4g BR=%.4g,%.4g\n",
          TL.x, TL.y, BR.x, BR.y );
-  /* printf("Text box                = %.10gx%.10g\n", bbox_width, bbox_height); */
+  /* printf("Text box                = %.4gx%.4g\n", bbox_width, bbox_height); */
   /* printf("WMF_FONT_HEIGHT         = %i\n", (int)WMF_FONT_HEIGHT(font)); */
-  printf("Pointsize               = %.10g\n", pointsize);
+  printf("Pointsize               = %.4g\n", pointsize);
   fflush(stdout);
 #endif
 
@@ -1416,7 +1416,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   draw_color_fill_rgb(API,WMF_DC_TEXTCOLOR(draw_text->dc));
 
   /* Output font size */
-  util_append_mvg(API, "font-size %.10g\n", pointsize);
+  util_append_mvg(API, "font-size %.4g\n", pointsize);
 
   /* Output Postscript font name */
   util_append_mvg(API, "font '%s'\n", WMF_FONT_PSNAME(font));
@@ -1877,7 +1877,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
   }
 
   util_append_mvg(API, "stroke-antialias 1\n");
-  util_append_mvg(API, "stroke-width %.10g\n", Max(0, pen_width));
+  util_append_mvg(API, "stroke-width %.4g\n", Max(0, pen_width));
 
   switch (pen_endcap)
   {
@@ -1916,7 +1916,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
     case PS_DASH:    /* -------  */
       /* Pattern 18,7 */
       util_append_mvg(API, "stroke-antialias 0\n");
-      util_append_mvg(API, "stroke-dasharray %.10g,%.10g\n",
+      util_append_mvg(API, "stroke-dasharray %.4g,%.4g\n",
       pixel_width * 18, pixel_width * 7);
       break;
 
@@ -1924,14 +1924,14 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
     case PS_DOT:    /* .......  */
       /* Pattern 3,3 */
       util_append_mvg(API, "stroke-antialias 0\n");
-      util_append_mvg(API, "stroke-dasharray %.10g,%.10g\n",
+      util_append_mvg(API, "stroke-dasharray %.4g,%.4g\n",
       pixel_width * 3, pixel_width * 3);
       break;
 
     case PS_DASHDOT:    /* _._._._  */
       /* Pattern 9,6,3,6 */
       util_append_mvg(API, "stroke-antialias 0\n");
-      util_append_mvg(API, "stroke-dasharray %.10g,%.10g,%.10g,%.10g\n",
+      util_append_mvg(API, "stroke-dasharray %.4g,%.4g,%.4g,%.4g\n",
       pixel_width * 9, pixel_width * 6, pixel_width * 3,
       pixel_width * 6);
       break;
@@ -1940,7 +1940,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
       /* Pattern 9,3,3,3,3,3 */
       util_append_mvg(API, "stroke-antialias 0\n");
       util_append_mvg(API,
-      "stroke-dasharray %.10g,%.10g,%.10g,%.10g,%.10g,%.10g\n",
+      "stroke-dasharray %.4g,%.4g,%.4g,%.4g,%.4g,%.4g\n",
       pixel_width * 9, pixel_width * 3, pixel_width * 3,
       pixel_width * 3, pixel_width * 3, pixel_width * 3);
       break;
@@ -2013,13 +2013,13 @@ static double util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font
 #if 0
   printf("String    = %s\n", str);
   printf("Font      = %s\n", WMF_FONT_PSNAME(font));
-  printf("lfHeight  = %.10g\n", font_height);
-  printf("bounds    = %.10g,%.10g %.10g,%.10g\n", metrics.bounds.x1, metrics.bounds.y1,
+  printf("lfHeight  = %.4g\n", font_height);
+  printf("bounds    = %.4g,%.4g %.4g,%.4g\n", metrics.bounds.x1, metrics.bounds.y1,
          metrics.bounds.x2,metrics.bounds.y2);
-  printf("ascent    = %.10g\n", metrics.ascent);
-  printf("descent   = %.10g\n", metrics.descent);
-  printf("height    = %.10g\n", metrics.height);
-  printf("Pointsize = %.10g\n", pointsize);
+  printf("ascent    = %.4g\n", metrics.ascent);
+  printf("descent   = %.4g\n", metrics.descent);
+  printf("height    = %.4g\n", metrics.height);
+  printf("Pointsize = %.4g\n", pointsize);
 #endif
 
   return floor(pointsize);
@@ -2112,7 +2112,7 @@ static float lite_font_stringwidth( wmfAPI* API, wmfFont* font, char* str)
   printf("string                  = \"%s\"\n", str);
   printf("WMF_FONT_NAME           = \"%s\"\n", WMF_FONT_NAME(font));
   printf("WMF_FONT_PSNAME         = \"%s\"\n", WMF_FONT_PSNAME(font));
-  printf("stringwidth             = %.10g\n", stringwidth);
+  printf("stringwidth             = %.4g\n", stringwidth);
   /* printf("WMF_FONT_HEIGHT         = %i\n", (int)WMF_FONT_HEIGHT(font)); */
   /* printf("WMF_FONT_WIDTH          = %i\n", (int)WMF_FONT_WIDTH(font)); */
   fflush(stdout);
@@ -2228,7 +2228,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
                 continue;
 
               weight = util_font_weight( type_info->description );
-              /* printf("Estimated weight =  %.10g\n", weight); */
+              /* printf("Estimated weight =  %.4g\n", weight); */
 
               if( abs(weight - target_weight) < abs(best_weight - target_weight) )
                 {
@@ -2639,17 +2639,17 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     printf("Yes\n");
   else
     printf("No\n");
-  printf("Size in metafile units:      %.10gx%.10g\n", wmf_width, wmf_height);
-  printf("Metafile units/inch:         %.10g\n", units_per_inch);
-  printf("Size in inches:              %.10gx%.10g\n",image_width_inch,image_height_inch);
-  printf("Bounding Box:                %.10g,%.10g %.10g,%.10g\n",
+  printf("Size in metafile units:      %.4gx%.4g\n", wmf_width, wmf_height);
+  printf("Metafile units/inch:         %.4g\n", units_per_inch);
+  printf("Size in inches:              %.4gx%.4g\n",image_width_inch,image_height_inch);
+  printf("Bounding Box:                %.4g,%.4g %.4g,%.4g\n",
          bbox.TL.x, bbox.TL.y, bbox.BR.x, bbox.BR.y);
-  printf("Bounding width x height:     %.10gx%.10g\n", bounding_width, bounding_height);
-  printf("Output resolution:           %.10gx%.10g\n", resolution_x, resolution_y);
-  printf("Image size:                  %.10gx%.10g\n", image_width, image_height);
-  printf("Bounding box scale factor:   %.10g,%.10g\n",
+  printf("Bounding width x height:     %.4gx%.4g\n", bounding_width, bounding_height);
+  printf("Output resolution:           %.4gx%.4g\n", resolution_x, resolution_y);
+  printf("Image size:                  %.4gx%.4g\n", image_width, image_height);
+  printf("Bounding box scale factor:   %.4g,%.4g\n",
          ddata->scale_x, ddata->scale_y);
-  printf("Translation:                 %.10g,%.10g\n",
+  printf("Translation:                 %.4g,%.4g\n",
    ddata->translate_x, ddata->translate_y);
 
 
@@ -2676,8 +2676,8 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     printf("dc->Window.Oy     = %d\n", dc->Window.Oy);
     printf("dc->Window.width  = %d\n", dc->Window.width);
     printf("dc->Window.height = %d\n", dc->Window.height);
-    printf("dc->pixel_width   = %.10g\n", dc->pixel_width);
-    printf("dc->pixel_height  = %.10g\n", dc->pixel_height);
+    printf("dc->pixel_width   = %.4g\n", dc->pixel_width);
+    printf("dc->pixel_height  = %.4g\n", dc->pixel_height);
 #if defined(HasWMFlite)  /* Only in libwmf 0.3 */
     printf("dc->Ox            = %.d\n", dc->Ox);
     printf("dc->Oy            = %.d\n", dc->Oy);
