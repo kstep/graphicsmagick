@@ -1457,8 +1457,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  if ((image->blob->type != FileStream) ||
-      (image->blob->data != (unsigned char *) NULL))
+  if (image->blob->type != FileStream)
     TemporaryFilename(filename);
   else
     CloseBlob(image);
@@ -2022,8 +2021,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     image=image->previous;
   TIFFClose(tiff);
   image->blob->status=False;
-  if ((image->blob->type != FileStream) ||
-      (image->blob->data != (unsigned char *) NULL))
+  if (image->blob->type != FileStream)
     {
       FILE
         *file;

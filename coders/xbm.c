@@ -276,12 +276,12 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize colormap.
   */
-  image->colormap[0].red=0;
-  image->colormap[0].green=0;
-  image->colormap[0].blue=0;
-  image->colormap[1].red=MaxRGB;
-  image->colormap[1].green=MaxRGB;
-  image->colormap[1].blue=MaxRGB;
+  image->colormap[0].red=MaxRGB;
+  image->colormap[0].green=MaxRGB;
+  image->colormap[0].blue=MaxRGB;
+  image->colormap[1].red=0;
+  image->colormap[1].green=0;
+  image->colormap[1].blue=0;
   if (image_info->ping)
     {
       CloseBlob(image);

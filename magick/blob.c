@@ -63,7 +63,7 @@
 #include "utility.h"
 #if defined(HasBZLIB)
 #include "bzlib.h"
-#endif 
+#endif
 #if defined(HasZLIB)
 #include "zlib.h"
 #endif
@@ -84,7 +84,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AttachBlob attaches a blob to the BlobInfo structure.
+%  AttachBlob() attaches a blob to the BlobInfo structure.
 %
 %  The format of the AttachBlob method is:
 %
@@ -110,6 +110,7 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
   blob_info->extent=length;
   blob_info->quantum=DefaultBlobQuantum;
   blob_info->offset=0;
+  blob_info->type=BlobStream;
 }
 
 /*
@@ -777,7 +778,7 @@ MagickExport ExtendedSignedIntegralType GetBlobSize(const Image *image)
     }
 #endif
     case StandardStream:
-		{
+    {
       offset=0;
       break;
     }
@@ -1546,6 +1547,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   if (image_info->stream != (StreamHandler) NULL)
     {
       image->blob->stream=image_info->stream;
+      image->blob->type=FifoStream;
       if (*type == 'w')
         return(True);
     }

@@ -873,8 +873,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   if (image_info->compression == JPEGCompression)
     compression=JPEG_UNSPECIFIED;
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  if ((image->blob->type != FileStream) ||
-      (image->blob->data != (unsigned char *) NULL))
+  if (image->blob->type != FileStream)
     TemporaryFilename(filename);
   else
     CloseBlob(image);
@@ -1137,8 +1136,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
   LiberateMemory((void **) &pixels);
-  if ((image->blob->type != FileStream) ||
-      (image->blob->data != (unsigned char *) NULL))
+  if (image->blob->type != FileStream)
     {
       FILE
         *file;
