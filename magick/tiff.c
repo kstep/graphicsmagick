@@ -519,18 +519,22 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
         IndexPacket
           index;
 
-        Quantum
+        register unsigned char
+          *r;
+
+        unsigned char
           *quantum_scanline;
 
-        register Quantum
-          *r;
+        unsigned int
+          packet_size;
 
         /*
           Convert TIFF image to PseudoClass MIFF image.
         */
-        quantum_scanline=(Quantum *) AllocateMemory(width*sizeof(Quantum));
+        packet_size=bits_per_sample > 8 ? 2 : 1;
+        quantum_scanline=(unsigned char *) AllocateMemory(packet_size*width);
         scanline=(unsigned char *) AllocateMemory(2*TIFFScanlineSize(tiff)+4);
-        if ((quantum_scanline == (Quantum *) NULL) ||
+        if ((quantum_scanline == (unsigned char *) NULL) ||
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
@@ -683,9 +687,10 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
             {
               for (x=0; x < (int) image->columns; x++)
               {
-                index=(*p++ << 8);
-                index|=(*p++);
-                *r++=index >> (bits_per_sample-QuantumDepth);
+                *r=(*p++ << 8);
+                *r|=(*p++);
+                *r>>=(bits_per_sample-QuantumDepth);
+                r++;
               }
               break;
             }
@@ -695,8 +700,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
           /*
             Transfer image scanline.
           */
-          (void) ReadPixelCache(image,IndexQuantum,(const unsigned char *)
-            quantum_scanline);
+          (void) ReadPixelCache(image,IndexQuantum,quantum_scanline);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
