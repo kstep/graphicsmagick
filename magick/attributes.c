@@ -133,7 +133,7 @@ Export void DestroyImageAttributes(Image *image)
 %
 %
 */
-Export ImageAttribute *GetImageAttribute(Image *image,const char *key)
+Export ImageAttribute *GetImageAttribute(const Image *image,const char *key)
 {
   register ImageAttribute
     *p;
