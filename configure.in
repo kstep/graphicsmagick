@@ -59,13 +59,12 @@ AC_PROG_LN_S
 AC_CYGWIN
 AC_EXEEXT
 AC_OBJEXT
-# Declare that the library is prepared to build a DLL
-# Must also pass -no-undefined to libtool in Makefile
-AC_LIBTOOL_WIN32_DLL
 
 #
 # Configure libtool and ltdl
 #
+AC_ENABLE_SHARED(no)
+AC_ENABLE_STATIC(yes)
 AC_LIBLTDL_CONVENIENCE
 # Substitute INCLTDL and LIBLTDL in the Makefiles
 AC_SUBST(INCLTDL)
@@ -74,8 +73,6 @@ AC_SUBST(LIBLTDL)
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_SETUP
 # Configure libtool
-AC_ENABLE_SHARED(no)
-AC_ENABLE_STATIC(yes)
 AC_PROG_LIBTOOL
 
 # Check to see if building shared libraries
