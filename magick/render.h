@@ -403,23 +403,10 @@ extern MagickExport unsigned int
   GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
   ListTypeInfo(FILE *,ExceptionInfo *);
 
-extern MagickExport unsigned long
-  TracePath(PrimitiveInfo *,const char *);
-
 extern MagickExport void
   DestroyDrawInfo(DrawInfo *),
   DestroyTypeInfo(void),
-  GetDrawInfo(const ImageInfo *,DrawInfo *),
-  TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
-    const double,const unsigned int,const unsigned int),
-  TraceBezier(PrimitiveInfo *,const unsigned long),
-  TraceCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
-  TraceEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
-  TraceLine(PrimitiveInfo *,const PointInfo,const PointInfo),
-  TracePoint(PrimitiveInfo *,const PointInfo),
-  TraceRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
-  TraceRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,
-    PointInfo);
+  GetDrawInfo(const ImageInfo *,DrawInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -129,8 +129,21 @@ static PrimitiveInfo
 static unsigned int
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *);
 
+static unsigned long
+  TracePath(PrimitiveInfo *,const char *);
+
 static void
   DestroyGradientInfo(GradientInfo *),
+  TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
+    const double,const unsigned int,const unsigned int),
+  TraceBezier(PrimitiveInfo *,const unsigned long),
+  TraceCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
+  TraceEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
+  TraceLine(PrimitiveInfo *,const PointInfo,const PointInfo),
+  TracePoint(PrimitiveInfo *,const PointInfo),
+  TraceRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
+  TraceRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,
+    PointInfo),
   TraceSquareLinecap(PrimitiveInfo *,const unsigned long,const double);
 
 /*
@@ -3308,8 +3321,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     stroke_opacity;
 
   Image
-    *fill_pattern,
-    *stroke_pattern;
+    *pattern;
 
   long
     start,
@@ -3364,6 +3376,10 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   if (0)
     DrawBoundingRectangles(image,draw_info,polygon_info);
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),"    begin draw-polygon");
+  fill=(primitive_info->method == FillToBorderMethod) ||
+    (primitive_info->method == FloodfillMethod);
+  fill_color=draw_info->fill;
+  stroke_color=draw_info->stroke;
   mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   bounds=polygon_info->edges[0].bounds;
   for (i=1; i < polygon_info->number_edges; i++)
@@ -3390,7 +3406,6 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   bounds.y2+=(mid+1.0);
   bounds.y2=bounds.y2 < 0.0 ? 0.0 : bounds.y2 >= image->rows ?
     image->rows-1 : bounds.y2;
-  stroke_color=draw_info->stroke;
   if (primitive_info->coordinates == 1)
     {
       /*
@@ -3421,11 +3436,6 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   /*
     Draw polygon or line.
   */
-  fill=(primitive_info->method == FillToBorderMethod) ||
-    (primitive_info->method == FloodfillMethod);
-  fill_color=draw_info->fill;
-  fill_pattern=draw_info->fill_pattern;
-  stroke_pattern=draw_info->stroke_pattern;
   start=(long) ceil(bounds.x1-0.5);
   stop=(long) floor(bounds.x2+0.5);
   for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2+0.5); y++)
@@ -3446,20 +3456,21 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
           fill_opacity=fill_opacity > 0.50 ? 1.0 : 0.0;
           stroke_opacity=stroke_opacity > 0.50 ? 1.0 : 0.0;
         }
-      if (fill_pattern != (Image *) NULL)
-        fill_color=AcquireOnePixel(fill_pattern,
-          (long) (x-fill_pattern->tile_info.x) % fill_pattern->columns,
-          (long) (y-fill_pattern->tile_info.y) % fill_pattern->rows,
+      pattern=draw_info->fill_pattern;
+      if (pattern != (Image *) NULL)
+        fill_color=AcquireOnePixel(pattern,
+          (long) (x-pattern->tile_info.x) % pattern->columns,
+          (long) (y-pattern->tile_info.y) % pattern->rows,
           &image->exception);
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
       if (fill_opacity != TransparentOpacity)
         *q=AlphaComposite(&fill_color,fill_opacity,q,
           (q->opacity == TransparentOpacity) ? OpaqueOpacity : q->opacity);
-      if (stroke_pattern != (Image *) NULL)
-        stroke_color=AcquireOnePixel(stroke_pattern,
-          (long) (x-stroke_pattern->tile_info.x) % stroke_pattern->columns,
-          (long) (y-stroke_pattern->tile_info.y) % stroke_pattern->rows,
-          &image->exception);
+      pattern=draw_info->stroke_pattern;
+      if (pattern != (Image *) NULL)
+        stroke_color=AcquireOnePixel(pattern,
+          (long) (x-pattern->tile_info.x) % pattern->columns,
+          (long) (y-pattern->tile_info.y) % pattern->rows,&image->exception);
       stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
       if (stroke_opacity != TransparentOpacity)
         *q=AlphaComposite(&stroke_color,stroke_opacity,q,
@@ -4152,7 +4163,7 @@ static inline double Permutate(const long n,const long k)
 %
 */
 
-MagickExport void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
+static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end,const PointInfo arc,const double angle,
   const unsigned int large_arc,const unsigned int sweep)
 {
@@ -4261,7 +4272,7 @@ MagickExport void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   }
 }
 
-MagickExport void TraceBezier(PrimitiveInfo *primitive_info,
+static void TraceBezier(PrimitiveInfo *primitive_info,
   const unsigned long number_coordinates)
 {
   double
@@ -4352,8 +4363,8 @@ MagickExport void TraceBezier(PrimitiveInfo *primitive_info,
   LiberateMemory((void **) &coefficients);
 }
 
-MagickExport void TraceCircle(PrimitiveInfo *primitive_info,
-  const PointInfo start, const PointInfo end)
+static void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo start,
+  const PointInfo end)
 {
   double
     alpha,
@@ -4374,8 +4385,8 @@ MagickExport void TraceCircle(PrimitiveInfo *primitive_info,
   TraceEllipse(primitive_info,start,offset,degrees);
 }
 
-MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,
-  const PointInfo start,const PointInfo stop,const PointInfo degrees)
+static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
+  const PointInfo stop,const PointInfo degrees)
 {
   double
     delta,
@@ -4424,7 +4435,7 @@ MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,
   }
 }
 
-MagickExport void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
+static void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end)
 {
   TracePoint(primitive_info,start);
@@ -4440,8 +4451,7 @@ MagickExport void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
   primitive_info->coordinates=2;
 }
 
-MagickExport unsigned long TracePath(PrimitiveInfo *primitive_info,
-  const char *path)
+static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
 {
   char
     *p,
@@ -4781,15 +4791,14 @@ MagickExport unsigned long TracePath(PrimitiveInfo *primitive_info,
   return(number_coordinates);
 }
 
-MagickExport void TracePoint(PrimitiveInfo *primitive_info,
-  const PointInfo point)
+static void TracePoint(PrimitiveInfo *primitive_info,const PointInfo point)
 {
   primitive_info->coordinates=1;
   primitive_info->point=point;
 }
 
-MagickExport void TraceRectangle(PrimitiveInfo *primitive_info,
-  const PointInfo start,const PointInfo end)
+static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
+  const PointInfo end)
 {
   PointInfo
     point;
@@ -4823,7 +4832,7 @@ MagickExport void TraceRectangle(PrimitiveInfo *primitive_info,
   }
 }
 
-MagickExport void TraceRoundRectangle(PrimitiveInfo *primitive_info,
+static void TraceRoundRectangle(PrimitiveInfo *primitive_info,
   const PointInfo start,const PointInfo end,PointInfo arc)
 {
   PointInfo
