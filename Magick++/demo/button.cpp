@@ -80,7 +80,8 @@ int main( int /*argc*/, char ** argv)
 
     // Quantize to desired colors
     // button.quantizeTreeDepth(8);
-    button.quantizeColors(16);
+    button.quantizeDither(false);
+    button.quantizeColors(64);
     button.quantize();
 
     // Save to file
