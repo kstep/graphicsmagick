@@ -6695,15 +6695,15 @@ echo $ECHO_N "checking for LCMS support ... $ECHO_C" >&6
 echo "${ECHO_T}" >&6
     failed=0;
     passed=0;
-    echo "$as_me:6698: checking for lcms.h" >&5
-echo $ECHO_N "checking for lcms.h... $ECHO_C" >&6
-if test "${ac_cv_header_lcms_h+set}" = set; then
+    echo "$as_me:6698: checking for lcms/lcms.h" >&5
+echo $ECHO_N "checking for lcms/lcms.h... $ECHO_C" >&6
+if test "${ac_cv_header_lcms_lcms_h+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
 #line 6704 "configure"
 #include "confdefs.h"
-#include <lcms.h>
+#include <lcms/lcms.h>
 _ACEOF
 if { (eval echo "$as_me:6708: \"$ac_cpp conftest.$ac_ext\"") >&5
   (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
@@ -6722,17 +6722,17 @@ else
   ac_cpp_err=yes
 fi
 if test -z "$ac_cpp_err"; then
-  ac_cv_header_lcms_h=yes
+  ac_cv_header_lcms_lcms_h=yes
 else
   echo "$as_me: failed program was:" >&5
   cat conftest.$ac_ext >&5
-  ac_cv_header_lcms_h=no
+  ac_cv_header_lcms_lcms_h=no
 fi
 rm -f conftest.err conftest.$ac_ext
 fi
-echo "$as_me:6733: result: $ac_cv_header_lcms_h" >&5
-echo "${ECHO_T}$ac_cv_header_lcms_h" >&6
-if test $ac_cv_header_lcms_h = yes; then
+echo "$as_me:6733: result: $ac_cv_header_lcms_lcms_h" >&5
+echo "${ECHO_T}$ac_cv_header_lcms_lcms_h" >&6
+if test $ac_cv_header_lcms_lcms_h = yes; then
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
