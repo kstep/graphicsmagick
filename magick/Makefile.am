@@ -174,6 +174,7 @@ pkginclude_HEADERS = \
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \
 	animate.h \
+	bit_stream.h \
 	display.h \
 	locale_c.h \
 	mac.h \

@@ -2191,6 +2191,11 @@ MagickExport unsigned int PushImagePixels(Image *image,
       }
     case GrayAlphaQuantum:
       {
+        /*
+          Input is organized as a gray level followed by opacity level
+          Colormap array is pre-stuffed with ascending or descending gray
+          levels according to the gray quantum representation.
+        */
         if (image->depth <= 8)
           {
             for (x = number_pixels; x > 0; --x)
