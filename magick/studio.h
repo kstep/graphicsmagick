@@ -15,7 +15,6 @@ extern "C" {
 #define _ISOC99_SOURCE  1
 #define _POSIX_C_SOURCE  199506L
 #define _XOPEN_SOURCE  600 
-#define _XOPEN_SOURCE_EXTENDED  1
 #define _LARGEFILE64_SOURCE  1
 
 #if !defined(_MAGICK_CONFIG_H)
