@@ -324,10 +324,10 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   jas_init();
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
-    ThrowReaderException(FileOpenError,"Unable to manage JP2 stream",image);
+    ThrowReaderException(DelegateError,"UnableToManageJP2Stream",image);
   jp2_image=jas_image_decode(jp2_stream,-1,0);
   if (jp2_image == (jas_image_t *) NULL)
-    ThrowReaderException(FileOpenError,"Unable to decode image file",image);
+    ThrowReaderException(DelegateError,"UnableToDecodeImageFile",image);
   /*
     Convert JPEG 2000 pixels.
   */
@@ -582,7 +582,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   jas_init();
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
-    ThrowWriterException(FileOpenError,"Unable to manage JP2 stream",image);
+    ThrowWriterException(DelegateError,"UnableToManageJP2Stream",image);
   number_components=image->matte ? 4 : 3;
   if ((image_info->type != TrueColorType) &&
       IsGrayImage(image,&image->exception))
@@ -599,7 +599,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   jp2_image=jas_image_create((short) number_components,component_info,
     number_components == 1 ? JAS_IMAGE_CM_GRAY : JAS_IMAGE_CM_RGB);
   if (jp2_image == (jas_image_t *) NULL)
-    ThrowWriterException(FileOpenError,"Unable to create image",image);
+    ThrowWriterException(DelegateError,"UnableToCreateImage",image);
   /*
     Convert to JPEG 2000 pixels.
   */
@@ -684,7 +684,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   FormatString(options,"rate=%lf",(double) image_info->quality/100.0);
   status=jas_image_encode(jp2_image,jp2_stream,format,options);
   if (status)
-    ThrowWriterException(FileOpenError,"Unable to encode image file",image);
+    ThrowWriterException(DelegateError,"UnableToEncodeImageFile",image);
   (void) jas_stream_close(jp2_stream);
   jas_image_destroy(jp2_image);
   CloseBlob(image);

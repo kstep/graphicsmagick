@@ -165,25 +165,25 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
         DIBinfo.bmiHeader.biCompression=BI_RGB;
         hDC=GetDC(NULL);
         if (!hDC)
-          ThrowReaderException(ResourceLimitError,"failed to create a DC",image);
+          ThrowReaderException(CoderError,"UnableToCreateADC",image);
         hBitmap= CreateDIBSection(hDC,&DIBinfo,DIB_RGB_COLORS,(void **) &ppBits,NULL,0);
         ReleaseDC(NULL,hDC);
         if (!hBitmap)
-          ThrowReaderException(ResourceLimitError,"failed to create bitmap",image);
+          ThrowReaderException(CoderError,"UnableToCreateBitmap",image);
 
         // create an offscreen DC
         hDC=CreateCompatibleDC(NULL);
         if (!hDC)
           {
             DeleteObject(hBitmap);
-            ThrowReaderException(ResourceLimitError,"failed to create a memory DC",image);
+            ThrowReaderException(CoderError,"UnableToCreateADC",image);
           }
         hOldBitmap=(HBITMAP) SelectObject(hDC,hBitmap);
         if (!hOldBitmap)
           {
             DeleteDC(hDC);
             DeleteObject(hBitmap);
-            ThrowReaderException(ResourceLimitError,"failed to create bitmap",image);
+            ThrowReaderException(CoderError,"UnableToCreateBitmap",image);
           }
 
         // bitblt from the memory to the DIB-based one
@@ -209,7 +209,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
               break;
           }
       } else
-        ThrowReaderException(FileOpenError,"no bitmap on clipboard",image);
+        ThrowReaderException(CoderError,"NoBitmapOnClipboard",image);
   }
 
   CloseBlob(image);

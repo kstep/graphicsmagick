@@ -142,7 +142,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
   if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0))
-    ThrowReaderException(CorruptImageError,"Not a AVS image file",image);
+    ThrowReaderException(CorruptImageError,"NotAnAVSImageFile",image);
   do
   {
     /*

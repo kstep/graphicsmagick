@@ -210,7 +210,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (status == -1)
     ThrowReaderException(CorruptImageError,
-      "Image file or does not contain any image data",image);
+      "ImageFileDoesNotContainAnyImageData",image);
   do
   {
     /*

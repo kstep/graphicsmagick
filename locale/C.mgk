@@ -52,10 +52,45 @@
   </Cache>
   <Coder>
     <Error>
+      <Message name="ColorTypeNotSupported">
+        Color type not supported
+      </Message>
+      <Message name="ImageTypeNotSupported">
+        Image type not supported
+      </Message>
+      <Message name="JPEGCompressionNotSupported">
+        JPEG compression not supported
+      </Message>
+      <Message name="MSBByteOrderNotSupported">
+        MSB order not supported bitmap
+      </Message>
+      <Message name="NoBitmapOnClipboard">
+        No bitmap on clipboard
+      </Message>
+      <Message name="PNGCompressionNotSupported">
+        PNG compression not supported
+      </Message>
+      <Message name="RLECompressionNotSupported">
+        RLE compression not supported
+      </Message>
+      <Message name="UnableToCreateBitmap">
+        Unable to create bitmap
+      </Message>
+      <Message name="UnableToCreateADC">
+        Unable to create a DC
+      </Message>
+      <Message name="UnableToTranslateText">
+        Unable to translate text
+      </Message>
       <Message name="UnableToZipCompressImage">
         Unable to zip-compress image
       </Message>
     </Error>
+    <Warning>
+      <Message name="Lossless to lossy JPEG conversion">
+        Lossless to lossy JPEG conversion
+      </Message>
+    </Warning>
   </Coder>
   <Configure>
     <Error>
@@ -83,17 +118,86 @@
         <Message name="AnErrorHasOccurredWritingToFile">
           An error has occurred writing to file
         </Message>
+        <Message name="CompressionNotValid">
+          Compression not valid
+        </Message>
+        <Message name="CorruptGIFImage">
+          Corrupt GIF image
+        </Message>
         <Message name="CorruptInlineImage">
           Corrupt inline image
+        </Message>
+        <Message name="ImageFileDoesNotContainAnyImageData">
+          Image file or does not contain any image data
         </Message>
         <Message name="ImproperImageHeader">
           Improper image header
         </Message>
+        <Message name="InsufficientImageDataInFile">
+          Insufficient image data in file
+        </Message>
+        <Message name="InvalidBitsPerPixel">
+					Invalid bits per pixel
+        </Message>
         <Message name="InvalidColormapIndex">
           Invalid colormap index
         </Message>
+        <Message name="InvalidCompression">
+					Invalid compression
+        </Message>
+        <Message name="InvalidNumerOfColors">
+					Invalid number of colors
+        </Message>
+        <Message name="LengthAndFilesizeDoNotMatch">
+					Length and filesize do not match
+        </Message>
+        <Message name="NegativeOrZeroImageSize">
+					Negative or zero image size
+        </Message>
+        <Message name="NonOS2HeaderSizeError">
+          Non OS/2 BMP header size < 40
+        </Message>
+        <Message name="NotAnARTImageFile">
+          Not an ART image file
+        </Message>
+        <Message name="NotAnAVIImageFile">
+          Not an AVI image file
+        </Message>
+        <Message name="NotAnAVSImageFile">
+          Not an AVS image file
+        </Message>
+        <Message name="NotABMPImageFile">
+          Not a BMP image file
+        </Message>
+        <Message name="NotACUTImageFile">
+          Not a CUT image file
+        </Message>
+        <Message name="NotADCMImageFile">
+          Not a DCM image file
+        </Message>
+        <Message name="NotADIBImageFile">
+          Not a DIB image file
+        </Message>
+        <Message name="NotADPXImageFile">
+          Not a DPX image file
+        </Message>
+        <Message name="NotAnEMFImageFile">
+          Not an EMF image file
+        </Message>
+        <Message name="NotAGIFImageFile">
+          Not a GIF image file
+        </Message>
+        <Message name="NotAnICOImageFile">
+          Not a ICO image file
+        </Message>
+        <Message name="StaticPlanesValueNotEqualToOne">
+					Static planes value not equal to 1
+        </Message>
         <Message name="UnableToReadColorProfile">
           Unable to read color profile
+        </Message>
+        <Message name="UnableToReadExtensionBlock">
+          Unable to read extension block
         </Message>
         <Message name="UnableToReadGenericProfile">
           Unable to read generic profile
@@ -104,8 +208,14 @@
         <Message name="UnableToReadImageData">
           Unable to read image data
         </Message>
+        <Message name="UnableToRunlengthDecodeImage">
+          Unable to runlength decode image
+        </Message>
         <Message name="UnexpectedEndOfFile">
           Unexpected end-of-file
+        </Message>
+        <Message name="UnrecognizedCompressionMethod">
+          Unrecognized compression method
         </Message>
       </Error>
     </Image>
@@ -117,6 +227,60 @@
       </Message>
       <Message name="NoTagFound">
         No tag found
+      </Message>
+      <Message name="PostscriptDelegateFailed">
+        Postscript delegate failed
+      </Message>
+      <Message name="UnableToCreateImage">
+        Unable to create image
+      </Message>
+      <Message name="UnableToDecodeImageFile">
+        Unable to decode image file
+      </Message>
+      <Message name="UnableToEncodeImageFile">
+        Unable to encode image file
+      </Message>
+      <Message name="UnableToInitializeFPXLibrary">
+        Unable to initialize FPX library
+      </Message>
+      <Message name="UnableToManageJP2Stream">
+        Unable to manage JP2 stream
+      </Message>
+      <Message name="UnableToReadAspectRatio">
+        Unable to read aspect ratio
+      </Message>
+      <Message name="UnableToReadSummaryInfo">
+        Unable to read summary info
+      </Message>
+      <Message name="UnableToSetAffineMatrix">
+        Unable to set affine matrix
+      </Message>
+      <Message name="UnableToSetAspectRatio">
+        Unable to set aspect ratio
+      </Message>
+      <Message name="UnableToSetColorTwist">
+        Unable to set color twist
+      </Message>
+      <Message name="UnableToSetContrast">
+        Unable to set contrast
+      </Message>
+      <Message name="UnableToSetFilteringValue">
+        Unable to set filtering value
+      </Message>
+      <Message name="UnableToSetImageComment">
+        Unable to set image comment
+      </Message>
+      <Message name="UnableToSetImageTitle">
+        Unable to set image title
+      </Message>
+      <Message name="UnableToSetJPEGLevel">
+        Unable to set JPEG level
+      </Message>
+      <Message name="UnableToSetRegionOfInterest">
+        Unable to set region of interest
+      </Message>
+      <Message name="UnableToSetSummaryInfo">
+        Unable to set summary info
       </Message>
     </Error>
   </Delegate>
@@ -191,6 +355,9 @@
   <Missing>
     <Delegate>
       <Error>
+        <Message name="DPSLibraryIsNotAvailable">
+          DPS library is not available
+        </Message>
         <Message name="FPXLibraryIsNotAvailable">
           FPX library is not available
         </Message>
@@ -461,6 +628,9 @@
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
         </Message>
+        <Message name="UnableToCreateColormap">
+          Unable to create colormap
+        </Message>
         <Message name="UnableToManageColor">
           Unable to manage color
         </Message>
@@ -476,6 +646,9 @@
     <Error>
       <Message name="FontSubstitutionRequired">
         Font substitution required
+      </Message>
+      <Message name="UnableToGetTypeMetrics">
+        Unable to get type metrics
       </Message>
       <Message name="UnableToInitializeFreetypeLibrary">
         Unable to initialize freetype library
@@ -508,6 +681,9 @@
     <Error>
       <Message name="NoWindowWithSpecifiedIDExists">
         No window with specified ID exists
+      </Message>
+      <Message name="UnableToCreateStandardColormap">
+        Unable to create standard colormap
       </Message>
       <Message name="UnableToGetVisual">
         Unable to get visual

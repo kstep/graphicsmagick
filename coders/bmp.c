@@ -553,7 +553,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       LogMagickEvent(CoderEvent,"  Magick: %c%c",magick[0],magick[1]);
     if ((count == 0) || ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
         (LocaleNCompare((char *) magick,"CI",2) != 0)))
-      ThrowReaderException(CorruptImageError,"Not a BMP image file",image);
+      ThrowReaderException(CorruptImageError,"NotABMPImageFile",image);
     bmp_info.file_size=ReadBlobLSBLong(image);
     (void) ReadBlobLSBLong(image);
     bmp_info.offset_bits=ReadBlobLSBLong(image);
@@ -561,8 +561,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (logging)
       LogMagickEvent(CoderEvent,"  BMP size: %lu",bmp_info.size);
     if (bmp_info.file_size != GetBlobSize(image))
-      ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP image: length and filesize do not match", image);
+      ThrowReaderException(CorruptImageWarning,"LengthAndFilesizeDoNotMatch",
+        image);
     if (bmp_info.size == 12)
       {
         /*
@@ -591,8 +591,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Microsoft Windows BMP image file.
         */
         if (bmp_info.size < 40)
-          ThrowReaderException(CorruptImageWarning,
-            "Corrupt BMP image: Non OS/2 BMP header size < 40",image);
+          ThrowReaderException(CorruptImageWarning,"NonOS2HeaderSizeError",
+            image);
         bmp_info.width=(short) ReadBlobLSBLong(image);
         bmp_info.height=(short) ReadBlobLSBLong(image);
         bmp_info.planes=ReadBlobLSBShort(image);
@@ -758,37 +758,28 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
 
     if (bmp_info.width <= 0)
-      ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP image: Negative or zero width",image);
+      ThrowReaderException(CorruptImageWarning,"NegativeOrZeroImageSize",image);
     if (bmp_info.height == 0)
-      ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP image: zero height",image);
+      ThrowReaderException(CorruptImageWarning,"NegativeOrZeroImageSize",image);
     if ((bmp_info.height < 0) && (bmp_info.compression !=0))
-      ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP image: Negative height with compression not valid",image);
+      ThrowReaderException(CorruptImageWarning,"CompressionNotValid",image);
     if (bmp_info.planes != 1)
-      ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP image: Static planes value not equal 1",image);
+      ThrowReaderException(CorruptImageWarning,"StaticPlanesValueNotEqualToOne",
+        image);
     if ((bmp_info.bits_per_pixel != 1) && (bmp_info.bits_per_pixel != 4) &&
         (bmp_info.bits_per_pixel != 8) && (bmp_info.bits_per_pixel != 16) &&
         (bmp_info.bits_per_pixel != 24) && (bmp_info.bits_per_pixel != 32))
-      ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP image: Invalid bits per pixel",image);
+      ThrowReaderException(CorruptImageWarning,"InvalidBitsPerPixel",image);
     if (bmp_info.number_colors > (1UL << bmp_info.bits_per_pixel))
-      ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP image: Invalid number of colors",image);
+      ThrowReaderException(CorruptImageWarning,"InvalidNumberOfColors",image);
     if (bmp_info.compression > 3)
-     ThrowReaderException(CorruptImageWarning,
-       "Corrupt BMP image: Invalid Compression",image);
+      ThrowReaderException(CorruptImageWarning,"InvalidCompression",image);
     if ((bmp_info.compression == 1) && (bmp_info.bits_per_pixel != 8))
-      ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP image: Invalid bits per pixel for RLE8 compression",image);
+      ThrowReaderException(CorruptImageWarning,"InvalidBitsPerPixel",image);
     if ((bmp_info.compression == 2) && (bmp_info.bits_per_pixel != 4))
-      ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP image: Invalid bits per pixel for RLE4 compression",image);
+      ThrowReaderException(CorruptImageWarning,"InvalidBitsPerPixel",image);
     if ((bmp_info.compression == 3) && (bmp_info.bits_per_pixel < 16))
-      ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP image: Invalid bits per pixel for compression",image);
+      ThrowReaderException(CorruptImageWarning,"InvalidBitsPerPixel",image);
     switch (bmp_info.compression)
     {
       case BI_RGB:
@@ -797,14 +788,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case BI_BITFIELDS:
         break;
       case BI_JPEG:
-        ThrowReaderException(CorruptImageError,"JPEG compression not supported",
-          image)
+        ThrowReaderException(CoderError,"JPEGCompressionNotSupported",image)
       case BI_PNG:
-        ThrowReaderException(CorruptImageError,"PNG compression not supported",
-          image)
+        ThrowReaderException(CoderError,"PNGCompressionNotSupported",image)
       default:
-        ThrowReaderException(CorruptImageError,
-          "Unrecognized compression method",image)
+        ThrowReaderException(CorruptImageError,"UnrecognizedCompressionMethod",
+          image)
     }
     image->columns=bmp_info.width;
     image->rows=AbsoluteValue(bmp_info.height);
@@ -885,7 +874,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         status=DecodeImage(image,bmp_info.compression,pixels);
         if (status == False)
-          ThrowReaderException(CorruptImageError,"runlength decoding failed",
+          ThrowReaderException(CorruptImageError,"UnableToRunlengthDecodeImage",
             image);
       }
     /*
@@ -1087,8 +1076,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bmp_info.compression != BI_RGB &&
             bmp_info.compression != BI_BITFIELDS)
-          ThrowReaderException(CorruptImageError,
-            "Compression mode != 0 or 3 in 16-bit BMP image file",image)
+          ThrowReaderException(CorruptImageError,"InvalidCompression",image)
         bytes_per_line=2*(image->columns+image->columns%2);
         image->storage_class=DirectClass;
         for (y=(long) image->rows-1; y >= 0; y--)
@@ -1182,8 +1170,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if ((bmp_info.compression != BI_RGB) &&
             (bmp_info.compression != BI_BITFIELDS))
-          ThrowReaderException(CorruptImageError,
-            "Compression mode != 0 or 3 in 32-bit BMP image file",image)
+          ThrowReaderException(CorruptImageError,"InvalidCompression",image)
         bytes_per_line=4*(image->columns);
         for (y=(long) image->rows-1; y >= 0; y--)
         {
@@ -1235,7 +1222,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,"Not a BMP image file",image)
+        ThrowReaderException(CorruptImageError,"NotABMPImageFile",image)
     }
     LiberateMemory((void **) &pixels);
     if (EOFBlob(image))
@@ -1658,8 +1645,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           if (pixels == (unsigned char *) NULL)
             {
               LiberateMemory((void **) &pixels);
-              ThrowWriterException(ResourceLimitError,
-                "MemoryAllocationFailed",image)
+              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+                image)
             }
           bmp_info.file_size-=bmp_info.image_size;
           bmp_info.image_size=EncodeImage(image,bytes_per_line,pixels,bmp_data);

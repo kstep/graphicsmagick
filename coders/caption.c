@@ -173,7 +173,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     *q='\0';
     status=GetTypeMetrics(image,draw_info,&metrics);
     if (status == False)
-      ThrowReaderException(CoderError,"Unable to get type metrics",image);
+      ThrowReaderException(TypeError,"UnableToGetTypeMetrics",image);
     if ((metrics.width+metrics.max_advance/2) < image->columns)
       continue;
     for (p--; !isspace((int) *p) && (p > caption); p--);

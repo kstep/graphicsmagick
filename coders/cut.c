@@ -314,7 +314,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
    Header.Reserved=ReadBlobLSBShort(image);
 
    if (Header.Width==0 || Header.Height==0 || Header.Reserved!=0)
-CUT_KO:  ThrowReaderException(CorruptImageError,"Not a CUT image file",image);
+CUT_KO:  ThrowReaderException(CorruptImageError,"NotACUTImageFile",image);
 
 /*---This code checks first line of image---*/
   EncodedByte=ReadBlobLSBShort(image);
@@ -457,8 +457,8 @@ NoPalette:
    image->colors=256;
    if (!AllocateImageColormap(image,image->colors))
      {
-NoMemory:  ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-        image)
+NoMemory:
+       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
            }     
    
    for (i=0; i < (long)image->colors; i++)

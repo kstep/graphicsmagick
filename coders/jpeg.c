@@ -660,8 +660,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       if (jpeg_pixels != (JSAMPLE *) NULL)
         LiberateMemory((void **) &jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
-      ThrowException(exception,image->exception.severity,image->exception.reason,
-        image->exception.description);
+      ThrowException(exception,image->exception.severity,
+        image->exception.reason,image->exception.description);
       number_pixels=image->columns*image->rows;
       if (number_pixels != 0)
         return(image);
@@ -1470,8 +1470,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     {
 #if defined(C_LOSSLESS_SUPPORTED)
       if (image_info->quality < 100)
-        ThrowException(&image->exception,OptionError,
-          "Lossless JPEG is being converted to lossy JPEG",(char *) NULL);
+        ThrowException(&image->exception,CoderWarning,
+          "LosslessToLossyJPEGConversion",(char *) NULL);
       else
         {
           int

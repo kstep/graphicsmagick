@@ -168,7 +168,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   k=(unsigned char) ((-ldblk) & 0x01);
 
    if(GetBlobSize(image)!=(8+((long)ldblk+k)*height))
-     ThrowReaderException(CorruptImageError,"Not a ART image file",image);
+     ThrowReaderException(CorruptImageError,"NotAnARTImageFile",image);
 
 
  image->columns=width;
@@ -183,7 +183,8 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 /* ----- Load RLE compressed raster ----- */
  BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
  if(BImgBuff==NULL)
-NoMemory: ThrowReaderException(CorruptImageError,"Memory exhausted",image);
+NoMemory:
+  ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
 
  for(i=0;i< (int) height;i++)
       {

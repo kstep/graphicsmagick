@@ -462,7 +462,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             status=DecodeImage(image,1,pixels);
             if (status == False)
               ThrowReaderException(CorruptImageError,
-                "unable to runlength decode",image);
+                "UnableToRunlengthDecodeImage",image);
           }
         /*
           Convert BMP raster image to pixel packets.
@@ -664,7 +664,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
           default:
-            ThrowReaderException(CorruptImageError,"Not a AVI image file",image)
+            ThrowReaderException(CorruptImageError,"NotAnAVIImageFile",image)
         }
         LiberateMemory((void **) &pixels);
         if ((unsigned long) image->scene < (avi_info.total_frames-1))

@@ -473,7 +473,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) memset(&dib_info,0,sizeof(DIBInfo));
   dib_info.size=ReadBlobLSBLong(image);
   if (dib_info.size!=40)
-    ThrowReaderException(CorruptImageError,"Not a Windows 3.X DIB image",image);
+    ThrowReaderException(CorruptImageError,"NotADIBImageFile",image);
   /*
     Microsoft Windows 3.X DIB image file.
   */
@@ -571,7 +571,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       status=DecodeImage(image,dib_info.compression,pixels);
       if (status == False)
-        ThrowReaderException(CorruptImageError,"runlength decoding failed",
+        ThrowReaderException(CorruptImageError,"UnableToRunlengthDecodeImage",
           image);
     }
   /*
@@ -790,7 +790,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageError,"Not a DIB image file",image)
+      ThrowReaderException(CorruptImageError,"NotADIBImageFile",image)
   }
   LiberateMemory((void **) &pixels);
   if (EOFBlob(image))

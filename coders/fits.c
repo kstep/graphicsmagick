@@ -324,7 +324,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   number_pixels=fits_info.columns*fits_info.rows;
   if ((!fits_info.simple) || (fits_info.number_axes < 1) ||
       (fits_info.number_axes > 4) || (number_pixels == 0))
-    ThrowReaderException(CorruptImageError,"image type not supported",image);
+    ThrowReaderException(CorruptImageError,"ImageTypeNotSupported",image);
   if (fits_info.bits_per_pixel == -32)
     {
       exponential[150]=1.0;
@@ -371,7 +371,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     */
     count=ReadBlob(image,packet_size*number_pixels,fits_pixels);
     if (count == 0)
-      ThrowReaderException(CorruptImageError,"Insufficient image data in file",
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile",
         image);
     if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
       {

@@ -191,7 +191,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   icon_file.count=ReadBlobLSBShort(image);
   if ((icon_file.reserved != 0) || (icon_file.resource_type != 1) ||
       (icon_file.count > MaxIcons))
-    ThrowReaderException(CorruptImageError,"Not a ICO image file",image);
+    ThrowReaderException(CorruptImageError,"NotAnICOImageFile",image);
   for (i=0; i < icon_file.count; i++)
   {
     icon_file.directory[i].width=ReadBlobByte(image);
@@ -413,7 +413,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,"Not a ICO image file",image)
+        ThrowReaderException(CorruptImageError,"NotAnICOImageFile",image)
     }
     SyncImage(image);
     /*

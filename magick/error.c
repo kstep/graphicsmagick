@@ -384,6 +384,7 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
     case BlobError: return("Blob/Error/");
     case CacheError: return("Cache/Error/");
     case CoderError: return("Coder/Error/");
+    case CoderWarning: return("Coder/Warning/");
     case ConfigureError: return("Configure/Error/");
     case CorruptImageError: return("Corrupt/Image/Error/");
     case DelegateError: return("Delegate/Error/");
