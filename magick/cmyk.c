@@ -563,26 +563,23 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           (void) WritePixelCache(image,MagentaQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
-        if (image->matte)
+        ProgressMonitor(SaveImageText,300,400);
+        if (image_info->interlace == PartitionInterlace)
           {
-            ProgressMonitor(SaveImageText,300,400);
-            if (image_info->interlace == PartitionInterlace)
-              {
-                CloseBlob(image);
-                AppendImageFormat("K",image->filename);
-                status=OpenBlob(image_info,image,WriteBinaryType);
-                if (status == False)
-                  ThrowWriterException(FileOpenWarning,"Unable to open file",
-                    image);
-              }
-            for (y=0; y < (int) image->rows; y++)
-            {
-              if (!GetPixelCache(image,0,y,image->columns,1))
-                break;
-              (void) WritePixelCache(image,BlackQuantum,pixels);
-              (void) WriteBlob(image,image->columns,pixels);
-            }
+            CloseBlob(image);
+            AppendImageFormat("K",image->filename);
+            status=OpenBlob(image_info,image,WriteBinaryType);
+            if (status == False)
+              ThrowWriterException(FileOpenWarning,"Unable to open file",
+                image);
           }
+        for (y=0; y < (int) image->rows; y++)
+        {
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          (void) WritePixelCache(image,BlackQuantum,pixels);
+          (void) WriteBlob(image,image->columns,pixels);
+        }
         if (image_info->interlace == PartitionInterlace)
           (void) strcpy(image->filename,image_info->filename);
         ProgressMonitor(SaveImageText,400,400);
