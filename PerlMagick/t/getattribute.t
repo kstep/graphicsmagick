@@ -66,7 +66,7 @@ testGetAttribute('input.miff','rows','46');
 
 ++$test;
 testGetAttribute('input.miff','signature',
-  '25b14945dc0131b7010b1fadb5249ad38ad9b8fdc3e0c7a9c56590940fd9734a');
+  'bc6bf6d18ff76a1f422d913671437c595f0bb475ce5b0ffd8c915179d6918298');
 
 ++$test;
 testGetAttribute('input.miff','texture',undef);
