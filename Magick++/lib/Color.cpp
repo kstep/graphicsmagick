@@ -141,7 +141,7 @@ Magick::Color::operator std::string() const
 {
 
   if ( !isValid() )
-    return std::string("INVALID");
+    return std::string("none");
 
   char colorbuf[17];
   ostrstream colorstr( colorbuf, sizeof(colorbuf ));

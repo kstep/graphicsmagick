@@ -98,7 +98,7 @@ namespace Magick
                      double translationX_, double translationY_ );
   };
 
-  // Angle (text drawing angle)
+  // Angle (drawing angle)
   class DrawableAngle  : public Drawable
   {
   public:
