@@ -587,7 +587,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     Read the delegates configuration file.
   */
   FormatString(filename,"%.1024s",basename);
-  path=GetMagickConfigurePath(basename,False,exception);
+  path=GetMagickConfigurePath(basename,True,exception);
   if (path != (char *) NULL)
     {
       FormatString(filename,"%.1024s",path);
