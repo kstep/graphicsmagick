@@ -1566,6 +1566,22 @@ namespace Magick
     const unsigned int _depth;
   };
 
+  // Endianness (little like Intel or big like SPARC) for image
+  // formats which support endian-specific options.
+  class endianImage : public std::unary_function<Image&,void>
+  {
+  public:
+    endianImage( EndianType endian_ )
+      : _endian( endian_ ) { }
+
+    void operator()( Image &image_ )
+      {
+        image_.endian( _endian );
+      }
+  private:
+    const EndianType  _endian;
+  };
+
   // Image file name
   class fileNameImage : public std::unary_function<Image&,void>
   {

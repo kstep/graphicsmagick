@@ -1,3 +1,11 @@
+2002-02-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (endianImage): New class to specify the
+ 	endian option for formats which support this notion (e.g. TIFF).
+
+	* lib/Image.cpp (endian): New method to specify the endian option
+ 	for formats which support this notion (e.g. TIFF).
+
 2002-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableFont): Support specifying a font via

@@ -786,8 +786,7 @@ Uses current fuzz setting when determining color match.</font></td>
 
 <tr>
 <td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;point_,
-const
-Image &amp;texture_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
+const Image &amp;texture_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
 </tr>
 
 <tr>
@@ -1449,10 +1448,10 @@ be quantized to fewer colors. Use a copy of the original if this is a problem.</
 <tr>
 <td><font size=-1><a href="Blob.html">Blob</a> *blob_</font></td>
 
-<td ROWSPAN="3"><font size=-1>Write image to a in-memory <a href="Blob.html">BLOB</a>
-stored in <i>blob_</i>. The <i>magick</i>_ parameter specifies the image
-format to write (defaults to <a href="#magick">magick</a> ). The depth_
-parameter species the image depth (defaults to <a href="#depth">depth</a>).</font>
+<td ROWSPAN="3"><font size=-1>Write image to a in-memory <a href="Blob.html">BLOB</a>stored
+in <i>blob_</i>. The <i>magick</i>_ parameter specifies the image format
+to write (defaults to <a href="#magick">magick</a> ). The depth_ parameter
+species the image depth (defaults to <a href="#depth">depth</a>).</font>
 <br><font size=-1><b><font color="#FF0000">Caution: </font></b>if an image
 format is selected which is capable of supporting fewer colors than the
 original image or quantization has been requested, the original image will
@@ -1991,6 +1990,22 @@ Document page. Often used with <i>psPageSize</i>.</font></td>
 <td><font size=-1>Image depth. Used to specify the bit depth when reading
 or writing&nbsp; raw images or when the output format supports multiple
 depths. Defaults to the quantum depth that ImageMagick is compiled with.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="endian"></a><font size=-1>endian</font></center>
+</td>
+
+<td><font size=-1><a href="Enumerations.html#EndianType">EndianType</a></font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1><a href="Enumerations.html#EndianType">EndianType</a>
+endian_</font></td>
+
+<td><font size=-1>Specify (or obtain) endian option for formats which support
+it.</font></td>
 </tr>
 
 <tr>

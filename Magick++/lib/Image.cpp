@@ -2179,6 +2179,18 @@ std::string Magick::Image::directory ( void ) const
   return std::string();
 }
 
+// Endianness (little like Intel or big like SPARC) for image
+// formats which support endian-specific options.
+void Magick::Image::endian ( Magick::EndianType endian_ )
+{
+  options()->endian( endian_ );
+  image()->endian = endian_;
+}
+Magick::EndianType Magick::Image::endian ( void ) const
+{
+  return constImage()->endian;
+}
+
 // Image file name
 void Magick::Image::fileName ( const std::string &fileName_ )
 {

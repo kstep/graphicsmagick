@@ -645,6 +645,11 @@ namespace Magick
     // Tile names from within an image montage
     std::string     directory ( void ) const;
 
+    // Endianness (little like Intel or big like SPARC) for image
+    // formats which support endian-specific options.
+    void            endian ( EndianType endian_ );
+    EndianType      endian ( void ) const;
+
     // Image file name
     void            fileName ( const std::string &fileName_ );
     std::string     fileName ( void ) const;

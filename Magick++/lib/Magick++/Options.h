@@ -76,6 +76,11 @@ namespace Magick
     void            depth ( unsigned int depth_ );
     unsigned int    depth ( void ) const;
 
+    // Endianness (little like Intel or big like SPARC) for image
+    // formats which support endian-specific options.
+    void            endian ( EndianType endian_ );
+    EndianType      endian ( void ) const;
+
     // Image filename to read or write
     void            fileName ( const std::string &fileName_ );
     std::string     fileName ( void ) const;

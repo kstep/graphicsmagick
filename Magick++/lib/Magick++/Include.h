@@ -147,6 +147,12 @@ namespace Magick
   using MagickLib::RunlengthEncodedCompression;
   using MagickLib::ZipCompression;
 
+  // Endian options
+  using MagickLib::EndianType;
+  using MagickLib::UndefinedEndian;
+  using MagickLib::LSBEndian;
+  using MagickLib::MSBEndian;
+
   // Fill rules
   using MagickLib::FillRule;
   using MagickLib::UndefinedRule;

@@ -157,6 +157,17 @@ Magick::Geometry Magick::Options::density ( void ) const
   return Geometry();
 }
 
+// Endianness (little like Intel or big like SPARC) for image
+// formats which support endian-specific options.
+void Magick::Options::endian ( Magick::EndianType endian_ )
+{
+  _imageInfo->endian = endian_;
+}
+Magick::EndianType Magick::Options::endian ( void ) const
+{
+  return _imageInfo->endian;
+}
+
 void Magick::Options::fileName ( const std::string &fileName_ )
 {
   fileName_.copy( _imageInfo->filename, MaxTextExtent-1 );
