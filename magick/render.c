@@ -4868,8 +4868,8 @@ MagickExport void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo star
   TraceEllipse(primitive_info,start,offset,degrees);
 }
 
-MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
-  const PointInfo stop,const PointInfo degrees)
+MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,
+  const PointInfo start,const PointInfo stop,PointInfo degrees)
 {
   double
     step;
@@ -4887,6 +4887,8 @@ MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo sta
   /*
     Ellipses are just short segmented polys.
   */
+  while (degrees.y < degrees.x)
+    degrees.y+=360.0;
   step=2/stop.y;
   if (stop.x > stop.y)
     step=2/stop.x;
@@ -4904,8 +4906,8 @@ MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo sta
     TracePoint(p,point);
     p++;
   }
-  point.x=cos(angle.y)*stop.x+start.x+MagickEpsilon;
-  point.y=sin(angle.y)*stop.y+start.y+MagickEpsilon;
+  point.x=cos(angle.y)*stop.x+start.x;
+  point.y=sin(angle.y)*stop.y+start.y;
   TracePoint(p,point);
   p++;
   primitive_info->coordinates=p-primitive_info;
