@@ -1129,12 +1129,13 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Profile1: %ld bytes, Profile2: %ld bytes",
                             (long)length,(long)image->color_profile.length);
-      /* check for missing or identical input and output profilea */
+      /* check for missing or identical input and output profile */
       if ((length != 0) && (image->color_profile.length != 0) &&
         (image->color_profile.length != length) &&
           (memcmp(image->color_profile.info,profile,length) != 0))
-       {
+        {
 #if defined(HasLCMS)
+
           typedef struct _ProfilePacket
           {
             unsigned short
@@ -1156,9 +1157,6 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
             source_type,
             target_type;
 
-          ClassType
-            storage_class;
-
           cmsHTRANSFORM
             transform;
 
@@ -1168,15 +1166,15 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
           int
             intent;
 
+          unsigned int
+            transform_colormap;
+
           long
             y;
 
           ProfilePacket
             alpha,
             beta;
-
-          QuantizeInfo
-            quantize_info;
 
           register long
             x;
@@ -1200,6 +1198,20 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
               (target_profile == (cmsHPROFILE) NULL))
             ThrowBinaryException3(ResourceLimitError,UnableToManageColor,
               UnableToOpenColorProfile);
+
+          /*
+            TODO: This may be optimized to use PixelPackets instead
+            of moving PixelPacket components to and from ProfilePackets.
+            The transform types below, then, must match #ifdef's in the
+            PixelPacket struct definition and should be optimized
+            based on Quantum size. Some (if not all?) YCbCr and LUV
+            profiles are (TIFF) scanline oriented, so transforming
+            one pixel at a time does not work for those profiles.
+
+            Notice that the performance penalty of transforming only
+            one pixel at a time is very small and probably not worth
+            optimizing.
+          */
           switch (cmsGetColorSpace(source_profile))
           {
             case icSigCmykData:
@@ -1313,14 +1325,38 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
             }
           switch (image->rendering_intent)
           {
-            case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
-            case PerceptualIntent: intent=INTENT_PERCEPTUAL; break;
-            case RelativeIntent: intent=INTENT_RELATIVE_COLORIMETRIC; break;
-            case SaturationIntent: intent=INTENT_SATURATION; break;
-            default: intent=INTENT_PERCEPTUAL; break;
+            case AbsoluteIntent:
+              intent=INTENT_ABSOLUTE_COLORIMETRIC;
+              break;
+            case PerceptualIntent: 
+              intent=INTENT_PERCEPTUAL; 
+              break;
+            case RelativeIntent: 
+              intent=INTENT_RELATIVE_COLORIMETRIC;
+              break;
+            case SaturationIntent: 
+              intent=INTENT_SATURATION; 
+              break;
+            default: 
+              intent=INTENT_PERCEPTUAL; 
+              break;
           }
+
+          /*
+            Transform just the colormap if the image is colormapped and we're
+            not transforming from gray to RGB/CMYK. A gray to RGB/CMYK
+            transformation must create a direct class image for the new image
+            to match the color profile even if the new image only has gray
+            colors. CMYK images are never color mapped.
+          */
+          transform_colormap=(image->storage_class == PseudoClass) &&
+                             (target_colorspace != CMYKColorspace) &&
+                             ((source_colorspace != GRAYColorspace) ||
+                              (source_colorspace == target_colorspace));
+
           transform=cmsCreateTransform(source_profile,source_type,
-            target_profile,target_type,intent,0);
+            target_profile,target_type,intent, 
+            (transform_colormap ? cmsFLAGS_NOTPRECALC : 0));
           cmsCloseProfile(source_profile);
           cmsCloseProfile(target_profile);
           if (transform == (cmsHTRANSFORM) NULL)
@@ -1328,74 +1364,102 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
               ThrowBinaryException3(ResourceLimitError,UnableToManageColor,
                 UnableToCreateColorTransform);
             }
-          (void) LogMagickEvent(TransformEvent,GetMagickModule(),"Performing color conversion");
-          storage_class=image->storage_class;
-          if (image->storage_class == PseudoClass)
+
+          if (transform_colormap)
             {
-              SyncImage(image);
-              image->storage_class=DirectClass;
-            }
-          if (target_colorspace == CMYKColorspace)
-            image->colorspace=target_colorspace;
-          for (y=0; y < (long) image->rows; y++)
-          {
-            q=GetImagePixels(image,0,y,image->columns,1);
-            if (q == (PixelPacket *) NULL)
-              break;
-            indexes=GetIndexes(image);
-            for (x=0; x < (long) image->columns; x++)
-            {
-              alpha.red=ScaleQuantumToShort(q->red);
-              if (source_colorspace != GRAYColorspace)
-                {
-                  alpha.green=ScaleQuantumToShort(q->green);
-                  alpha.blue=ScaleQuantumToShort(q->blue);
-                  if (source_colorspace == CMYKColorspace)
-                    alpha.black=ScaleQuantumToShort(indexes[x]);
-                }
-              cmsDoTransform(transform,&alpha,&beta,1);
-              q->red=ScaleShortToQuantum(beta.red);
-              if (target_colorspace == GRAYColorspace)
-                {
-                  q->green=q->red;
-                  q->blue=q->red;
-                }
-              else
-                {
-                  q->green=ScaleShortToQuantum(beta.green);
-                  q->blue=ScaleShortToQuantum(beta.blue);
-                }
-              if (image->matte)
-                if ((source_colorspace == CMYKColorspace) &&
-                    (target_colorspace != CMYKColorspace))
-                  q->opacity=indexes[x];
+              (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                "Performing pseudo class color conversion");
+              q=image->colormap;
+              for (x=0; x < (long) image->colors; x++)
+              {
+                alpha.red=ScaleQuantumToShort(q->red);
+                if (source_colorspace != GRAYColorspace)
+                  {
+                    alpha.green=ScaleQuantumToShort(q->green);
+                    alpha.blue=ScaleQuantumToShort(q->blue);
+                  }
+                cmsDoTransform(transform,&alpha,&beta,1);
+                q->red=ScaleShortToQuantum(beta.red);
+                if (target_colorspace == GRAYColorspace)
+                  {
+                    q->green=q->red;
+                    q->blue=q->red;
+                  }
                 else
-                  if ((source_colorspace != CMYKColorspace) &&
-                      (target_colorspace == CMYKColorspace))
-                    indexes[x]=q->opacity;
-              if (target_colorspace == CMYKColorspace)
-                indexes[x]=ScaleShortToQuantum(beta.black);
-              q++;
+                  {
+                    q->green=ScaleShortToQuantum(beta.green);
+                    q->blue=ScaleShortToQuantum(beta.blue);
+                  }
+                q++;
+              }
+              SyncImage(image);
             }
-            if (!SyncImagePixels(image))
-              break;
-          }
-          cmsDeleteTransform(transform);
-          image->colorspace=target_colorspace;
-          if ((storage_class == PseudoClass) &&
-              ((source_colorspace != GRAYColorspace) ||
-               (source_colorspace == target_colorspace)))
+          else
             {
-              /*
-                Create new image colormap.
-              */
-              GetQuantizeInfo(&quantize_info);
-              quantize_info.tree_depth=8;
-              quantize_info.dither=False;
-              quantize_info.colorspace=target_colorspace;
-              quantize_info.number_colors=image->colors;
-              (void) QuantizeImage(&quantize_info,image);
+              (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                "Performing direct class color conversion");
+              if (image->storage_class == PseudoClass)
+                {
+                  SyncImage(image);
+                  image->storage_class=DirectClass;
+                }
+              if (target_colorspace == CMYKColorspace)
+                image->colorspace=target_colorspace;
+              for (y=0; y < (long) image->rows; y++)
+              {
+                q=GetImagePixels(image,0,y,image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
+                indexes=GetIndexes(image);
+                for (x=0; x < (long) image->columns; x++)
+                {
+                  alpha.red=ScaleQuantumToShort(q->red);
+                  if (source_colorspace != GRAYColorspace)
+                    {
+                      alpha.green=ScaleQuantumToShort(q->green);
+                      alpha.blue=ScaleQuantumToShort(q->blue);
+                      if (source_colorspace == CMYKColorspace)
+                        alpha.black=ScaleQuantumToShort(q->opacity);
+                    }
+                  cmsDoTransform(transform,&alpha,&beta,1);
+                  q->red=ScaleShortToQuantum(beta.red);
+                  if (target_colorspace == GRAYColorspace)
+                    {
+                      q->green=q->red;
+                      q->blue=q->red;
+                    }
+                  else
+                    {
+                      q->green=ScaleShortToQuantum(beta.green);
+                      q->blue=ScaleShortToQuantum(beta.blue);
+                    }
+                  if (image->matte)
+                    {
+                      if ((source_colorspace == CMYKColorspace) &&
+                          (target_colorspace != CMYKColorspace))
+                        q->opacity=indexes[x];
+                      else
+                        if ((source_colorspace != CMYKColorspace) &&
+                            (target_colorspace == CMYKColorspace))
+                          indexes[x]=q->opacity;
+                    }
+                  if (target_colorspace == CMYKColorspace)
+                    q->opacity=ScaleShortToQuantum(beta.black);
+                  q++;
+                }
+                if (!SyncImagePixels(image))
+                  break;
+              }
             }
+          image->colorspace=target_colorspace;
+          /*
+            We can't be sure black and white stays black and white
+            and gray colors transform to gray colors.
+          */
+          image->is_grayscale=(target_colorspace == GRAYColorspace);
+          image->is_monochrome=False; 
+
+          cmsDeleteTransform(transform);
 #else
           ThrowBinaryException(MissingDelegateError,LCMSLibraryIsNotAvailable,
             image->filename);
