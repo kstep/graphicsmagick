@@ -62,133 +62,19 @@
 
 static MagicTest
   **magic_test_list = (MagicTest**) NULL;
-
-static void InitializeMagic(void);
-
 
-
 /*
   Set magic string (sized to MaxTextExtent)
   based on image header data provided in magick,
   with length magick_length.
 */
-Export unsigned int GetMagic(char* magic,
-                             const unsigned char *magick,
-                             const unsigned int magick_length)
-{
-  int
-    i;
 
-  if(magic_test_list == (MagicTest**) NULL)
-    InitializeMagic();
-
-  if(magic_test_list == (MagicTest**) NULL)
-    MagickError(FileOpenError,"Failed to initialize ImageMagick",NULL);
-
-  /* Traverse magic tests */
-  for (i=0;magic_test_list[i]!=(MagicTest*)NULL;++i)
-    {
-      switch(magic_test_list[i]->member->method)
-        {
-        case StringMagicMethod:
-          {
-            MagicTestMember
-              *member;
-
-            /* Traverse test members */
-            for(member=magic_test_list[i]->member;
-                member!=(MagicTestMember*)NULL;)
-              {
-                StringMethodArgument
-                  *arg;
-
-                arg=(StringMethodArgument*)member->argument;
-                if(arg->value_offset+arg->value_length > magick_length)
-                  break;
-
-                if(memcmp((char*)magick+arg->value_offset,(char*)arg->value,
-                          arg->value_length)==0)
-                  {
-                    if(member->truth_value == True)
-                      {
-                        if (member->next==(MagicTestMember*)NULL)
-                          {
-                            strcpy(magic, magic_test_list[i]->tag);
-                            return True;
-                          }
-                      }
-                    else
-                      {
-                        /* Short-circuit search */
-                        break;
-                      }
-                  }
-                member=member->next;
-              }
-
-            break;
-          }
-        default:
-          {
-          }
-        }
-    }
-
-  return False;
-}
-
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   Q u i t M a g i c                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method QuitMagic deallocates memory associated with the MagicTest list
-%
-%  The format of the QuitMagic method is:
-%
-%      void QuitMagic()
-%
-*/
-Export void QuitMagic(void)
-{
-  int
-    i;
-
-  /* Traverse magic tests */
-  for (i=0;magic_test_list[i]!=(MagicTest*)NULL;++i)
-    {
-      MagicTestMember
-        *member;
-
-      /* Traverse test members */
-      for(member=magic_test_list[i]->member;member!=(MagicTestMember*)NULL;)
-        {
-          MagicTestMember*
-            entry;
-
-          entry=member;
-          member=member->next;
-          FreeMemory((void**)&member->argument);
-          FreeMemory((void**)&member);
-        }
-    }
-  FreeMemory((void**)&magic_test_list[i]);
-}
-
-/* Initialize magic_test_list */
-static void InitializeMagic(void)
+/* Read and parse magic.mgk file */
+static int ReadMagicConfigurationFile(const char* path)
 {
   char
     buffer[MaxTextExtent],
     *buff_p,
-    file_name[MaxTextExtent],
     tag[MaxTextExtent],
     *tag_p;
 
@@ -202,11 +88,7 @@ static void InitializeMagic(void)
   MagicTestMember
     *test_member;
 
-  strcpy(file_name,DelegatePath);
-  strcat(file_name,DirectorySeparator);
-  strcat(file_name,"magic.mgk");
-
-  file = fopen(file_name, "r");
+  file = fopen(path, "r");
   if(file != (FILE*) NULL)
     {
       /* allocate and init format list */
@@ -458,9 +340,9 @@ static void InitializeMagic(void)
               char
                 buff[MaxTextExtent];
               
-              sprintf(buff,"%s:%d: syntax: \"%s\"\n", file_name,
+              sprintf(buff,"%s:%d: syntax: \"%s\"\n", path,
                       line_number, buff_p);
-              MagickError(OptionError,buff,NULL);
+              MagickWarning(OptionWarning,buff,NULL);
             }
           
           eol_error :
@@ -468,15 +350,156 @@ static void InitializeMagic(void)
               char
                 buff[MaxTextExtent];
 
-              sprintf(buff,"%s:%d: syntax: \"%s\"\n", file_name,
+              sprintf(buff,"%s:%d: syntax: \"%s\"\n", path,
                       line_number, "unexpected end of line");
-              MagickError(OptionError,buff,NULL);
+              MagickWarning(OptionWarning,buff,NULL);
             }
         }
       fclose(file);
     }
   else
-    {
-      MagickError(FileOpenError,"File open error",file_name);
-    }
+    return False;
+
+  if(magic_test_list == (MagicTest**) NULL)
+    return False;
+
+  return True;
 }
+/* Initialize magic_test_list */
+static void InitializeMagic(void)
+{
+  char
+    orig_path[MaxTextExtent],
+    path[MaxTextExtent];
+
+  if(getenv("DELEGATE_PATH") != NULL)
+    {
+      (void) getcwd(orig_path,MaxTextExtent-1);
+      strcpy(path,getenv("DELEGATE_PATH"));
+      if(chdir(path) == 0)
+        {
+          (void) getcwd(path,MaxTextExtent-1);
+          strcat(path,DirectorySeparator);
+          strcat(path,"magic.mgk");
+          chdir(orig_path);
+          if(ReadMagicConfigurationFile(path) == True)
+            return;
+        }
+    }
+
+  strcpy(path,DelegatePath);
+  strcat(path,DirectorySeparator);
+  strcat(path,"magic.mgk");
+
+  ReadMagicConfigurationFile(path);
+}
+Export unsigned int SetImageMagic(char* magic,
+                                  const unsigned char *magick,
+                                  const unsigned int magick_length)
+{
+  int
+    i;
+
+  if(magic_test_list == (MagicTest**) NULL)
+    InitializeMagic();
+
+  if(magic_test_list == (MagicTest**) NULL)
+    MagickError(FileOpenError,"Failed read file magic.mgk",NULL);
+
+  /* Traverse magic tests */
+  for (i=0;magic_test_list[i]!=(MagicTest*)NULL;++i)
+    {
+      switch(magic_test_list[i]->member->method)
+        {
+        case StringMagicMethod:
+          {
+            MagicTestMember
+              *member;
+
+            /* Traverse test members */
+            for(member=magic_test_list[i]->member;
+                member!=(MagicTestMember*)NULL;)
+              {
+                StringMethodArgument
+                  *arg;
+
+                arg=(StringMethodArgument*)member->argument;
+                if(arg->value_offset+arg->value_length > magick_length)
+                  break;
+
+                if(memcmp((char*)magick+arg->value_offset,(char*)arg->value,
+                          arg->value_length)==0)
+                  {
+                    if(member->truth_value == True)
+                      {
+                        if (member->next==(MagicTestMember*)NULL)
+                          {
+                            strcpy(magic, magic_test_list[i]->tag);
+                            return True;
+                          }
+                      }
+                    else
+                      {
+                        /* Short-circuit search */
+                        break;
+                      }
+                  }
+                member=member->next;
+              }
+
+            break;
+          }
+        default:
+          {
+          }
+        }
+    }
+
+  return False;
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   Q u i t M a g i c                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method QuitMagic deallocates memory associated with the MagicTest list
+%
+%  The format of the QuitMagic method is:
+%
+%      void QuitMagic()
+%
+*/
+Export void QuitMagic(void)
+{
+  int
+    i;
+
+  /* Traverse magic tests */
+  for (i=0;magic_test_list[i]!=(MagicTest*)NULL;++i)
+    {
+      MagicTestMember
+        *member;
+
+      /* Traverse test members */
+      for(member=magic_test_list[i]->member;member!=(MagicTestMember*)NULL;)
+        {
+          MagicTestMember*
+            entry;
+
+          entry=member;
+          member=member->next;
+          FreeMemory((void**)&member->argument);
+          FreeMemory((void**)&member);
+        }
+    }
+  FreeMemory((void**)&magic_test_list[i]);
+}
+

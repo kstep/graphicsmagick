@@ -1,8 +1,7 @@
-ImageMagick now depends on an external file, delegates.mgk.  If certain
-ImageMagick commands fails, check this file and verify it is valid for
-your environment.  For details beyond this document, see README.txt and
-ImageMagick.html.
-
+ImageMagick now depends on the external files, delegates.mgk and magic.mgk.
+If ImageMagick commands fail, verify that these files are installed
+and valid for your environment. For details beyond this document, see
+README.txt and ImageMagick.html.
 
 Unix:
 
@@ -61,7 +60,7 @@ Win98:
   Use Copy/Paste/Rename to copy and rename nt.mgk to delegates.mgk.  Now
   copy
 
-    ImageMagick-5.2.0\magick\magic.mgk
+    ImageMagick-5.2.0\delegates\magic.mgk
 
   to
 

@@ -79,7 +79,7 @@ noinst_HEADERS = animate.h stash.h defines.h display.h mac.h magic.h \
   modules.h nt.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) Magick-config.in Make.com mac.c magic.mgk nt.c \
+EXTRA_DIST = $(ALLMANPAGES) Magick-config.in Make.com mac.c nt.c \
   vms.c $(MAGICK_BASE_SRCS)
 
 # Where modules are installed
@@ -89,7 +89,7 @@ pkgdir = $(libdir)/ImageMagick/modules/coders
 pkg_DATA = 
 
 # Architecture independent data files installed in the package's data directory
-pkgdata_DATA = magic.mgk
+pkgdata_DATA =
 
 # Ensure that configuration header is not distributed
 dist-hook:

@@ -30,11 +30,12 @@
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.2 foreign
 
-# Architecture-independent data files
-pkgdata_DATA = delegates.mgk
+# Architecture independent data files installed in the package's data directory
+pkgdata_DATA = delegates.mgk magic.mgk
 
 # Additional files to distribute
-EXTRA_DIST = delegates.mgk.in delegates.mgk mac.mgk nt.mgk unix.mgk vms.mgk win95.mgk
+EXTRA_DIST = delegates.mgk.in delegates.mgk mac.mgk magic.mgk nt.mgk \
+             unix.mgk vms.mgk win95.mgk
 
 # Ensure that processed delegates file is not distributed
 #dist-hook:
