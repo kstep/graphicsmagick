@@ -9,7 +9,7 @@ AC_PREREQ(2.57)
 #
 # Set the package name and version
 #
-AC_INIT(lcms,1.12)
+AC_INIT(lcms,1.13)
 
 #
 # Libtool library revision control info
@@ -32,7 +32,7 @@ AC_INIT(lcms,1.12)
 #  6. If any interfaces have been removed since the last public release,
 #     then set age to 0.
 LIBRARY_CURRENT=1
-LIBRARY_REVISION=12
+LIBRARY_REVISION=13
 LIBRARY_AGE=0
 
 
@@ -87,7 +87,6 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
 AC_PROG_CXX
-
 
 # Configure python & swig
 PYTHON=''
@@ -155,7 +154,8 @@ AM_MAINTAINER_MODE
 # If the C compiler supports the keyword inline, do nothing. Otherwise
 # define inline to __inline__ or __inline if it accepts one of those,
 # otherwise define inline to be empty.
-#AC_C_INLINE
+AC_C_INLINE
+AC_SUBST(inline)
 
 # If words are stored with the most significant byte first (like
 # Motorola and SPARC CPUs), define `WORDS_BIGENDIAN'.
@@ -451,4 +451,14 @@ LIBS=''
 #
 # Perform substitutions
 #
-AC_OUTPUT(Makefile include/icc34.h include/Makefile jpegicc/Makefile python/Makefile samples/Makefile testbed/Makefile tifficc/Makefile src/Makefile )
+AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([lcms.pc])
+AC_CONFIG_FILES([include/icc34.h])
+AC_CONFIG_FILES([include/Makefile])
+AC_CONFIG_FILES([jpegicc/Makefile])
+AC_CONFIG_FILES([python/Makefile])
+AC_CONFIG_FILES([samples/Makefile])
+AC_CONFIG_FILES([testbed/Makefile])
+AC_CONFIG_FILES([tifficc/Makefile])
+AC_CONFIG_FILES([src/Makefile])
+AC_OUTPUT

@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -48,7 +48,7 @@ BOOL _cmsEndPointsBySpace(icColorSpaceSignature Space, WORD **White, WORD **Blac
        static WORD RGBwhite[4]  = { 0xffff, 0xffff, 0xffff };
        static WORD CMYKblack[4] = { 0xffff, 0xffff, 0xffff, 0xffff };   // 400% of ink
        static WORD CMYKwhite[4] = { 0, 0, 0, 0 };
-       static WORD LABblack[4]  = { 0, 0, 0 };
+       static WORD LABblack[4]  = { 0, 0x8000, 0x8000 };
        static WORD LABwhite[4]  = { 0xFF00, 0x8000, 0x8000 };
        static WORD CMYblack[4]  = { 0xffff, 0xffff, 0xffff };
        static WORD CMYwhite[4]  = { 0, 0, 0 };
@@ -513,11 +513,45 @@ icColorSpaceSignature LCMSEXPORT _cmsICCcolorSpace(int OurNotation)
        case PT_HLS:  return  icSigHlsData;
        case PT_Yxy:  return  icSigYxyData;
        case PT_HiFi: return  icSigHexachromeData;
-       case PT_HiFi8: return icSig8colorData;
+       case PT_HiFi7: return icSigHeptachromeData;
+       case PT_HiFi8: return icSigOctachromeData;
 
        default:  return icMaxEnumData;
        }
 }
+
+
+int LCMSEXPORT _cmsLCMScolorSpace(icColorSpaceSignature ProfileSpace)
+{    
+       switch (ProfileSpace) {
+
+       case icSigGrayData: return  PT_GRAY;
+       case icSigRgbData:  return  PT_RGB;
+       case icSigCmyData:  return  PT_CMY;
+       case icSigCmykData: return  PT_CMYK;
+       case icSigYCbCrData:return  PT_YCbCr;
+       case icSigLuvData:  return  PT_YUV;
+       case icSigXYZData:  return  PT_XYZ;
+       case icSigLabData:  return  PT_Lab;
+       case icSigLuvKData: return  PT_YUVK;
+       case icSigHsvData:  return  PT_HSV;
+       case icSigHlsData:  return  PT_HLS;
+       case icSigYxyData:  return  PT_Yxy;
+
+       case icSig6colorData:
+       case icSigHexachromeData: return PT_HiFi;
+
+       case icSigHeptachromeData:
+       case icSig7colorData:     return PT_HiFi7;
+
+       case icSigOctachromeData:
+       case icSig8colorData:     return PT_HiFi8;
+
+
+       default:  return icMaxEnumData;
+       }
+}
+
 
 int LCMSEXPORT _cmsChannelsOf(icColorSpaceSignature ColorSpace)
 {
@@ -538,9 +572,7 @@ int LCMSEXPORT _cmsChannelsOf(icColorSpaceSignature ColorSpace)
     case icSigHlsData:
     case icSigCmyData: 
     case icSig3colorData:  return 3;
-
-        
-            
+                   
     case icSigLuvKData:
     case icSigCmykData:
     case icSig4colorData:  return 4;
@@ -551,8 +583,12 @@ int LCMSEXPORT _cmsChannelsOf(icColorSpaceSignature ColorSpace)
     case icSigHexachromeData:   
     case icSig6colorData:  return 6;
         
+    case icSigHeptachromeData:
     case icSig7colorData:  return  7;
+
+    case icSigOctachromeData:
     case icSig8colorData:  return  8;
+
     case icSig9colorData:  return  9;
     case icSig10colorData: return 10;
     case icSig11colorData: return 11;
@@ -581,7 +617,7 @@ typedef struct {
 // of maximum are considered out of gamut.
 
 
-#define ERR_THERESHOLD  12
+#define ERR_THERESHOLD  5 // 12
 static
 int GamutSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
 {
@@ -952,13 +988,7 @@ void _cmsComputePrelinearizationTablesFromXFORM(cmsHTRANSFORM h[], int nTransfor
 
         if (!IsMonotonic(Trans[t]))
                     lIsSuitable = FALSE;        
-        
-        // If is not an aproximate exponential, exclude also
-        /*
-        if (cmsEstimateGamma(Trans[t]) < 0)
-                    lIsSuitable = FALSE;
-        */
-
+              
     }
 
     if (lIsSuitable) {

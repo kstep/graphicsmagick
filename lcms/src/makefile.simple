@@ -1,6 +1,6 @@
 SHELL = /bin/sh
 
-CFLAGS  = -g -O4 -I../include -fomit-frame-pointer -Wall 
+CFLAGS  = -g -O4 -I../include -fomit-frame-pointer -Wall -Wmissing-prototypes 
 LDFLAGS = -lm
 BASEDIR = $(DESTDIR)/usr
 BINDIR  = $(BASEDIR)/bin
@@ -16,7 +16,7 @@ RANLIB  = ranlib
 SRCS = cmscnvrt.c cmserr.c cmsgamma.c cmsgmt.c cmsintrp.c cmsio1.c \
 	cmslut.c cmsmatsh.c cmsmtrx.c cmspack.c cmspcs.c cmswtpnt.c \
 	cmsxform.c cmssamp.c cmscam97.c cmsnamed.c cmsps2.c cmscam02.c \
-	cmsvirt.c
+	cmsvirt.c cmscgats.c
 
 OBJS = $(SRCS:.c=.o)
 

@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -301,7 +301,7 @@ LPGAMMATABLE LCMSEXPORT cmsReverseGamma(int nResultSamples, LPGAMMATABLE InGamma
 
 
        // Does eliminate "hair" on curve      
-       cmsSmoothGamma(p, 0.001);           
+      //  cmsSmoothGamma(p, 0.001);           
            
        return p;
 }

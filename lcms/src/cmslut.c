@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -55,6 +55,32 @@
 //   L3 = M Curves
 //   L2 = A curves      
 //  
+//
+//  V2&3 emulation
+//  ===============
+//
+//  For output, Mat is multiplied by
+//  
+//
+//  | 0xff00 / 0xffff      0                    0           | 
+//  |        0          0xff00 / 0xffff         0           | 
+//  |        0             0                0xff00 / 0xffff | 
+//
+//
+//  For input, an additional matrix is needed at the very last end of the chain 
+//  
+//
+//  | 0xffff / 0xff00      0                     0        | 
+//  |        0          0xffff / 0xff00          0        | 
+//  |        0             0              0xffff / 0xff00 | 
+//
+//
+//  Which reduces to (val * 257) >> 8
+
+// A couple of macros to convert between revisions
+
+#define FROM_V2_TO_V4(x) (((((x)<<8)+(x))+0x80)>>8)    // BY 65535 DIV 65280 ROUND
+#define FROM_V4_TO_V2(x) ((((x)<<8)+0x80)/257)         // BY 65280 DIV 65535 ROUND
 
 
 // Lut Creation & Destruction
@@ -106,6 +132,9 @@ void LCMSEXPORT cmsFreeLUT(LPLUT Lut)
             }
        }
 
+       if (Lut ->CLut16params.p8)
+           free(Lut ->CLut16params.p8);
+
        free(Lut);
 }
 
@@ -128,12 +157,14 @@ LPLUT LCMSEXPORT cmsDupLUT(LPLUT Orig)
        CopyMemory(NewLUT, Orig, sizeof(LUT));
 
        for (i=0; i < Orig ->InputChan; i++) 
-            NewLUT -> L1[i] = DupBlockTab(Orig ->L1[i], sizeof(WORD) * Orig ->In16params.nSamples);
+            NewLUT -> L1[i] = (LPWORD) DupBlockTab((LPVOID) Orig ->L1[i], 
+                                        sizeof(WORD) * Orig ->In16params.nSamples);
 
        for (i=0; i < Orig ->OutputChan; i++)
-            NewLUT -> L2[i] = DupBlockTab(Orig ->L2[i], sizeof(WORD) * Orig ->Out16params.nSamples);   
+            NewLUT -> L2[i] = (LPWORD) DupBlockTab((LPVOID) Orig ->L2[i], 
+                                        sizeof(WORD) * Orig ->Out16params.nSamples);   
        
-       NewLUT -> T = DupBlockTab(Orig ->T, Orig -> Tsize);
+       NewLUT -> T = (LPWORD) DupBlockTab((LPVOID) Orig ->T, Orig -> Tsize);
 
        return NewLUT;
 }
@@ -299,225 +330,13 @@ LPLUT LCMSEXPORT cmsSetMatrixLUT4(LPLUT Lut, LPMAT3 M, LPVEC3 off, DWORD dwFlags
                 Lut ->wFlags |= LUT_HASMATRIX4;
                 break;
 
+
         default:;
         }
 
         return Lut;
 }
 
-
-// Eval gray LUT having only one input channel 
-static
-void Eval1Input(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS p16)
-{
-       Fixed32 fk;
-       Fixed32 k0, k1, rk, K0, K1;
-       int OutChan;
-
-       fk = ToFixedDomain((Fixed32) StageABC[0] * p16 -> Domain);
-       k0 = FIXED_TO_INT(fk);
-       rk = (WORD) FIXED_REST_TO_INT(fk);
-
-       k1 = k0 + (StageABC[0] != 0xFFFFU ? 1 : 0);
-
-       K0 = p16 -> opta1 * k0;
-       K1 = p16 -> opta1 * k1;
-
-       for (OutChan=0; OutChan < p16->nOutputs; OutChan++)
-       {
-
-           StageLMN[OutChan] = (WORD) FixedLERP(rk, LutTable[K0+OutChan],
-                                                    LutTable[K1+OutChan]);
-       }
-}
-
-
-
-// For more that 3 inputs (i.e., CMYK)
-// evaluate two 3-dimensional interpolations and then linearly interpolate between them.
-static
-void Eval4Inputs(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS p16)
-{       
-       Fixed32 fk;
-       Fixed32 k0, rk;
-       int K0, K1;
-       LPWORD T;
-       int i;
-       WORD Tmp1[MAXCHANNELS], Tmp2[MAXCHANNELS];
-
-       
-       fk = ToFixedDomain((Fixed32) StageABC[0] * p16 -> Domain);
-       k0 = FIXED_TO_INT(fk);
-       rk = FIXED_REST_TO_INT(fk);
-
-       K0 = p16 -> opta4 * k0;
-       K1 = p16 -> opta4 * (k0 + (StageABC[0] != 0xFFFFU ? 1 : 0));
-
-       p16 -> nInputs = 3;
-
-       T = LutTable + K0;
-
-       p16 ->Interp3D(StageABC + 1,  Tmp1, T, p16);
-
-       T = LutTable + K1;
-
-       p16 ->Interp3D(StageABC + 1,  Tmp2, T, p16);
-
-       p16 -> nInputs = 4;
-       for (i=0; i < p16 -> nOutputs; i++)
-       {
-              StageLMN[i] = (WORD) FixedLERP(rk, Tmp1[i], Tmp2[i]);
-              
-       }
-
-}
-
-
-static
-void Eval5Inputs(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS p16)
-{       
-       Fixed32 fk;
-       Fixed32 k0, rk;
-       int K0, K1;
-       LPWORD T;
-       int i;
-       WORD Tmp1[MAXCHANNELS], Tmp2[MAXCHANNELS];
-
-       
-       fk = ToFixedDomain((Fixed32) StageABC[0] * p16 -> Domain);
-       k0 = FIXED_TO_INT(fk);
-       rk = FIXED_REST_TO_INT(fk);
-
-       K0 = p16 -> opta5 * k0;
-       K1 = p16 -> opta5 * (k0 + (StageABC[0] != 0xFFFFU ? 1 : 0));
-
-       p16 -> nInputs = 4;
-
-       T = LutTable + K0;
-
-       Eval4Inputs(StageABC + 1, Tmp1, T, p16);
-
-       T = LutTable + K1;
-
-       Eval4Inputs(StageABC + 1, Tmp2, T, p16);
-
-       p16 -> nInputs = 5;
-       for (i=0; i < p16 -> nOutputs; i++)
-       {
-              StageLMN[i] = (WORD) FixedLERP(rk, Tmp1[i], Tmp2[i]);           
-              
-       }
-
-}
-
-
-static
-void Eval6Inputs(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS p16)
-{       
-       Fixed32 fk;
-       Fixed32 k0, rk;
-       int K0, K1;
-       LPWORD T;
-       int i;
-       WORD Tmp1[MAXCHANNELS], Tmp2[MAXCHANNELS];
-
-       
-       fk = ToFixedDomain((Fixed32) StageABC[0] * p16 -> Domain);
-       k0 = FIXED_TO_INT(fk);
-       rk = FIXED_REST_TO_INT(fk);
-
-       K0 = p16 -> opta6 * k0;
-       K1 = p16 -> opta6 * (k0 + (StageABC[0] != 0xFFFFU ? 1 : 0));
-
-       p16 -> nInputs = 5;
-
-       T = LutTable + K0;
-
-       Eval5Inputs(StageABC + 1, Tmp1, T, p16);
-
-       T = LutTable + K1;
-
-       Eval5Inputs(StageABC + 1, Tmp2, T, p16);
-
-       p16 -> nInputs = 6;
-       for (i=0; i < p16 -> nOutputs; i++)
-       {
-              StageLMN[i] = (WORD) FixedLERP(rk, Tmp1[i], Tmp2[i]);
-       }
-
-}
-
-static
-void Eval7Inputs(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS p16)
-{       
-       Fixed32 fk;
-       Fixed32 k0, rk;
-       int K0, K1;
-       LPWORD T;
-       int i;
-       WORD Tmp1[MAXCHANNELS], Tmp2[MAXCHANNELS];
-
-       
-       fk = ToFixedDomain((Fixed32) StageABC[0] * p16 -> Domain);
-       k0 = FIXED_TO_INT(fk);
-       rk = FIXED_REST_TO_INT(fk);
-
-       K0 = p16 -> opta7 * k0;
-       K1 = p16 -> opta7 * (k0 + (StageABC[0] != 0xFFFFU ? 1 : 0));
-
-       p16 -> nInputs = 6;
-
-       T = LutTable + K0;
-
-       Eval6Inputs(StageABC + 1, Tmp1, T, p16);
-
-       T = LutTable + K1;
-
-       Eval6Inputs(StageABC + 1, Tmp2, T, p16);
-
-       p16 -> nInputs = 7;
-       for (i=0; i < p16 -> nOutputs; i++)
-       {
-              StageLMN[i] = (WORD) FixedLERP(rk, Tmp1[i], Tmp2[i]);
-       }
-
-}
-
-static
-void Eval8Inputs(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS p16)
-{       
-       Fixed32 fk;
-       Fixed32 k0, rk;
-       int K0, K1;
-       LPWORD T;
-       int i;
-       WORD Tmp1[MAXCHANNELS], Tmp2[MAXCHANNELS];
-
-       
-       fk = ToFixedDomain((Fixed32) StageABC[0] * p16 -> Domain);
-       k0 = FIXED_TO_INT(fk);
-       rk = FIXED_REST_TO_INT(fk);
-
-       K0 = p16 -> opta8 * k0;
-       K1 = p16 -> opta8 * (k0 + (StageABC[0] != 0xFFFFU ? 1 : 0));
-
-       p16 -> nInputs = 7;
-
-       T = LutTable + K0;
-
-       Eval7Inputs(StageABC + 1, Tmp1, T, p16);
-
-       T = LutTable + K1;
-
-       Eval7Inputs(StageABC + 1, Tmp2, T, p16);
-
-       p16 -> nInputs = 8;
-       for (i=0; i < p16 -> nOutputs; i++)
-       {
-              StageLMN[i] = (WORD) FixedLERP(rk, Tmp1[i], Tmp2[i]);
-       }
-
-}
 
 
 
@@ -527,15 +346,35 @@ void LCMSEXPORT cmsEvalLUT(LPLUT Lut, WORD In[], WORD Out[])
        WORD StageABC[MAXCHANNELS], StageLMN[MAXCHANNELS];
 
 
-       // Matrix handling
+       for (i=0; i < Lut -> InputChan; i++)
+                            StageABC[i] = In[i];
+
+       
+       if (Lut ->wFlags & LUT_V4_OUTPUT_EMULATE_V2) {
+           
+           StageABC[0] = (WORD) FROM_V2_TO_V4(StageABC[0]);
+           StageABC[1] = (WORD) FROM_V2_TO_V4(StageABC[1]);
+           StageABC[2] = (WORD) FROM_V2_TO_V4(StageABC[2]);
+           
+       }
+
+       if (Lut ->wFlags & LUT_V2_OUTPUT_EMULATE_V4) {
+           
+           StageABC[0] = (WORD) FROM_V4_TO_V2(StageABC[0]);
+           StageABC[1] = (WORD) FROM_V4_TO_V2(StageABC[1]);
+           StageABC[2] = (WORD) FROM_V4_TO_V2(StageABC[2]);           
+       }
+
+
+       // Matrix handling. 
 
        if (Lut -> wFlags & LUT_HASMATRIX)
        {
               WVEC3 InVect, OutVect;
 
-              InVect.n[VX] = ToFixedDomain(In[0]);
-              InVect.n[VY] = ToFixedDomain(In[1]);
-              InVect.n[VZ] = ToFixedDomain(In[2]);
+              InVect.n[VX] = ToFixedDomain(StageABC[0]);
+              InVect.n[VY] = ToFixedDomain(StageABC[1]);
+              InVect.n[VZ] = ToFixedDomain(StageABC[2]);
 
               MAT3evalW(&OutVect, &Lut -> Matrix, &InVect);
 
@@ -545,12 +384,7 @@ void LCMSEXPORT cmsEvalLUT(LPLUT Lut, WORD In[], WORD Out[])
               StageABC[1] = Clamp_RGB(FromFixedDomain(OutVect.n[VY]));
               StageABC[2] = Clamp_RGB(FromFixedDomain(OutVect.n[VZ]));
        }
-       else
-       {
-              for (i=0; i < Lut -> InputChan; i++)
-                                   StageABC[i] = In[i];
-       }
-
+       
 
        // First linearization
 
@@ -596,47 +430,9 @@ void LCMSEXPORT cmsEvalLUT(LPLUT Lut, WORD In[], WORD Out[])
 
 
 
-       if (Lut -> wFlags & LUT_HAS3DGRID)
-       {
-              // If it is 4 channels input (like CMYK, for example),
-              // evaluate two 3-dimensional interpolations and then,
-              // linearly interpolate between them.
+       if (Lut -> wFlags & LUT_HAS3DGRID) {
 
-           switch (Lut -> InputChan) {
-
-
-           case 1: // Gray LUT
-
-               Eval1Input(StageABC, StageLMN, Lut->T, &Lut->CLut16params);
-               break;
-
-           case 3:
-              
-                Lut ->CLut16params.Interp3D(StageABC, StageLMN, Lut -> T, &Lut -> CLut16params);
-                break;
-
-           case 4: 
-                Eval4Inputs(StageABC, StageLMN, Lut->T, &Lut -> CLut16params);
-                break;
-
-           case 5:
-                Eval5Inputs(StageABC, StageLMN, Lut->T, &Lut -> CLut16params);
-                break;           
-
-           case 6:
-                Eval6Inputs(StageABC, StageLMN, Lut->T, &Lut -> CLut16params);
-                break;           
-            case 7:
-               Eval7Inputs(StageABC, StageLMN, Lut->T, &Lut -> CLut16params);
-               break;
-
-           case 8:
-               Eval8Inputs(StageABC, StageLMN, Lut->T, &Lut -> CLut16params);
-               break;
-
-           default:
-                cmsSignalError(LCMS_ERRC_ABORTED, "Unsupported restoration (%d channels)", Lut -> InputChan);
-           }
+            Lut ->CLut16params.Interp3D(StageABC, StageLMN, Lut -> T, &Lut -> CLut16params);
 
        }
        else
@@ -692,5 +488,74 @@ void LCMSEXPORT cmsEvalLUT(LPLUT Lut, WORD In[], WORD Out[])
        for (i=0; i < Lut -> OutputChan; i++)
               Out[i] = StageLMN[i];
        }
+
+       
+
+       if (Lut ->wFlags & LUT_V4_INPUT_EMULATE_V2) {
+           
+           Out[0] = (WORD) FROM_V4_TO_V2(Out[0]);
+           Out[1] = (WORD) FROM_V4_TO_V2(Out[1]);
+           Out[2] = (WORD) FROM_V4_TO_V2(Out[2]);
+           
+       }
+
+       if (Lut ->wFlags & LUT_V2_INPUT_EMULATE_V4) {
+           
+           Out[0] = (WORD) FROM_V2_TO_V4(Out[0]);
+           Out[1] = (WORD) FROM_V2_TO_V4(Out[1]);
+           Out[2] = (WORD) FROM_V2_TO_V4(Out[2]);           
+       }
+}
+
+
+// Precomputes tables for 8-bit on input devicelink. 
+// 
+LPLUT _cmsBlessLUT8(LPLUT Lut)
+{
+   int i, j;
+   WORD StageABC[3];
+   Fixed32 v1, v2, v3;
+   LPL8PARAMS p8; 
+   LPL16PARAMS p = &Lut ->CLut16params;
+
+  
+   p8 = (LPL8PARAMS) malloc(sizeof(L8PARAMS));
+   if (p8 == NULL) return NULL;
+
+  // values comes * 257, so we can safely take first byte (x << 8 + x)
+  // if there are prelinearization, is already melted in tables
+
+   for (i=0; i < 256; i++) {
+
+           StageABC[0] = StageABC[1] = StageABC[2] = RGB_8_TO_16(i);
+
+           if (Lut ->wFlags & LUT_HASTL1) {
+
+              for (j=0; j < 3; j++)
+                     StageABC[i] = cmsLinearInterpLUT16(StageABC[i],
+                                                        Lut -> L1[i],
+                                                       &Lut -> In16params);
+              Lut ->wFlags &= ~LUT_HASTL1;
+           }
+    
+               
+           v1 = ToFixedDomain(StageABC[0] * p -> Domain);
+           v2 = ToFixedDomain(StageABC[1] * p -> Domain);
+           v3 = ToFixedDomain(StageABC[2] * p -> Domain);
+
+           p8 ->X0[i] = p->opta3 * FIXED_TO_INT(v1);
+           p8 ->Y0[i] = p->opta2 * FIXED_TO_INT(v2);
+           p8 ->Z0[i] = p->opta1 * FIXED_TO_INT(v3);
+
+           p8 ->rx[i] = (WORD) FIXED_REST_TO_INT(v1);
+           p8 ->ry[i] = (WORD) FIXED_REST_TO_INT(v2);
+           p8 ->rz[i] = (WORD) FIXED_REST_TO_INT(v3);
+  
+  }
+
+   Lut -> CLut16params.p8 = p8;
+   Lut -> CLut16params.Interp3D = cmsTetrahedralInterp8;
+
+   return Lut;
 
 }

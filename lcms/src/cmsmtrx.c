@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -50,10 +50,6 @@ void cdecl MAT3scaleAndCut(LPWMAT3 r, LPMAT3 v, double d);
 #define DSWAP(x, y)     {double tmp = (x); (x)=(y); (y)=tmp;}
 
 
-// Fixed Mul/Div stuff. I guess that inlining these will improve
-// the overall speed, but my compiler (BorlandC 4.5) does not have
-// this feature functional. Optimizer gets confused and strange errors
-// appear. Best make them public functions.
 
 #ifdef USE_ASSEMBLER
 
@@ -81,59 +77,6 @@ Fixed32 FixedMul(Fixed32 a, Fixed32 b)
 }
 
 
-Fixed32 FixedDiv(Fixed32 Dividend, Fixed32 Divisor)
-{
-       ASM {
-        
-        sub     cx,cx           // assume positive result
-        mov     eax,Dividend
-        and     eax,eax         // positive dividend?
-        jns     short FDP1      // yes
-        inc     cx              // mark it's a negative dividend
-        neg     eax             // make the dividend positive
-        }
-
-FDP1:
-       ASM {
-        sub     edx,edx         //make it a 64-bit dividend, then shift
-                                // left 16 bits so that result will be
-                                // in EAX
-        rol     eax,16          // put fractional part of dividend in
-                                // high word of EAX
-        mov     dx,ax           // put whole part of dividend in DX
-        sub     ax,ax           // clear low word of EAX
-        mov     ebx,Divisor
-        and     ebx,ebx         // positive divisor?
-        jns     short FDP2      //yes
-        dec     cx              //mark it's a negative divisor
-        neg     ebx             // make divisor positive
-        }
-
-
-FDP2:
-        ASM {
-        div     ebx             // divide
-        shr     ebx,1           // divisor/2, minus 1 if the divisor is
-        adc     ebx,0           // even
-        dec     ebx
-        cmp     ebx,edx         // set Carry if the remainder is at least
-        adc     eax,0           // half as large as the divisor, then
-                                // use that to round up if necessary
-        and     cx,cx           // should the result be made negative?
-        jz      short FDP3      // no
-        neg     eax             // yes, negate it
-        }
-FDP3:
-
-        ASM {
-        shld    edx,eax,16      // whole part of result in DX;
-                                // fractional part is already in AX     
-        }
-
-        RET(_EAX);
-}
-
-
 
 
 Fixed32 FixedSquare(Fixed32 a)
@@ -156,49 +99,6 @@ Fixed32 FixedSquare(Fixed32 a)
 
 
 
-// Perform (a * 65536.0) / 65535.0. This give us a fixed-point
-// value normalized into 0...1.0 range
-
-
-Fixed32 ToFixedDomain(int a)
-{
-       ASM {
-           
-           xor       edx, edx
-           mov       eax, ss:a
-           shld      edx, eax, 16
-           sal       eax, 16
-           mov       ebx, 0x0000ffff
-           div       ebx
-           add       dx, 0x8000
-           adc       eax, 0
-           
-       }
-
-       RET(_EAX);
-}
-
-
-// a * 65535.0 + .5
-// from 0..1.0 fixed point to 0xffff.
-
-int FromFixedDomain(Fixed32 a)
-{
-       ASM {
-           
-           xor       edx, edx
-           mov       eax, ss:a
-           mov       ebx, 0x0000ffff
-           imul      ebx
-           add       eax, 0x8000
-           adc       edx, 0
-           shrd      eax, edx, 16
-           
-       }
-
-       RET(_EAX);
-}
-
 
 // Linear intERPolation
 // a * (h - l) >> 16 + l
@@ -212,6 +112,8 @@ Fixed32 FixedLERP(Fixed32 a, Fixed32 l, Fixed32 h)
               mov    ecx, dword ptr ss:a
               sub    eax, edx
               imul   ecx
+              add    eax, 0x8000
+              adc    edx, 0
               shrd   eax, edx, 16
               pop    edx
               add    eax, edx
@@ -246,15 +148,14 @@ WORD FixedScale(WORD a, Fixed32 s)
 
 #else
 
+
+
 // These are floating point versions for compilers that doesn't
 // support asm at all. Use with care, since this will slow down
 // all operations
 
 Fixed32 FixedMul(Fixed32 a, Fixed32 b)
 {
-
-// If newest "long long" defined, then use it
-
 #ifdef USE_INT64
        LONGLONG l = (LONGLONG) a * b + (LONGLONG) 0x8000;
        return (Fixed32) (l >> 16);
@@ -263,20 +164,6 @@ Fixed32 FixedMul(Fixed32 a, Fixed32 b)
 #endif
 }
 
-Fixed32 FixedDiv(Fixed32 Dividend, Fixed32 Divisor)
-{
-// If newest "long long" defined, then use it
-
-#ifdef USE_INT64
-
-    LONGLONG l = ((LONGLONG) Dividend) << 32;
-    return (Fixed32) ((l / Divisor) >> 16);
-
-#else
-       return DOUBLE_TO_FIXED(
-                     FIXED_TO_DOUBLE(Dividend) / FIXED_TO_DOUBLE(Divisor));
-#endif
-}
 
 Fixed32 FixedSquare(Fixed32 a)
 {
@@ -284,29 +171,23 @@ Fixed32 FixedSquare(Fixed32 a)
 }
 
 
-
-Fixed32 ToFixedDomain(int a)
-{
-       return (Fixed32) (((double) a * 65536.0 ) / 65535.0 + 0.5);
-}
-
-
-int FromFixedDomain(Fixed32 a)
-{
-       return (int) ((double) a * 65535.0 / 65536.0 + 0.5);
-}
-
-
 Fixed32 FixedLERP(Fixed32 a, Fixed32 l, Fixed32 h)
 {
+#ifdef USE_INT64
 
+       LONGLONG dif = (LONGLONG) (h - l) * a + 0x8000;           
+       dif = (dif >> 16) + l;        
+       return (Fixed32) (dif);
+#else
        double dif = h - l;
 
        dif *= a;
        dif /= 65536.0;
        dif += l;
 
-       return (int) dif;
+       return (Fixed32) (dif + 0.5);
+#endif
+     
 }
 
 
@@ -316,6 +197,23 @@ WORD FixedScale(WORD a, Fixed32 s)
 }
 
 #endif
+
+
+#ifndef USE_INLINE
+
+Fixed32 ToFixedDomain(int a)
+{
+    return a + ((a + 0x7fff) / 0xffff);
+}
+
+
+int FromFixedDomain(Fixed32 a)
+{
+    return a - ((a + 0x7fff) >> 16); 
+}
+
+#endif
+
 
 
 // Initiate a vector (double version)

@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -49,6 +49,13 @@ intent the proof is being done, if is the case. Since the first intent is to be
 applied to preview, is the proofing intent. The second intent  identifies the
 transform intent. Input data of any stage is taked as relative colorimetric
 always.
+
+
+NOTES: V4 states than perceptual & saturation intents between mixed v2 & v4 profiles should 
+scale PCS from a black point equal to ZERO in v2 profiles to the reference media black of
+perceptual v4 PCS. Since I found many v2 profiles to be using a perceptual intent with black 
+point not zero at all, I'm implementing that as a black point compensation from whatever 
+black from perceptal intent to the reference media black for v4 profiles.
 
 */
 
@@ -101,35 +108,7 @@ LCMSAPI LPcmsCIExyY LCMSEXPORT cmsD50_xyY(void)
 #pragma warning(disable : 4100 4505)
 #endif
 
-static
-void Rel2AbsCoefs(LPcmsCIEXYZ BlackPoint,
-                  LPcmsCIEXYZ WhitePoint,
-                  LPcmsCIEXYZ Illuminant,
-                  LPMAT3 ChromaticAdaptationMatrix,
-                  LPMAT3 m, LPVEC3 of)
-{
-     MAT3 Chrm;
-            
-       Chrm = *ChromaticAdaptationMatrix;
-       MAT3inverse(&Chrm, m);
-       VEC3init(of, 0, 0, 0);     
-      
-}
 
-// Calculate a, b for Absolute -> Relativ undoing any chromatic adaptation
-// done by the profile
-
-static
-void Abs2RelCoefs(LPcmsCIEXYZ BlackPoint,
-                  LPcmsCIEXYZ WhitePoint,
-                  LPcmsCIEXYZ Illuminant,
-                  LPMAT3 ChromaticAdaptationMatrix,
-                  LPMAT3 m, LPVEC3 of)
-{
-      
-       *m = *ChromaticAdaptationMatrix;
-        VEC3init(of, 0, 0, 0);       
-}
 
 // join scalings to obtain:
 //     relative input to absolute and then to relative output
@@ -147,29 +126,29 @@ void Rel2RelStepAbsCoefs(LPcmsCIEXYZ BlackPointIn,
 
                       LPMAT3 m, LPVEC3 of)
 {
-       MAT3 min, mout;
-       VEC3 ofin, ofout;
-
        
-       Rel2AbsCoefs(BlackPointIn,
-                    WhitePointIn,
-                    IlluminantIn, 
-                    ChromaticAdaptationMatrixIn,
-                    &min, &ofin);
+       VEC3 WtPtIn, WtPtInAdapted;
+       VEC3 WtPtOut, WtPtOutAdapted;
+       MAT3 Scale, m1, m2, m3;
+       
+       VEC3init(&WtPtIn, WhitePointIn->X, WhitePointIn->Y, WhitePointIn->Z);
+       MAT3eval(&WtPtInAdapted, ChromaticAdaptationMatrixIn, &WtPtIn);
+                  
+       VEC3init(&WtPtOut, WhitePointOut->X, WhitePointOut->Y, WhitePointOut->Z);
+       MAT3eval(&WtPtOutAdapted, ChromaticAdaptationMatrixOut, &WtPtOut);
 
-       Abs2RelCoefs(BlackPointOut,
-                    WhitePointOut,
-                    IlluminantOut, 
-                    ChromaticAdaptationMatrixOut,
-                    &mout, &ofout);
+       VEC3init(&Scale.v[0], WtPtInAdapted.n[0] / WtPtOutAdapted.n[0], 0, 0);
+       VEC3init(&Scale.v[1], 0, WtPtInAdapted.n[1] / WtPtOutAdapted.n[1], 0);
+       VEC3init(&Scale.v[2], 0, 0, WtPtInAdapted.n[2] / WtPtOutAdapted.n[2]);
 
 
-       // Chromatic adaptation matrix should be conmutative
-       // min * mout = mout * min
-           
-       MAT3per(m,  &min, &mout);
+       m1 = *ChromaticAdaptationMatrixIn;
+       MAT3inverse(&m1, &m2);
+       
+       MAT3per(&m3, &m2, &Scale);
+       MAT3per(m, &m3, ChromaticAdaptationMatrixOut);
        VEC3init(of, 0.0, 0.0, 0.0);
-              
+                    
 }
 
 
@@ -226,6 +205,24 @@ void ComputeBlackPointCompensationFactors(LPcmsCIEXYZ BlackPointIn,
    VEC3init(of, bx, by, bz);
 
 }
+
+// Return TRUE if both m and of are empy -- "m" being identity and "of" being 0
+
+static
+BOOL IdentityParameters(LPWMAT3 m, LPWVEC3 of)
+{	
+	WVEC3 wv0;
+
+	VEC3initF(&wv0, 0, 0, 0);
+
+	if (!MAT3isIdentity(m, 0.00001)) return FALSE;
+	if (!VEC3equal(of, &wv0, 0.00001)) return FALSE;
+
+	return TRUE;
+}
+
+
+
 
 // ----------------------------------------- Inter PCS conversions
 
@@ -346,18 +343,7 @@ int FromXYZRelLUT(int Absolute,
                             }
                             break;
 
-                     // From relative XYZ to absolute XYZ. 
-
-                     case XYZAbs:
-
-                            Rel2AbsCoefs(BlackPointIn, 
-                                         WhitePointIn, 
-                                         IlluminantIn, 
-                                         ChromaticAdaptationMatrixIn,
-                                         m, of);
-                            *fn1 = XYZ2XYZ;
-                            break;
-
+                    
                      // From relative XYZ to Relative Lab
 
                      case LabRel:
@@ -403,25 +389,7 @@ int FromXYZRelLUT(int Absolute,
                             }
                             break;
 
-                     // From relative XYZ To Absolute Lab, adjusting to D50
-
-                     case LabAbs:
-                                {
-                                Rel2RelStepAbsCoefs(BlackPointIn,
-                                                    WhitePointIn,
-                                                    IlluminantIn,
-                                                    ChromaticAdaptationMatrixIn,
-                                                    BlackPointOut,
-                                                    WhitePointOut,
-                                                    IlluminantOut,
-                                                    ChromaticAdaptationMatrixOut,
-                                                    m, of);
-                                
-                                *fn1 = XYZ2Lab;
-                                }
-                            break;
-
-
+                    
                      default: return FALSE;
                      }
 
@@ -429,49 +397,6 @@ int FromXYZRelLUT(int Absolute,
 }
 
 
-// Since XYZ comes in absolute colorimetry, no endpoints on input
-// are needed.
-
-static
-int FromXYZAbsLUT(
-                 int Phase2, LPcmsCIEXYZ BlackPointOut,
-                             LPcmsCIEXYZ WhitePointOut,
-                             LPcmsCIEXYZ IlluminantOut,
-                             LPMAT3 ChromaticAdaptationMatrixOut,
-
-                 _cmsADJFN *fn1,
-                 LPMAT3 m, LPVEC3 of)
-
-{
-
-          switch (Phase2) {
-
-              case XYZRel:
-                     Abs2RelCoefs(BlackPointOut, 
-                                  WhitePointOut, IlluminantOut, 
-                                  ChromaticAdaptationMatrixOut, m, of);
-                     *fn1 = XYZ2XYZ;
-                     break;
-
-              case XYZAbs:         // Identity
-                     *fn1 = NULL;
-                     break;
-
-              case LabRel:
-                     Abs2RelCoefs(BlackPointOut, 
-                                  WhitePointOut, IlluminantOut, 
-                                  ChromaticAdaptationMatrixOut, m, of);
-                     *fn1 = XYZ2Lab;
-                     break;
-
-              case LabAbs:
-                     *fn1 = XYZ2Lab;
-                     break;
-
-              default: return FALSE;
-              }
-       return TRUE;
-}
 
 
 // From Lab Relative type LUT
@@ -537,20 +462,6 @@ int FromLabRelLUT(int Absolute,
                      break;
 
 
-              // From Relative Lab to XYZ absolute. First covert to relative XYZ,
-              // then to absolute XYZ
-
-              case XYZAbs: {
-
-                     Rel2AbsCoefs(BlackPointIn, 
-                                  WhitePointIn, 
-                                  cmsD50_XYZ(), 
-                                  ChromaticAdaptationMatrixIn,
-                                  m, of);
-
-                     *fn1 = Lab2XYZ;
-                     }
-                     break;
 
               case LabRel:
 
@@ -590,66 +501,11 @@ int FromLabRelLUT(int Absolute,
                      }
                      break;
 
-              case LabAbs:
-                     Rel2AbsCoefs(BlackPointIn, WhitePointIn, cmsD50_XYZ(), 
-                         ChromaticAdaptationMatrixIn, m, of);
-                     *fn1 = Lab2XYZ2Lab;
-                     break;
 
               default: return FALSE;
               }
 
    return TRUE;
-}
-
-
-// From Lab Absolute LUT, always absolute
-
-static
-int FromLabAbsLUT(           LPcmsCIEXYZ BlackPointIn,
-                             LPcmsCIEXYZ WhitePointIn,
-                             LPcmsCIEXYZ IlluminantIn,
-                             LPMAT3 ChromaticAdaptationMatrixIn,
-
-                 int Phase2, LPcmsCIEXYZ BlackPointOut,
-                             LPcmsCIEXYZ WhitePointOut,
-                             LPcmsCIEXYZ IlluminantOut,
-                             LPMAT3 ChromaticAdaptationMatrixOut,
-
-                 _cmsADJFN *fn1,
-                 LPMAT3 m, LPVEC3 of)
-{
-
-
-          switch (Phase2) {
-
-              
-              case XYZRel:                     
-                     *fn1 = Lab2XYZ;
-                     break;
-
-              case XYZAbs:
-                     Abs2RelCoefs(BlackPointOut, 
-                                  WhitePointOut, IlluminantOut, 
-                                  ChromaticAdaptationMatrixOut, m, of);
-                     *fn1 = Lab2XYZ;
-                     break;
-
-              case LabRel:
-                     Abs2RelCoefs(BlackPointOut, 
-                                  WhitePointOut, IlluminantOut, 
-                                  ChromaticAdaptationMatrixOut, m, of);
-                     *fn1 = Lab2XYZ2Lab;
-                     break;
-
-              case LabAbs:
-                     *fn1 = NULL;
-                     break;
-
-              default: return FALSE;
-              }
-        
-        return TRUE;
 }
 
 
@@ -707,16 +563,6 @@ int cmsChooseCnvrt(int Absolute,
                      break;
 
        
-       // Input LUT is giving XYZ Absolute values. 
-
-       case XYZAbs:  rc = FromXYZAbsLUT(Phase2,
-                                          BlackPointOut,
-                                          WhitePointOut,
-                                          IlluminantOut,
-                                          ChromaticAdaptationMatrixOut,
-                                          fn1, &m, &of);
-                     break;
-       
 
        // Input LUT is giving Lab relative values
 
@@ -734,21 +580,8 @@ int cmsChooseCnvrt(int Absolute,
                                           fn1, &m, &of);
                      break;
 
+
        
-       // Input LUT is giving absolute Lab values.
-        
-       case LabAbs:  rc = FromLabAbsLUT(BlackPointIn,
-                                          WhitePointIn,
-                                          IlluminantIn,
-                                          ChromaticAdaptationMatrixIn,
-                                          Phase2,
-                                          BlackPointOut,
-                                          WhitePointOut,
-                                          IlluminantOut,
-                                          ChromaticAdaptationMatrixOut,
-                                          fn1, &m, &of);
-                     break;
-        
 
        // Unrecognized combination
 
@@ -760,5 +593,17 @@ int cmsChooseCnvrt(int Absolute,
        MAT3toFix(wm, &m);
        VEC3toFix(wof, &of);
 
+       // Do some optimization -- discard conversion if identity parameters.
+
+       if (*fn1 == XYZ2XYZ || *fn1 == Lab2XYZ2Lab) {
+
+           if (IdentityParameters(wm, wof))
+               *fn1 = NULL;
+       }
+
+       
        return rc;
 }
+
+
+                             

@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -187,7 +187,7 @@ int _cmsReasonableGridpointsByColorspace(icColorSpaceSignature Colorspace, DWORD
     if (dwFlags & cmsFLAGS_LOWRESPRECALC) {
         
         if (nChannels > 4) 
-                return 6;       // 7 for Hifi
+                return 6;       // 6 for Hifi
 
         if (nChannels == 1) 
                 return 33;      // For monochrome
@@ -254,8 +254,13 @@ LPLUT _cmsPrecalculateDeviceLink(cmsHTRANSFORM h, DWORD dwFlags)
            
        if (p ->EntryColorSpace == icSigRgbData && 
            p ->ExitColorSpace  == icSigRgbData &&
-           !(dwFlags & cmsFLAGS_NOPRELINEARIZATION))
-                _cmsComputePrelinearizationTablesFromXFORM((cmsHTRANSFORM) &p, 1, Grid);
+           !(dwFlags & cmsFLAGS_NOPRELINEARIZATION)) {
+
+           cmsHTRANSFORM hOne[1];
+           hOne[0] = h;
+                
+           _cmsComputePrelinearizationTablesFromXFORM(hOne, 1, Grid);
+       }
         
             
        // Attention to this typecast! we can take the luxury to

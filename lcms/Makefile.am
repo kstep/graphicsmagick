@@ -14,5 +14,8 @@ SUBDIRS = src jpegicc tifficc python samples testbed include
 
 # Additional files to distribute
 EXTRA_DIST = AUTHORS COPYING ChangeLog doc INSTALL NEWS README.1ST \
-	filter.c install.gcc
+	filter.c install.gcc lcms.pc.in
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = lcms.pc
 

@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -24,7 +24,7 @@
 #include "lcms.h"
 
 
-// As a rule, only the functions visibles from API can signal
+// As a rule, only the functions visible from API can signal
 // errors.
 
 void cdecl cmsSignalError(int ErrorCode, const char *ErrorText, ...);

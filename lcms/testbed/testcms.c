@@ -23,7 +23,7 @@
 // Test Suite for Little cms
 
 // #define ICM_COMPARATIVE      1
-// #define CHECK_SPEED          1
+//#define CHECK_SPEED          1
 
 #include "lcms.h"
 #include <time.h>
@@ -101,7 +101,7 @@ int CheckSwab(void)
 
     swab(Test, Test, 6);
 
-    if (strncmp(Test, "\x2\x1\x4\x3\x6\x5", 6) != 0)
+    if (strncmp((char*) Test, "\x2\x1\x4\x3\x6\x5", 6) != 0)
     {
             printf("\nOOOPPSS! swab() does not work as expected in your machine!\n\n");
             printf("Please, edit lcms.h and uncomment the USE_CUSTOM_SWAB toggle.\n");
@@ -142,10 +142,14 @@ void PrintStatistics(clock_t atime, LPSTATS Stats)
        // These are statistics of 16 bit, so divide
        // by 257 to get dE relative to 8 bits
 
-       printf("\ndE: mean=%g, SD=%g, max=%g ",
+       printf("\n");
+
+       if (Stats) 
+          printf("dE: mean=%g, SD=%g, max=%g ",
                      (Stats->x / Stats -> n) / 257.,
                      (Std(Stats)) / 257.,
-                     Stats -> Peak / 257.);
+                     Stats -> Peak / 257.);       
+           
 
        if (atime > 0)
             printf("[%d tics, %g sec.]", (int) diff, a);
@@ -158,24 +162,19 @@ void PrintStatistics(clock_t atime, LPSTATS Stats)
 static
 void TestFixedPoint(void)
 {
-       Fixed32 a, b, c, d, e;
+       Fixed32 a, b, c, d; 
        double f;
 
-       a = DOUBLE_TO_FIXED(1.12345);
-       b = DOUBLE_TO_FIXED(2.56789);
-
+       a = DOUBLE_TO_FIXED(1.1234);
+       b = DOUBLE_TO_FIXED(2.5678);
+       
        c = FixedMul(a, b);
-       e = FixedDiv(a, b);
+      
+       d = FIXED_REST_TO_INT(c);
+       f = ((double) d / 0xffff) * 1000000.0;
 
-       d = (c & 0xffff);
-       f = ((double) d / 0xffff) * 10000.0;
-
-       printf("Testing fixed point: 2.8848960205 = %d.%d\n", FIXED_TO_INT(c), (int) f);
-
-       d = (e & 0xffff);
-       f = ((double) d / 0xffff) * 10000.0;
-
-       printf("\t\t0.437499269828536 = %d.%d\n", FIXED_TO_INT(e), (int) f);
+       printf("Testing fixed point:\t%f = %d.%d\n", (1.1234 * 2.5678), FIXED_TO_INT(c), (int) f);
+      
 }
 
 
@@ -247,6 +246,7 @@ int TestJointCurves(void)
 }
 
 
+
 // Check reversing of gamma curves
 
 #define NPOINTS     1024
@@ -267,7 +267,7 @@ int TestReversingOfCurves(void)
     Reverse = cmsBuildGamma(NPOINTS, 1.0/3.0);
 
     Computed = cmsReverseGamma(NPOINTS, Gamma);
-    
+
     for (i=0; i < NPOINTS; i++) {
 
             dE = fabs(Reverse->GammaTable[i] - Computed->GammaTable[i]);
@@ -275,16 +275,18 @@ int TestReversingOfCurves(void)
             Stats.x += dE;                                   
             Stats.x2 += (dE * dE);
             Stats.n += 1.0;
-            if (dE > Stats.Peak) 
-                Stats.Peak = dE;
+            if (dE > Stats.Peak) {
+                Stats.Peak = dE;                                
+            }
 
-            if (dE > 0x1100) {
-                printf("Coarse error! %x", (int) dE);
+            if (dE > 0x0010) {
+                printf("Coarse error! %x on entry %d: %X/%X", (int) dE, i, Reverse->GammaTable[i],
+                                                                           Computed->GammaTable[i]);
                 return 0;
             }
                                    
     }
-
+    
     PrintStatistics(0, &Stats); 
     printf(" pass.\n");
     cmsFreeGamma(Gamma);
@@ -534,7 +536,7 @@ int TestLinearInterpolation(int lExhaustive)
 
        for (j=10; j < 4096; j ++)
        {
-       printf("%d\r", j);
+       if ((j % 10) == 0) printf("%d\r", j);
 
        for (i=0; i <= j; i++)
               {
@@ -549,9 +551,9 @@ int TestLinearInterpolation(int lExhaustive)
               if (n != i) k++;
 
        }
-       if (k > 0) printf("\r%d: %d errors\n", j, k);
+       
        }
-
+       printf("\n%d: %d errors\n\n", j, k);
        return 1;
 }
 
@@ -561,7 +563,8 @@ static
 int IsGood(const char *frm, WORD in, WORD out)
 {
 
-        if ((abs(in - out) > 2)) {
+        // 1 for rounding
+        if ((abs(in - out) > 1)) {
 
               printf("error %s %x - %x\n", frm, in, out);
               return 0;
@@ -1016,12 +1019,12 @@ int CompareTransforms(cmsHTRANSFORM xform1, cmsHTRANSFORM xform2,
        Stats.x = 0.0; Stats.n = 0.0; // GCC BUG HERE!!!!
 
 
-       for (r=0; r < BASE; r+= nRedInterv)
+       for (r=0; r <= BASE; r+= nRedInterv)
        {
               // printf("\r%02x:", r);
 
               Dot();
-              for (g=0; g < BASE; g++)
+              for (g=0; g <= BASE; g++)
                      {
                             // I will test random LSB
 
@@ -1038,7 +1041,7 @@ int CompareTransforms(cmsHTRANSFORM xform1, cmsHTRANSFORM xform2,
 
                             // I'm using b as index
 
-                            for (b=0; b < BASE; b ++) {
+                            for (b=0; b <= BASE; b ++) {
 
                                    // I measure the error using vector distance
                                    // Only if encodable values
@@ -1428,6 +1431,48 @@ int TestLinearizationDevicelink()
 
 
 static
+int TestLinearizationDevicelink2()
+{
+    LPGAMMATABLE Transfer[3];
+    cmsHPROFILE hLin1;
+    cmsHTRANSFORM hXForm;    
+    int nMaxErr;
+
+    printf("Checking saved linearization devicelink");
+
+    Transfer[0] = cmsBuildGamma(256, 1);
+    Transfer[1] = cmsBuildGamma(256, 1);
+    Transfer[2] = cmsBuildGamma(256, 1);
+    
+    hLin1 = cmsCreateLinearizationDeviceLink(icSigRgbData, Transfer);
+
+    _cmsSaveProfile(hLin1, "lin1.icc");
+    cmsFreeGammaTriple(Transfer);
+    cmsCloseProfile(hLin1);
+
+    hLin1 = cmsOpenProfileFromFile("lin1.icc", "r");
+
+    hXForm = cmsCreateTransform(hLin1, TYPE_RGBA_16, NULL, TYPE_RGBA_16, INTENT_ABSOLUTE_COLORIMETRIC, 0);
+
+    if (!hXForm) {
+
+        printf("Error!\n");
+        return 1;
+    }
+    
+    nMaxErr = TestFullSpectrum(hXForm, 31, 1);
+
+    cmsDeleteTransform(hXForm);
+    cmsCloseProfile(hLin1);
+    unlink("lin1.icc");
+
+    printf("\n");
+
+    return nMaxErr;
+}
+
+
+static
 int TestDeviceLinkGeneration()
 {
     cmsHTRANSFORM hXForm, hIdentity;
@@ -1458,6 +1503,56 @@ int TestDeviceLinkGeneration()
 
     return nMaxErr;
 }
+
+static
+int TestInkLimiting()
+{
+    cmsHPROFILE hIL;
+    cmsHTRANSFORM hXForm;
+    BYTE In[4], Out[4];
+    int i, j, k, l, res;
+    
+
+
+    printf("Testing ink limiting ");
+    
+    hIL = cmsCreateInkLimitingDeviceLink(icSigCmykData, 100);
+
+    
+    hXForm = cmsCreateTransform(hIL, TYPE_CMYK_8, NULL, TYPE_CMYK_8, INTENT_RELATIVE_COLORIMETRIC, 0);
+    if (!hXForm) {
+
+        printf("Error!\n");
+        return 0;
+    }
+
+    for (l=0; l < 255; l += 8) {
+        Dot();      
+        for (k=0; k < 255; k += 8) 
+            for (j=0; j < 255; j += 8) 
+                for (i=0; i < 255; i += 8) {
+
+                    In[0] = i; In[1] = j; In[2] = k; In[3] = l;
+
+                    cmsDoTransform(hXForm, In, Out, 1);
+
+                    res = Out[0] + Out[1] + Out[2] + Out[3];
+                        
+                    if (res > 0x100) {
+            
+                        printf("Failed! (%d) \n", res);
+                        return 0;   
+                    }
+        }
+    }
+
+    cmsDeleteTransform(hXForm);
+    cmsCloseProfile(hIL);
+    printf(" pass.\n");
+
+    return 1;
+}
+
 
 
 static
@@ -1492,7 +1587,7 @@ void CheckPlanar(void)
 #ifndef NON_WINDOWS
 
 static
-void CompareWithICM(void)
+void CompareWithICM_16bit(void)
 {
 
     HTRANSFORM hICMxform;
@@ -1507,7 +1602,7 @@ void CompareWithICM(void)
     cmsHTRANSFORM hlcmsxform;
 
 
-    printf("\n\nComparative with MS-Windows ICM:\n");
+    printf("\n\nComparative with MS-Windows ICM (16 bits per sample):\n");
     
 
     Profile.dwType = PROFILE_FILENAME;
@@ -1585,6 +1680,103 @@ void CompareWithICM(void)
 
 }
 
+static
+void CompareWithICM_8bit(void)
+{
+
+    HTRANSFORM hICMxform;
+    HPROFILE   hICMProfileFrom, hICMProfileTo;
+    LOGCOLORSPACE LogColorSpace;
+    RGBQUAD In, Out;
+    int r, g, b;
+    PROFILE Profile;
+    clock_t atime;
+    double seconds, diff;
+    cmsHPROFILE hlcmsProfileIn, hlcmsProfileOut;
+    cmsHTRANSFORM hlcmsxform;
+
+
+    printf("\n\nComparative with MS-Windows ICM (8 bits per sample):\n");
+    
+
+    Profile.dwType = PROFILE_FILENAME;
+    Profile.pProfileData = "sRGBSpac.ICM";
+    Profile.cbDataSize   = strlen("sRGBSpac.ICM");
+
+    hICMProfileFrom = OpenColorProfile(&Profile, PROFILE_READ, FILE_SHARE_READ, OPEN_EXISTING);
+
+    Profile.pProfileData = "sRGBSpac.ICM";
+    Profile.cbDataSize   = strlen("sRGBSpac.ICM");
+    hICMProfileTo   = OpenColorProfile(&Profile, PROFILE_READ, FILE_SHARE_READ, OPEN_EXISTING);
+
+    ZeroMemory(&LogColorSpace, sizeof(LOGCOLORSPACE));
+
+    LogColorSpace.lcsSignature = LCS_SIGNATURE;
+    LogColorSpace.lcsVersion   = 0x400;
+    LogColorSpace.lcsCSType    = LCS_CALIBRATED_RGB;
+    strcpy(LogColorSpace.lcsFilename, "sRGBSpac.ICM");
+
+    hICMxform = CreateColorTransform(&LogColorSpace, hICMProfileTo, NULL, BEST_MODE);
+
+    printf("Windows ICM is transforming full spectrum...");
+
+    atime = clock();
+
+    for (r=0; r < 255; r++)
+        for (g=0; g < 255; g++)
+            for (b=0; b < 255; b++) {
+
+        In.rgbRed   = r;
+        In.rgbGreen = g;
+        In.rgbBlue  = b;
+        
+        if (!TranslateBitmapBits(hICMxform, &In,  BM_RGBTRIPLETS, 1, 1, 0, &Out, BM_RGBTRIPLETS, 0, NULL, 0))
+            exit(2);
+       
+    }
+
+    diff = clock() - atime;
+    seconds = (double) diff / CLOCKS_PER_SEC;
+
+
+    printf("done. [%d tics, %g sec.]\n", (int) diff, seconds);
+  
+    CloseColorProfile(hICMProfileFrom);
+    CloseColorProfile(hICMProfileTo);
+    DeleteColorTransform(hICMxform);
+
+    hlcmsProfileIn  = cmsOpenProfileFromFile("sRGBSpac.ICM", "r");
+    hlcmsProfileOut = cmsOpenProfileFromFile("sRGBSpac.ICM", "r");
+
+    hlcmsxform  = cmsCreateTransform(hlcmsProfileIn, TYPE_BGRA_8, hlcmsProfileOut, TYPE_BGRA_8, INTENT_PERCEPTUAL, 0);
+
+    printf("lcms is transforming full spectrum...");
+
+    atime = clock();
+
+    for (r=0; r < 255; r++)
+        for (g=0; g < 255; g++)
+            for (b=0; b < 255; b++) {
+
+                In.rgbRed   = r;
+                In.rgbGreen = g;
+                In.rgbBlue  = b;
+                
+        cmsDoTransform(hlcmsxform, &In, &Out, 1);
+    }
+
+    diff = clock() - atime;
+    seconds = (double) diff / CLOCKS_PER_SEC;
+
+    printf("done. [%d tics, %g sec.]\n", (int) diff, seconds);
+
+    cmsDeleteTransform(hlcmsxform);
+    cmsCloseProfile(hlcmsProfileIn);
+    cmsCloseProfile(hlcmsProfileOut);
+
+}
+
+
 #endif
 #endif
 
@@ -1602,8 +1794,6 @@ void SpeedTest(void)
     COLOR In, Out;
    
    
-    printf("\n\nRaw speed check:\n");
-
     hlcmsProfileIn  = cmsOpenProfileFromFile("sRGB Color Space Profile.ICM", "r");
     hlcmsProfileOut = cmsOpenProfileFromFile("sRGB Color Space Profile.ICM", "r");
 
@@ -1638,7 +1828,216 @@ void SpeedTest(void)
 #endif
 
 
+static
+int TestSaveToMem(void)
+{
+      void    *memPtr=0;
+      size_t  bytesNeeded=0;
+      int rc = FALSE;
+      cmsHPROFILE hProfile = cmsCreate_sRGBProfile();
 
+      printf("Testing save to memory: ");
+
+     // pass 1 - compute length
+      if (!_cmsSaveProfileToMem(hProfile, memPtr, &bytesNeeded)) {
+                printf("Failed!\n");
+                return FALSE;
+      }
+    // pass 2 - generate profile
+      if(!bytesNeeded) {
+            printf("Failed!\n");
+            return FALSE;
+      }
+
+    memPtr = malloc(bytesNeeded);
+    if (_cmsSaveProfileToMem(hProfile, memPtr, &bytesNeeded)) {
+            
+
+        cmsHPROFILE newProfile = cmsOpenProfileFromMem(memPtr, bytesNeeded);        
+        const char* s = cmsTakeProductName(newProfile);
+
+        if (strncmp(s, "sRGB", 4) == 0) rc = TRUE;
+
+        cmsCloseProfile(newProfile);
+        free(memPtr);
+        
+    }
+
+    cmsCloseProfile(hProfile);
+
+    printf (rc ? "pass.\n" : "failed!\n");
+    return rc;
+}
+
+
+
+static
+int TestNamedColor(void)
+{
+    LPcmsNAMEDCOLORLIST nc2;    
+    cmsHPROFILE hProfile, hDevicelink, hsRGB, hLab;
+    cmsHTRANSFORM xform, rgb2lab;    
+    int i;
+
+
+    printf("Testing Named color profiles: ");
+
+
+    hsRGB    = cmsCreate_sRGBProfile();
+    hLab     = cmsCreateLabProfile(NULL);
+    
+    rgb2lab = cmsCreateTransform(hsRGB, TYPE_RGB_16, hLab, TYPE_Lab_16, INTENT_PERCEPTUAL, cmsFLAGS_NOTPRECALC);
+
+    nc2 = cmsAllocNamedColorList(64);
+
+    nc2 ->ColorantCount = 3;
+    strcpy(nc2 ->Prefix, "prefix");
+    strcpy(nc2 ->Suffix, "suffix");
+
+    for (i=0; i < 64; i++) {
+
+        WORD vv = RGB_8_TO_16((i*4));
+        
+        nc2 ->List[i].DeviceColorant[0] = vv;
+        nc2 ->List[i].DeviceColorant[1] = vv;
+        nc2 ->List[i].DeviceColorant[2] = vv;
+
+        cmsDoTransform(rgb2lab, nc2 ->List[i].DeviceColorant, nc2 ->List[i].PCS, 1);        
+        
+        sprintf(nc2 ->List[i].Name, "Color #%d", i);
+
+    }
+
+    hProfile = cmsOpenProfileFromFile("named.icc", "w");
+
+    cmsSetDeviceClass(hProfile, icSigNamedColorClass);
+    cmsSetPCS(hProfile, icSigLabData);
+    cmsSetColorSpace(hProfile, icSigRgbData);
+
+    cmsAddTag(hProfile, icSigNamedColor2Tag, (void*) nc2);
+    cmsAddTag(hProfile, icSigMediaWhitePointTag, cmsD50_XYZ());
+    cmsCloseProfile(hProfile);
+
+    cmsFreeNamedColorList(nc2);
+
+
+    hProfile = cmsOpenProfileFromFile("named.icc", "r");
+    
+    xform = cmsCreateTransform(hProfile, TYPE_NAMED_COLOR_INDEX, NULL, TYPE_RGB_16, INTENT_PERCEPTUAL, 0);
+
+    for (i=0; i < 64; i++) {
+
+        WORD index;
+        WORD Color[3];
+
+        index = i;
+
+        cmsDoTransform(xform, &index, Color, 1);
+
+        if (Color[0] != RGB_8_TO_16((i*4)) ||
+            Color[1] != RGB_8_TO_16((i*4)) ||
+            Color[2] != RGB_8_TO_16((i*4))) { 
+
+                    printf(" fail on spot color #%d\n", i); 
+                    return 0; 
+            }
+    }
+
+
+    cmsDeleteTransform(xform);
+    cmsCloseProfile(hProfile);
+    cmsDeleteTransform(rgb2lab);
+    cmsCloseProfile(hLab);
+
+        
+    hProfile = cmsOpenProfileFromFile("named.icc", "r");
+    
+    xform = cmsCreateTransform(hProfile, TYPE_NAMED_COLOR_INDEX, hsRGB, TYPE_RGB_16, INTENT_PERCEPTUAL, 0);
+
+    hDevicelink = cmsTransform2DeviceLink(xform, 0);
+
+    _cmsSaveProfile(hDevicelink, "named2.icc");
+    cmsCloseProfile(hDevicelink);
+    
+    cmsDeleteTransform(xform);
+    cmsCloseProfile(hProfile);
+    
+    cmsCloseProfile(hsRGB);
+        
+    unlink("named.icc");
+    unlink("named2.icc");
+
+    printf(" pass.\n");
+    return 1;
+}
+
+// New to 1.13 -- CGATS/IT8.7
+
+
+#define NPOINTS_IT8 10  // (17*17*17*17)
+
+static
+int TestIT8(void)
+{
+    LCMSHANDLE it8;
+    int i;
+
+    printf("Testing CGATS parser: ");
+
+    it8 = cmsIT8Alloc();
+
+    cmsIT8SetSheetType(it8, "LCMS/TESTING");
+    cmsIT8SetPropertyStr(it8, "ORIGINATOR",   "1");
+    cmsIT8SetPropertyUncooked(it8, "DESCRIPTOR",   "1234");
+    cmsIT8SetPropertyStr(it8, "MANUFACTURER", "3");
+    cmsIT8SetPropertyDbl(it8, "CREATED",      4);
+    cmsIT8SetPropertyDbl(it8, "SERIAL",       5);
+    cmsIT8SetPropertyHex(it8, "MATERIAL",     0x123);
+
+    cmsIT8SetPropertyDbl(it8, "NUMBER_OF_SETS", NPOINTS_IT8);
+    cmsIT8SetPropertyDbl(it8, "NUMBER_OF_FIELDS", 4);
+
+    cmsIT8SetDataFormat(it8, 0, "SAMPLE_ID");
+    cmsIT8SetDataFormat(it8, 1, "RGB_R");
+    cmsIT8SetDataFormat(it8, 2, "RGB_G");
+    cmsIT8SetDataFormat(it8, 3, "RGB_B");
+
+    for (i=0; i < NPOINTS_IT8; i++) {
+
+          char Patch[20];
+
+          sprintf(Patch, "P%d", i);
+
+          cmsIT8SetDataRowCol(it8, i, 0, Patch);
+          cmsIT8SetDataRowColDbl(it8, i, 1, i);
+          cmsIT8SetDataRowColDbl(it8, i, 2, i);
+          cmsIT8SetDataRowColDbl(it8, i, 3, i);
+    }
+
+    cmsIT8SaveToFile(it8, "TEST.IT8");
+    cmsIT8Free(it8);
+
+    it8 = cmsIT8LoadFromFile("TEST.IT8");
+
+    if (cmsIT8GetPropertyDbl(it8, "DESCRIPTOR") != 1234) {
+    
+        printf("fail!\n");
+        return 0;
+    }
+
+    if (cmsIT8GetDataDbl(it8, "P3", "RGB_G") != 3) {
+        printf("fail!\n");
+        return 0;
+    }
+
+
+    cmsIT8Free(it8);
+
+    unlink("TEST.IT8");
+    printf("pass.\n");
+    return 1;
+
+}
 
 
 
@@ -1646,8 +2045,9 @@ int main(int argc, char *argv[])
 {
        int lExhaustive = 0;   
 
+       
        printf("little cms testbed. Ver %1.2f [build %s %s]\n\n", LCMS_VERSION / 100., __DATE__, __TIME__);
-
+       
 #ifndef LCMS_DLL
 
        if (!CheckEndianess()) return 1;
@@ -1676,11 +2076,17 @@ int main(int argc, char *argv[])
        if (!TestPreview()) return 1;
        if (!TestMultiprofile()) return 1;
        if (!TestLinearizationDevicelink()) return 1;
-       if (!TestDeviceLinkGeneration()) return 0;
+       if (!TestDeviceLinkGeneration()) return 1;
+       if (!TestLinearizationDevicelink2()) return 1;
+       if (!TestInkLimiting()) return 1;
+       if (!TestSaveToMem()) return 1;
+       if (!TestNamedColor()) return 1;  
+       if (!TestIT8()) return 1;
 
 #ifdef ICM_COMPARATIVE
 #ifndef NON_WINDOWS
-       CompareWithICM();
+       CompareWithICM_8bit();
+       CompareWithICM_16bit();
 #endif
 #endif
 

@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -34,12 +34,233 @@ void cmsCalcL16Params(int nSamples, LPL16PARAMS p)
 
 
 
+// Eval gray LUT having only one input channel 
 
-void cmsCalcCLUT16Params(int nSamples, int InputChan, int OutputChan, LPL16PARAMS p)
+static
+void Eval1Input(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS p16)
+{
+       Fixed32 fk;
+       Fixed32 k0, k1, rk, K0, K1;
+       int OutChan;
+
+       fk = ToFixedDomain((Fixed32) StageABC[0] * p16 -> Domain);
+       k0 = FIXED_TO_INT(fk);
+       rk = (WORD) FIXED_REST_TO_INT(fk);
+
+       k1 = k0 + (StageABC[0] != 0xFFFFU ? 1 : 0);
+
+       K0 = p16 -> opta1 * k0;
+       K1 = p16 -> opta1 * k1;
+
+       for (OutChan=0; OutChan < p16->nOutputs; OutChan++) {
+
+           StageLMN[OutChan] = (WORD) FixedLERP(rk, LutTable[K0+OutChan],
+                                                    LutTable[K1+OutChan]);
+       }
+}
+
+
+
+// For more that 3 inputs (i.e., CMYK)
+// evaluate two 3-dimensional interpolations and then linearly interpolate between them.
+static
+void Eval4Inputs(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS p16)
+{       
+       Fixed32 fk;
+       Fixed32 k0, rk;
+       int K0, K1;
+       LPWORD T;
+       int i;
+       WORD Tmp1[MAXCHANNELS], Tmp2[MAXCHANNELS];
+
+       
+       fk = ToFixedDomain((Fixed32) StageABC[0] * p16 -> Domain);
+       k0 = FIXED_TO_INT(fk);
+       rk = FIXED_REST_TO_INT(fk);
+
+       K0 = p16 -> opta4 * k0;
+       K1 = p16 -> opta4 * (k0 + (StageABC[0] != 0xFFFFU ? 1 : 0));
+
+       p16 -> nInputs = 3;
+
+       T = LutTable + K0;
+
+       cmsTetrahedralInterp16(StageABC + 1,  Tmp1, T, p16);
+
+      
+       T = LutTable + K1;
+
+       cmsTetrahedralInterp16(StageABC + 1,  Tmp2, T, p16);
+
+      
+       p16 -> nInputs = 4;
+       for (i=0; i < p16 -> nOutputs; i++)
+       {
+              StageLMN[i] = (WORD) FixedLERP(rk, Tmp1[i], Tmp2[i]);
+              
+       }
+
+}
+
+
+static
+void Eval5Inputs(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS p16)
+{       
+       Fixed32 fk;
+       Fixed32 k0, rk;
+       int K0, K1;
+       LPWORD T;
+       int i;
+       WORD Tmp1[MAXCHANNELS], Tmp2[MAXCHANNELS];
+
+       
+       fk = ToFixedDomain((Fixed32) StageABC[0] * p16 -> Domain);
+       k0 = FIXED_TO_INT(fk);
+       rk = FIXED_REST_TO_INT(fk);
+
+       K0 = p16 -> opta5 * k0;
+       K1 = p16 -> opta5 * (k0 + (StageABC[0] != 0xFFFFU ? 1 : 0));
+
+       p16 -> nInputs = 4;
+
+       T = LutTable + K0;
+
+       Eval4Inputs(StageABC + 1, Tmp1, T, p16);
+
+       T = LutTable + K1;
+
+       Eval4Inputs(StageABC + 1, Tmp2, T, p16);
+
+       p16 -> nInputs = 5;
+       for (i=0; i < p16 -> nOutputs; i++)
+       {
+              StageLMN[i] = (WORD) FixedLERP(rk, Tmp1[i], Tmp2[i]);           
+              
+       }
+
+}
+
+
+static
+void Eval6Inputs(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS p16)
+{       
+       Fixed32 fk;
+       Fixed32 k0, rk;
+       int K0, K1;
+       LPWORD T;
+       int i;
+       WORD Tmp1[MAXCHANNELS], Tmp2[MAXCHANNELS];
+
+       
+       fk = ToFixedDomain((Fixed32) StageABC[0] * p16 -> Domain);
+       k0 = FIXED_TO_INT(fk);
+       rk = FIXED_REST_TO_INT(fk);
+
+       K0 = p16 -> opta6 * k0;
+       K1 = p16 -> opta6 * (k0 + (StageABC[0] != 0xFFFFU ? 1 : 0));
+
+       p16 -> nInputs = 5;
+
+       T = LutTable + K0;
+
+       Eval5Inputs(StageABC + 1, Tmp1, T, p16);
+
+       T = LutTable + K1;
+
+       Eval5Inputs(StageABC + 1, Tmp2, T, p16);
+
+       p16 -> nInputs = 6;
+       for (i=0; i < p16 -> nOutputs; i++)
+       {
+              StageLMN[i] = (WORD) FixedLERP(rk, Tmp1[i], Tmp2[i]);
+       }
+
+}
+
+static
+void Eval7Inputs(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS p16)
+{       
+       Fixed32 fk;
+       Fixed32 k0, rk;
+       int K0, K1;
+       LPWORD T;
+       int i;
+       WORD Tmp1[MAXCHANNELS], Tmp2[MAXCHANNELS];
+
+       
+       fk = ToFixedDomain((Fixed32) StageABC[0] * p16 -> Domain);
+       k0 = FIXED_TO_INT(fk);
+       rk = FIXED_REST_TO_INT(fk);
+
+       K0 = p16 -> opta7 * k0;
+       K1 = p16 -> opta7 * (k0 + (StageABC[0] != 0xFFFFU ? 1 : 0));
+
+       p16 -> nInputs = 6;
+
+       T = LutTable + K0;
+
+       Eval6Inputs(StageABC + 1, Tmp1, T, p16);
+
+       T = LutTable + K1;
+
+       Eval6Inputs(StageABC + 1, Tmp2, T, p16);
+
+       p16 -> nInputs = 7;
+       for (i=0; i < p16 -> nOutputs; i++)
+       {
+              StageLMN[i] = (WORD) FixedLERP(rk, Tmp1[i], Tmp2[i]);
+       }
+
+}
+
+static
+void Eval8Inputs(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS p16)
+{       
+       Fixed32 fk;
+       Fixed32 k0, rk;
+       int K0, K1;
+       LPWORD T;
+       int i;
+       WORD Tmp1[MAXCHANNELS], Tmp2[MAXCHANNELS];
+
+       
+       fk = ToFixedDomain((Fixed32) StageABC[0] * p16 -> Domain);
+       k0 = FIXED_TO_INT(fk);
+       rk = FIXED_REST_TO_INT(fk);
+
+       K0 = p16 -> opta8 * k0;
+       K1 = p16 -> opta8 * (k0 + (StageABC[0] != 0xFFFFU ? 1 : 0));
+
+       p16 -> nInputs = 7;
+
+       T = LutTable + K0;
+
+       Eval7Inputs(StageABC + 1, Tmp1, T, p16);
+
+       T = LutTable + K1;
+
+       Eval7Inputs(StageABC + 1, Tmp2, T, p16);
+
+       p16 -> nInputs = 8;
+       for (i=0; i < p16 -> nOutputs; i++)
+       {
+              StageLMN[i] = (WORD) FixedLERP(rk, Tmp1[i], Tmp2[i]);
+       }
+
+}
+
+
+
+
+// Fills optimization parameters
+
+void cmsCalcCLUT16ParamsEx(int nSamples, int InputChan, int OutputChan, 
+                                            BOOL lUseTetrahedral, LPL16PARAMS p)
 {
        int clutPoints;
 
        cmsCalcL16Params(nSamples, p);
+
        p -> nInputs  = InputChan;
        p -> nOutputs = OutputChan;
 
@@ -53,14 +274,53 @@ void cmsCalcCLUT16Params(int nSamples, int InputChan, int OutputChan, LPL16PARAM
        p -> opta6 = p -> opta5 * clutPoints;    // Used only on 6 inputs LUT
        p -> opta7 = p -> opta6 * clutPoints;    // Used only on 7 inputs LUT
        p -> opta8 = p -> opta7 * clutPoints;    // Used only on 8 inputs LUT
-       
-#ifdef USE_TETRAHEDRAL      
-       p ->Interp3D = cmsTetrahedralInterp16;   // Default Interpolation method
-#else
-       p ->Interp3D = cmsTrilinearInterp16;   
-#endif
 
+
+       switch (InputChan) {
+
+
+           case 1: // Gray LUT
+
+               p ->Interp3D = Eval1Input;
+               break;
+
+           case 3:  // RGB et al               
+               if (lUseTetrahedral)
+                   p ->Interp3D = cmsTetrahedralInterp16;   
+               else
+                   p ->Interp3D = cmsTrilinearInterp16;   
+                break;
+
+           case 4:  // CMYK LUT
+                p ->Interp3D = Eval4Inputs;
+                break;
+
+           case 5: // 5 Inks
+                p ->Interp3D = Eval5Inputs;
+                break;           
+
+           case 6: // Hexachrome
+                p -> Interp3D = Eval6Inputs;
+                break;     
+                
+            case 7: // 7 inks
+                p ->Interp3D = Eval7Inputs;
+                break;
+
+           case 8: // 8 inks
+                p ->Interp3D = Eval8Inputs;
+                break;
+
+           default:
+                cmsSignalError(LCMS_ERRC_ABORTED, "Unsupported restoration (%d channels)", InputChan);
+           }
        
+}
+
+
+void cmsCalcCLUT16Params(int nSamples, int InputChan, int OutputChan, LPL16PARAMS p)
+{
+    cmsCalcCLUT16ParamsEx(nSamples, InputChan, OutputChan, FALSE, p);
 }
 
 
@@ -84,7 +344,6 @@ WORD cmsLinearInterpLUT16(WORD Value, WORD LutTable[], LPL16PARAMS p)
        val2 = p -> Domain * ((double) Value / 65535.0);
 
        cell0 = (int) floor(val2);
-       // cell1 = cell0 + 1;
        cell1 = (int) ceil(val2);
 
        // Rest is 16 LSB bits
@@ -147,9 +406,9 @@ WORD cmsLinearInterpLUT16(WORD Value1, WORD LutTable[], LPL16PARAMS p)
               a1 = -a1;
        }
 
-       y = y0 + FIXED_TO_INT(a1);
+       y = (WORD) (y0 + FIXED_TO_INT(a1));
 
-       return (WORD) y;
+       return y;
 }
 
 #endif
@@ -259,6 +518,10 @@ WORD cmsReverseLinearInterpLUT16(WORD Value, WORD LutTable[], LPL16PARAMS p)
         register int r = 0x10000;
         register int x = 0, res;       // 'int' Give spacing for negative values
         int NumZeroes, NumPoles;
+        int cell0, cell1;
+        double val2;
+        double y0, y1, x0, x1;
+        double a, b;
 
         // July/27 2001 - Expanded to handle degenerated curves with an arbitrary
         // number of elements containing 0 at the begining of the table (Zeroes)
@@ -296,14 +559,46 @@ WORD cmsReverseLinearInterpLUT16(WORD Value, WORD LutTable[], LPL16PARAMS p)
 
         while (r > l) {
 
-                x = (l+r)/2;
-                res = (int) cmsLinearInterpLUT16((WORD) (x-1), LutTable, p);
-                if (res == Value) return (WORD) x;
+                x = (l + r) / 2;
+
+                res = (int) cmsLinearInterpLUT16((WORD) (x - 1), LutTable, p);
+
+                if (res == Value) {
+
+                    // Found exact match. 
+                    
+                    return (WORD) (x - 1);
+                }
+
                 if (res > Value) r = x - 1;
                 else l = x + 1;
         }
 
-        return (WORD) x ;
+        // Not found, should we interpolate?
+
+                
+        // Get surrounding nodes
+        
+        val2 = p -> Domain * ((double) (x - 1) / 65535.0);
+
+        cell0 = (int) floor(val2);
+        cell1 = (int) ceil(val2);
+           
+        if (cell0 == cell1) return (WORD) x;
+
+        y0 = LutTable[cell0] ;
+        x0 = (65535.0 * cell0) / p ->Domain; 
+
+        y1 = LutTable[cell1] ;
+        x1 = (65535.0 * cell1) / p ->Domain;
+
+        a = (y1 - y0) / (x1 - x0);
+        b = y0 - a * x0;
+
+        if (a == 0) return (WORD) x;
+
+        return (WORD) floor(((Value - b) / a) + 0.5);                        
+        
 }
 
 
@@ -566,6 +861,8 @@ void cmsTetrahedralInterp16(WORD Input[],
 
 }
 
+#undef DENS
+
 #else
 
 #ifdef _MSC_VER
@@ -591,12 +888,12 @@ void cmsTetrahedralInterp16(WORD Input[],
 
 
 
-    fx = ToFixedDomain((int) Input[0] * p -> Domain);
+    fx  = ToFixedDomain((int) Input[0] * p -> Domain);
     x0  = FIXED_TO_INT(fx);
     rx  = FIXED_REST_TO_INT(fx);   
 
 
-    fy = ToFixedDomain((int) Input[1] * p -> Domain);
+    fy  = ToFixedDomain((int) Input[1] * p -> Domain);
     y0  = FIXED_TO_INT(fy);
     ry  = FIXED_REST_TO_INT(fy);
 
@@ -604,11 +901,11 @@ void cmsTetrahedralInterp16(WORD Input[],
     z0 = FIXED_TO_INT(fz);
     rz = FIXED_REST_TO_INT(fz);
 
-
+    
     x1 = x0 + (Input[0] != 0xFFFFU ? 1 : 0);
     y1 = y0 + (Input[1] != 0xFFFFU ? 1 : 0);
     z1 = z0 + (Input[2] != 0xFFFFU ? 1 : 0);
-
+    
 
     Z0 = p -> opta1 * z0;
     Z1 = p -> opta1 * z1;
@@ -616,9 +913,116 @@ void cmsTetrahedralInterp16(WORD Input[],
     Y1 = p -> opta2 * y1;
     X0 = p -> opta3 * x0;
     X1 = p -> opta3 * x1;
+    
+
+    // These are the 6 Tetrahedral
+    for (OutChan=0; OutChan < TotalOut; OutChan++) {
+              
+        if (rx >= ry && ry >= rz)
+       {
+             
+              c1 = DENS(X1, Y0, Z0) - DENS(X0, Y0, Z0);
+              c2 = DENS(X1, Y1, Z0) - DENS(X1, Y0, Z0);
+              c3 = DENS(X1, Y1, Z1) - DENS(X1, Y1, Z0);
+                            
+       }
+       else
+       if (rx >= rz && rz >= ry)
+       {            
+              c1 = DENS(X1, Y0, Z0) - DENS(X0, Y0, Z0);
+              c2 = DENS(X1, Y1, Z1) - DENS(X1, Y0, Z1);
+              c3 = DENS(X1, Y0, Z1) - DENS(X1, Y0, Z0);
+                          
+       }
+       else
+       if (rz >= rx && rx >= ry)
+       {
+             
+              c1 = DENS(X1, Y0, Z1) - DENS(X0, Y0, Z1);
+              c2 = DENS(X1, Y1, Z1) - DENS(X1, Y0, Z1);
+              c3 = DENS(X0, Y0, Z1) - DENS(X0, Y0, Z0);                            
+
+       }
+       else
+       if (ry >= rx && rx >= rz)
+       {
+              
+              c1 = DENS(X1, Y1, Z0) - DENS(X0, Y1, Z0);
+              c2 = DENS(X0, Y1, Z0) - DENS(X0, Y0, Z0);
+              c3 = DENS(X1, Y1, Z1) - DENS(X1, Y1, Z0);
+                            
+       }
+       else
+       if (ry >= rz && rz >= rx)
+       {
+             
+              c1 = DENS(X1, Y1, Z1) - DENS(X0, Y1, Z1);
+              c2 = DENS(X0, Y1, Z0) - DENS(X0, Y0, Z0);
+              c3 = DENS(X0, Y1, Z1) - DENS(X0, Y1, Z0);
+                           
+       }
+       else
+       if (rz >= ry && ry >= rx)
+       {             
+              c1 = DENS(X1, Y1, Z1) - DENS(X0, Y1, Z1);
+              c2 = DENS(X0, Y1, Z1) - DENS(X0, Y0, Z1);
+              c3 = DENS(X0, Y0, Z1) - DENS(X0, Y0, Z0);
+                           
+       }
+       else  {
+              c1 = c2 = c3 = 0;
+              // assert(FALSE);
+       }
+        
+        Rest = c1 * rx + c2 * ry + c3 * rz;                
+
+        Output[OutChan] = (WORD) (DENS(X0,Y0,Z0) + ROUND_FIXED_TO_INT(ToFixedDomain(Rest)));        
+    }
+
+}
+#undef DENS
+
+#endif
 
 
-       // These are the 6 Tetrahedral
+// A optimized interpolation for 8-bit input.
+
+#define DENS(i,j,k) (LutTable[(i)+(j)+(k)+OutChan])
+
+void cmsTetrahedralInterp8(WORD Input[],
+                           WORD Output[],
+                           WORD LutTable[],
+                           LPL16PARAMS p)
+{
+
+       int        r, g, b;
+       Fixed32    rx, ry, rz;            
+       Fixed32    c1, c2, c3, Rest;       
+       int        OutChan;
+       register   Fixed32    X0, X1, Y0, Y1, Z0, Z1;
+       int        TotalOut = p -> nOutputs;
+       register   LPL8PARAMS p8 = p ->p8; 
+
+    
+       
+    r = Input[0] >> 8;
+    g = Input[1] >> 8;
+    b = Input[2] >> 8;
+
+    X0 = X1 = p8->X0[r];
+    Y0 = Y1 = p8->Y0[g];
+    Z0 = Z1 = p8->Z0[b];
+
+    X1 += (r == 255) ? 0 : p ->opta3;
+    Y1 += (g == 255) ? 0 : p ->opta2;
+    Z1 += (b == 255) ? 0 : p ->opta1;
+
+    rx = p8 ->rx[r];
+    ry = p8 ->ry[g];
+    rz = p8 ->rz[b];
+
+    
+    // These are the 6 Tetrahedral
     for (OutChan=0; OutChan < TotalOut; OutChan++) {
               
        if (rx >= ry && ry >= rz)
@@ -678,15 +1082,12 @@ void cmsTetrahedralInterp16(WORD Input[],
        }
         
 
-        Rest = c1 * rx + c2 * ry + c3 * rz + 0x8000;
-        
-        Output[OutChan] = (WORD) (DENS(X0,Y0,Z0) + (FixedDiv(Rest, 0xFFFFU) >> 16));        
+        Rest = c1 * rx + c2 * ry + c3 * rz;
+                
+        Output[OutChan] = (WORD) (DENS(X0,Y0,Z0) + ROUND_FIXED_TO_INT(ToFixedDomain(Rest)));        
     }
 
 }
 
-
-#endif
-
-
+#undef DENS
 

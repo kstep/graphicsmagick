@@ -118,6 +118,13 @@ void FatalError(const char *frm, ...)
        exit(1);
 }
 
+static
+int MyErrorHandler(int ErrorCode, const char *ErrorText)
+{
+    FatalError("%s", ErrorText);
+    return 0;
+}
+
 
 // Out of mem
 static
@@ -355,6 +362,7 @@ int GetProfileColorSpace(cmsHPROFILE hProfile)
 
        case icSigHexachromeData: return PT_HiFi;
 
+
        default:  return icMaxEnumData;
        }
 }
@@ -423,11 +431,11 @@ void WriteOutputFields(int OutputColorSpace)
         return;
     }
     
-    Compressor.in_color_space = n;
-    Compressor.jpeg_color_space = m;
+    Compressor.in_color_space = (J_COLOR_SPACE) n;
+    Compressor.jpeg_color_space = (J_COLOR_SPACE) m;
     Compressor.input_components = Compressor.num_components = k;
     jpeg_set_defaults(&Compressor);
-    jpeg_set_colorspace(&Compressor, m);
+    jpeg_set_colorspace(&Compressor, (J_COLOR_SPACE) m);
     jpeg_set_quality(&Compressor, jpegQuality,1);    
 }
 
@@ -438,14 +446,23 @@ int DoTransform(cmsHTRANSFORM hXForm)
     JSAMPROW ScanLineOut;
 
 
-      
+    
+       //Preserve resolution values from the original
+       // (Thanks to robert bergs for finding out this bug)
+
+       Compressor.density_unit=Decompressor.density_unit;
+       Compressor.X_density=Decompressor.X_density;
+       Compressor.Y_density=Decompressor.Y_density;
+
+       Compressor.write_JFIF_header = 1;
+     
        jpeg_start_decompress(&Decompressor);
        jpeg_start_compress(&Compressor, TRUE);
 
       // FIXME: # of bytes is *4 at most, but can be less
 
-       ScanLineIn  = malloc(Decompressor.output_width * 4);
-       ScanLineOut = malloc(Compressor.image_width * 4);
+       ScanLineIn  = (JSAMPROW) malloc(Decompressor.output_width * 4);
+       ScanLineOut = (JSAMPROW) malloc(Compressor.image_width * 4);
 
        while (Decompressor.output_scanline <
                             Decompressor.output_height) {
@@ -489,9 +506,7 @@ int TransformImage(char *cDefInpProf, char *cOutProf)
 
        if (BlackWhiteCompensation) {
 
-            dwFlags |= cmsFLAGS_WHITEBLACKCOMPENSATION;
-            if (PrecalcMode == 0) 
-                    FatalError("Cannot use White/Black compensation without precalculation. Use /c1 or /c2.");
+            dwFlags |= cmsFLAGS_BLACKPOINTCOMPENSATION;            
        }
 
        switch (PrecalcMode) {
@@ -572,7 +587,7 @@ int TransformImage(char *cDefInpProf, char *cOutProf)
                                           hProof, Intent, 
                                           ProofingIntent, dwFlags);
 
-       // Handle tile by tile or strip by strip
+       // Handle tile by tile or strip by strip strtok
 
        DoTransform(xform);
 
@@ -593,7 +608,7 @@ int TransformImage(char *cDefInpProf, char *cOutProf)
 static
 void Help(int level)
 {
-     fprintf(stderr, "little cms ICC profile applier for JPEG - v1.4\n\n");
+     fprintf(stderr, "little cms ICC profile applier for JPEG - v1.5\n\n");
 
      switch(level) {
 
@@ -610,7 +625,7 @@ void Help(int level)
      fprintf(stderr, "%cm<0,1,2,3> - SoftProof intent\n", SW);
      fprintf(stderr, "\n");
 
-     fprintf(stderr, "%cb - Black/White compensation\n", SW);
+     fprintf(stderr, "%cb - Black point compensation\n", SW);
      fprintf(stderr, "%cn - Ignore embedded profile\n", SW);
 
 
@@ -776,6 +791,8 @@ int main(int argc, char* argv[])
                          "absolute colorimetric" };
 
       HandleSwitches(argc, argv);
+
+      cmsSetErrorHandler(MyErrorHandler);
 
       if ((argc - xoptind) != 2) {
 

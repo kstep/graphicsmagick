@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -469,7 +469,11 @@ LPBYTE UnrollPlanarWordsBigEndian(register _LPcmsTRANSFORM info, register WORD w
 static
 LPBYTE UnrollLabDouble(register _LPcmsTRANSFORM info, register WORD wIn[], register LPBYTE accum)
 {       
-        cmsFloat2LabEncoded(wIn, (LPcmsCIELab) accum);
+        if (info ->lInputV4Lab)
+            cmsFloat2LabEncoded4(wIn, (LPcmsCIELab) accum);
+        else
+            cmsFloat2LabEncoded(wIn, (LPcmsCIELab) accum);
+
         accum += sizeof(cmsCIELab);
 
         return accum;
@@ -1207,7 +1211,11 @@ LPBYTE Pack1WordAndSkip1BigEndian(register _LPcmsTRANSFORM Info, register WORD w
 static
 LPBYTE PackLabDouble(register _LPcmsTRANSFORM Info, register WORD wOut[], register LPBYTE output)
 {
-    cmsLabEncoded2Float((LPcmsCIELab) output, wOut);
+    if (Info ->lOutputV4Lab)
+        cmsLabEncoded2Float4((LPcmsCIELab) output, wOut);
+    else
+        cmsLabEncoded2Float((LPcmsCIELab) output, wOut);
+
     output += sizeof(cmsCIELab);
 
     return output;
@@ -1627,7 +1635,7 @@ _cmsFIXFN _cmsIdentifyOutputFormat(_LPcmsTRANSFORM xform, DWORD dwOutput)
                             }
                             break;
 
-					 case 5:
+                     case 5:
                      case 7:
                      case 8:
                      case 9:
@@ -1847,7 +1855,7 @@ void LCMSEXPORT cmsChangeBuffersFormat(cmsHTRANSFORM hTransform,
 
     cmsSetUserFormatters(hTransform, 
                         dwInputFormat,
-                        (cmsFORMATTER) _cmsIdentifyInputFormat(hTransform, dwInputFormat),
+                        (cmsFORMATTER) _cmsIdentifyInputFormat((_LPcmsTRANSFORM ) hTransform, dwInputFormat),
                         dwOutputFormat,
-                        (cmsFORMATTER) _cmsIdentifyOutputFormat(hTransform, dwOutputFormat));
+                        (cmsFORMATTER) _cmsIdentifyOutputFormat((_LPcmsTRANSFORM ) hTransform, dwOutputFormat));
 }

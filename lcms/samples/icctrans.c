@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -37,6 +37,7 @@ int    cdecl xgetopt(int argc, char *argv[], char *optionS);
 // ------------------------------------------------------------------------
 
 static BOOL InHexa = FALSE;
+static BOOL InPer100 = FALSE;
 static int  Verbose = 0;
 static char *cInProf = NULL;
 static char *cOutProf = NULL;
@@ -74,6 +75,13 @@ void FatalError(const char *frm, ...)
        exit(1);
 }
 
+static
+int MyErrorHandler(int ErrorCode, const char *ErrorText)
+{
+    FatalError("icctrans: %s", ErrorText);
+    return 0;
+}
+
 
 
 // The toggles stuff
@@ -83,9 +91,13 @@ void HandleSwitches(int argc, char *argv[])
 {
        int s;
       
-       while ((s = xgetopt(argc,argv,"C:c:VvWwxXhHbBnNI:i:O:o:T:t:L:l:")) != EOF) {
+       while ((s = xgetopt(argc,argv,"%C:c:VvWwxXhHbBnNI:i:O:o:T:t:L:l:")) != EOF) {
 
        switch (s){
+
+       case '%' : 
+           InPer100 = TRUE;
+           break;
 
        case 'b':
        case 'B': 
@@ -218,6 +230,7 @@ void OpenTransforms(void)
        if (Verbose) {
 
             printf("From: %s\n", cmsTakeProductName(hInput));
+            printf("Desc: %s\n", cmsTakeProductDesc(hInput));
             if (hOutput) printf("To  : %s\n\n", cmsTakeProductName(hOutput));
        }
 
@@ -247,7 +260,8 @@ void OpenTransforms(void)
                                        hOutput, dwOut,
                                         Intent, dwFlags);
 
-       if (hOutput) {
+       hTransXYZ = NULL; hTransLab = NULL;
+       if (hOutput && Verbose) {
 
        hTransXYZ = cmsCreateTransform(hInput, dwIn,
                                       hXYZ,  TYPE_XYZ_16,
@@ -268,7 +282,7 @@ void CloseTransforms(void)
        if (hTransLab) cmsDeleteTransform(hTransLab);
        if (hTransXYZ) cmsDeleteTransform(hTransXYZ);
        cmsCloseProfile(hInput);
-      if (hOutput) cmsCloseProfile(hOutput);      
+       if (hOutput) cmsCloseProfile(hOutput);      
        cmsCloseProfile(hXYZ);
        cmsCloseProfile(hLab);
 
@@ -294,7 +308,10 @@ void PrintOne(const char* C, double v)
     }
     else
     {       
-        printf("%s%.2f ", Prefix, v / 257.);
+        if (InPer100)
+            printf("%s%.2f%% ", Prefix, ((v * 100.) / 65535.));
+        else
+            printf("%s%.2f ", Prefix, v / 257.);
     }
 }
 
@@ -363,11 +380,13 @@ void PrintResults(WORD Encoded[], icColorSpaceSignature ColorSpace)
                     PrintOne("C", Encoded[0]); PrintOne("M", Encoded[1]); PrintOne("Y", Encoded[2]); 
                     break;
 
+    case icSigHexachromeData:
     case icSig6colorData:
                             
                     PrintOne("C", Encoded[0]); PrintOne("M", Encoded[1]); PrintOne("Y", Encoded[2]); 
                     PrintOne("K", Encoded[3]); PrintOne("c", Encoded[1]); PrintOne("m", Encoded[2]); 
                     break;
+
     default:
 
         for (i=0; i < _cmsChannelsOf(OutputColorSpace); i++) {
@@ -385,6 +404,7 @@ int GetVal(const char* AskFor)
 {
     char Buffer[256];
     double tmp;
+    int tmp_hexa;
     char *Max;
     char* MaxTbl[] = { "255",
                      "65535",
@@ -393,7 +413,8 @@ int GetVal(const char* AskFor)
 
     Max = MaxTbl[InHexa * 2 + Width16];
 
-    
+    if (InPer100) Max = "100";
+
     if (xisatty(stdin))
            printf("%s (0..%s)? ", AskFor, Max);
 
@@ -411,10 +432,21 @@ int GetVal(const char* AskFor)
         
     }
 
-    sscanf(Buffer, (InHexa ? "%x" : "%lf"), &tmp);
+
+    if (InHexa) {
+        sscanf(Buffer, "%x", &tmp_hexa);
+        tmp = (double) tmp_hexa;
+    }
+    else {
+
+        sscanf(Buffer, "%lf", &tmp);
+    }
 
     if (!Width16)
         tmp *= 257.0;
+
+    if (InPer100)
+        tmp *= (255. / 100.);
 
     return (int) floor(tmp + 0.5);
 }
@@ -499,13 +531,34 @@ void TakeValues(WORD Encoded[])
                     Encoded[0] = GetVal("C"); Encoded[1] = GetVal("M"); Encoded[2] = GetVal("Y"); 
                     break;
 
-    case icSig6colorData:
-
+    case icSigHexachromeData:    
                     Encoded[0] = GetVal("C"); Encoded[1] = GetVal("M"); Encoded[2] = GetVal("Y"); Encoded[3] = GetVal("K"); 
                     Encoded[4] = GetVal("c"); Encoded[5] = GetVal("m");                                       
                     break;
-    default:
 
+    case icSigHeptachromeData:
+    case icSigOctachromeData:    
+    case icSig2colorData:
+    case icSig3colorData:
+    case icSig4colorData:
+    case icSig5colorData:
+    case icSig6colorData:
+    case icSig7colorData:
+    case icSig8colorData: {
+                            int i;
+
+                            for (i=0; i < _cmsChannelsOf(InputColorSpace); i++) {
+
+                                char Name[100];
+
+                                sprintf(Name, "Channel #%d", i+1);
+                                Encoded[i] = GetVal(Name);
+                            }
+
+                          }
+                          break;
+
+    default:              
                     FatalError("Unsupported %d channel profile", _cmsChannelsOf(InputColorSpace));
     }
 
@@ -529,9 +582,10 @@ void Help(void)
      fprintf(stderr, "%ct<0,1,2,3> - Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute)\n", SW);    
      
      fprintf(stderr, "%cw - use 16 bits\n", SW);
+     fprintf(stderr, "%c%% - use percent %% of ink\n", SW);
      fprintf(stderr, "%cx - Hexadecimal\n\n", SW);
      fprintf(stderr, "%cb - Black point compensation\n", SW);
-     fprintf(stderr, "%cc<0,1,2,3> - Precalculates transform (0=Off, 1=Normal, 2=Hi-res, 3=LoRes) [defaults to 1]\n", SW);     
+     fprintf(stderr, "%cc<0,1,2,3> - Precalculates transform (0=Off, 1=Normal, 2=Hi-res, 3=LoRes) [defaults to 0]\n", SW);     
      fprintf(stderr, "%cn - Terse output, intended for pipe usage\n\n", SW);
 
      fprintf(stderr, "This program is intended to be a demo of the little cms\n"
@@ -557,7 +611,9 @@ int main(int argc, char *argv[])
 
 
       HandleSwitches(argc, argv);
-                   
+
+      cmsSetErrorHandler(MyErrorHandler);
+
       OpenTransforms();
       
       for(;;) {
@@ -571,9 +627,12 @@ int main(int argc, char *argv[])
           TakeValues(Input);
           cmsDoTransform(hTrans, Input, Output, 1);
 
-          if (hTransXYZ) cmsDoTransform(hTransXYZ, Input, PCSxyz, 1);
-          if (hTransLab) cmsDoTransform(hTransLab, Input, PCSLab, 1);
-    
+          if (Verbose) {
+
+            if (hTransXYZ) cmsDoTransform(hTransXYZ, Input, PCSxyz, 1);
+            if (hTransLab) cmsDoTransform(hTransLab, Input, PCSLab, 1);
+          }
+
           if (xisatty(stdin))
                 printf("\n\n");
 
