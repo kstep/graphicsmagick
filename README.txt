@@ -30,7 +30,7 @@ AVAILABILITY
 
     ftp://ftp.imagemagick.org/pub/ImageMagick/binaries
     ftp://ftp.imagemagick.org/pub/ImageMagick/mac
-    ftp://ftp.imagemagick.org/pub/ImageMagick/xp
+    ftp://ftp.imagemagick.org/pub/ImageMagick/windows
     ftp://ftp.imagemagick.org/pub/ImageMagick/vms
     ftp://ftp.imagemagick.org/pub/ImageMagick/linux
 

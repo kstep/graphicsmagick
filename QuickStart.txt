@@ -83,11 +83,11 @@ Unix/Linux/Darwin/Cygwin/MinGW Install:
           $HOME/.magick/
           <current directory>/
 
-Win2K, WinME, NT, Win98, Win95 Install:
+XP, Win2K, WinME, NT, Win98, Win95 Install:
 
   Download
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-5.4.9-xp.exe
+      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-i686-pc-windows.exe
 
   and execute it (or "open" it from your browser) to start the installation
   program.
@@ -106,11 +106,11 @@ MAC Install:
 
   Download
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-5.4.9-mac.sit
+      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-powerpc-apple-mac9.2.sit
 
         or
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-powerpc-apple-darwin5.5.tar.gz
+      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-powerpc-apple-darwin6.0.tar.gz
 
   and double click on it to extract the distribution.   Move to the
   ImageMagick folder and double click on the convert program icon.
@@ -124,7 +124,7 @@ VMS Install:
 
   Type
 
-      unzip ImageMagick-5.4.8.zip
+      unzip ImageMagick-5.5.1.zip
       set default [.imagemagick]
       @make
       identify -verbose logo:
