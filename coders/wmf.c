@@ -198,11 +198,55 @@ static void wmf_magick_udata_set(wmfAPI * API, wmfUserData_t * userdata);
 
 static void wmf_magick_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
 {
+  if (!TO_FILL(rop_draw))
+    return;
+
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
-  /* FIXME: implement */
-  printf("wmf_magick_rop_draw not implemented\n");
+  /* FIXME: finish implementing (once we know what it is supposed to do!)*/
+
+  magick_brush(API, rop_draw->dc);
+
+  switch (rop_draw->ROP) /* Ternary raster operations */
+    {
+    case SRCCOPY: /* dest = source */
+      break;
+    case SRCPAINT: /* dest = source OR dest */
+      break;
+    case SRCAND: /* dest = source AND dest */
+      break;
+    case SRCINVERT: /* dest = source XOR dest */
+      break;
+    case SRCERASE: /* dest = source AND (NOT dest) */
+      break;
+    case NOTSRCCOPY: /* dest = (NOT source) */
+      break;
+    case NOTSRCERASE: /* dest = (NOT src) AND (NOT dest) */
+      break;
+    case MERGECOPY: /* dest = (source AND pattern) */
+      break;
+    case MERGEPAINT: /* dest = (NOT source) OR dest */
+      break;
+    case PATCOPY: /* dest = pattern */
+      break;
+    case PATPAINT: /* dest = DPSnoo */
+      break;
+    case PATINVERT: /* dest = pattern XOR dest */
+      break;
+    case DSTINVERT: /* dest = (NOT dest) */
+      break;
+    case BLACKNESS: /* dest = BLACK */
+      break;
+    case WHITENESS: /* dest = WHITE */
+      break;
+    default:
+      break;
+    }
+
+  magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
+                    (double)rop_draw->TL.x, (double)rop_draw->TL.y,
+                    (double)rop_draw->BR.x, (double)rop_draw->BR.y);
 
   /* Restore graphic context */
   magick_mvg_printf(API, "pop graphic-context\n");
