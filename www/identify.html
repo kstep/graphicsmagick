@@ -36,27 +36,28 @@
 <a href="#copy">Copyright</a></li>
 </ul>
 
-<dl><a NAME="syno"></a>
+<p><a NAME="syno"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Synopsis</font></font></font></b></td>
 </tr>
 </table>
 
+<dl>
 <dd>
 <b>identify</b> <i>file</i> [ <i>file</i> ... ]</dd>
 </dl>
 <i><a href="#top">Back to Contents</a></i>
 <br>&nbsp;
 <br>&nbsp;
-<dl><a NAME="desc"></a>
+<p><a NAME="desc"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Description</font></font></font></b></td>
 </tr>
 </table>
 
-<dd>
+<dl><dd>
 <b>Identify</b> describes the format and characteristics of one or more
 image files. It will also report if an image is incomplete or corrupt.
 The information displayed includes the scene number, the file name, the
@@ -65,261 +66,353 @@ the number of colors in the image, the number of bytes in the image, the
 format of the image (JPEG, PNM, etc.), and finally the number of seconds
 it took to read and process the image. An example line output from <b>identify</b>
 follows:</dd>
-
-<pre>&nbsp;&nbsp;&nbsp; images/aquarium.miff 640x480 PseudoClass 256c 308135b MIFF 1s</pre>
+<dd>
+<pre>
+    images/aquarium.miff 640x480 PseudoClass 256c 308135b MIFF 1s
+</pre>
+</dd>
+<dd>
 If <tt>-verbose</tt> is set, expect additional output including any image
 comment:
-<pre>&nbsp;&nbsp;&nbsp; Image: images/aquarium.miff
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class: PseudoClass
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; colors: 256
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; signature: eb5dca81dd93ae7e6ffae99a5275a53e
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; matte: False
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; geometry: 640x480
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; depth: 8
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bytes: 308135
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; format: MIFF
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; comments:
-&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Imported from MTV raster image:&nbsp; aquarium.mtv</pre>
+</dd>
+<dd>
+<pre>
+    Image: images/aquarium.miff
+    class: PseudoClass
+    colors: 256
+    signature: eb5dca81dd93ae7e6ffae99a527eb5dca81dd93ae7e6ffae99a5275a53e
+    matte: False
+    geometry: 640x480
+       depth: 8
+    bytes: 308135
+    format: MIFF
+    comments:
+    Imported from MTV raster image: aquarium.mtv
+</pre>
+</dd>
 </dl>
 <i><a href="#top">Back to Contents</a></i>
 <br>&nbsp;
 <br>&nbsp;
-<dl><a NAME="opti"></a>
-<table BORDER=0 WIDTH="65%" >
+<p><a NAME="opti"></a>
+<table BORDER=0 WIDTH="100%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Options</font></font></font></b></td>
 </tr>
 </table>
 
+<dl>
 <dd>
 Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
 the option again with a different effect.</dd>
+</dl>
 
 <p>&nbsp;
-<dl>&nbsp;
-<table BORDER=0 WIDTH="65%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">-cache
-<i>threshold</i></font></font></font></b></td>
-</tr>
-</table>
 
-<dd>
-megabytes of memory available to the pixel cache.</dd>
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+<a name="-cache">-cache</a> <i>threshold</i>
+     </font></font></font></b></td></tr></table>
 
-<dd>
-<p>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>megabytes of memory available to the pixel cache</td></tr></table>
+
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Image pixels are stored in memory until 80 megabytes of memory have been
 consumed. Subsequent pixel operations are cached on disk. Operations to
 memory are significantly faster but if your computer does not have a sufficient
-amount of free memory you may want to adjust this threshold value.</dd>
-</dl>
+amount of free memory you may want to adjust this threshold value.
+</font></td></tr></table>
 
-<dl>&nbsp;
-<table BORDER=0 WIDTH="65%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color
-="#FFFFFF"><font size="+1">-density
-<i>&lt;width>x&lt;height></i></font></font></font></b></td>
-</tr>
-</table>
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+<a name="-debug">-debug</a>
+     </font></font></font></b></td></tr></table>
 
-<dd>
-vertical and horizontal resolution in pixels of the image.</dd>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>enable debug printout</td></tr></table>
 
-<dd>
-<p>
-This option specifies an image density when decoding a <i>PostScript</i>
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+<a name="-density">-density</a> <i>&lt;width&gt;x&lt;height&gt;</i>
+     </font></font></font></b></td></tr></table>
+
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>vertical and horizontal resolution in pixels of the image</td></tr></table>
+
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+This option specifies an image density when decoding a <em>PostScript</em>
 or Portable Document page. The default is 72 dots per inch in the horizontal
-and vertical direction. This option is used in concert with <b>-page</b>.</dd>
-</dl>
+and vertical direction. This option is used in concert with <strong>-page</strong>.
+</font></td></tr></table>
 
-<dl>&nbsp;
-<table BORDER=0 WIDTH="65%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">-depth
-<i>value</i></font></font></font></b></td>
-</tr>
-</table>
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+<a name="-depth">-depth</a> <i>value</i>
+     </font></font></font></b></td></tr></table>
 
-<dd>
-depth of the image. This is the number of bits in a pixel. The only acceptable
-values are 8 or 16.</dd>
-</dl>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>depth of the image</td></tr></table>
 
-<dl>&nbsp;
-<table BORDER=0 WIDTH="65%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">-format
-<i>string</i></font></font></font></b></td>
-</tr>
-</table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+This is the number of bits in a pixel. The only acceptable
+values are 8 or 16.  Use this option to specify the depth of raw images whose
+depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
+image after it has been read.
+</font></td></tr></table>
 
-<dd>
-output formated image characteristics.</dd>
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+<a name="-format">-format</a> <i>"string"</i>
+     </font></font></font></b></td></tr></table>
 
-<dd>
-<p>
-Use this option to print information about the image in a format of your
-choosing.  You can include the image filename, type, width, height,
-or other image attributes by embedding special format characters: </dd>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>output formatted image characteristics</td></tr></table>
 
-<pre>&nbsp;&nbsp;&nbsp; %b&nbsp;&nbsp; file size
-&nbsp;&nbsp;&nbsp; %c&nbsp;&nbsp; comment
-&nbsp;&nbsp;&nbsp; %d&nbsp;&nbsp; directory
-&nbsp;&nbsp;&nbsp; %e&nbsp;&nbsp; filename extention
-&nbsp;&nbsp;&nbsp; %f&nbsp;&nbsp; filename
-&nbsp;&nbsp;&nbsp; %h&nbsp;&nbsp; height
-&nbsp;&nbsp;&nbsp; %i&nbsp;&nbsp; input filename
-&nbsp;&nbsp;&nbsp; %k&nbsp;&nbsp; number of unique colors
-&nbsp;&nbsp;&nbsp; %l&nbsp;&nbsp; label
-&nbsp;&nbsp;&nbsp; %m&nbsp;&nbsp; magick
-&nbsp;&nbsp;&nbsp; %n&nbsp;&nbsp; number of scenes
-&nbsp;&nbsp;&nbsp; %o&nbsp;&nbsp; output filename
-&nbsp;&nbsp;&nbsp; %p&nbsp;&nbsp; page number
-&nbsp;&nbsp;&nbsp; %q&nbsp;&nbsp; quantum depth
-&nbsp;&nbsp;&nbsp; %s&nbsp;&nbsp; scene number
-&nbsp;&nbsp;&nbsp; %t&nbsp;&nbsp; top of filename
-&nbsp;&nbsp;&nbsp; %u&nbsp;&nbsp; unique temporary filename
-&nbsp;&nbsp;&nbsp; %w&nbsp;&nbsp; width
-&nbsp;&nbsp;&nbsp; %x&nbsp;&nbsp; x resolution
-&nbsp;&nbsp;&nbsp; %y&nbsp;&nbsp; y resolution
-&nbsp;&nbsp;&nbsp; \\n&nbsp;&nbsp; newline
-&nbsp;&nbsp;&nbsp; \\r&nbsp;&nbsp; carriage return</pre>
-For example,
-<pre>&nbsp; -format "%m:%f %wx%h"</pre>
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+<a name="-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}{@}{!}{&lt;}{&gt;}</i>
+     </font></font></font></b></td></tr></table>
 
-<dd>
-display <b>MIFF:bird.miff 512x480</b> for an image
-titled <b>bird.miff</b> and whose width is 512 and height is 480.</dd>
-<p>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+See <em>X(1)</em> for details
+about the geometry specification. By default, the window size is the image
+size and the location is chosen by you when it is mapped.
+</font></td></tr></table>
 
-<dd>
-If the first character of <i>string</i> is <i>@</i>, the image comment
-is read from a file titled by the remaining characters in the string.</dd>
-</dl>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+By default, the width and height are maximum values. That is, the image
+is expanded or contracted to fit the width and height value while maintaining
+the aspect ratio of the image. <em>Append an exclamation point to the geometry
+to force the image size to exactly the size you specify</em>. For example,
+if you specify <strong>640x480!</strong> the image width is set to 640 pixels and
+height to 480. If only one factor is specified, both the width and height
+assume the value.
+</font></td></tr></table>
 
-<dl>&nbsp;
-<table BORDER=0 WIDTH="65%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">-size
-&lt;width>{%}x&lt;height>{%}{+offset}{!}</font></font></font></b></td>
-</tr>
-</table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+To specify a percentage width or height instead, append %. The image size
+is multiplied by the width and height percentages to obtain the final image
+dimensions. To increase the size of an image, use a value greater than
+100 (e.g. 125%). To decrease an image's size, use a percentage less than
+100.
+</font></td></tr></table>
 
-<dd>
-width and height of the image.</dd>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use <strong>@</strong> to specify the maximum area in pixels of an image.
+</font></td></tr></table>
 
-<dd>
-<p>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use <strong>&gt;</strong> to change the dimensions of the image <em>only</em> if
+its size exceeds the geometry specification. <strong>&lt;</strong> resizes the image
+<em>only</em>
+if its dimensions is less than the geometry specification. For example,
+if you specify <strong>'640x480&gt;'</strong> and the image size is 512x512, the image
+size does not change. However, if the image is 1024x1024, it is resized
+to 640x480.
+</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use <strong>&lt;</strong> to change the dimensions of the image <em>only</em> if
+its size exceeds the geometry specification. <strong>&gt;</strong> resizes the image
+<em>only</em>
+if its dimensions is less than the geometry specification. For example,
+if you specify <strong>640x480&gt;</strong> and the image size is 512x512, the image
+size does not change. However, if the image is 1024x1024, it is resized
+to 640x480.
+</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+There are 72 pixels per inch in PostScript coordinates.
+</font></td></tr></table>
+
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+<a name="-help">-help</a>
+     </font></font></font></b></td></tr></table>
+
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print usage instructions</td></tr></table>
+
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+<a name="-ping">-ping</a>
+     </font></font></font></b></td></tr></table>
+
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>efficiently determine image characteristics</td></tr></table>
+
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+<a name="-size">-size</a> <i>&lt;width&gt;x&lt;height&gt;{+offset}</i>
+     </font></font></font></b></td></tr></table>
+
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>width and height of the image</td></tr></table>
+
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use this option to specify the width and height of raw images whose dimensions
-are unknown such as <b>GRAY</b>,
-<b>RGB</b>, or <b>CMYK</b>. In addition
+are unknown such as <strong>GRAY</strong>,
+<strong>RGB</strong>, or <strong>CMYK</strong>. In addition
 to width and height, use
-<b>-size</b> to skip any header information in
-the image or tell the number of colors in a <b>MAP</b> image file, (e.g.
--size 640x512+256).</dd>
+<strong>-size</strong> with an offset to skip any header information in
+the image or tell the number of colors in a <strong>MAP</strong> image
+file, (e.g. -size 640x512+256).
+</font></td></tr></table>
 
-<dd>
-<p>
-For Photo CD images, choose from these sizes:</dd>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+For Photo CD images, choose from these sizes:</font></td></tr></table>
 
-<pre>&nbsp;&nbsp; 192x128
-&nbsp;&nbsp; 384x256
-&nbsp;&nbsp; 768x512
-&nbsp;&nbsp; 1536x1024
-&nbsp;&nbsp; 3072x2048</pre>
+<pre>
+     192x128
+     384x256
+     768x512
+     1536x1024
+     3072x2048
+</pre>
 
-<dd>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Finally, use this option to choose a particular resolution layer of a JBIG
-or JPEG image (e.g. -size 1024x768).</dd>
-</dl>
+or JPEG image (e.g. -size 1024x768).
+</font></td></tr></table>
 
-<dl>&nbsp;
-<table BORDER=0 WIDTH="65%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">-verbose</font></font></font></b></td>
-</tr>
-</table>
+     <table BORDER=0 WIDTH="94%">
+     <tr>
+     <td width="3%"><br></td> 
+     <td ALIGN=LEFT BGCOLOR="#9EBAC6">
+     <img SRC="../images/right_triangle_option.png"
+     ALT=">" BORDER=0 height=14
+     width=15><b><font face="Helvetica, Arial"
+     ><font color="#FFFFFF"><font size="+1">
+<a name="-verbose">-verbose</a>
+     </font></font></font></b></td></tr></table>
 
-<dd>
-print detailed information about the image.</dd>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print detailed information about the image</td></tr></table>
 
-<dd>
-<p>
-This information is printed: image name; the image class (<i>DirectClass</i>
-or <i>PseudoClass</i>); the total number of unique colors; whether there
-is a matte associated with the image; the number of runlength packets;
-the image size; the depth of the image; the image format; the image scene;
-and finally any image comment. Refer to
-<a href="miff.html">miff</a> for
-a description of the image class.</dd>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+This information is printed: image scene number; image name; image size;
+the image class (<em>DirectClass</em> or <em>PseudoClass</em>); the total number
+of unique colors; and the number of seconds to read and transform the image.
+Refer to <a href="miff.html">miff</a> for a description of the image class.
+</font></td></tr></table>
+
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+If <strong>-colors</strong> is also specified, the total unique colors in the image
+and color reduction error values are printed. Refer to <a href="quantize.html">quantize</a>
+for a description of these values.
+</font></td></tr></table>
 
 <br>&nbsp;
-<p>&nbsp;
-</dl>
-<i><a href="#top">Back to Contents</a></i></dl>
-
-<dl><a NAME="auth"></a>
+<br>
+<a NAME="auth"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Authors</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png"
+ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">Authors</font></font></font></b></td>
 </tr>
 </table>
 
-<dd>
-<i>John Cristy</i>, <i><a href="mailto:magick@wizards.dupont.com">magick@wizards.dupont.com</a></i><b>ImageMagick
-Studio</b>.</dd>
+<dl><dd>
+<i>John Cristy</i>, <i><a href="mailto:magick-users@imagemagick.org"
+>magick-users@imagemagick.org</a>, ImageMagick Studio</i>.</dd>
 </dl>
 <i><a href="#top">Back to Contents</a></i>
 <br>&nbsp;
-<br>&nbsp;
-<dl><a NAME="copy"></a>
+<br>
+<a NAME="copy"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Copyright</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png"
+ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">Copyright</font></font></font></b></td>
 </tr>
 </table>
 
-<dd>
+<dl><dd>
 <b>Copyright (C) 2002 ImageMagick Studio</b></dd>
-<p>
 <dd>
+<p>
 <b>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files ("ImageMagick"),
 to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
 is furnished to do so, subject to the following conditions:</b></dd>
-<p>
-
 <dd>
+<p>
 <b>The above copyright notice and this permission notice shall be included
 in all copies or substantial portions of ImageMagick.</b></dd>
-<p>
-
 <dd>
+<p>
 <b>The software is provided "as is", without warranty of any kind, express
 or implied, including but not limited to the warranties of merchantability,
 fitness for a particular purpose and noninfringement.In no event shall
 ImageMagick Studio be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out
-of or in connection with ImageMagick or the use or other dealings in ImageMagick.</b></dd>
+of or in connection with ImageMagick or the use or other dealings in
+ImageMagick.</b></dd>
 
-<p>
 <dd>
-<b>Except as contained in this notice, the name of the ImageMagick Studio
-LLC shall not be used in advertising or otherwise to promote the sale,
-use or other dealings in ImageMagick without prior written authorization
-from the ImageMagick Studio.</b></dd>
+<p>
+<b>Except as contained in this notice, the name of the
+ImageMagick Studio LLC shall not be used in advertising or otherwise to
+promote the sale, use or other dealings in ImageMagick without prior written
+authorization from the ImageMagick Studio.</b></dd>
 </dl>
+<p>
 <i><a href="#top">Back to Contents</a></i>
 <p>
 <hr>
-<p><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=MIDDLE></a><font size="-2">
+<p><a href="../ImageMagick.html"><img SRC="../images/home.png"
+ALT="ImageMagick Home Page" BORDER=0 height=40 width=40
+align=MIDDLE></a><font size="-2">
 Image manipulation software that works like magic.</font>
 </body>
 </html>
