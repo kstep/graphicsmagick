@@ -1195,8 +1195,8 @@ sub testFilterCompare {
     }
 
   $srcimage->set(depth=>8);
-#  if ("$filter" eq "Shade") {
-#  $srcimage->Display();
+#  if ("$filter" eq "Shear") {
+#    $srcimage->Display();
 #    $srcimage->write(filename=>"$refimage_name", compression=>'None');
 #  }
 

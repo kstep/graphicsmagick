@@ -138,11 +138,11 @@ MagickExport Image *AffineTransformImage(const Image *image,
   /*
     Affine transform image.
   */
-  affine_image=CloneImage(image,(unsigned long) floor(max.x-min.x+0.5),
-    (unsigned long) floor(max.y-min.y+0.5),True,exception);
+  affine_image=CloneImage(image,(unsigned long) ceil(max.x-min.x-0.5),
+    (unsigned long) ceil(max.y-min.y-0.5),True,exception);
   if (affine_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImage(affine_image,OpaqueOpacity);
+  SetImage(affine_image,TransparentOpacity);
   transform.sx=affine->sx;
   transform.rx=affine->rx;
   transform.ry=affine->ry;
@@ -241,6 +241,7 @@ static void CropToFitImage(Image **image,const double x_shear,
   crop_image=CropImage(*image,&geometry,exception);
   if (crop_image != (Image *) NULL)
     {
+      crop_image->page=(*image)->page;
       DestroyImage(*image);
       *image=crop_image;
     }
@@ -547,7 +548,7 @@ static void XShearImage(Image *image,const double degrees,
         displacement*=(-1.0);
         direction=LEFT;
       }
-    step=(long) floor(displacement+0.5);
+    step=(long) floor(displacement);
     alpha=(double) MaxRGB*(displacement-step);
     if (alpha == 0.0)
       {
@@ -745,7 +746,7 @@ static void YShearImage(Image *image,const double degrees,
         displacement*=(-1.0);
         direction=UP;
       }
-    step=(long) floor(displacement+0.5);
+    step=(long) floor(displacement);
     alpha=(double) MaxRGB*(displacement-step);
     if (alpha == 0.0)
       {
@@ -953,7 +954,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   if (integral_image == (Image *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToRotateImage");
-  shear.x=(-tan(DegreesToRadians(angle)/2));
+  shear.x=(-tan(DegreesToRadians(angle)/2.0));
   shear.y=sin(DegreesToRadians(angle));
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
@@ -967,9 +968,9 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
       width=image->rows;
       height=image->columns;
     }
-  y_width=(unsigned long) (width+ceil(fabs(shear.x)*height-0.5));
-  x_offset=(long) ceil(2*fabs(shear.x)*height-0.5);
-  y_offset=(long) ceil(fabs(shear.y)*y_width-0.5);
+  x_offset=(long) ceil(fabs(2.0*height*shear.y)-0.5);
+  y_width=(unsigned long) floor(fabs(height*shear.x)+width+0.5);
+  y_offset=(long) ceil(fabs(y_width*shear.y)-0.5);
   /*
     Surround image with a border.
   */
@@ -984,16 +985,17 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   /*
     Rotate the image.
   */
-  SetImageType(rotate_image,rotate_image->background_color.opacity !=
-    OpaqueOpacity ? TrueColorMatteType : TrueColorType);
+  rotate_image->storage_class=DirectClass;
+  rotate_image->matte|=rotate_image->background_color.opacity != OpaqueOpacity;
   XShearImage(rotate_image,shear.x,width,height,x_offset,
     (long) (rotate_image->rows-height)/2);
   YShearImage(rotate_image,shear.y,y_width,height,
     (long) (rotate_image->columns-y_width)/2,y_offset);
   XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
     (long) (rotate_image->columns-y_width)/2,0);
-  (void) memset(&rotate_image->page,0,sizeof(RectangleInfo));
   CropToFitImage(&rotate_image,shear.x,shear.y,width,height,True,exception);
+  rotate_image->page.width=0;
+  rotate_image->page.height=0;
   return(rotate_image);
 }
 
@@ -1075,16 +1077,16 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   if (integral_image == (Image *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToShearImage");
-  shear.x=(-tan(DegreesToRadians(x_shear)/2));
+  shear.x=(-tan(DegreesToRadians(x_shear)/2.0));
   shear.y=sin(DegreesToRadians(y_shear));
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
   /*
     Compute image size.
   */
-  y_width=(unsigned long) (image->columns+ceil(fabs(shear.x)*image->rows-0.5));
-  x_offset=(long) ceil(2*fabs(shear.x)*image->rows-0.5);
-  y_offset=(long) ceil(fabs(shear.y)*y_width-0.5);
+  x_offset=(long) ceil(fabs(2.0*image->rows*shear.x)-0.5);
+  y_width=(unsigned long) floor(fabs(image->rows*shear.x)+image->columns+0.5);
+  y_offset=(long) ceil(fabs(y_width*shear.y)-0.5);
   /*
     Surround image with border.
   */
@@ -1099,14 +1101,15 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   /*
     Shear the image.
   */
-  SetImageType(shear_image,shear_image->background_color.opacity !=
-    OpaqueOpacity ?  TrueColorMatteType : TrueColorType);
+  shear_image->storage_class=DirectClass;
+  shear_image->matte|=shear_image->background_color.opacity != OpaqueOpacity;
   XShearImage(shear_image,shear.x,image->columns,image->rows,x_offset,
     (long) (shear_image->rows-image->rows)/2);
   YShearImage(shear_image,shear.y,y_width,image->rows,
     (long) (shear_image->columns-y_width)/2,y_offset);
-  (void) memset(&shear_image->page,0,sizeof(RectangleInfo));
   CropToFitImage(&shear_image,shear.x,shear.y,image->columns,image->rows,
     False,exception);
+  shear_image->page.width=0;
+  shear_image->page.height=0;
   return(shear_image);
 }
