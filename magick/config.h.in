@@ -299,6 +299,9 @@
 /* Define if you have the <dirent.h> header file, and it defines `DIR'. */
 #undef HAVE_DIRENT_H
 
+/* Define if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
 /* Define if you don't have `vprintf' but do have `_doprnt.' */
 #undef HAVE_DOPRNT
 
@@ -535,6 +538,9 @@
 
 /* The size of a `int', as computed by sizeof. */
 #undef SIZEOF_INT
+
+/* The size of a `long', as computed by sizeof. */
+#undef SIZEOF_LONG
 
 /* The size of a `long long', as computed by sizeof. */
 #undef SIZEOF_LONG_LONG
