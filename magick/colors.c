@@ -1174,8 +1174,7 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 %
 %
 */
-MagickExport unsigned int QueryColorDatabase(const char *name,
-  PixelPacket *color)
+MagickExport unsigned int QueryColorDatabase(const char *name,PixelPacket *color)
 {
   ExceptionInfo
     exception;
