@@ -1964,12 +1964,6 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   assert(quantize_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if ((quantize_info->number_colors == 2) && quantize_info->dither &&
-      (quantize_info->colorspace == GRAYColorspace))
-    {
-      status=OrderedDitherImage(image);
-      return(status);
-    }
   number_colors=quantize_info->number_colors;
   if (number_colors == 0)
     number_colors=MaxRGB+1;
