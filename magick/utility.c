@@ -774,7 +774,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
 %
 %  The format of the GetToken method is:
 %
-%      void GetToken(const char *start,char **end, char *token)
+%      void GetToken(const char *start,char **end,char *token)
 %
 %  A description of each parameter follows:
 %
