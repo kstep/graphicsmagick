@@ -365,20 +365,35 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         q++;
       }
 		else
-      for (x=0; x < (long) image->columns; x++)
-      {
-        q->red=ScaleShortToQuantum(jas_matrix_getv(pixels[0],x));
-        q->green=q->red;
-        q->blue=q->red;
-        if (number_components > 1)
-          q->green=ScaleShortToQuantum(jas_matrix_getv(pixels[1],x));
-        if (number_components > 2)
-          q->blue=ScaleShortToQuantum(jas_matrix_getv(pixels[2],x));
-        if (number_components > 3)
-          q->opacity=ScaleShortToQuantum(jas_matrix_getv(pixels[3],x));
-        q++;
-      }
-    if (!SyncImagePixels(image))
+      if (image->depth <= 16)
+        for (x=0; x < (long) image->columns; x++)
+        {
+          q->red=ScaleShortToQuantum(jas_matrix_getv(pixels[0],x));
+          q->green=q->red;
+          q->blue=q->red;
+          if (number_components > 1)
+            q->green=ScaleShortToQuantum(jas_matrix_getv(pixels[1],x));
+          if (number_components > 2)
+            q->blue=ScaleShortToQuantum(jas_matrix_getv(pixels[2],x));
+          if (number_components > 3)
+            q->opacity=ScaleShortToQuantum(jas_matrix_getv(pixels[3],x));
+          q++;
+        }
+			else
+        for (x=0; x < (long) image->columns; x++)
+        {
+          q->red=ScaleLongToQuantum(jas_matrix_getv(pixels[0],x));
+          q->green=q->red;
+          q->blue=q->red;
+          if (number_components > 1)
+            q->green=ScaleLongToQuantum(jas_matrix_getv(pixels[1],x));
+          if (number_components > 2)
+            q->blue=ScaleLongToQuantum(jas_matrix_getv(pixels[2],x));
+          if (number_components > 3)
+            q->opacity=ScaleLongToQuantum(jas_matrix_getv(pixels[3],x));
+          q++;
+        }
+      if (!SyncImagePixels(image))
       break;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
@@ -614,21 +629,38 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
         p++;
       }
 		else
-      for (x=0; x < (long) image->columns; x++)
-      {
-        if (number_components == 1)
-          jas_matrix_setv(pixels[0],x,
-            ScaleQuantumToShort(PixelIntensityToQuantum(p)));
-        else
-          {
-            jas_matrix_setv(pixels[0],x,ScaleQuantumToShort(p->red));
-            jas_matrix_setv(pixels[1],x,ScaleQuantumToShort(p->green));
-            jas_matrix_setv(pixels[2],x,ScaleQuantumToShort(p->blue));
-            if (number_components > 3)
-              jas_matrix_setv(pixels[3],x,ScaleQuantumToShort(p->opacity));
-          }
-        p++;
-      }
+      if (image->depth <= 16)
+        for (x=0; x < (long) image->columns; x++)
+        {
+          if (number_components == 1)
+            jas_matrix_setv(pixels[0],x,
+              ScaleQuantumToShort(PixelIntensityToQuantum(p)));
+          else
+            {
+              jas_matrix_setv(pixels[0],x,ScaleQuantumToShort(p->red));
+              jas_matrix_setv(pixels[1],x,ScaleQuantumToShort(p->green));
+              jas_matrix_setv(pixels[2],x,ScaleQuantumToShort(p->blue));
+              if (number_components > 3)
+                jas_matrix_setv(pixels[3],x,ScaleQuantumToShort(p->opacity));
+            }
+          p++;
+        }
+			else
+        for (x=0; x < (long) image->columns; x++)
+        {
+          if (number_components == 1)
+            jas_matrix_setv(pixels[0],x,
+              ScaleQuantumToLong(PixelIntensityToQuantum(p)));
+          else
+            {
+              jas_matrix_setv(pixels[0],x,ScaleQuantumToLong(p->red));
+              jas_matrix_setv(pixels[1],x,ScaleQuantumToLong(p->green));
+              jas_matrix_setv(pixels[2],x,ScaleQuantumToLong(p->blue));
+              if (number_components > 3)
+                jas_matrix_setv(pixels[3],x,ScaleQuantumToLong(p->opacity));
+            }
+          p++;
+        }
     for (i=0; i < (long) number_components; i++)
       (void) jas_image_writecmpt(jp2_image,(short) i,0,(unsigned int) y,
         (unsigned int) image->columns,1,pixels[i]);
