@@ -475,23 +475,22 @@ static unsigned int ClipCacheNexus(Image *image,const unsigned long id)
     nexus_info->rows,image_nexus);
   q=GetCacheNexus(image->clip_mask,nexus_info->x,nexus_info->y,
     nexus_info->columns,nexus_info->rows,mask_nexus);
-  if ((p == (PixelPacket *) NULL) && (q == (PixelPacket *) NULL))
-    return(False);
   r=nexus_info->pixels;
-  for (y=0; y < (long) nexus_info->rows; y++)
-  {
-    for (x=0; x < (long) nexus_info->columns; x++)
+  if ((p != (PixelPacket *) NULL) && (q != (PixelPacket *) NULL))
+    for (y=0; y < (long) nexus_info->rows; y++)
     {
-      if (q->opacity == TransparentOpacity)
-        *r=(*p);
-      p++;
-      q++;
-      r++;
+      for (x=0; x < (long) nexus_info->columns; x++)
+      {
+        if (q->opacity == TransparentOpacity)
+          *r=(*p);
+        p++;
+        q++;
+        r++;
+      }
     }
-  }
   DestroyCacheNexus(image->cache,image_nexus);
   DestroyCacheNexus(image->clip_mask->cache,mask_nexus);
-  return(True);
+  return((p != (PixelPacket *) NULL) && (q != (PixelPacket *) NULL));
 }
 
 /*
