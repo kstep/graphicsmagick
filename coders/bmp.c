@@ -469,6 +469,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this is a BMP file.
   */
+  memset(&bmp_info,0,sizeof(BMPInfo));
   bmp_info.ba_offset=0;
   status=ReadBlob(image,2,(char *) magick);
   do
@@ -765,9 +766,18 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             word=(*p++);
             word|=(*p++ << 8);
-            q->red=UpScale(ScaleColor5to8((word >> 11) & 0x1f));
-            q->green=UpScale(ScaleColor6to8((word >> 5) & 0x3f));
-            q->blue=UpScale(ScaleColor5to8(word & 0x1f));
+            if (bmp_info.red_mask == 0)
+              {
+                q->red=UpScale(ScaleColor5to8((word >> 10) & 0x1f));
+                q->green=UpScale(ScaleColor5to8((word >> 5) & 0x1f));
+                q->blue=UpScale(ScaleColor5to8(word & 0x1f));
+              }
+            else
+              {
+                q->red=UpScale(ScaleColor5to8((word >> 11) & 0x1f));
+                q->green=UpScale(ScaleColor6to8((word >> 5) & 0x3f));
+                q->blue=UpScale(ScaleColor5to8(word & 0x1f));
+              }
             q++;
           }
           if (!SyncImagePixels(image))
