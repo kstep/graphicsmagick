@@ -27,8 +27,6 @@ for details):
     - Many bugs fixed which were reported via the ImageMagick bug
       tracking system, or via the mailing lists.
 
-    - MPEG is now read via the MPEG2 library to improve efficiency.
-
     - WMF support now works with libwmf 0.2.2, which may be compiled
       under Windows.
 
