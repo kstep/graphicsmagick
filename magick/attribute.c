@@ -1416,7 +1416,6 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
         (void) ConcatenateString(&p->value,attribute->value);
         LiberateMemory((void **) &attribute->value);
         LiberateMemory((void **) &attribute->key);
-        LiberateMemory((void **) &attribute);
         return(True);
       }
     if (p->next == (ImageAttribute *) NULL)
