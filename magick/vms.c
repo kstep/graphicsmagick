@@ -255,7 +255,7 @@ struct dirent *readdir(DIR *directory)
 %
 %
 */
-MagickExport int VMSIsMagickConflict(char *magick)
+MagickExport unsigned int VMSIsMagickConflict(char *magick)
 {
   ile3
     item_list[2];
