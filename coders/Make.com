@@ -59,6 +59,7 @@ $call Make mtv.c
 $call Make mvg.c
 $call Make null.c
 $call Make otb.c
+$call Make palm.c
 $call Make pcd.c
 $call Make pcl.c
 $call Make pcx.c
@@ -108,8 +109,8 @@ $call Make xwd.c
 $call Make yuv.c
 $library/create libCoders.olb art,avi,avs,bmp,cmyk,cut,dcm,dib,dps,dpx,ept, -
   fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icon,jbig,jp2,jpeg,label, -
-  logo,map,mat,matte,meta,miff,mono,mpc,mpr,mpeg,msl,mtv,mvg,null,otb,pcd,pcl, -
-	pcx,pdb,pdf,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,rgb, -
+  logo,map,mat,matte,meta,miff,mono,mpc,mpr,mpeg,msl,mtv,mvg,null,otb,palm, -
+	pcd,pcl,pcx,pdb,pdf,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,rgb, -
 	rla,rle,sct,sfw,sgi,stegano,sun,svg,tga,tiff,tile,tim,ttf,txt,uil,url,uyvy, -
   vicar,vid,viff,wbmp,wmf,wpg,x,xbm,xc,xcf,xpm,xwd,yuv,[-.magick]compress, -
   [-.magick]prervicccm

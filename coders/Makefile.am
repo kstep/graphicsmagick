@@ -37,7 +37,7 @@ MAGICK_CODER_SRCS = \
   ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c \
   histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c logo.c \
   map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c mpr.c msl.c \
-  mtv.c mvg.c null.c otb.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c \
+  mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c \
   pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
   tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c url.c uyvy.c vicar.c \
@@ -79,8 +79,8 @@ pkg_LTLIBRARIES = \
   ept.la fax.la fits.la fpx.la gif.la gradient.la gray.la hdf.la \
   histogram.la html.la icon.la jbig.la jp2.la jpeg.la label.la logo.la \
   map.la mat.la matte.la meta.la miff.la mono.la mpc.la mpeg.la mpr.la msl.la \
-  mtv.la mvg.la null.la otb.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la \
-  pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
+  mtv.la mvg.la null.la otb.la palm.la pcd.la pcl.la pcx.la pdb.la pdf.la \
+	pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
   pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la \
   tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la vicar.la \
   vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xcf.la xpm.la xwd.la \
@@ -282,14 +282,19 @@ mvg_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 mvg_la_LIBADD       = $(LIBMAGICK)
 
 # NULL module
-null_la_SOURCES      = null.c
-null_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-null_la_LIBADD       = $(LIBMAGICK)
+null_la_SOURCES     = null.c
+null_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+null_la_LIBADD      = $(LIBMAGICK)
 
 # OTB module
 otb_la_SOURCES      = otb.c
 otb_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 otb_la_LIBADD       = $(LIBMAGICK)
+
+# PALM module
+palm_la_SOURCES     = palm.c
+palm_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+palm_la_LIBADD      = $(LIBMAGICK)
 
 # PCD module
 pcd_la_SOURCES      = pcd.c

@@ -45,6 +45,7 @@ void OpenStaticModules(void)
   RegisterMVGImage();
   RegisterNULLImage();
   RegisterOTBImage();
+  RegisterPALMImage();
   RegisterPCDImage();
   RegisterPCLImage();
   RegisterPCXImage();
