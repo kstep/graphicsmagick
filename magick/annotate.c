@@ -67,6 +67,35 @@
 #endif
 
 /*
+  Typedef declarations.
+*/
+typedef struct _FontInfo
+{  
+  char
+    *format,
+    *metrics,
+    *glyphs,
+    *name,
+    *family,
+    *weight,
+    *version,
+    *alias;
+
+  struct _FontInfo
+    *previous,
+    *next;
+} FontInfo;
+
+/*
+  Static declarations.
+*/
+static FontInfo
+  *font_info = (FontInfo *) NULL;
+
+static SemaphoreInfo *
+  font_semaphore = (SemaphoreInfo *) NULL;
+
+/*
   Forward declarations.
 */
 static unsigned int
@@ -363,6 +392,109 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   D e s t r o y F o n t I n f o                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyFontInfo deallocates memory associated with the font_info
+%  list.
+%
+%  The format of the DestroyFontInfo method is:
+%
+%      DestroyFontInfo(void)
+%
+%
+*/
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+MagickExport void DestroyFontInfo(void)
+{
+  FontInfo
+    *font_info;
+
+  register FontInfo
+    *p;
+
+  AcquireSemaphore(&font_semaphore);
+  for (p=font_info; p != (FontInfo *) NULL; )
+  {
+    if (p->format != (char *) NULL)
+      LiberateMemory((void **) &p->format);
+    if (p->metrics != (char *) NULL)
+      LiberateMemory((void **) &p->metrics);
+    if (p->glyphs != (char *) NULL)
+      LiberateMemory((void **) &p->glyphs);
+    if (p->name != (char *) NULL)
+      LiberateMemory((void **) &p->name);
+    if (p->family != (char *) NULL)
+      LiberateMemory((void **) &p->family);
+    if (p->weight != (char *) NULL)
+      LiberateMemory((void **) &p->weight);
+    if (p->version != (char *) NULL)
+      LiberateMemory((void **) &p->version);
+    if (p->alias != (char *) NULL)
+      LiberateMemory((void **) &p->alias);
+    font_info=p;
+    p=p->next;
+    LiberateMemory((void **) &font_info);
+  }
+  font_info=(FontInfo *) NULL;
+  LiberateSemaphore(&font_semaphore);
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t F o n t I n f o                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetFontInfo 
+%
+%  The format of the GetFontInfo method is:
+%
+%      char *GetFontInfo(char *name)
+%
+%  A description of each parameter follows:
+%
+%    o name: Method GetFontMetrics returns True if the metrics are
+%      available otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+MagickExport char *GetFontInfo(char *name)
+{
+  /*
+  AcquireSemaphore(&font_semaphore);
+  if (font_info == (FontInfo *) NULL)
+    {
+      atexit(DestroyFontInfo);
+    }
+  LiberateSemaphore(&font_semaphore);
+  */
+  return(name);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t F o n t M e t r i c s                                               %
 %                                                                             %
 %                                                                             %
@@ -468,7 +600,7 @@ static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
   if (draw_info->font == (char *) NULL)
     return(RenderPostscript(image,draw_info,offset,render,metrics));
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strcpy(image_info->filename,draw_info->font);
+  (void) strcpy(image_info->filename,GetFontInfo(draw_info->font));
   (void) strcpy(image_info->magick,"PS");
   if (*image_info->filename == '@')
     (void) strcpy(image_info->magick,"TTF");
