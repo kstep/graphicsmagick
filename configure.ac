@@ -1478,22 +1478,29 @@ AM_CONDITIONAL(HasTXT2HTML, test "$have_txt2html" = 'yes')
 type_include_files=''
 
 # Windows
+AC_MSG_CHECKING(for windows font directory)
 windows_font_dir=''
 if test "$with_windows_font_dir" != "yes" && test -n "$with_windows_font_dir"
 then
    windows_font_dir="$with_windows_font_dir"
 else
   case $host_os in
-    cygwin* | mingw* | pw32*)
-      AC_PATH_PROG(NOTEPADdelegate,notepad.exe,)
-      windows_font_dir=`echo "$NOTEPADdelegate" | sed -e 's:/notepad.exe:/fonts:'`
+    cygwin* )
+      font_dir=`cygpath --windir`/Fonts
+      if test -f "$font_dir/times.ttf"
+      then
+        windows_font_dir="$font_dir"
+      fi
       ;;
+    #mingw* )
+    #pw32*)
   esac
 fi
 if test -n "$windows_font_dir"
 then
   type_include_files="$type_include_files "'file="type-windows.mgk"'
 fi
+AC_MSG_RESULT($windows_font_dir)
 AC_SUBST(windows_font_dir)
 
 # Adobe Postscript fonts on various systems
@@ -1903,6 +1910,11 @@ echo "Magick++          --with-magick-plus-plus=$with_magick_plus_plus 	$have_ma
 echo "PERL              --with-perl=$with_perl            	$have_perl"
 echo "PNG               --with-png=$with_png          	$have_png"
 echo "TIFF              --with-tiff=$with_tiff        	$have_tiff"
+result_windows_font_dir='none'
+if test -n "$windows_font_dir" ; then
+  result_windows_font_dir="$windows_font_dir"
+fi
+echo "Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir"
 echo "WMF               --with-wmf=$with_wmf          	$have_wmf"
 echo "X11               --with-x=$with_x             	$have_x"
 echo "XML               --with-xml=$with_xml          	$have_xml"

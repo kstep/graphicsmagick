@@ -160,7 +160,6 @@ MPEGEncodeDelegate = @MPEGEncodeDelegate@
 MVDelegate = @MVDelegate@
 MagickSharePath = @MagickSharePath@
 MogrifyDelegate = @MogrifyDelegate@
-NOTEPADdelegate = @NOTEPADdelegate@
 OBJDUMP = @OBJDUMP@
 OLDINCLUDE_DIR = @OLDINCLUDE_DIR@
 PACKAGE = @PACKAGE@
