@@ -97,7 +97,7 @@ static unsigned int
 */
 static unsigned int IsJP2(const unsigned char *magick,const unsigned int length)
 {
-  if (length < 12)
+  if (length < 9)
     return(False);
   if (memcmp(magick+4,"\152\120\040\040\015",5) == 0)
     return(True);
@@ -176,7 +176,6 @@ static unsigned int IsJPC(const unsigned char *magick,const unsigned int length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 #if defined(HasJP2)
 static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -244,6 +243,9 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     c=ReadBlobByte(image);
   }
   (void) fclose(file);
+  /*
+    Initialize JPEG 2000 API.
+  */
   jas_init();
   (void) strcpy(image->filename,image_info->filename);
   jp2_stream=jas_stream_fopen(image->filename,ReadBinaryType);
@@ -273,6 +275,9 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     if (depth <= 8)
       image->depth=8;
   }
+  /*
+    Convert JPEG 2000 pixels.
+  */
   for (i=0; i < number_components; i++)
   {
     width=jas_image_cmptwidth(jp2_image,i);
@@ -280,12 +285,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     pixels=jas_matrix_create(height,width);
     if (pixels == (jas_matrix_t *) NULL)
       break;
-    status=jas_image_readcmpt(jp2_image,i,0,0,width,height,pixels);
-    if (status)
-      {
-        jas_matrix_destroy(pixels);
-        break;
-      }
+    (void) jas_image_readcmpt(jp2_image,i,0,0,width,height,pixels);
     for (y=0; y < (int) height; y++)
     {
       q=GetImagePixels(image,0,y,width,1);
@@ -491,6 +491,9 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   else
     CloseBlob(image);
   TransformRGBImage(image,RGBColorspace);
+  /*
+    Intialize JPEG 2000 API.
+  */
   jas_init();
   jp2_stream=jas_stream_fopen(image->filename,WriteBinaryType);
   if (jp2_stream == (jas_stream_t *) NULL)
@@ -514,7 +517,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   if (jp2_image == (jas_image_t *) NULL)
     return(False);
   /*
-    Convert pixels.
+    Convert to JPEG 2000 pixels.
   */
   for (i=0; i < number_components; i++)
   {
@@ -556,10 +559,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
         p++;
       }
     }
-    status=jas_image_writecmpt(jp2_image,i,0,0,image->columns,image->rows,pixels);
+    (void) jas_image_writecmpt(jp2_image,i,0,0,image->columns,image->rows,pixels);
     jas_matrix_destroy(pixels);
-    if (status)
-      break;
     if (image->previous == (Image *) NULL)
       MagickMonitor(SaveImageText,i,number_components);
   }
