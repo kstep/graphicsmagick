@@ -1053,8 +1053,6 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_big5;
       if (LocaleCompare(draw_info->encoding,"GB2312") == 0)
         encoding_type=ft_encoding_gb2312;
-      if (LocaleCompare(draw_info->encoding,"Latin 1") == 0)
-        encoding_type=ft_encoding_latin_1;
       if (LocaleCompare(draw_info->encoding,"Latin 2") == 0)
         encoding_type=ft_encoding_latin_2;
       if (LocaleCompare(draw_info->encoding,"None") == 0)
