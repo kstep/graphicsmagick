@@ -1169,7 +1169,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       int
         count;
 
-      count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
+      count=sscanf(image_info->density,"%ux%u",&x_resolution,&y_resolution);
       if (count != 2)
         y_resolution=x_resolution;
     }
