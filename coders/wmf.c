@@ -65,6 +65,15 @@ extern wmf_functions WmfFunctions;
 extern int currentx;
 extern int currenty;
 
+typedef struct _ImUserData
+{
+  char*    mvg;
+  Image*   image;
+} ImUserData;
+
+#define MVG_PTR ((ImUserData*)(cstruct->userdata))->mvg
+#define IMG_PTR ((ImUserData*)(cstruct->userdata))->image
+
 static int
   WmfMmHeight(CSTRUCT *),
   WmfMmWidth(CSTRUCT *),
@@ -76,6 +85,7 @@ static int
 
 static void
   ExtendMVG(CSTRUCT *cstruct, const char* buff),
+  ScribbleMVG(CSTRUCT *cstruct),
   WmfClipRect(CSTRUCT *),
 /*   WmfCopyUserData(CSTRUCT *,DC *,DC *), */
   WmfCopyXpm(CSTRUCT *,U16, U16, U16 , U16 ,U16,U16,char *,U32 ),
@@ -107,11 +117,6 @@ static void
   WmfSetPmfSize(CSTRUCT *,HMETAFILE );
 
 
-
-#define SCREEN_WIDTH_PIXELS  1280
-#define SCREEN_WIDTH_MM      433
-#define SCREEN_HEIGHT_PIXELS 1024
-#define SCREEN_HEIGHT_MM     347
 
 /* WMF Library Callbacks */
 wmf_functions WmfFunctions =
@@ -186,31 +191,70 @@ wmf_functions WmfFunctions =
 /* Extend MVG drawing primitives in cstruct userdata */
 static void ExtendMVG(CSTRUCT *cstruct, const char* buff)
 {
-  ConcatenateString((char**)&cstruct->userdata, buff);
+  ConcatenateString((char**)&MVG_PTR, buff);
+}
+/* Render and then clear MVG drawing primitives in cstruct userdata */
+static void ScribbleMVG(CSTRUCT *cstruct)
+{
+  DrawInfo*
+    draw_info;
+
+  ImageInfo*
+    image_info;
+
+  image_info=(ImageInfo*)AcquireMemory(sizeof(ImageInfo));
+  GetImageInfo(image_info);
+  draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
+  GetDrawInfo( image_info, draw_info );
+  draw_info->primitive=MVG_PTR;
+/*   puts(draw_info->primitive); */
+  DrawImage(IMG_PTR,draw_info);
+  draw_info->primitive = (char*)NULL;
+  DestroyDrawInfo(draw_info);
+  DestroyImageInfo(image_info);
+  LiberateMemory((void**)&MVG_PTR);
+  MVG_PTR=AllocateString("");
 }
 
-/* Return output height of screen in milimeters? */
+#define SCREEN_WIDTH_PIXELS 1280
+#define SCREEN_HEIGHT_PIXELS 1024
+/* Return output height of screen in millimeters */
 static int WmfMmHeight(CSTRUCT *cstruct)
 {
-  return(347);
+  double
+    y_resolution;
+
+  y_resolution=72;
+
+  if(IMG_PTR->y_resolution > 0)
+    y_resolution=IMG_PTR->y_resolution;
+
+  return(((double)SCREEN_HEIGHT_PIXELS*MM_PER_INCH)/y_resolution);
 }
 
-/* Return output width of screen in milimeters? */
 static int WmfMmWidth(CSTRUCT *cstruct)
 {
-  return(433);
+  double
+    x_resolution;
+  
+  x_resolution=72;
+
+  if(IMG_PTR->x_resolution > 0)
+    x_resolution=IMG_PTR->x_resolution;
+
+  return(((double)SCREEN_WIDTH_PIXELS*MM_PER_INCH)/x_resolution);
 }
 
 /* Return output screen height in pixels */
 static int WmfPixelHeight(CSTRUCT *cstruct)
 {
-  return(1024);
+  return(SCREEN_HEIGHT_PIXELS);
 }
 
 /* Return output screen width in pixels */
 static int WmfPixelWidth(CSTRUCT *cstruct)
 {
-  return(1280);
+  return(SCREEN_WIDTH_PIXELS);
 }
 
 /* Return initialized drawing context */
@@ -222,6 +266,7 @@ static int WmfPixelWidth(CSTRUCT *cstruct)
 /* Set rectangular clipping region */
 static void WmfClipRect(CSTRUCT *cstruct)
 {
+  /* FIXME */
   puts("WmfClipRect() not implemented");
 }
 
@@ -238,8 +283,7 @@ static void WmfCopyXpm(CSTRUCT *cstruct,
                        unsigned short dest_w, unsigned short dest_h,
                        char *filename, unsigned int dwROP)
 {
-  puts("WmfCopyXpm() not implemented");
-#if 0
+
   /* FIXME: this trivial implementation only implements pixel
      replacement and ignores ROP entirely.  More support is needed in
      ImageMagick to support setting the fill style.
@@ -254,14 +298,14 @@ static void WmfCopyXpm(CSTRUCT *cstruct,
     buff[MaxTextExtent];
 
   /* image x,y width,height filename */
-  sprintf(buff, "image %i,%i %i,%i %s\n",
+  sprintf(buff, "image Replace %i,%i %i,%i XPM:%s\n",
           (int)dest_x,
           (int)dest_y,
           (int)dest_w,
           (int)dest_h,
           filename);
   ExtendMVG(cstruct, buff);
-#endif
+  ScribbleMVG(cstruct);
 }
 
 /*
@@ -328,10 +372,10 @@ static void WmfDrawArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord,
   int
     width;
 
-  width = cstruct->dc->pen->lopnWidth;
 
   ExtendMVG(cstruct, "push graphic-context\n");
 
+  width = cstruct->dc->pen->lopnWidth;
   yend   = (NormY(wmfrecord->Parameters[0],cstruct));
   xend   = (NormX(wmfrecord->Parameters[1],cstruct));
   ystart = (NormY(wmfrecord->Parameters[2],cstruct));
@@ -340,6 +384,9 @@ static void WmfDrawArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord,
   right  = (NormX(wmfrecord->Parameters[5],cstruct));
   top    = (NormY(wmfrecord->Parameters[6],cstruct));
   left   = (NormX(wmfrecord->Parameters[7],cstruct));
+
+  printf("DrawArc: yend=%f, xend=%f, ystart=%f, xstart=%f, bottom=%f right=%f, top=%f left=%f, width=%i\n",
+         yend,xend,ystart,xstart,bottom,right,top,left,width);
 
   if (right < left) { tmp = right; right = left; left = tmp; }
   if (bottom < top) { tmp = bottom; bottom = top; top = tmp; }
@@ -797,17 +844,19 @@ static void WmfDrawSimpleArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 
 /* Draw text */
 static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
-                 U16 flags, U16 *lpDx, int x, int y)
+                        U16 flags, U16 *lpDx, int x, int y)
 {
+  /* FIXME */
   puts("WmfDrawText() not implemented");
 }
 
+/* META_FRAMEREGION */
 /* static void WmfFrameRgn(CSTRUCT *cstruct,WINEREGION *rgn,U16 width,U16 height) */
 /* { */
 /*   puts("WmfFrameRgn()"); */
 /* } */
 
-/* Extended floodfill. Fill to border color, or fill color at point. */
+/* Extended floodfill. Fill to border color, or fill color at point. (META_EXTFLOODFILL) */
 static void WmfExtFloodFill(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
   char
@@ -855,7 +904,7 @@ static void WmfFillOpaque(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
   char
     buff[MaxTextExtent];
 
-  double
+  int
     x1,
     y1,
     x2,
@@ -879,7 +928,7 @@ static void WmfFillOpaque(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
   y1 = NormY(wmfrecord->Parameters[5]+(cstruct->dc->pen->lopnWidth/2),cstruct);
   x2 = NormX(wmfrecord->Parameters[6]-(cstruct->dc->pen->lopnWidth/2),cstruct);
   y2 = NormY(wmfrecord->Parameters[7]-(cstruct->dc->pen->lopnWidth/2),cstruct);
-  sprintf(buff,"rectangle %f,%f %f,%f\n",x1,y1,x2,y2);
+  sprintf(buff,"rectangle %i,%i %i,%i\n",x1,y1,x2,y2);
   ExtendMVG(cstruct, buff);
 
   ExtendMVG(cstruct, "pop graphic-context\n");
@@ -890,7 +939,7 @@ static void WmfFillOpaque(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 /* { */
 /* } */
 
-/* Fill with color until border color */
+/* Fill with color until border color (META_FLOODFILL) */
 static void WmfFloodFill(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
   char
@@ -917,10 +966,16 @@ static void WmfFloodFill(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 
 static void WmfNoClipRect(CSTRUCT *cstruct)
 {
+  /* FIXME */
   puts("WmfNoClipRect() not implemented");
 }
 
-/* Paint rectangular region using brush color */
+/* Paint rectangular region using brush color
+  Invoked by:
+  META_FILLREGION with cstruct->dc->brush set
+  META_INVERTREGION with cstruct->dc->ROPmode set to R2_NOT
+  META_PAINTREGION 
+*/
 static void WmfPaintRgn(CSTRUCT *cstruct, WINEREGION *rgn)
 {
   /* FIXME: this is probably supposed to be drawing with texture rather than solid color */
@@ -962,6 +1017,7 @@ static void WmfParseROP(CSTRUCT *cstruct, unsigned int dwROP,
                         unsigned short x, unsigned short y,
                         unsigned short width, unsigned short height)
 {
+  /* FIXME */
   puts("WmfParseROP() not implemented");
 }
 
@@ -971,7 +1027,7 @@ static void WmfParseROP(CSTRUCT *cstruct, unsigned int dwROP,
 /*   puts("WmfRestoreUserData()"); */
 /* } */
 
-/* Set pixel to specified color */
+/* Set pixel to specified color (META_SETPIXEL) */
 static void WmfSetPixel(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
   char
@@ -988,9 +1044,9 @@ static void WmfSetPixel(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
   ExtendMVG(cstruct, buff);
 
   /* Draw point */
-  sprintf(buff, "point %f,%f\n",
-          (float)NormX(wmfrecord->Parameters[3],cstruct),
-          (float)NormY(wmfrecord->Parameters[2],cstruct));
+  sprintf(buff, "point %i,%i\n",
+          (int)NormX(wmfrecord->Parameters[3],cstruct),
+          (int)NormY(wmfrecord->Parameters[2],cstruct));
   ExtendMVG(cstruct, buff);
 
   ExtendMVG(cstruct, "pop graphic-context\n");
@@ -999,23 +1055,36 @@ static void WmfSetPixel(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 /* Set scaled output size */
 static void WmfSetPmfSize(CSTRUCT *cstruct, HMETAFILE file)
 {
-  float pixperin;
+/*   float pixperin; */
 
-  pixperin = ((float)SCREEN_WIDTH_PIXELS)/(SCREEN_WIDTH_MM/MM_PER_INCH);
-  cstruct->xpixeling= file->pmh->Inch/pixperin;
-  cstruct->realwidth = (abs(file->pmh->Right-file->pmh->Left)/(float)file->pmh->Inch)*pixperin;
-  pixperin = ((float)SCREEN_HEIGHT_PIXELS)/(SCREEN_HEIGHT_MM/MM_PER_INCH);
-  cstruct->ypixeling= file->pmh->Inch/pixperin;
-  cstruct->realheight = (abs(file->pmh->Bottom-file->pmh->Top)/(float)file->pmh->Inch)*pixperin;
+  double
+    x_resolution,
+    y_resolution;
+  
+  x_resolution=72;
+  y_resolution=72;
+
+  if(IMG_PTR->x_resolution > 0)
+    x_resolution=IMG_PTR->x_resolution;
+
+  if(IMG_PTR->y_resolution > 0)
+    y_resolution=IMG_PTR->y_resolution;
+
+  cstruct->xpixeling= file->pmh->Inch/x_resolution;
+  cstruct->realwidth = floor(((double)x_resolution*file->pmh->Right-file->pmh->Left)/file->pmh->Inch);
+  cstruct->ypixeling= file->pmh->Inch/y_resolution;
+  cstruct->realheight = floor(((double)y_resolution*file->pmh->Bottom-file->pmh->Top)/file->pmh->Inch);
 }
 
 static void WmfSetFillStyle(CSTRUCT *cstruct, LOGBRUSH *brush, DC *currentDC)
 {
+  /* FIXME */
   puts("WmfSetFillStyle() not implemented");
 }
 
 static void WmfSetPenStyle(CSTRUCT *cstruct, LOGPEN *pen, DC *currentDC)
 {
+  /* FIXME */
   puts("WmfSetPenStyle() not implemented");
 }
 
@@ -1024,8 +1093,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CSTRUCT*
     cstruct;
 
-  DrawInfo*
-    draw_info;
 
   HMETAFILE 
     metafile;
@@ -1053,11 +1120,15 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if(cstruct == (CSTRUCT*)NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   memset((void*)cstruct,0,sizeof(CSTRUCT));
-  wmfinit(cstruct);
-  (char*)cstruct->userdata=AllocateString("");
-  if((char*)cstruct->userdata == (char*)NULL)
+  wmfinit(cstruct); /* Simply initializes realwidth & realheight */
+  cstruct->userdata=(void*)AcquireMemory(sizeof(ImUserData));
+  if(cstruct->userdata == (void*)NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  
+  MVG_PTR=AllocateString("");
+  if(MVG_PTR == NULL)
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+  IMG_PTR=image;
+
   /* Open metafile */
   strcpy(filename,image_info->filename);
   {
@@ -1132,6 +1203,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           LiberateMemory((void**)&(metafile));
 
           /* Destroy cstruct */
+          LiberateMemory((void**)&MVG_PTR);
           LiberateMemory((void**)&(cstruct->userdata));
           LiberateMemory((void**)&(cstruct->dc));
           LiberateMemory((void**)&(cstruct));
@@ -1143,16 +1215,11 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
 
       /* Scribble on canvas image */
+      IMG_PTR=image;
       cstruct->preparse = 0;
       PlayMetaFile((void *)cstruct,metafile,1,NULL);
 
-      draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
-      GetDrawInfo( local_info, draw_info );
-      draw_info->primitive=(char*)cstruct->userdata;
-      /* puts(draw_info->primitive); */
-      DrawImage(image,draw_info);
-      draw_info->primitive = (char*)NULL;
-      DestroyDrawInfo(draw_info);
+      ScribbleMVG(cstruct);
       DestroyImageInfo(local_info);
     }
 
@@ -1171,6 +1238,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void**)&(metafile));
 
   /* Destroy cstruct handle */
+  LiberateMemory((void**)&MVG_PTR);
   LiberateMemory((void**)&(cstruct->userdata));
   LiberateMemory((void**)&(cstruct->dc));
   LiberateMemory((void**)&(cstruct));
