@@ -1572,7 +1572,7 @@ static unsigned int ModifyCache(Image *image)
 %
 %  The format of the OpenCache() method is:
 %
-%      unsigned int OpenCache(Image *image)
+%      unsigned int OpenCache(Image *image,const MapMode mode)
 %
 %  A description of each parameter follows:
 %
@@ -1580,6 +1580,8 @@ static unsigned int ModifyCache(Image *image)
 %      successfully otherwise False.
 %
 %    o image: The image.
+%
+%    o mode: ReadMode, WriteMode, or IOMode.
 %
 %
 */
@@ -1616,7 +1618,7 @@ static void CacheSignalHandler(int status)
 }
 #endif
 
-MagickExport unsigned int OpenCache(Image *image)
+MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 {
   CacheInfo
     *cache_info;
@@ -1740,7 +1742,25 @@ MagickExport unsigned int OpenCache(Image *image)
   */
   if (*cache_info->cache_filename == '\0')
     TemporaryFilename(cache_info->cache_filename);
-  file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY,0777);
+  switch (mode)
+  {
+    case ReadMode:
+    {
+      file=open(cache_info->cache_filename,O_RDONLY | O_BINARY,0777);
+      break;
+    }
+    case WriteMode:
+    {
+      file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY,0777);
+      break;
+    }
+    case IOMode:
+    default:
+    {
+      file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY,0777);
+      break;
+    }
+  }
   if (file == -1)
     ThrowBinaryException(CacheWarning,"Unable to open cache",image->filename);
   if (!ExtendCache(file,cache_info->offset+cache_info->length))
@@ -1754,8 +1774,8 @@ MagickExport unsigned int OpenCache(Image *image)
   cache_info->type=DiskCache;
   if (cache_info->length == (size_t) cache_info->length)
     {
-      pixels=(PixelPacket *) MapBlob(file,IOMode,cache_info->offset,
-        cache_info->length);
+      pixels=(PixelPacket *)
+        MapBlob(file,mode,cache_info->offset,cache_info->length);
       if (pixels != (PixelPacket *) NULL)
         {
           /*
@@ -1860,7 +1880,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
       (void) strncpy(cache_info->cache_filename,filename,MaxTextExtent-1);
       cache_info->type=DiskCache;
       cache_info->offset=(*offset);
-      if (!OpenCache(image))
+      if (!OpenCache(image,ReadMode))
         return(False);
       (void) ReferenceCache(cache_info);
       *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
@@ -1876,7 +1896,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   (void) strncpy(cache_info->cache_filename,filename,MaxTextExtent-1);
   cache_info->type=DiskCache;
   cache_info->offset=(*offset);
-  if (!OpenCache(clone_image))
+  if (!OpenCache(clone_image,IOMode))
     return(False);
   for (y=0; y < (long) image->rows; y++)
   {
@@ -2581,7 +2601,7 @@ static unsigned int SyncCache(Image *image)
   assert(cache_info->signature == MagickSignature);
   if ((image->storage_class != cache_info->storage_class) ||
       (image->colorspace != cache_info->colorspace))
-    if (!OpenCache(image))
+    if (!OpenCache(image,IOMode))
       return(False);
   return(True);
 }
