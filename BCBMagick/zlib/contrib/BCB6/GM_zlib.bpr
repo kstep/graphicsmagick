@@ -72,8 +72,8 @@
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
-MinorVer=1
-Release=4
+MinorVer=2
+Release=1
 Build=1
 Debug=0
 PreRelease=0

@@ -5,7 +5,7 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="libMagick.lib"/>
     <OBJFILES value="..\filters\analyze.obj animate.obj annotate.obj attribute.obj blob.obj 
-      cache.obj cache_view.obj color.obj command.obj composite.obj compress.obj 
+      cache.obj cache_view.obj channel.obj color.obj command.obj composite.obj compress.obj 
       constitute.obj decorate.obj delegate.obj deprecate.obj display.obj 
       draw.obj effect.obj enhance.obj error.obj fx.obj gem.obj image.obj list.obj 
       locale.obj log.obj magic.obj magick.obj map.obj memory.obj module.obj 
@@ -55,6 +55,7 @@
       <FILE FILENAME="blob.c" FORMNAME="" UNITNAME="blob.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="cache.c" FORMNAME="" UNITNAME="cache.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="cache_view.c" FORMNAME="" UNITNAME="cache_view.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="channel.c" FORMNAME="" UNITNAME="channel.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="color.c" FORMNAME="" UNITNAME="color.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="command.c" FORMNAME="" UNITNAME="command.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="composite.c" FORMNAME="" UNITNAME="composite.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

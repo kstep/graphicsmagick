@@ -1,5 +1,14 @@
+2004-07-20  Mike Chiarappa  <mikechiarappa@libero.it>
+	* BCBMagick\magick\GM_magick.bpr: Updated to reflect changes since last update.
+	* BCBMagick\magick\libMagick.bpr: Updated to reflect changes since last update.
+	* BCBMagick\bzlib\GM_bzlib.bpr: Updated version number. 
+	* BCBMagick\lcms\BCB6\GM_lcms.bpr: Updated version number.  
+	* BCBMagick\Magickpp\lib\GM_magickpp.bpr: Updated version number.  
+	* BCBMagick\ttf\GM_ttf.bpr: Updated version number.  
+	* BCBMagick\zlib\GM_zlib.bpr: Updated version number.  
+	* BCBMagick now support full LZW encoding (read/write).
+	
 2004-07-24  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
-
 	* tiff/libtiff/tif_lzw.c: Replace with version which supports LZW encoding.
 	* magick/channel.c: New source file.
 	(ExportImageChannel): New function to export an image channel.
