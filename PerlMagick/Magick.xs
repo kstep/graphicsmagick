@@ -471,8 +471,8 @@ static struct
       {"skewY", DoubleReference} } },
     { "Compare", { {"image", ImageReference} } },
     { "AdaptiveThreshold", { {"geometry", StringReference},
-      {"radius", DoubleReference}, {"sigma", DoubleReference},
-      {"offset", DoubleReference} } },
+      {"width", IntegerReference}, {"height", IntegerReference},
+      {"offset", IntegerReference} } },
   };
 
 #ifdef START_MY_CXT
@@ -5988,28 +5988,28 @@ Mogrify(ref,...)
         }
         case 77:  /* AdaptiveThreshold */
         {
-          double
+          unsigned long
+            height,
             offset,
-            radius,
-            sigma;
+            width;
 
-          radius=0.0;
-          sigma=1.0;
-          offset=0.0;
+          height=3;
+          width=3;
+          offset=0;
           if (attribute_flag[1])
-            radius=argument_list[1].double_reference;
+            width=argument_list[1].int_reference;
           if (attribute_flag[2])
-            sigma=argument_list[2].double_reference;
+            height=argument_list[2].int_reference;
           if (attribute_flag[3])
-            offset=argument_list[3].double_reference;
+            offset=argument_list[3].int_reference;;
           if (attribute_flag[0])
             {
-              (void) sscanf(argument_list[0].string_reference,"%lfx%lf%lf",
-                &radius,&sigma,&offset);
+              (void) sscanf(argument_list[0].string_reference,"%lux%lu%lu",
+                &width,&height,&offset);
                if (strchr(argument_list[0].string_reference,'%') != (char *) NULL)
                  offset*=(double) MaxRGB/100.0;
             }
-          image=AdaptiveThresholdImage(image,radius,sigma,offset,&exception);
+          image=AdaptiveThresholdImage(image,width,height,offset,&exception);
           break;
         }
       }

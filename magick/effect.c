@@ -76,25 +76,27 @@
 %
 %  The format of the AdaptiveThresholdImage method is:
 %
-%      Image *AdaptiveThresholdImage(Image *image,const double radius,
-%        const double sigma,const double offset,ExceptionInfo *exception)
+%      Image *AdaptiveThresholdImage(Image *image,const unsigned long width,
+%        const unsigned long height,const unsigned long unsigned long,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
-%    o radius: The radius of the Gaussian, in pixels, not counting the center
-%      pixel.
+%    o width: The width of the local neighborhood.
 %
-%    o sigma: The standard deviation of the Gaussian, in pixels.
+%    o height: The height of the local neighborhood.
+%
+%    o offset: The mean offset.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
 MagickExport Image *AdaptiveThresholdImage(const Image *image,
-  const double radius,const double sigma,const double offset,
-  ExceptionInfo *exception)
+  const unsigned long width,const unsigned long height,
+	const unsigned long offset,ExceptionInfo *exception)
 {
 #define ThresholdImageText  "  Threshold the image...  "
 
@@ -107,7 +109,6 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     *threshold_image;
 
   long
-    width,
     y;
 
   register const PixelPacket
@@ -129,8 +130,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth(radius,sigma);
-  if (((long) image->columns < width) || ((long) image->rows < width))
+  if (((long) image->columns < width) || ((long) image->rows < height))
     ThrowImageException(OptionError,"UnableToThresholdImage",
       "ImageSmallerThanRadius");
   threshold_image=CloneImage(image,0,0,True,exception);
@@ -143,7 +143,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
+    p=AcquireImagePixels(image,-width/2,y-height/2,image->columns+width,height,
       exception);
     q=SetImagePixels(threshold_image,0,y,threshold_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -152,7 +152,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     {
       r=p;
       aggregate=zero;
-      for (v=0; v < width; v++)
+      for (v=0; v < height; v++)
       {
         for (u=0; u < width; u++)
         {
@@ -163,10 +163,10 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         }
         r+=image->columns+width;
       }
-      mean.red=aggregate.red/(width*width)+offset;
-      mean.green=aggregate.green/(width*width)+offset;
-      mean.blue=aggregate.blue/(width*width)+offset;
-      mean.opacity=aggregate.opacity/(width*width)+offset;
+      mean.red=aggregate.red/(width*height)+offset;
+      mean.green=aggregate.green/(width*height)+offset;
+      mean.blue=aggregate.blue/(width*height)+offset;
+      mean.opacity=aggregate.opacity/(width*height)+offset;
       q->red=q->red <= mean.red ? 0 : MaxRGB;
       q->green=q->green <= mean.green ? 0 : MaxRGB;
       q->blue=q->blue <= mean.blue ? 0 : MaxRGB;
@@ -300,7 +300,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
 %
 */
 
-static void BlurScanline(const double *kernel,const int width,
+static void BlurScanline(const double *kernel,const unsigned long width,
   const PixelPacket *source,PixelPacket *destination,
   const unsigned long columns)
 {
@@ -322,7 +322,7 @@ static void BlurScanline(const double *kernel,const int width,
     x;
 
   (void) memset(&zero,0,sizeof(DoublePixelPacket));
-  if ((unsigned long) width > columns)
+  if (width > columns)
     {
       for (x=0; x < (long) columns; x++)
       {
@@ -420,7 +420,7 @@ static void BlurScanline(const double *kernel,const int width,
   }
 }
 
-static int GetBlurKernel(int width,const double sigma,double **kernel)
+static int GetBlurKernel(unsigned long width,const double sigma,double **kernel)
 {
 #define KernelRank 3
 
