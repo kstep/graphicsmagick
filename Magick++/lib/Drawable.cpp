@@ -284,12 +284,10 @@ Magick::DrawableFont::DrawableFont ( const std::string &font_ )
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "font \""
+  buffstr << "font "
           << font_
-          << "\""
           << ends;
   _primitive.assign( buffer );
-  cout << "Primitive: \"" << _primitive << "\"" << endl;
 }
 
 // Specify text positioning gravity
