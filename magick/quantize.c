@@ -376,10 +376,10 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   */
   if (image->colormap == (PixelPacket *) NULL)
     image->colormap=(PixelPacket *)
-      AcquireMemory(cube_info->colors*sizeof(PixelPacket));
+      AcquireMemory((cube_info->colors+1)*sizeof(PixelPacket));
   else
     ReacquireMemory((void **) &image->colormap,
-      cube_info->colors*sizeof(PixelPacket));
+      (cube_info->colors+1)*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to quantize image",
       "Memory allocation failed");
