@@ -103,6 +103,29 @@ int main( int /*argc*/, char **argv)
 	}
     }
 
+    // Test ColorGray
+    {
+#undef MagickEpsilon
+#define MagickEpsilon  1.0e-12
+      double resolution = 1.0/MaxRGB;
+      double max_error = resolution + MagickEpsilon;
+
+      for( double value = 0; value < 1.0 + MagickEpsilon; value += resolution )
+        {
+          ColorGray gray(value);
+          if ( gray.shade() < value - max_error || gray.shade() > value + max_error )
+            {
+              ++failures;
+              cout << "Line: " << __LINE__
+                   << " shade is "
+                   << gray.shade()
+                   << " rather than nominal"
+                   << value
+                   << endl;
+            }
+        }
+    }
+
   }
   catch( Exception &error_ )
     {
