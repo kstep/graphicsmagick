@@ -49,7 +49,7 @@
 %
 %  The conjure program syntax is:
 %
-%    Usage: conjure [ -option value ... ] file [ file ... ]
+%    Usage: conjure [ -option value ... ] file [ file ... ] file
 %
 %
 */
@@ -97,7 +97,7 @@ static void Usage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [ -option value ... ] file [ file ... ]\n",
+  (void) printf("Usage: %.1024s [ -option value ... ] file [ file ... ] file\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
@@ -120,14 +120,17 @@ static void Usage(void)
 */
 int main(int argc,char **argv)
 {
+  char
+    *option;
+
   ExceptionInfo
-	  exception;
+    exception;
 
   Image
-	  *image;
+    *image;
 
   ImageInfo
-	  *image_info;
+    *image_info;
 
   register int
     i;
@@ -136,7 +139,7 @@ int main(int argc,char **argv)
     status;
 
   /*
-    Parse command-line arguments.
+    Set defaults.
   */
   ReadCommandlLine(argc,&argv);
   InitializeMagick(*argv);
@@ -146,21 +149,22 @@ int main(int argc,char **argv)
   if (argc < 2)
     Usage();
   GetExceptionInfo(&exception);
-	image_info=CloneImageInfo((ImageInfo *) NULL);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
   image_info->attributes=AllocateImage(image_info);
-  for (i=1; i < (argc-1); i+=2)
-  {
-    if (*argv[i] != '-') 
-      break;
-    status=SetImageAttribute(image_info->attributes,argv[i]+1,argv[i+1]);
-    if (status == False)
-      MagickError(ResourceLimitError,"Unable to persist key",argv[i]);
-  }
   /*
     Interpret MSL script.
   */
-  for ( ; i < argc; i++)
+  for (i=1; i < argc; i++)
   {
+    option=argv[i];
+    if ((strlen(option) < 2) || ((*option != '-') && (*option != '+')))
+      {
+        status=SetImageAttribute(image_info->attributes,option+1,argv[i+1]);
+        if (status == False)
+          MagickError(ResourceLimitError,"Unable to persist key",option);
+        i++;
+        continue;
+      }
     status=SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
     status=SetImageAttribute(image_info->attributes,"filename",argv[i]);
     if (status == False)
@@ -172,9 +176,9 @@ int main(int argc,char **argv)
     if (image != (Image *) NULL)
       DestroyImages(image);
   }
-	DestroyImageInfo(image_info);
-	DestroyMagick();
-	LiberateMemory((void **) &argv);
-	Exit(0);
-	return(False);
+  DestroyImageInfo(image_info);
+  DestroyMagick();
+  LiberateMemory((void **) &argv);
+  Exit(0);
+  return(False);
 }
