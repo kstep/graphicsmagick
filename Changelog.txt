@@ -1,2 +1,2 @@
 2001-09-07  Cristy  <cristy@mystic.es.dupont.com>
-	* DispatchImage() now properly handles grayscale images
+	* DispatchImage() now properly handles grayscale images.
