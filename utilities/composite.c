@@ -233,9 +233,6 @@ int main(int argc,char **argv)
     stereo,
     tile;
 
-  ImageAttribute
-    *attribute;
-
   /*
     Initialize command line arguments.
   */
@@ -1082,25 +1079,11 @@ int main(int argc,char **argv)
   CatchImageException(combine_image);
   if (image_info->verbose)
     DescribeImage(combine_image,stderr,False);
-  attribute=GetImageAttribute(image,"ReceiveMode");
-  if ((attribute != (ImageAttribute *) NULL) &&
-      (LocaleCompare("XTRNIMAGE",attribute->value) == 0))
-    {
-      DestroyImageInfo(image_info);
-      return(True);
-    }
-  attribute=GetImageAttribute(image,"TransmitMode");
-  if ((attribute != (ImageAttribute *) NULL) &&
-      (LocaleCompare("XTRNIMAGE",attribute->value) == 0))
-    {
-      DestroyImageInfo(image_info);
-      return(True);
-    }
   DestroyImages(combine_image);
   DestroyImageInfo(image_info);
-  DestroyMagick();
   if (doexit == False)
     return(True);
+  DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(0);
   return(False);
