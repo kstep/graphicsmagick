@@ -324,7 +324,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     exception);
   if (magnify_image == (Image *) NULL)
     return((Image *) NULL);
-  magnify_image->storage_class=DirectClass;
+  SetImageType(magnify_image,TrueColorType);
   /*
     Allocate image buffer and scanline buffer for 4 rows of the image.
   */
@@ -507,7 +507,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
   minify_image=CloneImage(image,image->columns/2,image->rows/2,False,exception);
   if (minify_image == (Image *) NULL)
     return((Image *) NULL);
-  minify_image->storage_class=DirectClass;
+  SetImageType(minify_image,TrueColorType);
   /*
     Reduce each row.
   */
@@ -799,7 +799,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
   scale=blur*Max(1.0/x_factor,1.0);
   support=Max(scale*filter_info->support,0.5);
   if (support > 0.5)
-    destination->storage_class=DirectClass;
+    SetImageType(destination,TrueColorType);
   else
     {
       /*
@@ -936,7 +936,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   scale=blur*Max(1.0/y_factor,1.0);
   support=Max(scale*filter_info->support,0.5);
   if (support > 0.5)
-    destination->storage_class=DirectClass;
+    SetImageType(destination,TrueColorType);
   else
     {
       /*
@@ -1374,7 +1374,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   scale_image=CloneImage(image,columns,rows,False,exception);
   if (scale_image == (Image *) NULL)
     return((Image *) NULL);
-  scale_image->storage_class=DirectClass;
+  SetImageType(scale_image,TrueColorType);
   /*
     Allocate memory.
   */

@@ -647,7 +647,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->storage_class == TrueColor) ||
         (visual_info->storage_class == DirectColor))
-      images[scene]->storage_class=DirectClass;
+      SetImageType(images[scene],TrueColorType);
     if ((display_image->columns < images[scene]->columns) &&
         (display_image->rows < images[scene]->rows))
       display_image=images[scene];
@@ -655,7 +655,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   if ((resource_info->map_type != (char *) NULL) ||
       (visual_info->storage_class == TrueColor) ||
       (visual_info->storage_class == DirectColor))
-    display_image->storage_class=DirectClass;
+    SetImageType(display_image,TrueColorType);
   XMakeStandardColormap(display,visual_info,&resources,display_image,map_info,
     &pixel);
   /*
@@ -1257,7 +1257,7 @@ MagickExport Image *XAnimateImages(Display *display,
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->storage_class == TrueColor) ||
         (visual_info->storage_class == DirectColor))
-      images[scene]->storage_class=DirectClass;
+      SetImageType(images[scene],TrueColorType);
     if ((display_image->columns < images[scene]->columns) &&
         (display_image->rows < images[scene]->rows))
       display_image=images[scene];

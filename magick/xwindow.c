@@ -2033,7 +2033,7 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
   y=0;
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
   draw_image->background_color=GetOnePixel(image,x,y);
-  draw_image->matte=True;
+  SetImageType(draw_image,TrueColorMatteType);
   for (y=0; y < (long) draw_image->rows; y++)
   {
     q=SetImagePixels(draw_image,0,y,draw_image->columns,1);
@@ -7115,7 +7115,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               }
             XGetPixelPacket(display,visual_info,map_info,resource_info,image,
               pixel);
-            image->storage_class=DirectClass;
+            SetImageType(image,TrueColorType);
             DestroyImage(map_image);
           }
       if (resource_info->debug)

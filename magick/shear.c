@@ -879,7 +879,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   if (rotate_image == (Image *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
       "Memory allocation failed");
-  rotate_image->storage_class=DirectClass;
+  SetImageType(rotate_image,TrueColorType);
   /*
     Rotate the image.
   */
@@ -997,7 +997,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     ThrowImageException(ResourceLimitWarning,"Unable to shear image",
       "Memory allocation failed");
   DestroyImage(integral_image);
-  shear_image->storage_class=DirectClass;
+  SetImageType(shear_image,TrueColorType);
   /*
     Shear the image.
   */

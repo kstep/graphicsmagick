@@ -1473,7 +1473,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             pixel=GetImagePixels(image,x % image->columns,y % image->rows,1,1);
             if (pixel == (PixelPacket *) NULL)
               break;
-            image->storage_class=DirectClass;
+            SetImageType(image,TrueColorType);
             if (strchr(SvPV(sval,na),',') == 0)
               QueryColorDatabase(SvPV(sval,na),pixel);
             else

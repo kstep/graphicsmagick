@@ -2004,7 +2004,7 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Update color information using point algorithm.
             */
-            (*image)->storage_class=DirectClass;
+            SetImageType(*image,TrueColorType);
             q=GetImagePixels(*image,x_offset,y_offset,1,1);
             if (q == (PixelPacket *) NULL)
               break;
@@ -2090,7 +2090,7 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Update color information using reset algorithm.
             */
-            (*image)->storage_class=DirectClass;
+            SetImageType(*image,TrueColorType);
             for (y=0; y < (long) (*image)->rows; y++)
             {
               q=SetImagePixels(*image,0,y,(*image)->columns,1);
@@ -2631,8 +2631,7 @@ static unsigned int XCompositeImage(Display *display,
       */
       SetImageOpacity(composite_image,OpaqueOpacity);
       opacity=(Quantum) (DownScale(MaxRGB)-(DownScale(MaxRGB)*blend)/100);
-      image->storage_class=DirectClass;
-      image->matte=True;
+      SetImageType(image,TrueColorMatteType);
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
@@ -3564,9 +3563,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   /*
     Cut image.
   */
-  image->storage_class=DirectClass;
-  if (!image->matte)
-    SetImageOpacity(image,OpaqueOpacity);
+  SetImageType(image,TrueColorMatteType);
   for (y=0; y < (long) crop_info.height; y++)
   {
     q=GetImagePixels(image,crop_info.x,y+crop_info.y,crop_info.width,1);
@@ -7756,9 +7753,7 @@ static unsigned int XMatteEditImage(Display *display,
         if ((x_offset >= (int) (*image)->columns) ||
             (y_offset >= (int) (*image)->rows))
           continue;
-        (*image)->storage_class=DirectClass;
-        if (!(*image)->matte)
-          SetImageOpacity(*image,OpaqueOpacity);
+        SetImageType(*image,TrueColorMatteType);
         switch (method)
         {
           case PointMethod:
@@ -7824,7 +7819,7 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Update matte information using reset algorithm.
             */
-            (*image)->storage_class=DirectClass;
+            SetImageType(*image,TrueColorType);
             for (y=0; y < (long) (*image)->rows; y++)
             {
               q=SetImagePixels(*image,0,y,(*image)->columns,1);

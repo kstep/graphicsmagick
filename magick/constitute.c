@@ -155,7 +155,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
       case 'a':
       case 'A':
       {
-        image->matte=True;
+        SetImageType(image,TrueColorMatteType);
         break;
       }
       case 'c':

@@ -206,7 +206,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     exception);
   if (frame_image == (Image *) NULL)
     return(False);
-  frame_image->storage_class=DirectClass;
+  SetImageType(frame_image,TrueColorType);
   /*
     Initialize 3D effects color.
   */
@@ -443,7 +443,7 @@ MagickExport unsigned int RaiseImage(Image *image,
       background=MaxRGB;
     }
   i=0;
-  image->storage_class=DirectClass;
+  SetImageType(image,TrueColorType);
   for (y=0; y < (long) raise_info->height; y++)
   {
     q=GetImagePixels(image,0,i++,image->columns,1);

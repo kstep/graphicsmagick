@@ -1177,7 +1177,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
             ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
               "failed to create color transform");
           if (image->colorspace == CMYKColorspace)
-            image->matte=True;
+            SetImageType(image,ColorSeparationMatteType);
           for (y=0; y < (long) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);

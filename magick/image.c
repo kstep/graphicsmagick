@@ -494,7 +494,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
       for (next=image; next != (Image *) NULL; next=next->next)
       {
         if (next->storage_class == DirectClass)
-          append_image->storage_class=DirectClass;
+          SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
         x+=next->columns;
         MagickMonitor(AppendImageText,scene++,GetNumberScenes(image));
@@ -512,7 +512,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
       for (next=image; next != (Image *) NULL; next=next->next)
       {
         if (next->storage_class == DirectClass)
-          append_image->storage_class=DirectClass;
+          SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,0,y);
         y+=next->rows;
         MagickMonitor(AppendImageText,scene,GetNumberScenes(image));
@@ -544,7 +544,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
             }
       }
       if (!global_colormap)
-        append_image->storage_class=DirectClass;
+        SetImageType(append_image,TrueColorType);
     }
   return(append_image);
 }
@@ -652,7 +652,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
       LiberateMemory((void **) &sum);
       return((Image *) NULL);
     }
-  average_image->storage_class=DirectClass;
+  SetImageType(average_image,TrueColorType);
   /*
     Compute sum over each pixel color component.
   */
@@ -751,8 +751,7 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
   /*
     Channel DirectClass packets.
   */
-  image->storage_class=DirectClass;
-  image->matte=False;
+  SetImageType(image,TrueColorMatteType);
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
@@ -1127,7 +1126,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   assert(image->signature == MagickSignature);
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
-  image->storage_class=DirectClass;
+  SetImageType(image,TrueColorType);
   switch (compose)
   {
     case DisplaceCompositeOp:
@@ -3431,7 +3430,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (border_image == (Image *) NULL)
               break;
             DestroyImage(*image);
-            border_image->storage_class=DirectClass;
+            SetImageType(border_image,TrueColorType);
             *image=border_image;
             continue;
           }
@@ -3897,7 +3896,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (frame_image == (Image *) NULL)
               break;
             DestroyImage(*image);
-            frame_image->storage_class=DirectClass;
+            SetImageType(frame_image,TrueColorType);
             *image=frame_image;
             continue;
           }
@@ -4572,7 +4571,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (shear_image == (Image *) NULL)
               break;
             DestroyImage(*image);
-            shear_image->storage_class=DirectClass;
+            SetImageType(shear_image,TrueColorType);
             *image=shear_image;
             continue;
           }
@@ -5243,7 +5242,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       /*
         Convert RGB to CMYK colorspace.
       */
-      image->storage_class=DirectClass;
+      SetImageType(image,TrueColorType);
       image->colorspace=CMYKColorspace;
       for (y=0; y < (long) image->rows; y++)
       {
@@ -5695,7 +5694,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
   if (opacity != OpaqueOpacity)
     background_color.opacity=opacity;
   if (background_color.opacity != OpaqueOpacity)
-    image->matte=True;
+    SetImageType(image,TrueColorMatteType);
   for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
@@ -5907,7 +5906,7 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
       }
       return;
     }
-  image->matte=True;
+  SetImageType(image,TrueColorMatteType);
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);

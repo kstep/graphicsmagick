@@ -853,7 +853,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
       /*
         Render fill color.
       */
-      annotate_image->matte=True;
+      SetImageType(annotate_image,TrueColorMatteType);
       fill_color=draw_info->fill;
       for (y=0; y < (long) annotate_image->rows; y++)
       {
@@ -1190,7 +1190,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           (FT_Vector *) NULL,True);
         if (status != False)
           continue;
-        image->storage_class=DirectClass;
+        SetImageType(image,TrueColorType);
         bitmap=(FT_BitmapGlyph) glyph.image;
         point.x=offset->x+bitmap->left;
         point.y=offset->y-bitmap->top;

@@ -331,7 +331,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   /*
     Push initial segment on stack.
   */
-  image->storage_class=DirectClass;
+  SetImageType(image,TrueColorType);
   x=x_offset;
   y=y_offset;
   start=0;
@@ -3431,7 +3431,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       DrawInfo
         *clone_info;
 
-      image->storage_class=DirectClass;
+      SetImageType(image,TrueColorType);
       if (draw_info->debug)
         PrintPrimitiveInfo(primitive_info);
       scale=ExpandAffine(&draw_info->affine);
@@ -3754,9 +3754,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   /*
     Push initial segment on stack.
   */
-  image->storage_class=DirectClass;
-  if (!image->matte)
-    SetImageOpacity(image,OpaqueOpacity);
+  SetImageType(image,TrueColorMatteType);
   x=x_offset;
   y=y_offset;
   start=0;
