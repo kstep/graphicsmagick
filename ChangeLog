@@ -1,3 +1,7 @@
+2002-07-17  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+  * PPM files were being written in P4 or P5 format if all pixels were gray.
+    This is correct behavior for the PNM format but not for the PPM format.
+
 2002-07-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Load font information from Windows rather than depending on hand
     edited type-windows.mgk file. Still not incorporated in Cygwin build.
