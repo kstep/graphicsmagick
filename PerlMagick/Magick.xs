@@ -5381,7 +5381,8 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0])
             image->fuzz=argument_list[0].double_reference;
-          TransformImage(image,"0x0",(char *) NULL);
+          TransformImage(&image,"0x0",(char *) NULL);
+          break;
         }
         case 60:  /* Wave */
         {
