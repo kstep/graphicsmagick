@@ -9207,20 +9207,39 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleCompare("units",option+1) == 0)
           {
             ResolutionType
-              resolution;
+              resolution_type = UndefinedResolution;
 
             if (*option == '+')
               {
-                (*image)->units=UndefinedResolution;
-                continue;
               }
-            option=argv[++i];
-            resolution=UndefinedResolution;
-            if (LocaleCompare("PixelsPerInch",option) == 0)
-              resolution=PixelsPerInchResolution;
-            if (LocaleCompare("PixelsPerCentimeter",option) == 0)
-              resolution=PixelsPerCentimeterResolution;
-            (*image)->units=resolution;
+            else if (*option == '-')
+              {
+                option=argv[++i];
+                if (LocaleCompare("PixelsPerInch",option) == 0)
+                  resolution_type=PixelsPerInchResolution;
+                if (LocaleCompare("PixelsPerCentimeter",option) == 0)
+                  resolution_type=PixelsPerCentimeterResolution;
+              }
+
+            if ( (resolution_type == PixelsPerInchResolution) &&
+                 ((*image)->units == PixelsPerCentimeterResolution) )
+              {
+                (*image)->x_resolution /= 2.54;
+                (*image)->y_resolution /= 2.54;
+              }
+            else if ( (resolution_type == PixelsPerCentimeterResolution) &&
+                      ((*image)->units == PixelsPerInchResolution) )
+              {
+                (*image)->x_resolution *= 2.54;
+                (*image)->y_resolution *= 2.54;
+              }
+            else if ( resolution_type == UndefinedResolution )
+              {
+                (*image)->x_resolution = 0.0;
+                (*image)->y_resolution = 0.0;
+              }
+            
+            (*image)->units=resolution_type;
             continue;
           }
         if (LocaleCompare("unsharp",option+1) == 0)
