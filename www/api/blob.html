@@ -71,7 +71,7 @@
 <H2><A NAME="attachblob">AttachBlob</A></H2>
 <P>Method AttachBlob attaches a blob to the BlobInfo structure.</P>
 <P>The format of the AttachBlob method is:</P>
-<blockquote>void AttachBlob ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info, const void *blob, const size_t length ); </blockquote><P>
+<blockquote>void AttachBlob BlobInfo *blob_info, const void *blob, const size_t length ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG><A NAME="item_o_blob_info%3A">blob_info:</A></STRONG><BR>
@@ -135,7 +135,7 @@ Return any errors or warnings in this structure.
 <P>Method CloneBlobInfo makes a duplicate of the given blob info structure, or if blob info is 
 <FONT SIZE=-1>NULL,</FONT> a new one.</P>
 <P>The format of the CloneBlobInfo method is:</P>
-<blockquote><A HREF="types/BlobInfo.html">BlobInfo</A> *CloneBlobInfo ( const <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info ); </blockquote><P>
+<blockquote>BlobInfo *CloneBlobInfo ( const BlobInfo *blob_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG><A NAME="item_o_clone_info%3A">clone_info:</A></STRONG><BR>
@@ -149,8 +149,8 @@ a structure of type info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyblobinfo">DestroyBlobInfo</A></H2>
-<blockquote>DestroyBlobInfo() deallocates memory associated with an <A HREF="types/BlobInfo.html">BlobInfo</A> structure. </blockquote><P>The format of the DestroyBlobInfo method is:</P>
-<blockquote>void DestroyBlobInfo ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob ); </blockquote><P>
+<blockquote>DestroyBlobInfo() deallocates memory associated with a BlobInfo structure. </blockquote><P>The format of the DestroyBlobInfo method is:</P>
+<blockquote>void DestroyBlobInfo ( BlobInfo *blob ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>blob:</STRONG><BR>
@@ -161,7 +161,7 @@ Specifies a pointer to a BlobInfo structure.
 <H2><A NAME="detachblob">DetachBlob</A></H2>
 <P>Method DetachBlob detaches a blob from the BlobInfo structure.</P>
 <P>The format of the DetachBlob method is:</P>
-<blockquote>void DetachBlob ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info ); </blockquote><P>
+<blockquote>void DetachBlob ( BlobInfo *blob_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>blob_info:</STRONG><BR>
@@ -193,8 +193,8 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getblobinfo">GetBlobInfo</A></H2>
-<blockquote>GetBlobInfo() initializes the <A HREF="types/BlobInfo.html">BlobInfo</A> structure. </blockquote><P>The format of the GetBlobInfo method is:</P>
-<blockquote>void GetBlobInfo ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info ); </blockquote><P>
+<blockquote>GetBlobInfo() initializes the BlobInfo structure. </blockquote><P>The format of the GetBlobInfo method is:</P>
+<blockquote>void GetBlobInfo ( BlobInfo *blob_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>blob_info:</STRONG><BR>
@@ -314,7 +314,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="referenceblob">ReferenceBlob</A></H2>
 <blockquote>ReferenceBlob() increments the reference count associated with the pixel blob returning a pointer to the blob. </blockquote><P>The format of the ReferenceBlob method is:</P>
-<blockquote><A HREF="types/BlobInfo.html">BlobInfo</A> ReferenceBlob ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info ); </blockquote><P>
+<blockquote>BlobInfo ReferenceBlob ( BlobInfo *blob_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>blob_info:</STRONG><BR>
