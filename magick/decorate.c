@@ -109,7 +109,7 @@ MagickExport Image *BorderImage(const Image *image,
   clone_image=CloneImage(image,0,0,False,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
-  clone_image->matte_color=image->border_color;
+  clone_image->matte_color=image->background_color;
   border_image=FrameImage(clone_image,&frame_info,exception);
   DestroyImage(clone_image);
   return(border_image);
@@ -201,7 +201,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     exception);
   if (frame_image == (Image *) NULL)
     return(False);
-  SetImageType(frame_image,TrueColorType);
+  SetImageType(frame_image,frame_image->matte_color.opacity !=
+    OpaqueOpacity ? TrueColorMatteType : TrueColorType);
   /*
     Initialize 3D effects color.
   */

@@ -3564,7 +3564,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (border_image == (Image *) NULL)
               break;
             DestroyImage(*image);
-            SetImageType(border_image,TrueColorType);
             *image=border_image;
             continue;
           }
@@ -4041,7 +4040,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (frame_image == (Image *) NULL)
               break;
             DestroyImage(*image);
-            SetImageType(frame_image,TrueColorType);
             *image=frame_image;
             continue;
           }
