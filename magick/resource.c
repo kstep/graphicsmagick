@@ -165,18 +165,18 @@ MagickExport void DestroyMagickResources(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t M a g i c k R e s o u r c e U s a g e                               %
+%   G e t M a g i c k R e s o u r c e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickResourceUsages() returns the available size for the specified
+%  GetMagickResource() returns the available size for the specified
 %  resource in megabytes.
 %
-%  The format of the GetMagickResourceUsage() method is:
+%  The format of the GetMagickResource() method is:
 %
-%      unsigned long GetMagickResourceUsage(const ResourceType type)
+%      unsigned long GetMagickResource(const ResourceType type)
 %
 %  A description of each parameter follows:
 %
@@ -185,7 +185,7 @@ MagickExport void DestroyMagickResources(void)
 %
 %
 */
-MagickExport unsigned long GetMagickResourceUsage(const ResourceType type)
+MagickExport unsigned long GetMagickResource(const ResourceType type)
 {
   unsigned long
     usage;
