@@ -101,9 +101,6 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
   register RunlengthPacket
     *q;
 
-  unsigned short
-    index;
-
   /*
     Allocate image structure.
   */

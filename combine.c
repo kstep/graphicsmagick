@@ -910,7 +910,7 @@ int main(int argc,char **argv)
   SetImageInfo(&image_info,True);
   status=WriteImage(&image_info,combined_image);
   if (image_info.verbose)
-    DescribeImage(combined_image,stderr,False);
+    DescribeImage(combined_image,stdout,False);
   DestroyDelegateInfo();
   Exit(status ? 0 : errno);
   return(False);

@@ -4797,7 +4797,7 @@ Export void MogrifyImages(const ImageInfo *image_info,const int argc,
   image=(*images);
   mogrify_image=(*images)->next;
   if (image_info->verbose)
-    DescribeImage(image,stderr,False);
+    DescribeImage(image,stdout,False);
   for (i=1; mogrify_image != (Image *) NULL; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
@@ -4806,7 +4806,7 @@ Export void MogrifyImages(const ImageInfo *image_info,const int argc,
     image->next->previous=image;
     image=image->next;
     if (image_info->verbose)
-      DescribeImage(mogrify_image,stderr,False);
+      DescribeImage(mogrify_image,stdout,False);
     mogrify_image=mogrify_image->next;
     (void) SetMonitorHandler(handler);
     ProgressMonitor(MogrifyImageText,i,number_images);
@@ -5216,7 +5216,7 @@ Export Image *PingImage(const ImageInfo *image_info)
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if (image_info->verbose)
-    DescribeImage(image,stderr,False);
+    DescribeImage(image,stdout,False);
   return(image);
 }
 

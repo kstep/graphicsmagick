@@ -274,6 +274,18 @@ typedef struct _Mng
     *ob[MAX_MNG_OBJECTS];
 #endif
 
+#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
+  FILE *
+    file;
+ 
+  png_byte
+     read_buffer[8];
+
+  int
+     bytes_in_read_buffer,
+     found_empty_plte;
+#endif
+
   long
     x_off[MAX_MNG_OBJECTS],
     y_off[MAX_MNG_OBJECTS];
@@ -312,8 +324,88 @@ typedef struct _Mng
     global_srgb_intent;
 
   unsigned int
+    basi_warning,
+    clon_warning,
+    dhdr_warning,
+    jhdr_warning,
+    past_warning,
+    show_warning,
     verbose;
 } Mng;
+
+#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
+#if !defined(PNG_NO_STDIO)
+/* This is the function that does the actual reading of data.  */
+static void
+mng_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
+{
+   Mng *
+      m;
+
+   png_size_t check;
+   int i = 0;
+
+   m=png_ptr->io_ptr;
+
+   /* fread() returns 0 on error, so it is OK to store this in a png_size_t
+    * instead of an int, which is what fread() actually returns.
+    */
+   while (m->bytes_in_read_buffer && length)
+     {
+        data[i]=m->read_buffer[i];
+        m->bytes_in_read_buffer--;
+        length--;
+        i++;
+     }
+   if (length)
+     {
+       check = (png_size_t)fread(&data[i], (png_size_t)1, length,
+          (FILE *)m->file);
+
+       if (check != length)
+         {
+           png_error(png_ptr, "Read Error");
+         }
+
+       if (length == 4)
+         {
+           if (data[0]==0 && data[1]==0 && data[2]==0 && data[3]==0)
+             {
+               check = (png_size_t)fread(m->read_buffer,
+                 (png_size_t)1, length, (FILE *)m->file);
+               m->read_buffer[4]=0;
+               m->bytes_in_read_buffer = 4;
+               if (!png_memcmp(m->read_buffer, mng_PLTE, 4))
+                  m->found_empty_plte=True;
+               if (!png_memcmp(m->read_buffer, mng_IEND, 4))
+                  m->found_empty_plte=False;
+             }
+           if (data[0]==0 && data[1]==0 && data[2]==0 && data[3]==1)
+             {
+               check = (png_size_t)fread(m->read_buffer,
+                 (png_size_t)1, length, (FILE *)m->file);
+               m->read_buffer[4]=0;
+               m->bytes_in_read_buffer = 4;
+               if (!png_memcmp(m->read_buffer, mng_bKGD, 4))
+                 if(m->found_empty_plte)
+                   {
+                   /* skip the bKGD data byte and CRC */
+                   check = (png_size_t)fread(m->read_buffer,
+                      (png_size_t)1, 5, (FILE *)m->file);
+                   /* read the next length */
+                   check = (png_size_t)fread(data, (png_size_t)1, length,
+                      (FILE *)m->file);
+                   m->bytes_in_read_buffer = 0;
+                   if(m->verbose)
+                     printf("Jettisoned a bKGD chunk after empty PLTE.\n");
+                   }
+             }
+         }
+   }
+
+}
+#endif
+#endif
 
 int PalettesAreEqual(const ImageInfo *image_info, Image *a, Image *b)
 {
@@ -517,6 +609,7 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
      return;
 }
 
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
@@ -669,6 +762,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         ReaderExit(ResourceLimitWarning,"b. Memory allocation failed", image);
       have_mng_structure=True;
       m->verbose = image_info->verbose;
+#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
+      m->file = image->file;
+#endif
 #ifdef ALWAYS_VERBOSE
       m->verbose = True;
 #endif
@@ -782,22 +878,28 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         if (!png_memcmp(type, mng_JHDR, 4))
           {
             skip_to_iend = True;
+            if(!m->jhdr_warning)
             MagickWarning(DelegateWarning,"JNG is not implemented yet",
               image->filename);
+            m->jhdr_warning++;
           }
 
         if (!png_memcmp(type, mng_DHDR, 4))
           {
             skip_to_iend = True;
+            if(!m->dhdr_warning)
             MagickWarning(DelegateWarning,"Delta-PNG is not implemented yet",
               image->filename);
+            m->dhdr_warning++;
           }
 
         if (!png_memcmp(type, mng_BASI, 4))
           {
             skip_to_iend = True;
+            if(!m->basi_warning)
             MagickWarning(DelegateWarning,"BASI is not implemented yet",
               image->filename);
+            m->basi_warning++;
           }
 
         if (length != 0)
@@ -1426,20 +1528,26 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
         if (!png_memcmp(type, mng_CLON, 4))
           {
+            if(!m->clon_warning)
             MagickWarning(DelegateWarning,"CLON is not implemented yet",
               image->filename);
+            m->clon_warning++;
           }
 
         if (!png_memcmp(type, mng_PAST, 4))
           {
+            if(!m->past_warning)
             MagickWarning(DelegateWarning,"PAST is not implemented yet",
               image->filename);
+            m->past_warning++;
           }
 
         if (!png_memcmp(type, mng_SHOW, 4))
           {
+            if(!m->show_warning)
             MagickWarning(DelegateWarning,"SHOW is not implemented yet",
               image->filename);
+            m->show_warning++;
           }
 
         if (png_memcmp(type, mng_IHDR, 4))
@@ -1683,6 +1791,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       png_set_sig_bytes(ping,8);
 #ifdef PNG_READ_EMPTY_PLTE_SUPPORTED
     png_permit_empty_plte(ping, True);
+#else
+    png_set_read_fn(ping, m, mng_read_data);
 #endif
     png_read_info(ping,ping_info);
     image->depth=ping_info->bit_depth;
@@ -2770,6 +2880,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           if (final_delay != initial_delay)
             need_fram=1;
 
+#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
           /* check for global palette possibility */
           equal_palettes = PalettesAreEqual(image_info, image,
                 next_image);
@@ -2777,6 +2888,9 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             use_global_plte = equal_palettes;
           if(!need_local_plte)
             need_local_plte = !equal_palettes;
+#else
+          need_local_plte = True;
+#endif
           
           next_image=next_image->next;
        }
@@ -3116,7 +3230,11 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           ping_info->color_type=PNG_COLOR_TYPE_PALETTE;
           ping_info->valid|=PNG_INFO_PLTE;
           if(have_global_plte)
+            {
+              if (image_info->verbose)
+                printf("writing empty PLTE chunk\n");
               ping_info->num_palette=0;
+            }
           else
             {
               ping_info->num_palette=image->colors;
@@ -3503,3 +3621,4 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   return(False);
 }
 #endif
+

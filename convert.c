@@ -1658,7 +1658,7 @@ int main(int argc,char **argv)
       break;
   }
   if (image_info.verbose)
-    DescribeImage(image,stderr,False);
+    DescribeImage(image,stdout,False);
   DestroyDelegateInfo();
   Exit(status ? 0 : errno);
   return(False);
