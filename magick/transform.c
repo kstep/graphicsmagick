@@ -442,7 +442,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *crop_info,
       return((Image *) NULL);
     }
   return(crop_image);
-} 
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -657,9 +657,7 @@ MagickExport Image *DeconstructImages(const Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o image: The image;  returned from
-%      ReadImage.  It points to the first image in the group to be
-%      coalesced.
+%    o image: The image sequence.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -907,26 +905,17 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
   Image
     *mosaic_image;
 
-  long
-    y;
-
   RectangleInfo
     page;
 
   register const Image
     *next;
 
-  register long
-    x;
-
-  register PixelPacket
-    *q;
-
   unsigned int
     scene;
 
   /*
-    Determine next bounding box.
+    Determine mosaic bounding box.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -949,29 +938,17 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
       page.height=next->rows+page.y;
   }
   /*
-    Allocate next structure.
+    Allocate mosaic image.
   */
   mosaic_image=AllocateImage((ImageInfo *) NULL);
   if (mosaic_image == (Image *) NULL)
     return((Image *) NULL);
+  mosaic_image->columns=page.width;
+  mosaic_image->rows=page.height;
+  SetImage(mosaic_image,OpaqueOpacity);
   /*
     Initialize colormap.
   */
-  mosaic_image->columns=page.width;
-  mosaic_image->rows=page.height;
-  for (y=0; y < (long) mosaic_image->rows; y++)
-  {
-    q=SetImagePixels(mosaic_image,0,y,mosaic_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) mosaic_image->columns; x++)
-    {
-      *q=mosaic_image->background_color;
-      q++;
-    }
-    if (!SyncImagePixels(mosaic_image))
-      break;
-  }
   scene=0;
   for (next=image; next != (Image *) NULL; next=next->next)
   {
@@ -1204,7 +1181,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           image->colorspace=profile_image->colorspace;
           cmsDeleteTransform(transform);
           cmsCloseProfile(image_profile);
-          cmsCloseProfile(transform_profile);     
+          cmsCloseProfile(transform_profile);
 #endif
           LiberateMemory((void **) &image->color_profile.info);
         }
