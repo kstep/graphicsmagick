@@ -4355,7 +4355,7 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     p=primitive_info;
     point.x=0;
     point.y=0;
-    alpha=pow(1.0-weight,number_coordinates-1);
+    alpha=pow((double) (1.0-weight),(double) number_coordinates-1);
     for (j=0; j < (long) number_coordinates; j++)
     {
       point.x+=alpha*coefficients[j]*p->point.x;
