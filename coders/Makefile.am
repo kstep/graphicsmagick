@@ -269,7 +269,7 @@ mpr_la_LIBADD       = $(LIBMAGICK) @LIB_XML@ @LIB_ZLIB@ @LIB_X11@ $(LIB_MATH)
 # MSL module
 msl_la_SOURCES      = msl.c
 msl_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-msl_la_LIBADD       = $(LIBMAGICK)
+msl_la_LIBADD       = $(LIBMAGICK) @LIB_XML@ @LIB_ZLIB@ @LIB_X11@ $(LIB_MATH)
 
 # MTV module
 mtv_la_SOURCES      = mtv.c
