@@ -40,6 +40,12 @@ extern "C" {
 #define IndexChannel BlackChannel
 #define AreaResource UndefinedResource /* not supported */
 
+extern WandExport int
+  FormatMagickString(char *,const size_t,const char *,...)
+    __attribute__((format (printf,3,4)));
+extern WandExport size_t
+  CopyMagickString(char *,const char *,const size_t);
+
 typedef enum
 {
   UndefinedMetric,
@@ -112,6 +118,8 @@ extern WandExport MagickWand
     double *),
   *MagickDeconstructImages(MagickWand *),
   *MagickFlattenImages(MagickWand *),
+  *MagickFxImage(MagickWand *,const char *),
+  *MagickFxImageChannel(MagickWand *,const ChannelType,const char *),
   *MagickGetImage(MagickWand *),
   *MagickMorphImages(MagickWand *,const unsigned long),
   *MagickMosaicImages(MagickWand *),
@@ -147,7 +155,6 @@ extern WandExport unsigned int
   MagickBlurImage(MagickWand *,const double,const double),
   MagickBorderImage(MagickWand *,const PixelWand *,const unsigned long,
     const unsigned long),
-  MagickChannelImage(MagickWand *,const ChannelType),
   MagickCharcoalImage(MagickWand *,const double,const double),
   MagickChopImage(MagickWand *,const unsigned long,const unsigned long,
     const long,const long),
@@ -176,8 +183,6 @@ extern WandExport unsigned int
   MagickFlopImage(MagickWand *),
   MagickFrameImage(MagickWand *,const PixelWand *,const unsigned long,
     const unsigned long,const long,const long),
-  MagickFxImageChannel(MagickWand *,const MagickWand *,const ChannelType,
-    const char *),
   MagickGammaImage(MagickWand *,const double),
   MagickGammaImageChannel(MagickWand *,const ChannelType,const double),
   MagickGetImageBackgroundColor(MagickWand *,PixelWand *),
@@ -227,6 +232,7 @@ extern WandExport unsigned int
     const unsigned long,const unsigned int,const unsigned int),
   MagickQuantizeImages(MagickWand *,const unsigned long,const ColorspaceType,
     const unsigned long,const unsigned int,const unsigned int),
+  MagickRadialBlurImage(MagickWand *,const double),
   MagickRaiseImage(MagickWand *,const unsigned long,const unsigned long,
     const long,const long,const unsigned int),
   MagickReadImage(MagickWand *,const char *),
@@ -243,6 +249,7 @@ extern WandExport unsigned int
   MagickRotateImage(MagickWand *,const PixelWand *,const double),
   MagickSampleImage(MagickWand *,const unsigned long,const unsigned long),
   MagickScaleImage(MagickWand *,const unsigned long,const unsigned long),
+  MagickSeparateImageChannel(MagickWand *,const ChannelType),
   MagickSetImage(MagickWand *,const MagickWand *),
   MagickSetFilename(MagickWand *,const char *),
   MagickSetImageBackgroundColor(MagickWand *,const PixelWand *),
@@ -261,7 +268,7 @@ extern WandExport unsigned int
   MagickSetImageGreenPrimary(MagickWand *,const double,const double),
   MagickSetImageGamma(MagickWand *,const double),
   MagickSetImageFilename(MagickWand *,const char *),
-  MagickSetImageIndex(MagickWand *,const unsigned long),
+  MagickSetImageIndex(MagickWand *,const long),
   MagickSetImageInterlaceScheme(MagickWand *,const InterlaceType),
   MagickSetImageIterations(MagickWand *,const unsigned long),
   MagickSetImageMatteColor(MagickWand *,const PixelWand *),

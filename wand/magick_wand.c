@@ -72,6 +72,7 @@
  *   MagickBlackThresholdImage
  *   MagickCompareImageChannels
  *   MagickCompareImages
+ *   MagickFxImage
  *   MagickFxImageChannel
  *   MagickGammaImageChannel
  *   MagickGetConfigureInfo
@@ -82,6 +83,7 @@
  *   MagickNegateImageChannel
  *   MagickPreviewImages
  *   MagickQueryFonts
+ *   MagickRadialBlurImage
  *   MagickThresholdImageChannel
  *   MagickTintImage
  *   MagickWhiteThresholdImage
@@ -825,50 +827,6 @@ WandExport unsigned int MagickBorderImage(MagickWand *wand,
   ReplaceImageInList(&wand->image,border_image);
   wand->images=GetFirstImageInList(wand->image);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k C h a n n e l I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickChannelImage() extracts a channel from the image.  A channel is a
-%  particular color component of each pixel in the image.
-%
-%  The format of the MagickChannelImage method is:
-%
-%      unsigned int MagickChannelImage(MagickWand *wand,
-%        const ChannelType channel)
-%
-%  A description of each parameter follows:
-%
-%    o wand: The magick wand.
-%
-%    o channel: Identify which channel to extract: RedChannel, GreenChannel,
-%      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
-%      BlackChannel, or IndexChannel.
-%
-*/
-WandExport unsigned int MagickChannelImage(MagickWand *wand,
-  const ChannelType channel)
-{
-  unsigned int
-    status;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickSignature);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  status=ChannelImage(wand->image,channel);
-  if (status == False)
-    InheritException(&wand->exception,&wand->image->exception);
-  return(status);
 }
 
 /*
@@ -2274,24 +2232,66 @@ WandExport unsigned int MagickFrameImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k F x I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickFxImage() evaluate expression for each pixel in the image.
+%
+%  The format of the MagickFxImage method is:
+%
+%      MagickWand *MagickFxImage(MagickWand *wand,const char *expression)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o expression: The expression.
+%
+*/
+WandExport MagickWand *MagickFxImage(MagickWand *wand,const char *expression)
+{
+#if defined(NOT_IMPLEMENTED)
+  Image
+    *fx_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    return(False);
+  fx_image=FxImage(wand->images,expression,&wand->exception);
+  if (fx_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandWithImages(wand,fx_image));
+#else
+  return False;
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k F x I m a g e C h a n n e l                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickFxImage() evaluate expression for each pixel in the specified channel.
+%  MagickFxImageChannel() evaluate expression for each pixel in the specified
+%  channel.
 %
-%  The format of the MagickFxImage method is:
+%  The format of the MagickFxImageChannel method is:
 %
-%      unsigned int MagickFxImage(MagickWand *wand,const MagickWand fx_wand,
+%      MagickWand *MagickFxImageChannel(MagickWand *wand,
 %        const ChannelType channel,const char *expression)
 %
 %  A description of each parameter follows:
 %
 %    o wand: The magick wand.
-%
-%    o fx_wand: The F(X) wand.
 %
 %    o channel: Identify which channel to level: RedChannel, GreenChannel,
 %      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
@@ -2300,22 +2300,21 @@ WandExport unsigned int MagickFrameImage(MagickWand *wand,
 %    o expression: The expression.
 %
 */
-WandExport unsigned int MagickFxImageChannel(MagickWand *wand,
-  const MagickWand *fx_wand,const ChannelType channel,const char *expression)
+WandExport MagickWand * MagickFxImageChannel(MagickWand *wand,
+  const ChannelType channel,const char *expression)
 {
 #if defined(NOT_IMPLEMENTED)
-  unsigned int
-    status;
+  Image
+    *fx_image;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  if ((wand->images == (Image *) NULL) ||
-      (fx_wand->images == (Image *) NULL))
-    ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  status=FxImageChannel(wand->image,fx_wand->image,channel,expression);
-  if (status == False)
-    InheritException(&wand->exception,&wand->image->exception);
-  return(status);
+  if (wand->images == (Image *) NULL)
+    return(False);
+  fx_image=FxImageChannel(wand->images,channel,expression,&wand->exception);
+  if (fx_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandWithImages(wand,fx_image));
 #else
   return False;
 #endif
@@ -5976,6 +5975,52 @@ MagickExport char **MagickQueryFormats(const char *pattern,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k R a d i a l B l u r I m a g e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickRadialBlurImage() radial blurs an image.
+%
+%  The format of the MagickRadialBlurImage method is:
+%
+%      unsigned int MagickRadialBlurImage(MagickWand *wand,const double angle)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o angle: The angle of the blur in degrees.
+%
+*/
+WandExport unsigned int MagickRadialBlurImage(MagickWand *wand,
+  const double angle)
+{
+#if NOT_IMPLEMENTED
+  Image
+    *blur_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  blur_image=RadialBlurImage(wand->image,angle,&wand->exception);
+  if (blur_image == (Image *) NULL)
+    return(False);
+  ReplaceImageInList(&wand->image,blur_image);
+  wand->images=GetFirstImageInList(wand->image);
+  return(True);
+#else
+  return False;
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k R a i s e I m a g e                                           %
 %                                                                             %
 %                                                                             %
@@ -6703,6 +6748,51 @@ WandExport unsigned int MagickScaleImage(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S e p a r a t e I m a g e C h a n n e l                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickChannelImage() separates a channel from the image and returns a
+%  grayscale image.  A channel is a particular color component of each pixel
+%  in the image.
+%
+%  The format of the MagickChannelImage method is:
+%
+%      unsigned int MagickSeparateImageChannel(MagickWand *wand,
+%        const ChannelType channel)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o channel: Identify which channel to extract: RedChannel, GreenChannel,
+%      BlueChannel, OpacityChannel, CyanChannel, MagentaChannel, YellowChannel,
+%      BlackChannel, or IndexChannel.
+%
+*/
+WandExport unsigned int MagickSeparateImageChannel(MagickWand *wand,
+  const ChannelType channel)
+{
+  unsigned int
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  status=ChannelImage(wand->image,channel);
+  if (status == False)
+    InheritException(&wand->exception,&wand->image->exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S e t F i l e n a m e                                         %
 %                                                                             %
 %                                                                             %
@@ -7319,8 +7409,7 @@ WandExport unsigned int MagickSetImageGreenPrimary(MagickWand *wand,
 %
 %  The format of the MagickSetImageIndex method is:
 %
-%      unsigned int MagickSetImageIndex(MagickWand *wand,
-%        const unsigned long index)
+%      unsigned int MagickSetImageIndex(MagickWand *wand,const long index)
 %
 %  A description of each parameter follows:
 %
@@ -7329,8 +7418,7 @@ WandExport unsigned int MagickSetImageGreenPrimary(MagickWand *wand,
 %    o index: The scene number.
 %
 */
-WandExport unsigned int MagickSetImageIndex(MagickWand *wand,
-  const unsigned long index)
+WandExport unsigned int MagickSetImageIndex(MagickWand *wand,const long index)
 {
   Image
     *image;
