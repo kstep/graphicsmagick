@@ -313,7 +313,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     count,
     font_height,
     height,
-    image_per_page,
+    images_per_page,
     max_height,
     number_images,
     number_lines,
@@ -488,10 +488,10 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   */
   montage_next=AllocateImage(image_info);
   montage_next->scene=1;
-  image_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
+  images_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
   tiles=0;
   total_tiles=number_images;
-  for (i=0; i < (int) image_per_page; i++)
+  for (i=0; i < (int) images_per_page; i++)
   {
     /*
       Determine bounding box.
@@ -781,7 +781,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
       tiles++;
     }
     montage_next->matte=False;
-    if ((i+1) < (int) image_per_page)
+    if ((i+1) < (int) images_per_page)
       {
         /*
           Allocate next next structure.
