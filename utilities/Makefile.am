@@ -52,6 +52,7 @@ SMILE_MIFF=$(top_srcdir)/Magick++/demo/smile.miff
 GENERIC_TTF=$(top_srcdir)/PerlMagick/demo/Generic.ttf
 
 check:
+	$(RM) -f *_out.miff
 	${GM} convert $(MODEL_MIFF) +noise Laplacian              -label AddNoise AddNoise_out.miff
 	${GM} convert $(MODEL_MIFF) -fill gold \
 	        -pointsize 14 -font $(GENERIC_TTF) \
@@ -112,4 +113,6 @@ check:
 	${GM} montage -geometry '130x194+10+5>' -gravity 'Center' \
 	  -bordercolor 'green' -borderwidth 1x1 -tile '5x1000' -compose 'over' \
 	  -background '#ffffff' -font $(GENERIC_TTF) -pointsize 18 -fill '#600' \
-	  -stroke 'none' null: null: null: null: null: [A-Z]*_out.miff demo_out.miff
+	  -stroke 'none' null: null: null: null: null: [A-Z]*_out.miff montage_out.miff
+	${GM} convert logo: -resize 40% logo.miff
+	${GM} composite logo.miff -gravity north gm montage_out.miff demo_out.miff

@@ -56,9 +56,16 @@
 2003-04-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> utilities/Makefile.am (check): Added code to put logo on demo
+        output.<BR>
+  <LI> magick/command.c (MontageImageCommand): Pass exception rather
+        than &amp;image-&gt;exception because image may be null, and it is
+        pointless to store the exception where it will not be reported to
+        the user anyway.<BR>
   <LI> utilities/Makefile.am (check): Ported Glenn Randers-Pehrson's
         utilities demo script into the Makefile to serve as a check
         target.<BR>
+        (check): Add definition to find Generic.ttf.
   <LI> locale/C.mgk: Fixed syntax error in &lt;Option&gt;&lt;FatalError&gt;
         section.<BR>
   <LI> www/development.html: New file to describe development

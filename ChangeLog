@@ -1,5 +1,7 @@
 2003-04-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* utilities/Makefile.am (check): Added code to put logo on demo
+	output.
 	* magick/command.c (MontageImageCommand): Pass exception rather
 	than &image->exception because image may be null, and it is
 	pointless to store the exception where it will not be reported to
