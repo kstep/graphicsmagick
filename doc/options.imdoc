@@ -1215,7 +1215,7 @@ and the width and height of the corners.</pp>
 <s>Circle</s> has a center coordinate and a coordinate for
 the outer edge.</pp>
 <pp>
-Use <s>Arc</s> to circumscribe an arc within
+Use <s>Arc</s> to inscribe an elliptical arc within
 a rectangle.  Arcs require a start and end point as well as the degree
 of rotation (e.g. 130,30 200,100 45,90).</pp>
 <pp>
