@@ -733,13 +733,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Rotate image.
       */
       degrees=rotate == 1 ? -90.0 : 90.0;
-      image->orphan=True;
       rotated_image=RotateImage(image,degrees,exception);
       if (rotated_image != (Image *) NULL)
-        {
-          DestroyImage(image);
-          image=rotated_image;
-        }
+        image=rotated_image;
     }
   /*
     Set CCIR 709 primaries with a D65 white point.

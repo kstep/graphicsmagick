@@ -339,13 +339,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Rotate image.
         */
-        image->orphan=True;
         rotated_image=RotateImage(image,90,exception);
         if (rotated_image != (Image *) NULL)
-          {
-            DestroyImage(image);
-            image=rotated_image;
-          }
+          image=rotated_image;
       }
     next_image=image->next;
     if (next_image != (Image *) NULL)
