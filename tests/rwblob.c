@@ -173,5 +173,7 @@ int main ( int argc, char **argv )
   DestroyImage( final );
   final = (Image*)NULL;
 
+  DestroyMagick();
+
   return 0;
 }

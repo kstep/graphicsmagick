@@ -404,5 +404,6 @@ int main ( int argc, char **argv )
 
   DestroyImage( canvas );
   DestroyImageInfo( image_info );
+  DestroyMagick();
   return 0;
 }
