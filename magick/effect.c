@@ -856,7 +856,6 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   */
   for (layer=0; layer <= 3; layer++)
   {
-    (void) memset(buffer,0,length);
     (void) memset(pixels,0,length);
     j=(long) image->columns+2;
     for (y=0; y < (long) image->rows; y++)
@@ -880,6 +879,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       }
       j++;
     }
+    (void) memset(buffer,0,length);
     for (i=0; i < 4; i++)
     {
       MagickMonitor(DespeckleImageText,4*layer+i,15);
