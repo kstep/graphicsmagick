@@ -554,6 +554,11 @@ typedef struct _MagickInfo
   struct _MagickInfo
     *previous,
     *next;
+
+#if defined(HasLTDL)
+  lt_dlhandle
+    handle;
+#endif
 } MagickInfo;
 
 /*

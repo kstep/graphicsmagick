@@ -185,6 +185,9 @@
 /* Define if using libltdl to create dynamically loadable modules */
 #undef HasLTDL
 
+/* Location of coder modules */
+#undef CoderModuleDirectory
+
 /* Define if using the dmalloc debugging malloc package */
 #undef WITH_DMALLOC
 

@@ -137,6 +137,89 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 
   if (magick_info == (MagickInfo *) NULL)
     {
+#if defined(HasLTDL)
+      char
+	**file_list,
+	*coder_dir,
+	*func_name,
+	*base_name;
+
+      int
+	i,
+	number_files;
+
+      lt_dlhandle
+	handle;
+
+      number_files = 256;
+
+      /* Use ImageMagick's memory allocators */
+      lt_dlmalloc = AllocateMemory;
+      lt_dlfree = FreeMemory;
+
+      /* Initialize ltdl */
+      if( lt_dlinit() != 0 )
+	{
+	  const char *dlerror = lt_dlerror();
+	  printf("ERROR: failed to initialise ltdl: %s\n", dlerror);
+	  exit(1);
+	}
+
+      coder_dir=AllocateMemory(MaxTextExtent-1);
+      strcpy(coder_dir, CoderModuleDirectory);
+
+      /* Set ltdl module search path */
+      lt_dlsetsearchpath( coder_dir );
+
+      /* List module files */
+      file_list=ListFiles(coder_dir,
+		      "*.so", &number_files);
+      if (file_list == (char **) NULL)
+	{
+	  FreeMemory(coder_dir);
+	  return (MagickInfo *)NULL;
+	}
+
+      func_name=AllocateMemory(MaxTextExtent-1);
+      for ( i = 0; i < number_files; ++i )
+	{
+	  void (*func)(void);
+
+	  /* Load module */
+	  printf("Loading %s\n", file_list[i]);
+	  if( ( handle=lt_dlopen(file_list[i]) ) == 0)
+	    {
+	      printf("ERROR: failed to load module %s: %s\n", file_list[i], lt_dlerror());
+	      continue;
+	      /*exit(1);*/
+	    }
+
+	  /* Locate and execute RegisterFORMATImage function */
+	  strcpy(func_name, "Register");
+	  base_name = BaseFilename( file_list[i] );
+	  Latin1Upper(base_name);
+	  strcat(func_name,base_name);
+	  FreeMemory(base_name);
+	  strcat(func_name, "Image");
+
+	  func=(void (*)(void))lt_dlsym(handle, func_name);
+	  if (func == NULL)
+	    {
+	      printf("ERROR: failed to find symbol : %s\n", lt_dlerror());
+	      continue;
+	    }
+	  func();
+
+	}
+      FreeMemory(func_name);
+      FreeMemory(coder_dir);
+
+      for (i=0; i < number_files; i++)
+          FreeMemory(file_list[i]);
+      if (file_list != (char **) NULL)
+          FreeMemory(file_list);
+
+#else
       Register8BIMImage();
       RegisterAVSImage();
       RegisterBMPImage();
@@ -204,6 +287,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterXPMImage();
       RegisterXWDImage();
       RegisterYUVImage();
+#endif
     }
   if (tag == (char *) NULL)
     return(magick_info);

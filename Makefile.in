@@ -215,11 +215,12 @@ convert_SOURCES = convert.c
 mogrify_SOURCES = mogrify.c
 identify_SOURCES = identify.c
 combine_SOURCES = combine.c
-
-# Libtool libraries, dependencies, and linker flags used by all executables
-LDADD = $(top_builddir)/ltdl/libltdlc.la $(MAGICK_LIB)
-DEPENDENCIES = $(LIBLTDL) $(MAGICK_LIB)
-LDFLAGS = @DLLDFLAGS@
+@WITH_MODULES_TRUE@LDADD = $(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@LDADD = $(MAGICK_LIB)
+@WITH_MODULES_TRUE@DEPENDENCIES = $(LIBLTDL) $(MAGICK_LIB)
+@WITH_MODULES_FALSE@DEPENDENCIES = $(MAGICK_LIB)
+@WITH_MODULES_TRUE@LDFLAGS = @DLLDFLAGS@
+@WITH_MODULES_FALSE@LDFLAGS = 
 
 # Manual pages to install
 man_MANS = $(MANPAGES)
@@ -252,43 +253,51 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I./magick
 LIBS = @LIBS@
 combine_OBJECTS =  combine.$(OBJEXT)
 combine_LDADD = $(LDADD)
-combine_DEPENDENCIES =  $(top_builddir)/ltdl/libltdlc.la \
-magick/libMagick.la
+@WITH_MODULES_TRUE@combine_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@combine_DEPENDENCIES =  magick/libMagick.la
 combine_LDFLAGS = 
 convert_OBJECTS =  convert.$(OBJEXT)
 convert_LDADD = $(LDADD)
-convert_DEPENDENCIES =  $(top_builddir)/ltdl/libltdlc.la \
-magick/libMagick.la
+@WITH_MODULES_TRUE@convert_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@convert_DEPENDENCIES =  magick/libMagick.la
 convert_LDFLAGS = 
 identify_OBJECTS =  identify.$(OBJEXT)
 identify_LDADD = $(LDADD)
-identify_DEPENDENCIES =  $(top_builddir)/ltdl/libltdlc.la \
-magick/libMagick.la
+@WITH_MODULES_TRUE@identify_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@identify_DEPENDENCIES =  magick/libMagick.la
 identify_LDFLAGS = 
 mogrify_OBJECTS =  mogrify.$(OBJEXT)
 mogrify_LDADD = $(LDADD)
-mogrify_DEPENDENCIES =  $(top_builddir)/ltdl/libltdlc.la \
-magick/libMagick.la
+@WITH_MODULES_TRUE@mogrify_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@mogrify_DEPENDENCIES =  magick/libMagick.la
 mogrify_LDFLAGS = 
 montage_OBJECTS =  montage.$(OBJEXT)
 montage_LDADD = $(LDADD)
-montage_DEPENDENCIES =  $(top_builddir)/ltdl/libltdlc.la \
-magick/libMagick.la
+@WITH_MODULES_TRUE@montage_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@montage_DEPENDENCIES =  magick/libMagick.la
 montage_LDFLAGS = 
 animate_OBJECTS =  animate.$(OBJEXT)
 animate_LDADD = $(LDADD)
-animate_DEPENDENCIES =  $(top_builddir)/ltdl/libltdlc.la \
-magick/libMagick.la
+@WITH_MODULES_TRUE@animate_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@animate_DEPENDENCIES =  magick/libMagick.la
 animate_LDFLAGS = 
 display_OBJECTS =  display.$(OBJEXT)
 display_LDADD = $(LDADD)
-display_DEPENDENCIES =  $(top_builddir)/ltdl/libltdlc.la \
-magick/libMagick.la
+@WITH_MODULES_TRUE@display_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@display_DEPENDENCIES =  magick/libMagick.la
 display_LDFLAGS = 
 import_OBJECTS =  import.$(OBJEXT)
 import_LDADD = $(LDADD)
-import_DEPENDENCIES =  $(top_builddir)/ltdl/libltdlc.la \
-magick/libMagick.la
+@WITH_MODULES_TRUE@import_DEPENDENCIES =  magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@import_DEPENDENCIES =  magick/libMagick.la
 import_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -301,9 +310,9 @@ man5dir = $(mandir)/man5
 MANS = $(man_MANS)
 
 NROFF = nroff
-DIST_COMMON =  Makefile.am Makefile.in aclocal.m4 config.guess \
-config.sub configure configure.in install-sh ltconfig ltmain.sh missing \
-mkinstalldirs
+DIST_COMMON =  Makefile.am Makefile.in acconfig.h aclocal.m4 \
+config.guess config.sub configure configure.in install-sh ltconfig \
+ltmain.sh magick/config.h.in magick/stamp-h.in missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -330,6 +339,34 @@ config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
 $(srcdir)/configure: @MAINTAINER_MODE_TRUE@$(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
+
+magick/config.h: magick/stamp-h
+	@if test ! -f $@; then \
+		rm -f magick/stamp-h; \
+		$(MAKE) magick/stamp-h; \
+	else :; fi
+magick/stamp-h: $(srcdir)/magick/config.h.in $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES= CONFIG_HEADERS=magick/config.h \
+	     $(SHELL) ./config.status
+	@echo timestamp > magick/stamp-h 2> /dev/null
+$(srcdir)/magick/config.h.in: @MAINTAINER_MODE_TRUE@$(srcdir)/magick/stamp-h.in
+	@if test ! -f $@; then \
+		rm -f $(srcdir)/magick/stamp-h.in; \
+		$(MAKE) $(srcdir)/magick/stamp-h.in; \
+	else :; fi
+$(srcdir)/magick/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) acconfig.h
+	cd $(top_srcdir) && $(AUTOHEADER)
+	@echo timestamp > $(srcdir)/magick/stamp-h.in 2> /dev/null
+
+mostlyclean-hdr:
+
+clean-hdr:
+
+distclean-hdr:
+	-rm -f magick/config.h
+
+maintainer-clean-hdr:
 
 mostlyclean-binPROGRAMS:
 
@@ -724,26 +761,26 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-tags \
-		mostlyclean-generic
+mostlyclean-am:  mostlyclean-hdr mostlyclean-binPROGRAMS \
+		mostlyclean-compile mostlyclean-libtool \
+		mostlyclean-tags mostlyclean-generic
 
 mostlyclean: mostlyclean-recursive
 
-clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
-		clean-generic mostlyclean-am clean-local
+clean-am:  clean-hdr clean-binPROGRAMS clean-compile clean-libtool \
+		clean-tags clean-generic mostlyclean-am clean-local
 
 clean: clean-recursive
 
-distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
-		distclean-tags distclean-generic clean-am \
-		distclean-local
+distclean-am:  distclean-hdr distclean-binPROGRAMS distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am distclean-local
 	-rm -f libtool
 
 distclean: distclean-recursive
 	-rm -f config.status
 
-maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+maintainer-clean-am:  maintainer-clean-hdr maintainer-clean-binPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am maintainer-clean-local
@@ -753,7 +790,8 @@ maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 maintainer-clean: maintainer-clean-recursive
 	-rm -f config.status
 
-.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+.PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
+mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
 maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \

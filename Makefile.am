@@ -67,9 +67,15 @@ identify_SOURCES = identify.c
 combine_SOURCES  = combine.c
 
 # Libtool libraries, dependencies, and linker flags used by all executables
-LDADD		 = $(top_builddir)/ltdl/libltdlc.la $(MAGICK_LIB)
+if WITH_MODULES
+LDADD		 = $(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
 DEPENDENCIES     = $(LIBLTDL) $(MAGICK_LIB)
 LDFLAGS          = @DLLDFLAGS@
+else
+LDADD		 = $(MAGICK_LIB)
+DEPENDENCIES     = $(MAGICK_LIB)
+LDFLAGS          = 
+endif # WITH_MODULES
 
 # Manual pages to install
 man_MANS = $(MANPAGES)

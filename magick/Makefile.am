@@ -49,6 +49,8 @@ libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c attributes.c blob.c cac
   label.c magick.c map.c matte.c memory.c monitor.c montage.c quantize.c \
   segment.c shear.c signature.c stegano.c timer.c transform.c ttf.c \
   utility.c widget.c xwindows.c zoom.c
+libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_TTF@ @LIB_XEXT@ @LIB_XT@ \
+  @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ $(top_builddir)/ltdl/libltdlc.la
 else
 libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c attributes.c avs.c bim.c blob.c bmp.c \
   cache.c cache_io.c cmyk.c colors.c compress.c dcm.c decorate.c delegates.c \
@@ -61,10 +63,9 @@ libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c attributes.c avs.c bim.
   shear.c signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c \
   transform.c ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c wbmp.c \
   widget.c x.c xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c
-endif # WITH_MODULES
-
 libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_TTF@ @LIB_XEXT@ @LIB_XT@ \
   @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@
+endif # WITH_MODULES
 
 # Source files not used for Unix library but which are distributed
 EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c

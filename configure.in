@@ -26,6 +26,17 @@ AM_CONFIG_HEADER(magick/config.h)
 
 AM_INIT_AUTOMAKE(ImageMagick,$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION, ' ')
 
+#
+# The following is extracted from AC_OUTPUT since we need the values of
+# prefix and exec_prefix earlier.
+# Reportedly fixed in autoconf 1.13 by the addition of AC_DEFINE_DIR but
+# does not seem to appear anywhere.
+#
+test "x$prefix" = xNONE && prefix=$ac_default_prefix
+# Let make expand exec_prefix.
+test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
+
+
 # Set default CFLAGS (if not already set)
 if test "${CFLAGS}x" = 'x';
 then
@@ -101,6 +112,9 @@ then
     DLLDFLAGS=-export-dynamic
     AC_SUBST(DLLDFLAGS)
   fi
+
+  eval "eval im_cv_x_coder_modules=${exec_prefix}/lib/ImageMagick/modules/coders"
+  AC_DEFINE_UNQUOTED(CoderModuleDirectory,"$im_cv_x_coder_modules",Location of coder modules)
 fi
 
 # Add configure option --enable-maintainer-mode which enables dependency
@@ -404,15 +418,6 @@ do
     fi
   fi
 done
-
-#
-# The following is extracted from AC_OUTPUT since we need the values of
-# prefix and exec_prefix earlier.
-# Reportedly fixed in autoconf 1.13 by the addition of AC_DEFINE_DIR
-#
-test "x$prefix" = xNONE && prefix=$ac_default_prefix
-# Let make expand exec_prefix.
-test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
 
 # Evaluate shell variable equivalents to Makefile directory variables
 eval "eval BIN_DIR=$bindir"
