@@ -185,21 +185,16 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
           *type_info;
         
         type_info=NTGetTypeList();
-        
         if (type_info != (TypeInfo *) NULL)
           {
             if (type_list == (TypeInfo *) NULL)
-              {
-                type_list=type_info;
-              }
+              type_list=type_info;
             else
               {
                 while (type_list->next != (TypeInfo *) NULL)
                   type_list=type_list->next;
-
                 type_list->next=type_info;
                 type_info->previous=type_list;
-
                 while (type_list->previous != (TypeInfo *) NULL)
                   type_list=type_list->previous;
               }
