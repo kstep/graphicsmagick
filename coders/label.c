@@ -880,11 +880,13 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
     point;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  unsigned int
+    identity;
 
   /*
     Render label with a Postscript font.
@@ -909,6 +911,8 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   /*
     Sample to compute bounding box.
   */
+  identity=(image_info->affine[0] == image_info->affine[3]) &&
+    (image_info->affine[1] == 0.0) && (image_info->affine[2] == 0.0);
   extent.x=0;
   extent.y=0;
   for (x=0; x <= (Extent(text)+2); x++)
@@ -922,7 +926,8 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
     if (point.y > extent.y)
       extent.y=point.y;
   }
-  (void) fprintf(file,"%g %g moveto\n",extent.x/2.0,extent.y/2.0);
+  (void) fprintf(file,"%g %g moveto\n",identity ? 0.0 : extent.x/2.0,
+    extent.y/2.0);
   (void) fprintf(file,"%g %g scale\n",image_info->pointsize,
     image_info->pointsize);
   (void) fprintf(file,
@@ -930,8 +935,9 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",image_info->affine[0],
     -image_info->affine[1],-image_info->affine[2],
     image_info->affine[3]);
-  (void) fprintf(file,"(%.1024s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
-    EscapeParenthesis(text));
+  if (!identity)
+    (void) fprintf(file,"(%.1024s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
+      EscapeParenthesis(text));
   (void) fprintf(file,"(%.1024s) show\n",EscapeParenthesis(text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
@@ -945,7 +951,46 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     return(False);
-  TransformImage(&image,"0x0",(char *) NULL);
+  if (!identity)
+    TransformImage(&image,"0x0",(char *) NULL);
+  else
+    {
+      char
+        geometry[MaxTextExtent];
+
+      PixelPacket
+        target;
+
+      RectangleInfo
+        crop_info;
+
+      register PixelPacket
+        *p;
+
+      crop_info.width=0;
+      crop_info.height=ceil(extent.y/2.0);
+      crop_info.x=0;
+      crop_info.y=floor(extent.y/8.0);
+      if (image == (Image *) NULL)
+        return(image);
+      target=GetOnePixel(image,0,0);
+      for (y=0; y < (int) image->rows; y++)
+      {
+        p=GetImagePixels(image,0,y,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          if (!ColorMatch(*p,target,0))
+            if (x > (int) crop_info.width)
+              crop_info.width=x;
+          p++;
+        }
+      }
+      (void) sprintf(geometry,"%ux%u%+d%+d",crop_info.width+1,crop_info.height,
+        crop_info.x,crop_info.y);
+      TransformImage(&image,geometry,(char *) NULL);
+    }
   image->matte=True;
   for (y=0; y < (int) image->rows; y++)
   {
