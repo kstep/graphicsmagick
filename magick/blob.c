@@ -468,14 +468,14 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   int
     file;
 
-  long
-    count;
-
   struct stat
     attributes;
 
   unsigned char
     *blob;
+
+  void
+    *map;
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
@@ -492,6 +492,13 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       return((void *) NULL);
     }
   *length=(size_t) (fstat(file,&attributes) < 0 ? 0 : attributes.st_size);
+  if (*length != (size_t) attributes.st_size)
+    {
+      (void) close(file);
+      ThrowException(exception,BlobWarning,"Unable to create blob",
+        "Memory allocation failed");
+      return((void *) NULL);
+    }
   blob=(unsigned char *) AcquireMemory(*length+1);
   if (blob == (unsigned char *) NULL)
     {
@@ -500,15 +507,27 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
         "Memory allocation failed");
       return((void *) NULL);
     }
-  count=read(file,blob,*length);
+  map=MapBlob(file,ReadMode,0,*length);
+  if (map != (void *) NULL)
+    {
+      (void) memcpy(blob,map,*length);
+      UnmapBlob(map,*length);
+    }
+  else
+    {
+      long
+        count;
+
+      count=read(file,blob,*length);
+      if (count != *length)
+        {
+          ThrowException(exception,BlobWarning,"Unable to read file",filename);
+          LiberateMemory((void **) &blob);
+          return((void *) NULL);
+        }
+    }
   blob[*length]='\0';
   (void) close(file);
-  if ((size_t) count != *length)
-    {
-      ThrowException(exception,BlobWarning,"Unable to read file",filename);
-      LiberateMemory((void **) &blob);
-      return((void *) NULL);
-    }
   return(blob);
 }
 
@@ -762,7 +781,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %  The format of the MapBlob method is:
 %
-%      void *MapBlob(int file,const MapMode mode,off_t offset,size_t *length)
+%      void *MapBlob(int file,const MapMode mode,off_t offset,size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -773,51 +792,40 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %    o mode: ReadMode, WriteMode, or IOMode.
 %
-%    o offset: start at this offset within the file.
+%    o offset: starting at this offset within the file.
 %
 %    o length: the length of the mapping is returned in this pointer.
 %
 %
 */
 MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
-  size_t *length)
+  size_t length)
 {
 #if defined(HAVE_MMAP)
-  struct stat
-    attributes;
-
   void
     *map;
 
   /*
     Map file.
   */
-  assert(length != (size_t *) NULL);
   if (file == -1)
-    return((void *) NULL);
-  if (fstat(file,&attributes) == -1)
-    return((void *) NULL);
-  *length=(size_t) attributes.st_size;
-  if (*length != attributes.st_size)
     return((void *) NULL);
   switch (mode)
   {
     case ReadMode:
     default:
     {
-      map=(void *) mmap((char *) NULL,*length,PROT_READ,MAP_PRIVATE,file,
-        offset);
+      map=(void *) mmap((char *) NULL,length,PROT_READ,MAP_PRIVATE,file,offset);
       break;
     }
     case WriteMode:
     {
-      map=(void *) mmap((char *) NULL,*length,PROT_WRITE,MAP_SHARED,file,
-        offset);
+      map=(void *) mmap((char *) NULL,length,PROT_WRITE,MAP_SHARED,file,offset);
       break;
     }
     case IOMode:
     {
-      map=(void *) mmap((char *) NULL,*length,PROT_READ | PROT_WRITE,MAP_SHARED,
+      map=(void *) mmap((char *) NULL,length,PROT_READ | PROT_WRITE,MAP_SHARED,
         file,offset);
       break;
     }
@@ -859,7 +867,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
 MagickExport void MSBOrderLong(register char *buffer,const size_t length)
 {
   int
-	  c;
+    c;
 
   register char
     *p,
@@ -1145,25 +1153,39 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
               {
                 if (magick_info->blob_support)
                   {
-                    size_t
-                      length;
+                    int
+                      file;
 
-                    void
-                      *blob;
+                    struct stat
+                      attributes;
 
                     /*
                       Format supports blobs-- try memory-mapped I/O.
                     */
-                    blob=MapBlob(fileno(image->file),ReadMode,0,&length);
-                    if (blob != (void *) NULL)
+                    file=fileno(image->file);
+                    if (fstat(file,&attributes) != -1)
                       {
-                        if (image_info->file != (FILE *) NULL)
-                          image->exempt=False;
-                        else
-                          (void) fclose(image->file);
-                        image->file=(FILE *) NULL;
-                        AttachBlob(image->blob,blob,length);
-                        image->blob->mapped=True;
+                        size_t
+                          length;
+
+                        length=(size_t) attributes.st_size;
+                        if (length == attributes.st_size)
+                          {
+                            void
+                              *blob;
+
+                            blob=MapBlob(file,ReadMode,0,length);
+                            if (blob != (void *) NULL)
+                              {
+                                if (image_info->file != (FILE *) NULL)
+                                  image->exempt=False;
+                                else
+                                  (void) fclose(image->file);
+                                image->file=(FILE *) NULL;
+                                AttachBlob(image->blob,blob,length);
+                                image->blob->mapped=True;
+                              }
+                          }
                       }
                   }
               }
