@@ -782,7 +782,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  center=0.0;
+  center=MagickEpsilon;
   for (x=0; x < (long) destination->columns; x++)
   {
     start=(long) Max(ceil(center-support-0.5),0);
@@ -895,7 +895,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  center=0.0;
+  center=MagickEpsilon;
   for (y=0; y < (long) destination->rows; y++)
   {
     start=(long) Max(ceil(center-support-0.5),0);
