@@ -678,7 +678,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 DestroyImageList(image);
                 return((Image *) NULL);
               }
-            image=GetNextImageInList(image);
+            image=SyncBlobToImage(image);
             status=MagickMonitor(LoadImagesText,TellBlob(image),
               GetBlobSize(image),exception);
             if (status == False)

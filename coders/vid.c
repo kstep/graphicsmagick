@@ -199,7 +199,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             image->next=next_image;
             image->next->previous=image;
-            image=GetNextImageInList(image);
+            image=SyncBlobToImage(image);
           }
       }
     (void) SetMonitorHandler(handler);

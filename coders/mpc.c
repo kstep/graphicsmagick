@@ -829,7 +829,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=GetNextImageInList(image);
+        image=SyncBlobToImage(image);
         status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
           exception);
         if (status == False)
@@ -1278,7 +1278,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(CacheError,"UnableToPeristPixelCache",image);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImageInList(image);
+    image=SyncBlobToImage(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)

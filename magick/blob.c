@@ -2243,6 +2243,45 @@ MagickExport int SyncBlob(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S y n c B l o b T o I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SyncBlobToImage() returns the next image in the list after the blob
+%  referenced is synchronized with the current image.
+%
+%  The format of the SyncBlobToImage method is:
+%
+%      Image *SyncBlobToImage(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport Image *SyncBlobToImage(const Image *images)
+{
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  assert(images->signature == MagickSignature);
+  if (images->next == (Image *) NULL)
+    return((Image *) NULL);
+  if (images->blob != images->next->blob)
+    {
+      DestroyBlobInfo(images->next->blob);
+      images->next->blob=ReferenceBlob(images->blob);
+    }
+  return(images->next);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  T e l l B l o b                                                            %
 %                                                                             %
 %                                                                             %

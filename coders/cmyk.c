@@ -436,7 +436,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=GetNextImageInList(image);
+        image=SyncBlobToImage(image);
         status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
           exception);
         if (status == False)
@@ -769,7 +769,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
     }
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImageInList(image);
+    image=SyncBlobToImage(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)

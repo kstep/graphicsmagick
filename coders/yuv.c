@@ -367,7 +367,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=GetNextImageInList(image);
+        image=SyncBlobToImage(image);
         if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
           break;
       }
@@ -677,7 +677,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImageInList(image);
+    image=SyncBlobToImage(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)

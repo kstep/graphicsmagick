@@ -719,7 +719,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=GetNextImageInList(image);
+        image=SyncBlobToImage(image);
         if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
           break;
       }
@@ -1190,7 +1190,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     LiberateMemory((void **) &viff_pixels);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImageInList(image);
+    image=SyncBlobToImage(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)

@@ -1275,7 +1275,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=GetNextImageInList(image);
+        image=SyncBlobToImage(image);
         status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
           exception);
         if (status == False)
@@ -1870,7 +1870,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     LiberateMemory((void **) &pixels);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImageInList(image);
+    image=SyncBlobToImage(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)

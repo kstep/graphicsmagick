@@ -599,7 +599,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=GetNextImageInList(image);
+        image=SyncBlobToImage(image);
         if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
           break;
       }
@@ -1014,7 +1014,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     LiberateMemory((void **) &pcx_colormap);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImageInList(image);
+    image=SyncBlobToImage(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)

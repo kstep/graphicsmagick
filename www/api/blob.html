@@ -31,6 +31,7 @@
 		<li><a href="#imagetoblob">ImageToBlob</a></li>
 		<li><a href="#pingblob">PingBlob</a></li>
 		<li><a href="#referenceblob">ReferenceBlob</a></li>
+		<li><a href="#syncblobtoimage">SyncBlobToImage</a></li>
 	</ul>
 
 </ul>
@@ -59,6 +60,7 @@
 <p>void * <strong>ImageToBlob</strong>( const ImageInfo *image_info, Image *image, size_t *length, ExceptionInfo *exception );</p>
 <p>Image * <strong>PingBlob</strong>( const ImageInfo *image_info, const void *blob, const size_t length, ExceptionInfo *exception );</p>
 <p>BlobInfo  <strong>ReferenceBlob</strong>( BlobInfo *blob_info );</p>
+<p>Image * <strong>SyncBlobToImage</strong>( const Image *images );</p>
 <p>
 </p>
 <hr />
@@ -394,6 +396,18 @@ Return any errors or warnings in this structure.
 </dt>
 <dd>
 The blob_info.
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="syncblobtoimage">SyncBlobToImage</a></h2>
+<blockquote>SyncBlobToImage() returns the next image in the list after the blob referenced is synchronized with the current image. </blockquote><p>The format of the SyncBlobToImage method is:</p>
+<blockquote><A HREF="types/Image.html">Image</A> *SyncBlobToImage ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong><a name="item_o_images%3a">o images:</a></strong><br />
+</dt>
+<dd>
+The image list.
 </dd>
 </dl>
 

@@ -405,11 +405,6 @@ MagickExport Image *GetNextImageInList(const Image *images)
   assert(images->signature == MagickSignature);
   if (images->next == (Image *) NULL)
     return((Image *) NULL);
-  if (images->blob != images->next->blob)
-    {
-      DestroyBlobInfo(images->next->blob);
-      images->next->blob=ReferenceBlob(images->blob);
-    }
   return(images->next);
 }
 
@@ -443,11 +438,6 @@ MagickExport Image *GetPreviousImageInList(const Image *images)
   assert(images->signature == MagickSignature);
   if (images->previous == (Image *) NULL)
     return((Image *) NULL);
-  if (images->blob != images->previous->blob)
-    {
-      DestroyBlobInfo(images->previous->blob);
-      images->previous->blob=ReferenceBlob(images->blob);
-    }
   return(images->previous);
 }
 

@@ -636,7 +636,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 DestroyImageList(image);
                 return((Image *) NULL);
               }
-            image=GetNextImageInList(image);
+            image=SyncBlobToImage(image);
           }
         (void) SetMonitorHandler(handler);
         if (!MagickMonitor(LoadImageText,j-1,number_images,&image->exception))

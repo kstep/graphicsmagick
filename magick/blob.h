@@ -97,7 +97,8 @@ extern MagickExport ExtendedSignedIntegralType
 
 extern MagickExport Image
   *BlobToImage(const ImageInfo *,const void *,const size_t,ExceptionInfo *),
-  *PingBlob(const ImageInfo *,const void *,const size_t,ExceptionInfo *);
+  *PingBlob(const ImageInfo *,const void *,const size_t,ExceptionInfo *),
+  *SyncBlobToImage(const Image *);
 
 extern MagickExport int
   EOFBlob(const Image *),

@@ -582,7 +582,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=GetNextImageInList(image);
+        image=SyncBlobToImage(image);
         if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
           break;
       }
@@ -933,7 +933,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     LiberateMemory((void **) &iris_pixels);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImageInList(image);
+    image=SyncBlobToImage(image);
     if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
       break;
   } while (image_info->adjoin);
