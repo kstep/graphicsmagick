@@ -3200,15 +3200,17 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
 %
 %  The format of the ModifyImage method is:
 %
-%      Image *ModifyImage(Image *image)
+%      Image *ModifyImage(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport void ModifyImage(Image** image, ExceptionInfo *exception)
+MagickExport void ModifyImage(Image** image,ExceptionInfo *exception)
 {
   Image
     *clone_image;

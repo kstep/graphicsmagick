@@ -1207,9 +1207,6 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
   DrawInfo
     *clone_info;
 
-  Image
-    *clip_mask;
-
   ImageAttribute
     *attribute;
 
@@ -1221,23 +1218,31 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
   attribute=GetImageAttribute(image,clip_path);
   if (attribute == (ImageAttribute *) NULL)
     return(False);
-  clip_mask=CloneImage(image,0,0,True,&image->exception);
-  if (clip_mask == (Image *) NULL)
-    return(False);
-  SetImage(clip_mask,TransparentOpacity);
+  if (image->clip_mask != (Image *) NULL)
+    ModifyImage(&image->clip_mask,&image->exception);
+  else
+    {
+      Image
+        *clip_mask;
+
+      clip_mask=CloneImage(image,0,0,True,&image->exception);
+      if (clip_mask == (Image *) NULL)
+        return(False);
+      SetImageClipMask(image,clip_mask);
+      DestroyImage(clip_mask);
+    }
   if (draw_info->debug)
     (void) fprintf(stdout,"\nbegin clip-path %.1024s\n",draw_info->clip_path);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("black",&clone_info->fill);
-  LiberateMemory((void **) &clone_info->clip_path);
-  status=DrawImage(clip_mask,clone_info);
+  clone_info->clip_path=(char *) NULL;
+  SetImage(image->clip_mask,TransparentOpacity);
+  status=DrawImage(image->clip_mask,clone_info);
   draw_info->clip_units=clone_info->clip_units;
   DestroyDrawInfo(clone_info);
   if (draw_info->debug)
     (void) fprintf(stdout,"end clip-path\n\n");
-  SetImageClipMask(image,clip_mask);
-  DestroyImage(clip_mask);
   return(status);
 }
 
