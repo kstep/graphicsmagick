@@ -751,17 +751,18 @@ Export void *MapBlob(int file,const MapMode mode,size_t *length)
     case ReadMode:
     default:
     {
-      map=mmap((char *) NULL,*length,PROT_READ,MAP_PRIVATE,file,0);
+      map=(void *) mmap((char *) NULL,*length,PROT_READ,MAP_PRIVATE,file,0);
       break;
     }
     case WriteMode:
     {
-      map=mmap((char *) NULL,*length,PROT_WRITE,MAP_SHARED,file,0);
+      map=(void *) mmap((char *) NULL,*length,PROT_WRITE,MAP_SHARED,file,0);
       break;
     }
     case IOMode:
     {
-      map=mmap((char *) NULL,*length,PROT_READ | PROT_WRITE,MAP_SHARED,file,0);
+      map=(void *) mmap((char *) NULL,*length,PROT_READ | PROT_WRITE,
+        MAP_SHARED,file,0);
       break;
     }
   }
