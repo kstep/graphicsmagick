@@ -646,8 +646,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               */
               lsb_first=1;
               if (*(char *) &lsb_first)
-                MSBOrderShort((char *) scanline,
-                  (TIFFScanlineSize(tiff) << 1)+4);
+                MSBOrderShort(scanline,(TIFFScanlineSize(tiff) << 1)+4);
             }
           p=scanline;
           r=quantum_scanline;
@@ -749,15 +748,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
-        scanline=(unsigned char *) AcquireMemory(2*TIFFScanlineSize(tiff)+4);
+        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
+          &sample_info);
+        scanline=(unsigned char *) AcquireMemory(8*TIFFScanlineSize(tiff));
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image)
           }
-        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
-          &sample_info);
         image->matte=extra_samples == 1;
         for (y=0; y < (long) image->rows; y++)
         {
@@ -775,8 +774,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               */
               lsb_first=1;
               if (*(char *) &lsb_first)
-                MSBOrderShort((char *) scanline,
-                  (TIFFScanlineSize(tiff) << 1)+4);
+                MSBOrderShort(scanline,8*TIFFScanlineSize(tiff));
             }
           if (bits_per_sample == 4)
             {
