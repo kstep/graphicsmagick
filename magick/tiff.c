@@ -500,7 +500,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) strcpy(image->filename,image_info->filename);
       image->temporary=True;
     }
-  CloseBlob(image);
   TIFFSetErrorHandler((TIFFErrorHandler) TIFFWarningHandler);
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarningHandler);
   tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
