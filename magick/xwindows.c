@@ -1392,10 +1392,20 @@ MagickExport void XDelay(Display *display,const unsigned long milliseconds)
   (void) XFlush(display);
   if (milliseconds == 0)
     return;
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#if defined(sysv)
+
+#if defined(WIN32)
+  Sleep(milliseconds);
+#elif defined(vms)
+  {
+    float
+      timer;
+
+    timer=milliseconds/1000.0;
+    lib$wait(&timer);
+  }
+#elif defined(HAVE_POLL)
   (void) poll((struct pollfd *) NULL,0,(int) milliseconds);
-#else
+#elif defined(HAVE_SELECT)
   {
     struct timeval
       timer;
@@ -1404,19 +1414,8 @@ MagickExport void XDelay(Display *display,const unsigned long milliseconds)
     timer.tv_usec=(long) (milliseconds % 1000)*1000;
     (void) select(0,(XFD_SET *) NULL,(XFD_SET *) NULL,(XFD_SET *) NULL,&timer);
   }
-#endif
-#endif
-#if defined(vms)
-  {
-    float
-      timer;
-
-    timer=milliseconds/1000.0;
-    lib$wait(&timer);
-  }
-#endif
-#if defined(WIN32)
-  Sleep(milliseconds);
+#else
+# error "Time delay method not defined."
 #endif
 }
 
