@@ -89,10 +89,6 @@ SOURCE=..\..\freetype\src\base\ftglyph.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\freetype\src\base\ftgrays.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\freetype\src\base\ftinit.c
 # End Source File
 # Begin Source File
@@ -261,15 +257,7 @@ SOURCE=..\..\freetype\include\ftsystem.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\freetype\include\t1tables.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\freetype\include\ttnameid.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\freetype\include\tttables.h
 # End Source File
 # Begin Source File
 

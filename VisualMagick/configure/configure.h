@@ -51,6 +51,8 @@ private:
   void process_project_type(ofstream &dsw,
           const char *root, const int runtime,
           const char *stype, const int btype);
+  void process_project_replacements(ofstream &dsw,
+          const char *root, const char *stype);
 	void write_lib_dsp(
     bool dll,
     int runtime,

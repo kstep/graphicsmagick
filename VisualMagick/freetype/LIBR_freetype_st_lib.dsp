@@ -81,10 +81,6 @@ SOURCE=..\..\freetype\src\base\ftglyph.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\freetype\src\base\ftgrays.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\freetype\src\base\ftinit.c
 # End Source File
 # Begin Source File
@@ -249,10 +245,6 @@ SOURCE=..\..\freetype\src\type1\t1parse.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\freetype\include\t1tables.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\freetype\src\type1\t1tokens.h
 # End Source File
 # Begin Source File
@@ -310,10 +302,6 @@ SOURCE=..\..\freetype\src\sfnt\ttpost.h
 # Begin Source File
 
 SOURCE=..\..\freetype\src\sfnt\ttsbit.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\freetype\include\tttables.h
 # End Source File
 # Begin Source File
 

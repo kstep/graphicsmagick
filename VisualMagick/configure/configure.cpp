@@ -1058,6 +1058,117 @@ bool CConfigureApp::is_project_type(const char *root, const int project_type)
   return false;
 }
 
+void CConfigureApp::process_project_replacements(ofstream &dsw,
+      const char *root, const char *stype)
+{
+    int project_type = DISABLED;
+    HANDLE tophandle;
+	  WIN32_FIND_DATA	topdata;
+
+    // Scan all top level directories and process the ones
+    // that we are allowed to.
+    std::string rootpath = root;
+    rootpath += "\\*";
+	  tophandle = FindFirstFile(rootpath.c_str(), &topdata);
+	  do
+	  {
+	    if (tophandle == INVALID_HANDLE_VALUE)
+        break;
+		  if ((topdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
+              FILE_ATTRIBUTE_DIRECTORY)
+      {
+        HANDLE handle;
+	      WIN32_FIND_DATA	data;
+
+        if (stricmp(topdata.cFileName,".") == 0)
+          continue;
+        if (stricmp(topdata.cFileName,"..") == 0)
+          continue;
+
+        // Now look to see if there is a directory by the same name
+        // one level above our config level
+        std::string searchpath;
+        searchpath = "..\\";
+        searchpath += root;
+        searchpath += "\\";
+        searchpath += topdata.cFileName;
+	      handle = FindFirstFile(searchpath.c_str(), &data);
+	      if (handle == INVALID_HANDLE_VALUE)
+          continue;
+        FindClose(handle);
+
+		    if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
+                FILE_ATTRIBUTE_DIRECTORY)
+        {
+	        WIN32_FIND_DATA	nestdata;
+          HANDLE nesthandle;
+
+          // Now look for all file with the specified spec in the
+          // current directory
+          std::string filepath;
+          filepath = root;
+          filepath += "\\";
+          filepath += topdata.cFileName;
+          filepath += "\\";
+          filepath += stype;
+	        nesthandle = FindFirstFile(filepath.c_str(), &nestdata);
+          do
+          {
+	          if (nesthandle == INVALID_HANDLE_VALUE)
+              break;
+
+            filepath = root;
+            filepath += "\\";
+            filepath += topdata.cFileName;
+            filepath += "\\";
+            filepath += nestdata.cFileName;
+            {
+              char drive[_MAX_DRIVE];
+              char dir[_MAX_DIR];
+              char fname[_MAX_FNAME];
+              char ext[_MAX_EXT];
+
+              _splitpath( filepath.c_str(), drive, dir, fname, ext );
+
+              rootpath = "..\\";
+              rootpath += root;
+              rootpath += "\\";
+              rootpath += topdata.cFileName;
+              rootpath += "\\";
+              rootpath += fname;
+	            handle = FindFirstFile(rootpath.c_str(), &nestdata);
+	            if (handle != INVALID_HANDLE_VALUE)
+              {
+                std::string renamed;
+                FindClose(handle);
+                renamed = rootpath;
+                renamed += ".bak";
+                if (MoveFile(rootpath.c_str(),renamed.c_str())==0)
+                {
+                  MessageBox(NULL, TEXT("Could not copy file to destination."), NULL, MB_OK);
+                }
+                else
+                {
+                  if (CopyFile(filepath.c_str(),rootpath.c_str(),FALSE)==0)
+                  {
+                    MessageBox(NULL, TEXT("Could not copy file to destination."), NULL, MB_OK);
+                  }
+                }
+              }
+            }
+	        } while (FindNextFile(nesthandle, &nestdata));
+          FindClose(nesthandle);
+
+          rootpath = root;
+          rootpath += "\\";
+          rootpath += data.cFileName;
+          process_project_replacements(dsw,rootpath.c_str(),stype);
+        }
+      }
+	  } while (FindNextFile(tophandle, &topdata));
+    FindClose(tophandle);
+}
+
 void CConfigureApp::process_project_type(ofstream &dsw,
       const char *root, int runtime, const char *stype, const int btype)
 {
@@ -1212,6 +1323,7 @@ BOOL CConfigureApp::InitInstance()
 		  libs_list_shared.push_back("wsock32.lib");
     }
 
+    process_project_replacements(dsw,"..","*.in");
     process_project_type(dsw,"..",projectType,"THIRDPARTY.txt",THIRDPARTY);
     process_project_type(dsw,"..",projectType,"LIBRARY.txt",   LIBRARY);
     process_project_type(dsw,"..",projectType,"STATICLIB.txt", STATICLIB);
