@@ -627,7 +627,7 @@ void Magick::Image::draw ( const Magick::Drawable &drawable_ )
     = options()->drawInfo();
 
   ostrstream primitive;
-  primitive << drawable_ << ends;
+  primitive << drawable_ << endl << ends;
   drawInfo->primitive = primitive.str();
   // cout << "Primitive: \"" << drawInfo->primitive << "\"" << endl;
 

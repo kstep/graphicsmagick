@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2002
 //
 // GD/PerlMagick example using Magick++ methods.
 //
@@ -35,7 +35,6 @@ int main( int /*argc*/, char ** argv)
     // Create a 300x300 white canvas.
     //
     Image image( "300x300", "white" );
-
 
     //
     // Draw texture-filled polygon

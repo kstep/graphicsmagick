@@ -38,7 +38,8 @@ int main( int /*argc*/, char ** argv)
     // Drawing list
     std::list<Magick::Drawable> drawList;
 
-    // Start drawing by pushing a drawing context with specified viewbox size
+    // Start drawing by pushing a drawing context with specified
+    // viewbox size
     drawList.push_back(DrawablePushGraphicContext());
     drawList.push_back(DrawableViewbox(0,0,image.columns(),image.rows()));
 
