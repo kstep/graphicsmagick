@@ -71,13 +71,13 @@ static int
   WmfPixelHeight(CSTRUCT *),
   WmfPixelWidth(CSTRUCT *);
 
-static void *
-  WmfInitialUserData(CSTRUCT *);
+/* static void * */
+/*   WmfInitialUserData(CSTRUCT *); */
 
 static void
   ExtendMVG(CSTRUCT *cstruct, const char* buff),
   WmfClipRect(CSTRUCT *),
-  WmfCopyUserData(CSTRUCT *,DC *,DC *),
+/*   WmfCopyUserData(CSTRUCT *,DC *,DC *), */
   WmfCopyXpm(CSTRUCT *,U16, U16, U16 , U16 ,U16,U16,char *,U32 ),
   WmfDrawArc(CSTRUCT*,WMFRECORD*,int finishing),
   WmfDrawChord(CSTRUCT *,WMFRECORD *),
@@ -95,12 +95,12 @@ static void
   WmfFillOpaque(CSTRUCT *,WMFRECORD *),
   WmfFinish(CSTRUCT *),
   WmfFloodFill(CSTRUCT *,WMFRECORD *),
-  WmfFrameRgn(CSTRUCT *cstruct,WINEREGION *rgn,U16 width,U16 height),
-  WmfFreeUserData(CSTRUCT *,DC *),
+/*   WmfFrameRgn(CSTRUCT *cstruct,WINEREGION *rgn,U16 width,U16 height), */
+/*   WmfFreeUserData(CSTRUCT *,DC *), */
   WmfNoClipRect(CSTRUCT *),
   WmfPaintRgn(CSTRUCT *, WINEREGION *rgn),
   WmfParseROP(CSTRUCT *,U32 ,U16 , U16, U16 , U16 ),
-  WmfRestoreUserData(CSTRUCT *,DC *),
+/*   WmfRestoreUserData(CSTRUCT *,DC *), */
   WmfSetFillStyle(CSTRUCT *,LOGBRUSH *,DC *),
   WmfSetPenStyle(CSTRUCT *,LOGPEN *,DC *),
   WmfSetPixel(CSTRUCT *,WMFRECORD *),
