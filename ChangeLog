@@ -80,7 +80,7 @@
   * DCM patch provided by Shane Blackett.
 
 2002-05-07  Cristy  <cristy@mystic.es.dupont.com>
-  * Lock mutex when destorying a SemaphoreInfo structure (patch provided
+  * Lock mutex when destroying a SemaphoreInfo structure (patch provided
     by William Radcliffe).
   * Added mingw patches provided by Derry Bryson.
 
