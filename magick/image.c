@@ -2184,12 +2184,11 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       p=image->colormap;
       for (i=0; i < (long) image->colors; i++)
       {
-        if (image->depth > 8)
-          (void) fprintf(file,"    %lu: (%5d,%5d,%5d)",i,p->red,p->green,
-            p->blue);
-        else
-          (void) fprintf(file,"    %lu: (%3ld,%3ld,%3ld)",i,Downscale(p->red),
-            Downscale(p->green),Downscale(p->blue));
+        char
+          tuple[MaxTextExtent];
+
+        GetColorTuple(image,p,False,tuple);
+        (void) fprintf(file,"    %lu: %.1024s",i,tuple);
         (void) fprintf(file,"\t");
         (void) QueryColorname(image,p,SVGCompliance,name,&image->exception);
         (void) fprintf(file,"  %.1024s",name);

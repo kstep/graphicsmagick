@@ -578,13 +578,12 @@ MagickExport void GetColorTuple(const Image *image,const PixelPacket *color,
     {
       if (image->matte)
         {
-          FormatString(tuple,
-            hex ? "#%02lx%02lx%02lx%02lx" : "(%3lu,%3lu,%3lu,%3lu)",
+          FormatString(tuple,hex ? "#%02x%02x%02x%02x" : "(%3u,%3u,%3u,%3u)",
             Downscale(color->red),Downscale(color->green),
             Downscale(color->blue),Downscale(color->opacity));
           return;
         }
-      FormatString(tuple,hex ? "#%02lx%02lx%02lx" : "(%3lu,%3lu,%3lu)",
+      FormatString(tuple,hex ? "#%02x%02x%02x" : "(%3u,%3u,%3u)",
         Downscale(color->red),Downscale(color->green),Downscale(color->blue));
       return;
     }
