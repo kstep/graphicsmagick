@@ -430,7 +430,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
         cube_info->color.red=q->red;
         cube_info->color.green=q->green;
         cube_info->color.blue=q->blue;
-        cube_info->distance=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
+        cube_info->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
         ClosestColor(cube_info,node_info->parent);
         index=(unsigned int) cube_info->color_number;
         for (i=0; i < count; i++)
@@ -601,10 +601,10 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
         if (!ColorMatch(p,p+count))
           break;
       index=MaxTreeDepth-1;
-      bisect=((double) MaxRGB+1.0)/2.0;
-      mid_red=(double) MaxRGB/2.0;
-      mid_green=(double) MaxRGB/2.0;
-      mid_blue=(double) MaxRGB/2.0;
+      bisect=(MaxRGB+1)/2.0;
+      mid_red=MaxRGB/2.0;
+      mid_green=MaxRGB/2.0;
+      mid_blue=MaxRGB/2.0;
       node_info=cube_info->root;
       for (level=1; level <= cube_info->depth; level++)
       {
@@ -633,9 +633,9 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
           Approximate the quantization error represented by this node.
         */
         node_info=node_info->child[id];
-        red=(double) p->red-mid_red;
-        green=(double) p->green-mid_green;
-        blue=(double) p->blue-mid_blue;
+        red=p->red-mid_red;
+        green=p->green-mid_green;
+        blue=p->blue-mid_blue;
         node_info->quantize_error+=
           count*red*red+count*green*green+count*blue*blue;
         cube_info->root->quantize_error+=node_info->quantize_error;
@@ -1069,7 +1069,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           p->color.red=red;
           p->color.green=green;
           p->color.blue=blue;
-          p->distance=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
+          p->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
           ClosestColor(p,node_info->parent);
           p->cache[i]=(long) p->color_number;
         }
@@ -1256,7 +1256,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   for (i=0; i < ExceptionQueueLength; i++)
   {
     cube_info->weights[ExceptionQueueLength-i-1]=1.0/weight;
-    weight*=exp(log(((double) MaxRGB+1.0))/(ExceptionQueueLength-1.0));
+    weight*=exp(log((MaxRGB+1))/(ExceptionQueueLength-1.0));
   }
   /*
     Normalize the weighting factors.
@@ -1959,9 +1959,9 @@ MagickExport unsigned int QuantizationError(Image *image)
   */
   image->mean_error_per_pixel=total_error/image->columns/image->rows;
   image->normalized_mean_error=image->mean_error_per_pixel/
-    (3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0));
+    (3.0*(MaxRGB+1)*(MaxRGB+1));
   image->normalized_maximum_error=maximum_error_per_pixel/
-    (3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0));
+    (3.0*(MaxRGB+1)*(MaxRGB+1));
   return(True);
 }
 

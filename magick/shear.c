@@ -551,7 +551,7 @@ static void XShearImage(Image *image,const double degrees,
         direction=LEFT;
       }
     step=(long) floor(displacement+0.5);
-    alpha=(double) MaxRGB*(displacement-step);
+    alpha=MaxRGB*(displacement-step);
     if (alpha == 0.0)
       {
         /*
@@ -742,7 +742,7 @@ static void YShearImage(Image *image,const double degrees,
         direction=UP;
       }
     step=(long) floor(displacement+0.5);
-    alpha=(double) MaxRGB*(displacement-step);
+    alpha=MaxRGB*(displacement-step);
     if (alpha == 0.0)
       {
         /*

@@ -46,7 +46,7 @@ typedef unsigned char Quantum;
 
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
-#define MaxRGB  4294967295e-0
+#define MaxRGB  4294967295UL
 #define PixelIntensity(pixel) ((unsigned long) \
   ((0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue)+0.5))
 #define PixelIntensityToQuantum(pixel) ((Quantum) \
