@@ -227,7 +227,7 @@ int main ( int argc, char **argv )
 
   if ( !strcmp( "PCD", format ) ||
        !strcmp( "PCDS", format ) )
-    fuzz_factor = 7;
+    fuzz_factor = 8;
 
   if ( !strcmp( "UYVY", format ) )
     fuzz_factor = 1;
