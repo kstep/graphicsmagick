@@ -130,6 +130,7 @@ ModuleExport void RegisterHTMLImage(void)
     *entry;
 
   entry=SetMagickInfo("HTM");
+  entry->encoder=WriteHTMLImage;
   entry->magick=IsHTML;
   entry->adjoin=False;
   entry->description=
@@ -137,12 +138,15 @@ ModuleExport void RegisterHTMLImage(void)
   entry->module=AllocateString("HTML");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("HTML");
+  entry->encoder=WriteHTMLImage;
+  entry->magick=IsHTML;
   entry->adjoin=False;
   entry->description=
     AllocateString("Hypertext Markup Language and a client-side image map");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("SHTML");
   entry->encoder=WriteHTMLImage;
+  entry->magick=IsHTML;
   entry->adjoin=False;
   entry->description=
     AllocateString("Hypertext Markup Language and a client-side image map");
@@ -329,13 +333,13 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       /*
         Write an image map.
       */
-      FormatString(buffer,"<map name=%.1024s>\n",mapname);
+      FormatString(buffer,"<map name=\"%.1024s\">\n",mapname);
       (void) WriteBlob(image,strlen(buffer),buffer);
-      FormatString(buffer,"  <area href=""%.1024s""",url);
+      FormatString(buffer,"  <area href=\"%.1024s",url);
       (void) WriteBlob(image,strlen(buffer),buffer);
       if (image->directory == (char *) NULL)
         {
-          FormatString(buffer,"%.1024s shape=rect coords=0,0,%u,%u>\n",
+          FormatString(buffer,"%.1024s\" shape=rect coords=0,0,%u,%u>\n",
             image->filename,width-1,height-1);
           (void) WriteBlob(image,strlen(buffer),buffer);
         }
@@ -345,12 +349,12 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
             (void) WriteByte(image,*p);
           else
             {
-              FormatString(buffer," shape=rect coords=%d,%d,%d,%d>\n",
+              FormatString(buffer,"\" shape=rect coords=%d,%d,%d,%d>\n",
                 x,y,x+(int) width-1,y+(int) height-1);
               (void) WriteBlob(image,strlen(buffer),buffer);
               if (*(p+1) != '\0')
                 {
-                  FormatString(buffer,"  <area href=""%.1024s""",url);
+                  FormatString(buffer,"  <area href=\"%.1024s\"",url);
                   (void) WriteBlob(image,strlen(buffer),buffer);
                 }
               x+=width;
@@ -414,13 +418,13 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Write an image map.
   */
-  FormatString(buffer,"<map name=%.1024s>\n",mapname);
+  FormatString(buffer,"<map name=\"%.1024s\">\n",mapname);
   (void) WriteBlob(image,strlen(buffer),buffer);
-  FormatString(buffer,"  <area href=""%.1024s""",url);
+  FormatString(buffer,"  <area href=\"%.1024s",url);
   (void) WriteBlob(image,strlen(buffer),buffer);
   if (image->directory == (char *) NULL)
     {
-      FormatString(buffer,"%.1024s shape=rect coords=0,0,%u,%u>\n",
+      FormatString(buffer,"%.1024s\" shape=rect coords=0,0,%u,%u>\n",
         image->filename,width-1,height-1);
       (void) WriteBlob(image,strlen(buffer),buffer);
     }
@@ -435,7 +439,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,strlen(buffer),buffer);
           if (*(p+1) != '\0')
             {
-              FormatString(buffer,"  <area href=""%.1024s""",url);
+              FormatString(buffer,"  <area href=\"%.1024s\"",url);
               (void) WriteBlob(image,strlen(buffer),buffer);
             }
           x+=width;
