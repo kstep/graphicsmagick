@@ -166,11 +166,11 @@ Export void GetMontageInfo(MontageInfo *montage_info)
 %
 %  The format of the MontageImages method is:
 %
-%      Image *MontageImages(Image *images,const MontageInfo *montage_info)
+%      Image *MontageImages(Image *image,const MontageInfo *montage_info)
 %
 %  A description of each parameter follows:
 %
-%    o images: Specifies a pointer to an array of Image structures.
+%    o image: Specifies a pointer to an array of Image structures.
 %
 %    o montage_info: Specifies a pointer to a MontageInfo structure.
 %
@@ -238,10 +238,10 @@ static int SceneCompare(const void *x,const void *y)
   return((int) (*image_1)->scene-(int) (*image_2)->scene);
 }
 
-Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
+Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
 {
-#define MontageImageText  "  Creating visual image directory...  "
-#define TileImageText  "  Creating image tiles...  "
+#define MontageImageText  "  Creating visual next directory...  "
+#define TileImageText  "  Creating next tiles...  "
 
   AnnotateInfo
     *annotate_info;
@@ -256,12 +256,11 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
     frame_info;
 
   Image
-    *image,
-    **image_list,
+    **next_list,
     **master_list,
-    *montage_image,
+    *montage_next,
     *texture,
-    *tiled_image;
+    *tiled_next;
 
   ImageAttribute
     *attribute;
@@ -277,6 +276,9 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
 
   MonitorHandler
     handler;
+
+  register Image
+    *next;
 
   register int
     i;
@@ -295,7 +297,7 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
     count,
     font_height,
     height,
-    images_per_page,
+    image_per_page,
     max_height,
     number_images,
     number_lines,
@@ -308,48 +310,42 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
     total_tiles,
     width;
 
-  assert(images != (Image *) NULL);
+  /*
+    Create next tiles.
+  */
+  assert(image != (Image *) NULL);
   assert(montage_info != (MontageInfo *) NULL);
-  /*
-    Convert image list to an image group.
-  */
-  image_list=ListToGroupImage(images,&number_images);
-  if (image_list == (Image **) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to montage image list",
-      "Memory allocation failed");
-  master_list=image_list;
-  /*
-    Create image tiles.
-  */
+  next_list=ListToGroupImage(image,&number_images);
+  master_list=next_list;
   for (tile=0; tile < number_images; tile++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    width=image_list[tile]->columns;
-    height=image_list[tile]->rows;
+    width=next_list[tile]->columns;
+    height=next_list[tile]->rows;
     x=0;
     y=0;
     (void) ParseImageGeometry(montage_info->geometry,&x,&y,&width,&height);
-    image_list[tile]->orphan=True;
-    tiled_image=ZoomImage(image_list[tile],width,height);
-    if (tiled_image == (Image *) NULL)
+    next_list[tile]->orphan=True;
+    tiled_next=ZoomImage(next_list[tile],width,height);
+    if (tiled_next == (Image *) NULL)
       {
         for (i=0; i < (int) tile; i++)
-          DestroyImage(image_list[i]);
+          DestroyImage(next_list[i]);
         (void) SetMonitorHandler(handler);
         return((Image *) NULL);
       }
-    image_list[tile]=tiled_image;
+    next_list[tile]=tiled_next;
     (void) SetMonitorHandler(handler);
     ProgressMonitor(TileImageText,tile,number_images);
   }
   /*
-    Sort image_list by increasing tile number.
+    Sort next_list by increasing tile number.
   */
   for (tile=0; tile < number_images; tile++)
-    if (image_list[tile]->scene == 0)
+    if (next_list[tile]->scene == 0)
       break;
   if (tile == number_images)
-    qsort((void *) image_list,number_images,sizeof(Image *),
+    qsort((void *) next_list,number_images,sizeof(Image *),
       (int (*)(const void *, const void *)) SceneCompare);
   /*
     Determine tiles per row and column.
@@ -398,8 +394,8 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
     }
   tile_info.x=montage_info->border_width;
   tile_info.y=montage_info->border_width;
-  tile_info.width=image_list[0]->columns;
-  tile_info.height=image_list[0]->rows;
+  tile_info.width=next_list[0]->columns;
+  tile_info.height=next_list[0]->rows;
   concatenate=False;
   if (montage_info->geometry != (char *) NULL)
     {
@@ -427,10 +423,10 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
     }
   for (tile=1; tile < number_images; tile++)
   {
-    if (image_list[tile]->columns > tile_info.width)
-      tile_info.width=image_list[tile]->columns;
-    if (image_list[tile]->rows > tile_info.height)
-      tile_info.height=image_list[tile]->rows;
+    if (next_list[tile]->columns > tile_info.width)
+      tile_info.width=next_list[tile]->columns;
+    if (next_list[tile]->rows > tile_info.height)
+      tile_info.height=next_list[tile]->rows;
   }
   /*
     Initialize annotate info.
@@ -458,14 +454,14 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
     &font_height);
   for (tile=0; tile < number_images; tile++)
   {
-    attribute=GetImageAttribute(image_list[tile],"Label");
+    attribute=GetImageAttribute(next_list[tile],"Label");
     if (attribute == (ImageAttribute *) NULL)
       continue;
     FormatLabel(clone_info,attribute->value,tile_info.width+(border_width << 1),
       &font_height);
   }
   /*
-    Determine the number of lines in an image label.
+    Determine the number of lines in an next label.
   */
   title_offset=0;
   if (montage_info->title != (char *) NULL)
@@ -474,21 +470,21 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
   number_lines=0;
   for (tile=0; tile < number_images; tile++)
   {
-    attribute=GetImageAttribute(image_list[tile],"Label");
+    attribute=GetImageAttribute(next_list[tile],"Label");
     if (attribute == (ImageAttribute *) NULL)
       continue;
     if (MultilineCensus(attribute->value) > (int) number_lines)
       number_lines=MultilineCensus(attribute->value);
   }
   /*
-    Allocate image structure.
+    Allocate next structure.
   */
-  montage_image=AllocateImage(clone_info);
-  montage_image->scene=1;
-  images_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
+  montage_next=AllocateImage(clone_info);
+  montage_next->scene=1;
+  image_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
   tiles=0;
   total_tiles=number_images;
-  for (i=0; i < (int) images_per_page; i++)
+  for (i=0; i < (int) image_per_page; i++)
   {
     /*
       Determine bounding box.
@@ -501,12 +497,12 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
     bounding_box.height=0;
     for (tile=0; tile < tiles_per_page; tile++)
     {
-      width=concatenate ? image_list[tile]->columns : tile_info.width;
+      width=concatenate ? next_list[tile]->columns : tile_info.width;
       x_offset+=width+(tile_info.x+border_width)*2;
       if (x_offset > (int) bounding_box.width)
         bounding_box.width=x_offset;
-      if (image_list[tile]->rows > max_height)
-        max_height=image_list[tile]->rows;
+      if (next_list[tile]->rows > max_height)
+        max_height=next_list[tile]->rows;
       if (((tile+1) == tiles_per_page) || (((tile+1) % tiles_per_row) == 0))
         {
           x_offset=0;
@@ -521,54 +517,54 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
     /*
       Initialize Image structure.
     */
-    (void) strcpy(montage_image->filename,montage_info->filename);
-    montage_image->columns=bounding_box.width;
-    montage_image->rows=bounding_box.height;
-    SetImage(montage_image,Opaque);
+    (void) strcpy(montage_next->filename,montage_info->filename);
+    montage_next->columns=bounding_box.width;
+    montage_next->rows=bounding_box.height;
+    SetImage(montage_next,Opaque);
     /*
       Set montage geometry.
     */
-    montage_image->montage=(char *) AllocateMemory(MaxTextExtent);
+    montage_next->montage=(char *) AllocateMemory(MaxTextExtent);
     count=1;
     for (tile=0; tile < tiles_per_page; tile++)
-      count+=Extent(image_list[tile]->filename)+1;
-    montage_image->directory=(char *) AllocateMemory(count);
-    if ((montage_image->montage == (char *) NULL) ||
-        (montage_image->directory == (char *) NULL))
+      count+=Extent(next_list[tile]->filename)+1;
+    montage_next->directory=(char *) AllocateMemory(count);
+    if ((montage_next->montage == (char *) NULL) ||
+        (montage_next->directory == (char *) NULL))
       {
-        DestroyImages(montage_image);
-        ThrowImageException(ResourceLimitWarning,"Unable to montage image_list",
+        DestroyImages(montage_next);
+        ThrowImageException(ResourceLimitWarning,"Unable to montage next_list",
           "Memory allocation failed");
       }
     x_offset=0;
     y_offset=title_offset;
-    FormatString(montage_image->montage,"%dx%d%+d%+d",
+    FormatString(montage_next->montage,"%dx%d%+d%+d",
       (int) (tile_info.width+(tile_info.x+border_width)*2),
       (int) (tile_info.height+(tile_info.y+border_width)*2+(font_height+4)*
       number_lines+(montage_info->shadow ? 4 : 0)),x_offset,y_offset);
-    *montage_image->directory='\0';
+    *montage_next->directory='\0';
     for (tile=0; tile < tiles_per_page; tile++)
     {
-      (void) strcat(montage_image->directory,image_list[tile]->filename);
-      (void) strcat(montage_image->directory,"\n");
+      (void) strcat(montage_next->directory,next_list[tile]->filename);
+      (void) strcat(montage_next->directory,"\n");
     }
     handler=SetMonitorHandler((MonitorHandler) NULL);
     if (texture != (Image *) NULL)
-      TextureImage(montage_image,texture);
+      TextureImage(montage_next,texture);
     if (montage_info->title != (char *) NULL)
       {
         /*
-          Annotate composite image with title.
+          Annotate composite next with title.
         */
-        FormatString(geometry,"%ux%u%+d%+d",montage_image->columns,
+        FormatString(geometry,"%ux%u%+d%+d",montage_next->columns,
           font_height << 1,0,tile_info.y+4);
         (void) CloneString(&annotate_info->geometry,geometry);
         (void) CloneString(&annotate_info->text,montage_info->title);
-        AnnotateImage(montage_image,annotate_info);
+        AnnotateImage(montage_next,annotate_info);
       }
     (void) SetMonitorHandler(handler);
     /*
-      Copy tile image to the composite image.
+      Copy tile next to the composite next.
     */
     x_offset=tile_info.x;
     y_offset=title_offset+tile_info.y;
@@ -576,42 +572,42 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
     for (tile=0; tile < tiles_per_page; tile++)
     {
       /*
-        Copy this tile to the composite image.
+        Copy this tile to the composite next.
       */
       handler=SetMonitorHandler((MonitorHandler) NULL);
-      image=image_list[tile];
-      width=concatenate ? image->columns : tile_info.width;
-      if (image->rows > max_height)
-        max_height=image->rows;
+      next=next_list[tile];
+      width=concatenate ? next->columns : tile_info.width;
+      if (next->rows > max_height)
+        max_height=next->rows;
       height=concatenate ? max_height : tile_info.height;
       if (border_width != 0)
         {
           Image
-            *bordered_image;
+            *bordered_next;
 
           RectangleInfo
             border_info;
 
           /*
-            Put a border around the image.
+            Put a border around the next.
           */
           border_info.width=border_width;
           border_info.height=border_width;
           if (montage_info->frame != (char *) NULL)
             {
-              border_info.width=(width-image->columns+1) >> 1;
-              border_info.height=(height-image->rows+1) >> 1;
+              border_info.width=(width-next->columns+1) >> 1;
+              border_info.height=(height-next->rows+1) >> 1;
             }
-          image->orphan=True;
-          bordered_image=BorderImage(image,&border_info);
-          if (bordered_image != (Image *) NULL)
+          next->orphan=True;
+          bordered_next=BorderImage(next,&border_info);
+          if (bordered_next != (Image *) NULL)
             {
-              DestroyImage(image);
-              image=bordered_image;
+              DestroyImage(next);
+              next=bordered_next;
             }
         }
       /*
-        Gravitate image as specified by the tile gravity.
+        Gravitate next as specified by the tile gravity.
       */
       switch (montage_info->gravity)
       {
@@ -623,20 +619,20 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
         }
         case NorthGravity:
         {
-          x=((width+(border_width << 1))-image->columns) >> 1;
+          x=((width+(border_width << 1))-next->columns) >> 1;
           y=0;
           break;
         }
         case NorthEastGravity:
         {
-          x=(width+(border_width << 1))-image->columns;
+          x=(width+(border_width << 1))-next->columns;
           y=0;
           break;
         }
         case WestGravity:
         {
           x=0;
-          y=((height+(border_width << 1))-image->rows) >> 1;
+          y=((height+(border_width << 1))-next->rows) >> 1;
           break;
         }
         case ForgetGravity:
@@ -644,32 +640,32 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
         case CenterGravity:
         default:
         {
-          x=((width+(border_width << 1))-image->columns) >> 1;
-          y=((height+(border_width << 1))-image->rows) >> 1;
+          x=((width+(border_width << 1))-next->columns) >> 1;
+          y=((height+(border_width << 1))-next->rows) >> 1;
           break;
         }
         case EastGravity:
         {
-          x=(width+(border_width << 1))-image->columns;
-          y=((height+(border_width << 1))-image->rows) >> 1;
+          x=(width+(border_width << 1))-next->columns;
+          y=((height+(border_width << 1))-next->rows) >> 1;
           break;
         }
         case SouthWestGravity:
         {
           x=0;
-          y=(height+(border_width << 1))-image->rows;
+          y=(height+(border_width << 1))-next->rows;
           break;
         }
         case SouthGravity:
         {
-          x=((width+(border_width << 1))-image->columns) >> 1;
-          y=(height+(border_width << 1))-image->rows;
+          x=((width+(border_width << 1))-next->columns) >> 1;
+          y=(height+(border_width << 1))-next->rows;
           break;
         }
         case SouthEastGravity:
         {
-          x=(width+(border_width << 1))-image->columns;
-          y=(height+(border_width << 1))-image->rows;
+          x=(width+(border_width << 1))-next->columns;
+          y=(height+(border_width << 1))-next->rows;
           break;
         }
       }
@@ -679,7 +675,7 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
             tile_info;
 
           Image
-            *framed_image;
+            *framed_next;
 
           /*
             Put an ornamental border around this tile.
@@ -687,31 +683,31 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
           tile_info=frame_info;
           tile_info.width=width+2*frame_info.width;
           tile_info.height=height+2*frame_info.height;
-          attribute=GetImageAttribute(image,"Label");
+          attribute=GetImageAttribute(next,"Label");
           if (attribute != (ImageAttribute *) NULL)
             tile_info.height+=(font_height+4)*MultilineCensus(attribute->value);
-          image->orphan=True;
-          framed_image=FrameImage(image,&tile_info);
-          if (framed_image != (Image *) NULL)
+          next->orphan=True;
+          framed_next=FrameImage(next,&tile_info);
+          if (framed_next != (Image *) NULL)
             {
-              DestroyImage(image);
-              image=framed_image;
+              DestroyImage(next);
+              next=framed_next;
             }
           x=0;
           y=0;
         }
-      if (Latin1Compare(image->magick,"NULL") != 0)
+      if (Latin1Compare(next->magick,"NULL") != 0)
         {
           /*
-            Composite background image with tile image.
+            Composite background next with tile next.
           */
-          if (image->matte)
-            CompositeImage(montage_image,montage_info->compose,image,x_offset+x,
+          if (next->matte)
+            CompositeImage(montage_next,montage_info->compose,next,x_offset+x,
               y_offset+y);
           else
-            CompositeImage(montage_image,ReplaceCompositeOp,image,x_offset+x,
+            CompositeImage(montage_next,ReplaceCompositeOp,next,x_offset+x,
               y_offset+y);
-          montage_image->matte=False;
+          montage_next->matte=False;
           if (montage_info->shadow)
             {
               register int
@@ -721,9 +717,9 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
               /*
                 Put a shadow under the tile to show depth.
               */
-              for (rows=0; rows < ((int) image->rows-4); rows++)
+              for (rows=0; rows < ((int) next->rows-4); rows++)
               {
-                q=GetPixelCache(montage_image,x+x_offset+image->columns,
+                q=GetPixelCache(montage_next,x+x_offset+next->columns,
                   y_offset+y+rows+4,Min(tile_info.x,4),1);
                 if (q == (PixelPacket *) NULL)
                   break;
@@ -732,39 +728,39 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
                   Modulate(0.0,0.0,-25.0+4*columns,&q->red,&q->green,&q->blue);
                   q++;
                 }
-                if (!SyncPixelCache(montage_image))
+                if (!SyncPixelCache(montage_next))
                   break;
               }
               for (rows=0; rows < Min(tile_info.y,4); rows++)
               {
-                q=GetPixelCache(montage_image,x+x_offset+4,y_offset+y+
-                  image->rows+rows,image->columns,1);
+                q=GetPixelCache(montage_next,x+x_offset+4,y_offset+y+
+                  next->rows+rows,next->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
-                for (columns=0; columns < (int) image->columns; columns++)
+                for (columns=0; columns < (int) next->columns; columns++)
                 {
                   Modulate(0.0,0.0,-25.0+4*rows,&q->red,&q->green,&q->blue);
                   q++;
                 }
-                if (!SyncPixelCache(montage_image))
+                if (!SyncPixelCache(montage_next))
                   break;
               }
             }
-          attribute=GetImageAttribute(image,"Label");
+          attribute=GetImageAttribute(next,"Label");
           if (attribute != (ImageAttribute *) NULL)
             {
               /*
-                Annotate composite image tile with label.
+                Annotate composite next tile with label.
               */
               FormatString(geometry,"%ux%u%+d%+d",
-                (montage_info->frame ? image->columns : width)-
+                (montage_info->frame ? next->columns : width)-
                 (border_width << 1),font_height,(int) (x_offset+border_width),
                 (int) (montage_info->frame ? y_offset+height+
                 (border_width << 1)-bevel_width-2 : y_offset+tile_info.height+
                 (border_width << 1)+(montage_info->shadow ? 4 : 0)+2));
               (void) CloneString(&annotate_info->geometry,geometry);
               (void) CloneString(&annotate_info->text,attribute->value);
-              AnnotateImage(montage_image,annotate_info);
+              AnnotateImage(montage_next,annotate_info);
             }
         }
       x_offset+=width+(tile_info.x+border_width)*2;
@@ -775,24 +771,24 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
             number_lines+(montage_info->shadow ? 4 : 0);
           max_height=0;
         }
-      DestroyImage(image);
+      DestroyImage(next);
       (void) SetMonitorHandler(handler);
       ProgressMonitor(MontageImageText,tiles,total_tiles);
       tiles++;
     }
-    if ((i+1) < (int) images_per_page)
+    if ((i+1) < (int) image_per_page)
       {
         /*
-          Allocate next image structure.
+          Allocate next next structure.
         */
-        AllocateNextImage(clone_info,montage_image);
-        if (montage_image->next == (Image *) NULL)
+        AllocateNextImage(clone_info,montage_next);
+        if (montage_next->next == (Image *) NULL)
           {
-            DestroyImages(montage_image);
+            DestroyImages(montage_next);
             return((Image *) NULL);
           }
-        montage_image=montage_image->next;
-        image_list+=tiles_per_page;
+        montage_next=montage_next->next;
+        next_list+=tiles_per_page;
         number_images-=tiles_per_page;
       }
   }
@@ -801,7 +797,7 @@ Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
   FreeMemory(master_list);
   DestroyAnnotateInfo(annotate_info);
   DestroyImageInfo(clone_info);
-  while (montage_image->previous != (Image *) NULL)
-    montage_image=montage_image->previous;
-  return(montage_image);
+  while (montage_next->previous != (Image *) NULL)
+    montage_next=montage_next->previous;
+  return(montage_next);
 }

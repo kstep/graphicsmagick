@@ -248,7 +248,7 @@ Export unsigned int EqualizeImage(Image *image)
     {
       FreeMemory(equalize_map);
       FreeMemory(map);
-      return;
+      return(False);
     }
   /*
     Equalize.
@@ -359,7 +359,7 @@ Export unsigned int GammaImage(Image *image,const char *gamma)
 
   assert(image != (Image *) NULL);
   if (gamma == (char *) NULL)
-    return;
+    return(False);
   red_gamma=1.0;
   green_gamma=1.0;
   blue_gamma=1.0;
@@ -371,7 +371,7 @@ Export unsigned int GammaImage(Image *image,const char *gamma)
   if (count == 1)
     {
       if (red_gamma == 1.0)
-        return;
+        return(False);
       green_gamma=red_gamma;
       blue_gamma=red_gamma;
     }
@@ -781,7 +781,7 @@ Export unsigned int NormalizeImage(Image *image)
           break;
       }
       if (low == high)
-        return;  /* zero span bound */
+        return(False);  /* zero span bound */
     }
   /*
     Stretch the histogram to create the normalized image mapping.

@@ -122,8 +122,9 @@ Export Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   if (magick_info == (MagickInfo *) NULL)
     {
       DestroyImageInfo(clone_info);
-      ThrowImageException(BlobWarning,"Unrecognized image format",
+      ThrowException(exception,BlobWarning,"Unrecognized image format",
         clone_info->magick);
+      return((Image *) NULL);
     }
   GetBlobInfo(&(clone_info->blob));
   if (magick_info->blob_support)
@@ -149,16 +150,18 @@ Export Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   if (file == -1)
     {
       DestroyImageInfo(clone_info);
-      ThrowImageException(BlobWarning,"Unable to convert blob to an image",
+      ThrowException(exception,BlobWarning,"Unable to convert blob to an image",
         clone_info->filename);
+      return((Image *) NULL);
     }
   count=write(file,blob,length);
   (void) close(file);
   if (count != length)
     {
       DestroyImageInfo(clone_info);
-      ThrowImageException(BlobWarning,"Unable to convert blob to an image",
+      ThrowException(exception,BlobWarning,"Unable to convert blob to an image",
         clone_info->filename);
+      return((Image *) NULL);
     }
   image=ReadImage(clone_info,&error);
   (void) remove(clone_info->filename);

@@ -220,7 +220,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
 %
 %  The format of the CoalesceImages method is:
 %
-%      Image *CoalesceImages(Image *images)
+%      Image *CoalesceImages(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -229,43 +229,45 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
 %      coalesced.
 %
 */
-Export Image *CoalesceImages(Image *images)
+Export Image *CoalesceImages(Image *image)
 {
   Image
-    *coalesce_image,
-    *image;
+    *coalesce_image;
+
+  register Image
+    *next;
 
   /*
-    Coalesce the image sequence.
+    Coalesce the next sequence.
   */
-  assert(images != (Image *) NULL);
-  if (images->next == (Image *) NULL)
-    ThrowImageException(OptionWarning,"Unable to coalesce images",
-      "image sequence required");
+  assert(image != (Image *) NULL);
+  if (image->next == (Image *) NULL)
+    ThrowImageException(OptionWarning,"Unable to coalesce image",
+      "next sequence required");
   /*
-    Clone first image in sequence.
+    Clone first next in sequence.
   */
-  coalesce_image=CloneImage(images,images->columns,images->rows,True);
+  coalesce_image=CloneImage(image,image->columns,image->rows,True);
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
   GetPageInfo(&coalesce_image->page);
   /*
-    Coalesce images.
+    Coalesce image.
   */
-  for (image=images->next; image != (Image *) NULL; image=image->next)
+  for (next=image->next; next != (Image *) NULL; next=next->next)
   {
     coalesce_image->next=CloneImage(coalesce_image,coalesce_image->columns,
       coalesce_image->rows,True);
     if (coalesce_image->next == (Image *) NULL)
       {
         DestroyImages(coalesce_image);
-        ThrowImageException(ResourceLimitWarning,"Unable to coalesce images",
-          "Memory allocation failed for cloned image");
+        ThrowImageException(ResourceLimitWarning,"Unable to coalesce image",
+          "Memory allocation failed for cloned next");
       }
     coalesce_image->next->previous=coalesce_image;
     coalesce_image=coalesce_image->next;
-    CompositeImage(coalesce_image,image->matte ? OverCompositeOp :
-      ReplaceCompositeOp,image,image->page.x,image->page.y);
+    CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
+      ReplaceCompositeOp,next,next->page.x,next->page.y);
     GetPageInfo(&coalesce_image->page);
   }
   while (coalesce_image->previous != (Image *) NULL)
@@ -486,7 +488,7 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
       return((Image *) NULL);
     }
   return(crop_image);
-}
+} 
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -503,27 +505,29 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
 %
 %  The format of the DeconstructImages method is:
 %
-%      Image *DeconstructImages(Image *images)
+%      Image *DeconstructImages(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o images: The address of a structure of type Image;  returned from
-%      ReadImage.  It points to the first image in the group to be
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.  It points to the first next in the group to be
 %      deconstructed.
 %
 */
-Export Image *DeconstructImages(Image *images)
+Export Image *DeconstructImages(Image *image)
 {
   Image
-    *crop_image,
-    *deconstruct_image,
-    *image;
+    *crop_next,
+    *deconstruct_image;
 
   int
     y;
 
   RectangleInfo
     *bounding_box;
+
+  register Image
+    *next;
 
   register int
     i,
@@ -533,127 +537,127 @@ Export Image *DeconstructImages(Image *images)
     *p,
     *q;
 
-  assert(images != (Image *) NULL);
-  if (images->next == (Image *) NULL)
-    ThrowImageException(OptionWarning,"Unable to deconstruct images",
+  assert(image != (Image *) NULL);
+  if (image->next == (Image *) NULL)
+    ThrowImageException(OptionWarning,"Unable to deconstruct image sequence",
       "image sequence required");
   /*
-    Ensure the images are the same size.
+    Ensure the image are the same size.
   */
-  for (image=images; image != (Image *) NULL; image=image->next)
+  for (next=image; next != (Image *) NULL; next=next->next)
   {
-    if ((image->columns != images->columns) || (image->rows != images->rows))
-      ThrowImageException(OptionWarning,"Unable to deconstruct images",
-        "images are not the same size");
+    if ((next->columns != image->columns) || (next->rows != image->rows))
+      ThrowImageException(OptionWarning,"Unable to deconstruct image sequence",
+        "image are not the same size");
   }
   /*
     Allocate memory.
   */
   bounding_box=(RectangleInfo *)
-    AllocateMemory(GetNumberScenes(images)*sizeof(RectangleInfo));
+    AllocateMemory(GetNumberScenes(image)*sizeof(RectangleInfo));
   if (bounding_box == (RectangleInfo *) NULL)
-    ThrowImageException(OptionWarning,"Unable to disintegrate images",
+    ThrowImageException(OptionWarning,"Unable to deconstruct image sequence",
       "Memory allocation failed");
   /*
-    Compute the bounding box for each image in the sequence.
+    Compute the bounding box for each next in the sequence.
   */
   i=0;
-  for (image=images->next; image != (Image *) NULL; image=image->next)
+  for (next=image->next; next != (Image *) NULL; next=next->next)
   {
     /*
-      Set bounding box to the image dimensions.
+      Set bounding box to the next dimensions.
     */
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (int) next->columns; x++)
     {
-      p=GetPixelCache(image,x,0,1,image->rows);
-      q=GetPixelCache(image->previous,x,0,1,image->previous->rows);
+      p=GetPixelCache(next,x,0,1,next->rows);
+      q=GetPixelCache(next->previous,x,0,1,next->previous->rows);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (int) next->rows; y++)
       {
-        if (!ColorMatch(*p,*q,image->fuzz))
+        if (!ColorMatch(*p,*q,next->fuzz))
           break;
         p++;
         q++;
       }
-      if (y < (int) image->rows)
+      if (y < (int) next->rows)
         break;
     }
     bounding_box[i].x=x;
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (int) next->rows; y++)
     {
-      p=GetPixelCache(image,0,y,image->columns,1);
-      q=GetPixelCache(image->previous,0,y,image->previous->columns,1);
+      p=GetPixelCache(next,0,y,next->columns,1);
+      q=GetPixelCache(next->previous,0,y,next->previous->columns,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (int) next->columns; x++)
       {
-        if (!ColorMatch(*p,*q,image->fuzz))
+        if (!ColorMatch(*p,*q,next->fuzz))
           break;
         p++;
         q++;
       }
-      if (x < (int) image->columns)
+      if (x < (int) next->columns)
         break;
     }
     bounding_box[i].y=y;
-    for (x=image->columns-1; x >= 0; x--)
+    for (x=next->columns-1; x >= 0; x--)
     {
-      p=GetPixelCache(image,x,0,1,image->rows);
-      q=GetPixelCache(image->previous,x,0,1,image->previous->rows);
+      p=GetPixelCache(next,x,0,1,next->rows);
+      q=GetPixelCache(next->previous,x,0,1,next->previous->rows);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (int) next->rows; y++)
       {
-        if (!ColorMatch(*p,*q,image->fuzz))
+        if (!ColorMatch(*p,*q,next->fuzz))
           break;
         p++;
         q++;
       }
-      if (y < (int) image->rows)
+      if (y < (int) next->rows)
         break;
     }
     bounding_box[i].width=x-bounding_box[i].x+1;
-    for (y=image->rows-1; y >= 0; y--)
+    for (y=next->rows-1; y >= 0; y--)
     {
-      p=GetPixelCache(image,0,y,image->columns,1);
-      q=GetPixelCache(image->previous,0,y,image->previous->columns,1);
+      p=GetPixelCache(next,0,y,next->columns,1);
+      q=GetPixelCache(next->previous,0,y,next->previous->columns,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (int) next->columns; x++)
       {
-        if (!ColorMatch(*p,*q,image->fuzz))
+        if (!ColorMatch(*p,*q,next->fuzz))
           break;
         p++;
         q++;
       }
-      if (x < (int) image->columns)
+      if (x < (int) next->columns)
         break;
     }
     bounding_box[i].height=y-bounding_box[i].y+1;
     i++;
   }
   /*
-    Clone first image in sequence.
+    Clone first next in sequence.
   */
-  deconstruct_image=CloneImage(images,images->columns,images->rows,True);
+  deconstruct_image=CloneImage(image,image->columns,image->rows,True);
   if (deconstruct_image == (Image *) NULL)
     {
       FreeMemory(bounding_box);
       return((Image *) NULL);
     }
   /*
-    Deconstruct the image sequence.
+    Deconstruct the next sequence.
   */
   i=0;
-  for (image=images->next; image != (Image *) NULL; image=image->next)
+  for (next=image->next; next != (Image *) NULL; next=next->next)
   {
-    image->orphan=True;
-    crop_image=CropImage(image,&bounding_box[i++]);
-    if (crop_image == (Image *) NULL)
+    next->orphan=True;
+    crop_next=CropImage(next,&bounding_box[i++]);
+    if (crop_next == (Image *) NULL)
       break;
-    deconstruct_image->next=crop_image;
-    crop_image->previous=deconstruct_image;
+    deconstruct_image->next=crop_next;
+    crop_next->previous=deconstruct_image;
     deconstruct_image=deconstruct_image->next;
   }
   FreeMemory(bounding_box);

@@ -1313,38 +1313,37 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MorphImages morphs a set of images.  Both the image pixels and size
-%  are linearly interpolated to give the appearance of a meta-morphosis from
-%  one image to the next.
+%  Method MorphImages morphs a sequence of images.  Both the next pixels and
+%  size are linearly interpolated to give the appearance of a meta-morphosis
+%  from one next to the next.
 %
 %  The format of the MorphImage method is:
 %
-%      Image *MorphImages(Image *images,const unsigned int number_frames)
+%      Image *MorphImages(Image *image,const unsigned int number_frames)
 %
 %  A description of each parameter follows:
 %
-%    o morph_image: Method MorphImages returns an image sequence that
-%      has linearly interpolated pixels and size between two input images.
+%    o morph_images: Method MorphImages returns an next sequence that
+%      has linearly interpolated pixels and size between two input image.
 %
-%    o images: The address of a structure of type Image;  returned from
+%    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
 %    o number_frames:  This unsigned integer reflects the number of in-between
-%      images to generate.  The more in-between frames, the smoother
+%      image to generate.  The more in-between frames, the smoother
 %      the morph.
 %
 %
 */
-Export Image *MorphImages(Image *images,const unsigned int number_frames)
+Export Image *MorphImages(Image *image,const unsigned int number_frames)
 {
-#define MorphImageText  "  Morphing image sequence...  "
+#define MorphImageText  "  Morphing next sequence...  "
 
   double
     alpha,
     beta;
 
   Image
-    *image,
     *morph_image,
     *morph_images;
 
@@ -1353,6 +1352,9 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
 
   MonitorHandler
     handler;
+
+  register Image
+    *next;
 
   register int
     i,
@@ -1365,47 +1367,48 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
   unsigned int
     scene;
 
-  assert(images != (Image *) NULL);
-  if (images->next == (Image *) NULL)
-    ThrowImageException(OptionWarning,"Unable to morph image","image sequence required");
+  assert(image != (Image *) NULL);
+  if (image->next == (Image *) NULL)
+    ThrowImageException(OptionWarning,"Unable to morph image sequence",
+      "next sequence required");
   /*
     Clone first frame in sequence.
   */
-  morph_images=CloneImage(images,images->columns,images->rows,True);
+  morph_images=CloneImage(image,image->columns,image->rows,True);
   if (morph_images == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to morph image sequence",
-      "Memory allocation failed");
+    ThrowImageException(ResourceLimitWarning,
+      "Unable to morph image sequence","Memory allocation failed");
   /*
-    Morph image.
+    Morph next.
   */
   scene=0;
-  for (image=images; image->next != (Image *) NULL; image=image->next)
+  for (next=image; next->next != (Image *) NULL; next=next->next)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
     for (i=0; i < (int) number_frames; i++)
     {
       beta=(double) (i+1.0)/(number_frames+1.0);
       alpha=1.0-beta;
-      image->orphan=True;
-      morph_images->next=ZoomImage(image,
-        (unsigned int) (alpha*image->columns+beta*image->next->columns+0.5),
-        (unsigned int) (alpha*image->rows+beta*image->next->rows+0.5));
+      next->orphan=True;
+      morph_images->next=ZoomImage(next,
+        (unsigned int) (alpha*next->columns+beta*next->next->columns+0.5),
+        (unsigned int) (alpha*next->rows+beta*next->next->rows+0.5));
       if (morph_images->next == (Image *) NULL)
         {
           DestroyImages(morph_images);
-          ThrowImageException(ResourceLimitWarning,"Unable to morph image sequence",
-            "Memory allocation failed");
+          ThrowImageException(ResourceLimitWarning,
+            "Unable to morph image sequence","Memory allocation failed");
         }
       morph_images->next->previous=morph_images;
       morph_images=morph_images->next;
-      image->next->orphan=True;
+      next->next->orphan=True;
       morph_image=
-        ZoomImage(image->next,morph_images->columns,morph_images->rows);
+        ZoomImage(next->next,morph_images->columns,morph_images->rows);
       if (morph_image == (Image *) NULL)
         {
           DestroyImages(morph_images);
-          ThrowImageException(ResourceLimitWarning,"Unable to morph image sequence",
-            "Memory allocation failed");
+          ThrowImageException(ResourceLimitWarning,
+            "Unable to morph image sequence","Memory allocation failed");
         }
       morph_images->class=DirectClass;
       for (y=0; y < (int) morph_images->rows; y++)
@@ -1432,22 +1435,22 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
       Clone last frame in sequence.
     */
     morph_images->next=
-      CloneImage(image->next,image->next->columns,image->next->rows,True);
+      CloneImage(next->next,next->next->columns,next->next->rows,True);
     if (morph_images->next == (Image *) NULL)
       {
         DestroyImages(morph_images);
-        ThrowImageException(ResourceLimitWarning,"Unable to morph image sequence",
-          "Memory allocation failed");
+        ThrowImageException(ResourceLimitWarning,
+          "Unable to morph image sequence","Memory allocation failed");
       }
     morph_images->next->previous=morph_images;
     morph_images=morph_images->next;
     (void) SetMonitorHandler(handler);
-    ProgressMonitor(MorphImageText,scene,GetNumberScenes(images));
+    ProgressMonitor(MorphImageText,scene,GetNumberScenes(image));
     scene++;
   }
   while (morph_images->previous != (Image *) NULL)
     morph_images=morph_images->previous;
-  if (image->next != (Image *) NULL)
+  if (next->next != (Image *) NULL)
     {
       DestroyImages(morph_images);
       return((Image *) NULL);

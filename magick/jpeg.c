@@ -517,8 +517,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     Initialize image structure.
   */
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=(void *) EmitMessage;
-  jpeg_info.err->error_exit=JPEGErrorHandler;
+  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
+  jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   jpeg_pixels=(JSAMPLE *) NULL;
   if (setjmp(error_recovery))
     {
@@ -1003,7 +1003,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     Initialize JPEG parameters.
   */
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=(void *) JPEGWarningHandler;
+  jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_create_compress(&jpeg_info);
   JPEGDestinationManager(&jpeg_info,image);
   jpeg_info.image_width=image->columns;

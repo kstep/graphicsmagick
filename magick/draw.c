@@ -1767,6 +1767,7 @@ Export unsigned int OpaqueImage(Image *image,const char *opaque_color,
       break;
     }
   }
+  return(True);
 }
 
 /*
@@ -1843,4 +1844,5 @@ Export unsigned int TransparentImage(Image *image,const char *color)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(TransparentImageText,y,image->rows);
   }
+  return(True);
 }

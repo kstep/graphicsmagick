@@ -497,6 +497,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read comment.
       */
+      c=ReadByte(image);
       length=MaxTextExtent;
       comment=(char *) AllocateMemory(length+1);
       p=comment;

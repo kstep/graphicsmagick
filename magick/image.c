@@ -392,7 +392,7 @@ Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AppendImages appends a set of images.  All the input images must
+%  Method AppendImages appends a sequence of images.  All the input images must
 %  have the same width or height.  Images of the same width are stacked
 %  top-to-bottom.  Images of the same height are stacked left-to-right.
 %  If stack is false, rectangular images are stacked left-to-right otherwise
@@ -400,25 +400,27 @@ Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
 %
 %  The format of the AppendImage method is:
 %
-%      Image *AppendImages(Image *images,const unsigned int stack)
+%      Image *AppendImages(Image *image,const unsigned int stack)
 %
 %  A description of each parameter follows:
 %
-%    o images: The address of a structure of type Image;  returned from
+%    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o stack: An unsigned value other than stacks rectangular images
+%    o stack: An unsigned value other than stacks rectangular image
 %      top-to-bottom otherwise left-to-right.
 %
 %
 */
-Export Image *AppendImages(Image *images,const unsigned int stack)
+Export Image *AppendImages(Image *image,const unsigned int stack)
 {
 #define AppendImageText  "  Appending image sequence...  "
 
   Image
-    *appended_image,
-    *image;
+    *append_image;
+
+  register Image
+    *next;
 
   register int
     i;
@@ -429,36 +431,36 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
     width;
 
   /*
-    Ensure the images have the same column width.
+    Ensure the image have the same column width.
   */
-  assert(images != (Image *) NULL);
-  if (images->next == (Image *) NULL)
-    ThrowImageException(OptionWarning,"Unable to append image",
+  assert(image != (Image *) NULL);
+  next=image;
+  if (image->next == (Image *) NULL)
+    ThrowImageException(OptionWarning,"Unable to append image sequence",
       "image sequence required");
-  for (image=images->next; image != (Image *) NULL; image=image->next)
-    if ((image->columns != images->columns) &&
-        (image->rows != images->rows))
-      ThrowImageException(OptionWarning,"Unable to append image",
+  for (next=image->next; next != (Image *) NULL; next=next->next)
+    if ((next->columns != image->columns) && (next->rows != image->rows))
+      ThrowImageException(OptionWarning,"Unable to append image sequence",
         "image widths or heights differ");
-  width=images->columns;
-  height=images->rows;
-  for (image=images->next; image != (Image *) NULL; image=image->next)
+  width=image->columns;
+  height=image->rows;
+  for (next=image->next; next != (Image *) NULL; next=next->next)
   {
-    width+=image->columns;
-    height+=image->rows;
+    width+=next->columns;
+    height+=next->rows;
   }
   /*
-    Initialize append image attributes.
+    Initialize append next attributes.
   */
-  if ((images->columns != images->next->columns) || !stack)
-    appended_image=CloneImage(images,width,images->rows,True);
+  if ((image->columns != image->next->columns) || !stack)
+    append_image=CloneImage(image,width,image->rows,True);
   else
-    appended_image=CloneImage(images,images->columns,height,True);
-  if (appended_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to append image",
+    append_image=CloneImage(image,image->columns,height,True);
+  if (append_image == (Image *) NULL)
+    ThrowImageException(ResourceLimitWarning,"Unable to append image sequence",
       "Memory allocation failed");
   scene=0;
-  if ((images->columns != images->next->columns) || !stack)
+  if ((image->columns != image->next->columns) || !stack)
     {
       register int
         x;
@@ -467,13 +469,13 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
         Stack left-to-right.
       */
       x=0;
-      for (image=images; image != (Image *) NULL; image=image->next)
+      for (next=image; next != (Image *) NULL; next=next->next)
       {
-        if (image->class == DirectClass)
-          appended_image->class=DirectClass;
-        CompositeImage(appended_image,ReplaceCompositeOp,image,x,0);
-        x+=image->columns;
-        ProgressMonitor(AppendImageText,scene++,GetNumberScenes(images));
+        if (next->class == DirectClass)
+          append_image->class=DirectClass;
+        CompositeImage(append_image,ReplaceCompositeOp,next,x,0);
+        x+=next->columns;
+        ProgressMonitor(AppendImageText,scene++,GetNumberScenes(image));
       }
     }
   else
@@ -485,44 +487,43 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
         Stack top-to-bottom.
       */
       y=0;
-      for (image=images; image != (Image *) NULL; image=image->next)
+      for (next=image; next != (Image *) NULL; next=next->next)
       {
-        if (image->class == DirectClass)
-          appended_image->class=DirectClass;
-        CompositeImage(appended_image,ReplaceCompositeOp,image,0,y);
-        y+=image->rows;
-        ProgressMonitor(AppendImageText,scene,GetNumberScenes(images));
+        if (next->class == DirectClass)
+          append_image->class=DirectClass;
+        CompositeImage(append_image,ReplaceCompositeOp,next,0,y);
+        y+=next->rows;
+        ProgressMonitor(AppendImageText,scene,GetNumberScenes(image));
         scene++;
       }
     }
-  if (appended_image->class == PseudoClass)
+  if (append_image->class == PseudoClass)
     {
       unsigned int
         global_colormap;
 
       /*
-        Determine if the sequence of images has the identical colormap.
+        Determine if the sequence of image has the identical colormap.
       */
       global_colormap=True;
-      for (image=images; image != (Image *) NULL; image=image->next)
+      for (next=image; next != (Image *) NULL; next=next->next)
       {
-        if ((image->class == DirectClass) ||
-            (image->colors != images->colors))
+        if ((next->class == DirectClass) || (next->colors != image->colors))
           {
             global_colormap=False;
             break;
           }
-        for (i=0; i < (int) images->colors; i++)
-          if (!ColorMatch(image->colormap[i],images->colormap[i],image->fuzz))
+        for (i=0; i < (int) image->colors; i++)
+          if (!ColorMatch(next->colormap[i],image->colormap[i],next->fuzz))
             {
               global_colormap=False;
               break;
             }
       }
       if (!global_colormap)
-        appended_image->class=DirectClass;
+        append_image->class=DirectClass;
     }
-  return(appended_image);
+  return(append_image);
 }
 
 /*
@@ -535,24 +536,24 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AverageImages averages a set of images.  All the input images must
-%  be the same size in pixels.
+%  Method AverageImages averages a sequence of images.  All the input image
+%  must be the same size in pixels.
 %
 %  The format of the AverageImage method is:
 %
-%      Image *AverageImages(const Image *images)
+%      Image *AverageImages(const Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o average_image: Method AverageImages returns the mean pixel value
 %      for an image sequence.
 %
-%    o images: The address of a structure of type Image;  returned from
+%    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
 %
 */
-Export Image *AverageImages(Image *images)
+Export Image *AverageImages(Image *image)
 {
 #define AverageImageText  "  Average image sequence...  "
 
@@ -566,13 +567,13 @@ Export Image *AverageImages(Image *images)
   } SumPacket;
 
   Image
-    *image;
-
-  Image
     *average_image;
 
   int
     y;
+
+  register Image
+    *next;
 
   register int
     i,
@@ -588,29 +589,28 @@ Export Image *AverageImages(Image *images)
   unsigned int
     number_scenes;
 
-  assert(images != (Image *) NULL);
-  if (images->next == (Image *) NULL)
-    ThrowImageException(OptionWarning,"Unable to average image",
+  assert(image != (Image *) NULL);
+  if (image->next == (Image *) NULL)
+    ThrowImageException(OptionWarning,"Unable to average image sequence",
       "image sequence required");
   /*
-    Ensure the images are the same size.
+    Ensure the image are the same size.
   */
-  for (image=images; image != (Image *) NULL; image=image->next)
+  for (next=image; next != (Image *) NULL; next=next->next)
   {
-    if ((image->columns != images->columns) ||
-        (image->rows != images->rows))
-      ThrowImageException(OptionWarning,"Unable to average image",
+    if ((next->columns != image->columns) || (next->rows != image->rows))
+      ThrowImageException(OptionWarning,"Unable to average image sequence",
         "images are not the same size");
   }
   /*
     Allocate sum accumulation buffer.
   */
   sum=(SumPacket *)
-    AllocateMemory(images->columns*images->rows*sizeof(SumPacket));
+    AllocateMemory(image->columns*image->rows*sizeof(SumPacket));
   if (sum == (SumPacket *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to average image",
+    ThrowImageException(ResourceLimitWarning,"Unable to average image sequence",
       "Memory allocation failed");
-  for (i=0; i < (int) (images->columns*images->rows); i++)
+  for (i=0; i < (int) (image->columns*image->rows); i++)
   {
     sum[i].red=0.0;
     sum[i].green=0.0;
@@ -618,29 +618,29 @@ Export Image *AverageImages(Image *images)
     sum[i].opacity=0.0;
   }
   /*
-    Initialize average image attributes.
+    Initialize average next attributes.
   */
-  average_image=CloneImage(images,images->columns,images->rows,True);
+  average_image=CloneImage(image,image->columns,image->rows,True);
   if (average_image == (Image *) NULL)
     {
       FreeMemory(sum);
-      ThrowImageException(ResourceLimitWarning,"Unable to average image",
-        "Memory allocation failed");
+      ThrowImageException(ResourceLimitWarning,
+        "Unable to average image sequence","Memory allocation failed");
     }
   average_image->class=DirectClass;
   /*
     Compute sum over each pixel color component.
   */
   number_scenes=0;
-  for (image=images; image != (Image *) NULL; image=image->next)
+  for (next=image; next != (Image *) NULL; next=next->next)
   {
     i=0;
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (int) next->rows; y++)
     {
-      p=GetPixelCache(image,0,y,image->columns,1);
+      p=GetPixelCache(next,0,y,next->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (int) next->columns; x++)
       {
         sum[i].red+=p->red;
         sum[i].green+=p->green;
@@ -653,7 +653,7 @@ Export Image *AverageImages(Image *images)
     number_scenes++;
   }
   /*
-    Average image pixels.
+    Average next pixels.
   */
   i=0;
   for (y=0; y < (int) average_image->rows; y++)
@@ -1554,12 +1554,12 @@ Export Image *CreateImage(const unsigned int width,const unsigned int height,
     Allocate image structure.
   */
   assert(pixels != (void *) NULL);
-  if ((width*height) == 0)
-    ThrowBinaryException(OptionWarning,"Unable to create image",
-      "impossible image size");
   image=AllocateImage((ImageInfo *) NULL);
   if (image == (Image *) NULL)
     return((Image *) NULL);
+  if ((width*height) == 0)
+    ThrowBinaryException(OptionWarning,"Unable to create image",
+      "impossible image size");
   image->columns=width;
   image->rows=height;
   for (i=0; i < strlen(map); i++)
@@ -2711,7 +2711,7 @@ Export void DestroyImageInfo(ImageInfo *image_info)
 Export void DestroyImages(Image *image)
 {
   Image
-    *next_image;
+    *next;
 
   /*
     Proceed to the top of the image list.
@@ -2725,11 +2725,11 @@ Export void DestroyImages(Image *image)
     /*
       Destroy this image.
     */
-    next_image=image->next;
-    if (next_image != (Image *)NULL)
-      next_image->previous=(Image *)NULL;
+    next=image->next;
+    if (next != (Image *)NULL)
+      next->previous=(Image *)NULL;
     DestroyImage(image);
-    image=next_image;
+    image=next;
   } while (image != (Image *) NULL);
 }
 
@@ -3010,7 +3010,7 @@ Export Image *GetNextImage(Image *image)
 Export unsigned int GetNumberScenes(const Image *image)
 {
   const Image
-    *next_image;
+    *next;
 
   unsigned int
     number_scenes;
@@ -3021,9 +3021,9 @@ Export unsigned int GetNumberScenes(const Image *image)
   assert(image != (const Image *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  next_image=image;
-  for (number_scenes=0; next_image != (Image *) NULL; number_scenes++)
-    next_image=next_image->next;
+  next=image;
+  for (number_scenes=0; next != (Image *) NULL; number_scenes++)
+    next=next->next;
   return(number_scenes);
 }
 
@@ -3189,10 +3189,7 @@ Export unsigned int GetPixels(Image *image,const int x,const int y,
               break;
             }
             default:
-            {
               ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
-              break;
-            }
           }
         }
         p++;
@@ -3247,10 +3244,7 @@ Export unsigned int GetPixels(Image *image,const int x,const int y,
               break;
             }
             default:
-            {
               ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
-              break;
-            }
           }
         }
         p++;
@@ -3305,10 +3299,7 @@ Export unsigned int GetPixels(Image *image,const int x,const int y,
               break;
             }
             default:
-            {
               ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
-              break;
-            }
           }
         }
         p++;
@@ -3363,10 +3354,7 @@ Export unsigned int GetPixels(Image *image,const int x,const int y,
               break;
             }
             default:
-            {
               ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
-              break;
-            }
           }
         }
         p++;
@@ -3421,10 +3409,7 @@ Export unsigned int GetPixels(Image *image,const int x,const int y,
               break;
             }
             default:
-            {
               ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
-              break;
-            }
           }
         }
         p++;
@@ -3432,11 +3417,9 @@ Export unsigned int GetPixels(Image *image,const int x,const int y,
       break;
     }
     default:
-    {
       ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
-      break;
-    }
   }
+  return(True);
 }
 
 /*
@@ -3744,7 +3727,7 @@ Export Image **ListToGroupImage(Image *image,unsigned int *number_images)
 {
   Image
     **images,
-    *next_image;
+    *next;
 
   register int
     i;
@@ -3754,25 +3737,22 @@ Export Image **ListToGroupImage(Image *image,unsigned int *number_images)
   */
   assert(image != (Image *) NULL);
   assert(number_images != (unsigned int *) NULL);
-  next_image=(Image *) image;
-  for (i=0; next_image != (Image *) NULL; i++)
-    next_image=next_image->next;
+  next=(Image *) image;
+  for (i=0; next != (Image *) NULL; i++)
+    next=next->next;
   images=(Image **) AllocateMemory(i*sizeof(Image *));
   if (images == (Image **) NULL)
-    {
-      ThrowException(&image->exception,ResourceLimitWarning,
-        "Unable to convert image list","Memory allocation failed");
-      return((Image **) NULL);
-    }
+    MagickError(ResourceLimitWarning,"Unable to convert image list",
+      "Memory allocation failed");
   *number_images=i;
   /*
     Add each image in the linked list to the group.
   */
-  next_image=(Image *) image;
-  for (i=0; next_image != (Image *) NULL; i++)
+  next=(Image *) image;
+  for (i=0; next != (Image *) NULL; i++)
   {
-    images[i]=next_image;
-    next_image=next_image->next;
+    images[i]=next;
+    next=next->next;
   }
   return(images);
 }
@@ -5119,17 +5099,17 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MogrifyImages applies image processing options to a sequence of
+%  Method MogrifyImages applies next processing options to a sequence of
 %  images as prescribed by command line options.
 %
 %  The format of the MogrifyImage method is:
 %
-%      unsigned int MogrifyImages(const ImageInfo *image_info,const int argc,
-%        char **argv,Image **images)
+%      unsigned int MogrifyImages(const ImageInfo *next_info,const int argc,
+%        char **argv,Image **image)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o next_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o argc: Specifies a pointer to an integer describing the number of
 %      elements in the argument vector.
@@ -5137,18 +5117,17 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
 %    o argv: Specifies a pointer to a text array containing the command line
 %      arguments.
 %
-%    o images: The address of a structure of type Image;  returned from
+%    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
 %
 */
-Export unsigned int MogrifyImages(const ImageInfo *image_info,const int argc,
-  char **argv,Image **images)
+Export unsigned int MogrifyImages(const ImageInfo *next_info,const int argc,
+  char **argv,Image **image)
 {
-#define MogrifyImageText  "  Transforming images...  "
+#define MogrifyImageText  "  Transforming image...  "
 
   Image
-    *image,
     *mogrify_image;
 
   register int
@@ -5157,35 +5136,38 @@ Export unsigned int MogrifyImages(const ImageInfo *image_info,const int argc,
   MonitorHandler
     handler;
 
+  register Image
+    *next;
+
   unsigned int
     number_images,
     status;
 
-  assert(image_info != (ImageInfo *) NULL);
-  assert(images != (Image **) NULL);
-  image=(*images);
-  for (number_images=1; image->next != (Image *) NULL; number_images++)
-    image=image->next;
+  assert(next_info != (ImageInfo *) NULL);
+  assert(image != (Image **) NULL);
+  next=(*image);
+  for (number_images=1; next->next != (Image *) NULL; number_images++)
+    next=next->next;
   ProgressMonitor(MogrifyImageText,0,number_images);
   handler=SetMonitorHandler((MonitorHandler) NULL);
-  status=MogrifyImage(image_info,argc,argv,images);
+  status=MogrifyImage(next_info,argc,argv,image);
   (void) SetMonitorHandler(handler);
   if (status == False)
     return(False);
-  image=(*images);
-  mogrify_image=(*images)->next;
-  if (image_info->verbose)
-    DescribeImage(image,stdout,False);
+  next=(*image);
+  mogrify_image=(*image)->next;
+  if (next_info->verbose)
+    DescribeImage(next,stdout,False);
   for (i=1; mogrify_image != (Image *) NULL; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    status=MogrifyImage(image_info,argc,argv,&mogrify_image);
+    status=MogrifyImage(next_info,argc,argv,&mogrify_image);
     if (status == False)
       break;
-    image->next=mogrify_image;
-    image->next->previous=image;
-    image=image->next;
-    if (image_info->verbose)
+    next->next=mogrify_image;
+    next->next->previous=next;
+    next=next->next;
+    if (next_info->verbose)
       DescribeImage(mogrify_image,stdout,False);
     mogrify_image=mogrify_image->next;
     (void) SetMonitorHandler(handler);
@@ -5204,26 +5186,25 @@ Export unsigned int MogrifyImages(const ImageInfo *image_info,const int argc,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MosaicImages inlays a number of images to form a single coherent
+%  Method MosaicImages inlays a number of image to form a single coherent
 %  picture.
 %
 %  The format of the MosaicImage method is:
 %
-%      Image *MosaicImages(const Image *images)
+%      Image *MosaicImages(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o images: The address of a structure of type Image;  returned from
+%    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
 %
 */
-Export Image *MosaicImages(Image *images)
+Export Image *MosaicImages(Image *image)
 {
 #define MosaicImageText  "  Creating an image mosaic...  "
 
   Image
-    *image,
     *mosaic_image;
 
   int
@@ -5231,6 +5212,9 @@ Export Image *MosaicImages(Image *images)
 
   RectangleInfo
     page;
+
+  register Image
+    *next;
 
   register int
     x;
@@ -5241,28 +5225,28 @@ Export Image *MosaicImages(Image *images)
   unsigned int
     scene;
 
-  assert(images != (Image *) NULL);
-  if (images->next == (Image *) NULL)
+  assert(image != (Image *) NULL);
+  if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to create image mosaic",
       "image sequence required");
   /*
-    Determine image bounding box.
+    Determine next bounding box.
   */
-  page.width=images->columns;
-  page.height=images->rows;
+  page.width=image->columns;
+  page.height=image->rows;
   page.x=0;
   page.y=0;
-  for (image=images; image != (Image *) NULL; image=image->next)
+  for (next=image; next != (Image *) NULL; next=next->next)
   {
-    page.x=image->page.x;
-    page.y=image->page.y;
-    if ((image->columns+page.x) > page.width)
-      page.width=image->columns+page.x;
-    if ((image->rows+page.y) > page.height)
-      page.height=image->rows+page.y;
+    page.x=next->page.x;
+    page.y=next->page.y;
+    if ((next->columns+page.x) > page.width)
+      page.width=next->columns+page.x;
+    if ((next->rows+page.y) > page.height)
+      page.height=next->rows+page.y;
   }
   /*
-    Allocate image structure.
+    Allocate next structure.
   */
   mosaic_image=AllocateImage((ImageInfo *) NULL);
   if (mosaic_image == (Image *) NULL)
@@ -5286,11 +5270,11 @@ Export Image *MosaicImages(Image *images)
       break;
   }
   scene=0;
-  for (image=images; image != (Image *) NULL; image=image->next)
+  for (next=image; next != (Image *) NULL; next=next->next)
   {
-    CompositeImage(mosaic_image,ReplaceCompositeOp,image,image->page.x,
-      image->page.y);
-    ProgressMonitor(MosaicImageText,scene++,GetNumberScenes(images));
+    CompositeImage(mosaic_image,ReplaceCompositeOp,next,next->page.x,
+      next->page.y);
+    ProgressMonitor(MosaicImageText,scene++,GetNumberScenes(image));
   }
   return(mosaic_image);
 }
@@ -5575,7 +5559,7 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
 
   Image
     *image,
-    *next_image;
+    *next;
 
   MagickInfo
     *magick_info;
@@ -5676,18 +5660,18 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
         quantum=target > last ? -1 : 1;
         for ( ; target != (last+quantum); target+=quantum)
         {
-          for (next_image=image; next_image; next_image=next_image->next)
+          for (next=image; next; next=next->next)
           {
             Image
               *clone_image;
 
-            if (next_image->scene != target)
+            if (next->scene != target)
               continue;
             /*
               Clone this subimage.
             */
-            clone_image=CloneImage(next_image,next_image->columns,
-              next_image->rows,True);
+            clone_image=CloneImage(next,next->columns,
+              next->rows,True);
             if (clone_image == (Image *) NULL)
               {
                 ThrowException(exception,MissingDelegateWarning,
@@ -5760,17 +5744,17 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
     ThrowException(exception,CorruptImageWarning,
       "An error has occurred reading file",image_info->filename);
   DestroyBlobInfo(&image->blob);
-  for (next_image=image; next_image; next_image=next_image->next)
+  for (next=image; next; next=next->next)
   {
-    GetBlobInfo(&next_image->blob);
-    next_image->tainted=False;
-    (void) strcpy(next_image->magick_filename,image_info->filename);
+    GetBlobInfo(&next->blob);
+    next->tainted=False;
+    (void) strcpy(next->magick_filename,image_info->filename);
     if (image->temporary)
-      (void) strcpy(next_image->filename,image_info->filename);
-    if (next_image->magick_columns == 0)
-      next_image->magick_columns=next_image->columns;
-    if (next_image->magick_rows == 0)
-      next_image->magick_rows=next_image->rows;
+      (void) strcpy(next->filename,image_info->filename);
+    if (next->magick_columns == 0)
+      next->magick_columns=next->columns;
+    if (next->magick_rows == 0)
+      next->magick_rows=next->rows;
   }
   return(image);
 }
@@ -5813,8 +5797,7 @@ Export Image *ReadImages(ImageInfo *image_info,ExceptionInfo *exception)
     *file;
 
   Image
-    *image,
-    *next_image;
+    *image;
 
   int
     c,
@@ -5824,6 +5807,9 @@ Export Image *ReadImages(ImageInfo *image_info,ExceptionInfo *exception)
   register char
     *p;
 
+  register Image
+    *next;
+
   register int
     i;
 
@@ -5832,8 +5818,11 @@ Export Image *ReadImages(ImageInfo *image_info,ExceptionInfo *exception)
   */
   file=(FILE *) fopen(image_info->filename+1,"r");
   if (file == (FILE *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to read image list",
-      "Memory allocation failed");
+    {
+      ThrowException(exception,ResourceLimitWarning,"Unable to read image list",
+        "Memory allocation failed");
+      return((Image *) NULL);
+    }
   length=MaxTextExtent;
   command=(char *) AllocateMemory(length);
   for (p=command; command != (char *) NULL; p++)
@@ -5854,8 +5843,11 @@ Export Image *ReadImages(ImageInfo *image_info,ExceptionInfo *exception)
   }
   (void) fclose(file);
   if (command == (char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to read image list",
-      "Memory allocation failed");
+    {
+      ThrowException(exception,ResourceLimitWarning,"Unable to read image list",
+        "Memory allocation failed");
+      return((Image *) NULL);
+    }
   *p='\0';
   Strip(command);
   images=StringToArgv(command,&number_images);
@@ -5867,11 +5859,11 @@ Export Image *ReadImages(ImageInfo *image_info,ExceptionInfo *exception)
   for (i=1; i < number_images; i++)
   {
     (void) strcpy(image_info->filename,images[i]);
-    next_image=ReadImage(image_info,exception);
-    if (next_image == (Image *) NULL)
+    next=ReadImage(image_info,exception);
+    if (next == (Image *) NULL)
       continue;
     if (image == (Image *) NULL)
-      image=next_image;
+      image=next;
     else
       {
         register Image
@@ -5881,8 +5873,8 @@ Export Image *ReadImages(ImageInfo *image_info,ExceptionInfo *exception)
           Link image into image list.
         */
         for (q=image; q->next != (Image *) NULL; q=q->next);
-        next_image->previous=q;
-        q->next=next_image;
+        next->previous=q;
+        q->next=next;
       }
   }
   return(image);
@@ -5952,7 +5944,7 @@ Export unsigned int RGBTransformImage(Image *image,
 
   assert(image != (Image *) NULL);
   if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
-    return;
+    return(True);
   if (colorspace == CMYKColorspace)
     {
       Quantum
@@ -5989,7 +5981,7 @@ Export unsigned int RGBTransformImage(Image *image,
         if (!SyncPixelCache(image))
           break;
       }
-      return;
+      return(True);
     }
   x=0;
   if (colorspace == GRAYColorspace)
@@ -6012,7 +6004,7 @@ Export unsigned int RGBTransformImage(Image *image,
           break;
       }
       if ((x == (int) image->columns) && (y == (int) image->rows))
-        return;
+        return(True);
     }
   /*
     Allocate the tables.
@@ -6738,7 +6730,7 @@ Export unsigned int SortColormapByIntensity(Image *image)
 
   assert(image != (Image *) NULL);
   if (image->class != PseudoClass)
-    return;
+    return(True);
   /*
     Allocate memory for pixel indexes.
   */
@@ -7044,11 +7036,11 @@ Export unsigned int TransformRGBImage(Image *image,
         if (!SyncPixelCache(image))
           break;
       }
-      return;
+      return(True);
     }
   if ((colorspace == RGBColorspace) || (colorspace == GRAYColorspace) ||
       (colorspace == TransparentColorspace))
-    return;
+    return(True);
   /*
     Allocate the tables.
   */

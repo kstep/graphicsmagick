@@ -129,7 +129,7 @@ Export unsigned int CompressColormapTransFirst(Image *image)
   */
   assert(image != (Image *) NULL);
   if (image->class != PseudoClass)
-    return;
+    return(True);
   marker=(unsigned char *) AllocateMemory(image->colors);
   if (marker == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
@@ -155,6 +155,7 @@ Export unsigned int CompressColormapTransFirst(Image *image)
   {
     register PixelPacket
       *p;
+
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
@@ -196,7 +197,7 @@ Export unsigned int CompressColormapTransFirst(Image *image)
       /* no duplicate or unused entries, and transparency-swap not needed */
       FreeMemory(marker);
       FreeMemory(opacity);
-      return;
+      return(True);
     }
   /*
     Compress colormap.

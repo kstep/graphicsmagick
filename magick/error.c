@@ -97,37 +97,37 @@ static WarningHandler
 %
 %  The format of the CatchImageException method is:
 %
-%      CatchImageException(Image *images,ExceptionType *severity)
+%      CatchImageException(Image *image,ExceptionType *severity)
 %
 %  A description of each parameter follows:
 %
-%    o images: Specifies a pointer to a list of one or more images.
+%    o image: Specifies a pointer to a list of one or more images.
 %
 %    o severity: return the highest severity exception.
 %
 %
 */
-Export void CatchImageException(Image *images,ExceptionType *severity)
+Export void CatchImageException(Image *image,ExceptionType *severity)
 {
   register Image
-    *image;
+    *next;
 
   if (image == (Image *) NULL)
     return;
-  for (image=images; image != (Image *) NULL; image=image->next)
+  for (next=image; next != (Image *) NULL; next=next->next)
   {
-    if (image->exception.severity == UndefinedException)
+    if (next->exception.severity == UndefinedException)
       continue;
-    if (image->exception.severity > *severity)
+    if (next->exception.severity > *severity)
       *severity=image->exception.severity;
-    if (image->exception.severity < ResourceLimitError)
+    if (next->exception.severity < ResourceLimitError)
       {
-        MagickWarning(image->exception.severity,image->exception.message,
-          image->exception.qualifier);
+        MagickWarning(next->exception.severity,next->exception.message,
+          next->exception.qualifier);
         continue;
       }
-    MagickError(image->exception.severity,image->exception.message,
-      image->exception.qualifier);
+    MagickError(next->exception.severity,next->exception.message,
+      next->exception.qualifier);
   }
 }
 

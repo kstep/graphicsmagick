@@ -130,9 +130,9 @@ Export unsigned int AnnotateImage(Image *image,
   assert(image != (Image *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
   if (annotate_info->text == (char *) NULL)
-    return;
+    return(False);
   if (*annotate_info->text == '\0')
-    return;
+    return(False);
   /*
     Translate any embedded format characters (e.g. %f).
   */
@@ -149,7 +149,7 @@ Export unsigned int AnnotateImage(Image *image,
   if (textlist == (char **) NULL)
     {
       DestroyAnnotateInfo(clone_info);
-      return;
+      return(False);
     }
   length=Extent(textlist[0]);
   for (i=1; textlist[i] != (char *) NULL; i++)
