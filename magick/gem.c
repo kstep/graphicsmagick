@@ -872,6 +872,237 @@ MagickExport double Permutate(const long n,const long k)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S c a l e C h a r T o Q u a n t u m                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ScaleCharToQuantum() scales a character value to the current quantum depth.
+%
+%  The format of the ScaleCharToQuantum() method is:
+%
+%      ScaleCharToQuantum(const unsigned long value)
+%
+%  A description of each parameter follows:
+%
+%    o quantum: ScaleCharToQuantum() returned the scaled value.
+%
+%    o value: scale this unsigned long value.
+%
+%
+*/
+MagickExport unsigned long ScaleCharToQuantum(const unsigned long value)
+{
+#if (QuantumDepth == 8)
+  return(value);
+#elif (QuantumDepth == 16)
+  return(257UL*value);
+#elif (QuantumDepth == 32)
+  return(16843009UL*value);
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S c a l e I n t T o Q u a n t u m                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ScaleIntToQuantum() scales an integer value to the current quantum depth.
+%
+%  The format of the ScaleIntToQuantum() method is:
+%
+%      ScaleIntToQuantum(const unsigned long value)
+%
+%  A description of each parameter follows:
+%
+%    o quantum: ScaleIntToQuantum() returned the scaled value.
+%
+%    o value: scale this unsigned long value.
+%
+%
+*/
+MagickExport unsigned long ScaleIntToQuantum(const unsigned long value)
+{
+#if (QuantumDepth == 8)
+  return(value/16843009UL);
+#elif (QuantumDepth == 16)
+  return(value/65537UL);
+#elif (QuantumDepth == 32)
+  return(value);
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S c a l e Q u a n t u m T o C h a r                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ScaleQuantumToChar() scales a value at the current quantum depth to a
+%  character value.
+%
+%  The format of the ScaleQuantumToChar() method is:
+%
+%      ScaleQuantumToChar(const unsigned long quantum)
+%
+%  A description of each parameter follows:
+%
+%    o value: ScaleQuantumToChar() returned the scaled value.
+%
+%    o quantum: scale this unsigned long quantum value.
+%
+%
+*/
+MagickExport unsigned long ScaleQuantumToChar(const unsigned long quantum)
+{
+#if (QuantumDepth == 8)
+  return(quantum);
+#elif (QuantumDepth == 16)
+  return(quantum/257UL);
+#elif (QuantumDepth == 32)
+  return(quantum/16843009UL);
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S c a l e Q u a n t u m T o I n t                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ScaleQuantumToInt() scales a value at the current quantum depth to an
+%  integer value.
+%
+%  The format of the ScaleQuantumToInt() method is:
+%
+%      ScaleQuantumToInt(const unsigned long quantum)
+%
+%  A description of each parameter follows:
+%
+%    o value: ScaleQuantumToInt() returned the scaled value.
+%
+%    o quantum: scale this unsigned long value.
+%
+%
+*/
+MagickExport unsigned long ScaleQuantumToInt(const unsigned long quantum)
+{
+#if (QuantumDepth == 8)
+  return(16843009UL*quantum);
+#elif (QuantumDepth == 16)
+  return(65537UL*quantum);
+#elif (QuantumDepth == 32)
+  return(value/65537UL);
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S c a l e Q u a n t u m T o S h o r t                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ScaleQuantumToInt() scales a value at the current quantum depth to a
+%  short value.
+%
+%  The format of the ScaleQuantumToShort() method is:
+%
+%      ScaleQuantumToShort(const unsigned long quantum)
+%
+%  A description of each parameter follows:
+%
+%    o value: ScaleQuantumToShort() returned the scaled value.
+%
+%    o quantum: scale this unsigned long value.
+%
+%
+*/
+MagickExport unsigned long ScaleQuantumToShort(const unsigned long quantum)
+{
+#if (QuantumDepth == 8)
+  return(257UL*quantum);
+#elif (QuantumDepth == 16)
+  return(quantum);
+#elif (QuantumDepth == 32)
+  return(quantum);
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S c a l e S h o r t T o Q u a n t u m                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ScaleShortToQuantum() scales a value to the current quantum depth.
+%
+%  The format of the ScaleShortToQuantum() method is:
+%
+%      ScaleShortToQuantum(const unsigned long value)
+%
+%  A description of each parameter follows:
+%
+%    o quantum: ScaleShortToQuantum() returned the scaled value.
+%
+%    o value: scale this unsigned long value.
+%
+%
+*/
+MagickExport unsigned long ScaleShortToQuantum(const unsigned long value)
+{
+#if (QuantumDepth == 8)
+  return(value/257UL);
+#elif (QuantumDepth == 16)
+  return(quantum);
+#elif (QuantumDepth == 32)
+  return(65537UL*value);
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   T r a n s f o r m H S L                                                   %
 %                                                                             %
 %                                                                             %

@@ -13,46 +13,6 @@ extern "C" {
 #define QuantumLeap
 #endif
 
-#if (QuantumDepth == 8)
-/*
-  Color quantum is [0..255].
-*/
-#define ScaleCharToQuantum(value)  (1UL*(value))
-#define ScaleIntToQuantum(value)  ((value)/16843009UL)
-#define ScaleQuantumToChar(quantum)  ((quantum)/1UL)
-#define ScaleQuantumToInt(quantum) (16843009UL*(quantum))
-#define ScaleQuantumToShort(quantum)  (257UL*(quantum))
-#define ScaleShortToQuantum(value)  ((value)/257UL)
-
-typedef unsigned char Quantum;
-#elif (QuantumDepth == 16)
-/*
-  Color quantum is [0..65535].
-*/
-#define ScaleCharToQuantum(value)  (257UL*(value))
-#define ScaleIntToQuantum(value)  ((value)/65537UL)
-#define ScaleQuantumToChar(quantum)  ((quantum)/257UL)
-#define ScaleQuantumToInt(quantum) (65537UL*(quantum))
-#define ScaleQuantumToShort(quantum)  (1UL*(quantum))
-#define ScaleShortToQuantum(value)  ((value)/1UL)
-
-typedef unsigned short Quantum;
-#elif (QuantumDepth == 32)
-/*
-  Experimental: Color quantum is [0..4294967295].
-*/
-#define ScaleCharToQuantum(value)  (16843009UL*(value))
-#define ScaleIntToQuantum(value)  ((value)/1UL)
-#define ScaleQuantumToChar(quantum)  ((quantum)/16843009UL)
-#define ScaleQuantumToInt(quantum)  (1UL*(quantum))
-#define ScaleQuantumToShort(quantum)  ((quantum)/65537UL)
-#define ScaleShortToQuantum(value)  (65537UL*(value))
-
-typedef unsigned int Quantum;
-#else
-# error "Specified value of QuantumDepth is not supported"
-#endif
-
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
 #define Downscale(quantum)  ScaleQuantumToChar(quantum)
@@ -96,6 +56,16 @@ typedef struct _ChromaticityInfo
     blue_primary,
     white_point;
 } ChromaticityInfo;
+
+#if (QuantumDepth == 8)
+typedef unsigned char Quantum;
+#elif (QuantumDepth == 16)
+typedef unsigned short Quantum;
+#elif (QuantumDepth == 32)
+typedef unsigned int Quantum;
+#else
+#error "Specified value of QuantumDepth is not supported"
+#endif
 
 typedef struct _PixelPacket
 {
@@ -697,7 +667,14 @@ extern MagickExport unsigned int
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *),
-  GetNumberColors(const Image *,FILE *,ExceptionInfo *);
+  GetNumberColors(const Image *,FILE *,ExceptionInfo *),
+  ScaleCharToQuantum(const unsigned long),
+  ScaleIntToQuantum(const unsigned long),
+  ScaleQuantumToChar(const unsigned long),
+  ScaleQuantumToInt(const unsigned long),
+  ScaleQuantumToShort(const unsigned long),
+  ScaleShortToQuantum(const unsigned long);
+
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),
