@@ -25,6 +25,8 @@
 
 <UL>
   <LI> coders/pcx.c (WritePCXImage): Support writing large PCX files.
+        (WritePCXImage): Ensure that UndefinedResolution is handled
+        properly. Avoid round-off error for centimeter based resolution.
 
 </UL>
 <p>

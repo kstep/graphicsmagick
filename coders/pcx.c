@@ -855,17 +855,23 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     pcx_info.top=0;
     pcx_info.right=(unsigned short) (image->columns-1);
     pcx_info.bottom=(unsigned short) (image->rows-1);
-    pcx_info.horizontal_resolution=(unsigned short) image->columns;
-    pcx_info.vertical_resolution=(unsigned short) image->rows;
-    if (image->units == PixelsPerInchResolution)
+    pcx_info.horizontal_resolution=72;
+    pcx_info.vertical_resolution=72;
+    switch (image->units)
       {
-        pcx_info.horizontal_resolution=(unsigned short) image->x_resolution;
-        pcx_info.vertical_resolution=(unsigned short) image->y_resolution;
-      }
-    if (image->units == PixelsPerCentimeterResolution)
-      {
-        pcx_info.horizontal_resolution=(unsigned short) (2.54*image->x_resolution);
-        pcx_info.vertical_resolution=(unsigned short) (2.54*image->y_resolution);
+      case UndefinedResolution:
+      case PixelsPerInchResolution:
+        {
+          pcx_info.horizontal_resolution=(unsigned short) image->x_resolution;
+          pcx_info.vertical_resolution=(unsigned short) image->y_resolution;
+          break;
+        }
+      case PixelsPerCentimeterResolution:
+        {
+          pcx_info.horizontal_resolution=(unsigned short) (2.54*image->x_resolution+0.5);
+          pcx_info.vertical_resolution=(unsigned short) (2.54*image->y_resolution+0.5);
+          break;
+        }
       }
     pcx_info.reserved=0;
     pcx_info.planes=1;

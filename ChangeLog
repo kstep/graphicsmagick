@@ -1,6 +1,8 @@
 2004-06-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pcx.c (WritePCXImage): Support writing large PCX files.
+	(WritePCXImage): Ensure that UndefinedResolution is handled
+	properly. Avoid round-off error for centimeter based resolution.
 
 2004-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
