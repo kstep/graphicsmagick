@@ -779,7 +779,7 @@ int main(int argc,char **argv)
                 MagickError(OptionError,"Missing geometry",option);
               break;
             }
-          if (LocaleNCompare("border",option+1,7) == 0)
+          if (LocaleCompare("border",option+1) == 0)
             {
               if (*option == '-')
                 {
@@ -800,7 +800,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("box",option+1,3) == 0)
+          if (LocaleCompare("box",option+1) == 0)
             {
               if (*option == '-')
                 {

@@ -1635,159 +1635,6 @@ MagickExport unsigned long MultilineCensus(const char *label)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P a r s e D o u b l e G e o m e t r y                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ParseDoubleGeometry parses a geometry specification and returns the
-%  width, height, x, and y values.  It also returns flags that indicates
-%  which of the four values (width, height, x, y) were located in the string,
-%  and whether the x and y values are negative.
-%
-%  The format of the ParseDoubleGeometry method is:
-%
-%      int ParseDoubleGeometry(const char *geometry,double *x,double *y,
-%        double *width,double *height)
-%
-%  A description of each parameter follows:
-%
-%    o flags:  Method ParseDoubleGeometry returns a bitmask that indicates
-%      which of the four values were located in the geometry string.
-%
-%    o geometry:  Specifies a character string representing the geometry
-%      specification.
-%
-%    o x,y:  The x and y offset as determined by the geometry specification is
-%      returned here.
-%
-%    o width,height:  The width and height as determined by the geometry
-%      specification is returned here.
-%
-%
-*/
-MagickExport int ParseDoubleGeometry(const char *geometry,double *x,double *y,
-  double *width,double *height)
-{
-  typedef struct _GeometryInfo
-  {
-    double
-      width,
-      height,
-      x,
-      y;
-  } GeometryInfo;
-
-  char
-    *p;
-
-  int
-    mask;
-
-  GeometryInfo
-    bounds;
-
-  /*
-    Ensure the geometry is valid.
-  */
-  assert(x != (double *) NULL);
-  assert(y != (double *) NULL);
-  assert(width != (double *) NULL);
-  assert(height != (double *) NULL);
-  if ((geometry == (char *) NULL) || (*geometry == '\0'))
-    return(NoValue);
-  /*
-    Parse widthxheight{+-}x{+-}y.
-  */
-  mask=NoValue;
-  if (geometry == (const char *) NULL)
-    return(mask);
-  p=(char *) geometry;
-  while (isspace((int) *p))
-    p++;
-  if (*p == '\0')
-    return(mask);
-  if (*p == '=')
-    p++;
-  if ((*p != '+') && (*p != '-') && (*p != 'x') && (*p != 'X'))
-    {
-      char
-        *q;
-
-      /*
-        Parse width.
-      */
-      bounds.width=strtol(p,&q,10);
-      if ((*q == 'x') || (*q == 'X'))
-        p=q;
-      else
-        bounds.width=strtod(p,&p);
-      mask|=WidthValue;
-    }
-  if ((*p == 'x') || (*p == 'X'))
-    {
-      /*
-        Parse height.
-      */
-      p++;
-      bounds.height=strtod(p,&p);
-      mask|=HeightValue;
-    }
-  if ((*p == '+') || (*p == '-'))
-    {
-      /*
-        Parse x value.
-      */
-      if (*p == '-')
-        {
-          p++;
-          bounds.x=(-strtod(p,&p));
-          mask|=XNegative;
-        }
-      else
-        {
-          p++;
-          bounds.x=strtod(p,&p);
-        }
-      mask|=XValue;
-      if ((*p == '+') || (*p == '-'))
-        {
-          /*
-            Parse y value.
-          */
-          if (*p == '-')
-            {
-              p++;
-              bounds.y=(-strtod(p,&p));
-              mask|=YNegative;
-            }
-          else
-            {
-              p++;
-              bounds.y=strtod(p,&p);
-            }
-          mask|=YValue;
-        }
-    }
-  if (*p != '\0')
-    return(0);
-  if (mask & XValue)
-    *x=bounds.x;
-  if (mask & YValue)
-    *y=bounds.y;
-  if (mask & WidthValue)
-    *width=bounds.width;
-  if (mask & HeightValue)
-    *height=bounds.height;
-  return(mask);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   P a r s e G e o m e t r y                                                 %
 %                                                                             %
 %                                                                             %
@@ -1833,7 +1680,7 @@ MagickExport int ParseGeometry(const char *geometry,long *x,long *y,
     bounds;
 
   /*
-    Ensure the geometry is valid.
+    Parse widthxheight{+-}x{+-}y.
   */
   assert(x != (long *) NULL);
   assert(y != (long *) NULL);
@@ -1841,9 +1688,6 @@ MagickExport int ParseGeometry(const char *geometry,long *x,long *y,
   assert(height != (unsigned long *) NULL);
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(NoValue);
-  /*
-    Parse widthxheight{+-}x{+-}y
-  */
   mask=NoValue;
   if (geometry == (const char *) NULL)
     return(mask);
