@@ -2257,7 +2257,10 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       for (y=0; y < (int) composite_image->rows; y++)
       {
         if (((y_offset+y) < 0) || ((y_offset+y) >= (int) image->rows))
-          continue;
+          {
+            p+=composite_image->columns;
+            continue;
+          }
         q=image->pixels+(y_offset+y)*image->columns+x_offset;
         for (x=0; x < (int) composite_image->columns; x++)
         {
@@ -2365,7 +2368,10 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   for (y=0; y < (int) composite_image->rows; y++)
   {
     if (((y_offset+y) < 0) || ((y_offset+y) >= (int) image->rows))
-      continue;
+      {
+        p+=composite_image->columns;
+        continue;
+      }
     q=image->pixels+(y_offset+y)*image->columns+x_offset;
     for (x=0; x < (int) composite_image->columns; x++)
     {

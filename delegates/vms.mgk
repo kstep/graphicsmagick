@@ -178,7 +178,8 @@ ps<=>pdf
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=print
-	print/delete %i
+	copy %i magick.ps
+	print/delete magick.ps
 
 rad=>
 	ra_ppm -g 1.0 %i %o

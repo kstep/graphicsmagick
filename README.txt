@@ -650,16 +650,16 @@ VMS COMPILATION
 
       display
 
-  Alternatively, get a zipped distribution (with JPEG, TIFF, PNG, TTF ) from
+  Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF) from
 
       ftp://ftp.wizards.dupont.com/pub/ImageMagick/vms/ImageMagick-4.1.zip
 
-  The VMS JPEG and TIFF source libraries are available on
+  The VMS JPEG, PNG, TIFF, and TTF  source libraries are available on
   axp.psl.ku.dk in [anonymous.decwindows.lib].
 
   Thanks to pmoreau@cenaath.cena.dgac.fr for supplying
-  invaluable help as well as the VMS versions of the JPEG, PNG, TIFF, and
-  TTF libraries.
+  invaluable help as well as the VMS versions of the JPEG, PNG, TTF, and
+  TIFF libraries.
 
 
 NT COMPILATION

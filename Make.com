@@ -35,7 +35,7 @@ $library_options=""
 $compile_options="/nodebug/optimize"
 $if (f$trnlnm("sys$system:decc$compiler.exe") .nes. "")
 $then       ! VAX with DEC C compiler
-$  compile_options="/decc/standard=vaxc/nodebug/optimize"
+$  compile_options="/decc/prefix=all/nodebug/optimize"
 $  library_options="_decc"
 $else       ! VAX with VAX C compiler, (GCC library needed for PNG format only)
 $  define/nolog lnk$library sys$library:vaxcrtl
@@ -46,7 +46,7 @@ $if (f$getsyi("HW_MODEL") .gt. 1023)
 $then       ! Alpha with DEC C compiler
 $  define/nolog sys decc$library_include
 $  deas lnk$library
-$  compile_options="/standard=vaxc/nodebug/optimize"
+$  compile_options="/prefix=all/nodebug/optimize"
 $  library_options="_axp"
 $  share := 'share'y
 $else

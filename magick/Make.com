@@ -6,7 +6,7 @@ $if (f$trnlnm("X11") .eqs. "") then define/nolog X11 decw$include:
 $compile_options="/nodebug/optimize"
 $if (f$trnlnm("sys$system:decc$compiler.exe") .nes. "") 
 $then     ! VAX with DEC C
-$  compile_options="/decc/nodebug/optimize"
+$  compile_options="/decc/prefix=all/nodebug/optimize"
 $else     ! VAX with VAX C
 $define/nolog lnk$library sys$library:vaxcrtl
 $define/nolog sys sys$share
@@ -14,7 +14,7 @@ $endif
 $if (f$getsyi("HW_MODEL") .gt. 1023)
 $then     ! Alpha with DEC C
 $  define/nolog sys decc$library_include
-$  compile_options="/nodebug/optimize"
+$  compile_options="/prefix=all/nodebug/optimize"
 $endif
 $
 $write sys$output "Making Magick..."
@@ -33,7 +33,7 @@ $call Make utility
 $call Make monitor
 $call Make error
 $call Make delegates
-$call Make magick ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
+$call Make magick  ("HasJPEG","HasLZW","HasPNG","HasTIFF","HasTTF","HasZLIB")
 $call Make display
 $call Make animate
 $call Make widget
