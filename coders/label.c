@@ -980,12 +980,10 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   (void) fclose(file);
   clone_info=CloneImageInfo(image_info);
   FormatString(geometry,"%dx%d+0+0!",(int) ceil(extent.x),(int) ceil(extent.y));
-puts(geometry);
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   (void) CloneString(&clone_info->page,geometry);
   DestroyImage(image);
   image=ReadImage(clone_info,exception);
-puts(filename);if (0)
   (void) remove(filename);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
