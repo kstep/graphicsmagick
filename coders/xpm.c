@@ -578,21 +578,16 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
     *picon,
     *map;
 
-  long
-    x,
-    y;
+  RectangleInfo
+		geometry;
 
   unsigned int
     status;
 
-  unsigned long
-    height,
-    width;
-
-  width=image->columns;
-  height=image->rows;
-  (void) ParseImageGeometry(PiconGeometry,&x,&y,&width,&height);
-  picon=ZoomImage(image,width,height,&image->exception);
+  SetGeometry(image,&geometry);
+  (void) ParseImageGeometry(PiconGeometry,&geometry.x,&geometry.y,
+		&geometry.width,&geometry.height);
+  picon=ZoomImage(image,geometry.width,geometry.height,&image->exception);
   if (IsGrayImage(image,&image->exception))
     map=BlobToImage(image_info,Graymap,GraymapExtent,&image->exception);
   else

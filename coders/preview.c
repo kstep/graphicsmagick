@@ -190,8 +190,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     argc;
 
   long
-    x,
-    y;
+		y;
 
   MonitorHandler
     handler;
@@ -199,30 +198,31 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   MontageInfo
     *montage_info;
 
+  RectangleInfo
+		geometry;
+
   register long
-    i;
+    i,
+		x;
 
   unsigned int
     status;
 
   unsigned long
-    colors,
-    height,
-    width;
+    colors;
 
   /*
     Scale the image to tile size.
   */
   (void) TransformRGBImage(image,RGBColorspace);
-  width=image->columns;
-  height=image->rows;
-  x=0;
-  y=0;
-  (void) ParseImageGeometry(DefaultPreviewGeometry,&x,&y,&width,&height);
+  SetGeometry(image,&geometry);
+  (void) ParseImageGeometry(DefaultPreviewGeometry,&geometry.x,&geometry.y,
+		&geometry.width,&geometry.height);
   clone_image=CloneImage(image,0,0,True,&image->exception);
   if (clone_image == (Image *) NULL)
     return(False);
-  preview_image=ZoomImage(clone_image,width,height,&image->exception);
+  preview_image=ZoomImage(clone_image,geometry.width,geometry.height,
+		&image->exception);
   DestroyImage(clone_image);
   if (preview_image == (Image *) NULL)
     return(False);
