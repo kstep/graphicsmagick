@@ -969,6 +969,9 @@
       <Message name="UnrecognizedResourceType">
         Unrecognized resource type
       </Message>
+      <Message name="UnrecognizedUnitsType">
+        Unrecognized units type
+      </Message>
       <Message name="UnrecognizedVirtualPixelMethod">
         Unrecognized virtual pixel method
       </Message>

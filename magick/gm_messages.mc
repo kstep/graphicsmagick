@@ -1751,6 +1751,12 @@ Unrecognized type
 .
 
 MessageId       = +1
+SymbolicName    = OptionErrorUnrecognizedUnitsType
+Language        = English
+Unrecognized units type
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorUnrecognizedVirtualPixelMethod
 Language        = English
 Unrecognized virtual pixel method
