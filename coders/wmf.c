@@ -789,7 +789,8 @@ static void ipa_draw_ellipse(wmfAPI * API, wmfDrawArc_t * draw_arc)
 }
 
 static void util_draw_arc(wmfAPI * API,
-          wmfDrawArc_t * draw_arc, magick_arc_t finish)
+                          wmfDrawArc_t * draw_arc,
+                          magick_arc_t finish)
 {
   wmfD_Coord
     BR,
@@ -862,14 +863,30 @@ static void util_draw_arc(wmfAPI * API,
       if (finish == magick_arc_ellipse)
         DrawEllipse(WmfDrawContext, XC(O.x), YC(O.y), Rx, Ry, 0, 360);
       else if (finish == magick_arc_pie)
-        DrawEllipse(WmfDrawContext, XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
+        {
+          DrawPathStart(WmfDrawContext);
+          DrawPathMoveToAbsolute(WmfDrawContext,
+                                 XC(O.x+start.x),YC(O.y+start.y));
+          DrawPathEllipticArcAbsolute(WmfDrawContext, Rx, Ry, 0, 0, 1,
+                                      XC(O.x+end.x),YC(O.y+end.y));
+          DrawPathLineToAbsolute(WmfDrawContext, XC(O.x), YC(O.y));
+          DrawPathClose(WmfDrawContext);
+          DrawPathFinish(WmfDrawContext);
+        }
       else if (finish == magick_arc_chord)
         {
-          DrawArc(WmfDrawContext, XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
-          DrawLine(WmfDrawContext, XC(start.x), YC(start.y), XC(end.x), YC(end.y));
+          DrawArc(WmfDrawContext,
+                  XC(draw_arc->TL.x), YC(draw_arc->TL.y),
+                  XC(draw_arc->BR.x), XC(draw_arc->BR.y),
+                  phi_s, phi_e);
+          DrawLine(WmfDrawContext,
+                   XC(draw_arc->BR.x-start.x), YC(draw_arc->BR.y-start.y),
+                   XC(draw_arc->BR.x-end.x), YC(draw_arc->BR.y-end.y));
         }
       else      /* if (finish == magick_arc_open) */
-        DrawArc(WmfDrawContext, XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
+        DrawArc(WmfDrawContext,
+                XC(draw_arc->TL.x), YC(draw_arc->TL.y),
+                XC(draw_arc->BR.x), XC(draw_arc->BR.y), phi_s, phi_e);
     }
 
   /* Restore graphic context */

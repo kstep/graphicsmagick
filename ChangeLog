@@ -1,3 +1,10 @@
+2004-02-13  Peter Boos  <pedib@colorfullife.com>
+
+	* coders/wmf.c (util_draw_arc): Fixes to improve handling for pie,
+	arc, and chord.  These fixes produce correct output for
+	wmf/examples/fjftest.wmf, but it is not known if they are correct
+	for all cases.
+
 2004-02-12  Tim Hunter  <cyclists@nc.rr.com>
 
 	* magick/profile.c (SetImageProfile): Bug fixes.
