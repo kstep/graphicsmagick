@@ -494,9 +494,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (LocaleCompare(primitive,"path") == 0)
           {
-            (void) strcat(command,'"');
+            (void) strcat(command,"\"");
             (void) strcat(command,vertices);
-            (void) strcat(command,'"');
+            (void) strcat(command,"\"");
           }
         if (LocaleCompare(primitive,"polyline") == 0)
           (void) strcat(command,vertices);
@@ -572,7 +572,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (LocaleCompare(keyword,"angle") == 0)
       (void) sscanf(value,"%lf",&element.angle);
     if (LocaleCompare(keyword,"circle") == 0)
-      CloneString(&primitive,"circle");
+      CloneString(&primitive,keyword);
     if (LocaleCompare(keyword,"cx") == 0)
       {
         (void) sscanf(value,"%lf",&element.cx);
@@ -586,7 +586,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (LocaleCompare(keyword,"d") == 0)
       (void) CloneString(&vertices,value);
     if (LocaleCompare(keyword,"ellipse") == 0)
-      CloneString(&primitive,"ellipse");
+      CloneString(&primitive,keyword);
     if (LocaleCompare(keyword,"g") == 0)
       {
         if (*token == '>')
@@ -604,19 +604,19 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (LocaleCompare(keyword,"href") == 0)
       (void) CloneString(&url,value);
     if (LocaleCompare(keyword,"line") == 0)
-      CloneString(&primitive,"line");
+      CloneString(&primitive,keyword);
     if (LocaleCompare(keyword,"image") == 0)
-      CloneString(&primitive,"image");
+      CloneString(&primitive,keyword);
     if (LocaleCompare(keyword,"major") == 0)
       (void) sscanf(value,"%lf",&element.major);
     if (LocaleCompare(keyword,"minor") == 0)
       (void) sscanf(value,"%lf",&element.minor);
     if (LocaleCompare(keyword,"path") == 0)
-      CloneString(&primitive,"path");
+      CloneString(&primitive,keyword);
     if (LocaleCompare(keyword,"polygon") == 0)
-      CloneString(&primitive,"polygon");
+      CloneString(&primitive,keyword);
     if (LocaleCompare(keyword,"polyline") == 0)
-      CloneString(&primitive,"polyline");
+      CloneString(&primitive,keyword);
     if (LocaleCompare(keyword,"points") == 0)
       (void) CloneString(&vertices,value);
     if (LocaleCompare(keyword,"r") == 0)
@@ -626,7 +626,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         element.minor=element.major;
       }
     if (LocaleCompare(keyword,"rect") == 0)
-      CloneString(&primitive,"rectangle");
+      CloneString(&primitive,keyword);
     if (LocaleCompare(keyword,"rx") == 0)
       {
         (void) sscanf(value,"%lf",&element.major);
@@ -684,7 +684,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         FreeMemory((void **) &tokens);
       }
     if (LocaleCompare(keyword,"text") == 0)
-      CloneString(&primitive,"text");
+      CloneString(&primitive,keyword);
     if (LocaleCompare(keyword,"transform") == 0)
       {
         tokens=StringToTokens(value,&number_tokens);

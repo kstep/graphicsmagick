@@ -1007,7 +1007,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_type=PointPrimitive;
     if (LocaleCompare("Line",keyword) == 0)
       primitive_type=LinePrimitive;
-    if (LocaleCompare("Rectangle",keyword) == 0)
+    if (LocaleNCompare("Rectangle",keyword,4) == 0)
       primitive_type=RectanglePrimitive;
     if (LocaleCompare("RoundRectangle",keyword) == 0)
       primitive_type=RoundRectanglePrimitive;
