@@ -47,7 +47,7 @@ testRead( 'input.dib', 'e9b162b8431709942886f79b7b7c11bb' );
 # Flexible Image Transport System
 #
 ++$test;
-testRead( 'input.fits', 'ae22361a4eb800020b782f444f7754a1' );
+testRead( 'input.fits', '93a139ba1fbb9a6fbb6c7f2dd276ebe8' );
 
 #
 # CompuServe graphics interchange format

@@ -136,9 +136,9 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
       bits_per_pixel;
 
     unsigned int
-      number_of_axis,
       columns,
       rows,
+      number_axes,
       number_scenes;
 
     double
@@ -282,7 +282,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         if (Latin1Compare(keyword,"BITPIX") == 0)
           fits_header.bits_per_pixel=(unsigned int) atoi(value);
         if (Latin1Compare(keyword,"NAXIS") == 0)
-          fits_header.number_of_axis=(unsigned int) atoi(value);
+          fits_header.number_axes=(unsigned int) atoi(value);
         if (Latin1Compare(keyword,"NAXIS1") == 0)
           fits_header.columns=(unsigned int) atoi(value);
         if (Latin1Compare(keyword,"NAXIS2") == 0)
@@ -311,8 +311,8 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
   /*
     Verify that required image information is defined.
   */
-  if ((!fits_header.simple) || (fits_header.number_of_axis < 1) ||
-      (fits_header.number_of_axis > 4) ||
+  if ((!fits_header.simple) || (fits_header.number_axes < 1) ||
+      (fits_header.number_axes > 4) ||
       (fits_header.columns*fits_header.rows) == 0)
     ReaderExit(CorruptImageWarning,"image type not supported",image);
   for (scene=0; scene < fits_header.number_scenes; scene++)
@@ -347,13 +347,13 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
     if (packet_size < 0)
       packet_size=(-packet_size);
     fits_pixels=(unsigned char *) AllocateMemory(
-      image->columns*image->rows*packet_size*sizeof(unsigned char));
+      packet_size*image->columns*image->rows*sizeof(unsigned char));
     if (fits_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Convert FITS pixels to pixel packets.
     */
-    status=ReadBlob(image,image->columns*image->rows*packet_size,fits_pixels);
+    status=ReadBlob(image,packet_size*image->columns*image->rows,fits_pixels);
     if (status == False)
       MagickWarning(CorruptImageWarning,"Insufficient image data in file",
         image->filename);
@@ -445,6 +445,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         q->red=image->colormap[index].red;
         q->green=image->colormap[index].green;
         q->blue=image->colormap[index].blue;
+        q++;
       }
       if (!SyncPixelCache(image))
         break;
@@ -567,10 +568,14 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(fits_header+240,buffer,Extent(buffer));
   FormatString(buffer,"NAXIS2  =           %10u",image->rows);
   (void) strncpy(fits_header+320,buffer,Extent(buffer));
-  (void) strcpy(buffer,"HISTORY Created by ImageMagick.");
+  FormatString(buffer,"DATAMIN =           %10u",0);
   (void) strncpy(fits_header+400,buffer,Extent(buffer));
-  (void) strcpy(buffer,"END");
+  FormatString(buffer,"DATAMAX =           %10u",MaxRGB);
   (void) strncpy(fits_header+480,buffer,Extent(buffer));
+  (void) strcpy(buffer,"HISTORY Created by ImageMagick.");
+  (void) strncpy(fits_header+560,buffer,Extent(buffer));
+  (void) strcpy(buffer,"END");
+  (void) strncpy(fits_header+640,buffer,Extent(buffer));
   (void) WriteBlob(image,2880,(char *) fits_header);
   FreeMemory(fits_header);
   /*
