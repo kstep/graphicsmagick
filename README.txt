@@ -39,7 +39,7 @@ AVAILABILITY
   recent version from ftp://ftp.imagemagick.org/pub/ImageMagick
   before submitting any bug reports or suggestions.  Report any
   problems via the web-based reporting facility at
-  http://www.imagemagick.org/ImageMagick/bugs.html.
+  http://www.simplesystems.org/ImageMagick/bugs.html.
 
 
 WWW
