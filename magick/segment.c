@@ -1380,7 +1380,7 @@ static void ZeroCrossHistogram(double *second_derivative,
 %  color components and identifying units that are homogeneous with the fuzzy
 %  c-means technique.
 %
-%  Specify Icluster threshold as the number of pixels in each cluster must
+%  Specify cluster threshold as the number of pixels in each cluster must
 %  exceed the the cluster threshold to be considered valid.  Smoothing
 %  threshold eliminates noise in the second derivative of the histogram.
 %  As the value is increased, you can expect a smoother second derivative.
@@ -1388,7 +1388,9 @@ static void ZeroCrossHistogram(double *second_derivative,
 %
 %  The format of the SegmentImage method is:
 %
-%      status=SegmentImage(image,colorspace,verbose)
+%      unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
+%        const unsigned int verbose,const double cluster_threshold,
+%        const double smoothing_threshold)
 %
 %  A description of each parameter follows.
 %

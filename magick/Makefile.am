@@ -39,6 +39,8 @@ MICRO_VERSION=@MICRO_VERSION@
 
 INCLUDES = -I$(top_srcdir)
 
+ALLMANPAGES = Magick-config.1
+
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 # Library base sources
@@ -83,8 +85,8 @@ noinst_HEADERS = animate.h cache.h defines.h display.h mac.h mng.h nt.h \
   vms.h
 
 # Additional files to distribute
-EXTRA_DIST = Imakefile Magick-config.in Make.com mac.c nt.c vms.c \
-  $(MAGICK_BASE_SRCS)
+EXTRA_DIST = $(ALLMANPAGES) Imakefile Magick-config.in Make.com mac.c nt.c \
+  vms.c $(MAGICK_BASE_SRCS)
 
 #
 # Libtool Modules

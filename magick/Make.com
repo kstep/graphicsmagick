@@ -21,7 +21,9 @@ $write sys$output "Making Magick..."
 $call Make PreRvIcccm.c
 $call Make animate.c
 $call Make annotate.c
+$call Make attributes.c
 $call Make avs.c
+$call Make bim.c
 $call Make blob.c
 $call Make bmp.c
 $call Make cache.c
@@ -67,8 +69,8 @@ $call Make monitor.c
 $call Make mono.c
 $call Make montage.c
 $call Make mtv.c
-$call Make null.c
 $call Make pcd.c
+$call Make pdb.c
 $call Make pcl.c
 $call Make pcx.c
 $call Make pdf.c
@@ -123,22 +125,18 @@ $call Make xwindows.c
 $call Make yuv.c
 $call Make zoom.c
 $call Make 8bim.c
-$library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
-  avs.obj,blob.obj,bmp.obj,cache.obj,cache_view.obj,cmyk.obj,colors.obj, -
-  compress.obj,constitute.obj,dcm.obj,decorate.obj,delegates.obj,display.obj, -
-  dps.obj,draw.obj,effects.obj,enhance.obj,ept.obj,error.obj,fax.obj,fits.obj, -
-  fpx.obj,gems.obj,gif.obj,gradation.obj,gray.obj,hdf.obj, -
-  histogram.obj,html.obj,icc.obj,icon.obj,image.obj,iptc.obj, -
-  jbig.obj,jpeg.obj,label.obj,logo.obj,magick.obj, -
-  map.obj,matte.obj,memory.obj,miff.obj,monitor.obj,mono.obj, -
-  montage.obj,mtv.obj,null.obj,pcd.obj,pcl.obj,pcx.obj, -
-  pdf.obj,pict.obj,pix.obj,pixel_cache.obj,plasma.obj,png.obj,pnm.obj, -
-  preview.obj,ps.obj,ps2.obj,ps3.obj,psd.obj,pwp.obj,quantize.obj, -
-  rgb.obj,rla.obj,rle.obj,segment.obj,sct.obj,sfw.obj,sgi.obj,shear.obj, -
-  signature.obj,stegano.obj,stream.obj,sun.obj,tga.obj,tiff.obj,tile.obj, -
-  tim.obj,timer.obj,transform.obj,ttf.obj,txt.obj,uil.obj,utility.obj, -
-  uyvy.obj,vicar.obj,vid.obj,viff.obj,vms.obj,widget.obj,wbmp.obj,x.obj, -
-  xbm.obj,xc.obj,xpm.obj,xwd.obj,xwindows.obj,yuv.obj,zoom.obj,8bim.obj
+$library/create libmagick.olb PreRvIcccm,animate,annotate,-
+  attributes,avs,bim,blob,bmp,cache,cache_view,cmyk,colors,compress,-
+  constitute,dcm,decorate,delegates,display,dps,draw,effects,-
+  enhance,ept,error,fax,fits,fpx,gems,gif,gradation,gray,-
+  hdf, histogram,html,icc,icon,image,iptc,jbig,jpeg,label,-
+  logo,magick, map,matte,memory,miff,monitor,mono,montage,mtv,-
+  pdb,pcd,pcl,pcx, pdf,pict,pix,pixel_cache,plasma,png,pnm,-
+  preview,ps,ps2,ps3,psd,pwp,quantize,rgb,rla,rle,segment,-
+  sct,sfw,sgi,shear,signature,stegano,stream,sun,tga,tiff,-
+  tile,tim,timer,transform,ttf,txt,uil,utility,uyvy,vicar,-
+  vid,viff,vms,widget,wbmp,x,xbm,xc,xpm,xwd,xwindows,yuv,-
+  zoom,8bim
 $exit
 $
 $Make: subroutine

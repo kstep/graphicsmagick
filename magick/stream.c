@@ -10,7 +10,7 @@
 %                  SSSSS    T    R  R   EEEEE  A   A  M   M                   %
 %                                                                             %
 %                                                                             %
-%                      ImageMagick Pixel static Methods                       %
+%                      ImageMagick Pixel Stream Methods                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -104,7 +104,7 @@ static void
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l o s e P i x e l S t r e a m                                           %
++   C l o s e P i x e l S t r e a m                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -123,7 +123,7 @@ static void
 %
 %
 */
-Export void ClosePixelStream(Image *image)
+static void ClosePixelStream(Image *image)
 {
   assert(image != (Image *) NULL);
 }
@@ -133,7 +133,7 @@ Export void ClosePixelStream(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y P i x e l S t r e a m                                       %
++   D e s t r o y P i x e l S t r e a m                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -152,7 +152,7 @@ Export void ClosePixelStream(Image *image)
 %
 %
 */
-Export void DestroyPixelStream(Image *image)
+static void DestroyPixelStream(Image *image)
 {
   StreamInfo
     *stream_info;
@@ -170,7 +170,7 @@ Export void DestroyPixelStream(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I n d e x e s F r o m S t r e a m                                   %
++   G e t I n d e x e s F r o m S t r e a m                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -208,7 +208,7 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l S t r e a m P i x e l                                     %
++   G e t P i x e l S t r e a m P i x e l                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -244,7 +244,7 @@ static PixelPacket GetOnePixelFromStream(Image *image,const int x,const int y)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l S t r e a m                                               %
++   G e t P i x e l S t r e a m                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -288,7 +288,7 @@ static PixelPacket *GetPixelStream(Image *image,const int x,const int y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l F r o m S t e a m                                         %
++   G e t P i x e l F r o m S t e a m                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -325,7 +325,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t P i x e l S t r e a m                                               %
++   S e t P i x e l S t r e a m                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -417,7 +417,7 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S y n c P i x e l S t r e a m                                             %
++   S y n c P i x e l S t r e a m                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
