@@ -496,7 +496,7 @@ MAGICK DELEGATES
     o ImageMagick requires Sam Leffler's TIFF software available
       via anonymous FTP as
 
-          ftp://ftp.uu.net/graphics/tiff/tiff-v3.4beta037-tar.gz
+          http://www.libtiff.org/
 
       to read the TIFF image format.  It in turn optionally requires
       the JPEG and ZLIB libraries.

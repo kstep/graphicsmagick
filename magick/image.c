@@ -2026,8 +2026,98 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  color profile: %u bytes\n",
       image->color_profile.length);
   if (image->iptc_profile.length > 0)
-    (void) fprintf(file,"  IPTC profile: %u bytes\n",
-      image->iptc_profile.length);
+    {
+      char
+        *tag;
+
+      int
+        c;
+
+      register int
+        j;
+
+      unsigned short
+        length;
+
+      /*
+        Describe IPTC data.
+      */
+      (void) fprintf(file,"  IPTC profile: %u bytes\n",
+        image->iptc_profile.length);
+      for (i=0; i < image->iptc_profile.length; i++)
+      {
+        if (image->iptc_profile.info[i] != 0x1c)
+          continue;
+        i++;  /* skip dataset byte */
+        switch (image->iptc_profile.info[++i])
+        {
+          case 5: tag="Image Name"; break;
+          case 7: tag="Edit Status"; break;
+          case 10: tag="Priority"; break;
+          case 15: tag="Category"; break;
+          case 20: tag="Supplemental Category"; break;
+          case 22: tag="Fixture Identifier"; break;
+          case 25: tag="Keyword"; break;
+          case 30: tag="Release Date"; break;
+          case 35: tag="Release Time"; break;
+          case 40: tag="Special Instructions"; break;
+          case 45: tag="Reference Service"; break;
+          case 47: tag="Reference Date"; break;
+          case 50: tag="Reference Number"; break;
+          case 55: tag="Created Date"; break;
+          case 60: tag="Created Time"; break;
+          case 65: tag="Originating Program"; break;
+          case 70: tag="Program Version"; break;
+          case 75: tag="Object Cycle"; break;
+          case 80: tag="Byline"; break;
+          case 85: tag="Byline Title"; break;
+          case 90: tag="City"; break;
+          case 95: tag="Province State"; break;
+          case 100: tag="Country Code"; break;
+          case 101: tag="Country"; break;
+          case 103: tag="Original Transmission Reference"; break;
+          case 105: tag="Headline"; break;
+          case 110: tag="Credit"; break;
+          case 115: tag="Source"; break;
+          case 116: tag="Copyright String"; break;
+          case 120: tag="Caption"; break;
+          case 121: tag="Local Caption"; break;
+          case 122: tag="Caption Writer"; break;
+          case 200: tag="Custom Field 1"; break;
+          case 201: tag="Custom Field 2"; break;
+          case 202: tag="Custom Field 3"; break;
+          case 203: tag="Custom Field 4"; break;
+          case 204: tag="Custom Field 5"; break;
+          case 205: tag="Custom Field 6"; break;
+          case 206: tag="Custom Field 7"; break;
+          case 207: tag="Custom Field 8"; break;
+          case 208: tag="Custom Field 9"; break;
+          case 209: tag="Custom Field 10"; break;
+          case 210: tag="Custom Field 11"; break;
+          case 211: tag="Custom Field 12"; break;
+          case 212: tag="Custom Field 13"; break;
+          case 213: tag="Custom Field 14"; break;
+          case 214: tag="Custom Field 15"; break;
+          case 215: tag="Custom Field 16"; break;
+          case 216: tag="Custom Field 17"; break;
+          case 217: tag="Custom Field 18"; break;
+          case 218: tag="Custom Field 19"; break;
+          case 219: tag="Custom Field 20"; break;
+          default: tag="unknown"; break;
+        }
+        (void) fprintf(file,"    %s: ",tag);
+        length=image->iptc_profile.info[++i] << 8;
+        length|=image->iptc_profile.info[++i];
+        for (j=0; j < length; j++)
+        {
+          i++;
+          c=image->iptc_profile.info[i];
+          if ((c >= 32) || isspace((int) c))
+            (void) fprintf(file,"%c",c);
+        }
+        (void) fprintf(file,"\n");
+      }
+    }
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
     if ((image->magick_columns != image->columns) ||
         (image->magick_rows != image->rows))
