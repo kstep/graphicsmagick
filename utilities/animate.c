@@ -636,8 +636,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingImageDepth",
-                    option);
+                  MagickFatalError(OptionFatalError,"MissingImageDepth",option);
                 image_info->depth=atol(argv[i]);
               }
             break;
@@ -649,8 +648,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingServerName",
-                    option);
+                  MagickFatalError(OptionFatalError,"MissingServerName",option);
                 (void) CloneString(&image_info->server_name,argv[i]);
               }
             break;
@@ -802,7 +800,7 @@ int main(int argc,char **argv)
                       SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
                       MagickFatalError(OptionFatalError,
-                        "Unrecognized resource type",type);
+                        "UnrecognizedResourceType",type);
               }
             break;
           }
@@ -1032,8 +1030,8 @@ int main(int argc,char **argv)
                 if (LocaleCompare("Tile",option) == 0)
                   virtual_pixel_method=TileVirtualPixelMethod;
                 if (virtual_pixel_method == UndefinedVirtualPixelMethod)
-                  MagickFatalError(OptionFatalError,"InvalidVirtualPixelMethod",
-                    option);
+                  MagickFatalError(OptionFatalError,
+                    "UnrecognizedVirtualPixelMethod",option);
               }
             break;
           }
@@ -1085,8 +1083,7 @@ int main(int argc,char **argv)
   }
   i--;
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
-    MagickFatalError(OptionFatalError,"MissingAnImageFilename",
-      (char *) NULL);
+    MagickFatalError(OptionFatalError,"MissingAnImageFilename",(char *) NULL);
   if (image == (Image *) NULL)
     {
       status&=MogrifyImages(image_info,i-j,argv+j,&image_list);

@@ -270,7 +270,7 @@ const char *GetLocaleMessage(const char *tag)
                 return tag;
 
             case 'f':  case 'F':
-              if (p - tp == 30 && !LocaleNCompare(tp, "FractalCompressionNotSupported", 30))
+              if (p - tp == 27 && !LocaleNCompare(tp, "FractalCompressNotSupported", 27))
                 return *np ? tag : "Fractal compression not supported";
               else
                 return tag;
@@ -291,10 +291,10 @@ const char *GetLocaleMessage(const char *tag)
                 return tag;
 
             case 'j':  case 'J':
-              if (p - tp == 26 && !LocaleNCompare(tp, "JNGCompressionNotSupported", 26))
+              if (p - tp == 23 && !LocaleNCompare(tp, "JNGCompressNotSupported", 23))
                 return *np ? tag : "JNG compression not supported";
               else
-              if (p - tp == 27 && !LocaleNCompare(tp, "JPEGCompressionNotSupported", 27))
+              if (p - tp == 24 && !LocaleNCompare(tp, "JPEGCompressNotSupported", 24))
                 return *np ? tag : "JPEG compression not supported";
               else
               if (p - tp == 19 && !LocaleNCompare(tp, "JPEGEmbeddingFailed", 19))
@@ -363,13 +363,13 @@ const char *GetLocaleMessage(const char *tag)
                 return tag;
 
             case 'p':  case 'P':
-              if (p - tp == 26 && !LocaleNCompare(tp, "PNGCompressionNotSupported", 26))
+              if (p - tp == 23 && !LocaleNCompare(tp, "PNGCompressNotSupported", 23))
                 return *np ? tag : "PNG compression not supported";
               else
                 return tag;
 
             case 'r':  case 'R':
-              if (p - tp == 26 && !LocaleNCompare(tp, "RLECompressionNotSupported", 26))
+              if (p - tp == 23 && !LocaleNCompare(tp, "RLECompressNotSupported", 23))
                 return *np ? tag : "RLE compression not supported";
               else
                 return tag;
@@ -411,7 +411,7 @@ const char *GetLocaleMessage(const char *tag)
                 return tag;
 
             case 'z':  case 'Z':
-              if (p - tp == 26 && !LocaleNCompare(tp, "ZipCompressionNotSupported", 26))
+              if (p - tp == 23 && !LocaleNCompare(tp, "ZipCompressNotSupported", 23))
                 return *np ? tag : "Zip compression not supported";
               else
                 return tag;
@@ -486,8 +486,8 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 24 && !LocaleNCompare(tp, "ColormapExceeds256Colors", 24))
                   return *np ? tag : "Colormap exceeded 256 colors";
                 else
-                if (p - tp == 19 && !LocaleNCompare(tp, "CompressionNotValid", 19))
-                  return *np ? tag : "Compression not valid";
+                if (p - tp == 16 && !LocaleNCompare(tp, "CompressNotValid", 16))
+                  return *np ? tag : "Compress not valid";
                 else
                 if (p - tp == 15 && !LocaleNCompare(tp, "CorruptGIFImage", 15))
                   return *np ? tag : "Corrupt GIF image";
@@ -543,7 +543,7 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 20 && !LocaleNCompare(tp, "InvalidColormapIndex", 20))
                   return *np ? tag : "Invalid colormap index";
                 else
-                if (p - tp == 18 && !LocaleNCompare(tp, "InvalidCompression", 18))
+                if (p - tp == 15 && !LocaleNCompare(tp, "InvalidCompress", 15))
                   return *np ? tag : "Invalid compression";
                 else
                 if (p - tp == 20 && !LocaleNCompare(tp, "InvalidNumerOfColors", 20))
@@ -729,7 +729,7 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 18 && !LocaleNCompare(tp, "UnknownPatternType", 18))
                   return *np ? tag : "Unknown pattern type";
                 else
-                if (p - tp == 29 && !LocaleNCompare(tp, "UnrecognizedCompressionMethod", 29))
+                if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedCompressMethod", 26))
                   return *np ? tag : "Unrecognized compression method";
                 else
                   return tag;
@@ -1127,6 +1127,12 @@ const char *GetLocaleMessage(const char *tag)
       if (p - tp == 22 && !LocaleNCompare(tp, "MissingAnImageFilename", 22))
         return *np ? tag : "Missing an image filename";
       else
+      if (p - tp == 17 && !LocaleNCompare(tp, "MissingBevelWidth", 17))
+        return *np ? tag : "Missing bevel width";
+      else
+      if (p - tp == 18 && !LocaleNCompare(tp, "MissingBorderColor", 18))
+        return *np ? tag : "Missing border color";
+      else
       if (p - tp == 12 && !LocaleNCompare(tp, "MissingColor", 12))
         return *np ? tag : "Missing color";
       else
@@ -1139,8 +1145,17 @@ const char *GetLocaleMessage(const char *tag)
       if (p - tp == 12 && !LocaleNCompare(tp, "MissingDepth", 12))
         return *np ? tag : "Missing depth";
       else
+      if (p - tp == 20 && !LocaleNCompare(tp, "MissingDisposeMethod", 20))
+        return *np ? tag : "Missing dispose method";
+      else
+      if (p - tp == 19 && !LocaleNCompare(tp, "MissingEncodingType", 19))
+        return *np ? tag : "Missing encoding type";
+      else
       if (p - tp == 16 && !LocaleNCompare(tp, "MissingEventMask", 16))
         return *np ? tag : "Missing event mask";
+      else
+      if (p - tp == 15 && !LocaleNCompare(tp, "MissingFilename", 15))
+        return *np ? tag : "Missing filename";
       else
       if (p - tp == 15 && !LocaleNCompare(tp, "MissingFontName", 15))
         return *np ? tag : "Missing font name";
@@ -1157,11 +1172,20 @@ const char *GetLocaleMessage(const char *tag)
       if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageDepth", 17))
         return *np ? tag : "Missing image depth";
       else
+      if (p - tp == 16 && !LocaleNCompare(tp, "MissingLabelName", 16))
+        return *np ? tag : "Missing label name";
+      else
+      if (p - tp == 12 && !LocaleNCompare(tp, "MissingLevel", 12))
+        return *np ? tag : "Missing level";
+      else
       if (p - tp == 14 && !LocaleNCompare(tp, "MissingMapType", 14))
         return *np ? tag : "Missing map type";
       else
       if (p - tp == 11 && !LocaleNCompare(tp, "MissingName", 11))
         return *np ? tag : "Missing name";
+      else
+      if (p - tp == 19 && !LocaleNCompare(tp, "MissingPageGeometry", 19))
+        return *np ? tag : "Missing page geometry";
       else
       if (p - tp == 15 && !LocaleNCompare(tp, "MissingPassword", 15))
         return *np ? tag : "Missing password";
@@ -1301,7 +1325,7 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 22 && !LocaleNCompare(tp, "InvalidComposeOperator", 22))
               return *np ? tag : "Invalid compose operator";
             else
-            if (p - tp == 18 && !LocaleNCompare(tp, "InvalidCompression", 18))
+            if (p - tp == 15 && !LocaleNCompare(tp, "InvalidCompress", 15))
               return *np ? tag : "Invalid image compression";
             else
             if (p - tp == 15 && !LocaleNCompare(tp, "InvalidPixelMap", 15))
@@ -1352,7 +1376,7 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 14 && !LocaleNCompare(tp, "MissingComment", 14))
               return *np ? tag : "Missing comment";
             else
-            if (p - tp == 25 && !LocaleNCompare(tp, "MissingCompressionQuality", 25))
+            if (p - tp == 22 && !LocaleNCompare(tp, "MissingCompressQuality", 22))
               return *np ? tag : "Missing compression quality";
             else
             if (p - tp == 18 && !LocaleNCompare(tp, "MissingCycleAmount", 18))
@@ -1872,10 +1896,23 @@ const char *GetLocaleMessage(const char *tag)
 
           case 'f':  case 'F':
             if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
-              if (LocaleNCompare(NEXT_FIELD, "MemoryAllocationFailed", 22) || p - tp != 22)
+              switch (*NEXT_FIELD)
+              {
+              default:
                 return tag;
-              else
-                return *np ? tag : "Memory allocation failed";
+
+              case 'm':  case 'M':
+                if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
+                  return *np ? tag : "Memory allocation failed";
+                else
+                  return tag;
+
+              case 'u':  case 'U':
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToDisplayImage", 20))
+                  return *np ? tag : "unable to display image";
+                else
+                  return tag;
+              }
             else
               return tag;
 
@@ -1969,8 +2006,23 @@ const char *GetLocaleMessage(const char *tag)
         return tag;
 
     case 'u':  case 'U':
+      if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedCompressType", 24))
+        return *np ? tag : "unrecognized compression type";
+      else
+      if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedDisposeMethod", 25))
+        return *np ? tag : "unrecognized dispose method";
+      else
+      if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedFilterType", 22))
+        return *np ? tag : "Unrecognized filter type";
+      else
       if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
         return *np ? tag : "Unrecognized option";
+      else
+      if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedResourceType", 24))
+        return *np ? tag : "Unrecognized resource type";
+      else
+      if (p - tp == 30 && !LocaleNCompare(tp, "UnrecognizedVirtualPixelMethod", 30))
+        return *np ? tag : "Unrecognized virtual pixel method";
       else
         return tag;
 

@@ -87,7 +87,7 @@
       <Message name="EncryptedWPGImageFileNotSupported">
         Encrypted WPG image file not supported
       </Message>
-      <Message name="FractalCompressionNotSupported">
+      <Message name="FractalCompressNotSupported">
         Fractal compression not supported
       </Message>
       <Message name="ImageColumnOrRowSizeIsNotSupported">
@@ -102,10 +102,10 @@
       <Message name="IncompatibleSizeOfDouble">
         Incompatible size of double
       </Message>
-      <Message name="JNGCompressionNotSupported">
+      <Message name="JNGCompressNotSupported">
         JNG compression not supported
       </Message>
-      <Message name="JPEGCompressionNotSupported">
+      <Message name="JPEGCompressNotSupported">
         JPEG compression not supported
       </Message>
       <Message name="JPEGEmbeddingFailed">
@@ -159,10 +159,10 @@
       <Message name="OnlyLevelZerofilesSupported">
         Only level zero files Supported
       </Message>
-      <Message name="PNGCompressionNotSupported">
+      <Message name="PNGCompressNotSupported">
         PNG compression not supported
       </Message>
-      <Message name="RLECompressionNotSupported">
+      <Message name="RLECompressNotSupported">
         RLE compression not supported
       </Message>
       <Message name="UnableToCopyProfile">
@@ -198,7 +198,7 @@
       <Message name="UnsupportedCellTypeInTheMatrix">
         Unsupported cell type in the matrix
       </Message>
-      <Message name="ZipCompressionNotSupported">
+      <Message name="ZipCompressNotSupported">
         Zip compression not supported
       </Message>
     </Error>
@@ -236,8 +236,8 @@
         <Message name="ColormapExceeds256Colors">
           Colormap exceeded 256 colors
         </Message>
-        <Message name="CompressionNotValid">
-          Compression not valid
+        <Message name="CompressNotValid">
+          Compress not valid
         </Message>
         <Message name="CorruptGIFImage">
           Corrupt GIF image
@@ -287,7 +287,7 @@
         <Message name="InvalidColormapIndex">
           Invalid colormap index
         </Message>
-        <Message name="InvalidCompression">
+        <Message name="InvalidCompress">
 					Invalid compression
         </Message>
         <Message name="InvalidNumerOfColors">
@@ -458,7 +458,7 @@
         <Message name="UnknownPatternType">
           Unknown pattern type
         </Message>
-        <Message name="UnrecognizedCompressionMethod">
+        <Message name="UnrecognizedCompressMethod">
           Unrecognized compression method
         </Message>
       </Error>
@@ -758,7 +758,7 @@
       <Message name="InvalidComposeOperator">
         Invalid compose operator
       </Message>
-      <Message name="InvalidCompression">
+      <Message name="InvalidCompress">
         Invalid image compression
       </Message>
       <Message name="InvalidPixelMap">
@@ -803,7 +803,7 @@
       <Message name="MissingComment">
         Missing comment
       </Message>
-      <Message name="MissingCompressionQuality">
+      <Message name="MissingCompressQuality">
         Missing compression quality
       </Message>
       <Message name="MissingCycleAmount">
@@ -1072,6 +1072,12 @@
       <Message name="MissingAnImageFilename">
         Missing an image filename
       </Message>
+      <Message name="MissingBevelWidth">
+        Missing bevel width
+      </Message>
+      <Message name="MissingBorderColor">
+        Missing border color
+      </Message>
       <Message name="MissingColor">
         Missing color
       </Message>
@@ -1084,8 +1090,17 @@
       <Message name="MissingDepth">
         Missing depth
       </Message>
+      <Message name="MissingDisposeMethod">
+        Missing dispose method
+      </Message>
+      <Message name="MissingEncodingType">
+        Missing encoding type
+      </Message>
       <Message name="MissingEventMask">
         Missing event mask
+      </Message>
+      <Message name="MissingFilename">
+        Missing filename
       </Message>
       <Message name="MissingFontName">
         Missing font name
@@ -1102,6 +1117,12 @@
       <Message name="MissingImageDepth">
         Missing image depth
       </Message>
+      <Message name="MissingLabelName">
+        Missing label name
+      </Message>
+      <Message name="MissingLevel">
+        Missing level
+      </Message>
       <Message name="MissingMapType">
         Missing map type
       </Message>
@@ -1110,6 +1131,9 @@
       </Message>
       <Message name="MissingPassword">
         Missing password
+      </Message>
+      <Message name="MissingPageGeometry">
+        Missing page geometry
       </Message>
       <Message name="MissingResourceLimit">
         Missing resource limit
@@ -1156,8 +1180,23 @@
       <Message name="OptionLengthExceedsLimit">
         Option length exceeds limit
       </Message>
+      <Message name="UnrecognizedCompressType">
+        unrecognized compression type
+      </Message>
+      <Message name="UnrecognizedDisposeMethod">
+        unrecognized dispose method
+      </Message>
+      <Message name="UnrecognizedFilterType">
+        Unrecognized filter type
+      </Message>
       <Message name="UnrecognizedOption">
         Unrecognized option
+      </Message>
+      <Message name="UnrecognizedResourceType">
+        Unrecognized resource type
+      </Message>
+      <Message name="UnrecognizedVirtualPixelMethod">
+        Unrecognized virtual pixel method
       </Message>
     </FatalError>
   </Option>
@@ -1371,6 +1410,9 @@
         </Message>
       </Error>
       <FatalError>
+        <Message name="UnableToDisplayImage">
+          unable to display image
+        </Message>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
         </Message>

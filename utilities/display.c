@@ -309,7 +309,7 @@ int main(int argc,char **argv)
   image_marker=(unsigned int *) AcquireMemory((argc+1)*sizeof(unsigned int));
   if (image_marker == (unsigned int *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-			"unable to display image");
+			"UnableToDisplayImage");
   for (i=0; i <= argc; i++)
     image_marker[i]=argc;
   resource_database=(XrmDatabase) NULL;
@@ -783,7 +783,7 @@ int main(int argc,char **argv)
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  MagickFatalError(OptionFatalError,"Invalid compression type",
+                  MagickFatalError(OptionFatalError,"UnrecognizedCompressType",
                     option);
               }
             break;
@@ -812,8 +812,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingEventMask",
-                    option);
+                  MagickFatalError(OptionFatalError,"MissingEventMask",option);
                 (void) SetLogEventMask(argv[i]);
               }
             break;
@@ -849,8 +848,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingImageDepth",
-                    option);
+                  MagickFatalError(OptionFatalError,"MissingImageDepth",option);
                 image_info->depth=atol(argv[i]);
               }
             break;
@@ -864,8 +862,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingServerName",
-                    option);
+                  MagickFatalError(OptionFatalError,"MissingServerName",option);
                 image_info->server_name=argv[i];
               }
             break;
@@ -885,7 +882,7 @@ int main(int argc,char **argv)
                     (LocaleCompare("None",option) != 0) &&
                     (LocaleCompare("Background",option) != 0) &&
                     (LocaleCompare("Previous",option) != 0))
-                  MagickFatalError(OptionFatalError,"Invalid dispose method",
+                  MagickFatalError(OptionFatalError,"UnrecognizedDisposeMethod",
                     option);
               }
             break;
@@ -925,8 +922,7 @@ int main(int argc,char **argv)
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
                 if (image_info->endian == UndefinedEndian)
-                  MagickFatalError(OptionFatalError,"InvalidEndianType",
-                    option);
+                  MagickFatalError(OptionFatalError,"InvalidEndianType",option);
               }
             break;
           }
@@ -980,7 +976,7 @@ int main(int argc,char **argv)
                 if (LocaleCompare("Sinc",option) == 0)
                   filter=SincFilter;
                 if (filter == UndefinedFilter)
-                  MagickFatalError(OptionFatalError,"Invalid filter type",
+                  MagickFatalError(OptionFatalError,"UnrecognizedFilterType",
                     option);
               }
             break;
@@ -1010,8 +1006,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingForeground",
-                    option);
+                  MagickFatalError(OptionFatalError,"MissingForeground",option);
                 resource_info.foreground_color=argv[i];
               }
              break;
@@ -1119,8 +1114,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing label name",
-                    option);
+                  MagickFatalError(OptionFatalError,"MissingLabelName",option);
               }
             break;
           }
@@ -1150,7 +1144,7 @@ int main(int argc,char **argv)
                       SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
                       MagickFatalError(OptionFatalError,
-                        "Unrecognized resource type",type);
+                        "UnrecognizedResourceType",type);
               }
             break;
           }
@@ -1166,7 +1160,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"Missing level",option);
+                  MagickFatalError(OptionFatalError,"MissingLevel",option);
                 resource_info.magnify=atoi(argv[i]);
               }
             break;
@@ -1243,7 +1237,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing page geometry",
+                  MagickFatalError(OptionFatalError,"MissingPageGeometry",
                     option);
                 image_info->page=GetPageGeometry(argv[i]);
               }
@@ -1275,7 +1269,7 @@ int main(int argc,char **argv)
           {
             i++;
             if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-              MagickFatalError(OptionFatalError,"Missing bevel width",option);
+              MagickFatalError(OptionFatalError,"MissingBevelWidth",option);
             break;
           }
         if (LocaleCompare("remote",option+1) == 0)
@@ -1407,7 +1401,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing filename",option);
+                  MagickFatalError(OptionFatalError,"MissingFilename",option);
                 (void) CloneString(&image_info->texture,argv[i]);
               }
             break;
@@ -1494,8 +1488,8 @@ int main(int argc,char **argv)
 
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,
-                    "MissingVirtualPixelMethod",option);
+                  MagickFatalError(OptionFatalError,"MissingVirtualPixelMethod",
+                    option);
                 option=argv[i];
                 virtual_pixel_method=UndefinedVirtualPixelMethod;
                 if (LocaleCompare("Constant",option) == 0)
@@ -1508,7 +1502,7 @@ int main(int argc,char **argv)
                   virtual_pixel_method=TileVirtualPixelMethod;
                 if (virtual_pixel_method == UndefinedVirtualPixelMethod)
                   MagickFatalError(OptionFatalError,
-                    "InvalidVirtualPixelMethod",option);
+                    "UnrecognizedVirtualPixelMethod",option);
               }
             break;
           }
@@ -1524,8 +1518,8 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,
-                    "MissingIDNameOrRoot",option);
+                  MagickFatalError(OptionFatalError,"MissingIDNameOrRoot",
+                    option);
                 resource_info.window_id=argv[i];
               }
             break;
@@ -1537,8 +1531,8 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,
-                    "MissingIDNameOrRoot",option);
+                  MagickFatalError(OptionFatalError,"MissingIDNameOrRoot",
+                    option);
                 resource_info.window_group=argv[i];
               }
             break;
@@ -1550,7 +1544,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing file name",option);
+                  MagickFatalError(OptionFatalError,"MissingFilename",option);
                 resource_info.write_filename=argv[i];
                 if (IsAccessible(resource_info.write_filename))
                   {

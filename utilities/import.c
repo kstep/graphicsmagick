@@ -249,8 +249,7 @@ int main(int argc,char **argv)
         */
         i++;
         if (i == argc)
-          MagickFatalError(OptionFatalError,"MissingServerName on -display",
-            option);
+          MagickFatalError(OptionFatalError,"MissingServerName",option);
         server_name=argv[i];
         break;
       }
@@ -367,7 +366,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing border color",
+                  MagickFatalError(OptionFatalError,"MissingBorderColor",
                     option);
                 (void) QueryColorDatabase(argv[i],&image_info->border_color,
                   &exception);
@@ -486,8 +485,8 @@ int main(int argc,char **argv)
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  MagickFatalError(OptionFatalError,"Invalid compression type",
-                    option);
+                  MagickFatalError(OptionFatalError,
+                    "UnrecognizedCompressionType",option);
               }
             break;
           }
@@ -513,8 +512,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"MissingEventMask",
-                    option);
+                  MagickFatalError(OptionFatalError,"MissingEventMask",option);
                 (void) SetLogEventMask(argv[i]);
               }
             break;
@@ -548,8 +546,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"MissingImageDepth",
-                    option);
+                  MagickFatalError(OptionFatalError,"MissingImageDepth",option);
                 image_info->depth=atol(argv[i]);
               }
             break;
@@ -578,7 +575,8 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing method",option);
+                  MagickFatalError(OptionFatalError,"MissingDisposeMethod",
+                    option);
                 if ((LocaleCompare("0",option) != 0) &&
                     (LocaleCompare("1",option) != 0) &&
                     (LocaleCompare("2",option) != 0) &&
@@ -587,7 +585,7 @@ int main(int argc,char **argv)
                     (LocaleCompare("None",option) != 0) &&
                     (LocaleCompare("Background",option) != 0) &&
                     (LocaleCompare("Previous",option) != 0))
-                  MagickFatalError(OptionFatalError,"Invalid dispose method",
+                  MagickFatalError(OptionFatalError,"UnrecognizedDisposeMethod",
                     option);
               }
             break;
@@ -608,7 +606,8 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing encoding type",option);
+                  MagickFatalError(OptionFatalError,"MissingEncodingType",
+                    option);
               }
             break;
           }
@@ -627,8 +626,7 @@ int main(int argc,char **argv)
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
                 if (image_info->endian == UndefinedEndian)
-                  MagickFatalError(OptionFatalError,"InvalidEndianType",
-                    option);
+                  MagickFatalError(OptionFatalError,"InvalidEndianType",option);
               }
             break;
           }
@@ -708,8 +706,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing label name",
-                    option);
+                  MagickFatalError(OptionFatalError,"MissingLabelName",option);
               }
             break;
           }
@@ -739,7 +736,7 @@ int main(int argc,char **argv)
                       SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
                       MagickFatalError(OptionFatalError,
-                        "Unrecognized resource type",type);
+                        "UnrecognizedResourceType",type);
               }
             break;
           }
@@ -778,7 +775,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing page geometry",
+                  MagickFatalError(OptionFatalError,"MissingPageGeometry",
                     option);
                 image_info->page=GetPageGeometry(argv[i]);
               }
@@ -970,8 +967,7 @@ int main(int argc,char **argv)
                 if (LocaleCompare("Optimize",option) == 0)
                   image_info->type=OptimizeType;
                 if (image_info->type == UndefinedType)
-                  MagickFatalError(OptionFatalError,"InvalidImageType",
-                    option);
+                  MagickFatalError(OptionFatalError,"InvalidImageType",option);
               }
             break;
           }
@@ -982,8 +978,7 @@ int main(int argc,char **argv)
       {
         i++;
         if (i == argc)
-          MagickFatalError(OptionFatalError,"MissingIDNameOrRoot",
-            option);
+          MagickFatalError(OptionFatalError,"MissingIDNameOrRoot",option);
         (void) CloneString(&target_window,argv[i]);
         break;
       }
@@ -1038,8 +1033,7 @@ int main(int argc,char **argv)
     image=next_image;
   }
   if (image == (Image *) NULL)
-    MagickFatalError(OptionFatalError,"MissingAnImageFilename",
-      (char *) NULL);
+    MagickFatalError(OptionFatalError,"MissingAnImageFilename",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   status&=MogrifyImages(image_info,argc-1,argv,&image);
