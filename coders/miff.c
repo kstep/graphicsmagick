@@ -1312,26 +1312,26 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 for (i=0; i < (long) image->colors; i++)
                 {
                   pixel=(*p << 8) | *(p+1);
-                  image->colormap[i].red=pixel;
+                  image->colormap[i].red=ScaleShortToQuantum(pixel);
                   p+=2;
                   pixel=(*p << 8) | *(p+1);
-                  image->colormap[i].green=pixel;
+                  image->colormap[i].green=ScaleShortToQuantum(pixel);
                   p+=2;
                   pixel=(*p << 8) | *(p+1);
-                  image->colormap[i].blue=pixel;
+                  image->colormap[i].blue=ScaleShortToQuantum(pixel);
                   p+=2;
                 }
               else
                 for (i=0; i < (long) image->colors; i++)
                 {
                   pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-                  image->colormap[i].red=pixel;
+                  image->colormap[i].red=ScaleLongToQuantum(pixel);
                   p+=4;
                   pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-                  image->colormap[i].green=pixel;
+                  image->colormap[i].green=ScaleLongToQuantum(pixel);
                   p+=4;
                   pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);
-                  image->colormap[i].blue=pixel;
+                  image->colormap[i].blue=ScaleLongToQuantum(pixel);
                   p+=4;
                 }
             LiberateMemory((void **) &colormap);

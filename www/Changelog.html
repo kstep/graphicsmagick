@@ -53,9 +53,22 @@
 </tr>
 </table>
 <p>
+2003-04-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/miff.c (ReadMIFFImage): Properly scale
+        colormap entries.<BR>
+  <LI> magick/image.c (TransformRGBImage): Eliminate 32-bit
+        integer overflow condition for Q:32 build while
+        transforming CMYK pixels.
+
+</UL>
+<p>
 2003-04-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> PerlMagick/t/ttf/read.t: Updated signatures and
+        reference image for FreeType 2.1.4.
   <LI> (PerlMagick/t/write.t, PerlMagick/t/montage.t,
         PerlMagick/t/rad/read.t, PerlMagick/t/rad/write.t):
         Fix signatures which were thrown off by previous
@@ -66,6 +79,17 @@
   <LI> PerlMagick/Makefile.PL.in: Perform substitutions
         on generated Makefile to ensure that the proper
         -lGraphicsMagick is used for a static build.
+  <LI> ttf: Updated to FreeType 2.1.4.  Now stored in
+        CVS as delegates/freetype2 rather than delegates/ttf
+        so be sure to re-checkout the ttf directory so that
+        the correct files are used.<BR>
+  <LI> wmf/incude/libwmf/api.h: Updating FreeType caused
+        a problem since it introduced a copy of zlib and
+        api.h included zlib.h.  Fixed problem by adding
+        a typedef for gzFile and not including zlib.h.
+  <LI> utilities/gm.c: Fixed minor compilation problem
+        under Windows caused by a typo in the signal
+        handler registration code.
 
 </UL>
 <p>

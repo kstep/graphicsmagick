@@ -5521,9 +5521,9 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
-          q->red=(Quantum) (((MaxRGB-q->red)*(MaxRGB-q->opacity))/MaxRGB);
-          q->green=(Quantum) (((MaxRGB-q->green)*(MaxRGB-q->opacity))/MaxRGB);
-          q->blue=(Quantum) (((MaxRGB-q->blue)*(MaxRGB-q->opacity))/MaxRGB);
+          q->red=(Quantum) (((double)(MaxRGB-q->red)*(MaxRGB-q->opacity))/MaxRGB+0.5);
+          q->green=(Quantum) (((double)(MaxRGB-q->green)*(MaxRGB-q->opacity))/MaxRGB+0.5);
+          q->blue=(Quantum) (((double)(MaxRGB-q->blue)*(MaxRGB-q->opacity))/MaxRGB+0.5);
           q->opacity=image->matte ? indexes[x] : OpaqueOpacity;
           q++;
         }

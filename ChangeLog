@@ -1,3 +1,11 @@
+2003-04-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/miff.c (ReadMIFFImage): Properly scale
+	colormap entries.
+	* magick/image.c (TransformRGBImage): Eliminate 32-bit
+	integer overflow condition for Q:32 build while
+	transforming CMYK pixels.
+
 2003-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/t/ttf/read.t: Updated signatures and
