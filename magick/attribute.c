@@ -146,7 +146,7 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
     dataset,
     record;
 
-  register int
+  register size_t
     i;
 
   size_t
@@ -157,7 +157,7 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
   count=sscanf(key,"IPTC:%d:%d",&dataset,&record);
   if (count != 2)
     return(False);
-  for (i=0; i < (int) image->iptc_profile.length; i++)
+  for (i=0; i < image->iptc_profile.length; i++)
   {
     if (image->iptc_profile.info[i] != 0x1c)
       continue;
@@ -176,7 +176,7 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
     LiberateMemory((void **) &attribute);
     break;
   }
-  return(i < (int) image->iptc_profile.length);
+  return(i < image->iptc_profile.length);
 }
 
 static unsigned char ReadByte(char **p,size_t *length)
@@ -367,13 +367,15 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     *string;
 
   int
-    i,
     id,
     start,
     stop;
 
   long
     count;
+
+  register size_t
+    i;
 
   size_t
     length;
@@ -409,7 +411,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
       continue;
     count=ReadByte((char **) &info,&length);
     string=(char *) NULL;
-    if ((count > 0) && (count <= (int) length))
+    if ((count > 0) && (count <= length))
       {
         string=(char *) AcquireMemory(count+MaxTextExtent);
         if (string != (char *) NULL)
