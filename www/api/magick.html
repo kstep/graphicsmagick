@@ -50,7 +50,7 @@
 <P>void  <STRONG>DestroyMagickInfo</STRONG>( void );</P>
 <P>char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick, const size_t length );</P>
 <P>char * <STRONG>GetMagickConfigurePath</STRONG>( const char *filename );</P>
-<P>MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *name, Exception *exception );</P>
+<P>const MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *name, Exception *exception );</P>
 <P>char * <STRONG>GetMagickVersion</STRONG>( unsigned int *version );</P>
 <P><STRONG>InitializeMagick</STRONG>( const char *path );</P>
 <P>unsigned int  <STRONG>IsMagickConflict</STRONG>( const char *magick );</P>
@@ -122,7 +122,7 @@ Method GetMagickConfigurePath returns the path if the configuration file is foun
 <P>Method GetMagickInfo returns a pointer MagickInfo structure that matches the specified name.  If name is 
 <FONT SIZE=-1>NULL,</FONT> the head of the image format list is returned.</P>
 <P>The format of the GetMagickInfo method is:</P>
-<blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *GetMagickInfo ( const char *name, Exception *exception ); </blockquote><P>
+<blockquote>const <A HREF="types/MagickInfo.html">MagickInfo</A> *GetMagickInfo ( const char *name, Exception *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_magick_info%3A">magick_info:</A></STRONG><BR>

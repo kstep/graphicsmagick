@@ -54,12 +54,12 @@
 <P>void  <STRONG>XFileBrowserWidget</STRONG>( Display *display, XWindows *windows, const char *action, char *reply );</P>
 <P>void  <STRONG>XFontBrowserWidget</STRONG>( Display *display, XWindows *windows, const char *action, char *reply );</P>
 <P>void  <STRONG>XInfoWidget</STRONG>( Display *display, XWindows *windows, const char *activity );</P>
-<P>void  <STRONG>XListBrowserWidget</STRONG>( Display *display, XWindows *windows, XWindowInfo *window_info, char const ** list, const char *action, const char *query, char *reply );</P>
+<P>void  <STRONG>XListBrowserWidget</STRONG>( Display *display, XWindows *windows, XWindowInfo *window_info, const char ** list, const char *action, const char *query, char *reply );</P>
 <P>int  <STRONG>XMenuWidget</STRONG>( Display *display, XWindows *windows, const char *title, const char ** selections, char *item );</P>
 <P>void  <STRONG>XMonitorWidget</STRONG>( Display *display, XWindows *windows, const char *task, const off_t quantum, const off_t span );</P>
 <P>void  <STRONG>XNoticeWidget</STRONG>( Display *display, XWindows *windows, const char *reason, const char *description );</P>
 <P>unsigned int  <STRONG>XPreferencesWidget</STRONG>( Display *display, XResourceInfo *resource_info, XWindows *windows );</P>
-<P>void  <STRONG>XTextViewWidget</STRONG>( Display *display, const XResourceInfo *resource_info, XWindows *windows, const unsigned int mono, const char *title, char const ** textlist );</P>
+<P>void  <STRONG>XTextViewWidget</STRONG>( Display *display, const XResourceInfo *resource_info, XWindows *windows, const unsigned int mono, const char *title, const char ** textlist );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -246,7 +246,7 @@ This character string reflects the current activity and is displayed in the Info
 <H2><A NAME="xlistbrowserwidget">XListBrowserWidget</A></H2>
 <P>Method XListBrowserWidget displays a List Browser widget with a query to the user.  The user keys a reply or select a reply from the list.  Finally, the user presses the Action or Cancel button to exit.  The typed text is returned as the reply function parameter.</P>
 <P>The format of the XListBrowserWidget method is:</P>
-<blockquote>void XListBrowserWidget ( Display *display, XWindows *windows, XWindowInfo *window_info, char const **list, const char *action, const char *query, char *reply ); </blockquote><P>
+<blockquote>void XListBrowserWidget ( Display *display, XWindows *windows, XWindowInfo *window_info, const char **list, const char *action, const char *query, char *reply ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>display:</STRONG><BR>
@@ -384,7 +384,7 @@ Specifies a pointer to a XWindows structure.
 <H2><A NAME="xtextviewwidget">XTextViewWidget</A></H2>
 <P>Method XTextViewWidget displays text in a Text View widget.</P>
 <P>The format of the XTextViewWidget method is:</P>
-<blockquote>void XTextViewWidget ( Display *display, const <A HREF="types/XResourceInfo.html">XResourceInfo</A> *resource_info, XWindows *windows, const unsigned int mono, const char *title, char const **textlist ); </blockquote><P>
+<blockquote>void XTextViewWidget ( Display *display, const <A HREF="types/XResourceInfo.html">XResourceInfo</A> *resource_info, XWindows *windows, const unsigned int mono, const char *title, const char **textlist ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>display:</STRONG><BR>
