@@ -29,3 +29,5 @@ libMagick___la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_
 include_HEADERS = Magick++.h
 
 EXTRA_DIST =
+
+LDFLAGS = @LDFLAGS@ $(LIBSTDC_LDFLAGS)

@@ -186,11 +186,7 @@ namespace Magick
 
 
 // Print exception to stream.
-inline std::ostream& operator<<( std::ostream& stream_,
-                                 const Magick::Exception& exception_)
-{
-  stream_ << exception_.what();
-  return stream_;
-}
+std::ostream& operator<<( std::ostream& stream_,
+			  const Magick::Exception& exception_);
 
 #endif

@@ -21,9 +21,16 @@ Magick::Exception::Exception( const std::string& what_ )
 }
 
 // Return message string
-inline const char* Magick::Exception::what( ) const throw()
+const char* Magick::Exception::what( ) const throw()
 {
   return _what.c_str();
+}
+
+std::ostream& operator<<( std::ostream& stream_,
+			  const Magick::Exception& exception_)
+{
+  stream_ << exception_.what();
+  return stream_;
 }
 
 //
