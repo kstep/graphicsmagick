@@ -864,7 +864,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("geometry",option+1,2) == 0)
             {
-              resource_info.image_geometry-(char *) NULL;
+              resource_info.image_geometry=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
