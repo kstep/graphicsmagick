@@ -598,7 +598,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
             case 'c':
             case 'C':
             {
-              *q++=p->red;
+              *q++=DownScale(p->red);
               break;
             }
             case 'g':
@@ -606,7 +606,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
             case 'y':
             case 'Y':
             {
-              *q++=p->green;
+              *q++=DownScale(p->green);
               break;
             }
             case 'b':
@@ -614,22 +614,22 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
             case 'm':
             case 'M':
             {
-              *q++=p->blue;
+              *q++=DownScale(p->blue);
               break;
             }
             case 'a':
             case 'A':
             {
               if (!image->matte)
-                *q++=MaxRGB;
+                *q++=DownScale(OpaqueOpacity);
               else
-                *q++=p->opacity;
+                *q++=DownScale(p->opacity);
               break;
             }
             case 'k':
             case 'K':
             {
-              *q++=p->opacity;
+              *q++=DownScale(p->opacity);
               break;
             }
             default:

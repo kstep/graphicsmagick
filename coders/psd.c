@@ -776,7 +776,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
     }
-  (void) IsSetImageOpacity(image);
+  (void) IsOpaqueImage(image);
   for (i=0; i < number_layers; i++)
   {
     /*
