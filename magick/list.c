@@ -149,7 +149,7 @@ MagickExport void DestroyImageList(Image *images)
     *image;
 
   if (images == (Image *) NULL)
-    return((Image *) NULL);
+    return;
   assert(images->signature == MagickSignature);
   while (images->previous != (Image *) NULL)
     images=images->previous;
