@@ -6326,6 +6326,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       DestroyImage(image);
       return(False);
     }
+  *magick='\0';
   if ((image->blob->data != (unsigned char *) NULL) || !image->exempt)
     (void) ReadBlob(image,2*MaxTextExtent,magick);
   else
