@@ -89,20 +89,20 @@ MagickExport PixelPacket AlphaComposite(const PixelPacket *p,const double alpha,
   const PixelPacket *q,const double beta)
 {
   double
-    gamma;
+    scale;
 
   PixelPacket
     composite;
 
-  gamma=1.0/MaxRGB;
+  scale=1.0/MaxRGB;
   composite.red=(Quantum)
-    (gamma*((MaxRGB-alpha)*p->red+alpha*(MaxRGB-beta)*q->red/MaxRGB)+0.5);
+    (scale*((MaxRGB-alpha)*p->red+scale*alpha*(MaxRGB-beta)*q->red)+0.5);
   composite.green=(Quantum)
-    (gamma*((MaxRGB-alpha)*p->green+alpha*(MaxRGB-beta)*q->green/MaxRGB)+0.5);
+    (scale*((MaxRGB-alpha)*p->green+scale*alpha*(MaxRGB-beta)*q->green)+0.5);
   composite.blue=(Quantum)
-    (gamma*((MaxRGB-alpha)*p->blue+alpha*(MaxRGB-beta)*q->blue/MaxRGB)+0.5);
+    (scale*((MaxRGB-alpha)*p->blue+scale*alpha*(MaxRGB-beta)*q->blue)+0.5);
   composite.opacity=(Quantum)
-    (MaxRGB-((MaxRGB-alpha)+alpha*(MaxRGB-beta)/MaxRGB)+0.5);
+    (MaxRGB-((MaxRGB-alpha)+scale*alpha*(MaxRGB-beta))+0.5);
   return(composite);
 }
 
@@ -138,7 +138,7 @@ MagickExport PixelPacket AlphaComposite(const PixelPacket *p,const double alpha,
 MagickExport unsigned int ColorMatch(const PixelPacket *p,const PixelPacket *q,
   const double fuzz)
 {
-  long
+  double
     blue,
     green,
     red;
@@ -146,9 +146,9 @@ MagickExport unsigned int ColorMatch(const PixelPacket *p,const PixelPacket *q,
   if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
       (p->blue == q->blue))
     return(True);
-  red=(long) p->red-(long) q->red;
-  green=(long) p->green-(long) q->green;
-  blue=(long) p->blue-(long) q->blue;
+  red=(double) p->red-(double) q->red;
+  green=(double) p->green-(double) q->green;
+  blue=(double) p->blue-(double) q->blue;
   if (((red*red)+(green*green)+(blue*blue)) <= (fuzz*fuzz))
     return(True);
   return(False);
