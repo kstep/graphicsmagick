@@ -1224,9 +1224,6 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,
 static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
   const unsigned int level,NodeInfo *parent)
 {
-  register int
-    i;
-
   NodeInfo
     *node_info;
 
@@ -1833,9 +1830,6 @@ static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
 */
 MagickExport unsigned int QuantizationError(Image *image)
 {
-  CubeInfo
-    cube_info;
-
   double
     distance,
     maximum_error_per_pixel,
