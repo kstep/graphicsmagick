@@ -470,11 +470,11 @@ void CNtMagickView::DoDisplayImage()
 
         {
 
-          pDestPixel->rgbRed = ScaleQuantumToChar(pPixels->red);
+          pDestPixel->rgbRed = MagickLib::ScaleQuantumToChar(pPixels->red);
 
-          pDestPixel->rgbGreen = ScaleQuantumToChar(pPixels->green);
+          pDestPixel->rgbGreen = MagickLib::ScaleQuantumToChar(pPixels->green);
 
-          pDestPixel->rgbBlue = ScaleQuantumToChar(pPixels->blue);
+          pDestPixel->rgbBlue = MagickLib::ScaleQuantumToChar(pPixels->blue);
 
           pDestPixel->rgbReserved = 0;
 

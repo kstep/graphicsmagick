@@ -2,7 +2,7 @@
 
 
 /* File created by MIDL compiler version 5.01.0164 */
-/* at Mon Jul 29 15:01:30 2002
+/* at Wed Aug 07 13:18:20 2002
  */
 /* Compiler settings for C:\home\bfriesen\ImageMagick\contrib\win32\ATL\ImageMagickObject\ImageMagickObject.idl:
     Oicf (OptLev=i2), W1, Zp8, env=Win32, ms_ext, c_ext
