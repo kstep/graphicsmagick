@@ -699,7 +699,7 @@ Export int LoadDynamicModule(const char* module)
   module_file=TagToModule(module_name);
   if( ( handle=lt_dlopen( module_file ) ) == 0)
     {
-#if 0
+#if 1  /* Without this enabled, there is no useful diagnostic */
       printf("WARNING: failed to load module \"%s\": %s\n",
              module_file, lt_dlerror());
 #endif
@@ -959,7 +959,7 @@ char *TagToModule(const char *tag)
       "Memory allocation failed");
 #if !defined(_VISUALC_)
   (void) FormatString(module_name, "%s.la",tag);
-  (void) LocalLower(module_name);
+  (void) LocaleLower(module_name);
 #else
   if (LocaleNCompare("IM_MOD_",tag,6) == 0)
     strcpy(module_name,tag);
