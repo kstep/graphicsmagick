@@ -1056,6 +1056,9 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     glyph,
     last_glyph;
 
+  Image
+    *fill_pattern;
+
   long
     y;
 
@@ -1164,6 +1167,13 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   (void) FT_Set_Char_Size(face,(long int) (64.0*draw_info->pointsize),
     (long int) (64.0*draw_info->pointsize),(unsigned int) resolution.x,
     (unsigned int) resolution.y);
+  metrics->pixels_per_em.x=face->size->metrics.x_ppem;
+  metrics->pixels_per_em.y=face->size->metrics.y_ppem;
+  metrics->ascent=face->size->metrics.ascender >> 6;
+  metrics->descent=face->size->metrics.descender >> 6;
+  metrics->width=0;
+  metrics->height=face->size->metrics.height >> 6;
+  metrics->max_advance=face->size->metrics.max_advance >> 6;
   /*
     Convert to Unicode.
   */
@@ -1235,8 +1245,9 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
               (FT_Vector *) NULL,True);
             if (status != False)
               continue;
-            SetImageType(image,TrueColorType);
             bitmap=(FT_BitmapGlyph) glyph.image;
+            SetImageType(image,TrueColorType);
+            fill_pattern=draw_info->fill_pattern;
             point.x=offset->x+bitmap->left;
             point.y=offset->y-bitmap->top;
             p=bitmap->bitmap.buffer;
@@ -1266,10 +1277,10 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                   opacity=(Quantum)
                     ((*p) >= 64 ? TransparentOpacity : OpaqueOpacity);
                 fill_color=draw_info->fill;
-                if (draw_info->fill_pattern != (Image *) NULL)
-                  fill_color=GetOnePixel(draw_info->fill_pattern,
-                    ((long) ceil(point.x+x-0.5) % draw_info->fill_pattern->columns),
-                    ((long) ceil(point.y+y-0.5) % draw_info->fill_pattern->rows));
+                if (fill_pattern != (Image *) NULL)
+                  fill_color=GetOnePixel(fill_pattern,
+                    ((long) ceil(point.x+x-0.5) % fill_pattern->columns),
+                    ((long) ceil(point.y+y-0.5) % fill_pattern->rows));
                 opacity=(Quantum) ((unsigned long) ((MaxRGB-opacity)*
                   (MaxRGB-fill_color.opacity))/MaxRGB);
                 if (!active)
@@ -1293,10 +1304,13 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       }
     FT_Glyph_Get_CBox(glyph.image,ft_glyph_bbox_pixels,&bounding_box);
     origin.x+=face->glyph->advance.x;
+    if (origin.x > metrics->width)
+      metrics->width=origin.x;
     if (last_glyph.id != 0)
       FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
   }
+  metrics->width>>=6;
   if (render)
     if ((draw_info->stroke.opacity != TransparentOpacity) ||
         (draw_info->stroke_pattern != (Image *) NULL))
@@ -1310,13 +1324,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       }
   if (glyph.id != 0)
     FT_Done_Glyph(glyph.image);
-  metrics->pixels_per_em.x=face->size->metrics.x_ppem;
-  metrics->pixels_per_em.y=face->size->metrics.y_ppem;
-  metrics->ascent=face->size->metrics.ascender >> 6;
-  metrics->descent=face->size->metrics.descender >> 6;
-  metrics->width=origin.x >> 6;
-  metrics->height=face->size->metrics.height >> 6;
-  metrics->max_advance=face->size->metrics.max_advance >> 6;
   /*
     Free resources.
   */
