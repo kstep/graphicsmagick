@@ -551,6 +551,8 @@ static double constant(char *name,int sans)
     }
     case 'M':
     {
+      if (strEQ(name,"MaxRGB"))
+        return(MaxRGB);
       if (strEQ(name,"MissingDelegateError"))
         return(MissingDelegateError);
       if (strEQ(name,"MissingDelegateWarning"))

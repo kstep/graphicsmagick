@@ -23,7 +23,7 @@ require AutoLoader;
       BlobWarning CacheWarning StreamWarning FatalException
       ResourceLimitError XServerError OptionError DelegateError
       MissingDelegateError CorruptImageError FileOpenError BlobError
-      CacheError StreamError Success Transparent Opaque
+      CacheError StreamError Success Transparent Opaque MaxRGB
     );
 
 $VERSION = '5.30';
