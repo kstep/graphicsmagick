@@ -1744,7 +1744,16 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         {
           (void) fprintf(file,"DirectClass ");
           if (image->total_colors != 0)
-            (void) fprintf(file,"%ldc ",(long) image->total_colors);
+            {
+              if (image->total_colors >= (1 << 24))
+                (void) fprintf(file,"%dmc ",(int)
+                  (image->total_colors/1024/1024));
+              else
+                if (image->total_colors >= (1 << 14))
+                  (void) fprintf(file,"%dkc ",(int) (image->total_colors/1024));
+                else
+                  (void) fprintf(file,"%dc ",(int) image->total_colors);
+            }
         }
       else
         if (image->total_colors <= image->colors)
