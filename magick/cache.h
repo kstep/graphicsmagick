@@ -44,6 +44,12 @@ typedef struct _CacheInfo
   unsigned long
     signature;
 
+  SemaphoreInfo
+    *semaphore;
+
+  long
+    reference_count;
+
   NexusInfo
     *nexus_info;
 

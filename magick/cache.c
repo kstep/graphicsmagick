@@ -677,12 +677,23 @@ static void DestroyCacheInfo(Cache cache)
   size_t
     length;
 
+  unsigned int
+    destroy;
+
   unsigned long
     number_pixels;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
+  destroy=False;
+  AcquireSemaphoreInfo(&cache_info->semaphore);
+  cache_info->reference_count--;
+  if (cache_info->reference_count == 0)
+    destroy=True;
+  LiberateSemaphoreInfo(&cache_info->semaphore);
+  if (!destroy)
+    return;
   number_pixels=cache_info->columns*cache_info->rows;
   length=number_pixels*sizeof(PixelPacket);
   if ((cache_info->storage_class == PseudoClass) ||
@@ -720,6 +731,8 @@ static void DestroyCacheInfo(Cache cache)
         DestroyCacheNexus(cache,id);
       LiberateMemory((void **) &cache_info->nexus_info);
     }
+  if (cache_info->semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo(cache_info->semaphore);
   LiberateMemory((void **) &cache_info);
 }
 
@@ -945,6 +958,7 @@ MagickExport void GetCacheInfo(Cache *cache)
   (void) memset(cache_info,0,sizeof(CacheInfo));
   cache_info->colorspace=RGBColorspace;
   cache_info->file=(-1);
+  cache_info->reference_count=1;
   cache_info->signature=MagickSignature;
   *cache=cache_info;
 }
