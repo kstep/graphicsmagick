@@ -1908,6 +1908,14 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
 {
 #define ShadeImageText  "  Shading image...  "
 
+   typedef struct _VectorPacket
+   {
+     int
+       x,
+       y,
+       z;
+   } VectorPacket;
+
   double
     distance,
     normal_distance,
@@ -1922,19 +1930,20 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
   int
     y;
 
-  PointInfo
-    light,
-    normal;
-
   register int
     i,
     x;
 
   register PixelPacket
     *p,
-    *p1,
-    *p2,
+    *s0,
+    *s1,
+    *s2,
     *q;
+
+  VectorPacket
+    light,
+    normal;
 
   /*
     Initialize shaded image attributes.
@@ -1981,7 +1990,7 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
   light.x=MaxRGB*cos(azimuth)*cos(elevation);
   light.y=MaxRGB*sin(azimuth)*cos(elevation);
   light.z=MaxRGB*sin(elevation);
-  normal.z=(6.0*MaxRGB)/3.0;  /* constant Z of surface normal */
+  normal.z=2*MaxRGB;  /* constant Z of surface normal */
   /*
     Shade image.
   */
@@ -1996,17 +2005,18 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
     */
     *q++=(*(p+image->columns));
     p++;
+    s0=p;
+    s1=p+image->columns;
+    s2=p+2*image->columns;
     for (x=1; x < (int) (image->columns-1); x++)
     {
       /*
         Determine the surface normal and compute shading.
       */
-      p1=p+image->columns;
-      p2=p+2*image->columns;
-      normal.x=Intensity(*(p-1))+Intensity(*(p1-1))+Intensity(*(p2-1))-
-        Intensity(*(p+1))-Intensity(*(p1+1))-Intensity(*(p2+1));
-      normal.y=Intensity(*(p2-1))+Intensity(*p2)+Intensity(*(p2+1))-
-        Intensity(*(p-1))-Intensity(*p)-Intensity(*(p+1));
+      normal.x=Intensity(*(s0-1))+Intensity(*(s1-1))+Intensity(*(s2-1))-
+        Intensity(*(s0+1))-Intensity(*(s1+1))-Intensity(*(s2+1));
+      normal.y=Intensity(*(s2-1))+Intensity(*s2)+Intensity(*(s2+1))-
+        Intensity(*(s0-1))-Intensity(*s0)-Intensity(*(s0+1));
       if ((normal.x == 0) && (normal.y == 0))
         shade=light.z;
       else
@@ -2023,10 +2033,10 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
         }
       if (shade_image->class == DirectClass)
         {
-          q->red=((unsigned long) (p->red*shade)) >> QuantumDepth;
-          q->green=((unsigned long) (p->green*shade)) >> QuantumDepth;
-          q->blue=((unsigned long) (p->blue*shade)) >> QuantumDepth;
-          q->opacity=p1->opacity;
+          q->red=(s1->red*shade)/(MaxRGB+1);
+          q->green=(s1->green*shade)/(MaxRGB+1);
+          q->blue=(s1->blue*shade)/(MaxRGB+1);
+          q->opacity=s1->opacity;
         }
       else
         {
@@ -2036,10 +2046,12 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
           q->green=shade_image->colormap[index].green;
           q->blue=shade_image->colormap[index].blue;
         }
-      p++;
+      s0++;
+      s1++;
+      s2++;
       q++;
     }
-    *q++=(*p);
+    *q++=(*s1);
     if (!SyncPixelCache(shade_image))
       break;
     if (QuantumTick(y,image->rows))
