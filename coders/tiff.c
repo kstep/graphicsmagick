@@ -2029,7 +2029,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         c;
 
       /*
-        Copy temporary file to image blob->
+        Copy temporary file to image blob.
       */
       file=fopen(filename,"rb");
       if (file == (FILE *) NULL)
