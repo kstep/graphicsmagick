@@ -6381,7 +6381,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case SegmentCommand:
     {
       static char
-        threshold[MaxTextExtent] = "1.5";
+        threshold[MaxTextExtent] = "1.0x1.5";
 
       /*
         Query user for smoothing threshold.
