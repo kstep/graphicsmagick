@@ -255,32 +255,21 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       count++;
     }
   }
-  image->depth=8;
-  image->storage_class=PseudoClass;
-  image->colors=256;
-  if (image_info->ping)
-    {
-      CloseBlob(image);
-      return(image);
-    }
-  /*
-    Read the rest of the header.
-  */
   while (count < (int) header_length)
   {
     c=ReadBlobByte(image);
     count++;
   }
-  /*
-    Verify that required image information is defined.
-  */
   if ((image->columns*image->rows) == 0)
     ThrowReaderException(CorruptImageWarning,"image size is zero",image);
-  /*
-    Create linear colormap.
-  */
-  if (!AllocateImageColormap(image,image->colors))
+  image->depth=8;
+  if (!AllocateImageColormap(image,256))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   /*
     Initialize image structure.
   */
@@ -437,7 +426,6 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
-  image->depth=8;
   /*
     Write header.
   */
@@ -471,6 +459,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   /*
     Write VICAR scanline.
   */
+  image->depth=8;
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
