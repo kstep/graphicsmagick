@@ -433,6 +433,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->subrange != 0)
     FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
+  if (image_info->authenticate != (char *) NULL)
+    FormatString(options+strlen(options)," -sPDFPassword=%.1024s",
+      image_info->authenticate);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   TemporaryFilename((char *) image_info->filename);
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,

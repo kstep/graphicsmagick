@@ -8,13 +8,13 @@
   <delegate decode="dvi" command='@DVIDecodeDelegate@ -q -o "%o" "%i"' />
   <delegate decode="edit" stealth="True" command='@EditorDelegate@ -title "Edit Image Comment" -e vi "%o"' />
   <delegate decode="emf" command='@WMFDecodeDelegate@ -o "%o" "%i"' />
-  <delegate decode="eps" encode="pdf" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sPDFPassword=%a -sDEVICE=@GSPDFDevice@ -sOutputFile=%o -- "%i" -c quit' />
-  <delegate decode="eps" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sPDFPassword=%a -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
+  <delegate decode="eps" encode="pdf" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=@GSPDFDevice@ -sOutputFile=%o -- "%i" -c quit' />
+  <delegate decode="eps" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="fig" command='@FIGDecodeDelegate@ -L ps "%i" "%o"' />
   <delegate decode="gplt" command='@EchoDelegate@ "set size 1.25,0.62
     set terminal postscript portrait color solid; set output "%o"; load "%i"" > %u;@GnuplotDecodeDelegate@ %u' />
-  <delegate decode="gs-color" stealth="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sPDFPassword=%a -sDEVICE=@GSColorDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
-  <delegate decode="gs-mono" stealth="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sPDFPassword=%a -sDEVICE=@GSMonoDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+  <delegate decode="gs-color" stealth="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=@GSColorDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
+  <delegate decode="gs-mono" stealth="True" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=@GSMonoDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit' />
   <delegate decode="hpgl" command='@HPGLDecodeDelegate@ -q -m eps -f `basename "%o"` "%i"
     mv -f `basename "%o"` "%o' />
   <delegate decode="htm" command='@HTMLDecodeDelegate@ -U -o "%o" "%i"' />
@@ -23,15 +23,15 @@
   <delegate decode="man" command='@MANDelegate@ -man -Tps "%i" > "%o"' />
   <delegate decode="mpeg-decode" stealth="True" command='@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%u%%d"' />
   <delegate encode="mpeg-encode" stealth="True" command='@MPEGEncodeDelegate@ "%i" "%o"' />
-  <delegate decode="pdf" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sPDFPassword=%a -sDEVICE=@GSEPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
-  <delegate decode="pdf" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sPDFPassword=%a -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
+  <delegate decode="pdf" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=@GSEPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
+  <delegate decode="pdf" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pnm" encode="ilbm" mode="encode" command='@ILBMEncodeDelegate@ -24if "%i" > "%o"' />
   <delegate decode="pnm" encode="launch" mode="encode" command='@LaunchDelegate@ "%i"' />
   <delegate decode="pnm" encode="win" mode="encode" command='@ShowImageDelegate@ -immutable "%i"' />
   <delegate decode="pov" command='@POVDelegate@ "+i"%i"" +o"%o" +fn%q +w%w +h%h +a -q9 -kfi"%s" -kff"%n"
     @ConvertDelegate@ -concatenate "%o*.png" "%o"' />
-  <delegate decode="ps" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sPDFPassword=%a -sDEVICE=@GSEPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
-  <delegate decode="ps" encode="pdf" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sPDFPassword=%a -sDEVICE=@GSPDFDevice@ -sOutputFile=%o -- "%i" -c quit' />
+  <delegate decode="ps" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=@GSEPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
+  <delegate decode="ps" encode="pdf" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -sDEVICE=@GSPDFDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="ps" encode="print" mode="encode" command='@PrintDelegate@ "%i"' />
   <delegate decode="rad" command='@RADDecodeDelegate@ -g 1.0 "%i" "%o"' />
   <delegate decode="rgba" encode="rle" mode="encode" command='@MogrifyDelegate@ -flip -size %wx%h "rgba:%i"

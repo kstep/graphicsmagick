@@ -3699,18 +3699,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         continue;
       }
     p++;
-
     switch (*p)
     {
-      case 'a':
-      {
-        if (clone_info->authenticate == (char *) NULL)
-          (void) strcpy(q,"null");
-        else
-          FormatString(q,"%.1024s",clone_info->authenticate);
-        q=translated_text+strlen(translated_text);
-        break;
-      }
       case 'b':
       {
         if (GetBlobSize(image) >= (1 << 24))
@@ -3721,7 +3711,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
             FormatString(q,"%lukb ",(unsigned long) (GetBlobSize(image)/1024));
           else
             FormatString(q,"%lub ",(unsigned long) GetBlobSize(image));
-        q=translated_text+strlen(translated_text);
         break;
       }
       case 'c':
@@ -3730,7 +3719,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         if (attribute == (ImageAttribute *) NULL)
           break;
         (void) strncpy(q,attribute->value,MaxTextExtent-1);
-        q+=strlen(attribute->value);
         break;
       }
       case 'd':
@@ -3749,28 +3737,24 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
           {
             GetPathComponent(image->magick_filename,HeadPath,filename);
             (void) strncpy(q,filename,MaxTextExtent-1);
-            q+=strlen(filename);
             break;
           }
           case 'e':
           {
             GetPathComponent(image->magick_filename,ExtensionPath,filename);
             (void) strncpy(q,filename,MaxTextExtent-1);
-            q+=strlen(filename);
             break;
           }
           case 'f':
           {
             GetPathComponent(image->magick_filename,TailPath,filename);
             (void) strncpy(q,filename,MaxTextExtent-1);
-            q+=strlen(filename);
             break;
           }
           case 't':
           {
             GetPathComponent(image->magick_filename,BasePath,filename);
             (void) strncpy(q,filename,MaxTextExtent-1);
-            q+=strlen(filename);
             break;
           }
         }
@@ -3779,26 +3763,22 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       case 'g':
       {
         FormatString(q,"0x%lx",clone_info->group);
-        q=translated_text+strlen(translated_text);
         break;
       }
       case 'h':
       {
         FormatString(q,"%lu",image->magick_rows ? image->magick_rows : 256);
-        q=translated_text+strlen(translated_text);
         break;
       }
       case 'i':
       {
         (void) strncpy(q,image->filename,MaxTextExtent-1);
-        q+=strlen(image->filename);
         break;
       }
       case 'k':
       {
         FormatString(q,"%lu",GetNumberColors(image,(FILE *) NULL,
           &image->exception));
-        q=translated_text+strlen(translated_text);
         break;
       }
       case 'l':
@@ -3807,25 +3787,21 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         if (attribute == (ImageAttribute *) NULL)
           break;
         (void) strncpy(q,attribute->value,MaxTextExtent-1);
-        q+=strlen(attribute->value);
         break;
       }
       case 'm':
       {
         (void) strncpy(q,image->magick,MaxTextExtent-1);
-        q+=strlen(image->magick);
         break;
       }
       case 'n':
       {
         FormatString(q,"%lu",(unsigned long) GetImageListSize(image));
-        q=translated_text+strlen(translated_text);
         break;
       }
       case 'o':
       {
         (void) strncpy(q,clone_info->filename,MaxTextExtent-1);
-        q+=strlen(clone_info->filename);
         break;
       }
       case 'p':
@@ -3840,13 +3816,11 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         for (page=1; p->previous != (Image *) NULL; page++)
           p=p->previous;
         FormatString(q,"%lu",page);
-        q=translated_text+strlen(translated_text);
         break;
       }
       case 'q':
       {
         FormatString(q,"%lu",GetImageDepth(image,&image->exception));
-        q=translated_text+strlen(translated_text);
         break;
       }
       case 'r':
@@ -3865,7 +3839,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
 
         FormatString(q,"%s%s%s",ClassTypes[image->storage_class],
           ColorspaceTypes[image->colorspace],(image->matte ? "Matte" : ""));
-        q=translated_text+strlen(translated_text);
         break;
       }
       case 's':
@@ -3873,7 +3846,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         FormatString(q,"%lu",image->scene);
         if (clone_info->subrange != 0)
           FormatString(q,"%lu",clone_info->subimage);
-        q=translated_text+strlen(translated_text);
         break;
       }
       case 'u':
@@ -3882,26 +3854,22 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         if (*filename == '\0')
           TemporaryFilename(filename);
         (void) strncpy(q,filename,MaxTextExtent-1);
-        q+=strlen(filename);
         break;
       }
       case 'w':
       {
         FormatString(q,"%lu",
           image->magick_columns ? image->magick_columns : 256);
-        q=translated_text+strlen(translated_text);
         break;
       }
       case 'x':
       {
         FormatString(q,"%g",image->x_resolution);
-        q=translated_text+strlen(translated_text);
         break;
       }
       case 'y':
       {
         FormatString(q,"%g",image->y_resolution);
-        q=translated_text+strlen(translated_text);
         break;
       }
       case 'z':
@@ -3910,7 +3878,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         if (*filename == '\0')
           TemporaryFilename(filename);
         (void) strncpy(q,filename,MaxTextExtent-1);
-        q+=strlen(filename);
         break;
       }
       case '[':
@@ -3940,7 +3907,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
                 q=translated_text+strlen(translated_text);
               }
             (void) strcpy(q,attribute->value);
-            q+=offset;
             break;
           }
         attribute=GetImageInfoAttribute(clone_info,image,key);
@@ -3956,7 +3922,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
             q=translated_text+strlen(translated_text);
           }
         (void) strcpy(q,attribute->value);
-        q+=offset;
         break;
       }
       case '#':
@@ -3966,7 +3931,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         if (attribute == (ImageAttribute *) NULL)
           break;
         (void) strncpy(q,attribute->value,MaxTextExtent-1);
-        q+=strlen(attribute->value);
         break;
       }
       case '%':
@@ -3981,6 +3945,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         break;
       }
     }
+    while (*q != '\0')
+      q++;
   }
   *q='\0';
   DestroyImageInfo(clone_info);
