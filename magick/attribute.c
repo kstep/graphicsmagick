@@ -851,13 +851,13 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
           {
             case EXIF_FMT_SBYTE:
             {
-              FormatString(s,"%d",(int)(*(char *)pval));
+              FormatString(s,"%d",(int)(*(char *) pval));
               value=AllocateString(s);
               break;
             }
             case EXIF_FMT_BYTE:
             {
-              FormatString(s,"%d",(int)(*(unsigned char *)pval));
+              FormatString(s,"%d",(int)(*(unsigned char *) pval));
               value=AllocateString(s);
               break;
             }
@@ -888,26 +888,26 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
             case EXIF_FMT_URATIONAL:
             {
               FormatString(s,"%d/%d",Read32u(morder,pval),
-                Read32u(morder,4+(char *)pval));
+                Read32u(morder,4+(char *) pval));
               value=AllocateString(s);
               break;
             }
             case EXIF_FMT_SRATIONAL:
             {
               FormatString(s,"%d/%d",Read32s(morder,pval),
-                Read32s(morder,4+(char *)pval));
+                Read32s(morder,4+(char *) pval));
               value=AllocateString(s);
               break;
             }
             case EXIF_FMT_SINGLE:
             {
-              FormatString(s,"%f",(double)*(float *)pval);
+              FormatString(s,"%f",(double)*(float *) pval);
               value=AllocateString(s);
               break;
             }
             case EXIF_FMT_DOUBLE:
             {
-              FormatString(s,"%f",*(double *)pval);
+              FormatString(s,"%f",*(double *) pval);
               value=AllocateString(s);
               break;
             }

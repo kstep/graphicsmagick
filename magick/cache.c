@@ -1519,7 +1519,7 @@ MagickExport unsigned int OpenCache(Image *image)
   if (cache_info->columns != (length/cache_info->rows/size))
     ThrowBinaryException(ResourceLimitWarning,"Pixel cache allocation failed",
       image->filename);
-  offset=length;
+  offset=(size_t) length;
   if (length != offset)
     cache_info->type=DiskCache;
   if ((cache_info->type == MemoryCache) ||

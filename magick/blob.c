@@ -486,7 +486,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       ThrowException(exception,BlobWarning,"Unable to open file",filename);
       return((void *) NULL);
     }
-  *length=fstat(file,&attributes) < 0 ? 0 : attributes.st_size;
+  *length=(size_t) (fstat(file,&attributes) < 0 ? 0 : attributes.st_size);
   blob=(unsigned char *) AcquireMemory(*length+1);
   if (blob == (unsigned char *) NULL)
     {
@@ -674,7 +674,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
         image->filename);
       return((void *) NULL);
     }
-  *length=fstat(file,&attributes) < 0 ? 0 : attributes.st_size;
+  *length=(size_t) (fstat(file,&attributes) < 0 ? 0 : attributes.st_size);
   blob=(unsigned char *) AcquireMemory(*length+1);
   if (blob == (unsigned char *) NULL)
     {
@@ -744,7 +744,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,size_t *length)
     return((void *) NULL);
   if (fstat(file,&attributes) == -1)
     return((void *) NULL);
-  *length=attributes.st_size;
+  *length=(size_t) attributes.st_size;
   if (*length != attributes.st_size)
     return((void *) NULL);
   switch (mode)
