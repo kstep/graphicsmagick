@@ -670,8 +670,7 @@ static double DistanceToLine(const PointInfo *pixel,const SegmentInfo *line)
 
   alpha=pixel->x-line->x1;
   beta=pixel->y-line->y1;
-  dot_product=(pixel->x-line->x1)*(line->x2-line->x1)+
-    (pixel->y-line->y1)*(line->y2-line->y1);
+  dot_product=alpha*(line->x2-line->x1)+beta*(line->y2-line->y1);
   if (dot_product <= 0)
     return(alpha*alpha+beta*beta);
   v=(line->x2-line->x1)*(line->x2-line->x1)+
@@ -688,6 +687,7 @@ static unsigned short PixelOnLine(const PointInfo *pixel,
   const SegmentInfo *line,const double mid,const unsigned short opacity)
 {
   register double
+    alpha,
     distance;
 
   if ((mid == 0) || (opacity == Opaque))
@@ -695,13 +695,12 @@ static unsigned short PixelOnLine(const PointInfo *pixel,
   if ((line->x1 == line->x2) && (line->y1 == line->y2))
     return((pixel->x == line->x1) && (pixel->y == line->y1) ? Opaque : opacity);
   distance=DistanceToLine(pixel,line);
-  if (distance <= ((mid-0.5)*(mid-0.5)))
+  alpha=mid-0.5;
+  if (distance <= (alpha*alpha))
     return(Opaque);
-  if (distance <= ((mid+0.5)*(mid+0.5)))
+  alpha=mid+0.5;
+  if (distance <= (alpha*alpha))
     {
-      register double
-        alpha;
-
       alpha=sqrt(distance)-mid-0.5;
       return((unsigned short) Max((int) opacity,Opaque*alpha*alpha));
     }

@@ -373,6 +373,66 @@ void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I m a g e F o r m a t C o n f l i c t                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ImageFormatConflict returns true if the image format conflicts with
+%  a logical drive (.e.g. X:).
+%
+%  Contributed by Mark Gavin of Digital Applications, Inc.
+%
+%  The format of the ImageFormatConflict routine is:
+%
+%      status=ImageFormatConflict(magick)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ImageFormatConflict returns true if the image format
+%      conflicts with a logical drive.
+%
+%    o magick: Specifies the image format.
+%
+%
+*/
+Export int ImageFormatConflict(const char *magick)
+{
+  long
+    number_bytes;
+
+  OSErr
+    status,
+    volume;
+    
+  short
+    index;
+  
+  Str255
+    volume_name;
+  
+  StringPtr
+    p;
+
+  assert(magick != (char *) NULL);
+  p=(StringPtr) &volume_name;
+  for (index=(-1); ; index--)
+  {
+    status=GetVInfo(index,p,&volume,&number_bytes);
+    if (status)
+      return(False);
+    if (Latin1Compare(p2cstr(p),magick) == 0)
+      return(True);
+  }
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   M A C E r r o r H a n d l e r                                             %
 %                                                                             %
 %                                                                             %

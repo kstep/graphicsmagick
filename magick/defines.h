@@ -168,7 +168,6 @@ extern "C" {
 #if !defined(STDIN_FILENO)
 #define STDIN_FILENO  0
 #endif
-#define TextWidth(font,text,length)  XTextWidth(font,(char *) (text),length)
 #define Transparent  0
 #define True  1
 #define UpShift(x) ((int) (x) << 14)

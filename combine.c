@@ -86,8 +86,8 @@
 /*
   Include declarations.
 */
-#include <magick/magick.h>
-#include <magick/defines.h>
+#include "magick/magick.h"
+#include "magick/defines.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

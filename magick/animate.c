@@ -701,10 +701,14 @@ Export void XAnimateBackgroundImage(Display *display,
     Initialize image pixmaps structure.
   */
   window_info.pixmaps=(Pixmap *) AllocateMemory(number_scenes*sizeof(Pixmap));
-  if (window_info.pixmaps == (Pixmap *) NULL)
+  window_info.matte_pixmaps=(Pixmap *)
+    AllocateMemory(number_scenes*sizeof(Pixmap));
+  if ((window_info.pixmaps == (Pixmap *) NULL) ||
+      (window_info.matte_pixmaps == (Pixmap *) NULL))
     MagickError(ResourceLimitError,"Unable to animate images",
       "Memory allocation failed");
   window_info.pixmaps[0]=window_info.pixmap;
+  window_info.matte_pixmaps[0]=window_info.pixmap;
   scene_info.pixels=(unsigned long *) NULL;
   scene_info.gamma_map=(XColor *) NULL;
   for (scene=1; scene < (int) number_scenes; scene++)
@@ -713,6 +717,7 @@ Export void XAnimateBackgroundImage(Display *display,
       Create X image.
     */
     window_info.pixmap=(Pixmap) NULL;
+    window_info.matte_pixmap=(Pixmap) NULL;
     if ((resources.map_type != (char *) NULL) ||
         (visual_info->class == TrueColor) ||
         (visual_info->class == DirectColor))
@@ -756,6 +761,7 @@ Export void XAnimateBackgroundImage(Display *display,
     XSetWindowBackgroundPixmap(display,window_info.id,window_info.pixmap);
     XClearWindow(display,window_info.id);
     window_info.pixmaps[scene]=window_info.pixmap;
+    window_info.matte_pixmaps[scene]=window_info.matte_pixmap;
     if (images[scene]->matte)
       XClearWindow(display,window_info.id);
     if (resources.delay != 0)
@@ -780,6 +786,7 @@ Export void XAnimateBackgroundImage(Display *display,
             break;
         }
       window_info.pixmap=window_info.pixmaps[scene];
+      window_info.matte_pixmap=window_info.matte_pixmaps[scene];
       XSetWindowBackgroundPixmap(display,window_info.id,window_info.pixmap);
       XClearWindow(display,window_info.id);
       XSync(display,False);
@@ -1518,10 +1525,14 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   XMapWindow(display,windows->image.id);
   windows->image.pixmaps=(Pixmap *)
     AllocateMemory(number_scenes*sizeof(Pixmap));
-  if (windows->image.pixmaps == (Pixmap *) NULL)
+  windows->image.matte_pixmaps=(Pixmap *)
+    AllocateMemory(number_scenes*sizeof(Pixmap));
+  if ((windows->image.pixmaps == (Pixmap *) NULL) ||
+      (windows->image.matte_pixmaps == (Pixmap *) NULL))
     MagickError(ResourceLimitError,"Unable to animate images",
       "Memory allocation failed");
   windows->image.pixmaps[0]=windows->image.pixmap;
+  windows->image.matte_pixmaps[0]=windows->image.matte_pixmap;
   scene_info.pixels=(unsigned long *) NULL;
   scene_info.gamma_map=(XColor *) NULL;
   for (scene=1; scene < (int) number_scenes; scene++)
@@ -1531,6 +1542,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     */
     TransformRGBImage(images[scene],RGBColorspace);
     windows->image.pixmap=(Pixmap) NULL;
+    windows->image.matte_pixmap=(Pixmap) NULL;
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->class == TrueColor) ||
         (visual_info->class == DirectColor))
@@ -1578,6 +1590,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         XFree((void *) window_name.value);
       }
     windows->image.pixmaps[scene]=windows->image.pixmap;
+    windows->image.matte_pixmaps[scene]=windows->image.matte_pixmap;
     event.xexpose.x=0;
     event.xexpose.y=0;
     event.xexpose.width=images[scene]->columns;
@@ -1667,12 +1680,13 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
           /*
             Copy X pixmap to Image window.
           */
-XGetPixelInfo(display,visual_info,map_info,resource_info,
-images[scene],&scene_info);
-windows->image.pixel_info=(&scene_info);
+          XGetPixelInfo(display,visual_info,map_info,resource_info,
+          images[scene],&scene_info);
+          windows->image.pixel_info=(&scene_info);
           windows->image.ximage->width=image->columns;
           windows->image.ximage->height=image->rows;
           windows->image.pixmap=windows->image.pixmaps[scene];
+          windows->image.matte_pixmap=windows->image.matte_pixmaps[scene];
           event.xexpose.x=0;
           event.xexpose.y=0;
           event.xexpose.width=image->columns;
@@ -1979,6 +1993,7 @@ windows->image.pixel_info=(&scene_info);
         if (event.xexpose.window == windows->image.id)
           {
             windows->image.pixmap=windows->image.pixmaps[scene];
+            windows->image.matte_pixmap=windows->image.matte_pixmaps[scene];
             XRefreshWindow(display,&windows->image,&event);
             break;
           }
@@ -2287,9 +2302,14 @@ windows->image.pixel_info=(&scene_info);
     if (windows->image.pixmaps[scene] != (Pixmap) NULL)
       XFreePixmap(display,windows->image.pixmaps[scene]);
     windows->image.pixmaps[scene]=(Pixmap) NULL;
+    if (windows->image.matte_pixmaps[scene] != (Pixmap) NULL)
+      XFreePixmap(display,windows->image.matte_pixmaps[scene]);
+    windows->image.matte_pixmaps[scene]=(Pixmap) NULL;
   }
   FreeMemory((char *) windows->image.pixmaps);
   windows->image.pixmaps=(Pixmap *) NULL;
+  FreeMemory((char *) windows->image.matte_pixmaps);
+  windows->image.matte_pixmaps=(Pixmap *) NULL;
   if (loaded_image == (Image *) NULL)
     {
       /*

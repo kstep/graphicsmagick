@@ -161,7 +161,7 @@ Export int ImageFormatConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
   if (strlen(magick) > 1)
-    return(0);
+    return(False);
   return((GetLogicalDrives()) & (1 << ((toupper((int) (*magick)))-'A')));
 }
 

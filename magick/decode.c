@@ -6253,7 +6253,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
         }
       annotate_info.font_info=font_info;
       annotate_info.text=text;
-      annotate_info.width=TextWidth(font_info,text,Extent(text));
+      annotate_info.width=XTextWidth(font_info,text,Extent(text));
       annotate_info.height=font_info->ascent+font_info->descent;
       (void) sprintf(annotate_info.geometry,"%ux%u+0+0",annotate_info.width,
         annotate_info.height);

@@ -618,7 +618,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             /*
               Finished annotating.
             */
-            annotate_info->width=TextWidth(font_info,annotate_info->text,
+            annotate_info->width=XTextWidth(font_info,annotate_info->text,
               Extent(annotate_info->text));
             XRefreshWindow(display,&windows->image,&text_event);
             state|=ExitState;
@@ -735,7 +735,7 @@ static unsigned int XAnnotateEditImage(Display *display,
                   }
               }
             p--;
-            x-=TextWidth(font_info,p,1);
+            x-=XTextWidth(font_info,p,1);
             text_event.xexpose.x=x;
             text_event.xexpose.y=y-font_info->max_bounds.ascent;
             XRefreshWindow(display,&windows->image,&text_event);
@@ -754,7 +754,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             while (p != annotate_info->text)
             {
               p--;
-              x-=TextWidth(font_info,p,1);
+              x-=XTextWidth(font_info,p,1);
               text_event.xexpose.x=x;
               XRefreshWindow(display,&windows->image,&text_event);
             }
@@ -766,7 +766,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             /*
               Finished annotating.
             */
-            annotate_info->width=TextWidth(font_info,annotate_info->text,
+            annotate_info->width=XTextWidth(font_info,annotate_info->text,
               Extent(annotate_info->text));
             XRefreshWindow(display,&windows->image,&text_event);
             state|=ExitState;
@@ -787,7 +787,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             else
               XDrawImageString(display,windows->image.id,annotate_context,x,y,
                 p,1);
-            x+=TextWidth(font_info,p,1);
+            x+=XTextWidth(font_info,p,1);
             p++;
             if ((x+font_info->max_bounds.width) < (int) windows->image.width)
               break;
@@ -799,7 +799,7 @@ static unsigned int XAnnotateEditImage(Display *display,
               Advance to the next line of text.
             */
             *p='\0';
-            annotate_info->width=TextWidth(font_info,annotate_info->text,
+            annotate_info->width=XTextWidth(font_info,annotate_info->text,
               Extent(annotate_info->text));
             if (annotate_info->next != (XAnnotateInfo *) NULL)
               {
@@ -883,7 +883,7 @@ static unsigned int XAnnotateEditImage(Display *display,
               */
               *p=data[i];
               XDrawString(display,windows->image.id,annotate_context,x,y,p,1);
-              x+=TextWidth(font_info,p,1);
+              x+=XTextWidth(font_info,p,1);
               p++;
               if ((x+font_info->max_bounds.width) < (int) windows->image.width)
                 continue;
@@ -892,7 +892,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             Advance to the next line of text.
           */
           *p='\0';
-          annotate_info->width=TextWidth(font_info,annotate_info->text,
+          annotate_info->width=XTextWidth(font_info,annotate_info->text,
             Extent(annotate_info->text));
           if (annotate_info->next != (XAnnotateInfo *) NULL)
             {

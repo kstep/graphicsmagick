@@ -3593,7 +3593,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     case RunlengthEncodedCompression:
       (void) fprintf(file,"Runlength Encoded\n"); break;
     case ZipCompression: (void) fprintf(file,"Zip\n"); break;
-    default: break;
+    default: (void) fprintf(file,"\n");  break;
   }
   if (image->packets < (image->columns*image->rows))
     (void) fprintf(file,"  runlength packets: %lu of %u\n",image->packets,
@@ -4636,12 +4636,12 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
         {
           pixel=(*PixelOffset(local_info->tile,x % local_info->tile->columns,
             y % local_info->tile->rows));
-          q->red=(Quantum) ((long) (pixel.red*opacity+q->red*
-            (Opaque-opacity))/Opaque);
-          q->green=(Quantum) ((long) (pixel.green*opacity+q->green*
-            (Opaque-opacity))/Opaque);
-          q->blue=(Quantum) ((long) (pixel.blue*opacity+q->blue*
-            (Opaque-opacity))/Opaque);
+          q->red=(Quantum)
+            ((long) (pixel.red*opacity+q->red*(Opaque-opacity))/Opaque);
+          q->green=(Quantum)
+            ((long) (pixel.green*opacity+q->green*(Opaque-opacity))/Opaque);
+          q->blue=(Quantum)
+            ((long) (pixel.blue*opacity+q->blue*(Opaque-opacity))/Opaque);
           if (local_info->tile->matte)
             {
               q->index=(unsigned short) ((long) (pixel.index*opacity+q->index*
@@ -9871,16 +9871,18 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
 #define Y (MaxRGB+1)
 #define Z (MaxRGB+1)*2
 
-  long
+  double
     tx,
     ty,
-    tz,
-    *x,
-    *y,
-    *z;
+    tz;
 
   Quantum
     *range_table;
+
+  register double
+    *x,
+    *y,
+    *z;
 
   register int
     blue,
@@ -9946,12 +9948,12 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
   /*
     Allocate the tables.
   */
-  x=(long *) AllocateMemory(3*(MaxRGB+1)*sizeof(long));
-  y=(long *) AllocateMemory(3*(MaxRGB+1)*sizeof(long));
-  z=(long *) AllocateMemory(3*(MaxRGB+1)*sizeof(long));
+  x=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
+  y=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
+  z=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
   range_table=(Quantum *) AllocateMemory(4*(MaxRGB+1)*sizeof(Quantum));
-  if ((x == (long *) NULL) || (y == (long *) NULL) ||
-      (z == (long *) NULL) || (range_table == (Quantum *) NULL))
+  if ((x == (double *) NULL) || (y == (double *) NULL) ||
+      (z == (double *) NULL) || (range_table == (Quantum *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to transform color space",
         "Memory allocation failed");
@@ -9983,15 +9985,15 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=UpShifted(0.29900)*i;
-        y[i+X]=UpShifted(0.58700)*i;
-        z[i+X]=UpShifted(0.11400)*i;
-        x[i+Y]=UpShifted(0.29900)*i;
-        y[i+Y]=UpShifted(0.58700)*i;
-        z[i+Y]=UpShifted(0.11400)*i;
-        x[i+Z]=UpShifted(0.29900)*i;
-        y[i+Z]=UpShifted(0.58700)*i;
-        z[i+Z]=UpShifted(0.11400)*i;
+        x[i+X]=0.299*i;
+        y[i+X]=0.587*i;
+        z[i+X]=0.114*i;
+        x[i+Y]=0.299*i;
+        y[i+Y]=0.587*i;
+        z[i+Y]=0.114*i;
+        x[i+Z]=0.299*i;
+        y[i+Z]=0.587*i;
+        z[i+Z]=0.114*i;
       }
       break;
     }
@@ -10007,19 +10009,19 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      ty=UpShifted((MaxRGB+1) >> 1);
-      tz=UpShifted((MaxRGB+1) >> 1);
+      ty=(MaxRGB+1) >> 1;
+      tz=(MaxRGB+1) >> 1;
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=UpShifted(0.33333)*i;
-        y[i+X]=UpShifted(0.33334)*i;
-        z[i+X]=UpShifted(0.33333)*i;
-        x[i+Y]=UpShifted(0.50000)*i;
-        y[i+Y]=0;
-        z[i+Y]=(-UpShifted(0.50000))*i;
-        x[i+Z]=(-UpShifted(0.25000))*i;
-        y[i+Z]=UpShifted(0.50000)*i;
-        z[i+Z]=(-UpShifted(0.25000))*i;
+        x[i+X]=0.33333*i;
+        y[i+X]=0.33334*i;
+        z[i+X]=0.33333*i;
+        x[i+Y]=0.5*i;
+        y[i+Y]=0.0;
+        z[i+Y]=(-0.5)*i;
+        x[i+Z]=(-0.25)*i;
+        y[i+Z]=0.5*i;
+        z[i+Z]=(-0.25)*i;
       }
       break;
     }
@@ -10034,31 +10036,31 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
 
         sRGB is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      ty=UpShifted((unsigned int) UpScale(156));
-      tz=UpShifted((unsigned int) UpScale(137));
+      ty=UpScale(156);
+      tz=UpScale(137);
       for (i=0; i <= (int) (0.018*MaxRGB); i++)
       {
-        x[i+X]=(long) (UpShifted(0.29900/1.3584)*0.018*MaxRGB*i);
-        y[i+X]=(long) (UpShifted(0.58700/1.3584)*0.018*MaxRGB*i);
-        z[i+X]=(long) (UpShifted(0.11400/1.3584)*0.018*MaxRGB*i);
-        x[i+Y]=(long) ((-UpShifted(0.29900/2.2179))*0.018*MaxRGB*i);
-        y[i+Y]=(long) ((-UpShifted(0.58700/2.2179))*0.018*MaxRGB*i);
-        z[i+Y]=(long) (UpShifted(0.88600/2.2179)*0.018*MaxRGB*i);
-        x[i+Z]=(long) (UpShifted(0.70100/1.8215)*0.018*MaxRGB*i);
-        y[i+Z]=(long) ((-UpShifted(0.58700/1.8215))*0.018*MaxRGB*i);
-        z[i+Z]=(long) ((-UpShifted(0.11400/1.8215))*0.018*MaxRGB*i);
+        x[i+X]=0.003962014134275617*MaxRGB*i;
+        y[i+X]=0.007778268551236748*MaxRGB*i;
+        z[i+X]=0.001510600706713781*MaxRGB*i;
+        x[i+Y]=(-0.002426619775463276)*MaxRGB*i;
+        y[i+Y]=(-0.004763965913702149)*MaxRGB*i;
+        z[i+Y]=0.007190585689165425*MaxRGB*i;
+        x[i+Z]=0.006927257754597858*MaxRGB*i;
+        y[i+Z]=(-0.005800713697502058)*MaxRGB*i;
+        z[i+Z]=(-0.0011265440570958)*MaxRGB*i;
       }
       for ( ; i <= MaxRGB; i++)
       {
-        x[i+X]=(long) (UpShifted(0.29900/1.3584)*(1.099*i-0.099));
-        y[i+X]=(long) (UpShifted(0.58700/1.3584)*(1.099*i-0.099));
-        z[i+X]=(long) (UpShifted(0.11400/1.3584)*(1.099*i-0.099));
-        x[i+Y]=(long) ((-UpShifted(0.29900/2.2179))*(1.099*i-0.099));
-        y[i+Y]=(long) ((-UpShifted(0.58700/2.2179))*(1.099*i-0.099));
-        z[i+Y]=(long) (UpShifted(0.88600/2.2179)*(1.099*i-0.099));
-        x[i+Z]=(long) (UpShifted(0.70100/1.8215)*(1.099*i-0.099));
-        y[i+Z]=(long) ((-UpShifted(0.58700/1.8215))*(1.099*i-0.099));
-        z[i+Z]=(long) ((-UpShifted(0.11400/1.8215))*(1.099*i-0.099));
+        x[i+X]=0.2201118963486454*(1.099*i-0.099);
+        y[i+X]=0.4321260306242638*(1.099*i-0.099);
+        z[i+X]=0.08392226148409894*(1.099*i-0.099);
+        x[i+Y]=(-0.1348122097479598)*(1.099*i-0.099);
+        y[i+Y]=(-0.2646647729834528)*(1.099*i-0.099);
+        z[i+Y]=0.3994769827314126*(1.099*i-0.099);
+        x[i+Z]=0.3848476530332144*(1.099*i-0.099);
+        y[i+Z]=(-0.3222618720834477)*(1.099*i-0.099);
+        z[i+Z]=(-0.06258578094976668)*(1.099*i-0.099);
       }
       break;
     }
@@ -10073,15 +10075,15 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=UpShifted(0.412453)*i;
-        y[i+X]=UpShifted(0.357580)*i;
-        z[i+X]=UpShifted(0.180423)*i;
-        x[i+Y]=UpShifted(0.212671)*i;
-        y[i+Y]=UpShifted(0.715160)*i;
-        z[i+Y]=UpShifted(0.072169)*i;
-        x[i+Z]=UpShifted(0.019334)*i;
-        y[i+Z]=UpShifted(0.119193)*i;
-        z[i+Z]=UpShifted(0.950227)*i;
+        x[i+X]=0.412453*i;
+        y[i+X]=0.35758*i;
+        z[i+X]=0.180423*i;
+        x[i+Y]=0.212671*i;
+        y[i+Y]=0.71516*i;
+        z[i+Y]=0.072169*i;
+        x[i+Z]=0.019334*i;
+        y[i+Z]=0.119193*i;
+        z[i+Z]=0.950227*i;
       }
       break;
     }
@@ -10097,19 +10099,19 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      ty=UpShifted((MaxRGB+1) >> 1);
-      tz=UpShifted((MaxRGB+1) >> 1);
+      ty=(MaxRGB+1) >> 1;
+      tz=(MaxRGB+1) >> 1;
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=UpShifted(0.299000)*i;
-        y[i+X]=UpShifted(0.587000)*i;
-        z[i+X]=UpShifted(0.114000)*i;
-        x[i+Y]=(-UpShifted(0.16873))*i;
-        y[i+Y]=(-UpShifted(0.331264))*i;
-        z[i+Y]=UpShifted(0.500000)*i;
-        x[i+Z]=UpShifted(0.500000)*i;
-        y[i+Z]=(-UpShifted(0.418688))*i;
-        z[i+Z]=(-UpShifted(0.081312))*i;
+        x[i+X]=0.299*i;
+        y[i+X]=0.587*i;
+        z[i+X]=0.114*i;
+        x[i+Y]=(-0.16873)*i;
+        y[i+Y]=(-0.331264)*i;
+        z[i+Y]=0.5*i;
+        x[i+Z]=0.5*i;
+        y[i+Z]=(-0.418688)*i;
+        z[i+Z]=(-0.081312)*i;
       }
       break;
     }
@@ -10124,31 +10126,31 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
 
         YCC is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      ty=UpShifted((unsigned int) UpScale(156));
-      tz=UpShifted((unsigned int) UpScale(137));
+      ty=UpScale(156);
+      tz=UpScale(137);
       for (i=0; i <= (int) (0.018*MaxRGB); i++)
       {
-        x[i+X]=(long) (UpShifted(0.29900/1.3584)*0.018*MaxRGB*i);
-        y[i+X]=(long) (UpShifted(0.58700/1.3584)*0.018*MaxRGB*i);
-        z[i+X]=(long) (UpShifted(0.11400/1.3584)*0.018*MaxRGB*i);
-        x[i+Y]=(long) ((-UpShifted(0.29900/2.2179))*0.018*MaxRGB*i);
-        y[i+Y]=(long) ((-UpShifted(0.58700/2.2179))*0.018*MaxRGB*i);
-        z[i+Y]=(long) (UpShifted(0.88600/2.2179)*0.018*MaxRGB*i);
-        x[i+Z]=(long) (UpShifted(0.70100/1.8215)*0.018*MaxRGB*i);
-        y[i+Z]=(long) ((-UpShifted(0.58700/1.8215))*0.018*MaxRGB*i);
-        z[i+Z]=(long) ((-UpShifted(0.11400/1.8215))*0.018*MaxRGB*i);
+        x[i+X]=0.003962014134275617*MaxRGB*i;
+        y[i+X]=0.007778268551236748*MaxRGB*i;
+        z[i+X]=0.001510600706713781*MaxRGB*i;
+        x[i+Y]=(-0.002426619775463276)*MaxRGB*i;
+        y[i+Y]=(-0.004763965913702149)*MaxRGB*i;
+        z[i+Y]=0.007190585689165425*MaxRGB*i;
+        x[i+Z]=0.006927257754597858*MaxRGB*i;
+        y[i+Z]=(-0.005800713697502058)*MaxRGB*i;
+        z[i+Z]=(-0.0011265440570958)*MaxRGB*i;
       }
       for ( ; i <= MaxRGB; i++)
       {
-        x[i+X]=(long) (UpShifted(0.29900/1.3584)*(1.099*i-0.099));
-        y[i+X]=(long) (UpShifted(0.58700/1.3584)*(1.099*i-0.099));
-        z[i+X]=(long) (UpShifted(0.11400/1.3584)*(1.099*i-0.099));
-        x[i+Y]=(long) ((-UpShifted(0.29900/2.2179))*(1.099*i-0.099));
-        y[i+Y]=(long) ((-UpShifted(0.58700/2.2179))*(1.099*i-0.099));
-        z[i+Y]=(long) (UpShifted(0.88600/2.2179)*(1.099*i-0.099));
-        x[i+Z]=(long) (UpShifted(0.70100/1.8215)*(1.099*i-0.099));
-        y[i+Z]=(long) ((-UpShifted(0.58700/1.8215))*(1.099*i-0.099));
-        z[i+Z]=(long) ((-UpShifted(0.11400/1.8215))*(1.099*i-0.099));
+        x[i+X]=0.2201118963486454*(1.099*i-0.099);
+        y[i+X]=0.4321260306242638*(1.099*i-0.099);
+        z[i+X]=0.08392226148409894*(1.099*i-0.099);
+        x[i+Y]=(-0.1348122097479598)*(1.099*i-0.099);
+        y[i+Y]=(-0.2646647729834528)*(1.099*i-0.099);
+        z[i+Y]=0.3994769827314126*(1.099*i-0.099);
+        x[i+Z]=0.3848476530332144*(1.099*i-0.099);
+        y[i+Z]=(-0.3222618720834477)*(1.099*i-0.099);
+        z[i+Z]=(-0.06258578094976668)*(1.099*i-0.099);
       }
       break;
     }
@@ -10164,19 +10166,19 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      ty=UpShifted((MaxRGB+1) >> 1);
-      tz=UpShifted((MaxRGB+1) >> 1);
+      ty=(MaxRGB+1) >> 1;
+      tz=(MaxRGB+1) >> 1;
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=UpShifted(0.29900)*i;
-        y[i+X]=UpShifted(0.58700)*i;
-        z[i+X]=UpShifted(0.11400)*i;
-        x[i+Y]=UpShifted(0.59600)*i;
-        y[i+Y]=(-UpShifted(0.27400))*i;
-        z[i+Y]=(-UpShifted(0.32200))*i;
-        x[i+Z]=UpShifted(0.21100)*i;
-        y[i+Z]=(-UpShifted(0.52300))*i;
-        z[i+Z]=UpShifted(0.31200)*i;
+        x[i+X]=0.299*i;
+        y[i+X]=0.587*i;
+        z[i+X]=0.114*i;
+        x[i+Y]=0.596*i;
+        y[i+Y]=(-0.274)*i;
+        z[i+Y]=(-0.322)*i;
+        x[i+Z]=0.211*i;
+        y[i+Z]=(-0.523)*i;
+        z[i+Z]=0.312*i;
       }
       break;
     }
@@ -10192,19 +10194,19 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         Pb and Pr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      ty=UpShifted((MaxRGB+1) >> 1);
-      tz=UpShifted((MaxRGB+1) >> 1);
+      ty=(MaxRGB+1) >> 1;
+      tz=(MaxRGB+1) >> 1;
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=UpShifted(0.299000)*i;
-        y[i+X]=UpShifted(0.587000)*i;
-        z[i+X]=UpShifted(0.114000)*i;
-        x[i+Y]=(-UpShifted(0.168736))*i;
-        y[i+Y]=(-UpShifted(0.331264))*i;
-        z[i+Y]=UpShifted(0.500000)*i;
-        x[i+Z]=UpShifted(0.500000)*i;
-        y[i+Z]=(-UpShifted(0.418688))*i;
-        z[i+Z]=(-UpShifted(0.081312))*i;
+        x[i+X]=0.299*i;
+        y[i+X]=0.587*i;
+        z[i+X]=0.114*i;
+        x[i+Y]=(-0.168736)*i;
+        y[i+Y]=(-0.331264)*i;
+        z[i+Y]=0.5*i;
+        x[i+Z]=0.5*i;
+        y[i+Z]=(-0.418688)*i;
+        z[i+Z]=(-0.081312)*i;
       }
       break;
     }
@@ -10221,19 +10223,19 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         U and V, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.  Note that U = 0.493*(B-Y), V = 0.877*(R-Y).
       */
-      ty=UpShifted((MaxRGB+1) >> 1);
-      tz=UpShifted((MaxRGB+1) >> 1);
+      ty=(MaxRGB+1) >> 1;
+      tz=(MaxRGB+1) >> 1;
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=UpShifted(0.29900)*i;
-        y[i+X]=UpShifted(0.58700)*i;
-        z[i+X]=UpShifted(0.11400)*i;
-        x[i+Y]=(-UpShifted(0.14740))*i;
-        y[i+Y]=(-UpShifted(0.28950))*i;
-        z[i+Y]=UpShifted(0.43690)*i;
-        x[i+Z]=UpShifted(0.61500)*i;
-        y[i+Z]=(-UpShifted(0.51500))*i;
-        z[i+Z]=(-UpShifted(0.10000))*i;
+        x[i+X]=0.299*i;
+        y[i+X]=0.587*i;
+        z[i+X]=0.114*i;
+        x[i+Y]=(-0.1474)*i;
+        y[i+Y]=(-0.2895)*i;
+        z[i+Y]=0.4369*i;
+        x[i+Z]=0.615*i;
+        y[i+Z]=(-0.515)*i;
+        z[i+Z]=(-0.1)*i;
       }
       break;
     }
@@ -10255,9 +10257,9 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         red=p->red;
         green=p->green;
         blue=p->blue;
-        p->red=range_limit[DownShift(x[red+X]+y[green+X]+z[blue+X]+tx)];
-        p->green=range_limit[DownShift(x[red+Y]+y[green+Y]+z[blue+Y]+ty)];
-        p->blue=range_limit[DownShift(x[red+Z]+y[green+Z]+z[blue+Z]+tz)];
+        p->red=range_limit[(int) (x[red+X]+y[green+X]+z[blue+X]+tx)];
+        p->green=range_limit[(int) (x[red+Y]+y[green+Y]+z[blue+Y]+ty)];
+        p->blue=range_limit[(int) (x[red+Z]+y[green+Z]+z[blue+Z]+tz)];
         p++;
         if (QuantumTick(i,image->packets))
           ProgressMonitor(RGBTransformImageText,i,image->packets);
@@ -10275,11 +10277,11 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         green=image->colormap[i].green;
         blue=image->colormap[i].blue;
         image->colormap[i].red=
-          range_limit[DownShift(x[red+X]+y[green+X]+z[blue+X]+tx)];
+          range_limit[(int) (x[red+X]+y[green+X]+z[blue+X]+tx)];
         image->colormap[i].green=
-          range_limit[DownShift(x[red+Y]+y[green+Y]+z[blue+Y]+ty)];
+          range_limit[(int) (x[red+Y]+y[green+Y]+z[blue+Y]+ty)];
         image->colormap[i].blue=
-          range_limit[DownShift(x[red+Z]+y[green+Z]+z[blue+Z]+tz)];
+          range_limit[(int) (x[red+Z]+y[green+Z]+z[blue+Z]+tz)];
       }
       SyncImage(image);
       break;
@@ -11213,7 +11215,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
       (void) strncpy(magick,image_info->filename,p-image_info->filename);
       magick[p-image_info->filename]='\0';
       Latin1Upper(magick);
-#if defined(WIN32)
+#if defined(macintosh) || defined(WIN32)
       if (!ImageFormatConflict(magick))
 #endif
         {
@@ -12187,7 +12189,7 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       255
     };
 
-  long
+  double
     *blue,
     *green,
     *red;
@@ -12250,12 +12252,12 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
   /*
     Allocate the tables.
   */
-  red=(long *) AllocateMemory(3*(MaxRGB+1)*sizeof(long));
-  green=(long *) AllocateMemory(3*(MaxRGB+1)*sizeof(long));
-  blue=(long *) AllocateMemory(3*(MaxRGB+1)*sizeof(long));
+  red=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
+  green=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
+  blue=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
   range_table=(Quantum *) AllocateMemory(4*(MaxRGB+1)*sizeof(Quantum));
-  if ((red == (long *) NULL) || (green == (long *) NULL) ||
-      (blue == (long *) NULL) || (range_table == (Quantum *) NULL))
+  if ((red == (double *) NULL) || (green == (double *) NULL) ||
+      (blue == (double *) NULL) || (range_table == (Quantum *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to transform color space",
         "Memory allocation failed");
@@ -12289,15 +12291,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=UpShifted(1.00000)*i;
-        green[i+R]=UpShifted(1.0000*0.5)*((i << 1)-MaxRGB);
-        blue[i+R]=(-UpShifted(0.66668*0.5))*((i << 1)-MaxRGB);
-        red[i+G]=UpShifted(1.00000)*i;
-        green[i+G]=0;
-        blue[i+G]=UpShifted(1.33333*0.5)*((i << 1)-MaxRGB);
-        red[i+B]=UpShifted(1.00000)*i;
-        green[i+B]=(-UpShifted(1.00000*0.5))*((i << 1)-MaxRGB);
-        blue[i+B]=(-UpShifted(0.66668*0.5))*((i << 1)-MaxRGB);
+        red[i+R]=i;
+        green[i+R]=0.5*(2.0*i-MaxRGB);
+        blue[i+R]=(-0.33334)*(2.0*i-MaxRGB);
+        red[i+G]=i;
+        green[i+G]=0.0;
+        blue[i+G]=0.666665*(2.0*i-MaxRGB);
+        red[i+B]=i;
+        green[i+B]=(-0.5)*(2.0*i-MaxRGB);
+        blue[i+B]=(-0.33334)*(2.0*i-MaxRGB);
       }
       break;
     }
@@ -12314,15 +12316,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=UpShifted(1.40200)*i;
-        green[i+R]=0;
-        blue[i+R]=UpShifted(1.88000)*(i-UpScale(137));
-        red[i+G]=UpShifted(1.40200)*i;
-        green[i+G]=(-(int) (UpShifted(0.19400*2.28900)*(i-UpScale(156))));
-        blue[i+G]=(-(int) (UpShifted(0.50900*1.88000)*(i-UpScale(137))));
-        red[i+B]=UpShifted(1.40200)*i;
-        green[i+B]=UpShifted(2.28900)*(i-UpScale(156));
-        blue[i+B]=0;
+        red[i+R]=1.40200*i;
+        green[i+R]=0.0;
+        blue[i+R]=1.88000*(i-(double) UpScale(137));
+        red[i+G]=1.40200*i;
+        green[i+G]=(-0.444066)*(i-(double) UpScale(156));
+        blue[i+G]=(-0.95692)*(i-(double) UpScale(137));
+        red[i+B]=1.40200*i;
+        green[i+B]=2.28900*(i-(double) UpScale(156));
+        blue[i+B]=0.0;
         range_table[i+(MaxRGB+1)]=(Quantum) UpScale(sRGBMap[DownScale(i)]);
       }
       for ( ; i < (int) UpScale(351); i++)
@@ -12340,15 +12342,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=UpShifted(3.240479)*i;
-        green[i+R]=(-UpShifted(1.537150))*i;
-        blue[i+R]=(-UpShifted(0.498535))*i;
-        red[i+G]=(-UpShifted(0.969256))*i;
-        green[i+G]=UpShifted(1.875992)*i;
-        blue[i+G]=UpShifted(0.041556)*i;
-        red[i+B]=UpShifted(0.055648)*i;
-        green[i+B]=(-UpShifted(0.204043))*i;
-        blue[i+B]=UpShifted(1.057311)*i;
+        red[i+R]=3.240479*i;
+        green[i+R]=(-1.537150)*i;
+        blue[i+R]=(-0.498535)*i;
+        red[i+G]=(-0.969256)*i;
+        green[i+G]=1.875992*i;
+        blue[i+G]=0.041556*i;
+        red[i+B]=0.055648*i;
+        green[i+B]=(-0.204043)*i;
+        blue[i+B]=1.057311*i;
       }
       break;
     }
@@ -12366,15 +12368,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=UpShifted(1.000000)*i;
-        green[i+R]=0;
-        blue[i+R]=UpShifted(1.402000*0.5)*((i << 1)-MaxRGB);
-        red[i+G]=UpShifted(1.000000)*i;
-        green[i+G]=(-UpShifted(0.344136*0.5))*((i << 1)-MaxRGB);
-        blue[i+G]=(-UpShifted(0.714136*0.5))*((i << 1)-MaxRGB);
-        red[i+B]=UpShifted(1.000000)*i;
-        green[i+B]=UpShifted(1.772000*0.5)*((i << 1)-MaxRGB);
-        blue[i+B]=0;
+        red[i+R]=i;
+        green[i+R]=0.0;
+        blue[i+R]=0.701*(2.0*i-MaxRGB);
+        red[i+G]=i;
+        green[i+G]=(-0.172068)*(2.0*i-MaxRGB);
+        blue[i+G]=(-0.357068)*(2.0*i-MaxRGB);
+        red[i+B]=i;
+        green[i+B]=0.886*(2.0*i-MaxRGB);
+        blue[i+B]=0.0;
       }
       break;
     }
@@ -12391,15 +12393,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=UpShifted(1.35840)*i;
-        green[i+R]=0;
-        blue[i+R]=UpShifted(1.82150)*(i-UpScale(137));
-        red[i+G]=UpShifted(1.35840)*i;
-        green[i+G]=(-(int) (UpShifted(0.19400*2.21790)*(i-UpScale(156))));
-        blue[i+G]=(-(int) (UpShifted(0.50900*1.82150)*(i-UpScale(137))));
-        red[i+B]=UpShifted(1.35840)*i;
-        green[i+B]=UpShifted(2.21790)*(i-UpScale(156));
-        blue[i+B]=0;
+        red[i+R]=1.3584*i;
+        green[i+R]=0.0;
+        blue[i+R]=1.8215*(i-(double) UpScale(137));
+        red[i+G]=1.3584*i;
+        green[i+G]=(-0.4302726)*(i-(double) UpScale(156));
+        blue[i+G]=(-0.9271435)*(i-(double) UpScale(137));
+        red[i+B]=1.3584*i;
+        green[i+B]=2.2179*(i-(double) UpScale(156));
+        blue[i+B]=0.0;
         range_table[i+(MaxRGB+1)]=(Quantum) UpScale(YCCMap[DownScale(i)]);
       }
       for ( ; i < (int) UpScale(351); i++)
@@ -12420,15 +12422,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=UpShifted(1.00000)*i;
-        green[i+R]=UpShifted(0.95620*0.5)*((i << 1)-MaxRGB);
-        blue[i+R]=UpShifted(0.62140*0.5)*((i << 1)-MaxRGB);
-        red[i+G]=UpShifted(1.00000)*i;
-        green[i+G]=(-UpShifted(0.27270*0.5))*((i << 1)-MaxRGB);
-        blue[i+G]=(-UpShifted(0.64680*0.5))*((i << 1)-MaxRGB);
-        red[i+B]=UpShifted(1.00000)*i;
-        green[i+B]=(-UpShifted(1.10370*0.5))*((i << 1)-MaxRGB);
-        blue[i+B]=UpShifted(1.70060*0.5)*((i << 1)-MaxRGB);
+        red[i+R]=i;
+        green[i+R]=0.4781*(2.0*i-MaxRGB);
+        blue[i+R]=0.3107*(2.0*i-MaxRGB);
+        red[i+G]=i;
+        green[i+G]=(-0.13635)*(2.0*i-MaxRGB);
+        blue[i+G]=(-0.3234)*(2.0*i-MaxRGB);
+        red[i+B]=i;
+        green[i+B]=(-0.55185)*(2.0*i-MaxRGB);
+        blue[i+B]=0.8503*(2.0*i-MaxRGB);
       }
       break;
     }
@@ -12446,15 +12448,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=UpShifted(1.000000)*i;
-        green[i+R]=0;
-        blue[i+R]=UpShifted(1.402000*0.5)*((i << 1)-MaxRGB);
-        red[i+G]=UpShifted(1.000000)*i;
-        green[i+G]=(-UpShifted(0.344136*0.5))*((i << 1)-MaxRGB);
-        blue[i+G]=UpShifted(0.714136*0.5)*((i << 1)-MaxRGB);
-        red[i+B]=UpShifted(1.000000)*i;
-        green[i+B]=UpShifted(1.772000*0.5)*((i << 1)-MaxRGB);
-        blue[i+B]=0;
+        red[i+R]=i;
+        green[i+R]=0.0;
+        blue[i+R]=0.701*(2.0*i-MaxRGB);
+        red[i+G]=i;
+        green[i+G]=(-0.172068)*(2.0*i-MaxRGB);
+        blue[i+G]=0.357068*(2.0*i-MaxRGB);
+        red[i+B]=i;
+        green[i+B]=0.886*(2.0*i-MaxRGB);
+        blue[i+B]=0.0;
       }
       break;
     }
@@ -12473,14 +12475,14 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=UpShifted(1.00000)*i;
-        green[i+R]=0;
-        blue[i+R]=UpShifted(1.13980*0.5)*((i << 1)-MaxRGB);
-        red[i+G]=UpShifted(1.00000)*i;
-        green[i+G]=(-UpShifted(0.39380*0.5))*((i << 1)-MaxRGB);
-        blue[i+G]=(-UpShifted(0.58050*0.5))*((i << 1)-MaxRGB);
-        red[i+B]=UpShifted(1.00000)*i;
-        green[i+B]=UpShifted(2.02790*0.5)*((i << 1)-MaxRGB);
+        red[i+R]=i;
+        green[i+R]=0.0;
+        blue[i+R]=0.5699*(2.0*i-MaxRGB);
+        red[i+G]=i;
+        green[i+G]=(-0.1969)*(2.0*i-MaxRGB);
+        blue[i+G]=(-0.29025)*(2.0*i-MaxRGB);
+        red[i+B]=i;
+        green[i+B]=1.01395*(2.0*i-MaxRGB);
         blue[i+B]=0;
       }
       break;
@@ -12503,9 +12505,9 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
         x=p->red;
         y=p->green;
         z=p->blue;
-        p->red=range_limit[DownShift(red[x+R]+green[y+R]+blue[z+R])];
-        p->green=range_limit[DownShift(red[x+G]+green[y+G]+blue[z+G])];
-        p->blue=range_limit[DownShift(red[x+B]+green[y+B]+blue[z+B])];
+        p->red=range_limit[(int) (red[x+R]+green[y+R]+blue[z+R])];
+        p->green=range_limit[(int) (red[x+G]+green[y+G]+blue[z+G])];
+        p->blue=range_limit[(int) (red[x+B]+green[y+B]+blue[z+B])];
         p++;
         if (QuantumTick(i,image->packets))
           ProgressMonitor(TransformRGBImageText,i,image->packets);
@@ -12523,23 +12525,13 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
         y=image->colormap[i].green;
         z=image->colormap[i].blue;
         image->colormap[i].red=
-          range_limit[DownShift(red[x+R]+green[y+R]+blue[z+R])];
+          range_limit[(int) (red[x+R]+green[y+R]+blue[z+R])];
         image->colormap[i].green=
-          range_limit[DownShift(red[x+G]+green[y+G]+blue[z+G])];
+          range_limit[(int) (red[x+G]+green[y+G]+blue[z+G])];
         image->colormap[i].blue=
-          range_limit[DownShift(red[x+B]+green[y+B]+blue[z+B])];
+          range_limit[(int) (red[x+B]+green[y+B]+blue[z+B])];
       }
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
-      {
-        x=p->red;
-        y=p->green;
-        z=p->blue;
-        p->red=range_limit[DownShift(red[x+R]+green[y+R]+blue[z+R])];
-        p->green=range_limit[DownShift(red[x+G]+green[y+G]+blue[z+G])];
-        p->blue=range_limit[DownShift(red[x+B]+green[y+B]+blue[z+B])];
-        p++;
-      }
+      SyncImage(image);
       break;
     }
   }

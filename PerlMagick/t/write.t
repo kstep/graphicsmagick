@@ -325,7 +325,7 @@ testReadWriteSized( 'UYVY:input_70x46.uyvy',
 		    'UYVY:output_70x46.uyvy',
 		    '70x46',
 		    q//,
-		    'b063c2f7ad1a48a58d3f80291b780180' );
+		    '5493371d700756a7eadf8198c70d1fe7' );
 
 
 1;

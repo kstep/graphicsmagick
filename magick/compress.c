@@ -889,6 +889,7 @@ Export unsigned int GIFDecodeImage(Image *image)
   }
   SetRunlengthPackets(image,packets);
   SyncImage(image);
+  image->compression=LZWCompression;
   FreeMemory(pixels);
   return(True);
 }
@@ -1430,6 +1431,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
   image->packets=packets;
   image->rows=y;
   SyncImage(image);
+  image->compression=FaxCompression;
   /*
     Free decoder memory.
   */

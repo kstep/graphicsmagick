@@ -8,7 +8,6 @@
 extern "C" {
 #endif
 
-#undef TextWidth
 #include <locale.h>
 #include <stat.h>
 #include <errno.h>
@@ -52,6 +51,7 @@ extern DIR
 
 extern int
   Exit(int),
+  ImageFormatConflict(const char *),
   MACSystemCommand(const char *);
 
 extern long

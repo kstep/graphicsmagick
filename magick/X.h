@@ -414,8 +414,9 @@ typedef struct _XWindowInfo
     highlight_stipple,
     shadow_stipple,
     pixmap,
+    *pixmaps,
     matte_pixmap,
-    *pixmaps;
+    *matte_pixmaps;
 
   int
     mask;
