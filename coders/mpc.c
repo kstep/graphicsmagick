@@ -315,13 +315,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"class") == 0)
                   {
+                    image->storage_class=UndefinedClass;
                     if (LocaleCompare(values,"PseudoClass") == 0)
                       image->storage_class=PseudoClass;
                     else
                       if (LocaleCompare(values,"DirectClass") == 0)
                         image->storage_class=DirectClass;
-                      else
-                        image->storage_class=UndefinedClass;
                     break;
                   }
                 if (LocaleCompare(keyword,"colors") == 0)
@@ -331,6 +330,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"colorspace") == 0)
                   {
+                    image->colorspace=UndefinedColorspace;
                     if (LocaleCompare(values,"CMYK") == 0)
                       image->colorspace=CMYKColorspace;
                     else
@@ -398,8 +398,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       else
                         if (LocaleCompare(values,"Previous") == 0)
                           image->dispose=PreviousDispose;
-                        else
-                          image->dispose=UndefinedDispose;
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -571,6 +569,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"rendering-intent") == 0)
                   {
+                    image->rendering_intent=UndefinedIntent;
                     if (LocaleCompare(values,"Saturation") == 0)
                       image->rendering_intent=SaturationIntent;
                     else
@@ -582,8 +581,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         else
                           if (LocaleCompare(values,"relative") == 0)
                             image->rendering_intent=RelativeIntent;
-                          else
-                            image->rendering_intent=UndefinedIntent;
                     break;
                   }
                 if (LocaleCompare(keyword,"resolution") == 0)
@@ -618,14 +615,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"units") == 0)
                   {
-                    if (LocaleCompare(values,"undefined") == 0)
-                      image->units=UndefinedResolution;
+                    image->units=UndefinedResolution;
+                    if (LocaleCompare(values,"pixels-per-inch") == 0)
+                      image->units=PixelsPerInchResolution;
                     else
-                      if (LocaleCompare(values,"pixels-per-inch") == 0)
-                        image->units=PixelsPerInchResolution;
-                      else
-                        if (LocaleCompare(values,"pixels-per-centimeter") == 0)
-                          image->units=PixelsPerCentimeterResolution;
+                      if (LocaleCompare(values,"pixels-per-centimeter") == 0)
+                        image->units=PixelsPerCentimeterResolution;
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
