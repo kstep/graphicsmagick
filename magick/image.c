@@ -5963,8 +5963,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   if (*(p+1) == ':')
     p+=2;  /* skip DECnet node spec */
 #endif
-  if ((*p == ':') && (*(p+1) != '\\') &&
-      ((p-image_info->filename) < (int) sizeof(magic)))
+  if ((*p == ':') && ((p-image_info->filename) < (int) sizeof(magic)))
     {
       /*
         User specified image format.
