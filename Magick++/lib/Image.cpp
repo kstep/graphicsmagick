@@ -274,8 +274,8 @@ void Magick::Image::annotate ( const std::string &text_,
   drawInfo->text = const_cast<char *>(text_.c_str());
 
   drawInfo->geometry = 0;
+  string boundingArea;
   if ( boundingArea_.isValid() ){
-    string boundingArea;
     if ( boundingArea_.width() == 0 || boundingArea_.height() == 0 )
       {
         char buff[30];
