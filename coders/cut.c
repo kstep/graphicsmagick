@@ -210,6 +210,31 @@ register IndexPacket *indexes;
 }
 
 
+/*This procedure computes number of colors in Grayed R[i]=G[i]=B[i] image*/
+int GetCutColors(Image *image)
+{
+int MaxColor,x,y;
+PixelPacket *q;
+int UpScale16;
+
+UpScale16=UpScale(16);
+MaxColor=0;
+ for (y=0; y < (int)image->rows; y++)  
+	{
+	q=SetImagePixels(image,0,y,image->columns,1);  
+	for (x=0; x < (int)image->columns; x++)  
+             {  	   
+	     if(MaxColor<q->red) MaxColor=q->red;
+	     if(MaxColor>=UpScale16) return(255);	
+	     q++;	
+	     }	
+	}
+	
+if(MaxColor<UpScale(2)) MaxColor=2;		
+else if(MaxColor<UpScale(16)) MaxColor=16;		
+return(MaxColor);
+}
+
 
 typedef struct
 	{
@@ -500,14 +525,13 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 
 
 /*detect monochrome image*/
+
 if(palette==NULL)
-    {
+    {		/*attempt to detect binary (black&white) images*/
     if(IsGrayImage(image))
       {
-      i=GetNumberColors(image,NULL);
-      if(i==2)
+      if(GetCutColors(image)==2)
          {
-         CompressColormap(image);
 	 for (i=0; i < (int)image->colors; i++)
 	   {
 	   j=UpScale(i);
@@ -515,7 +539,7 @@ if(palette==NULL)
 	   if(image->colormap[i].green!=j) goto Finish;
 	   if(image->colormap[i].blue!=j) goto Finish;
 	   }
-	   
+     
 	 image->colormap[1].red=image->colormap[1].green=image->colormap[1].blue=MaxRGB;
 	 for (i=0; i < (int)image->rows; i++)  
 	   {
@@ -532,21 +556,6 @@ if(palette==NULL)
 	   }
 	 }
        }     	 
-/*	 
-    if (IsMonochromeImage(image))
-	printf("monochrome");
-    printf("IsPseudoClass %d;",IsPseudoClass(image));
-    printf("%d\n",image->colors);
-    printf("Is Gray Image:%d;",IsGrayImage(image));
-    printf("%d\n",image->colors);
-    printf("Get Number of Colors:%d;",GetNumberColors(image,NULL));
-    printf("%d\n",image->colors);
-    
-    for (i=0; i < (int)image->colors; i++)
-	   {
-	   printf("[%d R%d;G%d;B%d]",i,
-	          image->colormap[i].red,image->colormap[i].green,image->colormap[i].blue);
-	   }*/
     } 
 
 Finish:

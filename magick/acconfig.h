@@ -2,6 +2,9 @@
 /* Define to empty if the keyword does not work.  */
 #undef const
 
+/* Define to empty if the keyword does not work.  */
+#undef inline
+
 /* Define if you don't have vprintf but do have _doprnt.  */
 #undef HAVE_DOPRNT
 
@@ -32,6 +35,10 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
+/* Define if your processor stores words with the most significant
+   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
+#undef WORDS_BIGENDIAN
+
 /* Define on System V Release 4.  */
 #undef SVR4
 
@@ -41,13 +48,13 @@
 /* Define if the X Window System is missing or not being used.  */
 #undef X_DISPLAY_MISSING
 
-/* Package name */
-#undef PACKAGE
+/* Define if you have Posix thread methods.  */
+#undef HasPTHREADS
 
-/* Package version */
-#undef VERSION
+/* Define if you have X11 library */
+#undef HasX11
 
-/* Include patented LZW compression */
+/* Include LZW compression */
 #undef HasLZW
 
 /* X11 server supports shape extension */
@@ -60,7 +67,7 @@
 #undef QuantumLeap
 
 /* Location of X11 RGB database */
-#undef RGBColorDatabase
+#undef X11ConfigurePath
 
 /* Define if you have the bzip2 library */
 #undef HasBZLIB
@@ -80,6 +87,9 @@
 /* Define if you have JPEG library */
 #undef HasJPEG
 
+/* Define if you have LCMS library */
+#undef HasLCMS
+
 /* Define if you have MPEG library */
 #undef HasMPEG
 
@@ -92,8 +102,11 @@
 /* Define if you have FreeType (TrueType font) library */
 #undef HasTTF
 
-/* Define if you have the SFIO mmap-based stdio library emulation */
-#undef HasSFIO
+/* Define to specify default TrueType font path. */
+#undef TT_FONT_PATH
+
+/* Define if you have XML library */
+#undef HasXML
 
 /* Define if you have zlib compression library */
 #undef HasZLIB
@@ -174,7 +187,7 @@
 #undef HAVE_PTMX_BSD
 
 /* Define directory where ImageMagick/delegates.h lives. (default /usr/local/share) */
-#undef DelegatePath
+#undef MagickConfigurePath
 
 /* Define location of 'bzip2' program */
 #undef BZIPDelegate
@@ -208,6 +221,12 @@
 
 /* Define location of the Postscript support program 'ps' */
 #undef PSDelegate
+
+/* Define location of the ILBM support program 'ilbmtoppm' */
+#undef ILBMDecodeDelegate
+
+/* Define location of the ILBM support program 'ppmtoilbm' */
+#undef ILBMEncodeDelegate
 
 /* Define location of the MPEG support program 'mpeg2decode' */
 #undef MPEGDecodeDelegate
@@ -259,3 +278,18 @@
 
 /* Define location of the 'cat' program */
 #undef CatDelegate
+
+/* Define location of 'enscript' program */
+#undef TXTDelegate
+
+/* Define location of the XCF support program 'xcftopnm' */
+#undef XCFDecodeDelegate
+
+/* Define if you have the gettimeofday function.  */
+#undef HAVE_GETTIMEOFDAY
+
+/* Define if you have the POSIX.4 clock_gettime function.  */
+#undef HAVE_CLOCK_GETTIME
+
+/* Pixel cache threshold (default 80MB)*/
+#undef PixelCacheThreshold

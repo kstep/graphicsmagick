@@ -1,6 +1,6 @@
 #  Makefile for building ImageMagick coder modules
 #
-# Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated
+# Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated
 # to making software imaging solutions freely available.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
@@ -32,13 +32,14 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
-MAGICK_CODER_SRCS = avi.c avs.c 8bim.c bmp.c cache.c cmyk.c cut.c dcm.c dps.c \
+MAGICK_CODER_SRCS = avi.c avs.c 8bim.c bmp.c cmyk.c cut.c dcm.c dps.c \
   ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c histogram.c html.c \
   icm.c icon.c iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c mono.c \
-  mtv.c mvg.c null.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c plasma.c png.c \
-  pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c \
-  sgi.c stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c \
-  uyvy.c vicar.c vid.c viff.c wbmp.c wpg.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
+  mpc.c mtv.c mvg.c null.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c plasma.c \
+  png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c \
+  sfw.c sgi.c stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c \
+  uil.c uyvy.c vicar.c vid.c viff.c wbmp.c wpg.c x.c xbm.c xc.c xpm.c xwd.c \
+  yuv.c
 
 MAJOR_VERSION=@MAJOR_VERSION@
 MINOR_VERSION=@MINOR_VERSION@
@@ -67,7 +68,7 @@ pkg_DATA = modules.mgk
 pkgdata_DATA = 
 
 # Modules which are to be built
-pkg_LTLIBRARIES   = 8bim.la avi.la avs.la bmp.la cache.la cmyk.la cut.la \
+pkg_LTLIBRARIES   = 8bim.la avi.la avs.la bmp.la mpc.la cmyk.la cut.la \
   dcm.la dps.la ept.la fax.la fpx.la fits.la gif.la gray.la gradient.la \
   hdf.la histogram.la html.la icm.la icon.la iptc.la jbig.la \
   jpeg.la label.la logo.la map.la matte.la miff.la mono.la mtv.la mvg.la \
@@ -101,9 +102,9 @@ bmp_la_LDFLAGS      = -no-undefined -module -avoid-version
 bmp_la_LIBADD       = ../magick/libMagick.la
 
 # CACHE module
-cache_la_SOURCES    = cache.c
-cache_la_LDFLAGS    = -no-undefined -module -avoid-version
-cache_la_LIBADD     = ../magick/libMagick.la
+mpc_la_SOURCES    = mpc.c
+mpc_la_LDFLAGS    = -no-undefined -module -avoid-version
+mpc_la_LIBADD     = ../magick/libMagick.la
 
 # CMYK module
 cmyk_la_SOURCES     = cmyk.c

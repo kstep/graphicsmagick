@@ -77,17 +77,6 @@
 #undef MNG_BASI_SUPPORTED
 
 /*
-  Define this to 9600 to get proposed MNG-0.96 capabilities (Draft
-  0.96), or to higher numbers to get proposed capabilities.
-
-  As of July 20, 1999, version 0.96 is the latest approved version.
-
-  MNG_LEVEL 9600: MNG-0.96
-
-#define MNG_LEVEL 9600
-*/
-
-/*
   If this is not defined, spec is interpreted strictly.  If it is
   defined, an attempt will be made to recover from some errors,
   including
@@ -548,7 +537,6 @@ static unsigned int CompressColormapTransFirst(Image *image)
       /*
       Remap pixels.
       */
-      printf("remapping.\n");
       for (y=0; y < (int) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
@@ -1026,8 +1014,6 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
 
   image=(Image *) ping->error_ptr;
   ThrowException(&image->exception,DelegateWarning,message,(char *) NULL);
-  if (ping == (png_struct *) NULL)
-    return;
 }
 
 #ifdef PNG_USER_MEM_SUPPORTED
@@ -1075,11 +1061,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_found,
     have_mng_structure,
     object_id,
-#if 0
-#if (QuantumDepth == 8)
-    reduction_warning,
-#endif
-#endif
     term_chunk_found,
     skip_to_iend,
     y;
@@ -1138,9 +1119,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #if 0
     mng_background_object = 0,
 #endif
-#ifdef MNG_LEVEL
-    mng_level,
-#endif
     mng_type = 0,   /* 0: PNG; 1: MNG; 2: MNG-LC; 3: MNG-VLC */
     simplicity = 0,
     status;
@@ -1160,14 +1138,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     subframe_width,
     ticks_per_second;
 
-#ifdef MNG_LEVEL
-  mng_level=MNG_LEVEL;
-#endif
-#if 0
-#if (QuantumDepth == 8)
-  reduction_warning=False;
-#endif
-#endif
   /*
     Open image file.
   */
@@ -3269,9 +3239,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     final_delay,
     initial_delay,
     matte,
-#ifdef MNG_LEVEL
-    mng_level,
-#endif
     scene,
     status,
     ticks_per_second;
@@ -3279,9 +3246,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   /*
     Open image file.
   */
-#ifdef MNG_LEVEL
-  mng_level=MNG_LEVEL;
-#endif
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
@@ -3738,11 +3702,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
 #ifdef PNG_USER_MEM_SUPPORTED
-    ping = png_create_write_struct_2(PNG_LIBPNG_VER_STRING,(void *) NULL,
+    ping = png_create_write_struct_2(PNG_LIBPNG_VER_STRING,(png_voidp) image_info,
       PNGErrorHandler,PNGWarningHandler,(void *) NULL,
       (png_malloc_ptr) png_IM_malloc,(png_free_ptr) png_IM_free);
 #else
-    ping=png_create_write_struct(PNG_LIBPNG_VER_STRING,(void *) NULL,
+    ping=png_create_write_struct(PNG_LIBPNG_VER_STRING,(png_voidp) image_info,
       PNGErrorHandler,PNGWarningHandler);
 #endif
     if (ping == (png_struct *) NULL)
@@ -3773,10 +3737,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       Prepare PNG for writing.
     */
 #if defined(PNG_MNG_FEATURES_SUPPORTED)
-        png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
+    if (image_info->adjoin)
+       png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
 #else
 # ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
-    png_permit_empty_plte(ping,True);
+    if (image_info->adjoin)
+       png_permit_empty_plte(ping,True);
 # endif
 #endif
     ping_info->width=image->columns;
@@ -4148,7 +4114,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
     /* This became available in libpng-1.0.9.  Output must be a MNG. */
     if (image_info->adjoin && ((image_info->quality % 10) == 7))
+    {
       ping_info->filter_type=PNG_INTRAPIXEL_DIFFERENCING;
+    }
 #endif
     if ((image_info->quality % 10) > 5)
       png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);

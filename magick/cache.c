@@ -246,7 +246,7 @@ static void DestroyCacheInfo(Cache cache)
     {
       CloseCache(cache);
       if (!cache_info->persist)
-        (void) remove(cache_info->filename);
+        (void) remove(cache_info->cache_filename);
       break;
     }
     default:
@@ -329,10 +329,16 @@ MagickExport void DestroyCacheNexus(Cache cache,const unsigned int id)
 */
 static void DestroyPixelCache(Image *image)
 {
+  CacheInfo
+    *cache_info;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->cache == (void *) NULL)
     return;
+  cache_info=(CacheInfo *) image->cache;
+  if (cache_info->persist)
+    WriteCacheInfo(image,cache_info->cache_filename);
   DestroyCacheInfo(image->cache);
   image->cache=(Cache) NULL;
 }
@@ -868,6 +874,9 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
     length,
     number_pixels;
 
+  size_t
+    offset;
+
   void
     *allocation;
 
@@ -895,9 +904,6 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
   length=number_pixels*sizeof(PixelPacket);
   if (cache_info->storage_class == PseudoClass)
     length+=number_pixels*sizeof(IndexPacket);
-  cache_info->rows=rows;
-  cache_info->columns=columns;
-  number_pixels=cache_info->columns*cache_info->rows;
   if (cache_info->storage_class != UndefinedClass)
     {
       /*
@@ -908,7 +914,10 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
       if (cache_info->type == MemoryMappedCache)
         (void) UnmapBlob(cache_info->pixels,(size_t) length);
     }
-  else
+  cache_info->rows=rows;
+  cache_info->columns=columns;
+  number_pixels=cache_info->columns*cache_info->rows;
+  if (cache_info->nexus == (NexusInfo *) NULL)
     {
       register int
         i;
@@ -969,11 +978,11 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
     Create pixel cache on disk.
   */
   if (cache_info->storage_class == UndefinedClass)
-    TemporaryFilename(cache_info->filename);
+    TemporaryFilename(cache_info->cache_filename);
   if (cache_info->file == -1)
     {
-      cache_info->file=
-        open(cache_info->filename,O_RDWR | O_CREAT | O_BINARY,0777);
+      cache_info->file=open(cache_info->cache_filename,
+        O_RDWR | O_CREAT | O_BINARY,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -987,25 +996,18 @@ else
     return(False);
 #endif
   cache_info->storage_class=storage_class;
-  if (cache_info->type != DiskCache)
+  cache_info->type=DiskCache;
+  allocation=MapBlob(cache_info->file,IOMode,&offset);
+  if (allocation != (void *) NULL)
     {
-      size_t
-        offset;
-
-      cache_info->type=DiskCache;
-      allocation=MapBlob(cache_info->file,IOMode,&offset);
-      if (allocation != (void *) NULL)
-        {
-          /*
-            Create memory-mapped pixel cache.
-          */
-          cache_info->type=MemoryMappedCache;
-          cache_info->pixels=(PixelPacket *) allocation;
-          if (cache_info->storage_class == PseudoClass)
-            cache_info->indexes=(IndexPacket *)
-              (cache_info->pixels+number_pixels);
-          CloseCache(cache);
-        }
+      /*
+        Create memory-mapped pixel cache.
+      */
+      cache_info->type=MemoryMappedCache;
+      cache_info->pixels=(PixelPacket *) allocation;
+      if (cache_info->storage_class == PseudoClass)
+        cache_info->indexes=(IndexPacket *) (cache_info->pixels+number_pixels);
+      CloseCache(cache);
     }
   return(True);
 }
@@ -1087,7 +1089,7 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
   */
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR | O_BINARY,0777);
+      cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1182,7 +1184,7 @@ MagickExport unsigned int ReadCachePixels(Cache cache,const unsigned int id)
   */
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR | O_BINARY,0777);
+      cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1567,7 +1569,7 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
   */
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR | O_BINARY,0777);
+      cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1585,6 +1587,267 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
     indexes+=nexus->columns;
     offset+=cache_info->columns;
   }
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e C a c h e I n f o                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteCacheInfo writes the persistent cache meta information to a file
+%  on disk.
+%
+%  The format of the WriteCacheInfo method is:
+%
+%      unsigned int WriteCacheInfo(Image *image,const char *filename)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method WriteCacheInfo returns True if the cache meta
+%      information is written to the specified file, otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o filename: The name of the file to write the persistent cache meta
+%      information.
+%
+%
+*/
+MagickExport unsigned int WriteCacheInfo(Image *image,const char *filename)
+{
+  CacheInfo
+    *cache_info;
+
+  char
+    color[MaxTextExtent];
+
+  ImageAttribute
+    *attribute;
+
+  FILE
+    *file;
+
+  register int
+    i;
+
+  unsigned int
+    status;
+
+  /*
+    Write persistent cache meta-information.
+  */
+  cache_info=(CacheInfo *) image->cache;
+  file=fopen(cache_info->meta_filename,WriteBinaryType);
+  if (file == (FILE *) NULL)
+    return(False);
+  (void) fprintf(file,"Id=MagickCache\n");
+  (void) fprintf(file,"Cache=%.1024s\n",filename);
+  if (image->storage_class == PseudoClass)
+    (void) fprintf(file,"Class=PseudoClass  Colors=%u  Matte=%s\n",
+      image->colors,image->matte ? "True" : "False");
+  else
+    if (image->colorspace != CMYKColorspace)
+      (void) fprintf(file,"Class=DirectClass  Matte=%s\n",
+        image->matte ? "True" : "False");
+    else
+      (void) fprintf(file,"Class=DirectClass  Colorspace=CMYK\n");
+  (void) fprintf(file,"Compression=");
+  switch (image->compression)
+  {
+    default:
+    case NoCompression: (void) fprintf(file,"None\n"); break;
+    case BZipCompression: (void) fprintf(file,"BZip\n"); break;
+    case FaxCompression: (void) fprintf(file,"Fax\n"); break;
+    case Group4Compression: (void) fprintf(file,"Group4\n"); break;
+    case JPEGCompression: (void) fprintf(file,"JPEG\n"); break;
+    case LosslessJPEGCompression: (void) fprintf(file,"Lossless\n"); break;
+    case LZWCompression: (void) fprintf(file,"LZW\n"); break;
+    case RunlengthEncodedCompression:
+      (void) fprintf(file,"RunlengthEncoded\n"); break;
+    case ZipCompression: (void) fprintf(file,"Zip\n"); break;
+  }
+  (void) fprintf(file,"Columns=%u  Rows=%u  Depth=%u\n",image->columns,
+    image->rows,image->depth);
+  if ((image->x_resolution != 0) && (image->y_resolution != 0))
+    {
+      char
+        units[MaxTextExtent];
+
+      /*
+        Set image resolution.
+      */
+      (void) strcpy(units,"undefined");
+      if (image->units == PixelsPerInchResolution)
+        (void) strcpy(units,"pixels-per-inch");
+      if (image->units == PixelsPerCentimeterResolution)
+        (void) strcpy(units,"pixels-per-centimeter");
+      (void) fprintf(file,"Resolution=%gx%g  units=%.1024s\n",
+        image->x_resolution,image->y_resolution,units);
+    }
+  if ((image->page.width != 0) && (image->page.height != 0))
+    (void) fprintf(file,"Page=%ux%u%+d%+d\n",image->page.width,
+      image->page.height,image->page.x,image->page.y);
+  (void) QueryColorName(&image->background_color,color);
+  (void) fprintf(file,"Background-color=%.1024s  ",color);
+  (void) QueryColorName(&image->border_color,color);
+  (void) fprintf(file,"Border-color=%.1024s  ",color);
+  (void) QueryColorName(&image->matte_color,color);
+  (void) fprintf(file,"Matte-color=%.1024s\n",color);
+  if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
+    (void) fprintf(file,"Scene=%u  Iterations=%u  Delay=%u  Dispose=%u\n",
+      image->scene,image->iterations,image->delay,image->dispose);
+  else
+    {
+      if (image->scene != 0)
+        (void) fprintf(file,"Scene=%u\n",image->scene);
+      if (image->iterations != 1)
+        (void) fprintf(file,"Iterations=%u\n",image->iterations);
+      if (image->delay != 0)
+        (void) fprintf(file,"Delay=%u\n",image->delay);
+      if (image->dispose != 0)
+        (void) fprintf(file,"Dispose=%u\n",image->dispose);
+    }
+  if (image->rendering_intent != UndefinedIntent)
+    {
+      if (image->rendering_intent == SaturationIntent)
+        (void) fprintf(file,"Rendering-intent=saturation\n");
+      else
+        if (image->rendering_intent == PerceptualIntent)
+          (void) fprintf(file,"Rendering-intent=perceptual\n");
+        else
+          if (image->rendering_intent == AbsoluteIntent)
+            (void) fprintf(file,"Rendering-intent=absolute\n");
+          else
+            (void) fprintf(file,"Rendering-intent=relative\n");
+    }
+  if (image->gamma != 0.0)
+    (void) fprintf(file,"Gamma=%g\n",image->gamma);
+  if (image->chromaticity.white_point.x != 0.0)
+    {
+      /*
+        Note chomaticity points.
+      */
+      (void) fprintf(file,
+        "Red-primary=%g,%g  Green-primary=%g,%g  Blue-primary=%g,%g\n",
+        image->chromaticity.red_primary.x,image->chromaticity.red_primary.y,
+        image->chromaticity.green_primary.x,
+        image->chromaticity.green_primary.y,
+        image->chromaticity.blue_primary.x,
+        image->chromaticity.blue_primary.y);
+      (void) fprintf(file,"White-point=%g,%g\n",
+        image->chromaticity.white_point.x,image->chromaticity.white_point.y);
+    }
+  if (image->color_profile.length > 0)
+    (void) fprintf(file,"Profile-icc=%u\n",image->color_profile.length);
+  if (image->iptc_profile.length > 0)
+    (void) fprintf(file,"Profile-iptc=%u\n",image->iptc_profile.length);
+  if (image->generic_profiles != 0)
+    {
+      /*
+        Generic profile.
+      */
+      for (i=0; i < image->generic_profiles; i++)
+        (void) fprintf(file,"Profile-%s=%u\n",
+          image->generic_profile[i].name == (char *) NULL ? "generic" :
+          image->generic_profile[i].name,image->generic_profile[i].length);
+    }
+  if (image->montage != (char *) NULL)
+    (void) fprintf(file,"Montage=%.1024s\n",image->montage);
+  SignatureImage(image);
+  attribute=GetImageAttribute(image,(char *) NULL);
+  for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
+  {
+    if (attribute->value != NULL)
+      {
+        (void) fprintf(file,"%.1024s=",attribute->key);
+        for (i=0; i < strlen(attribute->value); i++)
+          if (isspace((int) attribute->value[i]))
+            break;
+        if (i < strlen(attribute->value))
+          (void) fputc('{',file);
+        (void) fwrite(attribute->value,strlen(attribute->value),1,file);
+        if (i < strlen(attribute->value))
+          (void) fputc('}',file);
+        (void) fputc('\n',file);
+      }
+  }
+  (void) fprintf(file,"\f\n:\032");
+  if (image->montage != (char *) NULL)
+    {
+      /*
+        Write montage tile directory.
+      */
+      if (image->directory != (char *) NULL)
+        (void) fwrite(image->directory,strlen(image->directory),1,file);
+      (void) fputc('\0',file);
+    }
+  if (image->color_profile.length > 0)
+    (void) fwrite(image->color_profile.info,image->color_profile.length,1,file);
+  if (image->iptc_profile.length > 0)
+    (void) fwrite(image->iptc_profile.info,image->iptc_profile.length,1,file);
+  if (image->generic_profiles != 0)
+    {
+      /*
+        Generic profile.
+      */
+      for (i=0; i < image->generic_profiles; i++)
+      {
+        if (image->generic_profile[i].length == 0)
+          continue;
+        (void) fwrite(image->generic_profile[i].info,
+          image->generic_profile[i].length,1,file);
+      }
+    }
+  if (image->storage_class == PseudoClass)
+    {
+      register unsigned char
+        *q;
+
+      unsigned char
+        *colormap;
+
+      unsigned int
+        packet_size;
+
+      /*
+        Allocate colormap.
+      */
+      packet_size=image->colors > 256 ? 6 : 3;
+      colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
+      if (colormap == (unsigned char *) NULL)
+        return(False);
+      /*
+        Write colormap to file.
+      */
+      q=colormap;
+      if (image->colors <= 256)
+        for (i=0; i < (int) image->colors; i++)
+        {
+          *q++=image->colormap[i].red;
+          *q++=image->colormap[i].green;
+          *q++=image->colormap[i].blue;
+        }
+      else
+        for (i=0; i < (int) image->colors; i++)
+        {
+          *q++=image->colormap[i].red >> 8;
+          *q++=image->colormap[i].red & 0xff;
+          *q++=image->colormap[i].green >> 8;
+          *q++=image->colormap[i].green  & 0xff;
+          *q++=image->colormap[i].blue >> 8;
+          *q++=image->colormap[i].blue  & 0xff;
+        }
+      (void) fwrite(colormap,packet_size,image->colors,file);
+      LiberateMemory((void **) &colormap);
+    }
+  fclose(file);
   return(True);
 }
 
@@ -1662,7 +1925,7 @@ MagickExport unsigned int WriteCachePixels(Cache cache,const unsigned int id)
   */
   if (cache_info->file == -1)
     {
-      cache_info->file=open(cache_info->filename,O_RDWR | O_BINARY,0777);
+      cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
         return(False);
     }

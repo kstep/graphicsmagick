@@ -1183,15 +1183,6 @@ next image in a sequence</td>
 </tr>
 
 <tr>
-<td>fill</td>
-
-<td><i><a href="color.html">color name</a>kkkk</i></td>
-
-<td>color name (e.g. red) or hex value (e.g. #ccc) for annotating or changing
-opaque color</td>
-</tr>
-
-<tr>
 <td>font</td>
 
 <td><i>string</i></td>
@@ -1345,15 +1336,6 @@ OilPaint, CharcoalDrawing, JPEG}&nbsp;</td>
 <td><i>integer</i></td>
 
 <td>image scene number</td>
-</tr>
-
-<tr>
-<td>stroke</td>
-
-<td><i><a href="color.html">color name</a>kkkk</i></td>
-
-<td>color name (e.g. red) or hex value (e.g. #ccc) for annotating or changing
-opaque color</td>
 </tr>
 
 <tr>
@@ -1998,7 +1980,8 @@ first image in a multi-frame image file is returned.
 <p>To have full control over text positioning you will need font metric
 information.  Use
 
-<pre>&nbsp;&nbsp;&nbsp; ($x_ppem, $y_ppem, $ascender, $descender, $width, $height, $max_advance) = split(', ', $image->QueryFontMetrics(<i>parameters</i>);</pre>
+<pre>&nbsp;&nbsp;&nbsp; ($x_ppem, $y_ppem, $ascender, $descender, $width, $height, $max_advance) =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;split(', ', $image->QueryFontMetrics(<i>parameters</i>));</pre>
 
 Where <i>parameters</i> is any parameter of the <a href="#mani">Annotate</a>
 method.  The return values are
