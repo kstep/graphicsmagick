@@ -679,7 +679,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register int
+  register long
     i;
 
   unsigned char

@@ -311,10 +311,10 @@ MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
     normalize,
     value;
 
-  int
+  long
     width;
 
-  register int
+  register long
     u;
 
   if (radius > 0.0)
@@ -339,10 +339,10 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
     normalize,
     value;
 
-  int
+  long
     width;
 
-  register int
+  register long
     u,
     v;
 
@@ -974,7 +974,7 @@ MagickExport void TransformHWB(const Quantum red,const Quantum green,
     r,
     v;
 
-  register int
+  register long
     i;
 
   /*

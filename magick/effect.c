@@ -1518,11 +1518,11 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
   PixelPacket
     pixel;
 
-  register int
-    channel;
-
   register MedianSkipList
     *list;
+
+  register long
+    channel;
 
   unsigned long
     channels[4],
@@ -1844,10 +1844,10 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   Image
     *sharp_image;
 
-  int
+  long
     width;
 
-  register int
+  register long
     i,
     u,
     v;

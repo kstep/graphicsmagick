@@ -141,7 +141,7 @@ static unsigned int DecodeImage(const unsigned char *compressed_pixels,
   register const unsigned char
     *p;
 
-  register int
+  register long
     count;
 
   register unsigned char

@@ -210,7 +210,7 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
   double
     value;
 
-  register int
+  register long
     n;
 
   assert(string != (const char *) NULL);
@@ -255,7 +255,7 @@ static char **GetStyleTokens(void *context,const char *text,int *number_tokens)
     *p,
     *q;
 
-  register int
+  register long
     i;
 
   SVGInfo
@@ -311,7 +311,7 @@ static char **GetTransformTokens(void *context,const char *text,
     *p,
     *q;
 
-  register int
+  register long
     i;
 
   SVGInfo
@@ -707,7 +707,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
   SVGInfo
     *svg_info;
 
-  register int
+  register long
     i,
     j;
 
@@ -2298,7 +2298,7 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
   register char
     *p;
 
-  register int
+  register long
     i;
 
   SVGInfo
@@ -2873,7 +2873,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   output_write
     output_writer;
 
-  register int
+  register long
     i;
 
   unsigned int

@@ -117,7 +117,7 @@ static unsigned int ExecutePostscriptInterpreter(const unsigned int verbose,
     code,
     status;
 
-  register int
+  register long
     i;
 
 #if defined(HasGS)
@@ -425,7 +425,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p,
     *q;
 
-  register int
+  register long
     c;
 
   SegmentInfo

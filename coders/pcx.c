@@ -489,7 +489,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             case 1:
             {
-              register int
+              register long
                 bit;
 
               for (x=0; x < ((long) image->columns-7); x+=8)

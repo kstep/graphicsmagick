@@ -3905,7 +3905,7 @@ static void MSLEndElement(void *context,const xmlChar *name)
 
 static void MSLCharacters(void *context,const xmlChar *c,int length)
 {
-  register int
+  register long
     i;
 
   MSLInfo

@@ -1158,7 +1158,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register int
+  register long
     x;
 
   register long

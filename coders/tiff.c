@@ -703,7 +703,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             case 1:
             {
-              register int
+              register long
                 bit;
 
               for (x=0; x < ((long) width-7); x+=8)

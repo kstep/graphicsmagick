@@ -127,7 +127,7 @@ static unsigned int IsSFW(const unsigned char *magick,const size_t length)
 static unsigned char *SFWScan(const unsigned char *p,const unsigned char *q,
   const unsigned char *target,const int length)
 {
-  register int
+  register long
     i;
 
   for ( ; p < q; p++)

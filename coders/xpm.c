@@ -146,7 +146,7 @@ static char *ParseColor(char *data)
   register const char
     *q;
 
-  register int
+  register long
     i;
 
   for (i=0; i < NumberTargets; i++)

@@ -316,7 +316,7 @@ static void WBMPWriteInteger(Image *image,const unsigned long value)
     flag,
     n;
 
-  register int
+  register long
     i;
 
   unsigned char

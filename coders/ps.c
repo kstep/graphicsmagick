@@ -111,7 +111,7 @@ static unsigned int ExecutePostscriptInterpreter(const unsigned int verbose,
     code,
     status;
 
-  register int
+  register long
     i;
 
 #if defined(HasGS)

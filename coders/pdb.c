@@ -155,7 +155,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *pixels,
     count,
     pixel;
 
-  register int
+  register long
     i;
 
   register unsigned char

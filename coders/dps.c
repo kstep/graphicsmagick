@@ -115,7 +115,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i;
 
   register PixelPacket

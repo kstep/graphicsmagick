@@ -493,7 +493,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 

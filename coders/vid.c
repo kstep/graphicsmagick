@@ -115,7 +115,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MontageInfo
     *montage_info;
 
-  register int
+  register long
     i;
 
   unsigned int

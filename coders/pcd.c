@@ -142,7 +142,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   PCDTable
     *pcd_table[3];
 
-  register int
+  register long
     i,
     j;
 
@@ -886,7 +886,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     *p,
     *q;
 
-  register int
+  register long
     i,
     x;
 
@@ -978,7 +978,7 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   Image
     *pcd_image;
 
-  register int
+  register long
     i;
 
   unsigned int

@@ -603,7 +603,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i;
 
   struct jpeg_decompress_struct

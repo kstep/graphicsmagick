@@ -571,7 +571,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register long

@@ -341,7 +341,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   register Image
     *p;
 
-  register int
+  register long
     i;
 
   static int

@@ -159,7 +159,7 @@ static html_code html_codes[] = {
 
 static int stringnicmp(const char *p,const char *q,size_t n)
 {
-  register int
+  register long
     i,
     j;
 
@@ -1152,7 +1152,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
   long
     info_length;
 
-  register int
+  register long
     i;
 
   register unsigned char
@@ -1737,7 +1737,7 @@ static int format8BIM(Image *ifile, Image *ofile)
 
 static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
 {
-  register int
+  register long
     i;
 
   unsigned int

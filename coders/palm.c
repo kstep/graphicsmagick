@@ -364,7 +364,7 @@ static unsigned int
 */
 static int FindColor(PixelPacket *pixel)
 {
-  register int
+  register long
     i;
 
   for (i=0; i < 256; i++)
@@ -691,7 +691,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket

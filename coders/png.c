@@ -950,7 +950,7 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
   png_size_t
     check;
 
-  register int
+  register long
     i;
 
   i=0;
@@ -1098,7 +1098,7 @@ static void MngInfoFreeStruct(MngInfo *mng_info,int *have_mng_structure)
 {
   if (*have_mng_structure && (mng_info != (MngInfo *) NULL))
     {
-      register int
+      register long
         i;
 
       for (i=1; i < MNG_MAX_OBJECTS; i++)
@@ -1848,7 +1848,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (!memcmp(type,mng_PLTE,4))
           {
-            register int
+            register long
              i;
 
             /*
@@ -1884,7 +1884,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (!memcmp(type,mng_tRNS,4))
           {
-            register int
+            register long
               i;
 
             /* read global tRNS */
@@ -2092,7 +2092,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (!memcmp(type,mng_SAVE,4))
           {
-            register int
+            register long
               i;
 
             for (i=1; i<MNG_MAX_OBJECTS; i++)
@@ -2111,7 +2111,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         if (!memcmp(type,mng_DISC,4) || !memcmp(type,mng_SEEK,4))
           {
-            register int
+            register long
               i;
 
             /*
@@ -3279,7 +3279,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             case 1:
             {
-              register int
+              register long
                 bit;
 
               for (x=0; x < ((long) image->columns-7); x+=8)
@@ -4474,7 +4474,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    png_textp
      text;
 
-   register int
+   register long
      i;
 
    unsigned char
