@@ -252,7 +252,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (LocaleNCompare(command,"/Rotate 90",10) == 0)
       portrait=False;
-    if (LocaleNCompare(MediaBox,command,Extent(MediaBox)) != 0)
+    if (LocaleNCompare(MediaBox,command,strlen(MediaBox)) != 0)
       continue;
     count=sscanf(command,"/MediaBox [%lf %lf %lf %lf",&bounds.x1,&bounds.y1,
       &bounds.x2,&bounds.y2);

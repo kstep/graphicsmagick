@@ -387,7 +387,7 @@ int main(int argc,char **argv)
       Check command line for server name.
     */
     option=argv[i];
-    if ((Extent(option) == 1) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
       continue;
     if (LocaleCompare("display",option+1) == 0)
       {
@@ -459,7 +459,7 @@ int main(int argc,char **argv)
           option=(char *) "-";
         else
           option=(char *) "logo:Untitled";
-    if ((Extent(option) > 1) && ((*option == '-') || (*option == '+')))
+    if ((strlen(option) > 1) && ((*option == '-') || (*option == '+')))
       switch (*(option+1))
       {
         case 'b':

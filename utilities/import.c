@@ -278,7 +278,7 @@ int main(int argc,char **argv)
       Check command line for server name.
     */
     option=argv[i];
-    if ((Extent(option) == 1) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
       continue;
     if (LocaleCompare("display",option+1) == 0)
       {
@@ -365,7 +365,7 @@ int main(int argc,char **argv)
   for (i=1; i < argc; i++)
   {
     option=argv[i];
-    if ((Extent(option) < 2) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) < 2) || ((*option != '-') && (*option != '+')))
       filename=argv[i];
     else
       switch(*(option+1))

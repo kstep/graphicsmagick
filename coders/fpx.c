@@ -870,9 +870,9 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         Note image label.
       */
       summary_info.title_valid=True;
-      summary_info.title.length=Extent(label->value);
+      summary_info.title.length=strlen(label->value);
       summary_info.title.ptr=(unsigned char *)
-        AcquireMemory(Extent(label->value)+1);
+        AcquireMemory(strlen(label->value)+1);
       if (summary_info.title.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.title.ptr,label->value);
       else
@@ -886,9 +886,9 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         Note image comment.
       */
       summary_info.comments_valid=True;
-      summary_info.comments.length=Extent(comment->value);
+      summary_info.comments.length=strlen(comment->value);
       summary_info.comments.ptr=(unsigned char *)
-        AcquireMemory(Extent(comment->value)+1);
+        AcquireMemory(strlen(comment->value)+1);
       if (summary_info.comments.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.comments.ptr,comment->value);
       else

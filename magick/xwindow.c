@@ -81,11 +81,20 @@ static volatile unsigned int
 /*
   Method prototypes.
 */
+static char
+  *XVisualClassName(const int);
+
+static unsigned int
+  XMakePixmap(Display *,const XResourceInfo *,XWindowInfo *);
+
 static void
   XMakeImageLSBFirst(const XResourceInfo *,const XWindowInfo *,Image *,
     XImage *,XImage *),
   XMakeImageMSBFirst(const XResourceInfo *,const XWindowInfo *,Image *,
     XImage *,XImage *);
+
+static Window
+  XSelectWindow(Display *,RectangleInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -228,7 +237,7 @@ MagickExport unsigned int XAnnotateImage(Display *display,
   */
   XDrawImageString(display,annotate_pixmap,annotate_context,0,
     (int) annotate_info->font_info->ascent,annotate_info->text,
-    Extent(annotate_info->text));
+    strlen(annotate_info->text));
   XFreeGC(display,annotate_context);
   /*
     Initialize annotated X image.
@@ -2986,7 +2995,7 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
       /*
         Get basename of client.
       */
-      p=client_name+(Extent(client_name)-1);
+      p=client_name+(strlen(client_name)-1);
       while ((p > client_name) && (*p != '/'))
         p--;
       if (*p == '/')
@@ -6804,11 +6813,11 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   x=windows->magnify.font_info->max_bounds.width >> 1;
   y=windows->magnify.font_info->ascent+(height >> 2);
   XDrawImageString(display,windows->magnify.pixmap,
-    windows->magnify.annotate_context,x,y,text,Extent(text));
+    windows->magnify.annotate_context,x,y,text,strlen(text));
   y+=height;
   (void) QueryColorname(windows->image.image,&color,X11Compliance,text);
   XDrawImageString(display,windows->magnify.pixmap,
-    windows->magnify.annotate_context,x,y,text,Extent(text));
+    windows->magnify.annotate_context,x,y,text,strlen(text));
   /*
     Refresh magnify window.
   */
@@ -6851,8 +6860,8 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
 %
 %
 */
-unsigned int XMakePixmap(Display *display,const XResourceInfo *resource_info,
-  XWindowInfo *window)
+static unsigned int XMakePixmap(Display *display,
+  const XResourceInfo *resource_info,XWindowInfo *window)
 {
   unsigned int
     height,
@@ -7678,7 +7687,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
         size_hints->height);
       (void) strcpy(geometry,window_info->geometry);
       p=geometry;
-      while (Extent(p) > 0)
+      while (strlen(p) > 0)
       {
         if (!isspace((int) (*p)) && (*p != '%'))
           p++;
@@ -8153,7 +8162,7 @@ MagickExport void XRemoteCommand(Display *display,const char *window,
   */
   remote_atom=XInternAtom(display,"IM_REMOTE_COMMAND",False);
   XChangeProperty(display,remote_window,remote_atom,XA_STRING,8,
-    PropModeReplace,(unsigned char *) filename,Extent(filename));
+    PropModeReplace,(unsigned char *) filename,strlen(filename));
   XSync(display,False);
 }
 
@@ -8246,7 +8255,7 @@ MagickExport void XRetainWindowColors(Display *display,const Window window)
 %
 %
 */
-MagickExport Window XSelectWindow(Display *display,RectangleInfo *crop_info)
+static Window XSelectWindow(Display *display,RectangleInfo *crop_info)
 {
 #define MinimumCropArea  (unsigned int) 9
 
@@ -8632,7 +8641,7 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
 %
 %
 */
-MagickExport char *XVisualClassName(const int visual_class)
+static char *XVisualClassName(const int visual_class)
 {
   switch (visual_class)
   {

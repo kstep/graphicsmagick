@@ -504,8 +504,7 @@ typedef struct _XWindows
 extern MagickExport char
   *XGetResourceClass(XrmDatabase,const char *,const char *,char *),
   *XGetResourceInstance(XrmDatabase,const char *,const char *,const char *),
-  *XGetScreenDensity(Display *),
-  *XVisualClassName(const int);
+  *XGetScreenDensity(Display *);
 
 extern MagickExport Cursor
   XMakeCursor(Display *,Window,Colormap,char *,char *);
@@ -514,9 +513,7 @@ extern MagickExport Image
   *XAnimateImages(Display *,XResourceInfo *,char **,const int,Image *),
   *XDisplayImage(Display *,XResourceInfo *,char **,int,Image **,
     unsigned long *),
-  *XImportImage(const ImageInfo *,XImportInfo *),
-  *XGetWindowImage(Display *,const Window,const unsigned int,
-    const unsigned int);
+  *XImportImage(const ImageInfo *,XImportInfo *);
 
 extern MagickExport int
   XError(Display *,XErrorEvent *);
@@ -529,7 +526,6 @@ extern MagickExport unsigned int
   XGetWindowColor(Display *,char *),
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,
     unsigned int,unsigned int),
-  XMakePixmap(Display *,const XResourceInfo *,XWindowInfo *),
   XQueryColorDatabase(const char *,XColor *);
 
 extern MagickExport void
@@ -574,9 +570,6 @@ extern MagickExport void
   XWarning(const ExceptionType,const char *,const char *);
 
 extern MagickExport Window
-  XClientWindow(Display *,Window),
-  XGetSubwindow(Display *,Window,int,int),
-  XSelectWindow(Display *,RectangleInfo *),
   XWindowByID(Display *,const Window,const unsigned long),
   XWindowByName(Display *,const Window,const char *),
   XWindowByProperty(Display *,const Window,const Atom);

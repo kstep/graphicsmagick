@@ -20,9 +20,7 @@ extern MagickExport unsigned int
 
 extern MagickExport void
   GetTimerInfo(TimerInfo *),
-  ResetTimer(TimerInfo *),
-  StartTimer(TimerInfo *,const unsigned int),
-  StopTimer(TimerInfo *);
+  ResetTimer(TimerInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

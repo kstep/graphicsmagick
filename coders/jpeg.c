@@ -1232,9 +1232,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   */
   attribute=GetImageAttribute(image,"comment");
   if ((attribute != (ImageAttribute *) NULL) && (attribute->value != NULL))
-    for (i=0; i < Extent(attribute->value); i+=65533)
+    for (i=0; i < strlen(attribute->value); i+=65533)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) attribute->value+
-        i,(unsigned int) Min(Extent(attribute->value+i),65533));
+        i,(unsigned int) Min(strlen(attribute->value+i),65533));
   if (image->color_profile.length > 0)
     WriteICCProfile(&jpeg_info,image);
   if (image->iptc_profile.length > 0)

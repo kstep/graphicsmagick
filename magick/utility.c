@@ -107,7 +107,7 @@ MagickExport char *AllocateString(const char *source)
 
   length=MaxTextExtent;
   if (source != (char *) NULL)
-    length+=Extent(source);
+    length+=strlen(source);
   destination=(char *) AcquireMemory(length+MaxTextExtent);
   if (destination == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate string",
@@ -247,7 +247,7 @@ MagickExport unsigned int ConcatenateString(char **destination,
   if (source == (const char *) NULL)
     return(True);
   ReacquireMemory((void **) &(*destination),
-    Extent(*destination)+Extent(source)+MaxTextExtent);
+    strlen(*destination)+strlen(source)+MaxTextExtent);
   if (*destination == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to concatenate string",
       "Memory allocation failed");
@@ -465,7 +465,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
   assert(argc != (int *) NULL);
   assert(argv != (char ***) NULL);
   for (i=1; i < *argc; i++)
-    if (Extent((*argv)[i]) > (MaxTextExtent/2-1))
+    if (strlen((*argv)[i]) > (MaxTextExtent/2-1))
       MagickError(ResourceLimitError,"Token length exceeds limit",(*argv)[i]);
   vector=(char **) AcquireMemory((*argc+MaxTextExtent)*sizeof(char *));
   if (vector == (char **) NULL)
@@ -480,7 +480,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
   {
     option=(*argv)[i];
     vector[count++]=option;
-    if ((Extent(option) > 1) && ((*option == '-') || (*option == '+')))
+    if ((strlen(option) > 1) && ((*option == '-') || (*option == '+')))
       continue;
     if ((*option == '"') || (*option == '\''))
       continue;
@@ -688,7 +688,7 @@ MagickExport int GetGeometry(const char *image_geometry,int *x,int *y,
   (void) strcpy(geometry,image_geometry);
   flags=NoValue;
   p=geometry;
-  while (Extent(p) > 0)
+  while (strlen(p) > 0)
   {
     if (isspace((int) (*p)))
       (void) strcpy(p,p+1);
@@ -778,14 +778,14 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   (void) strcpy(component,path);
   if (*path == '\0')
     return;
-  for (p=component+(Extent(component)-1); p > component; p--)
+  for (p=component+(strlen(component)-1); p > component; p--)
     if (IsBasenameSeparator(*p))
       break;
   switch (type)
   {
     case RootPath:
     {
-      for (p=component+(Extent(component)-1); p > component; p--)
+      for (p=component+(strlen(component)-1); p > component; p--)
         if (*p == '.')
           break;
       if (*p == '.')
@@ -807,7 +807,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     {
       if (IsBasenameSeparator(*p))
         (void) strcpy(component,p+1);
-      for (p=component+(Extent(component)-1); p > component; p--)
+      for (p=component+(strlen(component)-1); p > component; p--)
         if (*p == '.')
           {
             *p='\0';
@@ -819,7 +819,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     {
       if (IsBasenameSeparator(*p))
         (void) strcpy(component,p+1);
-      for (p=component+(Extent(component)-1); p > component; p--)
+      for (p=component+(strlen(component)-1); p > component; p--)
         if (*p == '.')
           break;
       *component='\0';
@@ -941,7 +941,7 @@ MagickExport void GetToken(const char *start,char **end,char *token)
   token[i]='\0';
   if (LocaleNCompare(token,"url(#",5) == 0)
     {
-      i=Extent(token);
+      i=strlen(token);
       (void) strcpy(token,token+5);
       token[i-6]='\0';
     }
@@ -988,7 +988,7 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
   */
   if (pattern == (char *) NULL)
     return(True);
-  if (Extent(pattern) == 0)
+  if (strlen(pattern) == 0)
     return(True);
   if (LocaleCompare(pattern,"*") == 0)
     return(True);
@@ -1437,7 +1437,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
         }
 #endif
         filelist[*number_entries]=(char *)
-          AcquireMemory(Extent(entry->d_name)+MaxTextExtent);
+          AcquireMemory(strlen(entry->d_name)+MaxTextExtent);
         if (filelist[*number_entries] == (char *) NULL)
           break;
         (void) strcpy(filelist[*number_entries],entry->d_name);
@@ -1972,13 +1972,13 @@ MagickExport char *PostscriptGeometry(const char *page)
     Comparison is case insensitive.
   */
   for (i=0; *PageSizes[i] != (char *) NULL; i++)
-    if (LocaleNCompare(PageSizes[i][0],geometry,Extent(PageSizes[i][0])) == 0)
+    if (LocaleNCompare(PageSizes[i][0],geometry,strlen(PageSizes[i][0])) == 0)
       {
         /*
           Replace mneumonic with the equivalent size in dots-per-inch.
         */
         (void) strcpy(geometry,PageSizes[i][1]);
-        (void) strcat(geometry,page+Extent(PageSizes[i][0]));
+        (void) strcat(geometry,page+strlen(PageSizes[i][0]));
         break;
       }
   return(geometry);
@@ -2252,7 +2252,7 @@ MagickExport char **StringToList(const char *text)
       /*
         Convert string to a HEX list.
       */
-      lines=(Extent(text)/0x14)+1;
+      lines=(strlen(text)/0x14)+1;
       textlist=(char **) AcquireMemory((lines+MaxTextExtent)*sizeof(char *));
       if (textlist == (char **) NULL)
         MagickError(ResourceLimitError,"Unable to convert text",
@@ -2265,8 +2265,8 @@ MagickExport char **StringToList(const char *text)
           MagickError(ResourceLimitError,"Unable to convert text",
             "Memory allocation failed");
         FormatString(textlist[i],"0x%08x: ",(unsigned int) (i*0x14));
-        q=textlist[i]+Extent(textlist[i]);
-        for (j=1; j <= Min(Extent(p),0x14); j++)
+        q=textlist[i]+strlen(textlist[i]);
+        for (j=1; j <= Min(strlen(p),0x14); j++)
         {
           FormatString(hex_string,"%02x",(unsigned int) (*(p+j)));
           (void) strcpy(q,hex_string);
@@ -2282,7 +2282,7 @@ MagickExport char **StringToList(const char *text)
             *q++=' ';
         }
         *q++=' ';
-        for (j=1; j <= Min(Extent(p),0x14); j++)
+        for (j=1; j <= Min(strlen(p),0x14); j++)
         {
           if (isprint((int) (*p)))
             *q++=(*p);
@@ -2336,7 +2336,7 @@ MagickExport void Strip(char *data)
   p=data;
   while (isspace((int) (*p)))
     p++;
-  q=data+Extent(data)-1;
+  q=data+strlen(data)-1;
   while (isspace((int) (*q)) && (q > p))
     q--;
   count=q-p+1;
@@ -2868,7 +2868,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   /*
     Translate any embedded format characters.
   */
-  length=Extent(text)+MaxTextExtent;
+  length=strlen(text)+MaxTextExtent;
   translated_text=AllocateString(text);
   clone_info=CloneImageInfo(image_info);
   p=text;
@@ -2881,7 +2881,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         ReacquireMemory((void **) &translated_text,length);
         if (translated_text == (char *) NULL)
           break;
-        q=translated_text+Extent(translated_text);
+        q=translated_text+strlen(translated_text);
       }
     /*
       Process formatting characters in text.
@@ -2915,7 +2915,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
             FormatString(q,"%lukb ",(unsigned long) (SizeBlob(image)/1024));
           else
             FormatString(q,"%lub ",(unsigned long) SizeBlob(image));
-        q=translated_text+Extent(translated_text);
+        q=translated_text+strlen(translated_text);
         break;
       }
       case 'c':
@@ -2927,7 +2927,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         if (attribute == (ImageAttribute *) NULL)
           break;
         (void) strcpy(q,attribute->value);
-        q+=Extent(attribute->value);
+        q+=strlen(attribute->value);
         break;
       }
       case 'd':
@@ -2941,7 +2941,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         /*
           Label segment is the base of the filename.
         */
-        if (Extent(image->magick_filename) == 0)
+        if (strlen(image->magick_filename) == 0)
           break;
         switch (*p)
         {
@@ -2949,28 +2949,28 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
           {
             GetPathComponent(image->magick_filename,HeadPath,filename);
             (void) strcpy(q,filename);
-            q+=Extent(filename);
+            q+=strlen(filename);
             break;
           }
           case 'e':
           {
             GetPathComponent(image->magick_filename,ExtensionPath,filename);
             (void) strcpy(q,filename);
-            q+=Extent(filename);
+            q+=strlen(filename);
             break;
           }
           case 'f':
           {
             GetPathComponent(image->magick_filename,TailPath,filename);
             (void) strcpy(q,filename);
-            q+=Extent(filename);
+            q+=strlen(filename);
             break;
           }
           case 't':
           {
             GetPathComponent(image->magick_filename,BasePath,filename);
             (void) strcpy(q,filename);
-            q+=Extent(filename);
+            q+=strlen(filename);
             break;
           }
         }
@@ -2979,26 +2979,26 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       case 'g':
       {
         FormatString(q,"0x%lx",clone_info->group);
-        q=translated_text+Extent(translated_text);
+        q=translated_text+strlen(translated_text);
         break;
       }
       case 'h':
       {
         FormatString(q,"%u",image->magick_rows ? image->magick_rows : 256);
-        q=translated_text+Extent(translated_text);
+        q=translated_text+strlen(translated_text);
         break;
       }
       case 'i':
       {
         (void) strcpy(q,image->filename);
-        q+=Extent(image->filename);
+        q+=strlen(image->filename);
         break;
       }
       case 'k':
       {
         (void) GetNumberColors(image,(FILE *) NULL);
         FormatString(q,"%lu",image->total_colors);
-        q=translated_text+Extent(translated_text);
+        q=translated_text+strlen(translated_text);
         break;
       }
       case 'l':
@@ -3010,25 +3010,25 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         if (attribute == (ImageAttribute *) NULL)
           break;
         (void) strcpy(q,attribute->value);
-        q+=Extent(attribute->value);
+        q+=strlen(attribute->value);
         break;
       }
       case 'm':
       {
         (void) strcpy(q,image->magick);
-        q+=Extent(image->magick);
+        q+=strlen(image->magick);
         break;
       }
       case 'n':
       {
         FormatString(q,"%u",GetNumberScenes(image));
-        q=translated_text+Extent(translated_text);
+        q=translated_text+strlen(translated_text);
         break;
       }
       case 'o':
       {
         (void) strcpy(q,clone_info->filename);
-        q+=Extent(clone_info->filename);
+        q+=strlen(clone_info->filename);
         break;
       }
       case 'p':
@@ -3043,13 +3043,13 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         for (page=1; p->previous != (Image *) NULL; page++)
           p=p->previous;
         FormatString(q,"%u",page);
-        q=translated_text+Extent(translated_text);
+        q=translated_text+strlen(translated_text);
         break;
       }
       case 'q':
       {
         FormatString(q,"%u",image->depth);
-        q=translated_text+Extent(translated_text);
+        q=translated_text+strlen(translated_text);
         break;
       }
       case 's':
@@ -3057,38 +3057,38 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         FormatString(q,"%u",image->scene);
         if (clone_info->subrange != 0)
           FormatString(q,"%u",clone_info->subimage);
-        q=translated_text+Extent(translated_text);
+        q=translated_text+strlen(translated_text);
         break;
       }
       case 'u':
       {
         (void) strcpy(q,clone_info->unique);
-        q+=Extent(clone_info->unique);
+        q+=strlen(clone_info->unique);
         break;
       }
       case 'w':
       {
         FormatString(q,"%u",
           image->magick_columns ? image->magick_columns : 256);
-        q=translated_text+Extent(translated_text);
+        q=translated_text+strlen(translated_text);
         break;
       }
       case 'x':
       {
         FormatString(q,"%u",(unsigned int) image->x_resolution);
-        q=translated_text+Extent(translated_text);
+        q=translated_text+strlen(translated_text);
         break;
       }
       case 'y':
       {
         FormatString(q,"%u",(unsigned int) image->y_resolution);
-        q=translated_text+Extent(translated_text);
+        q=translated_text+strlen(translated_text);
         break;
       }
       case 'z':
       {
         (void) strcpy(q,clone_info->zero);
-        q+=Extent(clone_info->zero);
+        q+=strlen(clone_info->zero);
         break;
       }
       case '[':
@@ -3111,14 +3111,14 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         attribute=GetImageAttribute(image,key);
         if (attribute != (ImageAttribute *) NULL)
           {
-            offset=Extent(attribute->value);
+            offset=strlen(attribute->value);
             if ((size_t) (q-translated_text+offset) >= length)
               {
                 length+=(offset+MaxTextExtent);
                 ReacquireMemory((void **) &translated_text,length);
                 if (translated_text == (char *) NULL)
                   break;
-                q=translated_text+Extent(translated_text);
+                q=translated_text+strlen(translated_text);
               }
             (void) strcpy(q,attribute->value);
             q+=offset;
@@ -3127,14 +3127,14 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         attribute=GetImageInfoAttribute(clone_info,image,key);
         if (attribute == (ImageAttribute *) NULL)
           break;
-        offset=Extent(attribute->value);
+        offset=strlen(attribute->value);
         if ((size_t) (q-translated_text+offset) >= length)
           {
             length+=(offset+MaxTextExtent);
             ReacquireMemory((void **) &translated_text,length);
             if (translated_text == (char *) NULL)
               break;
-            q=translated_text+Extent(translated_text);
+            q=translated_text+strlen(translated_text);
           }
         (void) strcpy(q,attribute->value);
         q+=offset;

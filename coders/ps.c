@@ -270,13 +270,13 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Parse a bounding box statement.
     */
     count=0;
-    if (LocaleNCompare(BoundingBox,command,Extent(BoundingBox)) == 0)
+    if (LocaleNCompare(BoundingBox,command,strlen(BoundingBox)) == 0)
       count=sscanf(command,"%%%%BoundingBox: %lf %lf %lf %lf",&bounds.x1,
         &bounds.y1,&bounds.x2,&bounds.y2);
-    if (LocaleNCompare(DocumentMedia,command,Extent(DocumentMedia)) == 0)
+    if (LocaleNCompare(DocumentMedia,command,strlen(DocumentMedia)) == 0)
       count=sscanf(command,"%%%%DocumentMedia: %*s %lf %lf",&bounds.x2,
         &bounds.y2)+2;
-    if (LocaleNCompare(PageBoundingBox,command,Extent(PageBoundingBox)) == 0)
+    if (LocaleNCompare(PageBoundingBox,command,strlen(PageBoundingBox)) == 0)
       count=sscanf(command,"%%%%PageBoundingBox: %lf %lf %lf %lf",
         &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
     if (count != 4)
@@ -910,7 +910,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
         (void) strcpy(date,ctime(&timer));
-        date[Extent(date)-1]='\0';
+        date[strlen(date)-1]='\0';
         FormatString(buffer,"%%%%CreationDate: (%.1024s)\n",date);
         (void) WriteBlobString(image,buffer);
         bounds.x1=x;

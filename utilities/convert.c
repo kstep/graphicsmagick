@@ -495,7 +495,7 @@ int main(int argc,char **argv)
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
-    if ((Extent(option) < 2) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) < 2) || ((*option != '-') && (*option != '+')))
       {
         /*
           Read input image.
@@ -1915,7 +1915,7 @@ int main(int argc,char **argv)
   /*
     Write images.
   */
-  if ((Extent(option) > 2) && ((*option == '-') || (*option == '+')))
+  if ((strlen(option) > 2) && ((*option == '-') || (*option == '+')))
     {
       status=MogrifyImages(image_info,i,argv,&image);
       if (status == False)

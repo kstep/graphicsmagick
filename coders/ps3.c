@@ -338,7 +338,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
         (void) strcpy(date,ctime(&timer));
-        date[Extent(date)-1]='\0';
+        date[strlen(date)-1]='\0';
         FormatString(buffer,"%%%%CreationDate: (%.1024s)\n",date);
         (void) WriteBlobString(image,buffer);
         bounds.x1=x;

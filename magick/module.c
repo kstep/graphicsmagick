@@ -478,7 +478,7 @@ static char **GetModuleList(void)
     if (LocaleNCompare("IM_MOD_",modules[i],7) == 0)
       {
         (void) strcpy(modules[i],modules[i]+10);
-        modules[i][Extent(modules[i])-1]='\0';
+        modules[i][strlen(modules[i])-1]='\0';
       }
     i++;
     modules[i]=(char *) NULL;
@@ -535,7 +535,7 @@ MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
   for ( ; p != (ModuleAlias *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
-    for (i=Extent(p->name); i <= 9; i++)
+    for (i=strlen(p->name); i <= 9; i++)
       (void) fprintf(file," ");
     if (p->alias != (char *) NULL)
       (void) fprintf(file,"%.1024s",p->alias);

@@ -64,7 +64,7 @@ extern "C" {
 #  endif
 #  else
 #  include <dirent.h>
-#  define NAMLEN(dirent) Extent((dirent)->d_name)
+#  define NAMLEN(dirent) strlen((dirent)->d_name)
 #  endif
 #  include <pwd.h>
 #endif

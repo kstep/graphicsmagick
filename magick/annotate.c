@@ -161,10 +161,10 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   LiberateMemory((void **) &text);
   if (textlist == (char **) NULL)
     return(False);
-  length=Extent(textlist[0]);
+  length=strlen(textlist[0]);
   for (i=1; textlist[i] != (char *) NULL; i++)
-    if (Extent(textlist[i]) > (int) length)
-      length=Extent(textlist[i]);
+    if (strlen(textlist[i]) > (int) length)
+      length=strlen(textlist[i]);
   text=(char *) AcquireMemory(length+MaxTextExtent);
   if (text == (char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
@@ -461,14 +461,14 @@ static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
   if ((text == (char *) NULL) || (*text == '\0'))
     return((unsigned short *) NULL);
   unicode=(unsigned short *)
-    AcquireMemory((Extent(text)+MaxTextExtent)*sizeof(unsigned short));
+    AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (unicode == (unsigned short *) NULL)
     MagickError(ResourceLimitError,"Unable to convert text to Unicode",
       "Memory allocation failed");
   q=unicode;
   for (p=text; ; p+=length)
   {
-    length=Extent(p);
+    length=strlen(p);
     *q=GetUnicodeCharacter((const unsigned char *) p,&length);
     if (length == 0)
       break;
@@ -754,7 +754,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     (draw_info->affine.rx == 0.0) && (draw_info->affine.ry == 0.0);
   extent.x=0.0;
   extent.y=0.0;
-  for (i=0; i <= (Extent(draw_info->text)+2); i++)
+  for (i=0; i <= (strlen(draw_info->text)+2); i++)
   {
     point.x=fabs(draw_info->affine.sx*i*draw_info->pointsize+
       draw_info->affine.ry*2.0*draw_info->pointsize);
@@ -1436,7 +1436,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   annotate_info.font_info=font_info;
   annotate_info.text=(char *) draw_info->text;
   annotate_info.width=XTextWidth(font_info,draw_info->text,
-    Extent(draw_info->text));
+    strlen(draw_info->text));
   annotate_info.height=font_info->ascent+font_info->descent;
   metrics->pixels_per_em.x=font_info->max_bounds.width;
   metrics->pixels_per_em.y=font_info->max_bounds.width;

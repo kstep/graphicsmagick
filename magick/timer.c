@@ -68,6 +68,10 @@
 */
 static double
   UserTime(void);
+
+static void
+  StartTimer(TimerInfo *,const unsigned int),
+  StopTimer(TimerInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -283,7 +287,7 @@ MagickExport void ResetTimer(TimerInfo *time_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S t a r t T i m e r                                                       %
++   S t a r t T i m e r                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -304,7 +308,7 @@ MagickExport void ResetTimer(TimerInfo *time_info)
 %       stopwatch.
 %
 */
-MagickExport void StartTimer(TimerInfo *time_info,const unsigned int reset)
+static void StartTimer(TimerInfo *time_info,const unsigned int reset)
 {
   assert(time_info != (TimerInfo *) NULL);
   assert(time_info->signature == MagickSignature);
@@ -329,7 +333,7 @@ MagickExport void StartTimer(TimerInfo *time_info,const unsigned int reset)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S t o p T i m e r                                                         %
++   S t o p T i m e r                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -346,7 +350,7 @@ MagickExport void StartTimer(TimerInfo *time_info,const unsigned int reset)
 %    o  time_info: Timer statistics structure.
 %
 */
-MagickExport void StopTimer(TimerInfo *time_info)
+static void StopTimer(TimerInfo *time_info)
 {
   assert(time_info != (TimerInfo *) NULL);
   assert(time_info->signature == MagickSignature);

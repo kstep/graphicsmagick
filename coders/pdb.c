@@ -505,7 +505,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ReacquireMemory((void **) &comment,length+1);
               if (comment == (char *) NULL)
                 break;
-              p=comment+Extent(comment);
+              p=comment+strlen(comment);
             }
           c=ReadBlobByte(image);
           *p=c;

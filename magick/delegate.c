@@ -512,7 +512,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
       tag[i]=' ';
     tag[i]='\0';
     if (p->encode != (char *) NULL)
-      (void) strncpy(tag,p->encode,Extent(p->encode));
+      (void) strncpy(tag,p->encode,strlen(p->encode));
     (void) fprintf(file,"%10s%.1024s=%.1024s%.1024s  %s\n",
       p->decode ? p->decode : "",p->mode <= 0 ? "<" : " ",
       p->mode >= 0 ? ">" : " ",tag,delegate);
@@ -764,7 +764,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
         Note commands associated with this delegate.
       */
       delegate->commands=(char *)
-        AcquireMemory(Extent(delegate_info->commands)+1);
+        AcquireMemory(strlen(delegate_info->commands)+1);
       if (delegate->commands == (char *) NULL)
         return(delegate_list);
       (void) strcpy(delegate->commands,delegate_info->commands);

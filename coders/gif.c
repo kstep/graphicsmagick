@@ -1301,9 +1301,9 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobByte(image,0xfe);
             attribute=GetImageAttribute(image,"comment");
             p=attribute->value;
-            while (Extent(p) > 0)
+            while (strlen(p) > 0)
             {
-              count=Min(Extent(p),255);
+              count=Min(strlen(p),255);
               (void) WriteBlobByte(image,count);
               for (i=0; i < (int) count; i++)
                 (void) WriteBlobByte(image,*p++);

@@ -5464,7 +5464,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
       text[0].key=attribute->key;
       text[0].text=attribute->value;
-      text[0].text_length=Extent(attribute->value);
+      text[0].text_length=strlen(attribute->value);
       text[0].compression=image_info->compression == NoCompression ||
         (image_info->compression == UndefinedCompression &&
         text[0].text_length < 128) ? -1 : 0;
@@ -5486,7 +5486,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           "Cannot write more than 256 PNG text chunks",image->filename);
       ping_info->text[i].key=attribute->key;
       ping_info->text[i].text=attribute->value;
-      ping_info->text[i].text_length=Extent(attribute->value);
+      ping_info->text[i].text_length=strlen(attribute->value);
       ping_info->text[i].compression=image_info->compression == NoCompression ||
         (image_info->compression == UndefinedCompression &&
         ping_info->text[i].text_length < 128) ? -1 : 0;

@@ -179,7 +179,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
                 ReacquireMemory((void **) &comment,length+strlen(P7Comment)+1);
                 if (comment == (char *) NULL)
                   break;
-                p=comment+Extent(comment);
+                p=comment+strlen(comment);
               }
             c=ReadBlobByte(image);
             *p=c;

@@ -255,7 +255,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           p++;
           (void) strcpy(url,image_info->magick);
           (void) strcat(url,":");
-          url[Extent(url)+p-image->filename]='\0';
+          url[strlen(url)+p-image->filename]='\0';
           (void) strncat(url,image->filename,p-image->filename);
           (void) strcpy(image->filename,p);
         }
@@ -376,7 +376,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
         Determine image map filename.
       */
       (void) strcpy(image->filename,filename);
-      for (p=filename+Extent(filename)-1; p > (filename+1); p--)
+      for (p=filename+strlen(filename)-1; p > (filename+1); p--)
         if (*p == '.')
           {
             (void) strncpy(image->filename,filename,p-filename);

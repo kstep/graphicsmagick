@@ -378,7 +378,7 @@ int main(int argc,char **argv)
   for (i=1; i < argc; i++)
   {
     option=argv[i];
-    if ((Extent(option) > 1) && ((*option == '-') || (*option == '+')))
+    if ((strlen(option) > 1) && ((*option == '-') || (*option == '+')))
       switch (*(option+1))
       {
         case 'a':
@@ -1647,7 +1647,7 @@ int main(int argc,char **argv)
             /*
               Modify filename to include a user specified image format.
             */
-            p=image->filename+Extent(image->filename)-1;
+            p=image->filename+strlen(image->filename)-1;
             while ((*p != '.') && (p > (image->filename+1)))
               p--;
             p++;

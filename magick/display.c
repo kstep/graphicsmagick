@@ -623,7 +623,7 @@ static unsigned int XAnnotateEditImage(Display *display,
               Finished annotating.
             */
             annotate_info->width=XTextWidth(font_info,annotate_info->text,
-              Extent(annotate_info->text));
+              strlen(annotate_info->text));
             XRefreshWindow(display,&windows->image,&text_event);
             state|=ExitState;
             break;
@@ -675,11 +675,11 @@ static unsigned int XAnnotateEditImage(Display *display,
               if (annotate_info->stencil == ForegroundStencil)
                 XDrawString(display,windows->image.id,annotate_context,
                   text_info->x,text_info->y,text_info->text,
-                  Extent(text_info->text));
+                  strlen(text_info->text));
               else
                 XDrawImageString(display,windows->image.id,annotate_context,
                   text_info->x,text_info->y,text_info->text,
-                  Extent(text_info->text));
+                  strlen(text_info->text));
               text_info=text_info->previous;
             }
             XDrawString(display,windows->image.id,annotate_context,x,y,"_",1);
@@ -734,7 +734,7 @@ static unsigned int XAnnotateEditImage(Display *display,
                     x=annotate_info->x+annotate_info->width;
                     y=annotate_info->y;
                     if (annotate_info->width != 0)
-                      p+=Extent(annotate_info->text);
+                      p+=strlen(annotate_info->text);
                     break;
                   }
               }
@@ -771,7 +771,7 @@ static unsigned int XAnnotateEditImage(Display *display,
               Finished annotating.
             */
             annotate_info->width=XTextWidth(font_info,annotate_info->text,
-              Extent(annotate_info->text));
+              strlen(annotate_info->text));
             XRefreshWindow(display,&windows->image,&text_event);
             state|=ExitState;
             break;
@@ -804,7 +804,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             */
             *p='\0';
             annotate_info->width=XTextWidth(font_info,annotate_info->text,
-              Extent(annotate_info->text));
+              strlen(annotate_info->text));
             if (annotate_info->next != (XAnnotateInfo *) NULL)
               {
                 /*
@@ -897,7 +897,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           */
           *p='\0';
           annotate_info->width=XTextWidth(font_info,annotate_info->text,
-            Extent(annotate_info->text));
+            strlen(annotate_info->text));
           if (annotate_info->next != (XAnnotateInfo *) NULL)
             {
               /*
@@ -4881,8 +4881,8 @@ static CommandType XImageWindowCommand(Display *display,
           resource_info->quantum=1;
         }
       last_symbol=key_symbol;
-      delta[Extent(delta)+1]='\0';
-      delta[Extent(delta)]=Digits[key_symbol-XK_0];
+      delta[strlen(delta)+1]='\0';
+      delta[strlen(delta)]=Digits[key_symbol-XK_0];
       resource_info->quantum=atoi(delta);
       return(NullCommand);
     }
@@ -6940,7 +6940,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
             "http://www.imagemagick.org/");
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
           XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,8,
-            PropModeReplace,(unsigned char *) command,Extent(command));
+            PropModeReplace,(unsigned char *) command,strlen(command));
           XSetCursorState(display,windows,False);
           break;
         }

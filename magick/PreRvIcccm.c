@@ -232,7 +232,7 @@ Status XGetWMName(Display *display,Window window,XTextProperty *text_property)
   text_property->value=(unsigned char *) window_name;
   text_property->encoding=XA_STRING;
   text_property->format=8;
-  text_property->nitems=Extent(window_name);
+  text_property->nitems=strlen(window_name);
   return(True);
 }
 
@@ -291,7 +291,7 @@ int XStringListToTextProperty(char **argv,int argc,XTextProperty *property)
 
   number_bytes=0;
   for (i=0; i < argc; i++)
-    number_bytes+=(unsigned int) ((argv[i] ? Extent(argv[i]) : 0)+1);
+    number_bytes+=(unsigned int) ((argv[i] ? strlen(argv[i]) : 0)+1);
   protocol.encoding=XA_STRING;
   protocol.format=8;
   protocol.nitems=0;
@@ -325,7 +325,7 @@ int XStringListToTextProperty(char **argv,int argc,XTextProperty *property)
         else
           {
             (void) strcpy(buffer,argument);
-            buffer+=(Extent(argument)+1);
+            buffer+=(strlen(argument)+1);
           }
       }
     }

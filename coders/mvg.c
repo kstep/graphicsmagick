@@ -129,7 +129,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       while (ReadBlobString(image,primitive) != (char *) NULL)
       {
-        if (LocaleNCompare(BoundingBox,primitive,Extent(BoundingBox)) != 0)
+        if (LocaleNCompare(BoundingBox,primitive,strlen(BoundingBox)) != 0)
           continue;
         (void) sscanf(primitive,"viewbox %lf %lf %lf %lf",&bounds.x1,
           &bounds.y1,&bounds.x2,&bounds.y2);
@@ -257,7 +257,7 @@ static unsigned int WriteMVGImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) WriteBlob(image,Extent(attribute->value),attribute->value);
+  (void) WriteBlob(image,strlen(attribute->value),attribute->value);
   CloseBlob(image);
   return(True);
 }

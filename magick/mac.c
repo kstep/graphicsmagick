@@ -1400,7 +1400,7 @@ MagickExport void SetApplicationType(const char *filename,const char *magick,
    
   assert(filename != (char *) NULL);
   filetype='    ';
-  (void) strncpy((char *) &filetype,magick,Min(Extent(magick),4));
+  (void) strncpy((char *) &filetype,magick,Min(strlen(magick),4));
   (void) strcpy((char *) name,filename);
   c2pstr((char *) name);
   FSMakeFSSpec(0,0,name,&file_specification);

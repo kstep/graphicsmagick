@@ -231,14 +231,14 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           continue;
       if ((*p == '}') && (*(p+1) == ';'))
         break;
-      p+=Extent(p);
+      p+=strlen(p);
       if ((p-xpm_buffer+MaxTextExtent+1) < (int) length)
         continue;
       length<<=1;
       ReacquireMemory((void **) &xpm_buffer,length);
       if (xpm_buffer == (char *) NULL)
         break;
-      p=xpm_buffer+Extent(xpm_buffer);
+      p=xpm_buffer+strlen(xpm_buffer);
     }
   if (xpm_buffer == (char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);

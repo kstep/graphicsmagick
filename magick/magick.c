@@ -671,7 +671,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   *magic='\0';
-  p=image_info->filename+Max(Extent(image_info->filename)-1,0);
+  p=image_info->filename+Max(strlen(image_info->filename)-1,0);
   if (*p == ']')
     for (q=p-1; q > image_info->filename; q--)
     {
@@ -721,7 +721,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     {
       p--;
     } while ((*p != '.') && (p > (image_info->filename+1)));
-  if ((*p == '.') && (Extent(p) < (int) sizeof(magic)))
+  if ((*p == '.') && (strlen(p) < (int) sizeof(magic)))
     {
       /*
         User specified image format.

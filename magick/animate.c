@@ -338,7 +338,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
             "http://www.imagemagick.org/");
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
           XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,8,
-            PropModeReplace,(unsigned char *) command,Extent(command));
+            PropModeReplace,(unsigned char *) command,strlen(command));
           XSetCursorState(display,windows,False);
           break;
         }
@@ -1640,7 +1640,7 @@ MagickExport Image *XAnimateImages(Display *display,
         images[scene],resource_info->title);
     else
       {
-        p=images[scene]->filename+Extent(images[scene]->filename)-1;
+        p=images[scene]->filename+strlen(images[scene]->filename)-1;
         while ((p > images[scene]->filename) && (*(p-1) != '/'))
           p--;
         FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",p,
@@ -1729,7 +1729,7 @@ MagickExport Image *XAnimateImages(Display *display,
               /*
                 Update window title.
               */
-              p=images[scene]->filename+Extent(images[scene]->filename)-1;
+              p=images[scene]->filename+strlen(images[scene]->filename)-1;
               while ((p > images[scene]->filename) && (*(p-1) != '/'))
                 p--;
               FormatString(windows->image.name,

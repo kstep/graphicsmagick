@@ -216,7 +216,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ReacquireMemory((void **) &comment,length);
               if (comment == (char *) NULL)
                 break;
-              p=comment+Extent(comment);
+              p=comment+strlen(comment);
             }
           *p=c;
         }
@@ -254,7 +254,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 ReacquireMemory((void **) &values,length);
                 if (values == (char *) NULL)
                   break;
-                p=values+Extent(values);
+                p=values+strlen(values);
               }
             if (values == (char *) NULL)
               ThrowReaderException(ResourceLimitWarning,
@@ -668,17 +668,17 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       do
       {
         *p='\0';
-        if (((Extent(image->directory)+1) % MaxTextExtent) == 0)
+        if (((strlen(image->directory)+1) % MaxTextExtent) == 0)
           {
             /*
               Allocate more memory for the image directory.
             */
             ReacquireMemory((void **) &image->directory,
-              (Extent(image->directory)+MaxTextExtent+1));
+              (strlen(image->directory)+MaxTextExtent+1));
             if (image->directory == (char *) NULL)
               ThrowReaderException(CorruptImageWarning,
                 "Unable to read image data",image);
-            p=image->directory+Extent(image->directory);
+            p=image->directory+strlen(image->directory);
           }
         c=ReadBlobByte(image);
         *p++=c;

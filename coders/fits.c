@@ -612,23 +612,23 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   for (i=0; i < 2880; i++)
     fits_info[i]=' ';
   (void) strcpy(buffer,"SIMPLE  =                    T");
-  (void) strncpy(fits_info+0,buffer,Extent(buffer));
+  (void) strncpy(fits_info+0,buffer,strlen(buffer));
   FormatString(buffer,"BITPIX  =                    %d",image->depth);
-  (void) strncpy(fits_info+80,buffer,Extent(buffer));
+  (void) strncpy(fits_info+80,buffer,strlen(buffer));
   (void) strcpy(buffer,"NAXIS   =                    2");
-  (void) strncpy(fits_info+160,buffer,Extent(buffer));
+  (void) strncpy(fits_info+160,buffer,strlen(buffer));
   FormatString(buffer,"NAXIS1  =           %10u",image->columns);
-  (void) strncpy(fits_info+240,buffer,Extent(buffer));
+  (void) strncpy(fits_info+240,buffer,strlen(buffer));
   FormatString(buffer,"NAXIS2  =           %10u",image->rows);
-  (void) strncpy(fits_info+320,buffer,Extent(buffer));
+  (void) strncpy(fits_info+320,buffer,strlen(buffer));
   FormatString(buffer,"DATAMIN =           %10u",0);
-  (void) strncpy(fits_info+400,buffer,Extent(buffer));
+  (void) strncpy(fits_info+400,buffer,strlen(buffer));
   FormatString(buffer,"DATAMAX =           %10u",(1 << image->depth)-1);
-  (void) strncpy(fits_info+480,buffer,Extent(buffer));
+  (void) strncpy(fits_info+480,buffer,strlen(buffer));
   (void) strcpy(buffer,"HISTORY Created by ImageMagick.");
-  (void) strncpy(fits_info+560,buffer,Extent(buffer));
+  (void) strncpy(fits_info+560,buffer,strlen(buffer));
   (void) strcpy(buffer,"END");
-  (void) strncpy(fits_info+640,buffer,Extent(buffer));
+  (void) strncpy(fits_info+640,buffer,strlen(buffer));
   (void) WriteBlob(image,2880,(char *) fits_info);
   LiberateMemory((void **) &fits_info);
   /*

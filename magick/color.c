@@ -1124,7 +1124,7 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
   for ( ; p != (ColorInfo *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
-    for (i=Extent(p->name); i <= 22; i++)
+    for (i=strlen(p->name); i <= 22; i++)
       (void) fprintf(file," ");
     if (p->color.opacity == OpaqueOpacity)
       (void) fprintf(file,"%5d,%5d,%5d       ",p->color.red,p->color.green,
@@ -1213,7 +1213,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,PixelPacket *color
       blue=0;
       opacity=(-1);
       name++;
-      n=Extent(name);
+      n=strlen(name);
       if ((n == 3) || (n == 6) || (n == 9) || (n == 12))
         {
           /*

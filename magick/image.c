@@ -3316,7 +3316,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
   for (i=1; i < argc; i++)
-    if (Extent(argv[i]) > (MaxTextExtent/2-1))
+    if (strlen(argv[i]) > (MaxTextExtent/2-1))
       MagickError(OptionWarning,"Option length exceeds limit",argv[i]);
   /*
     Initialize method variables.
@@ -3347,7 +3347,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   for (i=1; i < argc; i++)
   {
     option=argv[i];
-    if ((Extent(option) <= 1) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) <= 1) || ((*option != '-') && (*option != '+')))
       continue;
     switch (*(option+1))
     {
@@ -4252,7 +4252,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             TokenInfo
               token_info;
 
-            length=Extent(argv[++i]);
+            length=strlen(argv[++i]);
             token=(char *) AcquireMemory(length+1);
             if (token == (char *) NULL)
               continue;

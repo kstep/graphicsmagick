@@ -278,7 +278,7 @@ static void XDrawBeveledButton(Display *display,const XWindowInfo *window_info,
     Draw text.
   */
   font_info=window_info->font_info;
-  width=XTextWidth(font_info,button_info->text,Extent(button_info->text));
+  width=XTextWidth(font_info,button_info->text,strlen(button_info->text));
   x=button_info->x+(QuantumMargin >> 1);
   if (button_info->center)
     x=button_info->x+(button_info->width >> 1)-(width >> 1);
@@ -293,14 +293,14 @@ static void XDrawBeveledButton(Display *display,const XWindowInfo *window_info,
       x=button_info->x+button_info->width+button_info->bevel_width+
         (QuantumMargin >> 1);
       XDrawString(display,window_info->id,window_info->widget_context,x,y,
-        button_info->text,Extent(button_info->text));
+        button_info->text,strlen(button_info->text));
       return;
     }
   XSetClipRectangles(display,window_info->widget_context,0,0,&crop_info,1,
     Unsorted);
   XSetTextColor(display,window_info,button_info->raised);
   XDrawString(display,window_info->id,window_info->widget_context,x,y,
-    button_info->text,Extent(button_info->text));
+    button_info->text,strlen(button_info->text));
   XSetClipMask(display,window_info->widget_context,None);
   if (!button_info->raised)
     XDelay(display,SuspendTime << 2);
@@ -491,7 +491,7 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
           (int) width)
         {
           text=text_info->text;
-          for (i=0; i < Extent(text); i++)
+          for (i=0; i < strlen(text); i++)
           {
             n=XTextWidth(font_info,(char *) text+i,(int)
               (text_info->cursor-text-i));
@@ -509,21 +509,21 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
       XSetClipRectangles(display,window_info->widget_context,0,0,&crop_info,1,
         Unsorted);
       XDrawString(display,window_info->id,window_info->widget_context,x,y,
-        text_info->marker,Extent(text_info->marker));
+        text_info->marker,strlen(text_info->marker));
       XSetClipMask(display,window_info->widget_context,None);
     }
   else
     {
       XSetClipRectangles(display,window_info->annotate_context,0,0,&crop_info,
         1,Unsorted);
-      width=XTextWidth(font_info,text_info->marker,Extent(text_info->marker));
+      width=XTextWidth(font_info,text_info->marker,strlen(text_info->marker));
       XFillRectangle(display,window_info->id,window_info->annotate_context,x,
         y-font_info->ascent,width,height);
       XSetClipMask(display,window_info->annotate_context,None);
       XSetClipRectangles(display,window_info->highlight_context,0,0,&crop_info,
         1,Unsorted);
       XDrawString(display,window_info->id,window_info->highlight_context,x,y,
-        text_info->marker,Extent(text_info->marker));
+        text_info->marker,strlen(text_info->marker));
       XSetClipMask(display,window_info->highlight_context,None);
     }
   x+=XTextWidth(font_info,text_info->marker,(int)
@@ -656,7 +656,7 @@ static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
   y1=triangle_info->y+((triangle_info->height-
     (font_info->ascent+font_info->descent)) >> 1)+font_info->ascent;
   XDrawString(display,window_info->id,window_info->widget_context,x1,y1,
-    triangle_info->text,Extent(triangle_info->text));
+    triangle_info->text,strlen(triangle_info->text));
 }
 
 /*
@@ -960,7 +960,7 @@ static void XDrawWidgetText(Display *display,const XWindowInfo *window_info,
   /*
     Draw text.
   */
-  width=XTextWidth(font_info,text_info->text,Extent(text_info->text));
+  width=XTextWidth(font_info,text_info->text,strlen(text_info->text));
   x=text_info->x+(QuantumMargin >> 1);
   if (text_info->center)
     x=text_info->x+(text_info->width >> 1)-(width >> 1);
@@ -971,7 +971,7 @@ static void XDrawWidgetText(Display *display,const XWindowInfo *window_info,
   y=text_info->y+((text_info->height-height) >> 1)+font_info->ascent;
   XSetClipRectangles(display,widget_context,0,0,&crop_info,1,Unsorted);
   XDrawString(display,window_info->id,widget_context,x,y,text_info->text,
-    Extent(text_info->text));
+    strlen(text_info->text));
   XSetClipMask(display,widget_context,None);
   if (x < text_info->x)
     XDrawLine(display,window_info->id,window_info->annotate_context,
@@ -1059,7 +1059,7 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
       /*
         Move cursor one position right.
       */
-      if (text_info->cursor == (text_info->text+Extent(text_info->text)))
+      if (text_info->cursor == (text_info->text+strlen(text_info->text)))
         break;
       text_info->cursor++;
       break;
@@ -1077,7 +1077,7 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
         break;
       if (*text == '\0')
         break;
-      if ((Extent(text_info->text)+1) >= MaxTextExtent)
+      if ((strlen(text_info->text)+1) >= MaxTextExtent)
         XBell(display,0);
       else
         {
@@ -1094,14 +1094,14 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
           /*
             Insert a string into the text.
           */
-          q=text_info->text+Extent(text_info->text)+Extent(text);
-          for (i=0; i <= Extent(text_info->cursor); i++)
+          q=text_info->text+strlen(text_info->text)+strlen(text);
+          for (i=0; i <= strlen(text_info->cursor); i++)
           {
-            *q=(*(q-Extent(text)));
+            *q=(*(q-strlen(text)));
             q--;
           }
           p=text;
-          for (i=0; i < Extent(text); i++)
+          for (i=0; i < strlen(text); i++)
             *text_info->cursor++=(*p++);
         }
       break;
@@ -1155,7 +1155,7 @@ static void XGetWidgetInfo(const char *text,XWidgetInfo *widget_info)
   widget_info->text=(char *) text;
   widget_info->cursor=(char *) text;
   if (text != (char *) NULL)
-    widget_info->cursor+=Extent(text);
+    widget_info->cursor+=strlen(text);
   widget_info->marker=(char *) text;
 }
 
@@ -1636,20 +1636,20 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
   font_info=windows->widget.font_info;
   text_width=0;
   for (i=0; i < colors; i++)
-    if (XTextWidth(font_info,colorlist[i],Extent(colorlist[i])) > text_width)
-      text_width=XTextWidth(font_info,colorlist[i],Extent(colorlist[i]));
-  width=XTextWidth(font_info,(char *) action,Extent(action));
-  if (XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText)) > width)
-    width=XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
-  if (XTextWidth(font_info,ResetButtonText,Extent(ResetButtonText)) > width)
-    width=XTextWidth(font_info,ResetButtonText,Extent(ResetButtonText));
-  if (XTextWidth(font_info,GrabButtonText,Extent(GrabButtonText)) > width)
-    width=XTextWidth(font_info,GrabButtonText,Extent(GrabButtonText));
+    if (XTextWidth(font_info,colorlist[i],strlen(colorlist[i])) > text_width)
+      text_width=XTextWidth(font_info,colorlist[i],strlen(colorlist[i]));
+  width=XTextWidth(font_info,(char *) action,strlen(action));
+  if (XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText)) > width)
+    width=XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText));
+  if (XTextWidth(font_info,ResetButtonText,strlen(ResetButtonText)) > width)
+    width=XTextWidth(font_info,ResetButtonText,strlen(ResetButtonText));
+  if (XTextWidth(font_info,GrabButtonText,strlen(GrabButtonText)) > width)
+    width=XTextWidth(font_info,GrabButtonText,strlen(GrabButtonText));
   width+=QuantumMargin;
-  if (XTextWidth(font_info,ColorPatternText,Extent(ColorPatternText)) > width)
-    width=XTextWidth(font_info,ColorPatternText,Extent(ColorPatternText));
-  if (XTextWidth(font_info,ColornameText,Extent(ColornameText)) > width)
-    width=XTextWidth(font_info,ColornameText,Extent(ColornameText));
+  if (XTextWidth(font_info,ColorPatternText,strlen(ColorPatternText)) > width)
+    width=XTextWidth(font_info,ColorPatternText,strlen(ColorPatternText));
+  if (XTextWidth(font_info,ColornameText,strlen(ColornameText)) > width)
+    width=XTextWidth(font_info,ColornameText,strlen(ColornameText));
   height=font_info->ascent+font_info->descent;
   /*
     Position Color Browser widget.
@@ -1820,7 +1820,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         x=QuantumMargin;
         y=text_info.y+((text_info.height-height) >> 1)+font_info->ascent;
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,ColorPatternText,Extent(ColorPatternText));
+          x,y,ColorPatternText,strlen(ColorPatternText));
         FormatString(text_info.text,"%.1024s",glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&grab_info);
@@ -1833,7 +1833,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         x=QuantumMargin;
         y=reply_info.y+((reply_info.height-height) >> 1)+font_info->ascent;
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,ColornameText,Extent(ColornameText));
+          x,y,ColornameText,strlen(ColornameText));
         XDrawBeveledMatte(display,&windows->widget,&reply_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledButton(display,&windows->widget,&action_info);
@@ -2102,7 +2102,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             (void) strcpy(reply_info.text,colorlist[id]);
             reply_info.highlight=False;
             reply_info.marker=reply_info.text;
-            reply_info.cursor=reply_info.text+Extent(reply_info.text);
+            reply_info.cursor=reply_info.text+strlen(reply_info.text);
             XDrawMatteText(display,&windows->widget,&reply_info);
             state|=RedrawActionState;
             if ((int) id == list_info.id)
@@ -2145,7 +2145,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             reply_info.highlight=XGetSelectionOwner(display,XA_PRIMARY) ==
               windows->widget.id;
             reply_info.marker=reply_info.text;
-            reply_info.cursor=reply_info.text+Extent(reply_info.text);
+            reply_info.cursor=reply_info.text+strlen(reply_info.text);
             XDrawMatteText(display,&windows->widget,&reply_info);
             break;
           }
@@ -2178,7 +2178,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
               Move text cursor to position of button press.
             */
             x=event.xbutton.x-reply_info.x-(QuantumMargin >> 2);
-            for (i=1; i <= Extent(reply_info.marker); i++)
+            for (i=1; i <= strlen(reply_info.marker); i++)
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
             reply_info.cursor=reply_info.marker+i-1;
@@ -2246,7 +2246,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
                   */
                   (void) XGetWindowColor(display,reply_info.text);
                   reply_info.marker=reply_info.text;
-                  reply_info.cursor=reply_info.text+Extent(reply_info.text);
+                  reply_info.cursor=reply_info.text+strlen(reply_info.text);
                   XDrawMatteText(display,&windows->widget,&reply_info);
                   state|=RedrawActionState;
                 }
@@ -2587,7 +2587,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= MaxTextExtent)
+        if ((strlen(reply_info.text)+length) >= MaxTextExtent)
           XBell(display,0);
         else
           {
@@ -2620,7 +2620,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         request=(&(event.xselectionrequest));
         XChangeProperty(request->display,request->requestor,request->property,
           request->target,8,PropModeReplace,(unsigned char *) primary_selection,
-          Extent(primary_selection));
+          strlen(primary_selection));
         notify.type=SelectionNotify;
         notify.send_event=True;
         notify.display=request->display;
@@ -2834,7 +2834,7 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
       for (i=0; selections[i] != (char *) NULL; i++)
       {
         width=
-          XTextWidth(font_info,(char *) selections[i],Extent(selections[i]));
+          XTextWidth(font_info,(char *) selections[i],strlen(selections[i]));
         if (width > windows->command.width)
           windows->command.width=width;
       }
@@ -3168,27 +3168,27 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
   assert(description != (char *) NULL);
   XCheckRefreshWindows(display,windows);
   font_info=windows->widget.font_info;
-  width=XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
-  if (XTextWidth(font_info,DismissButtonText,Extent(DismissButtonText)) > width)
-    width=XTextWidth(font_info,DismissButtonText,Extent(DismissButtonText));
-  if (XTextWidth(font_info,YesButtonText,Extent(YesButtonText)) > width)
-    width=XTextWidth(font_info,YesButtonText,Extent(YesButtonText));
+  width=XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText));
+  if (XTextWidth(font_info,DismissButtonText,strlen(DismissButtonText)) > width)
+    width=XTextWidth(font_info,DismissButtonText,strlen(DismissButtonText));
+  if (XTextWidth(font_info,YesButtonText,strlen(YesButtonText)) > width)
+    width=XTextWidth(font_info,YesButtonText,strlen(YesButtonText));
   width<<=1;
   if (description != (char *) NULL)
-    if (XTextWidth(font_info,(char *) description,Extent(description)) > width)
-      width=XTextWidth(font_info,(char *) description,Extent(description));
+    if (XTextWidth(font_info,(char *) description,strlen(description)) > width)
+      width=XTextWidth(font_info,(char *) description,strlen(description));
   if (description != (char *) NULL)
-    if (XTextWidth(font_info,(char *) description,Extent(description)) > width)
-      width=XTextWidth(font_info,(char *) description,Extent(description));
+    if (XTextWidth(font_info,(char *) description,strlen(description)) > width)
+      width=XTextWidth(font_info,(char *) description,strlen(description));
   height=(font_info->ascent+font_info->descent);
   /*
     Position Confirm widget.
   */
   windows->widget.width=width+9*QuantumMargin;
   windows->widget.min_width=9*QuantumMargin+
-    XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText))+
-    XTextWidth(font_info,DismissButtonText,Extent(DismissButtonText))+
-    XTextWidth(font_info,YesButtonText,Extent(YesButtonText));
+    XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText))+
+    XTextWidth(font_info,DismissButtonText,strlen(DismissButtonText))+
+    XTextWidth(font_info,YesButtonText,strlen(YesButtonText));
   if (windows->widget.width < windows->widget.min_width)
     windows->widget.width=windows->widget.min_width;
   windows->widget.height=12*height;
@@ -3230,7 +3230,7 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
         */
         XGetWidgetInfo(CancelButtonText,&cancel_info);
         cancel_info.width=QuantumMargin+
-          XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
+          XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText));
         cancel_info.height=(3*height) >> 1;
         cancel_info.x=windows->widget.width-cancel_info.width-QuantumMargin;
         cancel_info.y=windows->widget.height-(cancel_info.height << 1);
@@ -3239,14 +3239,14 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
         if (LocaleCompare(description,"Do you want to save it") == 0)
           dismiss_info.text=(char *) "Don't Save";
         dismiss_info.width=QuantumMargin+
-          XTextWidth(font_info,dismiss_info.text,Extent(dismiss_info.text));
+          XTextWidth(font_info,dismiss_info.text,strlen(dismiss_info.text));
         dismiss_info.x=(windows->widget.width >> 1)-(dismiss_info.width >> 1);
         yes_info=cancel_info;
         yes_info.text=(char *) YesButtonText;
         if (LocaleCompare(description,"Do you want to save it") == 0)
           yes_info.text=(char *) "Save";
         yes_info.width=QuantumMargin+
-          XTextWidth(font_info,yes_info.text,Extent(yes_info.text));
+          XTextWidth(font_info,yes_info.text,strlen(yes_info.text));
         if (yes_info.width < cancel_info.width)
           yes_info.width=cancel_info.width;
         yes_info.x=QuantumMargin;
@@ -3257,11 +3257,11 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
         /*
           Redraw Confirm widget.
         */
-        width=XTextWidth(font_info,(char *) reason,Extent(reason));
+        width=XTextWidth(font_info,(char *) reason,strlen(reason));
         x=(windows->widget.width >> 1)-(width >> 1);
         y=(windows->widget.height >> 1)-(height << 1);
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,(char *) reason,Extent(reason));
+          x,y,(char *) reason,strlen(reason));
         if (description != (char *) NULL)
           {
             char
@@ -3269,11 +3269,11 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
 
             (void) strcpy(question,description);
             (void) strcat(question,"?");
-            width=XTextWidth(font_info,question,Extent(question));
+            width=XTextWidth(font_info,question,strlen(question));
             x=(windows->widget.width >> 1)-(width >> 1);
             y+=height;
             XDrawString(display,windows->widget.id,
-              windows->widget.annotate_context,x,y,question,Extent(question));
+              windows->widget.annotate_context,x,y,question,strlen(question));
           }
         XDrawBeveledButton(display,&windows->widget,&cancel_info);
         XDrawBeveledButton(display,&windows->widget,&dismiss_info);
@@ -3581,18 +3581,18 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
   assert(reply != (char *) NULL);
   XCheckRefreshWindows(display,windows);
   font_info=windows->widget.font_info;
-  width=XTextWidth(font_info,(char *) action,Extent(action));
-  if (XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText)) > width)
-    width=XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
+  width=XTextWidth(font_info,(char *) action,strlen(action));
+  if (XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText)) > width)
+    width=XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText));
   width+=(3*QuantumMargin) >> 1;
   height=font_info->ascent+font_info->descent;
   /*
     Position Dialog widget.
   */
   windows->widget.width=
-    Max(2*width,XTextWidth(font_info,(char *) query,Extent(query)));
-  if ((int) windows->widget.width < XTextWidth(font_info,reply,Extent(reply)))
-    windows->widget.width=XTextWidth(font_info,reply,Extent(reply));
+    Max(2*width,XTextWidth(font_info,(char *) query,strlen(query)));
+  if ((int) windows->widget.width < XTextWidth(font_info,reply,strlen(reply)))
+    windows->widget.width=XTextWidth(font_info,reply,strlen(reply));
   windows->widget.width+=6*QuantumMargin;
   windows->widget.min_width=
     width+28*XTextWidth(font_info,"#",1)+4*QuantumMargin;
@@ -3756,7 +3756,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
               Move text cursor to position of button press.
             */
             x=event.xbutton.x-reply_info.x-(QuantumMargin >> 2);
-            for (i=1; i <= Extent(reply_info.marker); i++)
+            for (i=1; i <= strlen(reply_info.marker); i++)
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
             reply_info.cursor=reply_info.marker+i-1;
@@ -4004,7 +4004,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= MaxTextExtent)
+        if ((strlen(reply_info.text)+length) >= MaxTextExtent)
           XBell(display,0);
         else
           {
@@ -4035,7 +4035,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
         request=(&(event.xselectionrequest));
         XChangeProperty(request->display,request->requestor,request->property,
           request->target,8,PropModeReplace,(unsigned char *) primary_selection,
-          Extent(primary_selection));
+          strlen(primary_selection));
         notify.type=SelectionNotify;
         notify.display=request->display;
         notify.requestor=request->requestor;
@@ -4262,24 +4262,24 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
   font_info=windows->widget.font_info;
   text_width=0;
   for (i=0; i < files; i++)
-    if (XTextWidth(font_info,filelist[i],Extent(filelist[i])) > text_width)
-      text_width=XTextWidth(font_info,filelist[i],Extent(filelist[i]));
-  width=XTextWidth(font_info,(char *) action,Extent(action));
-  if (XTextWidth(font_info,GrabButtonText,Extent(GrabButtonText)) > width)
-    width=XTextWidth(font_info,GrabButtonText,Extent(GrabButtonText));
-  if (XTextWidth(font_info,FormatButtonText,Extent(FormatButtonText)) > width)
-    width=XTextWidth(font_info,FormatButtonText,Extent(FormatButtonText));
-  if (XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText)) > width)
-    width=XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
-  if (XTextWidth(font_info,HomeButtonText,Extent(HomeButtonText)) > width)
-    width=XTextWidth(font_info,HomeButtonText,Extent(HomeButtonText));
-  if (XTextWidth(font_info,UpButtonText,Extent(UpButtonText)) > width)
-    width=XTextWidth(font_info,UpButtonText,Extent(UpButtonText));
+    if (XTextWidth(font_info,filelist[i],strlen(filelist[i])) > text_width)
+      text_width=XTextWidth(font_info,filelist[i],strlen(filelist[i]));
+  width=XTextWidth(font_info,(char *) action,strlen(action));
+  if (XTextWidth(font_info,GrabButtonText,strlen(GrabButtonText)) > width)
+    width=XTextWidth(font_info,GrabButtonText,strlen(GrabButtonText));
+  if (XTextWidth(font_info,FormatButtonText,strlen(FormatButtonText)) > width)
+    width=XTextWidth(font_info,FormatButtonText,strlen(FormatButtonText));
+  if (XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText)) > width)
+    width=XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText));
+  if (XTextWidth(font_info,HomeButtonText,strlen(HomeButtonText)) > width)
+    width=XTextWidth(font_info,HomeButtonText,strlen(HomeButtonText));
+  if (XTextWidth(font_info,UpButtonText,strlen(UpButtonText)) > width)
+    width=XTextWidth(font_info,UpButtonText,strlen(UpButtonText));
   width+=QuantumMargin;
-  if (XTextWidth(font_info,DirectoryText,Extent(DirectoryText)) > width)
-    width=XTextWidth(font_info,DirectoryText,Extent(DirectoryText));
-  if (XTextWidth(font_info,FilenameText,Extent(FilenameText)) > width)
-    width=XTextWidth(font_info,FilenameText,Extent(FilenameText));
+  if (XTextWidth(font_info,DirectoryText,strlen(DirectoryText)) > width)
+    width=XTextWidth(font_info,DirectoryText,strlen(DirectoryText));
+  if (XTextWidth(font_info,FilenameText,strlen(FilenameText)) > width)
+    width=XTextWidth(font_info,FilenameText,strlen(FilenameText));
   height=font_info->ascent+font_info->descent;
   /*
     Position File Browser widget.
@@ -4356,7 +4356,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
               *p;
 
             special_info.text=(char *) FormatButtonText;
-            p=reply+Extent(reply)-1;
+            p=reply+strlen(reply)-1;
             while ((p > (reply+1)) && (*(p-1) != '.'))
               p--;
             if ((p > (reply+1)) && (*(p-1) == '.'))
@@ -4459,7 +4459,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
         x=QuantumMargin;
         y=text_info.y+((text_info.height-height) >> 1)+font_info->ascent;
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,DirectoryText,Extent(DirectoryText));
+          x,y,DirectoryText,strlen(DirectoryText));
         FormatString(text_info.text,"%.1024s%.1024s%.1024s",working_directory,
           DirectorySeparator,glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
@@ -4473,7 +4473,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
         x=QuantumMargin;
         y=reply_info.y+((reply_info.height-height) >> 1)+font_info->ascent;
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,FilenameText,Extent(FilenameText));
+          x,y,FilenameText,strlen(FilenameText));
         XDrawBeveledMatte(display,&windows->widget,&reply_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledButton(display,&windows->widget,&special_info);
@@ -4710,7 +4710,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             (void) strcpy(reply_info.text,filelist[id]);
             reply_info.highlight=False;
             reply_info.marker=reply_info.text;
-            reply_info.cursor=reply_info.text+Extent(reply_info.text);
+            reply_info.cursor=reply_info.text+strlen(reply_info.text);
             XDrawMatteText(display,&windows->widget,&reply_info);
             if ((int) id == list_info.id)
               {
@@ -4778,7 +4778,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
               Move text cursor to position of button press.
             */
             x=event.xbutton.x-reply_info.x-(QuantumMargin >> 2);
-            for (i=1; i <= Extent(reply_info.marker); i++)
+            for (i=1; i <= strlen(reply_info.marker); i++)
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
             reply_info.cursor=reply_info.marker+i-1;
@@ -4876,7 +4876,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 XDefineCursor(display,windows->widget.id,
                   windows->widget.cursor);
                 AppendImageFormat(format,reply_info.text);
-                reply_info.cursor=reply_info.text+Extent(reply_info.text);
+                reply_info.cursor=reply_info.text+strlen(reply_info.text);
                 XDrawMatteText(display,&windows->widget,&reply_info);
                 special_info.raised=True;
                 XDrawBeveledButton(display,&windows->widget,&special_info);
@@ -5224,7 +5224,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= MaxTextExtent)
+        if ((strlen(reply_info.text)+length) >= MaxTextExtent)
           XBell(display,0);
         else
           {
@@ -5257,7 +5257,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
         request=(&(event.xselectionrequest));
         XChangeProperty(request->display,request->requestor,request->property,
           request->target,8,PropModeReplace,(unsigned char *) primary_selection,
-          Extent(primary_selection));
+          strlen(primary_selection));
         notify.type=SelectionNotify;
         notify.display=request->display;
         notify.requestor=request->requestor;
@@ -5465,20 +5465,20 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
   font_info=windows->widget.font_info;
   text_width=0;
   for (i=0; i < fonts; i++)
-    if (XTextWidth(font_info,fontlist[i],Extent(fontlist[i])) > text_width)
-      text_width=XTextWidth(font_info,fontlist[i],Extent(fontlist[i]));
-  width=XTextWidth(font_info,(char *) action,Extent(action));
-  if (XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText)) > width)
-    width=XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
-  if (XTextWidth(font_info,ResetButtonText,Extent(ResetButtonText)) > width)
-    width=XTextWidth(font_info,ResetButtonText,Extent(ResetButtonText));
-  if (XTextWidth(font_info,BackButtonText,Extent(BackButtonText)) > width)
-    width=XTextWidth(font_info,BackButtonText,Extent(BackButtonText));
+    if (XTextWidth(font_info,fontlist[i],strlen(fontlist[i])) > text_width)
+      text_width=XTextWidth(font_info,fontlist[i],strlen(fontlist[i]));
+  width=XTextWidth(font_info,(char *) action,strlen(action));
+  if (XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText)) > width)
+    width=XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText));
+  if (XTextWidth(font_info,ResetButtonText,strlen(ResetButtonText)) > width)
+    width=XTextWidth(font_info,ResetButtonText,strlen(ResetButtonText));
+  if (XTextWidth(font_info,BackButtonText,strlen(BackButtonText)) > width)
+    width=XTextWidth(font_info,BackButtonText,strlen(BackButtonText));
   width+=QuantumMargin;
-  if (XTextWidth(font_info,FontPatternText,Extent(FontPatternText)) > width)
-    width=XTextWidth(font_info,FontPatternText,Extent(FontPatternText));
-  if (XTextWidth(font_info,FontnameText,Extent(FontnameText)) > width)
-    width=XTextWidth(font_info,FontnameText,Extent(FontnameText));
+  if (XTextWidth(font_info,FontPatternText,strlen(FontPatternText)) > width)
+    width=XTextWidth(font_info,FontPatternText,strlen(FontPatternText));
+  if (XTextWidth(font_info,FontnameText,strlen(FontnameText)) > width)
+    width=XTextWidth(font_info,FontnameText,strlen(FontnameText));
   height=font_info->ascent+font_info->descent;
   /*
     Position Font Browser widget.
@@ -5648,7 +5648,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         x=QuantumMargin;
         y=text_info.y+((text_info.height-height) >> 1)+font_info->ascent;
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,FontPatternText,Extent(FontPatternText));
+          x,y,FontPatternText,strlen(FontPatternText));
         FormatString(text_info.text,"%.1024s",glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&back_info);
@@ -5661,7 +5661,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         x=QuantumMargin;
         y=reply_info.y+((reply_info.height-height) >> 1)+font_info->ascent;
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,FontnameText,Extent(FontnameText));
+          x,y,FontnameText,strlen(FontnameText));
         XDrawBeveledMatte(display,&windows->widget,&reply_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledButton(display,&windows->widget,&action_info);
@@ -5954,7 +5954,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
             (void) strcpy(reply_info.text,fontlist[id]);
             reply_info.highlight=False;
             reply_info.marker=reply_info.text;
-            reply_info.cursor=reply_info.text+Extent(reply_info.text);
+            reply_info.cursor=reply_info.text+strlen(reply_info.text);
             XDrawMatteText(display,&windows->widget,&reply_info);
             state|=RedrawActionState;
             if ((int) id == list_info.id)
@@ -6014,7 +6014,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
               Move text cursor to position of button press.
             */
             x=event.xbutton.x-reply_info.x-(QuantumMargin >> 2);
-            for (i=1; i <= Extent(reply_info.marker); i++)
+            for (i=1; i <= strlen(reply_info.marker); i++)
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
             reply_info.cursor=reply_info.marker+i-1;
@@ -6413,7 +6413,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= MaxTextExtent)
+        if ((strlen(reply_info.text)+length) >= MaxTextExtent)
           XBell(display,0);
         else
           {
@@ -6444,7 +6444,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         request=(&(event.xselectionrequest));
         XChangeProperty(request->display,request->requestor,request->property,
           request->target,8,PropModeReplace,(unsigned char *) primary_selection,
-          Extent(primary_selection));
+          strlen(primary_selection));
         notify.type=SelectionNotify;
         notify.display=request->display;
         notify.requestor=request->requestor;
@@ -6526,7 +6526,7 @@ MagickExport void XInfoWidget(Display *display,XWindows *windows,
   assert(windows != (XWindows *) NULL);
   assert(activity != (char *) NULL);
   font_info=windows->info.font_info;
-  width=XTextWidth(font_info,(char *) activity,Extent(activity))+
+  width=XTextWidth(font_info,(char *) activity,strlen(activity))+
     ((3*QuantumMargin) >> 1)+4;
   height=((6*(font_info->ascent+font_info->descent)) >> 2)+4;
   if (((int) windows->info.width != width) ||
@@ -6687,13 +6687,13 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
     Determine Font Browser widget attributes.
   */
   font_info=window_info->font_info;
-  text_width=XTextWidth(font_info,(char *) query,Extent(query));
+  text_width=XTextWidth(font_info,(char *) query,strlen(query));
   for (i=0; i < entries; i++)
-    if (XTextWidth(font_info,(char *) list[i],Extent(list[i])) > text_width)
-      text_width=XTextWidth(font_info,(char *) list[i],Extent(list[i]));
-  width=XTextWidth(font_info,(char *) action,Extent(action));
-  if (XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText)) > width)
-    width=XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
+    if (XTextWidth(font_info,(char *) list[i],strlen(list[i])) > text_width)
+      text_width=XTextWidth(font_info,(char *) list[i],strlen(list[i]));
+  width=XTextWidth(font_info,(char *) action,strlen(action));
+  if (XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText)) > width)
+    width=XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText));
   width+=QuantumMargin;
   height=font_info->ascent+font_info->descent;
   /*
@@ -7010,7 +7010,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
             (void) strcpy(reply_info.text,list[id]);
             reply_info.highlight=False;
             reply_info.marker=reply_info.text;
-            reply_info.cursor=reply_info.text+Extent(reply_info.text);
+            reply_info.cursor=reply_info.text+strlen(reply_info.text);
             XDrawMatteText(display,window_info,&reply_info);
             selection_info.id=(~0);
             if ((int) id == list_info.id)
@@ -7052,7 +7052,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
               Move text cursor to position of button press.
             */
             x=event.xbutton.x-reply_info.x-(QuantumMargin >> 2);
-            for (i=1; i <= Extent(reply_info.marker); i++)
+            for (i=1; i <= strlen(reply_info.marker); i++)
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
             reply_info.cursor=reply_info.marker+i-1;
@@ -7411,7 +7411,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
         if ((status != Success) || (type != XA_STRING) || (format == 32) ||
             (length == 0))
           break;
-        if ((Extent(reply_info.text)+length) >= MaxTextExtent)
+        if ((strlen(reply_info.text)+length) >= MaxTextExtent)
           XBell(display,0);
         else
           {
@@ -7443,7 +7443,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
         request=(&(event.xselectionrequest));
         XChangeProperty(request->display,request->requestor,request->property,
           request->target,8,PropModeReplace,(unsigned char *) primary_selection,
-          Extent(primary_selection));
+          strlen(primary_selection));
         notify.type=SelectionNotify;
         notify.send_event=True;
         notify.display=request->display;
@@ -7554,10 +7554,10 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
   assert(item != (char *) NULL);
   font_info=windows->widget.font_info;
   windows->widget.width=!submenu_info.active ?
-    XTextWidth(font_info,(char *) title,Extent(title)) : 0;
+    XTextWidth(font_info,(char *) title,strlen(title)) : 0;
   for (id=0; selections[id] != (char *) NULL; id++)
   {
-    width=XTextWidth(font_info,(char *) selections[id],Extent(selections[id]));
+    width=XTextWidth(font_info,(char *) selections[id],strlen(selections[id]));
     if (width > (int) windows->widget.width)
       windows->widget.width=width;
   }
@@ -7565,7 +7565,7 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
   XGetWidgetInfo((char *) NULL,&menu_info);
   title_height=!submenu_info.active ?
     (3*(font_info->descent+font_info->ascent) >> 1)+5 : 2;
-  width=XTextWidth(font_info,(char *) title,Extent(title));
+  width=XTextWidth(font_info,(char *) title,strlen(title));
   height=(3*(font_info->ascent+font_info->descent)) >> 1;
   /*
     Position Menu widget.
@@ -8054,14 +8054,14 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   font_info=windows->widget.font_info;
-  width=XTextWidth(font_info,DismissButtonText,Extent(DismissButtonText));
+  width=XTextWidth(font_info,DismissButtonText,strlen(DismissButtonText));
   if (reason != (char *) NULL)
-    if (XTextWidth(font_info,(char *) reason,Extent(reason)) > (int) width)
-      width=XTextWidth(font_info,(char *) reason,Extent(reason));
+    if (XTextWidth(font_info,(char *) reason,strlen(reason)) > (int) width)
+      width=XTextWidth(font_info,(char *) reason,strlen(reason));
   if (description != (char *) NULL)
-    if (XTextWidth(font_info,(char *) description,Extent(description)) >
+    if (XTextWidth(font_info,(char *) description,strlen(description)) >
         (int) width)
-      width=XTextWidth(font_info,(char *) description,Extent(description));
+      width=XTextWidth(font_info,(char *) description,strlen(description));
   height=(font_info->ascent+font_info->descent);
   /*
     Position Notice widget.
@@ -8111,7 +8111,7 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
         */
         XGetWidgetInfo(DismissButtonText,&dismiss_info);
         dismiss_info.width=QuantumMargin+
-          XTextWidth(font_info,DismissButtonText,Extent(DismissButtonText));
+          XTextWidth(font_info,DismissButtonText,strlen(DismissButtonText));
         dismiss_info.height=(3*height) >> 1;
         dismiss_info.x=(windows->widget.width >> 1)-(dismiss_info.width >> 1);
         dismiss_info.y=windows->widget.height-(dismiss_info.height << 1);
@@ -8122,19 +8122,19 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
         /*
           Redraw Notice widget.
         */
-        width=XTextWidth(font_info,(char *) reason,Extent(reason));
+        width=XTextWidth(font_info,(char *) reason,strlen(reason));
         x=(windows->widget.width >> 1)-(width >> 1);
         y=(windows->widget.height >> 1)-(height << 1);
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,(char *) reason,Extent(reason));
+          x,y,(char *) reason,strlen(reason));
         if (description != (char *) NULL)
           {
-            width=XTextWidth(font_info,(char *) description,Extent(description));
+            width=XTextWidth(font_info,(char *) description,strlen(description));
             x=(windows->widget.width >> 1)-(width >> 1);
             y+=height;
             XDrawString(display,windows->widget.id,
               windows->widget.annotate_context,x,y,(char *) description,
-              Extent(description));
+              strlen(description));
           }
         XDrawBeveledButton(display,&windows->widget,&dismiss_info);
         XHighlightWidget(display,&windows->widget,BorderOffset,BorderOffset);
@@ -8388,13 +8388,13 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
   assert(windows != (XWindows *) NULL);
   XCheckRefreshWindows(display,windows);
   font_info=windows->widget.font_info;
-  text_width=XTextWidth(font_info,CacheButtonText,Extent(CacheButtonText));
+  text_width=XTextWidth(font_info,CacheButtonText,strlen(CacheButtonText));
   for (i=0; i < NumberPreferences; i++)
-    if (XTextWidth(font_info,Preferences[i],Extent(Preferences[i])) > text_width)
-      text_width=XTextWidth(font_info,Preferences[i],Extent(Preferences[i]));
-  width=XTextWidth(font_info,ApplyButtonText,Extent(ApplyButtonText));
-  if (XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText)) > width)
-    width=XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
+    if (XTextWidth(font_info,Preferences[i],strlen(Preferences[i])) > text_width)
+      text_width=XTextWidth(font_info,Preferences[i],strlen(Preferences[i]));
+  width=XTextWidth(font_info,ApplyButtonText,strlen(ApplyButtonText));
+  if (XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText)) > width)
+    width=XTextWidth(font_info,CancelButtonText,strlen(CancelButtonText));
   width+=QuantumMargin;
   height=(font_info->ascent+font_info->descent);
   /*
@@ -8537,7 +8537,7 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
             x=cache_info.x+cache_info.width+cache_info.bevel_width+
               (QuantumMargin >> 1);
             y=cache_info.y+((cache_info.height-height) >> 1);
-            width=XTextWidth(font_info,cache,Extent(cache));
+            width=XTextWidth(font_info,cache,strlen(cache));
             XClearArea(display,windows->widget.id,x,y,width,height,False);
             resource_info->undo_cache<<=1;
             if (resource_info->undo_cache > 256)
@@ -8831,11 +8831,11 @@ MagickExport void XTextViewWidget(Display *display,
     text_info=windows->widget.font_info;
   text_width=0;
   for (i=0; textlist[i] != (char *) NULL; i++)
-    if (XTextWidth(text_info,(char *) textlist[i],Extent(textlist[i])) >
+    if (XTextWidth(text_info,(char *) textlist[i],strlen(textlist[i])) >
         text_width)
-      text_width=XTextWidth(text_info,(char *) textlist[i],Extent(textlist[i]));
+      text_width=XTextWidth(text_info,(char *) textlist[i],strlen(textlist[i]));
   lines=i;
-  width=XTextWidth(font_info,DismissButtonText,Extent(DismissButtonText));
+  width=XTextWidth(font_info,DismissButtonText,strlen(DismissButtonText));
   width+=QuantumMargin;
   height=text_info->ascent+text_info->descent;
   /*
@@ -9405,7 +9405,7 @@ MagickExport void XTextViewWidget(Display *display,
         request=(&(event.xselectionrequest));
         XChangeProperty(request->display,request->requestor,request->property,
           request->target,8,PropModeReplace,(unsigned char *) primary_selection,
-          Extent(primary_selection));
+          strlen(primary_selection));
         notify.type=SelectionNotify;
         notify.send_event=True;
         notify.display=request->display;

@@ -157,7 +157,6 @@ else \
      (((double) (color).blue-(double) (target).blue)* \
       ((double) (color).blue-(double) (target).blue))) <= \
       (double) (distance*distance))
-#define Extent(string)  ((int) strlen(string))
 #define False  0
 #define DegreesToRadians(x) (MagickPI*(x)/180.0)
 #define Intensity(color)  \

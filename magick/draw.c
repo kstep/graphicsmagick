@@ -1568,7 +1568,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
           q++;
         continue;
       }
-    p=q-Extent(keyword);
+    p=q-strlen(keyword);
     primitive_type=UndefinedPrimitive;
     current=graphic_context[n]->affine;
     IdentityAffine(&affine);

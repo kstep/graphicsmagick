@@ -1919,7 +1919,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((char *) name,"text") == 0)
         {
-          if (Extent(svg_info->text) == 0)
+          if (strlen(svg_info->text) == 0)
             break;
           if (strchr(svg_info->text,'\'') != (char *) NULL)
             {
@@ -1971,7 +1971,7 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
       (void) fprintf(stdout,"  , %d)\n",length);
     }
   if (svg_info->text != (char *) NULL)
-    ReacquireMemory((void **) &svg_info->text,Extent(svg_info->text)+length+1);
+    ReacquireMemory((void **) &svg_info->text,strlen(svg_info->text)+length+1);
   else
     {
       svg_info->text=(char *) AcquireMemory(length+1);
@@ -1980,7 +1980,7 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
     }
   if (svg_info->text == (char *) NULL)
     return;
-  p=svg_info->text+Extent(svg_info->text);
+  p=svg_info->text+strlen(svg_info->text);
   for (i=0; i < length; i++)
     *p++=c[i];
   *p='\0';
@@ -2320,7 +2320,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->filename);
   while (ReadBlobString(image,message) != (char *) NULL)
   {
-    n=Extent(message);
+    n=strlen(message);
     if (n == 0)
       continue;
     status=xmlParseChunk(svg_info.parser,message,n,False);
@@ -3402,16 +3402,16 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         (void) strcpy(message,"  <polyline points=\"");
         (void) WriteBlobString(image,message);
-        length=Extent(message);
+        length=strlen(message);
         for ( ; j < i; j++)
         {
           FormatString(message,"%g,%g ",primitive_info[j].point.x,
             primitive_info[j].point.y);
-          length+=Extent(message);
+          length+=strlen(message);
           if (length >= 80)
             {
               (void) WriteBlobString(image,"\n    ");
-              length=Extent(message)+5;
+              length=strlen(message)+5;
             }
           (void) WriteBlobString(image,message);
         }
@@ -3431,16 +3431,16 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         i++;
         (void) strcpy(message,"  <polygon points=\"");
         (void) WriteBlobString(image,message);
-        length=Extent(message);
+        length=strlen(message);
         for ( ; j < i; j++)
         {
           FormatString(message,"%g,%g ",primitive_info[j].point.x,
             primitive_info[j].point.y);
-          length+=Extent(message);
+          length+=strlen(message);
           if (length >= 80)
             {
               (void) WriteBlobString(image,"\n    ");
-              length=Extent(message)+5;
+              length=strlen(message)+5;
             }
           (void) WriteBlobString(image,message);
         }

@@ -888,8 +888,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   p=(char *) NULL;
   if (*filename != '|')
     {
-      if ((Extent(filename) > 4) &&
-          (LocaleCompare(filename+Extent(filename)-4,".pgp") == 0))
+      if ((strlen(filename) > 4) &&
+          (LocaleCompare(filename+strlen(filename)-4,".pgp") == 0))
         {
           /*
             Decrypt image file with PGP encryption utilities.
@@ -898,8 +898,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             p=GetDelegateCommand(image_info,image,"pgp",(char *) NULL);
         }
       else
-        if ((Extent(filename) > 4) &&
-            (LocaleCompare(filename+Extent(filename)-4,".bz2") == 0))
+        if ((strlen(filename) > 4) &&
+            (LocaleCompare(filename+strlen(filename)-4,".bz2") == 0))
           {
             /*
               Uncompress/compress image file with BZIP compress utilities.
@@ -910,8 +910,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
               p=GetDelegateCommand(image_info,image,(char *) NULL,"bzip");
           }
         else
-          if ((Extent(filename) > 3) &&
-              (LocaleCompare(filename+Extent(filename)-3,".gz") == 0))
+          if ((strlen(filename) > 3) &&
+              (LocaleCompare(filename+strlen(filename)-3,".gz") == 0))
             {
               /*
                 Uncompress/compress image file with GNU compress utilities.
@@ -922,8 +922,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                 p=GetDelegateCommand(image_info,image,(char *) NULL,"zip");
             }
           else
-            if ((Extent(filename) > 2) &&
-                (LocaleCompare(filename+Extent(filename)-2,".Z") == 0))
+            if ((strlen(filename) > 2) &&
+                (LocaleCompare(filename+strlen(filename)-2,".Z") == 0))
               {
                 /*
                   Uncompress/compress image file with UNIX compress utilities.
@@ -2047,6 +2047,6 @@ MagickExport size_t WriteBlobString(Image *image,const char *string)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(string != (const char *) NULL);
-  count=WriteBlob(image,Extent(string),string);
+  count=WriteBlob(image,strlen(string),string);
   return(count);
 }

@@ -272,10 +272,8 @@ static unsigned int CompressCache(Cache cache)
   int
     y;
 
-  long
-    count;
-
   size_t
+    count,
     length;
 
   assert(cache != (Cache) NULL);
@@ -304,7 +302,7 @@ static unsigned int CompressCache(Cache cache)
   for (y=0; y < (int) cache_info->rows; y++)
   {
     count=read(cache_info->file,pixels,cache_info->columns*sizeof(PixelPacket));
-    if ((off_t) gzwrite(file,pixels,count) != count)
+    if ((size_t) gzwrite(file,pixels,(unsigned) count) != count)
       break;
   }
   if (y == (int) cache_info->rows)
@@ -314,7 +312,7 @@ static unsigned int CompressCache(Cache cache)
       {
         count=read(cache_info->file,pixels,
           cache_info->columns*sizeof(IndexPacket));
-        if ((off_t) gzwrite(file,pixels,count) != count)
+        if ((size_t) gzwrite(file,pixels,(unsigned) count) != count)
           break;
       }
   LiberateMemory((void **) &pixels);
@@ -1689,6 +1687,9 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const int x,const int y,
   RectangleInfo
     region;
 
+  size_t
+    number_pixels;
+
   unsigned int
     status;
 
@@ -1716,8 +1717,9 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const int x,const int y,
   offset=y*cache_info->columns+x;
   if (offset < 0)
     return((PixelPacket *) NULL);
+  number_pixels=cache_info->columns*cache_info->rows;
   offset+=(rows-1)*cache_info->columns+columns-1;
-  if (offset > (cache_info->columns*cache_info->rows))
+  if (offset > number_pixels)
     return((PixelPacket *) NULL);
   /*
     Return pixel cache.
@@ -2213,10 +2215,8 @@ static unsigned int UncompressCache(Cache cache)
   int
     y;
 
-  long
-    count;
-
   size_t
+    count,
     length;
 
   assert(cache != (Cache) NULL);
@@ -2245,8 +2245,9 @@ static unsigned int UncompressCache(Cache cache)
     }
   for (y=0; y < (int) cache_info->rows; y++)
   {
-    count=gzread(file,pixels,cache_info->columns*sizeof(PixelPacket));
-    if ((off_t) write(cache_info->file,pixels,count) != count)
+    length=cache_info->columns*sizeof(PixelPacket);
+    count=(size_t) gzread(file,pixels,(unsigned int) length);
+    if (write(cache_info->file,pixels,count) != count)
       break;
   }
   if (y == (int) cache_info->rows)
@@ -2254,8 +2255,9 @@ static unsigned int UncompressCache(Cache cache)
         (cache_info->colorspace == CMYKColorspace))
       for (y=0; y < (int) cache_info->rows; y++)
       {
-        count=gzread(file,pixels,cache_info->columns*sizeof(IndexPacket));
-        if ((off_t) write(cache_info->file,pixels,count) != count)
+        length=cache_info->columns*sizeof(IndexPacket);
+        count=(size_t) gzread(file,pixels,(unsigned int) length);
+        if (write(cache_info->file,pixels,count) != count)
           break;
       }
   LiberateMemory((void **) &pixels);
@@ -2537,14 +2539,17 @@ static unsigned int WriteCacheInfo(Image *image)
   {
     if (attribute->value != NULL)
       {
+        size_t
+          j;
+
         (void) fprintf(file,"%.1024s=",attribute->key);
-        for (i=0; i < (int) strlen(attribute->value); i++)
-          if (isspace((int) attribute->value[i]))
+        for (j=0; j < strlen(attribute->value); j++)
+          if (isspace((int) attribute->value[j]))
             break;
-        if (i < (int) strlen(attribute->value))
+        if (j < strlen(attribute->value))
           (void) fputc('{',file);
         (void) fwrite(attribute->value,strlen(attribute->value),1,file);
-        if (i < (int) strlen(attribute->value))
+        if (j < strlen(attribute->value))
           (void) fputc('}',file);
         (void) fputc('\n',file);
       }

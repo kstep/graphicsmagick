@@ -732,7 +732,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
       break;
     }
   }
-  if (Extent(image->magick_filename) > 0)
+  if (strlen(image->magick_filename) > 0)
     {
       SetImageAttribute(image,key,(const char *) attribute);
       return(GetImageAttribute(image,key));

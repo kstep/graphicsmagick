@@ -129,7 +129,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   list=(char **) AcquireMemory(sizeof(char *));
   if (list == (char **) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  list[0]=(char *) AcquireMemory(Extent(image_info->filename)+1);
+  list[0]=(char *) AcquireMemory(strlen(image_info->filename)+1);
   if (list[0] == (char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   (void) strcpy(list[0],image_info->filename);

@@ -591,7 +591,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   /*
     Initialize XWD file header.
   */
-  xwd_info.header_size=sz_XWDheader+Extent(image->filename)+1;
+  xwd_info.header_size=sz_XWDheader+strlen(image->filename)+1;
   xwd_info.file_version=(CARD32) XWD_FILE_VERSION;
   xwd_info.pixmap_format=(CARD32) ZPixmap;
   xwd_info.pixmap_depth=(CARD32) (image->storage_class == DirectClass ? 24 : 8);
@@ -631,7 +631,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   if (*(char *) &lsb_first)
     MSBOrderLong((char *) &xwd_info,sizeof(xwd_info));
   (void) WriteBlob(image,sz_XWDheader,(char *) &xwd_info);
-  (void) WriteBlob(image,Extent(image->filename)+1,(char *) image->filename);
+  (void) WriteBlob(image,strlen(image->filename)+1,(char *) image->filename);
   if (image->storage_class == PseudoClass)
     {
       XColor
