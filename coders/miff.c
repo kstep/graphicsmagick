@@ -1169,14 +1169,14 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 { \
   if (image->storage_class != DirectClass) \
     { \
-      if (image->depth > 8) \
-        *q++=index >> 8; \
       if (image->depth > 16) \
         { \
-          *q++=index >> 8; \
-          *q++=index >> 8; \
+          *q++=(unsigned char) (index >> 24); \
+          *q++=(unsigned char) (index >> 16); \
         } \
-      *q++=index; \
+      if (image->depth > 8) \
+        *q++=(unsigned char) (index >> 8); \
+      *q++=(unsigned char) index; \
     } \
   else \
     { \
@@ -1201,32 +1201,32 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             value=pixel.red; \
             if ((QuantumDepth-image->depth) != 0) \
               value*=257; \
-            *q++=value >> 8; \
-            *q++=value; \
+            *q++=(unsigned char) (value >> 8); \
+            *q++=(unsigned char) value; \
             value=pixel.green; \
             if ((QuantumDepth-image->depth) != 0) \
               value*=257; \
-            *q++=value >> 8; \
-            *q++=value; \
+            *q++=(unsigned char) (value >> 8); \
+            *q++=(unsigned char) value; \
             value=pixel.blue; \
             if ((QuantumDepth-image->depth) != 0) \
               value*=257; \
-            *q++=value >> 8; \
-            *q++=value; \
+            *q++=(unsigned char) (value >> 8); \
+            *q++=(unsigned char) value; \
             if (image->colorspace == CMYKColorspace) \
               { \
                 value=pixel.opacity; \
                 if ((QuantumDepth-image->depth) != 0) \
                   value*=257; \
-                *q++=value >> 8; \
-                *q++=value; \
+                *q++=(unsigned char) (value >> 8); \
+                *q++=(unsigned char) value; \
                 if (image->matte) \
                   { \
                     value=index; \
                     if ((QuantumDepth-image->depth) != 0) \
                       value*=257; \
-                    *q++=value >> 8; \
-                    *q++=value; \
+                    *q++=(unsigned char) (value >> 8); \
+                    *q++=(unsigned char) value; \
                   } \
               } \
             else \
@@ -1235,8 +1235,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                   value=pixel.opacity; \
                   if ((QuantumDepth-image->depth) != 0) \
                     value*=257; \
-                  *q++=value >> 8; \
-                  *q++=value; \
+                  *q++=(unsigned char) (value >> 8); \
+                  *q++=(unsigned char) value; \
                 } \
           } \
         else \
@@ -1244,42 +1244,42 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             value=pixel.red; \
             if ((QuantumDepth-image->depth) != 0) \
               value*=65537; \
-            *q++=value >> 24; \
-            *q++=value >> 16; \
-            *q++=value >> 8; \
-            *q++=value; \
+            *q++=(unsigned char) (value >> 24); \
+            *q++=(unsigned char) (value >> 16); \
+            *q++=(unsigned char) (value >> 8); \
+            *q++=(unsigned char) value; \
             value=pixel.green; \
             if ((QuantumDepth-image->depth) != 0) \
               value*=65537; \
-            *q++=value >> 24; \
-            *q++=value >> 16; \
-            *q++=value >> 8; \
-            *q++=value; \
+            *q++=(unsigned char) (value >> 24); \
+            *q++=(unsigned char) (value >> 16); \
+            *q++=(unsigned char) (value >> 8); \
+            *q++=(unsigned char) value; \
             value=pixel.blue; \
             if ((QuantumDepth-image->depth) != 0) \
               value*=65537; \
-            *q++=value >> 24; \
-            *q++=value >> 16; \
-            *q++=value >> 8; \
-            *q++=value; \
+            *q++=(unsigned char) (value >> 24); \
+            *q++=(unsigned char) (value >> 16); \
+            *q++=(unsigned char) (value >> 8); \
+            *q++=(unsigned char) value; \
             if (image->colorspace == CMYKColorspace) \
               { \
                 value=pixel.opacity; \
                 if ((QuantumDepth-image->depth) != 0) \
                   value*=65537; \
-                *q++=value >> 24; \
-                *q++=value >> 16; \
-                *q++=value >> 8; \
-                *q++=value; \
+                *q++=(unsigned char) (value >> 24); \
+                *q++=(unsigned char) (value >> 16); \
+                *q++=(unsigned char) (value >> 8); \
+                *q++=(unsigned char) value; \
                 if (image->matte) \
                   { \
                     value=index; \
                     if ((QuantumDepth-image->depth) != 0) \
                       value*=65537; \
-                    *q++=value >> 24; \
-                    *q++=value >> 16; \
-                    *q++=value >> 8; \
-                    *q++=value; \
+                    *q++=(unsigned char) (value >> 24); \
+                    *q++=(unsigned char) (value >> 16); \
+                    *q++=(unsigned char) (value >> 8); \
+                    *q++=(unsigned char) value; \
                   } \
               } \
             else \
@@ -1288,10 +1288,10 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                   value=pixel.opacity; \
                   if ((QuantumDepth-image->depth) != 0) \
                     value*=65537; \
-                  *q++=value >> 24; \
-                  *q++=value >> 16; \
-                  *q++=value >> 8; \
-                  *q++=value; \
+                  *q++=(unsigned char) (value >> 24); \
+                  *q++=(unsigned char) (value >> 16); \
+                  *q++=(unsigned char) (value >> 8); \
+                  *q++=(unsigned char) value; \
                 } \
           } \
     } \

@@ -5006,7 +5006,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 %  The format of the PlasmaImage method is:
 %
 %      unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
-%        int attenuate,int depth)
+%        unsigned long attenuate,unsigned long depth)
 %
 %  A description of each parameter follows:
 %
@@ -5035,7 +5035,7 @@ static inline Quantum PlasmaPixel(const double pixel,const double noise)
 }
 
 MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
-  int attenuate,int depth)
+  unsigned long attenuate,unsigned long depth)
 {
   double
     plasma;

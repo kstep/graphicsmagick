@@ -689,7 +689,7 @@ extern MagickExport unsigned int
   NegateImage(Image *,const unsigned int),
   NormalizeImage(Image *),
   OpaqueImage(Image *,const PixelPacket,const PixelPacket),
-  PlasmaImage(Image *,const SegmentInfo *,int,int),
+  PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
   PopImagePixels(const Image *,const QuantumType,unsigned char *),
   ProfileImage(Image *,const char *,const unsigned char *,const size_t,
     unsigned int),

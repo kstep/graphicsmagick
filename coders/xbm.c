@@ -323,15 +323,15 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (i=0; i < (long) (bytes_per_line*image->rows); (i+=2))
     {
       value=XBMInteger(image,hex_digits);
-      *p++=value;
+      *p++=(unsigned char) value;
       if (!padding || ((i+2) % bytes_per_line))
-        *p++=value >> 8;
+        *p++=(unsigned char) (value >> 8);
     }
   else
     for (i=0; i < (long) (bytes_per_line*image->rows); i++)
     {
       value=XBMInteger(image,hex_digits);
-      *p++=value;
+      *p++=(unsigned char) value;
     }
   /*
     Convert X bitmap image to pixel packets.
