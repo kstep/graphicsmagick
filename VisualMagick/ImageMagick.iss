@@ -494,12 +494,12 @@ Source: "bin\IM_MOD_RL*.dll"; DestDir: "{app}\modules"; CopyMode: alwaysoverwrit
 Source: "bin\X11.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "bin\Xext.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 ; Configuration files
-Source: "..\magick\colors.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
-Source: "bin\delegates.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
-Source: "..\magick\magic.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
-Source: "..\coders\modules.mgk"; DestDir: "{app}\modules"; CopyMode: alwaysoverwrite
-Source: "bin\type-ghostscript.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
-Source: "bin\type.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
+Source: "..\magick\colors.mgk"; DestDir: "{app}\config"; CopyMode: onlyifdoesntexist
+Source: "bin\delegates.mgk"; DestDir: "{app}\config"; CopyMode: onlyifdoesntexist
+Source: "..\magick\magic.mgk"; DestDir: "{app}\config"; CopyMode: onlyifdoesntexist
+Source: "..\coders\modules.mgk"; DestDir: "{app}\modules"; CopyMode: onlyifdoesntexist
+Source: "bin\type-ghostscript.mgk"; DestDir: "{app}\config"; CopyMode: onlyifdoesntexist
+Source: "bin\type.mgk"; DestDir: "{app}\config"; CopyMode: onlyifdoesntexist
 ; Release documentation files
 Source: "..\ChangeLog"; DestDir: "{app}"; CopyMode: alwaysoverwrite; DestName: "ChangeLog.txt"
 Source: "..\Copyright.txt"; DestDir: "{app}"; CopyMode: alwaysoverwrite
@@ -528,9 +528,10 @@ Source: "..\magick\ImageMagick.ico"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\contrib\win32\PathTool\PathTool.exe"; DestDir: "{app}\uninstall"; CopyMode: alwaysoverwrite
 Source: "..\contrib\win32\PathTool\PathTool.pdf"; DestDir: "{app}\uninstall"; CopyMode: alwaysoverwrite
 ; PerlMagick Perl module
-Source: "..\PerlMagick\Image-Magick.ppd"; DestDir: "{tmp}\PerlMagick"; CopyMode: alwaysoverwrite
-Source: "..\PerlMagick\Image-Magick.tar.gz"; DestDir: "{tmp}\PerlMagick\x86"; CopyMode: alwaysoverwrite
-; Source: "..\PerlMagick\demo"; DestDir: "{app}\PerlMagick\demo"; CopyMode: alwaysoverwrite
+Source: "..\PerlMagick\Image-Magick.ppd"; DestDir: "{app}\PerlMagick"; CopyMode: alwaysoverwrite
+Source: "..\PerlMagick\Image-Magick.tar.gz"; DestDir: "{app}\PerlMagick\x86"; CopyMode: alwaysoverwrite
+Source: "..\PerlMagick\demo\*"; DestDir: "{app}\PerlMagick\demo"; CopyMode: alwaysoverwrite
+Source: "PerlMagick-PPM.txt"; DestDir: "{app}\PerlMagick"; CopyMode: alwaysoverwrite; DestName: "README.txt"
 
 [Icons]
 Name: "{group}\ImageMagick Web Pages"; Filename: "{app}\ImageMagick.html"
@@ -543,11 +544,10 @@ Name: "{userdesktop}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; Icon
 [Run]
 ; Add -debug to parameters to enable debugging
 Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -a:""{app}"""; StatusMsg: "Updating environment variables..."; Tasks: update_path
-Filename: "ppm"; Parameters: "install Image-Magick.ppd"; WorkingDir: "{tmp}\PerlMagick"; StatusMsg: "Installing PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
+Filename: "ppm"; Parameters: "install Image-Magick.ppd"; WorkingDir: "{app}\PerlMagick"; StatusMsg: "Installing PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
 
 [UninstallRun]
 ; Add -debug to parameters to enable debugging
 Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -r:""{app}"""; StatusMsg: "Restoring environment variables..."; Tasks: update_path
 Filename: "ppm"; Parameters: "remove Image-Magick"; StatusMsg: "Uninstalling PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
-
 
