@@ -1,5 +1,8 @@
 2005-01-12  David N. Welton  <davidw@dedasys.com>
 
+	* Makefile.am (EXTRA_DIST): Added pkgIndex.tcl so that it gets
+	distributed.
+
 	* generic/Makefile.am (libdir): Make the version part of the
 	install directory.
 

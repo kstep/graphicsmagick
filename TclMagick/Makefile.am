@@ -1,5 +1,5 @@
 
-EXTRA_DIST=LICENSE tests images doc
+EXTRA_DIST=LICENSE tests images doc pkgIndex.tcl
 SUBDIRS = generic
 
 install-data-local:
