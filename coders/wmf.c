@@ -213,6 +213,7 @@ static void         ipa_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line);
 static void         ipa_draw_pie(wmfAPI * API, wmfDrawArc_t * draw_arc);
 static void         ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel);
 static void         ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line);
+static void         ipa_draw_polypolygon(wmfAPI * API, wmfPolyPoly_t* polypolygon);
 static void         ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect);
 static void         ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text);
 static void         ipa_flood_exterior(wmfAPI * API, wmfFlood_t * flood);
@@ -826,37 +827,83 @@ static void ipa_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line)
   DrawPopGraphicContext(WmfDrawContext);
 }
 
-static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
+static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * polyline)
 {
-  U16
-    i;
-
-  /* Save graphic context */
-  DrawPushGraphicContext(WmfDrawContext);
-
-  if (poly_line->count <= 2)
+  if (polyline->count <= 2)
     return;
 
-  if (TO_FILL(poly_line) || TO_DRAW(poly_line))
+  if (TO_FILL(polyline) || TO_DRAW(polyline))
     {
-      PointInfo
-        *points;
+      int
+        point;
 
-      util_set_pen(API, poly_line->dc);
-      util_set_brush(API, poly_line->dc, BrushApplyFill);
+      /* Save graphic context */
+      DrawPushGraphicContext(WmfDrawContext);
 
-      points = (PointInfo*)AcquireMemory(poly_line->count * sizeof(PointInfo));
-      for (i = 0; i < poly_line->count; i++)
+      util_set_pen(API, polyline->dc);
+      util_set_brush(API, polyline->dc, BrushApplyFill);
+
+      DrawPathStart(WmfDrawContext);
+      DrawPathMoveToAbsolute(WmfDrawContext,
+                             XC(polyline->pt[0].x),
+                             YC(polyline->pt[0].y));
+      for (point = 1; point < polyline->count; point++)
         {
-          points[i].x = XC(poly_line->pt[i].x);
-          points[i].y = YC(poly_line->pt[i].y);
+          DrawPathLineToAbsolute(WmfDrawContext,
+                                 XC(polyline->pt[point].x),
+                                 YC(polyline->pt[point].y));
         }
-      DrawPolygon(WmfDrawContext,poly_line->count,points);
-      LiberateMemory((void**)&points);
-    }
+      DrawPathClose(WmfDrawContext);
+      DrawPathFinish(WmfDrawContext);
 
-  /* Restore graphic context */
-  DrawPopGraphicContext(WmfDrawContext);
+      /* Restore graphic context */
+      DrawPopGraphicContext(WmfDrawContext);
+    }
+}
+
+/* Draw a polypolygon.  A polypolygon is a list of polygons */
+static void ipa_draw_polypolygon(wmfAPI * API, wmfPolyPoly_t* polypolygon)
+{
+  if (TO_FILL(polypolygon) || TO_DRAW(polypolygon))
+    {
+      int
+        polygon,
+        point;
+
+      wmfPolyLine_t
+        polyline;
+
+      /* Save graphic context */
+      DrawPushGraphicContext(WmfDrawContext);
+
+      util_set_pen(API, polypolygon->dc);
+      util_set_brush(API, polypolygon->dc, BrushApplyFill);
+
+      DrawPathStart(WmfDrawContext);
+      for (polygon = 0; polygon < polypolygon->npoly; polygon++)
+        {
+          polyline.dc = polypolygon->dc;
+          polyline.pt = polypolygon->pt[polygon];
+          polyline.count = polypolygon->count[polygon];
+          if ((polyline.count > 2) && polyline.pt)
+            {
+              DrawPathMoveToAbsolute(WmfDrawContext,
+                                     XC(polyline.pt[0].x),
+                                     YC(polyline.pt[0].y));
+              for (point = 1; point < polyline.count; point++)
+                {
+                  DrawPathLineToAbsolute(WmfDrawContext,
+                                         XC(polyline.pt[point].x),
+                                         YC(polyline.pt[point].y));
+                }
+              DrawPathClose(WmfDrawContext);
+            }
+        }
+      DrawPathFinish(WmfDrawContext);
+
+      /* Restore graphic context */
+      DrawPopGraphicContext(WmfDrawContext);
+    }
 }
 
 static void ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect)
@@ -1005,6 +1052,7 @@ static void ipa_functions(wmfAPI *API)
   FR->draw_line = ipa_draw_line;
   FR->poly_line = ipa_poly_line;
   FR->draw_polygon = ipa_draw_polygon;
+  FR->draw_polypolygon = ipa_draw_polypolygon;
   FR->draw_rectangle = ipa_draw_rectangle;
   FR->rop_draw = ipa_rop_draw;
   FR->bmp_draw = ipa_bmp_draw;

@@ -1,3 +1,7 @@
+2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Implement polypolygon support in WMF renderer.  Requires
+    libwmf 0.2.4 with draw_polypolygon IPA callback.
+
 2002-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added --enable-ccmalloc configure option.
 
