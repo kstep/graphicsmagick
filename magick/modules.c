@@ -855,7 +855,6 @@ char *TagToModule(const char *tag)
   (void) FormatString(module_name,"%s.la",tag);
   (void) LocaleLower(module_name);
 #else
-  puts(tag);
   if (LocaleNCompare("IM_MOD_",tag,6) == 0)
     (void) strcpy(module_name,tag);
   else
