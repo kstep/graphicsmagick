@@ -531,7 +531,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
 {
 #define ColormapExtent  155
 #define GraymapExtent  95
-#define PiconGeometry  "48x48"
+#define PiconGeometry  "48x48>"
 
   static unsigned char
     Colormap[]=
@@ -575,6 +575,8 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
     status,
     width;
 
+  width=image->columns;
+  height=image->rows;
   (void) ParseImageGeometry(PiconGeometry,&x,&y,&width,&height);
   picon=ZoomImage(image,width,height,&image->exception);
   if (IsGrayImage(image))
@@ -583,8 +585,8 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
     map=BlobToImage(image_info,Colormap,ColormapExtent,&image->exception);
   if ((picon == (Image *) NULL) || (map == (Image *) NULL))
     return(False);
-  MapImage(image,map,image_info->dither);
-  status=WriteXPMImage(image_info,picon);
+  status=MapImage(picon,map,image_info->dither);
+  status|=WriteXPMImage(image_info,picon);
   DestroyImage(map);
   DestroyImage(picon);
   return(status);
