@@ -119,7 +119,7 @@ typedef struct _StreamInfo
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterAVIImage(void);
 
 /*
@@ -367,9 +367,6 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     bit,
     y;
-
-  off_t
-    offset;
 
   PixelPacket
     *colormap;
@@ -859,7 +856,7 @@ ModuleExport void RegisterAVIImage(void)
 %      UnregisterAVIImage(void)
 %
 */
-static void UnregisterAVIImage(void)
+MagickExport void UnregisterAVIImage(void)
 {
   UnregisterMagickInfo("AVI");
 }

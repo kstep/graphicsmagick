@@ -62,7 +62,7 @@
 static unsigned int
   WriteCACHEImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterCACHEImage(void);
 
 /*
@@ -801,7 +801,7 @@ ModuleExport void RegisterCACHEImage(void)
 %      UnregisterCACHEImage(void)
 %
 */
-static void UnregisterCACHEImage(void)
+MagickExport void UnregisterCACHEImage(void)
 {
   UnregisterMagickInfo("CACHE");
 }

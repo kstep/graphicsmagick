@@ -61,7 +61,7 @@
 static unsigned int
   WriteHISTOGRAMImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterHISTOGRAMImage(void);
 
 /*
@@ -119,7 +119,7 @@ ModuleExport void RegisterHISTOGRAMImage(void)
 %      UnregisterHISTOGRAMImage(void)
 %
 */
-static void UnregisterHISTOGRAMImage(void)
+MagickExport void UnregisterHISTOGRAMImage(void)
 {
   UnregisterMagickInfo("HISTOGRAM");
 }

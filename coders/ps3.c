@@ -66,7 +66,7 @@
 static unsigned int
   WritePS3Image(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterPS3Image(void);
 
 /*
@@ -123,7 +123,7 @@ ModuleExport void RegisterPS3Image(void)
 %      UnregisterPS3Image(void)
 %
 */
-static void UnregisterPS3Image(void)
+MagickExport void UnregisterPS3Image(void)
 {
   UnregisterMagickInfo("PS3");
 }

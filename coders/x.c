@@ -64,7 +64,7 @@
 static unsigned int
   WriteXImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterXImage(void);
 
 #if defined(HasX11)
@@ -166,7 +166,7 @@ ModuleExport void RegisterXImage(void)
 %      UnregisterXImage(void)
 %
 */
-static void UnregisterXImage(void)
+MagickExport void UnregisterXImage(void)
 {
   UnregisterMagickInfo("X");
 }

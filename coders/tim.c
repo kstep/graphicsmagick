@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterTIMImage(void);
 
 /*
@@ -419,7 +419,7 @@ ModuleExport void RegisterTIMImage(void)
 %      UnregisterTIMImage(void)
 %
 */
-static void UnregisterTIMImage(void)
+MagickExport void UnregisterTIMImage(void)
 {
   UnregisterMagickInfo("TIM");
 }

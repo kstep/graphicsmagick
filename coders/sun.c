@@ -61,7 +61,7 @@
 static unsigned int
   WriteSUNImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterSUNImage(void);
 
 /*
@@ -588,7 +588,7 @@ ModuleExport void RegisterSUNImage(void)
 %      UnregisterSUNImage(void)
 %
 */
-static void UnregisterSUNImage(void)
+MagickExport void UnregisterSUNImage(void)
 {
   UnregisterMagickInfo("RAS");
   UnregisterMagickInfo("SUN");

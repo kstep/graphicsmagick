@@ -3793,7 +3793,7 @@ static const unsigned char
 static unsigned int
   WriteLOGOImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterLOGOImage(void);
 
 /*
@@ -3921,7 +3921,7 @@ ModuleExport void RegisterLOGOImage(void)
 %      UnregisterLOGOImage(void)
 %
 */
-static void UnregisterLOGOImage(void)
+MagickExport void UnregisterLOGOImage(void)
 {
   UnregisterMagickInfo("GRANITE");
   UnregisterMagickInfo("H");

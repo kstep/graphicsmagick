@@ -61,7 +61,7 @@
 static unsigned int
   WriteXBMImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterXBMImage(void);
 
 /*
@@ -421,7 +421,7 @@ ModuleExport void RegisterXBMImage(void)
 %      UnregisterXBMImage(void)
 %
 */
-static void UnregisterXBMImage(void)
+MagickExport void UnregisterXBMImage(void)
 {
   UnregisterMagickInfo("XBM");
 }

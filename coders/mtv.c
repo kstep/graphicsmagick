@@ -61,7 +61,7 @@
 static unsigned int
   WriteMTVImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterMTVImage(void);
 
 /*
@@ -267,7 +267,7 @@ ModuleExport void RegisterMTVImage(void)
 %      UnregisterMTVImage(void)
 %
 */
-static void UnregisterMTVImage(void)
+MagickExport void UnregisterMTVImage(void)
 {
   UnregisterMagickInfo("MTV");
 }

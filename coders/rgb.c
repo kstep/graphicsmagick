@@ -61,7 +61,7 @@
 static unsigned int
   WriteRGBImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterRGBImage(void);
 
 /*
@@ -448,7 +448,7 @@ ModuleExport void RegisterRGBImage(void)
 %      UnregisterRGBImage(void)
 %
 */
-static void UnregisterRGBImage(void)
+MagickExport void UnregisterRGBImage(void)
 {
   UnregisterMagickInfo("RGB");
   UnregisterMagickInfo("RGBA");

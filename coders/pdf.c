@@ -66,7 +66,7 @@
 static unsigned int
   WritePDFImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterPDFImage(void);
 
 /*
@@ -421,7 +421,7 @@ ModuleExport void RegisterPDFImage(void)
 %      UnregisterPDFImage(void)
 %
 */
-static void UnregisterPDFImage(void)
+MagickExport void UnregisterPDFImage(void)
 {
   UnregisterMagickInfo("EPDF");
   UnregisterMagickInfo("PDF");

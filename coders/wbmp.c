@@ -60,7 +60,7 @@
 static unsigned int
   WriteWBMPImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterWBMPImage(void);
 
 /*
@@ -260,7 +260,7 @@ ModuleExport void RegisterWBMPImage(void)
 %      UnregisterWBMPImage(void)
 %
 */
-static void UnregisterWBMPImage(void)
+MagickExport void UnregisterWBMPImage(void)
 {
   UnregisterMagickInfo("WBMP");
 }
@@ -298,7 +298,7 @@ static void UnregisterWBMPImage(void)
 %
 */
 
-static void WBMPWriteInteger(Image *image,const unsigned int value)
+MagickExport void WBMPWriteInteger(Image *image,const unsigned int value)
 {
   int
     bits,

@@ -157,7 +157,7 @@ typedef struct _SVGInfo
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterSVGImage(void);
 
 /*
@@ -380,7 +380,7 @@ static int SVGHasExternalSubset(void *context)
   return(svg_info->document->extSubset != NULL);
 }
 
-static void SVGInternalSubset(void *context,const xmlChar *name,
+MagickExport void SVGInternalSubset(void *context,const xmlChar *name,
   const xmlChar *external_id,const xmlChar *system_id)
 {
   SVGInfo
@@ -463,7 +463,7 @@ static xmlEntityPtr SVGGetParameterEntity(void *context,const xmlChar *name)
   return(xmlGetParameterEntity(svg_info->document,name));
 }
 
-static void SVGEntityDeclaration(void *context,const xmlChar *name,int type,
+MagickExport void SVGEntityDeclaration(void *context,const xmlChar *name,int type,
   const xmlChar *public_id,const xmlChar *system_id,xmlChar *content)
 {
   SVGInfo
@@ -525,7 +525,7 @@ void SVGAttributeDeclaration(void *context,const xmlChar *element,
 
 }
 
-static void SVGElementDeclaration(void *context,const xmlChar *name,int type,
+MagickExport void SVGElementDeclaration(void *context,const xmlChar *name,int type,
   xmlElementContentPtr content)
 {
   SVGInfo
@@ -550,7 +550,7 @@ static void SVGElementDeclaration(void *context,const xmlChar *name,int type,
         name,type,content);
 }
 
-static void SVGNotationDeclaration(void *context,const xmlChar *name,
+MagickExport void SVGNotationDeclaration(void *context,const xmlChar *name,
   const xmlChar *public_id,const xmlChar *system_id)
 {
   SVGInfo
@@ -577,7 +577,7 @@ static void SVGNotationDeclaration(void *context,const xmlChar *name,
         name,public_id,system_id);
 }
 
-static void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
+MagickExport void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
   const xmlChar *public_id,const xmlChar *system_id,const xmlChar *notation)
 {
   SVGInfo
@@ -596,7 +596,7 @@ static void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
 
 }
 
-static void SVGSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
+MagickExport void SVGSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
 {
   SVGInfo
     *svg_info;
@@ -609,7 +609,7 @@ static void SVGSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
     (void) fprintf(stdout,"SAX.setDocumentLocator()\n");
 }
 
-static void SVGStartDocument(void *context)
+MagickExport void SVGStartDocument(void *context)
 {
   register int
     i;
@@ -644,7 +644,7 @@ static void SVGStartDocument(void *context)
   svg_info->document=xmlNewDoc(svg_info->parser->version);
 }
 
-static void SVGEndDocument(void *context)
+MagickExport void SVGEndDocument(void *context)
 {
   register int
     i;
@@ -673,7 +673,7 @@ static void SVGEndDocument(void *context)
     FreeMemory((void **) &svg_info->url);
 }
 
-static void SVGStartElement(void *context,const xmlChar *name,
+MagickExport void SVGStartElement(void *context,const xmlChar *name,
   const xmlChar **attributes)
 {
   char
@@ -1058,7 +1058,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     }
 }
 
-static void SVGEndElement(void *context,const xmlChar *name)
+MagickExport void SVGEndElement(void *context,const xmlChar *name)
 {
   double
     angle;
@@ -1202,7 +1202,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
     }
 }
 
-static void SVGCharacters(void *context,const xmlChar *c,int length)
+MagickExport void SVGCharacters(void *context,const xmlChar *c,int length)
 {
   register int
     i;
@@ -1233,7 +1233,7 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
   Strip(svg_info->text);
 }
 
-static void SVGReference(void *context,const xmlChar *name)
+MagickExport void SVGReference(void *context,const xmlChar *name)
 {
   SVGInfo
     *svg_info;
@@ -1254,7 +1254,7 @@ static void SVGReference(void *context,const xmlChar *name)
     xmlAddChild(parser->node,xmlNewReference(svg_info->document,name));
 }
 
-static void SVGIgnorableWhitespace(void *context,const xmlChar *c,int length)
+MagickExport void SVGIgnorableWhitespace(void *context,const xmlChar *c,int length)
 {
   SVGInfo
     *svg_info;
@@ -1268,7 +1268,7 @@ static void SVGIgnorableWhitespace(void *context,const xmlChar *c,int length)
       length);
 }
 
-static void SVGProcessingInstructions(void *context,const xmlChar *target,
+MagickExport void SVGProcessingInstructions(void *context,const xmlChar *target,
   const xmlChar *data)
 {
   SVGInfo
@@ -1283,7 +1283,7 @@ static void SVGProcessingInstructions(void *context,const xmlChar *target,
       (char *) data);
 }
 
-static void SVGComment(void *context,const xmlChar *value)
+MagickExport void SVGComment(void *context,const xmlChar *value)
 {
   SVGInfo
     *svg_info;
@@ -1297,7 +1297,7 @@ static void SVGComment(void *context,const xmlChar *value)
   CloneString(&svg_info->comment,(char *) value);
 }
 
-static void SVGWarning(void *context,const char *format,...)
+MagickExport void SVGWarning(void *context,const char *format,...)
 {
   char
     message[MaxTextExtent];
@@ -1329,7 +1329,7 @@ static void SVGWarning(void *context,const char *format,...)
   va_end(operands);
 }
 
-static void SVGError(void *context,const char *format,...)
+MagickExport void SVGError(void *context,const char *format,...)
 {
   char
     message[MaxTextExtent];
@@ -1361,7 +1361,7 @@ static void SVGError(void *context,const char *format,...)
   va_end(operands);
 }
 
-static void SVGCDataBlock(void *context,const xmlChar *value,int length)
+MagickExport void SVGCDataBlock(void *context,const xmlChar *value,int length)
 {
   SVGInfo
     *svg_info;
@@ -1374,7 +1374,7 @@ static void SVGCDataBlock(void *context,const xmlChar *value,int length)
     (void) fprintf(stderr, "SAX.pcdata(%.20s, %d)\n",(char *) value,length);
 }
 
-static void SVGExternalSubset(void *context,const xmlChar *name,
+MagickExport void SVGExternalSubset(void *context,const xmlChar *name,
   const xmlChar *external_id,const xmlChar *system_id)
 {
   SVGInfo
@@ -1499,9 +1499,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   SVGInfo
     svg_info;
-
-  register int
-    i;
 
   unsigned int
     status;
@@ -1639,7 +1636,7 @@ ModuleExport void RegisterSVGImage(void)
 %      UnregisterSVGImage(void)
 %
 */
-static void UnregisterSVGImage(void)
+MagickExport void UnregisterSVGImage(void)
 {
   UnregisterMagickInfo("SVG");
 }

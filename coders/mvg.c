@@ -55,7 +55,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterMVGImage(void);
 
 /*
@@ -175,7 +175,7 @@ ModuleExport void RegisterMVGImage(void)
 %      UnregisterMVGImage(void)
 %
 */
-static void UnregisterMVGImage(void)
+MagickExport void UnregisterMVGImage(void)
 {
   UnregisterMagickInfo("MVG");
 }

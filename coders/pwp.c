@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterPWPImage(void);
 
 /*
@@ -292,7 +292,7 @@ ModuleExport void RegisterPWPImage(void)
 %      UnregisterPWPImage(void)
 %
 */
-static void UnregisterPWPImage(void)
+MagickExport void UnregisterPWPImage(void)
 {
   UnregisterMagickInfo("PWP");
 }

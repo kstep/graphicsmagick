@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterRLAImage(void);
 
 /*
@@ -428,7 +428,7 @@ ModuleExport void RegisterRLAImage(void)
 %      UnregisterRLAImage(void)
 %
 */
-static void UnregisterRLAImage(void)
+MagickExport void UnregisterRLAImage(void)
 {
   UnregisterMagickInfo("RLA");
 }

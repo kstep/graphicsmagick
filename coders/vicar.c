@@ -61,7 +61,7 @@
 static unsigned int
   WriteVICARImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterVICARImage(void);
 
 /*
@@ -381,7 +381,7 @@ ModuleExport void RegisterVICARImage(void)
 %      UnregisterVICARImage(void)
 %
 */
-static void UnregisterVICARImage(void)
+MagickExport void UnregisterVICARImage(void)
 {
   UnregisterMagickInfo("VICAR");
 }

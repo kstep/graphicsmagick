@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterTTFImage(void);
 
 #if defined(HasTTF)
@@ -279,7 +279,7 @@ ModuleExport void RegisterTTFImage(void)
 %      UnregisterTTFImage(void)
 %
 */
-static void UnregisterTTFImage(void)
+MagickExport void UnregisterTTFImage(void)
 {
 #if defined(HasTTF)
   UnregisterMagickInfo("TTF");

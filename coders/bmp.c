@@ -108,7 +108,7 @@ typedef struct _BMPInfo
 static unsigned int
   WriteBMPImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterBMPImage(void);
 
 /*
@@ -939,7 +939,7 @@ ModuleExport void RegisterBMPImage(void)
 %      UnregisterBMPImage(void)
 %
 */
-static void UnregisterBMPImage(void)
+MagickExport void UnregisterBMPImage(void)
 {
   UnregisterMagickInfo("BMP");
   UnregisterMagickInfo("BMP24");

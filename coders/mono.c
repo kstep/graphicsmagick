@@ -61,7 +61,7 @@
 static unsigned int
   WriteMONOImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterMONOImage(void);
 
 /*
@@ -225,7 +225,7 @@ ModuleExport void RegisterMONOImage(void)
 %      UnregisterMONOImage(void)
 %
 */
-static void UnregisterMONOImage(void)
+MagickExport void UnregisterMONOImage(void)
 {
   UnregisterMagickInfo("MONO");
 }

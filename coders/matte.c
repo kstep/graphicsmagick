@@ -61,7 +61,7 @@
 static unsigned int
   WriteMATTEImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterMATTEImage(void);
 
 /*
@@ -119,7 +119,7 @@ ModuleExport void RegisterMATTEImage(void)
 %      UnregisterMATTEImage(void)
 %
 */
-static void UnregisterMATTEImage(void)
+MagickExport void UnregisterMATTEImage(void)
 {
   UnregisterMagickInfo("MATTE");
 }

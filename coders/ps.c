@@ -61,7 +61,7 @@
 static unsigned int
   WritePSImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterPSImage(void);
 
 /*
@@ -486,7 +486,7 @@ ModuleExport void RegisterPSImage(void)
 %      UnregisterPSImage(void)
 %
 */
-static void UnregisterPSImage(void)
+MagickExport void UnregisterPSImage(void)
 {
   UnregisterMagickInfo("EPI");
   UnregisterMagickInfo("EPS");

@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterICONImage(void);
 
 /*
@@ -487,7 +487,7 @@ ModuleExport void RegisterICONImage(void)
 %      UnregisterICONImage(void)
 %
 */
-static void UnregisterICONImage(void)
+MagickExport void UnregisterICONImage(void)
 {
   UnregisterMagickInfo("ICO");
   UnregisterMagickInfo("ICON");

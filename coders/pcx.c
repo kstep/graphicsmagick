@@ -92,7 +92,7 @@ typedef struct _PCXInfo
 static unsigned int
   WritePCXImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterPCXImage(void);
 
 /*
@@ -672,7 +672,7 @@ ModuleExport void RegisterPCXImage(void)
 %      UnregisterPCXImage(void)
 %
 */
-static void UnregisterPCXImage(void)
+MagickExport void UnregisterPCXImage(void)
 {
   UnregisterMagickInfo("DCX");
   UnregisterMagickInfo("PCX");

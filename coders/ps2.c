@@ -66,7 +66,7 @@
 static unsigned int
   WritePS2Image(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterPS2Image(void);
 
 /*
@@ -128,7 +128,7 @@ ModuleExport void RegisterPS2Image(void)
 %      UnregisterPS2Image(void)
 %
 */
-static void UnregisterPS2Image(void)
+MagickExport void UnregisterPS2Image(void)
 {
   UnregisterMagickInfo("EPS2");
   UnregisterMagickInfo("PS2");

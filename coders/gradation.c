@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterGRADATIONImage(void);
 
 /*
@@ -231,7 +231,7 @@ ModuleExport void RegisterGRADATIONImage(void)
 %      UnregisterGRADATIONImage(void)
 %
 */
-static void UnregisterGRADATIONImage(void)
+MagickExport void UnregisterGRADATIONImage(void)
 {
   UnregisterMagickInfo("GRADATION");
 }

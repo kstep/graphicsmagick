@@ -57,7 +57,7 @@
 static unsigned int
   WriteWPGImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterWPGImage(void);
 
 #define DWORD unsigned long
@@ -125,7 +125,7 @@ typedef struct
 
 
 
-static void Rd_WP_DWORD(Image *image, DWORD *d)
+MagickExport void Rd_WP_DWORD(Image *image, DWORD *d)
 {
    unsigned char b;
 
@@ -148,7 +148,7 @@ static void Rd_WP_DWORD(Image *image, DWORD *d)
 }
 
 
-static void InsertRow(BYTE *p,int y,Image *image)
+MagickExport void InsertRow(BYTE *p,int y,Image *image)
 {
 int bit,x;
 register PixelPacket *q;
@@ -730,7 +730,7 @@ ModuleExport void RegisterWPGImage(void)
 %      UnregisterWPGImage(void)
 %
 */
-static void UnregisterWPGImage(void)
+MagickExport void UnregisterWPGImage(void)
 {
   UnregisterMagickInfo("WPG");
 }

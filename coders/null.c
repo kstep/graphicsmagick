@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterNULLImage(void);
 
 /*
@@ -208,7 +208,7 @@ ModuleExport void RegisterNULLImage(void)
 %      UnregisterNULLImage(void)
 %
 */
-static void UnregisterNULLImage(void)
+MagickExport void UnregisterNULLImage(void)
 {
   UnregisterMagickInfo("NULL");
 }

@@ -61,7 +61,7 @@
 static unsigned int
   WriteHTMLImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterHTMLImage(void);
 
 /*
@@ -176,7 +176,7 @@ ModuleExport void RegisterHTMLImage(void)
 %      UnregisterHTMLImage(void)
 %
 */
-static void UnregisterHTMLImage(void)
+MagickExport void UnregisterHTMLImage(void)
 {
   UnregisterMagickInfo("HTM");
   UnregisterMagickInfo("HTML");

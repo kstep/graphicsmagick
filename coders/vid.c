@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterVIDImage(void);
 
 /*
@@ -248,7 +248,7 @@ ModuleExport void RegisterVIDImage(void)
 %      UnregisterVIDImage(void)
 %
 */
-static void UnregisterVIDImage(void)
+MagickExport void UnregisterVIDImage(void)
 {
   UnregisterMagickInfo("VID");
 }

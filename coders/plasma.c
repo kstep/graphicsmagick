@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterPLASMAImage(void);
 
 /*
@@ -242,7 +242,7 @@ ModuleExport void RegisterPLASMAImage(void)
 %      UnregisterPLASMAImage(void)
 %
 */
-static void UnregisterPLASMAImage(void)
+MagickExport void UnregisterPLASMAImage(void)
 {
   UnregisterMagickInfo("PLASMA");
 }

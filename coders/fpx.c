@@ -64,7 +64,7 @@
 static unsigned int
   WriteFPXImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterFPXImage(void);
 
 #if defined(HasFPX)
@@ -518,7 +518,7 @@ ModuleExport void RegisterFPXImage(void)
 %      UnregisterFPXImage(void)
 %
 */
-static void UnregisterFPXImage(void)
+MagickExport void UnregisterFPXImage(void)
 {
   UnregisterMagickInfo("FPX");
 }
@@ -555,7 +555,7 @@ static void UnregisterFPXImage(void)
 %
 */
 
-static void ColorTwistMultiply(FPXColorTwistMatrix first,
+MagickExport void ColorTwistMultiply(FPXColorTwistMatrix first,
   FPXColorTwistMatrix second,FPXColorTwistMatrix *color_twist)
 {
   /*
@@ -603,7 +603,7 @@ static void ColorTwistMultiply(FPXColorTwistMatrix first,
     second.dummy3_zero)+(first.dummy7_one*second.dummy7_one);
 }
 
-static void SetBrightness(double brightness,FPXColorTwistMatrix *color_twist)
+MagickExport void SetBrightness(double brightness,FPXColorTwistMatrix *color_twist)
 {
   FPXColorTwistMatrix
     effect,
@@ -634,7 +634,7 @@ static void SetBrightness(double brightness,FPXColorTwistMatrix *color_twist)
   *color_twist=result;
 }
 
-static void SetColorBalance(double red,double green,double blue,
+MagickExport void SetColorBalance(double red,double green,double blue,
   FPXColorTwistMatrix *color_twist)
 {
   FPXColorTwistMatrix
@@ -706,7 +706,7 @@ static void SetColorBalance(double red,double green,double blue,
   *color_twist=result;
 }
 
-static void SetSaturation(double saturation,FPXColorTwistMatrix *color_twist)
+MagickExport void SetSaturation(double saturation,FPXColorTwistMatrix *color_twist)
 {
   FPXColorTwistMatrix
     effect,

@@ -2598,7 +2598,7 @@ static const DicomInfo
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterDCMImage(void);
 
 /*
@@ -3390,7 +3390,7 @@ ModuleExport void RegisterDCMImage(void)
 %      UnregisterDCMImage(void)
 %
 */
-static void UnregisterDCMImage(void)
+MagickExport void UnregisterDCMImage(void)
 {
   UnregisterMagickInfo("DCM");
 }

@@ -67,7 +67,7 @@ static Image
 static unsigned int
   WriteTIFFImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterTIFFImage(void);
 
 /*
@@ -1013,7 +1013,7 @@ ModuleExport void RegisterTIFFImage(void)
 %      UnregisterTIFFImage(void)
 %
 */
-static void UnregisterTIFFImage(void)
+MagickExport void UnregisterTIFFImage(void)
 {
 #if defined(HasTIFF)
   UnregisterMagickInfo("PTIF");
@@ -1055,7 +1055,7 @@ static void UnregisterTIFFImage(void)
 */
 
 #if defined(IPTC_SUPPORT)
-static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
+MagickExport void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 {
   register int
     i;

@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterRLEImage(void);
 
 /*
@@ -609,7 +609,7 @@ ModuleExport void RegisterRLEImage(void)
 %      UnregisterRLEImage(void)
 %
 */
-static void UnregisterRLEImage(void)
+MagickExport void UnregisterRLEImage(void)
 {
   UnregisterMagickInfo("RLE");
 }

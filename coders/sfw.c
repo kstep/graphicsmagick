@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterSFWImage(void);
 
 /*
@@ -153,7 +153,7 @@ static unsigned char *SFWScan(const unsigned char *p,const unsigned char *q,
   return((unsigned char *) NULL);
 }
 
-static void TranslateSFWMarker(unsigned char *marker)
+MagickExport void TranslateSFWMarker(unsigned char *marker)
 {
   switch (marker[1])
   {
@@ -384,7 +384,7 @@ ModuleExport void RegisterSFWImage(void)
 %      UnregisterSFWImage(void)
 %
 */
-static void UnregisterSFWImage(void)
+MagickExport void UnregisterSFWImage(void)
 {
   UnregisterMagickInfo("SFW");
 }

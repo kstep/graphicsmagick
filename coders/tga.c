@@ -61,7 +61,7 @@
 static unsigned int
   WriteTGAImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterTGAImage(void);
 
 /*
@@ -506,7 +506,7 @@ ModuleExport void RegisterTGAImage(void)
 %      UnregisterTGAImage(void)
 %
 */
-static void UnregisterTGAImage(void)
+MagickExport void UnregisterTGAImage(void)
 {
   UnregisterMagickInfo("ICB");
   UnregisterMagickInfo("TGA");

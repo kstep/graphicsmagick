@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterPDBImage(void);
 
 /*
@@ -584,7 +584,7 @@ ModuleExport void RegisterPDBImage(void)
 %      UnregisterPDBImage(void)
 %
 */
-static void UnregisterPDBImage(void)
+MagickExport void UnregisterPDBImage(void)
 {
   UnregisterMagickInfo("PDB");
 }

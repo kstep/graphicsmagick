@@ -61,7 +61,7 @@
 static unsigned int
   WriteTXTImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterTXTImage(void);
 
 /*
@@ -310,7 +310,7 @@ ModuleExport void RegisterTXTImage(void)
 %      UnregisterTXTImage(void)
 %
 */
-static void UnregisterTXTImage(void)
+MagickExport void UnregisterTXTImage(void)
 {
   UnregisterMagickInfo("TEXT");
   UnregisterMagickInfo("TXT");

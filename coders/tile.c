@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterTILEImage(void);
 
 /*
@@ -200,7 +200,7 @@ ModuleExport void RegisterTILEImage(void)
 %      UnregisterTILEImage(void)
 %
 */
-static void UnregisterTILEImage(void)
+MagickExport void UnregisterTILEImage(void)
 {
   UnregisterMagickInfo("TILE");
 }

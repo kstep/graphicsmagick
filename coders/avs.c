@@ -61,7 +61,7 @@
 static unsigned int
   WriteAVSImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterAVSImage(void);
 
 /*
@@ -266,7 +266,7 @@ ModuleExport void RegisterAVSImage(void)
 %      UnregisterAVSImage(void)
 %
 */
-static void UnregisterAVSImage(void)
+MagickExport void UnregisterAVSImage(void)
 {
   UnregisterMagickInfo("AVS");
 }

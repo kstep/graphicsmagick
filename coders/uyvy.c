@@ -61,7 +61,7 @@
 static unsigned int
   WriteUYVYImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterUYVYImage(void);
 
 /*
@@ -232,7 +232,7 @@ ModuleExport void RegisterUYVYImage(void)
 %      UnregisterUYVYImage(void)
 %
 */
-static void UnregisterUYVYImage(void)
+MagickExport void UnregisterUYVYImage(void)
 {
   UnregisterMagickInfo("UYVY");
 }

@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterSTEGANOImage(void);
 
 /*
@@ -253,7 +253,7 @@ ModuleExport void RegisterSTEGANOImage(void)
 %      UnregisterSTEGANOImage(void)
 %
 */
-static void UnregisterSTEGANOImage(void)
+MagickExport void UnregisterSTEGANOImage(void)
 {
   UnregisterMagickInfo("STEGANO");
 }

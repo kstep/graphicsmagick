@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterSCTImage(void);
 
 /*
@@ -303,7 +303,7 @@ ModuleExport void RegisterSCTImage(void)
 %      UnregisterSCTImage(void)
 %
 */
-static void UnregisterSCTImage(void)
+MagickExport void UnregisterSCTImage(void)
 {
   UnregisterMagickInfo("SCT");
 }

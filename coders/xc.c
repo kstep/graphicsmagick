@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterXCImage(void);
 
 /*
@@ -200,7 +200,7 @@ ModuleExport void RegisterXCImage(void)
 %      UnregisterXCImage(void)
 %
 */
-static void UnregisterXCImage(void)
+MagickExport void UnregisterXCImage(void)
 {
   UnregisterMagickInfo("XC");
 }

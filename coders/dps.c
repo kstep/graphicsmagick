@@ -60,7 +60,7 @@
 /*
   Forward declarations.
 */
-static void
+MagickExport void
   UnregisterDPSImage(void);
 
 /*
@@ -556,7 +556,7 @@ ModuleExport void RegisterDPSImage(void)
 %      UnregisterDPSImage(void)
 %
 */
-static void UnregisterDPSImage(void)
+MagickExport void UnregisterDPSImage(void)
 {
   UnregisterMagickInfo("DPS");
 }

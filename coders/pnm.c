@@ -61,7 +61,7 @@
 static unsigned int
   WritePNMImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterPNMImage(void);
 
 /*
@@ -701,7 +701,7 @@ ModuleExport void RegisterPNMImage(void)
 %      UnregisterPNMImage(void)
 %
 */
-static void UnregisterPNMImage(void)
+MagickExport void UnregisterPNMImage(void)
 {
   UnregisterMagickInfo("P7");
   UnregisterMagickInfo("PBM");

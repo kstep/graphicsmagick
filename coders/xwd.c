@@ -61,7 +61,7 @@
 static unsigned int
   WriteXWDImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterXWDImage(void);
 
 /*
@@ -517,7 +517,7 @@ ModuleExport void RegisterXWDImage(void)
 %      UnregisterXWDImage(void)
 %
 */
-static void UnregisterXWDImage(void)
+MagickExport void UnregisterXWDImage(void)
 {
 #if defined(HasX11)
   UnregisterMagickInfo("XWD");

@@ -77,7 +77,7 @@
 ModuleExport const char
   *DefaultXFont = "-adobe-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*";
 
-static void
+MagickExport void
   UnregisterLABELImage(void);
 
 /*
@@ -142,7 +142,7 @@ static char *EscapeParenthesis(const char *text)
   return(buffer);
 }
 
-static void EscapeText(char *text,const char escape)
+MagickExport void EscapeText(char *text,const char escape)
 {
   register char
     *p;
@@ -163,7 +163,7 @@ static void EscapeText(char *text,const char escape)
 
 #if defined(HasTTF)
 #if !defined(FREETYPE_MAJOR)
-static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
+MagickExport void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   Image *image)
 {
   char
@@ -214,7 +214,7 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   FreeMemory((void **) &label);
 }
 
-static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
+MagickExport void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
   TT_Glyph glyph,int x_offset,int y_offset,TT_Glyph_Metrics *glyph_metrics)
 {
   int
@@ -1427,7 +1427,7 @@ ModuleExport void RegisterLABELImage(void)
 %      UnregisterLABELImage(void)
 %
 */
-static void UnregisterLABELImage(void)
+MagickExport void UnregisterLABELImage(void)
 {
   UnregisterMagickInfo("LABEL");
 }

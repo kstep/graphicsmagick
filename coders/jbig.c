@@ -61,7 +61,7 @@
 static unsigned int
   WriteJBIGImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterJBIGImage(void);
 
 #if defined(HasJBIG)
@@ -322,7 +322,7 @@ ModuleExport void RegisterJBIGImage(void)
 %      UnregisterJBIGImage(void)
 %
 */
-static void UnregisterJBIGImage(void)
+MagickExport void UnregisterJBIGImage(void)
 {
   UnregisterMagickInfo("BIE");
   UnregisterMagickInfo("JBG");
@@ -360,7 +360,7 @@ static void UnregisterJBIGImage(void)
 %
 */
 
-static void JBIGEncode(unsigned char *pixels,size_t length,void *data)
+MagickExport void JBIGEncode(unsigned char *pixels,size_t length,void *data)
 {
   Image
     *image;

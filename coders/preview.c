@@ -67,7 +67,7 @@ const char
 static unsigned int
   WritePreviewImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterPreviewImage(void);
 
 /*
@@ -126,7 +126,7 @@ ModuleExport void RegisterPREVIEWImage(void)
 %      UnregisterPREVIEWImage(void)
 %
 */
-static void UnregisterPREVIEWImage(void)
+MagickExport void UnregisterPREVIEWImage(void)
 {
   UnregisterMagickInfo("PREVIEW");
 }

@@ -61,7 +61,7 @@
 static unsigned int
   WriteCMYKImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterCMYKImage(void);
 
 /*
@@ -425,7 +425,7 @@ ModuleExport void RegisterCMYKImage(void)
 %      UnregisterCMYKImage(void)
 %
 */
-static void UnregisterCMYKImage(void)
+MagickExport void UnregisterCMYKImage(void)
 {
   UnregisterMagickInfo("CMYK");
 }

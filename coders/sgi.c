@@ -87,7 +87,7 @@ typedef struct _SGIInfo
 static unsigned int
   WriteSGIImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterSGIImage(void);
 
 /*
@@ -161,7 +161,7 @@ static unsigned int IsSGI(const unsigned char *magick,const unsigned int length)
 %
 */
 
-static void SGIDecode(const unsigned int bytes_per_pixel,
+MagickExport void SGIDecode(const unsigned int bytes_per_pixel,
   unsigned char *max_packets,unsigned char *pixels)
 {
   int
@@ -638,7 +638,7 @@ ModuleExport void RegisterSGIImage(void)
 %      UnregisterSGIImage(void)
 %
 */
-static void UnregisterSGIImage(void)
+MagickExport void UnregisterSGIImage(void)
 {
   UnregisterMagickInfo("SGI");
 }

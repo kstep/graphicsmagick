@@ -65,7 +65,7 @@
 static unsigned int
   WriteJPEGImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterJPEGImage(void);
 
 /*
@@ -237,7 +237,7 @@ static unsigned int GetCharacter(j_decompress_ptr jpeg_info)
   return(GETJOCTET(*jpeg_info->src->next_input_byte++));
 }
 
-static void InitializeSource(j_decompress_ptr cinfo)
+MagickExport void InitializeSource(j_decompress_ptr cinfo)
 {
   SourceManager
     *source;
@@ -246,7 +246,7 @@ static void InitializeSource(j_decompress_ptr cinfo)
   source->start_of_blob=TRUE;
 }
 
-static void JPEGErrorHandler(j_common_ptr jpeg_info)
+MagickExport void JPEGErrorHandler(j_common_ptr jpeg_info)
 {
   EmitMessage(jpeg_info,0);
   longjmp(error_recovery,1);
@@ -441,7 +441,7 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
   return(True);
 }
 
-static void SkipInputData(j_decompress_ptr cinfo,long number_bytes)
+MagickExport void SkipInputData(j_decompress_ptr cinfo,long number_bytes)
 {
   SourceManager
     *source;
@@ -458,11 +458,11 @@ static void SkipInputData(j_decompress_ptr cinfo,long number_bytes)
   source->manager.bytes_in_buffer-=(size_t) number_bytes;
 }
 
-static void TerminateSource(j_decompress_ptr cinfo)
+MagickExport void TerminateSource(j_decompress_ptr cinfo)
 {
 }
 
-static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
+MagickExport void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
 {
   SourceManager
     *source;
@@ -784,7 +784,7 @@ ModuleExport void RegisterJPEGImage(void)
 %      UnregisterJPEGImage(void)
 %
 */
-static void UnregisterJPEGImage(void)
+MagickExport void UnregisterJPEGImage(void)
 {
   UnregisterMagickInfo("JPEG24");
   UnregisterMagickInfo("JPEG");
@@ -838,7 +838,7 @@ static boolean EmptyOutputBuffer(j_compress_ptr cinfo)
   return(TRUE);
 }
 
-static void InitializeDestination(j_compress_ptr cinfo)
+MagickExport void InitializeDestination(j_compress_ptr cinfo)
 {
   DestinationManager
     *destination;
@@ -873,7 +873,7 @@ static unsigned int JPEGWarningHandler(j_common_ptr jpeg_info,int level)
   return(True);
 }
 
-static void TerminateDestination(j_compress_ptr cinfo)
+MagickExport void TerminateDestination(j_compress_ptr cinfo)
 {
   DestinationManager
     *destination;
@@ -893,7 +893,7 @@ static void TerminateDestination(j_compress_ptr cinfo)
     ERREXIT(cinfo,JERR_FILE_WRITE);
 }
 
-static void WriteColorProfile(j_compress_ptr jpeg_info,Image *image)
+MagickExport void WriteColorProfile(j_compress_ptr jpeg_info,Image *image)
 {
   register int
     i,
@@ -924,7 +924,7 @@ static void WriteColorProfile(j_compress_ptr jpeg_info,Image *image)
   }
 }
 
-static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
+MagickExport void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
 {
   int
     roundup;
@@ -972,7 +972,7 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
   }
 }
 
-static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
+MagickExport void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
 {
   DestinationManager
     *destination;

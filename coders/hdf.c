@@ -61,7 +61,7 @@
 static unsigned int
   WriteHDFImage(const ImageInfo *,Image *);
 
-static void
+MagickExport void
   UnregisterHDFImage(void);
 
 /*
@@ -446,7 +446,7 @@ ModuleExport void RegisterHDFImage(void)
 %      UnregisterHDFImage(void)
 %
 */
-static void UnregisterHDFImage(void)
+MagickExport void UnregisterHDFImage(void)
 {
   UnregisterMagickInfo("HDF");
 }
