@@ -1704,30 +1704,15 @@ AM_CONDITIONAL(HasTXT2HTML, test "$have_txt2html" = 'yes')
 type_include_files=''
 
 # Windows
-AC_MSG_CHECKING(for windows font directory)
 windows_font_dir=''
 if test "$with_windows_font_dir" != "yes" && test -n "$with_windows_font_dir"
 then
    windows_font_dir="${with_windows_font_dir}/"
-else
-  case $host_os in
-    cygwin* )
-      font_dir=`cygpath --windir`/Fonts
-      if test -f "$font_dir/times.ttf"
-      then
-        windows_font_dir="$font_dir/"
-      fi
-      ;;
-    #mingw* )
-    # Use the automatic font detection facility for MinGW
-    #pw32*)
-  esac
 fi
 if test -n "$windows_font_dir"
 then
   type_include_files="$type_include_files "'file="type-windows.mgk"'
 fi
-AC_MSG_RESULT($windows_font_dir)
 AC_SUBST(windows_font_dir)
 
 # Adobe Postscript fonts on various systems
