@@ -232,7 +232,7 @@ static double ReadBlobLSBdouble(Image *image)
   assert(image->signature == MagickSignature);
   
   if(ReadBlob(image,8,(unsigned char *)&buffer)==0)
-	return(0);	
+	return(0.0);	
   if(*(char *)&lsb_first==1) return(buffer.d);
 
   c=buffer.chars[0]; buffer.chars[0]=buffer.chars[7]; buffer.chars[7]=c;
