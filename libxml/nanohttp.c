@@ -14,6 +14,7 @@
 /* TODO add compression support, Send the Accept- , and decompress on the
         fly with ZLIB if found at compile-time */
 
+#define INCLUDE_WINSOCK
 #include "libxml.h"
 
 #ifdef LIBXML_HTTP_ENABLED
