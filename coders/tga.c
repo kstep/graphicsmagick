@@ -730,8 +730,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     count=(long) ((targa_info.bits_per_pixel*targa_info.width) >> 3);
     targa_pixels=(unsigned char *) AcquireMemory(count);
     if (targa_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-        image);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     for (y=(long) (image->rows-1); y >= 0; y--)
     {
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

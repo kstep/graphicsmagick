@@ -851,8 +851,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       }
       ReacquireMemory((void **) &xref,(count+2048)*sizeof(off_t));
       if (xref == (off_t *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-          image);
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     }
   (void) WriteBlobString(image,"]\n");
   FormatString(buffer,"/Count %lu\n",(count-pages_id)/ObjectsPerImage);

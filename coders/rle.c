@@ -292,8 +292,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     number_pixels=image->columns*image->rows;
     rle_pixels=(unsigned char *) AcquireMemory(number_pixels*number_planes);
     if (rle_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-        image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     if ((flags & 0x01) && !(flags & 0x02))
       {
         long

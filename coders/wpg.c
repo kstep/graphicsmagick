@@ -766,8 +766,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitError,"Cannot decompress 
 
        image->colors=WPG_Palette.NumOfEntries;
        if (!AllocateImageColormap(image,image->colors))
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-           image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
        for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
        {
        image->colormap[i].red=ScaleCharToQuantum(ReadBlobByte(image));

@@ -3266,8 +3266,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       scale=(Quantum *) AcquireMemory((max_value+1)*sizeof(Quantum));
       if (scale == (Quantum *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-          image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       for (i=0; i <= (long) max_value; i++)
         scale[i]=(Quantum) (((double) MaxRGB*i)/max_value+0.5);
     }
@@ -3280,8 +3279,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=height;
     if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
       if (!AllocateImageColormap(image,max_value+1))
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-          image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     if (image_info->ping)
       break;
     if ((samples_per_pixel > 1) && (image->interlace == PlaneInterlace))

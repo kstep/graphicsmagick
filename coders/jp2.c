@@ -349,8 +349,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     if (pixels[i] == (jas_matrix_t *) NULL)
       {
         jas_image_destroy(jp2_image);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-          image)
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
       }
   }
   for (y=0; y < (long) image->rows; y++)
@@ -612,8 +611,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
         for (x=0; x < i; x++)
           jas_matrix_destroy(pixels[x]);
         jas_image_destroy(jp2_image);
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-          image)
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image)
       }
   }
   for (y=0; y < (long) image->rows; y++)

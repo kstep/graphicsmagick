@@ -536,12 +536,10 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Read DIB raster colormap.
       */
       if (!AllocateImageColormap(image,image->colors))
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-          image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       dib_colormap=(unsigned char *) AcquireMemory(4*image->colors);
       if (dib_colormap == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-          image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       packet_size=4;
       (void) ReadBlob(image,packet_size*image->colors,(char *) dib_colormap);
       p=dib_colormap;
@@ -565,8 +563,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pixels=(unsigned char *)
     AcquireMemory(Max(bytes_per_line,image->columns+1)*image->rows);
   if (pixels == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-      image);
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
   if ((dib_info.compression == 0) || (dib_info.compression == 3))
     (void) ReadBlob(image,length,(char *) pixels);
   else
@@ -1003,8 +1000,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
   */
   pixels=(unsigned char *) AcquireMemory(dib_info.image_size);
   if (pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-      image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   switch (dib_info.bits_per_pixel)
   {
     case 1:
@@ -1147,8 +1143,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
       dib_colormap=(unsigned char *)
         AcquireMemory(4*(1 << dib_info.bits_per_pixel));
       if (dib_colormap == (unsigned char *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-          image);
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
       q=dib_colormap;
       for (i=0; i < (long) image->colors; i++)
       {

@@ -315,8 +315,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     iris_pixels=(unsigned char *)
       AcquireMemory(4*bytes_per_pixel*number_pixels);
     if (iris_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-        image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     if (iris_info.storage != 0x01)
       {
         unsigned char
@@ -829,8 +828,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     number_pixels=image->columns*image->rows;
     iris_pixels=(unsigned char *) AcquireMemory(4*number_pixels);
     if (iris_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-        image);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     /*
       Convert image pixels to uncompressed SGI pixels.
     */

@@ -271,8 +271,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       colors=(XColor *) AcquireMemory(header.ncolors*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-          image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
       for (i=0; i < (long) header.ncolors; i++)
       {
         count=ReadBlob(image,sz_XWDColor,(char *) &color);
@@ -671,8 +670,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       */
       colors=(XColor *) AcquireMemory(image->colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-          image);
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
       for (i=0; i < (long) image->colors; i++)
       {
         colors[i].pixel=i;

@@ -980,8 +980,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Inititialize colormap.
     */
     if (!AllocateImageColormap(image,image->colors))
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-        image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     if (!BitSet(flag,0x80))
       {
         /*
@@ -1464,7 +1463,9 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+    status=MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),
+      &image->exception);
+    if (status == False)
       break;
   } while (image_info->adjoin);
   (void) WriteBlobByte(image,';'); /* terminator */

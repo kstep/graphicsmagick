@@ -227,7 +227,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     width=(width*16)/bits_per_pixel;
     tim_data=(unsigned char *) AcquireMemory(image_size);
     if (tim_data == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",            image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     (void) ReadBlob(image,image_size,(char *) tim_data);
     tim_pixels=tim_data;
     /*

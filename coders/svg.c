@@ -2821,8 +2821,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   number_pixels=image->columns*image->rows;
   bitmap.bitmap=(unsigned char *) AcquireMemory(number_planes*number_pixels);
   if (bitmap.bitmap == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-      image);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   point=0;
   for (j=0; j < image->rows; j++)
   {

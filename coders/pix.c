@@ -155,8 +155,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows= height;
     if (bits_per_pixel == 8)
       if (!AllocateImageColormap(image,256))
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-          image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;

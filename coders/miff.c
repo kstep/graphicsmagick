@@ -234,8 +234,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     length=MaxTextExtent;
     values=(char *) AcquireMemory(length);
     if (values == (char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-        image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
     colors=0;
     image->depth=8;
     image->compression=NoCompression;
@@ -823,8 +822,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       AcquireMemory((size_t) (1.01*packet_size*image->columns+600));
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-        image);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
     /*
       Read image pixels.
     */
