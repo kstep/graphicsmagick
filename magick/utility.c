@@ -268,8 +268,7 @@ MagickExport unsigned int ConcatenateString(char **destination,
 %
 %  Method ConvertTextToUnicode converts an ASCII text string to Unicode and
 %  returns the Unicode translation and the character count.  Normal characters
-%  are just copied.  However, escaped hex codes are interpreted before
-%  converting to Unicode (e.g. \0x30a3 is 12451 in the Unicode character set).
+%  are just copied.
 %
 %  The format of the ConvertTextToUnicode function is:
 %
