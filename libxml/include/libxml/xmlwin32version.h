@@ -199,6 +199,15 @@ extern void xmlCheckVersion(int version);
  * purpose. The third macro, LIBXML_STATIC, must be defined by any client 
  * code which links against libxml statically. 
  */
+
+#ifndef LIBXML_DLL_IMPORT
+#if defined(WIN32) && !defined(STATIC)
+#define LIBXML_DLL_IMPORT __declspec(dllimport)
+#else
+#define LIBXML_DLL_IMPORT
+#endif
+#endif
+
 #ifndef LIBXML_DLL_IMPORT
 #if defined(_MSC_VER) && !defined(IN_LIBXML) && !defined(LIBXML_STATIC)
 #define LIBXML_DLL_IMPORT __declspec(dllimport)
