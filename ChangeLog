@@ -1,3 +1,8 @@
+2002-10-15  Cristy  <cristy@mystic.es.dupont.com>
+  * Set locale type LC_NUMERIC to "C".
+  * Bug fix for PS2 encoder.
+  * Added PS-Adobe preamble to PS3 encoder.
+
 2002-10-14  Cristy  <cristy@mystic.es.dupont.com>
   * ImageMagick 5.5.1 released.
 
