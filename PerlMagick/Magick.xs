@@ -6391,7 +6391,7 @@ QueryColorname(ref,...)
     for (i=1; i < items; i++)
     {
       (void) QueryColorDatabase(SvPV(ST(i),na),&target_color);
-      (void) QueryColorname(image,&target_color,AllCompliance,message)l
+      (void) QueryColorname(image,&target_color,AllCompliance,message);
       s=sv_2mortal(newSVpv(message,0));
       PUSHs(s);
     }

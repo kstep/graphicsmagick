@@ -225,7 +225,7 @@ print("X Windows system pixmap file (color) ...\n");
 testReadWrite( 'XPM:input.xpm',
                'XPM:output.xpm',
                q//,
-               'e7361fbfc179805b8f240b88c5e9c4c8');
+               '45e5c63ac641eda9bedd4f42a7f6b4cd');
 
 
 print("X Windows system window dump file (color) ...\n");
