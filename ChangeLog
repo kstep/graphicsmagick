@@ -1,3 +1,7 @@
+2003-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/version.c (GetMagickWebSite): New function.
+
 2003-02-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/wmf.c (ipa_device_begin): Use MagickWebSite definition.
