@@ -1,5 +1,6 @@
 2001-12-28  Leonard Rosenthol  <leonardr@lazerware.com>
 	* Even more features and options were added to conjure
+	* Added CropBox support to PDF writer
 	
 2001-12-26  Leonard Rosenthol  <leonardr@lazerware.com>
 	* Conjure now supports having a list of files for the

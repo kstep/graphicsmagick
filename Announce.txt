@@ -94,7 +94,7 @@ Bob Friesenhahn       - Magick++, Unix modules, magic, configure, CVS,
 William Radcliffe     - VisualMagick, FlashPix, TIFF, timers, watermarking,
                         Windows modules, and fast polygon renderer.
 Glenn Randers-Pehrson - PNG, MNG, test scripts, documentation enhancements.
-Leonard Rosenthol     - Mac support, XCF, and drawing enhancements.
+Leonard Rosenthol     - Mac support, XCF, PSD, conjure, and drawing enhancements.
 
 We would like to give special thanks to several people who assist with
 ImageMagick:
