@@ -495,7 +495,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
     /*
       Execute delegate.
     */
-    if (!delegate->wait)
+    if (!delegate_info->wait)
       ConcatenateString(&command," &");
     status=SystemCommand(image_info->verbose,command);
     LiberateMemory((void **) &command);
