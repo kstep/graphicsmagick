@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -105,7 +105,7 @@ static inline PixelPacket AlphaComposite(const PixelPacket *p,
   return(composite);
 }
 
-MagickExport unsigned int CompositeImage(Image *canvas_image,
+MagickExport MagickPassFail CompositeImage(Image *canvas_image,
   const CompositeOperator compose,const Image *composite_image,
   const long x_offset,const long y_offset)
 {
@@ -146,6 +146,9 @@ MagickExport unsigned int CompositeImage(Image *canvas_image,
   register PixelPacket
     *q;
 
+  MagickPassFail
+    status=MagickPass;
+
   /*
     Prepare composite image.
   */
@@ -154,7 +157,7 @@ MagickExport unsigned int CompositeImage(Image *canvas_image,
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
   if (compose == NoCompositeOp)
-    return(True);
+    return(MagickPass);
   SetImageType(canvas_image,TrueColorType);
   switch (compose)
   {
@@ -179,7 +182,7 @@ MagickExport unsigned int CompositeImage(Image *canvas_image,
       */
       displace_image=CloneImage(composite_image,0,0,True,&canvas_image->exception);
       if (displace_image == (Image *) NULL)
-        return(False);
+        return(MagickFail);
       horizontal_scale=20.0;
       vertical_scale=20.0;
       if (composite_image->geometry != (char *) NULL)
@@ -208,7 +211,10 @@ MagickExport unsigned int CompositeImage(Image *canvas_image,
         r=GetImagePixels(displace_image,0,y,displace_image->columns,1);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
             (r == (PixelPacket *) NULL))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         q+=x_offset;
         for (x=0; x < (long) composite_image->columns; x++)
         {
@@ -231,7 +237,10 @@ MagickExport unsigned int CompositeImage(Image *canvas_image,
           r++;
         }
         if (!SyncImagePixels(displace_image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
       }
       composite_image=displace_image;
       break;
@@ -286,7 +295,10 @@ MagickExport unsigned int CompositeImage(Image *canvas_image,
       1,&canvas_image->exception);
     q=GetImagePixels(canvas_image,0,y,canvas_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     pixels=p;
     if (x_offset < 0)
       p-=x_offset;
@@ -895,7 +907,10 @@ MagickExport unsigned int CompositeImage(Image *canvas_image,
       q++;
     }
     if (!SyncImagePixels(canvas_image))
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
   }
-  return(True);
+  return(status);
 }

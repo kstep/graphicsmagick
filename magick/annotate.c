@@ -154,7 +154,7 @@ static unsigned int
 %
 %
 */
-MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
+MagickExport MagickPassFail AnnotateImage(Image *image,const DrawInfo *draw_info)
 {
   char
     primitive[MaxTextExtent],
@@ -181,8 +181,10 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     metrics;
 
   unsigned int
-    matte,
-    status;
+    matte;
+
+  MagickPassFail
+    status=MagickPass;
 
   unsigned long
     height,
@@ -196,9 +198,9 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
   if (draw_info->text == (char *) NULL)
-    return(False);
+    return(MagickFail);
   if (*draw_info->text == '\0')
-    return(False);
+    return(MagickFail);
   text=TranslateText((ImageInfo *) NULL,image,draw_info->text);
   if (text == (char *) NULL)
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
@@ -206,7 +208,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   textlist=StringToList(text);
   MagickFreeMemory(text);
   if (textlist == (char **) NULL)
-    return(False);
+    return(MagickFail);
   length=strlen(textlist[0]);
   for (i=1; textlist[i] != (char *) NULL; i++)
     if (strlen(textlist[i]) > length)
@@ -385,7 +387,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       Annotate image with text.
     */
     status=RenderType(image,annotate,&offset,&metrics);
-    if (status == False)
+    if (status == MagickFail)
       break;
     if (annotate->decorate == LineThroughDecoration)
       {
@@ -732,7 +734,7 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
 %
 %
 */
-MagickExport unsigned int GetTypeMetrics(Image *image,const DrawInfo *draw_info,
+MagickExport MagickPassFail GetTypeMetrics(Image *image,const DrawInfo *draw_info,
   TypeMetric *metrics)
 {
   DrawInfo
@@ -741,7 +743,7 @@ MagickExport unsigned int GetTypeMetrics(Image *image,const DrawInfo *draw_info,
   PointInfo
     offset;
 
-  unsigned int
+  MagickPassFail
     status;
 
   assert(draw_info != (DrawInfo *) NULL);
@@ -791,7 +793,7 @@ MagickExport unsigned int GetTypeMetrics(Image *image,const DrawInfo *draw_info,
 %
 %
 */
-static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
+static MagickPassFail RenderType(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,TypeMetric *metrics)
 {
   const TypeInfo
@@ -800,7 +802,7 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
   DrawInfo
    *clone_info;
 
-  unsigned int
+  MagickPassFail
     status;
 
   type_info=(const TypeInfo *) NULL;
@@ -950,7 +952,7 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
   return(0);
 }
 
-static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
+static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
   const char *encoding,const PointInfo *offset,TypeMetric *metrics)
 {
   typedef struct _GlyphInfo
@@ -1341,7 +1343,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   DestroyDrawInfo(clone_info);
   (void) FT_Done_Face(face);
   (void) FT_Done_FreeType(library);
-  return(True);
+  return(MagickPass);
 }
 #else
 static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
@@ -1417,7 +1419,7 @@ static char *EscapeParenthesis(const char *text)
   return(buffer);
 }
 
-static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
+static MagickPassFail RenderPostscript(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,TypeMetric *metrics)
 {
   char
@@ -1610,7 +1612,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
         metrics->descent)-0.5));
     }
   DestroyImage(annotate_image);
-  return(True);
+  return(MagickPass);
 }
 
 /*
@@ -1648,7 +1650,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
 %
 */
 #if defined(HasX11)
-static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
+static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,TypeMetric *metrics)
 {
   static DrawInfo
@@ -1678,7 +1680,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   static XVisualInfo
     *visual_info;
 
-  unsigned int
+  MagickPassFail
     status;
 
   unsigned long
@@ -1786,9 +1788,9 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   metrics->underline_position=(-2.0);
   metrics->underline_thickness=1.0;
   if (!draw_info->render)
-    return(True);
+    return(MagickPass);
   if (draw_info->fill.opacity == TransparentOpacity)
-    return(True);
+    return(MagickPass);
   /*
     Render fill color.
   */
@@ -1811,10 +1813,10 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   if (status == 0)
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
       UnableToAnnotateImage);
-  return(True);
+  return(MagickPass);
 }
 #else
-static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
+static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,TypeMetric *metrics)
 {
   ThrowBinaryException(MissingDelegateError,XWindowLibraryIsNotAvailable,

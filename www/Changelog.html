@@ -24,10 +24,12 @@
 2004-05-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/compress.c (HuffmanDecodeImage): Properly return error status.
+        (HuffmanEncode2Image): Properly return error status.
+  <LI> magick/composite.c (CompositeImage): Properly return error status.
   <LI> magick/quantize.c (ClassifyImageColors): Properly return error status.
         (GetImageQuantizeError): Properly return error status.
         (OrderedDitherImage): Properly return error status.
-
   <LI> magick/profile.c (ProfileImage): Properly return error status.
   <LI> magick/paint.c (ColorFloodfillImage): Properly return error status.
         (MatteFloodfillImage): Properly return error status.

@@ -745,7 +745,7 @@ static double Triangle(const double x,const double support)
   return(0.0);
 }
 
-static unsigned int HorizontalFilter(const Image *source,Image *destination,
+static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
   const double x_factor,const FilterInfo *filter_info,const double blur,
   ContributionInfo *contribution,const size_t span,unsigned long *quantum,
   ExceptionInfo *exception)
@@ -851,15 +851,11 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
             (contribution[i-start].pixel-contribution[0].pixel);
           indexes[y]=source_indexes[j];
         }
-      q->red=(Quantum) ((pixel.red < 0) ? 0 :
-        (pixel.red > MaxRGB) ? MaxRGB : pixel.red+0.5);
-      q->green=(Quantum) ((pixel.green < 0) ? 0 :
-        (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
-      q->blue=(Quantum) ((pixel.blue < 0) ? 0 :
-        (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
+      q->red=RoundSignedToQuantum(pixel.red);
+      q->green=RoundSignedToQuantum(pixel.green);
+      q->blue=RoundSignedToQuantum(pixel.blue);
       if ((destination->matte) || (destination->colorspace == CMYKColorspace))
-        q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
-          (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
+        q->opacity=RoundSignedToQuantum(pixel.opacity);
       q++;
     }
     if (!SyncImagePixels(destination))
@@ -872,7 +868,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
   return(x == (long) destination->columns);
 }
 
-static unsigned int VerticalFilter(const Image *source,Image *destination,
+static MagickPassFail VerticalFilter(const Image *source,Image *destination,
   const double y_factor,const FilterInfo *filter_info,const double blur,
   ContributionInfo *contribution,const size_t span,unsigned long *quantum,
   ExceptionInfo *exception)
@@ -976,15 +972,12 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
             source->columns+x);
           indexes[x]=source_indexes[j];
         }
-      q->red=(Quantum) ((pixel.red < 0) ? 0 :
-        (pixel.red > MaxRGB) ? MaxRGB : pixel.red+0.5);
-      q->green=(Quantum) ((pixel.green < 0) ? 0 :
-        (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
-      q->blue=(Quantum) ((pixel.blue < 0) ? 0 :
-        (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
+
+      q->red=RoundSignedToQuantum(pixel.red);
+      q->green=RoundSignedToQuantum(pixel.green);
+      q->blue=RoundSignedToQuantum(pixel.blue);
       if ((destination->matte) || (destination->colorspace == CMYKColorspace))
-        q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
-          (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
+        q->opacity=RoundSignedToQuantum(pixel.opacity);
       q++;
     }
     if (!SyncImagePixels(destination))
