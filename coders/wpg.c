@@ -432,7 +432,7 @@ Image *image2;
 
 if ((clone_info=CloneImageInfo(image_info)) == NULL) return(image);
 RewindBlob(clone_info->blob);
-TemporaryFilename((char *) clone_info->filename);
+UniqueImageFilename(image,(char *) clone_info->filename);
 
 if( (f=fopen(clone_info->filename,"wb"))==NULL) goto FINISH;
 SeekBlob(image,PS_Offset,SEEK_SET);
@@ -722,7 +722,8 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 		 AllocateNextImage(image_info,image);
 		 if (image->next == (Image *) NULL) goto Finish;
 		 image=image->next;
-		 image->colors=image->columns=image->rows=image->depth=0;
+		 image->columns=image->rows=0;
+		 image->colors=image->depth=0;
 		 break;
 
 	 case 0x1B:  /*Postscript l2*/
@@ -826,7 +827,8 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 	     AllocateNextImage(image_info,image);
 	     if (image->next == (Image *) NULL) goto Finish;
 	     image=image->next;
-	     image->colors=image->columns=image->rows=image->depth=0;
+	     image->columns=image->rows=0;
+	     image->colors=image->depth=0;
 	     break;
 
 	 case 0x12:	/* Postscript WPG2*/

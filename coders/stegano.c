@@ -117,12 +117,12 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     *clone_info;
 
   int
-    shift,
     y;
 
   long
     i,
-    j;
+    j,
+    shift;
 
   register IndexPacket
     *indexes,

@@ -429,7 +429,7 @@ static int SceneCompare(const void *x,const void *y)
 
   image_1=(Image **) x;
   image_2=(Image **) y;
-  return((int) (*image_1)->scene-(int) (*image_2)->scene);
+  return((int) ((*image_1)->scene-(*image_2)->scene));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -680,7 +680,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   window_info.y=0;
   if (resources.debug)
     {
-      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",images[0]->filename,
+      (void) fprintf(stderr,"Image: %.1024s[%lu] %ux%u ",images[0]->filename,
         images[0]->scene,images[0]->columns,images[0]->rows);
       if (images[0]->colors != 0)
         (void) fprintf(stderr,"%luc ",images[0]->colors);
@@ -791,8 +791,9 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       MagickError(XServerError,"Unable to create X image",(char *) NULL);
     if (resources.debug)
       {
-        (void) fprintf(stderr,"Image: [%u] %.1024s %ux%u ",images[scene]->scene,
-          images[scene]->filename,images[scene]->columns,images[scene]->rows);
+        (void) fprintf(stderr,"Image: [%lu] %.1024s %ux%u ",
+          images[scene]->scene,images[scene]->filename,images[scene]->columns,
+          images[scene]->rows);
         if (images[scene]->colors != 0)
           (void) fprintf(stderr,"%luc ",images[scene]->colors);
         (void) fprintf(stderr,"%.1024s\n",images[scene]->magick);
@@ -1019,7 +1020,7 @@ MagickExport Image *XAnimateImages(Display *display,
   static char
     working_directory[MaxTextExtent];
 
-  static unsigned int
+  static unsigned long
     number_windows;
 
   static XWindowInfo
@@ -1237,7 +1238,7 @@ MagickExport Image *XAnimateImages(Display *display,
   }
   if (resource_info->debug)
     {
-      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",
+      (void) fprintf(stderr,"Image: %.1024s[%lu] %ux%u ",
         display_image->filename,display_image->scene,
         display_image->columns,display_image->rows);
       if (display_image->colors != 0)
@@ -1628,8 +1629,9 @@ MagickExport Image *XAnimateImages(Display *display,
       MagickError(XServerError,"Unable to create X image",(char *) NULL);
     if (resource_info->debug)
       {
-        (void) fprintf(stderr,"Image: [%u] %.1024s %ux%u ",images[scene]->scene,
-          images[scene]->filename,images[scene]->columns,images[scene]->rows);
+        (void) fprintf(stderr,"Image: [%lu] %.1024s %ux%u ",
+          images[scene]->scene,images[scene]->filename,images[scene]->columns,
+          images[scene]->rows);
         if (images[scene]->colors != 0)
           (void) fprintf(stderr,"%luc ",images[scene]->colors);
         (void) fprintf(stderr,"%.1024s\n",images[scene]->magick);
@@ -2120,6 +2122,7 @@ MagickExport Image *XAnimateImages(Display *display,
             if (!(event.xkey.state & ControlMask))
               break;
             command_type=OpenCommand;
+            break;
           }
           case XK_BackSpace:
           {

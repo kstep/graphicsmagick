@@ -264,7 +264,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (colors == (XColor *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i < header.ncolors; i++)
+      for (i=0; i < (size_t) header.ncolors; i++)
       {
         count=ReadBlob(image,sz_XWDColor,(char *) &color);
         if (count == 0)
@@ -281,7 +281,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       lsb_first=1;
       if (*(char *) &lsb_first)
-        for (i=0; i < header.ncolors; i++)
+        for (i=0; i < (size_t) header.ncolors; i++)
         {
           MSBOrderLong((char *) &colors[i].pixel,sizeof(unsigned long));
           MSBOrderShort((char *) &colors[i].red,3*sizeof(unsigned short));
@@ -423,7 +423,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         indexes=GetIndexes(image);
         for (x=0; x < (int) image->columns; x++)
         {
-          index=ValidateColormapIndex(image,XGetPixel(ximage,x,y));
+          index=ValidateColormapIndex(image,
+            (unsigned int) XGetPixel(ximage,x,y));
           indexes[x]=index;
           *q++=image->colormap[index];
         }

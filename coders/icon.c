@@ -104,7 +104,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       planes,
       bits_per_pixel;
 
-    unsigned int
+    unsigned long
       size,
       offset;
   } IconEntry;
@@ -191,8 +191,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     icon_file.directory[i].reserved=ReadBlobByte(image);
     icon_file.directory[i].planes=ReadBlobLSBShort(image);
     icon_file.directory[i].bits_per_pixel=ReadBlobLSBShort(image);
-    icon_file.directory[i].size=(unsigned int) ReadBlobLSBLong(image);
-    icon_file.directory[i].offset=(unsigned int) ReadBlobLSBLong(image);
+    icon_file.directory[i].size=ReadBlobLSBLong(image);
+    icon_file.directory[i].offset=ReadBlobLSBLong(image);
   }
   for (i=0; i < icon_file.count; i++)
   {
@@ -398,7 +398,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         break;
       }
       default:
-        ThrowReaderException(CorruptImageWarning,"Not a ICO image file",image);
+        ThrowReaderException(CorruptImageWarning,"Not a ICO image file",image)
     }
     SyncImage(image);
     /*

@@ -1562,7 +1562,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                 zip_info.zalloc=NULL;
                 zip_info.zfree=NULL;
                 zip_info.opaque=NULL;
-                (void) deflateInit(&zip_info,Min(image_info->quality/10,9));
+                (void) deflateInit(&zip_info,
+                  (int) Min(image_info->quality/10,9));
               }
             zip_info.next_in=pixels;
             zip_info.avail_in=packet_size*image->columns;
@@ -1602,7 +1603,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                 bzip_info.bzfree=NULL;
                 bzip_info.opaque=NULL;
                 (void) BZ2_bzCompressInit(&bzip_info,
-                  Min(image_info->quality/10,9),image_info->verbose,0);
+                  (int) Min(image_info->quality/10,9),image_info->verbose,0);
               }
             bzip_info.next_in=(char *) pixels;
             bzip_info.avail_in=packet_size*image->columns;

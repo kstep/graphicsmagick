@@ -186,7 +186,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     {
       LiberateMemory((void **) &buffer);
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-        image);
+        image)
     }
   image->colormap[0].red=0;
   image->colormap[0].green=0;
@@ -463,7 +463,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     jbg_enc_init(&jbig_info,image->columns,image->rows,1,&pixels,
       (void (*)(unsigned char *,size_t,void *)) JBIGEncode,image);
     if (image_info->subimage != 0)
-      jbg_enc_layers(&jbig_info,image_info->subimage);
+      jbg_enc_layers(&jbig_info,(int) image_info->subimage);
     else
       {
         unsigned int

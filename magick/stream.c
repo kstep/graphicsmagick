@@ -59,7 +59,8 @@
 /*
   Typedef declaractions.
 */
-typedef CacheInfo StreamInfo;
+typedef CacheInfo
+  StreamInfo;
 
 /*
   Declare pixel stream interfaces.

@@ -176,7 +176,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Copy image to temporary file.
   */
-  TemporaryFilename((char *) image_info->filename);
+  UniqueImageFilename(image,(char *) image_info->filename);
   file=fopen(image_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to write file",image);
@@ -814,7 +814,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(filename,image->filename);
   if ((image->file == stdout) || image->pipet ||
       (image->blob->data != (unsigned char *) NULL))
-    TemporaryFilename(filename);
+    UniqueImageFilename(image,filename);
   else
     CloseBlob(image);
   {
@@ -1108,6 +1108,6 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
   ThrowBinaryException(MissingDelegateWarning,"FPX library is not available",
-    image->filename);
+    image->filename)
 }
 #endif

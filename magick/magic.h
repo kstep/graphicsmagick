@@ -21,7 +21,7 @@ typedef struct _MagicInfo
   unsigned char
     *magic;
 
-  unsigned int
+  unsigned long
     length,
     offset;
 

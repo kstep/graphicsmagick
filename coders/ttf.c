@@ -126,7 +126,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open draw file.
   */
-  TemporaryFilename(filename);
+  UniqueImageFilename(image,filename);
   file=fopen(filename,"w");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);

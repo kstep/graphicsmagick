@@ -1466,7 +1466,7 @@ MagickExport unsigned int SegmentImage(Image *image,
           LiberateMemory((void **) &histogram[i]);
         }
         ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-          image->filename);
+          image->filename)
       }
   }
   if (colorspace != RGBColorspace)

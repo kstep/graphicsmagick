@@ -1369,7 +1369,7 @@ MagickExport unsigned int OpenCache(Image *image)
     Create pixel cache on disk.
   */
   if (cache_info->storage_class == UndefinedClass)
-    TemporaryFilename(cache_info->cache_filename);
+    UniqueImageFilename(image,cache_info->cache_filename);
   if (cache_info->file == -1)
     {
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
@@ -2449,7 +2449,7 @@ static unsigned int WriteCacheInfo(Image *image)
     case RunlengthEncodedCompression: (void) fprintf(file,"RLE\n"); break;
     case ZipCompression: (void) fprintf(file,"Zip\n"); break;
   }
-  (void) fprintf(file,"columns=%u  rows=%u  depth=%u\n",image->columns,
+  (void) fprintf(file,"columns=%u  rows=%u  depth=%lu\n",image->columns,
     image->rows,image->depth);
   if ((image->x_resolution != 0) && (image->y_resolution != 0))
     {
@@ -2471,18 +2471,18 @@ static unsigned int WriteCacheInfo(Image *image)
     (void) fprintf(file,"page=%ux%u%+d%+d\n",image->page.width,
       image->page.height,image->page.x,image->page.y);
   if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
-    (void) fprintf(file,"scene=%u  iterations=%u  delay=%u  Dispose=%u\n",
+    (void) fprintf(file,"scene=%lu  iterations=%lu  delay=%lu  Dispose=%lu\n",
       image->scene,image->iterations,image->delay,image->dispose);
   else
     {
       if (image->scene != 0)
-        (void) fprintf(file,"scene=%u\n",image->scene);
+        (void) fprintf(file,"scene=%lu\n",image->scene);
       if (image->iterations != 1)
-        (void) fprintf(file,"iterations=%u\n",image->iterations);
+        (void) fprintf(file,"iterations=%lu\n",image->iterations);
       if (image->delay != 0)
-        (void) fprintf(file,"delay=%u\n",image->delay);
+        (void) fprintf(file,"delay=%lu\n",image->delay);
       if (image->dispose != 0)
-        (void) fprintf(file,"dispose=%u\n",image->dispose);
+        (void) fprintf(file,"dispose=%lu\n",image->dispose);
     }
   if (image->mean_error_per_pixel != 0.0)
     (void) fprintf(file,"error=%g  mean-error=%g  maximum-error=%g\n",

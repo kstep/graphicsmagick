@@ -291,7 +291,7 @@ MagickExport void Ascii85Flush(Image *image)
 
 MagickExport void Ascii85Encode(Image *image,const unsigned int code)
 {
-  int
+  long
     n;
 
   register char
@@ -937,7 +937,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
       quantize_info.colorspace=GRAYColorspace;
       (void) QuantizeImage(&quantize_info,huffman_image);
     }
-  TemporaryFilename(filename);
+  UniqueImageFilename(image,filename);
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
@@ -1333,7 +1333,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
 %  The format of the ZLIBEncodeImage method is:
 %
 %      unsigned int ZLIBEncodeImage(Image *image,const size_t number_pixels,
-%        const unsigned int quality,unsigned char *pixels)
+%        const unsigned long quality,unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -1353,7 +1353,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
 %
 */
 MagickExport unsigned int ZLIBEncodeImage(Image *image,
-  const size_t number_pixels,const unsigned int quality,unsigned char *pixels)
+  const size_t number_pixels,const unsigned long quality,unsigned char *pixels)
 {
   int
     status;
@@ -1384,7 +1384,7 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,
   stream.zalloc=(alloc_func) NULL;
   stream.zfree=(free_func) NULL;
   stream.opaque=(voidpf) NULL;
-  status=deflateInit(&stream,Min(quality/10,9));
+  status=deflateInit(&stream,(int) Min(quality/10,9));
   if (status == Z_OK)
     {
       status=deflate(&stream,Z_FINISH);

@@ -248,7 +248,7 @@ static int SceneCompare(const void *x,const void *y)
 
   image_1=(Image **) x;
   image_2=(Image **) y;
-  return((int) (*image_1)->scene-(int) (*image_2)->scene);
+  return((int) ((*image_1)->scene-(*image_2)->scene));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

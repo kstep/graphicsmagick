@@ -151,7 +151,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   /*
     Write blob to a temporary file on disk.
   */
-  TemporaryFilename(clone_info->filename);
+  UniqueImageFilename(image,clone_info->filename);
   file=open(clone_info->filename,O_WRONLY | O_CREAT | O_EXCL | O_BINARY,0777);
   if (file == -1)
     {

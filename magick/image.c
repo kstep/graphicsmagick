@@ -78,7 +78,7 @@ const char
   *SaveImagesText = "  Saving images...  ",
   *WriteBinaryType = "wb";
 
-const unsigned int
+const unsigned long
   DefaultCompressionQuality = 75;
 
 /*
@@ -857,18 +857,15 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
     length;
 
   /*
-    Allocate image structure.
+    Clone the image.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  clone_image=(Image *) AcquireMemory(sizeof(Image));
+  clone_image=AllocateImage((const ImageInfo *) NULL);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
-  /*
-    Clone the image.
-  */
   *clone_image=(*image);
   clone_image->reference_count=1;
   clone_image->montage=(char *) NULL;
@@ -1731,7 +1728,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
            (image->next == (Image *) NULL) && (image->scene == 0))
         (void) fprintf(file,"%.1024s ",image->filename);
       else
-        (void) fprintf(file,"%.1024s[%u] ",image->filename,image->scene);
+        (void) fprintf(file,"%.1024s[%lu] ",image->filename,image->scene);
       (void) fprintf(file,"%.1024s ",image->magick);
       if ((image->magick_columns != 0) || (image->magick_rows != 0))
         if ((image->magick_columns != image->columns) ||
@@ -1768,7 +1765,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
               (int) image->mean_error_per_pixel,image->normalized_mean_error,
               image->normalized_maximum_error);
           }
-      (void) fprintf(file,"%u-bit ",image->depth);
+      (void) fprintf(file,"%lu-bit ",image->depth);
       if (SizeBlob(image) != 0)
         {
           if (SizeBlob(image) >= (1 << 24))
@@ -1828,7 +1825,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     default: (void) fprintf(file,"undefined"); break;
   }
   (void) fprintf(file,"\n");
-  (void) fprintf(file,"  Depth: %u-bits\n",GetImageDepth(image));
+  (void) fprintf(file,"  Depth: %lu-bits\n",GetImageDepth(image));
   x=0;
   p=(Image *) NULL;
   if ((image->matte && (strcmp(image->magick,"GIF") != 0)) || image->taint)
@@ -1882,7 +1879,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       p=image->colormap;
       for (i=0; i < image->colors; i++)
       {
-        (void) fprintf(file,"    %d: (%5d,%5d,%5d)",i,p->red,p->green,p->blue);
+        (void) fprintf(file,"    %lu: (%5d,%5d,%5d)",i,p->red,p->green,p->blue);
         (void) fprintf(file,"\t");
         (void) QueryColorname(image,p,AllCompliance,name);
         (void) fprintf(file,"  %.1024s",name);
@@ -2100,21 +2097,21 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     (void) fprintf(file,"  Page Geometry: %ux%u%+d%+d\n",image->page.width,
       image->page.height,image->page.x,image->page.y);
   if (image->dispose != 0)
-    (void) fprintf(file,"  Dispose Method: %d\n",image->dispose);
+    (void) fprintf(file,"  Dispose Method: %lu\n",image->dispose);
   if (image->delay != 0)
-    (void) fprintf(file,"  Delay: %d\n",image->delay);
+    (void) fprintf(file,"  Delay: %lu\n",image->delay);
   if (image->iterations != 1)
-    (void) fprintf(file,"  Iterations: %d\n",image->iterations);
+    (void) fprintf(file,"  Iterations: %lu\n",image->iterations);
   p=image;
   while (p->previous != (Image *) NULL)
     p=p->previous;
   for (count=1; p->next != (Image *) NULL; count++)
     p=p->next;
   if (count > 1)
-    (void) fprintf(file,"  Scene: %u of %u\n",image->scene,count);
+    (void) fprintf(file,"  Scene: %lu of %u\n",image->scene,count);
   else
     if (image->scene != 0)
-      (void) fprintf(file,"  Scene: %u\n",image->scene);
+      (void) fprintf(file,"  Scene: %lu\n",image->scene);
   (void) fprintf(file,"  Compression: ");
   switch (image->compression)
   {
@@ -2629,7 +2626,7 @@ MagickExport RectangleInfo GetImageBoundingBox(Image *image)
 %
 %  The format of the GetImageDepth method is:
 %
-%      unsigned int GetImageDepth(Image *image)
+%      unsigned long GetImageDepth(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2637,7 +2634,7 @@ MagickExport RectangleInfo GetImageBoundingBox(Image *image)
 %
 %
 */
-MagickExport unsigned int GetImageDepth(Image *image)
+MagickExport unsigned long GetImageDepth(Image *image)
 {
   int
     y;
@@ -2702,15 +2699,19 @@ MagickExport unsigned int GetImageDepth(Image *image)
 */
 MagickExport void GetImageInfo(ImageInfo *image_info)
 {
+  Image
+    *image;
+
   /*
     File and image dimension members.
   */
   assert(image_info != (ImageInfo *) NULL);
   memset(image_info,0,sizeof(ImageInfo));
   image_info->blob=CloneBlobInfo((BlobInfo *) NULL);
-  TemporaryFilename(image_info->unique);
+  image=AllocateImage(image_info);
+  UniqueImageFilename(image,image_info->unique);
   (void) strcat(image_info->unique,"u");
-  TemporaryFilename(image_info->zero);
+  UniqueImageFilename(image,image_info->zero);
   image_info->adjoin=True;
   image_info->depth=QuantumDepth;
   image_info->interlace=NoInterlace;
@@ -2724,6 +2725,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->dither=True;
   image_info->preview_type=JPEGPreview;
   image_info->signature=MagickSignature;
+  DestroyImage(image);
 }
 
 /*
@@ -3141,7 +3143,7 @@ MagickExport unsigned int IsSubimage(const char *geometry,
 %  ListToGroupImage() is a convenience method that converts a linked list of
 %  images to a sequential array.  For example,
 %
-%    images = ListToGroupImage(image_list, \&n);
+%    images = ListToGroupImage(image_list,&n);
 %    for (i=0; i < n; i++)
 %      puts(images[i]->filename);
 %
@@ -5792,7 +5794,7 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
 %
 %  The format of the SetImageDepth method is:
 %
-%      unsigned int SetImageDepth(Image *image,const unsigned int depth)
+%      unsigned int SetImageDepth(Image *image,const unsigned long depth)
 %
 %  A description of each parameter follows:
 %
@@ -5802,7 +5804,7 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
 %
 %
 */
-MagickExport unsigned int SetImageDepth(Image *image,const unsigned int depth)
+MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
 {
   int
     y;

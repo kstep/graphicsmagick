@@ -3926,7 +3926,7 @@ static unsigned int XDrawEditImage(Display *display,
               XSetCursorState(display,windows,False);
               if (stipple_image == (Image *) NULL)
                 break;
-              TemporaryFilename(filename);
+              UniqueImageFilename(stipple_image,filename);
               FormatString(stipple_image->filename,"xbm:%.1024s",filename);
               status=WriteImage(image_info,stipple_image);
               DestroyImage(stipple_image);
@@ -6675,7 +6675,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Edit image comment.
       */
-      TemporaryFilename(image_info->filename);
+      UniqueImageFilename(*image,image_info->filename);
       comment=GetImageAttribute(*image,"comment");
       if ((comment != (ImageAttribute *) NULL) &&
           (comment->value != (char *) NULL))
@@ -6721,7 +6721,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      TemporaryFilename(filename);
+      UniqueImageFilename(*image,filename);
       FormatString((*image)->filename,"launch:%s",filename);
       status=WriteImage(image_info,*image);
       if (status != False)
@@ -6799,7 +6799,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->preview_type=(PreviewType) (i+1);
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"label","Preview");
-      TemporaryFilename(filename);
+      UniqueImageFilename(*image,filename);
       FormatString((*image)->filename,"preview:%s",filename);
       status=WriteImage(image_info,*image);
       FormatString((*image)->filename,"show:%s",filename);
@@ -6820,7 +6820,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"label","Histogram");
-      TemporaryFilename(filename);
+      UniqueImageFilename(*image,filename);
       FormatString((*image)->filename,"histogram:%s",filename);
       status=WriteImage(image_info,*image);
       FormatString((*image)->filename,"show:%s",filename);
@@ -6847,7 +6847,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"label","Matte");
-      TemporaryFilename(filename);
+      UniqueImageFilename(*image,filename);
       FormatString((*image)->filename,"matte:%s",filename);
       status=WriteImage(image_info,*image);
       FormatString((*image)->filename,"show:%s",filename);
@@ -8621,8 +8621,8 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   /*
     Print image.
   */
-  TemporaryFilename(print_image->magick_filename);
-  TemporaryFilename(filename);
+  UniqueImageFilename(print_image,print_image->magick_filename);
+  UniqueImageFilename(print_image,filename);
   FormatString(print_image->filename,"print:%s",filename);
   status=WriteImage(image_info,print_image);
   DestroyImage(print_image);
@@ -11397,7 +11397,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   window_info.y=0;
   if (resources.debug)
     {
-      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",image->filename,
+      (void) fprintf(stderr,"Image: %.1024s[%lu] %ux%u ",image->filename,
         image->scene,image->columns,image->rows);
       if (image->colors != 0)
         (void) fprintf(stderr,"%luc ",image->colors);
@@ -12020,8 +12020,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   nexus=(Image *) NULL;
   if (resource_info->debug)
     {
-      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",display_image->filename,
-        display_image->scene,display_image->columns,display_image->rows);
+      (void) fprintf(stderr,"Image: %.1024s[%lu] %ux%u ",
+        display_image->filename,display_image->scene,display_image->columns,
+        display_image->rows);
       if (display_image->colors != 0)
         (void) fprintf(stderr,"%luc ",display_image->colors);
       (void) fprintf(stderr,"%.1024s\n",display_image->magick);

@@ -92,7 +92,7 @@ typedef struct _EdgeInfo
   PointInfo
     *points;
 
-  int
+  long
     number_points,
     direction,
     ghostline,
@@ -104,7 +104,7 @@ typedef struct _PolygonInfo
   EdgeInfo
     *edges;
 
-  int
+  long
     number_edges;
 } PolygonInfo;
 
@@ -568,7 +568,7 @@ static void PrintPolygonInfo(const PolygonInfo *polygon_info)
   register EdgeInfo
     *p;
 
-  register int
+  register size_t
     i,
     j;
 
@@ -576,7 +576,7 @@ static void PrintPolygonInfo(const PolygonInfo *polygon_info)
   p=polygon_info->edges;
   for (i=0; i < polygon_info->number_edges; i++)
   {
-    (void) fprintf(stdout,"      edge %d:\n      direction: %s\n      "
+    (void) fprintf(stdout,"      edge %lu:\n      direction: %s\n      "
       "ghostline: %s\n      bounds: %g,%g - %g,%g\n",i,
       p->direction ? "down" : "up",p->ghostline ? "transparent" : "opaque",
       p->bounds.x1,p->bounds.y1,p->bounds.x2,p->bounds.y2);
@@ -991,7 +991,7 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
 %
 %  The format of the DestroyEdge method is:
 %
-%      void DestroyEdge(PolygonInfo *polygon_info,const int edge)
+%      long DestroyEdge(PolygonInfo *polygon_info,const int edge)
 %
 %  A description of each parameter follows:
 %
@@ -1001,7 +1001,7 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
 %
 %
 */
-static int DestroyEdge(PolygonInfo *polygon_info,const int edge)
+static long DestroyEdge(PolygonInfo *polygon_info,const long edge)
 {
   assert(edge >= 0);
   assert(edge < polygon_info->number_edges);
@@ -1038,7 +1038,7 @@ static int DestroyEdge(PolygonInfo *polygon_info,const int edge)
 */
 static void DestroyPolygonInfo(PolygonInfo *polygon_info)
 {
-  register int
+  register size_t
     i;
 
   for (i=0; i < polygon_info->number_edges; i++)
@@ -1096,7 +1096,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
   PrimitiveInfo
     primitive_info[6];
 
-  register int
+  register size_t
     i;
 
   SegmentInfo
@@ -2375,7 +2375,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
     if (primitive_type == UndefinedPrimitive)
       {
         if (graphic_context[n]->debug)
-          (void) fprintf(stdout,"  %.*s\n",q-p,p);
+          (void) fprintf(stdout,"  %.*s\n",(int) (q-p),p);
         continue;
       }
     /*
@@ -2614,7 +2614,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
     if (primitive_info == (PrimitiveInfo *) NULL)
       break;
     if (graphic_context[n]->debug)
-      (void) fprintf(stdout,"  %.*s\n",q-p,p);
+      (void) fprintf(stdout,"  %.*s\n",(int) (q-p),p);
     if (status == False)
       break;
     primitive_info[i].primitive=UndefinedPrimitive;
@@ -2705,7 +2705,6 @@ static inline double GetPixelOpacity(PolygonInfo *polygon_info,const double mid,
     subpath_opacity;
 
   int
-    j,
     winding_number;
 
   register double
@@ -2718,8 +2717,11 @@ static inline double GetPixelOpacity(PolygonInfo *polygon_info,const double mid,
   register const PointInfo
     *q;
 
-  register int
+  register size_t
     i;
+
+  size_t
+    j;
 
   /*
     Compute fill & stroke opacity for this (x,y) point.
@@ -2910,11 +2912,13 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     *p;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   SegmentInfo
     bounds;

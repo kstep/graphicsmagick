@@ -647,7 +647,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             /*
               Write image to temporary file in JPEG format.
             */
-            TemporaryFilename(filename);
+            UniqueImageFilename(image,filename);
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
               ThrowWriterException(DelegateWarning,"Unable to clone image",

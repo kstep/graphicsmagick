@@ -247,7 +247,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionWarning,"Invalid pixel map",map);
+                ThrowImageException(OptionWarning,"Invalid pixel map",map)
               }
             }
           }
@@ -317,7 +317,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionWarning,"Invalid pixel map",map);
+                ThrowImageException(OptionWarning,"Invalid pixel map",map)
               }
             }
           }
@@ -387,7 +387,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionWarning,"Invalid pixel map",map);
+                ThrowImageException(OptionWarning,"Invalid pixel map",map)
               }
             }
           }
@@ -457,7 +457,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionWarning,"Invalid pixel map",map);
+                ThrowImageException(OptionWarning,"Invalid pixel map",map)
               }
             }
           }
@@ -527,7 +527,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
               default:
               {
                 DestroyImage(image);
-                ThrowImageException(OptionWarning,"Invalid pixel map",map);
+                ThrowImageException(OptionWarning,"Invalid pixel map",map)
               }
             }
           }
@@ -541,7 +541,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
     default:
     {
       DestroyImage(image);
-      ThrowImageException(OptionWarning,"Invalid pixel map",map);
+      ThrowImageException(OptionWarning,"Invalid pixel map",map)
     }
   }
   return(image);
@@ -732,7 +732,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
                 break;
               }
               default:
-                ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
+                ThrowBinaryException(OptionWarning,"Invalid pixel map",map)
             }
           }
           p++;
@@ -797,7 +797,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
                 break;
               }
               default:
-                ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
+                ThrowBinaryException(OptionWarning,"Invalid pixel map",map)
             }
           }
           p++;
@@ -862,7 +862,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
                 break;
               }
               default:
-                ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
+                ThrowBinaryException(OptionWarning,"Invalid pixel map",map)
             }
           }
           p++;
@@ -927,7 +927,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
                 break;
               }
               default:
-                ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
+                ThrowBinaryException(OptionWarning,"Invalid pixel map",map)
             }
           }
           p++;
@@ -992,7 +992,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
                 break;
               }
               default:
-                ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
+                ThrowBinaryException(OptionWarning,"Invalid pixel map",map)
             }
           }
           p++;
@@ -1001,7 +1001,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
       break;
     }
     default:
-      ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
+      ThrowBinaryException(OptionWarning,"Invalid pixel map",map)
   }
   return(True);
 }
@@ -1928,7 +1928,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           return((Image *) NULL);
         }
       (void) strcpy(image->filename,clone_info->filename);
-      TemporaryFilename(clone_info->filename);
+      UniqueImageFilename(image,clone_info->filename);
       status=InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
       ThrowException(exception,image->exception.severity,
         image->exception.reason,image->exception.description);
@@ -2006,7 +2006,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             Image
               *clone_image;
 
-            if (next->scene != target)
+            if (next->scene != (unsigned long) target)
               continue;
             /*
               Clone this subimage.
@@ -2299,7 +2299,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           /*
             Let our encoding delegate process the image.
           */
-          TemporaryFilename(image->filename);
+          UniqueImageFilename(image,image->filename);
           status=
             InvokeDelegate(clone_info,image,(char *) NULL,clone_info->magick);
           (void) remove(image->filename);
@@ -2319,7 +2319,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
         {
           DestroyImageInfo(clone_info);
           ThrowBinaryException(MissingDelegateWarning,
-            "no encode delegate for this image format",clone_info->magick);
+            "no encode delegate for this image format",clone_info->magick)
         }
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);

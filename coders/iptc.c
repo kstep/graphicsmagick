@@ -331,7 +331,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
   {
     c=(*p++);
     length--;
-    if (length <= 0)
+    if (length == 0)
       break; 
     if (c == 0x1c)
       {
@@ -347,7 +347,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
   {
     c=(*p++);
     length--;
-    if (length <= 0)
+    if (length == 0)
       break; 
     if (c == 0x1c)
       marker=True;
@@ -362,12 +362,12 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
     */
     p++; /* dataset */
     length--;
-    if (length <= 0)
+    if (length == 0)
       break; 
     info_length++;
     p++; /* record number */
     length--;
-    if (length <= 0)
+    if (length == 0)
       break; 
     info_length++;
     /*
@@ -375,7 +375,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
     */
     c=(*p++);
     length--;
-    if (length <= 0)
+    if (length == 0)
       break; 
     info_length++;
     if (c & (unsigned char) 0x80)
@@ -384,7 +384,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
         {
           buffer[i]=(*p++);
           length--;
-          if (length <= 0)
+          if (length == 0)
             break; 
           info_length++;
         }
@@ -396,7 +396,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
         tag_length=((long) c) << 8;
         c=(*p++);
         length--;
-        if (length <= 0)
+        if (length == 0)
           break; 
         info_length++;
         tag_length|=(long) c;
@@ -405,7 +405,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
       break;
     p+=tag_length;
     length-=tag_length;
-    if (length <= 0)
+    if (length == 0)
       break; 
     info_length+=tag_length;  
   }
@@ -420,7 +420,7 @@ static unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
   unsigned char
     *info;
 
-  long
+  size_t
     length;
 
   if (image->iptc_profile.length == 0)
@@ -428,7 +428,7 @@ static unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
   info=image->iptc_profile.info;
   length=image->iptc_profile.length;
   length=GetIPTCStream(&info,length);
-  if (length <= 0)
+  if (length == 0)
     ThrowWriterException(FileOpenWarning,"No IPTC info was found",image);
   /*
     Open image file.

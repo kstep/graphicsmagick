@@ -701,7 +701,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       */
       image_info->subimage=atoi(image_info->tile);
       image_info->subrange=atoi(image_info->tile);
-      (void) sscanf(image_info->tile,"%u-%u",&image_info->subimage,
+      (void) sscanf(image_info->tile,"%lu-%lu",&image_info->subimage,
         &image_info->subrange);
       if (image_info->subrange < image_info->subimage)
         Swap(image_info->subimage,image_info->subrange);
@@ -838,7 +838,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
         Copy standard input or pipe to temporary file.
       */
       image_info->file=(FILE *) NULL;
-      TemporaryFilename(image->filename);
+      UniqueImageFilename(image,image->filename);
       image_info->temporary=True;
       FormatString(image_info->filename,"%.1024s",image->filename);
       file=fopen(image->filename,WriteBinaryType);

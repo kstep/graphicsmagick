@@ -322,7 +322,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     {
       image->generic_profiles=0;
       ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
+        (char *) NULL)
     }
   image->generic_profile[i].name=AllocateString((char *) NULL);
   FormatString(image->generic_profile[i].name,"APP%d",
@@ -662,7 +662,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     }
   if (image_info->subrange != 0)
     {
-      jpeg_info.scale_denom=image_info->subrange;
+      jpeg_info.scale_denom=(int) image_info->subrange;
       jpeg_calc_output_dimensions(&jpeg_info);
     }
 #if (JPEG_LIB_VERSION >= 61) && defined(D_PROGRESSIVE_SUPPORTED)
@@ -1122,7 +1122,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.image_width=image->columns;
   jpeg_info.image_height=image->rows;
   jpeg_info.input_components=3;
-  jpeg_info.data_precision=Min(image->depth,BITS_IN_JSAMPLE);
+  jpeg_info.data_precision=(int) Min(image->depth,BITS_IN_JSAMPLE);
   jpeg_info.in_color_space=JCS_RGB;
   switch (image_info->colorspace)
   {
@@ -1225,7 +1225,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     jpeg_set_quality(&jpeg_info,100,True);
   else
 #endif
-    jpeg_set_quality(&jpeg_info,image_info->quality,True);
+    jpeg_set_quality(&jpeg_info,(int) image_info->quality,True);
   jpeg_start_compress(&jpeg_info,True);
   /*
     Write JPEG profiles.

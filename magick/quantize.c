@@ -567,8 +567,8 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
 
   unsigned int
     index,
-    id,
-    level;
+    level,
+    id;
 
   for (y=0; y < (int) image->rows; y++)
   {
@@ -1162,7 +1162,8 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
 %
 %  The format of the GetCubeInfo method is:
 %
-%      cube_info=GetCubeInfo(const QuantizeInfo *quantize_info,int depth)
+%      CubeInfo GetCubeInfo(const QuantizeInfo *quantize_info,
+%        unsigned int depth)
 %
 %  A description of each parameter follows.
 %
@@ -1181,7 +1182,8 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
 %
 %
 */
-static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,int depth)
+static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
+  unsigned int depth)
 {
   CubeInfo
     *cube_info;
@@ -1977,10 +1979,8 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   CubeInfo
     *cube_info;
 
-  int
-    depth;
-
   unsigned int
+    depth,
     status;
 
   unsigned long

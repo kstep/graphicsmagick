@@ -1290,7 +1290,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         if (image->matte)
           c|=0x01;
         (void) WriteBlobByte(image,c);
-        WriteBlobLSBShort(image,image->delay);
+        WriteBlobLSBShort(image,(unsigned int) image->delay);
         (void) WriteBlobByte(image,(int) opacity);
         (void) WriteBlobByte(image,0x00);
         if (GetImageAttribute(image,"comment") != (ImageAttribute *) NULL)
@@ -1332,7 +1332,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlob(image,11,"NETSCAPE2.0");
             (void) WriteBlobByte(image,0x03);
             (void) WriteBlobByte(image,0x01);
-            WriteBlobLSBShort(image,image->iterations);
+            WriteBlobLSBShort(image,(unsigned int) image->iterations);
             (void) WriteBlobByte(image,0x00);
           }
       }

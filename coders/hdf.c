@@ -358,6 +358,6 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
   ThrowBinaryException(MissingDelegateWarning,"HDF library is not available",
-    image->filename);
+    image->filename)
 }
 #endif

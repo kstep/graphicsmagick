@@ -60,7 +60,7 @@ typedef struct _DrawInfo
   LineJoin
     linejoin;
 
-  unsigned int
+  unsigned long
     miterlimit,
     dash_offset;
 

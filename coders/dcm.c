@@ -2726,13 +2726,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     msb_first,
     number_scenes,
     quantum,
-    samples_per_pixel,
     significant_bits,
     status,
     width;
 
   unsigned long
-    max_value;
+    max_value,
+    samples_per_pixel;
 
   unsigned short
     *graymap,
@@ -2886,7 +2886,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if ((group == dicom_info[i].group) &&
               (element == dicom_info[i].element))
             break;
-        (void) fprintf(stdout,"0x%04x %4d %.1024s-%.1024s (0x%04x,0x%04x)",
+        (void) fprintf(stdout,"0x%04lx %4lu %.1024s-%.1024s (0x%04x,0x%04x)",
           image->offset,length,implicit_vr,explicit_vr,group,element);
         if (dicom_info[i].description != (char *) NULL)
           (void) fprintf(stdout," %.1024s",dicom_info[i].description);
@@ -2954,7 +2954,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Samples per pixel.
             */
-            samples_per_pixel=(unsigned int) datum;
+            samples_per_pixel=datum;
             break;
           }
           case 0x0004:
@@ -3151,7 +3151,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Handle 2.4.50 lossy JPEG and 2.4.70 lossless JPEG.
       */
-      TemporaryFilename(filename);
+      UniqueImageFilename(image,filename);
       file=fopen(filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         ThrowReaderException(FileOpenWarning,"Unable to write file",image);

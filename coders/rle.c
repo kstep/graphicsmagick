@@ -174,7 +174,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     bits_per_pixel,
     flags,
-    map_length,
+    map_length;
+
+  unsigned long
     number_colormaps,
     number_planes;
 
@@ -348,7 +350,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (i=0; i < (size_t) operand; i++)
           {
             pixel=ReadBlobByte(image);
-            if ((y < (int) image->rows) && ((x+i) < image->columns))
+            if ((y < (int) image->rows) && ((x+i) < (size_t) image->columns))
               *p=pixel;
             p+=number_planes;
           }
@@ -369,7 +371,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             x*number_planes+plane;
           for (i=0; i < (size_t) operand; i++)
           {
-            if ((y < (int) image->rows) && ((x+i) < image->columns))
+            if ((y < (int) image->rows) && ((x+i) < (size_t) image->columns))
               *p=pixel;
             p+=number_planes;
           }

@@ -124,13 +124,9 @@ typedef struct _CubeInfo
   NodeInfo
     *root;
 
-  unsigned int
-    progress;
-
   unsigned long
-    colors;
-
-  unsigned int
+    progress,
+    colors,
     free_nodes;
 
   NodeInfo
@@ -1611,7 +1607,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
 %
 %  The format of the ValidateColormapIndex method is:
 %
-%      IndexPacket ValidateColormapIndex(Image *image,const unsigned long index)
+%      IndexPacket ValidateColormapIndex(Image *image,const unsigned int index)
 %
 %  A description of each parameter follows:
 %
@@ -1625,11 +1621,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
 %
 */
 MagickExport IndexPacket ValidateColormapIndex(Image *image,
-  const unsigned long index)
+  const unsigned int index)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (index < image->colors)
+  if ((unsigned long) index < image->colors)
     return((IndexPacket) index);
   ThrowException(&image->exception,CorruptImageWarning,
     "invalid colormap index",image->filename);

@@ -231,7 +231,7 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
     (void) fprintf(file,"%.1024s",p->name);
     for (i=strlen(p->name); i <= 9; i++)
       (void) fprintf(file," ");
-    (void) fprintf(file,"%6d ",p->offset);
+    (void) fprintf(file,"%6ld ",p->offset);
     if (p->target != (char *) NULL)
       (void) fprintf(file,"%.1024s",p->target);
     (void) fprintf(file,"\n");

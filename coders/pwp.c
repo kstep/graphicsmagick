@@ -171,7 +171,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageWarning,"Not a PWP image file",pwp_image);
   clone_info=CloneImageInfo(image_info);
   RewindBlob(clone_info->blob);
-  TemporaryFilename(clone_info->filename);
+  UniqueImageFilename(pwp_image,clone_info->filename);
   image=(Image *) NULL;
   for ( ; ; )
   {

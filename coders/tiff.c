@@ -295,11 +295,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *q;
+
+  register size_t
+    i;
 
   register unsigned char
     *p;
@@ -343,7 +345,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   /*
     Copy image to temporary file.
   */
-  TemporaryFilename((char *) image_info->filename);
+  UniqueImageFilename(image,(char *) image_info->filename);
   file=fopen(image_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to write file",image);
@@ -445,8 +447,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       case COMPRESSION_ADOBE_DEFLATE: image->compression=ZipCompression; break;
       default: image->compression=RunlengthEncodedCompression; break;
     }
-    image->columns=width;
-    image->rows=height;
+    image->columns=(unsigned int) width;
+    image->rows=(unsigned int) height;
     range=max_sample_value-min_sample_value;
     image->depth=range <= 255 ? 8 : QuantumDepth;
     if ((samples_per_pixel == 1) && !TIFFIsTiled(tiff) &&
@@ -461,7 +463,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image);
+              "Memory allocation failed",image)
           }
       }
     if (units == RESUNIT_INCH)
@@ -531,7 +533,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image);
+              "Memory allocation failed",image)
           }
         /*
           Create colormap.
@@ -554,11 +556,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           case PHOTOMETRIC_MINISWHITE:
           default:
           {
-            unsigned int
+            unsigned long
               colors;
 
             colors=image->colors;
-            for (i=0; i < (int) image->colors; i++)
+            for (i=0; i < image->colors; i++)
             {
               image->colormap[colors-i-1].red=
                 ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
@@ -728,7 +730,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image);
+              "Memory allocation failed",image)
           }
         TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
           &sample_info);
@@ -814,7 +816,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image);
+              "Memory allocation failed",image)
           }
         (void) TIFFReadRGBAImage(tiff,image->columns,image->rows,
           pixels+image->columns*sizeof(uint32),0);
@@ -999,13 +1001,13 @@ ModuleExport void UnregisterTIFFImage(void)
 #if defined(IPTC_SUPPORT)
 static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 {
-  register int
+  register size_t
     i;
 
   unsigned char
     *profile;
 
-  unsigned int
+  unsigned long
     length,
     roundup;
 
@@ -1064,19 +1066,25 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 }
 #endif
 
-static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
+static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
   tsample_t sample,Image *image)
 {
-  int
-    bytes_per_pixel,
-    number_tiles,
-    status,
-    tile_width;
+  int32
+    status;
 
-  register int
-    i,
+  long
+    bytes_per_pixel;
+
+  register size_t
+    i;
+
+  size_t
     j,
     k;
+
+  unsigned long
+    number_tiles,
+    tile_width;
 
   static unsigned char
     *scanlines = (unsigned char *) NULL,
@@ -1098,8 +1106,9 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
   */
   i=(row % image->tile_info.height)*TIFFScanlineSize(tiff);
   memcpy(scanlines+i,(char *) scanline,TIFFScanlineSize(tiff));
-  if (((row % image->tile_info.height) != (image->tile_info.height-1)) &&
-      (row != image->rows-1))
+  if (((unsigned int) (row % image->tile_info.height) !=
+      (image->tile_info.height-1)) &&
+      ((unsigned int) row != image->rows-1))
     return(0);
   /*
     Write tile to TIFF image.
@@ -1111,9 +1120,9 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
     (image->columns+image->tile_info.width-1)/image->tile_info.height;
   for (i=0; i < number_tiles; i++)
   {
-    tile_width=(i == (int) number_tiles-1) ?
+    tile_width=(i == number_tiles-1) ?
       image->columns-(i*image->tile_info.width) : image->tile_info.width;
-    for (j=0; j < (int) ((row % image->tile_info.height)+1); j++)
+    for (j=0; j < ((row % image->tile_info.height)+1); j++)
       for (k=0; k < tile_width; k++)
       {
         register unsigned char
@@ -1126,12 +1135,13 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
           (j*(TIFFTileSize(tiff)/image->tile_info.height)+k*bytes_per_pixel);
         memcpy(q,p,bytes_per_pixel);
       }
-      status=TIFFWriteTile(tiff,tile_pixels,i*image->tile_info.width,(row/
-        image->tile_info.height)*image->tile_info.height,0,sample);
+      status=TIFFWriteTile(tiff,tile_pixels,(uint32)
+        (i*image->tile_info.width),(uint32) ((row/image->tile_info.height)*
+        image->tile_info.height),0,sample);
       if (status < 0)
         break;
   }
-  if (row == (image->rows-1))
+  if ((unsigned int) row == (image->rows-1))
     {
       /*
         Free memory resources.
@@ -1231,7 +1241,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(filename,image->filename);
   if ((image->file == stdout) || image->pipet ||
       (image->blob->data != (unsigned char *) NULL))
-    TemporaryFilename(filename);
+    UniqueImageFilename(image,filename);
   else
     CloseBlob(image);
   tiff=TIFFOpen(filename,WriteBinaryType);

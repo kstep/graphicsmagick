@@ -456,7 +456,6 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned int
     height,
-    number_images,
     overview,
     rotate,
     status,
@@ -464,6 +463,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned long
     offset,
+    number_images,
     subimage;
 
   /*
@@ -559,13 +559,13 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MonitorHandler
         handler;
 
-      register int
+      register size_t
         j;
 
       /*
         Read thumbnails from overview image.
       */
-      for (j=1; j <= (int) number_images; j++)
+      for (j=1; j <= number_images; j++)
       {
         handler=SetMonitorHandler((MonitorHandler) NULL);
         FormatString(image->filename,"images/img%04d.pcd",j);
@@ -577,7 +577,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         yy=luma;
         c1=chroma1;
         c2=chroma2;
-        for (i=0; i < height; i+=2)
+        for (y=0; y < (int) height; y+=2)
         {
           (void) ReadBlob(image,width,(char *) yy);
           yy+=image->columns;
@@ -615,7 +615,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           TransformRGBImage(image,sRGBColorspace);
         else
           TransformRGBImage(image,YCCColorspace);
-        if (j < (int) number_images)
+        if (j < number_images)
           {
             /*
               Allocate next image structure.
@@ -645,7 +645,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   yy=luma;
   c1=chroma1;
   c2=chroma2;
-  for (i=0; i < height; i+=2)
+  for (y=0; y < height; y+=2)
   {
     (void) ReadBlob(image,width,(char *) yy);
     yy+=image->columns;

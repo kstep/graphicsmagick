@@ -2404,52 +2404,6 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  T e m p o r a r y F i l e n a m e                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method TemporaryFilename replaces the contents of the string pointed to
-%  by filename by a unique file name.  Some delegates do not like % or .
-%  in their filenames.
-%
-%  The format of the TemporaryFilename method is:
-%
-%      void TemporaryFilename(char *filename)
-%
-%  A description of each parameter follows.
-%
-%   o  filename:  Specifies a pointer to an array of characters.  The unique
-%      file name is returned in this array.
-%
-*/
-MagickExport void TemporaryFilename(char *filename)
-{
-  assert(filename != (char *) NULL);
-  *filename='\0';
-#if !defined(vms) && !defined(macintosh)
-  {
-    char
-      *name;
-
-    name=(char *) tempnam((char *) NULL,TemporaryTemplate);
-    if (name != (char *) NULL)
-      {
-        (void) strcpy(filename,name);
-        LiberateMemory((void **) &name);
-        return;
-      }
-  }
-#endif
-  (void) tmpnam(filename);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   T o k e n i z e r                                                         %
 %                                                                             %
 %                                                                             %
@@ -2622,10 +2576,10 @@ static long sindex(char c,char *string)
   return(-1);
 }
 
-static void StoreToken(TokenInfo *token_info,char *string,int max_token_length,
+static void StoreToken(TokenInfo *token_info,char *string,long max_token_length,
   char c)
 {
-  register int
+  register size_t
     i;
 
   if ((token_info->offset < 0) || (token_info->offset >= (max_token_length-1)))

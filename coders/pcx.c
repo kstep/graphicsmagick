@@ -509,7 +509,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               if ((image->columns % 4) != 0)
                 {
-                  for (i=3; i >= (4-(image->columns % 4)); i--)
+                  for (i=3; i >= (size_t) (4-(image->columns % 4)); i--)
                     *r++=(*p >> (i*2)) & 0x03;
                   p++;
                 }
@@ -732,11 +732,11 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     packets,
-    scene,
     status;
 
   unsigned long
-    *page_table;
+    *page_table,
+    scene;
 
   /*
     Open output image file.

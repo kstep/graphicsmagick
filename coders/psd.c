@@ -782,7 +782,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read Packbit encoded pixel data as separate planes.
       */
-      for (i=0; i < (image->rows*psd_info.channels); i++)
+      for (i=0; i < (size_t) (image->rows*psd_info.channels); i++)
         (void) ReadBlobMSBShort(image);
       for (i=0; i < psd_info.channels; i++)
         (void) DecodeImage(image,i);
@@ -1037,7 +1037,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   WriteBlobMSBLong(image,image->rows);
   WriteBlobMSBLong(image,image->columns);
   WriteBlobMSBShort(image,
-    image->storage_class == PseudoClass ? 8 : image->depth);
+    (unsigned int) (image->storage_class == PseudoClass ? 8 : image->depth));
   if (((image_info->colorspace != UndefinedColorspace) ||
        (image->colorspace != CMYKColorspace)) &&
        (image_info->colorspace != CMYKColorspace))

@@ -1563,7 +1563,7 @@ MagickExport void XDisplayImageInfo(Display *display,
   assert(resource_info != (XResourceInfo *) NULL);
   assert(windows != (XWindows *) NULL);
   assert(image != (Image *) NULL);
-  TemporaryFilename(filename);
+  UniqueImageFilename(image,filename);
   file=fopen(filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     {
@@ -1620,7 +1620,7 @@ MagickExport void XDisplayImageInfo(Display *display,
     undo_image=undo_image->previous;
   }
   (void) fprintf(file,"Undo Edit Cache\n  levels: %u\n",levels);
-  (void) fprintf(file,"  bytes: %umb\n",(bytes+(1 << 19)) >> 20);
+  (void) fprintf(file,"  bytes: %lumb\n",(bytes+(1 << 19)) >> 20);
   (void) fprintf(file,"  limit: %lumb\n\n",resource_info->undo_cache);
   /*
     Write info about the image to a file.

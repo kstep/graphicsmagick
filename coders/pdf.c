@@ -208,7 +208,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open temporary output file.
   */
-  TemporaryFilename(postscript_filename);
+  UniqueImageFilename(image,postscript_filename);
   file=fopen(postscript_filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to write file",image);
@@ -300,7 +300,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     FormatString(options,"-dFirstPage=%u -dLastPage=%u",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
-  TemporaryFilename((char *) image_info->filename);
+  UniqueImageFilename(image,(char *) image_info->filename);
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
@@ -506,10 +506,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     *attribute;
 
   int
-    count,
-    status,
     x,
     y;
+
+  long
+    count;
 
   Image
     encode_image,
@@ -544,16 +545,17 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     height,
-    info_id,
-    object,
-    pages_id,
-    root_id,
     scene,
+    status,
     text_size,
     width;
 
   unsigned long
+    info_id,
     length,
+    object,
+    pages_id,
+    root_id,
     *xref;
 
   /*
@@ -568,7 +570,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         Write standard output or pipe to temporary file.
       */
       encode_image=(*image);
-      TemporaryFilename(image->filename);
+      UniqueImageFilename(image,image->filename);
       image->temporary=True;
       status=OpenBlob(image_info,image,WriteBinaryType);
       if (status == False)
@@ -935,7 +937,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             /*
               Write image to temporary file in JPEG format.
             */
-            TemporaryFilename(filename);
+            UniqueImageFilename(image,filename);
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
               ThrowWriterException(DelegateWarning,
@@ -1235,7 +1237,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             /*
               Write image to temporary file in JPEG format.
             */
-            TemporaryFilename(filename);
+            UniqueImageFilename(image,filename);
             jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
               ThrowWriterException(DelegateWarning,"Unable to clone image",

@@ -259,9 +259,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *pixels;
 
   unsigned int
-    max_value,
-    packets,
     status;
+
+  unsigned long
+    max_value,
+    packets;
 
   /*
     Open image file.

@@ -17,13 +17,13 @@ typedef struct _TokenInfo
   int
     state;
 
-  unsigned
+  unsigned int
     flag;
 
   char
     quote;
 
-  int
+  long
     offset;
 } TokenInfo;
 
@@ -47,6 +47,7 @@ extern MagickExport int
   LocaleNCompare(const char *,const char *,size_t),
   LocaleCompare(const char *,const char *),
   MultilineCensus(const char *),
+  ParseGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
   SystemCommand(const unsigned int,const char *),
   Tokenizer(TokenInfo *,unsigned,char *,int,char *,char *,char *,char *,
     char,char *,int *,char *);
@@ -69,8 +70,7 @@ extern MagickExport void
   LocaleLower(char *),
   LocaleUpper(char *),
   ReacquireMemory(void **,const size_t),
-  Strip(char *),
-  TemporaryFilename(char *);
+  Strip(char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -523,3 +523,53 @@ MagickExport unsigned int SignatureImage(Image *image)
   (void) SetImageAttribute(image,"signature",signature);
   return(True);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  U n i q u e I m a g e F i l e n a m e                                      %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UniqueImageFilename replaces the contents of the string pointed to
+%  by filename by a unique file name.  Some delegates do not like % or .
+%  in their filenames.
+%
+%  The format of the UniqueImageFilename method is:
+%
+%      void UniqueImageFilename(Image *image,char *filename)
+%
+%  A description of each parameter follows.
+%
+%    o image: The image.
+%
+%   o  filename:  Specifies a pointer to an array of characters.  The unique
+%      file name is returned in this array.
+%
+*/
+MagickExport void UniqueImageFilename(Image *image,char *filename)
+{
+  SignatureInfo
+    signature_info;
+
+  /*
+    Convert digital signature to a filename.
+  */
+  assert(filename != (char *) NULL);
+  GetSignatureInfo(&signature_info);
+  UpdateSignature(&signature_info,(unsigned char *) &image,sizeof(Image *));
+  UpdateSignature(&signature_info,(unsigned char *) image,sizeof(Image));
+  UpdateSignature(&signature_info,(unsigned char *) &filename,sizeof(char *));
+  FinalizeSignature(&signature_info);
+  FormatString(filename,"magick%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx",
+    signature_info.digest[0],signature_info.digest[1],signature_info.digest[2],
+    signature_info.digest[3],signature_info.digest[4],signature_info.digest[5],
+    signature_info.digest[6],signature_info.digest[7]);
+  AcquireSemaphoreInfo(&image->semaphore);
+  image->serial++;
+  LiberateSemaphoreInfo(&image->semaphore);
+}

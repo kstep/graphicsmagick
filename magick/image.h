@@ -84,7 +84,7 @@ typedef struct _RectangleInfo
 
 typedef struct _Ascii85Info
 {
-  int
+  long
     offset,
     line_break;
 
@@ -277,14 +277,12 @@ typedef struct _Image
     colorspace;
 
   unsigned int
-    matte;
-
-  unsigned int
+    matte,
     columns,
-    rows,
-    depth;
+    rows;
 
   unsigned long
+    depth,
     colors;
 
   PixelPacket
@@ -322,7 +320,7 @@ typedef struct _Image
     *directory,
     *geometry;
 
-  size_t
+  long
     offset;
 
   double
@@ -354,13 +352,11 @@ typedef struct _Image
   struct _Image
     *clip_mask;
 
-  unsigned int
+  unsigned long
     scene,
     dispose,
     delay,
-    iterations;
-
-  unsigned long
+    iterations,
     total_colors;
 
   double
@@ -387,8 +383,10 @@ typedef struct _Image
   void
     *client_data;
 
-  int
-    start_loop,
+  long
+    start_loop;
+
+  unsigned int
     taint;
 
   void
@@ -397,13 +395,13 @@ typedef struct _Image
   int
     (*fifo)(const struct _Image *,const void *,const size_t);
 
-  int
+  long
     reference_count;
 
   Ascii85Info
     ascii85;
 
-  int
+  unsigned int
     exempt,
     status,
     temporary,
@@ -424,6 +422,7 @@ typedef struct _Image
     *next;
 
   unsigned long
+    serial,
     signature;
 } Image;
 
@@ -435,7 +434,9 @@ typedef struct _ImageInfo
 
   unsigned int
     temporary,
-    adjoin,
+    adjoin;
+
+  unsigned long
     subimage,
     subrange,
     depth;
@@ -454,7 +455,7 @@ typedef struct _ImageInfo
   CompressionType
     compression;
 
-  unsigned int
+  unsigned long
     quality;
 
   char
@@ -579,7 +580,7 @@ extern MagickExport const char
   *SaveImagesText,
   *WriteBinaryType;
 
-extern MagickExport const unsigned int
+extern MagickExport const unsigned long
   DefaultCompressionQuality;
 
 /*
@@ -666,10 +667,9 @@ extern MagickExport ImageType
 
 extern MagickExport IndexPacket
   *GetIndexes(const Image *),
-  ValidateColormapIndex(Image *,const unsigned long);
+  ValidateColormapIndex(Image *,const unsigned int);
 
 extern MagickExport int
-  ParseGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
   ParseImageGeometry(const char *,int *,int *,unsigned int *,unsigned int *);
 
 extern MagickExport MagickInfo
@@ -702,7 +702,6 @@ extern MagickExport unsigned int
   DisplayImages(const ImageInfo *image_info,Image *image),
   EqualizeImage(Image *),
   GammaImage(Image *,const char *),
-  GetImageDepth(Image *),
   GetNumberScenes(const Image *),
   IsGeometry(const char *),
   IsGrayImage(Image *),
@@ -730,7 +729,7 @@ extern MagickExport unsigned int
   RaiseImage(Image *,const RectangleInfo *,const int),
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageClipMask(Image *,Image *),
-  SetImageDepth(Image *,const unsigned int),
+  SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
   SignatureImage(Image *),
   SortColormapByIntensity(Image *),
@@ -744,6 +743,7 @@ extern MagickExport unsigned int
     int (*)(const Image *,const void *,const size_t));
 
 extern MagickExport unsigned long
+  GetImageDepth(Image *),
   GetNumberColors(Image *,FILE *);
 
 extern MagickExport void
@@ -893,6 +893,7 @@ extern MagickExport void
   TransformHSL(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),
   TransformImage(Image **,const char *,const char *),
+  UniqueImageFilename(Image *,char *),
   Unregister8BIMImage(void),
   UnregisterARTImage(void),
   UnregisterAVIImage(void),
