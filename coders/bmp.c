@@ -508,8 +508,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           OS/2 BMP image file.
         */
-        bmp_info.width=ReadBlobLSBShort(image);
-        bmp_info.height=ReadBlobLSBShort(image);
+        bmp_info.width=(short) ReadBlobLSBShort(image);
+        bmp_info.height=(short) ReadBlobLSBShort(image);
         bmp_info.planes=ReadBlobLSBShort(image);
         bmp_info.bits_per_pixel=ReadBlobLSBShort(image);
         bmp_info.x_pixels=0;
@@ -523,8 +523,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Microsoft Windows BMP image file.
         */
-        bmp_info.width=ReadBlobLSBLong(image);
-        bmp_info.height=ReadBlobLSBLong(image);
+        bmp_info.width=(short) ReadBlobLSBLong(image);
+        bmp_info.height=(short) ReadBlobLSBLong(image);
         bmp_info.planes=ReadBlobLSBShort(image);
         bmp_info.bits_per_pixel=ReadBlobLSBShort(image);
         bmp_info.compression=ReadBlobLSBLong(image);
