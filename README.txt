@@ -142,13 +142,13 @@ UNIX/Cygwin COMPILATION
    --enable-gcov           enable gcov profiling support (default disabled)
    --enable-lzw            enable LZW support (default disabled)
    --disable-16bit-pixel   disable 16 bit/quantum pixels (default enabled)
+   --disable-largefile     omit support for large files
 
   Optional Packages:
    --with-modules          enable support for dynamically loadable modules
    --with-cache            set pixel cache threshhold (default 2047MB)
    --without-threads       disable threads support
    --without-frozenpaths   disable frozen delegate paths
-   --without-largefiles    disable support for large (64 bit) file offsets
    --without-magick-plus-plus disable build/install of Magick++
    --without-perl          disable build/install of PerlMagick
         or
@@ -273,12 +273,12 @@ UNIX/Cygwin COMPILATION
       for the pixel cache. The default cache threshold is 2047MB.
       Small memory machines may want to decrease the threshold.
 
-    o --without-largefiles: By default, ImageMagick is compiled with
+    o --disable-largefile: By default, ImageMagick is compiled with
       support for large (> 2GB on a 32-bit CPU) files if the operating
       system supports large files.  All applications which use the
       ImageMagick library must then also include support for large
       files. By disabling support for large files via
-      --without-largefiles, dependent applications do not require
+      --disable-largefile, dependent applications do not require
       special compilation options for large files in order to use the
       library.
 
