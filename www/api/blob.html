@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<HTML>
+<HEAD>
 <TITLE>blob - Methods to Read or Write Binary Large OBjects</TITLE>
-<link rel="StyleSheet" href="../www/magick.css" type="text/css">
+<LINK REV="made" HREF="mailto:bhcompile@stripples.devel.redhat.com">
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,23 +12,23 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A>
+<FONT SIZE=-1>NAME</FONT></A></LI>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A>
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#attachblob">AttachBlob</A>
-		<LI><A HREF="#blobtoimage">BlobToImage</A>
-		<LI><A HREF="#cloneblobinfo">CloneBlobInfo</A>
-		<LI><A HREF="#destroyblobinfo">DestroyBlobInfo</A>
-		<LI><A HREF="#detachblob">DetachBlob</A>
-		<LI><A HREF="#filetoblob">FileToBlob</A>
-		<LI><A HREF="#getblobinfo">GetBlobInfo</A>
-		<LI><A HREF="#imagetoblob">ImageToBlob</A>
-		<LI><A HREF="#pingblob">PingBlob</A>
+		<LI><A HREF="#attachblob">AttachBlob</A></LI>
+		<LI><A HREF="#blobtoimage">BlobToImage</A></LI>
+		<LI><A HREF="#cloneblobinfo">CloneBlobInfo</A></LI>
+		<LI><A HREF="#destroyblobinfo">DestroyBlobInfo</A></LI>
+		<LI><A HREF="#detachblob">DetachBlob</A></LI>
+		<LI><A HREF="#filetoblob">FileToBlob</A></LI>
+		<LI><A HREF="#getblobinfo">GetBlobInfo</A></LI>
+		<LI><A HREF="#imagetoblob">ImageToBlob</A></LI>
+		<LI><A HREF="#pingblob">PingBlob</A></LI>
 	</UL>
 
 </UL>
@@ -63,38 +63,38 @@
 <P>The format of the AttachBlob method is:</P>
 <blockquote>void AttachBlob ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info, const void *blob, const size_t length ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_blob_info%3A">blob_info:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_blob_info%3A">blob_info:</A></STRONG><BR>
 <DD>
 Specifies a pointer to a BlobInfo structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_blob%3A">blob:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_blob%3A">blob:</A></STRONG><BR>
 <DD>
 The address of a character stream in one of the image formats understood by ImageMagick.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
 <DD>
 This size_t integer reflects the length in bytes of the blob.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="blobtoimage">BlobToImage</A></H2>
-<blockquote>BlobToImage() implements direct to memory image formats. It returns the blob as an image. </blockquote><P>The format of the BlobToImage method is:</P>
+<blockquote>BlobToImage ( ) implements direct to memory image formats. It returnsthe blob as an image.; </blockquote><P>The format of the BlobToImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *BlobToImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
 <DD>
 The image info.
 <P></P>
-<dd><p></p><dt><STRONG>blob:</STRONG><BR>
+<p><dt><STRONG>blob:</STRONG><BR>
 <DD>
 The address of a character stream in one of the image formats understood by ImageMagick.
 <P></P>
-<dd><p></p><dt><STRONG>length:</STRONG><BR>
+<p><dt><STRONG>length:</STRONG><BR>
 <DD>
 This size_t integer reflects the length in bytes of the blob.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
@@ -105,23 +105,23 @@ Return any errors or warnings in this structure.
 <P>The format of the CloneBlobInfo method is:</P>
 <blockquote><A HREF="types/BlobInfo.html">BlobInfo</A> *CloneBlobInfo ( const <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_clone_info%3A">clone_info:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_clone_info%3A">clone_info:</A></STRONG><BR>
 <DD>
 Method CloneBlobInfo returns a duplicate of the given blob info, or if blob info is 
 <FONT SIZE=-1>NULL</FONT> a new one.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_quantize_info%3A">quantize_info:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_quantize_info%3A">quantize_info:</A></STRONG><BR>
 <DD>
 a structure of type info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyblobinfo">DestroyBlobInfo</A></H2>
-<blockquote>DestroyBlobInfo() deallocates memory associated with an <A HREF="types/BlobInfo.html">BlobInfo</A> structure. </blockquote><P>The format of the DestroyBlobInfo method is:</P>
+<blockquote>DestroyBlobInfo ( ) deallocates memory associated with an <A HREF="types/BlobInfo.html">BlobInfo</A> structure.; </blockquote><P>The format of the DestroyBlobInfo method is:</P>
 <blockquote>void DestroyBlobInfo ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>blob:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>blob:</STRONG><BR>
 <DD>
 Specifies a pointer to a BlobInfo structure.
 <P></P></DL></DL>
@@ -131,8 +131,8 @@ Specifies a pointer to a BlobInfo structure.
 <P>The format of the DetachBlob method is:</P>
 <blockquote>void DetachBlob ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>blob_info:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>blob_info:</STRONG><BR>
 <DD>
 Specifies a pointer to a BlobInfo structure.
 <P></P></DL></DL>
@@ -142,75 +142,75 @@ Specifies a pointer to a BlobInfo structure.
 <P>The format of the FileToBlob method is:</P>
 <blockquote>void *FileToBlob ( const char *filename, size_t *length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>blob:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>blob:</STRONG><BR>
 <DD>
 Method FileToBlob returns the contents of a file as a blob.  If an error occurs 
 <FONT SIZE=-1>NULL</FONT> is returned.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_filename%3A">filename:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_filename%3A">filename:</A></STRONG><BR>
 <DD>
 The filename.
 <P></P>
-<dd><p></p><dt><STRONG>length:</STRONG><BR>
+<p><dt><STRONG>length:</STRONG><BR>
 <DD>
 This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.
 <P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getblobinfo">GetBlobInfo</A></H2>
-<blockquote>GetBlobInfo() initializes the <A HREF="types/BlobInfo.html">BlobInfo</A> structure. </blockquote><P>The format of the GetBlobInfo method is:</P>
+<blockquote>GetBlobInfo ( ) initializes the <A HREF="types/BlobInfo.html">BlobInfo</A> structure.; </blockquote><P>The format of the GetBlobInfo method is:</P>
 <blockquote>void GetBlobInfo ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>blob_info:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>blob_info:</STRONG><BR>
 <DD>
 Specifies a pointer to a BlobInfo structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="imagetoblob">ImageToBlob</A></H2>
-<blockquote>ImageToBlob() implements direct to memory image formats. It returns the image as a blob and its length. The magick member of the <A HREF="types/Image.html">Image</A> structure determines the format of the returned blob ( GIG, JPEG, PNG, etc. ) </blockquote><P>The format of the ImageToBlob method is:</P>
+<blockquote>ImageToBlob ( ) implements direct to memory image formats. It returns theimage as a blob and its length. The magick member of the <A HREF="types/Image.html">Image</A> structuredetermines the format of the returned blob ( GIG, JPEG, PNG, etc. ); </blockquote><P>The format of the ImageToBlob method is:</P>
 <blockquote>void *ImageToBlob ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image, size_t *length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image_info:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
 The image info..
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 The image.
 <P></P>
-<dd><p></p><dt><STRONG>length:</STRONG><BR>
+<p><dt><STRONG>length:</STRONG><BR>
 <DD>
 This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.
 <P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="pingblob">PingBlob</A></H2>
-<blockquote>PingBlob() returns all the attributes of an image or image sequence except for the pixels. It is much faster and consumes far less memory than BlobToImage ( ) . On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the PingBlob method is:</P>
+<blockquote>PingBlob ( ) returns all the attributes of an image or image sequenceexcept for the pixels. It is much faster and consumes far less memorythan BlobToImage ( ) . On failure, a NULL image is returned and exceptiondescribes the reason for the failure.; </blockquote><P>The format of the PingBlob method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *PingBlob ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image_info:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
 The image info.
 <P></P>
-<dd><p></p><dt><STRONG>blob:</STRONG><BR>
+<p><dt><STRONG>blob:</STRONG><BR>
 <DD>
 The address of a character stream in one of the image formats understood by ImageMagick.
 <P></P>
-<dd><p></p><dt><STRONG>length:</STRONG><BR>
+<p><dt><STRONG>length:</STRONG><BR>
 <DD>
 This size_t integer reflects the length in bytes of the blob.
 <P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 </DL></DL>

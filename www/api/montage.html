@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<TITLE>montage - Methods to Create a Montage</TITLE>
-<link rel="StyleSheet" href="../www/magick.css" type="text/css">
+<HTML>
+<HEAD>
+<TITLE>montage - Methods to Create a Montage.</TITLE>
+<LINK REV="made" HREF="mailto:bhcompile@stripples.devel.redhat.com">
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,18 +12,18 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A>
+<FONT SIZE=-1>NAME</FONT></A></LI>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A>
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#clonemontageinfo">CloneMontageInfo</A>
-		<LI><A HREF="#destroymontageinfo">DestroyMontageInfo</A>
-		<LI><A HREF="#getmontageinfo">GetMontageInfo</A>
-		<LI><A HREF="#montageimages">MontageImages</A>
+		<LI><A HREF="#clonemontageinfo">CloneMontageInfo</A></LI>
+		<LI><A HREF="#destroymontageinfo">DestroyMontageInfo</A></LI>
+		<LI><A HREF="#getmontageinfo">GetMontageInfo</A></LI>
+		<LI><A HREF="#montageimages">MontageImages</A></LI>
 	</UL>
 
 </UL>
@@ -33,7 +33,7 @@
 <P>
 <H1><A NAME="name">
 <FONT SIZE=-1>NAME</FONT></A></H1>
-<P>montage - Methods to Create a Montage</P>
+<P>montage - Methods to Create a Montage.</P>
 <P>
 <HR>
 <H1><A NAME="synopsis">
@@ -49,39 +49,39 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="clonemontageinfo">CloneMontageInfo</A></H2>
-<blockquote>CloneMontageInfo() makes a copy of the given montage info structure. If NULL is specified, a new image info structure is created initialized to default values. </blockquote><P>The format of the CloneMontageInfo method is:</P>
+<blockquote>CloneMontageInfo ( ) makes a copy of the given montage info structure. IfNULL is specified, a new image info structure is created initialized todefault values.; </blockquote><P>The format of the CloneMontageInfo method is:</P>
 <blockquote><A HREF="types/MontageInfo.html">MontageInfo</A> *CloneMontageInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/MontageInfo.html">MontageInfo</A> *montage_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
 <DD>
 The image info.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_montage_info%3A">montage_info:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_montage_info%3A">montage_info:</A></STRONG><BR>
 <DD>
 The montage info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroymontageinfo">DestroyMontageInfo</A></H2>
-<blockquote>DestroyMontageInfo() deallocates memory associated with montage_info. </blockquote><P>The format of the DestroyMontageInfo method is:</P>
+<blockquote>DestroyMontageInfo ( ) deallocates memory associated with montage_info.; </blockquote><P>The format of the DestroyMontageInfo method is:</P>
 <blockquote>void DestroyMontageInfo ( <A HREF="types/MontageInfo.html">MontageInfo</A> *montage_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>montage_info:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>montage_info:</STRONG><BR>
 <DD>
 Specifies a pointer to an MontageInfo structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getmontageinfo">GetMontageInfo</A></H2>
-<blockquote>GetMontageInfo() initializes montage_info to default values. </blockquote><P>The format of the GetMontageInfo method is:</P>
+<blockquote>GetMontageInfo ( ) initializes montage_info to default values.; </blockquote><P>The format of the GetMontageInfo method is:</P>
 <blockquote>void GetMontageInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/MontageInfo.html">MontageInfo</A> *montage_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image_info:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
 a structure of type ImageInfo.
 <P></P>
-<dd><p></p><dt><STRONG>montage_info:</STRONG><BR>
+<p><dt><STRONG>montage_info:</STRONG><BR>
 <DD>
 Specifies a pointer to a MontageInfo structure.
 <P></P></DL></DL>
@@ -91,16 +91,16 @@ Specifies a pointer to a MontageInfo structure.
 <P>The format of the MontageImages method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MontageImages ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/MontageInfo.html">MontageInfo</A> *montage_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 Specifies a pointer to an array of Image structures.
 <P></P>
-<dd><p></p><dt><STRONG>montage_info:</STRONG><BR>
+<p><dt><STRONG>montage_info:</STRONG><BR>
 <DD>
 Specifies a pointer to a MontageInfo structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 </DL></DL>

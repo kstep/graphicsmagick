@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<HTML>
+<HEAD>
 <TITLE>monitor - ImageMagick Progress Monitor Methods</TITLE>
-<link rel="StyleSheet" href="../www/magick.css" type="text/css">
+<LINK REV="made" HREF="mailto:bhcompile@stripples.devel.redhat.com">
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,16 +12,16 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A>
+<FONT SIZE=-1>NAME</FONT></A></LI>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A>
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#magickmonitor">MagickMonitor</A>
-		<LI><A HREF="#setmonitorhandler">SetMonitorHandler</A>
+		<LI><A HREF="#magickmonitor">MagickMonitor</A></LI>
+		<LI><A HREF="#setmonitorhandler">SetMonitorHandler</A></LI>
 	</UL>
 
 </UL>
@@ -45,25 +45,25 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="magickmonitor">MagickMonitor</A></H2>
-<blockquote>MagickMonitor() calls the monitor handler method with a text string that describes the task and a measure of completion. </blockquote><P>The format of the MagickMonitor method is:</P>
+<blockquote>MagickMonitor ( ) calls the monitor handler method with a text string thatdescribes the task and a measure of completion.; </blockquote><P>The format of the MagickMonitor method is:</P>
 <blockquote>void MagickMonitor ( const char *text, const off_t quantum, const off_t span ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
 <DD>
 The position relative to the span parameter which represents how much progress has been made toward completing a task.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
 <DD>
 The span relative to completing a task.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setmonitorhandler">SetMonitorHandler</A></H2>
-<blockquote>SetMonitorHandler() sets the monitor handler to the specified method and returns the previous monitor handler. </blockquote><P>The format of the SetMonitorHandler method is:</P>
+<blockquote>SetMonitorHandler ( ) sets the monitor handler to the specified methodand returns the previous monitor handler.; </blockquote><P>The format of the SetMonitorHandler method is:</P>
 <blockquote>MonitorHandler SetMonitorHandler ( MonitorHandler handler ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_handler%3A">handler:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_handler%3A">handler:</A></STRONG><BR>
 <DD>
 Specifies a pointer to a method to handle monitors.
 </DL></DL>

@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<HTML>
+<HEAD>
 <TITLE>NAME</TITLE>
-<link rel="StyleSheet" href="../www/magick.css" type="text/css">
+<LINK REV="made" HREF="mailto:bhcompile@stripples.devel.redhat.com">
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,27 +12,27 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A>
+<FONT SIZE=-1>NAME</FONT></A></LI>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A>
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#xcolorbrowserwidget">XColorBrowserWidget</A>
-		<LI><A HREF="#xcommandwidget">XCommandWidget</A>
-		<LI><A HREF="#xconfirmwidget">XConfirmWidget</A>
-		<LI><A HREF="#xdialogwidget">XDialogWidget</A>
-		<LI><A HREF="#xfilebrowserwidget">XFileBrowserWidget</A>
-		<LI><A HREF="#xfontbrowserwidget">XFontBrowserWidget</A>
-		<LI><A HREF="#xinfowidget">XInfoWidget</A>
-		<LI><A HREF="#xlistbrowserwidget">XListBrowserWidget</A>
-		<LI><A HREF="#xmenuwidget">XMenuWidget</A>
-		<LI><A HREF="#xmonitorwidget">XMonitorWidget</A>
-		<LI><A HREF="#xnoticewidget">XNoticeWidget</A>
-		<LI><A HREF="#xpreferenceswidget">XPreferencesWidget</A>
-		<LI><A HREF="#xtextviewwidget">XTextViewWidget</A>
+		<LI><A HREF="#xcolorbrowserwidget">XColorBrowserWidget</A></LI>
+		<LI><A HREF="#xcommandwidget">XCommandWidget</A></LI>
+		<LI><A HREF="#xconfirmwidget">XConfirmWidget</A></LI>
+		<LI><A HREF="#xdialogwidget">XDialogWidget</A></LI>
+		<LI><A HREF="#xfilebrowserwidget">XFileBrowserWidget</A></LI>
+		<LI><A HREF="#xfontbrowserwidget">XFontBrowserWidget</A></LI>
+		<LI><A HREF="#xinfowidget">XInfoWidget</A></LI>
+		<LI><A HREF="#xlistbrowserwidget">XListBrowserWidget</A></LI>
+		<LI><A HREF="#xmenuwidget">XMenuWidget</A></LI>
+		<LI><A HREF="#xmonitorwidget">XMonitorWidget</A></LI>
+		<LI><A HREF="#xnoticewidget">XNoticeWidget</A></LI>
+		<LI><A HREF="#xpreferenceswidget">XPreferencesWidget</A></LI>
+		<LI><A HREF="#xtextviewwidget">XTextViewWidget</A></LI>
 	</UL>
 
 </UL>
@@ -71,21 +71,21 @@
 <P>The format of the XColorBrowserWidget method is:</P>
 <blockquote>void XColorBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_display%3A">display:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_display%3A">display:</A></STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_window%3A">window:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_window%3A">window:</A></STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_action%3A">action:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_action%3A">action:</A></STRONG><BR>
 <DD>
 Specifies a pointer to the action of this widget.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_reply%3A">reply:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_reply%3A">reply:</A></STRONG><BR>
 <DD>
 The response from the user is returned in this parameter.
 <P></P></DL></DL>
@@ -95,25 +95,25 @@ The response from the user is returned in this parameter.
 <P>The format of the XCommandWidget method is:</P>
 <blockquote>int XCommandWidget ( Display *display, XWindows *windows, const char **selections, XEvent *event ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_selection_number%3A">selection_number:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_selection_number%3A">selection_number:</A></STRONG><BR>
 <DD>
 Specifies the number of the selection that the user choose.
 <P></P>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG>window:</STRONG><BR>
+<p><dt><STRONG>window:</STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_selections%3A">selections:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_selections%3A">selections:</A></STRONG><BR>
 <DD>
 Specifies a pointer to one or more strings that comprise the choices in the menu.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_event%3A">event:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_event%3A">event:</A></STRONG><BR>
 <DD>
 Specifies a pointer to a 
 <FONT SIZE=-1>X11</FONT> XEvent structure.
@@ -124,25 +124,25 @@ Specifies a pointer to a
 <P>The format of the XConfirmWidget method is:</P>
 <blockquote>int XConfirmWidget ( Display *display, XWindows *windows, const char *reason, const char *description ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
 <DD>
 Method XConfirmWidget returns True if the user presses Yes otherwise False is returned.
 <P></P>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG>window:</STRONG><BR>
+<p><dt><STRONG>window:</STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_reason%3A">reason:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_reason%3A">reason:</A></STRONG><BR>
 <DD>
 Specifies the message to display before terminating the program.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_description%3A">description:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_description%3A">description:</A></STRONG><BR>
 <DD>
 Specifies any description to the message.
 <P></P></DL></DL>
@@ -152,25 +152,25 @@ Specifies any description to the message.
 <P>The format of the XDialogWidget method is:</P>
 <blockquote>int XDialogWidget ( Display *display, XWindows *windows, const char *action, const char *query, char *reply ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG>window:</STRONG><BR>
+<p><dt><STRONG>window:</STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<dd><p></p><dt><STRONG>action:</STRONG><BR>
+<p><dt><STRONG>action:</STRONG><BR>
 <DD>
 Specifies a pointer to the action of this widget.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_query%3A">query:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_query%3A">query:</A></STRONG><BR>
 <DD>
 Specifies a pointer to the query to present to the user.
 <P></P>
-<dd><p></p><dt><STRONG>reply:</STRONG><BR>
+<p><dt><STRONG>reply:</STRONG><BR>
 <DD>
 The response from the user is returned in this parameter.
 <P></P></DL></DL>
@@ -180,21 +180,21 @@ The response from the user is returned in this parameter.
 <P>The format of the XFileBrowserWidget method is:</P>
 <blockquote>void XFileBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG>window:</STRONG><BR>
+<p><dt><STRONG>window:</STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<dd><p></p><dt><STRONG>action:</STRONG><BR>
+<p><dt><STRONG>action:</STRONG><BR>
 <DD>
 Specifies a pointer to the action of this widget.
 <P></P>
-<dd><p></p><dt><STRONG>reply:</STRONG><BR>
+<p><dt><STRONG>reply:</STRONG><BR>
 <DD>
 The response from the user is returned in this parameter.
 <P></P></DL></DL>
@@ -204,21 +204,21 @@ The response from the user is returned in this parameter.
 <P>The format of the XFontBrowserWidget method is:</P>
 <blockquote>void XFontBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG>window:</STRONG><BR>
+<p><dt><STRONG>window:</STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<dd><p></p><dt><STRONG>action:</STRONG><BR>
+<p><dt><STRONG>action:</STRONG><BR>
 <DD>
 Specifies a pointer to the action of this widget.
 <P></P>
-<dd><p></p><dt><STRONG>reply:</STRONG><BR>
+<p><dt><STRONG>reply:</STRONG><BR>
 <DD>
 The response from the user is returned in this parameter.
 <P></P></DL></DL>
@@ -228,17 +228,17 @@ The response from the user is returned in this parameter.
 <P>The format of the XInfoWidget method is:</P>
 <blockquote>void XInfoWidget ( Display *display, XWindows *windows, const char *activity ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG>window:</STRONG><BR>
+<p><dt><STRONG>window:</STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_activity%3A">activity:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_activity%3A">activity:</A></STRONG><BR>
 <DD>
 This character string reflects the current activity and is displayed in the Info widget.
 <P></P></DL></DL>
@@ -248,29 +248,29 @@ This character string reflects the current activity and is displayed in the Info
 <P>The format of the XListBrowserWidget method is:</P>
 <blockquote>void XListBrowserWidget ( Display *display, XWindows *windows, XWindowInfo *window_info, const char **list, const char *action, const char *query, char *reply ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG>window:</STRONG><BR>
+<p><dt><STRONG>window:</STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_list%3A">list:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_list%3A">list:</A></STRONG><BR>
 <DD>
 Specifies a pointer to an array of strings.  The user can select from these strings as a possible reply value.
 <P></P>
-<dd><p></p><dt><STRONG>action:</STRONG><BR>
+<p><dt><STRONG>action:</STRONG><BR>
 <DD>
 Specifies a pointer to the action of this widget.
 <P></P>
-<dd><p></p><dt><STRONG>query:</STRONG><BR>
+<p><dt><STRONG>query:</STRONG><BR>
 <DD>
 Specifies a pointer to the query to present to the user.
 <P></P>
-<dd><p></p><dt><STRONG>reply:</STRONG><BR>
+<p><dt><STRONG>reply:</STRONG><BR>
 <DD>
 The response from the user is returned in this parameter.
 <P></P></DL></DL>
@@ -280,29 +280,29 @@ The response from the user is returned in this parameter.
 <P>The format of the XMenuWidget method is:</P>
 <blockquote>int XMenuWidget ( Display *display, XWindows *windows, const char *title, const char **selections, char *item ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>selection_number:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>selection_number:</STRONG><BR>
 <DD>
 Specifies the number of the selection that the user choose.
 <P></P>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG>window:</STRONG><BR>
+<p><dt><STRONG>window:</STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_title%3A">title:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_title%3A">title:</A></STRONG><BR>
 <DD>
 Specifies a character string that describes the menu selections.
 <P></P>
-<dd><p></p><dt><STRONG>selections:</STRONG><BR>
+<p><dt><STRONG>selections:</STRONG><BR>
 <DD>
 Specifies a pointer to one or more strings that comprise the choices in the menu.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_item%3A">item:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_item%3A">item:</A></STRONG><BR>
 <DD>
 Specifies a character array.  The item selected from the menu is returned here.
 <P></P></DL></DL>
@@ -313,25 +313,25 @@ Specifies a character array.  The item selected from the menu is returned here.
 <P>The format of the XMonitorWidget method is:</P>
 <blockquote>void XMonitorWidget ( Display *display, XWindows *windows, const char *task, const off_t quantum, const off_t span ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG>window:</STRONG><BR>
+<p><dt><STRONG>window:</STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_task%3A">task:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_task%3A">task:</A></STRONG><BR>
 <DD>
 Identifies the task in progress.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
 <DD>
 Specifies the quantum position within the span which represents how much progress has been made in completing a task.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
 <DD>
 Specifies the span relative to completing a task.
 <P></P></DL></DL>
@@ -341,21 +341,21 @@ Specifies the span relative to completing a task.
 <P>The format of the XNoticeWidget method is:</P>
 <blockquote>void XNoticeWidget ( Display *display, XWindows *windows, const char *reason, const char *description ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG>window:</STRONG><BR>
+<p><dt><STRONG>window:</STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<dd><p></p><dt><STRONG>reason:</STRONG><BR>
+<p><dt><STRONG>reason:</STRONG><BR>
 <DD>
 Specifies the message to display before terminating the program.
 <P></P>
-<dd><p></p><dt><STRONG>description:</STRONG><BR>
+<p><dt><STRONG>description:</STRONG><BR>
 <DD>
 Specifies any description to the message.
 <P></P></DL></DL>
@@ -365,18 +365,18 @@ Specifies any description to the message.
 <P>The format of the XPreferencesWidget method is:</P>
 <blockquote>unsigned int XPreferencesWidget ( Display *display, <A HREF="types/XResourceInfo.html">XResourceInfo</A> *resource_info, XWindows *windows ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_resource_info%3A">resource_info:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_resource_info%3A">resource_info:</A></STRONG><BR>
 <DD>
 Specifies a pointer to a 
 <FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 <P></P>
-<dd><p></p><dt><STRONG>window:</STRONG><BR>
+<p><dt><STRONG>window:</STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P></DL></DL>
@@ -386,30 +386,30 @@ Specifies a pointer to a XWindows structure.
 <P>The format of the XTextViewWidget method is:</P>
 <blockquote>void XTextViewWidget ( Display *display, const <A HREF="types/XResourceInfo.html">XResourceInfo</A> *resource_info, XWindows *windows, const unsigned int mono, const char *title, const char **textlist ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<DL><DL>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG>resource_info:</STRONG><BR>
+<p><dt><STRONG>resource_info:</STRONG><BR>
 <DD>
 Specifies a pointer to a 
 <FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 <P></P>
-<dd><p></p><dt><STRONG>window:</STRONG><BR>
+<p><dt><STRONG>window:</STRONG><BR>
 <DD>
 Specifies a pointer to a XWindows structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_mono%3A">mono:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_mono%3A">mono:</A></STRONG><BR>
 <DD>
 Use mono-spaced font when displaying text.
 <P></P>
-<dd><p></p><dt><STRONG>title:</STRONG><BR>
+<p><dt><STRONG>title:</STRONG><BR>
 <DD>
 This character string is displayed at the top of the widget window.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_textlist%3A">textlist:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_textlist%3A">textlist:</A></STRONG><BR>
 <DD>
 This string list is displayed within the Text View widget.
 </DL></DL>

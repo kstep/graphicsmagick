@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<HTML>
+<HEAD>
 <TITLE>memory - ImageMagick Memory Allocation Methods</TITLE>
-<link rel="StyleSheet" href="../www/magick.css" type="text/css">
+<LINK REV="made" HREF="mailto:bhcompile@stripples.devel.redhat.com">
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,17 +12,17 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A>
+<FONT SIZE=-1>NAME</FONT></A></LI>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A>
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#acquirememory">AcquireMemory</A>
-		<LI><A HREF="#liberatememory">LiberateMemory</A>
-		<LI><A HREF="#reacquirememory">ReacquireMemory</A>
+		<LI><A HREF="#acquirememory">AcquireMemory</A></LI>
+		<LI><A HREF="#liberatememory">LiberateMemory</A></LI>
+		<LI><A HREF="#reacquirememory">ReacquireMemory</A></LI>
 	</UL>
 
 </UL>
@@ -47,37 +47,37 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="acquirememory">AcquireMemory</A></H2>
-<blockquote>AcquireMemory() returns a pointer to a block of memory at least size bytes suitably aligned for any use. </blockquote><P>The format of the AcquireMemory method is:</P>
+<blockquote>AcquireMemory ( ) returns a pointer to a block of memory at least sizebytes suitably aligned for any use.; </blockquote><P>The format of the AcquireMemory method is:</P>
 <blockquote>void *AcquireMemory ( const size_t size ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_size%3A">size:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_size%3A">size:</A></STRONG><BR>
 <DD>
 The size of the memory in bytes to allocate.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="liberatememory">LiberateMemory</A></H2>
-<blockquote>LiberateMemory() frees memory that has already been allocated. </blockquote><P>The format of the LiberateMemory method is:</P>
+<blockquote>LiberateMemory ( ) frees memory that has already been allocated.; </blockquote><P>The format of the LiberateMemory method is:</P>
 <blockquote>void LiberateMemory ( void **memory ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
 <DD>
 
 <FONT SIZE=-1>A</FONT> pointer to a block memory to free for reuse.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="reacquirememory">ReacquireMemory</A></H2>
-<blockquote>ReacquireMemory() changes the size of the memory and returns a pointer to the ( possibly moved ) block. The contents will be unchanged up to the lesser of the new and old sizes. </blockquote><P>The format of the ReacquireMemory method is:</P>
+<blockquote>ReacquireMemory ( ) changes the size of the memory and returns apointer to the ( possibly moved ) block. The contents will be unchangedup to the lesser of the new and old sizes.; </blockquote><P>The format of the ReacquireMemory method is:</P>
 <blockquote>void ReacquireMemory ( void **memory, const size_t size ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_memory%3A">memory:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_memory%3A">memory:</A></STRONG><BR>
 <DD>
 
 <FONT SIZE=-1>A</FONT> pointer to a memory allocation.  On return the pointer may change but the contents of the original allocation will not.
 <P></P>
-<dd><p></p><dt><STRONG>size:</STRONG><BR>
+<p><dt><STRONG>size:</STRONG><BR>
 <DD>
 The new size of the allocated memory.
 </DL></DL>

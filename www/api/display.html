@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<HTML>
+<HEAD>
 <TITLE>display - Methods to Interactively Display and Edit an Image</TITLE>
-<link rel="StyleSheet" href="../www/magick.css" type="text/css">
+<LINK REV="made" HREF="mailto:bhcompile@stripples.devel.redhat.com">
 </HEAD>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,16 +12,16 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A>
+<FONT SIZE=-1>NAME</FONT></A></LI>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A>
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#xdisplaybackgroundimage">XDisplayBackgroundImage</A>
-		<LI><A HREF="#xdisplayimage">XDisplayImage</A>
+		<LI><A HREF="#xdisplaybackgroundimage">XDisplayBackgroundImage</A></LI>
+		<LI><A HREF="#xdisplayimage">XDisplayImage</A></LI>
 	</UL>
 
 </UL>
@@ -45,53 +45,53 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="xdisplaybackgroundimage">XDisplayBackgroundImage</A></H2>
-<blockquote>XDisplayBackgroundImage() displays an image in the background of a window. </blockquote><P>The format of the XDisplayBackgroundImage method is:</P>
+<blockquote>XDisplayBackgroundImage ( ) displays an image in the background of a window.; </blockquote><P>The format of the XDisplayBackgroundImage method is:</P>
 <blockquote>unsigned int XDisplayBackgroundImage ( Display *display, <A HREF="types/XResourceInfo.html">XResourceInfo</A> *resource_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_display%3A">display:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_display%3A">display:</A></STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_resource_info%3A">resource_info:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_resource_info%3A">resource_info:</A></STRONG><BR>
 <DD>
 Specifies a pointer to a 
 <FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 Specifies a pointer to a Image structure; returned from ReadImage.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="xdisplayimage">XDisplayImage</A></H2>
-<blockquote>XDisplayImage() displays an image via X11. A new image is created and returned if the user interactively transforms the displayed image. </blockquote><P>The format of the XDisplayImage method is:</P>
+<blockquote>XDisplayImage ( ) displays an image via X11. A new image is created andreturned if the user interactively transforms the displayed image.; </blockquote><P>The format of the XDisplayImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *XDisplayImage ( Display *display, <A HREF="types/XResourceInfo.html">XResourceInfo</A> *resource_info, char **argv, int argc, <A HREF="types/Image.html">Image</A> **image, unsigned long *state ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_nexus%3A">nexus:</A></STRONG><BR>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_nexus%3A">nexus:</A></STRONG><BR>
 <DD>
 Method XDisplayImage returns an image when the user chooses 'Open Image' from the command menu or picks a tile from the image directory.  Otherwise a null image is returned.
 <P></P>
-<dd><p></p><dt><STRONG>display:</STRONG><BR>
+<p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<dd><p></p><dt><STRONG>resource_info:</STRONG><BR>
+<p><dt><STRONG>resource_info:</STRONG><BR>
 <DD>
 Specifies a pointer to a 
 <FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_argv%3A">argv:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_argv%3A">argv:</A></STRONG><BR>
 <DD>
 Specifies the application's argument list.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_argc%3A">argc:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_argc%3A">argc:</A></STRONG><BR>
 <DD>
 Specifies the number of arguments.
 <P></P>
-<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<p><dt><STRONG>image:</STRONG><BR>
 <DD>
 Specifies an address to an address of an Image structure; returned from ReadImage.
 </DL></DL>
