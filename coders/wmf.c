@@ -406,8 +406,14 @@ static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
 
 static void wmf_magick_bmp_free (wmfAPI* API,wmfBMP* bmp)
 {
-  if(bmp->data)
-    DestroyImage((Image*)bmp->data);
+  /*
+   * We don't actually free the image here since we need the image
+   * to persist until DrawImage() has been executed.
+   * The images are freed by wmf_magick_device_close()
+   */
+
+  /* if(bmp->data) */
+    /* DestroyImage((Image*)bmp->data); */
   bmp->data   = (void*)0;
   bmp->width  = (U16)0;
   bmp->height = (U16)0;
@@ -432,13 +438,29 @@ static void wmf_magick_device_close (wmfAPI* API)
   int
     index;
 
-  wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
+  Image
+    *image;
 
-  /* Remove any temporary files */
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData (API);
+
+  /* Destroy and de-register images saved in the image registry */
   if(ddata->temp_images != 0)
     {
+      RegistryType
+        type;
+
+      size_t
+        length;
+
       for( index=0; index<ddata->cur_temp_file_index; index++ )
-        DeleteMagickRegistry((ddata->temp_images)[index]);
+        {
+          image=(Image*)GetMagickRegistry((ddata->temp_images)[index],
+                                          &type,&length);
+          if(type == ImageRegistryType)
+            DestroyImage(image);
+          DeleteMagickRegistry((ddata->temp_images)[index]);
+        }
       LiberateMemory((void**)&ddata->temp_images);
     }
 }
@@ -1274,51 +1296,26 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
   wmfRGB* bg_color = 0;
   wmfRGB* brush_color = 0;
 
-  wmfBMP* brush_bmp = 0;
-
   wmfBrush* brush = 0;
 
   unsigned int fill_opaque;
-  unsigned int fill_polyfill;
   unsigned int fill_ROP;
-
-  unsigned int brush_style;
-  unsigned int brush_hatch;
 
   wmfStream* out = ddata->out;
 
   if (out == 0) return;
 
   fill_opaque   = (unsigned int) WMF_DC_OPAQUE (dc);
-  fill_polyfill = (unsigned int) WMF_DC_POLYFILL (dc);
   fill_ROP      = (unsigned int) WMF_DC_ROP (dc);
 
   bg_color = WMF_DC_BACKGROUND (dc);
 
   brush = WMF_DC_BRUSH (dc);
 
-  brush_style = (unsigned int) WMF_BRUSH_STYLE (brush);
-  brush_hatch = (unsigned int) WMF_BRUSH_HATCH (brush);
-
   brush_color = WMF_BRUSH_COLOR (brush);
 
-  brush_bmp = WMF_BRUSH_BITMAP (brush);
-
-  /* Filled ? */
-  if (brush_style == BS_NULL) /* BS_HOLLOW same as BS_NULL */
-    {
-      wmf_stream_printf (API,out,"fill none\n");
-      return;
-    }
-
-  /* Set fill opacity */
-  if (fill_opaque)
-    wmf_stream_printf (API,out,"fill-opacity 1.0\n");
-  else
-    wmf_stream_printf (API,out,"fill-opacity 0.5\n"); /* semi-transparent?? */
-
   /* Set polygon fill rule */
-  switch (fill_polyfill) /* Is this correct ?? */
+  switch ((unsigned int) WMF_DC_POLYFILL(dc)) /* Is this correct ?? */
     {
     case WINDING:
       wmf_stream_printf (API,out,"fill-rule nonzero\n");
@@ -1330,11 +1327,23 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
       break;
     }
 
-  /* FIXME: implement */
-  switch (brush_style)
+  switch ((unsigned int) WMF_BRUSH_STYLE(brush))
     {
+    case BS_NULL: /* BS_HOLLOW & BS_NULL share enum */
+      {
+        wmf_stream_printf (API,out,"fill none\n");
+        break;
+      }
     case BS_SOLID:
       {
+        /* Set fill opacity 
+         * FIXME: this is probably totally bogus.
+         */
+        if (fill_opaque)
+          wmf_stream_printf (API,out,"fill-opacity 1.0\n");
+        else
+          wmf_stream_printf (API,out,"fill-opacity 0.5\n"); /* semi-transparent?? */
+
         wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
                            (int)brush_color->r,
                            (int)brush_color->g,
@@ -1368,7 +1377,7 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
                            (int)brush_color->g,
                            (int)brush_color->b);
 
-        switch (brush_hatch)
+        switch ((unsigned int) WMF_BRUSH_HATCH (brush))
           {
 
           case HS_HORIZONTAL:	/* ----- */
@@ -1425,7 +1434,7 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
       }
     case BS_DIBPATTERN:
       {
-#if 1
+        /* FIXME: finish implementing */
         char
           *imgspec;
 
@@ -1438,9 +1447,15 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
         long
           id;
 
+        wmfBMP
+          *brush_bmp = 0;
+
+        brush_bmp = WMF_BRUSH_BITMAP (brush);
+
         if ( brush_bmp->data != 0 )
           {
             char
+              composition_mode[14],
               pattern_id[30];
             
             sprintf(pattern_id, "fill_%lu", ddata->pattern_id);
@@ -1462,18 +1477,73 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
             sprintf(imgspec,"mpr:%li", id);
             wmf_stream_printf (API,out,"push pattern %s 0,0, %lu,%lu\n",
                                pattern_id, image->columns, image->rows);
-            wmf_stream_printf (API,out,"image Copy 0,0 %lu,%lu '%s'\n",
-                               image->columns, image->rows, imgspec);
+
+            strcpy(composition_mode,"Copy"); /* Default is copy */
+            switch(fill_ROP)
+              {
+              case SRCCOPY: /* dest = source */
+                printf("SRCCOPY\n");
+                strcpy(composition_mode,"Copy");
+                break;
+              case SRCPAINT: /* dest = source OR dest */
+                printf("SRCPAINT\n");
+                break;
+              case SRCAND: /* dest = source AND dest */
+                printf("SRCAND\n");
+                break;
+              case SRCINVERT: /* dest = source XOR dest */
+                printf("SRCINVERT\n");
+                strcpy(composition_mode,"Xor");
+                break;
+              case SRCERASE: /* dest = source AND (NOT dest) */
+                printf("SRCERASE\n");
+                break;
+              case NOTSRCCOPY: /* dest = (NOT source) */
+                printf("NOTSRCCOPY\n");
+                NegateImage(image,False);
+                strcpy(composition_mode,"Copy");
+                break;
+              case NOTSRCERASE: /* dest = (NOT source) AND (NOT dest) */
+                printf("NOTSRCERASE\n");
+                break;
+              case MERGECOPY: /* dest = (source AND pattern) */
+                printf("MERGECOPY\n");
+                break;
+              case MERGEPAINT: /* dest = (NOT source) OR dest */
+                printf("MERGEPAINT\n");
+                break;
+              case PATCOPY: /* dest = pattern */
+                printf("PATCOPY\n");
+                break;
+              case PATPAINT: /* dest = DPSnoo */
+                printf("PATPAINT\n");
+                break;
+              case PATINVERT: /* dest = pattern XOR dest */
+                printf("PATINVERT\n");
+                break;
+              case DSTINVERT: /* dest = (NOT dest) */
+                printf("DSTINVERT\n");
+                break;
+              case BLACKNESS: /* dest = BLACK bits */
+                printf("BLACKNESS\n");
+                break;
+              case WHITENESS: /* dest = WHITE bits */
+                printf("WHITENESS\n");
+                break;
+              default:
+                {
+                }
+              }
+            wmf_stream_printf (API,out,"image %s 0,0 %lu,%lu '%s'\n",
+                               composition_mode, image->columns, image->rows, imgspec);
             wmf_stream_printf (API,out,"pop pattern\n");
-            /* wmf_stream_printf (API,out,"fill url(#%s)\n", pattern_id); */
+            wmf_stream_printf (API,out,"fill url(#%s)\n", pattern_id);
 
             ++ddata->pattern_id;
           }
         else
           printf("magick_brush: no image data!\n");
-#else
-        printf("magick_brush: BS_DIBPATTERN not supported\n");
-#endif        
+
         break;
       }
     case BS_DIBPATTERNPT:
