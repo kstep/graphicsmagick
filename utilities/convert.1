@@ -33,7 +33,8 @@ Microsoft Windows 24-bit bitmap image file.
 Computer Graphics Metafile.
 .TP 7
 .B CMYK
-Raw cyan, magenta, yellow, and black bytes.
+Raw cyan, magenta, yellow, and black samples
+(8 or 16 bits, depending on the setting of the -depth option).
 .TP 7
 .B DCX+
 ZSoft IBM PC multi-page Paintbrush file.
@@ -84,7 +85,8 @@ CompuServe graphics interchange format; 8-bit color.
 CompuServe graphics interchange format; 8-bit color (version 87a).
 .TP 7
 .B GRAY
-Raw gray bytes.
+Raw gray samples
+(8 or 16 bits, depending on the setting of the -depth option).
 .TP 7
 .B GRADIENT
 gradual passing from one shade to another. Specify the desired shading as the
@@ -117,7 +119,10 @@ Microsoft icon.
 text image.
 .TP 7
 .B MAP
-Red, green, and blue colormap bytes followed by the image colormap indexes.
+Red, green, and blue colormap samples
+(8 or 16 bits, depending on the setting of the -depth option).
+followed by the image colormap indexes
+(8 or 16 bits, depending on whether colors <= 256).
 .TP 7
 .B MIFF+
 Magick image file format.
@@ -193,10 +198,12 @@ Xv's visual schnauzer format.
 Radiance image format.
 .TP 7
 .B RGB
-Raw red, green, and blue bytes.
+Raw red, green, and blue samples
+(8 or 16 bits, depending on the setting of the -depth option).
 .TP 7
 .B RGBA
-Raw red, green, blue and matte bytes.
+Raw red, green, blue and matte samples
+(8 or 16 bits, depending on the setting of the -depth option).
 .TP 7
 .B RLA
 Alias/Wavefront image file; read only

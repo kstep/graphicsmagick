@@ -72,9 +72,9 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadGRAYImage reads an image of raw grayscale bytes and returns it.
-%  It allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
+%  Method ReadGRAYImage reads an image of raw grayscale samples and returns
+%  it.  It allocates the memory necessary for the new Image structure and
+%   returns a pointer to the new image.
 %
 %  The format of the ReadGRAYImage method is:
 %
@@ -246,7 +246,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->decoder=ReadGRAYImage;
   entry->encoder=WriteGRAYImage;
   entry->raw=True;
-  entry->description=AllocateString("Raw gray bytes");
+  entry->description=AllocateString("Raw gray samples");
   entry->module=AllocateString("GRAY");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("R");
@@ -254,7 +254,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->encoder=WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AllocateString("Raw red bytes");
+  entry->description=AllocateString("Raw red samples");
   entry->module=AllocateString("GRAY");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("C");
@@ -262,7 +262,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->encoder=WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AllocateString("Raw cyan bytes");
+  entry->description=AllocateString("Raw cyan samples");
   entry->module=AllocateString("GRAY");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("G");
@@ -270,7 +270,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->encoder=WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AllocateString("Raw green bytes");
+  entry->description=AllocateString("Raw green samples");
   entry->module=AllocateString("GRAY");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("M");
@@ -278,7 +278,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->encoder=WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AllocateString("Raw magenta bytes");
+  entry->description=AllocateString("Raw magenta samples");
   entry->module=AllocateString("GRAY");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("B");
@@ -286,7 +286,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->encoder=WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AllocateString("Raw blue bytes");
+  entry->description=AllocateString("Raw blue samples");
   entry->module=AllocateString("GRAY");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("Y");
@@ -294,7 +294,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->encoder=WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AllocateString("Raw yellow bytes");
+  entry->description=AllocateString("Raw yellow samples");
   entry->module=AllocateString("GRAY");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("O");
@@ -302,7 +302,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->encoder=WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AllocateString("Raw opacity bytes");
+  entry->description=AllocateString("Raw opacity samples");
   entry->module=AllocateString("GRAY");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("K");
@@ -310,7 +310,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->encoder=WriteGRAYImage;
   entry->stealth=True;
   entry->raw=True;
-  entry->description=AllocateString("Raw black bytes");
+  entry->description=AllocateString("Raw black samples");
   entry->module=AllocateString("GRAY");
   (void) RegisterMagickInfo(entry);
 }

@@ -66,7 +66,8 @@ read only</td>
 <tr>
 <td BGCOLOR="#D0D0D0"><b>CMYK</b></td>
 
-<td BGCOLOR="#9EBAC6">Raw cyan, magenta, yellow, and black bytes</td>
+<td BGCOLOR="#9EBAC6">Raw cyan, magenta, yellow, and black samples
+(8 or 16 bits, depending on the setting of the -depth option)</td>
 
 <td BGCOLOR="#9EBAC6">set <tt>-size</tt> and <tt>-depth</tt> to specify
 the image width, height, and depth</td>
@@ -245,7 +246,8 @@ SDK</a></td>
 <tr>
 <td BGCOLOR="#D0D0D0"><b>GRAY</b></td>
 
-<td BGCOLOR="#9EBAC6">Raw gray bytes</td>
+<td BGCOLOR="#9EBAC6">Raw gray samples
+(8 or 16 bits, depending on the setting of the -depth option)</td>
 
 <td BGCOLOR="#9EBAC6">set <tt>-size</tt> and <tt>-depth</tt> to specify
 the image width, height, and depth</td>
@@ -362,7 +364,10 @@ is a label</tt>&nbsp;</td>
 <tr>
 <td BGCOLOR="#D0D0D0"><b>MAP</b></td>
 
-<td BGCOLOR="#9EBAC6">colormap intensities and indices</td>
+<td BGCOLOR="#9EBAC6">colormap intensities
+(8 or 16 bits, depending on the setting of the -depth option)</td>
+and indices
+(8 or 16 bits, depending on whether colors <= 256).
 
 <td BGCOLOR="#9EBAC6">&nbsp;</td>
 </tr>
@@ -657,7 +662,8 @@ to read</td>
 <tr>
 <td BGCOLOR="#D0D0D0"><b>RGB</b></td>
 
-<td BGCOLOR="#9EBAC6">Raw red, green, and blue bytes</td>
+<td BGCOLOR="#9EBAC6">Raw red, green, and blue samples
+(8 or 16 bits, depending on the setting of the -depth option)</td>
 
 <td BGCOLOR="#9EBAC6">set <tt>-size</tt> and <tt>-depth</tt> to specify
 the image width, height, and depth</td>
@@ -666,7 +672,8 @@ the image width, height, and depth</td>
 <tr>
 <td BGCOLOR="#D0D0D0"><b>RGBA</b></td>
 
-<td BGCOLOR="#9EBAC6">Raw red, green, blue, and matte bytes</td>
+<td BGCOLOR="#9EBAC6">Raw red, green, blue, and matte samples
+(8 or 16 bits, depending on the setting of the -depth option)</td>
 
 <td BGCOLOR="#9EBAC6">set <tt>-size</tt> and <tt>-depth</tt> to specify
 the image width, height, and depth</td>

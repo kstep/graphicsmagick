@@ -72,7 +72,7 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadRGBImage reads an image of raw red, green, and blue bytes and
+%  Method ReadRGBImage reads an image of raw red, green, and blue samples and
 %  returns it.  It allocates the memory necessary for the new Image structure
 %  and returns a pointer to the new image.
 %
@@ -436,14 +436,14 @@ ModuleExport void RegisterRGBImage(void)
   entry->decoder=ReadRGBImage;
   entry->encoder=WriteRGBImage;
   entry->raw=True;
-  entry->description=AllocateString("Raw red, green, and blue bytes");
+  entry->description=AllocateString("Raw red, green, and blue samples");
   entry->module=AllocateString("RGB");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("RGBA");
   entry->decoder=ReadRGBImage;
   entry->encoder=WriteRGBImage;
   entry->raw=True;
-  entry->description=AllocateString("Raw red, green, blue, and matte bytes");
+  entry->description=AllocateString("Raw red, green, blue, and matte samples");
   entry->module=AllocateString("RGB");
   (void) RegisterMagickInfo(entry);
 }

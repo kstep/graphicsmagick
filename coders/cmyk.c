@@ -72,7 +72,7 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadCMYKImage reads an image of raw red, green, and blue bytes and
+%  Method ReadCMYKImage reads an image of raw red, green, and blue samples and
 %  returns it.  It allocates the memory necessary for the new Image structure
 %  and returns a pointer to the new image.
 %
@@ -469,7 +469,7 @@ ModuleExport void RegisterCMYKImage(void)
   entry->encoder=WriteCMYKImage;
   entry->raw=True;
   entry->description=
-    AllocateString("Raw cyan, magenta, yellow, and black bytes");
+    AllocateString("Raw cyan, magenta, yellow, and black samples");
   entry->module=AllocateString("CMYK");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("CMYKA");
@@ -477,7 +477,7 @@ ModuleExport void RegisterCMYKImage(void)
   entry->encoder=WriteCMYKImage;
   entry->raw=True;
   entry->description=
-    AllocateString("Raw cyan, magenta, yellow, black, and matte bytes");
+    AllocateString("Raw cyan, magenta, yellow, black, and matte samples");
   entry->module=AllocateString("CMYK");
   (void) RegisterMagickInfo(entry);
 }
