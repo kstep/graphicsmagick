@@ -160,6 +160,7 @@ RMDelegate = @RMDelegate@
 SCANDecodeDelegate = @SCANDecodeDelegate@
 STRIP = @STRIP@
 ShowImageDelegate = @ShowImageDelegate@
+TXT2HTML = @TXT2HTML@
 TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
 WMFDecodeDelegate = @WMFDecodeDelegate@

@@ -10,15 +10,12 @@ EXTRA_DIST =
 
 SUBDIRS = bin lib tests demo
 
-# Non-Automake subdirectories to distribute
-#DISTDIRS = doc
-#dist-hook:
-#	( \
-#	  builddir=`pwd` ; \
-#	  cd $(srcdir) && \
-#	  ( \
-#	    for dir in $(DISTDIRS) ; do \
-#	      find $$dir -depth -print | egrep -v '(~$$)|(\.bak$$)|(/CVS)|(/\.#)|(/\.deps)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
-#	    done \
-#	  ) \
-#	)
+if HasTXT2HTML
+all-local: ../www/Magick++/NEWS.html
+else
+endif
+
+# Build HTML version of news
+../www/Magick++/NEWS.html: NEWS
+	txt2html -t 'Magick++ News' < $(srcdir)/NEWS  > $(srcdir)/../www/Magick++/NEWS.html
+	echo "Please do a 'cvs commit www/Magick++/NEWS.html' to submit updated HTML file"

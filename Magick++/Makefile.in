@@ -167,6 +167,7 @@ RMDelegate = @RMDelegate@
 SCANDecodeDelegate = @SCANDecodeDelegate@
 STRIP = @STRIP@
 ShowImageDelegate = @ShowImageDelegate@
+TXT2HTML = @TXT2HTML@
 TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
 WMFDecodeDelegate = @WMFDecodeDelegate@
@@ -351,7 +352,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-recursive
-all-am: Makefile
+all-am: Makefile all-local
 installdirs: installdirs-recursive
 installdirs-am:
 
@@ -417,8 +418,8 @@ uninstall-am: uninstall-info-am
 
 uninstall-info: uninstall-info-recursive
 
-.PHONY: $(RECURSIVE_TARGETS) GTAGS all all-am check check-am clean \
-	clean-generic clean-libtool clean-recursive distclean \
+.PHONY: $(RECURSIVE_TARGETS) GTAGS all all-am all-local check check-am \
+	clean clean-generic clean-libtool clean-recursive distclean \
 	distclean-generic distclean-libtool distclean-recursive \
 	distclean-tags distdir dvi dvi-am dvi-recursive info info-am \
 	info-recursive install install-am install-data install-data-am \
@@ -433,18 +434,12 @@ uninstall-info: uninstall-info-recursive
 	uninstall-info-recursive uninstall-recursive
 
 
-# Non-Automake subdirectories to distribute
-#DISTDIRS = doc
-#dist-hook:
-#	( \
-#	  builddir=`pwd` ; \
-#	  cd $(srcdir) && \
-#	  ( \
-#	    for dir in $(DISTDIRS) ; do \
-#	      find $$dir -depth -print | egrep -v '(~$$)|(\.bak$$)|(/CVS)|(/\.#)|(/\.deps)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
-#	    done \
-#	  ) \
-#	)
+@HasTXT2HTML_TRUE@all-local: ../www/Magick++/NEWS.html
+
+# Build HTML version of news
+../www/Magick++/NEWS.html: NEWS
+	txt2html -t 'Magick++ News' < $(srcdir)/NEWS  > $(srcdir)/../www/Magick++/NEWS.html
+	echo "Please do a 'cvs commit www/Magick++/NEWS.html' to submit updated HTML file"
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -1412,6 +1412,11 @@ have_ra_ppm='no'  ; if test "$RADDecodeDelegate" != 'ra_ppm' ; then have_ra_ppm=
 have_ralcgm='no'  ; if test "$CGMDecodeDelegate" != 'ralcgm' ; then have_ralcgm='yes' ; fi
 have_xcftopnm='no'  ; if test "$XCFDecodeDelegate" != 'xcftopnm' ; then have_xcftopnm='yes' ; fi
 
+# Test for optional txt2html utility and define automake conditional HasTXT2HTML if found.
+AC_PATH_PROG(TXT2HTML, txt2html, txt2html)
+have_txt2html='no' ; if test "$TXT2HTML" != 'txt2html' ; then have_txt2html='yes' ; fi
+AM_CONDITIONAL(HasTXT2HTML, test "$have_txt2html" = 'yes')
+
 if test "$with_frozenpaths" != 'yes'
 then
   # Re-set delegate definitions to default (no paths)
