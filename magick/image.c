@@ -1118,10 +1118,6 @@ MagickExport unsigned int CompositeImage(Image *image,
   int
     y;
 
-  register IndexPacket
-    *composite_indexes,
-    *indexes;
-
   register int
     x;
 
@@ -1275,7 +1271,6 @@ MagickExport unsigned int CompositeImage(Image *image,
     if ((y-y_offset) >= composite_image->rows)
       break;
     q=GetImagePixels(image,0,y,image->columns,1);
-    indexes=GetIndexes(image);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < image->columns; x++)
@@ -1290,7 +1285,6 @@ MagickExport unsigned int CompositeImage(Image *image,
       p=GetImagePixels(composite_image,x-x_offset,y-y_offset,1,1);
       if (p == (PixelPacket *) NULL)
         break;
-      composite_indexes=GetIndexes(composite_image);
       switch (compose)
       {
         case ThresholdCompositeOp:
@@ -1356,9 +1350,6 @@ MagickExport unsigned int CompositeImage(Image *image,
           break;
         }
       }
-      if (image->storage_class == PseudoClass)
-        if (image->storage_class == composite_image->storage_class)
-          indexes[x]=(*composite_indexes);
       q++;
     }
     if (!SyncImagePixels(image))
@@ -1366,8 +1357,6 @@ MagickExport unsigned int CompositeImage(Image *image,
   }
   if (compose == DisplaceCompositeOp)
     DestroyImage(composite_image);
-  if (compose != CopyOpacityCompositeOp)
-    (void) IsOpaqueImage(image);
   return(True);
 }
 

@@ -4580,7 +4580,6 @@ Mogrify(ref,...)
 
           unsigned int
             height,
-            matte,
             width;
 
           compose=OverCompositeOp;
@@ -4729,7 +4728,6 @@ Mogrify(ref,...)
           /*
             Composite image.
           */
-          matte=image->matte;
           if (!attribute_flag[8])
             CompositeImage(image,compose,composite_image,x,y);
           else
@@ -4742,7 +4740,6 @@ Mogrify(ref,...)
               CompositeImage(image,compose,rotate_image,x,y);
               DestroyImage(rotate_image);
             }
-          image->matte=matte;
           break;
         }
         case 36:  /* Contrast */
