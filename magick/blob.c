@@ -161,8 +161,6 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   magick_info=GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (const MagickInfo *) NULL)
     {
-      ThrowException(exception,BlobWarning,"Unrecognized image format",
-        clone_info->magick);
       DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
@@ -617,8 +615,6 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   magick_info=GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (const MagickInfo *) NULL)
      {
-       ThrowException(exception,BlobWarning,"No delegate for this image format",
-         clone_info->magick);
        DestroyImageInfo(clone_info);
        return((void *) NULL);
      }
