@@ -4402,13 +4402,6 @@ Mogrify(ref,...)
           image=ChopImage(image,&geometry,exception);
           break;
         }
-        case 59:  /* Trim */
-        {
-          if (attribute_flag[0])
-            image->fuzz=argument_list[0].double_reference;
-          attribute_flag[0]++;
-          argument_list[0].string_reference="0x0";
-        }
         case 8:  /* Crop */
         {
           if (attribute_flag[0])
@@ -5383,6 +5376,12 @@ Mogrify(ref,...)
               &radius,&sigma);
           image=CharcoalImage(image,radius,sigma,exception);
           break;
+        }
+        case 59:  /* Trim */
+        {
+          if (attribute_flag[0])
+            image->fuzz=argument_list[0].double_reference;
+          TransformImage(image,"0x0",(char *) NULL);
         }
         case 60:  /* Wave */
         {
