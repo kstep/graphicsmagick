@@ -119,30 +119,19 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->text=AllocateString(image_info->filename);
-  status=GetTypeMetrics(image,draw_info,&metrics);
   if ((image->columns != 0) || (image->rows != 0))
-    while (status != False)
+    for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize++)
     {
       width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
       height=(unsigned long) floor(metrics.height+0.5);
-      if ((image->columns != 0) && (width > image->columns))
+      if (((image->columns != 0) && (width > image->columns)) ||
+          ((image->rows != 0) && (height > image->rows)))
         {
           draw_info->pointsize--;
-          status=GetTypeMetrics(image,draw_info,&metrics);
-          image->rows=(unsigned long) floor(metrics.height+0.5);
           break;
         }
-      if ((image->rows != 0) && (height > image->rows))
-        {
-          draw_info->pointsize--;
-          status=GetTypeMetrics(image,draw_info,&metrics);
-          image->columns=(unsigned long)
-            floor(metrics.width+metrics.max_advance+0.5);
-          break;
-        }
-      draw_info->pointsize++;
-      status=GetTypeMetrics(image,draw_info,&metrics);
     }
+  status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
   FormatString(geometry,"+%g+%g",0.5*metrics.max_advance,metrics.ascent);
