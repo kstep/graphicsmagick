@@ -539,6 +539,9 @@ Choices are: <em>None</em>, <em>BZip</em>, <em>Fax</em>,
 Specify <strong>+compress</strong> to store the binary image in an uncompressed format.
 The default is the compression type of the specified image file.
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+If LZW compression has not been enabled, the image data will be written
+in an uncompressed LZW format that can be read by LZW decoders.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -671,10 +674,10 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>depth of the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This is the number of bits in a pixel. The only acceptable
-values are 8 or 16.  Use this option to specify the depth of raw images whose
-depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
-image after it has been read.
+This is the number of bits in a color sample within a pixel. The only
+acceptable values are 8 or 16.  Use this option to specify the depth of
+raw images whose depth is unknown such as GRAY, RGB, or CMYK, or to change
+the depth of any image after it has been read.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -1181,13 +1184,6 @@ to 640x480.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 There are 72 pixels per inch in PostScript coordinates.
 </font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-When used as a <strong>montage</strong> option, <strong>-geometry</strong> gives the image
-size and border size
-for each tile; default is 256x256+0+0.  In <strong>composite</strong>, <strong>-geometry</strong>
-gives the dimensions of the composite image and its location with respect
-to the main image.
-</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1655,10 +1651,15 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="-profile">-profile</a> <i>filename</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add ICM color or IPTC newswire information profile to image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add ICM, IPTC, or generic profile  to image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <tt>+profile icm</tt> or <tt>+profile iptc</tt> to remove the respective
-profile.
+<tt>-profile filename</tt> adds an ICM (ICC color management), IPTC
+(newswire information), or a generic profile to the image</font></td></tr></table>.
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use <tt>+profile icm</tt>, <tt>+profile iptc</tt>,
+or <tt>+profile profile_name</tt> to remove the respective
+profile.  Use <tt>identify -verbose</tt> to find out what profiles are in the
+image file.  Use <tt>+profile "*"</tt> to remove all profiles.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -1734,6 +1735,20 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-region">-region</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply options to a portion of the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="-resize">-resize</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>resize and locate an image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+This is an alias for the <strong>-geometry</strong> option and it behaves in the
+same manner.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2302,9 +2317,9 @@ function. A pixel is assigned to the closest class of which the fuzzy membership
 has a maximum value.</p>
 <p>
 For additional information see:
-&lt;blockquote&gt;<em>Young Won Lim, Sang Uk Lee</em>, "<strong>On The Color Image Segmentation
+<blockquote><em>Young Won Lim, Sang Uk Lee</em>, "<strong>On The Color Image Segmentation
 Algorithm Based on the Thresholding and the Fuzzy c-Means Techniques</strong>",
-Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.&lt;/blockquote&gt;</p>
+Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</blockquote></p>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 

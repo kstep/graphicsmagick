@@ -695,10 +695,15 @@ This option is used in concert with \fB-density\fP.
 
 .TP
 .B "-profile \fIfilename"\fP
-\fRadd ICM color or IPTC newswire information profile to image
+\fRadd ICM, IPTC, or generic profile  to image
 
-Use +profile icm or +profile iptc to remove the respective
-profile.
+-profile filename adds an ICM (ICC color management), IPTC
+(newswire information), or a generic profile to the image.
+
+Use +profile icm, +profile iptc,
+or +profile profile_name to remove the respective
+profile.  Use identify -verbose to find out what profiles are in the
+image file.  Use +profile "*" to remove all profiles.
 
 .TP
 .B "-quality \fIvalue"\fP

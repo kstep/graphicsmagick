@@ -956,10 +956,15 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="-profile">-profile</a> <i>filename</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add ICM color or IPTC newswire information profile to image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add ICM, IPTC, or generic profile  to image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <tt>+profile icm</tt> or <tt>+profile iptc</tt> to remove the respective
-profile.
+<tt>-profile filename</tt> adds an ICM (ICC color management), IPTC
+(newswire information), or a generic profile to the image</font></td></tr></table>.
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use <tt>+profile icm</tt>, <tt>+profile iptc</tt>,
+or <tt>+profile profile_name</tt> to remove the respective
+profile.  Use <tt>identify -verbose</tt> to find out what profiles are in the
+image file.  Use <tt>+profile "*"</tt> to remove all profiles.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
