@@ -320,8 +320,8 @@ static void WmfCopyXpm(CSTRUCT *cstruct,
     WMF Array Parameters:
       0  yend, y of endpoint
       1  xend, x of endpoint
-      2  ystart, y of endpoint
-      3  xstart, x of endpoint
+      2  ystart, y of startpoint
+      3  xstart, x of startpoint
       4  bottom, bottom of bounding box
       5  right, right of bounding box
       6  top, top of bounding box
@@ -372,21 +372,20 @@ static void WmfDrawArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord,
   int
     width;
 
-
   ExtendMVG(cstruct, "push graphic-context\n");
 
   width = cstruct->dc->pen->lopnWidth;
-  yend   = (NormY(wmfrecord->Parameters[0],cstruct));
-  xend   = (NormX(wmfrecord->Parameters[1],cstruct));
-  ystart = (NormY(wmfrecord->Parameters[2],cstruct));
-  xstart = (NormX(wmfrecord->Parameters[3],cstruct));
-  bottom = (NormY(wmfrecord->Parameters[4],cstruct));
-  right  = (NormX(wmfrecord->Parameters[5],cstruct));
-  top    = (NormY(wmfrecord->Parameters[6],cstruct));
-  left   = (NormX(wmfrecord->Parameters[7],cstruct));
+  yend   = (NormY(wmfrecord->Parameters[0],cstruct)); /* y of endpoint */
+  xend   = (NormX(wmfrecord->Parameters[1],cstruct)); /* x of endpoint */
+  ystart = (NormY(wmfrecord->Parameters[2],cstruct)); /* y of startpoint */
+  xstart = (NormX(wmfrecord->Parameters[3],cstruct)); /* x of startpoint */
+  bottom = (NormY(wmfrecord->Parameters[4],cstruct)); /* bottom of bounding box */
+  right  = (NormX(wmfrecord->Parameters[5],cstruct)); /* right of bounding box */
+  top    = (NormY(wmfrecord->Parameters[6],cstruct)); /* top of bounding box */
+  left   = (NormX(wmfrecord->Parameters[7],cstruct)); /* left of bounding box */
 
-  printf("DrawArc: yend=%f, xend=%f, ystart=%f, xstart=%f, bottom=%f right=%f, top=%f left=%f, width=%i\n",
-         yend,xend,ystart,xstart,bottom,right,top,left,width);
+/*   printf("DrawArc: yend=%f, xend=%f, ystart=%f, xstart=%f, bottom=%f right=%f, top=%f left=%f, width=%i\n", */
+/*          yend,xend,ystart,xstart,bottom,right,top,left,width); */
 
   if (right < left) { tmp = right; right = left; left = tmp; }
   if (bottom < top) { tmp = bottom; bottom = top; top = tmp; }
@@ -464,8 +463,8 @@ static void WmfDrawArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord,
            (float)centery,
            (float)radiusx,
            (float)radiusy,
-           (float)angle1,
-           (float)angle2
+           (float)RadiansToDegrees(oangle1),
+           (float)RadiansToDegrees(oangle2)
            );
   ExtendMVG(cstruct, buff);
 
