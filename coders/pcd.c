@@ -102,11 +102,11 @@ static unsigned int
 static unsigned int DecodeImage(Image *image,unsigned char *luma,
   unsigned char *chroma1,unsigned char *chroma2)
 {
-#define IsSync  ((accumulator & 0xffffff00) == 0xfffffe00)
+#define IsSync  ((sum & 0xffffff00) == 0xfffffe00)
 #define DecodeImageText  "  PCD decode image...  "
 #define PCDGetBits(n) \
 {  \
-  accumulator=(accumulator << n) & 0xffffffff; \
+  sum=(sum << n) & 0xffffffff; \
   bits-=n; \
   while (bits <= 24) \
   { \
@@ -115,7 +115,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
         (void) ReadBlob(image,0x800,(char *) buffer); \
         p=buffer; \
       } \
-    accumulator|=((unsigned int) (*p) << (24-bits)); \
+    sum|=((unsigned int) (*p) << (24-bits)); \
     bits+=8; \
     p++; \
   } \
@@ -160,12 +160,12 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     *buffer;
 
   unsigned int
-    accumulator,
     bits,
     length,
     pcd_length[3],
     plane,
-    row;
+    row,
+    sum;
 
   /*
     Initialize Huffman tables.
@@ -178,13 +178,13 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   if (buffer == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
-  accumulator=0;
+  sum=0;
   bits=32;
   p=buffer+0x800;
   for (i=0; i < (image->columns > 1536 ? 3 : 1); i++)
   {
     PCDGetBits(8);
-    length=(accumulator & 0xff)+1;
+    length=(sum & 0xff)+1;
     pcd_table[i]=(PCDTable *) AcquireMemory(length*sizeof(PCDTable));
     if (pcd_table[i] == (PCDTable *) NULL)
       {
@@ -196,16 +196,16 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     for (j=0; j < (int) length; j++)
     {
       PCDGetBits(8);
-      r->length=(accumulator & 0xff)+1;
+      r->length=(sum & 0xff)+1;
       if (r->length > 16)
         {
           LiberateMemory((void **) &buffer);
           return(False);
         }
       PCDGetBits(16);
-      r->sequence=(accumulator & 0xffff) << 16;
+      r->sequence=(sum & 0xffff) << 16;
       PCDGetBits(8);
-      r->key=accumulator & 0xff;
+      r->key=sum & 0xff;
       r->mask=(~((((unsigned int) 1) << (32-r->length))-1));
       r++;
     }
@@ -216,7 +216,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   */
   do { PCDGetBits(16) } while (0);
   do { PCDGetBits(16) } while (0);
-  while ((accumulator & 0x00fff000) != 0x00fff000)
+  while ((sum & 0x00fff000) != 0x00fff000)
     PCDGetBits(8);
   while (!IsSync)
     PCDGetBits(1);
@@ -235,11 +235,11 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
           Determine plane and row number.
         */
         PCDGetBits(16);
-        row=((accumulator >> 9) & 0x1fff);
+        row=((sum >> 9) & 0x1fff);
         if (row == image->rows)
           break;
         PCDGetBits(8);
-        plane=accumulator >> 30;
+        plane=sum >> 30;
         PCDGetBits(16);
         switch (plane)
         {
@@ -278,13 +278,13 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       Decode luminance or chrominance deltas.
     */
     r=pcd_table[plane];
-    for (i=0; ((i < (int) length) && ((accumulator & r->mask) != r->sequence)); i++)
+    for (i=0; ((i < (int) length) && ((sum & r->mask) != r->sequence)); i++)
       r++;
-    if (r == (PCDTable *) NULL)
+    if (((q-luma) > (image->columns*image->rows)) || (r == (PCDTable *) NULL))
       {
         ThrowException(&image->exception,CorruptImageWarning,
           "Corrupt PCD image, skipping to sync byte",image->filename);
-        while ((accumulator & 0x00fff000) != 0x00fff000)
+        while ((sum & 0x00fff000) != 0x00fff000)
           PCDGetBits(8);
         while (!IsSync)
           PCDGetBits(1);
