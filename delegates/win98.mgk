@@ -123,12 +123,12 @@ gplt=>
 
 gs-color=>
 	gswin32c -dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" "%s" \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
 	gswin32c -dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" "%s" \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>

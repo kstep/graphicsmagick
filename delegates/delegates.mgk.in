@@ -124,12 +124,12 @@ gplt=>
 
 gs-color=>
 	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSColorDevice@ -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" "%s" \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
 	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSMonoDevice@ -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" "%s" \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>

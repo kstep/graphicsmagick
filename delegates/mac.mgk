@@ -117,12 +117,12 @@ gplt=>
 
 gs-color=>
 	-dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" "%s" \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
 	-dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" "%s" \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
