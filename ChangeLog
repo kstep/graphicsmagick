@@ -1,3 +1,9 @@
+2003-07-29  Troy Edwards  <vallimar@sexorcisto.net>
+
+	* GraphicsMagick.spec: Updated to CVS build. Added the
+	GraphicsMagickWand files to the spec.  Only try to remove the
+	unneeded perl package files if we are using PerlMagick.
+
 2003-07-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick.spec: Added RPM spec file authored by Troy

@@ -1,5 +1,5 @@
-%define _use_internal_dependency_generator 0
-
+# Define this to '0' for release builds.
+%define DATE	20030728
 # Allow for selectively disabling from commandline
 %{!?quant:%define quant 8}
 %{!?perlm:%define perlm 1}
@@ -8,10 +8,19 @@
 Summary: An X application for displaying and manipulating images.
 Name: GraphicsMagick
 Version: 1.1
+%if %{DATE} > 0
+Release: 0.%{DATE}
+%else
 Release: 1
+%else
+%endif
 License: freeware
 Group: X11/Applications/Graphics
+%if %{DATE} > 0
+Source: ftp://ftp.GraphicsMagick.org/pub/%{name}/%{name}-%{version}-%{DATE}.tar.bz2
+%else
 Source: ftp://ftp.GraphicsMagick.org/pub/%{name}/%{name}-%{version}.tar.bz2
+%endif
 Url: http://www.GraphicsMagick.org/
 Buildroot: %{_tmppath}/%{name}-%{version}-root
 BuildPrereq: bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
@@ -30,7 +39,7 @@ animated or transparent .gifs, creating composite images, creating
 thumbnail images, and more.
 
 GraphicsMagick is one of your choices if you need a program to manipulate
-and display images. If you want to develop your own applications
+and dis play images. If you want to develop your own applications
 which use GraphicsMagick code or APIs, you need to install
 GraphicsMagick-devel as well.
 
@@ -96,11 +105,19 @@ GraphicsMagick C interface, however.
 %endif
 
 %prep
+%if %{DATE} > 0
+%setup -q -n %{name}-%{version}-%{DATE}
+%else
 %setup -q
+%endif
 
 %build
-GM=$RPM_BUILD_DIR/%{name}-%{version}
-export LDFLAGS="$LDFLAGS -L$GM/magick/.libs"
+# If you have trouble during the installation phase, then
+# uncomment the two lines below.  You may be using an older
+# libtool that sometimes has trouble linking the files.
+
+#GM=$RPM_BUILD_DIR/%{name}-%{version}
+#export LDFLAGS="-L$GM/magick/.libs $LDFLAGS"
 
 %if %{perlm}
 # Maybe this will fix perl installation issues.
@@ -110,11 +127,11 @@ fi
 %endif
 
 # This shouldn't be there yet.
-rm PerlMagick/Makefile.PL
+rm -f PerlMagick/Makefile.PL
 
 %configure --enable-shared --disable-static \
 	--with-modules --enable-lzw \
-	--without-frozenpaths \
+	--with-frozenpaths \
 %if %{perlm}
 	--with-perl \
 	--with-perl-options="$PERLOPTS" \
@@ -133,11 +150,20 @@ make
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 
+%if %{perlm}
 # Remove unpackaged files.
 rm -f `find $RPM_BUILD_ROOT%{_libdir}/perl*/ -name perllocal.pod -type f`
 rm -f `find $RPM_BUILD_ROOT%{_libdir}/perl*/ -name .packlist -type f`
+%endif
+# These are empty directories, just nuke 'em.
 rmdir $RPM_BUILD_ROOT%{_includedir}/magick
 rmdir $RPM_BUILD_ROOT%{_datadir}/%{name}
+# These have incorrect permissions set.
+chmod 655 $RPM_BUILD_ROOT%{_bindir}/%{name}-config
+chmod 655 $RPM_BUILD_ROOT%{_bindir}/%{name}Wand-config
+%if %{cplus}
+chmod 655 $RPM_BUILD_ROOT%{_bindir}/%{name}++-config
+%endif
 
 %post -p /sbin/ldconfig
 
@@ -151,27 +177,34 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.txt NEWS
 %doc %{_datadir}/%{name}-%{version}
 %{_libdir}/lib%{name}.so.*
+%{_libdir}/lib%{name}Wand.so.*
 %dir %{_libdir}/%{name}-%{version}
 %{_libdir}/%{name}-%{version}/*.mgk
 %dir %{_libdir}/%{name}-%{version}/modules-Q%{quant}
 %{_libdir}/%{name}-%{version}/modules-Q%{quant}/*/*.so
 %{_libdir}/%{name}-%{version}/modules-Q%{quant}/coders/*.mgk
 %attr(755, root, root) %{_bindir}/gm
-%attr(644, root, man) %{_mandir}/man1/%{name}-config.1.gz
 %attr(644, root, man) %{_mandir}/man1/gm.1.gz
 %attr(644, root, man) %{_mandir}/man4/*gz
 %attr(644, root, man) %{_mandir}/man5/*gz
 
 %files devel
 %defattr(644, root, root, 755)
+%dir %{_includedir}/%{name}/wand
+%{_includedir}/%{name}/wand/*
 %dir %{_includedir}/%{name}/magick
 %{_includedir}/%{name}/magick/*
+%{_libdir}/lib%{name}Wand.*a
 %{_libdir}/lib%{name}.*a
 %{_libdir}/lib%{name}.so
 %dir %{_libdir}/%{name}-%{version}/modules-Q%{quant}
 %{_libdir}/%{name}-%{version}/modules-Q%{quant}/*/*.la
 %{_libdir}/pkgconfig/%{name}.pc
+%{_libdir}/pkgconfig/%{name}Wand.pc
 %{_bindir}/%{name}-config
+%{_bindir}/%{name}Wand-config
+%attr(644, root, man) %{_mandir}/man1/%{name}-config.1.gz
+%attr(644, root, man) %{_mandir}/man1/%{name}Wand-config.1.gz
 
 %if %{perlm}
 %files perl
@@ -201,6 +234,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jun 28 2003 Troy Edwards <vallimar@sexorcisto.net> 1.1-20030628
+- Updated to CVS build, added the GraphicsMagickWand files to the spec.
+- Only try to remove the unneeded perl package files if we are using
+  PerlMagick.
+
 * Mon Jul 28 2003 Bob Friesenhahn <bfriesen@graphicsmagick.org> 1.1-1
 - Changed default quantum depth to 8 bits.
 
