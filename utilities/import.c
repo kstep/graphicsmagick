@@ -715,6 +715,11 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleNCompare("ping",option+1,2) == 0)
+            {
+              MagickWarning(OptionError,"Deprecated option",option);
+              break;
+            }
           if (LocaleNCompare("pointsize",option+1,2) == 0)
             {
               image_info->pointsize=12;
