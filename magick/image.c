@@ -194,6 +194,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->background_color=image_info->background_color;
   allocate_image->border_color=image_info->border_color;
   allocate_image->matte_color=image_info->matte_color;
+  SetPixelCacheMethods(allocate_image->cache,&image_info->methods);
   allocate_image->client_data=image_info->client_data;
   return(allocate_image);
 }
@@ -1173,6 +1174,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   if (image_info->attributes != (Image *) NULL)
     clone_info->attributes=CloneImage(image_info->attributes,0,0,True,
       &image_info->attributes->exception);
+  clone_info->methods=image_info->methods;
   clone_info->client_data=image_info->client_data;
   clone_info->fifo=image_info->fifo;
   clone_info->file=image_info->file;
@@ -3142,6 +3144,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   (void) QueryColorDatabase(BorderColor,&image_info->border_color,&exception);
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color,&exception);
   DestroyExceptionInfo(&exception);
+  GetPixelCacheMethods(&image_info->methods);
   image_info->signature=MagickSignature;
 }
 
