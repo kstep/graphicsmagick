@@ -106,25 +106,28 @@ struct _DrawContext
 
   /* MVG output string and housekeeping */
   char
-    *mvg;
+    *mvg;               /* MVG data */
 
   size_t
-    mvg_alloc,
-    mvg_length;
+    mvg_alloc,          /* total allocated memory */
+    mvg_length;         /* total MVG length */
+
+  int
+    mvg_width;          /* current line length */
 
   /* Graphic context */
   long
-    index;
+    index;              /* array index */
 
   DrawInfo
     **graphic_context;
 
   int
-    filter_off;
+    filter_off;         /* true if not filtering attributes */
 
   /* Pretty-printing depth */
   long
-    indent_depth;
+    indent_depth;       /* number of left-hand pad characters */
 
   /* Path operation support */
   PathOperation
@@ -195,6 +198,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
             ++context->mvg_length;
           }
         *(context->mvg + context->mvg_length) = 0;
+        context->mvg_width = context->indent_depth;
       }
 
     va_start(argp, format);
@@ -208,6 +212,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
     va_end(argp);
 
     context->mvg_length += str_length;
+    context->mvg_width += str_length;
     *(context->mvg + context->mvg_length) = 0;
 
     assert(context->mvg_length + 1 < context->mvg_alloc);
@@ -243,6 +248,42 @@ static void MvgAppendColor(DrawContext context, const PixelPacket *color)
                   color->opacity);
     }
 }
+
+static void MvgAppendPointsCommand(DrawContext context, const char* command,
+                            const size_t num_coords,
+                            const PointInfo * coordinates)
+{
+  const PointInfo
+    *coordinate;
+
+  size_t
+    i;
+
+  int
+    length,
+    sub_length;
+
+  char
+    buffer[MaxTextExtent];
+
+  length = context->indent_depth;
+  length += MvgPrintf(context, command);
+  for (i = num_coords, coordinate = coordinates; i; i--)
+    {
+      sub_length = sprintf(buffer," %.4g,%.4g", coordinate->x, coordinate->y);
+      if( (length + sub_length) > 78)
+        {
+          MvgPrintf(context, "\n");
+          length = context->indent_depth;
+        }
+      length += MvgPrintf(context, "%s", buffer);
+      ++coordinate;
+    }
+  if(length)
+    MvgPrintf(context, "\n");
+}
+
+
 
 MagickExport void DrawAnnotation(DrawContext context,
                                  const double x, const double y,
@@ -332,6 +373,7 @@ MagickExport DrawContext DrawAllocateContext(const ImageInfo *image_info,
   context->mvg = NULL;
   context->mvg_alloc = 0;
   context->mvg_length = 0;
+  context->mvg_width = 0;
 
   /* Graphic context */
   context->index = 0;
@@ -369,24 +411,13 @@ MagickExport void DrawArc(DrawContext context,
 }
 
 MagickExport void DrawBezier(DrawContext context, const size_t num_coords,
-                             const PointInfo * coordinates)
+                             const PointInfo *coordinates)
 {
-  const PointInfo
-    *coordinate;
-
-  size_t i;
-
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
   assert(coordinates != (const PointInfo *) NULL);
 
-  MvgPrintf(context, "bezier");
-  for (i = num_coords, coordinate = coordinates; i; i--)
-    {
-      MvgPrintf(context, " %.4g,%.4g", coordinate->x, coordinate->y);
-      ++coordinate;
-    }
-  MvgPrintf(context, "\n");
+  MvgAppendPointsCommand(context,"bezier",num_coords,coordinates);
 }
 
 MagickExport void DrawCircle(DrawContext context, const double ox,
@@ -1456,44 +1487,20 @@ MagickExport void DrawPolygon(DrawContext context,
                               const size_t num_coords,
                               const PointInfo * coordinates)
 {
-  const PointInfo
-    *coordinate;
-
-  size_t
-    i;
-
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  MvgPrintf(context, "polygon");
-  for (i = num_coords, coordinate = coordinates; i; i--)
-    {
-      MvgPrintf(context, " %.4g,%.4g", coordinate->x, coordinate->y);
-      ++coordinate;
-    }
-  MvgPrintf(context, "\n");
+  MvgAppendPointsCommand(context,"polygon",num_coords,coordinates);
 }
 
 MagickExport void DrawPolyline(DrawContext context,
                                const size_t num_coords,
                                const PointInfo * coordinates)
 {
-  const PointInfo
-    *coordinate;
-
-  size_t
-    i;
-
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  MvgPrintf(context, "polyline");
-  for (i = num_coords, coordinate = coordinates; i; i--)
-    {
-      MvgPrintf(context, " %.4g,%.4g", coordinate->x, coordinate->y);
-      ++coordinate;
-    }
-  MvgPrintf(context, "\n");
+  MvgAppendPointsCommand(context,"polyline",num_coords,coordinates);
 }
 
 MagickExport void DrawPopClipPath(DrawContext context)
