@@ -613,7 +613,7 @@ static int wandObjCmd(
         "virtualpixelmethod","GetVirtualPixelMethod","SetVirtualPixelMethod",
         "whitepoint",       "GetWhitePoint",        "SetWhitePoint",
         "width",            "GetWidth",
-        "number",           "GetNumberOfImages",
+        "number",           "GetNumberImages",
         "samplingfactors",  "GetSamplingFactors",   "SetSamplingFactors",
         "size",             "GetSize",              "SetSize",
         "hasnext",          "HasNext",
@@ -763,7 +763,7 @@ static int wandObjCmd(
         TM_VIRTUALPIXEL,    TM_GET_VIRTUALPIXEL,        TM_SET_VIRTUALPIXEL,
         TM_WHITE_POINT,     TM_GET_WHITE_POINT,         TM_SET_WHITE_POINT,
 	TM_WIDTH,           TM_GET_WIDTH,
-        TM_NUMBER,          TM_GET_NUMBER_OF_IMAGES,
+        TM_NUMBER,          TM_GET_NUMBER_IMAGES,
         TM_SAMPLING_FACTORS,TM_GET_SAMPLING_FACTORS,    TM_SET_SAMPLING_FACTORS,
         TM_SIZE,            TM_GET_SIZE,                TM_SET_SIZE,
 	TM_HASNEXT,         TM_HAS_NEXT_IMAGE,
@@ -3543,8 +3543,8 @@ static int wandObjCmd(
 	break;
     }
 
-    case TM_NUMBER:                /* number */
-    case TM_GET_NUMBER_OF_IMAGES:  /* GetNumberOfImages */
+    case TM_NUMBER:             /* number */
+    case TM_GET_NUMBER_IMAGES:  /* GetNumberImages */
     {
         long num;
 
