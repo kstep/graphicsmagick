@@ -16,6 +16,9 @@
    WebMagick, Web Magic, visualization, image processing, software development,
    simulation, image, software, AniMagick, Animagic, Magick++">
    <link rel="StyleSheet" href="magick.css" type="text/css">
+<style type="text/css">
+  PRE {font-size: x-small}
+</style>
 </head>
 <body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
 <center>
@@ -27,7 +30,23 @@
      SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
      height=14 width=15><b><font face="Helvetica, Arial"><font 
      color="#FFFFFF"><font size="+1">
-<a NAME="top">Contents</a>
+<a NAME="top">NAME</a>
+     </font></font></font></b></td></tr></table>
+     <table width="90%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+conjure - process a Magick Scripting Language (MSL) script
+<p>
+<strong>WARNING: Conjure and MSL are in very early development and the
+syntax is subject to change!</strong>
+</p>
+     </td></tr></table>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="contents">Contents</a>
      </font></font></font></b></td></tr></table>
      <table width="90%" border="0" cellspacing="0" cellpadding="8">
      <tr><td width="3%"><br></td><td>
@@ -52,9 +71,6 @@
 </dt>
 </dl>
      </td></tr></table>
-     <p>
-     <i><a href="#top">Back to Contents</a></i> 
-     &nbsp;</p>
      <table BORDER=0 WIDTH="100%"> 
      <tr> 
      <td ALIGN=LEFT BGCOLOR="#52799E"><img 
@@ -65,13 +81,10 @@
      </font></font></font></b></td></tr></table>
      <table width="90%" border="0" cellspacing="0" cellpadding="8">
      <tr><td width="3%"><br></td><td>
-<p><strong>conjure</strong> [ options ] script_file.msl</p>
-<p><strong>WARNING: Conjure is in very early development and the syntax is
-subject to change!</strong></p>
+<p>
+<strong>conjure</strong> [ options ] script_file.msl
+</p>
      </td></tr></table>
-     <p>
-     <i><a href="#top">Back to Contents</a></i> 
-     &nbsp;</p>
      <table BORDER=0 WIDTH="100%"> 
      <tr> 
      <td ALIGN=LEFT BGCOLOR="#52799E"><img 
@@ -96,7 +109,8 @@ is an example script:
       &lt;get width="base-width" height="base-height" /&gt;
       &lt;resize geometry="%[dimensions]" /&gt;
       &lt;get width="width" height="height" /&gt;
-      &lt;print output="Image sized from %[base-width]x%[base-height]
+      &lt;print output=
+        "Image sized from %[base-width]x%[base-height]
          to %[width]x%[height].\n" /&gt;
       &lt;write filename="image.png" /&gt;
     &lt;/image&gt;
@@ -110,11 +124,13 @@ invoked with
 <p>
 All operations will closely follow the key/value pairs defined in
 PerlMagick, unless otherwise noted.
-</p><p>
+</p>
+<p>
 <strong>Conjure</strong> is in the early stages of development as of
 December 2001.
-</p><p>
-This early announcement is to allow ImageMagick users to contibute ideas 
+</p>
+<p>
+This early announcement is to allow ImageMagick users to contribute ideas 
 early in the process so when the scripting language is released it will
 be useful/stable from the get-go!  If you want to contribute suggestions
 about the Magick scripting langauge (MSL), post them to
@@ -139,7 +155,8 @@ Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
 the option again with a different effect, or if it is changed by a statement
 in the scripting language.
-</p><p>
+</p>
+<p>
 You can define your own keyword/value pairs on the command line.
 The script can then use this information when setting values by including
 %[keyword] in the string.  For example, if you included
@@ -172,7 +189,7 @@ elements and their attributes:
 <dt>&lt;image&gt;</dt>
 <dd>Define a new image object.
 <strong>&lt;/image&gt;</strong> destroys it. Because of this, if you wish
-to reference multiple "subimages"&amp;nbsp;(aka pages or layers),
+to reference multiple "subimages" (aka pages or layers),
 you can embed one <strong>image</strong> element inside of
 another. For example:
 </dd>
@@ -196,12 +213,12 @@ another. For example:
 <dt>&lt;group&gt;</dt>
 <dd>Define a new group of image objects.
 By default, images are only valid for the life of
-their <strong>&lt;image&gt;</strong>element.
+their <strong>&lt;image&gt;</strong> element.
 </dd>
 <dd>
 <pre>
-    &lt;image&gt;   -- creates the image
-    .....        -- do stuff with it
+    &lt;image&gt;   -- create the image
+    .....     -- do stuff with it
     &lt;/image&gt;  -- dispose of the image
 </pre>
 </dd>
@@ -211,15 +228,16 @@ around for the life of the group:
 </dd>
 <dd>
 <pre>
-    &lt;group&gt;                           -- start a group
-        &lt;image&gt;                       -- create an image
-        ....                          -- do stuff
-        &lt;/image&gt;                      -- NOOP
-        &lt;image&gt;                       -- create another image
-        ....                          -- do more stuff
-        &lt;/image&gt;                      -- NOOP
-        &lt;write filename="image.mng" /&gt;  -- output
-    &lt;/group&gt;                          -- dispose of both images
+    &lt;group&gt;                   -- start a group
+        &lt;image&gt;               -- create an image
+        ....                  -- do stuff
+        &lt;/image&gt;              -- NOOP
+        &lt;image&gt;               -- create another image
+        ....                  -- do more stuff
+        &lt;/image&gt;              -- NOOP
+        &lt;write filename
+             ="image.mng" /&gt;  -- output
+    &lt;/group&gt;                  -- dispose of both images
 </pre>
 </dd>
 <dt>&lt;read&gt;</dt>
@@ -248,15 +266,21 @@ a single multiple-image file or multiple ones if necessary.
      &lt;write filename=image.tiff" /&gt;
 </pre>
 </dd>
+<dt>&lt;set&gt;</dt>
+<dd>opacity (can handle percentage values, e.g., 50%, but
+UNFORTUNATELY, you have to do %%!), background,
+bordercolor, mattecolor, clip-mask, colorspace (RGB, CMYK, Gray),
+density, magick</dd>
 <dt>&lt;get&gt;</dt>
-<dd>Get any attribute recognized by
+<dd>Gets any attribute recognized by
 PerlMagick's GetAttribute() and stores it as an image attribute for later
 use. Currently only <em>width</em> and <em>height</em> are supported.
 </dd>
 <dd>
 <pre>
     &lt;get width="base-width" height="base-height" /&gt;
-    &lt;print output="Image size is %[base-width]x%[base-height].\n" /&gt;
+    &lt;print output=
+      "Image size: %[base-width]x%[base-height].\n" /&gt;
 </pre>
 </dd>
 <dt>&lt;border&gt;</dt>
@@ -267,25 +291,40 @@ use. Currently only <em>width</em> and <em>height</em> are supported.
     <dd>radius, sigma</dd>
 <dt>&lt;chop&gt;</dt>
     <dd>geometry, height, width, x, y</dd>
+<dt>&lt;composite&gt;</dt>
+    <dd>compose, gravity</dd>
 <dt>&lt;crop&gt;</dt>
     <dd>geometry, height, width, x, y</dd>
 <dt>&lt;despeckle&gt;</dt>
+<dt>&lt;edge&gt;</dt>
+    <dd>radius</dd>
 <dt>&lt;emboss&gt;</dt>
     <dd>radius, sigma</dd>
 <dt>&lt;enhance&gt;</dt>
 <dt>&lt;equalize&gt;</dt>
+<dt>&lt;flatten&gt;</dt>
 <dt>&lt;flip&gt;</dt>
 <dt>&lt;flop&gt;</dt>
 <dt>&lt;frame&gt;</dt>
     <dd>fill, geometry, height, width, x, y, inner, outer</dd>
+<dt>&lt;gamma&gt;</dt>
+    <dd>red, green, blue</dd>
 <dt>&lt;get&gt;</dt>
 <dt>&lt;image&gt;</dt>
+<dt>&lt;implode&gt;</dt>
+    <dd>amount</dd>
 <dt>&lt;magnify&gt;</dt>
+<dt>&lt;medianfilter&gt;</dt>
+    <dd>radius</dd>
 <dt>&lt;minify&gt;</dt>
 <dt>&lt;normalize&gt;</dt>
+<dt>&lt;oilpaint&gt;</dt>
+    <dd>radius</dd>
 <dt>&lt;print&gt;</dt>
     <dd>output</dd>
 <dt>&lt;read&gt;</dt>
+<dt>&lt;reducenoise&gt;</dt>
+    <dd>radius</dd>
 <dt>&lt;resize&gt;</dt>
     <dd>blur, filter, height, width</dd>
 <dt>&lt;roll&gt;</dt>
@@ -306,16 +345,21 @@ use. Currently only <em>width</em> and <em>height</em> are supported.
     <dd>threshold</dd>
 <dt>&lt;spread&gt;</dt>
     <dd>radius</dd>
+<dt>&lt;stegano&gt;</dt>
+    <dd>image</dd>
+<dt>&lt;stereo&gt;</dt>
+    <dd>image</dd>
 <dt>&lt;swirl&gt;</dt>
     <dd>degrees</dd>
+<dt>texture&gt;</dt>
+    <dd>image</dd>
 <dt>&lt;threshold&gt;</dt>
     <dd>threshold</dd>
+<dt>&lt;transparent&gt;</dt>
+    <dd>color</dd>
 <dt>&lt;trim&gt;</dt>
 </dl>
      </td></tr></table>
-     <p>
-     <i><a href="#top">Back to Contents</a></i> 
-     &nbsp;</p>
 <a NAME="auth"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
