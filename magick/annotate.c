@@ -613,7 +613,8 @@ static unsigned int RenderTruetype(Image *image,
 
   double
     alpha,
-    opacity;
+    opacity,
+    temp;
 
   FT_BBox
     bounding_box;
@@ -843,8 +844,15 @@ static unsigned int RenderTruetype(Image *image,
     bitmap=(FT_BitmapGlyph) glyph->image;
     if ((bitmap->bitmap.width == 0) || (bitmap->bitmap.rows == 0))
       continue;
+    point.x=offset->x+bitmap->left-bounds->x1;
+#if !defined(_VISUALC_)
     point.y=offset->y+bounds->y2-bitmap->top-3.0*
       AffineExpansion(&annotate_info->affine)*annotate_info->pointsize/4.0+1.5;
+#else
+    temp=(3.0*annotate_info->pointsize/4.0)+1.5;
+    temp=AffineExpansion(&annotate_info->affine)*temp;
+    point.y=(bounds->y2-bitmap->top)+offset->y;
+#endif
     p=bitmap->bitmap.buffer;
     for (y=0; y < bitmap->bitmap.rows; y++)
     {
@@ -852,7 +860,6 @@ static unsigned int RenderTruetype(Image *image,
         continue;
       if (ceil(point.y+y-0.5) >= image->rows)
         break;
-      point.x=offset->x+bitmap->left-bounds->x1;
       for (x=0; x < bitmap->bitmap.width; x++)
       {
         if ((ceil(point.x+x-0.5) < 0) ||
