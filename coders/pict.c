@@ -1520,8 +1520,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   /*
     Write header, header size, size bounding box, version, and reserved.
   */
-  for (i=0; i < PictInfoSize; i++)
-    buffer[i]=0;
+  memset(buffer,0,PictInfoSize);
   (void) WriteBlob(image,PictInfoSize,buffer);
   (void) WriteBlobMSBShort(image,0);
   (void) WriteBlobMSBShort(image,size_rectangle.top);
@@ -1687,7 +1686,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       */
       (void) WriteBlobMSBLong(image,0x00000000L);  /* color seed */
       (void) WriteBlobMSBShort(image,0L);  /* color flags */
-      (void) WriteBlobMSBShort(image,(unsigned short) Max(image->colors-1,1));
+      (void) WriteBlobMSBShort(image,(unsigned short) (image->colors-1));
       for (i=0; i < (long) image->colors; i++)
       {
         red=(unsigned short)
