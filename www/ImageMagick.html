@@ -1346,6 +1346,16 @@ and transformations.  The primitives include
      image           operator x0,y0 w,h filename
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The transformations are
+</font></td></tr></table>
+<pre>
+     rotate          degrees
+     translate       dx,dy
+     scale           factor
+     skewX           degrees
+     skewY           degrees
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 <strong>Point</strong> requires a single coordinate.
 <strong>Line</strong> requires a start and end coordinate, while
 <strong>rectangle</strong>
@@ -1458,23 +1468,13 @@ are processed in command line order so be sure to use these
 options <em>before</em> the <strong>-draw</strong> option.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The transformations are
-</font></td></tr></table>
-<pre>
-     rotate          degrees
-     translate       dx,dy
-     scale           factor
-     skewX           degrees
-     skewY           degrees
-</pre>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Rotate rotates the primitive about the origen of the main image.
 Translate translates it, and scale scales it.
 SkewX and SkewY skew it with respect to the origen.
-The transformations modify the drawing affine matrix, which is initialized
-from the image affine matrix which is defined by from the <strong>-affine</strong> option.
+The transformations modify the currennt affine matrix, which is initialized
+from the initial affine matrix which is defined by from the <strong>-affine</strong> option.
 Transformations are cumulative within the <strong>-draw</strong> option.
-The image affine matrix is not affected; it is only changed by the
+The initial affine matrix is not affected; it is only changed by the
 appearance of another <strong>-affine</strong> option.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">

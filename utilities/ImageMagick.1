@@ -1001,6 +1001,15 @@ and transformations.  The primitives include
      text            x0,y0 string
      image           operator x0,y0 w,h filename
 
+The transformations are
+
+
+     rotate          degrees
+     translate       dx,dy
+     scale           factor
+     skewX           degrees
+     skewY           degrees
+
 \fBPoint\fP requires a single coordinate.
 \fBLine\fP requires a start and end coordinate, while
 \fBrectangle\fP
@@ -1109,22 +1118,13 @@ are processed in command line order so be sure to use these
 options \fIbefore\fP the \fB-draw\fP option.
 
 
-The transformations are
-
-
-     rotate          degrees
-     translate       dx,dy
-     scale           factor
-     skewX           degrees
-     skewY           degrees
-
 Rotate rotates the primitive about the origen of the main image.
 Translate translates it, and scale scales it.
 SkewX and SkewY skew it with respect to the origen.
-The transformations modify the drawing affine matrix, which is initialized
-from the image affine matrix which is defined by from the \fB-affine\fP option.
+The transformations modify the currennt affine matrix, which is initialized
+from the initial affine matrix which is defined by from the \fB-affine\fP option.
 Transformations are cumulative within the \fB-draw\fP option.
-The image affine matrix is not affected; it is only changed by the
+The initial affine matrix is not affected; it is only changed by the
 appearance of another \fB-affine\fP option.
 
 .TP
