@@ -2698,7 +2698,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   */
   assert(image_info != (ImageInfo *) NULL);
   memset(image_info,0,sizeof(ImageInfo));
-  GetBlobInfo(&(image_info->blob));
+  GetBlobInfo(&image_info->blob);
   TemporaryFilename(image_info->unique);
   (void) strcat(image_info->unique,"u");
   TemporaryFilename(image_info->zero);

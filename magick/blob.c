@@ -132,7 +132,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         clone_info->magick);
       return((Image *) NULL);
     }
-  GetBlobInfo(&(clone_info->blob));
+  GetBlobInfo(&clone_info->blob);
   if (magick_info->blob_support)
     {
       /*
@@ -145,7 +145,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       image=ReadImage(clone_info,exception);
       DestroyImageInfo(clone_info);
       if (image != (Image *) NULL)
-        GetBlobInfo(&(image->blob));
+        GetBlobInfo(&image->blob);
       return(image);
     }
   /*
@@ -545,7 +545,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       {
         *length=p->blob.length;
         blob=p->blob.data;
-        GetBlobInfo(&(p->blob));
+        GetBlobInfo(&p->blob);
       }
       return(blob);
     }
