@@ -2787,7 +2787,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("stroke-width",keyword) == 0)
           {
             GetToken(q,&q,token);
-            graphic_context[n]->stroke_width=atof(token)+0.5;
+            graphic_context[n]->stroke_width=atof(token);
             break;
           }
         status=False;
@@ -4291,7 +4291,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->fill.opacity=OpaqueOpacity;
   draw_info->stroke.opacity=TransparentOpacity;
   draw_info->stroke_antialias=clone_info->antialias;
-  draw_info->stroke_width=1.5;
+  draw_info->stroke_width=1.0;
   draw_info->fill_rule=EvenOddRule;
   draw_info->linecap=ButtCap;
   draw_info->linejoin=MiterJoin;
