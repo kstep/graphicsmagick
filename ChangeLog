@@ -25,7 +25,7 @@
 
 2002-08-08  Cristy  <cristy@mystic.es.dupont.com>
   * Added logging capabilities to the CORE API.  This facility is useful
-    for debugging.
+    for debugging.  Added "events" parameter to the -debug commandline option.
   * AcquireImagePixels() did not always return the same pixel values
     for virtual pixels when the cache was stored on disk (very rare).
   * new -virtual-pixel command line option.
