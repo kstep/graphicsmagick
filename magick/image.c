@@ -1022,9 +1022,6 @@ MagickExport unsigned int CompositeImage(Image *image,
   int
     y;
 
-  PixelPacket
-    color;
-
   register IndexPacket
     *composite_indexes,
     *indexes;

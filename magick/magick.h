@@ -54,7 +54,6 @@ extern "C" {
 #if defined(sysv)
 #  include <sys/poll.h>
 #endif
-#  include "magick/api.h"
 #else
 #if defined(WIN32)
 #  include <sys/types.h>
@@ -68,7 +67,6 @@ extern "C" {
 #  include <console.h>
 #  include <unix.h>
 #endif
-#  include "api.h"
 #endif
 #include <fcntl.h>
 #if defined(_VISUALC_)
@@ -88,6 +86,7 @@ extern "C" {
 #define HasTTF
 #define HasZLIB
 #define HAVE_STRERROR
+#define QuantumLeap
 #endif
 
 #if defined(VMS)
@@ -97,16 +96,17 @@ extern "C" {
 #define HasTIFF
 #define HasX11
 #define HasZLIB
+#define QuantumLeap
 #endif
 
 #if defined(WIN32)
 #define inline __inline
 #define HasJBIG
 #define HasJPEG
+#define HasLCMS
 #define HasPNG
 #define HasTIFF
 #define HasTTF
-#define HAVE_FREETYPE_FREETYPE_H
 #define HasX11
 #define HasZLIB
 #define HasBZLIB
@@ -115,7 +115,14 @@ extern "C" {
 #define HAVE_MMAP
 #define HasXML
 #define HAVE_LIBXML_XMLERROR_H
-#define HasLCMS
+#define HAVE_FREETYPE_FREETYPE_H
+#define QuantumLeap
+#endif
+
+#if !defined(macintosh)
+#  include "magick/api.h"
+#else
+#  include "api.h"
 #endif
 
 #define MagickSignature  0xabacadab

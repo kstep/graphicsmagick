@@ -2556,18 +2556,13 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
 #define BezierQuantum  200
 
   AffineMatrix
-    affine,
-    current;
+    affine;
 
   char
     buffer[MaxTextExtent],
     keyword[MaxTextExtent],
-    *primitive,
     *q,
     value[MaxTextExtent];
-
-  double
-    angle;
 
   ImageAttribute
     *attribute;
@@ -3117,9 +3112,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("viewbox",keyword) == 0)
           {
-            RectangleInfo
-              viewbox;
-
             (void) strtod(q,&q);
             if (*q == ',')
               q++;

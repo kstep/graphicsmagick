@@ -118,10 +118,10 @@ typedef enum
   StreamError = 445
 } ExceptionType;
 
-#undef EvenOddRule
 typedef enum
 {
   UndefinedRule,
+#undef EvenOddRule
   EvenOddRule,
   NonZeroRule
 } FillRule;
@@ -146,24 +146,23 @@ typedef enum
   SincFilter
 } FilterTypes;
 
-/* Eliminate possible conflict from <X11/Xutil.h> */
-#undef NoValue
-#undef XValue
-#undef YValue
-#undef WidthValue
-#undef HeightValue
-#undef AllValues
-#undef XNegative
-#undef YNegative
 typedef enum
 {
+#undef NoValue
   NoValue = 0x0000,
+#undef XValue
   XValue = 0x0001,
+#undef YValue
   YValue = 0x0002,
+#undef WidthValue
   WidthValue = 0x0004,
+#undef HeightValue
   HeightValue = 0x0008,
+#undef AllValues
   AllValues = 0x000F,
+#undef XNegative
   XNegative = 0x0010,
+#undef YNegative
   YNegative = 0x0020,
   AspectValue = 0x2000,
   GreaterValue = 0x8000,
@@ -173,16 +172,27 @@ typedef enum
 
 typedef enum
 {
+#undef ForgetGravity
   ForgetGravity,
+#undef NorthWestGravity
   NorthWestGravity,
+#undef NorthGravity
   NorthGravity,
+#undef NorthEastGravity
   NorthEastGravity,
+#undef WestGravity
   WestGravity,
+#undef CenterGravity
   CenterGravity,
+#undef EastGravity
   EastGravity,
+#undef SouthWestGravity
   SouthWestGravity,
+#undef SouthGravity
   SouthGravity,
+#undef SouthEastGravity
   SouthEastGravity,
+#undef StaticGravity
   StaticGravity
 } GravityType;
 
@@ -400,8 +410,11 @@ typedef enum
 
 typedef enum
 {
+#undef DoRed
   DoRed = 0x0001,
+#undef DoGreen
   DoGreen = 0x0002,
+#undef DoBlue
   DoBlue = 0x0004,
   DoMatte = 0x0008
 } XColorFlags;

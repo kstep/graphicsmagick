@@ -823,18 +823,16 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     *despeckle_image;
 
   int
+    j,
+    layer,
     y;
 
   Quantum
-    *blue,
     *buffer,
-    *green,
-    *matte,
-    *red;
+    *pixels;
 
   register int
     i,
-    j,
     x;
 
   register PixelPacket
@@ -845,7 +843,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     X[4]= {0, 1, 1,-1},
     Y[4]= {1, 0, 1, 1};
 
-  unsigned int
+  unsigned long
     packets;
 
   /*
@@ -863,119 +861,81 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     Allocate image buffers.
   */
   packets=(image->columns+2)*(image->rows+2);
-  red=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
-  green=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
-  blue=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
-  matte=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
+  pixels=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
   buffer=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
-  if ((red == (Quantum *) NULL) || (green == (Quantum *) NULL) ||
-      (blue == (Quantum *) NULL) || (matte == (Quantum *) NULL) ||
-      (buffer == (Quantum *) NULL))
+  if ((buffer == (Quantum *) NULL) || (pixels == (Quantum *) NULL))
     {
       DestroyImage(despeckle_image);
       ThrowImageException(ResourceLimitWarning,"Unable to despeckle image",
         "Memory allocation failed");
     }
   /*
-    Zero image buffers.
+    Reduce speckle in the image.
   */
-  for (i=0; i < (int) packets; i++)
+  for (layer=0; layer < 3; layer++)
   {
-    red[i]=0;
-    green[i]=0;
-    blue[i]=0;
-    matte[i]=0;
-    buffer[i]=0;
-  }
-  /*
-    Copy image pixels to color component buffers
-  */
-  j=image->columns+2;
-  for (y=0; y < (int) image->rows; y++)
-  {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
-      break;
-    j++;
-    for (x=0; x < (int) image->columns; x++)
+    memset(buffer,0,packets*sizeof(Quantum));
+    memset(pixels,0,packets*sizeof(Quantum));
+    j=image->columns+2;
+    for (y=0; y < (int) image->rows; y++)
     {
-      red[j]=p->red;
-      green[j]=p->green;
-      blue[j]=p->blue;
-      matte[j]=p->opacity;
-      p++;
+      p=GetImagePixels(image,0,y,image->columns,1);
+      if (p == (PixelPacket *) NULL)
+        break;
+      j++;
+      for (x=0; x < (int) image->columns; x++)
+      {
+        switch (layer)
+        {
+          case 0: pixels[j]=p->red; break;
+          case 1: pixels[j]=p->green; break;
+          case 2: pixels[j]=p->blue; break;
+          case 3: pixels[j]=p->opacity; break;
+          default: break;
+        }
+        p++;
+        j++;
+      }
       j++;
     }
-    j++;
-  }
-  /*
-    Reduce speckle in red channel.
-  */
-  for (i=0; i < 4; i++)
-  {
-    MagickMonitor(DespeckleImageText,i,12);
-    Hull(X[i],Y[i],1,image->columns,image->rows,red,buffer);
-    Hull(-X[i],-Y[i],1,image->columns,image->rows,red,buffer);
-    Hull(-X[i],-Y[i],-1,image->columns,image->rows,red,buffer);
-    Hull(X[i],Y[i],-1,image->columns,image->rows,red,buffer);
-  }
-  /*
-    Reduce speckle in green channel.
-  */
-  for (i=0; i < (int) packets; i++)
-    buffer[i]=0;
-  for (i=0; i < 4; i++)
-  {
-    MagickMonitor(DespeckleImageText,i+4,12);
-    Hull(X[i],Y[i],1,image->columns,image->rows,green,buffer);
-    Hull(-X[i],-Y[i],1,image->columns,image->rows,green,buffer);
-    Hull(-X[i],-Y[i],-1,image->columns,image->rows,green,buffer);
-    Hull(X[i],Y[i],-1,image->columns,image->rows,green,buffer);
-  }
-  /*
-    Reduce speckle in blue channel.
-  */
-  for (i=0; i < (int) packets; i++)
-    buffer[i]=0;
-  for (i=0; i < 4; i++)
-  {
-    MagickMonitor(DespeckleImageText,i+8,12);
-    Hull(X[i],Y[i],1,image->columns,image->rows,blue,buffer);
-    Hull(-X[i],-Y[i],1,image->columns,image->rows,blue,buffer);
-    Hull(-X[i],-Y[i],-1,image->columns,image->rows,blue,buffer);
-    Hull(X[i],Y[i],-1,image->columns,image->rows,blue,buffer);
-  }
-  /*
-    Copy color component buffers to despeckled image.
-  */
-  j=image->columns+2;
-  for (y=0; y < (int) image->rows; y++)
-  {
-    q=SetImagePixels(despeckle_image,0,y,despeckle_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    j++;
-    for (x=0; x < (int) image->columns; x++)
+    for (i=0; i < 4; i++)
     {
-      q->red=red[j];
-      q->green=green[j];
-      q->blue=blue[j];
-      q->opacity=matte[j];
-      q++;
+      MagickMonitor(DespeckleImageText,4*layer+i,15);
+      Hull(X[i],Y[i],1,image->columns,image->rows,pixels,buffer);
+      Hull(-X[i],-Y[i],1,image->columns,image->rows,pixels,buffer);
+      Hull(-X[i],-Y[i],-1,image->columns,image->rows,pixels,buffer);
+      Hull(X[i],Y[i],-1,image->columns,image->rows,pixels,buffer);
+    }
+    j=image->columns+2;
+    for (y=0; y < (int) image->rows; y++)
+    {
+      q=GetImagePixels(despeckle_image,0,y,despeckle_image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      j++;
+      for (x=0; x < (int) image->columns; x++)
+      {
+        switch (layer)
+        {
+          case 0: q->red=pixels[j]; break;
+          case 1: q->green=pixels[j]; break;
+          case 2: q->blue=pixels[j]; break;
+          case 3: q->opacity=pixels[j]; break;
+          default: break;
+        }
+        q++;
+        j++;
+      }
+      if (!SyncImagePixels(despeckle_image))
+        break;
       j++;
     }
-    if (!SyncImagePixels(despeckle_image))
-      break;
-    j++;
   }
   /*
     Free memory.
   */
   LiberateMemory((void **) &buffer);
-  LiberateMemory((void **) &matte);
-  LiberateMemory((void **) &blue);
-  LiberateMemory((void **) &green);
-  LiberateMemory((void **) &red);
+  LiberateMemory((void **) &pixels);
   return(despeckle_image);
 }
 
