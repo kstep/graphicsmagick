@@ -4297,10 +4297,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             Image
               *noisy_image;
 
-            option=argv[++i];
             if (*option == '-')
               noisy_image=
-                ReduceNoiseImage(*image,atol(option),&(*image)->exception);
+                ReduceNoiseImage(*image,atol(argv[++i]),&(*image)->exception);
             else
               {
                 NoiseType
@@ -4310,6 +4309,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   Add noise to image.
                 */
                 noise_type=UniformNoise;
+                option=argv[++i];
                 if (LocaleCompare("Gaussian",option) == 0)
                   noise_type=GaussianNoise;
                 if (LocaleCompare("multiplicative",option) == 0)
