@@ -148,7 +148,7 @@ check-rwblob:
 	do \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if DELEGATE_PATH=$(top_srcdir)/delegates ./rwblob $$file $$format ; \
+	    if MAGICK_DELEGATE_PATH=$(top_srcdir)/delegates ./rwblob $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -165,7 +165,7 @@ check-rwfile:
 	do \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if DELEGATE_PATH=$(top_srcdir)/delegates ./rwfile $$file $$format ; \
+	    if MAGICK_DELEGATE_PATH=$(top_srcdir)/delegates ./rwfile $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
