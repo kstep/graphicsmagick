@@ -1,81 +1,41 @@
-## Process this file with autoconf to create configure. -*- autoconf -*-
+dnl Process this file with autoconf to create configure. -*- autoconf -*-
 
 AC_PREREQ(2.50)
-AC_INIT([libtool], [1.4c], [bug-libtool@gnu.org])
-AC_CONFIG_SRCDIR([ltmain.in])
+AC_INIT(libltdl, 1.2)
+AC_CONFIG_SRCDIR(ltdl.c)
 
-AM_INIT_AUTOMAKE(libtool, 1.4c)
+dnl We shouldn't be using these internal macros of autoconf,
+dnl but CONFIG_AUX_DIR($with_auxdir) breaks automake.
+AC_ARG_WITH(auxdir,
+[  --with-auxdir=DIR   path to autoconf auxiliary files],
+[AC_CONFIG_AUX_DIRS($with_auxdir)],
+[AC_CONFIG_AUX_DIR_DEFAULT])
 
-# This is a sanity check so we can see which version is used in bug reports.
-# It is assumed that we only want to see the date extension for cvs libtool
-# versions (i.e. "odd" letters) and not actual alpha releases.
-TIMESTAMP=
-case "$VERSION" in
-  [*[acegikmoqsuwy])]
-    TIMESTAMP=`${CONFIG_SHELL} ${srcdir}/mkstamp < ${srcdir}/ChangeLog`
-    banner="Configuring $PACKAGE $VERSION$TIMESTAMP"
-    dashes=`echo "$banner" | sed 's/./-/g'`
-
-    # Display an obvious version banner
-    echo
-    echo $dashes
-    echo "$banner"
-    echo $dashes
-    echo
-    ;;
-esac    
-AC_SUBST(TIMESTAMP)
-
-pkgdatadir='${datadir}'"/${PACKAGE}"
-AC_SUBST(pkgdatadir) # automake does not need this, but libtoolize does
-aclocaldir='${datadir}/aclocal'
-AC_SUBST(aclocaldir)
-
-# Use the specified CC and LD
-AC_PROG_CC
-
-AM_PROG_LD
-AC_SUBST(LD)
-AM_PROG_NM
-AC_SUBST(NM)
-AC_PROG_LN_S
-
-pushdef([AC_MSG_ERROR], [CXX=no])
-AC_PROG_CXX
-popdef([AC_MSG_ERROR])
-AM_CONDITIONAL(HAVE_CXX, [test "x$CXX" != xno])
-
-LT_AC_PROG_GCJ
-AM_CONDITIONAL(HAVE_GCJ, [test "x$GCJ" != xno])
-
-# Declare win32 dll support
-AC_LIBTOOL_WIN32_DLL
-
-# Check for dlopen support
-AC_LIBTOOL_DLOPEN
-AC_PROG_LIBTOOL
-
-AC_ARG_ENABLE(ltdl-install,
-[  --disable-ltdl-install  do not install libltdl])
-if test x"${enable_ltdl_install+set}" != xset; then
-  enable_ltdl_install=yes
-  ac_configure_args="$ac_configure_args --enable-ltdl-install"
+if test -z "$enable_ltdl_install$enable_ltdl_convenience"; then
+  if test -f ${srcdir}/ltmain.sh; then
+    # if libltdl is libtoolized, it is assumed to be stand-alone and
+    # installed unless the command line overrides it (tested above)
+    enable_ltdl_install=yes
+  else
+    AC_MSG_WARN([*** The top-level configure must select either])
+    AC_MSG_WARN([*** [A""C_LIBLTDL_INSTALLABLE] or [A""C_LIBLTDL_CONVENIENCE].])
+    AC_MSG_ERROR([*** Maybe you want to --enable-ltdl-install?])
+  fi
 fi
-AC_CONFIG_SUBDIRS(libltdl)
 
-# all subdirectories that are configured on demand, but that must be
-# included in the distribution
-CONF_SUBDIRS="cdemo pdemo demo depdemo mdemo tagdemo"
-AC_SUBST(CONF_SUBDIRS)
+AM_INIT_AUTOMAKE(libltdl,1.2,-)
+AM_CONFIG_HEADER(config.h:config-h.in)
+AM_MAINTAINER_MODE
 
-ACINCLUDE_M4_LIST="${srcdir}/acinclude.m4"
-DIST_MAKEFILE_LIST=
-for dir in $CONF_SUBDIRS; do
-  ACINCLUDE_M4_LIST="$ACINCLUDE_M4_LIST ${srcdir}/$dir/acinclude.m4"
-  DIST_MAKEFILE_LIST="$DIST_MAKEFILE_LIST$dir/Makefile "
-done
-AC_SUBST(ACINCLUDE_M4_LIST)
-AC_SUBST(DIST_MAKEFILE_LIST)
+AC_PROG_CC
+AC_C_CONST
+AC_C_INLINE
 
-AC_CONFIG_FILES([Makefile doc/Makefile tests/Makefile])
-AC_OUTPUT
+AC_LIBTOOL_WIN32_DLL
+AC_PROG_LIBTOOL
+AC_SUBST(LIBTOOL_DEPS)
+
+AC_LIB_LTDL
+
+dnl Output the makefile
+AC_OUTPUT(Makefile)
