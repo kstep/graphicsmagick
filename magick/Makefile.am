@@ -377,7 +377,7 @@ wbmp_la_LIBADD      =
 # X module
 x_la_SOURCES        = x.c
 x_la_LDFLAGS        = -no-undefined -module -avoid-version
-x_la_LIBADD         = 
+x_la_LIBADD         = @LIB_X11@
 
 # XBM module
 xbm_la_SOURCES      = xbm.c
@@ -397,7 +397,7 @@ xpm_la_LIBADD       =
 # XWD module
 xwd_la_SOURCES      = xwd.c
 xwd_la_LDFLAGS      = -no-undefined -module -avoid-version
-xwd_la_LIBADD       = 
+xwd_la_LIBADD       = @LIB_X11@
 
 # YUV module
 yuv_la_SOURCES      = yuv.c
