@@ -1,6 +1,25 @@
 #ifndef __LIBXML_WIN32_CONFIG__
 #define __LIBXML_WIN32_CONFIG__
 
+/* This part added to build DLL for ImageMagick */
+#if !defined(_VISUALC_)
+#  error Something is very very wrong. This header must only be used under Visual C++.
+#endif /* !_VISUALC_ */
+#if defined(_MT) && defined(_DLL) && !defined(_LIB)
+#  pragma warning( disable: 4273 )      /* Disable the stupid dll linkage warnings */
+#  if !defined(_XMLLIB_)
+#    define LIBXML_DLL_IMPORT __declspec(dllimport)
+#  else
+#   define LIBXML_DLL_IMPORT __declspec(dllexport)
+#  endif /* !_XMLLIB_ */
+#else
+#  define LIBXML_DLL_IMPORT
+#endif /* _MT && _DLL && !_LIB */
+#pragma warning(disable : 4018)
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4142)
+/* End of part added for ImageMagick */
+
 #define HAVE_CTYPE_H
 #define HAVE_STDLIB_H
 #define HAVE_STDARG_H
