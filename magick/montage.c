@@ -511,14 +511,14 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
   */
   font_height=annotate_info->bounds.height;
   FormatLabel(clone_info,montage_info->title,((tile_info.width+
-    (border_width << 1))*Min(number_images,tiles_per_column)) >> 1,
+    2*border_width)*Min(number_images,tiles_per_column))/2,
     &font_height);
   for (tile=0; tile < number_images; tile++)
   {
     attribute=GetImageAttribute(next_list[tile],"Label");
     if (attribute == (ImageAttribute *) NULL)
       continue;
-    FormatLabel(clone_info,attribute->value,tile_info.width+(border_width << 1),
+    FormatLabel(clone_info,attribute->value,tile_info.width+2*border_width,
       &font_height);
   }
   /*
@@ -656,8 +656,8 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
           border_info.height=border_width;
           if (montage_info->frame != (char *) NULL)
             {
-              border_info.width=(width-next->columns+1) >> 1;
-              border_info.height=(height-next->rows+1) >> 1;
+              border_info.width=(width-next->columns+1)/2;
+              border_info.height=(height-next->rows+1)/2;
             }
           next->orphan=True;
           bordered_next=BorderImage(next,&border_info,exception);
@@ -680,20 +680,20 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
         }
         case NorthGravity:
         {
-          x=((width+(border_width << 1))-next->columns) >> 1;
+          x=((width+2*border_width)-(int) next->columns)/2;
           y=0;
           break;
         }
         case NorthEastGravity:
         {
-          x=(width+(border_width << 1))-next->columns;
+          x=(width+2*border_width)-(int) next->columns;
           y=0;
           break;
         }
         case WestGravity:
         {
           x=0;
-          y=((height+(border_width << 1))-next->rows) >> 1;
+          y=((height+2*border_width)-(int) next->rows)/2;
           break;
         }
         case ForgetGravity:
@@ -701,32 +701,32 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
         case CenterGravity:
         default:
         {
-          x=((width+(border_width << 1))-next->columns) >> 1;
-          y=((height+(border_width << 1))-next->rows) >> 1;
+          x=((width+2*border_width)-(int) next->columns)/2;
+          y=((height+2*border_width)-(int) next->rows)/2;
           break;
         }
         case EastGravity:
         {
-          x=(width+(border_width << 1))-next->columns;
-          y=((height+(border_width << 1))-next->rows) >> 1;
+          x=(width+2*border_width)-(int) next->columns;
+          y=((height+2*border_width)-(int) next->rows)/2;
           break;
         }
         case SouthWestGravity:
         {
           x=0;
-          y=(height+(border_width << 1))-next->rows;
+          y=(height+2*border_width)-(int) next->rows;
           break;
         }
         case SouthGravity:
         {
-          x=((width+(border_width << 1))-next->columns) >> 1;
-          y=(height+(border_width << 1))-next->rows;
+          x=((width+2*border_width)-(int) next->columns)/2;
+          y=(height+2*border_width)-(int) next->rows;
           break;
         }
         case SouthEastGravity:
         {
-          x=(width+(border_width << 1))-next->columns;
-          y=(height+(border_width << 1))-next->rows;
+          x=(width+2*border_width)-(int) next->columns;
+          y=(height+2*border_width)-(int) next->rows;
           break;
         }
       }
@@ -815,10 +815,10 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
               */
               FormatString(geometry,"%ux%u%+d%+d",
                 (montage_info->frame ? next->columns : width)-
-                (border_width << 1),font_height,(int) (x_offset+border_width),
+                2*border_width,font_height,(int) (x_offset+border_width),
                 (int) (montage_info->frame ? y_offset+height+
-                (border_width << 1)-bevel_width-2 : y_offset+tile_info.height+
-                (border_width << 1)+(montage_info->shadow ? 4 : 0)+2));
+                2*border_width-bevel_width-2 : y_offset+tile_info.height+
+                2*border_width+(montage_info->shadow ? 4 : 0)+2));
               (void) CloneString(&annotate_info->geometry,geometry);
               (void) CloneString(&annotate_info->text,attribute->value);
               AnnotateImage(montage_next,annotate_info);

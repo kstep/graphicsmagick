@@ -250,20 +250,20 @@ Export unsigned int AnnotateImage(Image *image,
       }
       case NorthGravity:
       {
-        clone_info->bounds.x=(width/2)-(annotate_image->columns/2)+x;
+        clone_info->bounds.x=(width/2)-(int) (annotate_image->columns/2)+x;
         clone_info->bounds.y=i*clone_info->bounds.height+y;
         break;
       }
       case NorthEastGravity:
       {
-        clone_info->bounds.x=width-annotate_image->columns+x;
+        clone_info->bounds.x=width-(int) annotate_image->columns+x;
         clone_info->bounds.y=i*clone_info->bounds.height+y;
         break;
       }
       case WestGravity:
       {
         clone_info->bounds.x=x;
-        clone_info->bounds.y=(height/2)-(number_lines*
+        clone_info->bounds.y=(height/2)-(int) (number_lines*
           clone_info->bounds.height/2)+i*clone_info->bounds.height+y;
         break;
       }
@@ -272,15 +272,15 @@ Export unsigned int AnnotateImage(Image *image,
       case CenterGravity:
       default:
       {
-        clone_info->bounds.x=(width/2)-(annotate_image->columns/2)+x;
-        clone_info->bounds.y=(height/2)-(number_lines*
+        clone_info->bounds.x=(width/2)-(int) (annotate_image->columns/2)+x;
+        clone_info->bounds.y=(height/2)-(int) (number_lines*
           clone_info->bounds.height/2)+i*clone_info->bounds.height+y;
         break;
       }
       case EastGravity:
       {
-        clone_info->bounds.x=width-annotate_image->columns-x;
-        clone_info->bounds.y=(height/2)-(number_lines*
+        clone_info->bounds.x=width-(int) annotate_image->columns-x;
+        clone_info->bounds.y=(height/2)-(int) (number_lines*
           clone_info->bounds.height/2)+i*clone_info->bounds.height-y;
         break;
       }
@@ -292,13 +292,13 @@ Export unsigned int AnnotateImage(Image *image,
       }
       case SouthGravity:
       {
-        clone_info->bounds.x=(width/2)-(annotate_image->columns/2)-x;
+        clone_info->bounds.x=(width/2)-(int) (annotate_image->columns/2)-x;
         clone_info->bounds.y=height-(i+1)*clone_info->bounds.height-y;
         break;
       }
       case SouthEastGravity:
       {
-        clone_info->bounds.x=width-annotate_image->columns-x;
+        clone_info->bounds.x=width-(int) annotate_image->columns-x;
         clone_info->bounds.y=height-(i+1)*clone_info->bounds.height-y;
         break;
       }
