@@ -222,7 +222,7 @@ static unsigned int IsXCF(const unsigned char *magick,const size_t length)
 %
 %
 */
-MagickExport char *ReadBlobStringWithLongSize(Image *image,char *string)
+static char *ReadBlobStringWithLongSize(Image *image,char *string)
 {
   int
     c;
@@ -276,7 +276,7 @@ MagickExport char *ReadBlobStringWithLongSize(Image *image,char *string)
 %
 %
 */
-MagickExport char *ReadBlobStringWithShortSize(Image *image,char *string)
+static char *ReadBlobStringWithShortSize(Image *image,char *string)
 {
   int
     c;

@@ -71,7 +71,7 @@
   <magic name="WMF" offset="0" target="\001\000\011\000" />
   <magic name="WPG" offset="0" target="\377WPC" />
   <magic name="XBM" offset="0" target="#define" />
-  <magic name="XCF" offset="0" target="gimp xcf file" />
+  <magic name="XCF" offset="0" target="gimp xcf" />
   <magic name="XPM" offset="1" target="* XPM *" />
   <magic name="XWD" offset="4" target="\007\000\000" />
   <magic name="XWD" offset="5" target="\000\000\007" />
