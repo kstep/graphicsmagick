@@ -175,7 +175,7 @@ clean-perl:
 distclean-perl:
 endif # WITH_PERL
 
-#all-local: all-perl
+all-local: $(top_srcdir)/www/NEWS.html $(top_srcdir)/www/Changelog.html
 
 # Install PerlMagick
 install-exec-local: install-exec-perl
@@ -202,3 +202,11 @@ check-local: check-perl
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
+
+# Build HTML version of news
+$(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
+	@PERL@ $(top_srcdir)/scripts/txt2html -t 'GraphicsMagick News' < $(top_srcdir)/NEWS  > $(top_srcdir)/www/NEWS.html
+
+# Build HTML version of ChangeLog
+$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
+	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick ChangeLog' < $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html

@@ -713,7 +713,7 @@ distcleancheck: distclean
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-recursive
-all-am: Makefile $(DATA)
+all-am: Makefile $(DATA) all-local
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
@@ -791,17 +791,17 @@ uninstall-am: uninstall-info-am uninstall-local uninstall-pkgdataDATA
 
 uninstall-info: uninstall-info-recursive
 
-.PHONY: $(RECURSIVE_TARGETS) CTAGS GTAGS all all-am check check-am \
-	check-local clean clean-generic clean-libtool clean-local \
-	clean-recursive ctags ctags-recursive dist dist-all dist-bzip2 \
-	dist-gzip dist-zip distcheck distclean distclean-generic \
-	distclean-libtool distclean-local distclean-recursive \
-	distclean-tags distcleancheck distdir distuninstallcheck dvi \
-	dvi-am dvi-recursive info info-am info-recursive install \
-	install-am install-data install-data-am install-data-local \
-	install-data-recursive install-exec install-exec-am \
-	install-exec-local install-exec-recursive install-info \
-	install-info-am install-info-recursive install-man \
+.PHONY: $(RECURSIVE_TARGETS) CTAGS GTAGS all all-am all-local check \
+	check-am check-local clean clean-generic clean-libtool \
+	clean-local clean-recursive ctags ctags-recursive dist dist-all \
+	dist-bzip2 dist-gzip dist-zip distcheck distclean \
+	distclean-generic distclean-libtool distclean-local \
+	distclean-recursive distclean-tags distcleancheck distdir \
+	distuninstallcheck dvi dvi-am dvi-recursive info info-am \
+	info-recursive install install-am install-data install-data-am \
+	install-data-local install-data-recursive install-exec \
+	install-exec-am install-exec-local install-exec-recursive \
+	install-info install-info-am install-info-recursive install-man \
 	install-pkgdataDATA install-recursive install-strip \
 	installcheck installcheck-am installdirs installdirs-am \
 	installdirs-recursive maintainer-clean maintainer-clean-generic \
@@ -896,7 +896,7 @@ perl-sources:
 @WITH_PERL_FALSE@clean-perl:
 @WITH_PERL_FALSE@distclean-perl:
 
-#all-local: all-perl
+all-local: $(top_srcdir)/www/NEWS.html $(top_srcdir)/www/Changelog.html
 
 # Install PerlMagick
 install-exec-local: install-exec-perl
@@ -920,6 +920,14 @@ maintainer-clean-local: distclean-local
 check-local: check-perl
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
+
+# Build HTML version of news
+$(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
+	@PERL@ $(top_srcdir)/scripts/txt2html -t 'GraphicsMagick News' < $(top_srcdir)/NEWS  > $(top_srcdir)/www/NEWS.html
+
+# Build HTML version of ChangeLog
+$(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
+	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick ChangeLog' < $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

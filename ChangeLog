@@ -1,5 +1,8 @@
 2003-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* scripts/txt2html: New script for formatting text into HTML.
+	* Makefile.am: Automated the generation of www/Changelog.html and
+	www/NEWS.html.
 	* coders/xpm.c (WritePICONImage): Close blob using correct image.
 	* tests/Makefile.am (CHECK_SIZED_FILES): Added files to tests
 	subdirectory so that tests don't need to use files from
