@@ -149,6 +149,10 @@ union ArgumentList
   Static declarations.
 */
 static char
+  *AlignTypes[] =
+  {
+    "Undefined", "Left", "Center", "Right", (char *) NULL
+  },
   *BooleanTypes[] =
   {
     "False", "True", (char *) NULL
@@ -336,7 +340,7 @@ static struct
       {"skewY", DoubleReference}, {"strokewidth", IntegerReference},
       {"antialias", BooleanTypes}, {"family", StringReference},
       {"style", StyleTypes}, {"stretch", StretchTypes},
-      {"weight", IntegerReference} } },
+      {"weight", IntegerReference}, {"align", AlignTypes} } },
     { "ColorFloodfill", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
       {"fill", StringReference}, {"bordercolor", StringReference},
@@ -4747,6 +4751,8 @@ Mogrify(ref,...)
             draw_info->stretch=(StretchType) argument_list[21].int_reference;
           if (attribute_flag[22])
             draw_info->weight=argument_list[22].int_reference;
+          if (attribute_flag[23])
+            draw_info->align=(AlignType) argument_list[23].int_reference;
           AnnotateImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           break;
