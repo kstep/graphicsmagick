@@ -1326,7 +1326,7 @@ Export size_t ReadBlob(Image *image,const size_t number_bytes,void *data)
   offset=0;
   for (i=number_bytes; i > 0; i-=count)
   {
-    count=fread((char *) data+offset,1,number_bytes,image->file);
+    count=fread((char *) data+offset,1,i,image->file);
     if (count <= 0)
       break;
     offset+=count;
