@@ -405,7 +405,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->blob.filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->blob->filesize);
       }
   } while (count > 0);
   LiberateMemory((void **) &scanline);

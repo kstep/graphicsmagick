@@ -387,17 +387,6 @@ typedef struct _Image
   void
     *client_data;
 
-  unsigned int
-    orphan;
-
-  struct _Image
-    *previous,
-    *list,
-    *next;
-
-  /*
-    Private members.
-  */
   int
     start_loop,
     taint;
@@ -424,7 +413,15 @@ typedef struct _Image
     *file;
 
   BlobInfo
-    blob;
+    *blob;
+
+  unsigned int
+    orphan;
+
+  struct _Image
+    *previous,
+    *list,
+    *next;
 
   unsigned long
     signature;
@@ -505,9 +502,6 @@ typedef struct _ImageInfo
   void
     *client_data;
 
-  /*
-    Private members.
-  */
   int
     (*fifo)(const Image *,const void *,const size_t);
 
@@ -519,7 +513,7 @@ typedef struct _ImageInfo
     *file;
 
   BlobInfo
-    blob;
+    *blob;
 
   unsigned long
     signature;

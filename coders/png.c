@@ -1597,7 +1597,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     MngInfoFreeStruct(mng_info,&have_mng_structure);
                     return((Image *) NULL);
                   }
-                image->next->blob=image->blob;
+                *image->next->blob=(*image->blob);
                 image=image->next;
                 mng_info->image=image;
               }
@@ -1915,7 +1915,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         MngInfoFreeStruct(mng_info,&have_mng_structure);
                         return((Image *) NULL);
                       }
-                    image->next->blob=image->blob;
+                    *image->next->blob=(*image->blob);
                     image=image->next;
                   }
                 mng_info->image=image;
@@ -2364,7 +2364,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         MngInfoFreeStruct(mng_info,&have_mng_structure);
                         return((Image *) NULL);
                       }
-                    image->next->blob=image->blob;
+                    *image->next->blob=(*image->blob);
                     image=image->next;
                   }
                 mng_info->image=image;
@@ -2410,7 +2410,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   MngInfoFreeStruct(mng_info,&have_mng_structure);
                   return((Image *) NULL);
                 }
-              image->next->blob=image->blob;
+              *image->next->blob=(*image->blob);
               image=image->next;
             }
             mng_info->image=image;
@@ -2449,11 +2449,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MngInfoFreeStruct(mng_info,&have_mng_structure);
                 return((Image *) NULL);
               }
-            image->next->blob=image->blob;
+            *image->next->blob=(*image->blob);
             image=image->next;
           }
         mng_info->image=image;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->blob.filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->blob->filesize);
         if (term_chunk_found)
           {
             image->start_loop=True;
@@ -3466,7 +3466,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                    }
 
                 large_image=image->next;
-                large_image->blob=image->blob;
+                *large_image->blob=(*image->blob);
                 large_image->columns=magnified_width;
                 large_image->rows=magnified_height;
 
@@ -3596,7 +3596,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                    image->previous->next=large_image;
                 image->orphan=True;
                 image->file=(FILE *) NULL;
-                image->blob.mapped=False;
+                image->blob->mapped=False;
                 DestroyImage(image);
                 image=large_image;
                 mng_info->image=image;
@@ -3725,7 +3725,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->rows=p->rows;
                     p->orphan=True;
                     p->file=(FILE *) NULL;
-                    p->blob.mapped=False;
+                    p->blob->mapped=False;
                     DestroyImage(p);
                     image->page.width=image->columns;
                     image->page.height=image->rows;
@@ -3843,7 +3843,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               return((Image *) NULL);
             }
           image=image->next;
-          image->next->blob=image->blob;
+          *image->next->blob=(*image->blob);
         }
       image->columns=mng_width;
       image->rows=mng_height;

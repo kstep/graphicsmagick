@@ -36,7 +36,7 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>void  <STRONG>MagickMonitor</STRONG>( const char *text, const size_t quantum, const size_t span );</P>
+<P>void  <STRONG>MagickMonitor</STRONG>( const char *text, const off_t quantum, const off_t span );</P>
 <P>MonitorHandler  <STRONG>SetMonitorHandler</STRONG>( MonitorHandler handler );</P>
 <P>
 <HR>
@@ -47,7 +47,7 @@
 <H2><A NAME="magickmonitor">MagickMonitor</A></H2>
 <P>Method MagickMonitor calls the monitor handler methods with a text string that describes the task and a measure of completion.</P>
 <P>The format of the MagickMonitor method is:</P>
-<blockquote>void MagickMonitor ( const char *text, const size_t quantum, const size_t span ); </blockquote><P>
+<blockquote>void MagickMonitor ( const char *text, const off_t quantum, const off_t span ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>

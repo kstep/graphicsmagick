@@ -126,7 +126,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
-  GetBlobInfo(&allocate_image->blob);
+  allocate_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   (void) strcpy(allocate_image->magick,"MIFF");
   allocate_image->storage_class=DirectClass;
   allocate_image->depth=QuantumDepth;
@@ -147,7 +147,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   /*
     Transfer image info.
   */
-  allocate_image->blob=image_info->blob;
+  *allocate_image->blob=(*image_info->blob);
   allocate_image->exempt=image_info->file != (FILE *) NULL;
   (void) strcpy(allocate_image->filename,image_info->filename);
   (void) strcpy(allocate_image->magick_filename,image_info->filename);
@@ -309,7 +309,7 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(image->next->filename,image->filename);
   if (image_info != (ImageInfo *) NULL)
     (void) strcpy(image->next->filename,image_info->filename);
-  image->next->blob=image->blob;
+  *image->next->blob=(*image->blob);
   image->next->file=image->file;
   image->next->scene=image->scene+1;
   image->next->previous=image;
@@ -936,7 +936,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
           image->generic_profile[i].info,length);
       }
     }
-  GetBlobInfo(&clone_image->blob);
+  clone_image->blob=CloneBlobInfo(image->blob);
   GetCacheInfo(&clone_image->cache);
   if ((columns != 0) || (rows != 0))
     {
@@ -1053,6 +1053,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
       return(clone_info);
     }
   *clone_info=(*image_info);
+  clone_info->blob=CloneBlobInfo(image_info->blob);
   if (image_info->size != (char *) NULL)
     clone_info->size=AllocateString(image_info->size);
   if (image_info->tile != (char *) NULL)
@@ -1761,17 +1762,17 @@ MagickExport void DescribeImage(Image *image,FILE *file,
               image->normalized_maximum_error);
           }
       (void) fprintf(file,"%u-bit ",image->depth);
-      if (image->blob.filesize != 0)
+      if (image->blob->filesize != 0)
         {
-          if (image->blob.filesize >= (1 << 24))
+          if (image->blob->filesize >= (1 << 24))
             (void) fprintf(file,"%lumb ",
-              (unsigned long) (image->blob.filesize/1024/1024));
+              (unsigned long) (image->blob->filesize/1024/1024));
           else
-            if (image->blob.filesize >= (1 << 16))
+            if (image->blob->filesize >= (1 << 16))
               (void) fprintf(file,"%lukb ",
-                (unsigned long) (image->blob.filesize/1024));
+                (unsigned long) (image->blob->filesize/1024));
             else
-              (void) fprintf(file,"%lub ",(unsigned long) image->blob.filesize);
+              (void) fprintf(file,"%lub ",(unsigned long) image->blob->filesize);
         }
       (void) fprintf(file,"%.1fu %d:%02d\n",user_time,(int) (elapsed_time/60.0),
         (int) ceil(fmod(elapsed_time,60.0)));
@@ -2061,16 +2062,16 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           else
             (void) fprintf(file,"\n");
     }
-  if (image->blob.filesize >= (1 << 24))
+  if (image->blob->filesize >= (1 << 24))
     (void) fprintf(file,"  Filesize: %lumb\n",
-      (unsigned long) (image->blob.filesize/1024/1024));
+      (unsigned long) (image->blob->filesize/1024/1024));
   else
-    if (image->blob.filesize >= (1 << 16))
+    if (image->blob->filesize >= (1 << 16))
       (void) fprintf(file,"  Filesize: %lukb\n",
-        (unsigned long) (image->blob.filesize/1024));
+        (unsigned long) (image->blob->filesize/1024));
     else
       (void) fprintf(file,"  Filesize: %lub\n",
-        (unsigned long) image->blob.filesize);
+        (unsigned long) image->blob->filesize);
   if (image->interlace == NoInterlace)
     (void) fprintf(file,"  Interlace: None\n");
   else
@@ -2252,7 +2253,6 @@ MagickExport void DestroyImage(Image *image)
   /*
     Close image.
   */
-  DestroyBlobInfo(&image->blob);
   if (image->file != (FILE *) NULL)
     {
       CloseBlob(image);
@@ -2313,6 +2313,7 @@ MagickExport void DestroyImage(Image *image)
         }
     }
   DestroySemaphoreInfo(image->semaphore);
+  DestroyBlobInfo(image->blob);
   LiberateMemory((void **) &image);
 }
 
@@ -2359,6 +2360,7 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
     LiberateMemory((void **) &image_info->density);
   if (image_info->view != (char *) NULL)
     LiberateMemory((void **) &image_info->view);
+  DestroyBlobInfo(image_info->blob);
   LiberateMemory((void **) &image_info);
 }
 
@@ -2698,7 +2700,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   */
   assert(image_info != (ImageInfo *) NULL);
   memset(image_info,0,sizeof(ImageInfo));
-  GetBlobInfo(&image_info->blob);
+  image_info->blob=CloneBlobInfo((BlobInfo *) NULL);
   TemporaryFilename(image_info->unique);
   (void) strcat(image_info->unique,"u");
   TemporaryFilename(image_info->zero);
@@ -2800,7 +2802,7 @@ MagickExport Image *GetNextImage(Image *image)
   CloseImagePixels(image);
   if (image->next == (Image *) NULL)
     return((Image *) NULL);
-  image->next->blob=image->blob;
+  *image->next->blob=(*image->blob);
   image->next->file=image->file;
   return(image->next);
 }

@@ -498,7 +498,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   if ((image->file == stdout) || image->pipet ||
-      (image->blob.data != (unsigned char *) NULL))
+      (image->blob->data != (unsigned char *) NULL))
   /*
     Intialize JPEG 2000 API.
   */

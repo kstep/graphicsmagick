@@ -3107,7 +3107,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"filesize") == 0)
             {
               if (image)
-                s=newSViv(image->blob.filesize);
+                s=newSViv(image->blob->filesize);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -6287,7 +6287,7 @@ Ping(ref,...)
           PUSHs(sv_2mortal(newSVpv(message,0)));
           FormatString(message,"%u",image->rows);
           PUSHs(sv_2mortal(newSVpv(message,0)));
-          FormatString(message,"%lu",(unsigned long) image->blob.filesize);
+          FormatString(message,"%lu",(unsigned long) image->blob->filesize);
           PUSHs(sv_2mortal(newSVpv(message,0)));
           PUSHs(sv_2mortal(newSVpv(image->magick,0)));
           DestroyImage(image);

@@ -1240,7 +1240,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strcpy(filename,image->filename);
   if ((image->file == stdout) || image->pipet ||
-      (image->blob.data != (unsigned char *) NULL))
+      (image->blob->data != (unsigned char *) NULL))
     TemporaryFilename(filename);
   else
     CloseBlob(image);
@@ -1724,7 +1724,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   if (LocaleCompare(image_info->magick,"PTIF") == 0)
     DestroyImages(image);
   if ((image->file == stdout) || image->pipet ||
-      (image->blob.data != (unsigned char *) NULL))
+      (image->blob->data != (unsigned char *) NULL))
     {
       FILE
         *file;
@@ -1733,7 +1733,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         c;
 
       /*
-        Copy temporary file to image blob.
+        Copy temporary file to image blob->
       */
       file=fopen(filename,ReadBinaryType);
       if (file == (FILE *) NULL)

@@ -600,8 +600,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       for (i=0; i < number_layers; i++)
       {
+        *layer_info[i].image->blob=(*image->blob);
         layer_info[i].image->file=image->file;
-        layer_info[i].image->blob=image->blob;
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
           if (layer_info[i].channel_info[j].size < 8)
@@ -710,8 +710,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           LiberateMemory((void **) &scanline);
         }
+        *image->blob=(*layer_info[i].image->blob);
         image->file=layer_info[i].image->file;
-        image->blob=layer_info[i].image->blob;
         if (layer_info[i].opacity != OpaqueOpacity)
           {
             /*

@@ -201,7 +201,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->blob.filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->blob->filesize);
       }
   } while ((width != (unsigned long) ~0) && (height != (unsigned long) ~0));
   while (image->previous != (Image *) NULL)

@@ -863,7 +863,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->blob.filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->blob->filesize);
       }
   } while (IsBMP(magick,2));
   while (image->previous != (Image *) NULL)

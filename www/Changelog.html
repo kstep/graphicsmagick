@@ -26,8 +26,9 @@ ImageMagick Changes</font></font></font></b></td>
 2001-09-08  Cristy  <cristy@mystic.es.dupont.com>
 	* ImageMagick defaults to 16-bit quantum.  Set QuantumMagick for
 	  8-bit.
-	* Changed filesize/total_colors to double so the Image structure
-	  size does not depend on the large-file preprocessor defines.
+	* Changed image->blob from BlobInfo to BlobInfo* so the Image
+	  structure size is not dependent on the large-file preprocessor
+	  defines.
 
 2001-09-07  Cristy  <cristy@mystic.es.dupont.com>
 	* Added -background to convert program usage text.

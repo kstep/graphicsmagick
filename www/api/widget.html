@@ -56,7 +56,7 @@
 <P>void  <STRONG>XInfoWidget</STRONG>( Display *display, XWindows *windows, const char *activity );</P>
 <P>void  <STRONG>XListBrowserWidget</STRONG>( Display *display, XWindows *windows, XWindowInfo *window_info, char const ** list, const char *action, const char *query, char *reply );</P>
 <P>int  <STRONG>XMenuWidget</STRONG>( Display *display, XWindows *windows, const char *title, const char ** selections, char *item );</P>
-<P>void  <STRONG>XMonitorWidget</STRONG>( Display *display, XWindows *windows, const char *task, const size_t quantum, const size_t span );</P>
+<P>void  <STRONG>XMonitorWidget</STRONG>( Display *display, XWindows *windows, const char *task, const off_t quantum, const off_t span );</P>
 <P>void  <STRONG>XNoticeWidget</STRONG>( Display *display, XWindows *windows, const char *reason, const char *description );</P>
 <P>unsigned int  <STRONG>XPreferencesWidget</STRONG>( Display *display, XResourceInfo *resource_info, XWindows *windows );</P>
 <P>void  <STRONG>XTextViewWidget</STRONG>( Display *display, const XResourceInfo *resource_info, XWindows *windows, const unsigned int mono, const char *title, char const ** textlist );</P>
@@ -311,7 +311,7 @@ Specifies a character array.  The item selected from the menu is returned here.
 <P>Method XMonitorWidget displays the progress a task is making in completing a task.  
 <FONT SIZE=-1>A</FONT> span of zero toggles the active status.  An inactive state disables the progress monitor.</P>
 <P>The format of the XMonitorWidget method is:</P>
-<blockquote>void XMonitorWidget ( Display *display, XWindows *windows, const char *task, const size_t quantum, const size_t span ); </blockquote><P>
+<blockquote>void XMonitorWidget ( Display *display, XWindows *windows, const char *task, const off_t quantum, const off_t span ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>display:</STRONG><BR>

@@ -3987,7 +3987,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   status=WriteImage(image_info,image);
   if (status == False)
     return(status);
-  filesize=image->blob.filesize;
+  filesize=image->blob->filesize;
   file=fopen(image->filename,ReadBinaryType);
   (void) remove(image->filename);
   if (file == (FILE *) NULL)

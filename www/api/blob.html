@@ -21,6 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#blobtoimage">BlobToImage</A></LI>
+		<LI><A HREF="#cloneblobinfo">CloneBlobInfo</A></LI>
 		<LI><A HREF="#destroyblobinfo">DestroyBlobInfo</A></LI>
 		<LI><A HREF="#filetoblob">FileToBlob</A></LI>
 		<LI><A HREF="#getblobinfo">GetBlobInfo</A></LI>
@@ -41,6 +42,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>BlobToImage</STRONG>( const ImageInfo *image_info, const void *blob, const size_t length, ExceptionInfo *exception );</P>
+<P>BlobInfo * <STRONG>CloneBlobInfo</STRONG>( const BlobInfo *blob_info );</P>
 <P>void  <STRONG>DestroyBlobInfo</STRONG>( BlobInfo *blob );</P>
 <P>void * <STRONG>FileToBlob</STRONG>( const char *filename, size_t *length, ExceptionInfo *exception );</P>
 <P>void  <STRONG>GetBlobInfo</STRONG>( BlobInfo *blob );</P>
@@ -80,6 +82,23 @@ This size_t integer reflects the length in bytes of the blob.
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="cloneblobinfo">CloneBlobInfo</A></H2>
+<P>Method CloneBlobInfo makes a duplicate of the given blob info structure, or if blob info is 
+<FONT SIZE=-1>NULL,</FONT> a new one.</P>
+<P>The format of the CloneBlobInfo method is:</P>
+<blockquote><A HREF="types/BlobInfo.html">BlobInfo</A> *CloneBlobInfo ( const <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_clone_info%3A">clone_info:</A></STRONG><BR>
+<DD>
+Method CloneBlobInfo returns a duplicate of the given blob info, or if blob info is 
+<FONT SIZE=-1>NULL</FONT> a new one.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_quantize_info%3A">quantize_info:</A></STRONG><BR>
+<DD>
+a structure of type info.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="destroyblobinfo">DestroyBlobInfo</A></H2>
 <P>Method DestroyBlobInfo deallocates memory associated with an BlobInfo structure.</P>
 <P>The format of the DestroyBlobInfo method is:</P>
@@ -92,14 +111,14 @@ Specifies a pointer to a BlobInfo structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="filetoblob">FileToBlob</A></H2>
-<P>Method FileToBlob returns the contents of a file as a blob.  It returns the file as a blob and its length.</P>
+<P>Method FileToBlob returns the contents of a file as a blob-&gt; It returns the file as a blob and its length.</P>
 <P>The format of the FileToBlob method is:</P>
 <blockquote>void *FileToBlob ( const char *filename, size_t *length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>blob:</STRONG><BR>
 <DD>
-Method FileToBlob returns the contents of a file as a blob.  If an error occurs 
+Method FileToBlob returns the contents of a file as a blob-&gt; If an error occurs 
 <FONT SIZE=-1>NULL</FONT> is returned.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_filename%3A">filename:</A></STRONG><BR>
@@ -108,7 +127,7 @@ The filename.
 <P></P>
 <p><dt><STRONG>length:</STRONG><BR>
 <DD>
-This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.
+This pointer to a size_t integer sets the initial length of the blob-&gt; On return, it reflects the actual length of the blob.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -152,7 +171,7 @@ The image.
 <P></P>
 <p><dt><STRONG>length:</STRONG><BR>
 <DD>
-This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.
+This pointer to a size_t integer sets the initial length of the blob-&gt; On return, it reflects the actual length of the blob.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>

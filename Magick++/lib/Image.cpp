@@ -2157,7 +2157,7 @@ std::string Magick::Image::fileName ( void ) const
 
 off_t Magick::Image::fileSize ( void ) const
 {
-  return constImage()->blob.filesize;
+  return constImage()->blob->filesize;
 }
 
 // Color to use when drawing inside an object

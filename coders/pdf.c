@@ -296,7 +296,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) fclose(file);
   CloseBlob(image);
-  filesize=image->blob.filesize;
+  filesize=image->blob->filesize;
   /*
     Use Ghostscript to convert Postscript image.
   */
@@ -320,7 +320,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   DestroyImage(image);
   clone_info=CloneImageInfo(image_info);
-  GetBlobInfo(&clone_info->blob);
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   (void) remove(postscript_filename);
@@ -333,7 +332,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     (void) strcpy(image->magick,"PDF");
     (void) strcpy(filename,image_info->filename);
-    image->blob.filesize=filesize;
+    image->blob->filesize=filesize;
     if (!portrait)
       {
         Image
@@ -1212,14 +1211,14 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     length=TellBlob(image);
     if (compression == FaxCompression)
       {
+        *tile_image->blob=(*image->blob);
         tile_image->file=image->file;
-        tile_image->blob=image->blob;
         if (LocaleCompare(CCITTParam,"0") == 0)
           (void) HuffmanEncodeImage((ImageInfo *) image_info,tile_image);
         else
           (void) Huffman2DEncodeImage((ImageInfo *) image_info,tile_image);
+        *image->blob=(*tile_image->blob);
         image->file=tile_image->file;
-        image->blob=tile_image->blob;
       }
     else
       if (image->storage_class == DirectClass)

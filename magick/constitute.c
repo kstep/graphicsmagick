@@ -2088,10 +2088,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
-  DestroyBlobInfo(&image->blob);
   for (next=image; next; next=next->next)
   {
-    GetBlobInfo(&next->blob);
     next->taint=False;
     (void) strcpy(next->magick_filename,clone_info->filename);
     if (image->temporary)

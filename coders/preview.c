@@ -529,16 +529,16 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
                 images[i]=quality_image;
               }
           }
-        if (images[i]->blob.filesize >= (1 << 24))
+        if (images[i]->blob->filesize >= (1 << 24))
           FormatString(label,"quality %.1024s\n%lumb ",factor,
-            (unsigned long) (images[i]->blob.filesize/1024/1024));
+            (unsigned long) (images[i]->blob->filesize/1024/1024));
         else
-          if (images[i]->blob.filesize >= (1 << 16))
+          if (images[i]->blob->filesize >= (1 << 16))
             FormatString(label,"quality %.1024s\n%lukb ",factor,
-              (unsigned long) (images[i]->blob.filesize/1024));
+              (unsigned long) (images[i]->blob->filesize/1024));
           else
             FormatString(label,"quality %.1024s\n%lub ",factor,
-              (unsigned long) images[i]->blob.filesize);
+              (unsigned long) images[i]->blob->filesize);
         break;
       }
     }

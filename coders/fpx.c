@@ -818,7 +818,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     compression=JPEG_UNSPECIFIED;
   (void) strcpy(filename,image->filename);
   if ((image->file == stdout) || image->pipet ||
-      (image->blob.data != (unsigned char *) NULL))
+      (image->blob->data != (unsigned char *) NULL))
     TemporaryFilename(filename);
   else
     CloseBlob(image);
@@ -1087,7 +1087,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   FPX_ClearSystem();
   LiberateMemory((void **) &pixels);
   if ((image->file == stdout) || image->pipet ||
-      (image->blob.data != (unsigned char *) NULL))
+      (image->blob->data != (unsigned char *) NULL))
     {
       FILE
         *file;
@@ -1096,7 +1096,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         c;
 
       /*
-        Copy temporary file to image blob.
+        Copy temporary file to image blob->
       */
       file=fopen(filename,ReadBinaryType);
       if (file == (FILE *) NULL)
