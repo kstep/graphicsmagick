@@ -1408,12 +1408,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   const ImageAttribute
     *attribute;
 
-  FILE
-    *file;
-
-  int
-    c;
-
   long
     y;
 
@@ -2023,17 +2017,27 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
-  image->blob->status=False;
-  /*
-    Copy temporary file to image blob.
-  */
-  file=fopen(filename,"rb");
-  if (file == (FILE *) NULL)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-  for (c=fgetc(file); c != EOF; c=fgetc(file))
-    (void) WriteBlobByte(image,c);
-  (void) fclose(file);
-  (void) remove(filename);
+  if (image->blob->type == FileStream)
+    status=rename(filename,image->filename);
+  if ((image->blob->type != FileStream) || rename(filename,image->filename))
+    {
+      FILE
+        *file;
+
+      int
+        c;
+
+      /*
+        Copy temporary file to image blob.
+      */
+      file=fopen(filename,"rb");
+      if (file == (FILE *) NULL)
+        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+      for (c=fgetc(file); c != EOF; c=fgetc(file))
+        (void) WriteBlobByte(image,c);
+      (void) fclose(file);
+      (void) remove(filename);
+    }
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   CloseBlob(image);
