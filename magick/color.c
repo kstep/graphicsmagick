@@ -539,20 +539,35 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %
 */
 
-MagickExport inline unsigned int XColorMatch(const PixelPacket *color,
+static unsigned int XColorMatch(const PixelPacket *color,
   const ColorPacket *target,const double distance)
 {
+  double
+    blue,
+    green,
+    red;
+
+  register double
+    p,
+    q;
+
   if ((distance == 0.0) && (color->red == target->red) &&
       (color->green == target->green) && (color->blue == target->blue))
     return(True);
-  if (((((double) color->red-(double) target->red)*
-       ((double) color->red-(double) target->red))+
-      (((double) color->green-(double) target->green)*
-       ((double) color->green-(double) target->green))+
-      (((double) color->blue-(double) target->blue)*
-       ((double) color->blue-(double) target->blue))) <= (distance*distance))
-    return(True);
-  return(False);
+  q=distance*distance;
+  red=(double) (color->red-target->red);
+  p=red*red;
+  if (p > q)
+    return(False);
+  green=(double) (color->green-target->green);
+  p+=green*green;
+  if (p > q)
+    return(False);
+  blue=(double) (color->blue-target->blue);
+  p+=blue*blue;
+  if (p > q)
+    return(False);
+  return(True);
 }
 
 MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
@@ -1402,23 +1417,14 @@ MagickExport unsigned int QueryColorname(const Image *image,
   p=GetColorInfo("*",exception);
   if (p != (const ColorInfo *) NULL)
     {
-      double
-        distance,
-        distance_squared;
-
       for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
       {
         if ((p->compliance != AllCompliance) && (p->compliance != compliance))
           continue;
-        distance=color->red-(int) p->color.red;
-        distance_squared=distance*distance;
-        distance=color->green-(int) p->color.green;
-        distance_squared+=distance*distance;
-        distance=color->blue-(int) p->color.blue;
-        distance_squared+=distance*distance;
-        distance=color->opacity-(int) p->color.opacity;
-        distance_squared+=distance*distance;
-        if (distance_squared != 0.0)
+        if ((p->color.red != color->red) ||
+            (p->color.green != color->green) ||
+            (p->color.blue != color->blue) ||
+            (p->color.opacity != color->opacity))
           continue;
         (void) strncpy(name,p->name,MaxTextExtent-1);
         return(True);

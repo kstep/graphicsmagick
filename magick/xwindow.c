@@ -717,20 +717,19 @@ MagickExport void XBestPixel(Display *display,const Colormap colormap,
   XColor *colors,unsigned int number_colors,XColor *color)
 {
   double
-    min_distance;
+    blue,
+    green,
+    min_distance,
+    red;
 
   int
     query_server,
     status;
 
-  long
-    mean;
-
   register double
-    distance_squared;
+    distance;
 
   register int
-    distance,
     i,
     j;
 
@@ -761,23 +760,24 @@ MagickExport void XBestPixel(Display *display,const Colormap colormap,
         number_colors=256;
       (void) XQueryColors(display,colormap,colors,number_colors);
     }
-  min_distance=0;
-  j=0;
+  min_distance=3.0*(MaxRGB+1)*(MaxRGB+1);
   for (i=0; i < (int) number_colors; i++)
   {
-    mean=(colors[i].red+color->red)/2L;
-    distance=colors[i].red-(int) color->red;
-    distance_squared=(2.0*65536.0+mean)*distance*distance/65536.0;
-    distance=colors[i].green-(int) color->green;
-    distance_squared+=4.0*distance*distance;
-    distance=colors[i].blue-(int) color->blue;
-    distance_squared+=(3.0*65536.0-1.0-mean)*distance*distance/65536.0;
-    if ((i == 0) || (distance_squared < min_distance))
-      {
-        min_distance=distance_squared;
-        color->pixel=colors[i].pixel;
-        j=i;
-      }
+    red=(double) (colors[i].red-color->red);
+    distance=red*red;
+    if (distance > min_distance)
+      continue;
+    green=(double) (colors[i].green-color->green);
+    distance+=green*green;
+    if (distance > min_distance)
+      continue;
+    blue=(double) (colors[i].blue-color->blue);
+    distance+=blue*blue;
+    if (distance > min_distance)
+      continue;
+    min_distance=distance;
+    color->pixel=colors[i].pixel;
+    j=i;
   }
   (void) XAllocColor(display,colormap,&colors[j]);
   if (query_server)
@@ -3362,9 +3362,9 @@ MagickExport char *XGetScreenDensity(Display *display)
   /*
     Set density as determined by screen size.
   */
-  x_density=((((double) DisplayWidth(display,XDefaultScreen(display)))*25.4)/ 
+  x_density=((((double) DisplayWidth(display,XDefaultScreen(display)))*25.4)/
     ((double) DisplayWidthMM(display,XDefaultScreen(display))));
-  y_density=((((double) DisplayHeight(display,XDefaultScreen(display)))*25.4)/ 
+  y_density=((((double) DisplayHeight(display,XDefaultScreen(display)))*25.4)/
     ((double) DisplayHeightMM(display,XDefaultScreen(display))));
   FormatString(density,"%gx%g",x_density,y_density);
   return(PostscriptGeometry(density));

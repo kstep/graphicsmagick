@@ -752,13 +752,21 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
           */
           color=cube_info->colormap+node_info->color_number;
           red=(double) (color->red-cube_info->color.red);
-          green=(double) (color->green-cube_info->color.green);
-          blue=(double) (color->blue-cube_info->color.blue);
-          distance=red*red+green*green+blue*blue;
+          distance=red*red;
           if (distance < cube_info->distance)
             {
-              cube_info->distance=distance;
-              cube_info->color_number=node_info->color_number;
+              green=(double) (color->green-cube_info->color.green);
+              distance+=green*green;
+              if (distance < cube_info->distance)
+                {
+                  blue=(double) (color->blue-cube_info->color.blue);
+                  distance+=blue*blue;
+                  if (distance < cube_info->distance)
+                    {
+                      cube_info->distance=distance;
+                      cube_info->color_number=node_info->color_number;
+                    }
+                }
             }
         }
     }
