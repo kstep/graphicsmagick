@@ -191,6 +191,9 @@
 /* Define if libtool can extract symbol lists from object files. */
 #undef HAVE_PRELOADED_SYMBOLS
 
+/* Define if you have POSIX threads libraries and header files. */
+#undef HAVE_PTHREAD
+
 /* Define to 1 if you have the `putc_unlocked' function. */
 #undef HAVE_PUTC_UNLOCKED
 
@@ -331,9 +334,6 @@
 /* Define if you have PNG library */
 #undef HasPNG
 
-/* Define if you have Posix thread methods. */
-#undef HasPTHREADS
-
 /* X11 server supports shape extension */
 #undef HasShape
 
@@ -432,6 +432,10 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* Define to the necessary symbol if this constant uses a non-standard name on
+   your system. */
+#undef PTHREAD_CREATE_JOINABLE
 
 /* Pixel cache threshold in MB (defaults to available memory) */
 #undef PixelCacheThreshold

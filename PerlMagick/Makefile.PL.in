@@ -45,7 +45,7 @@ WriteMakefile
    # 'CPPFLAGS'    => "$Config{'cppflags'} @CPPFLAGS@",
 
    # C compiler flags (e.g. -O -g)
-   # 'CCFLAGS'     => "$Config{'ccflags'} @CFLAGS@",
+   'CCFLAGS'     => "$Config{'ccflags'} @CFLAGS@",
 
    # Linker flags for building an executable
    'LDFLAGS'    =>  "-L@MAGICKLIBDIR@ $Config{'ldflags'}",

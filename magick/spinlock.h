@@ -42,19 +42,19 @@ static void _spinlock_release (int *sl)
 
 #else /* not WIN32 */
 
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
 
 static pthread_mutex_t
   spinlock_mutex = PTHREAD_MUTEX_INITIALIZER;
 #define SPINLOCK_WAIT (void) pthread_mutex_lock(&spinlock_mutex)
 #define SPINLOCK_RELEASE (void) pthread_mutex_unlock(&spinlock_mutex)
 
-#else /* not HasPTHREADS */
+#else /* not HAVE_PTHREAD */
 
 #define SPINLOCK_WAIT
 #define SPINLOCK_RELEASE
 
-#endif /* HasPTHREADS */
+#endif /* HAVE_PTHREAD */
 
 #endif /* WIN32 */
 #endif /* _SPINLOCKS_H */

@@ -130,9 +130,11 @@ pkginclude_HEADERS = \
 noinst_HEADERS = \
 	animate.h \
 	display.h \
+	locale_c.h \
 	mac.h \
 	nt_base.h \
 	nt_feature.h \
+	spinlock.h \
 	static.h \
 	studio.h \
 	tempfile.h \

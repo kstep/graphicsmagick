@@ -90,7 +90,7 @@ int main(int argc,char **argv)
 #if defined(WIN32)
   InitializeMagick((char *) NULL);
 #else
-  InitializeMagick((*argv);
+  InitializeMagick(*argv);
 #endif
 
   SetClientName(*argv);

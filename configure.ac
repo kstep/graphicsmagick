@@ -988,6 +988,50 @@ fi
 AC_DEFINE_UNQUOTED(X11ConfigurePath,"X11ConfigurePath",Location of X11 configure files)
 
 #
+# Find Posix threads library
+#
+LIB_THREAD=''
+have_threads=no
+if test "$with_threads" != 'no'
+then
+
+  ACX_PTHREAD()
+  if test "$acx_pthread_ok" = yes
+  then
+    have_threads=yes
+
+    DEF_THREAD="$PTHREAD_CFLAGS"
+    CFLAGS="$CFLAGS $DEF_THREAD"
+    CXXFLAGS="$CXXFLAGS $DEF_THREAD"
+
+    if test "x$PTHREAD_LIBS" = "x" ; then
+      case "${host_cpu}-${host_os}" in
+        *-freebsd*)
+           MAGICK_CHECK_PTHREAD_LIB(c_r,PTHREAD_LIBS=-lc_r) ;;
+      esac
+    fi
+
+    for lib in pthread pthreads
+    do
+      if test "x$PTHREAD_LIBS" = "x" ; then
+        MAGICK_CHECK_PTHREAD_LIB([$lib],[PTHREAD_LIBS=-l$lib])
+      fi
+    done
+
+    LIB_THREAD="$PTHREAD_LIBS"
+    LIBS="$LIBS $LIB_THREAD"
+
+    if test "$CC" != "$PTHREAD_CC"
+    then
+      AC_MSG_WARN([Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads.])
+      CC="$PTHREAD_CC"
+    fi
+  fi
+
+fi
+AC_SUBST(LIB_THREAD)
+
+#
 # Add support for ccmalloc memory debugging library if requested
 #
 have_ccmalloc='no'
@@ -1021,26 +1065,6 @@ AC_CHECK_LIB(m,sqrt,LIB_MATH="-lm",,)
 LIBS="$LIB_MATH $LIBS"
 AC_SUBST(LIB_MATH)
 
-#
-# Find Posix threads library
-#
-LIB_THREAD=''
-if test "$with_threads" != 'no'
-then
-AC_MSG_CHECKING([for POSIX thread support])
-OLIBS=$LIBS
-LIBS="$LIBS -lpthread"
-AC_TRY_LINK([#include <pthread.h>],[(void)pthread_create(0,0,0,0);],[
-  AC_MSG_RESULT([yes])
-  AC_DEFINE(HasPTHREADS, 1, [Define if you have Posix thread methods.])
-  LIB_THREAD="-lpthread"
-  DEF_THREAD="-D_REENTRANT"
-  LIBS="$LIBS $LIB_THREAD"
-  CPPFLAGS="$CPPFLAGS $DEF_THREAD"],[
-  AC_MSG_RESULT([no])
-  LIBS=$OLIBS])
-fi
-AC_SUBST(LIB_THREAD)
 
 #
 # If vsnprintf is missing, look for TRIO
@@ -2403,9 +2427,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_THREAD $LIB_MATH $LIB_CCMALLOC"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_THREAD $LIB_MATH $LIB_CCMALLOC"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_THREAD"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 

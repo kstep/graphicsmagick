@@ -37,7 +37,7 @@
 */
 #include "magick/studio.h"
 #include "magick/utility.h"
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
 #include <pthread.h>
 #endif
 #if defined(WIN32)
@@ -51,7 +51,7 @@
 */
 struct SemaphoreInfo
 {
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
   pthread_mutex_t
     mutex;		/* POSIX thread mutex */
 
@@ -76,7 +76,7 @@ struct SemaphoreInfo
 /*
   Static declaractions.
 */
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
 static pthread_mutex_t
   semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif
@@ -134,7 +134,7 @@ static void spinlock_release (int *sl)
 MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
@@ -149,7 +149,7 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
 #endif
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     *semaphore_info=AllocateSemaphoreInfo();
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
@@ -202,7 +202,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   /*
     Initialize the semaphore.
   */
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
   {
     int
       status;
@@ -245,7 +245,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 */
 MagickExport void DestroySemaphore(void)
 {
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
   (void) pthread_mutex_destroy(&semaphore_mutex);
 #endif
 #if defined(WIN32)
@@ -286,7 +286,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     return;
   assert((*semaphore_info)->signature == MagickSignature);
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
@@ -299,14 +299,14 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   spinlock_wait(&semaphore_mutex);
 #endif
 #endif
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
   (void) pthread_mutex_destroy(&(*semaphore_info)->mutex);
 #endif
 #if defined(WIN32)
   DeleteCriticalSection(&(*semaphore_info)->mutex);
 #endif
   MagickFreeMemory((*semaphore_info));
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
@@ -339,7 +339,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 */
 MagickExport void InitializeSemaphore(void)
 {
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
   (void) pthread_mutex_init(&semaphore_mutex,
     (const pthread_mutexattr_t *) NULL);
 #endif
@@ -414,7 +414,7 @@ MagickExport unsigned int LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
   if (pthread_mutex_lock(&semaphore_info->mutex))
     return(False);
   /* Record the thread ID of the locking thread */
@@ -462,7 +462,7 @@ MagickExport unsigned int UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   if (semaphore_info->locked != True)
     return (False);
   semaphore_info->locked=False;
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
   /* Enforce that unlocking thread is the same as the locking thread */
   assert(pthread_equal(semaphore_info->thread_id,pthread_self()));
   if (pthread_mutex_unlock(&semaphore_info->mutex))

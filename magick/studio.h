@@ -219,7 +219,7 @@ extern "C" {
 #if defined(HAVE_MMAP) && !defined(WIN32)
 # include <sys/mman.h>
 #endif
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
 # include <pthread.h>
 #endif
 #if defined(HAVE_POLL)
