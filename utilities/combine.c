@@ -189,10 +189,6 @@ int main(int argc,char **argv)
     *option,
     *write_filename;
 
-  void
-    *param1,
-    *param2;
-
   CompositeOperator
     compose;
 
@@ -227,6 +223,10 @@ int main(int argc,char **argv)
     stereo,
     tile;
 
+  void
+    *param1,
+    *param2;
+
   /*
     Initialize command line arguments.
   */
@@ -246,7 +246,8 @@ int main(int argc,char **argv)
       client_name=SetClientName((char *) NULL);
       status=ExpandFilenames(&argc,&argv);
       if (status == False)
-        MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
+        MagickError(ResourceLimitError,"Memory allocation failed",
+          (char *) NULL);
       if (argc < 4)
         Usage(client_name);
     }
@@ -1056,29 +1057,34 @@ int main(int argc,char **argv)
     }
   else
     {
-      if (mode==2)
+      if (mode == 2)
         {
-          ExceptionInfo exception;
-          char **blob_data;
-          size_t *blob_length;
+          char
+            **blob_data;
+          ExceptionInfo
+            exception;
+
+          size_t
+            *blob_length;
 
           blob_data=(char **)param1;
           blob_length=(size_t *)param2;
-
           (void) strcpy(combined_image->magick,image_info->magick);
           if (*blob_length == 0)
-            *blob_length = 8192;
-          *blob_data = ImageToBlob(image_info,combined_image,blob_length,&exception);
+            *blob_length=8192;
+          *blob_data=ImageToBlob(image_info,combined_image,blob_length,
+            &exception);
           if (*blob_data == NULL)
             CatchImageException(combined_image);
         }
-      if (mode==2)
+      if (mode == 2)
         {
-          int (*Fifo)(const Image *,const void *,const size_t);
+          int
+            (*fifo)(const Image *,const void *,const size_t);
 
-          Fifo=(int (*)(const Image *,const void *,const size_t))param1;
+          fifo=(int (*)(const Image *,const void *,const size_t)) param1;
           combined_image->client_data=param2;
-          status=WriteStream(image_info,combined_image,Fifo);
+          status=WriteStream(image_info,combined_image,fifo);
           if (status == False)
             CatchImageException(combined_image);
         }
@@ -1087,12 +1093,9 @@ int main(int argc,char **argv)
     DescribeImage(combined_image,stderr,False);
   DestroyImages(combined_image);
   DestroyImageInfo(image_info);
-  if (!mode)
-    {
-      LiberateMemory((void **) &argv);
-      Exit(0);
-      return(False);
-    }
-  else
+  if (mode)
     return(True);
+  LiberateMemory((void **) &argv);
+  Exit(0);
+  return(False);
 }

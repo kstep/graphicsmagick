@@ -160,14 +160,71 @@
 */
 
 /*
-  Forward reference
-*/
-void ConcatenateImages(int argc,char **argv);
-/*
   Include declarations.
 */
 #include "magick/magick.h"
 #include "magick/defines.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n c a t e n t a t e I m a g e s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ConcatentateImages reads each file in sequence and writes it to a
+%  single file.  It is required by the delegates subsystem.
+%
+%  The format of the ConcatentateImages method is:
+%
+%      void ConcatenateImages(int argc,char **argv)
+%
+%  A description of each parameter follows:
+%
+%    o argc: Specifies a pointer to an integer describing the number of
+%      elements in the argument vector.
+%
+%    o argv: Specifies a pointer to a text array containing the command line
+%      arguments.
+%
+%
+*/
+void ConcatenateImages(int argc,char **argv)
+{
+  FILE
+    *input,
+    *output;
+
+  register int
+    c,
+    i;
+
+  /*
+    Open output file.
+  */
+  output=fopen(argv[argc-1],"wb");
+  if (output == (FILE *) NULL)
+    MagickError(FileOpenError,"Unable to open file",argv[argc-1]);
+  for (i=2; i < (argc-1); i++)
+  {
+    input=fopen(argv[i],"rb");
+    if (input == (FILE *) NULL)
+      {
+        MagickWarning(FileOpenWarning,"Unable to open file",argv[i]);
+        continue;
+      }
+    for (c=fgetc(input); c != EOF; c=fgetc(input))
+      (void) fputc((char) c,output);
+    (void) fclose(input);
+    (void) remove(argv[i]);
+  }
+  (void) fclose(output);
+  Exit(0);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -340,10 +397,6 @@ int main(int argc,char **argv)
     *filename,
     *option;
 
-  void
-    *param1,
-    *param2;
-
   double
     sans;
 
@@ -378,6 +431,10 @@ int main(int argc,char **argv)
     scene,
     status;
 
+  void
+    *param1,
+    *param2;
+
   /*
     Initialize command line arguments.
   */
@@ -396,7 +453,8 @@ int main(int argc,char **argv)
       client_name=SetClientName((char *) NULL);
       status=ExpandFilenames(&argc,&argv);
       if (status == False)
-        MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
+        MagickError(ResourceLimitError,"Memory allocation failed",
+          (char *) NULL);
       if (argc < 3)
         Usage(client_name);
     }
@@ -1872,7 +1930,7 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    if (mode<2)
+    if (mode < 2)
       {
         status=WriteImage(image_info,p);
         if (status == False)
@@ -1880,29 +1938,34 @@ int main(int argc,char **argv)
       }
     else
       {
-        if (mode==2)
+        if (mode == 2)
           {
-            ExceptionInfo exception;
-            char **blob_data;
-            size_t *blob_length;
+            char
+              **blob_data;
 
-            blob_data=(char **)param1;
-            blob_length=(size_t *)param2;
+            ExceptionInfo
+              exception;
 
+            size_t
+              *blob_length;
+
+            blob_data=(char **) param1;
+            blob_length=(size_t *) param2;
             (void) strcpy(p->magick,image_info->magick);
             if (*blob_length == 0)
-              *blob_length = 8192;
-            *blob_data = ImageToBlob(image_info,p,blob_length,&exception);
+              *blob_length=8192;
+            *blob_data=ImageToBlob(image_info,p,blob_length,&exception);
             if (*blob_data == NULL)
               CatchImageException(p);
           }
-        if (mode==3)
+        if (mode == 3)
           {
-            int (*Fifo)(const Image *,const void *,const size_t);
+            int
+              (*fifo)(const Image *,const void *,const size_t);
 
-            Fifo=(int (*)(const Image *,const void *,const size_t))param1;
+            fifo=(int (*)(const Image *,const void *,const size_t)) param1;
             p->client_data=param2;
-            status=WriteStream(image_info,p,Fifo);
+            status=WriteStream(image_info,p,fifo);
             if (status == False)
               CatchImageException(p);
           }
@@ -1914,74 +1977,9 @@ int main(int argc,char **argv)
     DescribeImage(image,stderr,False);
   DestroyImages(image);
   DestroyImageInfo(image_info);
-  if (!mode)
-    {
-      LiberateMemory((void **) &argv);
-      Exit(0);
-      return(False);
-    }
-  else
+  if (mode)
     return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C o n c a t e n t a t e I m a g e s                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ConcatentateImages reads each file in sequence and writes it to a
-%  single file.  It is required by the delegates subsystem.
-%
-%  The format of the ConcatentateImages method is:
-%
-%      void ConcatenateImages(int argc,char **argv)
-%
-%  A description of each parameter follows:
-%
-%    o argc: Specifies a pointer to an integer describing the number of
-%      elements in the argument vector.
-%
-%    o argv: Specifies a pointer to a text array containing the command line
-%      arguments.
-%
-%
-*/
-void ConcatenateImages(int argc,char **argv)
-{
-  FILE
-    *input,
-    *output;
-
-  register int
-    c,
-    i;
-
-  /*
-    Open output file.
-  */
-  output=fopen(argv[argc-1],"wb");
-  if (output == (FILE *) NULL)
-    MagickError(FileOpenError,"Unable to open file",argv[argc-1]);
-  for (i=2; i < (argc-1); i++)
-  {
-    input=fopen(argv[i],"rb");
-    if (input == (FILE *) NULL)
-      {
-        MagickWarning(FileOpenWarning,"Unable to open file",argv[i]);
-        continue;
-      }
-    for (c=fgetc(input); c != EOF; c=fgetc(input))
-      (void) fputc((char) c,output);
-    (void) fclose(input);
-    (void) remove(argv[i]);
-  }
-  (void) fclose(output);
+  LiberateMemory((void **) &argv);
   Exit(0);
+  return(False);
 }
-
