@@ -1,3 +1,16 @@
+2003-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/fpx/*.fpx: Replaced with new copies.  Files
+	seemed to be corrupt.
+	* PerlMagick/t/cgm/read.t: Specify file magick so that CGM
+	read test passes for BLOB case.
+	* PerlMagick/t/rad/read.t: Specify file magick so that RAD
+	read test passes for BLOB case.
+	* PerlMagick/t/jng/read.t: Add read tests for JNG.
+	* PerlMagick/t/jng/write.t: Add read/write tests for JNG.
+	* configure.ac (DELEGATES): Added 'jng' to the DELEGATES list
+	so that JNG can be included in the PerlMagick tests.
+
 2003-02-18  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/png.c: Write proper JNG image_interlace_method.
