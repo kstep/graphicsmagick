@@ -1,3 +1,10 @@
+2000-10-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableImage): Added width and height
+ 	parameters to specify size to scale rendered image to.  This is
+ 	actually a bug-fix since it seems that the correct drawing command
+ 	was no longer being generated.
+
 2000-09-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (read): New overloaded method to read an image

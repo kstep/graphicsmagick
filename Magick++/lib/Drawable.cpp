@@ -191,11 +191,16 @@ Magick::DrawableEllipse::DrawableEllipse ( double originX_,
 // Draw image at point
 Magick::DrawableImage::DrawableImage ( double x_,
                                        double y_,
+                                       double width_,
+                                       double height_,
                                        const std::string &image_ )
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "image " << Coordinate( x_, y_) << " \"";
+  buffstr << "image "
+          << Coordinate( x_, y_)
+          << " " << Coordinate( width_, height_)
+          << " \"";
   for ( unsigned int i = 0; i < image_.length(); ++i )
     {
       if ( image_[i] == '"' )
@@ -276,11 +281,11 @@ Magick::DrawablePolyline::DrawablePolyline ( const std::list<Magick::Coordinate>
 Magick::DrawableRectangle::DrawableRectangle ( double upperLeftX_,
                                                double upperLeftY_,
                                                double lowerRightX_,
-                                               double lowerRightY )
+                                               double lowerRightY_ )
 {
   two_arg_impl( "rectangle",
                 Coordinate( upperLeftX_, upperLeftY_ ),
-                Coordinate( lowerRightX_, lowerRightY ) );
+                Coordinate( lowerRightX_, lowerRightY_ ) );
 }
 
 // RoundRectangle

@@ -130,11 +130,12 @@ namespace Magick
                       double arcStart_, double arcEnd_ );
   };
 
-  // Draw image at point
+  // Draw image at point, scaled to size specified by width and height
   class DrawableImage : public Drawable
   {
   public:
     DrawableImage ( double x_, double y_,
+                    double width_, double height_,
                     const std::string &image_ );
   };
 
