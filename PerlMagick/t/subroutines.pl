@@ -73,6 +73,66 @@ sub testRead {
 }
 
 #
+# Test reading a 16-bit file as a BLOB in which two signatures are possible,
+# depending on whether 16-bit pixels data has been enabled
+#
+# Usage: testReadBlob( read filename, expected md5 [, expected md5_16] );
+#
+sub testReadBlob {
+  my( $infile, $md5, $md5_16 ) =  @_;
+
+  my($blob, $blob_length, $image);
+
+  if ( !defined( $md5_16 ) )
+    {
+      $md5_16 = $md5;
+    }
+
+  if(!open( FILE, "< $infile")) {
+    print("Failed to open \"$infile\": $!\n");
+    print("not ok $test\n");
+    return;
+  }
+  binmode( FILE );
+  $blob_length = read( FILE, $blob, 100000 );
+  if( !defined($blob) )
+    {
+      print("Failed to read \"$infile\": $!\n");
+      print("not ok $test\n");
+      return;
+    }
+  close( FILE );
+
+  $image=Image::Magick->new;
+  if( !defined($image) ) {
+    print("Failed to open \"$infile\": image object not defined\n");
+    print("not ok $test\n");
+    return;
+  }
+  $image->Set(size=>'512x512');
+  $status=$image->BlobToImage($blob);
+  if( "$status" ) {
+    print "BlobToImage $infile: $status";
+    print "not ok $test\n";
+  } else {
+    $signature=$image->Get('signature');
+    if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+      print "Image: $infile, signatures do not match.\n";
+      print "       Computed: $signature\n";
+      print "       Expected: $md5\n";
+      if ( $md5 ne $md5_16 ) {
+         print "      if 16-bit: $md5_16\n";
+      }
+      #$image->Display();
+      print "not ok $test\n";
+    } else {
+      print "ok $test\n";
+    }
+  }
+  undef $blob;
+}
+
+#
 # Test reading a file, and compare with a reference file
 #
 sub testReadCompare {
