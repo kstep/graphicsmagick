@@ -462,6 +462,12 @@ static int GetUnicodeCharacter(const unsigned char *text,size_t *length)
 
 static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
 {
+  int
+    c;
+
+  register int
+    i;
+
   register const char
     *p;
 
@@ -486,7 +492,15 @@ static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
   for (p=text; ; p+=length)
   {
     length=strlen(p);
-    *q=GetUnicodeCharacter((const unsigned char *) p,&length);
+    c=GetUnicodeCharacter((const unsigned char *) p,&length);
+    if (c < 0)
+      {
+        *count=strlen(text);
+        for (i=0; i < *count; i++)
+          unicode[i]=text[i];
+        return(unicode);
+      }
+    *q=c;
     if (length == 0)
       break;
     q++;
