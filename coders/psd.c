@@ -1145,7 +1145,6 @@ static void WriteOneChannel( Image* image, Image* tmp_image,
   unsigned int
     packet_size =tmp_image->depth > 8 ? 2 : 1;
 
-	(void) WriteBlobMSBShort(image,0);  /* compression */
 
 	for (y=0; y < (long) tmp_image->rows; y++)
 	{
@@ -1162,6 +1161,7 @@ static void WriteImageChannels( Image* image, Image* tmp_image, unsigned char *p
   /*
 	Write uncompressed pixel data as separate planes.
   */
+	(void) WriteBlobMSBShort(image,0);  /* compression */
   if (tmp_image->storage_class == PseudoClass)
   {
 	  if (!tmp_image->matte)
