@@ -561,11 +561,11 @@ int main( int /*argc*/, char ** argv)
     //
     {
       // Test defaults
-      if ( image.density().isValid() )
+      if ( image.density() != Geometry(72,72) )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
-               << ", density default is incorrectly valid" << endl;
+               << ", density default is not 72x72 as expected" << endl;
 	}
       
       // Test set/get
@@ -588,14 +588,6 @@ int main( int /*argc*/, char ** argv)
       image.density("72x72");
 
     }
-
-    // Test setting invalid
-    image.density( Geometry() );
-    if ( image.density().isValid() )
-      {
-	++failures;
-	cout << "Line: " << __LINE__ << ", density failed set to inValid" << endl;
-      }
 
     //
     // depth
@@ -1439,21 +1431,23 @@ int main( int /*argc*/, char ** argv)
     //
     // xResolution
     //
-    if ( image.xResolution() != 0 )
+    if ( image.xResolution() != 72 )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", xResolution default is not zero as expected" << endl;
+             << ", xResolution default (" << image.xResolution()
+             << ") is not zero as expected" << endl;
       }
 
     //
     // yResolution
     //
-    if ( image.yResolution() != 0 )
+    if ( image.yResolution() != 72 )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", yResolution default is not zero as expected" << endl;
+             << ", yResolution default (" << image.yResolution()
+             << ") is not zero as expected" << endl;
       }
 
   }

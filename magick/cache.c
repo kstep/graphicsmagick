@@ -71,10 +71,12 @@
 */
 #define MaxCacheViews  (Max(cache_info->columns,cache_info->rows)+3)
 
-#ifdef S_IRUSR
-#define S_MODE      (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
+#if defined(POSIX) && defined(S_IRUSR)
+#  define S_MODE     (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
+#elif defined (WIN32)
+#  define S_MODE     (_S_IREAD | _S_IWRITE)
 #else
-#define S_MODE      0644 
+# define S_MODE      0644 
 #endif
 
 /*
@@ -2055,6 +2057,8 @@ static unsigned int ExtendCache(int file,ExtendedSignedIntegralType length)
   return(True);
 }
 
+#if defined(SIGBUS)
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -2070,6 +2074,8 @@ static void CacheSignalHandler(int status)
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
+
+#endif /* defined(SIGBUS) */
 
 MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 {
@@ -2366,7 +2372,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
 #if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
   pagesize=sysconf(_SC_PAGE_SIZE);
 #endif
-#if defined(HAVE_GETPAGESIZE)
+#if defined(HAVE_GETPAGESIZE) && defined(POSIX)
   pagesize=getpagesize();
 #endif
   if (pagesize <= 0)

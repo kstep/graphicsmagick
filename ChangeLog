@@ -1,5 +1,15 @@
 2003-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* ltdl/ltdl.c: Updated to latest CVS version.  Claimed to
+	support loading modules under MacOS-X.
+	* magick/resource.c (InitializeMagickResources): Enable code
+	under Windows which queries system limits.
+	* magick/cache.c (S_MODE): Fixed portability problems with
+	definition.
+	* VisualMagick/bin/delegates.mgk: Fix typo in "mpeg-decode"
+	decode rule.
+	* libtool: Update to latest CVS version.
+	* configure.ac: Test zlib for gzseek and gztell.
 	* magick/effect.c (ChannelThresholdImage): The is_grayscale flag
 	was not be evaluated correctly.
 

@@ -1,7 +1,7 @@
 # ltmain.sh - Provide generalized library-building support services.
 # NOTE: Changing this file will not affect anything until you rerun configure.
 #
-# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001
+# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003
 # Free Software Foundation, Inc.
 # Originally by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 #
@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1192 2003/02/18 05:15:03)"
+TIMESTAMP=" (1.1207 2003/03/20 20:24:20)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -97,8 +97,8 @@ fi
 : ${IFS=" 	"}
 
 if test "$build_libtool_libs" != yes && test "$build_old_libs" != yes; then
-  echo "$modename: not configured to build any kind of library" 1>&2
-  echo "Fatal configuration error.  See the $PACKAGE docs for more information." 1>&2
+  $echo "$modename: not configured to build any kind of library" 1>&2
+  $echo "Fatal configuration error.  See the $PACKAGE docs for more information." 1>&2
   exit 1
 fi
 
@@ -129,7 +129,7 @@ win32_libid () {
     win32_libid_type="x86 archive import"
     ;;
   *ar\ archive*) # could be an import, or static
-    if eval $OBJDUMP -f $1 | head -n 10 2>/dev/null | \
+    if eval $OBJDUMP -f $1 | $SED -e '10q' 2>/dev/null | \
       grep -E 'file format pe-i386(.*architecture: i386)?' >/dev/null ; then
       win32_nmres=`eval $NM -f posix -A $1 | \
         sed -n -e '1,100{/ I /{x;/import/!{s/^/import/;h;p;};x;}}'`
@@ -151,12 +151,11 @@ win32_libid () {
     esac
     ;;
   esac
-  echo $win32_libid_type
+  $echo $win32_libid_type
 }
 
 # End of Shell function definitions
 #####################################
-
 
 # Parse our command line options once, thoroughly.
 while test "$#" -gt 0
@@ -181,7 +180,7 @@ do
       # Check whether tagname contains only valid characters
       case $tagname in
       *[!-_A-Za-z0-9,/]*)
-	echo "$progname: invalid tag name: $tagname" 1>&2
+	$echo "$progname: invalid tag name: $tagname" 1>&2
 	exit 1
 	;;
       esac
@@ -197,7 +196,7 @@ do
 	  # Evaluate the configuration.
 	  eval "`${SED} -n -e '/^# ### BEGIN LIBTOOL TAG CONFIG: '$tagname'$/,/^# ### END LIBTOOL TAG CONFIG: '$tagname'$/p' < $0`"
 	else
-	  echo "$progname: ignoring unknown tag $tagname" 1>&2
+	  $echo "$progname: ignoring unknown tag $tagname" 1>&2
 	fi
 	;;
       esac
@@ -219,12 +218,11 @@ do
     ;;
 
   --version)
-    echo "$PROGRAM (GNU $PACKAGE) $VERSION$TIMESTAMP"
-    echo
-    echo "Copyright 1996, 1997, 1998, 1999, 2000, 2001"
-    echo "Free Software Foundation, Inc."
-    echo "This is free software; see the source for copying conditions.  There is NO"
-    echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+    $echo "$PROGRAM (GNU $PACKAGE) $VERSION$TIMESTAMP"
+    $echo
+    $echo "Copyright (C) 2003  Free Software Foundation, Inc."
+    $echo "This is free software; see the source for copying conditions.  There is NO"
+    $echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
     exit 0
     ;;
 
@@ -238,7 +236,7 @@ do
     ;;
 
   --debug)
-    echo "$progname: enabling shell trace mode"
+    $echo "$progname: enabling shell trace mode"
     set -x
     ;;
 
@@ -247,16 +245,16 @@ do
     ;;
 
   --features)
-    echo "host: $host"
+    $echo "host: $host"
     if test "$build_libtool_libs" = yes; then
-      echo "enable shared libraries"
+      $echo "enable shared libraries"
     else
-      echo "disable shared libraries"
+      $echo "disable shared libraries"
     fi
     if test "$build_old_libs" = yes; then
-      echo "enable static libraries"
+      $echo "enable static libraries"
     else
-      echo "disable static libraries"
+      $echo "disable static libraries"
     fi
     exit 0
     ;;
@@ -548,11 +546,11 @@ if test -z "$show_help"; then
 	# was found and let the user know that the "--tag" command
 	# line option must be used.
 	if test -z "$tagname"; then
-	  echo "$modename: unable to infer tagged configuration"
-	  echo "$modename: specify a tag with \`--tag'" 1>&2
+	  $echo "$modename: unable to infer tagged configuration"
+	  $echo "$modename: specify a tag with \`--tag'" 1>&2
 	  exit 1
 #        else
-#          echo "$modename: using $tagname tagged configuration"
+#          $echo "$modename: using $tagname tagged configuration"
 	fi
 	;;
       esac
@@ -616,7 +614,7 @@ if test -z "$show_help"; then
       done
     elif test "$need_locks" = warn; then
       if test -f "$lockfile"; then
-	echo "\
+	$echo "\
 *** ERROR, $lockfile exists and contains:
 `cat $lockfile 2>/dev/null`
 
@@ -630,7 +628,7 @@ compiler."
 	$run $rm $removelist
 	exit 1
       fi
-      echo $srcfile > "$lockfile"
+      $echo $srcfile > "$lockfile"
     fi
 
     if test -n "$fix_srcfile_path"; then
@@ -688,7 +686,7 @@ EOF
 
       if test "$need_locks" = warn &&
 	 test "X`cat $lockfile 2>/dev/null`" != "X$srcfile"; then
-	echo "\
+	$echo "\
 *** ERROR, $lockfile contains:
 `cat $lockfile 2>/dev/null`
 
@@ -758,7 +756,7 @@ EOF
 
       if test "$need_locks" = warn &&
 	 test "X`cat $lockfile 2>/dev/null`" != "X$srcfile"; then
-	echo "\
+	$echo "\
 *** ERROR, $lockfile contains:
 `cat $lockfile 2>/dev/null`
 
@@ -1646,11 +1644,11 @@ EOF
 	# was found and let the user know that the "--tag" command
 	# line option must be used.
 	if test -z "$tagname"; then
-	  echo "$modename: unable to infer tagged configuration"
-	  echo "$modename: specify a tag with \`--tag'" 1>&2
+	  $echo "$modename: unable to infer tagged configuration"
+	  $echo "$modename: specify a tag with \`--tag'" 1>&2
 	  exit 1
 #       else
-#         echo "$modename: using $tagname tagged configuration"
+#         $echo "$modename: using $tagname tagged configuration"
 	fi
 	;;
       esac
@@ -1912,17 +1910,17 @@ EOF
 	  case $linkmode in
 	  lib)
 	    if test "$deplibs_check_method" != pass_all; then
-	      echo
-	      echo "*** Warning: Trying to link with static lib archive $deplib."
-	      echo "*** I have the capability to make that library automatically link in when"
-	      echo "*** you link to this library.  But I can only do this if you have a"
-	      echo "*** shared version of the library, which you do not appear to have"
-	      echo "*** because the file extensions .$libext of this argument makes me believe"
-	      echo "*** that it is just a static archive that I should not used here."
+	      $echo
+	      $echo "*** Warning: Trying to link with static lib archive $deplib."
+	      $echo "*** I have the capability to make that library automatically link in when"
+	      $echo "*** you link to this library.  But I can only do this if you have a"
+	      $echo "*** shared version of the library, which you do not appear to have"
+	      $echo "*** because the file extensions .$libext of this argument makes me believe"
+	      $echo "*** that it is just a static archive that I should not used here."
 	    else
-	      echo
-	      echo "*** Warning: Linking the shared library $output against the"
-	      echo "*** static library $deplib is not portable!"
+	      $echo
+	      $echo "*** Warning: Linking the shared library $output against the"
+	      $echo "*** static library $deplib is not portable!"
 	      deplibs="$deplib $deplibs"
 	    fi
 	    continue
@@ -1982,8 +1980,9 @@ EOF
 	library_names=
 	old_library=
 	# If the library was installed with an old release of libtool,
-	# it will not redefine variable installed.
+	# it will not redefine variables installed, or shouldnotlink
 	installed=yes
+	shouldnotlink=no
 
 	# Read the .la file
 	case $lib in
@@ -2026,6 +2025,7 @@ EOF
 	  continue
 	fi # $pass = conv
 
+    
 	# Get the name of the library we link against.
 	linklib=
 	for l in $old_library $library_names; do
@@ -2118,6 +2118,7 @@ EOF
 	  continue
 	fi
 
+    
 	if test "$linkmode" = prog && test "$pass" != link; then
 	  newlib_search_path="$newlib_search_path $ladir"
 	  deplibs="$lib $deplibs"
@@ -2204,6 +2205,17 @@ EOF
 	    need_relink=yes
 	  fi
 	  # This is a shared library
+	
+      # Warn about portability, can't link against -module's on some systems (darwin)
+      if test "$shouldnotlink" = yes && test "$pass" = link ; then
+	    $echo
+	    if test "$linkmode" = prog; then
+	      $echo "*** Warning: Linking the executable $output against the loadable module"
+	    else
+	      $echo "*** Warning: Linking the shared library $output against the loadable module"
+	    fi
+	    $echo "*** $linklib is not portable!"    
+      fi	  
 	  if test "$linkmode" = lib &&
 	     test "$hardcode_into_libs" = yes; then
 	    # Hardcode the library path.
@@ -2253,8 +2265,8 @@ EOF
 
 	    # Make a new name for the extract_expsyms_cmds to use
 	    soroot="$soname"
-	    soname=`echo $soroot | ${SED} -e 's/^.*\///'`
-	    newlib="libimp-`echo $soname | ${SED} 's/^lib//;s/\.dll$//'`.a"
+	    soname=`$echo $soroot | ${SED} -e 's/^.*\///'`
+	    newlib="libimp-`$echo $soname | ${SED} 's/^lib//;s/\.dll$//'`.a"
 
 	    # If the library has no export list, then create one now
 	    if test -f "$output_objdir/$soname-def"; then :
@@ -2295,10 +2307,23 @@ EOF
 	    case $hardcode_action in
 	    immediate | unsupported)
 	      if test "$hardcode_direct" = no; then
+		add="$dir/$linklib"
 		case $host in
 		  *-*-sco3.2v5* ) add_dir="-L$dir" ;;
+		  *-*-darwin* )
+		    # if the lib is a module then we can not link against it, someone
+		    # is ignoring the new warnings I added
+		    if test -z `otool -XD $add` ; then
+		      $echo "** Warning, lib $linklib is a module, not a shared library"
+		      if test -z "$old_library" ; then
+		        $echo
+		        $echo "** And there doesn't seem to be a static archive available"
+		        $echo "** The link will probably fail, sorry"
+		      else
+		        add="$dir/$old_library"
+		      fi 
+		    fi
 		esac
-		add="$dir/$linklib"
 	      elif test "$hardcode_minus_L" = no; then
 		case $host in
 		*-*-sunos*) add_shlibpath="$dir" ;;
@@ -2422,21 +2447,21 @@ EOF
 
 	    # Just print a warning and add the library to dependency_libs so
 	    # that the program can be linked against the static library.
-	    echo
-	    echo "*** Warning: This system can not link to static lib archive $lib."
-	    echo "*** I have the capability to make that library automatically link in when"
-	    echo "*** you link to this library.  But I can only do this if you have a"
-	    echo "*** shared version of the library, which you do not appear to have."
+	    $echo
+	    $echo "*** Warning: This system can not link to static lib archive $lib."
+	    $echo "*** I have the capability to make that library automatically link in when"
+	    $echo "*** you link to this library.  But I can only do this if you have a"
+	    $echo "*** shared version of the library, which you do not appear to have."
 	    if test "$module" = yes; then
-	      echo "*** But as you try to build a module library, libtool will still create "
-	      echo "*** a static module, that should work as long as the dlopening application"
-	      echo "*** is linked with the -dlopen flag to resolve symbols at runtime."
+	      $echo "*** But as you try to build a module library, libtool will still create "
+	      $echo "*** a static module, that should work as long as the dlopening application"
+	      $echo "*** is linked with the -dlopen flag to resolve symbols at runtime."
 	      if test -z "$global_symbol_pipe"; then
-		echo
-		echo "*** However, this would only work if libtool was able to extract symbol"
-		echo "*** lists from a program, using \`nm' or equivalent, but libtool could"
-		echo "*** not find such a program.  So, this module is probably useless."
-		echo "*** \`nm' from GNU binutils and a full rebuild may help."
+		$echo
+		$echo "*** However, this would only work if libtool was able to extract symbol"
+		$echo "*** lists from a program, using \`nm' or equivalent, but libtool could"
+		$echo "*** not find such a program.  So, this module is probably useless."
+		$echo "*** \`nm' from GNU binutils and a full rebuild may help."
 	      fi
 	      if test "$build_old_libs" = no; then
 		build_libtool_libs=module
@@ -2490,6 +2515,7 @@ EOF
 	  if test "$link_all_deplibs" != no; then
 	    # Add the search paths of all dependency libraries
 	    for deplib in $dependency_libs; do
+	      depdepl=
 	      case $deplib in
 	      -L*) path="$deplib" ;;
 	      *.la)
@@ -2507,7 +2533,7 @@ EOF
 		  ;;
 		esac
 		if grep "^installed=no" $deplib > /dev/null; then
-		  path="-L$absdir/$objdir"
+		  path="$absdir/$objdir"
 		else
 		  eval libdir=`${SED} -n -e 's/^libdir=\(.*\)$/\1/p' $deplib`
 		  if test -z "$libdir"; then
@@ -2517,11 +2543,43 @@ EOF
 		  if test "$absdir" != "$libdir"; then
 		    $echo "$modename: warning: \`$deplib' seems to be moved" 1>&2
 		  fi
-		  path="-L$absdir"
+		  path="$absdir"
 		fi
+		depdepl=
+		case $host in
+		*-*-darwin*)
+		  depdepl=`$echo "X$deplib" | ${SED} -e 's,.*/,,' -e 's,^lib,,' -e 's,\.la$,,'`
+		  newlib_search_path="$newlib_search_path $path"
+		  if grep "^installed=no" $deplib > /dev/null; then
+		  # FIXME - ugly
+		   if test -f "$path/lib${depdepl}.dylib" ; then
+  		       eval depdepl=$path/lib${depdepl}.dylib
+		   else
+		   # We shouldn't get here
+		       depdepl="-l$depdepl"
+		   fi
+		  else
+		    depdepl="-l$depdepl"
+		  fi
+		  ;;
+		  # end ugly FIXME
+		esac 
+		path="-L$path"
+		;;
+		  -l*)
+		case $host in
+		*-*-darwin*)
+           depdepl=$deplib
+		  ;;
+		*) continue ;;
+		esac  		  
 		;;
 	      *) continue ;;
 	      esac
+	      case " $deplibs " in
+	      *" $depdepl "*) ;;
+	      *) deplibs="$deplibs $depdepl" ;;
+	      esac	      
 	      case " $deplibs " in
 	      *" $path "*) ;;
 	      *) deplibs="$deplibs $path" ;;
@@ -2695,9 +2753,9 @@ EOF
 	  $echo "$modename: cannot build libtool library \`$output' from non-libtool objects on this host:$objs" 2>&1
 	  exit 1
 	else
-	  echo
-	  echo "*** Warning: Linking the shared library $output against the non-libtool"
-	  echo "*** objects $objs is not portable!"
+	  $echo
+	  $echo "*** Warning: Linking the shared library $output against the non-libtool"
+	  $echo "*** objects $objs is not portable!"
 	  libobjs="$libobjs $objs"
 	fi
       fi
@@ -2867,7 +2925,7 @@ EOF
 
 	*)
 	  $echo "$modename: unknown library version type \`$version_type'" 1>&2
-	  echo "Fatal configuration error.  See the $PACKAGE docs for more information." 1>&2
+	  $echo "Fatal configuration error.  See the $PACKAGE docs for more information." 1>&2
 	  exit 1
 	  ;;
 	esac
@@ -2916,7 +2974,7 @@ EOF
 	# Remove our outputs, but don't remove object files since they
 	# may have been created when compiling PIC objects.
 	removelist=
-	tempremovelist=`echo "$output_objdir/*"`
+	tempremovelist=`$echo "$output_objdir/*"`
 	for p in $tempremovelist; do
 	  case $p in
 	    *.$objext)
@@ -2943,9 +3001,9 @@ EOF
 
       # Eliminate all temporary directories.
       for path in $notinst_path; do
-	lib_search_path=`echo "$lib_search_path " | ${SED} -e 's% $path % %g'`
-	deplibs=`echo "$deplibs " | ${SED} -e 's% -L$path % %g'`
-	dependency_libs=`echo "$dependency_libs " | ${SED} -e 's% -L$path % %g'`
+	lib_search_path=`$echo "$lib_search_path " | ${SED} -e 's% $path % %g'`
+	deplibs=`$echo "$deplibs " | ${SED} -e 's% -L$path % %g'`
+	dependency_libs=`$echo "$dependency_libs " | ${SED} -e 's% -L$path % %g'`
       done
 
       if test -n "$xrpath"; then
@@ -3066,13 +3124,13 @@ EOF
 		    newdeplibs="$newdeplibs $i"
 		  else
 		    droppeddeps=yes
-		    echo
-		    echo "*** Warning: dynamic linker does not accept needed library $i."
-		    echo "*** I have the capability to make that library automatically link in when"
-		    echo "*** you link to this library.  But I can only do this if you have a"
-		    echo "*** shared version of the library, which I believe you do not have"
-		    echo "*** because a test_compile did reveal that the linker did not use it for"
-		    echo "*** its dynamic dependency list that programs get resolved with at runtime."
+		    $echo
+		    $echo "*** Warning: dynamic linker does not accept needed library $i."
+		    $echo "*** I have the capability to make that library automatically link in when"
+		    $echo "*** you link to this library.  But I can only do this if you have a"
+		    $echo "*** shared version of the library, which I believe you do not have"
+		    $echo "*** because a test_compile did reveal that the linker did not use it for"
+		    $echo "*** its dynamic dependency list that programs get resolved with at runtime."
 		  fi
 		fi
 	      else
@@ -3108,22 +3166,22 @@ EOF
 		      newdeplibs="$newdeplibs $i"
 		    else
 		      droppeddeps=yes
-		      echo
-		      echo "*** Warning: dynamic linker does not accept needed library $i."
-		      echo "*** I have the capability to make that library automatically link in when"
-		      echo "*** you link to this library.  But I can only do this if you have a"
-		      echo "*** shared version of the library, which you do not appear to have"
-		      echo "*** because a test_compile did reveal that the linker did not use this one"
-		      echo "*** as a dynamic dependency that programs can get resolved with at runtime."
+		      $echo
+		      $echo "*** Warning: dynamic linker does not accept needed library $i."
+		      $echo "*** I have the capability to make that library automatically link in when"
+		      $echo "*** you link to this library.  But I can only do this if you have a"
+		      $echo "*** shared version of the library, which you do not appear to have"
+		      $echo "*** because a test_compile did reveal that the linker did not use this one"
+		      $echo "*** as a dynamic dependency that programs can get resolved with at runtime."
 		    fi
 		  fi
 		else
 		  droppeddeps=yes
-		  echo
-		  echo "*** Warning!  Library $i is needed by this library but I was not able to"
-		  echo "***  make it link in!  You will probably need to install it or some"
-		  echo "*** library that it depends on before this library will be fully"
-		  echo "*** functional.  Installing it before continuing would be even better."
+		  $echo
+		  $echo "*** Warning!  Library $i is needed by this library but I was not able to"
+		  $echo "***  make it link in!  You will probably need to install it or some"
+		  $echo "*** library that it depends on before this library will be fully"
+		  $echo "*** functional.  Installing it before continuing would be even better."
 		fi
 	      else
 		newdeplibs="$newdeplibs $i"
@@ -3181,17 +3239,17 @@ EOF
 	      fi
 	      if test -n "$a_deplib" ; then
 		droppeddeps=yes
-		echo
-		echo "*** Warning: linker path does not have real file for library $a_deplib."
-		echo "*** I have the capability to make that library automatically link in when"
-		echo "*** you link to this library.  But I can only do this if you have a"
-		echo "*** shared version of the library, which you do not appear to have"
-		echo "*** because I did check the linker path looking for a file starting"
+		$echo
+		$echo "*** Warning: linker path does not have real file for library $a_deplib."
+		$echo "*** I have the capability to make that library automatically link in when"
+		$echo "*** you link to this library.  But I can only do this if you have a"
+		$echo "*** shared version of the library, which you do not appear to have"
+		$echo "*** because I did check the linker path looking for a file starting"
 		if test -z "$potlib" ; then
-		  echo "*** with $libname but no candidates were found. (...for file magic test)"
+		  $echo "*** with $libname but no candidates were found. (...for file magic test)"
 		else
-		  echo "*** with $libname and none of the candidates passed a file format test"
-		  echo "*** using a file magic. Last file checked: $potlib"
+		  $echo "*** with $libname and none of the candidates passed a file format test"
+		  $echo "*** using a file magic. Last file checked: $potlib"
 		fi
 	      fi
 	    else
@@ -3221,7 +3279,7 @@ EOF
 		  potential_libs=`ls $i/$libname[.-]* 2>/dev/null`
 		  for potent_lib in $potential_libs; do
 		    potlib="$potent_lib" # see symlink-check above in file_magic test
-		    if eval echo \"$potent_lib\" 2>/dev/null \
+		    if eval $echo \"$potent_lib\" 2>/dev/null \
 		        | ${SED} 10q \
 		        | $EGREP "$match_pattern_regex" > /dev/null; then
 		      newdeplibs="$newdeplibs $a_deplib"
@@ -3233,17 +3291,17 @@ EOF
 	      fi
 	      if test -n "$a_deplib" ; then
 		droppeddeps=yes
-		echo
-		echo "*** Warning: linker path does not have real file for library $a_deplib."
-		echo "*** I have the capability to make that library automatically link in when"
-		echo "*** you link to this library.  But I can only do this if you have a"
-		echo "*** shared version of the library, which you do not appear to have"
-		echo "*** because I did check the linker path looking for a file starting"
+		$echo
+		$echo "*** Warning: linker path does not have real file for library $a_deplib."
+		$echo "*** I have the capability to make that library automatically link in when"
+		$echo "*** you link to this library.  But I can only do this if you have a"
+		$echo "*** shared version of the library, which you do not appear to have"
+		$echo "*** because I did check the linker path looking for a file starting"
 		if test -z "$potlib" ; then
-		  echo "*** with $libname but no candidates were found. (...for regex pattern test)"
+		  $echo "*** with $libname but no candidates were found. (...for regex pattern test)"
 		else
-		  echo "*** with $libname and none of the candidates passed a file format test"
-		  echo "*** using a regex pattern. Last file checked: $potlib"
+		  $echo "*** with $libname and none of the candidates passed a file format test"
+		  $echo "*** using a regex pattern. Last file checked: $potlib"
 		fi
 	      fi
 	    else
@@ -3264,13 +3322,13 @@ EOF
 	  fi
 	  if $echo "X $tmp_deplibs" | $Xsed -e 's/[ 	]//g' \
 	    | grep . >/dev/null; then
-	    echo
+	    $echo
 	    if test "X$deplibs_check_method" = "Xnone"; then
-	      echo "*** Warning: inter-library dependencies are not supported in this platform."
+	      $echo "*** Warning: inter-library dependencies are not supported in this platform."
 	    else
-	      echo "*** Warning: inter-library dependencies are not known to be supported."
+	      $echo "*** Warning: inter-library dependencies are not known to be supported."
 	    fi
-	    echo "*** All declared inter-library dependencies are being dropped."
+	    $echo "*** All declared inter-library dependencies are being dropped."
 	    droppeddeps=yes
 	  fi
 	  ;;
@@ -3290,17 +3348,17 @@ EOF
 
 	if test "$droppeddeps" = yes; then
 	  if test "$module" = yes; then
-	    echo
-	    echo "*** Warning: libtool could not satisfy all declared inter-library"
-	    echo "*** dependencies of module $libname.  Therefore, libtool will create"
-	    echo "*** a static module, that should work as long as the dlopening"
-	    echo "*** application is linked with the -dlopen flag."
+	    $echo
+	    $echo "*** Warning: libtool could not satisfy all declared inter-library"
+	    $echo "*** dependencies of module $libname.  Therefore, libtool will create"
+	    $echo "*** a static module, that should work as long as the dlopening"
+	    $echo "*** application is linked with the -dlopen flag."
 	    if test -z "$global_symbol_pipe"; then
-	      echo
-	      echo "*** However, this would only work if libtool was able to extract symbol"
-	      echo "*** lists from a program, using \`nm' or equivalent, but libtool could"
-	      echo "*** not find such a program.  So, this module is probably useless."
-	      echo "*** \`nm' from GNU binutils and a full rebuild may help."
+	      $echo
+	      $echo "*** However, this would only work if libtool was able to extract symbol"
+	      $echo "*** lists from a program, using \`nm' or equivalent, but libtool could"
+	      $echo "*** not find such a program.  So, this module is probably useless."
+	      $echo "*** \`nm' from GNU binutils and a full rebuild may help."
 	    fi
 	    if test "$build_old_libs" = no; then
 	      oldlibs="$output_objdir/$libname.$libext"
@@ -3310,16 +3368,16 @@ EOF
 	      build_libtool_libs=no
 	    fi
 	  else
-	    echo "*** The inter-library dependencies that have been dropped here will be"
-	    echo "*** automatically added whenever a program is linked with this library"
-	    echo "*** or is declared to -dlopen it."
+	    $echo "*** The inter-library dependencies that have been dropped here will be"
+	    $echo "*** automatically added whenever a program is linked with this library"
+	    $echo "*** or is declared to -dlopen it."
 
 	    if test "$allow_undefined" = no; then
-	      echo
-	      echo "*** Since this library must not contain undefined symbols,"
-	      echo "*** because either the platform does not support them or"
-	      echo "*** it was explicitly requested with -no-undefined,"
-	      echo "*** libtool will only create a static version of it."
+	      $echo
+	      $echo "*** Since this library must not contain undefined symbols,"
+	      $echo "*** because either the platform does not support them or"
+	      $echo "*** it was explicitly requested with -no-undefined,"
+	      $echo "*** libtool will only create a static version of it."
 	      if test "$build_old_libs" = no; then
 		oldlibs="$output_objdir/$libname.$libext"
 		build_libtool_libs=module
@@ -3460,6 +3518,17 @@ EOF
 	  $run eval '$echo "X$include_expsyms" | $SP2NL >> "$export_symbols"'
 	fi
 
+	tmp_deplibs=
+	for test_deplib in $deplibs; do
+		case " $convenience " in
+		*" $test_deplib "*) ;;
+		*) 
+			tmp_deplibs="$tmp_deplibs $test_deplib"
+			;;
+		esac
+	done
+	deplibs="$tmp_deplibs" 
+
 	if test -n "$convenience"; then
 	  if test -n "$whole_archive_flag_spec"; then
 	    save_libobjs=$libobjs
@@ -3538,21 +3607,18 @@ EOF
 	fi
 
 	# Do each of the archive commands.
+	if test "$module" = yes && test -n "$module_cmds" ; then
+	  if test -n "$export_symbols" && test -n "$module_expsym_cmds"; then
+	    eval cmds=\"$module_expsym_cmds\"
+	  else
+	    eval cmds=\"$module_cmds\"
+	  fi
+	else
 	if test -n "$export_symbols" && test -n "$archive_expsym_cmds"; then
 	  eval cmds=\"$archive_expsym_cmds\"
 	else
-	  save_deplibs="$deplibs"
-	  for conv in $convenience; do
-	    tmp_deplibs=
-	    for test_deplib in $deplibs; do
-	      if test "$test_deplib" != "$conv"; then
-		tmp_deplibs="$tmp_deplibs $test_deplib"
-	      fi
-	    done
-	    deplibs="$tmp_deplibs"
-	  done
 	  eval cmds=\"$archive_cmds\"
-	  deplibs="$save_deplibs"
+	  fi
 	fi
 
 	if test "X$skipped_export" != "X:" && len=`expr "X$cmds" : ".*"` &&
@@ -3875,7 +3941,7 @@ EOF
 
     prog)
       case $host in
-	*cygwin*) output=`echo $output | ${SED} -e 's,.exe$,,;s,$,.exe,'` ;;
+	*cygwin*) output=`$echo $output | ${SED} -e 's,.exe$,,;s,$,.exe,'` ;;
       esac
       if test -n "$vinfo"; then
 	$echo "$modename: warning: \`-version-info' is ignored for programs" 1>&2
@@ -3903,8 +3969,10 @@ EOF
       case $host in
       *darwin*)
         # Don't allow lazy linking, it breaks C++ global constructors
+        if test "$tagname" = CXX ; then
         compile_command="$compile_command ${wl}-bind_at_load"
         finalize_command="$finalize_command ${wl}-bind_at_load"
+        fi
         ;;
       esac
 
@@ -4081,8 +4149,8 @@ extern \"C\" {
 
 	  for arg in $dlprefiles; do
 	    $show "extracting global C symbols from \`$arg'"
-	    name=`echo "$arg" | ${SED} -e 's%^.*/%%'`
-	    $run eval 'echo ": $name " >> "$nlist"'
+	    name=`$echo "$arg" | ${SED} -e 's%^.*/%%'`
+	    $run eval '$echo ": $name " >> "$nlist"'
 	    $run eval "$NM $arg | $global_symbol_pipe >> '$nlist'"
 	  done
 
@@ -4111,7 +4179,7 @@ extern \"C\" {
 	    if test -f "$nlist"S; then
 	      eval "$global_symbol_to_cdecl"' < "$nlist"S >> "$output_objdir/$dlsyms"'
 	    else
-	      echo '/* NONE */' >> "$output_objdir/$dlsyms"
+	      $echo '/* NONE */' >> "$output_objdir/$dlsyms"
 	    fi
 
 	    $echo >> "$output_objdir/$dlsyms" "\
@@ -4344,19 +4412,19 @@ static const void *lt_preloaded_setup() {
 	# win32 will think the script is a binary if it has
 	# a .exe suffix, so we strip it off here.
 	case $output in
-	  *.exe) output=`echo $output|${SED} 's,.exe$,,'` ;;
+	  *.exe) output=`$echo $output|${SED} 's,.exe$,,'` ;;
 	esac
 	# test for cygwin because mv fails w/o .exe extensions
 	case $host in
 	  *cygwin*)
 	    exeext=.exe
-	    outputname=`echo $outputname|${SED} 's,.exe$,,'` ;;
+	    outputname=`$echo $outputname|${SED} 's,.exe$,,'` ;;
 	  *) exeext= ;;
 	esac
 	case $host in
 	  *cygwin* | *mingw* )
-	    cwrappersource=`echo ${objdir}/lt-${output}.c`
-	    cwrapper=`echo ${output}.exe`
+	    cwrappersource=`$echo ${objdir}/lt-${output}.c`
+	    cwrapper=`$echo ${output}.exe`
 	    $rm $cwrappersource $cwrapper
 	    trap "$rm $cwrappersource $cwrapper; exit 1" 1 2 15
 
@@ -4643,7 +4711,7 @@ else
 "
 
 	if test "$fast_install" = yes; then
-	  echo >> $output "\
+	  $echo >> $output "\
   program=lt-'$outputname'$exeext
   progdir=\"\$thisdir/$objdir\"
 
@@ -4659,7 +4727,7 @@ else
       $rm \"\$progdir/\$file\"
     fi"
 
-	  echo >> $output "\
+	  $echo >> $output "\
 
     # relink executable if necessary
     if test -n \"\$relink_command\"; then
@@ -4677,13 +4745,13 @@ else
     $rm \"\$progdir/\$file\"
   fi"
 	else
-	  echo >> $output "\
+	  $echo >> $output "\
   program='$outputname'
   progdir=\"\$thisdir/$objdir\"
 "
 	fi
 
-	echo >> $output "\
+	$echo >> $output "\
 
   if test -f \"\$progdir/\$program\"; then"
 
@@ -4735,7 +4803,7 @@ else
     # The program doesn't exist.
     \$echo \"\$0: error: \$progdir/\$program does not exist\" 1>&2
     \$echo \"This script is just a wrapper for \$program.\" 1>&2
-    echo \"See the $PACKAGE documentation for more information.\" 1>&2
+    $echo \"See the $PACKAGE documentation for more information.\" 1>&2
     exit 1
   fi
 fi\
@@ -4857,6 +4925,11 @@ fi\
 	    $echo "$modename: warning: to ensure that POSIX-compatible ar will work" 1>&2
 	    AR_FLAGS=cq
 	  fi
+	  # Is there a better way of finding the last object in the list?
+	  for obj in $save_oldobjs
+	  do
+	    last_oldobj=$obj
+	  done  
 	  for obj in $save_oldobjs
 	  do
 	    oldobjs="$objlist $obj"
@@ -4868,6 +4941,9 @@ fi\
 	    else
 	      # the above command should be used before it gets too long
 	      oldobjs=$objlist
+	      if test "$obj" = "$last_oldobj" ; then
+	        RANLIB=$save_RANLIB
+	      fi  
 	      test -z "$concat_cmds" || concat_cmds=$concat_cmds~
 	      eval concat_cmds=\"\${concat_cmds}$old_archive_cmds\"
 	      objlist=
@@ -4998,6 +5074,9 @@ revision=$revision
 
 # Is this an already installed library?
 installed=$installed
+
+# Should we warn about portability when linking against -modules?
+shouldnotlink=$module
 
 # Files to dlopen/dlpreopen
 dlopen='$dlfiles'
@@ -5357,7 +5436,7 @@ relink_command=\"$relink_command\""
 	case $file in
 	  *.exe)
 	    if test ! -f "$file"; then
-	      file=`echo $file|${SED} 's,.exe$,,'`
+	      file=`$echo $file|${SED} 's,.exe$,,'`
 	      stripped_ext=".exe"
 	    fi
 	    ;;
@@ -5366,7 +5445,7 @@ relink_command=\"$relink_command\""
 	# Do a test to see if this is really a libtool program.
 	case $host in
 	*cygwin*|*mingw*)
-	    wrapper=`echo $file | ${SED} -e 's,.exe$,,'`
+	    wrapper=`$echo $file | ${SED} -e 's,.exe$,,'`
 	    ;;
 	*)
 	    wrapper=$file
@@ -5379,7 +5458,7 @@ relink_command=\"$relink_command\""
 	  # To insure that "foo" is sourced, and not "foo.exe",
 	  # finese the cygwin/MSYS system by explicitly sourcing "foo."
 	  # which disallows the automatic-append-.exe behavior.
-	  case $host in
+	  case $build in
 	  *cygwin* | *mingw*) wrapperdot=${wrapper}. ;;
 	  *) wrapperdot=${wrapper} ;;
 	  esac
@@ -5417,7 +5496,7 @@ relink_command=\"$relink_command\""
 	  # To insure that "foo" is sourced, and not "foo.exe",
 	  # finese the cygwin/MSYS system by explicitly sourcing "foo."
 	  # which disallows the automatic-append-.exe behavior.
-	  case $host in
+	  case $build in
 	  *cygwin* | *mingw*) wrapperdot=${wrapper}. ;;
 	  *) wrapperdot=${wrapper} ;;
 	  esac
@@ -5472,7 +5551,7 @@ relink_command=\"$relink_command\""
 	    destfile=$destfile.exe
 	    ;;
 	  *:*.exe)
-	    destfile=`echo $destfile | ${SED} -e 's,.exe$,,'`
+	    destfile=`$echo $destfile | ${SED} -e 's,.exe$,,'`
 	    ;;
 	  esac
 	  ;;
@@ -5559,40 +5638,40 @@ relink_command=\"$relink_command\""
     # Exit here if they wanted silent mode.
     test "$show" = : && exit 0
 
-    echo "----------------------------------------------------------------------"
-    echo "Libraries have been installed in:"
+    $echo "----------------------------------------------------------------------"
+    $echo "Libraries have been installed in:"
     for libdir in $libdirs; do
-      echo "   $libdir"
+      $echo "   $libdir"
     done
-    echo
-    echo "If you ever happen to want to link against installed libraries"
-    echo "in a given directory, LIBDIR, you must either use libtool, and"
-    echo "specify the full pathname of the library, or use the \`-LLIBDIR'"
-    echo "flag during linking and do at least one of the following:"
+    $echo
+    $echo "If you ever happen to want to link against installed libraries"
+    $echo "in a given directory, LIBDIR, you must either use libtool, and"
+    $echo "specify the full pathname of the library, or use the \`-LLIBDIR'"
+    $echo "flag during linking and do at least one of the following:"
     if test -n "$shlibpath_var"; then
-      echo "   - add LIBDIR to the \`$shlibpath_var' environment variable"
-      echo "     during execution"
+      $echo "   - add LIBDIR to the \`$shlibpath_var' environment variable"
+      $echo "     during execution"
     fi
     if test -n "$runpath_var"; then
-      echo "   - add LIBDIR to the \`$runpath_var' environment variable"
-      echo "     during linking"
+      $echo "   - add LIBDIR to the \`$runpath_var' environment variable"
+      $echo "     during linking"
     fi
     if test -n "$hardcode_libdir_flag_spec"; then
       libdir=LIBDIR
       eval flag=\"$hardcode_libdir_flag_spec\"
 
-      echo "   - use the \`$flag' linker flag"
+      $echo "   - use the \`$flag' linker flag"
     fi
     if test -n "$admincmds"; then
-      echo "   - have your system administrator run these commands:$admincmds"
+      $echo "   - have your system administrator run these commands:$admincmds"
     fi
     if test -f /etc/ld.so.conf; then
-      echo "   - have your system administrator add LIBDIR to \`/etc/ld.so.conf'"
+      $echo "   - have your system administrator add LIBDIR to \`/etc/ld.so.conf'"
     fi
-    echo
-    echo "See any operating system documentation about shared libraries for"
-    echo "more information, such as the ld(1) and ld.so(8) manual pages."
-    echo "----------------------------------------------------------------------"
+    $echo
+    $echo "See any operating system documentation about shared libraries for"
+    $echo "more information, such as the ld(1) and ld.so(8) manual pages."
+    $echo "----------------------------------------------------------------------"
     exit 0
     ;;
 
@@ -5871,8 +5950,8 @@ relink_command=\"$relink_command\""
 	  noexename=$name
 	  case $file in
 	  *.exe) 
-	    file=`echo $file|${SED} 's,.exe$,,'`
-	    noexename=`echo $name|${SED} 's,.exe$,,'`
+	    file=`$echo $file|${SED} 's,.exe$,,'`
+	    noexename=`$echo $name|${SED} 's,.exe$,,'`
 	    # $file with .exe has already been added to rmfiles,
 	    # add $file without .exe
 	    rmfiles="$rmfiles $file"
@@ -5960,7 +6039,9 @@ MODE must be one of the following:
       uninstall       remove libraries from an installed directory
 
 MODE-ARGS vary depending on the MODE.  Try \`$modename --help --mode=MODE' for
-a more detailed description of MODE."
+a more detailed description of MODE.
+
+Report bugs to <bug-libtool@gnu.org>."
   exit 0
   ;;
 
@@ -6118,7 +6199,7 @@ Otherwise, only FILE itself is deleted using RM."
   ;;
 esac
 
-echo
+$echo
 $echo "Try \`$modename --help' for more information about other modes."
 
 exit 0
@@ -6140,7 +6221,7 @@ build_old_libs=yes
 # ### END LIBTOOL TAG CONFIG: disable-shared
 
 # ### BEGIN LIBTOOL TAG CONFIG: disable-static
-build_old_libs=`case $build_libtool_libs in yes) echo no;; *) echo yes;; esac`
+build_old_libs=`case $build_libtool_libs in yes) $echo no;; *) $echo yes;; esac`
 # ### END LIBTOOL TAG CONFIG: disable-static
 
 # Local Variables:

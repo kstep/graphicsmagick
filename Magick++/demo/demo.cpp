@@ -82,7 +82,7 @@ int main( int /*argc*/, char ** argv)
       example.density( "72x72" );
       example.fontPointsize( 18 );
       example.font( font );
-      example.strokeColor( "gold" );
+      example.strokeColor( Color() );
       example.fillColor( "gold" );
       example.annotate( "Magick++", "+0+20", NorthGravity );
       images.push_back( example );

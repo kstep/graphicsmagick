@@ -1,3 +1,9 @@
+2003-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/attributes.cpp : Change in the way that Magick++
+	retrieves density caused tests to fail.  Density now defaults
+	to 72x72 (GraphicsMagick default) rather than invalid.
+
 2003-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* demo/Makefile.am (CLEANFILES): Fix clean target to remove

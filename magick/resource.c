@@ -353,7 +353,7 @@ MagickExport void InitializeMagickResources(void)
   }
 #endif /* defined(POSIX) */
 
-#if NOT_USING_THIS_YET
+#if defined(WIN32)
   {
     //MEMORYSTATUSEX
     //  stat_ex;
