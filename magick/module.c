@@ -306,7 +306,8 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
 %
 %  The format of the GetModuleAlias method is:
 %
-%      ModuleAlias *GetModuleAlias(const char *name,ExceptionAlias *exception)
+%      const ModuleAlias *GetModuleAlias(const char *name,
+%        ExceptionAlias *exception)
 %
 %  A description of each parameter follows:
 %
@@ -320,14 +321,14 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
 %
 %
 */
-MagickExport ModuleAlias *GetModuleAlias(const char *name,
+MagickExport const ModuleAlias *GetModuleAlias(const char *name,
   ExceptionInfo *exception)
 {
-  register ModuleAlias
+  register const ModuleAlias
     *p;
 
   AcquireSemaphoreInfo(&module_semaphore);
-  if (module_aliases == (ModuleAlias *) NULL)
+  if (module_aliases == (const ModuleAlias *) NULL)
     {
       /*
         Initialize ltdl.
@@ -347,7 +348,7 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
   for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
     if (LocaleCompare(p->name,name) == 0)
       return(p);
-  return((ModuleAlias *) NULL);
+  return((const ModuleAlias *) NULL);
 }
 
 /*
@@ -517,7 +518,7 @@ static char **GetModuleList(void)
 */
 MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
 {
-  register ModuleAlias
+  register const ModuleAlias
     *p;
 
   register long

@@ -362,7 +362,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
 %
 %  The format of the GetMagickVersion method is:
 %
-%      char *GetMagickVersion(unsigned int *version)
+%      const char *GetMagickVersion(unsigned int *version)
 %
 %  A description of each parameter follows:
 %
@@ -372,7 +372,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
 %    o version: The ImageMagick version is returned as a number.
 %
 */
-MagickExport char *GetMagickVersion(unsigned int *version)
+MagickExport const char *GetMagickVersion(unsigned int *version)
 {
   assert(version != (unsigned int *) NULL);
   *version=MagickLibVersion;
