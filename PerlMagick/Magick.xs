@@ -5756,6 +5756,7 @@ Montage(ref,...)
               montage_info->border_width=SvIV(ST(i));
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'C':
@@ -5775,6 +5776,7 @@ Montage(ref,...)
                 next->compose=(CompositeOperator) sp;
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'F':
@@ -5806,6 +5808,7 @@ Montage(ref,...)
                 montage_info->frame=(char *) NULL;
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'G':
@@ -5845,6 +5848,7 @@ Montage(ref,...)
                next->gravity=(GravityType) in;
              break;
            }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'L':
@@ -5856,6 +5860,7 @@ Montage(ref,...)
                 (void) SetImageAttribute(next,"label",SvPV(ST(i),na));
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'M':
@@ -5905,6 +5910,7 @@ Montage(ref,...)
               }
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'P':
@@ -5915,6 +5921,7 @@ Montage(ref,...)
               montage_info->pointsize=SvIV(ST(i));
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'S':
@@ -5938,6 +5945,7 @@ Montage(ref,...)
               (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->stroke);
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'T':
@@ -5974,12 +5982,12 @@ Montage(ref,...)
                 TransparentImage(next,transparent_color,TransparentOpacity);
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         default:
           MagickError(OptionError,"Invalid attribute",attribute);
       }
-      MagickError(OptionError,"Invalid attribute",attribute);
     }
     exception=(&image->exception);
     image=MontageImages(image,montage_info,exception);

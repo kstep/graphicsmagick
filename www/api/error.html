@@ -28,6 +28,7 @@
 		<LI><A HREF="#magickwarning">MagickWarning</A>
 		<LI><A HREF="#seterrorhandler">SetErrorHandler</A>
 		<LI><A HREF="#setexceptioninfo">SetExceptionInfo</A>
+		<LI><A HREF="#setfatalerrorhandler">SetFatalErrorHandler</A>
 		<LI><A HREF="#setwarninghandler">SetWarningHandler</A>
 		<LI><A HREF="#throwexception">ThrowException</A>
 	</UL>
@@ -122,6 +123,26 @@ Specifies the reason to display before terminating the program.
 <DD>
 Specifies any description to the reason.
 <P></P></DL></DL>
+<P><CODE>MagickFatalError()</CODE> calls the fatal error handler methods with an error reason.</P>
+<P>The format of the MagickError method is:</P>
+<PRE>
+    void MagickFatalError(const ExceptionType error,const char *reason,
+      const char *description)</PRE>
+<P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Specifies the numeric error category.
+<P></P>
+<dd><p></p><dt><STRONG>reason:</STRONG><BR>
+<DD>
+Specifies the reason to display before terminating the program.
+<P></P>
+<dd><p></p><dt><STRONG>description:</STRONG><BR>
+<DD>
+Specifies any description to the reason.
+<P></P></DL></DL>
 <P>
 <H2><A NAME="magickwarning">MagickWarning</A></H2>
 <P>Method MagickWarning calls the warning handler methods with a warning reason.</P>
@@ -164,6 +185,18 @@ The exception info.
 <dd><p></p><dt><STRONG><A NAME="item_o_severity%3A">severity:</A></STRONG><BR>
 <DD>
 The exception severity.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="setfatalerrorhandler">SetFatalErrorHandler</A></H2>
+<blockquote>SetFatalErrorHandler() sets the fatal error handler to the specified method and returns the previous fatal error handler. </blockquote><P>The format of the SetErrorHandler method is:</P>
+<PRE>
+    ErrorHandler SetErrorHandler(ErrorHandler handler)</PRE>
+<P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>handler:</STRONG><BR>
+<DD>
+The method to handle errors.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setwarninghandler">SetWarningHandler</A></H2>

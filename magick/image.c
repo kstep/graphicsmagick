@@ -1142,6 +1142,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->client_data=image_info->client_data;
   clone_info->fifo=image_info->fifo;
   clone_info->file=image_info->file;
+  DestroyBlobInfo(clone_info->blob);
   clone_info->blob=CloneBlobInfo(image_info->blob);
   (void) strncpy(clone_info->magick,image_info->magick,MaxTextExtent-1);
   (void) strncpy(clone_info->unique,image_info->unique,MaxTextExtent-1);
