@@ -197,6 +197,75 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t T y p e I n f o B y F a m i l y                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetTypeInfoByFamily searches the type list for the specified family
+%  and if found returns attributes for that type.
+%
+%  The format of the GetTypeInfoByFamily method is:
+%
+%      const TypeInfo *GetTypeInfoByFamily(const char *family,
+%        const char *style,const char *weight,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o type_info: Method GetTypeInfo searches the type list for the specified
+%      name and if found returns attributes for that type.
+%
+%    o family: The type family.
+%
+%    o style: The type style.
+%
+%    o weight: The type weight.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
+  const char *style,const char *weight,ExceptionInfo *exception)
+{
+  register const TypeInfo
+    *p;
+
+  unsigned long
+    intensity;
+
+  /*
+    Search for requested type.
+  */
+  assert(family != (const char *) NULL);
+  assert(style != (const char *) NULL);
+  assert(weight != (const char *) NULL);
+  (void) GetTypeInfo("*",exception);
+  intensity=0;
+  if (weight != (const char *) NULL)
+    {
+      intensity=atol(weight);
+      if (LocaleCompare(weight,"normal") == 0)
+        intensity=400;
+      if (LocaleCompare(weight,"bold") == 0)
+        intensity=700;
+    }
+  if (intensity == 0)
+    intensity=400;
+  for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
+    if ((p->family != (char *) NULL) && (LocaleCompare(p->family,family) == 0))
+      if ((p->style != (char *) NULL) && (LocaleCompare(p->style,style) == 0))
+        if ((p->weight != (char *) NULL) && (atol(p->weight) == intensity))
+          break;
+  return(p);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  L i s t T y p e I n f o                                                    %
 %                                                                             %
 %                                                                             %
@@ -234,7 +303,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
     if (p->stealth)
       continue;
     if ((p->previous == (TypeInfo *) NULL) ||
-		    (LocaleCompare(p->filename,p->previous->filename) != 0))
+        (LocaleCompare(p->filename,p->previous->filename) != 0))
       {
         if (p->previous != (TypeInfo *) NULL)
           (void) fprintf(file,"\n");

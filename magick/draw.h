@@ -187,7 +187,8 @@ typedef struct _TypeMetric
   Method declarations.
 */
 extern MagickExport const TypeInfo
-  *GetTypeInfo(const char *,ExceptionInfo *);
+  *GetTypeInfo(const char *,ExceptionInfo *),
+  *GetTypeInfoByFamily(const char *,const char *,const char *,ExceptionInfo *);
 
 extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);

@@ -591,15 +591,18 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
   unsigned int
     status;
 
-  if (draw_info->font == (char *) NULL)
-    return(RenderPostscript(image,draw_info,offset,render,metrics));
   image_info=CloneImageInfo((ImageInfo *) NULL);
+  if (draw_info->font != (char *) NULL)
+    (void) strncpy(image_info->filename,draw_info->font,MaxTextExtent-1);
   type_info=GetTypeInfo(draw_info->font,&image->exception);
+  if ((draw_info->family != (char *) NULL) &&
+      (draw_info->style != (char *) NULL) &&
+      (draw_info->weight != (char *) NULL))
+    type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
+      draw_info->weight,&image->exception);
   if ((type_info != (const TypeInfo *) NULL) &&
       (type_info->glyphs != (char *) NULL))
     (void) strncpy(image_info->filename,type_info->glyphs,MaxTextExtent-1);
-  else
-    (void) strncpy(image_info->filename,draw_info->font,MaxTextExtent-1);
   (void) strcpy(image_info->magick,"PS");
   if (*image_info->filename == '@')
     (void) strcpy(image_info->magick,"TTF");
