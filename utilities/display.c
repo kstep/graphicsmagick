@@ -673,7 +673,8 @@ int main(int argc,char **argv)
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   MagickFatalError(OptionFatalError,"Missing threshold",option);
-                SetCacheThreshold(atol(argv[i]));
+                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }

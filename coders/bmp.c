@@ -877,7 +877,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (bmp_info.compression == BI_BITFIELDS))
       {
         if (logging)
-          LogMagickEvent(CoderEvent,"  Reading pixels (%ld bytes)",length);
+          LogMagickEvent(CoderEvent,"  Reading pixels (%ld bytes)",
+            (long) length);
         (void) ReadBlob(image,length,(char *) pixels);
       }
     else

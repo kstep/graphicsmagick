@@ -466,6 +466,114 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     C h a n n e l T h r e s h o l d I m a g e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ChannelThresholdImage() changes the value of individual pixels based on
+%  the intensity of each pixel channel.  The result is a high-contrast image.
+%
+%  The format of the ChannelThresholdImage method is:
+%
+%      unsigned int ChannelThresholdImage(Image *image,const char *threshold)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o threshold: define the threshold values.
+%
+%
+*/
+MagickExport unsigned int ChannelThresholdImage(Image *image,
+  const char *threshold)
+{
+#define ThresholdImageText  "  Threshold the image...  "
+
+  DoublePixelPacket
+    pixel;
+
+  IndexPacket
+    index;
+
+  long
+    count,
+    y;
+
+  register IndexPacket
+    *indexes;
+
+  register long
+    x;
+
+  register PixelPacket
+    *q;
+
+  /*
+    Threshold image.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (threshold == (const char *) NULL)
+    return(True);
+  SetImageType(image,TrueColorType);
+  pixel.red=MaxRGB;
+  pixel.green=MaxRGB;
+  pixel.blue=MaxRGB;
+  pixel.opacity=MaxRGB;
+  count=sscanf(threshold,"%lf%*[/,%%]%lf%*[/,%%]%lf%*[/,%%]%lf",
+    &pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
+  if (count == 1)
+    if (!AllocateImageColormap(image,2))
+      ThrowBinaryException(ResourceLimitError,"Unable to threshold image",
+        "Memory allocation failed");
+  if (strchr(threshold,'%') != (char *) NULL)
+    {
+      pixel.red*=MaxRGB/100.0;
+      pixel.green*=MaxRGB/100.0;
+      pixel.blue*=MaxRGB/100.0;
+      pixel.opacity*=MaxRGB/100.0;
+    }
+  for (y=0; y < (long) image->rows; y++)
+  {
+    q=GetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    indexes=GetIndexes(image);
+    if (count == 1)
+      for (x=0; x < (long) image->columns; x++)
+      {
+        index=PixelIntensityToQuantum(q) < pixel.red ? 0 : 1;
+        indexes[x]=index;
+        q->red=image->colormap[index].red;
+        q->green=image->colormap[index].green;
+        q->blue=image->colormap[index].blue;
+        q++;
+      }
+    else
+      for (x=0; x < (long) image->columns; x++)
+      {
+        q->red=q->red < pixel.red ? 0 : MaxRGB;
+        q->green=q->green < pixel.green ? 0 : MaxRGB;
+        q->blue=q->blue < pixel.blue ? 0 : MaxRGB;
+        q->opacity=q->opacity < pixel.opacity ? 0 : MaxRGB;
+        q++;
+      }
+    if (!SyncImagePixels(image))
+      break;
+    if (QuantumTick(y,image->rows))
+      if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
+        break;
+  }
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     D e s p e c k l e I m a g e                                             %
 %                                                                             %
 %                                                                             %
@@ -2068,114 +2176,6 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
       q->blue=image->colormap[index].blue;
       q++;
     }
-    if (!SyncImagePixels(image))
-      break;
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
-        break;
-  }
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%     T h r e s h o l d R G B I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ThresholdRGBImage() changes the value of individual pixels based on
-%  the intensity of each pixel compared to threshold.  The result is a
-%  high-contrast, two color image.
-%
-%  The format of the ThresholdRGBImage method is:
-%
-%      unsigned int ThresholdRGBImage(Image *image,const char *threshold)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%    o threshold: define the threshold values.
-%
-%
-*/
-MagickExport unsigned int ThresholdRGBImage(Image *image,const char *threshold)
-{
-#define ThresholdRGBImageText  "  ThresholdRGB the image...  "
-
-  DoublePixelPacket
-    pixel;
-
-  IndexPacket
-    index;
-
-  long
-    count,
-    y;
-
-  register IndexPacket
-    *indexes;
-
-  register long
-    x;
-
-  register PixelPacket
-    *q;
-
-  /*
-    Threshold image.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (threshold == (const char *) NULL)
-    return(True);
-  SetImageType(image,TrueColorType);
-  pixel.red=100.0;
-  pixel.green=100.0;
-  pixel.blue=100.0;
-  pixel.opacity=100.0;
-  count=sscanf(threshold,"%lf%*[/,%%]%lf%*[/,%%]%lf%*[/,%%]%lf",
-    &pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
-  if (count == 1)
-    if (!AllocateImageColormap(image,2))
-      ThrowBinaryException(ResourceLimitError,"Unable to threshold image",
-        "Memory allocation failed");
-  if (strchr(threshold,'%') != (char *) NULL)
-    {
-      pixel.red*=MaxRGB/100.0;
-      pixel.green*=MaxRGB/100.0;
-      pixel.blue*=MaxRGB/100.0;
-      pixel.opacity*=MaxRGB/100.0;
-    }
-  for (y=0; y < (long) image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    if (count == 1)
-      for (x=0; x < (long) image->columns; x++)
-      {
-        index=PixelIntensityToQuantum(q) < pixel.red ? 0 : 1;
-        indexes[x]=index;
-        q->red=image->colormap[index].red;
-        q->green=image->colormap[index].green;
-        q->blue=image->colormap[index].blue;
-        q++;
-      }
-    else
-      for (x=0; x < (long) image->columns; x++)
-      {
-        q->red=q->red < pixel.red ? 0 : MaxRGB;
-        q->green=q->green < pixel.green ? 0 : MaxRGB;
-        q->blue=q->blue < pixel.blue ? 0 : MaxRGB;
-        q->opacity=q->opacity < pixel.opacity ? 0 : MaxRGB;
-        q++;
-      }
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))

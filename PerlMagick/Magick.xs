@@ -5632,7 +5632,7 @@ Mogrify(ref,...)
         {
           if (!attribute_flag[0])
             argument_list[0].string_reference="50%";
-          ThresholdRGBImage(image,argument_list[0].string_reference);
+          ChannelThresholdImage(image,argument_list[0].string_reference);
           break;
         }
         case 58:  /* Charcoal */

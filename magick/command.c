@@ -460,7 +460,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowCompositeException(OptionError,"Missing threshold",
                     option);
-                SetCacheThreshold(atol(argv[i]));
+                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
@@ -1658,7 +1659,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowConvertException(OptionError,"Missing threshold",option);
-                SetCacheThreshold(atol(argv[i]));
+                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
@@ -3343,7 +3345,8 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowIdentifyException(OptionError,"Missing threshold",
                     option);
-                SetCacheThreshold(atol(argv[i]));
+                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
@@ -3792,7 +3795,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowMogrifyException(OptionError,"Missing threshold",option);
-                SetCacheThreshold(atol(argv[i]));
+                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
@@ -5439,7 +5443,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowMontageException(OptionError,"Missing threshold",option);
-                SetCacheThreshold(atol(argv[i]));
+                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
