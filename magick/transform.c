@@ -269,7 +269,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
   coalesce_image=CloneImage(image,0,0,True,exception);
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
-  memset(&coalesce_image->page,0,sizeof(RectangleInfo));
+  (void) memset(&coalesce_image->page,0,sizeof(RectangleInfo));
   /*
     Coalesce image.
   */
@@ -285,9 +285,9 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
     coalesce_image=GetNextImage(coalesce_image);
     coalesce_image->delay=next->delay;
     coalesce_image->start_loop=next->start_loop;
-    CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
+    (void) CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,next->page.y);
-    memset(&coalesce_image->page,0,sizeof(RectangleInfo));
+    (void) memset(&coalesce_image->page,0,sizeof(RectangleInfo));
   }
   while (coalesce_image->previous != (Image *) NULL)
     coalesce_image=coalesce_image->previous;
@@ -676,7 +676,7 @@ MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
     Flatten image.
   */
   for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
-    CompositeImage(flatten_image,next->matte ? OverCompositeOp :
+    (void) CompositeImage(flatten_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,next->page.y);
   (void) IsOpaqueImage(flatten_image);
   return(flatten_image);
@@ -956,7 +956,7 @@ MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
   scene=0;
   for (next=image; next != (Image *) NULL; next=next->next)
   {
-    CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
+    (void) CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
       next->page.y);
     MagickMonitor(MosaicImageText,scene++,GetNumberScenes(image));
   }

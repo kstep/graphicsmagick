@@ -194,7 +194,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   if ((annotate->fill.opacity == TransparentOpacity) &&
       (annotate->stroke.opacity == TransparentOpacity))
-    QueryColorDatabase("black",&annotate->fill);
+    (void) QueryColorDatabase("black",&annotate->fill);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->primitive=AllocateString(primitive);
   matte=image->matte;
@@ -304,8 +304,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
         clone_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
         FormatString(primitive,"rectangle 0,0 %lu,%lu",
           metrics.width,metrics.height);
-        CloneString(&clone_info->primitive,primitive);
-        DrawImage(image,clone_info);
+        (void) CloneString(&clone_info->primitive,primitive);
+        (void) DrawImage(image,clone_info);
       }
     /*
       Annotate image with text.
@@ -342,8 +342,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
         }
     clone_info->fill=draw_info->fill;
     FormatString(primitive,"line 0,0 %lu,0",metrics.width);
-    CloneString(&clone_info->primitive,primitive);
-    DrawImage(image,clone_info);
+    (void) CloneString(&clone_info->primitive,primitive);
+    (void) DrawImage(image,clone_info);
   }
   image->matte=matte;
   /*
@@ -604,9 +604,9 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
   (void) SetImageInfo(image_info,False,&image->exception);
   clone_info=CloneDrawInfo(image_info,draw_info);
   if (*image_info->filename != '@')
-    CloneString(&clone_info->font,image_info->filename);
+    (void) CloneString(&clone_info->font,image_info->filename);
   else
-    CloneString(&clone_info->font,image_info->filename+1);
+    (void) CloneString(&clone_info->font,image_info->filename+1);
   if (LocaleCompare(image_info->magick,"PS") == 0)
     status=RenderPostscript(image,clone_info,offset,render,metrics);
   else
@@ -870,7 +870,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
         if (!SyncImagePixels(annotate_image))
           break;
       }
-      CompositeImage(image,OverCompositeOp,annotate_image,(int)
+      (void) CompositeImage(image,OverCompositeOp,annotate_image,(int)
         ceil(offset->x-0.5),(int) ceil(offset->y-(metrics->ascent+
         metrics->descent)-0.5));
     }
@@ -926,7 +926,7 @@ static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
 
   FormatString(path,"C%g,%g %g,%g %g,%g",(p->x/64.0),(-p->y/64.0),(q->x/64.0),
     (-q->y/64.0),(to->x/64.0),(-to->y/64.0));
-  ConcatenateString(&draw_info->primitive,path);
+  (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
 
@@ -936,7 +936,7 @@ static int TraceLineTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   FormatString(path,"L%g,%g",(to->x/64.0),(-to->y/64.0));
-  ConcatenateString(&draw_info->primitive,path);
+  (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
 
@@ -946,7 +946,7 @@ static int TraceMoveTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   FormatString(path,"M%g,%g",(to->x/64.0),(-to->y/64.0));
-  ConcatenateString(&draw_info->primitive,path);
+  (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
 
@@ -958,7 +958,7 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
 
   FormatString(path,"Q%g,%g %g,%g",(control->x/64.0),(-control->y/64.0),
     (to->x/64.0),(-to->y/64.0));
-  ConcatenateString(&draw_info->primitive,path);
+  (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
 
@@ -1125,8 +1125,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   unicode=ConvertTextToUnicode(draw_info->text,&length);
   if (unicode == (unsigned short *) NULL)
     {
-      FT_Done_Face(face);
-      FT_Done_FreeType(library);
+      (void) FT_Done_Face(face);
+      (void) FT_Done_FreeType(library);
       ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
         "Memory allocation failed")
     }
@@ -1146,8 +1146,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   affine.xy=(FT_Fixed) (-65536.0*draw_info->affine.ry);
   affine.yy=(FT_Fixed) (65536.0*draw_info->affine.sy);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  QueryColorDatabase("#000000ff",&clone_info->fill);
-  CloneString(&clone_info->primitive,"");
+  (void) QueryColorDatabase("#000000ff",&clone_info->fill);
+  (void) CloneString(&clone_info->primitive,"");
   for (i=0; i < (long) length; i++)
   {
     glyph.id=FT_Get_Char_Index(face,unicode[i]);
@@ -1156,7 +1156,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         FT_Vector
           delta;
 
-        FT_Get_Kerning(face,last_glyph.id,glyph.id,ft_kerning_default,&delta);
+        (void) FT_Get_Kerning(face,last_glyph.id,glyph.id,ft_kerning_default,
+          &delta);
         origin.x+=delta.x;
       }
     glyph.origin=origin;
@@ -1174,13 +1175,13 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         */
         clone_info->affine.tx=offset->x+(glyph.origin.x >> 6);
         clone_info->affine.ty=offset->y-(glyph.origin.y >> 6);
-        CloneString(&clone_info->primitive,"path '");
+        (void) CloneString(&clone_info->primitive,"path '");
         status=FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
           &OutlineMethods,clone_info);
         if (status == False)
-          ConcatenateString(&clone_info->primitive,"'");
+          (void) ConcatenateString(&clone_info->primitive,"'");
       }
-    FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
+    (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
     if (render && (draw_info->fill.opacity != TransparentOpacity))
       {
         /*
@@ -1240,7 +1241,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         }
       }
     if (render && (draw_info->stroke.opacity != TransparentOpacity))
-      DrawImage(image,clone_info);  /* draw text stroke */
+      (void) DrawImage(image,clone_info);  /* draw text stroke */
     FT_Glyph_Get_CBox(glyph.image,ft_glyph_bbox_pixels,&bounding_box);
     if (bounding_box.xMin < extent.x1)
       extent.x1=bounding_box.xMin;
@@ -1269,8 +1270,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   */
   LiberateMemory((void **) &unicode);
   DestroyDrawInfo(clone_info);
-  FT_Done_Face(face);
-  FT_Done_FreeType(library);
+  (void) FT_Done_Face(face);
+  (void) FT_Done_FreeType(library);
   return(True);
 }
 #else
@@ -1370,7 +1371,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       /*
         Get user defaults from X resource database.
       */
-      XSetErrorHandler(XError);
+      (void) XSetErrorHandler(XError);
       client_name=SetClientName((char *) NULL);
       resource_database=XGetResourceDatabase(display,client_name);
       XGetResourceInfo(resource_database,client_name,&resource_info);
@@ -1429,7 +1430,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       /*
         Type name has changed.
       */
-      XFreeFont(display,font_info);
+      (void) XFreeFont(display,font_info);
       (void) CloneString(&resource_info.font,draw_info->font);
       font_info=XBestFont(display,&resource_info,False);
       if (font_info == (XFontStruct *) NULL)

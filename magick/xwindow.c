@@ -235,7 +235,7 @@ MagickExport unsigned int XAnnotateImage(Display *display,
   /*
     Draw text to pixmap.
   */
-  XDrawImageString(display,annotate_pixmap,annotate_context,0,
+  (void) XDrawImageString(display,annotate_pixmap,annotate_context,0,
     (int) annotate_info->font_info->ascent,annotate_info->text,
     (int) strlen(annotate_info->text));
   (void) XFreeGC(display,annotate_context);
@@ -383,7 +383,7 @@ MagickExport unsigned int XAnnotateImage(Display *display,
   */
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
   matte=image->matte;
-  CompositeImage(image,annotate_image->matte ? OverCompositeOp :
+  (void) CompositeImage(image,annotate_image->matte ? OverCompositeOp :
     CopyCompositeOp,annotate_image,x,y);
   image->matte=matte;
   DestroyImage(annotate_image);
@@ -763,7 +763,7 @@ MagickExport void XBestPixel(Display *display,const Colormap colormap,
   j=0;
   for (i=0; i < (int) number_colors; i++)
   {
-    mean=(colors[i].red+color->red)/2;
+    mean=(colors[i].red+color->red)/2L;
     distance=colors[i].red-(int) color->red;
     distance_squared=(2.0*65536.0+mean)*distance*distance/65536.0;
     distance=colors[i].green-(int) color->green;
@@ -1190,7 +1190,7 @@ MagickExport void XClientMessage(Display *display,const Window window,
   client_event.format=32;
   client_event.data.l[0]=(long) reason;
   client_event.data.l[1]=(long) timestamp;
-  XSendEvent(display,window,False,NoEventMask,(XEvent *) &client_event);
+  (void) XSendEvent(display,window,False,NoEventMask,(XEvent *) &client_event);
 }
 
 /*
@@ -1488,8 +1488,8 @@ MagickExport void XDestroyWindowColors(Display *display,Window window)
     return;
   if ((type == XA_PIXMAP) && (format == 32) && (length == 1) && (after == 0))
     {
-      XKillClient(display,(XID) (*((Pixmap *) data)));
-      XDeleteProperty(display,window,property);
+      (void) XKillClient(display,(XID) (*((Pixmap *) data)));
+      (void) XDeleteProperty(display,window,property);
     }
   if (type != None)
     (void) XFree((void *) data);
@@ -1938,13 +1938,13 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
     case PointElement:
     default:
     {
-      XDrawLines(display,draw_pixmap,draw_context,draw_info->coordinate_info,
+      (void) XDrawLines(display,draw_pixmap,draw_context,draw_info->coordinate_info,
         draw_info->number_coordinates,CoordModeOrigin);
       break;
     }
     case LineElement:
     {
-      XDrawLine(display,draw_pixmap,draw_context,draw_info->line_info.x1,
+      (void) XDrawLine(display,draw_pixmap,draw_context,draw_info->line_info.x1,
         draw_info->line_info.y1,draw_info->line_info.x2,
         draw_info->line_info.y2);
       break;
@@ -1966,7 +1966,7 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
     case CircleElement:
     case EllipseElement:
     {
-      XDrawArc(display,draw_pixmap,draw_context,
+      (void) XDrawArc(display,draw_pixmap,draw_context,
         draw_info->rectangle_info.x,draw_info->rectangle_info.y,
         draw_info->rectangle_info.width,draw_info->rectangle_info.height,
         0,360*64);
@@ -1975,7 +1975,7 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
     case FillCircleElement:
     case FillEllipseElement:
     {
-      XFillArc(display,draw_pixmap,draw_context,
+      (void) XFillArc(display,draw_pixmap,draw_context,
         draw_info->rectangle_info.x,draw_info->rectangle_info.y,
         draw_info->rectangle_info.width,draw_info->rectangle_info.height,
         0,360*64);
@@ -1987,9 +1987,9 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
         *coordinate_info;
 
       coordinate_info=draw_info->coordinate_info;
-      XDrawLines(display,draw_pixmap,draw_context,coordinate_info,
+      (void) XDrawLines(display,draw_pixmap,draw_context,coordinate_info,
         draw_info->number_coordinates,CoordModeOrigin);
-      XDrawLine(display,draw_pixmap,draw_context,
+      (void) XDrawLine(display,draw_pixmap,draw_context,
         coordinate_info[draw_info->number_coordinates-1].x,
         coordinate_info[draw_info->number_coordinates-1].y,
         coordinate_info[0].x,coordinate_info[0].y);
@@ -2156,11 +2156,11 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
   }
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
   if (draw_info->stencil == TransparentStencil)
-    CompositeImage(image,CopyOpacityCompositeOp,draw_image,x,y);
+    (void) CompositeImage(image,CopyOpacityCompositeOp,draw_image,x,y);
   else
     {
       matte=image->matte;
-      CompositeImage(image,OverCompositeOp,draw_image,x,y);
+      (void) CompositeImage(image,OverCompositeOp,draw_image,x,y);
       image->matte=matte;
     }
   DestroyImage(draw_image);
@@ -2295,7 +2295,7 @@ MagickExport void XFreeResources(Display *display,XVisualInfo *visual_info,
             Free destroy window and free cursors.
           */
           if (window_info->id != XRootWindow(display,visual_info->screen))
-            XDestroyWindow(display,window_info->id);
+            (void) XDestroyWindow(display,window_info->id);
           if (window_info->annotate_context != (GC) NULL)
             (void) XFreeGC(display,window_info->annotate_context);
           if (window_info->highlight_context != (GC) NULL)
@@ -2326,7 +2326,7 @@ MagickExport void XFreeResources(Display *display,XVisualInfo *visual_info,
   if (visual_info != (XVisualInfo *) NULL)
     (void) XFree((void *) visual_info);
   if (resource_info->close_server)
-    XCloseDisplay(display);
+    (void) XCloseDisplay(display);
 }
 
 /*
@@ -2439,8 +2439,8 @@ MagickExport void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
   annotate_info->next=(XAnnotateInfo *) NULL;
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
-  XSupportsLocale();
-  XSetLocaleModifiers("");
+  (void) XSupportsLocale();
+  (void) XSetLocaleModifiers("");
 }
 
 /*
@@ -2987,7 +2987,7 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
     Initialize resource database.
   */
   XrmInitialize();
-  XGetDefault(display,(char *) client_name,(char *) "dummy");
+  (void) XGetDefault(display,(char *) client_name,(char *) "dummy");
   resource_database=XrmGetDatabase(display);
   /*
     Combine application database.
@@ -3071,7 +3071,7 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     Initialize resource info fields.
   */
   assert(resource_info != (XResourceInfo *) NULL);
-  memset(resource_info,0,sizeof(XResourceInfo));
+  (void) memset(resource_info,0,sizeof(XResourceInfo));
   resource_info->resource_database=database;
   resource_info->image_info=CloneImageInfo((ImageInfo *) NULL);
   resource_info->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
@@ -4137,7 +4137,7 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
         y_offset-=crop_info.y;
         if (y_offset < 0)
           y_offset=0;
-        CompositeImage(image,CopyCompositeOp,composite_image,
+        (void) CompositeImage(image,CopyCompositeOp,composite_image,
           x_offset,y_offset);
       }
       /*
@@ -4340,10 +4340,10 @@ MagickExport void XHighlightEllipse(Display *display,Window window,
   assert(highlight_info != (RectangleInfo *) NULL);
   if ((highlight_info->width < 4) || (highlight_info->height < 4))
     return;
-  XDrawArc(display,window,annotate_context,highlight_info->x,
+  (void) XDrawArc(display,window,annotate_context,highlight_info->x,
     highlight_info->y,highlight_info->width-1,highlight_info->height-1,
     0,360*64);
-  XDrawArc(display,window,annotate_context,highlight_info->x+1,
+  (void) XDrawArc(display,window,annotate_context,highlight_info->x+1,
     highlight_info->y+1,highlight_info->width-3,highlight_info->height-3,
     0,360*64);
 }
@@ -4388,7 +4388,7 @@ MagickExport void XHighlightLine(Display *display,Window window,
   assert(window != (Window) NULL);
   assert(annotate_context != (GC) NULL);
   assert(highlight_info != (XSegment *) NULL);
-  XDrawLine(display,window,annotate_context,highlight_info->x1,
+  (void) XDrawLine(display,window,annotate_context,highlight_info->x1,
     highlight_info->y1,highlight_info->x2,highlight_info->y2);
 }
 
@@ -4511,7 +4511,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
   /*
     Set our forgiving error handler.
   */
-  XSetErrorHandler(XError);
+  (void) XSetErrorHandler(XError);
   /*
     Select target window.
   */
@@ -4579,7 +4579,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
             target=client;
           if (!ximage_info->frame && prior_target)
             target=prior_target;
-          XRaiseWindow(display,target);
+          (void) XRaiseWindow(display,target);
           XDelay(display,SuspendTime << 4);
         }
     }
@@ -4602,7 +4602,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
         {
           MagickWarning(XServerWarning,"Unable to read X window attributes",
             image_info->filename);
-          XCloseDisplay(display);
+          (void) XCloseDisplay(display);
           return((Image *) NULL);
         }
       (void) XTranslateCoordinates(display,target,root,0,0,&x,&y,&child);
@@ -4643,14 +4643,14 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
     Alert the user not to alter the screen.
   */
   if (!ximage_info->silent)
-    XBell(display,0);
+    (void) XBell(display,0);
   /*
     Get image by window id.
   */
-  XGrabServer(display);
+  (void) XGrabServer(display);
   image=XGetWindowImage(display,target,ximage_info->borders,
     ximage_info->descend ? 1 : 0);
-  XUngrabServer(display);
+  (void) XUngrabServer(display);
   if (image == (Image *) NULL)
     MagickWarning(XServerWarning,"Unable to read X window image",
       image_info->filename);
@@ -4694,10 +4694,10 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
       /*
         Alert the user we're done.
       */
-      XBell(display,0);
-      XBell(display,0);
+      (void) XBell(display,0);
+      (void) XBell(display,0);
     }
-  XCloseDisplay(display);
+  (void) XCloseDisplay(display);
   return(image);
 }
 
@@ -4748,7 +4748,7 @@ MagickExport XWindows *XInitializeWindows(Display *display,
         "Memory allocation failed");
       return((XWindows *) NULL);
     }
-  memset(windows,0,sizeof(XWindows));
+  (void) memset(windows,0,sizeof(XWindows));
   windows->pixel_info=(XPixelInfo *) AcquireMemory(sizeof(XPixelInfo));
   windows->icon_pixel=(XPixelInfo *) AcquireMemory(sizeof(XPixelInfo));
   windows->icon_resources=(XResourceInfo *)
@@ -6819,11 +6819,11 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   height=windows->magnify.font_info->ascent+windows->magnify.font_info->descent;
   x=windows->magnify.font_info->max_bounds.width >> 1;
   y=windows->magnify.font_info->ascent+(height >> 2);
-  XDrawImageString(display,windows->magnify.pixmap,
+  (void) XDrawImageString(display,windows->magnify.pixmap,
     windows->magnify.annotate_context,x,y,text,(int) strlen(text));
   y+=height;
   (void) QueryColorname(windows->image.image,&color,X11Compliance,text);
-  XDrawImageString(display,windows->magnify.pixmap,
+  (void) XDrawImageString(display,windows->magnify.pixmap,
     windows->magnify.annotate_context,x,y,text,(int) strlen(text));
   /*
     Refresh magnify window.
@@ -7170,7 +7170,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           if (status == 0)
             {
               colormap=XCopyColormapAndFree(display,colormap);
-              XAllocColor(display,colormap,&color);
+              (void) XAllocColor(display,colormap,&color);
             }
           pixel->pixels[i]=color.pixel;
           *p++=color;
@@ -7187,7 +7187,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           if (status == 0)
             {
               colormap=XCopyColormapAndFree(display,colormap);
-              XAllocColor(display,colormap,&color);
+              (void) XAllocColor(display,colormap,&color);
             }
           pixel->pixels[i]=color.pixel;
           *p++=color;
@@ -7515,7 +7515,7 @@ MagickExport void XMakeStandardColormap(Display *display,
         (void) XStoreColors(display,colormap,colors,(int) number_colors);
       else
         for (i=0; i < (long) number_colors; i++)
-          XAllocColor(display,colormap,&colors[i]);
+          (void) XAllocColor(display,colormap,&colors[i]);
       break;
     }
   }
@@ -7748,7 +7748,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
       mask=CWWidth | CWHeight;
       if (window_info->flags & USPosition)
         mask|=CWX | CWY;
-      XReconfigureWMWindow(display,window_info->id,window_info->screen,mask,
+      (void) XReconfigureWMWindow(display,window_info->id,window_info->screen,mask,
         &window_changes);
     }
   if (window_info->id == (Window) NULL)

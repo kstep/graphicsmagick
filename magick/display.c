@@ -204,10 +204,10 @@ static unsigned int XAnnotateEditImage(Display *display,
     Track pointer until button 1 is pressed.
   */
   XQueryPosition(display,windows->image.id,&x,&y);
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
     PointerMotionMask);
   cursor=XCreateFontCursor(display,XC_left_side);
-  XDefineCursor(display,windows->image.id,cursor);
+  (void) XDefineCursor(display,windows->image.id,cursor);
   state=DefaultState;
   do
   {
@@ -229,7 +229,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           Select a command from the Command widget.
         */
         id=XCommandWidget(display,windows,AnnotateMenu,&event);
-        XDefineCursor(display,windows->image.id,cursor);
+        (void) XDefineCursor(display,windows->image.id,cursor);
         if (id < 0)
           continue;
         switch (AnnotateCommands[id])
@@ -281,7 +281,7 @@ static unsigned int XAnnotateEditImage(Display *display,
                 break;
               }
             font_id=font_number;
-            XFreeFont(display,font_info);
+            (void) XFreeFont(display,font_info);
             break;
           }
           case AnnotateFontColorCommand:
@@ -485,7 +485,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           }
           default:
           {
-            XBell(display,0);
+            (void) XBell(display,0);
             break;
           }
         }
@@ -502,7 +502,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           {
             if ((x < (int) (windows->info.x+windows->info.width)) &&
                 (y < (int) (windows->info.y+windows->info.height)))
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           }
         else
           if ((x > (int) (windows->info.x+windows->info.width)) ||
@@ -514,8 +514,8 @@ static unsigned int XAnnotateEditImage(Display *display,
         break;
     }
   } while (!(state & ExitState));
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
-  XWithdrawWindow(display,windows->info.id,windows->info.screen);
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
+  (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
   if (state & EscapeState)
     return(True);
   /*
@@ -562,12 +562,12 @@ static unsigned int XAnnotateEditImage(Display *display,
     Create cursor and set graphic context.
   */
   cursor=XCreateFontCursor(display,XC_pencil);
-  XDefineCursor(display,windows->image.id,cursor);
+  (void) XDefineCursor(display,windows->image.id,cursor);
   annotate_context=windows->image.annotate_context;
   (void) XSetFont(display,annotate_context,font_info->fid);
-  XSetBackground(display,annotate_context,
+  (void) XSetBackground(display,annotate_context,
     windows->pixel_info->pen_colors[box_id].pixel);
-  XSetForeground(display,annotate_context,
+  (void) XSetForeground(display,annotate_context,
     windows->pixel_info->pen_colors[pen_id].pixel);
   /*
     Begin annotating the image with text.
@@ -576,7 +576,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   windows->command.data=0;
   (void) XCommandWidget(display,windows,TextMenu,(XEvent *) NULL);
   state=DefaultState;
-  XDrawString(display,windows->image.id,annotate_context,x,y,"_",1);
+  (void) XDrawString(display,windows->image.id,annotate_context,x,y,"_",1);
   text_event.xexpose.width=(unsigned int) font_info->max_bounds.width;
   text_event.xexpose.height=font_info->max_bounds.ascent+
     font_info->max_bounds.descent;
@@ -587,7 +587,7 @@ static unsigned int XAnnotateEditImage(Display *display,
       Display text cursor.
     */
     *p='\0';
-    XDrawString(display,windows->image.id,annotate_context,x,y,"_",1);
+    (void) XDrawString(display,windows->image.id,annotate_context,x,y,"_",1);
     /*
       Wait for next event.
     */
@@ -597,14 +597,14 @@ static unsigned int XAnnotateEditImage(Display *display,
         /*
           Select a command from the Command widget.
         */
-        XSetBackground(display,annotate_context,
+        (void) XSetBackground(display,annotate_context,
           windows->pixel_info->background_color.pixel);
-        XSetForeground(display,annotate_context,
+        (void) XSetForeground(display,annotate_context,
           windows->pixel_info->foreground_color.pixel);
         id=XCommandWidget(display,windows,AnnotateMenu,&event);
-        XSetBackground(display,annotate_context,
+        (void) XSetBackground(display,annotate_context,
           windows->pixel_info->pen_colors[box_id].pixel);
-        XSetForeground(display,annotate_context,
+        (void) XSetForeground(display,annotate_context,
           windows->pixel_info->pen_colors[pen_id].pixel);
         if (id < 0)
           continue;
@@ -614,7 +614,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           {
             XTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Image Annotation",ImageAnnotateHelp);
-            XDefineCursor(display,windows->image.id,cursor);
+            (void) XDefineCursor(display,windows->image.id,cursor);
             break;
           }
           case TextApplyCommand:
@@ -652,7 +652,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             /*
               Request primary selection.
             */
-            XConvertSelection(display,XA_PRIMARY,XA_STRING,XA_STRING,
+            (void) XConvertSelection(display,XA_PRIMARY,XA_STRING,XA_STRING,
               windows->image.id,CurrentTime);
             break;
           }
@@ -673,16 +673,16 @@ static unsigned int XAnnotateEditImage(Display *display,
             while (text_info != (XAnnotateInfo *) NULL)
             {
               if (annotate_info->stencil == ForegroundStencil)
-                XDrawString(display,windows->image.id,annotate_context,
+                (void) XDrawString(display,windows->image.id,annotate_context,
                   text_info->x,text_info->y,text_info->text,
                   (int) strlen(text_info->text));
               else
-                XDrawImageString(display,windows->image.id,annotate_context,
+                (void) XDrawImageString(display,windows->image.id,annotate_context,
                   text_info->x,text_info->y,text_info->text,
                   (int) strlen(text_info->text));
               text_info=text_info->previous;
             }
-            XDrawString(display,windows->image.id,annotate_context,x,y,"_",1);
+            (void) XDrawString(display,windows->image.id,annotate_context,x,y,"_",1);
           }
         break;
       }
@@ -787,9 +787,9 @@ static unsigned int XAnnotateEditImage(Display *display,
               break;
             *p=(*command);
             if (annotate_info->stencil == ForegroundStencil)
-              XDrawString(display,windows->image.id,annotate_context,x,y,p,1);
+              (void) XDrawString(display,windows->image.id,annotate_context,x,y,p,1);
             else
-              XDrawImageString(display,windows->image.id,annotate_context,x,y,
+              (void) XDrawImageString(display,windows->image.id,annotate_context,x,y,
                 p,1);
             x+=XTextWidth(font_info,p,1);
             p++;
@@ -886,7 +886,7 @@ static unsigned int XAnnotateEditImage(Display *display,
                 Draw a single character on the Image window.
               */
               *p=data[i];
-              XDrawString(display,windows->image.id,annotate_context,x,y,p,1);
+              (void) XDrawString(display,windows->image.id,annotate_context,x,y,p,1);
               x+=XTextWidth(font_info,p,1);
               p++;
               if ((x+font_info->max_bounds.width) < (int) windows->image.width)
@@ -928,14 +928,14 @@ static unsigned int XAnnotateEditImage(Display *display,
           y=annotate_info->y;
           p=annotate_info->text;
         }
-        XFree((void *) data);
+        (void) XFree((void *) data);
         break;
       }
       default:
         break;
     }
   } while (!(state & ExitState));
-  XFreeCursor(display,cursor);
+  (void) XFreeCursor(display,cursor);
   /*
     Annotation is relative to image configuration.
   */
@@ -1009,13 +1009,13 @@ static unsigned int XAnnotateEditImage(Display *display,
     LiberateMemory((void **) &annotate_info);
     annotate_info=previous_info;
   }
-  XSetForeground(display,annotate_context,
+  (void) XSetForeground(display,annotate_context,
     windows->pixel_info->foreground_color.pixel);
-  XSetBackground(display,annotate_context,
+  (void) XSetBackground(display,annotate_context,
     windows->pixel_info->background_color.pixel);
   (void) XSetFont(display,annotate_context,windows->font_info->fid);
   XSetCursorState(display,windows,False);
-  XFreeFont(display,font_info);
+  (void) XFreeFont(display,font_info);
   /*
     Update image configuration.
   */
@@ -1205,7 +1205,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
     Track pointer until button 1 is pressed.
   */
   XQueryPosition(display,windows->image.id,&x,&y);
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
     PointerMotionMask);
   state=DefaultState;
   do
@@ -1336,7 +1336,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
           }
           default:
           {
-            XBell(display,0);
+            (void) XBell(display,0);
             break;
           }
         }
@@ -1353,7 +1353,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
           {
             if ((x < (int) (windows->info.x+windows->info.width)) &&
                 (y < (int) (windows->info.y+windows->info.height)))
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           }
         else
           if ((x > (int) (windows->info.x+windows->info.width)) ||
@@ -1362,8 +1362,8 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
       }
     }
   } while (!(state & ExitState));
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
-  XWithdrawWindow(display,windows->info.id,windows->info.screen);
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
+  (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
   if (state & EscapeState)
     return(True);
   /*
@@ -1393,7 +1393,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
       }
     else
       if (windows->info.mapped)
-        XWithdrawWindow(display,windows->info.id,windows->info.screen);
+        (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
     /*
       Wait for next event.
     */
@@ -1474,7 +1474,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
       }
   } while (!(state & ExitState));
   (void) XSetFunction(display,windows->image.highlight_context,GXcopy);
-  XWithdrawWindow(display,windows->info.id,windows->info.screen);
+  (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
   if (distance <= 9)
     return(True);
   /*
@@ -1637,12 +1637,12 @@ static unsigned int XColorEditImage(Display *display,
   */
   cursor=XMakeCursor(display,windows->image.id,windows->map_info->colormap,
     resource_info->background_color,resource_info->foreground_color);
-  XDefineCursor(display,windows->image.id,cursor);
+  (void) XDefineCursor(display,windows->image.id,cursor);
   /*
     Track pointer until button 1 is pressed.
   */
   XQueryPosition(display,windows->image.id,&x,&y);
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
     PointerMotionMask);
   state=DefaultState;
   do
@@ -1667,7 +1667,7 @@ static unsigned int XColorEditImage(Display *display,
         id=XCommandWidget(display,windows,ColorEditMenu,&event);
         if (id < 0)
           {
-            XDefineCursor(display,windows->image.id,cursor);
+            (void) XDefineCursor(display,windows->image.id,cursor);
             continue;
           }
         switch (ColorEditCommands[id])
@@ -1843,7 +1843,7 @@ static unsigned int XColorEditImage(Display *display,
             break;
           }
         }
-        XDefineCursor(display,windows->image.id,cursor);
+        (void) XDefineCursor(display,windows->image.id,cursor);
         continue;
       }
     switch (event.type)
@@ -1880,7 +1880,7 @@ static unsigned int XColorEditImage(Display *display,
         XConfigureImageColormap(display,resource_info,windows,*image);
         (void) XConfigureImage(display,resource_info,windows,*image);
         XInfoWidget(display,windows,text);
-        XDefineCursor(display,windows->image.id,cursor);
+        (void) XDefineCursor(display,windows->image.id,cursor);
         state&=(~UpdateConfigurationState);
         break;
       }
@@ -1926,7 +1926,7 @@ static unsigned int XColorEditImage(Display *display,
           }
           default:
           {
-            XBell(display,0);
+            (void) XBell(display,0);
             break;
           }
         }
@@ -1943,7 +1943,7 @@ static unsigned int XColorEditImage(Display *display,
           {
             if ((x < (int) (windows->info.x+windows->info.width)) &&
                 (y < (int) (windows->info.y+windows->info.height)))
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           }
         else
           if ((x > (int) (windows->info.x+windows->info.width)) ||
@@ -2105,9 +2105,9 @@ static unsigned int XColorEditImage(Display *display,
         state&=(~UpdateConfigurationState);
       }
   } while (!(state & ExitState));
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
   XSetCursorState(display,windows,False);
-  XFreeCursor(display,cursor);
+  (void) XFreeCursor(display,cursor);
   return(True);
 }
 
@@ -2291,7 +2291,7 @@ static unsigned int XCompositeImage(Display *display,
     Track pointer until button 1 is pressed.
   */
   XQueryPosition(display,windows->image.id,&x,&y);
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
     PointerMotionMask);
   composite_info.x=windows->image.x+x;
   composite_info.y=windows->image.y+y;
@@ -2443,7 +2443,7 @@ static unsigned int XCompositeImage(Display *display,
         */
         composite_info.width=composite_image->columns;
         composite_info.height=composite_image->rows;
-        XDefineCursor(display,windows->image.id,cursor);
+        (void) XDefineCursor(display,windows->image.id,cursor);
         composite_info.x=windows->image.x+event.xbutton.x;
         composite_info.y=windows->image.y+event.xbutton.y;
         break;
@@ -2517,7 +2517,7 @@ static unsigned int XCompositeImage(Display *display,
           }
           default:
           {
-            XBell(display,0);
+            (void) XBell(display,0);
             break;
           }
         }
@@ -2534,7 +2534,7 @@ static unsigned int XCompositeImage(Display *display,
           {
             if ((x < (int) (windows->info.x+windows->info.width)) &&
                 (y < (int) (windows->info.y+windows->info.height)))
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           }
         else
           if ((x > (int) (windows->info.x+windows->info.width)) ||
@@ -2552,10 +2552,10 @@ static unsigned int XCompositeImage(Display *display,
       }
     }
   } while (!(state & ExitState));
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
   (void) XSetFunction(display,windows->image.highlight_context,GXcopy);
   XSetCursorState(display,windows,False);
-  XFreeCursor(display,cursor);
+  (void) XFreeCursor(display,cursor);
   if (state & EscapeState)
     return(True);
   /*
@@ -2722,7 +2722,7 @@ static unsigned int XConfigureImage(Display *display,
     Resize image to fit Image window dimensions.
   */
   XSetCursorState(display,windows,True);
-  XFlush(display);
+  (void) XFlush(display);
   stasis=((int) width == windows->image.ximage->width) &&
     ((int) height == windows->image.ximage->height);
   windows->magnify.x=width*windows->magnify.x/windows->image.ximage->width;
@@ -2794,7 +2794,7 @@ static unsigned int XConfigureImage(Display *display,
       size_hints->max_width=size_hints->width;
       size_hints->max_height=size_hints->height;
       (void) XSetNormalHints(display,windows->pan.id,size_hints);
-      XFree((void *) size_hints);
+      (void) XFree((void *) size_hints);
     }
   (void) XReconfigureWMWindow(display,windows->pan.id,windows->pan.screen,
     CWWidth | CWHeight,&window_changes);
@@ -2954,7 +2954,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
     Track pointer until button 1 is pressed.
   */
   XQueryPosition(display,windows->image.id,&x,&y);
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
     PointerMotionMask);
   crop_info.x=windows->image.x+x;
   crop_info.y=windows->image.y+y;
@@ -3036,7 +3036,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
         /*
           Note first corner of cropping rectangle-- exit loop.
         */
-        XDefineCursor(display,windows->image.id,cursor);
+        (void) XDefineCursor(display,windows->image.id,cursor);
         crop_info.x=windows->image.x+event.xbutton.x;
         crop_info.y=windows->image.y+event.xbutton.y;
         state|=ExitState;
@@ -3095,7 +3095,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           }
           default:
           {
-            XBell(display,0);
+            (void) XBell(display,0);
             break;
           }
         }
@@ -3112,7 +3112,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           {
             if ((x < (int) (windows->info.x+windows->info.width)) &&
                 (y < (int) (windows->info.y+windows->info.height)))
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           }
         else
           if ((x > (int) (windows->info.x+windows->info.width)) ||
@@ -3126,14 +3126,14 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
         break;
     }
   } while (!(state & ExitState));
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
   if (state & EscapeState)
     {
       /*
         User want to exit without cropping.
       */
-      XWithdrawWindow(display,windows->info.id,windows->info.screen);
-      XFreeCursor(display,cursor);
+      (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
+      (void) XFreeCursor(display,cursor);
       return(True);
     }
   (void) XSetFunction(display,windows->image.highlight_context,GXinvert);
@@ -3167,7 +3167,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
         }
       else
         if (windows->info.mapped)
-          XWithdrawWindow(display,windows->info.id,windows->info.screen);
+          (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
       /*
         Wait for next event.
       */
@@ -3450,7 +3450,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
             }
             default:
             {
-              XBell(display,0);
+              (void) XBell(display,0);
               break;
             }
           }
@@ -3469,7 +3469,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
             {
               if ((x < (int) (windows->info.x+windows->info.width)) &&
                   (y < (int) (windows->info.y+windows->info.height)))
-                XWithdrawWindow(display,windows->info.id,windows->info.screen);
+                (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
             }
           else
             if ((x > (int) (windows->info.x+windows->info.width)) ||
@@ -3482,8 +3482,8 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
       }
       if (state & UpdateConfigurationState)
         {
-          XPutBackEvent(display,&event);
-          XDefineCursor(display,windows->image.id,cursor);
+          (void) XPutBackEvent(display,&event);
+          (void) XDefineCursor(display,windows->image.id,cursor);
           break;
         }
     } while (!(state & ExitState));
@@ -3716,9 +3716,9 @@ static unsigned int XDrawEditImage(Display *display,
   for ( ; ; )
   {
     XQueryPosition(display,windows->image.id,&x,&y);
-    XSelectInput(display,windows->image.id,
+    (void) XSelectInput(display,windows->image.id,
       windows->image.attributes.event_mask | PointerMotionMask);
-    XDefineCursor(display,windows->image.id,cursor);
+    (void) XDefineCursor(display,windows->image.id,cursor);
     state=DefaultState;
     do
     {
@@ -3866,7 +3866,7 @@ static unsigned int XDrawEditImage(Display *display,
               if (entry < 0)
                 break;
               if (stipple != (Pixmap) NULL)
-                XFreePixmap(display,stipple);
+                (void) XFreePixmap(display,stipple);
               stipple=(Pixmap) NULL;
               if (entry == 6)
                 break;
@@ -3992,7 +3992,7 @@ static unsigned int XDrawEditImage(Display *display,
             {
               XTextViewWidget(display,resource_info,windows,False,
                 "Help Viewer - Image Rotation",ImageDrawHelp);
-              XDefineCursor(display,windows->image.id,cursor);
+              (void) XDefineCursor(display,windows->image.id,cursor);
               break;
             }
             case DrawDismissCommand:
@@ -4007,7 +4007,7 @@ static unsigned int XDrawEditImage(Display *display,
             default:
               break;
           }
-          XDefineCursor(display,windows->image.id,cursor);
+          (void) XDefineCursor(display,windows->image.id,cursor);
           continue;
         }
       switch (event.type)
@@ -4063,7 +4063,7 @@ static unsigned int XDrawEditImage(Display *display,
             }
             default:
             {
-              XBell(display,0);
+              (void) XBell(display,0);
               break;
             }
           }
@@ -4080,7 +4080,7 @@ static unsigned int XDrawEditImage(Display *display,
             {
               if ((x < (int) (windows->info.x+windows->info.width)) &&
                   (y < (int) (windows->info.y+windows->info.height)))
-                XWithdrawWindow(display,windows->info.id,windows->info.screen);
+                (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
             }
           else
             if ((x > (int) (windows->info.x+windows->info.width)) ||
@@ -4090,9 +4090,9 @@ static unsigned int XDrawEditImage(Display *display,
         }
       }
     } while (!(state & ExitState));
-    XSelectInput(display,windows->image.id,
+    (void) XSelectInput(display,windows->image.id,
       windows->image.attributes.event_mask);
-    XWithdrawWindow(display,windows->info.id,windows->info.screen);
+    (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
     if (state & EscapeState)
       break;
     /*
@@ -4122,7 +4122,7 @@ static unsigned int XDrawEditImage(Display *display,
         {
           if (number_coordinates > 1)
             {
-              XDrawLines(display,windows->image.id,
+              (void) XDrawLines(display,windows->image.id,
                 windows->image.highlight_context,coordinate_info,
                 number_coordinates,CoordModeOrigin);
               FormatString(text," %+d%+d",
@@ -4148,7 +4148,7 @@ static unsigned int XDrawEditImage(Display *display,
             }
           else
             if (windows->info.mapped)
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           break;
         }
         case RectangleElement:
@@ -4167,7 +4167,7 @@ static unsigned int XDrawEditImage(Display *display,
             }
           else
             if (windows->info.mapped)
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           break;
         }
         case CircleElement:
@@ -4188,14 +4188,14 @@ static unsigned int XDrawEditImage(Display *display,
             }
           else
             if (windows->info.mapped)
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           break;
         }
         case PolygonElement:
         case FillPolygonElement:
         {
           if (number_coordinates > 1)
-            XDrawLines(display,windows->image.id,
+            (void) XDrawLines(display,windows->image.id,
               windows->image.highlight_context,coordinate_info,
               number_coordinates,CoordModeOrigin);
           if (distance > 9)
@@ -4212,7 +4212,7 @@ static unsigned int XDrawEditImage(Display *display,
             }
           else
             if (windows->info.mapped)
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           break;
         }
       }
@@ -4226,7 +4226,7 @@ static unsigned int XDrawEditImage(Display *display,
         default:
         {
           if (number_coordinates > 1)
-            XDrawLines(display,windows->image.id,
+            (void) XDrawLines(display,windows->image.id,
               windows->image.highlight_context,coordinate_info,
               number_coordinates,CoordModeOrigin);
           break;
@@ -4260,7 +4260,7 @@ static unsigned int XDrawEditImage(Display *display,
         case FillPolygonElement:
         {
           if (number_coordinates > 1)
-            XDrawLines(display,windows->image.id,
+            (void) XDrawLines(display,windows->image.id,
               windows->image.highlight_context,coordinate_info,
               number_coordinates,CoordModeOrigin);
           if (distance > 9)
@@ -4631,7 +4631,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       */
       if (undo_image == (Image *) NULL)
         {
-          XBell(display,0);
+          (void) XBell(display,0);
           return;
         }
       cache_image=undo_image;
@@ -4796,7 +4796,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       */
       if (redo_image == (Image *) NULL)
         {
-          XBell(display,0);
+          (void) XBell(display,0);
           return;
         }
       windows->image.window_changes.width=redo_image->columns;
@@ -5580,7 +5580,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           (windows->image.height == (*image)->rows) &&
           (windows->image.crop_geometry == (char *) NULL))
         {
-          XBell(display,0);
+          (void) XBell(display,0);
           break;
         }
       windows->image.window_changes.width=(*image)->columns;
@@ -5626,7 +5626,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-flop";
-      MogrifyImage(resource_info->image_info,2,argv,image);
+      (void) MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.crop_geometry != (char *) NULL)
         {
@@ -5653,7 +5653,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-flip";
-      MogrifyImage(resource_info->image_info,2,argv,image);
+      (void) MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.crop_geometry != (char *) NULL)
         {
@@ -5739,7 +5739,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       argv[2]=color;
       argv[3]=(char *) "-shear";
       argv[4]=geometry;
-      MogrifyImage(resource_info->image_info,5,argv,image);
+      (void) MogrifyImage(resource_info->image_info,5,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5769,7 +5769,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-roll";
       argv[2]=geometry;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5814,7 +5814,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) strcat(modulate_factors,hue_percent);
       argv[1]=(char *) "-modulate";
       argv[2]=modulate_factors;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5843,7 +5843,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) strcat(modulate_factors,saturation_percent);
       argv[1]=(char *) "-modulate";
       argv[2]=modulate_factors;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5871,7 +5871,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) strcpy(modulate_factors,brightness_percent);
       argv[1]=(char *) "-modulate";
       argv[2]=modulate_factors;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5898,7 +5898,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-gamma";
       argv[2]=factor;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5914,7 +5914,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-contrast";
-      MogrifyImage(resource_info->image_info,2,argv,image);
+      (void) MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5930,7 +5930,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "+contrast";
-      MogrifyImage(resource_info->image_info,2,argv,image);
+      (void) MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5946,7 +5946,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-equalize";
-      MogrifyImage(resource_info->image_info,2,argv,image);
+      (void) MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5962,7 +5962,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-normalize";
-      MogrifyImage(resource_info->image_info,2,argv,image);
+      (void) MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5978,7 +5978,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-negate";
-      MogrifyImage(resource_info->image_info,2,argv,image);
+      (void) MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5995,7 +5995,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-colorspace";
       argv[2]=(char *) "gray";
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6021,7 +6021,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-map";
       argv[2]=filename;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6049,7 +6049,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       argv[1]=(char *) "-colors";
       argv[2]=colors;
       argv[3]=(char *) (status ? "-dither" : "+dither");
-      MogrifyImage(resource_info->image_info,4,argv,image);
+      (void) MogrifyImage(resource_info->image_info,4,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6065,7 +6065,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-despeckle";
-      MogrifyImage(resource_info->image_info,2,argv,image);
+      (void) MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6092,7 +6092,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-emboss";
       argv[2]=radius;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6119,7 +6119,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-noise";
       argv[2]=radius;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6143,7 +6143,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "+noise";
       argv[2]=noise_type;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6170,7 +6170,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-sharpen";
       argv[2]=radius;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6197,7 +6197,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-blur";
       argv[2]=radius;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6224,7 +6224,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-threshold";
       argv[2]=factor;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6251,7 +6251,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-edge";
       argv[2]=radius;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6278,7 +6278,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-spread";
       argv[2]=amount;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6305,7 +6305,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) (status ? "-shade" : "+shade");
       argv[2]=geometry;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6332,7 +6332,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-raise";
       argv[2]=bevel_width;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6359,7 +6359,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-segment";
       argv[2]=threshold;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6386,7 +6386,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-solarize";
       argv[2]=factor;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6413,7 +6413,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-swirl";
       argv[2]=degrees;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6440,7 +6440,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-implode";
       argv[2]=factor;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6467,7 +6467,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-wave";
       argv[2]=geometry;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6494,7 +6494,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-paint";
       argv[2]=radius;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6522,7 +6522,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       argv[1]=(char *) "-charcoal";
       argv[2]=radius;
-      MogrifyImage(resource_info->image_info,3,argv,image);
+      (void) MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6625,7 +6625,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       argv[2]=color;
       argv[3]=(char *) "-border";
       argv[4]=geometry;
-      MogrifyImage(resource_info->image_info,5,argv,image);
+      (void) MogrifyImage(resource_info->image_info,5,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6660,7 +6660,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       argv[2]=color;
       argv[3]=(char *) "-frame";
       argv[4]=geometry;
-      MogrifyImage(resource_info->image_info,5,argv,image);
+      (void) MogrifyImage(resource_info->image_info,5,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6762,7 +6762,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Zoom image.
       */
       if (windows->magnify.mapped)
-        XRaiseWindow(display,windows->magnify.id);
+        (void) XRaiseWindow(display,windows->magnify.id);
       else
         {
           /*
@@ -6969,7 +6969,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       break;
     default:
     {
-      XBell(display,0);
+      (void) XBell(display,0);
       break;
     }
   }
@@ -7022,7 +7022,7 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
   /*
     Update magnified image until the mouse button is released.
   */
-  XDefineCursor(display,windows->image.id,windows->magnify.cursor);
+  (void) XDefineCursor(display,windows->image.id,windows->magnify.cursor);
   state=DefaultState;
   x=event->xbutton.x;
   y=event->xbutton.y;
@@ -7037,7 +7037,7 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
       {
         if ((x < (int) (windows->info.x+windows->info.width)) &&
             (y < (int) (windows->info.y+windows->info.height)))
-          XWithdrawWindow(display,windows->info.id,windows->info.screen);
+          (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
       }
     else
       if ((x > (int) (windows->info.x+windows->info.width)) ||
@@ -7149,7 +7149,7 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
   {
     case QuitCommand:
     {
-      XWithdrawWindow(display,windows->magnify.id,windows->magnify.screen);
+      (void) XWithdrawWindow(display,windows->magnify.id,windows->magnify.screen);
       break;
     }
     case XK_Home:
@@ -7394,12 +7394,12 @@ static unsigned int XMatteEditImage(Display *display,
   */
   cursor=XMakeCursor(display,windows->image.id,windows->map_info->colormap,
     resource_info->background_color,resource_info->foreground_color);
-  XDefineCursor(display,windows->image.id,cursor);
+  (void) XDefineCursor(display,windows->image.id,cursor);
   /*
     Track pointer until button 1 is pressed.
   */
   XQueryPosition(display,windows->image.id,&x,&y);
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
     PointerMotionMask);
   state=DefaultState;
   do
@@ -7424,7 +7424,7 @@ static unsigned int XMatteEditImage(Display *display,
         id=XCommandWidget(display,windows,MatteEditMenu,&event);
         if (id < 0)
           {
-            XDefineCursor(display,windows->image.id,cursor);
+            (void) XDefineCursor(display,windows->image.id,cursor);
             continue;
           }
         switch (MatteEditCommands[id])
@@ -7564,7 +7564,7 @@ static unsigned int XMatteEditImage(Display *display,
           default:
             break;
         }
-        XDefineCursor(display,windows->image.id,cursor);
+        (void) XDefineCursor(display,windows->image.id,cursor);
         continue;
       }
     switch (event.type)
@@ -7601,7 +7601,7 @@ static unsigned int XMatteEditImage(Display *display,
         XConfigureImageColormap(display,resource_info,windows,*image);
         (void) XConfigureImage(display,resource_info,windows,*image);
         XInfoWidget(display,windows,text);
-        XDefineCursor(display,windows->image.id,cursor);
+        (void) XDefineCursor(display,windows->image.id,cursor);
         state&=(~UpdateConfigurationState);
         break;
       }
@@ -7650,7 +7650,7 @@ static unsigned int XMatteEditImage(Display *display,
           }
           default:
           {
-            XBell(display,0);
+            (void) XBell(display,0);
             break;
           }
         }
@@ -7667,7 +7667,7 @@ static unsigned int XMatteEditImage(Display *display,
           {
             if ((x < (int) (windows->info.x+windows->info.width)) &&
                 (y < (int) (windows->info.y+windows->info.height)))
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           }
         else
           if ((x > (int) (windows->info.x+windows->info.width)) ||
@@ -7803,9 +7803,9 @@ static unsigned int XMatteEditImage(Display *display,
         state&=(~UpdateConfigurationState);
       }
   } while (!(state & ExitState));
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
   XSetCursorState(display,windows,False);
-  XFreeCursor(display,cursor);
+  (void) XFreeCursor(display,cursor);
   return(True);
 }
 
@@ -7896,7 +7896,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
         {
           MagickWarning(ResourceLimitWarning,"Unable to select image",
             "Memory allocation failed");
-          XFreeStringList(files);
+          (void) XFreeStringList(files);
           return((Image *) NULL);
         }
       j=0;
@@ -7907,7 +7907,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       XListBrowserWidget(display,windows,&windows->widget,
         (const char **) filelist,"Load","Select Image to Load:",filename);
       LiberateMemory((void **) &filelist);
-      XFreeStringList(files);
+      (void) XFreeStringList(files);
     }
   if (*filename == '\0')
     return((Image *) NULL);
@@ -8069,7 +8069,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
         cursor=XCreateFontCursor(display,XC_sb_v_double_arrow);
       else
         cursor=XCreateFontCursor(display,XC_arrow);
-  XDefineCursor(display,windows->pan.id,cursor);
+  (void) XDefineCursor(display,windows->pan.id,cursor);
   /*
     Pan image as pointer moves until the mouse button is released.
   */
@@ -8166,9 +8166,9 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
   /*
     Restore cursor.
   */
-  XDefineCursor(display,windows->pan.id,windows->pan.cursor);
-  XFreeCursor(display,cursor);
-  XWithdrawWindow(display,windows->info.id,windows->info.screen);
+  (void) XDefineCursor(display,windows->pan.id,windows->pan.cursor);
+  (void) XFreeCursor(display,cursor);
+  (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
 }
 
 /*
@@ -8281,7 +8281,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,False);
   XQueryPosition(display,windows->image.id,&x,&y);
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
     PointerMotionMask);
   paste_info.x=windows->image.x+x;
   paste_info.y=windows->image.y+y;
@@ -8403,7 +8403,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
         paste_info.width=(unsigned int) (scale_factor*paste_image->columns+0.5);
         scale_factor=(double) windows->image.ximage->height/height;
         paste_info.height=(unsigned int) (scale_factor*paste_image->rows+0.5);
-        XDefineCursor(display,windows->image.id,cursor);
+        (void) XDefineCursor(display,windows->image.id,cursor);
         paste_info.x=windows->image.x+event.xbutton.x;
         paste_info.y=windows->image.y+event.xbutton.y;
         break;
@@ -8476,7 +8476,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
           }
           default:
           {
-            XBell(display,0);
+            (void) XBell(display,0);
             break;
           }
         }
@@ -8493,7 +8493,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
           {
             if ((x < (int) (windows->info.x+windows->info.width)) &&
                 (y < (int) (windows->info.y+windows->info.height)))
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           }
         else
           if ((x > (int) (windows->info.x+windows->info.width)) ||
@@ -8511,10 +8511,10 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
       }
     }
   } while (!(state & ExitState));
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
   (void) XSetFunction(display,windows->image.highlight_context,GXcopy);
   XSetCursorState(display,windows,False);
-  XFreeCursor(display,cursor);
+  (void) XFreeCursor(display,cursor);
   if (state & EscapeState)
     return(True);
   /*
@@ -8931,7 +8931,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
     Track pointer until button 1 is pressed.
   */
   XQueryPosition(display,windows->image.id,&x,&y);
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask |
     PointerMotionMask);
   roi_info.x=windows->image.x+x;
   roi_info.y=windows->image.y+y;
@@ -8994,7 +8994,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
         /*
           Note first corner of region of interest rectangle-- exit loop.
         */
-        XDefineCursor(display,windows->image.id,cursor);
+        (void) XDefineCursor(display,windows->image.id,cursor);
         roi_info.x=windows->image.x+event.xbutton.x;
         roi_info.y=windows->image.y+event.xbutton.y;
         state|=ExitState;
@@ -9037,7 +9037,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           }
           default:
           {
-            XBell(display,0);
+            (void) XBell(display,0);
             break;
           }
         }
@@ -9054,7 +9054,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           {
             if ((x < (int) (windows->info.x+windows->info.width)) &&
                 (y < (int) (windows->info.y+windows->info.height)))
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           }
         else
           if ((x > (int) (windows->info.x+windows->info.width)) ||
@@ -9068,14 +9068,14 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
         break;
     }
   } while (!(state & ExitState));
-  XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
+  (void) XSelectInput(display,windows->image.id,windows->image.attributes.event_mask);
   if (state & EscapeState)
     {
       /*
         User want to exit without region of interest.
       */
-      XWithdrawWindow(display,windows->info.id,windows->info.screen);
-      XFreeCursor(display,cursor);
+      (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
+      (void) XFreeCursor(display,cursor);
       return(True);
     }
   (void) XSetFunction(display,windows->image.highlight_context,GXinvert);
@@ -9109,7 +9109,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
         }
       else
         if (windows->info.mapped)
-          XWithdrawWindow(display,windows->info.id,windows->info.screen);
+          (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
       /*
         Wait for next event.
       */
@@ -9462,7 +9462,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
             {
               if ((x < (int) (windows->info.x+windows->info.width)) &&
                   (y < (int) (windows->info.y+windows->info.height)))
-                XWithdrawWindow(display,windows->info.id,windows->info.screen);
+                (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
             }
           else
             if ((x > (int) (windows->info.x+windows->info.width)) ||
@@ -9475,8 +9475,8 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
       }
       if (state & UpdateConfigurationState)
         {
-          XPutBackEvent(display,&event);
-          XDefineCursor(display,windows->image.id,cursor);
+          (void) XPutBackEvent(display,&event);
+          (void) XDefineCursor(display,windows->image.id,cursor);
           break;
         }
     } while (!(state & ExitState));
@@ -9786,7 +9786,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
               }
               default:
               {
-                XBell(display,0);
+                (void) XBell(display,0);
                 break;
               }
             }
@@ -9806,7 +9806,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
           rotate_info.y2-=32;
       } while (!(state & ExitState));
       (void) XSetFunction(display,windows->image.highlight_context,GXcopy);
-      XWithdrawWindow(display,windows->info.id,windows->info.screen);
+      (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
       if (state & EscapeState)
         return(True);
       /*
@@ -9832,7 +9832,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
           }
         else
           if (windows->info.mapped)
-            XWithdrawWindow(display,windows->info.id,windows->info.screen);
+            (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
         /*
           Wait for next event.
         */
@@ -9889,7 +9889,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
             rotate_info.y1),(double) (rotate_info.x2-rotate_info.x1)));
       } while (!(state & ExitState));
       (void) XSetFunction(display,windows->image.highlight_context,GXcopy);
-      XWithdrawWindow(display,windows->info.id,windows->info.screen);
+      (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
       if (distance <= 9)
         return(True);
     }
@@ -10254,7 +10254,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
             XMakeMagnifyImage(display,windows);
             (void) SetMonitorHandler(handler);
             if (event->type == ButtonRelease)
-              XWithdrawWindow(display,windows->info.id,windows->info.screen);
+              (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
             break;
           }
       break;
@@ -10270,7 +10270,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
         break;
       if (event->xclient.window == windows->magnify.id)
         {
-          XWithdrawWindow(display,windows->magnify.id,windows->magnify.screen);
+          (void) XWithdrawWindow(display,windows->magnify.id,windows->magnify.screen);
           break;
         }
       break;
@@ -10356,7 +10356,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
       if (event->xmap.window == windows->magnify.id)
         {
           windows->magnify.mapped=True;
-          XWithdrawWindow(display,windows->info.id,windows->info.screen);
+          (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
           break;
         }
       if (event->xmap.window == windows->info.id)
@@ -10622,7 +10622,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       /*
         Button press is outside any tile.
       */
-      XBell(display,0);
+      (void) XBell(display,0);
       return((Image *) NULL);
     }
   /*
@@ -10640,7 +10640,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       /*
         Button press is outside any tile.
       */
-      XBell(display,0);
+      (void) XBell(display,0);
       return((Image *) NULL);
     }
   /*
@@ -10677,7 +10677,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       if (exception.severity != UndefinedException)
         MagickWarning(exception.severity,exception.reason,
           exception.description);
-      XWithdrawWindow(display,windows->info.id,windows->info.screen);
+      (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
       break;
     }
     case TileNextCommand:
@@ -10901,7 +10901,7 @@ static void XTranslateImage(Display *display,XWindows *windows,
   XCheckRefreshWindows(display,windows);
   XDrawPanRectangle(display,windows);
   XRefreshWindow(display,&windows->image,(XEvent *) NULL);
-  XWithdrawWindow(display,windows->info.id,windows->info.screen);
+  (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
 }
 
 /*
@@ -11456,7 +11456,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
           width=window_attributes.width;
           height=window_attributes.height;
         }
-      XFree((void *) size_hints);
+      (void) XFree((void *) size_hints);
     }
   /*
     Create the X pixmap.
@@ -12006,7 +12006,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize font info.
   */
   if (windows->font_info != (XFontStruct *) NULL)
-    XFreeFont(display,windows->font_info);
+    (void) XFreeFont(display,windows->font_info);
   windows->font_info=XBestFont(display,resource_info,False);
   if (windows->font_info == (XFontStruct *) NULL)
     MagickError(XServerError,"Unable to load font",resource_info->font);
@@ -12058,14 +12058,14 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   context_values.graphics_exposures=False;
   context_mask=GCBackground | GCFont | GCForeground | GCGraphicsExposures;
   if (pixel->annotate_context != (GC) NULL)
-    XFreeGC(display,pixel->annotate_context);
+    (void) XFreeGC(display,pixel->annotate_context);
   pixel->annotate_context=
     XCreateGC(display,windows->context.id,context_mask,&context_values);
   if (pixel->annotate_context == (GC) NULL)
     MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
   context_values.background=pixel->depth_color.pixel;
   if (pixel->widget_context != (GC) NULL)
-    XFreeGC(display,pixel->widget_context);
+    (void) XFreeGC(display,pixel->widget_context);
   pixel->widget_context=
     XCreateGC(display,windows->context.id,context_mask,&context_values);
   if (pixel->widget_context == (GC) NULL)
@@ -12075,7 +12075,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   context_values.plane_mask=
     context_values.background ^ context_values.foreground;
   if (pixel->highlight_context != (GC) NULL)
-    XFreeGC(display,pixel->highlight_context);
+    (void) XFreeGC(display,pixel->highlight_context);
   pixel->highlight_context=XCreateGC(display,windows->context.id,
     context_mask | GCPlaneMask,&context_values);
   if (pixel->highlight_context == (GC) NULL)
@@ -12103,7 +12103,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize graphic context for icon window.
   */
   if (icon_pixel->annotate_context != (GC) NULL)
-    XFreeGC(display,icon_pixel->annotate_context);
+    (void) XFreeGC(display,icon_pixel->annotate_context);
   context_values.background=icon_pixel->background_color.pixel;
   context_values.foreground=icon_pixel->foreground_color.pixel;
   icon_pixel->annotate_context=XCreateGC(display,windows->icon.id,
@@ -12240,7 +12240,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       */
       manager_hints->flags|=WindowGroupHint;
       manager_hints->window_group=windows->group_leader.id;
-      XSelectInput(display,windows->group_leader.id,StructureNotifyMask);
+      (void) XSelectInput(display,windows->group_leader.id,StructureNotifyMask);
       if (resource_info->debug)
         (void) fprintf(stderr,"Window id: 0x%lx (group leader)\n",
           windows->group_leader.id);
@@ -12282,7 +12282,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     windows->info.id,(char *) ShadowBitmap,ShadowWidth,ShadowHeight);
   (void) XSetTransientForHint(display,windows->info.id,windows->image.id);
   if (windows->image.mapped)
-    XWithdrawWindow(display,windows->info.id,windows->info.screen);
+    (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
   if (resource_info->debug)
     (void) fprintf(stderr,"Window id: 0x%lx (info)\n",windows->info.id);
   /*
@@ -12444,7 +12444,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     (void) fprintf(stderr,"Window id: 0x%lx (pan)\n",windows->pan.id);
   (void) XSetTransientForHint(display,windows->pan.id,windows->image.id);
   if (windows->info.mapped)
-    XWithdrawWindow(display,windows->info.id,windows->info.screen);
+    (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
   if (!windows->image.mapped || (windows->backdrop.id != (Window) NULL))
     (void) XMapWindow(display,windows->image.id);
   /*
@@ -12482,7 +12482,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     if (((int) windows->image.width < windows->image.ximage->width) ||
         ((int) windows->image.height < windows->image.ximage->height))
       (void) XMapRaised(display,windows->pan.id);
-  XWithdrawWindow(display,windows->info.id,windows->info.screen);
+  (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
   (void) XSync(display,False);
   /*
     Respond to events.
@@ -12627,7 +12627,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                   Map/unmap Command widget.
                 */
                 if (windows->command.mapped)
-                  XWithdrawWindow(display,windows->command.id,
+                  (void) XWithdrawWindow(display,windows->command.id,
                     windows->command.screen);
                 else
                   {
@@ -12798,7 +12798,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                     XDrawPanRectangle(display,windows);
                   }
                 if (windows->backdrop.id != (Window) NULL)
-                  XInstallColormap(display,map_info->colormap);
+                  (void) XInstallColormap(display,map_info->colormap);
                 break;
               }
             if (*event.xclient.data.l == (long) windows->im_former_image)
@@ -12868,7 +12868,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 */
                 if (strncmp((char *) data, "file:", 5) != 0)
                   {
-                    XFree((void *) data);
+                    (void) XFree((void *) data);
                     break;
                   }
                 (void) strcpy(resource_info->image_info->filename,
@@ -12880,7 +12880,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 exception.description);
             if (nexus != (Image *) NULL)
               *state|=NextImageState | ExitState;
-            XFree((void *) data);
+            (void) XFree((void *) data);
             break;
           }
         /*
@@ -12890,7 +12890,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           break;
         if (*event.xclient.data.l != (long) windows->wm_delete_window)
           break;
-        XWithdrawWindow(display,event.xclient.window,visual_info->screen);
+        (void) XWithdrawWindow(display,event.xclient.window,visual_info->screen);
         if (event.xclient.window == windows->image.id)
           {
             *state|=ExitState;
@@ -13013,7 +13013,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               }
             else
               if (windows->pan.mapped)
-                XWithdrawWindow(display,windows->pan.id,windows->pan.screen);
+                (void) XWithdrawWindow(display,windows->pan.id,windows->pan.screen);
             break;
           }
         if (event.xconfigure.window == windows->magnify.id)
@@ -13164,7 +13164,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         if (event.xkey.window == windows->pan.id)
           {
             if (key_symbol == XK_q)
-              XWithdrawWindow(display,windows->pan.id,windows->pan.screen);
+              (void) XWithdrawWindow(display,windows->pan.id,windows->pan.screen);
             else
               if ((key_symbol == XK_F1) || (key_symbol == XK_Help))
                 XTextViewWidget(display,resource_info,windows,False,
@@ -13211,7 +13211,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         if (event.xmap.window == windows->image.id)
           {
             if (windows->backdrop.id != (Window) NULL)
-              XInstallColormap(display,map_info->colormap);
+              (void) XInstallColormap(display,map_info->colormap);
             if (LocaleCompare(display_image->magick,"LOGO") == 0)
               {
                 if (LocaleCompare(display_image->filename,"Untitled") == 0)
@@ -13229,7 +13229,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           {
             XMakeMagnifyImage(display,windows);
             windows->magnify.mapped=True;
-            XWithdrawWindow(display,windows->info.id,windows->info.screen);
+            (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
             break;
           }
         if (event.xmap.window == windows->pan.id)
@@ -13260,7 +13260,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             (void) XSetWindowBackgroundPixmap(display,windows->icon.id,
               windows->icon.pixmap);
             (void) XClearWindow(display,windows->icon.id);
-            XWithdrawWindow(display,windows->info.id,windows->info.screen);
+            (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
             windows->icon.mapped=True;
             break;
           }
@@ -13283,7 +13283,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       }
       case MappingNotify:
       {
-        XRefreshKeyboardMapping(&event.xmapping);
+        (void) XRefreshKeyboardMapping(&event.xmapping);
         break;
       }
       case NoExpose:
@@ -13326,7 +13326,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             exception.description);
         if (nexus != (Image *) NULL)
           *state|=NextImageState | ExitState;
-        XFree((void *) data);
+        (void) XFree((void *) data);
         break;
       }
       case ReparentNotify:
@@ -13370,7 +13370,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             if (map_info->colormap == icon_map->colormap)
               XConfigureImageColormap(display,resource_info,windows,
                 display_image);
-            XFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
+            (void) XFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
             windows->icon.mapped=False;
             break;
           }
@@ -13414,7 +13414,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       /*
         Query user if image has changed.
       */
-      SignatureImage(display_image);
+      (void) SignatureImage(display_image);
       if (!resource_info->immutable && display_image->taint)
         {
           status=XConfirmWidget(display,windows,"Your image changed.",
@@ -13435,21 +13435,21 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Withdraw pan and Magnify window.
       */
       if (windows->info.mapped)
-        XWithdrawWindow(display,windows->info.id,windows->info.screen);
+        (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
       if (windows->magnify.mapped)
-        XWithdrawWindow(display,windows->magnify.id,windows->magnify.screen);
+        (void) XWithdrawWindow(display,windows->magnify.id,windows->magnify.screen);
       if (windows->command.mapped)
-        XWithdrawWindow(display,windows->command.id,windows->command.screen);
+        (void) XWithdrawWindow(display,windows->command.id,windows->command.screen);
     }
   if (windows->pan.mapped)
-    XWithdrawWindow(display,windows->pan.id,windows->pan.screen);
+    (void) XWithdrawWindow(display,windows->pan.id,windows->pan.screen);
   if (!resource_info->backdrop)
     if (windows->backdrop.mapped)
       {
-        XWithdrawWindow(display,windows->backdrop.id,windows->backdrop.screen);
+        (void) XWithdrawWindow(display,windows->backdrop.id,windows->backdrop.screen);
         (void) XDestroyWindow(display,windows->backdrop.id);
         windows->backdrop.id=(Window) NULL;
-        XWithdrawWindow(display,windows->image.id,windows->image.screen);
+        (void) XWithdrawWindow(display,windows->image.id,windows->image.screen);
         (void) XDestroyWindow(display,windows->image.id);
         windows->image.id=(Window) NULL;
       }
@@ -13464,7 +13464,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Destroy X windows.
       */
       if (windows->image.mapped)
-        XWithdrawWindow(display,windows->image.id,windows->image.screen);
+        (void) XWithdrawWindow(display,windows->image.id,windows->image.screen);
       XDelay(display,SuspendTime);
       for (i=0; i < (int) number_windows; i++)
       {
@@ -13476,7 +13476,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             XDestroyImage(magick_windows[i]->ximage);
           }
         if (magick_windows[i]->pixmap != (Pixmap) NULL)
-          XFreePixmap(display,magick_windows[i]->pixmap);
+          (void) XFreePixmap(display,magick_windows[i]->pixmap);
         if (magick_windows[i]->id != (Window) NULL)
           (void) XDestroyWindow(display,magick_windows[i]->id);
         if (magick_windows[i]->destroy)
@@ -13486,29 +13486,29 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       /*
         Free Standard Colormap.
       */
-      XFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
+      (void) XFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
       if (resource_info->map_type == (char *) NULL)
-        XFreeStandardColormap(display,visual_info,map_info,pixel);
+        (void) XFreeStandardColormap(display,visual_info,map_info,pixel);
       /*
         Free X resources.
       */
       if (resource_info->backdrop)
-        XFreeCursor(display,windows->backdrop.cursor);
+        (void) XFreeCursor(display,windows->backdrop.cursor);
       if (windows->widget.highlight_stipple != (Pixmap) NULL)
-        XFreePixmap(display,windows->widget.highlight_stipple);
+        (void) XFreePixmap(display,windows->widget.highlight_stipple);
       if (windows->widget.highlight_stipple != (Pixmap) NULL)
-        XFreePixmap(display,windows->widget.shadow_stipple);
-      XFreeGC(display,pixel->widget_context);
-      XFreeGC(display,pixel->highlight_context);
-      XFreeGC(display,pixel->annotate_context);
-      XFreeGC(display,icon_pixel->annotate_context);
-      XFreeFont(display,font_info);
-      XFree((void *) class_hints);
-      XFree((void *) manager_hints);
-      XFree((void *) icon_visual);
-      XFree((void *) visual_info);
-      XFree((void *) icon_map);
-      XFree((void *) map_info);
+        (void) XFreePixmap(display,windows->widget.shadow_stipple);
+      (void) XFreeGC(display,pixel->widget_context);
+      (void) XFreeGC(display,pixel->highlight_context);
+      (void) XFreeGC(display,pixel->annotate_context);
+      (void) XFreeGC(display,icon_pixel->annotate_context);
+      (void) XFreeFont(display,font_info);
+      (void) XFree((void *) class_hints);
+      (void) XFree((void *) manager_hints);
+      (void) XFree((void *) icon_visual);
+      (void) XFree((void *) visual_info);
+      (void) XFree((void *) icon_map);
+      (void) XFree((void *) map_info);
       LiberateMemory((void **) &windows->popup.name);
       LiberateMemory((void **) &windows->widget.name);
       LiberateMemory((void **) &windows->magnify.name);

@@ -224,7 +224,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      histogram[Intensity(*p)]++;
+      histogram[(int) Intensity(*p)]++;
       p++;
     }
   }

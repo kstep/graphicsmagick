@@ -2292,7 +2292,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Parse SVG file.
   */
-  memset(&svg_info,0,sizeof(SVGInfo));
+  (void) memset(&svg_info,0,sizeof(SVGInfo));
   svg_info.file=file;
   svg_info.debug=image_info->debug;
   svg_info.exception=exception;

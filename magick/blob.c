@@ -471,7 +471,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
 MagickExport void GetBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
-  memset(blob,0,sizeof(BlobInfo));
+  (void) memset(blob,0,sizeof(BlobInfo));
   blob->quantum=BlobQuantum;
   blob->signature=MagickSignature;
 }
@@ -1086,7 +1086,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
         Read bytes from blob.
       */
       count=Min(length,image->blob->length-image->blob->offset);
-      if (count > 0)
+      if (count != 0)
         (void) memcpy(data,image->blob->data+image->blob->offset,count);
       image->blob->offset+=count;
       if (count < length)
@@ -1621,7 +1621,7 @@ MagickExport off_t SizeBlob(Image *image)
     return(image->blob->maximum_extent);
   if (image->file == (FILE *) NULL)
     return(image->blob->length);
-  SyncBlob(image);
+  (void) SyncBlob(image);
   return(fstat(fileno(image->file),&attributes) < 0 ? 0 : attributes.st_size);
 }
 

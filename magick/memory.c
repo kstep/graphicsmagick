@@ -88,7 +88,7 @@ MagickExport void *AcquireMemory(const size_t size)
   void
     *allocation;
 
-  assert(size > 0);
+  assert(size != 0);
   allocation=malloc(size);
   return(allocation);
 }

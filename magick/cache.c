@@ -471,7 +471,7 @@ MagickExport void DestroyCacheNexus(Cache cache,const unsigned int id)
   nexus_info=cache_info->nexus_info+id;
   if (nexus_info->staging != (PixelPacket *) NULL)
     LiberateMemory((void **) &nexus_info->staging);
-  memset(nexus_info,0,sizeof(NexusInfo));
+  (void) memset(nexus_info,0,sizeof(NexusInfo));
   nexus_info->available=True;
 }
 
@@ -649,7 +649,7 @@ MagickExport void GetCacheInfo(Cache *cache)
   if (cache_info == (CacheInfo *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");
-  memset(cache_info,0,sizeof(CacheInfo));
+  (void) memset(cache_info,0,sizeof(CacheInfo));
   cache_info->colorspace=RGBColorspace;
   cache_info->file=(-1);
   cache_info->signature=MagickSignature;
@@ -1328,7 +1328,7 @@ MagickExport unsigned int OpenCache(Image *image)
       if (cache_info->nexus_info == (NexusInfo *) NULL)
         MagickError(ResourceLimitError,"Memory allocation failed",
           "unable to allocate cache nexus_info");
-      memset(cache_info->nexus_info,0,(cache_info->rows+3)*sizeof(NexusInfo));
+      (void) memset(cache_info->nexus_info,0,(cache_info->rows+3)*sizeof(NexusInfo));
       for (id=1; id < (cache_info->rows+3); id++)
         cache_info->nexus_info[id].available=True;
     }
@@ -2523,10 +2523,10 @@ static unsigned int WriteCacheInfo(Image *image)
       (void) fprintf(file,"white-point=%g,%g\n",
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
-  if (image->color_profile.length > 0)
+  if (image->color_profile.length != 0)
     (void) fprintf(file,"profile-icc=%lu\n",(unsigned long)
       image->color_profile.length);
-  if (image->iptc_profile.length > 0)
+  if (image->iptc_profile.length != 0)
     (void) fprintf(file,"profile-iptc=%lu\n",(unsigned long)
       image->iptc_profile.length);
   if (image->generic_profiles != 0)
@@ -2573,9 +2573,9 @@ static unsigned int WriteCacheInfo(Image *image)
         (void) fwrite(image->directory,strlen(image->directory),1,file);
       (void) fputc('\0',file);
     }
-  if (image->color_profile.length > 0)
+  if (image->color_profile.length != 0)
     (void) fwrite(image->color_profile.info,image->color_profile.length,1,file);
-  if (image->iptc_profile.length > 0)
+  if (image->iptc_profile.length != 0)
     (void) fwrite(image->iptc_profile.info,image->iptc_profile.length,1,file);
   if (image->generic_profiles != 0)
     {
@@ -2632,7 +2632,7 @@ static unsigned int WriteCacheInfo(Image *image)
       (void) fwrite(colormap,packet_size,image->colors,file);
       LiberateMemory((void **) &colormap);
     }
-  fclose(file);
+  (void) fclose(file);
   return(True);
 }
 

@@ -644,8 +644,8 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
   n=0;
   number_points=0;
   points=(PointInfo *) NULL;
-  memset(&point,0,sizeof(PointInfo));
-  memset(&bounds,0,sizeof(SegmentInfo));
+  (void) memset(&point,0,sizeof(PointInfo));
+  (void) memset(&bounds,0,sizeof(SegmentInfo));
   for (i=0; path_info[i].code != EndCode; i++)
   {
     if ((path_info[i].code == MoveToCode) || (path_info[i].code == OpenCode) ||
@@ -1238,7 +1238,7 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
   if (draw_info->debug)
     (void) fprintf(stdout,"\nbegin clip-path %.1024s\n",draw_info->clip_path);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  CloneString(&clone_info->primitive,attribute->value);
+  (void) CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("black",&clone_info->fill);
   clone_info->clip_path=(char *) NULL;
   status=DrawImage(image->clip_mask,clone_info);
@@ -1327,7 +1327,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
   if (dash_polygon == (PrimitiveInfo *) NULL)
     return(False);
   scale=ExpandAffine(&draw_info->affine);
-  dash_offset=draw_info->dash_offset > 0 ? scale*draw_info->dash_offset : 0.0;
+  dash_offset=draw_info->dash_offset != 0 ? scale*draw_info->dash_offset : 0.0;
   distance=0.0;
   for (n=(-1); dash_offset > 0.0; )
   {
@@ -1786,7 +1786,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             GetToken(q,&q,token);
             if (draw_info->font != (char *) NULL)
               (void) strcpy(token,draw_info->font);
-            CloneString(&graphic_context[n]->font,token);
+            (void) CloneString(&graphic_context[n]->font,token);
             break;
           }
         if (LocaleCompare("font-size",keyword) == 0)
@@ -2934,7 +2934,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
   assert(primitive_info != (PrimitiveInfo *) NULL);
-  assert(primitive_info->coordinates > 0);
+  assert(primitive_info->coordinates != 0);
   path_info=ConvertPrimitiveToPath(draw_info,primitive_info);
   if (path_info == (PathInfo *) NULL)
     return(False);
@@ -3370,7 +3370,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       CloneString(&clone_info->text,primitive_info->text);
       FormatString(geometry,"%+g%+g",primitive_info->point.x,
         primitive_info->point.y);
-      CloneString(&clone_info->geometry,geometry);
+      (void) CloneString(&clone_info->geometry,geometry);
       status=AnnotateImage(image,clone_info);
       DestroyDrawInfo(clone_info);
       break;
@@ -3436,7 +3436,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
             }
         }
       matte=image->matte;
-      CompositeImage(image,composite_image->matte ? OverCompositeOp :
+      (void) CompositeImage(image,composite_image->matte ? OverCompositeOp :
         draw_info->compose,composite_image,x,y);
       DestroyImage(composite_image);
       image->matte=matte;
@@ -3466,7 +3466,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
           clone_info->stroke.opacity=TransparentOpacity;
           status=DrawPolygonPrimitive(image,clone_info,primitive_info);
           DestroyDrawInfo(clone_info);
-          DrawDashPolygon(draw_info,primitive_info,image);
+          (void) DrawDashPolygon(draw_info,primitive_info,image);
           break;
         }
       mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
@@ -3487,7 +3487,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
                (draw_info->linejoin == RoundJoin)) ||
                (primitive_info[i].primitive != UndefinedPrimitive))
             {
-              DrawPolygonPrimitive(image,draw_info,primitive_info);
+              (void) DrawPolygonPrimitive(image,draw_info,primitive_info);
               break;
             }
           clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
@@ -3498,7 +3498,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
           status|=DrawStrokePolygon(image,draw_info,primitive_info);
           break;
         }
-      DrawPolygonPrimitive(image,draw_info,primitive_info);
+      (void) DrawPolygonPrimitive(image,draw_info,primitive_info);
       break;
     }
   }
@@ -3554,7 +3554,7 @@ static void DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
   linecap[2].point.y+=10.0*MagickEpsilon;
   linecap[3].point.y+=10.0*MagickEpsilon;
   linecap[4].primitive=UndefinedPrimitive;
-  DrawPolygonPrimitive(image,draw_info,linecap);
+  (void) DrawPolygonPrimitive(image,draw_info,linecap);
 }
 
 static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
@@ -3645,7 +3645,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
     Initialize draw attributes.
   */
   assert(draw_info != (DrawInfo *) NULL);
-  memset(draw_info,0,sizeof(DrawInfo));
+  (void) memset(draw_info,0,sizeof(DrawInfo));
   clone_info=CloneImageInfo(image_info);
   IdentityAffine(&draw_info->affine);
   draw_info->gravity=NorthWestGravity;
@@ -4240,7 +4240,7 @@ static void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
 
       colinear.x=end.x+MagickEpsilon;
       colinear.y=end.y+MagickEpsilon;
-      TracePoint(primitive_info+1,colinear);
+      (void) TracePoint(primitive_info+1,colinear);
     }
   (primitive_info+1)->primitive=primitive_info->primitive;
   primitive_info->coordinates=2;

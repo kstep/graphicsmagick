@@ -470,7 +470,7 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
       /*
         No text-- just draw cursor.
       */
-      XDrawLine(display,window_info->id,window_info->annotate_context,x,y+3,
+      (void) XDrawLine(display,window_info->id,window_info->annotate_context,x,y+3,
         x,y-height+3);
       return;
     }
@@ -531,7 +531,7 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
     }
   x+=XTextWidth(font_info,text_info->marker,(int)
     (text_info->cursor-text_info->marker));
-  XDrawLine(display,window_info->id,window_info->annotate_context,x,y+3,
+  (void) XDrawLine(display,window_info->id,window_info->annotate_context,x,y+3,
     x,y-height+3);
 }
 
@@ -940,7 +940,7 @@ static void XDrawWidgetText(Display *display,const XWindowInfo *window_info,
   */
   widget_context=window_info->annotate_context;
   if (text_info->raised)
-    XClearArea(display,window_info->id,text_info->x,text_info->y,
+    (void) XClearArea(display,window_info->id,text_info->x,text_info->y,
       text_info->width,text_info->height,False);
   else
     {
@@ -977,7 +977,7 @@ static void XDrawWidgetText(Display *display,const XWindowInfo *window_info,
     Extent(text_info->text));
   (void) XSetClipMask(display,widget_context,None);
   if (x < text_info->x)
-    XDrawLine(display,window_info->id,window_info->annotate_context,
+    (void) XDrawLine(display,window_info->id,window_info->annotate_context,
       text_info->x,text_info->y,text_info->x,text_info->y+text_info->height-1);
 }
 
@@ -1081,7 +1081,7 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
       if (*text == '\0')
         break;
       if ((Extent(text_info->text)+1) >= MaxTextExtent)
-        XBell(display,0);
+        (void) XBell(display,0);
       else
         {
           if (text_info->highlight)
@@ -1683,9 +1683,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,mask,
+  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,mask,
     &window_changes);
-  XMapRaised(display,windows->widget.id);
+  (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
   /*
     Respond to X events.
@@ -1879,7 +1879,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         if (number_colors == 0)
           {
             (void) strcpy(glob_pattern,reset_pattern);
-            XBell(display,0);
+            (void) XBell(display,0);
           }
         else
           {
@@ -2278,7 +2278,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
                 if (MatteIsActive(action_info,event.xbutton))
                   {
                     if (*reply_info.text == '\0')
-                      XBell(display,0);
+                      (void) XBell(display,0);
                     else
                       state|=ExitState;
                   }
@@ -2595,7 +2595,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             (length == 0))
           break;
         if ((Extent(reply_info.text)+length) >= MaxTextExtent)
-          XBell(display,0);
+          (void) XBell(display,0);
         else
           {
             /*
@@ -2872,7 +2872,7 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
             }
           window_changes.width=windows->command.width;
           window_changes.height=windows->command.height;
-          XReconfigureWMWindow(display,windows->command.id,
+          (void) XReconfigureWMWindow(display,windows->command.id,
             windows->command.screen,CWWidth | CWHeight,&window_changes);
         }
       /*
@@ -3018,7 +3018,7 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
             break;
           while (XCheckMaskEvent(display,ButtonMotionMask,event));
           toggle_info.raised=False;
-          if (windows->command.data > 0)
+          if (windows->command.data != 0)
             XDrawTriangleEast(display,&windows->command,&toggle_info);
         }
         break;
@@ -3062,7 +3062,7 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
       toggle_info.x=selection_info[0].x+selection_info[0].width-
         toggle_info.width-(QuantumMargin >> 1);
       if (windows->command.mapped)
-        XClearWindow(display,windows->command.id);
+        (void) XClearWindow(display,windows->command.id);
     }
   if (state & RedrawWidgetState)
     {
@@ -3220,9 +3220,9 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,
+  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,
     CWWidth | CWHeight | CWX | CWY,&window_changes);
-  XMapRaised(display,windows->widget.id);
+  (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
   /*
     Respond to X events.
@@ -3627,9 +3627,9 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,
+  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,
     CWWidth | CWHeight | CWX | CWY,&window_changes);
-  XMapRaised(display,windows->widget.id);
+  (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
   /*
     Respond to X events.
@@ -4014,7 +4014,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
             (length == 0))
           break;
         if ((Extent(reply_info.text)+length) >= MaxTextExtent)
-          XBell(display,0);
+          (void) XBell(display,0);
         else
           {
             /*
@@ -4317,9 +4317,9 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,mask,
+  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,mask,
     &window_changes);
-  XMapRaised(display,windows->widget.id);
+  (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
   /*
     Respond to X events.
@@ -4909,7 +4909,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 if (MatteIsActive(action_info,event.xbutton))
                   {
                     if (*reply_info.text == '\0')
-                      XBell(display,0);
+                      (void) XBell(display,0);
                     else
                       state|=ExitState;
                   }
@@ -5236,7 +5236,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             (length == 0))
           break;
         if ((Extent(reply_info.text)+length) >= MaxTextExtent)
-          XBell(display,0);
+          (void) XBell(display,0);
         else
           {
             /*
@@ -5518,9 +5518,9 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,mask,
+  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,mask,
     &window_changes);
-  XMapRaised(display,windows->widget.id);
+  (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
   /*
     Respond to X events.
@@ -5712,7 +5712,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
                 break;
               }
             (void) strcpy(glob_pattern,back_pattern);
-            XBell(display,0);
+            (void) XBell(display,0);
           }
         else
           if (number_fonts == 1)
@@ -5858,13 +5858,13 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         if (font_info != (XFontStruct *) NULL)
           {
             windows->widget.font_info=font_info;;
-            XSetFont(display,windows->widget.widget_context,font_info->fid);
+            (void) XSetFont(display,windows->widget.widget_context,font_info->fid);
           }
         XDrawBeveledButton(display,&windows->widget,&mode_info);
         windows->widget.font_info=save_info;
         if (font_info != (XFontStruct *) NULL)
           {
-            XSetFont(display,windows->widget.widget_context,
+            (void) XSetFont(display,windows->widget.widget_context,
               windows->widget.font_info->fid);
             (void) XFreeFont(display,font_info);
           }
@@ -6115,7 +6115,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
                 if (MatteIsActive(action_info,event.xbutton))
                   {
                     if (*reply_info.text == '\0')
-                      XBell(display,0);
+                      (void) XBell(display,0);
                     else
                       state|=ExitState;
                   }
@@ -6427,7 +6427,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
             (length == 0))
           break;
         if ((Extent(reply_info.text)+length) >= MaxTextExtent)
-          XBell(display,0);
+          (void) XBell(display,0);
         else
           {
             /*
@@ -6552,12 +6552,12 @@ MagickExport void XInfoWidget(Display *display,XWindows *windows,
       windows->info.height=height;
       window_changes.width=width;
       window_changes.height=height;
-      XReconfigureWMWindow(display,windows->info.id,windows->info.screen,
+      (void) XReconfigureWMWindow(display,windows->info.id,windows->info.screen,
         CWWidth | CWHeight,&window_changes);
     }
   if (!windows->info.mapped)
     {
-      XMapRaised(display,windows->info.id);
+      (void) XMapRaised(display,windows->info.id);
       windows->info.mapped=True;
     }
   /*
@@ -6736,9 +6736,9 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
   window_changes.height=window_info->height;
   window_changes.x=window_info->x;
   window_changes.y=window_info->y;
-  XReconfigureWMWindow(display,window_info->id,window_info->screen,mask,
+  (void) XReconfigureWMWindow(display,window_info->id,window_info->screen,mask,
     &window_changes);
-  XMapRaised(display,window_info->id);
+  (void) XMapRaised(display,window_info->id);
   window_info->mapped=False;
   /*
     Respond to X events.
@@ -7130,7 +7130,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
                 if (MatteIsActive(action_info,event.xbutton))
                   {
                     if (*reply_info.text == '\0')
-                      XBell(display,0);
+                      (void) XBell(display,0);
                     else
                       state|=ExitState;
                   }
@@ -7425,7 +7425,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
             (length == 0))
           break;
         if ((Extent(reply_info.text)+length) >= MaxTextExtent)
-          XBell(display,0);
+          (void) XBell(display,0);
         else
           {
             /*
@@ -7611,9 +7611,9 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,
+  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,
     CWWidth | CWHeight | CWX | CWY,&window_changes);
-  XMapRaised(display,windows->widget.id);
+  (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
   /*
     Respond to X events.
@@ -7658,10 +7658,10 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
           {
             y=title_height;
             XSetBevelColor(display,&windows->widget,False);
-            XDrawLine(display,windows->widget.id,windows->widget.widget_context,
+            (void) XDrawLine(display,windows->widget.id,windows->widget.widget_context,
               selection_info.x,y-1,(int) selection_info.width,y-1);
             XSetBevelColor(display,&windows->widget,True);
-            XDrawLine(display,windows->widget.id,windows->widget.widget_context,
+            (void) XDrawLine(display,windows->widget.id,windows->widget.widget_context,
               selection_info.x,y,(int) selection_info.width,y);
             (void) XSetFillStyle(display,windows->widget.widget_context,
               FillSolid);
@@ -7695,10 +7695,10 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
         */
         y=top_offset+selection_info.height*(number_selections-1);
         XSetBevelColor(display,&windows->widget,False);
-        XDrawLine(display,windows->widget.id,windows->widget.widget_context,
+        (void) XDrawLine(display,windows->widget.id,windows->widget.widget_context,
           selection_info.x,y-1,(int) selection_info.width,y-1);
         XSetBevelColor(display,&windows->widget,True);
-        XDrawLine(display,windows->widget.id,windows->widget.widget_context,
+        (void) XDrawLine(display,windows->widget.id,windows->widget.widget_context,
           selection_info.x,y,(int) selection_info.width,y);
         (void) XSetFillStyle(display,windows->widget.widget_context,FillSolid);
       }
@@ -7716,7 +7716,7 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
               Exit menu.
             */
             if (event.xbutton.window == windows->command.id)
-              XPutBackEvent(display,&event);
+              (void) XPutBackEvent(display,&event);
             selection_info.id=(~0);
             *item='\0';
             state|=ExitState;
@@ -8105,11 +8105,11 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,
+  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,
     CWWidth | CWHeight | CWX | CWY,&window_changes);
-  XMapRaised(display,windows->widget.id);
+  (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
-  XBell(display,0);
+  (void) XBell(display,0);
   /*
     Respond to X events.
   */
@@ -8442,9 +8442,9 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,
+  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,
     CWWidth | CWHeight | CWX | CWY,&window_changes);
-  XMapRaised(display,windows->widget.id);
+  (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
   /*
     Respond to X events.
@@ -8554,7 +8554,7 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
               (QuantumMargin >> 1);
             y=cache_info.y+((cache_info.height-height) >> 1);
             width=XTextWidth(font_info,cache,Extent(cache));
-            XClearArea(display,windows->widget.id,x,y,width,height,False);
+            (void) XClearArea(display,windows->widget.id,x,y,width,height,False);
             resource_info->undo_cache<<=1;
             if (resource_info->undo_cache > 256)
               resource_info->undo_cache=1;
@@ -8883,9 +8883,9 @@ MagickExport void XTextViewWidget(Display *display,
   window_changes.height=windows->widget.height;
   window_changes.x=windows->widget.x;
   window_changes.y=windows->widget.y;
-  XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,mask,
+  (void) XReconfigureWMWindow(display,windows->widget.id,windows->widget.screen,mask,
     &window_changes);
-  XMapRaised(display,windows->widget.id);
+  (void) XMapRaised(display,windows->widget.id);
   windows->widget.mapped=False;
   /*
     Respond to X events.
@@ -9005,8 +9005,8 @@ MagickExport void XTextViewWidget(Display *display,
               Redraw scroll bar and text.
             */
             windows->widget.font_info=text_info;
-            XSetFont(display,windows->widget.annotate_context,text_info->fid);
-            XSetFont(display,windows->widget.highlight_context,text_info->fid);
+            (void) XSetFont(display,windows->widget.annotate_context,text_info->fid);
+            (void) XSetFont(display,windows->widget.highlight_context,text_info->fid);
             selection_info.id=slider_info.id;
             selection_info.y=list_info.y+(height >> 3)+2;
             for (i=0; i < (int) visible_lines; i++)
@@ -9019,8 +9019,8 @@ MagickExport void XTextViewWidget(Display *display,
               selection_info.y+=(int) selection_info.height;
             }
             windows->widget.font_info=font_info;
-            XSetFont(display,windows->widget.annotate_context,font_info->fid);
-            XSetFont(display,windows->widget.highlight_context,font_info->fid);
+            (void) XSetFont(display,windows->widget.annotate_context,font_info->fid);
+            (void) XSetFont(display,windows->widget.highlight_context,font_info->fid);
             /*
               Update slider.
             */
