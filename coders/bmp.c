@@ -805,7 +805,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->green=UpScale(*p++);
             q->red=UpScale(*p++);
             if (image->matte)
-              q->opacity=MaxRGB-UpScale(*p++);
+              q->opacity=UpScale(*p++);
             q++;
           }
           if (!SyncImagePixels(image))
@@ -1196,7 +1196,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             *q++=DownScale(p->green);
             *q++=DownScale(p->red);
             if (image->matte)
-              *q++=MaxRGB-DownScale(p->opacity);
+              *q++=DownScale(p->opacity);
             p++;
           }
           if (image->previous == (Image *) NULL)

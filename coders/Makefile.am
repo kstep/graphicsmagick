@@ -38,7 +38,7 @@ MAGICK_CODER_SRCS = avs.c 8bim.c bmp.c cache.c cmyk.c dcm.c dps.c ept.c fax.c \
   pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c pnm.c preview.c \
   ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c \
   sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c uyvy.c vicar.c \
-  vid.c viff.c wbmp.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
+  vid.c viff.c wbmp.c wpg.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
 
 MAJOR_VERSION=@MAJOR_VERSION@
 MINOR_VERSION=@MINOR_VERSION@
@@ -104,7 +104,7 @@ pkg_LTLIBRARIES   = 8bim.la avs.la bmp.la cache.la cmyk.la dcm.la \
   pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la rla.la \
   rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la $(TIFF_LA) \
   tile.la tim.la $(TTF_LA) txt.la uil.la uyvy.la vicar.la vid.la viff.la \
-  wbmp.la $(X_LA) xbm.la xc.la xpm.la $(XWD_LA) yuv.la
+  wbmp.la wpg.la $(X_LA) xbm.la xc.la xpm.la $(XWD_LA) yuv.la
 else
 pkg_LTLIBRARIES   =
 endif # WITH_MODULES
@@ -443,6 +443,11 @@ viff_la_LIBADD      = ../magick/libMagick.la
 wbmp_la_SOURCES     = wbmp.c
 wbmp_la_LDFLAGS     = -no-undefined -module -avoid-version
 wbmp_la_LIBADD      = ../magick/libMagick.la
+
+# WPG module
+wpg_la_SOURCES     = wpg.c
+wpg_la_LDFLAGS     = -no-undefined -module -avoid-version
+wpg_la_LIBADD      = ../magick/libMagick.la
 
 # X module
 x_la_SOURCES        = x.c

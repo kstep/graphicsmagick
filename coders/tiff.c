@@ -872,7 +872,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             q->green=UpScale(TIFFGetG(*p));
             q->blue=UpScale(TIFFGetB(*p));
             if (image->matte)
-              q->opacity=UpScale(TIFFGetA(*p));
+              q->opacity=MaxRGB-UpScale(TIFFGetA(*p));
             p--;
             q--;
           }

@@ -460,7 +460,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 q->red=XDownScale((*(p+0) << 8) | (*(p+1)));
                 q->green=XDownScale((*(p+2) << 8) | (*(p+3)));
                 q->blue=XDownScale((*(p+4) << 8) | (*(p+5)));
-                q->opacity=XDownScale((*(p+6) << 8) | (*(p+7)));
+                q->opacity=MaxRGB-XDownScale((*(p+6) << 8) | (*(p+7)));
                 p+=8;
                 q++;
               }
@@ -483,7 +483,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q->red=UpScale(*p);
               q->green=UpScale(*(p+1));
               q->blue=UpScale(*(p+2));
-              q->opacity=UpScale(*(p+3));
+              q->opacity=MaxRGB-UpScale(*(p+3));
               p+=4;
               q++;
             }
@@ -817,7 +817,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         *q++=DownScale(p->red);
         *q++=DownScale(p->green);
         *q++=DownScale(p->blue);
-        *q++=DownScale(p->opacity);
+        *q++=MaxRGB-DownScale(p->opacity);
         p++;
       }
       if (image->previous == (Image *) NULL)

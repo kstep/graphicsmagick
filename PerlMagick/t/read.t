@@ -60,7 +60,7 @@ testRead( 'granite:', 'c80c00aa59794ef7731a9117d9222d80');
 
 print("Microsoft icon ...\n");
 ++$test;
-testRead( 'input.ico', '34bb7fe60a48c49caf559ffe317f52dd',
+testRead( 'input.ico', '9214d6f1fe694fb2642e332830167475',
                        'c28b9e379c673ac3c4959f1dd17d16a2' );
 
 print("Magick image file format ...\n");

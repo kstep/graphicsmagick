@@ -846,7 +846,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                         pixel.blue=UpScale(ReadByte(image));
                         if (image->matte ||
                             (image->colorspace == CMYKColorspace))
-                          pixel.opacity=UpScale(ReadByte(image));
+                          pixel.opacity=MaxRGB-UpScale(ReadByte(image));
                       }
                     else
                       {
@@ -858,7 +858,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                           (image->depth-QuantumDepth);
                         if (image->matte ||
                             (image->colorspace == CMYKColorspace))
-                          pixel.opacity=MSBFirstReadShort(image) >>
+                          pixel.opacity=MaxRGB-MSBFirstReadShort(image) >>
                             (image->depth-QuantumDepth);
                       }
                   }
@@ -1378,7 +1378,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                         *q++=DownScale(pixel.blue);
                         if (image->matte ||
                             (image->colorspace == CMYKColorspace))
-                          *q++=DownScale(pixel.opacity);
+                          *q++=MaxRGB-DownScale(pixel.opacity);
                       }
                     else
                       {
@@ -1400,7 +1400,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                         if (image->matte ||
                             (image->colorspace == CMYKColorspace))
                           {
-                            value=pixel.opacity;
+                            value=MaxRGB-pixel.opacity;
                             if ((QuantumDepth-image->depth) > 0)
                               value*=257;
                             *q++=value >> 8;

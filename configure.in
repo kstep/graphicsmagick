@@ -989,7 +989,6 @@ AC_CHECK_HEADERS(math.h string.h stdarg.h pwd.h malloc.h)
 AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_PROG_CC_STDC
 AC_C_CONST
 AC_C_INLINE
 AC_C_BIGENDIAN
@@ -1054,7 +1053,8 @@ AC_PATH_PROG(HPGLDecodeDelegate, hp2xx, hp2xx)
 AC_PATH_PROG(HTMLDecodeDelegate, html2ps, html2ps)
 AC_PATH_PROG(ILBMDecodeDelegate, ilbmtoppm, ilbmtoppm)
 AC_PATH_PROG(ILBMEncodeDelegate, ppmtoilbm, ppmtoilbm)
-AC_PATH_PROG(LPDelegate, lp, lp)
+AC_PATH_PROG(LPDelegate, lp, no)
+AC_PATH_PROG(LPRDelegate, lpr, no)
 AC_PATH_PROG(LZWDecodeDelegate, uncompress, uncompress)
 AC_PATH_PROG(LZWEncodeDelegate, compress, compress)
 AC_PATH_PROG(LaunchDelegate, gimp, gimp)
@@ -1074,6 +1074,13 @@ AC_PATH_PROG(WMFDecodeDelegate, wmftogif, wmftogif)
 AC_PATH_PROG(WWWDecodeDelegate, wget, wget)
 AC_PATH_PROG(XCFDecodeDelegate, xcftopnm, xcftopnm)
 AC_PATH_PROG(ZipDelegate, gzip, gzip)
+
+# Prefer lpr to lp; lp needs options tacked on.
+if test "$LPRDelegate" != no
+then	PrintDelegate="$LPRDelegate"
+else	PrintDelegate="$LPDelegate -c -s"
+fi
+AC_SUBST(PrintDelegate)
 
 # Installed ImageMagick utiltity paths
 ConvertDelegate=$BIN_DIR/convert

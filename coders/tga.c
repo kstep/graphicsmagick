@@ -367,7 +367,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               pixel.green=UpScale(ReadByte(image));
               pixel.red=UpScale(ReadByte(image));
               if (tga_header.bits_per_pixel == 32)
-                pixel.opacity=UpScale(ReadByte(image));
+                pixel.opacity=MaxRGB-UpScale(ReadByte(image));
               break;
             }
           }
@@ -716,8 +716,11 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
             *q++=DownScale(p->blue);
             *q++=DownScale(p->green);
             *q++=DownScale(p->red);
-            if (image->matte || (image->colorspace == CMYKColorspace))
-              *q++=p->opacity;
+            if (image->matte)
+              *q++=MaxRGB-p->opacity;
+            else
+	     if (image->colorspace == CMYKColorspace)
+                *q++=p->opacity;
           }
         p++;
       }

@@ -263,7 +263,7 @@ MagickExport unsigned int XAnnotateImage(Display *display,
       break;
     for (x=0; x < (int) annotate_image->columns; x++)
     {
-      q->opacity=(Quantum) XGetPixel(annotate_ximage,x,y);
+      q->opacity=XGetPixel(annotate_ximage,x,y);
       if (q->opacity == TransparentOpacity)
         {
           /*

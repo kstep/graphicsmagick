@@ -35,8 +35,8 @@ typedef unsigned short Quantum;
 
 typedef unsigned char Quantum;
 #endif
-#define OpaqueOpacity  MaxRGB
-#define TransparentOpacity  0
+#define OpaqueOpacity  0
+#define TransparentOpacity  MaxRGB
 
 /*
   3D effects.

@@ -681,7 +681,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                   q->green=image->colormap[q->green].green;
                   q->blue=image->colormap[q->blue].blue;
                 }
-              q->opacity=(Quantum) (image->matte ? (*(p+offset*3)) : 0);
+              q->opacity=image->matte ? MaxRGB-(*(p+offset*3)) : 0;
               p++;
               q++;
             }
@@ -1053,7 +1053,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             *(q+offset)=DownScale(p->green);
             *(q+offset*2)=DownScale(p->blue);
             if (image->matte)
-              *(q+offset*3)=DownScale(p->opacity);
+              *(q+offset*3)=MaxRGB-DownScale(p->opacity);
             p++;
             q++;
           }

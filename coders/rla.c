@@ -308,7 +308,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case 3:
                 default:
                 {
-                  q->opacity=UpScale(byte);
+                  q->opacity=MaxRGB-UpScale(byte);
                   break;
                 }
               }
@@ -348,7 +348,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 3:
             default:
             {
-              q->opacity=UpScale(byte);
+              q->opacity=MaxRGB-UpScale(byte);
               break;
             }
           }

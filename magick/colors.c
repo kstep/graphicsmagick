@@ -2002,7 +2002,7 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
       color->blue=((unsigned long) (MaxRGB*blue)/((1 << n)-1));
       color->opacity=OpaqueOpacity;
       if (opacity >= 0)
-        color->opacity=((unsigned long) (MaxRGB*opacity)/((1 << n)-1));
+        color->opacity=MaxRGB-((unsigned long) (MaxRGB*opacity)/((1 << n)-1));
       return(True);
     }
   if (LocaleCompare(target,"none") == 0)

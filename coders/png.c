@@ -168,7 +168,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     if (marker[i])
       {
         for (j=i+1; j<number_colors; j++)
-          if (marker[j] && (opacity[i]==opacity[j]) &&
+          if (marker[j] && (opacity[i] == opacity[j]) &&
               (ColorMatch(image->colormap[i],image->colormap[j],0)))
             marker[j]=False;
        }
@@ -232,9 +232,9 @@ static unsigned int CompressColormapTransFirst(Image *image)
   {
     if (marker[i])
       {
-        for (j=i+1; j<image->colors; j++)
+        for (j=i+1; j < image->colors; j++)
         {
-          if ((opacity[i]==opacity[j]) &&
+          if ((opacity[i] == opacity[j]) &&
               (ColorMatch(image->colormap[i],image->colormap[j],0)))
             map[j]=map[i];
         }
@@ -251,7 +251,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
       }
   }
   FreeMemory((void **) &marker);
-  if (have_transparency && opacity[0] != TransparentOpacity)
+  if (have_transparency && (opacity[0] != TransparentOpacity))
     {
       /*
         Move the first transparent color to palette entry 0.
@@ -2142,7 +2142,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         transparent_color.red=ping_info->trans_values.red;
         transparent_color.green=ping_info->trans_values.green;
         transparent_color.blue=ping_info->trans_values.blue;
-        transparent_color.opacity=ping_info->trans_values.gray;
+        transparent_color.opacity=MaxRGB-ping_info->trans_values.gray;
         if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
           {
             transparent_color.red=transparent_color.opacity;
@@ -2353,7 +2353,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 *r++=(*p++);
                 if (ping_info->color_type == 4)
                   {
-                    q->opacity=(*p++);
+                    q->opacity=MaxRGB-(*p++);
                     q++;
                   }
               }
@@ -2375,6 +2375,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     q->opacity=((*p++) << 8);
                     q->opacity|=(*p++);
+                    q->opacity=MaxRGB-q->opacity;
                     q++;
                   }
 #else
@@ -2449,7 +2450,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
                     {
                       if (index < ping_info->num_trans)
-                        q->opacity=(Quantum) UpScale(ping_info->trans[index]);
+                        q->opacity=MaxRGB-UpScale(ping_info->trans[index]);
                     }
                 if (ping_info->color_type != PNG_COLOR_TYPE_PALETTE)
                   {
@@ -3639,7 +3640,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.green=p->green;
             ping_info->trans_values.blue=p->blue;
             ping_info->trans_values.gray=Intensity(*p);
-            ping_info->trans_values.index=DownScale(p->opacity);
+            ping_info->trans_values.index=MaxRGB-DownScale(p->opacity);
           }
         if (ping_info->valid & PNG_INFO_tRNS)
           {
@@ -3766,7 +3767,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                       index;
 
                    index=indexes[x];
-                   ping_info->trans[index]=(png_byte) DownScale(p->opacity);
+                   ping_info->trans[index]=MaxRGB-DownScale(p->opacity);
                   }
                 p++;
               }

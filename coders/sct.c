@@ -228,7 +228,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->opacity=MaxRGB-UpScale(ReadByte(image));
+      q->opacity=UpScale(ReadByte(image));
       q++;
     }
     if (!SyncImagePixels(image))

@@ -155,7 +155,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
             case 3:
             default:
             {
-              q->opacity=pixel;
+              q->opacity=MaxRGB-pixel;
               break;
             }
           }
@@ -199,7 +199,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
         case 3:
         default:
         {
-          q->opacity=pixel;
+          q->opacity=MaxRGB-pixel;
           break;
         }
       }
@@ -508,7 +508,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageWarning,"Not a PSD image file",
             image);
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
-        layer_info[i].opacity=ReadByte(image);
+        layer_info[i].opacity=MaxRGB-ReadByte(image);
         layer_info[i].clipping=ReadByte(image);
         layer_info[i].flags=ReadByte(image);
         (void) ReadByte(image);  /* filler */
@@ -653,7 +653,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 for (x=0; x < (int) layer_info[i].image->columns; x++)
                 {
-                  q->opacity=(unsigned long)
+                  q->opacity=MaxRGB-(unsigned long)
                     (q->opacity*layer_info[i].opacity)/MaxRGB;
                   q++;
                 }

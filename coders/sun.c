@@ -463,7 +463,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (int) image->columns; x++)
           {
             if (image->matte)
-              q->opacity=UpScale(*p++);
+              q->opacity=MaxRGB-UpScale(*p++);
             if (sun_header.type == RT_STANDARD)
               {
                 q->blue=UpScale(*p++);
@@ -755,7 +755,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (int) image->columns; x++)
           {
             if (image->matte)
-              *q++=DownScale(p->opacity);
+              *q++=MaxRGB-DownScale(p->opacity);
             *q++=DownScale(p->red);
             *q++=DownScale(p->green);
             *q++=DownScale(p->blue);

@@ -121,6 +121,7 @@ LIB_XT = @LIB_XT@
 LIB_ZLIB = @LIB_ZLIB@
 LN_S = @LN_S@
 LPDelegate = @LPDelegate@
+LPRDelegate = @LPRDelegate@
 LZWDecodeDelegate = @LZWDecodeDelegate@
 LZWEncodeDelegate = @LZWEncodeDelegate@
 LaunchDelegate = @LaunchDelegate@
@@ -143,6 +144,7 @@ PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
 PGPDecodeDelegate = @PGPDecodeDelegate@
 POVDelegate = @POVDelegate@
 PSDelegate = @PSDelegate@
+PrintDelegate = @PrintDelegate@
 RADDecodeDelegate = @RADDecodeDelegate@
 RANLIB = @RANLIB@
 RLEEncodeDelegate = @RLEEncodeDelegate@
@@ -209,8 +211,8 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 # Library base sources
 MAGICK_BASE_SRCS = PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
   cache.c cache_view.c colors.c compress.c constitute.c decorate.c delegates.c \
-  display.c draw.c effects.c enhance.c error.c gems.c image.c lock.c magic.c \
-  magick.c memory.c modules.c monitor.c montage.c quantize.c segment.c \
+  display.c draw.c effects.c enhance.c error.c gems.c image.c semaphore.c \
+  magic.c magick.c memory.c modules.c monitor.c montage.c quantize.c segment.c \
   shear.c signature.c stream.c timer.c transform.c utility.c \
   widget.c xwindows.c zoom.c
 
@@ -230,13 +232,13 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache.h cache_view.h \
   classify.h compress.h config.h delegates.h error.h gems.h image.h magick.h \
-  monitor.h quantize.h timer.h utility.h version.h widget.h \
+  monitor.h quantize.h semaphore.h timer.h utility.h version.h widget.h \
   xwindows.h
 
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h defines.h display.h lock.h mac.h magic.h \
-  modules.h nt.h vms.h
+noinst_HEADERS = animate.h defines.h display.h mac.h magic.h modules.h nt.h \
+  vms.h
 
 
 # Additional files to distribute
@@ -274,9 +276,9 @@ X_PRE_LIBS = @X_PRE_LIBS@
 @WITH_MODULES_FALSE@cache_view.lo colors.lo compress.lo constitute.lo \
 @WITH_MODULES_FALSE@decorate.lo delegates.lo display.lo draw.lo \
 @WITH_MODULES_FALSE@effects.lo enhance.lo error.lo gems.lo image.lo \
-@WITH_MODULES_FALSE@lock.lo magic.lo magick.lo memory.lo modules.lo \
-@WITH_MODULES_FALSE@monitor.lo montage.lo quantize.lo segment.lo \
-@WITH_MODULES_FALSE@shear.lo signature.lo stream.lo timer.lo \
+@WITH_MODULES_FALSE@semaphore.lo magic.lo magick.lo memory.lo \
+@WITH_MODULES_FALSE@modules.lo monitor.lo montage.lo quantize.lo \
+@WITH_MODULES_FALSE@segment.lo shear.lo signature.lo stream.lo timer.lo \
 @WITH_MODULES_FALSE@transform.lo utility.lo widget.lo xwindows.lo \
 @WITH_MODULES_FALSE@zoom.lo
 @WITH_MODULES_TRUE@am_libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo \
@@ -284,7 +286,7 @@ X_PRE_LIBS = @X_PRE_LIBS@
 @WITH_MODULES_TRUE@cache_view.lo colors.lo compress.lo constitute.lo \
 @WITH_MODULES_TRUE@decorate.lo delegates.lo display.lo draw.lo \
 @WITH_MODULES_TRUE@effects.lo enhance.lo error.lo gems.lo image.lo \
-@WITH_MODULES_TRUE@lock.lo magic.lo magick.lo memory.lo modules.lo \
+@WITH_MODULES_TRUE@semaphore.lo magic.lo magick.lo memory.lo modules.lo \
 @WITH_MODULES_TRUE@monitor.lo montage.lo quantize.lo segment.lo \
 @WITH_MODULES_TRUE@shear.lo signature.lo stream.lo timer.lo \
 @WITH_MODULES_TRUE@transform.lo utility.lo widget.lo xwindows.lo \
@@ -309,10 +311,10 @@ $(DEPDIR)/cache.Plo $(DEPDIR)/cache_view.Plo $(DEPDIR)/colors.Plo \
 $(DEPDIR)/compress.Plo $(DEPDIR)/constitute.Plo $(DEPDIR)/decorate.Plo \
 $(DEPDIR)/delegates.Plo $(DEPDIR)/display.Plo $(DEPDIR)/draw.Plo \
 $(DEPDIR)/effects.Plo $(DEPDIR)/enhance.Plo $(DEPDIR)/error.Plo \
-$(DEPDIR)/gems.Plo $(DEPDIR)/image.Plo $(DEPDIR)/lock.Plo \
-$(DEPDIR)/magic.Plo $(DEPDIR)/magick.Plo $(DEPDIR)/memory.Plo \
-$(DEPDIR)/modules.Plo $(DEPDIR)/monitor.Plo $(DEPDIR)/montage.Plo \
-$(DEPDIR)/quantize.Plo $(DEPDIR)/segment.Plo $(DEPDIR)/shear.Plo \
+$(DEPDIR)/gems.Plo $(DEPDIR)/image.Plo $(DEPDIR)/magic.Plo \
+$(DEPDIR)/magick.Plo $(DEPDIR)/memory.Plo $(DEPDIR)/modules.Plo \
+$(DEPDIR)/monitor.Plo $(DEPDIR)/montage.Plo $(DEPDIR)/quantize.Plo \
+$(DEPDIR)/segment.Plo $(DEPDIR)/semaphore.Plo $(DEPDIR)/shear.Plo \
 $(DEPDIR)/signature.Plo $(DEPDIR)/stream.Plo $(DEPDIR)/timer.Plo \
 $(DEPDIR)/transform.Plo $(DEPDIR)/utility.Plo $(DEPDIR)/widget.Plo \
 $(DEPDIR)/xwindows.Plo $(DEPDIR)/zoom.Plo
@@ -549,7 +551,6 @@ maintainer-clean-tags:
 @AMDEP@include $(DEPDIR)/error.Plo
 @AMDEP@include $(DEPDIR)/gems.Plo
 @AMDEP@include $(DEPDIR)/image.Plo
-@AMDEP@include $(DEPDIR)/lock.Plo
 @AMDEP@include $(DEPDIR)/magic.Plo
 @AMDEP@include $(DEPDIR)/magick.Plo
 @AMDEP@include $(DEPDIR)/memory.Plo
@@ -558,6 +559,7 @@ maintainer-clean-tags:
 @AMDEP@include $(DEPDIR)/montage.Plo
 @AMDEP@include $(DEPDIR)/quantize.Plo
 @AMDEP@include $(DEPDIR)/segment.Plo
+@AMDEP@include $(DEPDIR)/semaphore.Plo
 @AMDEP@include $(DEPDIR)/shear.Plo
 @AMDEP@include $(DEPDIR)/signature.Plo
 @AMDEP@include $(DEPDIR)/stream.Plo

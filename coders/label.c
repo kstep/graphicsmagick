@@ -511,7 +511,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
             if (image_info->stroke.opacity != TransparentOpacity)
               if (*p < (NumberGrays-1))
                 *q=image_info->stroke;
-            q->opacity=(MaxRGB*(*p+1))/NumberGrays;
+            q->opacity=MaxRGB-(MaxRGB*(*p+1))/NumberGrays;
           }
         p++;
         q++;
@@ -794,7 +794,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
       if ((image_info->stroke.opacity != TransparentOpacity) && (*p < 4))
         *q=image_info->stroke;
       if (image_info->antialias)
-        q->opacity=(int) (MaxRGB*Min(*p,4))/4;
+        q->opacity=MaxRGB-(MaxRGB*Min(*p,4))/4;
       else
         q->opacity=(*p) > 0 ? OpaqueOpacity : TransparentOpacity;
       if (q->opacity == TransparentOpacity)
@@ -1025,7 +1025,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->opacity=MaxRGB-Intensity(*q);
+      q->opacity=Intensity(*q);
       q->red=image_info->fill.red;
       q->green=image_info->fill.green;
       q->blue=image_info->fill.blue;
@@ -1200,7 +1200,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->opacity=Intensity(*q);
+      q->opacity=MaxRGB-Intensity(*q);
       q->red=image_info->fill.red;
       q->green=image_info->fill.green;
       q->blue=image_info->fill.blue;

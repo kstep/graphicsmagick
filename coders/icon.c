@@ -375,13 +375,15 @@ static Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception
       {
         byte=ReadByte(image);
         for (bit=0; bit < 8; bit++)
-          q[x+bit].opacity=(byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
+          q[x+bit].opacity=
+            (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
       }
       if ((image->columns % 8) != 0)
         {
           byte=ReadByte(image);
           for (bit=0; bit < (int) (image->columns % 8); bit++)
-            q[x+bit].opacity=(byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
+            q[x+bit].opacity=
+              (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
         }
       if (!SyncImagePixels(image))
         break;

@@ -198,7 +198,7 @@ ps<=>pdf
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=print
-	@LPDelegate@ -c -s %i
+	@PrintDelegate@ %i
 
 rad=>
 	@RADDecodeDelegate@ -g 1.0 %i %o

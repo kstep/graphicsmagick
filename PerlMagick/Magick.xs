@@ -4187,8 +4187,8 @@ Mogrify(ref,...)
           if (attribute_flag[8])
             (void) CloneString(&info->image_info->server_name,
               argument_list[8].string_reference);
-          annotate_info=CloneAnnotateInfo(info->image_info,
-            (AnnotateInfo *) NULL);
+          annotate_info=
+            CloneAnnotateInfo(info->image_info,(AnnotateInfo *) NULL);
           if (attribute_flag[0])
             (void) CloneString(&annotate_info->text,
               argument_list[0].string_reference);

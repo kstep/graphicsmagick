@@ -3188,10 +3188,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               switch (i)
               {
-                case 0: q->red=(Quantum) ReadByte(image); break;
-                case 1: q->green=(Quantum) ReadByte(image); break;
-                case 2: q->blue=(Quantum) ReadByte(image); break;
-                case 3: q->opacity=(unsigned int) ReadByte(image); break;
+                case 0: q->red=ReadByte(image); break;
+                case 1: q->green=ReadByte(image); break;
+                case 2: q->blue=ReadByte(image); break;
+                case 3: q->opacity=MaxRGB-ReadByte(image); break;
                 default: break;
               }
               q++;

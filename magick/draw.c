@@ -100,8 +100,8 @@ typedef struct _PrimitiveInfo
 */
 static double
   GenerateCircle(PrimitiveInfo *,PointInfo,PointInfo),
-  InsidePrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,const int,
-    Image *);
+  IntersectPrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,
+    const int,Image *);
 
 static void
   GenerateArc(PrimitiveInfo *,PointInfo,PointInfo,PointInfo),
@@ -424,14 +424,14 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
               *q=color;
             else
               {
-                q->red=alpha*(color.red*color.opacity+
-                  q->red*(MaxRGB-color.opacity));
-                q->green=alpha*(color.green*color.opacity+
-                  q->green*(MaxRGB-color.opacity));
-                q->blue=alpha*(color.blue*color.opacity+
-                  q->blue*(MaxRGB-color.opacity));
-                q->opacity=alpha*(color.opacity*
-                  color.opacity+q->opacity*(MaxRGB-color.opacity));
+                q->red=alpha*(color.red*(MaxRGB-color.opacity)+
+                  q->red*color.opacity);
+                q->green=alpha*(color.green*(MaxRGB-color.opacity)+
+                  q->green*color.opacity);
+                q->blue=alpha*(color.blue*(MaxRGB-color.opacity)+
+                  q->blue*color.opacity);
+                q->opacity=alpha*(color.opacity*(MaxRGB-color.opacity)+
+                  q->opacity*color.opacity);
               }
           }
         q++;
@@ -1242,8 +1242,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           case RectanglePrimitive:
           case RoundRectanglePrimitive:
           {
-            opacity=
-              InsidePrimitive(primitive_info,clone_info,&target,True,image);
+            opacity=MaxRGB-MaxRGB*
+              IntersectPrimitive(primitive_info,clone_info,&target,True,image);
             color=clone_info->fill;
             if (clone_info->tile != (Image *) NULL)
               color=GetOnePixel(clone_info->tile,x % clone_info->tile->columns,
@@ -1256,25 +1256,26 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               opacity=OpaqueOpacity;
             if (clone_info->opacity == 100.0)
               {
-                q->red=alpha*(color.red*opacity+q->red*(MaxRGB-opacity));
-                q->green=alpha*(color.green*opacity+q->green*(MaxRGB-opacity));
-                q->blue=alpha*(color.blue*opacity+q->blue*(MaxRGB-opacity));
+                q->red=alpha*(color.red*(MaxRGB-opacity)+q->red*opacity);
+                q->green=alpha*(color.green*(MaxRGB-opacity)+q->green*opacity);
+                q->blue=alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity);
                 break;
               }
-            q->red=alpha*(color.red*color.opacity+
-              q->red*(MaxRGB-color.opacity));
-            q->green=alpha*(color.green*color.opacity+
-              q->green*(MaxRGB-color.opacity));
-            q->blue=alpha*(color.blue*color.opacity+
-              q->blue*(MaxRGB-color.opacity));
-            q->opacity=alpha*(color.opacity*color.opacity+
-              q->opacity*(MaxRGB-color.opacity));
+            q->red=alpha*(color.red*(MaxRGB-color.opacity)+
+              q->red*color.opacity);
+            q->green=alpha*(color.green*(MaxRGB-color.opacity)+
+              q->green*color.opacity);
+            q->blue=alpha*(color.blue*(MaxRGB-color.opacity)+
+              q->blue*color.opacity);
+            q->opacity=alpha*(color.opacity*(MaxRGB-color.opacity)+
+              q->opacity*color.opacity);
             break;
           }
           default:
             break;
         }
-        opacity=InsidePrimitive(primitive_info,clone_info,&target,False,image);
+        opacity=MaxRGB-MaxRGB*
+          IntersectPrimitive(primitive_info,clone_info,&target,False,image);
         color=clone_info->stroke;
         color.opacity*=clone_info->opacity/100.0;
         if ((opacity == TransparentOpacity) ||
@@ -1287,18 +1288,20 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           opacity=OpaqueOpacity;
         if (clone_info->opacity == 100.0)
           {
-            q->red=alpha*(color.red*opacity+q->red*(MaxRGB-opacity));
-            q->green=alpha*(color.green*opacity+q->green*(MaxRGB-opacity));
-            q->blue=alpha*(color.blue*opacity+q->blue*(MaxRGB-opacity));
+            q->red=alpha*(color.red*(MaxRGB-opacity)+q->red*opacity);
+            q->green=alpha*(color.green*(MaxRGB-opacity)+q->green*opacity);
+            q->blue=alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity);
             q++;
             continue;
           }
-        q->red=alpha*(color.red*color.opacity+q->red*(MaxRGB-color.opacity));
-        q->green=alpha*(color.green*color.opacity+
-          q->green*(MaxRGB-color.opacity));
-        q->blue=alpha*(color.blue*color.opacity+q->blue*(MaxRGB-color.opacity));
-        q->opacity=alpha*(color.opacity*color.opacity+
-          q->opacity*(MaxRGB-color.opacity));
+        q->red=alpha*(color.red*(MaxRGB-color.opacity)+
+          q->red*color.opacity);
+        q->green=alpha*(color.green*(MaxRGB-color.opacity)+
+          q->green*color.opacity);
+        q->blue=alpha*(color.blue*(MaxRGB-color.opacity)+
+          q->blue*color.opacity);
+        q->opacity=alpha*(color.opacity*(MaxRGB-color.opacity)+
+          q->opacity*color.opacity);
         q++;
       }
       if (!SyncImagePixels(image))
@@ -2013,30 +2016,31 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n s i d e P r i m i t i v e                                             %
++   I n t e r s e c t P r i m i t i v e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method InsidePrimitive returns the opacity of the pen at the (x,y) position
-%  of the image.  The opacity is OpaqueOpacity if the (x,y) position is within
-%  the primitive as defined in primitive_info.  A value less than fully opaque
-%  and greater than fully transparent is returned for a primitive edge pixel
-%  to allow for anti-aliasing.  Otherwise fully transparent is returned.
+%  Method IntersectPrimitive returns the value from [0..1] for the (x,y)
+%  position of the image.  The opacity is 1.0 if the (x,y) position intersects
+%  within the bounds of the primitive as defined in primitive_info.  A value
+%  less than 1.0 and greater than 0.0 is returned for a primitive edge pixel
+%  to allow for anti-aliasing.  Otherwise 0.0 is returned.
 %
 %  Rick Mabry provided the algorithms for anti-aliased primitives.
 %
-%  The format of the InsidePrimitive method is:
+%  The format of the IntersectPrimitive method is:
 %
-%      double InsidePrimitive(PrimitiveInfo *primitive_info,
+%      double IntersectPrimitive(PrimitiveInfo *primitive_info,
 %        const DrawInfo *draw_info,const PointInfo *pixel,const int fill,
 %        Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o opacity:  Method InsidePrimitive returns a pen opacity associated with
-%      the (x,y) position of the image.
+%    o opacity:  Method IntersectPrimitive returns a opacity from [0..1] as
+%      determined by intesecting the (x,y) position of the image with the
+%      specified primitive list.
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
@@ -2048,7 +2052,6 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %      specified graphics primitive.
 %
 %    o image: The address of a structure of type Image.
-%
 %
 %
 */
@@ -2086,24 +2089,24 @@ static double PixelOnLine(const PointInfo *pixel,const PointInfo *p,
     alpha,
     distance;
 
-  if ((mid == 0) || (opacity == OpaqueOpacity))
+  if ((mid == 0) || (opacity == 1.0))
     return(opacity);
   if ((p->x == q->x) && (p->y == q->y))
-    return((pixel->x == p->x) && (pixel->y == p->y) ? MaxRGB : opacity);
+    return((pixel->x == p->x) && (pixel->y == p->y) ? 1.0 : opacity);
   distance=DistanceToLine(pixel,p,q);
   alpha=mid-0.5;
   if (distance <= (alpha*alpha))
-    return((double) MaxRGB);
+    return(1.0);
   alpha=mid+0.5;
   if (distance <= (alpha*alpha))
     {
       alpha=sqrt(distance)-mid-0.5;
-      return(Max(opacity,MaxRGB*alpha*alpha));
+      return(Max(opacity,alpha*alpha));
     }
   return(opacity);
 }
 
-static double InsidePrimitive(PrimitiveInfo *primitive_info,
+static double IntersectPrimitive(PrimitiveInfo *primitive_info,
   const DrawInfo *draw_info,const PointInfo *pixel,const int fill,Image *image)
 {
   PixelPacket
@@ -2130,7 +2133,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
   assert(primitive_info != (PrimitiveInfo *) NULL);
   assert(draw_info != (DrawInfo *) NULL);
   assert(image != (Image *) NULL);
-  opacity=TransparentOpacity;
+  opacity=0.0;
   mid=draw_info->linewidth/2.0;
   p=primitive_info;
   while (p->primitive != UndefinedPrimitive)
@@ -2143,7 +2146,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
       {
         if ((pixel->x == (int) (p->pixel.x+0.5)) &&
             (pixel->y == (int) (p->pixel.y+0.5)))
-          opacity=OpaqueOpacity;
+          opacity=1.0;
         break;
       }
       case LinePrimitive:
@@ -2162,23 +2165,23 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
         if (fill)
           {
             if (distance <= (radius-1.0))
-              opacity=OpaqueOpacity;
+              opacity=1.0;
             else
               if (distance < (radius+1.0))
                 {
                   alpha=(radius-distance+1.0)/2.0;
-                  opacity=Max(opacity,MaxRGB*alpha*alpha);
+                  opacity=Max(opacity,alpha*alpha);
                 }
             break;
           }
         if (fabs(distance-radius) < (mid+0.5))
           {
             if (fabs(distance-radius) <= (mid-0.5))
-              opacity=OpaqueOpacity;
+              opacity=1.0;
             else
               {
                 alpha=mid-fabs(distance-radius)+0.5;
-                opacity=Max(opacity,MaxRGB*alpha*alpha);
+                opacity=Max(opacity,alpha*alpha);
               }
           }
         break;
@@ -2207,8 +2210,8 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
 
         if (!fill)
           {
-            poly_opacity=TransparentOpacity;
-            for ( ; (p < q) && (poly_opacity != OpaqueOpacity); p++)
+            poly_opacity=0.0;
+            for ( ; (p < q) && (poly_opacity != 1.0); p++)
               poly_opacity=PixelOnLine(pixel,&p->pixel,&(p+1)->pixel,mid,
                 Max(opacity,poly_opacity));
             opacity=Max(opacity,poly_opacity);
@@ -2255,9 +2258,9 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
             if (crossing)
               crossings++;
         }
-        poly_opacity=TransparentOpacity;
+        poly_opacity=0.0;
         if (crossings & 0x01)
-          poly_opacity=OpaqueOpacity;
+          poly_opacity=1.0;
         p=primitive_info;
         minimum_distance=DistanceToLine(pixel,&q->pixel,&p->pixel);
         for (p++ ; p <= q; p++)
@@ -2272,7 +2275,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
               alpha=0.5+sqrt(minimum_distance);
             else
               alpha=0.5-sqrt(minimum_distance);
-            poly_opacity=MaxRGB*alpha*alpha;
+            poly_opacity=alpha*alpha;
           }
         opacity=Max(opacity,poly_opacity);
         break;
@@ -2287,7 +2290,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->pixel.x+0.5)) ||
                 (pixel->y != (int) (p->pixel.y+0.5)))
               break;
-            opacity=OpaqueOpacity;
+            opacity=1.0;
             break;
           }
           case ReplaceMethod:
@@ -2301,7 +2304,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
             target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
             color=GetOnePixel(image,(int) pixel->x,(int) pixel->y);
             if (ColorMatch(color,target,(int) image->fuzz))
-              opacity=OpaqueOpacity;
+              opacity=1.0;
             break;
           }
           case FloodfillMethod:
@@ -2322,7 +2325,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
           }
           case ResetMethod:
           {
-            opacity=OpaqueOpacity;
+            opacity=1.0;
             break;
           }
         }
@@ -2463,7 +2466,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
       case ImagePrimitive:
         break;
     }
-    if (opacity == OpaqueOpacity)
+    if (opacity == 1.0)
       return(opacity);
     p=q+1;
   }

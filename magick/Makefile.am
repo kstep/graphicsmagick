@@ -71,12 +71,12 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache.h cache_view.h \
   classify.h compress.h config.h delegates.h error.h gems.h image.h magick.h \
-  monitor.h quantize.h timer.h utility.h version.h widget.h \
+  monitor.h quantize.h semaphore.h timer.h utility.h version.h widget.h \
   xwindows.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h defines.h display.h semaphore.h mac.h magic.h \
-  modules.h nt.h vms.h
+noinst_HEADERS = animate.h defines.h display.h mac.h magic.h modules.h nt.h \
+  vms.h
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) Magick-config.in Make.com mac.c nt.c \
