@@ -1,14 +1,13 @@
 2002-01-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
 	* coders/wmf.c (wmf_magick_device_begin): Fix non-opaque fills.
-  	Now properly fills with texture image.
+	  Now properly fills with texture image.
 
 2002-01-05  Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
-        * Fixed an out-of-bounds memset() and two other memory overruns
-          when decoding 1-bit AVI, BMP, and DIB images.
+  * Fixed an out-of-bounds memset() and two other memory overruns
+    when decoding 1-bit AVI, BMP, and DIB images.
 
 2002-01-04 Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-        * Fix lcms header inclusion in transform.c.
+  * Fix lcms header inclusion in transform.c.
 
 2002-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* coders/wmf.c (magick_brush): Fixed bug with setting fill color.
