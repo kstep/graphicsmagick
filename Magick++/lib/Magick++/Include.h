@@ -462,6 +462,7 @@ namespace Magick
   using MagickLib::SetMagickInfo;
   using MagickLib::ShadeImage;
   using MagickLib::SharpenImage;
+  using MagickLib::ShaveImage;
   using MagickLib::ShearImage;
   using MagickLib::SolarizeImage;
   using MagickLib::SpreadImage;
