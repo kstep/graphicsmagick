@@ -659,7 +659,7 @@ static void SVGStartDocument(void *context)
   if (svg_info->document == (xmlDocPtr) NULL)
     return;
   if (parser->encoding == NULL)
-    svg_info->document->encoding=(char *) NULL;
+    svg_info->document->encoding=(const xmlChar *) NULL;
   else
     svg_info->document->encoding=xmlStrdup(parser->encoding);
   svg_info->document->standalone=parser->standalone;
@@ -1974,9 +1974,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
     }
   if (LocaleCompare((char *) name,"svg") == 0)
     {
-      if (svg_info->document->encoding != (char *) NULL)
+      if (svg_info->document->encoding != (const xmlChar *) NULL)
         (void) fprintf(svg_info->file,"encoding %.1024s\n",
-          svg_info->document->encoding);
+          (char *) svg_info->document->encoding);
       if (attributes != (const xmlChar **) NULL)
         {
           char

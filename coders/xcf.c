@@ -328,7 +328,7 @@ static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo,
       q->red    = ScaleCharToQuantum(xcfdata->red);
       q->green  = ScaleCharToQuantum(xcfdata->green);
       q->blue    = ScaleCharToQuantum(xcfdata->blue);
-      q->opacity  = xcfdata->opacity==0 ? TransparentOpacity : ScaleCharToQuantum(255-inLayerInfo->opacity);  
+      q->opacity  = (Quantum) (xcfdata->opacity==0 ? TransparentOpacity : ScaleCharToQuantum(255-inLayerInfo->opacity)); 
 
       xcfdata++;
     };
@@ -419,7 +419,7 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
         case 1:  q->green  = ScaleCharToQuantum(data);  break;
         case 2:  q->blue    = ScaleCharToQuantum(data);  break;
         case 3:  
-          q->opacity = data==0 ? TransparentOpacity : ScaleCharToQuantum(255-inLayerInfo->opacity);  
+          q->opacity = (Quantum) (data==0 ? TransparentOpacity : ScaleCharToQuantum(255-inLayerInfo->opacity));  
         break;
       }
       q++;
@@ -469,7 +469,7 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
         case 1:  q->green  = ScaleCharToQuantum(data);  break;
         case 2:  q->blue    = ScaleCharToQuantum(data);  break;
         case 3:  
-          q->opacity = data==0 ? TransparentOpacity : ScaleCharToQuantum(255-inLayerInfo->opacity);  
+          q->opacity = (Quantum) (data==0 ? TransparentOpacity : ScaleCharToQuantum(255-inLayerInfo->opacity));  
         break;
       }
       q++;
@@ -1129,7 +1129,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(ResourceLimitError,"Memory allocation failed", image);
     (void) memset(layer_info,0,number_layers*sizeof(XCFLayerInfo));
 
-    while (True)
+    for ( ; ; )
     {
       off_t
         offset,
