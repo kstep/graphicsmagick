@@ -1766,7 +1766,6 @@ MagickExport unsigned int CompositeImage(Image *image,
           q->opacity=p->opacity;
           indexes[x]=destination.opacity;
         }
-      else
       p++;
       if (p >= (pixels+composite_image->columns))
         p=pixels;
