@@ -501,6 +501,20 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->colors == 0)
         image->colors=1L << dib_info.bits_per_pixel;
     }
+  /* Allow non-zero width or height from size to override DIB header */
+  if(image_info->size)
+    {
+      long
+        size_x = 0,
+        size_y = 0,
+        size_width = 0,
+        size_height = 0;
+      ParseGeometry(image_info->size,&size_x,&size_y,&size_width,&size_height);
+      if(size_width && size_width < image->columns)
+        image->columns = size_width;
+      if(size_height && size_height < image->rows)
+        image->rows = size_height;
+    }
   if (image->storage_class == PseudoClass)
     {
       unsigned char
