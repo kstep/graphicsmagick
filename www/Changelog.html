@@ -13,6 +13,30 @@
 </tr>
 </table>
 <p>
+2003-03-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+<UL>
+  <LI> magick/Makefile.am: Added temporary.c and temporary.h. These
+        are not finished yet.<BR>
+  <LI> magick/cache.c: Transferred optimization from ImageMagick
+        to read/write all requested pixel cache rows in one system
+        call when accessing the cache using file I/O, and the
+        requested columns equals the image columns.
+  <LI> magick/resource.c: (ResourceInfo): Use type 'double' rather
+        than 'long double'. For many systems, the range of 'long double'
+        is the same as 'double'.  On others, use of 'long double' incurs
+        the cost of function calls since there is no hardware support.
+
+</UL>
+<p>
+2003-03-22  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> magick/effect.h, effect.c, command.c: Revised -random-dither
+        to require parameters: channel LOWxHIGH.  Channel can presently
+        be "intensity", "opacity", or "all".
+
+</UL>
+<p>
 2003-03-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -3323,11 +3323,11 @@ MagickExport void TemporaryFilename(char *filename)
     char
       *name;
 
-    name=(char *) tempnam((char *) NULL,filename);
-    if (name == (char *) NULL)
-      (void) tmpnam(filename);
-    (void) strncpy(filename,name,MaxTextExtent-1);
-    LiberateMemory((void **) &name);
+    if ((name=tempnam((char *) NULL,filename)))
+      {
+        (void) strncpy(filename,name,MaxTextExtent-1);
+        LiberateMemory((void **) &name);
+      }
   }
 #endif
   FormatString(filename+strlen(filename),"%ld.tmp",(long) getpid());

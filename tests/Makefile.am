@@ -314,6 +314,7 @@ check-rwblob:
 	then \
 	  echo "Failed rwblob for formats: $$failed" ; \
 	fi ; \
+	ls /home/bfriesen/tmp ; \
 	exit $$status
 
 check-rwfile:
@@ -341,6 +342,7 @@ check-rwfile:
 	then \
 	  echo "Failed rwfile for formats: $$failed" ; \
 	fi ; \
+	ls /home/bfriesen/tmp ; \
 	exit $$status
 
 check-rwblob-sized:
@@ -368,6 +370,7 @@ check-rwblob-sized:
 	then \
 	  echo "Failed rwblob for formats: $$failed" ; \
 	fi ; \
+	ls /home/bfriesen/tmp ; \
 	exit $$status
 
 check-rwfile-sized:
@@ -395,11 +398,15 @@ check-rwfile-sized:
 	then \
 	  echo "Failed rwfile for formats: $$failed" ; \
 	fi ; \
+	ls /home/bfriesen/tmp ; \
 	exit $$status
 
 check-drawtest:
 	-./drawtest drawtest_out.miff
+	ls /home/bfriesen/tmp
 	-./drawtest drawtest_out.mvg
+	ls /home/bfriesen/tmp
 	-./drawtest drawtest_out.svg
+	ls /home/bfriesen/tmp
 
 check: check-drawtest check-rwfile check-rwblob check-rwblob-sized check-rwfile-sized 

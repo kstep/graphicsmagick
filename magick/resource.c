@@ -62,7 +62,7 @@
   Define  declarations.
 */
 #define ResourceInfinity  (~0UL)
-#define ResourceToMegabytes(value) ((long double) (value)*1024.0*1024.0)
+#define ResourceToMegabytes(value) ((double) (value)*1024.0*1024.0)
 #define MegabytesToResource(value) ((unsigned long) ((value)/1024.0/1024.0))
 #define GigabytesToResource(value) \
   ((unsigned long) ((value)/1024.0/1024.0/1024.0))
@@ -72,7 +72,7 @@
 */
 typedef struct _ResourceInfo
 {
-  long double
+  double
     file,
     memory,
     map,
@@ -297,7 +297,7 @@ MagickExport unsigned long GetMagickResource(const ResourceType type)
 */
 MagickExport void InitializeMagickResources(void)
 {
-  long
+  unsigned long
     max_files=256,
     max_disk=ResourceInfinity,
     max_map=4096,

@@ -35,6 +35,10 @@ extern "C" {
 #define W_OK 2
 #define RW_OK 6
 #define HAVE_VSNPRINTF 1
+#define HAVE_TEMPNAM 1
+#if !defined(tempnam)
+# define tempnam _tempnam
+#endif
 #define vsnprintf _vsnprintf 
 #if !defined(HasLTDL)
 #  define lt_dlerror NTGetLastError

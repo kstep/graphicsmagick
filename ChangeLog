@@ -1,3 +1,15 @@
+2003-03-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/Makefile.am: Added temporary.c and temporary.h. These
+	are not finished yet.
+	* magick/cache.c: Transferred optimization from ImageMagick
+	to read/write all requested pixel cache rows in one system
+	call when accessing the cache using file I/O, and the
+	requested columns equals the image columns.
+	* magick/resource.c: (ResourceInfo): Use type 'double' rather
+	than 'long double'. For many systems, the range of 'long double'
+	is the same as 'double'.  On others, use of 'long double' incurs
+	the cost of function calls since there is no hardware support.
+
 2003-03-22  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/effect.h, effect.c, command.c: Revised -random-dither

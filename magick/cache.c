@@ -980,9 +980,6 @@ MagickExport void ClonePixelCacheMethods(Cache clone,const Cache cache)
 */
 MagickExport void DestroyCacheInfo(Cache cache)
 {
-  char
-    message[MaxTextExtent];
-
   CacheInfo
     *cache_info;
 
@@ -1024,6 +1021,9 @@ MagickExport void DestroyCacheInfo(Cache cache)
         }
       cache_info->file=(-1);
       (void) remove(cache_info->cache_filename);
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+        "remove %.1024s (%.1024s)",cache_info->filename,
+        cache_info->cache_filename);
       LiberateMagickResource(DiskResource,cache_info->length);
       break;
     }
@@ -1039,8 +1039,8 @@ MagickExport void DestroyCacheInfo(Cache cache)
     }
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->semaphore);
-  FormatString(message,"destroy %.1024s",cache_info->filename);
-  (void) LogMagickEvent(CacheEvent,GetMagickModule(),message);
+  (void) LogMagickEvent(CacheEvent,GetMagickModule(),"destroy %.1024s",
+     cache_info->filename);
   LiberateMemory((void **) &cache_info);
 }
 
@@ -2080,8 +2080,7 @@ static void CacheSignalHandler(int status)
 MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 {
   char
-    format[MaxTextExtent],
-    message[MaxTextExtent];
+    format[MaxTextExtent];
 
   CacheInfo
     *cache_info;
@@ -2203,9 +2202,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
                 (cache_info->colorspace == CMYKColorspace))
               cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
             FormatSize(cache_info->length,format);
-            FormatString(message,"open %.1024s (%.1024s)",cache_info->filename,
-              format);
-            (void) LogMagickEvent(CacheEvent,GetMagickModule(),message);
+            (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+               "open %.1024s (%.1024s)",cache_info->filename,format);
             return(True);
           }
       }
@@ -2251,6 +2249,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     {
       close(file);
       (void) remove(cache_info->cache_filename);
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+        "remove %.1024s (%.1024s)",cache_info->filename,
+        cache_info->cache_filename);
       LiberateMagickResource(DiskResource,cache_info->length);
       ThrowBinaryException(CacheError,"UnableToExtendCache",image->filename)
     }
@@ -2290,10 +2291,10 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   (void) signal(SIGBUS,CacheSignalHandler);
 #endif
   FormatSize(cache_info->length,format);
-  FormatString(message,"open %.1024s (%.1024s[%d], %.1024s, %.1024s)",
+  (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+    "open %.1024s (%.1024s[%d], %.1024s, %.1024s)",
     cache_info->filename,cache_info->cache_filename,cache_info->file,
     cache_info->type == MapCache ? "memory-mapped" : "disk",format);
-  (void) LogMagickEvent(CacheEvent,GetMagickModule(),message);
   return(True);
 }
 
@@ -2327,7 +2328,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 %
 %    o filename: The persistent pixel cache filename.
 %
-%    o initialize: A value other than zero initializes the persistent pixel
+%    o attach: A value other than zero initializes the persistent pixel
 %      cache.
 %
 %    o offset: The offset in the persistent cache to store pixels.
@@ -2505,6 +2506,9 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   size_t
     length;
 
+  unsigned long
+    rows;
+
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
@@ -2517,13 +2521,20 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
     nexus_info->x;
   length=nexus_info->columns*sizeof(IndexPacket);
+  rows=nexus_info->rows;
+  number_pixels=(ExtendedSignedIntegralType) length*rows;
+  if ((cache_info->columns == nexus_info->columns) && (number_pixels == (size_t) number_pixels))
+    {
+      length=number_pixels;
+      rows=1;
+    }
   indexes=nexus_info->indexes;
   if (cache_info->type != DiskCache)
     {
       /*
         Read indexes from memory.
       */
-      for (y=0; y < (long) nexus_info->rows; y++)
+      for (y=0; y < (long) rows; y++)
       {
         (void) memcpy(indexes,cache_info->indexes+offset,length);
         indexes+=nexus_info->columns;
@@ -2543,7 +2554,7 @@ static unsigned int ReadCacheIndexes(const Cache cache,
     }
   number_pixels=(ExtendedSignedIntegralType)
     cache_info->columns*cache_info->rows;
-  for (y=0; y < (long) nexus_info->rows; y++)
+  for (y=0; y < (long) rows; y++)
   {
     if ((FilePositionRead(file,indexes,length,cache_info->offset+
           number_pixels*sizeof(PixelPacket)+offset*sizeof(IndexPacket))) <= 0)
@@ -2556,7 +2567,7 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   if (QuantumTick(nexus_info->y,cache_info->rows))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
       nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
-  return(y == (long) nexus_info->rows);
+  return(y == (long) rows);
 }
 
 /*
@@ -2593,6 +2604,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
     *cache_info;
 
   ExtendedSignedIntegralType
+    number_pixels,
     offset;
 
   int
@@ -2610,6 +2622,9 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
   size_t
     length;
 
+  unsigned long
+    rows;
+
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
@@ -2619,13 +2634,20 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
   offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
     nexus_info->x;
   length=nexus_info->columns*sizeof(PixelPacket);
+  rows=nexus_info->rows;  
+  number_pixels=(ExtendedSignedIntegralType) length*rows;
+  if ((cache_info->columns == nexus_info->columns) && (number_pixels == (size_t) number_pixels))
+    {
+      length=number_pixels;
+      rows=1;
+    }
   pixels=nexus_info->pixels;
   if (cache_info->type != DiskCache)
     {
       /*
         Read pixels from memory.
       */
-      for (y=0; y < (long) nexus_info->rows; y++)
+      for (y=0; y < (long) rows; y++)
       {
         (void) memcpy(pixels,cache_info->pixels+offset,length);
         pixels+=nexus_info->columns;
@@ -2643,7 +2665,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
       if (file == -1)
         return(False);
     }
-  for (y=0; y < (long) nexus_info->rows; y++)
+  for (y=0; y < (long) rows; y++)
   {
     if ((FilePositionRead(file,pixels,length,
        cache_info->offset+offset*sizeof(PixelPacket))) < length)
@@ -2656,7 +2678,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
   if (QuantumTick(nexus_info->y,cache_info->rows))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
       nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
-  return(y == (long) nexus_info->rows);
+  return(y == (long) rows);
 }
 
 /*
@@ -3322,6 +3344,9 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   size_t
     length;
 
+  unsigned long
+    rows;
+
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
@@ -3334,13 +3359,20 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
     nexus_info->x;
   length=nexus_info->columns*sizeof(IndexPacket);
+  rows=nexus_info->rows;  
+  number_pixels=(ExtendedSignedIntegralType) length*rows;
+  if ((cache_info->columns == nexus_info->columns) && (number_pixels == (size_t) number_pixels))
+    {
+      length=number_pixels;
+      rows=1;
+    }
   indexes=nexus_info->indexes;
   if (cache_info->type != DiskCache)
     {
       /*
         Write indexes to memory.
       */
-      for (y=0; y < (long) nexus_info->rows; y++)
+      for (y=0; y < (long) rows; y++)
       {
         (void) memcpy(cache_info->indexes+offset,indexes,length);
         indexes+=nexus_info->columns;
@@ -3362,7 +3394,7 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
     }
   number_pixels=(ExtendedSignedIntegralType)
     cache_info->columns*cache_info->rows;
-  for (y=0; y < (long) nexus_info->rows; y++)
+  for (y=0; y < (long) rows; y++)
   {
     if ((FilePositionWrite(file,indexes,length,cache_info->offset+
        number_pixels*sizeof(PixelPacket)+offset*sizeof(IndexPacket))) < length)
@@ -3375,7 +3407,7 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   if (QuantumTick(nexus_info->y,cache_info->rows))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
       nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
-  return(y == (long) nexus_info->rows);
+  return(y == (long) rows);
 }
 
 /*
@@ -3413,6 +3445,7 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
     *cache_info;
 
   ExtendedSignedIntegralType
+    number_pixels,
     offset;
 
   int
@@ -3430,6 +3463,9 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   size_t
     length;
 
+  unsigned long
+    rows;
+
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
@@ -3439,13 +3475,20 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
     nexus_info->x;
   length=nexus_info->columns*sizeof(PixelPacket);
+  rows=nexus_info->rows;  
+  number_pixels=(ExtendedSignedIntegralType) length*rows;
+  if ((cache_info->columns == nexus_info->columns) && (number_pixels == (size_t) number_pixels))
+    {
+      length=number_pixels;
+      rows=1;
+    }
   pixels=nexus_info->pixels;
   if (cache_info->type != DiskCache)
     {
       /*
         Write pixels to memory.
       */
-      for (y=0; y < (long) nexus_info->rows; y++)
+      for (y=0; y < (long) rows; y++)
       {
         (void) memcpy(cache_info->pixels+offset,pixels,length);
         pixels+=nexus_info->columns;
@@ -3465,7 +3508,7 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
       if (file == -1)
         return(False);
     }
-  for (y=0; y < (long) nexus_info->rows; y++)
+  for (y=0; y < (long) rows; y++)
   {
     if ((FilePositionWrite(file,pixels,length,
         cache_info->offset+offset*sizeof(PixelPacket))) < length)
@@ -3478,5 +3521,5 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   if (QuantumTick(nexus_info->y,cache_info->rows))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
       nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
-  return(y == (long) nexus_info->rows);
+  return(y == (long) rows);
 }

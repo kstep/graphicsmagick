@@ -61,7 +61,7 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
 	signature.c compress.c command.c gem.c registry.c magic.c magick.c \
 	delegate.c module.c static.c resource.c log.c timer.c utility.c cache_view.c \
 	stream.c version.c animate.c display.c widget.c xwindow.c PreRvIcccm.c \
-	deprecate.c
+	deprecate.c temporary.c
 
 # Platform specific source files that may appear in the library
 EXTRA_libGraphicsMagick_la_SOURCES = nt_base.c nt_feature.c
@@ -150,8 +150,16 @@ pkginclude_HEADERS = \
 
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h display.h mac.h nt_base.h nt_feature.h \
-  static.h studio.h vms.h
+noinst_HEADERS = \
+	animate.h \
+	display.h \
+	mac.h \
+	nt_base.h \
+	nt_feature.h \
+	static.h \
+	studio.h \
+	temporary.h \
+	vms.h
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk GraphicsMagick-config.in \
