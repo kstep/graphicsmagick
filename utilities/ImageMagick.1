@@ -988,7 +988,7 @@ The primitives include
      point           x,y
      line            x0,y0 x1,y1
      rectangle       x0,y0 x1,y1
-     roundRectangle  x0,y0  w,h  wc,hc
+     roundRectangle  x0,y0 x1,y1 wc,hc
      arc             x0,y0 x1,y1 a0,a1
      ellipse         x0,y0 rx,ry a0,a1
      circle          x0,y0 x1,y1
@@ -1000,13 +1000,15 @@ The primitives include
      matte           x0,y0 method
      text            x0,y0 string
      image           operator x0,y0 w,h filename
+     rotate          degrees
+     translate       dx,dy
 
 \fBPoint\fP requires a single coordinate.
 \fBLine\fP requires a start and end coordinate, while
 \fBrectangle\fP
 expects an upper left and lower right coordinate.
-\fBRoundRectangle\fP has a center coordinate, a width and
-height, and the width and height of the corners.
+\fBRoundRectangle\fP has the upper left and lower right coordinates
+and the width and height of the corners.
 \fBCircle\fP has a center coordinate and a coordinate for
 the outer edge.  Use \fBArc\fP to circumscribe an arc within
 a rectangle.  Arcs require a start and end point as well as the degree
@@ -1092,6 +1094,9 @@ and filename:
 
      -draw 'image Over 100,100 225,225 image.jpg'
 
+You can use 0,0 for the image size, which means to use the actual
+dimensions found in the image header. Otherwise, it will
+be scaled to the given dimensions.
 See \fB-compose\fP for a description of the composite operators.
 
 
@@ -1104,6 +1109,10 @@ color with
 \fB-fill\fP, \fB-font\fP, and \fB-box\fP respectively. Options
 are processed in command line order so be sure to use these
 options \fIbefore\fP the \fB-draw\fP option.
+
+
+Rotate rotates the primitive about the origen of the main image.
+Translate translates it.
 
 .TP
 .B "-edge \fI<radius>"\fP
