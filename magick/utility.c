@@ -2426,18 +2426,18 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
 MagickExport void TemporaryFilename(char *filename)
 {
   assert(filename != (char *) NULL);
-  (void) strcpy(filename,"magickXXXXXX");
+  (void) strcpy(filename,"magic");
 #if !defined(vms) && !defined(macintosh)
   {
     char
       *name;
 
-    name=(char *) tempnam((char *) NULL,filename);
-    if (name != (char *) NULL)
-      {
-        (void) strcpy(filename,name);
-        LiberateMemory((void **) &name);
-      }
+    name=(char *) tempnam("./",filename);
+    if (name == (char *) NULL)
+      MagickError(ResourceLimitError,
+        "Unable to create a name for a temporary file",(char *) NULL);
+    (void) strcpy(filename,name);
+    LiberateMemory((void **) &name);
   }
 #else
   (void) tmpnam(filename);
