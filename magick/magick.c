@@ -860,7 +860,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   }
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
-  MagickFreeMemory(magick_array);
+  MagickFreeMemory((void *)magick_array);
   return(True);
 }
 
@@ -924,7 +924,7 @@ MagickExport unsigned int ListModuleMap(FILE *file,ExceptionInfo *exception)
    (void) fprintf(file, "</modulemap>\n");
    (void) fflush(file);
 
-   MagickFreeMemory(magick_array);
+   MagickFreeMemory((void *)magick_array);
 
    return(True);
 }

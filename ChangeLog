@@ -7,7 +7,7 @@
 	* magick/log.c (GetLogBlob): GetLogBlob should always return
 	a value.
 	* magick/magick.c (GetMagickInfoArray): Fixed array memory
-	allocation and clearing bug.
+	allocation and clearing bug. Eliminate warnings.
 
 2003-06-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
