@@ -5515,7 +5515,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               if (ping_info->trans[i] != 255)
                 ping_info->num_trans=(unsigned short) (i+1);
             if (ping_info->num_trans == 0)
-              ping_info->valid&=(~PNG_INFO_tRNS);
+              {
+                LiberateMemory((void **) &ping_info->trans);
+                ping_info->valid&=(~PNG_INFO_tRNS);
+              }
             if (!(ping_info->valid & PNG_INFO_tRNS))
               ping_info->num_trans=0;
             if (ping_info->num_trans == 0)
