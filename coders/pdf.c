@@ -1104,16 +1104,15 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     {
       case NoCompression: FormatString(buffer,CFormat,"ASCII85Decode"); break;
       case JPEGCompression: 
-		  {
-			  FormatString(buffer,CFormat,"DCTDecode"); 
-              (void) WriteBlobString(image,buffer);
-			  if ( image->colorspace == CMYKColorspace )
-			  {
-				  strcpy( buffer, "/Decode[1 0 1 0 1 0 1 0]\n" );
-                  (void) WriteBlobString(image,buffer);
-			  }
-			  break;
-		  }
+      {
+        FormatString(buffer,CFormat,"DCTDecode"); 
+        (void) WriteBlobString(image,buffer);
+        if (image->colorspace != CMYKColorspace)
+          break;
+        (void) strcpy(buffer,"/Decode[1 0 1 0 1 0 1 0]\n");
+        (void) WriteBlobString(image,buffer);
+        break;
+      }
       case LZWCompression: FormatString(buffer,CFormat,"LZWDecode"); break;
       case ZipCompression: FormatString(buffer,CFormat,"FlateDecode"); break;
       case FaxCompression:
