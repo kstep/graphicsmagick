@@ -107,7 +107,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   local_info->blob.data=(char *) blob;
   local_info->blob.offset=0;
   local_info->blob.length=length;
-  SetImageInfo(local_info,True);
+  SetImageInfo(local_info,False);
   magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
   if (magick_info == (MagickInfo *) NULL)
     {
