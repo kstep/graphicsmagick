@@ -144,7 +144,6 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image=(Image *) NULL;
   clone_info=CloneImageInfo(image_info);
-  (void) CloneString(&clone_info->size,DefaultTileGeometry);
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
@@ -154,7 +153,9 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (next_image != (Image *) NULL)
       {
         (void) SetImageAttribute(next_image,"Label",DefaultTileLabel);
-        TransformImage(&next_image,(char *) NULL,DefaultTileGeometry);
+        TransformImage(&next_image,(char *) NULL,
+          clone_info->size == (char *) NULL ? DefaultTileGeometry :
+          clone_info->size);
         if (image == (Image *) NULL)
           image=next_image;
         else

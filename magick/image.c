@@ -5099,12 +5099,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
     return(True);
   if (colorspace == CMYKColorspace)
     {
-      Quantum
-        black,
-        cyan,
-        magenta,
-        yellow;
-
       /*
         Convert RGB to CMYK colorspace.
       */
@@ -5116,18 +5110,10 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          cyan=MaxRGB-q->red;
-          magenta=MaxRGB-q->green;
-          yellow=MaxRGB-q->blue;
-          black=cyan;
-          if (magenta < black)
-            black=magenta;
-          if (yellow < black)
-            black=yellow;
-          q->red=cyan;
-          q->green=magenta;
-          q->blue=yellow;
-          q->opacity=black;
+          q->opacity=Min(Min(MaxRGB-q->red,MaxRGB-q->green),MaxRGB-q->blue);
+          q->red=MaxRGB-q->red-q->opacity;
+          q->green=MaxRGB-q->green-q->opacity;
+          q->blue=MaxRGB-q->blue-q->opacity;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -6240,11 +6226,10 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   assert(image->signature == MagickSignature);
   if ((image->colorspace == CMYKColorspace) && (colorspace == RGBColorspace))
     {
-      unsigned int
-        black,
-        cyan,
-        magenta,
-        yellow;
+      double
+        blue,
+        green,
+        red;
 
       /*
         Transform image from CMYK to RGB.
@@ -6257,23 +6242,15 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          cyan=q->red;
-          magenta=q->green;
-          yellow=q->blue;
-          black=q->opacity;
-          if ((cyan+black) > MaxRGB)
-            q->red=0;
-          else
-            q->red=MaxRGB-(cyan+black);
-          if ((magenta+black) > MaxRGB)
-            q->green=0;
-          else
-            q->green=MaxRGB-(magenta+black);
-          if ((yellow+black) > MaxRGB)
-            q->blue=0;
-          else
-            q->blue=MaxRGB-(yellow+black);
-          q->opacity=0;
+          red=MaxRGB-(double) (q->red+q->opacity);
+          green=MaxRGB-(double) (q->green+q->opacity);
+          blue=MaxRGB-(double) (q->blue+q->opacity);
+          q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+          q->green=(Quantum)
+            ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+          q->blue=(Quantum)
+            ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+          q->opacity=OpaqueOpacity;
           q++;
         }
         if (!SyncImagePixels(image))
