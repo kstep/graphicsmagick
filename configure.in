@@ -41,31 +41,6 @@ AC_PROG_MAKE_SET
 AC_PROG_LN_S
 
 #
-# Check for large file support
-#
-AC_MSG_CHECKING(whether large file support needs explicit enabling)
-result='no'
-getconf='getconf LFS_CFLAGS'
-if ($getconf) >/dev/null 2>&1
-then
-  CPPFLAGS="$CPPFLAGS "`$getconf`
-  result='yes'
-fi
-getconf='getconf LFS_LDFLAGS'
-if ($getconf) >/dev/null 2>&1
-then
-  LDFLAGS="$LDFLAGS "`$getconf`
-  result='yes'
-fi
-getconf='getconf LFS_LIBS'
-if ($getconf) >/dev/null 2>&1
-then
-  LIBS="$LIBS "`$getconf`
-  result='yes'
-fi
-AC_MSG_RESULT($result)
-
-#
 # Tests for Windows
 #
 AC_CYGWIN
@@ -88,13 +63,6 @@ AC_LIBTOOL_DLOPEN
 AM_ENABLE_SHARED(no)
 AM_ENABLE_STATIC(yes)
 AM_PROG_LIBTOOL
-# Configure libltdl
-AC_CONFIG_SUBDIRS(ltdl)
-# Set DLLDFLAGS
-if test X"$enable_shared" = Xyes; then
-  DLLDFLAGS=-export-dynamic
-  AC_SUBST(DLLDFLAGS)
-fi
 
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
@@ -110,6 +78,30 @@ then
   libtool_build_static_libs='yes'
 fi
 
+#
+# Enable support for modules
+# Only support modules if we are building shared libraries
+AC_ARG_WITH(modules,
+	      [  --with-modules          enable support for dynamically loadable modules],
+	      [with_modules=$withval],
+	      [with_modules='no'])
+if test "$with_modules" != 'no' && test "$libtool_build_shared_libs" = 'no'
+then
+  with_modules='no'
+fi
+AM_CONDITIONAL(WITH_MODULES, test "$with_modules" != 'no')
+if test "$with_modules" != 'no'
+then
+  AC_DEFINE(HasLTDL,,Define if using libltdl to create dynamically loadable modules)
+
+  # Configure libltdl
+  AC_CONFIG_SUBDIRS(ltdl)
+  # Set DLLDFLAGS
+  if test X"$enable_shared" = Xyes; then
+    DLLDFLAGS=-export-dynamic
+    AC_SUBST(DLLDFLAGS)
+  fi
+fi
 
 # Add configure option --enable-maintainer-mode which enables dependency
 # checking and generation useful to package maintainers.  This is made an
@@ -155,15 +147,15 @@ AC_ARG_ENABLE(lzw,
 	      [  --enable-lzw            enable LZW support (default is no)],
 	      [with_lzw=$enableval],
 	      [with_lzw='no'])
-test "$with_lzw" = 'yes' && AC_DEFINE(HasLZW)
+test "$with_lzw" = 'yes' && AC_DEFINE(HasLZW,1,Include LZW compression)
 AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
 
 # Enable 16-bit pixels.
 AC_ARG_ENABLE(16bit-pixel,
-	      [  --enable-16bit-pixel    enable 16 bit pixels (default is no)],
+	      [  --enable-16bit-pixel    enable 16 bit/quantum pixels (default is no)],
 	      [with_16_bit_pixel=$enableval],
 	      [with_16_bit_pixel='no'])
-test "$with_16_bit_pixel" = 'yes' && AC_DEFINE(QuantumLeap)
+test "$with_16_bit_pixel" = 'yes' && AC_DEFINE(QuantumLeap,,Increase max color value from 255 to 65535)
 
 # Enable sfio stdio support
 AC_ARG_ENABLE(sfio,
@@ -176,17 +168,23 @@ AC_ARG_WITH(cache,
 	      [  --with-cache            set pixel cache threshhold (default 80MB)],
 	      [with_cache=$withval],
 	      [with_cache=80])
-AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache)
+AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,Pixel cache threshold (default 80MB))
 
-# Enable support for full delegate paths
+# Disable support for full delegate paths
 AC_ARG_WITH(frozenpaths,
-	      [  --with-frozenpaths      enable frozen delegate paths (default is yes)],
+	      [  --without-frozenpaths   disable frozen delegate paths],
 	      [with_frozenpaths=$withval],
 	      [with_frozenpaths='yes'])
 
-# Enable build/install of PerlMagick.
+# Disable support for largefiles
+AC_ARG_WITH(largefiles,
+	      [  --without-largefiles    disable support for large (64 bit) file offsets],
+	      [with_largefiles=$withval],
+	      [with_largefiles='yes'])
+
+# Disable build/install of PerlMagick.
 AC_ARG_WITH(perl,
-	      [  --with-perl             enable build/install of PerlMagick (default is yes)],
+	      [  --without-perl          disable build/install of PerlMagick],
 	      [with_perl=$withval],
 	      [with_perl='yes'])
 
@@ -204,57 +202,57 @@ fi
 AM_CONDITIONAL(WITH_PERL_STATIC, test $with_perl_static = 'yes')
 AM_CONDITIONAL(WITH_PERL_DYNAMIC, test $with_perl_dynamic = 'yes')
 
-# Enable BZLIB (bzip2 library)
+# Disable BZLIB (bzip2 library)
 AC_ARG_WITH(bzlib,
-	      [  --with-bzlib            enable BZLIB (default is yes)],
+	      [  --without-bzlib         disable BZLIB support],
 	      [with_bzlib=$withval],
 	      [with_bzlib='yes'])
 
-# Enable Display Postscript.
+# Disable Display Postscript.
 AC_ARG_WITH(dps,
-	      [  --with-dps              enable Display Postscript (default is yes)],
+	      [  --without-dps           disable Display Postscript support],
 	      [with_dps=$withval],
 	      [with_dps='yes'])
 
-# Enable FlashPIX.
+# Disable FlashPIX.
 AC_ARG_WITH(fpx,
-	      [  --with-fpx              enable FlashPIX (default is yes)],
+	      [  --without-fpx           disable FlashPIX support],
 	      [with_fpx=$withval],
 	      [with_fpx='yes'])
 
-# Enable HDF.
+# Disable HDF.
 AC_ARG_WITH(hdf,
-	      [  --with-hdf              enable HDF (default is yes)],
+	      [  --without-hdf           disable HDF support],
 	      [with_hdf=$withval],
 	      [with_hdf='yes'])
 
-# Enable JBIG.
+# Disable JBIG.
 AC_ARG_WITH(jbig,
-	      [  --with-jbig             enable JBIG (default is yes)],
+	      [  --without-jbig          disable JBIG support],
 	      [with_jbig=$withval],
 	      [with_jbig='yes'])
 
-# Enable JPEG.
+# Disable JPEG.
 AC_ARG_WITH(jpeg,
-	      [  --with-jpeg             enable JPEG (default is yes)],
+	      [  --without-jpeg          disable JPEG support],
 	      [with_jpeg=$withval],
 	      [with_jpeg='yes'])
 
-# Enable PNG.
+# Disable PNG.
 AC_ARG_WITH(png,
-	      [  --with-png              enable PNG (default is yes)],
+	      [  --without-png           disable PNG support],
 	      [with_png=$withval],
 	      [with_png='yes'])
 
-# Enable TIFF.
+# Disable TIFF.
 AC_ARG_WITH(tiff,
-	      [  --with-tiff             enable TIFF (default is yes)],
+	      [  --without-tiff          disable TIFF support],
 	      [with_tiff=$withval],
 	      [with_tiff='yes'])
 
-# Enable TTF.
+# Disable TTF.
 AC_ARG_WITH(ttf,
-	      [  --with-ttf              enable TrueType (default is yes)],
+	      [  --without-ttf           disable TrueType support],
 	      [with_ttf=$withval],
 	      [with_ttf='yes'])
 
@@ -267,11 +265,11 @@ if test "$with_ttf_fontpath" != "yes" && test -z "$with_ttf_fontpath"
 then
   with_ttf_fontpath=''
 else
-  AC_DEFINE_UNQUOTED(TT_FONT_PATH,"$with_ttf_fontpath")
+  AC_DEFINE_UNQUOTED(TT_FONT_PATH,"$with_ttf_fontpath",Define to specify default TrueType font path.)
 fi
 
 AC_ARG_WITH(zlib,
-	      [  --with-zlib             enable ZLIB (default is yes)],
+	      [  --without-zlib          disable ZLIB support],
 	      [with_zlib=$withval],
 	      [with_zlib='yes'])
 
@@ -281,7 +279,7 @@ AC_HEADER_STAT
 AC_HEADER_TIME
 AC_HEADER_SYS_WAIT
 AC_HEADER_DIRENT
-AC_CHECK_HEADER(elf.h,AC_DEFINE(SVR4))
+AC_CHECK_HEADER(elf.h,AC_DEFINE(SVR4,,Define on System V Release 4.))
 AC_CHECK_HEADERS(sys/time.h sys/stat.h sys/types.h)
 AC_CHECK_HEADERS(math.h string.h stdarg.h pwd.h malloc.h)
 AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
@@ -324,36 +322,43 @@ changequote([, ])dnl
 ac_cv_sys_errlist='yes',
 ac_cv_sys_errlist='no')])
 if test "$ac_cv_sys_errlist" = 'yes' ; then
- AC_DEFINE(HAVE_SYS_ERRLIST)
+ AC_DEFINE(HAVE_SYS_ERRLIST,,Define if you have sys_errlist in libc)
  AC_MSG_RESULT(yes)
 else
  AC_MSG_RESULT(no)
 fi
 fi
 
-# Check for clock_gettime() in the default libraries, and verify that it works.
-# This test will rarely pass since most systems put this function in an
-# additional library (e.g. -lposix4 under Solaris).  However, if you want to
-# use it, you can just add the appropriate library to the LIBS environment
-# variable prior to running configure.
-AC_CACHE_CHECK(for clock_gettime, ac_cv_func_clock_gettime,
-[AC_TRY_RUN(
-changequote(<<, >>)dnl
-<<
-#include <time.h>
-int main( int argc, char **argv ) {
-  struct timespec time_spec;
-  if (clock_gettime(CLOCK_REALTIME,&time_spec) != -1)
-    exit(0);
-  exit(1);
-}
->>,
-changequote([, ])dnl
-  ac_cv_func_clock_gettime='yes', ac_cv_func_clock_gettime='no',
-  ac_cv_func_clock_gettime='cross')])
-if test "$ac_cv_func_clock_gettime" = 'yes' ; then
-  AC_DEFINE(HAVE_CLOCK_GETTIME)
+#
+# Check for large file support
+#
+LIB_LF=''
+if test "$with_largefiles" = 'yes'
+then
+  AC_MSG_CHECKING(whether large file support needs explicit enabling)
+  result='no'
+  getconf='getconf LFS_CFLAGS'
+  if ($getconf) >/dev/null 2>&1
+  then
+    CPPFLAGS="$CPPFLAGS "`$getconf`
+    result='yes'
+  fi
+  getconf='getconf LFS_LDFLAGS'
+  if ($getconf) >/dev/null 2>&1
+  then
+    LDFLAGS="$LDFLAGS "`$getconf`
+    result='yes'
+  fi
+  getconf='getconf LFS_LIBS'
+  if ($getconf) >/dev/null 2>&1
+  then
+    LIB_LF=`$getconf`
+    LIBS="$LIB_LF $LIBS"
+    result='yes'
+  fi
+  AC_MSG_RESULT($result)
 fi
+AC_SUBST(LIB_LF)
 
 # Check for delegate sub-directories and add -I & -L options as required.
 # This presumes that delegates are installed as detailed in the ImageMagick
@@ -430,8 +435,6 @@ CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
 # Extend includedir to include magick subdirectory offset
 includedir="$includedir/magick"
 
-
-
 #
 # Find the X11 RGB database
 #
@@ -480,7 +483,7 @@ AC_CACHE_CHECK(for X11 RGB database,im_cv_x_rgbdb,
     fi
 
   done])
-AC_DEFINE_UNQUOTED(RGBColorDatabase,"$im_cv_x_rgbdb")
+AC_DEFINE_UNQUOTED(RGBColorDatabase,"$im_cv_x_rgbdb",Location of X11 RGB database)
 
 #
 # Save initial user-tunable values
@@ -497,17 +500,19 @@ LIBS_INITIAL=$LIBS
 LIB_MATH=''
 AC_CHECK_LIB(m,sqrt,LIB_MATH="-lm",,)
 LIBS="$LIB_MATH $LIBS"
+AC_SUBST(LIB_MATH)
 
 #
 # Find Posix threads library
 #
 LIB_THREAD=''
 AC_CHECK_LIB(pthread,pthread_attr_init,
-  [AC_DEFINE(HasPTHREADS)
+  [AC_DEFINE(HasPTHREADS,,Define if you have Posix thread methods.)
    LIB_THREAD="-lpthread"
    DEF_THREAD="-D_REENTRANT"],,)
 LIBS="$LIB_THREAD $LIBS"
 CPPFLAGS="$DEF_THREAD $CPPFLAGS"
+AC_SUBST(LIB_THREAD)
 
 #
 # Check for Sfio
@@ -532,7 +537,7 @@ then
 	else
 	    LIB_SFIO='-lstdio -lsfio'
 	    LIBS="$LIB_SFIO $LIBS"
-	    AC_DEFINE(HasSFIO)
+	    AC_DEFINE(HasSFIO,,Define if you have the SFIO mmap-based stdio library emulation)
 	    AC_MSG_RESULT(yes)
 	    have_sfio='yes'
 	fi
@@ -541,6 +546,7 @@ then
     fi
 fi
 AM_CONDITIONAL(HasSFIO, test "$have_sfio" != 'no')
+AC_SUBST(LIB_SFIO)
 
 
 #
@@ -570,7 +576,7 @@ then
     else
       LIB_ZLIB='-lz'
       LIBS="$LIB_ZLIB $LIBS"
-      AC_DEFINE(HasZLIB)
+      AC_DEFINE(HasZLIB,,Define if you have zlib compression library)
       AC_MSG_RESULT(yes)
       have_zlib='yes'
     fi
@@ -579,6 +585,7 @@ then
   fi
 fi
 AM_CONDITIONAL(HasZLIB, test "$have_zlib" != 'no')
+AC_SUBST(LIB_ZLIB)
 
 #
 # Check for BZLIB
@@ -603,7 +610,7 @@ then
     else
       LIB_BZLIB='-lbz2'
       LIBS="$LIB_BZLIB $LIBS"
-      AC_DEFINE(HasBZLIB)
+      AC_DEFINE(HasBZLIB,,Define if you have the bzip2 library)
       AC_MSG_RESULT(yes)
       have_bzlib='yes'
     fi
@@ -612,6 +619,7 @@ then
   fi
 fi
 AM_CONDITIONAL(HasBZLIB, test "$have_bzlib" != 'no')
+AC_SUBST(LIB_BZLIB)
 
 #
 # Find the X11 include and library directories.
@@ -619,33 +627,41 @@ AM_CONDITIONAL(HasBZLIB, test "$have_bzlib" != 'no')
 AC_PATH_X
 AC_PATH_XTRA
 
+LIB_X11=''
 LIB_XEXT=''
 LIB_XT=''
 if test "$with_x" != 'no'
 then
     with_x='yes'dnl Ensure value is set
     LDFLAGS="$LDFLAGS $X_LIBS"
-    LIBS="-lX11 $X_EXTRA_LIBS $LIBS"
+    LIB_X11="-lX11 $X_EXTRA_LIBS"
+    LIBS="$LIB_X11 $LIBS"
     CPPFLAGS="$CPPFLAGS $X_CFLAGS"
-    AC_DEFINE(HasX11)
+    AC_DEFINE(HasX11,,Define if you have X11 library)
 
     AC_CHECK_LIB(Xext,XShmAttach,LIB_XEXT='-lXext',,)
-    AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory),,)
+    AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory,,X11 server supports shared memory extension),,)
     AC_CHECK_LIB(Xext,XShapeCombineMask,LIB_XEXT='-lXext',,)
-    AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape),,)
+    AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape,,X11 server supports shape extension),,)
 
     AC_CHECK_LIB(Xt,XtSetEventDispatcher,LIB_XT='-lXt',,)
     LIBS="$LIB_XEXT $LIB_XT $LIBS"
 fi
 AM_CONDITIONAL(HasX11, test "$with_x" != 'no')
+AC_SUBST(LIB_X11)
+AC_SUBST(LIB_XEXT)
+AC_SUBST(LIB_XT)
 
 #
 # If profiling, then check for -ldl and dlopen (required for Solaris & gcc)
 #
+LIB_DL=''
 if test "$with_profiling" = 'yes'
 then
-  AC_CHECK_LIB(dl,dlopen,LIBS="-ldl $LIBS",,)
+  AC_CHECK_LIB(dl,dlopen,LIB_DL='-ldl',,)
+  LIBS="$LIB_DL $LIBS"
 fi
+AC_SUBST(LIB_DL)
 
 #
 # Check for Display Postscript
@@ -674,7 +690,7 @@ then
     else
 	LIB_DPS='-ldpstk -ldps'
 	LIBS="$LIB_DPS $LIBS"
-	AC_DEFINE(HasDPS)
+	AC_DEFINE(HasDPS,,Define if you have Display Postscript)
 	AC_MSG_RESULT(yes)
 	have_dps='yes'
     fi
@@ -684,7 +700,7 @@ then
     fi
 fi
 AM_CONDITIONAL(HasDPS, test "$have_dps" != 'no')
-
+AC_SUBST(LIB_DPS)
 
 #
 # Check for FlashPIX
@@ -708,7 +724,7 @@ then
     else
 	LIB_FPX='-lfpx'
 	LIBS="$LIB_FPX $LIBS"
-	AC_DEFINE(HasFPX)
+	AC_DEFINE(HasFPX,,Define if you have FlashPIX library)
 	AC_MSG_RESULT(yes)
         have_fpx='yes'
     fi
@@ -717,6 +733,7 @@ then
     fi
 fi
 AM_CONDITIONAL(HasFPX, test "$have_fpx" != 'no')
+AC_SUBST(LIB_FPX)
 
 #
 # Check for PNG
@@ -741,7 +758,7 @@ then
     else
 	LIB_PNG='-lpng'
 	LIBS="$LIB_PNG $LIBS"
-	AC_DEFINE(HasPNG)
+	AC_DEFINE(HasPNG,,Define if you have PNG library)
 	AC_MSG_RESULT(yes)
 	have_png='yes'
     fi
@@ -750,6 +767,7 @@ then
     fi
 fi
 AM_CONDITIONAL(HasPNG, test "$have_png" != 'no')
+AC_SUBST(LIB_PNG)
 
 #
 # Check for JPEG
@@ -776,7 +794,7 @@ then
     else
 	LIB_JPEG='-ljpeg'
 	LIBS="$LIB_JPEG $LIBS"
-	AC_DEFINE(HasJPEG)
+	AC_DEFINE(HasJPEG,,Define if you have JPEG library)
 	AC_MSG_RESULT(yes)
         have_jpeg='yes'
     fi
@@ -785,6 +803,7 @@ then
     fi
 fi
 AM_CONDITIONAL(HasJPEG, test "$have_jpeg" != 'no')
+AC_SUBST(LIB_JPEG)
 
 #
 # Check for TTF
@@ -814,7 +833,7 @@ then
 	else
 	    LIB_TTF='-lttf'
 	    LIBS="$LIB_TTF $LIBS"
-	    AC_DEFINE(HasTTF)
+	    AC_DEFINE(HasTTF,,Define if you have FreeType (TrueType font) library)
 	    AC_MSG_RESULT(yes)
 	    have_ttf='yes'
 	fi
@@ -823,6 +842,7 @@ then
     fi
 fi
 AM_CONDITIONAL(HasTTF, test "$have_ttf" != 'no')
+AC_SUBST(LIB_TTF)
 
 #
 # Check for TIFF
@@ -847,7 +867,7 @@ then
     else
 	LIB_TIFF='-ltiff'
 	LIBS="$LIB_TIFF $LIBS"
-	AC_DEFINE(HasTIFF)
+	AC_DEFINE(HasTIFF,,Define if you have TIFF library)
 	AC_MSG_RESULT(yes)
 	have_tiff='yes'
 	AC_CHECK_HEADERS(tiffconf.h)
@@ -857,6 +877,7 @@ then
     fi
 fi
 AM_CONDITIONAL(HasTIFF, test "$have_tiff" != 'no')
+AC_SUBST(LIB_TIFF)
 
 #
 # Check for HDF
@@ -880,7 +901,7 @@ then
     else
 	LIB_HDF='-ldf'
 	LIBS="$LIB_HDF $LIBS"
-	AC_DEFINE(HasHDF)
+	AC_DEFINE(HasHDF,,Define if you have HDF library)
 	AC_MSG_RESULT(yes)
 	have_hdf='yes'
     fi
@@ -889,6 +910,7 @@ then
     fi
 fi
 AM_CONDITIONAL(HasHDF, test "$have_hdf" != 'no')
+AC_SUBST(LIB_HDF)
 
 #
 # Check for JBIG
@@ -912,7 +934,7 @@ then
     else
 	LIB_JBIG='-ljbig'
 	LIBS="$LIB_JBIG $LIBS"
-	AC_DEFINE(HasJBIG)
+	AC_DEFINE(HasJBIG,,Define if you have JBIG library)
 	AC_MSG_RESULT(yes)
         have_jbig='yes'
     fi
@@ -921,6 +943,7 @@ then
     fi
 fi
 AM_CONDITIONAL(HasJBIG, test "$have_jbig" != 'no')
+AC_SUBST(LIB_JBIG)
 
 #
 # Configure Delegates
@@ -928,7 +951,7 @@ AM_CONDITIONAL(HasJBIG, test "$have_jbig" != 'no')
 
 # Define directory where ImageMagick/delegates.h lives. (default /usr/local/share)
 eval DelegatePath="${DATA_DIR}/ImageMagick/"
-AC_DEFINE_UNQUOTED(DelegatePath,"$DelegatePath")
+AC_DEFINE_UNQUOTED(DelegatePath,"$DelegatePath",Define directory where ImageMagick/delegates.h lives.)
 
 # Locate delegates
 AC_PATH_PROG(BZIPDelegate, bzip2, bzip2)
@@ -1231,7 +1254,13 @@ CC=`echo $CC | sed -e 's/  */ /g'`
 CFLAGS=`echo $CFLAGS | sed -e 's/  */ /g'`
 CPPFLAGS=`echo $CPPFLAGS | sed -e 's/  */ /g'`
 LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
-LIBS=`echo $LIBS | sed -e 's/  */ /g'`
+#LIBS=`echo $LIBS | sed -e 's/  */ /g'`
+if test "$with_modules" = 'no'
+then
+  LIBS=`echo "$LIB_JBIG $LIB_HDF $LIB_TIFF $LIB_TTF $LIB_JPEG $LIB_PNG $LIB_FPX $LIB_DPS $LIB_XEXT $LIB_XT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_SFIO $LIB_THREAD $LIB_LF $LIB_MATH" | sed -e 's/  */ /g'`
+else
+  LIBS=`echo "$LIB_SFIO $LIB_THREAD $LIB_LF $LIB_MATH" | sed -e 's/  */ /g'`
+fi
 
 AC_SUBST(CPPFLAGS)
 AC_SUBST(X_CFLAGS)
@@ -1291,3 +1320,4 @@ echo "  CPPFLAGS = $CPPFLAGS"
 echo "  LDFLAGS  = $LDFLAGS"
 echo "  LIBS     = $LIBS"
 echo ""
+

@@ -39,9 +39,6 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
-/* Define on System V Release 4.  */
-#undef SVR4
-
 /* Define if you can safely include both <sys/time.h> and <time.h>.  */
 #undef TIME_WITH_SYS_TIME
 
@@ -51,118 +48,6 @@
 
 /* Define if the X Window System is missing or not being used.  */
 #undef X_DISPLAY_MISSING
-
-/* Define to empty if the keyword does not work.  */
-#undef const
-
-/* Define if you don't have vprintf but do have _doprnt.  */
-#undef HAVE_DOPRNT
-
-/* Define if you have <sys/wait.h> that is POSIX.1 compatible.  */
-#undef HAVE_SYS_WAIT_H
-
-/* Define if you have the vprintf function.  */
-#undef HAVE_VPRINTF
-
-/* Define to `int' if <sys/types.h> doesn't define.  */
-#undef mode_t
-
-/* Define to `int' if <sys/types.h> doesn't define.  */
-#undef pid_t
-
-/* Define as the return type of signal handlers (int or void).  */
-#undef RETSIGTYPE
-
-/* Define to `unsigned' if <sys/types.h> doesn't define.  */
-#undef size_t
-
-/* Define if you have the ANSI C header files.  */
-#undef STDC_HEADERS
-
-/* Define if your processor stores words with the most significant
-   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
-#undef WORDS_BIGENDIAN
-
-/* Define on System V Release 4.  */
-#undef SVR4
-
-/* Define if you can safely include both <sys/time.h> and <time.h>.  */
-#undef TIME_WITH_SYS_TIME
-
-/* Define if the X Window System is missing or not being used.  */
-#undef X_DISPLAY_MISSING
-
-/* Define if you have Posix thread methods.  */
-#undef HasPTHREADS
-
-/* Define if you have X11 library */
-#undef HasX11
-
-/* Include LZW compression */
-#undef HasLZW
-
-/* X11 server supports shape extension */
-#undef HasShape
-
-/* X11 server supports shared memory extension */
-#undef HasSharedMemory
-
-/* Increase max color value from 255 to 65535 */
-#undef QuantumLeap
-
-/* Location of X11 RGB database */
-#undef RGBColorDatabase
-
-/* Define if you have the bzip2 library */
-#undef HasBZLIB
-
-/* Define if you have Display Postscript */
-#undef HasDPS
-
-/* Define if you have FlashPIX library */
-#undef HasFPX
-
-/* Define if you have HDF library */
-#undef HasHDF
-
-/* Define if you have JBIG library */
-#undef HasJBIG
-
-/* Define if you have JPEG library */
-#undef HasJPEG
-
-/* Define if you have PNG library */
-#undef HasPNG
-
-/* Define if you have TIFF library */
-#undef HasTIFF
-
-/* Define if you have FreeType (TrueType font) library */
-#undef HasTTF
-
-/* Define to specify default TrueType font path. */
-#undef TT_FONT_PATH
-
-/* Define if you have the SFIO mmap-based stdio library emulation */
-#undef HasSFIO
-
-/* Define if you have zlib compression library */
-#undef HasZLIB
-
-/* Define if you have sys_errlist[] in libc */
-#undef HAVE_SYS_ERRLIST
-
-/* Define if you have SVR4 style pty allocation (/dev/ptmx) */
-#undef HAVE_PTMX
-
-/* Define directory where ImageMagick/delegates.h lives. (default /usr/local/share) */
-#undef DelegatePath
-
-/* Define if you have the POSIX.4 clock_gettime function.  */
-#undef HAVE_CLOCK_GETTIME
-
-/* Pixel cache threshold (default 80MB)*/
-#undef PixelCacheThreshold
 
 /* The number of bytes in a int.  */
 #undef SIZEOF_INT
@@ -260,6 +145,78 @@
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
 
+/* Define if using libltdl to create dynamically loadable modules */
+#undef HasLTDL
+
 /* Define if using the dmalloc debugging malloc package */
 #undef WITH_DMALLOC
+
+/* Include LZW compression */
+#undef HasLZW
+
+/* Increase max color value from 255 to 65535 */
+#undef QuantumLeap
+
+/* Pixel cache threshold (default 80MB) */
+#undef PixelCacheThreshold
+
+/* Define to specify default TrueType font path. */
+#undef TT_FONT_PATH
+
+/* Define on System V Release 4. */
+#undef SVR4
+
+/* Define if you have sys_errlist in libc */
+#undef HAVE_SYS_ERRLIST
+
+/* Location of X11 RGB database */
+#undef RGBColorDatabase
+
+/* Define if you have Posix thread methods. */
+#undef HasPTHREADS
+
+/* Define if you have the SFIO mmap-based stdio library emulation */
+#undef HasSFIO
+
+/* Define if you have zlib compression library */
+#undef HasZLIB
+
+/* Define if you have the bzip2 library */
+#undef HasBZLIB
+
+/* Define if you have X11 library */
+#undef HasX11
+
+/* X11 server supports shared memory extension */
+#undef HasSharedMemory
+
+/* X11 server supports shape extension */
+#undef HasShape
+
+/* Define if you have Display Postscript */
+#undef HasDPS
+
+/* Define if you have FlashPIX library */
+#undef HasFPX
+
+/* Define if you have PNG library */
+#undef HasPNG
+
+/* Define if you have JPEG library */
+#undef HasJPEG
+
+/* Define if you have FreeType (TrueType font) library */
+#undef HasTTF
+
+/* Define if you have TIFF library */
+#undef HasTIFF
+
+/* Define if you have HDF library */
+#undef HasHDF
+
+/* Define if you have JBIG library */
+#undef HasJBIG
+
+/* Define directory where ImageMagick/delegates.h lives. */
+#undef DelegatePath
 

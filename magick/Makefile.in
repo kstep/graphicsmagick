@@ -126,6 +126,24 @@ INCLTDL = @INCLTDL@
 LDFLAGS = @LDFLAGS@
 LIBLTDL = @LIBLTDL@
 LIBTOOL = @LIBTOOL@
+LIB_BZLIB = @LIB_BZLIB@
+LIB_DL = @LIB_DL@
+LIB_DPS = @LIB_DPS@
+LIB_FPX = @LIB_FPX@
+LIB_HDF = @LIB_HDF@
+LIB_JBIG = @LIB_JBIG@
+LIB_JPEG = @LIB_JPEG@
+LIB_LF = @LIB_LF@
+LIB_MATH = @LIB_MATH@
+LIB_PNG = @LIB_PNG@
+LIB_SFIO = @LIB_SFIO@
+LIB_THREAD = @LIB_THREAD@
+LIB_TIFF = @LIB_TIFF@
+LIB_TTF = @LIB_TTF@
+LIB_X11 = @LIB_X11@
+LIB_XEXT = @LIB_XEXT@
+LIB_XT = @LIB_XT@
+LIB_ZLIB = @LIB_ZLIB@
 LN_S = @LN_S@
 LPDelegate = @LPDelegate@
 LZWDecodeDelegate = @LZWDecodeDelegate@
@@ -163,8 +181,9 @@ X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 ZipDelegate = @ZipDelegate@
 
-AUTOMAKE_OPTIONS = 1.2 foreign
+AUTOMAKE_OPTIONS = 1.4 foreign
 
+# Shared libraries built in this directory
 lib_LTLIBRARIES = libMagick.la
 
 MAJOR_VERSION = @MAJOR_VERSION@
@@ -174,19 +193,344 @@ MICRO_VERSION = @MICRO_VERSION@
 INCLUDES = -I$(top_srcdir)
 
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
+@WITH_MODULES_TRUE@libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c blob.c cache.c   cache_io.c colors.c compress.c decorate.c delegates.c display.c draw.c   effects.c enhance.c error.c gems.c gradation.c histogram.c html.c image.c   label.c magick.c map.c matte.c memory.c monitor.c montage.c quantize.c   segment.c shear.c signature.c stegano.c timer.c transform.c ttf.c   utility.c widget.c xwindows.c zoom.c
+@WITH_MODULES_FALSE@libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c bim.c blob.c bmp.c   cache.c cache_io.c cmyk.c colors.c compress.c dcm.c decorate.c delegates.c   display.c dps.c draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c   gems.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c   image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c   miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c pdb.c   pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c   psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c sgi.c   shear.c signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c   transform.c ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c wbmp.c   widget.c x.c xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c
 
-# Library sources
-libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c attributes.c avs.c   bim.c blob.c bmp.c cache.c cache_io.c cmyk.c colors.c compress.c dcm.c   decorate.c delegates.c display.c dps.c draw.c effects.c enhance.c ept.c   error.c fax.c fits.c fpx.c gems.c gif.c gradation.c gray.c hdf.c histogram.c   html.c icc.c icon.c image.c iptc.c jbig.c jpeg.c label.c logo.c magick.c   map.c matte.c memory.c miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c   pcl.c pcx.c pdb.c pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c   ps2.c ps3.c psd.c pwp.c quantize.c rgb.c rla.c rle.c segment.c sct.c sfw.c   sgi.c shear.c signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c timer.c   transform.c ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c wbmp.c   widget.c x.c xbm.c xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c
+libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_TTF@ @LIB_XEXT@ @LIB_XT@   @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@
 
 
 # Source files not used for Unix library but which are distributed
 EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
 
+#
+# Libtool Modules
+#
+
+# Where modules are installed
+pkgdir = $(libdir)/ImageMagick/modules/coders
+@WITH_MODULES_TRUE@pkg_LTLIBRARIES = avs.la bmp.la cmyk.la dcm.la dps.la ept.la fax.la fpx.la   fits.la gif.la gray.la hdf.la icc.la icon.la iptc.la jbig.la jpeg.la   logo.la miff.la mono.la mtv.la null.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la   png.la pix.la plasma.la pnm.la preview.la ps.la ps2.la ps3.la psd.la   pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la sun.la tga.la  tiff.la tile.la   tim.la txt.la uil.la uyvy.la vicar.la vid.la viff.la wbmp.la x.la xbm.la   xc.la xpm.la xwd.la yuv.la bim.la
+@WITH_MODULES_FALSE@pkg_LTLIBRARIES = 
+
+# AVS module
+avs_la_SOURCES = avs.c
+avs_la_LDFLAGS = -no-undefined -module -avoid-version
+avs_la_LIBADD = 
+
+# BIM module
+bim_la_SOURCES = 8bim.c
+bim_la_LDFLAGS = -no-undefined -module -avoid-version
+bim_la_LIBADD = 
+
+# BMP module
+bmp_la_SOURCES = bmp.c
+bmp_la_LDFLAGS = -no-undefined -module -avoid-version
+bmp_la_LIBADD = 
+
+# CMYK module
+cmyk_la_SOURCES = cmyk.c
+cmyk_la_LDFLAGS = -no-undefined -module -avoid-version
+cmyk_la_LIBADD = 
+
+# DCM module
+dcm_la_SOURCES = dcm.c
+dcm_la_LDFLAGS = -no-undefined -module -avoid-version
+dcm_la_LIBADD = 
+
+# DPS module
+dps_la_SOURCES = dps.c
+dps_la_LDFLAGS = -no-undefined -module -avoid-version
+dps_la_LIBADD = @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@
+
+# EPT module
+ept_la_SOURCES = ept.c
+ept_la_LDFLAGS = -no-undefined -module -avoid-version
+ept_la_LIBADD = 
+
+# FAX module
+fax_la_SOURCES = fax.c
+fax_la_LDFLAGS = -no-undefined -module -avoid-version
+fax_la_LIBADD = 
+
+# FITS module
+fits_la_SOURCES = fits.c
+fits_la_LDFLAGS = -no-undefined -module -avoid-version
+fits_la_LIBADD = 
+
+# FPX module
+fpx_la_SOURCES = fpx.c
+fpx_la_LDFLAGS = -no-undefined -module -avoid-version
+fpx_la_LIBADD = @LIB_FPX@
+
+# GIF module
+gif_la_SOURCES = gif.c
+gif_la_LDFLAGS = -no-undefined -module -avoid-version
+gif_la_LIBADD = 
+
+# GRAY module
+gray_la_SOURCES = gray.c
+gray_la_LDFLAGS = -no-undefined -module -avoid-version
+gray_la_LIBADD = 
+
+# HDF module
+hdf_la_SOURCES = hdf.c
+hdf_la_LDFLAGS = -no-undefined -module -avoid-version
+hdf_la_LIBADD = @LIB_HDF@ @LIB_JPEG@ @LIB_ZLIB@
+
+# ICC module
+icc_la_SOURCES = icc.c
+icc_la_LDFLAGS = -no-undefined -module -avoid-version
+icc_la_LIBADD = 
+
+# ICON module
+icon_la_SOURCES = icon.c
+icon_la_LDFLAGS = -no-undefined -module -avoid-version
+icon_la_LIBADD = 
+
+# IPTC module
+iptc_la_SOURCES = iptc.c
+iptc_la_LDFLAGS = -no-undefined -module -avoid-version
+iptc_la_LIBADD = 
+
+# JBIG module
+jbig_la_SOURCES = jbig.c
+jbig_la_LDFLAGS = -no-undefined -module -avoid-version
+jbig_la_LIBADD = @LIB_JBIG@
+
+# JPEG module
+jpeg_la_SOURCES = jpeg.c
+jpeg_la_LDFLAGS = -no-undefined -module -avoid-version
+jpeg_la_LIBADD = @LIB_JPEG@
+
+# LOGO module
+logo_la_SOURCES = logo.c
+logo_la_LDFLAGS = -no-undefined -module -avoid-version
+logo_la_LIBADD = 
+
+# MIFF module
+miff_la_SOURCES = miff.c
+miff_la_LDFLAGS = -no-undefined -module -avoid-version
+miff_la_LIBADD = 
+
+# MONO module
+mono_la_SOURCES = mono.c
+mono_la_LDFLAGS = -no-undefined -module -avoid-version
+mono_la_LIBADD = 
+
+# MTV module
+mtv_la_SOURCES = mtv.c
+mtv_la_LDFLAGS = -no-undefined -module -avoid-version
+mtv_la_LIBADD = 
+
+# NULL module
+null_la_SOURCES = null.c
+null_la_LDFLAGS = -no-undefined -module -avoid-version
+null_la_LIBADD = 
+
+# PCD module
+pcd_la_SOURCES = pcd.c
+pcd_la_LDFLAGS = -no-undefined -module -avoid-version
+pcd_la_LIBADD = 
+
+# PCL module
+pcl_la_SOURCES = pcl.c
+pcl_la_LDFLAGS = -no-undefined -module -avoid-version
+pcl_la_LIBADD = 
+
+# PCX module
+pcx_la_SOURCES = pcx.c
+pcx_la_LDFLAGS = -no-undefined -module -avoid-version
+pcx_la_LIBADD = 
+
+# PDB module
+pdb_la_SOURCES = pdb.c
+pdb_la_LDFLAGS = -no-undefined -module -avoid-version
+pdb_la_LIBADD = 
+
+# PDF module
+pdf_la_SOURCES = pdf.c
+pdf_la_LDFLAGS = -no-undefined -module -avoid-version
+pdf_la_LIBADD = 
+
+# PICT module
+pict_la_SOURCES = pict.c
+pict_la_LDFLAGS = -no-undefined -module -avoid-version
+pict_la_LIBADD = 
+
+# PIX module
+pix_la_SOURCES = pix.c
+pix_la_LDFLAGS = -no-undefined -module -avoid-version
+pix_la_LIBADD = 
+
+# PNG module
+png_la_SOURCES = png.c
+png_la_LDFLAGS = -no-undefined -module -avoid-version
+png_la_LIBADD = @LIB_PNG@ @LIB_ZLIB@
+
+# PLASMA module
+plasma_la_SOURCES = plasma.c
+plasma_la_LDFLAGS = -no-undefined -module -avoid-version
+plasma_la_LIBADD = 
+
+# PNM module
+pnm_la_SOURCES = pnm.c
+pnm_la_LDFLAGS = -no-undefined -module -avoid-version
+pnm_la_LIBADD = 
+
+# PREVIEW module
+preview_la_SOURCES = preview.c
+preview_la_LDFLAGS = -no-undefined -module -avoid-version
+preview_la_LIBADD = 
+
+# PS module
+ps_la_SOURCES = ps.c
+ps_la_LDFLAGS = -no-undefined -module -avoid-version
+ps_la_LIBADD = 
+
+# PS2 module
+ps2_la_SOURCES = ps2.c
+ps2_la_LDFLAGS = -no-undefined -module -avoid-version
+ps2_la_LIBADD = 
+
+# PS3 module
+ps3_la_SOURCES = ps3.c
+ps3_la_LDFLAGS = -no-undefined -module -avoid-version
+ps3_la_LIBADD = 
+
+# PSD module
+psd_la_SOURCES = psd.c
+psd_la_LDFLAGS = -no-undefined -module -avoid-version
+psd_la_LIBADD = 
+
+# PWP module
+pwp_la_SOURCES = pwp.c
+pwp_la_LDFLAGS = -no-undefined -module -avoid-version
+pwp_la_LIBADD = 
+
+# RGB module
+rgb_la_SOURCES = rgb.c
+rgb_la_LDFLAGS = -no-undefined -module -avoid-version
+rgb_la_LIBADD = 
+
+# RLA module
+rla_la_SOURCES = rla.c
+rla_la_LDFLAGS = -no-undefined -module -avoid-version
+rla_la_LIBADD = 
+
+# RLE module
+rle_la_SOURCES = rle.c
+rle_la_LDFLAGS = -no-undefined -module -avoid-version
+rle_la_LIBADD = 
+
+# SCT module
+sct_la_SOURCES = sct.c
+sct_la_LDFLAGS = -no-undefined -module -avoid-version
+sct_la_LIBADD = 
+
+# SFW module
+sfw_la_SOURCES = sfw.c
+sfw_la_LDFLAGS = -no-undefined -module -avoid-version
+sfw_la_LIBADD = 
+
+# SGI module
+sgi_la_SOURCES = sgi.c
+sgi_la_LDFLAGS = -no-undefined -module -avoid-version
+sgi_la_LIBADD = 
+
+# SUN module
+sun_la_SOURCES = sun.c
+sun_la_LDFLAGS = -no-undefined -module -avoid-version
+sun_la_LIBADD = 
+
+# TGA module
+tga_la_SOURCES = tga.c
+tga_la_LDFLAGS = -no-undefined -module -avoid-version
+tga_la_LIBADD = 
+
+# TIFF module
+tiff_la_SOURCES = tiff.c
+tiff_la_LDFLAGS = -no-undefined -module -avoid-version
+tiff_la_LIBADD = @LIB_TIFF@ @LIB_ZLIB@
+
+# TILE module
+tile_la_SOURCES = tile.c
+tile_la_LDFLAGS = -no-undefined -module -avoid-version
+tile_la_LIBADD = 
+
+# TIM module
+tim_la_SOURCES = tim.c
+tim_la_LDFLAGS = -no-undefined -module -avoid-version
+tim_la_LIBADD = 
+
+# TXT module
+txt_la_SOURCES = txt.c
+txt_la_LDFLAGS = -no-undefined -module -avoid-version
+txt_la_LIBADD = 
+
+# UIL module
+uil_la_SOURCES = uil.c
+uil_la_LDFLAGS = -no-undefined -module -avoid-version
+uil_la_LIBADD = 
+
+# UYVY module
+uyvy_la_SOURCES = uyvy.c
+uyvy_la_LDFLAGS = -no-undefined -module -avoid-version
+uyvy_la_LIBADD = 
+
+# VICAR module
+vicar_la_SOURCES = vicar.c
+vicar_la_LDFLAGS = -no-undefined -module -avoid-version
+vicar_la_LIBADD = 
+
+# VID module
+vid_la_SOURCES = vid.c
+vid_la_LDFLAGS = -no-undefined -module -avoid-version
+vid_la_LIBADD = 
+
+# VIFF module
+viff_la_SOURCES = viff.c
+viff_la_LDFLAGS = -no-undefined -module -avoid-version
+viff_la_LIBADD = 
+
+# WBMP module
+wbmp_la_SOURCES = wbmp.c
+wbmp_la_LDFLAGS = -no-undefined -module -avoid-version
+wbmp_la_LIBADD = 
+
+# X module
+x_la_SOURCES = x.c
+x_la_LDFLAGS = -no-undefined -module -avoid-version
+x_la_LIBADD = 
+
+# XBM module
+xbm_la_SOURCES = xbm.c
+xbm_la_LDFLAGS = -no-undefined -module -avoid-version
+xbm_la_LIBADD = 
+
+# XC module
+xc_la_SOURCES = xc.c
+xc_la_LDFLAGS = -no-undefined -module -avoid-version
+xc_la_LIBADD = 
+
+# XPM module
+xpm_la_SOURCES = xpm.c
+xpm_la_LDFLAGS = -no-undefined -module -avoid-version
+xpm_la_LIBADD = 
+
+# XWD module
+xwd_la_SOURCES = xwd.c
+xwd_la_LDFLAGS = -no-undefined -module -avoid-version
+xwd_la_LIBADD = 
+
+# YUV module
+yuv_la_SOURCES = yuv.c
+yuv_la_LDFLAGS = -no-undefined -module -avoid-version
+yuv_la_LIBADD = 
+
 # Binary scripts
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = magick.h api.h attributes.h classify.h image.h quantize.h 	gems.h blob.h compress.h utility.h cache.h cache_io.h monitor.h 	error.h memory.h delegates.h timer.h version.h xwindows.h config.h
+include_HEADERS = magick.h api.h classify.h image.h quantize.h gems.h 	blob.h compress.h utility.h cache.h cache_io.h monitor.h error.h 	memory.h delegates.h timer.h version.h xwindows.h config.h
 
 
 # Headers which are not installed but which are distributed
@@ -200,24 +544,164 @@ DEFS = @DEFS@ -I../
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =  Magick-config
-LTLIBRARIES =  $(lib_LTLIBRARIES)
+LTLIBRARIES =  $(lib_LTLIBRARIES) $(pkg_LTLIBRARIES)
 
 LIBS = @LIBS@
-libMagick_la_LIBADD = 
-libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo annotate.lo \
-attributes.lo avs.lo bim.lo blob.lo bmp.lo cache.lo cache_io.lo cmyk.lo \
-colors.lo compress.lo dcm.lo decorate.lo delegates.lo display.lo dps.lo \
-draw.lo effects.lo enhance.lo ept.lo error.lo fax.lo fits.lo fpx.lo \
-gems.lo gif.lo gradation.lo gray.lo hdf.lo histogram.lo html.lo icc.lo \
-icon.lo image.lo iptc.lo jbig.lo jpeg.lo label.lo logo.lo magick.lo \
-map.lo matte.lo memory.lo miff.lo monitor.lo mono.lo montage.lo mtv.lo \
-null.lo pcd.lo pcl.lo pcx.lo pdb.lo pdf.lo pict.lo pix.lo plasma.lo \
-png.lo pnm.lo preview.lo ps.lo ps2.lo ps3.lo psd.lo pwp.lo quantize.lo \
-rgb.lo rla.lo rle.lo segment.lo sct.lo sfw.lo sgi.lo shear.lo \
-signature.lo stegano.lo sun.lo tga.lo tiff.lo tile.lo tim.lo timer.lo \
-transform.lo ttf.lo txt.lo uil.lo utility.lo uyvy.lo vicar.lo vid.lo \
-viff.lo wbmp.lo widget.lo x.lo xbm.lo xc.lo xpm.lo xwd.lo xwindows.lo \
-yuv.lo zoom.lo
+libMagick_la_DEPENDENCIES = 
+@WITH_MODULES_TRUE@libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo \
+@WITH_MODULES_TRUE@annotate.lo blob.lo cache.lo cache_io.lo colors.lo \
+@WITH_MODULES_TRUE@compress.lo decorate.lo delegates.lo display.lo \
+@WITH_MODULES_TRUE@draw.lo effects.lo enhance.lo error.lo gems.lo \
+@WITH_MODULES_TRUE@gradation.lo histogram.lo html.lo image.lo label.lo \
+@WITH_MODULES_TRUE@magick.lo map.lo matte.lo memory.lo monitor.lo \
+@WITH_MODULES_TRUE@montage.lo quantize.lo segment.lo shear.lo \
+@WITH_MODULES_TRUE@signature.lo stegano.lo timer.lo transform.lo ttf.lo \
+@WITH_MODULES_TRUE@utility.lo widget.lo xwindows.lo zoom.lo
+@WITH_MODULES_FALSE@libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo \
+@WITH_MODULES_FALSE@annotate.lo avs.lo bim.lo blob.lo bmp.lo cache.lo \
+@WITH_MODULES_FALSE@cache_io.lo cmyk.lo colors.lo compress.lo dcm.lo \
+@WITH_MODULES_FALSE@decorate.lo delegates.lo display.lo dps.lo draw.lo \
+@WITH_MODULES_FALSE@effects.lo enhance.lo ept.lo error.lo fax.lo \
+@WITH_MODULES_FALSE@fits.lo fpx.lo gems.lo gif.lo gradation.lo gray.lo \
+@WITH_MODULES_FALSE@hdf.lo histogram.lo html.lo icc.lo icon.lo image.lo \
+@WITH_MODULES_FALSE@iptc.lo jbig.lo jpeg.lo label.lo logo.lo magick.lo \
+@WITH_MODULES_FALSE@map.lo matte.lo memory.lo miff.lo monitor.lo \
+@WITH_MODULES_FALSE@mono.lo montage.lo mtv.lo null.lo pcd.lo pcl.lo \
+@WITH_MODULES_FALSE@pcx.lo pdb.lo pdf.lo pict.lo pix.lo plasma.lo \
+@WITH_MODULES_FALSE@png.lo pnm.lo preview.lo ps.lo ps2.lo ps3.lo psd.lo \
+@WITH_MODULES_FALSE@pwp.lo quantize.lo rgb.lo rla.lo rle.lo segment.lo \
+@WITH_MODULES_FALSE@sct.lo sfw.lo sgi.lo shear.lo signature.lo \
+@WITH_MODULES_FALSE@stegano.lo sun.lo tga.lo tiff.lo tile.lo tim.lo \
+@WITH_MODULES_FALSE@timer.lo transform.lo ttf.lo txt.lo uil.lo \
+@WITH_MODULES_FALSE@utility.lo uyvy.lo vicar.lo vid.lo viff.lo wbmp.lo \
+@WITH_MODULES_FALSE@widget.lo x.lo xbm.lo xc.lo xpm.lo xwd.lo \
+@WITH_MODULES_FALSE@xwindows.lo yuv.lo zoom.lo
+avs_la_DEPENDENCIES = 
+avs_la_OBJECTS =  avs.lo
+bmp_la_DEPENDENCIES = 
+bmp_la_OBJECTS =  bmp.lo
+cmyk_la_DEPENDENCIES = 
+cmyk_la_OBJECTS =  cmyk.lo
+dcm_la_DEPENDENCIES = 
+dcm_la_OBJECTS =  dcm.lo
+dps_la_DEPENDENCIES = 
+dps_la_OBJECTS =  dps.lo
+ept_la_DEPENDENCIES = 
+ept_la_OBJECTS =  ept.lo
+fax_la_DEPENDENCIES = 
+fax_la_OBJECTS =  fax.lo
+fpx_la_DEPENDENCIES = 
+fpx_la_OBJECTS =  fpx.lo
+fits_la_DEPENDENCIES = 
+fits_la_OBJECTS =  fits.lo
+gif_la_DEPENDENCIES = 
+gif_la_OBJECTS =  gif.lo
+gray_la_DEPENDENCIES = 
+gray_la_OBJECTS =  gray.lo
+hdf_la_DEPENDENCIES = 
+hdf_la_OBJECTS =  hdf.lo
+icc_la_DEPENDENCIES = 
+icc_la_OBJECTS =  icc.lo
+icon_la_DEPENDENCIES = 
+icon_la_OBJECTS =  icon.lo
+iptc_la_DEPENDENCIES = 
+iptc_la_OBJECTS =  iptc.lo
+jbig_la_DEPENDENCIES = 
+jbig_la_OBJECTS =  jbig.lo
+jpeg_la_DEPENDENCIES = 
+jpeg_la_OBJECTS =  jpeg.lo
+logo_la_DEPENDENCIES = 
+logo_la_OBJECTS =  logo.lo
+miff_la_DEPENDENCIES = 
+miff_la_OBJECTS =  miff.lo
+mono_la_DEPENDENCIES = 
+mono_la_OBJECTS =  mono.lo
+mtv_la_DEPENDENCIES = 
+mtv_la_OBJECTS =  mtv.lo
+null_la_DEPENDENCIES = 
+null_la_OBJECTS =  null.lo
+pcd_la_DEPENDENCIES = 
+pcd_la_OBJECTS =  pcd.lo
+pcl_la_DEPENDENCIES = 
+pcl_la_OBJECTS =  pcl.lo
+pcx_la_DEPENDENCIES = 
+pcx_la_OBJECTS =  pcx.lo
+pdb_la_DEPENDENCIES = 
+pdb_la_OBJECTS =  pdb.lo
+pdf_la_DEPENDENCIES = 
+pdf_la_OBJECTS =  pdf.lo
+pict_la_DEPENDENCIES = 
+pict_la_OBJECTS =  pict.lo
+png_la_DEPENDENCIES = 
+png_la_OBJECTS =  png.lo
+pix_la_DEPENDENCIES = 
+pix_la_OBJECTS =  pix.lo
+plasma_la_DEPENDENCIES = 
+plasma_la_OBJECTS =  plasma.lo
+pnm_la_DEPENDENCIES = 
+pnm_la_OBJECTS =  pnm.lo
+preview_la_DEPENDENCIES = 
+preview_la_OBJECTS =  preview.lo
+ps_la_DEPENDENCIES = 
+ps_la_OBJECTS =  ps.lo
+ps2_la_DEPENDENCIES = 
+ps2_la_OBJECTS =  ps2.lo
+ps3_la_DEPENDENCIES = 
+ps3_la_OBJECTS =  ps3.lo
+psd_la_DEPENDENCIES = 
+psd_la_OBJECTS =  psd.lo
+pwp_la_DEPENDENCIES = 
+pwp_la_OBJECTS =  pwp.lo
+rgb_la_DEPENDENCIES = 
+rgb_la_OBJECTS =  rgb.lo
+rla_la_DEPENDENCIES = 
+rla_la_OBJECTS =  rla.lo
+rle_la_DEPENDENCIES = 
+rle_la_OBJECTS =  rle.lo
+sct_la_DEPENDENCIES = 
+sct_la_OBJECTS =  sct.lo
+sfw_la_DEPENDENCIES = 
+sfw_la_OBJECTS =  sfw.lo
+sgi_la_DEPENDENCIES = 
+sgi_la_OBJECTS =  sgi.lo
+sun_la_DEPENDENCIES = 
+sun_la_OBJECTS =  sun.lo
+tga_la_DEPENDENCIES = 
+tga_la_OBJECTS =  tga.lo
+tiff_la_DEPENDENCIES = 
+tiff_la_OBJECTS =  tiff.lo
+tile_la_DEPENDENCIES = 
+tile_la_OBJECTS =  tile.lo
+tim_la_DEPENDENCIES = 
+tim_la_OBJECTS =  tim.lo
+txt_la_DEPENDENCIES = 
+txt_la_OBJECTS =  txt.lo
+uil_la_DEPENDENCIES = 
+uil_la_OBJECTS =  uil.lo
+uyvy_la_DEPENDENCIES = 
+uyvy_la_OBJECTS =  uyvy.lo
+vicar_la_DEPENDENCIES = 
+vicar_la_OBJECTS =  vicar.lo
+vid_la_DEPENDENCIES = 
+vid_la_OBJECTS =  vid.lo
+viff_la_DEPENDENCIES = 
+viff_la_OBJECTS =  viff.lo
+wbmp_la_DEPENDENCIES = 
+wbmp_la_OBJECTS =  wbmp.lo
+x_la_DEPENDENCIES = 
+x_la_OBJECTS =  x.lo
+xbm_la_DEPENDENCIES = 
+xbm_la_OBJECTS =  xbm.lo
+xc_la_DEPENDENCIES = 
+xc_la_OBJECTS =  xc.lo
+xpm_la_DEPENDENCIES = 
+xpm_la_OBJECTS =  xpm.lo
+xwd_la_DEPENDENCIES = 
+xwd_la_OBJECTS =  xwd.lo
+yuv_la_DEPENDENCIES = 
+yuv_la_OBJECTS =  yuv.lo
+bim_la_DEPENDENCIES = 
+bim_la_OBJECTS =  8bim.lo
 SCRIPTS =  $(bin_SCRIPTS)
 
 CFLAGS = @CFLAGS@
@@ -235,16 +719,39 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libMagick_la_SOURCES) $(EXTRA_libMagick_la_SOURCES)
-OBJECTS = $(libMagick_la_OBJECTS)
+DEP_FILES =  .deps/8bim.P .deps/PreRvIcccm.P .deps/animate.P \
+.deps/annotate.P .deps/avs.P .deps/bim.P .deps/blob.P .deps/bmp.P \
+.deps/cache.P .deps/cache_io.P .deps/cmyk.P .deps/colors.P \
+.deps/compress.P .deps/dcm.P .deps/decorate.P .deps/delegates.P \
+.deps/display.P .deps/dps.P .deps/draw.P .deps/effects.P \
+.deps/enhance.P .deps/ept.P .deps/error.P .deps/fax.P .deps/fits.P \
+.deps/fpx.P .deps/gems.P .deps/gif.P .deps/gradation.P .deps/gray.P \
+.deps/hdf.P .deps/histogram.P .deps/html.P .deps/icc.P .deps/icon.P \
+.deps/image.P .deps/iptc.P .deps/jbig.P .deps/jpeg.P .deps/label.P \
+.deps/logo.P .deps/mac.P .deps/magick.P .deps/map.P .deps/matte.P \
+.deps/memory.P .deps/miff.P .deps/monitor.P .deps/mono.P \
+.deps/montage.P .deps/mtv.P .deps/nt.P .deps/null.P .deps/pcd.P \
+.deps/pcl.P .deps/pcx.P .deps/pdb.P .deps/pdf.P .deps/pict.P \
+.deps/pix.P .deps/plasma.P .deps/png.P .deps/pnm.P .deps/preview.P \
+.deps/ps.P .deps/ps2.P .deps/ps3.P .deps/psd.P .deps/pwp.P \
+.deps/quantize.P .deps/rgb.P .deps/rla.P .deps/rle.P .deps/sct.P \
+.deps/segment.P .deps/sfw.P .deps/sgi.P .deps/shear.P .deps/signature.P \
+.deps/stegano.P .deps/sun.P .deps/tga.P .deps/tiff.P .deps/tile.P \
+.deps/tim.P .deps/timer.P .deps/transform.P .deps/ttf.P .deps/txt.P \
+.deps/uil.P .deps/utility.P .deps/uyvy.P .deps/vicar.P .deps/vid.P \
+.deps/viff.P .deps/vms.P .deps/wbmp.P .deps/widget.P .deps/x.P \
+.deps/xbm.P .deps/xc.P .deps/xpm.P .deps/xwd.P .deps/xwindows.P \
+.deps/yuv.P .deps/zoom.P
+SOURCES = $(libMagick_la_SOURCES) $(EXTRA_libMagick_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(cmyk_la_SOURCES) $(dcm_la_SOURCES) $(dps_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fpx_la_SOURCES) $(fits_la_SOURCES) $(gif_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(icc_la_SOURCES) $(icon_la_SOURCES) $(iptc_la_SOURCES) $(jbig_la_SOURCES) $(jpeg_la_SOURCES) $(logo_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mtv_la_SOURCES) $(null_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(png_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(sun_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES) $(bim_la_SOURCES)
+OBJECTS = $(libMagick_la_OBJECTS) $(avs_la_OBJECTS) $(bmp_la_OBJECTS) $(cmyk_la_OBJECTS) $(dcm_la_OBJECTS) $(dps_la_OBJECTS) $(ept_la_OBJECTS) $(fax_la_OBJECTS) $(fpx_la_OBJECTS) $(fits_la_OBJECTS) $(gif_la_OBJECTS) $(gray_la_OBJECTS) $(hdf_la_OBJECTS) $(icc_la_OBJECTS) $(icon_la_OBJECTS) $(iptc_la_OBJECTS) $(jbig_la_OBJECTS) $(jpeg_la_OBJECTS) $(logo_la_OBJECTS) $(miff_la_OBJECTS) $(mono_la_OBJECTS) $(mtv_la_OBJECTS) $(null_la_OBJECTS) $(pcd_la_OBJECTS) $(pcl_la_OBJECTS) $(pcx_la_OBJECTS) $(pdb_la_OBJECTS) $(pdf_la_OBJECTS) $(pict_la_OBJECTS) $(png_la_OBJECTS) $(pix_la_OBJECTS) $(plasma_la_OBJECTS) $(pnm_la_OBJECTS) $(preview_la_OBJECTS) $(ps_la_OBJECTS) $(ps2_la_OBJECTS) $(ps3_la_OBJECTS) $(psd_la_OBJECTS) $(pwp_la_OBJECTS) $(rgb_la_OBJECTS) $(rla_la_OBJECTS) $(rle_la_OBJECTS) $(sct_la_OBJECTS) $(sfw_la_OBJECTS) $(sgi_la_OBJECTS) $(sun_la_OBJECTS) $(tga_la_OBJECTS) $(tiff_la_OBJECTS) $(tile_la_OBJECTS) $(tim_la_OBJECTS) $(txt_la_OBJECTS) $(uil_la_OBJECTS) $(uyvy_la_OBJECTS) $(vicar_la_OBJECTS) $(vid_la_OBJECTS) $(viff_la_OBJECTS) $(wbmp_la_OBJECTS) $(x_la_OBJECTS) $(xbm_la_OBJECTS) $(xc_la_OBJECTS) $(xpm_la_OBJECTS) $(xwd_la_OBJECTS) $(yuv_la_OBJECTS) $(bim_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps magick/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign magick/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -304,8 +811,30 @@ uninstall-libLTLIBRARIES:
 	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
-.c.o:
-	$(COMPILE) -c $<
+mostlyclean-pkgLTLIBRARIES:
+
+clean-pkgLTLIBRARIES:
+	-test -z "$(pkg_LTLIBRARIES)" || rm -f $(pkg_LTLIBRARIES)
+
+distclean-pkgLTLIBRARIES:
+
+maintainer-clean-pkgLTLIBRARIES:
+
+install-pkgLTLIBRARIES: $(pkg_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgdir)
+	@list='$(pkg_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(pkgdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(pkgdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-pkgLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(pkg_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(pkgdir)/$$p; \
+	done
 
 # FIXME: We should only use cygpath when building on Windows,
 # and only if it is available.
@@ -329,9 +858,6 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-.c.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
 .s.lo:
 	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
 
@@ -350,6 +876,195 @@ maintainer-clean-libtool:
 
 libMagick.la: $(libMagick_la_OBJECTS) $(libMagick_la_DEPENDENCIES)
 	$(LINK) -rpath $(libdir) $(libMagick_la_LDFLAGS) $(libMagick_la_OBJECTS) $(libMagick_la_LIBADD) $(LIBS)
+
+avs.la: $(avs_la_OBJECTS) $(avs_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(avs_la_LDFLAGS) $(avs_la_OBJECTS) $(avs_la_LIBADD) $(LIBS)
+
+bmp.la: $(bmp_la_OBJECTS) $(bmp_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(bmp_la_LDFLAGS) $(bmp_la_OBJECTS) $(bmp_la_LIBADD) $(LIBS)
+
+cmyk.la: $(cmyk_la_OBJECTS) $(cmyk_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(cmyk_la_LDFLAGS) $(cmyk_la_OBJECTS) $(cmyk_la_LIBADD) $(LIBS)
+
+dcm.la: $(dcm_la_OBJECTS) $(dcm_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(dcm_la_LDFLAGS) $(dcm_la_OBJECTS) $(dcm_la_LIBADD) $(LIBS)
+
+dps.la: $(dps_la_OBJECTS) $(dps_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(dps_la_LDFLAGS) $(dps_la_OBJECTS) $(dps_la_LIBADD) $(LIBS)
+
+ept.la: $(ept_la_OBJECTS) $(ept_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(ept_la_LDFLAGS) $(ept_la_OBJECTS) $(ept_la_LIBADD) $(LIBS)
+
+fax.la: $(fax_la_OBJECTS) $(fax_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(fax_la_LDFLAGS) $(fax_la_OBJECTS) $(fax_la_LIBADD) $(LIBS)
+
+fpx.la: $(fpx_la_OBJECTS) $(fpx_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(fpx_la_LDFLAGS) $(fpx_la_OBJECTS) $(fpx_la_LIBADD) $(LIBS)
+
+fits.la: $(fits_la_OBJECTS) $(fits_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(fits_la_LDFLAGS) $(fits_la_OBJECTS) $(fits_la_LIBADD) $(LIBS)
+
+gif.la: $(gif_la_OBJECTS) $(gif_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(gif_la_LDFLAGS) $(gif_la_OBJECTS) $(gif_la_LIBADD) $(LIBS)
+
+gray.la: $(gray_la_OBJECTS) $(gray_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(gray_la_LDFLAGS) $(gray_la_OBJECTS) $(gray_la_LIBADD) $(LIBS)
+
+hdf.la: $(hdf_la_OBJECTS) $(hdf_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(hdf_la_LDFLAGS) $(hdf_la_OBJECTS) $(hdf_la_LIBADD) $(LIBS)
+
+icc.la: $(icc_la_OBJECTS) $(icc_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(icc_la_LDFLAGS) $(icc_la_OBJECTS) $(icc_la_LIBADD) $(LIBS)
+
+icon.la: $(icon_la_OBJECTS) $(icon_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(icon_la_LDFLAGS) $(icon_la_OBJECTS) $(icon_la_LIBADD) $(LIBS)
+
+iptc.la: $(iptc_la_OBJECTS) $(iptc_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(iptc_la_LDFLAGS) $(iptc_la_OBJECTS) $(iptc_la_LIBADD) $(LIBS)
+
+jbig.la: $(jbig_la_OBJECTS) $(jbig_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(jbig_la_LDFLAGS) $(jbig_la_OBJECTS) $(jbig_la_LIBADD) $(LIBS)
+
+jpeg.la: $(jpeg_la_OBJECTS) $(jpeg_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(jpeg_la_LDFLAGS) $(jpeg_la_OBJECTS) $(jpeg_la_LIBADD) $(LIBS)
+
+logo.la: $(logo_la_OBJECTS) $(logo_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(logo_la_LDFLAGS) $(logo_la_OBJECTS) $(logo_la_LIBADD) $(LIBS)
+
+miff.la: $(miff_la_OBJECTS) $(miff_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(miff_la_LDFLAGS) $(miff_la_OBJECTS) $(miff_la_LIBADD) $(LIBS)
+
+mono.la: $(mono_la_OBJECTS) $(mono_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(mono_la_LDFLAGS) $(mono_la_OBJECTS) $(mono_la_LIBADD) $(LIBS)
+
+mtv.la: $(mtv_la_OBJECTS) $(mtv_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(mtv_la_LDFLAGS) $(mtv_la_OBJECTS) $(mtv_la_LIBADD) $(LIBS)
+
+null.la: $(null_la_OBJECTS) $(null_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(null_la_LDFLAGS) $(null_la_OBJECTS) $(null_la_LIBADD) $(LIBS)
+
+pcd.la: $(pcd_la_OBJECTS) $(pcd_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(pcd_la_LDFLAGS) $(pcd_la_OBJECTS) $(pcd_la_LIBADD) $(LIBS)
+
+pcl.la: $(pcl_la_OBJECTS) $(pcl_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(pcl_la_LDFLAGS) $(pcl_la_OBJECTS) $(pcl_la_LIBADD) $(LIBS)
+
+pcx.la: $(pcx_la_OBJECTS) $(pcx_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(pcx_la_LDFLAGS) $(pcx_la_OBJECTS) $(pcx_la_LIBADD) $(LIBS)
+
+pdb.la: $(pdb_la_OBJECTS) $(pdb_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(pdb_la_LDFLAGS) $(pdb_la_OBJECTS) $(pdb_la_LIBADD) $(LIBS)
+
+pdf.la: $(pdf_la_OBJECTS) $(pdf_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(pdf_la_LDFLAGS) $(pdf_la_OBJECTS) $(pdf_la_LIBADD) $(LIBS)
+
+pict.la: $(pict_la_OBJECTS) $(pict_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(pict_la_LDFLAGS) $(pict_la_OBJECTS) $(pict_la_LIBADD) $(LIBS)
+
+png.la: $(png_la_OBJECTS) $(png_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(png_la_LDFLAGS) $(png_la_OBJECTS) $(png_la_LIBADD) $(LIBS)
+
+pix.la: $(pix_la_OBJECTS) $(pix_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(pix_la_LDFLAGS) $(pix_la_OBJECTS) $(pix_la_LIBADD) $(LIBS)
+
+plasma.la: $(plasma_la_OBJECTS) $(plasma_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(plasma_la_LDFLAGS) $(plasma_la_OBJECTS) $(plasma_la_LIBADD) $(LIBS)
+
+pnm.la: $(pnm_la_OBJECTS) $(pnm_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(pnm_la_LDFLAGS) $(pnm_la_OBJECTS) $(pnm_la_LIBADD) $(LIBS)
+
+preview.la: $(preview_la_OBJECTS) $(preview_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(preview_la_LDFLAGS) $(preview_la_OBJECTS) $(preview_la_LIBADD) $(LIBS)
+
+ps.la: $(ps_la_OBJECTS) $(ps_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(ps_la_LDFLAGS) $(ps_la_OBJECTS) $(ps_la_LIBADD) $(LIBS)
+
+ps2.la: $(ps2_la_OBJECTS) $(ps2_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(ps2_la_LDFLAGS) $(ps2_la_OBJECTS) $(ps2_la_LIBADD) $(LIBS)
+
+ps3.la: $(ps3_la_OBJECTS) $(ps3_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(ps3_la_LDFLAGS) $(ps3_la_OBJECTS) $(ps3_la_LIBADD) $(LIBS)
+
+psd.la: $(psd_la_OBJECTS) $(psd_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(psd_la_LDFLAGS) $(psd_la_OBJECTS) $(psd_la_LIBADD) $(LIBS)
+
+pwp.la: $(pwp_la_OBJECTS) $(pwp_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(pwp_la_LDFLAGS) $(pwp_la_OBJECTS) $(pwp_la_LIBADD) $(LIBS)
+
+rgb.la: $(rgb_la_OBJECTS) $(rgb_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(rgb_la_LDFLAGS) $(rgb_la_OBJECTS) $(rgb_la_LIBADD) $(LIBS)
+
+rla.la: $(rla_la_OBJECTS) $(rla_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(rla_la_LDFLAGS) $(rla_la_OBJECTS) $(rla_la_LIBADD) $(LIBS)
+
+rle.la: $(rle_la_OBJECTS) $(rle_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(rle_la_LDFLAGS) $(rle_la_OBJECTS) $(rle_la_LIBADD) $(LIBS)
+
+sct.la: $(sct_la_OBJECTS) $(sct_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(sct_la_LDFLAGS) $(sct_la_OBJECTS) $(sct_la_LIBADD) $(LIBS)
+
+sfw.la: $(sfw_la_OBJECTS) $(sfw_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(sfw_la_LDFLAGS) $(sfw_la_OBJECTS) $(sfw_la_LIBADD) $(LIBS)
+
+sgi.la: $(sgi_la_OBJECTS) $(sgi_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(sgi_la_LDFLAGS) $(sgi_la_OBJECTS) $(sgi_la_LIBADD) $(LIBS)
+
+sun.la: $(sun_la_OBJECTS) $(sun_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(sun_la_LDFLAGS) $(sun_la_OBJECTS) $(sun_la_LIBADD) $(LIBS)
+
+tga.la: $(tga_la_OBJECTS) $(tga_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(tga_la_LDFLAGS) $(tga_la_OBJECTS) $(tga_la_LIBADD) $(LIBS)
+
+tiff.la: $(tiff_la_OBJECTS) $(tiff_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(tiff_la_LDFLAGS) $(tiff_la_OBJECTS) $(tiff_la_LIBADD) $(LIBS)
+
+tile.la: $(tile_la_OBJECTS) $(tile_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(tile_la_LDFLAGS) $(tile_la_OBJECTS) $(tile_la_LIBADD) $(LIBS)
+
+tim.la: $(tim_la_OBJECTS) $(tim_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(tim_la_LDFLAGS) $(tim_la_OBJECTS) $(tim_la_LIBADD) $(LIBS)
+
+txt.la: $(txt_la_OBJECTS) $(txt_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(txt_la_LDFLAGS) $(txt_la_OBJECTS) $(txt_la_LIBADD) $(LIBS)
+
+uil.la: $(uil_la_OBJECTS) $(uil_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(uil_la_LDFLAGS) $(uil_la_OBJECTS) $(uil_la_LIBADD) $(LIBS)
+
+uyvy.la: $(uyvy_la_OBJECTS) $(uyvy_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(uyvy_la_LDFLAGS) $(uyvy_la_OBJECTS) $(uyvy_la_LIBADD) $(LIBS)
+
+vicar.la: $(vicar_la_OBJECTS) $(vicar_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(vicar_la_LDFLAGS) $(vicar_la_OBJECTS) $(vicar_la_LIBADD) $(LIBS)
+
+vid.la: $(vid_la_OBJECTS) $(vid_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(vid_la_LDFLAGS) $(vid_la_OBJECTS) $(vid_la_LIBADD) $(LIBS)
+
+viff.la: $(viff_la_OBJECTS) $(viff_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(viff_la_LDFLAGS) $(viff_la_OBJECTS) $(viff_la_LIBADD) $(LIBS)
+
+wbmp.la: $(wbmp_la_OBJECTS) $(wbmp_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(wbmp_la_LDFLAGS) $(wbmp_la_OBJECTS) $(wbmp_la_LIBADD) $(LIBS)
+
+x.la: $(x_la_OBJECTS) $(x_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(x_la_LDFLAGS) $(x_la_OBJECTS) $(x_la_LIBADD) $(LIBS)
+
+xbm.la: $(xbm_la_OBJECTS) $(xbm_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(xbm_la_LDFLAGS) $(xbm_la_OBJECTS) $(xbm_la_LIBADD) $(LIBS)
+
+xc.la: $(xc_la_OBJECTS) $(xc_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(xc_la_LDFLAGS) $(xc_la_OBJECTS) $(xc_la_LIBADD) $(LIBS)
+
+xpm.la: $(xpm_la_OBJECTS) $(xpm_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(xpm_la_LDFLAGS) $(xpm_la_OBJECTS) $(xpm_la_LIBADD) $(LIBS)
+
+xwd.la: $(xwd_la_OBJECTS) $(xwd_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(xwd_la_LDFLAGS) $(xwd_la_OBJECTS) $(xwd_la_LIBADD) $(LIBS)
+
+yuv.la: $(yuv_la_OBJECTS) $(yuv_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(yuv_la_LDFLAGS) $(yuv_la_OBJECTS) $(yuv_la_LIBADD) $(LIBS)
+
+bim.la: $(bim_la_OBJECTS) $(bim_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(bim_la_LDFLAGS) $(bim_la_OBJECTS) $(bim_la_LIBADD) $(LIBS)
 
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
@@ -419,6 +1134,11 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = magick
 
 distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign magick/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -430,6 +1150,38 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+
+DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
+
+-include $(DEP_FILES)
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+	-rm -rf .deps
+
+maintainer-clean-depend:
+
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
 info-am:
 info: info-am
 dvi-am:
@@ -444,22 +1196,22 @@ all-recursive-am: config.h
 install-exec-am: install-libLTLIBRARIES install-binSCRIPTS
 install-exec: install-exec-am
 
-install-data-am: install-includeHEADERS
+install-data-am: install-pkgLTLIBRARIES install-includeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES uninstall-binSCRIPTS \
-		uninstall-includeHEADERS
+uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgLTLIBRARIES \
+		uninstall-binSCRIPTS uninstall-includeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(HEADERS) config.h
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
-		$(DESTDIR)$(includedir)
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(pkgdir) \
+		$(DESTDIR)$(bindir) $(DESTDIR)$(includedir)
 
 
 mostlyclean-generic:
@@ -472,28 +1224,32 @@ distclean-generic:
 
 maintainer-clean-generic:
 mostlyclean-am:  mostlyclean-hdr mostlyclean-libLTLIBRARIES \
-		mostlyclean-compile mostlyclean-libtool \
-		mostlyclean-tags mostlyclean-generic
+		mostlyclean-pkgLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
+		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-hdr clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-tags clean-generic mostlyclean-am
+clean-am:  clean-hdr clean-libLTLIBRARIES clean-pkgLTLIBRARIES \
+		clean-compile clean-libtool clean-tags clean-depend \
+		clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-hdr distclean-libLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-tags distclean-generic \
-		clean-am
+distclean-am:  distclean-hdr distclean-libLTLIBRARIES \
+		distclean-pkgLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-depend \
+		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
 maintainer-clean-am:  maintainer-clean-hdr \
 		maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-pkgLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-tags maintainer-clean-generic \
-		distclean-am
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -502,15 +1258,20 @@ maintainer-clean: maintainer-clean-am
 .PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
 mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
 clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES \
+mostlyclean-pkgLTLIBRARIES distclean-pkgLTLIBRARIES \
+clean-pkgLTLIBRARIES maintainer-clean-pkgLTLIBRARIES \
+uninstall-pkgLTLIBRARIES install-pkgLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool uninstall-binSCRIPTS install-binSCRIPTS \
 uninstall-includeHEADERS install-includeHEADERS tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
-install-exec-am install-exec install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all installdirs \
+distclean-tags clean-tags maintainer-clean-tags distdir \
+mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info-am info dvi-am dvi check check-am \
+installcheck-am installcheck all-recursive-am install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
