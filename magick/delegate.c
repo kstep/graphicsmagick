@@ -696,7 +696,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                 char
                   path[MaxTextExtent];
 
-                NTGhostscriptEXE(path,MaxTextExtent-1);
+                XPGhostscriptEXE(path,MaxTextExtent-1);
                 SubstituteString(&delegate_list->commands,"@PSDelegate@",path);
               }
 #endif

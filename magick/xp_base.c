@@ -1354,15 +1354,15 @@ MagickExport int NTGhostscriptLoadDLL(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method NTGhostscriptUnLoadDLL unloads the Ghostscript DLL if it is loaded.
+%   Method XPGhostscriptUnLoadDLL unloads the Ghostscript DLL if it is loaded.
 %
-%  The format of the NTGhostscriptUnLoadDLL method is:
+%  The format of the XPGhostscriptUnLoadDLL method is:
 %
-%      int NTGhostscriptUnLoadDLL(void)
+%      int XPGhostscriptUnLoadDLL(void)
 %
 %%
 */
-MagickExport int NTGhostscriptUnLoadDLL(void)
+MagickExport int XPGhostscriptUnLoadDLL(void)
 {
   if (gs_dll_handle != (void *) NULL)
     {
@@ -1473,14 +1473,14 @@ MagickExport char *XPRegistryKeyLookup(const char *key)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NTResourceToBlob returns a blob containing the contents of the
+%  Method XPResourceToBlob returns a blob containing the contents of the
 %  resource in the current executable specified by the id parameter. This
 %  is currently used to retrieve MGK files tha have been embedded into
 %  the various command line utilities.
 %
 %  The format of the telldir method is:
 %
-%      unsigned char *NTResourceToBlob(const char *id)
+%      unsigned char *XPResourceToBlob(const char *id)
 %
 %  A description of each parameter follows:
 %
@@ -1488,7 +1488,7 @@ MagickExport char *XPRegistryKeyLookup(const char *key)
 %
 %
 */
-MagickExport unsigned char *NTResourceToBlob(const char *id)
+MagickExport unsigned char *XPResourceToBlob(const char *id)
 {
   char
     directory[MaxTextExtent];
