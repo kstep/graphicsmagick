@@ -124,8 +124,6 @@ struct SemaphoreInfo
 MagickExport void AcquireSemaphore(SemaphoreInfo **semaphore_info,
   void (*exit)(void))
 {
-  assert(semaphore_info != (SemaphoreInfo **) NULL);
-  assert((*semaphore_info)->signature == MagickSignature);
 #if defined(HasPTHREADS)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
