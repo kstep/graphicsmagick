@@ -42,12 +42,12 @@
 #include <errno.h>
 #include <math.h>
 #include <limits.h>
+#include <time.h>
 #include <assert.h>
 
 #if !defined(vms) && !defined(macintosh)
 # include <sys/types.h>
 # include <sys/stat.h>
-# include <sys/time.h>
 #if !defined(WIN32)
 # include <sys/times.h>
 #if defined(HAVE_MMAP)
@@ -60,7 +60,6 @@
 #else
 # include <types.h>
 # include <stat.h>
-# include <time.h>
 #if defined(macintosh)
 # include <SIOUX.h>
 # include <console.h>
