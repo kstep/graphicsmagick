@@ -1100,28 +1100,20 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             pixel=(*p++);
             pixel|=(*p++) << 8;
             red=((pixel & bmp_info.red_mask) << shift.red) >> 16;
+            if (quantum_bits.red == 8)
+              red|=(red >> 8);
             green=((pixel & bmp_info.green_mask) << shift.green) >> 16;
+            if (quantum_bits.green == 8)
+              green|=(green >> 8);
             blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
-            opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
-            if (quantum_bits.red == 5)
-              red|=((red & 0xe000) >> 5);
-            if (quantum_bits.green == 5)
-              green|=((green & 0xe000) >> 5);
-            if (quantum_bits.green == 6)
-              green|=((green & 0xc000) >> 6);
-            if (quantum_bits.blue == 5)
-              blue|=((blue & 0xe000) >> 5);
-            if (quantum_bits.blue <= 8)
-              blue|=((blue & 0xff00) >> 8);
-            if (quantum_bits.green <= 8)
-              green|=((green & 0xff00) >> 8);
-            if (quantum_bits.red <= 8)
-              red|=((red & 0xff00) >> 8);
+            if (quantum_bits.blue == 8)
+              blue|=(blue >> 8);
             if (image->matte != False)
               {
-                if (quantum_bits.opacity <= 8)
-                  q->opacity|=((q->opacity & 0xff00) >> 8);
-                q->opacity=ScaleShortToQuantum(opacity);
+                opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
+                if (quantum_bits.opacity == 8)
+                  opacity|=(opacity >> 8);
+                  q->opacity=ScaleShortToQuantum(opacity);
               }
             q->red=ScaleShortToQuantum(red);
             q->green=ScaleShortToQuantum(green);
@@ -1198,24 +1190,24 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             pixel|=(*p++ << 16);
             pixel|=(*p++ << 24);
             red=((pixel & bmp_info.red_mask) << shift.red) >> 16;
+            if (quantum_bits.red == 8)
+              red|=(red >> 8);
             green=((pixel & bmp_info.green_mask) << shift.green) >> 16;
+            if (quantum_bits.green == 8)
+              green|=(green >> 8);
             blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
-            opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
+            if (quantum_bits.blue == 8)
+              blue|=(blue >> 8);
+            if (image->matte != False)
+              {
+                opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
+                if (quantum_bits.opacity == 8)
+                  opacity|=(opacity >> 8);
+                  q->opacity=ScaleShortToQuantum(opacity);
+              }
             q->red=ScaleShortToQuantum(red);
             q->green=ScaleShortToQuantum(green);
             q->blue=ScaleShortToQuantum(blue);
-            if (image->matte)
-              q->opacity=ScaleShortToQuantum(opacity);
-#if (QuantumDepth > 8)
-            if (quantum_bits.red == 8)
-              q->red|=(q->red >> 8);
-            if (quantum_bits.green == 8)
-              q->green|=(q->green >> 8);
-            if (quantum_bits.blue == 8)
-              q->blue|=(q->blue >> 8);
-            if (quantum_bits.opacity == 8)
-              q->opacity|=(q->opacity >> 8);
-#endif
             q++;
           }
           if (!SyncImagePixels(image))
