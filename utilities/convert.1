@@ -18,292 +18,175 @@ file with a differing image format. In addition, various types of image
 processing can be performed on the converted image during the conversion
 process. \fBConvert\fP recognizes the following image formats:
 
-.in 15
 
-.in 5
-o \fBAVS\fP - AVS X image file.
-.in 0
-.in 5
-o \fBBIE+\fP - Joint Bi-level Image experts Group file interchange
-format.
-.in 0
-.in 5
-o \fBBMP+\fP - Microsoft Windows bitmap image file.
-.in 0
-.in 5
-o \fBBMP24+\fP - Microsoft Windows 24-bit bitmap image file.
-.in 0
-.in 5
-o \fBCGM\fP - Computer Graphics Metafile.
-.in 0
-.in 5
-o \fBCMYK\fP - Raw cyan, magenta, yellow, and black samples
-(8 or 16 bits, depending on the setting of the -depth option).
-.in 0
-.in 5
-o \fBDCX+\fP - ZSoft IBM PC multi-page Paintbrush file.
-.in 0
-.in 5
-o \fBDIB\fP - Microsoft Windows bitmap image file.
-.in 0
-.in 5
-o \fBDICOM\fP - Medical image file.
-.in 0
-.in 5
-o \fBEPDF\fP - Encapsulated Portable Document Format.
-.in 0
-.in 5
-o \fBEPI\fP - Adobe Encapsulated PostScript Interchange format.
-.in 0
-.in 5
-o \fBEPS\fP - Adobe Encapsulated PostScript file.
-.in 0
-.in 5
-o \fBEPS2\fP - Adobe Level II Encapsulated PostScript file.
-.in 0
-.in 5
-o \fBEPSF\fP - Adobe Encapsulated PostScript file.
-.in 0
-.in 5
-o \fBEPSI\fP - Adobe Encapsulated PostScript Interchange format.
-.in 0
-.in 5
-o \fBEPT\fP - Adobe Encapsulated PostScript Interchange format with
-TIFF preview.
-.in 0
-.in 5
-o \fBFAX+\fP - Group 3.
-.in 0
-.in 5
-o \fBFIG\fP - TransFig image format.
-.in 0
-.in 5
-o \fBFITS\fP - Flexible Image Transport System.
-.in 0
-.in 5
-o \fBFPX\fP - FlashPix Format.
-.in 0
-.in 5
-o \fBGIF\fP - CompuServe graphics interchange format; 8-bit color.
-.in 0
-.in 5
-o \fBGIF87\fP - CompuServe graphics interchange format; 8-bit color
-(version 87a).
-.in 0
-.in 5
-o \fBGRAY\fP - Raw gray samples (8 or 16 bits, depending on the
-setting of the -depth option).
-.in 0
-.in 5
-o \fBGRADIENT\fP- gradual passing from one shade to another. Specify
-the desired shading with the filename (e.g. gradient:red-blue).
-.in 0
-.in 5
-o \fBGRANITE\fP - granite texture.
-.in 0
-.in 5
-o \fBHDF+\fP - Hierarchical Data Format.
-.in 0
-.in 5
-o \fBHISTOGRAM\fP
-.in 0
-.in 5
-o \fBHPGL\fP - HP-GL plotter language.
-.in 0
-.in 5
-o \fBHTML\fP - Hypertext Markup Language
-a with client-side image map.
-.in 0
-.in 5
-o \fBJBIG+\fP - Joint Bi-level Image experts Group file interchange
-format.
-.in 0
-.in 5
-o \fBJPEG\fP - Joint Photographic Experts Group JFIF format;
-compressed 24-bit color.
-.in 0
-.in 5
-o \fBICO\fP - Microsoft icon.
-.in 0
-.in 5
-o \fBLABEL\fP - text image.
-.in 0
-.in 5
-o \fBMAP\fP - colormap intensities
-(8 or 16 bits, depending on the setting of the -depth option) and indices
-(8 or 16 bits, depending on whether colors > 256).
-.in 0
-.in 5
-o \fBMIFF+\fP - Magick image file format.
-.in 0
-.in 5
-o \fBMNG+\fP - Multiple-image Network Graphics.
-.in 0
-.in 5
-o \fBMONO\fP - Bi-level bitmap in least-significant-byte (LSB) first
-order.
-.in 0
-.in 5
-o \fBMPEG+\fP - Motion Picture Experts Group file interchange
-format.
-.in 0
-.in 5
-o \fBMTV+\fP -
-.in 0
-.in 5
-o \fBMVG\fP - Magick Vector Graphics.
-.in 0
-.in 5
-o \fBM2V+\fP - Motion Picture Experts Group file interchange
-format (version 2).
-.in 0
-.in 5
-o \fBNETSCAPE\fP - Netscape 216 color cube.
-.in 0
-.in 5
-o \fBNULL\fP - NULL image.
-.in 0
-.in 5
-o \fBPBM+\fP - Portable bitmap format (black and white).
-.in 0
-.in 5
-o \fBPCD\fP - Photo CD. The maximum resolution written is 512x768
-pixels.
-.in 0
-.in 5
-o \fBPCDS\fP - Photo CD. Decode with the sRGB color table.
-.in 0
-.in 5
-o \fBPCL\fP - Page Control Language.
-.in 0
-.in 5
-o \fBPCX\fP - ZSoft IBM PC Paintbrush file.
-.in 0
-.in 5
-o \fBPDF+\fP - Portable Document Format.
-.in 0
-.in 5
-o \fBPGM+\fP - Portable graymap format (gray scale).
-.in 0
-.in 5
-o \fBPICT\fP - Apple Macintosh QuickDraw/PICT file.
-.in 0
-.in 5
-o \fBPIX\fP - Alias/Wavefront RLE image format.
-.in 0
-.in 5
-o \fBPLASMA \fP- plasma fractal image. Specify the base color as
-the filename (e.g. plasma:gray). Use fractal to
-initialize to a random value (e.g. plasma:fractal).
-.in 0
-.in 5
-o \fBPNG\fP - Portable Network Graphics.
-.in 0
-.in 5
-o \fBPNM+\fP - Portable anymap.
-.in 0
-.in 5
-o \fBPPM+\fP - Portable pixmap format (color).
-.in 0
-.in 5
-o \fBPS+\fP - Adobe PostScript file.
-.in 0
-.in 5
-o \fBPSD\fP - Adobe PhotoShop bitmap file.
-.in 0
-.in 5
-o \fBPS2+\fP - Adobe Level II PostScript file.
-.in 0
-.in 5
-o \fBRAD\fP - Radiance image file.
-.in 0
-.in 5
-o \fBRGB\fP - Raw red, green, and blue samples (8 or 16 bits,
-depending on the setting of the -depth option).
-.in 0
-.in 5
-o \fBRGBA\fP - Raw red, green, blue, and matte samples (8 or 16 bits,
-depending on the setting of the -depth option).
-.in 0
-.in 5
-o \fBRLA\fP - Alias/Wavefront image file; read only.
-.in 0
-.in 5
-o \fBRLE\fP - Utah Run length encoded image file; read only.
-.in 0
-.in 5
-o \fBSGI+\fP - Irix RGB image file.
-.in 0
-.in 5
-o \fBSHTML\fP - Hypertext Markup Language a with client-side
-image map.
-.in 0
-.in 5
-o \fBSUN+\fP - SUN Rasterfile.
-.in 0
-.in 5
-o \fBSVG+\fP - Scalable Vector Graphics.
-.in 0
-.in 5
-o \fBTEXT\fP - raw text file; read only.
-.in 0
-.in 5
-o \fBTGA+\fP - Truevision Targa image file.
-.in 0
-.in 5
-o \fBTIFF+\fP - Tagged Image File Format.
-.in 0
-.in 5
-o \fBTIFF24+\fP - 24-bit Tagged Image File Format.
-.in 0
-.in 5
-o \fBTILE\fP - tile image with a texture.
-.in 0
-.in 5
-o \fBTIM\fP - PSX TIM file.
-.in 0
-.in 5
-o \fBTTF\fP - TrueType font file.
-.in 0
-.in 5
-o \fBUIL\fP - X-Motif UIL table.
-.in 0
-.in 5
-o \fBUYVY\fP - Interleaved YUV.
-.in 0
-.in 5
-o \fBVICAR\fP - read only.
-.in 0
-.in 5
-o \fBVID\fP - Visual Image Directory.
-.in 0
-.in 5
-o \fBVIFF+\fP - Khoros Visualization image file.
-.in 0
-.in 5
-o \fBWIN\fP - select image from or display image to your
-computer screen.
-.in 0
-.in 5
-o \fBX\fP - select image from or display image to your X server
-screen.
-.in 0
-.in 5
-o \fBXC\fP - constant image of X server color. Specify the image
-color as the filename (e.g. xc:yellow).
-.in 0
-.in 5
-o \fBXBM\fP - X Windows system bitmap, black and white only.
-.in 0
-.in 5
-o \fBXPM\fP - X Windows system pixmap file (color).
-.in 0
-.in 5
-o \fBXWD\fP - X Windows system window dump file (color).
-.in 0
-.in 5
-o \fBYUV+\fP - CCIR 601 4:1:1 file.
-.in 0
+	\fBName\fP	\fBMode\fP	\fBDescription\fP
+ o  	8BIM	*rw-	Photoshop resource format
+ o  	AFM	*r--	TrueType font
+ o  	ART	*r--	PF1: 1st Publisher
+ o  	APP1	*rw-	Photoshop resource format
+ o  	AVI	*r--	Audio/Visual Interleaved
+ o  	AVS	*rw+	AVS X image
+ o  	BIE	*rw-	Joint Bi-level Image experts Group
+			interchange format
+ o  	BMP	*rw+	Microsoft Windows bitmap image
+ o  	CMYK	*rw-	Raw cyan, magenta, yellow, and black samples
+	 	 	(8 or 16 bits, depending on the image depth)
+ o  	CMYKA	*rw-	Raw cyan, magenta, yellow, black, and matte
+			samples (8 or 16 bits, depending on the image
+			depth)
+ o  	CUT	*r--	DR Hallo
+ o  	DCM	*r--	Digital Imaging and Communications in
+			 Medicine image
+ o  	DCX	*rw+	ZSoft IBM PC multi-page Paintbrush
+ o  	DIB	*rw+	Microsoft Windows bitmap image
+ o  	DPS	*r--	Display Postscript
+ o  	DPX	*r--	Digital Moving Picture Exchange
+ o  	EPDF	*rw-	Encapsulated Portable Document Format
+ o  	EPI	*rw-	Adobe Encapsulated PostScript Interchange
+			format
+ o  	EPS	*rw-	Adobe Encapsulated PostScript
+ o  	EPS2	*-w-	Adobe Level II Encapsulated PostScript
+ o  	EPS3	*-w-	Adobe Level III Encapsulated PostScript
+ o  	EPSF	*rw-	Adobe Encapsulated PostScript
+ o  	EPSI	*rw-	Adobe Encapsulated PostScript Interchange
+			format
+ o  	EPT	*rw-	Adobe Encapsulated PostScript with TIFF
+			preview
+ o  	FAX	*rw+	Group 3 FAX
+ o  	FILE	*r--	Uniform Resource Locator
+ o  	FITS	*rw-	Flexible Image Transport System
+ o  	FPX	*rw-	FlashPix Format
+ o  	FTP	*r--	Uniform Resource Locator
+ o  	G3	*rw-	Group 3 FAX
+ o  	GIF	*rw+	CompuServe graphics interchange format
+ o  	GIF87	*rw-	CompuServe graphics interchange format
+			(version 87a)
+ o  	GRADIENT	*r--	Gradual passing from one shade to another
+ o  	GRANITE	*r--	Granite texture
+ o  	GRAY	*rw+	Raw gray samples (8 or 16 bits, depending
+			on the image depth)
+ o  	H	*rw-	Internal format
+ o  	HDF	-rw+	Hierarchical Data Format
+ o  	HISTOGRAM	*-w-	Histogram of the image
+ o  	HTM	*-w-	Hypertext Markup Language and a
+			client-side image map
+ o  	HTML	*-w-	Hypertext Markup Language and a
+			client-side image map
+ o  	HTTP	*r--	Uniform Resource Locator
+ o  	ICB	*rw+	Truevision Targa image
+ o  	ICM	*rw-	ICC Color Profile
+ o  	ICO	*r--	Microsoft icon
+ o  	ICON	*r--	Microsoft icon
+ o  	IMPLICIT	*---	
+ o  	IPTC	*rw-	IPTC Newsphoto
+ o  	JBG	*rw+	Joint Bi-level Image experts Group
+			interchange format
+ o  	JBIG	*rw+	Joint Bi-level Image experts Group
+			interchange format
+ o  	JP2	*rw-	JPEG-2000 JP2 File Format Syntax
+ o  	JPC	*rw-	JPEG-2000 Code Stream Syntax
+ o  	JPEG	*rw-	Joint Photographic Experts Group
+			JFIF format
+ o  	JPG	*rw-	Joint Photographic Experts Group
+			JFIF format
+ o  	LABEL	*r--	Text image format
+ o  	LOGO	*rw-	ImageMagick Logo
+ o  	M2V	*rw+	MPEG-2 Video Stream
+ o  	MAP	*rw-	Colormap intensities (8 or 16 bits,
+			depending on the image depth) and
+			indices (8 or 16 bits, depending
+	 	 	on whether colors exceeds 256).
+ o  	MATTE	*-w+	MATTE format
+ o  	MIFF	*rw+	Magick image format
+ o  	MNG	*rw+	Multiple-image Network Graphics
+ o  	MONO	*rw-	Bi-level bitmap in least-significant-byte
+			first order
+ o  	MPC	-rw-	Magick Persistent Cache image format
+ o  	MPR	*r--	Magick Persistent Registry
+ o  	MPEG	*rw+	MPEG-1 Video Stream
+ o  	MPG	*rw+	MPEG-1 Video Stream
+ o  	MTV	*rw+	MTV Raytracing image format
+ o  	MVG	*rw-	Magick Vector Graphics
+ o  	NETSCAPE	*r--	Netscape 216 color cube
+ o  	NULL	*r--	Constant image of uniform color
+ o  	OTB	*rw-	On-the-air bitmap
+ o  	P7	*rw+	Xv thumbnail format
+ o  	PAL	*rw-	16bit/pixel interleaved YUV
+ o  	PBM	*rw+	Portable bitmap format (black and white)
+ o  	PCD	*rw-	Photo CD
+ o  	PCDS	*rw-	Photo CD
+ o  	PCL	*-w-	Page Control Language
+ o  	PCT	*rw-	Apple Macintosh QuickDraw/PICT
+ o  	PCX	*rw-	ZSoft IBM PC Paintbrush
+ o  	PDB	*r--	Pilot Image Format
+ o  	PDF	*rw+	Portable Document Format
+ o  	PFB	*r--	TrueType font
+ o  	PFM	*r--	TrueType font
+ o  	PGM	*rw+	Portable graymap format (gray scale)
+ o  	PICON	*rw-	Personal Icon
+ o  	PICT	*rw-	Apple Macintosh QuickDraw/PICT
+ o  	PIX	*r--	Alias/Wavefront RLE image format
+ o  	PLASMA	*r--	Plasma fractal image
+ o  	PM	*rw-	X Windows system pixmap (color)
+ o  	PNG	*rw-	Portable Network Graphics
+ o  	PNM	*rw+	Portable anymap
+ o  	PPM	*rw+	Portable pixmap format (color)
+ o  	PREVIEW	*-w-	Show a preview an image enhancement,
+			effect, or f/x
+ o  	PS	*rw+	Adobe PostScript
+ o  	PS2	*-w+	Adobe Level II PostScript
+ o  	PS3	*-w+	Adobe Level III PostScript
+ o  	PSD	*rw-	Adobe Photoshop bitmap
+ o  	PTIF	*rw-	Pyramid encoded TIFF
+ o  	PWP	*r--	Seattle Film Works
+ o  	RAS	*rw+	SUN Rasterfile
+ o  	RGB	*rw+	Raw red, green, and blue samples (8 or
+			16 bits, depending on the image depth)
+ o  	RGBA	*rw+	Raw red, green, blue, and matte samples
+			(8 or 16 bits, depending on the image
+			depth)
+ o  	RLA	*r--	Alias/Wavefront image
+ o  	RLE	*r--	Utah Run length encoded image
+ o  	SCT	*r--	Scitex HandShake
+ o  	SFW	*r--	Seattle Film Works
+ o  	SGI	*rw+	Irix RGB image
+ o  	SHTML	*-w-	Hypertext Markup Language and a client-side
+			image map
+ o  	STEGANO	*r--	Steganographic image
+ o  	SUN	*rw+	SUN Rasterfile
+ o  	SVG	*rw+	Scalable Vector Gaphics
+ o  	TEXT	*rw+	Raw text
+ o  	TGA	*rw+	Truevision Targa image
+ o  	TIF	*rw+	Tagged Image File Format
+ o  	TIFF	*rw+	Tagged Image File Format
+ o  	TILE	*r--	Tile image with a texture
+ o  	TIM	*r--	PSX TIM
+ o  	TTF	*r--	TrueType font
+ o  	TXT	*rw+	Raw text
+ o  	UIL	*-w-	X-Motif UIL table
+ o  	UYVY	*rw-	16bit/pixel interleaved YUV
+ o  	VDA	*rw+	Truevision Targa image
+ o  	VICAR	*rw-	VICAR rasterfile format
+ o  	VID	*rw+	Visual Image Directory
+ o  	VIFF	*rw+	Khoros Visualization image
+ o  	VST	*rw+	Truevision Targa image
+ o  	WBMP	*rw-	Wireless Bitmap (level 0) image
+ o  	WPG	*r--	Word Perfect Graphics
+ o  	X	*rw-	X Image
+ o  	XBM	*rw-	X Windows system bitmap (black and white)
+ o  	XC	*r--	Constant image uniform color
+ o  	XCF	*r--	GIMP image
+ o  	XML	*r--	Scalable Vector Gaphics
+ o  	XPM	*rw-	X Windows system pixmap (color)
+ o  	XV	*rw+	Khoros Visualization image
+ o  	XWD	*rw-	X Windows system window dump (color)
+ o  	YUV	*rw-	CCIR 601 4:1:1
+			
+	Modes:		
+		*	Native blob support
+		r	Read
+		w	Write
+		+	Multi-image
 
 
 \fISupport for some of these formats require additional programs or libraries.
@@ -1334,7 +1217,7 @@ and mid ranges from 0 to 10.
 \fRthe type of list
 
 Choices are: \fBDelegate\fP, \fBFormat\fP, \fBMagic\fP,
-\fBModules\fP, or \fBType\fP.
+\fBModule\fP, or \fBType\fP.
 
 
 This option lists entries from the ImageMagick configuration files.

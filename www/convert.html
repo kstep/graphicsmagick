@@ -111,118 +111,178 @@ file with a differing image format. In addition, various types of image
 processing can be performed on the converted image during the conversion
 process. <strong>Convert</strong> recognizes the following image formats:
 </p>
-<dl>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>AVS</strong> - AVS X image file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>BIE+</strong> - Joint Bi-level Image experts Group file interchange
-format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>BMP+</strong> - Microsoft Windows bitmap image file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>BMP24+</strong> - Microsoft Windows 24-bit bitmap image file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>CGM</strong> - Computer Graphics Metafile.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>CMYK</strong> - Raw cyan, magenta, yellow, and black samples
-(8 or 16 bits, depending on the setting of the -depth option).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>DCX+</strong> - ZSoft IBM PC multi-page Paintbrush file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>DIB</strong> - Microsoft Windows bitmap image file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>DICOM</strong> - Medical image file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>EPDF</strong> - Encapsulated Portable Document Format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>EPI</strong> - Adobe Encapsulated PostScript Interchange format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>EPS</strong> - Adobe Encapsulated PostScript file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>EPS2</strong> - Adobe Level II Encapsulated PostScript file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>EPSF</strong> - Adobe Encapsulated PostScript file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>EPSI</strong> - Adobe Encapsulated PostScript Interchange format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>EPT</strong> - Adobe Encapsulated PostScript Interchange format with
-TIFF preview.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>FAX+</strong> - Group 3.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>FIG</strong> - TransFig image format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>FITS</strong> - Flexible Image Transport System.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>FPX</strong> - FlashPix Format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>GIF</strong> - CompuServe graphics interchange format; 8-bit color.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>GIF87</strong> - CompuServe graphics interchange format; 8-bit color
-(version 87a).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>GRAY</strong> - Raw gray samples (8 or 16 bits, depending on the
-setting of the -depth option).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>GRADIENT</strong>- gradual passing from one shade to another. Specify
-the desired shading with the filename (e.g. <tt>gradient:red-blue</tt>).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>GRANITE</strong> - granite texture.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>HDF+</strong> - Hierarchical Data Format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>HISTOGRAM</strong></dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>HPGL</strong> - HP-GL plotter language.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>HTML</strong> - Hypertext Markup Language
-a with client-side image map.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>JBIG+</strong> - Joint Bi-level Image experts Group file interchange
-format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>JPEG</strong> - Joint Photographic Experts Group JFIF format;
-compressed 24-bit color.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>ICO</strong> - Microsoft icon.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>LABEL</strong> - text image.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>MAP</strong> - colormap intensities
-(8 or 16 bits, depending on the setting of the -depth option) and indices
-(8 or 16 bits, depending on whether colors &gt; 256).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>MIFF+</strong> - Magick image file format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>MNG+</strong> - Multiple-image Network Graphics.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>MONO</strong> - Bi-level bitmap in least-significant-byte (LSB) first
-order.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>MPEG+</strong> - Motion Picture Experts Group file interchange
-format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>MTV+</strong> -</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>MVG</strong> - Magick Vector Graphics.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>M2V+</strong> - Motion Picture Experts Group file interchange
-format (version 2).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>NETSCAPE</strong> - Netscape 216 color cube.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>NULL</strong> - NULL image.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PBM+</strong> - Portable bitmap format (black and white).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PCD</strong> - Photo CD. The maximum resolution written is 512x768
-pixels.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PCDS</strong> - Photo CD. Decode with the sRGB color table.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PCL</strong> - Page Control Language.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PCX</strong> - ZSoft IBM PC Paintbrush file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PDF+</strong> - Portable Document Format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PGM+</strong> - Portable graymap format (gray scale).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PICT</strong> - Apple Macintosh QuickDraw/PICT file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PIX</strong> - Alias/Wavefront RLE image format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PLASMA </strong>- plasma fractal image. Specify the base color as
-the filename (e.g. <tt>plasma:gray</tt>). Use <tt>fractal</tt> to
-initialize to a random value (e.g. <tt>plasma:fractal</tt>).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PNG</strong> - Portable Network Graphics.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PNM+</strong> - Portable anymap.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PPM+</strong> - Portable pixmap format (color).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PS+</strong> - Adobe PostScript file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PSD</strong> - Adobe PhotoShop bitmap file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>PS2+</strong> - Adobe Level II PostScript file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>RAD</strong> - Radiance image file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>RGB</strong> - Raw red, green, and blue samples (8 or 16 bits,
-depending on the setting of the -depth option).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>RGBA</strong> - Raw red, green, blue, and matte samples (8 or 16 bits,
-depending on the setting of the -depth option).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>RLA</strong> - Alias/Wavefront image file; read only.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>RLE</strong> - Utah Run length encoded image file; read only.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>SGI+</strong> - Irix RGB image file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>SHTML</strong> - Hypertext Markup Language a with client-side
-image map.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>SUN+</strong> - SUN Rasterfile.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>SVG+</strong> - Scalable Vector Graphics.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>TEXT</strong> - raw text file; read only.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>TGA+</strong> - Truevision Targa image file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>TIFF+</strong> - Tagged Image File Format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>TIFF24+</strong> - 24-bit Tagged Image File Format.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>TILE</strong> - tile image with a texture.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>TIM</strong> - PSX TIM file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>TTF</strong> - TrueType font file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>UIL</strong> - X-Motif UIL table.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>UYVY</strong> - Interleaved YUV.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>VICAR</strong> - read only.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>VID</strong> - Visual Image Directory.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>VIFF+</strong> - Khoros Visualization image file.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>WIN</strong> - select image from or display image to your
-computer screen.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>X</strong> - select image from or display image to your X server
-screen.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>XC</strong> - constant image of X server color. Specify the image
-color as the filename (e.g. <tt>xc:yellow</tt>).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>XBM</strong> - X Windows system bitmap, black and white only.</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>XPM</strong> - X Windows system pixmap file (color).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>XWD</strong> - X Windows system window dump file (color).</dd>
-<dd><img SRC="../images/ball.png" ALT="*"><strong>YUV+</strong> - CCIR 601 4:1:1 file.</dd>
-</dl>
+<table border="0" cellspacing="0" cellpadding="2">
+<p>
+<tr><td></td><td><strong>Name</strong></td><td><strong>Mode</strong></td><td><strong>Description</strong></td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>8BIM</td><td>*rw-</td><td>Photoshop resource format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>AFM</td><td>*r--</td><td>TrueType font</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>ART</td><td>*r--</td><td>PF1: 1st Publisher</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>APP1</td><td>*rw-</td><td>Photoshop resource format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>AVI</td><td>*r--</td><td>Audio/Visual Interleaved</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>AVS</td><td>*rw+</td><td>AVS X image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>BIE</td><td>*rw-</td><td>Joint Bi-level Image experts Group</td></tr>
+<tr><td></td><td></td><td></td><td>interchange format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>BMP</td><td>*rw+</td><td>Microsoft Windows bitmap image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>CMYK</td><td>*rw-</td><td>Raw cyan, magenta, yellow, and black samples</td></tr>
+<tr><td></td><td> </td><td> </td><td>(8 or 16 bits, depending on the image depth)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>CMYKA</td><td>*rw-</td><td>Raw cyan, magenta, yellow, black, and matte</td></tr>
+<tr><td></td><td></td><td></td><td>samples (8 or 16 bits, depending on the image</td></tr>
+<tr><td></td><td></td><td></td><td>depth)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>CUT</td><td>*r--</td><td>DR Hallo</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>DCM</td><td>*r--</td><td>Digital Imaging and Communications in</td></tr>
+<tr><td></td><td></td><td></td><td> Medicine image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>DCX</td><td>*rw+</td><td>ZSoft IBM PC multi-page Paintbrush</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>DIB</td><td>*rw+</td><td>Microsoft Windows bitmap image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>DPS</td><td>*r--</td><td>Display Postscript</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>DPX</td><td>*r--</td><td>Digital Moving Picture Exchange</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>EPDF</td><td>*rw-</td><td>Encapsulated Portable Document Format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>EPI</td><td>*rw-</td><td>Adobe Encapsulated PostScript Interchange</td></tr>
+<tr><td></td><td></td><td></td><td>format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>EPS</td><td>*rw-</td><td>Adobe Encapsulated PostScript</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>EPS2</td><td>*-w-</td><td>Adobe Level II Encapsulated PostScript</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>EPS3</td><td>*-w-</td><td>Adobe Level III Encapsulated PostScript</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>EPSF</td><td>*rw-</td><td>Adobe Encapsulated PostScript</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>EPSI</td><td>*rw-</td><td>Adobe Encapsulated PostScript Interchange</td></tr>
+<tr><td></td><td></td><td></td><td>format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>EPT</td><td>*rw-</td><td>Adobe Encapsulated PostScript with TIFF</td></tr>
+<tr><td></td><td></td><td></td><td>preview</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>FAX</td><td>*rw+</td><td>Group 3 FAX</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>FILE</td><td>*r--</td><td>Uniform Resource Locator</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>FITS</td><td>*rw-</td><td>Flexible Image Transport System</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>FPX</td><td>*rw-</td><td>FlashPix Format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>FTP</td><td>*r--</td><td>Uniform Resource Locator</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>G3</td><td>*rw-</td><td>Group 3 FAX</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>GIF</td><td>*rw+</td><td>CompuServe graphics interchange format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>GIF87</td><td>*rw-</td><td>CompuServe graphics interchange format</td></tr>
+<tr><td></td><td></td><td></td><td>(version 87a)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>GRADIENT</td><td>*r--</td><td>Gradual passing from one shade to another</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>GRANITE</td><td>*r--</td><td>Granite texture</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>GRAY</td><td>*rw+</td><td>Raw gray samples (8 or 16 bits, depending</td></tr>
+<tr><td></td><td></td><td></td><td>on the image depth)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>H</td><td>*rw-</td><td>Internal format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>HDF</td><td>-rw+</td><td>Hierarchical Data Format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>HISTOGRAM</td><td>*-w-</td><td>Histogram of the image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>HTM</td><td>*-w-</td><td>Hypertext Markup Language and a</td></tr>
+<tr><td></td><td></td><td></td><td>client-side image map</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>HTML</td><td>*-w-</td><td>Hypertext Markup Language and a</td></tr>
+<tr><td></td><td></td><td></td><td>client-side image map</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>HTTP</td><td>*r--</td><td>Uniform Resource Locator</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>ICB</td><td>*rw+</td><td>Truevision Targa image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>ICM</td><td>*rw-</td><td>ICC Color Profile</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>ICO</td><td>*r--</td><td>Microsoft icon</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>ICON</td><td>*r--</td><td>Microsoft icon</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>IMPLICIT</td><td>*---</td><td></td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>IPTC</td><td>*rw-</td><td>IPTC Newsphoto</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>JBG</td><td>*rw+</td><td>Joint Bi-level Image experts Group</td></tr>
+<tr><td></td><td></td><td></td><td>interchange format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>JBIG</td><td>*rw+</td><td>Joint Bi-level Image experts Group</td></tr>
+<tr><td></td><td></td><td></td><td>interchange format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>JP2</td><td>*rw-</td><td>JPEG-2000 JP2 File Format Syntax</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>JPC</td><td>*rw-</td><td>JPEG-2000 Code Stream Syntax</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>JPEG</td><td>*rw-</td><td>Joint Photographic Experts Group</td></tr>
+<tr><td></td><td></td><td></td><td>JFIF format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>JPG</td><td>*rw-</td><td>Joint Photographic Experts Group</td></tr>
+<tr><td></td><td></td><td></td><td>JFIF format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>LABEL</td><td>*r--</td><td>Text image format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>LOGO</td><td>*rw-</td><td>ImageMagick Logo</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>M2V</td><td>*rw+</td><td>MPEG-2 Video Stream</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>MAP</td><td>*rw-</td><td>Colormap intensities (8 or 16 bits,</td></tr>
+<tr><td></td><td></td><td></td><td>depending on the image depth) and</td></tr>
+<tr><td></td><td></td><td></td><td>indices (8 or 16 bits, depending</td></tr>
+<tr><td></td><td> </td><td> </td><td>on whether colors exceeds 256).</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>MATTE</td><td>*-w+</td><td>MATTE format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>MIFF</td><td>*rw+</td><td>Magick image format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>MNG</td><td>*rw+</td><td>Multiple-image Network Graphics</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>MONO</td><td>*rw-</td><td>Bi-level bitmap in least-significant-byte</td></tr>
+<tr><td></td><td></td><td></td><td>first order</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>MPC</td><td>-rw-</td><td>Magick Persistent Cache image format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>MPR</td><td>*r--</td><td>Magick Persistent Registry</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>MPEG</td><td>*rw+</td><td>MPEG-1 Video Stream</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>MPG</td><td>*rw+</td><td>MPEG-1 Video Stream</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>MTV</td><td>*rw+</td><td>MTV Raytracing image format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>MVG</td><td>*rw-</td><td>Magick Vector Graphics</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>NETSCAPE</td><td>*r--</td><td>Netscape 216 color cube</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>NULL</td><td>*r--</td><td>Constant image of uniform color</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>OTB</td><td>*rw-</td><td>On-the-air bitmap</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>P7</td><td>*rw+</td><td>Xv thumbnail format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PAL</td><td>*rw-</td><td>16bit/pixel interleaved YUV</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PBM</td><td>*rw+</td><td>Portable bitmap format (black and white)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PCD</td><td>*rw-</td><td>Photo CD</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PCDS</td><td>*rw-</td><td>Photo CD</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PCL</td><td>*-w-</td><td>Page Control Language</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PCT</td><td>*rw-</td><td>Apple Macintosh QuickDraw/PICT</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PCX</td><td>*rw-</td><td>ZSoft IBM PC Paintbrush</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PDB</td><td>*r--</td><td>Pilot Image Format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PDF</td><td>*rw+</td><td>Portable Document Format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PFB</td><td>*r--</td><td>TrueType font</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PFM</td><td>*r--</td><td>TrueType font</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PGM</td><td>*rw+</td><td>Portable graymap format (gray scale)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PICON</td><td>*rw-</td><td>Personal Icon</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PICT</td><td>*rw-</td><td>Apple Macintosh QuickDraw/PICT</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PIX</td><td>*r--</td><td>Alias/Wavefront RLE image format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PLASMA</td><td>*r--</td><td>Plasma fractal image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PM</td><td>*rw-</td><td>X Windows system pixmap (color)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PNG</td><td>*rw-</td><td>Portable Network Graphics</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PNM</td><td>*rw+</td><td>Portable anymap</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PPM</td><td>*rw+</td><td>Portable pixmap format (color)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PREVIEW</td><td>*-w-</td><td>Show a preview an image enhancement,</td></tr>
+<tr><td></td><td></td><td></td><td>effect, or f/x</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PS</td><td>*rw+</td><td>Adobe PostScript</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PS2</td><td>*-w+</td><td>Adobe Level II PostScript</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PS3</td><td>*-w+</td><td>Adobe Level III PostScript</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PSD</td><td>*rw-</td><td>Adobe Photoshop bitmap</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PTIF</td><td>*rw-</td><td>Pyramid encoded TIFF</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>PWP</td><td>*r--</td><td>Seattle Film Works</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>RAS</td><td>*rw+</td><td>SUN Rasterfile</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>RGB</td><td>*rw+</td><td>Raw red, green, and blue samples (8 or</td></tr>
+<tr><td></td><td></td><td></td><td>16 bits, depending on the image depth)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>RGBA</td><td>*rw+</td><td>Raw red, green, blue, and matte samples</td></tr>
+<tr><td></td><td></td><td></td><td>(8 or 16 bits, depending on the image</td></tr>
+<tr><td></td><td></td><td></td><td>depth)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>RLA</td><td>*r--</td><td>Alias/Wavefront image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>RLE</td><td>*r--</td><td>Utah Run length encoded image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>SCT</td><td>*r--</td><td>Scitex HandShake</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>SFW</td><td>*r--</td><td>Seattle Film Works</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>SGI</td><td>*rw+</td><td>Irix RGB image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>SHTML</td><td>*-w-</td><td>Hypertext Markup Language and a client-side</td></tr>
+<tr><td></td><td></td><td></td><td>image map</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>STEGANO</td><td>*r--</td><td>Steganographic image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>SUN</td><td>*rw+</td><td>SUN Rasterfile</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>SVG</td><td>*rw+</td><td>Scalable Vector Gaphics</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>TEXT</td><td>*rw+</td><td>Raw text</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>TGA</td><td>*rw+</td><td>Truevision Targa image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>TIF</td><td>*rw+</td><td>Tagged Image File Format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>TIFF</td><td>*rw+</td><td>Tagged Image File Format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>TILE</td><td>*r--</td><td>Tile image with a texture</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>TIM</td><td>*r--</td><td>PSX TIM</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>TTF</td><td>*r--</td><td>TrueType font</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>TXT</td><td>*rw+</td><td>Raw text</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>UIL</td><td>*-w-</td><td>X-Motif UIL table</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>UYVY</td><td>*rw-</td><td>16bit/pixel interleaved YUV</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>VDA</td><td>*rw+</td><td>Truevision Targa image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>VICAR</td><td>*rw-</td><td>VICAR rasterfile format</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>VID</td><td>*rw+</td><td>Visual Image Directory</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>VIFF</td><td>*rw+</td><td>Khoros Visualization image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>VST</td><td>*rw+</td><td>Truevision Targa image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>WBMP</td><td>*rw-</td><td>Wireless Bitmap (level 0) image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>WPG</td><td>*r--</td><td>Word Perfect Graphics</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>X</td><td>*rw-</td><td>X Image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>XBM</td><td>*rw-</td><td>X Windows system bitmap (black and white)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>XC</td><td>*r--</td><td>Constant image uniform color</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>XCF</td><td>*r--</td><td>GIMP image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>XML</td><td>*r--</td><td>Scalable Vector Gaphics</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>XPM</td><td>*rw-</td><td>X Windows system pixmap (color)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>XV</td><td>*rw+</td><td>Khoros Visualization image</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>XWD</td><td>*rw-</td><td>X Windows system window dump (color)</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*"></td><td>YUV</td><td>*rw-</td><td>CCIR 601 4:1:1</td></tr>
+<tr><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td>Modes:</td><td></td><td></td></tr>
+<tr><td></td><td></td><td>*</td><td>Native blob support</td></tr>
+<tr><td></td><td></td><td>r</td><td>Read</td></tr>
+<tr><td></td><td></td><td>w</td><td>Write</td></tr>
+<tr><td></td><td></td><td>+</td><td>Multi-image</td></tr>
+</p>
+</table>
 <p>
 <em>Support for some of these formats require additional programs or libraries.
 <a href="install.html">README</a>
@@ -1686,7 +1746,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of list</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Choices are: <strong>Delegate</strong>, <strong>Format</strong>, <strong>Magic</strong>,
-<strong>Modules</strong>, or <strong>Type</strong>.
+<strong>Module</strong>, or <strong>Type</strong>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option lists entries from the ImageMagick configuration files.
