@@ -368,8 +368,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,const int 
             continue;
           }
         mask_image=ReadImage(image_info,exception);
-        if (mask_image == (Image *) NULL)
-          exit(1);
         status&=mask_image != (Image *) NULL;
         if (mask_image != (Image *) NULL)
           {
