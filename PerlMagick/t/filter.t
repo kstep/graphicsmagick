@@ -114,7 +114,7 @@ testFilter('input.miff', 'Layer',
 ++$test;
 testFilter('input.miff', 'Magnify',
   q/ /,
-  'c71947bf22503d1e06f21213a0e0cb3b',
+  '49437b49220fa637150ce589aa40e4a1',
   'b276d893a0ba26f924e493c8d1339fec');
 
 ++$test;

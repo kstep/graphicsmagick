@@ -330,6 +330,7 @@ Export Image *MagnifyImage(Image *image)
       return((Image *) NULL);
     }
   magnify_image->class=DirectClass;
+SetImage(magnify_image);
   /*
     Allocate image buffer and scanline buffer for 4 rows of the image.
   */
@@ -363,8 +364,7 @@ Export Image *MagnifyImage(Image *image)
     p=GetPixelCache(magnify_image,0,image->rows-1-y,magnify_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    s=scanline;
-    (void) memcpy(s,p,magnify_image->columns*sizeof(PixelPacket));
+    (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
     q=GetPixelCache(magnify_image,0,(image->rows-1-y) << 1,
       magnify_image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -432,6 +432,13 @@ Export Image *MagnifyImage(Image *image)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(MagnifyImageText,y,image->rows);
   }
+  p=GetPixelCache(magnify_image,0,2*image->rows-2,magnify_image->columns,1);
+  if (p != (PixelPacket *) NULL)
+    (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
+  q=GetPixelCache(magnify_image,0,2*image->rows-1,magnify_image->columns,1);
+  if (q != (PixelPacket *) NULL)
+    (void) memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
+  (void) SyncPixelCache(magnify_image);
   FreeMemory(scanline);
   return(magnify_image);
 }
