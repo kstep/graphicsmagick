@@ -1,4 +1,9 @@
 2004-07-20  Mike Chiarappa  <mikechiarappa@libero.it>
+	* lcms/include/lcms.h: Modified to achieve BCBMagick DLL compilation.
+	  Included modifications was introduced in GM in 2004-01-16 and 
+	  probabily lost with latest update of library.
+
+2004-07-20  Mike Chiarappa  <mikechiarappa@libero.it>
 
 	* BCBMagick: Updated lcms to version 1.13.
 	  Modified files: BCBMagick\All\bcbMagick.mak; BCBMagick\lcms\BCB6\GM_lcms.bpr;
