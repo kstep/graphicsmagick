@@ -569,8 +569,8 @@ static double constant(char *name,int sans)
     }
     case 'F':
     {
-      if (strEQ(name,"FatalException"))
-        return(FatalException);
+      if (strEQ(name,"FatalErrorException"))
+        return(FatalErrorException);
       if (strEQ(name,"FileOpenError"))
         return(FileOpenError);
       if (strEQ(name,"FileOpenWarning"))
