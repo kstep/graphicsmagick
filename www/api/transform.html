@@ -1,0 +1,245 @@
+<HTML>
+<HEAD>
+<TITLE>transform - Methods to Transform an Image</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#ChopImage">ChopImage</A>
+		<LI><A HREF="#CoalesceImage">CoalesceImage</A>
+		<LI><A HREF="#CropImage">CropImage</A>
+		<LI><A HREF="#FlipImage">FlipImage</A>
+		<LI><A HREF="#FlopImage">FlopImage</A>
+		<LI><A HREF="#RollImage">RollImage</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+transform - Methods to Transform an Image
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+chop_image=<STRONG>ChopImage</STRONG>(image,chop_info)
+
+<P>
+cropped_image=<STRONG>CropImage</STRONG>(image,crop_info)
+
+<P>
+flipped_image=<STRONG>FlipImage</STRONG>(image)
+
+<P>
+flopped_image=<STRONG>FlopImage</STRONG>(image)
+
+<P>
+rolled_image=<STRONG>RollImage</STRONG>(image,x_offset,y_offset)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="ChopImage">ChopImage</A></H2>
+<P>
+Method ChopImage creates a new image that is a subregion of an existing
+one. It allocates the memory necessary for the new Image structure and
+returns a pointer to the new image.
+
+<P>
+The format of the ChopImage routine is:
+
+<P>
+<PRE>        chop_image=ChopImage(image,chop_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">chop_image:</A></STRONG><DD>
+<P>
+Method ChopImage returns a pointer to the chop image. A null image is
+returned if there is a memory shortage or if the image width or height is
+zero.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>chop_info:</STRONG><DD>
+<P>
+Specifies a pointer to a RectangleInfo which defines the region of the
+image to crop.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="CoalesceImage">CoalesceImage</A></H2>
+<P>
+Method CoalesceImages merges a sequence of images. This is useful for GIF
+and MNG animation sequences that have page offsets and disposal methods.
+
+<P>
+The format of the CoalesceImages routine is:
+
+<P>
+<PRE>    CoalesceImages(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage. It
+points to the first image in the group to be coalesced.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="CropImage">CropImage</A></H2>
+<P>
+Method CropImage creates a new image that is a subregion of an existing
+one. It allocates the memory necessary for the new Image structure and
+returns a pointer to the new image. This routine is optimized to preserve
+the runlength encoding. That is, the cropped image will always use less
+memory than the original.
+
+<P>
+The format of the CropImage routine is:
+
+<P>
+<PRE>        cropped_image=CropImage(image,crop_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>cropped_image:</STRONG><DD>
+<P>
+Method CropImage returns a pointer to the cropped image. A null image is
+returned if there is a memory shortage or if the image width or height is
+zero.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>crop_info:</STRONG><DD>
+<P>
+Specifies a pointer to a RectangleInfo which defines the region of the
+image to crop.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="FlipImage">FlipImage</A></H2>
+<P>
+Method FlipImage creates a new image that reflects each scanline in the
+vertical direction It allocates the memory necessary for the new Image
+structure and returns a pointer to the new image.
+
+<P>
+The format of the FlipImage routine is:
+
+<P>
+<PRE>        flipped_image=FlipImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>flipped_image:</STRONG><DD>
+<P>
+Method FlipImage returns a pointer to the image after reflecting. A null
+image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="FlopImage">FlopImage</A></H2>
+<P>
+Method FlopImage creates a new image that reflects each scanline in the
+horizontal direction It allocates the memory necessary for the new Image
+structure and returns a pointer to the new image.
+
+<P>
+The format of the FlopImage routine is:
+
+<P>
+<PRE>        flopped_image=FlopImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>flopped_image:</STRONG><DD>
+<P>
+Method FlopImage returns a pointer to the image after reflecting. A null
+image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="RollImage">RollImage</A></H2>
+<P>
+Method RollImage rolls an image vertically and horizontally. It allocates
+the memory necessary for the new Image structure and returns a pointer to
+the new image.
+
+<P>
+The format of the RollImage routine is:
+
+<P>
+<PRE>        rolled_image=RollImage(image,x_offset,y_offset)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>rolled_image:</STRONG><DD>
+<P>
+Method RollImage returns a pointer to the image after rolling. A null image
+is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>x_offset:</STRONG><DD>
+<P>
+An integer that specifies the number of columns to roll in the horizontal
+direction.
+
+<DT><STRONG>y_offset:</STRONG><DD>
+<P>
+An integer that specifies the number of rows to roll in the vertical
+direction.
+
+</DL></DL>
+</BODY>
+
+</HTML>

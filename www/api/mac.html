@@ -19,6 +19,7 @@
 		<LI><A HREF="#closedir">closedir</A>
 		<LI><A HREF="#Exit">Exit</A>
 		<LI><A HREF="#FilenameToFSSpec">FilenameToFSSpec</A>
+		<LI><A HREF="#ImageFormatConflict">ImageFormatConflict</A>
 		<LI><A HREF="#MacGSExecuteCommand">MacGSExecuteCommand</A>
 		<LI><A HREF="#MacGSLaunchApplicationCore">MacGSLaunchApplicationCore</A>
 		<LI><A HREF="#MacGSLaunchApplication">MacGSLaunchApplication</A>
@@ -57,6 +58,9 @@ mac - Macintosh Utility Methods for ImageMagick
 
 <P>
 <STRONG>FilenameToFSSpec</STRONG>(filename,fsspec)
+
+<P>
+status=<STRONG>ImageFormatConflict</STRONG>(magick)
 
 <P>
 <STRONG>MACSystemCommand</STRONG>(command)
@@ -187,6 +191,36 @@ Specifies the name of the file.
 <DT><STRONG>fsspec:</STRONG><DD>
 <P>
 A pointer to type FSSpec.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ImageFormatConflict">ImageFormatConflict</A></H2>
+<P>
+Method ImageFormatConflict returns true if the image format conflicts with
+a logical drive (.e.g. X:).
+
+<P>
+Contributed by Mark Gavin of Digital Applications, Inc.
+
+<P>
+The format of the ImageFormatConflict routine is:
+
+<P>
+<PRE>        status=ImageFormatConflict(magick)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method ImageFormatConflict returns true if the image format conflicts with
+a logical drive.
+
+<DT><STRONG>magick:</STRONG><DD>
+<P>
+Specifies the image format.
 
 </DL></DL>
 <P>

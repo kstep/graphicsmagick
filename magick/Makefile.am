@@ -66,7 +66,7 @@ include_HEADERS = classify.h compress.h config.h defines.h delegates.h error.h \
 	utility.h version.h widget.h xwindows.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h display.h logo.h mac.h nt.h proxy.h vms.h
+noinst_HEADERS = animate.h display.h mac.h nt.h proxy.h vms.h
 
 # Additional files to distribute
 EXTRA_DIST = Imakefile Magick-config.in Make.com

@@ -18,43 +18,24 @@
 		<LI><A HREF="#AllocateImage">AllocateImage</A>
 		<LI><A HREF="#AllocateNextImage">AllocateNextImage</A>
 		<LI><A HREF="#AnimateImages">AnimateImages</A>
-		<LI><A HREF="#AnnotateImage">AnnotateImage</A>
 		<LI><A HREF="#AppendImages">AppendImages</A>
 		<LI><A HREF="#AverageImages">AverageImages</A>
-		<LI><A HREF="#BorderImage">BorderImage</A>
-		<LI><A HREF="#ChopImage">ChopImage</A>
-		<LI><A HREF="#CloneAnnotateInfo">CloneAnnotateInfo</A>
 		<LI><A HREF="#CloneImage">CloneImage</A>
 		<LI><A HREF="#CloneImageInfo">CloneImageInfo</A>
 		<LI><A HREF="#CloseImage">CloseImage</A>
-		<LI><A HREF="#CoalesceImage">CoalesceImage</A>
-		<LI><A HREF="#ColorFloodfillImage">ColorFloodfillImage</A>
-		<LI><A HREF="#ColorizeImage">ColorizeImage</A>
 		<LI><A HREF="#CommentImage">CommentImage</A>
 		<LI><A HREF="#CompressColormap">CompressColormap</A>
 		<LI><A HREF="#CompositeImage">CompositeImage</A>
 		<LI><A HREF="#CondenseImage">CondenseImage</A>
-		<LI><A HREF="#ContrastImage">ContrastImage</A>
 		<LI><A HREF="#CreateImage">CreateImage</A>
-		<LI><A HREF="#CropImage">CropImage</A>
 		<LI><A HREF="#CycleColormapImage">CycleColormapImage</A>
 		<LI><A HREF="#DescribeImage">DescribeImage</A>
-		<LI><A HREF="#DestroyAnnotateInfo">DestroyAnnotateInfo</A>
 		<LI><A HREF="#DestroyImage">DestroyImage</A>
 		<LI><A HREF="#DestroyImageInfo">DestroyImageInfo</A>
 		<LI><A HREF="#DestroyImages">DestroyImages</A>
-		<LI><A HREF="#DestroyMontageInfo">DestroyMontageInfo</A>
 		<LI><A HREF="#DisplayImages">DisplayImages</A>
-		<LI><A HREF="#DrawImage">DrawImage</A>
-		<LI><A HREF="#EqualizeImage">EqualizeImage</A>
-		<LI><A HREF="#FlipImage">FlipImage</A>
-		<LI><A HREF="#FlopImage">FlopImage</A>
-		<LI><A HREF="#FrameImage">FrameImage</A>
-		<LI><A HREF="#GammaImage">GammaImage</A>
-		<LI><A HREF="#GetAnnotateInfo">GetAnnotateInfo</A>
 		<LI><A HREF="#GetImageInfo">GetImageInfo</A>
 		<LI><A HREF="#GetImageType">GetImageType</A>
-		<LI><A HREF="#GetMontageInfo">GetMontageInfo</A>
 		<LI><A HREF="#GetNumberScenes">GetNumberScenes</A>
 		<LI><A HREF="#GetPixels">GetPixels</A>
 		<LI><A HREF="#IsGeometry">IsGeometry</A>
@@ -65,38 +46,25 @@
 		<LI><A HREF="#LabelImage">LabelImage</A>
 		<LI><A HREF="#LayerImage">LayerImage</A>
 		<LI><A HREF="#ListToGroupImage">ListToGroupImage</A>
-		<LI><A HREF="#MagnifyImage">MagnifyImage</A>
-		<LI><A HREF="#MatteFloodfillImage">MatteFloodfillImage</A>
 		<LI><A HREF="#MatteImage">MatteImage</A>
-		<LI><A HREF="#MinifyImage">MinifyImage</A>
-		<LI><A HREF="#ModulateImage">ModulateImage</A>
 		<LI><A HREF="#MogrifyImage">MogrifyImage</A>
 		<LI><A HREF="#MogrifyImages">MogrifyImages</A>
-		<LI><A HREF="#MontageImages">MontageImages</A>
-		<LI><A HREF="#MorphImages">MorphImages</A>
-		<LI><A HREF="#NegateImage">NegateImage</A>
-		<LI><A HREF="#NormalizeImage">NormalizeImage</A>
-		<LI><A HREF="#OpagueImage">OpagueImage</A>
 		<LI><A HREF="#OpenImage">OpenImage</A>
 		<LI><A HREF="#ParseImageGeometry">ParseImageGeometry</A>
 		<LI><A HREF="#PingImage">PingImage</A>
+		<LI><A HREF="#ReadImage">ReadImage</A>
+		<LI><A HREF="#ReadImages">ReadImages</A>
 		<LI><A HREF="#RGBTransformImage">RGBTransformImage</A>
-		<LI><A HREF="#RollImage">RollImage</A>
-		<LI><A HREF="#SampleImage">SampleImage</A>
-		<LI><A HREF="#ScaleImage">ScaleImage</A>
 		<LI><A HREF="#SetImage">SetImage</A>
 		<LI><A HREF="#SetImageInfo">SetImageInfo</A>
 		<LI><A HREF="#SortColormapByIntentsity">SortColormapByIntentsity</A>
-		<LI><A HREF="#SteganoImage">SteganoImage</A>
-		<LI><A HREF="#StereoImage">StereoImage</A>
 		<LI><A HREF="#SyncImage">SyncImage</A>
 		<LI><A HREF="#TextureImage">TextureImage</A>
-		<LI><A HREF="#ThresholdImage">ThresholdImage</A>
 		<LI><A HREF="#TransformImage">TransformImage</A>
 		<LI><A HREF="#TransformRGBImage">TransformRGBImage</A>
 		<LI><A HREF="#TransparentImage">TransparentImage</A>
 		<LI><A HREF="#UncompressImage">UncompressImage</A>
-		<LI><A HREF="#ZoomImage">ZoomImage</A>
+		<LI><A HREF="#WriteImage">WriteImage</A>
 	</UL>
 
 </UL>
@@ -118,22 +86,10 @@ allocated_image=<STRONG>AllocateImage</STRONG>(image_info)
 status=<STRONG>AnimateImages</STRONG>(image_info,image)
 
 <P>
-<STRONG>AnnotateImage</STRONG>(image,annotate_info)
-
-<P>
 <STRONG>AppendImages</STRONG>(images,stack)
 
 <P>
 averaged_image=<STRONG>AverageImages</STRONG>(images)
-
-<P>
-bordered_image=<STRONG>BorderImage</STRONG>(image,border_info)
-
-<P>
-chop_image=<STRONG>ChopImage</STRONG>(image,chop_info)
-
-<P>
-cloned_info=<STRONG>CloneAnnotateInfo</STRONG>(image_info,annotate_info)
 
 <P>
 clone_image=<STRONG>CloneImage</STRONG>(image,columns,rows,clone_pixels)
@@ -143,12 +99,6 @@ cloned_info=<STRONG>CloneImageInfo</STRONG>(image_info)
 
 <P>
 <STRONG>CloseImage</STRONG>(image)
-
-<P>
-<STRONG>ColorFloodfillImage</STRONG>(image,target,tile,x,y,method)
-
-<P>
-<STRONG>ColorizeImage</STRONG>(image,opaque_color,pen_color)
 
 <P>
 <STRONG>CommentImage</STRONG>(image,comments)
@@ -163,22 +113,13 @@ cloned_info=<STRONG>CloneImageInfo</STRONG>(image_info)
 <STRONG>CondenseImage</STRONG>(image)
 
 <P>
-<STRONG>ContrastImage</STRONG>(image,sharpen)
-
-<P>
 image=<STRONG>CreateImage</STRONG>(width,height,red,green,blue,opacity)
-
-<P>
-cropped_image=<STRONG>CropImage</STRONG>(image,crop_info)
 
 <P>
 <STRONG>CycleColormapImage</STRONG>(image,amount)
 
 <P>
 <STRONG>DescribeImage</STRONG>(image,file,verbose)
-
-<P>
-<STRONG>DestroyAnnotateInfo</STRONG>(annotate_info)
 
 <P>
 <STRONG>DestroyImage</STRONG>(image)
@@ -190,31 +131,7 @@ cropped_image=<STRONG>CropImage</STRONG>(image,crop_info)
 <STRONG>DestroyImages</STRONG>(image)
 
 <P>
-<STRONG>DestroyMontageInfo</STRONG>(montage_info)
-
-<P>
 status=<STRONG>DisplayImages</STRONG>(image_info,image)
-
-<P>
-<STRONG>DrawImage</STRONG>(image,annotate_info)
-
-<P>
-<STRONG>EqualizeImage</STRONG>(image)
-
-<P>
-flipped_image=<STRONG>FlipImage</STRONG>(image)
-
-<P>
-flopped_image=<STRONG>FlopImage</STRONG>(image)
-
-<P>
-framed_image=<STRONG>FrameImage</STRONG>(image,frame_info)
-
-<P>
-<STRONG>GammaImage</STRONG>(image,gamma)
-
-<P>
-<STRONG>GetAnnotateInfo</STRONG>(image_info,annotate_info)
 
 <P>
 <STRONG>GetImageInfo</STRONG>(image_info)
@@ -223,13 +140,10 @@ framed_image=<STRONG>FrameImage</STRONG>(image,frame_info)
 type=<STRONG>GetImageType</STRONG>(image)
 
 <P>
-<STRONG>GetMontageInfo</STRONG>(montage_info)
-
-<P>
 scenes=<STRONG>GetNumberScenes</STRONG>(image)
 
 <P>
-<STRONG>GetPixels</STRONG>(image,red,green,blue,opacity)
+<STRONG>GetPixels</STRONG>(image,red_pixels,green_pixels,blue_pixels,opacity_pixels)
 
 <P>
 status=<STRONG>IsGeometry</STRONG>(geometry)
@@ -256,19 +170,7 @@ status=<STRONG>IsTainted</STRONG>(image)
 images=<STRONG>ListToGroupImage</STRONG>(images,number_images)
 
 <P>
-magnified_image=<STRONG>MagnifyImage</STRONG>(image)
-
-<P>
-<STRONG>MatteFloodfillImage</STRONG>(image,target,matte,x,y,method)
-
-<P>
 <STRONG>MatteImage</STRONG>(image)
-
-<P>
-minified_image=<STRONG>MinifyImage</STRONG>(image)
-
-<P>
-<STRONG>ModulateImage</STRONG>(image,modulate)
 
 <P>
 <STRONG>MogrifyImage</STRONG>(image_info,argc,argv,image)
@@ -277,37 +179,22 @@ minified_image=<STRONG>MinifyImage</STRONG>(image)
 <STRONG>MogrifyImages</STRONG>(image_info,argc,argv,images)
 
 <P>
-<STRONG>MontageImages</STRONG>(images,montage_info)
-
-<P>
-morphed_image=<STRONG>MorphImages</STRONG>(images,number_frames)
-
-<P>
-<STRONG>NegateImage</STRONG>(image,grayscale)
-
-<P>
-<STRONG>NormalizeImage</STRONG>(image)
-
-<P>
 <STRONG>OpenImage</STRONG>(image_info,image,type)
 
 <P>
 flags=<STRONG>ParseImageGeometry</STRONG>(image_geometry,x,y,width,height)
 
 <P>
-filesize=<STRONG>PingImage</STRONG>(image_info,columns,rows)
+image=<STRONG>PingImage</STRONG>(image_info)
 
 <P>
 <STRONG>RGBTransformImage</STRONG>(image,colorspace)
 
 <P>
-rolled_image=<STRONG>RollImage</STRONG>(image,x_offset,y_offset)
+image=<STRONG>ReadImage</STRONG>(image_info)
 
 <P>
-sampled_image=<STRONG>SampleImage</STRONG>(image,columns,rows)
-
-<P>
-scaled_image=<STRONG>ScaleImage</STRONG>(image,columns,rows)
+image=<STRONG>ReadImages</STRONG>(image_info)
 
 <P>
 <STRONG>SetImage</STRONG>(image)
@@ -316,19 +203,10 @@ scaled_image=<STRONG>ScaleImage</STRONG>(image,columns,rows)
 <STRONG>SetImageInfo</STRONG>(image_info,rectify)
 
 <P>
-stegano_image=<STRONG>SteganoImage</STRONG>(image,watermark)
-
-<P>
-stereo_image=<STRONG>StereoImage</STRONG>(left_image,right_image)
-
-<P>
 <STRONG>SyncImage</STRONG>(image)
 
 <P>
 <STRONG>TextureImage</STRONG>(image,texture)
-
-<P>
-<STRONG>ThresholdImage</STRONG>(image,threshold)
 
 <P>
 <STRONG>TransformImage</STRONG>(image,crop_geometry,image_geometry)
@@ -340,7 +218,7 @@ stereo_image=<STRONG>StereoImage</STRONG>(left_image,right_image)
 <STRONG>TransparentImage</STRONG>(image,color)
 
 <P>
-zoomed_image=<STRONG>ZoomImage</STRONG>(image,columns,rows)
+status=<STRONG>WriteImage</STRONG>(image_info,image)
 
 <P>
 <HR>
@@ -430,33 +308,6 @@ The address of a structure of type Image.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="AnnotateImage">AnnotateImage</A></H2>
-<P>
-Method AnnotateImage annotates an image with text. Optionally the
-annotation can include the image filename, type, width, height, or scene
-number by embedding special format characters.
-
-<P>
-The format of the AnnotateImage routine is:
-
-<P>
-<PRE>        AnnotateImage(image,annotate_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>annotate_info:</STRONG><DD>
-<P>
-The address of a AnnotateInfo structure.
-
-</DL></DL>
-<P>
-<HR>
 <H2><A NAME="AppendImages">AppendImages</A></H2>
 <P>
 Method AppendImages appends a set of images. All the input images must have
@@ -509,104 +360,6 @@ Method AverageImages returns the mean pixel value for an image sequence.
 <DT><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="BorderImage">BorderImage</A></H2>
-<P>
-Method BorderImage takes an image and puts a border around it of a
-particular color. It allocates the memory necessary for the new Image
-structure and returns a pointer to the new image.
-
-<P>
-The format of the BorderImage routine is:
-
-<P>
-<PRE>        bordered_image=BorderImage(image,border_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>bordered_image:</STRONG><DD>
-<P>
-Method BorderImage returns a pointer to the bordered image. A null image is
-returned if there is a memory shortage.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>border_info:</STRONG><DD>
-<P>
-Specifies a pointer to a structure of type Rectangle which defines the
-border region.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="ChopImage">ChopImage</A></H2>
-<P>
-Method ChopImage creates a new image that is a subregion of an existing
-one. It allocates the memory necessary for the new Image structure and
-returns a pointer to the new image.
-
-<P>
-The format of the ChopImage routine is:
-
-<P>
-<PRE>        chop_image=ChopImage(image,chop_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>chop_image:</STRONG><DD>
-<P>
-Method ChopImage returns a pointer to the chop image. A null image is
-returned if there is a memory shortage or if the image width or height is
-zero.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>chop_info:</STRONG><DD>
-<P>
-Specifies a pointer to a RectangleInfo which defines the region of the
-image to crop.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="CloneAnnotateInfo">CloneAnnotateInfo</A></H2>
-<P>
-Method CloneAnnotateInfo makes a duplicate of the given annotate info, or
-if annotate info is NULL, a new one.
-
-<P>
-The format of the CloneAnnotateInfo routine is:
-
-<P>
-<PRE>        cloned_info=CloneAnnotateInfo(image_info,annotate_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>cloned_info:</STRONG><DD>
-<P>
-Method CloneAnnotateInfo returns a duplicate of the given annotate info, or
-if annotate info is NULL a new one.
-
-<DT><STRONG>image_info:</STRONG><DD>
-<P>
-a structure of type info.
-
-<DT><STRONG>annotate_info:</STRONG><DD>
-<P>
-a structure of type info.
 
 </DL></DL>
 <P>
@@ -695,93 +448,6 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="CoalesceImage">CoalesceImage</A></H2>
-<P>
-Method CoalesceImages merges a sequence of images. This is useful for GIF
-animation sequences that have page offsets and disposal methods.
-
-<P>
-The format of the CoalesceImages routine is:
-
-<P>
-<PRE>    CoalesceImages(image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="ColorFloodfillImage">ColorFloodfillImage</A></H2>
-<P>
-Method ColorFloodfillImage floodfills the designated area with a color. The
-floodfill algorithm is strongly based on a similar algorithm in ``Graphics
-Gems'' by Paul Heckbert.
-
-<P>
-The format of the ColorFloodfillImage routine is:
-
-<P>
-<PRE>        ColorFloodfillImage(image,target,tile,x,y,method)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>target:</STRONG><DD>
-<P>
-A RunlengthPacket structure. This is the RGB value of the target color.
-
-<DT><STRONG>tile:</STRONG><DD>
-<P>
-An image representing the image to tile onto the floodplane.
-
-<DT><STRONG>x,y:</STRONG><DD>
-<P>
-Unsigned integers representing the current location of the pen.
-
-<DT><STRONG>method:</STRONG><DD>
-<P>
-drawing method of type PrimitiveType: floodfill or fill to border.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="ColorizeImage">ColorizeImage</A></H2>
-<P>
-Method ColorizeImage colorizes an image with the pen color. The amount of
-the coloring is controlled with the opacity levels.
-
-<P>
-The format of the ColorizeImage routine is:
-
-<P>
-<PRE>        ColorizeImage(image,opaque_color,pen_color)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-<DT><STRONG>opaque_color, pen_color:</STRONG><DD>
-<P>
-A character string that contain an X11 color string.
 
 </DL></DL>
 <P>
@@ -895,32 +561,6 @@ The address of a structure of type Image.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="ContrastImage">ContrastImage</A></H2>
-<P>
-Method ContrastImage enhances the intensity differences between the lighter
-and darker elements of the image.
-
-<P>
-The format of the ContrastImage routine is:
-
-<P>
-<PRE>        ContrastImage(image,sharpen)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-<DT><STRONG>sharpen:</STRONG><DD>
-<P>
-If True, the intensity is increased otherwise it is decreased.
-
-</DL></DL>
-<P>
-<HR>
 <H2><A NAME="CreateImage">CreateImage</A></H2>
 <P>
 Method CreateImage creates an image from the specified normalized pixel
@@ -957,42 +597,6 @@ This array of normalized float values [0..1] contain the red, green, blue,
 and opacity components of the pixel data. The length of the arrays must
 equal the area specified by the width and height values. If you do not want
 to initialize a particular component, specify it as NULL.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="CropImage">CropImage</A></H2>
-<P>
-Method CropImage creates a new image that is a subregion of an existing
-one. It allocates the memory necessary for the new Image structure and
-returns a pointer to the new image. This routine is optimized to preserve
-the runlength encoding. That is, the cropped image will always use less
-memory than the original.
-
-<P>
-The format of the CropImage routine is:
-
-<P>
-<PRE>        cropped_image=CropImage(image,crop_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>cropped_image:</STRONG><DD>
-<P>
-Method CropImage returns a pointer to the cropped image. A null image is
-returned if there is a memory shortage or if the image width or height is
-zero.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>crop_info:</STRONG><DD>
-<P>
-Specifies a pointer to a RectangleInfo which defines the region of the
-image to crop.
 
 </DL></DL>
 <P>
@@ -1049,28 +653,6 @@ send the image attributes to this file.
 <P>
 an unsigned value other than zero prints detailed information about the
 image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="DestroyAnnotateInfo">DestroyAnnotateInfo</A></H2>
-<P>
-Method DestroyAnnotateInfo deallocates memory associated with an
-AnnotateInfo structure.
-
-<P>
-The format of the DestroyAnnotateInfo routine is:
-
-<P>
-<PRE>        DestroyAnnotateInfo(annotate_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>annotate_info:</STRONG><DD>
-<P>
-Specifies a pointer to an AnnotateInfo structure.
 
 </DL></DL>
 <P>
@@ -1140,28 +722,6 @@ The address of a structure of type Image.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="DestroyMontageInfo">DestroyMontageInfo</A></H2>
-<P>
-Method DestroyMontageInfo deallocates memory associated with an MontageInfo
-structure.
-
-<P>
-The format of the DestroyMontageInfo routine is:
-
-<P>
-<PRE>        DestroyMontageInfo(montage_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>montage_info:</STRONG><DD>
-<P>
-Specifies a pointer to an MontageInfo structure.
-
-</DL></DL>
-<P>
-<HR>
 <H2><A NAME="DisplayImages">DisplayImages</A></H2>
 <P>
 Method DisplayImages displays one or more images to an X window.
@@ -1188,192 +748,6 @@ Specifies a pointer to an ImageInfo structure.
 <DT><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="DrawImage">DrawImage</A></H2>
-<P>
-Method DrawImage draws a primitive (line, rectangle, ellipse) on the image.
-
-<P>
-The format of the DrawImage routine is:
-
-<P>
-<PRE>        DrawImage(image,annotate_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>annotate_info:</STRONG><DD>
-<P>
-The address of a DrawInfo structure.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="EqualizeImage">EqualizeImage</A></H2>
-<P>
-Method EqualizeImage performs histogram equalization on the reference
-image.
-
-<P>
-The format of the EqualizeImage routine is:
-
-<P>
-<PRE>        EqualizeImage(image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="FlipImage">FlipImage</A></H2>
-<P>
-Method FlipImage creates a new image that reflects each scanline in the
-vertical direction It allocates the memory necessary for the new Image
-structure and returns a pointer to the new image.
-
-<P>
-The format of the FlipImage routine is:
-
-<P>
-<PRE>        flipped_image=FlipImage(image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>flipped_image:</STRONG><DD>
-<P>
-Method FlipImage returns a pointer to the image after reflecting. A null
-image is returned if there is a memory shortage.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="FlopImage">FlopImage</A></H2>
-<P>
-Method FlopImage creates a new image that reflects each scanline in the
-horizontal direction It allocates the memory necessary for the new Image
-structure and returns a pointer to the new image.
-
-<P>
-The format of the FlopImage routine is:
-
-<P>
-<PRE>        flopped_image=FlopImage(image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>flopped_image:</STRONG><DD>
-<P>
-Method FlopImage returns a pointer to the image after reflecting. A null
-image is returned if there is a memory shortage.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="FrameImage">FrameImage</A></H2>
-<P>
-Method FrameImage takes an image and puts a frame around it of a particular
-color. It allocates the memory necessary for the new Image structure and
-returns a pointer to the new image.
-
-<P>
-The format of the FrameImage routine is:
-
-<P>
-<PRE>        framed_image=FrameImage(image,frame_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>framed_image:</STRONG><DD>
-<P>
-Method FrameImage returns a pointer to the framed image. A null image is
-returned if there is a memory shortage.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>frame_info:</STRONG><DD>
-<P>
-Specifies a pointer to a FrameInfo structure which defines the framed
-region.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="GammaImage">GammaImage</A></H2>
-<P>
-Method GammaImage converts the reference image to gamma corrected colors.
-
-<P>
-The format of the GammaImage routine is:
-
-<P>
-<PRE>        GammaImage(image,gamma)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-<DT><STRONG>gamma:</STRONG><DD>
-<P>
-A character string indicating the level of gamma correction.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="GetAnnotateInfo">GetAnnotateInfo</A></H2>
-<P>
-Method GetAnnotateInfo initializes the AnnotateInfo structure.
-
-<P>
-The format of the GetAnnotateInfo routine is:
-
-<P>
-<PRE>        GetAnnotateInfo(image_info,annotate_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image_info:</STRONG><DD>
-<P>
-Specifies a pointer to an ImageInfo structure.
-
-<DT><STRONG>annotate_info:</STRONG><DD>
-<P>
-Specifies a pointer to a AnnotateInfo structure.
 
 </DL></DL>
 <P>
@@ -1425,27 +799,6 @@ The address of a structure of type Image.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="GetMontageInfo">GetMontageInfo</A></H2>
-<P>
-Method GetMontageInfo initializes the MontageInfo structure.
-
-<P>
-The format of the GetMontageInfo routine is:
-
-<P>
-<PRE>        GetMontageInfo(montage_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>montage_info:</STRONG><DD>
-<P>
-Specifies a pointer to a MontageInfo structure.
-
-</DL></DL>
-<P>
-<HR>
 <H2><A NAME="GetNumberScenes">GetNumberScenes</A></H2>
 <P>
 Method GetNumberScenes returns the number of scenes in an image sequence.
@@ -1480,7 +833,7 @@ green, blue, and opacity values.
 The format of the GetPixels routine is:
 
 <P>
-<PRE>        GetPixels(image,red,green,blue,opacity)
+<PRE>        GetPixels(image,red_pixels,green_pixels,blue_pixels,opacity_pixels)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -1490,9 +843,9 @@ A description of each parameter follows:
 <P>
 Specifies a pointer to a Image structure; returned from ReadImage.
 
-<DT><STRONG>red,green,blue,opacity:</STRONG><DD>
+<DT><STRONG>red_pixels,green_pixels,blue_pixels,opacity_pixels:</STRONG><DD>
 <P>
-These arrays are returned with the correponding red, green, blue, and
+These arrays are returned with the correpondingred, green, blue, and
 opacity values from the image. The length of the arrays must equal the area
 specified by the columns and row values values of the Image structure. If
 you do not want to initialize a particular component, specify it as NULL.
@@ -1727,83 +1080,6 @@ is returned here.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="MagnifyImage">MagnifyImage</A></H2>
-<P>
-Method MagnifyImage creates a new image that is a integral size greater
-than an existing one. It allocates the memory necessary for the new Image
-structure and returns a pointer to the new image.
-
-<P>
-MagnifyImage scans the reference image to create a magnified image by
-bilinear interpolation. The magnified image columns and rows become:
-
-<P>
-<PRE>  number_columns &lt;&lt; 1
-</PRE>
-<P>
-<PRE>  number_rows &lt;&lt; 1
-</PRE>
-<P>
-The format of the MagnifyImage routine is:
-
-<P>
-<PRE>        magnified_image=MagnifyImage(image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>magnified_image:</STRONG><DD>
-<P>
-Method MagnifyImage returns a pointer to the image after magnification. A
-null image is returned if there is a memory shortage.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="MatteFloodfillImage">MatteFloodfillImage</A></H2>
-<P>
-Method MatteFloodfillImage floodfills the designated area with a matte
-value. The floodfill algorithm is strongly based on a similar algorithm in
-``Graphics Gems'' by Paul Heckbert.
-
-<P>
-The format of the MatteFloodfillImage routine is:
-
-<P>
-<PRE>        MatteFloodfillImage(image,target,matte,x,y,method)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>target:</STRONG><DD>
-<P>
-A RunlengthPacket structure. This is the RGB value of the target color.
-
-<DT><STRONG>matte:</STRONG><DD>
-<P>
-A integer value representing the amount of transparency.
-
-<DT><STRONG>x,y:</STRONG><DD>
-<P>
-Unsigned integers representing the current location of the pen.
-
-<DT><STRONG>method:</STRONG><DD>
-<P>
-drawing method of type PrimitiveType: floodfill or fill to border.
-
-</DL></DL>
-<P>
-<HR>
 <H2><A NAME="MatteImage">MatteImage</A></H2>
 <P>
 Method MatteImage initializes the matte channel of the reference image to
@@ -1822,83 +1098,6 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="MinifyImage">MinifyImage</A></H2>
-<P>
-Method MinifyImage creates a new image that is a integral size less than an
-existing one. It allocates the memory necessary for the new Image structure
-and returns a pointer to the new image.
-
-<P>
-MinifyImage scans the reference image to create a minified image by
-computing the weighted average of a 4x4 cell centered at each reference
-pixel. The target pixel requires two columns and two rows of the reference
-pixels. Therefore the minified image columns and rows become:
-
-<P>
-<PRE>  number_columns/2
-</PRE>
-<P>
-<PRE>  number_rows/2
-</PRE>
-<P>
-Weights assume that the importance of neighboring pixels is negately
-proportional to the square of their distance from the target pixel.
-
-<P>
-The scan only processes pixels that have a full set of neighbors. Pixels in
-the top, bottom, left, and right pairs of rows and columns are omitted from
-the scan.
-
-<P>
-The format of the MinifyImage routine is:
-
-<P>
-<PRE>        minified_image=MinifyImage(image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>minified_image:</STRONG><DD>
-<P>
-Method MinifyImage returns a pointer to the image after reducing. A null
-image is returned if there is a memory shortage or if the image size is
-less than IconSize*2.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="ModulateImage">ModulateImage</A></H2>
-<P>
-Method ModulateImage modulates the hue, saturation, and brightness of an
-image.
-
-<P>
-The format of the ModulateImage routine is:
-
-<P>
-<PRE>        ModulateImage(image,modulate)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-<DT><STRONG>modulate:</STRONG><DD>
-<P>
-A character string indicating the percent change in brightness, saturation,
-and hue in floating point notation separated by commas (e.g. 10.1,0.0,3.1).
 
 </DL></DL>
 <P>
@@ -1969,134 +1168,6 @@ Specifies a pointer to a text array containing the command line arguments.
 <DT><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="MontageImages">MontageImages</A></H2>
-<P>
-Method MontageImages creates a composite image by combining several
-separate images.
-
-<P>
-The format of the MontageImages routine is:
-
-<P>
-<PRE>        MontageImages(images,montage_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>images:</STRONG><DD>
-<P>
-Specifies a pointer to an array of Image structures.
-
-<DT><STRONG>montage_info:</STRONG><DD>
-<P>
-Specifies a pointer to a MontageInfo structure.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="MorphImages">MorphImages</A></H2>
-<P>
-Method MorphImages morphs a set of images. both the image pixels and size
-are linearly interpolated to give the appearance of a meta-morphosis from
-one image to the next.
-
-<P>
-The format of the MorphImage routine is:
-
-<P>
-<PRE>        morphed_image=MorphImages(images,number_frames)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>morphed_image:</STRONG><DD>
-<P>
-Method MorphImages returns an image sequence that has linearly interpolated
-pixels and size between two input images.
-
-<DT><STRONG>images:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-<DT><STRONG>number_frames:</STRONG><DD>
-<P>
-This unsigned integer reflects the number of in-between images to generate.
-The more in-between frames, the smoother the morph.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="NegateImage">NegateImage</A></H2>
-<P>
-Method NegateImage negates the colors in the reference image. The Grayscale
-option means that only grayscale values within the image are negated.
-
-<P>
-The format of the NegateImage routine is:
-
-<P>
-<PRE>        NegateImage(image,grayscale)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="NormalizeImage">NormalizeImage</A></H2>
-<P>
-Method NormalizeImage normalizes the pixel values to span the full range of
-color values. This is a contrast enhancement technique.
-
-<P>
-The format of the NormalizeImage routine is:
-
-<P>
-<PRE>        NormalizeImage(image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="OpagueImage">OpagueImage</A></H2>
-<P>
-Method OpaqueImage changes the color of an opaque pixel to the pen color.
-
-<P>
-The format of the OpaqueImage routine is:
-
-<P>
-<PRE>    OpaqueImage(image,opaque_color,pen_color)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-<DT><STRONG>opaque_color, pen_color:</STRONG><DD>
-<P>
-A character string that contain an X11 color string.
 
 </DL></DL>
 <P>
@@ -2183,13 +1254,13 @@ image file is pinged.
 The format of the PingImage routine is:
 
 <P>
-<PRE>        filesize=PingImage(image_info,columns,rows)
+<PRE>        image=PingImage(image_info)
 </PRE>
 <P>
 A description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>filesize:</STRONG><DD>
+<DT><STRONG>Image:</STRONG><DD>
 <P>
 Method PingImage returns the image size in bytes if the image file exists
 and it size can be determined otherwise 0.
@@ -2198,14 +1269,63 @@ and it size can be determined otherwise 0.
 <P>
 Specifies a pointer to an ImageInfo structure.
 
-<DT><STRONG>columns:</STRONG><DD>
+</DL></DL>
 <P>
-An unsigned integer pointer that specifies the number of columns in the
-image.
+<HR>
+<H2><A NAME="ReadImage">ReadImage</A></H2>
+<P>
+Method ReadImage reads an image and returns it. It allocates the memory
+necessary for the new Image structure and returns a pointer to the new
+image. By default, the image format is determined by its magic number. To
+specify a particular image format, precede the filename with an explicit
+image format name and a colon (i.e. ps:image) or as the filename suffix
+(i.e. image.ps).
 
-<DT><STRONG>rows:</STRONG><DD>
 <P>
-An unsigned integer pointer that specifies the number of rows in the image.
+The format of the ReadImage routine is:
+
+<P>
+<PRE>        image=ReadImage(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadImage returns a pointer to the image after reading. A null image
+is returned if there is a memory shortage or if the image cannot be read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadImages">ReadImages</A></H2>
+<P>
+Method ReadImages reads a list of image names from a file and then returns
+the images as a linked list.
+
+<P>
+The format of the ReadImage routine is:
+
+<P>
+<PRE>        image=ReadImages(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadImage returns a pointer to the image after reading. A null image
+is returned if there is a memory shortage or if the image cannot be read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
 
 </DL></DL>
 <P>
@@ -2235,125 +1355,6 @@ The address of a structure of type Image; returned from ReadImage.
 <P>
 An unsigned integer value that indicates which colorspace to transform the
 image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="RollImage">RollImage</A></H2>
-<P>
-Method RollImage rolls an image vertically and horizontally. It allocates
-the memory necessary for the new Image structure and returns a pointer to
-the new image.
-
-<P>
-The format of the RollImage routine is:
-
-<P>
-<PRE>        rolled_image=RollImage(image,x_offset,y_offset)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>rolled_image:</STRONG><DD>
-<P>
-Method RollImage returns a pointer to the image after rolling. A null image
-is returned if there is a memory shortage.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>x_offset:</STRONG><DD>
-<P>
-An integer that specifies the number of columns to roll in the horizontal
-direction.
-
-<DT><STRONG>y_offset:</STRONG><DD>
-<P>
-An integer that specifies the number of rows to roll in the vertical
-direction.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="SampleImage">SampleImage</A></H2>
-<P>
-Method SampleImage creates a new image that is a scaled size of an existing
-one using pixel sampling. It allocates the memory necessary for the new
-Image structure and returns a pointer to the new image.
-
-<P>
-The format of the SampleImage routine is:
-
-<P>
-<PRE>        sampled_image=SampleImage(image,columns,rows)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>sampled_image:</STRONG><DD>
-<P>
-Method SampleImage returns a pointer to the image after scaling. A null
-image is returned if there is a memory shortage.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>columns:</STRONG><DD>
-<P>
-An integer that specifies the number of columns in the sampled image.
-
-<DT><STRONG>rows:</STRONG><DD>
-<P>
-An integer that specifies the number of rows in the sampled image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="ScaleImage">ScaleImage</A></H2>
-<P>
-Method ScaleImage creates a new image that is a scaled size of an existing
-one. It allocates the memory necessary for the new Image structure and
-returns a pointer to the new image. To scale a scanline from x pixels to y
-pixels, each new pixel represents x/y old pixels. To read x/y pixels, read
-(x/y rounded up) pixels but only count the required fraction of the last
-old pixel read in your new pixel. The remainder of the old pixel will be
-counted in the next new pixel.
-
-<P>
-The scaling algorithm was suggested by <A
-HREF="mailto:rjohnson@shell.com">rjohnson@shell.com</A> and is adapted from
-<CODE>pnmscale(1)</CODE> of PBMPLUS by Jef Poskanzer.
-
-<P>
-The format of the ScaleImage routine is:
-
-<P>
-<PRE>        scaled_image=ScaleImage(image,columns,rows)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>scaled_image:</STRONG><DD>
-<P>
-Method ScaleImage returns a pointer to the image after scaling. A null
-image is returned if there is a memory shortage.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>columns:</STRONG><DD>
-<P>
-An integer that specifies the number of columns in the scaled image.
-
-<DT><STRONG>rows:</STRONG><DD>
-<P>
-An integer that specifies the number of rows in the scaled image.
 
 </DL></DL>
 <P>
@@ -2433,71 +1434,6 @@ A pointer to a Image structure.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="SteganoImage">SteganoImage</A></H2>
-<P>
-Method SteganoImage hides a digital watermark within the image.
-
-<P>
-The format of the SteganoImage routine is:
-
-<P>
-<PRE>        stegano_image=SteganoImage(image,watermark)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>stegano_image:</STRONG><DD>
-<P>
-Method SteganoImage returns a pointer to the steganographic image with the
-watermark hidden. A null image is returned if there is a memory shortage.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>watermark:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="StereoImage">StereoImage</A></H2>
-<P>
-Method StereoImage combines two images and produces a single image that is
-the composite of a left and right image of a stereo pair. The left image is
-converted to gray scale and written to the red channel of the stereo image.
-The right image is converted to gray scale and written to the blue channel
-of the stereo image. View the composite image with red-blue glasses to
-create a stereo effect.
-
-<P>
-The format of the StereoImage routine is:
-
-<P>
-<PRE>        stereo_image=StereoImage(left_image,right_image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>stereo_image:</STRONG><DD>
-<P>
-Method StereoImage returns a pointer to the stereo image. A null image is
-returned if there is a memory shortage.
-
-<DT><STRONG>left_image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>right_image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-</DL></DL>
-<P>
-<HR>
 <H2><A NAME="SyncImage">SyncImage</A></H2>
 <P>
 Method SyncImage initializes the red, green, and blue intensities of each
@@ -2541,31 +1477,6 @@ The address of a structure of type Image; returned from ReadImage.
 <DT><STRONG>texture:</STRONG><DD>
 <P>
 This image contains the texture to layer on the background.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="ThresholdImage">ThresholdImage</A></H2>
-<P>
-Method ThresholdImage thresholds the reference image.
-
-<P>
-The format of the ThresholdImage routine is:
-
-<P>
-<PRE>        ThresholdImage(image,threshold)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image; returned from ReadImage.
-
-<DT><STRONG>threshold:</STRONG><DD>
-<P>
-A double indicating the threshold value.
 
 </DL></DL>
 <P>
@@ -2699,41 +1610,38 @@ The address of a structure of type Image.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="ZoomImage">ZoomImage</A></H2>
+<H2><A NAME="WriteImage">WriteImage</A></H2>
 <P>
-Method ZoomImage creates a new image that is a scaled size of an existing
-one. It allocates the memory necessary for the new Image structure and
-returns a pointer to the new image. The Point filter gives fast pixel
-replication, Triangle is equivalent to bi-linear interpolation, and Mitchel
-giver slower, very high-quality results. See Graphic Gems III for details
-on this algorithm.
+Method WriteImage writes an image to a file as defined by
+image-&gt;filename. You can specify a particular image format by prefixing
+the file with the image type and a colon (i.e. ps:image) or specify the
+image type as the filename suffix (i.e. image.ps). The image may be
+modified to adapt it to the requirements of the image format. For example,
+DirectClass images must be color-reduced to PseudoClass if the format is
+GIF.
 
 <P>
-The format of the ZoomImage routine is:
+The format of the WriteImage routine is:
 
 <P>
-<PRE>        zoomed_image=ZoomImage(image,columns,rows)
+<PRE>        status=WriteImage(image_info,image)
 </PRE>
 <P>
 A description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>zoomed_image:</STRONG><DD>
+<DT><STRONG>status:</STRONG><DD>
 <P>
-Method ZoomImage returns a pointer to the image after scaling. A null image
-is returned if there is a memory shortage.
+Method WriteImage return True if the image is written. False is returned is
+there is a memory shortage or if the image file fails to write.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
 
 <DT><STRONG>image:</STRONG><DD>
 <P>
-The address of a structure of type Image.
-
-<DT><STRONG>columns:</STRONG><DD>
-<P>
-An integer that specifies the number of columns in the zoomed image.
-
-<DT><STRONG>rows:</STRONG><DD>
-<P>
-An integer that specifies the number of rows in the scaled image.
+A pointer to a Image structure.
 
 </DL></DL>
 </BODY>

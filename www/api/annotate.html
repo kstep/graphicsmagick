@@ -1,0 +1,158 @@
+<HTML>
+<HEAD>
+<TITLE>annotate - Methods to Annotate an Image</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#AnnotateImage">AnnotateImage</A>
+		<LI><A HREF="#CloneAnnotateInfo">CloneAnnotateInfo</A>
+		<LI><A HREF="#DestroyAnnotateInfo">DestroyAnnotateInfo</A>
+		<LI><A HREF="#GetAnnotateInfo">GetAnnotateInfo</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+annotate - Methods to Annotate an Image
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>AnnotateImage</STRONG>(image,annotate_info)
+
+<P>
+cloned_info=<STRONG>CloneAnnotateInfo</STRONG>(image_info,annotate_info)
+
+<P>
+<STRONG>DestroyAnnotateInfo</STRONG>(annotate_info)
+
+<P>
+<STRONG>GetAnnotateInfo</STRONG>(image_info,annotate_info)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="AnnotateImage">AnnotateImage</A></H2>
+<P>
+Method AnnotateImage annotates an image with text. Optionally the
+annotation can include the image filename, type, width, height, or scene
+number by embedding special format characters.
+
+<P>
+The format of the AnnotateImage routine is:
+
+<P>
+<PRE>        AnnotateImage(image,annotate_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>annotate_info:</STRONG><DD>
+<P>
+The address of a AnnotateInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="CloneAnnotateInfo">CloneAnnotateInfo</A></H2>
+<P>
+Method CloneAnnotateInfo makes a duplicate of the given annotate info, or
+if annotate info is NULL, a new one.
+
+<P>
+The format of the CloneAnnotateInfo routine is:
+
+<P>
+<PRE>        cloned_info=CloneAnnotateInfo(image_info,annotate_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>cloned_info:</STRONG><DD>
+<P>
+Method CloneAnnotateInfo returns a duplicate of the given annotate info, or
+if annotate info is NULL a new one.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+a structure of type info.
+
+<DT><STRONG>annotate_info:</STRONG><DD>
+<P>
+a structure of type info.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="DestroyAnnotateInfo">DestroyAnnotateInfo</A></H2>
+<P>
+Method DestroyAnnotateInfo deallocates memory associated with an
+AnnotateInfo structure.
+
+<P>
+The format of the DestroyAnnotateInfo routine is:
+
+<P>
+<PRE>        DestroyAnnotateInfo(annotate_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>annotate_info:</STRONG><DD>
+<P>
+Specifies a pointer to an AnnotateInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GetAnnotateInfo">GetAnnotateInfo</A></H2>
+<P>
+Method GetAnnotateInfo initializes the AnnotateInfo structure.
+
+<P>
+The format of the GetAnnotateInfo routine is:
+
+<P>
+<PRE>        GetAnnotateInfo(image_info,annotate_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>annotate_info:</STRONG><DD>
+<P>
+Specifies a pointer to a AnnotateInfo structure.
+
+</DL></DL>
+</BODY>
+
+</HTML>

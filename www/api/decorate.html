@@ -1,0 +1,146 @@
+<HTML>
+<HEAD>
+<TITLE>decorate - ImageMagick Image Decoration Methods</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#BorderImage">BorderImage</A>
+		<LI><A HREF="#FrameImage">FrameImage</A>
+		<LI><A HREF="#RaiseImage">RaiseImage</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+decorate - ImageMagick Image Decoration Methods
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+bordered_image=<STRONG>BorderImage</STRONG>(image,border_info)
+
+<P>
+framed_image=<STRONG>FrameImage</STRONG>(image,frame_info)
+
+<P>
+<STRONG>RaiseImage</STRONG>(image,raise_info,raised)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="BorderImage">BorderImage</A></H2>
+<P>
+Method BorderImage takes an image and puts a border around it of a
+particular color. It allocates the memory necessary for the new Image
+structure and returns a pointer to the new image.
+
+<P>
+The format of the BorderImage routine is:
+
+<P>
+<PRE>        bordered_image=BorderImage(image,border_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">bordered_image:</A></STRONG><DD>
+<P>
+Method BorderImage returns a pointer to the bordered image. A null image is
+returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>border_info:</STRONG><DD>
+<P>
+Specifies a pointer to a structure of type Rectangle which defines the
+border region.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="FrameImage">FrameImage</A></H2>
+<P>
+Method FrameImage takes an image and puts a frame around it of a particular
+color. It allocates the memory necessary for the new Image structure and
+returns a pointer to the new image.
+
+<P>
+The format of the FrameImage routine is:
+
+<P>
+<PRE>        framed_image=FrameImage(image,frame_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>framed_image:</STRONG><DD>
+<P>
+Method FrameImage returns a pointer to the framed image. A null image is
+returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>frame_info:</STRONG><DD>
+<P>
+Specifies a pointer to a FrameInfo structure which defines the framed
+region.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="RaiseImage">RaiseImage</A></H2>
+<P>
+Method RaiseImage lightens and darkens the edges of an image to give a 3-D
+raised or lower effect.
+
+<P>
+The format of the RaiseImage routine is:
+
+<P>
+<PRE>        RaiseImage(image,raise_info,raised)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>raise_info:</STRONG><DD>
+<P>
+Specifies a pointer to a XRectangle which defines the raised region.
+
+<DT><STRONG>raised:</STRONG><DD>
+<P>
+A value other than zero causes the image to have a 3-D raised effect,
+otherwise it has a lowered effect.
+
+</DL></DL>
+</BODY>
+
+</HTML>

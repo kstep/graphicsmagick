@@ -1,0 +1,205 @@
+<HTML>
+<HEAD>
+<TITLE>enhance - Methods to Enhance an Image</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#ContrastImage">ContrastImage</A>
+		<LI><A HREF="#EqualizeImage">EqualizeImage</A>
+		<LI><A HREF="#GammaImage">GammaImage</A>
+		<LI><A HREF="#ModulateImage">ModulateImage</A>
+		<LI><A HREF="#NegateImage">NegateImage</A>
+		<LI><A HREF="#NormalizeImage">NormalizeImage</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+enhance - Methods to Enhance an Image
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>ContrastImage</STRONG>(image,sharpen)
+
+<P>
+<STRONG>EqualizeImage</STRONG>(image)
+
+<P>
+<STRONG>GammaImage</STRONG>(image,gamma)
+
+<P>
+<STRONG>ModulateImage</STRONG>(image,modulate)
+
+<P>
+<STRONG>NegateImage</STRONG>(image,grayscale)
+
+<P>
+<STRONG>NormalizeImage</STRONG>(image)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="ContrastImage">ContrastImage</A></H2>
+<P>
+Method ContrastImage enhances the intensity differences between the lighter
+and darker elements of the image.
+
+<P>
+The format of the ContrastImage routine is:
+
+<P>
+<PRE>        ContrastImage(image,sharpen)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>sharpen:</STRONG><DD>
+<P>
+If True, the intensity is increased otherwise it is decreased.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="EqualizeImage">EqualizeImage</A></H2>
+<P>
+Method EqualizeImage performs histogram equalization on the reference
+image.
+
+<P>
+The format of the EqualizeImage routine is:
+
+<P>
+<PRE>        EqualizeImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GammaImage">GammaImage</A></H2>
+<P>
+Method GammaImage converts the reference image to gamma corrected colors.
+
+<P>
+The format of the GammaImage routine is:
+
+<P>
+<PRE>        GammaImage(image,gamma)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>gamma:</STRONG><DD>
+<P>
+A character string indicating the level of gamma correction.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ModulateImage">ModulateImage</A></H2>
+<P>
+Method ModulateImage modulates the hue, saturation, and brightness of an
+image.
+
+<P>
+The format of the ModulateImage routine is:
+
+<P>
+<PRE>        ModulateImage(image,modulate)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>modulate:</STRONG><DD>
+<P>
+A character string indicating the percent change in brightness, saturation,
+and hue in floating point notation separated by commas (e.g. 10.1,0.0,3.1).
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="NegateImage">NegateImage</A></H2>
+<P>
+Method NegateImage negates the colors in the reference image. The Grayscale
+option means that only grayscale values within the image are negated.
+
+<P>
+The format of the NegateImage routine is:
+
+<P>
+<PRE>        NegateImage(image,grayscale)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="NormalizeImage">NormalizeImage</A></H2>
+<P>
+Method NormalizeImage normalizes the pixel values to span the full range of
+color values. This is a contrast enhancement technique.
+
+<P>
+The format of the NormalizeImage routine is:
+
+<P>
+<PRE>        NormalizeImage(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+</DL></DL>
+</BODY>
+
+</HTML>

@@ -17,20 +17,24 @@
 
 		<LI><A HREF="#AddNoiseImage">AddNoiseImage</A>
 		<LI><A HREF="#BlurImage">BlurImage</A>
+		<LI><A HREF="#ColorizeImage">ColorizeImage</A>
 		<LI><A HREF="#DespeckleImage">DespeckleImage</A>
 		<LI><A HREF="#EdgeImage">EdgeImage</A>
 		<LI><A HREF="#EmbossImage">EmbossImage</A>
 		<LI><A HREF="#EnhanceImage">EnhanceImage</A>
 		<LI><A HREF="#ImplodeImage">ImplodeImage</A>
+		<LI><A HREF="#MorphImages">MorphImages</A>
 		<LI><A HREF="#OilPaintImage">OilPaintImage</A>
 		<LI><A HREF="#PlasmaImage">PlasmaImage</A>
-		<LI><A HREF="#RaiseImage">RaiseImage</A>
 		<LI><A HREF="#ReduceNoiseImage">ReduceNoiseImage</A>
 		<LI><A HREF="#ShadeImage">ShadeImage</A>
 		<LI><A HREF="#SharpenImage">SharpenImage</A>
 		<LI><A HREF="#SolarizeImage">SolarizeImage</A>
 		<LI><A HREF="#SpreadImage">SpreadImage</A>
+		<LI><A HREF="#SteganoImage">SteganoImage</A>
+		<LI><A HREF="#StereoImage">StereoImage</A>
 		<LI><A HREF="#SwirlImage">SwirlImage</A>
+		<LI><A HREF="#ThresholdImage">ThresholdImage</A>
 		<LI><A HREF="#WaveImage">WaveImage</A>
 	</UL>
 
@@ -53,6 +57,9 @@ noisy_image=<STRONG>AddNoiseImage</STRONG>(image,noise_type)
 blurred_image=<STRONG>BlurImage</STRONG>(image,factor)
 
 <P>
+<STRONG>ColorizeImage</STRONG>(image,opaque_color,pen_color)
+
+<P>
 despeckled_image=<STRONG>DespeckleImage</STRONG>(image)
 
 <P>
@@ -68,13 +75,13 @@ enhanced_image=<STRONG>EnhanceImage</STRONG>(image)
 imploded_image=<STRONG>ImplodeImage</STRONG>(image,factor)
 
 <P>
+morphed_image=<STRONG>MorphImages</STRONG>(images,number_frames)
+
+<P>
 painted_image=<STRONG>OilPaintImage</STRONG>(image,radius)
 
 <P>
 status=<STRONG>PlasmaImage</STRONG>(image,segment_info,attenuate,depth)
-
-<P>
-<STRONG>RaiseImage</STRONG>(image,raise_info,raised)
 
 <P>
 noisy_image=<STRONG>ReduceNoiseImage</STRONG>(image)
@@ -92,7 +99,16 @@ sharpened_image=<STRONG>SharpenImage</STRONG>(image,factor)
 spread_image=<STRONG>SpreadImage</STRONG>(image,amount)
 
 <P>
+stegano_image=<STRONG>SteganoImage</STRONG>(image,watermark)
+
+<P>
+stereo_image=<STRONG>StereoImage</STRONG>(left_image,right_image)
+
+<P>
 swirled_image=<STRONG>SwirlImage</STRONG>(image,degrees)
+
+<P>
+<STRONG>ThresholdImage</STRONG>(image,threshold)
 
 <P>
 waved_image=<STRONG>WaveImage</STRONG>(image,amplitude,frequency)
@@ -181,6 +197,32 @@ The address of a structure of type Image; returned from ReadImage.
 <P>
 An double value reflecting the percent weight to give to the center pixel
 of the neighborhood.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ColorizeImage">ColorizeImage</A></H2>
+<P>
+Method ColorizeImage colorizes an image with the pen color. The amount of
+the coloring is controlled with the opacity levels.
+
+<P>
+The format of the ColorizeImage routine is:
+
+<P>
+<PRE>        ColorizeImage(image,opaque_color,pen_color)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>opaque_color, pen_color:</STRONG><DD>
+<P>
+A character string that contain an X11 color string.
 
 </DL></DL>
 <P>
@@ -387,6 +429,39 @@ A double value that defines the extent of the implosion.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="MorphImages">MorphImages</A></H2>
+<P>
+Method MorphImages morphs a set of images. both the image pixels and size
+are linearly interpolated to give the appearance of a meta-morphosis from
+one image to the next.
+
+<P>
+The format of the MorphImage routine is:
+
+<P>
+<PRE>        morphed_image=MorphImages(images,number_frames)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>morphed_image:</STRONG><DD>
+<P>
+Method MorphImages returns an image sequence that has linearly interpolated
+pixels and size between two input images.
+
+<DT><STRONG>images:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>number_frames:</STRONG><DD>
+<P>
+This unsigned integer reflects the number of in-between images to generate.
+The more in-between frames, the smoother the morph.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="OilPaintImage">OilPaintImage</A></H2>
 <P>
 Method OilPaintImage creates a new image that is a copy of an existing one
@@ -456,37 +531,6 @@ specifies the plasma attenuation factor.
 <DT><STRONG>depth:</STRONG><DD>
 <P>
 this integer values define the plasma recursion depth.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="RaiseImage">RaiseImage</A></H2>
-<P>
-Method RaiseImage lightens and darkens the edges of an image to give a 3-D
-raised or lower effect.
-
-<P>
-The format of the RaiseImage routine is:
-
-<P>
-<PRE>        RaiseImage(image,raise_info,raised)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>raise_info:</STRONG><DD>
-<P>
-Specifies a pointer to a XRectangle which defines the raised region.
-
-<DT><STRONG>raised:</STRONG><DD>
-<P>
-A value other than zero causes the image to have a 3-D raised effect,
-otherwise it has a lowered effect.
 
 </DL></DL>
 <P>
@@ -675,6 +719,71 @@ to swap.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="SteganoImage">SteganoImage</A></H2>
+<P>
+Method SteganoImage hides a digital watermark within the image.
+
+<P>
+The format of the SteganoImage routine is:
+
+<P>
+<PRE>        stegano_image=SteganoImage(image,watermark)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>stegano_image:</STRONG><DD>
+<P>
+Method SteganoImage returns a pointer to the steganographic image with the
+watermark hidden. A null image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>watermark:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="StereoImage">StereoImage</A></H2>
+<P>
+Method StereoImage combines two images and produces a single image that is
+the composite of a left and right image of a stereo pair. The left image is
+converted to gray scale and written to the red channel of the stereo image.
+The right image is converted to gray scale and written to the blue channel
+of the stereo image. View the composite image with red-blue glasses to
+create a stereo effect.
+
+<P>
+The format of the StereoImage routine is:
+
+<P>
+<PRE>        stereo_image=StereoImage(left_image,right_image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>stereo_image:</STRONG><DD>
+<P>
+Method StereoImage returns a pointer to the stereo image. A null image is
+returned if there is a memory shortage.
+
+<DT><STRONG>left_image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>right_image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="SwirlImage">SwirlImage</A></H2>
 <P>
 Method SwirlImage creates a new image that is a copy of an existing one
@@ -704,6 +813,31 @@ The address of a structure of type Image; returned from ReadImage.
 <DT><STRONG>degrees:</STRONG><DD>
 <P>
 An double value that defines the tightness of the swirling.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ThresholdImage">ThresholdImage</A></H2>
+<P>
+Method ThresholdImage thresholds the reference image.
+
+<P>
+The format of the ThresholdImage routine is:
+
+<P>
+<PRE>        ThresholdImage(image,threshold)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>threshold:</STRONG><DD>
+<P>
+A double indicating the threshold value.
 
 </DL></DL>
 <P>

@@ -1,0 +1,227 @@
+<HTML>
+<HEAD>
+<TITLE>draw - Methods to Draw on an Image</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#ColorFloodfillImage">ColorFloodfillImage</A>
+		<LI><A HREF="#DrawImage">DrawImage</A>
+		<LI><A HREF="#InsidePrimitive">InsidePrimitive</A>
+		<LI><A HREF="#MatteFloodfillImage">MatteFloodfillImage</A>
+		<LI><A HREF="#OpagueImage">OpagueImage</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+draw - Methods to Draw on an Image
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>ColorFloodfillImage</STRONG>(image,target,tile,x,y,method)
+
+<P>
+<STRONG>DrawImage</STRONG>(image,annotate_info)
+
+<P>
+opacity=<STRONG>InsidePrimitive</STRONG>(primitive_info,annotate_info,target,image)
+
+<P>
+<STRONG>MatteFloodfillImage</STRONG>(image,target,matte,x,y,method)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="ColorFloodfillImage">ColorFloodfillImage</A></H2>
+<P>
+Method ColorFloodfillImage floodfills the designated area with a color. The
+floodfill algorithm is strongly based on a similar algorithm in ``Graphics
+Gems'' by Paul Heckbert.
+
+<P>
+The format of the ColorFloodfillImage routine is:
+
+<P>
+<PRE>        ColorFloodfillImage(image,target,tile,x,y,method)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>target:</STRONG><DD>
+<P>
+A RunlengthPacket structure. This is the RGB value of the target color.
+
+<DT><STRONG>tile:</STRONG><DD>
+<P>
+An image representing the image to tile onto the floodplane.
+
+<DT><STRONG>x,y:</STRONG><DD>
+<P>
+Unsigned integers representing the current location of the pen.
+
+<DT><STRONG>method:</STRONG><DD>
+<P>
+drawing method of type PrimitiveType: floodfill or fill to border.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="DrawImage">DrawImage</A></H2>
+<P>
+Method DrawImage draws a primitive (line, rectangle, ellipse) on the image.
+
+<P>
+The format of the DrawImage routine is:
+
+<P>
+<PRE>        DrawImage(image,annotate_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>annotate_info:</STRONG><DD>
+<P>
+The address of a DrawInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="InsidePrimitive">InsidePrimitive</A></H2>
+<P>
+Method InsidePrimitive returns the opacity of the pen at the (x,y) position
+of the image. The opacity is Opaque if the (x,y) position is within the
+primitive as defined in primitive_info. A value less than fully opaque and
+greater than fully transparent is returned for a primitive edge pixel to
+allow for anti-aliasing. Otherwise fully transparent is returned.
+
+<P>
+Rick Mabry provided the algorithms for anti-aliased primitives.
+
+<P>
+The format of the InsidePrimitive routine is:
+
+<P>
+<PRE>        opacity=InsidePrimitive(primitive_info,annotate_info,target,image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>opacity:</STRONG><DD>
+<P>
+Method InsidePrimitive returns a pen opacity associated with the (x,y)
+position of the image.
+
+<DT><STRONG>primitive_info:</STRONG><DD>
+<P>
+Specifies a pointer to a PrimitiveInfo structure.
+
+<DT><STRONG>annotate_info:</STRONG><DD>
+<P>
+Specifies a pointer to a AnnotateInfo structure.
+
+<DT><STRONG>target:</STRONG><DD>
+<P>
+PointInfo representing the (x,y) location in the image.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MatteFloodfillImage">MatteFloodfillImage</A></H2>
+<P>
+Method MatteFloodfillImage floodfills the designated area with a matte
+value. The floodfill algorithm is strongly based on a similar algorithm in
+``Graphics Gems'' by Paul Heckbert.
+
+<P>
+The format of the MatteFloodfillImage routine is:
+
+<P>
+<PRE>        MatteFloodfillImage(image,target,matte,x,y,method)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>target:</STRONG><DD>
+<P>
+A RunlengthPacket structure. This is the RGB value of the target color.
+
+<DT><STRONG>matte:</STRONG><DD>
+<P>
+A integer value representing the amount of transparency.
+
+<DT><STRONG>x,y:</STRONG><DD>
+<P>
+Unsigned integers representing the current location of the pen.
+
+<DT><STRONG>method:</STRONG><DD>
+<P>
+drawing method of type PrimitiveType: floodfill or fill to border.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="OpagueImage">OpagueImage</A></H2>
+<P>
+Method OpaqueImage changes the color of an opaque pixel to the pen color.
+
+<P>
+The format of the OpaqueImage routine is:
+
+<P>
+<PRE>    OpaqueImage(image,opaque_color,pen_color)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image; returned from ReadImage.
+
+<DT><STRONG>opaque_color, pen_color:</STRONG><DD>
+<P>
+A character string that contain an X11 color string.
+
+</DL></DL>
+</BODY>
+
+</HTML>
