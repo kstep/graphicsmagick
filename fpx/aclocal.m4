@@ -1,4 +1,4 @@
-# generated automatically by aclocal 1.7.1 -*- Autoconf -*-
+# generated automatically by aclocal 1.7.2 -*- Autoconf -*-
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002
 # Free Software Foundation, Inc.
@@ -224,7 +224,7 @@ AC_DEFUN([AM_AUTOMAKE_VERSION],[am__api_version="1.7"])
 # Call AM_AUTOMAKE_VERSION so it can be traced.
 # This function is AC_REQUIREd by AC_INIT_AUTOMAKE.
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
-	 [AM_AUTOMAKE_VERSION([1.7.1])])
+	 [AM_AUTOMAKE_VERSION([1.7.2])])
 
 # Helper functions for option handling.                    -*- Autoconf -*-
 
@@ -1240,6 +1240,48 @@ ia64-*-hpux*)
   rm -rf conftest*
   ;;
 
+x86_64-*linux*|ppc*-*linux*|powerpc*-*linux*|s390*-*linux*|sparc*-*linux*)
+  # Find out which ABI we are using.
+  echo 'int i;' > conftest.$ac_ext
+  if AC_TRY_EVAL(ac_compile); then
+    case "`/usr/bin/file conftest.o`" in
+    *32-bit*)
+      case $host in
+        x86_64-*linux*)
+          LD="${LD-ld} -m elf_i386"
+          ;;
+        ppc64-*linux*)
+          LD="${LD-ld} -m elf32ppclinux"
+          ;;
+        s390x-*linux*)
+          LD="${LD-ld} -m elf_s390"
+          ;;
+        sparc64-*linux*)
+          LD="${LD-ld} -m elf32_sparc"
+          ;;
+      esac
+      ;;
+    *64-bit*)
+      case $host in
+        x86_64-*linux*)
+          LD="${LD-ld} -m elf_x86_64"
+          ;;
+        ppc*-*linux*|powerpc*-*linux*)
+          LD="${LD-ld} -m elf64ppc"
+          ;;
+        s390*-*linux*)
+          LD="${LD-ld} -m elf64_s390"
+          ;;
+        sparc*-*linux*)
+          LD="${LD-ld} -m elf64_sparc"
+          ;;
+      esac
+      ;;
+    esac
+  fi
+  rm -rf conftest*
+  ;;
+
 *-*-sco3.2v5*)
   # On SCO OpenServer 5, we need -belf to get full-featured binaries.
   SAVE_CFLAGS="$CFLAGS"
@@ -1258,32 +1300,6 @@ AC_PROVIDE_IFELSE([AC_LIBTOOL_WIN32_DLL],
   AC_CHECK_TOOL(DLLTOOL, dlltool, false)
   AC_CHECK_TOOL(AS, as, false)
   AC_CHECK_TOOL(OBJDUMP, objdump, false)
-
-  # recent cygwin and mingw systems supply a stub DllMain which the user
-  # can override, but on older systems we have to supply one
-  AC_CACHE_CHECK([if libtool should supply DllMain function], lt_cv_need_dllmain,
-    [AC_TRY_LINK([],
-      [extern int __attribute__((__stdcall__)) DllMain(void*, int, void*);
-      DllMain (0, 0, 0);],
-      [lt_cv_need_dllmain=no],[lt_cv_need_dllmain=yes])])
-
-  case $host/$CC in
-  *-*-cygwin*/gcc*-mno-cygwin*|*-*-mingw*)
-    # old mingw systems require "-dll" to link a DLL, while more recent ones
-    # require "-mdll" (and still newer ones would rather have "-shared")
-    SAVE_CFLAGS="$CFLAGS"
-    CFLAGS="$CFLAGS -shared"
-    AC_CACHE_CHECK([how to link DLLs], lt_cv_cc_dll_switch,
-      [AC_TRY_LINK([],[],[lt_cv_cc_dll_switch=-shared],
-	[
-	  CFLAGS="$SAVE_CFLAGS -mdll"
-	AC_TRY_LINK([], [], [lt_cv_cc_dll_switch=-mdll],[lt_cv_cc_dll_switch=-dll])])])
-    CFLAGS="$SAVE_CFLAGS" ;;
-  *-*-cygwin* | *-*-pw32*)
-    # cygwin systems need to pass --dll to the linker, and not link
-    # crt.o which will require a WinMain@16 definition.
-    lt_cv_cc_dll_switch="-Wl,--dll -nostartfiles" ;;
-  esac
   ;;
   ])
 esac
@@ -3187,6 +3203,7 @@ _LT_AC_TAGVAR(link_all_deplibs, $1)=unknown
 _LT_AC_TAGVAR(old_archive_cmds, $1)=$old_archive_cmds
 _LT_AC_TAGVAR(no_undefined_flag, $1)=
 _LT_AC_TAGVAR(whole_archive_flag_spec, $1)=
+_LT_AC_TAGVAR(enable_shared_with_static_runtimes, $1)=no
 
 # Dependencies to place before and after the object being linked:
 _LT_AC_TAGVAR(predep_objects, $1)=
@@ -3405,29 +3422,17 @@ case $host_os in
     esac
     ;;
 
-  cygwin* )
+  cygwin* | mingw* | pw32*)
     # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1) is actually meaningless,
     # as there is no search path for DLLs.
     _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
     _LT_AC_TAGVAR(allow_undefined_flag, $1)=unsupported
     _LT_AC_TAGVAR(always_export_symbols, $1)=no
+    _LT_AC_TAGVAR(enable_shared_with_static_runtimes, $1)=yes
 
     if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
       _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
       _LT_AC_TAGVAR(archive_expsym_cmds, $1)='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}-retain-symbols-file $wl$export_symbols ${wl}--out-implib,$lib'
-    else
-      _LT_AC_TAGVAR(ld_shlibs, $1)=no
-    fi
-	;;
-
-  mingw* | pw32* )
-    _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
-    _LT_AC_TAGVAR(allow_undefined_flag, $1)=unsupported
-    _LT_AC_TAGVAR(always_export_symbols, $1)=no
-
-    if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
-      _LT_AC_TAGVAR(archive_cmds, $1)='$CC '$lt_cv_cc_dll_switch' $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,${lib}'
-      _LT_AC_TAGVAR(archive_expsym_cmds, $1)='$CC '$lt_cv_cc_dll_switch' $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}-retain-symbols-file $wl$export_symbols ${wl}--out-implib,${lib}'
     else
       _LT_AC_TAGVAR(ld_shlibs, $1)=no
     fi
@@ -3904,9 +3909,42 @@ esac
 AC_MSG_RESULT([$_LT_AC_TAGVAR(ld_shlibs, $1)])
 test "$_LT_AC_TAGVAR(ld_shlibs, $1)" = no && can_build_shared=no
 
-# Figure out "hidden" C++ library dependencies from verbose
-# compiler output whening linking a shared library.
-cat > conftest.$ac_ext <<EOF
+_LT_AC_TAGVAR(GCC, $1)="$GXX"
+_LT_AC_TAGVAR(LD, $1)="$LD"
+
+AC_LIBTOOL_POSTDEP_PREDEP($1)
+AC_LIBTOOL_PROG_COMPILER_PIC($1)
+AC_LIBTOOL_PROG_CC_C_O($1)
+AC_LIBTOOL_SYS_HARD_LINK_LOCKS($1)
+AC_LIBTOOL_PROG_LD_SHLIBS($1)
+AC_LIBTOOL_PROG_LD_HARDCODE_LIBPATH($1)
+AC_LIBTOOL_SYS_LIB_STRIP
+AC_LIBTOOL_SYS_DYNAMIC_LINKER($1)
+AC_LIBTOOL_DLOPEN_SELF($1)
+
+AC_LIBTOOL_CONFIG($1)
+
+AC_LANG_POP
+CC="$lt_save_CC"
+])# AC_LIBTOOL_LANG_CXX_CONFIG
+
+# AC_LIBTOOL_POSTDEP_PREDEP([TAGNAME])
+# ------------------------
+# Figure out "hidden" library dependencies from verbose
+# compiler output when linking a shared library.
+# Parse the compiler output and extract the necessary
+# objects, libraries and library flags.
+AC_DEFUN([AC_LIBTOOL_POSTDEP_PREDEP],[
+dnl we can't use the lt_simple_compile_test_code here,
+dnl because it contains code intended for an executable,
+dnl not a library.  It's possible we should let each
+dnl tag define a new lt_????_link_test_code variable,
+dnl but it's only used here...
+ifelse([$1],[],[cat > conftest.$ac_ext <<EOF
+int a;
+void foo (void) { a = 0; }
+EOF
+],[$1],[CXX],[cat > conftest.$ac_ext <<EOF
 class Foo
 {
 public:
@@ -3915,8 +3953,25 @@ private:
   int a;
 };
 EOF
-
-
+],[$1],[F77],[cat > conftest.$ac_ext <<EOF
+      subroutine foo
+      implicit none
+      integer*4 a
+      a=0
+      return
+      end
+EOF
+],[$1],[GCJ],[cat > conftest.$ac_ext <<EOF
+public class foo {
+  private int a;
+  public void bar (void) {
+    a = 0;
+  }
+};
+EOF
+])
+dnl Parse the compiler output and extract the necessary
+dnl objects, libraries and library flags.
 if AC_TRY_EVAL(ac_compile); then
   # Parse the compiler output and extract the necessary
   # objects, libraries and library flags.
@@ -3999,7 +4054,7 @@ if AC_TRY_EVAL(ac_compile); then
   # Clean up.
   rm -f a.out a.exe
 else
-  echo "libtool.m4: error: problem compiling C++ test program"
+  echo "libtool.m4: error: problem compiling $1 test program"
 fi
 
 $rm -f confest.$objext
@@ -4008,25 +4063,7 @@ case " $_LT_AC_TAGVAR(postdeps, $1) " in
 *" -lc "*) _LT_AC_TAGVAR(archive_cmds_need_lc, $1)=no ;;
 *) _LT_AC_TAGVAR(archive_cmds_need_lc, $1)=yes ;;
 esac
-
-_LT_AC_TAGVAR(GCC, $1)="$GXX"
-_LT_AC_TAGVAR(LD, $1)="$LD"
-
-AC_LIBTOOL_PROG_COMPILER_PIC($1)
-AC_LIBTOOL_PROG_CC_C_O($1)
-AC_LIBTOOL_SYS_HARD_LINK_LOCKS($1)
-AC_LIBTOOL_PROG_LD_SHLIBS($1)
-AC_LIBTOOL_PROG_LD_HARDCODE_LIBPATH($1)
-AC_LIBTOOL_SYS_LIB_STRIP
-AC_LIBTOOL_SYS_DYNAMIC_LINKER($1)
-AC_LIBTOOL_DLOPEN_SELF($1)
-
-AC_LIBTOOL_CONFIG($1)
-
-AC_LANG_POP
-CC="$lt_save_CC"
-])# AC_LIBTOOL_LANG_CXX_CONFIG
-
+])# AC_LIBTOOL_POSTDEP_PREDEP
 
 # AC_LIBTOOL_LANG_F77_CONFIG
 # ------------------------
@@ -4051,6 +4088,7 @@ _LT_AC_TAGVAR(link_all_deplibs, $1)=unknown
 _LT_AC_TAGVAR(old_archive_cmds, $1)=$old_archive_cmds
 _LT_AC_TAGVAR(no_undefined_flag, $1)=
 _LT_AC_TAGVAR(whole_archive_flag_spec, $1)=
+_LT_AC_TAGVAR(enable_shared_with_static_runtimes, $1)=no
 
 # Source file extension for f77 test sources.
 ac_ext=f
@@ -4248,6 +4286,7 @@ if test -f "$ltmain"; then
     _LT_AC_TAGVAR(export_dynamic_flag_spec, $1) \
     _LT_AC_TAGVAR(thread_safe_flag_spec, $1) \
     _LT_AC_TAGVAR(whole_archive_flag_spec, $1) \
+    _LT_AC_TAGVAR(enable_shared_with_static_runtimes, $1) \
     _LT_AC_TAGVAR(old_archive_cmds, $1) \
     _LT_AC_TAGVAR(old_archive_from_new_cmds, $1) \
     _LT_AC_TAGVAR(predep_objects, $1) \
@@ -4361,6 +4400,9 @@ build_old_libs=$enable_static
 
 # Whether or not to add -lc for building shared libraries.
 build_libtool_need_lc=$_LT_AC_TAGVAR(archive_cmds_need_lc, $1)
+
+# Whether or not to disallow shared libs when runtime libs are static
+allow_libtool_libs_with_static_runtimes=$_LT_AC_TAGVAR(enable_shared_with_static_runtimes, $1)
 
 # Whether or not to optimize for fast installation.
 fast_install=$enable_fast_install
@@ -4739,7 +4781,7 @@ esac
 
 # Handle CRLF in mingw tool chain
 opt_cr=
-case $host_os in
+case $build_os in
 mingw*)
   opt_cr=`echo 'x\{0,1\}' | tr x '\015'` # option cr in regexp
   ;;
@@ -5309,7 +5351,7 @@ ifelse([$1],[CXX],[
 ],[
   runpath_var=
   _LT_AC_TAGVAR(allow_undefined_flag, $1)=
-
+  _LT_AC_TAGVAR(enable_shared_with_static_runtimes, $1)=no
   _LT_AC_TAGVAR(archive_cmds, $1)=
   _LT_AC_TAGVAR(archive_cmds_need_lc, $1)=
   _LT_AC_TAGVAR(archive_expsym_cmds, $1)=
@@ -5409,6 +5451,7 @@ EOF
       _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
       _LT_AC_TAGVAR(allow_undefined_flag, $1)=unsupported
       _LT_AC_TAGVAR(always_export_symbols, $1)=no
+      _LT_AC_TAGVAR(enable_shared_with_static_runtimes, $1)=yes
 
       if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
         _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
@@ -5638,6 +5681,7 @@ EOF
       # FIXME: Should let the user specify the lib program.
       _LT_AC_TAGVAR(old_archive_cmds, $1)='lib /OUT:$oldlib$oldobjs$old_deplibs'
       fix_srcfile_path='`cygpath -w "$srcfile"`'
+      _LT_AC_TAGVAR(enable_shared_with_static_runtimes, $1)=yes
       ;;
 
     darwin* | rhapsody*)
