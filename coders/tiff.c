@@ -267,7 +267,7 @@ static unsigned int TIFFErrors(const char *module,const char *format,
   (void) vsprintf(p,format,warning);
   (void) strcat(p,".");
   if (image != (Image *) NULL)
-    ThrowBinaryException(DelegateWarning,message,image->filename);
+    ThrowBinaryException(DelegateError,message,image->filename);
   return(True);
 }
 
