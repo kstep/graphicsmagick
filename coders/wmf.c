@@ -437,7 +437,64 @@ static void WmfDrawPolyLines(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 /* Draw multiple polygons */
 static void WmfDrawPolyPolygon(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  puts("WmfDrawPolyPolygon()");
+  char
+    buff[MaxTextExtent];
+
+  int
+    *counts,
+    i,
+    k,
+    j;
+
+  ExtendMVG(cstruct, "push graphic-context\n");
+  if (cstruct->dc->brush->lbStyle != BS_NULL)
+    {
+      /* Set fill color for filled polygon*/
+      sprintf(buff, "fill #%02x%02x%02x\n",
+              (cstruct->dc->brush->lbColor[0]& 0x00FF),
+              (cstruct->dc->brush->lbColor[0]& 0xFF00)>>8,
+              (cstruct->dc->brush->lbColor[1]& 0x00FF)
+              );
+      ExtendMVG(cstruct, buff);
+    }
+  else
+    ExtendMVG(cstruct, "fill none\n");
+
+  if (cstruct->dc->pen->lopnStyle != PS_NULL)
+    {
+      /* Set stroke color for stroked polygon */
+      sprintf(buff, "stroke #%02x%02x%02x\n",
+              (cstruct->dc->pen->lopnColor[0]& 0x00FF),
+              ((cstruct->dc->pen->lopnColor[0]& 0xFF00)>>8),
+              (cstruct->dc->pen->lopnColor[1]& 0x00FF)
+              );
+      ExtendMVG(cstruct, buff);
+    }
+  else
+    ExtendMVG(cstruct, "stroke none\n");
+
+  counts = (int *) malloc(sizeof(int) * wmfrecord->Parameters[0]);
+  for (i=0;i<wmfrecord->Parameters[0];i++)
+    {
+      counts[i] = wmfrecord->Parameters[1+i];
+    }
+
+  /* Add polygon primitive with points */
+  for (k=0;k<wmfrecord->Parameters[0];k++)
+    {
+      ExtendMVG(cstruct, "polygon");
+      for(j=0;j<counts[k];j++)
+        {
+          ExtendMVG(cstruct, " ");
+          sprintf( buff, "%i,%i",
+                   NormX(wmfrecord->Parameters[++i],cstruct),
+                   NormY(wmfrecord->Parameters[++i],cstruct)
+                   );
+          ExtendMVG(cstruct, buff);
+        }
+      ExtendMVG(cstruct, "\n");
+    }
+  ExtendMVG(cstruct, "pop graphic-context\n");
 }
 
 /* Draw a rectangle */
@@ -605,12 +662,21 @@ static void WmfSetPenStyle(CSTRUCT *cstruct, LOGPEN *pen, DC *currentDC)
 
 static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  HMETAFILE metafile;
-  CSTRUCT *cstruct;
-  char buff[MaxTextExtent];
-  char filename[MaxTextExtent];
-  ImageInfo* local_info;
-  Image* image;
+  CSTRUCT*
+    cstruct;
+
+  HMETAFILE 
+    metafile;
+
+  Image*
+    image;
+
+  ImageInfo*
+    local_info;
+
+  char
+    buff[MaxTextExtent],
+    filename[MaxTextExtent];
 
   wmffunctions = &WmfFunctions;
 
@@ -622,6 +688,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if(cstruct == (CSTRUCT*)NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   memset((void*)cstruct,0,sizeof(CSTRUCT));
+  wmfinit(cstruct);
   cstruct->userdata = (void *)AcquireMemory(sizeof(IM));
   if(cstruct->userdata == (void*)NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
@@ -629,19 +696,41 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if(((IM*)cstruct->userdata)->mvg == (char*)NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   ((IM*)cstruct->userdata)->image=(Image*)NULL;
-  wmfinit(cstruct);
 
   /* Open metafile */
   strcpy(filename,image_info->filename);
-  if (1 == FileIsPlaceable(filename))
-    {
-      metafile = GetPlaceableMetaFile(filename);
-      if (metafile != NULL)
-        wmffunctions->set_pmf_size(cstruct,metafile);
-    }
-  else
-    metafile = GetMetaFile(filename);
+  {
+    /* Implement the function of FileIsPlaceable() because it has file
+       descriptor leak */
+    FILE*
+      file;
+    
+    U32
+      testlong;
 
+    file = fopen(filename,"rb");
+    if(file == NULL)
+      {
+        LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
+        LiberateMemory((void**)&(cstruct->userdata));
+        LiberateMemory((void**)&(cstruct));
+        ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+      }
+    testlong = wmfReadU32bit(file);
+    fclose(file);
+    if(testlong == 0x9ac6cdd7)
+      {
+        /* Placeable metafile */
+        metafile = GetPlaceableMetaFile(filename);
+        if (metafile != NULL)
+          wmffunctions->set_pmf_size(cstruct,metafile);
+      }
+    else
+      {
+        /* Ordinary metafile */
+        metafile = GetMetaFile(filename);
+      }
+  }  
   if (metafile == NULL)
     {
       LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
@@ -649,7 +738,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       LiberateMemory((void**)&(cstruct));
       ThrowReaderException(FileOpenWarning,"Unable to open file",image);
     }
-
+  
   /* Parse metafile to determine properties */
   cstruct->preparse = 1;
   PlayMetaFile((void *)cstruct,metafile,1,NULL);
