@@ -140,11 +140,11 @@ typedef struct _CubeInfo
 /*
   Static declarations.
 */
-static ColorInfo
-  *color_list = (ColorInfo *) NULL;
-
 static SemaphoreInfo
   *color_semaphore = (SemaphoreInfo *) NULL;
+
+static volatile ColorInfo
+  *color_list = (ColorInfo *) NULL;
 
 /*
   Forward declarations.
@@ -229,11 +229,11 @@ MagickExport IndexPacket ConstrainColormapIndex(Image *image,
 */
 MagickExport void DestroyColorInfo(void)
 {
-  ColorInfo
-    *color_info;
-
-  register ColorInfo
+  register volatile ColorInfo
     *p;
+
+  volatile ColorInfo
+    *color_info;
 
   AcquireSemaphoreInfo(&color_semaphore);
   for (p=color_list; p != (const ColorInfo *) NULL; )
@@ -428,7 +428,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
   register char
     *q;
 
-  register ColorInfo
+  register volatile ColorInfo
     *p;
 
   AcquireSemaphoreInfo(&color_semaphore);
@@ -436,7 +436,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
     (void) ReadConfigureFile(ColorFilename,0,exception);
   LiberateSemaphoreInfo(&color_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    return(color_list);
+    return((const ColorInfo *) color_list);
   /*
     Search for named color.
   */
@@ -470,7 +470,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
         color_list=p;
       }
   LiberateSemaphoreInfo(&color_semaphore);
-  return(p);
+  return((const ColorInfo *) p);
 }
 
 /*
@@ -507,7 +507,7 @@ MagickExport char **GetColorList(const char *pattern,int *number_colors)
   char
     **colorlist;
 
-  register const ColorInfo
+  register const volatile ColorInfo
     *p;
 
   ExceptionInfo
@@ -1316,7 +1316,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
 */
 MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 {
-  register const ColorInfo
+  register const volatile ColorInfo
     *p;
 
   register long
@@ -1403,7 +1403,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
   DoublePixelPacket
     pixel;
 
-  register const ColorInfo
+  register volatile const ColorInfo
     *p;
 
   register long
@@ -1582,7 +1582,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
   const PixelPacket *color,const ComplianceType compliance,char *name,
   ExceptionInfo *exception)
 {
-  register const ColorInfo
+  register volatile const ColorInfo
     *p;
 
   *name='\0';

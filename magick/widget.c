@@ -4824,7 +4824,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 ExceptionInfo
                   exception;
 
-                register const MagickInfo
+                register volatile const MagickInfo
                   *p;
 
                 /*

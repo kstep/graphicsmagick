@@ -233,6 +233,24 @@ typedef struct _PointInfo
     y;
 } PointInfo;
 
+typedef struct _PrimitiveInfo
+{
+  PointInfo
+    point;
+
+  unsigned long
+    coordinates;
+
+  PrimitiveType
+    primitive;
+
+  PaintMethod
+    method;
+
+  char
+    *text;
+} PrimitiveInfo;
+
 typedef struct _TypeInfo
 {
   const char
@@ -263,28 +281,10 @@ typedef struct _TypeInfo
   unsigned long
     signature;
 
-  struct _TypeInfo
+  volatile struct _TypeInfo
     *previous,
     *next;
 } TypeInfo;
-
-typedef struct _PrimitiveInfo
-{
-  PointInfo
-    point;
-
-  unsigned long
-    coordinates;
-
-  PrimitiveType
-    primitive;
-
-  PaintMethod
-    method;
-
-  char
-    *text;
-} PrimitiveInfo;
 
 typedef struct _TypeMetric
 {

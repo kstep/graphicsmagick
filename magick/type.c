@@ -78,7 +78,7 @@ static char
 static SemaphoreInfo
   *type_semaphore = (SemaphoreInfo *) NULL;
 
-static TypeInfo
+static volatile TypeInfo
   *type_list = (TypeInfo *) NULL;
 
 /*
@@ -108,10 +108,10 @@ static unsigned int
 */
 MagickExport void DestroyTypeInfo(void)
 {
-  register TypeInfo
+  register volatile TypeInfo
     *p;
 
-  TypeInfo
+  volatile TypeInfo
     *type_info;
 
   AcquireSemaphoreInfo(&type_semaphore);
@@ -175,7 +175,7 @@ MagickExport void DestroyTypeInfo(void)
 MagickExport const TypeInfo *GetTypeInfo(const char *name,
   ExceptionInfo *exception)
 {
-  register TypeInfo
+  register volatile TypeInfo
     *p;
 
   AcquireSemaphoreInfo(&type_semaphore);
@@ -207,7 +207,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
     }
   LiberateSemaphoreInfo(&type_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    return(type_list);
+    return((const TypeInfo *) type_list);
   /*
     Search for requested type.
   */
@@ -231,7 +231,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
         type_list=p;
       }
   LiberateSemaphoreInfo(&type_semaphore);
-  return(p);
+  return((const TypeInfo *) p);
 }
 
 /*
@@ -284,13 +284,13 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
       *substitute;
   } Fontmap;
 
-  const TypeInfo
+  volatile const TypeInfo
     *type_info;
 
   long
     range;
 
-  register const TypeInfo
+  register volatile const TypeInfo
     *p;
 
   register long
@@ -334,7 +334,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
       continue;
     if ((weight != 0) && (p->weight != weight))
       continue;
-    return(p);
+    return((TypeInfo *) p);
   }
   /*
     Check for types in the same family.
@@ -381,7 +381,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
       }
   }
   if (type_info != (TypeInfo *) NULL)
-    return(type_info);
+    return((TypeInfo *) type_info);
   /*
     Check for table-based substitution match.
   */
@@ -404,12 +404,12 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     {
       ThrowException(exception,TypeError,"Font substitution required",
         type_info->family);
-      return(type_info);
+      return((TypeInfo *) type_info);
     }
   if (family != (const char *) NULL)
     type_info=GetTypeInfoByFamily((const char *) NULL,style,stretch,weight,
       exception);
-  return(type_info);
+  return((TypeInfo *) type_info);
 }
 
 /*
@@ -472,9 +472,6 @@ static const char *StyleTypeToString(StyleType style)
 
 MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 {
-  register const TypeInfo
-    *p;
-
   char
     weight[MaxTextExtent];
 
@@ -483,6 +480,9 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
     *name,
     *stretch,
     *style;
+
+  register volatile const TypeInfo
+    *p;
 
   if (file == (FILE *) NULL)
     file=stdout;

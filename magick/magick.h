@@ -39,7 +39,7 @@ typedef struct _MagickInfo
   unsigned long
     signature;
 
-  struct _MagickInfo
+  volatile struct _MagickInfo
     *previous,
     *next;
 } MagickInfo;

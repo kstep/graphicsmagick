@@ -81,11 +81,11 @@ static char
 /*
   Global declaractions.
 */
-static DelegateInfo
-  *delegate_list = (DelegateInfo *) NULL;
-
 static SemaphoreInfo
   *delegate_semaphore = (SemaphoreInfo *) NULL;
+
+static volatile DelegateInfo
+  *delegate_list = (DelegateInfo *) NULL;
 
 /*
   Forward declaractions.
@@ -114,11 +114,11 @@ static unsigned int
 */
 MagickExport void DestroyDelegateInfo(void)
 {
-  DelegateInfo
-    *delegate_info;
-
-  register DelegateInfo
+  register volatile DelegateInfo
     *p;
+
+  volatile DelegateInfo
+    *delegate_info;
 
   AcquireSemaphoreInfo(&delegate_semaphore);
   for (p=delegate_list; p != (DelegateInfo *) NULL; )
@@ -184,11 +184,11 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
     *command,
     **commands;
 
-  const DelegateInfo
-    *delegate_info;
-
   register long
     i;
+
+  volatile const DelegateInfo
+    *delegate_info;
 
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -258,7 +258,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
   const char *encode,ExceptionInfo *exception)
 {
-  register DelegateInfo
+  register volatile DelegateInfo
     *p;
 
   AcquireSemaphoreInfo(&delegate_semaphore);
@@ -266,7 +266,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
     (void) ReadConfigureFile(DelegateFilename,0,exception);
   LiberateSemaphoreInfo(&delegate_semaphore);
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
-    return(delegate_list);
+    return((const DelegateInfo *) delegate_list);
   /*
     Search for requested delegate.
   */
@@ -311,7 +311,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
         delegate_list=p;
       }
   LiberateSemaphoreInfo(&delegate_semaphore);
-  return(p);
+  return((const DelegateInfo *) p);
 }
 
 /*
@@ -352,14 +352,14 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     **commands,
     filename[MaxTextExtent];
 
-  const DelegateInfo
-    *delegate_info;
-
   register long
     i;
 
   unsigned int
     status;
+
+  volatile const DelegateInfo
+    *delegate_info;
 
   /*
     Get delegate.
@@ -600,11 +600,11 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
     **commands,
     delegate[MaxTextExtent];
 
-  register const DelegateInfo
-    *p;
-
   register long
     i;
+
+  register volatile const DelegateInfo
+    *p;
 
   if (file == (const FILE *) NULL)
     file=stdout;
@@ -904,11 +904,11 @@ static unsigned int ReadConfigureFile(const char *basename,
 */
 MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
 {
-  DelegateInfo
-    *delegate;
-
-  register DelegateInfo
+  register volatile DelegateInfo
     *p;
+
+  volatile DelegateInfo
+    *delegate;
 
   /*
     Initialize new delegate.
@@ -917,7 +917,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   assert(delegate_info->signature == MagickSignature);
   delegate=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
   if (delegate == (DelegateInfo *) NULL)
-    return(delegate_list);
+    return((DelegateInfo *) delegate_list);
   delegate->decode=AcquireString(delegate_info->decode);
   delegate->encode=AcquireString(delegate_info->encode);
   delegate->mode=delegate_info->mode;
@@ -929,7 +929,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   if (delegate_list == (DelegateInfo *) NULL)
     {
       delegate_list=delegate;
-      return(delegate_list);
+      return((DelegateInfo *) delegate_list);
     }
   for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
   {
@@ -943,7 +943,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
         LiberateMemory((void **) &p->commands);
         p->commands=delegate->commands;
         LiberateMemory((void **) &delegate);
-        return(delegate_list);
+        return((DelegateInfo *) delegate_list);
       }
     if (p->next == (DelegateInfo *) NULL)
       break;
@@ -953,5 +953,5 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   */
   delegate->previous=p;
   p->next=delegate;
-  return(delegate_list);
+  return((DelegateInfo *) delegate_list);
 }

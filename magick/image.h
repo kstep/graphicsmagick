@@ -482,7 +482,7 @@ typedef struct _ColorInfo
   unsigned long
     signature;
 
-  struct _ColorInfo
+  volatile struct _ColorInfo
     *previous,
     *next;
 } ColorInfo;

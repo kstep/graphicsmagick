@@ -93,14 +93,14 @@ static char
 /*
   Global declarations.
 */
-static CoderInfo
-  *coder_list = (CoderInfo *) NULL;
-
-static ModuleInfo
-  *module_list = (ModuleInfo *) NULL;
-
 static SemaphoreInfo
   *module_semaphore = (SemaphoreInfo *) NULL;
+
+static volatile CoderInfo
+  *coder_list = (CoderInfo *) NULL;
+
+static volatile ModuleInfo
+  *module_list = (ModuleInfo *) NULL;
 
 /*
   Forward declarations.
@@ -171,20 +171,20 @@ static void *lt_dlsym(void *handle,char *symbol)
 
 MagickExport void DestroyModuleInfo(void)
 {
-  CoderInfo
-    *coder_info;
-
   ExceptionInfo
     exception;
 
-  ModuleInfo
-    *module_info;
-
-  register CoderInfo
+  register volatile CoderInfo
     *p;
 
-  register ModuleInfo
+  register volatile ModuleInfo
     *q;
+
+  volatile CoderInfo
+    *coder_info;
+
+  volatile ModuleInfo
+    *module_info;
 
   /*
     Free module & coder list.
@@ -337,13 +337,13 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
 MagickExport const CoderInfo *GetCoderInfo(const char *tag,
   ExceptionInfo *exception)
 {
-  register CoderInfo
+  register volatile CoderInfo
     *p;
 
   (void) GetMagicInfo((unsigned char *) NULL,0,exception);
   (void) GetModuleInfo(tag,exception);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
-    return(coder_list);
+    return((const CoderInfo *) coder_list);
   for (p=coder_list; p != (CoderInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       break;
@@ -364,7 +364,7 @@ MagickExport const CoderInfo *GetCoderInfo(const char *tag,
         coder_list->previous=p;
         coder_list=p;
       }
-  return(p);
+  return((const CoderInfo *) p);
 }
 
 /*
@@ -491,7 +491,7 @@ static char **GetModuleList(ExceptionInfo *exception)
 MagickExport const ModuleInfo *GetModuleInfo(const char *name,
   ExceptionInfo *exception)
 {
-  register ModuleInfo
+  register volatile ModuleInfo
     *p;
 
   AcquireSemaphoreInfo(&module_semaphore);
@@ -508,7 +508,7 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
     }
   LiberateSemaphoreInfo(&module_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    return(module_list);
+    return((const ModuleInfo *) module_list);
   AcquireSemaphoreInfo(&module_semaphore);
   for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
     if (LocaleCompare(p->name,name) == 0)
@@ -528,7 +528,7 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
       module_list=p;
     }
   LiberateSemaphoreInfo(&module_semaphore);
-  return(p);
+  return((const ModuleInfo *) p);
 }
 
 /*
@@ -558,11 +558,11 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
 */
 MagickExport unsigned int ListModuleInfo(FILE *file,ExceptionInfo *exception)
 {
-  register const ModuleInfo
-    *p;
-
   register long
     i;
+
+  register volatile const ModuleInfo
+    *p;
 
   if (file == (const FILE *) NULL)
     file=stdout;
@@ -681,7 +681,7 @@ MagickExport unsigned int OpenModule(const char *module,
   ModuleHandle
     handle;
 
-  register ModuleInfo
+  register volatile ModuleInfo
     *p;
 
   void
@@ -1024,7 +1024,7 @@ static unsigned int ReadConfigureFile(const char *basename,
 */
 static CoderInfo *RegisterModule(CoderInfo *entry,ExceptionInfo *exception)
 {
-  register CoderInfo
+  register volatile CoderInfo
     *p;
 
   /*
@@ -1302,18 +1302,18 @@ static unsigned int UnloadModule(const CoderInfo *coder_info,
 */
 static unsigned int UnregisterModule(const char *tag,ExceptionInfo *exception)
 {
-  CoderInfo
-    *coder_info;
-
-  register CoderInfo
+  register volatile CoderInfo
     *p;
+
+  volatile CoderInfo
+    *coder_info;
 
   assert(tag != (const char *) NULL);
   for (p=coder_list; p != (CoderInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->tag,tag) != 0)
       continue;
-    (void) UnloadModule(p,exception);
+    (void) UnloadModule((CoderInfo *) p,exception);
     LiberateMemory((void **) &p->tag);
     if (p->previous != (CoderInfo *) NULL)
       p->previous->next=p->next;

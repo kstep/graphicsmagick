@@ -74,11 +74,11 @@ static char
 /*
   Static declarations.
 */
-static MagicInfo
-  *magic_list = (MagicInfo *) NULL;
-
 static SemaphoreInfo
   *magic_semaphore = (SemaphoreInfo *) NULL;
+
+static volatile MagicInfo
+  *magic_list = (MagicInfo *) NULL;
 
 /*
   Forward declarations.
@@ -107,11 +107,11 @@ static unsigned int
 */
 MagickExport void DestroyMagicInfo(void)
 {
-  MagicInfo
-    *magic_info;
-
-  register MagicInfo
+  register volatile MagicInfo
     *p;
+
+  volatile MagicInfo
+    *magic_info;
 
   AcquireSemaphoreInfo(&magic_semaphore);
   for (p=magic_list; p != (MagicInfo *) NULL; )
@@ -169,7 +169,7 @@ MagickExport void DestroyMagicInfo(void)
 MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   const size_t length,ExceptionInfo *exception)
 {
-  register MagicInfo
+  register volatile MagicInfo
     *p;
 
   AcquireSemaphoreInfo(&magic_semaphore);
@@ -177,7 +177,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     (void) ReadConfigureFile(MagicFilename,0,exception);
   LiberateSemaphoreInfo(&magic_semaphore);
   if ((magic == (const unsigned char *) NULL) || (length == 0))
-    return(magic_list);
+    return((const MagicInfo *) magic_list);
   /*
     Search for requested magic.
   */
@@ -201,7 +201,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
         magic_list=p;
       }
   LiberateSemaphoreInfo(&magic_semaphore);
-  return(p);
+  return((const MagicInfo *) p);
 }
 
 /*
@@ -231,7 +231,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
 */
 MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 {
-  register const MagicInfo
+  register volatile const MagicInfo
     *p;
 
   register long
