@@ -599,7 +599,7 @@ static unsigned short *EncodeText(const char *text,size_t *count)
       "Memory allocation failed");
   q=encoding;
   for (p=text; *p != '\0'; p++)
-    *q++=(unsigned short) *p;
+    *q++=(unsigned char) *p;
   *count=q-encoding;
   return(encoding);
 }
@@ -720,7 +720,7 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
       {
         q=unicode;
         for (p=text; *p != '\0'; p++)
-          *q++=(unsigned short) *p;
+          *q++=(unsigned char) *p;
         break;
       }
     *q=(unsigned short) c;
@@ -1415,22 +1415,22 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     Convert text to 2-byte format as prescribed by the encoding.
   */
   switch (encoding_type)
-	{
-		case ft_encoding_sjis:
+  {
+    case ft_encoding_sjis:
     {
       encoding=EncodeSJIS(draw_info->text,&length);
       break;
     }
     case ft_encoding_unicode:
-		{
+    {
       encoding=EncodeUnicode(draw_info->text,&length);
       break;
-		}
+    }
     default:
-		{
-		  encoding=EncodeText(draw_info->text,&length);
+    {
+      encoding=EncodeText(draw_info->text,&length);
       break;
-		}
+    }
   }
   if (encoding == (unsigned short *) NULL)
     {
