@@ -35,6 +35,9 @@
 #define IDC_BuildIt                     1024
 #define IDC_DECORATE_FILES              1025
 #define IDC_INCLUDE_OPTIONAL            1026
+#define IDD_WAITDIALOG                  23040
+#define IDC_MSGCTRL                     23041
+#define IDC_PROGRESSCTRL                23042
 
 // Next default values for new objects
 // 

@@ -2,7 +2,7 @@
 
 [General Info]
 Version=1
-LastClass=CTargetPage
+LastClass=CFinishedPage
 LastTemplate=CDialog
 NewFileInclude1=#include "stdafx.h"
 NewFileInclude2=#include "configure.h"
@@ -16,11 +16,12 @@ Class4=CSystemPage
 Class5=CTargetPage
 Class6=CWelcomePage
 
-ResourceCount=4
+ResourceCount=5
 Resource1=IDD_SYSTEM_PAGE
 Resource2=IDD_WELCOME_PAGE
 Resource3=IDD_TARGET_PAGE
 Resource4=IDD_FINISHED_PAGE
+Resource5=IDD_WAITDIALOG
 
 [CLS:CConfigureApp]
 Type=0
@@ -41,6 +42,7 @@ HeaderFile=finished_page.h
 ImplementationFile=finished_page.cpp
 Filter=D
 VirtualFilter=idWC
+LastObject=CFinishedPage
 
 [CLS:CSystemPage]
 Type=0
@@ -115,4 +117,12 @@ Class=CWelcomePage
 ControlCount=2
 Control1=IDC_WELCOME_TEXT,static,1342308352
 Control2=IDC_STATIC,static,1342177294
+
+[DLG:IDD_WAITDIALOG]
+Type=1
+Class=?
+ControlCount=3
+Control1=IDC_MSGCTRL,static,1342308481
+Control2=IDC_PROGRESSCTRL,msctls_progress32,1350565888
+Control3=IDCANCEL,button,1342242816
 

@@ -125,6 +125,10 @@ SOURCE=.\target_page.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\WaitDlg.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\welcome_page.cpp
 # End Source File
 # End Group
@@ -162,6 +166,10 @@ SOURCE=.\system_page.h
 # Begin Source File
 
 SOURCE=.\target_page.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\WaitDlg.h
 # End Source File
 # Begin Source File
 

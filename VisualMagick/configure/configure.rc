@@ -159,6 +159,16 @@ BEGIN
     PUSHBUTTON      "Build It!",IDC_BuildIt,135,212,50,14,NOT WS_VISIBLE
 END
 
+IDD_WAITDIALOG DIALOG DISCARDABLE  0, 0, 228, 82
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "",IDC_MSGCTRL,8,5,214,32,SS_NOPREFIX
+    CONTROL         "",IDC_PROGRESSCTRL,"msctls_progress32",WS_BORDER,7,41,
+                    214,16
+    PUSHBUTTON      "Cancel",IDCANCEL,89,65,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Configure.h"
 #include "configure_wizard.h"
+#include "WaitDlg.h"
 #include "CStringEx.h"
 
 #ifdef _DEBUG
@@ -47,8 +48,10 @@ enum {MULTITHREADEDDLL, SINGLETHREADEDSTATIC, MULTITHREADEDSTATIC, MULTITHREADED
 enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, THIRDPARTY};
 
 BOOL useX11Stubs = TRUE;
-BOOL decorateFilenames = FALSE;
+BOOL decorateFiles = FALSE;
 BOOL optionalFiles = FALSE;
+BOOL consoleMode = TRUE;
+
 CString release_loc;
 CString debug_loc;
 CString bin_loc;
@@ -1163,13 +1166,13 @@ void CConfigureApp::process_project_replacements(ofstream &dsw,
                 renamed += ".bak";
                 if (MoveFile(rootpath.c_str(),renamed.c_str())==0)
                 {
-                  MessageBox(NULL, TEXT("Could not copy file to destination."), TEXT("Move Error!"), MB_OK);
+                  //MessageBox(NULL, TEXT("Could not copy file to destination."), TEXT("Move Error!"), MB_OK);
                 }
                 else
                 {
                   if (CopyFile(filepath.c_str(),rootpath.c_str(),FALSE)==0)
                   {
-                    MessageBox(NULL, TEXT("Could not copy file to destination."), TEXT("Copy Error!"), MB_OK);
+                    //MessageBox(NULL, TEXT("Could not copy file to destination."), TEXT("Copy Error!"), MB_OK);
                   }
                 }
               }
@@ -1253,6 +1256,33 @@ void CConfigureApp::process_project_type(ofstream &dsw,
     FindClose(tophandle);
 }
 
+class MyWaitDlg : public CWaitDialog
+{
+public:
+  MyWaitDlg (bool *status) :
+    CWaitDialog (status, NULL, NULL, NULL)
+  {
+    nCurrent = 1;
+    nTotal = 10;
+    nPercent = 0;
+  }
+
+  void Pumpit()
+  {
+	  nPercent = (nCurrent * 100)/nTotal;
+	  SetPercentComplete(nPercent);
+	  Pump();
+    nCurrent++;
+    if (nCurrent > nTotal)
+      nCurrent = 0;
+  }
+
+  int
+    nCurrent,
+    nTotal,
+    nPercent;
+};
+
 BOOL CConfigureApp::InitInstance()
 {
 	// Standard initialization
@@ -1270,7 +1300,7 @@ BOOL CConfigureApp::InitInstance()
   lib_loc = "..\\lib\\";
 
   wizard.m_Page2.m_useX11Stubs = useX11Stubs;
-  wizard.m_Page2.m_decorateFiles = decorateFilenames;
+  wizard.m_Page2.m_decorateFiles = decorateFiles;
   wizard.m_Page2.m_optionalFiles = optionalFiles;
 
   wizard.m_Page3.m_tempRelease = release_loc;
@@ -1279,10 +1309,13 @@ BOOL CConfigureApp::InitInstance()
   wizard.m_Page3.m_outputLib = lib_loc;
 
 	int nResponse = wizard.DoModal();
-  //if (nResponse == IDOK)
+  if (nResponse == ID_WIZFINISH)
 	{
+ 	  bool
+      bContinue = TRUE;
+
     useX11Stubs = wizard.m_Page2.m_useX11Stubs;
-    decorateFilenames = wizard.m_Page2.m_decorateFiles;
+    decorateFiles = wizard.m_Page2.m_decorateFiles;
     optionalFiles = wizard.m_Page2.m_optionalFiles;
     release_loc = wizard.m_Page3.m_tempRelease;
     debug_loc = wizard.m_Page3.m_tempDebug;
@@ -1290,6 +1323,8 @@ BOOL CConfigureApp::InitInstance()
     lib_loc = wizard.m_Page3.m_outputLib;
 
     int projectType = wizard.m_Page2.m_projectType;
+
+	  MyWaitDlg waitdlg(&bContinue);
 
     CString theprojectname;
     switch (projectType)
@@ -1312,8 +1347,9 @@ BOOL CConfigureApp::InitInstance()
 
 		write_dsw_start(dsw);
 
+    waitdlg.Pumpit();
+
     // Write all library project files:
-		//if (wizard.m_Page2.m_disptarget == 1)
     if (projectType == MULTITHREADEDDLL)
 		{
       if (!useX11Stubs)
@@ -1350,23 +1386,28 @@ BOOL CConfigureApp::InitInstance()
 		  libs_list_shared.push_back("advapi32.lib");
     }
 
+    waitdlg.Pumpit();
     process_project_replacements(dsw,"..","*.in");
+    waitdlg.Pumpit();
     process_project_type(dsw,"..",projectType,"THIRDPARTY.txt",THIRDPARTY);
+    waitdlg.Pumpit();
     process_project_type(dsw,"..",projectType,"LIBRARY.txt",   LIBRARY);
+    waitdlg.Pumpit();
     process_project_type(dsw,"..",projectType,"STATICLIB.txt", STATICLIB);
+    waitdlg.Pumpit();
     process_project_type(dsw,"..",projectType,"MODULE.txt",    MODULE);
+    waitdlg.Pumpit();
     process_project_type(dsw,"..",projectType,"UTILITY.txt",   UTILITY);
+    waitdlg.Pumpit();
 
 	  begin_project(dsw, "All", ".\\All\\All.dsp");
+    waitdlg.Pumpit();
     generate_global_dependencies(dsw, projectType);
     end_project(dsw);
 
+    waitdlg.Pumpit();
 		write_dsw_end(dsw);
 	}
-/*	else if (nResponse == IDCANCEL)
-	{
-	}*/
-
 	// Since the dialog has been closed, return FALSE so that we exit the
 	//  application, rather than start the application's message pump.
 	return FALSE;
@@ -1985,7 +2026,12 @@ void CConfigureApp::write_exe_dsp(
 			dsp << " /I \"" << (*it).c_str() << "\"";
 		}
 	}
-  dsp << " /D \"NDEBUG\" /D \"WIN32\" /D \"_CONSOLE\" /D \"_WINDOWS\" /D \"_VISUALC_\" /D \"NeedFunctionPrototypes\"";
+  dsp << " /D \"NDEBUG\" /D \"WIN32\" ";
+  if (consoleMode)
+    dsp << "/D \"_CONSOLE\" ";
+  else
+    dsp << "/D \"_WINDOWS\" ";
+  dsp << "/D \"_VISUALC_\" /D \"NeedFunctionPrototypes\"";
 	{
 		for (
 			std::list<std::string>::iterator it = defines_list.begin();
@@ -2022,20 +2068,25 @@ void CConfigureApp::write_exe_dsp(
 			dsp << " " << (*it).c_str() << "";
 		}
 	}
-	dsp << " /nologo /subsystem:console /incremental:no /machine:I386 ";
-  if (decorateFilenames)
+	dsp << " /nologo ";
+  if (consoleMode)
+    dsp << "/subsystem:console ";
+  else
+    dsp << "/subsystem:windows ";
+  dsp << "/incremental:no /machine:I386 ";
+  if (decorateFiles)
     outname = prefix.c_str();
   else
     outname = "";
-  if (decorateFilenames)
+  if (decorateFiles)
     outname += "RL_";
   outname += dspname.c_str();
   dsp << "/pdb:\"" << bin_path << outname;
-  if (decorateFilenames)
+  if (decorateFiles)
     dsp << "_";
   dsp << ".pdb\"";
   dsp << " /out:\"" << bin_path << outname;
-  if (decorateFilenames)
+  if (decorateFiles)
     dsp << "_";
   dsp << ".exe\"";
 	dsp << endl;
@@ -2076,7 +2127,12 @@ void CConfigureApp::write_exe_dsp(
 			dsp << " /I \"" << (*it).c_str() << "\"";
 		}
 	}
-  dsp << " /D \"_DEBUG\" /D \"WIN32\" /D \"_CONSOLE\" /D \"_WINDOWS\" /D \"_VISUALC_\" /D \"NeedFunctionPrototypes\"";
+  dsp << " /D \"_DEBUG\" /D \"WIN32\" ";
+  if (consoleMode)
+    dsp << "/D \"_CONSOLE\" ";
+  else
+    dsp << "/D \"_WINDOWS\" ";
+  dsp << "/D \"_VISUALC_\" /D \"NeedFunctionPrototypes\"";
 	{
 		for (
 			std::list<std::string>::iterator it = defines_list.begin();
@@ -2113,20 +2169,25 @@ void CConfigureApp::write_exe_dsp(
 			dsp << " " << (*it).c_str() << "";
 		}
 	}
-  if (decorateFilenames)
+  if (decorateFiles)
     outname = prefix.c_str();
   else
     outname = "";
-  if (decorateFilenames)
+  if (decorateFiles)
     outname += "DB_";
   outname += dspname.c_str();
-	dsp << " /nologo /subsystem:console /incremental:no /debug /machine:I386 ";
+	dsp << " /nologo ";
+  if (consoleMode)
+    dsp << "/subsystem:console ";
+  else
+    dsp << "/subsystem:windows ";
+  dsp << "/incremental:no /debug /machine:I386 ";
   dsp << "/pdb:\"" << bin_path << outname;
-  if (decorateFilenames)
+  if (decorateFiles)
     dsp << "_";
   dsp << ".pdb\"";
   dsp << " /out:\"" << bin_path << outname;
-  if (decorateFilenames)
+  if (decorateFiles)
     dsp << "_";
   dsp << ".exe\"";
 	dsp << endl;
