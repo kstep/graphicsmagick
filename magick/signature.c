@@ -364,7 +364,7 @@ static void UpdateSignature(SignatureInfo *signature_info,
     i;
 
   size_t
-	  n;
+    n;
 
   unsigned long
     count;
