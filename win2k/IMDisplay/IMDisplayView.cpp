@@ -744,6 +744,48 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
 	    bmi.biClrImportant = 0;			// Colors most important
 	    mBMI = bmi;	// keep it for clipboard use...
 
+      // Extract the pixels from Magick++ image object and convert to a DIB section
+      PixelPacket *pPixels = inImage->getPixels(0,0,inImage->columns(),inImage->rows());
+
+
+      RGBQUAD *prgbaDIB = 0;
+      HBITMAP hBitmap = CreateDIBSection
+        (
+         pDC->m_hDC,            // handle to device context
+         (BITMAPINFO *)&bmi,    // pointer to structure containing bitmap size, format, and color data
+         DIB_RGB_COLORS,        // color data type indicator: RGB values or palette indices
+         (void**)&prgbaDIB,     // pointer to variable to receive a pointer to the bitmap's bit values
+         NULL,                  // optional handle to a file mapping object
+         0                      // offset to the bitmap bit values within the file mapping object
+         );
+
+      if ( !hBitmap )
+        return;
+
+      unsigned long nPixels = inImage->columns() * inImage->rows();
+      RGBQUAD *pDestPixel = prgbaDIB;
+
+#if QuantumDepth == 8
+
+      // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
+      memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*nPixels);
+
+#elif QuantumDepth == 16
+
+      // Transfer pixels, scaling to Quantum
+      for( unsigned long nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
+        {
+          pDestPixel->rgbRed = Downscale(pPixels->red);
+          pDestPixel->rgbGreen = Downscale(pPixels->green);
+          pDestPixel->rgbBlue = Downscale(pPixels->blue);
+          pDestPixel->rgbReserved = 0;
+          ++pDestPixel;
+          ++pPixels;
+        }
+
+#endif
+
+/*
 	#if QuantumDepth == 8
 	    // Determine the size of the scaled image
 	    // Don't allow image to be zoomed
@@ -807,7 +849,7 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
 			++pPixels;
 	    }
 	#endif
-
+*/
 	    // Now copy the bitmap to devi.
 	    mOffscreenDC->SelectObject( hBitmap );
 	}
