@@ -2707,9 +2707,9 @@ MagickExport Image *ShadeImage(const Image *image,
         Determine the surface normal and compute shading.
       */
       normal.x=Intensity(s0-1)+Intensity(s1-1)+Intensity(s2-1)-
-        Intensity(s0+1)-Intensity(s1+1)-Intensity(s2+1);
+        (long) Intensity(s0+1)-(long) Intensity(s1+1)-(long) Intensity(s2+1);
       normal.y=Intensity(s2-1)+Intensity(s2)+Intensity(s2+1)-
-        Intensity(s0-1)-Intensity(s0)-Intensity(s0+1);
+        (long) Intensity(s0-1)-(long) Intensity(s0)-(long) Intensity(s0+1);
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else
