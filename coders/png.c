@@ -698,10 +698,10 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 %
 %    o exception: return any errors or warnings in this structure.
 %
-%  To do, more or less in chronological order (as of version 5.1.1,
-%   January 25, 2000 -- glennrp -- see also "To do" under WritePNGImage):
+%  To do, more or less in chronological order (as of version 5.2.8,
+%   January 23, 2001 -- glennrp -- see also "To do" under WritePNGImage):
 %
-%    Add MAGN chunk support.
+%    Get 16-bit cheap transparency working.
 %
 %    (At this point, PNG decoding is supposed to be in full MNG-LC compliance)
 %
@@ -1606,7 +1606,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             frame_timeout=default_frame_timeout;
             fb=default_fb;
             if (length > 0)
-              framing_mode=p[0];
+              if (p[0])
+                framing_mode=p[0];
             if (length > 6)
               {
                 /*
@@ -2678,6 +2679,86 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
+#if (QuantumDepth == 8)
+          if (image->depth == 16)
+            {
+              register Quantum
+                *p,
+                *r;
+
+              r=scanlines[y];
+              p=r;
+              for (x=0; x < (int) image->columns; x++)
+              {
+                if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+                  {
+                    *r++ = *p++;
+                    p++;
+                    if ((ping_info->valid & PNG_INFO_tRNS) &&
+                       (((*(p-2)<<8)|*(p-1))==transparent_color.opacity))
+                      {
+                         /* Cheap transparency */
+                         *r++ = TransparentOpacity;
+                      }
+                    else
+                         *r++ = OpaqueOpacity;
+                  }
+                if(ping_info->color_type == PNG_COLOR_TYPE_RGB)
+                  {
+                    *r++ = *p++;
+                    p++;
+                    *r++ = *p++;
+                    p++;
+                    *r++ = *p++;
+                    p++;
+                    if ((ping_info->valid & PNG_INFO_tRNS) &&
+                         (((*(p-6)<<8)|*(p-5))==transparent_color.red) &&
+                             (((*(p-4)<<8)|*(p-3))==transparent_color.green) &&
+                             (((*(p-2)<<8)|*(p-1))==transparent_color.blue))
+                      {
+                         /* Cheap transparency */
+                         *r++ = TransparentOpacity;
+                      }
+                    else
+                         *r++ = OpaqueOpacity;
+                  }
+                *r++ = *p++;
+                p++;
+                if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA ||
+                    ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+                {
+                  *r++ = *p++;
+                  p++;
+                }
+                if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+                {
+                  *r++ = *p++;
+                  p++;
+                  *r++ = *p++;
+                  p++;
+                }
+              }
+            }
+          if (image->depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+            (void) PushImagePixels(image,GrayQuantum,scanlines[y]);
+          if (ping_info->color_type == PNG_COLOR_TYPE_GRAY ||
+              ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+            {
+               image->depth=8;
+              (void) PushImagePixels(image,GrayOpacityQuantum,scanlines[y]);
+            }
+          else if (image->depth == 8 && ping_info->color_type ==
+               PNG_COLOR_TYPE_RGB)
+             (void) PushImagePixels(image,RGBQuantum,scanlines[y]);
+          else if (ping_info->color_type == PNG_COLOR_TYPE_RGB ||
+                ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+            {
+              image->depth=8;
+              (void) PushImagePixels(image,RGBAQuantum,scanlines[y]);
+            }
+          else if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+              (void) PushImagePixels(image,IndexQuantum,scanlines[y]);
+#else
           if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
             (void) PushImagePixels(image,GrayQuantum,scanlines[y]);
           else
@@ -2691,6 +2772,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (void) PushImagePixels(image,IndexQuantum,scanlines[y]);
                 else
                   (void) PushImagePixels(image,RGBQuantum,scanlines[y]);
+#endif
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -3603,7 +3685,7 @@ ModuleExport void UnregisterPNGImage(void)
 %    o image:  A pointer to an Image structure.
 %
 %
-%  To do (as of version 4.2.9, August 29, 1999 -- glennrp -- see also
+%  To do (as of version 5.2.8, January 23, 2001 -- glennrp -- see also
 %    "To do" under ReadPNGImage):
 %
 %    Preserve all unknown and not-yet-handled known chunks found in input
