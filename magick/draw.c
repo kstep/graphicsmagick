@@ -2248,11 +2248,10 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
             PixelPacket
               color;
 
-            static PixelPacket
+            PixelPacket
               target;
 
-            if ((pixel->x == 0) && (pixel->y == 0))
-              target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
+            target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
             color=GetOnePixel(image,(int) pixel->x,(int) pixel->y);
             if (ColorMatch(color,target,(int) image->fuzz))
               opacity=Opaque;
@@ -2268,9 +2267,7 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
             if (p->method == FillToBorderMethod)
               {
                 border_color=draw_info->border_color;
-                target.red=border_color.red;
-                target.green=border_color.green;
-                target.blue=border_color.blue;
+                target=border_color;
               }
             (void) ColorFloodfillImage(image,draw_info,target,
               (int) pixel->x,(int) pixel->y,p->method);
@@ -2312,19 +2309,17 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
             PixelPacket
               color;
 
-            static PixelPacket
+            PixelPacket
               target;
 
-            if ((pixel->x == 0) && (pixel->y == 0))
-              target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
             color=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
-            if (ColorMatch(color,target,image->fuzz))
-              {
-                q=GetImagePixels(image,(int) pixel->x,(int) pixel->y,1,1);
-                if (q != (PixelPacket *) NULL)
-                q->opacity=Transparent;
-                (void) SyncImagePixels(image);
-              }
+            target=GetOnePixel(image,(int) pixel->x,(int) pixel->y);
+            if (!ColorMatch(color,target,image->fuzz))
+              break;
+            q=GetImagePixels(image,(int) pixel->x,(int) pixel->y,1,1);
+            if (q != (PixelPacket *) NULL)
+              q->opacity=Transparent;
+            (void) SyncImagePixels(image);
             break;
           }
           case FloodfillMethod:
@@ -2337,9 +2332,7 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
             if (p->method == FillToBorderMethod)
               {
                 border_color=draw_info->border_color;
-                target.red=border_color.red;
-                target.green=border_color.green;
-                target.blue=border_color.blue;
+                target=border_color;
               }
             (void) MatteFloodfillImage(image,target,Transparent,
               (int) pixel->x,(int) pixel->y,p->method);
