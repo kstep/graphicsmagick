@@ -214,7 +214,7 @@ static void ConvertUsage(void)
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
       "-morph value         morph an image sequence",
-      "-mosaic              create an mosaic from an image sequence",
+      "-mosaic              create a mosaic from an image sequence",
       "-negate              replace every pixel with its complementary color ",
       "-noop                do not apply options to image",
       "-noise radius        add or reduce noise in an image",
