@@ -597,7 +597,7 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image)
             cube_info->colors++;
         }
       node_info=node_info->child[id];
-      if (level != 8)
+      if (level != MaxTreeDepth)
         {
           /*
             Approximate the quantization error represented by this node.
@@ -781,7 +781,7 @@ static void DefineColormap(CubeInfo *cube_info,NodeInfo *node_info)
   if (node_info->number_unique != 0)
     {
       /*
-        Colormap entry is defined by the mean color in this cube_info.
+        Colormap entry is defined by the mean color in this cube.
       */
       number_unique=node_info->number_unique;
       cube_info->colormap[cube_info->colors].red=(Quantum)

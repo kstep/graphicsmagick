@@ -341,7 +341,9 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
 
     unsigned long
       offset_bits,
-      size,
+      size;
+
+    long
       width,
       height;
 
@@ -440,8 +442,8 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         /*
           OS/2 BMP image file.
         */
-        bmp_header.width=(unsigned long) LSBFirstReadShort(image);
-        bmp_header.height=(unsigned long) LSBFirstReadShort(image);
+        bmp_header.width=LSBFirstReadShort(image);
+        bmp_header.height=LSBFirstReadShort(image);
         bmp_header.planes=LSBFirstReadShort(image);
         bmp_header.bits_per_pixel=LSBFirstReadShort(image);
         bmp_header.x_pixels=0;
@@ -498,7 +500,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
       }
     image->matte=bmp_header.bits_per_pixel == 32;
     image->columns=(unsigned int) bmp_header.width;
-    image->rows=(unsigned int) bmp_header.height;
+    image->rows=(unsigned int) AbsoluteValue(bmp_header.height);
     if ((bmp_header.number_colors != 0) || (bmp_header.bits_per_pixel < 16))
       {
         image->class=PseudoClass;
@@ -570,7 +572,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
     if (bmp_header.compression == 2)
       bmp_header.bits_per_pixel<<=1;
     bytes_per_line=((image->columns*bmp_header.bits_per_pixel+31)/32)*4;
-    image_size=bytes_per_line*bmp_header.height;
+    image_size=bytes_per_line*image->rows;
     bmp_pixels=(unsigned char *)
       AllocateMemory(image_size*sizeof(unsigned char));
     if (bmp_pixels == (unsigned char *) NULL)
@@ -583,16 +585,13 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
           Convert run-length encoded raster pixels.
         */
         status=DecodeImage(image,(unsigned int) bmp_header.compression,
-          (unsigned int) bmp_header.width,(unsigned int) bmp_header.height,
-          bmp_pixels);
+          (unsigned int) bmp_header.width,image->rows,bmp_pixels);
         if (status == False)
           ReaderExit(CorruptImageWarning,"not enough image pixels",image);
       }
     /*
       Initialize image structure.
     */
-    image->columns=(unsigned int) bmp_header.width;
-    image->rows=(unsigned int) bmp_header.height;
     image->units=PixelsPerCentimeterResolution;
     image->x_resolution=bmp_header.x_pixels/100.0;
     image->y_resolution=bmp_header.y_pixels/100.0;
@@ -764,6 +763,21 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
     if (image->class == PseudoClass)
       SyncImage(image);
     CondenseImage(image);
+    if (bmp_header.height < 0)
+      {
+        Image
+          *flipped_image;
+
+        /*
+          Correct image orientation.
+        */
+        flipped_image=FlipImage(image);
+        if (flipped_image != (Image *) NULL)
+          {
+            DestroyImage(image);
+            image=flipped_image;
+          }
+      }
     /*
       Proceed to next image.
     */

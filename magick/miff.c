@@ -709,6 +709,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
+  (void) IsPseudoClass(image);
   CondenseImage(image);
   if (image->class == DirectClass)
     {

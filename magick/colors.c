@@ -1101,7 +1101,7 @@ Export unsigned long GetNumberColors(const Image *image,FILE *file)
   color_cube.root=InitializeNode(&color_cube,0);
   if (color_cube.root == (NodeInfo *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to count colors",
+      MagickWarning(ResourceLimitWarning,"Unable to determine image class",
         "Memory allocation failed");
       return(0);
     }
@@ -1123,7 +1123,7 @@ Export unsigned long GetNumberColors(const Image *image,FILE *file)
           node_info->child[id]=InitializeNode(&color_cube,level);
           if (node_info->child[id] == (NodeInfo *) NULL)
             {
-              MagickWarning(ResourceLimitWarning,"Unable to count colors",
+              MagickWarning(ResourceLimitWarning,"Unable to determine image class",
                 "Memory allocation failed");
               return(0);
             }
@@ -1133,9 +1133,7 @@ Export unsigned long GetNumberColors(const Image *image,FILE *file)
       if (level != MaxTreeDepth)
         continue;
       for (j=0; j < (int) node_info->number_unique; j++)
-         if ((p->red == node_info->list[j].red) &&
-             (p->green == node_info->list[j].green) &&
-             (p->blue == node_info->list[j].blue))
+         if (ColorMatch(*p,node_info->list[j],0))
            break;
       if (j < (int) node_info->number_unique)
         {
@@ -1149,7 +1147,7 @@ Export unsigned long GetNumberColors(const Image *image,FILE *file)
           ReallocateMemory(node_info->list,(j+1)*sizeof(ColorPacket));
       if (node_info->list == (ColorPacket *) NULL)
         {
-          MagickWarning(ResourceLimitWarning,"Unable to count colors",
+          MagickWarning(ResourceLimitWarning,"Unable to determine image class",
             "Memory allocation failed");
           return(0);
         }
@@ -1199,7 +1197,8 @@ Export unsigned long GetNumberColors(const Image *image,FILE *file)
 %
 %  The format of the Histogram method is:
 %
-%      unsigned int IsMonochromeImage(Image *image)
+%      void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,
+%        FILE *file)
 %
 %  A description of each parameter follows.
 %
@@ -1346,62 +1345,16 @@ Export unsigned int IsGrayImage(Image *image)
   register int
     i;
 
-  unsigned int
-    gray_scale;
-
   /*
     Determine if image is grayscale.
   */
   assert(image != (Image *) NULL);
-  if (image->matte)
+  if (!IsPseudoClass(image))
     return(False);
-  if (image->colorspace == CMYKColorspace)
-    return(False);
-  gray_scale=True;
-  switch (image->class)
-  {
-    case DirectClass:
-    default:
-    {
-      register RunlengthPacket
-        *p;
-
-      if (image->matte)
-        return(False);
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
-      {
-        if (!IsGray(*p))
-          {
-            gray_scale=False;
-            break;
-          }
-        p++;
-      }
-      if (gray_scale)
-        {
-          QuantizeInfo
-            quantize_info;
-
-          GetQuantizeInfo(&quantize_info);
-          quantize_info.colorspace=GRAYColorspace;
-          (void) QuantizeImage(&quantize_info,image);
-          SyncImage(image);
-        }
-      break;
-    }
-    case PseudoClass:
-    {
-      for (i=0; i < (int) image->colors; i++)
-        if (!IsGray(image->colormap[i]))
-          {
-            gray_scale=False;
-            break;
-          }
-      break;
-    }
-  }
-  return(gray_scale);
+  for (i=0; i < (int) image->colors; i++)
+    if (!IsGray(image->colormap[i]))
+      return(False);
+  return(True);
 }
 
 /*
@@ -1521,13 +1474,12 @@ Export unsigned int IsPseudoClass(Image *image)
     Initialize color description tree.
   */
   color_cube.node_list=(Nodes *) NULL;
-  color_cube.progress=0;
   color_cube.colors=0;
   color_cube.free_nodes=0;
   color_cube.root=InitializeNode(&color_cube,0);
   if (color_cube.root == (NodeInfo *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to count colors",
+      MagickWarning(ResourceLimitWarning,"Unable to determine image class",
         "Memory allocation failed");
       return(False);
     }
@@ -1539,55 +1491,94 @@ Export unsigned int IsPseudoClass(Image *image)
     */
     node_info=color_cube.root;
     index=MaxTreeDepth-1;
-    for (level=1; level <= MaxTreeDepth; level++)
+    for (level=1; level < MaxTreeDepth; level++)
     {
-      id=(((Quantum) DownScale(p->red) >> index) & 0x01) << 2 |
-         (((Quantum) DownScale(p->green) >> index) & 0x01) << 1 |
-         (((Quantum) DownScale(p->blue) >> index) & 0x01);
+      id=((DownScale(p->red) >> index) & 0x01) << 2 |
+         ((DownScale(p->green) >> index) & 0x01) << 1 |
+         ((DownScale(p->blue) >> index) & 0x01);
       if (node_info->child[id] == (NodeInfo *) NULL)
         {
           node_info->child[id]=InitializeNode(&color_cube,level);
           if (node_info->child[id] == (NodeInfo *) NULL)
             {
-              MagickWarning(ResourceLimitWarning,"Unable to count colors",
-                "Memory allocation failed");
+              MagickWarning(ResourceLimitWarning,
+                "Unable to determine image class","Memory allocation failed");
               return(False);
             }
         }
       node_info=node_info->child[id];
       index--;
-      if (level != MaxTreeDepth)
-        continue;
-      for (j=0; j < (int) node_info->number_unique; j++)
-         if ((p->red == node_info->list[j].red) &&
-             (p->green == node_info->list[j].green) &&
-             (p->blue == node_info->list[j].blue))
-           break;
-      if (j < (int) node_info->number_unique)
-        {
-          node_info->list[j].count+=p->length+1;
-          continue;
-        }
-      if (node_info->number_unique == 0)
-        node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
+    }
+    for (j=0; j < (int) node_info->number_unique; j++)
+      if (ColorMatch(*p,node_info->list[j],0))
+        break;
+    if (j == (int) node_info->number_unique)
+      {
+        /*
+          Add this unique color to the color list.
+        */
+        if (node_info->number_unique == 0)
+          node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
+        else
+          node_info->list=(ColorPacket *)
+            ReallocateMemory(node_info->list,(j+1)*sizeof(ColorPacket));
+        if (node_info->list == (ColorPacket *) NULL)
+          {
+            MagickWarning(ResourceLimitWarning,
+              "Unable to determine image class","Memory allocation failed");
+            return(False);
+          }
+        node_info->list[j].red=p->red;
+        node_info->list[j].green=p->green;
+        node_info->list[j].blue=p->blue;
+        node_info->list[j].index=color_cube.colors++;
+        node_info->number_unique++;
+      }
+    p++;
+  }
+  if (color_cube.colors <= 256)
+    {
+      /*
+        Create colormap.
+      */
+      image->class=PseudoClass;
+      image->colors=color_cube.colors;
+      if (image->colormap == (ColorPacket *) NULL)
+        image->colormap=(ColorPacket *)
+          AllocateMemory(image->colors*sizeof(ColorPacket));
       else
-        node_info->list=(ColorPacket *)
-          ReallocateMemory(node_info->list,(j+1)*sizeof(ColorPacket));
-      if (node_info->list == (ColorPacket *) NULL)
+        image->colormap=(ColorPacket *) ReallocateMemory((char *)
+          image->colormap,image->colors*sizeof(ColorPacket));
+      if (image->colormap == (ColorPacket *) NULL)
         {
-          MagickWarning(ResourceLimitWarning,"Unable to count colors",
+          MagickWarning(ResourceLimitWarning,"Unable to determine image class",
             "Memory allocation failed");
           return(False);
         }
-      node_info->list[j].red=p->red;
-      node_info->list[j].green=p->green;
-      node_info->list[j].blue=p->blue;
-      node_info->list[j].count=1;
-      node_info->number_unique++;
-      color_cube.colors++;
+      p=image->pixels;
+      for (i=0; i < (int) image->packets; i++)
+      {
+        /*
+          Start at the root and proceed level by level.
+        */
+        node_info=color_cube.root;
+        index=MaxTreeDepth-1;
+        for (level=1; level < MaxTreeDepth; level++)
+        {
+          id=((DownScale(p->red) >> index) & 0x01) << 2 |
+             ((DownScale(p->green) >> index) & 0x01) << 1 |
+             ((DownScale(p->blue) >> index) & 0x01);
+          node_info=node_info->child[id];
+          index--;
+        }
+        for (j=0; j < (int) node_info->number_unique; j++)
+          if (ColorMatch(*p,node_info->list[j],0))
+            break;
+        p->index=node_info->list[j].index;
+        image->colormap[p->index]=node_info->list[j];
+        p++;
+      }
     }
-    p++;
-  }
   /*
     Release color cube tree storage.
   */
@@ -1598,19 +1589,6 @@ Export unsigned int IsPseudoClass(Image *image)
     FreeMemory((char *) color_cube.node_list);
     color_cube.node_list=nodes;
   } while (color_cube.node_list != (Nodes *) NULL);
-  if (color_cube.colors <= 256)
-    {
-      QuantizeInfo
-        quantize_info;
-
-      /*
-        Demote DirectClass to PseudoClass.
-      */
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=256;
-      (void) QuantizeImage(&quantize_info,image);
-      SyncImage(image);
-    }
   return((image->class == PseudoClass) && (image->colors <= 256));
 }
 
