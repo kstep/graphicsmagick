@@ -1018,7 +1018,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             image->background_color=target_color;
           return;
         }
-      if (strEQcase(attribute,"blue_p"))
+      if (strEQcase(attribute,"blue-point"))
         {
           for ( ; image; image=image->next)
             (void) sscanf(SvPV(sval,na),"%lf,%lf",
@@ -1221,7 +1221,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'G':
     case 'g':
     {
-      if (strEQcase(attribute,"green_p"))
+      if (strEQcase(attribute,"green-point"))
         {
           for ( ; image; image=image->next)
             (void) sscanf(SvPV(sval,na),"%lf,%lf",
@@ -1323,7 +1323,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             }
           return;
         }
-      if (strEQcase(attribute,"mattec") || strEQcase(attribute,"matte_color"))
+      if (strEQcase(attribute,"mattec") || strEQcase(attribute,"matte-color"))
         {
           (void) QueryColorDatabase(SvPV(sval,na),&target_color);
           if (info)
@@ -1461,7 +1461,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'R':
     case 'r':
     {
-      if (strEQcase(attribute,"red_p"))
+      if (strEQcase(attribute,"red-point"))
         {
           for ( ; image; image=image->next)
             (void) sscanf(SvPV(sval,na),"%lf,%lf",
@@ -1588,7 +1588,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'W':
     case 'w':
     {
-      if (strEQcase(attribute,"white_p"))
+      if (strEQcase(attribute,"white-point"))
         {
           for ( ; image; image=image->next)
             (void) sscanf(SvPV(sval,na),"%lf,%lf",
@@ -2707,7 +2707,6 @@ Get(ref,...)
         case 'b':
         {
           if (strEQcase(attribute,"background") ||
-              strEQcase(attribute,"background_color") ||
               strEQcase(attribute,"background-color"))
             {
               if (!image)
@@ -2718,37 +2717,37 @@ Get(ref,...)
               s=newSVpv(color,0);
               break;
             }
-          if (strEQcase(attribute,"base_column"))
+          if (strEQcase(attribute,"base-column"))
             {
               if (image)
                 s=newSViv(image->magick_columns);
               break;
             }
-          if (strEQcase(attribute,"base_filename"))
+          if (strEQcase(attribute,"base-filename"))
             {
               if (image)
                 s=newSVpv(image->magick_filename,0);
               break;
             }
-          if (strEQcase(attribute,"base_height"))
+          if (strEQcase(attribute,"base-height"))
             {
               if (image)
                 s=newSViv(image->magick_rows);
               break;
             }
-          if (strEQcase(attribute,"base_row"))
+          if (strEQcase(attribute,"base-row"))
             {
               if (image)
                 s=newSViv(image->magick_rows);
               break;
             }
-          if (strEQcase(attribute,"base_width"))
+          if (strEQcase(attribute,"base-width"))
             {
               if (image)
                 s=newSViv(image->magick_columns);
               break;
             }
-          if (strEQcase(attribute,"blue_p"))
+          if (strEQcase(attribute,"blue-point"))
             {
               if (!image)
                 break;
@@ -2758,7 +2757,6 @@ Get(ref,...)
               break;
             }
           if (strEQcase(attribute,"bordercolor") ||
-              strEQcase(attribute,"border_color") ||
               strEQcase(attribute,"border-color"))
             {
               if (!image)
@@ -2992,7 +2990,7 @@ Get(ref,...)
                 s=newSVpv(image->geometry,0);
               break;
             }
-          if (strEQcase(attribute,"green_p"))
+          if (strEQcase(attribute,"green-point"))
             {
               if (!image)
                 break;
@@ -3105,13 +3103,13 @@ Get(ref,...)
                   s=newSVpv(image->magick,0);
               break;
             }
-          if (strEQcase(attribute,"max"))
+          if (strEQcase(attribute,"maximum-error"))
             {
               if (image)
                 s=newSVnv(image->normalized_maximum_error);
               break;
             }
-          if (strEQcase(attribute,"mean"))
+          if (strEQcase(attribute,"mean-error"))
             {
               if (image)
                 s=newSVnv(image->normalized_mean_error);
@@ -3124,7 +3122,6 @@ Get(ref,...)
               break;
             }
           if (strEQcase(attribute,"mattecolor") ||
-              strEQcase(attribute,"matte_color") ||
               strEQcase(attribute,"matte-color"))
             {
               if (!image)
@@ -3244,7 +3241,7 @@ Get(ref,...)
                 }
               break;
             }
-          if (strEQcase(attribute,"red_p"))
+          if (strEQcase(attribute,"red-point"))
             {
               if (!image)
                 break;
@@ -3391,7 +3388,7 @@ Get(ref,...)
         case 'W':
         case 'w':
         {
-          if (strEQcase(attribute,"white_p"))
+          if (strEQcase(attribute,"white-point"))
             {
               if (!image)
                 break;
