@@ -299,7 +299,7 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method InitializeModules initializes the modules subsystem. It must be
-%  invoked before the LoadDynamicModule method may be used.
+%  invoked before the LoadModule method may be used.
 %
 %  The format of the InitializeModules method is:
 %
@@ -461,53 +461,6 @@ MagickExport void InitializeModules(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L o a d A l l M o d u l e s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method LoadAllModules loads all available modules.
-%
-%  The format of the LoadAllModules method is:
-%
-%      void LoadAllModules(void)
-%
-*/
-MagickExport int LoadAllModules(void)
-{
-  char
-    **module_list;
-
-  register char
-    **p;
-
-  register int
-    i;
-
-  /*
-    Load all modules.
-  */
-  module_list=ListModules();
-  if (module_list == (char **) NULL)
-    return(False);
-  p=module_list;
-  while (*p)
-    LoadDynamicModule(*p++);
-  /*
-    Free resources.
-  */
-  for (i=0; module_list[i]; i++)
-    FreeMemory((void **) &module_list[i]);
-  FreeMemory((void **) &module_list);
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   L i s t M o d u l e s                                                     %
 %                                                                             %
 %                                                                             %
@@ -640,25 +593,25 @@ MagickExport char **ListModules(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L o a d D y n a m i c M o d u l e                                         %
+%   L o a d M o d u l e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LoadDynamicModule loads a module, and invokes its registration
+%  Method LoadModule loads a module, and invokes its registration
 %  function.  It returns True on success, and False if there is an error.
 %
-%  The format of the LoadDynamicModule method is:
+%  The format of the LoadModule method is:
 %
-%      int LoadDynamicModule(const char *module)
+%      int LoadModule(const char *module)
 %
 %  A description of each parameter follows:
 %
 %    o module: a character string that indicates the module to load.
 %
 */
-MagickExport int LoadDynamicModule(const char* module)
+MagickExport int LoadModule(const char *module)
 {
   char
     message[MaxTextExtent],
@@ -746,6 +699,53 @@ MagickExport int LoadDynamicModule(const char* module)
       return(False);
     }
   method();
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L o a d M o d u l e s                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LoadModules loads all available modules.
+%
+%  The format of the LoadModules method is:
+%
+%      void LoadModules(void)
+%
+*/
+MagickExport int LoadModules(void)
+{
+  char
+    **module_list;
+
+  register char
+    **p;
+
+  register int
+    i;
+
+  /*
+    Load all modules.
+  */
+  module_list=ListModules();
+  if (module_list == (char **) NULL)
+    return(False);
+  p=module_list;
+  while (*p)
+    LoadModule(*p++);
+  /*
+    Free resources.
+  */
+  for (i=0; module_list[i]; i++)
+    FreeMemory((void **) &module_list[i]);
+  FreeMemory((void **) &module_list);
   return(True);
 }
 

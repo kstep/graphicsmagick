@@ -65,8 +65,8 @@ extern MagickExport char
   *TagToModule(const char *);
 
 extern MagickExport int
-  LoadAllModules(void),
-  LoadDynamicModule(const char *),
+  LoadModules(void),
+  LoadModule(const char *),
   UnloadDynamicModule(const char *),
   UnregisterModuleInfo(const char *);
 

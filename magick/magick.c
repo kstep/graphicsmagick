@@ -56,7 +56,7 @@
 #include "magick.h"
 #include "defines.h"
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-#  include "modules.h"
+#include "modules.h"
 #endif
 
 /*
@@ -64,6 +64,11 @@
 */
 static MagickInfo
   *magick_list = (MagickInfo *) NULL;
+
+#if defined(HasPTHREADS)
+static pthread_mutex_t
+  magick_mutex = PTHREAD_MUTEX_INITIALIZER;
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -91,6 +96,9 @@ MagickExport void DestroyMagickInfo(void)
   register MagickInfo
     *p;
 
+#if defined(HasPTHREADS)
+  pthread_mutex_lock(&magick_mutex);
+#endif
   for (p=magick_list; p != (MagickInfo *) NULL; )
   {
     entry=p;
@@ -101,6 +109,9 @@ MagickExport void DestroyMagickInfo(void)
     FreeMemory((void **) &entry);
   }
   magick_list=(MagickInfo *) NULL;
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&magick_mutex);
+#endif
 }
 
 /*
@@ -134,9 +145,6 @@ MagickExport void DestroyMagickInfo(void)
 */
 MagickExport MagickInfo *GetMagickInfo(const char *tag)
 {
-  MagickInfo
-    *magick_info;
-
   register MagickInfo
     *p;
 
@@ -145,6 +153,9 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       /*
         Register image formats.
       */
+      atexit(DestroyMagickInfo);
+      if (getenv("MAGIGK_CACHE_THRESHOLD") != (char *) NULL)
+        SetCacheThreshold(atoi(getenv("MAGIGK_CACHE_THRESHOLD")));
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
       InitializeModules();
 #else
@@ -219,37 +230,38 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterXWDImage();
       RegisterYUVImage();
 #endif
-      atexit(DestroyMagickInfo);
-      if (getenv("MAGIGK_CACHE_THRESHOLD") != (char *) NULL)
-        SetCacheThreshold(atoi(getenv("MAGIGK_CACHE_THRESHOLD")));
     }
-  magick_info=magick_list;
-  if ((tag != (char *) NULL) && (*tag != '\0'))
-    {
-      /*
-        Find tag in list
-      */
-      magick_info=(MagickInfo *) NULL;
-      for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
-        if (LocaleCompare(p->tag,tag) == 0)
-          {
-            magick_info=p;
-            break;
-          }
-#if defined(HasLTDL) || defined(_MAGICKMOD_)
-      /*
-        Try loading format module, and see if support is added to list.
-      */
-      if ((p == (MagickInfo *) NULL) && LoadDynamicModule(tag))
-        for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
-          if (LocaleCompare(p->tag,tag) == 0)
-            {
-              magick_info=p;
-              break;
-            }
+  if ((tag == (char *) NULL) || (*tag == '\0'))
+    return((MagickInfo *) NULL);
+  /*
+    Find tag in list
+  */
+#if defined(HasPTHREADS)
+  pthread_mutex_lock(&magick_mutex);
 #endif
-    }
-  return(magick_info);
+  for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
+    if (LocaleCompare(p->tag,tag) == 0)
+      break;
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&magick_mutex);
+#endif
+  if (p != (MagickInfo *) NULL)
+    return(p);
+#if defined(HasLTDL) || defined(_MAGICKMOD_)
+  (void) LoadModule(tag);
+#if defined(HasPTHREADS)
+  pthread_mutex_lock(&magick_mutex);
+#endif
+  for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
+    if (LocaleCompare(p->tag,tag) == 0)
+      break;
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&magick_mutex);
+#endif
+  if (p != (MagickInfo *) NULL)
+    return(p);
+#endif
+  return((MagickInfo *) NULL);
 }
 
 /*
@@ -280,13 +292,6 @@ MagickExport void ListMagickInfo(FILE *file)
   register MagickInfo
     *p;
 
-#if defined(HasLTDL) || defined(_MAGICKMOD_)
-  /*
-    Initialize ltdl and load modules.
-  */
-  InitializeModules();
-  LoadAllModules();
-#endif
   if (file == (FILE *) NULL)
     file=stdout;
   (void) fprintf(file,"\nHere is a list of image formats recognized by "
@@ -295,7 +300,11 @@ MagickExport void ListMagickInfo(FILE *file)
   (void) fprintf(file,"    Format  Mode  Description\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------\n");
-  for (p=GetMagickInfo((char *) NULL); p != (MagickInfo *) NULL; p=p->next)
+  (void) GetMagickInfo((char *) NULL);
+#if defined(HasLTDL) || defined(_MAGICKMOD_)
+  LoadModules();
+#endif
+  for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
       p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',p->encoder ? 'w' : '-',
       p->encoder && p->adjoin ? '+' : '-',p->description ? p->description : "");
@@ -340,23 +349,33 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   /*
     Add tag info to the image format list.
   */
+#if defined(HasPTHREADS)
+  pthread_mutex_lock(&magick_mutex);
+#endif
   p=(MagickInfo *) NULL;
   if (magick_list != (MagickInfo *) NULL)
     for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
     {
-      if (LocaleCompare(p->tag,entry->tag) >= 0)
+      if (LocaleCompare(p->tag,entry->tag) < 0)
+        continue;
+      if (LocaleCompare(p->tag,entry->tag) == 0)
         {
-          if (LocaleCompare(p->tag,entry->tag) == 0)
-            {
-              p=p->previous;
-              UnregisterMagickInfo(entry->tag);
-            }
-          break;
+          p=p->previous;
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&magick_mutex);
+#endif
+          UnregisterMagickInfo(entry->tag);
+#if defined(HasPTHREADS)
+  pthread_mutex_lock(&magick_mutex);
+#endif
         }
     }
   if (magick_list == (MagickInfo *) NULL)
     {
       magick_list=entry;
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&magick_mutex);
+#endif
       return(entry);
     }
   entry->previous=p;
@@ -364,6 +383,9 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   if (p->next != (MagickInfo *) NULL)
     p->next->previous=entry;
   p->next=entry;
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&magick_mutex);
+#endif
   return(entry);
 }
 
@@ -452,24 +474,30 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
   MagickInfo
     *p;
 
-  p=magick_list;
-  while (p != (MagickInfo *) NULL)
+#if defined(HasPTHREADS)
+  pthread_mutex_lock(&magick_mutex);
+#endif
+  for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
-    if (LocaleCompare(p->tag,tag) == 0)
-      {
-        if (p->next != (MagickInfo *) NULL)
-          p->next->previous=p->previous;
-        if (p->previous != (MagickInfo *) NULL)
-          p->previous->next=p->next;
-        else
-          magick_list=p->next;
-        FreeMemory((void **) &p->tag);
-        FreeMemory((void **) &p->description);
-        FreeMemory((void **) &p->module);
-        FreeMemory((void **) &p);
-        return(True);
-      }
-    p=p->next;
+    if (LocaleCompare(p->tag,tag) != 0)
+      continue;
+    if (p->next != (MagickInfo *) NULL)
+      p->next->previous=p->previous;
+    if (p->previous != (MagickInfo *) NULL)
+      p->previous->next=p->next;
+    else
+      magick_list=p->next;
+    FreeMemory((void **) &p->tag);
+    FreeMemory((void **) &p->description);
+    FreeMemory((void **) &p->module);
+    FreeMemory((void **) &p);
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&magick_mutex);
+#endif
+    return(True);
   }
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&magick_mutex);
+#endif
   return(False);
 }
