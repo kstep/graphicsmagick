@@ -727,7 +727,23 @@ Export int LoadDynamicModule(const char* module)
   *dest=0;
   strcat(module_file,".la");
 #else
-  strcpy(module_file,module_name);
+  if (strlen(module_name) < 5)
+  {
+    char
+      scratch[MaxTextExtent];
+  
+    scratch[0]='\0';
+#if defined(_DEBUG)
+    strcat(scratch, "IM_MOD_DB_");
+#else
+    strcat(scratch, "IM_MOD_RL_");
+#endif
+    strcat(scratch, module_name);
+    strcat(scratch, "_.dll");
+    strcpy(module_file,scratch);
+  }
+  else
+    strcpy(module_file,module_name);
 #endif
 
   /*
@@ -769,7 +785,10 @@ Export int LoadDynamicModule(const char* module)
   strcat(func_name, "Image");
 #else
   strcpy(func_name, "Register");
-  AddModuleTag(module_name, func_name);
+  if (strlen(module_name) < 5)
+    strcat(func_name,module_name);
+  else
+    AddModuleTag(module_name, func_name);
   strcat(func_name, "Image");
 #endif
 
@@ -935,7 +954,10 @@ Export int UnloadDynamicModule(const char* module)
       strcat(func_name, "Image");
 #else
       strcpy(func_name, "Unregister");
-      AddModuleTag(module, func_name);
+      if (strlen(module) < 5)
+        strcat(func_name,module);
+      else
+        AddModuleTag(module, func_name);
       strcat(func_name, "Image");
 #endif
 
