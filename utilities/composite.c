@@ -306,6 +306,10 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
                 &geometry.width,&geometry.height);
               if ((flags & WidthValue) == 0)
                 geometry.width-=2*geometry.x > (long) geometry.width ?
+                  geometry.width : 2*geometry.x;
+              if ((flags & HeightValue) == 0)
+                geometry.height-=2*geometry.y > (long) geometry.height ?
+                  geometry.height : 2*geometry.y;
               switch (option_info->gravity)
               {
                 case NorthWestGravity:
