@@ -2058,6 +2058,14 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             break;
           }
+        if (LocaleCompare("fill-opacity",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
+            graphic_context[n]->fill.opacity=(Quantum)
+              ((double) MaxRGB*(1.0-factor*atof(token)));
+            break;
+          }
         if (LocaleCompare("fill-rule",keyword) == 0)
           {
             GetToken(q,&q,token);
@@ -2072,14 +2080,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 break;
               }
             status=False;
-            break;
-          }
-        if (LocaleCompare("fill-opacity",keyword) == 0)
-          {
-            GetToken(q,&q,token);
-            factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->fill.opacity=(Quantum)
-              ((double) MaxRGB*(1.0-factor*atof(token)));
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
