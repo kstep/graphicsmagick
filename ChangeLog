@@ -1,3 +1,8 @@
+2002-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* ChangeLog : Renamed Changelog.txt to ChangeLog in order to
+ 	conform to GNU and open-source standards.
+
 2002-01-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* Makefile.am : $(DESTDIR) already contains trailing '/'.
 
