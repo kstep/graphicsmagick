@@ -930,12 +930,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
-    if (compression == FaxCompression)
-      if ((image->storage_class == DirectClass) ||
-          !IsMonochromeImage(image,&image->exception))
-      SetImageType(image,BilevelType);
-    if (compression == JPEGCompression)
-      image->storage_class=DirectClass;
     /*
       Scale image to size of Portable Document page.
     */
@@ -1139,15 +1133,133 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"stream\n");
     offset=TellBlob(image);
     number_pixels=image->columns*image->rows;
-    if (compression == FaxCompression)
+    if ((compression == FaxCompression) ||
+        ((image_info->type != TrueColorType) &&
+         IsGrayImage(image,&image->exception)))
       {
-        if (LocaleCompare(CCITTParam,"0") == 0)
-          (void) HuffmanEncodeImage(image_info,image);
-        else
-          (void) Huffman2DEncodeImage(image_info,image);
+        switch (compression)
+        {
+          case FaxCompression:
+          {
+            if (LocaleCompare(CCITTParam,"0") == 0)
+              {
+                (void) HuffmanEncodeImage(image_info,image);
+                break;
+              }
+            (void) Huffman2DEncodeImage(image_info,image);
+            break;
+          }
+          case JPEGCompression:
+          {
+            char
+              filename[MaxTextExtent];
+
+            FILE
+              *file;
+
+            Image
+              *jpeg_image;
+
+            int
+              c;
+
+            /*
+              Write image to temporary file in JPEG format.
+            */
+            TemporaryFilename(filename);
+            jpeg_image=CloneImage(image,0,0,True,&image->exception);
+            if (jpeg_image == (Image *) NULL)
+              ThrowWriterException(DelegateWarning,
+                "Unable to clone image",image);
+            (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
+            status=WriteImage(image_info,jpeg_image);
+            DestroyImage(jpeg_image);
+            if (status == False)
+              ThrowWriterException(DelegateWarning,"Unable to write image",
+                image);
+            file=fopen(filename,ReadBinaryType);
+            if (file == (FILE *) NULL)
+              ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+            for (c=fgetc(file); c != EOF; c=fgetc(file))
+              (void) WriteBlobByte(image,c);
+            (void) fclose(file);
+            (void) remove(filename);
+            break;
+          }
+          case RunlengthEncodedCompression:
+          default:
+          {
+            /*
+              Allocate pixel array.
+            */
+            length=number_pixels;
+            pixels=(unsigned char *) AcquireMemory(length);
+            if (pixels == (unsigned char *) NULL)
+              ThrowWriterException(ResourceLimitWarning,
+                "Memory allocation failed",image);
+            /*
+              Dump Runlength encoded pixels.
+            */
+            q=pixels;
+            for (y=0; y < (long) image->rows; y++)
+            {
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
+                break;
+              for (x=0; x < (long) image->columns; x++)
+              {
+                *q++=Downscale(Intensity(p));
+                p++;
+              }
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  MagickMonitor(SaveImageText,y,image->rows);
+            }
+            if (compression == ZipCompression)
+              status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
+            else
+              if (compression == LZWCompression)
+                status=LZWEncodeImage(image,length,pixels);
+              else
+                status=PackbitsEncodeImage(image,length,pixels);
+            LiberateMemory((void **) &pixels);
+            if (!status)
+              {
+                CloseBlob(image);
+                return(False);
+              }
+            break;
+          }
+          case NoCompression:
+          {
+            /*
+              Dump uncompressed PseudoColor packets.
+            */
+            Ascii85Initialize(image);
+            for (y=0; y < (long) image->rows; y++)
+            {
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
+                break;
+              for (x=0; x < (long) image->columns; x++)
+              {
+                Ascii85Encode(image,Downscale(Intensity(p)));
+                p++;
+              }
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  MagickMonitor(SaveImageText,y,image->rows);
+            }
+            Ascii85Flush(image);
+            break;
+          }
+        }
       }
     else
-      if (image->storage_class == DirectClass)
+      if ((image->storage_class == DirectClass) ||
+          (compression == JPEGCompression))
         switch (compression)
         {
           case JPEGCompression:
@@ -1375,11 +1487,14 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (image->colorspace == CMYKColorspace)
       (void) strcpy(buffer,"/DeviceCMYK\n");
     else
-      if (image->storage_class == DirectClass)
-        (void) strcpy(buffer,"/DeviceRGB\n");
-      else
-        if (compression == FaxCompression)
+      if ((compression == FaxCompression) ||
+          ((image_info->type != TrueColorType) &&
+           IsGrayImage(image,&image->exception)))
           (void) strcpy(buffer,"/DeviceGray\n");
+      else
+        if ((image->storage_class == DirectClass) ||
+            (compression == JPEGCompression))
+          (void) strcpy(buffer,"/DeviceRGB\n");
         else
           FormatString(buffer,"[ /Indexed /DeviceRGB %lu %lu 0 R ]\n",
             image->colors-1,object+3);
@@ -1440,19 +1555,132 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"stream\n");
     offset=TellBlob(image);
     number_pixels=tile_image->columns*tile_image->rows;
-    if (compression == FaxCompression)
+    if ((compression == FaxCompression) ||
+        ((image_info->type != TrueColorType) &&
+         IsGrayImage(image,&image->exception)))
       {
-        *tile_image->blob=(*image->blob);
-        tile_image->file=image->file;
-        if (LocaleCompare(CCITTParam,"0") == 0)
-          (void) HuffmanEncodeImage(image_info,tile_image);
-        else
-          (void) Huffman2DEncodeImage(image_info,tile_image);
-        *image->blob=(*tile_image->blob);
-        image->file=tile_image->file;
+        switch (compression)
+        {
+          case FaxCompression:
+          {
+            *tile_image->blob=(*image->blob);
+            tile_image->file=image->file;
+            if (LocaleCompare(CCITTParam,"0") == 0)
+              (void) HuffmanEncodeImage(image_info,tile_image);
+            else
+              (void) Huffman2DEncodeImage(image_info,tile_image);
+            *image->blob=(*tile_image->blob);
+            image->file=tile_image->file;
+            break;
+          }
+          case JPEGCompression:
+          {
+            char
+              filename[MaxTextExtent];
+
+            FILE
+              *file;
+
+            Image
+              *jpeg_image;
+
+            int
+              c;
+
+            /*
+              Write image to temporary file in JPEG format.
+            */
+            TemporaryFilename(filename);
+            jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
+            if (jpeg_image == (Image *) NULL)
+              ThrowWriterException(DelegateWarning,"Unable to clone image",
+                image);
+            (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
+            status=WriteImage(image_info,jpeg_image);
+            DestroyImage(jpeg_image);
+            if (status == False)
+              ThrowWriterException(DelegateWarning,"Unable to write image",
+                image);
+            file=fopen(filename,ReadBinaryType);
+            if (file == (FILE *) NULL)
+              ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+            for (c=fgetc(file); c != EOF; c=fgetc(file))
+              (void) WriteBlobByte(image,c);
+            (void) fclose(file);
+            (void) remove(filename);
+            break;
+          }
+          case RunlengthEncodedCompression:
+          default:
+          {
+            /*
+              Allocate pixel array.
+            */
+            length=number_pixels;
+            pixels=(unsigned char *) AcquireMemory(length);
+            if (pixels == (unsigned char *) NULL)
+              {
+                DestroyImage(tile_image);
+                ThrowWriterException(ResourceLimitWarning,
+                  "Memory allocation failed",image)
+              }
+            /*
+              Dump Runlength encoded pixels.
+            */
+            q=pixels;
+            for (y=0; y < (long) tile_image->rows; y++)
+            {
+              p=AcquireImagePixels(tile_image,0,y,tile_image->columns,1,
+                &tile_image->exception);
+              if (p == (const PixelPacket *) NULL)
+                break;
+              for (x=0; x < (long) tile_image->columns; x++)
+              {
+                *q++=Downscale(Intensity(p));
+                p++;
+              }
+            }
+            if (compression == ZipCompression)
+              status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
+            else
+              if (compression == LZWCompression)
+                status=LZWEncodeImage(image,length,pixels);
+              else
+                status=PackbitsEncodeImage(image,length,pixels);
+            LiberateMemory((void **) &pixels);
+            if (!status)
+              {
+                CloseBlob(image);
+                return(False);
+              }
+            break;
+          }
+          case NoCompression:
+          {
+            /*
+              Dump uncompressed PseudoColor packets.
+            */
+            Ascii85Initialize(image);
+            for (y=0; y < (long) tile_image->rows; y++)
+            {
+              p=AcquireImagePixels(tile_image,0,y,tile_image->columns,1,
+                &tile_image->exception);
+              if (p == (const PixelPacket *) NULL)
+                break;
+              for (x=0; x < (long) tile_image->columns; x++)
+              {
+                Ascii85Encode(image,Downscale(Intensity(p)));
+                p++;
+              }
+            }
+            Ascii85Flush(image);
+            break;
+          }
+        }
       }
     else
-      if (image->storage_class == DirectClass)
+      if ((image->storage_class == DirectClass) ||
+          (compression == JPEGCompression))
         switch (compression)
         {
           case JPEGCompression:
