@@ -783,19 +783,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
-    if (image_info->ping && (image_info->subrange != 0))
-      if (image->scene >= (image_info->subimage+image_info->subrange-1))
-        break;
-    if (image->fifo == (int (*)(const Image *,const void *,const size_t)) NULL)
-      {
-        /*
-          Attach persistent pixel cache.
-        */
-        status=PersistCache(image,cache_filename,True,&offset,exception);
-        if (status == False)
-          ThrowReaderException(CacheError,"Unable to perist pixel cache",
-            image);
-      }
+    if (image_info->ping)
+      break;
+    /*
+      Attach persistent pixel cache.
+    */
+    status=PersistCache(image,cache_filename,True,&offset,exception);
+    if (status == False)
+      ThrowReaderException(CacheError,"Unable to perist pixel cache",image);
     /*
       Proceed to next image.
     */
