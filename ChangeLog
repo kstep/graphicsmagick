@@ -1,3 +1,8 @@
+2003-10-21  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* magick/studio.h: small modifications to achieve DLL
+	compilation of library with Borland C++ Builder.
+	
 2003-10-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* libtool.m4: Updated libtool again to CVS latest version.
