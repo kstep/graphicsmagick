@@ -1,5 +1,8 @@
 2001-11-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lib/Image.cpp (Magick): Invoke DestroyMagick() to clean up
+ 	ImageMagick allocations.
+
 	* lib/Magick++/Include.h (ImageType): Added some missing enums to
 	Magick namespace.
 

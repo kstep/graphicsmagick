@@ -364,6 +364,7 @@ namespace Magick
   using MagickLib::DelegateWarning;
   using MagickLib::DespeckleImage;
   using MagickLib::DestroyDrawInfo;
+  using MagickLib::DestroyMagick;
   using MagickLib::DestroyImage;
   using MagickLib::DestroyImageInfo;
   using MagickLib::DestroyImages;

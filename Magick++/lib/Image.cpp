@@ -3271,6 +3271,7 @@ namespace Magick
   public:
     ~MagickCleanUp( void )
       {
+        DestroyMagick();
       }
   };
 
