@@ -52,7 +52,7 @@
 AppName=GraphicsMagick 1.0.0 Q:16
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=GraphicsMagick 1.0.0 Q:16 Beta (March 10, 2003)
+AppVerName=GraphicsMagick 1.0.0 Q:16 Snapshot (April 6, 2003)
 AppVersion=1.0.0
 AppCopyright=Copyright (C) 2003 GraphicsMagick Group
 AppPublisher=GraphicsMagick Group
@@ -69,7 +69,7 @@ InfoBeforeFile=before.txt
 InfoAfterFile=after.txt
 UninstallDisplayIcon={app}\ImageMagick.ico
 OutputDir=..\bin
-OutputBaseFilename=GraphicsMagick-1.0.0-Q16-utils
+OutputBaseFilename=GraphicsMagick-1.0.0-030406-Q16-windows-utils
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 
@@ -79,7 +79,7 @@ Name: desktop_icon; Description: "Create a &desktop icon"; MinVersion: 4,4
 Name: update_path; Description: "Update executable search path"
 Name: associate_extensions; Description: "Associate supported file extensions with GraphicsMagick"; Flags: unchecked
 ;Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.8.0 build 804"; Flags: unchecked
-;Name: install_Magick_DLL; Description: "Install ImageMagickObject OLE Control for VBscript, Visual Basic, and WSH"; Flags: unchecked
+Name: install_Magick_DLL; Description: "Register ImageMagickObject OLE Control for VBscript, Visual Basic, and WSH"; Flags: unchecked
 
 ; Windows registry settings
 [Registry]
@@ -727,9 +727,9 @@ Root: HKCR; Subkey: "Magick.XWDFile\shell\edit\command"; ValueType: string; Valu
 
 [Files]
 ; Compiler-dependent DLLs
-Source: "..\bin\msvcr70.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "..\bin\msvcp70.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "..\bin\mfc70.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+;Source: "..\bin\msvcr70.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+;Source: "..\bin\msvcp70.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+;Source: "..\bin\mfc70.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 ; Executables
 Source: "..\bin\imdisplay.exe"; DestDir: "{app}"; DestName: "gmdisplay.exe"; CopyMode: alwaysoverwrite
 Source: "..\bin\gm.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
@@ -783,10 +783,12 @@ Source: "..\..\contrib\win32\PathTool\PathTool.pdf"; DestDir: "{app}\uninstall";
 ;Source: "..\..\PerlMagick\demo\*"; DestDir: "{app}\PerlMagick\demo"; CopyMode: alwaysoverwrite
 ;Source: "PerlMagick-PPM.txt"; DestDir: "{app}\PerlMagick"; CopyMode: alwaysoverwrite; DestName: "README.txt"
 ; ImageMagickObject DLL (usable from Visual Basic and WSH)
-;Source: "..\bin\ImageMagickObject.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-;Source: "..\..\contrib\win32\ATL\ImageMagickObject\README.txt"; DestDir: "{app}\ImageMagickObject"; CopyMode: alwaysoverwrite
-;Source: "..\..\contrib\win32\ATL\ImageMagickObject\Tests\VBTest\*"; DestDir: "{app}\ImageMagickObject\VBExample"; CopyMode: alwaysoverwrite
-;Source: "..\..\contrib\win32\ATL\ImageMagickObject\Tests\WSHTest\*"; DestDir: "{app}\ImageMagickObject\WSHExample"; CopyMode: alwaysoverwrite
+Source: "..\..\contrib\win32\ATL7\ImageMagickObject\ImageMagickObject.dll"; DestDir: "{app}\ImageMagickObject"; CopyMode: alwaysoverwrite
+Source: "..\..\contrib\win32\ATL7\ImageMagickObject\README.txt"; DestDir: "{app}\ImageMagickObject"; CopyMode: alwaysoverwrite
+Source: "..\..\contrib\win32\ATL7\ImageMagickObject\MagickCMD.exe"; DestDir: "{app}\ImageMagickObject"; CopyMode: alwaysoverwrite
+Source: "..\..\contrib\win32\ATL7\ImageMagickObject\Tests\*.vbs"; DestDir: "{app}\ImageMagickObject\Tests"; CopyMode: alwaysoverwrite
+Source: "..\..\contrib\win32\ATL7\ImageMagickObject\Tests\*.jpg"; DestDir: "{app}\ImageMagickObject\Tests"; CopyMode: alwaysoverwrite
+Source: "..\..\contrib\win32\ATL7\ImageMagickObject\Tests\*.txt"; DestDir: "{app}\ImageMagickObject\Tests"; CopyMode: alwaysoverwrite
 ;  Development libraries
 ;Source: "..\lib\CORE_RL_Magick++_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
 ;Source: "..\lib\CORE_RL_bzlib_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
@@ -875,12 +877,12 @@ Name: "{userdesktop}\GraphicsMagick Display"; Filename: "{app}\gmdisplay.exe"; I
 Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -a:""{app}"""; StatusMsg: "Updating environment variables..."; Tasks: update_path
 ;Filename: "ppm"; Parameters: "install Graphics-Magick.ppd"; WorkingDir: "{app}\PerlMagick"; StatusMsg: "Installing PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
 ; Add /s to regsvr32 for silent operation
-;Filename: "regsvr32"; Parameters: "/c /s""{app}\ImageMagickObject.dll"""; StatusMsg: "Registering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
+Filename: "regsvr32"; Parameters: "/c /s""{app}\ImageMagickObject\ImageMagickObject.dll"""; StatusMsg: "Registering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
 
 [UninstallRun]
 ; Add -debug to parameters to enable debugging
 Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -r:""{app}"""; StatusMsg: "Restoring environment variables..."; Tasks: update_path
 ;Filename: "ppm"; Parameters: "remove Graphics-Magick"; StatusMsg: "Uninstalling PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
 ; Add /s to regsvr32 for silent operation
-;Filename: "regsvr32"; Parameters: "/u /s""{app}\ImageMagickObject.dll"""; StatusMsg: "Unregistering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
+Filename: "regsvr32"; Parameters: "/u /s""{app}\ImageMagickObject\ImageMagickObject.dll"""; StatusMsg: "Unregistering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
 
