@@ -1,3 +1,7 @@
+2002-10-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Added configure test for compiler __func__ support (HAS___func__).
+  * Added configure test for ftime().
+
 2002-10-31  Leonard Rosenthol <leonardr@lazerware.com>
   * CMYK + alpha layered PSD files now correctly read!
 
