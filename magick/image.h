@@ -88,11 +88,19 @@ typedef struct _PixelPacket
     blue,
     opacity;
 #else
+#if defined(macintosh)
+  Quantum
+    opacity,
+    red,
+    green,
+    blue;
+#else
   Quantum
     blue,
     green,
     red,
     opacity;
+#endif
 #endif
 } PixelPacket;
 
