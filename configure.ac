@@ -804,7 +804,6 @@ then
     failed=0;
     passed=0;
     AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_HEADER(pngconf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(png,png_free,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if PNG package is complete)
     if test $passed -gt 0
