@@ -685,7 +685,8 @@ MagickExport void DestroyCacheInfo(Cache cache)
       (void) UnmapBlob(cache_info->pixels,cache_info->length);
     case DiskCache:
     {
-      (void) remove(cache_info->cache_filename);
+      if (!cache_info->persist)
+       (void) remove(cache_info->cache_filename);
       break;
     }
     default:
@@ -1905,11 +1906,12 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   assert(filename != (const char *) NULL);
   assert(offset != (off_t *) NULL);
   pagesize=4096;
+#if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
+  pagesize=sysconf(_SC_PAGE_SIZE);
+#else
 #if defined(HAVE_GETPAGESIZE)
   pagesize=getpagesize();
 #endif
-#if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
-  pagesize=sysconf(_SC_PAGE_SIZE);
 #endif
   if (attach)
     {
@@ -1920,9 +1922,9 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
       (void) strncpy(cache_info->cache_filename,filename,MaxTextExtent-1);
       cache_info->type=DiskCache;
       cache_info->offset=(*offset);
+      cache_info->persist=True;
       if (!OpenCache(image,ReadMode))
         return(False);
-      (void) ReferenceCache(cache_info);
       *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
       return(True);
     }
@@ -1936,6 +1938,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   (void) strncpy(cache_info->cache_filename,filename,MaxTextExtent-1);
   cache_info->type=DiskCache;
   cache_info->offset=(*offset);
+  cache_info->persist=True;
   if (!OpenCache(clone_image,IOMode))
     return(False);
   for (y=0; y < (long) image->rows; y++)
@@ -1953,7 +1956,6 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
     if (!SyncImagePixels(clone_image))
       break;
   }
-  (void) ReferenceCache(cache_info);
   DestroyImage(clone_image);
   if (y < (long) image->rows)
     return(False);
@@ -2412,18 +2414,18 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  
+%
 %  SetImageVirtualPixelType() sets the type of "virtual" pixels for the image.
 %  A virtual pixel is any pixel access that is outside the boundaries of the
 %  image cache.
-%  
+%
 %  The format of the SetImageVirtualPixelType() method is:
-%      
+%
 %      SetImageVirtualPixelType(Image *image,const VirtualPixelType type,
 %        const PixelPacket *pixel)
-%  
+%
 %  A description of each parameter follows:
-%    
+%
 %    o image: The image.
 %
 %    o type: choose from these access types:
