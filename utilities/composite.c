@@ -72,7 +72,7 @@
 %    -label name         assign a label to an image
 %    -matte              store matte channel if the image has one
 %    -monochrome         transform image to black and white
-%    -negate             replace every pixel with its complementary color 
+%    -negate             replace every pixel with its complementary color
 %    -page geometry      size and location of an image canvas
 %    -quality value      JPEG/MIFF/PNG compression level
 %    -rotate degrees     apply Paeth rotation to the image
@@ -204,7 +204,6 @@ static unsigned int CompositeImages(ImageInfo *image_info,const int argc,
         CatchImageException(composite_image);
       DestroyImage(mask_image);
     }
-    //SetImageClipMask(*image,mask_image);
   if (option_info->compose == DissolveCompositeOp)
     {
       register PixelPacket
@@ -221,7 +220,8 @@ static unsigned int CompositeImages(ImageInfo *image_info,const int argc,
         for (x=0; x < (long) composite_image->columns; x++)
         {
           if (composite_image->matte)
-            q->opacity=(Quantum) (((MaxRGB-q->opacity)*option_info->dissolve)/100);
+            q->opacity=(Quantum)
+              (((MaxRGB-q->opacity)*option_info->dissolve)/100);
           else
             q->opacity=(Quantum) ((MaxRGB*option_info->dissolve)/100);
           q++;
@@ -232,11 +232,14 @@ static unsigned int CompositeImages(ImageInfo *image_info,const int argc,
       SetImageType(composite_image,TrueColorMatteType);
     }
   if (option_info->compose == DisplaceCompositeOp)
-    (void) CloneString(&composite_image->geometry,option_info->displace_geometry);
+    (void) CloneString(&composite_image->geometry,
+      option_info->displace_geometry);
   if (option_info->compose == ModulateCompositeOp)
-    (void) CloneString(&composite_image->geometry,option_info->watermark_geometry);
+    (void) CloneString(&composite_image->geometry,
+      option_info->watermark_geometry);
   if (option_info->compose == ThresholdCompositeOp)
-    (void) CloneString(&composite_image->geometry,option_info->unsharp_geometry);
+    (void) CloneString(&composite_image->geometry,
+      option_info->unsharp_geometry);
   /*
     Composite image.
   */
@@ -276,7 +279,8 @@ static unsigned int CompositeImages(ImageInfo *image_info,const int argc,
           for (y=0; y < (long) (*image)->rows; y+=composite_image->rows)
             for (x=0; x < (long) (*image)->columns; x+=composite_image->columns)
             {
-              status=CompositeImage(*image,option_info->compose,composite_image,x,y);
+              status=CompositeImage(*image,option_info->compose,
+                composite_image,x,y);
               CatchImageException(*image);
             }
         }
@@ -357,7 +361,8 @@ static unsigned int CompositeImages(ImageInfo *image_info,const int argc,
               break;
             }
           }
-          status=CompositeImage(*image,option_info->compose,composite_image,x,y);
+          status=
+            CompositeImage(*image,option_info->compose,composite_image,x,y);
           CatchImageException(*image);
         }
   (*image)->matte=matte;
@@ -798,7 +803,8 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("displace",option+1) == 0)
             {
-              (void) CloneString(&(option_info.displace_geometry),(char *) NULL);
+              (void) CloneString(&(option_info.displace_geometry),
+                (char *) NULL);
               if (*option == '-')
                 {
                   i++;
@@ -1217,7 +1223,8 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("watermark",option+1) == 0)
             {
-              (void) CloneString(&(option_info.watermark_geometry),(char *) NULL);
+              (void) CloneString(&(option_info.watermark_geometry),
+                (char *) NULL);
               if (*option == '-')
                 {
                   i++;

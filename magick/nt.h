@@ -15,6 +15,9 @@ extern "C" {
 #include <wingdi.h>
 #include <io.h>
 #include <errno.h>
+#if defined(_DEBUG)
+#include <crtdbg.h>
+#endif
 
 /*
   Define declarations.
