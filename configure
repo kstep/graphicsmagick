@@ -31794,6 +31794,8 @@ fi
     # Cygwin doesn't deliver -lXt as a DLL, which prevents a DLL build.
     # Adobe DPS (as delivered on Solaris) doesn't require -lXt.
     # GraphicsMagick itself doesn't use -lXt.
+    have_libdps='no'
+    LIBDPS_XT=''
     echo "$as_me:$LINENO: checking for DPSInitialize in -ldps" >&5
 echo $ECHO_N "checking for DPSInitialize in -ldps... $ECHO_C" >&6
 if test "${ac_cv_lib_dps_DPSInitialize+set}" = set; then
@@ -31849,18 +31851,93 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_dps_DPSInitialize" >&5
 echo "${ECHO_T}$ac_cv_lib_dps_DPSInitialize" >&6
 if test $ac_cv_lib_dps_DPSInitialize = yes; then
-  passed=`expr $passed + 1`
+  have_libdps='yes'
 else
-  failed=`expr $failed + 1`
+  have_libdps='no'
 fi
 
+    if test "$have_libdps" != 'yes'
+    then
+      # Unset cache variable so we can try again.
+      unset ac_cv_lib_dps_DPSInitialize
+      echo "$as_me:$LINENO: checking for DPSInitialize in -ldps" >&5
+echo $ECHO_N "checking for DPSInitialize in -ldps... $ECHO_C" >&6
+if test "${ac_cv_lib_dps_DPSInitialize+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ldps -lXt $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char DPSInitialize ();
+int
+main ()
+{
+DPSInitialize ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_dps_DPSInitialize=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_dps_DPSInitialize=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_dps_DPSInitialize" >&5
+echo "${ECHO_T}$ac_cv_lib_dps_DPSInitialize" >&6
+if test $ac_cv_lib_dps_DPSInitialize = yes; then
+  have_libdps='yes'
+else
+  have_libdps='no'
+fi
+
+      if test "$have_libdps" = 'yes'
+      then
+        LIBDPS_XT='-lXt'
+      fi
+    fi
+    if test "$have_libdps" = 'yes'
+    then
+      passed=`expr $passed + 1`
+    else
+      failed=`expr $failed + 1`
+    fi
     echo "$as_me:$LINENO: checking for XDPSPixelsPerPoint in -ldpstk" >&5
 echo $ECHO_N "checking for XDPSPixelsPerPoint in -ldpstk... $ECHO_C" >&6
 if test "${ac_cv_lib_dpstk_XDPSPixelsPerPoint+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-ldpstk -ldps $LIBS"
+LIBS="-ldpstk -ldps $LIBDPS_XT $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 /* confdefs.h.  */
@@ -31925,7 +32002,7 @@ echo "${ECHO_T}no -- some components failed test" >&6
         have_dps='no (failed tests)'
 	CPPFLAGS="$O_CPPFLAGS"
     else
-	LIB_DPS='-ldpstk -ldps'
+	LIB_DPS="-ldpstk -ldps ${LIBDPS_XT}"
 	LIBS="$LIB_DPS $LIBS"
 
 cat >>confdefs.h <<\_ACEOF

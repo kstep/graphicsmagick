@@ -1,5 +1,7 @@
 2003-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac (LIB_DPS): Add check to see if -lXt
+	is required by -ldps.  XFree86 -ldps requires -lXt.
 	* FlashPIX: FlashPIX library now compiles under
 	FreeBSD 5.0.
 	* magick/deprecate.c (ValidateColormapIndex): Remove

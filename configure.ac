@@ -1039,8 +1039,26 @@ then
     # Cygwin doesn't deliver -lXt as a DLL, which prevents a DLL build.
     # Adobe DPS (as delivered on Solaris) doesn't require -lXt.
     # GraphicsMagick itself doesn't use -lXt.
-    AC_CHECK_LIB(dps,DPSInitialize,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(dpstk,XDPSPixelsPerPoint,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-ldps)
+    have_libdps='no'
+    LIBDPS_XT=''
+    AC_CHECK_LIB(dps,DPSInitialize,have_libdps='yes',have_libdps='no',)
+    if test "$have_libdps" != 'yes'
+    then
+      # Unset cache variable so we can try again.
+      unset ac_cv_lib_dps_DPSInitialize
+      AC_CHECK_LIB(dps,DPSInitialize,have_libdps='yes',have_libdps='no',-lXt)
+      if test "$have_libdps" = 'yes'
+      then
+        LIBDPS_XT='-lXt'
+      fi
+    fi
+    if test "$have_libdps" = 'yes'
+    then
+      passed=`expr $passed + 1`
+    else
+      failed=`expr $failed + 1`
+    fi
+    AC_CHECK_LIB(dpstk,XDPSPixelsPerPoint,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-ldps $LIBDPS_XT)
     AC_MSG_CHECKING(if DPS package is complete)
     if test $passed -gt 0
     then
@@ -1050,7 +1068,7 @@ then
         have_dps='no (failed tests)'
 	CPPFLAGS="$O_CPPFLAGS"
     else
-	LIB_DPS='-ldpstk -ldps'
+	LIB_DPS="-ldpstk -ldps ${LIBDPS_XT}"
 	LIBS="$LIB_DPS $LIBS"
 	AC_DEFINE(HasDPS,1,Define if you have Display Postscript)
 	AC_MSG_RESULT(yes)
