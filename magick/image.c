@@ -335,7 +335,9 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AnimateImages displays one or more images to an X window.
+%  AnimateImages() repeatedly displays an image sequence to any X window 
+%  screen.  It returns a value other than 0 if successful.  Check the
+%  exception member of image to determine the reason for any failure.
 %
 %  The format of the AnimateImages method is:
 %
@@ -343,12 +345,9 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method AnimateImages returns True if the images are displayed
-%      in an X window, otherwise False is returned.
+%    o image_info: The image info.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
