@@ -1713,6 +1713,20 @@ not modify image pixels.</font></td>
 <td><font size=-1>Image border color</font></td>
 </tr>
 
+<tr NOSAVE>
+<td><a NAME="boundingBox"></a><font size=-1>boundingBox</font></td>
+
+<td><font size=-1>Geometry</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+
+<td><font size=-1>Return smallest bounding box enclosing non-border pixels.
+The current fuzz value is used when discriminating between pixels. This
+is the crop bounding box used by crop(Geometry(0,0)).</font></td>
+</tr>
+
 <tr>
 <td>
 <center><a NAME="boxColor"></a><font size=-1>boxColor</font></center>
@@ -1736,10 +1750,9 @@ not modify image pixels.</font></td>
 
 <td><font size=-1>unsigned int</font></td>
 
-<td><font size=-1>Pixel cache threshold in megabytes with default value
-80MB. Once this threshold is exceeded, all subsequent pixels cach operations
-are to/from disk. This is a static method and the attribute it sets is
-shared by all Image objects.</font></td>
+<td><font size=-1>Pixel cache threshold in megabytes. Once this threshold
+is exceeded, all subsequent pixels cache operations are to/from disk. This
+is a static method and the attribute it sets is shared by all Image objects.</font></td>
 </tr>
 
 <tr>

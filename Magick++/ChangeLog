@@ -4,7 +4,7 @@
  	MagickLib::RectangleInfo.
 
 	* lib/Image.cpp (boundingBox): Method to return smallest bounding
- 	box enclosing non-border pixels.  Still needs documentation.
+ 	box enclosing non-border pixels.
 
 2001-10-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
