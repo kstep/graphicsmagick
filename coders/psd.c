@@ -772,6 +772,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  negative layer count corrected for");
             }
         }
+
+      /* FIXME: need to constrain number_layers to a max of 24 */
+
       layer_info=MagickAllocateMemory(LayerInfo *,number_layers*sizeof(LayerInfo));
       if (layer_info == (LayerInfo *) NULL) {
         if(logging)
@@ -779,7 +782,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of LayerInfo failed");
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
           }
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
           }
       (void) memset(layer_info,0,number_layers*sizeof(LayerInfo));
       for (i=0; i < number_layers; i++)
