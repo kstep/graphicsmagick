@@ -168,7 +168,7 @@ void ConcatenateImages(int argc,char **argv);
 */
 #if defined(CONVERT_MAIN)
 static int convert_main(int argc,char **argv,
-  const char *header_data,const int header_length)
+  char **blob_data,size_t *blob_length)
 #else
 #include "magick/magick.h"
 #include "magick/defines.h"
@@ -1819,12 +1819,19 @@ int main(int argc,char **argv)
   for (p=image; p != (Image *) NULL; p=p->next)
   {
 #if defined(CONVERT_MAIN)
-    if (header_data != (char *) NULL)
-      fwrite((char *) header_data,1,header_length,stdout);
-#endif
+    ExceptionInfo exception;
+
+    (void) strcpy(p->magick,image_info->magick);
+    if (*blob_length == 0)
+      *blob_length = 8192;
+    *blob_data = ImageToBlob(image_info,p,blob_length,&exception);
+    if (*blob_data == NULL)
+      CatchImageException(p);
+#else
     status=WriteImage(image_info,p);
     if (status == False)
       CatchImageException(p);
+#endif
     if (image_info->adjoin)
       break;
   }

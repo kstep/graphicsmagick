@@ -441,11 +441,20 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
+  char
+    *blob_data;
+
+  size_t
+    blob_length;
+
   /*
     Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
   MagickIncarnate(*argv);
+#if defined(_VISUALC_)
+  _setmode(_fileno(stdout),_O_BINARY);
+#endif
 	if (getenv("GATEWAY_INTERFACE") || (argc>1))
     {
       FormatString(prefix,"HTTP/1.0 200 Ok\nContent-Type: %s\n\n","image/jpeg");
@@ -472,22 +481,27 @@ int main(int argc,char **argv)
                   if (LocaleNCompare("convert-",argv[i],8) == 0)
                     break;
                 }
-                convert_main(i-argc_hw,argv_hw,prefix,Extent(prefix));
+                blob_length=8192;
+                convert_main(i-argc_hw,argv_hw,&blob_data,&blob_length);
+                fwrite(prefix,1,Extent(prefix),stdout);
+                fwrite(blob_data,1,blob_length,stdout);
                 argc_hw = i+1;
                 argv_hw = &argv[argc_hw];
               }
             else if (LocaleNCompare("-combine",argv[argc_hw],8) == 0)
               {
-                argv_hw = &argv[argc_hw];
-                for (i=argc_hw+1; i < argc; i++)
+                for (i=argc_hw; i < argc; i++)
                 {
-                  if (LocaleNCompare("combine-",argv[i],8) == 0)
+                  if (LocaleNCompare("convert-",argv[i],8) == 0)
                     break;
                 }
-                combine_main(argc-argc_hw-1,argv_hw,prefix,Extent(prefix));
+                blob_length=8192;
+                combine_main(i-argc_hw,argv_hw,&blob_data,&blob_length);
+                fwrite(prefix,1,Extent(prefix),stdout);
+                fwrite(blob_data,1,blob_length,stdout);
                 argc_hw = i+1;
                 argv_hw = &argv[argc_hw];
-              }
+               }
           }
         }
     }
