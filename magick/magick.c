@@ -493,8 +493,6 @@ MagickExport void InitializeMagick(const char *path)
     filename[MaxTextExtent];
 
   InitializeSemaphore();
-  (void) setlocale(LC_ALL,"");
-  (void) setlocale(LC_NUMERIC,"C");
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
   if (path != (const char *) NULL)
