@@ -134,7 +134,7 @@ static unsigned int IsPNM(const unsigned char *magick,const unsigned int length)
 
 static unsigned int PNMInteger(Image *image,const unsigned int base)
 {
-#define P7Comment  "END_OF_COMMENTS"
+#define P7Comment  "END_OF_COMMENTS\n"
 
   int
     c;
