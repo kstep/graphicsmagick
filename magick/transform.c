@@ -996,7 +996,7 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %
 */
 MagickExport unsigned int ProfileImage(Image *image,const char *name,
-  const unsigned char *profile,const size_t length)
+  const unsigned char *profile,const size_t length,int copy)
 {
   register long
     i,
@@ -1048,12 +1048,20 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
     {
       if (image->iptc_profile.length != 0)
         LiberateMemory((void **) &image->iptc_profile.info);
-      image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
-      if (image->iptc_profile.info == (unsigned char *) NULL)
-        ThrowBinaryException(ResourceLimitError,"Unable to add IPTC profile",
-          "Memory allocation failed");
-      image->iptc_profile.length=length;
-      (void) memcpy(image->iptc_profile.info,profile,length);
+      if (copy)
+        {
+          image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
+          if (image->iptc_profile.info == (unsigned char *) NULL)
+            ThrowBinaryException(ResourceLimitWarning,"Unable to add IPTC profile",
+              "Memory allocation failed");
+          image->iptc_profile.length=length;
+          (void) memcpy(image->iptc_profile.info,profile,length);
+        }
+      else
+        {
+          image->iptc_profile.length=length;
+          image->iptc_profile.info=(unsigned char *) profile;
+        }
       return(True);
     }
   if (LocaleCompare("icm",name) == 0)
@@ -1176,12 +1184,20 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
 #endif
           LiberateMemory((void **) &image->color_profile.info);
         }
-      image->color_profile.info=(unsigned char *) AcquireMemory(length);
-      if (image->color_profile.info == (unsigned char *) NULL)
-        ThrowBinaryException(ResourceLimitError,"Unable to add ICM profile",
-          "Memory allocation failed");
-      image->color_profile.length=length;
-      (void) memcpy(image->color_profile.info,profile,length);
+      if (copy)
+        {
+          image->color_profile.info=(unsigned char *) AcquireMemory(length);
+          if (image->color_profile.info == (unsigned char *) NULL)
+            ThrowBinaryException(ResourceLimitError,"Unable to add ICM profile",
+              "Memory allocation failed");
+          image->color_profile.length=length;
+          (void) memcpy(image->color_profile.info,profile,length);
+        }
+      else
+        {
+          image->color_profile.length=length;
+          image->color_profile.info=(unsigned char *) profile;
+        }
       return(True);
     }
   for (i=0; i < (long) image->generic_profiles; i++)
@@ -1189,21 +1205,36 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
       break;
   if (i == (long) image->generic_profiles)
     {
-      image->generic_profile=(ProfileInfo *)
-        AcquireMemory((i+1)*sizeof(ProfileInfo));
       if (image->generic_profile == (ProfileInfo *) NULL)
-        ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
+        image->generic_profile=(ProfileInfo *)
+          AcquireMemory((i+1)*sizeof(ProfileInfo));
+      else
+        ReacquireMemory((void **) &image->generic_profile,
+          (i+1)*sizeof(ProfileInfo));
+      if (image->generic_profile == (ProfileInfo *) NULL)
+        ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
           (char *) NULL)
       image->generic_profiles++;
+      image->generic_profile[i].length=0;
+      image->generic_profile[i].info=(unsigned char *) NULL;
+      image->generic_profile[i].name=AllocateString(name);
     }
   if (image->generic_profile[i].length != 0)
     LiberateMemory((void **) &image->generic_profile[i].info);
-  image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
-  if (image->generic_profile[i].info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Unable to add profile",
-      "Memory allocation failed");
-  image->generic_profile[i].length=length;
-  (void) memcpy(image->generic_profile[i].info,profile,length);
+  if (copy)
+    {
+      image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
+      if (image->generic_profile[i].info == (unsigned char *) NULL)
+        ThrowBinaryException(ResourceLimitError,"Unable to add profile",
+          "Memory allocation failed");
+      image->generic_profile[i].length=length;
+      (void) memcpy(image->generic_profile[i].info,profile,length);
+    }
+  else
+    {
+      image->generic_profile[i].length=length;
+      image->generic_profile[i].info=(unsigned char *) profile;
+    }
   return(True);
 }
 

@@ -4720,28 +4720,46 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             register long
               j;
 
+            void
+              *client_data;
+
+
             if (*option == '+')
               {
                 /*
                   Remove a ICM, IPTC, or generic profile from the image.
                 */
                 (void) ProfileImage(*image,argv[++i],
-                  (const unsigned char *) NULL,0);
+                  (const unsigned char *) NULL,0,1);
                 continue;
               }
             /*
               Add a ICM, IPTC, or generic profile to the image.
             */
+            client_data = clone_info->client_data;
+            /* the following is how we pass arbitrary binary data down into
+               the meta.c code to be processed as it sees fit. The only use
+               so far is to pass JPEG data for lossless embedding of IPTC..
+             */
+            clone_info->client_data = (void *) &(*image)->iptc_profile;
             (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
             profile=ReadImage(clone_info,&(*image)->exception);
             if (profile == (Image *) NULL)
               continue;
             if (profile->iptc_profile.length != 0)
-              (void) ProfileImage(*image,"IPTC",profile->iptc_profile.info,
-                profile->iptc_profile.length);
+              {
+                (void) ProfileImage(*image,"IPTC",profile->iptc_profile.info,
+                profile->iptc_profile.length,0);
+                profile->iptc_profile.info=(unsigned char *) NULL,
+                profile->iptc_profile.length = 0;
+              }
             if (profile->color_profile.length != 0)
-              (void) ProfileImage(*image,"ICM",profile->color_profile.info,
-                profile->color_profile.length);
+              {
+                (void) ProfileImage(*image,"IPTC",profile->color_profile.info,
+                profile->color_profile.length,0);
+                profile->color_profile.info=(unsigned char *) NULL;
+                profile->color_profile.length=0;
+              }
             for (j=0; j < (long) profile->generic_profiles; j++)
             {
               ProfileInfo
@@ -4749,8 +4767,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
               generic=profile->generic_profile+j;
               (void) ProfileImage(*image,generic->name,generic->info,
-                generic->length);
+                generic->length,0);
+              generic->info=(unsigned char *) NULL;
+              generic->length=0;
             }
+            DestroyImage(profile);
+            clone_info->client_data = client_data;
             continue;
           }
         break;
