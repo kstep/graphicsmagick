@@ -223,6 +223,9 @@ Export unsigned int ColorFloodfillImage(Image *image,const DrawInfo *draw_info,
     x2,
     y;
 
+  PixelPacket
+    color;
+
   register IndexPacket
     *indexes;
 
@@ -417,22 +420,20 @@ Export unsigned int ColorFloodfillImage(Image *image,const DrawInfo *draw_info,
       {
         if (indexes[x])
           {
-            p=GetImagePixels(draw_info->tile,x % draw_info->tile->columns,
-              y % draw_info->tile->rows,1,1);
-            if (p == (PixelPacket *) NULL)
-              break;
+            color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
+              y % draw_info->tile->rows);
             if (!draw_info->tile->matte)
-              *q=(*p);
+              *q=color;
             else
               {
-                q->red=alpha*(p->red*p->opacity+
-                  q->red*(Opaque-p->opacity));
-                q->green=alpha*(p->green*p->opacity+
-                  q->green*(Opaque-p->opacity));
-                q->blue=alpha*(p->blue*p->opacity+
-                  q->blue*(Opaque-p->opacity));
-                q->opacity=alpha*(p->opacity*
-                  p->opacity+q->opacity*(Opaque-p->opacity));
+                q->red=alpha*(color.red*color.opacity+
+                  q->red*(Opaque-color.opacity));
+                q->green=alpha*(color.green*color.opacity+
+                  q->green*(Opaque-color.opacity));
+                q->blue=alpha*(color.blue*color.opacity+
+                  q->blue*(Opaque-color.opacity));
+                q->opacity=alpha*(color.opacity*
+                  color.opacity+q->opacity*(Opaque-color.opacity));
               }
           }
         q++;
