@@ -666,7 +666,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     Allocate primitive info memory.
   */
   number_points=2048;
-number_points=100*2048;
   primitive_info=(PrimitiveInfo *)
     AllocateMemory(number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
@@ -988,7 +987,6 @@ number_points=100*2048;
         if (*p != '\0')
           p++;
         *p++='\0';
-if (0)
         if (i < (int) (number_points-BezierQuantum*Extent(path)-1))
           {
             number_points+=BezierQuantum*Extent(path);
@@ -1486,9 +1484,6 @@ static void GenerateLine(PrimitiveInfo *primitive_info,PointInfo start,
 static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
 {
 #define BezierCoordinates  4
-
-  char
-    points[MaxTextExtent];
 
   double
     x,

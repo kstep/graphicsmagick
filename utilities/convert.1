@@ -585,6 +585,7 @@ The primitives include
      polyline
      polygon
      bezier
+     path
      color
      matte
      text
@@ -608,6 +609,15 @@ centered at 100,100 that extends to 150,150 use:
 .nf
      -draw 'circle 100,100 150,150'
 .fi
+
+Paths represent an outline of an object which is defined in terms of
+moveto (set a new current point), lineto (draw a straight line),
+curveto (draw a curve using a cubic bezier), arc (elliptical or
+circular arc) and closepath (close the current shape by drawing a line
+to the last moveto) elements. Compound paths (i.e., a path with
+subpaths, each consisting of a single moveto followed by one or more
+line or curve operations) are possible to allow effects such as "donut
+holes" in objects.
 
 Use \fBcolor\fP to change the color of a pixel.  Follow the
 pixel coordinate with a method:

@@ -920,6 +920,7 @@ The primitives include</dd>
 &nbsp;&nbsp;&nbsp;&nbsp; polyline
 &nbsp;&nbsp;&nbsp;&nbsp; polygon
 &nbsp;&nbsp;&nbsp;&nbsp; bezier
+&nbsp;&nbsp;&nbsp;&nbsp; path
 &nbsp;&nbsp;&nbsp;&nbsp; color
 &nbsp;&nbsp;&nbsp;&nbsp; matte
 &nbsp;&nbsp;&nbsp;&nbsp; text
@@ -942,6 +943,16 @@ optional comma.  For example, to define a circle centered at 100,100
 that extends to 150,150 use: </dd>
 
 <pre>&nbsp;&nbsp;&nbsp;&nbsp; -draw 'circle 100,100 150,150'</pre>
+
+<dd><a href=http://www.w3.org/TR/2000/03/WD-SVG-20000303/paths.html#PathDataGeneralInformation>Paths</a>
+represent an outline of an object which is defined in terms of
+moveto (set a new current point), lineto (draw a straight line),
+curveto (draw a curve using a cubic bezier), arc (elliptical or
+circular arc) and closepath (close the current shape by drawing a line
+to the last moveto) elements. Compound paths (i.e., a path with
+subpaths, each consisting of a single moveto followed by one or more
+line or curve operations) are possible to allow effects such as "donut
+holes" in objects.</dd>
 
 <dd>
 Use <b>color</b> to change the color of a pixel. Follow the pixel coordinate

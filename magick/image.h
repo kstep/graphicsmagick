@@ -898,7 +898,6 @@ extern Export void
   Unregister8BIMImage(void),
   UnregisterAVSImage(void),
   UnregisterBIEImage(void),
-  UnregisterCacheImage(void),
   UnregisterBMPImage(void),
   UnregisterBMP24Image(void),
   UnregisterCACHEImage(void),

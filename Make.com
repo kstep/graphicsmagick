@@ -5,17 +5,20 @@ $
 $ option := 'p1'
 $ if option .eqs. "CLEAN"
 $ then
-$    deletee/log [.magick]libmagick.olb;*
+$    deletee/log [.magick]libMagick.olb;*
+$    deletee/log [.coders]libCoders.olb;*
 $    exit
 $ endif
 $ if option .eqs. "REALCLEAN"
 $ then
-$    deletee/log [.magick]libmagick.olb;*,[...]*.obj;*
+$    deletee/log [.magick]libMagick.olb;*,[...]*.obj;*
+$    deletee/log [.coders]libCoders.olb;*,[...]*.obj;*
 $    exit
 $ endif
 $ if option .eqs. "DISTCLEAN"
 $ then
-$    deletee/log [.magick]libmagick.olb;*,[...]*.obj;*,*.exe;*,magickshr.olb;*
+$    deletee/log [.magick]libMagick.olb;*,[...]*.obj;*,*.exe;*,magickshr.olb;*
+$    deletee/log [.coders]libCoders.olb;*,[...]*.obj;*,*.exe;*,magickshr.olb;*
 $    exit
 $ endif
 $ if option .eqs. "NOSHR"
@@ -56,11 +59,16 @@ $write sys$output "Making in [.magick]"
 $set default [.magick]
 $@make
 $set default [-]
+$write sys$output "Making in [.coders]"
+$set default [.coders]
+$@make
+$set default [-]
 $
 $ if share
 $ then
 $    write sys$output "Making shareable image"
-$    link/share/exe=magickshr.exe   [.magick]libmagick.olb/lib, -
+$    link/share/exe=magickshr.exe   [.magick]libMagick.olb/lib, -
+  [.coders]libCoders.olb/lib, -
   [.jpeg]libjpeg.olb'library_options'/lib, -
   [.png]libpng.olb'library_options'/lib, -
   [.tiff]libtiff.olb'library_options'/lib, -
@@ -75,7 +83,8 @@ $    define/nolog magickshr 'f$environment("default")'magickshr.exe
 $    write sys$output "Shareable image logical MAGICKSHR defined:"
 $    show logi magickshr
 $ else
-$    link_libraries := [.magick]libmagick.olb/lib, -
+$    link_libraries := [.magick]libMagick.olb/lib, -
+  [.coders]libCoders.olb/lib, -
   [.jpeg]libjpeg.olb'library_options'/lib, -
   [.png]libpng.olb'library_options'/lib, -
   [.tiff]libtiff.olb'library_options'/lib, -

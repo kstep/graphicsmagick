@@ -11,6 +11,8 @@ extern "C" {
 #include <locale.h>
 #include <stat.h>
 #include <errno.h>
+#include <Errors.h>
+#include <Files.h>
 
 /*
   Define declarations.
