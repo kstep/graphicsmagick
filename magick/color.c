@@ -1425,9 +1425,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       LongPixelPacket
         pixel;
 
-      pixel.green=0;
-      pixel.blue=0;
-      pixel.opacity=(-1);
+      memset(&pixel,0,sizeof(LongPixelPacket));
       name++;
       for (n=0; isxdigit((int) name[n]); n++);
       if ((n == 3) || (n == 6) || (n == 9) || (n == 12))
@@ -1495,7 +1493,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       color->green=(Quantum) (((double) MaxRGB*pixel.green)/((1 << n)-1)+0.5);
       color->blue=(Quantum) (((double) MaxRGB*pixel.blue)/((1 << n)-1)+0.5);
       color->opacity=OpaqueOpacity;
-      if (pixel.opacity >= 0)
+      if ((n != 3) && (n != 6) && (n != 9) && (n != 12))
         color->opacity=(Quantum)
           (((double) MaxRGB*pixel.opacity)/((1 << n)-1)+0.5);
       return(True);
