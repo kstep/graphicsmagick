@@ -74,7 +74,7 @@ const char
   *LoadImageText = "  Loading image...  ",
   *LoadImagesText = "  Loading images...  ",
   *MatteColor = "#bdbdbd",  /* gray */
-  *PSDensityGeometry = "72.27x72.27",
+  *PSDensityGeometry = "72.0x72.0",
   *PSPageGeometry = "612x792>",
   *ReadBinaryType = "rb",
   *ReadBinaryUnbufferedType = "rbu",

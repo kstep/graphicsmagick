@@ -1162,8 +1162,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         jpeg_info.in_color_space=JCS_GRAYSCALE;
       }
   jpeg_set_defaults(&jpeg_info);
-  x_resolution=72.27;
-  y_resolution=72.27;
+  x_resolution=72.0;
+  y_resolution=72.0;
   if (image_info->density != (char *) NULL)
     {
       int

@@ -671,8 +671,8 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   (void) remove(filename);
   if (annotate_image == (Image *) NULL)
     return(False);
-  resolution.x=72.27;
-  resolution.y=72.27;
+  resolution.x=72.0;
+  resolution.y=72.0;
   if (draw_info->density != (char *) NULL)
     {
       int
@@ -691,14 +691,14 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
         crop_info;
 
       crop_info=GetImageBoundingBox(annotate_image);
-      crop_info.height=(unsigned int) ceil((resolution.y/72.27)*
+      crop_info.height=(unsigned int) ceil((resolution.y/72.0)*
         ExpandAffine(&draw_info->affine)*draw_info->pointsize-0.5);
-      crop_info.y=(int) ceil((resolution.y/72.27)*extent.y/8.0-0.5);
+      crop_info.y=(int) ceil((resolution.y/72.0)*extent.y/8.0-0.5);
       (void) FormatString(geometry,"%ux%u%+d%+d",crop_info.width,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&annotate_image,geometry,(char *) NULL);
     }
-  metrics->pixels_per_em.x=(resolution.y/72.27)*
+  metrics->pixels_per_em.x=(resolution.y/72.0)*
     ExpandAffine(&draw_info->affine)*draw_info->pointsize;
   metrics->pixels_per_em.y=metrics->pixels_per_em.x;
   metrics->ascent=metrics->pixels_per_em.x;
@@ -980,8 +980,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   /*
     Set text size.
   */
-  resolution.x=72.27;
-  resolution.y=72.27;
+  resolution.x=72.0;
+  resolution.y=72.0;
   if (draw_info->density != (char *) NULL)
     {
       i=sscanf(draw_info->density,"%lfx%lf",&resolution.x,&resolution.y);

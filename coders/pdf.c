@@ -215,8 +215,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Set the page geometry.
   */
-  dx_resolution=72.27;
-  dy_resolution=72.27;
+  dx_resolution=72.0;
+  dy_resolution=72.0;
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
      (void) strcpy(density,PSDensityGeometry);
@@ -690,9 +690,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     /*
       Scale relative to dots-per-inch.
     */
-    dx_resolution=72.27;
-    dy_resolution=72.27;
-    x_resolution=72.27;
+    dx_resolution=72.0;
+    dy_resolution=72.0;
+    x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
     count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
     if (count != 2)

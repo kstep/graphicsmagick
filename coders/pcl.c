@@ -282,7 +282,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     page_size=46;  /* B4 */
   FormatString(buffer,"\033&l%uA",page_size);  /* papersize */
   (void) WriteBlobString(image,buffer);
-  density=72.27;
+  density=72.0;
   if (image_info->density != (char *) NULL)
     (void) ParseGeometry(image_info->density,&sans_offset,&sans_offset,
       &density,&density);
