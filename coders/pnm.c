@@ -223,9 +223,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   long
-    blue,
-    green,
-    red,
     y;
 
   MonitorHandler
@@ -258,8 +255,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status;
 
   unsigned long
+    blue,
+    green,
     max_value,
     packets,
+    red,
     *scale;
 
   /*

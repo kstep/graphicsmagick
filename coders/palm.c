@@ -832,9 +832,10 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     for (x=0; x < (int) image->columns; x++)
       {
       if(bpp < 8) /* Make sure we use the entire colorspace for bpp */
-        color = indexes[x] * ((1 << bpp) - 1) / (image->colors - 1);
+        color = (unsigned char) (indexes[x] * ((1 << bpp) - 1) /
+          (image->colors - 1));
       else
-        color = indexes[x];
+        color = (unsigned char) indexes[x];
       byte |= color << bit;
       if (bit == 0)
         {

@@ -591,7 +591,7 @@ MagickExport Image *ReverseImageList(const Image *images,
   reverse_images=(Image *) NULL;
   for (i=0; i < (long) GetImageListSize(images); i++)
   {
-    image=GetImageList(images,GetImageListSize(images)-i-1,exception);
+    image=GetImageList(images,(long) GetImageListSize(images)-i-1,exception);
     if (image == (Image *) NULL)
       {
         if (reverse_images != (Image *) NULL)

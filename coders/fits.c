@@ -388,8 +388,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             pixel-=65536;
         if (fits_info.bits_per_pixel == -32)
           {
-            j=((int) long_quantum[1] << 16) | ((int) long_quantum[2] << 8) |
-               (int) long_quantum[3];
+            j=((long) long_quantum[1] << 16) | ((long) long_quantum[2] << 8) |
+               (long) long_quantum[3];
             k=(int) *long_quantum;
             exponent=((k & 127) << 1) | (j >> 23);
             *(float *) long_quantum=
@@ -402,10 +402,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           }
         if (fits_info.bits_per_pixel == -64)
           {
-            j=((unsigned long) long_quantum[1] << 24) |
-              ((unsigned long) long_quantum[2] << 16) |
-              ((unsigned long) long_quantum[3] << 8) |
-               (unsigned long) long_quantum[4];
+            j=((long) long_quantum[1] << 24) |
+              ((long) long_quantum[2] << 16) |
+              ((long) long_quantum[3] << 8) |
+               (long) long_quantum[4];
             k=(int) *long_quantum;
             l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
                (int) long_quantum[7];
@@ -435,8 +435,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
               pixel-=65536;
           if (fits_info.bits_per_pixel == -32)
             {
-              j=((int) long_quantum[1] << 16) | ((int) long_quantum[2] << 8) |
-                 (int) long_quantum[3];
+              j=((long) long_quantum[1] << 16) | ((long) long_quantum[2] << 8) |
+                 (long) long_quantum[3];
               k=(int) *long_quantum;
               exponent=((k & 127) << 1) | (j >> 23);
               *(float *) long_quantum=
@@ -449,10 +449,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             }
           if (fits_info.bits_per_pixel == -64)
             {
-              j=((unsigned long) long_quantum[1] << 24) |
-                ((unsigned long) long_quantum[2] << 16) |
-                ((unsigned long) long_quantum[3] << 8) |
-                 (unsigned long) long_quantum[4];
+              j=((long) long_quantum[1] << 24) |
+                ((long) long_quantum[2] << 16) |
+                ((long) long_quantum[3] << 8) |
+                 (long) long_quantum[4];
               k=(int) *long_quantum;
               l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
                  (int) long_quantum[7];
@@ -501,8 +501,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             pixel-=65536;
         if (fits_info.bits_per_pixel == -32)
           {
-            j=((int) long_quantum[1] << 16) | ((int) long_quantum[2] << 8) |
-               (int) long_quantum[3];
+            j=((long) long_quantum[1] << 16) | ((long) long_quantum[2] << 8) |
+               (long) long_quantum[3];
             k=(int) *long_quantum;
             exponent=((k & 127) << 1) | (j >> 23);
             *(float *) long_quantum=
@@ -515,13 +515,13 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           }
         if (fits_info.bits_per_pixel == -64)
           {
-            j=((unsigned long) long_quantum[1] << 24) |
-              ((unsigned long) long_quantum[2] << 16) |
-              ((unsigned long) long_quantum[3] << 8) |
-               (unsigned long) long_quantum[4];
+            j=((long) long_quantum[1] << 24) |
+              ((long) long_quantum[2] << 16) |
+              ((long) long_quantum[3] << 8) |
+               (long) long_quantum[4];
             k=(int) *long_quantum;
-            l=((int) long_quantum[5] << 16) | ((int) long_quantum[6] << 8) |
-               (int) long_quantum[7];
+            l=((long) long_quantum[5] << 16) | ((long) long_quantum[6] << 8) |
+               (long) long_quantum[7];
             exponent=((k & 127) << 4) | (j >> 28);
             *(double *) long_quantum=exponential[exponent]*(16777216.0*
               (double) ((j & 0x0FFFFFFF) | 0x10000000)+(double) l);

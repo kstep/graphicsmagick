@@ -1330,8 +1330,9 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      q=SetImagePixels(roll_image,(unsigned long) (offset.x+x) % image->columns,
-        (unsigned long) (offset.y+y) % image->rows,1,1);
+      q=SetImagePixels(roll_image,
+	(long) ((unsigned long) (offset.x+x) % image->columns),
+        (long) ((unsigned long) (offset.y+y) % image->rows),1,1);
       if (q == (PixelPacket *) NULL)
         break;
       roll_indexes=GetIndexes(roll_image);

@@ -1224,11 +1224,11 @@ static void WriteWhiteBackground( Image* image )
   long       count,  w8, w;
   char       *d, scanline[256];
   
-  int numChannels = 3, i, bytecount, dim = image->rows*numChannels;
+  int numChannels = 3, i, bytecount, dim = (int) (image->rows*numChannels);
   
   WriteBlobMSBShort( image, 1 ); /* RLE compressed */
 
-  w8 = image->columns;
+  w8 = (long) image->columns;
   
   d = scanline;
   /* Set up scanline */
@@ -1242,7 +1242,7 @@ static void WriteWhiteBackground( Image* image )
     case 0: break;
     case 1: *d++=0;     *d++ = (char)255;
         break;
-    default: *d++=1-w;     *d++ = (char)255;
+    default: *d++=(char) (1-w);     *d++ = (char)255;
         break;
   }
   
@@ -1419,7 +1419,7 @@ compute_layer_info:
     else
       num_channels = (tmp_image->matte ? 5 : 4);
 
-  channelLength = tmp_image->columns * tmp_image->rows * packet_size + 2;  
+  channelLength = (int) (tmp_image->columns * tmp_image->rows * packet_size + 2);  
   layer_info_size += (4*4 + 2 + num_channels * 6 + 4 + 4 + 4 * 1 + 4 + 12 + num_channels * channelLength);
 
   layer_count++;
@@ -1458,7 +1458,7 @@ compute_layer_info:
       (void) WriteBlobMSBLong(image,tmp_image->columns);  
 
       packet_size=tmp_image->depth > 8 ? 2 : 1;
-      channel_size = (packet_size * tmp_image->rows * tmp_image->columns) + 2;
+      channel_size = (int) ((packet_size * tmp_image->rows * tmp_image->columns) + 2);
       if (tmp_image->storage_class == PseudoClass) {
        (void) WriteBlobMSBShort(image, tmp_image->matte ? 2 : 1);
        if (tmp_image->matte) {

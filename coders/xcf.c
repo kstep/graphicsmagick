@@ -129,10 +129,10 @@ typedef struct {
           apply_mask,
           show_mask,
           edit_mask,
-          floating_offset,
-          offset_x,
-          offset_y,
-          mode,
+          floating_offset;
+  long offset_x,
+          offset_y;
+  unsigned long mode,
           tattoo;
   Image*      image;
 } XCFLayerInfo;
@@ -217,29 +217,28 @@ typedef enum
 static CompositeOperator GIMPBlendModeToCompositeOperator( unsigned long blendMode )
 {
   switch ( blendMode ) {
-    case GIMP_NORMAL_MODE:    return( OverCompositeOp );      break;
-    case GIMP_DISSOLVE_MODE:  return( DissolveCompositeOp );    break;
-    case GIMP_MULTIPLY_MODE:  return( MultiplyCompositeOp );    break;
-    case GIMP_SCREEN_MODE:    return( ScreenCompositeOp );    break;
-    case GIMP_OVERLAY_MODE:    return( OverlayCompositeOp );    break;
-    case GIMP_DIFFERENCE_MODE:  return( DifferenceCompositeOp );  break;
-    case GIMP_ADDITION_MODE:  return( AddCompositeOp );      break;
-    case GIMP_SUBTRACT_MODE:  return( SubtractCompositeOp );    break;
-    case GIMP_DARKEN_ONLY_MODE:  return( DarkenCompositeOp );    break;
-    case GIMP_LIGHTEN_ONLY_MODE:return( LightenCompositeOp );    break;
-    case GIMP_HUE_MODE:      return( HueCompositeOp );      break;
-    case GIMP_SATURATION_MODE:  return( SaturateCompositeOp );    break;
-    case GIMP_COLOR_MODE:    return( ColorizeCompositeOp );    break;
+    case GIMP_NORMAL_MODE:    return( OverCompositeOp );
+    case GIMP_DISSOLVE_MODE:  return( DissolveCompositeOp );
+    case GIMP_MULTIPLY_MODE:  return( MultiplyCompositeOp );
+    case GIMP_SCREEN_MODE:    return( ScreenCompositeOp );
+    case GIMP_OVERLAY_MODE:    return( OverlayCompositeOp );
+    case GIMP_DIFFERENCE_MODE:  return( DifferenceCompositeOp );
+    case GIMP_ADDITION_MODE:  return( AddCompositeOp );
+    case GIMP_SUBTRACT_MODE:  return( SubtractCompositeOp );
+    case GIMP_DARKEN_ONLY_MODE:  return( DarkenCompositeOp );
+    case GIMP_LIGHTEN_ONLY_MODE:return( LightenCompositeOp );
+    case GIMP_HUE_MODE:      return( HueCompositeOp );
+    case GIMP_SATURATION_MODE:  return( SaturateCompositeOp );
+    case GIMP_COLOR_MODE:    return( ColorizeCompositeOp );
     /* these are the ones we don't support...yet */
-    case GIMP_DODGE_MODE:    return( OverCompositeOp );    break;
-    case GIMP_BURN_MODE:    return( OverCompositeOp );    break;
-    case GIMP_HARDLIGHT_MODE:  return( OverCompositeOp );    break;
-    case GIMP_BEHIND_MODE:    return( OverCompositeOp );    break;
-    case GIMP_VALUE_MODE:    return( OverCompositeOp );    break;
-    case GIMP_DIVIDE_MODE:    return( OverCompositeOp );    break;
+    case GIMP_DODGE_MODE:    return( OverCompositeOp );
+    case GIMP_BURN_MODE:    return( OverCompositeOp );
+    case GIMP_HARDLIGHT_MODE:  return( OverCompositeOp );
+    case GIMP_BEHIND_MODE:    return( OverCompositeOp );
+    case GIMP_VALUE_MODE:    return( OverCompositeOp );
+    case GIMP_DIVIDE_MODE:    return( OverCompositeOp );
     default:
         return( OverCompositeOp );
-        break;
   }
 }
 
@@ -345,7 +344,7 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
               XCFLayerInfo*  inLayerInfo, int data_length)
 {
   unsigned char data, val;
-  size_t size;
+  off_t size;
   int count;
   int length;
   int bpp;    /* BYTES per pixel! */
@@ -621,7 +620,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
 
 static int load_hierarchy (Image *image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLayer)
 {
-  unsigned long 
+  off_t
   saved_pos,
   offset,
   junk;
@@ -739,8 +738,8 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* outL
       outLayer->show_mask = ReadBlobMSBLong(image);
       break;
     case PROP_OFFSETS:
-      outLayer->offset_x = ReadBlobMSBLong(image);
-      outLayer->offset_y = ReadBlobMSBLong(image);
+      outLayer->offset_x = (long) ReadBlobMSBLong(image);
+      outLayer->offset_y = (long) ReadBlobMSBLong(image);
       break;
     case PROP_MODE:
       outLayer->mode = ReadBlobMSBLong(image);
@@ -1084,14 +1083,14 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       {
       int buf[16];
-      int amount;
+      long amount;
 
       /* read over it... */
       while (prop_size > 0)
         {
-        amount = Min (16, prop_size);
+        amount = (long) Min (16, prop_size);
         for (i=0; i<(unsigned long) amount; i++)
-        amount = ReadBlob(image, amount, &buf);
+        amount = (long) ReadBlob(image, amount, &buf);
         prop_size -= Min (16, amount);
         }
       }
@@ -1113,9 +1112,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         we have to scan the layer offset list, and then reposition
         the read pointer
     */
-    unsigned long  oldPos = TellBlob(image);
+    off_t  oldPos = TellBlob(image);
     do {
-      int  offset = ReadBlobMSBLong(image);
+      long  offset = (long) ReadBlobMSBLong(image);
       if ( offset == 0 )
         foundAllLayers = True;
       else
@@ -1132,7 +1131,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     while (True)
     {
-      unsigned long
+      off_t
         offset,
         saved_pos;
       int

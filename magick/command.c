@@ -667,7 +667,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             break;
           }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
-        break;
       }
       case 'e':
       {
@@ -896,8 +895,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("noop",option+1) == 0)
           {
-            status&=CompositeImageList(image_info,&image,composite_image,mask_image,
-              &option_info,exception);
+            status&=CompositeImageList(image_info,&image,composite_image,
+              mask_image,&option_info,exception);
             if (composite_image != (Image *) NULL)
               {
                 DestroyImages(composite_image);
@@ -909,8 +908,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 mask_image=(Image *) NULL;
               }
             (void) CatchImageException(image);
+            break;
           }
-          break;
         ThrowCompositeException(OptionError,"Unrecognized option",option);
       }
       case 'p':
@@ -2118,7 +2117,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                       }
                     ThrowConvertException(OptionError,"Invalid list type",
                       option);
-                    break;
                   }
                   case 'D':
                   case 'd':
@@ -2130,7 +2128,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                       }
                     ThrowConvertException(OptionError,"Invalid list type",
                       option);
-                    break;
                   }
                   case 'F':
                   case 'f':
@@ -2142,7 +2139,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                       }
                     ThrowConvertException(OptionError,"Invalid list type",
                       option);
-                    break;
                   }
                   case 'M':
                   case 'm':
@@ -2161,7 +2157,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 #endif /* HasMODULES */
                     ThrowConvertException(OptionError,"Invalid list type",
                       option);
-                    break;
                   }
                   case 'T':
                   case 't':
@@ -2173,7 +2168,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                       }
                     ThrowConvertException(OptionError,"Invalid list type",
                       option);
-                    break;
                   }
                   default:
                     ThrowConvertException(OptionError,"Invalid list type",
@@ -4078,7 +4072,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                       }
                     ThrowMogrifyException(OptionWarning,"Invalid list type",
                       option);
-                    break;
                   }
                   case 'D':
                   case 'd':
@@ -4090,7 +4083,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                       }
                     ThrowMogrifyException(OptionWarning,"Invalid list type",
                       option);
-                    break;
                   }
                   case 'F':
                   case 'f':
@@ -4102,7 +4094,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                       }
                     ThrowMogrifyException(OptionWarning,"Invalid list type",
                       option);
-                    break;
                   }
                   case 'M':
                   case 'm':
@@ -4121,7 +4112,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 #endif /* HasMODULES */
                     ThrowMogrifyException(OptionWarning,"Invalid list type",
                       option);
-                    break;
                   }
                   case 'T':
                   case 't':

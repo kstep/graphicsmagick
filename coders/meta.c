@@ -1723,7 +1723,7 @@ static int format8BIM(Image *ifile, Image *ofile)
             formatIPTCfromBuffer(ofile, (char *)str, Size);
           }
         else
-          formatString(ofile, (char *)str, Size);
+          formatString(ofile, (char *)str, (long) Size);
       }
     LiberateMemory((void **) &str);
     LiberateMemory((void **) &PString);

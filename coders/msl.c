@@ -740,7 +740,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=border_image;
-        break;
         }
 
         break;
@@ -933,7 +932,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=newImage;
-        break;
         }
 
         break;
@@ -1148,51 +1146,51 @@ static void MSLStartElement(void *context,const xmlChar *name,
             }
             case NorthGravity:
             {
-              x = (msl_info->image[n]->columns - srcImage->columns) >> 1;
+              x =(long) ((msl_info->image[n]->columns- srcImage->columns) >> 1);
               y = 0;
               break;
             }
             case NorthEastGravity:
             {
-              x = msl_info->image[n]->columns - srcImage->columns;
+              x = (long) (msl_info->image[n]->columns - srcImage->columns);
               y = 0;
               break;
             }
             case WestGravity:
             {
               x = 0;
-              y = (msl_info->image[n]->rows - srcImage->rows) >> 1;
+              y = (long) ((msl_info->image[n]->rows - srcImage->rows) >> 1);
               break;
             }
             case CenterGravity:
             default:
             {
-              x = (msl_info->image[n]->columns - srcImage->columns) >> 1;
-              y = (msl_info->image[n]->rows - srcImage->rows) >> 1;
+              x =(long) ((msl_info->image[n]->columns- srcImage->columns) >> 1);
+              y = (long) ((msl_info->image[n]->rows - srcImage->rows) >> 1);
               break;
             }
             case EastGravity:
             {
-              x = msl_info->image[n]->columns - srcImage->columns;
-              y = (msl_info->image[n]->rows - srcImage->rows) >> 1;
+              x = (long) (msl_info->image[n]->columns - srcImage->columns);
+              y = (long) ((msl_info->image[n]->rows - srcImage->rows) >> 1);
               break;
             }
             case SouthWestGravity:
             {
               x = 0;
-              y = msl_info->image[n]->rows - srcImage->rows;
+              y = (long) (msl_info->image[n]->rows - srcImage->rows);
               break;
             }
             case SouthGravity:
             {
-              x =  (msl_info->image[n]->columns - srcImage->columns) >> 1;
-              y = msl_info->image[n]->rows - srcImage->rows;
+              x =(long) ((msl_info->image[n]->columns- srcImage->columns) >> 1);
+              y = (long) (msl_info->image[n]->rows - srcImage->rows);
               break;
             }
             case SouthEastGravity:
             {
-              x = msl_info->image[n]->columns - srcImage->columns;
-              y = msl_info->image[n]->rows - srcImage->rows;
+              x = (long) (msl_info->image[n]->columns - srcImage->columns);
+              y = (long) (msl_info->image[n]->rows - srcImage->rows);
               break;
             }
           }
@@ -1315,7 +1313,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=newImage;
-        break;
         }
 
         break;
@@ -1757,7 +1754,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=newImage;
-        break;
         }
 
         break;
@@ -2578,7 +2574,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
               break;
             DestroyImage(msl_info->image[n]);
             msl_info->image[n]=resize_image;
-            break;
           }
 
           break;
@@ -2662,7 +2657,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=newImage;
-        break;
         }
 
         break;
@@ -2720,7 +2714,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=newImage;
-        break;
         }
 
         break;
@@ -2810,7 +2803,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=newImage;
-        break;
         }
 
         break;
@@ -2894,7 +2886,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=newImage;
-        break;
         }
 
         break;
@@ -3199,7 +3190,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=newImage;
-        break;
         }
 
         break;
@@ -3271,7 +3261,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=newImage;
-        break;
         }
 
         break;
@@ -3570,7 +3559,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=newImage;
-        break;
         }
 
         break;
@@ -3872,7 +3860,8 @@ static void MSLEndElement(void *context,const xmlChar *name)
       {
         if (msl_info->group_info[msl_info->nGroups-1].numImages > 0 )
         {
-          long  i = msl_info->group_info[msl_info->nGroups-1].numImages;
+          long  i = (long)
+            (msl_info->group_info[msl_info->nGroups-1].numImages);
           while ( i-- )
           {
             if (msl_info->image[msl_info->n] != (Image *) NULL)
