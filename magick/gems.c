@@ -473,33 +473,35 @@ Export void Hull(const int x_offset,const int y_offset,const int polarity,
 %
 */
 
+static double DistanceToSegment(double x,double y,const PrimitiveInfo *p,
+  const PrimitiveInfo *q)
+{
+  register double
+    dot,
+    v;
+
+  dot=(x-p->x)*(q->x-p->x)+(y-p->y)*(q->y-p->y);
+  if (dot <= 0)
+    return(sqrt((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y)));
+  v=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
+  if ((dot*dot/v) > v)
+    return(sqrt((x-q->x)*(x-q->x)+(y-q->y)*(y-q->y)));
+  return(sqrt((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y)-dot*dot/v));
+}
+
 static Quantum InsideLinePrimitive(const PrimitiveInfo *p,
   const PrimitiveInfo *q,const int x,const int y,const Quantum opacity,
   const double mid)
 {
   register double
-    distance,
-    dot;
+    distance;
 
   if ((mid == 0) || (opacity == Opaque))
     return(opacity);
   if ((p->x == q->x) && (p->y == q->y))
     return((x == p->x) && (y == p->y) ? Opaque : opacity);
-  dot=(x-p->x)*(q->x-p->x)+(y-p->y)*(q->y-p->y);
-  if (dot < 0)
-    distance=sqrt((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y));
-  else
-    {
-      register double
-        v;
-
-      v=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
-      if ((dot*dot/v) > v)
-        distance=sqrt((x-q->x)*(x-q->x)+(y-q->y)*(y-q->y));
-      else
-        distance=sqrt((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y)-dot*dot/v);
-    }
-  if (distance < (mid-0.5))
+  distance=DistanceToSegment(x,y,p,q);
+  if (distance <= (mid-0.5))
     return(Opaque);
   if (distance <= (mid+0.5))
     return((Quantum) Max(opacity,Opaque*(distance-mid-0.5)*(distance-mid-0.5)));
@@ -605,26 +607,33 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case PolygonPrimitive:
       {
-        PrimitiveInfo
-          *r;
-
         Quantum
           poly_opacity;
 
         poly_opacity=Transparent;
-        for (r=p; (r < q) && (poly_opacity != Opaque); r++)
-          poly_opacity=InsideLinePrimitive(r,r+1,x,y,
+        for ( ; (p < q) && (poly_opacity != Opaque); p++)
+          poly_opacity=InsideLinePrimitive(p,p+1,x,y,
             (Quantum) Max(opacity,poly_opacity),mid);
-        poly_opacity=InsideLinePrimitive(q,p,x,y,poly_opacity,mid);
         opacity=Max(opacity,poly_opacity);
         break;
       }
       case FillPolygonPrimitive:
       {
+        double
+          distance,
+          nearest_distance;
+
         int
           crossing,
           crossings;
 
+        Quantum
+          poly_opacity;
+
+        PrimitiveInfo
+          *r;
+
+        r=p;
         crossings=0;
         if ((q->y >= y) != (p->y >= y))
           {
@@ -645,27 +654,50 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
                 break;
               crossing=(p-1)->x >= x;
               if (crossing != (p->x >= x))
-                crossings+=
-                  ((p-1)->x-((p-1)->y-y)*(p->x-(p-1)->x)/(p->y-(p-1)->y)) >= x;
+                crossings+=((p-1)->x-((p-1)->y-y)*(p->x-(p-1)->x)/
+                  (p->y-(p-1)->y)) >= x;
               else
                 if (crossing)
                   crossings++;
               continue;
             }
-         while ((p <= q) && (p->y < y))
-           p++;
-         if (p > q)
-           break;
-         crossing=(p-1)->x >= x;
-         if (crossing != (p->x >= x))
-           crossings+=
-             ((p-1)->x-((p-1)->y-y)*(p->x-(p-1)->x)/(p->y-(p-1)->y)) >= x;
-         else
-           if (crossing)
-             crossings++;
+          while ((p <= q) && (p->y < y))
+            p++;
+          if (p > q)
+            break;
+          crossing=(p-1)->x >= x;
+          if (crossing != (p->x >= x))
+            crossings+=
+              ((p-1)->x-((p-1)->y-y)*(p->x-(p-1)->x)/(p->y-(p-1)->y)) >= x;
+          else
+            if (crossing)
+              crossings++;
+        }
+        /*
+          Now find distance to polygon.
+        */
+        p=r;
+        nearest_distance=DistanceToSegment(x,y,p,q);
+        for ( ; p < q; p++)
+        {
+          distance=DistanceToSegment(x,y,p,p+1);
+          if (distance < nearest_distance)
+            nearest_distance=distance;
         }
         if (crossings & 0x01)
-          opacity=Opaque;
+          {
+            poly_opacity=Opaque;
+            if (nearest_distance < 0.5)
+              poly_opacity=(Quantum)
+                (Opaque*(0.5+nearest_distance)*(0.5+nearest_distance));
+            opacity=Max(opacity,poly_opacity);
+            break;
+          }
+        poly_opacity=Transparent;
+        if (nearest_distance < 0.5)
+          poly_opacity=(Quantum)
+            (Opaque*(0.5-nearest_distance)*(0.5-nearest_distance));
+        opacity=Max(opacity,poly_opacity);
         break;
       }
       case ColorPrimitive:

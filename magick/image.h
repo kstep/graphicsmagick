@@ -666,7 +666,7 @@ typedef struct _Image
   RenderingIntent
     rendering_intent;
 
-  double
+  float
     gamma;
 
   ChromaticityInfo
@@ -679,7 +679,7 @@ typedef struct _Image
   ResolutionType
     units;
 
-  double
+  float
     x_resolution,
     y_resolution;
 

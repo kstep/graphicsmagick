@@ -5723,8 +5723,8 @@ Image *ReadLABELImage(const ImageInfo *image_info)
       error=TT_New_Instance(face,&instance);
       if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
         {
-          image->x_resolution=96;
-          image->y_resolution=96;
+          image->x_resolution=96.0;
+          image->y_resolution=96.0;
         }
       error|=TT_Set_Instance_Resolutions(instance,(unsigned short)
         image->x_resolution,(unsigned short) image->y_resolution);
@@ -6636,7 +6636,7 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
                         image->rendering_intent=UndefinedIntent;
               }
             if (Latin1Compare(keyword,"resolution") == 0)
-              (void) sscanf(value,"%lfx%lf",&image->x_resolution,
+              (void) sscanf(value,"%fx%f",&image->x_resolution,
                 &image->y_resolution);
             if (Latin1Compare(keyword,"rows") == 0)
               image->rows=(unsigned int) atoi(value);
@@ -8363,7 +8363,7 @@ Image *ReadPDFImage(const ImageInfo *image_info)
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
      (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
+      count=sscanf(density,"%fx%f",&image->x_resolution,&image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
@@ -10758,7 +10758,7 @@ Image *ReadPSImage(const ImageInfo *image_info)
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
       (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
+      count=sscanf(density,"%fx%f",&image->x_resolution,&image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
@@ -14037,9 +14037,7 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
     *text;
 
   float
-    *chromaticity,
-    x_resolution,
-    y_resolution;
+    *chromaticity;
 
   Image
     *image;
@@ -14169,10 +14167,8 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
     TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
     TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
     TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_XRESOLUTION,&x_resolution);
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&y_resolution);
-    image->x_resolution=x_resolution;
-    image->y_resolution=y_resolution;
+    TIFFGetFieldDefaulted(tiff,TIFFTAG_XRESOLUTION,&image->x_resolution);
+    TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&image->y_resolution);
     chromaticity=(float *) NULL;
     TIFFGetField(tiff,TIFFTAG_WHITEPOINT,&chromaticity);
     if (chromaticity != (float *) NULL)
@@ -15341,7 +15337,7 @@ Image *ReadTXTImage(const ImageInfo *image_info)
         density[MaxTextExtent];
 
       (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
+      count=sscanf(density,"%fx%f",&image->x_resolution,&image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }

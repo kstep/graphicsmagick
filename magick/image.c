@@ -237,7 +237,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
       int
         count;
 
-      count=sscanf(image_info->density,"%lfx%lf",&allocated_image->x_resolution,
+      count=sscanf(image_info->density,"%fx%f",&allocated_image->x_resolution,
         &allocated_image->y_resolution);
       if (count != 2)
         allocated_image->y_resolution=allocated_image->x_resolution;
@@ -3148,6 +3148,13 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     Display verbose info about the image.
   */
   (void) fprintf(file,"Image: %.1024s\n",image->filename);
+  magick_info=(MagickInfo *) GetMagickInfo(image->magick);
+  if ((magick_info == (MagickInfo *) NULL) ||
+      (*magick_info->description == '\0'))
+    (void) fprintf(file,"  format: %.1024s\n",image->magick);
+  else
+    (void) fprintf(file,"  format: %.1024s (%s)\n",image->magick,
+      magick_info->description);
   (void) fprintf(file,"  type: ");
   switch (GetImageType((const ImageInfo *) NULL,image))
   {
@@ -3164,6 +3171,26 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   else
     (void) fprintf(file,"  class: PseudoClass\n");
   NumberColors(image,(FILE *) NULL);
+  if (!image->matte)
+    (void) fprintf(file,"  matte: False\n");
+  else
+    if ((strcmp(image->magick,"GIF") != 0) || image->tainted)
+      (void) fprintf(file,"  matte: True\n");
+    else
+      {
+        RunlengthPacket
+          *q;
+
+        q=image->pixels;
+        for (i=0; i < (int) (image->packets-1); i++)
+        {
+          if (q->index == Transparent)
+            break;
+          q++;
+        }
+        (void) fprintf(file,"  matte: (%3d,%3d,%3d) #%02x%02x%02x\n",
+          q->red,q->green,q->blue,q->red,q->green,q->blue);
+      }
   if (image->class == DirectClass)
     (void) fprintf(file,"  colors: %lu\n",image->total_colors);
   else
@@ -3208,16 +3235,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   if (image->normalized_maximum_error != 0)
     (void) fprintf(file,"  normalized maximum error: %.6f\n",
       image->normalized_maximum_error);
-  SignatureImage(image);
-  (void) fprintf(file,"  signature: %.1024s\n",image->signature);
-  if (image->tainted)
-    (void) fprintf(file,"  tainted: True\n");
-  else
-    (void) fprintf(file,"  tainted: False\n");
-  if (image->matte)
-    (void) fprintf(file,"  matte: True\n");
-  else
-    (void) fprintf(file,"  matte: False\n");
   if (image->rendering_intent == SaturationIntent)
     (void) fprintf(file,"  rendering-intent: saturation\n");
   else
@@ -3253,9 +3270,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   if (image->iptc_profile.length > 0)
     (void) fprintf(file,"  IPTC profile: %u bytes\n",
       image->iptc_profile.length);
-  if (image->packets < (image->columns*image->rows))
-    (void) fprintf(file,"  runlength packets: %lu of %u\n",image->packets,
-      image->columns*image->rows);
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
     if ((image->magick_columns != image->columns) ||
         (image->magick_rows != image->rows))
@@ -3319,13 +3333,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  delay: %d\n",image->delay);
   if (image->iterations != 1)
     (void) fprintf(file,"  iterations: %d\n",image->iterations);
-  magick_info=(MagickInfo *) GetMagickInfo(image->magick);
-  if ((magick_info == (MagickInfo *) NULL) ||
-      (*magick_info->description == '\0'))
-    (void) fprintf(file,"  format: %.1024s\n",image->magick);
-  else
-    (void) fprintf(file,"  format: %.1024s (%s)\n",image->magick,
-      magick_info->description);
   p=image;
   while (p->previous != (Image *) NULL)
     p=p->previous;
@@ -3358,6 +3365,15 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
               (void) fprintf(file,"BZip\n");
             else
               (void) fprintf(file,"None\n");
+  if (image->packets < (image->columns*image->rows))
+    (void) fprintf(file,"  runlength packets: %lu of %u\n",image->packets,
+      image->columns*image->rows);
+  if (image->tainted)
+    (void) fprintf(file,"  tainted: True\n");
+  else
+    (void) fprintf(file,"  tainted: False\n");
+  SignatureImage(image);
+  (void) fprintf(file,"  signature: %.1024s\n",image->signature);
   if (image->comments != (char *) NULL)
     {
       /*
@@ -3941,6 +3957,16 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
       while (primitive != (char *) NULL)
       {
         c=fgetc(file);
+        if (c == '#')
+          {
+            /*
+              Eat comments.
+            */
+            for (c=fgetc(file); c != EOF; c=fgetc(file))
+              if ((c == '\r') || (c == '\n'))
+                break;
+            continue;
+          }
         if (c == EOF)
           break;
         if ((q-primitive+1) >= (int) length)
@@ -4154,7 +4180,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         PointInfo
           degrees,
           end,
-	  start;
+          start;
 
         if (primitive_info[j].coordinates != 3)
           {
@@ -4173,9 +4199,23 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         end.y=primitive_info[j+1].y/2;
         degrees.x=primitive_info[j+2].x;
         degrees.y=primitive_info[j+2].y;
-        while (degrees.x > (degrees.y+360.0))
-          degrees.x-=360.0;
+        while (degrees.y < degrees.x)
+          degrees.y+=360;
         i=j;
+        if ((primitive_type == FillEllipsePrimitive) &&
+            (fmod(degrees.y-degrees.x,360.0) != 0.0))
+          {
+            if (start.x < bounds.x1)
+              bounds.x1=start.x;
+            if (start.y < bounds.y1)
+              bounds.y1=start.y;
+            if (end.x > bounds.x2)
+              bounds.x2=end.x;
+            if (end.y > bounds.y2)
+              bounds.y2=end.y;
+            primitive_info[j].coordinates++;
+            i++;
+          }
         for (n=(degrees.x+1.0); n <= degrees.y; n+=1.0)
         {
           point.x=cos(DegreesToRadians(fmod(n,360.0)))*end.x+start.x;
@@ -5022,7 +5062,7 @@ Export void GammaImage(Image *image,const char *gamma)
   ColorPacket
     *gamma_map;
 
-  double
+  float
     blue_gamma,
     green_gamma,
     red_gamma;
@@ -5042,8 +5082,8 @@ Export void GammaImage(Image *image,const char *gamma)
   red_gamma=1.0;
   green_gamma=1.0;
   blue_gamma=1.0;
-  count=sscanf(gamma,"%lf,%lf,%lf",&red_gamma,&green_gamma,&blue_gamma);
-  count=sscanf(gamma,"%lf/%lf/%lf",&red_gamma,&green_gamma,&blue_gamma);
+  count=sscanf(gamma,"%f,%f,%f",&red_gamma,&green_gamma,&blue_gamma);
+  count=sscanf(gamma,"%f/%f/%f",&red_gamma,&green_gamma,&blue_gamma);
   if (count == 1)
     {
       if (red_gamma == 1.0)

@@ -5430,12 +5430,14 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     compression;
 
   double
+    x_scale,
+    y_scale;
+
+  float
     dx_resolution,
     dy_resolution,
     x_resolution,
-    x_scale,
-    y_resolution,
-    y_scale;
+    y_resolution;
 
   int
     count,
@@ -5615,7 +5617,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
+    count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
@@ -5625,7 +5627,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       }
     if (image_info->density != (char *) NULL)
       {
-        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
+        count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
         if (count != 2)
           y_resolution=x_resolution;
       }
@@ -7835,7 +7837,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
     factor[MaxTextExtent],
     label[MaxTextExtent];
 
-  double
+  float
     degrees,
     gamma,
     percentage,
@@ -7891,7 +7893,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   local_info->quality=0;
   degrees=0;
-  gamma=(double) (-0.2);
+  gamma=(-0.2);
   colors=2;
   x=0;
   y=0;
@@ -7976,7 +7978,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       }
       case GammaPreview:
       {
-        FormatString(factor,"%.1f",gamma+=(double) 0.4);
+        FormatString(factor,"%.1f",gamma+=0.4);
         FormatString(label,"gamma %.1024s",factor);
         commands[argc++]="-gamma";
         commands[argc++]=factor;
@@ -8120,7 +8122,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       }
       case SegmentPreview:
       {
-        threshold+=(double) 0.4;
+        threshold+=0.4;
         FormatString(factor,"%.1fx%.1f",threshold,threshold);
         FormatString(label,"segment %.1024s",factor);
         commands[argc++]="-colors";
@@ -8550,12 +8552,14 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     **q;
 
   double
+    x_scale,
+    y_scale;
+
+  float
     dx_resolution,
     dy_resolution,
     x_resolution,
-    x_scale,
-    y_resolution,
-    y_scale;
+    y_resolution;
 
   int
     length,
@@ -8621,12 +8625,12 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
+    count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
     if (image_info->density != (char *) NULL)
       {
-        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
+        count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
         if (count != 2)
           y_resolution=x_resolution;
       }
@@ -9398,12 +9402,14 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     compression;
 
   double
+    x_scale,
+    y_scale;
+
+  float
     dx_resolution,
     dy_resolution,
     x_resolution,
-    x_scale,
-    y_resolution,
-    y_scale;
+    y_resolution;
 
   int
     count,
@@ -9474,7 +9480,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
+    count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
@@ -9484,7 +9490,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       }
     if (image_info->density != (char *) NULL)
       {
-        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
+        count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
         if (count != 2)
           y_resolution=x_resolution;
       }
@@ -11483,8 +11489,8 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         if (image->units == PixelsPerCentimeterResolution)
           units=RESUNIT_CENTIMETER;
         TIFFSetField(tiff,TIFFTAG_RESOLUTIONUNIT,(uint16) units);
-        TIFFSetField(tiff,TIFFTAG_XRESOLUTION,(float) image->x_resolution);
-        TIFFSetField(tiff,TIFFTAG_YRESOLUTION,(float) image->y_resolution);
+        TIFFSetField(tiff,TIFFTAG_XRESOLUTION,image->x_resolution);
+        TIFFSetField(tiff,TIFFTAG_YRESOLUTION,image->y_resolution);
       }
     if (image->chromaticity.white_point.x != 0.0)
       {

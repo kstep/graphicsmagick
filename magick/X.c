@@ -2797,7 +2797,7 @@ Export void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
     {
       if (resource_info->gamma_correct && (image->gamma != 0.0))
         {
-          double
+          float
             blue_gamma,
             green_gamma,
             red_gamma;
@@ -2811,7 +2811,7 @@ Export void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
           red_gamma=1.0;
           green_gamma=1.0;
           blue_gamma=1.0;
-          count=sscanf(resource_info->display_gamma,"%lf,%lf,%lf",
+          count=sscanf(resource_info->display_gamma,"%f,%f,%f",
             &red_gamma,&green_gamma,&blue_gamma);
           if (count == 1)
             {
