@@ -490,12 +490,12 @@ MagickExport void *ImageToHBITMAP(Image* image)
     if ( bitmap.bmBits == NULL )
       bitmap.bmBits = theBits;
 
-    for( row = 0 ; row < rows ; row++ )
+    for( row = 0 ; row < image->rows ; row++ )
       {
         pPixels = AcquireImagePixels(image,0,row,image->columns,1,&image->exception);
 
 #if QuantumDepth == 8
-        // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
+        /* Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8 */
         memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*image->columns);
         pDestPixel += image->columns;
 
@@ -504,7 +504,7 @@ MagickExport void *ImageToHBITMAP(Image* image)
           unsigned long nPixelCount;
 
           /* Transfer pixels, scaling to Quantum */
-          for( unsigned long nPixelCount = image->columns; nPixelCount ; nPixelCount-- )
+          for( nPixelCount = image->columns; nPixelCount ; nPixelCount-- )
             {
               pDestPixel->rgbRed = ScaleQuantumToChar(pPixels->red);
               pDestPixel->rgbGreen = ScaleQuantumToChar(pPixels->green);
