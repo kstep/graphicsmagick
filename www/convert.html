@@ -1146,9 +1146,9 @@ and whose width is 512 and height is 480. To generate a Unicode character
 (<i>TrueType fonts only</i>), embed the code as an escaped hex string (e.g.
 <tt>\0x30a3</tt>).
 <p>Use <b>image</b> to composite an image with another image. Follow the
-image coordinates with the image size and filename:
+image coordinates with the composite operator, image size,  and filename:
 
-<pre>&nbsp;&nbsp;&nbsp;&nbsp; -draw 'image 100,100 225,225 image.jpg'</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; -draw 'image Over 100,100 225,225 image.jpg'</pre>
 
 
 <dd>
