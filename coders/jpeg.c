@@ -1502,7 +1502,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 
   sampling_factors=image_info->sampling_factor;
 
-  if (preserve_settings[0])
+  if (preserve_settings && preserve_settings[0])
     {
       const ImageAttribute
         *attribute;
