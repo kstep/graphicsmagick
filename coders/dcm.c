@@ -2677,9 +2677,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  IndexPacket
-    index;
-
   int
     element,
     group,
@@ -2725,7 +2722,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     max_value;
 
   unsigned short
-    *graymap;
+    blue,
+    *graymap,
+    green,
+    index,
+    red;
 
   /*
     Open image file.
@@ -3163,7 +3164,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=width;
     image->rows=height;
     if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
-      if (!AllocateImageColormap(image,max_value+1))
+      if (!AllocateImageColormap(image,Min(max_value,MaxRGB)+1))
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
     if (image_info->ping)
@@ -3211,6 +3212,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert DCM Medical image to pixel packets.
         */
+	red=0;
+	green=0;
+	blue=0;
         i=0;
         byte=0;
         for (y=0; y < (int) image->rows; y++)
@@ -3227,14 +3231,14 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   index=ReadByte(image);
                 else
                   if (bits_allocated != 12)
-                    index=MSBFirstReadShort(image);
+                    index=LSBFirstReadShort(image);
                   else
                     {
                       if (i & 0x01)
                         index=(ReadByte(image) << 8) | byte;
                       else
                         {
-                          index=MSBFirstReadShort(image);
+                          index=LSBFirstReadShort(image);
                           byte=index & 0x0f;
                           index>>=4;
                         }
@@ -3244,29 +3248,37 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   index=max_value;
                 if (graymap != (unsigned short *) NULL)
                   index=graymap[index];
+                if (scale != (Quantum *) NULL)
+                  index=scale[index];
                 indexes[x]=index;
-                *q=image->colormap[index];
+                red=image->colormap[index].red;
+                green=image->colormap[index].green;
+                blue=image->colormap[index].blue;
               }
             else
-              if (bytes_per_pixel == 1)
-                {
-                  q->red=ReadByte(image);
-                  q->green=ReadByte(image);
-                  q->blue=ReadByte(image);
-                }
-              else
-                {
-                  q->red=LSBFirstReadShort(image);
-                  q->green=LSBFirstReadShort(image);
-                  q->blue=LSBFirstReadShort(image);
-                }
-            if ((image->class == DirectClass) && (scale != (Quantum *) NULL))
               {
-                q->red=scale[q->red];
-                q->green=scale[q->green];
-                q->blue=scale[q->blue];
-                q->opacity=scale[q->opacity];
+                if (bytes_per_pixel == 1)
+                  {
+                    red=ReadByte(image);
+                    green=ReadByte(image);
+                    blue=ReadByte(image);
+                  }
+                else
+                  {
+                    red=LSBFirstReadShort(image);
+                    green=LSBFirstReadShort(image);
+                    blue=LSBFirstReadShort(image);
+                  }
+                if (scale != (Quantum *) NULL)
+                  {
+                    red=scale[red];
+                    green=scale[green];
+                    blue=scale[blue];
+                  }
               }
+            q->red=red;
+            q->green=green;
+            q->blue=blue;
             q++;
           }
           if (!SyncImagePixels(image))

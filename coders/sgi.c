@@ -817,7 +817,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         *q++=DownScale(p->red);
         *q++=DownScale(p->green);
         *q++=DownScale(p->blue);
-        *q++=p->opacity;
+        *q++=DownScale(p->opacity);
         p++;
       }
       if (image->previous == (Image *) NULL)
