@@ -1002,19 +1002,19 @@ area of an image.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The x and y offsets specify the location of the upper left corner of
-the cropping region with respect to the upper left corner of the image.
-If the x offset is negative, it gives the distance leftward from the right edge
+the cropping region measured downward and rightward with respect to the
+upper left corner of the image.
+If the </strong>-gravity</strong> option is present with <em>NorthEast, East,</em>
+or <em>SouthEast</em>
+gravity, it gives the distance leftward from the right edge
 of the image to the right edge of the cropping region.  Similarly, if
-the y offset is negative, the distance is measured upward between the bottom
+the <strong>-gravity</strong> option is present with <em>SouthWest, South,</em>
+or <em>SouthEast</em>
+gravity, the distance is measured upward between the bottom
 edges.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Omit the x and y offset to generate one or more subimages of a uniform
 size.
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use cropping to crop a particular area of an image. Use <strong>-crop 0x0</strong>
-to trim edges that are the background color. Add an x and y offset to leave
-a portion of the trimmed edges with the image.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -1485,6 +1485,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 See <strong>-geometry</strong> for details
 about the geometry specification.
+The <strong>-frame</strong> option is not affected by the <strong>-gravity</strong> option.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The color of the border is specified with the
@@ -1506,7 +1507,7 @@ width=15><b><font face="Helvetica, Arial"
 A number of algorithms search for a target color. By default the color
 must be exact. Use this option to match colors that are close to the target
 color in RGB space. For example, if you want to automatically trim the
-edges of an image with <em>-crop 0x0</em> but the image was scanned and the
+edges of an image with <em>-trim</em> but the image was scanned and the
 target background color may differ by a small amount. This option can account
 for these differences.
 </font></td></tr></table>
@@ -1632,6 +1633,12 @@ The direction you choose specifies where to position the text when annotating
 the image. For example <em>Center</em> gravity forces the text to be centered
 within the image. By default, the image gravity is <em>NorthWest</em>.
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The <strong>-gravity</strong> option is also used in concert with the <strong>-geometry</strong>
+option and other options that take <strong>&lt;geometry&gt;</strong> as a parameter, such
+as the <strong>-crop</strong> option.  See <strong>-geometry</strong> for details of how the
+<strong>-gravity</strong> option interacts with the 
+<strong>&lt;x_offset&gt;</strong> and <strong>&lt;y_offset&gt;</strong> parameters of a geometry specification.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2069,9 +2076,7 @@ page are:
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For convenience you can specify the page size by media (e.g. A4, Ledger,
 etc.). Otherwise, <strong>-page</strong> behaves much like
-<strong>-geometry</strong> (e.g.
-<tt>-page
-letter+43+43&gt;</tt>).
+<strong>-geometry</strong> (e.g.  <tt>-page letter+43+43&gt;</tt>).
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To position a GIF image, use <strong>-page</strong><em>{+-}&lt;x offset&gt;{+-}&lt;y
@@ -2085,12 +2090,11 @@ relative to the lower left hand corner of the page by
 <tt>-page 612x792&gt;</tt>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
-Positive <strong>x</strong> and
-<strong>y</strong> <em>offset</em> are measured
-rightward and upward from the bottom left corner of the page, Unlike
-in <strong>-geometry</strong>, negative offsets are not treated
-specially.  They simply specify leftward and downward distances from the lower
-left hand corner of the page.
+The default gravity for the <strong>-page</strong>
+option is <em>SouthWest</em>, i.e., positive <strong>x</strong> and
+<strong>y</strong> <em>offset</em> are measured rightward and upward from the bottom
+left corner of the page, unless the <strong>-gravity</strong> option is present with
+a value other than <em>SouthWest</em>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The default page dimensions for a TEXT image is 612x792.
@@ -2287,6 +2291,7 @@ width=15><b><font face="Helvetica, Arial"
 This will create a 3-D effect.
 See <strong>-geometry</strong> for details
 details about the geometry specification.
+Offsets are not used.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>-raise</strong> to create a raised effect, otherwise use <strong>+raise</strong>.
@@ -2348,6 +2353,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 See <strong>-geometry</strong> for details
 the geometry specification.
+The offsets are not affected by the <strong>-gravity</strong> option.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 A negative <em>x offset</em> rolls the image left-to-right. A negative <em>y
@@ -2367,9 +2373,11 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <tt>&gt;</tt> to rotate the image only if its width exceeds the height.
 <tt>&lt;</tt> rotates the image <em>only</em> if its width is less than the
-height. For example, if you specify <tt>-90&gt;</tt> and the image size is
-480x640, the image is not rotated by the specified angle. However, if the
-image is 640x480, it is rotated by -90 degrees.
+height. For example, if you specify <tt>-rotate "-90&gt;"</tt> and the image
+size is 480x640, the image is not rotated.  However, if the
+image is 640x480, it is rotated by -90 degrees.  If you use <tt>&gt;</tt> or
+<tt>&lt;</tt>, enclose it in quotation marks to prevent it from being
+misinterpreted as a file redirection.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Empty triangles left over from rotating the image are filled with the color
@@ -2391,7 +2399,8 @@ width=15><b><font face="Helvetica, Arial"
 See <strong>-geometry</strong> for details about
 the geometry specification.
 <strong>-sample</strong> ignores the <strong>-filter</strong> selection if the <strong>-filter</strong> option
-is present.  Offsets, if present in the geometry string, are ignored.
+is present.  Offsets, if present in the geometry string, are ignored, and
+the <strong>-gravity</strong> option has no effect.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -2408,7 +2417,8 @@ width=15><b><font face="Helvetica, Arial"
 See <strong>-geometry</strong> for details about
 the geometry specification.  <strong>-scale</strong> uses a simpler, faster algorithm,
 and it ignores the <strong>-filter</strong> selection if the <strong>-filter</strong> option
-is present.  Offsets, if present in the geometry string, are ignored.
+is present.  Offsets, if present in the geometry string, are ignored, and
+the <strong>-gravity</strong> option has no effect.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -2718,6 +2728,21 @@ Refer to
 The <strong>-colors</strong> or <strong>-monochrome</strong> option is required for this option
 to take effect.
 </font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="-trim">-trim</a>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>trim an image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+This option removes any edges that are exactly the same color as the
+corner pixels.  Use <strong>-fuzz</strong> to make <strong>-trim</strong> remove edges that
+are nearly the same color as the corner pixels.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

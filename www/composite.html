@@ -720,10 +720,13 @@ as a file redirection.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used as a <strong>composite</strong> option, <strong>-geometry</strong>
 gives the dimensions of the image and its location with respect
-to the composite image.  If the x offset is negative, it represents the
-distance from the right edge of the image to the right edge of
-the composite image.  Similarly, if the y offset is negative, the distance
-is measured between the bottom edges.
+to the composite image.  If the <strong>-gravity</strong> option is present
+with <em>NorthEast, East,</em> or <em>SouthEast</em> gravity, the x offset
+represents the distance from the right edge of the image to the right edge of
+the composite image.  Similarly, if the <strong>-gravity</strong> option is present
+with <em>SouthWest, South,</em> or <em>SouthEast</em> gravity, the y offset
+is measured between the bottom edges. Accordingly, a positive offset will
+never point in the direction outside of the image.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -746,6 +749,12 @@ The direction you choose specifies where to position the text when annotating
 the image. For example <em>Center</em> gravity forces the text to be centered
 within the image. By default, the image gravity is <em>NorthWest</em>.
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The <strong>-gravity</strong> option is also used in concert with the <strong>-geometry</strong>
+option and other options that take <strong>&lt;geometry&gt;</strong> as a parameter, such
+as the <strong>-crop</strong> option.  See <strong>-geometry</strong> for details of how the
+<strong>-gravity</strong> option interacts with the 
+<strong>&lt;x_offset&gt;</strong> and <strong>&lt;y_offset&gt;</strong> parameters of a geometry specification.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used as an option to <em>composite</em>, <strong>-gravity</strong>
 gives the direction that the image gravitates within the composite.
@@ -933,9 +942,7 @@ page are:
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For convenience you can specify the page size by media (e.g. A4, Ledger,
 etc.). Otherwise, <strong>-page</strong> behaves much like
-<strong>-geometry</strong> (e.g.
-<tt>-page
-letter+43+43&gt;</tt>).
+<strong>-geometry</strong> (e.g.  <tt>-page letter+43+43&gt;</tt>).
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To position a GIF image, use <strong>-page</strong><em>{+-}&lt;x offset&gt;{+-}&lt;y
@@ -949,12 +956,11 @@ relative to the lower left hand corner of the page by
 <tt>-page 612x792&gt;</tt>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
-Positive <strong>x</strong> and
-<strong>y</strong> <em>offset</em> are measured
-rightward and upward from the bottom left corner of the page, Unlike
-in <strong>-geometry</strong>, negative offsets are not treated
-specially.  They simply specify leftward and downward distances from the lower
-left hand corner of the page.
+The default gravity for the <strong>-page</strong>
+option is <em>SouthWest</em>, i.e., positive <strong>x</strong> and
+<strong>y</strong> <em>offset</em> are measured rightward and upward from the bottom
+left corner of the page, unless the <strong>-gravity</strong> option is present with
+a value other than <em>SouthWest</em>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The default page dimensions for a TEXT image is 612x792.
@@ -1072,9 +1078,11 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <tt>&gt;</tt> to rotate the image only if its width exceeds the height.
 <tt>&lt;</tt> rotates the image <em>only</em> if its width is less than the
-height. For example, if you specify <tt>-90&gt;</tt> and the image size is
-480x640, the image is not rotated by the specified angle. However, if the
-image is 640x480, it is rotated by -90 degrees.
+height. For example, if you specify <tt>-rotate "-90&gt;"</tt> and the image
+size is 480x640, the image is not rotated.  However, if the
+image is 640x480, it is rotated by -90 degrees.  If you use <tt>&gt;</tt> or
+<tt>&lt;</tt>, enclose it in quotation marks to prevent it from being
+misinterpreted as a file redirection.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Empty triangles left over from rotating the image are filled with the color

@@ -537,10 +537,13 @@ as a file redirection.
 
 When used as a \fBcomposite\fP option, \fB-geometry\fP
 gives the dimensions of the image and its location with respect
-to the composite image.  If the x offset is negative, it represents the
-distance from the right edge of the image to the right edge of
-the composite image.  Similarly, if the y offset is negative, the distance
-is measured between the bottom edges.
+to the composite image.  If the \fB-gravity\fP option is present
+with \fINorthEast, East,\fP or \fISouthEast\fP gravity, the x offset
+represents the distance from the right edge of the image to the right edge of
+the composite image.  Similarly, if the \fB-gravity\fP option is present
+with \fISouthWest, South,\fP or \fISouthEast\fP gravity, the y offset
+is measured between the bottom edges. Accordingly, a positive offset will
+never point in the direction outside of the image.
 
 .TP
 .B "-gravity \fI<type>"\fP
@@ -555,6 +558,12 @@ The direction you choose specifies where to position the text when annotating
 the image. For example \fICenter\fP gravity forces the text to be centered
 within the image. By default, the image gravity is \fINorthWest\fP.
 
+
+The \fB-gravity\fP option is also used in concert with the \fB-geometry\fP
+option and other options that take \fB<geometry>\fP as a parameter, such
+as the \fB-crop\fP option.  See \fB-geometry\fP for details of how the
+\fB-gravity\fP option interacts with the 
+\fB<x_offset>\fP and \fB<y_offset>\fP parameters of a geometry specification.
 
 When used as an option to \fIcomposite\fP, \fB-gravity\fP
 gives the direction that the image gravitates within the composite.
@@ -684,9 +693,7 @@ page are:
 
 For convenience you can specify the page size by media (e.g. A4, Ledger,
 etc.). Otherwise, \fB-page\fP behaves much like
-\fB-geometry\fP (e.g.
--page
-letter+43+43>).
+\fB-geometry\fP (e.g.  -page letter+43+43>).
 
 
 To position a GIF image, use \fB-page\fP\fI{+-}<x offset>{+-}<y
@@ -700,12 +707,11 @@ relative to the lower left hand corner of the page by
 -page 612x792>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
-Positive \fBx\fP and
-\fBy\fP \fIoffset\fP are measured
-rightward and upward from the bottom left corner of the page, Unlike
-in \fB-geometry\fP, negative offsets are not treated
-specially.  They simply specify leftward and downward distances from the lower
-left hand corner of the page.
+The default gravity for the \fB-page\fP
+option is \fISouthWest\fP, i.e., positive \fBx\fP and
+\fBy\fP \fIoffset\fP are measured rightward and upward from the bottom
+left corner of the page, unless the \fB-gravity\fP option is present with
+a value other than \fISouthWest\fP.
 
 
 The default page dimensions for a TEXT image is 612x792.
@@ -782,9 +788,11 @@ image.
 
 Use > to rotate the image only if its width exceeds the height.
 < rotates the image \fIonly\fP if its width is less than the
-height. For example, if you specify -90> and the image size is
-480x640, the image is not rotated by the specified angle. However, if the
-image is 640x480, it is rotated by -90 degrees.
+height. For example, if you specify -rotate "-90>" and the image
+size is 480x640, the image is not rotated.  However, if the
+image is 640x480, it is rotated by -90 degrees.  If you use > or
+<, enclose it in quotation marks to prevent it from being
+misinterpreted as a file redirection.
 
 
 Empty triangles left over from rotating the image are filled with the color

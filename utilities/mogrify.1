@@ -224,19 +224,19 @@ area of an image.
 
 
 The x and y offsets specify the location of the upper left corner of
-the cropping region with respect to the upper left corner of the image.
-If the x offset is negative, it gives the distance leftward from the right edge
+the cropping region measured downward and rightward with respect to the
+upper left corner of the image.
+If the \fP-gravity\fP option is present with \fINorthEast, East,\fP
+or \fISouthEast\fP
+gravity, it gives the distance leftward from the right edge
 of the image to the right edge of the cropping region.  Similarly, if
-the y offset is negative, the distance is measured upward between the bottom
+the \fB-gravity\fP option is present with \fISouthWest, South,\fP
+or \fISouthEast\fP
+gravity, the distance is measured upward between the bottom
 edges.
 
 Omit the x and y offset to generate one or more subimages of a uniform
 size.
-
-
-Use cropping to crop a particular area of an image. Use \fB-crop 0x0\fP
-to trim edges that are the background color. Add an x and y offset to leave
-a portion of the trimmed edges with the image.
 
 .TP
 .B "-cycle \fI<amount>"\fP
@@ -530,6 +530,7 @@ filename is \fIimage.gif\fP, the output image filename becomes
 
 See \fB-geometry\fP for details
 about the geometry specification.
+The \fB-frame\fP option is not affected by the \fB-gravity\fP option.
 
 
 The color of the border is specified with the
@@ -543,7 +544,7 @@ line option.
 A number of algorithms search for a target color. By default the color
 must be exact. Use this option to match colors that are close to the target
 color in RGB space. For example, if you want to automatically trim the
-edges of an image with \fI-crop 0x0\fP but the image was scanned and the
+edges of an image with \fI-trim\fP but the image was scanned and the
 target background color may differ by a small amount. This option can account
 for these differences.
 
@@ -637,6 +638,12 @@ The direction you choose specifies where to position the text when annotating
 the image. For example \fICenter\fP gravity forces the text to be centered
 within the image. By default, the image gravity is \fINorthWest\fP.
 
+
+The \fB-gravity\fP option is also used in concert with the \fB-geometry\fP
+option and other options that take \fB<geometry>\fP as a parameter, such
+as the \fB-crop\fP option.  See \fB-geometry\fP for details of how the
+\fB-gravity\fP option interacts with the 
+\fB<x_offset>\fP and \fB<y_offset>\fP parameters of a geometry specification.
 .TP
 .B "-help"
 \fRprint usage instructions
@@ -876,9 +883,7 @@ page are:
 
 For convenience you can specify the page size by media (e.g. A4, Ledger,
 etc.). Otherwise, \fB-page\fP behaves much like
-\fB-geometry\fP (e.g.
--page
-letter+43+43>).
+\fB-geometry\fP (e.g.  -page letter+43+43>).
 
 
 To position a GIF image, use \fB-page\fP\fI{+-}<x offset>{+-}<y
@@ -892,12 +897,11 @@ relative to the lower left hand corner of the page by
 -page 612x792>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
-Positive \fBx\fP and
-\fBy\fP \fIoffset\fP are measured
-rightward and upward from the bottom left corner of the page, Unlike
-in \fB-geometry\fP, negative offsets are not treated
-specially.  They simply specify leftward and downward distances from the lower
-left hand corner of the page.
+The default gravity for the \fB-page\fP
+option is \fISouthWest\fP, i.e., positive \fBx\fP and
+\fBy\fP \fIoffset\fP are measured rightward and upward from the bottom
+left corner of the page, unless the \fB-gravity\fP option is present with
+a value other than \fISouthWest\fP.
 
 
 The default page dimensions for a TEXT image is 612x792.
@@ -973,6 +977,7 @@ specification.
 This will create a 3-D effect.
 See \fB-geometry\fP for details
 details about the geometry specification.
+Offsets are not used.
 
 
 Use \fB-raise\fP to create a raised effect, otherwise use \fB+raise\fP.
@@ -995,6 +1000,7 @@ option, the specified filter is used.
 
 See \fB-geometry\fP for details
 the geometry specification.
+The offsets are not affected by the \fB-gravity\fP option.
 
 
 A negative \fIx offset\fP rolls the image left-to-right. A negative \fIy
@@ -1006,9 +1012,11 @@ offset\fP rolls the image top-to-bottom.
 
 Use > to rotate the image only if its width exceeds the height.
 < rotates the image \fIonly\fP if its width is less than the
-height. For example, if you specify -90> and the image size is
-480x640, the image is not rotated by the specified angle. However, if the
-image is 640x480, it is rotated by -90 degrees.
+height. For example, if you specify -rotate "-90>" and the image
+size is 480x640, the image is not rotated.  However, if the
+image is 640x480, it is rotated by -90 degrees.  If you use > or
+<, enclose it in quotation marks to prevent it from being
+misinterpreted as a file redirection.
 
 
 Empty triangles left over from rotating the image are filled with the color
@@ -1022,7 +1030,8 @@ for details.
 See \fB-geometry\fP for details about
 the geometry specification.
 \fB-sample\fP ignores the \fB-filter\fP selection if the \fB-filter\fP option
-is present.  Offsets, if present in the geometry string, are ignored.
+is present.  Offsets, if present in the geometry string, are ignored, and
+the \fB-gravity\fP option has no effect.
 
 .TP
 .B "-scale \fI<geometry>"\fP
@@ -1031,7 +1040,8 @@ is present.  Offsets, if present in the geometry string, are ignored.
 See \fB-geometry\fP for details about
 the geometry specification.  \fB-scale\fP uses a simpler, faster algorithm,
 and it ignores the \fB-filter\fP selection if the \fB-filter\fP option
-is present.  Offsets, if present in the geometry string, are ignored.
+is present.  Offsets, if present in the geometry string, are ignored, and
+the \fB-gravity\fP option has no effect.
 
 .TP
 .B "-scene \fI<value{-value}>"\fP
@@ -1196,6 +1206,13 @@ quantize for more details.
 The \fB-colors\fP or \fB-monochrome\fP option is required for this option
 to take effect.
 
+.TP
+.B "-trim"
+\fRtrim an image
+
+This option removes any edges that are exactly the same color as the
+corner pixels.  Use \fB-fuzz\fP to make \fB-trim\fP remove edges that
+are nearly the same color as the corner pixels.
 .TP
 .B "-type \fI<type>"\fP
 \fRthe image type

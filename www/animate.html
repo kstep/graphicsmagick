@@ -413,19 +413,19 @@ area of an image.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The x and y offsets specify the location of the upper left corner of
-the cropping region with respect to the upper left corner of the image.
-If the x offset is negative, it gives the distance leftward from the right edge
+the cropping region measured downward and rightward with respect to the
+upper left corner of the image.
+If the </strong>-gravity</strong> option is present with <em>NorthEast, East,</em>
+or <em>SouthEast</em>
+gravity, it gives the distance leftward from the right edge
 of the image to the right edge of the cropping region.  Similarly, if
-the y offset is negative, the distance is measured upward between the bottom
+the <strong>-gravity</strong> option is present with <em>SouthWest, South,</em>
+or <em>SouthEast</em>
+gravity, the distance is measured upward between the bottom
 edges.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Omit the x and y offset to generate one or more subimages of a uniform
 size.
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use cropping to crop a particular area of an image. Use <strong>-crop 0x0</strong>
-to trim edges that are the background color. Add an x and y offset to leave
-a portion of the trimmed edges with the image.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -633,11 +633,6 @@ Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
 the width is chosen to maintain the aspect ratio. 
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If the <em>x offset</em> is negative, the offset is measured leftward
-from the right edge of the
-image to the right edge of the region being specified.
-Similarly, negative <em>y offset</em> is measured between the bottom edges.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
 dimensions. To increase the size of an image, use a value greater than
@@ -658,6 +653,14 @@ to 640x480.  Enclose the geometry specification in quotation marks to
 prevent the <tt>&gt;</tt> or <tt>&gt;</tt> from being interpreted by your shell
 as a file redirection.
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+When used with <em>animate</em> and <em>display</em>, offsets are handled in
+the same manner as in <em>X(1)&lt;/x&gt; and the <strong>-gravity</strong> option is not used.
+If the <em>x offset</em> is negative, the offset is measured leftward
+from the right edge of the
+screen to the right edge of the image being displayed.
+Similarly, negative <em>y offset</em> is measured between the bottom edges.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -680,6 +683,10 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-iconGeometry">-iconGeometry</a> <i>&lt;geometry&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the icon geometry</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Offsets, if present in the geometry specification, are ignored, and
+the <strong>-gravity</strong> option does not affect the <strong>iconGeometry</strong>
+option.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -838,9 +845,11 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <tt>&gt;</tt> to rotate the image only if its width exceeds the height.
 <tt>&lt;</tt> rotates the image <em>only</em> if its width is less than the
-height. For example, if you specify <tt>-90&gt;</tt> and the image size is
-480x640, the image is not rotated by the specified angle. However, if the
-image is 640x480, it is rotated by -90 degrees.
+height. For example, if you specify <tt>-rotate "-90&gt;"</tt> and the image
+size is 480x640, the image is not rotated.  However, if the
+image is 640x480, it is rotated by -90 degrees.  If you use <tt>&gt;</tt> or
+<tt>&lt;</tt>, enclose it in quotation marks to prevent it from being
+misinterpreted as a file redirection.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Empty triangles left over from rotating the image are filled with the color
@@ -1006,6 +1015,21 @@ Refer to
 The <strong>-colors</strong> or <strong>-monochrome</strong> option is required for this option
 to take effect.
 </font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="-trim">-trim</a>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>trim an image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+This option removes any edges that are exactly the same color as the
+corner pixels.  Use <strong>-fuzz</strong> to make <strong>-trim</strong> remove edges that
+are nearly the same color as the corner pixels.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
