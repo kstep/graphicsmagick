@@ -193,7 +193,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     *jp2_image;
 
   jas_matrix_t
-    *pixels;
+    *pixels[4];
 
   jas_stream_t
     *jp2_stream;
@@ -209,11 +209,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     *jp2_semaphore = (SemaphoreInfo *) NULL;
 
   unsigned int
-    depth,
-    height,
     number_components,
-    status,
-    width;
+    status;
 
   /*
     Open image file.
@@ -262,73 +259,72 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) jas_stream_close(jp2_stream);
   (void) remove(image->filename);
-  number_components=jas_image_numcmpts(jp2_image);
-  for (i=0; i < number_components; i++)
-  {
-    width=jas_image_cmptwidth(jp2_image,i);
-    if (width > image->columns)
-      image->columns=width;
-    height=jas_image_cmptheight(jp2_image,i);
-    if (height > image->rows)
-      image->rows=height;
-    depth=jas_image_cmptprec(jp2_image,i);
-    if (depth <= 8)
-      image->depth=8;
-  }
   /*
     Convert JPEG 2000 pixels.
   */
+  image->columns=jas_image_width(jp2_image);
+  image->rows=jas_image_height(jp2_image);
+  number_components=Min(jas_image_numcmpts(jp2_image),4);
   for (i=0; i < number_components; i++)
   {
-    width=jas_image_cmptwidth(jp2_image,i);
-    height=jas_image_cmptheight(jp2_image,i);
-    pixels=jas_matrix_create(height,width);
-    if (pixels == (jas_matrix_t *) NULL)
-      break;
-    (void) jas_image_readcmpt(jp2_image,i,0,0,width,height,pixels);
-    for (y=0; y < (int) height; y++)
-    {
-      q=GetImagePixels(image,0,y,width,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      for (x=0; x < (int) width; x++)
+    if (jas_image_cmptprec(jp2_image,i) <= 8)
+      image->depth=jas_image_cmptprec(jp2_image,i);
+    pixels[i]=jas_matrix_create(1,image->columns);
+    if (pixels[i] == (jas_matrix_t *) NULL)
       {
+        jas_image_destroy(jp2_image);
+        LiberateSemaphore(&jp2_semaphore);
+        ThrowReaderException(CorruptImageWarning,"Unable to allocate memory",
+          image);
+      }
+  }
+  for (y=0; y < (int) image->rows; y++)
+  {
+    q=GetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (i=0; i < number_components; i++)
+      (void) jas_image_readcmpt(jp2_image,i,0,y,image->columns,1,pixels[i]);
+    for (x=0; x < (int) image->columns; x++)
+    {
+      for (i=0; i < number_components; i++)
         switch (i)
         {
           case 0:
           {
-            q->red=UpScale(jas_matrix_get(pixels,y,x));
+            q->red=UpScale(jas_matrix_getv(pixels[0],x));
             q->green=q->red;
             q->blue=q->red;
             break;
           }
           case 1:
           {
-            q->green=UpScale(jas_matrix_get(pixels,y,x));
+            q->green=UpScale(jas_matrix_getv(pixels[1],x));
             break;
           }
           case 2:
           {
-            q->blue=UpScale(jas_matrix_get(pixels,y,x));
+            q->blue=UpScale(jas_matrix_getv(pixels[2],x));
             break;
           }
           case 3:
           {
-            q->opacity=UpScale(jas_matrix_get(pixels,y,x));
+            q->opacity=UpScale(jas_matrix_getv(pixels[3],x));
             break;
           }
           default:
             break;
         }
-        q++;
-      }
-      if (!SyncImagePixels(image))
-        break;
+      q++;
     }
-    jas_matrix_destroy(pixels);
+    if (!SyncImagePixels(image))
+      break;
     if (image->previous == (Image *) NULL)
-      MagickMonitor(LoadImageText,i,number_components);
+      if (QuantumTick(y,image->rows))
+        MagickMonitor(LoadImageText,y,image->rows);
   }
+  for (i=0; i < number_components; i++)
+    jas_matrix_destroy(pixels[i]);
   jas_image_destroy(jp2_image);
   CloseBlob(image);
   LiberateSemaphore(&jp2_semaphore);
@@ -449,7 +445,8 @@ ModuleExport void UnregisterJP2Image(void)
 static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
   char
-    filename[MaxTextExtent];
+    filename[MaxTextExtent],
+    magick[MaxTextExtent];
 
   int
     format,
@@ -564,7 +561,9 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     if (image->previous == (Image *) NULL)
       MagickMonitor(SaveImageText,i,number_components);
   }
-  format=jas_image_strtofmt(image->magick);
+  (void) strcpy(magick,image->magick);
+  LocaleLower(magick);
+  format=jas_image_strtofmt(magick);
   status=jas_image_encode(jp2_image,jp2_stream,format,0);
   if (status)
     ThrowWriterException(FileOpenWarning,"Unable to encode image file",image);
