@@ -1724,8 +1724,10 @@ int main(int argc,char **argv)
       (void) write(master,command,strlen(command));
       while ((response=Wait()))
       {
-        if ((status == 5) || verbose)
+        if (verbose)
           (void) fprintf(stderr,"%s\n",response);
+        if (status == 5)
+          Error(response,user);
       }
       if (!IsGlob(get_expression) && (localname != (char *) NULL))
         if ((strncmp("UNIX",system_type,4) == 0) ||
@@ -1735,8 +1737,10 @@ int main(int argc,char **argv)
             (void) write(master,command,strlen(command));
             while ((response=Wait()))
             {
-              if ((status == 5) || verbose)
+              if (verbose)
                 (void) fprintf(stderr,"%s\n",response);
+              if (status == 5)
+                Error(response,user);
             }
           }
     }
@@ -1765,8 +1769,10 @@ int main(int argc,char **argv)
         (void) write(master,command,strlen(command));
         while ((response=Wait()))
         {
-          if ((status == 5) || verbose)
+          if (verbose)
             (void) fprintf(stderr,"%s\n",response);
+          if (status == 5)
+            Error(response,user);
         }
         if (!IsGlob(put_expression) && (remotename != (char *) NULL))
           {
@@ -1778,8 +1784,10 @@ int main(int argc,char **argv)
                 (void) write(master,command,strlen(command));
                 while ((response=Wait()))
                 {
-                  if ((status == 5) || verbose)
+                  if (verbose)
                     (void) fprintf(stderr,"%s\n",response);
+                  if (status == 5)
+                    Error(response,user);
                 }
               }
           }
