@@ -158,7 +158,7 @@ dib_la_LIBADD       = $(LIBMAGICK)
 # DPS module
 dps_la_SOURCES      = dps.c
 dps_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-dps_la_LIBADD       = $(LIBMAGICK) @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@
+dps_la_LIBADD       = $(LIBMAGICK) @LIB_DPS@ @LIB_XEXT@ @LIB_X11@
 
 # DPX module
 dpx_la_SOURCES      = dpx.c

@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1137 2002/10/15 22:50:58)"
+TIMESTAMP=" (1.1148 2002/10/28 15:38:37)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -113,6 +113,40 @@ show_help=
 execute_dlfiles=
 lo2o="s/\\.lo\$/.${objext}/"
 o2lo="s/\\.${objext}\$/.lo/"
+
+#####################################
+# Shell function definitions:
+# This seems to be the best place for them
+
+# Need a lot of goo to handle *both* DLLs and import libs
+# Has to be a shell function in order to 'eat' the argument 
+# that is supplied when $file_magic_command is called.
+win32_libid () {
+  win32_libid_type="unknown"
+  if eval $OBJDUMP -f $1 2>/dev/null | \
+     grep -E 'file format pei+-i386(.*architecture: i386)?' >/dev/null ; then
+    win32_libid_type="x86 DLL"
+  else
+    if eval $OBJDUMP -f $1 2>/dev/null | \
+      grep -E 'file format pei*-i386(.*architecture: i386)?' >/dev/null ; then
+      win32_libid_type="x86"
+      if eval file $1 2>/dev/null | \
+         grep -E 'ar archive' >/dev/null; then
+        win32_libid_type="$win32_libid_type archive"
+        if eval $NM -f posix -A $1 | awk '{print $3}' | grep "I" >/dev/null ; then
+          win32_libid_type="$win32_libid_type import"
+        else
+          win32_libid_type="$win32_libid_type static"
+        fi
+      fi
+    fi
+  fi
+  echo $win32_libid_type
+}
+
+# End of Shell function definitions
+#####################################
+
 
 # Parse our command line options once, thoroughly.
 while test "$#" -gt 0
@@ -269,7 +303,7 @@ if test -z "$show_help"; then
   # Infer the operation mode.
   if test -z "$mode"; then
     case $nonopt in
-    *cc | *++ | gcc* | *-gcc*)
+    *cc | cc* | *++ | gcc* | *-gcc* | g++* | xlc*)
       mode=link
       for arg
       do
@@ -1089,6 +1123,14 @@ EOF
 	  finalize_command="$finalize_command $wl$qarg"
 	  continue
 	  ;;
+	xcclinker)
+	  linker_flags="$linker_flags $qarg"
+	  compiler_flags="$compiler_flags $qarg"
+	  prev=
+	  compile_command="$compile_command $qarg"
+	  finalize_command="$finalize_command $qarg"
+	  continue
+	  ;;
 	*)
 	  eval "$prev=\"\$arg\""
 	  prev=
@@ -1223,19 +1265,6 @@ EOF
 	continue
 	;;
 
-      # Pass -m32 and -m64 to gcc for SPARC Solaris targets to
-      # control 32/64 bit linkage.
-      -m32 | -m64)
-        case $with_gcc/$host in
-        yes/sparc-sun-solaris2*)
-          compile_command="$compile_command $arg"
-          finalize_command="$finalize_command $arg"
-          compiler_flags="$compiler_flags $arg"
-          ;;
-        esac
-        continue
-        ;;
-
       -module)
 	module=yes
 	continue
@@ -1367,6 +1396,11 @@ EOF
 
       -Xlinker)
 	prev=xlinker
+	continue
+	;;
+
+      -XCClinker)
+	prev=xcclinker
 	continue
 	;;
 
@@ -2671,7 +2705,7 @@ EOF
 	  ;;
 
 	irix | nonstopux)
-	  major=`expr $current - $age + 1`
+	  major=`expr $current - $age`
 
 	  case $version_type in
 	    nonstopux) verstring_prefix=nonstopux ;;
