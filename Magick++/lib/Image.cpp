@@ -438,6 +438,17 @@ void Magick::Image::colorize ( const unsigned int opacity_,
   colorize( opacity_, opacity_, opacity_, penColor_ );
 }
 
+// Compare current image with another image
+// Sets meanErrorPerPixel, normalizedMaxError, and normalizedMeanError
+// in the current image. False is returned if the images are identical.
+bool Magick::Image::compare ( const Image &reference_ )
+{
+  modifyImage();
+  Image ref = reference_;
+  ref.modifyImage();
+  return static_cast<bool>(IsImagesEqual(image(), ref.image()));
+}
+
 // Composite two images
 void Magick::Image::composite ( const Image &compositeImage_,
 				const int xOffset_,

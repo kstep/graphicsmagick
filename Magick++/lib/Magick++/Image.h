@@ -180,7 +180,12 @@ namespace Magick
     
     // Comment image (add comment string to image)
     void            comment ( const std::string &comment_ );
-    
+
+    // Compare current image with another image
+    // Sets meanErrorPerPixel, normalizedMaxError, and normalizedMeanError
+    // in the current image. False is returned if the images are identical.
+    bool            compare ( const Image &reference_ );
+
     // Compose an image onto another at specified offset and using
     // specified algorithm
     void            composite ( const Image &compositeImage_,
@@ -512,6 +517,13 @@ namespace Magick
     
     // Trim edges that are the background color from the image
     void            trim ( void );
+
+    // Image representation type (also see type attribute)
+    //   Available types:
+    //    Bilevel        Grayscale       GrayscaleMatte
+    //    Palette        PaletteMatte    TrueColor
+    //    TrueColorMatte ColorSeparation ColorSeparationMatte
+    void            type ( const ImageType type_ );
 
     // Replace image with a sharpened version of the original image
     // using the unsharp mask algorithm.
@@ -960,13 +972,12 @@ namespace Magick
     // Skew to use in Y axis when annotating with text or drawing
     void            transformSkewY ( const double skewy_ );
 
-    // Image representation type.
+    // Image representation type (also see type operation)
     //   Available types:
     //    Bilevel        Grayscale       GrayscaleMatte
     //    Palette        PaletteMatte    TrueColor
     //    TrueColorMatte ColorSeparation ColorSeparationMatte
     ImageType       type ( void ) const;
-    void            type ( const ImageType type_ );
 
     // Print detailed information about the image
     void            verbose ( const bool verboseFlag_ );

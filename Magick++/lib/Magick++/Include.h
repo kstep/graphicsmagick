@@ -568,6 +568,7 @@ namespace Magick
   using MagickLib::ImageToBlob;
   using MagickLib::ImplodeImage;
   using MagickLib::IsGeometry;
+  using MagickLib::IsImagesEqual;
   using MagickLib::IsSubimage;
   using MagickLib::LessValue;
   using MagickLib::LiberateMemory;

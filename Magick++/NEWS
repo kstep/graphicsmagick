@@ -1,11 +1,18 @@
 This file records noteworthy changes in Magick++.
 
+(5.4.9)
+  * Added the Image textEncoding() method and an encoding option to
+    DrawableText to support specifying "UTF-8" (Unicode) text encoding.
+  * Added the Image compare() method to support comparing two similar
+    images and obtaining error values.
+  * Magick++ compiles as a DLL under Visual C++ 7.0.
+
 (5.4.8)
   * The image type() method now also specifies the output image type
     to use while writing.
   * Added a profile() method to Image to support adding, removing,
     and retrieving named embedded application profiles.
-  * Magick++ is built as a DLL under Windows.
+  * Magick++ compiles as a DLL under Visual C++ 6.0.
 
 (5.4.7)
   * No changes to report.
