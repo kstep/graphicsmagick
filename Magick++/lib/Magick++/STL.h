@@ -1642,7 +1642,6 @@ namespace Magick
 
 	current->previous = previous;
 	current->next     = 0;
-	current->orphan   = static_cast<int>(false); // In a list
 
 	if ( previous != 0)
 	  previous->next = current;
@@ -1665,7 +1664,6 @@ namespace Magick
 	MagickLib::Image* image = iter->image();
 	image->previous = 0;
 	image->next = 0;
-	image->orphan = static_cast<int>(true); // Stand-alone
       }
   }
 
