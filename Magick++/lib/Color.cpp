@@ -38,25 +38,23 @@ int Magick::operator >  ( const Magick::Color& left_,
   return ( !( left_ < right_ ) && ( left_ != right_ ) );
 }
 // Compare color intensities (similar to ImageMagick Intensity macro)
+// If intensities match, discriminate based on priority green, red,
+// & then blue.
 int Magick::operator <  ( const Magick::Color& left_,
 			  const Magick::Color& right_ )
 {
+  double left_intensity=left_.intensity();
+  double right_intensity=right_.intensity();
   return (
-	  (
-	   static_cast<unsigned int>
-	   ( left_.redQuantum()   * 77 +
-	     left_.greenQuantum() * 150 +
-	     left_.blueQuantum()  * 29
-	     ) >> 8
-	   )
-	  <
-	  (
-	   static_cast<unsigned int>
-	   ( right_.redQuantum()   * 77 +
-	     right_.greenQuantum() * 150 +
-	     right_.blueQuantum()  * 29
-	     ) >> 8
-	   )
+          (left_intensity < right_intensity)
+          || (
+              (left_intensity == right_intensity)
+              && (
+                  (left_.greenQuantum() < right_.greenQuantum()) ||
+                  (left_.redQuantum() < right_.redQuantum()) ||
+                  (left_.blueQuantum() < right_.blueQuantum())
+                  )
+              )
 	  );
 }
 int Magick::operator >= ( const Magick::Color& left_,

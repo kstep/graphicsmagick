@@ -1,3 +1,18 @@
+2003-09-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/Makefile.am: Add build support for colorHistogram.cpp.
+	* tests/colorHistogram.cpp: New test program to test retrieving
+	color histograms from the image using colorHistogram().
+	* lib/Magick++/STL.h (colorHistogram): Added new template function
+	to retrieve a color histogram into a user-provided container.
+	Verified to work when using STL <vector> and <map> as the target
+	container types.  When <map> is used, a user-specified color may
+	be used to perform lookups in the map to obtain the usage count for
+	that color.
+	* lib/Color.cpp (operator >=): Insufficient resolution was being
+	provided in order to reliably sort color objects in STL
+	containers.  The updated algorithm should be fail-safe.
+
 2003-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (channelDepth): New method to set or get the

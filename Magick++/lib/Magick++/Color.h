@@ -88,6 +88,12 @@ namespace Magick
     // Public methods beyond this point are for Magick++ use only.
     //
 
+    // Obtain pixel intensity as a double
+    double intensity ( void ) const
+      {
+        return (0.299*(_pixel->red)+0.587*(_pixel->green)+0.114*(_pixel->blue));
+      }
+
     // Scale a value expressed as a double (0-1) to Quantum range (0-MaxRGB)
     static Quantum scaleDoubleToQuantum( const double double_ )
       {

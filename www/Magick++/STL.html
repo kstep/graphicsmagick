@@ -21,10 +21,10 @@ Template Libary</a> (<a href="http://www.sgi.com/tech/stl/">STL</a> )
 algorithms for operating across ranges of image frames in a container.
 It also provides a set of STL unary function objects to apply an
 operation on image frames in a container via an algorithm which uses
-unary function objects. A good example of a standard algorithm which
-is useful for processing containers of image frames is the STL <i><a
+unary function objects. A good example of a standard algorithm which is
+useful for processing containers of image frames is the STL <i><a
  href="http://www.sgi.com/tech/stl/for_each.html"> for_each</a> </i>
-algorithm which invokes a unary function object on a range of container 
+algorithm which invokes a unary function object on a range of container
 elements.
 <p>Magick++ uses a limited set of template argument types. The current
 template argument types are: </p>
@@ -38,23 +38,22 @@ via push_back(). Common compatable container types are the STL &lt;<a
  href="http://www.sgi.com/tech/stl/List.html">list</a> &gt; template
 containers. This template argument is usually used to represent an
 output container in which one or more image frames may be appended.
-Containers  like STL &lt;<a
- href="http://www.sgi.com/tech/stl/Vector.html">vector</a> &gt; which
-have a given default <i>capacity</i> may need to have their <i> capacity</i>
-adjusted via r<i>eserve() </i>to a larger <i>capacity</i> in order to
-support the expected final <i>size</i> . Since Magick++ images are
-very small, it is likely that the default capacity of STL &lt;<a
- href="http://www.sgi.com/tech/stl/Vector.html"> vector</a> &gt; is
+Containers like STL &lt;<a href="http://www.sgi.com/tech/stl/Vector.html">vector</a>
+&gt; which have a given default <i>capacity</i> may need to have their <i>
+capacity</i> adjusted via r<i>eserve() </i>to a larger <i>capacity</i>
+in order to support the expected final <i>size</i> . Since Magick++
+images are very small, it is likely that the default capacity of STL
+&lt;<a href="http://www.sgi.com/tech/stl/Vector.html"> vector</a> &gt; is
 sufficient for most situations.</blockquote>
   <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
   <blockquote>An input iterator used to express a position in a
-container.  These template arguments are typically used to represent a
+container. These template arguments are typically used to represent a
 range of elements  with f<i>irst_</i> representing the first element to
 be processed and <i> last_</i> representing the element to stop at. When
-processing the entire contents of a container, it is handy to know
-that STL containers usually provide the begin() and end() methods to
-return input interators which correspond  with the first and last
-elements, respectively.</blockquote>
+processing the entire contents of a container, it is handy to know that
+STL containers usually provide the begin() and end() methods to return
+input interators which correspond  with the first and last elements,
+respectively.</blockquote>
 </blockquote>
 The following is an example of how frames from a GIF animation <font
  color="#000000"> "test_image_anim.gif" may be appended horizontally
@@ -69,10 +68,10 @@ with the resulting image written to the file "appended_image.miff":</font>
 <tt><font color="#000066">&nbsp;&nbsp; readImages( &amp;imageList,
 "test_image_anim.gif" );</font></tt> </p>
 <p><tt><font color="#000066">&nbsp;&nbsp; Image appended;</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp; appendImages( &amp;appended, 
+<tt><font color="#000066">&nbsp;&nbsp; appendImages( &amp;appended,
 imageList.begin(), imageList.end() );</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp; appended.write(
-"appended_image.miff"  );</font></tt> <br>
+"appended_image.miff" );</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp; return 0;</font></tt> <br>
 <tt><font color="#000066">}</font></tt> </p>
 <p>The available Magick++ specific STL algorithms for operating on
@@ -101,8 +100,8 @@ first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</
 last_</font></td>
       <td><font size="-1">Animate a sequence of image frames. Image
 frames are  displayed in succession, creating an animated effect. The
-animation options  are taken from the first image frame. This feature
-is only supported under  X11 at the moment.</font></td>
+animation options  are taken from the first image frame. This feature is
+only supported under  X11 at the moment.</font></td>
     </tr>
     <tr>
       <td>
@@ -150,8 +149,8 @@ methods) to create a new image sequence in which all frames are full
 size and completely rendered. Note that if the original image sequence
 relied on page offsets and disposal methods that the resulting sequence
 will be larger (perhaps much larger) then the original. This is useful
-for GIF animation sequences that have page offsets and disposal
-methods. The resuting image sequence is returned via <i>coalescedImages_.</i></font></td>
+for GIF animation sequences that have page offsets and disposal methods.
+The resuting image sequence is returned via <i>coalescedImages_.</i></font></td>
     </tr>
     <tr>
       <td>
@@ -164,8 +163,8 @@ methods. The resuting image sequence is returned via <i>coalescedImages_.</i></f
 first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
 last_</font></td>
       <td><font size="-1">Break down an image sequence into constituent
-parts.&nbsp;  This is useful for creating GIF or MNG animation
-sequences. The input sequence  is specified by <i>first_</i> and <i>last_</i>,
+parts.&nbsp; This is useful for creating GIF or MNG animation sequences.
+The input sequence  is specified by <i>first_</i> and <i>last_</i>,
 and the deconstruted images  are returned via <i>deconstructedImages_</i>.</font></td>
     </tr>
     <tr>
@@ -182,8 +181,8 @@ feature is  fully supported under X11 but may have only limited support
 in other environments.</font> <br>
       <font size="-1"><b><font color="#ff0000">Caution: </font></b> if
 an image format is is not compatable with the display visual (e.g. JPEG
-on a colormapped display) then the original image will be altered. Use
-a copy of the original if this is a problem.</font></td>
+on a colormapped display) then the original image will be altered. Use a
+copy of the original if this is a problem.</font></td>
     </tr>
     <tr>
       <td>
@@ -197,7 +196,7 @@ last_</font></td>
       <td><font size="-1">Merge a sequence of image frames which
 represent image  layers into a single composited representation. The <i>flattendImage_</i>
 parameter points to an existing Image to update with the flattened
-image.  This function is useful for combining Photoshop layers into a
+image. This function is useful for combining Photoshop layers into a
 single image.</font></td>
     </tr>
     <tr>
@@ -225,7 +224,7 @@ order to evaluate quantization error.</font></td>
 first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
 last_, const <a href="Montage.html">Montage</a> &amp;montageOpts_</font></td>
       <td><font size="-1">Create a composite image by combining several
-separate  image frames. Multiple frames may be generated in the output
+separate image frames. Multiple frames may be generated in the output
 container <i> montageImages_ </i>depending on the tile setting and the
 number of image frames montaged. Montage options are provided via the
 parameter <i>montageOpts_</i> . Options set in the first image frame (<a
@@ -247,7 +246,7 @@ as options by <i>montageImages().</i></font></td>
 first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
 last_, unsigned int frames_</font></td>
       <td><font size="-1">Morph a seqence of image frames. This
-algorithm&nbsp;  expands the number of image frames (output to the
+algorithm&nbsp; expands the number of image frames (output to the
 container <i>morphedImages_)</i> by adding the number of intervening
 frames specified by <i>frames_</i> such that the original frames morph
 (blend) into each other when played as an animation.</font></td>
@@ -273,7 +272,7 @@ through <i>last_</i> .</font></td>
  href="http://www.sgi.com/tech/stl/Container.html"> Container</a>
 *sequence_, const std::string &amp;imageSpec_</font></td>
       <td><font size="-1">Read a sequence of image frames into existing
-container  (appending to container <i>sequence_</i>) with image names
+container (appending to container <i>sequence_</i>) with image names
 specified in the string <i>imageSpec_</i>.</font></td>
     </tr>
     <tr>
@@ -281,7 +280,7 @@ specified in the string <i>imageSpec_</i>.</font></td>
  href="http://www.sgi.com/tech/stl/Container.html"> Container</a>
 *sequence_, const <a href="Blob.html">Blob</a> &amp;blob_</font></td>
       <td><font size="-1">Read a sequence of image frames into existing
-container  (appending to container sequence_) from <a href="Blob.html">Blob</a>
+container (appending to container sequence_) from <a href="Blob.html">Blob</a>
 blob_.</font></td>
     </tr>
     <tr>
@@ -293,15 +292,15 @@ blob_.</font></td>
 first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
 last_, const std::string &amp;imageSpec_, bool adjoin_ = true</font></td>
       <td><font size="-1">Write images in container to file specified
-by string <i>imageSpec_</i>. Set <i>adjoin_ </i>to
-false to write a set of image frames via a wildcard <i>imageSpec_ </i>(e.g.
+by string <i>imageSpec_</i>. Set <i>adjoin_ </i>to false to write a
+set of image frames via a wildcard <i>imageSpec_ </i>(e.g.
 image%02d.miff).</font> <br>
 The wildcard must be one of <tt>%0Nd, %0No, or %0Nx</tt>. <br>
       <font size="-1"><b><font color="#ff0000">Caution: </font></b> if
 an image format is selected which is capable of supporting fewer colors
-than the original image or quantization has been requested, the
-original image will be quantized to fewer colors. Use a copy of the
-original if this is a problem.</font></td>
+than the original image or quantization has been requested, the original
+image will be quantized to fewer colors. Use a copy of the original if
+this is a problem.</font></td>
     </tr>
     <tr>
       <td><font size="-1"><a
@@ -309,8 +308,8 @@ original if this is a problem.</font></td>
 first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
 last_, <a href="Blob.html">Blob</a> *blob_, bool adjoin_ = true</font></td>
       <td><font size="-1">Write images in container to in-memory BLOB
-specified  by <a href="Blob.html">Blob</a> blob_. Set adjoin_ to false
-to write a set of image frames via a wildcard imageSpec_ (e.g.
+specified by <a href="Blob.html">Blob</a> blob_. Set adjoin_ to false to
+write a set of image frames via a wildcard imageSpec_ (e.g.
 image%02d.miff).</font> <br>
       <font size="-1"><b><font color="#ff0000">Caution:</font></b> if an
 image format is selected which is capable of supporting fewer colors
@@ -325,8 +324,8 @@ this is a problem.</font></td>
 first_, <a href="http://www.sgi.com/tech/stl/InputIterator.html">InputIterator</a>
 last_, bool measureError_ = false</font></td>
       <td><font size="-1">Quantize colors in images using current
-quantization  settings. Set <i>measureError_</i> to <i>true</i> in
-order to measure quantization  error.</font></td>
+quantization settings. Set <i>measureError_</i> to <i>true</i> in order
+to measure quantization  error.</font></td>
     </tr>
   </tbody>
 </table>
@@ -336,17 +335,17 @@ order to measure quantization  error.</font></td>
 <h3> Magick++ Unary Function Objects</h3>
 </center>
 Magick++ unary function objects inherit from the STL unary_function
-template  class . The STL unary_function template class is of the form 
+template class . The STL unary_function template class is of the form
 <blockquote><tt><font color="#000099">unary_function&lt;Arg, Result&gt;</font></tt></blockquote>
-and expects that derived classes implement a method of the form: 
-<blockquote><tt><font color="#000099">Result operator()( Arg argument_ 
+and expects that derived classes implement a method of the form:
+<blockquote><tt><font color="#000099">Result operator()( Arg argument_
 );</font></tt></blockquote>
 which is invoked by algorithms using the function object. In the case
-of  unary function objects defined by Magick++, the invoked function
+of unary function objects defined by Magick++, the invoked function
 looks like:
 <blockquote><tt><font color="#000099">void operator()( Image
 &amp;image_);</font></tt></blockquote>
-with a typical implementation looking similar to:        
+with a typical implementation looking similar to:
 <blockquote><tt><font color="#000099">void operator()( Image
 &amp;image_ )</font></tt> <br>
   <tt><font color="#000099">&nbsp; {</font></tt> <br>
@@ -354,17 +353,16 @@ with a typical implementation looking similar to:
 _sharpen );</font></tt> <br>
   <tt><font color="#000099">&nbsp; }</font></tt></blockquote>
 where <i>contrast</i> is an Image method and <i>_sharpen </i>is an
-argument  stored within the function object by its contructor. Since
+argument stored within the function object by its contructor. Since
 constructors may be polymorphic, a given function object may have
 several constructors and selects the appropriate Image method based on
 the arguments supplied.
 <p>In essence, unary function objects (as provided by Magick++) simply
 provide the means to construct an object which caches arguments for
 later use by an algorithm designed for use with unary function objects.
-There  is a unary function object corresponding each algorithm provided
-by the <a href="Image.html"> Image</a> class and there is
-a contructor available compatable with each synonymous  method in the
-Image class. </p>
+There is a unary function object corresponding each algorithm provided
+by the <a href="Image.html"> Image</a> class and there is a contructor
+available compatable with each synonymous  method in the Image class. </p>
 <p>The unary function objects that Magick++ provides to support
 manipulating images are shown in the following table: <br>
 &nbsp;
@@ -386,13 +384,13 @@ int height, unsigned offset = 0</font><br>
       </td>
       <td valign="top"><font size="-1">Apply adaptive thresholding to
 the image. Adaptive thresholding is useful if the ideal threshold level
-is not known in advance, or if the illumination gradient is not
-constant across the image. Adaptive thresholding works by evaulating
-the mean (average) of a pixel region (size specified by <i>width</i>
-and <i>height</i>) and using the mean as the thresholding value. In
-order to remove residual noise from the background, the threshold may
-be adjusted by subtracting a constant <i>offset</i>
-(default zero) from the mean to compute the threshold.</font><br>
+is not known in advance, or if the illumination gradient is not constant
+across the image. Adaptive thresholding works by evaulating the mean
+(average) of a pixel region (size specified by <i>width</i> and <i>height</i>)
+and using the mean as the thresholding value. In order to remove
+residual noise from the background, the threshold may be adjusted by
+subtracting a constant <i>offset</i> (default zero) from the mean to
+compute the threshold.</font><br>
       </td>
     </tr>
     <tr>
@@ -474,8 +472,8 @@ color of the border is specified by the <i>borderColor</i> attribute.</font></td
       <td><font size="-1">const double radius_ = 1, const double sigma_
 = 0.5</font></td>
       <td><font size="-1">Charcoal effect image (looks like charcoal
-sketch). The radius_ parameter specifies the radius of the Gaussian,
-in pixels, not  counting the center pixel.&nbsp; The sigma_ parameter
+sketch). The radius_ parameter specifies the radius of the Gaussian, in
+pixels, not  counting the center pixel.&nbsp; The sigma_ parameter
 specifies the standard  deviation of the Laplacian, in pixels.</font></td>
     </tr>
     <tr>
@@ -492,8 +490,8 @@ subregion of image)</font></td>
       <center><a name="colorizeImage"></a> <font size="-1">colorizeImage</font></center>
       </td>
       <td><font size="-1">const unsigned int opacityRed_, const
-unsigned int opacityGreen_, const unsigned int opacityBlue_, const
-Color &amp;penColor_</font></td>
+unsigned int opacityGreen_, const unsigned int opacityBlue_, const Color
+&amp;penColor_</font></td>
       <td><font size="-1">Colorize image with pen color, using
 specified percent  opacity for red, green, and blue quantums.</font></td>
     </tr>
@@ -511,8 +509,8 @@ specified percent  opacity.</font></td>
       <td><font size="-1">Comment image (add comment string to
 image).&nbsp; By default, each image is commented with its file name.
 Use&nbsp; this&nbsp;  method to&nbsp; assign a specific comment to the
-image.&nbsp; Optionally you can include the image filename, type,
-width, height, or other&nbsp; image&nbsp; attributes by embedding <a
+image.&nbsp; Optionally you can include the image filename, type, width,
+height, or other&nbsp; image&nbsp; attributes by embedding <a
  href="FormatCharacters.html">special format characters.</a> </font></td>
     </tr>
     <tr>
@@ -524,7 +522,7 @@ width, height, or other&nbsp; image&nbsp; attributes by embedding <a
  href="Enumerations.html#CompositeOperator"> CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
       <td rowspan="2"><font size="-1">Compose an image onto another at
-specified  offset and using specified algorithm</font></td>
+specified offset and using specified algorithm</font></td>
     </tr>
     <tr>
       <td><font size="-1">const <a href="Image.html">Image</a>
@@ -583,9 +581,9 @@ in image)</font></td>
       <td><font size="-1">const std::list&lt;<a href="Drawable.html">Drawable</a>
 &gt; &amp;drawable_</font></td>
       <td><font size="-1">Draw shapes or text on image using a set of
-Drawable  objects contained in an STL list. Use of this method improves
-drawing performance  and allows batching draw objects together in a
-list for repeated use.</font></td>
+Drawable objects contained in an STL list. Use of this method improves
+drawing performance  and allows batching draw objects together in a list
+for repeated use.</font></td>
     </tr>
     <tr>
       <td>
@@ -674,9 +672,9 @@ target pixel. Uses  current fuzz setting when determining color match.</font></t
     </tr>
     <tr>
       <td><font size="-1">unsigned int x_, unsigned int y_, const Image
-&amp;texture_,  const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
+&amp;texture_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill texture across pixels
-starting  at target-pixel and stopping at pixels matching specified
+starting at target-pixel and stopping at pixels matching specified
 border color. Uses current fuzz setting when determining color match.</font></td>
     </tr>
     <tr>
@@ -742,14 +740,13 @@ specified by 'sigma_'.</font></td>
       </td>
       <td><font size="-1">const string &amp;label_</font></td>
       <td><font size="-1">Assign a label to an image. Use this option
-to&nbsp;  assign&nbsp; a&nbsp; specific label to the image. Optionally
+to&nbsp; assign&nbsp; a&nbsp; specific label to the image. Optionally
 you can include  the image filename, type, width, height, or scene
-number in the label by embedding&nbsp; <a
- href="FormatCharacters.html">special format characters.</a> If the
-first character of string is @, the image label is read from a file 
-titled by the remaining characters in the string. When converting to
-Postscript,  use this&nbsp; option to specify a header string to print
-above the image.</font></td>
+number in the label by embedding&nbsp; <a href="FormatCharacters.html">special
+format characters.</a> If the first character of string is @, the image
+label is read from a file titled by the remaining characters in the
+string. When converting to Postscript,  use this&nbsp; option to
+specify a header string to print above the image.</font></td>
     </tr>
     <tr>
       <td>
@@ -758,7 +755,7 @@ above the image.</font></td>
       <td><font size="-1"><a href="Enumerations.html#ChannelType">ChannelType</a>
 layer_</font></td>
       <td><font size="-1">Extract layer from image. Use this option to
-extract  a particular layer from&nbsp; the image.&nbsp; <i>MatteLayer</i>,&nbsp;
+extract a particular layer from&nbsp; the image.&nbsp; <i>MatteLayer</i>,&nbsp;
 for&nbsp; example, is useful for extracting the opacity values from an
 image.</font></td>
     </tr>
@@ -776,12 +773,12 @@ image.</font></td>
       <td><font size="-1">const <a href="Image.html">Image</a>
 &amp;mapImage_ , bool dither_ = false</font></td>
       <td><font size="-1">Remap image colors with closest color from
-reference  image. Set dither_ to <i>true</i> in to apply
-Floyd/Steinberg error diffusion  to the image. By default, color
-reduction chooses an optimal&nbsp; set&nbsp;  of colors that best
-represent the original image. Alternatively, you can&nbsp; 
-choose&nbsp; a&nbsp; particular&nbsp; set&nbsp; of colors&nbsp;
-from&nbsp;  an image file with this option.</font></td>
+reference image. Set dither_ to <i>true</i> in to apply Floyd/Steinberg
+error diffusion  to the image. By default, color reduction chooses an
+optimal&nbsp; set&nbsp;  of colors that best represent the original
+image. Alternatively, you can&nbsp; choose&nbsp; a&nbsp;
+particular&nbsp; set&nbsp; of colors&nbsp; from&nbsp;  an image file
+with this option.</font></td>
     </tr>
     <tr>
       <td>
@@ -821,9 +818,9 @@ brightness of an image</font></td>
       </td>
       <td><font size="-1">bool grayscale_ = false</font></td>
       <td><font size="-1">Negate colors in image.&nbsp; Replace every
-pixel with  its complementary color (white becomes black, yellow
-becomes blue, etc.).&nbsp;  Set grayscale to only negate grayscale
-values in image.</font></td>
+pixel with  its complementary color (white becomes black, yellow becomes
+blue, etc.).&nbsp;  Set grayscale to only negate grayscale values in
+image.</font></td>
     </tr>
     <tr>
       <td>
@@ -846,11 +843,11 @@ normalizing the  pixel values to span the full range of color values).</font></t
       </td>
       <td><font size="-1">unsigned int opacity_</font></td>
       <td><font size="-1">Set or attenuate the opacity channel in the
-image. If the image pixels are opaque then they are set to the
-specified opacity  value, otherwise they are blended with the supplied
-opacity value.&nbsp; The value of opacity_ ranges from 0 (completely
-opaque) to <i>MaxRGB</i>. The defines <i>OpaqueOpacity</i> and <i>TransparentOpacity</i>
-are available to specify completely opaque or completely transparent,
+image. If the image pixels are opaque then they are set to the specified
+opacity  value, otherwise they are blended with the supplied opacity
+value.&nbsp; The value of opacity_ ranges from 0 (completely opaque) to <i>MaxRGB</i>.
+The defines <i>OpaqueOpacity</i> and <i>TransparentOpacity</i> are
+available to specify completely opaque or completely transparent,
 respectively.</font></td>
     </tr>
     <tr>
@@ -868,7 +865,7 @@ to specified  penColor_.</font></td>
       </td>
       <td><font size="-1">bool measureError_ = false</font></td>
       <td><font size="-1">Quantize image (reduce number of colors). Set
-measureError_  to true in order to calculate error attributes.</font></td>
+measureError_ to true in order to calculate error attributes.</font></td>
     </tr>
     <tr>
       <td>
@@ -897,7 +894,7 @@ noise peak  elimination filter.</font></td>
       </td>
       <td><font size="-1">int columns_, int rows_</font></td>
       <td><font size="-1">Roll image (rolls image vertically and
-horizontally)  by specified number of columnms and rows)</font></td>
+horizontally) by specified number of columnms and rows)</font></td>
     </tr>
     <tr>
       <td>
@@ -933,8 +930,8 @@ number of degrees</font></td>
 by analyzing  the histograms of the color components and identifying
 units that are homogeneous  with the fuzzy c-means technique. Also uses <i>quantizeColorSpace</i>
 and <i>verbose</i> image attributes. Specify <i>clusterThreshold_</i> ,
-as the number&nbsp; of&nbsp; pixels&nbsp; each cluster&nbsp; must
-exceed the cluster threshold to be considered valid. <i>SmoothingThreshold_</i>
+as the number&nbsp; of&nbsp; pixels&nbsp; each cluster&nbsp; must exceed
+the cluster threshold to be considered valid. <i>SmoothingThreshold_</i>
 eliminates noise in the&nbsp; second derivative of the histogram. As the
 value is&nbsp; increased, you can&nbsp; expect&nbsp; a&nbsp; smoother
 second derivative.&nbsp; The default is 1.5.</font></td>
@@ -948,8 +945,8 @@ second derivative.&nbsp; The default is 1.5.</font></td>
       <td><font size="-1">Shade image using distant light source.
 Specify <i> azimuth_</i> and <i>elevation_</i> as the&nbsp;
 position&nbsp; of&nbsp; the light source. By default, the shading
-results as a grayscale image.. Set c<i>olorShading_</i> to <i>true</i>
-to shade the red, green, and blue components of the image.</font></td>
+results as a grayscale image.. Set c<i>olorShading_</i> to <i>true</i> to
+shade the red, green, and blue components of the image.</font></td>
     </tr>
     <tr>
       <td>
@@ -958,9 +955,9 @@ to shade the red, green, and blue components of the image.</font></td>
       <td><font size="-1">const double radius_ = 1, const double sigma_
 = 0.5</font></td>
       <td><font size="-1">Sharpen pixels in image. The radius_
-parameter specifies  the radius of the Gaussian, in pixels, not
-counting the center pixel.&nbsp;  The sigma_ parameter specifies the
-standard deviation of the Laplacian, in pixels.</font></td>
+parameter specifies  the radius of the Gaussian, in pixels, not counting
+the center pixel.&nbsp;  The sigma_ parameter specifies the standard
+deviation of the Laplacian, in pixels.</font></td>
     </tr>
     <tr>
       <td>
@@ -976,16 +973,16 @@ standard deviation of the Laplacian, in pixels.</font></td>
       </td>
       <td><font size="-1">double xShearAngle_, double yShearAngle_</font></td>
       <td><font size="-1">Shear image (create parallelogram by sliding
-image by X or Y axis).&nbsp; Shearing slides one edge of an image
-along the X&nbsp;  or&nbsp; Y axis,&nbsp; creating&nbsp; a
+image by X or Y axis).&nbsp; Shearing slides one edge of an image along
+the X&nbsp;  or&nbsp; Y axis,&nbsp; creating&nbsp; a
 parallelogram.&nbsp; An X direction  shear slides an edge along the X
-axis, while&nbsp; a&nbsp; Y&nbsp; direction  shear&nbsp; slides&nbsp;
-an edge along the Y axis.&nbsp; The amount of the shear is controlled
-by a shear angle.&nbsp; For X direction&nbsp; shears,&nbsp;  x&nbsp;
-degrees is measured relative to the Y axis, and similarly, for Y
-direction shears&nbsp; y&nbsp; degrees is measured relative to the X
-axis. Empty triangles left over from shearing the&nbsp; image&nbsp;
-are filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.&nbsp;</font></td>
+axis, while&nbsp; a&nbsp; Y&nbsp; direction  shear&nbsp; slides&nbsp; an
+edge along the Y axis.&nbsp; The amount of the shear is controlled by a
+shear angle.&nbsp; For X direction&nbsp; shears,&nbsp;  x&nbsp; degrees
+is measured relative to the Y axis, and similarly, for Y direction
+shears&nbsp; y&nbsp; degrees is measured relative to the X axis. Empty
+triangles left over from shearing the&nbsp; image&nbsp; are
+filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.&nbsp;</font></td>
     </tr>
     <tr>
       <td>
@@ -993,7 +990,7 @@ are filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.
       </td>
       <td><font size="-1">double factor_</font></td>
       <td><font size="-1">Solarize image (similar to effect seen when
-exposing  a photographic film to light during the development process)</font></td>
+exposing a photographic film to light during the development process)</font></td>
     </tr>
     <tr>
       <td>
@@ -1102,14 +1099,14 @@ or_each()</tt>. </p>
 to transparent in a GIF animation: </p>
 <p><tt><font color="#000066">list&lt;image&gt; images;</font></tt> <br>
 <tt><font color="#000066">readImages( &amp;images, "animation.gif"  );</font></tt> <br>
-<tt><font color="#000066">for_each ( images.begin(), images.end(), 
+<tt><font color="#000066">for_each ( images.begin(), images.end(),
 transparentImage( "red" )&nbsp; );</font></tt> <br>
-<tt><font color="#000066">writeImages( images.begin(), images.end(), 
+<tt><font color="#000066">writeImages( images.begin(), images.end(),
 "animation.gif" );</font></tt> </p>
 <p>The available function objects for setting image attributes are <br>
 &nbsp;
 <table border="1">
-  <caption>Image Image Attributes</caption> <tbody>
+  <caption style="font-weight: bold;">Image Attributes</caption> <tbody>
     <tr>
       <td>
       <center><b>Attribute</b></center>
@@ -1268,8 +1265,8 @@ are close to the target  color in RGB space.</font></td>
       <td><font size="-1"><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
 colorSpace_</font></td>
       <td><font size="-1">The colorspace (e.g. CMYK) used to represent
-the image  pixel colors. Image pixels are always stored as RGB(A)
-except for the case  of CMY(K).</font></td>
+the image  pixel colors. Image pixels are always stored as RGB(A) except
+for the case  of CMY(K).</font></td>
     </tr>
     <tr>
       <td>
@@ -1280,7 +1277,7 @@ except for the case  of CMY(K).</font></td>
       <td><font size="-1"><a href="Enumerations.html#CompressionType">CompressionType</a>
 compressType_</font></td>
       <td><font size="-1">Image compresion type. The default is the
-compression  type of the specified image file.</font></td>
+compression type of the specified image file.</font></td>
     </tr>
     <tr>
       <td>
@@ -1350,9 +1347,9 @@ which has been shown to produce good results when reducing images.</font></td>
       <td><font size="-1">std::string</font></td>
       <td><font size="-1">const std::string &amp;font_</font></td>
       <td><font size="-1">Text rendering font. If the font is a fully
-qualified  X server font name, the font is obtained from an X&nbsp;
-server. To use a TrueType font, precede the TrueType filename with an
-@. Otherwise, specify&nbsp;  a&nbsp; Postscript font name (e.g.
+qualified X server font name, the font is obtained from an X&nbsp;
+server. To use a TrueType font, precede the TrueType filename with an @.
+Otherwise, specify&nbsp;  a&nbsp; Postscript font name (e.g.
 "helvetica").</font></td>
     </tr>
     <tr>
@@ -1389,14 +1386,13 @@ disposed of)  when creating a GIF animation.</font></td>
 interlace_</font></td>
       <td><font size="-1">The type of interlacing scheme (default <i>NoInterlace</i>
 ). This option is used to specify the type of&nbsp; interlacing
-scheme&nbsp;  for&nbsp; raw&nbsp; image formats such as RGB or YUV. <i>NoInterlace</i>
+scheme&nbsp; for&nbsp; raw&nbsp; image formats such as RGB or YUV. <i>NoInterlace</i>
 means do not&nbsp; interlace, <i>LineInterlace</i> uses scanline
-interlacing, and <i>PlaneInterlace</i> uses plane
-interlacing. <i> PartitionInterlace</i> is like <i>PlaneInterlace</i>
-except the&nbsp; different planes&nbsp; are  saved&nbsp; to individual
-files (e.g.&nbsp; image.R, image.G, and image.B).  Use <i>LineInterlace</i>
-or <i>PlaneInterlace</i> to create an interlaced  GIF or progressive
-JPEG image.</font></td>
+interlacing, and <i>PlaneInterlace</i> uses plane interlacing. <i>
+PartitionInterlace</i> is like <i>PlaneInterlace</i> except the&nbsp;
+different planes&nbsp; are  saved&nbsp; to individual files (e.g.&nbsp;
+image.R, image.G, and image.B).  Use <i>LineInterlace</i> or <i>PlaneInterlace</i>
+to create an interlaced  GIF or progressive JPEG image.</font></td>
     </tr>
     <tr>
       <td>
@@ -1405,7 +1401,7 @@ JPEG image.</font></td>
       <td><font size="-1">bool</font></td>
       <td><font size="-1">bool isValid_</font></td>
       <td><font size="-1">Set image validity. Valid images become empty
-(inValid)  if argument is false.</font></td>
+(inValid) if argument is false.</font></td>
     </tr>
     <tr>
       <td>
@@ -1513,9 +1509,8 @@ penColor).</font></td>
       <td><font size="-1">const <a
  href="Geometry.html#PostscriptPageSize">Geometry</a> &amp;pageSize_</font></td>
       <td><font size="-1">Postscript page size. Use this&nbsp; option
-to specify  the dimensions&nbsp; of the Postscript page in dots per
-inch or a TEXT page in pixels. This option is typically used in
-concert with <i>density</i>.</font></td>
+to specify  the dimensions&nbsp; of the Postscript page in dots per inch
+or a TEXT page in pixels. This option is typically used in concert with <i>density</i>.</font></td>
     </tr>
     <tr>
       <td>
@@ -1533,9 +1528,9 @@ concert with <i>density</i>.</font></td>
       <td><font size="-1">unsigned int</font></td>
       <td><font size="-1">unsigned int colors_</font></td>
       <td><font size="-1">Preferred number of colors in the image. The
-actual number of colors in the image may be less than your request,
-but never more. Images with less unique colors than specified with
-this option will have any duplicate or unused colors removed.</font></td>
+actual number of colors in the image may be less than your request, but
+never more. Images with less unique colors than specified with this
+option will have any duplicate or unused colors removed.</font></td>
     </tr>
     <tr>
       <td>
@@ -1559,13 +1554,13 @@ results when color reducing an image.</font></td>
       <td><font size="-1">bool</font></td>
       <td><font size="-1">bool flag_</font></td>
       <td><font size="-1">Apply Floyd/Steinberg error diffusion to the
-image. The basic strategy of dithering is to&nbsp; trade&nbsp;
-intensity resolution&nbsp;  for&nbsp; spatial&nbsp; resolution&nbsp;
-by&nbsp; averaging the intensities&nbsp;  of&nbsp; several&nbsp;
+image. The basic strategy of dithering is to&nbsp; trade&nbsp; intensity
+resolution&nbsp;  for&nbsp; spatial&nbsp; resolution&nbsp; by&nbsp;
+averaging the intensities&nbsp;  of&nbsp; several&nbsp;
 neighboring&nbsp; pixels. Images which&nbsp; suffer&nbsp;  from&nbsp;
-severe&nbsp; contouring&nbsp; when&nbsp; reducing colors can be
-improved with this option. The quantizeColors or monochrome option must
-be set for this option to take effect.</font></td>
+severe&nbsp; contouring&nbsp; when&nbsp; reducing colors can be improved
+with this option. The quantizeColors or monochrome option must be set
+for this option to take effect.</font></td>
     </tr>
     <tr>
       <td>
@@ -1576,8 +1571,8 @@ be set for this option to take effect.</font></td>
       <td><font size="-1">unsigned int treeDepth_</font></td>
       <td><font size="-1">Depth of the quantization color
 classification tree.  Values of 0 or 1 allow selection of the optimal
-tree depth for the color reduction algorithm. Values between 2 and 8
-may be used to manually adjust the tree depth.</font></td>
+tree depth for the color reduction algorithm. Values between 2 and 8 may
+be used to manually adjust the tree depth.</font></td>
     </tr>
     <tr>
       <td>
@@ -1695,22 +1690,22 @@ or to capture image from</font></td>
 </center>
 Magick++ provides the&nbsp;<a name="coderInfoList"></a> <i>coderInfoList()</i>
 function to support obtaining information about the image formats
-supported by GraphicsMagick. Support for image formats in
-GraphicsMagick is provided by modules known as "coders". A
-user-provided container is updated based on a boolean truth-table
-match. The truth-table supports matching based on whether
-GraphicsMagick can read the format, write the format, or supports
-multiple frames for the format. A wildcard specifier is supported for
-any "don't care" field. The data obtained via coderInfoList() may be
-useful for preparing GUI dialog boxes or for deciding which output
-format to write based on support within the GraphicsMagick build.      
+supported by GraphicsMagick. Support for image formats in GraphicsMagick
+is provided by modules known as "coders". A user-provided container is
+updated based on a boolean truth-table match. The truth-table supports
+matching based on whether GraphicsMagick can read the format, write the
+format, or supports multiple frames for the format. A wildcard
+specifier is supported for any "don't care" field. The data obtained
+via coderInfoList() may be useful for preparing GUI dialog boxes or for
+deciding which output format to write based on support within the
+GraphicsMagick build.
 <p>The definition of coderInfoList is: </p>
 <p><tt><font color="#000066">&nbsp; class CoderInfo</font></tt> <br>
 <tt><font color="#000066">&nbsp; {</font></tt> <br>
 <tt><font color="#000066">&nbsp; public:</font></tt> </p>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; enum MatchType {</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-AnyMatch,&nbsp;  // match any coder</font></tt> <br>
+AnyMatch,&nbsp; // match any coder</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TrueMatch,  //
 match coder if true</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FalseMatch  //
@@ -1731,8 +1726,8 @@ CoderInfo::MatchType isMultiFrame_ = CoderInfo::AnyMatch</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 );</font></tt> </p>
 <p>The following example shows how to retrieve a list of all of the
-coders which support reading images and print the coder attributes
-(all listed formats will be readable): </p>
+coders which support reading images and print the coder attributes (all
+listed formats will be readable): </p>
 <p><tt><font color="#000066">&nbsp; list&lt;CoderInfo&gt; coderList;</font></tt> <br>
 <tt><font color="#000066">&nbsp; coderInfoList(
 &amp;coderList,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1753,7 +1748,7 @@ entry-&gt;name() &lt;&lt; ": (" &lt;&lt; entry-&gt;description()
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Readable =
 ";</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp; if (
-entry-&gt;isReadable()  )</font></tt> <br>
+entry-&gt;isReadable() )</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
 "true";</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt> <br>
@@ -1763,7 +1758,7 @@ entry-&gt;isReadable()  )</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Writable =
 ";</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp; if (
-entry-&gt;isWritable()  )</font></tt> <br>
+entry-&gt;isWritable() )</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
 "true";</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt> <br>
@@ -1773,15 +1768,143 @@ entry-&gt;isWritable()  )</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Multiframe
 = ";</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp; if (
-entry-&gt;isMultiframe()  )</font></tt> <br>
+entry-&gt;isMultiframe() )</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
 "true";</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
 "false";</font></tt> <br>
 <tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; endl;</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp; }</font></tt> <br>
-&nbsp; <br>
-&nbsp; </p>
+<tt><font color="#000066">&nbsp;&nbsp; }</font></tt>&nbsp;</p>
+<h3 style="text-align: center;">Obtaining A Color Histogram&nbsp; </h3>
+<p> &nbsp;Magick++ provides the <a name="colorHistogram"></a><span
+ style="font-weight: bold;">colorHistogram</span> template function to
+retrieve a color histogram from an image. A color histogram provides a
+count of how many times each color occurs in the image. The histogram
+is written into a user-provided container, which (for example) could be
+a <span style="font-style: italic;">&lt;vector&gt;</span> or a <span
+ style="font-style: italic;">&lt;map&gt;</span>. &nbsp;When a
+&lt;map&gt; is used, the <span style="font-style: italic;">Color</span>
+is used as the key so that quick lookups of usage counts for colors may
+be performed. Writing into a <span style="font-style: italic;">&lt;map&gt;</span>
+may be slower than writing into a <span style="font-style: italic;">&lt;vector&gt;</span>
+since the <span style="font-style: italic;">&lt;map&gt;</span> sorts the
+entries (by color intensity) and checks for uniqueness. Each histogram
+entry is contained in type&nbsp;<span style="font-style: italic;">std::pair&lt;Magick::Color,unsigned
+long&gt;</span><span style="font-style: italic;"> </span>with the first
+member of the pair being a <span style="font-style: italic;">Color,</span>
+and the second member of the pair being an '<span
+ style="font-style: italic;">unsigned long</span>'. Use the <span
+ style="font-style: italic;">&lt;pair&gt;</span> "<span
+ style="font-style: italic;">first</span>" member to access the Color
+and the "<span style="font-style: italic;">second</span>" member to
+access&nbsp;the number of times the color occurs in the image.</p>
+<p>The template function declaration is as follows:<br>
+</p>
+<p><span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+template &lt;class Container &gt;</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+void colorHistogram( Container *histogram_, const Image image)</span><br>
+</p>
+<p>The following examples illustrate using both a &lt;map&gt; and a
+&lt;vector&gt; to retrieve the color histogram, and print out a
+formatted summary.<br>
+<br>
+Using &lt;map&gt;:<br>
+&nbsp; &nbsp; <br>
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+Image image("image.miff");</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+map&lt;Color,unsigned long&gt; histogram;</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+colorHistogram( &amp;histogram, image );</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+std::map&lt;Color,unsigned long&gt;::const_iterator p=histogram.begin();</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+while (p != histogram.end())</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp; {</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp;&nbsp; &nbsp;cout &lt;&lt; setw(10) &lt;&lt; (int)p-&gt;second
+&lt;&lt; ": ("</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt;
+setw(quantum_width) &lt;&lt; (int)p-&gt;first.redQuantum() &lt;&lt; ","</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quant</span><span
+ style="color: rgb(51, 51, 153); font-family: monospace;">um_width)
+&lt;&lt; (int)p-&gt;first.greenQuantum() &lt;&lt; ","</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt;
+setw(quantum_width) &lt;&lt; (int)p-&gt;first.blueQuantum() &lt;&lt; ")"</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; endl;</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp;&nbsp; &nbsp; p++;</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp; }</span><br>
+<br>
+Using &lt;vector&gt;:<br>
+&nbsp; &nbsp; <br>
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+Image image("image.miff");</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+std::vector&lt;std::pair&lt;Color,unsigned long&gt; &gt; histogram;</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+colorHistogram( &amp;histogram, image );</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+std::vector&lt;std::pair&lt;Color,unsigned long&gt;
+&gt;::const_iterator p=histogram.begin();</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+while (p != histogram.end())</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp; {</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp;&nbsp; &nbsp;cout &lt;&lt; setw(10) &lt;&lt; (int)p-&gt;second
+&lt;&lt; ": ("</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt;
+setw(quantum_width) &lt;&lt; (int)p-&gt;first.redQuantum() &lt;&lt; ","</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt;
+setw(quantum_width) &lt;&lt; (int)p-&gt;first.greenQuantum() &lt;&lt;
+","</span><br style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt;
+setw(quantum_width) &lt;&lt; (int)p-&gt;first.blueQuantum() &lt;&lt; ")"</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; endl;</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp;&nbsp; &nbsp;p++;</span><br
+ style="color: rgb(51, 51, 153); font-family: monospace;">
+<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
+&nbsp; }</span><br>
+</p>
+<p><br>
+<br>
+</p>
 </body>
 </html>

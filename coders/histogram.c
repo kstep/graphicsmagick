@@ -257,15 +257,6 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     if (maximum < blue[x])
       maximum=blue[x];
   }
-  for (x=0; x < (long) histogram_image->columns; x++)
-  {
-    if (red[x] > maximum)
-      red[x]=maximum;
-    if (green[x] > maximum)
-      green[x]=maximum;
-    if (blue[x] > maximum)
-      blue[x]=maximum;
-  }
   scale=(double) histogram_image->rows/maximum;
   /*
     Initialize histogram image.

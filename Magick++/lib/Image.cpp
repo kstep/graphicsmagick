@@ -442,6 +442,7 @@ unsigned int Magick::Image::channelDepth ( const ChannelType channel_ )
   channel_depth=GetImageChannelDepth( constImage(), channel_,
                                       &exceptionInfo );
   throwException( exceptionInfo );
+  return channel_depth;
 }
 
 

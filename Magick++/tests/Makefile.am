@@ -17,6 +17,7 @@ check_PROGRAMS =  \
 	coalesceImages \
 	coderInfo \
 	color \
+	colorHistogram \
 	exceptions \
 	montageImages \
 	morphImages \
@@ -31,6 +32,7 @@ averageImages_SOURCES	= averageImages.cpp
 coalesceImages_SOURCES	= coalesceImages.cpp
 coderInfo_SOURCES	= coderInfo.cpp
 color_SOURCES		= color.cpp
+colorHistogram_SOURCES  = colorHistogram.cpp
 exceptions_SOURCES	= exceptions.cpp
 montageImages_SOURCES	= montageImages.cpp
 morphImages_SOURCES	= morphImages.cpp
@@ -40,7 +42,7 @@ readWriteImages_SOURCES = readWriteImages.cpp
 EXTRA_DIST = \
 	test_image.miff test_image_anim.miff
 
-CLEANFILES = testmagick_anim_out.miff
+CLEANFILES = colorHistogram.txt testmagick_anim_out.miff
 
 if WIN32_NATIVE_BUILD
 SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'
@@ -57,6 +59,7 @@ check:
 	-env SRCDIR=$(SRCDIR) ./coalesceImages
 	-env SRCDIR=$(SRCDIR) ./coderInfo
 	-env SRCDIR=$(SRCDIR) ./color
+	-env SRCDIR=$(SRCDIR) ./colorHistogram > colorHistogram.txt
 	-env SRCDIR=$(SRCDIR) ./montageImages
 	-env SRCDIR=$(SRCDIR) ./morphImages
 	-env SRCDIR=$(SRCDIR) ./readWriteBlob

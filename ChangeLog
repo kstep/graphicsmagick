@@ -1,3 +1,9 @@
+2003-09-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/histogram.c (WriteHISTOGRAMImage): Remove a useless loop.
+	* coders/wpg.c: Applied patch from Fojtik Jaroslav to support
+	reading WPGs which use the EXT token.
+
 2003-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/color.c (HistogramToFile): Renamed static method

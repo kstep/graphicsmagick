@@ -13,6 +13,9 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
+#include <map>
+#include <utility>
+
 #include "Magick++/CoderInfo.h"
 #include "Magick++/Drawable.h"
 #include "Magick++/Exception.h"
@@ -1872,6 +1875,75 @@ namespace Magick
     MagickLib::LiberateMemory((void **)&coder_list);
   }
 
+  //
+  // Fill container with color histogram.
+  // Entries are of type "std::pair<Color,unsigned long>".  Use the pair
+  // "first" member to access the Color and the "second" member to access
+  // the number of times the color occurs in the image.
+  //
+  // For example:
+  //
+  //  Using <map>:
+  //
+  //  Image image("image.miff");
+  //  map<Color,unsigned long> histogram;
+  //  colorHistogram( &histogram, image );
+  //  std::map<Color,unsigned long>::const_iterator p=histogram.begin();
+  //  while (p != histogram.end())
+  //    {
+  //      cout << setw(10) << (int)p->second << ": ("
+  //           << setw(quantum_width) << (int)p->first.redQuantum() << ","
+  //           << setw(quantum_width) << (int)p->first.greenQuantum() << ","
+  //           << setw(quantum_width) << (int)p->first.blueQuantum() << ")"
+  //           << endl;
+  //      p++;
+  //    }
+  //
+  //  Using <vector>:
+  //
+  //  Image image("image.miff");
+  //  std::vector<std::pair<Color,unsigned long> > histogram;
+  //  colorHistogram( &histogram, image );
+  //  std::vector<std::pair<Color,unsigned long> >::const_iterator p=histogram.begin();
+  //  while (p != histogram.end())
+  //    {
+  //      cout << setw(10) << (int)p->second << ": ("
+  //           << setw(quantum_width) << (int)p->first.redQuantum() << ","
+  //           << setw(quantum_width) << (int)p->first.greenQuantum() << ","
+  //           << setw(quantum_width) << (int)p->first.blueQuantum() << ")"
+  //           << endl;
+  //      p++;
+  //    }
+
+  template <class Container >
+  void colorHistogram( Container *histogram_, const Image image)
+  {
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
+
+    // Obtain histogram array
+    unsigned long colors;
+    MagickLib::HistogramColorPacket *histogram_array = 
+      MagickLib::GetColorHistogram( image.constImage(), &colors, &exceptionInfo );
+    throwException( exceptionInfo );
+
+    // Clear out container
+    histogram_->clear();
+
+    // Transfer histogram array to container
+    for ( unsigned long i=0; i < colors; i++)
+      {
+        histogram_->insert(histogram_->end(),std::pair<Color,unsigned long>
+                           ( Color(histogram_array[i].pixel.red,
+                                   histogram_array[i].pixel.green,
+                                   histogram_array[i].pixel.blue),
+                                   histogram_array[i].count) );
+      }
+    
+    // Deallocate histogram array
+    MagickLib::LiberateMemory((void **)&histogram_array);
+  }
+                      
   // Break down an image sequence into constituent parts.  This is
   // useful for creating GIF or MNG animation sequences.
   template <class InputIterator, class Container >

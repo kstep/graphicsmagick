@@ -572,7 +572,10 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             }
           break;
         case 0xFD:
-          fprintf(stderr,"\nUnsupported WPG2 token EXT, please report!");  
+	  RunCount=ReadBlobByte(image);   /* EXT */
+	  for(i=0;i<=(int)RunCount;i++)
+                for(bbuf=0;bbuf<SampleSize;bbuf++)
+                  InsertRByte(SampleBuffer[bbuf]);          
           break;
         case 0xFE:
           RunCount=ReadBlobByte(image);  /* RST */
@@ -594,7 +597,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           }
           break;
         case 0xFF:
-          RunCount=ReadBlobByte(image);          /* WHT */
+          RunCount=ReadBlobByte(image);	 /* WHT */
           for(i=0;i<(int) SampleSize*((int)RunCount+1);i++)
             {
               InsertRByte(0xFF);
@@ -603,7 +606,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
         default:
           RunCount=bbuf & 0x7F;
 
-          if(bbuf & 0x80)
+          if(bbuf & 0x80)		 /* REP */
             {  
               for(i=0;i<(int) SampleSize;i++)
                 SampleBuffer[i]=ReadBlobByte(image);
@@ -611,7 +614,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
                 for(bbuf=0;bbuf<SampleSize;bbuf++)
                   InsertRByte(SampleBuffer[bbuf]);
             }
-          else {
+          else {			/* NRP */
             for(i=0;i<(int) SampleSize*((int)RunCount+1);i++)
               {
                 bbuf=ReadBlobByte(image);
