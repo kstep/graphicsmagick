@@ -18,8 +18,10 @@
    1b) Click on '!' icon to run configure program
    1c) Select DLL build
    1d) Uncheck "Use X11 Stubs" and check "Build demo and test programs"
-   1e) Finish remaining configure wizard screens to complete.
-   1f) File -> "Close Workspace"
+   1e) Click on Edit "magick_config.h" and ensure that UseInstalledImageMagick
+       is defined.
+   1f) Finish remaining configure wizard screens to complete.
+   1g) File -> "Close Workspace"
 
 2) Open workspace VisualMagick\VisualDynamicMT.dsw by double-clicking from
    Windows Explorer or opening workpace via Visual C++ dialog.
