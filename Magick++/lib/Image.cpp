@@ -563,7 +563,7 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
   std::list<Magick::Drawable>::const_iterator p = drawable_.begin();
   while ( p != drawable_.end() )
     {
-      cout << *p << endl;
+      //cout << *p << endl;
       if (buffer[0] != '\0' )
 	buffstr << " ";
       buffstr << *p;
