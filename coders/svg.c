@@ -122,8 +122,8 @@ typedef struct _SVGInfo
     height;
 
   char
-    *opage,
-    *osize,
+    *size,
+    *page,
     *title,
     *description,
     *comment;
@@ -141,7 +141,7 @@ typedef struct _SVGInfo
     segment;
 
   BoundingBox
-    page;
+    bounds;
 
   PointInfo
     radius;
@@ -646,25 +646,8 @@ static void SVGStartDocument(void *context)
   svg_info->graphic_context[0].linewidth=1.0;
   svg_info->graphic_context[0].pointsize=12.0;
   svg_info->graphic_context[0].opacity=100.0;
-#ifdef USETHIS
   for (i=0; i < 6; i++)
-  {
-    svg_info->graphic_context[0].affine[i]=0.0;
-    if (i == 0)
-      svg_info->graphic_context[0].affine[i]=svg_info->x_resolution/72.0;
-    if (i == 3)
-      svg_info->graphic_context[0].affine[i]=svg_info->y_resolution/72.0;
-  }
-#else
-  for (i=0; i < 6; i++)
-  {
-    svg_info->graphic_context[0].affine[i]=0.0;
-    if (i == 0)
-      svg_info->graphic_context[0].affine[i]=1.0;
-    if (i == 3)
-      svg_info->graphic_context[0].affine[i]=1.0;
-  }
-#endif
+    svg_info->graphic_context[0].affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
   GetExceptionInfo(svg_info->exception);
   svg_info->document=xmlNewDoc(svg_info->parser->version);
 }
@@ -777,7 +760,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"height") == 0)
         {
-          svg_info->page.height=atof(value)*UnitOfMeasure(value);
+          svg_info->bounds.height=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"href") == 0)
@@ -1022,28 +1005,28 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare(keyword,"viewBox") == 0)
         {
           p=(char *) value;
-          svg_info->page.x=strtod(p,&p);
+          svg_info->bounds.x=strtod(p,&p);
           if (*p == ',');
             p++;
-          svg_info->page.y=strtod(p,&p);
+          svg_info->bounds.y=strtod(p,&p);
           if (*p == ',');
             p++;
-          svg_info->page.width=strtod(p,&p);
+          svg_info->bounds.width=strtod(p,&p);
           if (*p == ',');
             p++;
-          svg_info->page.height=strtod(p,&p);
+          svg_info->bounds.height=strtod(p,&p);
           if (*p == ',');
             p++;
           continue;
         }
       if (LocaleCompare(keyword,"width") == 0)
         {
-          svg_info->page.width=atof(value)*UnitOfMeasure(value);
+          svg_info->bounds.width=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"x") == 0)
         {
-          svg_info->page.x=atof(value)*UnitOfMeasure(value);
+          svg_info->bounds.x=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"verts") == 0)
@@ -1068,7 +1051,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"y") == 0)
         {
-          svg_info->page.y=atof(value)*UnitOfMeasure(value);
+          svg_info->bounds.y=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"y1") == 0)
@@ -1086,87 +1069,57 @@ static void SVGStartElement(void *context,const xmlChar *name,
     (void) fprintf(stdout,")\n");
   if (LocaleCompare((char *) name,"svg") == 0)
     {
-      int
-        sizeset;
-
-      sizeset=0;
       if (attributes != (const xmlChar **) NULL)
-        for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
         {
-          keyword=(char *) attributes[i];
-          value=(char *) attributes[i+1];
-          if (LocaleCompare(keyword,"height") == 0)
-            {
-              svg_info->height=(int) svg_info->page.height;
-              sizeset|=1;
-            }
-          if (LocaleCompare(keyword,"width") == 0)
-            {
-              svg_info->width=(int) svg_info->page.width;
-              sizeset|=2;
-            }
-          if (LocaleCompare(keyword,"viewBox") == 0)
-            {
-              svg_info->height=(int) svg_info->page.height;
-              svg_info->width=(int) svg_info->page.width;
-              sizeset|=4;
-            }
-        }
-      if (sizeset > 1)
-        {
-          if (svg_info->osize != (char *) NULL)
+          char
+            *geometry,
+            *p;
+
+          RectangleInfo
+            page;
+
+          for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
+          {
+            keyword=(char *) attributes[i];
+            value=(char *) attributes[i+1];
+            if (LocaleCompare(keyword,"height") == 0)
+              svg_info->height=(int) svg_info->bounds.height;
+            if (LocaleCompare(keyword,"width") == 0)
+              svg_info->width=(int) svg_info->bounds.width;
+            if (LocaleCompare(keyword,"viewBox") == 0)
               {
-                int
-                  h,
-                  w,
-                  x,
-                  y;
-
-                unsigned int
-                  flags;
-
-                x=y=0;
-                w=svg_info->width;
-                h=svg_info->height;
-                flags=ParseImageGeometry(svg_info->osize,&x,&y,&w,&h);
-                q->affine[0]=(double)w/(double)svg_info->width;
-                q->affine[3]=(double)h/(double)svg_info->height;
-                svg_info->width=w;
-                svg_info->height=h;
+                svg_info->height=(int) svg_info->bounds.height;
+                svg_info->width=(int) svg_info->bounds.width;
               }
-            if (svg_info->opage != (char *) NULL)
-              {
-                char
-                  *geometry,
-                  *p;
-
-                int
-                  h,
-                  w,
-                  x,
-                  y;
-
-                unsigned int
-                  flags;
-
-                x=y=0;
-                w=svg_info->width;
-                h=svg_info->height;
-                geometry=PostscriptGeometry(svg_info->opage);
-                p=strchr(geometry,'>');
-                if (p)
-                  *p='\0';
-                flags=ParseImageGeometry(geometry,&x,&y,&w,&h);
-                DestroyPostscriptGeometry(geometry);
-                if (svg_info->x_resolution != 0.0)
-                  w=(unsigned int)(((w*svg_info->x_resolution)/72.0)+0.5);
-                if (svg_info->y_resolution != 0.0)
-                  h=(unsigned int)(((h*svg_info->y_resolution)/72.0)+0.5);
-                q->affine[0]=(double)w/(double)svg_info->width;
-                q->affine[3]=(double)h/(double)svg_info->height;
-                svg_info->width=w;
-                svg_info->height=h;
-              }
+          }
+          page.width=svg_info->width;
+          page.height=svg_info->height;
+          page.x=0;
+          page.y=0;
+          geometry=(char *) NULL;
+          if (svg_info->size != (char *) NULL)
+            geometry=PostscriptGeometry(svg_info->size);
+          if (svg_info->page != (char *) NULL)
+            geometry=PostscriptGeometry(svg_info->page);
+          if (geometry != (char *) NULL)
+            {
+              p=strchr(geometry,'>');
+              if (p != (char *) NULL)
+                *p='\0';
+              (void) ParseImageGeometry(geometry,&page.x,&page.y,
+                &page.width,&page.height);
+              DestroyPostscriptGeometry(geometry);
+            }
+          if (svg_info->x_resolution != 0.0)
+            page.width=(unsigned int)
+              (((page.width*svg_info->x_resolution)/72.0)+0.5);
+          if (svg_info->y_resolution != 0.0)
+            page.height=(unsigned int)
+              (((page.height*svg_info->y_resolution)/72.0)+0.5);
+          q->affine[0]=(double) page.width/svg_info->width;
+          q->affine[3]=(double) page.height/svg_info->height;
+          svg_info->width=page.width;
+          svg_info->height=page.height;
         }
     }
 }
@@ -1291,8 +1244,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
     }
   if (LocaleCompare((char *) name,"image") == 0)
     {
-      (void) fprintf(svg_info->file,"image %g,%g %g,%g %s\n",svg_info->page.x,
-        svg_info->page.y,svg_info->page.width,svg_info->page.height,
+      (void) fprintf(svg_info->file,"image %g,%g %g,%g %s\n",svg_info->bounds.x,
+        svg_info->bounds.y,svg_info->bounds.width,svg_info->bounds.height,
         svg_info->url);
       return;
     }
@@ -1323,8 +1276,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
       if ((svg_info->radius.x == 0.0) && (svg_info->radius.y == 0.0))
         {
           (void) fprintf(svg_info->file,"rectangle %g,%g %g,%g\n",
-            svg_info->page.x,svg_info->page.y,svg_info->page.x+
-            svg_info->page.width,svg_info->page.y+svg_info->page.height);
+            svg_info->bounds.x,svg_info->bounds.y,svg_info->bounds.x+
+            svg_info->bounds.width,svg_info->bounds.y+svg_info->bounds.height);
           return;
         }
       if (svg_info->radius.x == 0.0)
@@ -1332,8 +1285,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
       if (svg_info->radius.y == 0.0)
         svg_info->radius.y=svg_info->radius.x;
       (void) fprintf(svg_info->file,"roundRectangle %g,%g %g,%g %g,%g\n",
-        svg_info->page.x,svg_info->page.y,svg_info->page.width,
-        svg_info->page.height,svg_info->radius.x,svg_info->radius.y);
+        svg_info->bounds.x,svg_info->bounds.y,svg_info->bounds.width,
+        svg_info->bounds.height,svg_info->radius.x,svg_info->radius.y);
       svg_info->radius.x=0.0;
       svg_info->radius.y=0.0;
       return;
@@ -1342,11 +1295,11 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       Strip(svg_info->text);
       if (strchr(svg_info->text,'\'') != (char *) NULL)
-        (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",svg_info->page.x,
-          svg_info->page.y,svg_info->text);
+        (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",svg_info->bounds.x,
+          svg_info->bounds.y,svg_info->text);
       else
-        (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->page.x,
-          svg_info->page.y,svg_info->text);
+        (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->bounds.x,
+          svg_info->bounds.y,svg_info->text);
       *svg_info->text='\0';
       return;
     }
@@ -1696,12 +1649,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.y_resolution=image->y_resolution == 0.0 ? 72.0 : image->y_resolution;
   svg_info.width=image->columns;
   svg_info.height=image->rows;
-  svg_info.osize=(char *) NULL;
   if (image_info->size != (char *)NULL)
-    CloneString(&svg_info.osize,image_info->size);
-  svg_info.opage=(char *) NULL;
+    CloneString(&svg_info.size,image_info->size);
   if (image_info->page != (char *)NULL)
-    CloneString(&svg_info.opage,image_info->page);
+    CloneString(&svg_info.page,image_info->page);
   xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXHandlerStruct);
   n=ReadBlob(image,4,buffer);
