@@ -5560,7 +5560,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("yuv",option) == 0)
                   quantize_info.colorspace=YUVColorspace;
                 if (quantize_info.colorspace == UndefinedColorspace)
-                  ThrowMontageException(OptionError,"UnrecognizedColorspace",option);
+                  ThrowMontageException(OptionError,"UnrecognizedColorspace",
+                    option);
               }
             break;
           }
