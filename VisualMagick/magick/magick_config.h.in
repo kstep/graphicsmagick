@@ -6,14 +6,14 @@
 // project files may need to be edited to remove libraries the feature
 // depends on.
 //
-// Note that by default GraphicsMagick is configured with a QuantumDepth
-// of eight, has LZW compression disabled, and looks for all files in
-// the directory where the executable is located.
-// The installed configuration (i.e.  the setup.exe-style installer)
-// is modifying by defining "UseInstalledImageMagick" and "ProvideDllMain".
-// If you would like to install GraphicsMagick using hard-coded paths, or
-// want to use the Windows registry to install GraphicsMagick, then
-// UseInstalledImageMagick" should be defined.
+// Note that by default GraphicsMagick is configured with a
+// QuantumDepth of eight, has LZW compression disabled, and looks for
+// all files in the directory where the executable is located.  The
+// installed configuration (i.e.  the setup.exe-style installer) is
+// modifying by defining "UseInstalledMagick" and "ProvideDllMain".
+// If you would like to install GraphicsMagick using hard-coded paths,
+// or want to use the Windows registry to install GraphicsMagick, then
+// UseInstalledMagick" should be defined.
 //
 // Enabled options are of the form:
 //
@@ -26,28 +26,21 @@
 // so it is necessary to remove the comment, and change "undef" to "define"
 // in order for the option to be enabled.
 
-// Specify size of PixelPacket color Quantums (8, 16, or 32)
+// Specify size of PixelPacket color Quantums (8, 16, or 32).
 // A value of 8 uses half the memory than 16 and typically runs 30% faster,
 // but provides 256 times less color resolution than a value of 16.
 #define QuantumDepth 8
 
-// Define to build a GraphicsMagick which uses registry settings to
-// locate installed components.
-// #undef UseInstalledImageMagick
+// Define to build a GraphicsMagick which uses registry settings or
+// hard-coded paths to locate installed components.
+// #undef UseInstalledMagick
 
 //
-// When building GraphicsMagick using DLLs, include a DllMain() function
-// which automatically invokes InitializeMagick(NULL), and DestroyMagick()
-// so that the user doesn't need to.
+// When building GraphicsMagick using DLLs, include a DllMain()
+// function which automatically invokes InitializeMagick(NULL), and
+// DestroyMagick() so that the user doesn't need to.
 //
 // #undef ProvideDllMain
-
-//
-// Define Windows95 to avoid using functions which are not available
-// under Windows 95.  This reduces the maximum image size which may
-// be processed.
-//
-// #undef Windows95
 
 // Define to use the autotrace library (obtain sources seperately)
 // #undef HasAUTOTRACE

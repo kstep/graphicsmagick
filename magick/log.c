@@ -186,7 +186,7 @@ MagickExport void DestroyLogInfo(void)
 %
 */
 
-#if !defined(UseInstalledImageMagick) && defined(POSIX)
+#if !defined(UseInstalledMagick) && defined(POSIX)
 static void ChopPathComponents(char *path,const unsigned long components)
 {
   long
@@ -217,7 +217,7 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
   assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   (void) strncpy(path,filename,MaxTextExtent-1);
-#if defined(UseInstalledImageMagick)
+#if defined(UseInstalledMagick)
 #if defined(MagickLibPath)
   /*
     Search hard coded paths.

@@ -238,7 +238,7 @@ AC_ARG_ENABLE(installed,
 	      [with_installed='yes'])
 if test "$with_installed" = 'yes'
 then
-  AC_DEFINE(UseInstalledImageMagick,1,[GraphicsMagick is formally installed under prefix])
+  AC_DEFINE(UseInstalledMagick,1,[GraphicsMagick is formally installed under prefix])
 fi
 
 # Enable verbose output from libtool (enable libtool's default)

@@ -1076,7 +1076,7 @@ MagickExport StreamType GetBlobStreamType(const Image *image)
 %
 */
 
-#if !defined(UseInstalledImageMagick) && defined(POSIX)
+#if !defined(UseInstalledMagick) && defined(POSIX)
 static void ChopPathComponents(char *path,const unsigned long components)
 {
   long
@@ -1109,7 +1109,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   (void) strncpy(path,filename,MaxTextExtent-1);
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Searching for configure file \"%s\" ...",filename);
-#if defined(UseInstalledImageMagick)
+#if defined(UseInstalledMagick)
 #if defined(MagickLibPath)
   /*
     Search hard coded paths.
@@ -1140,7 +1140,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       }
   }
 #endif /* defined(WIN32) */
-#else /* !defined(UseInstalledImageMagick) */
+#else /* !defined(UseInstalledMagick) */
   if (*SetClientPath((char *) NULL) != '\0')
     {
 #if defined(POSIX)
@@ -1194,7 +1194,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 #if defined(WIN32)
   return(NTResourceToBlob(filename));
 #endif /* defined(WIN32) */
-#endif /* !defined(UseInstalledImageMagick) */
+#endif /* !defined(UseInstalledMagick) */
   ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",path);
   return((void *) NULL);
 }

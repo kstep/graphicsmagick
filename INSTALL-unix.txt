@@ -107,6 +107,8 @@ UNIX/Cygwin/MinGW COMPILATION
    --enable-prof           enable 'prof' profiling support (default disabled)
    --enable-gprof          enable 'gprof' profiling support (default disabled)
    --enable-gcov           enable 'gcov' profiling support (default disabled)
+   --disable-installed     disable building an installed GraphicsMagick
+                           (default enabled)
    --disable-largefile     disable support for large (64 bit) file offsets
    --enable-lzw            enable LZW support (default disabled)
 
@@ -158,15 +160,15 @@ UNIX/Cygwin/MinGW COMPILATION
 
   Several configure options require special note:
 
-    o --enable-shared: the shared libraries are built. Shared
-      libraries are preferred because they allow programs to share
-      common code, making the individual programs much smaller. In
-      addition shared libraries are required in order for PerlMagick to
-      be dynamically loaded by an installed PERL (otherwise an additional
-      PERL (PerlMagick) must be installed. This option is not the default
-      because all libraries used by GraphicsMagick must also be dynamic
-      libraries if GraphicsMagick itself is to be dynamically loaded (such
-      as for PerlMagick).
+    o --enable-shared: the shared libraries are built and support for
+      loading coder and process modules is enabled. Shared libraries are
+      preferred because they allow programs to share common code, making
+      the individual programs much smaller. In addition shared libraries
+      are required in order for PerlMagick to be dynamically loaded by an
+      installed PERL (otherwise an additional PERL (PerlMagick) must be
+      installed. This option is not the default because all libraries used
+      by GraphicsMagick must also be dynamic libraries if GraphicsMagick
+      itself is to be dynamically loaded (such as for PerlMagick).
 
       GraphicsMagick built with delegates (see MAGICK PLUG-INS below)
       can pose additional challenges. If GraphicsMagick is built using
@@ -211,13 +213,27 @@ UNIX/Cygwin/MinGW COMPILATION
       building PIC versions of the delegate libraries may take additional
       expertise and effort; 4) you are unable to build shared libraries.
 
-    o --with-modules: image format coders are built as loadable modules
-      which are installed in [prefix]/lib/GraphicsMagick/modules/coders.
-      Support for modules allows the formats supported by GraphicsMagick
-      to be extended by simply adding additional modules to the module
-      search path.  The modules option is only available in conjunction
-      with --enable-shared.  If --enable-shared is not also specified,
-      then support for modules is disabled.
+    o --disable-installed: By default the GraphicsMagick build is
+      configured to formally install into a directory tree. This is the
+      most secure and reliable way to install GraphicsMagick. Specifying
+      --disable-installed configures GraphicsMagick so that it doesn't use
+      hard-coded paths and locates support files by computing an offset
+      path from the executable (or from the location specified by the
+      MAGICK_HOME environment variable. The uninstalled configuration is
+      ideal for binary distributions which are expected to extract and run
+      in any location.
+
+    o --with-modules: image coders and process modules are built as
+      loadable modules which are installed under the directory
+      [prefix]/lib/GraphicsMagick-X.X.X/modules-QN (where 'N' equals 8, 16,
+      or 32 depending on the quantum depth) in the subdirectories 'coders'
+      and 'filters' respectively. The modules build option is only
+      available in conjunction with --enable-shared. If --enable-shared is
+      not also specified, then support for building modules is disabled.
+      Note that if --enable-shared is specified, the module loader is
+      active (allowing extending an installed GraphicsMagick by simply
+      copying a module into place) but GraphicsMagick itself is not built
+      using modules.
 
     o --enable-lzw: Unisys claims a patent on the algorithm supporting
       LZW compression (e.g. used by GIF and TIFF). To avoid possibly

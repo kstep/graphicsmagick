@@ -446,7 +446,7 @@ static const CoderInfo *GetCoderInfo(const char *tag,
 %
 %
 */
-#if !defined(UseInstalledImageMagick) && defined(POSIX)
+#if !defined(UseInstalledMagick) && defined(POSIX)
 static void ChopPathComponents(char *path,const unsigned long components)
 {
   long
@@ -492,7 +492,7 @@ static unsigned int FindMagickModule(const char *filename,
 
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Searching for module file \"%s\" ...",filename);
-#if defined(UseInstalledImageMagick)
+#if defined(UseInstalledMagick)
 #if defined(WIN32)
   {
     /*

@@ -163,7 +163,7 @@ MagickExport void DestroyTypeInfo(void)
 %
 %
 */
-#if !defined(UseInstalledImageMagick) && defined(POSIX)
+#if !defined(UseInstalledMagick) && defined(POSIX)
 static void ChopPathComponents(char *path,const unsigned long components)
 {
   long
@@ -206,7 +206,7 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
       if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
-#if defined(UseInstalledImageMagick)
+#if defined(UseInstalledMagick)
 #if defined(MagickLibPath)
   /*
     Search hard coded paths.

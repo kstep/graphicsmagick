@@ -918,7 +918,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                     SubstituteString((char **) &delegate_list->commands,
                                      "@PSDelegate@",path);
 
-# if defined(UseInstalledImageMagick)
+# if defined(UseInstalledMagick)
 #  if defined(MagickBinPath)
                     strcpy(BinPath,MagickBinPath);
 #  else
@@ -936,7 +936,7 @@ static unsigned int ReadConfigureFile(const char *basename,
 # else
                     /* Base path off of client path */
                     strcpy(BinPath,SetClientPath(NULL));
-# endif /* defined(UseInstalledImageMagick) */
+# endif /* defined(UseInstalledMagick) */
                     if ((BinPath[0] != 0) &&
                         (BinPath[strlen(BinPath)-1] != *DirectorySeparator))
                       strcat(BinPath,DirectorySeparator);

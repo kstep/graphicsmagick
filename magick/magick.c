@@ -343,7 +343,7 @@ MagickExport void InitializeMagick(const char *path)
   InitializeMagickResources();
 
   *execution_path='\0';
-#if !defined(UseInstalledImageMagick)
+#if !defined(UseInstalledMagick)
 #if defined(POSIX) || defined(WIN32)
   /* passing NULL means that we want the code to try to figure it out via
      asking the operating system

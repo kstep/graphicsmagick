@@ -111,9 +111,9 @@
       8 uses half the memory than 16 and may run 30% faster, but provides
       256 times less color resolution than a value of 16.
 
-    UseInstalledGraphicsMagick (default undefined)
+    UseInstalledMagick (default undefined)
 
-      Define to build an GraphicsMagick which uses registry settings or
+      Define to build a GraphicsMagick which uses registry settings or
       embedded paths to locate installed components (coder modules and
       configuration files). The default is to look for all files in the
       same directory as the executable.
@@ -125,20 +125,12 @@
       applications. This avoids the requirement to invoke IntializeMagick()
       from dependent applications but only works for DLL builds.
 
-    Windows95 (default undefined)
-
-      Define to allow binaries to execute under Windows '95. Note that
-      enabling support for Windows '95 disables support for the large
-      (&gt;2GB) pixel cache, limiting the decompressed image size that can be
-      processed. Input and output image files are currently limited to 2GB
-      under Windows.
-
     HasLZW (default undefined)
 
       Define to enable use of LZW compression in GIF, Postscript, PDF, and
       TIFF. Enabling LZW for TIFF also requires enabling LZW in the TIFF
       library. Note that LZW compression is patented by Unisys (until June,
-      2003) so it can not be used without a license.
+      2003) so it may not be used without a license.
 </PRE>
 
 <p>

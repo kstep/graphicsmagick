@@ -1,7 +1,12 @@
 2003-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* INSTALL-unix.txt: Added/corrected/improved documentation
+	regarding --disable-installed, --enable-shared, and
+	--with-modules.
 	* VisualMagick/magick/magick_config.h.in: Add more documentation
 	and explanatory notes in order to lessen confusion.
+	* Many files: Replaced "UseInstalledImageMagick" with
+	"UseInstalledMagick" for obvious reasons.
 
 2003-04-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
