@@ -1654,6 +1654,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  exit ReadOnePNGImage() with error.");
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+      LiberateSemaphoreInfo(&png_semaphore);
+#endif
       return(image);
     }
   /*
@@ -2120,6 +2123,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             "    Skipping PNG image data for scene %ld",
             mng_info->scenes_found-1);
       png_destroy_read_struct(&ping,&ping_info,&end_info);
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+      LiberateSemaphoreInfo(&png_semaphore);
+#endif
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  exit ReadOnePNGImage().");
@@ -2148,6 +2154,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       LiberateMemory((void **) &scanlines);
       image->colors=2;
       SetImage(image,TransparentOpacity);
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+      LiberateSemaphoreInfo(&png_semaphore);
+#endif
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  exit ReadOnePNGImage().");
@@ -3075,7 +3084,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
            Copy chunk to color_image->blob
         */
 
-        if (logging) 
+        if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Copying JDAT chunk data to color_blob.");
 
@@ -3116,7 +3125,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
            Copy chunk data to alpha_image->blob
         */
 
-        if (logging) 
+        if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Copying JDAA chunk data to alpha_blob.");
 
@@ -5237,6 +5246,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Finished reading image datastream.");
   } while (LocaleCompare(image_info->magick,"MNG") == 0);
+  CloseBlob(image);
 #ifdef MNG_INSERT_LAYERS
   if (insert_layers && !mng_info->image_found && (mng_info->mng_width) &&
        (mng_info->mng_height))
@@ -5351,9 +5361,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
   while (image->previous != (Image *) NULL)
     image=image->previous;
-#if 0  /* To do: find out why this causes a crash */
-  CloseBlob(image);
-#endif
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   have_mng_structure=False;
   if (logging)
@@ -5800,6 +5807,9 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       LiberateMemory((void **) &scanlines);
       LiberateMemory((void **) &png_pixels);
       CloseBlob(image);
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+      LiberateSemaphoreInfo(&png_semaphore);
+#endif
       return(False);
     }
   /*
@@ -6071,7 +6081,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
         {
           register const PixelPacket
             *p=NULL;
-  
+
           ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
           for (y=0; y < (long) image->rows; y++)
           {
@@ -6118,7 +6128,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
             {
               unsigned int
                 mask;
-  
+
               mask=0xffff;
               if (ping_info->bit_depth == 8)
                  mask=0x00ff;
@@ -6161,7 +6171,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
                       }
                       if (p->opacity != TransparentOpacity)
                       {
-                         break;  /* Can't use RGB + tRNS for 
+                         break;  /* Can't use RGB + tRNS for
                                     semitransparency. */
                       }
                     }
@@ -6449,6 +6459,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Setting up filtering");
 #if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
+
   /* This became available in libpng-1.0.9.  Output must be a MNG. */
   if (mng_info->write_mng && ((image_info->quality % 10) == 7))
     {
