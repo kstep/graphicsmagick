@@ -1,3 +1,8 @@
+2002-12-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/image.c: Re-wrote TransformRGBImage() so that it
+	does not penalize a Q:8 build.  The function should be
+	faster now, but no timings have been made to verify that.
+
 2002-12-21  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 	* Elimimated unused transparent_pixel array in png.c.
 	* Reverted to incrementing loops in bmp.c where the counter
