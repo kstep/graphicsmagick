@@ -979,8 +979,7 @@ static void SVGEndElement(void *context, const xmlChar *name)
   if (LocaleCompare((char *) name,"text") == 0)
     {
       (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->page.x,
-        svg_info->page.y-svg_info->graphic_context[n].pointsize/2.0,
-        svg_info->text);
+        svg_info->page.y,svg_info->text);
       svg_info->n--;
       return;
     }

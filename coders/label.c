@@ -283,11 +283,11 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   } TGlyph;
 
   char
-    filename[MaxTextExtent];
+    filename[MaxTextExtent],
+    label[MaxTextExtent];
 
   FT_BBox
-    bounding_box,
-    box;
+    bounding_box;
 
   FT_Bitmap
     *glyph;
@@ -433,11 +433,10 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   */
   origin.x=0;
   origin.y=0;
-  image->rows=0;
-  bounding_box.xMin=32000;
-  bounding_box.xMax=(-32000);
-  bounding_box.yMin=32000;
-  bounding_box.yMax=(-32000);
+  image->bounding_box.x1=32000;
+  image->bounding_box.x2=(-32000);
+  image->bounding_box.y1=32000;
+  image->bounding_box.y2=(-32000);
   transform.xx=65536.0*image_info->transform[0];
   transform.yx=(-65536.0*image_info->transform[1]);
   transform.xy=(-65536.0*image_info->transform[2]);
@@ -463,29 +462,27 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
       continue;
     glyphs[i].origin=bitmap_origin;
     origin.x+=glyphs[i].image->advance;
-    FT_Glyph_Get_Box(glyphs[i].image,&box);
+    FT_Glyph_Get_Box(glyphs[i].image,&bounding_box);
     x=glyphs[i].origin.x >> 6;
     y=glyphs[i].origin.y >> 6;
-    box.xMin+=x;
-    box.yMin+=y;
-    box.xMax+=x;
-    box.yMax+=y;
-    if (box.xMin < bounding_box.xMin)
-      bounding_box.xMin=box.xMin;
-    if (box.xMax > bounding_box.xMax)
-      bounding_box.xMax=box.xMax;
-    if (box.yMin < bounding_box.yMin)
-      bounding_box.yMin=box.yMin;
-    if (box.yMax > bounding_box.yMax)
-      bounding_box.yMax=box.yMax;
+    bounding_box.xMin+=x;
+    bounding_box.yMin+=y;
+    bounding_box.xMax+=x;
+    bounding_box.yMax+=y;
+    if (bounding_box.xMin < image->bounding_box.x1)
+      image->bounding_box.x1=bounding_box.xMin;
+    if (bounding_box.xMax > image->bounding_box.x2)
+      image->bounding_box.x2=bounding_box.xMax;
+    if (bounding_box.yMin < image->bounding_box.y1)
+      image->bounding_box.y1=bounding_box.yMin;
+    if (bounding_box.yMax > image->bounding_box.y2)
+      image->bounding_box.y2=bounding_box.yMax;
   }
-  image->bounding_box.x1=bounding_box.xMin;
-  image->bounding_box.y1=bounding_box.yMin;
-  image->bounding_box.x2=bounding_box.xMax;
-  image->bounding_box.y2=bounding_box.yMax;
-  image->columns=image->bounding_box.x2-image->bounding_box.x1+3;
-  image->rows=image->bounding_box.y2-image->bounding_box.y1+3;
+  image->columns=(int) (image->bounding_box.x2-image->bounding_box.x1+3) & -4;
+  image->rows=image->bounding_box.y2-image->bounding_box.y1;
   SetImage(image,TransparentOpacity);
+  FormatString(label,"%s %s",face->family_name,face->style_name);
+  (void) SetImageAttribute(image,"Label",label);
   /*
     Render label.
   */
@@ -497,8 +494,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     glyph=(&bitmap->bitmap);
     if ((glyph->width == 0) || (glyph->rows == 0))
       continue;
-    x=bitmap->left+(glyphs[i].origin.x/64)-bounding_box.xMin;
-    y=image->rows-bitmap->top-(glyphs[i].origin.y/64)+bounding_box.yMin;
+    x=bitmap->left+(glyphs[i].origin.x/64)-image->bounding_box.x1;
+    y=image->rows-bitmap->top-(glyphs[i].origin.y/64)+image->bounding_box.y1;
     q=GetImagePixels(image,x,y,glyph->width,glyph->rows);
     if (q == (PixelPacket *) NULL)
       break;
@@ -541,6 +538,9 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     filename[MaxTextExtent],
     *path,
     *path_end;
+
+  double
+    pointsize;
 
   Image
     *image;
@@ -683,7 +683,10 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     }
   status|=TT_Set_Instance_Resolutions(instance,(unsigned short)
     image->x_resolution,(unsigned short) image->y_resolution);
-  status|=TT_Set_Instance_CharSize(instance,(int) (64.0*image_info->pointsize));
+  pointsize=image_info->pointsize;
+  if (image_info->transform[1] == 0.0)
+    pointsize*=image_info->transform[0];
+  status|=TT_Set_Instance_CharSize(instance,(int) (64.0*pointsize));
   if (status)
     ThrowReaderException(DelegateWarning,"Cannot initialize TTF instance",
       image);
@@ -740,11 +743,6 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     if (glyphs[unicode[i]].z == (TT_Glyph *) NULL)
       continue;
     TT_Get_Glyph_Metrics(glyphs[unicode[i]],&glyph_metrics);
-    if (i == (length-1))
-      {
-        x+=glyph_metrics.bbox.xMax-glyph_metrics.bbox.xMin;
-        continue;
-      }
     x+=glyph_metrics.advance;
   }
   canvas.width=(x/64+3) & -4;
@@ -782,9 +780,9 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   /*
     Render label with a TrueType font.
   */
-  image->matte=True;
   image->columns=canvas.width;
   image->rows=canvas.rows;
+  SetImage(image,TransparentOpacity);
   p=(unsigned char *) canvas.bitmap;
   for (y=0; y < (int) image->rows; y++)
   {
@@ -814,6 +812,30 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     if ((image->columns % 2) != 0)
       p++;
   }
+  if ((image_info->transform[0] != 1.0) && (image_info->transform[1] != 0.0))
+    {
+      Image
+        *rotate_image;
+
+      /*
+        Rotate text.
+      */
+printf("%f %f %f %f %f\n",
+   image_info->transform[0], 
+   image_info->transform[1], 
+   image_info->transform[2], 
+   image_info->transform[3],180.0*acos(image_info->transform[0])/M_PI);
+      rotate_image=RotateImage(image,180.0*acos(image_info->transform[0])/M_PI,
+        &image->exception);
+      if (rotate_image == (Image *) NULL)
+        return(False);
+      DestroyImage(image);
+      image=rotate_image;
+    }
+  image->bounding_box.x1=0.0;
+  image->bounding_box.y1=0.0;
+  image->bounding_box.x2=image->columns;
+  image->bounding_box.y2=image->rows;
   /*
     Free TrueType resources.
   */
@@ -847,6 +869,9 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
     geometry[MaxTextExtent],
     page[MaxTextExtent];
 
+  double
+    pointsize;
+
   FILE
     *file;
 
@@ -861,9 +886,6 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
 
   PixelPacket
     corner;
-
-  RectangleInfo
-    crop_info;
 
   register int
     x;
@@ -892,22 +914,25 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   font=image_info->font;
   if (font == (char *) NULL)
     font="Helvetica";
+  pointsize=image_info->pointsize;
+  if (image_info->transform[1] == 0.0)
+    pointsize*=image_info->transform[0];
   (void) fprintf(file,
     "/%.1024s-ISO dup /%.1024s ReencodeFont findfont %f scalefont setfont\n",
-    font,font,image_info->pointsize);
+    font,font,pointsize);
   (void) fprintf(file,"0.0 0.0 0.0 setrgbcolor\n");
   (void) fprintf(file,"0 0 %u %u rectfill\n",
-    (unsigned int) ceil(image_info->pointsize*Extent(text)),
-    (unsigned int) ceil(2*image_info->pointsize));
+    (unsigned int) ceil(pointsize*Extent(text)),
+    (unsigned int) ceil(2.0*pointsize));
   (void) fprintf(file,"1.0 1.0 1.0 setrgbcolor\n");
-  (void) fprintf(file,"0 %f moveto (%.1024s) show\n",image_info->pointsize,
+  (void) fprintf(file,"0 %f moveto (%.1024s) show\n",pointsize,
     EscapeParenthesis(text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
   clone_info=CloneImageInfo(image_info);
   FormatString(page,"%ux%u+0+0!",
-    (unsigned int) ceil(image_info->pointsize*Extent(text)),
-    (unsigned int) ceil(2*image_info->pointsize));
+    (unsigned int) ceil(pointsize*Extent(text)),
+    (unsigned int) ceil(2.0*pointsize));
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   (void) CloneString(&clone_info->page,page);
   DestroyImage(image);
@@ -919,10 +944,10 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   /*
     Set bounding box to the image dimensions.
   */
-  crop_info.width=0;
-  crop_info.height=ceil(image_info->pointsize);
-  crop_info.x=0;
-  crop_info.y=image_info->pointsize/4;
+  image->bounding_box.x2=0;
+  image->bounding_box.y2=ceil(pointsize);
+  image->bounding_box.x1=0;
+  image->bounding_box.y1=pointsize/4;
   corner.red=0;
   corner.green=0;
   corner.blue=0;
@@ -934,13 +959,14 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
     for (x=0; x < (int) image->columns; x++)
     {
       if (!ColorMatch(*p,corner,0))
-        if (x > (int) crop_info.width)
-          crop_info.width=x;
+        if (x > image->bounding_box.x2)
+          image->bounding_box.x2=x;
       p++;
     }
   }
-  FormatString(geometry,"%ux%u%+d%+d",crop_info.width+1,crop_info.height,
-    crop_info.x,crop_info.y);
+  FormatString(geometry,"%dx%d%+d%+d",(int) image->bounding_box.x2+1,
+    (int) image->bounding_box.y2,(int) image->bounding_box.x1,
+    (int) image->bounding_box.y1);
   TransformImage(&image,geometry,(char *) NULL);
   image->matte=True;
   for (y=0; y < (int) image->rows; y++)
@@ -965,6 +991,25 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
     if (!SyncImagePixels(image))
       break;
   }
+  if ((image_info->transform[0] != 1.0) && (image_info->transform[1] != 0.0))
+    {
+      Image
+        *rotate_image;
+
+      /*
+        Rotate text.
+      */
+      rotate_image=RotateImage(image,180.0*acos(image_info->transform[0])/M_PI,
+        &image->exception);
+      if (rotate_image == (Image *) NULL)
+        return(False);
+      DestroyImage(image);
+      image=rotate_image;
+    }
+  image->bounding_box.x1=0.0;
+  image->bounding_box.y1=0.0;
+  image->bounding_box.x2=image->columns;
+  image->bounding_box.y2=image->rows;
   return(image);
 }
 
@@ -1112,6 +1157,10 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
   image->matte=True;
   image->columns=annotate_info.width;
   image->rows=annotate_info.height;
+  image->bounding_box.x1=0.0;
+  image->bounding_box.y1=0.0;
+  image->bounding_box.x2=annotate_info.width;
+  image->bounding_box.y2=annotate_info.height;
   image->background_color=image->border_color;
   status=XAnnotateImage(display,&pixel,&annotate_info,image);
   if (status == 0)
@@ -1139,6 +1188,25 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
     if (!SyncImagePixels(image))
       break;
   }
+  if ((image_info->transform[0] != 1.0) && (image_info->transform[1] != 0.0))
+    {
+      Image
+        *rotate_image;
+
+      /*
+        Rotate text.
+      */
+      rotate_image=RotateImage(image,180.0*acos(image_info->transform[0])/M_PI,
+        &image->exception);
+      if (rotate_image == (Image *) NULL)
+        return(False);
+      DestroyImage(image);
+      image=rotate_image;
+    }
+  image->bounding_box.x1=0.0;
+  image->bounding_box.y1=0.0;
+  image->bounding_box.x2=image->columns;
+  image->bounding_box.y2=image->rows;
   return(image);
 #else
   Image

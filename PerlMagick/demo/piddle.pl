@@ -56,6 +56,6 @@ $image->Draw(primitve=>'line',points=>'260,200 260,260',stroke=>red,linewidth=>5
 #
 # Draw text.
 #
-$image->Annotate(text=>'This is a test!',geometry=>'+30+130',
+$image->Annotate(text=>'This is a test!',geometry=>'+30+140',
   font=>'@Generic.ttf',fill=>'green',pointsize=>24,rotate=>45.0);
 $image->Display();

@@ -211,51 +211,38 @@ MagickExport unsigned int AnnotateImage(Image *image,
     annotate_image=ReadImage(image_info,&image->exception);
     if (annotate_image == (Image *) NULL)
       break;
-    if (annotate_info->degrees != 0.0)
-      {
-        Image
-          *rotate_image;
-
-        /*
-          Rotate text.
-        */
-        rotate_image=RotateImage(annotate_image,annotate_info->degrees,
-          &image->exception);
-        if (rotate_image == (Image *) NULL)
-          return(False);
-        DestroyImage(annotate_image);
-        annotate_image=rotate_image;
-        clone_info->bounds.height=annotate_image->rows;
-      }
     /*
       Composite text onto the image.
     */
-    y+=annotate_image->bounding_box.y2/2.0;
     switch (clone_info->gravity)
     {
       case NorthWestGravity:
       {
         clone_info->bounds.x=x;
-        clone_info->bounds.y=i*clone_info->bounds.height+y;
+        clone_info->bounds.y=i*clone_info->bounds.height+y-
+          annotate_image->bounding_box.y2;
         break;
       }
       case NorthGravity:
       {
         clone_info->bounds.x=(width/2)-(int) (annotate_image->columns/2)+x;
-        clone_info->bounds.y=i*clone_info->bounds.height+y;
+        clone_info->bounds.y=i*clone_info->bounds.height+y-
+          annotate_image->bounding_box.y2;
         break;
       }
       case NorthEastGravity:
       {
         clone_info->bounds.x=width-(int) annotate_image->columns+x;
-        clone_info->bounds.y=i*clone_info->bounds.height+y;
+        clone_info->bounds.y=i*clone_info->bounds.height+y-
+          annotate_image->bounding_box.y2;
         break;
       }
       case WestGravity:
       {
         clone_info->bounds.x=x;
         clone_info->bounds.y=(height/2)-(int) (number_lines*
-          clone_info->bounds.height/2)+i*clone_info->bounds.height+y;
+          clone_info->bounds.height/2)+i*clone_info->bounds.height+y-
+          annotate_image->bounding_box.y2;
         break;
       }
       case ForgetGravity:
@@ -265,32 +252,37 @@ MagickExport unsigned int AnnotateImage(Image *image,
       {
         clone_info->bounds.x=x+(width/2)-(int) (annotate_image->columns/2);
         clone_info->bounds.y=y+(height/2)-(int) (number_lines*
-          clone_info->bounds.height/2)+i*clone_info->bounds.height;
+          clone_info->bounds.height/2)+i*clone_info->bounds.height+
+          annotate_image->bounding_box.y2/2.0;
         break;
       }
       case EastGravity:
       {
         clone_info->bounds.x=x+width-(int) annotate_image->columns;
         clone_info->bounds.y=y+(height/2)-(int) (number_lines*
-          clone_info->bounds.height/2)+i*clone_info->bounds.height;
+          clone_info->bounds.height/2)+i*clone_info->bounds.height-
+          annotate_image->bounding_box.y2;
         break;
       }
       case SouthWestGravity:
       {
         clone_info->bounds.x=x;
-        clone_info->bounds.y=y+height-(i+1)*clone_info->bounds.height;
+        clone_info->bounds.y=y+height-(i+1)*clone_info->bounds.height-
+          annotate_image->bounding_box.y2/2.0;
         break;
       }
       case SouthGravity:
       {
         clone_info->bounds.x=x+(width/2)-(int) (annotate_image->columns/2);
-        clone_info->bounds.y=y+height-(i+1)*clone_info->bounds.height;
+        clone_info->bounds.y=y+height-(i+1)*clone_info->bounds.height-
+          annotate_image->bounding_box.y2;
         break;
       }
       case SouthEastGravity:
       {
         clone_info->bounds.x=x+width-(int) annotate_image->columns;
-        clone_info->bounds.y=y+height-(i+1)*clone_info->bounds.height;
+        clone_info->bounds.y=y+height-(i+1)*clone_info->bounds.height-
+          annotate_image->bounding_box.y2;
         break;
       }
     }
@@ -302,7 +294,6 @@ MagickExport unsigned int AnnotateImage(Image *image,
     CompositeImage(image,AnnotateCompositeOp,annotate_image,
       clone_info->bounds.x,clone_info->bounds.y);
     DestroyImage(annotate_image);
-    y-=annotate_image->bounding_box.y2/2.0;
   }
   image->matte=matte;
   DestroyImageInfo(image_info);

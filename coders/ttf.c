@@ -132,7 +132,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
     return((Image *) NULL);
-  (void) CloneString(&clone_info->size,"800x520");
+  (void) CloneString(&clone_info->size,"800x480");
   *font='\0';
   (void) CloneString(&clone_info->font,font);
   clone_info->pointsize=18;

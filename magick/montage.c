@@ -618,7 +618,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
           Annotate composite next with title.
         */
         FormatString(geometry,"%ux%u%+d%+d",montage_next->columns,
-          font_height << 1,0,tile_info.y+4);
+          font_height << 1,0,font_height+tile_info.y+4);
         (void) CloneString(&annotate_info->geometry,geometry);
         (void) CloneString(&annotate_info->text,montage_info->title);
         AnnotateImage(montage_next,annotate_info);
@@ -818,7 +818,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
                 2*border_width,font_height,(int) (x_offset+border_width),
                 (int) (montage_info->frame ? y_offset+height+
                 2*border_width-bevel_width-2 : y_offset+tile_info.height+
-                2*border_width+(montage_info->shadow ? 4 : 0)+2));
+                2*border_width+(montage_info->shadow ? 4 : 0)+font_height));
               (void) CloneString(&annotate_info->geometry,geometry);
               (void) CloneString(&annotate_info->text,attribute->value);
               AnnotateImage(montage_next,annotate_info);

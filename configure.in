@@ -807,8 +807,6 @@ then
       if test "$LIB_TTF" != ''
       then
          passed=`expr $passed + 1`
-      else
-         failed=`expr $failed + 1`
       fi
     fi
     if test "$LIB_TTF" = ''

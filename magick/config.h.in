@@ -69,6 +69,9 @@
 /* Define if you have the `fpx' library (-lfpx). */
 #undef HAVE_LIBFPX
 
+/* Define if you have the `freetype' library (-lfreetype). */
+#undef HAVE_LIBFREETYPE
+
 /* Define if you have the `ICE' library (-lICE). */
 #undef HAVE_LIBICE
 
