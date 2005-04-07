@@ -6088,12 +6088,21 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    image->depth=%u",image->depth);
     }
-  if (image->depth > 16)
+  if (image->depth > 8)
      image->depth=16;
   if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32)
      image->depth=8;
+  if (image->depth > 4 && image->depth < 8)
+     image->depth=8;
+  if (image->depth == 3)
+     image->depth=4;
   save_image_depth=image->depth;
   ping_info->bit_depth=(png_byte) save_image_depth;
+  if (logging)
+    {
+     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    ping_info->bit_depth=%u",ping_info->bit_depth);
+    }
 #if defined(PNG_pHYs_SUPPORTED)
   if ((image->x_resolution != 0) && (image->y_resolution != 0) &&
       (!mng_info->write_mng || !mng_info->equal_physs))
@@ -6170,7 +6179,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       background.index=(png_byte) background.gray;
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    Setting up bKGd chunk");
+            "    Setting up bKGD chunk");
       png_set_bKGD(ping,ping_info,&background);
     }
   /*
@@ -6955,7 +6964,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
     Allocate memory.
   */
   rowbytes=image->columns;
-  if (image->depth == 8)
+  if (image->depth <= 8)
     {
       if (mng_info->write_png24)
         rowbytes*=3;
@@ -6971,14 +6980,16 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
         }
     }
   else
-    if (image->depth == 16)
-      {
-        if ((mng_info->optimize || mng_info->IsPalette) &&
-            ImageIsGray(image))
-          rowbytes*=(image->matte ? 4 : 2);
-        else
-          rowbytes*=(image->matte ? 8 : 6);
-      }
+    {
+      if ((mng_info->optimize || mng_info->IsPalette) &&
+          ImageIsGray(image))
+        rowbytes*=(image->matte ? 4 : 2);
+      else
+        rowbytes*=(image->matte ? 8 : 6);
+    }
+  if (logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "  Allocating %lu bytes of memory for pixels",rowbytes);
   png_pixels=MagickAllocateMemory(unsigned char *,rowbytes);
   if (png_pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -6995,6 +7006,9 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       /*
         Convert PseudoClass image to a PNG monochrome image.
       */
+       if (logging)
+         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "  pass %d, Image Is Monochrome",pass);
       for (y=0; y < (long) image->rows; y++)
       {
         if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
@@ -7021,6 +7035,9 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
          (!image->matte || (ping_info->bit_depth >= QuantumDepth)) &&
          (mng_info->optimize || mng_info->IsPalette) && ImageIsGray(image))
       {
+         if (logging)
+           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "  pass %d, Image Is Gray",pass);
         for (y=0; y < (long) image->rows; y++)
         {
           if (!AcquireImagePixels(image,0,y,image->columns,1,
@@ -7052,6 +7069,11 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
         if ((image->depth > 8) || (mng_info->write_png24 ||
             mng_info->write_png32 ||
             (!mng_info->write_png8 && !mng_info->IsPalette)))
+         {
+           if (logging)
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "  pass %d, Image Is RGB, PNG colortype is %d",pass,
+               ping_info->color_type);
           for (y=0; y < (long) image->rows; y++)
           {
             if (!AcquireImagePixels(image,0,y,image->columns,1,
@@ -7073,11 +7095,21 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
               (void) ExportImagePixelArea(image,(QuantumType) RGBAQuantum,
                 image->depth,png_pixels,0);
             else
-              (void) ExportImagePixelArea(image,(QuantumType) RGBQuantum,
+              {
+               (void) ExportImagePixelArea(image,(QuantumType) RGBQuantum,
                 image->depth,png_pixels,0);
+              }
             png_write_row(ping,png_pixels);
           }
+           if (logging)
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "  pass %d done",pass);
+        }
       else
+        {
+           if (logging)
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "  pass %d, Image Is RGB, 16-bit GRAY, or GRAY_ALPHA",pass);
         for (y=0; y < (long) image->rows; y++)
         {
           if (!AcquireImagePixels(image,0,y,image->columns,1,
@@ -7093,6 +7125,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
             (void) ExportImagePixelArea(image,(QuantumType) IndexQuantum,
               image->depth,png_pixels,0);
           png_write_row(ping,png_pixels);
+        }
         }
         if (image->previous == (Image *) NULL)
           if (!MagickMonitor(SaveImageTag,pass,num_passes,&image->exception))

@@ -1,3 +1,7 @@
+2005-04-07 Glenn Randers-Pehrson <glennrp@glennrp.com>
+
+	* coders/png.c: encoder now accepts image->depth other than 8 and 16.
+
 2005-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (WriteDPXImage): First pass at a new SMPTE268M-2003
