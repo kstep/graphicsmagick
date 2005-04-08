@@ -1,3 +1,11 @@
+2005-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/cache.c (OpenCache): Fix a memory resource leak noticed
+	by Stefan v. Wachter <svwa-dev@mnet-online.de>.  This error with
+	keeping track of resources may eventually cause GraphicsMagick to
+	run slower and slower due to using disk-based images rather than
+	memory-based images.
+
 2005-04-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (AllocateString): Performance enhancement.

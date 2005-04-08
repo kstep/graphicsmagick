@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2005-04-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/cache.c (OpenCache): Fix a memory resource leak noticed
+        by Stefan v. Wachter &lt;svwa-dev@mnet-online.de&gt;.  This error with
+        keeping track of resources may eventually cause GraphicsMagick to
+        run slower and slower due to using disk-based images rather than
+        memory-based images.
+
+</UL>
+<p>
 2005-04-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

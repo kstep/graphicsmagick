@@ -2205,9 +2205,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   */
   offset=number_pixels*(sizeof(PixelPacket)+sizeof(IndexPacket));
   if ((offset == (magick_off_t) ((size_t) offset)) &&
-      (AcquireMagickResource(MemoryResource,offset)) &&
       ((cache_info->type == UndefinedCache) ||
-       (cache_info->type == MemoryCache)))
+       (cache_info->type == MemoryCache)) &&
+      (AcquireMagickResource(MemoryResource,offset)))
     {
       MagickReallocMemory(cache_info->pixels,(size_t) offset);
       pixels=cache_info->pixels;
@@ -2218,6 +2218,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
           /*
             Create in-memory pixel cache.
           */
+          cache_info->length=offset;
           cache_info->storage_class=image->storage_class;
           cache_info->colorspace=image->colorspace;
           cache_info->type=MemoryCache;
