@@ -3164,6 +3164,12 @@ snapshot.</pp>
 
 <abs>efficiently determine image characteristics</abs>
 
+<pp>
+Use this option to disable reading the image pixels so that image
+characteristics such as the image dimensions may be obtained very
+quickly. For identify, use +ping to force reading the image pixels so
+that the pixel read rate may be included in the displayed information.</pp>
+
 </utils>
 
 

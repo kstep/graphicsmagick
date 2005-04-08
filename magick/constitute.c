@@ -5041,6 +5041,11 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   clone_info->ping=True;
   image=ReadStream(clone_info,&PingStream,exception);
   DestroyImageInfo(clone_info);
+  /*
+    Intentionally clear timer if ping is requested since timing ping
+    is meaningless and misleading.
+  */
+  ResetTimer(&image->timer);
   return(image);
 }
 

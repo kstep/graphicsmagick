@@ -100,11 +100,12 @@ The information displayed includes the scene number, the file name, the
 width and height of the image, whether the image is colormapped or not,
 the number of colors in the image, the number of bytes in the image, the
 format of the image (JPEG, PNM, etc.), and finally the number of seconds
-it took to read and process the image. An example line output
-from <strong>identify</strong> follows:
+in both user time and elapsed time it took to read and process the image.
+If -verbose or +ping are provided as an option, the pixel read rate is
+also displayed. An example line output from <strong>identify</strong> follows:
 <pre>
     images/aquarium.miff 640x480 PseudoClass 256c
-           308135b MIFF 1s
+           308135b MIFF 0.000u 0:01
 </pre>
 <p>
 If <tt>-verbose</tt> is set, expect additional output including any image

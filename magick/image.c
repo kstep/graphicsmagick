@@ -1528,14 +1528,21 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
           FormatSize(GetBlobSize(image),format);
           (void) fprintf(file,"%.1024s ",format);
         }
-      pixels_per_second=(magick_int64_t) ((double) rows*columns/
-                                          (elapsed_time > GetTimerResolution() ?
-                                           elapsed_time : GetTimerResolution()));
-      FormatSize(pixels_per_second,format);
-      (void) fprintf(file,"%0.3fu %ld:%02ld (%s pixels/s)\n",user_time,
+      (void) fprintf(file,"%0.3fu %ld:%02ld",user_time,
                      (long) (elapsed_time/60.0),
-                     (long) ceil(fmod(elapsed_time,60.0)),
-                     format);
+                     (long) ceil(fmod(elapsed_time,60.0)));
+      /*
+        Only display pixel read rate if the time accumulated is at
+        least the timer's resolution.
+      */
+      if (elapsed_time >= GetTimerResolution())
+        {
+          pixels_per_second=(magick_int64_t) ((double) rows*columns/ elapsed_time);
+          FormatSize(pixels_per_second,format);
+          (void) fprintf(file," (%s pixels/s)",format);
+        }
+      fprintf(file,"\n");
+    
       return (ferror(file) ? MagickFail : MagickPass);
     }
   /*
@@ -2210,9 +2217,13 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
     (void) fprintf(file,"  Tainted: True\n");
   else
     (void) fprintf(file,"  Tainted: False\n");
-  if (user_time != 0.0)
+  /*
+    Only display time information if the time accumulated is at least
+    the timer's resolution.
+  */
+  if (user_time >= GetTimerResolution())
     (void) fprintf(file,"  User Time: %0.3fu\n",user_time);
-  if (elapsed_time != 0.0)
+  if (elapsed_time >= GetTimerResolution())
     {
       (void) fprintf(file,"  Elapsed Time: %ld:%02ld\n",
                      (long) (elapsed_time/60.0),

@@ -24,6 +24,13 @@
 2005-04-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/command.c (IdentifyImageCommand): Use +ping to force
+        identify to read the image pixels.
+  <LI> magick/constitute.c (PingImage): Intentionally clear
+        user/elapsed timer when ping is used on an image since the results
+        are misleading.<BR>
+  <LI> magick/image.c (DescribeImage): Only display pixel read rate if
+        the time accumulated is at least the timer's resolution.
   <LI> magick/cache.c (OpenCache): Fix a memory resource leak noticed
         by Stefan v. Wachter &lt;svwa-dev@mnet-online.de&gt;.  This error with
         keeping track of resources may eventually cause GraphicsMagick to

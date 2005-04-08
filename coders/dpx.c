@@ -1121,13 +1121,13 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   ImageComponentPackingMethod
     packing_method;
 
-  long
+  unsigned long
     y;
 
   register const PixelPacket
     *p;
   
-  register long
+  register unsigned long
     i,
     x;
 
@@ -1449,13 +1449,13 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         }
 
       WordStreamInitializeWrite(&word_stream,word_write_func,image);
-      for (y=0; y < (long) image->rows; y++)
+      for (y=0; y < image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
 
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < image->columns; x++)
             {
               /*
                 Prepare samples.

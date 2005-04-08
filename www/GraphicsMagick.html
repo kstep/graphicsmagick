@@ -1253,6 +1253,24 @@ that name. This is used to control on/off options. Use <tt>+define
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The following definitions may be created:</font></td></tr></table>
 <dl>
+<dt>dpx:bits-per-sample=&lt;value&gt;</dt>
+<dd>If the dpx:bits-per-sample key is defined, GraphicsMagick will write
+DPX images with the specified bits per sample, overriding any existing
+depth value. If this option is not specified, then the value is based on
+the existing image depth value from the original image file. The DPX
+standard supports bits per sample values of 1, 8, 10, 12, and 16. Many
+DPX readers demand a sample size of 10 bits with type A padding (see
+below).
+</dd>
+<dt>dpx:packing-method={packed|a|b|lsbpad|msbpad}</dt>
+<dd>DPX samples are output within 32-bit words. They may be tightly
+packed end-to-end within the words ("packed"), padded with null bits to
+the right of the sample ("a" or "lsbpad), or padded with null bits to the
+left of the sample ("b" or "msbpad"). This option only has an effect for
+sample sizes of 10 or 12 bits. If samples are not packed, the DPX
+standard recommends type A padding. Many DPX readers demand a sample size
+of 10 bits with type A padding.
+</dd>
 <dt>jp2:rate=&lt;value&gt;</dt>
 <dd>Specify the compression factor to use while writing JPEG-2000
 files. The compression factor is the reciprocal of the compression
@@ -3205,6 +3223,11 @@ width=15><b><font face="Helvetica, Arial"
     -ping
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>efficiently determine image characteristics</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use this option to disable reading the image pixels so that image
+characteristics such as the image dimensions may be obtained very
+quickly. For identify, use +ping to force reading the image pixels so
+that the pixel read rate may be included in the displayed information.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
