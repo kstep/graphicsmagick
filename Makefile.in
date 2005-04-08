@@ -122,7 +122,7 @@
 
 
 
-SOURCES = $(Magick___lib_libGraphicsMagick___la_SOURCES) $(coders_art_la_SOURCES) $(coders_avi_la_SOURCES) $(coders_avs_la_SOURCES) $(coders_bmp_la_SOURCES) $(coders_caption_la_SOURCES) $(coders_cineon_la_SOURCES) $(coders_clipboard_la_SOURCES) $(coders_cmyk_la_SOURCES) $(coders_cut_la_SOURCES) $(coders_dcm_la_SOURCES) $(coders_dib_la_SOURCES) $(coders_dps_la_SOURCES) $(coders_dpx_la_SOURCES) $(coders_emf_la_SOURCES) $(coders_ept_la_SOURCES) $(coders_fax_la_SOURCES) $(coders_fits_la_SOURCES) $(coders_fpx_la_SOURCES) $(coders_gif_la_SOURCES) $(coders_gradient_la_SOURCES) $(coders_gray_la_SOURCES) $(coders_histogram_la_SOURCES) $(coders_html_la_SOURCES) $(coders_icon_la_SOURCES) $(coders_jbig_la_SOURCES) $(coders_jp2_la_SOURCES) $(coders_jpeg_la_SOURCES) $(coders_label_la_SOURCES) $(coders_locale_la_SOURCES) $(coders_logo_la_SOURCES) $(coders_map_la_SOURCES) $(coders_mat_la_SOURCES) $(coders_matte_la_SOURCES) $(coders_meta_la_SOURCES) $(coders_miff_la_SOURCES) $(coders_mono_la_SOURCES) $(coders_mpc_la_SOURCES) $(coders_mpeg_la_SOURCES) $(coders_mpr_la_SOURCES) $(coders_msl_la_SOURCES) $(coders_mtv_la_SOURCES) $(coders_mvg_la_SOURCES) $(coders_null_la_SOURCES) $(coders_otb_la_SOURCES) $(coders_palm_la_SOURCES) $(coders_pcd_la_SOURCES) $(coders_pcl_la_SOURCES) $(coders_pcx_la_SOURCES) $(coders_pdb_la_SOURCES) $(coders_pdf_la_SOURCES) $(coders_pict_la_SOURCES) $(coders_pix_la_SOURCES) $(coders_plasma_la_SOURCES) $(coders_png_la_SOURCES) $(coders_pnm_la_SOURCES) $(coders_preview_la_SOURCES) $(coders_ps_la_SOURCES) $(coders_ps2_la_SOURCES) $(coders_ps3_la_SOURCES) $(coders_psd_la_SOURCES) $(coders_pwp_la_SOURCES) $(coders_rgb_la_SOURCES) $(coders_rla_la_SOURCES) $(coders_rle_la_SOURCES) $(coders_sct_la_SOURCES) $(coders_sfw_la_SOURCES) $(coders_sgi_la_SOURCES) $(coders_stegano_la_SOURCES) $(coders_sun_la_SOURCES) $(coders_svg_la_SOURCES) $(coders_tga_la_SOURCES) $(coders_tiff_la_SOURCES) $(coders_tile_la_SOURCES) $(coders_tim_la_SOURCES) $(coders_topol_la_SOURCES) $(coders_ttf_la_SOURCES) $(coders_txt_la_SOURCES) $(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) $(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) $(coders_vid_la_SOURCES) $(coders_viff_la_SOURCES) $(coders_wbmp_la_SOURCES) $(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) $(coders_xwd_la_SOURCES) $(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) $(ltdl_libltdl_la_SOURCES) $(magick_libGraphicsMagick_la_SOURCES) $(wand_libGraphicsMagickWand_la_SOURCES) $(Magick___demo_analyze_SOURCES) $(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) $(Magick___demo_detrans_SOURCES) $(Magick___demo_flip_SOURCES) $(Magick___demo_gravity_SOURCES) $(Magick___demo_piddle_SOURCES) $(Magick___demo_shapes_SOURCES) $(Magick___demo_zoom_SOURCES) $(Magick___tests_appendImages_SOURCES) $(Magick___tests_attributes_SOURCES) $(Magick___tests_averageImages_SOURCES) $(Magick___tests_coalesceImages_SOURCES) $(Magick___tests_coderInfo_SOURCES) $(Magick___tests_color_SOURCES) $(Magick___tests_colorHistogram_SOURCES) $(Magick___tests_exceptions_SOURCES) $(Magick___tests_montageImages_SOURCES) $(Magick___tests_morphImages_SOURCES) $(Magick___tests_readWriteBlob_SOURCES) $(Magick___tests_readWriteImages_SOURCES) $(tests_constitute_SOURCES) $(tests_drawtest_SOURCES) $(tests_maptest_SOURCES) $(tests_rwblob_SOURCES) $(tests_rwfile_SOURCES) $(utilities_gm_SOURCES) $(wand_drawtest_SOURCES) $(wand_wandtest_SOURCES)
+SOURCES = $(Magick___lib_libGraphicsMagick___la_SOURCES) $(coders_art_la_SOURCES) $(coders_avi_la_SOURCES) $(coders_avs_la_SOURCES) $(coders_bmp_la_SOURCES) $(coders_caption_la_SOURCES) $(coders_cineon_la_SOURCES) $(coders_clipboard_la_SOURCES) $(coders_cmyk_la_SOURCES) $(coders_cut_la_SOURCES) $(coders_dcm_la_SOURCES) $(coders_dib_la_SOURCES) $(coders_dps_la_SOURCES) $(coders_dpx_la_SOURCES) $(coders_emf_la_SOURCES) $(coders_ept_la_SOURCES) $(coders_fax_la_SOURCES) $(coders_fits_la_SOURCES) $(coders_fpx_la_SOURCES) $(coders_gif_la_SOURCES) $(coders_gradient_la_SOURCES) $(coders_gray_la_SOURCES) $(coders_histogram_la_SOURCES) $(coders_html_la_SOURCES) $(coders_icon_la_SOURCES) $(coders_jbig_la_SOURCES) $(coders_jp2_la_SOURCES) $(coders_jpeg_la_SOURCES) $(coders_label_la_SOURCES) $(coders_locale_la_SOURCES) $(coders_logo_la_SOURCES) $(coders_map_la_SOURCES) $(coders_mat_la_SOURCES) $(coders_matte_la_SOURCES) $(coders_meta_la_SOURCES) $(coders_miff_la_SOURCES) $(coders_mono_la_SOURCES) $(coders_mpc_la_SOURCES) $(coders_mpeg_la_SOURCES) $(coders_mpr_la_SOURCES) $(coders_msl_la_SOURCES) $(coders_mtv_la_SOURCES) $(coders_mvg_la_SOURCES) $(coders_null_la_SOURCES) $(coders_otb_la_SOURCES) $(coders_palm_la_SOURCES) $(coders_pcd_la_SOURCES) $(coders_pcl_la_SOURCES) $(coders_pcx_la_SOURCES) $(coders_pdb_la_SOURCES) $(coders_pdf_la_SOURCES) $(coders_pict_la_SOURCES) $(coders_pix_la_SOURCES) $(coders_plasma_la_SOURCES) $(coders_png_la_SOURCES) $(coders_pnm_la_SOURCES) $(coders_preview_la_SOURCES) $(coders_ps_la_SOURCES) $(coders_ps2_la_SOURCES) $(coders_ps3_la_SOURCES) $(coders_psd_la_SOURCES) $(coders_pwp_la_SOURCES) $(coders_rgb_la_SOURCES) $(coders_rla_la_SOURCES) $(coders_rle_la_SOURCES) $(coders_sct_la_SOURCES) $(coders_sfw_la_SOURCES) $(coders_sgi_la_SOURCES) $(coders_stegano_la_SOURCES) $(coders_sun_la_SOURCES) $(coders_svg_la_SOURCES) $(coders_tga_la_SOURCES) $(coders_tiff_la_SOURCES) $(coders_tile_la_SOURCES) $(coders_tim_la_SOURCES) $(coders_topol_la_SOURCES) $(coders_ttf_la_SOURCES) $(coders_txt_la_SOURCES) $(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) $(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) $(coders_vid_la_SOURCES) $(coders_viff_la_SOURCES) $(coders_wbmp_la_SOURCES) $(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) $(coders_xwd_la_SOURCES) $(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) $(ltdl_libltdl_la_SOURCES) $(magick_libGraphicsMagick_la_SOURCES) $(wand_libGraphicsMagickWand_la_SOURCES) $(Magick___demo_analyze_SOURCES) $(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) $(Magick___demo_detrans_SOURCES) $(Magick___demo_flip_SOURCES) $(Magick___demo_gravity_SOURCES) $(Magick___demo_piddle_SOURCES) $(Magick___demo_shapes_SOURCES) $(Magick___demo_zoom_SOURCES) $(Magick___tests_appendImages_SOURCES) $(Magick___tests_attributes_SOURCES) $(Magick___tests_averageImages_SOURCES) $(Magick___tests_coalesceImages_SOURCES) $(Magick___tests_coderInfo_SOURCES) $(Magick___tests_color_SOURCES) $(Magick___tests_colorHistogram_SOURCES) $(Magick___tests_exceptions_SOURCES) $(Magick___tests_montageImages_SOURCES) $(Magick___tests_morphImages_SOURCES) $(Magick___tests_readWriteBlob_SOURCES) $(Magick___tests_readWriteImages_SOURCES) $(tests_bitstream_SOURCES) $(tests_constitute_SOURCES) $(tests_drawtest_SOURCES) $(tests_maptest_SOURCES) $(tests_rwblob_SOURCES) $(tests_rwfile_SOURCES) $(utilities_gm_SOURCES) $(wand_drawtest_SOURCES) $(wand_wandtest_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -913,9 +913,9 @@ wand_libGraphicsMagickWand_la_OBJECTS =  \
 	$(am_wand_libGraphicsMagickWand_la_OBJECTS)
 am__EXEEXT_1 = utilities/gm$(EXEEXT)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
-am__EXEEXT_2 = tests/constitute$(EXEEXT) tests/drawtest$(EXEEXT) \
-	tests/maptest$(EXEEXT) tests/rwblob$(EXEEXT) \
-	tests/rwfile$(EXEEXT)
+am__EXEEXT_2 = tests/bitstream$(EXEEXT) tests/constitute$(EXEEXT) \
+	tests/drawtest$(EXEEXT) tests/maptest$(EXEEXT) \
+	tests/rwblob$(EXEEXT) tests/rwfile$(EXEEXT)
 am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
 	Magick++/demo/button$(EXEEXT) Magick++/demo/demo$(EXEEXT) \
 	Magick++/demo/detrans$(EXEEXT) Magick++/demo/flip$(EXEEXT) \
@@ -1021,6 +1021,9 @@ am_Magick___tests_readWriteImages_OBJECTS =  \
 Magick___tests_readWriteImages_OBJECTS =  \
 	$(am_Magick___tests_readWriteImages_OBJECTS)
 Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+am_tests_bitstream_OBJECTS = tests/bitstream.$(OBJEXT)
+tests_bitstream_OBJECTS = $(am_tests_bitstream_OBJECTS)
+tests_bitstream_DEPENDENCIES =
 am_tests_constitute_OBJECTS = tests/constitute.$(OBJEXT)
 tests_constitute_OBJECTS = $(am_tests_constitute_OBJECTS)
 tests_constitute_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -1136,10 +1139,11 @@ SOURCES = $(Magick___lib_libGraphicsMagick___la_SOURCES) \
 	$(Magick___tests_morphImages_SOURCES) \
 	$(Magick___tests_readWriteBlob_SOURCES) \
 	$(Magick___tests_readWriteImages_SOURCES) \
-	$(tests_constitute_SOURCES) $(tests_drawtest_SOURCES) \
-	$(tests_maptest_SOURCES) $(tests_rwblob_SOURCES) \
-	$(tests_rwfile_SOURCES) $(utilities_gm_SOURCES) \
-	$(wand_drawtest_SOURCES) $(wand_wandtest_SOURCES)
+	$(tests_bitstream_SOURCES) $(tests_constitute_SOURCES) \
+	$(tests_drawtest_SOURCES) $(tests_maptest_SOURCES) \
+	$(tests_rwblob_SOURCES) $(tests_rwfile_SOURCES) \
+	$(utilities_gm_SOURCES) $(wand_drawtest_SOURCES) \
+	$(wand_wandtest_SOURCES)
 DIST_SOURCES = $(Magick___lib_libGraphicsMagick___la_SOURCES) \
 	$(coders_art_la_SOURCES) $(coders_avi_la_SOURCES) \
 	$(coders_avs_la_SOURCES) $(coders_bmp_la_SOURCES) \
@@ -1209,10 +1213,11 @@ DIST_SOURCES = $(Magick___lib_libGraphicsMagick___la_SOURCES) \
 	$(Magick___tests_morphImages_SOURCES) \
 	$(Magick___tests_readWriteBlob_SOURCES) \
 	$(Magick___tests_readWriteImages_SOURCES) \
-	$(tests_constitute_SOURCES) $(tests_drawtest_SOURCES) \
-	$(tests_maptest_SOURCES) $(tests_rwblob_SOURCES) \
-	$(tests_rwfile_SOURCES) $(utilities_gm_SOURCES) \
-	$(wand_drawtest_SOURCES) $(wand_wandtest_SOURCES)
+	$(tests_bitstream_SOURCES) $(tests_constitute_SOURCES) \
+	$(tests_drawtest_SOURCES) $(tests_maptest_SOURCES) \
+	$(tests_rwblob_SOURCES) $(tests_rwfile_SOURCES) \
+	$(utilities_gm_SOURCES) $(wand_drawtest_SOURCES) \
+	$(wand_wandtest_SOURCES)
 man1dir = $(mandir)/man1
 man4dir = $(mandir)/man4
 man5dir = $(mandir)/man5
@@ -2880,12 +2885,15 @@ Magick___tests_readWriteImages_SOURCES = Magick++/tests/readWriteImages.cpp
 Magick___tests_readWriteImages_LDADD = $(LIBMAGICKPP)
 @WITH_PERL_TRUE@MAGICKPP_LOCAL_TARGETS = www/Magick++/NEWS.html www/Magick++/ChangeLog.html
 TESTS_CHECK_PGRMS = \
+	tests/bitstream \
         tests/constitute \
         tests/drawtest \
         tests/maptest \
         tests/rwblob \
         tests/rwfile
 
+tests_bitstream_SOURCES = tests/bitstream.c
+tests_bitstream_LDADD = 
 tests_constitute_SOURCES = tests/constitute.c
 tests_constitute_LDADD = $(LIBMAGICK)
 tests_maptest_SOURCES = tests/maptest.c
@@ -5043,6 +5051,11 @@ tests/$(am__dirstamp):
 tests/$(DEPDIR)/$(am__dirstamp):
 	@$(mkdir_p) tests/$(DEPDIR)
 	@: > tests/$(DEPDIR)/$(am__dirstamp)
+tests/bitstream.$(OBJEXT): tests/$(am__dirstamp) \
+	tests/$(DEPDIR)/$(am__dirstamp)
+tests/bitstream$(EXEEXT): $(tests_bitstream_OBJECTS) $(tests_bitstream_DEPENDENCIES) tests/$(am__dirstamp)
+	@rm -f tests/bitstream$(EXEEXT)
+	$(LINK) $(tests_bitstream_LDFLAGS) $(tests_bitstream_OBJECTS) $(tests_bitstream_LDADD) $(LIBS)
 tests/constitute.$(OBJEXT): tests/$(am__dirstamp) \
 	tests/$(DEPDIR)/$(am__dirstamp)
 tests/constitute$(EXEEXT): $(tests_constitute_OBJECTS) $(tests_constitute_DEPENDENCIES) tests/$(am__dirstamp)
@@ -5664,6 +5677,7 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-widget.lo
 	-rm -f magick/magick_libGraphicsMagick_la-xwindow.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-xwindow.lo
+	-rm -f tests/bitstream.$(OBJEXT)
 	-rm -f tests/constitute.$(OBJEXT)
 	-rm -f tests/drawtest.$(OBJEXT)
 	-rm -f tests/maptest.$(OBJEXT)
@@ -5971,6 +5985,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-version.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-widget.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-xwindow.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/bitstream.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/constitute.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/drawtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/maptest.Po@am__quote@

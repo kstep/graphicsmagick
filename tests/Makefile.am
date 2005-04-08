@@ -8,11 +8,15 @@
 #
 
 TESTS_CHECK_PGRMS = \
+	tests/bitstream \
         tests/constitute \
         tests/drawtest \
         tests/maptest \
         tests/rwblob \
         tests/rwfile
+
+tests_bitstream_SOURCES = tests/bitstream.c
+tests_bitstream_LDADD =
 
 tests_constitute_SOURCES = tests/constitute.c
 tests_constitute_LDADD = $(LIBMAGICK)

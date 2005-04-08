@@ -934,7 +934,7 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
               if (cache_info->file == -1)
                 (void) close(cache_file);
               ThrowBinaryException(FileOpenError,UnableToOpenFile,
-                clone_info->cache_filename)
+                                   clone_info->cache_filename);
             }
         }
       (void) MagickSeek(clone_file,cache_info->offset,SEEK_SET);
@@ -965,7 +965,7 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
       if (clone_info->file == -1)
         (void) close(clone_file);
       ThrowBinaryException3(ResourceLimitFatalError,MemoryAllocationFailed,
-        UnableToCloneImage)
+                            UnableToCloneImage);
     }
   (void) MagickSeek(cache_file,cache_info->offset,SEEK_SET);
   (void) MagickSeek(clone_file,cache_info->offset,SEEK_SET);
@@ -2235,9 +2235,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   */
   offset=number_pixels*(sizeof(PixelPacket)+sizeof(IndexPacket));
   if ((offset == (magick_off_t) ((size_t) offset)) &&
-      (AcquireMagickResource(MemoryResource,offset)) &&
       ((cache_info->type == UndefinedCache) ||
-       (cache_info->type == MemoryCache)))
+       (cache_info->type == MemoryCache)) &&
+      (AcquireMagickResource(MemoryResource,offset)))
     {
       MagickReallocMemory(cache_info->pixels,(size_t) offset);
       pixels=cache_info->pixels;
@@ -2248,6 +2248,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
           /*
             Create in-memory pixel cache.
           */
+          cache_info->length=offset;
           cache_info->storage_class=image->storage_class;
           cache_info->colorspace=image->colorspace;
           cache_info->type=MemoryCache;
@@ -2274,8 +2275,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
       {
         LiberateMagickResource(DiskResource,cache_info->length);
         ThrowBinaryException(FileOpenError,UnableToCreateTemporaryFile,
-                             cache_info->cache_filename)
-          }
+                             cache_info->cache_filename);
+      }
   switch (mode)
     {
     case ReadMode:
@@ -2305,8 +2306,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if (file == -1)
     {
       LiberateMagickResource(DiskResource,cache_info->length);
-      ThrowBinaryException(CacheError,UnableToOpenCache,image->filename)
-        }
+      ThrowBinaryException(CacheError,UnableToOpenCache,image->filename);
+    }
   if (!ExtendCache(file,cache_info->offset+cache_info->length))
     {
       (void) close(file);
@@ -2315,7 +2316,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
                             "remove %.1024s (%.1024s)",cache_info->filename,
                             cache_info->cache_filename);
       LiberateMagickResource(DiskResource,cache_info->length);
-      ThrowBinaryException(CacheError,UnableToExtendCache,image->filename)
+      ThrowBinaryException(CacheError,UnableToExtendCache,image->filename);
     }
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;

@@ -277,8 +277,7 @@ int main ( int argc, char **argv )
    * Check final output
    */
 
-  if ( !strcmp( "DPX", format ) ||
-       !strcmp( "JPEG", format ) ||
+  if ( !strcmp( "JPEG", format ) ||
        !strcmp( "JNG", format ) ||
        !strcmp( "JPG", format ) ||
        !strcmp( "JPG24", format ) ||

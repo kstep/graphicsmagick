@@ -673,8 +673,8 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
           BitStreamMSBWrite(&bit_stream,10,(unsigned int) ScaleQuantumToShort(p->red)/64U);
           BitStreamMSBWrite(&bit_stream,10,(unsigned int) ScaleQuantumToShort(p->green)/64U);
           BitStreamMSBWrite(&bit_stream,10,(unsigned int) ScaleQuantumToShort(p->blue)/64U);
-          if ((x == 0) && (y == 0))
-            printf("%x %x %x %x\n",packet[0],packet[1],packet[2],packet[3]);
+/*           if ((x == 0) && (y == 0)) */
+/*             printf("%x %x %x %x\n",packet[0],packet[1],packet[2],packet[3]); */
           (void) WriteBlob(image,4,packet);
 #else
           pixel=(unsigned long)

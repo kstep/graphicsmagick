@@ -564,6 +564,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixels_offset;
 
   MagickBool
+    is_grayscale=MagickFalse,
+    is_monochrome=MagickFalse,
     word_pad_lsb=MagickFalse,
     word_pad_msb=MagickFalse,
     swab=MagickFalse;
@@ -778,6 +780,16 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           else if (packing_method == PackingMethodWordsFillMSB)
             word_pad_msb=MagickTrue;
         }
+      /*
+        Decide if the image is grayscale.
+      */
+      if (((dpx_image_info.elements < 3) &&
+           (element_descriptor == ImageElementLuma)) ||
+          ((dpx_image_info.elements == 1) &&
+           (element_descriptor == ImageElementUnspecified)))
+        is_grayscale=MagickTrue;
+      if ((is_grayscale) && (bits_per_sample == 1))
+        is_monochrome=MagickTrue;
 
       switch (element_descriptor)
         {
@@ -904,42 +916,49 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         for (i=0; i < samples_per_element; i++)
                           samples[i]=WordStreamLSBRead(&word_stream,bits_per_sample);
                       }
+                    /*
+                      Scale samples.
+                    */
+                    for (i=0; i < samples_per_element; i++)
+                      samples[i]=ScaleShortToQuantum(samples[i]*scale_to_short);
+                    /*
+                      Assign samples.
+                    */
                     switch (element_descriptor)
                       {
                       case ImageElementRed:
-                        q->red=ScaleShortToQuantum(samples[0]*scale_to_short);
+                        q->red=samples[0];
                         break;
                       case ImageElementGreen:
-                        q->green=ScaleShortToQuantum(samples[0]*scale_to_short);
+                        q->green=samples[0];
                         break;
                       case ImageElementBlue:
-                        q->blue=ScaleShortToQuantum(samples[0]*scale_to_short);
+                        q->blue=samples[0];
                         break;
                       case ImageElementAlpha:
-                        q->opacity=MaxRGB-ScaleShortToQuantum(samples[0]*scale_to_short);
+                        q->opacity=MaxRGB-samples[0];
                         break;
                       case ImageElementUnspecified:
                       case ImageElementLuma:
-                        q->red=q->green=q->blue=ScaleShortToQuantum(samples[0]*
-                                                                    scale_to_short);
+                        q->red=q->green=q->blue=samples[0];
                         break;
                       case ImageElementRGB:
-                        q->blue=ScaleShortToQuantum(samples[0]*scale_to_short);
-                        q->green=ScaleShortToQuantum(samples[1]*scale_to_short);
-                        q->red=ScaleShortToQuantum(samples[2]*scale_to_short);
+                        q->blue=samples[0];
+                        q->green=samples[1];
+                        q->red=samples[2];
                         q->opacity=OpaqueOpacity;
                         break;
                       case ImageElementRGBA:
-                        q->blue=ScaleShortToQuantum(samples[0]*scale_to_short);
-                        q->green=ScaleShortToQuantum(samples[1]*scale_to_short);
-                        q->red=ScaleShortToQuantum(samples[2]*scale_to_short);
-                        q->opacity=MaxRGB-ScaleShortToQuantum(samples[3]*scale_to_short);
+                        q->blue=samples[0];
+                        q->green=samples[1];
+                        q->red=samples[2];
+                        q->opacity=MaxRGB-samples[3];
                         break;
                       case ImageElementABGR:
-                        q->opacity=MaxRGB-ScaleShortToQuantum(samples[0]*scale_to_short);
-                        q->red=ScaleShortToQuantum(samples[1]*scale_to_short);
-                        q->green=ScaleShortToQuantum(samples[2]*scale_to_short);
-                        q->blue=ScaleShortToQuantum(samples[3]*scale_to_short);
+                        q->opacity=MaxRGB-samples[0];
+                        q->red=samples[1];
+                        q->green=samples[2];
+                        q->blue=samples[3];
                         break;
                       default:
                         break;
@@ -981,6 +1000,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
                    image->filename);
+  image->is_monochrome=is_monochrome;
+  image->is_grayscale=is_grayscale;
   CloseBlob(image);
   return(image);
 }
@@ -1111,7 +1132,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     x;
 
   unsigned int
-    bits_per_sample,
+    bits_per_sample=0,
     element,
     number_of_elements,
     samples[8],
@@ -1161,21 +1182,27 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   word_write_func=(WordStreamWriteFunc) WriteBlobLSBLong;
 #endif
 
-  if (image->depth > 12 )
-    bits_per_sample=16;
-  else if (image->depth > 10)
-    bits_per_sample=12;
-  else if (image->depth > 8)
-    bits_per_sample=10;
-  else if (image->depth > 1)
-    bits_per_sample=8;
-  else
-    bits_per_sample=1;
+  if ((definition_value=AccessDefinition(image_info,"dpx","bits-per-sample")))
+    bits_per_sample=atoi(definition_value);
+
+  if (bits_per_sample == 0)
+    {
+      if (image->depth > 12 )
+        bits_per_sample=16;
+      else if (image->depth > 10)
+        bits_per_sample=12;
+      else if (image->depth > 8)
+        bits_per_sample=10;
+      else if (image->depth > 1)
+        bits_per_sample=8;
+      else
+        bits_per_sample=1;
+    }
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Bits per sample: %u", bits_per_sample);
 
-  is_grayscale=IsGrayImage(image,&image->exception);
+  is_grayscale=image->is_grayscale;
 
   if (is_grayscale)
     {
@@ -1436,41 +1463,47 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
               switch (element_descriptor)
                 {
                 case ImageElementRed:
-                  samples[0]=ScaleQuantumToShort(p->red)/scale_from_short;
+                  samples[0]=p->red;
                   break;
                 case ImageElementGreen:
-                  samples[0]=ScaleQuantumToShort(p->green)/scale_from_short;
+                  samples[0]=p->green;
                   break;
                 case ImageElementBlue:
-                  samples[0]=ScaleQuantumToShort(p->blue)/scale_from_short;
+                  samples[0]=p->blue;
                   break;
                 case ImageElementAlpha:
-                  samples[0]=ScaleQuantumToShort(MaxRGB-p->opacity)/scale_from_short;
+                  samples[0]=MaxRGB-p->opacity;
                   break;
                 case ImageElementUnspecified:
                 case ImageElementLuma:
-                  samples[0]=ScaleQuantumToShort(PixelIntensity(p))/scale_from_short;
+                  samples[0]=PixelIntensity(p);
                   break;
                 case ImageElementRGB:
-                  samples[0]=ScaleQuantumToShort(p->blue)/scale_from_short;
-                  samples[1]=ScaleQuantumToShort(p->green)/scale_from_short;
-                  samples[2]=ScaleQuantumToShort(p->red)/scale_from_short;
+                  samples[0]=p->blue;
+                  samples[1]=p->green;
+                  samples[2]=p->red;
                   break;
                 case ImageElementRGBA:
-                  samples[0]=ScaleQuantumToShort(p->blue)/scale_from_short;
-                  samples[1]=ScaleQuantumToShort(p->green)/scale_from_short;
-                  samples[2]=ScaleQuantumToShort(p->red)/scale_from_short;
-                  samples[3]=ScaleQuantumToShort(MaxRGB-p->opacity)/scale_from_short;
+                  samples[0]=p->blue;
+                  samples[1]=p->green;
+                  samples[2]=p->red;
+                  samples[3]=MaxRGB-p->opacity;
                   break;
                 case ImageElementABGR:
-                  samples[0]=ScaleQuantumToShort(MaxRGB-p->opacity)/scale_from_short;
-                  samples[1]=ScaleQuantumToShort(p->red)/scale_from_short;
-                  samples[2]=ScaleQuantumToShort(p->green)/scale_from_short;
-                  samples[3]=ScaleQuantumToShort(p->blue)/scale_from_short;
+                  samples[0]=MaxRGB-p->opacity;
+                  samples[1]=p->red;
+                  samples[2]=p->green;
+                  samples[3]=p->blue;
                   break;
                 default:
                   break;
                 }
+              /*
+                Scale samples.
+              */
+              for (i=0; i < samples_per_element; i++)
+                samples[i]=ScaleQuantumToShort(samples[i])/scale_from_short;
+
               /*
                 Output samples.
               */
