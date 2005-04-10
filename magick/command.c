@@ -602,39 +602,12 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
-                quantize_info->colorspace=UndefinedColorspace;
-                if (LocaleCompare("cmyk",option) == 0)
-                  quantize_info->colorspace=CMYKColorspace;
-                if (LocaleCompare("gray",option) == 0)
+                quantize_info->colorspace=StringToColorspaceType(option);
+                if (IsGrayColorspace(quantize_info->colorspace))
                   {
-                    quantize_info->colorspace=GRAYColorspace;
                     quantize_info->number_colors=256;
                     quantize_info->tree_depth=8;
                   }
-                if (LocaleCompare("hsl",option) == 0)
-                  quantize_info->colorspace=HSLColorspace;
-                if (LocaleCompare("hwb",option) == 0)
-                  quantize_info->colorspace=HWBColorspace;
-                if (LocaleCompare("ohta",option) == 0)
-                  quantize_info->colorspace=OHTAColorspace;
-                if (LocaleCompare("rgb",option) == 0)
-                  quantize_info->colorspace=RGBColorspace;
-                if (LocaleCompare("srgb",option) == 0)
-                  quantize_info->colorspace=sRGBColorspace;
-                if (LocaleCompare("transparent",option) == 0)
-                  quantize_info->colorspace=TransparentColorspace;
-                if (LocaleCompare("xyz",option) == 0)
-                  quantize_info->colorspace=XYZColorspace;
-                if (LocaleCompare("ycbcr",option) == 0)
-                  quantize_info->colorspace=YCbCrColorspace;
-                if (LocaleCompare("ycc",option) == 0)
-                  quantize_info->colorspace=YCCColorspace;
-                if (LocaleCompare("yiq",option) == 0)
-                  quantize_info->colorspace=YIQColorspace;
-                if (LocaleCompare("ypbpr",option) == 0)
-                  quantize_info->colorspace=YPbPrColorspace;
-                if (LocaleCompare("yuv",option) == 0)
-                  quantize_info->colorspace=YUVColorspace;
                 if (quantize_info->colorspace == UndefinedColorspace)
                   MagickFatalError(OptionFatalError,InvalidColorspaceType,
                     option);
@@ -1621,35 +1594,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowCompositeException(OptionError,MissingArgument,option);
                 option=argv[i];
-                image_info->colorspace=UndefinedColorspace;
-                if (LocaleCompare("cmyk",option) == 0)
-                  image_info->colorspace=CMYKColorspace;
-                if (LocaleCompare("gray",option) == 0)
-                  image_info->colorspace=GRAYColorspace;
-                if (LocaleCompare("hsl",option) == 0)
-                  image_info->colorspace=HSLColorspace;
-                if (LocaleCompare("hwb",option) == 0)
-                  image_info->colorspace=HWBColorspace;
-                if (LocaleCompare("ohta",option) == 0)
-                  image_info->colorspace=OHTAColorspace;
-                if (LocaleCompare("rgb",option) == 0)
-                  image_info->colorspace=RGBColorspace;
-                if (LocaleCompare("srgb",option) == 0)
-                  image_info->colorspace=sRGBColorspace;
-                if (LocaleCompare("transparent",option) == 0)
-                  image_info->colorspace=TransparentColorspace;
-                if (LocaleCompare("xyz",option) == 0)
-                  image_info->colorspace=XYZColorspace;
-                if (LocaleCompare("ycbcr",option) == 0)
-                  image_info->colorspace=YCbCrColorspace;
-                if (LocaleCompare("ycc",option) == 0)
-                  image_info->colorspace=YCCColorspace;
-                if (LocaleCompare("yiq",option) == 0)
-                  image_info->colorspace=YIQColorspace;
-                if (LocaleCompare("ypbpr",option) == 0)
-                  image_info->colorspace=YPbPrColorspace;
-                if (LocaleCompare("yuv",option) == 0)
-                  image_info->colorspace=YUVColorspace;
+                image_info->colorspace=StringToColorspaceType(option);
                 if (image_info->colorspace == UndefinedColorspace)
                   ThrowCompositeException(OptionError,UnrecognizedColorspace,
                     option);
@@ -3039,35 +2984,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowConvertException(OptionError,MissingArgument,option);
                 option=argv[i];
-                image_info->colorspace=UndefinedColorspace;
-                if (LocaleCompare("cmyk",option) == 0)
-                  image_info->colorspace=CMYKColorspace;
-                if (LocaleCompare("gray",option) == 0)
-                  image_info->colorspace=GRAYColorspace;
-                if (LocaleCompare("hsl",option) == 0)
-                  image_info->colorspace=HSLColorspace;
-                if (LocaleCompare("hwb",option) == 0)
-                  image_info->colorspace=HWBColorspace;
-                if (LocaleCompare("ohta",option) == 0)
-                  image_info->colorspace=OHTAColorspace;
-                if (LocaleCompare("rgb",option) == 0)
-                  image_info->colorspace=RGBColorspace;
-                if (LocaleCompare("srgb",option) == 0)
-                  image_info->colorspace=sRGBColorspace;
-                if (LocaleCompare("transparent",option) == 0)
-                  image_info->colorspace=TransparentColorspace;
-                if (LocaleCompare("xyz",option) == 0)
-                  image_info->colorspace=XYZColorspace;
-                if (LocaleCompare("ycbcr",option) == 0)
-                  image_info->colorspace=YCbCrColorspace;
-                if (LocaleCompare("ycc",option) == 0)
-                  image_info->colorspace=YCCColorspace;
-                if (LocaleCompare("yiq",option) == 0)
-                  image_info->colorspace=YIQColorspace;
-                if (LocaleCompare("ypbpr",option) == 0)
-                  image_info->colorspace=YPbPrColorspace;
-                if (LocaleCompare("yuv",option) == 0)
-                  image_info->colorspace=YUVColorspace;
+                image_info->colorspace=StringToColorspaceType(option);
                 if (image_info->colorspace == UndefinedColorspace)
                   ThrowConvertException(OptionError,UnrecognizedColorspace,option);
               }
@@ -5629,39 +5546,12 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
-                quantize_info->colorspace=UndefinedColorspace;
-                if (LocaleCompare("cmyk",option) == 0)
-                  quantize_info->colorspace=CMYKColorspace;
-                if (LocaleCompare("gray",option) == 0)
+                quantize_info->colorspace=StringToColorspaceType(option);
+                if (IsGrayColorspace(quantize_info->colorspace))
                   {
-                    quantize_info->colorspace=GRAYColorspace;
                     quantize_info->number_colors=256;
                     quantize_info->tree_depth=8;
                   }
-                if (LocaleCompare("hsl",option) == 0)
-                  quantize_info->colorspace=HSLColorspace;
-                if (LocaleCompare("hwb",option) == 0)
-                  quantize_info->colorspace=HWBColorspace;
-                if (LocaleCompare("ohta",option) == 0)
-                  quantize_info->colorspace=OHTAColorspace;
-                if (LocaleCompare("rgb",option) == 0)
-                  quantize_info->colorspace=RGBColorspace;
-                if (LocaleCompare("srgb",option) == 0)
-                  quantize_info->colorspace=sRGBColorspace;
-                if (LocaleCompare("transparent",option) == 0)
-                  quantize_info->colorspace=TransparentColorspace;
-                if (LocaleCompare("xyz",option) == 0)
-                  quantize_info->colorspace=XYZColorspace;
-                if (LocaleCompare("ycbcr",option) == 0)
-                  quantize_info->colorspace=YCbCrColorspace;
-                if (LocaleCompare("ycc",option) == 0)
-                  quantize_info->colorspace=YCCColorspace;
-                if (LocaleCompare("yiq",option) == 0)
-                  quantize_info->colorspace=YIQColorspace;
-                if (LocaleCompare("ypbpr",option) == 0)
-                  quantize_info->colorspace=YPbPrColorspace;
-                if (LocaleCompare("yuv",option) == 0)
-                  quantize_info->colorspace=YUVColorspace;
                 if (quantize_info->colorspace == UndefinedColorspace)
                   MagickFatalError(OptionFatalError,InvalidColorspaceType,
                     option);
@@ -7569,44 +7459,17 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             type=(*option);
             option=argv[++i];
-            if (LocaleCompare("cmyk",option) == 0)
+            quantize_info.colorspace=StringToColorspaceType(option);
+            if ((quantize_info.colorspace == CMYKColorspace) ||
+                (IsGrayColorspace(quantize_info.colorspace)))
               {
-                (void) TransformColorspace(*image,CMYKColorspace);
-                /* Ignore request to quantize in CMYK colorspace */
-                quantize_info.colorspace=RGBColorspace;
+                (void) TransformColorspace(*image,quantize_info.colorspace);
+                if (quantize_info.colorspace == CMYKColorspace)
+                  {
+                    /* Ignore request to quantize in CMYK colorspace */
+                    quantize_info.colorspace=RGBColorspace;
+                  }
               }
-            if (LocaleCompare("gray",option) == 0)
-              {
-                (void) TransformColorspace(*image,GRAYColorspace);
-                quantize_info.colorspace=GRAYColorspace;
-              }
-            if (LocaleCompare("hsl",option) == 0)
-              quantize_info.colorspace=HSLColorspace;
-            if (LocaleCompare("hwb",option) == 0)
-              quantize_info.colorspace=HWBColorspace;
-            if (LocaleCompare("ohta",option) == 0)
-              quantize_info.colorspace=OHTAColorspace;
-            if (LocaleCompare("rgb",option) == 0)
-              {
-                (void) TransformColorspace(*image,RGBColorspace);
-                quantize_info.colorspace=RGBColorspace;
-              }
-            if (LocaleCompare("srgb",option) == 0)
-              quantize_info.colorspace=sRGBColorspace;
-            if (LocaleCompare("transparent",option) == 0)
-              quantize_info.colorspace=TransparentColorspace;
-            if (LocaleCompare("xyz",option) == 0)
-              quantize_info.colorspace=XYZColorspace;
-            if (LocaleCompare("ycbcr",option) == 0)
-              quantize_info.colorspace=YCbCrColorspace;
-            if (LocaleCompare("ycc",option) == 0)
-              quantize_info.colorspace=YCCColorspace;
-            if (LocaleCompare("yiq",option) == 0)
-              quantize_info.colorspace=YIQColorspace;
-            if (LocaleCompare("ypbpr",option) == 0)
-              quantize_info.colorspace=YPbPrColorspace;
-            if (LocaleCompare("yuv",option) == 0)
-              quantize_info.colorspace=YUVColorspace;
             clone_info->colorspace=quantize_info.colorspace;
             if (type == '+')
               (*image)->colorspace=clone_info->colorspace;
@@ -9401,7 +9264,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       (*image)->matte=matte;
     }
 
-  if ( quantize_info.colorspace == GRAYColorspace )
+  if ( IsGrayColorspace(quantize_info.colorspace) )
     {
       /*
         If color reduction is requested, then quantize to the requested
@@ -9412,7 +9275,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       if ( quantize_info.number_colors != 0 )
         (void) QuantizeImage(&quantize_info,*image);
       else
-        (void) TransformColorspace(*image,GRAYColorspace);
+        (void) TransformColorspace(*image,quantize_info.colorspace);
     }
   else
     {
@@ -10137,35 +10000,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowMogrifyException(OptionError,MissingArgument,option);
                 option=argv[i];
-                image_info->colorspace=UndefinedColorspace;
-                if (LocaleCompare("cmyk",option) == 0)
-                  image_info->colorspace=CMYKColorspace;
-                if (LocaleCompare("gray",option) == 0)
-                  image_info->colorspace=GRAYColorspace;
-                if (LocaleCompare("hsl",option) == 0)
-                  image_info->colorspace=HSLColorspace;
-                if (LocaleCompare("hwb",option) == 0)
-                  image_info->colorspace=HWBColorspace;
-                if (LocaleCompare("ohta",option) == 0)
-                  image_info->colorspace=OHTAColorspace;
-                if (LocaleCompare("rgb",option) == 0)
-                  image_info->colorspace=RGBColorspace;
-                if (LocaleCompare("srgb",option) == 0)
-                  image_info->colorspace=sRGBColorspace;
-                if (LocaleCompare("transparent",option) == 0)
-                  image_info->colorspace=TransparentColorspace;
-                if (LocaleCompare("xyz",option) == 0)
-                  image_info->colorspace=XYZColorspace;
-                if (LocaleCompare("ycbcr",option) == 0)
-                  image_info->colorspace=YCbCrColorspace;
-                if (LocaleCompare("ycc",option) == 0)
-                  image_info->colorspace=YCCColorspace;
-                if (LocaleCompare("yiq",option) == 0)
-                  image_info->colorspace=YIQColorspace;
-                if (LocaleCompare("ypbpr",option) == 0)
-                  image_info->colorspace=YPbPrColorspace;
-                if (LocaleCompare("yuv",option) == 0)
-                  image_info->colorspace=YUVColorspace;
+                image_info->colorspace=StringToColorspaceType(option);
                 if (image_info->colorspace == UndefinedColorspace)
                   ThrowMogrifyException(OptionError,UnrecognizedColorspace,option);
               }
@@ -12087,39 +11922,12 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowMontageException(OptionError,MissingArgument,option);
                 option=argv[i];
-                quantize_info.colorspace=UndefinedColorspace;
-                if (LocaleCompare("cmyk",option) == 0)
-                  quantize_info.colorspace=CMYKColorspace;
-                if (LocaleCompare("gray",option) == 0)
+                quantize_info.colorspace=StringToColorspaceType(option);
+                if (IsGrayColorspace(quantize_info.colorspace))
                   {
-                    quantize_info.colorspace=GRAYColorspace;
                     quantize_info.number_colors=256;
                     quantize_info.tree_depth=8;
                   }
-                if (LocaleCompare("hsl",option) == 0)
-                  quantize_info.colorspace=HSLColorspace;
-                if (LocaleCompare("hwb",option) == 0)
-                  quantize_info.colorspace=HWBColorspace;
-                if (LocaleCompare("ohta",option) == 0)
-                  quantize_info.colorspace=OHTAColorspace;
-                if (LocaleCompare("rgb",option) == 0)
-                  quantize_info.colorspace=RGBColorspace;
-                if (LocaleCompare("srgb",option) == 0)
-                  quantize_info.colorspace=sRGBColorspace;
-                if (LocaleCompare("transparent",option) == 0)
-                  quantize_info.colorspace=TransparentColorspace;
-                if (LocaleCompare("xyz",option) == 0)
-                  quantize_info.colorspace=XYZColorspace;
-                if (LocaleCompare("ycbcr",option) == 0)
-                  quantize_info.colorspace=YCbCrColorspace;
-                if (LocaleCompare("ycc",option) == 0)
-                  quantize_info.colorspace=YCCColorspace;
-                if (LocaleCompare("yiq",option) == 0)
-                  quantize_info.colorspace=YIQColorspace;
-                if (LocaleCompare("ypbpr",option) == 0)
-                  quantize_info.colorspace=YPbPrColorspace;
-                if (LocaleCompare("yuv",option) == 0)
-                  quantize_info.colorspace=YUVColorspace;
                 if (quantize_info.colorspace == UndefinedColorspace)
                   ThrowMontageException(OptionError,UnrecognizedColorspace,
                     option);
@@ -13488,39 +13296,12 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
                 option=argv[i];
-                quantize_info->colorspace=UndefinedColorspace;
-                if (LocaleCompare("cmyk",option) == 0)
-                  quantize_info->colorspace=CMYKColorspace;
-                if (LocaleCompare("gray",option) == 0)
+                quantize_info->colorspace=StringToColorspaceType(option);
+                if (IsGrayColorspace(quantize_info->colorspace))
                   {
-                    quantize_info->colorspace=GRAYColorspace;
                     quantize_info->number_colors=256;
                     quantize_info->tree_depth=8;
                   }
-                if (LocaleCompare("hsl",option) == 0)
-                  quantize_info->colorspace=HSLColorspace;
-                if (LocaleCompare("hwb",option) == 0)
-                  quantize_info->colorspace=HWBColorspace;
-                if (LocaleCompare("ohta",option) == 0)
-                  quantize_info->colorspace=OHTAColorspace;
-                if (LocaleCompare("rgb",option) == 0)
-                  quantize_info->colorspace=RGBColorspace;
-                if (LocaleCompare("srgb",option) == 0)
-                  quantize_info->colorspace=sRGBColorspace;
-                if (LocaleCompare("transparent",option) == 0)
-                  quantize_info->colorspace=TransparentColorspace;
-                if (LocaleCompare("xyz",option) == 0)
-                  quantize_info->colorspace=XYZColorspace;
-                if (LocaleCompare("ycbcr",option) == 0)
-                  quantize_info->colorspace=YCbCrColorspace;
-                if (LocaleCompare("ycc",option) == 0)
-                  quantize_info->colorspace=YCCColorspace;
-                if (LocaleCompare("yiq",option) == 0)
-                  quantize_info->colorspace=YIQColorspace;
-                if (LocaleCompare("ypbpr",option) == 0)
-                  quantize_info->colorspace=YPbPrColorspace;
-                if (LocaleCompare("yuv",option) == 0)
-                  quantize_info->colorspace=YUVColorspace;
                 if (quantize_info->colorspace == UndefinedColorspace)
                   MagickFatalError(OptionFatalError,InvalidColorspaceType,
                     option);

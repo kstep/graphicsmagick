@@ -25,65 +25,6 @@
 #include <time.h>
 #include <magick/api.h>
 
-static const char *ColorspaceTypeToString(const ColorspaceType colorspace)
-{
-  const char
-    *log_colorspace = "Unknown";
-  
-  switch (colorspace)
-    {
-    case UndefinedColorspace:
-      log_colorspace="Undefined";
-      break;
-    case RGBColorspace:
-      log_colorspace="RGB";
-      break;
-    case GRAYColorspace:
-      log_colorspace="GRAY";
-      break;
-    case TransparentColorspace:
-      log_colorspace="Transparent";
-      break;
-    case OHTAColorspace:
-      log_colorspace="OHTA";
-      break;
-    case XYZColorspace:
-      log_colorspace="XYZ";
-      break;
-    case YCbCrColorspace:
-      log_colorspace="YCbCr";
-      break;
-    case YCCColorspace:
-      log_colorspace="PhotoCD YCC";
-      break;
-    case YIQColorspace:
-      log_colorspace="YIQ";
-      break;
-    case YPbPrColorspace:
-      log_colorspace="YPbPr";
-      break;
-    case YUVColorspace:
-      log_colorspace="YUV";
-      break;
-    case CMYKColorspace:
-      log_colorspace="CMYK";
-      break;
-    case sRGBColorspace:
-      log_colorspace="PhotoCD sRGB";
-      break;
-    case HSLColorspace:
-      log_colorspace="HSL";
-      break;
-    case HWBColorspace:
-      log_colorspace="HWB";
-      break;
-    case LABColorspace:
-      log_colorspace="LAB";
-      break;
-    }
-  return log_colorspace;
-}
-
 int main ( int argc, char **argv )
 {
   Image

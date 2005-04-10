@@ -17,8 +17,14 @@ extern "C" {
 #endif
 
 /*
+  Forward type declarations.
+*/
+typedef struct _Image *ImagePtr;
+
+/*
   Include declarations.
 */
+#include "magick/colorspace.h"
 #include "magick/error.h"
 #include "magick/timer.h"
 
@@ -47,17 +53,6 @@ extern "C" {
 #define ScaleShortToQuantum(value)   ((Quantum) ((value)/257UL))
 #define ScaleToQuantum(value)        ((unsigned long) (value))
 #define ScaleQuantumToIndex(value)   ((unsigned char) (value))
-/*
-  intensity=0.299*red+0.587*green+0.114*blue.
-  Premultiply by 1024 to obtain integral values, and then divide
-  result by 1024 by shifting to the right by 10 bits.
-*/
-#define PixelIntensity(pixel)                                          \
-  ((unsigned int)                                                      \
-   (((unsigned int) (pixel)->red*306U+                                 \
-     (unsigned int) (pixel)->green*601U+                               \
-     (unsigned int) (pixel)->blue*117U)                                \
-    >> 10U))
 typedef unsigned char Quantum;
 #elif (QuantumDepth == 16)
 #define MaxColormapSize  65536UL
@@ -76,17 +71,6 @@ typedef unsigned char Quantum;
 #define ScaleShortToQuantum(value)   ((Quantum) (value))
 #define ScaleToQuantum(value)        ((unsigned long) (257UL*(value)))
 #define ScaleQuantumToIndex(value)   ((unsigned short) (value))
-/*
-  intensity=0.299*red+0.587*green+0.114*blue.
-  Premultiply by 1024 to obtain integral values, and then divide
-  result by 1024 by shifting to the right by 10 bits.
-*/
-#define PixelIntensity(pixel)                                          \
-  ((unsigned int)                                                      \
-   (((unsigned int) (pixel)->red*306U+                                 \
-     (unsigned int) (pixel)->green*601U+                               \
-     (unsigned int) (pixel)->blue*117U)                                \
-    >> 10U))
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
 #define MaxColormapSize  65536UL
@@ -105,15 +89,6 @@ typedef unsigned short Quantum;
 #define ScaleShortToQuantum(value)   ((Quantum) (65537UL*(value)))
 #define ScaleToQuantum(value)        ((unsigned long) (16843009UL*(value)))
 #define ScaleQuantumToIndex(value)   ((unsigned short) ((value)/65537UL))
-/*
-  intensity=0.299*red+0.587*green+0.114*blue.
-*/
-#define PixelIntensity(pixel)                                   \
-  ((unsigned int)                                               \
-   (((double)306.0*(pixel)->red+                                \
-     (double)601.0*(pixel)->green+                              \
-     (double)117.0*(pixel)->blue)                               \
-    / 1024.0))
 typedef unsigned int Quantum;
 #else
 # error "Specified value of QuantumDepth is not supported"
@@ -127,9 +102,6 @@ typedef unsigned int Quantum;
   (value > MaxRGB) ? MaxRGB : value + 0.5))
 #define RoundToQuantum(value) ((Quantum) (value > MaxRGB ? MaxRGB : \
   value + 0.5))
-
-#define PixelIntensityToDouble(pixel) ((double)PixelIntensity(pixel))
-#define PixelIntensityToQuantum(pixel) ((Quantum)PixelIntensity(pixel))
 
 /*
   Maximum RGB value which fits in the specified bits
@@ -179,26 +151,6 @@ typedef enum
   DirectClass,
   PseudoClass
 } ClassType;
-
-typedef enum
-{
-  UndefinedColorspace,
-  RGBColorspace,
-  GRAYColorspace,
-  TransparentColorspace,
-  OHTAColorspace,
-  XYZColorspace,
-  YCbCrColorspace,
-  YCCColorspace,
-  YIQColorspace,
-  YPbPrColorspace,
-  YUVColorspace,
-  CMYKColorspace,
-  sRGBColorspace,
-  HSLColorspace,
-  HWBColorspace,
-  LABColorspace
-} ColorspaceType;
 
 typedef enum
 {
@@ -1036,16 +988,13 @@ extern MagickExport MagickPassFail
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
   ReplaceImageColormap(Image *image,const PixelPacket *colormap,
     const unsigned int colors),
-  RGBTransformImage(Image *,const ColorspaceType),
   SetImageClipMask(Image *image,const Image *clip_mask),
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
   SetImageType(Image *,const ImageType),
   SortColormapByIntensity(Image *),
   SyncImage(Image *),
-  TextureImage(Image *,const Image *),
-  TransformColorspace(Image *,const ColorspaceType),
-  TransformRGBImage(Image *,const ColorspaceType);
+  TextureImage(Image *,const Image *);
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *);
@@ -1064,4 +1013,4 @@ extern MagickExport void
 }
 #endif
 
-#endif
+#endif /* _MAGICK_IMAGE_H */

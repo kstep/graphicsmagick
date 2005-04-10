@@ -487,7 +487,7 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
               ThrowBinaryException3(ImageError,UnableToAssignProfile,
                 ColorspaceColorProfileMismatch);
             }
-          if ((source_colorspace == GRAYColorspace) &&
+          if ((IsGrayColorspace(source_colorspace)) &&
               (!IsGrayImage(image,&image->exception)))
             {
               cmsCloseProfile(source_profile);
@@ -598,7 +598,7 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
                   }
                 cmsDoTransform(transform,&alpha,&beta,1);
                 q->red=ScaleShortToQuantum(beta.red);
-                if (target_colorspace == GRAYColorspace)
+                if (IsGrayColorspace(target_colorspace))
                   {
                     q->green=q->red;
                     q->blue=q->red;
@@ -644,7 +644,7 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
                     }
                   cmsDoTransform(transform,&alpha,&beta,1);
                   q->red=ScaleShortToQuantum(beta.red);
-                  if (target_colorspace == GRAYColorspace)
+                  if (IsGrayColorspace(target_colorspace))
                     {
                       q->green=q->red;
                       q->blue=q->red;
@@ -680,7 +680,7 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
             We can't be sure black and white stays exactly black and white
             and that gray colors transform to gray colors.
           */
-          image->is_grayscale=(target_colorspace == GRAYColorspace);
+          image->is_grayscale=IsGrayColorspace(target_colorspace);
           image->is_monochrome=False; 
           cmsDeleteTransform(transform);
 

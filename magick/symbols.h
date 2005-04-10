@@ -87,6 +87,7 @@
 #define CoalesceImages GmCoalesceImages
 #define ColorFloodfillImage GmColorFloodfillImage
 #define ColorizeImage GmColorizeImage
+#define ColorspaceTypeToString GmColorspaceTypeToString
 #define CompositeImage GmCompositeImage
 #define CompositeImageCommand GmCompositeImageCommand
 #define CompositeUsage GmCompositeUsage
@@ -721,6 +722,7 @@
 #define SteganoImage GmSteganoImage
 #define StereoImage GmStereoImage
 #define StringToArgv GmStringToArgv
+#define StringToColorspaceType GmStringToColorspaceType
 #define StringToDouble GmStringToDouble
 #define StringToList GmStringToList
 #define Strip GmStrip

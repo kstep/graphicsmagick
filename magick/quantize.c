@@ -459,7 +459,7 @@ static MagickPassFail AssignImageColors(CubeInfo *cube_info,Image *image)
           }
     }
   if ((cube_info->quantize_info->number_colors == 2) &&
-      (cube_info->quantize_info->colorspace == GRAYColorspace))
+      (IsGrayColorspace(cube_info->quantize_info->colorspace)))
     {
       Quantum
         intensity;
@@ -2416,7 +2416,7 @@ MagickExport MagickPassFail QuantizeImage(const QuantizeInfo *quantize_info,
     which assures that the maximum number of colors is equal to, or
     less than MaxColormapSize.
   */
-  if (quantize_info->colorspace == GRAYColorspace)
+  if (IsGrayColorspace(quantize_info->colorspace))
     (void) TransformColorspace(image,quantize_info->colorspace);
   if (IsGrayImage(image,&image->exception))
     GrayscalePseudoClassImage(image,True);

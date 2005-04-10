@@ -864,15 +864,22 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Choices are:
 <strong>CMYK</strong>, <strong>GRAY</strong>, <strong>HSL</strong>, <strong>HWB</strong>, <strong>OHTA</strong>, <strong>RGB</strong>,
-<strong>Transparent</strong>, <strong>XYZ</strong>, <strong>YCbCr</strong>, <strong>YIQ</strong>, <strong>YPbPr</strong>,
-or
-<strong>YUV</strong>.</font></td></tr></table>
+<strong>Rec601Luma</strong>, <strong>Rec709Luma</strong>, <strong>Transparent</strong>, <strong>XYZ</strong>,
+<strong>YCbCr</strong>, <strong>YIQ</strong>, <strong>YPbPr</strong>, or <strong>YUV</strong>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Color reduction, by default, takes place in the RGB color space. Empirical
 evidence suggests that distances in color spaces such as YUV or YIQ correspond
 to perceptual color differences more closely than do distances in RGB space.
 These color spaces may give better results when color reducing an image.
 Refer to <a href="quantize.html">quantize</a> for more details.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">Two gray colorspaces are supported. The <strong>Rec601Luma</strong> space is
+based on the recommendations for legacy NTSC television (ITU-R BT.601-5). The
+<strong>Rec709Luma</strong> space is based on the recommendations for HDTV (Rec.
+ITU-R BT.709-5) and is suitable for suitable for use with computer
+graphics, and for contemporary CRT displays. The <strong>GRAY</strong> colorspace
+currently selects the <strong>Rec601Luma</strong> by default for backwards
+compatibly reasons. This default may be re-considered in the future.
+</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The <strong>Transparent</strong> color space behaves uniquely in that it preserves
 the matte channel of the image if it exists.</font></td></tr></table>

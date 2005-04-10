@@ -1510,10 +1510,11 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       (void) TransformColorspace(image,YCbCrColorspace);
       break;
     }
-    case GRAYColorspace:
+    case Rec601LumaColorspace:
+    case Rec709LumaColorspace:
     {
       jpeg_info.in_color_space=JCS_GRAYSCALE;
-      (void) TransformColorspace(image,GRAYColorspace);
+      (void) TransformColorspace(image,image_info->colorspace);
       break;
     }
     default:
@@ -1825,7 +1826,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             jpeg_info.comp_info[3].v_samp_factor);
           break;
         }
-        case GRAYColorspace:
+        case Rec601LumaColorspace:
+        case Rec709LumaColorspace:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Colorspace: GRAY");

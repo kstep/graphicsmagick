@@ -60,6 +60,8 @@ MAGICK_BASE_SRCS = \
 	magick/channel.h \
 	magick/color.c \
 	magick/color.h \
+	magick/colorspace.c \
+	magick/colorspace.h \
 	magick/command.c \
 	magick/command.h \
 	magick/composite.c \
@@ -189,6 +191,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/cache_view.h \
 	magick/channel.h \
 	magick/color.h \
+	magick/colorspace.h \
 	magick/command.h \
 	magick/command.h \
 	magick/composite.h \

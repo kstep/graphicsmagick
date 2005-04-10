@@ -1,3 +1,11 @@
+2005-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h: Import Rec601LumaColorspace (was
+	called GRAYColorspace) and Rec709LumaColorspace into Magick
+	namespace. Use of GRAYColorspace is mapped via a macro into
+	Rec601LumaColorspace in order to avoid a user-visible API
+	change.
+
 2004-08-17  Volker Lukas  <vlukas@gmx.de>
 
 	* lib/Drawable.cpp: Fixes to ensure that drawable objects remain

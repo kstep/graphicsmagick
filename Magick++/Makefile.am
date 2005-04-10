@@ -230,12 +230,12 @@ MAGICKPP_LOCAL_TARGETS = www/Magick++/NEWS.html www/Magick++/ChangeLog.html
 
 # Build HTML version of news
 www/Magick++/NEWS.html: Magick++/NEWS
-	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ News' < $(srcdir)/NEWS  > $(srcdir)/../www/Magick++/NEWS.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ News' < $(srcdir)/NEWS  > $(srcdir)/www/Magick++/NEWS.html
 	echo "Please do a 'cvs commit www/Magick++/NEWS.html' to submit updated HTML file"
 
 # Build HTML version of ChangeLog
 www/Magick++/ChangeLog.html: Magick++/ChangeLog
-	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(srcdir)/ChangeLog > $(srcdir)/../www/Magick++/ChangeLog.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(srcdir)/ChangeLog > $(srcdir)/www/Magick++/ChangeLog.html
 	echo "Please do a 'cvs commit www/Magick++/ChangeLog.html' to submit updated HTML file"
 
 else

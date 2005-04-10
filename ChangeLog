@@ -1,3 +1,20 @@
+2005-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c: Take advantage of ColorspaceTypeToString() and
+	StringToColorspaceType() functions in implementation.
+	* magick/colorspace.c (RGBTransformImage): Added support for
+	converting to Rec 709 grayscale colorspace.
+	(ColorspaceTypeToString): New function to translate from
+	ColorspaceType enumeration value to a string.
+	(StringToColorspaceType): New function to translate from a string
+	to a ColorspaceType enumeration value.  * magick/colorspace.h
+	(enum Rec601LumaColorspace): New enumeration to support the Rec
+	601 grayscale colorspace.  This is the colorspace previously
+	represented by GRAYColorspace. If GRAYColorspace is specified,
+	then Rec601LumaColorspace is selected.
+	(enum Rec709LumaColorspace): New enumeration to support the Rec
+	707 grayscale colorspace.
+
 2005-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (IdentifyImageCommand): Use +ping to force

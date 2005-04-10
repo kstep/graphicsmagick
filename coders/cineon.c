@@ -189,7 +189,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
   unsigned char
     *scandata;
   
-  void
+  unsigned char
     *scanline;
   
   size_t
@@ -258,8 +258,8 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
               {
                 if (i > 2)
                   {
-                    scanline=(void *) scandata;
-                    if (ReadBlobZC(image,scandata_bytes,&scanline) !=
+                    scanline=scandata;
+                    if (ReadBlobZC(image,scandata_bytes,(void *) &scanline) !=
                         scandata_bytes)
                       break;
                     BitStreamInitializeRead(&bit_stream,scanline);
@@ -289,8 +289,8 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
             q=SetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            scanline=(void *) scandata;
-            if (ReadBlobZC(image,scandata_bytes,&scanline) != scandata_bytes)
+            scanline=scandata;
+            if (ReadBlobZC(image,scandata_bytes,(void *) &scanline) != scandata_bytes)
               break;
             for (x=0 ; x < (long) image->columns; x++)
               {
@@ -312,7 +312,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
                 q->green=ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
                 q->blue=ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
                 q->opacity=0U;
-                (unsigned char *) scanline += 4;
+                scanline += 4;
                 q++;
               }
             if (!SyncImagePixels(image))
@@ -668,7 +668,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
         break;
       for (x=0; x < (long) image->columns; x++)
         {
-#if 1
+#if 0
           BitStreamInitializeWrite(&bit_stream,packet);
           BitStreamMSBWrite(&bit_stream,10,(unsigned int) ScaleQuantumToShort(p->red)/64U);
           BitStreamMSBWrite(&bit_stream,10,(unsigned int) ScaleQuantumToShort(p->green)/64U);
