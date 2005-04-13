@@ -84,6 +84,23 @@ typedef enum
 
 typedef enum
 {
+  TransferCharacteristicUserDefined=0,
+  TransferCharacteristicPrintingDensity=1,
+  TransferCharacteristicLinear=2,
+  TransferCharacteristicLogarithmic=3,
+  TransferCharacteristicUnspecifiedVideo=4,
+  TransferCharacteristicSMTPE274M=5,     /* 1920x1080 TV */
+  TransferCharacteristicITU_R704_4=6,
+  TransferCharacteristicITU_R601_5_BG=7, /* 625 Line */
+  TransferCharacteristicITU_R601_5_M=8,  /* 525 Line */
+  TransferCharacteristicNTSCCompositeVideo=9,
+  TransferCharacteristicPALCompositeVideo=10,
+  TransferCharacteristicZDepthLinear=11,
+  TransferCharacteristicZDepthHomogeneous=12
+} DPXTransferCharacteristic;
+
+typedef enum
+{
   PackingMethodPacked=0,           /* Packed with no padding */
   PackingMethodWordsFillLSB=1,     /* Method 'A', padding bits in LSB of 32-bit word */
   PackingMethodWordsFillMSB=2      /* Method 'B', padding bits in MSB of 32-bit word (deprecated) */
@@ -104,7 +121,7 @@ typedef struct _DPXFileInfo
   ASCII creator[100];              /* Creator */
   ASCII project_name[200];         /* Project name */
   ASCII copyright[200];            /* Right to use or copyright */
-  U32   encrption_key;             /* Enscryption key (FFFFFFFF unencrypted ) */
+  U32   encryption_key;            /* Encryption key (FFFFFFFF unencrypted ) */
   ASCII reserved[104];             /* Reserved for future use */
 } DPXFileInfo;
 
@@ -352,7 +369,7 @@ static void SwabDPXFileInfo(DPXFileInfo *file_info)
   MagickSwabUInt32(&file_info->generic_section_length);
   MagickSwabUInt32(&file_info->industry_section_length);
   MagickSwabUInt32(&file_info->user_defined_length);
-  MagickSwabUInt32(&file_info->encrption_key);
+  MagickSwabUInt32(&file_info->encryption_key);
 }
 static void SwabDPXImageInfo(DPXImageInfo *image_info)
 {
@@ -641,7 +658,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   StringToAttribute(image,"DPX:file.creator",dpx_file_info.creator);
   StringToAttribute(image,"DPX:file.project.name",dpx_file_info.project_name);
   StringToAttribute(image,"DPX:file.copyright",dpx_file_info.copyright);
-  U32ToAttribute(image,"DPX:file.encryption.key",dpx_file_info.encrption_key);
+  U32ToAttribute(image,"DPX:file.encryption.key",dpx_file_info.encryption_key);
 
   /*
     Obtain offset to pixels.
@@ -764,6 +781,13 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       element_descriptor=(DPXImageElementDescriptor)
         dpx_image_info.element_info[element].descriptor;
       packing_method=dpx_image_info.element_info[element].packing;
+      if (dpx_image_info.element_info[element].transfer_characteristic ==
+          TransferCharacteristicLogarithmic)
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Setting colorspace to CineonLogRGBColorspace");
+          image->colorspace=CineonLogRGBColorspace;
+        }
 
       /* FIXME: hack around Cinepaint oddity which mis-marks files. */
       if ((element_descriptor == ImageElementUnspecified) &&
@@ -1002,6 +1026,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                    image->filename);
   image->is_monochrome=is_monochrome;
   image->is_grayscale=is_grayscale;
+  image->depth=Min(image->depth,QuantumDepth);
   CloseBlob(image);
   return(image);
 }
@@ -1271,6 +1296,14 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                         "Element size: %u", (unsigned int) element_size);
 
   /*
+    Adjust image colorspace if necessary.
+  */
+  if (image_info->colorspace == CineonLogRGBColorspace)
+    (void) TransformColorspace(image,CineonLogRGBColorspace);
+  else
+    (void) TransformColorspace(image,RGBColorspace);
+
+  /*
     Image information header
   */
   memset(&dpx_image_info,0,sizeof(dpx_image_info));
@@ -1286,7 +1319,11 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     MaxValueGivenBits(bits_per_sample);
   dpx_image_info.element_info[0].reference_high_quantity=2.048; /* FIXME */
   dpx_image_info.element_info[0].descriptor=image->matte ? ImageElementRGBA : ImageElementRGB;
-  dpx_image_info.element_info[0].transfer_characteristic=2; /* linear */
+  
+  dpx_image_info.element_info[0].transfer_characteristic=
+    (image->colorspace == CineonLogRGBColorspace ?
+     TransferCharacteristicLogarithmic :
+     TransferCharacteristicLinear);
   dpx_image_info.element_info[0].colorimetric=6; /* ITU 709-4 */
   dpx_image_info.element_info[0].bits_per_sample=bits_per_sample;
   dpx_image_info.element_info[0].packing=0;
@@ -1354,7 +1391,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   strlcpy(dpx_file_info.creator,"",sizeof(dpx_file_info.creator));
   strlcpy(dpx_file_info.project_name,"",sizeof(dpx_file_info.project_name));
   strlcpy(dpx_file_info.copyright,"",sizeof(dpx_file_info.copyright));
-  dpx_file_info.encrption_key=UNDEFINED_U32_VALUE;
+  dpx_file_info.encryption_key=UNDEFINED_U32_VALUE;
 
   /*
     Image source information header
@@ -1382,8 +1419,6 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   dpx_source_info.aspect_ratio.vertical=1;
   dpx_source_info.x_scanned_size=UNDEFINED_U32_VALUE;
   dpx_source_info.y_scanned_size=UNDEFINED_U32_VALUE;
-
-  (void) TransformColorspace(image,RGBColorspace);
 
   /*
     Write file headers.

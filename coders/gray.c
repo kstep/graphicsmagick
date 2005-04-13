@@ -108,6 +108,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     status;
 
   unsigned int
+    depth,
     quantum_size,
     packet_size;
 
@@ -127,11 +128,20 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
   /*
+    Support depth in multiples of 8 bits.
+  */
+  if (image->depth > 16)
+    depth=32;
+  else if (image->depth > 8)
+    depth=16;
+  else
+    depth=8;
+  /*
     Allocate memory for a scanline.
   */
-  if (image->depth <= 8)
+  if (depth <= 8)
     quantum_size=8;
-  else if (image->depth <= 16)
+  else if (depth <= 16)
     quantum_size=16;
   else
     quantum_size=32;
@@ -156,7 +166,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     /*
       Convert raster image to pixel packets.
     */
-    if (!AllocateImageColormap(image,1 << image->depth))
+    if (!AllocateImageColormap(image,1 << depth))
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -392,6 +402,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
+    depth,
     quantum_size,
     packet_size,
     scene,
@@ -408,6 +419,15 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   /*
+    Support depth in multiples of 8 bits.
+  */
+  if (image->depth > 16)
+    depth=32;
+  else if (image->depth > 8)
+    depth=16;
+  else
+    depth=8;
+  /*
     Convert image to gray scale PseudoColor class.
   */
   scene=0;
@@ -416,9 +436,9 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for scanline.
     */
-    if (image->depth <= 8)
+    if (depth <= 8)
       quantum_size=8;
-    else if (image->depth <= 16)
+    else if (depth <= 16)
       quantum_size=16;
     else
       quantum_size=32;

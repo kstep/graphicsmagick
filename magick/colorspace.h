@@ -83,7 +83,8 @@ typedef enum
   HSLColorspace,         /* Hue, saturation, luminosity */
   HWBColorspace,         /* Hue, whiteness, blackness */
   LABColorspace,         /* LAB colorspace not supported yet other than via lcms */
-  Rec709LumaColorspace   /* ITU-R 709 Luma (grayscale) */
+  Rec709LumaColorspace,  /* ITU-R 709 Luma (grayscale) */
+  CineonLogRGBColorspace /* RGB data with Cineon Log scaling, 2.048 density range */
 } ColorspaceType;
 
 extern MagickExport MagickPassFail

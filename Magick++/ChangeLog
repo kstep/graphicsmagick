@@ -1,3 +1,8 @@
+2005-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h (Magick): Import CineonLogRGBColorspace
+	into Magick namespace.
+
 2005-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h: Import Rec601LumaColorspace (was

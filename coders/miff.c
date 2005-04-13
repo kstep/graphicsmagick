@@ -1841,6 +1841,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
+    depth,
     status;
 
   unsigned long
@@ -1879,15 +1880,24 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       (void) TransformColorspace(image,RGBColorspace);
     else
       (void) TransformColorspace(image,CMYKColorspace);
-    packet_size=image->depth/8;
+    /*
+      Valid depths are 8/16/32
+    */
+    if (image->depth > 16)
+      depth=32;
+    else if (image->depth > 8)
+      depth=16;
+    else
+      depth=8;
+    packet_size=depth/8;
     if (image->storage_class == DirectClass)
-      packet_size=3*image->depth/8;
+      packet_size=3*depth/8;
     if (image->colorspace == CMYKColorspace)
-      packet_size+=image->depth/8;
+      packet_size+=depth/8;
     if (image->matte)
-      packet_size+=image->depth/8;
+      packet_size+=depth/8;
     if (compression == RLECompression)
-      packet_size+=image->depth/8;
+      packet_size+=depth/8;
     length=packet_size*image->columns;
     pixels=MagickAllocateMemory(unsigned char *,length);
     length=(size_t) (1.01*packet_size*image->columns+600);
@@ -1938,7 +1948,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (*buffer != '\0')
       (void) WriteBlobString(image,buffer);
     FormatString(buffer,"columns=%lu  rows=%lu  depth=%u\n",image->columns,
-      image->rows,image->depth);
+      image->rows,depth);
     (void) WriteBlobString(image,buffer);
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
@@ -2129,7 +2139,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Allocate colormap.
         */
-        packet_size=3*image->depth/8;
+        packet_size=3*depth/8;
         colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
@@ -2221,7 +2231,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             }
           zip_info.next_in=pixels;
           zip_info.avail_in=(uInt) (packet_size*image->columns);
-          (void) ExportImagePixelArea(image,quantum_type,image->depth,pixels,0);
+          (void) ExportImagePixelArea(image,quantum_type,depth,pixels,0);
           do
           {
             zip_info.next_out=compress_pixels;
@@ -2268,7 +2278,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             }
           bzip_info.next_in=(char *) pixels;
           bzip_info.avail_in=(unsigned int) (packet_size*image->columns);
-          (void) ExportImagePixelArea(image,quantum_type,image->depth,pixels,0);
+          (void) ExportImagePixelArea(image,quantum_type,depth,pixels,0);
           do
           {
             bzip_info.next_out=(char *) compress_pixels;
@@ -2333,7 +2343,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         }
         default:
         {
-          (void) ExportImagePixelArea(image,quantum_type,image->depth,pixels,0);
+          (void) ExportImagePixelArea(image,quantum_type,depth,pixels,0);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
           break;
         }

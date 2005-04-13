@@ -21,6 +21,27 @@
 </tr>
 </table>
 <p>
+2005-04-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/miff.c (WriteMIFFImage): Normalize image depth to 8/16/32.
+  <LI> coders/gray.c (WriteGRAYImage): Normalize image depth to 8/16/32.
+  <LI> coders/fits.c (WriteFITSImage): Normalize image depth to 8/16.
+  <LI> tests/Makefile.am: Extended read/write tests to include 10, 12,
+        and 16-bit original test images.
+  <LI> coders/dpx.c (ReadDPXImage): If samples are log encoded, then
+        set the image to CineonLogRGBColorspace.
+        (WriteDPXImage): If image samples are log encoded, then mark DPX
+        file as being log encoded.<BR>
+  <LI> magick/colorspace.c (TransformRGBImage): Support translation
+        from log RGB to linear RGB based on Cineon guidelines.
+        (RGBTransformImage): Support translation from linear RGB to log RGB.
+  <LI> magick/colorspace.h (enum CineonLogRGBColorspace): New
+        enumeration to record that the RGB values are log encoded in a
+        2.048 density range as defined for the Cineon Digital Film System.
+
+</UL>
+<p>
 2005-04-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

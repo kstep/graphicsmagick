@@ -51,6 +51,9 @@ MagickExport const char *ColorspaceTypeToString(const ColorspaceType colorspace)
     case UndefinedColorspace:
       log_colorspace="Undefined";
       break;
+    case CineonLogRGBColorspace:
+      log_colorspace="CineonLogRGB";
+      break;
     case RGBColorspace:
       log_colorspace="RGB";
       break;
@@ -110,7 +113,9 @@ MagickExport ColorspaceType StringToColorspaceType(const char *colorspace_string
 
   colorspace=UndefinedColorspace;
 
-  if (LocaleCompare("cmyk",colorspace_string) == 0)
+  if (LocaleCompare("cineonlog",colorspace_string) == 0)
+    colorspace=CineonLogRGBColorspace;
+  else if (LocaleCompare("cmyk",colorspace_string) == 0)
     colorspace=CMYKColorspace;
   else if (LocaleCompare("gray",colorspace_string) == 0)
     colorspace=GRAYColorspace;
@@ -336,6 +341,85 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       return(status);
     }
 
+  if (colorspace == CineonLogRGBColorspace)
+    {
+      /*
+        Transform from linear RGB to Cineon Log RGB.
+      */
+      register PixelPacket
+        *q;
+
+      double MaxLinearValue=MaxRGB;/* Maximum linear value output */
+      double ReferenceWhite=685;   /* 90% white card (default 685) */
+      double ReferenceBlack=95;    /* 1% black card  (default 95) */
+      double DisplayGamma=1.7;     /* Display gamma */
+      double SoftClip=0.0;         /* Soft clip offset */
+      double BreakPoint=ReferenceWhite-SoftClip;
+      double Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)*0.002/0.6)),
+                                             (DisplayGamma/1.7)));
+      double Offset=Gain-MaxLinearValue;
+      double KneeOffset=pow(pow(10,((BreakPoint-ReferenceWhite)*0.002/0.6)),
+                            (DisplayGamma/1.7))*Gain-Offset;
+      double KneeGain=(MaxLinearValue-KneeOffset)/pow((5*SoftClip),(SoftClip/100));
+      unsigned int
+        *logmap,
+        scale_to_short;
+
+      /*
+        Build LUT
+      */
+      logmap=MagickAllocateMemory(unsigned int *,(MaxMap+1)*sizeof(unsigned int));
+      if (logmap == 0)
+        ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+                              UnableToTransformColorspace);
+      scale_to_short=(65535U / (65535U >> (16-10)));
+      for (i=0; i <= MaxMap; i++)
+        {
+          double
+            linearval,
+            logval;
+
+          linearval=i*(double) MaxRGB/MaxMap;
+          
+          logval=685+log10(pow((((double) linearval+Offset)/Gain),
+                               (1.7/DisplayGamma)))/(0.002/0.6);
+          logval *= scale_to_short;
+          logmap[i]=ScaleShortToQuantum(RndToInt(logval));
+          /* printf("logmap[%u]=%u\n",i,(unsigned int) logmap[i]); */
+        }
+      /*
+        Transform pixels.
+      */
+      image->storage_class=DirectClass;
+      for (y=0; y < (long) image->rows; y++)
+        {
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            {
+              status=MagickFail;
+              break;
+            }
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              q->red=logmap[ScaleQuantumToMap(q->red)];
+              q->green=logmap[ScaleQuantumToMap(q->green)];
+              q->blue=logmap[ScaleQuantumToMap(q->blue)];
+              q++;
+            }
+          if (!SyncImagePixels(image))
+          {
+            status=MagickFail;
+            break;
+          }
+        }
+
+      MagickFreeMemory(logmap);
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Transform to colorspace %s completed",
+                            ColorspaceTypeToString(colorspace));
+      return(status);
+    }
+
   if ((colorspace == HSLColorspace) || (colorspace == HWBColorspace))
     {
       void (*transform)(const Quantum,const Quantum,const Quantum,
@@ -355,16 +439,12 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
         case DirectClass:
         default:
           {
-            ExceptionInfo
-              *exception;
-            
             register PixelPacket
               *q;
             
             /*
               Convert DirectClass image.
             */
-            exception=(&image->exception);
             for (y=0; y < (long) image->rows; y++)
               {
                 q=GetImagePixels(image,0,y,image->columns,1);
@@ -384,7 +464,6 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                     q->red=(Quantum) RndToInt(p1*MaxRGB);
                     q->green=(Quantum) RndToInt(p2*MaxRGB);
                     q->blue=(Quantum) RndToInt(p3*MaxRGB);
-                    /* printf("Luminosity=%.07lf %u\n", p3, (unsigned int)q->blue); */
                     q++;
                   }
                 if (!SyncImagePixels(image))
@@ -393,7 +472,8 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
                     break;
                   }
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(RGBTransformImageText,y,image->rows,exception))
+                  if (!MagickMonitor(RGBTransformImageText,y,image->rows,
+                                     &image->exception))
                     break;
               }
             break;
@@ -925,7 +1005,6 @@ MagickExport MagickPassFail TransformColorspace(Image *image,
   assert(image != (Image *) NULL);
   assert(colorspace != UndefinedColorspace);
   assert(image->colorspace != UndefinedColorspace);
-
   /*
     If the image colorspace is the same as requested, do nothing.
   */
@@ -1203,6 +1282,92 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       image->colorspace=RGBColorspace;
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Colorspace transform completed"); 
+      return(status);
+    }
+
+  if (colorspace == CineonLogRGBColorspace)
+    {
+      /*
+        Transform from Cineon Log RGB to Linear RGB
+      */
+      register PixelPacket
+        *q;
+
+      double MaxLinearValue=MaxRGB;/* Maximum linear value output */
+      double ReferenceWhite=685;   /* 90% white card (default 685) */
+      double ReferenceBlack=95;    /* 1% black card  (default 95) */
+      double DisplayGamma=1.7;     /* Display gamma */
+      double SoftClip=0.0;         /* Soft clip offset */
+      double BreakPoint=ReferenceWhite-SoftClip;
+      double Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)*0.002/0.6)),
+                                             (DisplayGamma/1.7)));
+      double Offset=Gain-MaxLinearValue;
+      double KneeOffset=pow(pow(10,((BreakPoint-ReferenceWhite)*0.002/0.6)),
+                            (DisplayGamma/1.7))*Gain-Offset;
+      double KneeGain=(MaxLinearValue-KneeOffset)/pow((5*SoftClip),(SoftClip/100));
+      Quantum
+        *linearmap;
+
+      linearmap=MagickAllocateMemory(Quantum *,1024*sizeof(Quantum));
+      if (linearmap == 0)
+        ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+                              UnableToTransformColorspace);
+
+      for (i=0; i < 1024; i++)
+        {
+          double
+            linearval,
+            logval;
+
+          logval=i;
+          if (logval < ReferenceBlack)
+            {
+              /* Values below reference black are clipped to zero */
+              linearval=0.0;
+            }
+          else if (logval > BreakPoint)
+            {
+              /* Values above the breakpoint are soft-clipped. */
+              linearval=pow((logval-BreakPoint),(SoftClip/100))*KneeGain+KneeOffset;
+            }
+          else
+            {
+              /* Otherwise, normal values */
+              linearval=pow(pow(10,((logval-ReferenceWhite)*0.002/0.6)),(DisplayGamma/1.7))*Gain-Offset;
+            }
+
+          linearmap[i]=RndToInt(linearval);
+        }
+      /*
+        Transform pixels.
+      */
+      image->storage_class=DirectClass;
+      for (y=0; y < (long) image->rows; y++)
+        {
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            {
+              status=MagickFail;
+              break;
+            }
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              q->red=linearmap[ScaleQuantumToShort(q->red)/64U];
+              q->green=linearmap[ScaleQuantumToShort(q->green)/64U];
+              q->blue=linearmap[ScaleQuantumToShort(q->blue)/64U];
+              q++;
+            }
+          if (!SyncImagePixels(image))
+          {
+            status=MagickFail;
+            break;
+          }
+        }
+
+      MagickFreeMemory(linearmap);
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Transform to colorspace %s completed",
+                            ColorspaceTypeToString(colorspace));
       return(status);
     }
 

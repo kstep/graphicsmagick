@@ -143,6 +143,7 @@ namespace Magick
   using MagickLib::HWBColorspace;
   using MagickLib::LABColorspace;
   using MagickLib::Rec709LumaColorspace;
+  using MagickLib::CineonLogRGBColorspace;
   
   // Composition operations
   using MagickLib::AddCompositeOp;

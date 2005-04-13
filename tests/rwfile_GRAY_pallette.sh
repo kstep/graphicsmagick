@@ -6,4 +6,4 @@
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
 . ${srcdir}/tests/common.shi
-${RUNENV} ${MEMCHECK} ./rwfile -size 70x46 ${SRCDIR}/input_pallette.miff GRAY
+${RUNENV} ${MEMCHECK} ./rwfile ${SRCDIR}/input_pallette.miff GRAY
