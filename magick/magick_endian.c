@@ -23,7 +23,7 @@
  */
 
 #include "magick/studio.h"
-#include "magick/endian.h"
+#include "magick/magick_endian.h"
 
 MagickExport void
 MagickSwabUInt16(magick_uint16_t* wp)

@@ -39,7 +39,7 @@
 #include "magick/bit_stream.h"
 #include "magick/cache.h"
 #include "magick/color.h"
-#include "magick/endian.h"
+#include "magick/magick_endian.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"

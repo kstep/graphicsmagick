@@ -82,8 +82,6 @@ MAGICK_BASE_SRCS = \
 	magick/draw.h \
 	magick/effect.c \
 	magick/effect.h \
-	magick/endian.c \
-	magick/endian.h \
 	magick/enhance.c \
 	magick/enhance.h \
 	magick/error.c \
@@ -104,6 +102,8 @@ MAGICK_BASE_SRCS = \
 	magick/magic.h \
 	magick/magick.c \
 	magick/magick.h \
+	magick/magick_endian.c \
+	magick/magick_endian.h \
 	magick/map.c \
 	magick/map.h \
 	magick/memory.c \

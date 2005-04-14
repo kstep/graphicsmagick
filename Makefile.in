@@ -682,57 +682,57 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/delegate.c magick/delegate.h magick/deprecate.c \
 	magick/deprecate.h magick/display.c magick/display.h \
 	magick/draw.c magick/draw.h magick/effect.c magick/effect.h \
-	magick/endian.c magick/endian.h magick/enhance.c \
-	magick/enhance.h magick/error.c magick/error.h magick/fx.c \
-	magick/fx.h magick/gem.c magick/gem.h magick/image.c \
-	magick/image.h magick/list.c magick/list.h magick/locale.c \
-	magick/locale_c.h magick/log.c magick/log.h magick/magic.c \
-	magick/magic.h magick/magick.c magick/magick.h magick/map.c \
-	magick/map.h magick/memory.c magick/module.c magick/module.h \
-	magick/monitor.c magick/monitor.h magick/montage.c \
-	magick/montage.h magick/operator.c magick/operator.h \
-	magick/paint.c magick/paint.h magick/pixel_iterator.c \
-	magick/pixel_iterator.h magick/PreRvIcccm.c \
-	magick/PreRvIcccm.h magick/profile.c magick/profile.h \
-	magick/quantize.c magick/quantize.h magick/registry.c \
-	magick/registry.h magick/render.c magick/render.h \
-	magick/resize.c magick/resize.h magick/resource.c \
-	magick/resource.h magick/segment.c magick/semaphore.c \
-	magick/semaphore.h magick/shear.c magick/shear.h \
-	magick/signature.c magick/signature.h magick/spinlock.h \
-	magick/static.c magick/static.h magick/stream.c \
-	magick/stream.h magick/studio.h magick/symbols.h \
-	magick/tempfile.c magick/tempfile.h magick/timer.c \
-	magick/timer.h magick/transform.c magick/transform.h \
-	magick/tsd.c magick/tsd.h magick/type.c magick/utility.c \
-	magick/utility.h magick/version.c magick/version.h \
-	magick/widget.c magick/widget.h magick/xwindow.c \
-	magick/xwindow.h magick/nt_feature.c magick/nt_feature.h \
-	magick/nt_base.c magick/nt_base.h coders/art.c coders/avi.c \
-	coders/avs.c coders/bmp.c coders/caption.c coders/cineon.c \
-	coders/cmyk.c coders/cut.c coders/dcm.c coders/dib.c \
-	coders/dps.c coders/dpx.c coders/fax.c coders/fits.c \
-	coders/gif.c coders/gradient.c coders/gray.c \
-	coders/histogram.c coders/html.c coders/icon.c coders/label.c \
-	coders/locale.c coders/logo.c coders/map.c coders/mat.c \
-	coders/matte.c coders/meta.c coders/miff.c coders/mono.c \
-	coders/mpc.c coders/mpeg.c coders/mpr.c coders/msl.c \
-	coders/mtv.c coders/mvg.c coders/null.c coders/otb.c \
-	coders/palm.c coders/pcd.c coders/pcl.c coders/pcx.c \
-	coders/pdb.c coders/pdf.c coders/pict.c coders/pix.c \
-	coders/plasma.c coders/pnm.c coders/preview.c coders/ps.c \
-	coders/ps2.c coders/ps3.c coders/psd.c coders/pwp.c \
-	coders/rgb.c coders/rla.c coders/rle.c coders/sct.c \
-	coders/sfw.c coders/sgi.c coders/stegano.c coders/sun.c \
-	coders/svg.c coders/tga.c coders/tile.c coders/tim.c \
-	coders/topol.c coders/ttf.c coders/txt.c coders/uil.c \
-	coders/url.c coders/uyvy.c coders/vicar.c coders/vid.c \
-	coders/viff.c coders/wbmp.c coders/wmf.c coders/wpg.c \
-	coders/xbm.c coders/xc.c coders/xcf.c coders/xpm.c \
-	coders/yuv.c coders/clipboard.c coders/emf.c coders/fpx.c \
-	coders/jbig.c coders/jpeg.c coders/jp2.c coders/png.c \
-	coders/ept.c coders/tiff.c coders/x.c coders/xwd.c \
-	filters/analyze.c
+	magick/enhance.c magick/enhance.h magick/error.c \
+	magick/error.h magick/fx.c magick/fx.h magick/gem.c \
+	magick/gem.h magick/image.c magick/image.h magick/list.c \
+	magick/list.h magick/locale.c magick/locale_c.h magick/log.c \
+	magick/log.h magick/magic.c magick/magic.h magick/magick.c \
+	magick/magick.h magick/magick_endian.c magick/magick_endian.h \
+	magick/map.c magick/map.h magick/memory.c magick/module.c \
+	magick/module.h magick/monitor.c magick/monitor.h \
+	magick/montage.c magick/montage.h magick/operator.c \
+	magick/operator.h magick/paint.c magick/paint.h \
+	magick/pixel_iterator.c magick/pixel_iterator.h \
+	magick/PreRvIcccm.c magick/PreRvIcccm.h magick/profile.c \
+	magick/profile.h magick/quantize.c magick/quantize.h \
+	magick/registry.c magick/registry.h magick/render.c \
+	magick/render.h magick/resize.c magick/resize.h \
+	magick/resource.c magick/resource.h magick/segment.c \
+	magick/semaphore.c magick/semaphore.h magick/shear.c \
+	magick/shear.h magick/signature.c magick/signature.h \
+	magick/spinlock.h magick/static.c magick/static.h \
+	magick/stream.c magick/stream.h magick/studio.h \
+	magick/symbols.h magick/tempfile.c magick/tempfile.h \
+	magick/timer.c magick/timer.h magick/transform.c \
+	magick/transform.h magick/tsd.c magick/tsd.h magick/type.c \
+	magick/utility.c magick/utility.h magick/version.c \
+	magick/version.h magick/widget.c magick/widget.h \
+	magick/xwindow.c magick/xwindow.h magick/nt_feature.c \
+	magick/nt_feature.h magick/nt_base.c magick/nt_base.h \
+	coders/art.c coders/avi.c coders/avs.c coders/bmp.c \
+	coders/caption.c coders/cineon.c coders/cmyk.c coders/cut.c \
+	coders/dcm.c coders/dib.c coders/dps.c coders/dpx.c \
+	coders/fax.c coders/fits.c coders/gif.c coders/gradient.c \
+	coders/gray.c coders/histogram.c coders/html.c coders/icon.c \
+	coders/label.c coders/locale.c coders/logo.c coders/map.c \
+	coders/mat.c coders/matte.c coders/meta.c coders/miff.c \
+	coders/mono.c coders/mpc.c coders/mpeg.c coders/mpr.c \
+	coders/msl.c coders/mtv.c coders/mvg.c coders/null.c \
+	coders/otb.c coders/palm.c coders/pcd.c coders/pcl.c \
+	coders/pcx.c coders/pdb.c coders/pdf.c coders/pict.c \
+	coders/pix.c coders/plasma.c coders/pnm.c coders/preview.c \
+	coders/ps.c coders/ps2.c coders/ps3.c coders/psd.c \
+	coders/pwp.c coders/rgb.c coders/rla.c coders/rle.c \
+	coders/sct.c coders/sfw.c coders/sgi.c coders/stegano.c \
+	coders/sun.c coders/svg.c coders/tga.c coders/tile.c \
+	coders/tim.c coders/topol.c coders/ttf.c coders/txt.c \
+	coders/uil.c coders/url.c coders/uyvy.c coders/vicar.c \
+	coders/vid.c coders/viff.c coders/wbmp.c coders/wmf.c \
+	coders/wpg.c coders/xbm.c coders/xc.c coders/xcf.c \
+	coders/xpm.c coders/yuv.c coders/clipboard.c coders/emf.c \
+	coders/fpx.c coders/jbig.c coders/jpeg.c coders/jp2.c \
+	coders/png.c coders/ept.c coders/tiff.c coders/x.c \
+	coders/xwd.c filters/analyze.c
 am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-attribute.lo \
@@ -752,7 +752,6 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-display.lo \
 	magick/magick_libGraphicsMagick_la-draw.lo \
 	magick/magick_libGraphicsMagick_la-effect.lo \
-	magick/magick_libGraphicsMagick_la-endian.lo \
 	magick/magick_libGraphicsMagick_la-enhance.lo \
 	magick/magick_libGraphicsMagick_la-error.lo \
 	magick/magick_libGraphicsMagick_la-fx.lo \
@@ -763,6 +762,7 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-log.lo \
 	magick/magick_libGraphicsMagick_la-magic.lo \
 	magick/magick_libGraphicsMagick_la-magick.lo \
+	magick/magick_libGraphicsMagick_la-magick_endian.lo \
 	magick/magick_libGraphicsMagick_la-map.lo \
 	magick/magick_libGraphicsMagick_la-memory.lo \
 	magick/magick_libGraphicsMagick_la-module.lo \
@@ -2496,8 +2496,6 @@ MAGICK_BASE_SRCS = \
 	magick/draw.h \
 	magick/effect.c \
 	magick/effect.h \
-	magick/endian.c \
-	magick/endian.h \
 	magick/enhance.c \
 	magick/enhance.h \
 	magick/error.c \
@@ -2518,6 +2516,8 @@ MAGICK_BASE_SRCS = \
 	magick/magic.h \
 	magick/magick.c \
 	magick/magick.h \
+	magick/magick_endian.c \
+	magick/magick_endian.h \
 	magick/map.c \
 	magick/map.h \
 	magick/memory.c \
@@ -4740,8 +4740,6 @@ magick/magick_libGraphicsMagick_la-draw.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-effect.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
-magick/magick_libGraphicsMagick_la-endian.lo: magick/$(am__dirstamp) \
-	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-enhance.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-error.lo: magick/$(am__dirstamp) \
@@ -4762,6 +4760,8 @@ magick/magick_libGraphicsMagick_la-magic.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-magick.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-magick_endian.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-map.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-memory.lo: magick/$(am__dirstamp) \
@@ -5740,8 +5740,6 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-draw.lo
 	-rm -f magick/magick_libGraphicsMagick_la-effect.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-effect.lo
-	-rm -f magick/magick_libGraphicsMagick_la-endian.$(OBJEXT)
-	-rm -f magick/magick_libGraphicsMagick_la-endian.lo
 	-rm -f magick/magick_libGraphicsMagick_la-enhance.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-enhance.lo
 	-rm -f magick/magick_libGraphicsMagick_la-error.$(OBJEXT)
@@ -5762,6 +5760,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-magic.lo
 	-rm -f magick/magick_libGraphicsMagick_la-magick.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-magick.lo
+	-rm -f magick/magick_libGraphicsMagick_la-magick_endian.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-magick_endian.lo
 	-rm -f magick/magick_libGraphicsMagick_la-map.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-map.lo
 	-rm -f magick/magick_libGraphicsMagick_la-memory.$(OBJEXT)
@@ -6091,7 +6091,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-display.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-draw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-effect.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-endian.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-enhance.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-fx.Plo@am__quote@
@@ -6102,6 +6101,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-log.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-magic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-magick.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-magick_endian.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-map.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-memory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-module.Plo@am__quote@
@@ -6948,13 +6948,6 @@ magick/magick_libGraphicsMagick_la-effect.lo: magick/effect.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-effect.lo `test -f 'magick/effect.c' || echo '$(srcdir)/'`magick/effect.c
 
-magick/magick_libGraphicsMagick_la-endian.lo: magick/endian.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-endian.lo -MD -MP -MF "magick/$(DEPDIR)/magick_libGraphicsMagick_la-endian.Tpo" -c -o magick/magick_libGraphicsMagick_la-endian.lo `test -f 'magick/endian.c' || echo '$(srcdir)/'`magick/endian.c; \
-@am__fastdepCC_TRUE@	then mv -f "magick/$(DEPDIR)/magick_libGraphicsMagick_la-endian.Tpo" "magick/$(DEPDIR)/magick_libGraphicsMagick_la-endian.Plo"; else rm -f "magick/$(DEPDIR)/magick_libGraphicsMagick_la-endian.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/endian.c' object='magick/magick_libGraphicsMagick_la-endian.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-endian.lo `test -f 'magick/endian.c' || echo '$(srcdir)/'`magick/endian.c
-
 magick/magick_libGraphicsMagick_la-enhance.lo: magick/enhance.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-enhance.lo -MD -MP -MF "magick/$(DEPDIR)/magick_libGraphicsMagick_la-enhance.Tpo" -c -o magick/magick_libGraphicsMagick_la-enhance.lo `test -f 'magick/enhance.c' || echo '$(srcdir)/'`magick/enhance.c; \
 @am__fastdepCC_TRUE@	then mv -f "magick/$(DEPDIR)/magick_libGraphicsMagick_la-enhance.Tpo" "magick/$(DEPDIR)/magick_libGraphicsMagick_la-enhance.Plo"; else rm -f "magick/$(DEPDIR)/magick_libGraphicsMagick_la-enhance.Tpo"; exit 1; fi
@@ -7024,6 +7017,13 @@ magick/magick_libGraphicsMagick_la-magick.lo: magick/magick.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/magick.c' object='magick/magick_libGraphicsMagick_la-magick.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-magick.lo `test -f 'magick/magick.c' || echo '$(srcdir)/'`magick/magick.c
+
+magick/magick_libGraphicsMagick_la-magick_endian.lo: magick/magick_endian.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-magick_endian.lo -MD -MP -MF "magick/$(DEPDIR)/magick_libGraphicsMagick_la-magick_endian.Tpo" -c -o magick/magick_libGraphicsMagick_la-magick_endian.lo `test -f 'magick/magick_endian.c' || echo '$(srcdir)/'`magick/magick_endian.c; \
+@am__fastdepCC_TRUE@	then mv -f "magick/$(DEPDIR)/magick_libGraphicsMagick_la-magick_endian.Tpo" "magick/$(DEPDIR)/magick_libGraphicsMagick_la-magick_endian.Plo"; else rm -f "magick/$(DEPDIR)/magick_libGraphicsMagick_la-magick_endian.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/magick_endian.c' object='magick/magick_libGraphicsMagick_la-magick_endian.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-magick_endian.lo `test -f 'magick/magick_endian.c' || echo '$(srcdir)/'`magick/magick_endian.c
 
 magick/magick_libGraphicsMagick_la-map.lo: magick/map.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-map.lo -MD -MP -MF "magick/$(DEPDIR)/magick_libGraphicsMagick_la-map.Tpo" -c -o magick/magick_libGraphicsMagick_la-map.lo `test -f 'magick/map.c' || echo '$(srcdir)/'`magick/map.c; \

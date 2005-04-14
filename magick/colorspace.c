@@ -349,16 +349,18 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       register PixelPacket
         *q;
 
-      double MaxLinearValue=MaxRGB;/* Maximum linear value output */
-      double ReferenceWhite=685;   /* 90% white card (default 685) */
-      double ReferenceBlack=95;    /* 1% black card  (default 95) */
-      double DisplayGamma=1.7;     /* Display gamma */
-      double SoftClip=0.0;         /* Soft clip offset */
+      double MaxLinearValue=MaxRGB; /* Maximum linear value output */
+      double ReferenceWhite=685;    /* 90% white card (default 685) */
+      double ReferenceBlack=95;     /* 1% black card  (default 95) */
+      double DisplayGamma=1.7;      /* Typical display gamma */
+      double NegativeFilmGamma=0.6; /* Typical gamma for a film negative */
+      double SoftClip=0.0;          /* Soft clip offset */
       double BreakPoint=ReferenceWhite-SoftClip;
-      double Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)*0.002/0.6)),
-                                             (DisplayGamma/1.7)));
+      double Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)
+                                                    *0.002/NegativeFilmGamma)),
+                                            (DisplayGamma/1.7)));
       double Offset=Gain-MaxLinearValue;
-      double KneeOffset=pow(pow(10,((BreakPoint-ReferenceWhite)*0.002/0.6)),
+      double KneeOffset=pow(pow(10,((BreakPoint-ReferenceWhite)*0.002/NegativeFilmGamma)),
                             (DisplayGamma/1.7))*Gain-Offset;
       double KneeGain=(MaxLinearValue-KneeOffset)/pow((5*SoftClip),(SoftClip/100));
       unsigned int
@@ -382,7 +384,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
           linearval=i*(double) MaxRGB/MaxMap;
           
           logval=685+log10(pow((((double) linearval+Offset)/Gain),
-                               (1.7/DisplayGamma)))/(0.002/0.6);
+                               (1.7/DisplayGamma)))/(0.002/NegativeFilmGamma);
           logval *= scale_to_short;
           logmap[i]=ScaleShortToQuantum(RndToInt(logval));
           /* printf("logmap[%u]=%u\n",i,(unsigned int) logmap[i]); */
@@ -1293,16 +1295,18 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       register PixelPacket
         *q;
 
-      double MaxLinearValue=MaxRGB;/* Maximum linear value output */
-      double ReferenceWhite=685;   /* 90% white card (default 685) */
-      double ReferenceBlack=95;    /* 1% black card  (default 95) */
-      double DisplayGamma=1.7;     /* Display gamma */
-      double SoftClip=0.0;         /* Soft clip offset */
+      double MaxLinearValue=MaxRGB; /* Maximum linear value output */
+      double ReferenceWhite=685;    /* 90% white card (default 685) */
+      double ReferenceBlack=95;     /* 1% black card  (default 95) */
+      double DisplayGamma=1.7;      /* Typical display gamma */
+      double NegativeFilmGamma=0.6; /* Typical gamma for a film negative */
+      double SoftClip=0.0;          /* Soft clip offset */
       double BreakPoint=ReferenceWhite-SoftClip;
-      double Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)*0.002/0.6)),
-                                             (DisplayGamma/1.7)));
+      double Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)
+                                                    *0.002/NegativeFilmGamma)),
+                                            (DisplayGamma/1.7)));
       double Offset=Gain-MaxLinearValue;
-      double KneeOffset=pow(pow(10,((BreakPoint-ReferenceWhite)*0.002/0.6)),
+      double KneeOffset=pow(pow(10,((BreakPoint-ReferenceWhite)*0.002/NegativeFilmGamma)),
                             (DisplayGamma/1.7))*Gain-Offset;
       double KneeGain=(MaxLinearValue-KneeOffset)/pow((5*SoftClip),(SoftClip/100));
       Quantum
@@ -1333,7 +1337,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           else
             {
               /* Otherwise, normal values */
-              linearval=pow(pow(10,((logval-ReferenceWhite)*0.002/0.6)),(DisplayGamma/1.7))*Gain-Offset;
+              linearval=pow(pow(10,((logval-ReferenceWhite)*0.002/NegativeFilmGamma)),(DisplayGamma/1.7))*Gain-Offset;
             }
 
           linearmap[i]=RndToInt(linearval);
