@@ -599,6 +599,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   WordStreamReadFunc
     word_read_func;
 
+  const char *
+    definition_value;
+
   /*
     Open image file.
   */
@@ -784,9 +787,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (dpx_image_info.element_info[element].transfer_characteristic ==
           TransferCharacteristicLogarithmic)
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "Setting colorspace to CineonLogRGBColorspace");
           image->colorspace=CineonLogRGBColorspace;
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Setting colorspace to %s",
+                                ColorspaceTypeToString(image->colorspace));
         }
 
       /* FIXME: hack around Cinepaint oddity which mis-marks files. */
@@ -1024,6 +1028,17 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
                    image->filename);
+  /*
+    Support explicitly overriding the input file's colorspace.  Mostly useful
+    for testing.
+  */
+  if ((definition_value=AccessDefinition(image_info,"dpx","source-colorspace")))
+    {
+      image->colorspace=StringToColorspaceType(definition_value);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Explicitly set colorspace to %s",
+                            ColorspaceTypeToString(image->colorspace));
+    }
   image->is_monochrome=is_monochrome;
   image->is_grayscale=is_grayscale;
   image->depth=Min(image->depth,QuantumDepth);

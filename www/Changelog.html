@@ -21,6 +21,15 @@
 </tr>
 </table>
 <p>
+2005-04-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/Xwindow.c (XDelay): Prefer use of select() over poll()
+        since it is more portable.  MacOS-X has a poll() but it doesn't
+        work right.
+
+</UL>
+<p>
 2005-04-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

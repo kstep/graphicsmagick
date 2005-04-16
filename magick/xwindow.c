@@ -1764,8 +1764,6 @@ MagickExport void XDelay(Display *display,const unsigned long milliseconds)
     timer=milliseconds/1000.0;
     lib$wait(&timer);
   }
-#elif defined(HAVE_POLL)
-  (void) poll((struct pollfd *) NULL,0,(int) milliseconds);
 #elif defined(HAVE_SELECT)
   {
     struct timeval
@@ -1775,6 +1773,8 @@ MagickExport void XDelay(Display *display,const unsigned long milliseconds)
     timer.tv_usec=(long) (milliseconds % 1000)*1000;
     (void) select(0,(XFD_SET *) NULL,(XFD_SET *) NULL,(XFD_SET *) NULL,&timer);
   }
+#elif defined(HAVE_POLL)
+  (void) poll((struct pollfd *) NULL,0,(int) milliseconds);
 #else
 # error "Time delay method not defined."
 #endif
