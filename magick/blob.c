@@ -117,7 +117,7 @@ struct _BlobInfo
     stream;
 
   unsigned char
-    *data;
+    *data;              /* Blob or memory mapped data. */
 
   void
     *semaphore;
@@ -248,10 +248,9 @@ static const char *BlobStreamTypeToString(StreamType stream_type)
 %  provided pointer is updated with the address of the data.  This pointer
 %  is only valid while the BlobStream remains mapped or allocated.
 %
-%  The format of the ReadBlob method is:
+%  The format of the ReadBlobStream method is:
 %
-%      unsigned char *ReadBlobStream(Image *image,size_t request,
-%                                   size_t *available)
+%      size_t ReadBlobStream(Image *image,const size_t length,void **data)
 %
 %  A description of each parameter follows:
 %
@@ -273,6 +272,86 @@ static inline size_t ReadBlobStream(Image *image,const size_t length,void **data
   if (available < length)
     image->blob->eof=True;
   return available;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  W r i t e B l o b S t r e a m                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteBlobStream() writes data to an in-memory Blob  This function
+%  should only be invoked for Blobs of type 'BlobStream'.  The number of
+%  bytes written is returned.
+%
+%  The format of the WriteBlobStream method is:
+%
+%      size_t WriteBlobStream(Image *image,const size_t length,
+%                             const void *data)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o length: The requested amount of data.
+%
+%    o data: A pointer to where the data resides.
+%
+*/
+static void *ExtendBlobWriteStream(Image *image,const size_t length)
+{
+  if ((image->blob->offset+length) >= image->blob->extent)
+    {
+      if ((image->blob->mapped) && (image->blob->file != (FILE *) NULL))
+        {
+          /* Memory mapped file */
+          int
+            filedes;
+      
+          filedes=fileno(image->blob->file);
+          image->blob->quantum<<=1;
+          image->blob->extent+=length+image->blob->quantum;
+          if(ftruncate(filedes,image->blob->extent) != 0)
+            return 0;
+          image->blob->data=MapBlob(filedes,WriteMode,0,image->blob->extent);
+          (void) SyncBlob(image);
+        }
+      else
+        {
+          /* In-memory Blob */
+          image->blob->quantum<<=1;
+          image->blob->extent+=length+image->blob->quantum;
+          MagickReallocMemory(image->blob->data,image->blob->extent+1);
+          (void) SyncBlob(image);
+        }
+      if (image->blob->data == (unsigned char *) NULL)
+        {
+          DetachBlob(image->blob);
+          return 0;
+        }
+    }
+  return image->blob->data+image->blob->offset;
+}
+static inline size_t WriteBlobStream(Image *image,const size_t length,const void *data)
+{
+  void
+    *dest;
+
+  dest=image->blob->data+image->blob->offset;
+  if ((image->blob->offset+length) >= image->blob->extent)
+    if ((dest=ExtendBlobWriteStream(image,length)) == (void *) NULL)
+      return 0;
+
+  (void) memcpy(dest,data,length);
+  image->blob->offset+=length;
+  if (image->blob->offset > (magick_off_t) image->blob->length)
+    image->blob->length=image->blob->offset;
+  return length;
 }
 
 /*
@@ -2358,7 +2437,9 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   size_t
                     count;
 
-                  (void) setvbuf(image->blob->file,NULL,_IOFBF,16384);
+                  if (setvbuf(image->blob->file,NULL,_IOFBF,16384) != 0)
+                    (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+                                          "  setvbuf returns failure!");
                   image->blob->type=FileStream;
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                     "  opened file %s as FileStream blob %p",
@@ -2430,7 +2511,10 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                       if (image_info->file != (FILE *) NULL)
                         image->blob->exempt=False;
                       else
-                        (void) fclose(image->blob->file);
+                        {
+                          (void) fclose(image->blob->file);
+                          image->blob->file=(FILE *) NULL;
+                        }
                       AttachBlob(image->blob,blob,length);
                       image->blob->mapped=True;
                     }
@@ -3535,51 +3619,8 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
     }
     case BlobStream:
     {
-      void
-        *dest;
-
-      if ((image->blob->offset+length) >= image->blob->extent)
-        {
-          if (image->blob->mapped)
-            return(0);
-          image->blob->quantum<<=1;
-          image->blob->extent+=length+image->blob->quantum;
-          MagickReallocMemory(image->blob->data,image->blob->extent+1);
-          (void) SyncBlob(image);
-          if (image->blob->data == (unsigned char *) NULL)
-            {
-              DetachBlob(image->blob);
-              return(0);
-            }
-        }
-
-      dest=image->blob->data+image->blob->offset;
-      if (length <= 10)
-        {
-          register size_t
-            i;
-
-          register const unsigned char
-            *source=(const unsigned char*) data;
-
-          register unsigned char
-            *target=(unsigned char*) dest;
-
-          for(i=length; i > 0; i--)
-            {
-              *target=*source;
-              target++;
-              source++;
-            }
-        }
-      else
-        {
-          (void) memcpy(dest,data,length);
-        }
-      image->blob->offset+=length;
-      if (image->blob->offset > (magick_off_t) image->blob->length)
-        image->blob->length=image->blob->offset;
-      count=length;
+      count=WriteBlobStream(image,length,data);
+      break;
     }
   }
   return(count);
@@ -3756,6 +3797,9 @@ MagickExport size_t WriteBlobLSBShort(Image *image,const unsigned long value)
 */
 MagickExport size_t WriteBlobMSBLong(Image *image,const unsigned long value)
 {
+  size_t
+    count;
+
   unsigned char
     buffer[4];
 
@@ -3765,7 +3809,12 @@ MagickExport size_t WriteBlobMSBLong(Image *image,const unsigned long value)
   buffer[1]=(unsigned char) (value >> 16);
   buffer[2]=(unsigned char) (value >> 8);
   buffer[3]=(unsigned char) value;
-  return(WriteBlob(image,4,buffer));
+
+  if (image->blob->type == BlobStream)
+    count=WriteBlobStream(image,4,buffer);
+  else
+    count=WriteBlob(image,4,buffer);
+  return count;
 }
 
 /*

@@ -1,4 +1,4 @@
-This file was last updated on January 9, 2005.
+This file was last updated on April 32, 2005.
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file.
@@ -9,6 +9,7 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     * Fixes for CERT security alert TA04-217A described at
     "http://www.us-cert.gov/cas/techalerts/TA04-217A.html".
     * AVI, BMP, & DIB security fixes.
+    * PSD security fixes.
     * Implementation has replaced usage of strcpy, strcat, and strncat
     with the more security conscious strlcat and strlcpy.
 
@@ -37,8 +38,13 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     * Ensure that MIFF files indicate the compression which was actually used.
     * Properly handle errors from libtiff so that corrupted images are not
     output.
-    * Fix for stripped-TIFF reader.
+    * Fix for stripped-TIFF reader.  Handle extra samples in scanline TIFFs.
+    * JBIG writer was writing empty files for some libjbig releases.
     * Improved handling of corrupt GIF files.
+    * Handle large SUN format images.
+    * For the gmdisplay program, ensure that only RGB data is sent to Windows.
+    * Memory leak fixes.
+    * PDF writer is fixed so that Ghoscript 8.5 doesn't warn about the output.
 
   Feature improvements:
     * LZW compression is now enabled by default.
@@ -50,14 +56,25 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     * Provide the --enable-magick-compat option when configuring to install
     ImageMagick utilities compatibility links.
     * Identify -verbose output includes normalized (0.0-1.0) statistics.
+    * Identify and convert now print "pixels per second" rates to help
+    evaluate performance.
+    * Added the identify +ping option to force reading the complete file.
     * The display program now supports the +progress option to disable any
     visual progress indication (and hourglass cursor) while loading images.
+    * Support writing grayscale TGA files.
+    * Provide explicit support for Rec 601 and Rec 709 grayscale spaces.
+    * Include some support for a log RGB space based on the 2.048 density
+    range as defined for the Cineon Digital Film System.
 
   Coder additions/improvements:
 
-    * TIFF coder now supports reading and writing RGB, CMYK, and
-    grayscale, scanline-oriented TIFF images with arbitrary (1 to 32
-    bits) depth.
+    * Replaced existing DPX "support" with all-new DPX support conforming
+    to the SMPTE 268M-2003 standard.
+    * TIFF coder is completely re-written. Now supports reading and
+    writing RGB, CMYK, and grayscale, scanline-oriented TIFF images with
+    arbitrary (1 to 32 bits) depth. Includes support for tiled TIFF,
+    floating point TIFF, LogLuv TIFF, arbitrary depths, and associated
+    alpha.
     * TIFF coder now supports retrieving and saving XMP profiles.
     * Support 32-bit raw RGB images.
     * Support 32-bit raw CMYK images.
@@ -85,6 +102,7 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     * Determine location of Ghostscript fonts only once in order to improve
     performance.
     * Updated LCMS to version 1.14.
+    * Updated Jasper library to version 1.701.0.
     * Libtiff updated to support LZW compression.
     * Use GlobalMemoryStatusEx(), if available, to determine how much physical
     memory is available.  Important for large-memory machines.

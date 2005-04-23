@@ -1473,7 +1473,7 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   assert(file != (FILE *) NULL);
   elapsed_time=GetElapsedTime(&image->timer);
   user_time=GetUserTime(&image->timer);
-  (void) ContinueTimer(&image->timer);
+  GetTimerInfo(&image->timer);
   if (!verbose)
     {
       /*

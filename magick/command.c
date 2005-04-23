@@ -9416,6 +9416,9 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     (void) SetMonitorHandler(handler);
     if (scene)
       image->scene+=i;
+    /*
+      Print one line description of image.
+    */
     if (image_info->verbose)
       (void) DescribeImage(image,stdout,False);
     AppendImageToList(&mogrify_images,image);

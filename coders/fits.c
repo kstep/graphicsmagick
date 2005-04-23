@@ -735,7 +735,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(fits_info+320,buffer,strlen(buffer));
   FormatString(buffer,"DATAMIN =           %10u",0);
   (void) strncpy(fits_info+400,buffer,strlen(buffer));
-  FormatString(buffer,"DATAMAX =           %10u",MaxValueGivenBits(depth));
+  FormatString(buffer,"DATAMAX =           %10lu",(unsigned long) MaxValueGivenBits(depth));
   (void) strncpy(fits_info+480,buffer,strlen(buffer));
   (void) strcpy(buffer,"HISTORY Created by GraphicsMagick.");
   (void) strncpy(fits_info+560,buffer,strlen(buffer));

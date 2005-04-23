@@ -1,3 +1,22 @@
+2005-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* NEWS: Update with latest news.
+	* magick/blob.c (WriteBlob): Move BlobStream write support to a
+	subroutine for easier maintenance.
+	* coders/dpx.c (ReadDPXImage): Support retrieving all DPX
+	attributes as image attributes.
+	(WriteDPXImage): Buffer writes for better performance on some
+	platforms.
+
+2005-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (WriteDPXImage): Re-write sample marshalling to be
+	based on a series of tighter loops.  Results in a small
+	performance increase.
+	(ReadDPXImage): Re-write sample marshalling to be
+	based on a series of tighter loops.  Results in a small
+	performance increase.
+
 2005-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/Xwindow.c (XDelay): Prefer use of select() over poll()

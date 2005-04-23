@@ -229,6 +229,7 @@ extern MagickExport int
   NTmmap(address,length,protection,access,file,offset)
 #define msync(addr,len,flags) NTmsync(addr,len,flags)
 #define munmap(addr,len) NTmunmap(addr,len)
+#define ftruncate(filedes,length) NTftruncate(filedes,length)
 
 /*
   libltdl-like module loader wrappers

@@ -104,9 +104,9 @@ typedef unsigned int Quantum;
   value + 0.5))
 
 /*
-  Maximum RGB value which fits in the specified bits
+  Maximum unsigned RGB value which fits in the specified bits
 */
-#define MaxValueGivenBits(bits) ((0x01U << (bits-1)) +((0x01U << (bits-1))-1))
+#define MaxValueGivenBits(bits) ((unsigned long) (0x01UL << (bits-1)) +((0x01UL << (bits-1))-1))
 
 /*
   Deprecated defines.

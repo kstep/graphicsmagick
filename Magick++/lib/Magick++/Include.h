@@ -362,6 +362,14 @@ namespace Magick
   using MagickLib::RGBQuantum;
   using MagickLib::RGBAQuantum;
   using MagickLib::CMYKQuantum;
+  using MagickLib::CIEYQuantum;
+  using MagickLib::CIEXYZQuantum;
+
+  // Quantum sample types
+  using MagickLib::QuantumSampleType;
+  using MagickLib::UndefinedQuantumSampleType;
+  using MagickLib::UnsignedQuantumSampleType;
+  using MagickLib::FloatQuantumSampleType;
 
   // Rendering intents
   using MagickLib::RenderingIntent;

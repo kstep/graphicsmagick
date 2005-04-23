@@ -371,7 +371,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   if ((marker==1) && (length>4) && (strncmp((char *) profile,"Exif",4) == 0))
     FormatString(profile_name,"EXIF");
   else if (((marker==1) && length>5) && (strncmp((char *) profile,"http:",5) == 0))
-    FormatString(profile,"XMP");
+    FormatString((char *) profile,"XMP");
 
   /*
     Store profile in Image.

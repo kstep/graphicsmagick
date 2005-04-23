@@ -5042,10 +5042,10 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   image=ReadStream(clone_info,&PingStream,exception);
   DestroyImageInfo(clone_info);
   /*
-    Intentionally clear timer if ping is requested since timing ping
+    Intentionally restart timer if ping is requested since timing ping
     is meaningless and misleading.
   */
-  ResetTimer(&image->timer);
+  GetTimerInfo(&image->timer);
   return(image);
 }
 
@@ -5695,6 +5695,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   assert(image_info->filename != (char *) NULL);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  GetTimerInfo(&image->timer);
   image->logging=IsEventLogging();
   clone_info=CloneImageInfo(image_info);
   (void) strlcpy(clone_info->filename,image->filename,MaxTextExtent);
