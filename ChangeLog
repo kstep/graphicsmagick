@@ -1,3 +1,7 @@
+2005-04-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Magick++: Added image leveling methods for Magick++.
+
 2005-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS: Update with latest news.
