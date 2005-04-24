@@ -9,11 +9,7 @@
   Written by Bob Friesenhahn, September 2003
  
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#define Min(x,y)  (((x) < (y)) ? (x) : (y))
-#include <magick/magick_types.h>
+#include <magick/studio.h>
 #include <magick/bit_stream.h>
 
 int main ( int argc, char *argv[])
