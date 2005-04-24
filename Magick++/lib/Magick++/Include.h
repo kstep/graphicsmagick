@@ -653,6 +653,8 @@ namespace Magick
   using MagickLib::IsImagesEqual;
   using MagickLib::IsSubimage;
   using MagickLib::LessValue;
+  using MagickLib::LevelImage;
+  using MagickLib::LevelImageChannel;
   using MagickLib::LiberateMemory;
   using MagickLib::LocaleCompare;
   using MagickLib::LogMagickEvent;

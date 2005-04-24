@@ -21,7 +21,8 @@
   <li> <a href="#Image%20Manipulation%20Methods">Image Manipulation
 Methods</a> </li>
   <li> <a href="#Image%20Attributes">Image Attributes</a> </li>
-  <li> <a href="#Raw%20Image%20Pixel%20Access">Raw Image Pixel Access</a> </li>
+  <li> <a href="#Raw%20Image%20Pixel%20Access">Low-Level Image Pixel
+Access</a> </li>
 </ul>
 <hr width="100%">Image is the primary object in Magick++ and represents
 a single image frame (see <a href="ImageDesign.html">design</a> ). The <a
@@ -593,7 +594,7 @@ kernel to apply.</font></td>
       <td><font size="-1">void</font></td>
       <td><font size="-1">Display image on screen.</font> <br>
       <font size="-1"><b><font color="#ff0000">Caution: </font></b> if
-an image format is is not compatable   with the display visual (e.g.
+an image format is is not compatible   with the display visual (e.g.
 JPEG on a colormapped display) then the original   image will be
 altered. Use a copy of the original if this is a problem.</font></td>
     </tr>
@@ -790,6 +791,47 @@ special format characters.</a> If the first character of string is @, the
 image label is read from a  file titled by the remaining characters in
 the string. When converting to Postscript, use this&nbsp; option to
 specify a header string to print above the image.</font></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><small><a
+ name="level"></a>level<br>
+      </small></td>
+      <td style="vertical-align: top;"><small>const double black_point,
+const double white_point, const double mid_point=1.0<br>
+      </small></td>
+      <td style="vertical-align: top;"><small>Level image. Adjust the
+levels of the image by scaling the colors falling between specified
+white and black points to the full available quantum range. The
+parameters provided represent the black, mid (gamma), and white
+points.&nbsp; The black point specifies the darkest color in the image.
+Colors darker than the black point are set to zero. Mid point (gamma)
+specifies a gamma correction to apply to the image. White point
+specifies the lightest color in the image.&nbsp; Colors brighter than
+the white point are set to the maximum quantum value. The black and
+white point have the valid range 0 to MaxRGB while mid (gamma) has a
+useful range of 0 to ten.<br>
+      </small></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><small><a
+ name="levelChannel"></a>levelChannel<br>
+      </small></td>
+      <td style="vertical-align: top;"><small>const ChannelType
+channel, const double black_point, const double white_point, const
+double mid_point=1.0<br>
+      </small></td>
+      <td style="vertical-align: top;"><small>Level image channel.
+Adjust the levels of the image channel by scaling the values falling
+between specified white and black points to the full available quantum
+range. The parameters provided represent the black, mid (gamma), and
+white points. The black point specifies the darkest color in the image.
+Colors darker than the black point are set to zero. Mid point (gamma)
+specifies a gamma correction to apply to the image. White point
+specifies the lightest color in the image. Colors brighter than the
+white point are set to the maximum quantum value. The black and white
+point have the valid range 0 to MaxRGB while mid (gamma) has a useful
+range of 0 to ten.<br>
+      </small></td>
     </tr>
     <tr>
       <td>
@@ -2564,7 +2606,7 @@ or to  capture image from</font></td>
   </tbody>
 </table>
 <center>
-<h3> <a name="Raw Image Pixel Access"></a> Raw Image Pixel Access</h3>
+<h3> <a name="Raw Image Pixel Access"></a> Low-Level Image Pixel Access</h3>
 </center>
 Image pixels (of type <i><a href="PixelPacket.html">PixelPacket</a> </i>)
 may be accessed directly via the <i>Image Pixel   Cache</i> .&nbsp; The

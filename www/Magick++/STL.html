@@ -154,7 +154,7 @@ The resuting image sequence is returned via <i>coalescedImages_.</i></font></td>
     </tr>
     <tr>
       <td>
-      <center><a name="deconstructImages"></a> d<font size="-1">econstructImages</font></center>
+      <center><a name="deconstructImages"></a> <font size="-1">deconstructImages</font></center>
       </td>
       <td><font size="-1"><a
  href="http://www.sgi.com/tech/stl/Container.html"> Container</a>
@@ -749,6 +749,45 @@ string. When converting to Postscript,  use this&nbsp; option to specify
 a header string to print above the image.</font></td>
     </tr>
     <tr>
+      <td style="text-align: center; vertical-align: middle;"><small><a
+ name="levelImage"></a>levelImage<br>
+      </small></td>
+      <td style="vertical-align: top;"><small>const double black_point,
+const double white_point, const double mid_point=1.0<br>
+      </small></td>
+      <td style="vertical-align: top;"><small>Level image. Adjust the
+levels of the image by scaling the colors falling between specified
+white and black points to the full available quantum range. The
+parameters provided represent the black, mid (gamma), and white
+points.&nbsp; The black point specifies the darkest color in the image.
+Colors darker than the black point are set to zero. Mid point (gamma)
+specifies a gamma correction to apply to the image. White point
+specifies the lightest color in the image.&nbsp; Colors brighter than
+the white point are set to the maximum quantum value. The black and
+white point have the valid range 0 to MaxRGB while mid (gamma) has a
+useful range of 0 to ten.</small></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: middle;"><small><a
+ name="levelChannelImage"></a>levelChannelImage<br>
+      </small></td>
+      <td style="vertical-align: top;"><small>const Magick::ChannelType
+channel, const double black_point, const double white_point, const
+double mid_point=1.0<br>
+      </small></td>
+      <td style="vertical-align: top;"><small>Level image channel.
+Adjust the levels of the image channel by scaling the values falling
+between specified white and black points to the full available quantum
+range. The parameters provided represent the black, mid (gamma), and
+white points. The black point specifies the darkest color in the image.
+Colors darker than the black point are set to zero. Mid point (gamma)
+specifies a gamma correction to apply to the image. White point
+specifies the lightest color in the image. Colors brighter than the
+white point are set to the maximum quantum value. The black and white
+point have the valid range 0 to MaxRGB while mid (gamma) has a useful
+range of 0 to ten.</small></td>
+    </tr>
+    <tr>
       <td>
       <center><a name="layerImage"></a> <font size="-1">layerImage</font></center>
       </td>
@@ -811,9 +850,9 @@ component with the median color in a circular neighborhood</font></td>
 double hue_</font></td>
       <td><font size="-1">Modulate percent hue, saturation, and
 brightness of an image.&nbsp;</font><font size="-1">Modulation of
-saturation and brightness is as a ratio of the current value (1.0 for
-no change). Modulation of hue is an absolute rotation of -180 degrees
-to +180 degrees from the current position corresponding to an argument
+saturation and brightness is as a ratio of the current value (1.0 for no
+change). Modulation of hue is an absolute rotation of -180 degrees to
++180 degrees from the current position corresponding to an argument
 range of 0 to 2.0 (1.0 for no change).</font></td>
     </tr>
     <tr>

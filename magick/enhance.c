@@ -558,11 +558,12 @@ MagickExport MagickPassFail GammaImage(Image *image,const char *level)
 %
 %  LevelImage() adjusts the levels of an image by scaling the colors falling
 %  between specified white and black points to the full available quantum
-%  range. The parameters provided represent the black, mid, and white points.
-%  The black point specifies the darkest color in the image. Colors darker than
-%  the black point are set to zero. Mid point specifies a gamma correction to
-%  apply to the image.  White point specifies the lightest color in the image.
-%  Colors brighter than the white point are set to the maximum quantum value.
+%  range. The parameters provided represent the black, mid (gamma), and white
+%  points. The black point specifies the darkest color in the image. Colors
+%  darker than the black point are set to zero. Mid point specifies a gamma
+%  correction to apply to the image.  White point specifies the lightest color
+%  in the image. Colors brighter than the white point are set to the maximum
+%  quantum value.
 %
 %  The format of the LevelImage method is:
 %
@@ -722,8 +723,8 @@ MagickExport MagickPassFail LevelImage(Image *image,const char *levels)
 %  LevelImageChannel() adjusts the levels of a particular image channel by
 %  scaling the colors falling between specified white and black points to
 %  the full available quantum range. The parameters provided represent the
-%  black, mid, and white points.  The black point specifies the darkest
-%  color in the image. Colors darker than the black point are set to
+%  black, mid (gamma), and white points.  The black point specifies the
+%  darkest color in the image. Colors darker than the black point are set to
 %  zero. Mid point specifies a gamma correction to apply to the image.
 %  White point specifies the lightest color in the image.  Colors brighter
 %  than the white point are set to the maximum quantum value.
@@ -738,7 +739,7 @@ MagickExport MagickPassFail LevelImage(Image *image,const char *levels)
 %
 %    o image: The image.
 %
-%    o channel: Identify which channel to extract: Red, Cyan, Green, Magenta,
+%    o channel: Identify which channel to level: Red, Cyan, Green, Magenta,
 %      Blue, Yellow, or Opacity.
 %
 %    o black_point, mid_point, white_point: Specify the levels where the black

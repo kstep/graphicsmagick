@@ -113,6 +113,16 @@ void Magick::borderImage::operator()( Magick::Image &image_ ) const
   image_.border( _geometry );
 }
 
+// Extract channel from image
+Magick::channelImage::channelImage( const Magick::ChannelType channel_ )
+  : _channel( channel_ )
+{
+}
+void Magick::channelImage::operator()( Magick::Image &image_ ) const
+{
+  image_.channel( _channel );
+}
+
 // Charcoal effect image (looks like charcoal sketch)
 Magick::charcoalImage::charcoalImage( const double radius_, const double sigma_ )
       : _radius( radius_ ),
@@ -528,14 +538,34 @@ void Magick::labelImage::operator()( Magick::Image &image_ ) const
   image_.label( _label );
 }
 
-// Extract channel from image
-Magick::channelImage::channelImage( const Magick::ChannelType channel_ )
-  : _channel( channel_ )
+// Level image
+Magick::levelImage::levelImage( const double black_point,
+                                const double white_point,
+                                const double mid_point )
+  : _black_point(black_point),
+    _white_point(white_point),
+    _mid_point(mid_point)
 {
 }
-void Magick::channelImage::operator()( Magick::Image &image_ ) const
+void Magick::levelImage::operator()( Magick::Image &image_ ) const
 {
-  image_.channel( _channel );
+  image_.level( _black_point, _white_point, _mid_point );
+}
+
+// Level image channel
+Magick::levelChannelImage::levelChannelImage( const Magick::ChannelType channel,
+                                              const double black_point,
+                                              const double white_point,
+                                              const double mid_point )
+  : _channel(channel),
+    _black_point(black_point),
+    _white_point(white_point),
+    _mid_point(mid_point)
+{
+}
+void Magick::levelChannelImage::operator()( Magick::Image &image_ ) const
+{
+  image_.levelChannel( _channel, _black_point, _white_point, _mid_point );
 }
 
 // Magnify image by integral size

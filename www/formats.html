@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020810;12535100">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20050117;19062000">
+	<META NAME="CHANGED" CONTENT="20050423;18335800">
 	<META NAME="CLASSIFICATION" CONTENT="Describes the file formats supported by GraphicsMagick.">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software    development, simulation, image, software, AniMagick, Animagic,    Magick++">
@@ -291,7 +291,13 @@ Image Formats</B></FONT></P>
 				Moving Picture Exchange</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=51% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT>&nbsp;</P>
+				<P ALIGN=LEFT>RGB and grayscale are fully supported at 1, 8, 10,
+				12, and 16 bits as per the <A HREF="http://www.smpte.org/">SMPTE</A>
+				268M-2003 (V2.0) specification. This includes support for images
+				stored in a planar (multi-element) configuration and log RGB. RLE
+				compression, floating point, and YCbCr (used for video) are not
+				currently supported. DPX is commonly used to store image frames
+				in film and HDTV production.</P>
 			</TD>
 		</TR>
 		<TR>

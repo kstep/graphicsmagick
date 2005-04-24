@@ -1,3 +1,13 @@
+2005-04-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/STL.cpp (levelImage): New function object for leveling the
+	image channels.
+	(levelChannelImage): New function object for leveling a specific
+	image channel.
+	* lib/Image.cpp (level): New method for leveling the image
+	channels.
+	(levelChannel): New method for leveling a specific image channel.
+
 2005-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h (Magick): Import CineonLogRGBColorspace
