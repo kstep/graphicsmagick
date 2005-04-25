@@ -1624,6 +1624,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
       "  enter ReadOnePNGImage()");
 
+  transparent_color.red=0;
+  transparent_color.green=0;
+  transparent_color.blue=0;
+  transparent_color.opacity=0;
+
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
   AcquireSemaphoreInfo(&png_semaphore);
 #endif
@@ -3632,6 +3637,14 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     simplicity=0,
     subframe_height=0,
     subframe_width=0;
+    previous_fb.top=0;
+    previous_fb.bottom=0;
+    previous_fb.left=0;
+    previous_fb.right=0;
+    default_fb.top=0;
+    default_fb.bottom=0;
+    default_fb.left=0;
+    default_fb.right=0;
 
   /*
     Set image_info->type=OptimizeType (new in version 5.4.0) to get the

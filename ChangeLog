@@ -1,3 +1,8 @@
+2005-04-25 Glenn Randers-Pehrson <glennrp@glennrp.com>
+
+	* coders/png.c: Initialize several variables to avoid new
+	GCC 4.0.0 warnings.
+
 2005-04-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (WriteDPXImage): Fill out source information
