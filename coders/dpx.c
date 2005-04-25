@@ -70,6 +70,7 @@
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/utility.h"
+#include "magick/version.h"
 
 /*
   Forward declaractions.
@@ -956,7 +957,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "File size: %u", dpx_file_info.file_size);
 
-  StringToAttribute(image,"artist",dpx_file_info.creator);
+  StringToAttribute(image,"software",dpx_file_info.creator);
   StringToAttribute(image,"comment",dpx_file_info.project_name);
   StringToAttribute(image,"copyright",dpx_file_info.copyright);
   StringToAttribute(image,"document",dpx_file_info.image_filename);
@@ -1601,6 +1602,61 @@ static void InitializeWriteState(WriteState *write_state,Image *image, MagickBoo
   write_state->swab=swab;
   write_state->image=image;
 }
+
+#define AttributeToU8(image,key,member) \
+{ \
+  const ImageAttribute \
+    *attribute; \
+\
+  if ((attribute=GetImageAttribute(image,key))) \
+    member=(U8) strtol(attribute->value, (char **) NULL, 10); \
+  else \
+    SET_UNDEFINED_U8(member); \
+}
+
+#define AttributeToU16(image,key,member) \
+{ \
+  const ImageAttribute \
+    *attribute; \
+\
+  if ((attribute=GetImageAttribute(image,key))) \
+    member=(U16) strtol(attribute->value, (char **) NULL, 10); \
+  else \
+    SET_UNDEFINED_U16(member); \
+}
+
+#define AttributeToU32(image,key,member) \
+{ \
+  const ImageAttribute \
+    *attribute; \
+\
+  if ((attribute=GetImageAttribute(image,key))) \
+    member=(U32) strtol(attribute->value, (char **) NULL, 10); \
+  else \
+    SET_UNDEFINED_U32(member); \
+}
+
+#define AttributeToR32(image,key,member) \
+{ \
+  const ImageAttribute \
+    *attribute; \
+\
+  if ((attribute=GetImageAttribute(image,key))) \
+    member=(R32) strtod(attribute->value, (char **) NULL); \
+  else \
+    SET_UNDEFINED_R32(member); \
+}
+
+#define AttributeToString(image,key,member) \
+{ \
+  const ImageAttribute \
+    *attribute; \
+\
+  if ((attribute=GetImageAttribute(image,key))) \
+    (void) strlcpy(member,attribute->value,sizeof(member)); \
+  else \
+    SET_UNDEFINED_ASCII(member); \
+}
                             
 static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 {
@@ -1956,39 +2012,42 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   dpx_file_info.user_defined_length=0;
   strlcpy(dpx_file_info.image_filename,image->filename,
           sizeof(dpx_file_info.image_filename));
-  strlcpy(dpx_file_info.creation_datetime,"",
-          sizeof(dpx_file_info.creation_datetime));
-  strlcpy(dpx_file_info.creator,"",sizeof(dpx_file_info.creator));
-  strlcpy(dpx_file_info.project_name,"",sizeof(dpx_file_info.project_name));
-  strlcpy(dpx_file_info.copyright,"",sizeof(dpx_file_info.copyright));
-  SET_UNDEFINED_U32(dpx_file_info.encryption_key);
-
+  AttributeToString(image,"DPX:file.creation.datetime",
+                    dpx_file_info.creation_datetime);
+  strlcpy(dpx_file_info.creator,GetMagickVersion((unsigned long *) NULL),
+          sizeof(dpx_file_info.creator));
+  AttributeToString(image,"DPX:file.project.name",dpx_file_info.project_name);
+  AttributeToString(image,"DPX:file.copyright",dpx_file_info.copyright);
+  AttributeToU32(image,"DPX:file.encryption.key",dpx_file_info.encryption_key);
   /*
     Image source information header
   */
   memset(&dpx_source_info,0,sizeof(dpx_source_info));
-  dpx_source_info.x_offset=0; /* FIXME, use geometry for offset? */
-  dpx_source_info.y_offset=0;
-  dpx_source_info.x_center=image->columns/2.0;
-  dpx_source_info.y_center=image->rows/2.0;
-  dpx_source_info.x_original_size=image->magick_columns;
-  dpx_source_info.y_original_size=image->magick_rows;
-  strlcpy(dpx_source_info.source_image_filename,image->magick_filename,
-          sizeof(dpx_source_info.source_image_filename));
-  strlcpy(dpx_source_info.source_image_datetime,"",
-          sizeof(dpx_source_info.source_image_datetime));
-  strlcpy(dpx_source_info.input_device_name,"",
-          sizeof(dpx_source_info.input_device_name));
-  strlcpy(dpx_source_info.input_device_serialnumber,"",
-          sizeof(dpx_source_info.input_device_serialnumber));
-  dpx_source_info.border_validity.XL=0;
-  dpx_source_info.border_validity.XR=0;
-  dpx_source_info.border_validity.YT=0;
-  dpx_source_info.border_validity.YB=0;
-  dpx_source_info.aspect_ratio.horizontal=1;
-  dpx_source_info.aspect_ratio.vertical=1;
-  SET_UNDEFINED_U32(dpx_source_info.x_scanned_size);
-  SET_UNDEFINED_U32(dpx_source_info.y_scanned_size);
+  AttributeToU32(image,"DPX:source.x-offset",dpx_source_info.x_offset);
+  AttributeToU32(image,"DPX:source.y-offset",dpx_source_info.y_offset);
+  AttributeToR32(image,"DPX:source.x-center",dpx_source_info.x_center);
+  AttributeToR32(image,"DPX:source.y-center",dpx_source_info.y_center);
+  AttributeToU32(image,"DPX:source.x-original-size",dpx_source_info.x_original_size);
+  if (IS_UNDEFINED_U32(dpx_source_info.x_original_size))
+    dpx_source_info.x_original_size=image->magick_columns;
+  AttributeToU32(image,"DPX:source.y-original-size",dpx_source_info.y_original_size);
+  if (IS_UNDEFINED_U32(dpx_source_info.y_original_size))
+    dpx_source_info.y_original_size=image->magick_rows;
+  AttributeToString(image,"DPX:source.filename",dpx_source_info.source_image_filename);
+  if (IS_UNDEFINED_ASCII(dpx_source_info.source_image_filename))
+    strlcpy(dpx_source_info.source_image_filename,image->magick_filename,
+            sizeof(dpx_source_info.source_image_filename));
+  AttributeToString(image,"DPX:source.creation.datetime",dpx_source_info.source_image_datetime);
+  AttributeToString(image,"DPX:source.device.name",dpx_source_info.input_device_name);
+  AttributeToString(image,"DPX:source.device.serialnumber",dpx_source_info.input_device_serialnumber);
+  AttributeToU16(image,"DPX:source.border.validity.left",dpx_source_info.border_validity.XL);
+  AttributeToU16(image,"DPX:source.border.validity.right",dpx_source_info.border_validity.XR);
+  AttributeToU16(image,"DPX:source.border.validity.top",dpx_source_info.border_validity.YT);
+  AttributeToU16(image,"DPX:source.border.validity.bottom",dpx_source_info.border_validity.YB);
+  AttributeToU32(image,"DPX:source.aspect.ratio.horizontal",dpx_source_info.aspect_ratio.horizontal);
+  AttributeToU32(image,"DPX:source.aspect.ratio.vertical",dpx_source_info.aspect_ratio.vertical);
+  AttributeToR32(image,"DPX:source.scanned.size.x",dpx_source_info.x_scanned_size);
+  AttributeToR32(image,"DPX:source.scanned.size.y",dpx_source_info.y_scanned_size);
   /*
     Determine the maximum number of samples required for any element.
   */
