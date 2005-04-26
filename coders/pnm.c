@@ -302,7 +302,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        if (format == '7')
+        if ((format == '7') && (image->colors == 256))
           {
             /*
               Initialize 332 colormap.
