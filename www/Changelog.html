@@ -21,6 +21,30 @@
 </tr>
 </table>
 <p>
+2004-04-24  Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+
+<UL>
+  <LI> coders/pnm.c: Defend against malevolent pnm "P7" files that
+        try to set the colormap length &lt; 256.  Bugfix from Cristy.
+
+</UL>
+<p>
+2005-04-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> NEWS: Added latest news.
+
+</UL>
+<p>
+2005-04-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/xwindow.c (XDelay): Prefer use of select() over poll()
+        since it is more portable.  MacOS-X has a poll() but it doesn't
+        work right.
+
+</UL>
+<p>
 2005-04-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

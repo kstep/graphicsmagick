@@ -21,8 +21,35 @@
 </tr>
 </table>
 <p>
-This file was last updated on January 22, 2005.
+This file was last updated on April 24, 2005.
 
+<p>
+Significant changes associated with GraphicsMagick 1.1.6 (released TBD, 2005)
+
+<p>
+  Improvements:<BR>
+<UL>
+  <LI> Performance enhancements to internal string handling.
+  <LI> Save monochrome and grayscale flags in MPC format so that
+    subsequent saving to a monochrome or grayscale format is faster.
+
+</UL>
+<p>
+  Bugs fixed:<BR>
+<UL>
+  <LI> Memory leak fix to IsPaletteImage().
+  <LI> Resource tracking (leak) fix to pixel cache code. After processing
+    many images, GraphicsMagick started running slower due to incorrectly
+    using a disk-based pixel cache rather than RAM.
+  <LI> Fixed assertion encountered when displaying a large image using
+    MacOS's X11.<BR>
+  <LI> JBIG output was an empty file for some versions of libjbig.
+  <LI> PDF output no longer causes warnings with Ghostscript 8.5.
+  <LI> Added cast to double for integer arguments to pow() which seems
+    necessary since Visual C++ 7.0 and later don't seem to understand
+    that the argument to pow() is a double.
+
+</UL>
 <p>
 Significant changes associated with GraphicsMagick 1.1.5 (released January 22, 2005)
 
