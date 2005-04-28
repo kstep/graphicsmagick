@@ -459,7 +459,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS DISTCHECK_CONFIG_FLAGS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os MAGICK_LIBRARY_CURRENT MAGICK_LIBRARY_REVISION MAGICK_LIBRARY_AGE MAGICK_PLUS_PLUS_LIBRARY_CURRENT MAGICK_PLUS_PLUS_LIBRARY_REVISION MAGICK_PLUS_PLUS_LIBRARY_AGE MAGICK_WAND_LIBRARY_CURRENT MAGICK_WAND_LIBRARY_REVISION MAGICK_WAND_LIBRARY_AGE PACKAGE_VERSION_ADDENDUM PACKAGE_CHANGE_DATE PACKAGE_RELEASE_DATE CVS_BRANCH_TAG MAGICK_LIB_VERSION MAGICK_LIB_VERSION_TEXT MAGICK_LIB_VERSION_NUMBER INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CONFIG_STATUS_DEPENDENCIES PREFIX_DIR EXEC_PREFIX_DIR BIN_DIR SBIN_DIR LIBEXEC_DIR DATA_DIR SYSCONF_DIR SHAREDSTATE_DIR LOCALSTATE_DIR LIB_DIR INCLUDE_DIR OLDINCLUDE_DIR INFO_DIR MAN_DIR WinPathScript MAGICK_CODER_MODULE_PATH MAGICK_CONFIGURE_SRC_PATH MAGICK_CONFIGURE_BUILD_PATH MAGICK_FILTER_MODULE_PATH DIRSEP CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP SED EGREP LD LN_S LIB_GDI32 HasWINGDI32_TRUE HasWINGDI32_FALSE WIN32_NATIVE_BUILD_TRUE WIN32_NATIVE_BUILD_FALSE CYGWIN_BUILD_TRUE CYGWIN_BUILD_FALSE PTHREAD_CC PTHREAD_CXX PTHREAD_LIBS PTHREAD_CFLAGS LFS_CPPFLAGS INSTALL_LTDL_TRUE INSTALL_LTDL_FALSE CONVENIENCE_LTDL_TRUE CONVENIENCE_LTDL_FALSE NM LIBADD_DL ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP LIBTOOL LIBTOOL_DEPS LTCXXLIBOPTS WITH_MODULES_TRUE WITH_MODULES_FALSE WITH_LTDL_TRUE WITH_LTDL_FALSE DLLDFLAGS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT MAGICK_COMPAT_TRUE MAGICK_COMPAT_FALSE QuantumDepth PERL_MAKE_OPTIONS LIBSTDCLDFLAGS MODULE_EXTRA_CPPFLAGS LIBRARY_EXTRA_CPPFLAGS INT8_T UINT8_T INT16_T UINT16_T INT32_T UINT32_T INT64_T UINT64_T SysCtlDelegate WITH_MAGICK_PLUS_PLUS_TRUE WITH_MAGICK_PLUS_PLUS_FALSE LIB_THREAD CCMALLOCDelegate LIB_MATH LIB_TRIO HasZLIB_TRUE HasZLIB_FALSE LIB_ZLIB HasBZLIB_TRUE HasBZLIB_FALSE LIB_BZLIB X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS HasX11_TRUE HasX11_FALSE LIB_X11 LIB_XEXT LIB_DL HasDPS_TRUE HasDPS_FALSE LIB_DPS HasFPX_TRUE HasFPX_FALSE LIB_FPX HasLCMS_TRUE HasLCMS_FALSE LIB_LCMS HasPNG_TRUE HasPNG_FALSE LIB_PNG HasJPEG_TRUE HasJPEG_FALSE LIB_JPEG HasJP2_TRUE HasJP2_FALSE LIB_JP2 HasGS_TRUE HasGS_FALSE LIB_GS freetype_config HasTTF_TRUE HasTTF_FALSE LIB_TTF HasTIFF_TRUE HasTIFF_FALSE LIB_TIFF HasJBIG_TRUE HasJBIG_FALSE LIB_JBIG xml2_config HasXML_TRUE HasXML_FALSE LIB_XML HasWMF_TRUE HasWMF_FALSE LIB_WMF LIB_WMF_DEPS PERLMAINCC MagickBinPath MagickLibPath MagickLibConfigPath MagickCoderModulesPath MagickFilterModulesPath MagickSharePath MagickShareConfigPath AutotraceDecodeDelegate BZIPDelegate BrowseDelegate CGMDecodeDelegate CatDelegate DCRAWDecodeDelegate DOTDecodeDelegate DVIDecodeDelegate EchoDelegate EditorDelegate FIGDecodeDelegate GMDelegate GnuplotDecodeDelegate HPGLDecodeDelegate HTMLDecodeDelegate ILBMDecodeDelegate ILBMEncodeDelegate LPDelegate LPRDelegate LZWDecodeDelegate LZWEncodeDelegate LaunchDelegate MANDelegate MPEGDecodeDelegate MPEGEncodeDelegate MVDelegate PGPDecodeDelegate POVDelegate PSDelegate RADDecodeDelegate RLEEncodeDelegate RMDelegate SCANDecodeDelegate TXTDelegate WMFDecodeDelegate WWWDecodeDelegate ZipDelegate PrintDelegate TXT2HTML HasTXT2HTML_TRUE HasTXT2HTML_FALSE windows_font_dir ghostscript_font_dir type_include_files ConvertDelegate MogrifyDelegate ShowImageDelegate RPM HAS_RPM_TRUE HAS_RPM_FALSE GSMonoDevice GSPDFDevice GSPSDevice GSColorDevice GSEPSDevice GSVersion PERL WITH_PERL_TRUE WITH_PERL_FALSE WITH_PERL_STATIC_TRUE WITH_PERL_STATIC_FALSE WITH_PERL_DYNAMIC_TRUE WITH_PERL_DYNAMIC_FALSE PERL_SUPPORTS_DESTDIR MAGICKLIB MAGICKLIBDIR DELEGATES MAGICK_DEP_LIBS MAGICK_API_CFLAGS MAGICK_API_CPPFLAGS MAGICK_API_PC_CPPFLAGS MAGICK_API_LDFLAGS MAGICK_API_LIBS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS DISTCHECK_CONFIG_FLAGS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os MAGICK_LIBRARY_CURRENT MAGICK_LIBRARY_REVISION MAGICK_LIBRARY_AGE MAGICK_PLUS_PLUS_LIBRARY_CURRENT MAGICK_PLUS_PLUS_LIBRARY_REVISION MAGICK_PLUS_PLUS_LIBRARY_AGE MAGICK_WAND_LIBRARY_CURRENT MAGICK_WAND_LIBRARY_REVISION MAGICK_WAND_LIBRARY_AGE PACKAGE_VERSION_ADDENDUM PACKAGE_CHANGE_DATE PACKAGE_RELEASE_DATE CVS_BRANCH_TAG MAGICK_LIB_VERSION MAGICK_LIB_VERSION_TEXT MAGICK_LIB_VERSION_NUMBER INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CONFIG_STATUS_DEPENDENCIES PREFIX_DIR EXEC_PREFIX_DIR BIN_DIR SBIN_DIR LIBEXEC_DIR DATA_DIR SYSCONF_DIR SHAREDSTATE_DIR LOCALSTATE_DIR LIB_DIR INCLUDE_DIR OLDINCLUDE_DIR INFO_DIR MAN_DIR WinPathScript MAGICK_CODER_MODULE_PATH MAGICK_CONFIGURE_SRC_PATH MAGICK_CONFIGURE_BUILD_PATH MAGICK_FILTER_MODULE_PATH DIRSEP CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP SED EGREP LD LN_S LIB_GDI32 HasWINGDI32_TRUE HasWINGDI32_FALSE WIN32_NATIVE_BUILD_TRUE WIN32_NATIVE_BUILD_FALSE CYGWIN_BUILD_TRUE CYGWIN_BUILD_FALSE PTHREAD_CC PTHREAD_CXX PTHREAD_LIBS PTHREAD_CFLAGS LFS_CPPFLAGS INSTALL_LTDL_TRUE INSTALL_LTDL_FALSE CONVENIENCE_LTDL_TRUE CONVENIENCE_LTDL_FALSE NM LIBADD_DL ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP LIBTOOL LIBTOOL_DEPS LTCXXLIBOPTS WITH_MODULES_TRUE WITH_MODULES_FALSE WITH_LTDL_TRUE WITH_LTDL_FALSE DLLDFLAGS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT MAGICK_COMPAT_TRUE MAGICK_COMPAT_FALSE QuantumDepth PERL_MAKE_OPTIONS LIBSTDCLDFLAGS MODULE_EXTRA_CPPFLAGS LIBRARY_EXTRA_CPPFLAGS INT8_T UINT8_T INT16_T UINT16_T INT32_T UINT32_T INT64_T UINT64_T SysCtlDelegate WITH_MAGICK_PLUS_PLUS_TRUE WITH_MAGICK_PLUS_PLUS_FALSE LIB_THREAD CCMALLOCDelegate LIB_MATH LIB_TRIO HasZLIB_TRUE HasZLIB_FALSE LIB_ZLIB HasBZLIB_TRUE HasBZLIB_FALSE LIB_BZLIB X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS HasX11_TRUE HasX11_FALSE LIB_X11 LIB_XEXT LIB_DL HasDPS_TRUE HasDPS_FALSE LIB_DPS HasFPX_TRUE HasFPX_FALSE LIB_FPX HasLCMS_TRUE HasLCMS_FALSE LIB_LCMS HasPNG_TRUE HasPNG_FALSE LIB_PNG HasJPEG_TRUE HasJPEG_FALSE LIB_JPEG HasJP2_TRUE HasJP2_FALSE LIB_JP2 HasGS_TRUE HasGS_FALSE LIB_GS freetype_config HasTTF_TRUE HasTTF_FALSE LIB_TTF HasTIFF_TRUE HasTIFF_FALSE LIB_TIFF HasJBIG_TRUE HasJBIG_FALSE LIB_JBIG xml2_config HasXML_TRUE HasXML_FALSE LIB_XML HasWMF_TRUE HasWMF_FALSE LIB_WMF LIB_WMF_DEPS PERLMAINCC MagickBinPath MagickLibPath MagickLibConfigPath MagickCoderModulesPath MagickFilterModulesPath MagickSharePath MagickShareConfigPath AutotraceDecodeDelegate BZIPDelegate BrowseDelegate CGMDecodeDelegate CatDelegate DCRAWDecodeDelegate DOTDecodeDelegate DVIDecodeDelegate EchoDelegate EditorDelegate FIGDecodeDelegate GMDelegate GnuplotDecodeDelegate HPGLDecodeDelegate HTMLDecodeDelegate ILBMDecodeDelegate ILBMEncodeDelegate LPDelegate LPRDelegate LZWDecodeDelegate LZWEncodeDelegate LaunchDelegate MANDelegate MPEGDecodeDelegate MPEGEncodeDelegate MVDelegate PGPDecodeDelegate POVDelegate PSDelegate RADDecodeDelegate RLEEncodeDelegate RMDelegate SCANDecodeDelegate TXTDelegate WMFDecodeDelegate WWWDecodeDelegate ZipDelegate PrintDelegate RST2HTML HasRST2HTML_TRUE HasRST2HTML_FALSE TXT2HTML HasTXT2HTML_TRUE HasTXT2HTML_FALSE windows_font_dir ghostscript_font_dir type_include_files ConvertDelegate MogrifyDelegate ShowImageDelegate RPM HAS_RPM_TRUE HAS_RPM_FALSE GSMonoDevice GSPDFDevice GSPSDevice GSColorDevice GSEPSDevice GSVersion PERL WITH_PERL_TRUE WITH_PERL_FALSE WITH_PERL_STATIC_TRUE WITH_PERL_STATIC_FALSE WITH_PERL_DYNAMIC_TRUE WITH_PERL_DYNAMIC_FALSE PERL_SUPPORTS_DESTDIR MAGICKLIB MAGICKLIBDIR DELEGATES MAGICK_DEP_LIBS MAGICK_API_CFLAGS MAGICK_API_CPPFLAGS MAGICK_API_PC_CPPFLAGS MAGICK_API_LDFLAGS MAGICK_API_LIBS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -35572,6 +35572,59 @@ have_mpeg2encode='no' ; if test "$MPEGEncodeDelegate" != "$MPEGEncodeDelegateDef
 have_ra_ppm='no'  ; if test "$RADDecodeDelegate" != "$RADDecodeDelegateDefault" ; then have_ra_ppm='yes' ; fi
 have_ralcgm='no'  ; if test "$CGMDecodeDelegate" != "$CGMDecodeDelegateDefault" ; then have_ralcgm='yes' ; fi
 
+# Test for optional rst2html.py utility and define automake conditional HasRST2HTML if found.
+# Extract the first word of "rst2html.py", so it can be a program name with args.
+set dummy rst2html.py; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_RST2HTML+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $RST2HTML in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_RST2HTML="$RST2HTML" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_RST2HTML="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  test -z "$ac_cv_path_RST2HTML" && ac_cv_path_RST2HTML="rst2html.py"
+  ;;
+esac
+fi
+RST2HTML=$ac_cv_path_RST2HTML
+
+if test -n "$RST2HTML"; then
+  echo "$as_me:$LINENO: result: $RST2HTML" >&5
+echo "${ECHO_T}$RST2HTML" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+have_rst2html='no' ; if test "$RST2HTML" != 'rst2html' ; then have_rst2html='yes' ; fi
+
+
+if test "$have_rst2html" = 'yes'; then
+  HasRST2HTML_TRUE=
+  HasRST2HTML_FALSE='#'
+else
+  HasRST2HTML_TRUE='#'
+  HasRST2HTML_FALSE=
+fi
+
+
 # Test for optional txt2html utility and define automake conditional HasTXT2HTML if found.
 # Extract the first word of "txt2html", so it can be a program name with args.
 set dummy txt2html; ac_word=$2
@@ -36619,6 +36672,13 @@ if test -z "${HasWMF_TRUE}" && test -z "${HasWMF_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"HasWMF\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"HasWMF\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HasRST2HTML_TRUE}" && test -z "${HasRST2HTML_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HasRST2HTML\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HasRST2HTML\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -37787,6 +37847,9 @@ s,@WMFDecodeDelegate@,$WMFDecodeDelegate,;t t
 s,@WWWDecodeDelegate@,$WWWDecodeDelegate,;t t
 s,@ZipDelegate@,$ZipDelegate,;t t
 s,@PrintDelegate@,$PrintDelegate,;t t
+s,@RST2HTML@,$RST2HTML,;t t
+s,@HasRST2HTML_TRUE@,$HasRST2HTML_TRUE,;t t
+s,@HasRST2HTML_FALSE@,$HasRST2HTML_FALSE,;t t
 s,@TXT2HTML@,$TXT2HTML,;t t
 s,@HasTXT2HTML_TRUE@,$HasTXT2HTML_TRUE,;t t
 s,@HasTXT2HTML_FALSE@,$HasTXT2HTML_FALSE,;t t

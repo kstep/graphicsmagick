@@ -1337,6 +1337,8 @@ HasLCMS_FALSE = @HasLCMS_FALSE@
 HasLCMS_TRUE = @HasLCMS_TRUE@
 HasPNG_FALSE = @HasPNG_FALSE@
 HasPNG_TRUE = @HasPNG_TRUE@
+HasRST2HTML_FALSE = @HasRST2HTML_FALSE@
+HasRST2HTML_TRUE = @HasRST2HTML_TRUE@
 HasTIFF_FALSE = @HasTIFF_FALSE@
 HasTIFF_TRUE = @HasTIFF_TRUE@
 HasTTF_FALSE = @HasTTF_FALSE@
@@ -1489,6 +1491,7 @@ RANLIB = @RANLIB@
 RLEEncodeDelegate = @RLEEncodeDelegate@
 RMDelegate = @RMDelegate@
 RPM = @RPM@
+RST2HTML = @RST2HTML@
 SBIN_DIR = @SBIN_DIR@
 SCANDecodeDelegate = @SCANDecodeDelegate@
 SED = @SED@
@@ -4032,7 +4035,7 @@ doc_DATA = \
 	ChangeLog \
 	NEWS
 
-@MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = magick-version $(TXT2HTML_TARGETS)
+@MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = magick-version $(RST2HTML_TARGETS) $(TXT2HTML_TARGETS)
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = images locale scenes scripts www PerlMagick TclMagick
@@ -4048,6 +4051,9 @@ HTML_INSTALL_DATA_TARGETS = install-data-html
 
 # Uninstall HTML files
 HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
+@HasRST2HTML_TRUE@RST2HTML_TARGETS = \
+@HasRST2HTML_TRUE@	$(top_srcdir)/www/README.html
+
 
 # txt2html requires perl.
 @WITH_PERL_TRUE@TXT2HTML_TARGETS = \
@@ -4057,8 +4063,7 @@ HTML_UNINSTALL_DATA_TARGETS = uninstall-data-html
 @WITH_PERL_TRUE@	$(top_srcdir)/www/INSTALL-unix.html \
 @WITH_PERL_TRUE@	$(top_srcdir)/www/INSTALL-vms.html \
 @WITH_PERL_TRUE@	$(top_srcdir)/www/INSTALL-windows.html \
-@WITH_PERL_TRUE@	$(top_srcdir)/www/NEWS.html \
-@WITH_PERL_TRUE@	$(top_srcdir)/www/README.html
+@WITH_PERL_TRUE@	$(top_srcdir)/www/NEWS.html
 
 
 #
@@ -8964,7 +8969,7 @@ $(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
 
 # Build HTML version of README
 $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Install README' < $(top_srcdir)/README.txt > $(top_srcdir)/www/README.html
+	$(RST2HTML) --stylesheet=magick.css --date --time $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
 
 # Format C API documentation
 format_c_api_docs:

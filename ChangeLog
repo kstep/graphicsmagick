@@ -1,3 +1,7 @@
+2005-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* utilities/tests/convolve.sh: Add a convolution parameter.
+
 2005-04-28 Glenn Randers-Pehrson <glennrp@glennrp.com>
 
 	* magick/command.c: "IsGeometry() test was rejecting valid

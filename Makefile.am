@@ -153,7 +153,7 @@ doc_DATA = \
 	NEWS
 
 if MAINTAINER_MODE
-MAINTAINER_TARGETS = magick-version $(TXT2HTML_TARGETS)
+MAINTAINER_TARGETS = magick-version $(RST2HTML_TARGETS) $(TXT2HTML_TARGETS)
 endif
 
 all-local: $(MAGICKPP_LOCAL_TARGETS) $(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)
@@ -229,6 +229,11 @@ magick-version: magick/version.h
 
 ${srcdir}/configure: ${srcdir}/version.sh
 
+if HasRST2HTML
+RST2HTML_TARGETS = \
+	$(top_srcdir)/www/README.html
+endif # HasRST2HTML
+
 if WITH_PERL
 # txt2html requires perl.
 TXT2HTML_TARGETS = \
@@ -238,8 +243,7 @@ TXT2HTML_TARGETS = \
 	$(top_srcdir)/www/INSTALL-unix.html \
 	$(top_srcdir)/www/INSTALL-vms.html \
 	$(top_srcdir)/www/INSTALL-windows.html \
-	$(top_srcdir)/www/NEWS.html \
-	$(top_srcdir)/www/README.html
+	$(top_srcdir)/www/NEWS.html
 endif # WITH_PERL
 
 # Automatically reconfigure libtool
@@ -277,7 +281,7 @@ $(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
 
 # Build HTML version of README
 $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Install README' < $(top_srcdir)/README.txt > $(top_srcdir)/www/README.html
+	$(RST2HTML) --stylesheet=magick.css --date --time $(top_srcdir)/README.txt $(top_srcdir)/www/README.html
 
 # Format C API documentation
 format_c_api_docs:

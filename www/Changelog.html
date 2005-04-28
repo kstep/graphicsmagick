@@ -21,6 +21,32 @@
 </tr>
 </table>
 <p>
+2005-04-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> utilities/tests/convolve.sh: Add a convolution parameter.
+
+</UL>
+<p>
+2005-04-28 Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+
+<UL>
+  <LI> magick/command.c: "IsGeometry() test was rejecting valid
+        -convolve parameters.  Also, the image returned by ConvolveImage()
+        was ignored.
+
+</UL>
+<p>
+2005-04-25 Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+
+<UL>
+  <LI> coders/png.c: Initialize several variables to avoid new
+        GCC 4.0.0 warnings.<BR>
+  <LI> coders/pnm.c: Defend against malicious "P7" files that try
+        to set the colormap less than 256 bytes (bug fix from ImageMagick)
+
+</UL>
+<p>
 2005-04-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

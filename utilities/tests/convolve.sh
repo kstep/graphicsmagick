@@ -11,4 +11,4 @@
 set -e # Exit on any error
 . ${srcdir}/utilities/tests/common.sh
 
-${GM} convert ${MODEL_MIFF} -label Convolve Convolve_out.miff
+${GM} convert ${MODEL_MIFF} -convolve 1,1,1,1,4,1,1,1,1 -label Convolve Convolve_out.miff

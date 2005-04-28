@@ -2240,6 +2240,11 @@ have_mpeg2encode='no' ; if test "$MPEGEncodeDelegate" != "$MPEGEncodeDelegateDef
 have_ra_ppm='no'  ; if test "$RADDecodeDelegate" != "$RADDecodeDelegateDefault" ; then have_ra_ppm='yes' ; fi
 have_ralcgm='no'  ; if test "$CGMDecodeDelegate" != "$CGMDecodeDelegateDefault" ; then have_ralcgm='yes' ; fi
 
+# Test for optional rst2html.py utility and define automake conditional HasRST2HTML if found.
+AC_PATH_PROG(RST2HTML, rst2html.py, rst2html.py)
+have_rst2html='no' ; if test "$RST2HTML" != 'rst2html' ; then have_rst2html='yes' ; fi
+AM_CONDITIONAL(HasRST2HTML, test "$have_rst2html" = 'yes')
+
 # Test for optional txt2html utility and define automake conditional HasTXT2HTML if found.
 AC_PATH_PROG(TXT2HTML, txt2html, txt2html)
 have_txt2html='no' ; if test "$TXT2HTML" != 'txt2html' ; then have_txt2html='yes' ; fi

@@ -874,7 +874,7 @@ typedef struct _ImageInfo
     group;                   /* X11 window group ID */
 
   unsigned int
-    verbose;                 /* If true, display high-level processing */
+    verbose;                 /* If non-zero, display high-level processing */
 
   char
     *view,                   /* FlashPIX view specification */
