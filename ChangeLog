@@ -1,3 +1,8 @@
+2005-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* utilities/Makefile.am (check): Add a convolution parameter so
+	that the convolve demo actually does something.
+
 2004-04-24  Glenn Randers-Pehrson <glennrp@glennrp.com>
 
 	* coders/pnm.c: Defend against malevolent pnm "P7" files that

@@ -903,7 +903,7 @@ check:
 	${GM} convert $(MODEL_MIFF) -charcoal 0x1                 -label Charcoal Charcoal_out.miff
 	${GM} composite $(SMILE_MIFF) -geometry +35+65 $(MODEL_MIFF) -label Composite Comp_out.miff
 	${GM} convert $(MODEL_MIFF) -contrast                     -label Contrast Contrast_out.miff
-	${GM} convert $(MODEL_MIFF)                               -label Convolve Convolve_out.miff
+	${GM} convert $(MODEL_MIFF)  -convolve 1,1,1,1,4,1,1,1,1  -label Convolve Convolve_out.miff
 	${GM} convert $(MODEL_MIFF) -despeckle                    -label Despeckle Despeckle_out.miff
 	${GM} convert $(MODEL_MIFF) -crop '80x80+25+50'           -label Crop Crop_out.miff
 	${GM} convert $(MODEL_MIFF) -fill none -stroke gold \
