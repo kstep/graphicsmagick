@@ -3122,7 +3122,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
            if (*option == '-')
              {
                i++;
-               if ((i == (argc-1)) || !IsGeometry(argv[i]))
+               if (i == (argc-1))
                  ThrowConvertException(OptionError,MissingArgument,
                    option);
              }
@@ -7692,6 +7692,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("convolve",option+1) == 0)
           {
+            Image
+              *convolve_image;
+
             char
               *p,
               token[MaxTextExtent];
@@ -7730,7 +7733,10 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             }
             for ( ; x < (long) (order*order); x++)
               kernel[x]=0.0;
-            (void) ConvolveImage(*image,order,kernel,&(*image)->exception);
+            convolve_image=ConvolveImage(*image,order,kernel,
+              &(*image)->exception);
+            DestroyImage(*image);
+            *image=convolve_image;
             MagickFreeMemory(kernel);
             continue;
           }

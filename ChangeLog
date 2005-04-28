@@ -1,5 +1,7 @@
 2005-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/command.c (MogrifyImage): Apply the convolve fixes that
+	Glenn committed to CVS head.
 	* utilities/Makefile.am (check): Add a convolution parameter so
 	that the convolve demo actually does something.
 
