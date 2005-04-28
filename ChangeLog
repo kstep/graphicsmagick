@@ -1,3 +1,9 @@
+2005-04-28 Glenn Randers-Pehrson <glennrp@glennrp.com>
+
+	* magick/command.c: "IsGeometry() test was rejecting valid
+	-convolve parameters.  Also, the image returned by ConvolveImage()
+	was ignored.
+
 2005-04-25 Glenn Randers-Pehrson <glennrp@glennrp.com>
 
 	* coders/png.c: Initialize several variables to avoid new
