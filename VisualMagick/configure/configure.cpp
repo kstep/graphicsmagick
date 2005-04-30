@@ -1020,6 +1020,10 @@ void CConfigureApp::process_library( const char *root,
             workspace->write_project_dependency(project,"CORE_xlib");
           workspace->write_project_dependency(project,"CORE_magick");
         }
+      if (name.compare("filters") == 0)
+        {
+          workspace->write_project_dependency(project,"CORE_magick");
+        }
       if (name.compare("Magick++") == 0)
         {
           workspace->write_project_dependency(project,"CORE_magick");
