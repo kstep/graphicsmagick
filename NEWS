@@ -1,6 +1,6 @@
 This file was last updated on April 29, 2005.
 
-Significant changes associated with GraphicsMagick 1.1.6 (released TBD, 2005)
+Significant changes associated with GraphicsMagick 1.1.6 (released May 1, 2005)
 
   Improvements:
     o Performance enhancements to internal string handling.

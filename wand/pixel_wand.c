@@ -1493,5 +1493,5 @@ WandExport void PixelSetYellowQuantum(PixelWand *wand,const Quantum yellow)
 {
   assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
-  wand->pixel.green=(double) yellow/MaxRGB;
+  wand->pixel.blue=(double) yellow/MaxRGB;
 }

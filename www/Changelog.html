@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.1.5 ChangeLog</TITLE>
+<TITLE>GraphicsMagick 1.1.6 ChangeLog</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -17,13 +17,16 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.5 ChangeLog</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1.6 ChangeLog</font></font></font></b></td>
 </tr>
 </table>
 <p>
 2005-05-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> version.sh (PACKAGE_VERSION): Release version 1.1.6.
+  <LI> wand/pixel_wand.c (PixelSetYellowQuantum): Wrong PixelPacket
+        member was being set.  Thanks to Cristy for the heads-up.
   <LI> magick/image.c (SetImageType): Revert change from 2005-03-12.
         Some coders require that when the image is set to Bilevel type,
         that it be PseudoClass.
