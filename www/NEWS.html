@@ -21,7 +21,7 @@
 </tr>
 </table>
 <p>
-This file was last updated on April 24, 2005.
+This file was last updated on April 29, 2005.
 
 <p>
 Significant changes associated with GraphicsMagick 1.1.6 (released TBD, 2005)
@@ -48,6 +48,15 @@ Significant changes associated with GraphicsMagick 1.1.6 (released TBD, 2005)
   <LI> Added cast to double for integer arguments to pow() which seems
     necessary since Visual C++ 7.0 and later don't seem to understand
     that the argument to pow() is a double.
+  <LI> The -convolve option was not working.  Convolution was working at
+    the API level.
+
+</UL>
+<p>
+  Security Fixes:
+
+<UL>
+  <LI> Defend against malevolent pnm "P7" files.
 
 </UL>
 <p>

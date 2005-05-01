@@ -6475,28 +6475,26 @@ MagickExport unsigned int SetImageType(Image *image,const ImageType image_type)
     {
       if (image->colorspace != RGBColorspace)
         TransformColorspace(image,RGBColorspace);
-      if (!IsMonochromeImage(image,&image->exception))
+      if ((!IsMonochromeImage(image,&image->exception)) &&
+          (image->dither != MagickFalse))
         {
-          if (image->dither == True)
-            {
-              /*
+          /*
                 Dither image to bilevel
-              */
-              GetQuantizeInfo(&quantize_info);
-              quantize_info.colorspace=GRAYColorspace;
-              quantize_info.dither=image->dither;
-              quantize_info.tree_depth=8;
-              quantize_info.number_colors=2;
-              (void) QuantizeImage(&quantize_info,image);
-            }
-          else
-            {
-              /*
-                Normalize and Threshold image to bilevel
-              */
-              NormalizeImage(image); 
-              ThresholdImage(image,(double)MaxRGB/2);
-            }
+          */
+          GetQuantizeInfo(&quantize_info);
+          quantize_info.colorspace=GRAYColorspace;
+          quantize_info.dither=image->dither;
+          quantize_info.tree_depth=8;
+          quantize_info.number_colors=2;
+          (void) QuantizeImage(&quantize_info,image);
+        }
+      if ((image->is_monochrome == MagickFalse) ||
+          (image->storage_class != PseudoClass))
+        {
+          /*
+            Threshold image to bilevel
+          */
+          (void) ThresholdImage(image,(double)MaxRGB/2);
         }
       image->is_grayscale=True;
       image->is_monochrome=True;
