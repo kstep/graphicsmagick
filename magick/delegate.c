@@ -44,6 +44,7 @@
 #include "magick/blob.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
+#include "magick/log.h"
 #if defined(WIN32) || defined(__CYGWIN__)
 # include "magick/nt_feature.h"
 #endif
@@ -587,7 +588,7 @@ MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
 
   int
     argc,
-    code,
+    pexit_code,
     status;
 
   register long
@@ -623,22 +624,48 @@ MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
       (void) fputs("[ghostscript library]",stdout);
       (void) fputs(strchr(command,' '),stdout);
     }
+  /*
+    Allocate an interpreter.
+  */
   status=(gs_func->new_instance)(&interpreter,(void *) NULL);
   if (status < 0)
-    return(False);
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Failed to allocate Ghostscript interpreter!");
+      return(False);
+    }
+  /*
+    Initialize interpreter with argument list.
+  */
   argv=StringToArgv(command,&argc);
   if (argv == (char **) NULL)
-    return(False);
+    {
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Failed to allocate Ghostscript argument list!");
+      return(False);
+    }
   status=(gs_func->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
-    status=(gs_func->run_string)
-     (interpreter,"systemdict /start get exec\n",0,&code);
+    {
+      status=(gs_func->run_string)
+        (interpreter,"systemdict /start get exec\n",0,&pexit_code);
+      if ((status == 0) || (status <= -100))
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Ghostscript returns status %d, exit code %d",
+                              status,pexit_code);
+    }
+  /*
+    Exit interpreter.
+  */
   (gs_func->exit)(interpreter);
+  /*
+    Deallocate interpreter.
+  */
   (gs_func->delete_instance)(interpreter);
   for (i=0; i < argc; i++)
     MagickFreeMemory(argv[i]);
   MagickFreeMemory(argv);
-  if ((status == 0) || (status == -101))
+  if ((status == 0) || (status <= -100))
     return(False);
   return(True);
 #else

@@ -848,24 +848,139 @@ static TagInfo
     {  0x115, (char *) "SamplesPerPixel"},
     {  0x116, (char *) "RowsPerStrip"},
     {  0x117, (char *) "StripByteCounts"},
+    {  0x118, (char *) "MinSampleValue"},
+    {  0x119, (char *) "MaxSampleValue"},
     {  0x11A, (char *) "XResolution"},
     {  0x11B, (char *) "YResolution"},
     {  0x11C, (char *) "PlanarConfiguration"},
+    {  0x11D, (char *) "PageName"},
+    {  0x11E, (char *) "XPosition"},
+    {  0x11F, (char *) "YPosition"},
+    {  0x120, (char *) "FreeOffsets"},
+    {  0x121, (char *) "FreeByteCounts"},
+    {  0x122, (char *) "GrayResponseUnit"},
+    {  0x123, (char *) "GrayResponseCurve"},
+    {  0x124, (char *) "T4Options"},
+    {  0x125, (char *) "T6Options"},
     {  0x128, (char *) "ResolutionUnit"},
     {  0x12D, (char *) "TransferFunction"},
     {  0x131, (char *) "Software"},
     {  0x132, (char *) "DateTime"},
     {  0x13B, (char *) "Artist"},
+    {  0x13C, (char *) "HostComputer"},
+    {  0x13D, (char *) "Predictor"},
     {  0x13E, (char *) "WhitePoint"},
     {  0x13F, (char *) "PrimaryChromaticities"},
+    {  0x140, (char *) "ColorMap"},
+    {  0x141, (char *) "HalfToneHints"},
+    {  0x142, (char *) "TileWidth"},
+    {  0x143, (char *) "TileLength"},
+    {  0x144, (char *) "TileOffsets"},
+    {  0x145, (char *) "TileByteCounts"},
+    {  0x14A, (char *) "SubIFD"},
+    {  0x14C, (char *) "InkSet"},
+    {  0x14D, (char *) "InkNames"},
+    {  0x14E, (char *) "NumberOfInks"},
+    {  0x150, (char *) "DotRange"},
+    {  0x151, (char *) "TargetPrinter"},
+    {  0x152, (char *) "ExtraSample"},
+    {  0x153, (char *) "SampleFormat"},
+    {  0x154, (char *) "SMinSampleValue"},
+    {  0x155, (char *) "SMaxSampleValue"},
     {  0x156, (char *) "TransferRange"},
+    {  0x157, (char *) "ClipPath"},
+    {  0x158, (char *) "XClipPathUnits"},
+    {  0x159, (char *) "YClipPathUnits"},
+    {  0x15A, (char *) "Indexed"},
+    {  0x15B, (char *) "JPEGTables"},
+    {  0x15F, (char *) "OPIProxy"},
     {  0x200, (char *) "JPEGProc"},
     {  0x201, (char *) "JPEGInterchangeFormat"},
     {  0x202, (char *) "JPEGInterchangeFormatLength"},
+    {  0x203, (char *) "JPEGRestartInterval"},
+    {  0x205, (char *) "JPEGLosslessPredictors"},
+    {  0x206, (char *) "JPEGPointTransforms"},
+    {  0x207, (char *) "JPEGQTables"},
+    {  0x208, (char *) "JPEGDCTables"},
+    {  0x209, (char *) "JPEGACTables"},
     {  0x211, (char *) "YCbCrCoefficients"},
     {  0x212, (char *) "YCbCrSubSampling"},
     {  0x213, (char *) "YCbCrPositioning"},
     {  0x214, (char *) "ReferenceBlackWhite"},
+    {  0x2BC, (char *) "ExtensibleMetadataPlatform"},
+    {  0x301, (char *) "Gamma"},
+    {  0x302, (char *) "ICCProfileDescriptor"},
+    {  0x303, (char *) "SRGBRenderingIntent"},
+    {  0x320, (char *) "ImageTitle"},
+    {  0x5001, (char *) "ResolutionXUnit"},
+    {  0x5002, (char *) "ResolutionYUnit"},
+    {  0x5003, (char *) "ResolutionXLengthUnit"},
+    {  0x5004, (char *) "ResolutionYLengthUnit"},
+    {  0x5005, (char *) "PrintFlags"},
+    {  0x5006, (char *) "PrintFlagsVersion"},
+    {  0x5007, (char *) "PrintFlagsCrop"},
+    {  0x5008, (char *) "PrintFlagsBleedWidth"},
+    {  0x5009, (char *) "PrintFlagsBleedWidthScale"},
+    {  0x500A, (char *) "HalftoneLPI"},
+    {  0x500B, (char *) "HalftoneLPIUnit"},
+    {  0x500C, (char *) "HalftoneDegree"},
+    {  0x500D, (char *) "HalftoneShape"},
+    {  0x500E, (char *) "HalftoneMisc"},
+    {  0x500F, (char *) "HalftoneScreen"},
+    {  0x5010, (char *) "JPEGQuality"},
+    {  0x5011, (char *) "GridSize"},
+    {  0x5012, (char *) "ThumbnailFormat"},
+    {  0x5013, (char *) "ThumbnailWidth"},
+    {  0x5014, (char *) "ThumbnailHeight"},
+    {  0x5015, (char *) "ThumbnailColorDepth"},
+    {  0x5016, (char *) "ThumbnailPlanes"},
+    {  0x5017, (char *) "ThumbnailRawBytes"},
+    {  0x5018, (char *) "ThumbnailSize"},
+    {  0x5019, (char *) "ThumbnailCompressedSize"},
+    {  0x501A, (char *) "ColorTransferFunction"},
+    {  0x501B, (char *) "ThumbnailData"},
+    {  0x5020, (char *) "ThumbnailImageWidth"},
+    {  0x5021, (char *) "ThumbnailImageHeight"},
+    {  0x5022, (char *) "ThumbnailBitsPerSample"},
+    {  0x5023, (char *) "ThumbnailCompression"},
+    {  0x5024, (char *) "ThumbnailPhotometricInterp"},
+    {  0x5025, (char *) "ThumbnailImageDescription"},
+    {  0x5026, (char *) "ThumbnailEquipMake"},
+    {  0x5027, (char *) "ThumbnailEquipModel"},
+    {  0x5028, (char *) "ThumbnailStripOffsets"},
+    {  0x5029, (char *) "ThumbnailOrientation"},
+    {  0x502A, (char *) "ThumbnailSamplesPerPixel"},
+    {  0x502B, (char *) "ThumbnailRowsPerStrip"},
+    {  0x502C, (char *) "ThumbnailStripBytesCount"},
+    {  0x502D, (char *) "ThumbnailResolutionX"},
+    {  0x502E, (char *) "ThumbnailResolutionY"},
+    {  0x502F, (char *) "ThumbnailPlanarConfig"},
+    {  0x5030, (char *) "ThumbnailResolutionUnit"},
+    {  0x5031, (char *) "ThumbnailTransferFunction"},
+    {  0x5032, (char *) "ThumbnailSoftwareUsed"},
+    {  0x5033, (char *) "ThumbnailDateTime"},
+    {  0x5034, (char *) "ThumbnailArtist"},
+    {  0x5035, (char *) "ThumbnailWhitePoint"},
+    {  0x5036, (char *) "ThumbnailPrimaryChromaticities"},
+    {  0x5037, (char *) "ThumbnailYCbCrCoefficients"},
+    {  0x5038, (char *) "ThumbnailYCbCrSubsampling"},
+    {  0x5039, (char *) "ThumbnailYCbCrPositioning"},
+    {  0x503A, (char *) "ThumbnailRefBlackWhite"},
+    {  0x503B, (char *) "ThumbnailCopyRight"},
+    {  0x5090, (char *) "LuminanceTable"},
+    {  0x5091, (char *) "ChrominanceTable"},
+    {  0x5100, (char *) "FrameDelay"},
+    {  0x5101, (char *) "LoopCount"},
+    {  0x5110, (char *) "PixelUnit"},
+    {  0x5111, (char *) "PixelPerUnitX"},
+    {  0x5112, (char *) "PixelPerUnitY"},
+    {  0x5113, (char *) "PaletteHistogram"},
+    {  0x1000, (char *) "RelatedImageFileFormat"},
+    {  0x800D, (char *) "ImageID"},
+    {  0x80E3, (char *) "Matteing"},
+    {  0x80E4, (char *) "DataType"},
+    {  0x80E5, (char *) "ImageDepth"},
+    {  0x80E6, (char *) "TileDepth"},
     {  0x828D, (char *) "CFARepeatPatternDim"},
     {  0x828E, (char *) "CFAPattern"},
     {  0x828F, (char *) "BatteryLevel"},
@@ -873,6 +988,9 @@ static TagInfo
     {  0x829A, (char *) "ExposureTime"},
     {  0x829D, (char *) "FNumber"},
     {  0x83BB, (char *) "IPTC/NAA"},
+    {  0x84E3, (char *) "IT8RasterPadding"},
+    {  0x84E5, (char *) "IT8ColorTable"},
+    {  0x8649, (char *) "ImageResourceInformation"},
     {  0x8769, (char *) "ExifOffset"},
     {  0x8773, (char *) "InterColorProfile"},
     {  0x8822, (char *) "ExposureProgram"},
@@ -900,6 +1018,11 @@ static TagInfo
     {  0x9290, (char *) "SubSecTime"},
     {  0x9291, (char *) "SubSecTimeOriginal"},
     {  0x9292, (char *) "SubSecTimeDigitized"},
+    {  0x9C9B, (char *) "WinXP-Title"},     /* Win XP specific, UTF-16 Unicode */
+    {  0x9C9C, (char *) "WinXP-Comments"},  /* Win XP specific, UTF-16 Unicode */
+    {  0x9C9D, (char *) "WinXP-Author"},    /* Win XP specific, UTF-16 Unicode */
+    {  0x9C9E, (char *) "WinXP-Keywords"},  /* Win XP specific, UTF-16 Unicode */
+    {  0x9C9F, (char *) "WinXP-Subject"},   /* Win XP specific, UTF-16 Unicode */
     {  0xA000, (char *) "FlashPixVersion"},
     {  0xA001, (char *) "ColorSpace"},
     {  0xA002, (char *) "ExifImageWidth"},
@@ -907,19 +1030,53 @@ static TagInfo
     {  0xA005, (char *) "InteroperabilityOffset"},
     {  0xA20B, (char *) "FlashEnergy"},
     {  0xA20C, (char *) "SpatialFrequencyResponse"},
+    {  0xA20D, (char *) "Noise"},
     {  0xA20E, (char *) "FocalPlaneXResolution"},
     {  0xA20F, (char *) "FocalPlaneYResolution"},
     {  0xA210, (char *) "FocalPlaneResolutionUnit"},
+    {  0xA211, (char *) "ImageNumber"},
+    {  0xA212, (char *) "SecurityClassification"},
+    {  0xA213, (char *) "ImageHistory"},
     {  0xA214, (char *) "SubjectLocation"},
     {  0xA215, (char *) "ExposureIndex"},
+    {  0xA216, (char *) "TIFF/EPStandardID"},
     {  0xA217, (char *) "SensingMethod"},
     {  0xA300, (char *) "FileSource"},
     {  0xA301, (char *) "SceneType"},
+    {  0xA302, (char *) "CFAPattern"},
+    {  0xA401, (char *) "CustomRendered"},
+    {  0xA402, (char *) "ExposureMode"},
+    {  0xA403, (char *) "WhiteBalance"},
+    {  0xA404, (char *) "DigitalZoomRatio"},
+    {  0xA405, (char *) "FocalLengthIn35mmFilm"},
+    {  0xA406, (char *) "SceneCaptureType"},
+    {  0xA407, (char *) "GainControl"},
+    {  0xA408, (char *) "Contrast"},
+    {  0xA409, (char *) "Saturation"},
+    {  0xA40A, (char *) "Sharpness"},
+    {  0xA40B, (char *) "DeviceSettingDescription"},
+    {  0xA40C, (char *) "SubjectDistanceRange"},
+    {  0xA420, (char *) "ImageUniqueID"},
     {  0x0000, (char *) NULL}
   };
 
 static int
-  format_bytes[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
+  format_bytes[] =
+  {
+    0,
+    1, /* BYTE */
+    1, /* STRING / ASCII */
+    2, /* USHORT */
+    4, /* ULONG */
+    8, /* URATIONAL */
+    1, /* SBYTE */
+    1, /* UNDEFINED */
+    2, /* SSHORT */
+    4, /* SLONG */
+    8, /* SRATIONAL */
+    4, /* SINGLE / FLOAT */
+    8  /* DOUBLE */
+  };
 
 static short Read16s(int morder,void *ishort)
 {
@@ -1210,24 +1367,46 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
           {
             case EXIF_FMT_SBYTE:
             {
+              /* 8-bit signed integer */
               FormatString(s,"%ld",(long) (*(char *) pval));
               value=AllocateString(s);
               break;
             }
             case EXIF_FMT_BYTE:
             {
+              /* 8-bit unsigned integer */
+              value=MagickAllocateMemory(char *,n+1);
+              if (value != (char *) NULL)
+                {
+                  long
+                    a;
+
+                  for (a=0; a < n; a++)
+                  {
+                    value[a]='.';
+                    if (isprint((int) pval[a]) /* || (pval[a] == '\0') */)
+                      value[a]=pval[a];
+                  }
+                  value[a]='\0';
+                  break;
+                }
+#if 0
+              printf("format %u, length %u\n",f,n);
               FormatString(s,"%ld",(long) (*(unsigned char *) pval));
               value=AllocateString(s);
+#endif
               break;
             }
             case EXIF_FMT_SSHORT:
             {
+              /* 16-bit signed integer */
               FormatString(s,"%hd",Read16u(morder,pval));
               value=AllocateString(s);
               break;
             }
             case EXIF_FMT_USHORT:
             {
+              /* 16-bit unsigned integer */
               FormatString(s,"%hu",Read16s(morder,pval));
               value=AllocateString(s);
               break;

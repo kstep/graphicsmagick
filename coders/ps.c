@@ -515,8 +515,6 @@ ModuleExport void UnregisterPSImage(void)
 %
 %
 */
-static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
-{
 #define WriteRunlengthPacket(image,pixel,length,p) \
 { \
   if (image->matte && (p->opacity == TransparentOpacity)) \
@@ -527,7 +525,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       Min(length,0xff)); \
   (void) WriteBlobString(image,buffer); \
 }
-
+static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
+{
   static const char
     *PostscriptProlog[]=
     {
@@ -1148,7 +1147,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  if (!MagickMonitor(SaveImageText,y,image->rows,
+                                     &image->exception))
                     break;
             }
           }
@@ -1210,7 +1210,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 };
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  if (!MagickMonitor(SaveImageText,y,image->rows,
+                                     &image->exception))
                     break;
             }
           }

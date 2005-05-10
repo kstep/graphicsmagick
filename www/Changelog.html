@@ -21,6 +21,26 @@
 </tr>
 </table>
 <p>
+2005-05-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (WriteDPXImage): Default to big-endian output.
+  <LI> magick/delegate.c (InvokePostscriptDelegate): Improved
+        Ghostscript API-based error reporting and logging.
+  <LI> magick/attribute.c (GenerateEXIFAttribute): Extend EXIF
+        knowledge a bit.  Pass more characters from EXIF_FMT_BYTE in case
+        the byte stream contains nulls.
+  <LI> coders/dpx.c: Re-wrote the DPX read/write support in order to
+        hopefully surmount problems noticed when testing with files sent
+        to me.<BR>
+  <LI> wand/pixel_wand.c (PixelSetYellowQuantum): Wrong PixelPacket
+        member was being set.  Thanks to Cristy for the heads-up.
+  <LI> magick/image.c (SetImageType): Revert change from 2005-03-12.
+        Some coders require that when the image is set to Bilevel type,
+        that it be PseudoClass.
+
+</UL>
+<p>
 2005-04-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

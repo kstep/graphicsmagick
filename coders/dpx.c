@@ -367,6 +367,12 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
 %
 %
 */
+#define LogSetImageAttribute(name,value) \
+{ \
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(), \
+                        "Attribute \"%s\" set to \"%s\"", \
+                        name,value); \
+}
 
 #define StringToAttribute(image,name,member) \
 { \
@@ -377,6 +383,7 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
     { \
       strlcpy(buffer,member,Min(sizeof(member)+1,MaxTextExtent)); \
       SetImageAttribute(image,name,buffer); \
+      LogSetImageAttribute(name,buffer); \
     } \
 }
 #define U8ToAttribute(image,name,member) \
@@ -388,6 +395,7 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
     { \
       FormatString(buffer,"%u",(unsigned int) member); \
       SetImageAttribute(image,name,buffer); \
+      LogSetImageAttribute(name,buffer); \
     } \
 }
 #define U16ToAttribute(image,name,member) \
@@ -399,6 +407,7 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
     { \
       FormatString(buffer,"%u",(unsigned int) member); \
       SetImageAttribute(image,name,buffer); \
+      LogSetImageAttribute(name,buffer); \
     } \
 }
 #define U32ToAttribute(image,name,member) \
@@ -410,6 +419,7 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
     { \
       FormatString(buffer,"%u",member); \
       SetImageAttribute(image,name,buffer); \
+      LogSetImageAttribute(name,buffer); \
     } \
 }
 #define R32ToAttribute(image,name,member) \
@@ -421,6 +431,7 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
     { \
       FormatString(buffer,"%g",member); \
       SetImageAttribute(image,name,buffer); \
+      LogSetImageAttribute(name,buffer); \
     } \
 }
 static void SwabDPXFileInfo(DPXFileInfo *file_info)
@@ -496,6 +507,62 @@ static void SwabDPXTVInfo(DPXTVInfo *tv_info)
   MagickSwabFloat(&tv_info->breakpoint);
   MagickSwabFloat(&tv_info->white_level);
   MagickSwabFloat(&tv_info->integration_time);
+}
+static size_t DPXRowOctets(unsigned int row_samples,
+                           unsigned int bits_per_sample,
+                           ImageComponentPackingMethod packing_method)
+{
+  size_t
+    row_octets;
+
+  row_octets=0;
+  switch(bits_per_sample)
+    {
+    case 1:
+      /* One bit samples are packed into 32-bit words but filled to
+         next 32-bit word boundary at end of each row. */
+      row_octets=(((magick_int64_t) row_samples*bits_per_sample+31)/32)*sizeof(U32);
+      break;
+    case 10:
+      if ((packing_method == PackingMethodWordsFillLSB) ||
+          (packing_method == PackingMethodWordsFillMSB))
+        {
+          /* C.3 Three 10-bit samples per 32-bit word */
+          row_octets=((row_samples+2)/3)*sizeof(U32);
+        }
+      else
+        {
+          /* C.2 Packed 10-bit samples but filled to next 32-bit word
+         boundary at end of each row. */
+          row_octets=(((magick_int64_t) row_samples*bits_per_sample+31)/32)*sizeof(U32);
+        }
+      break;
+    case 12:
+      if ((packing_method == PackingMethodWordsFillLSB) ||
+          (packing_method == PackingMethodWordsFillMSB))
+        {
+          /* C.5: One 12-bit sample per 16-bit word */
+          row_octets=row_samples*sizeof(U16);
+        }
+      else
+        {
+          /* C.4: Packed 12-bit samples, but filled to next 32-bit
+             word boundary at end of each row. */
+          row_octets=(((magick_int64_t) row_samples*bits_per_sample+31)/32)*
+            sizeof(U32);
+        }
+      break;
+    case 8:
+    case 16:
+    case 32:
+    case 64:
+      /* C.1 & C.6: 8, 16, 32, and 64-bit samples do not require any
+         padding or filling at the end of a row. */
+      row_octets=row_samples*(bits_per_sample/8);
+      break;
+    }
+  /* printf("row_octets=%u\n",row_octets); */
+  return row_octets;
 }
 static const char *DescribeImageElementDescriptor(const DPXImageElementDescriptor descriptor)
 {
@@ -747,98 +814,109 @@ static unsigned int DPXSamplesPerElement(const DPXImageElementDescriptor element
 
   return samples_per_element;
 }
-static void ReadRowSamples(WordStreamReadHandle *word_stream,
-                           sample_t *samples,
-                           unsigned int samples_per_row,
-                           unsigned int bits_per_sample,
-                           ImageComponentPackingMethod packing_method)
+
+static void ReadRowSamples(const unsigned char *scanline,
+                           const unsigned int samples_per_row,
+                           const unsigned int bits_per_sample,
+                           const ImageComponentPackingMethod packing_method,
+                           sample_t *samples)
 {
+  BitStreamReadHandle
+    bit_stream;
+
   register unsigned long
     i;
 
-  sample_t
-    *samples_itr;
+  BitStreamInitializeRead(&bit_stream,scanline);
 
-  MagickBool
-    word_pad_lsb=MagickFalse,
-    word_pad_msb=MagickFalse;
-
-  /*
-    Determine component packing method.
-  */
-  if ((bits_per_sample == 10) || (bits_per_sample == 12))
+  if ((packing_method != PackingMethodPacked) &&
+      ((bits_per_sample == 10) || (bits_per_sample == 12)))
     {
+      MagickBool
+        word_pad_lsb=MagickFalse,
+        word_pad_msb=MagickFalse;
+
       if (packing_method == PackingMethodWordsFillLSB)
         word_pad_lsb=MagickTrue;
       else if (packing_method == PackingMethodWordsFillMSB)
         word_pad_msb=MagickTrue;
+
+      if (bits_per_sample == 10)
+        {
+          if (word_pad_lsb)
+            {
+              /*
+                Padding in LSB (Method A).
+              */
+              int
+                s=0;
+              
+              for (i=samples_per_row; i > 0; i--)
+                {
+                  *samples++=BitStreamMSBRead(&bit_stream,10);
+                  s++;
+                  if (s == 3)
+                    {
+                      (void) BitStreamMSBRead(&bit_stream,2);
+                      s=0;
+                    }
+                }
+              return;
+            }
+          else if (word_pad_msb)
+            {
+              /*
+                Padding in MSB (Method B).
+              */
+              int
+                s=0;
+                  
+              for (i=samples_per_row; i > 0; i--)
+                {
+                  if (s == 0)
+                    (void) BitStreamMSBRead(&bit_stream,2);
+                  s++;
+                  *samples++=BitStreamMSBRead(&bit_stream,10);
+                  if (s == 3)
+                    s=0;
+                }
+              return;
+            }
+        }
+      else if (bits_per_sample == 12)
+        {
+          if (word_pad_lsb)
+            {
+              /*
+                Padding in LSB (Method A).
+              */
+              for (i=samples_per_row; i > 0; i--)
+                {
+                  *samples++=BitStreamMSBRead(&bit_stream,12);
+                  (void) BitStreamMSBRead(&bit_stream,4);
+                }
+              return;
+            }
+          else if (word_pad_msb)
+            {
+              /*
+                Padding in MSB (Method B).
+              */
+              for (i=samples_per_row; i > 0; i--)
+                {
+                  (void) BitStreamMSBRead(&bit_stream,4);
+                  *samples++=BitStreamMSBRead(&bit_stream,12);
+                }
+              return;
+            }
+        }
     }
 
   /*
-    Obtain a row's worth of samples.
+    Default implementation.
   */
-  samples_itr=samples;
-  if (word_pad_lsb)
-    {
-      /*
-        Padding in LSB (Method A).
-      */
-      if (bits_per_sample == 10)
-        {
-          for (i=samples_per_row; i > 0; i--)
-            {
-              if (word_stream->bits_remaining == 0)
-                (void) WordStreamLSBRead(word_stream,2);
-              *samples_itr++=WordStreamLSBRead(word_stream,10);
-            }
-        }
-      else if (bits_per_sample == 12)
-        {
-          for (i=samples_per_row; i > 0; i--)
-            {
-              (void) WordStreamLSBRead(word_stream,4);
-              *samples_itr++=WordStreamLSBRead(word_stream,12);
-            }
-        }
-    }
-  else if (word_pad_msb)
-    {
-      /*
-        Padding in MSB (Method B).
-      */
-      if (bits_per_sample == 10)
-        {
-          for (i=samples_per_row; i > 0; i--)
-            {
-              if (word_stream->bits_remaining == 2)
-                (void) WordStreamLSBRead(word_stream,2);
-              *samples_itr++=WordStreamLSBRead(word_stream,10);
-            }
-        }
-      else if (bits_per_sample == 12)
-        {
-          for (i=samples_per_row; i > 0; i--)
-            {
-              *samples_itr++=WordStreamLSBRead(word_stream,12);
-              (void) WordStreamLSBRead(word_stream,4);
-            }
-        }
-    }
-  else
-    {
-      /*
-        Packed data. Packing is broken on scan-line boundaries.
-      */
-      for (i=samples_per_row; i > 0; i--)
-        *samples_itr++=WordStreamLSBRead(word_stream,bits_per_sample);
-    }
-  /*
-    Advance to next 32-bit word at end of row if components are packed.
-    Could probably just set word_stream->bits_remaining to 0.
-  */
-  if (packing_method == PackingMethodPacked)
-    word_stream->bits_remaining=0;
-  
+  for (i=samples_per_row; i > 0; i--)
+    *samples++=BitStreamMSBRead(&bit_stream,bits_per_sample);
 }
 static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -870,15 +948,20 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *q;
 
   size_t
-    offset;    
+    offset,
+    row_octets;
 
   sample_t
     *samples,
     *samples_itr;
 
+  unsigned char
+    *scanline;
+
   unsigned int
     bits_per_sample,
     element,
+    max_bits_per_sample,
     max_samples_per_element,
     samples_per_element,
     samples_per_row,
@@ -975,6 +1058,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Obtain offset to pixels.
   */
   pixels_offset=dpx_file_info.image_data_offset;
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Offset to data %lu",pixels_offset);
   if (pixels_offset < 1408)
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /*
@@ -1076,9 +1161,23 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       R32ToAttribute(image,"DPX:tv.integration.time",dpx_tv_info.integration_time);
     }
   /*
-    Obtain image depth.
+    Determine the maximum number of bits per sample, and samples per element.
   */
-  image->depth=dpx_image_info.element_info[0].bits_per_sample;
+  max_bits_per_sample=0;
+  max_samples_per_element=0;
+  for (element=0; element < dpx_image_info.elements; element++)
+    {
+      element_descriptor=(DPXImageElementDescriptor)
+        dpx_image_info.element_info[element].descriptor;
+      max_bits_per_sample=Max(max_bits_per_sample,
+                              dpx_image_info.element_info[element].bits_per_sample);
+      max_samples_per_element=Max(max_samples_per_element,
+                                  DPXSamplesPerElement(element_descriptor));
+    }
+  /*
+    Set image depth to maximum bits per sample encountered in any element.
+  */
+  image->depth=max_bits_per_sample;
   /*
     Skip reading pixels if ping requested.
   */
@@ -1093,22 +1192,19 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for ( ; offset < pixels_offset ; offset++ )
     (void) ReadBlobByte(image);
   /*
-    Determine the maximum number of samples required for any element.
-  */
-  max_samples_per_element=0;
-  for (element=0; element < dpx_image_info.elements; element++)
-    {
-      element_descriptor=(DPXImageElementDescriptor)
-        dpx_image_info.element_info[element].descriptor;
-      max_samples_per_element=Max(max_samples_per_element,
-                                  DPXSamplesPerElement(element_descriptor));
-    }
-  /*
     Allocate row samples.
   */
   samples=MagickAllocateMemory(sample_t *,max_samples_per_element*
                                image->columns*sizeof(sample_t));
+
   if (samples == (sample_t *) NULL)
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+  /*
+    Allocate scanline storage.
+  */
+  scanline=MagickAllocateMemory(unsigned char *,max_samples_per_element*
+                               image->columns*sizeof(U32));
+  if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Convert DPX raster image to pixel packets.
@@ -1195,6 +1291,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           */
           samples_per_row=samples_per_element*image->columns;
           /*
+            Compute octets per row.
+          */
+          row_octets=DPXRowOctets(samples_per_row,bits_per_sample,packing_method);
+          /*
             Determine if matte channel is supported.
           */
           switch (element_descriptor)
@@ -1213,6 +1313,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           WordStreamInitializeRead(&word_stream,word_read_func,image);
           for (y=0; y < (long) image->rows; y++)
             {
+
               if (element == 0)
                 q=SetImagePixels(image,0,y,image->columns,1);
               else
@@ -1221,8 +1322,16 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               /*
                 Obtain a row's worth of samples.
-              */
-              ReadRowSamples(&word_stream,samples,samples_per_row,bits_per_sample,packing_method);
+               */
+              {
+                void
+                  *scanline_data;
+                
+                scanline_data=scanline;
+                (void) ReadBlobZC(image,row_octets,&scanline_data);
+                ReadRowSamples(scanline_data,samples_per_row,bits_per_sample,
+                               packing_method,samples);
+              }
               /*
                 Scale row samples.
               */
@@ -1273,9 +1382,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case ImageElementRGB:
                   for (x=image->columns; x > 0; x--)
                     {
-                      q->blue=*samples_itr++;
-                      q->green=*samples_itr++;
                       q->red=*samples_itr++;
+                      q->green=*samples_itr++;
+                      q->blue=*samples_itr++;
                       q->opacity=OpaqueOpacity;
                       q++;
                     }
@@ -1283,9 +1392,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case ImageElementRGBA:
                   for (x=image->columns; x > 0; x--)
                     {
-                      q->blue=*samples_itr++;
-                      q->green=*samples_itr++;
                       q->red=*samples_itr++;
+                      q->green=*samples_itr++;
+                      q->blue=*samples_itr++;
                       q->opacity=MaxRGB-*samples_itr++;
                       q++;
                     }
@@ -1294,9 +1403,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   for (x=image->columns; x > 0; x--)
                     {
                       q->opacity=MaxRGB-*samples_itr++;
-                      q->red=*samples_itr++;
-                      q->green=*samples_itr++;
                       q->blue=*samples_itr++;
+                      q->green=*samples_itr++;
+                      q->red=*samples_itr++;
                       q++;
                     }
                   break;
@@ -1338,15 +1447,31 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   if ((definition_value=AccessDefinition(image_info,"dpx","source-colorspace")))
     {
-      image->colorspace=StringToColorspaceType(definition_value);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "Explicitly set colorspace to %s",
-                            ColorspaceTypeToString(image->colorspace));
+      ColorspaceType
+        colorspace;
+
+      colorspace=StringToColorspaceType(definition_value);
+      if (colorspace != UndefinedColorspace)
+        {
+          image->colorspace=colorspace;
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Explicitly set colorspace to %s",
+                                ColorspaceTypeToString(image->colorspace));
+        }
+      else
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Unrecognized source colorspace \"%s\"\n",
+                                definition_value);
+          ThrowException(&image->exception,OptionError,UnrecognizedColorspace,
+                         definition_value);
+        }
     }
   image->is_monochrome=is_monochrome;
   image->is_grayscale=is_grayscale;
   image->depth=Min(image->depth,QuantumDepth);
   MagickFreeMemory(samples);
+  MagickFreeMemory(scanline);
   CloseBlob(image);
   return(image);
 }
@@ -1451,156 +1576,108 @@ ModuleExport void UnregisterDPXImage(void)
 %
 %
 */
-static void WriteRowSamples(WordStreamWriteHandle *word_stream,
-                            const sample_t *samples,
-                            unsigned int samples_per_row,
-                            unsigned int bits_per_sample,
-                            ImageComponentPackingMethod packing_method)
+static void WriteRowSamples(const sample_t *samples,
+                            const unsigned int samples_per_row,
+                            const unsigned int bits_per_sample,
+                            const ImageComponentPackingMethod packing_method,
+                            unsigned char *scanline)
 {
-  register unsigned long
+  unsigned int
     i;
 
-  const sample_t
-    *samples_itr;
+  BitStreamWriteHandle
+    bit_stream;
 
-  MagickBool
-    word_pad_lsb=MagickFalse,
-    word_pad_msb=MagickFalse;
+  BitStreamInitializeWrite(&bit_stream,scanline);
 
-  /*
-    Determine component packing method.
-  */
-  if ((bits_per_sample == 10) || (bits_per_sample == 12))
+  if ((packing_method != PackingMethodPacked) &&
+      ((bits_per_sample == 10) || (bits_per_sample == 12)))
     {
+      MagickBool
+        word_pad_lsb=MagickFalse,
+        word_pad_msb=MagickFalse;
+
       if (packing_method == PackingMethodWordsFillLSB)
         word_pad_lsb=MagickTrue;
       else if (packing_method == PackingMethodWordsFillMSB)
         word_pad_msb=MagickTrue;
-    }
 
-  /*
-    Output samples.
-  */
-  samples_itr=samples;
-  if (word_pad_lsb)
-    {
-      /*
-        Padding in LSB (Method A).
-      */
       if (bits_per_sample == 10)
         {
-          for (i=samples_per_row; i > 0; i--)
+          if (word_pad_lsb)
             {
-              if (word_stream->bits_remaining == 32)
-                (void) WordStreamLSBWrite(word_stream,2,0);
-              WordStreamLSBWrite(word_stream,
-                                 bits_per_sample,*samples_itr);
-              samples_itr++;
+              /*
+                Padding in LSB (Method A).
+              */
+              int
+                s=0;
+              
+              for (i=samples_per_row; i > 0; i--)
+                {
+                  BitStreamMSBWrite(&bit_stream,10,*samples++);
+                  s++;
+                  if (s == 3)
+                    {
+                      (void) BitStreamMSBWrite(&bit_stream,2,0);
+                      s=0;
+                    }
+                }
+              return;
+            }
+          else if (word_pad_msb)
+            {
+              /*
+                Padding in MSB (Method B).
+              */
+              int
+                s=0;
+                  
+              for (i=samples_per_row; i > 0; i--)
+                {
+                  if (s == 0)
+                    (void) BitStreamMSBWrite(&bit_stream,2,0);
+                  s++;
+                  (void) BitStreamMSBWrite(&bit_stream,10,*samples++);
+                  if (s == 3)
+                    s=0;
+                }
+              return;
             }
         }
       else if (bits_per_sample == 12)
         {
-          for (i=samples_per_row; i > 0; i--)
+          if (word_pad_lsb)
             {
-              (void) WordStreamLSBWrite(word_stream,4,0);
-              (void) WordStreamLSBWrite(word_stream,
-                                        bits_per_sample,*samples_itr);
-              samples_itr++;
+              /*
+                Padding in LSB (Method A).
+              */
+              for (i=samples_per_row; i > 0; i--)
+                {
+                  (void) BitStreamMSBWrite(&bit_stream,12,*samples++);
+                  (void) BitStreamMSBWrite(&bit_stream,4,0);
+                }
+              return;
             }
-        }
-    }
-  else if (word_pad_msb)
-    {
-      /*
-        Padding in MSB (Method B).
-      */
-      if (bits_per_sample == 10)
-        {
-          for (i=samples_per_row; i > 0; i--)
+          else if (word_pad_msb)
             {
-              if (word_stream->bits_remaining == 2)
-                (void) WordStreamLSBWrite(word_stream,2,0);
-              (void) WordStreamLSBWrite(word_stream,
-                                        bits_per_sample,*samples_itr);
-              samples_itr++;
+              /*
+                Padding in MSB (Method B).
+              */
+              for (i=samples_per_row; i > 0; i--)
+                {
+                  (void) BitStreamMSBWrite(&bit_stream,4,0);
+                  (void) BitStreamMSBWrite(&bit_stream,12,*samples++);
+                }
+              return;
             }
-        }
-      else if (bits_per_sample == 12)
-        {
-          for (i=samples_per_row; i > 0; i--)
-            {
-              (void) WordStreamLSBWrite(word_stream,
-                                        bits_per_sample,*samples_itr);
-              (void) WordStreamLSBWrite(word_stream,4,0);
-              samples_itr++;
-            }
-        }
-    }
-  else
-    {
-      /*
-        Packed data. Packing is broken on scan-line boundaries.
-      */
-      for (i=samples_per_row; i > 0; i--)
-        {
-          (void) WordStreamLSBWrite(word_stream,
-                                    bits_per_sample,*samples_itr);
-          samples_itr++;
         }
     }
 
   /*
-    Flush packed row.
+    Default implementation.
   */
-  if (packing_method == PackingMethodPacked)
-    WordStreamLSBWriteFlush(word_stream);
-}
-
-#define WordBuffSize 256
-typedef struct _WriteState
-{
-  magick_uint32_t
-    word_count,
-    words[WordBuffSize];
-
-  MagickBool
-    swab;
-
-  Image
-    *image;
-} WriteState;
-
-static size_t FlushWords(WriteState *write_state)
-{
-  size_t
-    written=0;
-  if (write_state->word_count > 0)
-    {
-      if (write_state->swab)
-        MagickSwabArrayOfUInt32(write_state->words,write_state->word_count);
-      written=WriteBlob(write_state->image,
-                        write_state->word_count*sizeof(magick_uint32_t),
-                        (const void *) write_state->words);
-      write_state->word_count=0;
-    }
-  return written;
-}
-
-static size_t WriteWord (void *state, const unsigned long value)
-{
-  WriteState *write_state=(WriteState *) state;
-  write_state->words[write_state->word_count]=(magick_uint32_t) value;
-  write_state->word_count++;
-  if (write_state->word_count >= WordBuffSize)
-    (void) FlushWords(write_state);
-  return sizeof(magick_uint32_t);
-}
-
-static void InitializeWriteState(WriteState *write_state,Image *image, MagickBool swab)
-{
-  write_state->word_count=0;
-  write_state->swab=swab;
-  write_state->image=image;
+  for (i=samples_per_row; i > 0; i--)
+    BitStreamMSBWrite(&bit_stream,bits_per_sample,*samples++);
 }
 
 #define AttributeToU8(image,key,member) \
@@ -1692,38 +1769,33 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     *samples,
     *samples_itr;
 
+  unsigned char
+    *scanline;
+
   unsigned int
     bits_per_sample=0,
     element,
     max_samples_per_element,
     number_of_elements,
+    row_samples,
     samples_per_component,
     samples_per_element,
     samples_per_row,
     scale_from_short,
     status;
 
-  WordStreamWriteHandle
-    word_stream;
-
-  WordStreamWriteFunc
-    word_write_func;
-
-  WriteState
-    write_state;
-
   MagickBool
     swab;
 
   magick_int64_t
-    element_size,
-    row_samples;
+    element_size;
 
   const char *
     definition_value;
 
   size_t
-    offset=0;
+    offset=0,
+    row_octets;
 
   MagickBool
     is_grayscale;
@@ -1743,19 +1815,14 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     Support user-selection of big/little endian output.
   */
 #if defined(WORDS_BIGENDIAN)
+  swab=MagickFalse;
   if (image_info->endian == LSBEndian)
     swab=MagickTrue;
-  else
-    swab=MagickFalse;
 #else
-  if (image_info->endian == MSBEndian)
-    swab=MagickTrue;
-  else
+  swab=MagickTrue;
+  if (image_info->endian == LSBEndian)
     swab=MagickFalse;
 #endif
-
-  InitializeWriteState(&write_state,image,swab);
-  word_write_func=WriteWord;
 
   if ((definition_value=AccessDefinition(image_info,"dpx","bits-per-sample")))
     bits_per_sample=atoi(definition_value);
@@ -1804,8 +1871,17 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         }
     }
 
-  packing_method=PackingMethodPacked;
+  /*
+    Choose the default packing method.
+  */
+  if ((bits_per_sample == 10) || (bits_per_sample == 12))
+    packing_method=PackingMethodWordsFillLSB;
+  else
+    packing_method=PackingMethodPacked;
 
+  /*
+    Allow the user to over-ride the default packing method.
+  */
   if ((definition_value=AccessDefinition(image_info,"dpx","packing-method")))
     {
       if (LocaleCompare(definition_value,"packed") == 0)
@@ -1824,7 +1900,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     }
 
   row_samples=((magick_int64_t) image->columns*samples_per_component);
-  
+
+#if 0
   /* samples packed end-to-end, but padded to next word at end of each
      row */
   element_size=((row_samples*bits_per_sample+31)/32)*sizeof(magick_int32_t)*image->rows;
@@ -1844,6 +1921,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           element_size=((row_samples*image->rows+1)/2)*sizeof(magick_int32_t);
         }
     }
+#endif
+  row_octets=DPXRowOctets(row_samples,bits_per_sample,packing_method);
+  element_size=row_octets*image->rows;
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Element size: %u", (unsigned int) element_size);
@@ -1934,9 +2014,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /* Offset to element data from beginning of file. */
   dpx_image_info.element_info[0].data_offset=0x2000;
   /* Number of padded bytes at the end of each line */
-  SET_UNDEFINED_U32(dpx_image_info.element_info[0].eol_pad);
+  dpx_image_info.element_info[0].eol_pad=0;
   /* Number of padded bytes at the end of image element. */
-  SET_UNDEFINED_U32(dpx_image_info.element_info[0].eoi_pad);
+  dpx_image_info.element_info[0].eoi_pad=0;
   /* Element description */
   strlcpy(dpx_image_info.element_info[0].description,"Red, Green, & Blue",
           sizeof(dpx_image_info.element_info[0].description));
@@ -2066,6 +2146,18 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                                 image->columns*sizeof(sample_t));
   if (samples == (sample_t *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+  memset((void *) samples,0,max_samples_per_element*image->columns*
+         sizeof(sample_t));
+  /*
+    Allocate row scanline.
+  */
+  scanline=MagickAllocateMemory(unsigned char *,row_octets);
+  if (scanline == (unsigned char *) NULL)
+    {
+      MagickFreeMemory(samples);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
+  memset((void *) scanline,0,row_octets);
   /*
     Write file headers.
   */
@@ -2122,7 +2214,6 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       samples_per_element=DPXSamplesPerElement(element_descriptor);
       samples_per_row=samples_per_element*image->columns;
 
-      WordStreamInitializeWrite(&word_stream,word_write_func,&write_state);
       for (y=0; y < image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -2185,29 +2276,19 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             case ImageElementRGB:
               for (x=image->columns; x > 0; x--)
                 {
-                  *samples_itr++=p->blue;
-                  *samples_itr++=p->green;
                   *samples_itr++=p->red;
+                  *samples_itr++=p->green;
+                  *samples_itr++=p->blue;
                   p++;
                 }
               break;
             case ImageElementRGBA:
               for (x=image->columns; x > 0; x--)
                 {
-                  *samples_itr++=p->blue;
-                  *samples_itr++=p->green;
-                  *samples_itr++=p->red;
-                  *samples_itr++=MaxRGB-p->opacity;
-                  p++;
-                }
-              break;
-            case ImageElementABGR:
-              for (x=image->columns; x > 0; x--)
-                {
-                  *samples_itr++=MaxRGB-p->opacity;
                   *samples_itr++=p->red;
                   *samples_itr++=p->green;
                   *samples_itr++=p->blue;
+                  *samples_itr++=MaxRGB-p->opacity;
                   p++;
                 }
               break;
@@ -2231,13 +2312,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           /*
             Output samples.
           */
-          WriteRowSamples(&word_stream,samples,samples_per_row,bits_per_sample,packing_method);
+          WriteRowSamples(samples, samples_per_row, bits_per_sample,packing_method, scanline);
+          WriteBlob(image,row_octets,(void *) scanline);
         }
-      /*
-        Flush any remaining element output.
-      */
-      WordStreamLSBWriteFlush(&word_stream);
-      FlushWords(&write_state);
     }
 
   if ((magick_off_t) dpx_file_info.file_size != TellBlob(image))
@@ -2248,6 +2325,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     }
 
   MagickFreeMemory(samples);
+  MagickFreeMemory(scanline);
   CloseBlob(image);  
   return(status);
 }
