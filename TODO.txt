@@ -10,11 +10,6 @@ For 1.2 Branch
 
   o Fix Scitex RGB reader.
 
-  o Fix -convolve 1,1,1,1,4,1,1,1,1
-
-  o Ghostscript 8.50 is crashing under Windows when loaded as a module.
-    Maybe there has been an API change?
-
   o Look into problem reported by Rick Mabry, "Shear produces artifacts for
     a 0 y-shear (e.g. 60x0)."
 

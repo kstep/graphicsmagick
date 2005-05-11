@@ -82,6 +82,7 @@ XFAIL_TESTS = \
 	$(TESTS_XFAIL_TESTS)
 
 TOP_EXTRA_DIST = \
+	BUGS.txt \
 	ChangeLog \
 	Copyright.txt \
 	INSTALL-mac.txt \

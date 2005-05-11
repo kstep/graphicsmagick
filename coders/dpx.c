@@ -422,6 +422,18 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
       LogSetImageAttribute(name,buffer); \
     } \
 }
+#define U32ToBitsAttribute(image,name,member) \
+{ \
+  char \
+    buffer[MaxTextExtent]; \
+\
+  if (!IS_UNDEFINED_U32(member)) \
+    { \
+      SMPTEBitsToString(member,buffer); \
+      SetImageAttribute(image,name,buffer); \
+      LogSetImageAttribute(name,buffer); \
+    } \
+}
 #define R32ToAttribute(image,name,member) \
 { \
   char \
@@ -507,6 +519,58 @@ static void SwabDPXTVInfo(DPXTVInfo *tv_info)
   MagickSwabFloat(&tv_info->breakpoint);
   MagickSwabFloat(&tv_info->white_level);
   MagickSwabFloat(&tv_info->integration_time);
+}
+static void SMPTEBitsToString(const U32 value, char *str)
+{
+  BitStreamReadHandle
+    bit_stream;
+
+  unsigned int
+    pos;
+
+  BitStreamInitializeRead(&bit_stream,(const unsigned char *) &value);
+  for (pos=8; pos > 0; pos--)
+    {
+      sprintf(str,"%01u",BitStreamMSBRead(&bit_stream,4));
+      str += 1;
+      if ((pos > 2) && (pos % 2))
+        {
+          strcat(str,":");
+          str++;
+        }
+    }
+  *str='\0';
+}
+static U32 SMPTEStringToBits(const char *str)
+{
+  U32
+    bits;
+
+  BitStreamWriteHandle
+    bit_stream;
+
+  unsigned int
+    pos;
+
+  char
+    buff[2];
+
+  bits=0;
+  pos=0;
+  buff[1]='\0';
+
+  BitStreamInitializeWrite(&bit_stream,(unsigned char *) &bits);
+  while ((*str != 0) && (pos < 8))
+    {
+      if (!isdigit((int) *str))
+        {
+          str++;
+          continue;
+        }
+      buff[0]=*str++;
+      (void) BitStreamMSBWrite(&bit_stream,4,strtol(buff,(char **)NULL,10));
+      pos++;
+    }
 }
 static size_t DPXRowOctets(unsigned int row_samples,
                            unsigned int bits_per_sample,
@@ -1145,8 +1209,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (swab)
         SwabDPXTVInfo(&dpx_tv_info);
 
-      U32ToAttribute(image,"DPX:tv.time.code",dpx_tv_info.time_code);
-      U32ToAttribute(image,"DPX:tv.user.bits",dpx_tv_info.user_bits);
+      U32ToBitsAttribute(image,"DPX:tv.time.code",dpx_tv_info.time_code);
+      U32ToBitsAttribute(image,"DPX:tv.user.bits",dpx_tv_info.user_bits);
       U8ToAttribute(image,"DPX:tv.interlace",dpx_tv_info.interlace);
       U8ToAttribute(image,"DPX:tv.field.number",dpx_tv_info.field_number);
       U8ToAttribute(image,"DPX:tv.video.signal",dpx_tv_info.video_signal);
@@ -1576,6 +1640,26 @@ ModuleExport void UnregisterDPXImage(void)
 %
 %
 */
+static void GenerateDPXTimeStamp(char *timestamp, size_t maxsize)
+{
+  time_t
+    current_time;
+
+  const struct tm
+    *t;
+
+  char *
+    p;
+
+  current_time=time((time_t *) NULL);
+  t=localtime(&current_time);
+
+  strftime(timestamp,maxsize,"%Y:%m:%d:%H:%M:%S%Z",t);
+  timestamp[maxsize-1]='\0';
+  for (p=timestamp ; *p != '\0'; p++)
+    if (*p == ' ')
+      *p='0';
+}
 static void WriteRowSamples(const sample_t *samples,
                             const unsigned int samples_per_row,
                             const unsigned int bits_per_sample,
@@ -1713,6 +1797,17 @@ static void WriteRowSamples(const sample_t *samples,
     SET_UNDEFINED_U32(member); \
 }
 
+#define AttributeBitsToU32(image,key,member) \
+{ \
+  const ImageAttribute \
+    *attribute; \
+\
+  if ((attribute=GetImageAttribute(image,key))) \
+    member=SMPTEStringToBits(attribute); \
+  else \
+    SET_UNDEFINED_U32(member); \
+}
+
 #define AttributeToR32(image,key,member) \
 { \
   const ImageAttribute \
@@ -1734,7 +1829,7 @@ static void WriteRowSamples(const sample_t *samples,
   else \
     SET_UNDEFINED_ASCII(member); \
 }
-                            
+
 static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 {
   DPXFileInfo
@@ -2092,8 +2187,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   dpx_file_info.user_defined_length=0;
   strlcpy(dpx_file_info.image_filename,image->filename,
           sizeof(dpx_file_info.image_filename));
-  AttributeToString(image,"DPX:file.creation.datetime",
-                    dpx_file_info.creation_datetime);
+  GenerateDPXTimeStamp(dpx_file_info.creation_datetime,
+                       sizeof(dpx_file_info.creation_datetime));
   strlcpy(dpx_file_info.creator,GetMagickVersion((unsigned long *) NULL),
           sizeof(dpx_file_info.creator));
   AttributeToString(image,"DPX:file.project.name",dpx_file_info.project_name);
