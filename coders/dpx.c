@@ -976,6 +976,13 @@ static void ReadRowSamples(const unsigned char *scanline,
         }
     }
 
+  if (bits_per_sample == 8)
+    {
+      for (i=samples_per_row; i > 0; i--)
+        *samples++= (sample_t) *scanline++;
+      return;
+    }
+
   /*
     Default implementation.
   */
@@ -2026,9 +2033,14 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Adjust image colorspace if necessary.
   */
-  if (image_info->colorspace == CineonLogRGBColorspace)
+  if ((image_info->colorspace == CineonLogRGBColorspace) &&
+      (image->colorspace != CineonLogRGBColorspace))
     (void) TransformColorspace(image,CineonLogRGBColorspace);
-  else
+  else if (IsRGBColorspace(image_info->colorspace) &&
+           !IsRGBColorspace(image->colorspace))
+    (void) TransformColorspace(image,RGBColorspace);
+  else if (!IsRGBColorspace(image->colorspace) &&
+           (image->colorspace != CineonLogRGBColorspace))
     (void) TransformColorspace(image,RGBColorspace);
 
   /*

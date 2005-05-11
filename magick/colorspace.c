@@ -1337,7 +1337,8 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           else
             {
               /* Otherwise, normal values */
-              linearval=pow(pow(10,((logval-ReferenceWhite)*0.002/NegativeFilmGamma)),(DisplayGamma/1.7))*Gain-Offset;
+              linearval=pow(pow(10,((logval-ReferenceWhite)*0.002/NegativeFilmGamma)),
+                            (DisplayGamma/1.7))*Gain-Offset;
             }
 
           linearmap[i]=RndToInt(linearval);
@@ -1369,9 +1370,11 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         }
 
       MagickFreeMemory(linearmap);
+      image->colorspace=RGBColorspace;
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
                             "Transform to colorspace %s completed",
                             ColorspaceTypeToString(colorspace));
+      
       return(status);
     }
 

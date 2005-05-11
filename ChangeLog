@@ -1,8 +1,12 @@
 2005-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/colorspace.c (TransformRGBImage): Update image colorspace
+	to RGB when transforming from Cineon log space to RGB.
 	* coders/dpx.c (WriteDPXImage): Set image date & time field.
 	(ReadDPXImage): Retrieve television header SMTPE time code and
 	user bits and return them as a formatted string.
+	(WriteDPXImage): Fix colorspace mapping logic.  Was converting
+	Cineon log to RGB when it shouldn't be.
 
 2005-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
