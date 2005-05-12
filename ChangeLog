@@ -1,5 +1,7 @@
 2005-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/dpx.c: Added some performance optimizations for reading
+	and writing.  Write the motion picture and television headers.
 	* magick/colorspace.c (TransformRGBImage): Update image colorspace
 	to RGB when transforming from Cineon log space to RGB.
 	* coders/dpx.c (WriteDPXImage): Set image date & time field.

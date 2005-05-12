@@ -1041,30 +1041,6 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
 %
 %
 */
-#define ExportModulo8Quantum(q,quantum_size,quantum) \
-{ \
-  register unsigned int \
-    shift=quantum_size; \
-\
-  do \
-    { \
-      shift -= 8U; \
-      *q++=(unsigned char) (((unsigned int) quantum) >> shift); \
-    } while( shift > 0U); \
-}
-
-#define ExportFloatQuantum(q,quantum) \
-{ \
-  *((float *) q) = quantum; \
-  q += sizeof(float); \
-}
-
-#define ExportDoubleQuantum(q,quantum) \
-{ \
-  *((double *) q) = quantum; \
-  q += sizeof(double); \
-}
-
 MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   const QuantumType quantum_type,const unsigned int quantum_size,
   unsigned char *destination,const ExportPixelAreaOptions *options)
@@ -2916,31 +2892,6 @@ MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
 %    o options: Additional options specific to quantum_type (may be NULL).
 %
 */
-#define ImportModulo8Quantum(quantum,quantum_size,p) \
-{ \
-  register unsigned int \
-    shift=quantum_size; \
-\
-  quantum=0; \
-  do \
-    { \
-      shift -= 8U; \
-      quantum |= (*p++ << shift); \
-    } while( shift > 0U); \
-}
-
-#define ImportFloatQuantum(value,p) \
-{ \
-  value=*((float *) p); \
-  p += sizeof(float); \
-}
-
-#define ImportDoubleQuantum(value,p) \
-{ \
-  value=*((double *) p); \
-  p += sizeof(double); \
-}
-
 MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   const QuantumType quantum_type,const unsigned int quantum_size,
   const unsigned char *source,const ImportPixelAreaOptions *options)

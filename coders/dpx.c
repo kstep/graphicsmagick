@@ -65,6 +65,7 @@
 #include "magick/bit_stream.h"
 #include "magick/cache.h"
 #include "magick/color.h"
+#include "magick/constitute.h"
 #include "magick/magick_endian.h"
 #include "magick/log.h"
 #include "magick/magick.h"
@@ -571,6 +572,7 @@ static U32 SMPTEStringToBits(const char *str)
       (void) BitStreamMSBWrite(&bit_stream,4,strtol(buff,(char **)NULL,10));
       pos++;
     }
+  return bits;
 }
 static size_t DPXRowOctets(unsigned int row_samples,
                            unsigned int bits_per_sample,
@@ -891,6 +893,13 @@ static void ReadRowSamples(const unsigned char *scanline,
   register unsigned long
     i;
 
+  register sample_t
+    *sp;
+
+  register unsigned int
+    sample;
+
+  sp=samples;
   BitStreamInitializeRead(&bit_stream,scanline);
 
   if ((packing_method != PackingMethodPacked) &&
@@ -912,17 +921,17 @@ static void ReadRowSamples(const unsigned char *scanline,
               /*
                 Padding in LSB (Method A).
               */
-              int
-                s=0;
+              register int
+                s=3;
               
               for (i=samples_per_row; i > 0; i--)
                 {
-                  *samples++=BitStreamMSBRead(&bit_stream,10);
-                  s++;
-                  if (s == 3)
+                  *sp++=BitStreamMSBRead(&bit_stream,10);
+                  if (--s == 0)
                     {
-                      (void) BitStreamMSBRead(&bit_stream,2);
-                      s=0;
+                      bit_stream.bytes++;
+                      bit_stream.bits_remaining=8;
+                      s=3;
                     }
                 }
               return;
@@ -932,7 +941,7 @@ static void ReadRowSamples(const unsigned char *scanline,
               /*
                 Padding in MSB (Method B).
               */
-              int
+              register int
                 s=0;
                   
               for (i=samples_per_row; i > 0; i--)
@@ -940,7 +949,7 @@ static void ReadRowSamples(const unsigned char *scanline,
                   if (s == 0)
                     (void) BitStreamMSBRead(&bit_stream,2);
                   s++;
-                  *samples++=BitStreamMSBRead(&bit_stream,10);
+                  *sp++=BitStreamMSBRead(&bit_stream,10);
                   if (s == 3)
                     s=0;
                 }
@@ -956,7 +965,7 @@ static void ReadRowSamples(const unsigned char *scanline,
               */
               for (i=samples_per_row; i > 0; i--)
                 {
-                  *samples++=BitStreamMSBRead(&bit_stream,12);
+                  *sp++=BitStreamMSBRead(&bit_stream,12);
                   (void) BitStreamMSBRead(&bit_stream,4);
                 }
               return;
@@ -969,25 +978,56 @@ static void ReadRowSamples(const unsigned char *scanline,
               for (i=samples_per_row; i > 0; i--)
                 {
                   (void) BitStreamMSBRead(&bit_stream,4);
-                  *samples++=BitStreamMSBRead(&bit_stream,12);
+                  *sp++=BitStreamMSBRead(&bit_stream,12);
                 }
               return;
             }
         }
     }
 
+  /*
+    Special fast handling for 8-bit images.
+  */
   if (bits_per_sample == 8)
     {
       for (i=samples_per_row; i > 0; i--)
-        *samples++= (sample_t) *scanline++;
+        *sp++= (sample_t) *scanline++;
       return;
     }
 
   /*
-    Default implementation.
+    Special fast handling for 16-bit images.
+  */
+  if (bits_per_sample == 16)
+    {
+      for (i=samples_per_row; i > 0; i--)
+        {
+          sample=0;
+          sample |= (*scanline++ << 8);
+          sample |= (*scanline++);
+          *sp++=sample;
+        }
+      return;
+    }
+
+  /*
+    Special fast handling for Modulo-8 images.
+  */
+  if ((bits_per_sample >= 8) && (bits_per_sample % 8U == 0U))
+    {
+      for (i=samples_per_row; i > 0; i--)
+        {
+          ImportModulo8Quantum(*sp,bits_per_sample,scanline);
+          sp++;
+        }
+      return;
+    }
+
+  /*
+    Default implementation handles any bit depth.
   */
   for (i=samples_per_row; i > 0; i--)
-    *samples++=BitStreamMSBRead(&bit_stream,bits_per_sample);
+    *sp++=BitStreamMSBRead(&bit_stream,bits_per_sample);
 }
 static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -1673,12 +1713,16 @@ static void WriteRowSamples(const sample_t *samples,
                             const ImageComponentPackingMethod packing_method,
                             unsigned char *scanline)
 {
-  unsigned int
+  register unsigned int
     i;
 
   BitStreamWriteHandle
     bit_stream;
 
+  register unsigned char
+    *sp;
+
+  sp=scanline;
   BitStreamInitializeWrite(&bit_stream,scanline);
 
   if ((packing_method != PackingMethodPacked) &&
@@ -1700,17 +1744,16 @@ static void WriteRowSamples(const sample_t *samples,
               /*
                 Padding in LSB (Method A).
               */
-              int
-                s=0;
+              register int
+                s=3;
               
               for (i=samples_per_row; i > 0; i--)
                 {
                   BitStreamMSBWrite(&bit_stream,10,*samples++);
-                  s++;
-                  if (s == 3)
+                  if (--s == 0)
                     {
                       (void) BitStreamMSBWrite(&bit_stream,2,0);
-                      s=0;
+                      s=3;
                     }
                 }
               return;
@@ -1720,7 +1763,7 @@ static void WriteRowSamples(const sample_t *samples,
               /*
                 Padding in MSB (Method B).
               */
-              int
+              register int
                 s=0;
                   
               for (i=samples_per_row; i > 0; i--)
@@ -1762,6 +1805,43 @@ static void WriteRowSamples(const sample_t *samples,
               return;
             }
         }
+    }
+
+  /*
+    Special fast handling for 8-bit images.
+  */
+  if (bits_per_sample == 8)
+    {
+      for (i=samples_per_row; i > 0; i--)
+        *sp++= (unsigned char) *samples++;
+      return;
+    }
+
+  /*
+    Special fast handling for 16-bit images.
+  */
+  if (bits_per_sample == 16)
+    {
+      for (i=samples_per_row; i > 0; i--)
+        {
+          *sp++=(unsigned char) (((unsigned int) *samples) >> 8);
+          *sp++=(unsigned char) *samples;
+          samples++;
+        }
+      return;
+    }
+
+  /*
+    Special fast handling for Modulo-8 images.
+  */
+  if ((bits_per_sample >= 8) && (bits_per_sample % 8U == 0U))
+    {
+      for (i=samples_per_row; i > 0; i--)
+        {
+          ExportModulo8Quantum(sp,bits_per_sample,*samples);
+          samples++;
+        }
+      return;
     }
 
   /*
@@ -1810,7 +1890,7 @@ static void WriteRowSamples(const sample_t *samples,
     *attribute; \
 \
   if ((attribute=GetImageAttribute(image,key))) \
-    member=SMPTEStringToBits(attribute); \
+    member=SMPTEStringToBits(attribute->value); \
   else \
     SET_UNDEFINED_U32(member); \
 }
@@ -1847,6 +1927,12 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 
   DPXImageSourceInfo
     dpx_source_info;
+
+  DPXMPFilmInfo
+    dpx_mp_info;
+
+  DPXTVInfo
+    dpx_tv_info;
 
   DPXImageElementDescriptor
     element_descriptor;
@@ -2195,7 +2281,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   dpx_file_info.ditto_key=1; /* new frame */
   dpx_file_info.generic_section_length=sizeof(dpx_file_info)+
     sizeof(dpx_image_info)+sizeof(dpx_source_info);
-  dpx_file_info.industry_section_length=0;
+  dpx_file_info.industry_section_length=sizeof(dpx_mp_info)+sizeof(dpx_tv_info);
   dpx_file_info.user_defined_length=0;
   strlcpy(dpx_file_info.image_filename,image->filename,
           sizeof(dpx_file_info.image_filename));
@@ -2235,6 +2321,39 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   AttributeToU32(image,"DPX:source.aspect.ratio.vertical",dpx_source_info.aspect_ratio.vertical);
   AttributeToR32(image,"DPX:source.scanned.size.x",dpx_source_info.x_scanned_size);
   AttributeToR32(image,"DPX:source.scanned.size.y",dpx_source_info.y_scanned_size);
+  /*
+    Motion-picture film information header.
+  */
+  AttributeToString(image,"DPX:mp.film.manufacturer.id",dpx_mp_info.film_mfg_id_code);
+  AttributeToString(image,"DPX:mp.film.type",dpx_mp_info.film_type);
+  AttributeToString(image,"DPX:mp.perfs.offset",dpx_mp_info.perfs_offset);
+  AttributeToString(image,"DPX:mp.prefix",dpx_mp_info.prefix);
+  AttributeToString(image,"DPX:mp.count",dpx_mp_info.count);
+  AttributeToString(image,"DPX:mp.format",dpx_mp_info.format);
+  AttributeToU32(image,"DPX:mp.frame.position",dpx_mp_info.frame_position);
+  AttributeToU32(image,"DPX:mp.sequence.length",dpx_mp_info.sequence_length);
+  AttributeToU32(image,"DPX:mp.held.count",dpx_mp_info.held_count);
+  AttributeToR32(image,"DPX:mp.frame.rate",dpx_mp_info.frame_rate);
+  AttributeToR32(image,"DPX:mp.shutter.angle",dpx_mp_info.shutter_angle);
+  AttributeToString(image,"DPX:mp.frame.id",dpx_mp_info.frame_id);
+  AttributeToString(image,"DPX:mp.slate.info",dpx_mp_info.slate_info);
+  /*
+    Television information header.
+  */
+  AttributeBitsToU32(image,"DPX:tv.time.code",dpx_tv_info.time_code);
+  AttributeBitsToU32(image,"DPX:tv.user.bits",dpx_tv_info.user_bits);
+  AttributeToU8(image,"DPX:tv.interlace",dpx_tv_info.interlace);
+  AttributeToU8(image,"DPX:tv.field.number",dpx_tv_info.field_number);
+  AttributeToU8(image,"DPX:tv.video.signal",dpx_tv_info.video_signal);
+  AttributeToR32(image,"DPX:tv.horizontal.sampling.rate",dpx_tv_info.horizontal_sample);
+  AttributeToR32(image,"DPX:tv.temporal.sampling.rate",dpx_tv_info.temporal_sample);
+  AttributeToR32(image,"DPX:tv.sync.time",dpx_tv_info.sync_time);
+  AttributeToR32(image,"DPX:tv.gamma",dpx_tv_info.gamma);
+  AttributeToR32(image,"DPX:tv.black.level",dpx_tv_info.black_level);
+  AttributeToR32(image,"DPX:tv.black.gain",dpx_tv_info.black_gain);
+  AttributeToR32(image,"DPX:tv.breakpoint",dpx_tv_info.breakpoint);
+  AttributeToR32(image,"DPX:tv.white.level",dpx_tv_info.white_level);
+  AttributeToR32(image,"DPX:tv.integration.time",dpx_tv_info.integration_time);
   /*
     Determine the maximum number of samples required for any element.
   */
@@ -2276,10 +2395,14 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       SwabDPXFileInfo(&dpx_file_info);
       SwabDPXImageInfo(&dpx_image_info);
       SwabDPXImageSourceInfo(&dpx_source_info);
+      SwabDPXMPFilmInfo(&dpx_mp_info);
+      SwabDPXTVInfo(&dpx_tv_info);
     }
   offset += WriteBlob(image,sizeof(dpx_file_info),&dpx_file_info);
   offset += WriteBlob(image,sizeof(dpx_image_info),&dpx_image_info);
   offset += WriteBlob(image,sizeof(dpx_source_info),&dpx_source_info);
+  offset += WriteBlob(image,sizeof(dpx_mp_info),&dpx_mp_info);
+  offset += WriteBlob(image,sizeof(dpx_tv_info),&dpx_tv_info);
   if (swab)
     {
       /*
@@ -2288,6 +2411,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       SwabDPXFileInfo(&dpx_file_info);
       SwabDPXImageInfo(&dpx_image_info);
       SwabDPXImageSourceInfo(&dpx_source_info);
+      SwabDPXMPFilmInfo(&dpx_mp_info);
+      SwabDPXTVInfo(&dpx_tv_info);
     }
   for( ; offset < dpx_image_info.element_info[0].data_offset; offset++)
     (void) WriteBlobByte(image,0x00);
@@ -2412,6 +2537,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
               *samples_itr=ScaleQuantumToShort(*samples_itr)/scale_from_short;
               samples_itr++;
             }
+
           /*
             FIXME: RLE samples.
           */
