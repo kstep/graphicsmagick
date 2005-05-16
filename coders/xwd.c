@@ -325,21 +325,21 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         red_mask=ximage->red_mask;
         red_shift=0;
-        while ((red_mask & 0x01) == 0)
+        while ((red_mask != 0) && ((red_mask & 0x01) == 0))
         {
           red_mask>>=1;
           red_shift++;
         }
         green_mask=ximage->green_mask;
         green_shift=0;
-        while ((green_mask & 0x01) == 0)
+        while ((green_mask != 0) && ((green_mask & 0x01) == 0))
         {
           green_mask>>=1;
           green_shift++;
         }
         blue_mask=ximage->blue_mask;
         blue_shift=0;
-        while ((blue_mask & 0x01) == 0)
+        while ((blue_mask != 0) && ((blue_mask & 0x01) == 0))
         {
           blue_mask>>=1;
           blue_shift++;
