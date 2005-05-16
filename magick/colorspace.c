@@ -352,7 +352,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       double MaxLinearValue=MaxRGB; /* Maximum linear value output */
       double ReferenceWhite=685;    /* 90% white card (default 685) */
       double ReferenceBlack=95;     /* 1% black card  (default 95) */
-      double DisplayGamma=1.7;      /* Typical display gamma */
+      double DisplayGamma=1.0;      /* Typical display gamma (Kodak recommended 1.7) */
       double NegativeFilmGamma=0.6; /* Typical gamma for a film negative */
       double SoftClip=0.0;          /* Soft clip offset */
       double BreakPoint=ReferenceWhite-SoftClip;
@@ -1298,7 +1298,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       double MaxLinearValue=MaxRGB; /* Maximum linear value output */
       double ReferenceWhite=685;    /* 90% white card (default 685) */
       double ReferenceBlack=95;     /* 1% black card  (default 95) */
-      double DisplayGamma=1.7;      /* Typical display gamma */
+      double DisplayGamma=1.0;      /* Typical display gamma (Kodak recommended 1.7) */
       double NegativeFilmGamma=0.6; /* Typical gamma for a film negative */
       double SoftClip=0.0;          /* Soft clip offset */
       double BreakPoint=ReferenceWhite-SoftClip;

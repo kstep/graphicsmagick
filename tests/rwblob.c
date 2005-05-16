@@ -50,6 +50,9 @@ int main ( int argc, char **argv )
     columns = 0,
     pause = 0;
 
+  MagickBool
+    check = MagickTrue;
+
   double
     fuzz_factor = 0;
 
@@ -121,6 +124,8 @@ int main ( int argc, char **argv )
             }
           else if (LocaleCompare("log",option+1) == 0)
             (void) SetLogFormat(argv[++arg]);
+          else if (LocaleCompare("nocheck",option+1) == 0)
+            check=MagickFalse;
           else if (LocaleCompare("pause",option+1) == 0)
             pause=1;
           else if (LocaleCompare("size",option+1) == 0)
@@ -142,7 +147,7 @@ int main ( int argc, char **argv )
   if (arg != argc-2)
     {
       (void) printf("arg=%d, argc=%d\n", arg, argc);
-      (void) printf ( "Usage: %s [-compress algorithm -debug events -depth integer -log format -size geometry] infile format\n", argv[0] );
+      (void) printf ( "Usage: %s [-compress algorithm -debug events -depth integer -log format -nocheck -size geometry] infile format\n", argv[0] );
       (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
@@ -152,10 +157,10 @@ int main ( int argc, char **argv )
   arg++;
   (void) strncpy( format, argv[arg], MaxTextExtent-1 );
 
-/*   for (arg=0; arg < argc; arg++) */
-/*     (void) printf("%s ", argv[arg]); */
-/*   (void) printf("\n"); */
-/*   (void) fflush(stdout); */
+  /*   for (arg=0; arg < argc; arg++) */
+  /*     (void) printf("%s ", argv[arg]); */
+  /*   (void) printf("\n"); */
+  /*   (void) fflush(stdout); */
 
   /*
    * Read original image
@@ -290,35 +295,38 @@ int main ( int argc, char **argv )
     }
   LiberateMemory( (void**)&blob );
 
-  /*
-   * Check final output
-   */
-
-  if ( !strcmp( "JPEG", format ) ||
-       !strcmp( "JNG", format ) ||
-       !strcmp( "JPG", format ) ||
-       !strcmp( "JPG24", format ) ||
-       !strcmp( "JP2", format ) ||
-       !strcmp( "GRAY", format ) ||
-       !strcmp( "CMYK", format ) ||
-       !strcmp( "PAL", format ) ||
-       !strcmp( "PCD", format ) ||
-       !strcmp( "PCDS", format ) ||
-       !strcmp( "UYVY", format ) ||
-       !strcmp( "YUV", format )  ||
-       (final->compression == JPEGCompression))
-    fuzz_factor = 0.06;
-  
-  if ( !IsImagesEqual(original, final ) &&
-       (original->error.normalized_mean_error > fuzz_factor) )
+  if (check)
     {
-      (void) printf( "R/W file check for format \"%s\" failed: %u/%.6f/%.6fe\n",
-                     format,(unsigned int) original->error.mean_error_per_pixel,
-                     original->error.normalized_mean_error,
-                     original->error.normalized_maximum_error);
-      (void) fflush(stdout);
-      exit_status = 1;
-      goto program_exit;
+      /*
+       * Check final output
+       */
+
+      if ( !strcmp( "JPEG", format ) ||
+           !strcmp( "JNG", format ) ||
+           !strcmp( "JPG", format ) ||
+           !strcmp( "JPG24", format ) ||
+           !strcmp( "JP2", format ) ||
+           !strcmp( "GRAY", format ) ||
+           !strcmp( "CMYK", format ) ||
+           !strcmp( "PAL", format ) ||
+           !strcmp( "PCD", format ) ||
+           !strcmp( "PCDS", format ) ||
+           !strcmp( "UYVY", format ) ||
+           !strcmp( "YUV", format )  ||
+           (final->compression == JPEGCompression))
+        fuzz_factor = 0.06;
+  
+      if ( !IsImagesEqual(original, final ) &&
+           (original->error.normalized_mean_error > fuzz_factor) )
+        {
+          (void) printf( "R/W file check for format \"%s\" failed: %u/%.6f/%.6fe\n",
+                         format,(unsigned int) original->error.mean_error_per_pixel,
+                         original->error.normalized_mean_error,
+                         original->error.normalized_maximum_error);
+          (void) fflush(stdout);
+          exit_status = 1;
+          goto program_exit;
+        }
     }
 
  program_exit:

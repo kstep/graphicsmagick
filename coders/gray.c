@@ -166,8 +166,6 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     /*
       Convert raster image to pixel packets.
     */
-    if (!AllocateImageColormap(image,1 << depth))
-      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -188,6 +186,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
           if (!MagickMonitor(LoadImageText,y,image->rows,exception))
             break;
     }
+    image->is_grayscale=MagickTrue;
     count=image->tile_info.height-image->rows-image->tile_info.y;
     for (j=0; j < (long) count; j++)
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);

@@ -974,6 +974,16 @@ below).
 
 .in 15
 .in 15
+.B "dpx:source-colorspace={rgb|cineonlog}"
+.in 20
+ \fR
+.in 20
+Use the dpx:source-colorspace option when reading a DPX file to
+specify the colorspace the DPX file uses. This overrides the colorspace
+type implied by the DPX header (if any).
+
+.in 15
+.in 15
 .B "dpx:packing-method={packed|a|b|lsbpad|msbpad}"
 .in 20
  \fR
@@ -1461,7 +1471,8 @@ BIG5, GB2312, Latin 2, None, SJIScode, Symbol, Unicode, Wansung.\fP
 
 MSB indicates big-endian (e.g. SPARC, Motorola 68K) while LSB
 indicates little-endian (e.g. Intel 'x86, VAX) byte ordering. This
-option currently only influences the output of the TIFF writer.
+option currently only influences the output of the DPX and TIFF
+writers.
 
 Use \fB+endian\fP to revert to unspecified endianness.
 .TP

@@ -481,17 +481,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
         "Channel %ld scale is %u", i, channel_scale[i]);
     }
 
-  if (number_components == 1)
-    {
-      image->storage_class=PseudoClass;
-      image->colors=(image->depth == 8 ? 256 : MaxColormapSize);
-      if (!AllocateImageColormap(image,image->colors))
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-                             image);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "PseudoClass image colors %u",image->colors);
-    }
-
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
@@ -505,35 +494,12 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
       {
       case 1:
         { /* Grayscale */
-          register IndexPacket
-            *indexes;
-          
-          IndexPacket
-            index;
-            
-          indexes=GetIndexes(image);
-          if (image->depth == 8)
+          for (x=0; x < (long) image->columns; x++)
             {
-              for (x=0; x < (long) image->columns; x++)
-                {
-                  index=ScaleQuantumToChar(ScaleShortToQuantum(
-                    (unsigned short) jas_matrix_getv(pixels[0],x)
-                      *channel_scale[0]));
-                  VerifyColormapIndex(image,index);
-                  *indexes++=index;
-                  *q++=image->colormap[index];
-                }
-            }
-          else
-            {
-              for (x=0; x < (long) image->columns; x++)
-                {
-                  index=(unsigned short) jas_matrix_getv(pixels[0],x)
-                    *channel_scale[0];
-                  VerifyColormapIndex(image,index);
-                  *indexes++=index;
-                  *q++=image->colormap[index];
-                }
+              q->red=q->green=q->blue=ScaleShortToQuantum((unsigned short)
+                jas_matrix_getv(pixels[0],x)*channel_scale[0]);
+              q->opacity=OpaqueOpacity;
+              q++;
             }
           break;
         }
@@ -547,6 +513,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
                 jas_matrix_getv(pixels[1],x)*channel_scale[1]);
               q->blue=ScaleShortToQuantum((unsigned short)
                 jas_matrix_getv(pixels[2],x)*channel_scale[2]);
+              q->opacity=OpaqueOpacity;
               q++;
             }
           break;
@@ -575,7 +542,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
         if (!MagickMonitor(LoadImageText,y,image->rows,exception))
           break;
   }
-
+  if (number_components == 1)
+    image->is_grayscale=MagickTrue;
   {
     /*
       Obtain ICC ICM color profile

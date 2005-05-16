@@ -1232,6 +1232,11 @@ standard supports bits per sample values of 1, 8, 10, 12, and 16. Many
 DPX readers demand a sample size of 10 bits with type A padding (see
 below).
 </dd>
+<dt>dpx:source-colorspace={rgb|cineonlog}</dt>
+<dd>Use the dpx:source-colorspace option when reading a DPX file to
+specify the colorspace the DPX file uses. This overrides the colorspace
+type implied by the DPX header (if any).
+</dd>
 <dt>dpx:packing-method={packed|a|b|lsbpad|msbpad}</dt>
 <dd>DPX samples are output within 32-bit words. They may be tightly
 packed end-to-end within the words ("packed"), padded with null bits to
@@ -1781,7 +1786,8 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 MSB indicates big-endian (e.g. SPARC, Motorola 68K) while LSB
 indicates little-endian (e.g. Intel 'x86, VAX) byte ordering. This
-option currently only influences the output of the TIFF writer.</font></td></tr></table>
+option currently only influences the output of the DPX and TIFF
+writers.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>+endian</strong> to revert to unspecified endianness.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">

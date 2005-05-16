@@ -1,3 +1,13 @@
+2005-05-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jp2.c (ReadJP2Image): Return JP2 images as DirectClass
+	grayscale rather than PseudoClass.
+	* coders/gray.c (ReadGRAYImage): Return GRAY images as DirectClass
+	grayscale rather than PseudoClass.
+	* coders/dpx.c: Rewrote the DPX pixel reading/writing code yet
+	again to obtain up to 2X better performance.  In the process,
+	support little-endian pixel storage.
+
 2005-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c: Added some performance optimizations for reading

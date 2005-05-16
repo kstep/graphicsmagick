@@ -31,6 +31,8 @@
 % Supported features:
 %
 %   Anything which can be read, can also be written.
+%   All DPX header information is saved as image attributes and saved
+%   when the image is written.
 %
 %   Colorspaces:
 %    RGB
@@ -881,15 +883,55 @@ static unsigned int DPXSamplesPerElement(const DPXImageElementDescriptor element
   return samples_per_element;
 }
 
+typedef union _PackedU32Word
+{
+  U32 word;
+  unsigned char octets[4];
+} PackedU32Word;
+
+#define MSBImportOctets(scanline,packed_u32) \
+{ \
+  packed_u32.octets[0]=*scanline++; \
+  packed_u32.octets[1]=*scanline++; \
+  packed_u32.octets[2]=*scanline++; \
+  packed_u32.octets[3]=*scanline++; \
+}
+
+#define LSBImportOctets(scanline,packed_u32) \
+{ \
+  packed_u32.octets[3]=*scanline++; \
+  packed_u32.octets[2]=*scanline++; \
+  packed_u32.octets[1]=*scanline++; \
+  packed_u32.octets[0]=*scanline++; \
+}
+
+#if defined(WORDS_BIGENDIAN)
+#define LSBOctetsToPackedU32Word(scanline,packed_u32) \
+{ \
+  LSBImportOctets(scanline,packed_u32); \
+}
+#define MSBOctetsToPackedU32Word(scanline,packed_u32) \
+{ \
+  MSBImportOctets(scanline,packed_u32); \
+}
+#else
+#define LSBOctetsToPackedU32Word(scanline,packed_u32) \
+{ \
+  MSBImportOctets(scanline,packed_u32); \
+}
+#define MSBOctetsToPackedU32Word(scanline,packed_u32) \
+{ \
+  LSBImportOctets(scanline,packed_u32); \
+}
+#endif
+
 static void ReadRowSamples(const unsigned char *scanline,
                            const unsigned int samples_per_row,
                            const unsigned int bits_per_sample,
                            const ImageComponentPackingMethod packing_method,
+                           const EndianType endian_type,
                            sample_t *samples)
 {
-  BitStreamReadHandle
-    bit_stream;
-
   register unsigned long
     i;
 
@@ -900,8 +942,6 @@ static void ReadRowSamples(const unsigned char *scanline,
     sample;
 
   sp=samples;
-  BitStreamInitializeRead(&bit_stream,scanline);
-
   if ((packing_method != PackingMethodPacked) &&
       ((bits_per_sample == 10) || (bits_per_sample == 12)))
     {
@@ -916,22 +956,99 @@ static void ReadRowSamples(const unsigned char *scanline,
 
       if (bits_per_sample == 10)
         {
+          register PackedU32Word
+            packed_u32;
+          
+          register unsigned int
+            datum=2;
+          
+          unsigned int
+            shifts[3] = { 0, 0, 0 };
+
           if (word_pad_lsb)
             {
               /*
                 Padding in LSB (Method A).
               */
-              register int
-                s=3;
-              
-              for (i=samples_per_row; i > 0; i--)
+              shifts[0]=2;  /* datum-0 / blue */
+              shifts[1]=12; /* datum-1 / green */
+              shifts[2]=22; /* datum-2 / red */
+            }
+          else if (word_pad_msb)
+            {
+              /*
+                Padding in MSB (Method B).
+              */
+              shifts[0]=0;  /* datum-0 / blue */
+              shifts[1]=10; /* datum-1 / green */
+              shifts[2]=20; /* datum-2 / red */
+            }
+
+          if (endian_type == MSBEndian)
+            {
+              for (i=samples_per_row/3; i > 0; --i)
                 {
-                  *sp++=BitStreamMSBRead(&bit_stream,10);
-                  if (--s == 0)
+                  datum=2;
+                  MSBOctetsToPackedU32Word(scanline,packed_u32);
+                  *sp++=(packed_u32.word >> shifts[datum--]);
+                  *sp++=(packed_u32.word >> shifts[datum--]);
+                  *sp++=(packed_u32.word >> shifts[datum]);
+                }
+              if ((samples_per_row % 3))
+                {
+                  datum=2;
+                  MSBOctetsToPackedU32Word(scanline,packed_u32);
+                  for (i=(samples_per_row % 3); i > 0; --i)
+                    *sp++=(packed_u32.word >> shifts[datum--]);
+                }
+            }
+          else if (endian_type == LSBEndian)
+            {
+              for (i=samples_per_row/3; i > 0; --i)
+                {
+                  datum=2;
+                  LSBOctetsToPackedU32Word(scanline,packed_u32);
+                  *sp++=(packed_u32.word >> shifts[datum--]);
+                  *sp++=(packed_u32.word >> shifts[datum--]);
+                  *sp++=(packed_u32.word >> shifts[datum]);
+                }
+              if ((samples_per_row % 3))
+                {
+                  datum=2;
+                  LSBOctetsToPackedU32Word(scanline,packed_u32);
+                  for (i=(samples_per_row % 3); i > 0; --i)
+                    *sp++=(packed_u32.word >> shifts[datum--]);
+                }
+            }
+          return;
+        }
+      else if (bits_per_sample == 12)
+        {
+          if (word_pad_lsb)
+            {
+              /*
+                Padding in LSB (Method A).
+              */
+              if (endian_type == MSBEndian)
+                {
+                  for (i=samples_per_row; i > 0; i--)
                     {
-                      bit_stream.bytes++;
-                      bit_stream.bits_remaining=8;
-                      s=3;
+                      sample=0;
+                      sample |= (*scanline++ << 8);
+                      sample |= (*scanline++);
+                      sample >>= 4;
+                      *sp++=sample;
+                    }
+                }
+              else if (endian_type == LSBEndian)
+                {
+                  for (i=samples_per_row; i > 0; i--)
+                    {
+                      sample=0;
+                      sample |= (*scanline++);
+                      sample |= (*scanline++ << 8);
+                      sample >>= 4;
+                      *sp++=sample;
                     }
                 }
               return;
@@ -941,44 +1058,27 @@ static void ReadRowSamples(const unsigned char *scanline,
               /*
                 Padding in MSB (Method B).
               */
-              register int
-                s=0;
-                  
-              for (i=samples_per_row; i > 0; i--)
+              if (endian_type == MSBEndian)
                 {
-                  if (s == 0)
-                    (void) BitStreamMSBRead(&bit_stream,2);
-                  s++;
-                  *sp++=BitStreamMSBRead(&bit_stream,10);
-                  if (s == 3)
-                    s=0;
+                  for (i=samples_per_row; i > 0; i--)
+                    {
+                      sample=0;
+                      sample |= (*scanline++ << 8);
+                      sample |= (*scanline++);
+                      sample &= 0xFFF;
+                      *sp++=sample;
+                    }
                 }
-              return;
-            }
-        }
-      else if (bits_per_sample == 12)
-        {
-          if (word_pad_lsb)
-            {
-              /*
-                Padding in LSB (Method A).
-              */
-              for (i=samples_per_row; i > 0; i--)
+              else if (endian_type == LSBEndian)
                 {
-                  *sp++=BitStreamMSBRead(&bit_stream,12);
-                  (void) BitStreamMSBRead(&bit_stream,4);
-                }
-              return;
-            }
-          else if (word_pad_msb)
-            {
-              /*
-                Padding in MSB (Method B).
-              */
-              for (i=samples_per_row; i > 0; i--)
-                {
-                  (void) BitStreamMSBRead(&bit_stream,4);
-                  *sp++=BitStreamMSBRead(&bit_stream,12);
+                  for (i=samples_per_row; i > 0; i--)
+                    {
+                      sample=0;
+                      sample |= (*scanline++);
+                      sample |= (*scanline++ << 8);
+                      sample &= 0xFFF;
+                      *sp++=sample;
+                    }
                 }
               return;
             }
@@ -1000,34 +1100,68 @@ static void ReadRowSamples(const unsigned char *scanline,
   */
   if (bits_per_sample == 16)
     {
-      for (i=samples_per_row; i > 0; i--)
+      if (endian_type == MSBEndian)
         {
-          sample=0;
-          sample |= (*scanline++ << 8);
-          sample |= (*scanline++);
-          *sp++=sample;
+          for (i=samples_per_row; i > 0; i--)
+            {
+              sample=0;
+              sample |= (*scanline++ << 8);
+              sample |= (*scanline++);
+              *sp++=sample;
+            }
+        }
+      else if (endian_type == LSBEndian)
+        {
+          for (i=samples_per_row; i > 0; i--)
+            {
+              sample=0;
+              sample |= (*scanline++);
+              sample |= (*scanline++ << 8);
+              *sp++=sample;
+            }
         }
       return;
     }
 
   /*
-    Special fast handling for Modulo-8 images.
+    Special fast handling for 32-bit (float) images.
   */
-  if ((bits_per_sample >= 8) && (bits_per_sample % 8U == 0U))
+  if (bits_per_sample == 32)
     {
-      for (i=samples_per_row; i > 0; i--)
+      register PackedU32Word
+        packed_u32;
+
+      if (endian_type == MSBEndian)
         {
-          ImportModulo8Quantum(*sp,bits_per_sample,scanline);
-          sp++;
+          for (i=samples_per_row; i > 0; i--)
+            {
+              MSBOctetsToPackedU32Word(scanline,packed_u32);
+              *sp++=packed_u32.word;
+            }
+        }
+      else if (endian_type == LSBEndian)
+        {
+          for (i=samples_per_row; i > 0; i--)
+            {
+              LSBOctetsToPackedU32Word(scanline,packed_u32);
+              *sp++=packed_u32.word;
+            }
         }
       return;
     }
 
   /*
-    Default implementation handles any bit depth.
+    Default implementation handles any bit depth (in big-endian order).
   */
-  for (i=samples_per_row; i > 0; i--)
-    *sp++=BitStreamMSBRead(&bit_stream,bits_per_sample);
+  {
+    BitStreamReadHandle
+      bit_stream;
+
+    BitStreamInitializeRead(&bit_stream,scanline);
+
+    for (i=samples_per_row; i > 0; i--)
+      *sp++=BitStreamMSBRead(&bit_stream,bits_per_sample);
+  }
 }
 static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -1045,6 +1179,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   DPXTVInfo
     dpx_tv_info;
+
+  DPXUserDefinedData
+    dpx_user_data;
 
   Image
     *image;
@@ -1088,17 +1225,14 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     is_monochrome=MagickFalse,
     swab=MagickFalse;
 
-  WordStreamReadHandle
-    word_stream;
-
   DPXImageElementDescriptor
     element_descriptor;
 
   ImageComponentPackingMethod
     packing_method;
 
-  WordStreamReadFunc
-    word_read_func;
+  EndianType
+    endian_type;
 
   const char *
     definition_value;
@@ -1130,21 +1264,15 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     swab=MagickTrue;
 
 #if defined(WORDS_BIGENDIAN)
-  word_read_func = (swab ? (WordStreamReadFunc) ReadBlobLSBLong :
-                    (WordStreamReadFunc) ReadBlobMSBLong);
+  endian_type = (swab ? LSBEndian : MSBEndian);
 #else
-  word_read_func = (swab ? (WordStreamReadFunc) ReadBlobMSBLong :
-                    (WordStreamReadFunc) ReadBlobLSBLong);
+  endian_type = (swab ? MSBEndian : LSBEndian);
 #endif
   
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "%s endian DPX format",
-#if defined(WORDS_BIGENDIAN)
-                        (swab ? "Little" : "Big")
-#else
-                        (swab ? "Big" : "Little")
-#endif
-                        );
+                        (endian_type == MSBEndian ? "Big" : "Little"));
+
   if (swab)
     SwabDPXFileInfo(&dpx_file_info);
 
@@ -1170,9 +1298,14 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   pixels_offset=dpx_file_info.image_data_offset;
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Offset to data %lu",pixels_offset);
+                        "Image data offset %lu",pixels_offset);
   if (pixels_offset < 1408)
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Generic length %u, Industry length %u, User length %u",
+                        dpx_file_info.generic_section_length,
+                        dpx_file_info.industry_section_length,
+                        dpx_file_info.user_defined_length);
   /*
     Read image information header.
   */
@@ -1271,6 +1404,16 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       R32ToAttribute(image,"DPX:tv.white.level",dpx_tv_info.white_level);
       R32ToAttribute(image,"DPX:tv.integration.time",dpx_tv_info.integration_time);
     }
+  if ((pixels_offset >= 2080UL) && (dpx_file_info.user_defined_length > 0))
+    {
+      /*
+        Read user header.
+      */
+      offset += ReadBlob(image,sizeof(dpx_user_data),&dpx_user_data);
+      if (offset != (size_t) 2080L)
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+      StringToAttribute(image,"DPX:user.data.id",dpx_user_data.user_id);
+    }
   /*
     Determine the maximum number of bits per sample, and samples per element.
   */
@@ -1356,7 +1499,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
         }
       bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
-      image->depth=Max(image->depth,bits_per_sample);
       element_descriptor=(DPXImageElementDescriptor)
         dpx_image_info.element_info[element].descriptor;
       packing_method=dpx_image_info.element_info[element].packing;
@@ -1421,7 +1563,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Read element data.
           */
-          WordStreamInitializeRead(&word_stream,word_read_func,image);
           for (y=0; y < (long) image->rows; y++)
             {
 
@@ -1439,18 +1580,33 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   *scanline_data;
                 
                 scanline_data=scanline;
-                (void) ReadBlobZC(image,row_octets,&scanline_data);
+                if (ReadBlobZC(image,row_octets,&scanline_data) != row_octets)
+                  {
+                    status=MagickFail;
+                    break;
+                  }
                 ReadRowSamples(scanline_data,samples_per_row,bits_per_sample,
-                               packing_method,samples);
+                               packing_method,endian_type,samples);
               }
               /*
                 Scale row samples.
               */
               samples_itr=samples;
-              for (i=samples_per_row; i > 0; i--)
+              if (bits_per_sample == 1)
                 {
-                  *samples_itr=ScaleShortToQuantum((*samples_itr)*scale_to_short);
-                  samples_itr++;
+                  for (i=samples_per_row; i > 0; i--)
+                    {
+                      *samples_itr=(*samples_itr == 0) ? 0 : MaxRGB;
+                      samples_itr++;
+                    }
+                }
+              else
+                {
+                  for (i=samples_per_row; i > 0; i--)
+                    {
+                      *samples_itr=ScaleShortToQuantum((*samples_itr)*scale_to_short);
+                      samples_itr++;
+                    }
                 }
               /*
                 Assign samples to pixels.
@@ -1580,7 +1736,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   image->is_monochrome=is_monochrome;
   image->is_grayscale=is_grayscale;
-  image->depth=Min(image->depth,QuantumDepth);
+  image->depth=Min(QuantumDepth,image->depth);
   MagickFreeMemory(samples);
   MagickFreeMemory(scanline);
   CloseBlob(image);
@@ -1707,10 +1863,45 @@ static void GenerateDPXTimeStamp(char *timestamp, size_t maxsize)
     if (*p == ' ')
       *p='0';
 }
+#define MSBExportOctets(packed_u32,scanline) \
+{ \
+  *scanline++=packed_u32.octets[0]; \
+  *scanline++=packed_u32.octets[1]; \
+  *scanline++=packed_u32.octets[2]; \
+  *scanline++=packed_u32.octets[3]; \
+}
+#define LSBExportOctets(packed_u32,scanline) \
+{ \
+  *scanline++=packed_u32.octets[3]; \
+  *scanline++=packed_u32.octets[2]; \
+  *scanline++=packed_u32.octets[1]; \
+  *scanline++=packed_u32.octets[0]; \
+}
+#if defined(WORDS_BIGENDIAN)
+#define LSBPackedU32WordToOctets(packed_u32,scanline) \
+{ \
+  LSBExportOctets(packed_u32,scanline); \
+}
+#define MSBPackedU32WordToOctets(packed_u32,scanline) \
+{ \
+  MSBExportOctets(packed_u32,scanline); \
+}
+#else
+#define LSBPackedU32WordToOctets(packed_u32,scanline) \
+{ \
+  MSBExportOctets(packed_u32,scanline); \
+}
+#define MSBPackedU32WordToOctets(packed_u32,scanline) \
+{ \
+  LSBExportOctets(packed_u32,scanline); \
+}
+#endif
+
 static void WriteRowSamples(const sample_t *samples,
                             const unsigned int samples_per_row,
                             const unsigned int bits_per_sample,
                             const ImageComponentPackingMethod packing_method,
+                            const EndianType endian_type,
                             unsigned char *scanline)
 {
   register unsigned int
@@ -1721,6 +1912,9 @@ static void WriteRowSamples(const sample_t *samples,
 
   register unsigned char
     *sp;
+
+  register unsigned int
+    sample;
 
   sp=scanline;
   BitStreamInitializeWrite(&bit_stream,scanline);
@@ -1739,44 +1933,75 @@ static void WriteRowSamples(const sample_t *samples,
 
       if (bits_per_sample == 10)
         {
+          register PackedU32Word
+            packed_u32;
+          
+          register unsigned int
+            datum=2;
+          
+          unsigned int
+            shifts[3] = { 0, 0, 0 };
+          
           if (word_pad_lsb)
             {
               /*
                 Padding in LSB (Method A).
               */
-              register int
-                s=3;
-              
-              for (i=samples_per_row; i > 0; i--)
-                {
-                  BitStreamMSBWrite(&bit_stream,10,*samples++);
-                  if (--s == 0)
-                    {
-                      (void) BitStreamMSBWrite(&bit_stream,2,0);
-                      s=3;
-                    }
-                }
-              return;
+              shifts[0]=2;  /* datum-0 / blue */
+              shifts[1]=12; /* datum-1 / green */
+              shifts[2]=22; /* datum-2 / red */
             }
           else if (word_pad_msb)
             {
               /*
                 Padding in MSB (Method B).
               */
-              register int
-                s=0;
-                  
-              for (i=samples_per_row; i > 0; i--)
-                {
-                  if (s == 0)
-                    (void) BitStreamMSBWrite(&bit_stream,2,0);
-                  s++;
-                  (void) BitStreamMSBWrite(&bit_stream,10,*samples++);
-                  if (s == 3)
-                    s=0;
-                }
-              return;
+              shifts[0]=0;  /* datum-0 / blue */
+              shifts[1]=10; /* datum-1 / green */
+              shifts[2]=20; /* datum-2 / red */
             }
+
+          if (endian_type == MSBEndian)
+            {
+              for (i=samples_per_row/3; i > 0; --i)
+                {
+                  datum=2;
+                  packed_u32.word=0;
+                  packed_u32.word |= (*samples++ << shifts[datum--]);
+                  packed_u32.word |= (*samples++ << shifts[datum--]);
+                  packed_u32.word |= (*samples++ << shifts[datum]);
+                  MSBPackedU32WordToOctets(packed_u32,scanline);
+                }
+              if ((samples_per_row % 3))
+                {
+                  datum=2;
+                  packed_u32.word=0;
+                  for (i=(samples_per_row % 3); i > 0; --i)
+                    packed_u32.word |= (*samples++ << shifts[datum--]);
+                  MSBPackedU32WordToOctets(packed_u32,scanline);
+                }
+            }
+          else if (endian_type == LSBEndian)
+            {
+              for (i=samples_per_row/3; i > 0; --i)
+                {
+                  datum=2;
+                  packed_u32.word=0;
+                  packed_u32.word |= (*samples++ << shifts[datum--]);
+                  packed_u32.word |= (*samples++ << shifts[datum--]);
+                  packed_u32.word |= (*samples++ << shifts[datum]);
+                  LSBPackedU32WordToOctets(packed_u32,scanline);
+                }
+              if ((samples_per_row % 3))
+                {
+                  datum=2;
+                  packed_u32.word=0;
+                  for (i=(samples_per_row % 3); i > 0; --i)
+                    packed_u32.word |= (*samples++ << shifts[datum--]);
+                  LSBPackedU32WordToOctets(packed_u32,scanline);
+                }
+            }
+          return;
         }
       else if (bits_per_sample == 12)
         {
@@ -1785,25 +2010,52 @@ static void WriteRowSamples(const sample_t *samples,
               /*
                 Padding in LSB (Method A).
               */
-              for (i=samples_per_row; i > 0; i--)
+              if (endian_type == MSBEndian)
                 {
-                  (void) BitStreamMSBWrite(&bit_stream,12,*samples++);
-                  (void) BitStreamMSBWrite(&bit_stream,4,0);
+                  for (i=samples_per_row; i > 0; i--)
+                    {
+                      sample=*samples++;
+                      sample <<= 4;
+                      *sp++=(unsigned char) (((unsigned int) sample) >> 8);
+                      *sp++=(unsigned char) sample;
+                    }
                 }
-              return;
+              else if (endian_type == LSBEndian)
+                {
+                  for (i=samples_per_row; i > 0; i--)
+                    {
+                      sample=*samples++;
+                      sample <<= 4;
+                      *sp++=(unsigned char) sample;
+                      *sp++=(unsigned char) (((unsigned int) sample) >> 8);
+                    }
+                }
             }
           else if (word_pad_msb)
             {
               /*
                 Padding in MSB (Method B).
               */
-              for (i=samples_per_row; i > 0; i--)
+              if (endian_type == MSBEndian)
                 {
-                  (void) BitStreamMSBWrite(&bit_stream,4,0);
-                  (void) BitStreamMSBWrite(&bit_stream,12,*samples++);
+                  for (i=samples_per_row; i > 0; i--)
+                    {
+                      sample=((*samples++) & 0xFFF);
+                      *sp++=(unsigned char) (((unsigned int) sample) >> 8);
+                      *sp++=(unsigned char) sample;
+                    }
                 }
-              return;
+              else if (endian_type == LSBEndian)
+                {
+                  for (i=samples_per_row; i > 0; i--)
+                    {
+                      sample=((*samples++) & 0xFFF);
+                      *sp++=(unsigned char) sample;
+                      *sp++=(unsigned char) (((unsigned int) sample) >> 8);
+                    }
+                }
             }
+          return;
         }
     }
 
@@ -1822,30 +2074,56 @@ static void WriteRowSamples(const sample_t *samples,
   */
   if (bits_per_sample == 16)
     {
-      for (i=samples_per_row; i > 0; i--)
+      if (endian_type == MSBEndian)
         {
-          *sp++=(unsigned char) (((unsigned int) *samples) >> 8);
-          *sp++=(unsigned char) *samples;
-          samples++;
+          for (i=samples_per_row; i > 0; i--)
+            {
+              *sp++=(unsigned char) (((unsigned int) *samples) >> 8);
+              *sp++=(unsigned char) *samples;
+              samples++;
+            }
+        }
+      else if (endian_type == LSBEndian)
+        {
+          for (i=samples_per_row; i > 0; i--)
+            {
+              *sp++=(unsigned char) *samples;
+              *sp++=(unsigned char) (((unsigned int) *samples) >> 8);
+              samples++;
+            }
         }
       return;
     }
 
   /*
-    Special fast handling for Modulo-8 images.
+    Special fast handling for 32-bit (float) images.
   */
-  if ((bits_per_sample >= 8) && (bits_per_sample % 8U == 0U))
+  if (bits_per_sample == 32)
     {
-      for (i=samples_per_row; i > 0; i--)
+      register PackedU32Word
+        packed_u32;
+
+      if (endian_type == MSBEndian)
         {
-          ExportModulo8Quantum(sp,bits_per_sample,*samples);
-          samples++;
+          for (i=samples_per_row; i > 0; i--)
+            {
+              packed_u32.word=*samples++;
+              MSBPackedU32WordToOctets(packed_u32,scanline);
+            }
+        }
+      else if (endian_type == LSBEndian)
+        {
+          for (i=samples_per_row; i > 0; i--)
+            {
+              packed_u32.word=*samples++;
+              LSBPackedU32WordToOctets(packed_u32,scanline);
+            }
         }
       return;
     }
 
   /*
-    Default implementation.
+    Default implementation handles any bit depth (in big-endian order).
   */
   for (i=samples_per_row; i > 0; i--)
     BitStreamMSBWrite(&bit_stream,bits_per_sample,*samples++);
@@ -1985,6 +2263,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     offset=0,
     row_octets;
 
+  EndianType
+    endian_type;
+
   MagickBool
     is_grayscale;
 
@@ -2002,14 +2283,21 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Support user-selection of big/little endian output.
   */
+  endian_type=MSBEndian;
 #if defined(WORDS_BIGENDIAN)
   swab=MagickFalse;
   if (image_info->endian == LSBEndian)
-    swab=MagickTrue;
+    {
+      swab=MagickTrue;
+      endian_type=LSBEndian;
+    }
 #else
   swab=MagickTrue;
   if (image_info->endian == LSBEndian)
-    swab=MagickFalse;
+    {
+      swab=MagickFalse;
+      endian_type=LSBEndian;
+    }
 #endif
 
   if ((definition_value=AccessDefinition(image_info,"dpx","bits-per-sample")))
@@ -2532,10 +2820,20 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             Scale samples.
           */
           samples_itr=samples;
-          for (i=samples_per_row; i > 0; i--)
+          if (bits_per_sample == 1)
             {
-              *samples_itr=ScaleQuantumToShort(*samples_itr)/scale_from_short;
-              samples_itr++;
+              for (i=samples_per_row; i > 0; i--)
+                {
+                  *samples_itr=(*samples_itr > MaxRGB/2) ? 1 : 0;
+                }
+            }
+          else
+            {
+              for (i=samples_per_row; i > 0; i--)
+                {
+                  *samples_itr=ScaleQuantumToShort(*samples_itr)/scale_from_short;
+                  samples_itr++;
+                }
             }
 
           /*
@@ -2545,8 +2843,13 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           /*
             Output samples.
           */
-          WriteRowSamples(samples, samples_per_row, bits_per_sample,packing_method, scanline);
-          WriteBlob(image,row_octets,(void *) scanline);
+          WriteRowSamples(samples, samples_per_row, bits_per_sample,
+                          packing_method,endian_type,scanline);
+          if (WriteBlob(image,row_octets,(void *) scanline) != row_octets)
+            {
+              status=MagickFail;
+              break;
+            }
         }
     }
 

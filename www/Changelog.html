@@ -21,9 +21,24 @@
 </tr>
 </table>
 <p>
+2005-05-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jp2.c (ReadJP2Image): Return JP2 images as DirectClass
+        grayscale rather than PseudoClass.
+  <LI> coders/gray.c (ReadGRAYImage): Return GRAY images as DirectClass
+        grayscale rather than PseudoClass.
+  <LI> coders/dpx.c: Rewrote the DPX pixel reading/writing code yet
+        again to obtain up to 2X better performance.  In the process,
+        support little-endian pixel storage.
+
+</UL>
+<p>
 2005-05-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/dpx.c: Added some performance optimizations for reading
+        and writing.  Write the motion picture and television headers.
   <LI> magick/colorspace.c (TransformRGBImage): Update image colorspace
         to RGB when transforming from Cineon log space to RGB.
   <LI> coders/dpx.c (WriteDPXImage): Set image date &amp; time field.
