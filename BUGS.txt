@@ -8,6 +8,8 @@ Known Bugs in development GraphicsMagick 1.2
 
  * BMP reader is not working for some obscure low-color packed files.
 
+ * PCD reader is broken in 1.2.  Works in 1.1.X.
+
  * Kodak legacy Cineon "4.5" format support is mostly broken.
 
  * "gm convert logo: logo%n.png" produces a segmentation fault.

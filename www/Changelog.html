@@ -21,6 +21,24 @@
 </tr>
 </table>
 <p>
+2005-05-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (ReadRowSamples): Added necessary masking necessary
+        in order to cleanly retrieve DPX 10 bit samples.  Happened to work
+        properly without the masking with QuantumDepth=16.
+
+</UL>
+<p>
+2005-05-16  Tavis Ormandy &lt;taviso@gentoo.org&gt;
+
+<UL>
+  <LI> coders/xwd.c (ReadXWDImage): Fix for infinite loop in the xwd
+        decoder when calculating the shift r/g/b values and the mask is
+        set to zero.
+
+</UL>
+<p>
 2005-05-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

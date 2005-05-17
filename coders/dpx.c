@@ -990,16 +990,16 @@ static void ReadRowSamples(const unsigned char *scanline,
                 {
                   datum=2;
                   MSBOctetsToPackedU32Word(scanline,packed_u32);
-                  *sp++=(packed_u32.word >> shifts[datum--]);
-                  *sp++=(packed_u32.word >> shifts[datum--]);
-                  *sp++=(packed_u32.word >> shifts[datum]);
+                  *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
+                  *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
+                  *sp++=(packed_u32.word >> shifts[datum]) & 0x3FF;
                 }
               if ((samples_per_row % 3))
                 {
                   datum=2;
                   MSBOctetsToPackedU32Word(scanline,packed_u32);
                   for (i=(samples_per_row % 3); i > 0; --i)
-                    *sp++=(packed_u32.word >> shifts[datum--]);
+                    *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
                 }
             }
           else if (endian_type == LSBEndian)
@@ -1008,16 +1008,16 @@ static void ReadRowSamples(const unsigned char *scanline,
                 {
                   datum=2;
                   LSBOctetsToPackedU32Word(scanline,packed_u32);
-                  *sp++=(packed_u32.word >> shifts[datum--]);
-                  *sp++=(packed_u32.word >> shifts[datum--]);
-                  *sp++=(packed_u32.word >> shifts[datum]);
+                  *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
+                  *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
+                  *sp++=(packed_u32.word >> shifts[datum]) & 0x3FF;
                 }
               if ((samples_per_row % 3))
                 {
                   datum=2;
                   LSBOctetsToPackedU32Word(scanline,packed_u32);
                   for (i=(samples_per_row % 3); i > 0; --i)
-                    *sp++=(packed_u32.word >> shifts[datum--]);
+                    *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
                 }
             }
           return;
@@ -1539,6 +1539,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           scale_to_short=1U;
           if (bits_per_sample < 16U)
             scale_to_short=(65535U / (65535U >> (16-bits_per_sample)));
+
           /*
             Compute samples per row.
           */
@@ -1589,7 +1590,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                                packing_method,endian_type,samples);
               }
               /*
-                Scale row samples.
+                Scale samples.
               */
               samples_itr=samples;
               if (bits_per_sample == 1)
@@ -1963,7 +1964,7 @@ static void WriteRowSamples(const sample_t *samples,
 
           if (endian_type == MSBEndian)
             {
-              for (i=samples_per_row/3; i > 0; --i)
+              for (i=(samples_per_row/3); i > 0; --i)
                 {
                   datum=2;
                   packed_u32.word=0;
@@ -1983,7 +1984,7 @@ static void WriteRowSamples(const sample_t *samples,
             }
           else if (endian_type == LSBEndian)
             {
-              for (i=samples_per_row/3; i > 0; --i)
+              for (i=(samples_per_row/3); i > 0; --i)
                 {
                   datum=2;
                   packed_u32.word=0;
@@ -2065,7 +2066,7 @@ static void WriteRowSamples(const sample_t *samples,
   if (bits_per_sample == 8)
     {
       for (i=samples_per_row; i > 0; i--)
-        *sp++= (unsigned char) *samples++;
+        *sp++=(unsigned char) *samples++;
       return;
     }
 
@@ -2469,8 +2470,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       dpx_image_info.element_info[0].reference_low_data_code=0;
       dpx_image_info.element_info[0].reference_high_data_code=
         MaxValueGivenBits(bits_per_sample);
-      dpx_image_info.element_info[0].reference_low_quantity=0.00;
-      dpx_image_info.element_info[0].reference_high_quantity=2.048;
+      dpx_image_info.element_info[0].reference_low_quantity=0.00F;
+      dpx_image_info.element_info[0].reference_high_quantity=2.048F;
     }
   else if (transfer_characteristic == TransferCharacteristicLinear)
     {
@@ -2825,6 +2826,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
               for (i=samples_per_row; i > 0; i--)
                 {
                   *samples_itr=(*samples_itr > MaxRGB/2) ? 1 : 0;
+                  samples_itr++;
                 }
             }
           else
