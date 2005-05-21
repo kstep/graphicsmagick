@@ -27,6 +27,8 @@
   <LI> coders/meta.c (ReadMETAImage): Fixed reading ICM color profile
         files.  Due to a typo ICM color profiles were being stored as IPTC
         profiles.  This restores proper operation of the -profile option.
+        (ReadMETAImage): Fix double free bug.  Hopefully does not result
+        in a memory leak in other cases.
 
 </UL>
 <p>

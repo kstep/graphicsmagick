@@ -1096,7 +1096,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
                             (unsigned long) GetBlobSize(buff));
       (void) SetImageProfile(image,"IPTC",GetBlobStreamData(buff),
                              GetBlobSize(buff));
-      MagickFreeMemory(blob);
+      /* MagickFreeMemory(blob); */
       DetachBlob(buff->blob);
       DestroyImage(buff);
     }
@@ -1208,7 +1208,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
                             (unsigned long) GetBlobSize(buff));
       (void) SetImageProfile(image,"APP1",GetBlobStreamData(buff),
                              GetBlobSize(buff));
-      MagickFreeMemory(blob);
+      /* MagickFreeMemory(blob); */
       DetachBlob(buff->blob);
       DestroyImage(buff);
     }
@@ -1238,7 +1238,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
                             (unsigned long) GetBlobSize(buff));
       (void) SetImageProfile(image,"ICM",GetBlobStreamData(buff),
                              GetBlobSize(buff));
-      MagickFreeMemory(blob);
+      /* MagickFreeMemory(blob); */
       DetachBlob(buff->blob);
 
       DestroyImage(buff);
@@ -1288,7 +1288,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
                             (unsigned long) GetBlobSize(buff));
       (void) SetImageProfile(image,"IPTC",GetBlobStreamData(buff),
                              GetBlobSize(buff));
-      MagickFreeMemory(blob)
+      /* MagickFreeMemory(blob) */
       DetachBlob(buff->blob);
       DestroyImage(buff);
     }
