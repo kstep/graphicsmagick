@@ -1421,7 +1421,8 @@ MagickExport MagickPassFail  CycleColormapImage(Image *image,const int amount)
 %    o file: The file, typically stdout.
 %
 %    o verbose: A value other than zero prints more detailed information
-%      about the image.
+%      about the image. Values greater than one enable counting the number of
+%      colors in the image.
 %
 %
 */
@@ -1477,7 +1478,7 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   if (!verbose)
     {
       /*
-        Display detailed info about the image.
+        Display summary info about the image.
       */
       if (*image->magick_filename != '\0')
         if (LocaleCompare(image->magick_filename,image->filename) != 0)
@@ -1549,7 +1550,8 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
     Display verbose info about the image.
   */
   (void) SignatureImage(image);
-  image->total_colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
+  if (verbose > 1)
+    image->total_colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
   (void) fprintf(file,"Image: %.1024s\n",image->filename);
   magick_info=GetMagickInfo(image->magick,&image->exception);
   if ((magick_info == (const MagickInfo *) NULL) ||
@@ -1811,17 +1813,23 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
         }
     }
   if (image->storage_class == DirectClass)
-    (void) fprintf(file,"  Colors: %lu\n",image->total_colors);
+    {
+      if (image->total_colors > 0)
+        (void) fprintf(file,"  Colors: %lu\n",image->total_colors);
+    }
   else
-    if (image->total_colors <= image->colors)
-      (void) fprintf(file,"  Colors: %u\n",image->colors);
-    else
-      (void) fprintf(file,"  Colors: %lu=>%u\n",image->total_colors,
-        image->colors);
+    {
+      if (image->total_colors <= image->colors)
+        (void) fprintf(file,"  Colors: %u\n",image->colors);
+      else
+        (void) fprintf(file,"  Colors: %lu=>%u\n",image->total_colors,
+                       image->colors);
+    }
   if (image->storage_class == DirectClass)
     {
       if (image->total_colors < 1024)
-        (void) GetNumberColors(image,file,&image->exception);
+        if (verbose > 1)
+          (void) GetNumberColors(image,file,&image->exception);
     }
   else
     {

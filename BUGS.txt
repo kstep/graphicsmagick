@@ -19,10 +19,3 @@ Known Bugs in development GraphicsMagick 1.2
    This is an obscure bug in which bad things happen if multiple frames are
    written to a JPEG file with no extension.
 
- * CMS profile-based colorspace transforms are not working (works in 1.1.X).
-
-   gm convert infile -profile profile1.icm -profile profile2.icm outfile
-
-   This is likely because the work to change how metadata blobs are stored is
-   only about 1/2 completed (see TODO.txt).
-

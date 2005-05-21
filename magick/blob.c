@@ -2046,6 +2046,17 @@ MagickExport void *MapBlob(int file,const MapMode mode,magick_off_t offset,
     {
       map=(void *) mmap((char *) NULL,length,PROT_READ,MAP_PRIVATE,file,
         (off_t)offset);
+#if defined(HAVE_MADVISE)
+      if (map != (void *) MAP_FAILED)
+        {
+#if defined(MADV_SEQUENTIAL)
+          (void) madvise(map,length,MADV_SEQUENTIAL);
+#endif /* defined(MADV_SEQUENTIAL) */
+#if defined(MADV_WILLNEED)
+          (void) madvise(map,length,MADV_WILLNEED);
+#endif /* defined(MADV_WILLNEED) */
+        }
+#endif /* defined(HAVE_MADVISE) */
       break;
     }
     case WriteMode:

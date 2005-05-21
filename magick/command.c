@@ -1059,7 +1059,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("verbose",option+1) == 0)
           {
-            image_info->verbose=(*option == '-');
+            image_info->verbose+=(*option == '-');
             break;
           }
         if (LocaleCompare("version",option+1) == 0)
@@ -2360,7 +2360,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("verbose",option+1) == 0)
           {
-            image_info->verbose=(*option == '-');
+            image_info->verbose+=(*option == '-');
             break;
           }
         if (LocaleCompare("verbose",option+1) == 0)
@@ -4459,7 +4459,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("verbose",option+1) == 0)
           {
-            image_info->verbose=(*option == '-');
+            image_info->verbose+=(*option == '-');
             break;
           }
         if (LocaleCompare("verbose",option+1) == 0)
@@ -4892,7 +4892,7 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("verbose",option+1) == 0)
           {
-            image_info->verbose=(*option == '-');
+            image_info->verbose+=(*option == '-');
             continue;
           }
         if (LocaleCompare("version",option+1) == 0)
@@ -6303,7 +6303,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("verbose",option+1) == 0)
           {
-            image_info->verbose=(*option == '-');
+            image_info->verbose+=(*option == '-');
             break;
           }
         if (LocaleCompare("version",option+1) == 0)
@@ -6892,7 +6892,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("verbose",option+1) == 0)
           {
-            image_info->verbose=(*option == '-');
+            image_info->verbose+=(*option == '-');
             break;
           }
         if (LocaleCompare("verbose",option+1) == 0)
@@ -8535,17 +8535,30 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               (void) strlcpy(clone_info->filename,argv[++i],MaxTextExtent);
               profile_image=ReadImage(clone_info,&(*image)->exception);
               if (profile_image == (Image *) NULL)
-                continue;
+                {
+                  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                       "Failed to load profile from file \"%s\"",
+                                       clone_info->filename);
+                  continue;
+                }
 
               /* IPTC NewsPhoto Profile */
               profile=GetImageProfile(profile_image,"IPTC",&profile_length);
               if (profile)
-                (void) SetImageProfile(*image,"IPTC",profile,profile_length);
+                {
+                  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                        "Adding IPTC profile to image");
+                  (void) SetImageProfile(*image,"IPTC",profile,profile_length);
+                }
 
               /* ICC ICM Profile */
               profile=GetImageProfile(profile_image,"ICM",&profile_length);
               if (profile)
-                (void) ProfileImage(*image,"ICM",profile,profile_length,True);
+                {
+                  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                        "Adding ICM profile to image");
+                  (void) ProfileImage(*image,"ICM",profile,profile_length,True);
+                }
 
               /* Generic Profiles */
               for (j=0; j < (long) profile_image->generic_profiles; j++)
@@ -8554,6 +8567,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                     *generic;
                   
                   generic=profile_image->generic_profile+j;
+                  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                        "Adding %s profile to image",generic->name);
                   (void) SetImageProfile(*image,generic->name,generic->info,generic->length);
                 }
               DestroyImage(profile_image);
@@ -9180,7 +9195,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       {
         if (LocaleCompare("verbose",option+1) == 0)
           {
-            clone_info->verbose=(*option == '-');
+            clone_info->verbose+=(*option == '-');
             quantize_info.measure_error=(*option == '-');
             continue;
           }
@@ -11378,7 +11393,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("verbose",option+1) == 0)
           {
-            image_info->verbose=(*option == '-');
+            image_info->verbose+=(*option == '-');
             break;
           }
         if (LocaleCompare("verbose",option+1) == 0)
@@ -12804,7 +12819,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("verbose",option+1) == 0)
           {
-            image_info->verbose=(*option == '-');
+            image_info->verbose+=(*option == '-');
             break;
           }
         if (LocaleCompare("verbose",option+1) == 0)
@@ -13865,7 +13880,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("verbose",option+1) == 0)
           {
-            image_info->verbose=(*option == '-');
+            image_info->verbose+=(*option == '-');
             break;
           }
         if (LocaleCompare("version",option+1) == 0)

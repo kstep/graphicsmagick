@@ -23236,7 +23236,8 @@ rm -f conftest.mmap
 
 
 
-for ac_func in ftime getexecname getc_unlocked getpagesize mkstemp \
+
+for ac_func in ftime getexecname getc_unlocked getpagesize madvise mkstemp \
   _pclose pclose poll _popen popen pread pwrite putc_unlocked raise \
   rand_r select tempnam times seekdir sigemptyset sigaction strerror \
   strlcat strlcpy sysconf telldir vsprintf vsnprintf

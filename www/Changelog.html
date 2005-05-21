@@ -21,6 +21,36 @@
 </tr>
 </table>
 <p>
+2005-05-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/meta.c (ReadMETAImage): Fixed reading ICM color profile
+        files.  Due to a typo ICM color profiles were being stored as IPTC
+        profiles.  This restores proper operation of the -profile option.
+
+</UL>
+<p>
+2005-05-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (DescribeImage): If the image is DirectClass,
+        then don't compute the number of unique colors unless verbose is
+        greater than one.  This change is made since computing the number
+        of unique colors may take hours for some images.  The handling of
+        the -verbose argument is changed so that it is cumulative.
+        Specifying -verbose multiple times increases the level of
+        verbosity.
+
+</UL>
+<p>
+2005-05-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/nt_base.c (NTreaddir): Fix write beyond buffer length
+        reported in SourceForge issue #1182003.  Only impacts Windows.
+
+</UL>
+<p>
 2005-05-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

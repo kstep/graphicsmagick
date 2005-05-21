@@ -4444,9 +4444,14 @@ amount (default 0.05).
 <utils apps=identify>
 <pp>
 This information is printed: image scene number; image name; image size;
-the image class (<i>DirectClass</i> or <i>PseudoClass</i>); the total number
-of unique colors; and the number of seconds to read and transform the image.
-Refer to <a href="miff.html">miff</a> for a description of the image class.</pp>
+the image class (<i>DirectClass</i> or <i>PseudoClass</i>); the total
+number of unique colors; and the number of seconds to read and transform
+the image. If the image is <i>DirectClass</i>, the total number of unique
+colors is not displayed unless <s>-verbose</s> is specified twice since
+it may take quite a long time to compute, particularly for deep images.
+If the image is <i>PseudoClass</i> then its pixels are defined by indexes
+into a colormap. If the image is <i>DirectClass</i> then each pixel
+includes a complete and independent color specification.</pp>
 
 <pp>
 If <s>-colors</s> is also specified, the total unique colors in the image

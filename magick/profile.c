@@ -309,8 +309,9 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
   if (LocaleCompare("icm",name) == 0)
     {
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-                            "Profile1: %ld bytes, Profile2: %ld bytes",
-                            (long)length,(long)image->color_profile.length);
+                            "Profile1: %lu bytes, Profile2: %lu bytes",
+                            (unsigned long) length,
+                            (unsigned long) image->color_profile.length);
 
       /* Check for identical input and output profiles. Return on identity. */
       if ((length != 0) && (length == image->color_profile.length) &&

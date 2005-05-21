@@ -3067,9 +3067,14 @@ amount (default 0.05).
 \fRprint detailed information about the image
 
 This information is printed: image scene number; image name; image size;
-the image class (\fIDirectClass\fP or \fIPseudoClass\fP); the total number
-of unique colors; and the number of seconds to read and transform the image.
-Refer to miff for a description of the image class.
+the image class (\fIDirectClass\fP or \fIPseudoClass\fP); the total
+number of unique colors; and the number of seconds to read and transform
+the image. If the image is \fIDirectClass\fP, the total number of unique
+colors is not displayed unless \fB-verbose\fP is specified twice since
+it may take quite a long time to compute, particularly for deep images.
+If the image is \fIPseudoClass\fP then its pixels are defined by indexes
+into a colormap. If the image is \fIDirectClass\fP then each pixel
+includes a complete and independent color specification.
 
 If \fB-colors\fP is also specified, the total unique colors in the image
 and color reduction error values are printed. Refer to quantize

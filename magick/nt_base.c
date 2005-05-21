@@ -2092,7 +2092,8 @@ MagickExport struct dirent *NTreaddir(DIR *entry)
         return ((struct dirent *) NULL);
     }
   if (strlcpy(entry->file_info.d_name,entry->Win32FindData.cFileName,
-              MaxTextExtent) >= MaxTextExtent)
+              sizeof(entry->file_info.d_name)) >=
+      sizeof(entry->file_info.d_name))
     return ((struct dirent *) NULL);
   entry->firsttime=FALSE;
   entry->file_info.d_namlen=strlen(entry->file_info.d_name);

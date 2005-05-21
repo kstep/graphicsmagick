@@ -36,6 +36,7 @@
 */
 #include "magick/studio.h"
 #include "magick/blob.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/profile.h"
 #include "magick/utility.h"
@@ -571,13 +572,15 @@ static long parse8BIMW(Image *ifile, Image *ofile)
   line = MagickAllocateMemory(char *,inputlen);
   name = token = (char *)NULL;
   savedpos = 0;
-  /* DebugString("META CODER Parse8BIM\n"); */
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "META CODER Parse8BIM");
   while(super_fgets_w(&line,&inputlen,ifile)!=NULL)
   {
     state=0;
     next=0;
 
-    /* DebugString("META CODER Parse8BIM: %s (%d)\n",line, inputlen); */
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "META CODER Parse8BIM: %s (%d)",line, inputlen);
     token = MagickAllocateMemory(char *,inputlen);
     newstr = MagickAllocateMemory(char *,inputlen);
     while (Tokenizer(&token_info, 0, token, inputlen, line,
@@ -1071,7 +1074,9 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       else if (LocaleCompare(image_info->magick,"8BIMWTEXT") == 0)
         {
           length=parse8BIMW(image, buff);
-          /* DebugString("META CODER Parse8BIMW returned: %ld\n",length); */
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "META CODER Parse8BIMW returned: %lu",
+                                (unsigned long) length);
           if (length & 1)
             (void) WriteBlobByte(buff,0x0);
         }
@@ -1086,6 +1091,9 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           }
         }
 
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Store IPTC profile, size %lu bytes",
+                            (unsigned long) GetBlobSize(buff));
       (void) SetImageProfile(image,"IPTC",GetBlobStreamData(buff),
                              GetBlobSize(buff));
       MagickFreeMemory(blob);
@@ -1138,8 +1146,9 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
                 image)
             }
           AttachBlob(iptc->blob,pinfo->info,pinfo->length);
-          /* DebugString("META CODER APP1JPEG embed: 0x%08lx (%d)\n",
-               (unsigned long)pinfo->info, pinfo->length); */
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "META CODER APP1JPEG embed: 0x%08lx (%d)",
+                                (unsigned long)pinfo->info, pinfo->length);
           result=jpeg_embed(image,buff,iptc);
           DetachBlob(iptc->blob);
           DestroyImage(iptc);
@@ -1194,6 +1203,9 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             }
 #endif
         }
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Store APP1 profile, size %lu bytes",
+                            (unsigned long) GetBlobSize(buff));
       (void) SetImageProfile(image,"APP1",GetBlobStreamData(buff),
                              GetBlobSize(buff));
       MagickFreeMemory(blob);
@@ -1221,7 +1233,10 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           break;
         (void) WriteBlobByte(buff,c);
       }
-      (void) SetImageProfile(image,"IPTC",GetBlobStreamData(buff),
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Store ICM profile, size %lu bytes",
+                            (unsigned long) GetBlobSize(buff));
+      (void) SetImageProfile(image,"ICM",GetBlobStreamData(buff),
                              GetBlobSize(buff));
       MagickFreeMemory(blob);
       DetachBlob(buff->blob);
@@ -1268,6 +1283,9 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       blob[10]=length >> 8;
       blob[11]=length & 0xff;
 
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Store IPTC profile, size %lu bytes",
+                            (unsigned long) GetBlobSize(buff));
       (void) SetImageProfile(image,"IPTC",GetBlobStreamData(buff),
                              GetBlobSize(buff));
       MagickFreeMemory(blob)
