@@ -5,8 +5,8 @@
 	<TITLE>GraphicsMagick - MIFF File Format</TITLE>
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020824;11573700">
-	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20040418;19132000">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20050522;17524400">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust
    collection of tools and libraries to read, write, and
    manipulate an image in any of the more popular image
@@ -32,12 +32,12 @@
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
 <P><B>Magick Image File Format (MIFF)</B> is a platform-independent
-format for storing bitmap images. <B>MIFF</B> is a part of the
-<A HREF="../index.html">GraphicsMagick</A> toolkit of image
-manipulation utilities for the <I>X Window System</I>. <B>GraphicsMagick</B>
-is capable of converting many different image file formats to and
-from <B>MIFF</B> (<I>e.g.</I> <B>JPEG, XPM, TIFF,</B> <I>etc.</I>). 
-</P><A NAME="desc"></A>
+format for storing bitmap images. <B>MIFF</B> was originally invented
+by John Cristy for <B>ImageMagick</B>, but is also a native format of
+<B>GraphicsMagick</B>. It is useful as an efficient lossless working
+file format which assures that all of the image attributes used by
+GraphicsMagick are preserved. Several lossless compression algorithms
+are available in order to save space.</P><A NAME="desc"></A>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">
@@ -245,7 +245,7 @@ combinations that may be found in a <B>MIFF</B> file:
 	</DT><DD>
 	the number of bytes in the IPTC Newsphoto profile. The profile is
 	defined by the <I>IPTC</I><EM> <I>specification</I></EM>.</DD><DT>
-	<B>profile-<I>name</I></B>=<I>value</I></DT><DD STYLE="font-variant: normal; font-style: normal">
+	<B>profile-<I>name</I></B>=<I>value</I></DT><DD STYLE="font-style: normal">
 	the number of bytes in the generic profile <I>name</I> where <I>name</I>
 	identifies the profile. <I>Name</I> is substituted with any LATIN-1
 	string to form a unique generic profile identifier.</DD><DT>
@@ -659,8 +659,7 @@ GraphicsMagick without prior written authorization from the
 GraphicsMagick Studio. 
 </P>
 <HR>
-<P ALIGN=CENTER><A HREF="Copyright.html"><FONT SIZE=3>Copyright</FONT></A><FONT SIZE=3>
-<FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
-GraphicsMagick Group 2002, 2003, 2004</FONT></P>
+<P ALIGN=CENTER><A HREF="Copyright.html">Copyright</A> <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
+GraphicsMagick Group 2002, 2003, 2004</P>
 </BODY>
 </HTML>

@@ -72,6 +72,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/profile.h"
 #include "magick/utility.h"
 #include "magick/version.h"
 
@@ -1180,9 +1181,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DPXTVInfo
     dpx_tv_info;
 
-  DPXUserDefinedData
-    dpx_user_data;
-
   Image
     *image;
 
@@ -1404,15 +1402,39 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       R32ToAttribute(image,"DPX:tv.white.level",dpx_tv_info.white_level);
       R32ToAttribute(image,"DPX:tv.integration.time",dpx_tv_info.integration_time);
     }
-  if ((pixels_offset >= 2080UL) && (dpx_file_info.user_defined_length > 0))
+  if ((pixels_offset >= 2080UL) &&
+      (dpx_file_info.user_defined_length >= sizeof(DPXUserDefinedData)))
     {
       /*
         Read user header.
       */
-      offset += ReadBlob(image,sizeof(dpx_user_data),&dpx_user_data);
-      if (offset != (size_t) 2080L)
-        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
-      StringToAttribute(image,"DPX:user.data.id",dpx_user_data.user_id);
+      unsigned char
+        *user_data;
+
+      size_t
+        user_data_length;
+
+      DPXUserDefinedData
+        *dpx_user_data;
+
+      user_data_length=dpx_file_info.user_defined_length;
+      user_data=MagickAllocateMemory(unsigned char *,user_data_length);
+      if (user_data == (unsigned char *) NULL)
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      offset += ReadBlob(image,user_data_length,user_data);
+      if (offset != (2048U+user_data_length))
+        {
+          MagickFreeMemory(user_data);
+          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+        }
+      dpx_user_data=(DPXUserDefinedData *) user_data;
+      StringToAttribute(image,"DPX:user.data.id",dpx_user_data->user_id);
+      if (!SetImageProfile(image,"DPXUSERDATA",user_data,user_data_length))
+        {
+          MagickFreeMemory(user_data);
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+        }
+      MagickFreeMemory(user_data);
     }
   /*
     Determine the maximum number of bits per sample, and samples per element.
@@ -2239,10 +2261,14 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   unsigned char
     *scanline;
 
+  const unsigned char
+    *user_data;
+
   unsigned int
     bits_per_sample=0,
     element,
     max_samples_per_element,
+    image_data_offset,
     number_of_elements,
     row_samples,
     samples_per_component,
@@ -2262,7 +2288,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 
   size_t
     offset=0,
-    row_octets;
+    row_octets,
+    user_data_length=0;
 
   EndianType
     endian_type;
@@ -2377,28 +2404,6 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     }
 
   row_samples=((magick_int64_t) image->columns*samples_per_component);
-
-#if 0
-  /* samples packed end-to-end, but padded to next word at end of each
-     row */
-  element_size=((row_samples*bits_per_sample+31)/32)*sizeof(magick_int32_t)*image->rows;
-  if ((packing_method == PackingMethodWordsFillLSB) ||
-      (packing_method == PackingMethodWordsFillMSB))
-    {
-      if (bits_per_sample == 10)
-        {
-          /* three 10-bit samples per 32-bit word, no extra padding at
-             end of row */
-          element_size=((row_samples*image->rows+2)/3)*sizeof(magick_int32_t);
-        }
-      else if (bits_per_sample == 12)
-        {
-          /* samples packed end-to-end, but padded to next word at end
-             of each row */
-          element_size=((row_samples*image->rows+1)/2)*sizeof(magick_int32_t);
-        }
-    }
-#endif
   row_octets=DPXRowOctets(row_samples,bits_per_sample,packing_method);
   element_size=row_octets*image->rows;
 
@@ -2417,6 +2422,11 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   else if (!IsRGBColorspace(image->colorspace) &&
            (image->colorspace != CineonLogRGBColorspace))
     (void) TransformColorspace(image,RGBColorspace);
+
+  /*
+    Obtain pointer to user data and user data length (if available).
+  */
+  user_data=GetImageProfile(image,"DPXUSERDATA",&user_data_length);
 
   /*
     Image information header
@@ -2482,6 +2492,14 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         MaxValueGivenBits(bits_per_sample);
     }
 
+  /*
+    Compute image data offset.  Should be rounded up to next 8K block.
+  */
+  image_data_offset=2048;
+  if (user_data)
+    image_data_offset += user_data_length;
+  image_data_offset=(((image_data_offset+8091)/8092)*8092);
+
   /* Matte channel */
   dpx_image_info.element_info[0].descriptor=image->matte ?
     ImageElementRGBA : ImageElementRGB;
@@ -2494,7 +2512,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /* Encoding.  Unencoded or run length encoded */
   dpx_image_info.element_info[0].encoding=0; /* No encoding */
   /* Offset to element data from beginning of file. */
-  dpx_image_info.element_info[0].data_offset=0x2000;
+  dpx_image_info.element_info[0].data_offset=image_data_offset;
   /* Number of padded bytes at the end of each line */
   dpx_image_info.element_info[0].eol_pad=0;
   /* Number of padded bytes at the end of image element. */
@@ -2571,7 +2589,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   dpx_file_info.generic_section_length=sizeof(dpx_file_info)+
     sizeof(dpx_image_info)+sizeof(dpx_source_info);
   dpx_file_info.industry_section_length=sizeof(dpx_mp_info)+sizeof(dpx_tv_info);
-  dpx_file_info.user_defined_length=0;
+  dpx_file_info.user_defined_length=(user_data ? user_data_length : 0);
   strlcpy(dpx_file_info.image_filename,image->filename,
           sizeof(dpx_file_info.image_filename));
   GenerateDPXTimeStamp(dpx_file_info.creation_datetime,
@@ -2692,6 +2710,10 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   offset += WriteBlob(image,sizeof(dpx_source_info),&dpx_source_info);
   offset += WriteBlob(image,sizeof(dpx_mp_info),&dpx_mp_info);
   offset += WriteBlob(image,sizeof(dpx_tv_info),&dpx_tv_info);
+  if (user_data)
+    {
+      offset += WriteBlob(image,(size_t) user_data_length,user_data);
+    }
   if (swab)
     {
       /*

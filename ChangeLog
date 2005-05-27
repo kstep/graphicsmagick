@@ -1,3 +1,8 @@
+2005-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c: Retrieve and restore the DPX user defined data
+	area.  Make available as a "DPXUSERDATA" attached profile.
+
 2005-05-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/meta.c (ReadMETAImage): Fixed reading ICM color profile
