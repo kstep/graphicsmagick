@@ -960,6 +960,16 @@ The following definitions may be created:
 .in 15
 
 .in 15
+.B "cineon:colorspace={rgb|cineonlog}"
+.in 20
+ \fR
+.in 20
+Use the cineon:colorspace option when reading a Cineon file to
+specify the colorspace the Cineon file uses. This overrides the colorspace
+type implied by the DPX header (if any).
+
+.in 15
+.in 15
 .B "dpx:bits-per-sample=<value>"
 .in 20
  \fR
@@ -974,11 +984,11 @@ below).
 
 .in 15
 .in 15
-.B "dpx:source-colorspace={rgb|cineonlog}"
+.B "dpx:colorspace={rgb|cineonlog}"
 .in 20
  \fR
 .in 20
-Use the dpx:source-colorspace option when reading a DPX file to
+Use the dpx:colorspace option when reading a DPX file to
 specify the colorspace the DPX file uses. This overrides the colorspace
 type implied by the DPX header (if any).
 

@@ -941,6 +941,12 @@ that name. This is used to control on/off options. Use <tt>+define
 The following definitions may be created:</pp>
 
 <dl>
+<dt>cineon:colorspace={rgb|cineonlog}</dt>
+<dd>Use the cineon:colorspace option when reading a Cineon file to
+specify the colorspace the Cineon file uses. This overrides the colorspace
+type implied by the DPX header (if any).
+</dd>
+
 <dt>dpx:bits-per-sample=<value></dt>
 <dd>If the dpx:bits-per-sample key is defined, GraphicsMagick will write
 DPX images with the specified bits per sample, overriding any existing
@@ -951,8 +957,8 @@ DPX readers demand a sample size of 10 bits with type A padding (see
 below).
 </dd>
 
-<dt>dpx:source-colorspace={rgb|cineonlog}</dt>
-<dd>Use the dpx:source-colorspace option when reading a DPX file to
+<dt>dpx:colorspace={rgb|cineonlog}</dt>
+<dd>Use the dpx:colorspace option when reading a DPX file to
 specify the colorspace the DPX file uses. This overrides the colorspace
 type implied by the DPX header (if any).
 </dd>

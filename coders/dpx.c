@@ -95,10 +95,10 @@ typedef unsigned int sample_t;
 #define SET_UNDEFINED_R32(value) (*((U32 *) &value)=~0)
 #define SET_UNDEFINED_ASCII(value) (memset(value,0,sizeof(value)))
 
-#define IS_UNDEFINED_U8(value) (value == ((magick_uint8_t) ~0))
-#define IS_UNDEFINED_U16(value) (value == ((magick_uint16_t) ~0))
-#define IS_UNDEFINED_U32(value) (value == ((magick_uint32_t) ~0))
-#define IS_UNDEFINED_R32(value) (*((U32 *) &value) == ((magick_uint32_t) ~0))
+#define IS_UNDEFINED_U8(value) (value == ((U8) ~0))
+#define IS_UNDEFINED_U16(value) (value == ((U16) ~0))
+#define IS_UNDEFINED_U32(value) (value == ((U32) ~0))
+#define IS_UNDEFINED_R32(value) (*((U32 *) &value) == ((U32) ~0))
 #define IS_UNDEFINED_ASCII(value) (!(value[0] > 0))
 
 typedef enum
@@ -1472,7 +1472,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   samples=MagickAllocateMemory(sample_t *,max_samples_per_element*
                                image->columns*sizeof(sample_t));
-
   if (samples == (sample_t *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
@@ -1735,7 +1734,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Support explicitly overriding the input file's colorspace.  Mostly
     useful for testing.
   */
-  if ((definition_value=AccessDefinition(image_info,"dpx","source-colorspace")))
+  if ((definition_value=AccessDefinition(image_info,"dpx","colorspace")))
     {
       ColorspaceType
         colorspace;

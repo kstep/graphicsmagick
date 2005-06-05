@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20050528;15555800">
+	<META NAME="CHANGED" CONTENT="20050529;10084700">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<STYLE>
@@ -31,71 +31,75 @@
 		</TD>
 	</TR>
 </TABLE>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Recently,
-features have been added to <SPAN LANG="en-US">GraphicsMagick</SPAN>
-to make it more suitable for processing images used by the motion
-picture (film and high-definition) industry. In particular,
-industrial strength support for <A HREF="http://www.smpte.org/" TARGET="_top">SMPTE</A>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Recently,
+features have been added to GraphicsMagick to make it more suitable
+for processing images used by the motion picture (film and
+high-definition) industry. In particular, industrial strength support
+for </FONT><A HREF="http://www.smpte.org/" TARGET="_top"><FONT SIZE=2>SMPTE</FONT></A><FONT SIZE=2>
 DPX Version 2.0 (SMPTE 268M-2003) has been added for GraphicsMagick
 1.2. A new Cineon Log colorspace has been added to support images
 which use a logarithmic density encoding (with range of 0 to 2.048)
-according to Kodak specifications for Cineon Log.</FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">The modern
-motion picture industry usually shoots on film and then uses a
+according to Kodak specifications for Cineon Log.</FONT></FONT></P>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>The
+modern motion picture industry usually shoots on film and then uses a
 machine known as a &ldquo;datacine&rdquo; or a &ldquo;scanner&rdquo;
 to convert each film image into an individual image file. An
 alternative to this is to use a high definition CCD camera such as
-the <A HREF="http://www.grassvalley.com/products/cameras/viper/" TARGET="_top">Thompson
-Viper</A> to capture images to uncompressed files directly. A rather
-inferior approach is to use a video high definition compressed format
-like HDCAM and convert each frame to a file for processing. Images
-scanned from film are usually in either a log colorspace similar to
-Cineon Log (10 bits per sample is most common), or in a linear format
-(16 bits per sample is common). Some images (such as from the
-Thompson Viper) are log encoded using the full range for normal
-content rather than part of the range as is done for Cineon Log.
-While there is some continued use of the legacy Kodak Cineon format
-due to existing equipment and software, the standard image file
-format for motion picture frames is SMPTE DPX (SMPTE 268M-2003). This
-format is similar to the Kodak Cineon format, but has the advantage
-that it is an industry standard rather than a vendor standard. DPX
-files are practically always uncompressed. The design of DPX places
-header content at fixed offsets, and the image raster data offsets
-may be computed, so DPX files may be read or updated without
-rewriting the entire file.</FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Film images are
-usually captured at &ldquo;2K&rdquo; resolution, &ldquo;4K&rdquo;
+the </FONT><A HREF="http://www.grassvalley.com/products/cameras/viper/" TARGET="_top"><FONT SIZE=2>Grass
+Valley Viper</FONT></A><FONT SIZE=2> or the </FONT><A HREF="http://www.dalsa.com/dc/origin/origin.asp" TARGET="_top"><FONT SIZE=2>DALSA
+Origin</FONT></A><FONT SIZE=2> to capture images to uncompressed
+files directly. A rather inferior approach is to use a video high
+definition compressed format like HDCAM and convert each frame to a
+file for processing. Images scanned from film are usually in either a
+log colorspace similar to Cineon Log (10 bits per sample is most
+common), or in a linear format (16 bits per sample is common). Some
+images (such as from the Thompson Viper) are log encoded using the
+full range for normal content rather than part of the range as is
+done for Cineon Log. While there is some continued use of the legacy
+Kodak Cineon format due to existing equipment and software, the
+standard image file format for motion picture frames is SMPTE DPX
+(SMPTE 268M-2003). This format is similar to the Kodak Cineon format,
+but has the advantage that it is an industry standard rather than a
+vendor standard. DPX files are practically always uncompressed. The
+design of DPX places header content at fixed offsets, and the image
+raster data offsets may be computed, so DPX files may be read or
+updated without rewriting the entire file.</FONT></FONT></P>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Film
+images are usually captured at &ldquo;2K&rdquo; resolution, &ldquo;4K&rdquo;
 resolution, or even &ldquo;6K&rdquo; resolution, where the actual
 resolution values approximate the horizontal dimension of the image.
-A table of <A HREF="http://www.surrealroad.com/digital/index.php/archives/2005/standard-data-resolutions/" TARGET="_top">typical
-pixel resolutions for various film sizes</A> may be found on the
-<A HREF="http://www.digitalintermediates.org/" TARGET="_top">Digital
-Intermediates</A> site. File sizes may be quite large and range in
-size from 8MB to as much as 180MB. The common 10-bit &ldquo;2K&rdquo;
-format consumes 12MB of disk. A typical movie has an average of 144K
-frames (at 24 frames per second) so just one movie consumes <SPAN LANG="en-US">terabytes</SPAN>
-of storage. Businesses which specialize in handling digital
-intermediates often have several hundred <SPAN LANG="en-US">terabytes</SPAN>
-of on-line storage available. While &ldquo;2K&rdquo; has been the
-standard working resolution due to storage requirements and
-processing time, recently there is a trend to scanning at &ldquo;4K&rdquo;
-resolution since most experts say that this is the resolution
-necessary to capture the full resolution of a 35mm frame (but some
-claim more!). Some shops scan at &ldquo;4K&rdquo; but then reduce the
-image to &ldquo;2K&rdquo; as the working format so that the full
-resolution is available for later use, but the processing of the
-feature may be done on a normal &ldquo;2K&rdquo; schedule. IMAX
-(large format) film is normally scanned at &ldquo;6K&rdquo;
-resolution.</FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>The
+A table of </FONT><A HREF="http://www.surrealroad.com/digital/index.php/archives/2005/standard-data-resolutions/" TARGET="_top"><FONT SIZE=2>typical
+pixel resolutions for various film sizes</FONT></A><FONT SIZE=2> may
+be found on the </FONT><A HREF="http://www.digitalintermediates.org/" TARGET="_top"><FONT SIZE=2>Digital
+Intermediates</FONT></A><FONT SIZE=2> site. File sizes may be quite
+large and range in size from 8MB to as much as 180MB. The common
+10-bit &ldquo;2K&rdquo; format consumes 12MB of disk. A typical movie
+has an average of 144K frames (at 24 frames per second) so just one
+movie consumes terabytes of storage. Businesses which specialize in
+handling digital intermediates may have available on-line storage
+ranging from several tens of terabytes to several hundred terabytes.
+While &ldquo;2K&rdquo; has been the standard working resolution due
+to storage requirements and processing time, recently there is a
+trend to scanning at &ldquo;4K&rdquo; resolution since most experts
+say that this is the resolution necessary to capture the full
+resolution of a 35mm frame (but some claim more!). Some shops scan at
+&ldquo;4K&rdquo; but then reduce the image to &ldquo;2K&rdquo; as the
+working format so that the full resolution is available for later
+use, but the processing of the feature may be done on a normal &ldquo;2K&rdquo;
+schedule. An alternative is to do the work at &ldquo;2K&rdquo; but
+record a record of all the changes so that the changes may be
+re-played to obtain similar results at &ldquo;4K&rdquo;. IMAX (large
+format) film is normally scanned at &ldquo;8K&rdquo; resolution but
+the film media itself can support even more resolution.</FONT></FONT></P>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>The
 end result of the effort of encoding motion picture images to digital
 image files is to have a digital master which does not degrade over
 time and which has captured the maximum available information from
 the original film print. This digital master may be targeted toward
-producing film prints for showing in a theater, used to create <SPAN LANG="en-US">DVDs</SPAN>,
+producing film prints for showing in a theater, used to create DVDs,
 used as a master for &ldquo;digital cinema&rdquo; for viewing in
 suitably equipped theaters, or used to support television broadcasts.</FONT></FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Processing
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Processing
 film images is a specialty business. Many business exist which offer
 specialized software and hardware to process film images. Common
 tasks are &ldquo;color grading&rdquo; (adjusting color for a correct
@@ -106,86 +110,90 @@ GraphicsMagick lacks the high-quality graphical user interface
 necessary for a colorist or artist to interact with a sequence of
 images. GraphicsMagick lacks the experienced and dedicated team
 necessary to assure the desired results with particular media.</FONT></FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>The
-strength of GraphicsMagick <SPAN LANG="en-US">Vs</SPAN> specialized
-proprietary software are its cost (absolutely free!), open source
-availability (user is able to fix software flaws or tailor software
-to meet specific needs), general purpose image processing
-capabilities, deep image capabilities (up to 32-bits per sample),
-excellent performance, platform independence, lack of encumbering
-usage licenses, and robust implementation. Examples of areas where
-GraphicsMagick may be used are:</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Scaling
-(for example, &ldquo;4K&rdquo; to &ldquo;2K&rdquo; or 1920x1080 HD
-with excellent quality)<BR>Cropping<BR>Rotation<BR>Filtering<BR>ICC
-ICM profile-based color management and tran</FONT>sformations<BR>Gamma
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>The
+strength of GraphicsMagick versus specialized proprietary software
+are its cost (absolutely free!), open source availability (user is
+able to fix software flaws or tailor software to meet specific
+needs), general purpose image processing capabilities, deep image
+capabilities (up to 32-bits per sample), excellent performance,
+platform independence, lack of encumbering usage licenses, and robust
+implementation. Examples of areas where GraphicsMagick may be used
+are:</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT SIZE=2><FONT FACE="Verdana, Arial, Helvetica, sans-seri">View
+the image on a display.<BR>Scaling (for example, &ldquo;4K&rdquo; to
+&ldquo;2K&rdquo; or 1920x1080 HD with excellent
+quality)<BR>Cropping<BR>Rotation<BR>Filtering<BR>ICC ICM
+profile-based color management and tran</FONT>sformations<BR>Gamma
 adjustment<BR>Color adjustment<BR>Conversion to grayscale<BR>Text
 annotations<BR>Compositions<BR>Drawing on images (for example drawing
 markers on image)<BR>Conversion to and from other formats (e.g. TIFF,
-JPEG, SGI, Postscript, PNG, and PNM)</P>
-<P>GraphicsMagick performs well as compared with other software.
-Since it is free and portable, it may be installed on any available
-system with no license fees. For example, if a business has a
-computing cluster of several hundred Linux, SGI IRIX, or Mac OS X
+JPEG, SGI, Postscript, PNG, and PNM)</FONT></P>
+<P><FONT SIZE=2>GraphicsMagick performs well as compared with other
+software. Since it is free and portable, it may be installed on any
+available system with no license fees. For example, if a business has
+a computing cluster of several hundred Linux, SGI IRIX, or Mac OS X
 systems, then GraphicsMagick be installed across all systems and used
-for any desired purpose.</P>
-<P><SPAN LANG="en-US">GraphicsMagick's</SPAN> DPX file format support
-is rather comprehensive. In many ways, it goes beyond the DPX format
-support in other applications by striving to implement the complete
-DPX specification rather than just a few commonly used sub-formats.
-The capabilities of GraphicsMagick's DPX support are as follows:</P>
-<P><B>Supported DPX features:</B></P>
+for any desired purpose.</FONT></P>
+<P><FONT SIZE=2>GraphicsMagick's DPX file format support is rather
+comprehensive. In many ways, it goes beyond the DPX format support in
+other applications by striving to implement the complete DPX
+specification rather than just a few commonly used sub-formats. The
+capabilities of GraphicsMagick's DPX support are as follows:</FONT></P>
+<P><FONT SIZE=2><B>Supported DPX features:</B></FONT></P>
 <UL>
-	<LI><P>Anything which can be read, can also be written.</P>
-	<LI><P>All DPX header information (including the user specific area)
-	are stored as image attributes and restored when the image is
-	written.</P>
-	<LI><P>Image source header information is updated appropriately.</P>
+	<LI><P><FONT SIZE=2>Anything which can be read, can also be written.</FONT></P>
+	<LI><P><FONT SIZE=2>All DPX header information (including the user
+	specific area) are stored as image attributes and restored when the
+	image is written.</FONT></P>
+	<LI><P><FONT SIZE=2>Image source header information is updated
+	appropriately.</FONT></P>
 </UL>
-<P><B><SPAN LANG="en-US">Colorspaces</SPAN></B>:</P>
+<P><FONT SIZE=2><B>Colorspaces</B>:</FONT></P>
 <UL>
-	<LI><P>Linear RGB</P>
-	<LI><P>Cineon Log RGB (density range = 2.048)</P>
-	<LI><P>Grayscale (<SPAN LANG="en-US">Luma</SPAN>)</P>
+	<LI><P><FONT SIZE=2>Linear RGB</FONT></P>
+	<LI><P><FONT SIZE=2>Cineon Log RGB (density range = 2.048)</FONT></P>
+	<LI><P><FONT SIZE=2>Grayscale (Luma)</FONT></P>
 </UL>
-<P><B>Storage</B>:</P>
+<P><FONT SIZE=2><B>Storage</B>:</FONT></P>
 <UL>
-	<LI><P>Bits per sample of 1, 8, 10, 12, and 16.</P>
-	<LI><P>Packed, or fill type A or B for 10/12 bits.</P>
-	<LI><P>All RGB-oriented element types (R, G, B, A, RGB, RGBA, ABGR).</P>
-	<LI><P>Planar (multi-element) storage fully supported.</P>
-	<LI><P>Alpha may be stored in a separate element.</P>
-	<LI><P>Big and little <SPAN LANG="en-US">endian</SPAN> storage.</P>
+	<LI><P><FONT SIZE=2>Bits per sample of 1, 8, 10, 12, and 16.</FONT></P>
+	<LI><P><FONT SIZE=2>Packed, or fill type A or B for 10/12 bits.</FONT></P>
+	<LI><P><FONT SIZE=2>All RGB-oriented element types (R, G, B, A, RGB,
+	RGBA, ABGR).</FONT></P>
+	<LI><P><FONT SIZE=2>Planar (multi-element) storage fully supported.</FONT></P>
+	<LI><P><FONT SIZE=2>Alpha may be stored in a separate element.</FONT></P>
+	<LI><P><FONT SIZE=2>Big and little endian storage.</FONT></P>
 </UL>
-<P><B>Yet to be supported:</B></P>
+<P><FONT SIZE=2><B>Yet to be supported:</B></FONT></P>
 <UL>
-	<LI><P>Video <SPAN LANG="en-US">colorspaces</SPAN> like <SPAN LANG="en-US">CbYcr</SPAN>
-	and <SPAN LANG="en-US">CbCR</SPAN> and composite video.</P>
-	<LI><P>Floating point formats (32 and 64 bits)</P>
-	<LI><P>Depth channel (not supportable within GraphicsMagick).</P>
+	<LI><P><FONT SIZE=2>Video colorspaces like CbYcr and CbCR and
+	composite video.</FONT></P>
+	<LI><P><FONT SIZE=2>Floating point formats (32 and 64 bits)</FONT></P>
+	<LI><P><FONT SIZE=2>Depth channel (not supportable within
+	GraphicsMagick).</FONT></P>
 </UL>
-<P>The software is written efficiently so the performance when
-reading and writing files is limited by the performance of the file
-I/O subsystem. The software is designed to avoid seeking while
-reading and writing so that files may be read and written over pipes,
-or via a user provided file descriptor.</P>
-<H2>GraphicsMagick In Use</H2>
-<P>GraphicsMagick is easy to use. The following is an example of
-scaling a &ldquo;4K&rdquo; 16 bit scan to a &ldquo;2K&rdquo;
-<SPAN LANG="en-US">&ldquo;Academy&rdquo;</SPAN> 10 bit image:</P>
-<PRE STYLE="margin-bottom: 0.2in">   gm convert 4k.dpx -resize 1828x1556 -depth 10 2k.dpx</PRE><P>
-The above example uses the default resizing filters which are
-optimized for quality, but take longer than some other filers. The
-&ldquo;box&rdquo; resize filter provides reasonably good scaling in a
-reasonable amount of time:</P>
-<PRE STYLE="margin-bottom: 0.2in">   gm convert 4k.dpx -filter box -resize 1828x1556 -depth 10 2k.dpx</PRE><P>
-The above example command takes about 5 seconds (on an Apple 2.5GHz
-G5 PowerMac or Intel 2.4GHz <SPAN LANG="en-US">Xeon</SPAN>) to
-down-convert from a 131MB &ldquo;5K&rdquo; (5232x4376) original
-16-bit scan from a <A HREF="http://www.filmlight.ltd.uk/northlight.html" TARGET="_top"><SPAN LANG="en-US">NorthLight</SPAN>
-scanner</A> to a 11MB &ldquo;2K&rdquo; 10-bit working image.
-Operations on more typical &ldquo;2K&rdquo; images take on the order
-of half a second.</P>
+<P><FONT SIZE=2>The software is written efficiently so the
+performance when reading and writing files is limited by the
+performance of the file I/O subsystem. The software is designed to
+avoid seeking while reading and writing so that files may be read and
+written over pipes, or via a user provided file descriptor.</FONT></P>
+<H2><FONT SIZE=2>GraphicsMagick In Use</FONT></H2>
+<P><FONT SIZE=2>GraphicsMagick is easy to use. The following is an
+example of scaling a &ldquo;4K&rdquo; 16 bit scan to a &ldquo;2K&rdquo;
+&ldquo;Academy&rdquo; 10 bit image:</FONT></P>
+<PRE STYLE="margin-bottom: 0.2in">   <FONT SIZE=2>gm convert 4k.dpx -resize 1828x1556 -depth 10 2k.dpx</FONT></PRE><P>
+<FONT SIZE=2>The above example uses the default resizing filters
+which are optimized for quality, but take longer than some other
+filters. The &ldquo;box&rdquo; resize filter provides reasonably good
+scaling in a reasonable amount of time:</FONT></P>
+<PRE STYLE="margin-bottom: 0.2in">   <FONT SIZE=2>gm convert 4k.dpx -filter box -resize 1828x1556 -depth 10 2k.dpx</FONT></PRE><P>
+<FONT SIZE=2>The above example command takes about 5 seconds (on an
+Apple 2.5GHz G5 PowerMac or Intel 2.4GHz Xeon) to down-convert from a
+131MB &ldquo;5K&rdquo; (5232x4376) original 16-bit scan from a
+</FONT><A HREF="http://www.filmlight.ltd.uk/northlight.html" TARGET="_top"><FONT SIZE=2>NorthLight
+scanner</FONT></A><FONT SIZE=2> to a 11MB &ldquo;2K&rdquo; 10-bit
+working image. Operations on more typical &ldquo;2K&rdquo; images
+take on the order of half a second.</FONT></P>
 <HR>
 <P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
 <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>

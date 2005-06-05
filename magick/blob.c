@@ -791,8 +791,21 @@ MagickExport void CloseBlob(Image *image)
       break;
     }
     case FifoStream:
+      {
+        break;
+      }
     case BlobStream:
-      break;
+      {
+        if (image->blob->file != (FILE *) NULL)
+          {
+            /*
+              Truncate memory-mapped output file to size.
+            */
+            ftruncate(fileno(image->blob->file),image->blob->length);
+            status=fclose(image->blob->file);
+          }
+        break;
+      }
   }
   DetachBlob(image->blob);
   image->blob->status=status < 0;
@@ -2061,8 +2074,10 @@ MagickExport void *MapBlob(int file,const MapMode mode,magick_off_t offset,
     }
     case WriteMode:
     {
-      map=(void *) mmap((char *) NULL,length,PROT_WRITE,MAP_SHARED,file,
-        (off_t)offset);
+      map=(void *) mmap((char *) NULL,length,PROT_WRITE,MAP_SHARED,file,(off_t)offset);
+#if defined(MADV_SEQUENTIAL)
+          (void) madvise(map,length,MADV_SEQUENTIAL);
+#endif /* defined(MADV_SEQUENTIAL) */
       break;
     }
     case IOMode:
@@ -2075,12 +2090,13 @@ MagickExport void *MapBlob(int file,const MapMode mode,magick_off_t offset,
   if (map == (void *) MAP_FAILED)
     {
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-        "Failed to mmap FD %d using %s mode at offset %lu and length %lu.",
-           file,BlobMapModeToString(mode),(unsigned long)offset,(unsigned long)length);
+        "Failed to mmap fd %d using %s mode at offset %lu and length %lu (%d=\"%s\").",
+           file,BlobMapModeToString(mode),(unsigned long)offset,(unsigned long)length,
+             errno,strerror(errno));
       return((void *) NULL);
     }
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-    "Mmapped FD %d using %s mode at offset %lu and length %lu to address 0x%p",
+    "Mmapped fd %d using %s mode at offset %lu and length %lu to address 0x%p",
     file,BlobMapModeToString(mode),(unsigned long)offset,(unsigned long)length,
     map);
   return((void *) map);
@@ -2304,7 +2320,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
     case ReadBlobMode: type=(char *) "r"; break;
     case ReadBinaryBlobMode: type=(char *) "rb"; break;
     case WriteBlobMode: type=(char *) "w"; break;
-    case WriteBinaryBlobMode: type=(char *) "wb"; break;
+    case WriteBinaryBlobMode: type=(char *) "w+b"; break;
     case IOBinaryBlobMode: type=(char *) "w+b"; break;
   }
   if (image_info->stream != (StreamHandler) NULL)
@@ -2491,45 +2507,68 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 #endif
                 }
             }
-        if ((image->blob->type == FileStream) && (*type == 'r'))
+        if (image->blob->type == FileStream)
           {
-            const MagickInfo
-              *magick_info;
+            if (*type == 'r')
+              {
+                const MagickInfo
+                  *magick_info;
+                
+                struct stat
+                  attributes;
 
-            struct stat
-              attributes;
-
-            magick_info=GetMagickInfo(image_info->magick,&image->exception);
-            if ((magick_info != (const MagickInfo *) NULL) &&
-                magick_info->blob_support)
-              if ((fstat(fileno(image->blob->file),&attributes) >= 0) &&
-                  (attributes.st_size > MinBlobExtent) &&
-                  (attributes.st_size == (off_t) ((size_t) attributes.st_size)))
-                {
-                  size_t
-                    length;
-
-                  void
-                    *blob;
-
-                  length=(size_t) attributes.st_size;
-                  blob=MapBlob(fileno(image->blob->file),ReadMode,0,length);
-                  if (blob != (void *) NULL)
+                magick_info=GetMagickInfo(image_info->magick,&image->exception);
+                if ((magick_info != (const MagickInfo *) NULL) &&
+                    magick_info->blob_support)
+                  if ((fstat(fileno(image->blob->file),&attributes) >= 0) &&
+                      (attributes.st_size > MinBlobExtent) &&
+                      (attributes.st_size == (off_t) ((size_t) attributes.st_size)))
                     {
-                      /*
-                        Format supports blobs-- use memory-mapped I/O.
-                      */
-                      if (image_info->file != (FILE *) NULL)
-                        image->blob->exempt=False;
-                      else
+                      size_t
+                        length;
+                      
+                      void
+                        *blob;
+                      
+                      length=(size_t) attributes.st_size;
+                      blob=MapBlob(fileno(image->blob->file),ReadMode,0,length);
+                      if (blob != (void *) NULL)
                         {
-                          (void) fclose(image->blob->file);
-                          image->blob->file=(FILE *) NULL;
+                          /*
+                            Format supports blobs-- use memory-mapped I/O.
+                          */
+                          if (image_info->file != (FILE *) NULL)
+                            image->blob->exempt=False;
+                          else
+                            {
+                              (void) fclose(image->blob->file);
+                              image->blob->file=(FILE *) NULL;
+                            }
+                          AttachBlob(image->blob,blob,length);
+                          image->blob->mapped=True;
                         }
-                      AttachBlob(image->blob,blob,length);
-                      image->blob->mapped=True;
                     }
               }
+#if 0
+            else if (*type == 'w')
+              {
+                size_t
+                  length;
+
+                void
+                  *blob;
+
+                length=8192;
+                blob=MapBlob(fileno(image->blob->file),WriteMode,0,length);
+                if (blob != (void *) NULL)
+                  {
+                    image->blob->type=BlobStream;
+                    image->blob->quantum=DefaultBlobQuantum;
+                    image->blob->data=blob;
+                    image->blob->mapped=True;
+                  }
+              }
+#endif
           }
       }
   image->blob->status=False;

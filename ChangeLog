@@ -1,3 +1,22 @@
+2005-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/miff.c (ReadMIFFImage): Use StringToColorspaceType() to
+	parse colorspaces.
+	* coders/dpx.c (ReadDPXImage): Change existing
+	dpx:source-colorspace define to dpx:colorspace so it is easier to
+	remember.
+	* coders/cineon.c (ReadCINEONImage): Extract Cineon header
+	attributes in DPX compatible form so that it is possible to
+	convert Cineon to DPX while losing as little header information as
+	possible.  Allow the user to set the existing image colorspace
+	using the cineon:colorspace define.
+
+2005-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (ReadJPEGImage): Report actual depth of JPEG file
+	(8 or 12 bits).
+	* coders/cineon.c (ReadCINEONImage): Report depth as 10 bits.
+
 2005-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c: Retrieve and restore the DPX user defined data

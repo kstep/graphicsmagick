@@ -1223,6 +1223,11 @@ that name. This is used to control on/off options. Use <tt>+define
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The following definitions may be created:</font></td></tr></table>
 <dl>
+<dt>cineon:colorspace={rgb|cineonlog}</dt>
+<dd>Use the cineon:colorspace option when reading a Cineon file to
+specify the colorspace the Cineon file uses. This overrides the colorspace
+type implied by the DPX header (if any).
+</dd>
 <dt>dpx:bits-per-sample=&lt;value&gt;</dt>
 <dd>If the dpx:bits-per-sample key is defined, GraphicsMagick will write
 DPX images with the specified bits per sample, overriding any existing
@@ -1232,8 +1237,8 @@ standard supports bits per sample values of 1, 8, 10, 12, and 16. Many
 DPX readers demand a sample size of 10 bits with type A padding (see
 below).
 </dd>
-<dt>dpx:source-colorspace={rgb|cineonlog}</dt>
-<dd>Use the dpx:source-colorspace option when reading a DPX file to
+<dt>dpx:colorspace={rgb|cineonlog}</dt>
+<dd>Use the dpx:colorspace option when reading a DPX file to
 specify the colorspace the DPX file uses. This overrides the colorspace
 type implied by the DPX header (if any).
 </dd>

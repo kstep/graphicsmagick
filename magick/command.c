@@ -9693,12 +9693,113 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   LiberateArgumentList(argc,argv); \
   return(False); \
 }
+typedef struct _TransmogrifyOptions
+{
+  ImageInfo *image_info;
+  char *input_filename;
+  int argc;
+  char **argv;
+  char *output_format;
+  MagickBool global_colormap;
+  MagickPassFail status;
+  ExceptionInfo exception;
+} TransmogrifyOptions;
+static MagickPassFail* TransmogrifyImage(TransmogrifyOptions *options)
+{
+  char
+    output_filename[MaxTextExtent];
+
+  Image
+    *image;
+
+  ImageInfo
+    *image_info;
+
+  MagickPassFail
+    status = MagickPass;
+
+  assert(options != (TransmogrifyOptions *) NULL);
+  assert(options->input_filename != (char *) NULL);
+
+  image_info=CloneImageInfo(options->image_info);
+  (void) strlcpy(image_info->filename,options->input_filename,MaxTextExtent);
+  image=ReadImage(image_info,&options->exception);
+  status &= (image != (Image *) NULL) &&
+    (options->exception.severity < ErrorException);
+  if (image != (Image *) NULL)
+    {
+      if (options->output_format != (char *) NULL)
+        {
+          register char
+            *p;
+
+          /*
+            Modify filename to include a user specified image format.
+          */
+          p=image->filename+strlen(image->filename)-1;
+          while ((*p != '.') && (p > (image->filename+1)))
+            p--;
+          p++;
+          if (LocaleCompare(p,image->magick) == 0)
+            (void) strncpy(p,options->output_format,MaxTextExtent-(p-image->filename)-1);
+          else
+            {
+              FormatString(image_info->filename,"%.1024s:%.1024s",options->output_format,
+                           image->filename);
+              (void) strlcpy(image->filename,image_info->filename,
+                             MaxTextExtent);
+            }
+        }
+      /*
+        Transmogrify image as defined by the preceding image
+        processing options.
+      */
+      status &= MogrifyImages(image_info,options->argc,options->argv,&image);
+      if (options->global_colormap)
+        (void) MapImages(image,(Image *) NULL,image_info->dither);
+      /*
+        Write transmogrified image to disk.
+      */
+      if (options->output_format != (char *) NULL)
+        AppendImageFormat(options->output_format,image->filename);
+      else
+        if (LocaleCompare(image_info->filename,"-") != 0)
+          {
+            /*
+              Create a temporary file name in the same directory where
+              file is to be written.
+            */
+            (void) strlcpy(output_filename,image->filename,MaxTextExtent);
+            AppendImageFormat("tmp",image->filename);
+            if (IsAccessible(image->filename))
+              {
+                (void) strcat(image->filename,"~");
+                if (IsAccessible(image->filename))
+                  {
+                    ThrowException(&options->exception,FileOpenError,
+                                   UnableToCreateTemporaryFile,output_filename);
+                    status = MagickFail;
+                  }
+              }
+          }
+      if (status != MagickFail)
+        status &= WriteImages(image_info,image,image->filename,&options->exception);
+      if ((status != MagickFail) && (LocaleCompare(image_info->filename,"-") != 0))
+        {
+          (void) remove(output_filename);
+          (void) rename(image->filename,output_filename);
+        }
+      DestroyImage(image);
+    }
+  DestroyImageInfo(image_info);
+  options->status=status;
+  return (&options->status);
+}
 MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 
   char
-    filename[MaxTextExtent],
     *format,
     *option;
 
@@ -9759,68 +9860,25 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
     option=argv[i];
     if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
       {
+        TransmogrifyOptions
+            transmogrify_options;
         /*
           Option is a file name: begin by reading image from specified file.
         */
         k=i;
-        (void) strlcpy(image_info->filename,argv[i],MaxTextExtent);
-        image=ReadImage(image_info,exception);
-        status&=(image != (Image *) NULL) &&
-          (exception->severity < ErrorException);
-        if (image == (Image *) NULL)
-          continue;
-        if (format != (char *) NULL)
-          {
-            register char
-              *p;
 
-            /*
-              Modify filename to include a user specified image format.
-            */
-            p=image->filename+strlen(image->filename)-1;
-            while ((*p != '.') && (p > (image->filename+1)))
-              p--;
-            p++;
-            if (LocaleCompare(p,image->magick) == 0)
-              (void) strncpy(p,format,MaxTextExtent-(p-image->filename)-1);
-            else
-              {
-                FormatString(image_info->filename,"%.1024s:%.1024s",format,
-                  image->filename);
-                (void) strlcpy(image->filename,image_info->filename,
-                  MaxTextExtent);
-              }
-          }
-        /*
-          Transmogrify image as defined by the image processing options.
-        */
-        status&=MogrifyImages(image_info,i-j,argv+j,&image);
-        if (global_colormap)
-          (void) MapImages(image,(Image *) NULL,image_info->dither);
-        /*
-          Write transmogrified image to disk.
-        */
-        if (format != (char *) NULL)
-          AppendImageFormat(format,image->filename);
-        else
-          if (LocaleCompare(image_info->filename,"-") != 0)
-            {
-              (void) strlcpy(filename,image->filename,MaxTextExtent);
-              AppendImageFormat("tmp",image->filename);
-              if (IsAccessible(image->filename))
-                {
-                  (void) strcat(image->filename,"~");
-                  if (IsAccessible(image->filename))
-                    ThrowMogrifyException(FileOpenError,UnableToCreateTemporaryFile,filename);
-                }
-            }
-        status&=WriteImages(image_info,image,image->filename,&image->exception);
-        if ((status != False) && (LocaleCompare(image_info->filename,"-") != 0))
-          {
-            (void) remove(filename);
-            (void) rename(image->filename,filename);
-          }
-        DestroyImage(image);
+        transmogrify_options.image_info=image_info;
+        transmogrify_options.input_filename=argv[i];
+        transmogrify_options.argc=i-j;
+        transmogrify_options.argv=argv+j;
+        transmogrify_options.output_format=format;
+        transmogrify_options.global_colormap=global_colormap;
+        transmogrify_options.status=MagickPass;
+        GetExceptionInfo(&transmogrify_options.exception);
+        status &= *TransmogrifyImage(&transmogrify_options);
+        if (transmogrify_options.exception.severity > exception->severity)
+          CopyException(exception,&transmogrify_options.exception);
+        DestroyExceptionInfo(&transmogrify_options.exception);
         continue;
       }
     j=k+1;

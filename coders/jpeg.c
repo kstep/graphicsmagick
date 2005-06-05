@@ -977,7 +977,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "Sampling Factors: %s", s);
   
-  image->depth=jpeg_info.data_precision <= 8 ? 8 : 16;
+  image->depth=Min(jpeg_info.data_precision,QuantumDepth);
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
     if (!AllocateImageColormap(image,1 << image->depth))
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);

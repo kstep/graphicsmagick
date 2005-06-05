@@ -881,12 +881,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"colorspace") == 0)
                   {
-                    image->colorspace=UndefinedColorspace;
-                    if (LocaleCompare(values,"CMYK") == 0)
-                      image->colorspace=CMYKColorspace;
-                    else
-                      if (LocaleCompare(values,"RGB") == 0)
-                        image->colorspace=RGBColorspace;
+                    image->colorspace=(StringToColorspaceType(values));
                     break;
                   }
                 if (LocaleCompare(keyword,"compression") == 0)
