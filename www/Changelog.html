@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2005-06-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (SMPTEStringToBits): Time code and user bits were
+        being displayed in wrong order on little endian CPUs.  Thanks very
+        much for bug report from Jason Howard.
+        (SMPTEStringToBits): Similar fix for time code and user bits
+        string to binary.
+
+</UL>
+<p>
 2005-06-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
