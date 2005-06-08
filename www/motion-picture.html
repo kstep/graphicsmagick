@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20050529;10084700">
+	<META NAME="CHANGED" CONTENT="20050606;22085900">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<STYLE>
@@ -14,8 +14,10 @@
 		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		H2 { color: #000000 }
 		PRE { color: #000000 }
+		DD { color: #000000 }
+		H3 { color: #000000 }
+		DT { color: #000000 }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
@@ -35,62 +37,74 @@
 features have been added to GraphicsMagick to make it more suitable
 for processing images used by the motion picture (film and
 high-definition) industry. In particular, industrial strength support
-for </FONT><A HREF="http://www.smpte.org/" TARGET="_top"><FONT SIZE=2>SMPTE</FONT></A><FONT SIZE=2>
-DPX Version 2.0 (SMPTE 268M-2003) has been added for GraphicsMagick
-1.2. A new Cineon Log colorspace has been added to support images
-which use a logarithmic density encoding (with range of 0 to 2.048)
-according to Kodak specifications for Cineon Log.</FONT></FONT></P>
+for </FONT><A HREF="http://www.smpte.org/" TARGET="_top"><FONT SIZE=2>SMPTE</FONT></A>
+<FONT SIZE=2>DPX Version 2.0 (SMPTE 268M-2003) has been added for
+GraphicsMagick 1.2. A new Cineon Log colorspace has been added to
+support images which use a logarithmic density encoding (with range
+of 0 to 2.048) according to Kodak specifications for Cineon Log.
+Support for legacy Kodak 4.5 Cineon format has been improved.</FONT></FONT></P>
 <P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>The
 modern motion picture industry usually shoots on film and then uses a
-machine known as a &ldquo;datacine&rdquo; or a &ldquo;scanner&rdquo;
-to convert each film image into an individual image file. An
-alternative to this is to use a high definition CCD camera such as
-the </FONT><A HREF="http://www.grassvalley.com/products/cameras/viper/" TARGET="_top"><FONT SIZE=2>Grass
-Valley Viper</FONT></A><FONT SIZE=2> or the </FONT><A HREF="http://www.dalsa.com/dc/origin/origin.asp" TARGET="_top"><FONT SIZE=2>DALSA
-Origin</FONT></A><FONT SIZE=2> to capture images to uncompressed
+machine known as a &ldquo;datacine&rdquo; (e.g. <A HREF="http://www.grassvalley.com/products/film/spirit_4k/" TARGET="_top">Spirit
+4K DataCine</A> or <A HREF="http://www.cintel.co.uk/products/film-scanning.htm" TARGET="_top">Cintel
+DSX</A>) or a &ldquo;scanner&rdquo; (e.g. <A HREF="http://www.filmlight.ltd.uk/northlight.html" TARGET="_top">Northlight
+Scanner</A>) to convert each film image into an individual image
+file. An alternative to this is to use a high definition CCD camera
+such as the </FONT><A HREF="http://www.grassvalley.com/products/cameras/viper/" TARGET="_top"><FONT SIZE=2>Grass
+Valley Viper</FONT></A> <FONT SIZE=2>or the </FONT><A HREF="http://www.dalsa.com/dc/origin/origin.asp" TARGET="_top"><FONT SIZE=2>DALSA
+Origin</FONT></A> <FONT SIZE=2>to capture images to uncompressed
 files directly. A rather inferior approach is to use a video high
 definition compressed format like HDCAM and convert each frame to a
-file for processing. Images scanned from film are usually in either a
-log colorspace similar to Cineon Log (10 bits per sample is most
-common), or in a linear format (16 bits per sample is common). Some
-images (such as from the Thompson Viper) are log encoded using the
-full range for normal content rather than part of the range as is
-done for Cineon Log. While there is some continued use of the legacy
-Kodak Cineon format due to existing equipment and software, the
-standard image file format for motion picture frames is SMPTE DPX
-(SMPTE 268M-2003). This format is similar to the Kodak Cineon format,
-but has the advantage that it is an industry standard rather than a
-vendor standard. DPX files are practically always uncompressed. The
-design of DPX places header content at fixed offsets, and the image
-raster data offsets may be computed, so DPX files may be read or
-updated without rewriting the entire file.</FONT></FONT></P>
+file for processing.</FONT></FONT></P>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Images
+scanned from film are usually in either a log colorspace similar to
+Cineon Log (10 bits per sample is most common), or in a linear format
+(16 bits per sample is common). Some images (such as from the
+Thompson Viper) are log encoded using the full range for normal
+content rather than part of the range as is done for Cineon Log. Log
+encoding has the advantage that fewer bits are necessary to store the
+large dynamic range of film, and that the log encoding approximates
+the density characteristics of film (approximately linear when log
+encoded).</FONT></FONT></P>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>While
+there is some continued use of the legacy <A HREF="http://www.cinesite.com/?1632&amp;0&amp;" TARGET="_top">Kodak
+Cineon</A> format due to existing equipment and software, the
+standard image file format for motion picture frames is <A HREF="http://www.smpte.org/" TARGET="_top">SMPTE</A>
+DPX (SMPTE 268M-2003). This format is somewhat similar to the Kodak
+Cineon format, but has the advantage that it is an industry standard
+rather than a vendor standard. DPX files are practically always
+uncompressed. The design of DPX places header content at fixed
+offsets, and the image raster data offsets may be computed, so DPX
+files may be read or updated without rewriting the entire file.</FONT></FONT></P>
 <P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Film
 images are usually captured at &ldquo;2K&rdquo; resolution, &ldquo;4K&rdquo;
 resolution, or even &ldquo;6K&rdquo; resolution, where the actual
 resolution values approximate the horizontal dimension of the image.
 A table of </FONT><A HREF="http://www.surrealroad.com/digital/index.php/archives/2005/standard-data-resolutions/" TARGET="_top"><FONT SIZE=2>typical
-pixel resolutions for various film sizes</FONT></A><FONT SIZE=2> may
+pixel resolutions for various film sizes</FONT></A> <FONT SIZE=2>may
 be found on the </FONT><A HREF="http://www.digitalintermediates.org/" TARGET="_top"><FONT SIZE=2>Digital
-Intermediates</FONT></A><FONT SIZE=2> site. File sizes may be quite
+Intermediates</FONT></A> <FONT SIZE=2>site. File sizes may be quite
 large and range in size from 8MB to as much as 180MB. The common
-10-bit &ldquo;2K&rdquo; format consumes 12MB of disk. A typical movie
-has an average of 144K frames (at 24 frames per second) so just one
-movie consumes terabytes of storage. Businesses which specialize in
+10-bit &ldquo;2K&rdquo; format consumes 12MB of disk while a 10-bit
+&ldquo;4K&rdquo; scan consumes 50MB of disk.. A typical movie has an
+average of 144K frames (at 24 frames per second) so just one movie
+consumes terabytes of storage. Businesses which specialize in
 handling digital intermediates may have available on-line storage
 ranging from several tens of terabytes to several hundred terabytes.
 While &ldquo;2K&rdquo; has been the standard working resolution due
 to storage requirements and processing time, recently there is a
 trend to scanning at &ldquo;4K&rdquo; resolution since most experts
 say that this is the resolution necessary to capture the full
-resolution of a 35mm frame (but some claim more!). Some shops scan at
-&ldquo;4K&rdquo; but then reduce the image to &ldquo;2K&rdquo; as the
-working format so that the full resolution is available for later
-use, but the processing of the feature may be done on a normal &ldquo;2K&rdquo;
+resolution of a 35mm frame (but some claim more!). IMAX film (10X the
+area of 35mm film!) can likely support &ldquo;21K&rdquo; resolution
+once someone builds a machine capable of doing so but is currently
+scanned at &ldquo;8K&rdquo; resolution. Some shops scan at &ldquo;4K&rdquo;
+but then reduce the image to &ldquo;2K&rdquo; as the working format
+so that the full resolution is available for later use, but the
+processing of the feature may be done on a normal &ldquo;2K&rdquo;
 schedule. An alternative is to do the work at &ldquo;2K&rdquo; but
 record a record of all the changes so that the changes may be
-re-played to obtain similar results at &ldquo;4K&rdquo;. IMAX (large
-format) film is normally scanned at &ldquo;8K&rdquo; resolution but
-the film media itself can support even more resolution.</FONT></FONT></P>
+re-played to obtain similar results at &ldquo;4K&rdquo;.</FONT></FONT></P>
 <P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>The
 end result of the effort of encoding motion picture images to digital
 image files is to have a digital master which does not degrade over
@@ -177,23 +191,59 @@ performance when reading and writing files is limited by the
 performance of the file I/O subsystem. The software is designed to
 avoid seeking while reading and writing so that files may be read and
 written over pipes, or via a user provided file descriptor.</FONT></P>
-<H2><FONT SIZE=2>GraphicsMagick In Use</FONT></H2>
+<H3>GraphicsMagick In Use</H3>
 <P><FONT SIZE=2>GraphicsMagick is easy to use. The following is an
 example of scaling a &ldquo;4K&rdquo; 16 bit scan to a &ldquo;2K&rdquo;
 &ldquo;Academy&rdquo; 10 bit image:</FONT></P>
-<PRE STYLE="margin-bottom: 0.2in">   <FONT SIZE=2>gm convert 4k.dpx -resize 1828x1556 -depth 10 2k.dpx</FONT></PRE><P>
+<PRE STYLE="margin-bottom: 0.2in">   gm convert 4k.dpx -resize 1828x1556 -depth 10 2k.dpx</PRE><P>
 <FONT SIZE=2>The above example uses the default resizing filters
 which are optimized for quality, but take longer than some other
 filters. The &ldquo;box&rdquo; resize filter provides reasonably good
 scaling in a reasonable amount of time:</FONT></P>
-<PRE STYLE="margin-bottom: 0.2in">   <FONT SIZE=2>gm convert 4k.dpx -filter box -resize 1828x1556 -depth 10 2k.dpx</FONT></PRE><P>
+<PRE STYLE="margin-bottom: 0.2in">   gm convert 4k.dpx -filter box -resize 1828x1556 -depth 10 2k.dpx</PRE><P>
 <FONT SIZE=2>The above example command takes about 5 seconds (on an
 Apple 2.5GHz G5 PowerMac or Intel 2.4GHz Xeon) to down-convert from a
 131MB &ldquo;5K&rdquo; (5232x4376) original 16-bit scan from a
 </FONT><A HREF="http://www.filmlight.ltd.uk/northlight.html" TARGET="_top"><FONT SIZE=2>NorthLight
-scanner</FONT></A><FONT SIZE=2> to a 11MB &ldquo;2K&rdquo; 10-bit
+scanner</FONT></A> <FONT SIZE=2>to a 11MB &ldquo;2K&rdquo; 10-bit
 working image. Operations on more typical &ldquo;2K&rdquo; images
 take on the order of half a second.</FONT></P>
+<H3>DPX options</H3>
+<P>The following options are particularly useful when dealing with
+DPX files.</P>
+<DL>
+	<DT>-depth &lt;value&gt;</DT><DD>
+	Specifies the number of bits to preserve in a color sample. By
+	default the output file is written with the same number of bits as
+	the input file. For example, if the input file is 16 bits, it may be
+	reduced to 10 bits via '-depth 10'.</DD><DT>
+	-define dpx:bits-per-sample=&lt;value&gt;</DT><DD>
+	If the dpx:bits-per-sample key is defined, GraphicsMagick will
+	writeDPX images with the specified bits per sample, overriding any
+	existingdepth value. If this option is not specified, then the value
+	is based onthe existing image depth value from the original image
+	file. The DPXstandard supports bits per sample values of 1, 8, 10,
+	12, and 16. ManyDPX readers demand a sample size of 10 bits with
+	type A padding (see below).</DD><DT>
+	-define dpx:colorspace={rgb|cineonlog}</DT><DD>
+	Use the dpx:colorspace option when reading a DPX file to specify the
+	colorspace the DPX file uses. This overrides the colorspace type
+	implied by the DPX header (if any). Currently files with the
+	transfer characteristic <I>Printing Density</I> are assumed to be
+	log encoded density while files marked as <I>Linear</I> are assumed
+	to be linear.</DD><DT>
+	-define dpx:packing-method={packed|a|b|lsbpad|msbpad}</DT><DD>
+	DPX samples may be output within 32-bit words. They may be tightly
+	packed end-to-end within the words (&quot;packed&quot;), padded with
+	null bits to the right of the sample (&quot;a&quot; or &quot;lsbpad&rdquo;),
+	or padded with null bits to the left of the sample (&quot;b&quot; or
+	&quot;msbpad&quot;). This option only has an effect for sample sizes
+	of 10 or 12 bits. If samples are not packed, the DPX standard
+	recommends type A padding. Many DPX readers demand a sample size of
+	10 bits with type A padding.</DD></DL>
+<P>
+<BR><BR>
+</P>
 <HR>
 <P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
 <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>

@@ -1222,10 +1222,16 @@ use the \fB-resample\fP option.
 .B "-depth \fI<value>"\fP
 \fRdepth of the image
 
-This is the number of bits in a color sample within a pixel. The only
-acceptable values are 8 or 16.  Use this option to specify the depth of
-raw images whose depth is unknown such as GRAY, RGB, or CMYK, or to change
-the depth of any image after it has been read.
+This is the number of bits of color to preserve in the image. Any value
+between 1 and \fBQuantumDepth\fP (build option) may be specified,
+although 8 or 16 are the most common values. Use this option to specify
+the depth of raw images whose depth is unknown such as GRAY, RGB, or
+CMYK, or to change the depth of any image after it has been read.
+The depth option is applied to the pixels immediately so it may be
+used as a form of simple compression by discarding the least significant
+bits. Reducing the depth in advance may speed up color quantization, and
+help create smaller file sizes when using a compression algorithm like
+LZW or ZIP.
 .TP
 .B "-descend"
 \fRobtain image by descending window hierarchy

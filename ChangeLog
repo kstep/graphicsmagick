@@ -1,3 +1,11 @@
+2005-06-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (SMPTEStringToBits): Time code and user bits were
+	being displayed in wrong order on little endian CPUs.  Thanks very
+	much for bug report from Jason Howard.
+	(SMPTEStringToBits): Similar fix for time code and user bits
+	string to binary.
+
 2005-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/miff.c (ReadMIFFImage): Use StringToColorspaceType() to

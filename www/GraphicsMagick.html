@@ -1463,10 +1463,16 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>depth of the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This is the number of bits in a color sample within a pixel. The only
-acceptable values are 8 or 16.  Use this option to specify the depth of
-raw images whose depth is unknown such as GRAY, RGB, or CMYK, or to change
-the depth of any image after it has been read.</font></td></tr></table>
+This is the number of bits of color to preserve in the image. Any value
+between 1 and <strong>QuantumDepth</strong> (build option) may be specified,
+although 8 or 16 are the most common values. Use this option to specify
+the depth of raw images whose depth is unknown such as GRAY, RGB, or
+CMYK, or to change the depth of any image after it has been read.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">The depth option is applied to the pixels immediately so it may be
+used as a form of simple compression by discarding the least significant
+bits. Reducing the depth in advance may speed up color quantization, and
+help create smaller file sizes when using a compression algorithm like
+LZW or ZIP.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

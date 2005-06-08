@@ -4790,7 +4790,7 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
           (image->dither != MagickFalse))
         {
           /*
-                Dither image to bilevel
+            Dither image to bilevel
           */
           GetQuantizeInfo(&quantize_info);
           quantize_info.colorspace=GRAYColorspace;

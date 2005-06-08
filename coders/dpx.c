@@ -526,16 +526,13 @@ static void SwabDPXTVInfo(DPXTVInfo *tv_info)
 }
 static void SMPTEBitsToString(const U32 value, char *str)
 {
-  BitStreamReadHandle
-    bit_stream;
-
   unsigned int
-    pos;
+    pos,
+    shift = 28;
 
-  BitStreamInitializeRead(&bit_stream,(const unsigned char *) &value);
-  for (pos=8; pos > 0; pos--)
+  for (pos=8; pos > 0; pos--, shift -= 4)
     {
-      sprintf(str,"%01u",BitStreamMSBRead(&bit_stream,4));
+      sprintf(str,"%01u",(unsigned int) ((value >> shift) & 0x0fU));
       str += 1;
       if ((pos > 2) && (pos % 2))
         {
@@ -548,22 +545,17 @@ static void SMPTEBitsToString(const U32 value, char *str)
 static U32 SMPTEStringToBits(const char *str)
 {
   U32
-    bits;
-
-  BitStreamWriteHandle
-    bit_stream;
+    value=0;
 
   unsigned int
-    pos;
+    pos = 0,
+    shift = 28;
 
   char
     buff[2];
 
-  bits=0;
-  pos=0;
   buff[1]='\0';
 
-  BitStreamInitializeWrite(&bit_stream,(unsigned char *) &bits);
   while ((*str != 0) && (pos < 8))
     {
       if (!isdigit((int) *str))
@@ -572,10 +564,11 @@ static U32 SMPTEStringToBits(const char *str)
           continue;
         }
       buff[0]=*str++;
-      (void) BitStreamMSBWrite(&bit_stream,4,strtol(buff,(char **)NULL,10));
+      value |= (U32) ((strtol(buff,(char **)NULL,10)) << shift);
+      shift -= 4;
       pos++;
     }
-  return bits;
+  return value;
 }
 static size_t DPXRowOctets(unsigned int row_samples,
                            unsigned int bits_per_sample,
