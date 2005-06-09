@@ -1,3 +1,10 @@
+2005-06-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/png.c (WriteMNGImage): Use -define mng:need-cacheoff to
+	write a libmng-specific nEED request to disable frame buffering.
+	This allows the MNG data to stream without increasing memory
+	consumption in the libmng client.
+
 2005-06-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (SMPTEStringToBits): Time code and user bits were

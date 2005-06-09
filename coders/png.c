@@ -186,6 +186,7 @@ static png_byte FARDATA mng_bKGD[5]={ 98,  75,  71,  68, '\0'};
 static png_byte FARDATA mng_cHRM[5]={ 99,  72,  82,  77, '\0'};
 static png_byte FARDATA mng_gAMA[5]={103,  65,  77,  65, '\0'};
 static png_byte FARDATA mng_iCCP[5]={105,  67,  67,  80, '\0'};
+static png_byte FARDATA mng_nEED[5]={110,  69,  69,  68, '\0'};
 static png_byte FARDATA mng_pHYg[5]={112,  72,  89, 103, '\0'};
 static png_byte FARDATA mng_pHYs[5]={112,  72,  89, 115, '\0'};
 static png_byte FARDATA mng_sBIT[5]={115,  66,  73,  84, '\0'};
@@ -7922,6 +7923,9 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   unsigned char
     chunk[800];
 
+  size_t
+    chunk_length=0;
+
   unsigned int
     status;
 
@@ -8331,6 +8335,23 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
        }
      (void) WriteBlob(image,32,(char *) chunk);
      (void) WriteBlobMSBULong(image,crc32(0,chunk,32));
+#if 1
+     if (AccessDefinition(image_info,"mng","need-cacheoff"))
+     {
+       /*
+         Add a "nEED CACHEOFF" request to disable frame caching in libmng.
+         Unfortunately, standard conformant players will reject the stream
+         if they do not support a nEED request.
+       */
+       PNGType(chunk,mng_nEED);
+       chunk_length = (strlcpy((char *) chunk+4, "CACHEOFF",20));
+       (void) WriteBlobMSBULong(image,chunk_length);
+       LogPNGChunk(logging,mng_nEED,chunk_length);
+       chunk_length += 4;
+       (void) WriteBlob(image,chunk_length,(char *) chunk);
+       (void) WriteBlobMSBULong(image,crc32(0,chunk,chunk_length));
+     }
+#endif
      if ((image->previous == (Image *) NULL) &&
          (image->next != (Image *) NULL) && (image->iterations != 1))
        {
