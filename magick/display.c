@@ -12248,9 +12248,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         SetErrorHandler(XWarning) : SetErrorHandler((ErrorHandler) NULL);
       warning_handler=resource_info->display_warnings ?
         SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
-      (void) signal(SIGINT,XSignalHandler);
-      (void) signal(SIGSEGV,XSignalHandler);
-      (void) signal(SIGTERM,XSignalHandler);
+/*       (void) signal(SIGINT,XSignalHandler); */
+/*       (void) signal(SIGSEGV,XSignalHandler); */
+/*       (void) signal(SIGTERM,XSignalHandler); */
     }
   else
     {
@@ -12757,9 +12757,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       warning_handler=resource_info->display_warnings ?
         SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
     }
-  (void) signal(SIGINT,XSignalHandler);
-  (void) signal(SIGSEGV,XSignalHandler);
-  (void) signal(SIGTERM,XSignalHandler);
+/*   (void) signal(SIGINT,XSignalHandler); */
+/*   (void) signal(SIGSEGV,XSignalHandler); */
+/*   (void) signal(SIGTERM,XSignalHandler); */
   /*
     Initialize Image and Magnify X images.
   */

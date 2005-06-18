@@ -4996,7 +4996,8 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
     Intentionally restart timer if ping is requested since timing ping
     is meaningless and misleading.
   */
-  GetTimerInfo(&image->timer);
+  if (image != (Image *) NULL)
+    GetTimerInfo(&image->timer);
   return(image);
 }
 

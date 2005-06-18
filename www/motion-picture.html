@@ -6,18 +6,23 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20050606;22085900">
+	<META NAME="CHANGED" CONTENT="20050618;18035100">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P { color: #000000 }
+		P.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 10pt }
+		P.cjk { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		PRE { color: #000000 }
 		DD { color: #000000 }
+		DD.western { font-size: 10pt }
 		H3 { color: #000000 }
 		DT { color: #000000 }
+		DT.western { font-size: 10pt }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
@@ -33,17 +38,17 @@
 		</TD>
 	</TR>
 </TABLE>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Recently,
-features have been added to GraphicsMagick to make it more suitable
-for processing images used by the motion picture (film and
-high-definition) industry. In particular, industrial strength support
-for </FONT><A HREF="http://www.smpte.org/" TARGET="_top"><FONT SIZE=2>SMPTE</FONT></A>
+<P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Recently,
+features have been added to development GraphicsMagick 1.2 to make it
+more suitable for processing images used by the motion picture (film
+and high-definition) industry. In particular, industrial strength
+support for </FONT><A HREF="http://www.smpte.org/" TARGET="_top"><FONT SIZE=2>SMPTE</FONT></A>
 <FONT SIZE=2>DPX Version 2.0 (SMPTE 268M-2003) has been added for
 GraphicsMagick 1.2. A new Cineon Log colorspace has been added to
 support images which use a logarithmic density encoding (with range
 of 0 to 2.048) according to Kodak specifications for Cineon Log.
 Support for legacy Kodak 4.5 Cineon format has been improved.</FONT></FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>The
+<P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>The
 modern motion picture industry usually shoots on film and then uses a
 machine known as a &ldquo;datacine&rdquo; (e.g. <A HREF="http://www.grassvalley.com/products/film/spirit_4k/" TARGET="_top">Spirit
 4K DataCine</A> or <A HREF="http://www.cintel.co.uk/products/film-scanning.htm" TARGET="_top">Cintel
@@ -56,7 +61,7 @@ Origin</FONT></A> <FONT SIZE=2>to capture images to uncompressed
 files directly. A rather inferior approach is to use a video high
 definition compressed format like HDCAM and convert each frame to a
 file for processing.</FONT></FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Images
+<P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Images
 scanned from film are usually in either a log colorspace similar to
 Cineon Log (10 bits per sample is most common), or in a linear format
 (16 bits per sample is common). Some images (such as from the
@@ -66,7 +71,7 @@ encoding has the advantage that fewer bits are necessary to store the
 large dynamic range of film, and that the log encoding approximates
 the density characteristics of film (approximately linear when log
 encoded).</FONT></FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>While
+<P CLASS="western"><FONT SIZE=2><FONT FACE="Verdana, Arial, Helvetica, sans-seri">While
 there is some continued use of the legacy <A HREF="http://www.cinesite.com/?1632&amp;0&amp;" TARGET="_top">Kodak
 Cineon</A> format due to existing equipment and software, the
 standard image file format for motion picture frames is <A HREF="http://www.smpte.org/" TARGET="_top">SMPTE</A>
@@ -76,7 +81,7 @@ rather than a vendor standard. DPX files are practically always
 uncompressed. The design of DPX places header content at fixed
 offsets, and the image raster data offsets may be computed, so DPX
 files may be read or updated without rewriting the entire file.</FONT></FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Film
+<P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Film
 images are usually captured at &ldquo;2K&rdquo; resolution, &ldquo;4K&rdquo;
 resolution, or even &ldquo;6K&rdquo; resolution, where the actual
 resolution values approximate the horizontal dimension of the image.
@@ -105,7 +110,7 @@ processing of the feature may be done on a normal &ldquo;2K&rdquo;
 schedule. An alternative is to do the work at &ldquo;2K&rdquo; but
 record a record of all the changes so that the changes may be
 re-played to obtain similar results at &ldquo;4K&rdquo;.</FONT></FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>The
+<P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>The
 end result of the effort of encoding motion picture images to digital
 image files is to have a digital master which does not degrade over
 time and which has captured the maximum available information from
@@ -113,7 +118,7 @@ the original film print. This digital master may be targeted toward
 producing film prints for showing in a theater, used to create DVDs,
 used as a master for &ldquo;digital cinema&rdquo; for viewing in
 suitably equipped theaters, or used to support television broadcasts.</FONT></FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Processing
+<P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Processing
 film images is a specialty business. Many business exist which offer
 specialized software and hardware to process film images. Common
 tasks are &ldquo;color grading&rdquo; (adjusting color for a correct
@@ -124,7 +129,7 @@ GraphicsMagick lacks the high-quality graphical user interface
 necessary for a colorist or artist to interact with a sequence of
 images. GraphicsMagick lacks the experienced and dedicated team
 necessary to assure the desired results with particular media.</FONT></FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>The
+<P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>The
 strength of GraphicsMagick versus specialized proprietary software
 are its cost (absolutely free!), open source availability (user is
 able to fix software flaws or tailor software to meet specific
@@ -133,7 +138,7 @@ capabilities (up to 32-bits per sample), excellent performance,
 platform independence, lack of encumbering usage licenses, and robust
 implementation. Examples of areas where GraphicsMagick may be used
 are:</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT SIZE=2><FONT FACE="Verdana, Arial, Helvetica, sans-seri">View
+<P CLASS="western" STYLE="margin-left: 0.79in"><FONT SIZE=2><FONT FACE="Verdana, Arial, Helvetica, sans-seri">View
 the image on a display.<BR>Scaling (for example, &ldquo;4K&rdquo; to
 &ldquo;2K&rdquo; or 1920x1080 HD with excellent
 quality)<BR>Cropping<BR>Rotation<BR>Filtering<BR>ICC ICM
@@ -142,65 +147,76 @@ adjustment<BR>Color adjustment<BR>Conversion to grayscale<BR>Text
 annotations<BR>Compositions<BR>Drawing on images (for example drawing
 markers on image)<BR>Conversion to and from other formats (e.g. TIFF,
 JPEG, SGI, Postscript, PNG, and PNM)</FONT></P>
-<P><FONT SIZE=2>GraphicsMagick performs well as compared with other
-software. Since it is free and portable, it may be installed on any
-available system with no license fees. For example, if a business has
-a computing cluster of several hundred Linux, SGI IRIX, or Mac OS X
-systems, then GraphicsMagick be installed across all systems and used
-for any desired purpose.</FONT></P>
-<P><FONT SIZE=2>GraphicsMagick's DPX file format support is rather
-comprehensive. In many ways, it goes beyond the DPX format support in
-other applications by striving to implement the complete DPX
-specification rather than just a few commonly used sub-formats. The
-capabilities of GraphicsMagick's DPX support are as follows:</FONT></P>
-<P><FONT SIZE=2><B>Supported DPX features:</B></FONT></P>
+<P CLASS="western"><FONT SIZE=2>GraphicsMagick performs well as
+compared with other software. Since it is free and portable, it may
+be installed on any available system with no license fees. For
+example, if a studio has a computing cluster of several hundred
+Linux, SGI IRIX, FreeBSD, or Mac OS X systems, then GraphicsMagick be
+installed across all systems and used for any desired purpose.</FONT></P>
+<P CLASS="western"><FONT SIZE=2>GraphicsMagick's DPX file format
+support is rather comprehensive. In many ways, it goes beyond the DPX
+format support in other applications by striving to implement the
+complete DPX specification rather than just a few commonly used
+sub-formats. The capabilities of GraphicsMagick's DPX support are as
+follows:</FONT></P>
+<P CLASS="western"><FONT SIZE=2><B>Supported DPX features:</B></FONT></P>
 <UL>
-	<LI><P><FONT SIZE=2>Anything which can be read, can also be written.</FONT></P>
-	<LI><P><FONT SIZE=2>All DPX header information (including the user
-	specific area) are stored as image attributes and restored when the
-	image is written.</FONT></P>
-	<LI><P><FONT SIZE=2>Image source header information is updated
-	appropriately.</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Anything
+	which can be read, can also be written.</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">All
+	DPX header information (including the user specific area) are stored
+	as image attributes and restored when the image is written.</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Image
+	source header information is updated appropriately.</FONT></P>
 </UL>
-<P><FONT SIZE=2><B>Colorspaces</B>:</FONT></P>
+<P CLASS="western"><FONT SIZE=2><B>Colorspaces</B>:</FONT></P>
 <UL>
-	<LI><P><FONT SIZE=2>Linear RGB</FONT></P>
-	<LI><P><FONT SIZE=2>Cineon Log RGB (density range = 2.048)</FONT></P>
-	<LI><P><FONT SIZE=2>Grayscale (Luma)</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Linear
+	RGB</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Cineon
+	Log RGB (density range = 2.048)</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Grayscale
+	(Luma)</FONT></P>
 </UL>
-<P><FONT SIZE=2><B>Storage</B>:</FONT></P>
+<P CLASS="western"><FONT SIZE=2><B>Storage</B>:</FONT></P>
 <UL>
-	<LI><P><FONT SIZE=2>Bits per sample of 1, 8, 10, 12, and 16.</FONT></P>
-	<LI><P><FONT SIZE=2>Packed, or fill type A or B for 10/12 bits.</FONT></P>
-	<LI><P><FONT SIZE=2>All RGB-oriented element types (R, G, B, A, RGB,
-	RGBA, ABGR).</FONT></P>
-	<LI><P><FONT SIZE=2>Planar (multi-element) storage fully supported.</FONT></P>
-	<LI><P><FONT SIZE=2>Alpha may be stored in a separate element.</FONT></P>
-	<LI><P><FONT SIZE=2>Big and little endian storage.</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Bits
+	per sample of 1, 8, 10, 12, and 16.</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Packed,
+	or fill type A or B for 10/12 bits.</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">All
+	RGB-oriented element types (R, G, B, A, RGB, RGBA, ABGR).</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Planar
+	(multi-element) storage fully supported.</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Alpha
+	may be stored in a separate element.</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Big
+	and little endian storage.</FONT></P>
 </UL>
-<P><FONT SIZE=2><B>Yet to be supported:</B></FONT></P>
+<P CLASS="western"><FONT SIZE=2><B>Yet to be supported:</B></FONT></P>
 <UL>
-	<LI><P><FONT SIZE=2>Video colorspaces like CbYcr and CbCR and
-	composite video.</FONT></P>
-	<LI><P><FONT SIZE=2>Floating point formats (32 and 64 bits)</FONT></P>
-	<LI><P><FONT SIZE=2>Depth channel (not supportable within
-	GraphicsMagick).</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Video
+	colorspaces like CbYcr and CbCR and composite video.</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Floating
+	point formats (32 and 64 bits)</FONT></P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in"><FONT FACE="Albany">Depth
+	channel (not supportable within GraphicsMagick).</FONT></P>
 </UL>
-<P><FONT SIZE=2>The software is written efficiently so the
-performance when reading and writing files is limited by the
+<P CLASS="western"><FONT SIZE=2>The software is written efficiently
+so the performance when reading and writing files is limited by the
 performance of the file I/O subsystem. The software is designed to
 avoid seeking while reading and writing so that files may be read and
 written over pipes, or via a user provided file descriptor.</FONT></P>
 <H3>GraphicsMagick In Use</H3>
-<P><FONT SIZE=2>GraphicsMagick is easy to use. The following is an
-example of scaling a &ldquo;4K&rdquo; 16 bit scan to a &ldquo;2K&rdquo;
-&ldquo;Academy&rdquo; 10 bit image:</FONT></P>
-<PRE STYLE="margin-bottom: 0.2in">   gm convert 4k.dpx -resize 1828x1556 -depth 10 2k.dpx</PRE><P>
+<P CLASS="western"><FONT SIZE=2>GraphicsMagick is easy to use. The
+following is an example of scaling a &ldquo;4K&rdquo; 16 bit scan to
+a &ldquo;2K&rdquo; &ldquo;Academy&rdquo; 10 bit image:</FONT></P>
+<PRE STYLE="margin-bottom: 0.2in">   gm convert 4k.dpx -resize 1828x1556 -depth 10 2k.dpx</PRE><P CLASS="western">
 <FONT SIZE=2>The above example uses the default resizing filters
 which are optimized for quality, but take longer than some other
 filters. The &ldquo;box&rdquo; resize filter provides reasonably good
 scaling in a reasonable amount of time:</FONT></P>
-<PRE STYLE="margin-bottom: 0.2in">   gm convert 4k.dpx -filter box -resize 1828x1556 -depth 10 2k.dpx</PRE><P>
+<PRE STYLE="margin-bottom: 0.2in">   gm convert 4k.dpx -filter box -resize 1828x1556 -depth 10 2k.dpx</PRE><P CLASS="western">
 <FONT SIZE=2>The above example command takes about 5 seconds (on an
 Apple 2.5GHz G5 PowerMac or Intel 2.4GHz Xeon) to down-convert from a
 131MB &ldquo;5K&rdquo; (5232x4376) original 16-bit scan from a
@@ -209,30 +225,30 @@ scanner</FONT></A> <FONT SIZE=2>to a 11MB &ldquo;2K&rdquo; 10-bit
 working image. Operations on more typical &ldquo;2K&rdquo; images
 take on the order of half a second.</FONT></P>
 <H3>DPX options</H3>
-<P>The following options are particularly useful when dealing with
-DPX files.</P>
+<P CLASS="western">The following options are particularly useful when
+dealing with DPX files.</P>
 <DL>
-	<DT>-depth &lt;value&gt;</DT><DD>
+	<DT CLASS="western">-depth &lt;value&gt;</DT><DD CLASS="western">
 	Specifies the number of bits to preserve in a color sample. By
 	default the output file is written with the same number of bits as
 	the input file. For example, if the input file is 16 bits, it may be
-	reduced to 10 bits via '-depth 10'.</DD><DT>
-	-define dpx:bits-per-sample=&lt;value&gt;</DT><DD>
+	reduced to 10 bits via '-depth 10'.</DD><DT CLASS="western">
+	-define dpx:bits-per-sample=&lt;value&gt;</DT><DD CLASS="western">
 	If the dpx:bits-per-sample key is defined, GraphicsMagick will
 	writeDPX images with the specified bits per sample, overriding any
 	existingdepth value. If this option is not specified, then the value
 	is based onthe existing image depth value from the original image
 	file. The DPXstandard supports bits per sample values of 1, 8, 10,
 	12, and 16. ManyDPX readers demand a sample size of 10 bits with
-	type A padding (see below).</DD><DT>
-	-define dpx:colorspace={rgb|cineonlog}</DT><DD>
+	type A padding (see below).</DD><DT CLASS="western">
+	-define dpx:colorspace={rgb|cineonlog}</DT><DD CLASS="western">
 	Use the dpx:colorspace option when reading a DPX file to specify the
 	colorspace the DPX file uses. This overrides the colorspace type
 	implied by the DPX header (if any). Currently files with the
 	transfer characteristic <I>Printing Density</I> are assumed to be
 	log encoded density while files marked as <I>Linear</I> are assumed
-	to be linear.</DD><DT>
-	-define dpx:packing-method={packed|a|b|lsbpad|msbpad}</DT><DD>
+	to be linear.</DD><DT CLASS="western">
+	-define dpx:packing-method={packed|a|b|lsbpad|msbpad}</DT><DD CLASS="western" STYLE="margin-bottom: 0.2in">
 	DPX samples may be output within 32-bit words. They may be tightly
 	packed end-to-end within the words (&quot;packed&quot;), padded with
 	null bits to the right of the sample (&quot;a&quot; or &quot;lsbpad&rdquo;),
@@ -241,11 +257,75 @@ DPX files.</P>
 	of 10 or 12 bits. If samples are not packed, the DPX standard
 	recommends type A padding. Many DPX readers demand a sample size of
 	10 bits with type A padding.</DD></DL>
-<P>
+<H3>
+DPX Attributes</H3>
+<P CLASS="western">GraphicsMagick provides almost full access to DPX
+header attributes. DPX header attributes are shown in the output of
+'<KBD>gm identify -verbose</KBD>' and may be set using the -define
+syntax (e.g. '<KBD>-define dpx:mp.frame.position=2000</KBD>') on the
+command line in order to add a value, or override an existing value.
+The attributes in the list below may be viewed or updated. The names
+are similar to the attibute descriptions from the DPX standard.</P>
+<DL>
+	<DD CLASS="western"><VAR>dpx:file.copyright</VAR></DD><DD CLASS="western">
+	<VAR>dpx:file.creation.datetime</VAR></DD><DD CLASS="western">
+	<VAR>dpx:file.creator</VAR></DD><DD CLASS="western">
+	<VAR>dpx:file.encryption.key</VAR></DD><DD CLASS="western">
+	<VAR>dpx:file.filename</VAR></DD><DD CLASS="western">
+	<VAR>dpx:file.project.name</VAR></DD><DD CLASS="western">
+	<VAR>dpx:file.version</VAR></DD><DD CLASS="western">
+	<VAR>dpx:image.orientation</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.count</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.film.manufacturer.id</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.film.type</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.format</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.frame.id</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.frame.position</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.frame.rate</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.held.count</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.perfs.offset</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.prefix</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.sequence.length</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.shuter.angle</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.slate.info</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.aspect.ratio.horizontal</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.aspect.ratio.vertical</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.border.validity.botom</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.border.validity.left</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.border.validity.right</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.border.validity.top</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.creation.datetime</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.device.name</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.device.serialnumber</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.filename</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.scaned.size.x</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.scaned.size.y</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.x-center</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.x-offset</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.x-original-size</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.y-center</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.y-offset</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.y-original-size</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.black.gain</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.black.level</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.breakpoint</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.field.number</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.gama</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.horizontal.sampling.rate</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.integration.time</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.interlace</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.sync.time</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.temporal.sampling.rate</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.time.code</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.user.bits</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.video.signal</VAR></DD><DD CLASS="western">
+	<VAR>dpx:tv.white.level</VAR></DD><DD CLASS="western">
+	<VAR>dpx:user.data.id</VAR></DD></DL>
+<P CLASS="western">
 <BR><BR>
 </P>
 <HR>
-<P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
+<P CLASS="western" ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
 <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
 GraphicsMagick Group 2005</FONT></P>
 </BODY>

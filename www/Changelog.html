@@ -21,6 +21,26 @@
 </tr>
 </table>
 <p>
+2005-06-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (WriteDPXImage): Only preserve source image
+        dimension and offset information if image size has not changed.
+        If image size has changed, the existing information may become
+        invalid.<BR>
+        (WriteDPXImage): Allow user to assign DPX header attribute values
+        using syntax like "-define dpx:mp.frame.position=1000".
+
+</UL>
+<p>
+2005-06-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/fpx.c: Fix compilation problem due to additional
+        ExportImagePixelArea parameter.
+
+</UL>
+<p>
 2005-06-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

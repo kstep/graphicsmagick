@@ -446,6 +446,12 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 # define pclose _pclose
 #endif
 
+# if defined(HAVE__EXIT)
+#   define SignalHandlerExit _exit
+# else
+#   define SignalHandlerExit Exit
+# endif /* defined(HAVE__EXIT) */
+
 
 /*
   Image const declarations.

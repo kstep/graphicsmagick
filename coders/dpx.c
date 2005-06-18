@@ -1225,8 +1225,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   EndianType
     endian_type;
 
-  const char *
-    definition_value;
+  const char
+    *definition_value;
 
   /*
     Open image file.
@@ -1260,15 +1260,17 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   endian_type = (swab ? MSBEndian : LSBEndian);
 #endif
   
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "%s endian DPX format",
-                        (endian_type == MSBEndian ? "Big" : "Little"));
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "%s endian DPX format",
+                          (endian_type == MSBEndian ? "Big" : "Little"));
 
   if (swab)
     SwabDPXFileInfo(&dpx_file_info);
 
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "File size: %u", dpx_file_info.file_size);
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "File size: %u", dpx_file_info.file_size);
 
   StringToAttribute(image,"software",dpx_file_info.creator);
   StringToAttribute(image,"comment",dpx_file_info.project_name);
@@ -1288,15 +1290,38 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Obtain offset to pixels.
   */
   pixels_offset=dpx_file_info.image_data_offset;
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Image data offset %lu",pixels_offset);
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Image data offset %lu",pixels_offset);
   if (pixels_offset < 1408)
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Generic length %u, Industry length %u, User length %u",
-                        dpx_file_info.generic_section_length,
-                        dpx_file_info.industry_section_length,
-                        dpx_file_info.user_defined_length);
+  if (image->logging)
+  {
+    char
+      generic_length_str[MaxTextExtent],
+      industry_length_str[MaxTextExtent],
+      user_length_str[MaxTextExtent];
+
+    if (IS_UNDEFINED_U32(dpx_file_info.generic_section_length))
+      strlcpy(generic_length_str,"UNDEFINED",sizeof(generic_length_str));
+    else
+      FormatString(generic_length_str,"%u",dpx_file_info.generic_section_length);
+
+    if (IS_UNDEFINED_U32(dpx_file_info.industry_section_length))
+      strlcpy(industry_length_str,"UNDEFINED",sizeof(industry_length_str));
+    else
+      FormatString(industry_length_str,"%u",dpx_file_info.industry_section_length);
+
+    if (IS_UNDEFINED_U32(dpx_file_info.user_defined_length))
+      strlcpy(user_length_str,"UNDEFINED",sizeof(user_length_str));
+    else
+      FormatString(user_length_str,"%u",dpx_file_info.user_defined_length);
+
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Generic length %s, Industry length %s, User length %s",
+                          generic_length_str,industry_length_str,user_length_str);
+  }
   /*
     Read image information header.
   */
@@ -1307,10 +1332,11 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     SwabDPXImageInfo(&dpx_image_info);
   image->columns=dpx_image_info.pixels_per_line;
   image->rows=dpx_image_info.lines_per_image_element;
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Columns %ld, Rows %ld, Elements %u",
-                        image->columns, image->rows,
-                        (unsigned int) dpx_image_info.elements);
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Columns %ld, Rows %ld, Elements %u",
+                          image->columns, image->rows,
+                          (unsigned int) dpx_image_info.elements);
 
   U16ToAttribute(image,"DPX:image.orientation",dpx_image_info.orientation);
 
@@ -1396,6 +1422,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       R32ToAttribute(image,"DPX:tv.integration.time",dpx_tv_info.integration_time);
     }
   if ((pixels_offset >= 2080UL) &&
+      (!IS_UNDEFINED_U32(dpx_file_info.user_defined_length)) &&
       (dpx_file_info.user_defined_length >= sizeof(DPXUserDefinedData)))
     {
       /*
@@ -1520,9 +1547,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ColorimetricPrintingDensity)
         {
           image->colorspace=CineonLogRGBColorspace;
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "Setting colorspace to %s",
-                                ColorspaceTypeToString(image->colorspace));
+          if (image->logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Setting colorspace to %s",
+                                  ColorspaceTypeToString(image->colorspace));
         }
       /*
         FIXME: hack around Cinepaint oddity which mis-marks files.
@@ -1736,15 +1764,17 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (colorspace != UndefinedColorspace)
         {
           image->colorspace=colorspace;
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "Explicitly set colorspace to %s",
-                                ColorspaceTypeToString(image->colorspace));
+          if (image->logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Explicitly set colorspace to %s",
+                                  ColorspaceTypeToString(image->colorspace));
         }
       else
         {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "Unrecognized source colorspace \"%s\"\n",
-                                definition_value);
+          if (image->logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Unrecognized source colorspace \"%s\"\n",
+                                  definition_value);
           ThrowException(&image->exception,OptionError,UnrecognizedColorspace,
                          definition_value);
         }
@@ -2144,67 +2174,97 @@ static void WriteRowSamples(const sample_t *samples,
     BitStreamMSBWrite(&bit_stream,bits_per_sample,*samples++);
 }
 
-#define AttributeToU8(image,key,member) \
+#define AttributeToU8(image_info,image,key,member) \
 { \
   const ImageAttribute \
     *attribute; \
 \
-  if ((attribute=GetImageAttribute(image,key))) \
+  const char \
+    *definition_value; \
+\
+  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(U8) strtol(definition_value, (char **) NULL, 10); \
+  else if ((attribute=GetImageAttribute(image,key))) \
     member=(U8) strtol(attribute->value, (char **) NULL, 10); \
   else \
     SET_UNDEFINED_U8(member); \
 }
 
-#define AttributeToU16(image,key,member) \
+#define AttributeToU16(image_info,image,key,member) \
 { \
   const ImageAttribute \
     *attribute; \
 \
-  if ((attribute=GetImageAttribute(image,key))) \
+  const char \
+    *definition_value; \
+\
+  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(U16) strtol(definition_value, (char **) NULL, 10); \
+  else if ((attribute=GetImageAttribute(image,key))) \
     member=(U16) strtol(attribute->value, (char **) NULL, 10); \
   else \
     SET_UNDEFINED_U16(member); \
 }
 
-#define AttributeToU32(image,key,member) \
+#define AttributeToU32(image_info,image,key,member) \
 { \
   const ImageAttribute \
     *attribute; \
 \
-  if ((attribute=GetImageAttribute(image,key))) \
+  const char \
+    *definition_value; \
+\
+  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(U32) strtol(definition_value, (char **) NULL, 10); \
+  else if ((attribute=GetImageAttribute(image,key))) \
     member=(U32) strtol(attribute->value, (char **) NULL, 10); \
   else \
     SET_UNDEFINED_U32(member); \
 }
 
-#define AttributeBitsToU32(image,key,member) \
+#define AttributeBitsToU32(image_info,image,key,member) \
 { \
   const ImageAttribute \
     *attribute; \
 \
-  if ((attribute=GetImageAttribute(image,key))) \
+  const char \
+    *definition_value; \
+\
+  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
+    member=SMPTEStringToBits(definition_value); \
+  else if ((attribute=GetImageAttribute(image,key))) \
     member=SMPTEStringToBits(attribute->value); \
   else \
     SET_UNDEFINED_U32(member); \
 }
 
-#define AttributeToR32(image,key,member) \
+#define AttributeToR32(image_info,image,key,member) \
 { \
   const ImageAttribute \
     *attribute; \
 \
-  if ((attribute=GetImageAttribute(image,key))) \
+  const char \
+    *definition_value; \
+\
+  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(R32) strtod(definition_value, (char **) NULL); \
+  else if ((attribute=GetImageAttribute(image,key))) \
     member=(R32) strtod(attribute->value, (char **) NULL); \
   else \
     SET_UNDEFINED_R32(member); \
 }
 
-#define AttributeToString(image,key,member) \
+#define AttributeToString(image_info,image,key,member) \
 { \
   const ImageAttribute \
     *attribute; \
 \
-  if ((attribute=GetImageAttribute(image,key))) \
+  const char \
+    *definition_value; \
+\
+  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
+    (void) strlcpy(member,definition_value,sizeof(member)); \
+  else if ((attribute=GetImageAttribute(image,key))) \
     (void) strlcpy(member,attribute->value,sizeof(member)); \
   else \
     SET_UNDEFINED_ASCII(member); \
@@ -2337,8 +2397,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         bits_per_sample=1;
     }
 
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Bits per sample: %u", bits_per_sample);
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Bits per sample: %u", bits_per_sample);
 
   is_grayscale=image->is_grayscale;
 
@@ -2399,8 +2460,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   row_octets=DPXRowOctets(row_samples,bits_per_sample,packing_method);
   element_size=row_octets*image->rows;
 
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Element size: %u", (unsigned int) element_size);
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Element size: %u", (unsigned int) element_size);
 
   /*
     Adjust image colorspace if necessary.
@@ -2575,8 +2637,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           sizeof(dpx_file_info.header_format_version));
   dpx_file_info.file_size=
     dpx_file_info.image_data_offset+number_of_elements*element_size;
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Estimated file length: %u",dpx_file_info.file_size);
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Estimated file length: %u",dpx_file_info.file_size);
   dpx_file_info.ditto_key=1; /* new frame */
   dpx_file_info.generic_section_length=sizeof(dpx_file_info)+
     sizeof(dpx_image_info)+sizeof(dpx_source_info);
@@ -2588,71 +2651,80 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                        sizeof(dpx_file_info.creation_datetime));
   strlcpy(dpx_file_info.creator,GetMagickVersion((unsigned long *) NULL),
           sizeof(dpx_file_info.creator));
-  AttributeToString(image,"DPX:file.project.name",dpx_file_info.project_name);
-  AttributeToString(image,"DPX:file.copyright",dpx_file_info.copyright);
-  AttributeToU32(image,"DPX:file.encryption.key",dpx_file_info.encryption_key);
+  AttributeToString(image_info,image,"DPX:file.project.name",dpx_file_info.project_name);
+  AttributeToString(image_info,image,"DPX:file.copyright",dpx_file_info.copyright);
+  AttributeToU32(image_info,image,"DPX:file.encryption.key",dpx_file_info.encryption_key);
   /*
     Image source information header
   */
   memset(&dpx_source_info,0,sizeof(dpx_source_info));
-  AttributeToU32(image,"DPX:source.x-offset",dpx_source_info.x_offset);
-  AttributeToU32(image,"DPX:source.y-offset",dpx_source_info.y_offset);
-  AttributeToR32(image,"DPX:source.x-center",dpx_source_info.x_center);
-  AttributeToR32(image,"DPX:source.y-center",dpx_source_info.y_center);
-  AttributeToU32(image,"DPX:source.x-original-size",dpx_source_info.x_original_size);
-  if (IS_UNDEFINED_U32(dpx_source_info.x_original_size))
-    dpx_source_info.x_original_size=image->magick_columns;
-  AttributeToU32(image,"DPX:source.y-original-size",dpx_source_info.y_original_size);
-  if (IS_UNDEFINED_U32(dpx_source_info.y_original_size))
-    dpx_source_info.y_original_size=image->magick_rows;
-  AttributeToString(image,"DPX:source.filename",dpx_source_info.source_image_filename);
+  SET_UNDEFINED_U32(dpx_source_info.x_offset);
+  SET_UNDEFINED_U32(dpx_source_info.y_offset);
+  SET_UNDEFINED_R32(dpx_source_info.x_center);
+  SET_UNDEFINED_R32(dpx_source_info.y_center);
+  SET_UNDEFINED_U32(dpx_source_info.x_original_size);
+  SET_UNDEFINED_U32(dpx_source_info.y_original_size);
+  if ((image->rows == image->magick_rows) && (image->columns == image->magick_columns))
+    {
+      /* If image size has not changed from original (magick_columns
+         and magick_rows contain original size), then preserve any
+         existing source image dimension and offset information. If
+         size has changed, then information may be wrong. */
+      AttributeToU32(image_info,image,"DPX:source.x-offset",dpx_source_info.x_offset);
+      AttributeToU32(image_info,image,"DPX:source.y-offset",dpx_source_info.y_offset);
+      AttributeToR32(image_info,image,"DPX:source.x-center",dpx_source_info.x_center);
+      AttributeToR32(image_info,image,"DPX:source.y-center",dpx_source_info.y_center);
+      AttributeToU32(image_info,image,"DPX:source.x-original-size",dpx_source_info.x_original_size);
+      AttributeToU32(image_info,image,"DPX:source.y-original-size",dpx_source_info.y_original_size);
+    }
+  AttributeToString(image_info,image,"DPX:source.filename",dpx_source_info.source_image_filename);
   if (IS_UNDEFINED_ASCII(dpx_source_info.source_image_filename))
     strlcpy(dpx_source_info.source_image_filename,image->magick_filename,
             sizeof(dpx_source_info.source_image_filename));
-  AttributeToString(image,"DPX:source.creation.datetime",dpx_source_info.source_image_datetime);
-  AttributeToString(image,"DPX:source.device.name",dpx_source_info.input_device_name);
-  AttributeToString(image,"DPX:source.device.serialnumber",dpx_source_info.input_device_serialnumber);
-  AttributeToU16(image,"DPX:source.border.validity.left",dpx_source_info.border_validity.XL);
-  AttributeToU16(image,"DPX:source.border.validity.right",dpx_source_info.border_validity.XR);
-  AttributeToU16(image,"DPX:source.border.validity.top",dpx_source_info.border_validity.YT);
-  AttributeToU16(image,"DPX:source.border.validity.bottom",dpx_source_info.border_validity.YB);
-  AttributeToU32(image,"DPX:source.aspect.ratio.horizontal",dpx_source_info.aspect_ratio.horizontal);
-  AttributeToU32(image,"DPX:source.aspect.ratio.vertical",dpx_source_info.aspect_ratio.vertical);
-  AttributeToR32(image,"DPX:source.scanned.size.x",dpx_source_info.x_scanned_size);
-  AttributeToR32(image,"DPX:source.scanned.size.y",dpx_source_info.y_scanned_size);
+  AttributeToString(image_info,image,"DPX:source.creation.datetime",dpx_source_info.source_image_datetime);
+  AttributeToString(image_info,image,"DPX:source.device.name",dpx_source_info.input_device_name);
+  AttributeToString(image_info,image,"DPX:source.device.serialnumber",dpx_source_info.input_device_serialnumber);
+  AttributeToU16(image_info,image,"DPX:source.border.validity.left",dpx_source_info.border_validity.XL);
+  AttributeToU16(image_info,image,"DPX:source.border.validity.right",dpx_source_info.border_validity.XR);
+  AttributeToU16(image_info,image,"DPX:source.border.validity.top",dpx_source_info.border_validity.YT);
+  AttributeToU16(image_info,image,"DPX:source.border.validity.bottom",dpx_source_info.border_validity.YB);
+  AttributeToU32(image_info,image,"DPX:source.aspect.ratio.horizontal",dpx_source_info.aspect_ratio.horizontal);
+  AttributeToU32(image_info,image,"DPX:source.aspect.ratio.vertical",dpx_source_info.aspect_ratio.vertical);
+  AttributeToR32(image_info,image,"DPX:source.scanned.size.x",dpx_source_info.x_scanned_size);
+  AttributeToR32(image_info,image,"DPX:source.scanned.size.y",dpx_source_info.y_scanned_size);
   /*
     Motion-picture film information header.
   */
-  AttributeToString(image,"DPX:mp.film.manufacturer.id",dpx_mp_info.film_mfg_id_code);
-  AttributeToString(image,"DPX:mp.film.type",dpx_mp_info.film_type);
-  AttributeToString(image,"DPX:mp.perfs.offset",dpx_mp_info.perfs_offset);
-  AttributeToString(image,"DPX:mp.prefix",dpx_mp_info.prefix);
-  AttributeToString(image,"DPX:mp.count",dpx_mp_info.count);
-  AttributeToString(image,"DPX:mp.format",dpx_mp_info.format);
-  AttributeToU32(image,"DPX:mp.frame.position",dpx_mp_info.frame_position);
-  AttributeToU32(image,"DPX:mp.sequence.length",dpx_mp_info.sequence_length);
-  AttributeToU32(image,"DPX:mp.held.count",dpx_mp_info.held_count);
-  AttributeToR32(image,"DPX:mp.frame.rate",dpx_mp_info.frame_rate);
-  AttributeToR32(image,"DPX:mp.shutter.angle",dpx_mp_info.shutter_angle);
-  AttributeToString(image,"DPX:mp.frame.id",dpx_mp_info.frame_id);
-  AttributeToString(image,"DPX:mp.slate.info",dpx_mp_info.slate_info);
+  AttributeToString(image_info,image,"DPX:mp.film.manufacturer.id",dpx_mp_info.film_mfg_id_code);
+  AttributeToString(image_info,image,"DPX:mp.film.type",dpx_mp_info.film_type);
+  AttributeToString(image_info,image,"DPX:mp.perfs.offset",dpx_mp_info.perfs_offset);
+  AttributeToString(image_info,image,"DPX:mp.prefix",dpx_mp_info.prefix);
+  AttributeToString(image_info,image,"DPX:mp.count",dpx_mp_info.count);
+  AttributeToString(image_info,image,"DPX:mp.format",dpx_mp_info.format);
+  AttributeToU32(image_info,image,"DPX:mp.frame.position",dpx_mp_info.frame_position);
+  AttributeToU32(image_info,image,"DPX:mp.sequence.length",dpx_mp_info.sequence_length);
+  AttributeToU32(image_info,image,"DPX:mp.held.count",dpx_mp_info.held_count);
+  AttributeToR32(image_info,image,"DPX:mp.frame.rate",dpx_mp_info.frame_rate);
+  AttributeToR32(image_info,image,"DPX:mp.shutter.angle",dpx_mp_info.shutter_angle);
+  AttributeToString(image_info,image,"DPX:mp.frame.id",dpx_mp_info.frame_id);
+  AttributeToString(image_info,image,"DPX:mp.slate.info",dpx_mp_info.slate_info);
   /*
     Television information header.
   */
-  AttributeBitsToU32(image,"DPX:tv.time.code",dpx_tv_info.time_code);
-  AttributeBitsToU32(image,"DPX:tv.user.bits",dpx_tv_info.user_bits);
-  AttributeToU8(image,"DPX:tv.interlace",dpx_tv_info.interlace);
-  AttributeToU8(image,"DPX:tv.field.number",dpx_tv_info.field_number);
-  AttributeToU8(image,"DPX:tv.video.signal",dpx_tv_info.video_signal);
-  AttributeToR32(image,"DPX:tv.horizontal.sampling.rate",dpx_tv_info.horizontal_sample);
-  AttributeToR32(image,"DPX:tv.temporal.sampling.rate",dpx_tv_info.temporal_sample);
-  AttributeToR32(image,"DPX:tv.sync.time",dpx_tv_info.sync_time);
-  AttributeToR32(image,"DPX:tv.gamma",dpx_tv_info.gamma);
-  AttributeToR32(image,"DPX:tv.black.level",dpx_tv_info.black_level);
-  AttributeToR32(image,"DPX:tv.black.gain",dpx_tv_info.black_gain);
-  AttributeToR32(image,"DPX:tv.breakpoint",dpx_tv_info.breakpoint);
-  AttributeToR32(image,"DPX:tv.white.level",dpx_tv_info.white_level);
-  AttributeToR32(image,"DPX:tv.integration.time",dpx_tv_info.integration_time);
+  AttributeBitsToU32(image_info,image,"DPX:tv.time.code",dpx_tv_info.time_code);
+  AttributeBitsToU32(image_info,image,"DPX:tv.user.bits",dpx_tv_info.user_bits);
+  AttributeToU8(image_info,image,"DPX:tv.interlace",dpx_tv_info.interlace);
+  AttributeToU8(image_info,image,"DPX:tv.field.number",dpx_tv_info.field_number);
+  AttributeToU8(image_info,image,"DPX:tv.video.signal",dpx_tv_info.video_signal);
+  AttributeToR32(image_info,image,"DPX:tv.horizontal.sampling.rate",dpx_tv_info.horizontal_sample);
+  AttributeToR32(image_info,image,"DPX:tv.temporal.sampling.rate",dpx_tv_info.temporal_sample);
+  AttributeToR32(image_info,image,"DPX:tv.sync.time",dpx_tv_info.sync_time);
+  AttributeToR32(image_info,image,"DPX:tv.gamma",dpx_tv_info.gamma);
+  AttributeToR32(image_info,image,"DPX:tv.black.level",dpx_tv_info.black_level);
+  AttributeToR32(image_info,image,"DPX:tv.black.gain",dpx_tv_info.black_gain);
+  AttributeToR32(image_info,image,"DPX:tv.breakpoint",dpx_tv_info.breakpoint);
+  AttributeToR32(image_info,image,"DPX:tv.white.level",dpx_tv_info.white_level);
+  AttributeToR32(image_info,image,"DPX:tv.integration.time",dpx_tv_info.integration_time);
   /*
     Determine the maximum number of samples required for any element.
   */

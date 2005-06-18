@@ -289,6 +289,12 @@ UNIX/Cygwin/MinGW COMPILATION
              16              8MB
              32             15MB
 
+      GraphicsMagick performs all image processing computations using
+      double-precision floating point so results are very accurate.
+      Increasing the quantum storage size decreases the amount of
+      quantization noise (usually not visible at 8 bits) and helps
+      prevent countouring and posterization in the image.
+
     o --without-magick-plus-plus: Disable building Magick++, the C++
       application programming interface to GraphicsMagick. A suitable C++
       compiler is required in order to build Magick++. Specify the CXX

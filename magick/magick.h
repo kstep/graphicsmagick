@@ -72,8 +72,10 @@ extern MagickExport char
 extern MagickExport const char
   *GetImageMagick(const unsigned char *,const size_t);
 
-extern MagickExport unsigned int
-  IsMagickConflict(const char *),
+extern MagickExport MagickBool
+  IsMagickConflict(const char *);
+
+extern MagickExport MagickPassFail
   ListModuleMap(FILE *,ExceptionInfo *),
   ListMagickInfo(FILE *,ExceptionInfo *),
   UnregisterMagickInfo(const char *);

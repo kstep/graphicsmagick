@@ -341,6 +341,9 @@
 /* Define to 1 if you have the `vsprintf' function. */
 #undef HAVE_VSPRINTF
 
+/* Define to 1 if you have the `_exit' function. */
+#undef HAVE__EXIT
+
 /* Define to 1 if you have the `_pclose' function. */
 #undef HAVE__PCLOSE
 

@@ -45,7 +45,8 @@ typedef struct _TempfileInfo
     *next;
 } TempfileInfo;
 
-static TempfileInfo *templist = 0;
+static TempfileInfo
+  *templist = 0;
 
 static SemaphoreInfo
   *templist_semaphore = 0;
@@ -437,7 +438,8 @@ MagickExport void DestroyTemporaryFiles(void)
     *member,
     *liberate;
 
-  AcquireSemaphoreInfo(&templist_semaphore);
+  if (templist_semaphore)
+    AcquireSemaphoreInfo(&templist_semaphore);
   member=templist;
   templist=0;
   while(member)
@@ -452,8 +454,10 @@ MagickExport void DestroyTemporaryFiles(void)
       liberate->next=0;
       MagickFreeMemory(liberate);
     }
-  LiberateSemaphoreInfo(&templist_semaphore);
-  DestroySemaphoreInfo(&templist_semaphore);
+  if (templist_semaphore)
+    LiberateSemaphoreInfo(&templist_semaphore);
+  if (templist_semaphore)
+    DestroySemaphoreInfo(&templist_semaphore);
 }
 
 /*

@@ -1,3 +1,17 @@
+2005-06-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (WriteDPXImage): Only preserve source image
+	dimension and offset information if image size has not changed.
+	If image size has changed, the existing information may become
+	invalid.
+	(WriteDPXImage): Allow user to assign DPX header attribute values
+	using syntax like "-define dpx:mp.frame.position=1000".
+
+2005-06-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/fpx.c: Fix compilation problem due to additional
+	ExportImagePixelArea parameter.
+
 2005-06-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/png.c (WriteMNGImage): Use -define mng:need-cacheoff to

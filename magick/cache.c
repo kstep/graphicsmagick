@@ -2114,13 +2114,13 @@ static unsigned int ExtendCache(int file,magick_off_t length)
 extern "C" {
 #endif
 
-static void CacheSignalHandler(int status)
-{
-  MagickFatalError3(CacheFatalError,UnableToExtendPixelCache,
-    DiskAllocationFailed);
-  DestroyMagick();
-  Exit(status);
-}
+/* static void CacheSignalHandler(int signum) */
+/* { */
+/*   MagickFatalError3(CacheFatalError,UnableToExtendPixelCache, */
+/*     DiskAllocationFailed); */
+/*   DestroyMagick(); */
+/*   Exit(signum); */
+/* } */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
@@ -2351,7 +2351,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
         (void) close(file);
     }
 #if defined(SIGBUS)
-  (void) signal(SIGBUS,CacheSignalHandler);
+/*   (void) signal(SIGBUS,CacheSignalHandler); */
 #endif
   FormatSize(cache_info->length,format);
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),

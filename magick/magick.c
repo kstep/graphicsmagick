@@ -78,7 +78,6 @@ static MagickInfo
   *magick_list = (MagickInfo *) NULL;
 
 static MagickInitializationState MagickInitialized = InitDefault;
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,6 +103,7 @@ MagickExport void DestroyMagick(void)
   if (MagickInitialized == InitUninitialized)
     return;
 
+  fflush(stdout);
 #if defined(HasX11)
   XDestroyX11Resources();
 #endif
@@ -563,17 +563,44 @@ static Sigfunc *MagickCondSignal(int signo, Sigfunc *func)
   While support for signal is definitely broken under Windows, the good
   news is that it seems to be unlikely to generate a signal we care about.
 */
-static RETSIGTYPE MagickSignalHandler(int signo)
+static RETSIGTYPE MagickPanicSignalHandler(int signo)
 {
-  /*
-    Release resources
-  */
-  DestroyMagick();
+  /* fprintf(stderr,"Caught panic signal %d\n", signo); */
 
   /*
     Restore default handling for the signal
   */
   (void) MagickSignal(signo,SIG_DFL);
+
+  /*
+    Release resources
+  */
+  DestroyTemporaryFiles();
+
+  /*
+    Raise signal again to invoke default handler
+    This may cause a core dump or immediate exit.
+  */
+#if defined(HAVE_RAISE)
+  fflush(stdout);
+  (void) raise(signo);
+#endif
+
+  SignalHandlerExit(signo);
+}
+static RETSIGTYPE MagickSignalHandler(int signo)
+{
+  /* fprintf(stderr,"Caught signal %d\n", signo); */
+
+  /*
+    Restore default handling for the signal
+  */
+  (void) MagickSignal(signo,SIG_DFL);
+
+  /*
+    Release resources
+  */
+  DestroyMagick();
 
   /*
     Raise signal again to invoke default handler
@@ -583,11 +610,11 @@ static RETSIGTYPE MagickSignalHandler(int signo)
   (void) raise(signo);
 #endif
 
-  Exit(signo);
+  SignalHandlerExit(signo);
 }
 
 /*
-   The goal of this routine is to determine whether tha passed
+   The goal of this routine is to determine whether the passed
    string is a valid and complete path to a file within the 
    filesystem
  */
@@ -712,15 +739,15 @@ MagickExport void InitializeMagickSignalHandlers(void)
 #endif
   /* quit (ASCII FS), default terminate with core */
 #if defined(SIGQUIT)
-  (void) MagickCondSignal(SIGQUIT,MagickSignalHandler);
+  (void) MagickCondSignal(SIGQUIT,MagickPanicSignalHandler);
 #endif
   /* software-triggered abort, default terminate with core */
 #if defined(SIGABRT)
-  (void) MagickCondSignal(SIGABRT,MagickSignalHandler);
+  (void) MagickCondSignal(SIGABRT,MagickPanicSignalHandler);
 #endif
   /* floating point exception, default terminate with core */
 #if defined(SIGFPE)
-  (void) MagickCondSignal(SIGFPE,MagickSignalHandler);
+  (void) MagickCondSignal(SIGFPE,MagickPanicSignalHandler);
 #endif
   /* software termination signal from kill, default terminate */
 #if defined(SIGTERM)
@@ -728,11 +755,11 @@ MagickExport void InitializeMagickSignalHandlers(void)
 #endif
   /* exceeded cpu limit, default terminate with core */
 #if defined(SIGXCPU)
-  (void) MagickCondSignal(SIGXCPU,MagickSignalHandler);
+  (void) MagickCondSignal(SIGXCPU,MagickPanicSignalHandler);
 #endif
   /* exceeded file size limit, default terminate with core */
 #if defined(SIGXFSZ)
-  (void) MagickCondSignal(SIGXFSZ,MagickSignalHandler);
+  (void) MagickCondSignal(SIGXFSZ,MagickPanicSignalHandler);
 #endif
 }
 
@@ -745,7 +772,6 @@ MagickExport void InitializeMagick(const char *path)
      same call to DefineClientSettings to set it up. Please make sure
      that this rule is followed in any future updates the this code!!!
    */
-
   if (MagickInitialized == InitInitialized)
     return;
   SPINLOCK_WAIT;

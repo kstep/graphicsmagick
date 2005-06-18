@@ -663,7 +663,7 @@ typedef struct _Image
 
   double
     x_resolution,       /* Horizontal resolution (also see units) */
-    y_resolution;       /* Vertical resoution (also see units) */
+    y_resolution;       /* Vertical resolution (also see units) */
 
   RectangleInfo
     page,               /* Offset to apply when placing image */
