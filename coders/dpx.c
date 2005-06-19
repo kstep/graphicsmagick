@@ -38,6 +38,7 @@
 %    RGB
 %    Log RGB (density range = 2.048)
 %    Grayscale (Luma)
+%    CbYCr (only 4:4:4 sampling at the moment)
 %
 %   Storage:
 %    Bits per sample of 1, 8, 10, 12, and 16.
@@ -49,7 +50,7 @@
 % Not currently supported:
 %
 %   Colorspaces:
-%    CbYCr and other SMPTE 125M spaces.
+%    Subsampled CbYCr and other SMPTE 125M spaces.
 %    CbCR.
 %    Composite Video
 %
@@ -116,9 +117,16 @@ typedef enum
   ImageElementRGBA=51,             /* BGRA order */
   ImageElementABGR=52,             /* ARGB order */
   ImageElementCbYCrY422=100,       /* SMPTE 125M, 4:2:2 */
-  ImageElementCbYACrYA4224=101,    /* SMPTE 125M, 4:2:2:4 */
-  ImageElementCbYCr444=102,        /* SMPTE 125M, 4:4:4 */
-  ImageElementCbYCrA4444=103       /* SMPTE 125M, 4:4:4:4 */
+  ImageElementCbYACrYA4224=101,    /* 4:2:2:4 */
+  ImageElementCbYCr444=102,        /* 4:4:4 */
+  ImageElementCbYCrA4444=103,      /* 4:4:4:4 */
+  ImageElementUserDef2Element=150, /* User-defined 2-component element */
+  ImageElementUserDef3Element=151, /* User-defined 3-component element */
+  ImageElementUserDef4Element=152, /* User-defined 4-component element */
+  ImageElementUserDef5Element=153, /* User-defined 5-component element */
+  ImageElementUserDef6Element=154, /* User-defined 6-component element */
+  ImageElementUserDef7Element=155, /* User-defined 7-component element */
+  ImageElementUserDef8Element=156  /* User-defined 8-component element */
 } DPXImageElementDescriptor;
 
 typedef enum
@@ -631,58 +639,84 @@ static const char *DescribeImageElementDescriptor(const DPXImageElementDescripto
   char *
     description="Unknown";
 
+  static char
+    buffer[MaxTextExtent];
+
   switch(descriptor)
     {
     case ImageElementUnspecified:
-      description="Unspecified(0)";
+      description="Generic 1 Element";
       break;
     case ImageElementRed:
-      description="Red(1)";
+      description="Red";
       break;
     case ImageElementGreen:
-      description="Green(2)";
+      description="Green";
       break;
     case ImageElementBlue:
-      description="Blue(3)";
+      description="Blue";
       break;
     case ImageElementAlpha:
-      description="Alpha(4)";
+      description="Alpha";
       break;
     case ImageElementLuma:
-      description="Luma(6)";
+      description="Luma";
       break;
     case ImageElementColorDifferenceCbCr:
-      description="ColorDifferenceCbCr(7)";
+      description="ColorDifferenceCbCr";
       break;
     case ImageElementDepth:
       description="Depth(8)";
       break;
     case ImageElementCompositeVideo:
-      description="CompositeVideo(9)";
+      description="CompositeVideo";
       break;
     case ImageElementRGB:
-      description="RGB(50)";
+      description="RGB";
       break;
     case ImageElementRGBA:
-      description="RGBA(51)";
+      description="RGBA";
       break;
     case ImageElementABGR:
-      description="ABGR(52)";
+      description="ABGR";
       break;
     case ImageElementCbYCrY422:
-      description="CbYACrYA 4:2:2:4 (100)";
+      description="CbYACrYA 4:2:2:4";
       break;
     case ImageElementCbYACrYA4224:
-      description="CbYACrYA 4:2:2:4 (101)";
+      description="CbYACrYA 4:2:2:4";
       break;
     case ImageElementCbYCr444:
-      description="CbYCr 4:4:4 (102)";
+      description="CbYCr 4:4:4";
       break;
     case ImageElementCbYCrA4444:
-      description="CbYCrA 4:4:4:4 (103)";
+      description="CbYCrA 4:4:4:4";
+      break;
+    case ImageElementUserDef2Element:
+      description="Generic 2 Element";
+      break;
+    case ImageElementUserDef3Element:
+      description="Generic 3 Element";
+      break;
+    case ImageElementUserDef4Element:
+      description="Generic 4 Element";
+      break;
+    case ImageElementUserDef5Element:
+      description="Generic 5 Element";
+      break;
+    case ImageElementUserDef6Element:
+      description="Generic 6 Element";
+      break;
+    case ImageElementUserDef7Element:
+      description="Generic 7 Element";
+      break;
+    case ImageElementUserDef8Element:
+      description="Generic 8 Element";
       break;
     default:
       {
+        FormatString(buffer,"Unknown (%u)",(unsigned int) descriptor);
+        description=buffer;
       }
     }
 
@@ -700,42 +734,42 @@ static const char *DescribeImageTransferCharacteristic(const DPXTransferCharacte
   switch(characteristic)
     {
     case TransferCharacteristicUserDefined:
-      description="UserDefined(0)";
+      description="UserDefined";
       break;
     case TransferCharacteristicPrintingDensity:
-      description="PrintingDensity(1)";
+      description="PrintingDensity";
       break;
     case TransferCharacteristicLinear:
-      description="Linear(2)";
+      description="Linear";
       break;
     case TransferCharacteristicLogarithmic:
-      description="Logarithmic(3)";
+      description="Logarithmic";
       break;
     case TransferCharacteristicUnspecifiedVideo:
-      description="UnspecifiedVideo(4)";
+      description="UnspecifiedVideo";
       break;
     case TransferCharacteristicSMTPE274M:
-      description="SMTPE274M(5)";
+      description="SMTPE274M";
       break;
     case TransferCharacteristicITU_R704_4:
-      description="ITU-R704-4(6)";
+      description="ITU-R704-4";
     case TransferCharacteristicITU_R601_5_BG:
-      description="ITU-R601-5(7)";
+      description="ITU-R601-5";
       break;
     case TransferCharacteristicITU_R601_5_M:
-      description="ITU-R601-5-M(8)";
+      description="ITU-R601-5-M";
       break;
     case TransferCharacteristicNTSCCompositeVideo:
-      description="NTSCCompositeVideo(9)";
+      description="NTSCCompositeVideo";
       break;
     case TransferCharacteristicPALCompositeVideo:
-      description="PALCompositeVideo(10)";
+      description="PALCompositeVideo";
       break;
     case TransferCharacteristicZDepthLinear:
-      description="ZDepthLinear(11)";
+      description="ZDepthLinear";
       break;
     case TransferCharacteristicZDepthHomogeneous:
-      description="ZDepthHomogeneous(12)";
+      description="ZDepthHomogeneous";
       break;
     default:
       {
@@ -757,42 +791,42 @@ static const char *DescribeImageColorimetric(const DPXColorimetric colorimetric)
   switch(colorimetric)
     {
     case ColorimetricUserDefined:
-      description="UserDefined(0)";
+      description="UserDefined";
       break;
     case ColorimetricPrintingDensity:
-      description="PrintingDensity(1)";
+      description="PrintingDensity";
       break;
     case ColorimetricLinear:
-      description="NotApplicable(2)";
+      description="NotApplicable";
       break;
     case ColorimetricLogarithmic:
-      description="NotApplicable(3)";
+      description="NotApplicable";
       break;
     case ColorimetricUnspecifiedVideo:
-      description="UnspecifiedVideo(4)";
+      description="UnspecifiedVideo";
       break;
     case ColorimetricSMTPE274M:
-      description="SMTPE274M(5)";
+      description="SMTPE274M";
       break;
     case ColorimetricITU_R704_4:
-      description="ITU-R704-4(6)";
+      description="ITU-R704-4";
     case ColorimetricITU_R601_5_BG:
-      description="ITU-R601-5-BG(7)";
+      description="ITU-R601-5-BG";
       break;
     case ColorimetricITU_R601_5_M:
-      description="ITU-R601-5-M(8)";
+      description="ITU-R601-5-M";
       break;
     case ColorimetricNTSCCompositeVideo:
-      description="NTSCCompositeVideo(9)";
+      description="NTSCCompositeVideo";
       break;
     case ColorimetricPALCompositeVideo:
-      description="PALCompositeVideo(10)";
+      description="PALCompositeVideo";
       break;
     case ColorimetricZDepthLinear:
-      description="NotApplicable(11)";
+      description="NotApplicable";
       break;
     case ColorimetricZDepthHomogeneous:
-      description="NotApplicable(12)";
+      description="NotApplicable";
       break;
     default:
       {
@@ -820,11 +854,14 @@ static void DescribeDPXImageElement(const DPXImageElement *element_info,
                         element_info->reference_high_data_code,
                         element_info->reference_high_quantity);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Element %u: descriptor=%s characteristic=%s colorimetric=%s",
+                        "Element %u: descriptor=%s(%u) characteristic=%s(%u) colorimetric=%s(%u)",
                         element,
                         DescribeImageElementDescriptor(element_info->descriptor),
+                        (unsigned int) element_info->descriptor,
                         DescribeImageTransferCharacteristic(element_info->transfer_characteristic),
-                        DescribeImageColorimetric(element_info->colorimetric));
+                        (unsigned int) element_info->transfer_characteristic,
+                        DescribeImageColorimetric(element_info->colorimetric),
+                        (unsigned int) element_info->colorimetric);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Element %u: bits-per-sample=%u",
                         element,
@@ -847,7 +884,7 @@ static void DescribeDPXImageElement(const DPXImageElement *element_info,
                         element,
                         element_info->description);
 }
-static unsigned int DPXSamplesPerElement(const DPXImageElementDescriptor element_descriptor)
+static unsigned int  DPXSamplesPerElement(const DPXImageElementDescriptor element_descriptor)
 {
   unsigned int
     samples_per_element=0;
@@ -867,6 +904,12 @@ static unsigned int DPXSamplesPerElement(const DPXImageElementDescriptor element
       break;
     case ImageElementRGBA:
     case ImageElementABGR:
+      samples_per_element=4;
+      break;
+    case ImageElementCbYCr444:
+      samples_per_element=3;
+      break;
+    case ImageElementCbYCrA4444:
       samples_per_element=4;
       break;
     default:
@@ -1719,6 +1762,30 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       q++;
                     }
                   break;
+                case ImageElementCbYCr444:
+                  image->colorspace=YCbCrColorspace;
+                  /* red,green,blue = Y, Cb, Cr */
+                  for (x=image->columns; x > 0; x--)
+                    {
+                      q->green=*samples_itr++; /* Cb */
+                      q->red=*samples_itr++;   /* Y */
+                      q->blue=*samples_itr++;  /* Cr */
+                      q->opacity=OpaqueOpacity;
+                      q++;
+                    }
+                  break;
+                case ImageElementCbYCrA4444:
+                  image->colorspace=YCbCrColorspace;
+                  /* red,green,blue = Y, Cb, Cr */
+                  for (x=image->columns; x > 0; x--)
+                    {
+                      q->green=*samples_itr++; /* Cb */
+                      q->red=*samples_itr++;   /* Y */
+                      q->blue=*samples_itr++;  /* Cr */
+                      q->opacity=MaxRGB-*samples_itr++;
+                      q++;
+                    }
+                  break;
                 default:
                   break;
                 }
@@ -2359,6 +2426,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+  is_grayscale=image->is_grayscale;
 
   /*
     Support user-selection of big/little endian output.
@@ -2380,6 +2448,25 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     }
 #endif
 
+  /*
+    Adjust image colorspace if necessary.
+  */
+  if ((image_info->colorspace == CineonLogRGBColorspace) &&
+      (image->colorspace != CineonLogRGBColorspace))
+    (void) TransformColorspace(image,CineonLogRGBColorspace);
+  else if ((image_info->colorspace == YCbCrColorspace) &&
+           (image->colorspace != YCbCrColorspace))
+    (void) TransformColorspace(image,YCbCrColorspace);
+  else if (IsRGBColorspace(image_info->colorspace) &&
+           !IsRGBColorspace(image->colorspace))
+    (void) TransformColorspace(image,RGBColorspace);
+  else if (!IsRGBColorspace(image->colorspace) &&
+           (image->colorspace != CineonLogRGBColorspace))
+    (void) TransformColorspace(image,RGBColorspace);
+
+  /*
+    Compute desired/necessary number of bits per sample.
+  */
   if ((definition_value=AccessDefinition(image_info,"dpx","bits-per-sample")))
     bits_per_sample=atoi(definition_value);
 
@@ -2401,9 +2488,14 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "Bits per sample: %u", bits_per_sample);
 
-  is_grayscale=image->is_grayscale;
-
-  if (is_grayscale)
+  if (image->colorspace == YCbCrColorspace)
+    {
+      samples_per_component=3;
+      number_of_elements=1;
+      if (image->matte)
+        samples_per_component++;
+    }
+  else if (IsGrayColorspace(image->colorspace))
     {
       samples_per_component=1;
       number_of_elements=1;
@@ -2465,19 +2557,6 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                           "Element size: %u", (unsigned int) element_size);
 
   /*
-    Adjust image colorspace if necessary.
-  */
-  if ((image_info->colorspace == CineonLogRGBColorspace) &&
-      (image->colorspace != CineonLogRGBColorspace))
-    (void) TransformColorspace(image,CineonLogRGBColorspace);
-  else if (IsRGBColorspace(image_info->colorspace) &&
-           !IsRGBColorspace(image->colorspace))
-    (void) TransformColorspace(image,RGBColorspace);
-  else if (!IsRGBColorspace(image->colorspace) &&
-           (image->colorspace != CineonLogRGBColorspace))
-    (void) TransformColorspace(image,RGBColorspace);
-
-  /*
     Obtain pointer to user data and user data length (if available).
   */
   user_data=GetImageProfile(image,"DPXUSERDATA",&user_data_length);
@@ -2520,6 +2599,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 
   if (image->colorspace == CineonLogRGBColorspace)
     transfer_characteristic=TransferCharacteristicPrintingDensity;
+  else if (image->colorspace == YCbCrColorspace)
+    transfer_characteristic=TransferCharacteristicITU_R601_5_BG;
   else
     transfer_characteristic=TransferCharacteristicLinear;
 
@@ -2536,6 +2617,52 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         MaxValueGivenBits(bits_per_sample);
       dpx_image_info.element_info[0].reference_low_quantity=0.00F;
       dpx_image_info.element_info[0].reference_high_quantity=2.048F;
+    }
+  else if ((transfer_characteristic == TransferCharacteristicUnspecifiedVideo) ||
+           (transfer_characteristic == TransferCharacteristicSMTPE274M) ||
+           (transfer_characteristic == TransferCharacteristicITU_R704_4) ||
+           (transfer_characteristic == TransferCharacteristicITU_R601_5_BG) ||
+           (transfer_characteristic == TransferCharacteristicITU_R601_5_M) ||
+           (transfer_characteristic == TransferCharacteristicNTSCCompositeVideo) ||
+           (transfer_characteristic == TransferCharacteristicPALCompositeVideo))
+    {
+      /*
+        Some sort of video.
+      */
+      unsigned int
+        max_value_given_bits = MaxValueGivenBits(bits_per_sample);
+
+      switch (transfer_characteristic)
+        {
+        case TransferCharacteristicSMTPE274M:
+          dpx_image_info.element_info[0].colorimetric=ColorimetricSMTPE274M;
+          break;
+        case TransferCharacteristicITU_R704_4:
+          dpx_image_info.element_info[0].colorimetric=ColorimetricITU_R704_4;
+          break;
+        case TransferCharacteristicITU_R601_5_BG:
+          dpx_image_info.element_info[0].colorimetric=ColorimetricITU_R601_5_BG;
+          break;
+        case TransferCharacteristicITU_R601_5_M:
+          dpx_image_info.element_info[0].colorimetric=TransferCharacteristicITU_R601_5_M;
+          break;
+        case TransferCharacteristicNTSCCompositeVideo:
+          dpx_image_info.element_info[0].colorimetric=ColorimetricNTSCCompositeVideo;
+          break;
+        case TransferCharacteristicPALCompositeVideo:
+          dpx_image_info.element_info[0].colorimetric=ColorimetricPALCompositeVideo;
+          break;
+        default:
+          dpx_image_info.element_info[0].colorimetric=ColorimetricUserDefined;
+          break;
+        }
+
+      dpx_image_info.element_info[0].reference_low_data_code=  // 16 for 8 bits
+        (U32) (max_value_given_bits * (16.0/255.0) + 0.5);
+      dpx_image_info.element_info[0].reference_high_data_code= // 235 for 8 bits
+        (U32) (max_value_given_bits * (235.0/255.0) + 0.5);
+      dpx_image_info.element_info[0].reference_low_quantity=0.00F;  // 0mv
+      dpx_image_info.element_info[0].reference_high_quantity=0.700F; // 700mv
     }
   else if (transfer_characteristic == TransferCharacteristicLinear)
     {
@@ -2554,9 +2681,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     image_data_offset += user_data_length;
   image_data_offset=(((image_data_offset+8091)/8092)*8092);
 
-  /* Matte channel */
-  dpx_image_info.element_info[0].descriptor=image->matte ?
-    ImageElementRGBA : ImageElementRGB;
+  /* Element Descriptor */
+  SET_UNDEFINED_U8(dpx_image_info.element_info[0].descriptor);
   /* Number of bits per sample */
   dpx_image_info.element_info[0].bits_per_sample=bits_per_sample;
   /* Packing method */
@@ -2572,8 +2698,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /* Number of padded bytes at the end of image element. */
   dpx_image_info.element_info[0].eoi_pad=0;
   /* Element description */
-  strlcpy(dpx_image_info.element_info[0].description,"Red, Green, & Blue",
-          sizeof(dpx_image_info.element_info[0].description));
+  SET_UNDEFINED_ASCII(dpx_image_info.element_info[0].description);
 
   for (i=1; i < number_of_elements; i++)
     {
@@ -2584,47 +2709,69 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         dpx_image_info.element_info[i-1].data_offset+element_size;
     }
 
-  if (is_grayscale)
+  /*
+    Fill out element descriptor.
+  */
+  if (number_of_elements > 1)
     {
       /*
-        Grayscale with alpha plane.
+        Planar image configuration.
       */
-      dpx_image_info.element_info[0].descriptor=ImageElementLuma;
-      strlcpy(dpx_image_info.element_info[0].description,"Gray",
-              sizeof(dpx_image_info.element_info[0].description));
-      if (number_of_elements > 1)
+      if (IsGrayColorspace(image->colorspace))
         {
-          dpx_image_info.element_info[1].descriptor=ImageElementAlpha;
-          strlcpy(dpx_image_info.element_info[1].description,"Transparency",
-                  sizeof(dpx_image_info.element_info[1].description));
+          /* Luma with alpha channel in second plane */
+          dpx_image_info.element_info[0].descriptor=ImageElementLuma;
+          if (number_of_elements > 1)
+            dpx_image_info.element_info[1].descriptor=ImageElementAlpha;
+        }
+      else if (IsRGBColorspace(image->colorspace) ||
+               (image->colorspace == CineonLogRGBColorspace))
+        {
+          /* RGB Planar */
+          dpx_image_info.element_info[0].descriptor=ImageElementRed;
+          dpx_image_info.element_info[1].descriptor=ImageElementGreen;
+          dpx_image_info.element_info[2].descriptor=ImageElementBlue;
+          if ((image->matte) && (number_of_elements == 4))
+            {
+              dpx_image_info.element_info[3].descriptor=ImageElementAlpha;
+            }
         }
     }
   else
     {
-      if (number_of_elements > 1)
+      if (image->colorspace == YCbCrColorspace)
         {
-          /*
-            Planar image configuration.
-          */
-          dpx_image_info.element_info[0].descriptor=ImageElementRed;
-          strlcpy(dpx_image_info.element_info[0].description,"Red",
-                  sizeof(dpx_image_info.element_info[0].description));
-
-          dpx_image_info.element_info[1].descriptor=ImageElementGreen;
-          strlcpy(dpx_image_info.element_info[1].description,"Green",
-                  sizeof(dpx_image_info.element_info[1].description));
-
-          dpx_image_info.element_info[2].descriptor=ImageElementBlue;
-          strlcpy(dpx_image_info.element_info[2].description,"Blue",
-                  sizeof(dpx_image_info.element_info[2].description));
-
-          if ((image->matte) && (number_of_elements == 4))
-            {
-              dpx_image_info.element_info[3].descriptor=ImageElementAlpha;
-              strlcpy(dpx_image_info.element_info[3].description,"Transparency",
-                      sizeof(dpx_image_info.element_info[3].description));
-            }
+          /* CbYCr */
+          dpx_image_info.element_info[0].descriptor=image->matte ?
+            ImageElementCbYCrA4444 : ImageElementCbYCr444;
         }
+      else if (IsGrayColorspace(image->colorspace))
+        {
+          /* Luma */
+          dpx_image_info.element_info[0].descriptor=ImageElementLuma;
+        }
+      else if (IsRGBColorspace(image->colorspace) ||
+               (image->colorspace == CineonLogRGBColorspace))
+        {
+          /* RGB */
+          dpx_image_info.element_info[0].descriptor=image->matte ?
+            ImageElementRGBA : ImageElementRGB;
+        }
+    }
+
+  /*
+    Add a textual description for each element.
+  */
+  for (i=0; i < number_of_elements; i++)
+    {
+      strlcpy(dpx_image_info.element_info[i].description,
+              DescribeImageElementDescriptor(dpx_image_info.element_info[i].descriptor),
+              sizeof(dpx_image_info.element_info[0].description));
+      strlcat(dpx_image_info.element_info[i].description," / ",
+              sizeof(dpx_image_info.element_info[0].description));
+      strlcat(dpx_image_info.element_info[i].description,
+              DescribeImageTransferCharacteristic(dpx_image_info.element_info[i].transfer_characteristic),
+              sizeof(dpx_image_info.element_info[0].description));
     }
 
   /*
@@ -2740,7 +2887,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     Allocate row samples.
   */
   samples=MagickAllocateMemory(sample_t *,max_samples_per_element*
-                                image->columns*sizeof(sample_t));
+                               image->columns*sizeof(sample_t));
   if (samples == (sample_t *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   memset((void *) samples,0,max_samples_per_element*image->columns*
@@ -2899,6 +3046,26 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                   p++;
                 }
               break;
+            case ImageElementCbYCr444:
+              for (x=image->columns; x > 0; x--)
+                {
+                  *samples_itr++=p->green; /* Cb */
+                  *samples_itr++=p->red;   /* Y */
+                  *samples_itr++=p->blue;  /* Cr */
+                  p++;
+                }
+              break;
+            case ImageElementCbYCrA4444:
+              for (x=image->columns; x > 0; x--)
+                {
+                  *samples_itr++=p->green; /* Cb */
+                  *samples_itr++=p->red;   /* Y */
+                  *samples_itr++=p->blue;  /* Cr */
+                  *samples_itr++=MaxRGB-p->opacity;
+                  p++;
+                }
+              break;
+
             default:
               break;
             }

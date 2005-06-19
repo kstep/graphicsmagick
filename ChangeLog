@@ -1,3 +1,8 @@
+2005-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (ReadDPXImage): Add read support for CbYCr at 4:4:4.
+	(WriteDPXImage): Add write support for CbYCr at 4:4:4.
+
 2005-06-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (WriteDPXImage): Only preserve source image

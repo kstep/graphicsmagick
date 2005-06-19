@@ -101,7 +101,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   register PixelPacket
     *q,
-    *s;
+    *chroma_pixels;
 
   register long
     i;
@@ -205,22 +205,22 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          s=SetImagePixels(chroma_image,0,y,chroma_image->columns,1);
-          if (s == (PixelPacket *) NULL)
+          chroma_pixels=SetImagePixels(chroma_image,0,y,chroma_image->columns,1);
+          if (chroma_pixels == (PixelPacket *) NULL)
             break;
           for (x=0; x < (long) image->columns; x+=2)
           {
-            s->red=0;
-            s->green=ScaleCharToQuantum(*p++);
-            q->red=ScaleCharToQuantum(*p++);
+            chroma_pixels->red=0;
+            chroma_pixels->green=ScaleCharToQuantum(*p++); /* U (Cb) */
+            q->red=ScaleCharToQuantum(*p++); /* Y */
             q->green=0;
             q->blue=0;
             q++;
             q->green=0;
             q->blue=0;
-            s->blue=ScaleCharToQuantum(*p++);
-            q->red=ScaleCharToQuantum(*p++);
-            s++;
+            chroma_pixels->blue=ScaleCharToQuantum(*p++); /* V (Cr) */
+            q->red=ScaleCharToQuantum(*p++); /* Y */
+            chroma_pixels++;
             q++;
           }
         }
@@ -402,7 +402,7 @@ ModuleExport void RegisterYUVImage(void)
   entry->encoder=(EncoderHandler) WriteYUVImage;
   entry->adjoin=False;
   entry->raw=True;
-  entry->description=AcquireString("CCIR 601 4:1:1 or 4:2:2");
+  entry->description=AcquireString("CCIR 601 4:1:1 or 4:2:2 (8-bit only)");
   entry->module=AcquireString("YUV");
   (void) RegisterMagickInfo(entry);
 }
