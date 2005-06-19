@@ -2380,7 +2380,7 @@ You can use the option <tt>-list resource</tt> to find out the limits.</pp>
 
 <!-- ------------ -list --------------------------------------------- -->
 
-<utils apps=convert,identify,mogrify>
+<utils apps=convert,mogrify>
 <dopt>-list <type></opt>
 
 <abs>the type of list</abs>

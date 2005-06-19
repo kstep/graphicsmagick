@@ -1,3 +1,8 @@
+2005-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/nt_base.c (readdir): Fix write beyond buffer length
+	reported in SourceForge issue #1182003.  Only impacts Windows.
+
 2005-05-16  Tavis Ormandy <taviso@gentoo.org>
 
 	* coders/xwd.c (ReadXWDImage): Fix for infinite loop in the xwd

@@ -337,7 +337,7 @@
 <opt>-linewidth</opt>
 <abs>the line width for subsequent draw operations</abs>
 </utils>
-<utils apps=convert,identify,mogrify>
+<utils apps=convert,mogrify>
 <lopt>-list <type></opt>
 <abs>the type of list</abs>
 </utils>

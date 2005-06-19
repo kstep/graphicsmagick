@@ -2027,8 +2027,8 @@ MagickExport struct dirent *readdir(DIR *entry)
     }
   entry->firsttime=FALSE;
   (void) strncpy(entry->file_info.d_name,entry->Win32FindData.cFileName,
-    MaxTextExtent-1);
-  entry->file_info.d_name[MaxTextExtent-1]='\0';
+    sizeof(entry->file_info.d_name)-1);
+  entry->file_info.d_name[sizeof(entry->file_info.d_name)-1]='\0';
   entry->file_info.d_namlen=strlen(entry->file_info.d_name);
   return(&entry->file_info);
 }
