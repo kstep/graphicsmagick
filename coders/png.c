@@ -2206,7 +2206,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       int
         depth;
 
-      depth=(long) image->depth;
+      depth=(long) ping_info->bit_depth;
 #endif
       image->matte=((ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
           (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
@@ -2504,6 +2504,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           break;
       MagickFreeMemory(quantum_scanline);
     }
+
   if (image->storage_class == PseudoClass)
     (void) SyncImage(image);
   png_read_end(ping,ping_info);
@@ -3832,6 +3833,11 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 p+=16;
                 simplicity=mng_get_long(p);
+              }
+            if (logging)
+              {
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  MNG simplicity: %lx",simplicity);
               }
             mng_type=1;    /* Full MNG */
             if ((simplicity != 0) && ((simplicity | 11) == 11))
@@ -6026,6 +6032,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
     not_valid;
 
   unsigned long
+    quantum_size,  /* depth for ExportImage */
     rowbytes,
     save_image_depth;
 
@@ -6110,6 +6117,9 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
      image->depth=8;
   if (image->depth == 3)
      image->depth=4;
+
+  quantum_size=(image->depth > 8) ? 16:8;
+
   save_image_depth=image->depth;
   ping_info->bit_depth=(png_byte) save_image_depth;
   if (logging)
@@ -7029,10 +7039,10 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           break;
         if (mng_info->IsPalette)
               (void) ExportImagePixelArea(image,(QuantumType) GrayQuantum,
-                image->depth,png_pixels,0);
+                quantum_size,png_pixels,0);
         else
-          (void) ExportImagePixelArea(image,(QuantumType) RedQuantum,image->depth,
-            png_pixels,0);
+          (void) ExportImagePixelArea(image,(QuantumType) RedQuantum,
+            quantum_size,png_pixels,0);
         for (i=0; i < (long) image->columns; i++)
            *(png_pixels+i)=(*(png_pixels+i) > 128) ? 255 : 0;
         png_write_row(ping,png_pixels);
@@ -7061,15 +7071,15 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
             {
               if (mng_info->IsPalette)
                 (void) ExportImagePixelArea(image,(QuantumType) GrayQuantum,
-                   image->depth,png_pixels,0);
+                   quantum_size,png_pixels,0);
               else
                 (void) ExportImagePixelArea(image,(QuantumType) RedQuantum,
-                   image->depth,png_pixels,0);
+                   quantum_size,png_pixels,0);
             }
           else /* PNG_COLOR_TYPE_GRAY_ALPHA */
             {
               (void) ExportImagePixelArea(image,(QuantumType) GrayAlphaQuantum,
-                 image->depth,png_pixels,0);
+                 quantum_size,png_pixels,0);
             }
           png_write_row(ping,png_pixels);
         }
@@ -7097,21 +7107,21 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
               {
                 if (image->storage_class == DirectClass)
                   (void) ExportImagePixelArea(image,(QuantumType) RedQuantum,
-                     image->depth,png_pixels,0);
+                     quantum_size,png_pixels,0);
                 else
                   (void) ExportImagePixelArea(image,(QuantumType) GrayQuantum,
-                    image->depth,png_pixels,0);
+                    quantum_size,png_pixels,0);
               }
             else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
               (void) ExportImagePixelArea(image,(QuantumType) GrayAlphaQuantum,
-                 image->depth,png_pixels,0);
+                 quantum_size,png_pixels,0);
             else if (image->matte)
               (void) ExportImagePixelArea(image,(QuantumType) RGBAQuantum,
-                image->depth,png_pixels,0);
+                quantum_size,png_pixels,0);
             else
               {
                (void) ExportImagePixelArea(image,(QuantumType) RGBQuantum,
-                image->depth,png_pixels,0);
+                quantum_size,png_pixels,0);
               }
             png_write_row(ping,png_pixels);
           }
@@ -7131,13 +7141,13 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
             break;
           if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
             (void) ExportImagePixelArea(image,(QuantumType) GrayQuantum,
-              image->depth,png_pixels,0);
+              quantum_size,png_pixels,0);
           else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
             (void) ExportImagePixelArea(image,(QuantumType) GrayAlphaQuantum,
-              image->depth,png_pixels,0);
+              quantum_size,png_pixels,0);
           else
             (void) ExportImagePixelArea(image,(QuantumType) IndexQuantum,
-              image->depth,png_pixels,0);
+              quantum_size,png_pixels,0);
           png_write_row(ping,png_pixels);
         }
         }
@@ -7920,11 +7930,13 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   register long
     i;
 
-  unsigned char
-    chunk[800];
-
+#if 1
   size_t
     chunk_length=0;
+#endif
+
+  unsigned char
+    chunk[800];
 
   unsigned int
     status;
