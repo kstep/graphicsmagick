@@ -72,8 +72,11 @@ MagickExport const char *ColorspaceTypeToString(const ColorspaceType colorspace)
     case XYZColorspace:
       log_colorspace="XYZ";
       break;
-    case YCbCrColorspace:
-      log_colorspace="YCbCr";
+    case Rec601YCbCrColorspace:
+      log_colorspace="Rec601YCbCr";
+      break;
+    case Rec709YCbCrColorspace:
+      log_colorspace="Rec709YCbCr";
       break;
     case YCCColorspace:
       log_colorspace="PhotoCD YCC";
@@ -139,6 +142,10 @@ MagickExport ColorspaceType StringToColorspaceType(const char *colorspace_string
     colorspace=XYZColorspace;
   else if (LocaleCompare("ycbcr",colorspace_string) == 0)
     colorspace=YCbCrColorspace;
+  else if (LocaleCompare("rec601ycbcr",colorspace_string) == 0)
+    colorspace=Rec601YCbCrColorspace;
+  else if (LocaleCompare("rec709ycbcr",colorspace_string) == 0)
+    colorspace=Rec709YCbCrColorspace;
   else if (LocaleCompare("ycc",colorspace_string) == 0)
     colorspace=YCCColorspace;
   else if (LocaleCompare("yiq",colorspace_string) == 0)
@@ -164,7 +171,7 @@ MagickExport ColorspaceType StringToColorspaceType(const char *colorspace_string
 %
 %  Method RGBTransformImage converts the reference image from RGB to
 %  an alternate colorspace.  The transformation matrices are not the standard
-%  ones: the weights are rescaled to normalized the range of the transformed
+%  ones: the weights are rescaled to normalize the range of the transformed
 %  values to be [0..MaxRGB].
 %
 %  The format of the RGBTransformImage method is:
@@ -352,7 +359,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       double MaxLinearValue=MaxRGB; /* Maximum linear value output */
       double ReferenceWhite=685;    /* 90% white card (default 685) */
       double ReferenceBlack=95;     /* 1% black card  (default 95) */
-      double DisplayGamma=1.0;      /* Typical display gamma (Kodak recommended 1.7) */
+      double DisplayGamma=1.7;      /* Typical display gamma (Kodak recommends 1.7) */
       double NegativeFilmGamma=0.6; /* Typical gamma for a film negative */
       double SoftClip=0.0;          /* Soft clip offset */
       double BreakPoint=ReferenceWhite-SoftClip;
@@ -655,7 +662,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
     case XYZColorspace:
     {
       /*
-        Initialize CIE XYZ tables:
+        Initialize CIE XYZ tables (from ITU-R 709 RGB):
 
           X = 0.412453*X+0.357580*Y+0.180423*Z
           Y = 0.212671*X+0.715160*Y+0.072169*Z
@@ -681,10 +688,10 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       }
       break;
     }
-    case YCbCrColorspace:
+    case Rec601YCbCrColorspace:
     {
       /*
-        Initialize YCbCr tables:
+        Initialize YCbCr tables (according to ITU-R BT.601):
 
           Y =  0.299000*R+0.587000*G+0.114000*B
           Cb= -0.168736*R-0.331264*G+0.500000*B
@@ -804,7 +811,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
     case YPbPrColorspace:
     {
       /*
-        Initialize YPbPr tables:
+        Initialize YPbPr tables (according to ITU-R BT.601):
 
           Y =  0.299000*R+0.587000*G+0.114000*B
           Pb= -0.168736*R-0.331264*G+0.500000*B
@@ -1533,7 +1540,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
     case XYZColorspace:
     {
       /*
-        Initialize CIE XYZ tables:
+        Initialize CIE XYZ tables (to ITU R-709 RGB):
 
           R =  3.240479*R-1.537150*G-0.498535*B
           G = -0.969256*R+1.875992*G+0.041556*B
@@ -1553,7 +1560,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       }
       break;
     }
-    case YCbCrColorspace:
+    case Rec601YCbCrColorspace:
     {
       /*
         Initialize YCbCr tables:

@@ -1,3 +1,10 @@
+2005-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c: Support reading and writing subsampled CbYCr
+	images.  Colorimetery is not right yet.
+	* magick/colorspace.h (enum Rec709YCbCrColorspace): New
+	enumeration for Rec. 709 YcBCr colorspace.
+
 2005-06-21 Glenn Randers-Pehrson <glennrp@glennrp.com>
 
 	* coders/png.c: Fixed a problem with reading 16-bit PNG images

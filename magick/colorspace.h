@@ -64,16 +64,17 @@ extern "C" {
     (colorspace == TransparentColorspace) \
   )
 
+#define GRAYColorspace Rec601LumaColorspace
+#define YCbCrColorspace Rec601YCbCrColorspace
 typedef enum
 {
   UndefinedColorspace,
   RGBColorspace,         /* Plain old RGB colorspace */
-#define GRAYColorspace Rec601LumaColorspace
-  Rec601LumaColorspace,  /* ITU-R 601 Luma (grayscale) */
+  Rec601LumaColorspace,  /* Luma according to ITU-R 601 (grayscale) */
   TransparentColorspace, /* RGB but preserve matte channel during quantize */
   OHTAColorspace,
   XYZColorspace,         /* CIE XYZ */
-  YCbCrColorspace,
+  Rec601YCbCrColorspace, /* YCbCr according to ITU-R 601 */
   YCCColorspace,         /* Kodak PhotoCD PhotoYCC */
   YIQColorspace,
   YPbPrColorspace,
@@ -83,8 +84,9 @@ typedef enum
   HSLColorspace,         /* Hue, saturation, luminosity */
   HWBColorspace,         /* Hue, whiteness, blackness */
   LABColorspace,         /* LAB colorspace not supported yet other than via lcms */
-  Rec709LumaColorspace,  /* ITU-R 709 Luma (grayscale) */
-  CineonLogRGBColorspace /* RGB data with Cineon Log scaling, 2.048 density range */
+  Rec709LumaColorspace,  /* Luma according to ITU-R 709 (grayscale) */
+  CineonLogRGBColorspace,/* RGB data with Cineon Log scaling, 2.048 density range */
+  Rec709YCbCrColorspace  /* YCbCr according to ITU-R 709 */
 } ColorspaceType;
 
 extern MagickExport MagickPassFail
