@@ -120,7 +120,13 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   (void) strlcpy(image->filename,image_info->filename,MaxTextExtent);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,UnableToOpenFile,image)
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
+  /*
+    When subsampling, image width must be evenly divisible by two.
+  */
+  if (image->columns %2)
+    ThrowReaderException(CorruptImageError,SubsamplingRequiresEvenWidth,image);
+
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
   image->depth=8;
@@ -300,6 +306,13 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+
+  /*
+    When subsampling, image width must be evenly divisible by two.
+  */
+  if (image->columns %2)
+    ThrowWriterException(CoderError,SubsamplingRequiresEvenWidth,image);
+
   /*
     Convert to YUV, at full resolution.
   */

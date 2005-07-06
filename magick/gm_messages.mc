@@ -365,6 +365,12 @@ RLE compression not supported
 .
 
 MessageId       = +1
+SymbolicName    = CoderErrorSubsamplingRequiresEvenWidth
+Language        = English
+Subsampling requires that image width be evenly divisible by two
+.
+
+MessageId       = +1
 SymbolicName    = CoderErrorUnableToCopyProfile
 Language        = English
 Unable to copy profile
@@ -662,6 +668,12 @@ MessageId       = +1
 SymbolicName    = ImageErrorStaticPlanesValueNotEqualToOne
 Language        = English
 Static planes value not equal to 1
+.
+
+MessageId       = +1
+SymbolicName    = ImageErrorSubsamplingRequiresEvenWidth
+Language        = English
+Subsampling requires that image width be evenly divisible by two
 .
 
 MessageId       = +1
@@ -1772,6 +1784,12 @@ MessageId       = +1
 SymbolicName    = OptionErrorUnrecognizedVirtualPixelMethod
 Language        = English
 Unrecognized virtual pixel method
+.
+
+MessageId       = +1
+SymbolicName    = OptionErrorUnsupportedSamplingFactor
+Language        = English
+Unsupported sampling factor
 .
 
 MessageId       = +1

@@ -76,11 +76,11 @@ static unsigned int
 static Image *ReadXImage(const ImageInfo *image_info,
                          ExceptionInfo *ARGUNUSED(exception))
 {
-  XImportInfo
+  MagickXImportInfo
     ximage_info;
 
-  XGetImportInfo(&ximage_info);
-  return(XImportImage(image_info,&ximage_info));
+  MagickXGetImportInfo(&ximage_info);
+  return(MagickXImportImage(image_info,&ximage_info));
 }
 #endif /* defined(HasX11) */
 

@@ -307,7 +307,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
   unsigned int
     status;
 
-  XResourceInfo
+  MagickXResourceInfo
     resource_info;
 
   XrmDatabase
@@ -378,18 +378,18 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
   if (display == (Display *) NULL)
     MagickFatalError(XServerFatalError,UnableToOpenXServer,
       XDisplayName(server_name));
-  (void) XSetErrorHandler(XError);
+  (void) XSetErrorHandler(MagickXError);
   client_name=GetClientName();
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,(char *) client_name,&resource_info);
+  resource_database=MagickXGetResourceDatabase(display,client_name);
+  MagickXGetResourceInfo(resource_database,(char *) client_name,&resource_info);
   image_info=resource_info.image_info;
   quantize_info=resource_info.quantize_info;
   image_info->density=
-    XGetResourceInstance(resource_database,client_name,"density",(char *) NULL);
+    MagickXGetResourceInstance(resource_database,client_name,"density",(char *) NULL);
   if (image_info->density == (char *) NULL)
-    image_info->density=XGetScreenDensity(display);
+    image_info->density=MagickXGetScreenDensity(display);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"interlace","none");
+    MagickXGetResourceInstance(resource_database,client_name,"interlace","none");
   image_info->interlace=UndefinedInterlace;
   if (LocaleCompare("None",resource_value) == 0)
     image_info->interlace=NoInterlace;
@@ -402,11 +402,11 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
   if (image_info->interlace == UndefinedInterlace)
     MagickError(OptionFatalError,InvalidInterlaceType,resource_value);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"verbose","False");
-  image_info->verbose=IsTrue(resource_value);
+    MagickXGetResourceInstance(resource_database,client_name,"verbose","False");
+  image_info->verbose=MagickIsTrue(resource_value);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"dither","True");
-  quantize_info->dither=IsTrue(resource_value);
+    MagickXGetResourceInstance(resource_database,client_name,"dither","True");
+  quantize_info->dither=MagickIsTrue(resource_value);
   /*
     Parse command line.
   */
@@ -949,7 +949,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
             i++;
             if (i == argc)
               MagickFatalError(OptionFatalError,MissingArgument,option);
-            status=XRemoteCommand(display,resource_info.window_id,argv[i]);
+            status=MagickXRemoteCommand(display,resource_info.window_id,argv[i]);
             Exit(!status);
           }
         if (LocaleCompare("rotate",option+1) == 0)
@@ -1152,24 +1152,24 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
       AppendImageToList(&image_list,image);
     }
   if (resource_info.window_id != (char *) NULL)
-    XAnimateBackgroundImage(display,&resource_info,image_list);
+    MagickXAnimateBackgroundImage(display,&resource_info,image_list);
   else
     {
       /*
         Animate image to X server.
       */
-      loaded_image=XAnimateImages(display,&resource_info,argv,argc,image_list);
+      loaded_image=MagickXAnimateImages(display,&resource_info,argv,argc,image_list);
       while (loaded_image != (Image *) NULL)
       {
         image_list=loaded_image;
         loaded_image=
-          XAnimateImages(display,&resource_info,argv,argc,image_list);
+          MagickXAnimateImages(display,&resource_info,argv,argc,image_list);
       }
     }
   DestroyImageList(image_list);
   LiberateArgumentList(argc,argv);
-  XDestroyResourceInfo(&resource_info);
-  XDestroyX11Resources();
+  MagickXDestroyResourceInfo(&resource_info);
+  MagickXDestroyX11Resources();
   (void) XCloseDisplay(display);
   return(status);
 #else
@@ -5111,7 +5111,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
   unsigned long
     state;
 
-  XResourceInfo
+  MagickXResourceInfo
     resource_info;
 
   XrmDatabase
@@ -5190,18 +5190,18 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
   if (display == (Display *) NULL)
     MagickFatalError(XServerFatalError,UnableToOpenXServer,
       XDisplayName(server_name));
-  (void) XSetErrorHandler(XError);
+  (void) XSetErrorHandler(MagickXError);
   client_name=GetClientName();
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,(char *) client_name,&resource_info);
+  resource_database=MagickXGetResourceDatabase(display,client_name);
+  MagickXGetResourceInfo(resource_database,(char *) client_name,&resource_info);
   image_info=resource_info.image_info;
   quantize_info=resource_info.quantize_info;
   image_info->density=
-    XGetResourceInstance(resource_database,client_name,"density",(char *) NULL);
+    MagickXGetResourceInstance(resource_database,client_name,"density",(char *) NULL);
   if (image_info->density == (char *) NULL)
-    image_info->density=XGetScreenDensity(display);
+    image_info->density=MagickXGetScreenDensity(display);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"interlace","none");
+    MagickXGetResourceInstance(resource_database,client_name,"interlace","none");
   image_info->interlace=UndefinedInterlace;
   if (LocaleCompare("None",resource_value) == 0)
     image_info->interlace=NoInterlace;
@@ -5213,17 +5213,17 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
     image_info->interlace=PartitionInterlace;
   if (image_info->interlace == UndefinedInterlace)
     MagickError(OptionError,UnrecognizedInterlaceType,resource_value);
-  image_info->page=XGetResourceInstance(resource_database,client_name,
+  image_info->page=MagickXGetResourceInstance(resource_database,client_name,
     "pageGeometry",(char *) NULL);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"quality","75");
+    MagickXGetResourceInstance(resource_database,client_name,"quality","75");
   image_info->quality=atol(resource_value);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"verbose","False");
-  image_info->verbose=IsTrue(resource_value);
+    MagickXGetResourceInstance(resource_database,client_name,"verbose","False");
+  image_info->verbose=MagickIsTrue(resource_value);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"dither","True");
-  quantize_info->dither=IsTrue(resource_value);
+    MagickXGetResourceInstance(resource_database,client_name,"dither","True");
+  quantize_info->dither=MagickIsTrue(resource_value);
   /*
     Parse command line.
   */
@@ -5294,7 +5294,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                 /*
                   Display image to a specified X window.
                 */
-                if (XDisplayBackgroundImage(display,&resource_info,image))
+                if (MagickXDisplayBackgroundImage(display,&resource_info,image))
                   state|=RetainColorsState;
               }
             else
@@ -5307,7 +5307,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                   Display image to X server.
                 */
                 nexus=
-                  XDisplayImage(display,&resource_info,argv,argc,&image,&state);
+                  MagickXDisplayImage(display,&resource_info,argv,argc,&image,&state);
                 if (nexus == (Image *) NULL)
                   break;
                 while ((nexus != (Image *) NULL) && (!(state & ExitState)))
@@ -5323,7 +5323,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                     }
                   if (first_scene != last_scene)
                     image->scene=scene;
-                  next=XDisplayImage(display,&resource_info,argv,argc,&nexus,
+                  next=MagickXDisplayImage(display,&resource_info,argv,argc,&nexus,
                     &state);
                   if ((next == (Image *) NULL) &&
                       (nexus->next != (Image *) NULL))
@@ -6119,7 +6119,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
             i++;
             if (i == argc)
               MagickFatalError(OptionFatalError,MissingArgument,option);
-            status=XRemoteCommand(display,resource_info.window_id,argv[i]);
+            status=MagickXRemoteCommand(display,resource_info.window_id,argv[i]);
             Exit(!status);
           }
         if (LocaleCompare("roll",option+1) == 0)
@@ -6418,19 +6418,23 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
   }
   if (state & RetainColorsState)
     {
-      XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
+      MagickXRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
       (void) XSync(display,False);
     } 
   if (resource_database != (XrmDatabase) NULL)
     {
-      XrmDestroyDatabase(resource_database);
+      /* It seems that recent X11 libraries (as found in FreeBSD 5.4)
+         automatically destroy the resource database associated with
+         the display and there are double-frees if we destroy the
+         resource database ourselves. */
+      /* XrmDestroyDatabase(resource_database); */
       resource_database=(XrmDatabase) NULL;
     }
 
   MagickFreeMemory(image_marker);
-  XDestroyResourceInfo(&resource_info);
+  MagickXDestroyResourceInfo(&resource_info);
   LiberateArgumentList(argc,argv);
-  XDestroyX11Resources();
+  MagickXDestroyX11Resources();
   (void) XCloseDisplay(display);
   return(status);
 #else
@@ -13178,10 +13182,10 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
   unsigned int
     status;
 
-  XImportInfo
+  MagickXImportInfo
     ximage_info;
 
-  XResourceInfo
+  MagickXResourceInfo
     resource_info;
 
   XrmDatabase
@@ -13239,29 +13243,29 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
   if (display == (Display *) NULL)
     MagickFatalError(OptionFatalError,UnableToOpenXServer,
       XDisplayName(server_name));
-  (void) XSetErrorHandler(XError);
+  (void) XSetErrorHandler(MagickXError);
   client_name=GetClientName();
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetImportInfo(&ximage_info);
-  XGetResourceInfo(resource_database,(char *) client_name,&resource_info);
+  resource_database=MagickXGetResourceDatabase(display,client_name);
+  MagickXGetImportInfo(&ximage_info);
+  MagickXGetResourceInfo(resource_database,(char *) client_name,&resource_info);
   image_info=resource_info.image_info;
   quantize_info=resource_info.quantize_info;
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"border","False");
-  ximage_info.borders=IsTrue(resource_value);
+    MagickXGetResourceInstance(resource_database,client_name,"border","False");
+  ximage_info.borders=MagickIsTrue(resource_value);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"delay","0");
+    MagickXGetResourceInstance(resource_database,client_name,"delay","0");
   resource_info.delay=atol(resource_value);
-  image_info->density=XGetResourceInstance(resource_database,client_name,
+  image_info->density=MagickXGetResourceInstance(resource_database,client_name,
     "density",(char *) NULL);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"descend","True");
-  ximage_info.descend=IsTrue(resource_value);
+    MagickXGetResourceInstance(resource_database,client_name,"descend","True");
+  ximage_info.descend=MagickIsTrue(resource_value);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"frame","False");
-  ximage_info.frame=IsTrue(resource_value);
+    MagickXGetResourceInstance(resource_database,client_name,"frame","False");
+  ximage_info.frame=MagickIsTrue(resource_value);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"interlace","none");
+    MagickXGetResourceInstance(resource_database,client_name,"interlace","none");
   image_info->interlace=UndefinedInterlace;
   if (LocaleCompare("None",resource_value) == 0)
     image_info->interlace=NoInterlace;
@@ -13273,26 +13277,26 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
     image_info->interlace=PartitionInterlace;
   if (image_info->interlace == UndefinedInterlace)
     MagickError(OptionError,UnrecognizedInterlaceType,resource_value);
-  image_info->page=XGetResourceInstance(resource_database,client_name,
+  image_info->page=MagickXGetResourceInstance(resource_database,client_name,
     "pageGeometry",(char *) NULL);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"pause","0");
+    MagickXGetResourceInstance(resource_database,client_name,"pause","0");
   resource_info.pause=atol(resource_value);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"quality","85");
+    MagickXGetResourceInstance(resource_database,client_name,"quality","85");
   image_info->quality=atol(resource_value);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"screen","False");
-  ximage_info.screen=IsTrue(resource_value);
+    MagickXGetResourceInstance(resource_database,client_name,"screen","False");
+  ximage_info.screen=MagickIsTrue(resource_value);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"silent","False");
-  ximage_info.silent=IsTrue(resource_value);
+    MagickXGetResourceInstance(resource_database,client_name,"silent","False");
+  ximage_info.silent=MagickIsTrue(resource_value);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"verbose","False");
-  image_info->verbose=IsTrue(resource_value);
+    MagickXGetResourceInstance(resource_database,client_name,"verbose","False");
+  image_info->verbose=MagickIsTrue(resource_value);
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"dither","True");
-  quantize_info->dither=IsTrue(resource_value);
+    MagickXGetResourceInstance(resource_database,client_name,"dither","True");
+  quantize_info->dither=MagickIsTrue(resource_value);
   snapshots=1;
   status=True;
   filename=(char *) NULL;
@@ -13983,7 +13987,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
   for (i=0; i < (long) Max(snapshots,1); i++)
   {
     (void) sleep(resource_info.pause);
-    next_image=XImportImage(image_info,&ximage_info);
+    next_image=MagickXImportImage(image_info,&ximage_info);
     status&=next_image != (Image *) NULL;
     if (next_image == (Image *) NULL)
       continue;
@@ -14005,8 +14009,8 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
 
   DestroyImageList(image);
   LiberateArgumentList(argc,argv);
-  XDestroyResourceInfo(&resource_info);
-  XDestroyX11Resources();
+  MagickXDestroyResourceInfo(&resource_info);
+  MagickXDestroyX11Resources();
   (void) XCloseDisplay(display);
   return(!status);
 #else

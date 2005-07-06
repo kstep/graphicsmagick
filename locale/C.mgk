@@ -207,6 +207,9 @@
       <Message name="RLECompressionNotSupported">
         RLE compression not supported
       </Message>
+      <Message name="SubsamplingRequiresEvenWidth">
+        Subsampling requires that image width be evenly divisible by two
+      </Message>
       <Message name="UnableToCopyProfile">
         Unable to copy profile
       </Message>
@@ -367,6 +370,9 @@
         </Message>
         <Message name="StaticPlanesValueNotEqualToOne">
           Static planes value not equal to 1
+        </Message>
+        <Message name="SubsamplingRequiresEvenWidth">
+          Subsampling requires that image width be evenly divisible by two
         </Message>
         <Message name="UnableToReadColorProfile">
           Unable to read color profile
@@ -980,6 +986,9 @@
       </Message>
       <Message name="UnrecognizedVirtualPixelMethod">
         Unrecognized virtual pixel method
+      </Message>
+      <Message name="UnsupportedSamplingFactor">
+        Unsupported sampling factor
       </Message>
       <Message name="UsageError">
         Improper arguments supplied, please see manual

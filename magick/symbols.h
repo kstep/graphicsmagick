@@ -9,7 +9,7 @@
 
   Obtained via:
 
-  nm magick/.libs/libGraphicsMagick.a | grep ' T ' | egrep -v '(Gm)|(lt_)' | sort | \
+  nm -p magick/.libs/libGraphicsMagick.a | grep ' T ' | egrep -v '(Gm)|(lt_)' | sort | \
      awk '{ printf("#define %s Gm%s\n", $3, $3); }'
 
 */
@@ -862,76 +862,6 @@
 #define WriteImage GmWriteImage
 #define WriteImages GmWriteImages
 #define WriteStream GmWriteStream
-#define XAnimateBackgroundImage GmXAnimateBackgroundImage
-#define XAnimateImages GmXAnimateImages
-#define XAnnotateImage GmXAnnotateImage
-#define XBestFont GmXBestFont
-#define XBestIconSize GmXBestIconSize
-#define XBestPixel GmXBestPixel
-#define XBestVisualInfo GmXBestVisualInfo
-#define XCheckRefreshWindows GmXCheckRefreshWindows
-#define XClientMessage GmXClientMessage
-#define XColorBrowserWidget GmXColorBrowserWidget
-#define XCommandWidget GmXCommandWidget
-#define XConfigureImageColormap GmXConfigureImageColormap
-#define XConfirmWidget GmXConfirmWidget
-#define XConstrainWindowPosition GmXConstrainWindowPosition
-#define XDelay GmXDelay
-#define XDestroyWindowColors GmXDestroyWindowColors
-#define XDestroyX11Resources GmXDestroyX11Resources
-#define XDestroyXWindows GmXDestroyXWindows
-#define XDialogWidget GmXDialogWidget
-#define XDisplayBackgroundImage GmXDisplayBackgroundImage
-#define XDisplayImage GmXDisplayImage
-#define XDisplayImageInfo GmXDisplayImageInfo
-#define XDrawImage GmXDrawImage
-#define XError GmXError
-#define XFileBrowserWidget GmXFileBrowserWidget
-#define XFontBrowserWidget GmXFontBrowserWidget
-#define XFreeResources GmXFreeResources
-#define XFreeStandardColormap GmXFreeStandardColormap
-#define XGetAnnotateInfo GmXGetAnnotateInfo
-#define XGetImportInfo GmXGetImportInfo
-#define XGetMapInfo GmXGetMapInfo
-#define XGetPixelPacket GmXGetPixelPacket
-#define XGetResourceClass GmXGetResourceClass
-#define XGetResourceDatabase GmXGetResourceDatabase
-#define XGetResourceInfo GmXGetResourceInfo
-#define XGetResourceInstance GmXGetResourceInstance
-#define XGetScreenDensity GmXGetScreenDensity
-#define XGetWindowColor GmXGetWindowColor
-#define XGetWindowInfo GmXGetWindowInfo
-#define XHighlightEllipse GmXHighlightEllipse
-#define XHighlightLine GmXHighlightLine
-#define XHighlightRectangle GmXHighlightRectangle
-#define XImportImage GmXImportImage
-#define XInfoWidget GmXInfoWidget
-#define XInitializeWindows GmXInitializeWindows
-#define XListBrowserWidget GmXListBrowserWidget
-#define XMagickMonitor GmXMagickMonitor
-#define XMakeCursor GmXMakeCursor
-#define XMakeImage GmXMakeImage
-#define XMakeMagnifyImage GmXMakeMagnifyImage
-#define XMakeStandardColormap GmXMakeStandardColormap
-#define XMakeWindow GmXMakeWindow
-#define XMenuWidget GmXMenuWidget
-#define XMonitorWidget GmXMonitorWidget
-#define XNoticeWidget GmXNoticeWidget
-#define XPreferencesWidget GmXPreferencesWidget
-#define XQueryColorDatabase GmXQueryColorDatabase
-#define XQueryPosition GmXQueryPosition
-#define XRefreshWindow GmXRefreshWindow
-#define XRemoteCommand GmXRemoteCommand
-#define XRetainWindowColors GmXRetainWindowColors
-#define XSetCursorState GmXSetCursorState
-#define XSetWindows GmXSetWindows
-#define XSignalHandler GmXSignalHandler
-#define XTextViewWidget GmXTextViewWidget
-#define XUserPreferences GmXUserPreferences
-#define XWarning GmXWarning
-#define XWindowByID GmXWindowByID
-#define XWindowByName GmXWindowByName
-#define XWindowByProperty GmXWindowByProperty
 #define ZoomImage GmZoomImage
 #define _MagickError Gm_MagickError
 #define _MagickFatalError Gm_MagickFatalError

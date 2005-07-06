@@ -130,7 +130,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
     page,
     bits_per_pixel;
 
-  XResourceInfo
+  MagickXResourceInfo
     resource_info;
 
   XrmDatabase
@@ -159,7 +159,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
   /*
     Set our forgiving error handler.
   */
-  (void) XSetErrorHandler(XError);
+  (void) XSetErrorHandler(MagickXError);
   /*
     Open image file.
   */
@@ -174,8 +174,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
     Get user defaults from X resource database.
   */
   client_name=SetClientName((char *) NULL);
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,client_name,&resource_info);
+  resource_database=MagickXGetResourceDatabase(display,client_name);
+  MagickXGetResourceInfo(resource_database,client_name,&resource_info);
   /*
     Allocate standard colormap.
   */
@@ -190,15 +190,15 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
         Initialize visual info.
       */
       (void) CloneString(&resource_info.visual_type,"default");
-      visual_info=XBestVisualInfo(display,map_info,&resource_info);
+      visual_info=MagickXBestVisualInfo(display,map_info,&resource_info);
       map_info->colormap=(Colormap) NULL;
     }
   if ((map_info == (XStandardColormap *) NULL) ||
       (visual_info == (XVisualInfo *) NULL))
     {
       DestroyImage(image);
-      XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
-        (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+      MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
+        (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
       LogMagickEvent(CoderEvent,GetMagickModule(),
                      "failed to initialize visual info!");
       return((Image *) NULL);
@@ -215,8 +215,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
   if ((status == dps_status_failure) || (status == dps_status_no_extension))
     {
       DestroyImage(image);
-      XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
-        (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+      MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
+        (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
       LogMagickEvent(CoderEvent,GetMagickModule(),
                      "failed to create pixmap for image!");
       return((Image *) NULL);
@@ -230,8 +230,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
   if (status != dps_status_success)
     {
       DestroyImage(image);
-      XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
-        (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+      MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
+        (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
       LogMagickEvent(CoderEvent,GetMagickModule(),
                      "failed to rasterize EPS into pixmap!");
       return((Image *) NULL);
@@ -245,8 +245,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
   if (dps_image == (XImage *) NULL)
     {
       DestroyImage(image);
-      XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
-        (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+      MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
+        (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
       LogMagickEvent(CoderEvent,GetMagickModule(),
                      "failed initialize DPS X image!");
       return((Image *) NULL);
@@ -260,8 +260,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
     {
       DestroyImage(image);
       XDestroyImage(dps_image);
-      XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
-        (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+      MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
+        (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
       LogMagickEvent(CoderEvent,GetMagickModule(),
                      "failed allocate memory for colormap!");
       return((Image *) NULL);
@@ -425,8 +425,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
           DestroyImage(image);
           MagickFreeMemory(colors);
           XDestroyImage(dps_image);
-          XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
-            (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+          MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
+            (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
           LogMagickEvent(CoderEvent,GetMagickModule(),
                          "failed allocate image colormap!");
           return((Image *) NULL);
@@ -511,8 +511,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
   /*
     Free resources.
   */
-  XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
-    (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+  MagickXFreeResources(display,visual_info,map_info,(MagickXPixelInfo *) NULL,
+    (XFontStruct *) NULL,&resource_info,(MagickXWindowInfo *) NULL);
   CloseBlob(image);
   return(image);
 }

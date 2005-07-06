@@ -1509,43 +1509,43 @@ static const unsigned char
   Function prototypes.
 */
 static CommandType
-  XImageWindowCommand(Display *,XResourceInfo *,XWindows *,const unsigned int,
+  MagickXImageWindowCommand(Display *,MagickXResourceInfo *,MagickXWindows *,const unsigned int,
     KeySym,Image **);
 
 static Image
-  *XMagickCommand(Display *,XResourceInfo *,XWindows *,const CommandType,
+  *MagickXMagickCommand(Display *,MagickXResourceInfo *,MagickXWindows *,const CommandType,
     Image **),
-  *XOpenImage(Display *,XResourceInfo *,XWindows *,const unsigned int),
-  *XTileImage(Display *,XResourceInfo *,XWindows *,Image *,XEvent *),
-  *XVisualDirectoryImage(Display *,XResourceInfo *,XWindows *);
+  *MagickXOpenImage(Display *,MagickXResourceInfo *,MagickXWindows *,const unsigned int),
+  *MagickXTileImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image *,XEvent *),
+  *MagickXVisualDirectoryImage(Display *,MagickXResourceInfo *,MagickXWindows *);
 
 static unsigned int
-  XAnnotateEditImage(Display *,XResourceInfo *,XWindows *,Image *),
-  XDrawEditImage(Display *,XResourceInfo *,XWindows *,Image **),
-  XChopImage(Display *,XResourceInfo *,XWindows *,Image **),
-  XCropImage(Display *,XResourceInfo *,XWindows *,Image *,const ClipboardMode),
-  XBackgroundImage(Display *,XResourceInfo *,XWindows *,Image **),
-  XColorEditImage(Display *,XResourceInfo *,XWindows *,Image **),
-  XCompositeImage(Display *,XResourceInfo *,XWindows *,Image *),
-  XConfigureImage(Display *,XResourceInfo *,XWindows *,Image *),
-  XMatteEditImage(Display *,XResourceInfo *,XWindows *,Image **),
-  XPasteImage(Display *,XResourceInfo *,XWindows *,Image *),
-  XPrintImage(Display *,XResourceInfo *,XWindows *,Image *),
-  XRotateImage(Display *,XResourceInfo *,XWindows *,double,Image **),
-  XROIImage(Display *,XResourceInfo *,XWindows *,Image **),
-  XSaveImage(Display *,XResourceInfo *,XWindows *,Image *),
-  XTrimImage(Display *,XResourceInfo *,XWindows *,Image *);
+  MagickXAnnotateEditImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image *),
+  MagickXDrawEditImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image **),
+  MagickXChopImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image **),
+  MagickXCropImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image *,const ClipboardMode),
+  MagickXBackgroundImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image **),
+  MagickXColorEditImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image **),
+  MagickXCompositeImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image *),
+  MagickXConfigureImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image *),
+  MagickXMatteEditImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image **),
+  MagickXPasteImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image *),
+  MagickXPrintImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image *),
+  MagickXRotateImage(Display *,MagickXResourceInfo *,MagickXWindows *,double,Image **),
+  MagickXROIImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image **),
+  MagickXSaveImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image *),
+  MagickXTrimImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image *);
 
 static void
-  XDrawPanRectangle(Display *,XWindows *),
-  XImageCache(Display *,XResourceInfo *,XWindows *,const CommandType,Image **),
-  XMagnifyImage(Display *,XWindows *,XEvent *),
-  XMakePanImage(Display *,XResourceInfo *,XWindows *,Image *),
-  XPanImage(Display *,XWindows *,XEvent *),
-  XMagnifyWindowCommand(Display *,XWindows *,const unsigned int,const KeySym),
-  XSetCropGeometry(Display *,XWindows *,RectangleInfo *,Image *),
-  XScreenEvent(Display *,XWindows *,XEvent *),
-  XTranslateImage(Display *,XWindows *,Image *,const KeySym);
+  MagickXDrawPanRectangle(Display *,MagickXWindows *),
+  MagickXImageCache(Display *,MagickXResourceInfo *,MagickXWindows *,const CommandType,Image **),
+  MagickXMagnifyImage(Display *,MagickXWindows *,XEvent *),
+  MagickXMakePanImage(Display *,MagickXResourceInfo *,MagickXWindows *,Image *),
+  MagickXPanImage(Display *,MagickXWindows *,XEvent *),
+  MagickXMagnifyWindowCommand(Display *,MagickXWindows *,const unsigned int,const KeySym),
+  MagickXSetCropGeometry(Display *,MagickXWindows *,RectangleInfo *,Image *),
+  MagickXScreenEvent(Display *,MagickXWindows *,XEvent *),
+  MagickXTranslateImage(Display *,MagickXWindows *,Image *,const KeySym);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

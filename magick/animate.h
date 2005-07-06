@@ -146,7 +146,7 @@ typedef enum
   Function prototypes.
 */
 static Image
-  *XMagickCommand(Display *,XResourceInfo *,XWindows *,const CommandType,
+  *MagickXMagickCommand(Display *,MagickXResourceInfo *,MagickXWindows *,const CommandType,
     Image **,unsigned int *);
 
 

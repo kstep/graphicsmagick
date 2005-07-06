@@ -1662,16 +1662,16 @@ static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
   static Display
     *display = (Display *) NULL;
 
-  static XAnnotateInfo
+  static MagickXAnnotateInfo
     annotate_info;
 
   static XFontStruct
     *font_info;
 
-  static XPixelInfo
+  static MagickXPixelInfo
     pixel;
 
-  static XResourceInfo
+  static MagickXResourceInfo
     resource_info;
 
   static XrmDatabase
@@ -1705,10 +1705,10 @@ static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
       /*
         Get user defaults from X resource database.
       */
-      (void) XSetErrorHandler(XError);
+      (void) XSetErrorHandler(MagickXError);
       client_name=SetClientName((char *) NULL);
-      resource_database=XGetResourceDatabase(display,client_name);
-      XGetResourceInfo(resource_database,client_name,&resource_info);
+      resource_database=MagickXGetResourceDatabase(display,client_name);
+      MagickXGetResourceInfo(resource_database,client_name,&resource_info);
       resource_info.close_server=False;
       resource_info.colormap=PrivateColormap;
       resource_info.font=AllocateString(draw_info->font);
@@ -1721,7 +1721,7 @@ static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
       /*
         Initialize visual info.
       */
-      visual_info=XBestVisualInfo(display,map_info,&resource_info);
+      visual_info=MagickXBestVisualInfo(display,map_info,&resource_info);
       if (visual_info == (XVisualInfo *) NULL)
         ThrowBinaryException(XServerError,UnableToGetVisual,
           draw_info->server_name);
@@ -1730,23 +1730,23 @@ static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
       /*
         Initialize Standard Colormap info.
       */
-      XGetMapInfo(visual_info,XDefaultColormap(display,visual_info->screen),
+      MagickXGetMapInfo(visual_info,XDefaultColormap(display,visual_info->screen),
         map_info);
-      XGetPixelPacket(display,visual_info,map_info,&resource_info,
+      MagickXGetPixelPacket(display,visual_info,map_info,&resource_info,
         (Image *) NULL,&pixel);
       pixel.annotate_context=XDefaultGC(display,visual_info->screen);
       /*
         Initialize font info.
       */
-      font_info=XBestFont(display,&resource_info,False);
+      font_info=MagickXBestFont(display,&resource_info,False);
       if (font_info == (XFontStruct *) NULL)
         ThrowBinaryException(XServerError,UnableToLoadFont,draw_info->font);
       if ((map_info == (XStandardColormap *) NULL) ||
           (visual_info == (XVisualInfo *) NULL) ||
           (font_info == (XFontStruct *) NULL))
         {
-          XFreeResources(display,visual_info,map_info,&pixel,font_info,
-            &resource_info,(XWindowInfo *) NULL);
+          MagickXFreeResources(display,visual_info,map_info,&pixel,font_info,
+            &resource_info,(MagickXWindowInfo *) NULL);
           ThrowBinaryException(XServerError,UnableToLoadFont,
             draw_info->server_name)
         }
@@ -1755,7 +1755,7 @@ static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
   /*
     Initialize annotate info.
   */
-  XGetAnnotateInfo(&annotate_info);
+  MagickXGetAnnotateInfo(&annotate_info);
   annotate_info.stencil=ForegroundStencil;
   if (cache_info.font != draw_info->font)
     {
@@ -1764,7 +1764,7 @@ static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
       */
       (void) XFreeFont(display,font_info);
       (void) CloneString(&resource_info.font,draw_info->font);
-      font_info=XBestFont(display,&resource_info,False);
+      font_info=MagickXBestFont(display,&resource_info,False);
       if (font_info == (XFontStruct *) NULL)
         ThrowBinaryException(XServerError,UnableToLoadFont,draw_info->font);
     }
@@ -1812,7 +1812,7 @@ static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
   pixel.pen_color.red=ScaleQuantumToShort(draw_info->fill.red);
   pixel.pen_color.green=ScaleQuantumToShort(draw_info->fill.green);
   pixel.pen_color.blue=ScaleQuantumToShort(draw_info->fill.blue);
-  status=XAnnotateImage(display,&pixel,&annotate_info,image);
+  status=MagickXAnnotateImage(display,&pixel,&annotate_info,image);
   if (status == 0)
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
       UnableToAnnotateImage);

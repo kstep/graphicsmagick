@@ -80,28 +80,28 @@ static const int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XAnnotateEditImage annotates the image with text.
+%  Method MagickXAnnotateEditImage annotates the image with text.
 %
-%  The format of the XAnnotateEditImage method is:
+%  The format of the MagickXAnnotateEditImage method is:
 %
-%      unsigned int XAnnotateEditImage(Display *display,
-%        XResourceInfo *resource_info,XWindows *windows,Image *image)
+%      unsigned int MagickXAnnotateEditImage(Display *display,
+%        MagickXResourceInfo *resource_info,MagickXWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 */
-static unsigned int XAnnotateEditImage(Display *display,
-  XResourceInfo *resource_info,XWindows *windows,Image *image)
+static unsigned int MagickXAnnotateEditImage(Display *display,
+  MagickXResourceInfo *resource_info,MagickXWindows *windows,Image *image)
 {
   static const char
     *AnnotateMenu[]=
@@ -181,7 +181,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   unsigned long
     state;
 
-  XAnnotateInfo
+  MagickXAnnotateInfo
     *annotate_info,
     *previous_info;
 
@@ -200,14 +200,14 @@ static unsigned int XAnnotateEditImage(Display *display,
   */
   (void) CloneString(&windows->command.name,"Annotate");
   windows->command.data=4;
-  (void) XCommandWidget(display,windows,AnnotateMenu,(XEvent *) NULL);
+  (void) MagickXCommandWidget(display,windows,AnnotateMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
-  XClientMessage(display,windows->image.id,windows->im_protocols,
+  MagickXClientMessage(display,windows->image.id,windows->im_protocols,
     windows->im_update_widget,CurrentTime);
   /*
     Track pointer until button 1 is pressed.
   */
-  XQueryPosition(display,windows->image.id,&x,&y);
+  MagickXQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
   cursor=XCreateFontCursor(display,XC_left_side);
@@ -221,18 +221,18 @@ static unsigned int XAnnotateEditImage(Display *display,
           Display pointer position.
         */
         FormatString(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
-        XInfoWidget(display,windows,text);
+        MagickXInfoWidget(display,windows,text);
       }
     /*
       Wait for next event.
     */
-    XScreenEvent(display,windows,&event);
+    MagickXScreenEvent(display,windows,&event);
     if (event.xany.window == windows->command.id)
       {
         /*
           Select a command from the Command widget.
         */
-        id=XCommandWidget(display,windows,AnnotateMenu,&event);
+        id=MagickXCommandWidget(display,windows,AnnotateMenu,&event);
         (void) XDefineCursor(display,windows->image.id,cursor);
         if (id < 0)
           continue;
@@ -256,7 +256,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             /*
               Select a font name from the pop-up menu.
             */
-            font_number=XMenuWidget(display,windows,AnnotateMenu[id],
+            font_number=MagickXMenuWidget(display,windows,AnnotateMenu[id],
               (const char **) FontMenu,command);
             if (font_number < 0)
               break;
@@ -269,7 +269,7 @@ static unsigned int XAnnotateEditImage(Display *display,
                   Select a font name from a browser.
                 */
                 resource_info->font_name[font_number]=font_name;
-                XFontBrowserWidget(display,windows,"Select",font_name);
+                MagickXFontBrowserWidget(display,windows,"Select",font_name);
                 if (*font_name == '\0')
                   break;
               }
@@ -280,7 +280,7 @@ static unsigned int XAnnotateEditImage(Display *display,
               XLoadQueryFont(display,resource_info->font_name[font_number]);
             if (font_info == (XFontStruct *) NULL)
               {
-                XNoticeWidget(display,windows,"Unable to load font:",
+                MagickXNoticeWidget(display,windows,"Unable to load font:",
                   resource_info->font_name[font_number]);
                 break;
               }
@@ -301,7 +301,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             /*
               Select a pen color from the pop-up menu.
             */
-            pen_number=XMenuWidget(display,windows,AnnotateMenu[id],
+            pen_number=MagickXMenuWidget(display,windows,AnnotateMenu[id],
               (const char **) ColorMenu,command);
             if (pen_number < 0)
               break;
@@ -317,7 +317,7 @@ static unsigned int XAnnotateEditImage(Display *display,
                   Select a pen color from a dialog.
                 */
                 resource_info->pen_colors[pen_number]=color_name;
-                XColorBrowserWidget(display,windows,"Select",color_name);
+                MagickXColorBrowserWidget(display,windows,"Select",color_name);
                 if (*color_name == '\0')
                   break;
               }
@@ -326,7 +326,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             */
             (void) XParseColor(display,windows->map_info->colormap,
               resource_info->pen_colors[pen_number],&color);
-            XBestPixel(display,windows->map_info->colormap,(XColor *) NULL,
+            MagickXBestPixel(display,windows->map_info->colormap,(XColor *) NULL,
               (unsigned int) MaxColors,&color);
             windows->pixel_info->pen_colors[pen_number]=color;
             pen_id=pen_number;
@@ -345,7 +345,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             /*
               Select a pen color from the pop-up menu.
             */
-            pen_number=XMenuWidget(display,windows,AnnotateMenu[id],
+            pen_number=MagickXMenuWidget(display,windows,AnnotateMenu[id],
               (const char **) ColorMenu,command);
             if (pen_number < 0)
               break;
@@ -361,7 +361,7 @@ static unsigned int XAnnotateEditImage(Display *display,
                   Select a pen color from a dialog.
                 */
                 resource_info->pen_colors[pen_number]=color_name;
-                XColorBrowserWidget(display,windows,"Select",color_name);
+                MagickXColorBrowserWidget(display,windows,"Select",color_name);
                 if (*color_name == '\0')
                   break;
               }
@@ -370,7 +370,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             */
             (void) XParseColor(display,windows->map_info->colormap,
               resource_info->pen_colors[pen_number],&color);
-            XBestPixel(display,windows->map_info->colormap,(XColor *) NULL,
+            MagickXBestPixel(display,windows->map_info->colormap,(XColor *) NULL,
               (unsigned int) MaxColors,&color);
             windows->pixel_info->pen_colors[pen_number]=color;
             box_id=pen_number;
@@ -402,7 +402,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             /*
               Select a command from the pop-up menu.
             */
-            entry=XMenuWidget(display,windows,AnnotateMenu[id],RotateMenu,
+            entry=MagickXMenuWidget(display,windows,AnnotateMenu[id],RotateMenu,
               command);
             if (entry < 0)
               break;
@@ -411,7 +411,7 @@ static unsigned int XAnnotateEditImage(Display *display,
                 degrees=atof(RotateMenu[entry]);
                 break;
               }
-            (void) XDialogWidget(display,windows,"OK","Enter rotation angle:",
+            (void) MagickXDialogWidget(display,windows,"OK","Enter rotation angle:",
               angle);
             if (*angle == '\0')
               break;
@@ -420,7 +420,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           }
           case AnnotateHelpCommand:
           {
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Image Annotation",ImageAnnotateHelp);
             break;
           }
@@ -482,7 +482,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           case XK_F1:
           case XK_Help:
           {
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Image Annotation",ImageAnnotateHelp);
             break;
           }
@@ -529,7 +529,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   font_info=XLoadQueryFont(display,resource_info->font_name[font_id]);
   if (font_info == (XFontStruct *) NULL)
     {
-      XNoticeWidget(display,windows,"Unable to load font:",
+      MagickXNoticeWidget(display,windows,"Unable to load font:",
         resource_info->font_name[font_id]);
       font_info=windows->font_info;
     }
@@ -543,10 +543,10 @@ static unsigned int XAnnotateEditImage(Display *display,
   /*
     Initialize annotate structure.
   */
-  annotate_info=MagickAllocateMemory(XAnnotateInfo *,sizeof(XAnnotateInfo));
-  if (annotate_info == (XAnnotateInfo *) NULL)
+  annotate_info=MagickAllocateMemory(MagickXAnnotateInfo *,sizeof(MagickXAnnotateInfo));
+  if (annotate_info == (MagickXAnnotateInfo *) NULL)
     return(False);
-  XGetAnnotateInfo(annotate_info);
+  MagickXGetAnnotateInfo(annotate_info);
   annotate_info->x=x;
   annotate_info->y=y;
   if (!transparent_box && !transparent_pen)
@@ -579,7 +579,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   */
   (void) CloneString(&windows->command.name,"Text");
   windows->command.data=0;
-  (void) XCommandWidget(display,windows,TextMenu,(XEvent *) NULL);
+  (void) MagickXCommandWidget(display,windows,TextMenu,(XEvent *) NULL);
   state=DefaultState;
   (void) XDrawString(display,windows->image.id,annotate_context,x,y,"_",1);
   text_event.xexpose.width=(unsigned int) font_info->max_bounds.width;
@@ -596,7 +596,7 @@ static unsigned int XAnnotateEditImage(Display *display,
     /*
       Wait for next event.
     */
-    XScreenEvent(display,windows,&event);
+    MagickXScreenEvent(display,windows,&event);
     if (event.xany.window == windows->command.id)
       {
         /*
@@ -606,7 +606,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           windows->pixel_info->background_color.pixel);
         (void) XSetForeground(display,annotate_context,
           windows->pixel_info->foreground_color.pixel);
-        id=XCommandWidget(display,windows,AnnotateMenu,&event);
+        id=MagickXCommandWidget(display,windows,AnnotateMenu,&event);
         (void) XSetBackground(display,annotate_context,
           windows->pixel_info->pen_colors[box_id].pixel);
         (void) XSetForeground(display,annotate_context,
@@ -617,7 +617,7 @@ static unsigned int XAnnotateEditImage(Display *display,
         {
           case TextHelpCommand:
           {
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Image Annotation",ImageAnnotateHelp);
             (void) XDefineCursor(display,windows->image.id,cursor);
             break;
@@ -629,7 +629,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             */
             annotate_info->width=XTextWidth(font_info,annotate_info->text,
               (int) strlen(annotate_info->text));
-            XRefreshWindow(display,&windows->image,&text_event);
+            MagickXRefreshWindow(display,&windows->image,&text_event);
             state|=ExitState;
             break;
           }
@@ -645,7 +645,7 @@ static unsigned int XAnnotateEditImage(Display *display,
     text_event.xexpose.y=y-font_info->max_bounds.ascent;
     (void) XClearArea(display,windows->image.id,x,text_event.xexpose.y,
       text_event.xexpose.width,text_event.xexpose.height,False);
-    XRefreshWindow(display,&windows->image,&text_event);
+    MagickXRefreshWindow(display,&windows->image,&text_event);
     switch (event.type)
     {
       case ButtonPress:
@@ -667,15 +667,15 @@ static unsigned int XAnnotateEditImage(Display *display,
       {
         if (event.xexpose.count == 0)
           {
-            XAnnotateInfo
+            MagickXAnnotateInfo
               *text_info;
 
             /*
               Refresh Image window.
             */
-            XRefreshWindow(display,&windows->image,(XEvent *) NULL);
+            MagickXRefreshWindow(display,&windows->image,(XEvent *) NULL);
             text_info=annotate_info;
-            while (text_info != (XAnnotateInfo *) NULL)
+            while (text_info != (MagickXAnnotateInfo *) NULL)
             {
               if (annotate_info->stencil == ForegroundStencil)
                 (void) XDrawString(display,windows->image.id,annotate_context,
@@ -728,7 +728,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             */
             if (p == annotate_info->text)
               {
-                if (annotate_info->previous == (XAnnotateInfo *) NULL)
+                if (annotate_info->previous == (MagickXAnnotateInfo *) NULL)
                   break;
                 else
                   {
@@ -748,7 +748,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             x-=XTextWidth(font_info,p,1);
             text_event.xexpose.x=x;
             text_event.xexpose.y=y-font_info->max_bounds.ascent;
-            XRefreshWindow(display,&windows->image,&text_event);
+            MagickXRefreshWindow(display,&windows->image,&text_event);
             break;
           }
           case XK_bracketleft:
@@ -766,7 +766,7 @@ static unsigned int XAnnotateEditImage(Display *display,
               p--;
               x-=XTextWidth(font_info,p,1);
               text_event.xexpose.x=x;
-              XRefreshWindow(display,&windows->image,&text_event);
+              MagickXRefreshWindow(display,&windows->image,&text_event);
             }
             break;
           }
@@ -778,7 +778,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             */
             annotate_info->width=XTextWidth(font_info,annotate_info->text,
               (int) strlen(annotate_info->text));
-            XRefreshWindow(display,&windows->image,&text_event);
+            MagickXRefreshWindow(display,&windows->image,&text_event);
             state|=ExitState;
             break;
           }
@@ -812,7 +812,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             *p='\0';
             annotate_info->width=XTextWidth(font_info,annotate_info->text,
               (int) strlen(annotate_info->text));
-            if (annotate_info->next != (XAnnotateInfo *) NULL)
+            if (annotate_info->next != (MagickXAnnotateInfo *) NULL)
               {
                 /*
                   Line of text already exists.
@@ -823,9 +823,9 @@ static unsigned int XAnnotateEditImage(Display *display,
                 p=annotate_info->text;
                 break;
               }
-            annotate_info->next=MagickAllocateMemory(XAnnotateInfo *,
-              sizeof(XAnnotateInfo));
-            if (annotate_info->next == (XAnnotateInfo *) NULL)
+            annotate_info->next=MagickAllocateMemory(MagickXAnnotateInfo *,
+              sizeof(MagickXAnnotateInfo));
+            if (annotate_info->next == (MagickXAnnotateInfo *) NULL)
               return(False);
             *annotate_info->next=(*annotate_info);
             annotate_info->next->previous=annotate_info;
@@ -837,7 +837,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             annotate_info->y+=annotate_info->height;
             if (annotate_info->y > (int) windows->image.height)
               annotate_info->y=annotate_info->height;
-            annotate_info->next=(XAnnotateInfo *) NULL;
+            annotate_info->next=(MagickXAnnotateInfo *) NULL;
             x=annotate_info->x;
             y=annotate_info->y;
             p=annotate_info->text;
@@ -906,7 +906,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           *p='\0';
           annotate_info->width=XTextWidth(font_info,annotate_info->text,
             (int) strlen(annotate_info->text));
-          if (annotate_info->next != (XAnnotateInfo *) NULL)
+          if (annotate_info->next != (MagickXAnnotateInfo *) NULL)
             {
               /*
                 Line of text already exists.
@@ -917,9 +917,9 @@ static unsigned int XAnnotateEditImage(Display *display,
               p=annotate_info->text;
               continue;
             }
-          annotate_info->next=MagickAllocateMemory(XAnnotateInfo *,
-            sizeof(XAnnotateInfo));
-          if (annotate_info->next == (XAnnotateInfo *) NULL)
+          annotate_info->next=MagickAllocateMemory(MagickXAnnotateInfo *,
+            sizeof(MagickXAnnotateInfo));
+          if (annotate_info->next == (MagickXAnnotateInfo *) NULL)
             return(False);
           *annotate_info->next=(*annotate_info);
           annotate_info->next->previous=annotate_info;
@@ -931,7 +931,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           annotate_info->y+=annotate_info->height;
           if (annotate_info->y > (int) windows->image.height)
             annotate_info->y=annotate_info->height;
-          annotate_info->next=(XAnnotateInfo *) NULL;
+          annotate_info->next=(MagickXAnnotateInfo *) NULL;
           x=annotate_info->x;
           y=annotate_info->y;
           p=annotate_info->text;
@@ -956,9 +956,9 @@ static unsigned int XAnnotateEditImage(Display *display,
   /*
     Initialize annotated image.
   */
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
-  while (annotate_info != (XAnnotateInfo *) NULL)
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
+  while (annotate_info != (MagickXAnnotateInfo *) NULL)
   {
     if (annotate_info->width == 0)
       {
@@ -1006,7 +1006,7 @@ static unsigned int XAnnotateEditImage(Display *display,
     /*
       Annotate image with text.
     */
-    status=XAnnotateImage(display,windows->pixel_info,annotate_info,image);
+    status=MagickXAnnotateImage(display,windows->pixel_info,annotate_info,image);
     if (status == 0)
       return(False);
     /*
@@ -1022,13 +1022,13 @@ static unsigned int XAnnotateEditImage(Display *display,
   (void) XSetBackground(display,annotate_context,
     windows->pixel_info->background_color.pixel);
   (void) XSetFont(display,annotate_context,windows->font_info->fid);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   (void) XFreeFont(display,font_info);
   /*
     Update image configuration.
   */
-  XConfigureImageColormap(display,resource_info,windows,image);
-  (void) XConfigureImage(display,resource_info,windows,image);
+  MagickXConfigureImageColormap(display,resource_info,windows,image);
+  (void) MagickXConfigureImage(display,resource_info,windows,image);
   return(True);
 }
 
@@ -1043,40 +1043,40 @@ static unsigned int XAnnotateEditImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XBackgroundImage displays the image in the background of a window.
+%  Method MagickXBackgroundImage displays the image in the background of a window.
 %
-%  The format of the XBackgroundImage method is:
+%  The format of the MagickXBackgroundImage method is:
 %
-%      unsigned int XBackgroundImage(Display *display,
-%        XResourceInfo *resource_info,XWindows *windows,Image **image)
+%      unsigned int MagickXBackgroundImage(Display *display,
+%        MagickXResourceInfo *resource_info,MagickXWindows *windows,Image **image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XBackgroundImage return True if the image is
+%    o status: Method MagickXBackgroundImage return True if the image is
 %      printed.  False is returned is there is a memory shortage or if the
 %      image fails to print.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
 */
-static unsigned int XBackgroundImage(Display *display,
-  XResourceInfo *resource_info,XWindows *windows,Image **image)
+static unsigned int MagickXBackgroundImage(Display *display,
+  MagickXResourceInfo *resource_info,MagickXWindows *windows,Image **image)
 {
 #define BackgroundImageText  "  Background the image...  "
 
   static char
     window_id[MaxTextExtent] = "root";
 
-  XResourceInfo
+  MagickXResourceInfo
     background_resources;
 
   unsigned int
@@ -1085,27 +1085,27 @@ static unsigned int XBackgroundImage(Display *display,
   /*
     Put image in background.
   */
-  status=XDialogWidget(display,windows,"Background",
+  status=MagickXDialogWidget(display,windows,"Background",
     "Enter window id (id 0x00 selects window with pointer):",window_id);
   if (*window_id == '\0')
     return(False);
-  (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
-  XInfoWidget(display,windows,BackgroundImageText);
+  (void) MagickXMagickCommand(display,resource_info,windows,ApplyCommand,image);
+  MagickXInfoWidget(display,windows,BackgroundImageText);
   /*
     Display hourglass cursor if progress indication enabled.
   */
   if (resource_info->image_info->progress)
-    XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+    MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   background_resources=(*resource_info);
   background_resources.window_id=window_id;
   background_resources.backdrop=status;
-  status=XDisplayBackgroundImage(display,&background_resources,*image);
+  status=MagickXDisplayBackgroundImage(display,&background_resources,*image);
   if (status)
-    XClientMessage(display,windows->image.id,windows->im_protocols,
+    MagickXClientMessage(display,windows->image.id,windows->im_protocols,
       windows->im_retain_colors,CurrentTime);
-  XSetCursorState(display,windows,False);
-  (void) XMagickCommand(display,resource_info,windows,UndoCommand,image);
+  MagickXSetCursorState(display,windows,False);
+  (void) MagickXMagickCommand(display,resource_info,windows,UndoCommand,image);
   return(True);
 }
 
@@ -1120,33 +1120,33 @@ static unsigned int XBackgroundImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XChopImage chops the X image.
+%  Method MagickXChopImage chops the X image.
 %
-%  The format of the XChopImage method is:
+%  The format of the MagickXChopImage method is:
 %
-%    unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
-%      XWindows *windows,Image **image)
+%    unsigned int MagickXChopImage(Display *display,MagickXResourceInfo *resource_info,
+%      MagickXWindows *windows,Image **image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XChopImage return True if the image is
+%    o status: Method MagickXChopImage return True if the image is
 %      cut.  False is returned is there is a memory shortage or if the
 %      image fails to cut.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
 */
-static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,Image **image)
+static unsigned int MagickXChopImage(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,Image **image)
 {
   static const char
     *ChopMenu[]=
@@ -1209,14 +1209,14 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
   */
   (void) CloneString(&windows->command.name,"Chop");
   windows->command.data=1;
-  (void) XCommandWidget(display,windows,ChopMenu,(XEvent *) NULL);
+  (void) MagickXCommandWidget(display,windows,ChopMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
-  XClientMessage(display,windows->image.id,windows->im_protocols,
+  MagickXClientMessage(display,windows->image.id,windows->im_protocols,
     windows->im_update_widget,CurrentTime);
   /*
     Track pointer until button 1 is pressed.
   */
-  XQueryPosition(display,windows->image.id,&x,&y);
+  MagickXQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
   state=DefaultState;
@@ -1228,18 +1228,18 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
           Display pointer position.
         */
         FormatString(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
-        XInfoWidget(display,windows,text);
+        MagickXInfoWidget(display,windows,text);
       }
     /*
       Wait for next event.
     */
-    XScreenEvent(display,windows,&event);
+    MagickXScreenEvent(display,windows,&event);
     if (event.xany.window == windows->command.id)
       {
         /*
           Select a command from the Command widget.
         */
-        id=XCommandWidget(display,windows,ChopMenu,&event);
+        id=MagickXCommandWidget(display,windows,ChopMenu,&event);
         if (id < 0)
           continue;
         switch (ChopCommands[id])
@@ -1261,14 +1261,14 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
               Select a command from the pop-up menu.
             */
             id=
-              XMenuWidget(display,windows,ChopMenu[id],Directions,command);
+              MagickXMenuWidget(display,windows,ChopMenu[id],Directions,command);
             if (id >= 0)
               direction=DirectionCommands[id];
             break;
           }
           case ChopHelpCommand:
           {
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Image Chop",ImageChopHelp);
             break;
           }
@@ -1340,7 +1340,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
           {
             (void) XSetFunction(display,windows->image.highlight_context,
               GXcopy);
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Image Chop",ImageChopHelp);
             (void) XSetFunction(display,windows->image.highlight_context,
               GXinvert);
@@ -1401,8 +1401,8 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
           (void) XMapWindow(display,windows->info.id);
         FormatString(text," %lux%lu%+ld%+ld",chop_info.width,chop_info.height,
           chop_info.x,chop_info.y);
-        XInfoWidget(display,windows,text);
-        XHighlightLine(display,windows->image.id,
+        MagickXInfoWidget(display,windows,text);
+        MagickXHighlightLine(display,windows->image.id,
           windows->image.highlight_context,&segment_info);
       }
     else
@@ -1411,9 +1411,9 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
     /*
       Wait for next event.
     */
-    XScreenEvent(display,windows,&event);
+    MagickXScreenEvent(display,windows,&event);
     if (distance > 9)
-      XHighlightLine(display,windows->image.id,
+      MagickXHighlightLine(display,windows->image.id,
         windows->image.highlight_context,&segment_info);
     switch (event.type)
     {
@@ -1494,9 +1494,9 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
   /*
     Image chopping is relative to image configuration.
   */
-  (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+  (void) MagickXMagickCommand(display,resource_info,windows,ApplyCommand,image);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   windows->image.window_changes.width=
     windows->image.ximage->width-(unsigned int) chop_info.width;
   windows->image.window_changes.height=
@@ -1519,7 +1519,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
     Chop image.
   */
   chop_image=ChopImage(*image,&chop_info,&(*image)->exception);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   if (chop_image == (Image *) NULL)
     return(False);
   DestroyImage(*image);
@@ -1527,8 +1527,8 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
   /*
     Update image configuration.
   */
-  XConfigureImageColormap(display,resource_info,windows,*image);
-  (void) XConfigureImage(display,resource_info,windows,*image);
+  MagickXConfigureImageColormap(display,resource_info,windows,*image);
+  (void) MagickXConfigureImage(display,resource_info,windows,*image);
   return(True);
 }
 
@@ -1543,30 +1543,30 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XColorEditImage allows the user to interactively change
+%  Method MagickXColorEditImage allows the user to interactively change
 %  the color of one pixel for a DirectColor image or one colormap entry for
 %  a PseudoClass image.
 %
-%  The format of the XColorEditImage method is:
+%  The format of the MagickXColorEditImage method is:
 %
-%      unsigned int XColorEditImage(Display *display,
-%        XResourceInfo *resource_info,XWindows *windows,Image **image)
+%      unsigned int MagickXColorEditImage(Display *display,
+%        MagickXResourceInfo *resource_info,MagickXWindows *windows,Image **image)
 %
 %  A description of each parameter follows:
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 */
-static unsigned int XColorEditImage(Display *display,
-  XResourceInfo *resource_info,XWindows *windows,Image **image)
+static unsigned int MagickXColorEditImage(Display *display,
+  MagickXResourceInfo *resource_info,MagickXWindows *windows,Image **image)
 {
   static const char
     *ColorEditMenu[]=
@@ -1641,20 +1641,20 @@ static unsigned int XColorEditImage(Display *display,
   */
   (void) CloneString(&windows->command.name,"Color Edit");
   windows->command.data=4;
-  (void) XCommandWidget(display,windows,ColorEditMenu,(XEvent *) NULL);
+  (void) MagickXCommandWidget(display,windows,ColorEditMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
-  XClientMessage(display,windows->image.id,windows->im_protocols,
+  MagickXClientMessage(display,windows->image.id,windows->im_protocols,
     windows->im_update_widget,CurrentTime);
   /*
     Make cursor.
   */
-  cursor=XMakeCursor(display,windows->image.id,windows->map_info->colormap,
+  cursor=MagickXMakeCursor(display,windows->image.id,windows->map_info->colormap,
     resource_info->background_color,resource_info->foreground_color);
   (void) XDefineCursor(display,windows->image.id,cursor);
   /*
     Track pointer until button 1 is pressed.
   */
-  XQueryPosition(display,windows->image.id,&x,&y);
+  MagickXQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
   state=DefaultState;
@@ -1666,18 +1666,18 @@ static unsigned int XColorEditImage(Display *display,
           Display pointer position.
         */
         FormatString(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
-        XInfoWidget(display,windows,text);
+        MagickXInfoWidget(display,windows,text);
       }
     /*
       Wait for next event.
     */
-    XScreenEvent(display,windows,&event);
+    MagickXScreenEvent(display,windows,&event);
     if (event.xany.window == windows->command.id)
       {
         /*
           Select a command from the Command widget.
         */
-        id=XCommandWidget(display,windows,ColorEditMenu,&event);
+        id=MagickXCommandWidget(display,windows,ColorEditMenu,&event);
         if (id < 0)
           {
             (void) XDefineCursor(display,windows->image.id,cursor);
@@ -1702,7 +1702,7 @@ static unsigned int XColorEditImage(Display *display,
               Select a method from the pop-up menu.
             */
             entry=
-              XMenuWidget(display,windows,ColorEditMenu[id],MethodMenu,command);
+              MagickXMenuWidget(display,windows,ColorEditMenu[id],MethodMenu,command);
             if (entry >= 0)
               method=(PaintMethod) entry;
             break;
@@ -1725,7 +1725,7 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Select a pen color from the pop-up menu.
             */
-            pen_number=XMenuWidget(display,windows,ColorEditMenu[id],
+            pen_number=MagickXMenuWidget(display,windows,ColorEditMenu[id],
               (const char **) ColorMenu,command);
             if (pen_number < 0)
               break;
@@ -1738,7 +1738,7 @@ static unsigned int XColorEditImage(Display *display,
                   Select a pen color from a dialog.
                 */
                 resource_info->pen_colors[pen_number]=color_name;
-                XColorBrowserWidget(display,windows,"Select",color_name);
+                MagickXColorBrowserWidget(display,windows,"Select",color_name);
                 if (*color_name == '\0')
                   break;
               }
@@ -1747,7 +1747,7 @@ static unsigned int XColorEditImage(Display *display,
             */
             (void) XParseColor(display,windows->map_info->colormap,
               resource_info->pen_colors[pen_number],&color);
-            XBestPixel(display,windows->map_info->colormap,(XColor *) NULL,
+            MagickXBestPixel(display,windows->map_info->colormap,(XColor *) NULL,
               (unsigned int) MaxColors,&color);
             windows->pixel_info->pen_colors[pen_number]=color;
             pen_id=pen_number;
@@ -1771,7 +1771,7 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Select a pen color from the pop-up menu.
             */
-            pen_number=XMenuWidget(display,windows,ColorEditMenu[id],
+            pen_number=MagickXMenuWidget(display,windows,ColorEditMenu[id],
               (const char **) ColorMenu,command);
             if (pen_number < 0)
               break;
@@ -1784,7 +1784,7 @@ static unsigned int XColorEditImage(Display *display,
                   Select a pen color from a dialog.
                 */
                 resource_info->pen_colors[pen_number]=color_name;
-                XColorBrowserWidget(display,windows,"Select",color_name);
+                MagickXColorBrowserWidget(display,windows,"Select",color_name);
                 if (*color_name == '\0')
                   break;
               }
@@ -1815,7 +1815,7 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Select a command from the pop-up menu.
             */
-            entry=XMenuWidget(display,windows,ColorEditMenu[id],FuzzMenu,
+            entry=MagickXMenuWidget(display,windows,ColorEditMenu[id],FuzzMenu,
               command);
             if (entry < 0)
               break;
@@ -1825,7 +1825,7 @@ static unsigned int XColorEditImage(Display *display,
                 break;
               }
             (void) strcpy(fuzz,"20%");
-            (void) XDialogWidget(display,windows,"Ok",
+            (void) MagickXDialogWidget(display,windows,"Ok",
               "Enter fuzz factor (0.0 - 99.9%):",fuzz);
             if (*fuzz == '\0')
               break;
@@ -1835,14 +1835,14 @@ static unsigned int XColorEditImage(Display *display,
           }
           case ColorEditUndoCommand:
           {
-            (void) XMagickCommand(display,resource_info,windows,UndoCommand,
+            (void) MagickXMagickCommand(display,resource_info,windows,UndoCommand,
               image);
             break;
           }
           case ColorEditHelpCommand:
           default:
           {
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Image Annotation",ImageColorEditHelp);
             break;
           }
@@ -1873,7 +1873,7 @@ static unsigned int XColorEditImage(Display *display,
         */
         x=event.xbutton.x;
         y=event.xbutton.y;
-        (void) XMagickCommand(display,resource_info,windows,
+        (void) MagickXMagickCommand(display,resource_info,windows,
           SaveToUndoBufferCommand,image);
         state|=UpdateConfigurationState;
         break;
@@ -1890,9 +1890,9 @@ static unsigned int XColorEditImage(Display *display,
         */
         x=event.xbutton.x;
         y=event.xbutton.y;
-        XConfigureImageColormap(display,resource_info,windows,*image);
-        (void) XConfigureImage(display,resource_info,windows,*image);
-        XInfoWidget(display,windows,text);
+        MagickXConfigureImageColormap(display,resource_info,windows,*image);
+        (void) MagickXConfigureImage(display,resource_info,windows,*image);
+        MagickXInfoWidget(display,windows,text);
         (void) XDefineCursor(display,windows->image.id,cursor);
         state&=(~UpdateConfigurationState);
         break;
@@ -1933,7 +1933,7 @@ static unsigned int XColorEditImage(Display *display,
           case XK_F1:
           case XK_Help:
           {
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Image Annotation",ImageColorEditHelp);
             break;
           }
@@ -2123,7 +2123,7 @@ static unsigned int XColorEditImage(Display *display,
   } while (!(state & ExitState));
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   (void) XFreeCursor(display,cursor);
   return(True);
 }
@@ -2139,34 +2139,34 @@ static unsigned int XColorEditImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XCompositeImage requests an image name from the user, reads
+%  Method MagickXCompositeImage requests an image name from the user, reads
 %  the image and composites it with the X window image at a location the user
 %  chooses with the pointer.
 %
-%  The format of the XCompositeImage method is:
+%  The format of the MagickXCompositeImage method is:
 %
-%      unsigned int XCompositeImage(Display *display,
-%        XResourceInfo *resource_info,XWindows *windows,Image *image)
+%      unsigned int MagickXCompositeImage(Display *display,
+%        MagickXResourceInfo *resource_info,MagickXWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XCompositeImage returns True if the image is
+%    o status: Method MagickXCompositeImage returns True if the image is
 %      composited.  False is returned is there is a memory shortage or if the
 %      image fails to be composited.
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 */
-static unsigned int XCompositeImage(Display *display,
-  XResourceInfo *resource_info,XWindows *windows,Image *image)
+static unsigned int MagickXCompositeImage(Display *display,
+  MagickXResourceInfo *resource_info,MagickXWindows *windows,Image *image)
 {
   static char
     displacement_geometry[MaxTextExtent] = "30x30",
@@ -2231,20 +2231,20 @@ static unsigned int XCompositeImage(Display *display,
   /*
     Request image file name from user.
   */
-  XFileBrowserWidget(display,windows,"Composite",filename);
+  MagickXFileBrowserWidget(display,windows,"Composite",filename);
   if (*filename == '\0')
     return(True);
   /*
     Read image.
   */
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   (void) strlcpy(resource_info->image_info->filename,filename,MaxTextExtent);
   composite_image=ReadImage(resource_info->image_info,&image->exception);
   if (image->exception.severity != UndefinedException)
     MagickError2(image->exception.severity,image->exception.reason,
       image->exception.description);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   if (composite_image == (Image *) NULL)
     return(False);
   if (!composite_image->matte)
@@ -2252,10 +2252,10 @@ static unsigned int XCompositeImage(Display *display,
       /*
         Request mask image file name from user.
       */
-      XNoticeWidget(display,windows,
+      MagickXNoticeWidget(display,windows,
         "Your image does not have the required matte information.",
         "Press dismiss and choose an image to use as a mask.");
-      XFileBrowserWidget(display,windows,"Composite",filename);
+      MagickXFileBrowserWidget(display,windows,"Composite",filename);
       if (*filename != '\0')
         {
           char
@@ -2270,8 +2270,8 @@ static unsigned int XCompositeImage(Display *display,
           /*
             Read image.
           */
-          XSetCursorState(display,windows,True);
-          XCheckRefreshWindows(display,windows);
+          MagickXSetCursorState(display,windows,True);
+          MagickXCheckRefreshWindows(display,windows);
           image_info=CloneImageInfo((ImageInfo *) NULL);
           (void) strlcpy(image_info->filename,filename,MaxTextExtent);
           (void) CloneString(&image_info->size,size);
@@ -2281,7 +2281,7 @@ static unsigned int XCompositeImage(Display *display,
           if (image->exception.severity != UndefinedException)
             MagickError2(image->exception.severity,image->exception.reason,
               image->exception.description);
-          XSetCursorState(display,windows,False);
+          MagickXSetCursorState(display,windows,False);
           if (mask_image == (Image *) NULL)
             return(False);
           (void) CompositeImage(composite_image,CopyOpacityCompositeOp,
@@ -2295,14 +2295,14 @@ static unsigned int XCompositeImage(Display *display,
   */
   (void) CloneString(&windows->command.name,"Composite");
   windows->command.data=1;
-  (void) XCommandWidget(display,windows,CompositeMenu,(XEvent *) NULL);
+  (void) MagickXCommandWidget(display,windows,CompositeMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
-  XClientMessage(display,windows->image.id,windows->im_protocols,
+  MagickXClientMessage(display,windows->image.id,windows->im_protocols,
     windows->im_update_widget,CurrentTime);
   /*
     Track pointer until button 1 is pressed.
   */
-  XQueryPosition(display,windows->image.id,&x,&y);
+  MagickXQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
   composite_info.x=windows->image.x+x;
@@ -2321,25 +2321,25 @@ static unsigned int XCompositeImage(Display *display,
           Display pointer position.
         */
         FormatString(text," %+ld%+ld ",composite_info.x,composite_info.y);
-        XInfoWidget(display,windows,text);
+        MagickXInfoWidget(display,windows,text);
       }
     highlight_info=composite_info;
     highlight_info.x=composite_info.x-windows->image.x;
     highlight_info.y=composite_info.y-windows->image.y;
-    XHighlightRectangle(display,windows->image.id,
+    MagickXHighlightRectangle(display,windows->image.id,
       windows->image.highlight_context,&highlight_info);
     /*
       Wait for next event.
     */
-    XScreenEvent(display,windows,&event);
-    XHighlightRectangle(display,windows->image.id,
+    MagickXScreenEvent(display,windows,&event);
+    MagickXHighlightRectangle(display,windows->image.id,
       windows->image.highlight_context,&highlight_info);
     if (event.xany.window == windows->command.id)
       {
         /*
           Select a command from the Command widget.
         */
-        id=XCommandWidget(display,windows,CompositeMenu,&event);
+        id=MagickXCommandWidget(display,windows,CompositeMenu,&event);
         if (id < 0)
           continue;
         switch (CompositeCommands[id])
@@ -2376,7 +2376,7 @@ static unsigned int XCompositeImage(Display *display,
             /*
               Select a command from the pop-up menu.
             */
-            compose=(CompositeOperator) (XMenuWidget(display,windows,
+            compose=(CompositeOperator) (MagickXMenuWidget(display,windows,
               CompositeMenu[id],OperatorMenu,command)+1);
             break;
           }
@@ -2390,7 +2390,7 @@ static unsigned int XCompositeImage(Display *display,
             */
             (void) XSetFunction(display,windows->image.highlight_context,
               GXcopy);
-            (void) XDialogWidget(display,windows,"Dissolve",
+            (void) MagickXDialogWidget(display,windows,"Dissolve",
               "Enter the blend factor (0.0 - 99.9%):",factor);
             (void) XSetFunction(display,windows->image.highlight_context,
               GXinvert);
@@ -2407,7 +2407,7 @@ static unsigned int XCompositeImage(Display *display,
             */
             (void) XSetFunction(display,windows->image.highlight_context,
               GXcopy);
-            (void) XDialogWidget(display,windows,"Displace",
+            (void) MagickXDialogWidget(display,windows,"Displace",
               "Enter the horizontal and vertical scale:",displacement_geometry);
             (void) XSetFunction(display,windows->image.highlight_context,
               GXinvert);
@@ -2420,7 +2420,7 @@ static unsigned int XCompositeImage(Display *display,
           {
             (void) XSetFunction(display,windows->image.highlight_context,
               GXcopy);
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Image Composite",ImageCompositeHelp);
             (void) XSetFunction(display,windows->image.highlight_context,
               GXinvert);
@@ -2525,7 +2525,7 @@ static unsigned int XCompositeImage(Display *display,
           {
             (void) XSetFunction(display,windows->image.highlight_context,
               GXcopy);
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Image Composite",ImageCompositeHelp);
             (void) XSetFunction(display,windows->image.highlight_context,
               GXinvert);
@@ -2573,15 +2573,15 @@ static unsigned int XCompositeImage(Display *display,
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask);
   (void) XSetFunction(display,windows->image.highlight_context,GXcopy);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   (void) XFreeCursor(display,cursor);
   if (state & EscapeState)
     return(True);
   /*
     Image compositing is relative to image configuration.
   */
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   width=(unsigned int) image->columns;
   height=(unsigned int) image->rows;
   x=0;
@@ -2610,7 +2610,7 @@ static unsigned int XCompositeImage(Display *display,
       DestroyImage(composite_image);
       if (resize_image == (Image *) NULL)
         {
-          XSetCursorState(display,windows,False);
+          MagickXSetCursorState(display,windows,False);
           return(False);
         }
       composite_image=resize_image;
@@ -2658,12 +2658,12 @@ static unsigned int XCompositeImage(Display *display,
   (void) CompositeImage(image,compose,composite_image,composite_info.x,
     composite_info.y);
   DestroyImage(composite_image);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   /*
     Update image configuration.
   */
-  XConfigureImageColormap(display,resource_info,windows,image);
-  (void) XConfigureImage(display,resource_info,windows,image);
+  MagickXConfigureImageColormap(display,resource_info,windows,image);
+  (void) MagickXConfigureImage(display,resource_info,windows,image);
   return(True);
 }
 
@@ -2678,34 +2678,34 @@ static unsigned int XCompositeImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XConfigureImage creates a new X image.  It also notifies the
+%  Method MagickXConfigureImage creates a new X image.  It also notifies the
 %  window manager of the new image size and configures the transient widows.
 %
-%  The format of the XConfigureImage method is:
+%  The format of the MagickXConfigureImage method is:
 %
-%      unsigned int XConfigureImage(Display *display,
-%        XResourceInfo *resource_info,XWindows *windows,Image *image)
+%      unsigned int MagickXConfigureImage(Display *display,
+%        MagickXResourceInfo *resource_info,MagickXWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XConfigureImage returns True if the window is
+%    o status: Method MagickXConfigureImage returns True if the window is
 %      resized.  False is returned is there is a memory shortage or if the
 %      window fails to resize.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
 */
-static unsigned int XConfigureImage(Display *display,
-  XResourceInfo *resource_info,XWindows *windows,Image *image)
+static unsigned int MagickXConfigureImage(Display *display,
+  MagickXResourceInfo *resource_info,MagickXWindows *windows,Image *image)
 {
   char
     geometry[MaxTextExtent];
@@ -2745,7 +2745,7 @@ static unsigned int XConfigureImage(Display *display,
     Display hourglass cursor if progress indication enabled.
   */
   if (resource_info->image_info->progress)
-    XSetCursorState(display,windows,True);
+    MagickXSetCursorState(display,windows,True);
   /*
     Resize image to fit Image window dimensions.
   */
@@ -2760,10 +2760,10 @@ static unsigned int XConfigureImage(Display *display,
   windows->image.x=(int) (width*windows->image.x/windows->image.ximage->width);
   windows->image.y=(int)
     (height*windows->image.y/windows->image.ximage->height);
-  status=XMakeImage(display,resource_info,&windows->image,image,
+  status=MagickXMakeImage(display,resource_info,&windows->image,image,
     (unsigned int) width,(unsigned int) height);
   if (status == False)
-    XNoticeWidget(display,windows,"Unable to configure X image:",
+    MagickXNoticeWidget(display,windows,"Unable to configure X image:",
       windows->image.name);
   /*
     Notify window manager of the new configuration.
@@ -2786,17 +2786,17 @@ static unsigned int XConfigureImage(Display *display,
   (void) XReconfigureWMWindow(display,windows->image.id,windows->image.screen,
     mask,&window_changes);
   (void) XClearWindow(display,windows->image.id);
-  XRefreshWindow(display,&windows->image,(XEvent *) NULL);
+  MagickXRefreshWindow(display,&windows->image,(XEvent *) NULL);
   /*
     Update Magnify window configuration.
   */
   if (windows->magnify.mapped)
-    XMakeMagnifyImage(display,windows);
+    MagickXMakeMagnifyImage(display,windows);
   /*
     Update pan window configuration.
   */
   windows->pan.crop_geometry=windows->image.crop_geometry;
-  XBestIconSize(display,&windows->pan,image);
+  MagickXBestIconSize(display,&windows->pan,image);
   while ((windows->pan.width < MaxIconSize) &&
          (windows->pan.height < MaxIconSize))
   {
@@ -2827,17 +2827,17 @@ static unsigned int XConfigureImage(Display *display,
   (void) XReconfigureWMWindow(display,windows->pan.id,windows->pan.screen,
     CWWidth | CWHeight,&window_changes);
   if (windows->pan.mapped)
-    XMakePanImage(display,resource_info,windows,image);
+    MagickXMakePanImage(display,resource_info,windows,image);
   /*
     Update icon window configuration.
   */
   windows->icon.crop_geometry=windows->image.crop_geometry;
-  XBestIconSize(display,&windows->icon,image);
+  MagickXBestIconSize(display,&windows->icon,image);
   window_changes.width=windows->icon.width;
   window_changes.height=windows->icon.height;
   (void) XReconfigureWMWindow(display,windows->icon.id,windows->icon.screen,
     CWWidth | CWHeight,&window_changes);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   return(status);
 }
 
@@ -2852,27 +2852,27 @@ static unsigned int XConfigureImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XCropImage allows the user to select a region of the image and
+%  Method MagickXCropImage allows the user to select a region of the image and
 %  crop, copy, or cut it.  For copy or cut, the image can subsequently be
-%  composited onto the image with XPasteImage.
+%  composited onto the image with MagickXPasteImage.
 %
-%  The format of the XCropImage method is:
+%  The format of the MagickXCropImage method is:
 %
-%      unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
-%        XWindows *windows,Image *image,const ClipboardMode mode)
+%      unsigned int MagickXCropImage(Display *display,MagickXResourceInfo *resource_info,
+%        MagickXWindows *windows,Image *image,const ClipboardMode mode)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XCropImage returns True if the image is
+%    o status: Method MagickXCropImage returns True if the image is
 %      copied.  False is returned is there is a memory shortage or if the
 %      image fails to be copied.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
@@ -2882,8 +2882,8 @@ static unsigned int XConfigureImage(Display *display,
 %
 %
 */
-static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,Image *image,const ClipboardMode mode)
+static unsigned int MagickXCropImage(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,Image *image,const ClipboardMode mode)
 {
   static const char
     *CropModeMenu[]=
@@ -2974,14 +2974,14 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   }
   RectifyModeMenu[0]=windows->command.name;
   windows->command.data=0;
-  (void) XCommandWidget(display,windows,CropModeMenu,(XEvent *) NULL);
+  (void) MagickXCommandWidget(display,windows,CropModeMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
-  XClientMessage(display,windows->image.id,windows->im_protocols,
+  MagickXClientMessage(display,windows->image.id,windows->im_protocols,
     windows->im_update_widget,CurrentTime);
   /*
     Track pointer until button 1 is pressed.
   */
-  XQueryPosition(display,windows->image.id,&x,&y);
+  MagickXQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
   crop_info.x=windows->image.x+x;
@@ -2998,18 +2998,18 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           Display pointer position.
         */
         FormatString(text," %+ld%+ld ",crop_info.x,crop_info.y);
-        XInfoWidget(display,windows,text);
+        MagickXInfoWidget(display,windows,text);
       }
     /*
       Wait for next event.
     */
-    XScreenEvent(display,windows,&event);
+    MagickXScreenEvent(display,windows,&event);
     if (event.xany.window == windows->command.id)
       {
         /*
           Select a command from the Command widget.
         */
-        id=XCommandWidget(display,windows,CropModeMenu,&event);
+        id=MagickXCommandWidget(display,windows,CropModeMenu,&event);
         if (id < 0)
           continue;
         switch (CropCommands[id])
@@ -3020,19 +3020,19 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
             {
               case CopyMode:
               {
-                XTextViewWidget(display,resource_info,windows,False,
+                MagickXTextViewWidget(display,resource_info,windows,False,
                   "Help Viewer - Image Copy",ImageCopyHelp);
                 break;
               }
               case CropMode:
               {
-                XTextViewWidget(display,resource_info,windows,False,
+                MagickXTextViewWidget(display,resource_info,windows,False,
                   "Help Viewer - Image Crop",ImageCropHelp);
                 break;
               }
               case CutMode:
               {
-                XTextViewWidget(display,resource_info,windows,False,
+                MagickXTextViewWidget(display,resource_info,windows,False,
                   "Help Viewer - Image Cut",ImageCutHelp);
                 break;
               }
@@ -3102,19 +3102,19 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
             {
               case CopyMode:
               {
-                XTextViewWidget(display,resource_info,windows,False,
+                MagickXTextViewWidget(display,resource_info,windows,False,
                   "Help Viewer - Image Copy",ImageCopyHelp);
                 break;
               }
               case CropMode:
               {
-                XTextViewWidget(display,resource_info,windows,False,
+                MagickXTextViewWidget(display,resource_info,windows,False,
                   "Help Viewer - Image Crop",ImageCropHelp);
                 break;
               }
               case CutMode:
               {
-                XTextViewWidget(display,resource_info,windows,False,
+                MagickXTextViewWidget(display,resource_info,windows,False,
                   "Help Viewer - Image Cut",ImageCutHelp);
                 break;
               }
@@ -3191,8 +3191,8 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
             (void) XMapWindow(display,windows->info.id);
           FormatString(text," %lux%lu%+ld%+ld",crop_info.width,crop_info.height,
             crop_info.x,crop_info.y);
-          XInfoWidget(display,windows,text);
-          XHighlightRectangle(display,windows->image.id,
+          MagickXInfoWidget(display,windows,text);
+          MagickXHighlightRectangle(display,windows->image.id,
             windows->image.highlight_context,&highlight_info);
         }
       else
@@ -3201,9 +3201,9 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
       /*
         Wait for next event.
       */
-      XScreenEvent(display,windows,&event);
+      MagickXScreenEvent(display,windows,&event);
       if ((highlight_info.width > 3) && (highlight_info.height > 3))
-        XHighlightRectangle(display,windows->image.id,
+        MagickXHighlightRectangle(display,windows->image.id,
           windows->image.highlight_context,&highlight_info);
       switch (event.type)
       {
@@ -3220,13 +3220,13 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           */
           crop_info.x=windows->image.x+event.xbutton.x;
           crop_info.y=windows->image.y+event.xbutton.y;
-          XSetCursorState(display,windows,False);
+          MagickXSetCursorState(display,windows,False);
           state|=ExitState;
           if (LocaleCompare(windows->command.name,"Rectify") == 0)
             break;
           (void) CloneString(&windows->command.name,"Rectify");
           windows->command.data=0;
-          (void) XCommandWidget(display,windows,RectifyModeMenu,
+          (void) MagickXCommandWidget(display,windows,RectifyModeMenu,
             (XEvent *) NULL);
           break;
         }
@@ -3285,7 +3285,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           */
           FormatString(text," %lux%lu%+ld%+ld",crop_info.width,crop_info.height,
             crop_info.x,crop_info.y);
-          XInfoWidget(display,windows,text);
+          MagickXInfoWidget(display,windows,text);
         }
       highlight_info=crop_info;
       highlight_info.x=crop_info.x-windows->image.x;
@@ -3296,19 +3296,19 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           state|=ExitState;
           break;
         }
-      XHighlightRectangle(display,windows->image.id,
+      MagickXHighlightRectangle(display,windows->image.id,
         windows->image.highlight_context,&highlight_info);
-      XScreenEvent(display,windows,&event);
+      MagickXScreenEvent(display,windows,&event);
       if (event.xany.window == windows->command.id)
         {
           /*
             Select a command from the Command widget.
           */
           (void) XSetFunction(display,windows->image.highlight_context,GXcopy);
-          id=XCommandWidget(display,windows,RectifyModeMenu,&event);
+          id=MagickXCommandWidget(display,windows,RectifyModeMenu,&event);
           (void) XSetFunction(display,windows->image.highlight_context,
             GXinvert);
-          XHighlightRectangle(display,windows->image.id,
+          MagickXHighlightRectangle(display,windows->image.id,
             windows->image.highlight_context,&highlight_info);
           if (id >= 0)
             switch (RectifyCommands[id])
@@ -3326,19 +3326,19 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
                 {
                   case CopyMode:
                   {
-                    XTextViewWidget(display,resource_info,windows,False,
+                    MagickXTextViewWidget(display,resource_info,windows,False,
                       "Help Viewer - Image Copy",ImageCopyHelp);
                     break;
                   }
                   case CropMode:
                   {
-                    XTextViewWidget(display,resource_info,windows,False,
+                    MagickXTextViewWidget(display,resource_info,windows,False,
                       "Help Viewer - Image Crop",ImageCropHelp);
                     break;
                   }
                   case CutMode:
                   {
-                    XTextViewWidget(display,resource_info,windows,False,
+                    MagickXTextViewWidget(display,resource_info,windows,False,
                       "Help Viewer - Image Cut",ImageCutHelp);
                     break;
                   }
@@ -3361,7 +3361,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
             }
           continue;
         }
-      XHighlightRectangle(display,windows->image.id,
+      MagickXHighlightRectangle(display,windows->image.id,
         windows->image.highlight_context,&highlight_info);
       switch (event.type)
       {
@@ -3415,7 +3415,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           if (event.xbutton.window == windows->pan.id)
             if ((highlight_info.x != crop_info.x-windows->image.x) ||
                 (highlight_info.y != crop_info.y-windows->image.y))
-              XHighlightRectangle(display,windows->image.id,
+              MagickXHighlightRectangle(display,windows->image.id,
                 windows->image.highlight_context,&highlight_info);
           break;
         }
@@ -3428,11 +3428,11 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
                 event.xexpose.y=(int) highlight_info.y;
                 event.xexpose.width=(unsigned int) highlight_info.width;
                 event.xexpose.height=(unsigned int) highlight_info.height;
-                XRefreshWindow(display,&windows->image,&event);
+                MagickXRefreshWindow(display,&windows->image,&event);
               }
           if (event.xexpose.window == windows->info.id)
             if (event.xexpose.count == 0)
-              XInfoWidget(display,windows,text);
+              MagickXInfoWidget(display,windows,text);
           break;
         }
         case KeyPress:
@@ -3463,19 +3463,19 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
               {
                 case CopyMode:
                 {
-                  XTextViewWidget(display,resource_info,windows,False,
+                  MagickXTextViewWidget(display,resource_info,windows,False,
                     "Help Viewer - Image Copy",ImageCopyHelp);
                   break;
                 }
                 case CropMode:
                 {
-                  XTextViewWidget(display,resource_info,windows,False,
+                  MagickXTextViewWidget(display,resource_info,windows,False,
                     "Help Viewer - Image Cropg",ImageCropHelp);
                   break;
                 }
                 case CutMode:
                 {
-                  XTextViewWidget(display,resource_info,windows,False,
+                  MagickXTextViewWidget(display,resource_info,windows,False,
                     "Help Viewer - Image Cutg",ImageCutHelp);
                   break;
                 }
@@ -3526,7 +3526,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
     } while (!(state & ExitState));
   } while (!(state & ExitState));
   (void) XSetFunction(display,windows->image.highlight_context,GXcopy);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   if (state & EscapeState)
     return(True);
   if (mode == CropMode)
@@ -3536,17 +3536,17 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
         /*
           Reconfigure Image window as defined by cropping rectangle.
         */
-        XSetCropGeometry(display,windows,&crop_info,image);
+        MagickXSetCropGeometry(display,windows,&crop_info,image);
         windows->image.window_changes.width=(unsigned int) crop_info.width;
         windows->image.window_changes.height=(unsigned int) crop_info.height;
-        (void) XConfigureImage(display,resource_info,windows,image);
+        (void) MagickXConfigureImage(display,resource_info,windows,image);
         return(True);
       }
   /*
     Copy image before applying image transforms.
   */
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   width=(unsigned int) image->columns;
   height=(unsigned int) image->rows;
   x=0;
@@ -3562,7 +3562,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   crop_info.y=(int) (scale_factor*crop_info.y+0.5);
   crop_info.height=(unsigned int) (scale_factor*crop_info.height+0.5);
   crop_image=CropImage(image,&crop_info,&image->exception);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   if (crop_image == (Image *) NULL)
     return(False);
   if (resource_info->copy_image != (Image *) NULL)
@@ -3570,7 +3570,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   resource_info->copy_image=crop_image;
   if (mode == CopyMode)
     {
-      (void) XConfigureImage(display,resource_info,windows,image);
+      (void) MagickXConfigureImage(display,resource_info,windows,image);
       return(True);
     }
   /*
@@ -3593,8 +3593,8 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   /*
     Update image configuration.
   */
-  XConfigureImageColormap(display,resource_info,windows,image);
-  (void) XConfigureImage(display,resource_info,windows,image);
+  MagickXConfigureImageColormap(display,resource_info,windows,image);
+  (void) MagickXConfigureImage(display,resource_info,windows,image);
   return(True);
 }
 
@@ -3609,34 +3609,34 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XDrawEditImage draws a graphic element (point, line, rectangle,
+%  Method MagickXDrawEditImage draws a graphic element (point, line, rectangle,
 %  etc.) on the image.
 %
-%  The format of the XDrawEditImage method is:
+%  The format of the MagickXDrawEditImage method is:
 %
-%      unsigned int XDrawEditImage(Display *display,
-%        XResourceInfo *resource_info,XWindows *windows,Image **image)
+%      unsigned int MagickXDrawEditImage(Display *display,
+%        MagickXResourceInfo *resource_info,MagickXWindows *windows,Image **image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XDrawEditImage return True if the image is drawn
+%    o status: Method MagickXDrawEditImage return True if the image is drawn
 %      upon.  False is returned is there is a memory shortage or if the
 %      image cannot be drawn on.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
 */
-static unsigned int XDrawEditImage(Display *display,
-  XResourceInfo *resource_info,XWindows *windows,Image **image)
+static unsigned int MagickXDrawEditImage(Display *display,
+  MagickXResourceInfo *resource_info,MagickXWindows *windows,Image **image)
 {
   static const char
     *DrawMenu[]=
@@ -3709,7 +3709,7 @@ static unsigned int XDrawEditImage(Display *display,
   Window
     root_window;
 
-  XDrawInfo
+  MagickXDrawInfo
     draw_info;
 
   XEvent
@@ -3737,9 +3737,9 @@ static unsigned int XDrawEditImage(Display *display,
   */
   (void) CloneString(&windows->command.name,"Draw");
   windows->command.data=4;
-  (void) XCommandWidget(display,windows,DrawMenu,(XEvent *) NULL);
+  (void) MagickXCommandWidget(display,windows,DrawMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
-  XClientMessage(display,windows->image.id,windows->im_protocols,
+  MagickXClientMessage(display,windows->image.id,windows->im_protocols,
     windows->im_update_widget,CurrentTime);
   /*
     Wait for first button press.
@@ -3750,7 +3750,7 @@ static unsigned int XDrawEditImage(Display *display,
   cursor=XCreateFontCursor(display,XC_tcross);
   for ( ; ; )
   {
-    XQueryPosition(display,windows->image.id,&x,&y);
+    MagickXQueryPosition(display,windows->image.id,&x,&y);
     (void) XSelectInput(display,windows->image.id,
       windows->image.attributes.event_mask | PointerMotionMask);
     (void) XDefineCursor(display,windows->image.id,cursor);
@@ -3763,18 +3763,18 @@ static unsigned int XDrawEditImage(Display *display,
             Display pointer position.
           */
           FormatString(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
-          XInfoWidget(display,windows,text);
+          MagickXInfoWidget(display,windows,text);
         }
       /*
         Wait for next event.
       */
-      XScreenEvent(display,windows,&event);
+      MagickXScreenEvent(display,windows,&event);
       if (event.xany.window == windows->command.id)
         {
           /*
             Select a command from the Command widget.
           */
-          id=XCommandWidget(display,windows,DrawMenu,&event);
+          id=MagickXCommandWidget(display,windows,DrawMenu,&event);
           if (id < 0)
             continue;
           switch (DrawCommands[id])
@@ -3800,7 +3800,7 @@ static unsigned int XDrawEditImage(Display *display,
               /*
                 Select a command from the pop-up menu.
               */
-              element=(ElementType) (XMenuWidget(display,windows,
+              element=(ElementType) (MagickXMenuWidget(display,windows,
                 DrawMenu[id],Elements,command)+1);
               break;
             }
@@ -3829,7 +3829,7 @@ static unsigned int XDrawEditImage(Display *display,
               /*
                 Select a pen color from the pop-up menu.
               */
-              pen_number=XMenuWidget(display,windows,DrawMenu[id],
+              pen_number=MagickXMenuWidget(display,windows,DrawMenu[id],
                 (const char **) ColorMenu,command);
               if (pen_number < 0)
                 break;
@@ -3848,7 +3848,7 @@ static unsigned int XDrawEditImage(Display *display,
                     Select a pen color from a dialog.
                   */
                   resource_info->pen_colors[pen_number]=color_name;
-                  XColorBrowserWidget(display,windows,"Select",color_name);
+                  MagickXColorBrowserWidget(display,windows,"Select",color_name);
                   if (*color_name == '\0')
                     break;
                 }
@@ -3857,7 +3857,7 @@ static unsigned int XDrawEditImage(Display *display,
               */
               (void) XParseColor(display,windows->map_info->colormap,
                 resource_info->pen_colors[pen_number],&color);
-              XBestPixel(display,windows->map_info->colormap,(XColor *) NULL,
+              MagickXBestPixel(display,windows->map_info->colormap,(XColor *) NULL,
                 (unsigned int) MaxColors,&color);
               windows->pixel_info->pen_colors[pen_number]=color;
               pen_id=pen_number;
@@ -3893,7 +3893,7 @@ static unsigned int XDrawEditImage(Display *display,
                 Select a command from the pop-up menu.
               */
               StipplesMenu[7]=(char *) "Open...";
-              entry=XMenuWidget(display,windows,DrawMenu[id],StipplesMenu,
+              entry=MagickXMenuWidget(display,windows,DrawMenu[id],StipplesMenu,
                 command);
               if (entry < 0)
                 break;
@@ -3947,26 +3947,26 @@ static unsigned int XDrawEditImage(Display *display,
                   }
                   break;
                 }
-              XFileBrowserWidget(display,windows,"Stipple",filename);
+              MagickXFileBrowserWidget(display,windows,"Stipple",filename);
               if (*filename == '\0')
                 break;
               /*
                 Read image.
               */
-              XSetCursorState(display,windows,True);
-              XCheckRefreshWindows(display,windows);
+              MagickXSetCursorState(display,windows,True);
+              MagickXCheckRefreshWindows(display,windows);
               image_info=CloneImageInfo((ImageInfo *) NULL);
               (void) strlcpy(image_info->filename,filename,MaxTextExtent);
               stipple_image=ReadImage(image_info,&(*image)->exception);
               if ((*image)->exception.severity != UndefinedException)
                 MagickError2((*image)->exception.severity,
                   (*image)->exception.reason,(*image)->exception.description);
-              XSetCursorState(display,windows,False);
+              MagickXSetCursorState(display,windows,False);
               if (stipple_image == (Image *) NULL)
                 break;
               if (!AcquireTemporaryFileName(filename))
                 {
-                  XNoticeWidget(display,windows,
+                  MagickXNoticeWidget(display,windows,
                     "Unable to open temporary file:",filename);
                   break;
                 }
@@ -3978,7 +3978,7 @@ static unsigned int XDrawEditImage(Display *display,
                 &height,&stipple,&x,&y);
               (void) LiberateTemporaryFile(filename);
               if (status != BitmapSuccess)
-                XNoticeWidget(display,windows,"Unable to read X bitmap image:",
+                MagickXNoticeWidget(display,windows,"Unable to read X bitmap image:",
                   filename);
               break;
             }
@@ -4002,7 +4002,7 @@ static unsigned int XDrawEditImage(Display *display,
               /*
                 Select a command from the pop-up menu.
               */
-              entry=XMenuWidget(display,windows,DrawMenu[id],WidthsMenu,
+              entry=MagickXMenuWidget(display,windows,DrawMenu[id],WidthsMenu,
                 command);
               if (entry < 0)
                 break;
@@ -4011,7 +4011,7 @@ static unsigned int XDrawEditImage(Display *display,
                   line_width=atoi(WidthsMenu[entry]);
                   break;
                 }
-              (void) XDialogWidget(display,windows,"Ok","Enter line width:",
+              (void) MagickXDialogWidget(display,windows,"Ok","Enter line width:",
                 width);
               if (*width == '\0')
                 break;
@@ -4020,13 +4020,13 @@ static unsigned int XDrawEditImage(Display *display,
             }
             case DrawUndoCommand:
             {
-              (void) XMagickCommand(display,resource_info,windows,UndoCommand,
+              (void) MagickXMagickCommand(display,resource_info,windows,UndoCommand,
                 image);
               break;
             }
             case DrawHelpCommand:
             {
-              XTextViewWidget(display,resource_info,windows,False,
+              MagickXTextViewWidget(display,resource_info,windows,False,
                 "Help Viewer - Image Rotation",ImageDrawHelp);
               (void) XDefineCursor(display,windows->image.id,cursor);
               break;
@@ -4093,7 +4093,7 @@ static unsigned int XDrawEditImage(Display *display,
             case XK_F1:
             case XK_Help:
             {
-              XTextViewWidget(display,resource_info,windows,False,
+              MagickXTextViewWidget(display,resource_info,windows,False,
                 "Help Viewer - Image Rotation",ImageDrawHelp);
               break;
             }
@@ -4165,7 +4165,7 @@ static unsigned int XDrawEditImage(Display *display,
               FormatString(text," %+d%+d",
                 coordinate_info[number_coordinates-1].x,
                 coordinate_info[number_coordinates-1].y);
-              XInfoWidget(display,windows,text);
+              MagickXInfoWidget(display,windows,text);
             }
           break;
         }
@@ -4179,8 +4179,8 @@ static unsigned int XDrawEditImage(Display *display,
               degrees=RadiansToDegrees(-atan2((double) (line_info.y2-
                 line_info.y1),(double) (line_info.x2-line_info.x1)));
               FormatString(text," %.2f",degrees);
-              XInfoWidget(display,windows,text);
-              XHighlightLine(display,windows->image.id,
+              MagickXInfoWidget(display,windows,text);
+              MagickXHighlightLine(display,windows->image.id,
                 windows->image.highlight_context,&line_info);
             }
           else
@@ -4199,8 +4199,8 @@ static unsigned int XDrawEditImage(Display *display,
               */
               FormatString(text," %lux%lu%+ld%+ld",rectangle_info.width,
                 rectangle_info.height,rectangle_info.x,rectangle_info.y);
-              XInfoWidget(display,windows,text);
-              XHighlightRectangle(display,windows->image.id,
+              MagickXInfoWidget(display,windows,text);
+              MagickXHighlightRectangle(display,windows->image.id,
                 windows->image.highlight_context,&rectangle_info);
             }
           else
@@ -4221,8 +4221,8 @@ static unsigned int XDrawEditImage(Display *display,
               */
               FormatString(text," %lux%lu%+ld%+ld",rectangle_info.width,
                 rectangle_info.height,rectangle_info.x,rectangle_info.y);
-              XInfoWidget(display,windows,text);
-              XHighlightEllipse(display,windows->image.id,
+              MagickXInfoWidget(display,windows,text);
+              MagickXHighlightEllipse(display,windows->image.id,
                 windows->image.highlight_context,&rectangle_info);
             }
           else
@@ -4246,8 +4246,8 @@ static unsigned int XDrawEditImage(Display *display,
               degrees=RadiansToDegrees(-atan2((double) (line_info.y2-
                 line_info.y1),(double) (line_info.x2-line_info.x1)));
               FormatString(text," %.2f",degrees);
-              XInfoWidget(display,windows,text);
-              XHighlightLine(display,windows->image.id,
+              MagickXInfoWidget(display,windows,text);
+              MagickXHighlightLine(display,windows->image.id,
                 windows->image.highlight_context,&line_info);
             }
           else
@@ -4260,7 +4260,7 @@ static unsigned int XDrawEditImage(Display *display,
       /*
         Wait for next event.
       */
-      XScreenEvent(display,windows,&event);
+      MagickXScreenEvent(display,windows,&event);
       switch (element)
       {
         case PointElement:
@@ -4275,7 +4275,7 @@ static unsigned int XDrawEditImage(Display *display,
         case LineElement:
         {
           if (distance > 9)
-            XHighlightLine(display,windows->image.id,
+            MagickXHighlightLine(display,windows->image.id,
               windows->image.highlight_context,&line_info);
           break;
         }
@@ -4283,7 +4283,7 @@ static unsigned int XDrawEditImage(Display *display,
         case FillRectangleElement:
         {
           if ((rectangle_info.width > 3) && (rectangle_info.height > 3))
-            XHighlightRectangle(display,windows->image.id,
+            MagickXHighlightRectangle(display,windows->image.id,
               windows->image.highlight_context,&rectangle_info);
           break;
         }
@@ -4293,7 +4293,7 @@ static unsigned int XDrawEditImage(Display *display,
         case FillEllipseElement:
         {
           if ((rectangle_info.width > 3) && (rectangle_info.height > 3))
-            XHighlightEllipse(display,windows->image.id,
+            MagickXHighlightEllipse(display,windows->image.id,
               windows->image.highlight_context,&rectangle_info);
           break;
         }
@@ -4305,7 +4305,7 @@ static unsigned int XDrawEditImage(Display *display,
               windows->image.highlight_context,coordinate_info,
               number_coordinates,CoordModeOrigin);
           if (distance > 9)
-            XHighlightLine(display,windows->image.id,
+            MagickXHighlightLine(display,windows->image.id,
               windows->image.highlight_context,&line_info);
           break;
         }
@@ -4466,7 +4466,7 @@ static unsigned int XDrawEditImage(Display *display,
     */
     draw_info.x=(int) rectangle_info.x;
     draw_info.y=(int) rectangle_info.y;
-    (void) XMagickCommand(display,resource_info,windows,SaveToUndoBufferCommand,
+    (void) MagickXMagickCommand(display,resource_info,windows,SaveToUndoBufferCommand,
       image);
     width=(unsigned int) (*image)->columns;
     height=(unsigned int) (*image)->rows;
@@ -4532,17 +4532,17 @@ static unsigned int XDrawEditImage(Display *display,
     /*
       Draw element on image.
     */
-    XSetCursorState(display,windows,True);
-    XCheckRefreshWindows(display,windows);
-    status=XDrawImage(display,windows->pixel_info,&draw_info,*image);
-    XSetCursorState(display,windows,False);
+    MagickXSetCursorState(display,windows,True);
+    MagickXCheckRefreshWindows(display,windows);
+    status=MagickXDrawImage(display,windows->pixel_info,&draw_info,*image);
+    MagickXSetCursorState(display,windows,False);
     /*
       Update image colormap and return to image drawing.
     */
-    XConfigureImageColormap(display,resource_info,windows,*image);
-    (void) XConfigureImage(display,resource_info,windows,*image);
+    MagickXConfigureImageColormap(display,resource_info,windows,*image);
+    (void) MagickXConfigureImage(display,resource_info,windows,*image);
   }
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   MagickFreeMemory(coordinate_info);
   return(status);
 }
@@ -4558,24 +4558,24 @@ static unsigned int XDrawEditImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XDrawPanRectangle draws a rectangle in the pan window.  The pan
+%  Method MagickXDrawPanRectangle draws a rectangle in the pan window.  The pan
 %  window displays a zoom image and the rectangle shows which portion of
 %  the image is displayed in the Image window.
 %
-%  The format of the XDrawPanRectangle method is:
+%  The format of the MagickXDrawPanRectangle method is:
 %
-%      XDrawPanRectangle(Display *display,XWindows *windows)
+%      MagickXDrawPanRectangle(Display *display,MagickXWindows *windows)
 %
 %  A description of each parameter follows:
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %
 */
-static void XDrawPanRectangle(Display *display,XWindows *windows)
+static void MagickXDrawPanRectangle(Display *display,MagickXWindows *windows)
 {
   double
     scale_factor;
@@ -4596,7 +4596,7 @@ static void XDrawPanRectangle(Display *display,XWindows *windows)
     Display the panning rectangle.
   */
   (void) XClearWindow(display,windows->pan.id);
-  XHighlightRectangle(display,windows->pan.id,windows->pan.annotate_context,
+  MagickXHighlightRectangle(display,windows->pan.id,windows->pan.annotate_context,
     &highlight_info);
 }
 
@@ -4611,32 +4611,32 @@ static void XDrawPanRectangle(Display *display,XWindows *windows)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XImageCache handles the creation, manipulation, and destruction of
+%  Method MagickXImageCache handles the creation, manipulation, and destruction of
 %  the image cache (undo and redo buffers).
 %
-%  The format of the XImageCache method is:
+%  The format of the MagickXImageCache method is:
 %
-%      void XImageCache(Display *display,XResourceInfo *resource_info,
-%        XWindows *windows,const CommandType command,Image **image)
+%      void MagickXImageCache(Display *display,MagickXResourceInfo *resource_info,
+%        MagickXWindows *windows,const CommandType command,Image **image)
 %
 %  A description of each parameter follows:
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o command: Specifies a command to perform.
 %
-%    o image: Specifies a pointer to an Image structure;  XImageCache
+%    o image: Specifies a pointer to an Image structure;  MagickXImageCache
 %      may transform the image and return a new image pointer.
 %
 %
 */
-static void XImageCache(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,const CommandType command,Image **image)
+static void MagickXImageCache(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,const CommandType command,Image **image)
 {
   Image
     *cache_image;
@@ -4689,8 +4689,8 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       DestroyImage(cache_image);
       if (windows->image.orphan)
         return;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       return;
     }
     case CutCommand:
@@ -4799,10 +4799,10 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       cache_image=AllocateImage((ImageInfo *) NULL);
       if (cache_image == (Image *) NULL)
         break;
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       cache_image->list=CloneImage(*image,0,0,True,&(*image)->exception);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (cache_image->list == (Image *) NULL)
         {
           DestroyImage(cache_image);
@@ -4850,8 +4850,8 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       redo_image=(Image *) NULL;
       if (windows->image.orphan)
         return;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       return;
     }
   if (command != InfoCommand)
@@ -4859,10 +4859,10 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
   /*
     Display image info.
   */
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
-  XDisplayImageInfo(display,resource_info,windows,undo_image,*image);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
+  MagickXDisplayImageInfo(display,resource_info,windows,undo_image,*image);
+  MagickXSetCursorState(display,windows,False);
 }
 
 /*
@@ -4876,27 +4876,27 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XImageWindowCommand makes a transform to the image or Image window
+%  Method MagickXImageWindowCommand makes a transform to the image or Image window
 %  as specified by a user menu button or keyboard command.
 %
-%  The format of the XMagickCommand method is:
+%  The format of the MagickXMagickCommand method is:
 %
-%      CommandType XImageWindowCommand(Display *display,
-%        XResourceInfo *resource_info,XWindows *windows,
+%      CommandType MagickXImageWindowCommand(Display *display,
+%        MagickXResourceInfo *resource_info,MagickXWindows *windows,
 %        const unsigned int state,KeySym key_symbol,Image **image)
 %
 %  A description of each parameter follows:
 %
-%    o nexus:  Method XImageWindowCommand returns an image when the
+%    o nexus:  Method MagickXImageWindowCommand returns an image when the
 %      user chooses 'Open Image' from the command menu.  Otherwise a null
 %      image is returned.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o state: key mask.
 %
@@ -4907,8 +4907,8 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
 %
 %
 */
-static CommandType XImageWindowCommand(Display *display,
-  XResourceInfo *resource_info,XWindows *windows,const unsigned int state,
+static CommandType MagickXImageWindowCommand(Display *display,
+  MagickXResourceInfo *resource_info,MagickXWindows *windows,const unsigned int state,
   KeySym key_symbol,Image **image)
 {
   static char
@@ -5194,7 +5194,7 @@ static CommandType XImageWindowCommand(Display *display,
     case XK_Home:
     case XK_KP_Home:
     {
-      XTranslateImage(display,windows,*image,key_symbol);
+      MagickXTranslateImage(display,windows,*image,key_symbol);
       return(NullCommand);
     }
     case XK_Up:
@@ -5252,14 +5252,14 @@ static CommandType XImageWindowCommand(Display *display,
           if ((int) (windows->image.y+windows->image.height) >
               (int) crop_info.height)
             windows->image.y=(int) (crop_info.height-windows->image.height);
-          XSetCropGeometry(display,windows,&crop_info,*image);
+          MagickXSetCropGeometry(display,windows,&crop_info,*image);
           windows->image.window_changes.width=(unsigned int) crop_info.width;
           windows->image.window_changes.height=(unsigned int) crop_info.height;
           (void) XSetWindowBackgroundPixmap(display,windows->image.id,None);
-          (void) XConfigureImage(display,resource_info,windows,*image);
+          (void) MagickXConfigureImage(display,resource_info,windows,*image);
           return(NullCommand);
         }
-      XTranslateImage(display,windows,*image,key_symbol);
+      MagickXTranslateImage(display,windows,*image,key_symbol);
       return(NullCommand);
     }
     default:
@@ -5279,30 +5279,30 @@ static CommandType XImageWindowCommand(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XMagickCommand makes a transform to the image or Image window
+%  Method MagickXMagickCommand makes a transform to the image or Image window
 %  as specified by a user menu button or keyboard command.
 %
-%  The format of the XMagickCommand method is:
+%  The format of the MagickXMagickCommand method is:
 %
-%      Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
-%        XWindows *windows,const CommandType command,Image **image)
+%      Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resource_info,
+%        MagickXWindows *windows,const CommandType command,Image **image)
 %
 %  A description of each parameter follows:
 %
-%    o nexus:  Method XMagickCommand returns an image when the
+%    o nexus:  Method MagickXMagickCommand returns an image when the
 %      user chooses 'Load Image' from the command menu.  Otherwise a null
 %      image is returned.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o command: Specifies a command to perform.
 %
-%    o image: Specifies a pointer to an Image structure;  XMagickCommand
+%    o image: Specifies a pointer to an Image structure;  MagickXMagickCommand
 %      may transform the image and return a new image pointer.
 %
 %
@@ -5319,8 +5319,8 @@ static CommandType XImageWindowCommand(Display *display,
     oldimage=temporary_image; \
   } \
 }
-static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,const CommandType command,Image **image)
+static Image *MagickXMagickCommand(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,const CommandType command,Image **image)
 {
   char
     /* *argv[10], */
@@ -5352,8 +5352,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   /*
     Process user command.
   */
-  XCheckRefreshWindows(display,windows);
-  XImageCache(display,resource_info,windows,command,image);
+  MagickXCheckRefreshWindows(display,windows);
+  MagickXImageCache(display,resource_info,windows,command,image);
   /* argv[0]=resource_info->client_name; */
   nexus=(Image *) NULL;
   windows->image.window_changes.width=windows->image.ximage->width;
@@ -5366,7 +5366,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Load image.
       */
-      nexus=XOpenImage(display,resource_info,windows,False);
+      nexus=MagickXOpenImage(display,resource_info,windows,False);
       break;
     }
     case NextCommand:
@@ -5374,7 +5374,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Display next image.
       */
-      XClientMessage(display,windows->image.id,windows->im_protocols,
+      MagickXClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
     }
@@ -5383,7 +5383,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Display former image.
       */
-      XClientMessage(display,windows->image.id,windows->im_protocols,
+      MagickXClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_former_image,CurrentTime);
       break;
     }
@@ -5393,7 +5393,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Select image.
       */
       (void) chdir(resource_info->home_directory);
-      nexus=XOpenImage(display,resource_info,windows,True);
+      nexus=MagickXOpenImage(display,resource_info,windows,True);
       break;
     }
     case SaveCommand:
@@ -5401,10 +5401,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Save image.
       */
-      status=XSaveImage(display,resource_info,windows,*image);
+      status=MagickXSaveImage(display,resource_info,windows,*image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to write X image:",
+          MagickXNoticeWidget(display,windows,"Unable to write X image:",
             (*image)->filename);
           break;
         }
@@ -5415,10 +5415,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Print image.
       */
-      status=XPrintImage(display,resource_info,windows,*image);
+      status=MagickXPrintImage(display,resource_info,windows,*image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to print X image:",
+          MagickXNoticeWidget(display,windows,"Unable to print X image:",
             (*image)->filename);
           break;
         }
@@ -5432,12 +5432,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Delete image file.
       */
-      XFileBrowserWidget(display,windows,"Delete",filename);
+      MagickXFileBrowserWidget(display,windows,"Delete",filename);
       if (*filename == '\0')
         break;
       status=remove(filename);
       if (status != False)
-        XNoticeWidget(display,windows,"Unable to delete image file:",filename);
+        MagickXNoticeWidget(display,windows,"Unable to delete image file:",filename);
       break;
     }
     case NewCommand:
@@ -5450,13 +5450,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for canvas geometry.
       */
-      status=XDialogWidget(display,windows,"New","Enter image geometry:",
+      status=MagickXDialogWidget(display,windows,"New","Enter image geometry:",
         geometry);
       if (*geometry == '\0')
         break;
       if (!status)
         format=(char *) "xc";
-      XColorBrowserWidget(display,windows,"Select",color);
+      MagickXColorBrowserWidget(display,windows,"Select",color);
       if (*color == '\0')
         break;
       /*
@@ -5468,7 +5468,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if ((*image)->exception.severity != UndefinedException)
         MagickError2((*image)->exception.severity,(*image)->exception.reason,
           (*image)->exception.description);
-      XClientMessage(display,windows->image.id,windows->im_protocols,
+      MagickXClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
     }
@@ -5477,7 +5477,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Visual Image directory.
       */
-      nexus=XVisualDirectoryImage(display,resource_info,windows);
+      nexus=MagickXVisualDirectoryImage(display,resource_info,windows);
       break;
     }
     case QuitCommand:
@@ -5486,17 +5486,17 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Exit program.
       */
       if (!resource_info->confirm_exit)
-        XClientMessage(display,windows->image.id,windows->im_protocols,
+        MagickXClientMessage(display,windows->image.id,windows->im_protocols,
           windows->im_exit,CurrentTime);
       else
         {
           /*
             Confirm program exit.
           */
-          status=XConfirmWidget(display,windows,"Do you really want to exit",
+          status=MagickXConfirmWidget(display,windows,"Do you really want to exit",
             resource_info->client_name);
           if (status > 0)
-            XClientMessage(display,windows->image.id,windows->im_protocols,
+            MagickXClientMessage(display,windows->image.id,windows->im_protocols,
               windows->im_exit,CurrentTime);
         }
       break;
@@ -5506,7 +5506,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Cut image.
       */
-      (void) XCropImage(display,resource_info,windows,*image,CutMode);
+      (void) MagickXCropImage(display,resource_info,windows,*image,CutMode);
       break;
     }
     case CopyCommand:
@@ -5514,7 +5514,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Copy image.
       */
-      (void) XCropImage(display,resource_info,windows,*image,CopyMode);
+      (void) MagickXCropImage(display,resource_info,windows,*image,CopyMode);
       break;
     }
     case PasteCommand:
@@ -5522,10 +5522,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Paste image.
       */
-      status=XPasteImage(display,resource_info,windows,*image);
+      status=MagickXPasteImage(display,resource_info,windows,*image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to paste X image",
+          MagickXNoticeWidget(display,windows,"Unable to paste X image",
             (*image)->filename);
           break;
         }
@@ -5538,7 +5538,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       windows->image.window_changes.width=windows->image.ximage->width/2;
       windows->image.window_changes.height=windows->image.ximage->height/2;
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case OriginalSizeCommand:
@@ -5548,7 +5548,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       windows->image.window_changes.width=(unsigned int) (*image)->columns;
       windows->image.window_changes.height=(unsigned int) (*image)->rows;
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case DoubleSizeCommand:
@@ -5558,7 +5558,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       windows->image.window_changes.width=windows->image.ximage->width << 1;
       windows->image.window_changes.height=windows->image.ximage->height << 1;
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case ResizeCommand:
@@ -5579,7 +5579,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       x=0;
       y=0;
       FormatString(geometry,"%lux%lu+0+0",width,height);
-      status=XDialogWidget(display,windows,"Resize",
+      status=MagickXDialogWidget(display,windows,"Resize",
         "Enter resize geometry (e.g. 640x480, 200%):",geometry);
       if (*geometry == '\0')
         break;
@@ -5588,7 +5588,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) GetMagickGeometry(geometry,&x,&y,&width,&height);
       windows->image.window_changes.width=(unsigned int) width;
       windows->image.window_changes.height=(unsigned int) height;
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case ApplyCommand:
@@ -5603,8 +5603,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Apply size transforms to image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       /*
         Crop and/or scale displayed image.
       */
@@ -5618,13 +5618,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       windows->image.x=0;
       windows->image.y=0;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case RefreshCommand:
     {
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case RestoreCommand:
@@ -5648,8 +5648,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           windows->image.x=0;
           windows->image.y=0;
         }
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case CropCommand:
@@ -5657,7 +5657,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Crop image.
       */
-      (void) XCropImage(display,resource_info,windows,*image,CropMode);
+      (void) MagickXCropImage(display,resource_info,windows,*image,CropMode);
       break;
     }
     case ChopCommand:
@@ -5665,10 +5665,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Chop image.
       */
-      status=XChopImage(display,resource_info,windows,image);
+      status=MagickXChopImage(display,resource_info,windows,image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to cut X image",
+          MagickXNoticeWidget(display,windows,"Unable to cut X image",
             (*image)->filename);
           break;
         }
@@ -5679,10 +5679,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Flop image scanlines.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       ReplaceImage(*image,FlopImage(*image,&(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.crop_geometry != (char *) NULL)
         {
           /*
@@ -5697,7 +5697,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       if (windows->image.orphan)
         break;
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case FlipCommand:
@@ -5705,10 +5705,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Flip image scanlines.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       ReplaceImage(*image,FlipImage(*image,&(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.crop_geometry != (char *) NULL)
         {
           /*
@@ -5723,7 +5723,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       if (windows->image.orphan)
         break;
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case RotateRightCommand:
@@ -5731,10 +5731,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Rotate image 90 degrees clockwise.
       */
-      status=XRotateImage(display,resource_info,windows,90.0,image);
+      status=MagickXRotateImage(display,resource_info,windows,90.0,image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to rotate X image",
+          MagickXNoticeWidget(display,windows,"Unable to rotate X image",
             (*image)->filename);
           break;
         }
@@ -5745,10 +5745,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Rotate image 90 degrees counter-clockwise.
       */
-      status=XRotateImage(display,resource_info,windows,-90.0,image);
+      status=MagickXRotateImage(display,resource_info,windows,-90.0,image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to rotate X image",
+          MagickXNoticeWidget(display,windows,"Unable to rotate X image",
             (*image)->filename);
           break;
         }
@@ -5759,10 +5759,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Rotate image.
       */
-      status=XRotateImage(display,resource_info,windows,0.0,image);
+      status=MagickXRotateImage(display,resource_info,windows,0.0,image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to rotate X image",
+          MagickXNoticeWidget(display,windows,"Unable to rotate X image",
             (*image)->filename);
           break;
         }
@@ -5780,19 +5780,19 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for shear color and geometry.
       */
-      XColorBrowserWidget(display,windows,"Select",color);
+      MagickXColorBrowserWidget(display,windows,"Select",color);
       if (*color == '\0')
         break;
-      (void) XDialogWidget(display,windows,"Shear","Enter shear geometry:",
+      (void) MagickXDialogWidget(display,windows,"Shear","Enter shear geometry:",
         geometry);
       if (*geometry == '\0')
         break;
       /*
         Shear image.
       */
-      (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      (void) MagickXMagickCommand(display,resource_info,windows,ApplyCommand,image);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) QueryColorDatabase(color,&(*image)->background_color,
          &(*image)->exception);
       x_shear=0.0;
@@ -5800,13 +5800,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) GetMagickDimension(geometry,&x_shear,&y_shear);
       ReplaceImage(*image,ShearImage(*image,x_shear,y_shear,
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
       windows->image.window_changes.width=(unsigned int) (*image)->columns;
       windows->image.window_changes.height=(unsigned int) (*image)->rows;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case RollCommand:
@@ -5817,26 +5817,26 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for the roll geometry.
       */
-      (void) XDialogWidget(display,windows,"Roll","Enter roll geometry:",
+      (void) MagickXDialogWidget(display,windows,"Roll","Enter roll geometry:",
         geometry);
       if (*geometry == '\0')
         break;
       /*
         Roll image.
       */
-      (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      (void) MagickXMagickCommand(display,resource_info,windows,ApplyCommand,image);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) GetImageGeometry(*image,geometry,False,&rectangle);
       ReplaceImage(*image,RollImage(*image,rectangle.x,rectangle.y,
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
       windows->image.window_changes.width=(unsigned int) (*image)->columns;
       windows->image.window_changes.height=(unsigned int) (*image)->rows;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case TrimCommand:
@@ -5844,10 +5844,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Trim image.
       */
-      status=XTrimImage(display,resource_info,windows,*image);
+      status=MagickXTrimImage(display,resource_info,windows,*image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to trim X image",
+          MagickXNoticeWidget(display,windows,"Unable to trim X image",
             (*image)->filename);
           break;
         }
@@ -5861,23 +5861,23 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for percent hue change.
       */
-      (void) XDialogWidget(display,windows,"Apply",
+      (void) MagickXDialogWidget(display,windows,"Apply",
         "Enter percent change in image hue (0-200):",hue_percent);
       if (*hue_percent == '\0')
         break;
       /*
         Vary the image hue.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) strlcpy(modulate_factors,"100.0/100.0/",MaxTextExtent);
       (void) strlcat(modulate_factors,hue_percent,MaxTextExtent);
       (void) ModulateImage(*image,modulate_factors);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case SaturationCommand:
@@ -5888,23 +5888,23 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for percent saturation change.
       */
-      (void) XDialogWidget(display,windows,"Apply",
+      (void) MagickXDialogWidget(display,windows,"Apply",
         "Enter percent change in color saturation (0-200):",saturation_percent);
       if (*saturation_percent == '\0')
         break;
       /*
         Vary color saturation.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) strlcpy(modulate_factors,"100.0/",MaxTextExtent);
       (void) strlcat(modulate_factors,saturation_percent,MaxTextExtent);
       (void) ModulateImage(*image,modulate_factors);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case BrightnessCommand:
@@ -5915,22 +5915,22 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for percent brightness change.
       */
-      (void) XDialogWidget(display,windows,"Apply",
+      (void) MagickXDialogWidget(display,windows,"Apply",
         "Enter percent change in color brightness (0-200):",brightness_percent);
       if (*brightness_percent == '\0')
         break;
       /*
         Vary the color brightness.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) strlcpy(modulate_factors,brightness_percent,MaxTextExtent);
       (void) ModulateImage(*image,modulate_factors);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case GammaCommand:
@@ -5941,21 +5941,21 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for gamma value.
       */
-      (void) XDialogWidget(display,windows,"Gamma",
+      (void) MagickXDialogWidget(display,windows,"Gamma",
         "Enter gamma value (e.g. 1.0/1.0/1.6):",factor);
       if (*factor == '\0')
         break;
       /*
         Gamma correct image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) GammaImage(*image,factor);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case SpiffCommand:
@@ -5963,14 +5963,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Sharpen the image contrast.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) ContrastImage(*image,True);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case DullCommand:
@@ -5978,14 +5978,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Dull the image contrast.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) ContrastImage(*image,False);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case EqualizeCommand:
@@ -5993,14 +5993,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Perform histogram equalization on the image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) EqualizeImage(*image);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case NormalizeCommand:
@@ -6008,14 +6008,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Perform histogram normalization on the image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) NormalizeImage(*image);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case NegateCommand:
@@ -6023,14 +6023,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Negate colors in image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) NegateImage(*image,False);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case GrayscaleCommand:
@@ -6038,14 +6038,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Convert image to grayscale.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) TransformColorspace(*image,GRAYColorspace);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case MapCommand:
@@ -6059,25 +6059,25 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Request image file name from user.
       */
-      XFileBrowserWidget(display,windows,"Map",filename);
+      MagickXFileBrowserWidget(display,windows,"Map",filename);
       if (*filename == '\0')
         break;
       /*
         Map image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       map_image=ReadImage(resource_info->image_info,&(*image)->exception);
       if (map_image != (Image *) NULL)
         {
           (void) MapImage(*image,map_image,True);
           DestroyImage(map_image);
         }
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case QuantizeCommand:
@@ -6091,25 +6091,25 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for maximum number of colors.
       */
-      status=XDialogWidget(display,windows,"Quantize",
+      status=MagickXDialogWidget(display,windows,"Quantize",
         "Maximum number of colors:",colors);
       if (*colors == '\0')
         break;
       /*
         Color reduce the image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       GetQuantizeInfo(&quantize_info);
       quantize_info.number_colors=atol(colors);
       quantize_info.dither=(status ? False : True);
       quantize_info.colorspace=(*image)->colorspace;
       (void) QuantizeImage(&quantize_info,*image);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case DespeckleCommand:
@@ -6117,14 +6117,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Despeckle image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       ReplaceImage(*image,DespeckleImage(*image,&(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case EmbossCommand:
@@ -6139,25 +6139,25 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for emboss radius.
       */
-      (void) XDialogWidget(display,windows,"Emboss",
+      (void) MagickXDialogWidget(display,windows,"Emboss",
         "Enter the emboss radius and standard deviation:",emboss_argument);
       if (*emboss_argument == '\0')
         break;
       /*
         Reduce noise in the image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       radius=0.0;
       sigma=1.0;
       (void) GetMagickDimension(emboss_argument,&radius,&sigma);
       ReplaceImage(*image,EmbossImage(*image,radius,sigma,
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case ReduceNoiseCommand:
@@ -6168,22 +6168,22 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for noise radius.
       */
-      (void) XDialogWidget(display,windows,"Reduce Noise",
+      (void) MagickXDialogWidget(display,windows,"Reduce Noise",
         "Enter the noise radius:",radius);
       if (*radius == '\0')
         break;
       /*
         Reduce noise in the image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       ReplaceImage(*image,ReduceNoiseImage(*image,atol(radius),
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case AddNoiseCommand:
@@ -6197,13 +6197,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Add noise to the image.
       */
-      XListBrowserWidget(display,windows,&windows->widget,NoiseTypes,
+      MagickXListBrowserWidget(display,windows,&windows->widget,NoiseTypes,
         "Add Noise","Select a type of noise to add to your image:",
         option);
       if (*option == '\0')
         break;
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       noise_type=UniformNoise;
       if (LocaleCompare("Gaussian",option) == 0)
         noise_type=GaussianNoise;
@@ -6217,11 +6217,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         noise_type=PoissonNoise;
       ReplaceImage(*image,AddNoiseImage(*image,noise_type,
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case SharpenCommand:
@@ -6236,25 +6236,25 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for sharpen radius.
       */
-      (void) XDialogWidget(display,windows,"Sharpen",
+      (void) MagickXDialogWidget(display,windows,"Sharpen",
         "Enter the sharpen radius and standard deviation:",option);
       if (*option == '\0')
         break;
       /*
         Sharpen image scanlines.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       radius=0.0;
       sigma=1.0;
       (void) GetMagickDimension(option,&radius,&sigma);
       ReplaceImage(*image,SharpenImage(*image,radius,sigma,
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case BlurCommand:
@@ -6269,25 +6269,25 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for blur radius.
       */
-      (void) XDialogWidget(display,windows,"Blur",
+      (void) MagickXDialogWidget(display,windows,"Blur",
         "Enter the blur radius and standard deviation:",option);
       if (*option == '\0')
         break;
       /*
         Blur an image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       radius=0.0;
       sigma=1.0;
       (void) GetMagickDimension(option,&radius,&sigma);
       ReplaceImage(*image,BlurImage(*image,radius,sigma,
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case ThresholdCommand:
@@ -6299,21 +6299,21 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Query user for threshold value.
       */
       (void) sprintf(factor,"%lu",(unsigned long)(MaxRGB+1)/2);
-      (void) XDialogWidget(display,windows,"Threshold",
+      (void) MagickXDialogWidget(display,windows,"Threshold",
         "Enter threshold value:",factor);
       if (*factor == '\0')
         break;
       /*
         Threshold image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) ChannelThresholdImage(*image,factor);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case EdgeDetectCommand:
@@ -6324,22 +6324,22 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for edge factor.
       */
-      (void) XDialogWidget(display,windows,"Detect Edges",
+      (void) MagickXDialogWidget(display,windows,"Detect Edges",
         "Enter the edge detect radius:",radius);
       if (*radius == '\0')
         break;
       /*
         Detect edge in image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       ReplaceImage(*image,EdgeImage(*image,atof(radius),
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case SpreadCommand:
@@ -6350,22 +6350,22 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for spread amount.
       */
-      (void) XDialogWidget(display,windows,"Spread",
+      (void) MagickXDialogWidget(display,windows,"Spread",
         "Enter the displacement amount:",amount);
       if (*amount == '\0')
         break;
       /*
         Displace image pixels by a random amount.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       ReplaceImage(*image,SpreadImage(*image,atoi(amount),
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case ShadeCommand:
@@ -6380,25 +6380,25 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for the shade geometry.
       */
-      status=XDialogWidget(display,windows,"Shade",
+      status=MagickXDialogWidget(display,windows,"Shade",
         "Enter the azimuth and elevation of the light source:",geometry);
       if (*geometry == '\0')
         break;
       /*
         Shade image pixels.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       azimuth=30.0;
       elevation=30.0;
       (void) GetMagickDimension(geometry,&azimuth,&elevation);
       ReplaceImage(*image,ShadeImage(*image,(status ? True : False),
         azimuth,elevation,&(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case RaiseCommand:
@@ -6409,22 +6409,22 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for bevel width.
       */
-      (void) XDialogWidget(display,windows,"Raise","Bevel width:",bevel_width);
+      (void) MagickXDialogWidget(display,windows,"Raise","Bevel width:",bevel_width);
       if (*bevel_width == '\0')
         break;
       /*
         Raise an image.
       */
-      (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      (void) MagickXMagickCommand(display,resource_info,windows,ApplyCommand,image);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) GetImageGeometry(*image,bevel_width,False,&rectangle);
       (void) RaiseImage(*image,&rectangle,True);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case SegmentCommand:
@@ -6439,26 +6439,26 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for smoothing threshold.
       */
-      (void) XDialogWidget(display,windows,"Segment","Smooth threshold:",
+      (void) MagickXDialogWidget(display,windows,"Segment","Smooth threshold:",
         threshold);
       if (*threshold == '\0')
         break;
       /*
         Segment an image.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       cluster_threshold=1.0;
       smoothing_threshold=1.5;
       (void) GetMagickDimension(threshold,&cluster_threshold,
          &smoothing_threshold);
       (void) SegmentImage(*image,(*image)->colorspace,False,
         cluster_threshold,smoothing_threshold);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case SolarizeCommand:
@@ -6469,21 +6469,21 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for solarize factor.
       */
-      (void) XDialogWidget(display,windows,"Solarize",
+      (void) MagickXDialogWidget(display,windows,"Solarize",
         "Enter the solarize factor (0 - 99.9%):",factor);
       if (*factor == '\0')
         break;
       /*
         Solarize image pixels.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) SolarizeImage(*image,StringToDouble(factor,MaxRGB));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case SwirlCommand:
@@ -6494,22 +6494,22 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for swirl angle.
       */
-      (void) XDialogWidget(display,windows,"Swirl","Enter the swirl angle:",
+      (void) MagickXDialogWidget(display,windows,"Swirl","Enter the swirl angle:",
         degrees);
       if (*degrees == '\0')
         break;
       /*
         Swirl image pixels about the center.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       ReplaceImage(*image,SwirlImage(*image,atof(degrees),
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case ImplodeCommand:
@@ -6520,22 +6520,22 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for implode factor.
       */
-      (void) XDialogWidget(display,windows,"Implode",
+      (void) MagickXDialogWidget(display,windows,"Implode",
         "Enter the implosion/explosion factor (-1.0 - 1.0):",factor);
       if (*factor == '\0')
         break;
       /*
         Implode image pixels about the center.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       ReplaceImage(*image,ImplodeImage(*image,atof(factor),
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case WaveCommand:
@@ -6550,25 +6550,25 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for the shade geometry.
       */
-      (void) XDialogWidget(display,windows,"Wave",
+      (void) MagickXDialogWidget(display,windows,"Wave",
         "Enter the amplitude and length of the wave:",geometry);
       if (*geometry == '\0')
         break;
       /*
         Shade image pixels.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       amplitude=25.0;
       wavelength=150.0;
       (void) GetMagickDimension(geometry,&amplitude,&wavelength);
       ReplaceImage(*image,WaveImage(*image,amplitude,wavelength,
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case OilPaintCommand:
@@ -6579,22 +6579,22 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for circular neighborhood radius.
       */
-      (void) XDialogWidget(display,windows,"Oil Paint",
+      (void) MagickXDialogWidget(display,windows,"Oil Paint",
         "Enter the mask radius:",radius);
       if (*radius == '\0')
         break;
       /*
         OilPaint image scanlines.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       ReplaceImage(*image,OilPaintImage(*image,atof(radius),
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case CharcoalDrawCommand:
@@ -6609,26 +6609,26 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for charcoal radius.
       */
-      (void) XDialogWidget(display,windows,"Charcoal Draw",
+      (void) MagickXDialogWidget(display,windows,"Charcoal Draw",
         "Enter the charcoal radius:",option);
       if (*option == '\0')
         break;
       /*
         Charcoal the image.
       */
-      (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      (void) MagickXMagickCommand(display,resource_info,windows,ApplyCommand,image);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       radius=0.0;
       sigma=1.0;
       (void) GetMagickDimension(option,&radius,&sigma);
       ReplaceImage(*image,CharcoalImage(*image,radius,sigma,
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case AnnotateCommand:
@@ -6636,10 +6636,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Annotate the image with text.
       */
-      status=XAnnotateEditImage(display,resource_info,windows,*image);
+      status=MagickXAnnotateEditImage(display,resource_info,windows,*image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to annotate X image",
+          MagickXNoticeWidget(display,windows,"Unable to annotate X image",
             (*image)->filename);
           break;
         }
@@ -6650,10 +6650,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Draw image.
       */
-      status=XDrawEditImage(display,resource_info,windows,image);
+      status=MagickXDrawEditImage(display,resource_info,windows,image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to draw on the X image",
+          MagickXNoticeWidget(display,windows,"Unable to draw on the X image",
             (*image)->filename);
           break;
         }
@@ -6664,10 +6664,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Color edit.
       */
-      status=XColorEditImage(display,resource_info,windows,image);
+      status=MagickXColorEditImage(display,resource_info,windows,image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to pixel edit X image",
+          MagickXNoticeWidget(display,windows,"Unable to pixel edit X image",
             (*image)->filename);
           break;
         }
@@ -6678,10 +6678,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Matte edit.
       */
-      status=XMatteEditImage(display,resource_info,windows,image);
+      status=MagickXMatteEditImage(display,resource_info,windows,image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to matte edit X image",
+          MagickXNoticeWidget(display,windows,"Unable to matte edit X image",
             (*image)->filename);
           break;
         }
@@ -6692,10 +6692,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Composite image.
       */
-      status=XCompositeImage(display,resource_info,windows,*image);
+      status=MagickXCompositeImage(display,resource_info,windows,*image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to composite X image",
+          MagickXNoticeWidget(display,windows,"Unable to composite X image",
             (*image)->filename);
           break;
         }
@@ -6709,31 +6709,31 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for border color and geometry.
       */
-      XColorBrowserWidget(display,windows,"Select",color);
+      MagickXColorBrowserWidget(display,windows,"Select",color);
       if (*color == '\0')
         break;
-      (void) XDialogWidget(display,windows,"Add Border",
+      (void) MagickXDialogWidget(display,windows,"Add Border",
         "Enter border geometry:",geometry);
       if (*geometry == '\0')
         break;
       /*
         Add a border to the image.
       */
-      (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      (void) MagickXMagickCommand(display,resource_info,windows,ApplyCommand,image);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) QueryColorDatabase(color,&(*image)->border_color,
         &(*image)->exception);
       (void) GetImageGeometry(*image,geometry,False,&rectangle);
       ReplaceImage(*image,BorderImage(*image,&rectangle,
         &(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
       windows->image.window_changes.width=(unsigned int) (*image)->columns;
       windows->image.window_changes.height=(unsigned int) (*image)->rows;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case AddFrameCommand:
@@ -6747,19 +6747,19 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for frame color and geometry.
       */
-      XColorBrowserWidget(display,windows,"Select",color);
+      MagickXColorBrowserWidget(display,windows,"Select",color);
       if (*color == '\0')
         break;
-      (void) XDialogWidget(display,windows,"Add Frame","Enter frame geometry:",
+      (void) MagickXDialogWidget(display,windows,"Add Frame","Enter frame geometry:",
         geometry);
       if (*geometry == '\0')
         break;
       /*
         Surround image with an ornamental border.
       */
-      (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      (void) MagickXMagickCommand(display,resource_info,windows,ApplyCommand,image);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       (void) QueryColorDatabase(color,&(*image)->matte_color,
         &(*image)->exception);
       (void) GetImageGeometry(*image,geometry,False,&rectangle);
@@ -6772,13 +6772,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       frame_info.width=(*image)->columns+2*frame_info.width;
       frame_info.height=(*image)->rows+2*frame_info.height;
       ReplaceImage(*image,FrameImage(*image,&frame_info,&(*image)->exception));
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
       windows->image.window_changes.width=(unsigned int) (*image)->columns;
       windows->image.window_changes.height=(unsigned int) (*image)->rows;
-      XConfigureImageColormap(display,resource_info,windows,*image);
-      (void) XConfigureImage(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
+      (void) MagickXConfigureImage(display,resource_info,windows,*image);
       break;
     }
     case CommentCommand:
@@ -6794,7 +6794,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       if (!AcquireTemporaryFileName(image_info->filename))
         {
-          XNoticeWidget(display,windows,"Unable to open temporary file:",
+          MagickXNoticeWidget(display,windows,"Unable to open temporary file:",
             image_info->filename);
           break;
         }
@@ -6809,7 +6809,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           if (file == (FILE *) NULL)
             {
               (void) LiberateTemporaryFile(image_info->filename);
-              XNoticeWidget(display,windows,"Unable to edit image comment",
+              MagickXNoticeWidget(display,windows,"Unable to edit image comment",
                 image_info->filename);
               break;
             }
@@ -6818,12 +6818,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           (void) fputc('\n',file);
           (void) fclose(file);
         }
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       status=InvokeDelegate(image_info,*image,"edit",(char *) NULL,
         &(*image)->exception);
       if (status == False)
-        XNoticeWidget(display,windows,"Unable to edit image comment",
+        MagickXNoticeWidget(display,windows,"Unable to edit image comment",
           (char *) NULL);
       else
         {
@@ -6836,7 +6836,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           (*image)->taint=True;
         }
       (void) LiberateTemporaryFile(image_info->filename);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       break;
     }
     case LaunchCommand:
@@ -6844,11 +6844,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Launch program.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       if (!AcquireTemporaryFileName(filename))
         {
-          XNoticeWidget(display,windows,"Unable to open temporary file:",
+          MagickXNoticeWidget(display,windows,"Unable to open temporary file:",
             filename);
           break;
         }
@@ -6857,7 +6857,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (status == False)
         {
           (void) LiberateTemporaryFile(filename);
-          XNoticeWidget(display,windows,"Unable to launch image editor",
+          MagickXNoticeWidget(display,windows,"Unable to launch image editor",
             (char *) NULL);
         }
       else
@@ -6866,11 +6866,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           if ((*image)->exception.severity != UndefinedException)
             MagickError2((*image)->exception.severity,
               (*image)->exception.reason,(*image)->exception.description);
-          XClientMessage(display,windows->image.id,windows->im_protocols,
+          MagickXClientMessage(display,windows->image.id,windows->im_protocols,
             windows->im_next_image,CurrentTime);
         }
       (void) LiberateTemporaryFile(filename);
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       break;
     }
     case RegionofInterestCommand:
@@ -6878,7 +6878,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Apply an image processing technique to a region of interest.
       */
-      (void) XROIImage(display,resource_info,windows,image);
+      (void) MagickXROIImage(display,resource_info,windows,image);
       break;
     }
     case InfoCommand:
@@ -6895,9 +6895,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           /*
             Make magnify image.
           */
-          XSetCursorState(display,windows,True);
+          MagickXSetCursorState(display,windows,True);
           (void) XMapRaised(display,windows->magnify.id);
-          XSetCursorState(display,windows,False);
+          MagickXSetCursorState(display,windows,False);
         }
       break;
     }
@@ -6912,7 +6912,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Select preview type from menu.
       */
-      XListBrowserWidget(display,windows,&windows->widget,PreviewTypes,
+      MagickXListBrowserWidget(display,windows,&windows->widget,PreviewTypes,
         "Preview","Select an enhancement, effect, or F/X:",preview_type);
       if (*preview_type == '\0')
         break;
@@ -6921,21 +6921,21 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           break;
       if (PreviewTypes[i] == (char *) NULL)
         {
-          XNoticeWidget(display,windows,"unknown preview type",preview_type);
+          MagickXNoticeWidget(display,windows,"unknown preview type",preview_type);
           break;
         }
       /*
         Show image preview.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       image_info->preview_type=(PreviewType) (i+1);
       image_info->group=(long) windows->image.id;
       (void) SetImageAttribute(*image,"label",(char *) NULL);
       (void) SetImageAttribute(*image,"label","Preview");
       if (!AcquireTemporaryFileName(filename))
         {
-          XNoticeWidget(display,windows,"Unable to open temporary file:",
+          MagickXNoticeWidget(display,windows,"Unable to open temporary file:",
             filename);
           break;
         }
@@ -6945,11 +6945,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=WriteImage(image_info,*image);
       if (status == False)
         {
-          XNoticeWidget(display,windows,"Unable to show image preview",
+          MagickXNoticeWidget(display,windows,"Unable to show image preview",
             (*image)->filename);
         }
-      XDelay(display,1500);
-      XSetCursorState(display,windows,False);
+      MagickXDelay(display,1500);
+      MagickXSetCursorState(display,windows,False);
       break;
     }
     case ShowHistogramCommand:
@@ -6957,14 +6957,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Show image histogram.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       image_info->group=(long) windows->image.id;
       (void) SetImageAttribute(*image,"label",(char *) NULL);
       (void) SetImageAttribute(*image,"label","Histogram");
       if (!AcquireTemporaryFileName(filename))
         {
-          XNoticeWidget(display,windows,"Unable to open temporary file:",
+          MagickXNoticeWidget(display,windows,"Unable to open temporary file:",
             filename);
           break;
         }
@@ -6973,31 +6973,31 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       FormatString((*image)->filename,"show:%s",filename);
       status=WriteImage(image_info,*image);
       if (status == False)
-        XNoticeWidget(display,windows,"Unable to show histogram",
+        MagickXNoticeWidget(display,windows,"Unable to show histogram",
           (*image)->filename);
-      XDelay(display,1500);
-      XSetCursorState(display,windows,False);
+      MagickXDelay(display,1500);
+      MagickXSetCursorState(display,windows,False);
       break;
     }
     case ShowMatteCommand:
     {
       if (!(*image)->matte)
         {
-          XNoticeWidget(display,windows,
+          MagickXNoticeWidget(display,windows,
             "Image does not have any matte information",(*image)->filename);
           break;
         }
       /*
         Show image matte.
       */
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       image_info->group=(long) windows->image.id;
       (void) SetImageAttribute(*image,"label",(char *) NULL);
       (void) SetImageAttribute(*image,"label","Matte");
       if (!AcquireTemporaryFileName(filename))
         {
-          XNoticeWidget(display,windows,"Unable to open temporary file:",
+          MagickXNoticeWidget(display,windows,"Unable to open temporary file:",
             filename);
           break;
         }
@@ -7006,10 +7006,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       FormatString((*image)->filename,"show:%s",filename);
       status=WriteImage(image_info,*image);
       if (status == False)
-        XNoticeWidget(display,windows,"Unable to show matte",
+        MagickXNoticeWidget(display,windows,"Unable to show matte",
           (*image)->filename);
-      XDelay(display,1500);
-      XSetCursorState(display,windows,False);
+      MagickXDelay(display,1500);
+      MagickXSetCursorState(display,windows,False);
       break;
     }
     case BackgroundCommand:
@@ -7017,12 +7017,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Background image.
       */
-      status=XBackgroundImage(display,resource_info,windows,image);
+      status=MagickXBackgroundImage(display,resource_info,windows,image);
       if (status == False)
         break;
       nexus=CloneImage(*image,0,0,True,&(*image)->exception);
       if (nexus != (Image *) NULL)
-        XClientMessage(display,windows->image.id,windows->im_protocols,
+        MagickXClientMessage(display,windows->image.id,windows->im_protocols,
           windows->im_next_image,CurrentTime);
       break;
     }
@@ -7034,12 +7034,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Display next image after pausing.
       */
-      (void) XDialogWidget(display,windows,"Slide Show",
+      (void) MagickXDialogWidget(display,windows,"Slide Show",
         "Pause how many 1/100ths of a second between images:",delay);
       if (*delay == '\0')
         break;
       resource_info->delay=atoi(delay);
-      XClientMessage(display,windows->image.id,windows->im_protocols,
+      MagickXClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
     }
@@ -7048,12 +7048,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Set user preferences.
       */
-      status=XPreferencesWidget(display,resource_info,windows);
+      status=MagickXPreferencesWidget(display,resource_info,windows);
       if (status == False)
         break;
       nexus=CloneImage(*image,0,0,True,&(*image)->exception);
       if (nexus != (Image *) NULL)
-        XClientMessage(display,windows->image.id,windows->im_protocols,
+        MagickXClientMessage(display,windows->image.id,windows->im_protocols,
           windows->im_next_image,CurrentTime);
       break;
     }
@@ -7062,7 +7062,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         User requested help.
       */
-      XTextViewWidget(display,resource_info,windows,False,
+      MagickXTextViewWidget(display,resource_info,windows,False,
         "Help Viewer - Display",DisplayHelp);
       break;
     }
@@ -7080,7 +7080,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       root_window=XRootWindow(display,XDefaultScreen(display));
       mozilla_atom=XInternAtom(display,"_MOZILLA_VERSION",False);
-      mozilla_window=XWindowByProperty(display,root_window,mozilla_atom);
+      mozilla_window=MagickXWindowByProperty(display,root_window,mozilla_atom);
       if (mozilla_window != (Window) NULL)
         {
           char
@@ -7094,23 +7094,23 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
           (void) XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,
             8,PropModeReplace,(unsigned char *) command,(int) strlen(command));
-          XSetCursorState(display,windows,False);
+          MagickXSetCursorState(display,windows,False);
           break;
         }
-      XSetCursorState(display,windows,True);
-      XCheckRefreshWindows(display,windows);
+      MagickXSetCursorState(display,windows,True);
+      MagickXCheckRefreshWindows(display,windows);
       status=InvokeDelegate(image_info,*image,"browse",(char *) NULL,
         &(*image)->exception);
       if (status == False)
-        XNoticeWidget(display,windows,"Unable to browse documentation",
+        MagickXNoticeWidget(display,windows,"Unable to browse documentation",
           (char *) NULL);
-      XDelay(display,1500);
-      XSetCursorState(display,windows,False);
+      MagickXDelay(display,1500);
+      MagickXSetCursorState(display,windows,False);
       break;
     }
     case VersionCommand:
     {
-      XNoticeWidget(display,windows,GetMagickVersion((unsigned long *) NULL),
+      MagickXNoticeWidget(display,windows,GetMagickVersion((unsigned long *) NULL),
         GetMagickCopyright());
       break;
     }
@@ -7137,26 +7137,26 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XMagnifyImage magnifies portions of the image as indicated
+%  Method MagickXMagnifyImage magnifies portions of the image as indicated
 %  by the pointer.  The magnified portion is displayed in a separate window.
 %
-%  The format of the XMagnifyImage method is:
+%  The format of the MagickXMagnifyImage method is:
 %
-%      void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
+%      void MagickXMagnifyImage(Display *display,MagickXWindows *windows,XEvent *event)
 %
 %  A description of each parameter follows:
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o event: Specifies a pointer to a XEvent structure.  If it is NULL,
 %      the entire image is refreshed.
 %
 %
 */
-static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
+static void MagickXMagnifyImage(Display *display,MagickXWindows *windows,XEvent *event)
 {
   char
     text[MaxTextExtent];
@@ -7198,12 +7198,12 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
           Display pointer position.
         */
         FormatString(text," %+d%+d ",windows->magnify.x,windows->magnify.y);
-        XInfoWidget(display,windows,text);
+        MagickXInfoWidget(display,windows,text);
       }
     /*
       Wait for next event.
     */
-    XScreenEvent(display,windows,event);
+    MagickXScreenEvent(display,windows,event);
     switch (event->type)
     {
       case ButtonPress:
@@ -7246,7 +7246,7 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
   /*
     Display magnified image.
   */
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
 }
 
 /*
@@ -7260,12 +7260,12 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XMagnifyWindowCommand moves the image within an Magnify window by
+%  Method MagickXMagnifyWindowCommand moves the image within an Magnify window by
 %  one pixel as specified by the key symbol.
 %
-%  The format of the XMagnifyWindowCommand method is:
+%  The format of the MagickXMagnifyWindowCommand method is:
 %
-%      void XMagnifyWindowCommand(Display *display,XWindows *windows,
+%      void MagickXMagnifyWindowCommand(Display *display,MagickXWindows *windows,
 %        const unsigned int state,const KeySym key_symbol)
 %
 %  A description of each parameter follows:
@@ -7273,7 +7273,7 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o state: key mask.
 %
@@ -7282,7 +7282,7 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
 %
 %
 */
-static void XMagnifyWindowCommand(Display *display,XWindows *windows,
+static void MagickXMagnifyWindowCommand(Display *display,MagickXWindows *windows,
   const unsigned int state,const KeySym key_symbol)
 {
   unsigned int
@@ -7368,7 +7368,7 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
     default:
       break;
   }
-  XMakeMagnifyImage(display,windows);
+  MagickXMakeMagnifyImage(display,windows);
 }
 
 /*
@@ -7382,30 +7382,30 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XMakePanImage creates a thumbnail of the image and displays it in
+%  Method MagickXMakePanImage creates a thumbnail of the image and displays it in
 %  the Pan icon window.
 %
-%  The format of the XMakePanImage method is:
+%  The format of the MagickXMakePanImage method is:
 %
-%        void XMakePanImage(Display *display,XResourceInfo *resource_info,
-%          XWindows *windows,Image *image)
+%        void MagickXMakePanImage(Display *display,MagickXResourceInfo *resource_info,
+%          MagickXWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
 */
-static void XMakePanImage(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,Image *image)
+static void MagickXMakePanImage(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,Image *image)
 {
   unsigned int
     status;
@@ -7414,22 +7414,22 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
     Display hourglass cursor if progress indication enabled.
   */
   if (resource_info->image_info->progress)
-    XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+    MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   windows->pan.x=windows->image.x;
   windows->pan.y=windows->image.y;
   /*
     Create and display image for panning icon.
   */
-  status=XMakeImage(display,resource_info,&windows->pan,image,
+  status=MagickXMakeImage(display,resource_info,&windows->pan,image,
     windows->pan.width,windows->pan.height);
   if (status == False)
     MagickError2(XServerError,image->exception.reason,(char *) NULL);
   (void) XSetWindowBackgroundPixmap(display,windows->pan.id,
     windows->pan.pixmap);
   (void) XClearWindow(display,windows->pan.id);
-  XDrawPanRectangle(display,windows);
-  XSetCursorState(display,windows,False);
+  MagickXDrawPanRectangle(display,windows);
+  MagickXSetCursorState(display,windows,False);
 }
 
 /*
@@ -7443,30 +7443,30 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XMatteEditImage allows the user to interactively change
+%  Method MagickXMatteEditImage allows the user to interactively change
 %  the Matte channel of an image.  If the image is PseudoClass it is promoted
 %  to DirectClass before the matte information is stored.
 %
-%  The format of the XMatteEditImage method is:
+%  The format of the MagickXMatteEditImage method is:
 %
-%      unsigned int XMatteEditImage(Display *display,
-%        XResourceInfo *resource_info,XWindows *windows,Image **image)
+%      unsigned int MagickXMatteEditImage(Display *display,
+%        MagickXResourceInfo *resource_info,MagickXWindows *windows,Image **image)
 %
 %  A description of each parameter follows:
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 */
-static unsigned int XMatteEditImage(Display *display,
-  XResourceInfo *resource_info,XWindows *windows,Image **image)
+static unsigned int MagickXMatteEditImage(Display *display,
+  MagickXResourceInfo *resource_info,MagickXWindows *windows,Image **image)
 {
   static char
     matte[MaxTextExtent] = "0";
@@ -7538,20 +7538,20 @@ static unsigned int XMatteEditImage(Display *display,
   */
   (void) CloneString(&windows->command.name,"Matte Edit");
   windows->command.data=4;
-  (void) XCommandWidget(display,windows,MatteEditMenu,(XEvent *) NULL);
+  (void) MagickXCommandWidget(display,windows,MatteEditMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
-  XClientMessage(display,windows->image.id,windows->im_protocols,
+  MagickXClientMessage(display,windows->image.id,windows->im_protocols,
     windows->im_update_widget,CurrentTime);
   /*
     Make cursor.
   */
-  cursor=XMakeCursor(display,windows->image.id,windows->map_info->colormap,
+  cursor=MagickXMakeCursor(display,windows->image.id,windows->map_info->colormap,
     resource_info->background_color,resource_info->foreground_color);
   (void) XDefineCursor(display,windows->image.id,cursor);
   /*
     Track pointer until button 1 is pressed.
   */
-  XQueryPosition(display,windows->image.id,&x,&y);
+  MagickXQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
   state=DefaultState;
@@ -7563,18 +7563,18 @@ static unsigned int XMatteEditImage(Display *display,
           Display pointer position.
         */
         FormatString(text," %+d%+d ",x+windows->image.x,y+windows->image.y);
-        XInfoWidget(display,windows,text);
+        MagickXInfoWidget(display,windows,text);
       }
     /*
       Wait for next event.
     */
-    XScreenEvent(display,windows,&event);
+    MagickXScreenEvent(display,windows,&event);
     if (event.xany.window == windows->command.id)
       {
         /*
           Select a command from the Command widget.
         */
-        id=XCommandWidget(display,windows,MatteEditMenu,&event);
+        id=MagickXCommandWidget(display,windows,MatteEditMenu,&event);
         if (id < 0)
           {
             (void) XDefineCursor(display,windows->image.id,cursor);
@@ -7599,7 +7599,7 @@ static unsigned int XMatteEditImage(Display *display,
               Select a method from the pop-up menu.
             */
             entry=
-              XMenuWidget(display,windows,MatteEditMenu[id],MethodMenu,command);
+              MagickXMenuWidget(display,windows,MatteEditMenu[id],MethodMenu,command);
             if (entry >= 0)
               method=(PaintMethod) entry;
             break;
@@ -7622,7 +7622,7 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Select a pen color from the pop-up menu.
             */
-            pen_number=XMenuWidget(display,windows,MatteEditMenu[id],
+            pen_number=MagickXMenuWidget(display,windows,MatteEditMenu[id],
               (const char **) ColorMenu,command);
             if (pen_number < 0)
               break;
@@ -7635,7 +7635,7 @@ static unsigned int XMatteEditImage(Display *display,
                   Select a pen color from a dialog.
                 */
                 resource_info->pen_colors[pen_number]=color_name;
-                XColorBrowserWidget(display,windows,"Select",color_name);
+                MagickXColorBrowserWidget(display,windows,"Select",color_name);
                 if (*color_name == '\0')
                   break;
               }
@@ -7666,7 +7666,7 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Select a command from the pop-up menu.
             */
-            entry=XMenuWidget(display,windows,MatteEditMenu[id],FuzzMenu,
+            entry=MagickXMenuWidget(display,windows,MatteEditMenu[id],FuzzMenu,
               command);
             if (entry < 0)
               break;
@@ -7676,7 +7676,7 @@ static unsigned int XMatteEditImage(Display *display,
                 break;
               }
             (void) strcpy(fuzz,"20%");
-            (void) XDialogWidget(display,windows,"Ok",
+            (void) MagickXDialogWidget(display,windows,"Ok",
               "Enter fuzz factor (0.0 - 99.9%):",fuzz);
             if (*fuzz == '\0')
               break;
@@ -7701,7 +7701,7 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Select a command from the pop-up menu.
             */
-            entry=XMenuWidget(display,windows,MatteEditMenu[id],MatteMenu,
+            entry=MagickXMenuWidget(display,windows,MatteEditMenu[id],MatteMenu,
               command);
             if (entry < 0)
               break;
@@ -7713,20 +7713,20 @@ static unsigned int XMatteEditImage(Display *display,
                 break;
               }
             FormatString(message,"Enter matte value (0 - %lu):",MaxRGB);
-            (void) XDialogWidget(display,windows,"Matte",message,matte);
+            (void) MagickXDialogWidget(display,windows,"Matte",message,matte);
             if (*matte == '\0')
               break;
             break;
           }
           case MatteEditUndoCommand:
           {
-            (void) XMagickCommand(display,resource_info,windows,UndoCommand,
+            (void) MagickXMagickCommand(display,resource_info,windows,UndoCommand,
               image);
             break;
           }
           case MatteEditHelpCommand:
           {
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Matte Edit",ImageMatteEditHelp);
             break;
           }
@@ -7759,7 +7759,7 @@ static unsigned int XMatteEditImage(Display *display,
         */
         x=event.xbutton.x;
         y=event.xbutton.y;
-        (void) XMagickCommand(display,resource_info,windows,
+        (void) MagickXMagickCommand(display,resource_info,windows,
           SaveToUndoBufferCommand,image);
         state|=UpdateConfigurationState;
         break;
@@ -7776,9 +7776,9 @@ static unsigned int XMatteEditImage(Display *display,
         */
         x=event.xbutton.x;
         y=event.xbutton.y;
-        XConfigureImageColormap(display,resource_info,windows,*image);
-        (void) XConfigureImage(display,resource_info,windows,*image);
-        XInfoWidget(display,windows,text);
+        MagickXConfigureImageColormap(display,resource_info,windows,*image);
+        (void) MagickXConfigureImage(display,resource_info,windows,*image);
+        MagickXInfoWidget(display,windows,text);
         (void) XDefineCursor(display,windows->image.id,cursor);
         state&=(~UpdateConfigurationState);
         break;
@@ -7822,7 +7822,7 @@ static unsigned int XMatteEditImage(Display *display,
           case XK_F1:
           case XK_Help:
           {
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Matte Edit",ImageMatteEditHelp);
             break;
           }
@@ -7982,7 +7982,7 @@ static unsigned int XMatteEditImage(Display *display,
   } while (!(state & ExitState));
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   (void) XFreeCursor(display,cursor);
   return(True);
 }
@@ -7998,32 +7998,32 @@ static unsigned int XMatteEditImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XOpenImage loads an image from a file.
+%  Method MagickXOpenImage loads an image from a file.
 %
-%  The format of the XOpenImage method is:
+%  The format of the MagickXOpenImage method is:
 %
-%     Image *XOpenImage(Display *display,XResourceInfo *resource_info,
-%       XWindows *windows,const unsigned int command)
+%     Image *MagickXOpenImage(Display *display,MagickXResourceInfo *resource_info,
+%       MagickXWindows *windows,const unsigned int command)
 %
 %  A description of each parameter follows:
 %
-%    o nexus: Method XOpenImage returns an image if can be loaded
+%    o nexus: Method MagickXOpenImage returns an image if can be loaded
 %      successfully.  Otherwise a null image is returned.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o command: A value other than zero indicates that the file is selected
 %      from the command line argument list.
 %
 %
 */
-static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,const unsigned int command)
+static Image *MagickXOpenImage(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,const unsigned int command)
 {
   ExceptionInfo
     exception;
@@ -8044,7 +8044,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
     Request file name from user.
   */
   if (!command)
-    XFileBrowserWidget(display,windows,"Open",filename);
+    MagickXFileBrowserWidget(display,windows,"Open",filename);
   else
     {
       char
@@ -8082,7 +8082,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
         if (*files[i] != '-')
           filelist[j++]=files[i];
       filelist[j]=(char *) NULL;
-      XListBrowserWidget(display,windows,&windows->widget,
+      MagickXListBrowserWidget(display,windows,&windows->widget,
         (const char **) filelist,"Load","Select Image to Load:",filename);
       MagickFreeMemory(filelist);
       (void) XFreeStringList(files);
@@ -8102,11 +8102,11 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
         User may want to delay the X server screen grab.
       */
       (void) strcpy(seconds,"0");
-      (void) XDialogWidget(display,windows,"Grab","Enter any delay in seconds:",
+      (void) MagickXDialogWidget(display,windows,"Grab","Enter any delay in seconds:",
         seconds);
       if (*seconds == '\0')
         return((Image *) NULL);
-      XDelay(display,1000*atol(seconds));
+      MagickXDelay(display,1000*atol(seconds));
     }
   if ((LocaleCompare(image_info->magick,"CMYK") == 0) ||
       (LocaleCompare(image_info->magick,"GRAY") == 0) ||
@@ -8129,15 +8129,15 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       (void) strcpy(geometry,"512x512");
       if (image_info->size != (char *) NULL)
         (void) strlcpy(geometry,image_info->size,MaxTextExtent);
-      (void) XDialogWidget(display,windows,"Load","Enter the image geometry:",
+      (void) MagickXDialogWidget(display,windows,"Load","Enter the image geometry:",
         geometry);
       (void) CloneString(&image_info->size,geometry);
     }
   /*
     Load the image.
   */
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   (void) strlcpy(image_info->filename,filename,MaxTextExtent);
   handler=(MonitorHandler) NULL;
   if (LocaleCompare(image_info->magick,"X") == 0)
@@ -8147,9 +8147,9 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
     CatchException(&exception);
   if (LocaleCompare(image_info->magick,"X") == 0)
     (void) SetMonitorHandler(handler);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   if (nexus != (Image *) NULL)
-    XClientMessage(display,windows->image.id,windows->im_protocols,
+    MagickXClientMessage(display,windows->image.id,windows->im_protocols,
       windows->im_next_image,CurrentTime);
   else
     {
@@ -8176,7 +8176,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
             i;
 
           FormatString(title,"Unknown format: %.1024s",filename);
-          XTextViewWidget(display,resource_info,windows,True,title,
+          MagickXTextViewWidget(display,resource_info,windows,True,title,
             (const char **) textlist);
           for (i=0; textlist[i] != (char *) NULL; i++)
             MagickFreeMemory(textlist[i]);
@@ -8200,24 +8200,24 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XPanImage pans the image until the mouse button is released.
+%  Method MagickXPanImage pans the image until the mouse button is released.
 %
-%  The format of the XPanImage method is:
+%  The format of the MagickXPanImage method is:
 %
-%      void XPanImage(Display *display,XWindows *windows,XEvent *event)
+%      void MagickXPanImage(Display *display,MagickXWindows *windows,XEvent *event)
 %
 %  A description of each parameter follows:
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o event: Specifies a pointer to a XEvent structure.  If it is NULL,
 %      the entire image is refreshed.
 %
 */
-static void XPanImage(Display *display,XWindows *windows,XEvent *event)
+static void MagickXPanImage(Display *display,MagickXWindows *windows,XEvent *event)
 {
   char
     text[MaxTextExtent];
@@ -8330,12 +8330,12 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
             windows->image.y=(int) pan_info.y;
             FormatString(text," %ux%u%+d%+d ",windows->image.width,
               windows->image.height,windows->image.x,windows->image.y);
-            XInfoWidget(display,windows,text);
+            MagickXInfoWidget(display,windows,text);
             /*
               Refresh Image window.
             */
-            XDrawPanRectangle(display,windows);
-            XRefreshWindow(display,&windows->image,(XEvent *) NULL);
+            MagickXDrawPanRectangle(display,windows);
+            MagickXRefreshWindow(display,&windows->image,(XEvent *) NULL);
           }
         state&=(~UpdateConfigurationState);
       }
@@ -8343,7 +8343,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
       Wait for next event.
     */
     if (!(state & ExitState))
-      XScreenEvent(display,windows,event);
+      MagickXScreenEvent(display,windows,event);
   } while (!(state & ExitState));
   /*
     Restore cursor.
@@ -8364,33 +8364,33 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XPasteImage pastes an image previously saved with XCropImage
+%  Method MagickXPasteImage pastes an image previously saved with MagickXCropImage
 %  in the X window image at a location the user chooses with the pointer.
 %
-%  The format of the XPasteImage method is:
+%  The format of the MagickXPasteImage method is:
 %
-%      unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
-%        XWindows *windows,Image *image)
+%      unsigned int MagickXPasteImage(Display *display,MagickXResourceInfo *resource_info,
+%        MagickXWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XPasteImage returns True if the image is
+%    o status: Method MagickXPasteImage returns True if the image is
 %      pasted.  False is returned is there is a memory shortage or if the
 %      image fails to be pasted.
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 */
-static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,Image *image)
+static unsigned int MagickXPasteImage(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,Image *image)
 {
   static const char
     *PasteMenu[]=
@@ -8454,15 +8454,15 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   */
   (void) CloneString(&windows->command.name,"Paste");
   windows->command.data=1;
-  (void) XCommandWidget(display,windows,PasteMenu,(XEvent *) NULL);
+  (void) MagickXCommandWidget(display,windows,PasteMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
-  XClientMessage(display,windows->image.id,windows->im_protocols,
+  MagickXClientMessage(display,windows->image.id,windows->im_protocols,
     windows->im_update_widget,CurrentTime);
   /*
     Track pointer until button 1 is pressed.
   */
-  XSetCursorState(display,windows,False);
-  XQueryPosition(display,windows->image.id,&x,&y);
+  MagickXSetCursorState(display,windows,False);
+  MagickXQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
   paste_info.x=windows->image.x+x;
@@ -8480,25 +8480,25 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
           Display pointer position.
         */
         FormatString(text," %+ld%+ld ",paste_info.x,paste_info.y);
-        XInfoWidget(display,windows,text);
+        MagickXInfoWidget(display,windows,text);
       }
     highlight_info=paste_info;
     highlight_info.x=paste_info.x-windows->image.x;
     highlight_info.y=paste_info.y-windows->image.y;
-    XHighlightRectangle(display,windows->image.id,
+    MagickXHighlightRectangle(display,windows->image.id,
       windows->image.highlight_context,&highlight_info);
     /*
       Wait for next event.
     */
-    XScreenEvent(display,windows,&event);
-    XHighlightRectangle(display,windows->image.id,
+    MagickXScreenEvent(display,windows,&event);
+    MagickXHighlightRectangle(display,windows->image.id,
       windows->image.highlight_context,&highlight_info);
     if (event.xany.window == windows->command.id)
       {
         /*
           Select a command from the Command widget.
         */
-        id=XCommandWidget(display,windows,PasteMenu,&event);
+        id=MagickXCommandWidget(display,windows,PasteMenu,&event);
         if (id < 0)
           continue;
         switch (PasteCommands[id])
@@ -8535,13 +8535,13 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
             /*
               Select a command from the pop-up menu.
             */
-            operation=(CompositeOperator) (XMenuWidget(display,windows,
+            operation=(CompositeOperator) (MagickXMenuWidget(display,windows,
               PasteMenu[id],OperatorMenu,command)+1);
             break;
           }
           case PasteHelpCommand:
           {
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Image Composite",ImagePasteHelp);
             break;
           }
@@ -8653,7 +8653,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
           {
             (void) XSetFunction(display,windows->image.highlight_context,
               GXcopy);
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Image Composite",ImagePasteHelp);
             (void) XSetFunction(display,windows->image.highlight_context,
               GXinvert);
@@ -8701,15 +8701,15 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask);
   (void) XSetFunction(display,windows->image.highlight_context,GXcopy);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   (void) XFreeCursor(display,cursor);
   if (state & EscapeState)
     return(True);
   /*
     Image pasting is relative to image configuration.
   */
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   width=(unsigned int) image->columns;
   height=(unsigned int) image->rows;
   x=0;
@@ -8729,12 +8729,12 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   */
   (void) CompositeImage(image,operation,paste_image,paste_info.x,paste_info.y);
   DestroyImage(paste_image);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   /*
     Update image colormap.
   */
-  XConfigureImageColormap(display,resource_info,windows,image);
-  (void) XConfigureImage(display,resource_info,windows,image);
+  MagickXConfigureImageColormap(display,resource_info,windows,image);
+  (void) MagickXConfigureImage(display,resource_info,windows,image);
   return(True);
 }
 
@@ -8749,33 +8749,33 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XPrintImage prints an image to a Postscript printer.
+%  Method MagickXPrintImage prints an image to a Postscript printer.
 %
-%  The format of the XPrintImage method is:
+%  The format of the MagickXPrintImage method is:
 %
-%      unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
-%        XWindows *windows,Image *image)
+%      unsigned int MagickXPrintImage(Display *display,MagickXResourceInfo *resource_info,
+%        MagickXWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XPrintImage return True if the image is
+%    o status: Method MagickXPrintImage return True if the image is
 %      printed.  False is returned is there is a memory shortage or if the
 %      image fails to print.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
 */
-static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,Image *image)
+static unsigned int MagickXPrintImage(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,Image *image)
 {
   char
     filename[MaxTextExtent],
@@ -8797,7 +8797,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   FormatString(geometry,"Letter");
   if (image_info->page != (char *) NULL)
     (void) strlcpy(geometry,image_info->page,MaxTextExtent);
-  XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
+  MagickXListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
     "Select Postscript Page Geometry:",geometry);
   if (*geometry == '\0')
     return(True);
@@ -8805,8 +8805,8 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   /*
     Apply image transforms.
   */
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   print_image=CloneImage(image,0,0,True,&image->exception);
   if (print_image == (Image *) NULL)
     return(False);
@@ -8818,14 +8818,14 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   */
   if (!AcquireTemporaryFileName(print_image->magick_filename))
     {
-      XNoticeWidget(display,windows,"Unable to open temporary file:",
+      MagickXNoticeWidget(display,windows,"Unable to open temporary file:",
         print_image->magick_filename);
       status=False;
       goto error_return;
     }
   if (!AcquireTemporaryFileName(filename))
     {
-      XNoticeWidget(display,windows,"Unable to open temporary file:",
+      MagickXNoticeWidget(display,windows,"Unable to open temporary file:",
         filename);
       status=False;
       goto error_return;
@@ -8835,7 +8835,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
  error_return:
   DestroyImage(print_image);
   DestroyImageInfo(image_info);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   return(status);
 }
 
@@ -8850,34 +8850,34 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XROIImage applies an image processing technique to a region
+%  Method MagickXROIImage applies an image processing technique to a region
 %  of interest.
 %
-%  The format of the XROIImage method is:
+%  The format of the MagickXROIImage method is:
 %
-%      unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
-%        XWindows *windows,Image **image)
+%      unsigned int MagickXROIImage(Display *display,MagickXResourceInfo *resource_info,
+%        MagickXWindows *windows,Image **image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XROIImage returns True if the image is
+%    o status: Method MagickXROIImage returns True if the image is
 %      cropped.  False is returned is there is a memory shortage or if the
 %      image fails to be cropped.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 %
 */
-static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,Image **image)
+static unsigned int MagickXROIImage(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,Image **image)
 {
 #define ApplyMenus  7
 
@@ -9124,14 +9124,14 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
   */
   (void) CloneString(&windows->command.name,"ROI");
   windows->command.data=0;
-  (void) XCommandWidget(display,windows,ROIMenu,(XEvent *) NULL);
+  (void) MagickXCommandWidget(display,windows,ROIMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
-  XClientMessage(display,windows->image.id,windows->im_protocols,
+  MagickXClientMessage(display,windows->image.id,windows->im_protocols,
     windows->im_update_widget,CurrentTime);
   /*
     Track pointer until button 1 is pressed.
   */
-  XQueryPosition(display,windows->image.id,&x,&y);
+  MagickXQueryPosition(display,windows->image.id,&x,&y);
   (void) XSelectInput(display,windows->image.id,
     windows->image.attributes.event_mask | PointerMotionMask);
   roi_info.x=windows->image.x+x;
@@ -9148,25 +9148,25 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           Display pointer position.
         */
         FormatString(text," %+ld%+ld ",roi_info.x,roi_info.y);
-        XInfoWidget(display,windows,text);
+        MagickXInfoWidget(display,windows,text);
       }
     /*
       Wait for next event.
     */
-    XScreenEvent(display,windows,&event);
+    MagickXScreenEvent(display,windows,&event);
     if (event.xany.window == windows->command.id)
       {
         /*
           Select a command from the Command widget.
         */
-        id=XCommandWidget(display,windows,ROIMenu,&event);
+        id=MagickXCommandWidget(display,windows,ROIMenu,&event);
         if (id < 0)
           continue;
         switch (ROICommands[id])
         {
           case ROIHelpCommand:
           {
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Region of Interest",ImageROIHelp);
             break;
           }
@@ -9232,7 +9232,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           case XK_F1:
           case XK_Help:
           {
-            XTextViewWidget(display,resource_info,windows,False,
+            MagickXTextViewWidget(display,resource_info,windows,False,
               "Help Viewer - Region of Interest",ImageROIHelp);
             break;
           }
@@ -9306,8 +9306,8 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
             (void) XMapWindow(display,windows->info.id);
           FormatString(text," %lux%lu%+ld%+ld",roi_info.width,roi_info.height,
             roi_info.x,roi_info.y);
-          XInfoWidget(display,windows,text);
-          XHighlightRectangle(display,windows->image.id,
+          MagickXInfoWidget(display,windows,text);
+          MagickXHighlightRectangle(display,windows->image.id,
             windows->image.highlight_context,&highlight_info);
         }
       else
@@ -9316,9 +9316,9 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
       /*
         Wait for next event.
       */
-      XScreenEvent(display,windows,&event);
+      MagickXScreenEvent(display,windows,&event);
       if ((highlight_info.width > 3) && (highlight_info.height > 3))
-        XHighlightRectangle(display,windows->image.id,
+        MagickXHighlightRectangle(display,windows->image.id,
           windows->image.highlight_context,&highlight_info);
       switch (event.type)
       {
@@ -9335,13 +9335,13 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           */
           roi_info.x=windows->image.x+event.xbutton.x;
           roi_info.y=windows->image.y+event.xbutton.y;
-          XSetCursorState(display,windows,False);
+          MagickXSetCursorState(display,windows,False);
           state|=ExitState;
           if (LocaleCompare(windows->command.name,"Apply") == 0)
             break;
           (void) CloneString(&windows->command.name,"Apply");
           windows->command.data=ApplyMenus;
-          (void) XCommandWidget(display,windows,ApplyMenu,(XEvent *) NULL);
+          (void) MagickXCommandWidget(display,windows,ApplyMenu,(XEvent *) NULL);
           break;
         }
         case Expose:
@@ -9400,7 +9400,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           */
           FormatString(text," %lux%lu%+ld%+ld",roi_info.width,roi_info.height,
             roi_info.x,roi_info.y);
-          XInfoWidget(display,windows,text);
+          MagickXInfoWidget(display,windows,text);
         }
       highlight_info=roi_info;
       highlight_info.x=roi_info.x-windows->image.x;
@@ -9419,7 +9419,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
             case UndoCommand:
             case RedoCommand:
             {
-              (void) XMagickCommand(display,resource_info,windows,command_type,
+              (void) MagickXMagickCommand(display,resource_info,windows,command_type,
                 image);
               break;
             }
@@ -9454,10 +9454,10 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
                 Apply image processing technique to the region of interest.
               */
               windows->image.orphan=True;
-              (void) XMagickCommand(display,resource_info,windows,command_type,
+              (void) MagickXMagickCommand(display,resource_info,windows,command_type,
                 &roi_image);
               handler=SetMonitorHandler((MonitorHandler) NULL);
-              (void) XMagickCommand(display,resource_info,windows,
+              (void) MagickXMagickCommand(display,resource_info,windows,
                 SaveToUndoBufferCommand,image);
               windows->image.orphan=False;
               (void) CompositeImage(*image,CopyCompositeOp,roi_image,
@@ -9469,18 +9469,18 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           }
           if (command_type != InfoCommand)
             {
-              XConfigureImageColormap(display,resource_info,windows,*image);
-              (void) XConfigureImage(display,resource_info,windows,*image);
+              MagickXConfigureImageColormap(display,resource_info,windows,*image);
+              (void) MagickXConfigureImage(display,resource_info,windows,*image);
             }
-          XCheckRefreshWindows(display,windows);
-          XInfoWidget(display,windows,text);
+          MagickXCheckRefreshWindows(display,windows);
+          MagickXInfoWidget(display,windows,text);
           (void) XSetFunction(display,windows->image.highlight_context,
             GXinvert);
           state&=(~UpdateRegionState);
         }
-      XHighlightRectangle(display,windows->image.id,
+      MagickXHighlightRectangle(display,windows->image.id,
         windows->image.highlight_context,&highlight_info);
-      XScreenEvent(display,windows,&event);
+      MagickXScreenEvent(display,windows,&event);
       if (event.xany.window == windows->command.id)
         {
           /*
@@ -9488,7 +9488,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           */
           (void) XSetFunction(display,windows->image.highlight_context,GXcopy);
           command_type=NullCommand;
-          id=XCommandWidget(display,windows,ApplyMenu,&event);
+          id=MagickXCommandWidget(display,windows,ApplyMenu,&event);
           if (id >= 0)
             {
               (void) strlcpy(command,ApplyMenu[id],MaxTextExtent);
@@ -9498,7 +9498,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
                   /*
                     Select a command from a pop-up menu.
                   */
-                  entry=XMenuWidget(display,windows,ApplyMenu[id],
+                  entry=MagickXMenuWidget(display,windows,ApplyMenu[id],
                     (const char **) Menus[id],command);
                   if (entry >= 0)
                     {
@@ -9509,13 +9509,13 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
             }
           (void) XSetFunction(display,windows->image.highlight_context,
             GXinvert);
-          XHighlightRectangle(display,windows->image.id,
+          MagickXHighlightRectangle(display,windows->image.id,
             windows->image.highlight_context,&highlight_info);
           if (command_type == HelpCommand)
             {
               (void) XSetFunction(display,windows->image.highlight_context,
                 GXcopy);
-              XTextViewWidget(display,resource_info,windows,False,
+              MagickXTextViewWidget(display,resource_info,windows,False,
                 "Help Viewer - Region of Interest",ImageROIHelp);
               (void) XSetFunction(display,windows->image.highlight_context,
                 GXinvert);
@@ -9534,7 +9534,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
             state|=UpdateRegionState;
           continue;
         }
-      XHighlightRectangle(display,windows->image.id,
+      MagickXHighlightRectangle(display,windows->image.id,
         windows->image.highlight_context,&highlight_info);
       switch (event.type)
       {
@@ -9590,7 +9590,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           if (event.xbutton.window == windows->pan.id)
             if ((highlight_info.x != crop_info.x-windows->image.x) ||
                 (highlight_info.y != crop_info.y-windows->image.y))
-              XHighlightRectangle(display,windows->image.id,
+              MagickXHighlightRectangle(display,windows->image.id,
                 windows->image.highlight_context,&highlight_info);
           break;
         }
@@ -9603,11 +9603,11 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
                 event.xexpose.y=(int) highlight_info.y;
                 event.xexpose.width=(unsigned int) highlight_info.width;
                 event.xexpose.height=(unsigned int) highlight_info.height;
-                XRefreshWindow(display,&windows->image,&event);
+                MagickXRefreshWindow(display,&windows->image,&event);
               }
           if (event.xexpose.window == windows->info.id)
             if (event.xexpose.count == 0)
-              XInfoWidget(display,windows,text);
+              MagickXInfoWidget(display,windows,text);
           break;
         }
         case KeyPress:
@@ -9640,7 +9640,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
             {
               (void) XSetFunction(display,windows->image.highlight_context,
                 GXcopy);
-              XTextViewWidget(display,resource_info,windows,False,
+              MagickXTextViewWidget(display,resource_info,windows,False,
                 "Help Viewer - Region of Interest",ImageROIHelp);
               (void) XSetFunction(display,windows->image.highlight_context,
                 GXinvert);
@@ -9648,7 +9648,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
             }
             default:
             {
-              command_type=XImageWindowCommand(display,resource_info,windows,
+              command_type=MagickXImageWindowCommand(display,resource_info,windows,
                 event.xkey.state,key_symbol,image);
               if (command_type != NullCommand)
                 state|=UpdateRegionState;
@@ -9693,7 +9693,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
     } while (!(state & ExitState));
   } while (!(state & ExitState));
   (void) XSetFunction(display,windows->image.highlight_context,GXcopy);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   if (state & EscapeState)
     return(True);
   return(True);
@@ -9710,27 +9710,27 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XRotateImage rotates the X image.  If the degrees parameter
+%  Method MagickXRotateImage rotates the X image.  If the degrees parameter
 %  if zero, the rotation angle is computed from the slope of a line drawn by
 %  the user.
 %
-%  The format of the XRotateImage method is:
+%  The format of the MagickXRotateImage method is:
 %
-%      unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
-%        XWindows *windows,double degrees,Image **image)
+%      unsigned int MagickXRotateImage(Display *display,MagickXResourceInfo *resource_info,
+%        MagickXWindows *windows,double degrees,Image **image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XRotateImage return True if the image is
+%    o status: Method MagickXRotateImage return True if the image is
 %      rotate.  False is returned is there is a memory shortage or if the
 %      image fails to rotate.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o degrees: Specifies the number of degrees to rotate the image.
 %
@@ -9739,8 +9739,8 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
 %
 %
 */
-static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,double degrees,Image **image)
+static unsigned int MagickXRotateImage(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,double degrees,Image **image)
 {
   static const char
     *RotateMenu[]=
@@ -9814,15 +9814,15 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
       */
       (void) CloneString(&windows->command.name,"Rotate");
       windows->command.data=2;
-      (void) XCommandWidget(display,windows,RotateMenu,(XEvent *) NULL);
+      (void) MagickXCommandWidget(display,windows,RotateMenu,(XEvent *) NULL);
       (void) XMapRaised(display,windows->command.id);
-      XClientMessage(display,windows->image.id,windows->im_protocols,
+      MagickXClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_update_widget,CurrentTime);
       /*
         Wait for first button press.
       */
       (void) XSetFunction(display,windows->image.highlight_context,GXinvert);
-      XQueryPosition(display,windows->image.id,&x,&y);
+      MagickXQueryPosition(display,windows->image.id,&x,&y);
       rotate_info.x1=x;
       rotate_info.y1=y;
       rotate_info.x2=x;
@@ -9830,20 +9830,20 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
       state=DefaultState;
       do
       {
-        XHighlightLine(display,windows->image.id,
+        MagickXHighlightLine(display,windows->image.id,
           windows->image.highlight_context,&rotate_info);
         /*
           Wait for next event.
         */
-        XScreenEvent(display,windows,&event);
-        XHighlightLine(display,windows->image.id,
+        MagickXScreenEvent(display,windows,&event);
+        MagickXHighlightLine(display,windows->image.id,
           windows->image.highlight_context,&rotate_info);
         if (event.xany.window == windows->command.id)
           {
             /*
               Select a command from the Command widget.
             */
-            id=XCommandWidget(display,windows,RotateMenu,&event);
+            id=MagickXCommandWidget(display,windows,RotateMenu,&event);
             if (id < 0)
               continue;
             (void) XSetFunction(display,windows->image.highlight_context,
@@ -9871,7 +9871,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
                 /*
                   Select a pen color from the pop-up menu.
                 */
-                pen_number=XMenuWidget(display,windows,RotateMenu[id],
+                pen_number=MagickXMenuWidget(display,windows,RotateMenu[id],
                   (const char **) ColorMenu,command);
                 if (pen_number < 0)
                   break;
@@ -9884,7 +9884,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
                       Select a pen color from a dialog.
                     */
                     resource_info->pen_colors[pen_number]=color_name;
-                    XColorBrowserWidget(display,windows,"Select",color_name);
+                    MagickXColorBrowserWidget(display,windows,"Select",color_name);
                     if (*color_name == '\0')
                       break;
                   }
@@ -9893,7 +9893,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
                 */
                 (void) XParseColor(display,windows->map_info->colormap,
                   resource_info->pen_colors[pen_number],&color);
-                XBestPixel(display,windows->map_info->colormap,(XColor *) NULL,
+                MagickXBestPixel(display,windows->map_info->colormap,(XColor *) NULL,
                   (unsigned int) MaxColors,&color);
                 windows->pixel_info->pen_colors[pen_number]=color;
                 pen_id=pen_number;
@@ -9912,7 +9912,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
                 /*
                   Select a command from the pop-up menu.
                 */
-                id=XMenuWidget(display,windows,RotateMenu[id],
+                id=MagickXMenuWidget(display,windows,RotateMenu[id],
                   Directions,command);
                 if (id >= 0)
                   direction=DirectionCommands[id];
@@ -9920,7 +9920,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
               }
               case RotateHelpCommand:
               {
-                XTextViewWidget(display,resource_info,windows,False,
+                MagickXTextViewWidget(display,resource_info,windows,False,
                   "Help Viewer - Image Rotation",ImageRotateHelp);
                 break;
               }
@@ -9994,7 +9994,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
               {
                 (void) XSetFunction(display,windows->image.highlight_context,
                   GXcopy);
-                XTextViewWidget(display,resource_info,windows,False,
+                MagickXTextViewWidget(display,resource_info,windows,False,
                   "Help Viewer - Image Rotation",ImageRotateHelp);
                 (void) XSetFunction(display,windows->image.highlight_context,
                   GXinvert);
@@ -10042,8 +10042,8 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
               (void) XMapWindow(display,windows->info.id);
             FormatString(text," %.2f",
               direction == VerticalRotateCommand ? degrees-90.0 : degrees);
-            XInfoWidget(display,windows,text);
-            XHighlightLine(display,windows->image.id,
+            MagickXInfoWidget(display,windows,text);
+            MagickXHighlightLine(display,windows->image.id,
               windows->image.highlight_context,&rotate_info);
           }
         else
@@ -10053,9 +10053,9 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
         /*
           Wait for next event.
         */
-        XScreenEvent(display,windows,&event);
+        MagickXScreenEvent(display,windows,&event);
         if (distance > 9)
-          XHighlightLine(display,windows->image.id,
+          MagickXHighlightLine(display,windows->image.id,
             windows->image.highlight_context,&rotate_info);
         switch (event.type)
         {
@@ -10123,9 +10123,9 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
   for (rotations=0; normalized_degrees > 45.0; rotations++)
     normalized_degrees-=90.0;
   if (normalized_degrees != 0.0)
-    (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+    (void) MagickXMagickCommand(display,resource_info,windows,ApplyCommand,image);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   (*image)->background_color.red=
     ScaleShortToQuantum(windows->pixel_info->pen_colors[pen_id].red);
   (*image)->background_color.green=
@@ -10133,7 +10133,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
   (*image)->background_color.blue=
     ScaleShortToQuantum(windows->pixel_info->pen_colors[pen_id].blue);
   rotate_image=RotateImage(*image,degrees,&(*image)->exception);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   if (rotate_image == (Image *) NULL)
     return(False);
   DestroyImage(*image);
@@ -10199,7 +10199,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
           windows->image.window_changes.width=width;
           windows->image.window_changes.height=height;
         }
-      XConfigureImageColormap(display,resource_info,windows,*image);
+      MagickXConfigureImageColormap(display,resource_info,windows,*image);
     }
   else
     if (((rotations % 4) == 1) || ((rotations % 4) == 3))
@@ -10210,7 +10210,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
   /*
     Update image configuration.
   */
-  (void) XConfigureImage(display,resource_info,windows,*image);
+  (void) MagickXConfigureImage(display,resource_info,windows,*image);
   return(True);
 }
 
@@ -10225,33 +10225,33 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XSaveImage saves an image to a file.
+%  Method MagickXSaveImage saves an image to a file.
 %
-%  The format of the XSaveImage method is:
+%  The format of the MagickXSaveImage method is:
 %
-%      unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
-%        XWindows *windows,Image *image)
+%      unsigned int MagickXSaveImage(Display *display,MagickXResourceInfo *resource_info,
+%        MagickXWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XSaveImage return True if the image is
+%    o status: Method MagickXSaveImage return True if the image is
 %      written.  False is returned is there is a memory shortage or if the
 %      image fails to write.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
 */
-static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,Image *image)
+static unsigned int MagickXSaveImage(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,Image *image)
 {
   char
     filename[MaxTextExtent],
@@ -10280,7 +10280,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       GetPathComponent(image->filename,TailPath,filename);
       (void) chdir(path);
     }
-  XFileBrowserWidget(display,windows,"Save",filename);
+  MagickXFileBrowserWidget(display,windows,"Save",filename);
   if (*filename == '\0')
     return(True);
   if (IsAccessible(filename))
@@ -10288,7 +10288,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       /*
         File exists-- seek user's permission before overwriting.
       */
-      status=XConfirmWidget(display,windows,"Overwrite",filename);
+      status=MagickXConfirmWidget(display,windows,"Overwrite",filename);
       if (status <= 0)
         return(True);
     }
@@ -10305,7 +10305,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
         Request JPEG quality from user.
       */
       FormatString(quality,"%lu",image_info->quality);
-      status=XDialogWidget(display,windows,"Save","Enter JPEG quality:",
+      status=MagickXDialogWidget(display,windows,"Save","Enter JPEG quality:",
         quality);
       if (*quality == '\0')
         return(True);
@@ -10328,7 +10328,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
         FormatString(geometry,"%.1024s",PSPageGeometry);
       if (image_info->page != (char *) NULL)
         (void) strlcpy(geometry,image_info->page,MaxTextExtent);
-      XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
+      MagickXListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
         "Select page geometry:",geometry);
       if (*geometry != '\0')
         image_info->page=GetPageGeometry(geometry);
@@ -10336,8 +10336,8 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
   /*
     Apply image transforms.
   */
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   save_image=CloneImage(image,0,0,True,&image->exception);
   if (save_image == (Image *) NULL)
     return(False);
@@ -10353,7 +10353,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
     image->taint=False;
   DestroyImage(save_image);
   DestroyImageInfo(image_info);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   return(status);
 }
 
@@ -10368,19 +10368,19 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XScreenEvent handles global events associated with the Pan and
+%  Method MagickXScreenEvent handles global events associated with the Pan and
 %  Magnify windows.
 %
-%  The format of the XScreenEvent function is:
+%  The format of the MagickXScreenEvent function is:
 %
-%      void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
+%      void MagickXScreenEvent(Display *display,MagickXWindows *windows,XEvent *event)
 %
 %  A description of each parameter follows:
 %
 %    o display: Specifies a pointer to the Display structure;  returned from
 %      XOpenDisplay.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o event: Specifies a pointer to a X11 XEvent structure.
 %
@@ -10391,12 +10391,12 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
 extern "C" {
 #endif
 
-static int XPredicate(Display *ARGUNUSED(display),XEvent *event,char *data)
+static int MagickXPredicate(Display *ARGUNUSED(display),XEvent *event,char *data)
 {
-  register XWindows
+  register MagickXWindows
     *windows;
 
-  windows=(XWindows *) data;
+  windows=(MagickXWindows *) data;
   if ((event->type == ClientMessage) &&
       (event->xclient.window == windows->image.id))
     return(False);
@@ -10407,7 +10407,7 @@ static int XPredicate(Display *ARGUNUSED(display),XEvent *event,char *data)
 }
 #endif
 
-static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
+static void MagickXScreenEvent(Display *display,MagickXWindows *windows,XEvent *event)
 {
   MonitorHandler
     handler;
@@ -10416,7 +10416,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
     x,
     y;
 
-  (void) XIfEvent(display,event,XPredicate,(char *) windows);
+  (void) XIfEvent(display,event,MagickXPredicate,(char *) windows);
   if (event->xany.window == windows->command.id)
     return;
   switch (event->type)
@@ -10441,7 +10441,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
         }
       if (event->xbutton.window == windows->pan.id)
         {
-          XPanImage(display,windows,event);
+          MagickXPanImage(display,windows,event);
           break;
         }
       if (event->xbutton.window == windows->image.id)
@@ -10467,7 +10467,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
             if (!windows->magnify.mapped)
               (void) XMapRaised(display,windows->magnify.id);
             handler=SetMonitorHandler((MonitorHandler) NULL);
-            XMakeMagnifyImage(display,windows);
+            MagickXMakeMagnifyImage(display,windows);
             (void) SetMonitorHandler(handler);
             if (event->type == ButtonRelease)
               (void) XWithdrawWindow(display,windows->info.id,
@@ -10525,7 +10525,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
                 windows->magnify.screen,CWWidth | CWHeight,&window_changes);
               break;
             }
-          XMakeMagnifyImage(display,windows);
+          MagickXMakeMagnifyImage(display,windows);
           break;
         }
       break;
@@ -10534,19 +10534,19 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
     {
       if (event->xexpose.window == windows->image.id)
         {
-          XRefreshWindow(display,&windows->image,event);
+          MagickXRefreshWindow(display,&windows->image,event);
           break;
         }
       if (event->xexpose.window == windows->pan.id)
         if (event->xexpose.count == 0)
           {
-            XDrawPanRectangle(display,windows);
+            MagickXDrawPanRectangle(display,windows);
             break;
           }
       if (event->xexpose.window == windows->magnify.id)
         if (event->xexpose.count == 0)
           {
-            XMakeMagnifyImage(display,windows);
+            MagickXMakeMagnifyImage(display,windows);
             break;
           }
       break;
@@ -10566,7 +10566,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
       */
       (void) XLookupString((XKeyEvent *) &event->xkey,command,sizeof(command),
         &key_symbol,(XComposeStatus *) NULL);
-      XMagnifyWindowCommand(display,windows,event->xkey.state,key_symbol);
+      MagickXMagnifyWindowCommand(display,windows,event->xkey.state,key_symbol);
       break;
     }
     case MapNotify:
@@ -10607,7 +10607,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
              if (y >= (int) windows->image.height)
                y=windows->image.height-1;
             windows->magnify.y=windows->image.y+y;
-            XMakeMagnifyImage(display,windows);
+            MagickXMakeMagnifyImage(display,windows);
           }
       break;
     }
@@ -10641,13 +10641,13 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XSetCropGeometry accepts a cropping geometry relative to the
+%  Method MagickXSetCropGeometry accepts a cropping geometry relative to the
 %  Image window and translates it to a cropping geometry relative to the
 %  image.
 %
-%  The format of the XSetCropGeometry method is:
+%  The format of the MagickXSetCropGeometry method is:
 %
-%      void XSetCropGeometry(Display *display,XWindows *windows,
+%      void MagickXSetCropGeometry(Display *display,MagickXWindows *windows,
 %        RectangleInfo *crop_info,Image *image)
 %
 %  A description of each parameter follows:
@@ -10655,7 +10655,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o crop_info:  A pointer to a RectangleInfo that defines a region of the
 %      Image window to crop.
@@ -10664,7 +10664,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
 %
 %
 */
-static void XSetCropGeometry(Display *display,XWindows *windows,
+static void MagickXSetCropGeometry(Display *display,MagickXWindows *windows,
   RectangleInfo *crop_info,Image *image)
 {
   char
@@ -10688,7 +10688,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
       */
       FormatString(text," %lux%lu%+ld%+ld",crop_info->width,crop_info->height,
         crop_info->x,crop_info->y);
-      XInfoWidget(display,windows,text);
+      MagickXInfoWidget(display,windows,text);
     }
   /*
     Cropping geometry is relative to any previous crop geometry.
@@ -10730,25 +10730,25 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XTileImage loads or deletes a selected tile from a visual
+%  Method MagickXTileImage loads or deletes a selected tile from a visual
 %  image directory.  The load or delete command is chosen from a menu.
 %
-%  The format of the XTileImage method is:
+%  The format of the MagickXTileImage method is:
 %
-%      Image *XTileImage(Display *display,XResourceInfo *resource_info,
-%        XWindows *windows,Image *image,XEvent *event)
+%      Image *MagickXTileImage(Display *display,MagickXResourceInfo *resource_info,
+%        MagickXWindows *windows,Image *image,XEvent *event)
 %
 %  A description of each parameter follows:
 %
-%    o tile_image:  XTileImage reads or deletes the tile image
+%    o tile_image:  MagickXTileImage reads or deletes the tile image
 %      and returns it.  A null image is returned if an error occurs.
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
@@ -10758,8 +10758,8 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
 %
 %
 */
-static Image *XTileImage(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,Image *image,XEvent *event)
+static Image *MagickXTileImage(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,Image *image,XEvent *event)
 {
   static const char
     *VerbMenu[]=
@@ -10864,7 +10864,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   /*
     Select a command from the pop-up menu.
   */
-  id=XMenuWidget(display,windows,"Tile Verb",VerbMenu,command);
+  id=MagickXMenuWidget(display,windows,"Tile Verb",VerbMenu,command);
   if (id < 0)
     return((Image *) NULL);
   q=p;
@@ -10875,8 +10875,8 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   /*
     Perform command for the selected tile.
   */
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   tile_image=(Image *) NULL;
   switch (TileCommands[id])
   {
@@ -10885,7 +10885,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       /*
         Load tile image.
       */
-      XCheckRefreshWindows(display,windows);
+      MagickXCheckRefreshWindows(display,windows);
       (void) strcpy(resource_info->image_info->magick,"MIFF");
       (void) strlcpy(resource_info->image_info->filename,filename,
                      MaxTextExtent);
@@ -10901,7 +10901,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       /*
         Display next image.
       */
-      XClientMessage(display,windows->image.id,windows->im_protocols,
+      MagickXClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
     }
@@ -10910,7 +10910,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       /*
         Display former image.
       */
-      XClientMessage(display,windows->image.id,windows->im_protocols,
+      MagickXClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_former_image,CurrentTime);
       break;
     }
@@ -10921,16 +10921,16 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       */
       if (!IsAccessible(filename))
         {
-          XNoticeWidget(display,windows,"Image file does not exist:",filename);
+          MagickXNoticeWidget(display,windows,"Image file does not exist:",filename);
           break;
         }
-      status=XConfirmWidget(display,windows,"Really delete tile",filename);
+      status=MagickXConfirmWidget(display,windows,"Really delete tile",filename);
       if (status <= 0)
         break;
       status=remove(filename);
       if (status != False)
         {
-          XNoticeWidget(display,windows,"Unable to delete image file:",
+          MagickXNoticeWidget(display,windows,"Unable to delete image file:",
             filename);
           break;
         }
@@ -10987,14 +10987,14 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       }
       windows->image.window_changes.width=(unsigned int) image->columns;
       windows->image.window_changes.height=(unsigned int) image->rows;
-      XConfigureImageColormap(display,resource_info,windows,image);
-      (void) XConfigureImage(display,resource_info,windows,image);
+      MagickXConfigureImageColormap(display,resource_info,windows,image);
+      (void) MagickXConfigureImage(display,resource_info,windows,image);
       break;
     }
     default:
       break;
   }
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   return(tile_image);
 }
 
@@ -11009,14 +11009,14 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XTranslateImage translates the image within an Image window
+%  Method MagickXTranslateImage translates the image within an Image window
 %  by one pixel as specified by the key symbol.  If the image has a `montage'
 %  string the translation is respect to the width and height contained within
 %  the string.
 %
-%  The format of the XTranslateImage method is:
+%  The format of the MagickXTranslateImage method is:
 %
-%      void XTranslateImage(Display *display,XWindows *windows,
+%      void MagickXTranslateImage(Display *display,MagickXWindows *windows,
 %        Image *image,const KeySym key_symbol)
 %
 %  A description of each parameter follows:
@@ -11024,7 +11024,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
@@ -11034,7 +11034,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
 %
 %
 */
-static void XTranslateImage(Display *display,XWindows *windows,
+static void MagickXTranslateImage(Display *display,MagickXWindows *windows,
   Image *image,const KeySym key_symbol)
 {
   char
@@ -11113,10 +11113,10 @@ static void XTranslateImage(Display *display,XWindows *windows,
   */
   FormatString(text," %ux%u%+d%+d ",windows->image.width,
     windows->image.height,windows->image.x,windows->image.y);
-  XInfoWidget(display,windows,text);
-  XCheckRefreshWindows(display,windows);
-  XDrawPanRectangle(display,windows);
-  XRefreshWindow(display,&windows->image,(XEvent *) NULL);
+  MagickXInfoWidget(display,windows,text);
+  MagickXCheckRefreshWindows(display,windows);
+  MagickXDrawPanRectangle(display,windows);
+  MagickXRefreshWindow(display,&windows->image,(XEvent *) NULL);
   (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
 }
 
@@ -11131,32 +11131,32 @@ static void XTranslateImage(Display *display,XWindows *windows,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XTrimImage trims the edges from the Image window.
+%  Method MagickXTrimImage trims the edges from the Image window.
 %
-%  The format of the XTrimImage method is:
+%  The format of the MagickXTrimImage method is:
 %
-%      unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
-%        XWindows *windows,Image *image)
+%      unsigned int MagickXTrimImage(Display *display,MagickXResourceInfo *resource_info,
+%        MagickXWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XTrimImage returns True if the image is
+%    o status: Method MagickXTrimImage returns True if the image is
 %      cropped.  False is returned is there is a memory shortage or if the
 %      image fails to be cropped.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %    o image: Specifies a pointer to an Image structure.
 %
 %
 */
-static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,Image *image)
+static unsigned int MagickXTrimImage(Display *display,MagickXResourceInfo *resource_info,
+  MagickXWindows *windows,Image *image)
 {
   RectangleInfo
     trim_info;
@@ -11172,8 +11172,8 @@ static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
   /*
     Trim edges from image.
   */
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   /*
     Crop the left edge.
   */
@@ -11193,7 +11193,7 @@ static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
   trim_info.x=x;
   if (trim_info.x == (int) windows->image.ximage->width)
     {
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       return(False);
     }
   /*
@@ -11251,12 +11251,12 @@ static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
       /*
         Reconfigure Image window as defined by the trimming rectangle.
       */
-      XSetCropGeometry(display,windows,&trim_info,image);
+      MagickXSetCropGeometry(display,windows,&trim_info,image);
       windows->image.window_changes.width=(unsigned int) trim_info.width;
       windows->image.window_changes.height=(unsigned int) trim_info.height;
-      (void) XConfigureImage(display,resource_info,windows,image);
+      (void) MagickXConfigureImage(display,resource_info,windows,image);
     }
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   return(True);
 }
 
@@ -11271,30 +11271,30 @@ static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XVisualDirectoryImage creates a Visual Image Directory.
+%  Method MagickXVisualDirectoryImage creates a Visual Image Directory.
 %
-%  The format of the XVisualDirectoryImage method is:
+%  The format of the MagickXVisualDirectoryImage method is:
 %
-%      Image *XVisualDirectoryImage(Display *display,
-%        XResourceInfo *resource_info,XWindows *windows)
+%      Image *MagickXVisualDirectoryImage(Display *display,
+%        MagickXResourceInfo *resource_info,MagickXWindows *windows)
 %
 %  A description of each parameter follows:
 %
-%    o nexus: Method XVisualDirectoryImage returns a visual image
+%    o nexus: Method MagickXVisualDirectoryImage returns a visual image
 %      directory if it can be created successfully.  Otherwise a null image
 %      is returned.
 %
 %    o display: Specifies a connection to an X server; returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
+%    o windows: Specifies a pointer to a MagickXWindows structure.
 %
 %
 */
-static Image *XVisualDirectoryImage(Display *display,
-  XResourceInfo *resource_info,XWindows *windows)
+static Image *MagickXVisualDirectoryImage(Display *display,
+  MagickXResourceInfo *resource_info,MagickXWindows *windows)
 {
 #define TileImageText  "  Scale image tiles...  "
 #define XClientName  "montage"
@@ -11338,13 +11338,13 @@ static Image *XVisualDirectoryImage(Display *display,
     backdrop,
     status;
 
-  XResourceInfo
+  MagickXResourceInfo
     background_resources;
 
   /*
     Request file name from user.
   */
-  XFileBrowserWidget(display,windows,"Directory",filenames);
+  MagickXFileBrowserWidget(display,windows,"Directory",filenames);
   if (*filenames == '\0')
     return((Image *) NULL);
   /*
@@ -11384,8 +11384,8 @@ static Image *XVisualDirectoryImage(Display *display,
     return((Image *) NULL);
   image=(Image *) NULL;
   GetExceptionInfo(&exception);
-  XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+  MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
@@ -11413,9 +11413,9 @@ static Image *XVisualDirectoryImage(Display *display,
           }
         if (backdrop)
           {
-            (void) XDisplayBackgroundImage(display,&background_resources,
+            (void) MagickXDisplayBackgroundImage(display,&background_resources,
               next_image);
-            XSetCursorState(display,windows,True);
+            MagickXSetCursorState(display,windows,True);
           }
         if (image == (Image *) NULL)
           image=next_image;
@@ -11434,7 +11434,7 @@ static Image *XVisualDirectoryImage(Display *display,
   MagickFreeMemory(filelist);
   if (image == (Image *) NULL)
     {
-      XSetCursorState(display,windows,False);
+      MagickXSetCursorState(display,windows,False);
       MagickError(ImageError,NoImagesWereLoaded,filenames);
       return((Image *) NULL);
     }
@@ -11450,10 +11450,10 @@ static Image *XVisualDirectoryImage(Display *display,
   montage_image=MontageImages(image,montage_info,&image->exception);
   DestroyMontageInfo(montage_info);
   DestroyImageList(image);
-  XSetCursorState(display,windows,False);
+  MagickXSetCursorState(display,windows,False);
   if (montage_image == (Image *) NULL)
     return(montage_image);
-  XClientMessage(display,windows->image.id,windows->im_protocols,
+  MagickXClientMessage(display,windows->image.id,windows->im_protocols,
     windows->im_next_image,CurrentTime);
   return(montage_image);
 }
@@ -11469,27 +11469,27 @@ static Image *XVisualDirectoryImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  XDisplayBackgroundImage() displays an image in the background of a window.
+%  MagickXDisplayBackgroundImage() displays an image in the background of a window.
 %
-%  The format of the XDisplayBackgroundImage method is:
+%  The format of the MagickXDisplayBackgroundImage method is:
 %
-%      unsigned int XDisplayBackgroundImage(Display *display,
-%        XResourceInfo *resource_info,Image *image)
+%      unsigned int MagickXDisplayBackgroundImage(Display *display,
+%        MagickXResourceInfo *resource_info,Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
 %    o image: Specifies a pointer to an Image structure; returned from
 %      ReadImage.
 %
 %
 */
-MagickExport unsigned int XDisplayBackgroundImage(Display *display,
-  XResourceInfo *resource_info,Image *image)
+MagickExport unsigned int MagickXDisplayBackgroundImage(Display *display,
+  MagickXResourceInfo *resource_info,Image *image)
 {
   char
     geometry[MaxTextExtent],
@@ -11499,7 +11499,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
     x,
     y;
 
-  static XPixelInfo
+  static MagickXPixelInfo
     pixel;
 
   static XStandardColormap
@@ -11508,7 +11508,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   static XVisualInfo
     *visual_info = (XVisualInfo *) NULL;
 
-  static XWindowInfo
+  static MagickXWindowInfo
     window_info;
 
   unsigned int
@@ -11524,7 +11524,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   XGCValues
     context_values;
 
-  XResourceInfo
+  MagickXResourceInfo
     resources;
 
   XWindowAttributes
@@ -11543,11 +11543,11 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   else
     {
       if (isdigit((int) *resources.window_id))
-        window_info.id=XWindowByID(display,root_window,
+        window_info.id=MagickXWindowByID(display,root_window,
           (Window) strtol((char *) resources.window_id,(char **) NULL,0));
       if (window_info.id == (Window) NULL)
         window_info.id=
-          XWindowByName(display,root_window,resources.window_id);
+          MagickXWindowByName(display,root_window,resources.window_id);
     }
   if (window_info.id == (Window) NULL)
     {
@@ -11581,7 +11581,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
       */
       resources.map_type=(char *) NULL;
       resources.visual_type=visual_type;
-      visual_info=XBestVisualInfo(display,map_info,&resources);
+      visual_info=MagickXBestVisualInfo(display,map_info,&resources);
       if (visual_info == (XVisualInfo *) NULL)
         MagickFatalError(XServerFatalError,UnableToGetVisual,
           resources.visual_type);
@@ -11597,12 +11597,12 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
     Free previous root colors.
   */
   if (window_info.id == root_window)
-    (void) XDestroyWindowColors(display,root_window);
+    (void) MagickXDestroyWindowColors(display,root_window);
   /*
     Initialize Standard Colormap.
   */
   resources.colormap=SharedColormap;
-  XMakeStandardColormap(display,visual_info,&resources,image,map_info,&pixel);
+  MagickXMakeStandardColormap(display,visual_info,&resources,image,map_info,&pixel);
   /*
     Graphic context superclass.
   */
@@ -11616,7 +11616,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   /*
     Initialize Image window attributes.
   */
-  XGetWindowInfo(display,visual_info,map_info,&pixel,(XFontStruct *) NULL,
+  MagickXGetWindowInfo(display,visual_info,map_info,&pixel,(XFontStruct *) NULL,
     &resources,&window_info);
   /*
     Create the X image.
@@ -11642,7 +11642,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   window_info.height=(unsigned int) height;
   window_info.x=(int) x;
   window_info.y=(int) y;
-  status=XMakeImage(display,&resources,&window_info,image,window_info.width,
+  status=MagickXMakeImage(display,&resources,&window_info,image,window_info.width,
     window_info.height);
   if (status == False)
     MagickFatalError(XServerFatalError,UnableToCreateXImage,(char *) NULL);
@@ -11725,7 +11725,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
     (unsigned int) window_info.width,(unsigned int) window_info.height);
   (void) XSetWindowBackgroundPixmap(display,window_info.id,window_info.pixmap);
   (void) XClearWindow(display,window_info.id);
-  XDelay(display,10*image->delay);
+  MagickXDelay(display,10*image->delay);
   (void) XSync(display,False);
   return(window_info.id == root_window);
 }
@@ -11741,24 +11741,24 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  XDisplayImage() displays an image via X11.  A new image is created and
+%  MagickXDisplayImage() displays an image via X11.  A new image is created and
 %  returned if the user interactively transforms the displayed image.
 %
-%  The format of the XDisplayImage method is:
+%  The format of the MagickXDisplayImage method is:
 %
-%      Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
+%      Image *MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
 %        char **argv,int argc,Image **image,unsigned long *state)
 %
 %  A description of each parameter follows:
 %
-%    o nexus:  Method XDisplayImage returns an image when the
+%    o nexus:  Method MagickXDisplayImage returns an image when the
 %      user chooses 'Open Image' from the command menu or picks a tile
 %      from the image directory.  Otherwise a null image is returned.
 %
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%    o resource_info: Specifies a pointer to a X11 MagickXResourceInfo structure.
 %
 %    o argv: Specifies the application's argument list.
 %
@@ -11782,7 +11782,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
     } \
 }
 
-MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
+MagickExport Image *MagickXDisplayImage(Display *display,MagickXResourceInfo *resource_info,
   char **argv,int argc,Image **image,unsigned long *state)
 {
 
@@ -12160,7 +12160,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   static XPoint
     vid_info;
 
-  static XWindowInfo
+  static MagickXWindowInfo
     *magick_windows[MaxXWindows];
 
   static unsigned int
@@ -12199,11 +12199,11 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XGCValues
     context_values;
 
-  XPixelInfo
+  MagickXPixelInfo
     *icon_pixel,
     *pixel;
 
-  XResourceInfo
+  MagickXResourceInfo
     *icon_resources;
 
   XStandardColormap
@@ -12217,7 +12217,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XWindowChanges
     window_changes;
 
-  XWindows
+  MagickXWindows
     *windows;
 
   XWMHints
@@ -12229,8 +12229,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   (void) TransformColorspace(display_image,RGBColorspace);
   monitor_handler=(MonitorHandler) NULL;
   warning_handler=(WarningHandler) NULL;
-  windows=XSetWindows((XWindows *) ~0);
-  if (windows != (XWindows *) NULL)
+  windows=MagickXSetWindows((MagickXWindows *) ~0);
+  if (windows != (MagickXWindows *) NULL)
     {
       /*
         Change to the working directory.
@@ -12240,17 +12240,17 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Set the progress monitor if progress monitoring is requested.
       */
       if (resource_info->image_info->progress)
-        monitor_handler=SetMonitorHandler(XMagickMonitor);
+        monitor_handler=SetMonitorHandler(MagickXMagickMonitor);
       /*
         Set the warning and signal handlers.
       */
       warning_handler=resource_info->display_warnings ?
-        SetErrorHandler(XWarning) : SetErrorHandler((ErrorHandler) NULL);
+        SetErrorHandler(MagickXWarning) : SetErrorHandler((ErrorHandler) NULL);
       warning_handler=resource_info->display_warnings ?
-        SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
-/*       (void) signal(SIGINT,XSignalHandler); */
-/*       (void) signal(SIGSEGV,XSignalHandler); */
-/*       (void) signal(SIGTERM,XSignalHandler); */
+        SetWarningHandler(MagickXWarning) : SetWarningHandler((WarningHandler) NULL);
+/*       (void) signal(SIGINT,MagickXSignalHandler); */
+/*       (void) signal(SIGSEGV,MagickXSignalHandler); */
+/*       (void) signal(SIGTERM,MagickXSignalHandler); */
     }
   else
     {
@@ -12258,8 +12258,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Allocate windows structure.
       */
       resource_info->colors=display_image->colors;
-      windows=XSetWindows(XInitializeWindows(display,resource_info));
-      if (windows == (XWindows *) NULL)
+      windows=MagickXSetWindows(MagickXInitializeWindows(display,resource_info));
+      if (windows == (MagickXWindows *) NULL)
         MagickFatalError3(ResourceLimitError,MemoryAllocationFailed,
           UnableToCreateXWindow);
       /*
@@ -12275,7 +12275,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       magick_windows[number_windows++]=(&windows->popup);
       magick_windows[number_windows++]=(&windows->magnify);
       magick_windows[number_windows++]=(&windows->pan);
-      magick_windows[number_windows]=(XWindowInfo *) NULL;
+      magick_windows[number_windows]=(MagickXWindowInfo *) NULL;
       for (i=0; i < (int) number_windows; i++)
         magick_windows[i]->id=(Window) NULL;
       vid_info.x=0;
@@ -12286,7 +12286,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   if (windows->font_info != (XFontStruct *) NULL)
     (void) XFreeFont(display,windows->font_info);
-  windows->font_info=XBestFont(display,resource_info,False);
+  windows->font_info=MagickXBestFont(display,resource_info,False);
   if (windows->font_info == (XFontStruct *) NULL)
     MagickFatalError(XServerFatalError,UnableToLoadFont,resource_info->font);
   /*
@@ -12315,21 +12315,21 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       (void) LogMagickEvent(X11Event,GetMagickModule(),"%.1024s",
         display_image->magick);
     }
-  XMakeStandardColormap(display,visual_info,resource_info,display_image,
+  MagickXMakeStandardColormap(display,visual_info,resource_info,display_image,
     map_info,pixel);
   display_image->taint=False;
   /*
     Initialize graphic context.
   */
   windows->context.id=(Window) NULL;
-  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
+  MagickXGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->context);
   class_hints->res_name=(char *) "superclass";
   class_hints->res_class=(char *) "Display";
   manager_hints->flags=InputHint | StateHint;
   manager_hints->input=False;
   manager_hints->initial_state=WithdrawnState;
-  XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
+  MagickXMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->context);
   if (IsEventLogging())
     (void) LogMagickEvent(X11Event,GetMagickModule(),"Window id: 0x%lx (context)",
@@ -12370,10 +12370,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Initialize icon window.
   */
-  XGetWindowInfo(display,icon_visual,icon_map,icon_pixel,(XFontStruct *) NULL,
+  MagickXGetWindowInfo(display,icon_visual,icon_map,icon_pixel,(XFontStruct *) NULL,
     icon_resources,&windows->icon);
   windows->icon.geometry=resource_info->icon_geometry;
-  XBestIconSize(display,&windows->icon,display_image);
+  MagickXBestIconSize(display,&windows->icon,display_image);
   windows->icon.attributes.colormap=
     XDefaultColormap(display,icon_visual->screen);
   windows->icon.attributes.event_mask=ExposureMask | StructureNotifyMask;
@@ -12381,7 +12381,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   manager_hints->flags=InputHint | StateHint;
   manager_hints->input=False;
   manager_hints->initial_state=IconicState;
-  XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
+  MagickXMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->icon);
   if (IsEventLogging())
     (void) LogMagickEvent(X11Event,GetMagickModule(),"Window id: 0x%lx (icon)",
@@ -12407,7 +12407,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       (void) CloneString(&windows->image.name,"");
       (void) CloneString(&windows->image.icon_name,"");
     }
-  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
+  MagickXGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->image);
   windows->image.shape=True;  /* non-rectangular shape hint */
   windows->image.shared_memory&=resource_info->use_shared_memory;
@@ -12470,7 +12470,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     ButtonReleaseMask | EnterWindowMask | ExposureMask | KeyPressMask |
     KeyReleaseMask | LeaveWindowMask | OwnerGrabButtonMask |
     PropertyChangeMask | StructureNotifyMask | SubstructureNotifyMask;
-  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
+  MagickXGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->backdrop);
   if ((resource_info->backdrop) || (windows->backdrop.id != (Window) NULL))
     {
@@ -12496,7 +12496,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       manager_hints->input=True;
       manager_hints->initial_state=
         resource_info->iconic ? IconicState : NormalState;
-      XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
+      MagickXMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
         &windows->backdrop);
       if (IsEventLogging())
         (void) LogMagickEvent(X11Event,GetMagickModule(),
@@ -12538,7 +12538,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         (void) LogMagickEvent(X11Event,GetMagickModule(),
           "Window id: 0x%lx (group leader)",windows->group_leader.id);
     }
-  XMakeWindow(display,
+  MagickXMakeWindow(display,
     (Window) (resource_info->backdrop ? windows->backdrop.id : root_window),
     argv,argc,class_hints,manager_hints,&windows->image);
   (void) XChangeProperty(display,windows->image.id,windows->im_protocols,
@@ -12552,7 +12552,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Initialize Info widget.
   */
-  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,resource_info,
+  MagickXGetWindowInfo(display,visual_info,map_info,pixel,font_info,resource_info,
     &windows->info);
   (void) CloneString(&windows->info.name,"Info");
   (void) CloneString(&windows->info.icon_name,"Info");
@@ -12568,7 +12568,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   manager_hints->input=False;
   manager_hints->initial_state=NormalState;
   manager_hints->window_group=windows->image.id;
-  XMakeWindow(display,windows->image.id,argv,argc,class_hints,manager_hints,
+  MagickXMakeWindow(display,windows->image.id,argv,argc,class_hints,manager_hints,
     &windows->info);
   windows->info.highlight_stipple=XCreateBitmapFromData(display,
     windows->info.id,(char *) HighlightBitmap,HighlightWidth,HighlightHeight);
@@ -12583,12 +12583,12 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Initialize Command widget.
   */
-  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
+  MagickXGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->command);
   windows->command.data=MagickMenus;
-  (void) XCommandWidget(display,windows,CommandMenu,(XEvent *) NULL);
+  (void) MagickXCommandWidget(display,windows,CommandMenu,(XEvent *) NULL);
   FormatString(resource_name,"%.1024s.command",resource_info->client_name);
-  windows->command.geometry=XGetResourceClass(resource_info->resource_database,
+  windows->command.geometry=MagickXGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   (void) CloneString(&windows->command.name,MagickTitle);
   windows->command.border_width=0;
@@ -12601,7 +12601,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   manager_hints->input=False;
   manager_hints->initial_state=NormalState;
   manager_hints->window_group=windows->image.id;
-  XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
+  MagickXMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->command);
   windows->command.highlight_stipple=windows->info.highlight_stipple;
   windows->command.shadow_stipple=windows->info.shadow_stipple;
@@ -12616,10 +12616,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   if (windows->widget.id != (Window) NULL)
     (void) CloneString(&windows->widget.name,"");
-  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
+  MagickXGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->widget);
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
-  windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
+  windows->widget.geometry=MagickXGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   (void ) CloneString(&windows->widget.name,"");
   windows->widget.border_width=0;
@@ -12633,7 +12633,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   manager_hints->input=True;
   manager_hints->initial_state=NormalState;
   manager_hints->window_group=windows->image.id;
-  XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
+  MagickXMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->widget);
   windows->widget.highlight_stipple=windows->info.highlight_stipple;
   windows->widget.shadow_stipple=windows->info.shadow_stipple;
@@ -12646,7 +12646,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   if (windows->popup.id != (Window) NULL)
     (void) CloneString(&windows->popup.name,"");
-  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
+  MagickXGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
   (void) CloneString(&windows->popup.name,"");
   windows->popup.border_width=0;
@@ -12659,7 +12659,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   manager_hints->input=True;
   manager_hints->initial_state=NormalState;
   manager_hints->window_group=windows->image.id;
-  XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
+  MagickXMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->popup);
   windows->popup.highlight_stipple=windows->info.highlight_stipple;
   windows->popup.shadow_stipple=windows->info.shadow_stipple;
@@ -12672,15 +12672,15 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   if (windows->magnify.id != (Window) NULL)
     (void) CloneString(&windows->magnify.name,"");
-  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
+  MagickXGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->magnify);
   windows->magnify.shared_memory&=resource_info->use_shared_memory;
   FormatString(resource_name,"%.1024s.magnify",resource_info->client_name);
-  windows->magnify.geometry=XGetResourceClass(resource_info->resource_database,
+  windows->magnify.geometry=MagickXGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   (void) CloneString(&windows->magnify.name,"");
   FormatString(windows->magnify.name,"Magnify %uX",resource_info->magnify);
-  windows->magnify.cursor=XMakeCursor(display,windows->image.id,
+  windows->magnify.cursor=MagickXMakeCursor(display,windows->image.id,
     map_info->colormap,resource_info->background_color,
     resource_info->foreground_color);
   if (windows->magnify.cursor == (Cursor) NULL)
@@ -12702,7 +12702,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   manager_hints->input=True;
   manager_hints->initial_state=NormalState;
   manager_hints->window_group=windows->image.id;
-  XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
+  MagickXMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->magnify);
   if (IsEventLogging())
     (void) LogMagickEvent(X11Event,GetMagickModule(),"Window id: 0x%lx (magnify)",
@@ -12711,13 +12711,13 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Initialize panning window.
   */
-  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
+  MagickXGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->pan);
   (void) CloneString(&windows->pan.name,"Pan Icon");
   windows->pan.width=windows->icon.width;
   windows->pan.height=windows->icon.height;
   FormatString(resource_name,"%.1024s.pan",resource_info->client_name);
-  windows->pan.geometry=XGetResourceClass(resource_info->resource_database,
+  windows->pan.geometry=MagickXGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   (void) XParseGeometry(windows->pan.geometry,&windows->pan.x,&windows->pan.y,
     &windows->pan.width,&windows->pan.height);
@@ -12731,7 +12731,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   manager_hints->input=False;
   manager_hints->initial_state=NormalState;
   manager_hints->window_group=windows->image.id;
-  XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
+  MagickXMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->pan);
   if (IsEventLogging())
     (void) LogMagickEvent(X11Event,GetMagickModule(),"Window id: 0x%lx (pan)",
@@ -12746,34 +12746,34 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   if ((resource_info->image_info->progress) &&
       (monitor_handler == (MonitorHandler) NULL))
-    monitor_handler=SetMonitorHandler(XMagickMonitor);
+    monitor_handler=SetMonitorHandler(MagickXMagickMonitor);
   /*
     Set warning and signal handlers.
   */
   if (warning_handler == (WarningHandler) NULL)
     {
       warning_handler=resource_info->display_warnings ?
-        SetErrorHandler(XWarning) : SetErrorHandler((ErrorHandler) NULL);
+        SetErrorHandler(MagickXWarning) : SetErrorHandler((ErrorHandler) NULL);
       warning_handler=resource_info->display_warnings ?
-        SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
+        SetWarningHandler(MagickXWarning) : SetWarningHandler((WarningHandler) NULL);
     }
-/*   (void) signal(SIGINT,XSignalHandler); */
-/*   (void) signal(SIGSEGV,XSignalHandler); */
-/*   (void) signal(SIGTERM,XSignalHandler); */
+/*   (void) signal(SIGINT,MagickXSignalHandler); */
+/*   (void) signal(SIGSEGV,MagickXSignalHandler); */
+/*   (void) signal(SIGTERM,MagickXSignalHandler); */
   /*
     Initialize Image and Magnify X images.
   */
   windows->image.x=0;
   windows->image.y=0;
   windows->magnify.shape=False;
-  status=XMakeImage(display,resource_info,&windows->image,display_image,
+  status=MagickXMakeImage(display,resource_info,&windows->image,display_image,
     (unsigned int) display_image->columns,(unsigned int) display_image->rows);
   if (status == False)
     MagickFatalError(XServerFatalError,UnableToCreateXImage,(char *) NULL);
   if (windows->image.mapped)
-    XRefreshWindow(display,&windows->image,(XEvent *) NULL);
+    MagickXRefreshWindow(display,&windows->image,(XEvent *) NULL);
   handler=SetMonitorHandler((MonitorHandler) NULL);
-  status=XMakeImage(display,resource_info,&windows->magnify,(Image *) NULL,
+  status=MagickXMakeImage(display,resource_info,&windows->magnify,(Image *) NULL,
     windows->magnify.width,windows->magnify.height);
   (void) SetMonitorHandler(handler);
   if (status == False)
@@ -12781,7 +12781,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   if (windows->magnify.mapped)
     {
       (void) XMapRaised(display,windows->magnify.id);
-      XMakeMagnifyImage(display,windows);
+      MagickXMakeMagnifyImage(display,windows);
     }
   if (windows->image.mapped)
     if (((int) windows->image.width < windows->image.ximage->width) ||
@@ -12852,7 +12852,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             /*
               Do not block if delay > 0.
             */
-            XDelay(display,SuspendTime << 2);
+            MagickXDelay(display,SuspendTime << 2);
             continue;
           }
       }
@@ -12867,7 +12867,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         /*
           Select a command from the Command widget.
         */
-        id=XCommandWidget(display,windows,CommandMenu,&event);
+        id=MagickXCommandWidget(display,windows,CommandMenu,&event);
         if (id < 0)
           continue;
         (void) strlcpy(command,CommandMenu[id],MaxTextExtent);
@@ -12877,7 +12877,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             /*
               Select a command from a pop-up menu.
             */
-            entry=XMenuWidget(display,windows,CommandMenu[id],Menus[id],
+            entry=MagickXMenuWidget(display,windows,CommandMenu[id],Menus[id],
               command);
             if (entry < 0)
               continue;
@@ -12885,7 +12885,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             command_type=Commands[id][entry];
           }
         if (command_type != NullCommand)
-          nexus=XMagickCommand(display,resource_info,windows,command_type,
+          nexus=MagickXMagickCommand(display,resource_info,windows,command_type,
             &display_image);
         continue;
       }
@@ -12923,10 +12923,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                     /*
                       Select a command from the Immutable menu.
                     */
-                    entry=XMenuWidget(display,windows,"Commands",ImmutableMenu,
+                    entry=MagickXMenuWidget(display,windows,"Commands",ImmutableMenu,
                       command);
                     if (entry >= 0)
-                      nexus=XMagickCommand(display,resource_info,windows,
+                      nexus=MagickXMagickCommand(display,resource_info,windows,
                         ImmutableCommands[entry],&display_image);
                     break;
                   }
@@ -12938,7 +12938,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                     windows->command.screen);
                 else
                   {
-                    (void) XCommandWidget(display,windows,CommandMenu,
+                    (void) MagickXCommandWidget(display,windows,CommandMenu,
                       (XEvent *) NULL);
                     (void) XMapRaised(display,windows->command.id);
                   }
@@ -12949,9 +12949,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 /*
                   User pressed the image magnify button.
                 */
-                (void) XMagickCommand(display,resource_info,windows,ZoomCommand,
+                (void) MagickXMagickCommand(display,resource_info,windows,ZoomCommand,
                   &display_image);
-                XMagnifyImage(display,windows,&event);
+                MagickXMagnifyImage(display,windows,&event);
                 break;
               }
               case Button3:
@@ -12961,10 +12961,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                     /*
                       Select a command from the Immutable menu.
                     */
-                    entry=XMenuWidget(display,windows,"Commands",ImmutableMenu,
+                    entry=MagickXMenuWidget(display,windows,"Commands",ImmutableMenu,
                       command);
                     if (entry >= 0)
-                      nexus=XMagickCommand(display,resource_info,windows,
+                      nexus=MagickXMagickCommand(display,resource_info,windows,
                         ImmutableCommands[entry],&display_image);
                     break;
                   }
@@ -12973,7 +12973,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                     /*
                       Open or delete a tile from a visual image directory.
                     */
-                    nexus=XTileImage(display,resource_info,windows,
+                    nexus=MagickXTileImage(display,resource_info,windows,
                       display_image,&event);
                     if (nexus != (Image *) NULL)
                       *state|=MontageImageState | NextImageState | ExitState;
@@ -12984,10 +12984,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 /*
                   Select a command from the Short Cuts menu.
                 */
-                entry=XMenuWidget(display,windows,"Short Cuts",ShortCutsMenu,
+                entry=MagickXMenuWidget(display,windows,"Short Cuts",ShortCutsMenu,
                   command);
                 if (entry >= 0)
-                  nexus=XMagickCommand(display,resource_info,windows,
+                  nexus=MagickXMagickCommand(display,resource_info,windows,
                     ShortCutsCommands[entry],&display_image);
                 break;
               }
@@ -13031,14 +13031,14 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             /*
               Select a magnify factor from the pop-up menu.
             */
-            factor=XMenuWidget(display,windows,"Magnify",MagnifyMenu,command);
+            factor=MagickXMenuWidget(display,windows,"Magnify",MagnifyMenu,command);
             if (factor >= 0)
-              XMagnifyWindowCommand(display,windows,0,MagnifyCommands[factor]);
+              MagickXMagnifyWindowCommand(display,windows,0,MagnifyCommands[factor]);
             break;
           }
         if (event.xbutton.window == windows->pan.id)
           {
-            XPanImage(display,windows,&event);
+            MagickXPanImage(display,windows,&event);
             break;
           }
         timer=time((time_t *) NULL)+(long) display_image->delay/100+1;
@@ -13065,7 +13065,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               {
                 (void) CloneString(&windows->command.name,MagickTitle);
                 windows->command.data=MagickMenus;
-                (void) XCommandWidget(display,windows,CommandMenu,
+                (void) MagickXCommandWidget(display,windows,CommandMenu,
                   (XEvent *) NULL);
                 break;
               }
@@ -13103,7 +13103,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                     (void) XSetWindowBackgroundPixmap(display,windows->pan.id,
                       windows->pan.pixmap);
                     (void) XClearWindow(display,windows->pan.id);
-                    XDrawPanRectangle(display,windows);
+                    MagickXDrawPanRectangle(display,windows);
                   }
                 if (windows->backdrop.id != (Window) NULL)
                   (void) XInstallColormap(display,map_info->colormap);
@@ -13211,7 +13211,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             */
             windows->image.window_changes.width=windows->image.ximage->width;
             windows->image.window_changes.height=windows->image.ximage->height;
-            (void) XConfigureImage(display,resource_info,windows,
+            (void) MagickXConfigureImage(display,resource_info,windows,
               display_image);
           }
         break;
@@ -13242,7 +13242,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                       windows->command.x=
                         event.xconfigure.x-windows->command.width-25;
                       windows->command.y=event.xconfigure.y;
-                      XConstrainWindowPosition(display,&windows->command);
+                      MagickXConstrainWindowPosition(display,&windows->command);
                       window_changes.x=windows->command.x;
                       window_changes.y=windows->command.y;
                       (void) XReconfigureWMWindow(display,windows->command.id,
@@ -13255,7 +13255,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                         event.xconfigure.x+event.xconfigure.width/10;
                       windows->widget.y=
                         event.xconfigure.y+event.xconfigure.height/10;
-                      XConstrainWindowPosition(display,&windows->widget);
+                      MagickXConstrainWindowPosition(display,&windows->widget);
                       window_changes.x=windows->widget.x;
                       window_changes.y=windows->widget.y;
                       (void) XReconfigureWMWindow(display,windows->widget.id,
@@ -13267,7 +13267,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                       windows->magnify.x=
                         event.xconfigure.x+event.xconfigure.width+25;
                       windows->magnify.y=event.xconfigure.y;
-                      XConstrainWindowPosition(display,&windows->magnify);
+                      MagickXConstrainWindowPosition(display,&windows->magnify);
                       window_changes.x=windows->magnify.x;
                       window_changes.y=windows->magnify.y;
                       (void) XReconfigureWMWindow(display,windows->magnify.id,
@@ -13280,7 +13280,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                         event.xconfigure.x+event.xconfigure.width+25;
                       windows->pan.y=
                         event.xconfigure.y+windows->magnify.height+50;
-                      XConstrainWindowPosition(display,&windows->pan);
+                      MagickXConstrainWindowPosition(display,&windows->pan);
                       window_changes.x=windows->pan.x;
                       window_changes.y=windows->pan.y;
                       (void) XReconfigureWMWindow(display,windows->pan.id,
@@ -13306,14 +13306,14 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 */
                 windows->image.window_changes.width=event.xconfigure.width;
                 windows->image.window_changes.height=event.xconfigure.height;
-                (void) XConfigureImage(display,resource_info,windows,
+                (void) MagickXConfigureImage(display,resource_info,windows,
                   display_image);
               }
             if ((event.xconfigure.width < windows->image.ximage->width) ||
                 (event.xconfigure.height < windows->image.ximage->height))
               {
                 (void) XMapRaised(display,windows->pan.id);
-                XDrawPanRectangle(display,windows);
+                MagickXDrawPanRectangle(display,windows);
               }
             else
               if (windows->pan.mapped)
@@ -13351,9 +13351,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             if (windows->magnify.mapped && windows->magnify.stasis)
               {
                 handler=SetMonitorHandler((MonitorHandler) NULL);
-                status=XMakeImage(display,resource_info,&windows->magnify,
+                status=MagickXMakeImage(display,resource_info,&windows->magnify,
                   display_image,windows->magnify.width,windows->magnify.height);
-                XMakeMagnifyImage(display,windows);
+                MagickXMakeMagnifyImage(display,windows);
                 (void) SetMonitorHandler(handler);
               }
             break;
@@ -13425,7 +13425,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         if (event.xexpose.window == windows->image.id)
           if (windows->image.mapped)
             {
-              XRefreshWindow(display,&windows->image,&event);
+              MagickXRefreshWindow(display,&windows->image,&event);
               timer=time((time_t *) NULL)+(long) display_image->delay/100+1;
               break;
             }
@@ -13433,19 +13433,19 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           if (event.xexpose.count == 0)
             if (windows->magnify.mapped)
               {
-                XMakeMagnifyImage(display,windows);
+                MagickXMakeMagnifyImage(display,windows);
                 break;
               }
         if (event.xexpose.window == windows->pan.id)
           if (event.xexpose.count == 0)
             {
-              XDrawPanRectangle(display,windows);
+              MagickXDrawPanRectangle(display,windows);
               break;
             }
         if (event.xexpose.window == windows->icon.id)
           if (event.xexpose.count == 0)
             {
-              XRefreshWindow(display,&windows->icon,&event);
+              MagickXRefreshWindow(display,&windows->icon,&event);
               break;
             }
         break;
@@ -13467,14 +13467,14 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             command);
         if (event.xkey.window == windows->image.id)
           {
-            command_type=XImageWindowCommand(display,resource_info,windows,
+            command_type=MagickXImageWindowCommand(display,resource_info,windows,
               event.xkey.state,key_symbol,&display_image);
             if (command_type != NullCommand)
-              nexus=XMagickCommand(display,resource_info,windows,command_type,
+              nexus=MagickXMagickCommand(display,resource_info,windows,command_type,
                 &display_image);
           }
         if (event.xkey.window == windows->magnify.id)
-          XMagnifyWindowCommand(display,windows,event.xkey.state,key_symbol);
+          MagickXMagnifyWindowCommand(display,windows,event.xkey.state,key_symbol);
         if (event.xkey.window == windows->pan.id)
           {
             if (key_symbol == XK_q)
@@ -13482,10 +13482,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 windows->pan.screen);
             else
               if ((key_symbol == XK_F1) || (key_symbol == XK_Help))
-                XTextViewWidget(display,resource_info,windows,False,
+                MagickXTextViewWidget(display,resource_info,windows,False,
                   "Help Viewer - Image Pan",ImagePanHelp);
               else
-                XTranslateImage(display,windows,*image,key_symbol);
+                MagickXTranslateImage(display,windows,*image,key_symbol);
           }
         timer=time((time_t *) NULL)+(long) display_image->delay/100+1;
         break;
@@ -13535,7 +13535,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             if (LocaleCompare(display_image->magick,"LOGO") == 0)
               {
                 if (LocaleCompare(display_image->filename,"Untitled") == 0)
-                  nexus=XOpenImage(display,resource_info,windows,False);
+                  nexus=MagickXOpenImage(display,resource_info,windows,False);
                 else
                   *state|=NextImageState | ExitState;
               }
@@ -13547,7 +13547,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           }
         if (event.xmap.window == windows->magnify.id)
           {
-            XMakeMagnifyImage(display,windows);
+            MagickXMakeMagnifyImage(display,windows);
             windows->magnify.mapped=True;
             (void) XWithdrawWindow(display,windows->info.id,
               windows->info.screen);
@@ -13555,7 +13555,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           }
         if (event.xmap.window == windows->pan.id)
           {
-            XMakePanImage(display,resource_info,windows,display_image);
+            MagickXMakePanImage(display,resource_info,windows,display_image);
             windows->pan.mapped=True;
             break;
           }
@@ -13573,9 +13573,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               Create an icon image.
             */
             taint=display_image->taint;
-            XMakeStandardColormap(display,icon_visual,icon_resources,
+            MagickXMakeStandardColormap(display,icon_visual,icon_resources,
               display_image,icon_map,icon_pixel);
-            (void) XMakeImage(display,icon_resources,&windows->icon,
+            (void) MagickXMakeImage(display,icon_resources,&windows->icon,
               display_image,windows->icon.width,windows->icon.height);
             display_image->taint=taint;
             (void) XSetWindowBackgroundPixmap(display,windows->icon.id,
@@ -13692,9 +13692,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         if (event.xunmap.window == windows->icon.id)
           {
             if (map_info->colormap == icon_map->colormap)
-              XConfigureImageColormap(display,resource_info,windows,
+              MagickXConfigureImageColormap(display,resource_info,windows,
                 display_image);
-            (void) XFreeStandardColormap(display,icon_visual,icon_map,
+            (void) MagickXFreeStandardColormap(display,icon_visual,icon_map,
               icon_pixel);
             windows->icon.mapped=False;
             break;
@@ -13733,7 +13733,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   }
   while (!(*state & ExitState));
   if (!(*state & ExitState))
-    (void) XMagickCommand(display,resource_info,windows,FreeBuffersCommand,
+    (void) MagickXMagickCommand(display,resource_info,windows,FreeBuffersCommand,
       &display_image);
   else
     {
@@ -13742,13 +13742,13 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       */
       if (!resource_info->immutable && display_image->taint)
         {
-          status=XConfirmWidget(display,windows,"Your image changed.",
+          status=MagickXConfirmWidget(display,windows,"Your image changed.",
             "Do you want to save it");
           if (status == 0)
             *state&=(~ExitState);
           else
             if (status > 0)
-              (void) XMagickCommand(display,resource_info,windows,SaveCommand,
+              (void) MagickXMagickCommand(display,resource_info,windows,SaveCommand,
                 &display_image);
         }
     }
@@ -13785,8 +13785,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Enable application cursor if progress indication enabled.
   */
   if (resource_info->image_info->progress)
-    XSetCursorState(display,windows,True);
-  XCheckRefreshWindows(display,windows);
+    MagickXSetCursorState(display,windows,True);
+  MagickXCheckRefreshWindows(display,windows);
   if (!resource_info->immutable || (display_image->next != (Image *) NULL))
     if ((*state & FormerImageState) || (*state & NextImageState))
       *state&=(~ExitState);
@@ -13795,9 +13795,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       /*
         Free Standard Colormap.
       */
-      (void) XFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
+      (void) MagickXFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
       if (resource_info->map_type == (char *) NULL)
-        (void) XFreeStandardColormap(display,visual_info,map_info,pixel);
+        (void) MagickXFreeStandardColormap(display,visual_info,map_info,pixel);
       /*
         Free X resources.
       */
@@ -13808,7 +13808,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           DestroyImage(resource_info->copy_image);
           resource_info->copy_image=(Image *) NULL;
         }
-       XDestroyXWindows(windows);
+       MagickXDestroyXWindows(windows);
     }
 
   DestroyWindowsImage(windows,icon);

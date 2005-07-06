@@ -1752,6 +1752,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                (element_descriptor == ImageElementCbYACrYA4224)) &&
               (chroma_image == (Image *) NULL))
             {
+              /*
+                When subsampling, image width must be evenly divisible by two.
+              */
+              if (image->columns %2)
+                ThrowReaderException(CorruptImageError,SubsamplingRequiresEvenWidth,image);
+
               chroma_image=CloneImage(image,image->columns/2UL,1,True,exception);
               if (chroma_image == (Image *) NULL)
                 ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -1971,7 +1977,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   Image
                     *chroma_resized=0;
 
-                  chroma_resized=ResizeImage(chroma_image,image->columns,1,LanczosFilter,1.0,exception);
+                  chroma_resized=ResizeImage(chroma_image,image->columns,1,
+                                             LanczosFilter,1.0,exception);
                   if (chroma_resized != (Image *) NULL)
                     {
                       const PixelPacket
@@ -2718,8 +2725,15 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         sampling_factor_vertical=sampling_factor_horizontal;
       if ((sampling_factor_horizontal != 1) && (sampling_factor_horizontal != 2) &&
           (sampling_factor_vertical != 1) && (sampling_factor_vertical != 2))
-        ThrowWriterException(CorruptImageError,UnexpectedSamplingFactor,
+        ThrowWriterException(OptionError,UnsupportedSamplingFactor,
           image);
+
+      /*
+        When subsampling, image width must be evenly divisible by two.
+      */
+      if (((sampling_factor_horizontal / sampling_factor_vertical) == 2) &&
+          (image->columns %2))
+       ThrowWriterException(CoderError,SubsamplingRequiresEvenWidth,image);
     }
 
   /*
@@ -2727,7 +2741,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   */
   if (image->colorspace == YCbCrColorspace)
     {
-      if (((double) sampling_factor_horizontal / sampling_factor_vertical) > 1.0)
+      if ((sampling_factor_horizontal / sampling_factor_vertical) == 2)
         samples_per_component=2;
       else
         samples_per_component=3;
@@ -3222,7 +3236,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
            (element_descriptor == ImageElementCbYACrYA4224)) &&
           (chroma_image == (Image *) NULL))
         {
-          chroma_image=ResizeImage(image,image->columns/2,image->rows,BoxFilter,1.0,&image->exception);
+          chroma_image=ResizeImage(image,image->columns/2,image->rows,
+                                   BoxFilter,1.0,&image->exception);
           if (chroma_image == (Image *) NULL)
             ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
         }

@@ -105,7 +105,7 @@ MagickExport void DestroyMagick(void)
 
   fflush(stdout);
 #if defined(HasX11)
-  XDestroyX11Resources();
+  MagickXDestroyX11Resources();
 #endif
   DestroyColorInfo();
   DestroyDelegateInfo();

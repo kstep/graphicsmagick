@@ -3706,7 +3706,7 @@ the <s>-gravity</s> option has no effect.</pp>
 This option specifies the sampling factors to be used by the JPEG encoder for
 chroma downsampling.  If this option is omitted, the JPEG library
 will use its own default values.  When reading or writing the YUV format
-and when writing the M2V (MPEG-2) format, use
+and when writing the DPX or M2V (MPEG-2) format, use
 <s>-sampling-factor 2x1</s> to specify the 4:2:2 downsampling method.</pp>
 
 <pp>

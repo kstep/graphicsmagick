@@ -497,7 +497,7 @@ MagickExport MagickPassFail AnimateImages(const ImageInfo *image_info,
   XrmDatabase
     resource_database;
 
-  XResourceInfo
+  MagickXResourceInfo
     resource;
 
   assert(image_info != (const ImageInfo *) NULL);
@@ -507,13 +507,13 @@ MagickExport MagickPassFail AnimateImages(const ImageInfo *image_info,
   display=XOpenDisplay((char *) NULL);
   if (display == (Display *) NULL)
     return(False);
-  (void) XSetErrorHandler(XError);
+  (void) XSetErrorHandler(MagickXError);
   client_name=SetClientName((char *) NULL);
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,client_name,&resource);
+  resource_database=MagickXGetResourceDatabase(display,client_name);
+  MagickXGetResourceInfo(resource_database,client_name,&resource);
   resource.image_info=CloneImageInfo(image_info);
   resource.immutable=True;
-  (void) XAnimateImages(display,&resource,&client_name,1,image);
+  (void) MagickXAnimateImages(display,&resource,&client_name,1,image);
   (void) XCloseDisplay(display);
   DestroyImageInfo(resource.image_info);
   return(image->exception.severity == UndefinedException);
@@ -2440,7 +2440,7 @@ MagickExport MagickPassFail DisplayImages(const ImageInfo *image_info,
   XrmDatabase
     resource_database;
 
-  XResourceInfo
+  MagickXResourceInfo
     resource_info;
 
   assert(image_info != (const ImageInfo *) NULL);
@@ -2450,27 +2450,31 @@ MagickExport MagickPassFail DisplayImages(const ImageInfo *image_info,
   display=XOpenDisplay((char *) NULL);
   if (display == (Display *) NULL)
     return(MagickFail);
-  (void) XSetErrorHandler(XError);
+  (void) XSetErrorHandler(MagickXError);
   client_name=SetClientName((char *) NULL);
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,client_name,&resource_info);
+  resource_database=MagickXGetResourceDatabase(display,client_name);
+  MagickXGetResourceInfo(resource_database,client_name,&resource_info);
   if (image_info->page != (char *) NULL)
     resource_info.image_geometry=AcquireString(image_info->page);
   resource_info.immutable=True;
   for (next=image; next; next=next->next)
   {
     state=DefaultState;
-    (void) XDisplayImage(display,&resource_info,&client_name,1,&next,&state);
+    (void) MagickXDisplayImage(display,&resource_info,&client_name,1,&next,&state);
     if (state & ExitState)
       break;
   }
   if (resource_database != (XrmDatabase) NULL)
     {
-      XrmDestroyDatabase(resource_database);
+      /* It seems that recent X11 libraries (as found in FreeBSD 5.4)
+         automatically destroy the resource database associated with
+         the display and there are double-frees if we destroy the
+         resource database ourselves. */
+      /* XrmDestroyDatabase(resource_database); */
       resource_database=(XrmDatabase) NULL;
     }
-  XDestroyResourceInfo(&resource_info);
-  XDestroyX11Resources();
+  MagickXDestroyResourceInfo(&resource_info);
+  MagickXDestroyX11Resources();
   (void) XCloseDisplay(display);
   return(image->exception.severity != UndefinedException);
 }

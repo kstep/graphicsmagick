@@ -1,3 +1,22 @@
+2005-07-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/{animate.c, display.c, import.c, xwindow.c}: Rename all
+	symbols starting with 'X' so that they are prefixed with 'Magick'.
+	This eases maintenance since it is almost impossible to understand
+	code which pretends to be the X11 libraries.  The few programs
+	which use the GraphicsMagick 'X' functions will need to alter the
+	symbol names they use.  Sorry.
+	* magick/command.c (DisplayImageCommand): Don't invoke
+	XrmDestroyDatabase() to destroy the resource database associated
+	with the display since it seems that XCloseDisplay() does this for
+	us.
+	* magick/image.c (DisplayImages): Don't invoke
+	XrmDestroyDatabase() to destroy the resource database associated
+	with the display since it seems that XCloseDisplay() does this for
+	us.
+	* coders/uyvy.c: Enforce image width restrictions.
+	* coders/dpx.c: Enforce image width restrictions when subsampling.
+
 2005-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c: Support reading and writing subsampled CbYCr
