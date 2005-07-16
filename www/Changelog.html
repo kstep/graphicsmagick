@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2005-07-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (DisplayImages): Don't invoke
+        XrmDestroyDatabase() to destroy the resource database associated
+        with the display since it seems that XCloseDisplay() does this for
+        us and the X.org server doesn't properly keep track of the
+        resource allocation.<BR>
+  <LI> magick/command.c (DisplayImageCommand): Ditto for
+        XrmDestroyDatabase().
+
+</UL>
+<p>
 2005-05-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

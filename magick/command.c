@@ -6525,7 +6525,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
     } 
   if (resource_database != (XrmDatabase) NULL)
     {
-      XrmDestroyDatabase(resource_database);
+      /* XrmDestroyDatabase(resource_database); */
       resource_database=(XrmDatabase) NULL;
     }
 

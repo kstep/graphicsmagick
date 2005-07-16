@@ -1,3 +1,13 @@
+2005-07-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (DisplayImages): Don't invoke
+	XrmDestroyDatabase() to destroy the resource database associated
+	with the display since it seems that XCloseDisplay() does this for
+	us and the X.org server doesn't properly keep track of the
+	resource allocation.
+	* magick/command.c (DisplayImageCommand): Ditto for
+	XrmDestroyDatabase().
+
 2005-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/nt_base.c (readdir): Fix write beyond buffer length
