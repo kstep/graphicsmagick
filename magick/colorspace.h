@@ -63,6 +63,11 @@ extern "C" {
     (colorspace == RGBColorspace) || \
     (colorspace == TransparentColorspace) \
   )
+#define IsYCbCrColorspace(colorspace) \
+  ( \
+    (colorspace == Rec601YCbCrColorspace) || \
+    (colorspace == Rec709YCbCrColorspace) \
+  )
 
 #define GRAYColorspace Rec601LumaColorspace
 #define YCbCrColorspace Rec601YCbCrColorspace

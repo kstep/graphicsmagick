@@ -754,6 +754,7 @@ static const char *DescribeImageTransferCharacteristic(const DPXTransferCharacte
       break;
     case TransferCharacteristicITU_R709:
       description="ITU-R709";
+      break;
     case TransferCharacteristicITU_R601_625L:
       description="ITU-R601-625L";
       break;
@@ -811,6 +812,7 @@ static const char *DescribeImageColorimetric(const DPXColorimetric colorimetric)
       break;
     case ColorimetricITU_R709:
       description="ITU-R709";
+      break;
     case ColorimetricITU_R601_625L:
       description="ITU-R601-625L";
       break;
@@ -1055,6 +1057,9 @@ typedef union _PackedU32Word
   LSBImportOctets(scanline,packed_u32); \
 }
 #endif
+
+#define ScaleFromVideo(sample,ref_low,upscale) \
+  ((unsigned int) (sample > ref_low ? (sample - ref_low)*upscale+0.5 : 0))
 
 static void ReadRowSamples(const unsigned char *scanline,
                            const unsigned int samples_per_row,
@@ -1722,9 +1727,55 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       samples_per_element=DPXSamplesPerElement(element_descriptor);
       if (samples_per_element > 0)
         {
+          unsigned int
+            max_value_given_bits = MaxValueGivenBits(bits_per_sample),
+            reference_low = 0,
+            reference_high = max_value_given_bits;
+
+          double
+            ScaleY = 0.0,
+            ScaleCbCr = 0.0;
+
           scale_to_short=1U;
           if (bits_per_sample < 16U)
             scale_to_short=(65535U / (65535U >> (16-bits_per_sample)));
+
+          /*
+            Is this a YCbCr type space?
+          */
+          switch (element_descriptor)
+            {
+            case ImageElementCbYCrY422:
+            case ImageElementCbYACrYA4224:
+            case ImageElementCbYCr444:
+            case ImageElementCbYCrA4444:
+              {
+                /*
+                  Establish YCbCr video defaults.
+                */
+                reference_low = (((double) max_value_given_bits+1) * (64.0/1024.0));
+                reference_high = (((double) max_value_given_bits+1) * (940.0/1024.0));
+                
+                if (!IS_UNDEFINED_U32(dpx_image_info.element_info[element].reference_low_data_code))
+                  reference_low=dpx_image_info.element_info[element].reference_low_data_code;
+                
+                if (!IS_UNDEFINED_U32(dpx_image_info.element_info[element].reference_high_data_code))
+                  reference_high=dpx_image_info.element_info[element].reference_high_data_code;
+                
+                ScaleY = (((double) max_value_given_bits+1)/(reference_high-reference_low));
+                ScaleCbCr = ScaleY*((940.0-64.0)/(960.0-64.0));
+                reference_low=ScaleShortToQuantum(reference_low*scale_to_short);
+                reference_high=ScaleShortToQuantum(reference_high*scale_to_short);
+#if 0
+                printf("reference_low=%u, reference_high=%u, ScaleY=%g, ScaleCbCr=%g\n",
+                       reference_low, reference_high, ScaleY, ScaleCbCr);
+#endif
+                break;
+              }
+            default:
+              {
+              }
+            }
 
           /*
             Compute samples per row.
@@ -1884,7 +1935,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     PixelPacket
                       *chroma_pixels;
 
-                    image->colorspace=YCbCrColorspace;
+                    if ((DPXColorimetric) dpx_image_info.element_info[element].colorimetric == 
+                        ColorimetricITU_R709)
+                      image->colorspace=Rec709YCbCrColorspace;
+                    else
+                      image->colorspace=Rec601YCbCrColorspace;
+
                     chroma_pixels=SetImagePixels(chroma_image,0,0,chroma_image->columns,1);
                     if (chroma_pixels == (PixelPacket *) NULL)
                       break;
@@ -1892,13 +1948,13 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       {
                         chroma_pixels->red=0;
                         chroma_pixels->green=*samples_itr++; /* Cb */
-                        q->red=*samples_itr++;               /* Y */
+                        q->red=*samples_itr++; /* Y */
                         q->green=MaxRGB/2;
                         q->blue=MaxRGB/2;
                         q->opacity=OpaqueOpacity;
                         q++;
-                        chroma_pixels->blue=*samples_itr++;  /* Cr */
-                        q->red=*samples_itr++;               /* Y */
+                        chroma_pixels->blue=*samples_itr++; /* Cr */
+                        q->red=*samples_itr++; /* Y */
                         q->green=MaxRGB/2;
                         q->blue=MaxRGB/2;
                         q->opacity=OpaqueOpacity;
@@ -1916,7 +1972,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     PixelPacket
                       *chroma_pixels;
 
-                    image->colorspace=YCbCrColorspace;
+                    if ((DPXColorimetric) dpx_image_info.element_info[element].colorimetric == 
+                        ColorimetricITU_R709)
+                      image->colorspace=Rec709YCbCrColorspace;
+                    else
+                      image->colorspace=Rec601YCbCrColorspace;
+
                     chroma_pixels=SetImagePixels(chroma_image,0,0,chroma_image->columns,1);
                     if (chroma_pixels == (PixelPacket *) NULL)
                       break;
@@ -1943,29 +2004,43 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     break;
                   }
                 case ImageElementCbYCr444:
-                  image->colorspace=YCbCrColorspace;
-                  /* red,green,blue = Y, Cb, Cr */
-                  for (x=image->columns; x > 0; x--)
-                    {
-                      q->green=*samples_itr++; /* Cb */
-                      q->red=*samples_itr++;   /* Y */
-                      q->blue=*samples_itr++;  /* Cr */
-                      q->opacity=OpaqueOpacity;
-                      q++;
-                    }
-                  break;
+                  {
+                    if ((DPXColorimetric) dpx_image_info.element_info[element].colorimetric == 
+                        ColorimetricITU_R709)
+                      image->colorspace=Rec709YCbCrColorspace;
+                    else
+                      image->colorspace=Rec601YCbCrColorspace;
+                    
+                    /* red,green,blue = Y, Cb, Cr */
+                    for (x=image->columns; x > 0; x--)
+                      {
+                        q->green=*samples_itr++; /* Cb */
+                        q->red=*samples_itr++;   /* Y */
+                        q->blue=*samples_itr++;  /* Cr */
+                        q->opacity=OpaqueOpacity;
+                        q++;
+                      }
+                    break;
+                  }
                 case ImageElementCbYCrA4444:
-                  image->colorspace=YCbCrColorspace;
-                  /* red,green,blue = Y, Cb, Cr */
-                  for (x=image->columns; x > 0; x--)
-                    {
-                      q->green=*samples_itr++; /* Cb */
-                      q->red=*samples_itr++;   /* Y */
-                      q->blue=*samples_itr++;  /* Cr */
-                      q->opacity=MaxRGB-*samples_itr++;
-                      q++;
-                    }
-                  break;
+                  {
+                    if ((DPXColorimetric) dpx_image_info.element_info[element].colorimetric == 
+                        ColorimetricITU_R709)
+                      image->colorspace=Rec709YCbCrColorspace;
+                    else
+                      image->colorspace=Rec601YCbCrColorspace;
+
+                    /* red,green,blue = Y, Cb, Cr */
+                    for (x=image->columns; x > 0; x--)
+                      {
+                        q->green=*samples_itr++; /* Cb */
+                        q->red=*samples_itr++;   /* Y */
+                        q->blue=*samples_itr++;  /* Cr */
+                        q->opacity=MaxRGB-*samples_itr++;
+                        q++;
+                      }
+                    break;
+                  }
                 default:
                   break;
                 }
@@ -1978,7 +2053,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     *chroma_resized=0;
 
                   chroma_resized=ResizeImage(chroma_image,image->columns,1,
-                                             LanczosFilter,1.0,exception);
+                                             BoxFilter,1.0,exception); /* LanczosFilter? */
                   if (chroma_resized != (Image *) NULL)
                     {
                       const PixelPacket
@@ -2001,6 +2076,29 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       chroma_resized=0;
                     }
                 }
+
+              if (IsYCbCrColorspace(image->colorspace))
+                {
+                  /*
+                    Adjust YCbCr levels from video levels to full-range levels.
+                  */
+                  q=GetImagePixels(image,0,y,image->columns,1);
+                  if (q == (const PixelPacket *) NULL)
+                    {
+                      printf("Failed to get pixels!\n");
+                      break;
+                    }
+                  for (x=image->columns; x > 0; x--)
+                    {
+                      q->red = ScaleFromVideo(q->red,reference_low,ScaleY);
+                      q->green = ScaleFromVideo(q->green,reference_low,ScaleCbCr);
+                      q->blue = ScaleFromVideo(q->blue,reference_low,ScaleCbCr);
+                      q++;
+                    }
+                  if (!SyncImagePixels(image))
+                        break;
+                }
+
               /*
                 FIXME: Add support for optional EOL padding.
               */
@@ -2552,6 +2650,8 @@ static void WriteRowSamples(const sample_t *samples,
   else \
     SET_UNDEFINED_ASCII(member); \
 }
+#define ScaleToVideo(sample,ref_low,dnscale) \
+  ((unsigned int) (((double) sample*dnscale)+ref_low+0.5))
 
 static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 {
@@ -2675,9 +2775,15 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   if ((image_info->colorspace == CineonLogRGBColorspace) &&
       (image->colorspace != CineonLogRGBColorspace))
     (void) TransformColorspace(image,CineonLogRGBColorspace);
+  else if ((image_info->colorspace == Rec709YCbCrColorspace) &&
+           (image->colorspace != Rec709YCbCrColorspace))
+    (void) TransformColorspace(image,Rec709YCbCrColorspace);
+  else if ((image_info->colorspace == Rec601YCbCrColorspace) &&
+           (image->colorspace != Rec601YCbCrColorspace))
+    (void) TransformColorspace(image,Rec601YCbCrColorspace);
   else if ((image_info->colorspace == YCbCrColorspace) &&
-           (image->colorspace != YCbCrColorspace))
-    (void) TransformColorspace(image,YCbCrColorspace);
+           (image->colorspace != Rec601YCbCrColorspace))
+    (void) TransformColorspace(image,Rec601YCbCrColorspace);
   else if (IsRGBColorspace(image_info->colorspace) &&
            !IsRGBColorspace(image->colorspace))
     (void) TransformColorspace(image,RGBColorspace);
@@ -2739,7 +2845,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Intuit the samples per component and the number of elements.
   */
-  if (image->colorspace == YCbCrColorspace)
+  if (IsYCbCrColorspace(image->colorspace))
     {
       if ((sampling_factor_horizontal / sampling_factor_vertical) == 2)
         samples_per_component=2;
@@ -2852,11 +2958,27 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   SET_UNDEFINED_R32(dpx_image_info.element_info[0].reference_high_quantity);
 
   if (image->colorspace == CineonLogRGBColorspace)
-    transfer_characteristic=TransferCharacteristicPrintingDensity;
-  else if (image->colorspace == YCbCrColorspace)
-    transfer_characteristic=TransferCharacteristicITU_R601_625L;
+    {
+      transfer_characteristic=TransferCharacteristicPrintingDensity;
+    }
+  else if (IsYCbCrColorspace(image->colorspace))
+    {
+      if (image->colorspace == Rec709YCbCrColorspace)
+        {
+          transfer_characteristic=TransferCharacteristicITU_R709;
+        }
+      else
+        {
+          if (image->rows > 525)
+            transfer_characteristic=TransferCharacteristicITU_R601_625L;
+          else
+            transfer_characteristic=TransferCharacteristicITU_R601_525L;
+        }
+    }
   else
-    transfer_characteristic=TransferCharacteristicLinear;
+    {
+      transfer_characteristic=TransferCharacteristicLinear;
+    }
 
   /* Transfer characteristic. Define the amplitude transfer function
      necessary to transform the data to a linear original. */
@@ -2993,7 +3115,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     }
   else
     {
-      if (image->colorspace == YCbCrColorspace)
+      if (IsYCbCrColorspace(image->colorspace))
         {
           /* CbYCr */
           if (samples_per_component == 2)
@@ -3207,6 +3329,15 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   */
   for (element=0; element < dpx_image_info.elements; element++)
     {
+      unsigned int
+        max_value_given_bits = MaxValueGivenBits(bits_per_sample),
+        reference_low = 0,
+        reference_high = max_value_given_bits;
+
+      double
+        ScaleY = 0.0,
+        ScaleCbCr = 0.0;
+
       if ((magick_off_t) dpx_image_info.element_info[element].data_offset !=
           TellBlob(image))
         {
@@ -3221,6 +3352,18 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       scale_from_short=1U;
       if (bits_per_sample < 16U)
         scale_from_short=(65535U / (65535U >> (16-bits_per_sample)));
+
+      if (IsYCbCrColorspace(image->colorspace))
+        {
+          reference_low = (((double) MaxRGB+1)*(64.0/1024.0));
+          reference_high = (((double) MaxRGB+1)*(940.0/1024.0));
+          ScaleY = ((double) reference_high-reference_low)/((double) MaxRGB+1);
+          ScaleCbCr = ScaleY*((960.0-64.0)/(940.0-64.0));
+#if 0
+          printf("reference_low=%u, reference_high=%u, ScaleY=%g, ScaleCbCr=%g\n",
+                 reference_low, reference_high, ScaleY, ScaleCbCr);
+#endif
+        }
 
       element_descriptor=(DPXImageElementDescriptor)
         dpx_image_info.element_info[element].descriptor;
@@ -3333,11 +3476,11 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 
                 for (x=image->columns; x > 0; x -= 2)
                   {
-                    *samples_itr++=chroma_pixels->green; /* Cb */
-                    *samples_itr++=p->red;               /* Y */
+                    *samples_itr++=ScaleToVideo(chroma_pixels->green,reference_low,ScaleCbCr); /* Cb */
+                    *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);               /* Y */
                     p++;
-                    *samples_itr++=chroma_pixels->blue;  /* Cr */
-                    *samples_itr++=p->red;               /* Y */
+                    *samples_itr++=ScaleToVideo(chroma_pixels->blue,reference_low,ScaleCbCr);  /* Cr */
+                    *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);               /* Y */
                     p++;
                     chroma_pixels++;
                   }
@@ -3356,12 +3499,12 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 
                 for (x=image->columns; x > 0; x -= 2)
                   {
-                    *samples_itr++=chroma_pixels->green; /* Cb */
-                    *samples_itr++=p->red;               /* Y */
+                    *samples_itr++=ScaleToVideo(chroma_pixels->green,reference_low,ScaleCbCr); /* Cb */
+                    *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);               /* Y */
                     *samples_itr++=MaxRGB-p->opacity;
                     p++;
-                    *samples_itr++=chroma_pixels->blue;  /* Cr */
-                    *samples_itr++=p->red;               /* Y */
+                    *samples_itr++=ScaleToVideo(chroma_pixels->blue,reference_low,ScaleCbCr);  /* Cr */
+                    *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);               /* Y */
                     *samples_itr++=MaxRGB-p->opacity;
                     p++;
                     chroma_pixels++;
@@ -3371,18 +3514,18 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             case ImageElementCbYCr444:
               for (x=image->columns; x > 0; x--)
                 {
-                  *samples_itr++=p->green; /* Cb */
-                  *samples_itr++=p->red;   /* Y */
-                  *samples_itr++=p->blue;  /* Cr */
+                  *samples_itr++=ScaleToVideo(p->green,reference_low,ScaleCbCr); /* Cb */
+                  *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);   /* Y */
+                  *samples_itr++=ScaleToVideo(p->blue,reference_low,ScaleCbCr);  /* Cr */
                   p++;
                 }
               break;
             case ImageElementCbYCrA4444:
               for (x=image->columns; x > 0; x--)
                 {
-                  *samples_itr++=p->green; /* Cb */
-                  *samples_itr++=p->red;   /* Y */
-                  *samples_itr++=p->blue;  /* Cr */
+                  *samples_itr++=ScaleToVideo(p->green,reference_low,ScaleCbCr); /* Cb */
+                  *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);   /* Y */
+                  *samples_itr++=ScaleToVideo(p->blue,reference_low,ScaleCbCr);  /* Cr */
                   *samples_itr++=MaxRGB-p->opacity;
                   p++;
                 }

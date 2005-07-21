@@ -560,8 +560,9 @@ affect the color reduction algorithm.
 
 Choices are:
 \fBCMYK\fP, \fBGRAY\fP, \fBHSL\fP, \fBHWB\fP, \fBOHTA\fP, \fBRGB\fP,
-\fBRec601Luma\fP, \fBRec709Luma\fP, \fBTransparent\fP, \fBXYZ\fP,
-\fBYCbCr\fP, \fBYIQ\fP, \fBYPbPr\fP, or \fBYUV\fP.
+\fBRec601Luma\fP, \fBRec709Luma\fP, \fBRec601YCbCr\fP, \fBRec709CbCr\fP,
+\fBTransparent\fP, \fBXYZ\fP, \fBYCbCr\fP, \fBYIQ\fP, \fBYPbPr\fP,
+or \fBYUV\fP.
 
 Color reduction, by default, takes place in the RGB color space. Empirical
 evidence suggests that distances in color spaces such as YUV or YIQ correspond
@@ -569,12 +570,20 @@ to perceptual color differences more closely than do distances in RGB space.
 These color spaces may give better results when color reducing an image.
 Refer to quantize for more details.
 Two gray colorspaces are supported. The \fBRec601Luma\fP space is
-based on the recommendations for legacy NTSC television (ITU-R BT.601-5). The
-\fBRec709Luma\fP space is based on the recommendations for HDTV (Rec.
-ITU-R BT.709-5) and is suitable for suitable for use with computer
+based on the recommendations for legacy NTSC television (ITU-R BT.601-5).
+The \fBRec709Luma\fP space is based on the recommendations for HDTV
+(Rec. ITU-R BT.709-5) and is suitable for suitable for use with computer
 graphics, and for contemporary CRT displays. The \fBGRAY\fP colorspace
-currently selects the \fBRec601Luma\fP by default for backwards
-compatibly reasons. This default may be re-considered in the future.
+currently selects the \fBRec601Luma\fP colorspace by default for
+backwards compatibly reasons. This default may be re-considered in the
+future.
+
+Two YCbCr colorspaces are supported. The \fBRec601YCbCr\fP space is
+based on the recommendations for legacy NTSC television (ITU-R BT.601-5). The
+\fBRec709CbCr\fP space is based on the recommendations for HDTV (Rec.
+ITU-R BT.709-5) and is suitable for suitable for use with computer
+graphics, and for contemporary CRT displays. The \fBYCbCr\fP colorspace
+specification is equivalent to\fBRec601YCbCr\fP.
 
 
 The \fBTransparent\fP color space behaves uniquely in that it preserves

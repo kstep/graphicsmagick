@@ -691,11 +691,11 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
     case Rec601YCbCrColorspace:
     {
       /*
-        Initialize YCbCr tables (according to ITU-R BT.601):
+        Initialize YCbCr tables (using ITU-R BT.601 luma):
 
           Y =  0.299000*R+0.587000*G+0.114000*B
           Cb= -0.168736*R-0.331264*G+0.500000*B
-          Cr=  0.500000*R-0.418688*G-0.081316*B
+          Cr=  0.500000*R-0.418688*G-0.081312*B
 
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
@@ -707,15 +707,55 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       z_p = z_map;
       for (i=0; i <= MaxMap; i++)
       {
+        /* Red */
         x_p->x=RndToInt(0.299*i);
         y_p->x=RndToInt(0.587*i);
         z_p->x=RndToInt(0.114*i);
+        /* Green */
         x_p->y=RndToInt((-0.16873)*i);
         y_p->y=RndToInt((-0.331264)*i);
         z_p->y=RndToInt(0.500000*i);
+        /* Blue */
         x_p->z=RndToInt(0.500000*i);
         y_p->z=RndToInt((-0.418688)*i);
-        z_p->z=RndToInt((-0.081316)*i);
+        z_p->z=RndToInt((-0.081312)*i);
+        ++x_p;
+        ++y_p;
+        ++z_p;
+      }
+      break;
+    }
+    case Rec709YCbCrColorspace:
+    {
+      /*
+        Initialize YCbCr tables (using ITU-R BT.709 luma):
+
+          Y =  0.212600*R+0.715200*G+0.072200*B
+          Cb= -0.114572*R-0.385428*G+0.500000*B
+          Cr=  0.500000*R-0.454153*G-0.045847*B
+
+        Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
+        through MaxRGB.
+      */
+      primary_info.y=RndToInt((MaxMap+1)/2);
+      primary_info.z=RndToInt((MaxMap+1)/2);
+      x_p = x_map;
+      y_p = y_map;
+      z_p = z_map;
+      for (i=0; i <= MaxMap; i++)
+      {
+        /* Red */
+        x_p->x=RndToInt(0.212600*i);
+        y_p->x=RndToInt(0.715200*i);
+        z_p->x=RndToInt(0.072200*i);
+        /* Green */
+        x_p->y=RndToInt((-0.114572)*i);
+        y_p->y=RndToInt((-0.385428)*i);
+        z_p->y=RndToInt(0.500000*i);
+        /* Blue */
+        x_p->z=RndToInt(0.500000*i);
+        y_p->z=RndToInt((-0.454153)*i);
+        z_p->z=RndToInt((-0.045847)*i);
         ++x_p;
         ++y_p;
         ++z_p;
@@ -1563,6 +1603,8 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
     case Rec601YCbCrColorspace:
     {
       /*
+        YCbCr based on ITU-R 601 Luma
+
         Initialize YCbCr tables:
 
           R = Y            +1.402000*Cr
@@ -1574,14 +1616,46 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       */
       for (i=0; i <= MaxMap; i++)
       {
+        /* Y */
         red_map[i].red=RndToInt(i);
         green_map[i].red=0;
         blue_map[i].red=RndToInt((1.402000*0.5)*(2.0*i-MaxMap));
+        /* Pb */
         red_map[i].green=RndToInt(i);
         green_map[i].green=RndToInt((-0.344136*0.5)*(2.0*i-MaxMap));
         blue_map[i].green=RndToInt((-0.714136*0.5)*(2.0*i-MaxMap));
+        /* Pr */
         red_map[i].blue=RndToInt(i);
         green_map[i].blue=RndToInt((1.772000*0.5)*(2.0*i-MaxMap));
+        blue_map[i].blue=0;
+      }
+      break;
+    }
+    case Rec709YCbCrColorspace:
+    {
+      /*
+        YCbCr based on ITU-R 709 Luma.
+
+          R = Y            +1.574800*Cr
+          G = Y-0.187324*Cb-0.468124*Cr
+          B = Y+1.855600*Cb
+
+        Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
+        through MaxMap.
+      */
+      for (i=0; i <= MaxMap; i++)
+      {
+        /* Y */
+        red_map[i].red=RndToInt(i);
+        green_map[i].red=0;
+        blue_map[i].red=RndToInt((1.5748*0.5)*(2.0*i-MaxMap));
+        /* Pb */
+        red_map[i].green=RndToInt(i);
+        green_map[i].green=RndToInt((-0.187324*0.5)*(2.0*i-MaxMap));
+        blue_map[i].green=RndToInt((-0.468124*0.5)*(2.0*i-MaxMap));
+        /* Pr */
+        red_map[i].blue=RndToInt(i);
+        green_map[i].blue=RndToInt((1.8556*0.5)*(2.0*i-MaxMap));
         blue_map[i].blue=0;
       }
       break;
@@ -1644,7 +1718,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
     case YPbPrColorspace:
     {
       /*
-        Initialize YPbPr tables:
+        Initialize Y'PbPr tables using ITU-R 601 luma:
 
           R = Y            +1.402000*C2
           G = Y-0.344136*C1+0.714136*C2

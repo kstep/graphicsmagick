@@ -1,3 +1,9 @@
+2005-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c: Support proper encode and decode of YCbCr video
+	levels.
+	* magick/colorspace.c: Support Rec709YCbCrColorspace colorspace.
+
 2005-07-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/{animate.c, display.c, import.c, xwindow.c}: Rename all

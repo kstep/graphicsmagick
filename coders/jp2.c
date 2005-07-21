@@ -576,6 +576,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                     "ICC profile: %lu bytes",(unsigned long) blob->len_);
             SetImageProfile(image,"ICM",blob->buf_,blob->len_);
+            // FIXME: icc_stream->obj_ and profile are leaked here (as per jf_m_007@yahoo.fr)!
+
             (void) jas_stream_close(icc_stream);
           }
       }

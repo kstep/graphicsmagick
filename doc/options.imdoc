@@ -487,8 +487,9 @@ affect the color reduction algorithm.</pp>
 <pp>
 Choices are:
 <s>CMYK</s>, <s>GRAY</s>, <s>HSL</s>, <s>HWB</s>, <s>OHTA</s>, <s>RGB</s>,
-<s>Rec601Luma</s>, <s>Rec709Luma</s>, <s>Transparent</s>, <s>XYZ</s>,
-<s>YCbCr</s>, <s>YIQ</s>, <s>YPbPr</s>, or <s>YUV</s>.</pp>
+<s>Rec601Luma</s>, <s>Rec709Luma</s>, <s>Rec601YCbCr</s>, <s>Rec709CbCr</s>,
+<s>Transparent</s>, <s>XYZ</s>, <s>YCbCr</s>, <s>YIQ</s>, <s>YPbPr</s>,
+or <s>YUV</s>.</pp>
 
 <pp>
 Color reduction, by default, takes place in the RGB color space. Empirical
@@ -498,12 +499,21 @@ These color spaces may give better results when color reducing an image.
 Refer to <a href="quantize.html">quantize</a> for more details.</pp>
 
 <pp>Two gray colorspaces are supported. The <s>Rec601Luma</s> space is
-based on the recommendations for legacy NTSC television (ITU-R BT.601-5). The
-<s>Rec709Luma</s> space is based on the recommendations for HDTV (Rec.
-ITU-R BT.709-5) and is suitable for suitable for use with computer
+based on the recommendations for legacy NTSC television (ITU-R BT.601-5).
+The <s>Rec709Luma</s> space is based on the recommendations for HDTV
+(Rec. ITU-R BT.709-5) and is suitable for suitable for use with computer
 graphics, and for contemporary CRT displays. The <s>GRAY</s> colorspace
-currently selects the <s>Rec601Luma</s> by default for backwards
-compatibly reasons. This default may be re-considered in the future.
+currently selects the <s>Rec601Luma</s> colorspace by default for
+backwards compatibly reasons. This default may be re-considered in the
+future.
+</pp>
+
+<pp>Two YCbCr colorspaces are supported. The <s>Rec601YCbCr</s> space is
+based on the recommendations for legacy NTSC television (ITU-R BT.601-5). The
+<s>Rec709CbCr</s> space is based on the recommendations for HDTV (Rec.
+ITU-R BT.709-5) and is suitable for suitable for use with computer
+graphics, and for contemporary CRT displays. The <s>YCbCr</s> colorspace
+specification is equivalent to<s>Rec601YCbCr</s>.
 </pp>
 
 <pp>
