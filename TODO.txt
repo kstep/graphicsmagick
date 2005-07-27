@@ -30,6 +30,8 @@ For 1.2 Branch
 
   o Update Windows libtiff to version 3.7.X.
 
+  o Update Windows zlib to version 1.2.3 (security issue).
+
   o Fix bug noticed when writing multiple image frames to a JPEG
     file without an extension.
 

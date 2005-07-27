@@ -38,13 +38,13 @@
 %    RGB
 %    Log RGB (density range = 2.048)
 %    Grayscale (Luma)
-%    CbYCr (colorimetry still needs some work)
+%    YCbCr 4:4:4 and 4:2:2 (use -sampling-factor 2x1 for 4:2:2)
 %
 %   Storage:
 %    Bits per sample of 1, 8, 10, 12, and 16.
 %    Packed, or fill type A or B for 10/12 bits.
 %    All RGB-oriented element types (R, G, B, A, RGB, RGBA, ABGR).
-%    All CbYCr-oriented element types.
+%    All YCbCr-oriented element types.
 %    Planar (multi-element) storage fully supported.
 %    Alpha may be stored in a separate element.
 %
@@ -1766,10 +1766,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 ScaleCbCr = ScaleY*((940.0-64.0)/(960.0-64.0));
                 reference_low=ScaleShortToQuantum(reference_low*scale_to_short);
                 reference_high=ScaleShortToQuantum(reference_high*scale_to_short);
-#if 0
-                printf("reference_low=%u, reference_high=%u, ScaleY=%g, ScaleCbCr=%g\n",
-                       reference_low, reference_high, ScaleY, ScaleCbCr);
-#endif
                 break;
               }
             default:
@@ -2053,7 +2049,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     *chroma_resized=0;
 
                   chroma_resized=ResizeImage(chroma_image,image->columns,1,
-                                             BoxFilter,1.0,exception); /* LanczosFilter? */
+                                             TriangleFilter,1.0,exception);
                   if (chroma_resized != (Image *) NULL)
                     {
                       const PixelPacket
@@ -3359,10 +3355,6 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           reference_high = (((double) MaxRGB+1)*(940.0/1024.0));
           ScaleY = ((double) reference_high-reference_low)/((double) MaxRGB+1);
           ScaleCbCr = ScaleY*((960.0-64.0)/(940.0-64.0));
-#if 0
-          printf("reference_low=%u, reference_high=%u, ScaleY=%g, ScaleCbCr=%g\n",
-                 reference_low, reference_high, ScaleY, ScaleCbCr);
-#endif
         }
 
       element_descriptor=(DPXImageElementDescriptor)
@@ -3380,7 +3372,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           (chroma_image == (Image *) NULL))
         {
           chroma_image=ResizeImage(image,image->columns/2,image->rows,
-                                   BoxFilter,1.0,&image->exception);
+                                   TriangleFilter,1.0,&image->exception);
           if (chroma_image == (Image *) NULL)
             ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
         }

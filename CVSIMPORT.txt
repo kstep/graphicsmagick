@@ -72,7 +72,7 @@ xml: Note, this one may be bogus!
 zlib:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import zlib 1.2.2' delegates/zlib \
-    INITIAL ZLIB_1_2_2
+    import -m 'Import zlib 1.2.3' delegates/zlib \
+    INITIAL ZLIB_1_2_3
 
 

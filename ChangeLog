@@ -1,3 +1,8 @@
+2005-07-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* zlib: Updated to version 1.2.3.
+	* coders/dpx.c: Use TriangleFilter for scaling chroma.
+
 2005-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c: Support proper encode and decode of YCbCr video
