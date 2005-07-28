@@ -1,3 +1,11 @@
+2005-07-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jp2.c: Change how Jasper is intialized.  Hopefully
+	eliminate memory leak when reading ICC color profile.
+	* magick/utility.c (SystemCommand): Always report command error
+	information if a command fails.
+	* Fix some compilation warnings produced by a 64-bit build.
+
 2005-07-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* zlib: Updated to version 1.2.3.

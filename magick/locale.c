@@ -208,7 +208,7 @@ GetLocaleMessageFromTag(const char *tag)
             {
               if (LocaleCompare(severity,severity_map[j].name) == 0)
                 {
-                  for (i=severity_map[j].offset; i < severity_map[j+1].offset != 0; i++)
+                  for (i=severity_map[j].offset; i < severity_map[j+1].offset; i++)
                     {
                       int
                         prefix,

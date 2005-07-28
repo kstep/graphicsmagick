@@ -21,8 +21,27 @@
 </tr>
 </table>
 <p>
-This file was last updated on April 29, 2005.
+This file was last updated on July 26, 2005.
 
+<p>
+Significant changes associated with GraphicsMagick 1.1.7 (yet to be released)
+
+<p>
+  Security Fixes:<BR>
+<UL>
+  <LI> Updated zlib to version 1.2.3 (1.2.2 has a security flaw).
+
+</UL>
+<p>
+  Bugs fixed:<BR>
+<UL>
+  <LI> Fixed double-free problem while displaying an image with X.org
+    server noted under FreeBSD 5.4 and heard about under Linux with X.org.
+  <LI> Fixed buffer over-run in readdir() which only occurs under
+    Microsoft Windows.<BR>
+  <LI> Fix for an infinite loop bug in the XWD reader.
+
+</UL>
 <p>
 Significant changes associated with GraphicsMagick 1.1.6 (released May 1, 2005)
 

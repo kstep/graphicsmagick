@@ -315,9 +315,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
-    Initialize JPEG 2000 API.
+    Obtain a JP2 Stream.
   */
-  jas_init();
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
     ThrowReaderException(DelegateError,UnableToManageJP2Stream,image);
@@ -687,6 +686,13 @@ ModuleExport void RegisterJP2Image(void)
   entry->decoder=(DecoderHandler) ReadJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
+
+  /*
+    Initialize Jasper
+  */
+#if defined(HasJP2)
+  jas_init();
+#endif
 }
 
 /*
@@ -713,6 +719,13 @@ ModuleExport void UnregisterJP2Image(void)
   (void) UnregisterMagickInfo("JP2");
   (void) UnregisterMagickInfo("JPC");
   (void) UnregisterMagickInfo("PGX");
+
+#if defined(HasJP2)
+  /*
+    Cleanup Jasper
+  */
+  jas_cleanup();
+#endif
 }
 
 #if defined(HasJP2)
@@ -796,11 +809,15 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+
   /*
-    Intialize JPEG 2000 API.
+    Ensure that image is in RGB space.
   */
   TransformColorspace(image,RGBColorspace);
-  jas_init();
+
+  /*
+    Obtain a JP2 stream.
+  */
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
     ThrowWriterException(DelegateError,UnableToManageJP2Stream,image);
