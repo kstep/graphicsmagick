@@ -207,7 +207,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   if (stream_info->pixels == (PixelPacket *) NULL)
     stream_info->pixels=MagickAllocateMemory(PixelPacket *,length);
   else
-    if (length != stream_info->length)
+    if (length != (size_t) stream_info->length)
       MagickReallocMemory(stream_info->pixels,length);
   if (stream_info->pixels == (void *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
@@ -586,7 +586,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
       stream_info->length=length;
     }
   else
-    if (stream_info->length < length)
+    if ((size_t) stream_info->length < length)
       {
         MagickReallocMemory(stream_info->pixels,length);
         stream_info->length=length;

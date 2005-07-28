@@ -768,8 +768,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   unsigned short
     color16,
     flags = 0;
-
-
+  
   /*
     Open output image file.
   */
@@ -884,6 +883,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   if (one_row == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
 
+  transpix.red=transpix.green=transpix.blue=0;
   for (y=0; y < (int) image->rows; y++)
     {
       ptr = one_row;

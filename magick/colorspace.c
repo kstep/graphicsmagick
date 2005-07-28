@@ -361,15 +361,15 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       double ReferenceBlack=95;     /* 1% black card  (default 95) */
       double DisplayGamma=1.7;      /* Typical display gamma (Kodak recommends 1.7) */
       double NegativeFilmGamma=0.6; /* Typical gamma for a film negative */
-      double SoftClip=0.0;          /* Soft clip offset */
-      double BreakPoint=ReferenceWhite-SoftClip;
+      /* double SoftClip=0.0; */          /* Soft clip offset */
+      /* double BreakPoint=ReferenceWhite-SoftClip; */
       double Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)
                                                     *0.002/NegativeFilmGamma)),
                                             (DisplayGamma/1.7)));
       double Offset=Gain-MaxLinearValue;
-      double KneeOffset=pow(pow(10,((BreakPoint-ReferenceWhite)*0.002/NegativeFilmGamma)),
-                            (DisplayGamma/1.7))*Gain-Offset;
-      double KneeGain=(MaxLinearValue-KneeOffset)/pow((5*SoftClip),(SoftClip/100));
+      /* double KneeOffset=pow(pow(10,((BreakPoint-ReferenceWhite)*0.002/NegativeFilmGamma)), */
+/*                             (DisplayGamma/1.7))*Gain-Offset; */
+      /* double KneeGain=(MaxLinearValue-KneeOffset)/pow((5*SoftClip),(SoftClip/100)); */
       unsigned int
         *logmap,
         scale_to_short;

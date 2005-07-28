@@ -833,7 +833,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     x;
 
   SegmentInfo
-    bounds;
+    bounds={0.0,0.0,0.0,0.0};
 
   time_t
     timer;

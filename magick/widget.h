@@ -33,7 +33,7 @@ typedef enum
 /*
   Typedef declarations.
 */
-typedef struct _XWidgetInfo
+typedef struct _MagickXWidgetInfo
 {
   char
     *cursor,
@@ -60,7 +60,7 @@ typedef struct _XWidgetInfo
     center,
     trough,
     highlight;
-} XWidgetInfo;
+} MagickXWidgetInfo;
 
 /*
   X utilities routines.

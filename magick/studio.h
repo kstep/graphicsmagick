@@ -218,6 +218,7 @@ extern "C" {
 #   include <dirent.h>
 #   define NAMLEN(dirent) strlen((dirent)->d_name)
 #  endif
+#  include <sys/wait.h>
 #  include <pwd.h>
 # endif
 # if !defined(S_ISDIR)

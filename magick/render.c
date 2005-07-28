@@ -3534,7 +3534,7 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
     y;
 
   PointInfo
-    p,
+    p={0,0},
     q,
     point;
 
@@ -4489,10 +4489,10 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
     last_attribute;
 
   PointInfo
-    end,
+    end={0,0},
     points[4],
     point,
-    start;
+    start={0,0};
 
   PrimitiveType
     primitive_type;
@@ -4984,11 +4984,11 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     miterlimit;
 
   LineSegment
-    dx,
-    dy,
-    inverse_slope,
-    slope,
-    theta;
+    dx={0,0},
+    dy={0,0},
+    inverse_slope={0,0},
+    slope={0,0},
+    theta={0,0};
 
   PointInfo
     box_p[5],

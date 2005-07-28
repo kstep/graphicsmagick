@@ -3999,21 +3999,44 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
   int
     status;
 
+  char
+    message[MaxTextExtent];
+
+  const char
+    *message_p = (const char *) NULL;
+
   errno=0;
 #if defined(POSIX)
   status=system(command);
+  if (status == 1)
+    {
+      strlcpy(message,strerror(status),sizeof(message));
+      message_p=message;
+    }
+  else if (WIFSIGNALED(status))
+    {
+      snprintf(message,sizeof(message),"terminated due to signal %d",
+               WTERMSIG(status));
+      message[sizeof(message)-1]='\0';
+      message_p=message;
+    }
 #elif defined(vms)
   status=!system(command);
+  if (!status)
+    message_p=strerror(status);
 #elif defined(macintosh)
   status=MACSystemCommand(command);
+  if (!status)
+    message_p=strerror(status);
 #elif defined(WIN32)
   status=NTSystemComman(command);
+  if (!status)
+    message_p=strerror(status);
 #else
 #  error Do not know how to run system commands.
 #endif
-  if (verbose)
-    MagickError2(DelegateError,command,!status ? strerror(status) :
-      (char *) NULL);
+  if (verbose || (status != 0))
+    MagickError2(DelegateError,command,message_p);
   return(status);
 }
 

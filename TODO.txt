@@ -10,16 +10,20 @@ For 1.2 Branch
 
   o Fix Scitex RGB reader.
 
+  o Fix PhotoCD support (broken in 1.2, works in 1.1.X).
+
+  o Fix polyline renderering (improperly closes shape) when line is very thick.
+
   o Look into problem reported by Rick Mabry, "Shear produces artifacts for
     a 0 y-shear (e.g. 60x0)."
+
+  o Fix bug noticed when writing multiple image frames to a JPEG
+    file without an extension.
 
   o Fix "gm convert logo: logo%n.png" --> Segmentation fault
 
   o Fix PerlMagick BLOB reading (disable header magic checking if already
     specified).
-
-  o Figure out how to parallel install PerlMagick without conflicting
-    with ImageMagick.
 
   o Update to libtool 2.0 (partially done in sandbox).
 
@@ -30,10 +34,7 @@ For 1.2 Branch
 
   o Update Windows libtiff to version 3.7.X.
 
-  o Update Windows zlib to version 1.2.3 (security issue).
-
-  o Fix bug noticed when writing multiple image frames to a JPEG
-    file without an extension.
+  o Update Windows zlib to version 1.2.3 (done).
 
   o Update Windows lcms to version 1.14. (done).
 

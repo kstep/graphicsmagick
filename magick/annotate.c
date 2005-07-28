@@ -1046,6 +1046,9 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
   unsigned short
     *text;
 
+  glyph.image=(FT_Glyph) 0;
+  last_glyph.image=(FT_Glyph) 0;
+
   /*
     Initialize Truetype library.
   */

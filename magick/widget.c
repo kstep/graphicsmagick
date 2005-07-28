@@ -66,7 +66,7 @@
 /*
   Variable declarations.
 */
-static XWidgetInfo
+static MagickXWidgetInfo
   monitor_info =
   {
     (char *) NULL, (char *) NULL, (char *) NULL,
@@ -94,7 +94,7 @@ static const unsigned int
   Method prototypes.
 */
 static void
-  XDrawMatte(Display *,const MagickXWindowInfo *,const XWidgetInfo *),
+  XDrawMatte(Display *,const MagickXWindowInfo *,const MagickXWidgetInfo *),
   XSetBevelColor(Display *,const MagickXWindowInfo *,const unsigned int),
   XSetMatteColor(Display *,const MagickXWindowInfo *,const unsigned int),
   XSetTextColor(Display *,const MagickXWindowInfo *,const unsigned int);
@@ -125,13 +125,13 @@ static void
 %
 %    o window_info: Specifies a pointer to a X11 MagickXWindowInfo structure.
 %
-%    o bevel_info: Specifies a pointer to a XWidgetInfo structure.  It
+%    o bevel_info: Specifies a pointer to a MagickXWidgetInfo structure.  It
 %      contains the extents of the bevel.
 %
 %
 */
 static void XDrawBevel(Display *display,const MagickXWindowInfo *window_info,
-  const XWidgetInfo *bevel_info)
+  const MagickXWidgetInfo *bevel_info)
 {
   int
     x1,
@@ -215,13 +215,13 @@ static void XDrawBevel(Display *display,const MagickXWindowInfo *window_info,
 %
 %    o window_info: Specifies a pointer to a X11 MagickXWindowInfo structure.
 %
-%    o button_info: Specifies a pointer to a XWidgetInfo structure.  It
+%    o button_info: Specifies a pointer to a MagickXWidgetInfo structure.  It
 %      contains the extents of the button.
 %
 %
 */
 static void XDrawBeveledButton(Display *display,const MagickXWindowInfo *window_info,
-  const XWidgetInfo *button_info)
+  const MagickXWidgetInfo *button_info)
 {
   int
     x,
@@ -318,13 +318,13 @@ static void XDrawBeveledButton(Display *display,const MagickXWindowInfo *window_
 %
 %    o window_info: Specifies a pointer to a X11 MagickXWindowInfo structure.
 %
-%    o matte_info: Specifies a pointer to a XWidgetInfo structure.  It
+%    o matte_info: Specifies a pointer to a MagickXWidgetInfo structure.  It
 %      contains the extents of the matte.
 %
 %
 */
 static void XDrawBeveledMatte(Display *display,const MagickXWindowInfo *window_info,
-  const XWidgetInfo *matte_info)
+  const MagickXWidgetInfo *matte_info)
 {
   /*
     Draw matte.
@@ -357,13 +357,13 @@ static void XDrawBeveledMatte(Display *display,const MagickXWindowInfo *window_i
 %
 %    o window_info: Specifies a pointer to a X11 MagickXWindowInfo structure.
 %
-%    o matte_info: Specifies a pointer to a XWidgetInfo structure.  It
+%    o matte_info: Specifies a pointer to a MagickXWidgetInfo structure.  It
 %      contains the extents of the matte.
 %
 %
 */
 static void XDrawMatte(Display *display,const MagickXWindowInfo *window_info,
-  const XWidgetInfo *matte_info)
+  const MagickXWidgetInfo *matte_info)
 {
   /*
     Draw matte.
@@ -407,13 +407,13 @@ static void XDrawMatte(Display *display,const MagickXWindowInfo *window_info,
 %
 %    o window_info: Specifies a pointer to a X11 MagickXWindowInfo structure.
 %
-%    o text_info: Specifies a pointer to a XWidgetInfo structure.  It
+%    o text_info: Specifies a pointer to a MagickXWidgetInfo structure.  It
 %      contains the extents of the text.
 %
 %
 */
 static void XDrawMatteText(Display *display,const MagickXWindowInfo *window_info,
-  XWidgetInfo *text_info)
+  MagickXWidgetInfo *text_info)
 {
   const char
     *text;
@@ -546,13 +546,13 @@ static void XDrawMatteText(Display *display,const MagickXWindowInfo *window_info
 %
 %    o window_info: Specifies a pointer to a X11 MagickXWindowInfo structure.
 %
-%    o triangle_info: Specifies a pointer to a XWidgetInfo structure.  It
+%    o triangle_info: Specifies a pointer to a MagickXWidgetInfo structure.  It
 %      contains the extents of the triangle.
 %
 %
 */
 static void XDrawTriangleEast(Display *display,const MagickXWindowInfo *window_info,
-  const XWidgetInfo *triangle_info)
+  const MagickXWidgetInfo *triangle_info)
 {
   int
     x1,
@@ -673,13 +673,13 @@ static void XDrawTriangleEast(Display *display,const MagickXWindowInfo *window_i
 %
 %    o window_info: Specifies a pointer to a X11 MagickXWindowInfo structure.
 %
-%    o triangle_info: Specifies a pointer to a XWidgetInfo structure.  It
+%    o triangle_info: Specifies a pointer to a MagickXWidgetInfo structure.  It
 %      contains the extents of the triangle.
 %
 %
 */
 static void XDrawTriangleNorth(Display *display,const MagickXWindowInfo *window_info,
-  const XWidgetInfo *triangle_info)
+  const MagickXWidgetInfo *triangle_info)
 {
   int
     x1,
@@ -784,13 +784,13 @@ static void XDrawTriangleNorth(Display *display,const MagickXWindowInfo *window_
 %
 %    o window_info: Specifies a pointer to a X11 MagickXWindowInfo structure.
 %
-%    o triangle_info: Specifies a pointer to a XWidgetInfo structure.  It
+%    o triangle_info: Specifies a pointer to a MagickXWidgetInfo structure.  It
 %      contains the extents of the triangle.
 %
 %
 */
 static void XDrawTriangleSouth(Display *display,const MagickXWindowInfo *window_info,
-  const XWidgetInfo *triangle_info)
+  const MagickXWidgetInfo *triangle_info)
 {
   int
     x1,
@@ -896,12 +896,12 @@ static void XDrawTriangleSouth(Display *display,const MagickXWindowInfo *window_
 %
 %    o window_info: Specifies a pointer to a XWindowText structure.
 %
-%    o text_info: Specifies a pointer to XWidgetInfo structure.
+%    o text_info: Specifies a pointer to MagickXWidgetInfo structure.
 %
 %
 */
 static void XDrawWidgetText(Display *display,const MagickXWindowInfo *window_info,
-  XWidgetInfo *text_info)
+  MagickXWidgetInfo *text_info)
 {
   GC
     widget_context;
@@ -988,7 +988,7 @@ static void XDrawWidgetText(Display *display,const MagickXWindowInfo *window_inf
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o text_info: Specifies a pointer to a XWidgetInfo structure.  It
+%    o text_info: Specifies a pointer to a MagickXWidgetInfo structure.  It
 %      contains the extents of the text.
 %
 %    o key_symbol:  A X11 KeySym that indicates what editing function to
@@ -1001,7 +1001,7 @@ static void XDrawWidgetText(Display *display,const MagickXWindowInfo *window_inf
 %
 %
 */
-static void XEditText(Display *display,XWidgetInfo *text_info,
+static void XEditText(Display *display,MagickXWidgetInfo *text_info,
   const KeySym key_symbol,char *text,const unsigned long state)
 {
   switch ((int) key_symbol)
@@ -1108,7 +1108,7 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XGetWidgetInfo initializes the XWidgetInfo structure.
+%  Method XGetWidgetInfo initializes the MagickXWidgetInfo structure.
 %
 %  The format of the XGetWidgetInfo function is:
 %
@@ -1118,11 +1118,11 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
 %
 %    o text: A string of characters associated with the widget.
 %
-%    o widget_info: Specifies a pointer to a X11 XWidgetInfo structure.
+%    o widget_info: Specifies a pointer to a X11 MagickXWidgetInfo structure.
 %
 %
 */
-static void XGetWidgetInfo(const char *text,XWidgetInfo *widget_info)
+static void XGetWidgetInfo(const char *text,MagickXWidgetInfo *widget_info)
 {
   /*
     Initialize widget info.
@@ -1573,7 +1573,7 @@ MagickExport void MagickXColorBrowserWidget(Display *display,MagickXWindows *win
   XTextProperty
     window_name;
 
-  XWidgetInfo
+  MagickXWidgetInfo
     action_info,
     cancel_info,
     expose_info,
@@ -2781,8 +2781,8 @@ static unsigned char tile_bits[] = {
   static unsigned int
     number_selections;
 
-  static XWidgetInfo
-    *selection_info = (XWidgetInfo *) NULL;
+  static MagickXWidgetInfo
+    *selection_info = (MagickXWidgetInfo *) NULL;
 
   unsigned int
     height;
@@ -2855,11 +2855,11 @@ static unsigned char tile_bits[] = {
       /*
         Allocate selection info memory.
       */
-      if (selection_info != (XWidgetInfo *) NULL)
+      if (selection_info != (MagickXWidgetInfo *) NULL)
         MagickFreeMemory(selection_info);
-      selection_info=MagickAllocateMemory(XWidgetInfo *,
-        number_selections*sizeof(XWidgetInfo));
-      if (selection_info == (XWidgetInfo *) NULL)
+      selection_info=MagickAllocateMemory(MagickXWidgetInfo *,
+        number_selections*sizeof(MagickXWidgetInfo));
+      if (selection_info == (MagickXWidgetInfo *) NULL)
         {
           MagickError3(ResourceLimitError,MemoryAllocationFailed,
             UnableToCreateCommandWidget);
@@ -3137,7 +3137,7 @@ MagickExport int MagickXConfirmWidget(Display *display,MagickXWindows *windows,
   XTextProperty
     window_name;
 
-  XWidgetInfo
+  MagickXWidgetInfo
     cancel_info,
     dismiss_info,
     yes_info;
@@ -3547,7 +3547,7 @@ MagickExport int MagickXDialogWidget(Display *display,MagickXWindows *windows,
   XTextProperty
     window_name;
 
-  XWidgetInfo
+  MagickXWidgetInfo
     action_info,
     cancel_info,
     reply_info,
@@ -4139,7 +4139,7 @@ MagickExport void MagickXFileBrowserWidget(Display *display,MagickXWindows *wind
   XTextProperty
     window_name;
 
-  XWidgetInfo
+  MagickXWidgetInfo
     action_info,
     cancel_info,
     expose_info,
@@ -5361,7 +5361,7 @@ MagickExport void MagickXFontBrowserWidget(Display *display,MagickXWindows *wind
   XTextProperty
     window_name;
 
-  XWidgetInfo
+  MagickXWidgetInfo
     action_info,
     back_info,
     cancel_info,
@@ -6614,7 +6614,7 @@ MagickExport void MagickXListBrowserWidget(Display *display,MagickXWindows *wind
   XTextProperty
     window_name;
 
-  XWidgetInfo
+  MagickXWidgetInfo
     action_info,
     cancel_info,
     expose_info,
@@ -7504,7 +7504,7 @@ MagickExport int MagickXMenuWidget(Display *display,MagickXWindows *windows,
   XSetWindowAttributes
     window_attributes;
 
-  XWidgetInfo
+  MagickXWidgetInfo
     highlight_info,
     menu_info,
     selection_info;
@@ -7552,7 +7552,7 @@ MagickExport int MagickXMenuWidget(Display *display,MagickXWindows *windows,
       toggle_info.raised=True;
       XDrawTriangleEast(display,&windows->command,&toggle_info);
     }
-  windows->widget.y=!submenu_info.active ? y-((3*title_height) >> 2) : y;
+  windows->widget.y=(!submenu_info.active ? ((int) (y-((3*title_height) >> 2))) : y);
   if (submenu_info.active)
     windows->widget.y=windows->command.y+submenu_info.y;
   MagickXConstrainWindowPosition(display,&windows->widget);
@@ -8015,7 +8015,7 @@ MagickExport void MagickXNoticeWidget(Display *display,MagickXWindows *windows,
   XTextProperty
     window_name;
 
-  XWidgetInfo
+  MagickXWidgetInfo
     dismiss_info;
 
   XWindowChanges
@@ -8351,7 +8351,7 @@ MagickExport unsigned int MagickXPreferencesWidget(Display *display,
   XTextProperty
     window_name;
 
-  XWidgetInfo
+  MagickXWidgetInfo
     apply_info,
     cache_info,
     cancel_info,
@@ -8773,7 +8773,7 @@ MagickExport void MagickXTextViewWidget(Display *display,
   XTextProperty
     window_name;
 
-  XWidgetInfo
+  MagickXWidgetInfo
     dismiss_info,
     expose_info,
     list_info,

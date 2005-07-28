@@ -1206,7 +1206,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     j;
 
   SegmentInfo
-    bounds;
+    bounds={0.0,0.0,0.0,0.0};
 
   size_t
     length;

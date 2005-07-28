@@ -1600,7 +1600,7 @@ static unsigned int MagickXColorEditImage(Display *display,
     pen_id = 0;
 
   static XColor
-    border_color = { 0, 0, 0, 0, 0 };
+    border_color = { 0, 0, 0, 0, 0, 0 }; /* Also fill 'pad' field */
 
   char
     command[MaxTextExtent],
@@ -7500,7 +7500,7 @@ static unsigned int MagickXMatteEditImage(Display *display,
     method = PointMethod;
 
   static XColor
-    border_color = { 0, 0, 0, 0, 0 };
+    border_color = { 0, 0, 0, 0, 0, 0 };  /* Also fill 'pad' field */
 
   char
     command[MaxTextExtent],
@@ -8255,6 +8255,8 @@ static void MagickXPanImage(Display *display,MagickXWindows *windows,XEvent *eve
   */
   x_factor=(double) windows->image.ximage->width/windows->pan.width;
   y_factor=(double) windows->image.ximage->height/windows->pan.height;
+  pan_info.x=0;
+  pan_info.y=0;
   pan_info.width=
     windows->pan.width*windows->image.width/windows->image.ximage->width;
   pan_info.height=

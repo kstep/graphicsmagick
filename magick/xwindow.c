@@ -1185,9 +1185,9 @@ MagickExport void MagickXBestPixel(Display *display,const Colormap colormap,
 */
 #define MaxStandardColormaps  7
 #define MagickXVisualColormapSize(visual_info) Min( (int) (\
-  (visual_info->storage_class == TrueColor) || (visual_info->storage_class == DirectColor) ? \
-   visual_info->red_mask | visual_info->green_mask | visual_info->blue_mask : \
-   visual_info->colormap_size),1 << visual_info->depth)
+  ((visual_info->storage_class == TrueColor) || (visual_info->storage_class == DirectColor)) ? \
+    (int) (visual_info->red_mask | visual_info->green_mask | visual_info->blue_mask) : \
+    visual_info->colormap_size),(1 << visual_info->depth))
 
 MagickExport XVisualInfo *MagickXBestVisualInfo(Display *display,
   XStandardColormap *map_info,MagickXResourceInfo *resource_info)
@@ -5442,8 +5442,8 @@ MagickExport unsigned int MagickXMakeImage(Display *display,
           */
           resize_image=(Image *) NULL;
           if ((window->pixel_info->colors != 0) ||
-              (window->image->rows > XDisplayHeight(display,window->screen)) ||
-              (window->image->columns > XDisplayWidth(display,window->screen)))
+              (window->image->rows > (unsigned long) XDisplayHeight(display,window->screen)) ||
+              (window->image->columns > (unsigned long) XDisplayWidth(display,window->screen)))
             resize_image=SampleImage(window->image,width,height,
               &image->exception);
           else
@@ -7568,7 +7568,7 @@ MagickExport void MagickXMakeStandardColormap(Display *display,
       if ((map_info->red_max*map_info->green_max*map_info->blue_max) != 0)
         if (!image->matte && !resource_info->color_recovery &&
             resource_info->quantize_info->dither &&
-            ((int) number_colors < MaxColormapSize))
+            (number_colors < MaxColormapSize))
           {
             Image
               *map_image;

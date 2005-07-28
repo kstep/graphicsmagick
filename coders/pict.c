@@ -771,6 +771,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   /*
     Read PICT header.
   */
+  pixmap.bits_per_pixel=0;
+  pixmap.component_count=0;
   for (i=0; i < 512; i++)
     (void) ReadBlobByte(image);  /* skip header */
   (void) ReadBlobMSBShort(image);  /* skip picture size */

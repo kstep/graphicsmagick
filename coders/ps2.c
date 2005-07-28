@@ -516,7 +516,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     i;
 
   SegmentInfo
-    bounds;
+    bounds={0.0,0.0,0.0,0.0};
 
   size_t
     length;

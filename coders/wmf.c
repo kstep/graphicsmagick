@@ -809,6 +809,11 @@ static void util_draw_arc(wmfAPI * API,
     Rx,
     Ry;
 
+  end.x=0;
+  end.y=0;
+  start.x=0;
+  start.y=0;
+
   /* Save graphic context */
   DrawPushGraphicContext(WmfDrawContext);
 

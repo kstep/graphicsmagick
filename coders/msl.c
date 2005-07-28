@@ -3910,36 +3910,7 @@ static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
   ExceptionInfo *exception)
 {
   xmlSAXHandler
-    SAXModules =
-    {
-      MSLInternalSubset,
-      MSLIsStandalone,
-      MSLHasInternalSubset,
-      MSLHasExternalSubset,
-      MSLResolveEntity,
-      MSLGetEntity,
-      MSLEntityDeclaration,
-      MSLNotationDeclaration,
-      MSLAttributeDeclaration,
-      MSLElementDeclaration,
-      MSLUnparsedEntityDeclaration,
-      MSLSetDocumentLocator,
-      MSLStartDocument,
-      MSLEndDocument,
-      MSLStartElement,
-      MSLEndElement,
-      MSLReference,
-      MSLCharacters,
-      MSLIgnorableWhitespace,
-      MSLProcessingInstructions,
-      MSLComment,
-      MSLWarning,
-      MSLError,
-      MSLError,
-      MSLGetParameterEntity,
-      MSLCDataBlock,
-      MSLExternalSubset
-    };
+    SAXModules;
 
   char
     message[MaxTextExtent];
@@ -4000,6 +3971,36 @@ static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
   if (*image != (Image *) NULL)
     MSLPushImage(&msl_info,*image);
   (void) xmlSubstituteEntitiesDefault(1);
+
+  memset(&SAXModules,0,sizeof(SAXModules));
+  SAXModules.internalSubset=MSLInternalSubset;
+  SAXModules.isStandalone=MSLIsStandalone;
+  SAXModules.hasInternalSubset=MSLHasInternalSubset;
+  SAXModules.hasExternalSubset=MSLHasExternalSubset;
+  SAXModules.resolveEntity=MSLResolveEntity;
+  SAXModules.getEntity=MSLGetEntity;
+  SAXModules.entityDecl=MSLEntityDeclaration;
+  SAXModules.notationDecl=MSLNotationDeclaration;
+  SAXModules.attributeDecl=MSLAttributeDeclaration;
+  SAXModules.elementDecl=MSLElementDeclaration;
+  SAXModules.unparsedEntityDecl=MSLUnparsedEntityDeclaration;
+  SAXModules.setDocumentLocator=MSLSetDocumentLocator;
+  SAXModules.startDocument=MSLStartDocument;
+  SAXModules.endDocument=MSLEndDocument;
+  SAXModules.startElement=MSLStartElement;
+  SAXModules.endElement=MSLEndElement;
+  SAXModules.reference=MSLReference;
+  SAXModules.characters=MSLCharacters;
+  SAXModules.ignorableWhitespace=MSLIgnorableWhitespace;
+  SAXModules.processingInstruction=MSLProcessingInstructions;
+  SAXModules.comment=MSLComment;
+  SAXModules.warning=MSLWarning;
+  SAXModules.error=MSLError;
+  SAXModules.fatalError=MSLError;
+  SAXModules.getParameterEntity=MSLGetParameterEntity;
+  SAXModules.cdataBlock=MSLCDataBlock;
+  SAXModules.externalSubset=MSLExternalSubset;
+
   SAXHandler=(&SAXModules);
   msl_info.parser=xmlCreatePushParserCtxt(SAXHandler,&msl_info,(char *) NULL,0,
     msl_image->filename);

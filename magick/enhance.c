@@ -1411,6 +1411,8 @@ MagickExport MagickPassFail NormalizeImage(Image *image)
           break;
       }
     }
+  high.opacity=0;
+  low.opacity=0;
   if (image->matte)
     {
       (void) memset(&intensity,0,sizeof(DoublePixelPacket));
