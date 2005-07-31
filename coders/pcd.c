@@ -93,9 +93,6 @@ static unsigned int
 %
 %
 */
-static unsigned int DecodeImage(Image *image,unsigned char *luma,
-  unsigned char *chroma1,unsigned char *chroma2)
-{
 #define IsSync  ((sum & 0xffffff00) == 0xfffffe00)
 #define DecodeImageText  "  PCD decode image...  "
 #define PCDGetBits(n) \
@@ -116,7 +113,9 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   if (EOFBlob(image)) \
     break; \
 }
-
+static unsigned int DecodeImage(Image *image,unsigned char *luma,
+  unsigned char *chroma1,unsigned char *chroma2)
+{
   typedef struct PCDTable
   {
     unsigned int
@@ -724,11 +723,13 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->colorspace=sRGBColorspace;
   else
     image->colorspace=YCCColorspace;
+  /* FIXME: YCCColorspace transform is broken! 1.1 is ok! */
   (void) TransformColorspace(image,RGBColorspace);
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
+
   if ((rotate == 1) || (rotate == 3))
     {
       double
@@ -748,6 +749,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image=rotated_image;
         }
     }
+
   /*
     Set CCIR 709 primaries with a D65 white point.
   */

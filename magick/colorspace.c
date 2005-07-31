@@ -1142,13 +1142,13 @@ static void RGBTransformPacket(PixelPacket *pixel,
   blue_p = &blue_map[ScaleQuantumToMap(pixel->blue)];
 
   red=(red_p->red+green_p->red+blue_p->red);
-  if(red < 0) red = 0;
+  if (red < 0) red = 0;
 
   green=(red_p->green+green_p->green+blue_p->green);
-  if(green < 0) green = 0;
+  if (green < 0) green = 0;
 
   blue=(red_p->blue+green_p->blue+blue_p->blue);
-  if(blue < 0) blue = 0;
+  if (blue < 0) blue = 0;
 
   if ( rgb_map != 0 )
     {
@@ -1161,9 +1161,9 @@ static void RGBTransformPacket(PixelPacket *pixel,
       green_index = ScaleMapToChar(green);
       blue_index = ScaleMapToChar(blue);
 
-      if(red_index > rgb_map_max_index) red_index = rgb_map_max_index;
-      if(green_index > rgb_map_max_index) green_index = rgb_map_max_index;
-      if(blue_index > rgb_map_max_index) blue_index = rgb_map_max_index;
+      if (red_index > rgb_map_max_index) red_index = rgb_map_max_index;
+      if (green_index > rgb_map_max_index) green_index = rgb_map_max_index;
+      if (blue_index > rgb_map_max_index) blue_index = rgb_map_max_index;
 
       pixel->red=ScaleCharToQuantum(rgb_map[red_index]);
       pixel->green=ScaleCharToQuantum(rgb_map[green_index]);
@@ -1171,9 +1171,9 @@ static void RGBTransformPacket(PixelPacket *pixel,
     }
   else
     {
-      if(red > (int) MaxMap) red=(int) MaxMap;
-      if(green > (int) MaxMap) green=(int) MaxMap;
-      if(blue > (int) MaxMap) blue=(int) MaxMap;
+      if ((unsigned int) red > MaxMap) red=MaxMap;
+      if ((unsigned int) green > MaxMap) green=MaxMap;
+      if ((unsigned int) blue > MaxMap) blue=MaxMap;
 
       pixel->red=ScaleMapToQuantum((unsigned int) red);
       pixel->green=ScaleMapToQuantum((unsigned int) green);

@@ -1,3 +1,8 @@
+2005-07-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c: Support the little-endian 10-bit packed format as
+	used by the Library Of Congress.
+
 2005-07-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jp2.c: Change how Jasper is intialized.  Hopefully

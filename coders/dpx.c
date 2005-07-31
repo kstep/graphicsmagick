@@ -1061,6 +1061,27 @@ typedef union _PackedU32Word
 #define ScaleFromVideo(sample,ref_low,upscale) \
   ((unsigned int) (sample > ref_low ? (sample - ref_low)*upscale+0.5 : 0))
 
+
+/*
+  WordStreamLSBRead support
+*/
+typedef struct _ReadWordU32State
+{
+  const unsigned char *words;
+} ReadWordU32State;
+
+static unsigned long ReadWordU32 (void *state)
+{
+  magick_uint32_t value;
+  ReadWordU32State *read_state=(ReadWordU32State *) state;
+  value =  *read_state->words++ << 24;
+  value |= *read_state->words++ << 16;
+  value |= *read_state->words++ << 8;
+  value |= *read_state->words++;
+  return value;
+}
+
+
 static void ReadRowSamples(const unsigned char *scanline,
                            const unsigned int samples_per_row,
                            const unsigned int bits_per_sample,
@@ -1287,8 +1308,9 @@ static void ReadRowSamples(const unsigned char *scanline,
     }
 
   /*
-    Default implementation handles any bit depth (in big-endian order).
+    Packed data.
   */
+  if (endian_type == MSBEndian)
   {
     BitStreamReadHandle
       bit_stream;
@@ -1298,6 +1320,19 @@ static void ReadRowSamples(const unsigned char *scanline,
     for (i=samples_per_row; i > 0; i--)
       *sp++=BitStreamMSBRead(&bit_stream,bits_per_sample);
   }
+  else if (endian_type == LSBEndian)
+    {
+      ReadWordU32State
+        read_state;
+      
+      WordStreamReadHandle
+        read_stream;
+      
+      read_state.words=scanline;
+      WordStreamInitializeRead(&read_stream,ReadWordU32, (void *) &read_state);
+      for (i=samples_per_row; i > 0; i--)
+        *sp++=WordStreamLSBRead(&read_stream,bits_per_sample);
+    }
 }
 static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -2319,6 +2354,25 @@ static void GenerateDPXTimeStamp(char *timestamp, size_t maxsize)
 }
 #endif
 
+
+/*
+  WordStreamLSBWrite support
+*/
+typedef struct _WriteWordU32State
+{
+  unsigned char *words;
+} WriteWordU32State;
+
+static size_t WriteWordU32 (void *state, const unsigned long value)
+{
+  WriteWordU32State *write_state=(WriteWordU32State *) state;
+  *write_state->words++ = (unsigned char) ((value >> 24) & 0xff);
+  *write_state->words++ = (unsigned char) ((value >> 16) & 0xff);
+  *write_state->words++ = (unsigned char) ((value >> 8) & 0xff);
+  *write_state->words++ = (unsigned char) (value & 0xff);
+  return sizeof(magick_uint32_t);
+}
+
 static void WriteRowSamples(const sample_t *samples,
                             const unsigned int samples_per_row,
                             const unsigned int bits_per_sample,
@@ -2545,10 +2599,27 @@ static void WriteRowSamples(const sample_t *samples,
     }
 
   /*
-    Default implementation handles any bit depth (in big-endian order).
+    Packed data.
   */
-  for (i=samples_per_row; i > 0; i--)
-    BitStreamMSBWrite(&bit_stream,bits_per_sample,*samples++);
+  if (endian_type == MSBEndian)
+  {
+    for (i=samples_per_row; i > 0; i--)
+      BitStreamMSBWrite(&bit_stream,bits_per_sample,*samples++);
+  }
+  else if (endian_type == LSBEndian)
+    {
+      WriteWordU32State
+        write_state;
+      
+      WordStreamWriteHandle
+        write_stream;
+
+      write_state.words=scanline;
+      WordStreamInitializeWrite(&write_stream,WriteWordU32, (void *) &write_state);
+
+      for (i=samples_per_row; i > 0; i--)
+        WordStreamLSBWrite(&write_stream,bits_per_sample,*samples++);
+    }
 }
 
 #define AttributeToU8(image_info,image,key,member) \
