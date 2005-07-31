@@ -1,33 +1,34 @@
-Microsoft Developer Studio Project File, Format Version 6.00 for libpng.
+Microsoft Developer Studio Project File, Format Version 7.10 for libpng.
 
-Copyright (C) 2000-2004 Simon-Pierre Cadieux.
-Copyright (C) 2004 Cosmin Truta.
+Copyright (C) 2004 Simon-Pierre Cadieux.
 For conditions of distribution and use, see copyright notice in png.h
-
 
 Assumptions:
 * The libpng source files are in ..\..
 * The zlib source files are in ..\..\..\zlib
-* The zlib project files are in ..\..\..\zlib\projects\visualc6
-
+* The zlib project file is in . /* Warning: This is until the zlib project
+  files get intergrated into the next zlib release. The final zlib project
+  directory will then be ..\..\..\zlib\projects\visualc71. */
 
 To use:
 
-1) On the main menu, select "File | Open Workspace".
-   Open "libpng.dsw".
+1) On the main menu, select "File | Open Solution".
+   Open "libpng.sln".
 
-2) Select "Build | Set Active Configuration".
+2) Display the Solution Explorer view (Ctrl+Alt+L)
+
+3) Set one of the project as the StartUp project. If you just want to build the
+   binaries set "libpng" as the startup project (Select "libpng" tree view
+   item + Project | Set as StartUp project). If you want to build and test the
+   binaries set it to "pngtest" (Select "pngtest" tree view item +
+   Project | Set as StartUp project)
+
+4) Select "Build | Configuration Manager...".
    Choose the configuration you wish to build.
-   (Choose libpng or pngtest; zlib will be built automatically.)
 
-3) Select "Build | Clean".
+5) Select "Build | Clean Solution".
 
-4) Select "Build | Build ... (F7)".  Ignore warning messages about
-   not being able to find certain include files (e.g. alloc.h).
-
-5) If you built the sample program (pngtest),
-   select "Build | Execute ... (Ctrl+F5)".
-
+6) Select "Build | Build Solution (Ctrl-Shift-B)"
 
 This project builds the libpng binaries as follows:
 
@@ -41,7 +42,6 @@ This project builds the libpng binaries as follows:
 * Win32_LIB_ASM_Release\libpng.lib    static build using ASM code
 * Win32_LIB_ASM_Debug\libpngd.lib     static build using ASM (debug version)
 
-
 Notes:
 
 If you change anything in the source files, or select different compiler
@@ -51,7 +51,7 @@ PNG_USER_PRIVATEBUILD and PNG_USER_DLLFNAME_POSTFIX according to the
 instructions provided in "pngconf.h".
 
 All DLLs built by this project use the Microsoft dynamic C runtime library
-MSVCRT.DLL (MSVCRTD.DLL for debug versions).  If you distribute any of the
-above mentioned libraries you should also include this DLL in your package.
-For a list of files that are redistributable in Visual C++ 6.0, see
-Common\Redist\Redist.txt on Disc 1 of the Visual C++ 6.0 product CDs.
+MSVCR71.DLL (MSVCR71D.DLL for debug versions).  If you distribute any of the
+above mentioned libraries you may have to include this DLL in your package.
+For a list of files that are redistributable in Visual Studio see
+$(VCINSTALLDIR)\redist.txt.
