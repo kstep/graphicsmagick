@@ -1,3 +1,9 @@
+2005-07-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* png: Updated libpng to version 1.2.8.
+	* coders/ept.c (WriteEPTImage): MSVC does not support a
+	'long long' type.
+
 2005-07-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jp2.c: Change how Jasper is intialized.  Hopefully
