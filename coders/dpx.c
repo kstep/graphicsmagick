@@ -57,6 +57,48 @@
 %   Storage:
 %    Bits per sample of 32 and 64 (floating point).
 %    Depth.
+%
+% Notes about byte order:
+%
+%    The DPX specification doesn't say anything about how endian byte
+%    order should influence the image pixels.  It is not even clear
+%    if the pixel storage should be different at all.  Due to the lack
+%    of a standard, GraphicsMagick is currently using the following
+%    endian rules.  These rules may change at any time:
+%
+%      o 8 bit format is always written in ascending order so endian rules
+%        do not apply.
+%
+%      o Packed 10 and 12-bit formats use "natural" (big-endian) byte order.
+%
+%      o 12-bit filled format, and 16 bit format are based on 16-bit words,
+%        so 16-bit words are byte-swapped to native order.
+%
+%      o 10-bit filled format is based on a 32-bit word, so 32-bit words
+%        are byte-swapped to native order.
+%
+%    The default format is big-endian.
+%
+% Additional notes:
+%
+%    I have received some YCbCr and 16-bit RGB files in which channels
+%    are interchanged.  In the case of YCbCr, the Cb and Cr channels
+%    were swapped. In the case of RGB, the blue and red channels were
+%    swapped.  GraphicsMagick attempts to adhere to the standard so such
+%    files will read incorrectly.
+%
+%    It is quite easy to interpret the standard incorrectly and assume
+%    that the data packing diagrams represent a big-endian word loaded
+%    into memory. In fact, the specification tends to suggest that even
+%    though the text does not state that. However, with the exception of
+%    10-bit components in a 32-bit word, this is not the case.
+%
+%    The DPX specification does not specify row alignment on a 32-bit
+%    word boundary, but unofficial documentation (e.g. the O'Reilly
+%    GFF book) and "lore" suggest it.  The GraphicsMagick implementation
+%    does pad rows to the next 32-bit boundary.  It is not clear if the
+%    End-of-line padding field should reflect padding to a 32-bit boundary.
+%    
 */
 
 /*
@@ -584,28 +626,32 @@ static size_t DPXRowOctets(unsigned int row_samples,
                            ImageComponentPackingMethod packing_method)
 {
   size_t
-    row_octets;
+    row_octets = 0;
 
-  row_octets=0;
+  magick_int64_t
+    row_bits = 0;
+
   switch(bits_per_sample)
     {
     case 1:
-      /* One bit samples are packed into 32-bit words but filled to
-         next 32-bit word boundary at end of each row. */
-      row_octets=(((magick_int64_t) row_samples*bits_per_sample+31)/32)*sizeof(U32);
+    case 8:
+    case 16:
+    case 32:
+    case 64:
+      /* C.1 and C.6.  Naturally packed formats. */
+      row_bits=(magick_int64_t) row_samples*bits_per_sample;
       break;
     case 10:
       if ((packing_method == PackingMethodWordsFillLSB) ||
           (packing_method == PackingMethodWordsFillMSB))
         {
           /* C.3 Three 10-bit samples per 32-bit word */
-          row_octets=((row_samples+2)/3)*sizeof(U32);
+          row_bits=((magick_int64_t) (row_samples+2)/3)*sizeof(U32)*8;
         }
       else
         {
-          /* C.2 Packed 10-bit samples but filled to next 32-bit word
-         boundary at end of each row. */
-          row_octets=(((magick_int64_t) row_samples*bits_per_sample+31)/32)*sizeof(U32);
+          /* C.2 Packed 10-bit samples. */
+          row_bits=(magick_int64_t) row_samples*bits_per_sample;
         }
       break;
     case 12:
@@ -613,25 +659,22 @@ static size_t DPXRowOctets(unsigned int row_samples,
           (packing_method == PackingMethodWordsFillMSB))
         {
           /* C.5: One 12-bit sample per 16-bit word */
-          row_octets=row_samples*sizeof(U16);
+          row_bits=(magick_int64_t) row_samples*sizeof(U16)*8;
         }
       else
         {
-          /* C.4: Packed 12-bit samples, but filled to next 32-bit
-             word boundary at end of each row. */
-          row_octets=(((magick_int64_t) row_samples*bits_per_sample+31)/32)*
-            sizeof(U32);
+          /* C.4: Packed 12-bit samples. */
+          row_bits=(magick_int64_t) row_samples*bits_per_sample;
         }
       break;
-    case 8:
-    case 16:
-    case 32:
-    case 64:
-      /* C.1 & C.6: 8, 16, 32, and 64-bit samples do not require any
-         padding or filling at the end of a row. */
-      row_octets=row_samples*(bits_per_sample/8);
-      break;
     }
+  if (row_bits != 0)
+    {
+      /* Compute row octets filled to next 32-bit word boundary at end
+         of row. */
+      row_octets=((row_bits+31)/32)*sizeof(U32);
+    }
+
   /* printf("row_octets=%u\n",row_octets); */
   return row_octets;
 }
@@ -1117,7 +1160,7 @@ static void ReadRowSamples(const unsigned char *scanline,
             packed_u32;
           
           register unsigned int
-            datum=2;
+            datum;
           
           unsigned int
             shifts[3] = { 0, 0, 0 };
@@ -1143,6 +1186,26 @@ static void ReadRowSamples(const unsigned char *scanline,
 
           if (endian_type == MSBEndian)
             {
+
+#if 1
+              /* Standard specified datum order */
+              for (i=samples_per_row/3; i > 0; --i)
+                {
+                  datum=0;
+                  MSBOctetsToPackedU32Word(scanline,packed_u32);
+                  *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
+                  *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
+                  *sp++=(packed_u32.word >> shifts[datum]) & 0x3FF;
+
+                }
+              if ((samples_per_row % 3))
+                {
+                  datum=0;
+                  MSBOctetsToPackedU32Word(scanline,packed_u32);
+                  for (i=(samples_per_row % 3); i > 0; --i)
+                    *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
+                }
+#else
               for (i=samples_per_row/3; i > 0; --i)
                 {
                   datum=2;
@@ -1158,9 +1221,30 @@ static void ReadRowSamples(const unsigned char *scanline,
                   for (i=(samples_per_row % 3); i > 0; --i)
                     *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
                 }
+#endif
+
             }
           else if (endian_type == LSBEndian)
             {
+#if 1
+              /* Standard specified datum order */
+              for (i=samples_per_row/3; i > 0; --i)
+                {
+                  datum=0;
+                  LSBOctetsToPackedU32Word(scanline,packed_u32);
+                  *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
+                  *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
+                  *sp++=(packed_u32.word >> shifts[datum]) & 0x3FF;
+                }
+              if ((samples_per_row % 3))
+                {
+                  datum=0;
+                  LSBOctetsToPackedU32Word(scanline,packed_u32);
+                  for (i=(samples_per_row % 3); i > 0; --i)
+                    *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
+                }
+#else
+
               for (i=samples_per_row/3; i > 0; --i)
                 {
                   datum=2;
@@ -1176,6 +1260,7 @@ static void ReadRowSamples(const unsigned char *scanline,
                   for (i=(samples_per_row % 3); i > 0; --i)
                     *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
                 }
+#endif
             }
           return;
         }
@@ -1310,18 +1395,20 @@ static void ReadRowSamples(const unsigned char *scanline,
   /*
     Packed data.
   */
-  if (endian_type == MSBEndian)
-  {
-    BitStreamReadHandle
-      bit_stream;
+  if ((endian_type == MSBEndian) || (endian_type == LSBEndian))
+    {
+      BitStreamReadHandle
+        bit_stream;
 
-    BitStreamInitializeRead(&bit_stream,scanline);
+      BitStreamInitializeRead(&bit_stream,scanline);
 
-    for (i=samples_per_row; i > 0; i--)
-      *sp++=BitStreamMSBRead(&bit_stream,bits_per_sample);
-  }
+      for (i=samples_per_row; i > 0; i--)
+        *sp++=BitStreamMSBRead(&bit_stream,bits_per_sample);
+    }
+#if 0
   else if (endian_type == LSBEndian)
     {
+      /* Word-based packing used by Library of Congress */
       ReadWordU32State
         read_state;
       
@@ -1333,6 +1420,7 @@ static void ReadRowSamples(const unsigned char *scanline,
       for (i=samples_per_row; i > 0; i--)
         *sp++=WordStreamLSBRead(&read_stream,bits_per_sample);
     }
+#endif
 }
 static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -1454,7 +1542,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   StringToAttribute(image,"comment",dpx_file_info.project_name);
   StringToAttribute(image,"copyright",dpx_file_info.copyright);
   StringToAttribute(image,"document",dpx_file_info.image_filename);
-  StringToAttribute(image,"timestamp",dpx_file_info.creation_datetime);
+  /* StringToAttribute(image,"timestamp",dpx_file_info.creation_datetime); */
 
   StringToAttribute(image,"DPX:file.version",dpx_file_info.header_format_version);
   StringToAttribute(image,"DPX:file.filename",dpx_file_info.image_filename);
@@ -1933,9 +2021,16 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case ImageElementRGB:
                   for (x=image->columns; x > 0; x--)
                     {
+#if 1
+                      /* BGR order (spec says BGR) */
+                      q->blue=*samples_itr++;
+                      q->green=*samples_itr++;
+                      q->red=*samples_itr++;
+#else
                       q->red=*samples_itr++;
                       q->green=*samples_itr++;
                       q->blue=*samples_itr++;
+#endif
                       q->opacity=OpaqueOpacity;
                       q++;
                     }
@@ -1943,9 +2038,16 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case ImageElementRGBA:
                   for (x=image->columns; x > 0; x--)
                     {
+#if 1
+                      /* BGR order (spec says BGR) */
+                      q->blue=*samples_itr++;
+                      q->green=*samples_itr++;
+                      q->red=*samples_itr++;
+#else
                       q->red=*samples_itr++;
                       q->green=*samples_itr++;
                       q->blue=*samples_itr++;
+#endif
                       q->opacity=MaxRGB-*samples_itr++;
                       q++;
                     }
@@ -1953,10 +2055,11 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case ImageElementABGR:
                   for (x=image->columns; x > 0; x--)
                     {
+                      /* ARGB order */
                       q->opacity=MaxRGB-*samples_itr++;
-                      q->blue=*samples_itr++;
-                      q->green=*samples_itr++;
                       q->red=*samples_itr++;
+                      q->green=*samples_itr++;
+                      q->blue=*samples_itr++;
                       q++;
                     }
                   break;
@@ -2413,7 +2516,7 @@ static void WriteRowSamples(const sample_t *samples,
             packed_u32;
           
           register unsigned int
-            datum=2;
+            datum;
           
           unsigned int
             shifts[3] = { 0, 0, 0 };
@@ -2439,6 +2542,26 @@ static void WriteRowSamples(const sample_t *samples,
 
           if (endian_type == MSBEndian)
             {
+#if 1
+              /* Standard specified datum order */
+              for (i=(samples_per_row/3); i > 0; --i)
+                {
+                  datum=0;
+                  packed_u32.word=0;
+                  packed_u32.word |= (*samples++ << shifts[datum++]);
+                  packed_u32.word |= (*samples++ << shifts[datum++]);
+                  packed_u32.word |= (*samples++ << shifts[datum]);
+                  MSBPackedU32WordToOctets(packed_u32,scanline);
+                }
+              if ((samples_per_row % 3))
+                {
+                  datum=0;
+                  packed_u32.word=0;
+                  for (i=(samples_per_row % 3); i > 0; --i)
+                    packed_u32.word |= (*samples++ << shifts[datum++]);
+                  MSBPackedU32WordToOctets(packed_u32,scanline);
+                }
+#else
               for (i=(samples_per_row/3); i > 0; --i)
                 {
                   datum=2;
@@ -2456,9 +2579,30 @@ static void WriteRowSamples(const sample_t *samples,
                     packed_u32.word |= (*samples++ << shifts[datum--]);
                   MSBPackedU32WordToOctets(packed_u32,scanline);
                 }
+#endif
             }
           else if (endian_type == LSBEndian)
             {
+#if 1
+              /* Standard specified datum order */
+              for (i=(samples_per_row/3); i > 0; --i)
+                {
+                  datum=0;
+                  packed_u32.word=0;
+                  packed_u32.word |= (*samples++ << shifts[datum++]);
+                  packed_u32.word |= (*samples++ << shifts[datum++]);
+                  packed_u32.word |= (*samples++ << shifts[datum]);
+                  LSBPackedU32WordToOctets(packed_u32,scanline);
+                }
+              if ((samples_per_row % 3))
+                {
+                  datum=0;
+                  packed_u32.word=0;
+                  for (i=(samples_per_row % 3); i > 0; --i)
+                    packed_u32.word |= (*samples++ << shifts[datum++]);
+                  LSBPackedU32WordToOctets(packed_u32,scanline);
+                }
+#else
               for (i=(samples_per_row/3); i > 0; --i)
                 {
                   datum=2;
@@ -2476,6 +2620,7 @@ static void WriteRowSamples(const sample_t *samples,
                     packed_u32.word |= (*samples++ << shifts[datum--]);
                   LSBPackedU32WordToOctets(packed_u32,scanline);
                 }
+#endif
             }
           return;
         }
@@ -2601,13 +2746,15 @@ static void WriteRowSamples(const sample_t *samples,
   /*
     Packed data.
   */
-  if (endian_type == MSBEndian)
+  if ((endian_type == MSBEndian) || (endian_type == LSBEndian))
   {
     for (i=samples_per_row; i > 0; i--)
       BitStreamMSBWrite(&bit_stream,bits_per_sample,*samples++);
   }
+#if 0
   else if (endian_type == LSBEndian)
     {
+      /* Word-based packing used by Library of Congress */
       WriteWordU32State
         write_state;
       
@@ -2620,6 +2767,7 @@ static void WriteRowSamples(const sample_t *samples,
       for (i=samples_per_row; i > 0; i--)
         WordStreamLSBWrite(&write_stream,bits_per_sample,*samples++);
     }
+#endif
 }
 
 #define AttributeToU8(image_info,image,key,member) \
@@ -3510,18 +3658,32 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             case ImageElementRGB:
               for (x=image->columns; x > 0; x--)
                 {
+#if 1
+                  /* BGR */
+                  *samples_itr++=p->blue;
+                  *samples_itr++=p->green;
+                  *samples_itr++=p->red;
+#else
                   *samples_itr++=p->red;
                   *samples_itr++=p->green;
                   *samples_itr++=p->blue;
+#endif
                   p++;
                 }
               break;
             case ImageElementRGBA:
               for (x=image->columns; x > 0; x--)
                 {
+#if 1
+                  /* BGRA */
+                  *samples_itr++=p->blue;
+                  *samples_itr++=p->green;
+                  *samples_itr++=p->red;
+#else
                   *samples_itr++=p->red;
                   *samples_itr++=p->green;
                   *samples_itr++=p->blue;
+#endif
                   *samples_itr++=MaxRGB-p->opacity;
                   p++;
                 }
