@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2005-08-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (WriteDPXImage): 10 and 12-bit packed data was not
+        according to DPX specification.  Added dpx:pixel-endian={lsb|msb}
+        to allow the user to specify the endian order of the pixel data in
+        case it does (or should not) not match the headers.  Library Of
+        Congress format is 10-bit packed data in big-endian format, but is
+        marked as little-endian.
+
+</UL>
+<p>
 2005-08-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

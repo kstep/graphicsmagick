@@ -1260,6 +1260,12 @@ sample sizes of 10 or 12 bits. If samples are not packed, the DPX
 standard recommends type A padding. Many DPX readers demand a sample size
 of 10 bits with type A padding.
 </dd>
+<dt>dpx:pixel-endian={lsb|msb}</dt>
+<dd>Allows the user to specify the endian order of the pixels when
+reading or writing the DPX files. Sometimes this is useful if the file is
+(or must be) written incorrectly so that the file header and the pixels
+use different endianness.
+</dd>
 <dt>jp2:rate=&lt;value&gt;</dt>
 <dd>Specify the compression factor to use while writing JPEG-2000
 files. The compression factor is the reciprocal of the compression

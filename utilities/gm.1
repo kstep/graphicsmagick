@@ -1017,6 +1017,17 @@ of 10 bits with type A padding.
 
 .in 15
 .in 15
+.B "dpx:pixel-endian={lsb|msb}"
+.in 20
+ \fR
+.in 20
+Allows the user to specify the endian order of the pixels when
+reading or writing the DPX files. Sometimes this is useful if the file is
+(or must be) written incorrectly so that the file header and the pixels
+use different endianness.
+
+.in 15
+.in 15
 .B "jp2:rate=<value>"
 .in 20
  \fR
