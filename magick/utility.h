@@ -126,8 +126,7 @@ extern MagickExport void
   LocaleUpper(char *),
   ReacquireMemory(void **,const size_t),
   Strip(char *),
-  SetGeometry(const Image *,RectangleInfo *),
-  TemporaryFilename(char *);
+  SetGeometry(const Image *,RectangleInfo *);
 
 extern MagickExport void
   FormatString(char *,const char *,...) __attribute__((format (printf,2,3)));

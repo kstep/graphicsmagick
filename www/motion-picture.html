@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20050724;23062200">
+	<META NAME="CHANGED" CONTENT="20050814;23134000">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<STYLE>
@@ -19,11 +19,11 @@
 		P.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		PRE { color: #000000 }
 		DD { color: #000000 }
-		DD.western { font-size: 10pt }
+		DD.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 10pt }
 		H3 { color: #000000 }
-		H3.western { font-size: 12pt }
+		H3.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		DT { color: #000000 }
-		DT.western { font-size: 10pt }
+		DT.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 10pt }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
@@ -153,10 +153,10 @@ example, if a studio has a computing cluster of several hundred
 Linux, SGI IRIX, FreeBSD, or Mac OS X systems, then GraphicsMagick
 may be installed across all systems and used for any desired purpose.</FONT></P>
 <P CLASS="western"><FONT SIZE=2>GraphicsMagick's DPX file format
-support is rather comprehensive. It goes beyond the DPX format
-support in other applications by striving to implement the complete
-DPX specification rather than just a few commonly used sub-formats.
-The capabilities of GraphicsMagick's DPX support are as follows:</FONT></P>
+support is very comprehensive. It goes beyond the DPX format support
+in other applications by striving to implement the complete DPX
+specification rather than just a few commonly used sub-formats. The
+capabilities of GraphicsMagick's DPX support are as follows:</FONT></P>
 <P CLASS="western"><FONT SIZE=2><B>Supported DPX features:</B></FONT></P>
 <UL>
 	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">Anything which
@@ -174,9 +174,9 @@ The capabilities of GraphicsMagick's DPX support are as follows:</FONT></P>
 	(default density range = 2.048)</P>
 	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">Grayscale
 	(Luma)</P>
-	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">YCbCr (4:4:4
-	and 4:2:2). Please note that below-black and above-white values are
-	clipped.</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">Rec. 601 and
+	Rec. 709 YCbCr (4:4:4 and 4:2:2). Below-black and above-white values
+	are clipped.</P>
 </UL>
 <P CLASS="western"><FONT SIZE=2><B>Storage</B>:</FONT></P>
 <UL>
@@ -196,12 +196,18 @@ The capabilities of GraphicsMagick's DPX support are as follows:</FONT></P>
 </UL>
 <P CLASS="western"><FONT SIZE=2><B>Yet to be supported:</B></FONT></P>
 <UL>
-	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">Obscure video
-	colorspaces like CbCR and composite video.</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">Composite
+	video.</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">Luma for a
+	grayscale image is currently full-range &ldquo;linear&rdquo;. A
+	means should be provided to select video levels.</P>
 	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">Floating point
 	formats (32 and 64 bits)</P>
 	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">Depth channel
 	(not supportable within GraphicsMagick).</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">A &ldquo;Rec.
+	709&rdquo; RGB working space for working with video files without
+	clipping below-black and above-white.</P>
 </UL>
 <P CLASS="western"><FONT SIZE=2>The software is written efficiently
 so the performance when reading and writing files is limited by the
@@ -258,8 +264,13 @@ dealing with DPX files.</P>
 	that RGB is converted to a gray image using Rec601 Luma. Rec709Luma
 	requests that RGB is converted to a gray image using Rec709Luma.
 	Rec601YCbCr requests that the image is saved as YCbCr according to
-	Rec601 (SDTV) specifications.  Rec709CbCr requests that the image is
+	Rec601 (SDTV) specifications. Rec709CbCr requests that the image is
 	saved as YCbCr according to Rec709 (HDTV) specifications.</DD><DT CLASS="western">
+	-endian {lsb|msb}</DT><DD CLASS="western">
+	Specifies the endian order to use when writing the DPX file.
+	GraphicsMagick writes big-endian DPX files by default since they are
+	the most portable. Other implementations may use the native order of
+	the host CPU (e.g. little-endian when using an Intel 'x86 CPU).</DD><DT CLASS="western">
 	-depth &lt;value&gt;</DT><DD CLASS="western">
 	Specifies the number of bits to preserve in a color sample. By
 	default the output file is written with the same number of bits as
@@ -289,8 +300,31 @@ dealing with DPX files.</P>
 	of 10 or 12 bits. If samples are not packed, the DPX standard
 	recommends type A padding. Many DPX readers demand a sample size of
 	10 bits with type A padding.</DD><DT CLASS="western">
-	-sampling-factor 2x1</DT><DD CLASS="western">
-	Select 4:2:2 subsampling when saving an image in YCbCr format.</DD></DL>
+	-define dpx:pixel-endian={lsb|msb}</DT><DD CLASS="western">
+	DPX pixels should use the endian order that the DPX header
+	specifies. Sometimes there is a mis-match and the pixels use a
+	different endian order than the file header specifies. For example,
+	the file header may specify little endian, but the pixels are in
+	big-endian order. To work around that use -define
+	dpx-pixel-endian=msb when reading the file. Likewise, this option
+	may be used to intentionally write the pixels using a different
+	order than the header. Files obtained from the <A HREF="http://www.digitalpreservation.gov/" TARGET="_top">Library
+	Of Congress</A> use big-endian 10-bit packed pixels in a file marked
+	as little-endian so this option must be used to read such files
+	correctly.</DD><DT CLASS="western">
+	-interlace plane</DT><DD CLASS="western">
+	By default, samples are stored contiguously in a single element when
+	possible. Specifying '-interlace plane' causes each sample type
+	(e.g. 'red') to be stored in its own image element. Planar storage
+	is fully supported for grayscale (with alpha) and RGB.  For YCbCr,
+	chroma must be 4:2:2 subsampled in order to use planar storage.
+	While planar storage offers a number of benefits, it seems that very
+	few DPX-supporting applications support it.</DD><DT CLASS="western">
+	-sampling-factor 2x1</DT><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	Select 4:2:2 subsampling when saving an image in YCbCr format.
+	Subsampling is handled via a general-purpose image resize algorithm
+	rather than a dedicated filter so subsampling may be slow (but
+	good).</DD></DL>
 <H3 CLASS="western">
 DPX Attributes</H3>
 <P CLASS="western">GraphicsMagick provides almost full access to DPX

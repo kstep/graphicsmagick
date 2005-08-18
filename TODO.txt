@@ -25,6 +25,9 @@ For 1.2 Branch
   o Fix PerlMagick BLOB reading (disable header magic checking if already
     specified).
 
+  o Implement DrawableFillPattern and DrawableStrokePattern drawable objects
+    in order to allow setting the fill and stroke patterns.
+
   o Update to libtool 2.0 (partially done in sandbox).
 
   o Re-write metadata handling to use accessor functions rather

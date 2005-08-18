@@ -119,7 +119,7 @@ extern MagickExport Image
   *ReadInlineImage(const ImageInfo *image_info,const char *content,
      ExceptionInfo *exception);
 
-MagickExport MagickPassFail
+extern MagickExport MagickPassFail
   DispatchImage(const Image *image,const long x_offset,const long y_offset,
     const unsigned long columns,const unsigned long rows,const char *map,
     const StorageType type,void *pixels,ExceptionInfo *exception),

@@ -27,7 +27,7 @@ extern "C" {
   magick_uint64_t --                          0 to 18,446,744,073,709,551,615
 */
 
-#if defined(WIN32) && !defined(__MINGW32__)
+#if defined(WIN32) && !defined(__MINGW32__) || defined (_CH_)
 
   /* The following typedefs are used for WIN32 */
   typedef signed char   magick_int8_t;
@@ -39,9 +39,14 @@ extern "C" {
   typedef signed int  magick_int32_t;
   typedef unsigned int magick_uint32_t;
 
-  /* Maybe we need to do something different for __BORLANDC__ here? */
+#  if defined(_CH_)
+#  include <stdint.h>
+  typedef int64_t  magick_int64_t;
+  typedef uint64_t magick_uint64_t;
+#  else
   typedef signed __int64  magick_int64_t;
   typedef unsigned __int64 magick_uint64_t;
+#  endif
 
 #else
 

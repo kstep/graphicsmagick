@@ -1756,7 +1756,8 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBLong(image,image->rows);
   (void) WriteBlobMSBLong(image,image->columns);
   (void) WriteBlobMSBShort(image,
-                           (image->storage_class == PseudoClass ? 8 : Min(image->depth,16)));
+                           (image->storage_class == PseudoClass ? 8 :
+                            image->depth > 8 ? 16 : 8));
   if (((image_info->colorspace != UndefinedColorspace) ||
        (image->colorspace != CMYKColorspace)) &&
       (image_info->colorspace != CMYKColorspace))

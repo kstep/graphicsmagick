@@ -115,12 +115,6 @@ extern "C" {
 # define MagickGlobal
 #endif
 
-#if defined(__cplusplus) || defined(c_plusplus)
-# define storage_class  c_class
-#else
-# define storage_class  class
-#endif
-
 /*
   Enable use of numeric message IDs and a translation table in order
   to support multiple locales.

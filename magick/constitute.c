@@ -422,7 +422,15 @@ MagickExport Image *ConstituteImage(const unsigned long width,
 	  q->red=0;
 	  q->green=0;
 	  q->blue=0;
-	  q->opacity=OpaqueOpacity;
+          if (image->colorspace == CMYKColorspace)
+            {
+              q->opacity=0;
+              *indexes=OpaqueOpacity;
+            }
+          else
+            {
+              q->opacity=OpaqueOpacity;
+            }
           for (i=0; i < (long) length; i++)
             {
               /*
@@ -4512,6 +4520,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q->blue=unsigned_value;
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->opacity=unsigned_value;
+                        *indexes++=OpaqueOpacity;
                         q++;
                       }
                   }
@@ -4528,6 +4537,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q->blue=unsigned_value*unsigned_scale;
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->opacity=unsigned_value*unsigned_scale;
+                        *indexes++=OpaqueOpacity;
                         q++;
                       }
                   }
@@ -4544,6 +4554,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q->blue=unsigned_value/unsigned_scale;
                         ImportModulo8Quantum(unsigned_value,quantum_size,p);
                         q->opacity=unsigned_value/unsigned_scale;
+                        *indexes++=OpaqueOpacity;
                         q++;
                       }
                   }
@@ -4566,6 +4577,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q->green=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                         q->blue=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
                         q->opacity=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
+                        *indexes++=OpaqueOpacity;
                         q++;
                       }
                   }
@@ -4578,6 +4590,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q->green=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                         q->blue=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
                         q->opacity=BitStreamMSBRead(&stream,quantum_size)/unsigned_scale;
+                        *indexes++=OpaqueOpacity;
                         q++;
                       }
                   }
@@ -4607,6 +4620,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       float_value -= double_minvalue;
                       float_value *= double_scale;
                       q->opacity=RoundSignedToQuantum(float_value);
+                      *indexes++=OpaqueOpacity;
                       q++;
                     }
                 }
@@ -4631,6 +4645,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       double_value -= double_minvalue;
                       double_value *= double_scale;
                       q->opacity=RoundSignedToQuantum(double_value);
+                      *indexes++=OpaqueOpacity;
                       q++;
                     }
                 }

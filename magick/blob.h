@@ -92,11 +92,6 @@ extern MagickExport FILE
 extern MagickExport StreamHandler
   GetBlobStreamHandler(const Image *image);
 
-#if 0
-extern MagickExport StreamType
-  GetBlobStreamType(const Image *image);
-#endif
-
 extern MagickExport unsigned char
   *GetBlobStreamData(const Image *image);
 

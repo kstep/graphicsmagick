@@ -1385,38 +1385,6 @@ MagickExport StreamHandler GetBlobStreamHandler(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t B l o b S t r e a m T y p e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetBlobStreamType() returns the stream type for the image.
-%
-%  The format of the GetBlobStreamType method is:
-%
-%      StreamType GetBlobStreamType(const Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%
-*/
-#if 0
-MagickExport StreamType GetBlobStreamType(const Image *image)
-{
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
-  return(image->blob->type);
-}
-#endif
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t B l o b T e m p o r a r y                                           %
 %                                                                             %
 %                                                                             %
@@ -3437,7 +3405,8 @@ MagickExport int SyncBlob(Image *image)
   assert(image->blob->type != UndefinedStream);
   for (p=image; p->previous != (Image *) NULL; p=p->previous);
   for ( ; p->next != (Image *) NULL; p=p->next)
-    *p->blob=(*image->blob);
+    if (p->blob != image->blob)
+      *p->blob=(*image->blob);
   status=0;
   switch (image->blob->type)
   {

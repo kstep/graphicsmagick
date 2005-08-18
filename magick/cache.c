@@ -3099,6 +3099,12 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   if (nexus_info->staging == (PixelPacket *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToAllocateCacheInfo);
+#if 1
+  /*
+    Initialize region to zero to ensure consistent behavior.
+  */
+  memset(nexus_info->staging,0,nexus_info->length);
+#endif
   nexus_info->pixels=nexus_info->staging;
   nexus_info->indexes=(IndexPacket *) NULL;
   if ((cache_info->storage_class == PseudoClass) ||

@@ -549,9 +549,6 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  register IndexPacket
-    *indexes;
-
   register long
     x;
 
@@ -682,6 +679,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   pixels=MagickAllocateMemory(unsigned char *,pixels_size);
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+  memset(pixels,0,pixels_size);
   /*
     Convert MIFF to XWD raster pixels.
   */
@@ -690,11 +688,14 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
     q=pixels;
 
     if (image->storage_class == PseudoClass)
       {
+        register IndexPacket
+          *indexes;
+
+        indexes=GetIndexes(image);
         for (x=(long) image->columns; x > 0; x--)
           *q++=(unsigned char) *indexes++;
       }

@@ -91,7 +91,9 @@ typedef unsigned short Quantum;
 #define ScaleQuantumToIndex(value)   ((unsigned short) ((value)/65537UL))
 typedef unsigned int Quantum;
 #else
-# error "Specified value of QuantumDepth is not supported"
+#  ifndef _CH_
+#    error "Specified value of QuantumDepth is not supported"
+#  endif
 #endif
 
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \

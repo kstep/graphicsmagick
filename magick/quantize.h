@@ -55,7 +55,6 @@ extern MagickExport unsigned int
   MapImage(Image *,const Image *,const unsigned int),
   MapImages(Image *,const Image *,const unsigned int),
   OrderedDitherImage(Image *),
-  QuantizationError(Image *),
   QuantizeImage(const QuantizeInfo *,Image *),
   QuantizeImages(const QuantizeInfo *,Image *),
   SegmentImage(Image *,const ColorspaceType,const unsigned int,const double,

@@ -170,8 +170,16 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       if (!MagickMonitor(ThresholdImageText,y,image->rows,exception))
         break;
   }
-  threshold_image->is_monochrome=True;
-  threshold_image->is_grayscale=True;
+  if (y < (long) image->rows)
+    {
+      DestroyImage(threshold_image);
+      threshold_image=(Image *) NULL;
+    }
+  else
+    {
+      threshold_image->is_monochrome=True;
+      threshold_image->is_grayscale=True;
+    }
   return(threshold_image);
 }
 

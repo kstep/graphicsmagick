@@ -484,8 +484,11 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 q->red=ScaleShortToQuantum((*(p+0) << 8) | (*(p+1)));
                 q->green=ScaleShortToQuantum((*(p+2) << 8) | (*(p+3)));
                 q->blue=ScaleShortToQuantum((*(p+4) << 8) | (*(p+5)));
-                q->opacity=(Quantum)
-                  (MaxRGB-ScaleShortToQuantum((*(p+6) << 8) | (*(p+7))));
+                if (image->matte)
+                  q->opacity=(Quantum)
+                    (MaxRGB-ScaleShortToQuantum((*(p+6) << 8) | (*(p+7))));
+                else
+                  q->opacity=OpaqueOpacity;
                 p+=8;
                 q++;
               }
@@ -509,7 +512,10 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q->red=ScaleCharToQuantum(*p);
               q->green=ScaleCharToQuantum(*(p+1));
               q->blue=ScaleCharToQuantum(*(p+2));
-              q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(*(p+3)));
+              if (image->matte)
+                q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(*(p+3)));
+              else
+                q->opacity=OpaqueOpacity;
               p+=4;
               q++;
             }

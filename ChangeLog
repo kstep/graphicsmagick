@@ -1,3 +1,14 @@
+2005-08-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/colorspace.c: Added support for influencing Cineon Log
+	colorspace transformations via image attributes.	
+	Perform colorspace transformations in floating point rather than
+	integer in order to reduce the amount of noise added by
+	transform table quantization.
+	* coders/psd.c (WritePSDImage): Ensure that output image is 8 or
+	16-bits regardless of specific image depth.
+	* coders/dpx.c: Added support for planar YCbCr 4:2:2.
+
 2005-08-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (WriteDPXImage): 10 and 12-bit packed data was not

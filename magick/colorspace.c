@@ -30,6 +30,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/attribute.h"
 #include "magick/cache.h"
 #include "magick/color.h"
 #include "magick/colorspace.h"
@@ -38,8 +39,23 @@
 #include "magick/monitor.h"
 #include "magick/utility.h"
 
+typedef float TransformQuantum;
+#define TransformValue(value) ((TransformQuantum) (value))
+
 /* Round floating value to an integer */
 #define RndToInt(value) ((int)((value)+0.5))
+
+/* Assign value of attribute to double if attribute exists for key */
+#define MagickAttributeToDouble(image,key,variable) \
+{ \
+    const ImageAttribute \
+      *attribute; \
+\
+  if ((attribute=GetImageAttribute(image,key))) \
+  { \
+    variable=strtod(attribute->value,(char **) NULL); \
+  } \
+}
 
 MagickExport const char *ColorspaceTypeToString(const ColorspaceType colorspace)
 {
@@ -190,7 +206,7 @@ MagickExport ColorspaceType StringToColorspaceType(const char *colorspace_string
 
 typedef struct _XYZColorTransformPacket
 {
-  int
+  TransformQuantum
     x,
     y,
     z;
@@ -206,7 +222,7 @@ static inline void XYZTransformPacket(PixelPacket *pixel,
   const XYZColorTransformPacket *z_map,
   const XYZColorTransformPacket *primary_info)
 {
-  register int
+  double
     blue,
     green,
     red;
@@ -221,18 +237,15 @@ static inline void XYZTransformPacket(PixelPacket *pixel,
   z_p = &z_map[ScaleQuantumToMap(pixel->blue)];
 
   red=(x_p->x+y_p->x+z_p->x+primary_info->x);
-  if(red < 0) red = 0;
-  if(red > (int) MaxMap) red = (int) MaxMap;
+  red = red < 0 ? 0 : red > MaxMap ? MaxMap : (unsigned int) (red + 0.5);
   pixel->red=ScaleMapToQuantum(red);
 
   green=(x_p->y+y_p->y+z_p->y+primary_info->y);
-  if(green < 0) green = 0;
-  if(green > (int) MaxMap) green = (int) MaxMap;
+  green = green < 0 ? 0 : green > MaxMap ? MaxMap : (unsigned int) (green + 0.5);
   pixel->green=ScaleMapToQuantum(green);
 
   blue=(x_p->z+y_p->z+z_p->z+primary_info->z);
-  if(blue < 0) blue = 0;
-  if(blue > (int) MaxMap) blue = (int) MaxMap;
+  blue = blue < 0 ? 0 : blue > MaxMap ? MaxMap : (unsigned int) (blue + 0.5);
   pixel->blue=ScaleMapToQuantum(blue);
 }
 MagickExport MagickPassFail RGBTransformImage(Image *image,
@@ -256,8 +269,10 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
   XYZColorTransformPacket
     primary_info;
 
+  register long
+    i;
+
   register unsigned int
-    i,
     x;
 
   MagickPassFail
@@ -356,23 +371,40 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       register PixelPacket
         *q;
 
-      double MaxLinearValue=MaxRGB; /* Maximum linear value output */
-      double ReferenceWhite=685;    /* 90% white card (default 685) */
-      double ReferenceBlack=95;     /* 1% black card  (default 95) */
-      double DisplayGamma=1.7;      /* Typical display gamma (Kodak recommends 1.7) */
-      double NegativeFilmGamma=0.6; /* Typical gamma for a film negative */
-      /* double SoftClip=0.0; */          /* Soft clip offset */
-      /* double BreakPoint=ReferenceWhite-SoftClip; */
-      double Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)
-                                                    *0.002/NegativeFilmGamma)),
-                                            (DisplayGamma/1.7)));
-      double Offset=Gain-MaxLinearValue;
-      /* double KneeOffset=pow(pow(10,((BreakPoint-ReferenceWhite)*0.002/NegativeFilmGamma)), */
-/*                             (DisplayGamma/1.7))*Gain-Offset; */
-      /* double KneeGain=(MaxLinearValue-KneeOffset)/pow((5*SoftClip),(SoftClip/100)); */
+      double
+        DisplayGamma,
+        Gain,
+        MaxLinearValue,
+        NegativeFilmGamma,
+        Offset,
+        ReferenceBlack,
+        ReferenceWhite;
+
       unsigned int
         *logmap,
         scale_to_short;
+
+      /*
+        Establish defaults.
+      */
+      MaxLinearValue=MaxRGB; /* Maximum linear value output */
+      ReferenceWhite=685;    /* 90% white card (default 685) */
+      ReferenceBlack=95;     /* 1% black card  (default 95) */
+      DisplayGamma=1.7;      /* Typical display gamma (Kodak recommends 1.7) */
+      NegativeFilmGamma=0.6; /* Typical gamma for a film negative */
+
+      /*
+        Allow image attributes to override defaults.
+      */
+      MagickAttributeToDouble(image,"reference-white",ReferenceWhite);
+      MagickAttributeToDouble(image,"reference-black",ReferenceBlack);
+      MagickAttributeToDouble(image,"display-gamma",DisplayGamma);
+      MagickAttributeToDouble(image,"negative-film-gamma",NegativeFilmGamma);
+
+      Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)
+                                             *0.002/NegativeFilmGamma)),
+                                     (DisplayGamma/1.7)));
+      Offset=Gain-MaxLinearValue;
 
       /*
         Build LUT
@@ -382,7 +414,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
         ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
                               UnableToTransformColorspace);
       scale_to_short=(65535U / (65535U >> (16-10)));
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
         {
           double
             linearval,
@@ -541,11 +573,11 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       x_p = x_map;
       y_p = y_map;
       z_p = z_map;
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        x_p->x=x_p->y=x_p->z=RndToInt(0.299*i);
-        y_p->x=y_p->y=y_p->z=RndToInt(0.587*i);
-        z_p->x=z_p->y=z_p->z=RndToInt(0.114*i);
+        x_p->x=x_p->y=x_p->z=TransformValue(0.299*i);
+        y_p->x=y_p->y=y_p->z=TransformValue(0.587*i);
+        z_p->x=z_p->y=z_p->z=TransformValue(0.114*i);
         ++x_p;
         ++y_p;
         ++z_p;
@@ -562,11 +594,11 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       x_p = x_map;
       y_p = y_map;
       z_p = z_map;
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        x_p->x=x_p->y=x_p->z=RndToInt(0.2126*i);
-        y_p->x=y_p->y=y_p->z=RndToInt(0.7152*i);
-        z_p->x=z_p->y=z_p->z=RndToInt(0.0722*i);
+        x_p->x=x_p->y=x_p->z=TransformValue(0.2126*i);
+        y_p->x=y_p->y=y_p->z=TransformValue(0.7152*i);
+        z_p->x=z_p->y=z_p->z=TransformValue(0.0722*i);
         ++x_p;
         ++y_p;
         ++z_p;
@@ -585,22 +617,22 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=RndToInt((MaxMap+1)/2);
-      primary_info.z=RndToInt((MaxMap+1)/2);
+      primary_info.y=TransformValue((MaxMap+1)/2);
+      primary_info.z=TransformValue((MaxMap+1)/2);
       x_p = x_map;
       y_p = y_map;
       z_p = z_map;
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        x_p->x=RndToInt(0.33333*i);
-        y_p->x=RndToInt(0.33334*i);
-        z_p->x=RndToInt(0.33333*i);
-        x_p->y=RndToInt(0.5*i);
-        y_p->y=RndToInt(0.0);
-        z_p->y=RndToInt((-0.5)*i);
-        x_p->z=RndToInt((-0.25)*i);
-        y_p->z=RndToInt(0.5*i);
-        z_p->z=RndToInt((-0.25)*i);
+        x_p->x=TransformValue(0.33333*i);
+        y_p->x=TransformValue(0.33334*i);
+        z_p->x=TransformValue(0.33333*i);
+        x_p->y=TransformValue(0.5*i);
+        y_p->y=TransformValue(0.0);
+        z_p->y=TransformValue((-0.5)*i);
+        x_p->z=TransformValue((-0.25)*i);
+        y_p->z=TransformValue(0.5*i);
+        z_p->z=TransformValue((-0.25)*i);
         ++x_p;
         ++y_p;
         ++z_p;
@@ -622,37 +654,37 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       */
       /* FIXME! The scaling factors for this transform look bizarre,
          and in fact, the results are not correct. */
-      primary_info.y=RndToInt(ScaleCharToMap(156));
-      primary_info.z=RndToInt(ScaleCharToMap(137));
+      primary_info.y=TransformValue(ScaleCharToMap(156));
+      primary_info.z=TransformValue(ScaleCharToMap(137));
       x_p = x_map;
       y_p = y_map;
       z_p = z_map;
       for (i=0; i <= (long) (0.018*MaxMap); i++)
       {
-        x_p->x=RndToInt(0.003962014134275617*i);
-        y_p->x=RndToInt(0.007778268551236748*i);
-        z_p->x=RndToInt(0.001510600706713781*i);
-        x_p->y=RndToInt((-0.002426619775463276)*i);
-        y_p->y=RndToInt((-0.004763965913702149)*i);
-        z_p->y=RndToInt(0.007190585689165425*i);
-        x_p->z=RndToInt(0.006927257754597858*i);
-        y_p->z=RndToInt((-0.005800713697502058)*i);
-        z_p->z=RndToInt((-0.0011265440570958)*i);
+        x_p->x=TransformValue(0.003962014134275617*i);
+        y_p->x=TransformValue(0.007778268551236748*i);
+        z_p->x=TransformValue(0.001510600706713781*i);
+        x_p->y=TransformValue((-0.002426619775463276)*i);
+        y_p->y=TransformValue((-0.004763965913702149)*i);
+        z_p->y=TransformValue(0.007190585689165425*i);
+        x_p->z=TransformValue(0.006927257754597858*i);
+        y_p->z=TransformValue((-0.005800713697502058)*i);
+        z_p->z=TransformValue((-0.0011265440570958)*i);
         ++x_p;
         ++y_p;
         ++z_p;
       }
-      for ( ; i <= MaxMap; i++)
+      for ( ; i <= (long) MaxMap; i++)
       {
-        x_p->x=RndToInt(0.2201118963486454*(1.099*i-0.099));
-        y_p->x=RndToInt(0.4321260306242638*(1.099*i-0.099));
-        z_p->x=RndToInt(0.08392226148409894*(1.099*i-0.099));
-        x_p->y=RndToInt((-0.1348122097479598)*(1.099*i-0.099));
-        y_p->y=RndToInt((-0.2646647729834528)*(1.099*i-0.099));
-        z_p->y=RndToInt(0.3994769827314126*(1.099*i-0.099));
-        x_p->z=RndToInt(0.3848476530332144*(1.099*i-0.099));
-        y_p->z=RndToInt((-0.3222618720834477)*(1.099*i-0.099));
-        z_p->z=RndToInt((-0.06258578094976668)*(1.099*i-0.099));
+        x_p->x=TransformValue(0.2201118963486454*(1.099*i-0.099));
+        y_p->x=TransformValue(0.4321260306242638*(1.099*i-0.099));
+        z_p->x=TransformValue(0.08392226148409894*(1.099*i-0.099));
+        x_p->y=TransformValue((-0.1348122097479598)*(1.099*i-0.099));
+        y_p->y=TransformValue((-0.2646647729834528)*(1.099*i-0.099));
+        z_p->y=TransformValue(0.3994769827314126*(1.099*i-0.099));
+        x_p->z=TransformValue(0.3848476530332144*(1.099*i-0.099));
+        y_p->z=TransformValue((-0.3222618720834477)*(1.099*i-0.099));
+        z_p->z=TransformValue((-0.06258578094976668)*(1.099*i-0.099));
         ++x_p;
         ++y_p;
         ++z_p;
@@ -671,17 +703,17 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       x_p = x_map;
       y_p = y_map;
       z_p = z_map;
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        x_p->x=RndToInt(0.412453*i);
-        y_p->x=RndToInt(0.35758*i);
-        z_p->x=RndToInt(0.180423*i);
-        x_p->y=RndToInt(0.212671*i);
-        y_p->y=RndToInt(0.71516*i);
-        z_p->y=RndToInt(0.072169*i);
-        x_p->z=RndToInt(0.019334*i);
-        y_p->z=RndToInt(0.119193*i);
-        z_p->z=RndToInt(0.950227*i);
+        x_p->x=TransformValue(0.412453*i);
+        y_p->x=TransformValue(0.35758*i);
+        z_p->x=TransformValue(0.180423*i);
+        x_p->y=TransformValue(0.212671*i);
+        y_p->y=TransformValue(0.71516*i);
+        z_p->y=TransformValue(0.072169*i);
+        x_p->z=TransformValue(0.019334*i);
+        y_p->z=TransformValue(0.119193*i);
+        z_p->z=TransformValue(0.950227*i);
         ++x_p;
         ++y_p;
         ++z_p;
@@ -700,25 +732,25 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=RndToInt((MaxMap+1)/2);
-      primary_info.z=RndToInt((MaxMap+1)/2);
+      primary_info.y=TransformValue((MaxMap+1)/2);
+      primary_info.z=TransformValue((MaxMap+1)/2);
       x_p = x_map;
       y_p = y_map;
       z_p = z_map;
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
         /* Red */
-        x_p->x=RndToInt(0.299*i);
-        y_p->x=RndToInt(0.587*i);
-        z_p->x=RndToInt(0.114*i);
+        x_p->x=TransformValue(0.299*i);
+        y_p->x=TransformValue(0.587*i);
+        z_p->x=TransformValue(0.114*i);
         /* Green */
-        x_p->y=RndToInt((-0.16873)*i);
-        y_p->y=RndToInt((-0.331264)*i);
-        z_p->y=RndToInt(0.500000*i);
+        x_p->y=TransformValue((-0.16873)*i);
+        y_p->y=TransformValue((-0.331264)*i);
+        z_p->y=TransformValue(0.500000*i);
         /* Blue */
-        x_p->z=RndToInt(0.500000*i);
-        y_p->z=RndToInt((-0.418688)*i);
-        z_p->z=RndToInt((-0.081312)*i);
+        x_p->z=TransformValue(0.500000*i);
+        y_p->z=TransformValue((-0.418688)*i);
+        z_p->z=TransformValue((-0.081312)*i);
         ++x_p;
         ++y_p;
         ++z_p;
@@ -737,25 +769,25 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=RndToInt((MaxMap+1)/2);
-      primary_info.z=RndToInt((MaxMap+1)/2);
+      primary_info.y=TransformValue((MaxMap+1)/2);
+      primary_info.z=TransformValue((MaxMap+1)/2);
       x_p = x_map;
       y_p = y_map;
       z_p = z_map;
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
         /* Red */
-        x_p->x=RndToInt(0.212600*i);
-        y_p->x=RndToInt(0.715200*i);
-        z_p->x=RndToInt(0.072200*i);
+        x_p->x=TransformValue(0.212600*i);
+        y_p->x=TransformValue(0.715200*i);
+        z_p->x=TransformValue(0.072200*i);
         /* Green */
-        x_p->y=RndToInt((-0.114572)*i);
-        y_p->y=RndToInt((-0.385428)*i);
-        z_p->y=RndToInt(0.500000*i);
+        x_p->y=TransformValue((-0.114572)*i);
+        y_p->y=TransformValue((-0.385428)*i);
+        z_p->y=TransformValue(0.500000*i);
         /* Blue */
-        x_p->z=RndToInt(0.500000*i);
-        y_p->z=RndToInt((-0.454153)*i);
-        z_p->z=RndToInt((-0.045847)*i);
+        x_p->z=TransformValue(0.500000*i);
+        y_p->z=TransformValue((-0.454153)*i);
+        z_p->z=TransformValue((-0.045847)*i);
         ++x_p;
         ++y_p;
         ++z_p;
@@ -777,37 +809,37 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       */
       /* FIXME! The scaling factors for this transform look bizarre,
          and in fact, the results are not correct. */
-      primary_info.y=RndToInt(ScaleCharToMap(156));
-      primary_info.z=RndToInt(ScaleCharToMap(137));
+      primary_info.y=TransformValue(ScaleCharToMap(156));
+      primary_info.z=TransformValue(ScaleCharToMap(137));
       x_p = x_map;
       y_p = y_map;
       z_p = z_map;
       for (i=0; i <= (long) (0.018*MaxMap); i++)
       {
-        x_p->x=RndToInt(0.003962014134275617*i);
-        y_p->x=RndToInt(0.007778268551236748*i);
-        z_p->x=RndToInt(0.001510600706713781*i);
-        x_p->y=RndToInt((-0.002426619775463276)*i);
-        y_p->y=RndToInt((-0.004763965913702149)*i);
-        z_p->y=RndToInt(0.007190585689165425*i);
-        x_p->z=RndToInt(0.006927257754597858*i);
-        y_p->z=RndToInt((-0.005800713697502058)*i);
-        z_p->z=RndToInt((-0.0011265440570958)*i);
+        x_p->x=TransformValue(0.003962014134275617*i);
+        y_p->x=TransformValue(0.007778268551236748*i);
+        z_p->x=TransformValue(0.001510600706713781*i);
+        x_p->y=TransformValue((-0.002426619775463276)*i);
+        y_p->y=TransformValue((-0.004763965913702149)*i);
+        z_p->y=TransformValue(0.007190585689165425*i);
+        x_p->z=TransformValue(0.006927257754597858*i);
+        y_p->z=TransformValue((-0.005800713697502058)*i);
+        z_p->z=TransformValue((-0.0011265440570958)*i);
         ++x_p;
         ++y_p;
         ++z_p;
       }
-      for ( ; i <= MaxMap; i++)
+      for ( ; i <= (long) MaxMap; i++)
       {
-        x_p->x=RndToInt(0.2201118963486454*(1.099*i-0.099));
-        y_p->x=RndToInt(0.4321260306242638*(1.099*i-0.099));
-        z_p->x=RndToInt(0.08392226148409894*(1.099*i-0.099));
-        x_p->y=RndToInt((-0.1348122097479598)*(1.099*i-0.099));
-        y_p->y=RndToInt((-0.2646647729834528)*(1.099*i-0.099));
-        z_p->y=RndToInt(0.3994769827314126*(1.099*i-0.099));
-        x_p->z=RndToInt(0.3848476530332144*(1.099*i-0.099));
-        y_p->z=RndToInt((-0.3222618720834477)*(1.099*i-0.099));
-        z_p->z=RndToInt((-0.06258578094976668)*(1.099*i-0.099));
+        x_p->x=TransformValue(0.2201118963486454*(1.099*i-0.099));
+        y_p->x=TransformValue(0.4321260306242638*(1.099*i-0.099));
+        z_p->x=TransformValue(0.08392226148409894*(1.099*i-0.099));
+        x_p->y=TransformValue((-0.1348122097479598)*(1.099*i-0.099));
+        y_p->y=TransformValue((-0.2646647729834528)*(1.099*i-0.099));
+        z_p->y=TransformValue(0.3994769827314126*(1.099*i-0.099));
+        x_p->z=TransformValue(0.3848476530332144*(1.099*i-0.099));
+        y_p->z=TransformValue((-0.3222618720834477)*(1.099*i-0.099));
+        z_p->z=TransformValue((-0.06258578094976668)*(1.099*i-0.099));
         ++x_p;
         ++y_p;
         ++z_p;
@@ -826,22 +858,22 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=RndToInt((MaxMap+1)/2);
-      primary_info.z=RndToInt((MaxMap+1)/2);
+      primary_info.y=TransformValue((MaxMap+1)/2);
+      primary_info.z=TransformValue((MaxMap+1)/2);
       x_p = x_map;
       y_p = y_map;
       z_p = z_map;
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        x_p->x=RndToInt(0.299*i);
-        y_p->x=RndToInt(0.587*i);
-        z_p->x=RndToInt(0.114*i);
-        x_p->y=RndToInt(0.596*i);
-        y_p->y=RndToInt((-0.274)*i);
-        z_p->y=RndToInt((-0.322)*i);
-        x_p->z=RndToInt(0.211*i);
-        y_p->z=RndToInt((-0.523)*i);
-        z_p->z=RndToInt(0.312*i);
+        x_p->x=TransformValue(0.299*i);
+        y_p->x=TransformValue(0.587*i);
+        z_p->x=TransformValue(0.114*i);
+        x_p->y=TransformValue(0.596*i);
+        y_p->y=TransformValue((-0.274)*i);
+        z_p->y=TransformValue((-0.322)*i);
+        x_p->z=TransformValue(0.211*i);
+        y_p->z=TransformValue((-0.523)*i);
+        z_p->z=TransformValue(0.312*i);
         ++x_p;
         ++y_p;
         ++z_p;
@@ -860,22 +892,22 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
         Pb and Pr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      primary_info.y=RndToInt((MaxMap+1)/2);
-      primary_info.z=RndToInt((MaxMap+1)/2);
+      primary_info.y=TransformValue((MaxMap+1)/2);
+      primary_info.z=TransformValue((MaxMap+1)/2);
       x_p = x_map;
       y_p = y_map;
       z_p = z_map;
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        x_p->x=RndToInt(0.299*i);
-        y_p->x=RndToInt(0.587*i);
-        z_p->x=RndToInt(0.114*i);
-        x_p->y=RndToInt((-0.168736)*i);
-        y_p->y=RndToInt((-0.331264)*i);
-        z_p->y=RndToInt(0.5*i);
-        x_p->z=RndToInt(0.5*i);
-        y_p->z=RndToInt((-0.418688)*i);
-        z_p->z=RndToInt((-0.081312)*i);
+        x_p->x=TransformValue(0.299*i);
+        y_p->x=TransformValue(0.587*i);
+        z_p->x=TransformValue(0.114*i);
+        x_p->y=TransformValue((-0.168736)*i);
+        y_p->y=TransformValue((-0.331264)*i);
+        z_p->y=TransformValue(0.5*i);
+        x_p->z=TransformValue(0.5*i);
+        y_p->z=TransformValue((-0.418688)*i);
+        z_p->z=TransformValue((-0.081312)*i);
         ++x_p;
         ++y_p;
         ++z_p;
@@ -895,22 +927,22 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
         U and V, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.  Note that U = 0.493*(B-Y), V = 0.877*(R-Y).
       */
-      primary_info.y=RndToInt((MaxMap+1)/2);
-      primary_info.z=RndToInt((MaxMap+1)/2);
+      primary_info.y=TransformValue((MaxMap+1)/2);
+      primary_info.z=TransformValue((MaxMap+1)/2);
       x_p = x_map;
       y_p = y_map;
       z_p = z_map;
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        x_p->x=RndToInt(0.299*i);
-        y_p->x=RndToInt(0.587*i);
-        z_p->x=RndToInt(0.114*i);
-        x_p->y=RndToInt((-0.1474)*i);
-        y_p->y=RndToInt((-0.2895)*i);
-        z_p->y=RndToInt(0.4369*i);
-        x_p->z=RndToInt(0.615*i);
-        y_p->z=RndToInt((-0.515)*i);
-        z_p->z=RndToInt((-0.1)*i);
+        x_p->x=TransformValue(0.299*i);
+        y_p->x=TransformValue(0.587*i);
+        z_p->x=TransformValue(0.114*i);
+        x_p->y=TransformValue((-0.1474)*i);
+        y_p->y=TransformValue((-0.2895)*i);
+        z_p->y=TransformValue(0.4369*i);
+        x_p->z=TransformValue(0.615*i);
+        y_p->z=TransformValue((-0.515)*i);
+        z_p->z=TransformValue((-0.1)*i);
         ++x_p;
         ++y_p;
         ++z_p;
@@ -925,7 +957,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
   */
   for (i=0; i <= MaxMap; i++)
     {
-      printf("%5ld: x_map(%7d,%7d,%7d) y_map(%7d,%7d,%7d) z_map(%7d,%7d,%7d)\n",
+      printf("%5ld: x_map(%g,%g,%g) y_map(%g,%g,%g) z_map(%g,%g,%g)\n",
              i,
              ((x_map[i].x)),
              ((x_map[i].y)),
@@ -1114,7 +1146,7 @@ MagickExport MagickPassFail TransformColorspace(Image *image,
 */
 typedef struct _RGBColorTransformPacket
 {
-  int
+  TransformQuantum
     red,
     green,
     blue;
@@ -1127,7 +1159,7 @@ static void RGBTransformPacket(PixelPacket *pixel,
   const unsigned char *rgb_map,
   const unsigned int rgb_map_max_index)
 {
-  register int
+  double
     blue,
     green,
     red;
@@ -1142,13 +1174,13 @@ static void RGBTransformPacket(PixelPacket *pixel,
   blue_p = &blue_map[ScaleQuantumToMap(pixel->blue)];
 
   red=(red_p->red+green_p->red+blue_p->red);
-  if (red < 0) red = 0;
+  red = red < 0 ? 0 : red > MaxMap ? MaxMap : (unsigned int) (red + 0.5);
 
   green=(red_p->green+green_p->green+blue_p->green);
-  if (green < 0) green = 0;
+  green = green < 0 ? 0 : green > MaxMap ? MaxMap : (unsigned int) (green + 0.5);
 
   blue=(red_p->blue+green_p->blue+blue_p->blue);
-  if (blue < 0) blue = 0;
+  blue = blue < 0 ? 0 : blue > MaxMap ? MaxMap : (unsigned int) (blue + 0.5);
 
   if ( rgb_map != 0 )
     {
@@ -1171,13 +1203,9 @@ static void RGBTransformPacket(PixelPacket *pixel,
     }
   else
     {
-      if ((unsigned int) red > MaxMap) red=MaxMap;
-      if ((unsigned int) green > MaxMap) green=MaxMap;
-      if ((unsigned int) blue > MaxMap) blue=MaxMap;
-
-      pixel->red=ScaleMapToQuantum((unsigned int) red);
-      pixel->green=ScaleMapToQuantum((unsigned int) green);
-      pixel->blue=ScaleMapToQuantum((unsigned int) blue);
+      pixel->red=ScaleMapToQuantum(red);
+      pixel->green=ScaleMapToQuantum(green);
+      pixel->blue=ScaleMapToQuantum(blue);
     }
 }
 MagickExport MagickPassFail TransformRGBImage(Image *image,
@@ -1257,7 +1285,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
   register long
     x;
 
-  register unsigned int
+  register long
     i;
 
   unsigned int
@@ -1342,22 +1370,50 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       register PixelPacket
         *q;
 
-      double MaxLinearValue=MaxRGB; /* Maximum linear value output */
-      double ReferenceWhite=685;    /* 90% white card (default 685) */
-      double ReferenceBlack=95;     /* 1% black card  (default 95) */
-      double DisplayGamma=1.0;      /* Typical display gamma (Kodak recommended 1.7) */
-      double NegativeFilmGamma=0.6; /* Typical gamma for a film negative */
-      double SoftClip=0.0;          /* Soft clip offset */
-      double BreakPoint=ReferenceWhite-SoftClip;
-      double Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)
-                                                    *0.002/NegativeFilmGamma)),
-                                            (DisplayGamma/1.7)));
-      double Offset=Gain-MaxLinearValue;
-      double KneeOffset=pow(pow(10,((BreakPoint-ReferenceWhite)*0.002/NegativeFilmGamma)),
-                            (DisplayGamma/1.7))*Gain-Offset;
-      double KneeGain=(MaxLinearValue-KneeOffset)/pow((5*SoftClip),(SoftClip/100));
+      double
+        BreakPoint,
+        DisplayGamma,
+        Gain,
+        KneeGain,
+        KneeOffset,
+        MaxLinearValue,
+        NegativeFilmGamma,
+        Offset,
+        ReferenceBlack,
+        ReferenceWhite,
+        SoftClip;
+
       Quantum
         *linearmap;
+
+      /*
+        Establish defaults.
+      */
+      MaxLinearValue=MaxRGB; /* Maximum linear value output */
+      ReferenceWhite=685;    /* 90% white card (default 685) */
+      ReferenceBlack=95;     /* 1% black card  (default 95) */
+      DisplayGamma=1.0;      /* Typical display gamma (Kodak recommended 1.7) */
+      NegativeFilmGamma=0.6; /* Typical gamma for a film negative */
+      SoftClip=0.0;          /* Soft clip offset */
+
+      /*
+        Allow image attributes to override defaults.
+      */
+      MagickAttributeToDouble(image,"reference-white",ReferenceWhite);
+      MagickAttributeToDouble(image,"reference-black",ReferenceBlack);
+      MagickAttributeToDouble(image,"display-gamma",DisplayGamma);
+      MagickAttributeToDouble(image,"negative-film-gamma",NegativeFilmGamma);
+      MagickAttributeToDouble(image,"soft-clip-offset",SoftClip);
+
+      BreakPoint=ReferenceWhite-SoftClip;
+      Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)
+                                                    *0.002/NegativeFilmGamma)),
+                                            (DisplayGamma/1.7)));
+      Offset=Gain-MaxLinearValue;
+      KneeOffset=pow(pow(10,((BreakPoint-ReferenceWhite)*0.002/NegativeFilmGamma)),
+                            (DisplayGamma/1.7))*Gain-Offset;
+      KneeGain=(MaxLinearValue-KneeOffset)/pow((5*SoftClip),(SoftClip/100));
+
 
       linearmap=MagickAllocateMemory(Quantum *,1024*sizeof(Quantum));
       if (linearmap == 0)
@@ -1536,17 +1592,17 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         I and Q, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxMap.
       */
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        red_map[i].red=RndToInt(i);
-        green_map[i].red=RndToInt(0.5*(2.0*i-MaxMap));
-        blue_map[i].red=RndToInt((-0.33334)*(2.0*i-MaxMap));
-        red_map[i].green=RndToInt(i);
-        green_map[i].green=0;
-        blue_map[i].green=RndToInt(0.666665*(2.0*i-MaxMap));
-        red_map[i].blue=RndToInt(i);
-        green_map[i].blue=RndToInt((-0.5)*(2.0*i-MaxMap));
-        blue_map[i].blue=RndToInt((-0.33334)*(2.0*i-MaxMap));
+        red_map[i].red=TransformValue(i);
+        green_map[i].red=TransformValue(0.5*(2.0*i-MaxMap));
+        blue_map[i].red=TransformValue((-0.33334)*(2.0*i-MaxMap));
+        red_map[i].green=TransformValue(i);
+        green_map[i].green=TransformValue(0);
+        blue_map[i].green=TransformValue(0.666665*(2.0*i-MaxMap));
+        red_map[i].blue=TransformValue(i);
+        green_map[i].blue=TransformValue((-0.5)*(2.0*i-MaxMap));
+        blue_map[i].blue=TransformValue((-0.33334)*(2.0*i-MaxMap));
       }
       break;
     }
@@ -1563,17 +1619,17 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       */
       rgb_map=sRGBMap;
       rgb_map_max_index=350;
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        red_map[i].red=RndToInt(1.40200*i);
-        green_map[i].red=0;
-        blue_map[i].red=RndToInt(1.88000*(i-ScaleCharToMap(137)));
-        red_map[i].green=RndToInt(1.40200*i);
-        green_map[i].green=RndToInt((-0.444066)*(i-ScaleCharToMap(156)));
-        blue_map[i].green=RndToInt((-0.95692)*(i-ScaleCharToMap(137)));
-        red_map[i].blue=RndToInt(1.40200*i);
-        green_map[i].blue=RndToInt(2.28900*(i-ScaleCharToMap(156)));
-        blue_map[i].blue=0;
+        red_map[i].red=TransformValue(1.40200*i);
+        green_map[i].red=TransformValue(0);
+        blue_map[i].red=TransformValue(1.88000*(i-ScaleCharToMap(137)));
+        red_map[i].green=TransformValue(1.40200*i);
+        green_map[i].green=TransformValue((-0.444066)*(i-ScaleCharToMap(156)));
+        blue_map[i].green=TransformValue((-0.95692)*(i-ScaleCharToMap(137)));
+        red_map[i].blue=TransformValue(1.40200*i);
+        green_map[i].blue=TransformValue(2.28900*(i-ScaleCharToMap(156)));
+        blue_map[i].blue=TransformValue(0);
       }
       break;
     }
@@ -1586,17 +1642,17 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           G = -0.969256*R+1.875992*G+0.041556*B
           B =  0.055648*R-0.204043*G+1.057311*B
       */
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        red_map[i].red=RndToInt(3.240479*i);
-        green_map[i].red=RndToInt((-1.537150)*i);
-        blue_map[i].red=RndToInt((-0.498535)*i);
-        red_map[i].green=RndToInt((-0.969256)*i);
-        green_map[i].green=RndToInt(1.875992*i);
-        blue_map[i].green=RndToInt(0.041556*i);
-        red_map[i].blue=RndToInt(0.055648*i);
-        green_map[i].blue=RndToInt((-0.204043)*i);
-        blue_map[i].blue=RndToInt(1.057311*i);
+        red_map[i].red=TransformValue(3.240479*i);
+        green_map[i].red=TransformValue((-1.537150)*i);
+        blue_map[i].red=TransformValue((-0.498535)*i);
+        red_map[i].green=TransformValue((-0.969256)*i);
+        green_map[i].green=TransformValue(1.875992*i);
+        blue_map[i].green=TransformValue(0.041556*i);
+        red_map[i].blue=TransformValue(0.055648*i);
+        green_map[i].blue=TransformValue((-0.204043)*i);
+        blue_map[i].blue=TransformValue(1.057311*i);
       }
       break;
     }
@@ -1614,20 +1670,20 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxMap.
       */
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
         /* Y */
-        red_map[i].red=RndToInt(i);
-        green_map[i].red=0;
-        blue_map[i].red=RndToInt((1.402000*0.5)*(2.0*i-MaxMap));
+        red_map[i].red=TransformValue(i);
+        green_map[i].red=TransformValue(0);
+        blue_map[i].red=TransformValue((1.402000*0.5)*(2.0*i-MaxMap));
         /* Pb */
-        red_map[i].green=RndToInt(i);
-        green_map[i].green=RndToInt((-0.344136*0.5)*(2.0*i-MaxMap));
-        blue_map[i].green=RndToInt((-0.714136*0.5)*(2.0*i-MaxMap));
+        red_map[i].green=TransformValue(i);
+        green_map[i].green=TransformValue((-0.344136*0.5)*(2.0*i-MaxMap));
+        blue_map[i].green=TransformValue((-0.714136*0.5)*(2.0*i-MaxMap));
         /* Pr */
-        red_map[i].blue=RndToInt(i);
-        green_map[i].blue=RndToInt((1.772000*0.5)*(2.0*i-MaxMap));
-        blue_map[i].blue=0;
+        red_map[i].blue=TransformValue(i);
+        green_map[i].blue=TransformValue((1.772000*0.5)*(2.0*i-MaxMap));
+        blue_map[i].blue=TransformValue(0);
       }
       break;
     }
@@ -1643,20 +1699,20 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxMap.
       */
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
         /* Y */
-        red_map[i].red=RndToInt(i);
-        green_map[i].red=0;
-        blue_map[i].red=RndToInt((1.5748*0.5)*(2.0*i-MaxMap));
+        red_map[i].red=TransformValue(i);
+        green_map[i].red=TransformValue(0);
+        blue_map[i].red=TransformValue((1.5748*0.5)*(2.0*i-MaxMap));
         /* Pb */
-        red_map[i].green=RndToInt(i);
-        green_map[i].green=RndToInt((-0.187324*0.5)*(2.0*i-MaxMap));
-        blue_map[i].green=RndToInt((-0.468124*0.5)*(2.0*i-MaxMap));
+        red_map[i].green=TransformValue(i);
+        green_map[i].green=TransformValue((-0.187324*0.5)*(2.0*i-MaxMap));
+        blue_map[i].green=TransformValue((-0.468124*0.5)*(2.0*i-MaxMap));
         /* Pr */
-        red_map[i].blue=RndToInt(i);
-        green_map[i].blue=RndToInt((1.8556*0.5)*(2.0*i-MaxMap));
-        blue_map[i].blue=0;
+        red_map[i].blue=TransformValue(i);
+        green_map[i].blue=TransformValue((1.8556*0.5)*(2.0*i-MaxMap));
+        blue_map[i].blue=TransformValue(0);
       }
       break;
     }
@@ -1675,17 +1731,17 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       */
       rgb_map=YCCMap;
       rgb_map_max_index=350;
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        red_map[i].red=RndToInt(1.3584*i);
-        green_map[i].red=0;
-        blue_map[i].red=RndToInt(1.8215*(i-ScaleCharToMap(137)));
-        red_map[i].green=RndToInt(1.3584*i);
-        green_map[i].green=RndToInt((-0.4302726)*(i-ScaleCharToMap(156)));
-        blue_map[i].green=RndToInt((-0.9271435)*(i-ScaleCharToMap(137)));
-        red_map[i].blue=RndToInt(1.3584*i);
-        green_map[i].blue=RndToInt(2.2179*(i-ScaleCharToMap(156)));
-        blue_map[i].blue=0;
+        red_map[i].red=TransformValue(1.3584*i);
+        green_map[i].red=TransformValue(0);
+        blue_map[i].red=TransformValue(1.8215*(i-ScaleCharToMap(137)));
+        red_map[i].green=TransformValue(1.3584*i);
+        green_map[i].green=TransformValue((-0.4302726)*(i-ScaleCharToMap(156)));
+        blue_map[i].green=TransformValue((-0.9271435)*(i-ScaleCharToMap(137)));
+        red_map[i].blue=TransformValue(1.3584*i);
+        green_map[i].blue=TransformValue(2.2179*(i-ScaleCharToMap(156)));
+        blue_map[i].blue=TransformValue(0);
       }
       break;
     }
@@ -1701,17 +1757,17 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         I and Q, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxMap.
       */
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        red_map[i].red=RndToInt(i);
-        green_map[i].red=RndToInt(0.4781*(2.0*i-MaxMap));
-        blue_map[i].red=RndToInt(0.3107*(2.0*i-MaxMap));
-        red_map[i].green=RndToInt(i);
-        green_map[i].green=RndToInt((-0.13635)*(2.0*i-MaxMap));
-        blue_map[i].green=RndToInt((-0.3234)*(2.0*i-MaxMap));
-        red_map[i].blue=RndToInt(i);
-        green_map[i].blue=RndToInt((-0.55185)*(2.0*i-MaxMap));
-        blue_map[i].blue=RndToInt(0.8503*(2.0*i-MaxMap));
+        red_map[i].red=TransformValue(i);
+        green_map[i].red=TransformValue(0.4781*(2.0*i-MaxMap));
+        blue_map[i].red=TransformValue(0.3107*(2.0*i-MaxMap));
+        red_map[i].green=TransformValue(i);
+        green_map[i].green=TransformValue((-0.13635)*(2.0*i-MaxMap));
+        blue_map[i].green=TransformValue((-0.3234)*(2.0*i-MaxMap));
+        red_map[i].blue=TransformValue(i);
+        green_map[i].blue=TransformValue((-0.55185)*(2.0*i-MaxMap));
+        blue_map[i].blue=TransformValue(0.8503*(2.0*i-MaxMap));
       }
       break;
     }
@@ -1727,17 +1783,17 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         Pb and Pr, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxMap.
       */
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        red_map[i].red=RndToInt(i);
-        green_map[i].red=0;
-        blue_map[i].red=RndToInt(0.701*(2.0*i-MaxMap));
-        red_map[i].green=RndToInt(i);
-        green_map[i].green=RndToInt((-0.172068)*(2.0*i-MaxMap));
-        blue_map[i].green=RndToInt(0.357068*(2.0*i-MaxMap));
-        red_map[i].blue=RndToInt(i);
-        green_map[i].blue=RndToInt(0.886*(2.0*i-MaxMap));
-        blue_map[i].blue=0;
+        red_map[i].red=TransformValue(i);
+        green_map[i].red=TransformValue(0);
+        blue_map[i].red=TransformValue(0.701*(2.0*i-MaxMap));
+        red_map[i].green=TransformValue(i);
+        green_map[i].green=TransformValue((-0.172068)*(2.0*i-MaxMap));
+        blue_map[i].green=TransformValue(0.357068*(2.0*i-MaxMap));
+        red_map[i].blue=TransformValue(i);
+        green_map[i].blue=TransformValue(0.886*(2.0*i-MaxMap));
+        blue_map[i].blue=TransformValue(0);
       }
       break;
     }
@@ -1754,17 +1810,17 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
         U and V, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxMap.
       */
-      for (i=0; i <= MaxMap; i++)
+      for (i=0; i <= (long) MaxMap; i++)
       {
-        red_map[i].red=RndToInt(i);
-        green_map[i].red=0;
-        blue_map[i].red=RndToInt(0.5699*(2.0*i-MaxMap));
-        red_map[i].green=RndToInt(i);
-        green_map[i].green=RndToInt((-0.1969)*(2.0*i-MaxMap));
-        blue_map[i].green=RndToInt((-0.29025)*(2.0*i-MaxMap));
-        red_map[i].blue=RndToInt(i);
-        green_map[i].blue=RndToInt(1.01395*(2.0*i-MaxMap));
-        blue_map[i].blue=0;
+        red_map[i].red=TransformValue(i);
+        green_map[i].red=TransformValue(0);
+        blue_map[i].red=TransformValue(0.5699*(2.0*i-MaxMap));
+        red_map[i].green=TransformValue(i);
+        green_map[i].green=TransformValue((-0.1969)*(2.0*i-MaxMap));
+        blue_map[i].green=TransformValue((-0.29025)*(2.0*i-MaxMap));
+        red_map[i].blue=TransformValue(i);
+        green_map[i].blue=TransformValue(1.01395*(2.0*i-MaxMap));
+        blue_map[i].blue=TransformValue(0);
       }
       break;
     }
@@ -1774,9 +1830,9 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
   /*
     Dump tables
   */
-  for (i=0; i <= MaxMap; i++)
+  for (i=0; i <= (long) MaxMap; i++)
     {
-      printf("%5ld: red_map(%7d,%7d,%7d) green_map(%7d,%7d,%7d) blue_map(%7d,%7d,%7d)\n",
+      printf("%5ld: red_map(%g,%g,%g) green_map(%g,%g,%g) blue_map(%g,%g,%g)\n",
              i,
              ((red_map[i].red)),
              ((red_map[i].green)),

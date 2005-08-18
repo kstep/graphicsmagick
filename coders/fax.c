@@ -217,6 +217,7 @@ ModuleExport void RegisterFAXImage(void)
   entry->note=AcquireString(FAXNote);
   entry->module=AcquireString("FAX");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("G3");
   entry->decoder=(DecoderHandler) ReadFAXImage;
   entry->encoder=(EncoderHandler) WriteFAXImage;
