@@ -128,7 +128,7 @@ namespace Magick
   using MagickLib::ColorspaceType;
   using MagickLib::UndefinedColorspace;
   using MagickLib::RGBColorspace;
-  using MagickLib::Rec601LumaColorspace;
+  using MagickLib::GRAYColorspace;
   using MagickLib::TransparentColorspace;
   using MagickLib::OHTAColorspace;
   using MagickLib::XYZColorspace;
@@ -142,8 +142,10 @@ namespace Magick
   using MagickLib::HSLColorspace;
   using MagickLib::HWBColorspace;
   using MagickLib::LABColorspace;
-  using MagickLib::Rec709LumaColorspace;
   using MagickLib::CineonLogRGBColorspace;
+  using MagickLib::Rec601LumaColorspace;
+  using MagickLib::Rec709LumaColorspace;
+  using MagickLib::Rec709YCbCrColorspace;
   
   // Composition operations
   using MagickLib::AddCompositeOp;

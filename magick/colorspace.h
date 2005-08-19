@@ -54,6 +54,7 @@ extern "C" {
 #define PixelIntensityToQuantum(pixel) ((Quantum)PixelIntensity(pixel))
 #define IsGrayColorspace(colorspace) \
   ( \
+    (colorspace == GRAYColorspace) || \
     (colorspace == Rec601LumaColorspace) || \
     (colorspace == Rec709LumaColorspace) \
   )
@@ -65,21 +66,20 @@ extern "C" {
   )
 #define IsYCbCrColorspace(colorspace) \
   ( \
+    (colorspace == YCbCrColorspace) || \
     (colorspace == Rec601YCbCrColorspace) || \
     (colorspace == Rec709YCbCrColorspace) \
   )
 
-#define GRAYColorspace Rec601LumaColorspace
 #define YCbCrColorspace Rec601YCbCrColorspace
 typedef enum
 {
   UndefinedColorspace,
   RGBColorspace,         /* Plain old RGB colorspace */
-  Rec601LumaColorspace,  /* Luma according to ITU-R 601 (grayscale) */
+  GRAYColorspace,        /* Plain old full-range grayscale */
   TransparentColorspace, /* RGB but preserve matte channel during quantize */
   OHTAColorspace,
   XYZColorspace,         /* CIE XYZ */
-  Rec601YCbCrColorspace, /* YCbCr according to ITU-R 601 */
   YCCColorspace,         /* Kodak PhotoCD PhotoYCC */
   YIQColorspace,
   YPbPrColorspace,
@@ -89,8 +89,10 @@ typedef enum
   HSLColorspace,         /* Hue, saturation, luminosity */
   HWBColorspace,         /* Hue, whiteness, blackness */
   LABColorspace,         /* LAB colorspace not supported yet other than via lcms */
-  Rec709LumaColorspace,  /* Luma according to ITU-R 709 (grayscale) */
   CineonLogRGBColorspace,/* RGB data with Cineon Log scaling, 2.048 density range */
+  Rec601LumaColorspace,  /* Luma (Y) according to ITU-R 601 */
+  Rec601YCbCrColorspace, /* YCbCr according to ITU-R 601 */
+  Rec709LumaColorspace,  /* Luma (Y) according to ITU-R 709 */
   Rec709YCbCrColorspace  /* YCbCr according to ITU-R 709 */
 } ColorspaceType;
 

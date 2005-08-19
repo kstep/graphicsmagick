@@ -73,6 +73,9 @@ MagickExport const char *ColorspaceTypeToString(const ColorspaceType colorspace)
     case RGBColorspace:
       log_colorspace="RGB";
       break;
+    case GRAYColorspace:
+      log_colorspace="Gray";
+      break;
     case Rec601LumaColorspace:
       log_colorspace="Rec601Luma";
       break;
@@ -563,10 +566,11 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
   primary_info.x=primary_info.y=primary_info.z=0;
   switch (colorspace)
   {
+    case GRAYColorspace:
     case Rec601LumaColorspace:
     {
       /*
-        Initialize Rec. 601 Gray tables:
+        Initialize Rec. 601 Luma tables:
 
           G = 0.29900*R+0.58700*G+0.11400*B
       */
@@ -587,7 +591,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
     case Rec709LumaColorspace:
     {
       /*
-        Initialize Rec. 709 Gray tables:
+        Initialize Rec. 709 Luma tables:
 
           G = 0.2126*R+0.7152*G+0.0722*B
       */

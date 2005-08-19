@@ -187,8 +187,9 @@ static char
   },
   *ColorspaceTypes[] =
   {
-    "Undefined", "RGB", "Gray", "Transparent", "OHTA", "XYZ", "YCbCr",
-    "YCC", "YIQ", "YPbPr", "YUV", "CMYK", "sRGB", "HSL", "HWB", "LAB", (char *) NULL
+    "Undefined", "RGB", "Gray", "Transparent", "OHTA", "XYZ", "YCC",
+    "YIQ", "YPbPr", "YUV", "CMYK", "sRGB", "HSL", "HWB", "LAB",  "CineonLog",
+    "Rec601Luma", "Rec601YCbCr", "Rec709Luma", "Rec709YCbCr", (char *) NULL
   },
   *CompositeTypes[] =
   {

@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20050814;23134000">
+	<META NAME="CHANGED" CONTENT="20050818;21032300">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<STYLE>
@@ -257,15 +257,17 @@ DPX options</H3>
 dealing with DPX files.</P>
 <DL>
 	<DT CLASS="western">-colorspace
-	{CineonLogRGB|RGB|Rec601Luma|Rec709Luma|Rec601YCbCr|Rec709CbCr}</DT><DD CLASS="western">
+	{CineonLogRGB|RGB|Gray|Rec601Luma|Rec709Luma|Rec601YCbCr|Rec709CbCr}</DT><DD CLASS="western">
 	Specifies the colorspace to be used when saving the DPX file.
 	CineonLogRGB selects log encoding according to Kodak Cineon
-	specifications. RGB selects linear RGB encoding. Rec601Luma requests
-	that RGB is converted to a gray image using Rec601 Luma. Rec709Luma
-	requests that RGB is converted to a gray image using Rec709Luma.
-	Rec601YCbCr requests that the image is saved as YCbCr according to
-	Rec601 (SDTV) specifications. Rec709CbCr requests that the image is
-	saved as YCbCr according to Rec709 (HDTV) specifications.</DD><DT CLASS="western">
+	specifications. RGB selects linear RGB encoding. Gray selects linear
+	gray encoding similar to RGB, but with a single channel. Rec601Luma
+	requests that RGB is converted to a gray image using Rec601 Luma.
+	Rec709Luma requests that RGB is converted to a gray image using
+	Rec709Luma. Rec601YCbCr requests that the image is saved as YCbCr
+	according to Rec601 (SDTV) specifications. Rec709CbCr requests that
+	the image is saved as YCbCr according to Rec709 (HDTV)
+	specifications.</DD><DT CLASS="western">
 	-endian {lsb|msb}</DT><DD CLASS="western">
 	Specifies the endian order to use when writing the DPX file.
 	GraphicsMagick writes big-endian DPX files by default since they are
@@ -316,7 +318,7 @@ dealing with DPX files.</P>
 	By default, samples are stored contiguously in a single element when
 	possible. Specifying '-interlace plane' causes each sample type
 	(e.g. 'red') to be stored in its own image element. Planar storage
-	is fully supported for grayscale (with alpha) and RGB.  For YCbCr,
+	is fully supported for grayscale (with alpha) and RGB. For YCbCr,
 	chroma must be 4:2:2 subsampled in order to use planar storage.
 	While planar storage offers a number of benefits, it seems that very
 	few DPX-supporting applications support it.</DD><DT CLASS="western">

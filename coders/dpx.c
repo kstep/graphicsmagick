@@ -1542,6 +1542,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DPXImageElementDescriptor
     element_descriptor;
 
+  DPXTransferCharacteristic
+    transfer_characteristic;
+
   ImageComponentPackingMethod
     packing_method;
 
@@ -1784,71 +1787,111 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   max_bits_per_sample=0;
   max_samples_per_element=0;
-  for (element=0; element < dpx_image_info.elements; element++)
-    {
-      if (element == 0)
-        {
-          DPXColorimetric colorimetric=
-            (DPXColorimetric) dpx_image_info.element_info[element].colorimetric;
-          DPXSetPrimaryChromaticities(colorimetric,&image->chromaticity);
-        }
-      element_descriptor=(DPXImageElementDescriptor)
-        dpx_image_info.element_info[element].descriptor;
-      max_bits_per_sample=Max(max_bits_per_sample,
-                              dpx_image_info.element_info[element].bits_per_sample);
-      max_samples_per_element=Max(max_samples_per_element,
-                                  DPXSamplesPerElement(element_descriptor));
-      /*
-        Set image colorspace
-      */
-      switch (element_descriptor)
-        {
-        case ImageElementColorDifferenceCbCr:
-        case ImageElementCbYCrY422:
-        case ImageElementCbYACrYA4224:
-        case ImageElementCbYCr444:
-        case ImageElementCbYCrA4444:
-          {
-            image->colorspace=Rec601YCbCrColorspace;
-            if ((DPXColorimetric) dpx_image_info.element_info[element].colorimetric == 
-                ColorimetricITU_R709)
-              image->colorspace=Rec709YCbCrColorspace;
-            break;
-          }
-        case ImageElementRed:
-        case ImageElementGreen:
-        case ImageElementBlue:
-        case ImageElementLuma:
-        case ImageElementRGB:
-        case ImageElementRGBA:
-        case ImageElementABGR:
-          {
-            if (dpx_image_info.element_info[element].transfer_characteristic ==
-                ColorimetricPrintingDensity)
-              image->colorspace=CineonLogRGBColorspace;
-            break;
-          }
-        default:
-          {
-          }
-        }
+  {
+    MagickBool
+      has_cbcr=MagickFalse,
+      has_luma=MagickFalse,
+      has_matte=MagickFalse,
+      has_rgb=MagickFalse;
 
-      /*
-        Check for a matte channel.
-      */
-      switch (element_descriptor)
-        {
-        case ImageElementAlpha:
-        case ImageElementRGBA:
-        case ImageElementABGR:
-        case ImageElementCbYACrYA4224:
-        case ImageElementCbYCrA4444:
-          image->matte=MagickTrue;
-          break;
-        default:
-          break;
-        }
-    }
+    DPXColorimetric
+      colorimetric=ColorimetricUserDefined;
+
+    transfer_characteristic=TransferCharacteristicUserDefined;
+    for (element=0; element < dpx_image_info.elements; element++)
+      {
+        if (element == 0)
+          {
+            DPXColorimetric colorimetric=
+              (DPXColorimetric) dpx_image_info.element_info[element].colorimetric;
+            DPXSetPrimaryChromaticities(colorimetric,&image->chromaticity);
+          }
+        element_descriptor=(DPXImageElementDescriptor)
+          dpx_image_info.element_info[element].descriptor;
+        max_bits_per_sample=Max(max_bits_per_sample,
+                                dpx_image_info.element_info[element].bits_per_sample);
+        max_samples_per_element=Max(max_samples_per_element,
+                                    DPXSamplesPerElement(element_descriptor));
+        /*
+          Set image colorspace
+        */
+        switch (element_descriptor)
+          {
+          case ImageElementColorDifferenceCbCr:
+          case ImageElementCbYCrY422:
+          case ImageElementCbYACrYA4224:
+          case ImageElementCbYCr444:
+          case ImageElementCbYCrA4444:
+            {
+              has_cbcr=MagickTrue;
+              colorimetric=dpx_image_info.element_info[element].colorimetric;
+              transfer_characteristic=dpx_image_info.element_info[element].transfer_characteristic;
+              break;
+            }
+          case ImageElementRed:
+          case ImageElementGreen:
+          case ImageElementBlue:
+          case ImageElementRGB:
+          case ImageElementRGBA:
+          case ImageElementABGR:
+            {
+              has_rgb=MagickTrue;
+              colorimetric=dpx_image_info.element_info[element].colorimetric;
+              transfer_characteristic=dpx_image_info.element_info[element].transfer_characteristic;
+              break;
+            }
+          case ImageElementLuma:
+            {
+              has_luma=MagickTrue;
+              colorimetric=dpx_image_info.element_info[element].colorimetric;
+              transfer_characteristic=dpx_image_info.element_info[element].transfer_characteristic;
+              break;
+            }
+          default:
+            {
+            }
+          }
+        
+        /*
+          Check for a matte channel.
+        */
+        switch (element_descriptor)
+          {
+          case ImageElementAlpha:
+          case ImageElementRGBA:
+          case ImageElementABGR:
+          case ImageElementCbYACrYA4224:
+          case ImageElementCbYCrA4444:
+            has_matte=MagickTrue;
+            break;
+          default:
+            break;
+          }
+      }
+    if (has_cbcr)
+      {
+        image->colorspace=Rec601YCbCrColorspace;
+        if (transfer_characteristic == TransferCharacteristicITU_R709)
+          image->colorspace=Rec709YCbCrColorspace;
+      }
+    else if (has_luma)
+      {
+        image->colorspace=GRAYColorspace;
+        if (transfer_characteristic == TransferCharacteristicITU_R709)
+          image->colorspace=Rec709LumaColorspace;
+        else if ((transfer_characteristic == TransferCharacteristicITU_R601_625L) ||
+                 (transfer_characteristic == TransferCharacteristicITU_R601_525L))
+          image->colorspace=Rec601LumaColorspace;
+      }
+    else if (has_rgb)
+      {
+        image->colorspace=RGBColorspace;
+        if (transfer_characteristic == TransferCharacteristicPrintingDensity)
+          image->colorspace=CineonLogRGBColorspace;
+      }
+
+    image->matte=has_matte;
+  }
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                           "Image colorspace: %s",
@@ -1935,6 +1978,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
       element_descriptor=(DPXImageElementDescriptor)
         dpx_image_info.element_info[element].descriptor;
+      transfer_characteristic=
+        dpx_image_info.element_info[element].transfer_characteristic;
       packing_method=dpx_image_info.element_info[element].packing;
       /*
         FIXME: hack around Cinepaint oddity which mis-marks files.
@@ -1945,10 +1990,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Decide if the image is grayscale.
       */
-      if (((dpx_image_info.elements < 3) &&
-           (element_descriptor == ImageElementLuma)) ||
-          ((dpx_image_info.elements == 1) &&
-           (element_descriptor == ImageElementUnspecified)))
+      if (IsGrayColorspace(image->colorspace))
         {
           is_grayscale=MagickTrue;
         }
@@ -1976,9 +2018,11 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             scale_to_short=(65535U / (65535U >> (16-bits_per_sample)));
 
           /*
-            Is this a YCbCr type space?
+            Is this a video type space?
           */
-          if (IsYCbCrColorspace(image->colorspace))
+          if (IsYCbCrColorspace(image->colorspace) ||
+              (image->colorspace == Rec601LumaColorspace) ||
+              (image->colorspace == Rec709LumaColorspace))
             {
               /*
                 Establish YCbCr video defaults.
@@ -2113,14 +2157,27 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case ImageElementLuma:
                   if (IsYCbCrColorspace(image->colorspace))
                     {
+                      /* Video Luma (planar) */
                       for (x=image->columns; x > 0; x--)
                         {
                           q->red=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
                           q++;
                         }
                     }
+                  else if ((image->colorspace == Rec601LumaColorspace) ||
+                           (image->colorspace == Rec709LumaColorspace))
+                    {
+                      /* Video Luma */
+                      for (x=image->columns; x > 0; x--)
+                        {
+                          q->red=q->green=q->blue=
+                            ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
+                          q++;
+                        }
+                    }
                   else
                     {
+                      /* Linear Grayscale */
                       for (x=image->columns; x > 0; x--)
                         {
                           q->red=q->green=q->blue=*samples_itr++;
@@ -3111,15 +3168,21 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   if ((image_info->colorspace == CineonLogRGBColorspace) &&
       (image->colorspace != CineonLogRGBColorspace))
     (void) TransformColorspace(image,CineonLogRGBColorspace);
-  else if ((image_info->colorspace == Rec709YCbCrColorspace) &&
-           (image->colorspace != Rec709YCbCrColorspace))
-    (void) TransformColorspace(image,Rec709YCbCrColorspace);
+  else if ((image_info->colorspace == Rec601LumaColorspace) &&
+           (image->colorspace != Rec601LumaColorspace))
+    (void) TransformColorspace(image,Rec601LumaColorspace);
   else if ((image_info->colorspace == Rec601YCbCrColorspace) &&
            (image->colorspace != Rec601YCbCrColorspace))
     (void) TransformColorspace(image,Rec601YCbCrColorspace);
   else if ((image_info->colorspace == YCbCrColorspace) &&
            (image->colorspace != Rec601YCbCrColorspace))
     (void) TransformColorspace(image,Rec601YCbCrColorspace);
+  else if ((image_info->colorspace == Rec709LumaColorspace) &&
+           (image->colorspace != Rec709LumaColorspace))
+    (void) TransformColorspace(image,Rec709LumaColorspace);
+  else if ((image_info->colorspace == Rec709YCbCrColorspace) &&
+           (image->colorspace != Rec709YCbCrColorspace))
+    (void) TransformColorspace(image,Rec709YCbCrColorspace);
   else if (IsRGBColorspace(image_info->colorspace) &&
            !IsRGBColorspace(image->colorspace))
     (void) TransformColorspace(image,RGBColorspace);
@@ -3316,19 +3379,19 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     {
       transfer_characteristic=TransferCharacteristicPrintingDensity;
     }
-  else if (IsYCbCrColorspace(image->colorspace))
+  else if ((image->colorspace == YCbCrColorspace) ||
+           (image->colorspace == Rec601YCbCrColorspace) ||
+           (image->colorspace == Rec601LumaColorspace))
     {
-      if (image->colorspace == Rec709YCbCrColorspace)
-        {
-          transfer_characteristic=TransferCharacteristicITU_R709;
-        }
+      if (image->rows > 525)
+        transfer_characteristic=TransferCharacteristicITU_R601_625L;
       else
-        {
-          if (image->rows > 525)
-            transfer_characteristic=TransferCharacteristicITU_R601_625L;
-          else
-            transfer_characteristic=TransferCharacteristicITU_R601_525L;
-        }
+        transfer_characteristic=TransferCharacteristicITU_R601_525L;
+    }
+  else if ((image->colorspace == Rec709YCbCrColorspace) ||
+           (image->colorspace == Rec709LumaColorspace))
+    {
+      transfer_characteristic=TransferCharacteristicITU_R709;
     }
   else
     {
@@ -3375,7 +3438,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           dpx_image_info.element_info[0].colorimetric=ColorimetricITU_R601_625L;
           break;
         case TransferCharacteristicITU_R601_525L:
-          dpx_image_info.element_info[0].colorimetric=TransferCharacteristicITU_R601_525L;
+          dpx_image_info.element_info[0].colorimetric=ColorimetricITU_R601_525L;
           break;
         case TransferCharacteristicNTSCCompositeVideo:
           dpx_image_info.element_info[0].colorimetric=ColorimetricNTSCCompositeVideo;
@@ -3723,12 +3786,15 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       DescribeDPXImageElement(&dpx_image_info.element_info[element],element+1);
 
       bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
+      transfer_characteristic=dpx_image_info.element_info[element].transfer_characteristic;
 
       scale_from_short=1U;
       if (bits_per_sample < 16U)
         scale_from_short=(65535U / (65535U >> (16-bits_per_sample)));
 
-      if (IsYCbCrColorspace(image->colorspace))
+      if ((transfer_characteristic == TransferCharacteristicITU_R709) ||
+          (transfer_characteristic == TransferCharacteristicITU_R601_625L) ||
+          (transfer_characteristic == TransferCharacteristicITU_R601_525L))
         {
           reference_low = (((double) MaxRGB+1)*(64.0/1024.0));
           reference_high = (((double) MaxRGB+1)*(940.0/1024.0));
@@ -3800,7 +3866,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             case ImageElementUnspecified:
             case ImageElementLuma:
               {
-                if (IsYCbCrColorspace(image->colorspace))
+                if ((transfer_characteristic == TransferCharacteristicITU_R709) ||
+                    (transfer_characteristic == TransferCharacteristicITU_R601_625L) ||
+                    (transfer_characteristic == TransferCharacteristicITU_R601_525L))
                   {
                     /* Video luma */
                     for (x=image->columns; x > 0; x--)
@@ -3809,7 +3877,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                         p++;
                       }
                   }
-                else if (IsGrayColorspace(image->colorspace))
+                else
                   {
                     /* Linear gray */
                     for (x=image->columns; x > 0; x--)

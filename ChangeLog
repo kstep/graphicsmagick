@@ -1,5 +1,12 @@
-2005-08-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2005-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/dpx.c: Added support for reading and writing DPX Luma
+	files using proper video levels.
+	* magick/colorspace.h (enum ColorspaceType): Decided that
+	GRAYColorspace should be reserved for full-range grayscale data
+	while Rec601LumaColorspace and Rec709LumaColorspace should be for
+	video colorspaces.  Therefore, GRAYColorspace is no longer a
+	synonym for Rec601LumaColorspace.
 	* magick/colorspace.c: Added support for influencing Cineon Log
 	colorspace transformations via image attributes.	
 	Perform colorspace transformations in floating point rather than
