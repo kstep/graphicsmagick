@@ -17,20 +17,26 @@ TESTS_CHECK_PGRMS = \
 
 tests_bitstream_SOURCES = tests/bitstream.c
 tests_bitstream_LDADD =
+tests_bitstream_CPPFLAGS = $(AM_CPPFLAGS)
 
 tests_constitute_SOURCES = tests/constitute.c
+tests_constitute_CPPFLAGS = $(AM_CPPFLAGS)
 tests_constitute_LDADD = $(LIBMAGICK)
 
 tests_maptest_SOURCES = tests/maptest.c
+tests_maptest_CPPFLAGS = $(AM_CPPFLAGS)
 tests_maptest_LDADD = $(LIBMAGICK)
 
 tests_rwblob_SOURCES = tests/rwblob.c
+tests_rwblob_CPPFLAGS = $(AM_CPPFLAGS)
 tests_rwblob_LDADD = $(LIBMAGICK)
 
 tests_rwfile_SOURCES = tests/rwfile.c
+tests_rwfile_CPPFLAGS = $(AM_CPPFLAGS)
 tests_rwfile_LDADD = $(LIBMAGICK)
 
 tests_drawtest_SOURCES = tests/drawtest.c
+tests_drawtest_CPPFLAGS = $(AM_CPPFLAGS)
 tests_drawtest_LDADD = $(LIBMAGICK)
 
 if !HasFPX

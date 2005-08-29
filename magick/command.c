@@ -114,8 +114,17 @@ typedef struct _CommandInfo
 } CommandInfo;
 
 static void
+  AnimateUsage(void),
+  CompositeUsage(void),
+  ConjureUsage(void),
+  ConvertUsage(void),
+  DisplayUsage(void),
+  GMUsage(void),
+  IdentifyUsage(void),
+  ImportUsage(void),
   LiberateArgumentList(const int argc,char **argv),
-  GMUsage(void);
+  MogrifyUsage(void),
+  MontageUsage(void);
 
 static unsigned int
   HelpCommand(ImageInfo *image_info,int argc,char **argv,
@@ -185,7 +194,7 @@ static const CommandInfo commands[] =
 %
 %
 */
-MagickExport void AnimateUsage(void)
+static void AnimateUsage(void)
 {
   const char
     **p;
@@ -2491,7 +2500,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
 %
 %
 */
-MagickExport void CompositeUsage(void)
+static void CompositeUsage(void)
 {
   const char
     **p;
@@ -4603,7 +4612,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 %      void ConvertUsage()
 %
 */
-MagickExport void ConvertUsage(void)
+static void ConvertUsage(void)
 {
   static const char
     *options[]=
@@ -4786,7 +4795,7 @@ MagickExport void ConvertUsage(void)
 %      void ConjureUsage()
 %
 */
-MagickExport void ConjureUsage(void)
+static void ConjureUsage(void)
 {
   static const char
     *options[]=
@@ -4955,7 +4964,7 @@ MagickExport unsigned int ConjureImageCommand(ImageInfo *image_info,
 %
 %
 */
-MagickExport void DisplayUsage(void)
+static void DisplayUsage(void)
 {
   const char
     **p;
@@ -6471,7 +6480,7 @@ static void GMUsage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s command [options ...]\n",GetClientName());
-  (void) printf("\nWhere options include: \n");
+  (void) printf("\nWhere commands include: \n");
       
   for (i=0; commands[i].command != 0; i++)
     {
@@ -6971,7 +6980,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
 %
 %
 */
-MagickExport void IdentifyUsage(void)
+static void IdentifyUsage(void)
 {
   const char
     **p;
@@ -11557,7 +11566,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 %
 %
 */
-MagickExport void MogrifyUsage(void)
+static void MogrifyUsage(void)
 {
   static const char
     *options[]=
@@ -13007,7 +13016,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
 %
 %
 */
-MagickExport void MontageUsage(void)
+static void MontageUsage(void)
 {
   const char
     **p;
@@ -14039,7 +14048,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
 %
 %
 */
-MagickExport void ImportUsage(void)
+static void ImportUsage(void)
 {
   const char
     **p;
@@ -14269,7 +14278,7 @@ static unsigned int RegisterCommand(ImageInfo *image_info,
       DWORD
         dwSupportedTypes;
 
-      /* set a pointer to thsi appliation as the source for our messages */
+      /* set a pointer to thsi application as the source for our messages */
       memset(szPathName, 0, MaxTextExtent*sizeof(char));
       FormatString(szPathName,"%.1024s%s%.1024s",
                    GetClientPath(),DirectorySeparator,GetClientName());
@@ -14293,3 +14302,116 @@ static unsigned int RegisterCommand(ImageInfo *image_info,
   return FALSE;
 }
 #endif
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G M C o m m a n d                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GMCommand() implements the 'gm' utility.
+%
+%  The format of the GMCommand method is:
+%
+%      int GMCommand(int argc,char **argv)
+%
+%  A description of each parameter follows:
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%
+*/
+MagickExport int GMCommand(int argc,char **argv)
+{
+  char
+    command[MaxTextExtent],
+    *text;
+
+  ExceptionInfo
+    exception;
+
+  ImageInfo
+    *image_info;
+
+  unsigned int
+    status=True;
+
+  ReadCommandlLine(argc,&argv);
+
+  (void) SetClientName(argv[0]);
+  {
+    /*
+      Support traditional alternate names for GraphicsMagick subcommands.
+    */
+    static const char *command_names [] =
+      {
+        "animate",
+        "composite",
+        "conjure",
+        "convert",
+        "display",
+        "identify",
+        "import",
+        "mogrify",
+        "montage",
+        NULL
+      };
+
+    unsigned int
+      i;
+
+    GetPathComponent(argv[0],BasePath,command);
+    for (i=0; command_names[i]; i++)
+      if (LocaleCompare(command,command_names[i]) == 0)
+        break;
+
+    if (command_names[i])
+      {
+        /*
+          Set command name to alternate name.
+        */
+        argv[0]=command;
+      }
+    else
+      {
+        if (argc < 2)
+          {
+            GMUsage();
+            Exit(1);
+          }
+
+        /*
+          Skip to subcommand name.
+        */
+        argc--;
+        argv++;
+      }
+  }
+
+  GetExceptionInfo(&exception);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  text=(char *) NULL;
+  status=MagickCommand(image_info,argc,argv,&text,&exception);
+  if (text != (char *) NULL)
+    {
+      (void) fputs(text,stdout);
+      (void) fputc('\n',stdout);
+      MagickFreeMemory(text);
+    }
+  if (exception.severity != UndefinedException)
+    CatchException(&exception);
+  DestroyImageInfo(image_info);
+  DestroyExceptionInfo(&exception);
+  DestroyMagick();
+
+  Exit(!status);
+  return(False);
+}

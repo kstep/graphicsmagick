@@ -1,4 +1,4 @@
-This file was last updated on April 23, 2005.
+This file was last updated on August 18, 2005.
 
 Please note that this file records news for the associated development
 branch and that each development branch has its own NEWS file.
@@ -10,6 +10,7 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     "http://www.us-cert.gov/cas/techalerts/TA04-217A.html".
     * AVI, BMP, & DIB security fixes.
     * PSD security fixes.
+    * P7 format security fix.
     * Implementation has replaced usage of strcpy, strcat, and strncat
     with the more security conscious strlcat and strlcpy.
 
@@ -45,6 +46,7 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     * For the gmdisplay program, ensure that only RGB data is sent to Windows.
     * Memory leak fixes.
     * PDF writer is fixed so that Ghoscript 8.5 doesn't warn about the output.
+    * Fixed a infinite loop bug in the XWD reader.
 
   Feature improvements:
     * LZW compression is now enabled by default.
@@ -86,6 +88,7 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     * Added ExportImageChannel() and ImportImageChannel() APIs to support
     exporting and importing pixel regions with an arbitary range of (1 to
     32) bits per quantum.
+    * Added image leveling methods for Magick++.
 
   Performance improvments:
 
@@ -94,6 +97,9 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     order to improve performance dramatically.
     * When writing very large JPEG images, don't enable Huffman compression
     since doing so requires libjpeg to buffer the entire image in memory.
+    * When using the 'identify' -verbose option, -verbose must be specified
+      twice in order to obtain the color count.  This makes normal use of
+      -verbose much faster.
 
   Windows-specific improvements/changes:
 
@@ -103,9 +109,12 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     performance.
     * Updated LCMS to version 1.14.
     * Updated Jasper library to version 1.701.0.
+    * Updated libpng to 1.2.8.
+    * Updated zlib to 1.2.3.
     * Libtiff updated to support LZW compression.
     * Use GlobalMemoryStatusEx(), if available, to determine how much physical
     memory is available.  Important for large-memory machines.
+    * Fixed NTreaddir() so that it does not write beyond its buffer.
     * Fixed opendir() emulation function so it can't overwrite the stack.
     o FlashPIX library sources are no longer distributed in the Windows
     source package and building FlashPIX is disabled by default.  FlashPIX

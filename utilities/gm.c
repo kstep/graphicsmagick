@@ -41,23 +41,7 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/attribute.h"
-#include "magick/command.h"
-#include "magick/magick.h"
-#include "magick/utility.h"
-#include "magick/version.h"
-
-static void PrintUsage(void)
-{
-  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Use:\n\n");
-  (void) printf("  %.1024s help\n\n", SetClientName((char *) NULL));
-  (void) printf("to obtain a list of available subcommands, or\n\n");
-  (void) printf("  %.1024s help 'command'\n\n", SetClientName((char *) NULL));
-  (void) printf("to obtain help information for 'command'\n");
-}
+#include "magick/api.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,92 +58,11 @@ static void PrintUsage(void)
 */
 int main(int argc,char **argv)
 {
-  char
-    command[MaxTextExtent],
-    *text;
-
-  ExceptionInfo
-    exception;
-
-  ImageInfo
-    *image_info;
-
-  unsigned int
-    status=True;
-
-  ReadCommandlLine(argc,&argv);
 #if defined(WIN32)
   InitializeMagick((char *) NULL);
 #else
   InitializeMagick(argv[0]);
 #endif
 
-  (void) SetClientName(argv[0]);
-  {
-    /*
-      Support traditional alternate names for GraphicsMagick subcommands.
-    */
-    static const char *command_names [] =
-      {
-        "animate",
-        "composite",
-        "conjure",
-        "convert",
-        "display",
-        "identify",
-        "import",
-        "mogrify",
-        "montage",
-        NULL
-      };
-
-    unsigned int
-      i;
-
-    GetPathComponent(argv[0],BasePath,command);
-    for (i=0; command_names[i]; i++)
-      if (LocaleCompare(command,command_names[i]) == 0)
-        break;
-
-    if (command_names[i])
-      {
-        /*
-          Set command name to alternate name.
-        */
-        argv[0]=command;
-      }
-    else
-      {
-        if (argc < 2)
-          {
-            PrintUsage();
-            Exit(1);
-          }
-
-        /*
-          Skip to subcommand name.
-        */
-        argc--;
-        argv++;
-      }
-  }
-
-  GetExceptionInfo(&exception);
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-  text=(char *) NULL;
-  status=MagickCommand(image_info,argc,argv,&text,&exception);
-  if (text != (char *) NULL)
-    {
-      (void) fputs(text,stdout);
-      (void) fputc('\n',stdout);
-      MagickFreeMemory(text);
-    }
-  if (exception.severity != UndefinedException)
-    CatchException(&exception);
-  DestroyImageInfo(image_info);
-  DestroyExceptionInfo(&exception);
-  DestroyMagick();
-
-  Exit(!status);
-  return(False);
+  return GMCommand(argc,argv);
 }

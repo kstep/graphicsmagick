@@ -11,19 +11,11 @@
  *
  */
 
-#if !defined(_VISUALC_)
-#include <magick/magick_config.h>
-#endif
+#include <magick/api.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
 #include <string.h>
-#if defined(_VISUALC_)
-#include <stdlib.h>
-#include <sys\types.h>
-#endif
-#include <time.h>
-#include <magick/api.h>
 
 int main ( int argc, char **argv )
 {

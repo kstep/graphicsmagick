@@ -959,7 +959,7 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
   /*
     Dump tables
   */
-  for (i=0; i <= MaxMap; i++)
+  for (i=0; i <= (long) MaxMap; i++)
     {
       printf("%5ld: x_map(%g,%g,%g) y_map(%g,%g,%g) z_map(%g,%g,%g)\n",
              i,

@@ -32,63 +32,85 @@ typedef struct _Image *ImagePtr;
   Define declarations.
 */
 #if !defined(QuantumDepth)
-#define QuantumDepth  16
-#define QuantumLeap
+#  define QuantumDepth  16
 #endif
 
+/*
+  Maximum unsigned RGB value which fits in the specified bits
+*/
+#define MaxValueGivenBits(bits) ((unsigned long) (0x01UL << (bits-1)) +((0x01UL << (bits-1))-1))
+
 #if (QuantumDepth == 8)
-#define MaxColormapSize  256UL
-#define MaxMap  255UL
-#define MaxRGB  255UL
-#define ScaleCharToMap(value)        ((unsigned char) (value))
-#define ScaleCharToQuantum(value)    ((Quantum) (value))
-#define ScaleLongToQuantum(value)    ((Quantum) ((value)/16843009UL))
-#define ScaleMapToChar(value)        ((unsigned int) (value))
-#define ScaleMapToQuantum(value)     ((Quantum) (value))
-#define ScaleQuantum(quantum)        ((unsigned long) (quantum))
-#define ScaleQuantumToChar(quantum)  ((unsigned char) (quantum))
-#define ScaleQuantumToLong(quantum)  ((unsigned long) (16843009UL*(quantum)))
-#define ScaleQuantumToMap(quantum)   ((unsigned char) (quantum))
-#define ScaleQuantumToShort(quantum) ((unsigned short) (257UL*(quantum)))
-#define ScaleShortToQuantum(value)   ((Quantum) ((value)/257UL))
-#define ScaleToQuantum(value)        ((unsigned long) (value))
-#define ScaleQuantumToIndex(value)   ((unsigned char) (value))
-typedef unsigned char Quantum;
+#  define MaxColormapSize  256UL
+#  define MaxMap  255UL
+#  define MaxRGB  255UL
+#  define ScaleCharToMap(value)        ((unsigned char) (value))
+#  define ScaleCharToQuantum(value)    ((Quantum) (value))
+#  define ScaleLongToQuantum(value)    ((Quantum) ((value)/16843009UL))
+#  define ScaleMapToChar(value)        ((unsigned int) (value))
+#  define ScaleMapToQuantum(value)     ((Quantum) (value))
+#  define ScaleQuantum(quantum)        ((unsigned long) (quantum))
+#  define ScaleQuantumToChar(quantum)  ((unsigned char) (quantum))
+#  define ScaleQuantumToLong(quantum)  ((unsigned long) (16843009UL*(quantum)))
+#  define ScaleQuantumToMap(quantum)   ((unsigned char) (quantum))
+#  define ScaleQuantumToShort(quantum) ((unsigned short) (257UL*(quantum)))
+#  define ScaleShortToQuantum(value)   ((Quantum) ((value)/257UL))
+#  define ScaleToQuantum(value)        ((unsigned long) (value))
+#  define ScaleQuantumToIndex(value)   ((unsigned char) (value))
+   typedef unsigned char Quantum;
 #elif (QuantumDepth == 16)
-#define MaxColormapSize  65536UL
-#define MaxMap 65535UL
-#define MaxRGB  65535UL
-#define ScaleCharToMap(value)        ((unsigned short) (257UL*(value)))
-#define ScaleCharToQuantum(value)    ((Quantum) (257UL*(value)))
-#define ScaleLongToQuantum(value)    ((Quantum) ((value)/65537UL))
-#define ScaleMapToChar(value)        ((unsigned int) ((value)/257UL))
-#define ScaleMapToQuantum(value)     ((Quantum) (value))
-#define ScaleQuantum(quantum)        ((unsigned long) ((quantum)/257UL))
-#define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/257UL))
-#define ScaleQuantumToLong(quantum)  ((unsigned long) (65537UL*(quantum)))
-#define ScaleQuantumToMap(quantum)   ((unsigned short) (quantum))
-#define ScaleQuantumToShort(quantum) ((unsigned short) (quantum))
-#define ScaleShortToQuantum(value)   ((Quantum) (value))
-#define ScaleToQuantum(value)        ((unsigned long) (257UL*(value)))
-#define ScaleQuantumToIndex(value)   ((unsigned short) (value))
-typedef unsigned short Quantum;
+#  define MaxColormapSize  65536UL
+#  define MaxMap 65535UL
+#  define MaxRGB  65535UL
+#  define ScaleCharToMap(value)        ((unsigned short) (257UL*(value)))
+#  define ScaleCharToQuantum(value)    ((Quantum) (257UL*(value)))
+#  define ScaleLongToQuantum(value)    ((Quantum) ((value)/65537UL))
+#  define ScaleMapToChar(value)        ((unsigned int) ((value)/257UL))
+#  define ScaleMapToQuantum(value)     ((Quantum) (value))
+#  define ScaleQuantum(quantum)        ((unsigned long) ((quantum)/257UL))
+#  define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/257UL))
+#  define ScaleQuantumToLong(quantum)  ((unsigned long) (65537UL*(quantum)))
+#  define ScaleQuantumToMap(quantum)   ((unsigned short) (quantum))
+#  define ScaleQuantumToShort(quantum) ((unsigned short) (quantum))
+#  define ScaleShortToQuantum(value)   ((Quantum) (value))
+#  define ScaleToQuantum(value)        ((unsigned long) (257UL*(value)))
+#  define ScaleQuantumToIndex(value)   ((unsigned short) (value))
+   typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
-#define MaxColormapSize  65536UL
+#  define MaxColormapSize  65536UL
+#  define MaxRGB  4294967295UL
+#  define ScaleCharToQuantum(value)    ((Quantum) (16843009UL*(value)))
+#  define ScaleLongToQuantum(value)    ((Quantum) ((value)))
+#  define ScaleQuantum(quantum)        ((unsigned long) ((quantum)/16843009UL))
+#  define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/16843009UL))
+#  define ScaleQuantumToLong(quantum)  ((unsigned long) (quantum))
+#  define ScaleQuantumToShort(quantum) ((unsigned short) ((quantum)/65537UL))
+#  define ScaleShortToQuantum(value)   ((Quantum) (65537UL*(value)))
+#  define ScaleToQuantum(value)        ((unsigned long) (16843009UL*(value)))
+#  define ScaleQuantumToIndex(value)   ((unsigned short) ((value)/65537UL))
+
+/*
+  MaxMap defines the maximum index value for algorithms which depend
+  on lookup tables (e.g. colorspace transformations and
+  normalization). When MaxMap is less than MaxRGB it is necessary to
+  downscale samples to fit the range of MaxMap. The number of bits
+  which are effectively preserved depends on the size of MaxMap.
+  MaxMap should be a multiple of 255 and no larger than MaxRGB.  Note
+  that tables can become quite large and as the tables grow larger it
+  may take more time to compute the table than to process the image.
+*/
 #define MaxMap 65535UL
-#define MaxRGB  4294967295UL
-#define ScaleCharToMap(value)        ((unsigned short) (257UL*(value)))
-#define ScaleCharToQuantum(value)    ((Quantum) (16843009UL*(value)))
-#define ScaleLongToQuantum(value)    ((Quantum) ((value)))
-#define ScaleMapToChar(value)        ((unsigned int) ((value)/257UL))
-#define ScaleMapToQuantum(value)     ((Quantum) (65537UL*(value)))
-#define ScaleQuantum(quantum)        ((unsigned long) ((quantum)/16843009UL))
-#define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/16843009UL))
-#define ScaleQuantumToLong(quantum)  ((unsigned long) (quantum))
-#define ScaleQuantumToMap(quantum)   ((unsigned short) ((quantum)/65537UL))
-#define ScaleQuantumToShort(quantum) ((unsigned short) ((quantum)/65537UL))
-#define ScaleShortToQuantum(value)   ((Quantum) (65537UL*(value)))
-#define ScaleToQuantum(value)        ((unsigned long) (16843009UL*(value)))
-#define ScaleQuantumToIndex(value)   ((unsigned short) ((value)/65537UL))
+#if MaxMap == 65535UL
+#  define ScaleCharToMap(value)        ((unsigned short) (257UL*(value)))
+#  define ScaleMapToChar(value)        ((unsigned int) ((value)/257UL))
+#  define ScaleMapToQuantum(value)     ((Quantum) (65537UL*(value)))
+#  define ScaleQuantumToMap(quantum)   ((unsigned short) ((quantum)/65537UL))
+#else
+#  define ScaleCharToMap(value)        ((unsigned short) ((MaxMap/255)*(value)))
+#  define ScaleMapToChar(value)        ((unsigned int) ((value)/(MaxMap/255)))
+#  define ScaleMapToQuantum(value)     ((Quantum) ((MaxRGB/MaxMap)*(value)))
+#  define ScaleQuantumToMap(quantum)   ((unsigned short) ((quantum)/(MaxRGB/MaxMap)))
+#endif
 typedef unsigned int Quantum;
 #else
 #  ifndef _CH_
@@ -106,21 +128,9 @@ typedef unsigned int Quantum;
   value + 0.5))
 
 /*
-  Maximum unsigned RGB value which fits in the specified bits
-*/
-#define MaxValueGivenBits(bits) ((unsigned long) (0x01UL << (bits-1)) +((0x01UL << (bits-1))-1))
-
-/*
   Deprecated defines.
 */
 #define RunlengthEncodedCompression RLECompression
-#if 0
-#define Downscale(quantum)  ScaleQuantumToChar(quantum)
-#define Intensity(color)  PixelIntensityToQuantum(color)
-#define Upscale(value)  ScaleCharToQuantum(value)
-#define XDownscale(value)  ScaleShortToQuantum(value)
-#define XUpscale(quantum)  ScaleQuantumToShort(quantum)
-#endif
 
 /*
   Enum declarations.

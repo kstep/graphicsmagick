@@ -547,8 +547,8 @@ int main( int /*argc*/, char ** argv)
       }
 
     // Test set/get
-    image.compressType(RunlengthEncodedCompression);
-    if ( image.compressType() != RunlengthEncodedCompression )
+    image.compressType(RLECompression);
+    if ( image.compressType() != RLECompression )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", compressType set/get failed" << endl;

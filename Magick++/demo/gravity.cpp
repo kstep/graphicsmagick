@@ -54,7 +54,7 @@ int main( int /*argc*/, char ** argv)
     base.font( font );
     base.boxColor( "red" );
     base.animationDelay( 20 );
-    base.compressType( RunlengthEncodedCompression );
+    base.compressType( RLECompression );
 
     for ( int angle = 0; angle < 360; angle += 30 )
       {

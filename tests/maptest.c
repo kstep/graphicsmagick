@@ -11,20 +11,12 @@
  
 */
 
-#if !defined(_VISUALC_)
-#include <magick_config.h>
-#endif
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <string.h>
-#if defined(_VISUALC_)
-#include <stdlib.h>
-#include <sys\types.h>
-#endif
-#include <time.h>
 #include <magick/api.h>
 #include <magick/map.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct _KeyValMap
 {

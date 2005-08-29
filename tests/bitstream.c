@@ -9,8 +9,13 @@
   Written by Bob Friesenhahn, September 2003
  
 */
-#include <magick/studio.h>
+
+#include <magick/api.h>
 #include <magick/bit_stream.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 int main ( int argc, char *argv[])
 {

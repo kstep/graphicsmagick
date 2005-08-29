@@ -11,19 +11,11 @@
  *
  */
 
-#if !defined(_VISUALC_)
-#include <magick/magick_config.h>
-#endif
+#include <magick/api.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
 #include <string.h>
-#if defined(_VISUALC_)
-#include <stdlib.h>
-#include <sys\types.h>
-#endif
-#include <time.h>
-#include <magick/api.h>
 
 int main ( int argc, char **argv )
 {
@@ -97,7 +89,7 @@ int main ( int argc, char **argv )
               if (LocaleCompare("LZW",option) == 0)
                 imageInfo->compression=LZWCompression;
               if (LocaleCompare("RLE",option) == 0)
-                imageInfo->compression=RunlengthEncodedCompression;
+                imageInfo->compression=RLECompression;
               if (LocaleCompare("Zip",option) == 0)
                 imageInfo->compression=ZipCompression;
             }

@@ -5,19 +5,11 @@
  *
  */
 
-#if !defined(_VISUALC_)
-#include <magick/magick_config.h>
-#endif
+#include <magick/api.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#if defined(_VISUALC_)
-#include <stdlib.h>
-#include <sys\types.h>
-#endif
-#include <time.h>
-#include <magick/api.h>
 
 #if !defined(True)
 # define True 1

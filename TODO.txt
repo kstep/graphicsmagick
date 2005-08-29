@@ -10,8 +10,6 @@ For 1.2 Branch
 
   o Fix Scitex RGB reader.
 
-  o Fix PhotoCD support (broken in 1.2, works in 1.1.X).
-
   o Fix polyline renderering (improperly closes shape) when line is very thick.
 
   o Look into problem reported by Rick Mabry, "Shear produces artifacts for

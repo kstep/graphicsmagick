@@ -9,13 +9,6 @@
  
   GraphicsMagick Application Programming Interface declarations.
 
-  Api.h depends on a number of ANSI C headers as follows:
-
-      #include <stdio.h>
-      #include <time.h>
-      #include <sys/types.h>
-      #include <magick/api.h>
-
 */
 
 #ifndef _MAGICK_API_H
@@ -36,6 +29,9 @@ extern "C" {
 #  undef inline
 # endif
 #endif
+
+#include <stdio.h>
+#include <sys/types.h>
 
 #if defined(WIN32) && !defined(__CYGWIN__)
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)

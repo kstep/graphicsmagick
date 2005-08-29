@@ -1021,22 +1021,24 @@ am_Magick___tests_readWriteImages_OBJECTS =  \
 Magick___tests_readWriteImages_OBJECTS =  \
 	$(am_Magick___tests_readWriteImages_OBJECTS)
 Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
-am_tests_bitstream_OBJECTS = tests/bitstream.$(OBJEXT)
+am_tests_bitstream_OBJECTS =  \
+	tests/tests_bitstream-bitstream.$(OBJEXT)
 tests_bitstream_OBJECTS = $(am_tests_bitstream_OBJECTS)
 tests_bitstream_DEPENDENCIES =
-am_tests_constitute_OBJECTS = tests/constitute.$(OBJEXT)
+am_tests_constitute_OBJECTS =  \
+	tests/tests_constitute-constitute.$(OBJEXT)
 tests_constitute_OBJECTS = $(am_tests_constitute_OBJECTS)
 tests_constitute_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_tests_drawtest_OBJECTS = tests/drawtest.$(OBJEXT)
+am_tests_drawtest_OBJECTS = tests/tests_drawtest-drawtest.$(OBJEXT)
 tests_drawtest_OBJECTS = $(am_tests_drawtest_OBJECTS)
 tests_drawtest_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_tests_maptest_OBJECTS = tests/maptest.$(OBJEXT)
+am_tests_maptest_OBJECTS = tests/tests_maptest-maptest.$(OBJEXT)
 tests_maptest_OBJECTS = $(am_tests_maptest_OBJECTS)
 tests_maptest_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_tests_rwblob_OBJECTS = tests/rwblob.$(OBJEXT)
+am_tests_rwblob_OBJECTS = tests/tests_rwblob-rwblob.$(OBJEXT)
 tests_rwblob_OBJECTS = $(am_tests_rwblob_OBJECTS)
 tests_rwblob_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_tests_rwfile_OBJECTS = tests/rwfile.$(OBJEXT)
+am_tests_rwfile_OBJECTS = tests/tests_rwfile-rwfile.$(OBJEXT)
 tests_rwfile_OBJECTS = $(am_tests_rwfile_OBJECTS)
 tests_rwfile_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_utilities_gm_OBJECTS = utilities/gm.$(OBJEXT)
@@ -2901,15 +2903,21 @@ TESTS_CHECK_PGRMS = \
 
 tests_bitstream_SOURCES = tests/bitstream.c
 tests_bitstream_LDADD = 
+tests_bitstream_CPPFLAGS = $(AM_CPPFLAGS)
 tests_constitute_SOURCES = tests/constitute.c
+tests_constitute_CPPFLAGS = $(AM_CPPFLAGS)
 tests_constitute_LDADD = $(LIBMAGICK)
 tests_maptest_SOURCES = tests/maptest.c
+tests_maptest_CPPFLAGS = $(AM_CPPFLAGS)
 tests_maptest_LDADD = $(LIBMAGICK)
 tests_rwblob_SOURCES = tests/rwblob.c
+tests_rwblob_CPPFLAGS = $(AM_CPPFLAGS)
 tests_rwblob_LDADD = $(LIBMAGICK)
 tests_rwfile_SOURCES = tests/rwfile.c
+tests_rwfile_CPPFLAGS = $(AM_CPPFLAGS)
 tests_rwfile_LDADD = $(LIBMAGICK)
 tests_drawtest_SOURCES = tests/drawtest.c
+tests_drawtest_CPPFLAGS = $(AM_CPPFLAGS)
 tests_drawtest_LDADD = $(LIBMAGICK)
 @HasFPX_FALSE@TESTS_FPX_XFAIL_TESTS = \
 @HasFPX_FALSE@	tests/rwblob_FPX_bilevel.sh \
@@ -5200,32 +5208,32 @@ tests/$(am__dirstamp):
 tests/$(DEPDIR)/$(am__dirstamp):
 	@$(mkdir_p) tests/$(DEPDIR)
 	@: > tests/$(DEPDIR)/$(am__dirstamp)
-tests/bitstream.$(OBJEXT): tests/$(am__dirstamp) \
+tests/tests_bitstream-bitstream.$(OBJEXT): tests/$(am__dirstamp) \
 	tests/$(DEPDIR)/$(am__dirstamp)
 tests/bitstream$(EXEEXT): $(tests_bitstream_OBJECTS) $(tests_bitstream_DEPENDENCIES) tests/$(am__dirstamp)
 	@rm -f tests/bitstream$(EXEEXT)
 	$(LINK) $(tests_bitstream_LDFLAGS) $(tests_bitstream_OBJECTS) $(tests_bitstream_LDADD) $(LIBS)
-tests/constitute.$(OBJEXT): tests/$(am__dirstamp) \
+tests/tests_constitute-constitute.$(OBJEXT): tests/$(am__dirstamp) \
 	tests/$(DEPDIR)/$(am__dirstamp)
 tests/constitute$(EXEEXT): $(tests_constitute_OBJECTS) $(tests_constitute_DEPENDENCIES) tests/$(am__dirstamp)
 	@rm -f tests/constitute$(EXEEXT)
 	$(LINK) $(tests_constitute_LDFLAGS) $(tests_constitute_OBJECTS) $(tests_constitute_LDADD) $(LIBS)
-tests/drawtest.$(OBJEXT): tests/$(am__dirstamp) \
+tests/tests_drawtest-drawtest.$(OBJEXT): tests/$(am__dirstamp) \
 	tests/$(DEPDIR)/$(am__dirstamp)
 tests/drawtest$(EXEEXT): $(tests_drawtest_OBJECTS) $(tests_drawtest_DEPENDENCIES) tests/$(am__dirstamp)
 	@rm -f tests/drawtest$(EXEEXT)
 	$(LINK) $(tests_drawtest_LDFLAGS) $(tests_drawtest_OBJECTS) $(tests_drawtest_LDADD) $(LIBS)
-tests/maptest.$(OBJEXT): tests/$(am__dirstamp) \
+tests/tests_maptest-maptest.$(OBJEXT): tests/$(am__dirstamp) \
 	tests/$(DEPDIR)/$(am__dirstamp)
 tests/maptest$(EXEEXT): $(tests_maptest_OBJECTS) $(tests_maptest_DEPENDENCIES) tests/$(am__dirstamp)
 	@rm -f tests/maptest$(EXEEXT)
 	$(LINK) $(tests_maptest_LDFLAGS) $(tests_maptest_OBJECTS) $(tests_maptest_LDADD) $(LIBS)
-tests/rwblob.$(OBJEXT): tests/$(am__dirstamp) \
+tests/tests_rwblob-rwblob.$(OBJEXT): tests/$(am__dirstamp) \
 	tests/$(DEPDIR)/$(am__dirstamp)
 tests/rwblob$(EXEEXT): $(tests_rwblob_OBJECTS) $(tests_rwblob_DEPENDENCIES) tests/$(am__dirstamp)
 	@rm -f tests/rwblob$(EXEEXT)
 	$(LINK) $(tests_rwblob_LDFLAGS) $(tests_rwblob_OBJECTS) $(tests_rwblob_LDADD) $(LIBS)
-tests/rwfile.$(OBJEXT): tests/$(am__dirstamp) \
+tests/tests_rwfile-rwfile.$(OBJEXT): tests/$(am__dirstamp) \
 	tests/$(DEPDIR)/$(am__dirstamp)
 tests/rwfile$(EXEEXT): $(tests_rwfile_OBJECTS) $(tests_rwfile_DEPENDENCIES) tests/$(am__dirstamp)
 	@rm -f tests/rwfile$(EXEEXT)
@@ -5828,12 +5836,12 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-widget.lo
 	-rm -f magick/magick_libGraphicsMagick_la-xwindow.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-xwindow.lo
-	-rm -f tests/bitstream.$(OBJEXT)
-	-rm -f tests/constitute.$(OBJEXT)
-	-rm -f tests/drawtest.$(OBJEXT)
-	-rm -f tests/maptest.$(OBJEXT)
-	-rm -f tests/rwblob.$(OBJEXT)
-	-rm -f tests/rwfile.$(OBJEXT)
+	-rm -f tests/tests_bitstream-bitstream.$(OBJEXT)
+	-rm -f tests/tests_constitute-constitute.$(OBJEXT)
+	-rm -f tests/tests_drawtest-drawtest.$(OBJEXT)
+	-rm -f tests/tests_maptest-maptest.$(OBJEXT)
+	-rm -f tests/tests_rwblob-rwblob.$(OBJEXT)
+	-rm -f tests/tests_rwfile-rwfile.$(OBJEXT)
 	-rm -f utilities/gm.$(OBJEXT)
 	-rm -f wand/drawing_wand.$(OBJEXT)
 	-rm -f wand/drawing_wand.lo
@@ -6137,12 +6145,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-version.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-widget.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-xwindow.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/bitstream.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/constitute.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/drawtest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/maptest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/rwblob.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/rwfile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_bitstream-bitstream.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_constitute-constitute.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_drawtest-drawtest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_maptest-maptest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_rwblob-rwblob.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_rwfile-rwfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/gm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/drawing_wand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/drawtest.Po@am__quote@
@@ -7910,6 +7918,90 @@ filters/magick_libGraphicsMagick_la-analyze.lo: filters/analyze.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='filters/analyze.c' object='filters/magick_libGraphicsMagick_la-analyze.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o filters/magick_libGraphicsMagick_la-analyze.lo `test -f 'filters/analyze.c' || echo '$(srcdir)/'`filters/analyze.c
+
+tests/tests_bitstream-bitstream.o: tests/bitstream.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_bitstream_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_bitstream-bitstream.o -MD -MP -MF "tests/$(DEPDIR)/tests_bitstream-bitstream.Tpo" -c -o tests/tests_bitstream-bitstream.o `test -f 'tests/bitstream.c' || echo '$(srcdir)/'`tests/bitstream.c; \
+@am__fastdepCC_TRUE@	then mv -f "tests/$(DEPDIR)/tests_bitstream-bitstream.Tpo" "tests/$(DEPDIR)/tests_bitstream-bitstream.Po"; else rm -f "tests/$(DEPDIR)/tests_bitstream-bitstream.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tests/bitstream.c' object='tests/tests_bitstream-bitstream.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_bitstream_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_bitstream-bitstream.o `test -f 'tests/bitstream.c' || echo '$(srcdir)/'`tests/bitstream.c
+
+tests/tests_bitstream-bitstream.obj: tests/bitstream.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_bitstream_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_bitstream-bitstream.obj -MD -MP -MF "tests/$(DEPDIR)/tests_bitstream-bitstream.Tpo" -c -o tests/tests_bitstream-bitstream.obj `if test -f 'tests/bitstream.c'; then $(CYGPATH_W) 'tests/bitstream.c'; else $(CYGPATH_W) '$(srcdir)/tests/bitstream.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "tests/$(DEPDIR)/tests_bitstream-bitstream.Tpo" "tests/$(DEPDIR)/tests_bitstream-bitstream.Po"; else rm -f "tests/$(DEPDIR)/tests_bitstream-bitstream.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tests/bitstream.c' object='tests/tests_bitstream-bitstream.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_bitstream_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_bitstream-bitstream.obj `if test -f 'tests/bitstream.c'; then $(CYGPATH_W) 'tests/bitstream.c'; else $(CYGPATH_W) '$(srcdir)/tests/bitstream.c'; fi`
+
+tests/tests_constitute-constitute.o: tests/constitute.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_constitute_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_constitute-constitute.o -MD -MP -MF "tests/$(DEPDIR)/tests_constitute-constitute.Tpo" -c -o tests/tests_constitute-constitute.o `test -f 'tests/constitute.c' || echo '$(srcdir)/'`tests/constitute.c; \
+@am__fastdepCC_TRUE@	then mv -f "tests/$(DEPDIR)/tests_constitute-constitute.Tpo" "tests/$(DEPDIR)/tests_constitute-constitute.Po"; else rm -f "tests/$(DEPDIR)/tests_constitute-constitute.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tests/constitute.c' object='tests/tests_constitute-constitute.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_constitute_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_constitute-constitute.o `test -f 'tests/constitute.c' || echo '$(srcdir)/'`tests/constitute.c
+
+tests/tests_constitute-constitute.obj: tests/constitute.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_constitute_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_constitute-constitute.obj -MD -MP -MF "tests/$(DEPDIR)/tests_constitute-constitute.Tpo" -c -o tests/tests_constitute-constitute.obj `if test -f 'tests/constitute.c'; then $(CYGPATH_W) 'tests/constitute.c'; else $(CYGPATH_W) '$(srcdir)/tests/constitute.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "tests/$(DEPDIR)/tests_constitute-constitute.Tpo" "tests/$(DEPDIR)/tests_constitute-constitute.Po"; else rm -f "tests/$(DEPDIR)/tests_constitute-constitute.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tests/constitute.c' object='tests/tests_constitute-constitute.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_constitute_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_constitute-constitute.obj `if test -f 'tests/constitute.c'; then $(CYGPATH_W) 'tests/constitute.c'; else $(CYGPATH_W) '$(srcdir)/tests/constitute.c'; fi`
+
+tests/tests_drawtest-drawtest.o: tests/drawtest.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_drawtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_drawtest-drawtest.o -MD -MP -MF "tests/$(DEPDIR)/tests_drawtest-drawtest.Tpo" -c -o tests/tests_drawtest-drawtest.o `test -f 'tests/drawtest.c' || echo '$(srcdir)/'`tests/drawtest.c; \
+@am__fastdepCC_TRUE@	then mv -f "tests/$(DEPDIR)/tests_drawtest-drawtest.Tpo" "tests/$(DEPDIR)/tests_drawtest-drawtest.Po"; else rm -f "tests/$(DEPDIR)/tests_drawtest-drawtest.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tests/drawtest.c' object='tests/tests_drawtest-drawtest.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_drawtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_drawtest-drawtest.o `test -f 'tests/drawtest.c' || echo '$(srcdir)/'`tests/drawtest.c
+
+tests/tests_drawtest-drawtest.obj: tests/drawtest.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_drawtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_drawtest-drawtest.obj -MD -MP -MF "tests/$(DEPDIR)/tests_drawtest-drawtest.Tpo" -c -o tests/tests_drawtest-drawtest.obj `if test -f 'tests/drawtest.c'; then $(CYGPATH_W) 'tests/drawtest.c'; else $(CYGPATH_W) '$(srcdir)/tests/drawtest.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "tests/$(DEPDIR)/tests_drawtest-drawtest.Tpo" "tests/$(DEPDIR)/tests_drawtest-drawtest.Po"; else rm -f "tests/$(DEPDIR)/tests_drawtest-drawtest.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tests/drawtest.c' object='tests/tests_drawtest-drawtest.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_drawtest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_drawtest-drawtest.obj `if test -f 'tests/drawtest.c'; then $(CYGPATH_W) 'tests/drawtest.c'; else $(CYGPATH_W) '$(srcdir)/tests/drawtest.c'; fi`
+
+tests/tests_maptest-maptest.o: tests/maptest.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_maptest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_maptest-maptest.o -MD -MP -MF "tests/$(DEPDIR)/tests_maptest-maptest.Tpo" -c -o tests/tests_maptest-maptest.o `test -f 'tests/maptest.c' || echo '$(srcdir)/'`tests/maptest.c; \
+@am__fastdepCC_TRUE@	then mv -f "tests/$(DEPDIR)/tests_maptest-maptest.Tpo" "tests/$(DEPDIR)/tests_maptest-maptest.Po"; else rm -f "tests/$(DEPDIR)/tests_maptest-maptest.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tests/maptest.c' object='tests/tests_maptest-maptest.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_maptest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_maptest-maptest.o `test -f 'tests/maptest.c' || echo '$(srcdir)/'`tests/maptest.c
+
+tests/tests_maptest-maptest.obj: tests/maptest.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_maptest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_maptest-maptest.obj -MD -MP -MF "tests/$(DEPDIR)/tests_maptest-maptest.Tpo" -c -o tests/tests_maptest-maptest.obj `if test -f 'tests/maptest.c'; then $(CYGPATH_W) 'tests/maptest.c'; else $(CYGPATH_W) '$(srcdir)/tests/maptest.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "tests/$(DEPDIR)/tests_maptest-maptest.Tpo" "tests/$(DEPDIR)/tests_maptest-maptest.Po"; else rm -f "tests/$(DEPDIR)/tests_maptest-maptest.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tests/maptest.c' object='tests/tests_maptest-maptest.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_maptest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_maptest-maptest.obj `if test -f 'tests/maptest.c'; then $(CYGPATH_W) 'tests/maptest.c'; else $(CYGPATH_W) '$(srcdir)/tests/maptest.c'; fi`
+
+tests/tests_rwblob-rwblob.o: tests/rwblob.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_rwblob_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_rwblob-rwblob.o -MD -MP -MF "tests/$(DEPDIR)/tests_rwblob-rwblob.Tpo" -c -o tests/tests_rwblob-rwblob.o `test -f 'tests/rwblob.c' || echo '$(srcdir)/'`tests/rwblob.c; \
+@am__fastdepCC_TRUE@	then mv -f "tests/$(DEPDIR)/tests_rwblob-rwblob.Tpo" "tests/$(DEPDIR)/tests_rwblob-rwblob.Po"; else rm -f "tests/$(DEPDIR)/tests_rwblob-rwblob.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tests/rwblob.c' object='tests/tests_rwblob-rwblob.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_rwblob_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_rwblob-rwblob.o `test -f 'tests/rwblob.c' || echo '$(srcdir)/'`tests/rwblob.c
+
+tests/tests_rwblob-rwblob.obj: tests/rwblob.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_rwblob_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_rwblob-rwblob.obj -MD -MP -MF "tests/$(DEPDIR)/tests_rwblob-rwblob.Tpo" -c -o tests/tests_rwblob-rwblob.obj `if test -f 'tests/rwblob.c'; then $(CYGPATH_W) 'tests/rwblob.c'; else $(CYGPATH_W) '$(srcdir)/tests/rwblob.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "tests/$(DEPDIR)/tests_rwblob-rwblob.Tpo" "tests/$(DEPDIR)/tests_rwblob-rwblob.Po"; else rm -f "tests/$(DEPDIR)/tests_rwblob-rwblob.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tests/rwblob.c' object='tests/tests_rwblob-rwblob.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_rwblob_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_rwblob-rwblob.obj `if test -f 'tests/rwblob.c'; then $(CYGPATH_W) 'tests/rwblob.c'; else $(CYGPATH_W) '$(srcdir)/tests/rwblob.c'; fi`
+
+tests/tests_rwfile-rwfile.o: tests/rwfile.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_rwfile_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_rwfile-rwfile.o -MD -MP -MF "tests/$(DEPDIR)/tests_rwfile-rwfile.Tpo" -c -o tests/tests_rwfile-rwfile.o `test -f 'tests/rwfile.c' || echo '$(srcdir)/'`tests/rwfile.c; \
+@am__fastdepCC_TRUE@	then mv -f "tests/$(DEPDIR)/tests_rwfile-rwfile.Tpo" "tests/$(DEPDIR)/tests_rwfile-rwfile.Po"; else rm -f "tests/$(DEPDIR)/tests_rwfile-rwfile.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tests/rwfile.c' object='tests/tests_rwfile-rwfile.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_rwfile_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_rwfile-rwfile.o `test -f 'tests/rwfile.c' || echo '$(srcdir)/'`tests/rwfile.c
+
+tests/tests_rwfile-rwfile.obj: tests/rwfile.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_rwfile_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_rwfile-rwfile.obj -MD -MP -MF "tests/$(DEPDIR)/tests_rwfile-rwfile.Tpo" -c -o tests/tests_rwfile-rwfile.obj `if test -f 'tests/rwfile.c'; then $(CYGPATH_W) 'tests/rwfile.c'; else $(CYGPATH_W) '$(srcdir)/tests/rwfile.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "tests/$(DEPDIR)/tests_rwfile-rwfile.Tpo" "tests/$(DEPDIR)/tests_rwfile-rwfile.Po"; else rm -f "tests/$(DEPDIR)/tests_rwfile-rwfile.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tests/rwfile.c' object='tests/tests_rwfile-rwfile.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_rwfile_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tests/tests_rwfile-rwfile.obj `if test -f 'tests/rwfile.c'; then $(CYGPATH_W) 'tests/rwfile.c'; else $(CYGPATH_W) '$(srcdir)/tests/rwfile.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`; \

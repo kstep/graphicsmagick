@@ -43,7 +43,6 @@
 #define AnalyzeImage GmAnalyzeImage
 #define AnimateImageCommand GmAnimateImageCommand
 #define AnimateImages GmAnimateImages
-#define AnimateUsage GmAnimateUsage
 #define AnnotateImage GmAnnotateImage
 #define AppendImageFormat GmAppendImageFormat
 #define AppendImageToList GmAppendImageToList
@@ -90,17 +89,14 @@
 #define ColorspaceTypeToString GmColorspaceTypeToString
 #define CompositeImage GmCompositeImage
 #define CompositeImageCommand GmCompositeImageCommand
-#define CompositeUsage GmCompositeUsage
 #define CompressImageColormap GmCompressImageColormap
 #define ConcatenateString GmConcatenateString
 #define ConjureImageCommand GmConjureImageCommand
-#define ConjureUsage GmConjureUsage
 #define ConstituteImage GmConstituteImage
 #define ContinueTimer GmContinueTimer
 #define Contrast GmContrast
 #define ContrastImage GmContrastImage
 #define ConvertImageCommand GmConvertImageCommand
-#define ConvertUsage GmConvertUsage
 #define ConvolveImage GmConvolveImage
 #define CopyException GmCopyException
 #define CropImage GmCropImage
@@ -149,7 +145,6 @@
 #define DispatchImage GmDispatchImage
 #define DisplayImageCommand GmDisplayImageCommand
 #define DisplayImages GmDisplayImages
-#define DisplayUsage GmDisplayUsage
 #define DrawAffine GmDrawAffine
 #define DrawAffineImage GmDrawAffineImage
 #define DrawAllocateContext GmDrawAllocateContext
@@ -404,7 +399,6 @@
 #define HuffmanEncodeImage GmHuffmanEncodeImage
 #define Hull GmHull
 #define IdentifyImageCommand GmIdentifyImageCommand
-#define IdentifyUsage GmIdentifyUsage
 #define IdentityAffine GmIdentityAffine
 #define ImageListToArray GmImageListToArray
 #define ImageToBlob GmImageToBlob
@@ -413,7 +407,6 @@
 #define ImportImageChannel GmImportImageChannel
 #define ImportImageCommand GmImportImageCommand
 #define ImportImagePixelArea GmImportImagePixelArea
-#define ImportUsage GmImportUsage
 #define InitializeLogInfo GmInitializeLogInfo
 #define InitializeMagick GmInitializeMagick
 #define InitializeMagickClientPathAndName GmInitializeMagickClientPathAndName
@@ -502,10 +495,8 @@
 #define MogrifyImage GmMogrifyImage
 #define MogrifyImageCommand GmMogrifyImageCommand
 #define MogrifyImages GmMogrifyImages
-#define MogrifyUsage GmMogrifyUsage
 #define MontageImageCommand GmMontageImageCommand
 #define MontageImages GmMontageImages
-#define MontageUsage GmMontageUsage
 #define MorphImages GmMorphImages
 #define MosaicImages GmMosaicImages
 #define MotionBlurImage GmMotionBlurImage

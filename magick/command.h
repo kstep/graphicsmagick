@@ -39,16 +39,8 @@ extern MagickExport unsigned int
   MontageImageCommand(ImageInfo *image_info,int argc,char **argv,
                       char **metadata,ExceptionInfo *exception);
 
-extern MagickExport void
-  AnimateUsage(void),
-  CompositeUsage(void),
-  ConjureUsage(void),
-  ConvertUsage(void),
-  DisplayUsage(void),
-  IdentifyUsage(void),
-  ImportUsage(void),
-  MogrifyUsage(void),
-  MontageUsage(void);
+extern MagickExport int
+  GMCommand(int argc,char **argv);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

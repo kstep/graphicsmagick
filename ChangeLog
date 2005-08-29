@@ -1,3 +1,10 @@
+2005-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/api.h: Eliminate requirement to include certain system
+	headers prior to including <magick/api.h>.
+	* utilities/gm.c: Move utility implementation to GMCommand() in
+	command.c
+
 2005-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c: Added support for reading and writing DPX Luma
