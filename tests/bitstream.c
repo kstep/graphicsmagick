@@ -10,7 +10,7 @@
  
 */
 
-#include <magick/api.h>
+#include <magick/studio.h>
 #include <magick/bit_stream.h>
 
 #include <stdio.h>
