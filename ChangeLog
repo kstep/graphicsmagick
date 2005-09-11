@@ -1,3 +1,8 @@
+2005-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.h: DispatchImage and PopImagePixels were not
+	properly DLL imported by the headers.
+
 2005-07-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* png: Updated libpng to version 1.2.8.

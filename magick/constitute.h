@@ -52,7 +52,7 @@ extern MagickExport Image
   *ReadImage(const ImageInfo *,ExceptionInfo *),
   *ReadInlineImage(const ImageInfo *,const char *,ExceptionInfo *);
 
-MagickExport unsigned int
+extern MagickExport unsigned int
   DispatchImage(const Image *,const long,const long,const unsigned long,
     const unsigned long,const char *,const StorageType,void *,ExceptionInfo *),
   PopImagePixels(const Image *,const QuantumType,unsigned char *);
