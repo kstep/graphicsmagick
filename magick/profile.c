@@ -256,6 +256,7 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
       */
       if (GlobExpression("8bim",name) || GlobExpression("iptc",name))
         {
+          MagickFreeMemory(image->iptc_profile.name);
           if (image->iptc_profile.length != 0)
             MagickFreeMemory(image->iptc_profile.info);
           image->iptc_profile.length=0;
@@ -263,6 +264,7 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
         }
       if (GlobExpression("icm",name))
         {
+          MagickFreeMemory(image->color_profile.name);
           if (image->color_profile.length != 0)
             MagickFreeMemory(image->color_profile.info);
           image->color_profile.length=0;
@@ -870,6 +872,8 @@ SetImageProfile(Image *image,const char *name, const unsigned char *profile,
       /* Clear existing profile */
       MagickFreeMemory(image_profile->info);
       image_profile->length=0;
+      if (image_profile->name)
+        MagickFreeMemory(image_profile->name);
 
       if (profile)
         {

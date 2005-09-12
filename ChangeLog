@@ -1,3 +1,8 @@
+2005-09-12 Glenn Randers-Pehrson <glennrp@glennrp.com>
+
+	* magick/profile.c (ProfileImage):  Free color_profile->name
+	and iptc_profile->name when destroying the profile.
+
 2005-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/api.h: Eliminate requirement to include certain system
