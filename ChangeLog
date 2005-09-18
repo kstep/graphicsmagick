@@ -1,3 +1,12 @@
+2005-09-18  Michal Kowalczuk  <sammael@brzydal.eu.org>
+
+	* coders/gif.c: Free global_colormap before returning with error.
+
+2005-09-18  Stepan Kasal  <kasal@ucw.cz>
+
+	* Makefile.am (BUILT_SOURCES): Removed.
+	* magick/Makefile.am (MAGICK_BUILT_SRCS): Removed, too.
+
 2005-09-12 Glenn Randers-Pehrson <glennrp@glennrp.com>
 
 	* magick/profile.c (ProfileImage):  Free color_profile->name

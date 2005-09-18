@@ -3210,7 +3210,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             */
             rows_per_strip=rows_per_strip+(8-(rows_per_strip % 8));
             (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
-            (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RGB);
+            if (IsRGBColorspace(image->colorspace))
+              (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RGB);
             if (bits_per_sample == 12)
               (void) TIFFSetField(tiff,TIFFTAG_JPEGTABLESMODE,JPEGTABLESMODE_QUANT);
             break;

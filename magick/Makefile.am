@@ -23,10 +23,6 @@ MAGICK_PKGCONFIG = \
 MAGICK_MANS = \
         magick/GraphicsMagick-config.1
 
-MAGICK_BUILT_SRCS = \
-	magick/magick_config.h \
-	magick/magick_config_api.h
-
 LIBMAGICK=magick/libGraphicsMagick.la
 
 if WITH_MODULES

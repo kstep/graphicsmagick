@@ -1609,9 +1609,6 @@ CLEANFILES = \
 	$(TESTS_CLEANFILES) \
 	$(WAND_CLEANFILES)
 
-BUILT_SOURCES = \
-	$(MAGICK_BUILT_SRCS)
-
 
 # Binary scripts
 bin_SCRIPTS = \
@@ -2443,10 +2440,6 @@ MAGICK_PKGCONFIG = \
 
 MAGICK_MANS = \
         magick/GraphicsMagick-config.1
-
-MAGICK_BUILT_SRCS = \
-	magick/magick_config.h \
-	magick/magick_config_api.h
 
 LIBMAGICK = magick/libGraphicsMagick.la
 @WITH_MODULES_FALSE@magick_libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS) $(MAGICK_CODER_SRCS) $(MAGICK_FILTER_SRCS)
@@ -4092,8 +4085,7 @@ DIST_WINDOWS_SRC_ZIP = $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDEN
 @HAS_RPM_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
 @HAS_RPM_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm
 
-all: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) all-am
+all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .cpp .lo .o .obj
@@ -8586,8 +8578,7 @@ distcleancheck: distclean
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS check-local
-check: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) check-am
+check: check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA) \
 		$(HEADERS) all-local
 install-binPROGRAMS: install-libLTLIBRARIES
@@ -8596,8 +8587,7 @@ installdirs:
 	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man4dir)" "$(DESTDIR)$(man5dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(magickincdir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)" "$(DESTDIR)$(wandincdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
-install: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) install-am
+install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -8642,7 +8632,6 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-checkPROGRAMS \

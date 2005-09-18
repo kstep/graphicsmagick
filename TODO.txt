@@ -26,14 +26,20 @@ For 1.2 Branch
   o Implement DrawableFillPattern and DrawableStrokePattern drawable objects
     in order to allow setting the fill and stroke patterns.
 
+  o It appears that SyncImagePixels() silently fails if the region
+    includes parts outside of the underlying image. The API supports
+    requesting areas outside of the image, but then the underlying image
+    is not updated. This was first noted with -lat when the image is
+    entirely disk-based.
+
   o Update to libtool 2.0 (partially done in sandbox).
 
   o Re-write metadata handling to use accessor functions rather
     than accessing Image members directly (50% complete).
 
-  o Update Windows libpng to version 1.2.8.
-
   o Update Windows libtiff to version 3.7.X.
+
+  o Update Windows libpng to version 1.2.8. (done).
 
   o Update Windows zlib to version 1.2.3 (done).
 

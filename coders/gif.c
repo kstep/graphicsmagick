@@ -881,9 +881,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           GIF Extension block.
         */
         count=ReadBlob(image,1,(char *) &c);
-        if (count == 0)
-          ThrowReaderException(CorruptImageError,UnableToReadExtensionBlock,
+        if (count == 0) {
+	  MagickFreeMemory(global_colormap);
+          ThrowReaderException(CorruptImageError,UnableToReadExtensionBlock,	 
             image);
+	}
         switch (c)
         {
           case 0xf9:
@@ -987,13 +989,17 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     delay=0;
     dispose=0;
     iterations=1;
-    if ((image->columns == 0) || (image->rows == 0))
+    if ((image->columns == 0) || (image->rows == 0)) {
+      MagickFreeMemory(global_colormap);    
       ThrowReaderException(CorruptImageError,NegativeOrZeroImageSize,image);
+    }
     /*
       Inititialize colormap.
     */
-    if (!AllocateImageColormap(image,image->colors))
+    if (!AllocateImageColormap(image,image->colors)) {
+      MagickFreeMemory(global_colormap);    
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
     if (!BitSet(flag,0x80))
       {
         /*
@@ -1041,8 +1047,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Decode image.
     */
     status=DecodeImage(image,opacity);
-    if (!image_info->ping && (status == False))
+    if (!image_info->ping && (status == False)) {
+      MagickFreeMemory(global_colormap);    
       ThrowReaderException(CorruptImageError,CorruptImage,image);
+    }
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
