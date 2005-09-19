@@ -1,3 +1,7 @@
+2005-09-18  Michal Kowalczuk  <sammael@brzydal.eu.org>
+
+	* coders/gif.c: Free global_colormap before returning with error.
+
 2005-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/constitute.h: DispatchImage and PopImagePixels were not
