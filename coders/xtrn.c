@@ -56,7 +56,7 @@
 #include "magick/constitute.h"
 #include "magick/delegate.h"
 #include "magick/magick.h"
-#include "magick/stream.h"
+#include "magick/pixel_cache.h"
 #include "magick/utility.h"
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
