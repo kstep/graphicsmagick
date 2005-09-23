@@ -35,10 +35,10 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/cache.h"
 #include "magick/channel.h"
 #include "magick/image.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

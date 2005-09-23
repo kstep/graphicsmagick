@@ -37,10 +37,10 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/cache.h"
 #include "magick/color.h"
 #include "magick/composite.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 #include "magick/resize.h"
 #include "magick/transform.h"
 #include "magick/quantize.h"

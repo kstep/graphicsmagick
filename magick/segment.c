@@ -78,8 +78,8 @@
 */
 
 #include "magick/studio.h"
-#include "magick/cache.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 #include "magick/quantize.h"
 #include "magick/utility.h"
 

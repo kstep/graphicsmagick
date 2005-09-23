@@ -1,3 +1,10 @@
+2005-09-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c: Incorporate all functionality from
+	cache.c, cache_view.c, and stream.c so that all private interfaces
+	can be fully hidden.  As a result cache.c, cache_view.c, and
+	stream.c are now removed.
+
 2005-09-18  Michal Kowalczuk  <sammael@brzydal.eu.org>
 
 	* coders/gif.c: Free global_colormap before returning with error.

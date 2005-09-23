@@ -42,9 +42,9 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/cache.h"
 #include "magick/decorate.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 #include "magick/render.h"
 #include "magick/shear.h"
 #include "magick/transform.h"

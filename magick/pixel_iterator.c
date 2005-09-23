@@ -13,7 +13,7 @@
 */
 
 #include "magick/studio.h"
-#include "magick/cache.h"
+#include "magick/pixel_cache.h"
 #include "magick/pixel_iterator.h"
 
 /*

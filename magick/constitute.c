@@ -37,15 +37,14 @@
 #include "magick/studio.h"
 #include "magick/bit_stream.h"
 #include "magick/blob.h"
-#include "magick/cache.h"
 #include "magick/color.h"
 #include "magick/constitute.h"
 #include "magick/delegate.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 #include "magick/semaphore.h"
-#include "magick/stream.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 

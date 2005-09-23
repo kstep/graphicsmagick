@@ -34,7 +34,7 @@
 
 #include "magick/studio.h"
 #include "magick/blob.h"
-#include "magick/cache.h"
+#include "magick/pixel_cache.h"
 #include "magick/magick.h"
 #include "magick/utility.h"
 #if defined(HasWINGDI32)

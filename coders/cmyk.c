@@ -36,7 +36,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/cache.h"
+#include "magick/pixel_cache.h"
 #include "magick/constitute.h"
 #include "magick/blob.h"
 #include "magick/magick.h"

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>display - Interactively display and edit an image</title>
-<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -33,8 +33,8 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>unsigned int  <strong>XDisplayBackgroundImage</strong>( Display *display, XResourceInfo *resource_info, Image *image );</P>
-<P>Image * <strong>XDisplayImage</strong>( Display *display, XResourceInfo *resource_info, char ** argv, int argc, Image ** image, unsigned long *state );</P>
+<P>unsigned int Magick <strong>XDisplayBackgroundImage</strong>( Display *display, MagickXResourceInfo *resource_info, Image *image );</P>
+<P>Image *Magick <strong>XDisplayImage</strong>( Display *display, MagickXResourceInfo *resource_info, char ** argv, int argc, Image ** image, unsigned long *state );</P>
 <P>
 </P>
 <hr />
@@ -42,8 +42,8 @@
 <P>
 </P>
 <h2><a name="xdisplaybackgroundimage">XDisplayBackgroundImage</a></h2>
-<blockquote>XDisplayBackgroundImage() displays an image in the background of a window. </blockquote><P>The format of the XDisplayBackgroundImage method is:</P>
-<blockquote>unsigned int XDisplayBackgroundImage ( Display *display, <A HREF="types.html#XResourceInfo">XResourceInfo</A> *resource_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>MagickXDisplayBackgroundImage() displays an image in the background of a window. </blockquote><P>The format of the MagickXDisplayBackgroundImage method is:</P>
+<blockquote>unsigned int MagickXDisplayBackgroundImage ( Display *display, MagickXResourceInfo *resource_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_display_3a">display:</a></strong><br />
 </dt>
@@ -54,7 +54,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong><a name="item_o_resource_info_3a">resource_info:</a></strong><br />
 </dt>
 <DD>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a X11 MagickXResourceInfo structure.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_image_3a">image:</a></strong><br />
@@ -66,13 +66,13 @@ Specifies a pointer to an Image structure; returned from ReadImage.
 <P>
 </P>
 <h2><a name="xdisplayimage">XDisplayImage</a></h2>
-<blockquote>XDisplayImage() displays an image via X11. A new image is created and returned if the user interactively transforms the displayed image. </blockquote><P>The format of the XDisplayImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *XDisplayImage ( Display *display, <A HREF="types.html#XResourceInfo">XResourceInfo</A> *resource_info, char **argv, int argc, <A HREF="types.html#Image">Image</A> **image, unsigned long *state ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>MagickXDisplayImage() displays an image via X11. A new image is created and returned if the user interactively transforms the displayed image. </blockquote><P>The format of the MagickXDisplayImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *MagickXDisplayImage ( Display *display, MagickXResourceInfo *resource_info, char **argv, int argc, <A HREF="types.html#Image">Image</A> **image, unsigned long *state ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_nexus_3a">nexus:</a></strong><br />
 </dt>
 <DD>
-Method XDisplayImage returns an image when the user chooses 'Open Image' from the command menu or picks a tile from the image directory.  Otherwise a null image is returned.
+Method MagickXDisplayImage returns an image when the user chooses 'Open Image' from the command menu or picks a tile from the image directory.  Otherwise a null image is returned.
 </dd>
 <P></P>
 <dt><strong>display:</strong><br />
@@ -84,7 +84,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>resource_info:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a X11 MagickXResourceInfo structure.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_argv_3a">argv:</a></strong><br />

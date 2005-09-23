@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>animate - Interactively animate an image sequence</title>
-<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -33,7 +33,7 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>void  <strong>XAnimateBackgroundImage</strong>( Display *display, XResourceInfo *resource_info, Image *images );</P>
+<P>void Magick <strong>XAnimateBackgroundImage</strong>( Display *display, MagickXResourceInfo *resource_info, Image *images );</P>
 <P>
 </P>
 <hr />
@@ -41,8 +41,8 @@
 <P>
 </P>
 <h2><a name="xanimatebackgroundimage">XAnimateBackgroundImage</a></h2>
-<blockquote>XAnimateBackgroundImage() animates an image sequence in the background of a window. </blockquote><P>The format of the XAnimateBackgroundImage method is:</P>
-<blockquote>void XAnimateBackgroundImage ( Display *display, <A HREF="types.html#XResourceInfo">XResourceInfo</A> *resource_info, <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>MagickXAnimateBackgroundImage() animates an image sequence in the background of a window. </blockquote><P>The format of the MagickXAnimateBackgroundImage method is:</P>
+<blockquote>void MagickXAnimateBackgroundImage ( Display *display, MagickXResourceInfo *resource_info, <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_display_3a">display:</a></strong><br />
 </dt>
@@ -53,7 +53,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong><a name="item_o_resource_info_3a">resource_info:</a></strong><br />
 </dt>
 <DD>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a X11 MagickXResourceInfo structure.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_images_3a">images:</a></strong><br />
@@ -65,10 +65,10 @@ The image list.
 <P>
 </P>
 <h2><a name="xanimateimage">XAnimateImage</a></h2>
-<P><code>XAnimateImages()</code> displays an image via X11.</P>
-<P>The format of the XAnimateImages method is:</P>
+<P><code>MagickXAnimateImages()</code> displays an image via X11.</P>
+<P>The format of the MagickXAnimateImages method is:</P>
 <pre>
-    Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
+    Image *MagickXAnimateImages(Display *display,MagickXResourceInfo *resource_info,
       char **argv,const int argc,Image *images)</pre>
 <P>A description of each parameter follows:</P>
 <dl>
@@ -81,7 +81,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>resource_info:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a X11 MagickXResourceInfo structure.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_argv_3a">argv:</a></strong><br />

@@ -74,7 +74,7 @@
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/bit_stream.h"
-#include "magick/cache.h"
+#include "magick/pixel_cache.h"
 #include "magick/magick_endian.h"
 #include "magick/error.h"
 #include "magick/list.h"

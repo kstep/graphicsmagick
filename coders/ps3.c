@@ -38,7 +38,7 @@
 #include "magick/studio.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
-#include "magick/cache.h"
+#include "magick/pixel_cache.h"
 #include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/compress.h"

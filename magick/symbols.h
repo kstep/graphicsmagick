@@ -19,7 +19,6 @@
 
 #if defined(PREFIX_MAGICK_SYMBOLS)
 #define AccessDefinition GmAccessDefinition
-#define AcquireCacheNexus GmAcquireCacheNexus
 #define AcquireCacheView GmAcquireCacheView
 #define AcquireImagePixels GmAcquireImagePixels
 #define AcquireMagickResource GmAcquireMagickResource
@@ -115,7 +114,6 @@
 #define DespeckleImage GmDespeckleImage
 #define DestroyBlobInfo GmDestroyBlobInfo
 #define DestroyCacheInfo GmDestroyCacheInfo
-#define DestroyCacheNexus GmDestroyCacheNexus
 #define DestroyColorInfo GmDestroyColorInfo
 #define DestroyConstitute GmDestroyConstitute
 #define DestroyDelegateInfo GmDestroyDelegateInfo
@@ -299,7 +297,6 @@
 #define GetCacheClass GmGetCacheClass
 #define GetCacheColorspace GmGetCacheColorspace
 #define GetCacheInfo GmGetCacheInfo
-#define GetCacheNexus GmGetCacheNexus
 #define GetCacheView GmGetCacheView
 #define GetCacheViewIndexes GmGetCacheViewIndexes
 #define GetCacheViewPixels GmGetCacheViewPixels
@@ -365,9 +362,6 @@
 #define GetMontageInfo GmGetMontageInfo
 #define GetNextImage GmGetNextImage
 #define GetNextImageInList GmGetNextImageInList
-#define GetNexus GmGetNexus
-#define GetNexusIndexes GmGetNexusIndexes
-#define GetNexusPixels GmGetNexusPixels
 #define GetNumberColors GmGetNumberColors
 #define GetNumberScenes GmGetNumberScenes
 #define GetOnePixel GmGetOnePixel
@@ -666,7 +660,6 @@
 #define SegmentImage GmSegmentImage
 #define SetBlobClosable GmSetBlobClosable
 #define SetBlobTemporary GmSetBlobTemporary
-#define SetCacheNexus GmSetCacheNexus
 #define SetCacheThreshold GmSetCacheThreshold
 #define SetCacheView GmSetCacheView
 #define SetClientFilename GmSetClientFilename
@@ -720,7 +713,6 @@
 #define SubstituteString GmSubstituteString
 #define SwirlImage GmSwirlImage
 #define SyncBlob GmSyncBlob
-#define SyncCacheNexus GmSyncCacheNexus
 #define SyncCacheView GmSyncCacheView
 #define SyncImage GmSyncImage
 #define SyncImagePixels GmSyncImagePixels

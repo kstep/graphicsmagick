@@ -37,10 +37,10 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/cache.h"
 #include "magick/utility.h"
 #include "magick/monitor.h"
 #include "magick/nt_feature.h"
+#include "magick/pixel_cache.h"
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>

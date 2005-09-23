@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>blob - Read or write formatted images in memory</title>
-<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -32,7 +32,6 @@
 		<li><a href="#getblobstatus">GetBlobStatus</a></li>
 		<li><a href="#getblobstreamdata">GetBlobStreamData</a></li>
 		<li><a href="#getblobstreamhandler">GetBlobStreamHandler</a></li>
-		<li><a href="#getblobstreamtype">GetBlobStreamType</a></li>
 		<li><a href="#getblobtemporary">GetBlobTemporary</a></li>
 		<li><a href="#getconfigureblob">GetConfigureBlob</a></li>
 		<li><a href="#imagetoblob">ImageToBlob</a></li>
@@ -70,7 +69,6 @@
 <P>int  <strong>GetBlobStatus</strong>( const Image *image );</P>
 <P>unsigned char * <strong>GetBlobStreamData</strong>( const Image *image );</P>
 <P>const StreamHandler  <strong>GetBlobStreamHandler</strong>( const Image *image );</P>
-<P>StreamType  <strong>GetBlobStreamType</strong>( const Image *image );</P>
 <P>unsigned int  <strong>GetBlobTemporary</strong>( const Image *image );</P>
 <P>void * <strong>GetConfigureBlob</strong>( const char *filename, ExceptionInfo *exception );</P>
 <P>void * <strong>ImageToBlob</strong>( const ImageInfo *image_info, Image *image, size_t *length, ExceptionInfo *exception );</P>
@@ -334,18 +332,6 @@ The image.
 <h2><a name="getblobstreamhandler">GetBlobStreamHandler</a></h2>
 <blockquote>GetBlobStreamHandler() returns the stream handler associated with the image. </blockquote><P>The format of the GetBlobStreamHandler method is:</P>
 <blockquote>const <A HREF="types.html#StreamHandler">StreamHandler</A> GetBlobStreamHandler ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong><br />
-</dt>
-<DD>
-The image.
-</dd>
-<P></P></dl>
-<P>
-</P>
-<h2><a name="getblobstreamtype">GetBlobStreamType</a></h2>
-<blockquote>GetBlobStreamType() returns the stream type for the image. </blockquote><P>The format of the GetBlobStreamType method is:</P>
-<blockquote>StreamType GetBlobStreamType ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong><br />
 </dt>

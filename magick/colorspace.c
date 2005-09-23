@@ -31,12 +31,12 @@
 */
 #include "magick/studio.h"
 #include "magick/attribute.h"
-#include "magick/cache.h"
 #include "magick/color.h"
 #include "magick/colorspace.h"
 #include "magick/gem.h"
 #include "magick/log.h"
 #include "magick/monitor.h"
+#include "magick/pixel_cache.h"
 #include "magick/utility.h"
 
 typedef float TransformQuantum;

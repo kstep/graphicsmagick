@@ -37,9 +37,9 @@
 */
 #include "magick/studio.h"
 #include "magick/alpha_composite.h"
-#include "magick/cache.h"
 #include "magick/composite.h"
 #include "magick/gem.h"
+#include "magick/pixel_cache.h"
 #include "magick/utility.h"
 
 /*

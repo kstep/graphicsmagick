@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2005 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -8,13 +8,6 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%                                                                             %
-%                                                                             %
-%                      CCCC   AAA    CCCC  H   H  EEEEE                       %
-%                     C      A   A  C      H   H  E                           %
-%                     C      AAAAA  C      HHHHH  EEE                         %
-%                     C      A   A  C      H   H  E                           %
-%                      CCCC  A   A   CCCC  H   H  EEEEE                       %
 %                                                                             %
 %                                                                             %
 %                     GraphicsMagick Pixel Cache Methods                      %
@@ -37,11 +30,12 @@
 */
 #include "magick/studio.h"
 #include "magick/blob.h"
-#include "magick/cache.h"
+#include "magick/constitute.h"
 #include "magick/list.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/resource.h"
+#include "magick/pixel_cache.h"
 #include "magick/semaphore.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -94,15 +88,181 @@
 extern "C" {
 #endif
 
+/*
+  Enum declaractions.
+*/
+typedef enum
+{
+  UndefinedCache,
+  MemoryCache,
+  DiskCache,
+  MapCache
+} CacheType;
+
+typedef IndexPacket
+  *(*GetIndexesFromHandler)(const Image *);
+
+typedef const PixelPacket
+  *(*AcquirePixelHandler)(const Image *,const long,const long,
+    const unsigned long,const unsigned long,ExceptionInfo *);
+
+typedef PixelPacket
+  (*AcquireOnePixelFromHandler)(const Image *,const long,const long,
+    ExceptionInfo *);
+
+typedef PixelPacket
+  (*GetOnePixelFromHandler)(Image *,const long,const long);
+
+typedef PixelPacket
+  *(*GetPixelHandler)(Image *,const long,const long,const unsigned long,
+    const unsigned long);
+
+typedef PixelPacket
+  *(*GetPixelsFromHandler)(const Image *);
+
+typedef PixelPacket
+  *(*SetPixelHandler)(Image *,const long,const long,const unsigned long,
+    const unsigned long);
+
+typedef unsigned int
+  (*SyncPixelHandler)(Image *);
+
+typedef void
+  (*DestroyPixelHandler)(Image *);
+
+typedef struct _CacheMethods
+{
+  AcquireOnePixelFromHandler
+    acquire_one_pixel_from_handler;
+
+  AcquirePixelHandler
+    acquire_pixel_handler;
+
+  DestroyPixelHandler
+    destroy_pixel_handler;
+
+  GetIndexesFromHandler
+    get_indexes_from_handler;
+
+  GetOnePixelFromHandler
+    get_one_pixel_from_handler;
+
+  GetPixelHandler
+    get_pixel_handler;
+
+  GetPixelsFromHandler
+    get_pixels_from_handler;
+
+  SetPixelHandler
+    set_pixel_handler;
+
+  SyncPixelHandler
+    sync_pixel_handler;
+} CacheMethods;
+
+typedef struct _NexusInfo
+{
+  long
+    x,
+    y;
+
+  magick_off_t
+    length;
+
+  PixelPacket
+    *staging,
+    *pixels;
+
+  IndexPacket
+    *indexes;
+
+  unsigned long
+    columns,
+    rows;
+
+  unsigned int
+    available;
+} NexusInfo;
+
+typedef struct _CacheInfo
+{
+  unsigned long
+    id;
+
+  NexusInfo
+    *nexus_info;
+
+  ClassType
+    storage_class;
+
+  ColorspaceType
+    colorspace;
+
+  CacheType
+    type;
+
+  unsigned long
+    columns,
+    rows;
+
+  magick_off_t
+    offset,
+    length;
+
+  PixelPacket
+    *pixels;
+
+  IndexPacket
+    *indexes;
+
+  VirtualPixelMethod
+    virtual_pixel_method;
+
+  PixelPacket
+    virtual_pixel;
+
+  int
+    file;
+
+  char
+    filename[MaxTextExtent],
+    cache_filename[MaxTextExtent];
+
+  CacheMethods
+    methods;
+
+  long
+    reference_count;
+
+  void
+    *semaphore;
+
+  unsigned long
+    signature;
+} CacheInfo;
+
+
+static ClassType
+  GetCacheClass(const Cache cache);
+
+static ColorspaceType
+  GetCacheColorspace(const Cache cache);
+
+
 static const PixelPacket
   *AcquirePixelCache(const Image *,const long,const long,const unsigned long,
-    const unsigned long,ExceptionInfo *);
+    const unsigned long,ExceptionInfo *),
+  *AcquireCacheNexus(const Image *image,const long x,const long y,
+    const unsigned long columns,const unsigned long rows,const unsigned long nexus,
+    ExceptionInfo *exception);
 
 static IndexPacket
-  *GetIndexesFromCache(const Image *);
+  *GetIndexesFromCache(const Image *),
+  *GetNexusIndexes(const Cache cache,const unsigned long nexus);
 
 static PixelPacket
   AcquireOnePixelFromCache(const Image *,const long,const long,ExceptionInfo *),
+  *GetNexusPixels(const Cache cache,const unsigned long nexus),
   GetOnePixelFromCache(Image *,const long,const long),
   *GetPixelCache(Image *,const long,const long,const unsigned long,
     const unsigned long),
@@ -111,10 +271,43 @@ static PixelPacket
     const unsigned long);
 
 static unsigned int
+  OpenCache(Image *image,const MapMode mode),
+  SyncCacheNexus(Image *image,const unsigned long nexus),
   SyncPixelCache(Image *);
 
+static unsigned long
+  GetNexus(Cache cache);
+
 static void
+  SetPixelCacheMethods(Cache cache,AcquirePixelHandler acquire_pixel,
+    GetPixelHandler get_pixel,SetPixelHandler set_pixel,SyncPixelHandler sync_pixel,
+    GetPixelsFromHandler get_pixels_from,GetIndexesFromHandler get_indexes_from,
+    AcquireOnePixelFromHandler acquire_one_pixel_from,
+    GetOnePixelFromHandler get_one_pixel_from,DestroyPixelHandler destroy_pixel),
+  DestroyCacheNexus(Cache cache,const unsigned long nexu),
   DestroyPixelCache(Image *);
+
+/*
+  Cache view interfaces.
+*/
+typedef struct _View
+{
+  Image
+    *image;
+
+  unsigned long
+    id;
+
+  unsigned long
+    signature;
+} View;
+
+/*
+  Stream interfaces.
+*/
+typedef CacheInfo StreamInfo;
+
+
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
@@ -127,6 +320,12 @@ static inline unsigned int
   IsNexusInCore(const Cache,const unsigned long);
 
 static PixelPacket
+  *GetCacheNexus(Image *image,const long x,const long y,
+    const unsigned long columns,const unsigned long rows,
+    const unsigned long nexus),
+  *SetCacheNexus(Image *image,const long x,const long y,
+    const unsigned long columns,const unsigned long rows,
+    const unsigned long nexus),
   *SetNexus(const Image *,const RectangleInfo *,const unsigned long);
 
 static unsigned int
@@ -135,6 +334,30 @@ static unsigned int
   SyncCache(Image *),
   WriteCacheIndexes(Cache,const unsigned long),
   WriteCachePixels(Cache,const unsigned long);
+
+static const PixelPacket
+  *AcquirePixelStream(const Image *,const long,const long,const unsigned long,
+    const unsigned long,ExceptionInfo *);
+
+static IndexPacket
+  *GetIndexesFromStream(const Image *);
+
+static PixelPacket
+  AcquireOnePixelFromStream(const Image *,const long,const long,
+    ExceptionInfo *),
+  GetOnePixelFromStream(Image *,const long,const long),
+  *GetPixelStream(Image *,const long,const long,const unsigned long,
+    const unsigned long),
+  *GetPixelsFromStream(const Image *),
+  *SetPixelStream(Image *,const long,const long,const unsigned long,
+    const unsigned long);
+
+static unsigned int
+  SyncPixelStream(Image *);
+
+static void
+  DestroyPixelStream(Image *);
+
 
 /*
 
@@ -300,7 +523,7 @@ static inline unsigned int IsNexusInCore(const Cache cache,
 %
 %
 */
-MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
+static const PixelPacket *AcquireCacheNexus(const Image *image,
   const long x,const long y,const unsigned long columns,
   const unsigned long rows,const unsigned long nexus,ExceptionInfo *exception)
 {
@@ -481,6 +704,53 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   }
   DestroyCacheNexus(cache_info,image_nexus);
   return(pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c q u i r e C a c h e V i e w                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AcquireCacheView gets pixels from the in-memory or disk pixel cache
+%  as defined by the geometry parameters.   A pointer to the pixels is returned
+%  if the pixels are transferred, otherwise a NULL is returned.
+%
+%  The format of the AcquireCacheView method is:
+%
+%      const PixelPacket *AcquireCacheView(const ViewInfo *view,const long x,
+%        const long y,const unsigned long columns,const unsigned long rows,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method GetCacheView returns a null pointer if an error
+%      occurs, otherwise a pointer to the view pixels.
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport const PixelPacket *AcquireCacheView(const ViewInfo *view,
+  const long x,const long y,const unsigned long columns,
+  const unsigned long rows,ExceptionInfo *exception)
+{
+  const View
+    *view_info = (const View *) view;
+
+  assert(view_info != (View *) NULL);
+  assert(view_info->signature == MagickSignature);
+  return(AcquireCacheNexus(view_info->image,x,y,columns,rows,view_info->id,exception));
 }
 
 /*
@@ -690,6 +960,144 @@ static PixelPacket AcquireOnePixelFromCache(const Image *image,const long x,
   if (pixel != (PixelPacket *) NULL)
     return(*pixel);
   return(image->background_color);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   A c q u i r e O n e P i x e l F r o m S t r e a m                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AcquireOnePixelFromStream() returns a single pixel at the specified
+%  (x,y) location.  The image background color is returned if an error occurs.
+%
+%  The format of the AcquireOnePixelFromStream() method is:
+%
+%      PixelPacket *AcquireOnePixelFromStream(const Image image,const long x,
+%        const long y,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method GetOnePixelFromStream returns a pixel at the specified
+%      (x,y) location.
+%
+%    o image: The image.
+%
+%    o x,y:  These values define the location of the pixel to return.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static PixelPacket AcquireOnePixelFromStream(const Image *image,const long x,
+  const long y,ExceptionInfo *exception)
+{
+  register const PixelPacket
+    *pixel;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  pixel=AcquirePixelStream(image,x,y,1,1,exception);
+  if (pixel != (PixelPacket *) NULL)
+    return(*pixel);
+  return(image->background_color);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   A c q u i r e P i x e l S t r e a m                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AcquirePixelStream() gets pixels from the in-memory or disk pixel
+%  cache as defined by the geometry parameters.   A pointer to the pixels is
+%  returned if the pixels are transferred, otherwise a NULL is returned.  For
+%  streams this method is a no-op.
+%
+%  The format of the AcquirePixelStream() method is:
+%
+%      const PixelPacket *AcquirePixelStream(const Image *image,const long x,
+%        const long y,const unsigned long columns,const unsigned long rows,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method GetPixelStream() returns a pointer to the pixels if they
+%      are transferred, otherwise a NULL is returned.
+%
+%    o image: The image.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
+  const long y,const unsigned long columns,const unsigned long rows,
+  ExceptionInfo *exception)
+{
+  size_t
+    length;
+
+  StreamInfo
+    *stream_info;
+
+  magick_uint64_t
+    number_pixels;
+
+  /*
+    Validate pixel cache geometry.
+  */
+  assert(image != (const Image *) NULL);
+  if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
+      ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
+    {
+      ThrowException3(exception,StreamError,UnableToAcquirePixelStream,
+        ImageDoesNotContainTheStreamGeometry);
+      return((PixelPacket *) NULL);
+    }
+  stream_info=(StreamInfo *) image->cache;
+  assert(stream_info->signature == MagickSignature);
+  if (stream_info->type == UndefinedCache)
+    {
+      ThrowException(exception,StreamError,PixelCacheIsNotOpen,
+        image->filename);
+      return((PixelPacket *) NULL);
+    }
+  /*
+    Pixels are stored in a temporary buffer until they are synced to the cache.
+  */
+  number_pixels=(magick_uint64_t)columns*rows;
+  length=number_pixels*sizeof(PixelPacket);
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace == CMYKColorspace))
+    length+=number_pixels*sizeof(IndexPacket);
+  if (stream_info->pixels == (PixelPacket *) NULL)
+    stream_info->pixels=MagickAllocateMemory(PixelPacket *,length);
+  else
+    if (length != (size_t) stream_info->length)
+      MagickReallocMemory(stream_info->pixels,length);
+  if (stream_info->pixels == (void *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateCacheInfo);
+  stream_info->length=length;
+  stream_info->indexes=(IndexPacket *) NULL;
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace == CMYKColorspace))
+    stream_info->indexes=(IndexPacket *) (stream_info->pixels+number_pixels);
+  return(stream_info->pixels);
 }
 
 /*
@@ -1036,6 +1444,40 @@ MagickExport void ClonePixelCacheMethods(Cache clone,const Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l o s e C a c h e V i e w                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CloseCacheView() closes the specified view returned by a previous call
+%  to OpenCacheView().
+%
+%  The format of the CloseCacheView method is:
+%
+%      void CloseCacheView(ViewInfo *view)
+%
+%  A description of each parameter follows:
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+*/
+MagickExport void CloseCacheView(ViewInfo *view)
+{
+  View
+    *view_info = (View *) view;
+
+  assert(view_info != (View *) NULL);
+  assert(view_info->signature == MagickSignature);
+  DestroyCacheNexus(view_info->image->cache,view_info->id);
+  MagickFreeMemory(view_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y C a c h e I n f o                                           %
 %                                                                             %
 %                                                                             %
@@ -1145,7 +1587,7 @@ MagickExport void DestroyCacheInfo(Cache cache)
 %
 %
 */
-MagickExport void DestroyCacheNexus(Cache cache,const unsigned long nexus)
+static void DestroyCacheNexus(Cache cache,const unsigned long nexus)
 {
   CacheInfo
     *cache_info;
@@ -1239,6 +1681,54 @@ static void DestroyPixelCache(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   D e s t r o y P i x e l S t r e a m                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyPixelStream() deallocates memory associated with the pixel
+%  stream.
+%
+%  The format of the DestroyPixelStream() method is:
+%
+%      void DestroyPixelStream(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+static void DestroyPixelStream(Image *image)
+{
+  StreamInfo
+    *stream_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  stream_info=(StreamInfo *) image->cache;
+  assert(stream_info->signature == MagickSignature);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &stream_info->semaphore);
+  stream_info->reference_count--;
+  if (stream_info->reference_count > 0)
+    {
+      LiberateSemaphoreInfo((SemaphoreInfo **) &stream_info->semaphore);
+      return;
+    }
+  LiberateSemaphoreInfo((SemaphoreInfo **) &stream_info->semaphore);
+  if (stream_info->pixels != (PixelPacket *) NULL)
+    MagickFreeMemory(stream_info->pixels);
+  if (stream_info->semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo((SemaphoreInfo **) &stream_info->semaphore);
+  MagickFreeMemory(stream_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t C a c h e C l a s s                                                 %
 %                                                                             %
 %                                                                             %
@@ -1259,7 +1749,7 @@ static void DestroyPixelCache(Image *image)
 %
 %
 */
-MagickExport ClassType GetCacheClass(const Cache cache)
+static ClassType GetCacheClass(const Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -1295,7 +1785,7 @@ MagickExport ClassType GetCacheClass(const Cache cache)
 %
 %
 */
-MagickExport ColorspaceType GetCacheColorspace(const Cache cache)
+static ColorspaceType GetCacheColorspace(const Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -1384,7 +1874,7 @@ MagickExport void GetCacheInfo(Cache *cache)
 %
 %
 */
-MagickExport PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
+static PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
   const unsigned long columns,const unsigned long rows,
   const unsigned long nexus)
 {
@@ -1415,6 +1905,120 @@ MagickExport PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
       return((PixelPacket *) NULL);
     }
   return(pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e V i e w                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetCacheView() gets pixels from the in-memory or disk pixel cache as
+%  defined by the geometry parameters.   A pointer to the pixels is returned if
+%  the pixels are transferred, otherwise a NULL is returned.
+%
+%  The format of the GetCacheView method is:
+%
+%      PixelPacket *GetCacheView(ViewInfo *view,const long x,const long y,
+%        const unsigned long columns,const unsigned long rows)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method GetCacheView returns a null pointer if an error
+%      occurs, otherwise a pointer to the view pixels.
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%
+*/
+MagickExport PixelPacket *GetCacheView(ViewInfo *view,const long x,const long y,
+  const unsigned long columns,const unsigned long rows)
+{
+  View
+    *view_info = (View *) view;
+
+  assert(view_info != (View *) NULL);
+  assert(view_info->signature == MagickSignature);
+  return(GetCacheNexus(view_info->image,x,y,columns,rows,view_info->id));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e V i e w I n d e x e s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheViewIndexes returns the indexes associated with the specified
+%  view.
+%
+%  The format of the GetCacheViewIndexes method is:
+%
+%      IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
+%
+%  A description of each parameter follows:
+%
+%    o indexes: Method GetCacheViewIndexes returns the indexes associated with
+%      the specified view.
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%
+*/
+MagickExport IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
+{
+  const View
+    *view_info = (const View *) view;
+
+  assert(view_info != (View *) NULL);
+  assert(view_info->signature == MagickSignature);
+  return(GetNexusIndexes(view_info->image->cache,view_info->id));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e V i e w P i x e l s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetCacheViewPixels() returns the pixels associated with the specified
+%  specified view.
+%
+%  The format of the GetCacheViewPixels method is:
+%
+%      PixelPacket *GetCacheViewPixels(const ViewInfo *view)
+%
+%  A description of each parameter follows:
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%
+*/
+MagickExport PixelPacket *GetCacheViewPixels(const ViewInfo *view)
+{
+  const View
+    *view_info = (const View *) view;
+
+  assert(view_info != (View *) NULL);
+  assert(view_info->signature == MagickSignature);
+  return(GetNexusPixels(view_info->image->cache,view_info->id));
 }
 
 /*
@@ -1602,6 +2206,45 @@ static IndexPacket *GetIndexesFromCache(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t I n d e x e s F r o m S t r e a m                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetIndexesFromStream() returns the indexes associated with the last
+%  call to SetPixelStream() or GetPixelStream().
+%
+%  The format of the GetIndexesFromStream() method is:
+%
+%      IndexPacket *GetIndexesFromStream(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o indexes: Method GetIndexesFromStream() returns the indexes associated
+%      with the last call to SetPixelStream() or GetPixelStream().
+%
+%    o image: The image.
+%
+%
+*/
+static IndexPacket *GetIndexesFromStream(const Image *image)
+{
+  StreamInfo
+    *stream_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  stream_info=(StreamInfo *) image->cache;
+  assert(stream_info->signature == MagickSignature);
+  return(stream_info->indexes);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t N e x u s                                                           %
 %                                                                             %
 %                                                                             %
@@ -1622,7 +2265,7 @@ static IndexPacket *GetIndexesFromCache(const Image *image)
 %
 %
 */
-MagickExport unsigned long GetNexus(Cache cache)
+static unsigned long GetNexus(Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -1671,7 +2314,7 @@ MagickExport unsigned long GetNexus(Cache cache)
 %
 %
 */
-MagickExport IndexPacket *GetNexusIndexes(const Cache cache,
+static IndexPacket *GetNexusIndexes(const Cache cache,
   const unsigned long nexus)
 {
   CacheInfo
@@ -1717,7 +2360,7 @@ MagickExport IndexPacket *GetNexusIndexes(const Cache cache,
 %
 %
 */
-MagickExport PixelPacket *GetNexusPixels(const Cache cache,
+static PixelPacket *GetNexusPixels(const Cache cache,
   const unsigned long nexus)
 {
   CacheInfo
@@ -1815,6 +2458,48 @@ static PixelPacket GetOnePixelFromCache(Image *image,const long x,const long y)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   pixel=GetPixelCache(image,x,y,1,1);
+  if (pixel != (PixelPacket *) NULL)
+    return(*pixel);
+  return(image->background_color);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t O n e P i x e l F r o m S t r e a m                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetOnePixelFromStream() returns a single pixel at the specified (x,y)
+%  location.  The image background color is returned if an error occurs.
+%
+%  The format of the GetOnePixelFromStream() method is:
+%
+%      PixelPacket *GetOnePixelFromStream(const Image image,const long x,
+%        const long y)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method GetOnePixelFromStream returns a pixel at the specified
+%      (x,y) location.
+%
+%    o image: The image.
+%
+%    o x,y:  These values define the location of the pixel to return.
+%
+*/
+static PixelPacket GetOnePixelFromStream(Image *image,const long x,const long y)
+{
+  register PixelPacket
+    *pixel;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  pixel=GetPixelStream(image,x,y,1,1);
   if (pixel != (PixelPacket *) NULL)
     return(*pixel);
   return(image->background_color);
@@ -1947,6 +2632,51 @@ MagickExport magick_off_t GetPixelCacheArea(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t P i x e l S t r e a m                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetPixelStream() gets pixels from the in-memory or disk pixel cache as
+%  defined by the geometry parameters.   A pointer to the pixels is returned if
+%  the pixels are transferred, otherwise a NULL is returned.  For streams
+%  this method is a no-op.
+%
+%  The format of the GetPixelStream() method is:
+%
+%      PixelPacket *GetPixelStream(Image *image,const long x,const long y,
+%        const unsigned long columns,const unsigned long rows)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method GetPixelStream() returns a pointer to the pixels if they
+%      are transferred, otherwise a NULL is returned.
+%
+%    o image: The image.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%
+*/
+static PixelPacket *GetPixelStream(Image *image,const long x,const long y,
+  const unsigned long columns,const unsigned long rows)
+{
+  PixelPacket
+    *pixels;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  pixels=SetPixelStream(image,x,y,columns,rows);
+  return(pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t P i x e l s F r o m C a c h e                                       %
 %                                                                             %
 %                                                                             %
@@ -1976,7 +2706,45 @@ static PixelPacket *GetPixelsFromCache(const Image *image)
   assert(image->cache != (Cache) NULL);
   return(GetNexusPixels(image->cache,0));
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t P i x e l F r o m S t e a m                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetPixelsFromStream() returns the pixels associated with the last
+%  call to SetPixelStream() or GetPixelStream().
+%
+%  The format of the GetPixelsFromStream() method is:
+%
+%      PixelPacket *GetPixelsFromStream(const Image image)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method GetPixelsFromStream returns the pixels associated with
+%      the last call to SetPixelStream() or GetPixelStream().
+%
+%    o image: The image.
+%
+%
+*/
+static PixelPacket *GetPixelsFromStream(const Image *image)
+{
+  StreamInfo
+    *stream_info;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  stream_info=(StreamInfo *) image->cache;
+  assert(stream_info->signature == MagickSignature);
+  return(stream_info->pixels);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2128,7 +2896,7 @@ extern "C" {
 
 #endif /* defined(SIGBUS) */
 
-MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
+static unsigned int OpenCache(Image *image,const MapMode mode)
 {
   char
     format[MaxTextExtent];
@@ -2361,6 +3129,52 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
                         cache_info->type == MapCache ? "memory-mapped" : "disk",
                         format);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   O p e n C a c h e V i e w                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  OpenCacheView() opens a view into the pixel cache.
+%
+%  The format of the OpenCacheView method is:
+%
+%      ViewInfo *OpenCacheView(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport ViewInfo *OpenCacheView(Image *image)
+{
+  View
+    *view;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  view=MagickAllocateMemory(View *,sizeof(View));
+  if (view == (View *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateCacheView);
+  (void) memset(view,0,sizeof(View));
+  view->id=GetNexus(image->cache);
+  view->image=image;
+  view->signature=MagickSignature;
+  if (view->id == 0)
+    {
+      CloseCacheView((ViewInfo *) view);
+      return((ViewInfo *) NULL);
+    }
+  return((ViewInfo *) view);
 }
 
 /*
@@ -2754,6 +3568,63 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e a d S t r e a m                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadStream() makes the image pixels available to a user supplied
+%  callback method immediately upon reading a scanline with the ReadImage()
+%  method.
+%
+%  The format of the ReadStream() method is:
+%
+%      Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o stream: a callback method.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
+  ExceptionInfo *exception)
+{
+  Image
+    *image;
+
+  ImageInfo
+    *clone_info;
+
+  /*
+    Stream image pixels.
+  */
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  clone_info=CloneImageInfo(image_info);
+  GetCacheInfo(&clone_info->cache);
+  SetPixelCacheMethods(clone_info->cache,AcquirePixelStream,GetPixelStream,
+    SetPixelStream,SyncPixelStream,GetPixelsFromStream,GetIndexesFromStream,
+    AcquireOnePixelFromStream,GetOnePixelFromStream,DestroyPixelStream);
+  clone_info->stream=stream;
+  image=ReadImage(clone_info,exception);
+  DestroyImageInfo(clone_info);
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e f e r e n c e C a c h e                                               %
 %                                                                             %
 %                                                                             %
@@ -2824,7 +3695,7 @@ MagickExport Cache ReferenceCache(Cache cache)
 %
 %
 */
-MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
+static PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
   const unsigned long columns,const unsigned long rows,
   const unsigned long nexus)
 {
@@ -2866,6 +3737,46 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
   region.width=columns;
   region.height=rows;
   return(SetNexus(image,&region,nexus));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t C a c h e V i e w                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetCacheView() gets pixels from the in-memory or disk pixel cache as
+%  defined by the geometry parameters.   A pointer to the pixels is returned
+%  if the pixels are transferred, otherwise a NULL is returned.
+%
+%  The format of the SetCacheView method is:
+%
+%      PixelPacket *SetCacheView(ViewInfo *view,const long x,const long y,
+%        const unsigned long columns,const unsigned long rows)
+%
+%  A description of each parameter follows:
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%
+*/
+MagickExport PixelPacket *SetCacheView(ViewInfo *view,const long x,const long y,
+  const unsigned long columns,const unsigned long rows)
+{
+  View
+    *view_info = (View *) view;
+
+  assert(view_info != (View *) NULL);
+  assert(view_info->signature == MagickSignature);
+  return(SetCacheNexus(view_info->image,x,y,columns,rows,view_info->id));
 }
 
 /*
@@ -3182,7 +4093,7 @@ static PixelPacket *SetPixelCache(Image *image,const long x,const long y,
 %
 %
 */
-MagickExport void SetPixelCacheMethods(Cache cache,
+static void SetPixelCacheMethods(Cache cache,
   AcquirePixelHandler acquire_pixel,GetPixelHandler get_pixel,
   SetPixelHandler set_pixel,SyncPixelHandler sync_pixel,
   GetPixelsFromHandler get_pixels_from,GetIndexesFromHandler get_indexes_from,
@@ -3216,6 +4127,117 @@ MagickExport void SetPixelCacheMethods(Cache cache,
   cache_info->methods.acquire_one_pixel_from_handler=acquire_one_pixel_from;
   cache_info->methods.get_one_pixel_from_handler=get_one_pixel_from;
   cache_info->methods.destroy_pixel_handler=destroy_pixel;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   S e t P i x e l S t r e a m                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetPixelStream() allocates an area to store image pixels as defined
+%  by the region rectangle and returns a pointer to the area.  This area is
+%  subsequently transferred from the pixel cache with method SyncPixelStream().
+%  A pointer to the pixels is returned if the pixels are transferred,
+%  otherwise a NULL is returned.
+%
+%  The format of the SetPixelStream() method is:
+%
+%      PixelPacket *SetPixelStream(Image *image,const long x,const long y,
+%        const unsigned long columns,const unsigned long rows)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method SetPixelStream returns a pointer to the pixels is
+%      returned if the pixels are transferred, otherwise a NULL is returned.
+%
+%    o image: The image.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%
+*/
+static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
+  const unsigned long columns,const unsigned long rows)
+{
+  size_t
+    length;
+
+  StreamInfo
+    *stream_info;
+
+  StreamHandler
+    stream;
+
+  magick_uint64_t
+    number_pixels;
+
+  /*
+    Validate pixel cache geometry.
+  */
+  assert(image != (Image *) NULL);
+  if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
+      ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
+    {
+      ThrowException3(&image->exception,StreamError,UnableToSetPixelStream,
+        ImageDoesNotContainTheStreamGeometry);
+      return((PixelPacket *) NULL);
+    }
+  stream=GetBlobStreamHandler(image);
+  if (stream == (const StreamHandler) NULL)
+    {
+      ThrowException3(&image->exception,StreamError,UnableToSetPixelStream,
+        NoStreamHandlerIsDefined);
+      return((PixelPacket *) NULL);
+    }
+  stream_info=(StreamInfo *) image->cache;
+  assert(stream_info->signature == MagickSignature);
+  if ((image->storage_class != GetCacheClass(image->cache)) ||
+      (image->colorspace != GetCacheColorspace(image->cache)))
+    {
+      if (GetCacheClass(image->cache) == UndefinedClass)
+        (void) stream(image,(const void *) NULL,stream_info->columns);
+      stream_info->storage_class=image->storage_class;
+      stream_info->colorspace=image->colorspace;
+      stream_info->columns=image->columns;
+      stream_info->rows=image->rows;
+      image->cache=stream_info;
+    }
+  /*
+    Pixels are stored in a temporary buffer until they are synced to the cache.
+  */
+  stream_info->columns=columns;
+  stream_info->rows=rows;
+  number_pixels=(magick_uint64_t)columns*rows;
+  length=number_pixels*sizeof(PixelPacket);
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace == CMYKColorspace))
+    length+=number_pixels*sizeof(IndexPacket);
+  if (stream_info->pixels == (PixelPacket *) NULL)
+    {
+      stream_info->pixels=MagickAllocateMemory(PixelPacket *,length);
+      stream_info->length=length;
+    }
+  else
+    if ((size_t) stream_info->length < length)
+      {
+        MagickReallocMemory(stream_info->pixels,length);
+        stream_info->length=length;
+      }
+  if (stream_info->pixels == (void *) NULL)
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateImagePixels);
+  stream_info->indexes=(IndexPacket *) NULL;
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace == CMYKColorspace))
+    stream_info->indexes=(IndexPacket *) (stream_info->pixels+number_pixels);
+  return(stream_info->pixels);
 }
 
 /*
@@ -3290,7 +4312,7 @@ static unsigned int SyncCache(Image *image)
 %
 %
 */
-MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
+static unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
 {
   unsigned int
     status;
@@ -3317,6 +4339,40 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
   if (status == False)
     ThrowBinaryException(CacheError,UnableToSyncCache,image->filename);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S y n c C a c h e V i e w                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SyncCacheView() saves the view pixels to the in-memory or disk cache.
+%  The method returns True if the pixel region is synced, otherwise False.
+%
+%  The format of the SyncCacheView method is:
+%
+%      unsigned int SyncCacheView(ViewInfo *view)
+%
+%  A description of each parameter follows:
+%
+%    o view: The address of a structure of type ViewInfo.
+%
+%
+*/
+MagickExport unsigned int SyncCacheView(ViewInfo *view)
+{
+  View
+    *view_info = (View *) view;
+
+  assert(view_info != (View *) NULL);
+  assert(view_info->signature == MagickSignature);
+  return(SyncCacheNexus(view_info->image,view_info->id));
 }
 
 /*
@@ -3388,6 +4444,55 @@ MagickExport MagickPassFail SyncImagePixels(Image *image)
 static MagickPassFail SyncPixelCache(Image *image)
 {
   return(SyncCacheNexus(image,0));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   S y n c P i x e l S t r e a m                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SyncPixelStream() calls the user supplied callback method with the
+%  latest stream of pixels.
+%
+%  The format of the SyncPixelStream method is:
+%
+%      unsigned int SyncPixelStream(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method SyncPixelStream() returns True if the image pixels are
+%      transferred to the in-memory or disk cache otherwise False.
+%
+%    o image: The image.
+%
+%
+*/
+static unsigned int SyncPixelStream(Image *image)
+{
+  StreamInfo
+    *stream_info;
+
+  StreamHandler
+    stream;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  stream_info=(StreamInfo *) image->cache;
+  assert(stream_info->signature == MagickSignature);
+  stream=GetBlobStreamHandler(image);
+  if (stream == (StreamHandler) NULL)
+    {
+      ThrowException3(&image->exception,StreamError,UnableToSyncPixelStream,
+        NoStreamHandlerIsDefined);
+      return(False);
+    }
+  return(stream(image,stream_info->pixels,stream_info->columns));
 }
 
 /*
@@ -3625,4 +4730,52 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
       nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
   return(y == (long) rows);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e S t r e a m                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteStream() makes the image pixels available to a user supplied
+%  callback method immediately upon writing pixel data with the WriteImage()
+%  method.
+%
+%  The format of the WriteStream() method is:
+%
+%      unsigned int WriteStream(const ImageInfo *image_info,Image *,
+%        StreamHandler stream)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o stream: A callback method.
+%
+%
+*/
+MagickExport unsigned int WriteStream(const ImageInfo *image_info,Image *image,
+  StreamHandler stream)
+{
+  ImageInfo
+    *clone_info;
+
+  unsigned int
+    status;
+
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  clone_info=CloneImageInfo(image_info);
+  clone_info->stream=stream;
+  status=WriteImage(clone_info,image);
+  DestroyImageInfo(clone_info);
+  return(status);
 }

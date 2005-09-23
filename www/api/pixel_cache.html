@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>cache - Low-level access to image pixels</title>
-<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+<title>pixel_cache - Image pixel cache.</title>
+<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -17,19 +17,29 @@
 	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
 	<ul>
 
+		<li><a href="#acquirecacheview">AcquireCacheView</a></li>
 		<li><a href="#acquireimagepixels">AcquireImagePixels</a></li>
 		<li><a href="#acquireonepixel">AcquireOnePixel</a></li>
+		<li><a href="#closecacheview">CloseCacheView</a></li>
 		<li><a href="#destroycacheinfo">DestroyCacheInfo</a></li>
 		<li><a href="#destroyimagepixels">DestroyImagePixels</a></li>
+		<li><a href="#getcacheview">GetCacheView</a></li>
+		<li><a href="#getcacheviewindexes">GetCacheViewIndexes</a></li>
+		<li><a href="#getcacheviewpixels">GetCacheViewPixels</a></li>
 		<li><a href="#getimagepixels">GetImagePixels</a></li>
 		<li><a href="#getimagevirtualpixelmethod">GetImageVirtualPixelMethod</a></li>
 		<li><a href="#getindexes">GetIndexes</a></li>
 		<li><a href="#getonepixel">GetOnePixel</a></li>
 		<li><a href="#getpixels">GetPixels</a></li>
 		<li><a href="#modifycache">ModifyCache</a></li>
+		<li><a href="#opencacheview">OpenCacheView</a></li>
+		<li><a href="#readstream">ReadStream</a></li>
 		<li><a href="#referencecache">ReferenceCache</a></li>
+		<li><a href="#setcacheview">SetCacheView</a></li>
 		<li><a href="#setimagepixels">SetImagePixels</a></li>
 		<li><a href="#setimagevirtualpixelmethod">SetImageVirtualPixelMethod</a></li>
+		<li><a href="#syncimagepixels">SyncImagePixels</a></li>
+		<li><a href="#writestream">WriteStream</a></li>
 	</ul>
 
 </ul>
@@ -39,29 +49,70 @@
 <P>
 </P>
 <h1><a name="name">NAME</a></h1>
-<P>cache - Low-level access to image pixels</P>
+<P>pixel_cache - Image pixel cache (working pixels).</P>
 <P>
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>const PixelPacket * <strong>AcquireCacheView</strong>( const ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
 <P>const PixelPacket * <strong>AcquireImagePixels</strong>( const Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
 <P>PixelPacket  <strong>AcquireOnePixel</strong>( const Image image, const long x, const long y, ExceptionInfo exception );</P>
+<P>void  <strong>CloseCacheView</strong>( ViewInfo *view );</P>
 <P>void  <strong>DestroyCacheInfo</strong>( Cache cache );</P>
 <P>void  <strong>DestroyImagePixels</strong>( Image *image );</P>
+<P>PixelPacket * <strong>GetCacheView</strong>( ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
+<P>IndexPacket * <strong>GetCacheViewIndexes</strong>( const ViewInfo *view );</P>
+<P>PixelPacket * <strong>GetCacheViewPixels</strong>( const ViewInfo *view );</P>
 <P>PixelPacket * <strong>GetImagePixels</strong>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P>VirtualPixelMethod  <strong>GetImageVirtualPixelMethod</strong>( const Image *image );</P>
 <P>IndexPacket * <strong>GetIndexes</strong>( const Image *image );</P>
 <P>PixelPacket * <strong>GetOnePixel</strong>( const Image image, const long x, const long y );</P>
 <P>PixelPacket * <strong>GetPixels</strong>( const Image image );</P>
 <P>unsigned int  <strong>ModifyCache</strong>( Image *image );</P>
+<P>ViewInfo * <strong>OpenCacheView</strong>( Image *image );</P>
+<P>Image * <strong>ReadStream</strong>( const ImageInfo *image_info, StreamHandler stream, ExceptionInfo *exception );</P>
 <P>Cache  <strong>ReferenceCache</strong>( Cache cache_info );</P>
+<P>PixelPacket * <strong>SetCacheView</strong>( ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P>PixelPacket * <strong>SetImagePixels</strong>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P><strong>SetImageVirtualPixelMethod</strong>( const Image *image, const VirtualPixelMethod method );</P>
+<P>unsigned int  <strong>SyncCacheView</strong>( ViewInfo *view );</P>
 <P>MagickPassFail  <strong>SyncImagePixels</strong>( Image *image );</P>
+<P>unsigned int  <strong>WriteStream</strong>( const ImageInfo *image_info, Image *, StreamHandler stream );</P>
 <P>
 </P>
 <hr />
 <h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<P>
+</P>
+<h2><a name="acquirecacheview">AcquireCacheView</a></h2>
+<P>Method AcquireCacheView gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.  A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.</P>
+<P>The format of the AcquireCacheView method is:</P>
+<blockquote>const <A HREF="types.html#PixelPacket">PixelPacket</A> *AcquireCacheView ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_pixels_3a">pixels:</a></strong><br />
+</dt>
+<DD>
+Method GetCacheView returns a null pointer if an error occurs, otherwise a pointer to the view pixels.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_view_3a">view:</a></strong><br />
+</dt>
+<DD>
+The address of a structure of type ViewInfo.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_x_2cy_2ccolumns_2crows_3a">x,y,columns,rows:</a></strong><br />
+</dt>
+<DD>
+These values define the perimeter of a region of pixels.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
+</dt>
+<DD>
+Return any errors or warnings in this structure.
+</dd>
+<P></P></dl>
 <P>
 </P>
 <h2><a name="acquireimagepixels">AcquireImagePixels</a></h2>
@@ -81,13 +132,13 @@
 The image.
 </dd>
 <P></P>
-<dt><strong><a name="item_o_x_2cy_2ccolumns_2crows_3a">x,y,columns,rows:</a></strong><br />
+<dt><strong>x,y,columns,rows:</strong><br />
 </dt>
 <DD>
 These values define the perimeter of a region of pixels.
 </dd>
 <P></P>
-<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
+<dt><strong>exception:</strong><br />
 </dt>
 <DD>
 Return any errors or warnings in this structure.
@@ -98,7 +149,7 @@ Return any errors or warnings in this structure.
 <h2><a name="acquireonepixel">AcquireOnePixel</a></h2>
 <blockquote>AcquireOnePixel() returns a single pixel at the specified ( x, y ) location. The image background color is returned if an error occurs. If you plan to modify the pixel, use GetOnePixel ( ) instead. This function is convenient but performance will be poor if it is used too often. </blockquote><blockquote>The format of the AcquireOnePixel() method is: </blockquote><blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> AcquireOnePixel ( const <A HREF="types.html#Image">Image</A> image, const long x, const long y, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> exception ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_pixels_3a">pixels:</a></strong><br />
+<dt><strong>pixels:</strong><br />
 </dt>
 <DD>
 <code>AcquireOnePixel()</code> returns a pixel at the specified (x,y) location.
@@ -124,6 +175,18 @@ Return any errors or warnings in this structure.
 <P></P></dl>
 <P>
 </P>
+<h2><a name="closecacheview">CloseCacheView</a></h2>
+<blockquote>CloseCacheView() closes the specified view returned by a previous call to OpenCacheView ( ) . </blockquote><P>The format of the CloseCacheView method is:</P>
+<blockquote>void CloseCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>view:</strong><br />
+</dt>
+<DD>
+The address of a structure of type ViewInfo.
+</dd>
+<P></P></dl>
+<P>
+</P>
 <h2><a name="destroycacheinfo">DestroyCacheInfo</a></h2>
 <blockquote>DestroyCacheInfo() deallocates memory associated with the pixel cache. </blockquote><blockquote>The format of the DestroyCacheInfo() method is: </blockquote><blockquote>void DestroyCacheInfo ( <A HREF="types.html#Cache">Cache</A> cache ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
@@ -142,6 +205,61 @@ Specifies a pointer to a Cache structure.
 </dt>
 <DD>
 The image.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="getcacheview">GetCacheView</a></h2>
+<blockquote>GetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><P>The format of the GetCacheView method is:</P>
+<blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *GetCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>pixels:</strong><br />
+</dt>
+<DD>
+Method GetCacheView returns a null pointer if an error occurs, otherwise a pointer to the view pixels.
+</dd>
+<P></P>
+<dt><strong>view:</strong><br />
+</dt>
+<DD>
+The address of a structure of type ViewInfo.
+</dd>
+<P></P>
+<dt><strong>x,y,columns,rows:</strong><br />
+</dt>
+<DD>
+These values define the perimeter of a region of pixels.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="getcacheviewindexes">GetCacheViewIndexes</a></h2>
+<P>Method GetCacheViewIndexes returns the indexes associated with the specified view.</P>
+<P>The format of the GetCacheViewIndexes method is:</P>
+<blockquote>IndexPacket *GetCacheViewIndexes ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_indexes_3a">indexes:</a></strong><br />
+</dt>
+<DD>
+Method GetCacheViewIndexes returns the indexes associated with the specified view.
+</dd>
+<P></P>
+<dt><strong>view:</strong><br />
+</dt>
+<DD>
+The address of a structure of type ViewInfo.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="getcacheviewpixels">GetCacheViewPixels</a></h2>
+<blockquote>GetCacheViewPixels() returns the pixels associated with the specified specified view. </blockquote><P>The format of the GetCacheViewPixels method is:</P>
+<blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *GetCacheViewPixels ( const <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>view:</strong><br />
+</dt>
+<DD>
+The address of a structure of type ViewInfo.
 </dd>
 <P></P></dl>
 <P>
@@ -184,7 +302,7 @@ The image.
 <h2><a name="getindexes">GetIndexes</a></h2>
 <blockquote>GetIndexes() returns the colormap indexes associated with the last call to SetImagePixels ( ) or GetImagePixels ( ) . NULL is returned if colormap indexes are not available. </blockquote><blockquote>The format of the GetIndexes() method is: </blockquote><blockquote>IndexPacket *GetIndexes ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
-<dt><strong><a name="item_o_indexes_3a">indexes:</a></strong><br />
+<dt><strong>indexes:</strong><br />
 </dt>
 <DD>
 <code>GetIndexes()</code> returns the indexes associated with the last call to <code>SetImagePixels()</code> or GetImagePixels().
@@ -244,6 +362,41 @@ The image.
 <P></P></dl>
 <P>
 </P>
+<h2><a name="opencacheview">OpenCacheView</a></h2>
+<blockquote>OpenCacheView() opens a view into the pixel cache. </blockquote><P>The format of the OpenCacheView method is:</P>
+<blockquote><A HREF="types.html#ViewInfo">ViewInfo</A> *OpenCacheView ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="readstream">ReadStream</a></h2>
+<blockquote>ReadStream() makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the ReadImage ( ) method. </blockquote><blockquote>The format of the ReadStream() method is: </blockquote><blockquote><A HREF="types.html#Image">Image</A> *ReadStream ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#StreamHandler">StreamHandler</A> stream, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_image_info_3a">image_info:</a></strong><br />
+</dt>
+<DD>
+The image info.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_stream_3a">stream:</a></strong><br />
+</dt>
+<DD>
+a callback method.
+</dd>
+<P></P>
+<dt><strong>exception:</strong><br />
+</dt>
+<DD>
+Return any errors or warnings in this structure.
+</dd>
+<P></P></dl>
+<P>
+</P>
 <h2><a name="referencecache">ReferenceCache</a></h2>
 <blockquote>ReferenceCache() increments the reference count associated with the pixel cache returning a pointer to the cache. </blockquote><P>The format of the ReferenceCache method is:</P>
 <blockquote><A HREF="types.html#Cache">Cache</A> ReferenceCache ( <A HREF="types.html#Cache">Cache</A> cache_info ); </blockquote><P>A description of each parameter follows:</P>
@@ -252,6 +405,24 @@ The image.
 </dt>
 <DD>
 The cache_info.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="setcacheview">SetCacheView</a></h2>
+<blockquote>SetCacheView() gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters. A pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned. </blockquote><P>The format of the SetCacheView method is:</P>
+<blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *SetCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>view:</strong><br />
+</dt>
+<DD>
+The address of a structure of type ViewInfo.
+</dd>
+<P></P>
+<dt><strong>x,y,columns,rows:</strong><br />
+</dt>
+<DD>
+These values define the perimeter of a region of pixels.
 </dd>
 <P></P></dl>
 <P>
@@ -305,7 +476,19 @@ choose from these access types:
       MirrorVPType:  mirror the image at the boundaries.
       ConstantVPType:  every value outside the image is a constant as
       defines by the pixel parameter.
-=head2 SyncImagePixels</pre>
+=head2 SyncCacheView</pre>
+<blockquote>SyncCacheView() saves the view pixels to the in-memory or disk cache. The method returns True if the pixel region is synced, otherwise False. </blockquote><P>The format of the SyncCacheView method is:</P>
+<blockquote>unsigned int SyncCacheView ( <A HREF="types.html#ViewInfo">ViewInfo</A> *view ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>view:</strong><br />
+</dt>
+<DD>
+The address of a structure of type ViewInfo.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="syncimagepixels">SyncImagePixels</a></h2>
 <blockquote>SyncImagePixels() saves the image pixels to the in-memory or disk cache. The method returns True if the pixel region is synced, otherwise False. </blockquote><blockquote>The format of the SyncImagePixels() method is: </blockquote><blockquote>MagickPassFail SyncImagePixels ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>status:</strong><br />
@@ -318,6 +501,23 @@ choose from these access types:
 </dt>
 <DD>
 The image.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="writestream">WriteStream</a></h2>
+<blockquote>WriteStream() makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the WriteImage ( ) method. </blockquote><blockquote>The format of the WriteStream() method is: </blockquote><blockquote>unsigned int WriteStream ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *, <A HREF="types.html#StreamHandler">StreamHandler</A> stream ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image_info:</strong><br />
+</dt>
+<DD>
+The image info.
+</dd>
+<P></P>
+<dt><strong>stream:</strong><br />
+</dt>
+<DD>
+A callback method.
 </dd>
 </dl>
 

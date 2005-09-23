@@ -39,7 +39,6 @@
 */
 #include "magick/studio.h"
 #include "magick/attribute.h"
-#include "magick/cache.h"
 #include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/constitute.h"
@@ -60,6 +59,7 @@
 #include "magick/montage.h"
 #include "magick/operator.h"
 #include "magick/paint.h"
+#include "magick/pixel_cache.h"
 #include "magick/profile.h"
 #include "magick/quantize.h"
 #include "magick/render.h"

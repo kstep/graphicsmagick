@@ -29,8 +29,8 @@
 */
 #include "magick/studio.h"
 #include "magick/attribute.h"
-#include "magick/cache.h"
 #include "magick/gem.h"
+#include "magick/pixel_cache.h"
 #include "magick/utility.h"
 
 /*

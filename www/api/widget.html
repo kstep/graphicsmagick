@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>widget - X11 Widgets</title>
-<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -44,19 +44,19 @@
 </P>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<P>void  <strong>XColorBrowserWidget</strong>( Display *display, XWindows *windows, const char *action, char *reply );</P>
-<P>int  <strong>XCommandWidget</strong>( Display *display, XWindows *windows, const char ** selections, XEvent *event );</P>
-<P>int  <strong>XConfirmWidget</strong>( Display *display, XWindows *windows, const char *reason, const char *description );</P>
-<P>int  <strong>XDialogWidget</strong>( Display *display, XWindows *windows, const char *action, const char *query, char *reply );</P>
-<P>void  <strong>XFileBrowserWidget</strong>( Display *display, XWindows *windows, const char *action, char *reply );</P>
-<P>void  <strong>XFontBrowserWidget</strong>( Display *display, XWindows *windows, const char *action, char *reply );</P>
-<P>void  <strong>XInfoWidget</strong>( Display *display, XWindows *windows, const char *activity );</P>
-<P>void  <strong>XListBrowserWidget</strong>( Display *display, XWindows *windows, XWindowInfo *window_info, const char ** list, const char *action, const char *query, char *reply );</P>
-<P>int  <strong>XMenuWidget</strong>( Display *display, XWindows *windows, const char *title, const char ** selections, char *item );</P>
-<P>void  <strong>XMonitorWidget</strong>( Display *display, XWindows *windows, const char *task, const magick_int64_t quantum, const magick_uint64_t span );</P>
-<P>void  <strong>XNoticeWidget</strong>( Display *display, XWindows *windows, const char *reason, const char *description );</P>
-<P>unsigned int  <strong>XPreferencesWidget</strong>( Display *display, XResourceInfo *resource_info, XWindows *windows );</P>
-<P>void  <strong>XTextViewWidget</strong>( Display *display, const XResourceInfo *resource_info, XWindows *windows, const unsigned int mono, const char *title, const char ** textlist );</P>
+<P>void Magick <strong>XColorBrowserWidget</strong>( Display *display, MagickXWindows *windows, const char *action, char *reply );</P>
+<P>int Magick <strong>XCommandWidget</strong>( Display *display, MagickXWindows *windows, const char ** selections, XEvent *event );</P>
+<P>int Magick <strong>XConfirmWidget</strong>( Display *display, MagickXWindows *windows, const char *reason, const char *description );</P>
+<P>int Magick <strong>XDialogWidget</strong>( Display *display, MagickXWindows *windows, const char *action, const char *query, char *reply );</P>
+<P>void Magick <strong>XFileBrowserWidget</strong>( Display *display, MagickXWindows *windows, const char *action, char *reply );</P>
+<P>void Magick <strong>XFontBrowserWidget</strong>( Display *display, MagickXWindows *windows, const char *action, char *reply );</P>
+<P>void Magick <strong>XInfoWidget</strong>( Display *display, MagickXWindows *windows, const char *activity );</P>
+<P>void Magick <strong>XListBrowserWidget</strong>( Display *display, MagickXWindows *windows, MagickXWindowInfo *window_info, const char ** list, const char *action, const char *query, char *reply );</P>
+<P>int Magick <strong>XMenuWidget</strong>( Display *display, MagickXWindows *windows, const char *title, const char ** selections, char *item );</P>
+<P>void Magick <strong>XMonitorWidget</strong>( Display *display, MagickXWindows *windows, const char *task, const magick_int64_t quantum, const magick_uint64_t span );</P>
+<P>void Magick <strong>XNoticeWidget</strong>( Display *display, MagickXWindows *windows, const char *reason, const char *description );</P>
+<P>unsigned int Magick <strong>XPreferencesWidget</strong>( Display *display, MagickXResourceInfo *resource_info, MagickXWindows *windows );</P>
+<P>void Magick <strong>XTextViewWidget</strong>( Display *display, const MagickXResourceInfo *resource_info, MagickXWindows *windows, const unsigned int mono, const char *title, const char ** textlist );</P>
 <P>
 </P>
 <hr />
@@ -64,9 +64,9 @@
 <P>
 </P>
 <h2><a name="xcolorbrowserwidget">XColorBrowserWidget</a></h2>
-<P>Method XColorBrowserWidget displays a Color Browser widget with a color query to the user.  The user keys a reply and presses the Action or Cancel button to exit.  The typed text is returned as the reply function parameter.</P>
-<P>The format of the XColorBrowserWidget method is:</P>
-<blockquote>void XColorBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXColorBrowserWidget displays a Color Browser widget with a color query to the user.  The user keys a reply and presses the Action or Cancel button to exit.  The typed text is returned as the reply function parameter.</P>
+<P>The format of the MagickXColorBrowserWidget method is:</P>
+<blockquote>void MagickXColorBrowserWidget ( Display *display, MagickXWindows *windows, const char *action, char *reply ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_display_3a">display:</a></strong><br />
 </dt>
@@ -77,7 +77,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong><a name="item_o_window_3a">window:</a></strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_action_3a">action:</a></strong><br />
@@ -95,9 +95,9 @@ The response from the user is returned in this parameter.
 <P>
 </P>
 <h2><a name="xcommandwidget">XCommandWidget</a></h2>
-<P>Method XCommandWidget maps a menu and returns the command pointed to by the user when the button is released.</P>
-<P>The format of the XCommandWidget method is:</P>
-<blockquote>int XCommandWidget ( Display *display, XWindows *windows, const char **selections, XEvent *event ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXCommandWidget maps a menu and returns the command pointed to by the user when the button is released.</P>
+<P>The format of the MagickXCommandWidget method is:</P>
+<blockquote>int MagickXCommandWidget ( Display *display, MagickXWindows *windows, const char **selections, XEvent *event ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_selection_number_3a">selection_number:</a></strong><br />
 </dt>
@@ -114,7 +114,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>window:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_selections_3a">selections:</a></strong><br />
@@ -132,14 +132,14 @@ Specifies a pointer to a X11 XEvent structure.
 <P>
 </P>
 <h2><a name="xconfirmwidget">XConfirmWidget</a></h2>
-<P>Method XConfirmWidget displays a Confirm widget with a notice to the user.  The function returns -1 if Dismiss is pressed, 0 for Cancel, and 1 for Yes.</P>
-<P>The format of the XConfirmWidget method is:</P>
-<blockquote>int XConfirmWidget ( Display *display, XWindows *windows, const char *reason, const char *description ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXConfirmWidget displays a Confirm widget with a notice to the user.  The function returns -1 if Dismiss is pressed, 0 for Cancel, and 1 for Yes.</P>
+<P>The format of the MagickXConfirmWidget method is:</P>
+<blockquote>int MagickXConfirmWidget ( Display *display, MagickXWindows *windows, const char *reason, const char *description ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong><a name="item_o_status_3a">status:</a></strong><br />
 </dt>
 <DD>
-Method XConfirmWidget returns True if the user presses Yes otherwise False is returned.
+Method MagickXConfirmWidget returns True if the user presses Yes otherwise False is returned.
 </dd>
 <P></P>
 <dt><strong>display:</strong><br />
@@ -151,7 +151,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>window:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_reason_3a">reason:</a></strong><br />
@@ -169,9 +169,9 @@ Specifies any description to the message.
 <P>
 </P>
 <h2><a name="xdialogwidget">XDialogWidget</a></h2>
-<P>Method XDialogWidget displays a Dialog widget with a query to the user.  The user keys a reply and presses the Ok or Cancel button to exit.  The typed text is returned as the reply function parameter.</P>
-<P>The format of the XDialogWidget method is:</P>
-<blockquote>int XDialogWidget ( Display *display, XWindows *windows, const char *action, const char *query, char *reply ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXDialogWidget displays a Dialog widget with a query to the user.  The user keys a reply and presses the Ok or Cancel button to exit.  The typed text is returned as the reply function parameter.</P>
+<P>The format of the MagickXDialogWidget method is:</P>
+<blockquote>int MagickXDialogWidget ( Display *display, MagickXWindows *windows, const char *action, const char *query, char *reply ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>display:</strong><br />
 </dt>
@@ -182,7 +182,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>window:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P>
 <dt><strong>action:</strong><br />
@@ -206,9 +206,9 @@ The response from the user is returned in this parameter.
 <P>
 </P>
 <h2><a name="xfilebrowserwidget">XFileBrowserWidget</a></h2>
-<P>Method XFileBrowserWidget displays a File Browser widget with a file query to the user.  The user keys a reply and presses the Action or Cancel button to exit.  The typed text is returned as the reply function parameter.</P>
-<P>The format of the XFileBrowserWidget method is:</P>
-<blockquote>void XFileBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXFileBrowserWidget displays a File Browser widget with a file query to the user.  The user keys a reply and presses the Action or Cancel button to exit.  The typed text is returned as the reply function parameter.</P>
+<P>The format of the MagickXFileBrowserWidget method is:</P>
+<blockquote>void MagickXFileBrowserWidget ( Display *display, MagickXWindows *windows, const char *action, char *reply ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>display:</strong><br />
 </dt>
@@ -219,7 +219,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>window:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P>
 <dt><strong>action:</strong><br />
@@ -237,9 +237,9 @@ The response from the user is returned in this parameter.
 <P>
 </P>
 <h2><a name="xfontbrowserwidget">XFontBrowserWidget</a></h2>
-<P>Method XFontBrowserWidget displays a Font Browser widget with a font query to the user.  The user keys a reply and presses the Action or Cancel button to exit.  The typed text is returned as the reply function parameter.</P>
-<P>The format of the XFontBrowserWidget method is:</P>
-<blockquote>void XFontBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXFontBrowserWidget displays a Font Browser widget with a font query to the user.  The user keys a reply and presses the Action or Cancel button to exit.  The typed text is returned as the reply function parameter.</P>
+<P>The format of the MagickXFontBrowserWidget method is:</P>
+<blockquote>void MagickXFontBrowserWidget ( Display *display, MagickXWindows *windows, const char *action, char *reply ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>display:</strong><br />
 </dt>
@@ -250,7 +250,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>window:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P>
 <dt><strong>action:</strong><br />
@@ -268,9 +268,9 @@ The response from the user is returned in this parameter.
 <P>
 </P>
 <h2><a name="xinfowidget">XInfoWidget</a></h2>
-<P>Method XInfoWidget displays text in the Info widget.  The purpose is to inform the user that what activity is currently being performed (e.g.  reading an image, rotating an image, etc.).</P>
-<P>The format of the XInfoWidget method is:</P>
-<blockquote>void XInfoWidget ( Display *display, XWindows *windows, const char *activity ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXInfoWidget displays text in the Info widget.  The purpose is to inform the user that what activity is currently being performed (e.g.  reading an image, rotating an image, etc.).</P>
+<P>The format of the MagickXInfoWidget method is:</P>
+<blockquote>void MagickXInfoWidget ( Display *display, MagickXWindows *windows, const char *activity ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>display:</strong><br />
 </dt>
@@ -281,7 +281,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>window:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_activity_3a">activity:</a></strong><br />
@@ -293,9 +293,9 @@ This character string reflects the current activity and is displayed in the Info
 <P>
 </P>
 <h2><a name="xlistbrowserwidget">XListBrowserWidget</a></h2>
-<P>Method XListBrowserWidget displays a List Browser widget with a query to the user.  The user keys a reply or select a reply from the list.  Finally, the user presses the Action or Cancel button to exit.  The typed text is returned as the reply function parameter.</P>
-<P>The format of the XListBrowserWidget method is:</P>
-<blockquote>void XListBrowserWidget ( Display *display, XWindows *windows, XWindowInfo *window_info, const char **list, const char *action, const char *query, char *reply ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXListBrowserWidget displays a List Browser widget with a query to the user.  The user keys a reply or select a reply from the list.  Finally, the user presses the Action or Cancel button to exit.  The typed text is returned as the reply function parameter.</P>
+<P>The format of the MagickXListBrowserWidget method is:</P>
+<blockquote>void MagickXListBrowserWidget ( Display *display, MagickXWindows *windows, MagickXWindowInfo *window_info, const char **list, const char *action, const char *query, char *reply ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>display:</strong><br />
 </dt>
@@ -306,7 +306,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>window:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_list_3a">list:</a></strong><br />
@@ -336,9 +336,9 @@ The response from the user is returned in this parameter.
 <P>
 </P>
 <h2><a name="xmenuwidget">XMenuWidget</a></h2>
-<P>Method XMenuWidget maps a menu and returns the command pointed to by the user when the button is released.</P>
-<P>The format of the XMenuWidget method is:</P>
-<blockquote>int XMenuWidget ( Display *display, XWindows *windows, const char *title, const char **selections, char *item ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXMenuWidget maps a menu and returns the command pointed to by the user when the button is released.</P>
+<P>The format of the MagickXMenuWidget method is:</P>
+<blockquote>int MagickXMenuWidget ( Display *display, MagickXWindows *windows, const char *title, const char **selections, char *item ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>selection_number:</strong><br />
 </dt>
@@ -355,7 +355,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>window:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_title_3a">title:</a></strong><br />
@@ -379,9 +379,9 @@ Specifies a character array.  The item selected from the menu is returned here.
 <P>
 </P>
 <h2><a name="xmonitorwidget">XMonitorWidget</a></h2>
-<P>Method XMonitorWidget displays the progress a task is making in completing a task.  A span of zero toggles the active status.  An inactive state disables the progress monitor.</P>
-<P>The format of the XMonitorWidget method is:</P>
-<blockquote>void XMonitorWidget ( Display *display, XWindows *windows, const char *task, const magick_int64_t quantum, const magick_uint64_t span ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXMonitorWidget displays the progress a task is making in completing a task.  A span of zero toggles the active status.  An inactive state disables the progress monitor.</P>
+<P>The format of the MagickXMonitorWidget method is:</P>
+<blockquote>void MagickXMonitorWidget ( Display *display, MagickXWindows *windows, const char *task, const magick_int64_t quantum, const magick_uint64_t span ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>display:</strong><br />
 </dt>
@@ -392,7 +392,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>window:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_task_3a">task:</a></strong><br />
@@ -416,9 +416,9 @@ Specifies the span relative to completing a task.
 <P>
 </P>
 <h2><a name="xnoticewidget">XNoticeWidget</a></h2>
-<P>Method XNoticeWidget displays a Notice widget with a notice to the user.  The function returns when the user presses the ``Dismiss'' button.</P>
-<P>The format of the XNoticeWidget method is:</P>
-<blockquote>void XNoticeWidget ( Display *display, XWindows *windows, const char *reason, const char *description ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXNoticeWidget displays a Notice widget with a notice to the user.  The function returns when the user presses the ``Dismiss'' button.</P>
+<P>The format of the MagickXNoticeWidget method is:</P>
+<blockquote>void MagickXNoticeWidget ( Display *display, MagickXWindows *windows, const char *reason, const char *description ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>display:</strong><br />
 </dt>
@@ -429,7 +429,7 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>window:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P>
 <dt><strong>reason:</strong><br />
@@ -447,9 +447,9 @@ Specifies any description to the message.
 <P>
 </P>
 <h2><a name="xpreferenceswidget">XPreferencesWidget</a></h2>
-<P>Method XPreferencesWidget displays a Preferences widget with program preferences.  If the user presses the Apply button, the preferences are stored in a configuration file in the users' home directory.</P>
-<P>The format of the XPreferencesWidget method is:</P>
-<blockquote>unsigned int XPreferencesWidget ( Display *display, <A HREF="types.html#XResourceInfo">XResourceInfo</A> *resource_info, XWindows *windows ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXPreferencesWidget displays a Preferences widget with program preferences.  If the user presses the Apply button, the preferences are stored in a configuration file in the users' home directory.</P>
+<P>The format of the MagickXPreferencesWidget method is:</P>
+<blockquote>unsigned int MagickXPreferencesWidget ( Display *display, MagickXResourceInfo *resource_info, MagickXWindows *windows ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>display:</strong><br />
 </dt>
@@ -460,21 +460,21 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong><a name="item_o_resource_info_3a">resource_info:</a></strong><br />
 </dt>
 <DD>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a X11 MagickXResourceInfo structure.
 </dd>
 <P></P>
 <dt><strong>window:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P></dl>
 <P>
 </P>
 <h2><a name="xtextviewwidget">XTextViewWidget</a></h2>
-<P>Method XTextViewWidget displays text in a Text View widget.</P>
-<P>The format of the XTextViewWidget method is:</P>
-<blockquote>void XTextViewWidget ( Display *display, const <A HREF="types.html#XResourceInfo">XResourceInfo</A> *resource_info, XWindows *windows, const unsigned int mono, const char *title, const char **textlist ); </blockquote><P>A description of each parameter follows:</P>
+<P>Method MagickXTextViewWidget displays text in a Text View widget.</P>
+<P>The format of the MagickXTextViewWidget method is:</P>
+<blockquote>void MagickXTextViewWidget ( Display *display, const MagickXResourceInfo *resource_info, MagickXWindows *windows, const unsigned int mono, const char *title, const char **textlist ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>display:</strong><br />
 </dt>
@@ -485,13 +485,13 @@ Specifies a connection to an X server; returned from XOpenDisplay.
 <dt><strong>resource_info:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a X11 XResourceInfo structure.
+Specifies a pointer to a X11 MagickXResourceInfo structure.
 </dd>
 <P></P>
 <dt><strong>window:</strong><br />
 </dt>
 <DD>
-Specifies a pointer to a XWindows structure.
+Specifies a pointer to a MagickXWindows structure.
 </dd>
 <P></P>
 <dt><strong><a name="item_o_mono_3a">mono:</a></strong><br />

@@ -48,10 +48,6 @@ MAGICK_BASE_SRCS = \
 	magick/bit_stream.h \
 	magick/blob.c \
 	magick/blob.h \
-	magick/cache.c \
-	magick/cache.h \
-	magick/cache_view.c \
-	magick/cache_view.h \
 	magick/channel.c \
 	magick/channel.h \
 	magick/color.c \
@@ -113,6 +109,8 @@ MAGICK_BASE_SRCS = \
 	magick/operator.h \
 	magick/paint.c \
 	magick/paint.h \
+	magick/pixel_cache.h \
+	magick/pixel_cache.c \
 	magick/pixel_iterator.c \
 	magick/pixel_iterator.h \
 	magick/PreRvIcccm.c \
@@ -139,8 +137,6 @@ MAGICK_BASE_SRCS = \
 	magick/spinlock.h \
 	magick/static.c \
 	magick/static.h \
-	magick/stream.c \
-	magick/stream.h \
 	magick/studio.h \
 	magick/symbols.h \
 	magick/tempfile.c \
@@ -182,9 +178,6 @@ MAGICK_INCLUDE_HDRS = \
 	magick/api.h \
 	magick/attribute.h \
 	magick/blob.h \
-	magick/cache.h \
-	magick/cache.h \
-	magick/cache_view.h \
 	magick/channel.h \
 	magick/color.h \
 	magick/colorspace.h \
@@ -213,6 +206,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/montage.h \
 	magick/operator.h \
 	magick/paint.h \
+	magick/pixel_cache.h \
 	magick/profile.h \
 	magick/quantize.h \
 	magick/registry.h \
@@ -221,7 +215,6 @@ MAGICK_INCLUDE_HDRS = \
 	magick/resource.h \
 	magick/shear.h \
 	magick/signature.h \
-	magick/stream.h \
 	magick/symbols.h \
 	magick/timer.h \
 	magick/transform.h \

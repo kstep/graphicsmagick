@@ -39,7 +39,6 @@
 #if defined(HasX11)
 #include "magick/attribute.h"
 #include "magick/blob.h"
-#include "magick/cache.h"
 #include "magick/color.h"
 #include "magick/composite.h"
 #include "magick/constitute.h"
@@ -52,6 +51,7 @@
 #include "magick/monitor.h"
 #include "magick/montage.h"
 #include "magick/paint.h"
+#include "magick/pixel_cache.h"
 #include "magick/quantize.h"
 #include "magick/render.h"
 #include "magick/resize.h"

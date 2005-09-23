@@ -40,12 +40,12 @@
 */
 #include "magick/studio.h"
 #include "magick/alpha_composite.h"
-#include "magick/cache.h"
 #include "magick/color.h"
 #include "magick/composite.h"
 #include "magick/constitute.h"
 #include "magick/gem.h"
 #include "magick/log.h"
+#include "magick/pixel_cache.h"
 #include "magick/render.h"
 #include "magick/tempfile.h"
 #include "magick/transform.h"
