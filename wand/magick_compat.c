@@ -136,6 +136,20 @@ WandExport size_t CopyMagickString(char *destination,const char *source,
 %
 %
 */
+static int FormatMagickStringList(char *string,const size_t length,
+                                  const char *format,va_list operands)
+{
+  int
+    count;
+
+#if defined(HAVE_VSNPRINTF)
+  count=vsnprintf(string,length,format,operands);
+#else
+  count=vsprintf(string,format,operands);
+#endif
+
+  return(count);
+}
 WandExport int FormatMagickString(char *string,const size_t length,
   const char *format,...)
 {
@@ -145,14 +159,10 @@ WandExport int FormatMagickString(char *string,const size_t length,
   va_list
     operands;
 
-  va_start(operands,format);
-#if defined(HAVE_VSNPRINTF)
-  count=vsnprintf(string,length,format,operands);
-#else
-  count=vsprintf(string,format,operands);
-#endif
+  va_start(operands, format);
+  count=FormatMagickStringList(string,length,format,operands);
   va_end(operands);
-  return(count);
+  return (count);
 }
 
 /*

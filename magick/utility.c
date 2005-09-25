@@ -99,8 +99,9 @@ static const unsigned char
 */
 static int
   IsDirectory(const char *);
+
 static int
-MagickStrToD(const char *start,char **end,double *value);
+  MagickStrToD(const char *start,char **end,double *value);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1110,21 +1111,22 @@ MagickExport void FormatSize(const magick_int64_t size,char *format)
 %
 %
 */
+static void FormatStringList(char *string,const char *format, 
+                             va_list operands)
+{  
+#if defined(HAVE_VSNPRINTF)
+  (void) vsnprintf(string,MaxTextExtent,format,operands);
+#else
+  (void) vsprintf(string,format,operands);
+#endif
+}
 MagickExport void FormatString(char *string,const char *format,...)
 {
   va_list
     operands;
 
   va_start(operands,format);
-#if defined(HAVE_VSNPRINTF)
-  (void) vsnprintf(string,MaxTextExtent,format,operands);
-#else
-#  if defined(HAVE_VSPRINTF)
-  (void) vsprintf(string,format,operands);
-#  else
-#    error Neither vsnprintf or vsprintf is available.
-#  endif
-#endif
+  FormatStringList(string, format, operands);
   va_end(operands);
 }
 

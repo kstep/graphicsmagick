@@ -344,9 +344,9 @@ MagickExport unsigned int IsEventLogging(void)
 %
 %
 */
-MagickExport unsigned int LogMagickEvent(const ExceptionType type,
+static unsigned int LogMagickEventList(const ExceptionType type,
   const char *module,const char *function,const unsigned long line,
-  const char *format,...)
+  const char *format,va_list operands)
 {
   char
     *domain,
@@ -370,9 +370,6 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
 
   time_t
     seconds;
-
-  va_list
-    operands;
 
   if (!IsEventLogging())
     return(False);
@@ -482,7 +479,6 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
     default: nteventtype=EVENTLOG_INFORMATION_TYPE; break;
   }
 #endif
-  va_start(operands,format);
 #if defined(HAVE_VSNPRINTF)
   (void) vsnprintf(event,MaxTextExtent,format,operands);
 #else
@@ -492,7 +488,6 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
 #    error Neither vsnprintf or vsprintf is available.
 #  endif
 #endif
-  va_end(operands);
   seconds=time((time_t *) NULL);
   time_meridian=localtime(&seconds);
   elapsed_time=GetElapsedTime(&log_info->timer);
@@ -736,6 +731,22 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
   LiberateSemaphoreInfo(&log_semaphore);
   return(True);
 }
+MagickExport unsigned int LogMagickEvent(const ExceptionType type,
+  const char *module,const char *function,const unsigned long line,
+  const char *format,...)
+{
+  unsigned int
+    count;
+
+  va_list
+    operands;
+
+  va_start(operands,format);
+  count=LogMagickEventList(type, module, function, line, format, operands);
+  va_end(operands);
+  return (count);
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

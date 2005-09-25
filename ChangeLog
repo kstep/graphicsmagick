@@ -1,3 +1,9 @@
+2005-09-24  Peter Wu  <peterw@softintegration.com>
+
+	* Incorporate changes necessary so that GraphicsMagick can work
+	with the Ch C/C++ interpreter from SoftIntegration at
+	http://www.softintegration.com/.
+
 2005-09-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/pixel_cache.c: Incorporate all functionality from

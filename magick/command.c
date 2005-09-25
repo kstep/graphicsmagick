@@ -14344,6 +14344,12 @@ MagickExport int GMCommand(int argc,char **argv)
   unsigned int
     status=True;
 
+#if defined(WIN32)
+  InitializeMagick((char *) NULL);
+#else
+  InitializeMagick(argv[0]);
+#endif
+
   ReadCommandlLine(argc,&argv);
 
   (void) SetClientName(argv[0]);

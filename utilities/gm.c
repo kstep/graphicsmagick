@@ -58,11 +58,5 @@
 */
 int main(int argc,char **argv)
 {
-#if defined(WIN32)
-  InitializeMagick((char *) NULL);
-#else
-  InitializeMagick(argv[0]);
-#endif
-
   return GMCommand(argc,argv);
 }
