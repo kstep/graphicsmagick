@@ -1,3 +1,10 @@
+2005-09-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Transform quality value into zip
+	compression quality level similar to what is done for MIFF/MNG/PNG.
+	Since default quality value is 75, this means that the default zip
+	quality level is 7.
+
 2005-09-24  Peter Wu  <peterw@softintegration.com>
 
 	* Incorporate changes necessary so that GraphicsMagick can work

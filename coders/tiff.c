@@ -3233,7 +3233,17 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                  (photometric == PHOTOMETRIC_MINISBLACK)) &&
                 ((bits_per_sample == 8) || (bits_per_sample == 16)))
               (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
-            (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,9);
+            {
+              /*
+                Zip quality has a useful range of 1-9.
+              */
+              unsigned int zip_quality=image_info->quality / 10;
+              if (zip_quality < 1)
+                zip_quality=1;
+              if (zip_quality > 9)
+                zip_quality=9;
+              (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,zip_quality);
+            }
             break;
           }
         case COMPRESSION_CCITTFAX4:

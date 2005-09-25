@@ -3367,7 +3367,7 @@ or when a "clean" look is desired.</pp>
 <utils apps=composite,convert,display,import,mogrify,montage>
 <dopt>-quality <value></opt>
 
-<abs>JPEG/MIFF/PNG compression level</abs>
+<abs>JPEG/MIFF/PNG/TIFF compression level</abs>
 
 <pp> For the JPEG and MPEG image formats, quality is 0 (lowest image
 quality and highest compression) to 100 (best quality but least
@@ -3377,9 +3377,10 @@ downsampling.  To use the same quality value as that found by the JPEG
 decoder, use the <tt>-define jpeg:preserve-settings</tt> flag.</pp>
 
 <pp>
-For the MIFF image format, quality/10 is the zlib compression level, which
-is 0 (worst but fastest compression) to 9 (best but slowest).  It has no
-effect on the image appearance, since the compression is always lossless.</pp>
+For the MIFF image format, and the TIFF format while using ZIP
+compression, quality/10 is the zlib compression level, which is 0 (worst
+but fastest compression) to 9 (best but slowest). It has no effect on the
+image appearance, since the compression is always lossless.</pp>
 
 <pp>
 For the JPEG-2000 image format, quality is mapped using a non-linear
