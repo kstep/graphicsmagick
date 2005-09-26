@@ -24,6 +24,9 @@
 2005-09-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/attribute.c (GetImageAttribute): Add more general support
+        for retrieving wildcarded attributes so that an identify -format
+        specification like '%[dpx:*]' works as expected.
   <LI> coders/tiff.c (WriteTIFFImage): Transform quality value into zip
         compression quality level similar to what is done for MIFF/MNG/PNG.
         Since default quality value is 75, this means that the default zip

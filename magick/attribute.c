@@ -1545,32 +1545,104 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
   return(True);
 }
 
+/*
+  Generate an aggregate attribute result based on a wildcard
+  specification like "foo:*".
+*/
+static int GenerateWildcardAttribute(Image *image,const char *key)
+{
+  char
+    *result=NULL;
+
+  size_t
+    key_length=0;
+
+  register ImageAttribute
+    *p = (ImageAttribute *) NULL;
+
+  MagickPassFail
+    status=MagickFail;
+
+  key_length=strlen(key)-1;
+  for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
+    if (LocaleNCompare(key,p->key,key_length) == 0)
+      {
+        char
+          s[MaxTextExtent];
+
+        if (result != NULL)
+          (void) ConcatenateString(&result,"\n");
+        FormatString(s,"%.512s=%.1024s",p->key,p->value);
+        (void) ConcatenateString(&result,s);
+      }
+
+  if (result != NULL)
+    {
+      status=SetImageAttribute(image,key,result);
+      MagickFreeMemory(result);
+    }
+  return status;
+}
+
 MagickExport const ImageAttribute *GetImageAttribute(const Image *image,
   const char *key)
 {
   register ImageAttribute
-    *p;
+    *p = (ImageAttribute *) NULL;
+
+  size_t
+    key_length=0;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+
+  /*
+    If key is null, then return a pointer to the attribute list.
+  */
   if (key == (char *) NULL)
     return(image->attributes);
+
+  key_length=strlen(key);
+
+
   for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
     if (LocaleCompare(key,p->key) == 0)
       return(p);
+
   if (LocaleNCompare("IPTC:",key,5) == 0)
     {
+      /*
+        Create an attribute named "IPTC:*" with all matching
+        key=values and return it.
+      */
       if (GenerateIPTCAttribute((Image *) image,key) == True)
         return(GetImageAttribute(image,key));
     }
-  if (LocaleNCompare("8BIM:",key,5) == 0)
+  else if (LocaleNCompare("8BIM:",key,5) == 0)
     {
+      /*
+        Create an attribute named "8BIM:*" with all matching
+        key=values and return it.
+      */
       if (Generate8BIMAttribute((Image *) image,key) == True)
         return(GetImageAttribute(image,key));
     }
-  if (LocaleNCompare("EXIF:",key,5) == 0)
+  else if (LocaleNCompare("EXIF:",key,5) == 0)
     {
+      /*
+        Create an attribute named "EXIF:*" with all matching
+        key=values and return it.
+      */
       if (GenerateEXIFAttribute((Image *) image,key) == True)
+        return(GetImageAttribute(image,key));
+    }
+  else if ((key_length >=2) && (key[key_length-1] == '*'))
+    {
+      /*
+        Create an attribute named "foo:*" with all matching
+        key=values and return it.
+      */
+      if (GenerateWildcardAttribute((Image *) image,key) == True)
         return(GetImageAttribute(image,key));
     }
   return(p);

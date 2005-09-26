@@ -2520,7 +2520,7 @@ processing. This option is useful for non-interactive display operations,
 or when a "clean" look is desired.
 .TP
 .B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG compression level
+\fRJPEG/MIFF/PNG/TIFF compression level
  For the JPEG and MPEG image formats, quality is 0 (lowest image
 quality and highest compression) to 100 (best quality but least
 effective compression). The default quality is 75.  Use the
@@ -2528,9 +2528,10 @@ effective compression). The default quality is 75.  Use the
 downsampling.  To use the same quality value as that found by the JPEG
 decoder, use the -define jpeg:preserve-settings flag.
 
-For the MIFF image format, quality/10 is the zlib compression level, which
-is 0 (worst but fastest compression) to 9 (best but slowest).  It has no
-effect on the image appearance, since the compression is always lossless.
+For the MIFF image format, and the TIFF format while using ZIP
+compression, quality/10 is the zlib compression level, which is 0 (worst
+but fastest compression) to 9 (best but slowest). It has no effect on the
+image appearance, since the compression is always lossless.
 
 For the JPEG-2000 image format, quality is mapped using a non-linear
 equation to the compression ratio required by the Jasper library. This
@@ -3869,7 +3870,7 @@ Options, above.
 \fRadd ICM, IPTC, or generic profile  to image
 .TP
 .B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG compression level
+\fRJPEG/MIFF/PNG/TIFF compression level
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
@@ -4760,7 +4761,7 @@ Options, above.
 \fRadd ICM, IPTC, or generic profile  to image
 .TP
 .B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG compression level
+\fRJPEG/MIFF/PNG/TIFF compression level
 .TP
 .B "-raise \fI<width>x<height>"\fP
 \fRlighten or darken image edges
@@ -5178,7 +5179,7 @@ Options, above.
 \fRdisable progress monitor and busy cursor
 .TP
 .B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG compression level
+\fRJPEG/MIFF/PNG/TIFF compression level
 .TP
 .B "-raise \fI<width>x<height>"\fP
 \fRlighten or darken image edges
@@ -7291,7 +7292,7 @@ Options, above.
 \fRpointsize of the PostScript, OPTION1, or TrueType font
 .TP
 .B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG compression level
+\fRJPEG/MIFF/PNG/TIFF compression level
 .TP
 .B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
 \fRresize an image
@@ -7614,7 +7615,7 @@ Options, above.
 \fRadd ICM, IPTC, or generic profile  to image
 .TP
 .B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG compression level
+\fRJPEG/MIFF/PNG/TIFF compression level
 .TP
 .B "-raise \fI<width>x<height>"\fP
 \fRlighten or darken image edges
@@ -7985,7 +7986,7 @@ Options, above.
 \fRpointsize of the PostScript, OPTION1, or TrueType font
 .TP
 .B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG compression level
+\fRJPEG/MIFF/PNG/TIFF compression level
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point

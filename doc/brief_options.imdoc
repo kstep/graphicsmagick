@@ -475,7 +475,7 @@
 </utils>
 <utils apps=composite,convert,display,import,mogrify,montage>
 <lopt>-quality <value></opt>
-<abs>JPEG/MIFF/PNG compression level</abs>
+<abs>JPEG/MIFF/PNG/TIFF compression level</abs>
 </utils>
 <utils apps=convert,display,mogrify>
 <lopt>-raise <width>x<height></opt>

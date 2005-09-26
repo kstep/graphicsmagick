@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20050818;21032300">
+	<META NAME="CHANGED" CONTENT="20050925;19563700">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<STYLE>
@@ -356,11 +356,11 @@ are similar to the attribute descriptions from the DPX standard.</P>
 	<VAR>dpx:mp.perfs.offset</VAR></DD><DD CLASS="western">
 	<VAR>dpx:mp.prefix</VAR></DD><DD CLASS="western">
 	<VAR>dpx:mp.sequence.length</VAR></DD><DD CLASS="western">
-	<VAR>dpx:mp.shuter.angle</VAR></DD><DD CLASS="western">
+	<VAR>dpx:mp.shutter.angle</VAR></DD><DD CLASS="western">
 	<VAR>dpx:mp.slate.info</VAR></DD><DD CLASS="western">
 	<VAR>dpx:source.aspect.ratio.horizontal</VAR></DD><DD CLASS="western">
 	<VAR>dpx:source.aspect.ratio.vertical</VAR></DD><DD CLASS="western">
-	<VAR>dpx:source.border.validity.botom</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.border.validity.bottom</VAR></DD><DD CLASS="western">
 	<VAR>dpx:source.border.validity.left</VAR></DD><DD CLASS="western">
 	<VAR>dpx:source.border.validity.right</VAR></DD><DD CLASS="western">
 	<VAR>dpx:source.border.validity.top</VAR></DD><DD CLASS="western">
@@ -368,8 +368,8 @@ are similar to the attribute descriptions from the DPX standard.</P>
 	<VAR>dpx:source.device.name</VAR></DD><DD CLASS="western">
 	<VAR>dpx:source.device.serialnumber</VAR></DD><DD CLASS="western">
 	<VAR>dpx:source.filename</VAR></DD><DD CLASS="western">
-	<VAR>dpx:source.scaned.size.x</VAR></DD><DD CLASS="western">
-	<VAR>dpx:source.scaned.size.y</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.scanned.size.x</VAR></DD><DD CLASS="western">
+	<VAR>dpx:source.scanned.size.y</VAR></DD><DD CLASS="western">
 	<VAR>dpx:source.x-center</VAR></DD><DD CLASS="western">
 	<VAR>dpx:source.x-offset</VAR></DD><DD CLASS="western">
 	<VAR>dpx:source.x-original-size</VAR></DD><DD CLASS="western">
@@ -392,8 +392,12 @@ are similar to the attribute descriptions from the DPX standard.</P>
 	<VAR>dpx:tv.white.level</VAR></DD><DD CLASS="western" STYLE="margin-bottom: 0.2in">
 	<VAR>dpx:user.data.id</VAR></DD></DL>
 <P CLASS="western">
-<BR><BR>
-</P>
+Specific header values from a DPX file may be displayed quickly using
+a command similar to:</P>
+<PRE>   gm identify -format '%[DPX:tv.time.code]' foo.dpx</PRE><P CLASS="western">
+Use</P>
+<PRE>   gm identify -format '%[dpx:*]' foo.dpx</PRE><P CLASS="western">
+to list all DPX header attributes.</P>
 <HR>
 <P CLASS="western" ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
 <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>

@@ -6726,7 +6726,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
                   MemoryAllocationFailed,
                     MagickMsg(OptionError,UnableToFormatImageMetadata));
               (void) ConcatenateString(&(*metadata),text);
-              (void) ConcatenateString(&(*metadata),"\n");
+/*               (void) ConcatenateString(&(*metadata),"\n"); */
               MagickFreeMemory(text);
             }
         }
@@ -14408,8 +14408,11 @@ MagickExport int GMCommand(int argc,char **argv)
   status=MagickCommand(image_info,argc,argv,&text,&exception);
   if (text != (char *) NULL)
     {
-      (void) fputs(text,stdout);
-      (void) fputc('\n',stdout);
+      if (strlen(text))
+        {
+          (void) fputs(text,stdout);
+          (void) fputc('\n',stdout);
+        }
       MagickFreeMemory(text);
     }
   if (exception.severity != UndefinedException)
