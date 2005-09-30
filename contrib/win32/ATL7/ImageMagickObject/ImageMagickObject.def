@@ -16,3 +16,4 @@ GetClientName @18
 DefineClientName @19
 LocaleCompare @20
 GetPathComponent @21
+GMCommand @22
