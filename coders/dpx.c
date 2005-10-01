@@ -3046,7 +3046,7 @@ static void WriteRowSamples(const sample_t *samples,
   else if ((attribute=GetImageAttribute(image,key))) \
     (void) strncpy(member,attribute->value,sizeof(member)); \
   else \
-  SET_UNDEFINED_ASCII(member); \    
+    SET_UNDEFINED_ASCII(member); \
 }
 #define ScaleToVideo(sample,ref_low,dnscale) \
   ((unsigned int) (((double) sample*dnscale)+ref_low+0.5))
