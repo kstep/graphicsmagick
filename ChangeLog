@@ -1,3 +1,11 @@
+2005-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (AttributeToString): Use strncpy rather than
+	strlcpy to copy string.  This is important since DPX header
+	strings are not null terminated and may need to fill all available
+	space.  Certain short header fields like mp.film.manufacturer.id,
+	mp.film.type, and mp.perfs.offset were being truncated!
+
 2005-09-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/attribute.c (GetImageAttribute): Add more general support

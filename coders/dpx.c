@@ -3028,6 +3028,11 @@ static void WriteRowSamples(const sample_t *samples,
     SET_UNDEFINED_R32(member); \
 }
 
+/*
+  This macro uses strncpy on purpose.  The string is not required to
+  be null terminated, but any unused space should be filled with
+  nulls.
+*/
 #define AttributeToString(image_info,image,key,member) \
 { \
   const ImageAttribute \
@@ -3037,11 +3042,11 @@ static void WriteRowSamples(const sample_t *samples,
     *definition_value; \
 \
   if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
-    (void) strlcpy(member,definition_value,sizeof(member)); \
+    (void) strncpy(member,definition_value,sizeof(member)); \
   else if ((attribute=GetImageAttribute(image,key))) \
-    (void) strlcpy(member,attribute->value,sizeof(member)); \
+    (void) strncpy(member,attribute->value,sizeof(member)); \
   else \
-    SET_UNDEFINED_ASCII(member); \
+  SET_UNDEFINED_ASCII(member); \    
 }
 #define ScaleToVideo(sample,ref_low,dnscale) \
   ((unsigned int) (((double) sample*dnscale)+ref_low+0.5))
