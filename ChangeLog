@@ -1,3 +1,18 @@
+2005-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/magick/magick_types.h.in: Add patch for Ch.
+	* magick/command.c (TransmogrifyImage): Complete re-write of
+	mogrify file handling.  Former version wrote to a temporary file
+	and then moved temporary file to replace original if necessary.
+	New version moves an existing writable file to a backup file with
+	tilde ('~') added to end of file name, writes to the final output
+	file name, and removes the backup file on success.  The new
+	approach satisfies formats which embed the output name in the file
+	(e.g. the DPX format) and still works when the output file exists
+	and is writeable, but is in non-writeable directory.  The previous
+	approach would fail if the output file exists and is writable, but
+	the directory is not writeable.
+
 2005-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (AttributeToString): Use strncpy rather than

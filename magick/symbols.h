@@ -427,6 +427,7 @@
 #define IsSubimage GmIsSubimage
 #define IsTaintImage GmIsTaintImage
 #define IsTrue GmIsTrue
+#define IsWriteable GmIsWriteable
 #define LZWEncode2Image GmLZWEncode2Image
 #define LZWEncodeImage GmLZWEncodeImage
 #define LevelImage GmLevelImage

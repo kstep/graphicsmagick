@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20050925;19563700">
+	<META NAME="CHANGED" CONTENT="20051002;8225200">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<STYLE>
@@ -292,7 +292,9 @@ dealing with DPX files.</P>
 	implied by the DPX header (if any). Currently files with the
 	transfer characteristic <I>Printing Density</I> are assumed to be
 	log encoded density while files marked as <I>Linear</I> are assumed
-	to be linear.</DD><DT CLASS="western">
+	to be linear. Hint: use '-define dpx:colorspace=rgb' in order to
+	avoid the log to linear transformation for DPX files which use
+	Printing Density.</DD><DT CLASS="western">
 	-define dpx:packing-method={packed|a|b|lsbpad|msbpad}</DT><DD CLASS="western">
 	DPX samples may be output within 32-bit words. They may be tightly
 	packed end-to-end within the words (&quot;packed&quot;), padded with

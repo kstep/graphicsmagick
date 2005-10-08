@@ -195,7 +195,6 @@ extern WandExport unsigned int
   MagickGetImageExtrema(MagickWand *,unsigned long *,unsigned long *),
   MagickGetImageGreenPrimary(MagickWand *,double *,double *),
   MagickGetImageMatteColor(MagickWand *,PixelWand *),
-  MagickGetImageMean(MagickWand *,double *,double *),
   MagickGetImagePixels(MagickWand *,const long,const long,const unsigned long,
     const unsigned long,const char *,const StorageType,unsigned char *),
   MagickGetImageRedPrimary(MagickWand *,double *,double *),

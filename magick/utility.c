@@ -2547,36 +2547,36 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsAccessible() returns True if the file as defined by path exists
+%  IsAccessible() returns MagickTrue if the file as defined by path exists
 %  and is readable by the user.
 %
 %  The format of the IsAccessible method is:
 %
-%      unsigned int IsAccessible(const char *path)
+%      MagickBool IsAccessible(const char *path)
 %
 %  A description of each parameter follows.
 %
-%    o status:  Method IsAccessible returns True if the file as defined by
-%      path exists and is readable by the user, otherwise False is returned.
+%    o status:  Method IsAccessible returns MagickTrue if the file as defined by
+%      path exists and is readable by the user, otherwise MagickFalse is returned.
 %
 %    o path:  A pointer to an array of characters containing the path.
 %
 %
 */
-MagickExport unsigned int IsAccessible(const char *path)
+MagickExport MagickBool IsAccessible(const char *path)
 {
   if ((path == (const char *) NULL) || (*path == '\0'))
-    return(False);
+    return(MagickFalse);
 
   if ((access(path,R_OK)) != 0)
     {
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
         "Tried: %.1024s [%.1024s]",path,strerror(errno));
-      return(False);
+      return(MagickFalse);
     }
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
                         "Found: %.1024s",path);
-  return (True);
+  return (MagickTrue);
 }
 
 /*
@@ -2590,31 +2590,32 @@ MagickExport unsigned int IsAccessible(const char *path)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsAccessibleNoLogging() returns True if the file as defined by path
+%  IsAccessibleNoLogging() returns MagickTrue if the file as defined by path
 %  exists and is accessable by the user. This version is used internally to
 %  avoid using the error logging of the normal version.
 %
 %  The format of the IsAccessibleNoLogging method is:
 %
-%      unsigned int IsAccessibleNoLogging(const char *path)
+%      MagickBool IsAccessibleNoLogging(const char *path)
 %
 %  A description of each parameter follows.
 %
-%    o status:  Method IsAccessibleNoLogging returns True if the file as defined by
-%      path exists and is a regular file, otherwise False is returned.
+%    o status:  Method IsAccessibleNoLogging returns MagickTrue if the file as
+%      defined by path exists and is a regular file, otherwise Magick False is
+%      returned.
 %
 %    o path:  A pointer to an array of characters containing the path.
 %
 %
 */
-MagickExport unsigned int IsAccessibleNoLogging(const char *path)
+MagickExport MagickBool IsAccessibleNoLogging(const char *path)
 {
   if ((path == (const char *) NULL) || (*path == '\0'))
-    return(False);
+    return(MagickFalse);
 
   if ((access(path,R_OK)) != 0)
-    return(False);
-  return (True);
+    return(MagickFalse);
+  return (MagickTrue);
 }
 
 /*
@@ -2628,24 +2629,24 @@ MagickExport unsigned int IsAccessibleNoLogging(const char *path)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsAccessibleAndNotEmpty() returns True if the file as defined by path
+%  IsAccessibleAndNotEmpty() returns MagickTrue if the file as defined by path
 %  exists, is a regular file, and contains at least one byte of data.
 %
 %  The format of the IsAccessibleAndNotEmpty method is:
 %
-%      unsigned int IsAccessibleAndNotEmpty(const char *path)
+%      MagickBool IsAccessibleAndNotEmpty(const char *path)
 %
 %  A description of each parameter follows.
 %
-%    o status:  Method IsAccessibleAndNotEmpty returns True if the file as
+%    o status:  Method IsAccessibleAndNotEmpty returns MagickTrue if the file as
 %      defined by path exists, is a regular file, and contains content,
-%      otherwise False is returned.
+%      otherwise MagickFalse is returned.
 %
 %    o path:  A pointer to an array of characters containing the path.
 %
 %
 */
-MagickExport unsigned int IsAccessibleAndNotEmpty(const char *path)
+MagickExport MagickBool IsAccessibleAndNotEmpty(const char *path)
 {
   int
     status;
@@ -2654,13 +2655,13 @@ MagickExport unsigned int IsAccessibleAndNotEmpty(const char *path)
     file_info;
 
   if ((path == (const char *) NULL) || (*path == '\0'))
-    return(False);
+    return(MagickFalse);
   status=stat(path,&file_info);
 
   if ((status == 0) && S_ISREG(file_info.st_mode) && (file_info.st_size > 0))
-    return (True);
+    return (MagickTrue);
 
-  return (False);
+  return (MagickFalse);
 }
 
 /*
@@ -2677,7 +2678,7 @@ MagickExport unsigned int IsAccessibleAndNotEmpty(const char *path)
 %  IsDirectory() returns -1 if the path does not exist, 0 if the
 %  path represents a file, and 1 if the path represents a directory.
 %
-%  The format of the IsAccessible method is:
+%  The format of the IsDirectory method is:
 %
 %      int IsDirectory(const char *path)
 %
@@ -2719,23 +2720,23 @@ static int IsDirectory(const char *path)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsGeometry returns True if the geometry specification is valid
+%  Method IsGeometry returns MagickTrue if the geometry specification is valid
 %  as determined by GetGeometry.
 %
 %  The format of the IsGeometry method is:
 %
-%      unsigned int IsGeometry(const char *geometry)
+%      MagickBool IsGeometry(const char *geometry)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method IsGeometry returns True if the geometry specification
-%      is valid otherwise False is returned.
+%    o status: Method IsGeometry returns MagickTrue if the geometry specification
+%      is valid otherwise MagickFalse is returned.
 %
 %    o geometry: This string is the geometry specification.
 %
 %
 */
-MagickExport unsigned int IsGeometry(const char *geometry)
+MagickExport MagickBool IsGeometry(const char *geometry)
 {
   long
     x,
@@ -2764,12 +2765,12 @@ MagickExport unsigned int IsGeometry(const char *geometry)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsGlob() returns True if the path specification contains a globbing patten.
-%  as determined by GetGlob.
+%  IsGlob() returns MagickTrue if the path specification contains a globbing
+%  patten.as determined by GetGlob.
 %
 %  The format of the IsGlob method is:
 %
-%      unsigned int IsGlob(const char *geometry)
+%      MagickBool IsGlob(const char *geometry)
 %
 %  A description of each parameter follows:
 %
@@ -2780,9 +2781,9 @@ MagickExport unsigned int IsGeometry(const char *geometry)
 %
 %
 */
-MagickExport unsigned int IsGlob(const char *path)
+MagickExport MagickBool IsGlob(const char *path)
 {
-  unsigned int
+  MagickBool
     status;
 
   status=(strchr(path,'*') != (char *) NULL) ||
@@ -2792,6 +2793,46 @@ MagickExport unsigned int IsGlob(const char *path)
     (strchr(path,'[') != (char *) NULL) ||
     (strchr(path,']') != (char *) NULL);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  I s W r i t a b l e                                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsWritable() returns True if the file as defined by path exists
+%  and is writeable by the user.
+%
+%  The format of the IsWriteable method is:
+%
+%      MagickBool IsWriteable(const char *path)
+%
+%  A description of each parameter follows.
+%
+%    o status:  Method IsWriteable returns MagickTrue if the file as defined
+%      by path exists and is writeable by the user, otherwise MagickFalse is
+%      returned.
+%
+%    o path:  A pointer to an array of characters containing the path.
+%
+%
+*/
+MagickExport MagickBool IsWriteable(const char *path)
+{
+  if ((path == (const char *) NULL) || (*path == '\0'))
+    return(MagickFalse);
+
+  if ((access(path,W_OK)) != 0)
+    {
+      return(MagickFalse);
+    }
+  return (MagickTrue);
 }
 
 /*

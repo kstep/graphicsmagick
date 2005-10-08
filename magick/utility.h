@@ -101,12 +101,15 @@ extern MagickExport unsigned int
   ConcatenateString(char **,const char *),
   ExpandFilenames(int *,char ***),
   GetExecutionPath(char *),
-  GetExecutionPathUsingName(char *),
+  GetExecutionPathUsingName(char *);
+
+extern MagickExport MagickBool
   IsAccessible(const char *),
   IsAccessibleNoLogging(const char *),
   IsAccessibleAndNotEmpty(const char *),
   IsGeometry(const char *),
-  IsGlob(const char *);
+  IsGlob(const char *),
+  IsWriteable(const char *);
 
 extern MagickExport unsigned long
   MultilineCensus(const char *);

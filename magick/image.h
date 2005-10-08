@@ -633,7 +633,7 @@ typedef struct _Image
   CompressionType
     compression;        /* Compression algorithm to use when encoding image */
 
-  unsigned int
+  MagickBool
     dither,             /* True if image is to be dithered */
     matte;              /* True if image has an opacity (alpha) channel */ 
 
@@ -920,13 +920,13 @@ typedef struct _ImageInfo
   Image
     *attributes;             /* Private. Image attribute list */
 
-  unsigned int
+  MagickBool
     ping;                    /* Private, if true, read file header only */
 
   PreviewType
     preview_type;            /* Private, used by PreviewImage */
 
-  unsigned int
+  MagickBool
     affirm;                  /* Private, when true do not intuit image format */
 
   void

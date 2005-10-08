@@ -9719,9 +9719,6 @@ typedef struct _TransmogrifyOptions
 } TransmogrifyOptions;
 static MagickPassFail* TransmogrifyImage(TransmogrifyOptions *options)
 {
-  char
-    output_filename[MaxTextExtent];
-
   Image
     *image;
 
@@ -9739,71 +9736,82 @@ static MagickPassFail* TransmogrifyImage(TransmogrifyOptions *options)
   image=ReadImage(image_info,&options->exception);
   status &= (image != (Image *) NULL) &&
     (options->exception.severity < ErrorException);
-  if (image != (Image *) NULL)
+  if (status != MagickFail)
     {
-      if (options->output_format != (char *) NULL)
-        {
-          register char
-            *p;
-
-          /*
-            Modify filename to include a user specified image format.
-          */
-          p=image->filename+strlen(image->filename)-1;
-          while ((*p != '.') && (p > (image->filename+1)))
-            p--;
-          p++;
-          if (LocaleCompare(p,image->magick) == 0)
-            (void) strncpy(p,options->output_format,MaxTextExtent-(p-image->filename)-1);
-          else
-            {
-              FormatString(image_info->filename,"%.1024s:%.1024s",options->output_format,
-                           image->filename);
-              (void) strlcpy(image->filename,image_info->filename,
-                             MaxTextExtent);
-            }
-        }
       /*
         Transmogrify image as defined by the preceding image
         processing options.
       */
       status &= MogrifyImages(image_info,options->argc,options->argv,&image);
-      if (options->global_colormap)
+      if ((status != MagickFail) && (options->global_colormap))
         (void) MapImages(image,(Image *) NULL,image_info->dither);
-      /*
-        Write transmogrified image to disk.
-      */
-      if (options->output_format != (char *) NULL)
-        AppendImageFormat(options->output_format,image->filename);
-      else
-        if (LocaleCompare(image_info->filename,"-") != 0)
-          {
-            /*
-              Create a temporary file name in the same directory where
-              file is to be written.
-            */
-            (void) strlcpy(output_filename,image->filename,MaxTextExtent);
-            AppendImageFormat("tmp",image->filename);
-            if (IsAccessible(image->filename))
-              {
-                (void) strcat(image->filename,"~");
-                if (IsAccessible(image->filename))
-                  {
-                    ThrowException(&options->exception,FileOpenError,
-                                   UnableToCreateTemporaryFile,output_filename);
-                    status = MagickFail;
-                  }
-              }
-          }
+
       if (status != MagickFail)
-        status &= WriteImages(image_info,image,image->filename,&options->exception);
-      if ((status != MagickFail) && (LocaleCompare(image_info->filename,"-") != 0))
         {
-          (void) remove(output_filename);
-          (void) rename(image->filename,output_filename);
+          /*
+            Write transmogrified image to disk.
+          */
+          char
+            output_filename[MaxTextExtent],
+            temporary_filename[MaxTextExtent];
+
+          strcpy(temporary_filename,"");
+          /*
+            Compute final output file name and format
+          */
+          (void) strlcpy(output_filename,image->filename,MaxTextExtent);
+          if (options->output_format != (char *) NULL)
+            {
+              AppendImageFormat(options->output_format,output_filename);
+              strlcpy(image->magick,options->output_format,MaxTextExtent);
+            }
+          if (LocaleCompare(image_info->filename,"-") != 0)
+            {
+              /*
+                If output file already exists and is writeable by the
+                user, then create a rescue file by adding a tilde to the
+                existing file name and renaming.  If output file does
+                not exist or the rename of the existing file fails, then
+                there is no backup!  Note that this approach allows working
+                within a read-only directory if the output file already exists
+                and is writeable.
+              */
+              if (IsWriteable(output_filename))
+                {
+                  (void) strlcpy(temporary_filename,output_filename,MaxTextExtent);
+                  (void) strcat(temporary_filename,"~");
+                  if (rename(output_filename,temporary_filename) == 0)
+                    {
+                      if(image_info->verbose)
+                        fprintf(stdout, "rename to backup %.1024s=>%.1024s\n",
+                                output_filename,temporary_filename);
+                    }
+                  else
+                    {
+                      strcpy(temporary_filename,"");
+                    }
+                }
+            }
+          /*
+            Write the output file.
+          */
+          (void) strlcpy(image->filename,output_filename,MaxTextExtent);
+          status &= WriteImages(image_info,image,image->filename,&options->exception);
+          if ((status != MagickFail) && (temporary_filename[0] != 0))
+            {
+              /*
+                Remove backup file.
+              */
+              if (remove(temporary_filename) == 0)
+                {
+                  if (image_info->verbose)
+                    fprintf(stdout, "remove backup %.1024s\n",temporary_filename);
+                }
+            }
         }
-      DestroyImage(image);
     }
+  if (image)
+    DestroyImageList(image);
   DestroyImageInfo(image_info);
   options->status=status;
   return (&options->status);
@@ -9818,9 +9826,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 
   double
     sans;
-
-  Image
-    *image;
 
   long
     j,
@@ -9855,7 +9860,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
   */
   format=(char *) NULL;
   global_colormap=False;
-  image=NewImageList();
   status=True;
 
   /*
@@ -11536,7 +11540,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         ThrowMogrifyException(OptionError,UnrecognizedOption,option)
     }
   }
-  if ((i != argc) || (image == (Image *) NULL))
+  if (i != argc)
     {
       if (exception->severity == UndefinedException)
         ThrowMogrifyException(OptionError,MissingAnImageFilename,
