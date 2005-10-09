@@ -21,6 +21,100 @@
 </tr>
 </table>
 <p>
+2005-10-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.h (Image): Added an orientation member to the Image
+        structure to record image orientation for the DPX, and TIFF
+        formats. Eventually formats which support IPTC and EXIF embedded
+        profiles should be supported by the orientation member as well.
+
+</UL>
+<p>
+2005-10-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> VisualMagick/magick/magick_types.h.in: Add patch for Ch.
+  <LI> magick/command.c (TransmogrifyImage): Complete re-write of
+        mogrify file handling.  Former version wrote to a temporary file
+        and then moved temporary file to replace original if necessary.
+        New version moves an existing writable file to a backup file with
+        tilde ('~') added to end of file name, writes to the final output
+        file name, and removes the backup file on success.  The new
+        approach satisfies formats which embed the output name in the file
+        (e.g. the DPX format) and still works when the output file exists
+        and is writeable, but is in non-writeable directory.  The previous
+        approach would fail if the output file exists and is writable, but
+        the directory is not writeable.
+
+</UL>
+<p>
+2005-10-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (AttributeToString): Use strncpy rather than
+        strlcpy to copy string.  This is important since DPX header
+        strings are not null terminated and may need to fill all available
+        space.  Certain short header fields like mp.film.manufacturer.id,
+        mp.film.type, and mp.perfs.offset were being truncated!
+
+</UL>
+<p>
+2005-09-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/attribute.c (GetImageAttribute): Add more general support
+        for retrieving wildcarded attributes so that an identify -format
+        specification like '%[dpx:*]' works as expected.
+  <LI> coders/tiff.c (WriteTIFFImage): Transform quality value into zip
+        compression quality level similar to what is done for MIFF/MNG/PNG.
+        Since default quality value is 75, this means that the default zip
+        quality level is 7.
+
+</UL>
+<p>
+2005-09-24  Peter Wu  &lt;peterw@softintegration.com&gt;
+
+<UL>
+  <LI> Incorporate changes necessary so that GraphicsMagick can work
+        with the Ch C/C++ interpreter from SoftIntegration at
+        http://www.softintegration.com/.
+
+</UL>
+<p>
+2005-09-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/pixel_cache.c: Incorporate all functionality from
+        cache.c, cache_view.c, and stream.c so that all private interfaces
+        can be fully hidden.  As a result cache.c, cache_view.c, and
+        stream.c are now removed.
+
+</UL>
+<p>
+2005-09-18  Michal Kowalczuk  &lt;sammael@brzydal.eu.org&gt;
+
+<UL>
+  <LI> coders/gif.c: Free global_colormap before returning with error.
+
+</UL>
+<p>
+2005-09-18  Stepan Kasal  &lt;kasal@ucw.cz&gt;
+
+<UL>
+  <LI> Makefile.am (BUILT_SOURCES): Removed.
+  <LI> magick/Makefile.am (MAGICK_BUILT_SRCS): Removed, too.
+
+</UL>
+<p>
+2005-09-12 Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+
+<UL>
+  <LI> magick/profile.c (ProfileImage):  Free color_profile-&gt;name
+        and iptc_profile-&gt;name when destroying the profile.
+
+</UL>
+<p>
 2005-08-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -356,6 +356,22 @@ typedef enum
   PoissonNoise
 } NoiseType;
 
+/*
+  Image orientation.  Based on TIFF standard values.
+*/
+typedef enum               /* Line direction / Frame Direction */
+{                          /* -------------- / --------------- */
+  UndefinedOrientation,    /* Unknown        / Unknown         */
+  TopLeftOrientation,      /* Left to right  / Top to bottom   */
+  TopRightOrientation,     /* Right to left  / Top to bottom   */
+  BottomRightOrientation,  /* Right to left  / Bottom to top   */
+  BottomLeftOrientation,   /* Left to right  / Bottom to top   */
+  LeftTopOrientation,      /* Top to bottom  / Left to right   */
+  RightTopOrientation,     /* Top to bottom  / Right to left   */
+  RightBottomOrientation,  /* Bottom to top  / Right to left   */
+  LeftBottomOrientation    /* Bottom to top  / Left to right   */
+} OrientationType;
+
 typedef enum
 {
   UndefinedPreview = 0,
@@ -658,6 +674,9 @@ typedef struct _Image
 
   ChromaticityInfo
     chromaticity;       /* Red, green, blue, and white chromaticity values */
+
+  OrientationType
+    orientation;        /* Image orientation */
 
   RenderingIntent
     rendering_intent;   /* Rendering intent */

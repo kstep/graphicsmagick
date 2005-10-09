@@ -1,3 +1,10 @@
+2005-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.h (Image): Added an orientation member to the Image
+	structure to record image orientation for the DPX, and TIFF
+	formats. Eventually formats which support IPTC and EXIF embedded
+	profiles should be supported by the orientation member as well.
+
 2005-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/magick/magick_types.h.in: Add patch for Ch.

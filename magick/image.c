@@ -277,6 +277,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
     &allocate_image->exception);
   (void) QueryColorDatabase(MatteColor,&allocate_image->matte_color,
     &allocate_image->exception);
+  allocate_image->orientation=UndefinedOrientation;
   GetTimerInfo(&allocate_image->timer);
   GetCacheInfo(&allocate_image->cache);
   allocate_image->blob=CloneBlobInfo((BlobInfo *) NULL);
@@ -1071,6 +1072,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->matte_color=image->matte_color;
   clone_image->gamma=image->gamma;
   clone_image->chromaticity=image->chromaticity;
+  clone_image->orientation=image->orientation;
   if (image->color_profile.length != 0)
     {
       /*
@@ -1426,6 +1428,44 @@ MagickExport MagickPassFail  CycleColormapImage(Image *image,const int amount)
 %
 %
 */
+static const char *OrientationTypeToString(const OrientationType orientation_type)
+{
+  const char *
+    orientation = "Unknown";
+
+  switch (orientation_type)
+    {
+    case UndefinedOrientation:
+      orientation = "Unknown";
+      break;
+    case TopLeftOrientation:
+      orientation = "TopLeft";
+      break;
+    case TopRightOrientation:
+      orientation = "TopRight";
+      break;
+    case BottomRightOrientation:
+      orientation = "BottomRight";
+      break;
+    case BottomLeftOrientation:
+      orientation = "BottomLeft";
+      break;
+    case LeftTopOrientation:
+      orientation = "LeftTop";
+      break;
+    case RightTopOrientation:
+      orientation = "RightTop";
+      break;
+    case RightBottomOrientation:
+      orientation = "RightBottom";
+      break;
+    case LeftBottomOrientation:
+      orientation = "LeftBottom";
+      break;
+    }
+
+  return orientation;
+}
 MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   const unsigned int verbose)
 {
@@ -1933,6 +1973,7 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
     else
       if (image->interlace == PartitionInterlace)
         (void) fprintf(file,"  Interlace: Partition\n");
+  (void) fprintf(file,"  Orientation: %s\n", OrientationTypeToString(image->orientation));
   (void) QueryColorname(image,&image->background_color,SVGCompliance,color,
     &image->exception);
   (void) fprintf(file,"  Background Color: %.1024s\n",color);

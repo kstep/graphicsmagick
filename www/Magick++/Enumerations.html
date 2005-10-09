@@ -1,13 +1,13 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>Enumerations</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
 	<META NAME="CREATED" CONTENT="20020805;17491620">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20021125;10502900">
+	<META NAME="CHANGED" CONTENT="20051009;16200700">
 	<META NAME="DESCRIPTION" CONTENT="Documentation for GraphicsMagick enumerations">
 	<STYLE>
 	<!--
@@ -19,7 +19,7 @@
 	-->
 	</STYLE>
 </HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#1f00ff" VLINK="#9900dd" BGCOLOR="#ffffff">
+<BODY LANG="en-US" TEXT="#000000" LINK="#1f00ff" VLINK="#9900dd" BGCOLOR="#ffffff" DIR="LTR">
 <H1 ALIGN=CENTER>Enumerations</H1>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
@@ -59,6 +59,7 @@
 	</P>
 	<LI><P STYLE="margin-bottom: 0in"><A HREF="#NoiseType">NoiseType</A>
 		</P>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="#OrientationType">OrientationType</A></P>
 	<LI><P STYLE="margin-bottom: 0in"><A HREF="#PaintMethod">PaintMethod</A>
 		</P>
 	<LI><P STYLE="margin-bottom: 0in"><A HREF="#QuantumTypes">QuantumTypes</A>
@@ -883,13 +884,13 @@ property for usage details.
 <P STYLE="margin-bottom: 0in"><I>FilterTypes</I> is used to adjust
 the filter algorithm used when resizing images. Different filters
 experience varying degrees of success with various images and can
-take sipngicantly different amounts of processing time. GraphicsMagick
-uses the <I>LanczosFilter</I> by default since this filter has been
-shown to provide the best results for most images in a reasonable
-amount of time. Other filter types (e.g. <I>TriangleFilter</I>) may
-execute much faster but may show artifacts when the image is re-sized
-or around diagonal lines. The only way to be sure is to test the
-filter with sample images. 
+take sipngicantly different amounts of processing time.
+GraphicsMagick uses the <I>LanczosFilter</I> by default since this
+filter has been shown to provide the best results for most images in
+a reasonable amount of time. Other filter types (e.g. <I>TriangleFilter</I>)
+may execute much faster but may show artifacts when the image is
+re-sized or around diagonal lines. The only way to be sure is to test
+the filter with sample images. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>FilterTypes</B></P>
 <TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
@@ -1558,6 +1559,137 @@ to select the type of noise to be added to the image.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
+	<COL WIDTH=256*>
+	<TR>
+		<TD WIDTH=100% BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="PaintMethod1"></A><A NAME="OrientationType"></A>
+			<IMG SRC="right_triangle.png" NAME="Graphic25" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">OrientationType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><I>OrientationType</I>
+specifies the orientation of the image. Useful for when the image is
+produced via a different ordinate system, the camera was turned on
+its side, or the page was scanned sideways.</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>OrientationType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3 BGCOLOR="#cccccc">
+	<COL WIDTH=65*>
+	<COL WIDTH=75*>
+	<COL WIDTH=115*>
+	<TR>
+		<TD WIDTH=25%>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD WIDTH=29%>
+			<P ALIGN=CENTER><B>Scanline Direction</B></P>
+		</TD>
+		<TD WIDTH=45%>
+			<P ALIGN=CENTER><B>Frame Direction</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>UndefinedOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Unknown</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Unknown</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>TopLeftOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Left to right</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Top to bottom</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>TopRightOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Right to left</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Top to bottom</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>BottomRightOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Right to left</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Bottom to top</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>BottomLeftOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Left to right</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Bottom to top</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>LeftTopOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Top to bottom</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Left to right</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>RightTopOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Top to bottom</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Right to left</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>RightBottomOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Bottom to top</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Right to left</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>LeftBottomOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Bottom to top</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Left to right</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">
@@ -1815,8 +1947,8 @@ Quantums</B></P>
 </TABLE>
 <P>Rendering intent is a concept defined by <A HREF="http://www.color.org/">ICC</A>
 Spec ICC.1:1998-09, &quot;File Format for Color Profiles&quot;.
-GraphicsMagick uses <I>RenderingIntent</I> in order to support ICC Color
-Profiles. 
+GraphicsMagick uses <I>RenderingIntent</I> in order to support ICC
+Color Profiles. 
 </P>
 <P STYLE="margin-bottom: 0in">From the specification: &quot;Rendering
 intent specifies the style of reproduction to be used during the

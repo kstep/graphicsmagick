@@ -293,6 +293,18 @@ namespace Magick
   using MagickLib::ImpulseNoise;
   using MagickLib::LaplacianNoise;
   using MagickLib::PoissonNoise;
+
+  // Orientation types
+  using MagickLib::OrientationType;
+  using MagickLib::UndefinedOrientation;
+  using MagickLib::TopLeftOrientation;
+  using MagickLib::TopRightOrientation;
+  using MagickLib::BottomRightOrientation;
+  using MagickLib::BottomLeftOrientation;
+  using MagickLib::LeftTopOrientation;
+  using MagickLib::RightTopOrientation;
+  using MagickLib::RightBottomOrientation;
+  using MagickLib::LeftBottomOrientation;
   
   // Paint methods
   using MagickLib::PaintMethod;

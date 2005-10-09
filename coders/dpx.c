@@ -1096,6 +1096,43 @@ static void DPXSetPrimaryChromaticities(const DPXColorimetric colorimetric,
     }
 }
 
+static OrientationType
+DPXOrientationToOrientationType(const unsigned int orientation)
+{
+  OrientationType
+    orientation_type = UndefinedOrientation;
+
+  switch (orientation)
+    {
+    case 0:
+      orientation_type=TopLeftOrientation;
+      break;
+    case 1:
+      orientation_type=TopRightOrientation;
+      break;
+    case 2:
+      orientation_type=BottomLeftOrientation;
+      break;
+    case 3:
+      orientation_type=BottomRightOrientation;
+      break;
+    case 4:
+      orientation_type=LeftTopOrientation;
+      break;
+    case 5:
+      orientation_type=RightTopOrientation;
+      break;
+    case 6:
+      orientation_type=LeftBottomOrientation;
+      break;
+    case 7:
+      orientation_type=RightBottomOrientation;
+      break;
+    }
+
+  return orientation_type;
+}
+
 typedef union _PackedU32Word
 {
   U32 word;
@@ -1665,6 +1702,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           (unsigned int) dpx_image_info.elements);
 
   U16ToAttribute(image,"DPX:image.orientation",dpx_image_info.orientation);
+  image->orientation=DPXOrientationToOrientationType(dpx_image_info.orientation);
 
   if (pixels_offset >= 1664UL)
     {
@@ -2588,6 +2626,43 @@ static void GenerateDPXTimeStamp(char *timestamp, size_t maxsize)
     if (*p == ' ')
       *p='0';
 }
+
+static unsigned int OrientationTypeToDPXOrientation(const OrientationType orientation_type)
+{
+  unsigned int
+    orientation = 0;
+
+  switch (orientation_type)
+    {
+    case UndefinedOrientation:
+    case TopLeftOrientation:
+      orientation=0;
+      break;
+    case TopRightOrientation:
+      orientation=1;
+      break;
+    case BottomLeftOrientation:
+      orientation=2;
+      break;
+    case BottomRightOrientation:
+      orientation=3;
+      break;
+    case LeftTopOrientation:
+      orientation=4;
+      break;
+    case RightTopOrientation:
+      orientation=5;
+      break;
+    case LeftBottomOrientation:
+      orientation=6;
+      break;
+    case RightBottomOrientation:
+      orientation=7;
+      break;
+    }
+  return orientation;
+}
+
 #define MSBExportOctets(packed_u32,scanline) \
 { \
   *scanline++=packed_u32.octets[0]; \
@@ -3349,7 +3424,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   */
   memset(&dpx_image_info,0,sizeof(dpx_image_info));
   /* Image orientation */
-  dpx_image_info.orientation=0; /* Left to right, top to bottom */
+  dpx_image_info.orientation=OrientationTypeToDPXOrientation(image->orientation);
   /* Number of image elements described. */
   dpx_image_info.elements=number_of_elements;
   /* Number of pixels per line. */

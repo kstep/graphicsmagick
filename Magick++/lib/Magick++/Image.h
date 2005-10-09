@@ -925,6 +925,10 @@ namespace Magick
     // color reduced.
     double          normalizedMeanError ( void ) const;
 
+    // Image orientation
+    void            orientation ( const OrientationType orientation_ );
+    OrientationType orientation ( void ) const;
+
     // Preferred size and location of an image canvas.
     void            page ( const Geometry &pageSize_ );
     Geometry        page ( void ) const;

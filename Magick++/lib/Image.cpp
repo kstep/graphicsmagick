@@ -2864,6 +2864,17 @@ double Magick::Image::normalizedMeanError ( void ) const
   return constImage()->error.normalized_mean_error;
 }
 
+// Image orientation
+void Magick::Image::orientation ( const Magick::OrientationType orientation_ )
+{
+  modifyImage();
+  image()->orientation = orientation_;
+}
+Magick::OrientationType Magick::Image::orientation ( void ) const
+{
+  return constImage()->orientation;
+}
+
 void Magick::Image::penColor ( const Color &penColor_ )
 {
   modifyImage();

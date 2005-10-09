@@ -1,3 +1,8 @@
+2005-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (orientation): New accessor method to support
+	image orientation.
+
 2005-04-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/STL.cpp (levelImage): New function object for leveling the

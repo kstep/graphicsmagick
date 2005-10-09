@@ -1019,6 +1019,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     fill_order,
     max_sample_value,
     min_sample_value,
+    orientation,
     pages,
     photometric,
     planar_config,
@@ -1126,6 +1127,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fill_order);
+      if (TIFFGetField(tiff,TIFFTAG_ORIENTATION,&orientation))
+        image->orientation=(OrientationType) orientation;
       if (logging)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Geometry: %ux%u",
@@ -3184,7 +3187,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           planar_config=PLANARCONFIG_SEPARATE;
 
       (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,fill_order);
-      (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
+      if (image->orientation != UndefinedOrientation)
+        (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,(uint16) image->orientation);
       (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
       (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
       (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel);

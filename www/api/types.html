@@ -6,8 +6,8 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
 	<META NAME="CREATED" CONTENT="20030425;13574600">
-	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20031226;11045700">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20051009;16272400">
 	<META NAME="CLASSIFICATION" CONTENT="Documentation for GraphicsMagick C API Types">
 	<META NAME="DESCRIPTION" CONTENT="Documentation for C structures, typedefs, and enumerations used by GraphicsMagick.">
 	<STYLE>
@@ -65,6 +65,7 @@
 	<LI><P STYLE="margin-bottom: 0in"><A HREF="#MonitorHandler">MonitorHandler</A></P>
 	<LI><P STYLE="margin-bottom: 0in"><A HREF="#MontageInfo">MontageInfo</A></P>
 	<LI><P STYLE="margin-bottom: 0in"><A HREF="#NoiseType">NoiseType</A></P>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="#OrientationType">OrientationType</A></P>
 	<LI><P STYLE="margin-bottom: 0in"><A HREF="#PaintMethod">PaintMethod</A></P>
 	<LI><P STYLE="margin-bottom: 0in"><A HREF="#PixelPacket">PixelPacket</A></P>
 	<LI><P STYLE="margin-bottom: 0in"><A HREF="#PointInfo">PointInfo</A></P>
@@ -2081,28 +2082,28 @@ shown in the following table: <BR>&nbsp;
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Image Structure Members</B></P>
 <TABLE WIDTH=100% BORDER=1 CELLPADDING=5 CELLSPACING=0 BGCOLOR="#cccccc">
-	<COL WIDTH=47*>
-	<COL WIDTH=36*>
-	<COL WIDTH=173*>
+	<COL WIDTH=48*>
+	<COL WIDTH=37*>
+	<COL WIDTH=171*>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P ALIGN=CENTER><B>Member</B></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P ALIGN=CENTER><B>Type</B></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P ALIGN=CENTER><B>Description</B></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="attribute"></A><FONT SIZE=2>attribute</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2><A HREF="#ImageAttribute">ImageAttribute</A>*</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image attribute list. Consists of a
 			doubly-linked-list of ImageAttribute structures, each of which has
 			an associated key and value. Access/update list via
@@ -2114,94 +2115,94 @@ shown in the following table: <BR>&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="background_color"></A><FONT SIZE=2>ImageAttributebackground_color</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#PixelPacket"><FONT SIZE=2>PixelPacket</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image background color</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="blur"></A><FONT SIZE=2>blur</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>double</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Blur factor to apply to the image when zooming</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="border_color"></A><FONT SIZE=2>border_color</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#PixelPacket"><FONT SIZE=2>PixelPacket</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image border color</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="chromaticity"></A><FONT SIZE=2>chromaticity</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#ChromaticityInfo"><FONT SIZE=2>ChromaticityInfo</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Red, green, blue, and white-point chromaticity
 			values.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="color_profile"></A><FONT SIZE=2>color_profile</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#ProfileInfo"><FONT SIZE=2>ProfileInfo</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>ICC color profile. Specifications are available
 			from the International Color Consortium for the format of ICC
 			color profiles.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="colormap"></A><FONT SIZE=2>colormap</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2><A HREF="#PixelPacket">PixelPacket</A> *</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>PseudoColor palette array.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="colors"></A><FONT SIZE=2>colors</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>The desired number of colors. Used by
 			<A HREF="quantize.html#quantizeimage">QuantizeImage().</A></FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="colorspace"></A><FONT SIZE=2>colorspace</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#ColorspaceType"><FONT SIZE=2>ColorspaceType</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image pixel interpretation.If the colorspace is
 			RGB the pixels are red, green, blue. If matte is true, then red,
 			green, blue, and index. If it is CMYK, the pixels are cyan,
@@ -2209,47 +2210,47 @@ shown in the following table: <BR>&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="columns"></A><FONT SIZE=2>columns</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image width</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="comments"></A><FONT SIZE=2>comments</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>char *</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image comments</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="compression"></A><FONT SIZE=2>compression</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#CompressionType"><FONT SIZE=2>CompressionType</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image compresion type. The default is the
 			compression type of the specified image file.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="delay"></A><FONT SIZE=2>delay</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Time in 1/100ths of a second (0 to 65535) which
 			must expire before displaying the next image in an animated
 			sequence. This option is useful for regulating the animation of a
@@ -2257,63 +2258,63 @@ shown in the following table: <BR>&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="depth"></A><FONT SIZE=2>depth</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image depth (8 or 16). QuantumLeap must be defined
 			before a depth of 16 is valid.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="directory"></A><FONT SIZE=2>directory</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>char *</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Tile names from within an image montage. Only
 			valid after calling <A HREF="montage.html#montageimages">MontageImages()</A>
 			or reading a MIFF file which contains a directory.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="dispose"></A><FONT SIZE=2>dispose</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>GIF disposal method. This option is used to
 			control how successive frames are rendered (how the preceding
 			frame is disposed of) when creating a GIF animation.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="exception"></A><FONT SIZE=2>exception</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>ExceptionInfo</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Record of any error which occurred when updating
 			image.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="file"></A><FONT SIZE=2>file</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>FILE *</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Stdio stream to read image from or write image to.
 			If set, GraphicsMagick will read from or write to the stream
 			rather than opening a file. Used by <A HREF="image.html#readimage">ReadImage()</A>
@@ -2322,35 +2323,35 @@ shown in the following table: <BR>&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="filename"></A><FONT SIZE=2>filename</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>char[MaxTextExtent]</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image file name to read or write.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="filesize"></A><FONT SIZE=2>filesize</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>long int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Number of bytes of the encoded file.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="filter"></A><FONT SIZE=2>filter</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#FilterTypes"><FONT SIZE=2>FilterTypes</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Filter to use when resizing image. The reduction
 			filter employed has a significant effect on the time required to
 			resize an image and the resulting quality. The default filter is
@@ -2359,13 +2360,13 @@ shown in the following table: <BR>&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="fuzz"></A><FONT SIZE=2>fuzz</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Colors within this distance are considered equal.
 			A number of algorithms search for a target color. By default the
 			color must be exact. Use this option to match colors that are
@@ -2373,13 +2374,13 @@ shown in the following table: <BR>&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="gamma"></A><FONT SIZE=2>gamma</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>double</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Gamma level of the image. The same color image
 			displayed on two different workstations may look different due to
 			differences in the display monitor. Use gamma correction to adjust
@@ -2387,24 +2388,24 @@ shown in the following table: <BR>&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="geometry"></A><FONT SIZE=2>geometry</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>char *</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Preferred size of the image when encoding.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="interlace"></A><FONT SIZE=2>interlace</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#InterlaceType"><FONT SIZE=2>InterlaceType</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>The type of interlacing scheme (default
 			NoInterlace). This option is used to specify the type of
 			interlacing scheme for raw image formats such as RGB or YUV.
@@ -2417,214 +2418,226 @@ shown in the following table: <BR>&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="iptc_profile"></A><FONT SIZE=2>iptc_profile</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#ProfileInfo"><FONT SIZE=2>ProfileInfo</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>IPTC profile. Specifications are available from
 			the International Press Telecommunications Council for IPTC
 			profiles.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="iterations"></A><FONT SIZE=2>iterations</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Number of iterations to loop an animation (e.g.
 			Netscape loop extension) for.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="list"></A><FONT SIZE=2>list</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>struct _Image *</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Undo image list (used only by 'display')</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="magick"></A><FONT SIZE=2>magick</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>char[MaxTextExtent]</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image encoding format (e.g. &quot;GIF&quot;).</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="magick_columns"></A><FONT SIZE=2>magick_columns</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Base image width (before transformations)</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="magick_filename"></A><FONT SIZE=2>magick_filename</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>char[MaxTextExtent]</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Base image filename (before transformations)</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="magick_rows"></A><FONT SIZE=2>magick_rows</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Base image height (before transformations)</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="matte"></A><FONT SIZE=2>matte</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>If non-zero, then the index member of <A HREF="#pixels">pixels</A>
 			represents the alpha channel.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="matte_color"></A><FONT SIZE=2>matte_color</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#PixelPacket"><FONT SIZE=2>PixelPacket</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image matte (transparent) color</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="mean_error_per_pixel"></A><FONT SIZE=2>mean_error_per_pixel</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>The mean error per pixel computed when an image is
 			color reduced. This parameter is only valid if verbose is set to
 			true and the image has just been quantized.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="montage"></A><FONT SIZE=2>montage</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>char *</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Tile size and offset within an image montage. Only
 			valid for montage images.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="next"></A><FONT SIZE=2>next</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>struct _Image *</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Next image frame in sequence</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="normalized_maximum_error"></A><FONT SIZE=2>normalized_maximum_error</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>double</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>The normalized max error per pixel computed when
 			an image is color reduced. This parameter is only valid if <I>verbose</I>
 			is set to true and the image has just been quantized.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="normalized_mean_error"></A><FONT SIZE=2>normalized_mean_error</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>double</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>The normalized mean error per pixel computed when
 			an image is color reduced. This parameter is only valid if <I>verbose</I>
 			is set to true and the image has just been quantized.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="offset"></A><FONT SIZE=2>offset</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Number of initial bytes to skip over when reading
 			raw image.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
+			<P><FONT SIZE=2>orientation</FONT></P>
+		</TD>
+		<TD WIDTH=14%>
+			<P><FONT SIZE=2><A HREF="#OrientationType">OrientationType</A></FONT></P>
+		</TD>
+		<TD WIDTH=67%>
+			<P><FONT SIZE=2>Orientation of the image. Specifies scanline
+			orientation and starting coordinate of image.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=19%>
 			<P><A NAME="orphan"></A><FONT SIZE=2>orphan</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>When set, <A HREF="image.html#cloneimage">CloneImage()</A>
 			clones only the current frame, creating an &quot;orphan&quot;
 			frame.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="page"></A><FONT SIZE=2>page</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#RectangleInfo"><FONT SIZE=2>RectangleInfo</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Equivalent size of Postscript page.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="pipe"></A><FONT SIZE=2>pipe</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Set to <I>True</I> if image is read/written
 			from/to a POSIX pipe. To read from (or write to) an open pipe, set
 			this member to <I>True</I>, set the <A HREF="#file">file</A>
@@ -2635,69 +2648,69 @@ shown in the following table: <BR>&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="pixels"></A><FONT SIZE=2>pixels</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2><A HREF="#PixelPacket">PixelPacket</A> *</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image pixels retrieved via <A HREF="cache.html#getpixelcache">GetPixelCache()</A>
 			or initialized via <A HREF="cache.html#setpixelcache">SetPixelCache()</A>.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="previous"></A><FONT SIZE=2>previous</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>struct _Image *</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Previous image frame in sequence.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="rendering_intent"></A><FONT SIZE=2>rendering_intent</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#RenderingIntent"><FONT SIZE=2>RenderingIntent</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>The type of rendering intent.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="rows"></A><FONT SIZE=2>rows</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image height</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="scene"></A><FONT SIZE=2>scene</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image frame scene number.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="storage_type"></A><FONT SIZE=2>storage_type</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#ClassType"><FONT SIZE=2>ClassType</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Image storage class. If <A HREF="#ClassType">DirectClass</A>
 			then the image packets contain valid RGB or CMYK colors. If
 			<A HREF="#ClassType">PseudoClass</A> then the image has a colormap
@@ -2705,25 +2718,25 @@ shown in the following table: <BR>&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="tainted"></A><FONT SIZE=2>tainted</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>int</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Set to&nbsp; non-zero (True) if the image pixels
 			have been modified.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="tile_info"></A><FONT SIZE=2>tile_info</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#RectangleInfo"><FONT SIZE=2>RectangleInfo</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Describes a tile within an image.&nbsp; For
 			example, if your images is 640x480 you may only want 320x256 with
 			an offset of +128+64. It is used for raw formats such as RGB and
@@ -2731,25 +2744,25 @@ shown in the following table: <BR>&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="timer"></A><FONT SIZE=2>timer</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>TimerInfo</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Support for measuring actual (user + system) and
 			elapsed execution time.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="total_colors"></A><FONT SIZE=2>total_colors</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>unsigned long</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>The number of colors in the image after
 			<A HREF="quantize.html#quantizeimage">QuantizeImage()</A>, or
 			<A HREF="quantize.html#quantizeimages">QuantizeImages()</A> if the
@@ -2758,35 +2771,35 @@ shown in the following table: <BR>&nbsp;
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="units"></A><FONT SIZE=2>units</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><A HREF="#ResolutionType"><FONT SIZE=2>ResolutionType</FONT></A></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Units of image resolution</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="x_resolution"></A><FONT SIZE=2>x_resolution</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>double</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Horizontal resolution of the image</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
+		<TD WIDTH=19%>
 			<P><A NAME="y_resolution"></A><FONT SIZE=2>y_resolution</FONT></P>
 		</TD>
 		<TD WIDTH=14%>
 			<P><FONT SIZE=2>double</FONT></P>
 		</TD>
-		<TD WIDTH=68%>
+		<TD WIDTH=67%>
 			<P><FONT SIZE=2>Vertical resolution of the image</FONT></P>
 		</TD>
 	</TR>
@@ -4018,7 +4031,138 @@ to select the type of noise to be added to the image. <BR>&nbsp;
 		</TD>
 	</TR>
 </TABLE>
-<P STYLE="margin-bottom: 0in"><BR>&nbsp; 
+<P STYLE="margin-bottom: 0in"><BR><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
+	<COL WIDTH=256*>
+	<TR>
+		<TD WIDTH=100% BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="PaintMethod1"></A><A NAME="OrientationType"></A>
+			<IMG SRC="../Magick++/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">OrientationType</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><I>OrientationType</I>
+specifies the orientation of the image. Useful for when the image is
+produced via a different ordinate system, the camera was turned on
+its side, or the page was scanned sideways.</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>OrientationType</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3 BGCOLOR="#cccccc">
+	<COL WIDTH=65*>
+	<COL WIDTH=75*>
+	<COL WIDTH=115*>
+	<TR>
+		<TD WIDTH=25%>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD WIDTH=29%>
+			<P ALIGN=CENTER><B>Scanline Direction</B></P>
+		</TD>
+		<TD WIDTH=45%>
+			<P ALIGN=CENTER><B>Frame Direction</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>UndefinedOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Unknown</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Unknown</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>TopLeftOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Left to right</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Top to bottom</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>TopRightOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Right to left</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Top to bottom</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>BottomRightOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Right to left</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Bottom to top</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>BottomLeftOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Left to right</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Bottom to top</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>LeftTopOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Top to bottom</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Left to right</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>RightTopOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Top to bottom</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Right to left</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>RightBottomOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Bottom to top</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Right to left</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=25%>
+			<P>LeftBottomOrientation</P>
+		</TD>
+		<TD WIDTH=29%>
+			<P>Bottom to top</P>
+		</TD>
+		<TD WIDTH=45%>
+			<P>Left to right</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0in"><BR>
 </P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
