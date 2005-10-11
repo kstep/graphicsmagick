@@ -1,3 +1,7 @@
+2005-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/svg.c (ReadSVGImage): Eliminate memory leak.
+
 2005-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.h (Image): Added an orientation member to the Image

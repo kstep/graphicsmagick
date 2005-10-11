@@ -263,7 +263,7 @@ static char **GetStyleTokens(void *context,const char *text,int *number_tokens)
   for (p=text; *p != '\0'; p++)
     if (*p == ':')
       (*number_tokens)+=2;
-  tokens=MagickAllocateMemory(char **,(*number_tokens+2)*sizeof(char *));
+  tokens=MagickAllocateMemory(char **,(*number_tokens+2)*sizeof(*tokens));
   if (tokens == (char **) NULL)
     {
       ThrowException3(svg_info->exception,ResourceLimitError,
@@ -280,14 +280,12 @@ static char **GetStyleTokens(void *context,const char *text,int *number_tokens)
     if ((*q != ':') && (*q != ';') && (*q != '\0'))
       continue;
     tokens[i]=AllocateString(p);
-    (void) strncpy(tokens[i],p,q-p);
-    tokens[i][q-p]='\0';
+    (void) strlcpy(tokens[i],p,q-p+1);
     Strip(tokens[i++]);
     p=q+1;
   }
   tokens[i]=AllocateString(p);
-  (void) strncpy(tokens[i],p,q-p);
-  tokens[i][q-p]='\0';
+  (void) strlcpy(tokens[i],p,q-p+1);
   Strip(tokens[i++]);
   tokens[i]=(char *) NULL;
   return(tokens);
@@ -321,7 +319,7 @@ static char **GetTransformTokens(void *context,const char *text,
     if (*p == '(')
       (*number_tokens)+=2;
   }
-  tokens=MagickAllocateMemory(char **,(*number_tokens+2)*sizeof(char *));
+  tokens=MagickAllocateMemory(char **,(*number_tokens+2)*sizeof(*tokens));
   if (tokens == (char **) NULL)
     {
       ThrowException3(svg_info->exception,ResourceLimitError,
@@ -338,14 +336,12 @@ static char **GetTransformTokens(void *context,const char *text,
     if ((*q != '(') && (*q != ')') && (*q != '\0'))
       continue;
     tokens[i]=AllocateString(p);
-    (void) strncpy(tokens[i],p,q-p);
-    tokens[i][q-p]='\0';
+    (void) strlcpy(tokens[i],p,q-p+1);
     Strip(tokens[i++]);
     p=q+1;
   }
   tokens[i]=AllocateString(p);
-  (void) strncpy(tokens[i],p,q-p);
-  tokens[i][q-p]='\0';
+  (void) strlcpy(tokens[i],p,q-p+1);
   Strip(tokens[i++]);
   tokens[i]=(char *) NULL;
   return(tokens);
@@ -648,18 +644,17 @@ static void SVGEndDocument(void *context)
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.endDocument()");
   svg_info=(SVGInfo *) context;
-  if (svg_info->offset != (char *) NULL)
-    MagickFreeMemory(svg_info->offset);
-  if (svg_info->stop_color != (char *) NULL)
-    MagickFreeMemory(svg_info->stop_color);
-  if (svg_info->scale != (double *) NULL)
-    MagickFreeMemory(svg_info->scale);
-  if (svg_info->text != (char *) NULL)
-    MagickFreeMemory(svg_info->text);
-  if (svg_info->vertices != (char *) NULL)
-    MagickFreeMemory(svg_info->vertices);
-  if (svg_info->url != (char *) NULL)
-    MagickFreeMemory(svg_info->url);
+  MagickFreeMemory(svg_info->offset);
+  MagickFreeMemory(svg_info->stop_color);
+  MagickFreeMemory(svg_info->scale);
+  MagickFreeMemory(svg_info->text);
+  MagickFreeMemory(svg_info->vertices);
+  MagickFreeMemory(svg_info->url);
+  if (svg_info->document != (xmlDocPtr) NULL)
+    {
+      xmlFreeDoc(svg_info->document);
+      svg_info->document=(xmlDocPtr) NULL;
+    }
 }
 
 static void SVGStartElement(void *context,const xmlChar *name,
@@ -1286,7 +1281,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               MVGPrintf(svg_info->file,"affine %g %g %g %g %g %g\n",
                 transform.sx,transform.rx,transform.ry,transform.sy,
                 transform.tx,transform.ty);
-              for (j=0; j < number_tokens; j++)
+              for (j=0; tokens[j] != (char *) NULL; j++)
                 MagickFreeMemory(tokens[j]);
               MagickFreeMemory(tokens);
               break;
@@ -1680,7 +1675,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     break;
                 }
               }
-              for (j=0; j < number_tokens; j++)
+              for (j=0; tokens[j] != (char *) NULL; j++)
                 MagickFreeMemory(tokens[j]);
               MagickFreeMemory(tokens);
               break;
@@ -1853,7 +1848,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               MVGPrintf(svg_info->file,"affine %g %g %g %g %g %g\n",
                 transform.sx,transform.rx,transform.ry,transform.sy,
                 transform.tx,transform.ty);
-              for (j=0; j < number_tokens; j++)
+              for (j=0; tokens[j] != (char *) NULL; j++)
                 MagickFreeMemory(tokens[j]);
               MagickFreeMemory(tokens);
               break;
@@ -2327,6 +2322,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
     default:
       break;
   }
+  (void) memset(&svg_info->segment,0,sizeof(svg_info->segment));
   svg_info->n--;
 }
 
@@ -2545,7 +2541,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
     return;
   (void) xmlNewDtd(svg_info->document,name,external_id,system_id);
   parser_context=(*parser);
-  parser->inputTab=(xmlParserInputPtr *) xmlMalloc(5*sizeof(xmlParserInputPtr));
+  parser->inputTab=(xmlParserInputPtr *) xmlMalloc(5*sizeof(*parser->inputTab));
   if (parser->inputTab == (xmlParserInputPtr *) NULL)
     {
       parser->errNo=XML_ERR_NO_MEMORY;
@@ -2585,7 +2581,36 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   xmlSAXHandler
-    SAXModules;
+    SAXModules =
+    {
+      SVGInternalSubset,
+      SVGIsStandalone,
+      SVGHasInternalSubset,
+      SVGHasExternalSubset,
+      SVGResolveEntity,
+      SVGGetEntity,
+      SVGEntityDeclaration,
+      SVGNotationDeclaration,
+      SVGAttributeDeclaration,
+      SVGElementDeclaration,
+      SVGUnparsedEntityDeclaration,
+      SVGSetDocumentLocator,
+      SVGStartDocument,
+      SVGEndDocument,
+      SVGStartElement,
+      SVGEndElement,
+      SVGReference,
+      SVGCharacters,
+      SVGIgnorableWhitespace,
+      SVGProcessingInstructions,
+      SVGComment,
+      SVGWarning,
+      SVGError,
+      SVGError,
+      SVGGetParameterEntity,
+      SVGCDataBlock,
+      SVGExternalSubset
+    };
 
   char
     filename[MaxTextExtent],
@@ -2655,36 +2680,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) CloneString(&svg_info.size,image_info->size);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"begin SAX");
   (void) xmlSubstituteEntitiesDefault(1);
-
-  memset(&SAXModules,0,sizeof(SAXModules));
-  SAXModules.internalSubset=SVGInternalSubset;
-  SAXModules.isStandalone=SVGIsStandalone;
-  SAXModules.hasInternalSubset=SVGHasInternalSubset;
-  SAXModules.hasExternalSubset=SVGHasExternalSubset;
-  SAXModules.resolveEntity=SVGResolveEntity;
-  SAXModules.getEntity=SVGGetEntity;
-  SAXModules.entityDecl=SVGEntityDeclaration;
-  SAXModules.notationDecl=SVGNotationDeclaration;
-  SAXModules.attributeDecl=SVGAttributeDeclaration;
-  SAXModules.elementDecl=SVGElementDeclaration;
-  SAXModules.unparsedEntityDecl=SVGUnparsedEntityDeclaration;
-  SAXModules.setDocumentLocator=SVGSetDocumentLocator;
-  SAXModules.startDocument=SVGStartDocument;
-  SAXModules.endDocument=SVGEndDocument;
-  SAXModules.startElement=SVGStartElement;
-  SAXModules.endElement=SVGEndElement;
-  SAXModules.reference=SVGReference;
-  SAXModules.characters=SVGCharacters;
-  SAXModules.ignorableWhitespace=SVGIgnorableWhitespace;
-  SAXModules.processingInstruction=SVGProcessingInstructions;
-  SAXModules.comment=SVGComment;
-  SAXModules.warning=SVGWarning;
-  SAXModules.error=SVGError;
-  SAXModules.fatalError=SVGError;
-  SAXModules.getParameterEntity=SVGGetParameterEntity;
-  SAXModules.cdataBlock=SVGCDataBlock;
-  SAXModules.externalSubset=SVGExternalSubset;
-
   SAXHandler=(&SAXModules);
   svg_info.parser=xmlCreatePushParserCtxt(SAXHandler,&svg_info,(char *) NULL,0,
     image->filename);
