@@ -263,7 +263,7 @@ static char **GetStyleTokens(void *context,const char *text,int *number_tokens)
   for (p=text; *p != '\0'; p++)
     if (*p == ':')
       (*number_tokens)+=2;
-  tokens=MagickAllocateMemory(char **,(*number_tokens+2)*sizeof(char *));
+  tokens=MagickAllocateMemory(char **,(*number_tokens+2)*sizeof(*tokens));
   if (tokens == (char **) NULL)
     {
       ThrowException3(svg_info->exception,ResourceLimitError,
@@ -321,7 +321,7 @@ static char **GetTransformTokens(void *context,const char *text,
     if (*p == '(')
       (*number_tokens)+=2;
   }
-  tokens=MagickAllocateMemory(char **,(*number_tokens+2)*sizeof(char *));
+  tokens=MagickAllocateMemory(char **,(*number_tokens+2)*sizeof(*tokens));
   if (tokens == (char **) NULL)
     {
       ThrowException3(svg_info->exception,ResourceLimitError,
@@ -647,18 +647,17 @@ static void SVGEndDocument(void *context)
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.endDocument()");
   svg_info=(SVGInfo *) context;
-  if (svg_info->offset != (char *) NULL)
-    MagickFreeMemory(svg_info->offset);
-  if (svg_info->stop_color != (char *) NULL)
-    MagickFreeMemory(svg_info->stop_color);
-  if (svg_info->scale != (double *) NULL)
-    MagickFreeMemory(svg_info->scale);
-  if (svg_info->text != (char *) NULL)
-    MagickFreeMemory(svg_info->text);
-  if (svg_info->vertices != (char *) NULL)
-    MagickFreeMemory(svg_info->vertices);
-  if (svg_info->url != (char *) NULL)
-    MagickFreeMemory(svg_info->url);
+  MagickFreeMemory(svg_info->offset);
+  MagickFreeMemory(svg_info->stop_color);
+  MagickFreeMemory(svg_info->scale);
+  MagickFreeMemory(svg_info->text);
+  MagickFreeMemory(svg_info->vertices);
+  MagickFreeMemory(svg_info->url);
+  if (svg_info->document != (xmlDocPtr) NULL)
+    {
+      xmlFreeDoc(svg_info->document);
+      svg_info->document=(xmlDocPtr) NULL;
+    }
 }
 
 static void SVGStartElement(void *context,const xmlChar *name,
@@ -1285,7 +1284,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               MVGPrintf(svg_info->file,"affine %g %g %g %g %g %g\n",
                 transform.sx,transform.rx,transform.ry,transform.sy,
                 transform.tx,transform.ty);
-              for (j=0; j < number_tokens; j++)
+              for (j=0; tokens[j] != (char *) NULL; j++)
                 MagickFreeMemory(tokens[j]);
               MagickFreeMemory(tokens);
               break;
@@ -1679,7 +1678,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     break;
                 }
               }
-              for (j=0; j < number_tokens; j++)
+              for (j=0; tokens[j] != (char *) NULL; j++)
                 MagickFreeMemory(tokens[j]);
               MagickFreeMemory(tokens);
               break;
@@ -1852,7 +1851,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               MVGPrintf(svg_info->file,"affine %g %g %g %g %g %g\n",
                 transform.sx,transform.rx,transform.ry,transform.sy,
                 transform.tx,transform.ty);
-              for (j=0; j < number_tokens; j++)
+              for (j=0; tokens[j] != (char *) NULL; j++)
                 MagickFreeMemory(tokens[j]);
               MagickFreeMemory(tokens);
               break;
@@ -2326,6 +2325,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
     default:
       break;
   }
+  (void) memset(&svg_info->segment,0,sizeof(svg_info->segment));
   svg_info->n--;
 }
 
@@ -2544,7 +2544,7 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
     return;
   (void) xmlNewDtd(svg_info->document,name,external_id,system_id);
   parser_context=(*parser);
-  parser->inputTab=(xmlParserInputPtr *) xmlMalloc(5*sizeof(xmlParserInputPtr));
+  parser->inputTab=(xmlParserInputPtr *) xmlMalloc(5*sizeof(*parser->inputTab));
   if (parser->inputTab == (xmlParserInputPtr *) NULL)
     {
       parser->errNo=XML_ERR_NO_MEMORY;

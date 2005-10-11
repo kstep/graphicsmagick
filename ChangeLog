@@ -1,3 +1,7 @@
+2005-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/svg.c (ReadSVGImage): Eliminate memory leak.
+
 2005-09-18  Michal Kowalczuk  <sammael@brzydal.eu.org>
 
 	* coders/gif.c: Free global_colormap before returning with error.
