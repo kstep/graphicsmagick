@@ -1,6 +1,6 @@
-This file was last updated on July 26, 2005.
+This file was last updated on October 12, 2005.
 
-Significant changes associated with GraphicsMagick 1.1.7 (yet to be released)
+Significant changes associated with GraphicsMagick 1.1.7 (released October 12, 2005)
 
   Security Fixes:  
     o Updated zlib to version 1.2.3 (1.2.2 has a security flaw).
@@ -10,7 +10,13 @@ Significant changes associated with GraphicsMagick 1.1.7 (yet to be released)
     server noted under FreeBSD 5.4 and heard about under Linux with X.org.
     o Fixed buffer over-run in readdir() which only occurs under
     Microsoft Windows.
+    o Memory leak fixes for GIF and SVG.
     o Fix for an infinite loop bug in the XWD reader.
+    o Properly DLL-export DispatchImage and PopImagePixels.
+
+  Updates:
+    o Zlib is updated to version 1.2.3.
+    o Libpng is updated to version 1.2.8.
 
 Significant changes associated with GraphicsMagick 1.1.6 (released May 1, 2005)
 
