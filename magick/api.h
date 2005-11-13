@@ -31,6 +31,7 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <sys/types.h>
 
 #if defined(WIN32) && !defined(__CYGWIN__)

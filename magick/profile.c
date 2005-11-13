@@ -482,6 +482,7 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
             }
           }
 
+          /* Colorspace undefined */
           if ((source_colorspace == UndefinedColorspace) ||
               (target_colorspace == UndefinedColorspace))
             {
@@ -490,25 +491,38 @@ ProfileImage(Image *image,const char *name,const unsigned char *profile,
               ThrowBinaryException3(ImageError,UnableToAssignProfile,
                 ColorspaceColorProfileMismatch);
             }
-          if ((IsGrayColorspace(source_colorspace)) &&
-              (!IsGrayImage(image,&image->exception)))
+          /* Gray colorspace */
+          if (IsGrayColorspace(source_colorspace) &&
+              !IsGrayImage(image,&image->exception))
             {
               cmsCloseProfile(source_profile);
               cmsCloseProfile(target_profile);
               ThrowBinaryException3(ImageError,UnableToAssignProfile,
                 ColorspaceColorProfileMismatch);
             }
-          if ((source_colorspace == CMYKColorspace) &&
-              (image->colorspace != CMYKColorspace))
+          /* CMYK colorspace */
+          if (IsCMYKColorspace(source_colorspace) &&
+              !IsCMYKColorspace(image->colorspace))
             {
               cmsCloseProfile(source_profile);
               cmsCloseProfile(target_profile);
               ThrowBinaryException3(ImageError,UnableToAssignProfile,
                 ColorspaceColorProfileMismatch);
             }
-          if ((source_colorspace != GRAYColorspace) &&
-              (source_colorspace != CMYKColorspace) &&
-              (image->colorspace != RGBColorspace))
+          /* YCbCr colorspace */
+          if (IsYCbCrColorspace(source_colorspace) &&
+              !IsYCbCrColorspace(image->colorspace))
+            {
+              cmsCloseProfile(source_profile);
+              cmsCloseProfile(target_profile);
+              ThrowBinaryException3(ImageError,UnableToAssignProfile,
+                                    ColorspaceColorProfileMismatch);
+            }
+          /* Verify that source colorspace type is supported */
+          if (!IsGrayColorspace(source_colorspace) &&
+              !IsCMYKColorspace(source_colorspace) &&
+              !IsYCbCrColorspace(source_colorspace) &&
+              !IsRGBColorspace(image->colorspace))
             {
               cmsCloseProfile(source_profile);
               cmsCloseProfile(target_profile);

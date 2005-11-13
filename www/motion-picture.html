@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20051002;8225200">
+	<META NAME="CHANGED" CONTENT="20051112;18193400">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<STYLE>
@@ -251,7 +251,22 @@ the command provided to it.</P>
 added benefit. It is able to run several commands in the background.
 This means that if your system has multiple CPUs, it can take
 advantage of all the CPUs while still using one command:</P>
-<PRE STYLE="margin-bottom: 0.2in">   find /assets/001 -name '*.dpx' -print | xargs --max-procs 3 --max-args 25 gm mogrify -resize 1828x1556 -depth 10</PRE><H3 CLASS="western">
+<PRE STYLE="margin-bottom: 0.2in">   find /assets/001 -name '*.dpx' -print | xargs --max-procs 3 --max-args 25 gm mogrify -resize 1828x1556 -depth 10</PRE><P CLASS="western">
+GraphicsMagick may be used to create a contact sheet (grid of
+thumbnails with name and size) by using the &ldquo;VID&rdquo;
+pseudoformat which accepts a wildcarded argument of files (protected
+by quotes!) to read. The output files are buffered while files are
+being read so there is a practical limit to the number of files which
+may be processed at once. To output to a Postscript file:</P>
+<PRE>    gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet.ps&quot;</PRE><P CLASS="western">
+or to a PDF file:</P>
+<PRE>    gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet.pdf&quot;</PRE><P CLASS="western">
+or to a sequence of JPEG files ranging from contact-sheet-000.jpg to
+contact-sheet-999.jpg:</P>
+<PRE>   gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet-%03d.jpg&quot;</PRE><P CLASS="western">
+or to a MIFF file which may be used to interactively browse the
+original files using 'gm display':</P>
+<PRE>    gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet.miff&quot;</PRE><H3 CLASS="western">
 DPX options</H3>
 <P CLASS="western">The following options are particularly useful when
 dealing with DPX files.</P>
@@ -316,6 +331,14 @@ dealing with DPX files.</P>
 	Of Congress</A> use big-endian 10-bit packed pixels in a file marked
 	as little-endian so this option must be used to read such files
 	correctly.</DD><DT CLASS="western">
+	-define dpx:swap-samples={true|false}</DT><DD CLASS="western">
+	GraphicsMagick strives to adhere to the DPX standard but certain
+	aspects of the standard can be quite confusing. As a result, some
+	10-bit DPX files have Red and Blue interchanged, or Cb and Cr
+	interchanged due to an different interpretation of the standard, or
+	getting the wires crossed. The swap-samples option may be supplied
+	when reading or writing in order to read or write using the
+	necessary sample order.</DD><DT CLASS="western">
 	-interlace plane</DT><DD CLASS="western">
 	By default, samples are stored contiguously in a single element when
 	possible. Specifying '-interlace plane' causes each sample type
@@ -396,9 +419,9 @@ are similar to the attribute descriptions from the DPX standard.</P>
 <P CLASS="western">
 Specific header values from a DPX file may be displayed quickly using
 a command similar to:</P>
-<PRE>   gm identify -format '%[DPX:tv.time.code]' foo.dpx</PRE><P CLASS="western">
+<PRE STYLE="margin-bottom: 0.2in">   gm identify -format '%[DPX:tv.time.code]' foo.dpx</PRE><P CLASS="western">
 Use</P>
-<PRE>   gm identify -format '%[dpx:*]' foo.dpx</PRE><P CLASS="western">
+<PRE STYLE="margin-bottom: 0.2in">   gm identify -format '%[dpx:*]' foo.dpx</PRE><P CLASS="western">
 to list all DPX header attributes.</P>
 <HR>
 <P CLASS="western" ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>

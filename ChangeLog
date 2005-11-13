@@ -1,3 +1,20 @@
+2005-11-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/magick_compat.c (FormatMagickStringList): MagickExport since this
+	function is used by Ch extension.
+	* magick/log.c (LogMagickEventList): MagickExport since this
+	function is used by Ch extension.
+	* magick/utility.c (FormatStringList): MagickExport since this
+	function is used by Ch extension.
+	* coders/dpx.c (ReadDPXImage): Added support for dpx:swap-samples
+	define in order to handle files with Cb and Cr swapped.  Fixed a
+	bug in the header reading which caused some valid files to fail to
+	read at all.
+	(WriteDPXImage): Added support for dpx:swap-samples define in
+	order to write files with Cb and Cr swapped.
+	* magick/profile.c (ProfileImage): Add support for ICC CMS
+	profiles in YCbCr space.
+
 2005-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/svg.c (ReadSVGImage): Eliminate memory leak.

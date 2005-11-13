@@ -52,6 +52,10 @@ extern "C" {
 #define PixelIntensity(pixel) PixelIntensityRec601(pixel)
 #define PixelIntensityToDouble(pixel) ((double)PixelIntensity(pixel))
 #define PixelIntensityToQuantum(pixel) ((Quantum)PixelIntensity(pixel))
+#define IsCMYKColorspace(colorspace) \
+  ( \
+    (colorspace == CMYKColorspace) \
+  )
 #define IsGrayColorspace(colorspace) \
   ( \
     (colorspace == GRAYColorspace) || \

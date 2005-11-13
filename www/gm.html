@@ -1266,6 +1266,14 @@ reading or writing the DPX files. Sometimes this is useful if the file is
 (or must be) written incorrectly so that the file header and the pixels
 use different endianness.
 </dd>
+<dt>dpx:swap-samples={true|false}</dt>
+<dd>GraphicsMagick strives to adhere to the DPX standard but certain
+aspects of the standard can be quite confusing. As a result, some 10-bit
+DPX files have Red and Blue interchanged, or Cb and Cr interchanged due
+to an different interpretation of the standard, or getting the wires
+crossed. The swap-samples option may be supplied when reading or writing
+in order to read or write using the necessary sample order.
+</dd>
 <dt>jp2:rate=&lt;value&gt;</dt>
 <dd>Specify the compression factor to use while writing JPEG-2000
 files. The compression factor is the reciprocal of the compression

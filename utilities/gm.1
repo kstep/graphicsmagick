@@ -1028,6 +1028,19 @@ use different endianness.
 
 .in 15
 .in 15
+.B "dpx:swap-samples={true|false}"
+.in 20
+ \fR
+.in 20
+GraphicsMagick strives to adhere to the DPX standard but certain
+aspects of the standard can be quite confusing. As a result, some 10-bit
+DPX files have Red and Blue interchanged, or Cb and Cr interchanged due
+to an different interpretation of the standard, or getting the wires
+crossed. The swap-samples option may be supplied when reading or writing
+in order to read or write using the necessary sample order.
+
+.in 15
+.in 15
 .B "jp2:rate=<value>"
 .in 20
  \fR

@@ -82,7 +82,10 @@ extern MagickExport unsigned int
   IsEventLogging(void),
   LogMagickEvent(const ExceptionType type,
     const char *module,const char *function,const unsigned long line,
-    const char *format,...) __attribute__((format (printf,5,6)));
+    const char *format,...) __attribute__((format (printf,5,6))),
+  LogMagickEventList(const ExceptionType type,
+    const char *module,const char *function,const unsigned long line,
+    const char *format,va_list operands);
 
 extern MagickExport unsigned long
   SetLogEventMask(const char *events);

@@ -281,6 +281,7 @@
 #define ForegroundColor GmForegroundColor
 #define FormatSize GmFormatSize
 #define FormatString GmFormatString
+#define FormatStringList GmFormatStringList
 #define FrameImage GmFrameImage
 #define FuzzyColorMatch GmFuzzyColorMatch
 #define GammaImage GmGammaImage
@@ -453,6 +454,7 @@
 #define LocaleUpper GmLocaleUpper
 #define LockSemaphoreInfo GmLockSemaphoreInfo
 #define LogMagickEvent GmLogMagickEvent
+#define LogMagickEventList GmLogMagickEventList
 #define MSBOrderLong GmMSBOrderLong
 #define MSBOrderShort GmMSBOrderShort
 #define MagickCommand GmMagickCommand

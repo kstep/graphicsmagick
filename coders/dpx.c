@@ -936,7 +936,7 @@ static void DescribeDPXImageElement(const DPXImageElement *element_info,
                         element_info->reference_high_data_code,
                         element_info->reference_high_quantity);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Element %u: descriptor=%s(%u) characteristic=%s(%u) colorimetric=%s(%u)",
+                        "Element %u: descriptor=%s(%u) transfer_characteristic=%s(%u) colorimetric=%s(%u)",
                         element,
                         DescribeImageElementDescriptor(element_info->descriptor),
                         (unsigned int) element_info->descriptor,
@@ -1226,6 +1226,7 @@ static void ReadRowSamples(const unsigned char *scanline,
                            const unsigned int bits_per_sample,
                            const ImageComponentPackingMethod packing_method,
                            const EndianType endian_type,
+                           const MagickBool swap_word_datums,
                            sample_t *samples)
 {
   register unsigned long
@@ -1264,27 +1265,42 @@ static void ReadRowSamples(const unsigned char *scanline,
           if (word_pad_lsb)
             {
               /*
-                Padding in LSB (Method A).
+                Padding in LSB (Method A)  Standard method.
               */
-              shifts[0]=2;  /* datum-0 / blue */
-              shifts[1]=12; /* datum-1 / green */
-              shifts[2]=22; /* datum-2 / red */
+              if (swap_word_datums == MagickFalse)
+                {
+                  shifts[0]=2;  /* datum-0 / blue */
+                  shifts[1]=12; /* datum-1 / green */
+                  shifts[2]=22; /* datum-2 / red */
+                }
+              else
+                {
+                  shifts[0]=22; /* datum-2 / red */
+                  shifts[1]=12; /* datum-1 / green */
+                  shifts[2]=2;  /* datum-0 / blue */
+                }
             }
           else if (word_pad_msb)
             {
               /*
-                Padding in MSB (Method B).
+                Padding in MSB (Method B)  Deprecated method.
               */
-              shifts[0]=0;  /* datum-0 / blue */
-              shifts[1]=10; /* datum-1 / green */
-              shifts[2]=20; /* datum-2 / red */
+              if (swap_word_datums == MagickFalse)
+                {
+                  shifts[0]=0;  /* datum-0 / blue */
+                  shifts[1]=10; /* datum-1 / green */
+                  shifts[2]=20; /* datum-2 / red */
+                }
+              else
+                {
+                  shifts[0]=20; /* datum-2 / red */
+                  shifts[1]=10; /* datum-1 / green */
+                  shifts[2]=0;  /* datum-0 / blue */
+                }
             }
 
           if (endian_type == MSBEndian)
             {
-
-#if 0
-              /* Standard specified datum order */
               for (i=samples_per_row/3; i > 0; --i)
                 {
                   datum=0;
@@ -1301,30 +1317,9 @@ static void ReadRowSamples(const unsigned char *scanline,
                   for (i=(samples_per_row % 3); i > 0; --i)
                     *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
                 }
-#else
-              /* Reverse datum order */
-              for (i=samples_per_row/3; i > 0; --i)
-                {
-                  datum=2;
-                  MSBOctetsToPackedU32Word(scanline,packed_u32);
-                  *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
-                  *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
-                  *sp++=(packed_u32.word >> shifts[datum]) & 0x3FF;
-                }
-              if ((samples_per_row % 3))
-                {
-                  datum=2;
-                  MSBOctetsToPackedU32Word(scanline,packed_u32);
-                  for (i=(samples_per_row % 3); i > 0; --i)
-                    *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
-                }
-#endif
-
             }
           else if (endian_type == LSBEndian)
             {
-#if 0
-              /* Standard specified datum order */
               for (i=samples_per_row/3; i > 0; --i)
                 {
                   datum=0;
@@ -1340,24 +1335,6 @@ static void ReadRowSamples(const unsigned char *scanline,
                   for (i=(samples_per_row % 3); i > 0; --i)
                     *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
                 }
-#else
-              /* Reverse datum order */
-              for (i=samples_per_row/3; i > 0; --i)
-                {
-                  datum=2;
-                  LSBOctetsToPackedU32Word(scanline,packed_u32);
-                  *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
-                  *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
-                  *sp++=(packed_u32.word >> shifts[datum]) & 0x3FF;
-                }
-              if ((samples_per_row % 3))
-                {
-                  datum=2;
-                  LSBOctetsToPackedU32Word(scanline,packed_u32);
-                  for (i=(samples_per_row % 3); i > 0; --i)
-                    *sp++=(packed_u32.word >> shifts[datum--]) & 0x3FF;
-                }
-#endif
             }
           return;
         }
@@ -1366,7 +1343,7 @@ static void ReadRowSamples(const unsigned char *scanline,
           if (word_pad_lsb)
             {
               /*
-                Padding in LSB (Method A).
+                Padding in LSB (Method A)  Standard method.
               */
               if (endian_type == MSBEndian)
                 {
@@ -1395,7 +1372,7 @@ static void ReadRowSamples(const unsigned char *scanline,
           else if (word_pad_msb)
             {
               /*
-                Padding in MSB (Method B).
+                Padding in MSB (Method B)  Deprecated method.
               */
               if (endian_type == MSBEndian)
                 {
@@ -1734,7 +1711,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       R32ToAttribute(image,"DPX:source.scanned.size.x",dpx_source_info.x_scanned_size);
       R32ToAttribute(image,"DPX:source.scanned.size.y",dpx_source_info.y_scanned_size);
     }
-  if ((pixels_offset >= 1920UL) && (dpx_file_info.industry_section_length > 0))
+  if (pixels_offset >= 1920UL)
     {
       /*
         Read Motion-picture film information header.
@@ -1745,80 +1722,88 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (swab)
         SwabDPXMPFilmInfo(&dpx_mp_info);
 
-      StringToAttribute(image,"DPX:mp.film.manufacturer.id",dpx_mp_info.film_mfg_id_code);
-      StringToAttribute(image,"DPX:mp.film.type",dpx_mp_info.film_type);
-      StringToAttribute(image,"DPX:mp.perfs.offset",dpx_mp_info.perfs_offset);
-      StringToAttribute(image,"DPX:mp.prefix",dpx_mp_info.prefix);
-      StringToAttribute(image,"DPX:mp.count",dpx_mp_info.count);
-      StringToAttribute(image,"DPX:mp.format",dpx_mp_info.format);
-      U32ToAttribute(image,"DPX:mp.frame.position",dpx_mp_info.frame_position);
-      U32ToAttribute(image,"DPX:mp.sequence.length",dpx_mp_info.sequence_length);
-      U32ToAttribute(image,"DPX:mp.held.count",dpx_mp_info.held_count);
-      R32ToAttribute(image,"DPX:mp.frame.rate",dpx_mp_info.frame_rate);
-      R32ToAttribute(image,"DPX:mp.shutter.angle",dpx_mp_info.shutter_angle);
-      StringToAttribute(image,"DPX:mp.frame.id",dpx_mp_info.frame_id);
-      StringToAttribute(image,"DPX:mp.slate.info",dpx_mp_info.slate_info);
+      if (dpx_file_info.industry_section_length > 0)
+        {
+          StringToAttribute(image,"DPX:mp.film.manufacturer.id",dpx_mp_info.film_mfg_id_code);
+          StringToAttribute(image,"DPX:mp.film.type",dpx_mp_info.film_type);
+          StringToAttribute(image,"DPX:mp.perfs.offset",dpx_mp_info.perfs_offset);
+          StringToAttribute(image,"DPX:mp.prefix",dpx_mp_info.prefix);
+          StringToAttribute(image,"DPX:mp.count",dpx_mp_info.count);
+          StringToAttribute(image,"DPX:mp.format",dpx_mp_info.format);
+          U32ToAttribute(image,"DPX:mp.frame.position",dpx_mp_info.frame_position);
+          U32ToAttribute(image,"DPX:mp.sequence.length",dpx_mp_info.sequence_length);
+          U32ToAttribute(image,"DPX:mp.held.count",dpx_mp_info.held_count);
+          R32ToAttribute(image,"DPX:mp.frame.rate",dpx_mp_info.frame_rate);
+          R32ToAttribute(image,"DPX:mp.shutter.angle",dpx_mp_info.shutter_angle);
+          StringToAttribute(image,"DPX:mp.frame.id",dpx_mp_info.frame_id);
+          StringToAttribute(image,"DPX:mp.slate.info",dpx_mp_info.slate_info);
+        }
     }
-  if ((pixels_offset >= 2048UL) && (dpx_file_info.industry_section_length > 0))
+  if (pixels_offset >= 2048UL)
     {
       /*
         Read Television information header.
       */
       offset += ReadBlob(image,sizeof(dpx_tv_info),&dpx_tv_info);
       if (offset != (size_t) 2048L)
-        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image); 
       if (swab)
         SwabDPXTVInfo(&dpx_tv_info);
 
-      U32ToBitsAttribute(image,"DPX:tv.time.code",dpx_tv_info.time_code);
-      U32ToBitsAttribute(image,"DPX:tv.user.bits",dpx_tv_info.user_bits);
-      U8ToAttribute(image,"DPX:tv.interlace",dpx_tv_info.interlace);
-      U8ToAttribute(image,"DPX:tv.field.number",dpx_tv_info.field_number);
-      U8ToAttribute(image,"DPX:tv.video.signal",dpx_tv_info.video_signal);
-      R32ToAttribute(image,"DPX:tv.horizontal.sampling.rate",dpx_tv_info.horizontal_sample);
-      R32ToAttribute(image,"DPX:tv.temporal.sampling.rate",dpx_tv_info.temporal_sample);
-      R32ToAttribute(image,"DPX:tv.sync.time",dpx_tv_info.sync_time);
-      R32ToAttribute(image,"DPX:tv.gamma",dpx_tv_info.gamma);
-      R32ToAttribute(image,"DPX:tv.black.level",dpx_tv_info.black_level);
-      R32ToAttribute(image,"DPX:tv.black.gain",dpx_tv_info.black_gain);
-      R32ToAttribute(image,"DPX:tv.breakpoint",dpx_tv_info.breakpoint);
-      R32ToAttribute(image,"DPX:tv.white.level",dpx_tv_info.white_level);
-      R32ToAttribute(image,"DPX:tv.integration.time",dpx_tv_info.integration_time);
+      if (dpx_file_info.industry_section_length > 0)
+        {
+          U32ToBitsAttribute(image,"DPX:tv.time.code",dpx_tv_info.time_code);
+          U32ToBitsAttribute(image,"DPX:tv.user.bits",dpx_tv_info.user_bits);
+          U8ToAttribute(image,"DPX:tv.interlace",dpx_tv_info.interlace);
+          U8ToAttribute(image,"DPX:tv.field.number",dpx_tv_info.field_number);
+          U8ToAttribute(image,"DPX:tv.video.signal",dpx_tv_info.video_signal);
+          R32ToAttribute(image,"DPX:tv.horizontal.sampling.rate",dpx_tv_info.horizontal_sample);
+          R32ToAttribute(image,"DPX:tv.temporal.sampling.rate",dpx_tv_info.temporal_sample);
+          R32ToAttribute(image,"DPX:tv.sync.time",dpx_tv_info.sync_time);
+          R32ToAttribute(image,"DPX:tv.gamma",dpx_tv_info.gamma);
+          R32ToAttribute(image,"DPX:tv.black.level",dpx_tv_info.black_level);
+          R32ToAttribute(image,"DPX:tv.black.gain",dpx_tv_info.black_gain);
+          R32ToAttribute(image,"DPX:tv.breakpoint",dpx_tv_info.breakpoint);
+          R32ToAttribute(image,"DPX:tv.white.level",dpx_tv_info.white_level);
+          R32ToAttribute(image,"DPX:tv.integration.time",dpx_tv_info.integration_time);
+        }
     }
-  if ((pixels_offset >= 2080UL) &&
-      (!IS_UNDEFINED_U32(dpx_file_info.user_defined_length)) &&
-      (dpx_file_info.user_defined_length >= sizeof(DPXUserDefinedData)))
+  if (pixels_offset >= 2080UL)
     {
-      /*
-        Read user header.
-      */
-      unsigned char
-        *user_data;
-
-      size_t
-        user_data_length;
-
-      DPXUserDefinedData
-        *dpx_user_data;
-
-      user_data_length=dpx_file_info.user_defined_length;
-      user_data=MagickAllocateMemory(unsigned char *,user_data_length);
-      if (user_data == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-      offset += ReadBlob(image,user_data_length,user_data);
-      if (offset != (2048U+user_data_length))
+      if (!IS_UNDEFINED_U32(dpx_file_info.user_defined_length) &&
+          (dpx_file_info.user_defined_length >= sizeof(DPXUserDefinedData)))
         {
+          /*
+            Read user header.
+          */
+          unsigned char
+            *user_data;
+
+          size_t
+            user_data_length;
+
+          DPXUserDefinedData
+            *dpx_user_data;
+
+          user_data_length=dpx_file_info.user_defined_length;
+          user_data=MagickAllocateMemory(unsigned char *,user_data_length);
+          if (user_data == (unsigned char *) NULL)
+            ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+          offset += ReadBlob(image,user_data_length,user_data);
+          if (offset != (2048U+user_data_length))
+            {
+              MagickFreeMemory(user_data);
+              ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+            }
+          dpx_user_data=(DPXUserDefinedData *) user_data;
+          StringToAttribute(image,"DPX:user.data.id",dpx_user_data->user_id);
+          if (!SetImageProfile(image,"DPXUSERDATA",user_data,user_data_length))
+            {
+              MagickFreeMemory(user_data);
+              ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+            }
           MagickFreeMemory(user_data);
-          ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
         }
-      dpx_user_data=(DPXUserDefinedData *) user_data;
-      StringToAttribute(image,"DPX:user.data.id",dpx_user_data->user_id);
-      if (!SetImageProfile(image,"DPXUSERDATA",user_data,user_data_length))
-        {
-          MagickFreeMemory(user_data);
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
-        }
-      MagickFreeMemory(user_data);
     }
   /*
     Determine the maximum number of bits per sample, samples per element, and colorspace
@@ -1887,6 +1872,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           default:
             {
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Unhandled element descriptor: %s",
+                                    DescribeImageElementDescriptor(element_descriptor));
             }
           }
         
@@ -1980,6 +1967,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   for (element=0; element < dpx_image_info.elements; element++)
     {
+      MagickBool
+        swap_word_datums = MagickFalse;
+
       DescribeDPXImageElement(&dpx_image_info.element_info[element],element+1);
       /*
         Data sign, (0 = unsigned; 1 = signed)
@@ -2020,11 +2010,25 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         dpx_image_info.element_info[element].transfer_characteristic;
       packing_method=dpx_image_info.element_info[element].packing;
       /*
-        FIXME: hack around Cinepaint oddity which mis-marks files.
+        Allow the user to over-ride the packing method specified by the header.
       */
-      if ((element_descriptor == ImageElementUnspecified) &&
-          (dpx_image_info.elements == 1))
-        packing_method=PackingMethodWordsFillMSB;
+      if ((definition_value=AccessDefinition(image_info,"dpx","packing-method")))
+        {
+          if (LocaleCompare(definition_value,"packed") == 0)
+            {
+              packing_method=PackingMethodPacked;
+            }
+          else if ((bits_per_sample == 10) || (bits_per_sample == 12))
+            {
+              if ((LocaleCompare(definition_value,"lsbpad") == 0) ||
+                  (LocaleCompare(definition_value,"a") == 0))
+                packing_method=PackingMethodWordsFillLSB;
+              else if ((LocaleCompare(definition_value,"msbpad") == 0) ||
+                       (LocaleCompare(definition_value,"b") == 0))
+                packing_method=PackingMethodWordsFillMSB;
+            }
+        }
+
       /*
         Decide if the image is grayscale.
       */
@@ -2036,6 +2040,23 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           is_monochrome=MagickTrue;
         }
+      /*
+        Are datums returned in reverse order when extracted from a
+        32-bit word?  This is to support Note 2 in Table 1 which
+        describes how RGB/RGBA are returned in reversed order for the
+        10-bit "filled" format.
+      */
+      if ((element_descriptor == ImageElementRGB) || (element_descriptor == ImageElementRGBA))
+        {
+          if ((bits_per_sample == 10) && (packing_method != PackingMethodPacked))
+            swap_word_datums = MagickTrue;
+        }
+      if ((definition_value=AccessDefinition(image_info,"dpx","swap-samples")))
+        {
+          if (LocaleCompare(definition_value,"true") == 0)
+            swap_word_datums = swap_word_datums ? MagickFalse : MagickTrue;
+        }
+
       /*
         Determine number of samples per element.
       */
@@ -2139,7 +2160,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     break;
                   }
                 ReadRowSamples(scanline_data,samples_per_row,bits_per_sample,
-                               packing_method,endian_type,samples);
+                               packing_method,endian_type,swap_word_datums,samples);
               }
               /*
                 Scale samples.
@@ -2731,6 +2752,7 @@ static void WriteRowSamples(const sample_t *samples,
                             const unsigned int bits_per_sample,
                             const ImageComponentPackingMethod packing_method,
                             const EndianType endian_type,
+                            const MagickBool swap_word_datums,
                             unsigned char *scanline)
 {
   register unsigned int
@@ -2770,29 +2792,46 @@ static void WriteRowSamples(const sample_t *samples,
           
           unsigned int
             shifts[3] = { 0, 0, 0 };
-          
+
           if (word_pad_lsb)
             {
               /*
-                Padding in LSB (Method A).
+                Padding in LSB (Method A)  Standard method.
               */
-              shifts[0]=2;  /* datum-0 / blue */
-              shifts[1]=12; /* datum-1 / green */
-              shifts[2]=22; /* datum-2 / red */
+              if (swap_word_datums == MagickFalse)
+                {
+                  shifts[0]=2;  /* datum-0 / blue */
+                  shifts[1]=12; /* datum-1 / green */
+                  shifts[2]=22; /* datum-2 / red */
+                }
+              else
+                {
+                  shifts[0]=22; /* datum-2 / red */
+                  shifts[1]=12; /* datum-1 / green */
+                  shifts[2]=2;  /* datum-0 / blue */
+                }
             }
           else if (word_pad_msb)
             {
               /*
-                Padding in MSB (Method B).
+                Padding in MSB (Method B)  Deprecated method.
               */
-              shifts[0]=0;  /* datum-0 / blue */
-              shifts[1]=10; /* datum-1 / green */
-              shifts[2]=20; /* datum-2 / red */
+              if (swap_word_datums == MagickFalse)
+                {
+                  shifts[0]=0;  /* datum-0 / blue */
+                  shifts[1]=10; /* datum-1 / green */
+                  shifts[2]=20; /* datum-2 / red */
+                }
+              else
+                {
+                  shifts[0]=20; /* datum-2 / red */
+                  shifts[1]=10; /* datum-1 / green */
+                  shifts[2]=0;  /* datum-0 / blue */
+                }
             }
 
           if (endian_type == MSBEndian)
             {
-#if 0
               /* Standard specified datum order */
               for (i=(samples_per_row/3); i > 0; --i)
                 {
@@ -2811,30 +2850,9 @@ static void WriteRowSamples(const sample_t *samples,
                     packed_u32.word |= (*samples++ << shifts[datum++]);
                   MSBPackedU32WordToOctets(packed_u32,scanline);
                 }
-#else
-              /* Reverse datum order */
-              for (i=(samples_per_row/3); i > 0; --i)
-                {
-                  datum=2;
-                  packed_u32.word=0;
-                  packed_u32.word |= (*samples++ << shifts[datum--]);
-                  packed_u32.word |= (*samples++ << shifts[datum--]);
-                  packed_u32.word |= (*samples++ << shifts[datum]);
-                  MSBPackedU32WordToOctets(packed_u32,scanline);
-                }
-              if ((samples_per_row % 3))
-                {
-                  datum=2;
-                  packed_u32.word=0;
-                  for (i=(samples_per_row % 3); i > 0; --i)
-                    packed_u32.word |= (*samples++ << shifts[datum--]);
-                  MSBPackedU32WordToOctets(packed_u32,scanline);
-                }
-#endif
             }
           else if (endian_type == LSBEndian)
             {
-#if 0
               /* Standard specified datum order */
               for (i=(samples_per_row/3); i > 0; --i)
                 {
@@ -2853,26 +2871,6 @@ static void WriteRowSamples(const sample_t *samples,
                     packed_u32.word |= (*samples++ << shifts[datum++]);
                   LSBPackedU32WordToOctets(packed_u32,scanline);
                 }
-#else
-              /* Reverse datum order */
-              for (i=(samples_per_row/3); i > 0; --i)
-                {
-                  datum=2;
-                  packed_u32.word=0;
-                  packed_u32.word |= (*samples++ << shifts[datum--]);
-                  packed_u32.word |= (*samples++ << shifts[datum--]);
-                  packed_u32.word |= (*samples++ << shifts[datum]);
-                  LSBPackedU32WordToOctets(packed_u32,scanline);
-                }
-              if ((samples_per_row % 3))
-                {
-                  datum=2;
-                  packed_u32.word=0;
-                  for (i=(samples_per_row % 3); i > 0; --i)
-                    packed_u32.word |= (*samples++ << shifts[datum--]);
-                  LSBPackedU32WordToOctets(packed_u32,scanline);
-                }
-#endif
             }
           return;
         }
@@ -3847,6 +3845,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   */
   for (element=0; element < dpx_image_info.elements; element++)
     {
+      MagickBool
+        swap_word_datums = MagickFalse;
+
       unsigned int
         max_value_given_bits = MaxValueGivenBits(bits_per_sample),
         reference_low = 0,
@@ -3892,6 +3893,26 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       samples_per_element=DPXSamplesPerElement(element_descriptor);
       samples_per_row=samples_per_element*image->columns;
 
+      /*
+        Are datums returned in reverse order when extracted from a
+        32-bit word?  This is to support Note 2 in Table 1 which
+        describes how RGB/RGBA are returned in reversed order for the
+        10-bit "filled" format.
+      */
+      if ((element_descriptor == ImageElementRGB) || (element_descriptor == ImageElementRGBA))
+        {
+          if ((bits_per_sample == 10) && (packing_method != PackingMethodPacked))
+            swap_word_datums = MagickTrue;
+        }
+      if ((definition_value=AccessDefinition(image_info,"dpx","swap-samples")))
+        {
+          if (LocaleCompare(definition_value,"true") == 0)
+            swap_word_datums = swap_word_datums ? MagickFalse : MagickTrue;
+        }
+
+      /*
+        Create a chroma image if we are subsampling YCbCr.
+      */
       if (((element_descriptor == ImageElementCbYCrY422) ||
            (element_descriptor == ImageElementCbYACrYA4224) ||
            (element_descriptor == ImageElementColorDifferenceCbCr)) &&
@@ -4121,7 +4142,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             Output samples.
           */
           WriteRowSamples(samples, samples_per_row, bits_per_sample,
-                          packing_method,endian_type,scanline);
+                          packing_method,endian_type,swap_word_datums,scanline);
           if (WriteBlob(image,row_octets,(void *) scanline) != row_octets)
             {
               status=MagickFail;

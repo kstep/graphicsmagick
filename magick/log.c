@@ -344,7 +344,7 @@ MagickExport unsigned int IsEventLogging(void)
 %
 %
 */
-static unsigned int LogMagickEventList(const ExceptionType type,
+MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
   const char *module,const char *function,const unsigned long line,
   const char *format,va_list operands)
 {

@@ -136,8 +136,8 @@ WandExport size_t CopyMagickString(char *destination,const char *source,
 %
 %
 */
-static int FormatMagickStringList(char *string,const size_t length,
-                                  const char *format,va_list operands)
+WandExport int FormatMagickStringList(char *string,const size_t length,
+                                      const char *format,va_list operands)
 {
   int
     count;

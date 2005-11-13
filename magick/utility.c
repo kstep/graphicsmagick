@@ -1111,8 +1111,8 @@ MagickExport void FormatSize(const magick_int64_t size,char *format)
 %
 %
 */
-static void FormatStringList(char *string,const char *format, 
-                             va_list operands)
+MagickExport void FormatStringList(char *string,const char *format, 
+                                   va_list operands)
 {  
 #if defined(HAVE_VSNPRINTF)
   (void) vsnprintf(string,MaxTextExtent,format,operands);

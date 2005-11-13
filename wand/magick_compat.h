@@ -109,7 +109,9 @@ extern WandExport void
 
 extern WandExport int
   FormatMagickString(char *,const size_t,const char *,...)
-    __attribute__((format (printf,3,4)));
+    __attribute__((format (printf,3,4))),
+  FormatMagickStringList(char *string,const size_t length,
+    const char *format,va_list operands);
 
 extern WandExport unsigned int
   ImportImagePixels(Image *image,const long x_offset,
