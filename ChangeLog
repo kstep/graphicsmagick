@@ -1,3 +1,8 @@
+2005-11-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/magick/magick_config.h.in: Remove unnecessary test
+	for WIN32.
+
 2005-11-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_compat.c (FormatMagickStringList): MagickExport since this
