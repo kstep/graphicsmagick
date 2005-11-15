@@ -31,8 +31,14 @@ extern "C" {
 #endif
 
 #include <stdio.h>
-#include <stdarg.h>
 #include <sys/types.h>
+#if !defined(_VISUALC_)
+/*
+  Including stdarg.h under Windows causes a silly compile failure in stddef.h
+  but apparently va_list is actually defined by stdio.h.
+  */
+# include <stdarg.h>
+#endif
 
 #if defined(WIN32) && !defined(__CYGWIN__)
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
