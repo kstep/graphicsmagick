@@ -18,18 +18,12 @@
 # undef class
 #endif
 
-// Needed for stdio FILE
 #include <stdio.h>
-
-// Needed for time_t
+#include <stdarg.h>
 #include <time.h>
 
 #if defined(HAVE_SYS_TYPES_H)
 # include <sys/types.h>
-#endif
-
-#if defined(macintosh)
-#  include <stat.mac.h>  /* Needed for off_t */
 #endif
 
 #if defined(__BORLANDC__)
