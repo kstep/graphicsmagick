@@ -1663,13 +1663,13 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
     case Rec601YCbCrColorspace:
     {
       /*
-        YCbCr based on ITU-R 601 Luma
+        Y'CbCr based on ITU-R 601 Luma
 
-        Initialize YCbCr tables:
+        Initialize Y'CbCr tables:
 
-          R = Y            +1.402000*Cr
-          G = Y-0.344136*Cb-0.714136*Cr
-          B = Y+1.772000*Cb
+          R' = Y'            +1.402000*Cr
+          G' = Y'-0.344136*Cb-0.714136*Cr
+          B' = Y'+1.772000*Cb
 
         Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxMap.
@@ -1694,11 +1694,11 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
     case Rec709YCbCrColorspace:
     {
       /*
-        YCbCr based on ITU-R 709 Luma.
+        Y'CbCr based on ITU-R 709 Luma.
 
-          R = Y            +1.574800*Cr
-          G = Y-0.187324*Cb-0.468124*Cr
-          B = Y+1.855600*Cb
+          R' = Y'            +1.574800*Cr
+          G' = Y'-0.187324*Cb-0.468124*Cr
+          B' = Y'+1.855600*Cb
 
         Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxMap.

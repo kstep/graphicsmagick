@@ -46,9 +46,7 @@ extern MagickExport void
   TransformHSL(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),
   TransformHWB(const Quantum,const Quantum,const Quantum,double *,double *,
-    double *),
-  Upsample(const unsigned long,const unsigned long,const unsigned long,
-    unsigned char *);
+    double *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

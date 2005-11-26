@@ -1,3 +1,12 @@
+2005-11-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (ReadDPXImage): Improve performance when reading
+	YCbCr files.  Handle files which use Printing Density on top of
+	YCbCr.  Default YCbCr to Rec.709 if the transfer characteristic is
+	User Defined.
+	* coders/pcd.c (Upsample): Moved Upsample from gem.c to here since
+	PCD is the only user and it is not a general purpose function.
+
 2005-11-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/magick/magick_config.h.in: Remove unnecessary test

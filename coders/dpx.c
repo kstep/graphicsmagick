@@ -81,12 +81,22 @@
 %
 % Additional notes:
 %
-%    I have received some YCbCr and 16-bit RGB files in which channels
-%    are interchanged.  In the case of YCbCr, the Cb and Cr channels
-%    were swapped. In the case of RGB, the blue and red channels were
-%    swapped.  GraphicsMagick is currently following FilmLight, Thompson,
-%    and Quantel's direction on this, even though it does not appear to
-%    adhere to the specification.
+%    I have received some YCbCr files in which the Cb/Cr channels are
+%    swapped. GraphicsMagick is currently following following my own
+%    interpretation of the DPX specification even though it does not
+%    match files provided to me written by Quantel iQ, and DVS Clipster.
+%    Luckily, large number of files conforming to my interpretation exist
+%    from other sources (Thompson/GrassValley Spirit 4K, S.Two Viper,
+%    Technicolor, Warner, ...). If a YCbCr file reads with vertical
+%    distortion, try adding "-define dpx:swap-samples=true" when reading
+%    the image. The same option may be used to write YCbCr files with
+%    swapped samples.
+%
+%    Note that some YCbCr files are interlaced.  Interlaced files combine
+%    two fields into one image.  This means that 1/60th of a second has
+%    elapsed between odd and even rows.  Distortion will be evident if
+%    the camera or observed object is in motion.  This distortion is not
+%    due to a defect in GraphicsMagick.
 %
 %    The DPX specification does not specify row alignment on a 32-bit
 %    word boundary, but unofficial documentation (e.g. the O'Reilly
@@ -1490,6 +1500,34 @@ static void ReadRowSamples(const unsigned char *scanline,
         *sp++=WordStreamLSBRead(&read_stream,bits_per_sample);
   }
 }
+/*
+  Apply a simple "Tent" filter to upsample chroma channels.
+*/
+void TentUpsampleChroma(Image *image)
+{
+  PixelPacket
+    *max_pixels,
+    *pixels;
+
+  pixels=GetPixels(image);
+  max_pixels=pixels+image->columns;
+  pixels++;
+
+  while(pixels < max_pixels)
+    {
+      double
+        result;
+
+      result=((double) (pixels-1)->green + (pixels+1)->green)/2;
+      pixels->green=RoundToQuantum(result);
+
+      result=((double) (pixels-1)->blue + (pixels+1)->blue)/2;
+      pixels->blue=RoundToQuantum(result);
+
+      pixels += 2;
+    }
+}
+
 static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   DPXFileInfo
@@ -1508,8 +1546,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dpx_tv_info;
 
   Image
-    *image=0,
-    *chroma_image=0;
+    *image=0;
 
   long
     y;
@@ -1895,9 +1932,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (has_cbcr)
       {
-        image->colorspace=Rec601YCbCrColorspace;
-        if (transfer_characteristic == TransferCharacteristicITU_R709)
-          image->colorspace=Rec709YCbCrColorspace;
+        image->colorspace=Rec709YCbCrColorspace;
+        if ((transfer_characteristic == TransferCharacteristicITU_R601_625L) ||
+            (transfer_characteristic == TransferCharacteristicITU_R601_525L))
+          image->colorspace=Rec601YCbCrColorspace;
       }
     else if (has_luma)
       {
@@ -2046,14 +2084,15 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         describes how RGB/RGBA are returned in reversed order for the
         10-bit "filled" format.
       */
-      if ((element_descriptor == ImageElementRGB) || (element_descriptor == ImageElementRGBA))
+      if ((element_descriptor == ImageElementRGB) ||
+          (element_descriptor == ImageElementRGBA))
         {
           if ((bits_per_sample == 10) && (packing_method != PackingMethodPacked))
             swap_word_datums = MagickTrue;
         }
       if ((definition_value=AccessDefinition(image_info,"dpx","swap-samples")))
         {
-          if (LocaleCompare(definition_value,"true") == 0)
+          if (LocaleCompare(definition_value,"false") != 0)
             swap_word_datums = swap_word_datums ? MagickFalse : MagickTrue;
         }
 
@@ -2085,15 +2124,21 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               /*
                 Establish YCbCr video defaults.
+                 8 bit ==> 16 to 235
+                10 bit ==> 64 to 940
               */
               reference_low = (((double) max_value_given_bits+1) * (64.0/1024.0));
               reference_high = (((double) max_value_given_bits+1) * (940.0/1024.0));
               
               if (!IS_UNDEFINED_U32(dpx_image_info.element_info[element].reference_low_data_code))
                 reference_low=dpx_image_info.element_info[element].reference_low_data_code;
+              if ((definition_value=AccessDefinition(image_info,"dpx","reference-low")))
+                reference_low=strtol(definition_value, (char **)NULL, 10);
               
               if (!IS_UNDEFINED_U32(dpx_image_info.element_info[element].reference_high_data_code))
                 reference_high=dpx_image_info.element_info[element].reference_high_data_code;
+              if ((definition_value=AccessDefinition(image_info,"dpx","reference-high")))
+                reference_high=strtol(definition_value, (char **)NULL, 10);
               
               ScaleY = (((double) max_value_given_bits+1)/(reference_high-reference_low));
               ScaleCbCr = ScaleY*((940.0-64.0)/(960.0-64.0));
@@ -2121,18 +2166,13 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           if (((element_descriptor == ImageElementCbYCrY422) ||
                (element_descriptor == ImageElementCbYACrYA4224) ||
-               (element_descriptor == ImageElementColorDifferenceCbCr)) &&
-              (chroma_image == (Image *) NULL))
+               (element_descriptor == ImageElementColorDifferenceCbCr)))
             {
               /*
                 When subsampling, image width must be evenly divisible by two.
               */
               if (image->columns %2)
                 ThrowReaderException(CorruptImageError,SubsamplingRequiresEvenWidth,image);
-
-              chroma_image=CloneImage(image,image->columns/2UL,1,True,exception);
-              if (chroma_image == (Image *) NULL)
-                ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
             }
           /*
             Read element data.
@@ -2162,6 +2202,37 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 ReadRowSamples(scanline_data,samples_per_row,bits_per_sample,
                                packing_method,endian_type,swap_word_datums,samples);
               }
+
+#if 0
+              /*
+                Debug junk
+              */
+              if ((y>674) || (y<676))
+                {
+                  samples_itr=samples;
+                  for (x=image->columns; x > 0; x -= 2)
+                    {
+                      unsigned int
+                        Cb,
+                        Y1,
+                        Cr,
+                        Y2;
+                      
+                      Cb = *samples_itr++;
+                      Y1 = *samples_itr++;
+                      Cr = *samples_itr++;
+                      Y2 = *samples_itr++;
+
+                      if ((x>883) && (x<896))
+                        {
+                          printf("Cb=%05u,Y1=%05u,Cr=%05u,Y2=%05u,",Cb,Y1,Cr,Y2);
+                          // printf("Y1=%05u,Y2=%05u,",Y1,Y2);
+                        }
+                    }
+                  printf("\n");
+                }
+#endif
+
               /*
                 Scale samples.
               */
@@ -2247,37 +2318,27 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case ImageElementColorDifferenceCbCr:
                   {
                     /* CbCr 4:2:2 sampling */
-                    PixelPacket
-                      *chroma_pixels;
-                  
-                    chroma_pixels=SetImagePixels(chroma_image,0,0,chroma_image->columns,1);
-                    if (chroma_pixels == (PixelPacket *) NULL)
-                      break;
-
-                    for (x=image->columns; x > 0; x-= 2)
+                    for (x=image->columns; x > 0; x -= 2)
                       {
-                        chroma_pixels->red=0;
-                        chroma_pixels->green=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cb */
-                        chroma_pixels->blue=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr);  /* Cr */
-                        chroma_pixels->opacity=OpaqueOpacity;
-                        chroma_pixels++;
+                        Quantum
+                          Cb,
+                          Cr;
+                        
+                        Cb=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cb */
+                        Cr=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cr */
+                    
+                        q->green=Cb; /* Cb */
+                        q->blue=Cr;  /* Cr */
+                        q++;
+
+                        q->green=Cb; /* Cb (false) */
+                        q->blue=Cr;  /* Cr (false) */
+                        q++;
                       }
-                    if (!SyncImagePixels(chroma_image))
-                      break;
+                    TentUpsampleChroma(image);
                     break;
                   }
                 case ImageElementRGB:
-#if 0
-                  /* BGR order */
-                  for (x=image->columns; x > 0; x--)
-                    {
-                      q->blue=*samples_itr++;
-                      q->green=*samples_itr++;
-                      q->red=*samples_itr++;
-                      q->opacity=OpaqueOpacity;
-                      q++;
-                    }
-#else
                   /* RGB order */
                   for (x=image->columns; x > 0; x--)
                     {
@@ -2287,20 +2348,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       q->opacity=OpaqueOpacity;
                       q++;
                     }
-#endif
                   break;
                 case ImageElementRGBA:
-#if 0
-                  /* BGR order (spec says BGR) */
-                  for (x=image->columns; x > 0; x--)
-                    {
-                      q->blue=*samples_itr++;
-                      q->green=*samples_itr++;
-                      q->red=*samples_itr++;
-                      q->opacity=MaxRGB-*samples_itr++;
-                      q++;
-                    }
-#else
                   /* RGB order */
                   for (x=image->columns; x > 0; x--)
                     {
@@ -2310,91 +2359,84 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       q->opacity=MaxRGB-*samples_itr++;
                       q++;
                     }
-#endif
                   break;
                 case ImageElementABGR:
-#if 0
+                  /* ARGB order */
                   for (x=image->columns; x > 0; x--)
                     {
-                      /* ARGB order */
                       q->opacity=MaxRGB-*samples_itr++;
                       q->red=*samples_itr++;
                       q->green=*samples_itr++;
                       q->blue=*samples_itr++;
                       q++;
                     }
-#else
-                  for (x=image->columns; x > 0; x--)
-                    {
-                      /* ARGB order */
-                      q->opacity=MaxRGB-*samples_itr++;
-                      q->red=*samples_itr++;
-                      q->green=*samples_itr++;
-                      q->blue=*samples_itr++;
-                      q++;
-                    }
-#endif
                   break;
                 case ImageElementCbYCrY422:
                   {
                     /* CbY | CrY | CbY | CrY ..., even number of columns required. */
-                    PixelPacket
-                      *chroma_pixels;
-
-                    chroma_pixels=SetImagePixels(chroma_image,0,0,chroma_image->columns,1);
-                    if (chroma_pixels == (PixelPacket *) NULL)
-                      break;
                     for (x=image->columns; x > 0; x -= 2)
                       {
-                        chroma_pixels->red=0;
-                        chroma_pixels->green=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cb */
-                        q->red=ScaleFromVideo(*samples_itr++,reference_low,ScaleY); /* Y */
-                        q->green=MaxRGB/2;
-                        q->blue=MaxRGB/2;
+                        Quantum
+                          Cb,
+                          Cr,
+                          Y0,
+                          Y1;
+
+                        Cb=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cb */
+                        Y0=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);    /* Y0 */
+                        Cr=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cr */
+                        Y1=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);    /* Y1 */
+
+                        q->red=Y0;   /* Y0 */
+                        q->green=Cb; /* Cb */
+                        q->blue=Cr;  /* Cr */
                         q->opacity=OpaqueOpacity;
                         q++;
-                        chroma_pixels->blue=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cr */
-                        q->red=ScaleFromVideo(*samples_itr++,reference_low,ScaleY); /* Y */
-                        q->green=MaxRGB/2;
-                        q->blue=MaxRGB/2;
+
+                        q->red=Y1;   /* Y1 */
+                        q->green=Cb; /* Cb (false) */
+                        q->blue=Cr;  /* Cr (false) */
                         q->opacity=OpaqueOpacity;
                         q++;
-                        chroma_pixels->opacity=OpaqueOpacity;
-                        chroma_pixels++;
+
                       }
-                    if (!SyncImagePixels(chroma_image))
-                      break;
+                    TentUpsampleChroma(image);
                     break;
                   }
                 case ImageElementCbYACrYA4224:
                   {
-                    /* CbYA | CrYA | CbYA | CrYA ..., even number of columns required. */
-                    PixelPacket
-                      *chroma_pixels;
-
-                    chroma_pixels=SetImagePixels(chroma_image,0,0,chroma_image->columns,1);
-                    if (chroma_pixels == (PixelPacket *) NULL)
-                      break;
+                    /* CbYA | CrYA ..., even number of columns required. */
                     for (x=image->columns; x > 0; x -= 2)
                       {
-                        chroma_pixels->red=0;
-                        chroma_pixels->green=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cb */
-                        q->red=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);               /* Y */
-                        q->green=MaxRGB/2;
-                        q->blue=MaxRGB/2;
-                        q->opacity=MaxRGB-*samples_itr++;    /* A */
+                        Quantum
+                          A0,
+                          A1,
+                          Cb,
+                          Cr,
+                          Y0,
+                          Y1;
+
+                        Cb=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr);
+                        Y0=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
+                        A0=MaxRGB-*samples_itr++;
+
+                        Cr=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr);
+                        Y1=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
+                        A1=MaxRGB-*samples_itr++;
+
+                        q->red=Y0;     /* Y0 */
+                        q->green=Cb;   /* Cb */
+                        q->blue=Cr;    /* Cr */
+                        q->opacity=A0; /* A0 */
                         q++;
-                        chroma_pixels->blue=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr);  /* Cr */
-                        q->red=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);               /* Y */
-                        q->green=MaxRGB/2;
-                        q->blue=MaxRGB/2;
-                        q->opacity=MaxRGB-*samples_itr++;    /* A */
+
+                        q->red=Y1;     /* Y1 */
+                        q->green=Cb;   /* Cb (false) */
+                        q->blue=Cr     /* Cr (false) */;
+                        q->opacity=A1; /* A1 */
                         q++;
-                        chroma_pixels->opacity=0;
-                        chroma_pixels++;
                       }
-                    if (!SyncImagePixels(chroma_image))
-                      break;
+                    TentUpsampleChroma(image);
                     break;
                   }
                 case ImageElementCbYCr444:
@@ -2403,7 +2445,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     for (x=image->columns; x > 0; x--)
                       {
                         q->green=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cb */
-                        q->red=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);   /* Y */
+                        q->red=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);      /* Y */
                         q->blue=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr);  /* Cr */
                         q->opacity=OpaqueOpacity;
                         q++;
@@ -2416,7 +2458,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     for (x=image->columns; x > 0; x--)
                       {
                         q->green=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cb */
-                        q->red=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);   /* Y */
+                        q->red=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);      /* Y */
                         q->blue=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr);  /* Cr */
                         q->opacity=MaxRGB-*samples_itr++;
                         q++;
@@ -2428,36 +2470,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               if (!SyncImagePixels(image))
                 break;
-              if (chroma_image != (Image *) NULL)
-                {
-                  /* Perform 4:2:2 chroma re-sampling */
-                  Image
-                    *chroma_resized=0;
 
-                  chroma_resized=ResizeImage(chroma_image,image->columns,1,
-                                             TriangleFilter,1.0,exception);
-                  if (chroma_resized != (Image *) NULL)
-                    {
-                      const PixelPacket
-                        *r;
-
-                      q=GetImagePixels(image,0,y,image->columns,1);
-                      r=AcquireImagePixels(chroma_resized,0,0,chroma_resized->columns,1,exception);
-                      if ((q == (const PixelPacket *) NULL) || (r == (const PixelPacket *) NULL))
-                        break;
-                      for (x=image->columns; x > 0; x--)
-                        {
-                          q->green=r->green;
-                          q->blue=r->blue;
-                          r++;
-                          q++;
-                        }
-                      if (!SyncImagePixels(image))
-                        break;
-                      DestroyImage(chroma_resized);
-                      chroma_resized=0;
-                    }
-                }
               /*
                 FIXME: Add support for optional EOL padding.
               */
@@ -2481,15 +2494,11 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CoderError,ColorTypeNotSupported,image);
         }
     }
-  if (chroma_image != (Image *) NULL)
-    {
-      DestroyImage(chroma_image);
-      chroma_image=(Image *) NULL;
-    }
     
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
                    image->filename);
+
   /*
     Support explicitly overriding the input file's colorspace.  Mostly
     useful for testing.
@@ -2518,6 +2527,18 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                          definition_value);
         }
     }
+
+  /*
+    Don't return image in YCbCr colorspace at the moment since it can
+    cause some usability problems elsewhere in GraphicsMagick.
+  */
+  if (IsYCbCrColorspace(image->colorspace))
+    {
+      TransformColorspace(image,RGBColorspace);
+      if (transfer_characteristic == TransferCharacteristicPrintingDensity)
+        image->colorspace=CineonLogRGBColorspace;
+    }
+
   image->is_monochrome=is_monochrome;
   image->is_grayscale=is_grayscale;
   image->depth=Min(QuantumDepth,image->depth);
@@ -3906,7 +3927,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         }
       if ((definition_value=AccessDefinition(image_info,"dpx","swap-samples")))
         {
-          if (LocaleCompare(definition_value,"true") == 0)
+          if (LocaleCompare(definition_value,"false") != 0)
             swap_word_datums = swap_word_datums ? MagickFalse : MagickTrue;
         }
 

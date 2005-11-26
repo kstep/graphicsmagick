@@ -834,7 +834,6 @@
 #define UnsharpMaskImage GmUnsharpMaskImage
 #define UnshiftImageList GmUnshiftImageList
 #define UpdateSignature GmUpdateSignature
-#define Upsample GmUpsample
 #define WaveImage GmWaveImage
 #define WriteBlob GmWriteBlob
 #define WriteBlobByte GmWriteBlobByte
