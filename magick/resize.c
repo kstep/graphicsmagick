@@ -54,7 +54,7 @@ typedef struct _ContributionInfo
 typedef struct _FilterInfo
 {
   double
-    (*function)(const double x,const double support),
+    (*function)(const double,const double),
     support;
 } FilterInfo;
 /*
@@ -685,10 +685,6 @@ static double Hermite(const double x,const double ARGUNUSED(support))
   return(0.0);
 }
 
-/*
-  Lanczos3. See "Graphics Gems Volume I", "Filters For Common
-  Resampling Tasks" by Ken Turkowski.
-*/
 static double Lanczos(const double x,const double support)
 {
   if (x < -3.0)
@@ -1116,9 +1112,6 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if ((columns == 0) || (rows == 0))
     ThrowImageException(ImageError,UnableToResizeImage,
       MagickMsg(CorruptImageError,NegativeOrZeroImageSize));
-  /*
-    If resize is not necessary, then simply clone image.
-  */
   if ((columns == image->columns) && (rows == image->rows) && (blur == 1.0))
     return(CloneImage(image,0,0,True,exception));
   resize_image=CloneImage(image,columns,rows,True,exception);

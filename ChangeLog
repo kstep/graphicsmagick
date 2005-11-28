@@ -1,3 +1,8 @@
+2005-11-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resize.c: Revert yesterday's benign-appearing edits since
+	they caused a bizzare bug.
+
 2005-11-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (ReadDPXImage): Improve performance when reading

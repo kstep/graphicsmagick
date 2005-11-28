@@ -334,10 +334,10 @@ typedef struct _DPXTVInfo
   R32   vertical_sample;           /* Vertical sampling rate */
   R32   temporal_sample;           /* Temporal sampling rate or frame rate (Hz) */
   R32   sync_time;                 /* Time offset from sync to first pixel (ms) */
-  R32   gamma;                     /* Gamma */
+  R32   gamma;                     /* Gamma (applied above breakpoint) */
   R32   black_level;               /* Black level code value */
-  R32   black_gain;                /* Black gain */
-  R32   breakpoint;                /* Breakpoint */
+  R32   black_gain;                /* Black gain (linear gain applied below breakpoint) */
+  R32   breakpoint;                /* Breakpoint (point above which gamma is applied) */
   R32   white_level;               /* Reference white level code value */
   R32   integration_time;          /* Integration time (s) */
   ASCII reserved[76];              /* Reserved for future use */
@@ -627,48 +627,43 @@ static U32 SMPTEStringToBits(const char *str)
     }
   return value;
 }
-static size_t DPXRowOctets(unsigned int row_samples,
-                           unsigned int bits_per_sample,
-                           ImageComponentPackingMethod packing_method)
+/*
+  Compute the number of octets required to contain the specified number of
+  rows, with specified samples per row, bits per sample, and packing method.
+*/
+static size_t DPXRowOctets(const unsigned long rows,
+                           const unsigned int samples_per_row,
+                           const unsigned int bits_per_sample,
+                           const ImageComponentPackingMethod packing_method)
 {
-  unsigned int
-    word_size = 32;
-
   size_t
-    row_octets = 0;
-
-  magick_int64_t
-    row_bits = 0;
+    octets = 0;
 
   switch(bits_per_sample)
     {
     case 1:
-      row_bits=(magick_int64_t) row_samples*bits_per_sample;
-      word_size = 32;
+      /* Packed 1-bit samples in 32-bit words. Rows are padded out to 32-bit alignment */
+      octets=rows*(((magick_int64_t) samples_per_row*bits_per_sample+31)/32)*sizeof(U32);
       break;
     case 8:
-      /* C.1 8-bit samples in a 32-bit word */
-      row_bits=(magick_int64_t) row_samples*bits_per_sample;
-      word_size = 32;
+      /* C.1 8-bit samples in a 32-bit word. Rows are padded out to 32-bit alignment */
+      octets=rows*(((magick_int64_t) samples_per_row*bits_per_sample+31)/32)*sizeof(U32);
       break;
     case 32:
       /* 32-bit samples in a 32-bit word */
-      row_bits=(magick_int64_t) row_samples*bits_per_sample;
-      word_size = 32;
+      octets=samples_per_row*sizeof(U32)*rows;
       break;
     case 10:
       if ((packing_method == PackingMethodWordsFillLSB) ||
           (packing_method == PackingMethodWordsFillMSB))
         {
           /* C.3 Three 10-bit samples per 32-bit word */
-          row_bits=((magick_int64_t) (row_samples+2)/3)*sizeof(U32)*8;
-          word_size = 32;
+          octets=(((((magick_int64_t) (rows*samples_per_row+2)/3)*sizeof(U32)*8)+31)/32)*sizeof(U32);
         }
       else
         {
           /* C.2 Packed 10-bit samples in a 32-bit word. */
-          row_bits=(magick_int64_t) row_samples*bits_per_sample;
-          word_size = 32;
+          octets=rows*(((magick_int64_t) samples_per_row*bits_per_sample+31)/32)*sizeof(U32);
         }
       break;
     case 12:
@@ -676,54 +671,45 @@ static size_t DPXRowOctets(unsigned int row_samples,
           (packing_method == PackingMethodWordsFillMSB))
         {
           /* C.5: One 12-bit sample per 16-bit word */
-          row_bits=(magick_int64_t) row_samples*sizeof(U16)*8;
-          word_size = 16;
+          octets=((((magick_int64_t) rows*samples_per_row*sizeof(U16)*8)+15)/16)*sizeof(U16);
         }
       else
         {
           /* C.4: Packed 12-bit samples in a 32-bit word. */
-          row_bits=(magick_int64_t) row_samples*bits_per_sample;
-          word_size = 32;
+          octets=rows*(((magick_int64_t) samples_per_row*bits_per_sample+31)/32)*sizeof(U32);
         }
       break;
     case 16:
       /* C.6 16-bit samples in 16-bit words. */
-      row_bits=(magick_int64_t) row_samples*bits_per_sample;
-      word_size = 16;
+      octets=((((magick_int64_t) rows*samples_per_row*bits_per_sample)+15)/16)*sizeof(U16);
       break;
     case 64:
       /* 64-bit samples in 64-bit words. */
-      row_bits=(magick_int64_t) row_samples*bits_per_sample;
-      word_size = 64;
+      octets=(magick_int64_t) rows*samples_per_row*8;
       break;
     }
-  if (row_bits != 0)
-    {
-      if (word_size == 16)
-        {
-          /* Compute row octets filled to next 16-bit word boundary at
-             end of row. */
-          row_octets=((row_bits+15)/16)*sizeof(U16);
-        }
 
-      else if (word_size == 32)
-        {
-          /* Compute row octets filled to next 32-bit word boundary at
-             end of row. */
-          row_octets=((row_bits+31)/32)*sizeof(U32);
-        }
-
-      else if (word_size == 64)
-        {
-          /* Compute row octets filled to next 64-bit word boundary at
-             end of row. */
-          row_octets=((row_bits+63)/64)*sizeof(magick_uint64_t);
-        }
-    }
-
-  /* printf("row_octets=%u\n",row_octets); */
-  return row_octets;
+  return octets;
 }
+/*
+  Compute optimum I/O parameters based on all considerations.
+*/
+#if 0
+static size_t DPXIOOctets(const long current_row, /* 0 based */
+                          const unsigned long image_rows,
+                          const unsigned int samples_per_row,
+                          const unsigned int bits_per_sample,
+                          const ImageComponentPackingMethod packing_method)
+{
+  long
+    rows_remaining;
+
+  rows_remaining=image_rows-current_row;
+
+
+
+}
+#endif
 static const char *DescribeImageElementDescriptor(const DPXImageElementDescriptor descriptor)
 {
   char *
@@ -812,6 +798,9 @@ static const char *DescribeImageElementDescriptor(const DPXImageElementDescripto
 
   return description;
 }
+/*
+  Describe the element transfer characteristic.
+*/
 static const char *DescribeImageTransferCharacteristic(const DPXTransferCharacteristic characteristic)
 {
   static char
@@ -870,6 +859,9 @@ static const char *DescribeImageTransferCharacteristic(const DPXTransferCharacte
 
   return description;
 }
+/*
+  Describe the element colorimetric.
+*/
 static const char *DescribeImageColorimetric(const DPXColorimetric colorimetric)
 {
   static char
@@ -928,6 +920,9 @@ static const char *DescribeImageColorimetric(const DPXColorimetric colorimetric)
 
   return description;
 }
+/*
+  Describe the image element.
+*/
 static void DescribeDPXImageElement(const DPXImageElement *element_info,
                                     const unsigned int element)
 {
@@ -976,10 +971,16 @@ static void DescribeDPXImageElement(const DPXImageElement *element_info,
                         element,
                         element_info->description);
 }
-static unsigned int  DPXSamplesPerElement(const DPXImageElementDescriptor element_descriptor)
+/*
+  Obtain number of element samples required to support one pixel.  For
+  example, RGB requires three samples, but if the image organization
+  is planar three elements are required to support RGB, and this
+  function will therefore return 1 rather than 3.
+*/
+static unsigned int  DPXSamplesPerPixel(const DPXImageElementDescriptor element_descriptor)
 {
   unsigned int
-    samples_per_element=0;
+    samples_per_pixel=0;
   
   switch (element_descriptor)
     {
@@ -990,36 +991,39 @@ static unsigned int  DPXSamplesPerElement(const DPXImageElementDescriptor elemen
     case ImageElementAlpha:
     case ImageElementLuma:
     case ImageElementColorDifferenceCbCr:
-      samples_per_element=1;
+      samples_per_pixel=1;
       break;
     case ImageElementRGB:
-      samples_per_element=3;
+      samples_per_pixel=3;
       break;
     case ImageElementRGBA:
     case ImageElementABGR:
-      samples_per_element=4;
+      samples_per_pixel=4;
       break;
     case ImageElementCbYCrY422:
       /* CbY | CrY | CbY | CrY ..., even number of columns required. */
-      samples_per_element=2;
+      samples_per_pixel=2;
       break;
     case ImageElementCbYACrYA4224:
       /* CbYA | CrYA | CbYA | CrYA ..., even number of columns required. */
-      samples_per_element=3;
+      samples_per_pixel=3;
       break;
     case ImageElementCbYCr444:
-      samples_per_element=3;
+      samples_per_pixel=3;
       break;
     case ImageElementCbYCrA4444:
-      samples_per_element=4;
+      samples_per_pixel=4;
       break;
     default:
-      samples_per_element=0;
+      samples_per_pixel=0;
       break;
     }
 
-  return samples_per_element;
+  return samples_per_pixel;
 }
+/*
+  Set the image primary chromaticities based on the colorimetric.
+*/
 static void DPXSetPrimaryChromaticities(const DPXColorimetric colorimetric,
                                         ChromaticityInfo *chromaticity_info)
 {
@@ -1562,23 +1566,23 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     row_octets;
 
   sample_t
-    *samples,
-    *samples_itr;
+    *samples,                   /* parsed sample array */
+    *samples_itr;               /* current sample */
 
   unsigned char
     *scanline;
 
   magick_int64_t
-    element_size;
+    element_size;               /* Number of bytes in an element */
 
   unsigned int
-    bits_per_sample,
-    element,
-    max_bits_per_sample,
-    max_samples_per_element,
-    samples_per_element,
-    samples_per_row,
-    scale_to_short,
+    bits_per_sample,            /* number of bits per sample */
+    element,                    /* current element number */
+    max_bits_per_sample,        /* maximum number of bits per sample for any element */
+    max_samples_per_pixel,      /* maximum number of samples comprising one pixel for any element */
+    samples_per_pixel,          /* number of samples comprising one pixel for this element */
+    samples_per_row,            /* number of samples in one row */
+    scale_to_short,             /* multiplier to scale to 16-bits */
     status;
 
   unsigned long
@@ -1586,9 +1590,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixels_offset;
 
   MagickBool
-    is_grayscale=MagickFalse,
-    is_monochrome=MagickFalse,
-    swab=MagickFalse;
+    is_grayscale=MagickFalse,   /* image is grayscale ? */
+    is_monochrome=MagickFalse,  /* image is monochrome ? */
+    swab=MagickFalse;           /* swap endian order */
 
   DPXImageElementDescriptor
     element_descriptor;
@@ -1846,7 +1850,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine the maximum number of bits per sample, samples per element, and colorspace
   */
   max_bits_per_sample=0;
-  max_samples_per_element=0;
+  max_samples_per_pixel=0;
   {
     MagickBool
       has_cbcr=MagickFalse,
@@ -1870,8 +1874,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           dpx_image_info.element_info[element].descriptor;
         max_bits_per_sample=Max(max_bits_per_sample,
                                 dpx_image_info.element_info[element].bits_per_sample);
-        max_samples_per_element=Max(max_samples_per_element,
-                                    DPXSamplesPerElement(element_descriptor));
+        max_samples_per_pixel=Max(max_samples_per_pixel,
+                                  DPXSamplesPerPixel(element_descriptor));
         /*
           Set image colorspace
         */
@@ -1979,14 +1983,14 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate row samples.
   */
-  samples=MagickAllocateMemory(sample_t *,max_samples_per_element*
+  samples=MagickAllocateMemory(sample_t *,max_samples_per_pixel*
                                image->columns*sizeof(sample_t));
   if (samples == (sample_t *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Allocate scanline storage.
   */
-  scanline=MagickAllocateMemory(unsigned char *,max_samples_per_element*
+  scanline=MagickAllocateMemory(unsigned char *,max_samples_per_pixel*
                                 image->columns*sizeof(U32));
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -2066,9 +2070,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 packing_method=PackingMethodWordsFillMSB;
             }
         }
-
       /*
-        Decide if the image is grayscale.
+        Decide if the image is grayscale and monochrome.
       */
       if (IsGrayColorspace(image->colorspace))
         {
@@ -2095,12 +2098,11 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (LocaleCompare(definition_value,"false") != 0)
             swap_word_datums = swap_word_datums ? MagickFalse : MagickTrue;
         }
-
       /*
-        Determine number of samples per element.
+        Determine number of samples per pixel element.
       */
-      samples_per_element=DPXSamplesPerElement(element_descriptor);
-      if (samples_per_element > 0)
+      samples_per_pixel=DPXSamplesPerPixel(element_descriptor);
+      if (samples_per_pixel > 0)
         {
           unsigned int
             max_value_given_bits = MaxValueGivenBits(bits_per_sample),
@@ -2124,7 +2126,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               /*
                 Establish YCbCr video defaults.
-                 8 bit ==> 16 to 235
+                8 bit ==> 16 to 235
                 10 bit ==> 64 to 940
               */
               reference_low = (((double) max_value_given_bits+1) * (64.0/1024.0));
@@ -2144,15 +2146,14 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ScaleCbCr = ScaleY*((940.0-64.0)/(960.0-64.0));
               reference_low=ScaleShortToQuantum(reference_low*scale_to_short);
             }
-
           /*
             Compute samples per row.
           */
-          samples_per_row=samples_per_element*image->columns;
+          samples_per_row=samples_per_pixel*image->columns;
           /*
             Compute octets per row.
           */
-          row_octets=DPXRowOctets(samples_per_row,bits_per_sample,packing_method);
+          row_octets=DPXRowOctets(1,samples_per_row,bits_per_sample,packing_method);
           /*
             Compute element size.
           */
@@ -2202,37 +2203,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 ReadRowSamples(scanline_data,samples_per_row,bits_per_sample,
                                packing_method,endian_type,swap_word_datums,samples);
               }
-
-#if 0
-              /*
-                Debug junk
-              */
-              if ((y>674) || (y<676))
-                {
-                  samples_itr=samples;
-                  for (x=image->columns; x > 0; x -= 2)
-                    {
-                      unsigned int
-                        Cb,
-                        Y1,
-                        Cr,
-                        Y2;
-                      
-                      Cb = *samples_itr++;
-                      Y1 = *samples_itr++;
-                      Cr = *samples_itr++;
-                      Y2 = *samples_itr++;
-
-                      if ((x>883) && (x<896))
-                        {
-                          printf("Cb=%05u,Y1=%05u,Cr=%05u,Y2=%05u,",Cb,Y1,Cr,Y2);
-                          // printf("Y1=%05u,Y2=%05u,",Y1,Y2);
-                        }
-                    }
-                  printf("\n");
-                }
-#endif
-
               /*
                 Scale samples.
               */
@@ -3199,12 +3169,12 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     element,
     sampling_factor_horizontal,
     sampling_factor_vertical,
-    max_samples_per_element,
+    max_samples_per_pixel,
     image_data_offset,
     number_of_elements,
     row_samples,
     samples_per_component,
-    samples_per_element,
+    samples_per_pixel,
     samples_per_row,
     scale_from_short,
     status;
@@ -3425,7 +3395,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     }
 
   row_samples=((magick_int64_t) image->columns*samples_per_component);
-  row_octets=DPXRowOctets(row_samples,bits_per_sample,packing_method);
+  row_octets=DPXRowOctets(1,row_samples,bits_per_sample,packing_method);
   element_size=row_octets*image->rows;
 
   if (image->logging)
@@ -3785,22 +3755,22 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Determine the maximum number of samples required for any element.
   */
-  max_samples_per_element=0;
+  max_samples_per_pixel=0;
   for (element=0; element < dpx_image_info.elements; element++)
     {
       element_descriptor=(DPXImageElementDescriptor)
         dpx_image_info.element_info[element].descriptor;
-      max_samples_per_element=Max(max_samples_per_element,
-                                  DPXSamplesPerElement(element_descriptor));
+      max_samples_per_pixel=Max(max_samples_per_pixel,
+                                  DPXSamplesPerPixel(element_descriptor));
     }
   /*
     Allocate row samples.
   */
-  samples=MagickAllocateMemory(sample_t *,max_samples_per_element*
+  samples=MagickAllocateMemory(sample_t *,max_samples_per_pixel*
                                image->columns*sizeof(sample_t));
   if (samples == (sample_t *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-  memset((void *) samples,0,max_samples_per_element*image->columns*
+  memset((void *) samples,0,max_samples_per_pixel*image->columns*
          sizeof(sample_t));
   /*
     Allocate row scanline.
@@ -3911,8 +3881,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         Determine component packing method.
       */
       packing_method=dpx_image_info.element_info[element].packing;
-      samples_per_element=DPXSamplesPerElement(element_descriptor);
-      samples_per_row=samples_per_element*image->columns;
+      samples_per_pixel=DPXSamplesPerPixel(element_descriptor);
+      samples_per_row=samples_per_pixel*image->columns;
 
       /*
         Are datums returned in reverse order when extracted from a
