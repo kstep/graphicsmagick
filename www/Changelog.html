@@ -21,6 +21,26 @@
 </tr>
 </table>
 <p>
+2005-12-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.h: Added some useful macros for accessing
+        PixelPacket members in a generic way.
+  <LI> coders/dpx.c (ReadDPXImage): For YCbCr with 'A' sample, 'A'
+        sample levels are like Luma.<BR>
+        (WriteDPXImage): For YCbCr with 'A' sample, 'A' sample levels are
+        like Luma.
+
+</UL>
+<p>
+2005-12-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (RegisterTIFFImage): Report libtiff release
+        version rather than ABI version.
+
+</UL>
+<p>
 2005-11-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -2448,10 +2448,21 @@ ModuleExport void RegisterTIFFImage(void)
   MagickInfo
     *entry;
 
-  *version='\0';
-#if defined(TIFF_VERSION)
-  FormatString(version,"%d",TIFF_VERSION);
-#endif
+  version[0]='\0';
+  {
+    int
+      i;
+
+    const char
+      *p;
+
+    /* TIFFGetVersion() is in libtiff 3.5.3 and later */
+    for (p=TIFFGetVersion(), i=0;
+          (i < MaxTextExtent-1) && (*p != 0) && (*p != '\n');
+          p++, i++)
+      version[i] = *p;
+    version[i]=0;
+  }
 
   entry=SetMagickInfo("PTIF");
   entry->decoder=(DecoderHandler) ReadTIFFImage;

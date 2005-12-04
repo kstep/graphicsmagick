@@ -1,3 +1,17 @@
+2005-12-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.h: Added some useful macros for accessing
+	PixelPacket members in a generic way.
+	* coders/dpx.c (ReadDPXImage): For YCbCr with 'A' sample, 'A'
+	sample levels are like Luma.
+	(WriteDPXImage): For YCbCr with 'A' sample, 'A' sample levels are
+	like Luma.
+
+2005-12-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (RegisterTIFFImage): Report libtiff release
+	version rather than ABI version.
+
 2005-11-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resize.c: Revert yesterday's benign-appearing edits since

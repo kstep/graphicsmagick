@@ -2126,8 +2126,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               /*
                 Establish YCbCr video defaults.
-                8 bit ==> 16 to 235
-                10 bit ==> 64 to 940
+                 8 bit ==> Luma 16 to 235
+                10 bit ==> Luma 64 to 940
               */
               reference_low = (((double) max_value_given_bits+1) * (64.0/1024.0));
               reference_high = (((double) max_value_given_bits+1) * (940.0/1024.0));
@@ -2232,25 +2232,37 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case ImageElementRed:
                   for (x=image->columns; x > 0; x--)
                     {
-                      q++->red=*samples_itr++;
+                      SetRedSample(q++,*samples_itr++);
                     }
                   break;
                 case ImageElementGreen:
                   for (x=image->columns; x > 0; x--)
                     {
-                      q++->green=*samples_itr++;
+                      SetGreenSample(q++,*samples_itr++);
                     }
                   break;
                 case ImageElementBlue:
                   for (x=image->columns; x > 0; x--)
                     {
-                      q++->blue=*samples_itr++;
+                      SetBlueSample(q++,*samples_itr++);
                     }
                   break;
                 case ImageElementAlpha:
-                  for (x=image->columns; x > 0; x--)
+                  if (IsYCbCrColorspace(image->colorspace))
                     {
-                      q++->opacity=MaxRGB-*samples_itr++;
+                      /* Video levels */
+                      for (x=image->columns; x > 0; x--)
+                        {
+                          SetOpacitySample(q++,MaxRGB-ScaleFromVideo(*samples_itr++,reference_low,ScaleY));
+                        }
+                    }
+                  else
+                    {
+                      /* Full range levels. */
+                      for (x=image->columns; x > 0; x--)
+                        {
+                          SetOpacitySample(q++,MaxRGB-*samples_itr++);
+                        }
                     }
                   break;
                 case ImageElementUnspecified:
@@ -2260,7 +2272,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       /* Video Luma (planar) */
                       for (x=image->columns; x > 0; x--)
                         {
-                          q->red=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
+                          SetRedSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));
                           q++;
                         }
                     }
@@ -2270,8 +2282,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       /* Video Luma */
                       for (x=image->columns; x > 0; x--)
                         {
-                          q->red=q->green=q->blue=
-                            ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
+                          SetGraySample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));
                           q++;
                         }
                     }
@@ -2280,7 +2291,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       /* Linear Grayscale */
                       for (x=image->columns; x > 0; x--)
                         {
-                          q->red=q->green=q->blue=*samples_itr++;
+                          SetGraySample(q,*samples_itr++);
                           q++;
                         }
                     }
@@ -2297,12 +2308,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         Cb=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cb */
                         Cr=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cr */
                     
-                        q->green=Cb; /* Cb */
-                        q->blue=Cr;  /* Cr */
+                        SetCbSample(q,Cb); /* Cb */
+                        SetCrSample(q,Cr);  /* Cr */
                         q++;
 
-                        q->green=Cb; /* Cb (false) */
-                        q->blue=Cr;  /* Cr (false) */
+                        SetCbSample(q,Cb); /* Cb (false) */
+                        SetCrSample(q,Cr);  /* Cr (false) */
                         q++;
                       }
                     TentUpsampleChroma(image);
@@ -2312,10 +2323,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   /* RGB order */
                   for (x=image->columns; x > 0; x--)
                     {
-                      q->red=*samples_itr++;
-                      q->green=*samples_itr++;
-                      q->blue=*samples_itr++;
-                      q->opacity=OpaqueOpacity;
+                      SetRedSample(q,*samples_itr++);
+                      SetGreenSample(q,*samples_itr++);
+                      SetBlueSample(q,*samples_itr++);
+                      SetOpacitySample(q,OpaqueOpacity);
                       q++;
                     }
                   break;
@@ -2323,10 +2334,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   /* RGB order */
                   for (x=image->columns; x > 0; x--)
                     {
-                      q->red=*samples_itr++;
-                      q->green=*samples_itr++;
-                      q->blue=*samples_itr++;
-                      q->opacity=MaxRGB-*samples_itr++;
+                      SetRedSample(q,*samples_itr++);
+                      SetGreenSample(q,*samples_itr++);
+                      SetBlueSample(q,*samples_itr++);
+                      SetOpacitySample(q,MaxRGB-*samples_itr++);
                       q++;
                     }
                   break;
@@ -2334,10 +2345,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   /* ARGB order */
                   for (x=image->columns; x > 0; x--)
                     {
-                      q->opacity=MaxRGB-*samples_itr++;
-                      q->red=*samples_itr++;
-                      q->green=*samples_itr++;
-                      q->blue=*samples_itr++;
+                      SetOpacitySample(q,MaxRGB-*samples_itr++);
+                      SetRedSample(q,*samples_itr++);
+                      SetGreenSample(q,*samples_itr++);
+                      SetBlueSample(q,*samples_itr++);
                       q++;
                     }
                   break;
@@ -2357,18 +2368,17 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         Cr=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cr */
                         Y1=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);    /* Y1 */
 
-                        q->red=Y0;   /* Y0 */
-                        q->green=Cb; /* Cb */
-                        q->blue=Cr;  /* Cr */
-                        q->opacity=OpaqueOpacity;
+                        SetYSample(q,Y0);   /* Y0 */
+                        SetCbSample(q,Cb);  /* Cb */
+                        SetCrSample(q,Cr);  /* Cr */
+                        SetOpacitySample(q,OpaqueOpacity);
                         q++;
 
-                        q->red=Y1;   /* Y1 */
-                        q->green=Cb; /* Cb (false) */
-                        q->blue=Cr;  /* Cr (false) */
+                        SetYSample(q,Y1);   /* Y1 */
+                        SetCbSample(q,Cb) ; /* Cb (false) */
+                        SetCrSample(q,Cr);  /* Cr (false) */
                         q->opacity=OpaqueOpacity;
                         q++;
-
                       }
                     TentUpsampleChroma(image);
                     break;
@@ -2388,22 +2398,22 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                         Cb=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr);
                         Y0=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
-                        A0=MaxRGB-*samples_itr++;
+                        A0=MaxRGB-ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
 
                         Cr=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr);
                         Y1=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
-                        A1=MaxRGB-*samples_itr++;
+                        A1=MaxRGB-ScaleFromVideo(*samples_itr++,reference_low,ScaleY);
 
-                        q->red=Y0;     /* Y0 */
-                        q->green=Cb;   /* Cb */
-                        q->blue=Cr;    /* Cr */
-                        q->opacity=A0; /* A0 */
+                        SetYSample(q,Y0);       /* Y0 */
+                        SetCbSample(q,Cb);      /* Cb */
+                        SetCrSample(q,Cr);      /* Cr */
+                        SetOpacitySample(q,A0); /* A0 */
                         q++;
 
-                        q->red=Y1;     /* Y1 */
-                        q->green=Cb;   /* Cb (false) */
-                        q->blue=Cr     /* Cr (false) */;
-                        q->opacity=A1; /* A1 */
+                        SetYSample(q,Y1);       /* Y1 */
+                        SetCbSample(q,Cb);      /* Cb (false) */
+                        SetCrSample(q,Cr);      /* Cr (false) */
+                        SetOpacitySample(q,A1); /* A1 */
                         q++;
                       }
                     TentUpsampleChroma(image);
@@ -2414,10 +2424,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     /* red,green,blue = Y, Cb, Cr */
                     for (x=image->columns; x > 0; x--)
                       {
-                        q->green=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cb */
-                        q->red=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);      /* Y */
-                        q->blue=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr);  /* Cr */
-                        q->opacity=OpaqueOpacity;
+                        SetCbSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr)); /* Cb */
+                        SetYSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));     /* Y */
+                        SetCrSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr)); /* Cr */
+                        SetOpacitySample(q,OpaqueOpacity);
                         q++;
                       }
                     break;
@@ -2427,10 +2437,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     /* red,green,blue = Y, Cb, Cr */
                     for (x=image->columns; x > 0; x--)
                       {
-                        q->green=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr); /* Cb */
-                        q->red=ScaleFromVideo(*samples_itr++,reference_low,ScaleY);      /* Y */
-                        q->blue=ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr);  /* Cr */
-                        q->opacity=MaxRGB-*samples_itr++;
+                        SetCbSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr)); /* Cb */
+                        SetYSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleY));     /* Y */
+                        SetCrSample(q,ScaleFromVideo(*samples_itr++,reference_low,ScaleCbCr)); /* Cr */
+                        SetOpacitySample(q,MaxRGB-ScaleFromVideo(*samples_itr++,reference_low,ScaleY));
                         q++;
                       }
                     break;
@@ -3930,31 +3940,48 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             case ImageElementRed:
               for (x=image->columns; x > 0; x--)
                 {
-                  *samples_itr++=p->red;
+                  *samples_itr++=GetRedSample(p);
                   p++;
                 }
               break;
             case ImageElementGreen:
               for (x=image->columns; x > 0; x--)
                 {
-                  *samples_itr++=p->green;
+                  *samples_itr++=GetGreenSample(p);
                   p++;
                 }
               break;
             case ImageElementBlue:
               for (x=image->columns; x > 0; x--)
                 {
-                  *samples_itr++=p->blue;
+                  *samples_itr++=GetBlueSample(p);
                   p++;
                 }
               break;
             case ImageElementAlpha:
-              for (x=image->columns; x > 0; x--)
-                {
-                  *samples_itr++=MaxRGB-p->opacity;
-                  p++;
-                }
-              break;
+              {
+                if ((transfer_characteristic == TransferCharacteristicITU_R709) ||
+                    (transfer_characteristic == TransferCharacteristicITU_R601_625L) ||
+                    (transfer_characteristic == TransferCharacteristicITU_R601_525L))
+                  {
+                    /* Video levels */
+                    for (x=image->columns; x > 0; x--)
+                      {
+                        *samples_itr++=ScaleToVideo((MaxRGB-GetOpacitySample(p)),reference_low,ScaleY);
+                        p++;
+                      }
+                  }
+                else
+                  {
+                    /* Full range levels */
+                    for (x=image->columns; x > 0; x--)
+                      {
+                        *samples_itr++=MaxRGB-GetOpacitySample(p);
+                        p++;
+                      }
+                  }
+                break;
+              }
             case ImageElementUnspecified:
             case ImageElementLuma:
               {
@@ -3965,7 +3992,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                     /* Video luma */
                     for (x=image->columns; x > 0; x--)
                       {
-                        *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);
+                        *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);
                         p++;
                       }
                   }
@@ -3974,7 +4001,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                     /* Linear gray */
                     for (x=image->columns; x > 0; x--)
                       {
-                        *samples_itr++=p->red;
+                        *samples_itr++=GetGraySample(p);
                         p++;
                       }
                   }
@@ -3993,8 +4020,8 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 
                 for (x=image->columns; x > 0; x -= 2)
                   {
-                    *samples_itr++=ScaleToVideo(chroma_pixels->green,reference_low,ScaleCbCr); /* Cb */
-                    *samples_itr++=ScaleToVideo(chroma_pixels->blue,reference_low,ScaleCbCr);  /* Cr */
+                    *samples_itr++=ScaleToVideo(GetCbSample(chroma_pixels),reference_low,ScaleCbCr); /* Cb */
+                    *samples_itr++=ScaleToVideo(GetCrSample(chroma_pixels),reference_low,ScaleCbCr);  /* Cr */
                     chroma_pixels++;
                   }
                 break;
@@ -4004,13 +4031,13 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 {
 #if 0
                   /* BGR */
-                  *samples_itr++=p->blue;
-                  *samples_itr++=p->green;
-                  *samples_itr++=p->red;
+                  *samples_itr++=GetBlueSample(p);
+                  *samples_itr++=GetGreenSample(p);
+                  *samples_itr++=GetRedSample(p);
 #else
-                  *samples_itr++=p->red;
-                  *samples_itr++=p->green;
-                  *samples_itr++=p->blue;
+                  *samples_itr++=GetRedSample(p);
+                  *samples_itr++=GetGreenSample(p);
+                  *samples_itr++=GetBlueSample(p);
 #endif
                   p++;
                 }
@@ -4020,15 +4047,15 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
                 {
 #if 0
                   /* BGRA */
-                  *samples_itr++=p->blue;
-                  *samples_itr++=p->green;
-                  *samples_itr++=p->red;
+                  *samples_itr++=GetBlueSample(p);
+                  *samples_itr++=GetGreenSample(p);
+                  *samples_itr++=GetRedSample(p);
 #else
-                  *samples_itr++=p->red;
-                  *samples_itr++=p->green;
-                  *samples_itr++=p->blue;
+                  *samples_itr++=GetRedSample(p);
+                  *samples_itr++=GetGreenSample(p);
+                  *samples_itr++=GetBlueSample(p);
 #endif
-                  *samples_itr++=MaxRGB-p->opacity;
+                  *samples_itr++=MaxRGB-GetOpacitySample(p);
                   p++;
                 }
               break;
@@ -4045,11 +4072,11 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 
                 for (x=image->columns; x > 0; x -= 2)
                   {
-                    *samples_itr++=ScaleToVideo(chroma_pixels->green,reference_low,ScaleCbCr); /* Cb */
-                    *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);               /* Y */
+                    *samples_itr++=ScaleToVideo(GetCbSample(chroma_pixels),reference_low,ScaleCbCr); /* Cb */
+                    *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);                 /* Y */
                     p++;
-                    *samples_itr++=ScaleToVideo(chroma_pixels->blue,reference_low,ScaleCbCr);  /* Cr */
-                    *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);               /* Y */
+                    *samples_itr++=ScaleToVideo(GetCrSample(chroma_pixels),reference_low,ScaleCbCr); /* Cr */
+                    *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);                 /* Y */
                     p++;
                     chroma_pixels++;
                   }
@@ -4068,13 +4095,13 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 
                 for (x=image->columns; x > 0; x -= 2)
                   {
-                    *samples_itr++=ScaleToVideo(chroma_pixels->green,reference_low,ScaleCbCr); /* Cb */
-                    *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);               /* Y */
-                    *samples_itr++=MaxRGB-p->opacity;
+                    *samples_itr++=ScaleToVideo(GetCbSample(chroma_pixels),reference_low,ScaleCbCr); /* Cb */
+                    *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);                 /* Y */
+                    *samples_itr++=ScaleToVideo((MaxRGB-GetOpacitySample(p)),reference_low,ScaleY);  /* A */
                     p++;
-                    *samples_itr++=ScaleToVideo(chroma_pixels->blue,reference_low,ScaleCbCr);  /* Cr */
-                    *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);               /* Y */
-                    *samples_itr++=MaxRGB-p->opacity;
+                    *samples_itr++=ScaleToVideo(GetCrSample(chroma_pixels),reference_low,ScaleCbCr); /* Cr */
+                    *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);                 /* Y */
+                    *samples_itr++=ScaleToVideo((MaxRGB-GetOpacitySample(p)),reference_low,ScaleY);  /* A */
                     p++;
                     chroma_pixels++;
                   }
@@ -4083,19 +4110,19 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             case ImageElementCbYCr444:
               for (x=image->columns; x > 0; x--)
                 {
-                  *samples_itr++=ScaleToVideo(p->green,reference_low,ScaleCbCr); /* Cb */
-                  *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);   /* Y */
-                  *samples_itr++=ScaleToVideo(p->blue,reference_low,ScaleCbCr);  /* Cr */
+                  *samples_itr++=ScaleToVideo(GetCbSample(p),reference_low,ScaleCbCr); /* Cb */
+                  *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);     /* Y */
+                  *samples_itr++=ScaleToVideo(GetCrSample(p),reference_low,ScaleCbCr); /* Cr */
                   p++;
                 }
               break;
             case ImageElementCbYCrA4444:
               for (x=image->columns; x > 0; x--)
                 {
-                  *samples_itr++=ScaleToVideo(p->green,reference_low,ScaleCbCr); /* Cb */
-                  *samples_itr++=ScaleToVideo(p->red,reference_low,ScaleY);   /* Y */
-                  *samples_itr++=ScaleToVideo(p->blue,reference_low,ScaleCbCr);  /* Cr */
-                  *samples_itr++=MaxRGB-p->opacity;
+                  *samples_itr++=ScaleToVideo(GetCbSample(p),reference_low,ScaleCbCr);            /* Cb */
+                  *samples_itr++=ScaleToVideo(GetYSample(p),reference_low,ScaleY);                /* Y */
+                  *samples_itr++=ScaleToVideo(GetCrSample(p),reference_low,ScaleCbCr);            /* Cr */
+                  *samples_itr++=ScaleToVideo((MaxRGB-GetOpacitySample(p)),reference_low,ScaleY); /* A */
                   p++;
                 }
               break;
