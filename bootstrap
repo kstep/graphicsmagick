@@ -3,7 +3,9 @@
 # Execute this script to update the build environment if the version of
 # Automake or Autoconf is changed.
 #
-aclocal -I .
+
+#libtoolize --verbose --copy --force --nonrecursive --ltdl=ltdl
+aclocal -I ltdl/m4
 autoheader
 autoconf
-automake
+automake --verbose --add-missing --copy --force-missing

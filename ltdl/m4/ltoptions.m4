@@ -1,24 +1,13 @@
 # Helper functions for option handling.                    -*- Autoconf -*-
+
+# Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 # Written by Gary V. Vaughan <gary@gnu.org>
-
-# Copyright (C) 2004  Free Software Foundation, Inc.
-
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
+# This file is free software; the Free Software Foundation gives
+# unlimited permission to copy and/or distribute it, with or without
+# modifications, as long as this notice is preserved.
 
-# serial 1
+# serial 3 ltoptions.m4
 
 # This is to help aclocal find these macros, as it can't see m4_define.
 AC_DEFUN([LTOPTIONS_VERSION], [m4_if([1])])
@@ -31,9 +20,15 @@ m4_define([_LT_MANGLE_OPTION],
 
 
 # _LT_SET_OPTION(NAME)
-# ------------------------------
-# Set option NAME.  Other NAMEs are saved as a flag.
-m4_define([_LT_SET_OPTION], [m4_define(_LT_MANGLE_OPTION([$1]))])
+# --------------------
+# Set option NAME, and if there is a matching handler defined,
+# dispatch to it.  Other NAMEs are saved as a flag.
+m4_define([_LT_SET_OPTION],
+[m4_define(_LT_MANGLE_OPTION([$1]))dnl
+m4_ifdef(_LT_MANGLE_DEFUN([$1]),
+        _LT_MANGLE_DEFUN([$1]),
+    [m4_warning([Unknown Libtool option `$1'])])[]dnl
+])
 
 
 # _LT_IF_OPTION(OPTION, IF-SET, [IF-NOT-SET])
@@ -47,7 +42,7 @@ m4_define([_LT_IF_OPTION],
 # ---------------------------------------
 # Execute IF-NOT-SET if all OPTIONS are not set.
 m4_define([_LT_UNLESS_OPTIONS],
-[AC_FOREACH([_LT_Option], [$1],
+[m4_foreach([_LT_Option], m4_split(m4_normalize([$1])),
 	    [m4_ifdef(_LT_MANGLE_OPTION(_LT_Option),
 		      [m4_define([$0_found])])])[]dnl
 m4_ifdef([$0_found], [m4_undefine([$0_found])], [$2
@@ -61,18 +56,17 @@ m4_ifdef([$0_found], [m4_undefine([$0_found])], [$2
 # If any OPTION has a handler macro declared with LT_OPTION_DEFINE,
 # dispatch to that macro; otherwise complain about the unknown option
 # and exit.
-m4_define([_LT_SET_OPTIONS],
-[AC_FOREACH([_LT_Option], [$1],
-    [_LT_SET_OPTION(_LT_Option)
-    m4_ifdef(_LT_MANGLE_DEFUN(_LT_Option),
-		_LT_MANGLE_DEFUN(_LT_Option),
-	[m4_fatal([Unknown option `]_LT_Option[' to LT][_INIT_LIBTOOL])])
-    ])dnl
+m4_defun([_LT_SET_OPTIONS],
+[# Set options
+m4_foreach([_LT_Option], m4_split(m4_normalize([$1])),
+    [_LT_SET_OPTION(_LT_Option)])
 dnl
 dnl Simply set some default values (i.e off) if boolean options were not
 dnl specified:
-_LT_UNLESS_OPTIONS([dlopen], enable_dlopen=no)
-_LT_UNLESS_OPTIONS([win32-dll], enable_win32_dll=no)
+_LT_UNLESS_OPTIONS([dlopen], [enable_dlopen=no
+])
+_LT_UNLESS_OPTIONS([win32-dll], [enable_win32_dll=no
+])
 dnl
 dnl If no reference was made to various pairs of opposing options, then
 dnl we run the default mode handler for the pair.  For example, if neither
@@ -103,7 +97,8 @@ m4_define([LT_OPTION_DEFINE],
 
 # dlopen
 # ------
-LT_OPTION_DEFINE([dlopen], [enable_dlopen=yes])
+LT_OPTION_DEFINE([dlopen], [enable_dlopen=yes
+])
 
 AU_DEFUN([AC_LIBTOOL_DLOPEN],
 [_LT_SET_OPTION([dlopen])
@@ -365,7 +360,7 @@ m4_define([_LT_WITH_PIC],
     [pic_mode="$withval"],
     [pic_mode=default])
 
-test -z "$pic_mode" && pic_mode=m4_if($#, 1, $1, default)
+test -z "$pic_mode" && pic_mode=m4_default([$1], [default])
 
 _LT_DECL([], [pic_mode], [0], [What type of objects to build])dnl
 ])# _LT_WITH_PIC
@@ -374,7 +369,7 @@ LT_OPTION_DEFINE([pic-only], [_LT_WITH_PIC([yes])])
 LT_OPTION_DEFINE([no-pic], [_LT_WITH_PIC([no])])
 
 # Old name:
-AU_DEFUN([AC_LIBTOOL_PIC_MODE],
+AU_DEFUN([AC_LIBTOOL_PICMODE],
 [_LT_SET_OPTION([pic-only])
 AC_DIAGNOSE([obsolete],
 [$0: Remove this warning and the call to _LT_SET_OPTION when you
@@ -382,4 +377,4 @@ put the `pic-only' option into LT_INIT's first parameter.])
 ])
 
 dnl aclocal-1.4 backwards compatibility:
-dnl AC_DEFUN([AC_LIBTOOL_PIC_MODE], [])
+dnl AC_DEFUN([AC_LIBTOOL_PICMODE], [])

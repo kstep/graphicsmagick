@@ -15,7 +15,13 @@ AC_PREREQ(2.59)
 AC_INIT(magick/magick.h)
 
 # Specify directory where m4 macros may be found.
-AC_CONFIG_MACRO_DIR([.])
+AC_CONFIG_MACRO_DIR([ltdl/m4])
+
+# Directory where AC_LIBOBJ replacement files are to be found.
+AC_CONFIG_LIBOBJ_DIR([ltdl])
+
+# Directory where autotools helper scripts lives.
+AC_CONFIG_AUX_DIR([ltdl/config])
 
 #
 # Save initial user-tunable values
@@ -315,20 +321,21 @@ AC_SUBST(LFS_CPPFLAGS)
 #
 
 # Configure libltdl
-#AC_CONFIG_SUBDIRS(ltdl)
-AC_LIBLTDL_CONVENIENCE(ltdl)
+LT_CONFIG_LTDL_DIR([ltdl],[nonrecursive]) 
+AC_LIBLTDL_CONVENIENCE([ltdl])
 AC_LIB_LTDL
 # Substitute INCLTDL and LIBLTDL in the Makefiles
 #AC_SUBST(INCLTDL)
 #AC_SUBST(LIBLTDL)
 
 # Configure libtool
-AC_DISABLE_SHARED
-AC_ENABLE_STATIC
-AC_LIBTOOL_TAGS([CXX])
-AC_LIBTOOL_WIN32_DLL
+dnl AC_DISABLE_SHARED
+dnl AC_ENABLE_STATIC
+dnl AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_DLOPEN
-AC_PROG_LIBTOOL
+LT_INIT([disable-shared win32-dll])
+dnl AC_PROG_LIBTOOL
+LT_LANG([C++])
 AC_SUBST(LIBTOOL_DEPS)
 
 # Check to see if building shared libraries

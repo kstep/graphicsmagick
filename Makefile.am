@@ -13,12 +13,9 @@ AUTOMAKE_OPTIONS = 1.9 subdir-objects dist-zip dist-bzip2 foreign
 
 topincludedir = @includedir@/GraphicsMagick
 
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/Magick++/lib
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
-# It seems that AC_CONFIG_MACRO_DIR([m4]) in configure.ac should cause
-# Automake to pass aclocal the right flags, but here is some more
-# positive enforcement.
-ACLOCAL_AMFLAGS = -I .
+ACLOCAL_AMFLAGS = -I ltdl/m4
 
 MODULECOMMONFLAGS = -no-undefined -module -avoid-version
 
@@ -108,24 +105,29 @@ EXTRA_DIST = \
 	$(UTILITIES_EXTRA_DIST) \
 	$(WAND_EXTRA_DIST)
 
-
-lib_LTLIBRARIES = $(LIBLTDL) $(LIBMAGICK) $(LIBMAGICKPP) $(LIBWAND)
+lib_LTLIBRARIES = $(LIBMAGICK) $(LIBMAGICKPP) $(LIBWAND)
 
 check_PROGRAMS = \
 	$(TESTS_CHECK_PGRMS) \
 	$(MAGICKPP_CHECK_PGRMS) \
 	$(WAND_CHECK_PGRMS)
 
-include $(srcdir)/config/Makefile.am
-include $(srcdir)/ltdl/Makefile.am
-include $(srcdir)/coders/Makefile.am
-include $(srcdir)/magick/Makefile.am
-include $(srcdir)/filters/Makefile.am
-include $(srcdir)/Magick++/Makefile.am
-include $(srcdir)/tests/Makefile.am
-include $(srcdir)/wand/Makefile.am
-include $(srcdir)/utilities/Makefile.am
-include $(srcdir)/PerlMagick/Makefile.am
+AM_LDFLAGS =
+noinst_LTLIBRARIES =
+EXTRA_LTLIBRARIES =
+BUILT_SOURCES =
+MOSTLYCLEANFILES =
+
+include config/Makefile.am
+include ltdl/Makefile.inc
+include coders/Makefile.am
+include magick/Makefile.am
+include filters/Makefile.am
+include Magick++/Makefile.am
+include tests/Makefile.am
+include wand/Makefile.am
+include utilities/Makefile.am
+include PerlMagick/Makefile.am
 
 # Pkgconfig directory
 pkgconfigdir = $(libdir)/pkgconfig

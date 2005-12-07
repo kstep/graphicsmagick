@@ -54,12 +54,6 @@
 /* Define to 1 if you have the `argz_stringify' function. */
 #undef HAVE_ARGZ_STRINGIFY
 
-/* Define to 1 if you have the <assert.h> header file. */
-#undef HAVE_ASSERT_H
-
-/* Define to 1 if you have the `bcopy' function. */
-#undef HAVE_BCOPY
-
 /* define if bool is a built-in type */
 #undef HAVE_BOOL
 
@@ -68,9 +62,6 @@
 
 /* define if the compiler supports const_cast<> */
 #undef HAVE_CONST_CAST
-
-/* Define to 1 if you have the <ctype.h> header file. */
-#undef HAVE_CTYPE_H
 
 /* define if the compiler supports default template parameters */
 #undef HAVE_DEFAULT_TEMPLATE_PARAMETERS
@@ -96,9 +87,6 @@
 
 /* Define if you have the _dyld_func_lookup function. */
 #undef HAVE_DYLD
-
-/* Define to 1 if you have the <errno.h> header file. */
-#undef HAVE_ERRNO_H
 
 /* Define to 1 if the system has the type `error_t'. */
 #undef HAVE_ERROR_T
@@ -127,9 +115,6 @@
 /* Define to 1 if you have the `getpagesize' function. */
 #undef HAVE_GETPAGESIZE
 
-/* Define to 1 if you have the `index' function. */
-#undef HAVE_INDEX
-
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
@@ -141,6 +126,9 @@
 
 /* Define if you have the libdl library or equivalent. */
 #undef HAVE_LIBDL
+
+/* Define if libdlloader will be built on this platform */
+#undef HAVE_LIBDLLOADER
 
 /* Define to 1 if long double works and has more range or precision than
    double. */
@@ -154,15 +142,6 @@
 
 /* Define to 1 if you have the `madvise' function. */
 #undef HAVE_MADVISE
-
-/* Define to 1 if you have the <malloc.h> header file. */
-#undef HAVE_MALLOC_H
-
-/* Define to 1 if you have the `memcpy' function. */
-#undef HAVE_MEMCPY
-
-/* Define to 1 if you have the `memmove' function. */
-#undef HAVE_MEMMOVE
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
@@ -222,9 +201,6 @@
 /* Define to 1 if you have the `readdir' function. */
 #undef HAVE_READDIR
 
-/* Define to 1 if you have the `rindex' function. */
-#undef HAVE_RINDEX
-
 /* Define to 1 if you have the `seekdir' function. */
 #undef HAVE_SEEKDIR
 
@@ -249,20 +225,11 @@
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
-/* Define to 1 if you have the <stdio.h> header file. */
-#undef HAVE_STDIO_H
-
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
 
 /* define if the compiler supports Standard Template Library */
 #undef HAVE_STL
-
-/* Define to 1 if you have the `strchr' function. */
-#undef HAVE_STRCHR
-
-/* Define to 1 if you have the `strcmp' function. */
-#undef HAVE_STRCMP
 
 /* Define to 1 if you have the `strerror' function. */
 #undef HAVE_STRERROR
@@ -281,9 +248,6 @@
 
 /* Headers provide a prototype for strlcpy */
 #undef HAVE_STRLCPY_PROTOTYPE
-
-/* Define to 1 if you have the `strrchr' function. */
-#undef HAVE_STRRCHR
 
 /* Define to 1 if you have the `sysconf' function. */
 #undef HAVE_SYSCONF
@@ -416,19 +380,19 @@
 /* Define if the OS needs help to load dependent libraries for dlopen(). */
 #undef LTDL_DLOPEN_DEPLIBS
 
+/* Define to the system default library search path. */
+#undef LT_DLSEARCH_PATH
+
+/* Define to the extension used for runtime loadable modules, say, ".so". */
+#undef LT_MODULE_EXT
+
+/* Define to the name of the environment variable that determines the run-time
+   module search path. */
+#undef LT_MODULE_PATH_VAR
+
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
-#undef LTDL_OBJDIR
-
-/* Define to the name of the environment variable that determines the dynamic
-   library search path. */
-#undef LTDL_SHLIBPATH_VAR
-
-/* Define to the extension used for shared libraries, say, ".so". */
-#undef LTDL_SHLIB_EXT
-
-/* Define to the system default library search path. */
-#undef LTDL_SYSSEARCHPATH
+#undef LT_OBJDIR
 
 /* Define to prepend to default font search path. */
 #undef MAGICK_FONT_PATH
@@ -515,28 +479,28 @@
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
-/* The size of a `signed int', as computed by sizeof. */
+/* The size of `signed int', as computed by sizeof. */
 #undef SIZEOF_SIGNED_INT
 
-/* The size of a `signed long', as computed by sizeof. */
+/* The size of `signed long', as computed by sizeof. */
 #undef SIZEOF_SIGNED_LONG
 
-/* The size of a `signed long long', as computed by sizeof. */
+/* The size of `signed long long', as computed by sizeof. */
 #undef SIZEOF_SIGNED_LONG_LONG
 
-/* The size of a `signed short', as computed by sizeof. */
+/* The size of `signed short', as computed by sizeof. */
 #undef SIZEOF_SIGNED_SHORT
 
-/* The size of a `unsigned int', as computed by sizeof. */
+/* The size of `unsigned int', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_INT
 
-/* The size of a `unsigned long', as computed by sizeof. */
+/* The size of `unsigned long', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_LONG
 
-/* The size of a `unsigned long long', as computed by sizeof. */
+/* The size of `unsigned long long', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_LONG_LONG
 
-/* The size of a `unsigned short', as computed by sizeof. */
+/* The size of `unsigned short', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_SHORT
 
 /* Define to 1 if you have the ANSI C header files. */

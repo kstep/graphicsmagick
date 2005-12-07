@@ -1,3 +1,8 @@
+2005-12-06  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* Updates to use latest development autotools, including
+	development libtool 2.0.
+
 2005-12-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.h: Added some useful macros for accessing

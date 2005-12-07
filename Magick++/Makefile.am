@@ -4,6 +4,8 @@
 # Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004
 #
 
+AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
+
 LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la
 
 MAGICKPP_SCRPTS = \

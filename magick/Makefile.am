@@ -36,6 +36,10 @@ magick_libGraphicsMagick_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/lt
 magick_libGraphicsMagick_la_LDFLAGS = -no-undefined \
 	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
+if CONVENIENCE_LTDL
+magick_libGraphicsMagick_la_DEPENDENCIES = $(LIBLTDL)
+endif
+
 # Library base sources
 MAGICK_BASE_SRCS = \
 	magick/alpha_composite.h \
