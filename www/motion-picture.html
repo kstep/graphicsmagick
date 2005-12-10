@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20051207;20144500">
+	<META NAME="CHANGED" CONTENT="20051210;11055800">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<STYLE>
@@ -231,7 +231,7 @@ of half a second.</P>
 <H4>Colorspace Transformation</H4>
 <P CLASS="western">To convert an RGB file to a 4:2:2 YCbCr file in
 Rec 709 space:</P>
-<PRE STYLE="margin-bottom: 0.2in">   gm convert 2k.dpx -depth 10 -colorspace Rec709YCbCr -sampling-factor 2x1 2k-ycbcr.dpx</PRE><H4>
+<PRE STYLE="margin-bottom: 0.2in">   gm convert 2k.dpx -depth 10 -colorspace Rec709YCbCr -sampling-factor 4:2:2 2k-ycbcr.dpx</PRE><H4>
 Modifying An Image In-Place</H4>
 <P CLASS="western">Besides <EM>convert</EM>, which converts from one
 file to another, there is <EM>mogrify</EM> which transforms the file
@@ -372,10 +372,10 @@ dealing with DPX files.</P>
 	chroma must be 4:2:2 subsampled in order to use planar storage.
 	While planar storage offers a number of benefits, it seems that very
 	few DPX-supporting applications support it.</DD><DT CLASS="western">
-	-sampling-factor 2x1</DT><DD CLASS="western" STYLE="margin-bottom: 0.2in">
+	-sampling-factor 4:2:2</DT><DD CLASS="western" STYLE="margin-bottom: 0.2in">
 	Select 4:2:2 subsampling when saving an image in YCbCr format.
 	Subsampling is handled via a general-purpose image resize algorithm
-	rather than a dedicated filter so subsampling may be slow (but
+	(lanczos) rather than a dedicated filter so subsampling is slow (but
 	good).</DD></DL>
 <H3 CLASS="western">
 DPX Attributes</H3>

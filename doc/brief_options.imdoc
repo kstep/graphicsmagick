@@ -531,7 +531,7 @@
 </utils>
 <utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
 <lopt>-sampling-factor <horizontal_factor>x<vertical_factor></opt>
-<abs>sampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.</abs>
+<abs>chroma subsampling factors</abs>
 </utils>
 <utils apps=convert,mogrify>
 <lopt>-scale <geometry></opt>

@@ -1060,9 +1060,9 @@ the JPEG library has been patched to support it. Use of lossless JPEG is
 generally not recommended.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use the <strong>-quality</strong> option to set the compression level to be used by
-JPEG, PNG, MIFF, and MPEG encoders.  Use the <strong>-sampling-factor</strong>
-option to set the sampling factor to be used by DPX, JPEG, MPEG, and YUV encoders
-for downsampling the chroma channels.</font></td></tr></table>
+JPEG, PNG, MIFF, and MPEG encoders. Use the <strong>-sampling-factor</strong>
+option to set the sampling factor to be used by the DPX, JPEG, MPEG, and
+YUV encoders for downsampling the chroma channels.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -3677,18 +3677,20 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="details-sampling-factor"></a>-sampling-factor <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chroma subsampling factors</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option specifies the sampling factors to be used by the DPX, JPEG,
-MPEG, or YUV encoders for chroma downsampling. If this option is omitted,
-default values are used. When reading or writing the YUV format and when
-writing the DPX or M2V (MPEG-2) format, use <strong>-sampling-factor 2x1</strong>
-to specify the 4:2:2 downsampling method.</font></td></tr></table>
+MPEG, or YUV encoders for chroma downsampling. The sampling factor must
+be specified while reading the raw YUV format since it is not preserved
+in the file header.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">Industry-standard video subsampling notation such as "4:2:2" may also
+be used to specify the sampling factors. "4:2:2" is equivalent to a
+specification of "2x1"</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-To use the same sampling factors as those found by the JPEG decoder, use
-the <tt>-define jpeg:preserve-settings</tt> flag.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">Industry-standard video subsampling notation such as "4:4:4" and
-"4:2:2" may also be used.</font></td></tr></table>
+The JPEG decoder obtains the original sampling factors (and quality
+settings) when a JPEG file is read. To re-use the original sampling
+factors (and quality setting) when JPEG is output, use the <tt>-define
+jpeg:preserve-settings</tt> flag.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5079,7 +5081,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-sampling-factor">-sampling-factor</a> <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chroma subsampling factors</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5955,7 +5957,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-sampling-factor">-sampling-factor</a> <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chroma subsampling factors</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -7753,7 +7755,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-sampling-factor">-sampling-factor</a> <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chroma subsampling factors</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -8919,7 +8921,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-sampling-factor">-sampling-factor</a> <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chroma subsampling factors</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -11781,7 +11783,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-sampling-factor">-sampling-factor</a> <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chroma subsampling factors</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -12287,7 +12289,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-sampling-factor">-sampling-factor</a> <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chroma subsampling factors</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -13474,7 +13476,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-sampling-factor">-sampling-factor</a> <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chroma subsampling factors</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -14521,7 +14523,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-sampling-factor">-sampling-factor</a> <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>chroma subsampling factors</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

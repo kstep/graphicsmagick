@@ -197,32 +197,35 @@ static const CommandInfo commands[] =
 %
 %
 */
-void NormalizeSamplingFactor(ImageInfo *image_info)
+static void NormalizeSamplingFactor(ImageInfo *image_info)
 {
+  int
+    count;
+
+  unsigned int
+    factors[3],
+    horizontal,
+    vertical;
+
+  char
+    buffer[MaxTextExtent];
+
   if (image_info->sampling_factor == NULL)
-    {
-      return;
-    }
-  else if (LocaleCompare(image_info->sampling_factor, "4:4:4") == 0)
-    {
-      /* No subsampling */
-      CloneString(&image_info->sampling_factor,"2x2");
-    }
-  else if (LocaleCompare(image_info->sampling_factor, "4:2:2") == 0)
-    {
-      /* Cb and Cr are subsampled by a factor of 2 horizontally. */
-      CloneString(&image_info->sampling_factor,"2x1");
-    }
-  else if (LocaleCompare(image_info->sampling_factor, "4:1:1") == 0)
-    {
-      /* Cb and Cr are subsampled by a factor of 4 vertically and horizontally. */
-      CloneString(&image_info->sampling_factor,"4x1");
-    }
-  else if (LocaleCompare(image_info->sampling_factor, "4:2:0") == 0)
-    {
-      /* Cb and Cr are subsampled by a factor of 2 horizontally and vertically. */
-      /* CloneString(&image_info->sampling_factor,""); */
-    }
+    return;
+
+  factors[0]=factors[1]=factors[2]=0;
+  count=sscanf(image_info->sampling_factor,"%u:%u:%u",
+               &factors[0], &factors[1], &factors[2]);
+  if ((count != 3) || (factors[1] == 0))
+    return;
+
+  horizontal=factors[0]/factors[1];
+  vertical=1;
+  if (factors[2] == 0)
+    vertical=2;
+
+  FormatString(buffer,"%ux%u",horizontal,vertical);
+  CloneString(&image_info->sampling_factor,buffer);
 }
 
 /*

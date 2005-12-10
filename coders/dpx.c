@@ -3920,7 +3920,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           (chroma_image == (Image *) NULL))
         {
           chroma_image=ResizeImage(image,image->columns/2,image->rows,
-                                   TriangleFilter,1.0,&image->exception);
+                                   LanczosFilter,1.0,&image->exception);
           if (chroma_image == (Image *) NULL)
             ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
         }

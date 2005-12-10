@@ -1,3 +1,8 @@
+2005-12-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (NormalizeSamplingFactor): Generalized
+	subsampling notation parsing support.
+
 2005-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (NormalizeSamplingFactor): Add some support for
