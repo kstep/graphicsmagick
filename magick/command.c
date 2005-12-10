@@ -178,6 +178,58 @@ static const CommandInfo commands[] =
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   N o r m a l i z e S a m p l i n g F a c t o r                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  NormalizeSamplingFactor() transforms industry-standard subsampling
+%  specifications into the internal geometry-style form.
+%
+%  The format of the NormalizeSamplingFactor method is:
+%
+%      void NormalizeSamplingFactor(ImageInfo *image_info)
+%
+%  A description of each parameter follows:
+%
+%   o image_info: ImageInfo structure containing sampling factor to transform.
+%
+%
+*/
+void NormalizeSamplingFactor(ImageInfo *image_info)
+{
+  if (image_info->sampling_factor == NULL)
+    {
+      return;
+    }
+  else if (LocaleCompare(image_info->sampling_factor, "4:4:4") == 0)
+    {
+      /* No subsampling */
+      CloneString(&image_info->sampling_factor,"2x2");
+    }
+  else if (LocaleCompare(image_info->sampling_factor, "4:2:2") == 0)
+    {
+      /* Cb and Cr are subsampled by a factor of 2 horizontally. */
+      CloneString(&image_info->sampling_factor,"2x1");
+    }
+  else if (LocaleCompare(image_info->sampling_factor, "4:1:1") == 0)
+    {
+      /* Cb and Cr are subsampled by a factor of 4 vertically and horizontally. */
+      CloneString(&image_info->sampling_factor,"4x1");
+    }
+  else if (LocaleCompare(image_info->sampling_factor, "4:2:0") == 0)
+    {
+      /* Cb and Cr are subsampled by a factor of 2 horizontally and vertically. */
+      /* CloneString(&image_info->sampling_factor,""); */
+    }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   A n i m a t e U s a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -982,6 +1034,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
+                NormalizeSamplingFactor(image_info);
               }
             break;
           }
@@ -2222,6 +2275,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowCompositeException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
+                NormalizeSamplingFactor(image_info);
               }
             break;
           }
@@ -4196,6 +4250,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowConvertException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
+                NormalizeSamplingFactor(image_info);
               }
             break;
           }
@@ -6172,6 +6227,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
+                NormalizeSamplingFactor(image_info);
               }
             break;
           }
@@ -6884,6 +6940,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowIdentifyException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
+                NormalizeSamplingFactor(image_info);
               }
             break;
           }
@@ -8841,6 +8898,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Set image sampling factor.
             */
             (void) CloneString(&clone_info->sampling_factor,argv[++i]);
+            NormalizeSamplingFactor(clone_info);
             continue;
           }
         if (LocaleCompare("sans",option+1) == 0)
@@ -11197,6 +11255,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
+                NormalizeSamplingFactor(image_info);
               }
             break;
           }
@@ -12716,6 +12775,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowMontageException(OptionError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
+                NormalizeSamplingFactor(image_info);
               }
             break;
           }
@@ -13840,6 +13900,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
+                NormalizeSamplingFactor(image_info);
               }
             break;
           }

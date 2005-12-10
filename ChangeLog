@@ -1,3 +1,9 @@
+2005-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (NormalizeSamplingFactor): Add some support for
+	normalizing industry-standard subsampling notation (e.g. 4:2:2)
+	into GraphicsMagick's unusual notation.
+
 2005-12-06  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* Updates to use latest development autotools, including

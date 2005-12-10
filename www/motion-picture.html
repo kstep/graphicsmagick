@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20051117;14000700">
+	<META NAME="CHANGED" CONTENT="20051207;20144500">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<STYLE>
@@ -24,6 +24,7 @@
 		H3.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		DT { color: #000000 }
 		DT.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 10pt }
+		H4 { color: #000000 }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
@@ -200,16 +201,10 @@ capabilities of GraphicsMagick's DPX support are as follows:</FONT></P>
 <UL>
 	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">Composite
 	video.</P>
-	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">Luma for a
-	grayscale image is currently full-range &ldquo;linear&rdquo;. A
-	means should be provided to select video levels.</P>
 	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">Floating point
 	formats (32 and 64 bits)</P>
 	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">Depth channel
 	(not supportable within GraphicsMagick).</P>
-	<LI><P CLASS="western" STYLE="margin-bottom: 0.08in">A &ldquo;Rec.
-	709&rdquo; RGB working space for working with video files without
-	clipping below-black and above-white.</P>
 </UL>
 <P CLASS="western"><FONT SIZE=2>The software is written efficiently
 so the performance when reading and writing files is limited by the
@@ -217,6 +212,7 @@ performance of the file I/O subsystem. The software is designed to
 avoid seeking while reading and writing so that files may be read and
 written over pipes, or via a user provided file descriptor.</FONT></P>
 <H3 CLASS="western">GraphicsMagick In Use</H3>
+<H4>Image Resize</H4>
 <P CLASS="western"><FONT SIZE=2>GraphicsMagick is easy to use. The
 following is an example of scaling a &ldquo;4K&rdquo; 16 bit scan to
 a &ldquo;2K&rdquo; &ldquo;Academy&rdquo; 10 bit image:</FONT></P>
@@ -232,14 +228,16 @@ G5 PowerMac or Intel 2.4GHz Xeon) to down-convert from a 131MB &ldquo;5K&rdquo;
 scanner</A> to a 11MB &ldquo;2K&rdquo; 10-bit working image.
 Operations on more typical &ldquo;2K&rdquo; images take on the order
 of half a second.</P>
+<H4>Colorspace Transformation</H4>
 <P CLASS="western">To convert an RGB file to a 4:2:2 YCbCr file in
 Rec 709 space:</P>
-<PRE STYLE="margin-bottom: 0.2in">   gm convert 2k.dpx -depth 10 -colorspace Rec709YCbCr -sampling-factor 2x1 2k-ycbcr.dpx</PRE><P CLASS="western">
-Besides <EM>convert</EM>, which converts from one file to another,
-there is <EM>mogrify</EM> which transforms the file in place. A
-temporary file is used (if necessary) to ensure that the existing
-image file is not damaged if something goes wrong (e.g., not enough
-disk space).</P>
+<PRE STYLE="margin-bottom: 0.2in">   gm convert 2k.dpx -depth 10 -colorspace Rec709YCbCr -sampling-factor 2x1 2k-ycbcr.dpx</PRE><H4>
+Modifying An Image In-Place</H4>
+<P CLASS="western">Besides <EM>convert</EM>, which converts from one
+file to another, there is <EM>mogrify</EM> which transforms the file
+in place. A temporary file is used (if necessary) to ensure that the
+existing image file is not damaged if something goes wrong (e.g., not
+enough disk space).</P>
 <P CLASS="western">A typical mogrify command is</P>
 <PRE STYLE="margin-bottom: 0.2in">   gm mogrify -resize 1828x1556 -depth 10 file-0001.dpx file-0002.dpx</PRE><P CLASS="western">
 Multiple files may be specified on the command line so the same
@@ -253,22 +251,47 @@ the command provided to it.</P>
 added benefit. It is able to run several commands in the background.
 This means that if your system has multiple CPUs, it can take
 advantage of all the CPUs while still using one command:</P>
-<PRE STYLE="margin-bottom: 0.2in">   find /assets/001 -name '*.dpx' -print | xargs --max-procs 3 --max-args 25 gm mogrify -resize 1828x1556 -depth 10</PRE><P CLASS="western">
-GraphicsMagick may be used to create a contact sheet (grid of
-thumbnails with name and size) by using the &ldquo;VID&rdquo;
+<PRE STYLE="margin-bottom: 0.2in">   find /assets/001 -name '*.dpx' -print | xargs --max-procs 3 --max-args 25 gm mogrify -resize 1828x1556 -depth 10</PRE><H4>
+Creating A Contact Sheet</H4>
+<P CLASS="western">GraphicsMagick may be used to create a contact
+sheet (grid of thumbnails with name and size) by using the &ldquo;VID&rdquo;
 pseudoformat which accepts a wildcarded argument of files (protected
 by quotes!) to read. The output files are buffered while files are
 being read so there is a practical limit to the number of files which
 may be processed at once. To output to a Postscript file:</P>
-<PRE>    gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet.ps&quot;</PRE><P CLASS="western">
+<PRE STYLE="margin-bottom: 0.2in">   gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet.ps&quot;</PRE><P CLASS="western">
 or to a PDF file:</P>
-<PRE>    gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet.pdf&quot;</PRE><P CLASS="western">
+<PRE STYLE="margin-bottom: 0.2in">    gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet.pdf&quot;</PRE><P CLASS="western">
 or to a sequence of JPEG files ranging from contact-sheet-000.jpg to
 contact-sheet-999.jpg:</P>
-<PRE>   gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet-%03d.jpg&quot;</PRE><P CLASS="western">
+<PRE STYLE="margin-bottom: 0.2in">   gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet-%03d.jpg&quot;</PRE><P CLASS="western">
 or to a MIFF file which may be used to interactively browse the
 original files using 'gm display':</P>
-<PRE>    gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet.miff&quot;</PRE><H3 CLASS="western">
+<PRE STYLE="margin-bottom: 0.2in">   gm convert &quot;vid:*.dpx&quot; &quot;contact-sheet.miff&quot;</PRE><H4>
+Animating A Sequence</H4>
+<P CLASS="western">GraphicsMagick may be used to animate an image
+sequence on an X11 display. Frames are buffered in memory (pre-loaded
+into the X11 server) so the number of frames which may be animated at
+once is limited. GraphicsMagick has been used to animate 1080P
+(1920x1080) images at 24 frames per second with at least 300 frames
+in the sequence.More frames may be buffered on 64-bit systems. Many
+more frames may be animated by preparing a reduced set of frames in
+advance.</P>
+<P CLASS="western">To visualize an animation at 24 frames per second
+(delay (1/24)*100) use</P>
+<PRE>...gm animate -delay 4.17 &ldquo;Frame_*.dpx&rdquo;</PRE><P CLASS="western">
+In order to obtain a preview of a larger sequence, and if the frames
+are numbered, a broader span of time may be animated by selecting
+every 10<SUP>th</SUP> frame (terminating with zero) to animate at 2.4
+frames per second:</P>
+<PRE>...gm animate -delay 41.7 &ldquo;Frame_*0.dpx&rdquo;</PRE><H4>
+Viewing A Sequence</H4>
+<P CLASS="western">A sequence of images may be displayed on an X11
+server using 'gm display'. Unlike 'gm animate' there are no arbitrary
+limits when displaying a sequence this way. Unlike 'gm animate' the
+inter-frame delay can not be set to less than a second (100 ticks is
+one second).</P>
+<PRE>...gm display +progress -delay 100 &ldquo;Frame_*.dpx&rdquo;</PRE><H3 CLASS="western">
 DPX options</H3>
 <P CLASS="western">The following options are particularly useful when
 dealing with DPX files.</P>

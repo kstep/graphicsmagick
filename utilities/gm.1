@@ -854,7 +854,7 @@ generally not recommended.
 
 Use the \fB-quality\fP option to set the compression level to be used by
 JPEG, PNG, MIFF, and MPEG encoders.  Use the \fB-sampling-factor\fP
-option to set the sampling factor to be used by JPEG, MPEG, and YUV encoders
+option to set the sampling factor to be used by DPX, JPEG, MPEG, and YUV encoders
 for downsampling the chroma channels.
 .TP
 .B "-contrast"
@@ -2734,16 +2734,18 @@ is present.  Offsets, if present in the geometry string, are ignored, and
 the \fB-gravity\fP option has no effect.
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
+\fRsampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.
 
-This option specifies the sampling factors to be used by the JPEG encoder for
-chroma downsampling.  If this option is omitted, the JPEG library
-will use its own default values.  When reading or writing the YUV format
-and when writing the DPX or M2V (MPEG-2) format, use
-\fB-sampling-factor 2x1\fP to specify the 4:2:2 downsampling method.
+This option specifies the sampling factors to be used by the DPX, JPEG,
+MPEG, or YUV encoders for chroma downsampling. If this option is omitted,
+default values are used. When reading or writing the YUV format and when
+writing the DPX or M2V (MPEG-2) format, use \fB-sampling-factor 2x1\fP
+to specify the 4:2:2 downsampling method.
 
 To use the same sampling factors as those found by the JPEG decoder, use
 the -define jpeg:preserve-settings flag.
+Industry-standard video subsampling notation such as "4:4:4" and
+"4:2:2" may also be used.
 .TP
 .B "-scale \fI<geometry>"\fP
 \fRscale the image.
@@ -3429,7 +3431,7 @@ Options, above.
 \fRapply Paeth image rotation to the image
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
+\fRsampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.
 .TP
 .B "-scenes \fI<value-value>"\fP
 \fRrange of image scene numbers to read
@@ -3898,7 +3900,7 @@ Options, above.
 \fRapply Paeth image rotation to the image
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
+\fRsampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.
 .TP
 .B "-scene \fI<value>"\fP
 \fRset scene number
@@ -4807,7 +4809,7 @@ Options, above.
 \fRscale image using pixel sampling
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
+\fRsampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.
 .TP
 .B "-scale \fI<geometry>"\fP
 \fRscale the image.
@@ -5210,7 +5212,7 @@ Options, above.
 \fRscale image using pixel sampling
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
+\fRsampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.
 .TP
 .B "-scenes \fI<value-value>"\fP
 \fRrange of image scene numbers to read
@@ -7148,7 +7150,7 @@ Options, above.
 \fRefficiently determine image characteristics
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
+\fRsampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.
 .TP
 .B "-size \fI<width>x<height>{+offset}"\fP
 \fRwidth and height of the image
@@ -7314,7 +7316,7 @@ Options, above.
 \fRapply Paeth image rotation to the image
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
+\fRsampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.
 .TP
 .B "-scene \fI<value>"\fP
 \fRset scene number
@@ -7661,7 +7663,7 @@ Options, above.
 \fRscale image using pixel sampling
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
+\fRsampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.
 .TP
 .B "-scale \fI<geometry>"\fP
 \fRscale the image.
@@ -8014,7 +8016,7 @@ Options, above.
 \fRapply Paeth image rotation to the image
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
-\fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
+\fRsampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.
 .TP
 .B "-scenes \fI<value-value>"\fP
 \fRrange of image scene numbers to read

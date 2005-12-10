@@ -756,7 +756,7 @@ generally not recommended.</pp>
 <pp>
 Use the <s>-quality</s> option to set the compression level to be used by
 JPEG, PNG, MIFF, and MPEG encoders.  Use the <s>-sampling-factor</s>
-option to set the sampling factor to be used by JPEG, MPEG, and YUV encoders
+option to set the sampling factor to be used by DPX, JPEG, MPEG, and YUV encoders
 for downsampling the chroma channels.</pp>
 
 </utils>
@@ -3727,18 +3727,21 @@ the <s>-gravity</s> option has no effect.</pp>
 <utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
 <dopt>-sampling-factor <horizontal_factor>x<vertical_factor></opt>
 
-<abs>sampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.</abs>
+<abs>sampling factors used by DPX, JPEG, MPEG-2, and YUV decoder/encoder.</abs>
 
 <pp>
-This option specifies the sampling factors to be used by the JPEG encoder for
-chroma downsampling.  If this option is omitted, the JPEG library
-will use its own default values.  When reading or writing the YUV format
-and when writing the DPX or M2V (MPEG-2) format, use
-<s>-sampling-factor 2x1</s> to specify the 4:2:2 downsampling method.</pp>
+This option specifies the sampling factors to be used by the DPX, JPEG,
+MPEG, or YUV encoders for chroma downsampling. If this option is omitted,
+default values are used. When reading or writing the YUV format and when
+writing the DPX or M2V (MPEG-2) format, use <s>-sampling-factor 2x1</s>
+to specify the 4:2:2 downsampling method.</pp>
 
 <pp>
 To use the same sampling factors as those found by the JPEG decoder, use
 the <tt>-define jpeg:preserve-settings</tt> flag.</pp>
+
+<pp>Industry-standard video subsampling notation such as "4:4:4" and
+"4:2:2" may also be used.</pp>
 
 </utils>
 
