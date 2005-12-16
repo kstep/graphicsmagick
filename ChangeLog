@@ -1,3 +1,10 @@
+2005-12-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c: Decided to swap 10-bit subsampled 4:2:2 YCbCr by
+	default since this is what practically all sample files I have
+	been provided actually do.  Ignore the fact that there is nothing
+	in the standard which supports this.
+
 2005-12-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (NormalizeSamplingFactor): Generalized

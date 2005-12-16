@@ -46,7 +46,7 @@
 %    All RGB-oriented element types (R, G, B, A, RGB, RGBA, ABGR).
 %    All YCbCr-oriented element types.
 %    Planar (multi-element) storage fully supported.
-%    Alpha may be stored in a separate element.
+%    Alpha (key channel) may be stored in a separate element.
 %
 % Not currently supported:
 %
@@ -60,10 +60,18 @@
 % Notes about byte order:
 %
 %    The DPX specification doesn't say anything about how endian byte
-%    order should influence the image pixels.  It is not even clear
-%    if the pixel storage should be different at all.  Due to the lack
-%    of a standard, GraphicsMagick is currently using the following
-%    endian rules.  These rules may change at any time:
+%    order should influence the image pixels.  The 1994 version of the
+%    specification suggests very strongly that *all* formats are
+%    accessed as an array of 32-bit words (therefore implying 32-bit
+%    swapping) but the 2003 specification has ammended this (ambiguously)
+%    to imply the mixed use of 16 and 32 bit words.  As we all know,
+%    performing endian swapping on two 16-bit values does not have the
+%    same effect as performing endian swapping on one 32-bit value (the
+%    order of the two 16-bit samples is reversed) so the 2003 specification
+%    is not compatible with the 1994 specification.
+%
+%    Due to the lack of an unambiguous standard, GraphicsMagick is currently
+%    using the following endian rules.  These rules may change at any time:
 %
 %      o 8 bit format is always written in ascending order so endian rules
 %        do not apply.
@@ -81,16 +89,18 @@
 %
 % Additional notes:
 %
-%    I have received some YCbCr files in which the Cb/Cr channels are
-%    swapped. GraphicsMagick is currently following following my own
-%    interpretation of the DPX specification even though it does not
-%    match files provided to me written by Quantel iQ, and DVS Clipster.
-%    Luckily, large number of files conforming to my interpretation exist
-%    from other sources (Thompson/GrassValley Spirit 4K, S.Two Viper,
-%    Technicolor, Warner, ...). If a YCbCr file reads with vertical
-%    distortion, try adding "-define dpx:swap-samples=true" when reading
-%    the image. The same option may be used to write YCbCr files with
-%    swapped samples.
+%    I have received many 4:2:2 YCbCr files in which the Cb/Cr channels are
+%    swapped from my interpretation of the specification. This has caused
+%    considerable consternation.  As a result I have decided to observe the
+%    "majority rules" rule and follow the apparent direction set by systems
+%    set by Quantel iQ, and DVS Clipster.  Therefore, 4:2:2 YCbCr files have
+%    Cb/Cr intentionally swapped from the standard.  But 4:4:4 YCbCr files
+%    use the ordering suggested by the standard since all such files received
+%    to date follow the standard.
+%
+%     If a YCbCr file reads with vertical or color distortion, try adding
+%    "-define dpx:swap-samples=true" when reading the image. The same option
+%    may be used to write YCbCr files with swapped samples.
 %
 %    Note that some YCbCr files are interlaced.  Interlaced files combine
 %    two fields into one image.  This means that 1/60th of a second has
@@ -2085,10 +2095,17 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Are datums returned in reverse order when extracted from a
         32-bit word?  This is to support Note 2 in Table 1 which
         describes how RGB/RGBA are returned in reversed order for the
-        10-bit "filled" format.
+        10-bit "filled" format.  Note 3 refers to Note 2 so presumably
+        the same applies for ABGR.  The majority of YCbCr 4:2:2 files
+        received have been swapped (but not YCbCr 4:4:4 for some
+        reason) so swap the samples for YCbCr 4:2:2 as well.
       */
       if ((element_descriptor == ImageElementRGB) ||
-          (element_descriptor == ImageElementRGBA))
+          (element_descriptor == ImageElementRGBA) ||
+          (element_descriptor == ImageElementABGR) ||
+          (element_descriptor == ImageElementCbYCrY422) ||
+          (element_descriptor == ImageElementCbYACrYA4224) ||
+          (element_descriptor == ImageElementLuma))
         {
           if ((bits_per_sample == 10) && (packing_method != PackingMethodPacked))
             swap_word_datums = MagickTrue;
@@ -3898,9 +3915,17 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         Are datums returned in reverse order when extracted from a
         32-bit word?  This is to support Note 2 in Table 1 which
         describes how RGB/RGBA are returned in reversed order for the
-        10-bit "filled" format.
+        10-bit "filled" format.  Note 3 refers to Note 2 so presumably
+        the same applies for ABGR.  The majority of YCbCr 4:2:2 files
+        received have been swapped (but not YCbCr 4:4:4 for some
+        reason) so swap the samples for YCbCr 4:2:2 as well.
       */
-      if ((element_descriptor == ImageElementRGB) || (element_descriptor == ImageElementRGBA))
+      if ((element_descriptor == ImageElementRGB) ||
+          (element_descriptor == ImageElementRGBA) ||
+          (element_descriptor == ImageElementABGR) ||
+          (element_descriptor == ImageElementCbYCrY422) ||
+          (element_descriptor == ImageElementCbYACrYA4224) ||
+          (element_descriptor == ImageElementLuma))
         {
           if ((bits_per_sample == 10) && (packing_method != PackingMethodPacked))
             swap_word_datums = MagickTrue;
