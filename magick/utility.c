@@ -1306,7 +1306,8 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 
   int
     count,
-    flags;
+    flags,
+    i;
 
   double
     double_val;
@@ -1328,6 +1329,7 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
   /*
     Transfer base geometry while recording and stripping flags
   */
+  i=0;
   q=geometry;
   flags=NoValue;
 
@@ -1381,6 +1383,11 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
           case 'X':
           case 'x':
             {
+              /* Check for too many characters. */
+              i++;
+              if (i == sizeof(geometry))
+                return NoValue;
+
               *q=*c;
               q++;
               break;

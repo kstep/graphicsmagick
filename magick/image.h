@@ -126,6 +126,8 @@ typedef unsigned int Quantum;
   (value > MaxRGB) ? MaxRGB : value + 0.5))
 #define RoundToQuantum(value) ((Quantum) (value > MaxRGB ? MaxRGB : \
   value + 0.5))
+#define ConstrainToQuantum(value) (value < 0 ? 0 : \
+  (value > MaxRGB) ? MaxRGB : value)
 
 /*
   Deprecated defines.

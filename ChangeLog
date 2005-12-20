@@ -1,3 +1,11 @@
+2005-12-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/enhance.c (LevelImage): Fix -level command parsing when a
+	percent symbol is supplied within the argument rather than at the
+	end.
+	* magick/utility.c (GetGeometry): Bounds-check geometry string
+	length.
+
 2005-12-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c: Decided to swap 10-bit subsampled 4:2:2 YCbCr by
