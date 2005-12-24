@@ -217,13 +217,13 @@ typedef __int32_t       icS15Fixed16Number;
 typedef __uint32_t      icU16Fixed16Number;
 
 #else   
-#if defined(__GNUC__) || defined(__unix__)
+#if defined(__GNUC__) || defined(__unix__) || defined(__unix)
 
 #include <sys/types.h>
 
 typedef int32_t       icSignature; 
 
-#ifdef __sun
+#if defined(__sun) || defined(__hpux)  
 
 typedef uint8_t   icUInt8Number;
 typedef uint16_t  icUInt16Number;

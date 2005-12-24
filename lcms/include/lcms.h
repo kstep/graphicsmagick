@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2005 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -20,7 +20,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// Version 1.14
+// Version 1.15
 
 #ifndef __cms_H
 
@@ -46,7 +46,7 @@
 // USE_FLOAT are the generic floating-point routines. USE_C should work on
 // virtually any machine.
 
-// #define USE_FLOAT        1
+//#define USE_FLOAT        1
 // #define USE_C            1
 #define USE_ASSEMBLER    1
 
@@ -74,10 +74,13 @@
 // Uncomment this if your compiler supports inline
 #define USE_INLINE  1
 
+// Uncomment this if your compiler doesn't work with fast floor function
+// #define USE_DEFAULT_FLOOR_CONVERSION  1
+
 
 // ********** End of configuration toggles ******************************
 
-#define LCMS_VERSION        114
+#define LCMS_VERSION        115
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -88,7 +91,7 @@
 
 // Metroworks CodeWarrior
 
-#if __MWERKS__ 
+#ifdef __MWERKS__ 
 #   define unlink remove
 #   if WIN32 
 #       define USE_CUSTOM_SWAB 1
@@ -122,11 +125,15 @@
 #  define USE_C               1
 #endif
 
+#ifdef _HOST_BIG_ENDIAN
+#   define USE_BIG_ENDIAN      1
+#endif
+
 #if defined(__sgi__) || defined(__sgi) || defined(__powerpc__) || defined(sparc) || defined(__ppc__)
 #   define USE_BIG_ENDIAN      1
 #endif
 
-#if TARGET_CPU_PPC
+#ifdef TARGET_CPU_PPC
 #   define USE_BIG_ENDIAN   1
 #endif
 
@@ -141,22 +148,28 @@
 #if defined(__OpenBSD__) || defined(__NetBSD__) || defined(__FreeBSD__)
 #  include <sys/types.h>
 #  define USE_INT64           1
-#  undef  LONGLONG
-#  define LONGLONG            u_int64_t
+#  define LCMSSLONGLONG       int_64_t
+#  define LCMSULONGLONG       u_int64_t
 #endif
 
 #ifdef USE_INT64
-#   ifndef LONGLONG
-#   define LONGLONG unsigned long long
+#   ifndef LCMSULONGLONG
+#       define LCMSULONGLONG unsigned long long
+#       define LCMSSLONGLONG long long
 #   endif
 #endif
 
-#include <memory.h>
+#if !defined(__INTEGRITY)
+#   include <memory.h>
+#endif
+
 #include <string.h>
 
 #if defined(__GNUC__) || defined(__FreeBSD__)
 #   include <unistd.h>
 #endif
+
+#ifndef LCMS_WIN_TYPES_ALREADY_DEFINED
 
 typedef unsigned char BYTE, *LPBYTE; 
 typedef unsigned short WORD, *LPWORD;
@@ -189,6 +202,7 @@ typedef void* LCMSHANDLE;
 #define MAX_PATH     (256)
 
 #define cdecl
+#endif
 
 // The specification for "inline" is section 6.7.4 of the C99 standard (ISO/IEC 9899:1999). 
 
@@ -208,8 +222,9 @@ typedef HANDLE LCMSHANDLE;
 
 
 #ifdef  USE_INT64
-#  ifndef LONGLONG
-#    define LONGLONG unsigned __int64
+#  ifndef LCMSULONGLONG
+#    define LCMSULONGLONG unsigned __int64
+#    define LCMSSLONGLONG __int64
 #  endif
 #endif
 
@@ -222,16 +237,20 @@ typedef HANDLE LCMSHANDLE;
 #include "icc34.h"          // ICC header file
 
 
-// Plus some additions
+// Some tag & type additions
 
 #define lcmsSignature                  ((icSignature)           0x6c636d73L)
 
 #define icSigLuvKData                  ((icColorSpaceSignature) 0x4C75764BL)  // 'LuvK'
 
-#define icSigMCH5Data                  ((icColorSpaceSignature) 0x4d434835L)  // MCH9
 #define icSigHexachromeData            ((icColorSpaceSignature) 0x4d434836L)  // MCH6
 #define icSigHeptachromeData           ((icColorSpaceSignature) 0x4d434837L)  // MCH7
 #define icSigOctachromeData            ((icColorSpaceSignature) 0x4d434838L)  // MCH8
+
+#define icSigMCH5Data                  ((icColorSpaceSignature) 0x4d434835L)  // MCH5
+#define icSigMCH6Data                  ((icColorSpaceSignature) 0x4d434836L)  // MCH6
+#define icSigMCH7Data                  ((icColorSpaceSignature) 0x4d434837L)  // MCH7
+#define icSigMCH8Data                  ((icColorSpaceSignature) 0x4d434838L)  // MCH8
 #define icSigMCH9Data                  ((icColorSpaceSignature) 0x4d434839L)  // MCH9
 #define icSigMCHAData                  ((icColorSpaceSignature) 0x4d434841L)  // MCHA
 #define icSigMCHBData                  ((icColorSpaceSignature) 0x4d434842L)  // MCHB
@@ -240,8 +259,16 @@ typedef HANDLE LCMSHANDLE;
 #define icSigMCHEData                  ((icColorSpaceSignature) 0x4d434845L)  // MCHE
 #define icSigMCHFData                  ((icColorSpaceSignature) 0x4d434846L)  // MCHF
 
+#define icSigCAM97JABData              ((icColorSpaceSignature) 0x4A616231L)  // 'Jab1' H. Zeng
+#define icSigCAM02JABData              ((icColorSpaceSignature) 0x4A616232L)  // 'Jab2' H. Zeng
+#define icSigCAM02JCHData              ((icColorSpaceSignature) 0x4A636A32L)  // 'Jch2' H. Zeng
+
 #define icSigChromaticityTag            ((icTagSignature) 0x6368726dL) // As per Addendum 2 to Spec. ICC.1:1998-09
 #define icSigChromaticAdaptationTag     ((icTagSignature) 0x63686164L) // 'chad'
+#define icSigColorantTableTag           ((icTagSignature) 0x636c7274L) // 'clrt'
+#define icSigColorantTableOutTag        ((icTagSignature) 0x636c6f74L) // 'clot'
+#define icSigHPGamutDescTag             ((icTagSignature) 0x676D7441L) // 'gmtA' H. Zeng               
+
 
 #define icSigParametricCurveType        ((icTagTypeSignature) 0x70617261L)  // parametric (ICC 4.0)
 #define icSigMultiLocalizedUnicodeType  ((icTagTypeSignature) 0x6D6C7563L)
@@ -249,6 +276,8 @@ typedef HANDLE LCMSHANDLE;
 #define icSigChromaticityType           ((icTagTypeSignature) 0x6368726dL)
 #define icSiglutAtoBType                ((icTagTypeSignature) 0x6d414220L)  // mAB 
 #define icSiglutBtoAType                ((icTagTypeSignature) 0x6d424120L)  // mBA 
+#define icSigColorantTableType          ((icTagTypeSignature) 0x636c7274L)  // clrt
+#define icSigHPGamutDescType            ((icTagTypeSignature) 0x676D7441L)  // gmtA H. Zeng               
 
 
 typedef struct {
@@ -481,6 +510,7 @@ typedef LCMSHANDLE cmsHTRANSFORM;
 #define TYPE_CMY_16_SE         (COLORSPACE_SH(PT_CMY)|CHANNELS_SH(3)|BYTES_SH(2)|ENDIAN16_SH(1))
 
 #define TYPE_CMYK_8            (COLORSPACE_SH(PT_CMYK)|CHANNELS_SH(4)|BYTES_SH(1))
+#define TYPE_CMYKA_8           (COLORSPACE_SH(PT_CMYK)|EXTRA_SH(1)|CHANNELS_SH(4)|BYTES_SH(1))  
 #define TYPE_CMYK_8_REV        (COLORSPACE_SH(PT_CMYK)|CHANNELS_SH(4)|BYTES_SH(1)|FLAVOR_SH(1))
 #define TYPE_YUVK_8            TYPE_CMYK_8_REV
 #define TYPE_CMYK_8_PLANAR     (COLORSPACE_SH(PT_CMYK)|CHANNELS_SH(4)|BYTES_SH(1)|PLANAR_SH(1))
@@ -612,10 +642,28 @@ typedef LCMSHANDLE cmsHTRANSFORM;
 
 #endif
 
+
+// Gamma table parameters
+
+typedef struct {
+
+	unsigned int Crc32;  // Has my table been touched?
+
+	// Keep initial parameters for further serialization
+
+    int          Type;
+    double       Params[10];
+
+	}  LCMSGAMMAPARAMS, FAR* LPLCMSGAMMAPARAMS;
+    
 // Gamma tables.
 
 typedef struct {
-              
+
+	LCMSGAMMAPARAMS Birth;	// Parameters used for table creation
+                      
+    // Table-based representation follows
+
     int  nEntries;
     WORD GammaTable[1];
 
@@ -869,7 +917,6 @@ LCMSAPI double        LCMSEXPORT cmsEstimateGammaEx(LPWORD Table, int nEntries, 
 LCMSAPI LPGAMMATABLE  LCMSEXPORT cmsReadICCGamma(cmsHPROFILE hProfile, icTagSignature sig);
 LCMSAPI LPGAMMATABLE  LCMSEXPORT cmsReadICCGammaReversed(cmsHPROFILE hProfile, icTagSignature sig);
 
-
 // Access to Profile data.
 
 LCMSAPI BOOL          LCMSEXPORT cmsTakeMediaWhitePoint(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
@@ -877,6 +924,7 @@ LCMSAPI BOOL          LCMSEXPORT cmsTakeMediaBlackPoint(LPcmsCIEXYZ Dest, cmsHPR
 LCMSAPI BOOL          LCMSEXPORT cmsTakeIluminant(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile);
 LCMSAPI BOOL          LCMSEXPORT cmsTakeColorants(LPcmsCIEXYZTRIPLE Dest, cmsHPROFILE hProfile);
 LCMSAPI DWORD         LCMSEXPORT cmsTakeHeaderFlags(cmsHPROFILE hProfile);
+LCMSAPI DWORD         LCMSEXPORT cmsTakeHeaderAttributes(cmsHPROFILE hProfile);
 
 LCMSAPI void          LCMSEXPORT cmsSetLanguage(int LanguageCode, int CountryCode);
 LCMSAPI const char*   LCMSEXPORT cmsTakeProductName(cmsHPROFILE hProfile);
@@ -919,11 +967,46 @@ typedef struct {
 
 LCMSAPI LPcmsSEQ LCMSEXPORT cmsReadProfileSequenceDescription(cmsHPROFILE hProfile);
 
+
+
+// Extended gamut tag -- an HP extension
+
+#define LCMSGAMUTMETHOD_SEGMENTMAXIMA   0
+#define LCMSGAMUTMETHOD_CONVEXHULL      1
+#define LCMSGAMUTMETHOD_ALPHASHAPE      2
+
+
+#define LCMSGAMUT_PHYSICAL				0
+#define LCMSGAMUT_HP1					1
+#define LCMSGAMUT_HP2					2
+
+typedef struct {
+
+			icColorSpaceSignature  CoordSig;	// Gamut coordinates signature
+			icUInt16Number         Method;		// Method used to generate gamut
+			icUInt16Number         Usage;       // Gamut usage or intent
+
+			char Description[512];				// Textual description
+			
+			cmsViewingConditions   Vc;			// The viewing conditions
+
+			icUInt32Number         Count;		// Number of entries		
+			double				   Data[1];	    // The current data		
+
+	} cmsGAMUTEX, FAR* LPcmsGAMUTEX;
+
+
+LCMSAPI LPcmsGAMUTEX LCMSEXPORT cmsReadExtendedGamut(cmsHPROFILE hProfile, int index);
+LCMSAPI void         LCMSEXPORT cmsFreeExtendedGamut(LPcmsGAMUTEX gex);
+
+
+
  
 // Translate form/to our notation to ICC 
 LCMSAPI icColorSpaceSignature LCMSEXPORT _cmsICCcolorSpace(int OurNotation);
 LCMSAPI                   int LCMSEXPORT _cmsLCMScolorSpace(icColorSpaceSignature ProfileSpace);
 LCMSAPI                   int LCMSEXPORT _cmsChannelsOf(icColorSpaceSignature ColorSpace);
+LCMSAPI BOOL                  LCMSEXPORT _cmsIsMatrixShaper(cmsHPROFILE hProfile);
 
 #define LCMS_USED_AS_INPUT      0
 #define LCMS_USED_AS_OUTPUT     1
@@ -936,12 +1019,16 @@ LCMSAPI icColorSpaceSignature   LCMSEXPORT cmsGetColorSpace(cmsHPROFILE hProfile
 LCMSAPI icProfileClassSignature LCMSEXPORT cmsGetDeviceClass(cmsHPROFILE hProfile);
 LCMSAPI DWORD                   LCMSEXPORT cmsGetProfileICCversion(cmsHPROFILE hProfile);
 LCMSAPI void                    LCMSEXPORT cmsSetProfileICCversion(cmsHPROFILE hProfile, DWORD Version);
+LCMSAPI icInt32Number           LCMSEXPORT cmsGetTagCount(cmsHPROFILE hProfile);
+LCMSAPI icTagSignature          LCMSEXPORT cmsGetTagSignature(cmsHPROFILE hProfile, icInt32Number n);
+
 
 LCMSAPI void          LCMSEXPORT cmsSetDeviceClass(cmsHPROFILE hProfile, icProfileClassSignature sig);
 LCMSAPI void          LCMSEXPORT cmsSetColorSpace(cmsHPROFILE hProfile, icColorSpaceSignature sig);
 LCMSAPI void          LCMSEXPORT cmsSetPCS(cmsHPROFILE hProfile, icColorSpaceSignature pcs);
 LCMSAPI void          LCMSEXPORT cmsSetRenderingIntent(cmsHPROFILE hProfile, int RenderingIntent);
 LCMSAPI void          LCMSEXPORT cmsSetHeaderFlags(cmsHPROFILE hProfile, DWORD Flags);
+LCMSAPI void          LCMSEXPORT cmsSetHeaderAttributes(cmsHPROFILE hProfile, DWORD Flags);
 LCMSAPI void          LCMSEXPORT cmsSetProfileID(cmsHPROFILE hProfile, LPBYTE ProfileID);
 
 // Intents
@@ -980,9 +1067,13 @@ LCMSAPI void          LCMSEXPORT cmsSetProfileID(cmsHPROFILE hProfile, LPBYTE Pr
 #define cmsFLAGS_SOFTPROOFING             0x4000    // Do softproofing
 
 
+// Black preservation
+
+#define cmsFLAGS_PRESERVEBLACK            0x8000
+            
 // CRD special
 
-#define cmsFLAGS_NODEFAULTRESOURCEDEF  0x00010000
+#define cmsFLAGS_NODEFAULTRESOURCEDEF     0x00010000
 
 // Gridpoints
 
@@ -1027,6 +1118,11 @@ LCMSAPI void         LCMSEXPORT cmsSetAlarmCodes(int r, int g, int b);
 LCMSAPI void         LCMSEXPORT cmsGetAlarmCodes(int *r, int *g, int *b);
 
 
+// Adaptation state for absolute colorimetric intent
+
+LCMSAPI double       LCMSEXPORT cmsSetAdaptationState(double d);
+
+
 // Named color support
 typedef struct {                
                 char Name[MAX_PATH];
@@ -1052,6 +1148,10 @@ typedef struct {
 LCMSAPI int  LCMSEXPORT cmsNamedColorCount(cmsHTRANSFORM xform);
 LCMSAPI BOOL LCMSEXPORT cmsNamedColorInfo(cmsHTRANSFORM xform, int nColor, char* Name, char* Prefix, char* Suffix);
 LCMSAPI int  LCMSEXPORT cmsNamedColorIndex(cmsHTRANSFORM xform, const char* Name);
+
+// Colorant tables
+
+LCMSAPI LPcmsNAMEDCOLORLIST LCMSEXPORT cmsReadColorantTable(cmsHPROFILE hProfile, icTagSignature sig);
 
 // Profile creation 
 
@@ -1100,15 +1200,16 @@ LCMSAPI void LCMSEXPORT cmsSetErrorHandler(cmsErrorHandlerFunction Fn);
 
 typedef struct _lcms_LUT_struc LUT, FAR* LPLUT; // opaque pointer
 
-LCMSAPI LPLUT LCMSEXPORT cmsAllocLUT(void);
-LCMSAPI LPLUT LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nTable);
-LCMSAPI LPLUT LCMSEXPORT cmsAlloc3DGrid(LPLUT Lut, int clutPoints, int inputChan, int outputChan);
-LCMSAPI LPLUT LCMSEXPORT cmsSetMatrixLUT(LPLUT Lut, LPMAT3 M);
-LCMSAPI LPLUT LCMSEXPORT cmsSetMatrixLUT4(LPLUT Lut, LPMAT3 M, LPVEC3 off, DWORD dwFlags);
-LCMSAPI void  LCMSEXPORT cmsFreeLUT(LPLUT Lut);
-LCMSAPI void  LCMSEXPORT cmsEvalLUT(LPLUT Lut, WORD In[], WORD Out[]);
-LCMSAPI LPLUT LCMSEXPORT cmsReadICCLut(cmsHPROFILE hProfile, icTagSignature sig);
-LCMSAPI LPLUT LCMSEXPORT cmsDupLUT(LPLUT Orig);
+LCMSAPI LPLUT  LCMSEXPORT cmsAllocLUT(void);
+LCMSAPI LPLUT  LCMSEXPORT cmsAllocLinearTable(LPLUT NewLUT, LPGAMMATABLE Tables[], int nTable);
+LCMSAPI LPLUT  LCMSEXPORT cmsAlloc3DGrid(LPLUT Lut, int clutPoints, int inputChan, int outputChan);
+LCMSAPI LPLUT  LCMSEXPORT cmsSetMatrixLUT(LPLUT Lut, LPMAT3 M);
+LCMSAPI LPLUT  LCMSEXPORT cmsSetMatrixLUT4(LPLUT Lut, LPMAT3 M, LPVEC3 off, DWORD dwFlags);
+LCMSAPI void   LCMSEXPORT cmsFreeLUT(LPLUT Lut);
+LCMSAPI void   LCMSEXPORT cmsEvalLUT(LPLUT Lut, WORD In[], WORD Out[]);
+LCMSAPI double LCMSEXPORT cmsEvalLUTreverse(LPLUT Lut, WORD Target[], WORD Result[], LPWORD Hint);
+LCMSAPI LPLUT  LCMSEXPORT cmsReadICCLut(cmsHPROFILE hProfile, icTagSignature sig);
+LCMSAPI LPLUT  LCMSEXPORT cmsDupLUT(LPLUT Orig);
 
 // LUT Sampling
 
@@ -1150,6 +1251,7 @@ LCMSAPI int             LCMSEXPORT cmsIT8SetTable(LCMSHANDLE IT8, int nTable);
 LCMSAPI LCMSHANDLE      LCMSEXPORT cmsIT8LoadFromFile(const char* cFileName);
 LCMSAPI LCMSHANDLE      LCMSEXPORT cmsIT8LoadFromMem(void *Ptr, size_t len);
 LCMSAPI BOOL            LCMSEXPORT cmsIT8SaveToFile(LCMSHANDLE IT8, const char* cFileName);
+LCMSAPI BOOL            LCMSEXPORT cmsIT8SaveToMem(LCMSHANDLE hIT8, void *MemPtr, size_t* BytesNeeded);
 
 // Properties
 LCMSAPI const char*     LCMSEXPORT cmsIT8GetSheetType(LCMSHANDLE hIT8);
@@ -1235,9 +1337,50 @@ LCMSAPI BOOL LCMSEXPORT _cmsAddGammaTag(cmsHPROFILE hProfile, icTagSignature sig
 LCMSAPI BOOL LCMSEXPORT _cmsAddChromaticityTag(cmsHPROFILE hProfile, icTagSignature sig, LPcmsCIExyYTRIPLE Chrm);
 LCMSAPI BOOL LCMSEXPORT _cmsAddSequenceDescriptionTag(cmsHPROFILE hProfile, icTagSignature sig, LPcmsSEQ PSeq);
 LCMSAPI BOOL LCMSEXPORT _cmsAddNamedColorTag(cmsHPROFILE hProfile, icTagSignature sig, LPcmsNAMEDCOLORLIST nc);
+LCMSAPI BOOL LCMSEXPORT _cmsAddDateTimeTag(cmsHPROFILE hProfile, icTagSignature sig, struct tm *DateTime);
+LCMSAPI BOOL LCMSEXPORT _cmsAddColorantTableTag(cmsHPROFILE hProfile, icTagSignature sig, LPcmsNAMEDCOLORLIST nc);
 
-//  -- end of morge
+// --------------------------------------------------------------------------------------------------- Inline functions
 
+// Fast floor conversion logic. Thanks to Sree Kotay and Stuart Nixon 
+// note than this only works in the range ..-32767...+32767 because 
+// mantissa is interpreted as 15.16 fixed point.
+// The union is to avoid pointer aliasing overoptimization.
+
+LCMS_INLINE int _cmsQuickFloor(double val)
+{
+#if USE_DEFAULT_FLOOR_CONVERSION
+    return (int) floor(val);
+#else
+    const double _lcms_double2fixmagic = 68719476736.0 * 1.5;  // 2^36 * 1.5, (52-16=36) uses limited precision to floor
+    union {
+        double val;
+        int halves[2];
+    } temp;
+    
+    temp.val = val + _lcms_double2fixmagic;
+
+    
+#if USE_BIG_ENDIAN
+    return temp.halves[1] >> 16;
+#else
+    return temp.halves[0] >> 16;
+#endif
+#endif
+}
+
+
+
+// Clamp with saturation
+
+LCMS_INLINE WORD _cmsClampWord(int in)
+{
+       if (in < 0) return 0;
+       if (in > 0xFFFF) return 0xFFFFU;   // Including marker
+       return (WORD) in;
+}
+
+// ------------------------------------------------------------------------------------------- end of inline functions
 
 // Signal error from inside lcms code
 
@@ -1313,30 +1456,36 @@ typedef struct {                // Matrix (Fixed 15.16)
 
 
 
-void cdecl VEC3init(LPVEC3 r, double x, double y, double z);   // double version
-void cdecl VEC3initF(LPWVEC3 r, double x, double y, double z); // Fix32 version
-void cdecl VEC3toFix(LPWVEC3 r, LPVEC3 v);
-void cdecl VEC3fromFix(LPVEC3 r, LPWVEC3 v);
-void cdecl VEC3scaleFix(LPWORD r, LPWVEC3 Scale);
-void cdecl VEC3swap(LPVEC3 a, LPVEC3 b);
-void cdecl VEC3divK(LPVEC3 r, LPVEC3 v, double d);
-void cdecl VEC3perK(LPVEC3 r, LPVEC3 v, double d);
-void cdecl VEC3minus(LPVEC3 r, LPVEC3 a, LPVEC3 b);
-void cdecl VEC3perComp(LPVEC3 r, LPVEC3 a, LPVEC3 b);
-BOOL cdecl VEC3equal(LPWVEC3 a, LPWVEC3 b, double Tolerance);
-void cdecl VEC3scaleAndCut(LPWVEC3 r, LPVEC3 v, double d);
-void cdecl VEC3saturate(LPVEC3 v);
+void   cdecl VEC3init(LPVEC3 r, double x, double y, double z);   // double version
+void   cdecl VEC3initF(LPWVEC3 r, double x, double y, double z); // Fix32 version
+void   cdecl VEC3toFix(LPWVEC3 r, LPVEC3 v);
+void   cdecl VEC3fromFix(LPVEC3 r, LPWVEC3 v);
+void   cdecl VEC3scaleFix(LPWORD r, LPWVEC3 Scale);
+void   cdecl VEC3swap(LPVEC3 a, LPVEC3 b);
+void   cdecl VEC3divK(LPVEC3 r, LPVEC3 v, double d);
+void   cdecl VEC3perK(LPVEC3 r, LPVEC3 v, double d);
+void   cdecl VEC3minus(LPVEC3 r, LPVEC3 a, LPVEC3 b);
+void   cdecl VEC3perComp(LPVEC3 r, LPVEC3 a, LPVEC3 b);
+BOOL   cdecl VEC3equal(LPWVEC3 a, LPWVEC3 b, double Tolerance);
+BOOL   cdecl VEC3equalF(LPVEC3 a, LPVEC3 b, double Tolerance);
+void   cdecl VEC3scaleAndCut(LPWVEC3 r, LPVEC3 v, double d);
+void   cdecl VEC3cross(LPVEC3 r, LPVEC3 u, LPVEC3 v);
+void   cdecl VEC3saturate(LPVEC3 v);
+double cdecl VEC3distance(LPVEC3 a, LPVEC3 b);
+double cdecl VEC3length(LPVEC3 a);
 
-void cdecl MAT3identity(LPMAT3 a);
-void cdecl MAT3per(LPMAT3 r, LPMAT3 a, LPMAT3 b);
-void cdecl MAT3perK(LPMAT3 r, LPMAT3 v, double d);
-int  cdecl MAT3inverse(LPMAT3 a, LPMAT3 b);
-void cdecl MAT3eval(LPVEC3 r, LPMAT3 a, LPVEC3 v);
-void cdecl MAT3toFix(LPWMAT3 r, LPMAT3 v);
-void cdecl MAT3fromFix(LPMAT3 r, LPWMAT3 v);
-void cdecl MAT3evalW(LPWVEC3 r, LPWMAT3 a, LPWVEC3 v);
-BOOL cdecl MAT3isIdentity(LPWMAT3 a, double Tolerance);
-void cdecl MAT3scaleAndCut(LPWMAT3 r, LPMAT3 v, double d);
+void   cdecl MAT3identity(LPMAT3 a);
+void   cdecl MAT3per(LPMAT3 r, LPMAT3 a, LPMAT3 b);
+void   cdecl MAT3perK(LPMAT3 r, LPMAT3 v, double d);
+int    cdecl MAT3inverse(LPMAT3 a, LPMAT3 b);
+BOOL   cdecl MAT3solve(LPVEC3 x, LPMAT3 a, LPVEC3 b);
+double cdecl MAT3det(LPMAT3 m);
+void   cdecl MAT3eval(LPVEC3 r, LPMAT3 a, LPVEC3 v);
+void   cdecl MAT3toFix(LPWMAT3 r, LPMAT3 v);
+void   cdecl MAT3fromFix(LPMAT3 r, LPWMAT3 v);
+void   cdecl MAT3evalW(LPWVEC3 r, LPWMAT3 a, LPWVEC3 v);
+BOOL   cdecl MAT3isIdentity(LPWMAT3 a, double Tolerance);
+void   cdecl MAT3scaleAndCut(LPWMAT3 r, LPMAT3 v, double d);
 
 // Is a table linear?
 
@@ -1376,7 +1525,7 @@ typedef struct _lcms_l16params_struc {    // Used on 16 bits interpolations
 
                _cms3DLERP Interp3D; // The interpolation routine
                 
-                LPL8PARAMS p8;      // Points to some tables for 8-bit speedup
+                LPL8PARAMS p8;      // Points to some tables for 8-bit speedup              
 
                } L16PARAMS, *LPL16PARAMS;
 
@@ -1466,11 +1615,25 @@ struct _lcms_LUT_struc {
                L16PARAMS L4params;             
                unsigned int L4Entries;
 
+               // Gray axes fixup. Only on v2 8-bit Lab LUT
+
+               BOOL FixGrayAxes;
+
+
+			   // Parameters used for curve creation
+
+			   LCMSGAMMAPARAMS LCurvesBirth[4][MAXCHANNELS];
+               
 
                }; // LUT, FAR* LPLUT;
 
 
 BOOL         cdecl _cmsSmoothEndpoints(LPWORD Table, int nEntries);
+
+
+// CRC of gamma tables
+
+unsigned int _cmsCrc32OfGammaTable(LPGAMMATABLE Table);
 
 // Sampled curves
 
@@ -1553,11 +1716,11 @@ BOOL                 cdecl cmsAppendNamedColor(cmsHTRANSFORM xform, const char* 
 
 // This is the internal struct holding profile details.
 
-typedef struct {
+typedef struct _lcms_iccprofile_struct {
 
-              void*           stream;   // Associated stream. If NULL,
-                                        // tags are supposed to be in
-                                        // memory rather than in a file.
+              void* stream;   // Associated stream. If NULL,
+                              // tags are supposed to be in
+                              // memory rather than in a file.
 
                // Only most important items found in ICC profile
 
@@ -1566,6 +1729,7 @@ typedef struct {
                icColorSpaceSignature   PCS;
                icRenderingIntent       RenderingIntent;
                icUInt32Number          flags;
+			   icUInt32Number          attributes;
                cmsCIEXYZ               Illuminant;
                
                // Additions for V4 profiles
@@ -1579,36 +1743,53 @@ typedef struct {
 
                // Dictionary
 
-               icInt32Number   TagCount;
-               icTagSignature  TagNames[MAX_TABLE_TAG];
-               size_t          TagSizes[MAX_TABLE_TAG];
-               size_t          TagOffsets[MAX_TABLE_TAG];
-               LPVOID          TagPtrs[MAX_TABLE_TAG];
+               icInt32Number           TagCount;
+               icTagSignature          TagNames[MAX_TABLE_TAG];
+               size_t                  TagSizes[MAX_TABLE_TAG];
+               size_t                  TagOffsets[MAX_TABLE_TAG];
+               LPVOID                  TagPtrs[MAX_TABLE_TAG];
 
-               char            PhysicalFile[MAX_PATH];
+               char                    PhysicalFile[MAX_PATH];
                
-               BOOL            IsWrite;
-               BOOL            SaveAs8Bits;
+               BOOL                    IsWrite;
+               BOOL                    SaveAs8Bits;
 
-               struct tm       Created;
+               struct tm               Created;
 
                // I/O handlers
 
-               size_t (* Read)(void *buffer, size_t size, size_t count, void *stream);
+               size_t (* Read)(void *buffer, size_t size, size_t count, struct _lcms_iccprofile_struct* Icc);
                
-               BOOL   (* Seek)(void* stream, size_t offset);
-               BOOL   (* Close)(void* stream);
-               size_t (* Tell)(void* stream);
+               BOOL   (* Seek)(struct _lcms_iccprofile_struct* Icc, size_t offset);
+               BOOL   (* Close)(struct _lcms_iccprofile_struct* Icc);
+               size_t (* Tell)(struct _lcms_iccprofile_struct* Icc);
                
                // Writting
 
-               BOOL   (* Write)(void* stream, size_t size, LPVOID Ptr);
-             
+               BOOL   (* Write)(struct _lcms_iccprofile_struct* Icc, size_t size, LPVOID Ptr);
+                           
+               size_t UsedSpace;
+
+
               } LCMSICCPROFILE, FAR* LPLCMSICCPROFILE;
 
 
 // Create an empty template for virtual profiles
 cmsHPROFILE cdecl _cmsCreateProfilePlaceholder(void);
+
+// Search into tag dictionary
+icInt32Number cdecl _cmsSearchTag(LPLCMSICCPROFILE Profile, icTagSignature sig, BOOL lSignalError);
+
+// Search for a particular tag, replace if found or add new one else
+LPVOID _cmsInitTag(LPLCMSICCPROFILE Icc, icTagSignature sig, size_t size, const void* Init);
+
+
+LPLCMSICCPROFILE cdecl _cmsCreateProfileFromFilePlaceholder(const char* FileName);
+LPLCMSICCPROFILE cdecl _cmsCreateProfileFromMemPlaceholder(LPVOID MemPtr, DWORD dwSize);
+
+void _cmsSetSaveToDisk(LPLCMSICCPROFILE Icc, const char* FileName);
+void _cmsSetSaveToMemory(LPLCMSICCPROFILE Icc, LPVOID MemPtr, size_t dwSize);
+
 
 
 // These macros unpack format specifiers into integers
@@ -1651,70 +1832,75 @@ typedef LPBYTE (* _cmsFIXFN)(register struct _cmstransform_struct *info,
 // Transformation
 typedef struct _cmstransform_struct {
 
-                            // Keep formats for further reference
-                            DWORD InputFormat, OutputFormat;
-                           
-                            DWORD StrideIn, StrideOut;      // Planar support
+                    // Keep formats for further reference
+                    DWORD InputFormat, OutputFormat;
+                   
+                    DWORD StrideIn, StrideOut;      // Planar support
 
-                            int Intent, ProofIntent;
-                            int DoGamutCheck;
+                    int Intent, ProofIntent;
+                    int DoGamutCheck;
 
-                           
-                            cmsHPROFILE InputProfile;
-                            cmsHPROFILE OutputProfile;
-                            cmsHPROFILE PreviewProfile;
-                           
-                            icColorSpaceSignature EntryColorSpace;
-                            icColorSpaceSignature ExitColorSpace;
-                        
-                            WMAT3 m1, m2;       // Matrix holding inter PCS operation
-                            WVEC3 of1, of2;     // Offset terms
+                   
+                    cmsHPROFILE InputProfile;
+                    cmsHPROFILE OutputProfile;
+                    cmsHPROFILE PreviewProfile;
+                   
+                    icColorSpaceSignature EntryColorSpace;
+                    icColorSpaceSignature ExitColorSpace;
+                
+                    WMAT3 m1, m2;       // Matrix holding inter PCS operation
+                    WVEC3 of1, of2;     // Offset terms
 
-                            _cmsCOLORCALLBACKFN xform;
+                    _cmsCOLORCALLBACKFN xform;
 
-                            // Steps in xFORM
+                    // Steps in xFORM
 
-                            _cmsFIXFN   FromInput;
-                            _cmsTRANSFN FromDevice;
-                            _cmsADJFN   Stage1;
-                            _cmsADJFN   Stage2;
-                            _cmsTRANSFN ToDevice;
-                            _cmsFIXFN   ToOutput;
+                    _cmsFIXFN   FromInput;
+                    _cmsTRANSFN FromDevice;
+                    _cmsADJFN   Stage1;
+                    _cmsADJFN   Stage2;
+                    _cmsTRANSFN ToDevice;
+                    _cmsFIXFN   ToOutput;
 
-                            // LUTs
+                    // LUTs
 
-                            LPLUT Device2PCS;
-                            LPLUT PCS2Device;
-                            LPLUT Gamut;         // Gamut check
-                            LPLUT Preview;       // Preview (Proof)
+                    LPLUT Device2PCS;
+                    LPLUT PCS2Device;
+                    LPLUT Gamut;         // Gamut check
+                    LPLUT Preview;       // Preview (Proof)
 
-                            LPLUT DeviceLink;    // Precalculated grid - device link profile
-                            LPLUT GamutCheck;    // Precalculated device -> gamut check
+                    LPLUT DeviceLink;    // Precalculated grid - device link profile
+                    LPLUT GamutCheck;    // Precalculated device -> gamut check
 
-                            // Matrix/Shapers
+                    // Matrix/Shapers
 
-                            LPMATSHAPER InMatShaper;
-                            LPMATSHAPER OutMatShaper;
-                            LPMATSHAPER SmeltMatShaper;
+                    LPMATSHAPER InMatShaper;
+                    LPMATSHAPER OutMatShaper;
+                    LPMATSHAPER SmeltMatShaper;
 
 
-                            // Phase of Lab/XYZ, Abs/Rel
+                    // Phase of Lab/XYZ, Abs/Rel
 
-                            int Phase1, Phase2, Phase3;
+                    int Phase1, Phase2, Phase3;
 
-                            // Named color table
-                            LPcmsNAMEDCOLORLIST NamedColorList;
-                               
-                            // Flag for transform involving v4 profiles
+                    // Named color table
+                    
+                    LPcmsNAMEDCOLORLIST NamedColorList;
+                       
+                    // Flag for transform involving v4 profiles
 
-                            BOOL lInputV4Lab, lOutputV4Lab;
+                    BOOL lInputV4Lab, lOutputV4Lab;
 
-                            // 1-pixel cache
+                    // 1-pixel cache
 
-                            WORD CacheIn[MAXCHANNELS];
-                            WORD CacheOut[MAXCHANNELS];
+                    WORD CacheIn[MAXCHANNELS];
+                    WORD CacheOut[MAXCHANNELS];
 
-                            } _cmsTRANSFORM,FAR *_LPcmsTRANSFORM;
+
+                    double AdaptationState; // Figure for v4 incomplete state of adaptation
+
+
+                   } _cmsTRANSFORM,FAR *_LPcmsTRANSFORM;
 
 
 
@@ -1741,6 +1927,7 @@ int cdecl cmsChooseCnvrt(int Absolute,
                              LPcmsCIEXYZ IlluminantOut,
                              LPMAT3 ChromaticAdaptationMatrixOut,
                  int DoBPC,
+                 double AdaptationState,
                  _cmsADJFN *fn1,
                  LPWMAT3 wm, LPWVEC3 wof);
 
@@ -1754,8 +1941,6 @@ BOOL cdecl   _cmsEndPointsBySpace(icColorSpaceSignature Space,
 WORD * cdecl _cmsWhiteBySpace(icColorSpaceSignature Space);
 
 
-WORD cdecl Clamp_XYZ(int in);
-WORD cdecl Clamp_RGB(int in);
 
 WORD cdecl Clamp_L(Fixed32 in);
 WORD cdecl Clamp_ab(Fixed32 in);
@@ -1771,6 +1956,9 @@ int cdecl _cmsReasonableGridpointsByColorspace(icColorSpaceSignature Colorspace,
 
 // Precalculate device link
 LPLUT cdecl _cmsPrecalculateDeviceLink(cmsHTRANSFORM h, DWORD dwFlags);
+
+// Precalculate black preserving device link
+LPLUT _cmsPrecalculateBlackPreservingDeviceLink(cmsHTRANSFORM hCMYK2CMYK, DWORD dwFlags);
 
 // Precalculate gamut check
 LPLUT cdecl _cmsPrecalculateGamutCheck(cmsHTRANSFORM h);
@@ -1789,6 +1977,10 @@ LPLUT cdecl _cmsComputeSoftProofLUT(cmsHPROFILE hProfile, int nIntent);
 
 // Find a suitable prelinearization tables, matching the given transform
 void cdecl _cmsComputePrelinearizationTablesFromXFORM(cmsHTRANSFORM h[], int nTransforms, LPLUT Grid);
+
+
+// Build a tone curve for K->K' if possible (only works on CMYK)
+LPGAMMATABLE _cmsBuildKToneCurve(cmsHTRANSFORM hCMYK2CMYK, int nPoints);
 
 // These are two VITAL macros, from converting between 8 and 16 bit
 // representation. 
