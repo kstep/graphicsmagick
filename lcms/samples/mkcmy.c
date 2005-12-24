@@ -28,14 +28,6 @@
 
 #include "lcms.h"
 
-/*
-
-
-  Lab -> XYZ -> RGB -> CMY
-  ========================
-
-*/
-
 
 typedef struct {
 				cmsHPROFILE   hLab;
@@ -135,7 +127,7 @@ void InitCargo(LPCARGO Cargo)
 
 	Cargo -> hLab = cmsCreateLabProfile(NULL);
 	Cargo -> hRGB = CreateRGBSpace();
-
+	
 	Cargo->Lab2RGB = cmsCreateTransform(Cargo->hLab, TYPE_Lab_16, 
 									    Cargo ->hRGB, TYPE_RGB_16,
 										INTENT_RELATIVE_COLORIMETRIC, 
@@ -207,9 +199,10 @@ int main(int argc, char *argv[])
 	cmsAddTag(hProfile, icSigBToA0Tag, BToA0);
 
 	cmsSetColorSpace(hProfile, icSigCmyData);
+	cmsSetDeviceClass(hProfile, icSigOutputClass);
 
 	cmsAddTag(hProfile, icSigProfileDescriptionTag, "Little cms CMY mixing");
-    cmsAddTag(hProfile, icSigCopyrightTag,          "Copyright (c) Marti Maria, 2002. All rights reserved.");
+    cmsAddTag(hProfile, icSigCopyrightTag,          "Copyright (c) Marti Maria, 2005. All rights reserved.");
     cmsAddTag(hProfile, icSigDeviceMfgDescTag,      "Little cms");    
     cmsAddTag(hProfile, icSigDeviceModelDescTag,    "CMY mixing");
 
@@ -222,6 +215,7 @@ int main(int argc, char *argv[])
 	cmsCloseProfile(hProfile);	
 	FreeCargo(&Cargo);
 	fprintf(stderr, "Done.\n");
+
 
 
 	return 0;

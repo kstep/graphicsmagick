@@ -702,8 +702,10 @@ int bchswSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
     cmsCIEXYZ XYZ;
     LPBCHSWADJUSTS bchsw = (LPBCHSWADJUSTS) Cargo;
     
+
     cmsLabEncoded2Float(&LabIn, In);
-     
+    
+
     cmsLab2LCh(&LChIn, &LabIn);
 
     // Do some adjusts on LCh
@@ -712,13 +714,14 @@ int bchswSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
     LChOut.C = LChIn.C + bchsw -> Saturation;
     LChOut.h = LChIn.h + bchsw -> Hue;
     
+        
     cmsLCh2Lab(&LabOut, &LChOut);
 
     // Move white point in Lab
 
     cmsLab2XYZ(&bchsw ->WPsrc,  &XYZ, &LabOut);
     cmsXYZ2Lab(&bchsw ->WPdest, &LabOut, &XYZ);
-
+    
     // Back to encoded
 
     cmsFloat2LabEncoded(Out, &LabOut);
@@ -831,7 +834,7 @@ cmsHPROFILE LCMSEXPORT cmsCreateNULLProfile(void)
 
        cmsAllocLinearTable(Lut, &EmptyTab, 2);
         
-       cmsAddTag(hProfile, icSigBToA0Tag,    (LPVOID) Lut);
+       cmsAddTag(hProfile, icSigBToA0Tag, (LPVOID) Lut);
     
        cmsFreeLUT(Lut);
        cmsFreeGamma(EmptyTab);

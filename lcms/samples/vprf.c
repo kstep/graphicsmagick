@@ -35,6 +35,9 @@ cmsHPROFILE OpenStockProfile(const char* File)
        if (stricmp(File, "*Lab") == 0)
                 return cmsCreateLabProfile(NULL);
        
+       if (stricmp(File, "*Lab4") == 0)
+                return cmsCreateLab4Profile(NULL);
+       
        if (stricmp(File, "*LabD65") == 0) {
 
            cmsCIExyY D65xyY;

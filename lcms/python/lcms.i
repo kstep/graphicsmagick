@@ -109,9 +109,9 @@ cmsSetErrorHandler(MyErrorHandler);
       return NULL;
     }
 	
-	if ((SWIG_ConvertPtr(tmp[0], (void **) &gamma[0], SWIGTYPE_LPGAMMATABLE,1)) == -1) return NULL;
-	if ((SWIG_ConvertPtr(tmp[1], (void **) &gamma[1], SWIGTYPE_LPGAMMATABLE,1)) == -1) return NULL;
-	if ((SWIG_ConvertPtr(tmp[2], (void **) &gamma[2], SWIGTYPE_LPGAMMATABLE,1)) == -1) return NULL;
+	if ((SWIG_ConvertPtr(tmp[0], (void **) &gamma[0], SWIGTYPE_p_GAMMATABLE,1)) == -1) return NULL;
+	if ((SWIG_ConvertPtr(tmp[1], (void **) &gamma[1], SWIGTYPE_p_GAMMATABLE,1)) == -1) return NULL;
+	if ((SWIG_ConvertPtr(tmp[2], (void **) &gamma[2], SWIGTYPE_p_GAMMATABLE,1)) == -1) return NULL;
 
     $1 = gamma;
 

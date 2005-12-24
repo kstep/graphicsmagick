@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2005 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -239,6 +239,18 @@ typedef struct {
 
 
 
+typedef struct {
+
+		FILE* stream;	// For save-to-file behaviour
+
+		LPBYTE Base;
+		LPBYTE Ptr;		// For save-to-mem behaviour
+		size_t Used;
+		size_t Max;
+
+	} SAVESTREAM, FAR* LPSAVESTREAM;
+
+
 // ------------------------------------------------------ IT8 parsing routines
 
 
@@ -267,7 +279,7 @@ static const KEYWORD TabKeys[] = {
 
 // Predefined properties
 
-static char* PredefinedProperties[] = {
+static const char* PredefinedProperties[] = {
 
         "NUMBER_OF_FIELDS",    // Required - NUMBER OF FIELDS
         "NUMBER_OF_SETS",      // Required - NUMBER OF SETS
@@ -308,7 +320,7 @@ static char* PredefinedProperties[] = {
 
 
 // Predefined sample types on dataset
-static char* PredefinedSampleID[] = {
+static const char* PredefinedSampleID[] = {
 
         "CMYK_C",         // Cyan component of CMYK data expressed as a percentage
         "CMYK_M",         // Magenta component of CMYK data expressed as a percentage
@@ -461,7 +473,7 @@ SYMBOL BinSrchKey(const char *id)
 static
 double xpow10(int n)
 {
-    return pow(10, n);
+    return pow(10, (double) n);
 }
 
 
@@ -665,7 +677,7 @@ void InSymbol(LPIT8 it8)
                         sprintf(it8->id, it8 ->DoubleFormatter, it8->dnum);
                     }
 
-                    k = strlen(it8 ->id);
+                    k = (int) strlen(it8 ->id);
                     idptr = it8 ->id + k;
                     do {
                 
@@ -911,7 +923,7 @@ void* AllocChunk(LPIT8 it8, size_t size)
                 it8 ->Allocator.BlockSize = size;
 
         it8 ->Allocator.Used = 0;
-        it8 ->Allocator.Block = AllocBigBlock(it8, it8 ->Allocator.BlockSize);
+        it8 ->Allocator.Block = (LPBYTE) AllocBigBlock(it8, it8 ->Allocator.BlockSize);
     }
             
     ptr = it8 ->Allocator.Block + it8 ->Allocator.Used;
@@ -970,7 +982,13 @@ BOOL AddToList(LPIT8 it8, LPKEYVALUE* Head, const char *Key, const char* xValue,
 
     if (IsAvailableOnList(*Head, Key, &last)) {
 
-                    return SynError(it8, "duplicate key <%s>", Key);                                        
+			// This may work for editing properties
+
+			 last->Value   = AllocString(it8, xValue);
+			 last->WriteAs = WriteAs;
+			 return TRUE;
+
+             // return SynError(it8, "duplicate key <%s>", Key);                                        
     }
 
         // Allocate the container
@@ -1043,7 +1061,7 @@ int LCMSEXPORT cmsIT8SetTable(LCMSHANDLE IT8, int nTable)
              AllocTable(it8);
          }
          else {
-             SynError(IT8, "Table %d is out of sequence", nTable);
+             SynError(it8, "Table %d is out of sequence", nTable);
              return -1;
          }
      }
@@ -1327,18 +1345,47 @@ BOOL SetData(LPIT8 it8, int nSet, int nField, const char *Val)
 
 // Writes a string to file
 static
-void WriteStr(FILE *f, char *str)
+void WriteStr(LPSAVESTREAM f, const char *str)
 {
-    if (str == NULL)
-        fwrite(" ", 1, 1, f);
-    else
-        fwrite(str, 1, strlen(str), f);
+	
+	size_t len;
+
+	if (str == NULL) 
+		str = " ";
+	
+	// Lenghth to write
+	len = strlen(str);
+    f ->Used += len;
+	
+
+	if (f ->stream) {	// Should I write it to a file?
+
+		fwrite(str, 1, len, f->stream);
+		
+	}
+	else {	// Or to a memory block?
+						
+
+		if (f ->Base) {   // Am I just counting the bytes?
+			
+			if (f ->Used > f ->Max) {
+
+				cmsSignalError(LCMS_ERRC_ABORTED, "Write to memory overflows in CGATS parser");
+				return;
+			}
+			
+			CopyMemory(f ->Ptr, str, len);
+			f->Ptr += len;
+			
+		}
+						
+	}	
 }
 
 
 // 
 static
-void Writef(FILE* f, const char* frm, ...)
+void Writef(LPSAVESTREAM f, const char* frm, ...)
 {
     char Buffer[4096];
     va_list args;
@@ -1352,7 +1399,7 @@ void Writef(FILE* f, const char* frm, ...)
 
 // Writes full header
 static
-void WriteHeader(LPIT8 it8, FILE *fp)
+void WriteHeader(LPIT8 it8, LPSAVESTREAM fp)
 {
     LPKEYVALUE p;
     LPTABLE t = GetTable(it8);
@@ -1367,7 +1414,8 @@ void WriteHeader(LPIT8 it8, FILE *fp)
             WriteStr(fp, "#\n# ");
             for (Pt = p ->Value; *Pt; Pt++) {
 
-                fwrite(Pt, 1, 1, fp);
+
+				Writef(fp, "%c", *Pt);                
 
                 if (*Pt == '\n') {
                     WriteStr(fp, "# ");
@@ -1425,7 +1473,7 @@ void WriteHeader(LPIT8 it8, FILE *fp)
 
 // Writes the data format
 static
-void WriteDataFormat(FILE *fp, LPIT8 it8)
+void WriteDataFormat(LPSAVESTREAM fp, LPIT8 it8)
 {
     int i, nSamples;
     LPTABLE t = GetTable(it8);
@@ -1448,7 +1496,7 @@ void WriteDataFormat(FILE *fp, LPIT8 it8)
 
 // Writes data array
 static
-void WriteData(FILE *fp, LPIT8 it8)
+void WriteData(LPSAVESTREAM fp, LPIT8 it8)
 {
        int  i, j;
        LPTABLE t = GetTable(it8);
@@ -1492,28 +1540,70 @@ void WriteData(FILE *fp, LPIT8 it8)
 // Saves whole file
 BOOL LCMSEXPORT cmsIT8SaveToFile(LCMSHANDLE hIT8, const char* cFileName)
 {
-    FILE *fp;
+    SAVESTREAM sd;	
     int i;
     LPIT8 it8 = (LPIT8) hIT8;
 
-    fp = fopen(cFileName, "wt");
-    if (!fp) return FALSE;
+	ZeroMemory(&sd, sizeof(SAVESTREAM));
+
+    sd.stream = fopen(cFileName, "wt");
+    if (!sd.stream) return FALSE;
     
-    WriteStr(fp, it8->SheetType);
-    WriteStr(fp, "\n");
+    WriteStr(&sd, it8->SheetType);
+    WriteStr(&sd, "\n");
     for (i=0; i < it8 ->TablesCount; i++) {
 
             cmsIT8SetTable(hIT8, i);
-            WriteHeader(it8, fp);
-            WriteDataFormat(fp, it8);
-            WriteData(fp, it8);
+            WriteHeader(it8, &sd);
+            WriteDataFormat(&sd, it8);
+            WriteData(&sd, it8);
     }
-    fclose(fp);
+    
+	fclose(sd.stream);
 
     return TRUE;
 }
 
 
+// Saves to memory
+BOOL LCMSEXPORT cmsIT8SaveToMem(LCMSHANDLE hIT8, void *MemPtr, size_t* BytesNeeded)
+{
+    SAVESTREAM sd;	
+    int i;
+    LPIT8 it8 = (LPIT8) hIT8;
+
+	ZeroMemory(&sd, sizeof(SAVESTREAM));
+
+    sd.stream = NULL;
+	sd.Base   = MemPtr;
+	sd.Ptr    = sd.Base;
+
+	sd.Used = 0;
+
+	if (sd.Base) 
+		sd.Max  = *BytesNeeded;		// Write to memory?
+	else 
+		sd.Max  = 0;				// Just counting the needed bytes
+   
+    WriteStr(&sd, it8->SheetType);
+    WriteStr(&sd, "\n");
+    for (i=0; i < it8 ->TablesCount; i++) {
+
+            cmsIT8SetTable(hIT8, i);
+            WriteHeader(it8, &sd);
+            WriteDataFormat(&sd, it8);
+            WriteData(&sd, it8);
+    }
+    
+	sd.Used++;	// The \0 at the very end
+
+	if (sd.Base)
+		sd.Ptr = 0;
+
+	*BytesNeeded = sd.Used;
+
+    return TRUE;
+}
 
 
 // -------------------------------------------------------------- Higer level parsing
@@ -1548,8 +1638,8 @@ BOOL DataFormatSection(LPIT8 it8)
        Skip(it8, SEND_DATA_FORMAT);
        SkipEOLN(it8);
 
-       if (iField < t ->nSamples) {
-		   SynError(it8, "Missing fields. NUMBER_OF_FIELDS was %d.\n", t ->nSamples);
+       if (iField != t ->nSamples) {
+           SynError(it8, "Count mismatch. NUMBER_OF_FIELDS was %d, found %d\n", t ->nSamples, iField);
 
            
        }
@@ -1597,12 +1687,14 @@ BOOL DataSection (LPIT8 it8)
     Skip(it8, SEND_DATA);
     SkipEOLN(it8);
  
-    // Check for data completion
-    if ((iSet+1) < t -> nPatches)
-        return SynError(it8, "Missing data. NUMBER_OF_SETS was %d.\n", t ->nPatches);
+    // Check for data completion.
+
+    if ((iSet+1) != t -> nPatches)
+        return SynError(it8, "Count mismatch. NUMBER_OF_SETS was %d, found %d\n", t ->nPatches, iSet+1);
 
     return TRUE;
 }
+
 
 
 
@@ -1643,7 +1735,10 @@ BOOL HeaderSection(LPIT8 it8)
                 InSymbol(it8);
                 if (!GetVal(it8, Buffer, "Property data expected")) return FALSE;
 
-                AddToList(it8, &GetTable(it8)->HeaderList, VarName, Buffer, WRITE_UNCOOKED);                
+				
+                AddToList(it8, &GetTable(it8)->HeaderList, VarName, Buffer, 
+								(it8->sy == SSTRING) ? WRITE_STRINGIFY : WRITE_UNCOOKED);
+				
                 InSymbol(it8);
                 break;
 
@@ -1876,7 +1971,7 @@ LCMSHANDLE LCMSEXPORT cmsIT8LoadFromMem(void *Ptr, size_t len)
     it8 = (LPIT8) hIT8;
     it8 ->MemoryBlock = (char*) malloc(len + 1);
 
-    strncpy(it8 ->MemoryBlock, Ptr, len);
+    strncpy(it8 ->MemoryBlock, (const char*) Ptr, len);
     it8 ->MemoryBlock[len] = 0;
 
     strncpy(it8->FileName, "", MAX_PATH-1);
@@ -2217,8 +2312,8 @@ int LCMSEXPORT cmsIT8SetTableByLabel(LCMSHANDLE hIT8, const char* cSet, const ch
     char Type[256], Label[256];
     int nTable;
    
-	if (cField != NULL && *cField == 0)
-			cField = "LABEL";
+    if (cField != NULL && *cField == 0)
+            cField = "LABEL";
 
     if (cField == NULL) 
             cField = "LABEL";
@@ -2230,7 +2325,7 @@ int LCMSEXPORT cmsIT8SetTableByLabel(LCMSHANDLE hIT8, const char* cSet, const ch
             return -1;
     
     if (ExpectedType != NULL && *ExpectedType == 0)
-		ExpectedType = NULL;
+        ExpectedType = NULL;
 
     if (ExpectedType) {
 

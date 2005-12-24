@@ -87,7 +87,7 @@ static icTagSignature Preview[]    = {icSigPreview0Tag,
 
 
 
-
+static double GlobalAdaptationState = 0;
 
 // --------------------------------Stages--------------------------------------
 
@@ -506,6 +506,46 @@ void NC2deviceXform(_LPcmsTRANSFORM p,
 // --------------------------------------------------------------------------
 // Build a LUT based on shape-matrix method.
 
+
+// Some non-conformant gray profiles are using kTCR as L*,
+// this function converts the curve to XYZ PCS.
+
+static
+void FromLstarToXYZ(LPGAMMATABLE g, LPGAMMATABLE gxyz[3])
+{
+    int i;
+    int nPoints = 4096;
+    cmsCIELab Lab;
+    cmsCIEXYZ XYZ;
+    L16PARAMS L16;
+
+    // Setup interpolation across origin
+    cmsCalcL16Params(g ->nEntries, &L16);
+
+    // Allocate curves
+    gxyz[0] = cmsAllocGamma(nPoints);
+    gxyz[1] = cmsAllocGamma(nPoints);
+    gxyz[2] = cmsAllocGamma(nPoints);
+
+    // Transport from Lab to XYZ
+
+    for (i=0; i < nPoints; i++) {
+
+        WORD val = _cmsQuantizeVal(i, nPoints);
+        WORD w   = cmsLinearInterpLUT16(val, g->GammaTable, &L16);
+
+        Lab.L = ((double) 100.0 * w ) / 65535.0;
+        Lab.a = Lab.b = 0;
+
+        cmsLab2XYZ(NULL, &XYZ, &Lab);
+
+        // Should be same curve
+        gxyz[0] ->GammaTable[i] = (WORD) floor((65535.0 * XYZ.X) / D50X + 0.5);
+        gxyz[1] ->GammaTable[i] = (WORD) floor((65535.0 * XYZ.Y) / D50Y + 0.5);
+        gxyz[2] ->GammaTable[i] = (WORD) floor((65535.0 * XYZ.Z) / D50Z + 0.5);
+    }
+}
+
 // Monochrome version
 
 static
@@ -519,9 +559,16 @@ LPMATSHAPER cmsBuildGrayInputMatrixShaper(cmsHPROFILE hProfile)
        GrayTRC = cmsReadICCGamma(hProfile, icSigGrayTRCTag);        // Y
        cmsTakeIluminant(&Illuminant, hProfile);
 
-       Shapes[0] = cmsDupGamma(GrayTRC);
-       Shapes[1] = cmsDupGamma(GrayTRC);
-       Shapes[2] = cmsDupGamma(GrayTRC); 
+       if (cmsGetPCS(hProfile) == icSigLabData) {
+
+                // Fixup for Lab monochrome
+                FromLstarToXYZ(GrayTRC, Shapes);
+       }
+       else  {
+                Shapes[0] = cmsDupGamma(GrayTRC);
+                Shapes[1] = cmsDupGamma(GrayTRC);
+                Shapes[2] = cmsDupGamma(GrayTRC); 
+       }
        
        if (!Shapes[0] || !Shapes[1] || !Shapes[2])
               return NULL;
@@ -551,14 +598,38 @@ LPMATSHAPER cmsBuildGrayOutputMatrixShaper(cmsHPROFILE hProfile)
        LPGAMMATABLE GrayTRC, Shapes[3];
        LPMATSHAPER MatShaper;
        MAT3 Scale;
-
-       GrayTRC = cmsReadICCGammaReversed(hProfile, icSigGrayTRCTag);   // Y
+       
        cmsTakeIluminant(&Illuminant, hProfile);
 
-       Shapes[0] = cmsDupGamma(GrayTRC);
-       Shapes[1] = cmsDupGamma(GrayTRC);
-       Shapes[2] = cmsDupGamma(GrayTRC); 
-       
+       // That is a special case for non-compliant profiles. 
+
+       if (cmsGetPCS(hProfile) == icSigLabData) {
+                
+                LPGAMMATABLE Shapes1[3];
+
+                GrayTRC = cmsReadICCGamma(hProfile, icSigGrayTRCTag);
+                FromLstarToXYZ(GrayTRC, Shapes1);
+
+                // Reversing must be done after curve translation
+
+                Shapes[0] = cmsReverseGamma(Shapes1[0]->nEntries, Shapes1[0]);
+                Shapes[1] = cmsReverseGamma(Shapes1[1]->nEntries, Shapes1[1]);
+                Shapes[2] = cmsReverseGamma(Shapes1[2]->nEntries, Shapes1[2]);
+                
+                cmsFreeGammaTriple(Shapes1);
+
+       }
+       else  {
+
+                // Normal case
+
+                GrayTRC = cmsReadICCGammaReversed(hProfile, icSigGrayTRCTag);   // Y
+
+                Shapes[0] = cmsDupGamma(GrayTRC);
+                Shapes[1] = cmsDupGamma(GrayTRC);
+                Shapes[2] = cmsDupGamma(GrayTRC); 
+       }
+            
        if (!Shapes[0] || !Shapes[1] || !Shapes[2])
               return NULL;
       
@@ -806,6 +877,7 @@ void TakeConversionRoutines(_LPcmsTRANSFORM p, int DoBPC)
                              &ChromaticAdaptationMatrixOut,
 
                  DoBPC,
+                 p ->AdaptationState,
                  &p->Stage1,
                  &p->m1, &p->of1);
 
@@ -851,6 +923,7 @@ void TakeConversionRoutines(_LPcmsTRANSFORM p, int DoBPC)
                              &IlluminantProof,
                              &ChromaticAdaptationMatrixProof,
                  DoBPC,
+                 p ->AdaptationState,
                  &p->Stage1,
                  &p->m1, &p->of1);
 
@@ -868,6 +941,7 @@ void TakeConversionRoutines(_LPcmsTRANSFORM p, int DoBPC)
                              &IlluminantOut,
                              &ChromaticAdaptationMatrixOut,
                  0,
+                 0.0,
                  &p->Stage2,
                  &p->m2, &p->of2);
        }
@@ -885,9 +959,9 @@ BOOL IsProperColorSpace(cmsHPROFILE hProfile, DWORD dwFormat, BOOL lUsePCS)
        if (Space == PT_ANY) return TRUE;
 
        if (lUsePCS)
-           return (_cmsICCcolorSpace(Space) == cmsGetPCS(hProfile));
+           return (Space == _cmsLCMScolorSpace(cmsGetPCS(hProfile)));
        else
-           return (_cmsICCcolorSpace(Space) == cmsGetColorSpace(hProfile));
+           return (Space == _cmsLCMScolorSpace(cmsGetColorSpace(hProfile)));
 }
 
 
@@ -925,6 +999,7 @@ _LPcmsTRANSFORM AllocEmptyTransform(void)
     p -> NamedColorList = NULL;
     p -> EntryColorSpace = (icColorSpaceSignature) 0;
     p -> ExitColorSpace  = (icColorSpaceSignature) 0;
+    p -> AdaptationState = GlobalAdaptationState;
 
     return p;
 }
@@ -1002,14 +1077,14 @@ cmsHPROFILE CreateDeviceLinkTransform(_LPcmsTRANSFORM p, DWORD dwFlags)
     SetPrecalculatedTransform(p, dwFlags);
     
     p -> EntryColorSpace = cmsGetColorSpace(p -> InputProfile);
-    p -> ExitColorSpace = cmsGetPCS(p -> InputProfile);
+    p -> ExitColorSpace  = cmsGetPCS(p -> InputProfile);
     
     if (p ->EntryColorSpace == icSigRgbData ||
         p ->EntryColorSpace == icSigCmyData) {
                    
                     p->DeviceLink -> CLut16params.Interp3D = cmsTetrahedralInterp16;
     }
-
+               
     // Precalculated device-link profile is ready
     return (cmsHTRANSFORM) p;
 }
@@ -1123,7 +1198,8 @@ _LPcmsTRANSFORM PickTransformRoutine(_LPcmsTRANSFORM p,
                        !p->PreviewProfile  && 
                        p -> Intent != INTENT_ABSOLUTE_COLORIMETRIC && 
                        (p -> EntryColorSpace == icSigRgbData) && 
-                       (p -> ExitColorSpace == icSigRgbData)) {
+                       (p -> ExitColorSpace == icSigRgbData) &&
+                       !((*dwFlagsPtr) & cmsFLAGS_BLACKPOINTCOMPENSATION)) {
 
                           // Yes... try to smelt matrix-shapers
                           p -> xform = MatrixShaperXFORM;
@@ -1365,17 +1441,7 @@ cmsHTRANSFORM LCMSEXPORT cmsCreateProofingTransform(cmsHPROFILE InputProfile,
        if (dwFlags & cmsFLAGS_MATRIXOUTPUT)
               ToTag = (icTagSignature)0;
 
-       
-       // *** uncomment this to disable fast gamut checking 
-        /*
-       if (dwFlags & cmsFLAGS_GAMUTCHECK) {
-
-             p -> DoGamutCheck = TRUE;
-             dwFlags |= cmsFLAGS_NOTPRECALC;
-       }
-       */
-
-       // *** Up to here 
+              
      
        if (PickTransformRoutine(p, &dwFlags, &FromTag, &ToTag) == NULL) {
 
@@ -1392,7 +1458,22 @@ cmsHTRANSFORM LCMSEXPORT cmsCreateProofingTransform(cmsHPROFILE InputProfile,
                LPLUT DeviceLink;   
                LPLUT GamutCheck = NULL;
                
-               DeviceLink = _cmsPrecalculateDeviceLink((cmsHTRANSFORM) p, dwFlags);
+
+               if (p ->EntryColorSpace == icSigCmykData &&
+                   p ->ExitColorSpace == icSigCmykData &&
+                   dwFlags & cmsFLAGS_PRESERVEBLACK) {
+
+                    DeviceLink = _cmsPrecalculateBlackPreservingDeviceLink((cmsHTRANSFORM) p, dwFlags);
+
+                    // Cannot be done at all?
+                    if (DeviceLink == NULL) 
+                            DeviceLink = _cmsPrecalculateDeviceLink((cmsHTRANSFORM) p, dwFlags);
+
+               }   
+               else {
+
+                    DeviceLink = _cmsPrecalculateDeviceLink((cmsHTRANSFORM) p, dwFlags);
+               }
                 
                if (dwFlags & cmsFLAGS_GAMUTCHECK) {
 
@@ -1406,7 +1487,12 @@ cmsHTRANSFORM LCMSEXPORT cmsCreateProofingTransform(cmsHPROFILE InputProfile,
                if (p ->EntryColorSpace == icSigRgbData ||
                    p ->EntryColorSpace == icSigCmyData) {
                    
-                    DeviceLink -> CLut16params.Interp3D = cmsTetrahedralInterp16;
+                   
+                    cmsCalcCLUT16ParamsEx(DeviceLink->CLut16params.nSamples,
+                                          DeviceLink->CLut16params.nInputs,
+                                          DeviceLink->CLut16params.nOutputs, 
+                                          TRUE, &DeviceLink->CLut16params);
+                    
                }
                
                // If this is a 8-bit transform, optimize LUT further.
@@ -1428,7 +1514,7 @@ cmsHTRANSFORM LCMSEXPORT cmsCreateProofingTransform(cmsHPROFILE InputProfile,
                     if ((nIntent != INTENT_ABSOLUTE_COLORIMETRIC) && 
                         !(dwFlags & cmsFLAGS_NOWHITEONWHITEFIXUP))
 
-							_cmsFixWhiteMisalignment(p);
+                            _cmsFixWhiteMisalignment(p);
 
                 }
                 else
@@ -1498,6 +1584,8 @@ void LCMSEXPORT cmsDeleteTransform(cmsHTRANSFORM hTransform)
               cmsFreeMatShaper(p -> SmeltMatShaper);
        if (p ->NamedColorList)
               cmsFreeNamedColorList(p ->NamedColorList);
+	   if (p -> GamutCheck)
+			cmsFreeLUT(p -> GamutCheck); 
 
        free((void *) p);
 }
@@ -1533,6 +1621,32 @@ void LCMSEXPORT cmsGetAlarmCodes(int *r, int *g, int *b)
        *b = RGB_16_TO_8(AlarmB);
 }
 
+// Returns TRUE if the profile is implemented as matrix-shaper
+
+BOOL LCMSEXPORT _cmsIsMatrixShaper(cmsHPROFILE hProfile)
+{    
+    switch (cmsGetColorSpace(hProfile)) {
+
+    case icSigGrayData:
+        
+        return cmsIsTag(hProfile, icSigGrayTRCTag);
+
+    case icSigRgbData:
+
+        return (cmsIsTag(hProfile, icSigRedColorantTag) &&
+                cmsIsTag(hProfile, icSigGreenColorantTag) &&
+                cmsIsTag(hProfile, icSigBlueColorantTag) &&
+                cmsIsTag(hProfile, icSigRedTRCTag) &&
+                cmsIsTag(hProfile, icSigGreenTRCTag) &&
+                cmsIsTag(hProfile, icSigBlueTRCTag));
+
+    default:
+
+        return FALSE;
+    }
+}
+
+
 BOOL LCMSEXPORT cmsIsIntentSupported(cmsHPROFILE hProfile,
                                                 int Intent, int UsedDirection)
 {
@@ -1554,7 +1668,8 @@ BOOL LCMSEXPORT cmsIsIntentSupported(cmsHPROFILE hProfile,
         return FALSE;
        }
 
-       return (cmsIsTag(hProfile, TagTable[Intent]));       
+       if (cmsIsTag(hProfile, TagTable[Intent])) return TRUE;
+       return _cmsIsMatrixShaper(hProfile);
      }
 
      return (cmsTakeRenderingIntent(hProfile) == Intent);
@@ -1779,7 +1894,7 @@ cmsHTRANSFORM LCMSEXPORT cmsCreateMultiprofileTransform(cmsHPROFILE hProfiles[],
 
     if ((Intent != INTENT_ABSOLUTE_COLORIMETRIC) && 
         !(dwFlags & cmsFLAGS_NOWHITEONWHITEFIXUP))
-							_cmsFixWhiteMisalignment(p);
+                            _cmsFixWhiteMisalignment(p);
 
     return (cmsHTRANSFORM) p;
 
@@ -1792,4 +1907,14 @@ ErrorCleanup:
 }
 
 
+                       
+double LCMSEXPORT cmsSetAdaptationState(double d)
+{
+    double OldVal = GlobalAdaptationState;
 
+    if (d >= 0) 
+            GlobalAdaptationState = d;
+
+    return OldVal;
+    
+}

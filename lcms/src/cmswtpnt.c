@@ -214,7 +214,7 @@ void ComputeChromaticAdaptation(LPMAT3 Conversion,
 }
 
 
-// Returns the final chromatic adaptation from illuminant FromIll to Illuminant ToIll
+// Returns the final chrmatic adaptation from illuminant FromIll to Illuminant ToIll
 // The cone matrix can be specified in ConeMatrix. If NULL, Bradford is assumed
 
 BOOL cmsAdaptationMatrix(LPMAT3 r, LPMAT3 ConeMatrix, LPcmsCIEXYZ FromIll, LPcmsCIEXYZ ToIll)
@@ -644,9 +644,15 @@ int cmsDetectBlackPoint(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, int Intent
 
     // v4 + perceptual & saturation intents does have its own black point
 
-    if ((cmsGetProfileICCversion(hProfile) >= 0x4000000) &&
+    if ((cmsGetProfileICCversion(hProfile) >= 0x4000000) &&     
         (Intent == INTENT_PERCEPTUAL || Intent == INTENT_SATURATION)) {
 
+       // Matrix shaper share MRC & perceptual intents
+
+       if (_cmsIsMatrixShaper(hProfile)) 
+           return BlackPointAsDarkerColorant(hProfile, INTENT_RELATIVE_COLORIMETRIC, BlackPoint, cmsFLAGS_NOTPRECALC);
+
+       // Get fixed value
        return GetV4PerceptualBlack(BlackPoint, hProfile, dwFlags);
     }
 
@@ -683,6 +689,8 @@ int cmsDetectBlackPoint(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, int Intent
                     cmsAdaptToIlluminant(BlackPoint, cmsD50_XYZ(), &MediaWhite, &TrustedBlackPoint);
              else
                     *BlackPoint = TrustedBlackPoint;
+
+             return 1;
     }
 
 #endif

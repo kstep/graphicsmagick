@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2005 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -48,6 +48,10 @@ static char *cInProf   = NULL;
 static char *cOutProf  = NULL;
 static char *cProofing = NULL;
 
+static LCMSHANDLE hIT8in;		// CGATS input 
+
+static char CGATSPatch[1024];	// Patch Name
+
 static int Intent           = INTENT_PERCEPTUAL;
 static int ProofingIntent   = INTENT_PERCEPTUAL;
 
@@ -83,6 +87,16 @@ void FatalError(const char *frm, ...)
        va_end(args);
 
        exit(1);
+}
+
+static
+void Warning(const char *frm, ...)
+{
+       va_list args;
+
+       va_start(args, frm);
+       vfprintf(stderr, frm, args);
+       va_end(args);
 }
 
 static
@@ -196,7 +210,7 @@ void HandleSwitches(int argc, char *argv[])
 
 
 
-
+// Creates all needed color transforms
 
 static
 void OpenTransforms(void)
@@ -246,6 +260,22 @@ void OpenTransforms(void)
             printf("From: %s\n", cmsTakeProductName(hInput));
             printf("Desc: %s\n", cmsTakeProductDesc(hInput));
             if (hOutput) printf("To  : %s\n\n", cmsTakeProductName(hOutput));
+
+            if (cmsIsTag(hInput, icSigColorantTableTag)) {
+
+                LPcmsNAMEDCOLORLIST list = cmsReadColorantTable(hInput, icSigColorantTableTag);
+                int i;
+
+                for (i=0; i < list ->nColors; i++)
+                    printf("%s\n", list ->List[i].Name);
+
+                cmsFreeNamedColorList(list);
+
+            }
+
+            if (cmsIsTag(hInput, icSigColorantTableOutTag)) {
+                printf("...");
+            }
        }
 
       
@@ -461,8 +491,7 @@ void PrintResults(WORD Encoded[], icColorSpaceSignature ColorSpace)
         }   
     }
 
-
-
+    printf("\n");
 }
 
 
@@ -574,90 +603,96 @@ WORD GetIndex(void)
 }
 
 
+
+// Read values from a text file or terminal
+
 static
-void TakeValues(WORD Encoded[])
+void TakeTextValues(WORD Encoded[])
 {
+
+    if (xisatty(stdin))
+        printf("\nEnter values, 'q' to quit\n");
 
     if (cmsGetDeviceClass(hInput) == icSigNamedColorClass) {
         Encoded[0] = GetIndex();
         return;
     }
-       
+
     switch (InputColorSpace) {
 
     case icSigXYZData:
-                    xyz.X = GetDbl("X"); 
-                    xyz.Y = GetDbl("Y"); 
-                    xyz.Z = GetDbl("Z");
-                    cmsFloat2XYZEncoded(Encoded, &xyz);                 
-                    break;
+        xyz.X = GetDbl("X"); 
+        xyz.Y = GetDbl("Y"); 
+        xyz.Z = GetDbl("Z");
+        cmsFloat2XYZEncoded(Encoded, &xyz);                 
+        break;
 
     case icSigLabData:
-                    Lab.L = GetDbl("L*"); 
-                    Lab.a = GetDbl("a*"); 
-                    Lab.b = GetDbl("b*");
-                    cmsFloat2LabEncoded(Encoded, &Lab);                 
-                    break;
+        Lab.L = GetDbl("L*"); 
+        Lab.a = GetDbl("a*"); 
+        Lab.b = GetDbl("b*");
+        cmsFloat2LabEncoded(Encoded, &Lab);                 
+        break;
 
     case icSigLuvData:
-                    Encoded[0] = GetVal("L"); 
-                    Encoded[1] = GetVal("u"); 
-                    Encoded[2] = GetVal("v"); 
-                    break;
+        Encoded[0] = GetVal("L"); 
+        Encoded[1] = GetVal("u"); 
+        Encoded[2] = GetVal("v"); 
+        break;
 
     case icSigYCbCrData:
-                    Encoded[0] = GetVal("Y"); 
-                    Encoded[1] = GetVal("Cb"); 
-                    Encoded[2] = GetVal("Cr"); 
-                    break;
+        Encoded[0] = GetVal("Y"); 
+        Encoded[1] = GetVal("Cb"); 
+        Encoded[2] = GetVal("Cr"); 
+        break;
 
 
     case icSigYxyData:
-                    Encoded[0] = GetVal("Y"); 
-                    Encoded[1] = GetVal("x"); 
-                    Encoded[2] = GetVal("y"); 
-                    break;
+        Encoded[0] = GetVal("Y"); 
+        Encoded[1] = GetVal("x"); 
+        Encoded[2] = GetVal("y"); 
+        break;
 
     case icSigRgbData:
-                    Encoded[0] = GetVal("R"); 
-                    Encoded[1] = GetVal("G"); 
-                    Encoded[2] = GetVal("B"); 
-                    break;
+        Encoded[0] = GetVal("R"); 
+        Encoded[1] = GetVal("G"); 
+        Encoded[2] = GetVal("B"); 
+        break;
 
     case icSigGrayData:
-                    Encoded[0] = GetVal("G");
-                    break;
+        Encoded[0] = GetVal("G");
+        break;
 
     case icSigHsvData:
-                    Encoded[0] = GetVal("H"); 
-                    Encoded[1] = GetVal("s"); 
-                    Encoded[2] = GetVal("v"); 
-                    break;
+        Encoded[0] = GetVal("H"); 
+        Encoded[1] = GetVal("s"); 
+        Encoded[2] = GetVal("v"); 
+        break;
 
     case icSigHlsData:
-                    Encoded[0] = GetVal("H"); 
-                    Encoded[1] = GetVal("l"); 
-                    Encoded[2] = GetVal("s"); 
-                    break;
+        Encoded[0] = GetVal("H"); 
+        Encoded[1] = GetVal("l"); 
+        Encoded[2] = GetVal("s"); 
+        break;
 
     case icSigCmykData:
-                    Encoded[0] = Get100("C"); 
-                    Encoded[1] = Get100("M"); 
-                    Encoded[2] = Get100("Y"); 
-                    Encoded[3] = Get100("K"); 
-                    break;
+        Encoded[0] = Get100("C"); 
+        Encoded[1] = Get100("M"); 
+        Encoded[2] = Get100("Y"); 
+        Encoded[3] = Get100("K"); 
+        break;
 
     case icSigCmyData:                        
-                    Encoded[0] = Get100("C"); 
-                    Encoded[1] = Get100("M"); 
-                    Encoded[2] = Get100("Y"); 
-                    break;
+        Encoded[0] = Get100("C"); 
+        Encoded[1] = Get100("M"); 
+        Encoded[2] = Get100("Y"); 
+        break;
 
     case icSigHexachromeData:    
-                    Encoded[0] = Get100("C"); Encoded[1] = Get100("M"); 
-                    Encoded[2] = Get100("Y"); Encoded[3] = Get100("K"); 
-                    Encoded[4] = Get100("c"); Encoded[5] = Get100("m");                                       
-                    break;
+        Encoded[0] = Get100("C"); Encoded[1] = Get100("M"); 
+        Encoded[2] = Get100("Y"); Encoded[3] = Get100("K"); 
+        Encoded[4] = Get100("c"); Encoded[5] = Get100("m");                                       
+        break;
 
     case icSigHeptachromeData:
     case icSigOctachromeData:    
@@ -668,31 +703,128 @@ void TakeValues(WORD Encoded[])
     case icSig6colorData:
     case icSig7colorData:
     case icSig8colorData: {
-                            int i;
+        int i;
 
-                            for (i=0; i < _cmsChannelsOf(InputColorSpace); i++) {
+        for (i=0; i < _cmsChannelsOf(InputColorSpace); i++) {
 
-                                char Name[100];
+            char Name[100];
 
-                                sprintf(Name, "Channel #%d", i+1);
-                                Encoded[i] = GetVal(Name);
-                            }
+            sprintf(Name, "Channel #%d", i+1);
+            Encoded[i] = GetVal(Name);
+        }
 
                           }
                           break;
 
     default:              
-                    FatalError("Unsupported %d channel profile", _cmsChannelsOf(InputColorSpace));
+        FatalError("Unsupported %d channel profile", _cmsChannelsOf(InputColorSpace));
     }
 
+    if (xisatty(stdin))
+        printf("\n");
+
 }
+
+
+
+// Take a value and scale it accordly to fill a WORD (0..FFFF)
+
+static
+WORD GetIT8Val(const char* Name, double Max)
+{
+	double CGATSfactor = 65535.0 / Max;
+	const char* Val = cmsIT8GetData(hIT8in, CGATSPatch, Name);
+
+	if (Val == NULL)
+		FatalError("Field '%s' not found", Name);
+	 
+
+	return (WORD) floor(atof(Val) * CGATSfactor + 0.5);
+
+}
+
+
+// Read input values from CGATS file.
+
+static
+void TakeCGATSValues(int nPatch, WORD Encoded[])
+{
+    // At first take the name if SAMPLE_ID is present
+	cmsIT8GetPatchName(hIT8in, nPatch, CGATSPatch);
+
+    // Special handling for named color profiles. 
+    // Lookup the name in the names database (the transform)
+
+	if (cmsGetDeviceClass(hInput) == icSigNamedColorClass) {
+
+        int index = cmsNamedColorIndex(hTrans, CGATSPatch);
+        if (index < 0) 
+            FatalError("Named color '%s' not found in the profile", CGATSPatch); 
+
+        Encoded[0] = (WORD) index;
+        return;
+    }
+    
+    // Color is not a spot color, proceed.
+
+	switch (InputColorSpace) {
+
+
+    // Encoding should follow CGATS specification.
+
+	case icSigXYZData:
+                    xyz.X = cmsIT8GetDataDbl(hIT8in, CGATSPatch, "XYZ_X") / 100.0;
+                    xyz.Y = cmsIT8GetDataDbl(hIT8in, CGATSPatch, "XYZ_Y") / 100.0;
+                    xyz.Z = cmsIT8GetDataDbl(hIT8in, CGATSPatch, "XYZ_Z") / 100.0;
+                    cmsFloat2XYZEncoded(Encoded, &xyz);                 
+                    break;
+
+    case icSigLabData:
+                    Lab.L = cmsIT8GetDataDbl(hIT8in, CGATSPatch, "LAB_L");
+                    Lab.a = cmsIT8GetDataDbl(hIT8in, CGATSPatch, "LAB_A");
+                    Lab.b = cmsIT8GetDataDbl(hIT8in, CGATSPatch, "LAB_B");
+                    cmsFloat2LabEncoded(Encoded, &Lab);                 
+                    break;
+
+        
+    case icSigRgbData:
+                    Encoded[0] = GetIT8Val("RGB_R", 255.0);
+                    Encoded[1] = GetIT8Val("RGB_G", 255.0);
+                    Encoded[2] = GetIT8Val("RGB_B", 255.0);
+                    break;
+
+    case icSigGrayData:
+                    Encoded[0] = GetIT8Val("GRAY", 255.0);
+                    break;
+    
+    case icSigCmykData:
+                    Encoded[0] = GetIT8Val("CMYK_C", 100.0);
+                    Encoded[1] = GetIT8Val("CMYK_M", 100.0);
+                    Encoded[2] = GetIT8Val("CMYK_Y", 100.0);
+                    Encoded[3] = GetIT8Val("CMYK_K", 100.0);
+                    break;
+
+    case icSigCmyData:                        
+                    Encoded[0] = GetIT8Val("CMY_C", 100.0);
+                    Encoded[1] = GetIT8Val("CMY_M", 100.0);
+                    Encoded[2] = GetIT8Val("CMY_Y", 100.0);
+                    break;
+    
+	default:
+		FatalError("Unsupported %d channel profile for CGATS", _cmsChannelsOf(InputColorSpace));
+
+	}
+
+}
+
+
 
 
 static
 void Help(void)
 {
              
-     fprintf(stderr, "usage: icctrans [flags]\n\n");
+     fprintf(stderr, "usage: icctrans [flags] [CGATS input file]\n\n");
 
      fprintf(stderr, "flags:\n\n");
      fprintf(stderr, "%cv - Verbose\n", SW);
@@ -724,13 +856,28 @@ void Help(void)
 
 
 
+static
+void PrintPCS(WORD Input[], WORD PCSxyz[], WORD PCSLab[])
+{
+    if (Verbose && hTransXYZ && hTransLab) {
+                        
+            if (hTransXYZ) cmsDoTransform(hTransXYZ, Input, PCSxyz, 1);
+            if (hTransLab) cmsDoTransform(hTransLab, Input, PCSLab, 1);
+
+            PrintResults(PCSxyz, icSigXYZData); 
+            PrintResults(PCSLab, icSigLabData); 
+          }
+}
+
+
 
 int main(int argc, char *argv[])
 {
     WORD Input[MAXCHANNELS], Output[MAXCHANNELS], PCSLab[MAXCHANNELS], PCSxyz[MAXCHANNELS];
+	int nPatch = 0;
+    int nMaxPatches;
 
-    
-    fprintf(stderr, "little cms ColorSpace conversion calculator - v1.8\n\n");
+    fprintf(stderr, "little cms ColorSpace conversion calculator - v2.0\n\n");
 
       if (argc == 1)  
               Help();              
@@ -739,39 +886,44 @@ int main(int argc, char *argv[])
 
       cmsSetErrorHandler(MyErrorHandler);
 
+	  // Open CGATS input if specified
+
+	  if (argc - xoptind == 1)  {
+		  hIT8in = cmsIT8LoadFromFile(argv[xoptind]);
+          if (hIT8in == NULL) 
+              FatalError("'%s' is not recognized as a CGATS file", argv[xoptind]);
+          
+		  nMaxPatches = (int) cmsIT8GetPropertyDbl(hIT8in, "NUMBER_OF_SETS");
+
+	  }
+
       OpenTransforms();
       
       for(;;) {
 
-          if (xisatty(stdin))
-              printf("\nEnter values, 'q' to quit\n");
-
-          if (feof(stdin))
+		  if (feof(stdin))
               break;
+          
+		  if (hIT8in == NULL) {
+			
+			TakeTextValues(Input);          
 
-          TakeValues(Input);
-          cmsDoTransform(hTrans, Input, Output, 1);
+		  }
+		  else {
 
-          if (Verbose) {
+			if (nPatch >= nMaxPatches) break;
+			TakeCGATSValues(nPatch++, Input);
+		  }
 
-            if (hTransXYZ) cmsDoTransform(hTransXYZ, Input, PCSxyz, 1);
-            if (hTransLab) cmsDoTransform(hTransLab, Input, PCSLab, 1);
-          }
-                    
-          if (xisatty(stdin))
-                printf("\n");
-         
-          PrintResults(Output, OutputColorSpace); printf("\n");
-
-          if (Verbose && hTransXYZ && hTransLab) {
-
-            PrintResults(PCSxyz, icSigXYZData); printf("\n");
-            PrintResults(PCSLab, icSigLabData); printf("\n");
-          }
-
+          cmsDoTransform(hTrans, Input, Output, 1);          
+          PrintResults(Output, OutputColorSpace); 
+          PrintPCS(Input, PCSxyz, PCSLab);             
       }
 
-          
+
+	  if (hIT8in)
+		  cmsIT8Free(hIT8in);
+
       return 0;     
 }
 

@@ -1,6 +1,6 @@
 #
 # Makefile for building LCMS library
-# Written by Bob Friesenhahn, June 2003
+# Initially Written by Bob Friesenhahn, June 2003
 #
 
 # Don't require all the GNU mandated files
@@ -22,10 +22,10 @@ liblcms_la_LDFLAGS = -no-undefined \
 
 liblcms_la_LIBADD = $(LCMS_LIB_DEPLIBS)
 
-liblcms_la_CFLAGS = -O3
+# liblcms_la_CFLAGS = -O3
 
 liblcms_la_SOURCES = \
-  cmscnvrt.c cmserr.c cmsgamma.c cmsgmt.c cmsintrp.c cmsio1.c cmslut.c \
+  cmscnvrt.c cmserr.c cmsgamma.c cmsgmt.c cmsintrp.c cmsio0.c cmsio1.c cmslut.c \
   cmsmatsh.c cmsmtrx.c cmspack.c cmspcs.c cmswtpnt.c cmsxform.c \
   cmssamp.c cmscam97.c cmsnamed.c cmsps2.c cmscam02.c cmsvirt.c cmscgats.c
 

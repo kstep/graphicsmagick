@@ -255,20 +255,36 @@ mxArray* AllocateOutputArray(const mxArray* In, int OutputChannels)
 
     if (InputChannels != OutputChannels) {
     
+		
         int i, NewSize;
         int *ModifiedDimensions = (int*) mxMalloc(nDimensions * sizeof(int));
+	
+
         CopyMemory(ModifiedDimensions, Dimensions, nDimensions * sizeof(int));
         ModifiedDimensions[nDimensions - 1] = OutputChannels;
         
-        NewSize = 1;
+		switch (mxGetClassID(In))  {
+
+		case mxINT8_CLASS:   NewSize = sizeof(char); break;
+		case mxUINT8_CLASS:  NewSize = sizeof(unsigned char); break;
+		case mxINT16_CLASS:  NewSize = sizeof(short); break;
+		case mxUINT16_CLASS: NewSize = sizeof(unsigned short); break;
+
+		default:
+		case mxDOUBLE_CLASS: NewSize = sizeof(double); break;
+		}
+ 
+
+        // NewSize = 1;
         for (i=0; i < nDimensions; i++)
             NewSize *= ModifiedDimensions[i];
         
+
         mxSetDimensions(Out, ModifiedDimensions, nDimensions);
         mxFree(ModifiedDimensions);
         
         mxSetPr(Out, mxRealloc(mxGetPr(Out), NewSize));             
-        
+
     }
 
 
@@ -425,10 +441,11 @@ void OpenTransforms(int argc, char *argv[])
     OutputChannels = _cmsChannelsOf(OutputColorSpace);
 	InputChannels  = _cmsChannelsOf(InputColorSpace);
     
+
     dwIn  = MakeFormatDescriptor(InputColorSpace, nBytesDepth);
     dwOut = MakeFormatDescriptor(OutputColorSpace, nBytesDepth);
     
-    
+ 
     dwFlags = GetFlags();
     
     if (cProofing != NULL) {
@@ -458,8 +475,9 @@ void ApplyTransforms(const mxArray *In, mxArray *Out)
     double *Input  = mxGetPr(In); 
 	double *Output = mxGetPr(Out);    
     size_t nPixels = GetNumberOfPixels(In);;
-      
+      	
     cmsDoTransform(hColorTransform, Input, Output, nPixels );
+
 }
 
 
@@ -582,7 +600,7 @@ void HandleSwitches(int argc, char *argv[])
 static
 void PrintHelp(void)
 {
-    mexPrintf("(MX) little cms ColorSpace conversion tool - v0.2 BETA\n\n");
+    mexPrintf("(MX) little cms ColorSpace conversion tool - v0.3 BETA\n\n");
     
     mexPrintf("usage: icctrans (mVar, flags)\n\n");
     

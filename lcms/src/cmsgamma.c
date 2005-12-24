@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2005 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -23,7 +23,7 @@
 
 #include "lcms.h"
 
-// Gamma handling. I'm encoding gamma as 0..ffff value
+// Gamma handling. 
 
 LPGAMMATABLE LCMSEXPORT cmsAllocGamma(int nEntries);
 void         LCMSEXPORT cmsFreeGamma(LPGAMMATABLE Gamma);
@@ -31,6 +31,7 @@ void         LCMSEXPORT cmsFreeGammaTriple(LPGAMMATABLE Gamma[3]);
 LPGAMMATABLE LCMSEXPORT cmsBuildGamma(int nEntries, double Gamma);
 LPGAMMATABLE LCMSEXPORT cmsDupGamma(LPGAMMATABLE Src);
 LPGAMMATABLE LCMSEXPORT cmsReverseGamma(int nResultSamples, LPGAMMATABLE InGamma);
+LPGAMMATABLE LCMSEXPORT cmsBuildParametricGamma(int nEntries, int Type, double Params[]);
 LPGAMMATABLE LCMSEXPORT cmsJoinGamma(LPGAMMATABLE InGamma, LPGAMMATABLE OutGamma);
 LPGAMMATABLE LCMSEXPORT cmsJoinGammaEx(LPGAMMATABLE InGamma, LPGAMMATABLE OutGamma, int nPoints);
 BOOL         LCMSEXPORT cmsSmoothGamma(LPGAMMATABLE Tab, double lambda);
@@ -60,69 +61,75 @@ double LCMSEXPORT cmsEstimateGammaEx(LPWORD GammaTable, int nEntries, double The
 typedef float vec[MAX_KNOTS+1];
 
 
-// default gamma function
+// Ciclic-redundant-check for assuring table is a true representation of parametric curve
 
-#if 1
-
-// No slope limiting
-
+// The usual polynomial, which is used for AAL5, FDDI, and probably Ethernet 
+#define QUOTIENT 0x04c11db7
+    
 static
-double FGamma(double R, double x)
-{
-       return pow(R, x);
+unsigned int Crc32(unsigned int result, LPVOID ptr, int len)
+{    
+    int          i,j;
+    BYTE         octet; 
+    LPBYTE       data = (LPBYTE) ptr;
+        
+    for (i=0; i < len; i++) {
+
+        octet = *data++;
+
+        for (j=0; j < 8; j++) {
+
+            if (result & 0x80000000) {
+
+                result = (result << 1) ^ QUOTIENT ^ (octet >> 7);
+            }
+            else
+            {
+                result = (result << 1) ^ (octet >> 7);
+            }
+            octet <<= 1;
+        }
+    }
+    
+    return result;
 }
 
-#else
+// Get CRC of gamma table 
 
-// Quantization becomes evident below 
-//
-//      R^x * 65535 < 1.0
-//
-// So, we apply linear tram on
-// 
-//      R^x < 1 / 65535
-//
-//      x * log(R) < log(1) - log(65535) 
-//
-//      R < (1 /exp(log(65535) / x)
-//
-//  Somehow arbitrarely, we adopt 0.018, which corresponds
-//  with gamma 2.7 This is adequate for most situations.
-//
-//  The resulting line must be:
-//
-//  f(0) = 0
-//  f(0.018) = pow(0.018, x)
-//
-//  so, 
-//  
-//  f() = pow(0.018, x) / 0.018
-
-static 
-double FGamma(double R, double x)
+unsigned int _cmsCrc32OfGammaTable(LPGAMMATABLE Table)
 {
-       if (R < 0.018) 
-           return (R * pow(0.018, x)) / 0.018;
+    unsigned int crc = ~0U;
 
-       return pow(R, x);
+    crc = Crc32(crc, &Table -> Birth.Type,      sizeof(int));
+    crc = Crc32(crc, Table ->Birth.Params,     sizeof(double)*10);
+    crc = Crc32(crc, &Table ->nEntries,  sizeof(int));
+    crc = Crc32(crc, Table ->GammaTable, sizeof(WORD) * Table -> nEntries);
+
+    return ~crc;
+
 }
 
-
-#endif
 
 LPGAMMATABLE LCMSEXPORT cmsAllocGamma(int nEntries)
 {
        LPGAMMATABLE p;
        size_t size;
 
+       if (nEntries > 65530) {
+                cmsSignalError(LCMS_ERRC_WARNING, "Couldn't create gammatable of more than 65530 entries; 65530 assumed");
+                nEntries = 65530;
+       }
+
        size = sizeof(GAMMATABLE) + (sizeof(WORD) * (nEntries-1));
 
        p = (LPGAMMATABLE) malloc(size);
        if (!p) return NULL;
 
-       p -> nEntries = nEntries;
-       ZeroMemory(p -> GammaTable, nEntries * sizeof(WORD));
+       ZeroMemory(p, size);
 
+       p -> Birth.Type     = 0;
+       p -> nEntries = nEntries;
+       
        return p;
 }
 
@@ -141,50 +148,6 @@ void LCMSEXPORT cmsFreeGammaTriple(LPGAMMATABLE Gamma[3])
     Gamma[0] = Gamma[1] = Gamma[2] = NULL;
 }
 
-// Build a gamma table based on gamma constant
-
-LPGAMMATABLE LCMSEXPORT cmsBuildGamma(int nEntries, double Gamma)
-{
-       LPGAMMATABLE p;
-       LPWORD Table;
-       int i;
-       double R, Val;
-
-       if (nEntries > 65530) {
-                cmsSignalError(LCMS_ERRC_WARNING, "Couldn't create gammatable of more than 65530 entries; 65530 assumed");
-                nEntries = 65530;
-       }
-
-       p = cmsAllocGamma(nEntries);
-       if (!p) return NULL;
-
-       Table = p -> GammaTable;
-       if (Gamma == 0.0)
-       {
-              ZeroMemory(Table, nEntries*sizeof(WORD));
-              return p;
-       }
-
-       if (Gamma == 1.0) {
-
-           for (i=0; i < nEntries; i++) {
-
-            Table[i] = _cmsQuantizeVal(i, nEntries);              
-
-           }
-           return p;
-       }
-
-       for (i=0; i < nEntries; i++)
-       {
-              R   = (double) i / (nEntries-1);
-              Val = FGamma(R, Gamma);
-
-              Table[i] = (WORD) floor(Val * 65535. + .5);
-       }
-
-       return p;
-}
 
 
 // Duplicate a gamma table
@@ -192,14 +155,14 @@ LPGAMMATABLE LCMSEXPORT cmsBuildGamma(int nEntries, double Gamma)
 LPGAMMATABLE  LCMSEXPORT cmsDupGamma(LPGAMMATABLE In)
 {
        LPGAMMATABLE Ptr;
+       size_t size;
 
        Ptr = cmsAllocGamma(In -> nEntries);
        if (Ptr == NULL) return NULL;
 
-       CopyMemory(Ptr -> GammaTable,
-                  In -> GammaTable,
-                  In -> nEntries * sizeof(WORD));
+       size = sizeof(GAMMATABLE) + (sizeof(WORD) * (In -> nEntries-1));
 
+       CopyMemory(Ptr, In, size);                  
        return Ptr;
 }
 
@@ -230,7 +193,7 @@ LPGAMMATABLE LCMSEXPORT cmsJoinGamma(LPGAMMATABLE InGamma,
 
               wValIn  = cmsLinearInterpLUT16(RGB_8_TO_16(i), InPtr, &L16In);
               wValOut = cmsReverseLinearInterpLUT16(wValIn, OutPtr, &L16Out);
-
+              
               p -> GammaTable[i] = wValOut;
        }
 
@@ -263,6 +226,8 @@ LPGAMMATABLE LCMSEXPORT cmsJoinGammaEx(LPGAMMATABLE InGamma,
 
     // Does clean "hair"
     cmsSmoothSampledCurve(r, 0.001);
+
+    cmsClampSampledCurve(r, 0.0, 65535.0); 
     
     cmsFreeSampledCurve(x);
     cmsFreeSampledCurve(y);
@@ -299,9 +264,6 @@ LPGAMMATABLE LCMSEXPORT cmsReverseGamma(int nResultSamples, LPGAMMATABLE InGamma
               p -> GammaTable[i] = wValOut;
        }
 
-
-       // Does eliminate "hair" on curve      
-      //  cmsSmoothGamma(p, 0.001);           
            
        return p;
 }
@@ -319,9 +281,14 @@ LPGAMMATABLE LCMSEXPORT cmsBuildParametricGamma(int nEntries, int Type, double P
         LPGAMMATABLE Table;
         double R, Val, dval, e;
         int i;
+        int ParamsByType[] = { 0, 1, 3, 4, 5, 7 };
 
         Table = cmsAllocGamma(nEntries);
         if (NULL == Table) return NULL;
+
+        Table -> Birth.Type = Type;       
+
+        CopyMemory(Table ->Birth.Params, Params, ParamsByType[abs(Type)] * sizeof(double));
 
 
         for (i=0; i < nEntries; i++) {
@@ -472,8 +439,18 @@ LPGAMMATABLE LCMSEXPORT cmsBuildParametricGamma(int nEntries, int Type, double P
         Table->GammaTable[i] = (WORD) floor(dval);
         }
 
+        Table -> Birth.Crc32 = _cmsCrc32OfGammaTable(Table);
+
         return Table;
 }
+
+// Build a gamma table based on gamma constant
+
+LPGAMMATABLE LCMSEXPORT cmsBuildGamma(int nEntries, double Gamma)
+{
+    return cmsBuildParametricGamma(nEntries, 1, &Gamma);
+}
+
 
 
 // From: Eilers, P.H.C. (1994) Smoothing and interpolation with finite
@@ -771,7 +748,8 @@ double ScaleVal(double v, double Min, double Max, int nPoints)
 
         double a, b;
 
-        if (v < 0) return 0;
+        if (v <= Min) return 0;
+        if (v >= Max) return (nPoints-1);
     
         a = (double) (nPoints - 1) / (Max - Min);
         b = a * Min;
@@ -830,7 +808,7 @@ LPSAMPLEDCURVE cmsJoinSampledCurves(LPSAMPLEDCURVE X, LPSAMPLEDCURVE Y, int nRes
         // Scale t to x domain
         x = (i * (MaxX - MinX) / (nResultingPoints-1)) + MinX;
 
-        // Find interval in which t is within (always up, 
+        // Find interval in which j is within (always up, 
         // since fn should be monotonic at all)
 
         j = 1;
@@ -904,26 +882,6 @@ LPSAMPLEDCURVE cmsConvertGammaToSampledCurve(LPGAMMATABLE Gamma, int nPoints)
 }
 
 
-#ifdef DEBUG
-static
-void ASAVE(LPWORD Table, int nEntries, const char* dump)
-{
-    FILE* f;
-    int i;
-
-        f = fopen(dump, "wt");
-        if (!f)
-                return;
-
-        
-
-    for (i=0; i < nEntries; i++)
-        fprintf(f, "%g\n", (double) Table[i]);
-        
-
-    fclose(f);
-}
-#endif
 
 
 // Smooth endpoints (used in Black/White compensation)
@@ -987,8 +945,5 @@ BOOL _cmsSmoothEndpoints(LPWORD Table, int nEntries)
         Table[i] = (WORD) floor(v + .5);
         }
 
-#ifdef DEBUG
-        ASAVE(Table, nEntries, "smoothed.txt");
-#endif
     return TRUE;
 }

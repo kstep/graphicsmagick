@@ -734,7 +734,15 @@ int TransformImage(char *cDefInpProf, char *cOutProf)
         if (!IgnoreEmbedded && read_icc_profile(&Decompressor, &EmbedBuffer, &EmbedLen))
         {
               hIn = cmsOpenProfileFromMem(EmbedBuffer, EmbedLen);
-              if (Verbose) fprintf(stdout, " (embedded profile found)");
+
+               if (Verbose) {
+
+                  fprintf(stdout, " (Embedded profile found)\n");
+                  fprintf(stdout, "Product name: %s\n", cmsTakeProductName(hIn));
+                  fprintf(stdout, "Description : %s\n", cmsTakeProductDesc(hIn));                          
+                  fflush(stdout);
+              }
+
                if (hIn != NULL && SaveEmbedded != NULL)
                           SaveMemoryBlock(EmbedBuffer, EmbedLen, SaveEmbedded);
 

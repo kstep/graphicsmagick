@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="lcmsdll"
+	Name="lcms"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>
@@ -11,75 +11,10 @@
 	</Platforms>
 	<Configurations>
 		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory="."
-			IntermediateDirectory=".\DllDebug"
-			ConfigurationType="2"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include"
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_USRDLL;LCMSDLL_EXPORTS;LCMS_DLL;LCMS_DLL_BUILD"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				StructMemberAlignment="1"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\DllDebug/lcmsdll.pch"
-				AssemblerListingLocation=".\DllDebug/"
-				ObjectFile=".\DllDebug/"
-				ProgramDataBaseFileName=".\DllDebug/"
-				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="4"
-				CompileAs="0"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				OutputFile="..\..\bin\lcmsd.dll"
-				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
-				ModuleDefinitionFile="..\..\src\lcms.def"
-				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="./lcmsd.pdb"
-				ImportLibrary="..\..\lib\ms\lcmsdlld.lib"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName="./lcmsdll.tlb"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="3082"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
-		</Configuration>
-		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="."
-			IntermediateDirectory=".\DllRelease"
-			ConfigurationType="2"
+			IntermediateDirectory=".\LibRelease"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
@@ -88,43 +23,35 @@
 				Optimization="3"
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="1"
+				EnableIntrinsicFunctions="TRUE"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="TRUE"
 				EnableFiberSafeOptimizations="TRUE"
+				OptimizeForProcessor="0"
 				AdditionalIncludeDirectories="..\..\include"
-				PreprocessorDefinitions="NDEBUG;LCMS_DLL,LCMS_DLL_BUILD;WIN32;_WINDOWS;_USRDLL"
+				PreprocessorDefinitions="WIN32,NDEBUG,_LIB"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
-				RuntimeLibrary="0"
-				StructMemberAlignment="1"
+				RuntimeLibrary="4"
+				StructMemberAlignment="0"
 				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=""
-				AssemblerListingLocation=".\DllRelease/"
-				ObjectFile="Release/"
-				ProgramDataBaseFileName="Release/"
+				EnableEnhancedInstructionSet="0"
+				PrecompiledHeaderFile=".\LibRelease/lcms.pch"
+				AssemblerListingLocation=".\LibRelease/"
+				ObjectFile=".\LibRelease/"
+				ProgramDataBaseFileName=".\LibRelease/"
 				WarningLevel="4"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="FALSE"
 				Detect64BitPortabilityProblems="TRUE"
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				OutputFile="..\..\bin\lcms.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				ModuleDefinitionFile="..\..\src\lcms.def"
-				OptimizeReferences="0"
-				ImportLibrary="..\..\lib\ms\lcmsdll.lib"/>
+				Name="VCLibrarianTool"
+				OutputFile="..\..\lib\MS\lcms.lib"
+				SuppressStartupBanner="TRUE"/>
 			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName="./lcmsdll.tlb"/>
+				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -140,7 +67,55 @@
 			<Tool
 				Name="VCXMLDataGeneratorTool"/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="."
+			IntermediateDirectory=".\LibDebug"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\include"
+				PreprocessorDefinitions="WIN32,_DEBUG,_LIB"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				PrecompiledHeaderFile=".\LibDebug/lcms.pch"
+				AssemblerListingLocation=".\LibDebug/"
+				ObjectFile=".\LibDebug/"
+				ProgramDataBaseFileName=".\LibDebug/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="..\..\lib\MS\lcmsd.lib"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="3082"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
 			<Tool
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
@@ -216,12 +191,6 @@
 			<File
 				RelativePath="..\..\src\cmsxform.c">
 			</File>
-			<File
-				RelativePath="..\..\src\lcms.def">
-			</File>
-			<File
-				RelativePath=".\lcms.rc">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -234,8 +203,14 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Resource Files"
-			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			Name="Documentation"
+			Filter=".txt">
+			<File
+				RelativePath="..\..\doc\LCMSAPI.TXT">
+			</File>
+			<File
+				RelativePath="..\..\doc\TUTORIAL.TXT">
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

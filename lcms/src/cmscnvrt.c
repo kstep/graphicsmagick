@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2005 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -74,6 +74,7 @@ int cdecl cmsChooseCnvrt(int Absolute,
                              LPMAT3 ChromaticAdaptationMatrixOut,
 
                 int DoBlackPointCompensation,
+                double AdaptationState,
                  _cmsADJFN *fn1,
                  LPWMAT3 wm, LPWVEC3 wof);
 
@@ -114,17 +115,19 @@ LCMSAPI LPcmsCIExyY LCMSEXPORT cmsD50_xyY(void)
 //     relative input to absolute and then to relative output
 
 static
-void Rel2RelStepAbsCoefs(LPcmsCIEXYZ BlackPointIn,
-                      LPcmsCIEXYZ WhitePointIn,
-                      LPcmsCIEXYZ IlluminantIn,
-                      LPMAT3 ChromaticAdaptationMatrixIn,
+void Rel2RelStepAbsCoefs(double AdaptationState,
 
-                      LPcmsCIEXYZ BlackPointOut,
-                      LPcmsCIEXYZ WhitePointOut,
-                      LPcmsCIEXYZ IlluminantOut,
-                      LPMAT3 ChromaticAdaptationMatrixOut,
+                         LPcmsCIEXYZ BlackPointIn,
+                         LPcmsCIEXYZ WhitePointIn,
+                         LPcmsCIEXYZ IlluminantIn,
+                         LPMAT3 ChromaticAdaptationMatrixIn,
 
-                      LPMAT3 m, LPVEC3 of)
+                         LPcmsCIEXYZ BlackPointOut,
+                         LPcmsCIEXYZ WhitePointOut,
+                         LPcmsCIEXYZ IlluminantOut,
+                         LPMAT3 ChromaticAdaptationMatrixOut,
+
+                         LPMAT3 m, LPVEC3 of)
 {
        
        VEC3 WtPtIn, WtPtInAdapted;
@@ -142,11 +145,26 @@ void Rel2RelStepAbsCoefs(LPcmsCIEXYZ BlackPointIn,
        VEC3init(&Scale.v[2], 0, 0, WtPtInAdapted.n[2] / WtPtOutAdapted.n[2]);
 
 
-       m1 = *ChromaticAdaptationMatrixIn;
-       MAT3inverse(&m1, &m2);
+       // Adaptation state
+
+       if (AdaptationState == 1.0) {
+
+           // Observer is fully adapted. Keep chromatic adaptation 
+
+           CopyMemory(m, &Scale, sizeof(MAT3));
+
+       }
+       else {
+
+            // Observer is not adapted, undo the chromatic adaptation
+            m1 = *ChromaticAdaptationMatrixIn;
+            MAT3inverse(&m1, &m2);
        
-       MAT3per(&m3, &m2, &Scale);
-       MAT3per(m, &m3, ChromaticAdaptationMatrixOut);
+            MAT3per(&m3, &m2, &Scale);
+            MAT3per(m, &m3, ChromaticAdaptationMatrixOut);
+       }
+
+            
        VEC3init(of, 0.0, 0.0, 0.0);
                     
 }
@@ -210,15 +228,15 @@ void ComputeBlackPointCompensationFactors(LPcmsCIEXYZ BlackPointIn,
 
 static
 BOOL IdentityParameters(LPWMAT3 m, LPWVEC3 of)
-{	
-	WVEC3 wv0;
+{   
+    WVEC3 wv0;
 
-	VEC3initF(&wv0, 0, 0, 0);
+    VEC3initF(&wv0, 0, 0, 0);
 
-	if (!MAT3isIdentity(m, 0.00001)) return FALSE;
-	if (!VEC3equal(of, &wv0, 0.00001)) return FALSE;
+    if (!MAT3isIdentity(m, 0.00001)) return FALSE;
+    if (!VEC3equal(of, &wv0, 0.00001)) return FALSE;
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -240,9 +258,9 @@ void XYZ2XYZ(WORD In[], WORD Out[], LPWMAT3 m, LPWVEC3 of)
 
     MAT3evalW(&r, m, &a);
 
-    Out[0] = Clamp_XYZ((r.n[VX] + of->n[VX]) >> 1);
-    Out[1] = Clamp_XYZ((r.n[VY] + of->n[VY]) >> 1);
-    Out[2] = Clamp_XYZ((r.n[VZ] + of->n[VZ]) >> 1);
+    Out[0] = _cmsClampWord((r.n[VX] + of->n[VX]) >> 1);
+    Out[1] = _cmsClampWord((r.n[VY] + of->n[VY]) >> 1);
+    Out[2] = _cmsClampWord((r.n[VZ] + of->n[VZ]) >> 1);
 }
 
 
@@ -297,6 +315,7 @@ int FromXYZRelLUT(int Absolute,
                              LPMAT3 ChromaticAdaptationMatrixOut,
 
                  int DoBlackPointCompensation,
+                 double AdaptationState,
                  _cmsADJFN *fn1,
                  LPMAT3 m, LPVEC3 of)
 
@@ -312,15 +331,16 @@ int FromXYZRelLUT(int Absolute,
                                    // From input relative to absolute, and then
                                    // back to output relative
 
-                                   Rel2RelStepAbsCoefs(BlackPointIn,
-                                                  WhitePointIn,
-                                                  IlluminantIn,
-                                                  ChromaticAdaptationMatrixIn,
-                                                  BlackPointOut,
-                                                  WhitePointOut,
-                                                  IlluminantOut,
-                                                  ChromaticAdaptationMatrixOut,
-                                                  m, of);
+                                   Rel2RelStepAbsCoefs(AdaptationState,
+                                                       BlackPointIn,
+                                                       WhitePointIn,
+                                                       IlluminantIn,
+                                                       ChromaticAdaptationMatrixIn,
+                                                       BlackPointOut,
+                                                       WhitePointOut,
+                                                       IlluminantOut,
+                                                       ChromaticAdaptationMatrixOut,
+                                                       m, of);
                                    *fn1 = XYZ2XYZ;
 
                             }
@@ -355,7 +375,8 @@ int FromXYZRelLUT(int Absolute,
                             if (Absolute)
                             {   
 
-                                Rel2RelStepAbsCoefs(BlackPointIn,
+                                Rel2RelStepAbsCoefs(AdaptationState,
+                                                    BlackPointIn,
                                                     WhitePointIn,
                                                     IlluminantIn,
                                                     ChromaticAdaptationMatrixIn,
@@ -414,6 +435,8 @@ int FromLabRelLUT(int Absolute,
                              LPMAT3 ChromaticAdaptationMatrixOut,
 
                 int DoBlackPointCompensation,
+                double AdaptationState,
+
                  _cmsADJFN *fn1,
                  LPMAT3 m, LPVEC3 of)
 {
@@ -429,15 +452,16 @@ int FromLabRelLUT(int Absolute,
                             // From lab relative, to XYZ absolute, and then,
                             // back to XYZ relative
 
-                            Rel2RelStepAbsCoefs(BlackPointIn,
-                                           WhitePointIn,
-                                           cmsD50_XYZ(),
-                                           ChromaticAdaptationMatrixIn,
-                                           BlackPointOut,
-                                           WhitePointOut,
-                                           IlluminantOut,
-                                           ChromaticAdaptationMatrixOut,
-                                           m, of);
+                            Rel2RelStepAbsCoefs(AdaptationState,
+                                                BlackPointIn,
+                                                WhitePointIn,
+                                                cmsD50_XYZ(),
+                                                ChromaticAdaptationMatrixIn,
+                                                BlackPointOut,
+                                                WhitePointOut,
+                                                IlluminantOut,
+                                                ChromaticAdaptationMatrixOut,
+                                                m, of);
 
                             *fn1 = Lab2XYZ;
 
@@ -467,18 +491,19 @@ int FromLabRelLUT(int Absolute,
 
                      if (Absolute) {
 
-                     // First pass to XYZ using the input illuminant
-                     // * InIlluminant / D50, then to absolute. Then
-                     // to relative, but for input
+                             // First pass to XYZ using the input illuminant
+                             // * InIlluminant / D50, then to absolute. Then
+                             // to relative, but for input
 
-                     Rel2RelStepAbsCoefs(BlackPointIn, 
-                                         WhitePointIn, IlluminantIn,
-                                         ChromaticAdaptationMatrixIn,
-                                         BlackPointOut, 
-                                         WhitePointOut, cmsD50_XYZ(),
-                                         ChromaticAdaptationMatrixOut,
-                                         m, of);
-                     *fn1 = Lab2XYZ2Lab;
+                             Rel2RelStepAbsCoefs(AdaptationState,
+                                                 BlackPointIn, 
+                                                 WhitePointIn, IlluminantIn,
+                                                 ChromaticAdaptationMatrixIn,
+                                                 BlackPointOut, 
+                                                 WhitePointOut, cmsD50_XYZ(),
+                                                 ChromaticAdaptationMatrixOut,
+                                                 m, of);
+                             *fn1 = Lab2XYZ2Lab;
                      }
                      else
                      {      // Lab -> Lab relative don't need any adjust unless
@@ -532,6 +557,7 @@ int cmsChooseCnvrt(int Absolute,
                               LPMAT3 ChromaticAdaptationMatrixOut,
 
                   int DoBlackPointCompensation,
+                  double AdaptationState,
                   _cmsADJFN *fn1,
                   LPWMAT3 wm, LPWVEC3 wof)
 {
@@ -559,6 +585,7 @@ int cmsChooseCnvrt(int Absolute,
                                           IlluminantOut,
                                           ChromaticAdaptationMatrixOut,
                                           DoBlackPointCompensation,
+                                          AdaptationState,
                                           fn1, &m, &of);
                      break;
 
@@ -577,6 +604,7 @@ int cmsChooseCnvrt(int Absolute,
                                           IlluminantOut,
                                           ChromaticAdaptationMatrixOut,
                                           DoBlackPointCompensation,
+                                          AdaptationState,
                                           fn1, &m, &of);
                      break;
 
@@ -606,4 +634,4 @@ int cmsChooseCnvrt(int Absolute,
 }
 
 
-                             
+      

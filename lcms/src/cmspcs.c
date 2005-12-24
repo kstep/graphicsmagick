@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2005 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -309,9 +309,9 @@ void cmsLab2XYZEncoded(WORD Lab[3], WORD XYZ[3])
        // Convert to 1.15 fixed format PCS
 
        
-       XYZ[0] = Clamp_XYZ((int) floor(X * 32768.0 + 0.5));
-       XYZ[1] = Clamp_XYZ((int) floor(Y * 32768.0 + 0.5));
-       XYZ[2] = Clamp_XYZ((int) floor(Z * 32768.0 + 0.5));
+       XYZ[0] = _cmsClampWord((int) floor(X * 32768.0 + 0.5));
+       XYZ[1] = _cmsClampWord((int) floor(Y * 32768.0 + 0.5));
+       XYZ[2] = _cmsClampWord((int) floor(Z * 32768.0 + 0.5));
        
 
 }
@@ -401,26 +401,34 @@ void LCMSEXPORT cmsLabEncoded2Float4(LPcmsCIELab Lab, const WORD wLab[3])
         Lab->b = ab2float4(wLab[2]);
 }
 
+static
+double Clamp_L_double(double L)
+{
+    if (L < 0) L = 0;
+    if (L > 100) L = 100;
+
+    return L;
+}
+
+
+static
+double Clamp_ab_double(double ab)
+{
+    if (ab < -128) ab = -128.0;
+    if (ab > +127.9961) ab = +127.9961;
+
+    return ab;
+}
 
 void LCMSEXPORT cmsFloat2LabEncoded(WORD wLab[3], const cmsCIELab* fLab)
 {
     cmsCIELab Lab;
 
     
-    Lab.L = fLab ->L;
-    Lab.a = fLab ->a;
-    Lab.b = fLab ->b;
-                                
-
-    if (Lab.L < 0) Lab.L = 0;
-    if (Lab.L > 100.) Lab.L = 100.;
-
-    if (Lab.a < -128.) Lab.a = -128;
-    if (Lab.a > 127.9961) Lab.a = 127.9961;
-    if (Lab.b < -128.) Lab.b = -128;
-    if (Lab.b > 127.9961) Lab.b = 127.9961;
-                
-
+    Lab.L = Clamp_L_double(fLab ->L);
+    Lab.a = Clamp_ab_double(fLab ->a);
+    Lab.b = Clamp_ab_double(fLab ->b);
+                                                
     wLab[0] = L2Fix3(Lab.L);
     wLab[1] = ab2Fix3(Lab.a);
     wLab[2] = ab2Fix3(Lab.b);
@@ -456,14 +464,19 @@ void LCMSEXPORT cmsFloat2LabEncoded4(WORD wLab[3], const cmsCIELab* fLab)
 
 void LCMSEXPORT cmsLab2LCh(LPcmsCIELCh LCh, const cmsCIELab* Lab)
 {
+    double a, b;
 
-    LCh -> L = Lab -> L;
-    LCh -> C = pow(Lab -> a * Lab -> a + Lab -> b * Lab -> b, 0.5);
+    LCh -> L = Clamp_L_double(Lab -> L);
 
-    if (Lab -> a == 0 && Lab -> b == 0)
+    a = Clamp_ab_double(Lab -> a);
+    b = Clamp_ab_double(Lab -> b);
+
+    LCh -> C = pow(a * a + b * b, 0.5);
+
+    if (a == 0 && b == 0)
             LCh -> h   = 0;
     else
-            LCh -> h = atan2(Lab -> b, Lab -> a);
+            LCh -> h = atan2(b, a);
     
 
     LCh -> h *= (180. / M_PI);
@@ -477,50 +490,17 @@ void LCMSEXPORT cmsLab2LCh(LPcmsCIELCh LCh, const cmsCIELab* Lab)
 
 }
 
+
+
+
 void LCMSEXPORT cmsLCh2Lab(LPcmsCIELab Lab, const cmsCIELCh* LCh)
 {
-    double h = LCh -> h;        
-    double tanh = tan((h * M_PI) / 180.0);       
-
-
-    while (h > 360.)         
-                h -= 360.;
-
-    while (h < 0)
-                h += 360.;
-    
-    Lab -> L = LCh -> L;
-
-    if (h <= 90.0 || h >= 270.0) {
         
-        Lab -> a = LCh -> C / sqrt((tanh * tanh ) + 1 );        
-    }
-    else {
-
-        Lab -> a = - LCh -> C / sqrt((tanh * tanh ) + 1 );        
-    }
-
-
-    if (h <= 180) {
-
-        Lab -> b = sqrt(LCh -> C * LCh -> C - Lab -> a * Lab -> a);
-    }
-    else {
-        Lab -> b = - sqrt(LCh -> C * LCh -> C - Lab -> a * Lab -> a);
-    }
+    double h = (LCh -> h * M_PI) / 180.0;
     
-
-    
-
-    
-    /*
-    h *= (M_PI /180.0);
-
-    Lab -> L = LCh -> L;
-
-    Lab -> a = LCh -> C * cos(h);
-    Lab -> b = LCh -> C * sin(h);
-    */
+    Lab -> L = Clamp_L_double(LCh -> L);
+    Lab -> a = Clamp_ab_double(LCh -> C * cos(h));
+    Lab -> b = Clamp_ab_double(LCh -> C * sin(h));          
     
 }
 

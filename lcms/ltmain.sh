@@ -1,7 +1,7 @@
 # ltmain.sh - Provide generalized library-building support services.
 # NOTE: Changing this file will not affect anything until you rerun configure.
 #
-# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004
+# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005
 # Free Software Foundation, Inc.
 # Originally by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 #
@@ -17,7 +17,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 # As a special exception to the GNU General Public License, if you
 # distribute this file as part of a program that contains a
@@ -43,8 +43,8 @@ EXIT_FAILURE=1
 
 PROGRAM=ltmain.sh
 PACKAGE=libtool
-VERSION=1.5.10
-TIMESTAMP=" (1.1220.2.131 2004/09/19 12:46:56)"
+VERSION=1.5.20
+TIMESTAMP=" (1.1220.2.287 2005/08/31 18:54:15)"
 
 # See if we are running on zsh, and set the options which allow our
 # commands through without removal of \ escapes.
@@ -88,14 +88,15 @@ rm="rm -f"
 Xsed="${SED}"' -e 1s/^X//'
 sed_quote_subst='s/\([\\`\\"$\\\\]\)/\\\1/g'
 # test EBCDIC or ASCII
-case `echo A|tr A '\301'` in
- A) # EBCDIC based system
-  SP2NL="tr '\100' '\n'"
-  NL2SP="tr '\r\n' '\100\100'"
+case `echo X|tr X '\101'` in
+ A) # ASCII based system
+    # \n is not interpreted correctly by Solaris 8 /usr/ucb/tr
+  SP2NL='tr \040 \012'
+  NL2SP='tr \015\012 \040\040'
   ;;
- *) # Assume ASCII based system
-  SP2NL="tr '\040' '\012'"
-  NL2SP="tr '\015\012' '\040\040'"
+ *) # EBCDIC based system
+  SP2NL='tr \100 \n'
+  NL2SP='tr \r\n \100\100'
   ;;
 esac
 
@@ -112,8 +113,9 @@ if test "${LANG+set}" = set; then
 fi
 
 # Make sure IFS has a sensible default
-: ${IFS=" 	
-"}
+lt_nl='
+'
+IFS=" 	$lt_nl"
 
 if test "$build_libtool_libs" != yes && test "$build_old_libs" != yes; then
   $echo "$modename: not configured to build any kind of library" 1>&2
@@ -143,7 +145,8 @@ o2lo="s/\\.${objext}\$/.lo/"
 # Need a lot of goo to handle *both* DLLs and import libs
 # Has to be a shell function in order to 'eat' the argument
 # that is supplied when $file_magic_command is called.
-func_win32_libid () {
+func_win32_libid ()
+{
   win32_libid_type="unknown"
   win32_fileres=`file -L $1 2>/dev/null`
   case $win32_fileres in
@@ -183,7 +186,8 @@ func_win32_libid () {
 # Only attempt this if the compiler in the base compile
 # command doesn't match the default compiler.
 # arg is usually of the form 'gcc ...'
-func_infer_tag () {
+func_infer_tag ()
+{
     if test -n "$available_tags" && test -z "$tagname"; then
       CC_quoted=
       for arg in $CC; do
@@ -242,8 +246,25 @@ func_infer_tag () {
 }
 
 
+# func_extract_an_archive dir oldlib
+func_extract_an_archive ()
+{
+    f_ex_an_ar_dir="$1"; shift
+    f_ex_an_ar_oldlib="$1"
+
+    $show "(cd $f_ex_an_ar_dir && $AR x $f_ex_an_ar_oldlib)"
+    $run eval "(cd \$f_ex_an_ar_dir && $AR x \$f_ex_an_ar_oldlib)" || exit $?
+    if ($AR t "$f_ex_an_ar_oldlib" | sort | sort -uc >/dev/null 2>&1); then
+     :
+    else
+      $echo "$modename: ERROR: object name conflicts: $f_ex_an_ar_dir/$f_ex_an_ar_oldlib" 1>&2
+      exit $EXIT_FAILURE
+    fi
+}
+
 # func_extract_archives gentop oldlib ...
-func_extract_archives () {
+func_extract_archives ()
+{
     my_gentop="$1"; shift
     my_oldlibs=${1+"$@"}
     my_oldobjs=""
@@ -287,7 +308,7 @@ func_extract_archives () {
 	  cd $my_xdir || exit $?
 	  darwin_archive=$my_xabs
 	  darwin_curdir=`pwd`
-	  darwin_base_archive=`basename $darwin_archive`
+	  darwin_base_archive=`$echo "X$darwin_archive" | $Xsed -e 's%^.*/%%'`
 	  darwin_arches=`lipo -info "$darwin_archive" 2>/dev/null | $EGREP Architectures 2>/dev/null`
 	  if test -n "$darwin_arches"; then 
 	    darwin_arches=`echo "$darwin_arches" | $SED -e 's/.*are://'`
@@ -296,64 +317,33 @@ func_extract_archives () {
 	    for darwin_arch in  $darwin_arches ; do
 	      mkdir -p "unfat-$$/${darwin_base_archive}-${darwin_arch}"
 	      lipo -thin $darwin_arch -output "unfat-$$/${darwin_base_archive}-${darwin_arch}/${darwin_base_archive}" "${darwin_archive}"
-	      # Remove the table of contents from the thin files.
-	      $AR -d "unfat-$$/${darwin_base_archive}-${darwin_arch}/${darwin_base_archive}" __.SYMDEF 2>/dev/null || true
-	      $AR -d "unfat-$$/${darwin_base_archive}-${darwin_arch}/${darwin_base_archive}" __.SYMDEF\ SORTED 2>/dev/null || true
 	      cd "unfat-$$/${darwin_base_archive}-${darwin_arch}"
-	      $AR -xo "${darwin_base_archive}"
-	      rm "${darwin_base_archive}"
+	      func_extract_an_archive "`pwd`" "${darwin_base_archive}"
 	      cd "$darwin_curdir"
+	      $rm "unfat-$$/${darwin_base_archive}-${darwin_arch}/${darwin_base_archive}"
 	    done # $darwin_arches
       ## Okay now we have a bunch of thin objects, gotta fatten them up :)
-	    darwin_filelist=`find unfat-$$ -type f | xargs basename | sort -u | $NL2SP`
+	    darwin_filelist=`find unfat-$$ -type f -name \*.o -print -o -name \*.lo -print| xargs basename | sort -u | $NL2SP`
 	    darwin_file=
 	    darwin_files=
 	    for darwin_file in $darwin_filelist; do
 	      darwin_files=`find unfat-$$ -name $darwin_file -print | $NL2SP`
 	      lipo -create -output "$darwin_file" $darwin_files
 	    done # $darwin_filelist
-	    rm -rf unfat-$$
+	    ${rm}r unfat-$$
 	    cd "$darwin_orig_dir"
 	  else
-	    cd $darwin_orig_dir
-	    (cd $my_xdir && $AR x $my_xabs) || exit $?
+	    cd "$darwin_orig_dir"
+ 	    func_extract_an_archive "$my_xdir" "$my_xabs"
 	  fi # $darwin_arches
 	fi # $run
-      ;;
-      *)
-	# We will extract separately just the conflicting names and we will
-	# no longer touch any unique names. It is faster to leave these
-	# extract automatically by $AR in one run.
-	$show "(cd $my_xdir && $AR x $my_xabs)"
-	$run eval "(cd \$my_xdir && $AR x \$my_xabs)" || exit $?
-	if ($AR t "$my_xabs" | sort | sort -uc >/dev/null 2>&1); then
-	  :
-	else
-	  $echo "$modename: warning: object name conflicts; renaming object files" 1>&2
-	  $echo "$modename: warning: to ensure that they will not overwrite" 1>&2
-	  $AR t "$my_xabs" | sort | uniq -cd | while read -r count name
-	  do
-	    i=1
-	    while test "$i" -le "$count"
-	    do
-	      # Put our $i before any first dot (extension)
-	      # Never overwrite any file
-	      name_to="$name"
-	      while test "X$name_to" = "X$name" || test -f "$my_xdir/$name_to"
-	      do
-		name_to=`$echo "X$name_to" | $Xsed -e "s/\([^.]*\)/\1-$i/"`
-	      done
-	      $show "(cd $my_xdir && $AR xN $i $my_xabs '$name' && $mv '$name' '$name_to')"
-	      $run eval "(cd \$my_xdir && $AR xN $i \$my_xabs '$name' && $mv '$name' '$name_to')" || exit $?
-	      i=`expr $i + 1`
-	    done
-	  done
-	fi
 	;;
+      *)
+        func_extract_an_archive "$my_xdir" "$my_xabs"
+        ;;
       esac
       my_oldobjs="$my_oldobjs "`find $my_xdir -name \*.$objext -print -o -name \*.lo -print | $NL2SP`
     done
-
     func_extract_archives_result="$my_oldobjs"
 }
 # End of Shell function definitions
@@ -426,10 +416,10 @@ do
   --version)
     $echo "$PROGRAM (GNU $PACKAGE) $VERSION$TIMESTAMP"
     $echo
-    $echo "Copyright (C) 2003  Free Software Foundation, Inc."
+    $echo "Copyright (C) 2005  Free Software Foundation, Inc."
     $echo "This is free software; see the source for copying conditions.  There is NO"
     $echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
-    exit $EXIT_SUCCESS
+    exit $?
     ;;
 
   --config)
@@ -438,7 +428,7 @@ do
     for tagname in $taglist; do
       ${SED} -n -e "/^# ### BEGIN LIBTOOL TAG CONFIG: $tagname$/,/^# ### END LIBTOOL TAG CONFIG: $tagname$/p" < "$progpath"
     done
-    exit $EXIT_SUCCESS
+    exit $?
     ;;
 
   --debug)
@@ -463,7 +453,7 @@ do
     else
       $echo "disable static libraries"
     fi
-    exit $EXIT_SUCCESS
+    exit $?
     ;;
 
   --finish) mode="finish" ;;
@@ -520,7 +510,7 @@ if test -z "$show_help"; then
   # Infer the operation mode.
   if test -z "$mode"; then
     $echo "*** Warning: inferring the mode of operation is deprecated." 1>&2
-    $echo "*** Future versions of Libtool will require -mode=MODE be specified." 1>&2
+    $echo "*** Future versions of Libtool will require --mode=MODE be specified." 1>&2
     case $nonopt in
     *cc | cc* | *++ | gcc* | *-gcc* | g++* | xlc*)
       mode=link
@@ -586,7 +576,7 @@ if test -z "$show_help"; then
 
     for arg
     do
-      case "$arg_mode" in
+      case $arg_mode in
       arg  )
 	# do not "continue".  Instead, add this to base_compile
 	lastarg="$arg"
@@ -668,7 +658,10 @@ if test -z "$show_help"; then
       case $lastarg in
       # Double-quote args containing other shell metacharacters.
       # Many Bourne shells cannot handle close brackets correctly
-      # in scan sets, so we specify it separately.
+      # in scan sets, and some SunOS ksh mistreat backslash-escaping
+      # in scan sets (worked around with variable expansion),
+      # and furthermore cannot handle '|' '&' '(' ')' in scan sets 
+      # at all, so we specify them separately.
       *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
 	lastarg="\"$lastarg\""
 	;;
@@ -742,6 +735,14 @@ if test -z "$show_help"; then
       esac
     done
 
+    qlibobj=`$echo "X$libobj" | $Xsed -e "$sed_quote_subst"`
+    case $qlibobj in
+      *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
+	qlibobj="\"$qlibobj\"" ;;
+    esac
+    test "X$libobj" != "X$qlibobj" \
+	&& $echo "X$libobj" | grep '[]~#^*{};<>?"'"'"' 	&()|`$[]' \
+	&& $echo "$modename: libobj name \`$libobj' may not contain shell special characters."
     objname=`$echo "X$obj" | $Xsed -e 's%^.*/%%'`
     xdir=`$echo "X$obj" | $Xsed -e 's%/[^/]*$%%'`
     if test "X$xdir" = "X$obj"; then
@@ -814,12 +815,17 @@ compiler."
 	$run $rm $removelist
 	exit $EXIT_FAILURE
       fi
-      $echo $srcfile > "$lockfile"
+      $echo "$srcfile" > "$lockfile"
     fi
 
     if test -n "$fix_srcfile_path"; then
       eval srcfile=\"$fix_srcfile_path\"
     fi
+    qsrcfile=`$echo "X$srcfile" | $Xsed -e "$sed_quote_subst"`
+    case $qsrcfile in
+      *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
+      qsrcfile="\"$qsrcfile\"" ;;
+    esac
 
     $run $rm "$libobj" "${libobj}T"
 
@@ -841,10 +847,10 @@ EOF
       fbsd_hideous_sh_bug=$base_compile
 
       if test "$pic_mode" != no; then
-	command="$base_compile $srcfile $pic_flag"
+	command="$base_compile $qsrcfile $pic_flag"
       else
 	# Don't build PIC code
-	command="$base_compile $srcfile"
+	command="$base_compile $qsrcfile"
       fi
 
       if test ! -d "${xdir}$objdir"; then
@@ -924,9 +930,9 @@ EOF
     if test "$build_old_libs" = yes; then
       if test "$pic_mode" != yes; then
 	# Don't build PIC code
-	command="$base_compile $srcfile"
+	command="$base_compile $qsrcfile"
       else
-	command="$base_compile $srcfile $pic_flag"
+	command="$base_compile $qsrcfile $pic_flag"
       fi
       if test "$compiler_c_o" = yes; then
 	command="$command -o $obj"
@@ -1348,6 +1354,13 @@ EOF
 	  prev=
 	  continue
 	  ;;
+        darwin_framework)
+	  compiler_flags="$compiler_flags $arg"
+	  compile_command="$compile_command $arg"
+	  finalize_command="$finalize_command $arg"
+	  prev=
+	  continue
+	  ;;
 	*)
 	  eval "$prev=\"\$arg\""
 	  prev=
@@ -1405,6 +1418,14 @@ EOF
 	fi
 	continue
 	;;
+
+      -framework|-arch)
+        prev=darwin_framework
+        compiler_flags="$compiler_flags $arg"
+	compile_command="$compile_command $arg"
+	finalize_command="$finalize_command $arg"
+        continue
+        ;;
 
       -inst-prefix-dir)
 	prev=inst_prefix
@@ -1466,7 +1487,7 @@ EOF
 	    # These systems don't actually have a C library (as such)
 	    test "X$arg" = "X-lc" && continue
 	    ;;
-	  *-*-openbsd* | *-*-freebsd*)
+	  *-*-openbsd* | *-*-freebsd* | *-*-dragonfly*)
 	    # Do not include libc due to us having libc/libc_r.
 	    test "X$arg" = "X-lc" && continue
 	    ;;
@@ -1477,7 +1498,7 @@ EOF
 	  esac
 	elif test "X$arg" = "X-lc_r"; then
 	 case $host in
-	 *-*-openbsd* | *-*-freebsd*)
+	 *-*-openbsd* | *-*-freebsd* | *-*-dragonfly*)
 	   # Do not include libc_r directly, use -pthread flag.
 	   continue
 	   ;;
@@ -1487,8 +1508,20 @@ EOF
 	continue
 	;;
 
+      # Tru64 UNIX uses -model [arg] to determine the layout of C++
+      # classes, name mangling, and exception handling.
+      -model)
+	compile_command="$compile_command $arg"
+	compiler_flags="$compiler_flags $arg"
+	finalize_command="$finalize_command $arg"
+	prev=xcompiler
+	continue
+	;;
+
      -mt|-mthreads|-kthread|-Kthread|-pthread|-pthreads|--thread-safe)
-	deplibs="$deplibs $arg"
+	compiler_flags="$compiler_flags $arg"
+	compile_command="$compile_command $arg"
+	finalize_command="$finalize_command $arg"
 	continue
 	;;
 
@@ -1497,13 +1530,14 @@ EOF
 	continue
 	;;
 
-      # gcc -m* arguments should be passed to the linker via $compiler_flags
-      # in order to pass architecture information to the linker
-      # (e.g. 32 vs 64-bit).  This may also be accomplished via -Wl,-mfoo
-      # but this is not reliable with gcc because gcc may use -mfoo to
-      # select a different linker, different libraries, etc, while
-      # -Wl,-mfoo simply passes -mfoo to the linker.
-      -m*)
+      # -64, -mips[0-9] enable 64-bit mode on the SGI compiler
+      # -r[0-9][0-9]* specifies the processor on the SGI compiler
+      # -xarch=*, -xtarget=* enable 64-bit mode on the Sun compiler
+      # +DA*, +DD* enable 64-bit mode on the HP compiler
+      # -q* pass through compiler args for the IBM compiler
+      # -m* pass through architecture-specific compiler args for GCC
+      -64|-mips[0-9]|-r[0-9][0-9]*|-xarch=*|-xtarget=*|+DA*|+DD*|-q*|-m*)
+
 	# Unknown arguments in both finalize_command and compile_command need
 	# to be aesthetically quoted because they are evaled later.
 	arg=`$echo "X$arg" | $Xsed -e "$sed_quote_subst"`
@@ -1976,17 +2010,13 @@ EOF
 	    compile_deplibs="$deplib $compile_deplibs"
 	    finalize_deplibs="$deplib $finalize_deplibs"
 	  else
-	    deplibs="$deplib $deplibs"
+	    compiler_flags="$compiler_flags $deplib"
 	  fi
 	  continue
 	  ;;
 	-l*)
 	  if test "$linkmode" != lib && test "$linkmode" != prog; then
 	    $echo "$modename: warning: \`-l' is ignored for archives/objects" 1>&2
-	    continue
-	  fi
-	  if test "$pass" = conv; then
-	    deplibs="$deplib $deplibs"
 	    continue
 	  fi
 	  name=`$echo "X$deplib" | $Xsed -e 's/^-l//'`
@@ -2188,6 +2218,8 @@ EOF
 	# it will not redefine variables installed, or shouldnotlink
 	installed=yes
 	shouldnotlink=no
+	avoidtemprpath=
+
 
 	# Read the .la file
 	case $lib in
@@ -2286,6 +2318,7 @@ EOF
 	    dir="$libdir"
 	    absdir="$libdir"
 	  fi
+	  test "X$hardcode_automatic" = Xyes && avoidtemprpath=yes
 	else
 	  if test ! -f "$ladir/$objdir/$linklib" && test -f "$abs_ladir/$linklib"; then
 	    dir="$ladir"
@@ -2370,12 +2403,12 @@ EOF
 	  if test -n "$library_names" &&
 	     { test "$prefer_static_libs" = no || test -z "$old_library"; }; then
 	    # We need to hardcode the library path
-	    if test -n "$shlibpath_var"; then
+	    if test -n "$shlibpath_var" && test -z "$avoidtemprpath" ; then
 	      # Make sure the rpath contains only unique directories.
 	      case "$temp_rpath " in
 	      *" $dir "*) ;;
 	      *" $absdir "*) ;;
-	      *) temp_rpath="$temp_rpath $dir" ;;
+	      *) temp_rpath="$temp_rpath $absdir" ;;
 	      esac
 	    fi
 
@@ -2561,7 +2594,7 @@ EOF
 		add_dir="-L$dir"
 		# Try looking first in the location we're being installed to.
 		if test -n "$inst_prefix_dir"; then
-		  case "$libdir" in
+		  case $libdir in
 		    [\\/]*)
 		      add_dir="$add_dir -L$inst_prefix_dir$libdir"
 		      ;;
@@ -2634,7 +2667,7 @@ EOF
 	      add_dir="-L$libdir"
 	      # Try looking first in the location we're being installed to.
 	      if test -n "$inst_prefix_dir"; then
-		case "$libdir" in
+		case $libdir in
 		  [\\/]*)
 		    add_dir="$add_dir -L$inst_prefix_dir$libdir"
 		    ;;
@@ -2695,8 +2728,6 @@ EOF
 	      fi
 	    fi
 	  else
-	    convenience="$convenience $dir/$old_library"
-	    old_convenience="$old_convenience $dir/$old_library"
 	    deplibs="$dir/$old_library $deplibs"
 	    link_static=yes
 	  fi
@@ -2814,12 +2845,12 @@ EOF
 	      *) continue ;;
 	      esac
 	      case " $deplibs " in
-	      *" $depdepl "*) ;;
-	      *) deplibs="$depdepl $deplibs" ;;
+	      *" $path "*) ;;
+	      *) deplibs="$path $deplibs" ;;
 	      esac
 	      case " $deplibs " in
-	      *" $path "*) ;;
-	      *) deplibs="$deplibs $path" ;;
+	      *" $depdepl "*) ;;
+	      *) deplibs="$depdepl $deplibs" ;;
 	      esac
 	    done
 	  fi # link_all_deplibs != no
@@ -3084,27 +3115,27 @@ EOF
 
 	# Check that each of the things are valid numbers.
 	case $current in
-	0 | [1-9] | [1-9][0-9] | [1-9][0-9][0-9]) ;;
+	0|[1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9]) ;;
 	*)
-	  $echo "$modename: CURRENT \`$current' is not a nonnegative integer" 1>&2
+	  $echo "$modename: CURRENT \`$current' must be a nonnegative integer" 1>&2
 	  $echo "$modename: \`$vinfo' is not valid version information" 1>&2
 	  exit $EXIT_FAILURE
 	  ;;
 	esac
 
 	case $revision in
-	0 | [1-9] | [1-9][0-9] | [1-9][0-9][0-9]) ;;
+	0|[1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9]) ;;
 	*)
-	  $echo "$modename: REVISION \`$revision' is not a nonnegative integer" 1>&2
+	  $echo "$modename: REVISION \`$revision' must be a nonnegative integer" 1>&2
 	  $echo "$modename: \`$vinfo' is not valid version information" 1>&2
 	  exit $EXIT_FAILURE
 	  ;;
 	esac
 
 	case $age in
-	0 | [1-9] | [1-9][0-9] | [1-9][0-9][0-9]) ;;
+	0|[1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|[1-9][0-9][0-9][0-9][0-9]) ;;
 	*)
-	  $echo "$modename: AGE \`$age' is not a nonnegative integer" 1>&2
+	  $echo "$modename: AGE \`$age' must be a nonnegative integer" 1>&2
 	  $echo "$modename: \`$vinfo' is not valid version information" 1>&2
 	  exit $EXIT_FAILURE
 	  ;;
@@ -3336,7 +3367,7 @@ EOF
 	  *-*-netbsd*)
 	    # Don't link with libc until the a.out ld.so is fixed.
 	    ;;
-	  *-*-openbsd* | *-*-freebsd*)
+	  *-*-openbsd* | *-*-freebsd* | *-*-dragonfly*)
 	    # Do not include libc due to us having libc/libc_r.
 	    test "X$arg" = "X-lc" && continue
 	    ;;
@@ -3386,7 +3417,7 @@ EOF
 	  if test "$?" -eq 0 ; then
 	    ldd_output=`ldd conftest`
 	    for i in $deplibs; do
-	      name="`expr $i : '-l\(.*\)'`"
+	      name=`expr $i : '-l\(.*\)'`
 	      # If $name is empty we are operating on a -L argument.
               if test "$name" != "" && test "$name" -ne "0"; then
 		if test "X$allow_libtool_libs_with_static_runtimes" = "Xyes" ; then
@@ -3423,7 +3454,7 @@ EOF
 	    # Error occurred in the first compile.  Let's try to salvage
 	    # the situation: Compile a separate program for each library.
 	    for i in $deplibs; do
-	      name="`expr $i : '-l\(.*\)'`"
+	      name=`expr $i : '-l\(.*\)'`
 	      # If $name is empty we are operating on a -L argument.
               if test "$name" != "" && test "$name" != "0"; then
 		$rm conftest
@@ -3475,7 +3506,7 @@ EOF
 	  set dummy $deplibs_check_method
 	  file_magic_regex=`expr "$deplibs_check_method" : "$2 \(.*\)"`
 	  for a_deplib in $deplibs; do
-	    name="`expr $a_deplib : '-l\(.*\)'`"
+	    name=`expr $a_deplib : '-l\(.*\)'`
 	    # If $name is empty we are operating on a -L argument.
             if test "$name" != "" && test  "$name" != "0"; then
 	      if test "X$allow_libtool_libs_with_static_runtimes" = "Xyes" ; then
@@ -3544,7 +3575,7 @@ EOF
 	  set dummy $deplibs_check_method
 	  match_pattern_regex=`expr "$deplibs_check_method" : "$2 \(.*\)"`
 	  for a_deplib in $deplibs; do
-	    name="`expr $a_deplib : '-l\(.*\)'`"
+	    name=`expr $a_deplib : '-l\(.*\)'`
 	    # If $name is empty we are operating on a -L argument.
 	    if test -n "$name" && test "$name" != "0"; then
 	      if test "X$allow_libtool_libs_with_static_runtimes" = "Xyes" ; then
@@ -3785,6 +3816,9 @@ EOF
 	        # The command line is too long to execute in one step.
 	        $show "using reloadable object file for export list..."
 	        skipped_export=:
+		# Break out early, otherwise skipped_export may be
+		# set to false by a later but shorter cmd.
+		break
 	      fi
 	    done
 	    IFS="$save_ifs"
@@ -3854,7 +3888,8 @@ EOF
 	  fi
 	fi
 
-	if test "X$skipped_export" != "X:" && len=`expr "X$test_cmds" : ".*"` &&
+	if test "X$skipped_export" != "X:" &&
+	   len=`expr "X$test_cmds" : ".*" 2>/dev/null` &&
 	   test "$len" -le "$max_cmd_len" || test "$max_cmd_len" -le -1; then
 	  :
 	else
@@ -3873,6 +3908,7 @@ EOF
 	    save_libobjs=$libobjs
 	  fi
 	  save_output=$output
+	  output_la=`$echo "X$output" | $Xsed -e "$basename"`
 
 	  # Clear the reloadable object creation command queue and
 	  # initialize k to one.
@@ -3882,13 +3918,13 @@ EOF
 	  delfiles=
 	  last_robj=
 	  k=1
-	  output=$output_objdir/$save_output-${k}.$objext
+	  output=$output_objdir/$output_la-${k}.$objext
 	  # Loop over the list of objects to be linked.
 	  for obj in $save_libobjs
 	  do
 	    eval test_cmds=\"$reload_cmds $objlist $last_robj\"
 	    if test "X$objlist" = X ||
-	       { len=`expr "X$test_cmds" : ".*"` &&
+	       { len=`expr "X$test_cmds" : ".*" 2>/dev/null` &&
 		 test "$len" -le "$max_cmd_len"; }; then
 	      objlist="$objlist $obj"
 	    else
@@ -3902,9 +3938,9 @@ EOF
 		# the last one created.
 		eval concat_cmds=\"\$concat_cmds~$reload_cmds $objlist $last_robj\"
 	      fi
-	      last_robj=$output_objdir/$save_output-${k}.$objext
+	      last_robj=$output_objdir/$output_la-${k}.$objext
 	      k=`expr $k + 1`
-	      output=$output_objdir/$save_output-${k}.$objext
+	      output=$output_objdir/$output_la-${k}.$objext
 	      objlist=$obj
 	      len=1
 	    fi
@@ -3924,13 +3960,13 @@ EOF
 	    eval concat_cmds=\"\$concat_cmds~$export_symbols_cmds\"
           fi
 
-	  # Set up a command to remove the reloadale object files
+	  # Set up a command to remove the reloadable object files
 	  # after they are used.
 	  i=0
 	  while test "$i" -lt "$k"
 	  do
 	    i=`expr $i + 1`
-	    delfiles="$delfiles $output_objdir/$save_output-${i}.$objext"
+	    delfiles="$delfiles $output_objdir/$output_la-${i}.$objext"
 	  done
 
 	  $echo "creating a temporary reloadable object file: $output"
@@ -3978,13 +4014,30 @@ EOF
 	  IFS="$save_ifs"
 	  eval cmd=\"$cmd\"
 	  $show "$cmd"
-	  $run eval "$cmd" || exit $?
+	  $run eval "$cmd" || {
+	    lt_exit=$?
+
+	    # Restore the uninstalled library and exit
+	    if test "$mode" = relink; then
+	      $run eval '(cd $output_objdir && $rm ${realname}T && $mv ${realname}U $realname)'
+	    fi
+
+	    exit $lt_exit
+	  }
 	done
 	IFS="$save_ifs"
 
 	# Restore the uninstalled library and exit
 	if test "$mode" = relink; then
 	  $run eval '(cd $output_objdir && $rm ${realname}T && $mv $realname ${realname}T && $mv "$realname"U $realname)' || exit $?
+
+	  if test -n "$convenience"; then
+	    if test -z "$whole_archive_flag_spec"; then
+	      $show "${rm}r $gentop"
+	      $run ${rm}r "$gentop"
+	    fi
+	  fi
+
 	  exit $EXIT_SUCCESS
 	fi
 
@@ -4327,22 +4380,22 @@ extern \"C\" {
 
 	    # Prepare the list of exported symbols
 	    if test -z "$export_symbols"; then
-	      export_symbols="$output_objdir/$output.exp"
+	      export_symbols="$output_objdir/$outputname.exp"
 	      $run $rm $export_symbols
-	      $run eval "${SED} -n -e '/^: @PROGRAM@$/d' -e 's/^.* \(.*\)$/\1/p' "'< "$nlist" > "$export_symbols"'
+	      $run eval "${SED} -n -e '/^: @PROGRAM@ $/d' -e 's/^.* \(.*\)$/\1/p' "'< "$nlist" > "$export_symbols"'
               case $host in
               *cygwin* | *mingw* )
-                $run eval "${SED} -e '1iEXPORTS'"' < "$export_symbols" > "$output_objdir/$output.def"'
+                $run eval "${SED} -e '1iEXPORTS'"' < "$export_symbols" > "$output_objdir/$outputname.def"'
                 ;;
               esac
 	    else
-	      $run eval "${SED} -e 's/\([][.*^$]\)/\\\1/g' -e 's/^/ /' -e 's/$/$/'"' < "$export_symbols" > "$output_objdir/$output.exp"'
+	      $run eval "${SED} -e 's/\([ ][.*^$]\)/\\\1/g' -e 's/^/ /' -e 's/$/$/'"' < "$export_symbols" > "$output_objdir/$outputname.exp"'
               case $host in
               *cygwin* | *mingw* )
-                $run eval "${SED} -e '1iEXPORTS'"' < "$output_objdir/$output.exp" > "$output_objdir/$output.def"'
+                $run eval "${SED} -e '1iEXPORTS'"' < "$output_objdir/$outputname.exp" > "$output_objdir/$outputname.def"'
                 ;;
               esac
-	      $run eval 'grep -f "$output_objdir/$output.exp" < "$nlist" > "$nlist"T'
+	      $run eval 'grep -f "$output_objdir/$outputname.exp" < "$nlist" > "$nlist"T'
 	      $run eval 'mv "$nlist"T "$nlist"'
 	    fi
 	  fi
@@ -4398,7 +4451,7 @@ extern \"C\" {
 
 	    case $host in
 	    *cygwin* | *mingw* )
-	      $echo >> "$output_objdir/$dlsyms" "\
+	  $echo >> "$output_objdir/$dlsyms" "\
 /* DATA imports from DLLs on WIN32 can't be const, because
    runtime relocations are performed -- see ld's documentation
    on pseudo-relocs */
@@ -4406,14 +4459,14 @@ struct {
 "
 	      ;;
 	    * )
-	      $echo >> "$output_objdir/$dlsyms" "\
+	  $echo >> "$output_objdir/$dlsyms" "\
 const struct {
 "
 	      ;;
 	    esac
 
 
-	    $echo >> "$output_objdir/$dlsyms" "\
+	  $echo >> "$output_objdir/$dlsyms" "\
   const char *name;
   lt_ptr address;
 }
@@ -4468,21 +4521,21 @@ static const void *lt_preloaded_setup() {
 	  #$run $rm "$output_objdir/$dlsyms" "$nlist" "${nlist}S" "${nlist}T"
 
 	  # Transform the symbol file into the correct name.
-	  case $host in
-	  *cygwin* | *mingw* )
-	    if test -f "$output_objdir/${outputname}.def" ; then
-	      compile_command=`$echo "X$compile_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/${outputname}.def $output_objdir/${outputname}S.${objext}%"`
-	      finalize_command=`$echo "X$finalize_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/${outputname}.def $output_objdir/${outputname}S.${objext}%"`
-	    else
-	      compile_command=`$echo "X$compile_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/${outputname}S.${objext}%"`
-	      finalize_command=`$echo "X$finalize_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/${outputname}S.${objext}%"`
-            fi
-	    ;;
-	  * )
-	    compile_command=`$echo "X$compile_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/${outputname}S.${objext}%"`
-	    finalize_command=`$echo "X$finalize_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/${outputname}S.${objext}%"`
-	    ;;
-	  esac
+          case $host in
+          *cygwin* | *mingw* )
+            if test -f "$output_objdir/${outputname}.def" ; then
+              compile_command=`$echo "X$compile_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/${outputname}.def $output_objdir/${outputname}S.${objext}%"`
+              finalize_command=`$echo "X$finalize_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/${outputname}.def $output_objdir/${outputname}S.${objext}%"`
+            else
+              compile_command=`$echo "X$compile_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/${outputname}S.${objext}%"`
+              finalize_command=`$echo "X$finalize_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/${outputname}S.${objext}%"`
+             fi
+            ;;
+          * )
+            compile_command=`$echo "X$compile_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/${outputname}S.${objext}%"`
+            finalize_command=`$echo "X$finalize_command" | $Xsed -e "s%@SYMFILE@%$output_objdir/${outputname}S.${objext}%"`
+            ;;
+          esac
 	  ;;
 	*)
 	  $echo "$modename: unknown suffix for \`$dlsyms'" 1>&2
@@ -4513,7 +4566,7 @@ static const void *lt_preloaded_setup() {
 	if test -n "$dlsyms"; then
 	  #$show "$rm $output_objdir/${outputname}S.${objext}"
 	  #$run $rm "$output_objdir/${outputname}S.${objext}"
-	  :
+          :
 	fi
 
 	exit $status
@@ -4656,12 +4709,12 @@ static const void *lt_preloaded_setup() {
 	esac
 	case $host in
 	  *cygwin* | *mingw* )
-	    output_name=`basename $output`
-	    output_path=`dirname $output`
-	    cwrappersource=`$echo ${output_path}/${objdir}/lt-${output_name}.c`
-	    cwrapper=`$echo ${output_path}/${output_name}.exe`
-	    $rm $cwrappersource $cwrapper
-	    trap "$rm $cwrappersource $cwrapper; exit $EXIT_FAILURE" 1 2 15
+            output_name=`basename $output`
+            output_path=`dirname $output`
+            cwrappersource="$output_path/$objdir/lt-$output_name.c"
+            cwrapper="$output_path/$output_name.exe"
+            $rm $cwrappersource $cwrapper
+            trap "$rm $cwrappersource $cwrapper; exit $EXIT_FAILURE" 1 2 15
 
 	    cat > $cwrappersource <<EOF
 
@@ -4686,6 +4739,8 @@ EOF
 #include <malloc.h>
 #include <stdarg.h>
 #include <assert.h>
+#include <string.h>
+#include <ctype.h>
 #include <sys/stat.h>
 
 #if defined(PATH_MAX)
@@ -4704,10 +4759,10 @@ EOF
 #if defined (_WIN32) || defined (__MSDOS__) || defined (__DJGPP__) || \
   defined (__OS2__)
 # define HAVE_DOS_BASED_FILE_SYSTEM
-# ifndef DIR_SEPARATOR_2 
+# ifndef DIR_SEPARATOR_2
 #  define DIR_SEPARATOR_2 '\\'
 # endif
-# ifndef PATH_SEPARATOR_2 
+# ifndef PATH_SEPARATOR_2
 #  define PATH_SEPARATOR_2 ';'
 # endif
 #endif
@@ -4730,17 +4785,19 @@ EOF
   if (stale) { free ((void *) stale); stale = 0; } \
 } while (0)
 
+/* -DDEBUG is fairly common in CFLAGS.  */
+#undef DEBUG
 #if defined DEBUGWRAPPER
 # define DEBUG(format, ...) fprintf(stderr, format, __VA_ARGS__)
 #else
-# define DEBUG(format, ...) 
+# define DEBUG(format, ...)
 #endif
 
 const char *program_name = NULL;
 
 void * xmalloc (size_t num);
 char * xstrdup (const char *string);
-char * basename (const char *name);
+const char * base_name (const char *name);
 char * find_executable(const char *wrapper);
 int    check_executable(const char *path);
 char * strendzap(char *str, const char *pat);
@@ -4752,17 +4809,17 @@ main (int argc, char *argv[])
   char **newargz;
   int i;
 
-  program_name = (char *) xstrdup ((char *) basename (argv[0]));
+  program_name = (char *) xstrdup (base_name (argv[0]));
   DEBUG("(main) argv[0]      : %s\n",argv[0]);
   DEBUG("(main) program_name : %s\n",program_name);
   newargz = XMALLOC(char *, argc+2);
 EOF
 
-	    cat >> $cwrappersource <<EOF
-  newargz[0] = "$SHELL";
+            cat >> $cwrappersource <<EOF
+  newargz[0] = (char *) xstrdup("$SHELL");
 EOF
 
-	    cat >> $cwrappersource <<"EOF"
+            cat >> $cwrappersource <<"EOF"
   newargz[1] = find_executable(argv[0]);
   if (newargz[1] == NULL)
     lt_fatal("Couldn't find %s", argv[0]);
@@ -4782,11 +4839,21 @@ EOF
 
 EOF
 
-	    cat >> $cwrappersource <<EOF
+            case $host_os in
+              mingw*)
+                cat >> $cwrappersource <<EOF
+  execv("$SHELL",(char const **)newargz);
+EOF
+              ;;
+              *)
+                cat >> $cwrappersource <<EOF
   execv("$SHELL",newargz);
 EOF
+              ;;
+            esac
 
-	    cat >> $cwrappersource <<"EOF"
+            cat >> $cwrappersource <<"EOF"
+  return 127;
 }
 
 void *
@@ -4806,21 +4873,21 @@ xstrdup (const char *string)
 ;
 }
 
-char *
-basename (const char *name)
+const char *
+base_name (const char *name)
 {
   const char *base;
 
 #if defined (HAVE_DOS_BASED_FILE_SYSTEM)
   /* Skip over the disk name in MSDOS pathnames. */
-  if (isalpha (name[0]) && name[1] == ':')
+  if (isalpha ((unsigned char)name[0]) && name[1] == ':')
     name += 2;
 #endif
 
   for (base = name; *name; name++)
     if (IS_DIR_SEPARATOR (*name))
       base = name + 1;
-  return (char *) base;
+  return base;
 }
 
 int
@@ -4828,14 +4895,22 @@ check_executable(const char * path)
 {
   struct stat st;
 
-  DEBUG("(check_executable)  : %s\n", path ? (*path ? path : "EMPTY!") : "NULL!");
+  DEBUG("(check_executable)  : %s\n", path ? (*path ? path : "EMPTY!") : "NULL!"
+);
   if ((!path) || (!*path))
     return 0;
 
   if ((stat (path, &st) >= 0) &&
-      (((st.st_mode & S_IXOTH) == S_IXOTH) ||
+      (
+        /* MinGW & native WIN32 do not support S_IXOTH or S_IXGRP */
+#if defined (S_IXOTH)
+       ((st.st_mode & S_IXOTH) == S_IXOTH) ||
+#endif
+#if defined (S_IXGRP)
        ((st.st_mode & S_IXGRP) == S_IXGRP) ||
-       ((st.st_mode & S_IXUSR) == S_IXUSR)))
+#endif
+       ((st.st_mode & S_IXUSR) == S_IXUSR))
+      )
     return 1;
   else
     return 0;
@@ -4849,20 +4924,20 @@ find_executable (const char* wrapper)
   int has_slash = 0;
   const char* p;
   const char* p_next;
-  struct stat st;
   /* static buffer for getcwd */
   char tmp[LT_PATHMAX + 1];
   int tmp_len;
   char* concat_name;
 
-  DEBUG("(find_executable)  : %s\n", wrapper ? (*wrapper ? wrapper : "EMPTY!") : "NULL!");
-  
+  DEBUG("(find_executable)  : %s\n", wrapper ? (*wrapper ? wrapper : "EMPTY!") :
+ "NULL!");
+
   if ((wrapper == NULL) || (*wrapper == '\0'))
     return NULL;
 
   /* Absolute path? */
 #if defined (HAVE_DOS_BASED_FILE_SYSTEM)
-  if (isalpha (wrapper[0]) && wrapper[1] == ':')
+  if (isalpha ((unsigned char)wrapper[0]) && wrapper[1] == ':')
   {
     concat_name = xstrdup (wrapper);
     if (check_executable(concat_name))
@@ -4880,7 +4955,7 @@ find_executable (const char* wrapper)
       XFREE(concat_name);
     }
 #if defined (HAVE_DOS_BASED_FILE_SYSTEM)
-}
+  }
 #endif
 
   for (p = wrapper; *p; p++)
@@ -4985,16 +5060,16 @@ lt_fatal (const char *message, ...)
   va_end (ap);
 }
 EOF
-	  # we should really use a build-platform specific compiler
-	  # here, but OTOH, the wrappers (shell script and this C one)
-	  # are only useful if you want to execute the "real" binary.
-	  # Since the "real" binary is built for $host, then this
-	  # wrapper might as well be built for $host, too.
-	  $run $LTCC -s -o $cwrapper $cwrappersource
-	  ;;
-	esac
-	$rm $output
-	trap "$rm $output; exit $EXIT_FAILURE" 1 2 15
+          # we should really use a build-platform specific compiler
+          # here, but OTOH, the wrappers (shell script and this C one)
+          # are only useful if you want to execute the "real" binary.
+          # Since the "real" binary is built for $host, then this
+          # wrapper might as well be built for $host, too.
+          $run $LTCC $LTCFLAGS -s -o $cwrapper $cwrappersource
+          ;;
+        esac
+        $rm $output
+        trap "$rm $output; exit $EXIT_FAILURE" 1 2 15
 
 	$echo > $output "\
 #! $SHELL
@@ -5144,13 +5219,13 @@ else
 	# Backslashes separate directories on plain windows
 	*-*-mingw | *-*-os2*)
 	  $echo >> $output "\
-      exec \$progdir\\\\\$program \${1+\"\$@\"}
+      exec \"\$progdir\\\\\$program\" \${1+\"\$@\"}
 "
 	  ;;
 
 	*)
 	  $echo >> $output "\
-      exec \$progdir/\$program \${1+\"\$@\"}
+      exec \"\$progdir/\$program\" \${1+\"\$@\"}
 "
 	  ;;
 	esac
@@ -5160,7 +5235,7 @@ else
     fi
   else
     # The program doesn't exist.
-    \$echo \"\$0: error: \$progdir/\$program does not exist\" 1>&2
+    \$echo \"\$0: error: \\\`\$progdir/\$program' does not exist\" 1>&2
     \$echo \"This script is just a wrapper for \$program.\" 1>&2
     $echo \"See the $PACKAGE documentation for more information.\" 1>&2
     exit $EXIT_FAILURE
@@ -5202,6 +5277,63 @@ fi\
       if test -n "$old_archive_from_new_cmds" && test "$build_libtool_libs" = yes; then
        cmds=$old_archive_from_new_cmds
       else
+	# POSIX demands no paths to be encoded in archives.  We have
+	# to avoid creating archives with duplicate basenames if we
+	# might have to extract them afterwards, e.g., when creating a
+	# static archive out of a convenience library, or when linking
+	# the entirety of a libtool archive into another (currently
+	# not supported by libtool).
+	if (for obj in $oldobjs
+	    do
+	      $echo "X$obj" | $Xsed -e 's%^.*/%%'
+	    done | sort | sort -uc >/dev/null 2>&1); then
+	  :
+	else
+	  $echo "copying selected object files to avoid basename conflicts..."
+
+	  if test -z "$gentop"; then
+	    gentop="$output_objdir/${outputname}x"
+	    generated="$generated $gentop"
+
+	    $show "${rm}r $gentop"
+	    $run ${rm}r "$gentop"
+	    $show "$mkdir $gentop"
+	    $run $mkdir "$gentop"
+	    status=$?
+	    if test "$status" -ne 0 && test ! -d "$gentop"; then
+	      exit $status
+	    fi
+	  fi
+
+	  save_oldobjs=$oldobjs
+	  oldobjs=
+	  counter=1
+	  for obj in $save_oldobjs
+	  do
+	    objbase=`$echo "X$obj" | $Xsed -e 's%^.*/%%'`
+	    case " $oldobjs " in
+	    " ") oldobjs=$obj ;;
+	    *[\ /]"$objbase "*)
+	      while :; do
+		# Make sure we don't pick an alternate name that also
+		# overlaps.
+		newobj=lt$counter-$objbase
+		counter=`expr $counter + 1`
+		case " $oldobjs " in
+		*[\ /]"$newobj "*) ;;
+		*) if test ! -f "$gentop/$newobj"; then break; fi ;;
+		esac
+	      done
+	      $show "ln $obj $gentop/$newobj || cp $obj $gentop/$newobj"
+	      $run ln "$obj" "$gentop/$newobj" ||
+	      $run cp "$obj" "$gentop/$newobj"
+	      oldobjs="$oldobjs $gentop/$newobj"
+	      ;;
+	    *) oldobjs="$oldobjs $obj" ;;
+	    esac
+	  done
+	fi
+
 	eval cmds=\"$old_archive_cmds\"
 
 	if len=`expr "X$cmds" : ".*"` &&
@@ -5215,20 +5347,7 @@ fi\
 	  objlist=
 	  concat_cmds=
 	  save_oldobjs=$oldobjs
-	  # GNU ar 2.10+ was changed to match POSIX; thus no paths are
-	  # encoded into archives.  This makes 'ar r' malfunction in
-	  # this piecewise linking case whenever conflicting object
-	  # names appear in distinct ar calls; check, warn and compensate.
-	    if (for obj in $save_oldobjs
-	    do
-	      $echo "X$obj" | $Xsed -e 's%^.*/%%'
-	    done | sort | sort -uc >/dev/null 2>&1); then
-	    :
-	  else
-	    $echo "$modename: warning: object name conflicts; overriding AR_FLAGS to 'cq'" 1>&2
-	    $echo "$modename: warning: to ensure that POSIX-compatible ar will work" 1>&2
-	    AR_FLAGS=cq
-	  fi
+
 	  # Is there a better way of finding the last object in the list?
 	  for obj in $save_oldobjs
 	  do
@@ -5239,7 +5358,7 @@ fi\
 	    oldobjs="$objlist $obj"
 	    objlist="$objlist $obj"
 	    eval test_cmds=\"$old_archive_cmds\"
-	    if len=`expr "X$test_cmds" : ".*"` &&
+	    if len=`expr "X$test_cmds" : ".*" 2>/dev/null` &&
 	       test "$len" -le "$max_cmd_len"; then
 	      :
 	    else
@@ -5436,11 +5555,11 @@ relink_command=\"$relink_command\""
     # install_prog (especially on Windows NT).
     if test "$nonopt" = "$SHELL" || test "$nonopt" = /bin/sh ||
        # Allow the use of GNU shtool's install command.
-       $echo "X$nonopt" | $Xsed | grep shtool > /dev/null; then
+       $echo "X$nonopt" | grep shtool > /dev/null; then
       # Aesthetically quote it.
       arg=`$echo "X$nonopt" | $Xsed -e "$sed_quote_subst"`
       case $arg in
-      *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*)
+      *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
 	arg="\"$arg\""
 	;;
       esac
@@ -5449,14 +5568,14 @@ relink_command=\"$relink_command\""
       shift
     else
       install_prog=
-      arg="$nonopt"
+      arg=$nonopt
     fi
 
     # The real first argument should be the name of the installation program.
     # Aesthetically quote it.
     arg=`$echo "X$arg" | $Xsed -e "$sed_quote_subst"`
     case $arg in
-    *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*)
+    *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
       arg="\"$arg\""
       ;;
     esac
@@ -5474,28 +5593,31 @@ relink_command=\"$relink_command\""
     do
       if test -n "$dest"; then
 	files="$files $dest"
-	dest="$arg"
+	dest=$arg
 	continue
       fi
 
       case $arg in
       -d) isdir=yes ;;
-      -f) prev="-f" ;;
-      -g) prev="-g" ;;
-      -m) prev="-m" ;;
-      -o) prev="-o" ;;
+      -f) 
+      	case " $install_prog " in
+	*[\\\ /]cp\ *) ;;
+	*) prev=$arg ;;
+	esac
+	;;
+      -g | -m | -o) prev=$arg ;;
       -s)
 	stripme=" -s"
 	continue
 	;;
-      -*) ;;
-
+      -*)
+	;;
       *)
 	# If the previous option needed an argument, then skip it.
 	if test -n "$prev"; then
 	  prev=
 	else
-	  dest="$arg"
+	  dest=$arg
 	  continue
 	fi
 	;;
@@ -5504,7 +5626,7 @@ relink_command=\"$relink_command\""
       # Aesthetically quote the argument.
       arg=`$echo "X$arg" | $Xsed -e "$sed_quote_subst"`
       case $arg in
-      *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*)
+      *[\[\~\#\^\&\*\(\)\{\}\|\;\<\>\?\'\ \	]*|*]*|"")
 	arg="\"$arg\""
 	;;
       esac
@@ -5673,11 +5795,14 @@ relink_command=\"$relink_command\""
 
 	  if test "$#" -gt 0; then
 	    # Delete the old symlinks, and create new ones.
+	    # Try `ln -sf' first, because the `ln' binary might depend on
+	    # the symlink we replace!  Solaris /bin/ln does not understand -f,
+	    # so we also need to try rm && ln -s.
 	    for linkname
 	    do
 	      if test "$linkname" != "$realname"; then
-		$show "(cd $destdir && $rm $linkname && $LN_S $realname $linkname)"
-		$run eval "(cd $destdir && $rm $linkname && $LN_S $realname $linkname)"
+                $show "(cd $destdir && { $LN_S -f $realname $linkname || { $rm $linkname && $LN_S $realname $linkname; }; })"
+                $run eval "(cd $destdir && { $LN_S -f $realname $linkname || { $rm $linkname && $LN_S $realname $linkname; }; })"
 	      fi
 	    done
 	  fi
@@ -5690,7 +5815,16 @@ relink_command=\"$relink_command\""
 	    IFS="$save_ifs"
 	    eval cmd=\"$cmd\"
 	    $show "$cmd"
-	    $run eval "$cmd" || exit $?
+	    $run eval "$cmd" || {
+	      lt_exit=$?
+
+	      # Restore the uninstalled library and exit
+	      if test "$mode" = relink; then
+		$run eval '(cd $output_objdir && $rm ${realname}T && $mv ${realname}U $realname)'
+	      fi
+
+	      exit $lt_exit
+	    }
 	  done
 	  IFS="$save_ifs"
 	fi
@@ -5784,17 +5918,15 @@ relink_command=\"$relink_command\""
 	  notinst_deplibs=
 	  relink_command=
 
-	  # To insure that "foo" is sourced, and not "foo.exe",
-	  # finese the cygwin/MSYS system by explicitly sourcing "foo."
-	  # which disallows the automatic-append-.exe behavior.
-	  case $build in
-	  *cygwin* | *mingw*) wrapperdot=${wrapper}. ;;
-	  *) wrapperdot=${wrapper} ;;
-	  esac
+	  # Note that it is not necessary on cygwin/mingw to append a dot to
+	  # foo even if both foo and FILE.exe exist: automatic-append-.exe
+	  # behavior happens only for exec(3), not for open(2)!  Also, sourcing
+	  # `FILE.' does not work on cygwin managed mounts.
+	  #
 	  # If there is no directory component, then add one.
-	  case $file in
-	  */* | *\\*) . ${wrapperdot} ;;
-	  *) . ./${wrapperdot} ;;
+	  case $wrapper in
+	  */* | *\\*) . ${wrapper} ;;
+	  *) . ./${wrapper} ;;
 	  esac
 
 	  # Check the variables that should have been set.
@@ -5822,17 +5954,15 @@ relink_command=\"$relink_command\""
 	  done
 
 	  relink_command=
-	  # To insure that "foo" is sourced, and not "foo.exe",
-	  # finese the cygwin/MSYS system by explicitly sourcing "foo."
-	  # which disallows the automatic-append-.exe behavior.
-	  case $build in
-	  *cygwin* | *mingw*) wrapperdot=${wrapper}. ;;
-	  *) wrapperdot=${wrapper} ;;
-	  esac
+	  # Note that it is not necessary on cygwin/mingw to append a dot to
+	  # foo even if both foo and FILE.exe exist: automatic-append-.exe
+	  # behavior happens only for exec(3), not for open(2)!  Also, sourcing
+	  # `FILE.' does not work on cygwin managed mounts.
+	  #
 	  # If there is no directory component, then add one.
-	  case $file in
-	  */* | *\\*) . ${wrapperdot} ;;
-	  *) . ./${wrapperdot} ;;
+	  case $wrapper in
+	  */* | *\\*) . ${wrapper} ;;
+	  *) . ./${wrapper} ;;
 	  esac
 
 	  outputname=
@@ -5873,7 +6003,7 @@ relink_command=\"$relink_command\""
 	fi
 
 	# remove .exe since cygwin /usr/bin/install will append another
-	# one anyways
+	# one anyway 
 	case $install_prog,$host in
 	*/usr/bin/install*,*cygwin*)
 	  case $file:$destfile in
@@ -6543,7 +6673,7 @@ esac
 $echo
 $echo "Try \`$modename --help' for more information about other modes."
 
-exit $EXIT_SUCCESS
+exit $?
 
 # The TAGs below are defined such that we never get into a situation
 # in which we disable both kinds of libraries.  Given conflicting

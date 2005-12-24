@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2005 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -250,8 +250,6 @@ void Eval8Inputs(WORD StageABC[], WORD StageLMN[], WORD LutTable[], LPL16PARAMS 
 }
 
 
-
-
 // Fills optimization parameters
 
 void cmsCalcCLUT16ParamsEx(int nSamples, int InputChan, int OutputChan, 
@@ -270,7 +268,7 @@ void cmsCalcCLUT16ParamsEx(int nSamples, int InputChan, int OutputChan,
        p -> opta2 = p -> opta1 * clutPoints;    // Y
        p -> opta3 = p -> opta2 * clutPoints;    // X
        p -> opta4 = p -> opta3 * clutPoints;    // Used only in 4 inputs LUT
-       p -> opta5 = p -> opta4 * clutPoints;
+       p -> opta5 = p -> opta4 * clutPoints;    // Used only in 5 inputs LUT
        p -> opta6 = p -> opta5 * clutPoints;    // Used only on 6 inputs LUT
        p -> opta7 = p -> opta6 * clutPoints;    // Used only on 7 inputs LUT
        p -> opta8 = p -> opta7 * clutPoints;    // Used only on 8 inputs LUT
@@ -285,13 +283,14 @@ void cmsCalcCLUT16ParamsEx(int nSamples, int InputChan, int OutputChan,
                break;
 
            case 3:  // RGB et al               
-               if (lUseTetrahedral)
-                   p ->Interp3D = cmsTetrahedralInterp16;   
+               if (lUseTetrahedral) {                   
+                   p ->Interp3D = cmsTetrahedralInterp16;                   
+               }
                else
                    p ->Interp3D = cmsTrilinearInterp16;   
-                break;
+               break;
 
-           case 4:  // CMYK LUT
+           case 4:  // CMYK LUT             
                 p ->Interp3D = Eval4Inputs;
                 break;
 
@@ -299,7 +298,7 @@ void cmsCalcCLUT16ParamsEx(int nSamples, int InputChan, int OutputChan,
                 p ->Interp3D = Eval5Inputs;
                 break;           
 
-           case 6: // Hexachrome
+           case 6: // 6 Inks
                 p -> Interp3D = Eval6Inputs;
                 break;     
                 
@@ -521,7 +520,7 @@ WORD cmsReverseLinearInterpLUT16(WORD Value, WORD LutTable[], LPL16PARAMS p)
         int cell0, cell1;
         double val2;
         double y0, y1, x0, x1;
-        double a, b;
+        double a, b, f;
 
         // July/27 2001 - Expanded to handle degenerated curves with an arbitrary
         // number of elements containing 0 at the begining of the table (Zeroes)
@@ -603,7 +602,12 @@ WORD cmsReverseLinearInterpLUT16(WORD Value, WORD LutTable[], LPL16PARAMS p)
 
         if (a == 0) return (WORD) x;
 
-        return (WORD) floor(((Value - b) / a) + 0.5);                        
+        f = ((Value - b) / a);
+
+        if (f < 0.0) return (WORD) 0;
+        if (f >= 65535.0) return (WORD) 0xFFFF;
+
+        return (WORD) floor(f + 0.5);                        
         
 }
 
@@ -640,9 +644,9 @@ void cmsTrilinearInterp16(WORD Input[], WORD Output[],
     py = ((double) Input[1] * (p->Domain)) / 65535.0;
     pz = ((double) Input[2] * (p->Domain)) / 65535.0;
 
-    x0 = (int) floor(px); fx = px - (double) x0;
-    y0 = (int) floor(py); fy = py - (double) y0;
-    z0 = (int) floor(pz); fz = pz - (double) z0;
+    x0 = (int) _cmsQuickFloor(px); fx = px - (double) x0;
+    y0 = (int) _cmsQuickFloor(py); fy = py - (double) y0;
+    z0 = (int) _cmsQuickFloor(pz); fz = pz - (double) z0;
 
     x1 = x0 + (Input[0] != 0xFFFFU ? 1 : 0);
     y1 = y0 + (Input[1] != 0xFFFFU ? 1 : 0);
@@ -699,8 +703,8 @@ void cmsTrilinearInterp16(WORD Input[], WORD Output[],
 
            int        OutChan, TotalOut;
            Fixed32    fx, fy, fz;
-  register WORD       rx, ry, rz;
-           int        x0, y0, z0, x1, y1, z1;
+  register int        rx, ry, rz;
+           int        x0, y0, z0;
   register int        X0, X1, Y0, Y1, Z0, Z1;
            int        d000, d001, d010, d011,
                       d100, d101, d110, d111,
@@ -712,27 +716,28 @@ void cmsTrilinearInterp16(WORD Input[], WORD Output[],
 
     fx = ToFixedDomain((int) Input[0] * p -> Domain);
     x0  = FIXED_TO_INT(fx);
-    rx  = (WORD) FIXED_REST_TO_INT(fx);    // Rest in 0..1.0 domain
+    rx  = FIXED_REST_TO_INT(fx);    // Rest in 0..1.0 domain
 
 
     fy = ToFixedDomain((int) Input[1] * p -> Domain);
     y0  = FIXED_TO_INT(fy);
-    ry  = (WORD) FIXED_REST_TO_INT(fy);
+    ry  = FIXED_REST_TO_INT(fy);
 
     fz = ToFixedDomain((int) Input[2] * p -> Domain);
     z0 = FIXED_TO_INT(fz);
-    rz = (WORD) FIXED_REST_TO_INT(fz);
+    rz = FIXED_REST_TO_INT(fz);
 
-    x1 = x0 + (Input[0] != 0xFFFFU ? 1 : 0);
-    y1 = y0 + (Input[1] != 0xFFFFU ? 1 : 0);
-    z1 = z0 + (Input[2] != 0xFFFFU ? 1 : 0);
 
-    Z0 = p -> opta1 * z0;
-    Z1 = p -> opta1 * z1;
-    Y0 = p -> opta2 * y0;
-    Y1 = p -> opta2 * y1;
+
     X0 = p -> opta3 * x0;
-    X1 = p -> opta3 * x1;
+    X1 = X0 + (Input[0] == 0xFFFFU ? 0 : p->opta3);
+
+	Y0 = p -> opta2 * y0;
+    Y1 = Y0 + (Input[1] == 0xFFFFU ? 0 : p->opta2);
+   
+    Z0 = p -> opta1 * z0;
+    Z1 = Z0 + (Input[2] == 0xFFFFU ? 0 : p->opta1);
+    
 
 
     for (OutChan = 0; OutChan < TotalOut; OutChan++)
@@ -798,9 +803,9 @@ void cmsTetrahedralInterp16(WORD Input[],
     py = ((double) Input[1] * p->Domain) / 65535.0;
     pz = ((double) Input[2] * p->Domain) / 65535.0;
 
-    x0 = (int) floor(px); fx = (px - (double) x0);
-    y0 = (int) floor(py); fy = (py - (double) y0);
-    z0 = (int) floor(pz); fz = (pz - (double) z0);
+    x0 = (int) _cmsQuickFloor(px); fx = (px - (double) x0);
+    y0 = (int) _cmsQuickFloor(py); fy = (py - (double) y0);
+    z0 = (int) _cmsQuickFloor(pz); fz = (pz - (double) z0);
 
 
     x1 = x0 + (Input[0] != 0xFFFFU ? 1 : 0);
@@ -871,10 +876,6 @@ void cmsTetrahedralInterp16(WORD Input[],
 
 #else
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4701)
-#endif
-
 #define DENS(i,j,k) (LutTable[(i)+(j)+(k)+OutChan])
 
 void cmsTetrahedralInterp16(WORD Input[],
@@ -886,7 +887,6 @@ void cmsTetrahedralInterp16(WORD Input[],
        Fixed32    fx, fy, fz;
        Fixed32    rx, ry, rz;
        int        x0, y0, z0;
-       int        x1, y1, z1;
        Fixed32    c1, c2, c3, Rest;       
        int        OutChan;
        register   Fixed32    X0, X1, Y0, Y1, Z0, Z1;
@@ -895,37 +895,32 @@ void cmsTetrahedralInterp16(WORD Input[],
 
 
     fx  = ToFixedDomain((int) Input[0] * p -> Domain);
-    x0  = FIXED_TO_INT(fx);
-    rx  = FIXED_REST_TO_INT(fx);   
-
-
     fy  = ToFixedDomain((int) Input[1] * p -> Domain);
-    y0  = FIXED_TO_INT(fy);
-    ry  = FIXED_REST_TO_INT(fy);
+    fz  = ToFixedDomain((int) Input[2] * p -> Domain);
 
-    fz = ToFixedDomain((int) Input[2] * p -> Domain);
-    z0 = FIXED_TO_INT(fz);
-    rz = FIXED_REST_TO_INT(fz);
+    x0  = FIXED_TO_INT(fx);
+    y0  = FIXED_TO_INT(fy); 
+    z0  = FIXED_TO_INT(fz);
 
-    
-    x1 = x0 + (Input[0] != 0xFFFFU ? 1 : 0);
-    y1 = y0 + (Input[1] != 0xFFFFU ? 1 : 0);
-    z1 = z0 + (Input[2] != 0xFFFFU ? 1 : 0);
-    
+    rx  = FIXED_REST_TO_INT(fx);   
+    ry  = FIXED_REST_TO_INT(fy);      
+    rz  = FIXED_REST_TO_INT(fz);
 
-    Z0 = p -> opta1 * z0;
-    Z1 = p -> opta1 * z1;
-    Y0 = p -> opta2 * y0;
-    Y1 = p -> opta2 * y1;
     X0 = p -> opta3 * x0;
-    X1 = p -> opta3 * x1;
+    X1 = X0 + (Input[0] == 0xFFFFU ? 0 : p->opta3);
+
+	Y0 = p -> opta2 * y0;
+    Y1 = Y0 + (Input[1] == 0xFFFFU ? 0 : p->opta2);
+   
+    Z0 = p -> opta1 * z0;
+    Z1 = Z0 + (Input[2] == 0xFFFFU ? 0 : p->opta1);
     
+
 
     // These are the 6 Tetrahedral
     for (OutChan=0; OutChan < TotalOut; OutChan++) {
               
-        if (rx >= ry && ry >= rz)
-       {
+       if (rx >= ry && ry >= rz) {
              
               c1 = DENS(X1, Y0, Z0) - DENS(X0, Y0, Z0);
               c2 = DENS(X1, Y1, Z0) - DENS(X1, Y0, Z0);
@@ -933,16 +928,15 @@ void cmsTetrahedralInterp16(WORD Input[],
                             
        }
        else
-       if (rx >= rz && rz >= ry)
-       {            
+       if (rx >= rz && rz >= ry) {            
+
               c1 = DENS(X1, Y0, Z0) - DENS(X0, Y0, Z0);
               c2 = DENS(X1, Y1, Z1) - DENS(X1, Y0, Z1);
               c3 = DENS(X1, Y0, Z1) - DENS(X1, Y0, Z0);
                           
        }
        else
-       if (rz >= rx && rx >= ry)
-       {
+       if (rz >= rx && rx >= ry) {
              
               c1 = DENS(X1, Y0, Z1) - DENS(X0, Y0, Z1);
               c2 = DENS(X1, Y1, Z1) - DENS(X1, Y0, Z1);
@@ -950,8 +944,7 @@ void cmsTetrahedralInterp16(WORD Input[],
 
        }
        else
-       if (ry >= rx && rx >= rz)
-       {
+       if (ry >= rx && rx >= rz) {
               
               c1 = DENS(X1, Y1, Z0) - DENS(X0, Y1, Z0);
               c2 = DENS(X0, Y1, Z0) - DENS(X0, Y0, Z0);
@@ -959,8 +952,7 @@ void cmsTetrahedralInterp16(WORD Input[],
                             
        }
        else
-       if (ry >= rz && rz >= rx)
-       {
+       if (ry >= rz && rz >= rx) {
              
               c1 = DENS(X1, Y1, Z1) - DENS(X0, Y1, Z1);
               c2 = DENS(X0, Y1, Z0) - DENS(X0, Y0, Z0);
@@ -968,8 +960,8 @@ void cmsTetrahedralInterp16(WORD Input[],
                            
        }
        else
-       if (rz >= ry && ry >= rx)
-       {             
+       if (rz >= ry && ry >= rx) {             
+
               c1 = DENS(X1, Y1, Z1) - DENS(X0, Y1, Z1);
               c2 = DENS(X0, Y1, Z1) - DENS(X0, Y0, Z1);
               c3 = DENS(X0, Y0, Z1) - DENS(X0, Y0, Z0);
@@ -981,11 +973,19 @@ void cmsTetrahedralInterp16(WORD Input[],
        }
         
         Rest = c1 * rx + c2 * ry + c3 * rz;                
+      
+		// There is a lot of math hidden in this expression. The rest is in fixed domain
+		// and the result in 0..ffff domain. So the complete expression should be 		
+		// ROUND_FIXED_TO_INT(ToFixedDomain(Rest)) But that can be optimized as (Rest + 0x7FFF) / 0xFFFF
 
-        Output[OutChan] = (WORD) (DENS(X0,Y0,Z0) + ROUND_FIXED_TO_INT(ToFixedDomain(Rest)));        
+		Output[OutChan] = (WORD) (DENS(X0,Y0,Z0) + ((Rest + 0x7FFF) / 0xFFFF));
+
     }
 
 }
+
+
+
 #undef DENS
 
 #endif
@@ -1090,7 +1090,7 @@ void cmsTetrahedralInterp8(WORD Input[],
 
         Rest = c1 * rx + c2 * ry + c3 * rz;
                 
-        Output[OutChan] = (WORD) (DENS(X0,Y0,Z0) + ROUND_FIXED_TO_INT(ToFixedDomain(Rest)));        
+        Output[OutChan] = (WORD) (DENS(X0,Y0,Z0) + ((Rest + 0x7FFF) / 0xFFFF));
     }
 
 }

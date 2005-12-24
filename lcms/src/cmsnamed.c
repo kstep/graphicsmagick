@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2004 Marti Maria
+//  Copyright (C) 1998-2005 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -26,13 +26,6 @@
 #include "lcms.h"
 
 
-LPcmsNAMEDCOLORLIST  cdecl cmsAllocNamedColorList(int n);
-void                 cdecl cmsFreeNamedColorList(LPcmsNAMEDCOLORLIST List);
-BOOL                 cdecl cmsAppendNamedColor(cmsHTRANSFORM xform, const char* Name, WORD PCS[3], WORD Colorant[MAXCHANNELS]);
-
-
-// ---------------------------------------------------------------------------------
-
 
 static
 LPcmsNAMEDCOLORLIST GrowNamedColorList(LPcmsNAMEDCOLORLIST v, int ByElements)
@@ -41,6 +34,7 @@ LPcmsNAMEDCOLORLIST GrowNamedColorList(LPcmsNAMEDCOLORLIST v, int ByElements)
         
         LPcmsNAMEDCOLORLIST TheNewList;
         int NewElements;
+        size_t size;
 
         if (v ->Allocated == 0)
             NewElements = 64;   // Initial guess
@@ -50,14 +44,16 @@ LPcmsNAMEDCOLORLIST GrowNamedColorList(LPcmsNAMEDCOLORLIST v, int ByElements)
         while (ByElements > NewElements)
                 NewElements *= 2;
         
-        TheNewList = (LPcmsNAMEDCOLORLIST) malloc(sizeof(cmsNAMEDCOLORLIST) 
-                                                        + (sizeof(cmsNAMEDCOLOR) * NewElements));
+        size = sizeof(cmsNAMEDCOLORLIST) + (sizeof(cmsNAMEDCOLOR) * NewElements);
+        TheNewList = (LPcmsNAMEDCOLORLIST) malloc(size);
+        
 
         if (TheNewList == NULL) {
             cmsSignalError(LCMS_ERRC_ABORTED, "Out of memory reallocating named color list");
             return NULL;
         }
         else {
+              ZeroMemory(TheNewList, size);
               CopyMemory(TheNewList, v, sizeof(cmsNAMEDCOLORLIST) + (v ->nColors - 1) * sizeof(cmsNAMEDCOLOR));
               TheNewList -> Allocated = NewElements;
 
@@ -102,8 +98,6 @@ void cmsFreeNamedColorList(LPcmsNAMEDCOLORLIST v)
     free(v);
 }   
 
-
-
 BOOL cmsAppendNamedColor(cmsHTRANSFORM xform, const char* Name, WORD PCS[3], WORD Colorant[MAXCHANNELS])
 {
     _LPcmsTRANSFORM v = (_LPcmsTRANSFORM) xform;
@@ -127,6 +121,7 @@ BOOL cmsAppendNamedColor(cmsHTRANSFORM xform, const char* Name, WORD PCS[3], WOR
     List ->nColors++;
     return TRUE;
 }
+
 
 
 // Returns named color count 

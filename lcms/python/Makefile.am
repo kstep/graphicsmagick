@@ -45,4 +45,5 @@ lcms_wrap.cxx: lcms.i
 lcms.py: lcms_wrap.cxx
 
 clean-local:
-	rm -f lcms_wrap.cxx lcms.py
+	rm -f lcms_wrap.cxx lcms.py lcms.pyc
+

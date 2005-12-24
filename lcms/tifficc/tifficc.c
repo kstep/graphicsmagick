@@ -61,10 +61,16 @@ static BOOL Width16                = FALSE;
 static BOOL GamutCheck             = FALSE;
 static BOOL lIsDeviceLink          = FALSE;
 static BOOL StoreAsAlpha           = FALSE;
+static BOOL PreserveBlack		   = FALSE;
+static BOOL InputLabUsingICC	   = FALSE;
+
 static int Intent                  = INTENT_PERCEPTUAL;
 static int ProofingIntent          = INTENT_PERCEPTUAL;
 static int PrecalcMode             = 1;
 static double InkLimit             = 400;
+
+static double ObserverAdaptationState = 0;
+
 
 static const char *cInpProf  = NULL;
 static const char *cOutProf  = NULL;
@@ -122,6 +128,25 @@ void FatalError(const char *frm, ...)
        exit(1);
 }
 
+// Issue a warning
+
+static
+void Warning(const char *frm, ...)
+{
+       va_list args;
+
+       va_start(args, frm);
+       ConsoleWarningHandler("TIFFICC", frm, args);
+       va_end(args);
+}
+
+
+static
+int MyErrorHandler(int ErrorCode, const char *ErrorText)
+{
+    FatalError("%s", ErrorText);
+    return 0;
+}
 
 // Out of mem
 
@@ -257,13 +282,16 @@ DWORD GetInputPixelType(TIFF *Bank)
            break;
 
      case 9:
+			pt = PT_Lab;
+			InputLabUsingICC = TRUE;
+			break;
+
      case PHOTOMETRIC_CIELAB:
            pt = PT_Lab;
+		   InputLabUsingICC = FALSE;
            break;
 
-     case PHOTOMETRIC_LOGL:     /* CIE Log2(L) */
-           FatalError("Hummm... I have been unable of find any of  these, please contact me at marti@littlecms.com, thanx.");
-
+    
      case PHOTOMETRIC_LOGLUV:      /* CIE Log2(L) (u',v') */
 
            TIFFSetField(Bank, TIFFTAG_SGILOGDATAFMT, SGILOGDATAFMT_16BIT);
@@ -895,6 +923,38 @@ cmsHPROFILE GetTIFFProfile(TIFF* in)
 }
 
 
+// Formatter for 8bit Lab TIFF (photometric 8)
+
+static
+unsigned char* UnrollTIFFLab8(register void* nfo, register WORD wIn[], register LPBYTE accum)
+{
+    _LPcmsTRANSFORM info = (_LPcmsTRANSFORM) nfo;
+
+	   wIn[0] = (accum[0]) << 8;
+	   wIn[1] = ((accum[1] > 127) ? (accum[1] - 128) : (accum[1] + 128)) << 8;
+	   wIn[2] = ((accum[2] > 127) ? (accum[2] - 128) : (accum[2] + 128)) << 8;
+       
+       return accum + 3;
+}
+
+
+static
+unsigned char* PackTIFFLab8(register void* nfo, register WORD wOut[], register LPBYTE output)
+{
+    _LPcmsTRANSFORM info = (_LPcmsTRANSFORM) nfo;
+
+		*output++ = (wOut[0] + 0x0080) >> 8;
+
+		wOut[1] = (wOut[1] + 0x0080) >> 8;
+		wOut[2] = (wOut[2] + 0x0080) >> 8;
+
+		*output++ = (wOut[1] < 128) ? (wOut[1] + 128) : (wOut[1] - 128);
+		*output++ = (wOut[2] < 128) ? (wOut[2] + 128) : (wOut[2] - 128);
+
+       return output;
+}
+
+
 // Transform one image
 
 static
@@ -908,6 +968,10 @@ int TransformImage(TIFF* in, TIFF* out, const char *cDefInpProf, const char *cOu
        DWORD dwFlags = 0;        
        int nPlanes;
 
+    // Observer adaptation state (only meaningful on absolute colorimetric intent)
+
+       cmsSetAdaptationState(ObserverAdaptationState);
+
        if (EmbedProfile && cOutProf) 
            DoEmbedProfile(out, cOutProf);
 
@@ -916,7 +980,11 @@ int TransformImage(TIFF* in, TIFF* out, const char *cDefInpProf, const char *cOu
        if (BlackWhiteCompensation) 
             dwFlags |= cmsFLAGS_WHITEBLACKCOMPENSATION;           
        
-       
+
+       if (PreserveBlack) {
+			dwFlags |= cmsFLAGS_PRESERVEBLACK;
+			if (PrecalcMode == 0) PrecalcMode = 1;
+	   }
 
        switch (PrecalcMode) {
            
@@ -1001,13 +1069,14 @@ int TransformImage(TIFF* in, TIFF* out, const char *cDefInpProf, const char *cOu
        }
        else {
 
-       xform = cmsCreateProofingTransform(hIn, wInput, 
-                                          hOut, wOutput, 
-                                          hProof, Intent, 
-                                          ProofingIntent, 
-                                          dwFlags);
+		   xform = cmsCreateProofingTransform(hIn, wInput, 
+											  hOut, wOutput, 
+											  hProof, Intent, 
+											  ProofingIntent, 
+											  dwFlags);
        }
 
+      
 
        // Planar stuff
 
@@ -1016,6 +1085,26 @@ int TransformImage(TIFF* in, TIFF* out, const char *cDefInpProf, const char *cOu
        else
             nPlanes = 1;
 
+
+	   // TIFF Lab of 8 bits need special handling
+
+		if (wInput == TYPE_Lab_8 && 
+			   !InputLabUsingICC &&
+			   cInpProf != NULL  &&
+			   stricmp(cInpProf, "*Lab") == 0) {
+
+					cmsSetUserFormatters(xform, TYPE_Lab_8, UnrollTIFFLab8, TYPE_Lab_8, NULL); 
+		}
+
+
+		if (wOutput == TYPE_Lab_8 && 			   
+			   cOutProf != NULL  &&
+			   stricmp(cOutProf, "*Lab") == 0) {
+
+					cmsSetUserFormatters(xform, TYPE_Lab_8, NULL, TYPE_Lab_8, PackTIFFLab8); 
+		}
+
+	   
        // Handle tile by tile or strip by strip
 
        if (TIFFIsTiled(in)) {
@@ -1048,7 +1137,7 @@ int TransformImage(TIFF* in, TIFF* out, const char *cDefInpProf, const char *cOu
 static
 void Help(int level)
 {
-    fprintf(stderr, "little cms ICC profile applier for TIFF - v4.1\n\n");
+    fprintf(stderr, "little cms ICC profile applier for TIFF - v5.0\n\n");
     fflush(stderr);
     
      switch(level) {
@@ -1083,7 +1172,9 @@ void Help(int level)
      
      fprintf(stderr, "\n"); 
      fprintf(stderr, "%cb - Black point compensation\n", SW);
+	 fprintf(stderr, "%cf - Preserve black channel (CMYK->CMYK only)\n", SW);
      fprintf(stderr, "%ck<0..400> - Ink-limiting in %% (CMYK only)\n", SW);
+     fprintf(stderr, "%cd<0..1> - Observer adaptation state (abs.col. only)\n", SW);
 
      fprintf(stderr, "\n");
      fprintf(stderr, "%ch<0,1,2> - More help\n", SW);
@@ -1106,7 +1197,7 @@ void Help(int level)
                      "To recover sRGB from a CMYK separation:\n"
                      "\ttifficc %ciprinter.icm incmyk.tif outrgb.tif\n"
                      "To convert from CIELab TIFF to sRGB\n"
-                     "\ttifficc %ciTiffLab8Spac.icm in.tif out.tif\n\n", 
+                     "\ttifficc %ci*Lab in.tif out.tif\n\n", 
                      SW, SW, SW, SW, SW, SW);
      break;
 
@@ -1134,7 +1225,7 @@ void HandleSwitches(int argc, char *argv[])
 {
        int s;
       
-       while ((s=xgetopt(argc,argv,"aAeEbBwWnNvVGgh:H:i:I:o:O:P:p:t:T:c:C:l:L:M:m:K:k:S:s:")) != EOF) {
+       while ((s=xgetopt(argc,argv,"aAeEbBfFwWnNvVGgh:H:i:I:o:O:P:p:t:T:c:C:l:L:M:m:K:k:S:s:D:d:")) != EOF) {
 
        switch (s)
        {
@@ -1143,15 +1234,38 @@ void HandleSwitches(int argc, char *argv[])
        case 'A':
             StoreAsAlpha = TRUE;
             break;
+       case 'b':
+       case 'B':
+            BlackWhiteCompensation = TRUE;
+            break;
+       
+       case 'c':
+       case 'C':
+            PrecalcMode = atoi(xoptarg);
+            if (PrecalcMode < 0 || PrecalcMode > 3)
+                    FatalError("Unknown precalc mode '%d'", PrecalcMode);
+            break;
+
+       case 'd':
+       case 'D': ObserverAdaptationState = atof(xoptarg);
+                 if (ObserverAdaptationState != 0 && 
+                     ObserverAdaptationState != 1.0)
+                        Warning("Adaptation states other that 0 or 1 are not yet implemented");
+                 break;
 
        case 'e':
        case 'E':
             EmbedProfile = TRUE;
             break;
 
-       case 'b':
-       case 'B':
-            BlackWhiteCompensation = TRUE;
+	   case 'f':
+	   case 'F':
+		    PreserveBlack = TRUE;
+			break;
+
+        case 'g':
+        case 'G':
+            GamutCheck = TRUE;
             break;
 
        case 'v':
@@ -1211,18 +1325,7 @@ void HandleSwitches(int argc, char *argv[])
             Width16 = TRUE;
             break;
 
-        case 'g':
-        case 'G':
-            GamutCheck = TRUE;
-            break;
-
-        case 'c':
-        case 'C':
-            PrecalcMode = atoi(xoptarg);
-            if (PrecalcMode < 0 || PrecalcMode > 3)
-                    FatalError("Unknown precalc mode '%d'", PrecalcMode);
-            break;
-
+           
         case 'k':
         case 'K':
                 InkLimit = atof(xoptarg);
@@ -1263,6 +1366,8 @@ int main(int argc, char* argv[])
                          "absolute colorimetric" };
 
       HandleSwitches(argc, argv);
+  
+	  cmsSetErrorHandler(MyErrorHandler);
 
       if ((argc - xoptind) != 2) {
 
