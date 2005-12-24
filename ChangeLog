@@ -1,3 +1,7 @@
+2005-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lcms: Update to lcms 1.15.
+
 2005-12-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/enhance.c (LevelImage): Fix -level command parsing when a

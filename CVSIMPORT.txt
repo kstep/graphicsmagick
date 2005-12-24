@@ -37,10 +37,10 @@ jbig:
 lcms:
   
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import lcms 1.14' delegates/lcms \
-    LCMS_DIST LCMS_1_14
+    import -m 'Import lcms 1.15' delegates/lcms \
+    LCMS_DIST LCMS_1_15
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    checkout -j LCMS_1_13 -jLCMS_1_14 delegates/lcms
+    checkout -j LCMS_1_14 -jLCMS_1_15 delegates/lcms
 
 png:
 
