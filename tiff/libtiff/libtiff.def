@@ -1,6 +1,7 @@
-LIBRARY libtiff
 EXPORTS TIFFOpen
+	TIFFOpenW
 	TIFFGetVersion
+	TIFFCleanup
 	TIFFClose
 	TIFFFlush
 	TIFFFlushData
@@ -8,10 +9,13 @@ EXPORTS TIFFOpen
 	TIFFVGetField
 	TIFFGetFieldDefaulted
 	TIFFVGetFieldDefaulted
+	TIFFGetTagListEntry
+	TIFFGetTagListCount
 	TIFFReadDirectory
 	TIFFScanlineSize
 	TIFFStripSize
 	TIFFVStripSize
+	TIFFRawStripSize
 	TIFFTileRowSize
 	TIFFTileSize
 	TIFFVTileSize
@@ -19,10 +23,17 @@ EXPORTS TIFFOpen
 	TIFFGetMode
 	TIFFIsTiled
 	TIFFIsByteSwapped
+	TIFFIsBigEndian
+	TIFFCIELabToRGBInit
+	TIFFCIELabToXYZ
+	TIFFXYZToRGB
+	TIFFYCbCrToRGBInit
+	TIFFYCbCrtoRGB
 	TIFFCurrentRow
 	TIFFCurrentDirectory
 	TIFFCurrentStrip
 	TIFFCurrentTile
+	TIFFDataWidth
 	TIFFReadBufferSetup
 	TIFFLastDirectory
 	TIFFSetDirectory
@@ -30,12 +41,14 @@ EXPORTS TIFFOpen
 	TIFFUnlinkDirectory
 	TIFFSetField
 	TIFFVSetField
+	TIFFCheckpointDirectory
 	TIFFWriteDirectory
 	TIFFRewriteDirectory
 	TIFFPrintDirectory
 	TIFFReadScanline
 	TIFFWriteScanline
 	TIFFReadRGBAImage
+	TIFFReadRGBAImageOriented
 	TIFFPrintDirectory
 	TIFFReadScanline
 	TIFFWriteScanline
@@ -54,6 +67,8 @@ EXPORTS TIFFOpen
 	TIFFWriteTile
 	TIFFComputeStrip
 	TIFFNumberOfStrips
+	TIFFRGBAImageBegin
+	TIFFRGBAImageEnd
 	TIFFReadEncodedStrip
 	TIFFReadRawStrip
 	TIFFReadEncodedTile
@@ -65,6 +80,7 @@ EXPORTS TIFFOpen
 	TIFFWriteEncodedTile
 	TIFFWriteRawTile
 	TIFFSetWriteOffset
+	TIFFSwabDouble
 	TIFFSwabShort
 	TIFFSwabLong
 	TIFFSwabArrayOfShort
@@ -83,6 +99,23 @@ EXPORTS TIFFOpen
 	_TIFFmemcmp
 	TIFFCreateDirectory
 	TIFFDefaultStripSize
-
-
+	TIFFSetTagExtender
+	TIFFMergeFieldInfo
+	TIFFCurrentDirOffset
+	TIFFWriteCheck
+	TIFFRGBAImageOK
+	TIFFNumberOfDirectories
+	TIFFSetFileName
+	TIFFSetClientdata
+	TIFFSetMode
+	TIFFClientdata
+	TIFFGetReadProc
+	TIFFGetWriteProc
+	TIFFGetSeekProc
+	TIFFGetCloseProc
+	TIFFGetSizeProc
+	TIFFGetMapFileProc
+	TIFFGetUnmapFileProc
+	TIFFIsCODECConfigured
+	TIFFGetConfiguredCODECs
 

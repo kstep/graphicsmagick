@@ -1,4 +1,4 @@
-/* $Header$ */
+/* $Id$ */
 
 /*
  * Copyright (c) 1995-1997 Sam Leffler
@@ -50,7 +50,6 @@
 #include "zlib.h"
 
 #include <stdio.h>
-#include <assert.h>
 
 /*
  * Sigh, ZLIB_VERSION is defined as a string so there's no
@@ -228,7 +227,8 @@ ZIPPostEncode(TIFF* tif)
 		switch (state) {
 		case Z_STREAM_END:
 		case Z_OK:
-		    if (sp->stream.avail_out != tif->tif_rawdatasize) {
+		    if ((int)sp->stream.avail_out != (int)tif->tif_rawdatasize)
+                    {
 			    tif->tif_rawcc =
 				tif->tif_rawdatasize - sp->stream.avail_out;
 			    TIFFFlushData1(tif);
@@ -331,10 +331,10 @@ TIFFInitZIP(TIFF* tif, int scheme)
 	 * override parent get/set field methods.
 	 */
 	_TIFFMergeFieldInfo(tif, zipFieldInfo, N(zipFieldInfo));
-	sp->vgetparent = tif->tif_vgetfield;
-	tif->tif_vgetfield = ZIPVGetField;	/* hook for codec tags */
-	sp->vsetparent = tif->tif_vsetfield;
-	tif->tif_vsetfield = ZIPVSetField;	/* hook for codec tags */
+	sp->vgetparent = tif->tif_tagmethods.vgetfield;
+	tif->tif_tagmethods.vgetfield = ZIPVGetField;	/* hook for codec tags */
+	sp->vsetparent = tif->tif_tagmethods.vsetfield;
+	tif->tif_tagmethods.vsetfield = ZIPVSetField;	/* hook for codec tags */
 
 	/* Default values for codec-specific fields */
 	sp->zipquality = Z_DEFAULT_COMPRESSION;	/* default comp. level */
@@ -365,3 +365,5 @@ bad:
 	return (0);
 }
 #endif /* ZIP_SUPORT */
+
+/* vim: set ts=8 sts=8 sw=8 noet: */

@@ -37,7 +37,7 @@ static	int NotConfigured(TIFF*, int);
 #define	TIFFInitLZW		NotConfigured
 #endif
 #ifndef	PACKBITS_SUPPORT
-#define	TIFFInitPackbits	NotConfigured
+#define	TIFFInitPackBits	NotConfigured
 #endif
 #ifndef	THUNDER_SUPPORT
 #define	TIFFInitThunderScan	NotConfigured
@@ -111,7 +111,40 @@ _notConfigured(TIFF* tif)
 static int
 NotConfigured(TIFF* tif, int scheme)
 {
-	tif->tif_setupdecode = _notConfigured;
-	tif->tif_setupencode = _notConfigured;
-	return (1);
+    (void) scheme;
+    
+    tif->tif_decodestatus = FALSE;
+    tif->tif_setupdecode = _notConfigured;
+    tif->tif_encodestatus = FALSE;
+    tif->tif_setupencode = _notConfigured;
+    return (1);
 }
+
+/************************************************************************/
+/*                       TIFFIsCODECConfigured()                        */
+/************************************************************************/
+
+/**
+ * Check whether we have working codec for the specific coding scheme.
+ * 
+ * @return returns 1 if the codec is configured and working. Otherwise
+ * 0 will be returned.
+ */
+
+int
+TIFFIsCODECConfigured(uint16 scheme)
+{
+	const TIFFCodec* codec = TIFFFindCODEC(scheme);
+
+	if(codec == NULL) {
+            return 0;
+        }
+        if(codec->init == NULL) {
+            return 0;
+        }
+	if(codec->init != NotConfigured){
+            return 1;
+        }
+	return 0;
+}
+

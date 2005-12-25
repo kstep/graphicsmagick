@@ -31,15 +31,14 @@ bit of work it can easily be built and used on other non-UNIX platforms.
 
 <A NAME=UNIX><HR><H2>Building on a UNIX System</H2></A>
 
-To build the software on a UNIX system
-you need to first run the configure shell script
-that is located in the top level of the source directory.
-This script probes the target system for necessary tools and functions
-and constructs a build environment in which the software may be
-compiled.
-Once configuration is done, you simply run <TT>make</TT>
- to build the software
-and then <TT>make install</TT> to do the installation; for example:
+To build the software on a UNIX system you need to first run the configure
+shell script that is located in the top level of the source directory. This
+script probes the target system for necessary tools and functions and
+constructs a build environment in which the software may be compiled.
+
+Once configuration is done, you simply run <TT>make</TT> (or <TT>gmake</TT>)
+to build the software and then <TT>make install</TT> to do the installation;
+for example:
 
 <UL><PRE>
 hyla% <B>cd tiff-v3.4beta099</B>
@@ -50,27 +49,33 @@ hyla% <B>make</B>
 hyla# <B>make install</B>
 </PRE></UL>
 
-In general, the software is designed such that the following should
-be ``<I>make-able</I>'' in each directory:
+Supplied makefiles are depend on GNU <TT>make</TT> utility, so you will need
+the one. Depending on your installation <B>make</B> command may invoke
+standard system <TT>make</TT> and <B>gmake</B> invoke GNU make. In this case
+you should use former. If you don't have <TT>make</TT> at all, but only
+<TT>gmake</TT>, you should export environment variable <TT>MAKE=gmake</TT>
+before <B>./configure</B>.
+
+<P>
+
+In general, the software is designed such that the following should be
+``<I>make-able</I>'' in each directory:
 
 <UL><PRE>
 make [all]	build stuff
 make install	build&install stuff
-make clean	remove .o files and cruft, but not executables
-make clobber	remove everything that can be recreated
-make distclean	remove <EM>absolutely everything</EM> that can be recreated
+make clean	remove .o files, executables and cruft
+make distclean	remove everything, that can be recreated
 </PRE></UL>
 
-Note that after running "<TT>make clobber</TT>" or
-"<TT>make distclean</TT>" the <TT>configure</TT> script must
-be run again to create the Makefiles and other make-related files.
+Note that after running "<TT>make distclean</TT>" the <TT>configure</TT>
+script must be run again to create the Makefiles and other make-related files. 
 
 <A NAME="BuildTrees"><P><HR WIDTH=65% ALIGN=right><H3>Build Trees</H3></A>
 
-There are two schemes for configuring and building the software.
-If you intend to build the software for only one target system, you
-can configure the software so that it is built in the same directories
-as the source code. 
+There are two schemes for configuring and building the software. If you intend
+to build the software for only one target system, you can configure the
+software so that it is built in the same directories as the source code. 
 
 <UL><PRE>
 hyla% <B>cd tiff-v3.4beta099</B>
@@ -82,9 +87,9 @@ hyla% <B>./configure</B>
 </PRE></UL>
 
 <P>
-Otherwise, you can configure a build tree that 
-is parallel to the source tree hierarchy but which contains only
-configured files and files created during the build procedure.
+Otherwise, you can configure a build tree that is parallel to the source tree
+hierarchy but which contains only configured files and files created during
+the build procedure.
 
 <UL><PRE>
 hyla% <B>cd tiff-v3.4beta099</B>
@@ -101,107 +106,107 @@ This second scheme is useful for:
   the distribution on CD-ROM)
 </UL>
 
-<A NAME="ConfigFiles"><P><HR WIDTH=65% ALIGN=right><H3>Configuration Files</H3></A>
+<A NAME="ConfigOptions"><P><HR WIDTH=65% ALIGN=right>
+	<H3>Configuration Options</H3></A>
 
-The configuration process is critical to the proper compilation,
-installation, and operation of the software.
-The configure script runs a series of tests to
-decide whether or not the target system
-supports required functionality and, if it does not, whether it
-can emulate or workaround the missing functions.
-This procedure is fairly complicated and, due to the nonstandard
-nature of most UNIX systems, prone to error.
-The first time that you configure the software for use you should
-check the output from the configure script and look for anything
-that does not make sense for your system.
-A sample configure run is shown below together with an explanation
-of some of the work that is done.
+The configuration process is critical to the proper compilation, installation,
+and operation of the software. The configure script runs a series of tests to
+decide whether or not the target system supports required functionality and,
+if it does not, whether it can emulate or workaround the missing functions.
+This procedure is fairly complicated and, due to the nonstandard nature of
+most UNIX systems, prone to error. The first time that you configure the
+software for use you should check the output from the configure script and
+look for anything that does not make sense for your system.
 
 <P>
-A second function of the configure script is to set the default
-configuration parameters for the software.
-Of particular note are the directories where the software is to be
-installed.
-By default the software is installed in the <B>/usr/local</B> hierarchy.
-To change this behaviour the appropriate parameters can be
-specified either:
-<UL>
-<LI>on the command line to configure,
-<LI>in a site-wide configuration file, or
-<LI>in a target-specific configuration file.
-</UL>
-configure reads any site-wide configure file first, and
-then any target-specific configuration file.
-This permits target-specific definitions to override
-site-wide definitions.
+A second function of the configure script is to set the default configuration
+parameters for the software. Of particular note are the directories where the
+software is to be installed. By default the software is installed in the
+<B>/usr/local</B> hierarchy. To change this behaviour the appropriate
+parameters can be specified on the command line to configure. Run
+<B>./configure --help</B> to get a list of possible options. Installation
+related options are shown below.
 
-<P>
-Site-wide configuration files are named
-<B>config.site</B> and are automatically searched for first
-in any directory specified on the command line to configure
-(using the <TT>-site</TT> option), or if that fails, in
-the directory in in which the configure script is located.
+<PRE><TT>
+Installation directories:
+  --prefix=PREFIX         install architecture-independent files in PREFIX
+                          [/usr/local]
+  --exec-prefix=EPREFIX   install architecture-dependent files in EPREFIX
+                          [PREFIX]
 
-<P>
-Target-specific configuration files are named <B>config.local</B>
-and are looked for first in the top-level configuration directory,
-or, if that fails, in the directory in which the configure script
-is located.
+By default, `make install' will install all the files in
+`/usr/local/bin', `/usr/local/lib' etc.  You can specify
+an installation prefix other than `/usr/local' using `--prefix',
+for instance `--prefix=$HOME'.
 
-<P>
-Configuration files are just shell scripts that define
-shell variables that control the configuration process.
-For example, the following file might be used on a BSDI system to
-configure the software for installation in the <B>/usr/contrib</B> area.
+For better control, use the options below.
 
-<PRE>
-#
-# Parameters suitable for BSDI 1.1
-#
-DIR_BIN="/usr/contrib/bin"		# directory for client apps
-DIR_LIB="/usr/contrib/lib"		# directory for libraries
-DIR_MAN="/usr/contrib/man"		# directory for manual pages
-</PRE>
+Fine tuning of the installation directories:
+  --bindir=DIR           user executables [EPREFIX/bin]
+  --sbindir=DIR          system admin executables [EPREFIX/sbin]
+  --libexecdir=DIR       program executables [EPREFIX/libexec]
+  --datadir=DIR          read-only architecture-independent data [PREFIX/share]
+  --sysconfdir=DIR       read-only single-machine data [PREFIX/etc]
+  --sharedstatedir=DIR   modifiable architecture-independent data [PREFIX/com]
+  --localstatedir=DIR    modifiable single-machine data [PREFIX/var]
+  --libdir=DIR           object code libraries [EPREFIX/lib]
+  --includedir=DIR       C header files [PREFIX/include]
+  --oldincludedir=DIR    C header files for non-gcc [/usr/include]
+  --infodir=DIR          info documentation [PREFIX/info]
+  --mandir=DIR           man documentation [PREFIX/man]
 
-<P>
-For a complete list of the possible configuration parameters look
-at the sample <B>config.site</B> file provided in the distribution; the
-section below describes some of the more important parameters.
+Program names:
+  --program-prefix=PREFIX            prepend PREFIX to installed program names
+  --program-suffix=SUFFIX            append SUFFIX to installed program names
+  --program-transform-name=PROGRAM   run sed PROGRAM on installed program names
+</TT></PRE>
 
-<A NAME="Packages"><P><HR WIDTH=65% ALIGN=right><H3>Configuring Optional Packages/Support</H3></A>
+<A NAME="Packages"><P><HR WIDTH=65% ALIGN=right>
+	<H3>Configuring Optional Packages/Support</H3></A>
 
-The TIFF software comes with several packages that are installed only
-as needed, or only if specifically configured at the time
-the configure script is run.  Packages can be configured in a
-<B>config.site</B> or <B>config.local</B> file, or by using a
-<TT>-with-&lt;PACKAGE&gt;</TT> option when invoking configure;
-e.g. <TT>configure -with-AFM</TT>.
+The TIFF software comes with several packages that are installed only as
+needed, or only if specifically configured at the time the configure script is
+run.  Packages can be configured via the <B>configure</B> script commandline
+parameters.
 
 <DL>
-<DT><I>DSO Support</I>
-<DD>The <TT>DSO</TT> support controls whether or not to
-configure the software
-to build a Dynamic Shared Object for the TIFF library.
-Use of DSOs can significantly reduce the disk space needed for
-users of the TIFF software.
-If DSOs are not used then the code is statically linked into
-each application that uses it.
-By default this support is configured only if the system appears
-to suport DSOs in a way that fits into the normal build scheme
-(<TT>auto</TT>).
-If DSO support is <EM>explicitly enabled</EM> and there is no
-support for using DSOs in the expected way then DSOs are not used.
+	<DT><I>Static/Shared Objects Support</I>
 
-<P>
-<DT><I>JPEG Support</I>
-<DD>The <TT>JPEG</TT> package enables support for the handling
-of TIFF images with JPEG-encoded data.
-Support for JPEG-encoded data requires the Independent JPEG Group (IJG)
-<TT>libjpeg</TT> distribution; this software is available at
-<A HREF=ftp://ftp.uu.net/graphics/jpeg/>ftp.uu.net:/graphics/jpeg/</A>.
-If JPEG support is enabled the <TT>DIRS_LIBINC</TT> and <TT>DIR_JPEGLIB</TT>
-parameters should also be set (see below).
-By default JPEG support is not configured.
+	<DD><TT>
+		--enable-shared[=PKGS]&nbsp;&nbsp;&nbsp;&nbsp;build shared libraries [default=yes]<BR>
+		--enable-static[=PKGS]&nbsp;&nbsp;&nbsp;&nbsp;build static libraries [default=yes]
+	</TT>
+	
+	<P>These options control whether or not to configure the software to
+	build a shared and static binaries for the TIFF library. Use of shared
+	libraries can significantly reduce the disk space needed for users of
+	the TIFF software. If shared libarries are not used then the code is
+	statically linked into each application that uses it. By default both
+	types of binaries is configured.
+
+	<P><TT>
+		--enable-rpath&nbsp;&nbsp;&nbsp;&nbsp;Enable runtime linker paths (-R libtool option)
+	</TT>
+
+	<P> Add library directories (see other options below) to the TIFF
+	library	run-time linker path.
+
+	<P><DT><I>JPEG Support</I>
+
+	<DD><TT>
+		--disable-jpeg&nbsp;&nbsp;&nbsp;&nbsp;disable IJG JPEG library usage (required for JPEG compression, enabled by default)
+		--with-jpeg-include-dir=DIR&nbsp;&nbsp;&nbsp;&nbsp;location of IJG JPEG library headers
+		--with-jpeg-lib-dir=DIR&nbsp;&nbsp;&nbsp;&nbsp;location of IJG JPEG library binary)
+	</TT>
+	<DD>The <TT>JPEG</TT> package enables support for the handling of TIFF
+	images with JPEG-encoded data. Support for JPEG-encoded data requires
+	the Independent JPEG Group (IJG) <TT>libjpeg</TT> distribution; this
+	software is available at
+	<A HREF=ftp://ftp.uu.net/graphics/jpeg/>ftp.uu.net:/graphics/jpeg/</A>.
+	<B>configure</B> script automatically tries to search the working IJG
+	JPEG installation. If it fails to find library, JPEG support will be
+	automatically disabled.If you want specify the exact paths to library
+	binary and headers, use above switches for that.
 
 <P>
 <DT><I>ZIP Support</I>
@@ -455,193 +460,6 @@ Finally, to complete support for the shared library added the appropriate
 rules to <B>libtiff/Makefile.in</B> under the target specified in the
 <TT>configure</TT> script.
 
-
-
-
-<A NAME="Parameters"><P><HR WIDTH=65% ALIGN=right><H3>Configuration Parameters</H3></A>
-
-This section gives a brief description of the less obvious
-configuration parameters.  Consult the distributed <B>config.site</B>
-for a <EM>complete list of parameters</EM>.
-The list here is sorted alphabetically.
-
-<P>
-<TABLE BORDER CELLPADDING=3>
-
-<TR>
-<TD VALIGN=top><TT>AROPTS</TT></TD>
-<TD>The options passed to ar when creating an archive.
-Note that configure will automatically check to see if ar
-supports an <TT>s</TT> to create a symbol table instead of
-using ranlib.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>DIR_BIN</TT></TD>
-<TD>The directory where client applications should be installed; by
-default this is <B>/usr/local/bin</B>.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>DIR_GZLIB</TT></TD>
-<TD>The pathname of the directory containing the zlib library
-(when ZIP or PixarLog compression support is enabled);
-e.g. ``<TT>../src/zlib</TT>''.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>DIR_JPEGLIB</TT></TD>
-<TD>The pathname of the directory containing the JPEG library
-(when JPEG support is enabled); e.g. ``<TT>/usr/local/lib</TT>''.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>DIR_LIB</TT></TD>
-<TD>The directory to install libraries and DSO's; by default
-this is <B>/usr/local/lib</B>.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>DIR_MAN</TT></TD>
-<TD>The top-most directory of the manual area where manual
-pages should be installed.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>DIRS_LIBINC</TT></TD>
-<TD>A space-separated list of directories in which to search for
-include files when building the library and tools.
-If JPEG or ZIP support is configured this parameter should include
-the directories where the associated include files are located.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>DIST_POINT</TT></TD>
-<TD>The most point release number for the distribution; e.g. if this
-is version 3.5.4 then the the point release number is 4.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>DIST_MAJOR</TT></TD>
-<TD>The major version number for the distribution; e.g. if this
-is version 3.5.4 then the the major number is 3.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>DIST_MINOR</TT></TD>
-<TD>The minor version number for the distribution; e.g. if this
-is version 3.5.4 then the the major number is 5.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>DSOSUF</TT></TD>
-<TD>When DSO's are built, the filename suffix for a DSO.
-If this is set to <TT>"a"</TT> then  statically linked archives are used.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>DSOSUF_VERSION</TT></TD>
-<TD>When DSO's are built, a version-specific filename suffix for a DSO.
-If this is set to something other than the value of <TT>DSO</TT> then
-the file <B>libtiff.<TT>DSOSUF_VERSION</TT></B> will be installed and
-a link to it named <B>libtiff.<TT>DSOSUF</TT></B> will automatically
-be created.  (Note that this means that rule for building the target
-DSO must generate a file named <B>libtiff.<TT>DSOSUF_VERSION</TT></B>.)</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>ENVOPTS</TT></TD>
-<TD>Options to pass to <TT>CC</TT> to force ANSI C compilation.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>FILLORDER</TT></TD>
-<TD>The order of bits in a byte on the server machine;
-either LSB2MSB or MSB2LSB.
-This is normally selected according to the target system.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>GCOPTS</TT></TD>
-<TD>Special options to pass the C compiler.  If this parameter
-is set, then configure may append other options to this list.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>INSTALL</TT></TD>
-<TD>The pathname of the install program to use.  Note that this program
-must emulate the command line interface used by the IRIX install program.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>LIBPORT</TT></TD>
-<TD>The pathname of the library that holds code to emulate missing
-system functionality.
-Normally this parameter is set by configure based on whether or
-not emulation code is required for the target.
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>LLDOPTS</TT>
-<TD>Extra command line options passed to <TT>CC</TT>
-when linking an executable.
-This option is usually set only when DSO support is enabled
-(to force the executable to search for the TIFF DSO
-in non-standard locations in the filesystem.)</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>MACHDEPLIBS</TT></TD>
-<TD>Target-dependent libraries that should be used when linking
-tools.
-Note that if this parameter is specified configure will append to
-the list of libraries.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>MANSCHEME</TT></TD>
-<TD>The scheme to use when preparing and installing manual pages.
-Schemes are constructed according to:
-<UL>
-&lt;<I>organization</I>&gt;-&lt;<I>formatting</I>&gt;-&lt;<I>compression</I>&gt;[-&lt;<I>suffix</I>&gt;]
-</UL>
-where:
-&lt;<I>organization</I>&gt; is either <TT>bsd</TT>
-for BSD-style section organization (e.g.  file formats in
-section 5) or <TT>sysv</TT> for System V-style
-organization (e.g. file formats in section 4).
-&lt;<I>formatting</I>&gt; is either <TT>nroff</TT> to force
-installation of formatted materials (using nroff) or
-<TT>source</TT> to get the nroff source installed.
-&lt;<I>compression</I>&gt; is either the name of a program
-to compress the manual pages (gipz, compress, pack) or
-<TT>cat</TT> for uncompressed data.
-&lt;<I>suffix</I>&gt; is either the file suffix to convert
-installed pages to (e.g. 0.gz for gzip-compressed pages under BSD)
-or <TT>strip</TT> to force the normal ".4f" suffix to be converted to ".4"
-(or ".5" if using the BSD organization).  If no -&lt;suffix&gt;
-is specified then filenames are not converted when they are installed.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>PORTFUNCS</TT></TD>
-<TD>A list of non-standard functions that should be emulated.
-Normally this list is constructed by configure based on checks it does.
-If this parameter is set, configure will append to the specified list.</TD>
-</TR>
-
-<TR>
-<TD VALIGN=top><TT>SETMAKE</TT></TD>
-<TD>If make does not automatically set <TT>$MAKE</TT> to
-the name of the make program to invoke for subdirectories, then
-configure will create an explicit definition.
-If this parameter is set, then it will be used instead.
-by default <TT>bin</TT> is used.</TD>
-</TR>
-
-</TABLE>
-
-
 <A NAME=PC><P><HR><H2>Building the Software under Windows 95/98/NT/2000 with MS VC++</H2></A>
 
 With Microsoft Visual C++ installed, and properly configured for commandline
@@ -654,10 +472,9 @@ C:\LIBTIFF\LIBTIFF> cd ..\tools
 C:\LIBTIFF\TOOLS> nmake /f makefile.vc
 </pre>
 
-This will build the library file <tt>LIBTIFF\LIBTIFF\LIBTIFF.LIB</tt>.  This
-can be used in Win32 programs.  If used in a project using the /MD compiler
-switch (using the runtime C library), it may be necessary to modify the 
-CFLAGS macro in makefile.vc to correspond.<p>
+This will build the library file <TT>libtiff\libtiff\libtiff.lib</TT>.  This
+can be used in Win32 programs.You may want to adjust the build options before start compiling. All parameters contained in the <TT>nmake.opt</TT> file.This is
+a plain text file you can open with your favorite text editor.<p>
 
 The makefile also builds a DLL (libtiff.dll) with an associated import
 library (libtiff_i.lib).  Any builds using libtiff will need to include
@@ -665,9 +482,6 @@ the LIBTIFF\LIBTIFF directory in the include path.<p>
 
 The <tt>libtiff\tools\makefile.vc</tt> should build .exe's for all the
 standard TIFF tool programs.<p>
-
-NOTE: The contents of the contrib/win32 directory should no longer be
-needed, and are kept in the distribution temporarily.<p>
 
 <A NAME=DJGPP><P><HR><H2>Building the Software under MS/DOS with the DJGPP v2 compiler</H2></A>
 
@@ -810,9 +624,8 @@ $ YCBCR     :==$DISK:[TIFF.TOOLS]YCBCR
 </PRE>
 </OL>
 
-You will want to add these lines  to your <TT>LOGIN.COM</TT>
-file, after changing
-the name of the directory that you have used on your machine.
+You will want to add these lines  to your <TT>LOGIN.COM</TT> file, after
+changing the name of the directory that you have used on your machine.
 
 <P>
 This release has been tested on OpenVMS/VAX 5.5-2, using VAX C 3.2.

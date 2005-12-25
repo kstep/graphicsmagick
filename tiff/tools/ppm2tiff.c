@@ -1,4 +1,4 @@
-/* $Header$ */
+/* $Id$ */
 
 /*
  * Copyright (c) 1991-1997 Sam Leffler
@@ -24,12 +24,22 @@
  * OF THIS SOFTWARE.
  */
 
+#include "tif_config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
 #include "tiffio.h"
+
+#ifndef HAVE_GETOPT
+extern int getopt(int, char**, char*);
+#endif
 
 #if defined(_WINDOWS) || defined(MSDOS)
 #define BINMODE "b"
@@ -58,22 +68,24 @@ BadPPM(char* file)
 int
 main(int argc, char* argv[])
 {
-	uint16 photometric;
+	uint16 photometric = 0;
 	uint32 rowsperstrip = (uint32) -1;
 	double resolution = -1;
 	unsigned char *buf = NULL;
-	uint32 row;
 	tsize_t linebytes;
-	uint16 spp;
+	uint16 spp = 1;
 	TIFF *out;
 	FILE *in;
-	uint32 w, h;
-	int prec;
+	unsigned int w, h, prec, row;
 	char *infile;
 	int c;
 	extern int optind;
 	extern char* optarg;
 
+	if ( argc < 2 ) {
+	    fprintf(stderr, "%s: Too few arguments\n", argv[0]);
+	    usage();
+	}
 	while ((c = getopt(argc, argv, "c:r:R:")) != -1)
 		switch (c) {
 		case 'c':		/* compression scheme */
@@ -91,6 +103,11 @@ main(int argc, char* argv[])
 			/*NOTREACHED*/
 		}
 
+	if ( optind + 2 < argc ) {
+	    fprintf(stderr, "%s: Too many arguments\n", argv[0]);
+	    usage();
+	}
+
 	/*
 	 * If only one file is specified, read input from
 	 * stdin; otherwise usage is: ppm2tiff input output.
@@ -107,9 +124,9 @@ main(int argc, char* argv[])
 		in = stdin;
 	}
 
-	if (getc(in) != 'P')
+	if (fgetc(in) != 'P')
 		BadPPM(infile);
-	switch (getc(in)) {
+	switch (fgetc(in)) {
 	case '5':			/* it's a PGM file */
 		spp = 1;
 		photometric = PHOTOMETRIC_MINISBLACK;
@@ -124,16 +141,37 @@ main(int argc, char* argv[])
 	default:
 		BadPPM(infile);
 	}
-	if (fscanf(in, " %ld %ld %d", &w, &h, &prec) != 3)
+
+	/* Parse header */
+	while(1) {
+		if (feof(in))
+			BadPPM(infile);
+		c = fgetc(in);
+		/* Skip whitespaces (blanks, TABs, CRs, LFs) */
+		if (strchr(" \t\r\n", c))
+			continue;
+
+		/* Check fo comment line */
+		if (c == '#') {
+			do {
+			    c = fgetc(in);
+			} while(!strchr("\r\n", c) || feof(in));
+			continue;
+		}
+
+		ungetc(c, in);
+		break;
+	}
+	if (fscanf(in, " %u %u %u", &w, &h, &prec) != 3)
 		BadPPM(infile);
-	if (getc(in) != '\n' || w <= 0 || h <= 0 || prec != 255)
+	if (fgetc(in) != '\n' || prec != 255)
 		BadPPM(infile);
 
 	out = TIFFOpen(argv[optind], "w");
 	if (out == NULL)
 		return (-4);
-	TIFFSetField(out, TIFFTAG_IMAGEWIDTH,  w);
-	TIFFSetField(out, TIFFTAG_IMAGELENGTH, h);
+	TIFFSetField(out, TIFFTAG_IMAGEWIDTH, (uint32) w);
+	TIFFSetField(out, TIFFTAG_IMAGELENGTH, (uint32) h);
 	TIFFSetField(out, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
 	TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, spp);
 	TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, 8);
@@ -187,7 +225,7 @@ processCompressOptions(char* opt)
 		compression = COMPRESSION_PACKBITS;
 	else if (strneq(opt, "jpeg", 4)) {
 		char* cp = strchr(opt, ':');
-		if (cp && isdigit(cp[1]))
+		if (cp && isdigit((int)cp[1]))
 			quality = atoi(cp+1);
 		if (cp && strchr(cp, 'r'))
 			jpegcolormode = JPEGCOLORMODE_RAW;
@@ -215,9 +253,8 @@ char* stuff[] = {
 "",
 " -c jpeg[:opts]  compress output with JPEG encoding",
 " -c lzw[:opts]	compress output with Lempel-Ziv & Welch encoding",
-"               (no longer supported by default due to Unisys patent enforcement)", 
 " -c zip[:opts]	compress output with deflate encoding",
-" -c packbits	compress output with packbits encoding",
+" -c packbits	compress output with packbits encoding (the default)",
 " -c none	use no compression algorithm on output",
 "",
 "JPEG options:",
@@ -236,7 +273,10 @@ usage(void)
 	int i;
 
 	setbuf(stderr, buf);
+        fprintf(stderr, "%s\n\n", TIFFGetVersion());
 	for (i = 0; stuff[i] != NULL; i++)
 		fprintf(stderr, "%s\n", stuff[i]);
 	exit(-1);
 }
+
+/* vim: set ts=8 sts=8 sw=8 noet: */

@@ -1,4 +1,4 @@
-/* $Header$ */
+/* $Id$ */
 
 /*
  * Copyright (c) 1994-1997 Sam Leffler
@@ -23,17 +23,28 @@
  * LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 
  * OF THIS SOFTWARE.
  */
+
+#include "tif_config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
 #include "tiffio.h"
 
-#define	streq(a,b)	(strcasecmp(a,b) == 0)
+#ifndef HAVE_GETOPT
+extern int getopt(int, char**, char*);
+#endif
 
-#ifndef howmany
-#define	howmany(x, y)	(((x)+((y)-1))/(y))
+#define	streq(a,b)	(strcmp(a,b) == 0)
+
+#ifndef TIFFhowmany8
+# define TIFFhowmany8(x) (((x)&0x07)?((uint32)(x)>>3)+1:(uint32)(x)>>3)
 #endif
 
 typedef enum {
@@ -84,11 +95,19 @@ main(int argc, char* argv[])
     }
     if (argc-optind != 2)
 	usage();
-    thumbnail = (uint8*) _TIFFmalloc(tnw * tnh);
+
     out = TIFFOpen(argv[optind+1], "w");
     if (out == NULL)
-	return (-2);
+	return 2;
     in = TIFFOpen(argv[optind], "r");
+
+    thumbnail = (uint8*) _TIFFmalloc(tnw * tnh);
+    if (!thumbnail) {
+	    TIFFError(TIFFFileName(in),
+		      "Can't allocate space for thumbnail buffer.");
+	    return 1;
+    }
+
     if (in != NULL) {
 	initScale();
 	do {
@@ -100,13 +119,13 @@ main(int argc, char* argv[])
 	(void) TIFFClose(in);
     }
     (void) TIFFClose(out);
-    return (0);
+    return 0;
 bad:
     (void) TIFFClose(out);
-    return (1);
+    return 1;
 }
 
-#define	CopyField1(tag, v) \
+#define	CopyField(tag, v) \
     if (TIFFGetField(in, tag, &v)) TIFFSetField(out, tag, v)
 #define	CopyField2(tag, v1, v2) \
     if (TIFFGetField(in, tag, &v1, &v2)) TIFFSetField(out, tag, v1, v2)
@@ -118,40 +137,62 @@ bad:
 static void
 cpTag(TIFF* in, TIFF* out, uint16 tag, uint16 count, TIFFDataType type)
 {
-    uint16 shortv, shortv2, *shortav;
-    float floatv, *floatav;
-    char *stringv;
-    uint32 longv;
-
-    switch (type) {
-    case TIFF_SHORT:
-	if (count == 1) {
-	    CopyField1(tag, shortv);
-	} else if (count == 2) {
-	    CopyField2(tag, shortv, shortv2);
-	} else if (count == (uint16) -1) {
-	    CopyField2(tag, shortv, shortav);
+	switch (type) {
+	case TIFF_SHORT:
+		if (count == 1) {
+			uint16 shortv;
+			CopyField(tag, shortv);
+		} else if (count == 2) {
+			uint16 shortv1, shortv2;
+			CopyField2(tag, shortv1, shortv2);
+		} else if (count == 4) {
+			uint16 *tr, *tg, *tb, *ta;
+			CopyField4(tag, tr, tg, tb, ta);
+		} else if (count == (uint16) -1) {
+			uint16 shortv1;
+			uint16* shortav;
+			CopyField2(tag, shortv1, shortav);
+		}
+		break;
+	case TIFF_LONG:
+		{ uint32 longv;
+		  CopyField(tag, longv);
+		}
+		break;
+	case TIFF_RATIONAL:
+		if (count == 1) {
+			float floatv;
+			CopyField(tag, floatv);
+		} else if (count == (uint16) -1) {
+			float* floatav;
+			CopyField(tag, floatav);
+		}
+		break;
+	case TIFF_ASCII:
+		{ char* stringv;
+		  CopyField(tag, stringv);
+		}
+		break;
+	case TIFF_DOUBLE:
+		if (count == 1) {
+			double doublev;
+			CopyField(tag, doublev);
+		} else if (count == (uint16) -1) {
+			double* doubleav;
+			CopyField(tag, doubleav);
+		}
+		break;
+          default:
+                TIFFError(TIFFFileName(in),
+                          "Data type %d is not supported, tag %d skipped.",
+                          tag, type);
 	}
-	break;
-    case TIFF_LONG:
-	CopyField1(tag, longv);
-	break;
-    case TIFF_RATIONAL:
-	if (count == 1) {
-	    CopyField1(tag, floatv);
-	} else if (count == (uint16) -1) {
-	    CopyField1(tag, floatav);
-	}
-	break;
-    case TIFF_ASCII:
-	CopyField1(tag, stringv);
-	break;
-    }
 }
+
 #undef CopyField4
 #undef CopyField3
 #undef CopyField2
-#undef CopyField1
+#undef CopyField
 
 static struct cpTag {
     uint16	tag;
@@ -225,26 +266,30 @@ cpStrips(TIFF* in, TIFF* out)
 
     if (buf) {
 	tstrip_t s, ns = TIFFNumberOfStrips(in);
-	uint32 *bytecounts;
+	tsize_t *bytecounts;
 
 	TIFFGetField(in, TIFFTAG_STRIPBYTECOUNTS, &bytecounts);
 	for (s = 0; s < ns; s++) {
 	    if (bytecounts[s] > bufsize) {
 		buf = (unsigned char *)_TIFFrealloc(buf, bytecounts[s]);
 		if (!buf)
-		    return (0);
+		    goto bad;
 		bufsize = bytecounts[s];
 	    }
 	    if (TIFFReadRawStrip(in, s, buf, bytecounts[s]) < 0 ||
 		TIFFWriteRawStrip(out, s, buf, bytecounts[s]) < 0) {
 		_TIFFfree(buf);
-		return (0);
+		return 0;
 	    }
 	}
 	_TIFFfree(buf);
-	return (1);
+	return 1;
     }
-    return (0);
+
+bad:
+	TIFFError(TIFFFileName(in),
+		  "Can't allocate space for strip buffer.");
+	return 0;
 }
 
 static int
@@ -255,26 +300,30 @@ cpTiles(TIFF* in, TIFF* out)
 
     if (buf) {
 	ttile_t t, nt = TIFFNumberOfTiles(in);
-	uint32 *bytecounts;
+	tsize_t *bytecounts;
 
 	TIFFGetField(in, TIFFTAG_TILEBYTECOUNTS, &bytecounts);
 	for (t = 0; t < nt; t++) {
 	    if (bytecounts[t] > bufsize) {
 		buf = (unsigned char *)_TIFFrealloc(buf, bytecounts[t]);
 		if (!buf)
-		    return (0);
+		    goto bad;
 		bufsize = bytecounts[t];
 	    }
 	    if (TIFFReadRawTile(in, t, buf, bytecounts[t]) < 0 ||
 		TIFFWriteRawTile(out, t, buf, bytecounts[t]) < 0) {
 		_TIFFfree(buf);
-		return (0);
+		return 0;
 	    }
 	}
 	_TIFFfree(buf);
-	return (1);
+	return 1;
     }
-    return (0);
+
+bad:
+    TIFFError(TIFFFileName(in),
+		  "Can't allocate space for tile buffer.");
+	return (0);
 }
 
 static int
@@ -293,12 +342,12 @@ cpIFD(TIFF* in, TIFF* out)
 
 static	uint16	photometric;		/* current photometric of raster */
 static	uint16	filterWidth;		/* filter width in pixels */
-static	uint16	stepSrcWidth;		/* src image stepping width */
-static	uint16	stepDstWidth;		/* dest stepping width */
+static	uint32	stepSrcWidth;		/* src image stepping width */
+static	uint32	stepDstWidth;		/* dest stepping width */
 static	uint8* src0;			/* horizontal bit stepping (start) */
 static	uint8* src1;			/* horizontal bit stepping (middle) */
 static	uint8* src2;			/* horizontal bit stepping (end) */
-static	uint16* rowoff;		/* row offset for stepping */
+static	uint32* rowoff;			/* row offset for stepping */
 static	uint8 cmap[256];		/* colormap indexes */
 static	uint8 bits[256];		/* count of bits set */
 
@@ -333,7 +382,7 @@ expFill(float pct[], uint32 p, uint32 n)
     uint32 i;
     uint32 c = (p * n) / 100;
     for (i = 1; i < c; i++)
-	pct[i] = 1-exp(i/((double)(n-1)))/ M_E;
+	pct[i] = (float) (1-exp(i/((double)(n-1)))/ M_E);
     for (; i < n; i++)
 	pct[i] = 0.;
 }
@@ -374,7 +423,7 @@ initScale()
     src0 = (uint8*) _TIFFmalloc(sizeof (uint8) * tnw);
     src1 = (uint8*) _TIFFmalloc(sizeof (uint8) * tnw);
     src2 = (uint8*) _TIFFmalloc(sizeof (uint8) * tnw);
-    rowoff = (uint16*) _TIFFmalloc(sizeof (uint16) * tnw);
+    rowoff = (uint32*) _TIFFmalloc(sizeof (uint32) * tnw);
     filterWidth = 0;
     stepDstWidth = stepSrcWidth = 0;
     setupBitsTables();
@@ -385,7 +434,7 @@ initScale()
  * according to the widths of the src and dst images.
  */
 static void
-setupStepTables(uint16 sw)
+setupStepTables(uint32 sw)
 {
     if (stepSrcWidth != sw || stepDstWidth != tnw) {
 	int step = sw;
@@ -419,7 +468,7 @@ setupStepTables(uint16 sw)
 }
 
 static void
-setrow(uint8* row, int nrows, const uint8* rows[])
+setrow(uint8* row, uint32 nrows, const uint8* rows[])
 {
     uint32 x;
     uint32 area = nrows * filterWidth;
@@ -466,13 +515,14 @@ setImage1(const uint8* br, uint32 rw, uint32 rh)
     int step = rh;
     int limit = tnh;
     int err = 0;
-    int bpr = howmany(rw,8);
-    uint32 sy = 0;
+    int bpr = TIFFhowmany8(rw);
+    int sy = 0;
     uint8* row = thumbnail;
     uint32 dy;
     for (dy = 0; dy < tnh; dy++) {
 	const uint8* rows[256];
-	int nrows = 1;
+	uint32 nrows = 1;
+	fprintf(stderr, "bpr=%d, sy=%d, bpr*sy=%d\n", bpr, sy, bpr*sy);
 	rows[0] = br + bpr*sy;
 	err += step;
 	while (err >= limit) {
@@ -511,10 +561,16 @@ generateThumbnail(TIFF* in, TIFF* out)
     TIFFGetFieldDefaulted(in, TIFFTAG_SAMPLESPERPIXEL, &spp);
     TIFFGetFieldDefaulted(in, TIFFTAG_ROWSPERSTRIP, &rps);
     if (spp != 1 || bps != 1)
-	return (0);
+	return 0;
     rowsize = TIFFScanlineSize(in);
     rastersize = sh * rowsize;
+    fprintf(stderr, "rastersize=%u\n", (unsigned int)rastersize);
     raster = (unsigned char*)_TIFFmalloc(rastersize);
+    if (!raster) {
+	    TIFFError(TIFFFileName(in),
+		      "Can't allocate space for raster buffer.");
+	    return 0;
+    }
     rp = raster;
     for (s = 0; s < ns; s++) {
 	(void) TIFFReadEncodedStrip(in, s, rp, -1);
@@ -523,6 +579,7 @@ generateThumbnail(TIFF* in, TIFF* out)
     TIFFGetField(in, TIFFTAG_PHOTOMETRIC, &photometric);
     setupCmap();
     setImage(raster, sw, sh);
+    _TIFFfree(raster);
 
     TIFFSetField(out, TIFFTAG_SUBFILETYPE, FILETYPE_REDUCEDIMAGE);
     TIFFSetField(out, TIFFTAG_IMAGEWIDTH, (uint32) tnw);
@@ -566,7 +623,10 @@ usage(void)
 	int i;
 
 	setbuf(stderr, buf);
+        fprintf(stderr, "%s\n\n", TIFFGetVersion());
 	for (i = 0; stuff[i] != NULL; i++)
 		fprintf(stderr, "%s\n", stuff[i]);
 	exit(-1);
 }
+
+/* vim: set ts=8 sts=8 sw=8 noet: */

@@ -1,3 +1,5 @@
+/* $Id$ */
+
 /*
  * Copyright (c) 1997 Greg Ward Larson
  * Copyright (c) 1997 Silicon Graphics, Inc.
@@ -146,7 +148,6 @@
  */
 
 #include <stdio.h>
-#include <assert.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -185,7 +186,7 @@ LogL16Decode(TIFF* tif, tidata_t op, tsize_t occ, tsample_t s)
 {
 	LogLuvState* sp = DecoderState(tif);
 	int shft, i, npixels;
-	u_char* bp;
+	unsigned char* bp;
 	int16* tp;
 	int16 b;
 	int cc, rc;
@@ -203,20 +204,20 @@ LogL16Decode(TIFF* tif, tidata_t op, tsize_t occ, tsample_t s)
 	}
 	_TIFFmemset((tdata_t) tp, 0, npixels*sizeof (tp[0]));
 
-	bp = (u_char*) tif->tif_rawcp;
+	bp = (unsigned char*) tif->tif_rawcp;
 	cc = tif->tif_rawcc;
 					/* get each byte string */
 	for (shft = 2*8; (shft -= 8) >= 0; ) {
 		for (i = 0; i < npixels && cc > 0; )
 			if (*bp >= 128) {		/* run */
 				rc = *bp++ + (2-128);
-				b = (int16)*bp++ << shft;
+				b = (int16)(*bp++ << shft);
 				cc -= 2;
-				while (rc--)
+				while (rc-- && i < npixels)
 					tp[i++] |= b;
 			} else {			/* non-run */
 				rc = *bp++;		/* nul is noop */
-				while (--cc && rc--)
+				while (--cc && rc-- && i < npixels)
 					tp[i++] |= (int16)*bp++ << shft;
 			}
 		if (i != npixels) {
@@ -242,7 +243,7 @@ LogLuvDecode24(TIFF* tif, tidata_t op, tsize_t occ, tsample_t s)
 {
 	LogLuvState* sp = DecoderState(tif);
 	int cc, i, npixels;
-	u_char* bp;
+	unsigned char* bp;
 	uint32* tp;
 
 	assert(s == 0);
@@ -257,7 +258,7 @@ LogLuvDecode24(TIFF* tif, tidata_t op, tsize_t occ, tsample_t s)
 		tp = (uint32 *) sp->tbuf;
 	}
 					/* copy to array of uint32 */
-	bp = (u_char*) tif->tif_rawcp;
+	bp = (unsigned char*) tif->tif_rawcp;
 	cc = tif->tif_rawcc;
 	for (i = 0; i < npixels && cc > 0; i++) {
 		tp[i] = bp[0] << 16 | bp[1] << 8 | bp[2];
@@ -284,7 +285,7 @@ LogLuvDecode32(TIFF* tif, tidata_t op, tsize_t occ, tsample_t s)
 {
 	LogLuvState* sp;
 	int shft, i, npixels;
-	u_char* bp;
+	unsigned char* bp;
 	uint32* tp;
 	uint32 b;
 	int cc, rc;
@@ -303,7 +304,7 @@ LogLuvDecode32(TIFF* tif, tidata_t op, tsize_t occ, tsample_t s)
 	}
 	_TIFFmemset((tdata_t) tp, 0, npixels*sizeof (tp[0]));
 
-	bp = (u_char*) tif->tif_rawcp;
+	bp = (unsigned char*) tif->tif_rawcp;
 	cc = tif->tif_rawcc;
 					/* get each byte string */
 	for (shft = 4*8; (shft -= 8) >= 0; ) {
@@ -312,11 +313,11 @@ LogLuvDecode32(TIFF* tif, tidata_t op, tsize_t occ, tsample_t s)
 				rc = *bp++ + (2-128);
 				b = (uint32)*bp++ << shft;
 				cc -= 2;
-				while (rc--)
+				while (rc-- && i < npixels)
 					tp[i++] |= b;
 			} else {			/* non-run */
 				rc = *bp++;		/* nul is noop */
-				while (--cc && rc--)
+				while (--cc && rc-- && i < npixels)
 					tp[i++] |= (uint32)*bp++ << shft;
 			}
 		if (i != npixels) {
@@ -405,7 +406,7 @@ LogL16Encode(TIFF* tif, tidata_t bp, tsize_t cc, tsample_t s)
 			}
 			mask = 0xff << shft;		/* find next run */
 			for (beg = i; beg < npixels; beg += rc) {
-				b = tp[beg] & mask;
+				b = (int16) (tp[beg] & mask);
 				rc = 1;
 				while (rc < 127+2 && beg+rc < npixels &&
 						(tp[beg+rc] & mask) == b)
@@ -414,36 +415,36 @@ LogL16Encode(TIFF* tif, tidata_t bp, tsize_t cc, tsample_t s)
 					break;		/* long enough */
 			}
 			if (beg-i > 1 && beg-i < MINRUN) {
-				b = tp[i] & mask;	/* check short run */
+				b = (int16) (tp[i] & mask);/*check short run */
 				j = i+1;
 				while ((tp[j++] & mask) == b)
-					if (j == beg) {
-						*op++ = 128-2+j-i;
-						*op++ = b >> shft;
-						occ -= 2;
-						i = beg;
-						break;
-					}
+                                    if (j == beg) {
+                                        *op++ = (tidataval_t)(128-2+j-i);
+                                        *op++ = (tidataval_t) (b >> shft);
+                                        occ -= 2;
+                                        i = beg;
+                                        break;
+                                    }
 			}
 			while (i < beg) {		/* write out non-run */
 				if ((j = beg-i) > 127) j = 127;
 				if (occ < j+3) {
-					tif->tif_rawcp = op;
-					tif->tif_rawcc = tif->tif_rawdatasize - occ;
-					if (!TIFFFlushData1(tif))
-						return (-1);
-					op = tif->tif_rawcp;
-					occ = tif->tif_rawdatasize - tif->tif_rawcc;
+                                    tif->tif_rawcp = op;
+                                    tif->tif_rawcc = tif->tif_rawdatasize - occ;
+                                    if (!TIFFFlushData1(tif))
+                                        return (-1);
+                                    op = tif->tif_rawcp;
+                                    occ = tif->tif_rawdatasize - tif->tif_rawcc;
 				}
-				*op++ = j; occ--;
+				*op++ = (tidataval_t) j; occ--;
 				while (j--) {
-					*op++ = tp[i++] >> shft & 0xff;
+					*op++ = (tidataval_t) (tp[i++] >> shft & 0xff);
 					occ--;
 				}
 			}
 			if (rc >= MINRUN) {		/* write out run */
-				*op++ = 128-2+rc;
-				*op++ = tp[beg] >> shft & 0xff;
+				*op++ = (tidataval_t) (128-2+rc);
+				*op++ = (tidataval_t) (tp[beg] >> shft & 0xff);
 				occ -= 2;
 			} else
 				rc = 0;
@@ -569,14 +570,14 @@ LogLuvEncode32(TIFF* tif, tidata_t bp, tsize_t cc, tsample_t s)
 					op = tif->tif_rawcp;
 					occ = tif->tif_rawdatasize - tif->tif_rawcc;
 				}
-				*op++ = j; occ--;
+				*op++ = (tidataval_t) j; occ--;
 				while (j--) {
 					*op++ = (tidataval_t)(tp[i++] >> shft & 0xff);
 					occ--;
 				}
 			}
 			if (rc >= MINRUN) {		/* write out run */
-				*op++ = 128-2+rc;
+				*op++ = (tidataval_t) (128-2+rc);
 				*op++ = (tidataval_t)(tp[beg] >> shft & 0xff);
 				occ -= 2;
 			} else
@@ -693,7 +694,7 @@ L16toGry(LogLuvState* sp, tidata_t op, int n)
 
 	while (n-- > 0) {
 		double Y = LogL16toY(*l16++);
-		*gp++ = (Y <= 0.) ? 0 : (Y >= 1.) ? 255 : (int)(256.*sqrt(Y));
+		*gp++ = (uint8) ((Y <= 0.) ? 0 : (Y >= 1.) ? 255 : (int)(256.*sqrt(Y)));
 	}
 }
 
@@ -704,7 +705,7 @@ L16fromY(LogLuvState* sp, tidata_t op, int n)
 	float* yp = (float*) op;
 
 	while (n-- > 0)
-		*l16++ = LogL16fromY(*yp++, sp->encode_meth);
+		*l16++ = (int16) (LogL16fromY(*yp++, sp->encode_meth));
 }
 
 #if !LOGLUV_PUBLIC
@@ -720,9 +721,9 @@ XYZtoRGB24(float xyz[3], uint8 rgb[3])
 	b =  0.061*xyz[0] + -0.224*xyz[1] +  1.163*xyz[2];
 					/* assume 2.0 gamma for speed */
 	/* could use integer sqrt approx., but this is probably faster */
-	rgb[0] = (r <= 0.) ? 0 : (r >= 1.) ? 255 : (int)(256.*sqrt(r));
-	rgb[1] = (g <= 0.) ? 0 : (g >= 1.) ? 255 : (int)(256.*sqrt(g));
-	rgb[2] = (b <= 0.) ? 0 : (b >= 1.) ? 255 : (int)(256.*sqrt(b));
+	rgb[0] = (uint8)((r<=0.) ? 0 : (r >= 1.) ? 255 : (int)(256.*sqrt(r)));
+	rgb[1] = (uint8)((g<=0.) ? 0 : (g >= 1.) ? 255 : (int)(256.*sqrt(g)));
+	rgb[2] = (uint8)((b<=0.) ? 0 : (b >= 1.) ? 255 : (int)(256.*sqrt(b)));
 }
 
 #if !LOGLUV_PUBLIC
@@ -993,7 +994,7 @@ Luv24fromLuv48(LogLuvState* sp, tidata_t op, int n)
 		else
 			Le = itrunc(.25*(luv3[0]-3314.), sp->encode_meth);
 
-		Ce = uv_encode((luv[1]+.5)/(1<<15), (luv[2]+.5)/(1<<15),
+		Ce = uv_encode((luv3[1]+.5)/(1<<15), (luv3[2]+.5)/(1<<15),
 					sp->encode_meth);
 		if (Ce < 0)	/* never happens */
 			Ce = uv_encode(U_NEU, V_NEU, SGILOGENCODE_NODITHER);
@@ -1161,6 +1162,17 @@ LogL16GuessDataFmt(TIFFDirectory *td)
 	return (SGILOGDATAFMT_UNKNOWN);
 }
 
+static uint32
+multiply(size_t m1, size_t m2)
+{
+	uint32	bytes = m1 * m2;
+
+	if (m1 && bytes / m1 != m2)
+		bytes = 0;
+
+	return bytes;
+}
+
 static int
 LogL16InitState(TIFF* tif)
 {
@@ -1189,9 +1201,9 @@ LogL16InitState(TIFF* tif)
 		    "No support for converting user data format to LogL");
 		return (0);
 	}
-	sp->tbuflen = td->td_imagewidth * td->td_rowsperstrip;
-	sp->tbuf = (tidata_t*) _TIFFmalloc(sp->tbuflen * sizeof (int16));
-	if (sp->tbuf == NULL) {
+	sp->tbuflen = multiply(td->td_imagewidth, td->td_rowsperstrip);
+	if (multiply(sp->tbuflen, sizeof (int16)) == 0 ||
+	    (sp->tbuf = (tidata_t*) _TIFFmalloc(sp->tbuflen * sizeof (int16))) == NULL) {
 		TIFFError(module, "%s: No space for SGILog translation buffer",
 		    tif->tif_name);
 		return (0);
@@ -1287,9 +1299,9 @@ LogLuvInitState(TIFF* tif)
 		    "No support for converting user data format to LogLuv");
 		return (0);
 	}
-	sp->tbuflen = td->td_imagewidth * td->td_rowsperstrip;
-	sp->tbuf = (tidata_t*) _TIFFmalloc(sp->tbuflen * sizeof (uint32));
-	if (sp->tbuf == NULL) {
+	sp->tbuflen = multiply(td->td_imagewidth, td->td_rowsperstrip);
+	if (multiply(sp->tbuflen, sizeof (uint32)) == 0 ||
+	    (sp->tbuf = (tidata_t*) _TIFFmalloc(sp->tbuflen * sizeof (uint32))) == NULL) {
 		TIFFError(module, "%s: No space for SGILog translation buffer",
 		    tif->tif_name);
 		return (0);
@@ -1497,7 +1509,7 @@ LogLuvVSetField(TIFF* tif, ttag_t tag, va_list ap)
 		/*
 		 * Must recalculate sizes should bits/sample change.
 		 */
-		tif->tif_tilesize = TIFFTileSize(tif);
+		tif->tif_tilesize = isTiled(tif) ? TIFFTileSize(tif) : (tsize_t) -1;
 		tif->tif_scanlinesize = TIFFScanlineSize(tif);
 		return (1);
 	case TIFFTAG_SGILOGENCODE:
@@ -1573,10 +1585,10 @@ TIFFInitSGILog(TIFF* tif, int scheme)
 
 	/* override SetField so we can handle our private pseudo-tag */
 	_TIFFMergeFieldInfo(tif, LogLuvFieldInfo, N(LogLuvFieldInfo));
-	sp->vgetparent = tif->tif_vgetfield;
-	tif->tif_vgetfield = LogLuvVGetField;   /* hook for codec tags */
-	sp->vsetparent = tif->tif_vsetfield;
-	tif->tif_vsetfield = LogLuvVSetField;   /* hook for codec tags */
+	sp->vgetparent = tif->tif_tagmethods.vgetfield;
+	tif->tif_tagmethods.vgetfield = LogLuvVGetField;   /* hook for codec tags */
+	sp->vsetparent = tif->tif_tagmethods.vsetfield;
+	tif->tif_tagmethods.vsetfield = LogLuvVSetField;   /* hook for codec tags */
 
 	return (1);
 bad:
@@ -1584,3 +1596,5 @@ bad:
 	return (0);
 }
 #endif /* LOGLUV_SUPPORT */
+
+/* vim: set ts=8 sts=8 sw=8 noet: */

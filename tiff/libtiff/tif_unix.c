@@ -1,4 +1,4 @@
-/* $Header$ */
+/* $Id$ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -25,12 +25,31 @@
  */
 
 /*
- * TIFF Library UNIX-specific Routines.
+ * TIFF Library UNIX-specific Routines. These are should also work with the
+ * Windows Common RunTime Library.
  */
-#include "tiffiop.h"
-#include <sys/types.h>
-#include <unistd.h>
+#include "tif_config.h"
+
 #include <stdlib.h>
+#include <sys/stat.h>
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
+#ifdef HAVE_FCNTL_H
+# include <fcntl.h>
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+
+#ifdef HAVE_IO_H
+# include <io.h>
+#endif
+
+#include "tiffiop.h"
 
 static tsize_t
 _tiffReadProc(thandle_t fd, tdata_t buf, tsize_t size)
@@ -47,11 +66,7 @@ _tiffWriteProc(thandle_t fd, tdata_t buf, tsize_t size)
 static toff_t
 _tiffSeekProc(thandle_t fd, toff_t off, int whence)
 {
-#if USE_64BIT_API == 1
-	return ((toff_t) lseek64((int) fd, (off64_t) off, whence));
-#else
 	return ((toff_t) lseek((int) fd, (off_t) off, whence));
-#endif
 }
 
 static int
@@ -60,7 +75,6 @@ _tiffCloseProc(thandle_t fd)
 	return (close((int) fd));
 }
 
-#include <sys/stat.h>
 
 static toff_t
 _tiffSizeProc(thandle_t fd)
@@ -69,13 +83,8 @@ _tiffSizeProc(thandle_t fd)
 	long fsize;
 	return ((fsize = lseek((int) fd, 0, SEEK_END)) < 0 ? 0 : fsize);
 #else
-#if USE_64BIT_API == 1
-	struct stat64 sb;
-	return (toff_t) (fstat64((int) fd, &sb) < 0 ? 0 : sb.st_size);
-#else
 	struct stat sb;
 	return (toff_t) (fstat((int) fd, &sb) < 0 ? 0 : sb.st_size);
-#endif
 #endif
 }
 
@@ -144,12 +153,13 @@ TIFFOpen(const char* name, const char* mode)
 {
 	static const char module[] = "TIFFOpen";
 	int m, fd;
+        TIFF* tif;
 
 	m = _TIFFgetMode(mode, module);
 	if (m == -1)
 		return ((TIFF*)0);
 
-/* for cygwin */        
+/* for cygwin and mingw */        
 #ifdef O_BINARY
         m |= O_BINARY;
 #endif        
@@ -163,8 +173,65 @@ TIFFOpen(const char* name, const char* mode)
 		TIFFError(module, "%s: Cannot open", name);
 		return ((TIFF *)0);
 	}
-	return (TIFFFdOpen(fd, name, mode));
+
+	tif = TIFFFdOpen((int)fd, name, mode);
+	if(!tif)
+		close(fd);
+	return tif;
 }
+
+#ifdef __WIN32__
+/*
+ * Open a TIFF file with a Unicode filename, for read/writing.
+ */
+TIFF*
+TIFFOpenW(const wchar_t* name, const char* mode)
+{
+	static const char module[] = "TIFFOpenW";
+	int m, fd;
+	int mbsize;
+	char *mbname;
+	TIFF* tif;
+
+	m = _TIFFgetMode(mode, module);
+	if (m == -1)
+		return ((TIFF*)0);
+
+/* for cygwin and mingw */        
+#ifdef O_BINARY
+        m |= O_BINARY;
+#endif        
+        
+	fd = _wopen(name, m, 0666);
+	if (fd < 0) {
+		TIFFError(module, "%s: Cannot open", name);
+		return ((TIFF *)0);
+	}
+
+	mbname = NULL;
+	mbsize = WideCharToMultiByte(CP_ACP, 0, name, -1, NULL, 0, NULL, NULL);
+	if (mbsize > 0) {
+		mbname = _TIFFmalloc(mbsize);
+		if (!mbname) {
+			TIFFError(module,
+			"Can't allocate space for filename conversion buffer");
+			return ((TIFF*)0);
+		}
+
+		WideCharToMultiByte(CP_ACP, 0, name, -1, mbname, mbsize,
+				    NULL, NULL);
+	}
+
+	tif = TIFFFdOpen((int)fd, (mbname != NULL) ? mbname : "<unknown>",
+			 mode);
+	
+	_TIFFfree(mbname);
+	
+	if(!tif)
+		close(fd);
+	return tif;
+}
+#endif
 
 void*
 _TIFFmalloc(tsize_t s)

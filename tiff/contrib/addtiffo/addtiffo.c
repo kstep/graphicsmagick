@@ -28,6 +28,12 @@
  ******************************************************************************
  *
  * $Log$
+ * Revision 1.1.1.2  2005/12/25 16:42:35  bfriesen
+ * Import libtiff 3.7.4
+ *
+ * Revision 1.4  2004/09/21 13:31:23  dron
+ * Add missed include string.h.
+ *
  * Revision 1.3  2000/04/18 22:48:31  warmerda
  * Added support for averaging resampling
  *
@@ -49,6 +55,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "tiffio.h"
 
 void TIFFBuildOverviews( TIFF *, int, int *, int, const char *,
