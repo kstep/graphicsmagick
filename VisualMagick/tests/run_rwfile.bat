@@ -6,6 +6,7 @@ set bilevel_file=%srcdir%input_bilevel.miff
 set gray_file=%srcdir%input_gray.miff
 set pallette_file=%srcdir%input_pallette.miff
 set truecolor_file=%srcdir%input_truecolor.miff
+@echo on
 %exedir%drawtest drawtest_out.miff
 %exedir%drawtest drawtest_out.mvg
 %exedir%drawtest drawtest_out.svg

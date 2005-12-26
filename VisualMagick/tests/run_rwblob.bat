@@ -6,6 +6,7 @@ set bilevel_file=%srcdir%input_bilevel.miff
 set gray_file=%srcdir%input_gray.miff
 set pallette_file=%srcdir%input_pallette.miff
 set truecolor_file=%srcdir%input_truecolor.miff
+@echo on
 %exedir%rwblob.exe -debug %events% %bilevel_file% AVS 
 %exedir%rwblob.exe -debug %events% %gray_file% AVS 
 %exedir%rwblob.exe -debug %events% %pallette_file% AVS 
