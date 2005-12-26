@@ -1,3 +1,8 @@
+2005-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* NEWS: Updated with latest changes.
+	* tiff: Update to libtiff 3.7.5.
+
 2005-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lcms: Update to lcms 1.15.

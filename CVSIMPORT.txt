@@ -53,6 +53,15 @@ ralcgm:
     import -m 'Import ralcgm 3.50' delegates/ralcgm \
     RALCGM_DIST RALCGM_3_50
 
+
+tiff:
+
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    import -m 'Import libtiff 3.7.4' delegates/tiff \
+    ??? TIFF_3_7_4
+  cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
+    checkout -j??? -jTIFF_3_7_4 delegates/tiff
+
 wmf:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
@@ -74,5 +83,3 @@ zlib:
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
     import -m 'Import zlib 1.2.3' delegates/zlib \
     INITIAL ZLIB_1_2_3
-
-
