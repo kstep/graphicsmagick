@@ -3,7 +3,7 @@
  *
  * Project:  GeoTIFF Overview Builder
  * Purpose:  Mainline for building overviews in a TIFF file.
- * Author:   Frank Warmerdam, warmerda@home.com
+ * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
  ******************************************************************************
  * Copyright (c) 1999, Frank Warmerdam
@@ -28,8 +28,8 @@
  ******************************************************************************
  *
  * $Log$
- * Revision 1.1.1.2  2005/12/25 16:42:35  bfriesen
- * Import libtiff 3.7.4
+ * Revision 1.6  2005/12/16 05:59:55  fwarmerdam
+ * Major upgrade to support YCbCr subsampled jpeg images
  *
  * Revision 1.4  2004/09/21 13:31:23  dron
  * Add missed include string.h.
@@ -68,7 +68,7 @@ void TIFFBuildOverviews( TIFF *, int, int *, int, const char *,
 int main( int argc, char ** argv )
 
 {
-    int		anOverviews[100];
+    int		anOverviews[100];   /* TODO: un-hardwire array length, flexible allocate */
     int		nOverviewCount = 0;
     int		bUseSubIFD = 0;
     TIFF	*hTIFF;
@@ -83,8 +83,8 @@ int main( int argc, char ** argv )
                 "                tiff_filename [resolution_reductions]\n"
                 "\n"
                 "Example:\n"
-                " %% addtifo abc.tif 2 4 8 16\n" );
-        exit( 1 );
+                " %% addtiffo abc.tif 2 4 8 16\n" );
+        return( 1 );
     }
 
     while( argv[1][0] == '-' )
@@ -101,7 +101,14 @@ int main( int argc, char ** argv )
             argc -= 2;
             pszResampling = *argv;
         }
+        else
+        {
+            fprintf( stderr, "Incorrect parameters\n" );
+            return( 1 );
+        }
     }
+
+    /* TODO: resampling mode parameter needs to be encoded in an integer from this point on */
 
 /* -------------------------------------------------------------------- */
 /*      Collect the user requested reduction factors.                   */
@@ -109,6 +116,11 @@ int main( int argc, char ** argv )
     while( nOverviewCount < argc - 2 && nOverviewCount < 100 )
     {
         anOverviews[nOverviewCount] = atoi(argv[nOverviewCount+2]);
+        if( anOverviews[nOverviewCount] <= 0)
+        {
+            fprintf( stderr, "Incorrect parameters\n" );
+            return(1);
+        }
         nOverviewCount++;
     }
 
@@ -116,10 +128,11 @@ int main( int argc, char ** argv )
 /*      Default to four overview levels.  It would be nicer if it       */
 /*      defaulted based on the size of the source image.                */
 /* -------------------------------------------------------------------- */
+    /* TODO: make it default based on the size of the source image */
     if( nOverviewCount == 0 )
     {
         nOverviewCount = 4;
-        
+
         anOverviews[0] = 2;
         anOverviews[1] = 4;
         anOverviews[2] = 8;
@@ -133,20 +146,20 @@ int main( int argc, char ** argv )
     if( hTIFF == NULL )
     {
         fprintf( stderr, "TIFFOpen(%s) failed.\n", argv[1] );
-        exit( 1 );
+        return( 1 );
     }
 
     TIFFBuildOverviews( hTIFF, nOverviewCount, anOverviews, bUseSubIFD,
                         pszResampling, NULL, NULL );
 
     TIFFClose( hTIFF );
-    
+
 /* -------------------------------------------------------------------- */
 /*      Optionally test for memory leaks.                               */
 /* -------------------------------------------------------------------- */
 #ifdef DBMALLOC
     malloc_dump(1);
 #endif
-    
-    exit( 0 );
+
+    return( 0 );
 }

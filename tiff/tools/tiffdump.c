@@ -56,8 +56,8 @@ char*	appname;
 char*	curfile;
 int	swabflag;
 int	bigendian;
-int	typeshift[13];		/* data type shift counts */
-long	typemask[13];		/* data type masks */
+int	typeshift[14];		/* data type shift counts */
+long	typemask[14];		/* data type masks */
 uint32	maxitems = 24;		/* maximum indirect data items to print */
 
 char*	bytefmt = "%s%#02x";		/* BYTE */
@@ -162,7 +162,7 @@ InitByteOrder(int magic)
 	typeshift[ord(TIFF_SRATIONAL)] = 0;
 	typeshift[ord(TIFF_FLOAT)] = 0;
 	typeshift[ord(TIFF_DOUBLE)] = 0;
-	if (magic == TIFF_BIGENDIAN) {
+	if (magic == TIFF_BIGENDIAN || magic == MDI_BIGENDIAN) {
 		typeshift[ord(TIFF_BYTE)] = 24;
 		typeshift[ord(TIFF_SBYTE)] = 24;
 		typeshift[ord(TIFF_SHORT)] = 16;
@@ -193,8 +193,14 @@ dump(int fd, off_t diroff)
 	/*
 	 * Setup the byte order handling.
 	 */
-	if (hdr.tiff_magic != TIFF_BIGENDIAN && hdr.tiff_magic != TIFF_LITTLEENDIAN)
-		Fatal("Not a TIFF file, bad magic number %u (%#x)",
+	if (hdr.tiff_magic != TIFF_BIGENDIAN && hdr.tiff_magic != TIFF_LITTLEENDIAN &&
+#if HOST_BIGENDIAN
+	    // MDI is sensitive to the host byte order, unlike TIFF
+	    MDI_BIGENDIAN != hdr.tiff_magic )
+#else
+	    MDI_LITTLEENDIAN != hdr.tiff_magic )
+#endif
+		Fatal("Not a TIFF or MDI file, bad magic number %u (%#x)",
 		    hdr.tiff_magic, hdr.tiff_magic);
 	InitByteOrder(hdr.tiff_magic);
 	/*
@@ -295,7 +301,8 @@ ReadDirectory(int fd, unsigned ix, off_t off)
 	if (swabflag)
 		TIFFSwabLong(&nextdiroff);
 	printf("Directory %u: offset %lu (%#lx) next %lu (%#lx)\n", ix,
-	    (unsigned long) off, (unsigned long) off, nextdiroff, nextdiroff);
+	    (unsigned long)off, (unsigned long)off,
+	    (unsigned long)nextdiroff, (unsigned long)nextdiroff);
 	for (dp = dir, n = dircount; n > 0; n--, dp++) {
 		if (swabflag) {
 			TIFFSwabArrayOfShort(&dp->tdir_tag, 2);
@@ -519,7 +526,7 @@ PrintByte(FILE* fd, const char* fmt, TIFFDirEntry* dp)
 {
 	char* sep = "";
 
-	if (hdr.tiff_magic != TIFF_LITTLEENDIAN) {
+	if (hdr.tiff_magic == TIFF_BIGENDIAN) {
 		switch ((int)dp->tdir_count) {
 		case 4: fprintf(fd, fmt, sep, dp->tdir_offset&0xff);
 			sep = " ";
@@ -547,7 +554,7 @@ PrintShort(FILE* fd, const char* fmt, TIFFDirEntry* dp)
 {
 	char *sep = "";
 
-	if (hdr.tiff_magic != TIFF_LITTLEENDIAN) {
+	if (hdr.tiff_magic == TIFF_BIGENDIAN) {
 		switch (dp->tdir_count) {
 		case 2: fprintf(fd, fmt, sep, dp->tdir_offset&0xffff);
 			sep = " ";
@@ -701,8 +708,8 @@ TIFFFetchData(int fd, TIFFDirEntry* dir, void* cp)
 
 	w = (dir->tdir_type < NWIDTHS ? datawidth[dir->tdir_type] : 0);
 	cc = dir->tdir_count * w;
-	if (lseek(fd, (off_t)dir->tdir_offset, 0) == (off_t)dir->tdir_offset &&
-	    read(fd, cp, cc) == cc) {
+	if (lseek(fd, (off_t)dir->tdir_offset, 0) != (off_t)-1
+	    && read(fd, cp, cc) != -1) {
 		if (swabflag) {
 			switch (dir->tdir_type) {
 			case TIFF_SHORT:

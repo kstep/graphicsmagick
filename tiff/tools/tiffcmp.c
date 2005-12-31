@@ -602,7 +602,7 @@ static int
 CheckLongTag(TIFF* tif1, TIFF* tif2, int tag, char* name)
 {
 	uint32 v1, v2;
-	CHECK(v1 == v2, "%s: %lu %lu\n");
+	CHECK(v1 == v2, "%s: %u %u\n");
 }
 
 static int
@@ -623,7 +623,7 @@ static void
 leof(const char* name, uint32 row, int s)
 {
 
-	printf("%s: EOF at scanline %lu", name, row);
+	printf("%s: EOF at scanline %lu", name, (unsigned long)row);
 	if (s >= 0)
 		printf(", sample %d", s);
 	printf("\n");

@@ -56,6 +56,7 @@ main(int argc, char* argv[])
 	TIFF *in, *out;
 
 	if (argc < 2) {
+                fprintf(stderr, "%s\n\n", TIFFGetVersion());
 		fprintf(stderr, "usage: tiffsplit input.tif [prefix]\n");
 		return (-3);
 	}
@@ -199,6 +200,13 @@ tiffcp(TIFF* in, TIFF* out)
 	CopyField(TIFFTAG_HOSTCOMPUTER, stringv);
 	CopyField(TIFFTAG_PAGENAME, stringv);
 	CopyField(TIFFTAG_DOCUMENTNAME, stringv);
+	CopyField(TIFFTAG_BADFAXLINES, longv);
+	CopyField(TIFFTAG_CLEANFAXDATA, longv);
+	CopyField(TIFFTAG_CONSECUTIVEBADFAXLINES, longv);
+	CopyField(TIFFTAG_FAXRECVPARAMS, longv);
+	CopyField(TIFFTAG_FAXRECVTIME, longv);
+	CopyField(TIFFTAG_FAXSUBADDRESS, stringv);
+	CopyField(TIFFTAG_FAXDCS, stringv);
 	if (TIFFIsTiled(in))
 		return (cpTiles(in, out));
 	else
@@ -264,3 +272,5 @@ cpTiles(TIFF* in, TIFF* out)
 	}
 	return (0);
 }
+
+/* vim: set ts=8 sts=8 sw=8 noet: */

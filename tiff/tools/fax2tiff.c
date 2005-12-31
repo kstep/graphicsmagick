@@ -57,11 +57,13 @@
 # define EXIT_FAILURE	1
 #endif
 
+#define TIFFhowmany8(x) (((x)&0x07)?((uint32)(x)>>3)+1:(uint32)(x)>>3)
+
 TIFF	*faxTIFF;
 char	*rowbuf;
 char	*refbuf;
 
-int	xsize = 1728;
+uint32	xsize = 1728;
 int	verbose;
 int	stretch;
 uint16	badfaxrun;
@@ -84,6 +86,8 @@ main(int argc, char* argv[])
 	uint32 group3options_out = 0;	/* 1d-encoded */
 	uint32 group4options_in = 0;	/* compressed */
 	uint32 group4options_out = 0;	/* compressed */
+	uint32 defrowsperstrip = (uint32) 0;
+	uint32 rowsperstrip;
 	int photometric_in = PHOTOMETRIC_MINISWHITE;
 	int photometric_out = PHOTOMETRIC_MINISWHITE;
 	int mode = FAXMODE_CLASSF;
@@ -95,7 +99,7 @@ main(int argc, char* argv[])
 	extern char* optarg;
 
 
-	while ((c = getopt(argc, argv, "R:X:o:1234ABLMPUW5678abcflmpsuvwz?")) != -1)
+	while ((c = getopt(argc, argv, "R:X:o:1234ABLMPUW5678abcflmprsuvwz?")) != -1)
 		switch (c) {
 			/* input-related options */
 		case '3':		/* input is g3-encoded */
@@ -136,7 +140,7 @@ main(int argc, char* argv[])
 			resY = (float) atof(optarg);
 			break;
 		case 'X':		/* input width */
-			xsize = atoi(optarg);
+			xsize = (uint32) atoi(optarg);
 			break;
 
 			/* output-related options */
@@ -183,6 +187,9 @@ main(int argc, char* argv[])
 		case 'p':	/* generate not EOL-aligned output (g3 only) */
 			group3options_out &= ~GROUP3OPT_FILLBITS;
 			break;
+		case 'r':		/* rows/strip */
+			defrowsperstrip = atol(optarg);
+			break;
 		case 's':		/* stretch image by dup'ng scanlines */
 			stretch = 1;
 			break;
@@ -206,10 +213,8 @@ main(int argc, char* argv[])
 	if (npages < 1)
 		usage();
 
-/* NB: the uint32 casts are to silence certain ANSI-C compilers */
-#define	TIFFhowmany(x, y) ((((uint32)(x))+(((uint32)(y))-1))/((uint32)(y)))
-	rowbuf = _TIFFmalloc(TIFFhowmany(xsize,8));
-	refbuf = _TIFFmalloc(TIFFhowmany(xsize,8));
+	rowbuf = _TIFFmalloc(TIFFhowmany8(xsize));
+	refbuf = _TIFFmalloc(TIFFhowmany8(xsize));
 	if (rowbuf == NULL || refbuf == NULL) {
 		fprintf(stderr, "%s: Not enough memory\n", argv[0]);
 		return (EXIT_FAILURE);
@@ -270,22 +275,27 @@ main(int argc, char* argv[])
 		switch (compression_out) {
 			/* g3 */
 			case COMPRESSION_CCITTFAX3:
-			TIFFSetField(out, TIFFTAG_GROUP3OPTIONS, group3options_out);
+			TIFFSetField(out, TIFFTAG_GROUP3OPTIONS,
+				     group3options_out);
 			TIFFSetField(out, TIFFTAG_FAXMODE, mode);
-			TIFFSetField(out, TIFFTAG_ROWSPERSTRIP, -1L);
+			rowsperstrip =
+				(defrowsperstrip)?defrowsperstrip:(uint32)-1L;
 			break;
 
 			/* g4 */
 			case COMPRESSION_CCITTFAX4:
-			TIFFSetField(out, TIFFTAG_GROUP4OPTIONS, group4options_out);
+			TIFFSetField(out, TIFFTAG_GROUP4OPTIONS,
+				     group4options_out);
 			TIFFSetField(out, TIFFTAG_FAXMODE, mode);
-			TIFFSetField(out, TIFFTAG_ROWSPERSTRIP, -1L);
+			rowsperstrip =
+				(defrowsperstrip)?defrowsperstrip:(uint32)-1L;
 			break;
 
 			default:
-			TIFFSetField(out, TIFFTAG_ROWSPERSTRIP,
-			    TIFFDefaultStripSize(out, 0));
+			rowsperstrip = (defrowsperstrip) ?
+				defrowsperstrip : TIFFDefaultStripSize(out, 0);
 		}
+		TIFFSetField(out, TIFFTAG_ROWSPERSTRIP, rowsperstrip);
 		TIFFSetField(out, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
 		TIFFSetField(out, TIFFTAG_FILLORDER, fillorder_out);
 		TIFFSetField(out, TIFFTAG_SOFTWARE, "fax2tiff");
@@ -333,6 +343,7 @@ int
 copyFaxFile(TIFF* tifin, TIFF* tifout)
 {
 	uint32 row;
+	uint32 linesize = TIFFhowmany8(xsize);
 	uint16 badrun;
 	int ok;
 
@@ -355,22 +366,22 @@ copyFaxFile(TIFF* tifin, TIFF* tifout)
 	badfaxlines = 0;
 	badfaxrun = 0;
 
-	_TIFFmemset(refbuf, 0, sizeof (refbuf));
+	_TIFFmemset(refbuf, 0, linesize);
 	row = 0;
 	badrun = 0;		/* current run of bad lines */
 	while (tifin->tif_rawcc > 0) {
 		ok = (*tifin->tif_decoderow)(tifin, (tdata_t) rowbuf, 
-					     sizeof (rowbuf), 0);
+					     linesize, 0);
 		if (!ok) {
 			badfaxlines++;
 			badrun++;
 			/* regenerate line from previous good line */
-			_TIFFmemcpy(rowbuf, refbuf, sizeof (rowbuf));
+			_TIFFmemcpy(rowbuf, refbuf, linesize);
 		} else {
 			if (badrun > badfaxrun)
 				badfaxrun = badrun;
 			badrun = 0;
-			_TIFFmemcpy(refbuf, rowbuf, sizeof (rowbuf));
+			_TIFFmemcpy(refbuf, rowbuf, linesize);
 		}
 		tifin->tif_row++;
 
@@ -424,6 +435,7 @@ char* stuff[] = {
 " -f		generate TIFF Class F (TIFF/F) format	[default]",
 " -m		output fill order is MSB2LSB",
 " -l		output fill order is LSB2MSB		[default]",
+" -r #		make each strip have no more than # rows",
 " -s		stretch image by duplicating scanlines",
 " -v		print information about conversion work",
 " -z		generate LZW compressed output",
