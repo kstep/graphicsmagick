@@ -25,7 +25,7 @@ dnl OF THIS SOFTWARE.
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([LibTIFF Software], 3.7.4, [tiff@lists.maptools.org], tiff)
+AC_INIT([LibTIFF Software], 3.8.0, [tiff@lists.maptools.org], tiff)
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR(m4)
 AC_LANG(C)
@@ -40,8 +40,8 @@ AM_MAINTAINER_MODE
 dnl Versioning.
 dnl Don't fill the ALPHA_VERSION field, if not applicable.
 LIBTIFF_MAJOR_VERSION=3
-LIBTIFF_MINOR_VERSION=7
-LIBTIFF_MICRO_VERSION=4
+LIBTIFF_MINOR_VERSION=8
+LIBTIFF_MICRO_VERSION=0
 LIBTIFF_ALPHA_VERSION=
 LIBTIFF_VERSION=$LIBTIFF_MAJOR_VERSION.$LIBTIFF_MINOR_VERSION.$LIBTIFF_MICRO_VERSION$LIBTIFF_ALPHA_VERSION
 dnl This will be used with the 'make release' target
@@ -252,6 +252,19 @@ if test "$HAVE_LOGLUV" = "yes" ; then
 fi
 
 dnl ---------------------------------------------------------------------------
+dnl Switch on/off support for Microsoft Document Imaging
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_ENABLE(mdi,
+	      AS_HELP_STRING([--disable-mdi],
+			     [disable support for Microsoft Document Imaging]),
+	      [HAVE_MDI=$enableval], [HAVE_MDI=yes])
+
+if test "$HAVE_MDI" = "yes" ; then
+  AC_DEFINE(MDI_SUPPORT,1,[Support Microsoft Document Imaging format])
+fi
+
+dnl ---------------------------------------------------------------------------
 dnl Check for ZLIB.
 dnl ---------------------------------------------------------------------------
 
@@ -432,11 +445,21 @@ dnl ---------------------------------------------------------------------------
 
 AC_ARG_ENABLE(strip-chopping,
 	      AS_HELP_STRING([--disable-strip-chopping],
-			     [disable support for strip chopping (whether or not to convert single-strip uncompressed images to mutiple strips of ~8Kb to reduce memory usage)]),
+			     [disable support for strip chopping (whether or not to convert single-strip uncompressed images to mutiple strips of specified size to reduce memory usage)]),
 	      [HAVE_STRIPCHOP=$enableval], [HAVE_STRIPCHOP=yes])
+AC_ARG_WITH(default-strip-size,
+	    AS_HELP_STRING([--with-default-strip-size=SIZE],
+			   [default size of the strip in bytes (when strip chopping enabled) [[default=8192]]]),,)
 
 if test "$HAVE_STRIPCHOP" = "yes" ; then
-  AC_DEFINE(STRIPCHOP_DEFAULT,TIFF_STRIPCHOP,[Support strip chopping (whether or not to convert single-strip uncompressed images to mutiple strips of ~8Kb to reduce memory usage)])
+  AC_DEFINE(STRIPCHOP_DEFAULT,TIFF_STRIPCHOP,[Support strip chopping (whether or not to convert single-strip uncompressed images to mutiple strips of specified size to reduce memory usage)])
+
+  if test "x$with_default_strip_size" == "x" ; then
+    with_default_strip_size="8192"
+  fi
+
+  AC_DEFINE_UNQUOTED(STRIP_SIZE_DEFAULT,$with_default_strip_size,[Default size of the strip in bytes (when strip chopping enabled)])
+
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -519,6 +542,7 @@ LOC_MSG([  Documentation directory:            ${LIBTIFF_DOCDIR}])
 LOC_MSG([  C compiler:                         ${CC} ${CFLAGS}])
 LOC_MSG([  C++ compiler:                       ${CXX} ${CXXFLAGS}])
 LOC_MSG([  Enable runtime linker paths:        ${HAVE_RPATH}])
+LOC_MSG([  Support Microsoft Document Imaging: ${HAVE_MDI}])
 LOC_MSG()
 LOC_MSG([ Support for internal codecs:])
 LOC_MSG([  CCITT Group 3 & 4 algorithms:       ${HAVE_CCITT}])

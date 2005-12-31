@@ -1,3 +1,217 @@
+2005-12-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tools/bmp2tiff.c (main): Fixed warning regarding returning
+	inconsistent types from a condition.
+	* tools/tiffcmp.c (CheckLongTag): Eliminate warning due to printf
+	format.
+	* tools/bmp2tiff.c: Reduce compilation warnings on big-endian CPUs.
+
+2005-12-28  Joris Van Damme  <joris.at.lebbeke@skynet.be>
+
+	* html/{index.html, support.hml, libtiff.html}: Cleaned up HTML
+
+2005-12-27  Andrey Kiselev  <dron@remotesensing.org>
+
+	* libtiff/tiffio.h: Added VC_EXTRALEAN definition before including
+	windows.h, to reduce the compile time.
+
+2005-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* libtiff/tif_jpeg.c: Improve compilation under MinGW.
+
+2005-12-26  Andrey Kiselev  <dron@remotesensing.org>
+
+	* libtiff/{tif_dir.c, tif_dir.h, tif_dirread.c, tif_dirinfo.c}: 
+	tiffFieldInfo and exifFieldInfo arrays definitions moved back to
+	tif_dirinfo.c; added _TIFFGetFieldInfo() and _TIFFGetExifFieldInfo()
+	private functions to retrieve FieldInfo arrays.
+
+2005-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* html/build.html: Added some additional instructions for when
+	building using MSVC under Windows.  Also fixed two HTML syntax
+	errors and used HTML Tidy to tidy up the HTML syntax and
+	formatting.
+
+2005-12-24  Andrey Kiselev  <dron@remotesensing.org>
+
+	* libtiff/{tif_aux.c, tif_dir.c, tif_dir.h, tif_dirwrite.c,
+	tif_print.c, tif_getimage.c}: Make InkSet, NumberOfInks, DotRange and
+	StoNits tags custom.
+
+2005-12-23  Andrey Kiselev  <dron@remotesensing.org>
+
+	* libtiff/{tif_aux.c, tif_dir.c, tif_dir.h, tif_print.c}: Make
+	WhitePoint tag custom.
+
+	* libtiff/{tif_dir.h, tiff.h}: More EXIF tags added.
+
+2005-12-23  Joris Van Damme  <joris.at.lebbeke@skynet.be>
+
+	* libtiff/tiffio.h: fixed typo that potentially resulted in 
+	redefininition of USE_WIN32_FILEIO
+
+	* libtiff/*: Added more 'dual-mode' error handling: Done TIFFWarning 
+	calls in core LibTiff.
+
+2005-12-21  Andrey Kiselev  <dron@remotesensing.org>
+
+	* libtiff/{tif_dir.c, tif_dir.h, tif_print.c}: Make RichTIFFIPTC,
+	Photoshop and ICCProfile tags custom.
+
+2005-12-21  Joris Van Damme  <joris.at.lebbeke@skynet.be>
+
+	* libtiff/*, contrib/*: Added 'dual-mode' error handling, enabling 
+	newer code to get context indicator in error handler and still
+	remain compatible with older code: Done TIFFError calls everywhere 
+	except in tools   
+
+2005-12-20  Andrey Kiselev  <dron@remotesensing.org>
+
+	* tools/tiffcp.c: Added many error reporting messages; fixed integer
+	overflow as per bug
+
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=789
+
+2005-12-16  Frank Warmerdam  <warmerdam@pobox.com>
+
+	* contrib/addtiffo/*: Major upgrade by Joris to support subsampled
+	YCbCr images in jpeg compressed TIFF files.
+
+2005-12-14  Andrey Kiselev  <dron@remotesensing.org>
+
+	* tools/tiffcp.c: Return non-zero status when reading fails (again).
+
+2005-12-13  Andrey Kiselev  <dron@remotesensing.org>
+
+	* tools/tiffcp.c: Return non-zero status when reading fails.
+
+2005-12-12  Andrey Kiselev  <dron@remotesensing.org>
+
+	* libtiff/{tif_dir.h, tiff.h}: Added more EXIF tags.
+
+2005-12-09  Andrey Kiselev  <dron@remotesensing.org>
+
+	* libtiff/{tif_dir.c, tif_dir.h, tif_print.c}: Make XMLPacket tag
+	custom.
+
+	* tools/tiffinfo.c: Print EXIF directory contents if exist.
+
+	* libtiff/tiff.h: Few EXIF tag numbers added.
+
+	* libtiff/{tif_dirinfo.c, tif_dirread.c, tif_dir.h, tif_dir.c,
+	tiffio.h}: Preliminary support to read custom directories. New
+	functions: TIFFReadCustomDirectory() and TIFFReadEXIFDirectory().
+
+2005-12-07  Andrey Kiselev  <dron@remotesensing.org>
+
+	* libtiff/{tif_dirinfo.c, tif_dirread.c, tif_dir.h, tif_dir.c}:
+	More work to implement custom directory read support.
+
+	* libtiff/{tif_aux.c, tif_dirinfo.c, tif_dirread.c, tif_dir.h,
+	tif_dir.c, tif_print.c}: Make YCbCrCoefficients and ReferenceBlackWhite
+	tags custom.
+
+2005-12-05  Andrey Kiselev  <dron@remotesensing.org>
+
+	* libtiff/tif_dirread.c: One more workaround for broken
+	StripByteCounts tag. Handle the case when StripByteCounts array filled
+	with completely wrong values.
+
+2005-11-30  Andrey Kiselev  <dron@remotesensing.org>
+
+	* libtiff/tif_dirinfo.c: Release file descriptor in case of failure
+	in the TIFFOpenW() function as per bug
+
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=1003
+
+	* libtiff/tif_dirinfo.c: Correctly yse bsearch() and lfind()
+	functions as per bug
+
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=1008
+
+2005-11-20  Frank Warmerdam  <warmerdam@pobox.com>
+
+	* tif_open.c, tiff.h, tiffdump.c: Incorporate preliminary support
+	for MS MDI format.
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=1002
+
+	* .cvsignore: many files added, and a few update according
+	to suggestion of Brad HArds on tiff mailing list. 
+
+2005-11-03  Frank Warmerdam  <warmerdam@pobox.com>
+
+	* libtiff/libtiff.def, tiffiop.h, tiffio.h: Made TIFFFreeDirectory
+	public.
+
+2005-10-31  Andrey Kiselev  <dron@remotesensing.org>
+
+	* tools/fax2tiff.c: Properly calculate sizes of temporary arrays
+	as per bug
+
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=943
+
+	* tools/fax2tiff.c: Added option '-r' to set RowsPerStrip parameter
+	as per bug
+
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=944
+
+	* tools/tiffdump.c: Fixed typeshift and typemask arrays initialization
+	problem as per bug
+
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=946
+
+	* tools/bmp2tiff.c: Fixed possible integer overflow error as per bug
+	
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=965
+
+	* libtiff/tif_dirinfo.c: Make XResolution, YResolution and
+	ResolutionUnit tags modifiable during write process. As per bug
+
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=977
+
+	* tools/tiffsplit.c: Copy fax related fields over splitted parts
+	as per bug
+	
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=983
+
+2005-10-21  Frank Warmerdam  <warmerdam@pobox.com>
+
+	* tif_dirread.c: Don't try and split single strips into "0" strips
+	in ChopUpSingleUncompressedStrip.  This happens in some degenerate
+	cases (like 1x1 files with stripbytecounts==0 (gtsmall.jp2 embed tiff)
+
+2005-10-20  Joris Van Damme  <joris.at.lebbeke@skynet.be>
+
+	* tif_fax3.c: changed 'at scanline ...' style warning/errors
+	with incorrect use of tif_row, to 'at line ... of
+	strip/tile ...' style
+
+2005-10-15  Frank Warmerdam  <warmerdam@pobox.com>
+
+	* tif_write.c: fixed setting of planarconfig as per bug report
+	on the mailing list from Joris.
+
+2005-10-07  Andrey Kiselev  <dron@remotesensing.org>
+
+	* configure.ac, configure, nmake.opt, libtiff/{tif_config.h,
+	tif_dirread.c}: Make the default strip size configurable via the
+	--with-default-strip-size and STRIP_SIZE_DEFAULT options.
+
+2005-09-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* html/support.html: Fixed link to documentation on Greg Ward's
+	LogLuv TIFF format.
+
+2005-09-28  Andrey Kiselev  <dron@remotesensing.org>
+
+	* tools/tiffdump.c: Fixed crash when reading malformed tags.
+
+2005-09-20  Andrey Kiselev  <dron@remotesensing.org>
+
+	* tools/tiff2pdf.c: Added missed 'break' statement as per bug
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=932
+
 2005-09-12  Andrey Kiselev  <dron@remotesensing.org>
 
 	* libtiff 3.7.4 released.

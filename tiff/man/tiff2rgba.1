@@ -1,4 +1,4 @@
-.\"	$Header$
+.\" $Id$
 .\"
 .\" Copyright (c) 1988-1997 Sam Leffler
 .\" Copyright (c) 1991-1997 Silicon Graphics, Inc.
@@ -23,7 +23,7 @@
 .\" OF THIS SOFTWARE.
 .\"
 .if n .po 0
-.TH TIFF2RGBA 1 "June 13, 2001"
+.TH TIFF2RGBA 1 "November 2, 2005" "libtiff"
 .SH NAME
 tiff2rgba \- convert a 
 .SM TIFF
@@ -53,7 +53,7 @@ The generated images are stripped images with four samples per pixel
 (red, green, blue and alpha) or if the -n flag is used, three samples
 per pixel (red, green, and blue).  The resulting images are always planar
 configuration contiguous.  For this reason, this program is a useful utility
-for transform exotic TIFF files into a form ingestable by almost any TIFF
+for transform exotic TIFF files into a form ingestible by almost any TIFF
 supporting software. 
 .SH OPTIONS
 .TP
@@ -85,6 +85,9 @@ images on systems with limited RAM.
 Drop the alpha component from the output file, producing a pure RGB file.
 Currently this does not work if the -b flag is also in effect.
 .SH "SEE ALSO"
-.IR tiff2bw (1),
-.IR TIFFReadRGBAImage (3t),
-.IR libtiff (3)
+.BR tiff2bw (1),
+.BR TIFFReadRGBAImage (3t),
+.BR libtiff (3)
+.PP
+Libtiff library home page:
+.BR http://www.remotesensing.org/libtiff/
