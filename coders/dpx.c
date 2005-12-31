@@ -1582,7 +1582,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     *scanline;
 
-  magick_int64_t
+  size_t
     element_size;               /* Number of bytes in an element */
 
   unsigned int
@@ -2171,17 +2171,19 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Compute octets per row.
           */
           row_octets=DPXRowOctets(1,samples_per_row,bits_per_sample,packing_method);
-          /*
-            Compute element size.
-          */
-          element_size=row_octets*image->rows;
-
           if (image->logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "Samples per row %u, octets per row %lu, element size %lu",
-                                  samples_per_row, (unsigned long) row_octets,
-                                  (unsigned long) element_size);
-
+            {
+              /*
+                Compute element size.
+              */
+              element_size=DPXRowOctets(image->rows,samples_per_row,
+                                        bits_per_sample,packing_method);
+              
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Samples per row %u, octets per row %lu, element size %lu",
+                                    samples_per_row, (unsigned long) row_octets,
+                                    (unsigned long) element_size);
+            }
           if (((element_descriptor == ImageElementCbYCrY422) ||
                (element_descriptor == ImageElementCbYACrYA4224) ||
                (element_descriptor == ImageElementColorDifferenceCbCr)))
@@ -3209,7 +3211,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   MagickBool
     swab;
 
-  magick_int64_t
+  size_t
     element_size;
 
   const char *
@@ -3423,7 +3425,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 
   row_samples=((magick_int64_t) image->columns*samples_per_component);
   row_octets=DPXRowOctets(1,row_samples,bits_per_sample,packing_method);
-  element_size=row_octets*image->rows;
+  element_size=DPXRowOctets(image->rows,row_samples,bits_per_sample,packing_method);
 
   if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),

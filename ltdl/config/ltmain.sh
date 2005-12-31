@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh; do not edit by hand
 
-# ltmain.sh (GNU libtool 1.2215 2005/12/04 14:48:08) 2.1a
+# ltmain.sh (GNU libtool 1.2240 2005/12/29 17:46:09) 2.1a
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005 Free Software Foundation, Inc.
@@ -63,7 +63,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool 1.2215 2005/12/04 14:48:08) 2.1a
+#       $progname:		(GNU libtool 1.2240 2005/12/29 17:46:09) 2.1a
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -72,8 +72,8 @@
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=2.1a
-TIMESTAMP=" 1.2215 2005/12/04 14:48:08"
-package_revision=1.2215
+TIMESTAMP=" 1.2240 2005/12/29 17:46:09"
+package_revision=1.2240
 
 ## --------------------- ##
 ## M4sh Initialization.  ##
@@ -86,10 +86,34 @@ if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
   # Zsh 3.x and 4.x performs word splitting on ${1+"$@"}, which
   # is contrary to our usage.  Disable this feature.
   alias -g '${1+"$@"}'='"$@"'
-elif test -n "${BASH_VERSION+set}" && (set -o posix) >/dev/null 2>&1; then
+  setopt NO_GLOB_SUBST
+elif (set -o posix) >/dev/null 2>&1; then
   set -o posix
 fi
+BIN_SH=xpg4; export BIN_SH # for Tru64
 DUALCASE=1; export DUALCASE # for MKS sh
+
+
+# PATH needs CR
+# Avoid depending upon Character Ranges.
+as_cr_letters='abcdefghijklmnopqrstuvwxyz'
+as_cr_LETTERS='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+as_cr_Letters=$as_cr_letters$as_cr_LETTERS
+as_cr_digits='0123456789'
+as_cr_alnum=$as_cr_Letters$as_cr_digits
+
+# The user is always right.
+if test "${PATH_SEPARATOR+set}" != set; then
+  echo "#! /bin/sh" >conf$$.sh
+  echo  "exit 0"   >>conf$$.sh
+  chmod +x conf$$.sh
+  if (PATH="/nonexistent;."; conf$$.sh) >/dev/null 2>&1; then
+    PATH_SEPARATOR=';'
+  else
+    PATH_SEPARATOR=:
+  fi
+  rm -f conf$$.sh
+fi
 
 # Support unset when possible.
 if ( (MAIL=60; unset MAIL) || exit) >/dev/null 2>&1; then
@@ -99,8 +123,34 @@ else
 fi
 
 
+# Find who we are.  Look in the path if we contain no path at all
+# relative or not.
+case $0 in
+  *[\\/]* ) as_myself=$0 ;;
+  *) as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  test -r "$as_dir/$0" && as_myself=$as_dir/$0 && break
+done
+
+     ;;
+esac
+# We did not find ourselves, most probably we were run as `sh COMMAND'
+# in which case we are not to be found in the path.
+if test "x$as_myself" = x; then
+  as_myself=$0
+fi
+if test ! -f "$as_myself"; then
+  { echo "$as_me: error: cannot find myself; rerun with an absolute file name" >&2
+   { (exit 1); exit 1; }; }
+fi
+
 # Work around bugs in pre-3.0 UWIN ksh.
-$as_unset ENV MAIL MAILPATH
+for as_var in ENV MAIL MAILPATH
+do ($as_unset $as_var) >/dev/null 2>&1 && $as_unset $as_var
+done
 PS1='$ '
 PS2='> '
 PS4='+ '
@@ -114,7 +164,7 @@ do
   if (set +x; test -z "`(eval $as_var=C; export $as_var) 2>&1`"); then
     eval $as_var=C; export $as_var
   else
-    $as_unset $as_var
+    ($as_unset $as_var) >/dev/null 2>&1 && $as_unset $as_var
   fi
 done
 
@@ -151,9 +201,9 @@ $as_unset CDPATH
 
 : ${CP="cp -f"}
 : ${ECHO="echo"}
-: ${EGREP="grep -E"}
-: ${FGREP="grep -F"}
-: ${GREP="grep"}
+: ${EGREP="/usr/local/bin/grep -E"}
+: ${FGREP="/usr/local/bin/grep -F"}
+: ${GREP="/usr/local/bin/grep"}
 : ${LN_S="ln -s"}
 : ${MAKE="make"}
 : ${MKDIR="mkdir"}
@@ -558,6 +608,7 @@ magic="%%%MAGIC variable%%%"
 # $mode is unset
 nonopt=
 execute_dlfiles=
+preserve_args=
 lo2o="s/\\.lo\$/.${objext}/"
 o2lo="s/\\.${objext}\$/.lo/"
 
@@ -2653,7 +2704,7 @@ func_mode_link ()
     vinfo=
     vinfo_number=no
     weak_libs=
-
+    single_module="${wl}-single_module"
     func_infer_tag $base_compile
 
     # We need to know -static, to get the right output filenames.
@@ -3118,6 +3169,11 @@ func_mode_link ()
 	    *" $arg "*) ;;
 	    * ) new_inherited_linker_flags="$new_inherited_linker_flags $arg" ;;
 	esac
+	continue
+	;;
+
+      -multi_module)
+	single_module="${wl}-multi_module"
 	continue
 	;;
 
@@ -4031,7 +4087,7 @@ func_mode_link ()
 	      # Make sure the rpath contains only unique directories.
 	      case "$temp_rpath " in
 	      *"$absdir:"*) ;;
-	      *) temp_rpath="$temp_rpath:$absdir" ;;
+	      *) temp_rpath="$temp_rpath$absdir:" ;;
 	      esac
 	    fi
 
@@ -5322,6 +5378,33 @@ EOF
 	  ;;
       esac
 
+      # move library search paths that coincide with paths to not yet
+      # installed libraries to the beginning of the library search list
+      new_libs=
+      for path in $notinst_path; do
+	case " $new_libs " in
+	*" -L$path/$objdir "*) ;;
+	*)
+	  case " $deplibs " in
+	  *" -L$path/$objdir "*)
+	    new_libs="$new_libs -L$path/$objdir" ;;
+	  esac
+	  ;;
+	esac
+      done
+      for deplib in $deplibs; do
+	case $deplib in
+	-L*)
+	  case " $new_libs " in
+	  *" $deplib "*) ;;
+	  *) new_libs="$new_libs $deplib" ;;
+	  esac
+	  ;;
+	*) new_libs="$new_libs $deplib" ;;
+	esac
+      done
+      deplibs="$new_libs"
+
       # All the library-specific variables (install_libdir is set above).
       library_names=
       old_library=
@@ -5406,6 +5489,7 @@ EOF
 	fi
 
 	lib="$output_objdir/$realname"
+	linknames=
 	for link
 	do
 	  linknames="$linknames $link"
@@ -5909,6 +5993,35 @@ EOF
 	finalize_deplibs=`$ECHO "X $finalize_deplibs" | $Xsed -e 's% \([^ $]*\).ltframework% -framework \1%g'`
 	;;
       esac
+
+
+      # move library search paths that coincide with paths to not yet
+      # installed libraries to the beginning of the library search list
+      new_libs=
+      for path in $notinst_path; do
+	case " $new_libs " in
+	*" -L$path/$objdir "*) ;;
+	*)
+	  case " $compile_deplibs " in
+	  *" -L$path/$objdir "*)
+	    new_libs="$new_libs -L$path/$objdir" ;;
+	  esac
+	  ;;
+	esac
+      done
+      for deplib in $compile_deplibs; do
+	case $deplib in
+	-L*)
+	  case " $new_libs " in
+	  *" $deplib "*) ;;
+	  *) new_libs="$new_libs $deplib" ;;
+	  esac
+	  ;;
+	*) new_libs="$new_libs $deplib" ;;
+	esac
+      done
+      compile_deplibs="$new_libs"
+
 
       compile_command="$compile_command $compile_deplibs"
       finalize_command="$finalize_command $finalize_deplibs"

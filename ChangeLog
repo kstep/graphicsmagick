@@ -1,3 +1,7 @@
+2005-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tiff: Update to libtiff 3.8.0. 
+
 2005-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS: Updated with latest changes.

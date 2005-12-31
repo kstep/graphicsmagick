@@ -180,6 +180,7 @@ am__aclocal_m4_deps = $(top_srcdir)/ltdl/m4/argz.m4 \
 	$(top_srcdir)/ltdl/m4/ltoptions.m4 \
 	$(top_srcdir)/ltdl/m4/ltsugar.m4 \
 	$(top_srcdir)/ltdl/m4/ltversion.m4 $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/ltdl/m4/lt~obsolete.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -1984,7 +1985,7 @@ topincludedir = @includedir@/GraphicsMagick
 # -I$(srcdir) is needed for user that built libltdl with a sub-Automake
 # (not as a sub-package!) using 'nostdinc':
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
-	-DLT_CONFIG_H='<$(LT_CONFIG_H)>' -DLTDL -I. -I$(srcdir) -Iltdl \
+	-DLT_CONFIG_H='<$(LT_CONFIG_H)>' -DLTDL -Iltdl \
 	-I$(srcdir)/ltdl -I$(srcdir)/ltdl/libltdl \
 	-I$(top_srcdir)/Magick++/lib
 ACLOCAL_AMFLAGS = -I ltdl/m4
@@ -2059,8 +2060,7 @@ TOP_EXTRA_DIST = \
 EXTRA_DIST = $(TOP_EXTRA_DIST) $(CONFIG_EXTRA_DIST) \
 	$(MAGICK_EXTRA_DIST) $(MAGICKPP_EXTRA_DIST) \
 	$(TESTS_EXTRA_DIST) $(UTILITIES_EXTRA_DIST) $(WAND_EXTRA_DIST) \
-	ltdl/COPYING.LIB ltdl/Makefile.inc ltdl/README \
-	ltdl/m4/lt~obsolete.m4 ltdl/argz_.h
+	ltdl/COPYING.LIB ltdl/README ltdl/argz_.h
 lib_LTLIBRARIES = $(LIBMAGICK) $(LIBMAGICKPP) $(LIBWAND) \
 	$(am__append_2)
 AM_LDFLAGS = -no-undefined

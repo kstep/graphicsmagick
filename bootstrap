@@ -4,8 +4,9 @@
 # Automake or Autoconf is changed.
 #
 
-#libtoolize --verbose --copy --force --nonrecursive --ltdl=ltdl
+libtoolize --verbose --copy --force --nonrecursive --ltdl=ltdl
 aclocal -I ltdl/m4
+echo 'm4_include([ltdl/m4/lt~obsolete.m4])' >> aclocal.m4
 autoheader
 autoconf
 automake --verbose --add-missing --copy --force-missing
