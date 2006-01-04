@@ -34897,7 +34897,10 @@ done
 
 
 
-for ac_func in TIFFMergeFieldInfo TIFFSetTagExtender
+
+
+for ac_func in TIFFMergeFieldInfo TIFFSetErrorHandlerExt \
+                            TIFFSetTagExtender TIFFSetWarningHandlerExt
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 { echo "$as_me:$LINENO: checking for $ac_func" >&5
@@ -37886,7 +37889,7 @@ then
   GMDelegate="${GMDelegateDefault}"
   GnuplotDecodeDelegate="$GnuplotDecodeDelegateDefault"
   HPGLDecodeDelegate="$HPGLDecodeDelegateDefault"
-  HTMLDecodeDelegate="$HTMLDecodeDelegatDefault"
+  HTMLDecodeDelegate="$HTMLDecodeDelegateDefault"
   ILBMDecodeDelegate="$ILBMDecodeDelegateDefault"
   ILBMEncodeDelegate="$ILBMEncodeDelegateDefault"
   LPDelegate="$LPDelegateDefault"

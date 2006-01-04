@@ -41,6 +41,26 @@ extern "C" {
 #define HAVE_TEMPNAM 1
 #define HAVE_RAISE 1
 
+/*
+  libtiff features.
+*/
+
+/* Define to 1 if you have the <tiffconf.h> header file. */
+#define HAVE_TIFFCONF_H 1
+
+/* Define to 1 if you have the `TIFFMergeFieldInfo' function. */
+#define HAVE_TIFFMERGEFIELDINFO 1
+
+/* Define to 1 if you have the `TIFFSetErrorHandlerExt' function. */
+#define HAVE_TIFFSETERRORHANDLEREXT 1
+
+/* Define to 1 if you have the `TIFFSetTagExtender' function. */
+#define HAVE_TIFFSETTAGEXTENDER 1
+
+/* Define to 1 if you have the `TIFFSetWarningHandlerExt' function. */
+#define HAVE_TIFFSETWARNINGHANDLEREXT 1
+
+
 // Define to support memory mapping files for improved performance
 #define HAVE_MMAP_FILEIO 1
 

@@ -1880,7 +1880,8 @@ then
 	    AC_MSG_RESULT(yes)
 	    have_tiff='yes'
 	    AC_CHECK_HEADERS(tiffconf.h)
-            AC_CHECK_FUNCS([TIFFMergeFieldInfo TIFFSetTagExtender])
+            AC_CHECK_FUNCS([TIFFMergeFieldInfo TIFFSetErrorHandlerExt \
+                            TIFFSetTagExtender TIFFSetWarningHandlerExt])
         fi
     else
         AC_MSG_RESULT(no)
@@ -2362,7 +2363,7 @@ then
   GMDelegate="${GMDelegateDefault}"
   GnuplotDecodeDelegate="$GnuplotDecodeDelegateDefault"
   HPGLDecodeDelegate="$HPGLDecodeDelegateDefault"
-  HTMLDecodeDelegate="$HTMLDecodeDelegatDefault"
+  HTMLDecodeDelegate="$HTMLDecodeDelegateDefault"
   ILBMDecodeDelegate="$ILBMDecodeDelegateDefault"
   ILBMEncodeDelegate="$ILBMEncodeDelegateDefault"
   LPDelegate="$LPDelegateDefault"

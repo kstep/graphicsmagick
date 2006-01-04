@@ -4479,7 +4479,6 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %    o formatted_text: The address of a character string containing the embedded
 %      formatting characters.
 %
-%
 */
 MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   const char *formatted_text)
@@ -4561,6 +4560,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
     {
       case 'b':
       {
+        /* File size */
         char
           format[MaxTextExtent];
 
@@ -4572,6 +4572,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'c':
       {
+        /* Comment */
         attribute=GetImageAttribute(image,"comment");
         if (attribute == (ImageAttribute *) NULL)
           break;
@@ -4593,6 +4594,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         {
           case 'd':
           {
+            /* Directory */
             GetPathComponent(image->magick_filename,HeadPath,filename);
             (void) strlcpy(q,filename,MaxTextExtent);
             q+=strlen(filename);
@@ -4600,6 +4602,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
           }
           case 'e':
           {
+            /* Filename extension */
             GetPathComponent(image->magick_filename,ExtensionPath,filename);
             (void) strlcpy(q,filename,MaxTextExtent);
             q+=strlen(filename);
@@ -4607,6 +4610,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
           }
           case 'f':
           {
+            /* Filename */
             GetPathComponent(image->magick_filename,TailPath,filename);
             (void) strlcpy(q,filename,MaxTextExtent);
             q+=strlen(filename);
@@ -4614,6 +4618,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
           }
           case 't':
           {
+            /* Top of filename */
             GetPathComponent(image->magick_filename,BasePath,filename);
             (void) strlcpy(q,filename,MaxTextExtent);
             q+=strlen(filename);
@@ -4624,6 +4629,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'g':
       {
+        /* Group ? */
         FormatString(q,"0x%lx",clone_info->group);
         while (*q != '\0')
           q++;
@@ -4631,6 +4637,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'h':
       {
+        /* Image height */
         FormatString(q,"%lu",image->magick_rows ? image->magick_rows : 256);
         while (*q != '\0')
           q++;
@@ -4638,12 +4645,14 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'i':
       {
+        /* Input filename */
         (void) strlcpy(q,image->filename,MaxTextExtent);
         q+=strlen(image->filename);
         break;
       }
       case 'k':
       {
+        /* Number of unique colors */
         FormatString(q,"%lu",GetNumberColors(image,(FILE *) NULL,
           &image->exception));
         while (*q != '\0')
@@ -4652,6 +4661,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'l':
       {
+        /* Label */
         attribute=GetImageAttribute(image,"label");
         if (attribute == (ImageAttribute *) NULL)
           break;
@@ -4661,12 +4671,14 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'm':
       {
+        /* File format "magick" */
         (void) strlcpy(q,image->magick,MaxTextExtent);
         q+=strlen(image->magick);
         break;
       }
       case 'n':
       {
+        /* Number of scenes */
         FormatString(q,"%lu",(unsigned long) GetImageListLength(image));
         while (*q != '\0')
           q++;
@@ -4674,12 +4686,14 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'o':
       {
+        /* Output filename */
         (void) strlcpy(q,clone_info->filename,MaxTextExtent);
         q+=strlen(clone_info->filename);
         break;
       }
       case 'p':
       {
+        /* Page number */
         register const Image
           *p;
 
@@ -4696,6 +4710,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'q':
       {
+        /* Quantum depth */
         FormatString(q,"%lu",GetImageDepth(image,&image->exception));
         while (*q != '\0')
           q++;
@@ -4703,6 +4718,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'r':
       {
+        /* Image storage class and colorspace */
         static char
           *ClassTypes[] =
           {
@@ -4725,6 +4741,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 's':
       {
+        /* Scene number */
         FormatString(q,"%lu",image->scene);
         if (clone_info->subrange != 0)
           FormatString(q,"%lu",clone_info->subimage);
@@ -4734,6 +4751,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'u':
       {
+        /* Unique temporary filename */
         (void) strlcpy(filename,clone_info->unique,MaxTextExtent);
         if (*filename == '\0')
           if (!AcquireTemporaryFileName(filename))
@@ -4744,6 +4762,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'w':
       {
+        /* Image width */
         FormatString(q,"%lu",
           image->magick_columns ? image->magick_columns : 256);
         while (*q != '\0')
@@ -4752,6 +4771,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'x':
       {
+        /* Horizontal resolution */
         FormatString(q,"%g",image->x_resolution);
         while (*q != '\0')
           q++;
@@ -4759,6 +4779,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'y':
       {
+        /* Vertical resolution */
         FormatString(q,"%g",image->y_resolution);
         while (*q != '\0')
           q++;
@@ -4766,6 +4787,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'z':
       {
+        /* Second unique temporary filename */
         (void) strlcpy(filename,clone_info->zero,MaxTextExtent);
         if (*filename == '\0')
           if (!AcquireTemporaryFileName(filename))
@@ -4776,6 +4798,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case '[':
       {
+        /* Image attribute */
         char
           key[MaxTextExtent];
 
@@ -4822,6 +4845,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case '#':
       {
+        /* Image signature */
         (void) SignatureImage(image);
         attribute=GetImageAttribute(image,"signature");
         if (attribute == (ImageAttribute *) NULL)
@@ -4832,11 +4856,13 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case '%':
       {
+        /* Pass through literal % */
         *q++=(*p);
         break;
       }
       default:
       {
+        /* Pass through unknown codes */
         *q++='%';
         *q++=(*p);
         break;

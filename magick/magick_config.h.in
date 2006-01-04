@@ -287,8 +287,14 @@
 /* Define to 1 if you have the `TIFFMergeFieldInfo' function. */
 #undef HAVE_TIFFMERGEFIELDINFO
 
+/* Define to 1 if you have the `TIFFSetErrorHandlerExt' function. */
+#undef HAVE_TIFFSETERRORHANDLEREXT
+
 /* Define to 1 if you have the `TIFFSetTagExtender' function. */
 #undef HAVE_TIFFSETTAGEXTENDER
+
+/* Define to 1 if you have the `TIFFSetWarningHandlerExt' function. */
+#undef HAVE_TIFFSETWARNINGHANDLEREXT
 
 /* Define to 1 if you have the `times' function. */
 #undef HAVE_TIMES

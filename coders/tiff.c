@@ -63,19 +63,6 @@
 #  if !defined(COMPRESSION_ADOBE_DEFLATE)
 #    define COMPRESSION_ADOBE_DEFLATE  8
 #  endif  /* !defined(COMPRESSION_ADOBE_DEFLATE) */
-/*
-  Pull in some libjpeg headers in order to learn sample depth.
-*/
-#if 0
-#if defined(HasJPEG)
-# define JPEG_INTERNAL_OPTIONS
-# if defined(__MINGW32__)
-#  define XMD_H 1
-# endif
-# undef HAVE_STDLIB_H
-# include "jpeglib.h"
-#endif
-#endif
 
 /*
   Global declarations.
@@ -166,11 +153,13 @@ static unsigned int IsTIFF(const unsigned char *magick,const size_t length)
 */
 #if defined(HAVE_TIFFMERGEFIELDINFO) && defined(HAVE_TIFFSETTAGEXTENDER)
 #  define EXTEND_TIFF_TAGS 1
-#  define TIFFTAG_EXIF_IFD 34665
+#  if !defined(TIFFTAG_EXIFIFD)
+#    define TIFFTAG_EXIFIFD 34665
+#  endif
 static const TIFFFieldInfo
   ExtensionTiffFieldInfo[] =
   {
-    { TIFFTAG_EXIF_IFD, -1, -1, TIFF_LONG, FIELD_CUSTOM,
+    { TIFFTAG_EXIFIFD, -1, -1, TIFF_LONG, FIELD_CUSTOM,
       MagickFalse, MagickTrue, "EXIF SubIFD Offset"
     }
   };
@@ -2478,6 +2467,7 @@ ModuleExport void RegisterTIFFImage(void)
   entry->description=AcquireString(TIFFDescription);
   if (*version != '\0')
     entry->version=AcquireString(version);
+  entry->stealth=MagickTrue; /* Don't list in '-list format' output */
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
 
