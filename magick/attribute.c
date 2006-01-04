@@ -989,13 +989,13 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
       }
   }
   if (index < 0)
-    return(False);
+    goto generate_attribute_failure;
   /*
     If EXIF data exists, then try to parse the request for a tag.
   */
   key=(char *) &specification[5];
   if ((key == (char *) NULL) || (*key == '\0'))
-    return(False);
+    goto generate_attribute_failure;
   while (isspace((int) (*key)))
     key++;
   all=0;
@@ -1032,7 +1032,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
       key++;
       n=strlen(key);
       if (n != 4)
-        return(False);
+        goto generate_attribute_failure;
       else
         {
           /*
@@ -1054,7 +1054,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
                   if ((c >= 'a') && (c <= 'f'))
                     tag|=c-('a'-10);
                   else
-                    return(False);
+                    goto generate_attribute_failure;
             }
           } while (*key != '\0');
         }
@@ -1079,7 +1079,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
     }
   }
   if (tag < 0)
-    return(False);
+    goto generate_attribute_failure;
   length=image->generic_profile[index].length;
   info=image->generic_profile[index].info;
   while (length != 0)
@@ -1099,7 +1099,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
     break;
   }
   if (length < 16)
-    return(False);
+    goto generate_attribute_failure;
   tiffp=info;
   id=Read16u(0,tiffp);
   morder=0;
@@ -1109,15 +1109,15 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
     if (id == 0x4D4D) /* MSB */
       morder=1;
     else
-      return(False);
+      goto generate_attribute_failure;
   if (Read16u(morder,tiffp+2) != 0x002a)
-    return(False);
+    goto generate_attribute_failure;
   /*
     This is the offset to the first IFD.
   */
   offset=Read32u(morder,tiffp+4);
   if (offset >= length)
-    return(False);
+    goto generate_attribute_failure;
   /*
     Set the pointer to the first IFD and follow it were it leads.
   */
@@ -1336,6 +1336,9 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
   (void) SetImageAttribute(image,specification,(const char *) final);
   MagickFreeMemory(final);
   return(True);
+ generate_attribute_failure:
+  MagickFreeMemory(final);
+  return False;
 }
 
 MagickExport const ImageAttribute *GetImageAttribute(const Image *image,
