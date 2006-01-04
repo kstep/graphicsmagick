@@ -2826,7 +2826,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         will expect that the format reported is that of the input
         file.
       */
-      (void) strncpy(image->magick,magick,MaxTextExtent-1);
+      if (image != (Image *) NULL)
+        (void) strncpy(image->magick,magick,MaxTextExtent-1);
     }
   if (clone_info->temporary)
     {

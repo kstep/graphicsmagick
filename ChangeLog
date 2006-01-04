@@ -1,3 +1,8 @@
+2006-01-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (ReadImage): Avoid crash if delegate fails
+	to return image.
+
 2006-01-03  Daniel Kobras  <kobras@debian.org>
 
 	* magick/attribute.c (GenerateEXIFAttribute): Fix EXIF IFD stack
