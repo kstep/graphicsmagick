@@ -1311,7 +1311,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
               offset;
 
             offset=(size_t) Read32u(morder,pval);
-            if ((offset < length) || (level < (DE_STACK_SIZE-2)))
+            if ((offset < length) && (level < (DE_STACK_SIZE-2)))
               {
                 /*
                   Push our current directory state onto the stack.

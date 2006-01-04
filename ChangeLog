@@ -1,3 +1,9 @@
+2006-01-03  Daniel Kobras  <kobras@debian.org>
+
+	* magick/attribute.c (GenerateEXIFAttribute): Fix EXIF IFD stack
+	overflow vulnerability.
+	* configure.ac: Fix typo in HTMLDecodeDelegate.
+
 2005-10-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh (PACKAGE_VERSION): Released version 1.1.7.

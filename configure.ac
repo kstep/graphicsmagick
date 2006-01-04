@@ -2370,7 +2370,7 @@ then
   GMDelegate="${GMDelegateDefault}"
   GnuplotDecodeDelegate="$GnuplotDecodeDelegateDefault"
   HPGLDecodeDelegate="$HPGLDecodeDelegateDefault"
-  HTMLDecodeDelegate="$HTMLDecodeDelegatDefault"
+  HTMLDecodeDelegate="$HTMLDecodeDelegateDefault"
   ILBMDecodeDelegate="$ILBMDecodeDelegateDefault"
   ILBMEncodeDelegate="$ILBMEncodeDelegateDefault"
   LPDelegate="$LPDelegateDefault"
