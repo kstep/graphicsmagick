@@ -1004,9 +1004,11 @@ MagickExport unsigned long SetLogEventMask(const char *events)
       ExceptionInfo
         exception;
 
+      LiberateSemaphoreInfo(&log_semaphore);
       GetExceptionInfo(&exception);
       (void) ReadLogConfigureFile(MagickLogFilename,0,&exception);
       DestroyExceptionInfo(&exception);
+      AcquireSemaphoreInfo(&log_semaphore);
     }
 
   /*
