@@ -57,18 +57,18 @@ struct SemaphoreInfo
     mutex;		/* POSIX thread mutex */
 
   pthread_t
-    thread_id;		/* ID of thread which holds the lock */
+    owner_thread_id;    /* ID of thread which holds the lock */
 #endif
 #if defined(WIN32)
   CRITICAL_SECTION
     mutex;		/* Windows critical section */
 
   DWORD
-    thread_id;		/* ID of thread which holds the lock */
+    owner_thread_id;    /* ID of thread which holds the lock */
 #endif
 
   unsigned int
-    locked;		/* True if semaphore is locked */
+    lock_depth;         /* Number of times lock is held by same thread */
 
   unsigned long
     signature;		/* Used to validate structure */
@@ -132,7 +132,8 @@ static void spinlock_release (LONG volatile *sl)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireSemaphoreInfo() acquires a semaphore.
+%  AcquireSemaphoreInfo() locks a semaphore, initializing it first if
+%  necessary.
 %
 %  The format of the AcquireSemaphoreInfo method is:
 %
@@ -220,19 +221,37 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
     int
       status;
 
-    status=pthread_mutex_init(&semaphore_info->mutex,
-      (const pthread_mutexattr_t *) NULL);
-    if (status != 0)
+    pthread_mutexattr_t 
+      mutexattr;
+
+    if ((status=pthread_mutexattr_init(&mutexattr)) != 0)
       {
         MagickFreeMemory(semaphore_info);
+        errno=status;
         return((SemaphoreInfo *) NULL);
       }
+
+#if defined(PTHREAD_MUTEX_RECURSIVE)
+    (void) pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);
+#endif /* PTHREAD_MUTEX_RECURSIVE */
+
+    if ((status=pthread_mutex_init(&semaphore_info->mutex,&mutexattr)) != 0)
+      {
+        MagickFreeMemory(semaphore_info);
+        errno=status;
+        return((SemaphoreInfo *) NULL);
+      }
+
+    (void) pthread_mutexattr_destroy(&mutexattr);
+
+    semaphore_info->owner_thread_id=0;
   }
 #endif
 #if defined(WIN32)
   InitializeCriticalSection(&semaphore_info->mutex);
 #endif
-  semaphore_info->locked=False;
+  semaphore_info->lock_depth=0;
+  
   semaphore_info->signature=MagickSignature;
   return(semaphore_info);
 }
@@ -376,7 +395,7 @@ MagickExport void InitializeSemaphore(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LiberateSemaphoreInfo liberates a semaphore.
+%  Method LiberateSemaphoreInfo unlocks the semaphore if it has been allocated.
 %
 %  The format of the LiberateSemaphoreInfo method is:
 %
@@ -423,23 +442,44 @@ MagickExport void LiberateSemaphoreInfo(SemaphoreInfo **semaphore_info)
 %
 %
 */
-MagickExport unsigned int LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
+MagickExport MagickPassFail LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
+
 #if defined(HAVE_PTHREAD)
-  if (pthread_mutex_lock(&semaphore_info->mutex))
-    return(False);
-  /* Record the thread ID of the locking thread */
-  semaphore_info->thread_id=pthread_self();
+  {
+    int
+      status;
+
+    pthread_t
+      self;
+
+    self=pthread_self();
+
+    if ((semaphore_info->lock_depth > 0) &&
+        (semaphore_info->owner_thread_id == self))
+      {
+        fprintf(stderr,"Warning: recursive semaphore lock detected!\n");
+        fflush(stderr);
+      }
+    
+    if ((status = pthread_mutex_lock(&semaphore_info->mutex)) != 0)
+      {
+        errno=status;
+        return(MagickFail);
+      }
+    /* Record the thread ID of the locking thread */
+    semaphore_info->owner_thread_id=self;
+  }
 #endif
 #if defined(WIN32)
   EnterCriticalSection(&semaphore_info->mutex);
   /* Record the thread ID of the locking thread */
-  semaphore_info->thread_id=GetCurrentThreadId();
+  semaphore_info->owner_thread_id=GetCurrentThreadId();
 #endif
-  semaphore_info->locked=True;
-  return(True);
+  semaphore_info->lock_depth++;
+  return(MagickPass);
 }
 
 /*
@@ -468,23 +508,24 @@ MagickExport unsigned int LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 %
 %
 */
-MagickExport unsigned int UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
+MagickExport MagickPassFail UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
-  if (semaphore_info->locked != True)
-    return (False);
-  semaphore_info->locked=False;
+  if (semaphore_info->lock_depth == 0)
+    return (MagickFail);
+  
 #if defined(HAVE_PTHREAD)
   /* Enforce that unlocking thread is the same as the locking thread */
-  assert(pthread_equal(semaphore_info->thread_id,pthread_self()));
+  assert(pthread_equal(semaphore_info->owner_thread_id,pthread_self()));
   if (pthread_mutex_unlock(&semaphore_info->mutex))
-    return(False);
+    return(MagickFail);
 #endif
 #if defined(WIN32)
   /* Enforce that unlocking thread is the same as the locking thread */
-  assert(GetCurrentThreadId() == semaphore_info->thread_id);
+  assert(GetCurrentThreadId() == semaphore_info->owner_thread_id);
   LeaveCriticalSection(&semaphore_info->mutex);
 #endif
-  return(True);
+  semaphore_info->lock_depth--;
+  return(MagickPass);
 }

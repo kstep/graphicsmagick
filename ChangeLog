@@ -1,5 +1,10 @@
 2006-01-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/semaphore.c (AllocateSemaphoreInfo): Allow semaphores to
+	recurse on POSIX systems which support recursive semaphores but
+	also warn if the semaphore recurses.
+	* magick/log.c (SetLogEventMask): Avoid deadlock if invoked before
+        log.mgk has been loaded.
 	* magick/attribute.c (GenerateEXIFAttribute): Fix memory leak on
 	error which was reported by Micha³ Kowalczuk.
 
