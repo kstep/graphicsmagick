@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20051214;20025400">
+	<META NAME="CHANGED" CONTENT="20060112;10443500">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<STYLE>
@@ -65,14 +65,14 @@ Valley Viper</A> or the <A HREF="http://www.dalsa.com/dc/origin/origin.asp" TARG
 Origin</A> to capture images to uncompressed files directly. A rather
 inferior approach is to use a video high definition compressed format
 like HDCAM and convert each frame to a file for processing.</FONT></P>
-<P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=2>Images
-scanned from film are usually in either a log colorspace similar to
-Cineon Log (10 bits per sample is most common), or in a linear format
-(16 bits per sample is common). Some cameras (such as the Thompson
-Viper) use log encoding similar to Cineon Log. Log encoding has the
-advantage that fewer bits are necessary to cover the extended dynamic
-range of film, and that the log encoding approximates the density
-characteristics of film (approximately linear when log encoded).</FONT></FONT></P>
+<P CLASS="western">Images scanned from film are usually in either a
+log colorspace similar to Cineon Log (10 bits per sample is most
+common), or in a linear format (16 bits per sample is common). Some
+cameras (such as the Thompson Viper) use log encoding similar to
+Cineon Log. Log encoding has the advantage that fewer bits are
+necessary to cover the extended dynamic range of film, and that the
+log encoding approximates the density characteristics of film
+(approximately linear when log encoded).</P>
 <P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri">While
 there is some continued use of the legacy <A HREF="http://www.cinesite.com/?1632&amp;0&amp;" TARGET="_top">Kodak
 Cineon</A> format due to existing equipment and software, the
@@ -228,6 +228,35 @@ G5 PowerMac or Intel 2.4GHz Xeon) to down-convert from a 131MB &ldquo;5K&rdquo;
 scanner</A> to a 11MB &ldquo;2K&rdquo; 10-bit working image.
 Operations on more typical &ldquo;2K&rdquo; images take on the order
 of half a second.</P>
+<H4>Annotate Image</H4>
+<P CLASS="western">The following example shows how GraphicsMagick's
+resize capability may be combined with its powerful drawing
+capability to take a full size source image and produce a smaller
+(720x576) version which includes the image filename and timecode at
+the top of the image, and a logo &ldquo;bug&rdquo; image in the
+bottom right corner:</P>
+<PRE>gm convert infile.dpx -resize &ldquo;720x576!&rdquo; \
+  -draw 'fill &quot;white&quot;;text-undercolor &quot;Blue&quot;;font &quot;Helvetica&quot;;font-size 18;text 10,20 &quot;%f ([DPX:tv.time.code])&quot;;image atop 500,400 0,0 &quot;gm-125x80t.png&quot;' \
+  outfile.dpx</PRE><P CLASS="western">
+As may be seen, the argument to -draw can become extremely long, so
+to make things easy, the drawing commands may be placed in a simple
+text file and passed by reference to the draw comand:</P>
+<P CLASS="western">First lets check what we edited into our drawing
+command file:</P>
+<PRE>   % cat drawcmd.txt 
+   fill &quot;white&quot;
+   text-undercolor &quot;Blue&quot;
+   font &quot;Helvetica&quot;
+   font-size 18
+   text 10,20 &quot;%f (%[DPX:tv.time.code])&quot;
+   image atop 500,400 &quot;0,0 &quot;gm-125x80t.png&quot;</PRE><P CLASS="western">
+and now we can apply it by passing the filename prefixed with a '@'
+to the -draw command:</P>
+<PRE>   gm convert infile.dpx -resize &ldquo;720x576!&rdquo; -draw &ldquo;@drawcmd.txt&rdquo; outfile.dpx</PRE><P CLASS="western">
+The &ldquo;0,0&rdquo; in the image composition command argument says
+to use the image as is.  If the composited image should be
+automatically resized, then simply replace the &ldquo;0,0&rdquo; with
+the desired size.</P>
 <H4>Colorspace Transformation</H4>
 <P CLASS="western">To convert an RGB file to a 4:2:2 YCbCr file in
 Rec 709 space:</P>
@@ -279,19 +308,27 @@ more frames may be animated by preparing a reduced set of frames in
 advance.</P>
 <P CLASS="western">To visualize an animation at 24 frames per second
 (delay (1/24)*100) use</P>
-<PRE>...gm animate -delay 4.17 &ldquo;Frame_*.dpx&rdquo;</PRE><P CLASS="western">
+<PRE STYLE="margin-bottom: 0.2in">   gm animate -delay 4.17 &ldquo;Frame_*.dpx&rdquo;</PRE><P CLASS="western">
 In order to obtain a preview of a larger sequence, and if the frames
 are numbered, a broader span of time may be animated by selecting
 every 10<SUP>th</SUP> frame (terminating with zero) to animate at 2.4
 frames per second:</P>
-<PRE>...gm animate -delay 41.7 &ldquo;Frame_*0.dpx&rdquo;</PRE><H4>
+<PRE STYLE="margin-bottom: 0.2in">   gm animate -delay 41.7 &ldquo;Frame_*0.dpx&rdquo;</PRE><H4>
+Displaying One Image Frame</H4>
+<P CLASS="western">An image frame may be displayed on an X11 server
+using 'gm display'.  By default the name of the image file is
+displayed in the title bar.  By specifying the format of the title,
+other useful information such as the time code (see the DPX
+Attributes section for more details) may be included in the window
+title:</P>
+<PRE>   gm display -title '%f (%[DPX:tv.time.code])' foo.dpx</PRE><H4>
 Viewing A Sequence</H4>
 <P CLASS="western">A sequence of images may be displayed on an X11
 server using 'gm display'. Unlike 'gm animate' there are no arbitrary
 limits when displaying a sequence this way. Unlike 'gm animate' the
 inter-frame delay can not be set to less than a second (100 ticks is
 one second).</P>
-<PRE>...gm display +progress -delay 100 &ldquo;Frame_*.dpx&rdquo;</PRE><H3 CLASS="western">
+<PRE STYLE="margin-bottom: 0.2in">   gm display +progress -delay 100 &ldquo;Frame_*.dpx&rdquo;</PRE><H3 CLASS="western">
 DPX options</H3>
 <P CLASS="western">The following options are particularly useful when
 dealing with DPX files.</P>
