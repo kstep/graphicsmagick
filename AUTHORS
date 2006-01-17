@@ -52,6 +52,12 @@ Lars Ruben Skyum
 		-define support, improved color profile support,
 		and re-wrote the PS3 coder.
 
+Rolf Schroedter
+		Principal author of TclMagick.
+
+David N. Welton
+		Co-author of TclMagick, particularly in the Unix environment.
+
 Non-Member Authors
 ==================
 

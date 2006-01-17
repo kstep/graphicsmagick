@@ -84,10 +84,13 @@ uncompressed. The design of DPX places header content at fixed
 offsets, and the image raster data offsets may be computed, so DPX
 files may be read or updated without rewriting the entire file.</FONT></P>
 <P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Film
-images are usually captured at &ldquo;2K&rdquo; resolution, &ldquo;4K&rdquo;
-resolution, or even &ldquo;6K&rdquo; resolution, where the actual
-resolution values approximate the horizontal dimension of the image.
-A table of <A HREF="http://www.surrealroad.com/digital/index.php/archives/2005/standard-data-resolutions/" TARGET="_top">typical
+images are usually captured at &ldquo;2K&rdquo; resolution (</FONT><FONT SIZE=2><FONT FACE="Verdana, Arial, Helvetica, sans-serif">82
+pixels/mm)</FONT></FONT><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
+&ldquo;4K&rdquo; resolution (</FONT><FONT SIZE=2><FONT FACE="Verdana, Arial, Helvetica, sans-serif">164
+pixels/mm)</FONT></FONT><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
+or even &ldquo;8K&rdquo; resolution (<FONT SIZE=2>328 pixels/mm</FONT></FONT><FONT SIZE=2><FONT FACE="Verdana, Arial, Helvetica, sans-serif">)</FONT></FONT><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
+where the actual resolution values approximate the horizontal
+dimension of the image. A table of <A HREF="http://www.surrealroad.com/digital/index.php/archives/2005/standard-data-resolutions/" TARGET="_top">typical
 pixel resolutions for various film sizes</A> may be found on the
 <A HREF="http://www.digitalintermediates.org/" TARGET="_top">Digital
 Intermediates</A> site. File sizes may be quite large and range in
@@ -266,7 +269,11 @@ Modifying An Image In-Place</H4>
 file to another, there is <EM>mogrify</EM> which transforms the file
 in place. A temporary file is used (if necessary) to ensure that the
 existing image file is not damaged if something goes wrong (e.g., not
-enough disk space).</P>
+enough disk space). Note that unlike some applications supporting
+DPX/Cineon, when a file is modifed &ldquo;in-place&rdquo; , it is
+completely re-written. While GraphicsMagick makes every attempt to
+preserve header information, some previously existing features of the
+file (such as the offset to the pixel data) may change.</P>
 <P CLASS="western">A typical mogrify command is</P>
 <PRE STYLE="margin-bottom: 0.2in">   gm mogrify -resize 1828x1556 -depth 10 file-0001.dpx file-0002.dpx</PRE><P CLASS="western">
 Multiple files may be specified on the command line so the same

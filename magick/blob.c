@@ -2442,7 +2442,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   count=fread(magick,MaxTextExtent,1,image->blob->file);
                   (void) rewind(image->blob->file);
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                     "  read %ld magic header bytes", (long) count);
+                     "  read %ld magic header bytes", (long) count*MaxTextExtent);
 #if defined(HasZLIB)
                   if ((magick[0] == 0x1FU) && (magick[1] == 0x8BU) &&
                       (magick[2] == 0x08U))
