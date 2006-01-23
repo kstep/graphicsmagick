@@ -212,9 +212,11 @@ static int BlobRead(jas_stream_obj_t *object,char *buffer,const int length)
   size_t
     count;
 
-  count=ReadBlob(((StreamManager *) object)->image,(size_t) length,
-    (void *) buffer);
-  return((int) count);
+  StreamManager
+    *source = (StreamManager *) object;
+
+  count=ReadBlob(source->image,(size_t) length,(void *) buffer);
+  return ((int) count);
 }
 
 static int BlobWrite(jas_stream_obj_t *object,char *buffer,const int length)
@@ -222,20 +224,28 @@ static int BlobWrite(jas_stream_obj_t *object,char *buffer,const int length)
   size_t
     count;
 
-  count=WriteBlob(((StreamManager *) object)->image,(size_t) length,
-    (void *) buffer);
+  StreamManager
+    *source = (StreamManager *) object;
+
+  count=WriteBlob(source->image,(size_t) length,(void *) buffer);
   return((int) count);
 }
 
 static long BlobSeek(jas_stream_obj_t *object,long offset,int origin)
 {
-  return(SeekBlob(((StreamManager *) object)->image,offset,origin));
+  StreamManager
+    *source = (StreamManager *) object;
+
+  return (SeekBlob(source->image,offset,origin));
 }
 
 static int BlobClose(jas_stream_obj_t *object)
 {
-  CloseBlob(((StreamManager *) object)->image);
-  return(0);
+  StreamManager
+    *source = (StreamManager *) object;
+
+  CloseBlob(source->image);
+  return (0);
 }
 
 static jas_stream_ops_t

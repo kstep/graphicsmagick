@@ -688,9 +688,9 @@ MagickExport void InitializeMagickClientPathAndName(const char *ARGUNUSED(path))
       else
         {
           /*
-            The call to the OS failed so we try one last kludgy thing
-            - we call getcwd and sling whatever seems to be a filename
-            passed by the caller onto the end and see if that works
+            The call to the OS failed so we try to compute a usable
+            path based on the current working directory or by
+            searching the executable search path.
           */
           (void) strlcpy(execution_path,path,MaxTextExtent);
           if (GetExecutionPathUsingName(execution_path))

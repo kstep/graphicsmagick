@@ -1525,22 +1525,21 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
               buffer[MaxTextExtent];
             
             const char
-              *seperator;
+              *separator;
             
             int
               length;
             
-            seperator = strchr(start,DirectoryListSeparator);
-            if (seperator)
-              length=seperator-start;
+            separator = strchr(start,DirectoryListSeparator);
+            if (separator)
+              length=separator-start;
             else
               length=end-start;
             if (length > MaxTextExtent-1)
               length = MaxTextExtent-1;
-            (void) strncpy(buffer,start,length);
-            buffer[length]='\0';
+            (void) strlcpy(buffer,start,length+1);
             if (buffer[length-1] != DirectorySeparator[0])
-              (void) strcat(buffer,DirectorySeparator);
+              (void) strlcat(buffer,DirectorySeparator,sizeof(buffer));
             AddConfigurePath(path_map,&path_index,buffer,exception);
             start += length+1;
           }
@@ -1652,15 +1651,15 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   if (logging)
     {
       char
-        list_seperator[2],
+        list_separator[2],
         *search_path=0;
 
-      list_seperator[0]=DirectoryListSeparator;
-      list_seperator[1]='\0';
+      list_separator[0]=DirectoryListSeparator;
+      list_separator[1]='\0';
       while(MagickMapIterateNext(path_map_iterator,&key))
         {
           if (search_path)
-            (void) ConcatenateString(&search_path,list_seperator);
+            (void) ConcatenateString(&search_path,list_separator);
           (void) ConcatenateString(&search_path,
             MagickMapDereferenceIterator(path_map_iterator,0));
         }

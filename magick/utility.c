@@ -648,7 +648,7 @@ MagickExport void DefineClientName(const char *path)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DefineClientPathAndName() this is a helper function that parses the passed
-%  string in order to define several global settings relatd to the location of
+%  string in order to define several global settings related to the location of
 %  the application. It sets the path, the filename, and the display name of the
 %  client application based on the input string which is assumed to be the full
 %  and valid path to the client.
@@ -1192,10 +1192,15 @@ MagickExport unsigned int GetExecutionPath(char *path)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetExecutionPathUsingName() returns the directory path containing the
-%  executable that started the process. Decisions are made based on a path
-%  which may be user provided, or the value of main()'s argv[0].  On success
-%  True is returned, otherwise False.
+%  GetExecutionPathUsingName() replaces the provided path with the full
+%  path to the directory containing the executable.  The replaced path
+%  is terminated by a directory separator.  The provided path may be
+%  a bare executable name, a relative path to the executable, or the
+%  full path to the executable.  The provided path is usually obtained
+%  from the argv[0] argument to main. If the path is a bare executable
+%  name, then the executable is located via the executable search path.
+%  If the path is replaced, then MagickPass is returned, otherwise
+%  MagickFail is returned.
 %
 %  The format of the GetExecutionPathUsingName method is:
 %
@@ -1206,53 +1211,118 @@ MagickExport unsigned int GetExecutionPath(char *path)
 %    o path: The path (partial or complete) to the executable.
 %
 */
-MagickExport unsigned int GetExecutionPathUsingName(char *path)
+MagickExport MagickPassFail GetExecutionPathUsingName(char *path)
 {
+  char
+    execution_path[MaxTextExtent],
+    original_cwd[MaxTextExtent],
+    temporary_path[MaxTextExtent],
+    *p;
+
+  execution_path[0]='\0';
+
+  /*
+    Save original working directory so it can be restored later.
+  */
+  if (getcwd(original_cwd,sizeof(original_cwd)-1) == NULL)
+    {
+      return(MagickFail);
+    }
+
+  /*
+    Check to see if path is a valid relative path from current
+    directory.
+  */
   if (IsAccessibleNoLogging(path))
     {
-      char
-        current_directory[MaxTextExtent];
-
-      current_directory[0]='\0';
-  
-      if ((getcwd(current_directory,sizeof(current_directory)-1)))
+      /*
+        If we can change directory to the path, then capture the full
+        path to it.  Otherwise, remove any trailing path component
+        (typically the program name) and try again.
+      */
+      if (chdir(path) == 0)
         {
-          char
-            execution_path[MaxTextExtent];
-
-          execution_path[0]='\0';
-
-          if (chdir(path) == 0)
+          (void) getcwd(execution_path,sizeof(execution_path)-2);
+        }
+      else
+        {
+          (void) strlcpy(temporary_path,path,sizeof(execution_path));
+          p=strrchr(temporary_path,DirectorySeparator[0]);
+          if (p)
+            *p='\0';
+          if (chdir(temporary_path) == 0)
             {
               (void) getcwd(execution_path,sizeof(execution_path)-2);
             }
-          else
-            {
-              char
-                *p;
-
-              (void) strlcpy(execution_path,path,sizeof(execution_path));
-              p=strrchr(execution_path,DirectorySeparator[0]);
-              if (p)
-                *p='\0';
-              if (chdir(execution_path) == 0)
-                (void) getcwd(execution_path,sizeof(execution_path)-2);
-            }
-          (void) chdir(current_directory);
-          if (execution_path[0] != '\0')
-            {
-              (void) strlcat(execution_path,DirectorySeparator,sizeof(execution_path));
-              (void) strlcpy(path,execution_path,MaxTextExtent);
-              (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-                                    "Path \"%.1024s\" is usable.",path);
-              errno=0;
-              return (True);
-            }
         }
     }
+  /*
+    Otherwise, check to see if bare program name is available via the
+    executable search path.
+  */
+  if ((execution_path[0] == 0) && (strchr(path,DirectorySeparator[0]) == NULL ))
+  {
+    const char
+      *search_path;
+
+    search_path=getenv("PATH");
+    if ( search_path )
+      {
+        const char
+          *end = NULL,
+          *start = search_path;
+        
+        end=start+strlen(start);
+        while ( start < end )
+          {
+            const char
+              *separator;
+            
+            int
+              length;
+            
+            separator = strchr(start,DirectoryListSeparator);
+            if (separator)
+              length=separator-start;
+            else
+              length=end-start;
+            if (length > MaxTextExtent-1)
+              length = MaxTextExtent-1;
+            (void) strlcpy(temporary_path,start,length+1);
+            if (chdir(temporary_path) == 0)
+              {
+                if (temporary_path[length-1] != DirectorySeparator[0])
+                  (void) strlcat(temporary_path,DirectorySeparator,sizeof(temporary_path));
+                (void) strlcat(temporary_path,path,sizeof(temporary_path));
+                if (IsAccessibleNoLogging(temporary_path))
+                  {
+                    (void) getcwd(execution_path,sizeof(execution_path)-2);
+                    break;
+                  }
+              }
+            start += length+1;
+          }
+      }
+  }
+
+  /*
+    Restore original working directory.
+  */
+  (void) chdir(original_cwd);
+
+  if (execution_path[0] != '\0')
+    {
+      (void) strlcat(execution_path,DirectorySeparator,sizeof(execution_path));
+      (void) strlcpy(path,execution_path,MaxTextExtent);
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+                            "Path \"%.1024s\" is usable.",path);
+      errno=0;
+      return (MagickPass);
+    }
+
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
                         "Path \"%.1024s\" is not valid.",path);
-  return(False);
+  return(MagickFail);
 }
 
 /*

@@ -260,6 +260,26 @@ The &ldquo;0,0&rdquo; in the image composition command argument says
 to use the image as is.  If the composited image should be
 automatically resized, then simply replace the &ldquo;0,0&rdquo; with
 the desired size.</P>
+<P CLASS="western">There are a number of powerful scripting
+environments for GraphicsMagick.  One of these is <A HREF="http://rmagick.rubyforge.org/" TARGET="_top">RMagick</A>
+(Ruby language interface to GraphicsMagick). In Ruby, the same effect
+may be obtained via a script that looks like:</P>
+<PRE>   #! /usr/local/bin/ruby -w
+   require 'RMagick'
+   include Magick
+   img = Image.read('infile.dpx')[0]
+   frog = Image.read('gm-125x80t.png')[0]
+   gc = Draw.new
+   gc.fill('white')
+   gc.text_undercolor(&quot;Blue&quot;)
+   gc.font(&quot;Helvetica&quot;)
+   gc.font_size(18)
+   gc.text(10, 20, &quot;%f (%[DPX:tv.time.code])&quot;)
+   gc.composite(500, 400, 0, 0, frog, AtopCompositeOp)
+   gc.draw(img)
+   img.write('outfile.dpx')</PRE><P CLASS="western">
+In addition to Ruby, there are scripting interfaces for Perl, Python,
+Tcl, and Ch (C-like scripting language).</P>
 <H4>Colorspace Transformation</H4>
 <P CLASS="western">To convert an RGB file to a 4:2:2 YCbCr file in
 Rec 709 space:</P>
