@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20060112;10443500">
+	<META NAME="CHANGED" CONTENT="20060203;23091500">
 	<META NAME="CLASSIFICATION" CONTENT="Description of new features in GraphicsMagick to support the motion picture industry">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, DPX, Cineon, 268M">
 	<STYLE>
@@ -84,11 +84,10 @@ uncompressed. The design of DPX places header content at fixed
 offsets, and the image raster data offsets may be computed, so DPX
 files may be read or updated without rewriting the entire file.</FONT></P>
 <P CLASS="western"><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Film
-images are usually captured at &ldquo;2K&rdquo; resolution (</FONT><FONT SIZE=2><FONT FACE="Verdana, Arial, Helvetica, sans-serif">82
-pixels/mm)</FONT></FONT><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
-&ldquo;4K&rdquo; resolution (</FONT><FONT SIZE=2><FONT FACE="Verdana, Arial, Helvetica, sans-serif">164
-pixels/mm)</FONT></FONT><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
-or even &ldquo;8K&rdquo; resolution (<FONT SIZE=2>328 pixels/mm</FONT></FONT><FONT SIZE=2><FONT FACE="Verdana, Arial, Helvetica, sans-serif">)</FONT></FONT><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
+images are usually captured at &ldquo;2K&rdquo; resolution (</FONT>82
+pixels/mm)<FONT FACE="Verdana, Arial, Helvetica, sans-seri">, &ldquo;4K&rdquo;
+resolution (</FONT>164 pixels/mm)<FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
+or even &ldquo;8K&rdquo; resolution (328 pixels/mm</FONT>)<FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
 where the actual resolution values approximate the horizontal
 dimension of the image. A table of <A HREF="http://www.surrealroad.com/digital/index.php/archives/2005/standard-data-resolutions/" TARGET="_top">typical
 pixel resolutions for various film sizes</A> may be found on the
@@ -239,7 +238,7 @@ capability to take a full size source image and produce a smaller
 the top of the image, and a logo &ldquo;bug&rdquo; image in the
 bottom right corner:</P>
 <PRE>gm convert infile.dpx -resize &ldquo;720x576!&rdquo; \
-  -draw 'fill &quot;white&quot;;text-undercolor &quot;Blue&quot;;font &quot;Helvetica&quot;;font-size 18;text 10,20 &quot;%f ([DPX:tv.time.code])&quot;;image atop 500,400 0,0 &quot;gm-125x80t.png&quot;' \
+  -draw 'fill &quot;white&quot;;text-undercolor &quot;Blue&quot;;font &quot;Helvetica&quot;;font-size 18;text 10,20 &quot;%f (%[DPX:tv.time.code])&quot;;image atop 500,400 0,0 &quot;gm-125x80t.png&quot;' \
   outfile.dpx</PRE><P CLASS="western">
 As may be seen, the argument to -draw can become extremely long, so
 to make things easy, the drawing commands may be placed in a simple
@@ -255,13 +254,13 @@ command file:</P>
    image atop 500,400 &quot;0,0 &quot;gm-125x80t.png&quot;</PRE><P CLASS="western">
 and now we can apply it by passing the filename prefixed with a '@'
 to the -draw command:</P>
-<PRE>   gm convert infile.dpx -resize &ldquo;720x576!&rdquo; -draw &ldquo;@drawcmd.txt&rdquo; outfile.dpx</PRE><P CLASS="western">
+<PRE STYLE="margin-bottom: 0.2in">   gm convert infile.dpx -resize &ldquo;720x576!&rdquo; -draw &ldquo;@drawcmd.txt&rdquo; outfile.dpx</PRE><P CLASS="western">
 The &ldquo;0,0&rdquo; in the image composition command argument says
-to use the image as is.  If the composited image should be
+to use the image as is. If the composited image should be
 automatically resized, then simply replace the &ldquo;0,0&rdquo; with
 the desired size.</P>
 <P CLASS="western">There are a number of powerful scripting
-environments for GraphicsMagick.  One of these is <A HREF="http://rmagick.rubyforge.org/" TARGET="_top">RMagick</A>
+environments for GraphicsMagick. One of these is <A HREF="http://rmagick.rubyforge.org/" TARGET="_top">RMagick</A>
 (Ruby language interface to GraphicsMagick). In Ruby, the same effect
 may be obtained via a script that looks like:</P>
 <PRE>   #! /usr/local/bin/ruby -w
@@ -343,12 +342,12 @@ frames per second:</P>
 <PRE STYLE="margin-bottom: 0.2in">   gm animate -delay 41.7 &ldquo;Frame_*0.dpx&rdquo;</PRE><H4>
 Displaying One Image Frame</H4>
 <P CLASS="western">An image frame may be displayed on an X11 server
-using 'gm display'.  By default the name of the image file is
-displayed in the title bar.  By specifying the format of the title,
+using 'gm display'. By default the name of the image file is
+displayed in the title bar. By specifying the format of the title,
 other useful information such as the time code (see the DPX
 Attributes section for more details) may be included in the window
 title:</P>
-<PRE>   gm display -title '%f (%[DPX:tv.time.code])' foo.dpx</PRE><H4>
+<PRE STYLE="margin-bottom: 0.2in">   gm display -title '%f (%[DPX:tv.time.code])' foo.dpx</PRE><H4>
 Viewing A Sequence</H4>
 <P CLASS="western">A sequence of images may be displayed on an X11
 server using 'gm display'. Unlike 'gm animate' there are no arbitrary
@@ -361,9 +360,9 @@ DPX options</H3>
 dealing with DPX files.</P>
 <DL>
 	<DT CLASS="western">-colorspace
-	{CineonLogRGB|RGB|Gray|Rec601Luma|Rec709Luma|Rec601YCbCr|Rec709CbCr}</DT><DD CLASS="western">
+	{CineonLog|RGB|Gray|Rec601Luma|Rec709Luma|Rec601YCbCr|Rec709CbCr}</DT><DD CLASS="western">
 	Specifies the colorspace to be used when saving the DPX file.
-	CineonLogRGB selects log encoding according to Kodak Cineon
+	CineonLog selects log encoding according to Kodak Cineon
 	specifications. RGB selects linear RGB encoding. Gray selects linear
 	gray encoding similar to RGB, but with a single channel. Rec601Luma
 	requests that RGB is converted to a gray image using Rec601 Luma.
