@@ -1,3 +1,8 @@
+2006-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sgi.c (ReadSGIImage): Properly compute image depth for
+	16-bit SGI image files.
+
 2006-01-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (GetExecutionPathUsingName): Search executable

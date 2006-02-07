@@ -39,6 +39,7 @@
 #include "magick/blob.h"
 #include "magick/pixel_cache.h"
 #include "magick/color.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/utility.h"
@@ -46,27 +47,40 @@
 /*
   Typedef declaractions.
 */
+
+/*
+  The SGI file header is 512 bytes in size.
+*/
 typedef struct _SGIInfo
 {
   unsigned short
-    magic;
+    magic;                  /* Identification number (474) */
 
-  unsigned char
-    storage,
-    bytes_per_pixel;
+  magick_int8_t
+    storage,                /* Compression flag */
+    bytes_per_pixel;        /* Bytes per pixel (per bit plane) */
 
-  unsigned short
-    dimension,
-    columns,
-    rows,
-    depth;
+  magick_int16_t
+    dimension,              /* Number of image dimentions */
+    xsize,                  /* Width of image in pixels */
+    ysize,                  /* Height of image in pixels */
+    zsize;                  /* Number of bit planes */
 
-  unsigned long
-    minimum_value,
-    maximum_value;
+  magick_uint32_t
+    pix_min,                /* Smallest pixel component value */
+    pix_max;                /* Largest pixel component value */
 
-  unsigned char
-    filler[492];
+  char
+    dummy1[4];              /* Not used */
+
+  char
+    image_name[80];         /* Name of image (null terminated) */
+
+  magick_uint32_t
+    color_map;              /* Format of pixel data */
+
+  char
+    dummy2[404];            /* Not used */
 } SGIInfo;
 
 /*
@@ -275,29 +289,59 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->compression=RLECompression;
     iris_info.bytes_per_pixel=ReadBlobByte(image);
     iris_info.dimension=ReadBlobMSBShort(image);
-    iris_info.columns=ReadBlobMSBShort(image);
-    iris_info.rows=ReadBlobMSBShort(image);
-    iris_info.depth=ReadBlobMSBShort(image);
-    image->columns=iris_info.columns;
-    image->rows=iris_info.rows;
-    image->depth=iris_info.depth <= 8 ? 8 : QuantumDepth;
-    if (iris_info.depth < 3)
+    iris_info.xsize=ReadBlobMSBShort(image);
+    iris_info.ysize=ReadBlobMSBShort(image);
+    iris_info.zsize=ReadBlobMSBShort(image);
+    iris_info.pix_min=ReadBlobMSBLong(image);
+    iris_info.pix_max=ReadBlobMSBLong(image);
+
+    (void) ReadBlob(image,(unsigned int) sizeof(iris_info.dummy1),
+                    iris_info.dummy1);
+    (void) ReadBlob(image,(unsigned int) sizeof(iris_info.image_name),
+                    iris_info.image_name);
+    iris_info.image_name[sizeof(iris_info.image_name)-1]=0;
+    iris_info.color_map=ReadBlobMSBLong(image);
+    (void) ReadBlob(image,(unsigned int) sizeof(iris_info.dummy2),
+                    iris_info.dummy2);
+
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "    Header: BPC=%u, Dimension=%u, XSize=%u, YSize=%u, ZSize=%u, PixMin=%u, PixMax=%u, image_name=\"%.79s\", color_map=%u",
+                          (unsigned int) iris_info.bytes_per_pixel,
+                          (unsigned int) iris_info.dimension,
+                          (unsigned int) iris_info.xsize,
+                          (unsigned int) iris_info.ysize,
+                          (unsigned int) iris_info.zsize,
+                          iris_info.pix_min,
+                          iris_info.pix_max,
+                          iris_info.image_name,
+                          iris_info.color_map);
+
+    image->columns=iris_info.xsize;
+    image->rows=iris_info.ysize;
+
+    image->depth=QuantumDepth;
+    if (iris_info.color_map == 0)
+      {
+        image->depth=iris_info.bytes_per_pixel*8;
+      }
+    if (image->depth > QuantumDepth)
+      image->depth=QuantumDepth;
+
+    if (iris_info.zsize < 3)
       {
         image->storage_class=PseudoClass;
         image->colors=256;
       }
+
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    iris_info.minimum_value=ReadBlobMSBLong(image);
-    iris_info.maximum_value=ReadBlobMSBLong(image);
-    (void) ReadBlob(image,(unsigned int) sizeof(iris_info.filler),
-      (char *) iris_info.filler);
+
     /*
       Allocate SGI pixels.
     */
     bytes_per_pixel=iris_info.bytes_per_pixel;
-    number_pixels=iris_info.columns*iris_info.rows;
+    number_pixels=iris_info.xsize*iris_info.ysize;
     iris_pixels=MagickAllocateMemory(unsigned char *,
       4*bytes_per_pixel*number_pixels);
     if (iris_pixels == (unsigned char *) NULL)
@@ -311,18 +355,18 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read standard image format.
         */
         scanline=MagickAllocateMemory(unsigned char *,
-          bytes_per_pixel*iris_info.columns);
+          bytes_per_pixel*iris_info.xsize);
         if (scanline == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "   Reading SGI scanlines"); 
-        for (z=0; z < (int) iris_info.depth; z++)
+        for (z=0; z < (int) iris_info.zsize; z++)
         {
           p=iris_pixels+bytes_per_pixel*z;
-          for (y=0; y < (long) iris_info.rows; y++)
+          for (y=0; y < (long) iris_info.ysize; y++)
           {
-            (void) ReadBlob(image,bytes_per_pixel*iris_info.columns,
+            (void) ReadBlob(image,bytes_per_pixel*iris_info.xsize,
               (char *) scanline);
             if (EOFBlob(image))
               {
@@ -331,14 +375,14 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
             if (bytes_per_pixel == 2)
-              for (x=0; x < (long) iris_info.columns; x++)
+              for (x=0; x < (long) iris_info.xsize; x++)
               {
                 *p=scanline[2*x];
                 *(p+1)=scanline[2*x+1];
                 p+=8;
               }
             else
-              for (x=0; x < (long) iris_info.columns; x++)
+              for (x=0; x < (long) iris_info.xsize; x++)
               {
                 *p=scanline[x];
                 p+=4;
@@ -365,19 +409,19 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read runlength-encoded image format.
         */
-        offsets=MagickAllocateMemory(unsigned long *,iris_info.rows*
-          iris_info.depth*sizeof(unsigned long));
-        max_packets=MagickAllocateMemory(unsigned char *,4*iris_info.columns+10);
-        runlength=MagickAllocateMemory(unsigned long *,iris_info.rows*
-          iris_info.depth*sizeof(unsigned long));
+        offsets=MagickAllocateMemory(unsigned long *,iris_info.ysize*
+          iris_info.zsize*sizeof(unsigned long));
+        max_packets=MagickAllocateMemory(unsigned char *,4*iris_info.xsize+10);
+        runlength=MagickAllocateMemory(unsigned long *,iris_info.ysize*
+          iris_info.zsize*sizeof(unsigned long));
         if ((offsets == (unsigned long *) NULL) ||
             (max_packets == (unsigned char *) NULL) ||
             (runlength == (unsigned long *) NULL))
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        for (i=0; i < (int) (iris_info.rows*iris_info.depth); i++)
+        for (i=0; i < (int) (iris_info.ysize*iris_info.zsize); i++)
           offsets[i]=ReadBlobMSBLong(image);
-        for (i=0; i < (int) (iris_info.rows*iris_info.depth); i++)
+        for (i=0; i < (int) (iris_info.ysize*iris_info.zsize); i++)
           runlength[i]=ReadBlobMSBLong(image);
         if (EOFBlob(image))
           {
@@ -389,27 +433,27 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         offset=0;
         data_order=0;
-        for (y=0; ((y < (long) iris_info.rows) && !data_order); y++)
-          for (z=0; ((z < (int) iris_info.depth) && !data_order); z++)
+        for (y=0; ((y < (long) iris_info.ysize) && !data_order); y++)
+          for (z=0; ((z < (int) iris_info.zsize) && !data_order); z++)
           {
-            if (offsets[y+z*iris_info.rows] < offset)
+            if (offsets[y+z*iris_info.ysize] < offset)
               data_order=1;
-            offset=offsets[y+z*iris_info.rows];
+            offset=offsets[y+z*iris_info.ysize];
           }
-        offset=512+4*bytes_per_pixel*2*(iris_info.rows*iris_info.depth);
+        offset=512+4*bytes_per_pixel*2*(iris_info.ysize*iris_info.zsize);
         if (data_order == 1)
           {
-            for (z=0; z < (int) iris_info.depth; z++)
+            for (z=0; z < (int) iris_info.zsize; z++)
             {
               p=iris_pixels;
-              for (y=0; y < (long) iris_info.rows; y++)
+              for (y=0; y < (long) iris_info.ysize; y++)
               {
-                if (offset != offsets[y+z*iris_info.rows])
+                if (offset != offsets[y+z*iris_info.ysize])
                   {
-                    offset=offsets[y+z*iris_info.rows];
+                    offset=offsets[y+z*iris_info.ysize];
                     (void) SeekBlob(image,(long) offset,SEEK_SET);
                   }
-                (void) ReadBlob(image,runlength[y+z*iris_info.rows],
+                (void) ReadBlob(image,runlength[y+z*iris_info.ysize],
                   (char *) max_packets);
                 if (EOFBlob(image))
                   {
@@ -417,25 +461,25 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       UnexpectedEndOfFile, image);
                     break;
                   }
-                offset+=runlength[y+z*iris_info.rows];
+                offset+=runlength[y+z*iris_info.ysize];
                 SGIDecode(bytes_per_pixel,max_packets,p+bytes_per_pixel*z);
-                p+=(iris_info.columns*4*bytes_per_pixel);
+                p+=(iris_info.xsize*4*bytes_per_pixel);
               }
             }
           }
         else
           {
             p=iris_pixels;
-            for (y=0; y < (long) iris_info.rows; y++)
+            for (y=0; y < (long) iris_info.ysize; y++)
             {
-              for (z=0; z < (int) iris_info.depth; z++)
+              for (z=0; z < (int) iris_info.zsize; z++)
               {
-                if (offset != offsets[y+z*iris_info.rows])
+                if (offset != offsets[y+z*iris_info.ysize])
                   {
-                    offset=offsets[y+z*iris_info.rows];
+                    offset=offsets[y+z*iris_info.ysize];
                     (void) SeekBlob(image,(long) offset,SEEK_SET);
                   }
-                (void) ReadBlob(image,runlength[y+z*iris_info.rows],
+                (void) ReadBlob(image,runlength[y+z*iris_info.ysize],
                   (char *) max_packets);
                 if (EOFBlob(image))
                   {
@@ -443,10 +487,10 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       UnexpectedEndOfFile, image);
                     break;
                   }
-                offset+=runlength[y+z*iris_info.rows];
+                offset+=runlength[y+z*iris_info.ysize];
                 SGIDecode(bytes_per_pixel,max_packets,p+bytes_per_pixel*z);
               }
-              p+=(iris_info.columns*4*bytes_per_pixel);
+              p+=(iris_info.xsize*4*bytes_per_pixel);
               if (EOFBlob(image))
                 break;
             }
@@ -460,9 +504,9 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "   Initializing SGI image structure"); 
-    image->matte=iris_info.depth == 4;
-    image->columns=iris_info.columns;
-    image->rows=iris_info.rows;
+    image->matte=iris_info.zsize == 4;
+    image->columns=iris_info.xsize;
+    image->rows=iris_info.ysize;
     /*
       Convert SGI raster image to pixel packets.
     */
@@ -822,25 +866,29 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       iris_info.storage=0x01;
     iris_info.bytes_per_pixel=1;  /* one byte per pixel */
     iris_info.dimension=3;
-    iris_info.columns=(unsigned short) image->columns;
-    iris_info.rows=(unsigned short) image->rows;
+    iris_info.xsize=(unsigned short) image->columns;
+    iris_info.ysize=(unsigned short) image->rows;
     if (image->matte != MagickFalse)
-      iris_info.depth=4;
+      iris_info.zsize=4;
     else
       {
         if ((image_info->type != TrueColorType) &&
             (IsGrayImage(image,&image->exception) != False))
           {
             iris_info.dimension=2;
-            iris_info.depth=1;
+            iris_info.zsize=1;
           }
         else
-          iris_info.depth=3;
+          iris_info.zsize=3;
       }
-    iris_info.minimum_value=0;
-    iris_info.maximum_value=ScaleQuantumToChar(MaxRGB);
-    for (i=0; i < (int) sizeof(iris_info.filler); i++)
-      iris_info.filler[i]=0;
+    iris_info.pix_min=0;
+    iris_info.pix_max=ScaleQuantumToChar(MaxRGB);
+
+    (void) memset(iris_info.dummy1,0,sizeof(iris_info.dummy1));
+    (void) memset(iris_info.image_name,0,sizeof(iris_info.image_name));
+    iris_info.color_map=0;
+    (void) memset(iris_info.dummy2,0,sizeof(iris_info.dummy2));
+
     /*
       Write SGI header.
     */
@@ -848,13 +896,18 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobByte(image,iris_info.storage);
     (void) WriteBlobByte(image,iris_info.bytes_per_pixel);
     (void) WriteBlobMSBShort(image,iris_info.dimension);
-    (void) WriteBlobMSBShort(image,iris_info.columns);
-    (void) WriteBlobMSBShort(image,iris_info.rows);
-    (void) WriteBlobMSBShort(image,iris_info.depth);
-    (void) WriteBlobMSBLong(image,iris_info.minimum_value);
-    (void) WriteBlobMSBLong(image,iris_info.maximum_value);
-    (void) WriteBlob(image,sizeof(iris_info.filler),
-      (char *) iris_info.filler);
+    (void) WriteBlobMSBShort(image,iris_info.xsize);
+    (void) WriteBlobMSBShort(image,iris_info.ysize);
+    (void) WriteBlobMSBShort(image,iris_info.zsize);
+    (void) WriteBlobMSBLong(image,iris_info.pix_min);
+    (void) WriteBlobMSBLong(image,iris_info.pix_max);
+    (void) WriteBlob(image,sizeof(iris_info.dummy1),
+                     (char *) iris_info.dummy1);
+    (void) WriteBlob(image,sizeof(iris_info.image_name),
+                     (char *) iris_info.image_name);
+    (void) WriteBlobMSBLong(image,iris_info.color_map);
+    (void) WriteBlob(image,sizeof(iris_info.dummy2),
+      (char *) iris_info.dummy2);
     /*
       Allocate SGI pixels.
     */
@@ -870,7 +923,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
       if (p == (const PixelPacket *) NULL)
         break;
-      q=iris_pixels+((iris_info.rows-1)-y)*(iris_info.columns*4);
+      q=iris_pixels+((iris_info.ysize-1)-y)*(iris_info.xsize*4);
       for (x=0; x < (long) image->columns; x++)
       {
         *q++=ScaleQuantumToChar(p->red);
@@ -892,21 +945,21 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         /*
           Write uncompressed SGI pixels.
         */
-        scanline=MagickAllocateMemory(unsigned char *,iris_info.columns);
+        scanline=MagickAllocateMemory(unsigned char *,iris_info.xsize);
         if (scanline == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        for (z=0; z < (int) iris_info.depth; z++)
+        for (z=0; z < (int) iris_info.zsize; z++)
         {
           q=iris_pixels+z;
-          for (y=0; y < (long) iris_info.rows; y++)
+          for (y=0; y < (long) iris_info.ysize; y++)
           {
-            for (x=0; x < (long) iris_info.columns; x++)
+            for (x=0; x < (long) iris_info.xsize; x++)
             {
               scanline[x]=(*q);
               q+=4;
             }
-            (void) WriteBlob(image,iris_info.columns,(char *) scanline);
+            (void) WriteBlob(image,iris_info.xsize,(char *) scanline);
           }
         }
         MagickFreeMemory(scanline);
@@ -923,39 +976,39 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         /*
           Convert SGI uncompressed pixels.
         */
-        offsets=MagickAllocateMemory(unsigned long *,iris_info.rows*
-          iris_info.depth*sizeof(unsigned long));
+        offsets=MagickAllocateMemory(unsigned long *,iris_info.ysize*
+          iris_info.zsize*sizeof(unsigned long));
         packets=MagickAllocateMemory(unsigned char *,
-          4*(2*iris_info.columns+10)*image->rows);
-        runlength=MagickAllocateMemory(unsigned long *,iris_info.rows*
-          iris_info.depth*sizeof(unsigned long));
+          4*(2*iris_info.xsize+10)*image->rows);
+        runlength=MagickAllocateMemory(unsigned long *,iris_info.ysize*
+          iris_info.zsize*sizeof(unsigned long));
         if ((offsets == (unsigned long *) NULL) ||
             (packets == (unsigned char *) NULL) ||
             (runlength == (unsigned long *) NULL))
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        offset=512+4*2*(iris_info.rows*iris_info.depth);
+        offset=512+4*2*(iris_info.ysize*iris_info.zsize);
         number_packets=0;
         q=iris_pixels;
-        for (y=0; y < (long) iris_info.rows; y++)
+        for (y=0; y < (long) iris_info.ysize; y++)
         {
-          for (z=0; z < (int) iris_info.depth; z++)
+          for (z=0; z < (int) iris_info.zsize; z++)
           {
             length=
-              SGIEncode(q+z,(int) iris_info.columns,packets+number_packets);
+              SGIEncode(q+z,(int) iris_info.xsize,packets+number_packets);
             number_packets+=length;
-            offsets[y+z*iris_info.rows]=offset;
-            runlength[y+z*iris_info.rows]=length;
+            offsets[y+z*iris_info.ysize]=offset;
+            runlength[y+z*iris_info.ysize]=length;
             offset+=length;
           }
-          q+=(iris_info.columns*4);
+          q+=(iris_info.xsize*4);
         }
         /*
           Write out line start and length tables and runlength-encoded pixels.
         */
-        for (i=0; i < (int) (iris_info.rows*iris_info.depth); i++)
+        for (i=0; i < (int) (iris_info.ysize*iris_info.zsize); i++)
           (void) WriteBlobMSBLong(image,offsets[i]);
-        for (i=0; i < (int) (iris_info.rows*iris_info.depth); i++)
+        for (i=0; i < (int) (iris_info.ysize*iris_info.zsize); i++)
           (void) WriteBlobMSBLong(image,runlength[i]);
         (void) WriteBlob(image,number_packets,(char *) packets);
         /*
