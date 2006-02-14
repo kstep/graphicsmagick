@@ -2,6 +2,7 @@
 set srcdir=..\..\..\Magick++\demo\
 set bindir=..\..\bin\
 set outdir=
+set cfgdir=..\..\bin\
 set PATH=%bindir%;%PATH%
 
 echo button ...
