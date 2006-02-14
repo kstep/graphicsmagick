@@ -4119,8 +4119,10 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
   int
     status;
 
+#if defined(POSIX)
   char
     message[MaxTextExtent];
+#endif /* POSIX */
 
   const char
     *message_p = (const char *) NULL;
