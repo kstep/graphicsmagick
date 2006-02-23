@@ -1,3 +1,7 @@
+2006-02-23  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick: Updated to latest changes
+
 2006-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/sgi.c (ReadSGIImage): Properly compute image depth for
