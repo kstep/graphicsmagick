@@ -6,7 +6,8 @@
     <PROJECT value="GM_lcms.dll"/>
     <OBJFILES value="GM_lcms.obj ..\src\cmscnvrt.obj ..\src\cmserr.obj
       ..\src\cmsgamma.obj ..\src\cmsgmt.obj ..\src\cmsintrp.obj 
-      ..\src\cmsio1.obj ..\src\cmslut.obj ..\src\cmsmatsh.obj 
+      ..\src\cmsio0.obj ..\src\cmsio1.obj 
+      ..\src\cmslut.obj ..\src\cmsmatsh.obj 
       ..\src\cmsmtrx.obj ..\src\cmspack.obj  ..\src\cmspcs.obj 
       ..\src\cmswtpnt.obj ..\src\cmsxform.obj ..\src\cmssamp.obj
       ..\src\cmscam97.obj ..\src\cmsnamed.obj ..\src\cmsps2.obj 
@@ -57,6 +58,7 @@
       <FILE FILENAME="..\src\cmsgamma.c" FORMNAME="" UNITNAME="cmsgamma" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsgmt.c" FORMNAME="" UNITNAME="cmsgmt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsintrp.c" FORMNAME="" UNITNAME="cmsintrp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsio0.c" FORMNAME="" UNITNAME="cmsio0" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsio1.c" FORMNAME="" UNITNAME="cmsio1" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmslut.c" FORMNAME="" UNITNAME="cmslut" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsmatsh.c" FORMNAME="" UNITNAME="cmsmatsh" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -81,7 +83,7 @@
 IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
-MinorVer=13
+MinorVer=15
 Release=0
 Build=1
 Debug=0
@@ -95,13 +97,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Little CMS
 FileDescription=Little CMS color engine
-FileVersion=1.13.0.0
+FileVersion=1.15.0.0
 InternalName=lcms - Borland C++ Builder 6.0 porting by Mike Chiarappa, mikechiarappa@libero.it
 LegalCopyright=No copyright, use freely
 LegalTrademarks=Marti' Maria
 OriginalFilename=lcms
 ProductName=Little CMS color engine
-ProductVersion=1.13
+ProductVersion=1.15
 Comments=www.littlecms.com, http://www.lcms.coloraid.de
 
 [HistoryLists\hlIncludePath]

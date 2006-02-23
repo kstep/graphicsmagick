@@ -5,15 +5,16 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="GM_magick.dll"/>
     <OBJFILES value="GM_magick.obj ..\filters\analyze.obj animate.obj annotate.obj 
-      attribute.obj blob.obj cache.obj cache_view.obj channel.obj color.obj command.obj 
+      attribute.obj blob.obj channel.obj color.obj colorspace.c command.obj 
       composite.obj compress.obj constitute.obj decorate.obj delegate.obj 
       deprecate.obj display.obj draw.obj effect.obj enhance.obj error.obj fx.obj 
-      gem.obj image.obj list.obj locale.obj log.obj magic.obj magick.obj map.obj 
-      memory.obj module.obj monitor.obj montage.obj nt_base.obj nt_feature.obj operator.c 
-      paint.obj pixel_iterator.obj PreRvIcccm.obj profile.obj quantize.obj registry.obj
-      render.obj resize.obj resource.obj segment.obj semaphore.obj shear.obj 
-      signature.obj static.obj stream.obj tempfile.obj timer.obj transform.obj 
-      type.obj utility.obj version.obj widget.obj xwindow.obj 
+      gem.obj image.obj list.obj locale.obj log.obj magic.obj magick.obj 
+      magick_endian.obj map.obj memory.obj module.obj monitor.obj montage.obj 
+      nt_base.obj nt_feature.obj operator.c paint.obj pixel-cache.obj pixel_iterator.obj
+      PreRvIcccm.obj profile.obj quantize.obj registry.obj render.obj resize.obj 
+      resource.obj segment.obj semaphore.obj shear.obj signature.obj static.obj 
+      stream.obj tempfile.obj timer.obj transform.obj 
+      tsd.obj type.obj utility.obj version.obj widget.obj xwindow.obj 
       ..\coders\art.obj ..\coders\avi.obj 
       ..\coders\avs.obj ..\coders\bmp.obj ..\coders\caption.obj 
       ..\coders\cineon.obj ..\coders\clipboard.obj ..\coders\cmyk.obj 
@@ -62,7 +63,7 @@
     <SYSDEFINES value="NO_STRICT;_NO_VCL;_RTLDLL"/>
     <MAINSOURCE value="GM_magick.c"/>
     <INCLUDEPATH value="..;..\bzlib;..\coders;..\filters;..\jbig\libjbig;..\jpeg;..\lcms\include;..\png\;..\tiff\libtiff;..\ttf\include;;..\zlib;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\coders;..\filters;&quot;D:\GraphicsMagick-1.1\magick&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="..\coders;..\tiff\libtiff;..\filters;&quot;..\magick&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-sus -w-spa -w-rch -w-pia -w-par -w-8027 -w-eff -w-csu -w-ccc -w-aus"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -88,10 +89,9 @@
       <FILE FILENAME="annotate.c" FORMNAME="" UNITNAME="annotate.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="attribute.c" FORMNAME="" UNITNAME="attribute.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="blob.c" FORMNAME="" UNITNAME="blob.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="cache.c" FORMNAME="" UNITNAME="cache.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="cache_view.c" FORMNAME="" UNITNAME="cache_view.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="channel.c" FORMNAME="" UNITNAME="channel.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="color.c" FORMNAME="" UNITNAME="color.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="colorspace.c" FORMNAME="" UNITNAME="colorspace.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="command.c" FORMNAME="" UNITNAME="command.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="composite.c" FORMNAME="" UNITNAME="composite.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="compress.c" FORMNAME="" UNITNAME="compress.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -112,6 +112,7 @@
       <FILE FILENAME="log.c" FORMNAME="" UNITNAME="log.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="magic.c" FORMNAME="" UNITNAME="magic.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="magick.c" FORMNAME="" UNITNAME="magick.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="magick_endian.c" FORMNAME="" UNITNAME="magick_endian.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="map.c" FORMNAME="" UNITNAME="map.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="memory.c" FORMNAME="" UNITNAME="memory.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="module.c" FORMNAME="" UNITNAME="module.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -121,6 +122,7 @@
       <FILE FILENAME="nt_feature.c" FORMNAME="" UNITNAME="nt_feature.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="operator.c" FORMNAME="" UNITNAME="operator.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="paint.c" FORMNAME="" UNITNAME="paint.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="pixel_cache.c" FORMNAME="" UNITNAME="pixel_cache.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="pixel_iterator.c" FORMNAME="" UNITNAME="pixel_iterator.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="PreRvIcccm.c" FORMNAME="" UNITNAME="PreRvIcccm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="profile.c" FORMNAME="" UNITNAME="profile.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -134,10 +136,10 @@
       <FILE FILENAME="shear.c" FORMNAME="" UNITNAME="shear.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="signature.c" FORMNAME="" UNITNAME="signature.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="static.c" FORMNAME="" UNITNAME="static.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="stream.c" FORMNAME="" UNITNAME="stream.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="tempfile.c" FORMNAME="" UNITNAME="tempfile.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="timer.c" FORMNAME="" UNITNAME="timer.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="transform.c" FORMNAME="" UNITNAME="transform.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tsd.c" FORMNAME="" UNITNAME="tsd.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="type.c" FORMNAME="" UNITNAME="type.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="utility.c" FORMNAME="" UNITNAME="utility.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="version.c" FORMNAME="" UNITNAME="version.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

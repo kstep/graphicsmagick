@@ -5,11 +5,12 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="lcms.lib"/>
     <OBJFILES value="..\src\cmscnvrt.obj ..\src\cmserr.obj ..\src\cmsgamma.obj 
-      ..\src\cmsgmt.obj ..\src\cmsintrp.obj ..\src\cmsio1.obj ..\src\cmslut.obj 
-      ..\src\cmsmatsh.obj ..\src\cmsmtrx.obj ..\src\cmspack.obj 
-      ..\src\cmspcs.obj ..\src\cmswtpnt.obj ..\src\cmsxform.obj 
-      ..\src\cmssamp.obj ..\src\cmscam97.obj ..\src\cmsnamed.obj 
-      ..\src\cmsps2.obj ..\src\cmscam02.obj ..\src\cmsvirt.obj ..\src\cmscgats.obj"/>
+      ..\src\cmsgmt.obj ..\src\cmsintrp.obj ..\src\cmsio0.obj
+      ..\src\cmsio1.obj ..\src\cmslut.obj ..\src\cmsmatsh.obj
+      ..\src\cmsmtrx.obj ..\src\cmspack.obj ..\src\cmspcs.obj
+      ..\src\cmswtpnt.obj ..\src\cmsxform.obj ..\src\cmssamp.obj
+      ..\src\cmscam97.obj ..\src\cmsnamed.obj ..\src\cmsps2.obj
+      ..\src\cmscam02.obj ..\src\cmsvirt.obj ..\src\cmscgats.obj"/>
     <RESFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
@@ -49,6 +50,7 @@
       <FILE FILENAME="..\src\cmsgamma.c" FORMNAME="" UNITNAME="cmsgamma" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsgmt.c" FORMNAME="" UNITNAME="cmsgmt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsintrp.c" FORMNAME="" UNITNAME="cmsintrp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsio0.c" FORMNAME="" UNITNAME="cmsio0" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsio1.c" FORMNAME="" UNITNAME="cmsio1" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmslut.c" FORMNAME="" UNITNAME="cmslut" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\cmsmatsh.c" FORMNAME="" UNITNAME="cmsmatsh" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -73,7 +75,7 @@
 IncludeVerInfo=0
 AutoIncBuild=0
 MajorVer=1
-MinorVer=13
+MinorVer=15
 Release=0
 Build=0
 Debug=0
@@ -87,13 +89,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=1.13.0.0
+FileVersion=1.15.0.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
 ProductName=
-ProductVersion=1.13.0.0
+ProductVersion=1.15.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]

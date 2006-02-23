@@ -1,6 +1,6 @@
 # 
 # ***************************************************************
-# **  GraphicsMagick library - v.1.2 - 20 July 2004            **
+# **  GraphicsMagick library - v.1.2 - 30 Jan 2006             **
 # **                                                           **
 # **  Porting for compilation with Borland C++Builder 6.0      **
 # **-----------------------------------------------------------**
@@ -98,7 +98,9 @@ copy-all:
   copy $(GMBCB)\tiff\libtiff\libtiff.bpf $(GMDIR)\tiff\libtiff
   copy $(GMBCB)\tiff\libtiff\GM_tiff.bpr $(GMDIR)\tiff\libtiff
   copy $(GMBCB)\tiff\libtiff\GM_tiff.c $(GMDIR)\tiff\libtiff
-  copy $(GMBCB)\tiff\libtiff\tiffconf.h.in $(GMDIR)\tiff\libtiff\tiffconf.h
+  copy $(GMBCB)\tiff\libtiff\tif_config.h $(GMDIR)\tiff\libtiff
+  copy $(GMBCB)\tiff\libtiff\tiffconf.h $(GMDIR)\tiff\libtiff
+  copy $(GMBCB)\tiff\libtiff\tiffio.h $(GMDIR)\tiff\libtiff
   
   copy $(GMBCB)\tiff\tools\fax2ps.bpr $(GMDIR)\tiff\tools
   copy $(GMBCB)\tiff\tools\fax2tiff.bpr $(GMDIR)\tiff\tools
