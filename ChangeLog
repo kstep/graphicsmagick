@@ -1,3 +1,8 @@
+2006-02-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/environment.imdoc: MAGICK_FONT_PATH has not been supported
+	since 1.1.  Remove mention of it!
+
 2006-02-23  Mike Chiarappa  <mikechiarappa@libero.it>
 
 	* BCBMagick: Updated to latest changes
