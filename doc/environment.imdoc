@@ -80,13 +80,6 @@ is similar to operating system search paths (i.e. colon delimited for
 Unix, and semi-colon delimited for Microsoft Windows). This user
 specified search path is used before trying the default search path.</abs>
 
-<opt>MAGICK_FONT_PATH</opt>
-
-<abs>Directory where GraphicsMagick should look for TrueType and
-Postscript Type1 font files if the font file is not found in the current
-directory. It is preferred to define the available fonts via type.mgk
-rather than use <s>MAGICK_FONT_PATH</s>.</abs>
-
 <opt>MAGICK_HOME</opt>
 
 <abs>Path to top of GraphicsMagick installation directory. Only observed

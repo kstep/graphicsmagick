@@ -239,7 +239,7 @@ MAGICK DELEGATES
 
     o GraphicsMagick requires scanimage from
 
-         http://www.mostang.com/sane/
+         http://www.sane-project.org/
 								 
       to import an image from a scanner device.
 

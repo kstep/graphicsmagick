@@ -226,7 +226,10 @@ static long BlobSeek(jas_stream_obj_t *object,long offset,int origin)
 
 static int BlobClose(jas_stream_obj_t *object)
 {
-  CloseBlob(((StreamManager *) object)->image);
+  StreamManager
+    *source = (StreamManager *) object;
+
+  CloseBlob(source->image);
   return(0);
 }
 
