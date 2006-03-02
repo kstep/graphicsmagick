@@ -21,7 +21,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                              Jaroslav Fojtik                                %
-%                                 June 2001                                   %
+%                                2001 - 2006                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -68,80 +68,86 @@ typedef struct
   unsigned short NameFlag;
 }
 MATHeader;
-
-static void InsertRow(unsigned char *p, int y, Image * image)
+
+
+/* Update one byte row inside image. */
+static void InsertByteRow(unsigned char *p, int y, Image * image)
 {
   int x;
   register PixelPacket *q;
   IndexPacket index;
   register IndexPacket *indexes;
 
-  switch (image->depth)
-  {
-    case 8:                     /* Convert PseudoColor scanline. */
-      {
-        q = SetImagePixels(image, 0, y, image->columns, 1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes = GetIndexes(image);
+                       /* Convert PseudoColor scanline. */  
+  q = SetImagePixels(image, 0, y, image->columns, 1);
+  if (q == (PixelPacket *) NULL) return;
+         
+  indexes = GetIndexes(image);
 
-        for (x = 0; x < (long) image->columns; x++)
-        {
-          index = (IndexPacket) (*p);
-          VerifyColormapIndex(image, index);
-          indexes[x] = index;
-          *q++ = image->colormap[index];
-          p++;
-        }
-        if (!SyncImagePixels(image))
-          break;
+  for (x = 0; x < (long) image->columns; x++)
+  {
+    index = (IndexPacket) (*p);
+    VerifyColormapIndex(image, index);
+    indexes[x] = index;
+    *q++ = image->colormap[index];
+    p++;
+  }
+  if (!SyncImagePixels(image))
+    return;
         /*           if (image->previous == (Image *) NULL)
            if (QuantumTick(y,image->rows))
            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows); */
-      }
-      return;
+      
+  return;
+}
 
-    case 16:
-      {
-        q = SetImagePixels(image, 0, y, image->columns, 1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x = 0; x < (long) image->columns; x++)
-        {
-          q->red = ScaleShortToQuantum(*(unsigned short *) p);
-          q->green = ScaleShortToQuantum(*(unsigned short *) p);
-          q->blue = ScaleShortToQuantum(*(unsigned short *) p);
-          p += 2;
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
+
+/* Update one word row inside image. */
+static void InsertWordRow(unsigned char *p, int y, Image * image)
+{
+  int x;
+  register PixelPacket *q;
+/*   IndexPacket index; */
+/*   register IndexPacket *indexes; */
+
+  q = SetImagePixels(image, 0, y, image->columns, 1);
+  if (q == (PixelPacket *) NULL) return;
+          
+  for (x = 0; x < (long) image->columns; x++)
+  {
+    q->red = ScaleShortToQuantum(*(unsigned short *) p);
+    q->green = ScaleShortToQuantum(*(unsigned short *) p);
+    q->blue = ScaleShortToQuantum(*(unsigned short *) p);
+    q->opacity = OpaqueOpacity;
+    p += 2;
+    q++;
+  }
+  if (!SyncImagePixels(image))
+    return;
         /*          if (image->previous == (Image *) NULL)
            if (QuantumTick(y,image->rows))
            MagickMonitor(LoadImageText,image->rows-y-1,image->rows); */
-        return;
-      }
-  }
+  return; 
 }
 
-static void InsertFloatRow(double *p, int y, Image * image, double Min, double Max)
+static void InsertFloatRow(double *p, int y, Image * image, double MinVal, double MaxVal)
 {
   double f;
   int x;
   register PixelPacket *q;
 
-  if (Min >= Max)
-    Max = Min + 1;
+  if (MinVal >= MaxVal)
+    MaxVal = MinVal + 1;
 
   q = SetImagePixels(image, 0, y, image->columns, 1);
   if (q == (PixelPacket *) NULL)
     return;
   for (x = 0; x < (long) image->columns; x++)
   {
-    f = (double) MaxRGB *(*p - Min) / (Max - Min);
-    q->red = ScaleShortToQuantum(f);
-    q->green = ScaleShortToQuantum(f);
-    q->blue = ScaleShortToQuantum(f);
+    f = (double) MaxRGB *(*p - MinVal) / (MaxVal - MinVal);
+    q->red = 
+      q->green = 
+      q->blue = RoundSignedToQuantum(f);
     p++;
     q++;
   }
@@ -153,17 +159,17 @@ static void InsertFloatRow(double *p, int y, Image * image, double Min, double M
   return;
 }
 
-static void InsertComplexFloatRow(double *p, int y, Image * image, double Min,
-                                  double Max)
+static void InsertComplexFloatRow(double *p, int y, Image * image, double MinVal,
+                                  double MaxVal)
 {
   double f;
   int x;
   register PixelPacket *q;
 
-  if (Min == 0)
-    Min = -1;
-  if (Max == 0)
-    Max = 1;
+  if (MinVal == 0)
+    MinVal = -1;
+  if (MaxVal == 0)
+    MaxVal = 1;
 
   q = SetImagePixels(image, 0, y, image->columns, 1);
   if (q == (PixelPacket *) NULL)
@@ -172,7 +178,7 @@ static void InsertComplexFloatRow(double *p, int y, Image * image, double Min,
   {
     if (*p > 0)
     {
-      f = (*p / Max) * (MaxRGB - q->red);
+      f = (*p / MaxVal) * (MaxRGB - q->red);
       if (f + q->red > MaxRGB)
         q->red = MaxRGB;
       else
@@ -184,7 +190,7 @@ static void InsertComplexFloatRow(double *p, int y, Image * image, double Min,
     }
     if (*p < 0)
     {
-      f = (*p / Max) * (MaxRGB - q->blue);
+      f = (*p / MaxVal) * (MaxRGB - q->blue);
       if (f + q->blue > MaxRGB)
         q->blue = MaxRGB;
       else
@@ -307,8 +313,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     x;
   long ldblk;
   unsigned char *BImgBuff = NULL;
-  double Min,
-    Max,
+  double MinVal, MaxVal,
    *dblrow;
 
   /*
@@ -427,8 +432,8 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (BImgBuff == NULL)
     goto NoMemory;
 
-  Min = 0;
-  Max = 0;
+  MinVal = 0;
+  MaxVal = 0;
   if (CellType == 9)            /*Find Min and Max Values for floats */
   {
     filepos = TellBlob(image);
@@ -438,18 +443,18 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
       dblrow = (double *) BImgBuff;
       if (i == 0)
       {
-        Min = Max = *dblrow;
+        MinVal = MaxVal = *dblrow;
       }
       for (x = 0; x < (long) MATLAB_HDR.SizeX; x++)
       {
-        if (Min > *dblrow)
-          Min = *dblrow;
-        if (Max < *dblrow)
-          Max = *dblrow;
+        if (MinVal > *dblrow)
+          MinVal = *dblrow;
+        if (MaxVal < *dblrow)
+          MaxVal = *dblrow;
         dblrow++;
       }
     }
-    SeekBlob(image, filepos, SEEK_SET);
+    (void) SeekBlob(image, filepos, SEEK_SET);
   }
 
   /*Main loop for reading all scanlines */
@@ -457,17 +462,18 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   {
     switch (CellType)
     {
-      case 4:
+      case 2:	/* Byte order */
+        (void) ReadBlob(image, ldblk, (char *) BImgBuff);
+        InsertByteRow(BImgBuff, i, image);
+        break;
+      case 4:   /* Word order */
         ReadBlobWordLSB(image, ldblk, (unsigned short *) BImgBuff);
-        InsertRow(BImgBuff, i, image);
+        InsertWordRow(BImgBuff, i, image);
         break;
       case 9:
         ReadBlobDoublesLSB(image, ldblk, (double *) BImgBuff);
-        InsertFloatRow((double *) BImgBuff, i, image, Min, Max);
-        break;
-      default:
-        (void) ReadBlob(image, ldblk, (char *) BImgBuff);
-        InsertRow(BImgBuff, i, image);
+        InsertFloatRow((double *) BImgBuff, i, image, MinVal, MaxVal);
+        break;      
     }
   }
 
@@ -483,23 +489,23 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
         dblrow = (double *) BImgBuff;
         if (i == 0)
         {
-          Min = Max = *dblrow;
+          MinVal = MaxVal = *dblrow;
         }
         for (x = 0; x < (long) MATLAB_HDR.SizeX; x++)
         {
-          if (Min > *dblrow)
-            Min = *dblrow;
-          if (Max < *dblrow)
-            Max = *dblrow;
+          if (MinVal > *dblrow)
+            MinVal = *dblrow;
+          if (MaxVal < *dblrow)
+            MaxVal = *dblrow;
           dblrow++;
         }
       }
-      SeekBlob(image, filepos, SEEK_SET);
+      (void) SeekBlob(image, filepos, SEEK_SET);
 
       for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
       {
         ReadBlobDoublesLSB(image, ldblk, (double *) BImgBuff);
-        InsertComplexFloatRow((double *) BImgBuff, i, image, Min, Max);
+        InsertComplexFloatRow((double *) BImgBuff, i, image, MinVal, MaxVal);
       }
     }
   }

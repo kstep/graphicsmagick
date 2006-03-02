@@ -1,3 +1,13 @@
+2006-03-02  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c: Fixes for observed crash.  Byte and word formats
+	are working.
+
+2006-03-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sgi.c (ReadSGIImage): Properly compute image depth for
+	16-bit SGI image files.
+
 2006-02-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/environment.imdoc: MAGICK_FONT_PATH has not been supported
