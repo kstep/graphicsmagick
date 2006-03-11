@@ -27,7 +27,9 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%
+%Currently supported formats:
+%  2D matrices:       X*Y   byte, word, double, complex
+%  3D matrices: only X*Y*3  byte, word
 */
 
 /*
@@ -71,7 +73,7 @@ MATHeader;
 
 
 /* Update one byte row inside image. */
-static void InsertByteRow(unsigned char *p, int y, Image * image)
+static void InsertByteRow(unsigned char *p, int y, Image * image, int channel)
 {
   int x;
   register PixelPacket *q;
@@ -81,17 +83,47 @@ static void InsertByteRow(unsigned char *p, int y, Image * image)
                        /* Convert PseudoColor scanline. */  
   q = SetImagePixels(image, 0, y, image->columns, 1);
   if (q == (PixelPacket *) NULL) return;
-         
-  indexes = GetIndexes(image);
 
-  for (x = 0; x < (long) image->columns; x++)
-  {
-    index = (IndexPacket) (*p);
-    VerifyColormapIndex(image, index);
-    indexes[x] = index;
-    *q++ = image->colormap[index];
-    p++;
-  }
+  switch(channel)
+    {
+    case 0:          
+      indexes = GetIndexes(image);
+
+      for (x = 0; x < (long) image->columns; x++)
+        {
+        index = (IndexPacket) (*p);
+        VerifyColormapIndex(image, index);
+        indexes[x] = index;
+        *q++ = image->colormap[index];
+        p++;
+        }
+      break;
+    case 1:
+       for (x = 0; x < (long) image->columns; x++)        
+         { 
+         q->blue = ScaleCharToQuantum(*(unsigned short *) p);
+         p++;
+         q++;
+         }
+       break;
+    case 2:
+       for (x = 0; x < (long) image->columns; x++)        
+         {
+         q->green = ScaleCharToQuantum(*(unsigned short *) p);
+         p++;
+         q++;
+         }
+       break;
+    case 3:
+       for (x = 0; x < (long) image->columns; x++)        
+	 {         
+         q->red = ScaleCharToQuantum(*(unsigned short *) p);
+         q->opacity = OpaqueOpacity;
+         p++;
+         q++;
+         }
+       break;
+    }
   if (!SyncImagePixels(image))
     return;
         /*           if (image->previous == (Image *) NULL)
@@ -103,25 +135,53 @@ static void InsertByteRow(unsigned char *p, int y, Image * image)
 
 
 /* Update one word row inside image. */
-static void InsertWordRow(unsigned char *p, int y, Image * image)
+static void InsertWordRow(unsigned char *p, int y, Image * image, int channel)
 {
   int x;
   register PixelPacket *q;
-/*   IndexPacket index; */
-/*   register IndexPacket *indexes; */
 
   q = SetImagePixels(image, 0, y, image->columns, 1);
   if (q == (PixelPacket *) NULL) return;
-          
-  for (x = 0; x < (long) image->columns; x++)
-  {
-    q->red = ScaleShortToQuantum(*(unsigned short *) p);
-    q->green = ScaleShortToQuantum(*(unsigned short *) p);
-    q->blue = ScaleShortToQuantum(*(unsigned short *) p);
-    q->opacity = OpaqueOpacity;
-    p += 2;
-    q++;
-  }
+
+  switch(channel)
+    {
+    case 0: 
+      for (x = 0; x < (long) image->columns; x++)
+        {
+        q->red =
+          q->green =
+          q->blue = ScaleShortToQuantum(*(unsigned short *) p);    
+        q->opacity = OpaqueOpacity;
+        p += 2;
+        q++;
+        }
+       break;
+    case 1:
+       for (x = 0; x < (long) image->columns; x++)        
+         { 
+         q->blue = ScaleShortToQuantum(*(unsigned short *) p);
+         p += 2;
+         q++;
+         }
+       break;
+    case 2:
+       for (x = 0; x < (long) image->columns; x++)        
+         {
+         q->green = ScaleShortToQuantum(*(unsigned short *) p);
+         p += 2;
+         q++;
+         }
+       break;
+    case 3:
+       for (x = 0; x < (long) image->columns; x++)        
+	 {
+         q->red = ScaleShortToQuantum(*(unsigned short *) p);
+         p += 2;
+         q++;
+         }
+       break;
+    }   
+         
   if (!SyncImagePixels(image))
     return;
         /*          if (image->previous == (Image *) NULL)
@@ -130,6 +190,8 @@ static void InsertWordRow(unsigned char *p, int y, Image * image)
   return; 
 }
 
+
+/* Update one double organised row inside image. */
 static void InsertFloatRow(double *p, int y, Image * image, double MinVal, double MaxVal)
 {
   double f;
@@ -315,6 +377,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   unsigned char *BImgBuff = NULL;
   double MinVal, MaxVal,
    *dblrow;
+  unsigned long z, Unknown5;
 
   /*
      Open image file.
@@ -338,9 +401,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   MATLAB_HDR.unknown4 = ReadBlobLSBLong(image);
   MATLAB_HDR.DimFlag = ReadBlobLSBLong(image);
   MATLAB_HDR.SizeX = ReadBlobLSBLong(image);
-  MATLAB_HDR.SizeY = ReadBlobLSBLong(image);
-  MATLAB_HDR.Flag1 = ReadBlobLSBShort(image);
-  MATLAB_HDR.NameFlag = ReadBlobLSBShort(image);
+  MATLAB_HDR.SizeY = ReadBlobLSBLong(image);  
 
   if (strncmp(MATLAB_HDR.identific, "MATLAB", 6))
   MATLAB_KO:ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
@@ -348,12 +409,26 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     goto MATLAB_KO;
   if (MATLAB_HDR.unknown0 != 0x0E)
     goto MATLAB_KO;
-  if (MATLAB_HDR.DimFlag != 8)
-    ThrowReaderException(CoderError, MultidimensionalMatricesAreNotSupported,
+
+  switch(MATLAB_HDR.DimFlag)
+  {
+    case  8: z=1; break;	       /*2D matrix*/
+    case 12: z=ReadBlobLSBLong(image); /*3D matrix RGB*/
+	     Unknown5= ReadBlobLSBLong(image);
+	     if(z!=3) ThrowReaderException(CoderError, MultidimensionalMatricesAreNotSupported,
                          image);
+	     break;
+    default: ThrowReaderException(CoderError, MultidimensionalMatricesAreNotSupported,
+                         image);
+  }  
+
+  MATLAB_HDR.Flag1 = ReadBlobLSBShort(image);
+  MATLAB_HDR.NameFlag = ReadBlobLSBShort(image);
 
   /*printf("MATLAB_HDR.StructureFlag %ld\n",MATLAB_HDR.StructureFlag); */
-  if (MATLAB_HDR.StructureFlag != 6 && MATLAB_HDR.StructureFlag != 0x806)
+  if (MATLAB_HDR.StructureFlag != 6 && 
+      MATLAB_HDR.StructureFlag != 0x806 &&
+      MATLAB_HDR.StructureFlag != 9)
     goto MATLAB_KO;
 
   switch (MATLAB_HDR.NameFlag)
@@ -401,7 +476,8 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
       ldblk = (long) (8 * MATLAB_HDR.SizeX);
       break;
     default:
-  ThrowReaderException(CoderError, UnsupportedCellTypeInTheMatrix, image)}
+      ThrowReaderException(CoderError, UnsupportedCellTypeInTheMatrix, image)
+  }
 
   image->columns = MATLAB_HDR.SizeX;
   image->rows = MATLAB_HDR.SizeY;
@@ -411,7 +487,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   /* ----- Create gray palette ----- */
 
-  if (CellType == 2)
+  if (CellType == 2  && z!=3)
   {
     image->colors = 256;
     if (!AllocateImageColormap(image, image->colors))
@@ -458,24 +534,52 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   }
 
   /*Main loop for reading all scanlines */
-  for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
-  {
-    switch (CellType)
+  if(z==1)
+  {  
+    for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
     {
-      case 2:	/* Byte order */
-        (void) ReadBlob(image, ldblk, (char *) BImgBuff);
-        InsertByteRow(BImgBuff, i, image);
-        break;
-      case 4:   /* Word order */
-        ReadBlobWordLSB(image, ldblk, (unsigned short *) BImgBuff);
-        InsertWordRow(BImgBuff, i, image);
-        break;
-      case 9:
-        ReadBlobDoublesLSB(image, ldblk, (double *) BImgBuff);
-        InsertFloatRow((double *) BImgBuff, i, image, MinVal, MaxVal);
-        break;      
+      switch (CellType)
+      {
+        case 2:	/* Byte order */
+          (void) ReadBlob(image, ldblk, (char *) BImgBuff);
+          InsertByteRow(BImgBuff, i, image,0);
+          break;
+        case 4:   /* Word order */
+          ReadBlobWordLSB(image, ldblk, (unsigned short *) BImgBuff);
+          InsertWordRow(BImgBuff, i, image,0);
+          break;
+        case 9:
+          ReadBlobDoublesLSB(image, ldblk, (double *) BImgBuff);
+          InsertFloatRow((double *) BImgBuff, i, image, MinVal, MaxVal);
+          break;      
+      }
     }
   }
+  else
+   while(z>=1)
+   {
+   for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
+    {
+      switch (CellType)
+      {
+        case 2:	/* Byte order */
+          (void) ReadBlob(image, ldblk, (char *) BImgBuff);
+          InsertByteRow(BImgBuff, i, image, z);
+          break;
+        case 4:   /* Word order */
+          ReadBlobWordLSB(image, ldblk, (unsigned short *) BImgBuff);
+          InsertWordRow(BImgBuff, i, image, z);
+          break;
+        case 9:
+          goto MATLAB_KO;
+          /* ReadBlobDoublesLSB(image, ldblk, (double *) BImgBuff);
+          InsertFloatRow((double *) BImgBuff, i, image, MinVal, MaxVal);
+          break; */
+      }
+    }
+
+   z--;
+   } 
 
   /*Read complex part of numbers here */
   if (MATLAB_HDR.StructureFlag == 0x806)

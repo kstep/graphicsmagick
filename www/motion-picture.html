@@ -294,9 +294,9 @@ completely re-written. While GraphicsMagick makes every attempt to
 preserve header information, some previously existing features of the
 file (such as the offset to the pixel data) may change.</P>
 <P CLASS="western">A typical mogrify command is</P>
-<PRE STYLE="margin-bottom: 0.2in">   gm mogrify -resize 1828x1556 -depth 10 file-0001.dpx file-0002.dpx</PRE><P CLASS="western">
+<PRE STYLE="margin-bottom: 0.2in">   gm mogrify -resize 1828x1556 -depth 10 file-0001.dpx file-0002.dpx</PRE><H3 CLASS="western">
 Multiple files may be specified on the command line so the same
-command may process hundreds of files in one invocation.</P>
+command may process hundreds of files in one invocation.</H3>
 <P CLASS="western">Unix users can use the <EM>find</EM> and <EM>xargs</EM>
 programs to perform operations on any number of files:</P>
 <PRE STYLE="margin-bottom: 0.2in">   find /assets/001 -name '*.dpx' -print | xargs gm mogrify -resize 1828x1556 -depth 10</PRE><P CLASS="western">
@@ -442,13 +442,16 @@ dealing with DPX files.</P>
 	good).</DD></DL>
 <H3 CLASS="western">
 DPX Attributes</H3>
-<P CLASS="western">GraphicsMagick provides almost full access to DPX
-header attributes. DPX header attributes are shown in the output of
-'<KBD>gm identify -verbose</KBD>' and may be set using the -define
-syntax (e.g. '<KBD>-define dpx:mp.frame.position=2000</KBD>') on the
-command line in order to add a value, or override an existing value.
-The attributes in the list below may be viewed or updated. The names
-are similar to the attribute descriptions from the DPX standard.</P>
+<UL>
+	<LI><P CLASS="western">GraphicsMagick provides almost full access to
+	DPX header attributes. DPX header attributes are shown in the output
+	of '<KBD>gm identify -verbose</KBD>' and may be set using the
+	-define syntax (e.g. '<KBD>-define dpx:mp.frame.position=2000</KBD>')
+	on the command line in order to add a value, or override an existing
+	value. The attributes in the list below may be viewed or updated.
+	The names are similar to the attribute descriptions from the DPX
+	standard.</P>
+</UL>
 <DL>
 	<DD CLASS="western"><VAR>dpx:file.copyright</VAR></DD><DD CLASS="western">
 	<VAR>dpx:file.creation.datetime</VAR></DD><DD CLASS="western">
