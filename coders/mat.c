@@ -101,7 +101,7 @@ static void InsertByteRow(unsigned char *p, int y, Image * image, int channel)
     case 1:
        for (x = 0; x < (long) image->columns; x++)        
          { 
-         q->blue = ScaleCharToQuantum(*(unsigned short *) p);
+         q->blue = ScaleCharToQuantum(*p);
          p++;
          q++;
          }
@@ -109,7 +109,7 @@ static void InsertByteRow(unsigned char *p, int y, Image * image, int channel)
     case 2:
        for (x = 0; x < (long) image->columns; x++)        
          {
-         q->green = ScaleCharToQuantum(*(unsigned short *) p);
+         q->green = ScaleCharToQuantum(*p);
          p++;
          q++;
          }
@@ -117,7 +117,7 @@ static void InsertByteRow(unsigned char *p, int y, Image * image, int channel)
     case 3:
        for (x = 0; x < (long) image->columns; x++)        
 	 {         
-         q->red = ScaleCharToQuantum(*(unsigned short *) p);
+         q->red = ScaleCharToQuantum(*p);
          q->opacity = OpaqueOpacity;
          p++;
          q++;
