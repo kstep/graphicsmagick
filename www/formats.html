@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020810;12535100">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20060311;13240600">
+	<META NAME="CHANGED" CONTENT="20060311;18532600">
 	<META NAME="CLASSIFICATION" CONTENT="Describes the file formats supported by GraphicsMagick.">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software    development, simulation, image, software, AniMagick, Animagic,    Magick++">
@@ -805,9 +805,11 @@ Image Formats</B></FONT></P>
 				image format</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=51% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT>Currently supported formats:</P>
-				<P ALIGN=LEFT>2D matrices:  X*Y  byte, word, double, complex</P>
-				<P ALIGN=LEFT>3D matrices: only X*Y*3  byte, word</P>
+				<P ALIGN=LEFT>Comming from <A HREF="http://www.mathworks.com/">MATHWORKS</A>
+				for storing matrices.&nbsp; Currently supported types are 2D
+				matrices: byte, word, double, complex and 3D matrices containing
+				RGB [x*y*3] byte, word. Not supported are compressed matrices
+				from Matlab &gt;7.1.</P>
 			</TD>
 		</TR>
 		<TR>

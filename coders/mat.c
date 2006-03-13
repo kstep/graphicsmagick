@@ -71,6 +71,8 @@ typedef struct
 }
 MATHeader;
 
+char *MonthsTab[12]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+
 
 /* Update one byte row inside image. */
 static void InsertByteRow(unsigned char *p, int y, Image * image, int channel)
@@ -412,8 +414,8 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   switch(MATLAB_HDR.DimFlag)
   {
-    case  8: z=1; break;	       /*2D matrix*/
-    case 12: z=ReadBlobLSBLong(image); /*3D matrix RGB*/
+    case  8: z=1; break;	       /* 2D matrix */
+    case 12: z=ReadBlobLSBLong(image); /* 3D matrix RGB */
 	     Unknown5= ReadBlobLSBLong(image);
 	     if(z!=3) ThrowReaderException(CoderError, MultidimensionalMatricesAreNotSupported,
                          image);
@@ -425,16 +427,17 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   MATLAB_HDR.Flag1 = ReadBlobLSBShort(image);
   MATLAB_HDR.NameFlag = ReadBlobLSBShort(image);
 
-  /*printf("MATLAB_HDR.StructureFlag %ld\n",MATLAB_HDR.StructureFlag); */
+  /* printf("MATLAB_HDR.StructureFlag %ld\n",MATLAB_HDR.StructureFlag); */
   if (MATLAB_HDR.StructureFlag != 6 && 
       MATLAB_HDR.StructureFlag != 0x806 &&
-      MATLAB_HDR.StructureFlag != 9)
+      MATLAB_HDR.StructureFlag != 9 &&		/* uint8 3D */
+      MATLAB_HDR.StructureFlag != 11)		/* uint16 3D */
     goto MATLAB_KO;
 
   switch (MATLAB_HDR.NameFlag)
   {
     case 0:
-      (void) ReadBlob(image, 4, &size); /*Object name string */
+      (void) ReadBlob(image, 4, &size); /* Object name string */
       size = 4 * (long) ((size + 3 + 1) / 4);
       (void) SeekBlob(image, size, SEEK_CUR);
       break;
@@ -442,36 +445,36 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     case 2:
     case 3:
     case 4:
-      (void) ReadBlob(image, 4, &size); /*Object name string */
+      (void) ReadBlob(image, 4, &size); /* Object name string */
       break;
     default:
       goto MATLAB_KO;
   }
 
-  CellType = ReadBlobLSBLong(image);    /*Additional object type */
-  /*fprintf(stdout,"Cell type:%ld\n",CellType); */
-  (void) ReadBlob(image, 4, &size);     /*data size */
+  CellType = ReadBlobLSBLong(image);    /* Additional object type */
+  /* fprintf(stdout,"Cell type:%ld\n",CellType); */
+  (void) ReadBlob(image, 4, &size);     /* data size */
 
   switch (CellType)
   {
     case 2:
-      image->depth = Min(QuantumDepth,8);         /*Byte type cell */
+      image->depth = Min(QuantumDepth,8);         /* Byte type cell */
       ldblk = (long) MATLAB_HDR.SizeX;
       if (MATLAB_HDR.StructureFlag == 0x806)
         goto MATLAB_KO;
       break;
     case 4:
-      image->depth = Min(QuantumDepth,16);        /*Word type cell */
+      image->depth = Min(QuantumDepth,16);        /* Word type cell */
       ldblk = (long) (2 * MATLAB_HDR.SizeX);
       if (MATLAB_HDR.StructureFlag == 0x806)
         goto MATLAB_KO;
       break;
     case 9:
-      image->depth = Min(QuantumDepth,32);        /*double type cell */
+      image->depth = Min(QuantumDepth,32);        /* double type cell */
       if (sizeof(double) != 8)
         ThrowReaderException(CoderError, IncompatibleSizeOfDouble, image);
       if (MATLAB_HDR.StructureFlag == 0x806)
-      {                         /*complex double type cell */
+      {                         /* complex double type cell */
       }
       ldblk = (long) (8 * MATLAB_HDR.SizeX);
       break;
@@ -504,13 +507,13 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   }
 
   /* ----- Load raster data ----- */
-  BImgBuff = MagickAllocateMemory(unsigned char *,ldblk);    /*Ldblk was set in the check phase */
+  BImgBuff = MagickAllocateMemory(unsigned char *,ldblk);    /* Ldblk was set in the check phase */
   if (BImgBuff == NULL)
     goto NoMemory;
 
   MinVal = 0;
   MaxVal = 0;
-  if (CellType == 9)            /*Find Min and Max Values for floats */
+  if (CellType == 9)            /* Find Min and Max Values for floats */
   {
     filepos = TellBlob(image);
     for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
@@ -533,7 +536,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     (void) SeekBlob(image, filepos, SEEK_SET);
   }
 
-  /*Main loop for reading all scanlines */
+  /* Main loop for reading all scanlines */
   if(z==1)
   {  
     for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
@@ -584,7 +587,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   /*Read complex part of numbers here */
   if (MATLAB_HDR.StructureFlag == 0x806)
   {
-    if (CellType == 9)          /*Find Min and Max Values for complex parts of floats */
+    if (CellType == 9) /* Find Min and Max Values for complex parts of floats */
     {
       filepos = TellBlob(image);
       for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
@@ -628,12 +631,161 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     DestroyImage(image);
     image = FlopImage(rotated_image, exception);
     if (image == NULL)
-      image = rotated_image;    /*Obtain something if flop operation fails */
+      image = rotated_image;    /* Obtain something if flop operation fails */
     else
       DestroyImage(rotated_image);
   }
 
   return (image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e M A T L A B I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Function WriteMATLABImage writes an Matlab matrix to a file.  
+%
+%  The format of the WriteMATLABImage method is:
+%
+%      unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Function WriteMATLABImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to a ImageInfo structure.
+%
+%    o image:  A pointer to an Image structure.
+%
+*/
+static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
+{
+  long y;
+  register long x;
+  register const PixelPacket *q;
+  unsigned int status;
+  int logging;
+  unsigned long DataSize;
+  char padding;
+  char MATLAB_HDR[0x84];
+  Image *rotated_image, *image2;
+  time_t current_time;
+  const struct tm *t;
+
+  current_time=time((time_t *) NULL);
+  t=localtime(&current_time);
+
+  /*
+    Open output image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter MAT");
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  if (status == False)
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+
+  /*  Rotate image. */
+  rotated_image = RotateImage(image, 90.0, &image->exception);
+  if (rotated_image == (Image *) NULL)
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    
+  image2 = FlopImage(rotated_image, &image->exception);
+  DestroyImage(rotated_image);  rotated_image=NULL;
+  if (image2 == NULL)
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+
+  /*
+    Store MAT header.
+  */
+  DataSize = image2->rows/*X*/ * image2->columns /*Y*/ * 3 /*Z*/;
+  padding=((unsigned char)(DataSize-1) & 0x7) ^ 0x7;
+
+  memset(MATLAB_HDR,' ',124);
+  FormatString(MATLAB_HDR,"MATLAB 5.0 MAT-file, Platform: LNX86, Created on: Tue %s %2d %2d:%2d:%2d %d",
+    
+    MonthsTab[t->tm_mon],
+    t->tm_mday,
+    t->tm_hour,t->tm_min,t->tm_sec,
+    t->tm_year+1900);
+  MATLAB_HDR[0x7C]=0;
+  MATLAB_HDR[0x7D]=1;
+  MATLAB_HDR[0x7E]='I';
+  MATLAB_HDR[0x7F]='M';
+  MATLAB_HDR[0x80]=0xE;
+  MATLAB_HDR[0x81]=0;  MATLAB_HDR[0x82]=0;   MATLAB_HDR[0x83]=0;
+  WriteBlob(image,sizeof(MATLAB_HDR),MATLAB_HDR);
+
+  WriteBlobLSBLong(image, DataSize + 56l + padding); /* 0x84 */
+  WriteBlobLSBLong(image, 0x6); /* 0x88 */
+  WriteBlobLSBLong(image, 0x8); /* 0x8C */
+  WriteBlobLSBLong(image, 0x6); /* 0x90 */  
+  WriteBlobLSBLong(image, 0);   
+  WriteBlobLSBLong(image, 0x5); /* 0x98 */  
+  WriteBlobLSBLong(image, 0xC); /* 0x9C */      
+  WriteBlobLSBLong(image, image2->columns);  /* x: 0xA0 */  
+  WriteBlobLSBLong(image, image2->rows);     /* y: 0xA4 */  
+  WriteBlobLSBLong(image, 3);               /* z: 0xA8 */  
+  WriteBlobLSBLong(image, 0);
+  WriteBlobLSBShort(image, 1);  /* 0xB0 */  
+  WriteBlobLSBShort(image, 1);  /* 0xB2 */
+  WriteBlobLSBLong(image, 'M'); /* 0xB4 */
+  WriteBlobLSBLong(image, 0x2); /* 0xB8 */  
+  WriteBlobLSBLong(image, DataSize); /* 0xBC */
+
+  /*
+    Store image data.
+  */
+  for (y=0; y < (long) image2->rows; y++)
+  {
+    q=SetImagePixels(image2,0,y,image2->columns,1);
+    for (x=0; x < (long) image2->columns; x++)
+    {
+      WriteBlobByte(image,ScaleQuantumToChar(q->red));
+      q++;
+    }
+  }
+  for (y=0; y < (long) image2->rows; y++)
+  {
+    q=SetImagePixels(image2,0,y,image2->columns,1);
+    for (x=0; x < (long) image2->columns; x++)
+    {
+      WriteBlobByte(image,ScaleQuantumToChar(q->green));
+      q++;
+    }
+  }
+  for (y=0; y < (long) image2->rows; y++)
+  {
+    q=SetImagePixels(image2,0,y,image2->columns,1);
+    for (x=0; x < (long) image2->columns; x++)
+    {
+      WriteBlobByte(image,ScaleQuantumToChar(q->blue));
+      q++;
+    }
+  }
+
+  while(padding-->0) WriteBlobByte(image,0);
+
+  DestroyImage(image2);
+
+  status=True;
+
+  CloseBlob(image);
+  if (logging)
+    (void)LogMagickEvent(CoderEvent,GetMagickModule(),"return MAT");
+  
+  return(status);
 }
 
 /*
@@ -665,6 +817,7 @@ ModuleExport void RegisterMATImage(void)
 
   entry = SetMagickInfo("MAT");
   entry->decoder = (DecoderHandler) ReadMATImage;
+  entry->encoder = (EncoderHandler) WriteMATLABImage;
   entry->seekable_stream = True;
   entry->description = AcquireString("MATLAB image format");
   entry->module = AcquireString("MAT");

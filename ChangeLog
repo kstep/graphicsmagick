@@ -1,6 +1,11 @@
+2006-03-13  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c (WriteMATLABImage): Add RGB writer support for
+	MATLAB format.
+
 2006-03-11  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
-	* coders/mat.c (ReadMATImage): More fixes for MAT reader.
+	* coders/mat.c (ReadMATImage): RGB support for MAT reader.
 
 2006-03-02  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
