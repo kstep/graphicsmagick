@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2006 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -72,6 +72,50 @@ typedef struct
 MATHeader;
 
 char *MonthsTab[12]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+char *DayOfWTab[7]={"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
+#ifdef __WIN32__
+ char *OsDesc="PCWIN";
+#else
+ char *OsDesc="LNX86";
+#endif
+
+typedef enum
+  {
+    miINT8 = 1,			/* 8 bit signed */
+    miUINT8,			/* 8 bit unsigned */
+    miINT16,			/* 16 bit signed */
+    miUINT16,			/* 16 bit unsigned */
+    miINT32,			/* 32 bit signed */
+    miUINT32,			/* 32 bit unsigned */
+    miSINGLE,			/* IEEE 754 single precision float */
+    miRESERVE1,
+    miDOUBLE,			/* IEEE 754 double precision float */
+    miRESERVE2,
+    miRESERVE3,
+    miINT64,			/* 64 bit signed */
+    miUINT64,			/* 64 bit unsigned */
+    miMATRIX			/* MATLAB array */
+  } mat5_data_type;
+
+typedef enum
+  {
+    mxCELL_CLASS=1,		/* cell array */
+    mxSTRUCT_CLASS,		/* structure */
+    mxOBJECT_CLASS,		/* object */
+    mxCHAR_CLASS,		/* character array */
+    mxSPARSE_CLASS,		/* sparse array */
+    mxDOUBLE_CLASS,		/* double precision array */
+    mxSINGLE_CLASS,		/* single precision floating point */
+    mxINT8_CLASS,		/* 8 bit signed integer */
+    mxUINT8_CLASS,		/* 8 bit unsigned integer */
+    mxINT16_CLASS,		/* 16 bit signed integer */
+    mxUINT16_CLASS,		/* 16 bit unsigned integer */
+    mxINT32_CLASS,		/* 32 bit signed integer */
+    mxUINT32_CLASS,		/* 32 bit unsigned integer */
+    mxINT64_CLASS,		/* 64 bit signed integer */
+    mxUINT64_CLASS,		/* 64 bit unsigned integer */
+    mxFUNCTION_CLASS            /* Function handle */
+  } arrayclasstype;
 
 
 /* Update one byte row inside image. */
@@ -275,7 +319,7 @@ static void InsertComplexFloatRow(double *p, int y, Image * image, double MinVal
   return;
 }
 
-/*This function reads one block of unsigned shortS*/
+/* This function reads one block of unsigned shortS*/
 static void ReadBlobWordLSB(Image * image, size_t len, unsigned short *data)
 {
   while (len >= 2)
@@ -414,8 +458,8 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   switch(MATLAB_HDR.DimFlag)
   {
-    case  8: z=1; break;	       /* 2D matrix */
-    case 12: z=ReadBlobLSBLong(image); /* 3D matrix RGB */
+    case  8: z=1; break;	       /* 2D matrix*/
+    case 12: z=ReadBlobLSBLong(image); /* 3D matrix RGB*/
 	     Unknown5= ReadBlobLSBLong(image);
 	     if(z!=3) ThrowReaderException(CoderError, MultidimensionalMatricesAreNotSupported,
                          image);
@@ -428,10 +472,11 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   MATLAB_HDR.NameFlag = ReadBlobLSBShort(image);
 
   /* printf("MATLAB_HDR.StructureFlag %ld\n",MATLAB_HDR.StructureFlag); */
-  if (MATLAB_HDR.StructureFlag != 6 && 
-      MATLAB_HDR.StructureFlag != 0x806 &&
-      MATLAB_HDR.StructureFlag != 9 &&		/* uint8 3D */
-      MATLAB_HDR.StructureFlag != 11)		/* uint16 3D */
+  if (MATLAB_HDR.StructureFlag != mxCHAR_CLASS && 
+      MATLAB_HDR.StructureFlag != mxDOUBLE_CLASS && 
+      MATLAB_HDR.StructureFlag != (0x800|mxDOUBLE_CLASS) &&  /* complex double */
+      MATLAB_HDR.StructureFlag != mxUINT8_CLASS &&           /* uint8 3D */
+      MATLAB_HDR.StructureFlag != mxUINT16_CLASS)	     /* uint16 3D */
     goto MATLAB_KO;
 
   switch (MATLAB_HDR.NameFlag)
@@ -457,19 +502,19 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   switch (CellType)
   {
-    case 2:
+    case miUINT8:
       image->depth = Min(QuantumDepth,8);         /* Byte type cell */
       ldblk = (long) MATLAB_HDR.SizeX;
       if (MATLAB_HDR.StructureFlag == 0x806)
         goto MATLAB_KO;
       break;
-    case 4:
+    case miUINT16:
       image->depth = Min(QuantumDepth,16);        /* Word type cell */
       ldblk = (long) (2 * MATLAB_HDR.SizeX);
       if (MATLAB_HDR.StructureFlag == 0x806)
         goto MATLAB_KO;
       break;
-    case 9:
+    case miDOUBLE:
       image->depth = Min(QuantumDepth,32);        /* double type cell */
       if (sizeof(double) != 8)
         ThrowReaderException(CoderError, IncompatibleSizeOfDouble, image);
@@ -490,7 +535,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   /* ----- Create gray palette ----- */
 
-  if (CellType == 2  && z!=3)
+  if (CellType == miUINT8  && z!=3)
   {
     image->colors = 256;
     if (!AllocateImageColormap(image, image->colors))
@@ -513,7 +558,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   MinVal = 0;
   MaxVal = 0;
-  if (CellType == 9)            /* Find Min and Max Values for floats */
+  if (CellType == miDOUBLE)        /* Find Min and Max Values for floats */
   {
     filepos = TellBlob(image);
     for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
@@ -543,15 +588,15 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     {
       switch (CellType)
       {
-        case 2:	/* Byte order */
+        case miUINT8:	/* Byte order */
           (void) ReadBlob(image, ldblk, (char *) BImgBuff);
           InsertByteRow(BImgBuff, i, image,0);
           break;
-        case 4:   /* Word order */
+        case miUINT16:	/* Word order */
           ReadBlobWordLSB(image, ldblk, (unsigned short *) BImgBuff);
           InsertWordRow(BImgBuff, i, image,0);
           break;
-        case 9:
+        case miDOUBLE:
           ReadBlobDoublesLSB(image, ldblk, (double *) BImgBuff);
           InsertFloatRow((double *) BImgBuff, i, image, MinVal, MaxVal);
           break;      
@@ -565,15 +610,15 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     {
       switch (CellType)
       {
-        case 2:	/* Byte order */
+        case miUINT8:	/* Byte order */
           (void) ReadBlob(image, ldblk, (char *) BImgBuff);
           InsertByteRow(BImgBuff, i, image, z);
           break;
-        case 4:   /* Word order */
+        case miUINT16: 	/* Word order */
           ReadBlobWordLSB(image, ldblk, (unsigned short *) BImgBuff);
           InsertWordRow(BImgBuff, i, image, z);
           break;
-        case 9:
+        case miDOUBLE:
           goto MATLAB_KO;
           /* ReadBlobDoublesLSB(image, ldblk, (double *) BImgBuff);
           InsertFloatRow((double *) BImgBuff, i, image, MinVal, MaxVal);
@@ -584,10 +629,10 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
    z--;
    } 
 
-  /*Read complex part of numbers here */
+  /* Read complex part of numbers here */
   if (MATLAB_HDR.StructureFlag == 0x806)
   {
-    if (CellType == 9) /* Find Min and Max Values for complex parts of floats */
+    if (CellType == miDOUBLE)        /* Find Min and Max Values for complex parts of floats */
     {
       filepos = TellBlob(image);
       for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
@@ -677,7 +722,6 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   unsigned long DataSize;
   char padding;
   char MATLAB_HDR[0x84];
-  Image *rotated_image, *image2;
   time_t current_time;
   const struct tm *t;
 
@@ -694,27 +738,18 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter MAT");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-
-  /*  Rotate image. */
-  rotated_image = RotateImage(image, 90.0, &image->exception);
-  if (rotated_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-    
-  image2 = FlopImage(rotated_image, &image->exception);
-  DestroyImage(rotated_image);  rotated_image=NULL;
-  if (image2 == NULL)
-    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);  
 
   /*
     Store MAT header.
   */
-  DataSize = image2->rows/*X*/ * image2->columns /*Y*/ * 3 /*Z*/;
+  DataSize = image->rows /*Y*/ * image->columns /*X*/ * 3 /*Z*/;
   padding=((unsigned char)(DataSize-1) & 0x7) ^ 0x7;
 
   memset(MATLAB_HDR,' ',124);
-  FormatString(MATLAB_HDR,"MATLAB 5.0 MAT-file, Platform: LNX86, Created on: Tue %s %2d %2d:%2d:%2d %d",
-    
+  FormatString(MATLAB_HDR,"MATLAB 5.0 MAT-file, Platform: %s, Created on: %s %s %2d %2d:%2d:%2d %d",
+    OsDesc,
+    DayOfWTab[t->tm_wday],
     MonthsTab[t->tm_mon],
     t->tm_mday,
     t->tm_hour,t->tm_min,t->tm_sec,
@@ -734,9 +769,9 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   WriteBlobLSBLong(image, 0);   
   WriteBlobLSBLong(image, 0x5); /* 0x98 */  
   WriteBlobLSBLong(image, 0xC); /* 0x9C */      
-  WriteBlobLSBLong(image, image2->columns);  /* x: 0xA0 */  
-  WriteBlobLSBLong(image, image2->rows);     /* y: 0xA4 */  
-  WriteBlobLSBLong(image, 3);               /* z: 0xA8 */  
+  WriteBlobLSBLong(image, image->rows);    /* x: 0xA0 */  
+  WriteBlobLSBLong(image, image->columns); /* y: 0xA4 */  
+  WriteBlobLSBLong(image, 3);              /* z: 0xA8 */  
   WriteBlobLSBLong(image, 0);
   WriteBlobLSBShort(image, 1);  /* 0xB0 */  
   WriteBlobLSBShort(image, 1);  /* 0xB2 */
@@ -747,28 +782,28 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   /*
     Store image data.
   */
-  for (y=0; y < (long) image2->rows; y++)
+  for (y=0; y<(long)image->columns; y++)
   {
-    q=SetImagePixels(image2,0,y,image2->columns,1);
-    for (x=0; x < (long) image2->columns; x++)
+    q=AcquireImagePixels(image,y-1,0,1,image->rows-1,&image->exception);    
+    for (x=0; x < (long) image->rows; x++)
     {
       WriteBlobByte(image,ScaleQuantumToChar(q->red));
       q++;
     }
   }
-  for (y=0; y < (long) image2->rows; y++)
+  for (y=0; y<(long)image->columns; y++)
   {
-    q=SetImagePixels(image2,0,y,image2->columns,1);
-    for (x=0; x < (long) image2->columns; x++)
+    q=AcquireImagePixels(image,y-1,0,1,image->rows-1,&image->exception);
+    for (x=0; x < (long) image->rows; x++)
     {
       WriteBlobByte(image,ScaleQuantumToChar(q->green));
       q++;
     }
   }
-  for (y=0; y < (long) image2->rows; y++)
+  for (y=0; y<(long)image->columns; y++)
   {
-    q=SetImagePixels(image2,0,y,image2->columns,1);
-    for (x=0; x < (long) image2->columns; x++)
+    q=AcquireImagePixels(image,y-1,0,1,image->rows-1,&image->exception);
+    for (x=0; x < (long) image->rows; x++)
     {
       WriteBlobByte(image,ScaleQuantumToChar(q->blue));
       q++;
@@ -776,8 +811,6 @@ static unsigned int WriteMATLABImage(const ImageInfo *image_info,Image *image)
   }
 
   while(padding-->0) WriteBlobByte(image,0);
-
-  DestroyImage(image2);
 
   status=True;
 

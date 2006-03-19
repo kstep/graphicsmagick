@@ -1,3 +1,9 @@
+2006-03-19  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c: Use symbolic constants rather than plain numbers
+	so the module is more maintainable.  Correct the format for the
+	day of the week.
+
 2006-03-13  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c (WriteMATLABImage): Add RGB writer support for
