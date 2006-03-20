@@ -256,6 +256,8 @@ static void InsertFloatRow(double *p, int y, Image * image, double MinVal, doubl
     q->red = 
       q->green = 
       q->blue = RoundSignedToQuantum(f);
+    q->opacity = OpaqueOpacity;
+  
     p++;
     q++;
   }
@@ -518,7 +520,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
       image->depth = Min(QuantumDepth,32);        /* double type cell */
       if (sizeof(double) != 8)
         ThrowReaderException(CoderError, IncompatibleSizeOfDouble, image);
-      if (MATLAB_HDR.StructureFlag == 0x806)
+      if (MATLAB_HDR.StructureFlag == (0x800|mxDOUBLE_CLASS))
       {                         /* complex double type cell */
       }
       ldblk = (long) (8 * MATLAB_HDR.SizeX);
@@ -532,6 +534,12 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   image->colors = 1l >> 8;
   if (image->columns == 0 || image->rows == 0)
     goto MATLAB_KO;
+  if (image_info->ping)
+  {
+    image->columns = MATLAB_HDR.SizeY;	/* Fix for reading header only. */
+    image->rows = MATLAB_HDR.SizeX;
+    goto SKIP_READING;
+  }
 
   /* ----- Create gray palette ----- */
 
@@ -630,7 +638,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
    } 
 
   /* Read complex part of numbers here */
-  if (MATLAB_HDR.StructureFlag == 0x806)
+  if (MATLAB_HDR.StructureFlag == (0x800|mxDOUBLE_CLASS))
   {
     if (CellType == miDOUBLE)        /* Find Min and Max Values for complex parts of floats */
     {
@@ -681,6 +689,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
       DestroyImage(rotated_image);
   }
 
+SKIP_READING:
   return (image);
 }
 

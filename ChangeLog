@@ -1,3 +1,11 @@
+2006-03-20  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c: Ensure that unusued opacity channel is set to opaque.
+	* PerlMagick/t/input.art: New ART test image.
+	* PerlMagick/t/input8.mat: New MATLAB test image (8-bit indexed).
+	* PerlMagick/t/input_dbl.mat: New MATLAB test image (double grey)
+	* PerlMagick/t/input_rgb.mat: New MATLAB test image (8-bit RGB)
+
 2006-03-19  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c: Use symbolic constants rather than plain numbers
