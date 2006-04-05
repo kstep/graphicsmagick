@@ -1,3 +1,10 @@
+2006-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (IMAGE_DATA_ROUNDING): Thanks to Steve Sloan for
+	noticing that 8K is 8192 rather than 8092.  Added a define to
+	allow tailoring the pixel data alignment boundary in case 8K is
+	not the right answer for some reason.
+
 2006-03-20  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c: Ensure that unusued opacity channel is set to opaque.

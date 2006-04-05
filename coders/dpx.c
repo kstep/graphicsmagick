@@ -161,6 +161,16 @@ typedef unsigned int sample_t;
 #define IS_UNDEFINED_R32(value) (*((U32 *) &value) == ((U32) ~0))
 #define IS_UNDEFINED_ASCII(value) (!(value[0] > 0))
 
+/*
+  Round the starting address of pixel data to this offset.  The DPX
+  specification recommends rounding up to the next 8K boundary past
+  the file header.
+*/
+#define IMAGE_DATA_ROUNDING 8192
+
+/*
+  Iimage element descriptors.
+*/
 typedef enum
 {
   ImageElementUnspecified=0,
@@ -188,6 +198,9 @@ typedef enum
   ImageElementUserDef8Element=156  /* User-defined 8-component element */
 } DPXImageElementDescriptor;
 
+/*
+  Transfer characteristic enumerations.
+*/
 typedef enum
 {
   TransferCharacteristicUserDefined=0,
@@ -205,6 +218,9 @@ typedef enum
   TransferCharacteristicZDepthHomogeneous=12
 } DPXTransferCharacteristic;
 
+/*
+  Colorimetric enumerations.
+*/
 typedef enum
 {
   ColorimetricUserDefined=0,       /* User defined */
@@ -222,6 +238,9 @@ typedef enum
   ColorimetricZDepthHomogeneous=12
 } DPXColorimetric;
 
+/*
+  Packing methods for filled words.
+*/
 typedef enum
 {
   PackingMethodPacked=0,           /* Packed with no padding */
@@ -3141,8 +3160,18 @@ static void WriteRowSamples(const sample_t *samples,
   else \
     SET_UNDEFINED_ASCII(member); \
 }
+
+/*
+  Scale a value to video levels.
+*/
 #define ScaleToVideo(sample,ref_low,dnscale) \
   ((unsigned int) (((double) sample*dnscale)+ref_low+0.5))
+
+/*
+  Round an offset up to specified offset boundary.
+*/
+#define RoundUpToBoundary(offset,boundary) \
+  (((offset+boundary-1)/boundary)*boundary);
 
 static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 {
@@ -3571,7 +3600,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   image_data_offset=2048;
   if (user_data)
     image_data_offset += user_data_length;
-  image_data_offset=(((image_data_offset+8091)/8092)*8092);
+  image_data_offset=RoundUpToBoundary(image_data_offset,IMAGE_DATA_ROUNDING);
 
   /* Element Descriptor */
   SET_UNDEFINED_U8(dpx_image_info.element_info[0].descriptor);
