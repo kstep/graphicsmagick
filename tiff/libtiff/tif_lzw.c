@@ -1002,16 +1002,20 @@ cl_hash(LZWCodecState* sp)
 static void
 LZWCleanup(TIFF* tif)
 {
-	if (tif->tif_data) {
-		if (DecoderState(tif)->dec_codetab)
-			_TIFFfree(DecoderState(tif)->dec_codetab);
+	(void)TIFFPredictorCleanup(tif);
 
-		if (EncoderState(tif)->enc_hashtab)
-			_TIFFfree(EncoderState(tif)->enc_hashtab);
+	assert(tif->tif_data != 0);
 
-		_TIFFfree(tif->tif_data);
-		tif->tif_data = NULL;
-	}
+	if (DecoderState(tif)->dec_codetab)
+		_TIFFfree(DecoderState(tif)->dec_codetab);
+
+	if (EncoderState(tif)->enc_hashtab)
+		_TIFFfree(EncoderState(tif)->enc_hashtab);
+
+	_TIFFfree(tif->tif_data);
+	tif->tif_data = NULL;
+
+	_TIFFSetDefaultCompressionState(tif);
 }
 
 int
@@ -1050,7 +1054,8 @@ TIFFInitLZW(TIFF* tif, int scheme)
 	(void) TIFFPredictorInit(tif);
 	return (1);
 bad:
-	TIFFErrorExt(tif->tif_clientdata, "TIFFInitLZW", "No space for LZW state block");
+	TIFFErrorExt(tif->tif_clientdata, "TIFFInitLZW", 
+		     "No space for LZW state block");
 	return (0);
 }
 

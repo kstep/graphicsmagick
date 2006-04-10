@@ -382,7 +382,12 @@ main(int argc, char** argv)
 	}
 	while ((n = read(fileno(stdin), buf, sizeof (buf))) > 0)
 	    write(fileno(fd), buf, n);
+	lseek(fileno(fd), 0, SEEK_SET);
+#if defined(_WIN32) && defined(USE_WIN32_FILEIO)
+	tif = TIFFFdOpen(_get_osfhandle(fileno(fd)), "temp", "r");
+#else
 	tif = TIFFFdOpen(fileno(fd), "temp", "r");
+#endif
 	if (tif) {
 	    fax2ps(tif, npages, pages, "<stdin>");
 	    TIFFClose(tif);
@@ -407,7 +412,7 @@ char* stuff[] = {
 " -y yres       set default vertical resolution of input data (lpi)",
 " -S            scale output to page size",
 " -W width      set output page width (inches), default is 8.5",
-" -H height     set output page height (inchest), default is 11",
+" -H height     set output page height (inches), default is 11",
 NULL
 };
 

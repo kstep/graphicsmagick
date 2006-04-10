@@ -257,7 +257,7 @@ tiffFieldInfo[] = {
 /* end Pixar tags */
     { TIFFTAG_RICHTIFFIPTC, -3, -3,	TIFF_LONG,	FIELD_CUSTOM, 
       0,    1,   "RichTIFFIPTC" },
-    { TIFFTAG_PHOTOSHOP,    -1, -3,	TIFF_BYTE,	FIELD_CUSTOM, 
+    { TIFFTAG_PHOTOSHOP,    -3, -3,	TIFF_BYTE,	FIELD_CUSTOM, 
       0,    1,   "Photoshop" },
     { TIFFTAG_EXIFIFD,		1, 1,	TIFF_LONG,	FIELD_CUSTOM,
       0,	0,	"EXIFIFDOffset" },
@@ -711,7 +711,7 @@ _TIFFFindFieldInfo(TIFF* tif, ttag_t tag, TIFFDataType dt)
 		return (tif->tif_foundfield);
 	/* NB: use sorted search (e.g. binary search) */
 	if(dt != TIFF_ANY) {
-            TIFFFieldInfo key = {0, 0, 0, 0, 0, 0, 0, 0};
+            TIFFFieldInfo key = {0, 0, 0, TIFF_NOTYPE, 0, 0, 0, 0};
 	    TIFFFieldInfo* pkey = &key;
 	    const TIFFFieldInfo **ret;
 
@@ -744,7 +744,7 @@ _TIFFFindFieldInfoByName(TIFF* tif, const char *field_name, TIFFDataType dt)
 		return (tif->tif_foundfield);
 	/* NB: use sorted search (e.g. binary search) */
 	if(dt != TIFF_ANY) {
-            TIFFFieldInfo key = {0, 0, 0, 0, 0, 0, 0, 0};
+            TIFFFieldInfo key = {0, 0, 0, TIFF_NOTYPE, 0, 0, 0, 0};
 	    TIFFFieldInfo* pkey = &key;
 	    const TIFFFieldInfo **ret;
 

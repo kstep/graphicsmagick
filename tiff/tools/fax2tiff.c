@@ -264,7 +264,11 @@ main(int argc, char* argv[])
 			    "%s: %s: Can not open\n", argv[0], argv[optind]);
 			continue;
 		}
+#if defined(_WIN32) && defined(USE_WIN32_FILEIO)
+                TIFFSetClientdata(faxTIFF, (thandle_t)_get_osfhandle(fileno(in)));
+#else
                 TIFFSetClientdata(faxTIFF, (thandle_t)fileno(in));
+#endif
 		TIFFSetFileName(faxTIFF, (const char*)argv[optind]);
 		TIFFSetField(out, TIFFTAG_IMAGEWIDTH, xsize);
 		TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, 1);
@@ -350,11 +354,11 @@ copyFaxFile(TIFF* tifin, TIFF* tifout)
 	tifin->tif_rawdatasize = TIFFGetFileSize(tifin);
 	tifin->tif_rawdata = _TIFFmalloc(tifin->tif_rawdatasize);
 	if (tifin->tif_rawdata == NULL) {
-		TIFFError(tifin->tif_name, "%s: Not enough memory");
+		TIFFError(tifin->tif_name, "Not enough memory");
 		return (0);
 	}
 	if (!ReadOK(tifin, tifin->tif_rawdata, tifin->tif_rawdatasize)) {
-		TIFFError(tifin->tif_name, "%s: Read error at scanline 0");
+		TIFFError(tifin->tif_name, "Read error at scanline 0");
 		return (0);
 	}
 	tifin->tif_rawcp = tifin->tif_rawdata;

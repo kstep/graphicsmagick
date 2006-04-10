@@ -36,7 +36,7 @@
 tdata_t
 _TIFFCheckMalloc(TIFF* tif, size_t nmemb, size_t elem_size, const char* what)
 {
-	tdata_t *cp = NULL;
+	tdata_t cp = NULL;
 	tsize_t	bytes = nmemb * elem_size;
 
 	/*
@@ -181,7 +181,7 @@ TIFFVGetFieldDefaulted(TIFF* tif, ttag_t tag, va_list ap)
 	case TIFFTAG_YCBCRCOEFFICIENTS:
 		{
 			/* defaults are from CCIR Recommendation 601-1 */
-			float ycbcrcoeffs[] = { 0.299f, 0.587f, 0.114f };
+			static float ycbcrcoeffs[] = { 0.299f, 0.587f, 0.114f };
 			*va_arg(ap, float **) = ycbcrcoeffs;
 			return 1;
 		}

@@ -60,9 +60,9 @@ extern void *lfind(const void *, const void *, size_t *, size_t,
 #include "tiffio.h"
 #include "tif_dir.h"
 
-typedef double dblparam_t;
-
-#define GLOBALDATA(TYPE,NAME)	extern TYPE NAME
+#ifndef STRIP_SIZE_DEFAULT
+# define STRIP_SIZE_DEFAULT 8192
+#endif
 
 #define    streq(a,b)      (strcmp(a,b) == 0)
 
@@ -250,6 +250,7 @@ extern	void _TIFFSwab32BitData(TIFF*, tidata_t, tsize_t);
 extern	void _TIFFSwab64BitData(TIFF*, tidata_t, tsize_t);
 extern	int TIFFFlushData1(TIFF*);
 extern	int TIFFDefaultDirectory(TIFF*);
+extern	void _TIFFSetDefaultCompressionState(TIFF*);
 extern	int TIFFSetCompressionScheme(TIFF*, int);
 extern	int TIFFSetDefaultCompressionState(TIFF*);
 extern	uint32 _TIFFDefaultStripSize(TIFF*, uint32);
@@ -266,10 +267,10 @@ extern	void _TIFFsetDoubleArray(double**, double*, uint32);
 extern	void _TIFFprintAscii(FILE*, const char*);
 extern	void _TIFFprintAsciiTag(FILE*, const char*, const char*);
 
-GLOBALDATA(TIFFErrorHandler,_TIFFwarningHandler);
-GLOBALDATA(TIFFErrorHandler,_TIFFerrorHandler);
-GLOBALDATA(TIFFErrorHandlerExt,_TIFFwarningHandlerExt);
-GLOBALDATA(TIFFErrorHandlerExt,_TIFFerrorHandlerExt);
+extern	TIFFErrorHandler _TIFFwarningHandler;
+extern	TIFFErrorHandler _TIFFerrorHandler;
+extern	TIFFErrorHandlerExt _TIFFwarningHandlerExt;
+extern	TIFFErrorHandlerExt _TIFFerrorHandlerExt;
 
 extern	tdata_t _TIFFCheckMalloc(TIFF*, size_t, size_t, const char*);
 

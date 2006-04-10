@@ -329,11 +329,19 @@ processCompressOptions(char* opt)
 		defcompression = COMPRESSION_PACKBITS;
 	} else if (strneq(opt, "jpeg", 4)) {
 		char* cp = strchr(opt, ':');
-		if (cp && isdigit((int)cp[1]))
+
+                defcompression = COMPRESSION_JPEG;
+                while( cp )
+                {
+                    if (isdigit((int)cp[1]))
 			quality = atoi(cp+1);
-		if (cp && strchr(cp, 'r'))
+                    else if (cp[1] == 'r' )
 			jpegcolormode = JPEGCOLORMODE_RAW;
-		defcompression = COMPRESSION_JPEG;
+                    else
+                        usage();
+
+                    cp = strchr(cp+1,':');
+                }
 	} else if (strneq(opt, "g3", 2)) {
 		processG3Options(opt);
 		defcompression = COMPRESSION_CCITTFAX3;
@@ -547,8 +555,8 @@ tiffcp(TIFF* in, TIFF* out)
 	if (compression == COMPRESSION_JPEG) {
 	    uint16 input_compression, input_photometric;
 
-            if ( TIFFGetField( in, TIFFTAG_COMPRESSION, &input_compression )
-                 && input_compression == COMPRESSION_JPEG ) {
+            if (TIFFGetField(in, TIFFTAG_COMPRESSION, &input_compression)
+                 && input_compression == COMPRESSION_JPEG) {
                 TIFFSetField(in, TIFFTAG_JPEGCOLORMODE, JPEGCOLORMODE_RGB);
             }
 	    if (TIFFGetField(in, TIFFTAG_PHOTOMETRIC, &input_photometric)) {
@@ -627,9 +635,13 @@ tiffcp(TIFF* in, TIFF* out)
 		 * use the library default.
 		 */
 		if (rowsperstrip == (uint32) 0) {
-			if (!TIFFGetField(in, TIFFTAG_ROWSPERSTRIP,&rowsperstrip))
+			if (!TIFFGetField(in, TIFFTAG_ROWSPERSTRIP,
+					  &rowsperstrip)) {
 				rowsperstrip =
 					TIFFDefaultStripSize(out, rowsperstrip);
+			}
+			if (rowsperstrip > length)
+				rowsperstrip = length;
 		}
 		else if (rowsperstrip == (uint32) -1)
 			rowsperstrip = length;
