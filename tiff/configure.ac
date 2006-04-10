@@ -1,7 +1,7 @@
 dnl                                               -*- Autoconf -*-
 dnl Tag Image File Format (TIFF) Software
 dnl
-dnl Copyright (C) 2004, Andrey Kiselev <dron@remotesensing.org>
+dnl Copyright (C) 2004, Andrey Kiselev <dron@ak4719.spb.edu>
 dnl
 dnl Permission to use, copy, modify, distribute, and sell this software and 
 dnl its documentation for any purpose is hereby granted without fee, provided
@@ -25,7 +25,7 @@ dnl OF THIS SOFTWARE.
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([LibTIFF Software], 3.8.0, [tiff@lists.maptools.org], tiff)
+AC_INIT([LibTIFF Software], 3.8.2, [tiff@lists.maptools.org], tiff)
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR(m4)
 AC_LANG(C)
@@ -41,7 +41,7 @@ dnl Versioning.
 dnl Don't fill the ALPHA_VERSION field, if not applicable.
 LIBTIFF_MAJOR_VERSION=3
 LIBTIFF_MINOR_VERSION=8
-LIBTIFF_MICRO_VERSION=0
+LIBTIFF_MICRO_VERSION=2
 LIBTIFF_ALPHA_VERSION=
 LIBTIFF_VERSION=$LIBTIFF_MAJOR_VERSION.$LIBTIFF_MINOR_VERSION.$LIBTIFF_MICRO_VERSION$LIBTIFF_ALPHA_VERSION
 dnl This will be used with the 'make release' target
@@ -78,6 +78,7 @@ VL_PROG_CC_WARNINGS()
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_LIBTOOL
+AC_LIBTOOL_WIN32_DLL
 
 dnl Checks for libraries.
 AC_CHECK_LIB([c], [main])
@@ -451,10 +452,12 @@ AC_ARG_WITH(default-strip-size,
 	    AS_HELP_STRING([--with-default-strip-size=SIZE],
 			   [default size of the strip in bytes (when strip chopping enabled) [[default=8192]]]),,)
 
-if test "$HAVE_STRIPCHOP" = "yes" ; then
+if test "$HAVE_STRIPCHOP" = "yes" \
+	-a "x$with_default_strip_size" != "xno"; then
   AC_DEFINE(STRIPCHOP_DEFAULT,TIFF_STRIPCHOP,[Support strip chopping (whether or not to convert single-strip uncompressed images to mutiple strips of specified size to reduce memory usage)])
 
-  if test "x$with_default_strip_size" == "x" ; then
+  if test "x$with_default_strip_size" = "x" \
+	  -o "x$with_default_strip_size" = "xyes"; then
     with_default_strip_size="8192"
   fi
 

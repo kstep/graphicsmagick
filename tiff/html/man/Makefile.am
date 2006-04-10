@@ -1,6 +1,6 @@
 # Tag Image File Format (TIFF) Software
 #
-# Copyright (C) 2004, Andrey Kiselev <dron@remotesensing.org>
+# Copyright (C) 2004, Andrey Kiselev <dron@ak4719.spb.edu>
 #
 # Permission to use, copy, modify, distribute, and sell this software and 
 # its documentation for any purpose is hereby granted without fee, provided
@@ -25,6 +25,7 @@
 
 docdir = $(LIBTIFF_DOCDIR)/html/man
 MANSRCDIR = $(top_srcdir)/man
+HTMLMANDIR = $(top_srcdir)/html/man
 
 GROFF = groff -Thtml -mandoc
 ECHO = echo
@@ -112,6 +113,6 @@ manpages = $(docfiles:.html=)
 .PHONY: htmldoc
 htmldoc: index
 	for i in $(manpages); do					\
-		${GROFF} $(MANSRCDIR)/$$i > $$i.html;			\
+		${GROFF} $(MANSRCDIR)/$$i > $(HTMLMANDIR)/$$i.html;	\
 	done
 

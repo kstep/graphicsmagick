@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.18.1 -->
-<!-- CreationDate: Fri Dec 30 00:55:57 2005 -->
+<!-- CreationDate: Mon Mar 13 18:03:10 2006 -->
 <html>
 <head>
 <meta name="generator" content="groff -Thtml, see www.gnu.org">
@@ -300,24 +300,6 @@ information on the meaning of each tag.</p></td>
 <td width="8%"></td>
 <td width="41%">
 
-<p>TIFFTAG_FAXMODE</p>
-</td>
-<td width="8%">
-
-<p>1</p>
-</td>
-<td width="24%">
-
-<p>int</p>
-</td>
-<td width="16%">
-
-<p>&dagger; G3/G4 compression pseudo-tag</p>
-</td>
-<tr valign="top" align="left">
-<td width="8%"></td>
-<td width="41%">
-
 <p>TIFFTAG_FAXFILLFUNC</p>
 </td>
 <td width="8%">
@@ -331,6 +313,24 @@ information on the meaning of each tag.</p></td>
 <td width="16%">
 
 <p>G3/G4 compression pseudo-tag</p>
+</td>
+<tr valign="top" align="left">
+<td width="8%"></td>
+<td width="41%">
+
+<p>TIFFTAG_FAXMODE</p>
+</td>
+<td width="8%">
+
+<p>1</p>
+</td>
+<td width="24%">
+
+<p>int</p>
+</td>
+<td width="16%">
+
+<p>&dagger; G3/G4 compression pseudo-tag</p>
 </td>
 <tr valign="top" align="left">
 <td width="8%"></td>
@@ -422,17 +422,19 @@ information on the meaning of each tag.</p></td>
 <td width="8%"></td>
 <td width="41%">
 
-<p>TIFFTAG_IMAGEDESCRIPTION</p>
+<p>TIFFTAG_ICCPROFILE</p>
 </td>
 <td width="8%">
 
-<p>1</p>
+<p>2</p>
 </td>
 <td width="24%">
 
-<p>char*</p>
+<p>uint32,void*</p>
 </td>
 <td width="16%">
+
+<p>count, profile data</p>
 </td>
 <tr valign="top" align="left">
 <td width="8%"></td>
@@ -451,6 +453,22 @@ information on the meaning of each tag.</p></td>
 <td width="16%">
 
 <p>&dagger;</p>
+</td>
+<tr valign="top" align="left">
+<td width="8%"></td>
+<td width="41%">
+
+<p>TIFFTAG_IMAGEDESCRIPTION</p>
+</td>
+<td width="8%">
+
+<p>1</p>
+</td>
+<td width="24%">
+
+<p>char*</p>
+</td>
+<td width="16%">
 </td>
 <tr valign="top" align="left">
 <td width="8%"></td>
@@ -524,19 +542,19 @@ information on the meaning of each tag.</p></td>
 <td width="8%"></td>
 <td width="41%">
 
-<p>TIFFTAG_JPEGTABLES</p>
+<p>TIFFTAG_JPEGCOLORMODE</p>
 </td>
 <td width="8%">
 
-<p>2</p>
+<p>1</p>
 </td>
 <td width="24%">
 
-<p>uint32*,void*</p>
+<p>int</p>
 </td>
 <td width="16%">
 
-<p>&dagger; count &amp; tables</p>
+<p>&dagger; JPEG pseudo-tag</p>
 </td>
 <tr valign="top" align="left">
 <td width="8%"></td>
@@ -560,19 +578,19 @@ information on the meaning of each tag.</p></td>
 <td width="8%"></td>
 <td width="41%">
 
-<p>TIFFTAG_JPEGCOLORMODE</p>
+<p>TIFFTAG_JPEGTABLES</p>
 </td>
 <td width="8%">
 
-<p>1</p>
+<p>2</p>
 </td>
 <td width="24%">
 
-<p>int</p>
+<p>uint32*,void*</p>
 </td>
 <td width="16%">
 
-<p>&dagger; JPEG pseudo-tag</p>
+<p>&dagger; count &amp; tables</p>
 </td>
 <tr valign="top" align="left">
 <td width="8%"></td>
@@ -742,6 +760,24 @@ information on the meaning of each tag.</p></td>
 <td width="8%"></td>
 <td width="41%">
 
+<p>TIFFTAG_PHOTOSHOP</p>
+</td>
+<td width="8%">
+
+<p>?</p>
+</td>
+<td width="24%">
+
+<p>uint32,void*</p>
+</td>
+<td width="16%">
+
+<p>count, data</p>
+</td>
+<tr valign="top" align="left">
+<td width="8%"></td>
+<td width="41%">
+
 <p>TIFFTAG_PLANARCONFIG</p>
 </td>
 <td width="8%">
@@ -825,6 +861,24 @@ information on the meaning of each tag.</p></td>
 <p>uint16</p>
 </td>
 <td width="16%">
+</td>
+<tr valign="top" align="left">
+<td width="8%"></td>
+<td width="41%">
+
+<p>TIFFTAG_RICHTIFFIPTC</p>
+</td>
+<td width="8%">
+
+<p>2</p>
+</td>
+<td width="24%">
+
+<p>uint32,void*</p>
+</td>
+<td width="16%">
+
+<p>count, data</p>
 </td>
 <tr valign="top" align="left">
 <td width="8%"></td>
@@ -1085,6 +1139,42 @@ information on the meaning of each tag.</p></td>
 <td width="8%"></td>
 <td width="41%">
 
+<p>TIFFTAG_WHITEPOINT</p>
+</td>
+<td width="8%">
+
+<p>1</p>
+</td>
+<td width="24%">
+
+<p>float*</p>
+</td>
+<td width="16%">
+
+<p>2-entry array</p>
+</td>
+<tr valign="top" align="left">
+<td width="8%"></td>
+<td width="41%">
+
+<p>TIFFTAG_XMLPACKET</p>
+</td>
+<td width="8%">
+
+<p>2</p>
+</td>
+<td width="24%">
+
+<p>uint32,void*</p>
+</td>
+<td width="16%">
+
+<p>count, data</p>
+</td>
+<tr valign="top" align="left">
+<td width="8%"></td>
+<td width="41%">
+
 <p>TIFFTAG_XPOSITION</p>
 </td>
 <td width="8%">
@@ -1112,24 +1202,6 @@ information on the meaning of each tag.</p></td>
 <p>float</p>
 </td>
 <td width="16%">
-</td>
-<tr valign="top" align="left">
-<td width="8%"></td>
-<td width="41%">
-
-<p>TIFFTAG_WHITEPOINT</p>
-</td>
-<td width="8%">
-
-<p>1</p>
-</td>
-<td width="24%">
-
-<p>float*</p>
-</td>
-<td width="16%">
-
-<p>2-entry array</p>
 </td>
 <tr valign="top" align="left">
 <td width="8%"></td>
@@ -1216,42 +1288,6 @@ information on the meaning of each tag.</p></td>
 <p>float</p>
 </td>
 <td width="16%">
-</td>
-<tr valign="top" align="left">
-<td width="8%"></td>
-<td width="41%">
-
-<p>TIFFTAG_PHOTOSHOP</p>
-</td>
-<td width="8%">
-
-<p>?</p>
-</td>
-<td width="24%">
-
-<p>uint32,void*</p>
-</td>
-<td width="16%">
-
-<p>count, data</p>
-</td>
-<tr valign="top" align="left">
-<td width="8%"></td>
-<td width="41%">
-
-<p>TIFFTAG_ICCPROFILE</p>
-</td>
-<td width="8%">
-
-<p>2</p>
-</td>
-<td width="24%">
-
-<p>uint32,void*</p>
-</td>
-<td width="16%">
-
-<p>count, profile data*</p>
 </td>
 </table>
 <!-- INDENTATION -->

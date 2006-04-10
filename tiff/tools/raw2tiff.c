@@ -2,10 +2,10 @@
  *
  * Project:  libtiff tools
  * Purpose:  Convert raw byte sequences in TIFF images
- * Author:   Andrey Kiselev, dron@remotesensing.org
+ * Author:   Andrey Kiselev, dron@ak4719.spb.edu
  *
  ******************************************************************************
- * Copyright (c) 2002, Andrey Kiselev <dron@remotesensing.org>
+ * Copyright (c) 2002, Andrey Kiselev <dron@ak4719.spb.edu>
  *
  * Permission to use, copy, modify, distribute, and sell this software and 
  * its documentation for any purpose is hereby granted without fee, provided
@@ -270,8 +270,13 @@ main(int argc, char* argv[])
 	}
 	bufsize = width * nbands * depth;
 	buf1 = (unsigned char *)_TIFFmalloc(bufsize);
-	TIFFSetField(out, TIFFTAG_ROWSPERSTRIP,
-		     TIFFDefaultStripSize(out, rowsperstrip));
+
+	rowsperstrip = TIFFDefaultStripSize(out, rowsperstrip);
+	if (rowsperstrip > length) {
+		rowsperstrip = length;
+	}
+	TIFFSetField(out, TIFFTAG_ROWSPERSTRIP, rowsperstrip );
+
 	lseek(fd, hdr_size, SEEK_SET);		/* Skip the file header */
 	for (row = 0; row < length; row++) {
 		switch(interleaving) {
@@ -531,11 +536,19 @@ processCompressOptions(char* opt)
 		compression = COMPRESSION_PACKBITS;
 	else if (strncmp(opt, "jpeg", 4) == 0) {
 		char* cp = strchr(opt, ':');
-		if (cp && isdigit((int)cp[1]))
+
+                compression = COMPRESSION_JPEG;
+                while( cp )
+                {
+                    if (isdigit((int)cp[1]))
 			quality = atoi(cp+1);
-		if (cp && strchr(cp, 'r'))
+                    else if (cp[1] == 'r' )
 			jpegcolormode = JPEGCOLORMODE_RAW;
-		compression = COMPRESSION_JPEG;
+                    else
+                        usage();
+
+                    cp = strchr(cp+1,':');
+                }
 	} else if (strncmp(opt, "lzw", 3) == 0) {
 		char* cp = strchr(opt, ':');
 		if (cp)
@@ -594,7 +607,7 @@ static char* stuff[] = {
 "",
 " -c lzw[:opts]	compress output with Lempel-Ziv & Welch encoding",
 " -c zip[:opts]	compress output with deflate encoding",
-" -c jpeg[:opts]compress output with JPEG encoding",
+" -c jpeg[:opts]	compress output with JPEG encoding",
 " -c packbits	compress output with packbits encoding",
 " -c none	use no compression algorithm on output",
 "",

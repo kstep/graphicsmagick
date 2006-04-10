@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>
-	Changes in TIFF v3.7.0beta2
+	Changes in TIFF v3.8.2
 </TITLE>
 </HEAD>
 
@@ -15,8 +15,8 @@
 
 <UL>
 <HR SIZE=4 WIDTH=65% ALIGN=left>
-<B>Current Version</B>: v3.7.0beta2<BR>
-<B>Previous Version</B>: <A HREF=v3.7.0beta.html>v3.7.0beta</a><BR>
+<B>Current Version</B>: v3.8.2<BR>
+<B>Previous Version</B>: <A HREF=v3.8.1.html>v3.8.1</a><BR>
 <B>Master FTP Site</B>: <A HREF="ftp://ftp.remotesensing.org/pub/libtiff">
 ftp.remotesensing.org</a>, directory pub/libtiff</A><BR>
 <B>Master HTTP Site</B>: <A HREF="http://www.remotesensing.org/libtiff">
@@ -36,7 +36,6 @@ The following information is located here:
 <LI><A HREF="#libtiff">Changes in libtiff</A>
 <LI><A HREF="#tools">Changes in the tools</A>
 <LI><A HREF="#contrib">Changes in the contrib area</A>
-<LI><A HREF="#lzwkit">Changes in the LZW compression kit</A>
 </UL>
 <p> 
 <P><HR WIDTH=65% ALIGN=left>
@@ -46,11 +45,7 @@ The following information is located here:
 <A NAME="highlights"><B><FONT SIZE=+3>M</FONT>AJOR CHANGES:</B></A>
 
 <UL>
-
-	<li> The code has been reviewed by Dmitry Levin: added checks
-	for values, returned by the space allocation functions, fixed
-	problems with the possible integer overflows.
-
+	<li> Bug-fix release.
 </UL>
 
 
@@ -60,7 +55,18 @@ The following information is located here:
 <A NAME="configure"><B><FONT SIZE=+3>C</FONT>HANGES IN THE SOFTWARE CONFIGURATION:</B></A>
 
 <UL>
-	<li> Several fixes in the test suite.
+
+	<li> tools/Makefile.am: Use runtime paths linker flags when rpath
+	option enabled.
+
+	<li> Makefiles improvements as per bug
+	<a href="http://bugzilla.remotesensing.org/show_bug.cgi?id=1128">
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=1128</a>
+
+	<li> Fixed win32 I/O functions usage as per bug
+	<a href="http://bugzilla.remotesensing.org/show_bug.cgi?id=1127">
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=1127</a>
+
 </UL>
 
 <P><HR WIDTH=65% ALIGN=left>
@@ -70,20 +76,25 @@ The following information is located here:
 <A NAME="libtiff"><B><FONT SIZE=+3>C</FONT>HANGES IN LIBTIFF:</B></A>
 
 <UL>
+	<li> tif_strip.c: Take subsampling in account when calculating
+	TIFFScanlineSize().
 
-	<li> Preliminary support for BigTIFF files: now libtiff can
-	recognize and reject to open such images. ;-)
+	<li> tif_jpeg.c, tif_fax3.c, tif_zip.c, tif_pixarlog.c,
+	tif_lzw.c, tif_luv.c: Use _TIFFSetDefaultCompressionState() in all
+	codec cleanup methods. As per bug
+	<a href="http://bugzilla.remotesensing.org/show_bug.cgi?id=1120">
+		http://bugzilla.remotesensing.org/show_bug.cgi?id=1120</a>
+	
+	<li> tif_jpeg.c: Do not cleanup codec state in TIFFInitJPEG(). As
+	per bug
+	<a href="http://bugzilla.remotesensing.org/show_bug.cgi?id=1119">
+		http://bugzilla.remotesensing.org/show_bug.cgi?id=1119</a>
 
-	<li> libtiff/tif_dirinfo.c: changed type of XMLPacket (tag 700) to 
-	TIFFTAG_BYTE instead of TIFFTAG_UNDEFINED to comply with the info
-	in the Adobe XMP Specification.
+	<li> tif_dir.c: Use double type instead of dblparam_t.
 
-	<li> Added many checks for integer overflow and for successful space
-	allocations in the different parts of library. Code review
-	completed by Dmitry V. Levin.
-
-	<li> libtiff/{tiffio.h, tif_compress.c}: Added
-	TIFFGetConfiguredCODECs()function to get the list of configured codecs.
+	<li> tif_dirread.c: Do not check the PlanarConfig tag presence
+	in TIFFReadDirectory, because it is always set at the start of
+	function and we allow TIFFs without that tag set.
 
 </UL>
 
@@ -94,8 +105,20 @@ The following information is located here:
 <A NAME="tools"><B><FONT SIZE=+3>C</FONT>HANGES IN THE TOOLS:</B></A>
 
 <UL>
-	<li> tiff2bw: Write ImageWidth/Height tags to output file, as
-	noted by Gennady Khokhorin.
+	<li> tiffcp.c: Do not set RowsPerStrip bigger than image length.
+
+	<li> fax2tiff.c: Fixed wrong TIFFerror() invocations as per bug
+	<a href="http://bugzilla.remotesensing.org/show_bug.cgi?id=1125">
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=1125</a>
+
+	<li> fax2ps.c: Fixed reading the input stream from stdin as per bug
+	<a href="http://bugzilla.remotesensing.org/show_bug.cgi?id=1124">
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=1124</a>
+
+	<li> raw2tiff.c: Do not set RowsPerStrip larger than ImageLength.
+	As per bug
+	<a href="http://bugzilla.remotesensing.org/show_bug.cgi?id=1110">
+	http://bugzilla.remotesensing.org/show_bug.cgi?id=1110</a>
 
 </UL>
 
@@ -106,24 +129,7 @@ The following information is located here:
 <A NAME="contrib"><B><FONT SIZE=+3>C</FONT>HANGES IN THE CONTRIB AREA:</B></A>
 
 <UL> 
-
-	<li> No changes.
-
 </UL>
-
-<!--------------------------------------------------------------------------->
-
-<A NAME="lzwkit"><B><FONT SIZE=+3>C</FONT>HANGES IN THE LZW COMPRESSION
-KIT:</B></A>
-<UL> 
-
-	<li> This one is not longer needed.
-
-</UL>
-
-<A HREF="index.html"><IMG SRC="images/back.gif"></A> TIFF home page.<BR>
-
-<HR>
 
 Last updated $Date$.
 

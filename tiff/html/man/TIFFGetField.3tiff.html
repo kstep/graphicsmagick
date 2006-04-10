@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.18.1 -->
-<!-- CreationDate: Fri Dec 30 00:55:55 2005 -->
+<!-- CreationDate: Mon Mar 13 18:03:08 2006 -->
 <html>
 <head>
 <meta name="generator" content="groff -Thtml, see www.gnu.org">
@@ -97,8 +97,9 @@ correspond to the types used to specify tag values to
 <i>TIFFGetField</i> returns parameter values, so all the
 listed data types are pointers to storage where values
 should be returned. Consult the <small>TIFF</small>
-specification for information on the meaning of each tag and
-their possible values.</p></td>
+specification (or relevant industry specification) for
+information on the meaning of each tag and their possible
+values.</p></td>
 </table>
 <!-- TABS -->
 
@@ -322,24 +323,6 @@ their possible values.</p></td>
 <td width="8%"></td>
 <td width="41%">
 
-<p>TIFFTAG_FAXMODE</p>
-</td>
-<td width="8%">
-
-<p>1</p>
-</td>
-<td width="23%">
-
-<p>int*</p>
-</td>
-<td width="17%">
-
-<p>G3/G4 compression pseudo-tag</p>
-</td>
-<tr valign="top" align="left">
-<td width="8%"></td>
-<td width="41%">
-
 <p>TIFFTAG_FAXFILLFUNC</p>
 </td>
 <td width="8%">
@@ -349,6 +332,24 @@ their possible values.</p></td>
 <td width="23%">
 
 <p>TIFFFaxFillFunc*</p>
+</td>
+<td width="17%">
+
+<p>G3/G4 compression pseudo-tag</p>
+</td>
+<tr valign="top" align="left">
+<td width="8%"></td>
+<td width="41%">
+
+<p>TIFFTAG_FAXMODE</p>
+</td>
+<td width="8%">
+
+<p>1</p>
+</td>
+<td width="23%">
+
+<p>int*</p>
 </td>
 <td width="17%">
 
@@ -433,6 +434,24 @@ their possible values.</p></td>
 <p>char**</p>
 </td>
 <td width="17%">
+</td>
+<tr valign="top" align="left">
+<td width="8%"></td>
+<td width="41%">
+
+<p>TIFFTAG_ICCPROFILE</p>
+</td>
+<td width="8%">
+
+<p>2</p>
+</td>
+<td width="23%">
+
+<p>uint32*,void**</p>
+</td>
+<td width="17%">
+
+<p>count, profile data</p>
 </td>
 <tr valign="top" align="left">
 <td width="8%"></td>
@@ -534,19 +553,19 @@ their possible values.</p></td>
 <td width="8%"></td>
 <td width="41%">
 
-<p>TIFFTAG_JPEGTABLES</p>
+<p>TIFFTAG_JPEGCOLORMODE</p>
 </td>
 <td width="8%">
 
-<p>2</p>
+<p>1</p>
 </td>
 <td width="23%">
 
-<p>uint32*,void**</p>
+<p>int*</p>
 </td>
 <td width="17%">
 
-<p>count &amp; tables</p>
+<p>JPEG pseudo-tag</p>
 </td>
 <tr valign="top" align="left">
 <td width="8%"></td>
@@ -570,19 +589,19 @@ their possible values.</p></td>
 <td width="8%"></td>
 <td width="41%">
 
-<p>TIFFTAG_JPEGCOLORMODE</p>
+<p>TIFFTAG_JPEGTABLES</p>
 </td>
 <td width="8%">
 
-<p>1</p>
+<p>2</p>
 </td>
 <td width="23%">
 
-<p>int*</p>
+<p>uint32*,void**</p>
 </td>
 <td width="17%">
 
-<p>JPEG pseudo-tag</p>
+<p>count &amp; tables</p>
 </td>
 <tr valign="top" align="left">
 <td width="8%"></td>
@@ -750,6 +769,24 @@ their possible values.</p></td>
 <td width="8%"></td>
 <td width="41%">
 
+<p>TIFFTAG_PHOTOSHOP</p>
+</td>
+<td width="8%">
+
+<p>2</p>
+</td>
+<td width="23%">
+
+<p>uint32*,void**</p>
+</td>
+<td width="17%">
+
+<p>count, data</p>
+</td>
+<tr valign="top" align="left">
+<td width="8%"></td>
+<td width="41%">
+
 <p>TIFFTAG_PLANARCONFIG</p>
 </td>
 <td width="8%">
@@ -829,6 +866,24 @@ their possible values.</p></td>
 <p>uint16*</p>
 </td>
 <td width="17%">
+</td>
+<tr valign="top" align="left">
+<td width="8%"></td>
+<td width="41%">
+
+<p>TIFFTAG_RICHTIFFIPTC</p>
+</td>
+<td width="8%">
+
+<p>2</p>
+</td>
+<td width="23%">
+
+<p>uint32*,void**</p>
+</td>
+<td width="17%">
+
+<p>count, data</p>
 </td>
 <tr valign="top" align="left">
 <td width="8%"></td>
@@ -1157,6 +1212,24 @@ their possible values.</p></td>
 <td width="8%"></td>
 <td width="41%">
 
+<p>TIFFTAG_XMLPACKET</p>
+</td>
+<td width="8%">
+
+<p>2</p>
+</td>
+<td width="23%">
+
+<p>uint32*,void**</p>
+</td>
+<td width="17%">
+
+<p>count, data</p>
+</td>
+<tr valign="top" align="left">
+<td width="8%"></td>
+<td width="41%">
+
 <p>TIFFTAG_XPOSITION</p>
 </td>
 <td width="8%">
@@ -1263,27 +1336,9 @@ their possible values.</p></td>
 </td>
 <td width="23%">
 
-<p>float*</p>
+<p>float*&Dagger;</p>
 </td>
 <td width="17%">
-</td>
-<tr valign="top" align="left">
-<td width="8%"></td>
-<td width="41%">
-
-<p>TIFFTAG_ICCPROFILE</p>
-</td>
-<td width="8%">
-
-<p>2</p>
-</td>
-<td width="23%">
-
-<p>uint32*,void**</p>
-</td>
-<td width="17%">
-
-<p>count, profile data&Dagger;</p>
 </td>
 </table>
 <!-- INDENTATION -->
