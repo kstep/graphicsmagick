@@ -94,25 +94,25 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   typedef struct _TGAInfo
   {
     unsigned char
-    id_length,       /* Size of Image ID field */
+      id_length,       /* Size of Image ID field */
       colormap_type,   /* Color map type */
       image_type;      /* Image type code */
 
     unsigned short
-    colormap_index,  /* Color map origin */
+      colormap_index,  /* Color map origin */
       colormap_length; /* Color map length */
 
     unsigned char
-    colormap_size;   /* Color map entry depth */
+      colormap_size;   /* Color map entry depth */
 
     unsigned short
-    x_origin,          /* X origin of image */
+      x_origin,        /* X origin of image */
       y_origin,        /* Y orgin of image */
       width,           /* Width of image */
       height;          /* Height of image */
 
     unsigned char
-    bits_per_pixel,  /* Image pixel size */
+      bits_per_pixel,  /* Image pixel size */
       attributes;      /* Image descriptor byte */
   } TGAInfo;
 

@@ -57,10 +57,10 @@ ralcgm:
 tiff:
 
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -ko -m 'Import libtiff 3.8.0' delegates/tiff \
-    INITIAL TIFF_3_8_0
+    import -ko -m 'Import libtiff 3.8.2' delegates/tiff \
+    INITIAL TIFF_3_8_2
   cvs -d :ext:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    checkout -jTIFF_3_7_4 -jTIFF_3_8_0 delegates/tiff
+    checkout -jTIFF_3_8_0 -jTIFF_3_8_2 delegates/tiff
 
 wmf:
 
