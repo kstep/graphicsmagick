@@ -109,20 +109,20 @@ BOOL CIMDisplayDoc::DoReadImage( void )
     }
 
     // Image may still be usable if there is a warning
-    catch(Magick::Warning warning)
+    catch(Magick::Warning &warning)
     {
       DoDisplayWarning("DoReadImage",warning.what());
     }
 
     // Image is not usable
-    catch(Magick::Error error)
+    catch(Magick::Error &error)
     {
 	DoDisplayError("DoReadImage",error.what());
         m_pImage.isValid(false);
 	return FALSE;
     }
 
-    catch(exception e)
+    catch(std::exception &e)
     {
 	DoDisplayError("DoReadImage",e.what());
         m_pImage.isValid(false);
