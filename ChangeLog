@@ -1,3 +1,8 @@
+2006-05-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/nt_base.c (NTGhostscriptEnumerateVersions): Recent GNU
+	Ghostscript identifies itself as "GPL Ghostscript".
+
 2006-03-02  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c: Fixes for observed crash.  Byte and word formats

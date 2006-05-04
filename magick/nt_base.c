@@ -994,6 +994,7 @@ char *NTGetLastError(void)
 #define GS_PRODUCT_AFPL "AFPL Ghostscript"
 #define GS_PRODUCT_ALADDIN "Aladdin Ghostscript"
 #define GS_PRODUCT_GNU "GNU Ghostscript"
+#define GS_PRODUCT_GPL "GPL Ghostscript"
 #define GS_MINIMUM_VERSION 550
 
 /* Get Ghostscript versions for given product.
@@ -1073,6 +1074,7 @@ static int NTGhostscriptEnumerateVersions(int *pver)
   n = NTGhostscriptProductVersions(pver, 0, GS_PRODUCT_AFPL);
   n = NTGhostscriptProductVersions(pver, n, GS_PRODUCT_ALADDIN);
   n = NTGhostscriptProductVersions(pver, n, GS_PRODUCT_GNU);
+  n = NTGhostscriptProductVersions(pver, n, GS_PRODUCT_GPL);
 
   if (n >= pver[0]) {
     pver[0] = n;
