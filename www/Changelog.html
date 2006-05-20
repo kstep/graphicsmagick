@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2006-05-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (ReadTIFFImage): -define tiff:alpha= override was
+        only working if the TIFFTAG_EXTRASAMPLES tag was present.  Now it
+        is always available when an alpha channel is present.
+
+</UL>
+<p>
+2006-05-11  JH  &lt;jh@ops.everybox.com&gt;
+
+<UL>
+  <LI> GraphicsMagick.spec.in (files devel): Include
+        %{_libdir}/lib%{name}Wand.so.
+
+</UL>
+<p>
 2006-05-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -1295,16 +1295,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               alpha_type=AssociatedAlpha;
               image->matte=True;
 
-              if ((definition_value=AccessDefinition(image_info,"tiff","alpha")))
-                {
-                  if (LocaleCompare(definition_value,"unspecified") == 0)
-                    alpha_type=UnspecifiedAlpha;
-                  else if (LocaleCompare(definition_value,"associated") == 0)
-                    alpha_type=AssociatedAlpha;
-                  else if (LocaleCompare(definition_value,"unassociated") == 0)
-                    alpha_type=UnassociatedAlpha;
-                }
-              else if (sample_info[0] == EXTRASAMPLE_UNSPECIFIED)
+              if (sample_info[0] == EXTRASAMPLE_UNSPECIFIED)
                 alpha_type=UnspecifiedAlpha;
               else if (sample_info[0] == EXTRASAMPLE_UNASSALPHA)
                 alpha_type=UnassociatedAlpha;
@@ -1331,6 +1322,25 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             image->matte=MagickTrue;
           }
 
+      /*
+        Allow the user to over-ride the alpha channel type.
+      */
+      if (image->matte)
+        {
+          if ((definition_value=AccessDefinition(image_info,"tiff","alpha")))
+            {
+              if (LocaleCompare(definition_value,"unspecified") == 0)
+                alpha_type=UnspecifiedAlpha;
+              else if (LocaleCompare(definition_value,"associated") == 0)
+                alpha_type=AssociatedAlpha;
+              else if (LocaleCompare(definition_value,"unassociated") == 0)
+                alpha_type=UnassociatedAlpha;
+            }
+        }
+
+      /*
+        Describe how the alpha channel will be treated.
+      */
       if (image->matte)
         {
           char
