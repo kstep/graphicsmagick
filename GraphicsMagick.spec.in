@@ -189,6 +189,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_includedir}/%{name}/magick
 %{_includedir}/%{name}/magick/*
 %{_libdir}/lib%{name}Wand.*a
+%{_libdir}/lib%{name}Wand.so
 %{_libdir}/lib%{name}.*a
 %{_libdir}/lib%{name}.so
 %dir %{_libdir}/%{name}-%{base_version}/modules-Q%{quant}

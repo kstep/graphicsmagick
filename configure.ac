@@ -2005,7 +2005,7 @@ then
   have_libwmflite='no'
   have_libwmf_ipa_h='no'
 
-  AC_CHECK_HEADER([libwmf/ipa.h],[have_libwmf_ipa_h='yes'],[$FT2BUILD_H])
+  AC_CHECK_HEADER([libwmf/ipa.h],[have_libwmf_ipa_h='yes'],[],[$FT2BUILD_H])
   if test "$have_libwmf_ipa_h" = 'yes'
   then
 
