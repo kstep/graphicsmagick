@@ -1,3 +1,7 @@
+2006-05-31  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* configure.ac: Fix arguments to AC_CHECK_HEADER.
+
 2006-05-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (ReadTIFFImage): -define tiff:alpha= override was
