@@ -1,3 +1,8 @@
+2006-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c: Add mention of -resample to convert and
+	mogrify usage messages.
+
 2006-05-31  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
 
 	* configure.ac: Fix arguments to AC_CHECK_HEADER.
