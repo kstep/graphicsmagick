@@ -1,3 +1,10 @@
+2006-06-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (ConvertImageCommand): Fix memory leaks which
+	occured when an image was not returned.
+	* magick/command.c (IdentifyImageCommand): Ditto.
+	* magick/command.c (MogrifyImageCommand): Ditto.
+
 2006-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c: Add mention of -resample to convert and
