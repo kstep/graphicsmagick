@@ -1419,14 +1419,10 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
 
 static void LiberateCompositeOptions(CompositeOptions *option_info)
 {
-  if (option_info->displace_geometry != (char *) NULL)
-    MagickFreeMemory((option_info->displace_geometry));
-  if (option_info->geometry != (char *) NULL)
-    MagickFreeMemory((option_info->geometry));
-  if (option_info->unsharp_geometry != (char *) NULL)
-    MagickFreeMemory((option_info->unsharp_geometry));
-  if (option_info->watermark_geometry != (char *) NULL)
-    MagickFreeMemory((option_info->watermark_geometry));
+  MagickFreeMemory(option_info->displace_geometry);
+  MagickFreeMemory(option_info->geometry);
+  MagickFreeMemory(option_info->unsharp_geometry);
+  MagickFreeMemory(option_info->watermark_geometry);
 }
 
 #define NotInitialized  (unsigned int) (~0)
@@ -2710,22 +2706,20 @@ static unsigned int ConcatenateImages(const int argc,char **argv,
 }
 
 #define NotInitialized  (unsigned int) (~0)
+
 #define ThrowConvertException(code,reason,description) \
 { \
-  DestroyImageList(image); \
-  DestroyImageList(image_list); \
+  status = MagickFail; \
   ThrowException(exception,code,reason,description); \
-  LiberateArgumentList(argc,argv); \
-  return(False); \
+  goto convert_cleanup_and_return; \
 }
 #define ThrowConvertException3(code,reason,description) \
 { \
-  DestroyImageList(image); \
-  DestroyImageList(image_list); \
+  status = MagickFail; \
   ThrowException3(exception,code,reason,description); \
-  LiberateArgumentList(argc,argv); \
-  return(False); \
+  goto convert_cleanup_and_return; \
 }
+
 MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
@@ -2738,9 +2732,9 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
     sans;
 
   Image
-    *image,
-    *image_list,
-    *next_image;
+    *image = (Image *) NULL,
+    *image_list = (Image *) NULL,
+    *next_image = (Image *) NULL;
 
   long
     j,
@@ -2752,7 +2746,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 
   unsigned int
     ping,
-    status;
+    status = 0;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -2763,12 +2757,12 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
     {
       ConvertUsage();
       ThrowException(exception,OptionError,UsageError,NULL);
-      return False;
+      return MagickFail;
     }
   if (LocaleCompare("-version",argv[1]) == 0)
     {
       (void) VersionCommand(image_info,argc,argv,metadata,exception);
-      return False;
+      return MagickFail;
     }
 
   status=ExpandFilenames(&argc,&argv);
@@ -4616,7 +4610,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       if (exception->severity == UndefinedException)
         ThrowConvertException(OptionError,MissingAnImageFilename,
           (char *) NULL);
-      return(False);
+      status = MagickFail;
+      goto convert_cleanup_and_return;
     }
   if (i != (argc-1))
     ThrowConvertException(OptionError,MissingAnImageFilename,(char *) NULL);
@@ -4645,6 +4640,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       (void) ConcatenateString(&(*metadata),"\n");
       MagickFreeMemory(text);
     }
+ convert_cleanup_and_return:
   DestroyImageList(image_list);
   LiberateArgumentList(argc,argv);
   return(status);
@@ -6649,31 +6645,27 @@ static unsigned int HelpCommand(ImageInfo *ARGUNUSED(image_info),
 %
 %
 */
+
 #define ThrowIdentifyException(code,reason,description) \
 { \
-  if (format != (char *) NULL) \
-    MagickFreeMemory(format); \
-  DestroyImageList(image); \
+  status = MagickFail; \
   ThrowException(exception,code,reason,description); \
-  LiberateArgumentList(argc,argv); \
-  return(False); \
+  goto identify_cleanup_and_return; \
 }
 #define ThrowIdentifyException3(code,reason,description) \
 { \
-  if (format != (char *) NULL) \
-    MagickFreeMemory(format); \
-  DestroyImageList(image); \
+  status = MagickFail; \
   ThrowException3(exception,code,reason,description); \
-  LiberateArgumentList(argc,argv); \
-  return(False); \
+  goto identify_cleanup_and_return; \
 }
+
 MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
   char
-    *format,
-    *option,
-    *q;
+    *format = NULL,
+    *option = NULL,
+    *q = NULL;
 
   Image
     *image;
@@ -6691,7 +6683,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
 
   unsigned int
     ping,
-    status;
+    status = 0;
 
   /*
     Check for sufficient arguments
@@ -7009,12 +7001,12 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
       if (exception->severity == UndefinedException)
         ThrowIdentifyException(OptionError,MissingAnImageFilename,
           (char *) NULL);
-      return(False);
+      status = MagickFail;
     }
   if (i != argc)
     ThrowIdentifyException(OptionError,MissingAnImageFilename,(char *) NULL);
-  if (format != (char *) NULL)
-    MagickFreeMemory(format);
+ identify_cleanup_and_return:
+  MagickFreeMemory(format);
   DestroyImageList(image);
   LiberateArgumentList(argc,argv);
   return(status);
@@ -9762,12 +9754,14 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 %
 %
 */
+
 #define ThrowMogrifyException(code,reason,description) \
 { \
+  status = MagickFail; \
   ThrowException(exception,code,reason,description); \
-  LiberateArgumentList(argc,argv); \
-  return(False); \
+  goto mogrify_cleanup_and_return; \
 }
+
 typedef struct _TransmogrifyOptions
 {
   ImageInfo *image_info;
@@ -9883,8 +9877,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 {
 
   char
-    *format,
-    *option;
+    *format = NULL,
+    *option = NULL;
 
   double
     sans;
@@ -11608,8 +11602,9 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
       if (exception->severity == UndefinedException)
         ThrowMogrifyException(OptionError,MissingAnImageFilename,
           (char *) NULL);
-      return(False);
     }
+ mogrify_cleanup_and_return:
+  MagickFreeMemory(format);
   LiberateArgumentList(argc,argv);
   return(status);
 }
