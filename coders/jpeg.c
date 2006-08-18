@@ -1427,6 +1427,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Initialize JPEG parameters.
   */
+  (void) memset(&jpeg_info,0,sizeof(jpeg_info));
+  (void) memset(&jpeg_error,0,sizeof(jpeg_error));
   jpeg_info.client_data=(void *) image;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
