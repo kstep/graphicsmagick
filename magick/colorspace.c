@@ -404,9 +404,19 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
       MagickAttributeToDouble(image,"display-gamma",DisplayGamma);
       MagickAttributeToDouble(image,"negative-film-gamma",NegativeFilmGamma);
 
+      /*
+        FIXME: Math seems to be producing data with gamma 1.0 rather than 1.7.
+      */
+
+#if 1
       Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)
                                              *0.002/NegativeFilmGamma)),
                                      (DisplayGamma/1.7)));
+#else
+      Gain=MaxLinearValue/(1.0 - pow(pow(10,((ReferenceBlack-ReferenceWhite)
+                                             *0.002/NegativeFilmGamma)),
+                                     (1.0/DisplayGamma)));
+#endif
       Offset=Gain-MaxLinearValue;
 
       /*
@@ -424,9 +434,16 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             logval;
 
           linearval=i*(double) MaxRGB/MaxMap;
-          
+
+          /*
+            FIXME: Math seems to be expecting data with gamma 1.0 rather than 1.7.
+          */
           logval=685+log10(pow((((double) linearval+Offset)/Gain),
                                (1.7/DisplayGamma)))/(0.002/NegativeFilmGamma);
+
+/*           logval=685+log10(pow((((double) linearval+Offset)/Gain), */
+/*                                (DisplayGamma/1.0)))/(0.002/NegativeFilmGamma); */
+
           logval *= scale_to_short;
           logmap[i]=ScaleShortToQuantum(RndToInt(logval));
           /* printf("logmap[%u]=%u\n",i,(unsigned int) logmap[i]); */

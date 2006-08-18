@@ -1486,6 +1486,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Initialize JPEG parameters.
   */
+  (void) memset(&jpeg_info,0,sizeof(jpeg_info));
+  (void) memset(&jpeg_error,0,sizeof(jpeg_error));
   jpeg_info.client_data=(void *) image;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
@@ -1668,11 +1670,13 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 
    /*
      Don't enable Huffman optimization for large images (> 16 Mpixels)
-     in order to conserve memory.
+     in order to conserve memory.  The JPEG library must buffer the
+     entire image when Huffman optimization is enabled.  In the future
+     this limit may be adjusted via user option or automatically
+     determined based on available memory.
    */
-  if (((magick_uint64_t) image->columns * image->rows) <
-      (magick_uint64_t) 1024UL*1024UL*16UL)
-    jpeg_info.optimize_coding=True;
+  jpeg_info.optimize_coding=(((magick_uint64_t) image->columns * image->rows) <
+                             (magick_uint64_t) 1024UL*1024UL*16UL);
 
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
   if (image_info->interlace != NoInterlace)

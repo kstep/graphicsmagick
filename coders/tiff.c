@@ -2735,7 +2735,8 @@ static void WriteNewsProfile(TIFF *tiff,
 static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
   char
-    filename[MaxTextExtent];
+    filename[MaxTextExtent],
+    open_flags[MaxTextExtent];
 
   const ImageAttribute
     *attribute;
@@ -2753,7 +2754,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
   uint16
     bits_per_sample,
     compress_tag,
-    fill_order,
+    /* fill_order, */
     photometric,
     planar_config,
     sample_format,
@@ -2815,9 +2816,35 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
   /*
     Open TIFF file
 
-    'w'          open for write
+    'w'  open for write
+    'l'  force little-endian byte order
+    'b'  force big-endian byte order
+    'L'  force LSB to MSB bit order (weird)
+    'B'  force MSB to LSB bit order (normal)
   */
-  tiff=TIFFOpen(filename,"w");
+  (void) strncpy(open_flags, "w", sizeof(open_flags));
+  switch (image_info->endian)
+    {
+    case LSBEndian:
+      (void) strncat(open_flags, "l", sizeof(open_flags));
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Using little endian byte order");
+      break;
+    case MSBEndian:
+      (void) strncat(open_flags, "b", sizeof(open_flags));
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Using big endian byte order");
+      break;
+    default:
+    case UndefinedEndian:
+      {
+        /* Default is native byte order */
+      }
+    }
+
+  tiff=TIFFOpen(filename,open_flags);
   if (tiff == (TIFF *) NULL)
     {
       if (filename_is_temporary)
@@ -3163,31 +3190,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                               sample_format == SAMPLEFORMAT_UINT ? "Unsigned" :
                               sample_format == SAMPLEFORMAT_IEEEFP ? "IEEEFP" :
                               "unknown");
-
-      /*
-        Determine bit ordering in a byte.
-      */
-      switch (image_info->endian)
-        {
-        case LSBEndian:
-          fill_order=FILLORDER_LSB2MSB;
-          if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "Using LSB2MSB bit fillorder");
-          break;
-        case MSBEndian:
-          fill_order=FILLORDER_MSB2LSB;
-          if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                  "Using MSB2LSB bit fillorder");
-          break;
-        default:
-        case UndefinedEndian:
-          {
-            (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fill_order);
-            break;
-          }
-        }
       /*
         Determine planar configuration.
       */
@@ -3197,7 +3199,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             (image_info->interlace == PartitionInterlace))
           planar_config=PLANARCONFIG_SEPARATE;
 
-      (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,fill_order);
+      /* (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,fill_order); */
       if (image->orientation != UndefinedOrientation)
         (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,(uint16) image->orientation);
       (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
