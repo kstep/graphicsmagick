@@ -3043,7 +3043,7 @@ typedef struct _StatisticsContext {
   ImageStatistics *statistics;
 } StatisticsContext;
 static MagickPassFail GetImageStatisticsMean(void *user_context,
-                                             const long ARGUNUSED(x),
+                                             const long x,
                                              const long y,
                                              const Image *image,
                                              const PixelPacket *pixel,
@@ -3089,7 +3089,7 @@ static MagickPassFail GetImageStatisticsMean(void *user_context,
       if (normalized <  statistics->opacity.minimum)
         statistics->opacity.minimum=normalized;
     }
-  if (QuantumTick(y,image->rows))
+  if ((x == 0) && QuantumTick(y,image->rows))
     if (!MagickMonitor("Compute image mean ...",y,image->rows,exception))
       return (MagickFail);
 
@@ -3097,7 +3097,7 @@ static MagickPassFail GetImageStatisticsMean(void *user_context,
 }
 #define Square(x)  ((x)*(x))
 static MagickPassFail GetImageStatisticsVariance(void *user_context,
-                                                 const long ARGUNUSED(x),
+                                                 const long x,
                                                  const long y,
                                                  const Image *image,
                                                  const PixelPacket *pixel,
@@ -3130,7 +3130,7 @@ static MagickPassFail GetImageStatisticsVariance(void *user_context,
       statistics->opacity.variance +=
         Square(normalized-statistics->opacity.mean)/context->variance_divisor;
     }
-  if (QuantumTick(y,image->rows))
+  if ((x == 0) && QuantumTick(y,image->rows))
     if (!MagickMonitor("Compute image variance ...",y,image->rows,exception))
       return (MagickFail);
 
@@ -3413,8 +3413,8 @@ typedef struct _PixelErrorStats {
 static MagickPassFail
 ComputePixelError(void *user_data,
                   const Image *first_image,
-                  const long ARGUNUSED(first_x),
-                  const long ARGUNUSED(first_y),
+                  const long first_x,
+                  const long first_y,
                   const PixelPacket *first_pixel,
                   const Image *ARGUNUSED(second_image),
                   const long ARGUNUSED(second_x),
@@ -3445,6 +3445,9 @@ ComputePixelError(void *user_data,
   stats->total_error+=distance;
   if (distance > stats->maximum_error_per_pixel)
     stats->maximum_error_per_pixel=distance;
+  if ((first_x == 0) && QuantumTick(first_y,first_image->rows))
+    if (!MagickMonitor("Compute pixel error ...",first_y,first_image->rows,exception))
+      return (MagickFail);
   return (MagickPass);
 }
 

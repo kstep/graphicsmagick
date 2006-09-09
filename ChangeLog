@@ -1,3 +1,12 @@
+2006-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sgi.c (ReadSGIImage): Mostly applied Debian patch for
+	CVE-2006-4144 security issue related to RLE decoding.  Also added
+	complete verification of file header.
+	* magick/image.c (ComputePixelError): Add progress monitor.
+	(GetImageStatisticsMean): Call progress monitor less often.
+	(GetImageStatisticsVariance): Call progress monitor less often.
+
 2006-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): ImageInfo 'endian' option now

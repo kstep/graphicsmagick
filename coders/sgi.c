@@ -36,6 +36,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/pixel_cache.h"
 #include "magick/color.h"
@@ -60,8 +61,8 @@ typedef struct _SGIInfo
     storage,                /* Compression flag */
     bytes_per_pixel;        /* Bytes per pixel (per bit plane) */
 
-  magick_int16_t
-    dimension,              /* Number of image dimentions */
+  magick_uint16_t
+    dimension,              /* Number of image dimensions */
     xsize,                  /* Width of image in pixels */
     ysize,                  /* Height of image in pixels */
     zsize;                  /* Number of bit planes */
@@ -158,17 +159,18 @@ static unsigned int IsSGI(const unsigned char *magick,const size_t length)
 %
 */
 
-static void SGIDecode(const unsigned long bytes_per_pixel,
-  unsigned char *max_packets,unsigned char *pixels)
+static int SGIDecode(const unsigned long bytes_per_pixel,
+  unsigned char *max_packets,unsigned char *pixels,
+  unsigned long npackets,unsigned long npixels)
 {
-  long
+  unsigned long
     count;
 
   register unsigned char
     *p,
     *q;
 
-  unsigned long
+  unsigned int
     pixel;
 
   p=max_packets;
@@ -177,20 +179,29 @@ static void SGIDecode(const unsigned long bytes_per_pixel,
     {
       for ( ; ; )
       {
+         if (npackets-- == 0)
+           return -1;
         pixel=(*p++) << 8U;
         pixel|=(*p++);
-        count=(long) (pixel & 0x7fU);
+        count=(pixel & 0x7fU);
         if (count == 0)
           break;
+        if (count > npixels)
+          return -1;
+        npixels -= count;
         if (pixel & 0x80U)
           for ( ; count != 0U; count--)
           {
+            if (npackets-- == 0)
+              return -1;
             *q=(*p++);
             *(q+1)=(*p++);
             q+=8U;
           }
         else
           {
+            if (npackets-- == 0)
+              return -1;
             pixel=(*p++) << 8U;
             pixel|=(*p++);
             for ( ; count != 0; count--)
@@ -201,22 +212,31 @@ static void SGIDecode(const unsigned long bytes_per_pixel,
             }
           }
       }
-      return;
+      return 0;
     }
   for ( ; ; )
   {
+    if (npackets-- == 0)
+      return -1;
     pixel=(*p++);
-    count=(long) (pixel & 0x7f);
+    count= (pixel & 0x7fU);
     if (count == 0)
       break;
+    if (count > npixels)
+      return -1;
+    npixels -= count;
     if (pixel & 0x80)
       for ( ; count != 0; count--)
       {
+        if (npackets-- == 0)
+          return -1;
         *q=(*p++);
         q+=4;
       }
     else
       {
+        if (npackets-- == 0)
+          return -1;
         pixel=(*p++);
         for ( ; count != 0; count--)
         {
@@ -225,6 +245,7 @@ static void SGIDecode(const unsigned long bytes_per_pixel,
         }
       }
   }
+  return 0;
 }
 
 static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -285,8 +306,6 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (iris_info.magic != 0x01DA)
       ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     iris_info.storage=ReadBlobByte(image);
-    if (iris_info.storage == 0x01)
-      image->compression=RLECompression;
     iris_info.bytes_per_pixel=ReadBlobByte(image);
     iris_info.dimension=ReadBlobMSBShort(image);
     iris_info.xsize=ReadBlobMSBShort(image);
@@ -305,7 +324,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     iris_info.dummy2);
 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "    Header: BPC=%u, Dimension=%u, XSize=%u, YSize=%u, ZSize=%u, PixMin=%u, PixMax=%u, image_name=\"%.79s\", color_map=%u",
+                          "    Header: Storage=%u, BPC=%u, Dimension=%u, XSize=%u, YSize=%u, ZSize=%u, PixMin=%u, PixMax=%u, image_name=\"%.79s\", color_map=%u",
+                          (unsigned int) iris_info.storage,
                           (unsigned int) iris_info.bytes_per_pixel,
                           (unsigned int) iris_info.dimension,
                           (unsigned int) iris_info.xsize,
@@ -316,22 +336,131 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           iris_info.image_name,
                           iris_info.color_map);
 
-    image->columns=iris_info.xsize;
-    image->rows=iris_info.ysize;
-
-    image->depth=QuantumDepth;
-    if (iris_info.color_map == 0)
+    /*
+      Validate image header and set image attributes.
+    */
+    if (iris_info.storage == 0)
       {
-        image->depth=iris_info.bytes_per_pixel*8;
+        /* Uncompressed */
+        image->compression=NoCompression;
       }
-    if (image->depth > QuantumDepth)
-      image->depth=QuantumDepth;
-
-    if (iris_info.zsize < 3)
+    else if (iris_info.storage == 1)
       {
-        image->storage_class=PseudoClass;
-        image->colors=256;
+        /* RLE compressed */
+        image->compression=RLECompression;
       }
+    else
+      {
+        /* Error */
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      }
+
+    if (iris_info.color_map != 0)
+      {
+        /* We only support images with normal (no) colormap */
+        ThrowReaderException(CorruptImageError,ImageTypeNotSupported,image);
+      }
+
+    if (iris_info.bytes_per_pixel == 1)
+      {
+        /* 8 bits per sample */
+        image->depth=8;
+      }
+    else if (iris_info.bytes_per_pixel == 2)
+      {
+        /* 16 bits per sample */
+        image->depth=Min(16,QuantumDepth);
+      }
+    else
+      {
+        /* Error */
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      }
+
+    if (iris_info.dimension == 1)
+      {
+        /*
+          Image contains one channel and one scanline, with scanline
+          length specified by xsize.
+        */
+        image->columns=iris_info.xsize;
+        image->rows=1;
+        image->is_grayscale=MagickTrue;
+        if (iris_info.bytes_per_pixel == 1)
+          {
+            /* Use a grayscale colormap */
+            image->storage_class=PseudoClass;
+            image->colors=256;
+          }
+      }
+    else if (iris_info.dimension == 2)
+      {
+        /*
+          One channel with a number of scan lines.  Width and height
+          of image are given by the values of xsize and ysize.
+        */
+        image->columns=iris_info.xsize;
+        image->rows=iris_info.ysize;
+        image->is_grayscale=MagickTrue;
+        if (iris_info.bytes_per_pixel == 1)
+          {
+            /* Use a grayscale colormap */
+            image->storage_class=PseudoClass;
+            image->colors=256;
+          }
+      }
+    else if (iris_info.dimension == 3)
+      {
+        /*
+          A number of channels.  Width and height of image are given
+          by the values of xsize and ysize. The number of channels is
+          specified by zsize.
+
+          B/W images have a zsize of 1.  RGB images have a zsize of 3.
+          RGB images with an alpha channel have a zsize of 4. Images
+          may have more than four channels but the meaning of
+          additional channels is implementation dependent.
+        */
+
+        image->columns=iris_info.xsize;
+        image->rows=iris_info.ysize;
+
+        if (iris_info.zsize == 1)
+          {
+            /* B/W image */
+            image->matte = MagickFalse;
+            image->is_grayscale=MagickTrue;
+            if (iris_info.bytes_per_pixel == 1)
+              {
+                /* Use a grayscale colormap */
+                image->storage_class=PseudoClass;
+                image->colors=256;
+              }
+          }
+        else if (iris_info.zsize == 3)
+          {
+            /* RGB */
+            image->matte=MagickFalse;
+          }
+        else if (iris_info.zsize == 4)
+          {
+            /* RGBA  */
+            image->matte=MagickTrue;
+          }
+        else
+          {
+            /* Error */
+            ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+          }
+      }
+    else
+      {
+        /* Error */
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      }
+
+    if (iris_info.image_name[0])
+      (void) SetImageAttribute(image,"comment",iris_info.image_name);
 
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -342,6 +471,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     bytes_per_pixel=iris_info.bytes_per_pixel;
     number_pixels=iris_info.xsize*iris_info.ysize;
+    if (4*bytes_per_pixel*number_pixels < number_pixels) /* Overflow? */
+      ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,image);
     iris_pixels=MagickAllocateMemory(unsigned char *,
       4*bytes_per_pixel*number_pixels);
     if (iris_pixels == (unsigned char *) NULL)
@@ -422,12 +553,13 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (i=0; i < (int) (iris_info.ysize*iris_info.zsize); i++)
           offsets[i]=ReadBlobMSBLong(image);
         for (i=0; i < (int) (iris_info.ysize*iris_info.zsize); i++)
+        {
           runlength[i]=ReadBlobMSBLong(image);
-        if (EOFBlob(image))
-          {
-            ThrowReaderException(CorruptImageError,
-              UnexpectedEndOfFile, image);
-          }
+          if (EOFBlob(image))
+            ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
+          if (runlength[i] > ((unsigned long) 4*iris_info.xsize+10))
+            ThrowReaderException(CorruptImageError,UnableToRunlengthDecodeImage,image);
+        }
         /*
           Check data order.
         */
@@ -440,7 +572,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               data_order=1;
             offset=offsets[y+z*iris_info.ysize];
           }
-        offset=512+4*bytes_per_pixel*2*(iris_info.ysize*iris_info.zsize);
+        offset=TellBlob(image);
         if (data_order == 1)
           {
             for (z=0; z < (int) iris_info.zsize; z++)
@@ -462,7 +594,11 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     break;
                   }
                 offset+=runlength[y+z*iris_info.ysize];
-                SGIDecode(bytes_per_pixel,max_packets,p+bytes_per_pixel*z);
+                if (SGIDecode(bytes_per_pixel,max_packets,p+bytes_per_pixel*z,
+		              runlength[y+z*iris_info.ysize]/bytes_per_pixel,
+                              iris_info.xsize) == -1)
+	          ThrowReaderException(CorruptImageError,
+                                       UnableToRunlengthDecodeImage,image); 
                 p+=(iris_info.xsize*4*bytes_per_pixel);
               }
             }
@@ -488,7 +624,11 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     break;
                   }
                 offset+=runlength[y+z*iris_info.ysize];
-                SGIDecode(bytes_per_pixel,max_packets,p+bytes_per_pixel*z);
+                if (SGIDecode(bytes_per_pixel,max_packets,p+bytes_per_pixel*z,
+		              runlength[y+z*iris_info.ysize]/bytes_per_pixel,
+                              iris_info.xsize) == -1)
+	          ThrowReaderException(CorruptImageError,
+                                       UnableToRunlengthDecodeImage,image); 
               }
               p+=(iris_info.xsize*4*bytes_per_pixel);
               if (EOFBlob(image))
@@ -499,14 +639,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         MagickFreeMemory(max_packets);
         MagickFreeMemory(offsets);
       }
-    /*
-      Initialize image structure.
-    */
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "   Initializing SGI image structure"); 
-    image->matte=iris_info.zsize == 4;
-    image->columns=iris_info.xsize;
-    image->rows=iris_info.ysize;
+
     /*
       Convert SGI raster image to pixel packets.
     */
@@ -885,7 +1018,14 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     iris_info.pix_max=ScaleQuantumToChar(MaxRGB);
 
     (void) memset(iris_info.dummy1,0,sizeof(iris_info.dummy1));
-    (void) memset(iris_info.image_name,0,sizeof(iris_info.image_name));
+    {
+      const ImageAttribute
+        *attribute;
+
+      (void) memset(iris_info.image_name,0,sizeof(iris_info.image_name));
+      if ((attribute=GetImageAttribute(image,"comment")))
+        strlcpy(iris_info.image_name,attribute->value,sizeof(iris_info.image_name));
+    }
     iris_info.color_map=0;
     (void) memset(iris_info.dummy2,0,sizeof(iris_info.dummy2));
 

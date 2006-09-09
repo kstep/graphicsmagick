@@ -180,12 +180,23 @@ GetImageProfile(const Image* image, const char *name, size_t *length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ProfileImage() adds or removes a ICM, IPTC, or generic profile from an
-%  image.  If the profile is NULL, it is removed from the image otherwise
-%  added.  Use a name of '*' and a profile of NULL to remove all profiles
-%  from the image. Ownership of the profile is transferred to GraphicsMagick
-%  (it should not be altered or deallocated) unless the clone option is set
-%  to True.
+%  ProfileImage() adds, applies, or removes a ICM, IPTC, or generic profile
+%  from an image.  If the profile is NULL, it is removed from the image
+%  otherwise added (or applied).  Use a name of '*' and a profile of NULL to
+%  remove all profiles from the image. Ownership of the profile is
+%  transferred to GraphicsMagick (it should not be altered or deallocated)
+%  unless the clone option is set to True.
+%
+%  ICC ICM profiles are a special case and are handled as follows:
+%
+%  If there is no ICM profile currently associated with the image, then
+%  the profile is simply associated with the image and the image pixels
+%  are not altered.
+%  
+%  If there is already a ICM profile associated with the image, then
+%  the colorspace transform described by the existing and new profiles
+%  is applied to the image pixels, and the new profile is associated
+%  with the image.
 %
 %  The format of the ProfileImage method is:
 %
