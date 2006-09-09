@@ -1,3 +1,9 @@
+2006-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sgi.c (ReadSGIImage): Mostly applied Debian patch for
+	CVE-2006-4144 security issue related to RLE decoding.  Also added
+	complete verification of file header.
+
 2006-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/png.c (ReadOnePNGImage): Fix compilation problem.  Patch
