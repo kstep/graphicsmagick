@@ -1024,7 +1024,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
 
       (void) memset(iris_info.image_name,0,sizeof(iris_info.image_name));
       if ((attribute=GetImageAttribute(image,"comment")))
-        strlcpy(iris_info.image_name,attribute->value,sizeof(iris_info.image_name));
+        strncpy(iris_info.image_name,attribute->value,sizeof(iris_info.image_name)-1);
     }
     iris_info.color_map=0;
     (void) memset(iris_info.dummy2,0,sizeof(iris_info.dummy2));

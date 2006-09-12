@@ -258,14 +258,16 @@ static CompositeOperator GIMPBlendModeToCompositeOperator( unsigned long blendMo
 %
 %    o string: The address of a character buffer.
 %
+%    o max: Length of 'string' array.
+%
 %
 */
-static char *ReadBlobStringWithLongSize(Image *image,char *string)
+static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max)
 {
   int
     c;
 
-  register long
+  register unsigned long
     i;
 
   unsigned long
@@ -273,8 +275,9 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  assert(max != 0);
   length = ReadBlobMSBLong(image);
-  for (i=0; i < (long) length; i++)
+  for (i=0; i < Min(length,max-1); i++)
   {
     c=ReadBlobByte(image);
     if (c == EOF)
@@ -282,6 +285,7 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string)
     string[i]=c;
   }
   string[i]='\0';
+  SeekBlob(image, length-i, SEEK_CUR);
   return(string);
 }
 
@@ -692,7 +696,8 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
   outLayer->width = ReadBlobMSBLong(image);
   outLayer->height = ReadBlobMSBLong(image);
   outLayer->type = ReadBlobMSBLong(image);
-  ReadBlobStringWithLongSize(image, outLayer->name);
+  (void) ReadBlobStringWithLongSize(image, outLayer->name,
+                                           sizeof(outLayer->name));
 
   /* allocate the image for this layer */
   outLayer->image=CloneImage(image,outLayer->width, outLayer->height,True,
@@ -702,9 +707,9 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
 
   /* read the layer properties! */
   foundPropEnd = 0;
-  while ( !foundPropEnd ) {
-  PropType    prop_type = (PropType) ReadBlobMSBLong(image);
-  unsigned long  prop_size = ReadBlobMSBLong(image);
+  while ( !foundPropEnd && !EOFBlob(image) ) {
+    PropType    prop_type = (PropType) ReadBlobMSBLong(image);
+    unsigned long  prop_size = ReadBlobMSBLong(image);
 
     switch (prop_type)
     {
@@ -772,21 +777,24 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
          prop_type); */
 
       {
-      int buf[16];
-      unsigned int amount;
+          int buf[16];
+          unsigned int amount;
 
-      /* read over it... */
-      while (prop_size > 0)
-        {
-        amount = Min (16, prop_size);
-        for (i=0; i<(long)amount; i++)
-        amount = ReadBlob(image, amount, &buf);
-        prop_size -= Min (16, amount);
-        }
+          /* read over it... */
+          while (prop_size > 0 && !EOFBlob(image))
+            {
+              amount = Min (16, prop_size);
+              for (i=0; i<(long)amount; i++)
+                amount = ReadBlob(image, amount, &buf);
+              prop_size -= Min (16, amount);
+            }
       }
       break;
     }
   }
+
+  if (!foundPropEnd)
+    return False;
 
   /* clear the image based on the layer opacity */
     SetImage(outLayer->image,(Quantum)(255-outLayer->opacity));
@@ -936,9 +944,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->matte=True;  /* XCF always has a matte! */
 
   /* read properties */
-  while ( !foundPropEnd ) {
-  PropType    prop_type = (PropType) ReadBlobMSBLong(image);
-  unsigned long  prop_size = ReadBlobMSBLong(image);
+  while ( !foundPropEnd && !EOFBlob(image) ) {
+    PropType    prop_type = (PropType) ReadBlobMSBLong(image);
+    unsigned long  prop_size = ReadBlobMSBLong(image);
 
   switch ( prop_type ) {
     case PROP_END:
@@ -1079,7 +1087,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*float  factor = (float) */ (void) ReadBlobMSBLong(image);
         /* unsigned long digits =  */ (void) ReadBlobMSBLong(image);
         for (i=0; i<5; i++)
-         ReadBlobStringWithLongSize(image, unit_string);
+          (void) ReadBlobStringWithLongSize(image, unit_string,
+                                                   sizeof(unit_string));
       }
      break;
 
@@ -1091,18 +1100,21 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       int buf[16];
       long amount;
 
-      /* read over it... */
-      while (prop_size > 0)
-        {
-        amount = (long) Min (16, prop_size);
-        for (i=0; i<(unsigned long) amount; i++)
-        amount = (long) ReadBlob(image, amount, &buf);
-        prop_size -= Min (16, amount);
-        }
+        /* read over it... */
+        while (prop_size > 0 && !EOFBlob(image))
+          {
+            amount = (long) Min (16, prop_size);
+            for (i=0; i<(unsigned long) amount; i++)
+              amount = (long) ReadBlob(image, amount, &buf);
+            prop_size -= Min (16, amount);
+          }
       }
       break;
   }
   }
+
+  if (!foundPropEnd)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
   if (image_info->ping && (image_info->subrange != 0)) {
   ; /* do nothing, we were just pinging! */
