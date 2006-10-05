@@ -1,3 +1,8 @@
+2006-10-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (pixelColor): Don't enforce color "validity" when
+	setting the pixel color.
+
 2005-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (orientation): New accessor method to support

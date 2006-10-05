@@ -2922,30 +2922,24 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
 void Magick::Image::pixelColor ( const unsigned int x_, const unsigned int y_,
 				 const Color &color_ )
 {
-  if ( color_.isValid() )
-  {
-    // Test arguments to ensure they are within the image.
-    if ( y_ > rows() || x_ > columns() )
-      throwExceptionExplicit( OptionError,
-			      "Access outside of image boundary" );
+  // Test arguments to ensure they are within the image.
+  if ( y_ > rows() || x_ > columns() )
+    throwExceptionExplicit( OptionError,
+                            "Access outside of image boundary" );
       
-    modifyImage();
+  modifyImage();
 
-    // Set image to DirectClass
-    classType( DirectClass );
+  // Set image to DirectClass
+  classType( DirectClass );
 
-    // Get pixel view
-    Pixels pixels(*this);
-    // Set pixel value
-    *(pixels.get(x_, y_, 1, 1 )) = color_;
-    // Tell ImageMagick that pixels have been updated
-    pixels.sync();
+  // Get pixel view
+  Pixels pixels(*this);
+  // Set pixel value
+  *(pixels.get(x_, y_, 1, 1 )) = color_;
+  // Tell ImageMagick that pixels have been updated
+  pixels.sync();
 
-    return;
-  }
-
-  throwExceptionExplicit( OptionError,
-			  "Color argument is invalid" );
+  return;
 }
 // Get the color of a pixel
 Magick::Color Magick::Image::pixelColor ( const unsigned int x_,
