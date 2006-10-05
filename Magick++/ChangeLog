@@ -1,3 +1,8 @@
+2006-10-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (pixelColor): Don't enforce color "validity" when
+	setting the pixel color.
+
 2004-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h: Disable unavoidable warnings under

@@ -21,6 +21,20 @@
 </tr>
 </table>
 <p>
+2006-09-12  Daniel Kobras  &lt;kobras@debian.org&gt;
+
+<UL>
+  <LI> coders/sgi.c (ReadSGIImage): Use strncpy() instead of strlcpy() in
+        1.1 branch.<BR>
+  <LI> coders/xcf.c (ReadBlobStringWithLongSize): Add new parameter 'max'
+        to prevent overflowing the 'string' array. (CVE-2006-3743)
+        (ReadOneLayer): Adjust callers of ReadBlobStringWithLongSize(), and
+        guard against infinite loops on premature end-of-file.
+        (ReadXCFImage): Adjust callers of ReadBlobStringWithLongSize(), and
+        guard against infinite loops on premature end-of-file.
+
+</UL>
+<p>
 2006-09-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

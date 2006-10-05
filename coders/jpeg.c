@@ -1116,7 +1116,7 @@ ModuleExport void RegisterJPEGImage(void)
     *entry;
 
   entry=SetMagickInfo("JPEG");
-  entry->thread_support=False;
+  entry->thread_support=False; /* libjpeg is not thread safe */
 #if defined(HasJPEG)
   entry->decoder=(DecoderHandler) ReadJPEGImage;
   entry->encoder=(EncoderHandler) WriteJPEGImage;
@@ -1138,7 +1138,7 @@ ModuleExport void RegisterJPEGImage(void)
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("JPG");
-  entry->thread_support=False;
+  entry->thread_support=False; /* libjpeg is not thread safe */
 #if defined(HasJPEG)
   entry->decoder=(DecoderHandler) ReadJPEGImage;
   entry->encoder=(EncoderHandler) WriteJPEGImage;

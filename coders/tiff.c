@@ -1459,6 +1459,7 @@ ModuleExport void RegisterTIFFImage(void)
 #endif
 
   entry=SetMagickInfo("PTIF");
+  entry->thread_support=False; /* libtiff uses libjpeg which is not thread safe */
   entry->decoder=(DecoderHandler) ReadTIFFImage;
   entry->encoder=(EncoderHandler) WritePTIFImage;
   entry->adjoin=False;
@@ -1467,6 +1468,7 @@ ModuleExport void RegisterTIFFImage(void)
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("TIF");
+  entry->thread_support=False; /* libtiff uses libjpeg which is not thread safe */
   entry->decoder=(DecoderHandler) ReadTIFFImage;
   entry->encoder=(EncoderHandler) WriteTIFFImage;
   entry->description=AcquireString(TIFFDescription);
@@ -1476,6 +1478,7 @@ ModuleExport void RegisterTIFFImage(void)
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("TIFF");
+  entry->thread_support=False; /* libtiff uses libjpeg which is not thread safe */
   entry->decoder=(DecoderHandler) ReadTIFFImage;
   entry->encoder=(EncoderHandler) WriteTIFFImage;
   entry->magick=(MagickHandler) IsTIFF;
