@@ -1,5 +1,5 @@
 /* ltdl.c -- system independent dlopen wrapper
-   Copyright (C) 1998, 1999, 2000, 2004, 2005 Free Software Foundation, Inc.
+   Copyright (C) 1998, 1999, 2000, 2004, 2005, 2006 Free Software Foundation, Inc.
    Originally by Thomas Tanner <tanner@ffii.org>
 
    NOTE: The canonical source of this file is maintained with the
@@ -86,14 +86,16 @@ static	const char	sys_dlsearch_path[]	= LT_DLSEARCH_PATH;
 /* The type of a function used at each iteration of  foreach_dirinpath().  */
 typedef int	foreach_callback_func (char *filename, void *data1,
 				       void *data2);
+/* foreachfile_callback itself calls a function of this type: */
+typedef int	file_worker_func      (const char *filename, void *data);
 
 static	int	foreach_dirinpath     (const char *search_path,
 				       const char *base_name,
 				       foreach_callback_func *func,
 				       void *data1, void *data2);
 
-static	int	find_file_callback    (char *filename, void *data,
-				       void *ignored);
+static	int	find_file_callback    (char *filename, void *data1,
+				       void *data2);
 static	int	find_handle_callback  (char *filename, void *data,
 				       void *ignored);
 static	int	foreachfile_callback  (char *filename, void *data1,
@@ -130,12 +132,15 @@ static	int	list_files_by_dir     (const char *dirnam,
 				       char **pargz, size_t *pargz_len);
 static	int	file_not_found	      (void);
 
+#ifdef HAVE_LIBDLLOADER
 static	int	loader_init_callback  (lt_dlhandle handle);
+#endif /* HAVE_LIBDLLOADER */
+
 static	int	loader_init	      (lt_get_vtable *vtable_func,
 				       lt_user_data data);
 
 static	char	       *user_search_path= 0;
-static	lt_dlhandle	handles 	= 0;
+static	lt_dlhandle	handles	= 0;
 static	int		initialized	= 0;
 
 /* Our memory failure callback sets the error message to be passed back
@@ -147,14 +152,17 @@ lt__alloc_die_callback (void)
   LT__SETERROR (NO_MEMORY);
 }
 
+#ifdef HAVE_LIBDLLOADER
 /* This function is called to initialise each preloaded module loader,
    and hook it into the list of loaders to be used when attempting to
    dlopen an application module.  */
 static int
 loader_init_callback (lt_dlhandle handle)
 {
-  return loader_init (lt_dlsym (handle, "get_vtable"), 0);
+  lt_get_vtable *vtable_func = (lt_get_vtable *) lt_dlsym (handle, "get_vtable");
+  return loader_init (vtable_func, 0);
 }
+#endif /* HAVE_LIBDLLOADER */
 
 static int
 loader_init (lt_get_vtable *vtable_func, lt_user_data data)
@@ -188,7 +196,9 @@ loader_init (lt_get_vtable *vtable_func, lt_user_data data)
 #define get_vtable		preopen_LTX_get_vtable
 #define preloaded_symbols	LT_CONC3(lt_, LTDLOPEN, _LTX_preloaded_symbols)
 
+LT_BEGIN_C_DECLS
 LT_SCOPE const lt_dlvtable *	get_vtable (lt_user_data data);
+LT_END_C_DECLS
 #ifdef HAVE_LIBDLLOADER
 extern lt_dlsymlist		preloaded_symbols;
 #endif
@@ -282,9 +292,9 @@ lt_dlexit (void)
 	}
 
       /* close all loaders */
-      for (loader = lt_dlloader_next (NULL); loader;)
+      for (loader = (lt_dlloader *) lt_dlloader_next (NULL); loader;)
 	{
-	  lt_dlloader *next   = lt_dlloader_next (loader);
+	  lt_dlloader *next   = (lt_dlloader *) lt_dlloader_next (loader);
 	  lt_dlvtable *vtable = (lt_dlvtable *) lt_dlloader_get (loader);
 
 	  if ((vtable = lt_dlloader_remove ((char *) vtable->name)))
@@ -333,7 +343,7 @@ tryall_dlopen (lt_dlhandle *phandle, const char *filename)
       goto done;
     }
 
-  handle = *phandle;
+  handle = (lt__handle *) *phandle;
   if (filename)
     {
       /* Comment out the check of file permissions using access.
@@ -364,7 +374,7 @@ tryall_dlopen (lt_dlhandle *phandle, const char *filename)
     const lt_dlvtable *vtable = 0;
     lt_dlloader *loader = 0;
 
-    while ((loader = lt_dlloader_next (loader)))
+    while ((loader = (lt_dlloader *) lt_dlloader_next (loader)))
       {
 	vtable = lt_dlloader_get (loader);
 	handle->module = (*vtable->module_open) (vtable->dlloader_data,
@@ -679,7 +689,7 @@ find_file (const char *search_path, const char *base_name, char **pdir)
 }
 
 static int
-find_handle_callback (char *filename, void *data, void *ignored)
+find_handle_callback (char *filename, void *data, void * LT__UNUSED ignored)
 {
   lt_dlhandle  *handle		= (lt_dlhandle *) data;
   int		notfound	= access (filename, R_OK);
@@ -712,20 +722,26 @@ find_handle (const char *search_path, const char *base_name,
   return handle;
 }
 
+#if !defined(LTDL_DLOPEN_DEPLIBS)
+static int
+load_deplibs (lt_dlhandle handle, char * LT__UNUSED deplibs)
+{
+  ((lt__handle *) handle)->depcount = 0;
+  return 0;
+}
+
+#else /* defined(LTDL_DLOPEN_DEPLIBS) */
 static int
 load_deplibs (lt_dlhandle handle, char *deplibs)
 {
-#if defined(LTDL_DLOPEN_DEPLIBS)
   char	*p, *save_search_path = 0;
   int   depcount = 0;
   int	i;
   char	**names = 0;
-#endif
   int	errors = 0;
 
   ((lt__handle *) handle)->depcount = 0;
 
-#if defined(LTDL_DLOPEN_DEPLIBS)
   if (!deplibs)
     {
       return errors;
@@ -839,7 +855,7 @@ load_deplibs (lt_dlhandle handle, char *deplibs)
 
       cur->deplibs = (lt_dlhandle *) MALLOC (lt__handle, depcount);
       if (!cur->deplibs)
-	goto cleanup;
+	goto cleanup_names;
 
       for (i = 0; i < depcount; ++i)
 	{
@@ -866,10 +882,10 @@ load_deplibs (lt_dlhandle handle, char *deplibs)
   if (save_search_path) {
     MEMREASSIGN (user_search_path, save_search_path);
   }
-#endif
 
   return errors;
 }
+#endif /* defined(LTDL_DLOPEN_DEPLIBS) */
 
 static int
 unload_deplibs (lt_dlhandle handle)
@@ -887,6 +903,7 @@ unload_deplibs (lt_dlhandle handle)
 	      errors += lt_dlclose (cur->deplibs[i]);
 	    }
 	}
+      FREE (cur->deplibs);
     }
 
   return errors;
@@ -1308,7 +1325,7 @@ try_dlopen (lt_dlhandle *phandle, const char *filename)
       ((lt__handle *) *phandle)->info.ref_count	= 1;
       MEMREASSIGN (((lt__handle *) *phandle)->info.name, name);
 
-      ((lt__handle *) *phandle)->next	= handles;
+      ((lt__handle *) *phandle)->next	= (lt__handle *) handles;
       handles				= *phandle;
     }
 
@@ -1593,8 +1610,7 @@ list_files_by_dir (const char *dirnam, char **pargz, size_t *pargz_len)
 static int
 foreachfile_callback (char *dirname, void *data1, void *data2)
 {
-  int (*func) (const char *filename, void *data)
-	= (int (*) (const char *filename, void *data)) data1;
+  file_worker_func *func = *(file_worker_func **) data1;
 
   int	  is_done  = 0;
   char   *argz     = 0;
@@ -1631,37 +1647,38 @@ lt_dlforeachfile (const char *search_path,
 		  void *data)
 {
   int is_done = 0;
+  file_worker_func **fpptr = &func;
 
   if (search_path)
     {
       /* If a specific path was passed, search only the directories
 	 listed in it.  */
       is_done = foreach_dirinpath (search_path, 0,
-				   foreachfile_callback, func, data);
+				   foreachfile_callback, fpptr, data);
     }
   else
     {
       /* Otherwise search the default paths.  */
       is_done = foreach_dirinpath (user_search_path, 0,
-				   foreachfile_callback, func, data);
+				   foreachfile_callback, fpptr, data);
       if (!is_done)
 	{
 	  is_done = foreach_dirinpath (getenv(LTDL_SEARCHPATH_VAR), 0,
-				       foreachfile_callback, func, data);
+				       foreachfile_callback, fpptr, data);
 	}
 
 #if defined(LT_MODULE_PATH_VAR)
       if (!is_done)
 	{
 	  is_done = foreach_dirinpath (getenv(LT_MODULE_PATH_VAR), 0,
-				       foreachfile_callback, func, data);
+				       foreachfile_callback, fpptr, data);
 	}
 #endif
 #if defined(LT_DLSEARCH_PATH)
       if (!is_done && sys_dlsearch_path)
 	{
 	  is_done = foreach_dirinpath (sys_dlsearch_path, 0,
-				       foreachfile_callback, func, data);
+				       foreachfile_callback, fpptr, data);
 	}
 #endif
     }
@@ -2020,7 +2037,7 @@ typedef struct {
 lt_dlinterface_id
 lt_dlinterface_register (const char *id_string, lt_dlhandle_interface *iface)
 {
-  lt__interface_id *interface_id = lt__malloc (sizeof *interface_id);
+  lt__interface_id *interface_id = (lt__interface_id *) lt__malloc (sizeof *interface_id);
 
   /* If lt__malloc fails, it will LT__SETERROR (NO_MEMORY), which
      can then be detected with lt_dlerror() if we return 0.  */
@@ -2156,7 +2173,7 @@ lt_dlhandle_fetch (lt_dlinterface_id iface, const char *module_name)
 
   assert (iface); /* iface is a required argument */
 
-  while ((handle = lt_dlhandle_iterate (handle, iface)))
+  while ((handle = lt_dlhandle_iterate (iface, handle)))
     {
       lt__handle *cur = (lt__handle *) handle;
       if (cur && cur->info.name && streq (cur->info.name, module_name))

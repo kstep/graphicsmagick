@@ -1,3 +1,8 @@
+2006-10-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Updated autoconf to version 2.60, automake to version 1.10, and
+	libtool to latest CVS head version (1.2348 2006/10/22).
+
 2006-09-11  Daniel Kobras  <kobras@debian.org>
 
 	* coders/xcf.c (ReadBlobStringWithLongSize): Add new parameter 'max'

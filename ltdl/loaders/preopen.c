@@ -1,5 +1,5 @@
 /* loader-preopen.c -- emulate dynamic linking using preloaded_symbols
-   Copyright (C) 1998, 1999, 2000, 2004 Free Software Foundation, Inc.
+   Copyright (C) 1998, 1999, 2000, 2004, 2006 Free Software Foundation, Inc.
    Originally by Thomas Tanner <tanner@ffii.org>
 
    NOTE: The canonical source of this file is maintained with the
@@ -36,7 +36,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
    be fetched from the preloaded symbol list by lt_dlsym():  */
 #define get_vtable	preopen_LTX_get_vtable
 
+LT_BEGIN_C_DECLS
 LT_SCOPE lt_dlvtable *get_vtable (lt_user_data loader_data);
+LT_END_C_DECLS
 
 
 /* Boilerplate code to set up the vtable for hooking this loader into
@@ -58,7 +60,7 @@ get_vtable (lt_user_data loader_data)
 
   if (!vtable)
     {
-      vtable = lt__zalloc (sizeof *vtable);
+      vtable = (lt_dlvtable *) lt__zalloc (sizeof *vtable);
     }
 
   if (vtable && !vtable->name)
@@ -108,7 +110,7 @@ static const	lt_dlsymlist   *default_preloaded_symbols	= 0;
 
 /* A function called through the vtable to initialise this loader.  */
 static int
-vl_init (lt_user_data loader_data)
+vl_init (lt_user_data LT__UNUSED loader_data)
 {
   int errors = 0;
 
@@ -125,7 +127,7 @@ vl_init (lt_user_data loader_data)
 /* A function called through the vtable when this loader is no
    longer needed by the application.  */
 static int
-vl_exit (lt_user_data loader_data)
+vl_exit (lt_user_data LT__UNUSED loader_data)
 {
   free_symlists ();
   return 0;
@@ -136,7 +138,7 @@ vl_exit (lt_user_data loader_data)
    loader.  Returns an opaque representation of the newly opened
    module for processing with this loader's other vtable functions.  */
 static lt_module
-vm_open (lt_user_data loader_data, const char *filename)
+vm_open (lt_user_data LT__UNUSED loader_data, const char *filename)
 {
   symlist_chain *lists;
   lt_module	 module = 0;
@@ -163,8 +165,17 @@ vm_open (lt_user_data loader_data, const char *filename)
 	{
 	  if (!symbol->address && streq (symbol->name, filename))
 	    {
-	      module = (lt_module) lists->symlist;
-	      goto done;
+	      /* If the next symbol's name and address is 0, it means
+		 the module just contains the originator and no symbols.
+		 In this case we pretend that we never saw the module and
+	         hope that some other loader will be able to load the module
+	         and have access to its symbols */
+	      const lt_dlsymlist *next_symbol = symbol +1;
+	      if (next_symbol->address && next_symbol->name)
+		{
+	          module = (lt_module) lists->symlist;
+	          goto done;
+		}
 	    }
 	}
     }
@@ -179,7 +190,7 @@ vm_open (lt_user_data loader_data, const char *filename)
 /* A function called through the vtable when a particular module
    should be unloaded.  */
 static int
-vm_close (lt_user_data loader_data, lt_module module)
+vm_close (lt_user_data LT__UNUSED loader_data, lt_module module)
 {
   /* Just to silence gcc -Wall */
   module = 0;
@@ -190,7 +201,7 @@ vm_close (lt_user_data loader_data, lt_module module)
 /* A function called through the vtable to get the address of
    a symbol loaded from a particular module.  */
 static void *
-vm_sym (lt_user_data loader_data, lt_module module, const char *name)
+vm_sym (lt_user_data LT__UNUSED loader_data, lt_module module, const char *name)
 {
   lt_dlsymlist	       *symbol = (lt_dlsymlist*) module;
 
@@ -250,7 +261,7 @@ add_symlist (const lt_dlsymlist *symlist)
   /* Don't add the same list twice:  */
   if (!lists)
     {
-      symlist_chain *tmp = lt__zalloc (sizeof *tmp);
+      symlist_chain *tmp = (symlist_chain *) lt__zalloc (sizeof *tmp);
 
       if (tmp)
 	{

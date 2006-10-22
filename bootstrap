@@ -5,8 +5,9 @@
 #
 
 libtoolize --verbose --copy --force --nonrecursive --ltdl=ltdl
+cp ltdl/Makefile.inc-gm ltdl/Makefile.inc
 aclocal -I ltdl/m4
-echo 'm4_include([ltdl/m4/lt~obsolete.m4])' >> aclocal.m4
 autoheader
 autoconf
 automake --verbose --add-missing --copy --force-missing
+

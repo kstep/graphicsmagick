@@ -1,5 +1,5 @@
 /* loader-load_add_on.c --  dynamic linking for BeOS
-   Copyright (C) 1998, 1999, 2000, 2004 Free Software Foundation, Inc.
+   Copyright (C) 1998, 1999, 2000, 2004, 2006 Free Software Foundation, Inc.
    Originally by Thomas Tanner <tanner@ffii.org>
 
    NOTE: The canonical source of this file is maintained with the
@@ -36,7 +36,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
    be fetched from the preloaded symbol list by lt_dlsym():  */
 #define get_vtable	load_add_on_LTX_get_vtable
 
+LT_BEGIN_C_DECLS
 LT_SCOPE lt_dlvtable *get_vtable (lt_user_data loader_data);
+LT_END_C_DECLS
 
 
 /* Boilerplate code to set up the vtable for hooking this loader into
@@ -89,7 +91,7 @@ get_vtable (lt_user_data loader_data)
    loader.  Returns an opaque representation of the newly opened
    module for processing with this loader's other vtable functions.  */
 static lt_module
-vm_open (lt_user_data loader_data, const char *filename)
+vm_open (lt_user_data LT__UNUSED loader_data, const char *filename)
 {
   image_id image = 0;
 
@@ -118,7 +120,7 @@ vm_open (lt_user_data loader_data, const char *filename)
 /* A function called through the vtable when a particular module
    should be unloaded.  */
 static int
-vm_close (lt_user_data loader_data, lt_module module)
+vm_close (lt_user_data LT__UNUSED loader_data, lt_module module)
 {
   int errors = 0;
 
@@ -135,7 +137,7 @@ vm_close (lt_user_data loader_data, lt_module module)
 /* A function called through the vtable to get the address of
    a symbol loaded from a particular module.  */
 static void *
-vm_sym (lt_user_data loader_data, lt_module module, const char *name)
+vm_sym (lt_user_data LT__UNUSED loader_data, lt_module module, const char *name)
 {
   void *address = 0;
   image_id image = (image_id) module;

@@ -47,7 +47,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #  define LT_SCOPE
 #endif
 
-#if defined(_cplusplus)
+#if defined(__cplusplus)
 extern "C" {
 #endif
 
@@ -63,7 +63,7 @@ typedef int	SListCompare	(const SList *item1, const SList *item2,
 LT_SCOPE SList *slist_concat	(SList *head, SList *tail);
 LT_SCOPE SList *slist_cons	(SList *item, SList *slist);
 
-LT_SCOPE SList *slist_delete	(SList *slist, void (*delete) (void *item));
+LT_SCOPE SList *slist_delete	(SList *slist, void (*delete_fct) (void *item));
 LT_SCOPE void *	slist_remove	(SList **phead, SListCallback *find,
 				 void *matchdata);
 LT_SCOPE SList *slist_reverse	(SList *slist);
@@ -82,7 +82,7 @@ LT_SCOPE void *	slist_foreach   (SList *slist, SListCallback *foreach,
 LT_SCOPE SList *slist_box	(const void *userdata);
 LT_SCOPE void *	slist_unbox	(SList *item);
 
-#if defined(_cplusplus)
+#if defined(__cplusplus)
 }
 #endif
 
