@@ -1896,7 +1896,7 @@ topincludedir = @includedir@/GraphicsMagick
 # -I$(srcdir) is needed for user that built libltdl with a sub-Automake
 # (not as a sub-package!) using 'nostdinc':
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
-	-DLT_CONFIG_H='<$(LT_CONFIG_H)>' -DLTDL -Iltdl \
+	-DLT_CONFIG_H='<$(LT_CONFIG_H)>' -DLTDL -I. -I$(srcdir) -Iltdl \
 	-I$(srcdir)/ltdl -I$(srcdir)/ltdl/libltdl \
 	-I$(top_srcdir)/Magick++/lib
 ACLOCAL_AMFLAGS = -I ltdl/m4

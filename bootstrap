@@ -5,7 +5,6 @@
 #
 
 libtoolize --verbose --copy --force --nonrecursive --ltdl=ltdl
-cp ltdl/Makefile.inc-gm ltdl/Makefile.inc
 aclocal -I ltdl/m4
 autoheader
 autoconf
