@@ -541,7 +541,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
               image->compression = RLECompression;
               for (i = 0; i < (long) bytes_per_row; )
                 {
-                  count = ReadBlobByte(image);
+          count = Min(ReadBlobByte(image), bytes_per_row-i);
                   byte = ReadBlobByte(image);
                   (void) memset(one_row + i, (int) byte, count);
                   i += count;
@@ -579,6 +579,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       indexes=GetIndexes(image);
       if(bits_per_pixel == 16)
         {
+      if (image->columns > 2*bytes_per_row)
+        ThrowReaderException(CorruptImageError,CorruptImage,image);
           for (x=0; x < (long) image->columns; x++)
             {
               color16 = (*ptr++ << 8);
@@ -595,6 +597,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
           bit = 8 - bits_per_pixel;
           for(x = 0; x < (long) image->columns; x++)
             {
+	if (ptr - one_row >= bytes_per_row)
+          ThrowReaderException(CorruptImageError,CorruptImage,image);
               index =(IndexPacket) (mask - (((*ptr) & (mask << bit)) >> bit));
               indexes[x] = index;
               *q++ = image->colormap[index];
