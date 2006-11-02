@@ -3022,7 +3022,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Photometric interpretation.
             */
-            for (i=0; i < (long) length; i++)
+            for (i=0; i < (long) Min(length, MaxTextExtent-1); i++)
               photometric[i]=data[i];
             photometric[i]='\0';
             break;
