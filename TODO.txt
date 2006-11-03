@@ -37,7 +37,7 @@ For 1.2 Branch
   o Re-write metadata handling to use accessor functions rather
     than accessing Image members directly (50% complete).
 
-  o Update Windows libtiff to version 3.7.X. (updated to 3.7.4)
+  o Update Windows libtiff to version 3.8.2. (done)
 
   o Update Windows libpng to version 1.2.8. (done).
 

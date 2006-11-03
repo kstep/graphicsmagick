@@ -21,6 +21,27 @@
 </tr>
 </table>
 <p>
+2006-11-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> www/Magick++/Image.html: Fix documentation regarding retrieving
+        EXIF attribute.<BR>
+  <LI> magick/command.c: Fix typo in usage messages.
+
+</UL>
+<p>
+2006-11-02  Daniel Kobras  &lt;kobras@debian.org&gt;
+
+<UL>
+  <LI> coders/dcm.c: (ReadDCMImage) Prevent buffer overflow of
+        'photometric' array in DCM coder. Original patch thanks to
+        M Joonas Pihlaja. (CVE-2006-5456)
+  <LI> coders/palm.c: (ReadPALMImage) Fix heap overflows of 'one_row'
+        array in PALM coder. Original patch thanks to M Joonas Pihlaja.
+<STRONG>(CVE-2006-5456)</STRONG>
+
+</UL>
+<p>
 2006-10-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
