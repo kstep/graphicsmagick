@@ -1,3 +1,10 @@
+2007-02-10  Daniel Kobras  <kobras@debian.org>
+
+	* coders/palm.c: (ReadPALMImage) Do not implicitly call
+	  ReadBlobByte() twice in Min() macro. Patch thanks to
+	  Vladimir Nadvornik. This was a regression
+	  introduced in patch for CVE-2006-5456. (CVE-2007-0770)
+
 2006-11-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/Magick++/Image.html: Fix documentation regarding retrieving

@@ -541,7 +541,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         image->compression = RLECompression;
         for (i = 0; i < (long) bytes_per_row; )
           {
-          count = Min(ReadBlobByte(image), bytes_per_row-i);
+          count = ReadBlobByte(image);
+          count = Min(count, bytes_per_row-i);
           byte = ReadBlobByte(image);
           memset(one_row + i, (int) byte, count);
           i += count;
