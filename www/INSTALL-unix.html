@@ -528,6 +528,60 @@ UNIX/Cygwin/MinGW COMPILATION
 </PRE>
 
 <p>
+  Building under the Intel version of Apple's OS X
+
+<PRE>
+    A GraphicsMagick user submitted these steps for how to get
+    GraphicsMagick up and going on an Intel Mac:
+
+    The first few steps should be done as an administrator, or with
+    proper use of "sudo"
+
+    1. Install Fink (a package manager). The default setup will create a
+      /sw directory on your main hard drive. It will also make sure
+      /sw/bin is in your path.
+
+    2. Install the latest X-Code from Apple.
+
+    3. Make a link in /Developer/SDKs/MacOSX10.4u.sdk/ to /sw:
+
+       "cd /Developer/SDKs/MacOSX10.4u.sdk; ln -s sw /sw"
+
+    4. Use Fink, or FinkCommander to install libjpeg and libtiff and any
+       other libraries you might want.
+
+    As a regular user or administrator:
+
+    5. Download the GM snapshot.
+
+    6. Unpack and cd into the source directory.
+
+    7. Set your CFLAGS environment variable to (command varies by shell):
+
+       "-O -g -isysroot /Developer/SDKs/MacOSX10.4u.sdk/ -arch i386 -I/sw/include/"
+
+    8. Set your LDFLAGS environment variable to:
+
+       "-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk/,-L/sw/lib/"
+
+    9. I used the following ./configure line:
+
+      ./configure --prefix=/sw --with-quantum-depth=16 --disable-dependency-tracking \\
+      --with-x=yes --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ --without-perl
+
+    10. Issue make
+
+    11. Test the binaries as necessary and when satisfied:
+
+      sudo make install
+
+    12. start X11 and in a new shell: (or source your .profile or .login)
+
+      gm display
+</PRE>
+
+
+<p>
   Dealing with configuration failures:
 
 <PRE>
@@ -638,6 +692,7 @@ UNIX/Cygwin/MinGW COMPILATION
     CPU type, and the library versions used. The GraphicsMagick developers
     use the current release of all dependent libraries.
 </PRE>
+
 
 <HR>
 

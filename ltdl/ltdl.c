@@ -1,30 +1,32 @@
 /* ltdl.c -- system independent dlopen wrapper
-   Copyright (C) 1998, 1999, 2000, 2004, 2005, 2006 Free Software Foundation, Inc.
-   Originally by Thomas Tanner <tanner@ffii.org>
+
+   Copyright (C) 1998, 1999, 2000, 2004, 2005,
+                 2006 Free Software Foundation, Inc.
+   Written by Thomas Tanner, 1998
 
    NOTE: The canonical source of this file is maintained with the
    GNU Libtool package.  Report bugs to bug-libtool@gnu.org.
 
-This library is free software; you can redistribute it and/or
+GNU Libltdl is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 As a special exception to the GNU Lesser General Public License,
 if you distribute this file as part of a program or library that
-is built using GNU libtool, you may include it under the same
-distribution terms that you use for the rest of that program.
+is built using GNU Libtool, you may include this file under the
+same distribution terms that you use for the rest of that program.
 
-This library is distributed in the hope that it will be useful,
+GNU Libltdl is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-02110-1301  USA
-
+License along with GNU Libltdl; see the file COPYING.LIB.  If not, a
+copy can be downloaded from  http://www.gnu.org/licenses/lgpl.html,
+or obtained by writing to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
 #include "lt_system.h"
@@ -282,6 +284,18 @@ lt_dlexit (void)
 		      if (lt_dlclose (tmp))
 			{
 			  ++errors;
+			}
+		      /* Make sure that the handle pointed to by 'cur' still exists.
+			 lt_dlclose recursively closes dependent libraries which removes
+			 them from the linked list.  One of these might be the one
+			 pointed to by 'cur'.  */
+		      if (cur)
+			{
+			  for (tmp = (lt__handle *) handles; tmp; tmp = tmp->next)
+			    if (tmp == cur)
+			      break;
+			  if (! tmp)
+			    cur = (lt__handle *) handles;
 			}
 		    }
 		}

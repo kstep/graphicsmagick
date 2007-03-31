@@ -476,7 +476,7 @@
 /* Prefix Magick library symbols with a common string. */
 #undef PREFIX_MAGICK_SYMBOLS
 
-/* Define to the necessary symbol if this constant uses a non-standard name on
+/* Define to necessary symbol if this constant uses a non-standard name on
    your system. */
 #undef PTHREAD_CREATE_JOINABLE
 

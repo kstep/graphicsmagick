@@ -6,6 +6,12 @@ See website for "wish list".
 For 1.2 Branch
 ==============
 
+  o Cineon writer seems to be entirely broken now.
+
+  o SGI writer should support 16-bit quantums.
+
+  o EPT/EPT2/EPT3 formts are not inserting TIFF preview properly.
+
   o Fix/improve PSD reader.
 
   o Fix Scitex RGB reader to handle files written by Photoshop.

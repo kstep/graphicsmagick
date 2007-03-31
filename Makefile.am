@@ -15,7 +15,7 @@ topincludedir = @includedir@/GraphicsMagick
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
-ACLOCAL_AMFLAGS = -I ltdl/m4
+ACLOCAL_AMFLAGS = -I ltdl/m4 -I m4
 
 MODULECOMMONFLAGS = -no-undefined -module -avoid-version
 

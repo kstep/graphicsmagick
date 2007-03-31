@@ -578,7 +578,9 @@ namespace Magick
     // Channel a texture on image background
     void            texture ( const Image &texture_ );
     
-    // Threshold image
+    // Threshold image channels (below threshold becomes black, above
+    // threshold becomes white).
+    // The range of the threshold parameter is 0 to MaxRGB.
     void            threshold ( const double threshold_ );
     
     // Transform image based on image and crop geometries

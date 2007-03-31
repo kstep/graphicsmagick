@@ -43,6 +43,8 @@
 #include "magick/magic.h"
 #include "magick/magick.h"
 #include "magick/tempfile.h"
+#include "magick/transform.h"
+#include "magick/shear.h"
 #include "magick/utility.h"
 
 
@@ -418,6 +420,8 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
     }
 }
 
+
+/* Helper for WPG1 raster reader. */
 #define InsertByte(b) \
 { \
   BImgBuff[x]=b; \
@@ -429,6 +433,7 @@ static void InsertRow(unsigned char *p,long y,Image *image, int bpp)
     y++; \
     } \
 }
+/* WPG1 raster reader. */
 static int UnpackWPGRaster(Image *image,int bpp)
 {
   int
@@ -454,15 +459,6 @@ static int UnpackWPGRaster(Image *image,int bpp)
   while(y<(long) image->rows)
     {
       bbuf=ReadBlobByte(image);
-
-      /*
-        if not readed byte ??????
-        {
-          delete Raster;
-          Raster=NULL;
-          return(-2);
-        }
-      */
 
       RunCount=bbuf & 0x7F;
       if(bbuf & 0x80)
@@ -512,17 +508,23 @@ static int UnpackWPGRaster(Image *image,int bpp)
   return(0);
 }
 
-#define InsertRByte(b) \
+
+/* Helper for WPG2 reader. */
+#define InsertByte6(b) \
 { \
-  BImgBuff[x]=b; \
+  if(XorMe)\
+    BImgBuff[x] = (unsigned char)~b;\
+  else\
+    BImgBuff[x] = b;\
   x++; \
   if((long) x >= ldblk) \
   { \
-    InsertRow(BImgBuff,(long) (image->rows-y-1),image,bpp); \
+    InsertRow(BImgBuff,(long) y,image,bpp); \
     x=0; \
     y++; \
    } \
 }
+/* WPG2 raster reader. */
 static int UnpackWPG2Raster(Image *image,int bpp)
 {
   unsigned int
@@ -544,6 +546,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
   long
     ldblk;
 
+  int XorMe = 0;
 
   x=0;
   y=0;
@@ -566,20 +569,21 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             return(-2);
           break;
         case 0x7E:
-          (void) fprintf(stderr,"\nUnsupported WPG token XOR, please report!");  
+          (void) fprintf(stderr,"\nUnsupported WPG token XOR, please report!");
+	  XorMe=!XorMe;
           break;
         case 0x7F:
           RunCount=ReadBlobByte(image);   /* BLK */
           for(i=0; i < SampleSize*(RunCount+1); i++)
             {
-              InsertRByte(0);
+              InsertByte6(0);
             }
           break;
         case 0xFD:
 	  RunCount=ReadBlobByte(image);   /* EXT */
 	  for(i=0; i<= RunCount;i++)
             for(bbuf=0; bbuf < SampleSize; bbuf++)
-              InsertRByte(SampleBuffer[bbuf]);          
+              InsertByte6(SampleBuffer[bbuf]);          
           break;
         case 0xFE:
           RunCount=ReadBlobByte(image);  /* RST */
@@ -594,7 +598,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             /* duplicate the previous row RunCount x */
             for(i=0;i<=RunCount;i++)
               {      
-                InsertRow(BImgBuff,(long) (image->rows > y ? image->rows-y-1 : 0),
+                InsertRow(BImgBuff,(long) (image->rows >= y ? y : image->rows-1),
                           image,bpp);
                 y++;
               }    
@@ -604,7 +608,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           RunCount=ReadBlobByte(image);	 /* WHT */
           for(i=0; i < SampleSize*(RunCount+1); i++)
             {
-              InsertRByte(0xFF);
+              InsertByte6(0xFF);
             }
           break;
         default:
@@ -616,19 +620,82 @@ static int UnpackWPG2Raster(Image *image,int bpp)
                 SampleBuffer[i]=ReadBlobByte(image);
               for(i=0;i<=RunCount;i++)
                 for(bbuf=0;bbuf<SampleSize;bbuf++)
-                  InsertRByte(SampleBuffer[bbuf]);
+                  InsertByte6(SampleBuffer[bbuf]);
             }
           else {			/* NRP */
             for(i=0; i< SampleSize*(RunCount+1);i++)
               {
                 bbuf=ReadBlobByte(image);
-                InsertRByte(bbuf);
+                InsertByte6(bbuf);
               }
           }
         }
     }
   MagickFreeMemory(BImgBuff);
   return(0);
+}
+
+
+typedef float tCTM[3][3];
+
+static unsigned LoadWPG2Flags(Image *image,char Precision,float *Angle,tCTM *CTM)
+{
+const unsigned char TPR=1,TRN=2,SKW=4,SCL=8,ROT=0x10,OID=0x20,LCK=0x80;
+long x;
+unsigned DenX;
+unsigned Flags;
+
+ memset(*CTM,0,sizeof(*CTM));     /*CTM.erase();CTM.resize(3,3);*/
+ (*CTM)[0][0]=1;
+ (*CTM)[1][1]=1;
+ (*CTM)[2][2]=1;
+
+ Flags=ReadBlobLSBShort(image);
+ if(Flags & LCK) x=ReadBlobLSBLong(image);	/*Edit lock*/
+ if(Flags & OID)
+	{
+	if(Precision==0)
+	  {x=ReadBlobLSBShort(image);}	/*ObjectID*/
+	else
+	  {x=ReadBlobLSBLong(image);}	/*ObjectID (Double precision)*/
+	}
+ if(Flags & ROT)
+	{
+	x=ReadBlobLSBLong(image);	/*Rot Angle*/
+	if(Angle) *Angle=x/65536.0;
+	}
+ if(Flags & (ROT|SCL))
+	{
+	x=ReadBlobLSBLong(image);	/*Sx*cos()*/
+	(*CTM)[0][0] = (float)x/0x10000;
+	x=ReadBlobLSBLong(image);	/*Sy*cos()*/
+	(*CTM)[1][1] = (float)x/0x10000;
+	}
+ if(Flags & (ROT|SKW))
+	{
+	x=ReadBlobLSBLong(image);       /*Kx*sin()*/
+	(*CTM)[1][0] = (float)x/0x10000;
+	x=ReadBlobLSBLong(image);       /*Ky*sin()*/
+	(*CTM)[0][1] = (float)x/0x10000;
+	}
+ if(Flags & TRN)
+	{
+	x=ReadBlobLSBLong(image); DenX=ReadBlobLSBShort(image);  /*Tx*/
+        if(x>=0) (*CTM)[0][2] = (float)x+(float)DenX/0x10000;
+            else (*CTM)[0][2] = (float)x-(float)DenX/0x10000;
+	x=ReadBlobLSBLong(image); DenX=ReadBlobLSBShort(image);  /*Ty*/
+	(*CTM)[1][2]=(float)x + ((x>=0)?1:-1)*(float)DenX/0x10000;
+        if(x>=0) (*CTM)[1][2] = (float)x+(float)DenX/0x10000;
+            else (*CTM)[1][2] = (float)x-(float)DenX/0x10000;
+	}
+ if(Flags & TPR)
+	{
+	x=ReadBlobLSBShort(image); DenX=ReadBlobLSBShort(image);  /*Px*/
+	(*CTM)[2][0] = x + (float)DenX/0x10000;;
+	x=ReadBlobLSBShort(image);  DenX=ReadBlobLSBShort(image); /*Py*/
+	(*CTM)[2][1] = x + (float)DenX/0x10000;
+	}
+ return(Flags);
 }
 
 
@@ -715,6 +782,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   return(image);
 }
 
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -777,6 +845,13 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
   typedef struct
   {
+    unsigned	HorizontalUnits;
+    unsigned	VerticalUnits;
+    unsigned char PosSizePrecision;
+  } WPG2Start;
+
+  typedef struct
+  {
     unsigned int Width;
     unsigned int Heigth;
     unsigned int Depth;
@@ -819,7 +894,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   } WPGPSl1Record;  
 
   Image
-    *image;
+    *image,
+    *rotated_image;
 
   unsigned int
     status;
@@ -832,6 +908,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
   WPG2Record
     Rec2;
+
+  WPG2Start StartWPG;
 
   WPGBitmapType1
     BitmapHeader1;
@@ -847,13 +925,16 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
   int
     i,
-    bpp;
+    bpp,
+    WPG2Flags;
 
   long
     ldblk;
 
   unsigned char
     *BImgBuff;
+
+  tCTM CTM;         /*current transform matrix*/
 
   /*
     Open image file.
@@ -1029,6 +1110,38 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                                        image)
                     }
 
+              if(Rec.RecType==0x14 && BitmapHeader2.RotAngle!=0)
+              {  
+		   // flop command                
+		 if(BitmapHeader2.RotAngle & 0x8000)
+                 {
+                   rotated_image = FlopImage(image, exception);
+		   rotated_image->blob = image->blob;
+		   image->blob = NULL;
+		   RemoveLastImageFromList(&image);
+		   AppendImageToList(&image,rotated_image);
+	         }
+		   // flip command
+		 if(BitmapHeader2.RotAngle & 0x2000)
+		 {
+	           rotated_image = FlipImage(image, exception);
+		   rotated_image->blob = image->blob;
+		   image->blob = NULL;
+		   RemoveLastImageFromList(&image);
+		   AppendImageToList(&image,rotated_image);		
+		 }
+		
+		  // rotate command
+                 if(BitmapHeader2.RotAngle & 0x0FFF)
+		 {
+	           rotated_image = RotateImage(image, (BitmapHeader2.RotAngle & 0x0FFF), exception);
+		   rotated_image->blob = image->blob;
+		   image->blob = NULL;
+		   RemoveLastImageFromList(&image);
+		   AppendImageToList(&image,rotated_image);		
+		 }                
+              }
+
               /* Allocate next image structure. */
               AllocateNextImage(image_info,image);
               image->depth=8;
@@ -1050,8 +1163,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
       break;
 
     case 2:  /* WPG level 2 */
+      memset(CTM,0,sizeof(CTM));
+      StartWPG.PosSizePrecision = 0;
       while(!EOFBlob(image)) /* object parser loop */
-
         {
           (void) SeekBlob(image,Header.DataOffset,SEEK_SET);
           if(EOFBlob(image))
@@ -1072,6 +1186,11 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
           switch(Rec2.RecType)
             {
+	    case 1:
+              StartWPG.HorizontalUnits=ReadBlobLSBShort(image);
+              StartWPG.VerticalUnits=ReadBlobLSBShort(image);
+              StartWPG.PosSizePrecision=ReadBlobByte(image);
+              break;
             case 0x0C:    /* Color palette */
               WPG_Palette.StartIndex=ReadBlobLSBShort(image);
               WPG_Palette.NumOfEntries=ReadBlobLSBShort(image);
@@ -1164,6 +1283,36 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   }   
                 }
 
+
+		if(CTM[0][0]<0)
+		{		/*?? RotAngle=360-RotAngle;*/
+		  rotated_image = FlopImage(image, exception);
+		  rotated_image->blob = image->blob;
+		  image->blob = NULL;
+		  RemoveLastImageFromList(&image);
+		  AppendImageToList(&image,rotated_image);
+			/* Try to change CTM according to Flip - I am not sure, must be checked.		  
+		  Tx(0,0)=-1;      Tx(1,0)=0;   Tx(2,0)=0;
+		  Tx(0,1)= 0;      Tx(1,1)=1;   Tx(2,1)=0;
+		  Tx(0,2)=(WPG._2Rect.X_ur+WPG._2Rect.X_ll);
+		                   Tx(1,2)=0;   Tx(2,2)=1; */                  
+                }
+		if(CTM[1][1]<0)
+		{		/*?? RotAngle=360-RotAngle;*/
+		  rotated_image = FlipImage(image, exception);
+		  rotated_image->blob = image->blob;
+		  image->blob = NULL;
+		  RemoveLastImageFromList(&image);
+		  AppendImageToList(&image,rotated_image);
+			  /* Try to change CTM according to Flip - I am not sure, must be checked.
+		  float_matrix Tx(3,3);
+		  Tx(0,0)= 1;   Tx(1,0)= 0;   Tx(2,0)=0;
+		  Tx(0,1)= 0;   Tx(1,1)=-1;   Tx(2,1)=0;
+		  Tx(0,2)= 0;   Tx(1,2)=(WPG._2Rect.Y_ur+WPG._2Rect.Y_ll);
+					      Tx(2,2)=1; */		  
+		}		
+		
+
               /* Allocate next image structure. */
               AllocateNextImage(image_info,image);
               image->depth=8;
@@ -1180,6 +1329,10 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 image=ExtractPostscript(image,image_info,
                   TellBlob(image)+i,		/*skip PS header in the wpg2*/
                   (long) (Rec2.RecordLength-i-2),exception);
+              break;
+
+	    case 0x1B:          /*bitmap rectangle*/
+              WPG2Flags = LoadWPG2Flags(image,StartWPG.PosSizePrecision,NULL,&CTM);
               break;
             }
         }
@@ -1216,7 +1369,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
       Fix scene numbers
     */
     for (p=image; p != (Image *) NULL; p=p->next)
-      p->scene=scene++;      
+      p->scene=scene++;
   }
   
   return(image);       

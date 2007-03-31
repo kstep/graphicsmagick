@@ -1,3 +1,25 @@
+2007-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (WriteDPXImage): Set DPX reference high quantity to
+	2.047 rather than 2.048 since zero is assumed to occupy one count
+	and 2.047 seems to be the convention even though the DPX
+	specification says the default is 2.048.  Technicolor uses 2.047.
+	* m4/acx_pthread.m4: Update version of ACX_PTHREAD macro used.
+
+2007-03-28  Fojtik Jaroslav  <fojtik@humusoft.cz>
+
+	* coders/wpg.c: Support CTM translation in WPG reader.
+
+2007-03-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c: Store 10-bit Luma samples in the filled 32-bit
+	storage word starting with the datum in the least significant
+	position.
+
+2007-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Updated autoconf to version 2.61.
+
 2007-02-10  Daniel Kobras  <kobras@debian.org>
 
 	* coders/palm.c: (ReadPALMImage) Do not implicitly call

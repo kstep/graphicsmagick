@@ -2123,8 +2123,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (element_descriptor == ImageElementRGBA) ||
           (element_descriptor == ImageElementABGR) ||
           (element_descriptor == ImageElementCbYCrY422) ||
-          (element_descriptor == ImageElementCbYACrYA4224) ||
-          (element_descriptor == ImageElementLuma))
+          (element_descriptor == ImageElementCbYACrYA4224))
         {
           if ((bits_per_sample == 10) && (packing_method != PackingMethodPacked))
             swap_word_datums = MagickTrue;
@@ -3537,7 +3536,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       dpx_image_info.element_info[0].reference_high_data_code=
         MaxValueGivenBits(bits_per_sample);
       dpx_image_info.element_info[0].reference_low_quantity=0.00F;
-      dpx_image_info.element_info[0].reference_high_quantity=2.048F;
+      dpx_image_info.element_info[0].reference_high_quantity=2.047F;
     }
   else if ((transfer_characteristic == TransferCharacteristicUnspecifiedVideo) ||
            (transfer_characteristic == TransferCharacteristicSMTPE274M) ||
@@ -3955,8 +3954,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
           (element_descriptor == ImageElementRGBA) ||
           (element_descriptor == ImageElementABGR) ||
           (element_descriptor == ImageElementCbYCrY422) ||
-          (element_descriptor == ImageElementCbYACrYA4224) ||
-          (element_descriptor == ImageElementLuma))
+          (element_descriptor == ImageElementCbYACrYA4224))
         {
           if ((bits_per_sample == 10) && (packing_method != PackingMethodPacked))
             swap_word_datums = MagickTrue;

@@ -1678,7 +1678,9 @@ void Magick::Image::texture ( const Image &texture_ )
   throwImageException();
 }
 
-// Threshold image
+// Threshold image channels (below threshold becomes black, above
+// threshold becomes white).
+// The range of the threshold parameter is 0 to MaxRGB.
 void Magick::Image::threshold ( const double threshold_ )
 {
   modifyImage();

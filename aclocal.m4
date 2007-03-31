@@ -11,8 +11,8 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-m4_if(m4_PACKAGE_VERSION, [2.60],,
-[m4_fatal([this file was generated for autoconf 2.60.
+m4_if(m4_PACKAGE_VERSION, [2.61],,
+[m4_fatal([this file was generated for autoconf 2.61.
 You have another version of autoconf.  If you want to use that,
 you should regenerate the build system entirely.], [63])])
 
@@ -923,6 +923,7 @@ AC_SUBST([am__tar])
 AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
 
+m4_include([m4/acx_pthread.m4])
 m4_include([ltdl/m4/argz.m4])
 m4_include([ltdl/m4/libtool.m4])
 m4_include([ltdl/m4/ltdl.m4])
