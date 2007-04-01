@@ -325,10 +325,6 @@ PGPDecodeDelegate = @PGPDecodeDelegate@
 POVDelegate = @POVDelegate@
 PREFIX_DIR = @PREFIX_DIR@
 PSDelegate = @PSDelegate@
-PTHREAD_CC = @PTHREAD_CC@
-PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
-PTHREAD_CXX = @PTHREAD_CXX@
-PTHREAD_LIBS = @PTHREAD_LIBS@
 PrintDelegate = @PrintDelegate@
 QuantumDepth = @QuantumDepth@
 RADDecodeDelegate = @RADDecodeDelegate@
@@ -432,6 +428,7 @@ xml2_config = @xml2_config@
 
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.8.5 dist-zip dist-bzip2 foreign
+ACLOCAL_AMFLAGS = -I m4
 
 # Subdirectories to build
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = Magick++

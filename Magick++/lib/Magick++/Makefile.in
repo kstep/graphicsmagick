@@ -286,10 +286,6 @@ PGPDecodeDelegate = @PGPDecodeDelegate@
 POVDelegate = @POVDelegate@
 PREFIX_DIR = @PREFIX_DIR@
 PSDelegate = @PSDelegate@
-PTHREAD_CC = @PTHREAD_CC@
-PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
-PTHREAD_CXX = @PTHREAD_CXX@
-PTHREAD_LIBS = @PTHREAD_LIBS@
 PrintDelegate = @PrintDelegate@
 QuantumDepth = @QuantumDepth@
 RADDecodeDelegate = @RADDecodeDelegate@
@@ -416,9 +412,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  Magick++/lib/Magick++/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  Magick++/lib/Magick++/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  Magick++/lib/Magick++/Makefile
+	  $(AUTOMAKE) --gnu  Magick++/lib/Magick++/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
