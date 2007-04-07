@@ -1,3 +1,8 @@
+2007-04-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c: Read Matlab files in both big and little endian
+	format.
+
 2007-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (WriteDPXImage): Set DPX reference high quantity to

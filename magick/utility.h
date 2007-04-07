@@ -145,6 +145,8 @@ extern MagickExport size_t
   Allocate memory
 */
 #define MagickAllocateMemory(type,size) ((type) malloc((size_t) (size)))
+/* #define MagickAllocateMemory(type,size) ((type) malloc((size))) */
+/* #define MagickAllocateMemory(type,size) ((size != ((size_t) size)) ? ((type) 0) : ((type) malloc((size_t) (size)))) */
 
 /*
   Free memory and set pointer to NULL

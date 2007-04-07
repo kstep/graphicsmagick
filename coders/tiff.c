@@ -1562,6 +1562,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               Allocate memory for one scanline.
             */
             scanline_size=TIFFScanlineSize(tiff);
+            if (0 == scanline_size)
+              {
+                status=MagickFail;
+                break;
+              }
+
             scanline=MagickAllocateMemory(unsigned char *,scanline_size);
             if (scanline == (unsigned char *) NULL)
               {
@@ -1696,6 +1702,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               Allocate memory for one strip.
             */
             strip_size_max=TIFFStripSize(tiff);
+            if (0 == strip_size_max)
+              {
+                status=MagickFail;
+                break;
+              }
+
             strip=MagickAllocateMemory(unsigned char *,strip_size_max);
             if (strip == (unsigned char *) NULL)
               {
@@ -1868,6 +1880,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               Obtain the maximum number of bytes required to contain a tile.
             */
             tile_size_max=TIFFTileSize(tiff);
+            if (0 == tile_size_max)
+              {
+                status=MagickFail;
+                break;
+              }
             /*
               Compute the total number of pixels in one tile
             */
@@ -1883,7 +1900,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             /*
               Allocate tile buffer
             */
-            tile=MagickAllocateMemory(unsigned char *,(size_t) tile_size_max);
+            tile=MagickAllocateMemory(unsigned char *, tile_size_max);
             if (tile == (unsigned char *) NULL)
               {
                 TIFFClose(tiff);
@@ -2057,7 +2074,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                      image);
               }
-            strip_pixels=MagickAllocateMemory(uint32 *,(size_t) (number_pixels*sizeof(uint32)));
+            strip_pixels=MagickAllocateMemory(uint32 *, (number_pixels*sizeof(uint32)));
             if (strip_pixels == (uint32 *) NULL)
               {
                 TIFFClose(tiff);
@@ -3608,7 +3625,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                     if (sample_format != SAMPLEFORMAT_IEEEFP)
                       SwabDataToNativeEndian(bits_per_sample,scanline,scanline_size);
 #endif
-                    if (TIFFWriteScanline(tiff, scanline,y,sample) < 0)
+                    if (TIFFWriteScanline(tiff, scanline,y,sample) == -1)
                       {
                         status=MagickFail;
                         break;
@@ -3730,7 +3747,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Allocate tile buffer
             */
-            tile=MagickAllocateMemory(unsigned char *,(size_t) tile_size_max);
+            tile=MagickAllocateMemory(unsigned char *, tile_size_max);
             if (tile == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);            
             /*
@@ -3835,7 +3852,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                         if (sample_format != SAMPLEFORMAT_IEEEFP)
                           SwabDataToNativeEndian(bits_per_sample,tile,tile_size_max);
 #endif
-                        if ((tile_size=TIFFWriteTile(tiff,tile,x,y,0,sample)) < 0)
+                        if ((tile_size=TIFFWriteTile(tiff,tile,x,y,0,sample)) == -1)
                           {
                             status=MagickFail;
                           }
@@ -3907,7 +3924,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           ThrowWriterException(FileOpenError,UnableToOpenFile,image);
         }
       /* st_size has type off_t */
-      if ((fstat(file,&attributes) < 0) ||
+      if ((fstat(file,&attributes) != 0) ||
           (attributes.st_size != (off_t) ((size_t) attributes.st_size)) ||
           (attributes.st_size <= (off_t) ((size_t) 0)))
         {
