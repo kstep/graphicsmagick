@@ -1,3 +1,8 @@
+2007-04-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/mat.c: Read Matlab files in both big and little endian
+	format.
+
 2007-04-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* m4/acx_pthread.m4: Update version of ACX_PTHREAD macro used.
