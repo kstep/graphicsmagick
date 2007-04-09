@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>cache - Low-level access to image pixels</title>
-<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+<link rev="made" href="mailto:bfriesen@blade.simplesystems.org" />
 </head>
 
 <body style="background-color: white">
@@ -51,7 +51,7 @@
 <P>PixelPacket * <strong>GetImagePixels</strong>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P>VirtualPixelMethod  <strong>GetImageVirtualPixelMethod</strong>( const Image *image );</P>
 <P>IndexPacket * <strong>GetIndexes</strong>( const Image *image );</P>
-<P>PixelPacket * <strong>GetOnePixel</strong>( const Image image, const long x, const long y );</P>
+<P>PixelPacket  <strong>GetOnePixel</strong>( const Image image, const long x, const long y );</P>
 <P>PixelPacket * <strong>GetPixels</strong>( const Image image );</P>
 <P>unsigned int  <strong>ModifyCache</strong>( Image *image );</P>
 <P>Cache  <strong>ReferenceCache</strong>( Cache cache_info );</P>
@@ -196,7 +196,7 @@ The image.
 <P>
 </P>
 <h2><a name="getonepixel">GetOnePixel</a></h2>
-<blockquote>GetOnePixel() returns a single pixel at the specified ( x, y ) location. The image background color is returned if an error occurs. </blockquote><blockquote>The format of the GetOnePixel() method is: </blockquote><blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> *GetOnePixel ( const <A HREF="types.html#Image">Image</A> image, const long x, const long y ); </blockquote><P>A description of each parameter follows:</P>
+<blockquote>GetOnePixel() returns a single pixel at the specified ( x, y ) location. The image background color is returned if an error occurs. </blockquote><blockquote>The format of the GetOnePixel() method is: </blockquote><blockquote><A HREF="types.html#PixelPacket">PixelPacket</A> GetOnePixel ( const <A HREF="types.html#Image">Image</A> image, const long x, const long y ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong><br />
 </dt>
