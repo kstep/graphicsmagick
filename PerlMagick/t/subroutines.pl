@@ -361,6 +361,26 @@ sub testReadCompare {
 #      goto COMPARE_RUNTIME_ERROR;
 #    }
 
+  # Verify that $srcimage and $refimage contain the same number of frames.
+  if ( $#srcimage != $#refimage )
+    {
+      $errorinfo = "Source and reference images contain different number of frames ($#srcimage != $#refimage)";
+      warn("$errorinfo");
+      goto COMPARE_RUNTIME_ERROR;
+    }
+
+  # Compare each frame in the sequence.
+  for ($index = 0; $srcimage->[$index] && $refimage->[$index]; $index++)
+    {
+      $status=$srcimage->[$index]->Compare($refimage->[$index]);
+      if ("$status")
+        {
+          $errorinfo = "Compare($refimage_name)->[$index]: $status";
+          warn("$errorinfo");
+          goto COMPARE_RUNTIME_ERROR;
+        }
+    }
+
   $status=$srcimage->Compare($refimage);
   if ("$status")
     {

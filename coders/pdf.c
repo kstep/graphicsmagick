@@ -1100,6 +1100,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException2(CoderError,image->exception.reason,image);
             (void) strcpy(jpeg_image->magick,"JPEG");
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
+            if (blob == (void *) NULL)
+              ThrowWriterException2(CoderError,image->exception.reason,image);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
             MagickFreeMemory(blob);
@@ -1213,6 +1215,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException2(CoderError,image->exception.reason,image);
             (void) strcpy(jpeg_image->magick,"JPEG");
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
+            if (blob == (void *) NULL)
+              ThrowWriterException2(CoderError,image->exception.reason,image);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
             MagickFreeMemory(blob);
@@ -1542,7 +1546,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
               ThrowWriterException2(CoderError,image->exception.reason,image);
+            (void) strcpy(jpeg_image->magick,"JPEG");
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
+            if (blob == (void *) NULL)
+              ThrowWriterException2(CoderError,image->exception.reason,image);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
             MagickFreeMemory(blob);
@@ -1640,7 +1647,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
               ThrowWriterException2(CoderError,image->exception.reason,image);
+            (void) strcpy(jpeg_image->magick,"JPEG");
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
+            if (blob == (void *) NULL)
+              ThrowWriterException2(CoderError,image->exception.reason,image);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
             MagickFreeMemory(blob);

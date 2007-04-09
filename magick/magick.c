@@ -665,7 +665,8 @@ MagickExport void InitializeMagickClientPathAndName(const char *path)
             - we call getcwd and sling whatever seems to be a filename
             passed by the caller onto the end and see if that works
           */
-          (void) strncpy(execution_path,path,MaxTextExtent-1);
+          if (path)
+            (void) strncpy(execution_path,path,MaxTextExtent-1);
           if (GetExecutionPathUsingName(execution_path))
             {
               (void) DefineClientPathAndName(execution_path);

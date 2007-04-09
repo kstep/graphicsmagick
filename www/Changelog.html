@@ -21,6 +21,28 @@
 </tr>
 </table>
 <p>
+2007-04-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/GraphicsMagick.pc.in: Fix for SourceForge bug id 1576616
+        "Fix includedir variable in pkg-config files".
+  <LI> magick/cache.c (GetOnePixel): Fix for SourceForge bug id 1572357
+        "GetOnePixel definition appears incorrect".  Is is true that this
+        function is intended for read-only purposes and that the
+        PixelPacket value is returned directly.
+  <LI> coders/pdf.c (WritePDFImage): Fix for SourceForge bug id 1510075
+        "Failed to write PDF with JPEG compression".
+  <LI> magick/command.c (MogrifyImageCommand): Properly bubble up
+        errors and terminate further mogrify processing immediately. This
+        in response to SourceForge bug id 1391421 "problem doing resize on
+        273x1 JPEG".<BR>
+  <LI> magick/magick.c (InitializeMagickClientPathAndName): Fix for
+        SourceForge bug id 1315109 "segfault in InitializeMagick(NULL)".
+  <LI> wand/magick_wand.c (MagickGetQuantumDepth): Fix for SourceForge
+        bug id 1353744 "MagickGetQuantumDepth doesn't work".
+
+</UL>
+<p>
 2007-04-07  Fojtik Jaroslav  &lt;JaFojtik@seznam.cz&gt;
 
 <UL>

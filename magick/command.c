@@ -9890,6 +9890,10 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           Transmogrify image as defined by the image processing options.
         */
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
+        if (image->exception.severity > exception->severity)
+          CopyException(exception,&image->exception);
+        if (status != MagickPass)
+          break;
         if (global_colormap)
           (void) MapImages(image,(Image *) NULL,image_info->dither);
         /*

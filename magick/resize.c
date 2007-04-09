@@ -1118,7 +1118,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   assert((filter >= 0) && (filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
     ThrowImageException(ImageError,UnableToResizeImage,
-      MagickMsg(CorruptImageError,NegativeOrZeroImageSize));
+      MagickMsg(OptionError,NonzeroWidthAndHeightRequired));
   if ((columns == image->columns) && (rows == image->rows) && (blur == 1.0))
     return(CloneImage(image,0,0,True,exception));
   resize_image=CloneImage(image,columns,rows,True,exception);
