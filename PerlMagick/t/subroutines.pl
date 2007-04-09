@@ -180,10 +180,10 @@ sub testCompositeCompare {
 }
 
 #
-# Test reading a 16-bit file in which two signatures are possible,
-# depending on whether 16-bit pixels data has been enabled
+# Test reading a file in which several signatures are possible,
+# depending on available image depth.
 #
-# Usage: testRead( read filename, expected ref_8 [, expected ref_16] );
+# Usage: testRead( read filename, expected ref_8 [, expected ref_16] [, expected ref_32] );
 #
 sub testRead {
   my( $infile, $ref_8, $ref_16, $ref_32 ) =  @_;
@@ -361,12 +361,24 @@ sub testReadCompare {
 #      goto COMPARE_RUNTIME_ERROR;
 #    }
 
-  $status=$srcimage->Compare($refimage);
-  if ("$status")
+  # Verify that $srcimage and $refimage contain the same number of frames.
+  if ( $#srcimage != $#refimage )
     {
-      $errorinfo = "Compare($refimage_name): $status";
+      $errorinfo = "Source and reference images contain different number of frames ($#srcimage != $#refimage)";
       warn("$errorinfo");
       goto COMPARE_RUNTIME_ERROR;
+    }
+
+  # Compare each frame in the sequence.
+  for ($index = 0; $srcimage->[$index] && $refimage->[$index]; $index++)
+    {
+      $status=$srcimage->[$index]->Compare($refimage->[$index]);
+      if ("$status")
+        {
+          $errorinfo = "Compare($refimage_name)->[$index]: $status";
+          warn("$errorinfo");
+          goto COMPARE_RUNTIME_ERROR;
+        }
     }
 
   $normalized_mean_error=0;
@@ -400,6 +412,8 @@ sub testReadCompare {
   return 0;
 
  COMPARE_RUNTIME_ERROR:
+  $srcimage->Display();
+  $refimage->Display();
   undef $srcimage;
   undef $refimage;
   print "not ok $test\n";

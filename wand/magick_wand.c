@@ -4155,6 +4155,7 @@ WandExport const char *MagickGetPackageName(void)
 */
 WandExport const char *MagickGetQuantumDepth(unsigned long *depth)
 {
+  *depth = (unsigned long) QuantumDepth;
   return(MagickQuantumDepth);
 }
 

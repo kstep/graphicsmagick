@@ -13,7 +13,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
-BEGIN { $| = 1; $test=1; print "1..49\n"; }
+BEGIN { $| = 1; $test=1; print "1..50\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -175,9 +175,13 @@ print("WBMP (Wireless Bitmap (level 0) image) ...\n");
 ++$test;
 testReadCompare('input.wbmp', 'reference/read/input_wbmp.miff', q//, 0, 0);
 
-print("WPG (Word Perfect Graphics image) ...\n");
+print("WPG (Word Perfect Graphics image, v1) ...\n");
 ++$test;
-testReadCompare('input.wpg', 'reference/read/input_wpg.miff', q//, 0, 0);
+testReadCompare('input1.wpg', 'reference/read/input1_wpg.miff', q//, 0, 0);
+
+print("WPG (Word Perfect Graphics image, v2) ...\n");
+++$test;
+testReadCompare('input2.wpg', 'reference/read/input2_wpg.miff', q//, 0, 0);
 
 print("X Windows system bitmap (black and white only) ...\n");
 ++$test;

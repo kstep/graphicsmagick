@@ -692,7 +692,8 @@ MagickExport void InitializeMagickClientPathAndName(const char *ARGUNUSED(path))
             path based on the current working directory or by
             searching the executable search path.
           */
-          (void) strlcpy(execution_path,path,MaxTextExtent);
+          if (path)
+            (void) strlcpy(execution_path,path,MaxTextExtent);
           if (GetExecutionPathUsingName(execution_path))
             {
               (void) DefineClientPathAndName(execution_path);

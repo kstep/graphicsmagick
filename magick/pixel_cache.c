@@ -2396,7 +2396,7 @@ static PixelPacket *GetNexusPixels(const Cache cache,
 %
 %  The format of the GetOnePixel() method is:
 %
-%      PixelPacket *GetOnePixel(const Image image,const long x,const long y)
+%      PixelPacket GetOnePixel(const Image image,const long x,const long y)
 %
 %  A description of each parameter follows:
 %

@@ -8778,8 +8778,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             
             resample_width=(unsigned long)
               ((*image)->columns*(x_resolution/(*image)->x_resolution)+0.5);
+            if (resample_width < 1)
+              resample_width = 1;
             resample_height=(unsigned long)
               ((*image)->rows*(y_resolution/(*image)->y_resolution)+0.5);
+            if (resample_height < 1)
+              resample_height = 1;
+
             (void) CloneString(&clone_info->density,resample_density);
             (void) CloneString(&draw_info->density,resample_density);
             (*image)->x_resolution=x_resolution;
@@ -9799,6 +9804,8 @@ static MagickPassFail* TransmogrifyImage(TransmogrifyOptions *options)
         processing options.
       */
       status &= MogrifyImages(image_info,options->argc,options->argv,&image);
+      if (image->exception.severity > options->exception.severity)
+        CopyException(&options->exception,&image->exception);
       if ((status != MagickFail) && (options->global_colormap))
         (void) MapImages(image,(Image *) NULL,image_info->dither);
 

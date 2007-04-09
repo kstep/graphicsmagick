@@ -90,7 +90,10 @@ Updated with profile length if profile is present.
 <P>
 </P>
 <h2><a name="profileimage">ProfileImage</a></h2>
-<blockquote>ProfileImage() adds or removes a ICM, IPTC, or generic profile from an image. If the profile is NULL, it is removed from the image otherwise added. Use a name of ' *' and a profile of NULL to remove all profiles from the image. Ownership of the profile is transferred to GraphicsMagick ( it should not be altered or deallocated ) unless the clone option is set to True. </blockquote><P>The format of the ProfileImage method is:</P>
+<blockquote>ProfileImage() adds, applies, or removes a ICM, IPTC, or generic profile from an image. If the profile is NULL, it is removed from the image otherwise added ( or applied ) . Use a name of ' *' and a profile of NULL to remove all profiles from the image. Ownership of the profile is transferred to GraphicsMagick ( it should not be altered or deallocated ) unless the clone option is set to True. </blockquote><P>ICC ICM profiles are a special case and are handled as follows:</P>
+<P>If there is no ICM profile currently associated with the image, then the profile is simply associated with the image and the image pixels are not altered.</P>
+<P>If there is already a ICM profile associated with the image, then the colorspace transform described by the existing and new profiles is applied to the image pixels, and the new profile is associated with the image.</P>
+<P>The format of the ProfileImage method is:</P>
 <blockquote>unsigned int ProfileImage ( <A HREF="types.html#Image">Image</A> *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong><br />

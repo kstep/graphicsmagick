@@ -1,3 +1,23 @@
+2007-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/GraphicsMagick.pc.in: Fix for SourceForge bug id 1576616
+	"Fix includedir variable in pkg-config files".
+	* magick/pixel_cache.c (GetOnePixel): Fix for SourceForge bug id
+	1572357 "GetOnePixel definition appears incorrect".  Is is true
+	that this function is intended for read-only purposes and that the
+	PixelPacket value is returned directly.
+	* coders/pdf.c (WritePDFImage): Fix for SourceForge bug id 1510075
+	"Failed to write PDF with JPEG compression".
+	* magick/command.c (MogrifyImageCommand): Properly bubble up
+	errors and terminate further mogrify processing immediately. This
+	in response to SourceForge bug id 1391421 "problem doing resize on
+	273x1 JPEG".
+	* magick/magick.c (InitializeMagickClientPathAndName): Fix for
+	SourceForge bug id 1315109 "segfault in InitializeMagick(NULL)".
+	* wand/magick_wand.c (MagickGetQuantumDepth): Fix for SourceForge
+	bug id 1353744 "MagickGetQuantumDepth doesn't work".
+	* PerlMagick/t/read.t: Added a test for WPG v1.
+
 2007-04-07  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/mat.c: Read Matlab files in both big and little endian
