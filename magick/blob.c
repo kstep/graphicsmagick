@@ -3298,7 +3298,8 @@ MagickExport int SyncBlob(Image *image)
   assert(image->blob->type != UndefinedStream);
   for (p=image; p->previous != (Image *) NULL; p=p->previous);
   for ( ; p->next != (Image *) NULL; p=p->next)
-    *p->blob=(*image->blob);
+    if (p->blob != image->blob)
+      *p->blob=(*image->blob);
   status=0;
   switch (image->blob->type)
   {

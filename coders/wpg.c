@@ -1357,13 +1357,19 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     
     /*
       Rewind list, removing any empty images while rewinding.
-    */   
-    for (p=image; p != (Image *) NULL; p=p->previous)
-      {
-        if ((p->rows == 0) || (p->columns == 0))
-          DeleteImageFromList(&p);
+    */ 
+    p=image;
+    while (p != (Image *) NULL)
+    {
+      if ((p->rows == 0) || (p->columns == 0))
+      {		// Image is empty, so erase it.	
+	DeleteImageFromList(&p);	
         image=p;
+	continue;
       }
+      image=p;      
+      p=p->previous;
+    }      
     
     /*
       Fix scene numbers
