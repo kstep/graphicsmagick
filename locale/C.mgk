@@ -834,6 +834,9 @@
       <Message name="ReferenceIsNotMyType">
         Reference is not my type
       </Message>
+      <Message name="RequestDidNotReturnAnImage">
+        Request did not return an image
+      </Message>
       <Message name="SteganoImageRequired">
         Stegano image required
       </Message>
@@ -1018,6 +1021,9 @@
       </Message>
       <Message name="OptionLengthExceedsLimit">
         Option length exceeds limit
+      </Message>
+      <Message name="RequestDidNotReturnAnImage">
+        Request did not return an image
       </Message>
       <Message name="UnableToOpenXServer">
         Unable to open XServer

@@ -1,9 +1,22 @@
+2007-04-09  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/wpg.c (ReadWPGImage): Fix for SourceForge bug id 1431805
+	"clip art wpg files cause access violation in graphics magick".
+
+2007-04-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/pixel_cache.c (ModifyCache): Ensure that the cache nexus
+	is open.  Fix for SourceForge bug id 1173713 "segfault in
+	ModifyCache"
+	* m4/acx_pthread.m4 (ACX_PTHREAD): Apply fixes necessary to
+	support C++ compiler properly.
+
 2007-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/GraphicsMagick.pc.in: Fix for SourceForge bug id 1576616
 	"Fix includedir variable in pkg-config files".
 	* magick/pixel_cache.c (GetOnePixel): Fix for SourceForge bug id
-	1572357 "GetOnePixel definition appears incorrect".  Is is true
+	1572357 "GetOnePixel definition appears incorrect".  It is true
 	that this function is intended for read-only purposes and that the
 	PixelPacket value is returned directly.
 	* coders/pdf.c (WritePDFImage): Fix for SourceForge bug id 1510075

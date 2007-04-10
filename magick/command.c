@@ -1204,7 +1204,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
   }
   i--;
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
-    MagickFatalError(OptionFatalError,MissingAnImageFilename,(char *) NULL);
+    MagickFatalError(OptionFatalError,RequestDidNotReturnAnImage,(char *) NULL);
   if (image == (Image *) NULL)
     {
       status&=MogrifyImages(image_info,i-j,argv+j,&image_list);
@@ -2497,7 +2497,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   if (image == (Image *) NULL)
     {
       if (exception->severity == UndefinedException)
-        ThrowCompositeException(OptionError,MissingAnImageFilename,
+        ThrowCompositeException(OptionError,RequestDidNotReturnAnImage,
           (char *) NULL);
       return(False);
     }
@@ -4608,7 +4608,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
     {
       if (exception->severity == UndefinedException)
-        ThrowConvertException(OptionError,MissingAnImageFilename,
+        ThrowConvertException(OptionError,RequestDidNotReturnAnImage,
           (char *) NULL);
       status = MagickFail;
       goto convert_cleanup_and_return;
@@ -6999,7 +6999,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   if (number_images == 0)
     {
       if (exception->severity == UndefinedException)
-        ThrowIdentifyException(OptionError,MissingAnImageFilename,
+        ThrowIdentifyException(OptionError,RequestDidNotReturnAnImage,
           (char *) NULL);
       status = MagickFail;
     }
@@ -13017,7 +13017,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
     {
       if (exception->severity == UndefinedException)
-        ThrowMontageException(OptionError,MissingAnImageFilename,
+        ThrowMontageException(OptionError,RequestDidNotReturnAnImage,
           (char *) NULL);
       return(False);
     }
@@ -13034,7 +13034,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   (void) strlcpy(montage_info->filename,argv[argc-1],MaxTextExtent);
   montage_image=MontageImages(image_list,montage_info,exception);
   if (montage_image == (Image *) NULL)
-    ThrowMontageException(OptionError,MissingAnImageFilename,(char *) NULL);
+    ThrowMontageException(OptionError,RequestDidNotReturnAnImage,(char *) NULL);
   DestroyImageList(image_list);
   /*
     Write image.
@@ -14081,7 +14081,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
     image=next_image;
   }
   if (image == (Image *) NULL)
-    MagickFatalError(OptionFatalError,MissingAnImageFilename,(char *) NULL);
+    MagickFatalError(OptionFatalError,RequestDidNotReturnAnImage,(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   status&=MogrifyImages(image_info,argc-1,argv,&image);

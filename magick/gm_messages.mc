@@ -1481,6 +1481,12 @@ Reference is not my type
 .
 
 MessageId       = +1
+SymbolicName    = OptionErrorRequestDidNotReturnAnImage
+Language        = English
+Request did not return an image
+.
+
+MessageId       = +1
 SymbolicName    = OptionErrorSteganoImageRequired
 Language        = English
 Stegano image required
@@ -1844,6 +1850,12 @@ MessageId       = +1
 SymbolicName    = OptionFatalErrorOptionLengthExceedsLimit
 Language        = English
 Option length exceeds limit
+.
+
+MessageId       = +1
+SymbolicName    = OptionFatalErrorRequestDidNotReturnAnImage
+Language        = English
+Request did not return an image
 .
 
 MessageId       = +1

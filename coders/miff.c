@@ -1867,7 +1867,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
-      Allocate image pixels.
+      Transform colorspace if necessary.
     */
     if (((image_info->colorspace != UndefinedColorspace) ||
          (image->colorspace != CMYKColorspace)) &&
@@ -1884,6 +1884,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       depth=16;
     else
       depth=8;
+    /*
+      Allocate image pixels.
+    */
     packet_size=depth/8;
     if (image->storage_class == DirectClass)
       packet_size=3*depth/8;

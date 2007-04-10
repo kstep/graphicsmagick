@@ -2799,6 +2799,8 @@ static unsigned int ModifyCache(Image *image)
   /* we don't actually lock until we know for sure that someone else is using
      the same cache. */
   AcquireSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
+  if (!cache_info->nexus_info)
+    OpenCache(image,IOMode);
   cache_info->reference_count--;
   clone_image=(*image);
   GetCacheInfo(&image->cache);
