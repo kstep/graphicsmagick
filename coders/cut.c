@@ -21,7 +21,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                              Jaroslav Fojtik                                %
-%                                 June 2000                                   %
+%                              June 2000 - 2007                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -83,7 +83,7 @@ static void InsertRow(unsigned char *p,long y,Image *image)
           {
             for (bit=0; bit < 8; bit++)
               {
-                index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+                index=((*p) & (0x80U >> bit) ? 0x01U : 0x00U);
                 indexes[x+bit]=index;
                 *q++=image->colormap[index];
               }
@@ -93,7 +93,7 @@ static void InsertRow(unsigned char *p,long y,Image *image)
           {
             for (bit=0; bit < (long) (image->columns % 8); bit++)
               {
-                index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+                index=((*p) & (0x80 >> bit) ? 0x01U : 0x00U);
                 indexes[x+bit]=index;
                 *q++=image->colormap[index];
               }
@@ -114,19 +114,19 @@ static void InsertRow(unsigned char *p,long y,Image *image)
         indexes=GetIndexes(image);
         for (x=0; x < ((long) image->columns-1); x+=2)
           {
-            index=(IndexPacket) ((*p >> 6) & 0x3);
+            index=(IndexPacket) ((*p >> 6U) & 0x3U);
             VerifyColormapIndex(image,index);
             indexes[x]=index;
             *q++=image->colormap[index];
-            index=(IndexPacket) ((*p >> 4) & 0x3);
+            index=(IndexPacket) ((*p >> 4U) & 0x3U);
             VerifyColormapIndex(image,index);
             indexes[x]=index;
             *q++=image->colormap[index];
-            index=(IndexPacket) ((*p >> 2) & 0x3);
+            index=(IndexPacket) ((*p >> 2U) & 0x3U);
             VerifyColormapIndex(image,index);
             indexes[x]=index;
             *q++=image->colormap[index];
-            index=(IndexPacket) ((*p) & 0x3);
+            index=(IndexPacket) ((*p) & 0x3U);
             VerifyColormapIndex(image,index);
             indexes[x+1]=index;
             *q++=image->colormap[index];
@@ -134,21 +134,21 @@ static void InsertRow(unsigned char *p,long y,Image *image)
           }
         if ((image->columns % 4) != 0)
           {
-            index=(IndexPacket) ((*p >> 6) & 0x3);
+            index=(IndexPacket) ((*p >> 6U) & 0x3U);
             VerifyColormapIndex(image,index);
             indexes[x]=index;
             *q++=image->colormap[index];
             if ((image->columns % 4) >= 1)
 
               {
-                index=(IndexPacket) ((*p >> 4) & 0x3);
+                index=(IndexPacket) ((*p >> 4U) & 0x3U);
                 VerifyColormapIndex(image,index);
                 indexes[x]=index;
                 *q++=image->colormap[index];
-                if ((image->columns % 4) >= 2)
+                if ((image->columns % 4) >= 2U)
 
                   {
-                    index=(IndexPacket) ((*p >> 2) & 0x3);
+                    index=(IndexPacket) ((*p >> 2U) & 0x3U);
                     VerifyColormapIndex(image,index);
                     indexes[x]=index;
                     *q++=image->colormap[index];
@@ -172,11 +172,11 @@ static void InsertRow(unsigned char *p,long y,Image *image)
         indexes=GetIndexes(image);
         for (x=0; x < ((long) image->columns-1); x+=2)
           {
-            index=(IndexPacket) ((*p >> 4) & 0xf);
+            index=(IndexPacket) ((*p >> 4U) & 0xfU);
             VerifyColormapIndex(image,index);
             indexes[x]=index;
             *q++=image->colormap[index];
-            index=(IndexPacket) ((*p) & 0xf);
+            index=(IndexPacket) ((*p) & 0xfU);
             VerifyColormapIndex(image,index);
             indexes[x+1]=index;
             *q++=image->colormap[index];
@@ -184,7 +184,7 @@ static void InsertRow(unsigned char *p,long y,Image *image)
           }
         if ((image->columns % 2) != 0)
           {
-            index=(IndexPacket) ((*p >> 4) & 0xf);
+            index=(IndexPacket) ((*p >> 4U) & 0xfU);
             VerifyColormapIndex(image,index);
             indexes[x]=index;
             *q++=image->colormap[index];
@@ -222,28 +222,39 @@ static void InsertRow(unsigned char *p,long y,Image *image)
     }
 }
 
-static int GetCutColors(Image *image)
+static unsigned int GetCutColors(Image *image)
 {
-  int MaxColor,x,y;
-  PixelPacket *q;
-  int ScaleCharToQuantum16;
+  int
+    x,
+    y;
 
-  /*This procedure computes number of colors in Grayed R[i]=G[i]=B[i] image*/
+  PixelPacket
+    *q;
+
+  Quantum
+    MaxColor,
+    ScaleCharToQuantum16;
+
+  /* Compute the number of colors in Grayed R[i]=G[i]=B[i] image */
   ScaleCharToQuantum16=ScaleCharToQuantum(16);
   MaxColor=0;
-  for (y=0; y < (long)image->rows; y++)  
+  for (y=0; y < (long)image->rows; y++)
     {
-      q=SetImagePixels(image,0,y,image->columns,1);  
-      for (x=0; x < (long)image->columns; x++)  
-        {       
-          if(MaxColor<q->red) MaxColor=q->red;
-          if(MaxColor>=ScaleCharToQuantum16) return(255);  
-          q++;  
-        }  
+      q=SetImagePixels(image,0,y,image->columns,1);
+      for (x=(long)image->columns; x > 0; x--)
+        {
+          if (MaxColor < q->red)
+            MaxColor=q->red;
+          if (MaxColor >= ScaleCharToQuantum16)
+            return(255);
+          q++;
+        }
     }
-  if(MaxColor<(int) ScaleCharToQuantum(2)) MaxColor=2;    
-  else if(MaxColor<(int) ScaleCharToQuantum(16)) MaxColor=16;    
-  return(MaxColor);
+  if (MaxColor < ScaleCharToQuantum(2))
+    MaxColor=2;
+  else if (MaxColor < ScaleCharToQuantum(16))
+    MaxColor=16;
+  return (MaxColor);
 }
 
 /*
@@ -344,6 +355,8 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=i;
   image->colors=1l >> i;
 
+  /* If ping is true, then only set image size and colors without reading any image data. */
+  if (image_info->ping) goto Finish;
  
   /* ----- Do something with palette ----- */
   if ((clone_info=CloneImageInfo(image_info)) == NULL) goto NoPalette;
@@ -620,3 +633,4 @@ ModuleExport void UnregisterCUTImage(void)
 {
   (void) UnregisterMagickInfo("CUT");
 }
+

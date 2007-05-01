@@ -21,7 +21,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                              Jaroslav Fojtik                                %
-%                                January 2001                                 %
+%                            January 2001 - 2007                              %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -165,6 +165,9 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if (!AllocateImageColormap(image,image->colors)) goto NoMemory;
 
+  /* If ping is true, then only set image size and colors without reading any image data. */
+  if (image_info->ping) goto DONE_READING;
+
   /* ----- Load RLE compressed raster ----- */
   BImgBuff=MagickAllocateMemory(unsigned char *,ldblk);  /*Ldblk was set in the check phase*/
   if(BImgBuff==NULL)
@@ -182,6 +185,8 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
                    image->filename);
+
+DONE_READING:
   CloseBlob(image);
   return(image);
 }
