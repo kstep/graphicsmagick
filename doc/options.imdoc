@@ -486,10 +486,10 @@ affect the color reduction algorithm.</pp>
 <abs>the type of colorspace</abs>
 <pp>
 Choices are:
-<s>CMYK</s>, <s>GRAY</s>, <s>HSL</s>, <s>HWB</s>, <s>OHTA</s>, <s>RGB</s>,
-<s>Rec601Luma</s>, <s>Rec709Luma</s>, <s>Rec601YCbCr</s>, <s>Rec709YCbCr</s>,
-<s>Transparent</s>, <s>XYZ</s>, <s>YCbCr</s>, <s>YIQ</s>, <s>YPbPr</s>,
-or <s>YUV</s>.</pp>
+<s>CineonLog</s>, <s>CMYK</s>, <s>GRAY</s>, <s>HSL</s>, <s>HWB</s>,
+<s>OHTA</s>, <s>RGB</s>, <s>Rec601Luma</s>, <s>Rec709Luma</s>,
+<s>Rec601YCbCr</s>, <s>Rec709YCbCr</s>, <s>Transparent</s>, <s>XYZ</s>,
+<s>YCbCr</s>, <s>YIQ</s>, <s>YPbPr</s>, or <s>YUV</s>.</pp>
 
 <pp>
 Color reduction, by default, takes place in the RGB color space. Empirical

@@ -1110,7 +1110,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                                        image)
                     }
 
-              if(Rec.RecType==0x14 && BitmapHeader2.RotAngle!=0)
+              if(Rec.RecType==0x14 && BitmapHeader2.RotAngle!=0 && !image_info->ping)
               {  
 		   // flop command                
 		 if(BitmapHeader2.RotAngle & 0x8000)
@@ -1284,7 +1284,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 }
 
 
-		if(CTM[0][0]<0)
+		if(CTM[0][0]<0 && !image_info->ping)
 		{		/*?? RotAngle=360-RotAngle;*/
 		  rotated_image = FlopImage(image, exception);
 		  rotated_image->blob = image->blob;
@@ -1297,7 +1297,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 		  Tx(0,2)=(WPG._2Rect.X_ur+WPG._2Rect.X_ll);
 		                   Tx(1,2)=0;   Tx(2,2)=1; */                  
                 }
-		if(CTM[1][1]<0)
+		if(CTM[1][1]<0 && !image_info->ping)
 		{		/*?? RotAngle=360-RotAngle;*/
 		  rotated_image = FlipImage(image, exception);
 		  rotated_image->blob = image->blob;

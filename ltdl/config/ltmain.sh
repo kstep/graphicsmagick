@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh; do not edit by hand
 
-# ltmain.sh (GNU libtool 1.2439 2007/03/26 20:18:43) 2.1a
+# ltmain.sh (GNU libtool 1.2444 2007/04/10 19:09:26) 2.1a
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
@@ -65,7 +65,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool 1.2439 2007/03/26 20:18:43) 2.1a
+#       $progname:		(GNU libtool 1.2444 2007/04/10 19:09:26) 2.1a
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -74,8 +74,8 @@
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=2.1a
-TIMESTAMP=" 1.2439 2007/03/26 20:18:43"
-package_revision=1.2439
+TIMESTAMP=" 1.2444 2007/04/10 19:09:26"
+package_revision=1.2444
 
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
@@ -112,15 +112,15 @@ $lt_unset CDPATH
 
 : ${CP="cp -f"}
 : ${ECHO="echo"}
-: ${EGREP="egrep"}
-: ${FGREP="fgrep"}
-: ${GREP="grep"}
+: ${EGREP="/usr/local/bin/grep -E"}
+: ${FGREP="/usr/local/bin/grep -F"}
+: ${GREP="/usr/local/bin/grep"}
 : ${LN_S="ln -s"}
 : ${MAKE="make"}
 : ${MKDIR="mkdir"}
 : ${MV="mv -f"}
 : ${RM="rm -f"}
-: ${SED="sed"}
+: ${SED="/usr/local/bin/sed"}
 : ${SHELL="${CONFIG_SHELL-/bin/sh}"}
 : ${Xsed="$SED -e 1s/^X//"}
 
@@ -3152,9 +3152,9 @@ func_mode_link ()
 
       -no-install)
 	case $host in
-	*-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2*)
+	*-*-cygwin* | *-*-mingw* | *-*-pw32* | *-*-os2* | *-*-darwin*)
 	  # The PATH hackery in wrapper scripts is required on Windows
-	  # in order for the loader to find any dlls it needs.
+	  # and Darwin in order for the loader to find any dlls it needs.
 	  func_warning "\`-no-install' is ignored for $host"
 	  func_warning "assuming \`-no-fast-install' instead"
 	  fast_install=no

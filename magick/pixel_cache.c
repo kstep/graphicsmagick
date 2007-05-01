@@ -1032,8 +1032,8 @@ static PixelPacket AcquireOnePixelFromStream(const Image *image,const long x,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method GetPixelStream() returns a pointer to the pixels if they
-%      are transferred, otherwise a NULL is returned.
+%    o status: Method AcquirePixelStream() returns a pointer to the pixels if
+%      they are transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %

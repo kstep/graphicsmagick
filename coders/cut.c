@@ -21,7 +21,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                              Jaroslav Fojtik                                %
-%                                 June 2000                                   %
+%                              June 2000 - 2007                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -355,6 +355,8 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=i;
   image->colors=1l >> i;
 
+  /* If ping is true, then only set image size and colors without reading any image data. */
+  if (image_info->ping) goto Finish;
  
   /* ----- Do something with palette ----- */
   if ((clone_info=CloneImageInfo(image_info)) == NULL) goto NoPalette;
@@ -631,3 +633,4 @@ ModuleExport void UnregisterCUTImage(void)
 {
   (void) UnregisterMagickInfo("CUT");
 }
+

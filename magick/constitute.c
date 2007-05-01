@@ -4979,10 +4979,13 @@ MagickExport void ImportPixelAreaOptionsInit(ImportPixelAreaOptions *options)
 extern "C" {
 #endif
 
-static unsigned int PingStream(const Image *ARGUNUSED(image),
-  const void *ARGUNUSED(pixels),const size_t ARGUNUSED(columns))
+static MagickPassFail PingStream(const Image *image,
+  const void *pixels,const size_t columns)
 {
-  return(True);
+  (void) image;
+  (void) pixels;
+  (void) columns;
+  return(MagickPass);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -5420,6 +5423,14 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   for (next=image; next; next=next->next)
   {
+    /*
+      Apply user-requested colorspace setting.  This allows the user
+      to override the default colorspace for the image type.
+    */
+    if ( UndefinedColorspace != image_info->colorspace)
+      {
+        next->colorspace = image_info->colorspace;
+      }
     if (next->storage_class == PseudoClass)
       {
         /*

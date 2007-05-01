@@ -1,3 +1,10 @@
+2007-04-30  Fojtik Jaroslav  <JaFojtik@seznam.cz>
+
+	* coders/art.c, coders.cut.c, coders/mat.c, coders/wpg.c: Add
+	support for PingImage() so that image identification is fast by
+	default.  Also eliminates error message produced by mat.c due to
+	rotating an image which has no pixel cache.
+
 2007-04-09  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/wpg.c (ReadWPGImage): Fix for SourceForge bug id 1431805

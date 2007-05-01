@@ -50,7 +50,7 @@ typedef enum
 {
   UndefinedQuantumSampleType, /* Not specified */
   UnsignedQuantumSampleType,  /* Unsigned integral type (1 to 32 bits) */
-  FloatQuantumSampleType      /* Floating point type (16, 32, or 64 bit) */
+  FloatQuantumSampleType      /* Floating point type (16, 24, 32, or 64 bit) */
 } QuantumSampleType;
 
 /*

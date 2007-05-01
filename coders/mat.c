@@ -653,6 +653,18 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     }
   }
 
+  /*
+    If ping is true, then only set image size and colors without
+    reading any image data.
+  */
+  if (image_info->ping)
+    {
+      unsigned long temp = image->columns;
+      image->columns = image->rows;
+      image->rows = temp;
+      goto done_reading;
+    }
+
   /* ----- Load raster data ----- */
   BImgBuff = MagickAllocateMemory(unsigned char *,ldblk);    /* Ldblk was set in the check phase */
   if (BImgBuff == NULL)
@@ -771,17 +783,12 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     }
   }
 
-  if (BImgBuff != NULL)
-  {
-    MagickFreeMemory(BImgBuff);
-    BImgBuff = NULL;
-  }
-  CloseBlob(image);
-
   /*  Rotate image. */
   rotated_image = RotateImage(image, 90.0, exception);
   if (rotated_image != (Image *) NULL)
   {
+    rotated_image->page.x=0;
+    rotated_image->page.y=0;
     DestroyImage(image);
     image = FlopImage(rotated_image, exception);
     if (image == NULL)
@@ -789,6 +796,11 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     else
       DestroyImage(rotated_image);
   }
+
+ done_reading:
+
+  MagickFreeMemory(BImgBuff);
+  CloseBlob(image);
 
   return (image);
 }
