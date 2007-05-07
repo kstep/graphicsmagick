@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2007 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -17,46 +17,13 @@
 %                                                                             %
 %                                                                             %
 %                    Read/Write Kodak Cineon Image Format.                    %
-%                Cineon Image Format is a subset of SMTPE DPX                 %
+%                 Cineon Image Format is similar to SMTPE DPX                 %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
-%                             Kelly Bergougnoux                               %
-%                      <three3@users.sourceforge.net>                         %
-%                               October 2003                                  %
+%                              Bob Friesenhahn                                %
+%                                 May 2007                                    %
 %                                                                             %
-%                                                                             %
-%  Copyright (C) 1999-2003 ImageMagick Studio, a non-profit organization      %
-%  dedicated to making software imaging solutions freely available.           %
-%                                                                             %
-%  This software and documentation is provided "as is," and the copyright     %
-%  holders and contributing author(s) make no representations or warranties,  %
-%  express or implied, including but not limited to, warranties of            %
-%  merchantability or fitness for any particular purpose or that the use of   %
-%  the software or documentation will not infringe any third party patents,   %
-%  copyrights, trademarks or other rights.                                    %
-%                                                                             %
-%  The copyright holders and contributing author(s) will not be held liable   %
-%  for any direct, indirect, special or consequential damages arising out of  %
-%  any use of the software or documentation, even if advised of the           %
-%  possibility of such damage.                                                %
-%                                                                             %
-%  Permission is hereby granted to use, copy, modify, and distribute this     %
-%  source code, or portions hereof, documentation and executables, for any    %
-%  purpose, without fee, subject to the following restrictions:               %
-%                                                                             %
-%    1. The origin of this source code must not be misrepresented.            %
-%    2. Altered versions must be plainly marked as such and must not be       %
-%       misrepresented as being the original source.                          %
-%    3. This Copyright notice may not be removed or altered from any source   %
-%       or altered source distribution.                                       %
-%                                                                             %
-%  The copyright holders and contributing author(s) specifically permit,      %
-%  without fee, and encourage the use of this source code as a component for  %
-%  supporting image processing in commercial products.  If you use this       %
-%  source code in a product, acknowledgment is not required but would be      %
-%  be appreciated.                                                            %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -484,15 +451,27 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
   if (swab)
     SwabCineonFileInfo(&cin_file_info);
 
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "File magic 0x%04X",cin_file_info.magic);
+
   if (cin_file_info.magic != 0x802A5FD7)
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Image offset %u, Generic length %u, Industry length %u, User length %u",
+                        "Image offset %u, Generic length %u, Industry length %u, User length %u, File size %u",
                         cin_file_info.image_data_offset,
                         cin_file_info.generic_section_length,
                         cin_file_info.industry_section_length,
-                        cin_file_info.user_defined_length);
+                        cin_file_info.user_defined_length,
+                        cin_file_info.file_size);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Header format version \"%s\"", cin_file_info.header_format_version);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Image file name \"%s\"", cin_file_info.image_filename);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Creation date \"%s\"", cin_file_info.creation_date);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Creation time \"%s\"", cin_file_info.creation_time);
 
   StringToAttribute(image,"document",cin_file_info.image_filename);
   StringToAttribute(image,"DPX:file.filename",cin_file_info.image_filename);
@@ -546,6 +525,24 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
                         "Columns %ld, Rows %ld, Channels %u",
                         image->columns, image->rows,
                         (unsigned int) cin_image_info.channels);
+  if (!IS_UNDEFINED_R32(cin_image_info.white_point[0]))
+    image->chromaticity.white_point.x = cin_image_info.white_point[0];
+  if (!IS_UNDEFINED_R32(cin_image_info.white_point[1]))
+    image->chromaticity.white_point.y = cin_image_info.white_point[1];
+  if (!IS_UNDEFINED_R32(cin_image_info.red_primary_chromaticity[0]))
+    image->chromaticity.red_primary.x = cin_image_info.red_primary_chromaticity[0];
+  if (!IS_UNDEFINED_R32(cin_image_info.red_primary_chromaticity[1]))
+    image->chromaticity.red_primary.y = cin_image_info.red_primary_chromaticity[1];
+  if (!IS_UNDEFINED_R32(cin_image_info.green_primary_chromaticity[0]))
+    image->chromaticity.green_primary.x = cin_image_info.green_primary_chromaticity[0];
+  if (!IS_UNDEFINED_R32(cin_image_info.green_primary_chromaticity[1]))
+    image->chromaticity.green_primary.y = cin_image_info.green_primary_chromaticity[1];
+  if (!IS_UNDEFINED_R32(cin_image_info.blue_primary_chromaticity[0]))
+    image->chromaticity.blue_primary.x = cin_image_info.blue_primary_chromaticity[0];
+  if (!IS_UNDEFINED_R32(cin_image_info.blue_primary_chromaticity[1]))
+    image->chromaticity.blue_primary.y = cin_image_info.blue_primary_chromaticity[1];
+  StringToAttribute(image,"DPX:file.project.name",cin_image_info.label_text);
+
   /*
     Read image origination header.
   */
@@ -575,7 +572,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
   R32ToAttribute(image,"DPX:source.device.pitch.y",cin_source_info.input_device_pitch_y);
   R32ToAttribute(image,"DPX:source.device.gamma",cin_source_info.gamma);
 
-  if ((pixels_offset >= 2048) && (cin_file_info.industry_section_length > 0))
+  if ((pixels_offset >= 1024) && (cin_file_info.industry_section_length > 0))
     {
       /*
         Read Motion-picture film information header.
@@ -597,6 +594,27 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
       StringToAttribute(image,"DPX:mp.slate.info",cin_mp_info.slate_info);
     }
 
+  if ((pixels_offset >= 2048) && (cin_file_info.user_defined_length > 0))
+    {
+      unsigned char
+        *user_data;
+      
+      size_t
+        user_data_length;
+
+      user_data_length=cin_file_info.user_defined_length;
+      user_data=MagickAllocateMemory(unsigned char *,user_data_length);
+      if (user_data == (unsigned char *) NULL)
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+      offset += ReadBlob(image,user_data_length,user_data);
+      if (!SetImageProfile(image,"CINEONUSERDATA",user_data,user_data_length))
+        {
+          MagickFreeMemory(user_data);
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+        }
+      MagickFreeMemory(user_data);
+    }
+
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -608,6 +626,10 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
   */
   for ( ; offset < pixels_offset ; offset++ )
     (void) ReadBlobByte(image);
+
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Reading Cineon pixels starting at offset %ld",(long) TellBlob(image));
 
   /*
     Convert CINEON raster image to pixel packets.
@@ -660,6 +682,10 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
         scandata=MagickAllocateMemory(unsigned char *,scandata_bytes);
         for (y=0; y < (long) image->rows; y++)
           {
+            unsigned int red;
+            unsigned int green;
+            unsigned int blue;
+
             q=SetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
@@ -671,20 +697,14 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
                 /*
                   Packed 10 bit samples with 2 bit pad at end of 32-bit word.
                 */
-#if 0
-                if ((x == 0) && (y == 0))
-                  {
-                    printf("%x %x %x %x\n",
-                           ((unsigned char *)scanline)[0],
-                           ((unsigned char *)scanline)[1],
-                           ((unsigned char *)scanline)[2],
-                           ((unsigned char *)scanline)[3]);
-                  }
-#endif
                 BitStreamInitializeRead(&bit_stream,scanline);
-                q->red=ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
-                q->green=ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
-                q->blue=ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
+                red   = BitStreamMSBRead(&bit_stream,10);
+                green = BitStreamMSBRead(&bit_stream,10);
+                blue  = BitStreamMSBRead(&bit_stream,10);
+
+                q->red=ScaleShortToQuantum(red*64);
+                q->green=ScaleShortToQuantum(green*64);
+                q->blue=ScaleShortToQuantum(blue*64);
                 q->opacity=0U;
                 scanline += 4;
                 q++;
@@ -820,8 +840,158 @@ ModuleExport void UnregisterCINEONImage(void)
 %
 %
 */
+
+#define AttributeToU8(image_info,image,key,member) \
+{ \
+  const ImageAttribute \
+    *attribute; \
+\
+  const char \
+    *definition_value; \
+\
+  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(U8) strtol(definition_value, (char **) NULL, 10); \
+  else if ((attribute=GetImageAttribute(image,key))) \
+    member=(U8) strtol(attribute->value, (char **) NULL, 10); \
+  else \
+    SET_UNDEFINED_U8(member); \
+}
+
+#define AttributeToU16(image_info,image,key,member) \
+{ \
+  const ImageAttribute \
+    *attribute; \
+\
+  const char \
+    *definition_value; \
+\
+  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(U16) strtol(definition_value, (char **) NULL, 10); \
+  else if ((attribute=GetImageAttribute(image,key))) \
+    member=(U16) strtol(attribute->value, (char **) NULL, 10); \
+  else \
+    SET_UNDEFINED_U16(member); \
+}
+
+#define AttributeToU32(image_info,image,key,member) \
+{ \
+  const ImageAttribute \
+    *attribute; \
+\
+  const char \
+    *definition_value; \
+\
+  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(U32) strtol(definition_value, (char **) NULL, 10); \
+  else if ((attribute=GetImageAttribute(image,key))) \
+    member=(U32) strtol(attribute->value, (char **) NULL, 10); \
+  else \
+    SET_UNDEFINED_U32(member); \
+}
+
+#define AttributeToS32(image_info,image,key,member) \
+{ \
+  const ImageAttribute \
+    *attribute; \
+\
+  const char \
+    *definition_value; \
+\
+  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(S32) strtol(definition_value, (char **) NULL, 10); \
+  else if ((attribute=GetImageAttribute(image,key))) \
+    member=(S32) strtol(attribute->value, (char **) NULL, 10); \
+  else \
+    SET_UNDEFINED_S32(member); \
+}
+
+#define AttributeToR32(image_info,image,key,member) \
+{ \
+  const ImageAttribute \
+    *attribute; \
+\
+  const char \
+    *definition_value; \
+\
+  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(R32) strtod(definition_value, (char **) NULL); \
+  else if ((attribute=GetImageAttribute(image,key))) \
+    member=(R32) strtod(attribute->value, (char **) NULL); \
+  else \
+    SET_UNDEFINED_R32(member); \
+}
+
+/*
+  This macro uses strncpy on purpose.  The string is not required to
+  be null terminated, but any unused space should be filled with
+  nulls.
+*/
+#define AttributeToString(image_info,image,key,member) \
+{ \
+  const ImageAttribute \
+    *attribute; \
+\
+  const char \
+    *definition_value; \
+\
+  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
+    (void) strncpy(member,definition_value,sizeof(member)); \
+  else if ((attribute=GetImageAttribute(image,key))) \
+    (void) strncpy(member,attribute->value,sizeof(member)); \
+  else \
+    SET_UNDEFINED_ASCII(member); \
+}
+
+static void GenerateCineonTimeStamp(char *date_str, size_t date_str_length, char*time_str, size_t time_str_length)
+{
+  char timestamp[MaxTextExtent];
+
+  time_t
+    current_time;
+
+  const struct tm
+    *t;
+
+  current_time=time((time_t *) NULL);
+  t=localtime(&current_time);
+
+  memset(timestamp,0,sizeof(timestamp));
+  strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%S%Z",t);
+  timestamp[MaxTextExtent]='\0';
+  memset(date_str,0,date_str_length);
+  strlcpy(date_str,timestamp,11);
+  memset(time_str,0,time_str_length);
+  strlcpy(time_str,timestamp+11,15);
+}
+
+
 static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
 {
+  CineonFileInfo
+    cin_file_info;
+
+  CineonImageInfo
+    cin_image_info;
+
+  CineonImageOriginationInfo
+    cin_source_info;
+
+  CineonFilmInfo
+    cin_mp_info;
+
+  const unsigned char
+    *user_data;
+
+  size_t
+    user_data_length=0,
+    offset=0;
+
+  off_t
+    written=0;
+
+  MagickBool
+    swab=MagickFalse;
+
   long
     y;
 
@@ -829,257 +999,387 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
     *p;
   
   register long
-    i,
     x;
 
   unsigned int
     status;
- 
-  unsigned long
-    pixel;
 
-  unsigned int
-    maxr,
-    maxg,
-    maxb,
-    minr,
-    ming,
-    minb;
-
-  /* 
-     Get the max values for each component... I guess it "needs" it...
-  */
-  maxr=maxg=maxb=0;
-  minr=ming=minb=MaxRGB;
-  for (y=0; y < (long) image->rows; y++)
-    {
-      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      for (x=0; x < (long) image->columns; x++)
-        {
-          if ( p->red > maxr ) maxr = p->red;
-          if ( p->green > maxg ) maxg = p->green;
-          if ( p->blue > maxb ) maxb = p->blue;
-          if ( p->red < minr ) minr = p->red;
-          if ( p->green < ming ) ming = p->green;
-          if ( p->blue < minb ) minb = p->blue;
-          p++;
-        }
-    }
-  /*
-    Div by 64 to get 10bit values since that's all I'll do right now.
-  */
-  maxr=ScaleQuantumToShort(maxr)/64;
-  maxg=ScaleQuantumToShort(maxg)/64;
-  maxb=ScaleQuantumToShort(maxb)/64;
-  minr=ScaleQuantumToShort(minr)/64;
-  ming=ScaleQuantumToShort(ming)/64;
-  minb=ScaleQuantumToShort(minb)/64;
-
-  /*
-    Open output image file.
-  */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
-  if (status == False)
-    return(status);
-  /* Magick Number... */
-  (void) (void) TransformColorspace(image,RGBColorspace);
-  (void) WriteBlobMSBLong(image,0x802A5FD7);
-  /* Offset to image */
-  (void) WriteBlobMSBLong(image,0x0800);
-  /* Generic section header length */
-  (void) WriteBlobMSBLong(image,0x400);	
-  /* Industry Specific lenght */
-  (void) WriteBlobMSBLong(image,0x400);	
-  /* variable length section */
-  (void) WriteBlobMSBLong(image,0x0);
-  /* Total image file size */
-  (void) WriteBlobMSBLong(image,4*image->columns*image->rows+0x2000); 
-  /* Version number of header format */
-  (void) WriteBlobString(image,"V4.5");	
-  (void) WriteBlobMSBLong(image,0x0);
-  /* Filename */
-  (void) WriteBlobString(image,image->filename);
-  for ( i =0 ; i < ( 100 - (long) strlen(image->filename) ); i++ )
-    (void) WriteBlobByte(image,0);
-  /* Creation Date. */
-  (void) WriteBlobString(image,"yyyy:mm:dd  ");
-  /* Creation Time. */
-  (void) WriteBlobString(image,"hh:mm:ssxxx ");	
-  for ( i =0 ; i < 36 ; i++)
-    (void) WriteBlobByte(image,0);
-  /* 0 left to right top to bottom */
-  (void) WriteBlobByte(image,0);
-  /* 3 channels */
-  (void) WriteBlobByte(image,3);
-  /* alignment */
-  (void) WriteBlobByte(image,0x0);
-  (void) WriteBlobByte(image,0x0);
-  /* Do R */ 
-  /* Channel 1 designator byte 0 */
-  (void) WriteBlobByte(image,0);
-  /* Channel 1 designator byte 1 */
-  (void) WriteBlobByte(image,1);
-  /* Bits per pixel... */
-  (void) WriteBlobByte(image,10);
-  /* alignment */
-  (void) WriteBlobByte(image,0);
-  /* pixels per line */
-  (void) WriteBlobMSBLong(image,image->columns);
-  /* lines per image */
-  (void) WriteBlobMSBLong(image,image->rows);
-  /* Minimum data value */
-  (void) WriteBlobMSBLong(image,minr);
-  /* Minimum quantity represented */
-  (void) WriteBlobMSBLong(image,0x0);
-  /* Maximum data value */
-  (void) WriteBlobMSBLong(image,maxr);
-  /* Maximum quantity represented */
-  (void) WriteBlobMSBLong(image,0x40000000);
-  /* Do G */ 
-  /* see above. */
-  (void) WriteBlobByte(image,0);
-  (void) WriteBlobByte(image,2);
-  (void) WriteBlobByte(image,10);
-  (void) WriteBlobByte(image,0);
-  (void) WriteBlobMSBLong(image,image->columns);
-  (void) WriteBlobMSBLong(image,image->rows);   
-  (void) WriteBlobMSBLong(image,ming);	
-  (void) WriteBlobMSBLong(image,0x0);
-  (void) WriteBlobMSBLong(image,maxg);
-  (void) WriteBlobMSBLong(image,0x40000000);
-  /* Go B */
-  /* see above. */
-  (void) WriteBlobByte(image,0);
-  (void) WriteBlobByte(image,3);
-  (void) WriteBlobByte(image,10);
-  (void) WriteBlobByte(image,0);
-  (void) WriteBlobMSBLong(image,image->columns);
-  (void) WriteBlobMSBLong(image,image->rows); 
-  (void) WriteBlobMSBLong(image,minb);
-  (void) WriteBlobMSBLong(image,0x0);
-  (void) WriteBlobMSBLong(image,maxb);
-  (void) WriteBlobMSBLong(image,0x40000000);
-  /* pad channel 4-8 */
-  for (i=0; i < 5*28; i++)
-    (void) WriteBlobByte(image,0x00);
-  /* k here's where it gets ugly and I should be shot */
-  /* White point(colour temp.) x */
-  (void) WriteBlobMSBLong(image,0x4EFF0000);
-  /* White point(colour temp.) y */
-  (void) WriteBlobMSBLong(image,0x4EFF0000);
-  /* Red primary chromaticity x */
-  (void) WriteBlobMSBLong(image,0x4EFF0000);
-  /* Red primary chromaticity y */
-  (void) WriteBlobMSBLong(image,0x4EFF0000);
-  /* Green primary chromaticity x */
-  (void) WriteBlobMSBLong(image,0x4EFF0000);
-  /* Green primary chromaticity y */
-  (void) WriteBlobMSBLong(image,0x4EFF0000);
-  /* Blue primary chromaticity x */
-  (void) WriteBlobMSBLong(image,0x4EFF0000);
-  /* Blue primary chromaticity y */
-  (void) WriteBlobMSBLong(image,0x4EFF0000);
-  /* Label Text... */
-  for (i=0; i < 200+28; i++)
-    (void) WriteBlobByte(image,0x00);
-  /* pixel interleave (rgbrgbr...) */
-  (void) WriteBlobByte(image,0);
-  /* Packing longword (32bit) boundaries */
-  (void) WriteBlobByte(image,5);
-  /* Data unsigned */
-  (void) WriteBlobByte(image,0);
-  /* Image sense: positive image */
-  (void) WriteBlobByte(image,0);
-  /* End of line padding */
-  (void) WriteBlobMSBLong(image,0x0);
-  /* End of channel padding */
-  (void) WriteBlobMSBLong(image,0x0);
-  /* Reseved for future Use.. */
-  for (i=0; i < 20; i++)
-    (void) WriteBlobByte(image,0x00);
 
   /*
-    Generic Orientation Header
+    Cineon files are written in Cineon Log color space.
+  */
+  if (image->colorspace != CineonLogRGBColorspace)
+    (void) TransformColorspace(image,CineonLogRGBColorspace);
+
+#if !defined(WORDS_BIGENDIAN)
+  swab=MagickTrue;
+#endif /* !defined(WORDS_BIGENDIAN) */
+
+  /*
+    File information header
+  */
+  memset(&cin_file_info,0,sizeof(cin_file_info));
+
+  /* Magick number (0x802A5FD7) */
+  cin_file_info.magic = 0x802A5FD7;
+  /* Generic section header length in bytes */
+  cin_file_info.generic_section_length = sizeof(cin_file_info)+sizeof(cin_image_info)+sizeof(cin_source_info);
+  /* Industry specific header length in bytes */
+  cin_file_info.industry_section_length = sizeof(cin_mp_info);
+  /* User defined header length in bytes */
+  cin_file_info.user_defined_length = 0;
+  user_data=GetImageProfile(image,"CINEONUSERDATA",&user_data_length);
+  if (user_data && user_data_length)
+    cin_file_info.user_defined_length = user_data_length;
+  /* Offset to image data in bytes */
+  cin_file_info.image_data_offset =
+    cin_file_info.generic_section_length +
+    cin_file_info.industry_section_length +
+    cin_file_info.user_defined_length;
+  /* Total image file size in bytes  */
+  cin_file_info.file_size =
+    cin_file_info.generic_section_length +
+    cin_file_info.industry_section_length +
+    cin_file_info.user_defined_length +
+    image->rows*image->columns*4;
+  /* Version number of header format */
+  strlcpy(cin_file_info.header_format_version,"V4.5",sizeof(cin_file_info.header_format_version));
+  /* Image filename */
+  strlcpy(cin_file_info.image_filename,image->filename,sizeof(cin_file_info.image_filename));
+  /* Creation date "yyyy:mm:dd", and time "hh:mm:ssLTZ" */
+  GenerateCineonTimeStamp(cin_file_info.creation_date,sizeof(cin_file_info.creation_date),
+                          cin_file_info.creation_time,sizeof(cin_file_info.creation_time));
+
+  /*
+    Image information header
+  */
+  memset(&cin_image_info,0,sizeof(cin_image_info));
+  /* Image orientation */
+  cin_image_info.orientation = 0; /* left to right, top to bottom */
+  /* Number of image channels (1-8) */
+  cin_image_info.channels = 3; /* RGB */
+
+  /* Channel 0 (Red) */
+  cin_image_info.channel_info[0].designator_byte_0 = 0;  /* 0 = universal metric */
+  cin_image_info.channel_info[0].designator_byte_1 = 1;  /* Red, Printing Density */
+  /* Bit depth */
+  cin_image_info.channel_info[0].bits_per_sample = 10;
+  /* Pixels per line (columns) */
+  cin_image_info.channel_info[0].pixels_per_line = image->columns;
+  /* Lines per image (rows) */
+  cin_image_info.channel_info[0].lines_per_image = image->rows;
+  /* Reference low data code value */
+  cin_image_info.channel_info[0].reference_low_data_code = 0;
+  /* Low quantity represented */
+  cin_image_info.channel_info[0].reference_low_quantity = 0.00;
+  /* Reference high data code value */
+  cin_image_info.channel_info[0].reference_high_data_code = 1023;
+  /* Reference high quantity represented */
+  cin_image_info.channel_info[0].reference_high_quantity = 2.048;
+
+  /* Channel 1 (Green) */
+  cin_image_info.channel_info[1] = cin_image_info.channel_info[0];
+  cin_image_info.channel_info[1].designator_byte_1 = 2; /* Green, Printing Density */
+
+  /* Channel 2  (Blue) */
+  cin_image_info.channel_info[2] = cin_image_info.channel_info[0];
+  cin_image_info.channel_info[2].designator_byte_1 = 3; /* Blue, Printing Density */
+
+  /* White point (color temperature) - x,y pair */
+  SET_UNDEFINED_R32(cin_image_info.white_point[0]);
+  SET_UNDEFINED_R32(cin_image_info.white_point[1]);
+  if ( image->chromaticity.white_point.x != 0.0 && image->chromaticity.white_point.y != 0.0 )
+    {
+      cin_image_info.white_point[0] = image->chromaticity.white_point.x;
+      cin_image_info.white_point[1] = image->chromaticity.white_point.y;
+    }
+  /* Red primary chromaticity - x,y pair */
+  SET_UNDEFINED_R32(cin_image_info.red_primary_chromaticity[0]);
+  SET_UNDEFINED_R32(cin_image_info.red_primary_chromaticity[1]);
+  if ( image->chromaticity.red_primary.x != 0.0 &&  image->chromaticity.red_primary.y != 0.0)
+    {
+      cin_image_info.red_primary_chromaticity[0] = image->chromaticity.red_primary.x;
+      cin_image_info.red_primary_chromaticity[1] = image->chromaticity.red_primary.y;
+    }
+  /* Green primary chromaticity - x,y pair */
+  SET_UNDEFINED_R32(cin_image_info.green_primary_chromaticity[0]);
+  SET_UNDEFINED_R32(cin_image_info.green_primary_chromaticity[1]);
+  if ( image->chromaticity.green_primary.x != 0.0 && image->chromaticity.green_primary.y != 0.0 )
+    {
+      cin_image_info.green_primary_chromaticity[0] = image->chromaticity.green_primary.x;
+      cin_image_info.green_primary_chromaticity[1] = image->chromaticity.green_primary.y;
+    }
+  /* Blue primary chromaticity - x,y pair */
+  SET_UNDEFINED_R32(cin_image_info.blue_primary_chromaticity[0]);
+  SET_UNDEFINED_R32(cin_image_info.blue_primary_chromaticity[1]);
+  if ( image->chromaticity.blue_primary.x != 0.0 && image->chromaticity.blue_primary.y != 0.0 )
+    {
+      cin_image_info.blue_primary_chromaticity[0] = image->chromaticity.blue_primary.x;
+      cin_image_info.blue_primary_chromaticity[1] = image->chromaticity.blue_primary.y;
+    }
+  /* Label text */
+  AttributeToString(image_info,image,"DPX:file.project.name",cin_image_info.label_text);
+  /* Data interleave */
+  cin_image_info.data_interleave = 0; /* rgbrgbrgb ... */
+  /* Packing method */
+  cin_image_info.packing = 5; /* longword (32-bit) boundaries - left justified */
+  /* Data sign: 0=unsigned, 1=signed */
+  cin_image_info.sign = 0;
+  /* Image sense: 0=positive, 1=negative */
+  cin_image_info.sense = 0;
+  /* End of line padding */
+  cin_image_info.eol_pad = 0;
+  /* End of channel padding */
+  cin_image_info.eoc_pad = 0;
+  
+  /*
+    Image origination header.
+  */
+  memset(&cin_source_info,0,sizeof(cin_source_info));
+  AttributeToS32(image_info,image,"DPX:source.x-offset",cin_source_info.x_offset); /* X offset */
+  AttributeToS32(image_info,image,"DPX:source.y-offset",cin_source_info.y_offset); /* Y offset */
+  /* Source image filename */
+  AttributeToString(image_info,image,"DPX:source.filename",cin_source_info.source_image_filename);
+  {
+    /*
+      DPX stores creation date and time in the format
+      "yyyy:mm:dd:hh:mm:ssLTZ" but Cineon wants date and time to be split into
+      yyyy:mm:dd & hh:mm:ssLTZ
+    */
+    ASCII date_and_time[25];
+    AttributeToString(image_info,image,"DPX:source.creation.datetime",date_and_time);
+    SET_UNDEFINED_ASCII(cin_source_info.creation_date);
+    SET_UNDEFINED_ASCII(cin_source_info.creation_time);
+
+    if (!IS_UNDEFINED_ASCII(date_and_time))
+      {
+        /* Creation date: yyyy:mm:dd */
+        (void) strlcpy(cin_source_info.creation_date,date_and_time,11);
+        /* Creation time: hh:mm:ssLTZ */
+        (void) strlcpy(cin_source_info.creation_time,date_and_time+11,sizeof(cin_source_info.creation_time));
+      }
+  }
+  /* Input device */
+  AttributeToString(image_info,image,"DPX:source.device.name",cin_source_info.input_device);
+  /* Input device model number */
+  AttributeToString(image_info,image,"DPX:source.device.model",cin_source_info.input_device_model);
+  /* Input device serial number */
+  AttributeToString(image_info,image,"DPX:source.device.serialnumber",cin_source_info.input_device_serial);
+  /* Input device pitch for X (samples/mm) */
+  AttributeToR32(image_info,image,"DPX:source.device.pitch.x",cin_source_info.input_device_pitch_x);
+  /* Input device pitch for Y (samples/mm) */
+  AttributeToR32(image_info,image,"DPX:source.device.pitch.y",cin_source_info.input_device_pitch_y);
+  /* Image gamma of capture device */
+  AttributeToR32(image_info,image,"DPX:source.device.gamma",cin_source_info.gamma);
+
+  /*
+    Film/Frame Information
+  */
+  memset(&cin_mp_info,0,sizeof(cin_mp_info));
+  /* Film mfg. ID code (2 digits from film edge code) */
+  AttributeToU8(image_info,image,"DPX:mp.film.manufacturer.id",cin_mp_info.film_mfg_id_code);
+  /* Film type (2 digits from film edge code) */
+  AttributeToU8(image_info,image,"DPX:mp.film.type",cin_mp_info.film_type);
+  /* Offset in perfs (2 digits from film edge code) */
+  AttributeToU8(image_info,image,"DPX:mp.perfs.offset",cin_mp_info.perfs_offset);
+  /* Prefix (6 digits from film edge code) */
+  AttributeToU32(image_info,image,"DPX:mp.prefix",cin_mp_info.prefix);
+  /* Count (4 digits from film edge code) */
+  AttributeToU32(image_info,image,"DPX:mp.count",cin_mp_info.count);
+  /* Format -- e.g. Academy */
+  AttributeToString(image_info,image,"DPX:mp.format",cin_mp_info.format);
+  /* Frame position in sequence */
+  AttributeToU32(image_info,image,"DPX:mp.frame.position",cin_mp_info.frame_position);
+  /* Frame rate of original (frames/s) */
+  AttributeToR32(image_info,image,"DPX:mp.frame.rate",cin_mp_info.frame_rate);
+  /* Frame identification - e.g. keyframe */
+  AttributeToString(image_info,image,"DPX:mp.frame.id",cin_mp_info.frame_id);
+  /* Slate information */
+  AttributeToString(image_info,image,"DPX:mp.slate.info",cin_mp_info.slate_info);
+  
+  /*
+    Open output image file.
   */
 
-  /* X offset */
-  (void) WriteBlobMSBLong(image,0x0);
-  /* Y offset */
-  (void) WriteBlobMSBLong(image,0x0);
-  /* Filename */
-  (void) WriteBlobString(image,image->filename);
-  for ( i =0 ; i < ( 100 - (long) strlen(image->filename) ); i++ ) 
-    (void) WriteBlobByte(image,0);
-  /* date. who cares ? */
-  for ( i =0 ; i < 12 ; i++ ) 
-    (void) WriteBlobByte(image,0);
-  /* time who cares ? */
-  for ( i =0 ; i < 12 ; i++ ) 
-    (void) WriteBlobByte(image,0);
-  (void) WriteBlobString(image,"GraphicsMagick");
-  for (i = 0; i < 64-11 ; i++)
-    (void) WriteBlobByte(image,0);
-  for (i = 0; i < 32 ; i++)
-    (void) WriteBlobByte(image,0);
-  for (i = 0; i < 32 ; i++)
-    (void) WriteBlobByte(image,0);
-  /* X input device pitch */
-  (void) WriteBlobMSBLong(image,0x4326AB85);
-  /* Y input device pitch */
-  (void) WriteBlobMSBLong(image,0x4326AB85);
-  /* Image gamma */
-  (void) WriteBlobMSBLong(image,0x3F800000);
-  /* Reserved for future use */
-  for (i = 0; i < 40 ; i++)
-    (void) WriteBlobByte(image,0);
-  for ( i = 0 ; i < 4 ; i++)
-    (void) WriteBlobByte(image,0);
-  (void) WriteBlobMSBLong(image,0x0);
-  (void) WriteBlobMSBLong(image,0x0);
-  for ( i = 0 ; i < 32 ; i++)
-    (void) WriteBlobByte(image,0);
-  (void) WriteBlobMSBLong(image,0x0);
-  (void) WriteBlobMSBLong(image,0x0);
-  for ( i = 0 ; i < 32 ; i++)
-    (void) WriteBlobByte(image,0);
-  for ( i = 0 ; i < 200 ; i++)
-    (void) WriteBlobByte(image,0);
-  for ( i = 0 ; i < 740 ; i++)
-    (void) WriteBlobByte(image,0);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  if (status == MagickFail)
+    return (status);
+
+  if (swab)
+    {
+      /*
+        Swap byte order.
+      */
+      SwabCineonFileInfo(&cin_file_info);
+      SwabCineonImageInfo(&cin_image_info);
+      SwabCineonImageOriginationInfo(&cin_source_info);
+      SwabCineonFilmInfo(&cin_mp_info);
+    }
+
+  written = WriteBlob(image,sizeof(cin_file_info),&cin_file_info);
+  if (written != sizeof(cin_file_info))
+    {
+      CloseBlob(image);
+      return (MagickFail);
+    }
+  offset += written;
+
+  written = WriteBlob(image,sizeof(cin_image_info),&cin_image_info);
+  if (written != sizeof(cin_image_info))
+    {
+      CloseBlob(image);
+      return (MagickFail);
+    }
+  offset += written;
+
+  written = WriteBlob(image,sizeof(cin_source_info),&cin_source_info);
+  if (written != sizeof(cin_source_info))
+    {
+      CloseBlob(image);
+      return (MagickFail);
+    }
+  offset += written;
+
+  written = WriteBlob(image,sizeof(cin_mp_info),&cin_mp_info);
+  if (written != sizeof(cin_mp_info))
+    {
+      CloseBlob(image);
+      return (MagickFail);
+    }
+  offset += written;
+
+  if (swab)
+    {
+      /*
+        Swap byte order back to original.
+      */
+      SwabCineonFileInfo(&cin_file_info);
+      SwabCineonImageInfo(&cin_image_info);
+      SwabCineonImageOriginationInfo(&cin_source_info);
+      SwabCineonFilmInfo(&cin_mp_info);
+    }
+
+  if (user_data)
+    {
+      written = WriteBlob(image,user_data_length,user_data);
+      if (written != user_data_length)
+        {
+          CloseBlob(image);
+          return (MagickFail);
+        }
+      offset += written;
+    }
+
+  if (image->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Writing Cineon pixels starting at offset %ld",(long) TellBlob(image));
+
   /*
     Convert pixel packets to CINEON raster image.
   */
-  for (y=0; y < (long) image->rows; y++)
+  {
+    unsigned char
+      *scanline;
+
+    size_t
+      scanline_bytes;
+
+    BitStreamWriteHandle
+      bit_stream;
+
+    unsigned int
+      unsigned_maxvalue=MaxRGB,
+      sample_bits,
+      unsigned_scale = 1U;
+
+    unsigned int
+      red,
+      green,
+      blue;
+
+    /* Maximum value which may be represented by a stored sample */
+    sample_bits = cin_image_info.channel_info[0].bits_per_sample;
+    unsigned_maxvalue=MaxValueGivenBits(sample_bits);
+      
+    if (QuantumDepth == sample_bits)
+      {
+      }
+    else if (QuantumDepth > sample_bits)
+      {
+        /* Multiply to scale up */
+        unsigned_scale=(MaxRGB / (MaxRGB >> (QuantumDepth-sample_bits)));
+      }
+    else if (QuantumDepth < sample_bits)
+      {
+        /* Divide to scale down */
+        unsigned_scale=(unsigned_maxvalue/MaxRGB);
+      }
+
+    scanline_bytes=image->columns*4;
+    scanline=MagickAllocateMemory(unsigned char *,scanline_bytes);
+    if (scanline == (unsigned char *) NULL)
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
+    memset(scanline,0,scanline_bytes);
+
+    for (y=0; y < (long) image->rows; y++)
+      {
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        
+        BitStreamInitializeWrite(&bit_stream,scanline);
+        
+        for (x=0; x < (long) image->columns; x++)
+          {
+
+
+/*             unsigned int red = ScaleQuantumToShort(p->red)/64U; */
+/*             unsigned int green = ScaleQuantumToShort(p->green)/64U; */
+/*             unsigned int blue = ScaleQuantumToShort(p->blue)/64U; */
+
+            if (QuantumDepth < sample_bits)
+              {
+                /* Multiply to scale up */
+                red = p->red*unsigned_scale;
+                green = p->green*unsigned_scale;
+                blue = p->blue*unsigned_scale;
+              }
+            else
+              {
+                /* Divide to scale down */
+                red = p->red/unsigned_scale;
+                green = p->green/unsigned_scale;
+                blue = p->blue/unsigned_scale;
+              }
+
+            BitStreamMSBWrite(&bit_stream,10,red);
+            BitStreamMSBWrite(&bit_stream,10,green);
+            BitStreamMSBWrite(&bit_stream,10,blue);
+            BitStreamMSBWrite(&bit_stream,2,0);
+            p++;
+          }
+        written = WriteBlob(image,scanline_bytes,scanline);
+        if (written != scanline_bytes)
+          {
+            status = MagickFail;
+            break;
+          }
+        offset += written;
+      }
+    MagickFreeMemory(scanline);
+  }
+
+  if ((magick_off_t) cin_file_info.file_size != TellBlob(image))
     {
-      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      for (x=0; x < (long) image->columns; x++)
-        {
-#if 0
-          BitStreamInitializeWrite(&bit_stream,packet);
-          BitStreamMSBWrite(&bit_stream,10,(unsigned int) ScaleQuantumToShort(p->red)/64U);
-          BitStreamMSBWrite(&bit_stream,10,(unsigned int) ScaleQuantumToShort(p->green)/64U);
-          BitStreamMSBWrite(&bit_stream,10,(unsigned int) ScaleQuantumToShort(p->blue)/64U);
-/*           if ((x == 0) && (y == 0)) */
-/*             printf("%x %x %x %x\n",packet[0],packet[1],packet[2],packet[3]); */
-          (void) WriteBlob(image,4,packet);
-#else
-          pixel=(unsigned long)
-            (((long) ((1023L*p->red+MaxRGB/2)/MaxRGB) & 0x3ff) << 22) |
-            (((long) ((1023L*p->green+MaxRGB/2)/MaxRGB) & 0x3ff) << 12) |
-            (((long) ((1023L*p->blue+MaxRGB/2)/MaxRGB) & 0x3ff) << 2);
-          (void) WriteBlobMSBLong(image,pixel);
-#endif
-          p++;
-        }
+      printf("### File length %u, TellBlob says %u\n",
+             cin_file_info.file_size,
+             (unsigned int) TellBlob(image));
     }
-  CloseBlob(image);  
+
+  CloseBlob(image);
   return(status);
 }

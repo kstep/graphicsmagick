@@ -787,6 +787,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   rotated_image = RotateImage(image, 90.0, exception);
   if (rotated_image != (Image *) NULL)
   {
+    /* Remove page offsets added by RotateImage */
     rotated_image->page.x=0;
     rotated_image->page.y=0;
     DestroyImage(image);

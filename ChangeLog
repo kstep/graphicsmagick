@@ -1,3 +1,9 @@
+2007-05-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/cineon.c (WriteCINEONImage): Re-wrote Cineon writer from
+	scratch.  There is no code originating from ImageMagick in this
+	source module any more.
+
 2007-04-30  Fojtik Jaroslav  <JaFojtik@seznam.cz>
 
 	* coders/art.c, coders.cut.c, coders/mat.c, coders/wpg.c: Add

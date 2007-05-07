@@ -286,6 +286,10 @@ TESTS_TESTS = \
 	tests/rwblob_BMP_gray.sh \
 	tests/rwblob_BMP_pallette.sh \
 	tests/rwblob_BMP_truecolor.sh \
+	tests/rwblob_CIN_bilevel.sh \
+	tests/rwblob_CIN_gray.sh \
+	tests/rwblob_CIN_pallette.sh \
+	tests/rwblob_CIN_truecolor.sh \
 	tests/rwblob_CMYK_truecolor_70x46.sh \
 	tests/rwblob_DIB_bilevel.sh \
 	tests/rwblob_DIB_gray.sh \
@@ -476,6 +480,13 @@ TESTS_TESTS = \
 	tests/rwfile_BMP_truecolor12.sh \
 	tests/rwfile_BMP_truecolor16.sh \
 	tests/rwfile_BMP_truecolor.sh \
+	tests/rwfile_CIN_bilevel.sh \
+	tests/rwfile_CIN_gray.sh \
+	tests/rwfile_CIN_pallette.sh \
+	tests/rwfile_CIN_truecolor10.sh \
+	tests/rwfile_CIN_truecolor12.sh \
+	tests/rwfile_CIN_truecolor16.sh \
+	tests/rwfile_CIN_truecolor.sh \
 	tests/rwfile_CMYK_truecolor_70x46.sh \
 	tests/rwfile_DIB_bilevel.sh \
 	tests/rwfile_DIB_gray.sh \

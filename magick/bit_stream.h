@@ -105,7 +105,7 @@ extern "C" {
     Initialize Bit Stream for writing
 
     bit_stream  - bit stream to initialize.
-    bytes       - bytes to read bits from.
+    bytes       - byte array to write bits to
   */
   static inline void BitStreamInitializeWrite(BitStreamWriteHandle *bit_stream,
                                               unsigned char *bytes)
