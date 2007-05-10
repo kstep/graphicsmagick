@@ -1025,13 +1025,13 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    if (jpeg_info.data_precision > 8)
+    if (jpeg_info.data_precision > 8) /* Should be == 12? */
       {
         if (jpeg_info.out_color_space == JCS_GRAYSCALE)
           {
             for (x=0; x < (long) image->columns; x++)
             {
-              index=(IndexPacket) (16*GETJSAMPLE(*p++));
+              index=(IndexPacket) (GETJSAMPLE(*p++));
               VerifyColormapIndex(image,index);
               indexes[x]=index;
               *q++=image->colormap[index];
@@ -1512,6 +1512,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       (void) TransformColorspace(image,YCbCrColorspace);
       break;
     }
+    case GRAYColorspace:
     case Rec601LumaColorspace:
     case Rec709LumaColorspace:
     {

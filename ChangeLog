@@ -1,3 +1,8 @@
+2007-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (ReadJPEGImage): Fix reading 12-bit grayscale
+	JPEG.
+
 2007-05-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/cineon.c (WriteCINEONImage): Re-wrote Cineon writer from

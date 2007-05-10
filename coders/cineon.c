@@ -1335,25 +1335,19 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
         
         for (x=0; x < (long) image->columns; x++)
           {
-
-
-/*             unsigned int red = ScaleQuantumToShort(p->red)/64U; */
-/*             unsigned int green = ScaleQuantumToShort(p->green)/64U; */
-/*             unsigned int blue = ScaleQuantumToShort(p->blue)/64U; */
-
             if (QuantumDepth < sample_bits)
               {
                 /* Multiply to scale up */
-                red = p->red*unsigned_scale;
+                red   = p->red*unsigned_scale;
                 green = p->green*unsigned_scale;
-                blue = p->blue*unsigned_scale;
+                blue  = p->blue*unsigned_scale;
               }
             else
               {
                 /* Divide to scale down */
-                red = p->red/unsigned_scale;
+                red   = p->red/unsigned_scale;
                 green = p->green/unsigned_scale;
-                blue = p->blue/unsigned_scale;
+                blue  = p->blue/unsigned_scale;
               }
 
             BitStreamMSBWrite(&bit_stream,10,red);
