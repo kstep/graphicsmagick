@@ -418,9 +418,6 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
   const char *
     definition_value;
 
-  size_t
-    scandata_bytes;
-  
   BitStreamReadHandle
     bit_stream;
 
@@ -634,94 +631,111 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
   /*
     Convert CINEON raster image to pixel packets.
   */
-  switch (number_of_channels)
-    {
-    case 1:
-      {
-        scandata_bytes=4;
-        scandata=MagickAllocateMemory(unsigned char *,scandata_bytes);
-        for (y=0; y < (long) image->rows; y++)
-          {
-            q=SetImagePixels(image,0,y,image->columns,1);
-            if (q == (PixelPacket *) NULL)
-              break;
-            /*
-              Packed 10 bit samples with 2 bit pad at end of 32-bit word.
-            */
-            scanline=(void *) scandata;
-            i=3;
-            for (x=(long) image->columns; x > 0; x--, i++)
-              {
-                if (i > 2)
-                  {
-                    scanline=scandata;
-                    if (ReadBlobZC(image,scandata_bytes,(void *) &scanline) !=
-                        scandata_bytes)
-                      break;
-                    BitStreamInitializeRead(&bit_stream,scanline);
-                    i=0;
-                  }
-                q->red=q->green=q->blue=
-                  ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
-                q->opacity=0U;
-                q++;
-              }
-            if (!SyncImagePixels(image))
-              break;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
-                  break;
-          }
-        MagickFreeMemory(scandata);
-        break;
-      }
-    case 3:
-      {
-        scandata_bytes=image->columns*4;
-        scandata=MagickAllocateMemory(unsigned char *,scandata_bytes);
-        for (y=0; y < (long) image->rows; y++)
-          {
-            unsigned int red;
-            unsigned int green;
-            unsigned int blue;
+  {
+    size_t
+      scandata_bytes;
 
-            q=SetImagePixels(image,0,y,image->columns,1);
-            if (q == (PixelPacket *) NULL)
-              break;
-            scanline=scandata;
-            if (ReadBlobZC(image,scandata_bytes,(void *) &scanline) != scandata_bytes)
-              break;
-            for (x=0 ; x < (long) image->columns; x++)
-              {
-                /*
-                  Packed 10 bit samples with 2 bit pad at end of 32-bit word.
-                */
-                BitStreamInitializeRead(&bit_stream,scanline);
-                red   = BitStreamMSBRead(&bit_stream,10);
-                green = BitStreamMSBRead(&bit_stream,10);
-                blue  = BitStreamMSBRead(&bit_stream,10);
+    unsigned int
+      bits_per_sample,
+      scale_to_short=0;
 
-                q->red=ScaleShortToQuantum(red*64);
-                q->green=ScaleShortToQuantum(green*64);
-                q->blue=ScaleShortToQuantum(blue*64);
-                q->opacity=0U;
-                scanline += 4;
-                q++;
-              }
-            if (!SyncImagePixels(image))
-              break;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(y,image->rows))
-                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
-                  break;
-          }
-        MagickFreeMemory(scandata);
-        break;
+    /* Assume that all channels are the same depth */
+    bits_per_sample = max_bits_per_sample;
+
+    switch (number_of_channels)
+      {
+      case 1:
+        {
+          scandata_bytes=4;
+          scale_to_short=64;
+          scandata=MagickAllocateMemory(unsigned char *,scandata_bytes);
+          for (y=0; y < (long) image->rows; y++)
+            {
+              q=SetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              /*
+                Packed 10 bit samples with 2 bit pad at end of 32-bit word.
+              */
+              scanline=(void *) scandata;
+              i=3;
+              for (x=(long) image->columns; x > 0; x--, i++)
+                {
+                  if (i > 2)
+                    {
+                      scanline=scandata;
+                      if (ReadBlobZC(image,scandata_bytes,(void *) &scanline) !=
+                          scandata_bytes)
+                        break;
+                      BitStreamInitializeRead(&bit_stream,scanline);
+                      i=0;
+                    }
+                  q->red=q->green=q->blue=
+                    ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*scale_to_short);
+                  q->opacity=0U;
+                  q++;
+                }
+              if (!SyncImagePixels(image))
+                break;
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                    break;
+            }
+          MagickFreeMemory(scandata);
+          break;
+        }
+      case 3:
+        {
+          scandata_bytes=image->columns*4;
+          scale_to_short=64;
+          scandata=MagickAllocateMemory(unsigned char *,scandata_bytes);
+          for (y=0; y < (long) image->rows; y++)
+            {
+              magick_uint32_t red;
+              magick_uint32_t green;
+              magick_uint32_t blue;
+
+              q=SetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              scanline=scandata;
+              if (ReadBlobZC(image,scandata_bytes,(void *) &scanline) != scandata_bytes)
+                break;
+              BitStreamInitializeRead(&bit_stream,scanline);
+              for (x=0 ; x < (long) image->columns; x++)
+                {
+                  /*
+                    Packed 10 bit samples with 2 bit pad at end of 32-bit word.
+                  */
+                  red   = BitStreamMSBRead(&bit_stream,10);
+                  green = BitStreamMSBRead(&bit_stream,10);
+                  blue  = BitStreamMSBRead(&bit_stream,10);
+                  (void) BitStreamMSBRead(&bit_stream,2);
+
+                  q->red     = ScaleShortToQuantum(red*scale_to_short);
+                  q->green   = ScaleShortToQuantum(green*scale_to_short);
+                  q->blue    = ScaleShortToQuantum(blue*scale_to_short);
+                  q->opacity = 0U;
+
+/*                   printf("i:%u,%u,%u --> %u,%u,%u\n", red, green, blue, */
+/*                          (unsigned int)q->red, (unsigned int)q->green, (unsigned int)q->blue); */
+                  q++;
+                }
+              if (!SyncImagePixels(image))
+                break;
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                    break;
+            }
+          MagickFreeMemory(scandata);
+          break;
+        }
+      default:
+        ThrowReaderException(CorruptImageError,ImageTypeNotSupported,image);
       }
-    default:
-      ThrowReaderException(CorruptImageError,ImageTypeNotSupported,image);
-    }
+  }
   image->depth=Min(image->depth,QuantumDepth);
   image->colorspace=CineonLogRGBColorspace;
 
@@ -1292,32 +1306,16 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
       bit_stream;
 
     unsigned int
-      unsigned_maxvalue=MaxRGB,
-      sample_bits,
-      unsigned_scale = 1U;
-
-    unsigned int
       red,
       green,
       blue;
 
-    /* Maximum value which may be represented by a stored sample */
-    sample_bits = cin_image_info.channel_info[0].bits_per_sample;
-    unsigned_maxvalue=MaxValueGivenBits(sample_bits);
-      
-    if (QuantumDepth == sample_bits)
-      {
-      }
-    else if (QuantumDepth > sample_bits)
-      {
-        /* Multiply to scale up */
-        unsigned_scale=(MaxRGB / (MaxRGB >> (QuantumDepth-sample_bits)));
-      }
-    else if (QuantumDepth < sample_bits)
-      {
-        /* Divide to scale down */
-        unsigned_scale=(unsigned_maxvalue/MaxRGB);
-      }
+    unsigned int
+      bits_per_sample,
+      scale_from_short;
+
+    bits_per_sample = cin_image_info.channel_info[0].bits_per_sample;
+    scale_from_short=(65535U / (65535U >> (16-bits_per_sample)));
 
     scanline_bytes=image->columns*4;
     scanline=MagickAllocateMemory(unsigned char *,scanline_bytes);
@@ -1335,20 +1333,12 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
         
         for (x=0; x < (long) image->columns; x++)
           {
-            if (QuantumDepth < sample_bits)
-              {
-                /* Multiply to scale up */
-                red   = p->red*unsigned_scale;
-                green = p->green*unsigned_scale;
-                blue  = p->blue*unsigned_scale;
-              }
-            else
-              {
-                /* Divide to scale down */
-                red   = p->red/unsigned_scale;
-                green = p->green/unsigned_scale;
-                blue  = p->blue/unsigned_scale;
-              }
+            red   = ScaleQuantumToShort(p->red)/scale_from_short;
+            green = ScaleQuantumToShort(p->green)/scale_from_short;
+            blue  = ScaleQuantumToShort(p->blue)/scale_from_short;
+
+/*             printf("o:%u,%u,%u --> %u,%u,%u\n",(unsigned int)p->red, (unsigned int) p->green, (unsigned int) p->blue, */
+/*                    red, green, blue); */
 
             BitStreamMSBWrite(&bit_stream,10,red);
             BitStreamMSBWrite(&bit_stream,10,green);

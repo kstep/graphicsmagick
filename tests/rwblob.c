@@ -293,19 +293,20 @@ int main ( int argc, char **argv )
        * Check final output
        */
 
-      if ( !strcmp( "JPEG", format ) ||
-           !strcmp( "JNG", format ) ||
-           !strcmp( "JPG", format ) ||
-           !strcmp( "JPG24", format ) ||
-           !strcmp( "JP2", format ) ||
-           !strcmp( "GRAY", format ) ||
-           !strcmp( "CMYK", format ) ||
-           !strcmp( "PAL", format ) ||
-           !strcmp( "PCD", format ) ||
-           !strcmp( "PCDS", format ) ||
-           !strcmp( "UYVY", format ) ||
-           !strcmp( "YUV", format )  ||
-           (final->compression == JPEGCompression))
+      if ((!strcmp( "CIN", format ) && (QuantumDepth == 8)) ||
+          (!strcmp( "CMYK", format )) ||
+          (!strcmp( "GRAY", format )) ||
+          (!strcmp( "JNG", format )) ||
+          (!strcmp( "JP2", format )) ||
+          (!strcmp( "JPEG", format )) ||
+          (!strcmp( "JPG", format )) ||
+          (!strcmp( "JPG24", format )) ||
+          (!strcmp( "PAL", format )) ||
+          (!strcmp( "PCD", format )) ||
+          (!strcmp( "PCDS", format )) ||
+          (!strcmp( "UYVY", format )) ||
+          (!strcmp( "YUV", format ))  ||
+          (final->compression == JPEGCompression))
         fuzz_factor = 0.06;
   
       if ( !IsImagesEqual(original, final ) &&
