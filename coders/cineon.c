@@ -65,18 +65,29 @@ typedef magick_int32_t S32;
 typedef float R32;
 typedef unsigned int sample_t;
 
+/*
+  Union to allow R32 to be accessed as an unsigned U32 type for "unset
+  value" access.
+*/
+typedef union _R32_u
+{
+  U32   u;
+  R32   f;
+} R32_u;
+
 #define SET_UNDEFINED_U8(value)  (value=~0)
 #define SET_UNDEFINED_U16(value) (value=~0)
 #define SET_UNDEFINED_U32(value) (value=~0)
 #define SET_UNDEFINED_S32(value) (value=0x80000000)
-#define SET_UNDEFINED_R32(value) (*((U32 *) &value)=0x7F800000U)
+
+#define SET_UNDEFINED_R32(value) (((R32_u*) &value)->u=0x7F800000U);
 #define SET_UNDEFINED_ASCII(value) (memset(value,0,sizeof(value)))
 
 #define IS_UNDEFINED_U8(value) (value == ((U8) ~0))
 #define IS_UNDEFINED_U16(value) (value == ((U16) ~0))
 #define IS_UNDEFINED_U32(value) (value == ((U32) ~0))
 #define IS_UNDEFINED_S32(value) (value == ((S32) 0x80000000))
-#define IS_UNDEFINED_R32(value) (*((U32 *) &value) == ((U32) 0x7F800000U))
+#define IS_UNDEFINED_R32(value) (((R32_u*) &value)->u == ((U32) 0x7F800000U))
 #define IS_UNDEFINED_ASCII(value) (!(value[0] > 0))
 
 typedef struct _CineonFileInfo
@@ -649,6 +660,8 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
           scandata_bytes=4;
           scale_to_short=64;
           scandata=MagickAllocateMemory(unsigned char *,scandata_bytes);
+          scanline=(unsigned char*) scandata;
+          BitStreamInitializeRead(&bit_stream,scanline);
           for (y=0; y < (long) image->rows; y++)
             {
               q=SetImagePixels(image,0,y,image->columns,1);
@@ -657,14 +670,14 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
               /*
                 Packed 10 bit samples with 2 bit pad at end of 32-bit word.
               */
-              scanline=(void *) scandata;
+              scanline=(unsigned char *) scandata;
               i=3;
               for (x=(long) image->columns; x > 0; x--, i++)
                 {
                   if (i > 2)
                     {
                       scanline=scandata;
-                      if (ReadBlobZC(image,scandata_bytes,(void *) &scanline) !=
+                      if (ReadBlobZC(image,scandata_bytes,(void **) &scanline) !=
                           scandata_bytes)
                         break;
                       BitStreamInitializeRead(&bit_stream,scanline);
@@ -700,7 +713,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
               if (q == (PixelPacket *) NULL)
                 break;
               scanline=scandata;
-              if (ReadBlobZC(image,scandata_bytes,(void *) &scanline) != scandata_bytes)
+              if (ReadBlobZC(image,scandata_bytes,(void **) &scanline) != scandata_bytes)
                 break;
               BitStreamInitializeRead(&bit_stream,scanline);
               for (x=0 ; x < (long) image->columns; x++)
@@ -1000,7 +1013,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
     user_data_length=0,
     offset=0;
 
-  off_t
+  size_t
     written=0;
 
   MagickBool

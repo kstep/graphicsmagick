@@ -4448,6 +4448,14 @@ static Image *MagickXGetWindowImage(Display *display,const Window window,
         }
         XDestroyImage(ximage);
         ximage=(XImage *) NULL;
+
+        /*
+          Evaluate image depth.
+        */
+        composite_image->depth=GetImageDepth(composite_image,&composite_image->exception);
+        if (composite_image->depth < 8)
+          composite_image->depth=8;
+
         if (image == (Image *) NULL)
           {
             image=composite_image;

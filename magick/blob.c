@@ -167,7 +167,7 @@ static const char *BlobMapModeToString(MapMode map_mode)
 
 static const char *BlobModeToString(BlobMode blob_mode)
 {
-  char
+  const char
     *mode_string="Undefined";
 
   switch (blob_mode)
@@ -195,7 +195,7 @@ static const char *BlobModeToString(BlobMode blob_mode)
 }
 static const char *BlobStreamTypeToString(StreamType stream_type)
 {
-  char
+  const char
     *type_string="Undefined";
 
   switch (stream_type)
@@ -317,7 +317,7 @@ static void *ExtendBlobWriteStream(Image *image,const size_t length)
           image->blob->extent+=length+image->blob->quantum;
           if(ftruncate(filedes,image->blob->extent) != 0)
             return 0;
-          image->blob->data=MapBlob(filedes,WriteMode,0,image->blob->extent);
+          image->blob->data=(unsigned char*) MapBlob(filedes,WriteMode,0,image->blob->extent);
           (void) SyncBlob(image);
         }
       else
@@ -1661,7 +1661,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
           if (search_path)
             (void) ConcatenateString(&search_path,list_separator);
           (void) ConcatenateString(&search_path,
-            MagickMapDereferenceIterator(path_map_iterator,0));
+            (const char *) MagickMapDereferenceIterator(path_map_iterator,0));
         }
       
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
@@ -2724,7 +2724,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
       const unsigned char
         *source;
 
-      count=ReadBlobStream(image,length,(void *) (&source));
+      count=ReadBlobStream(image,length,(void **) (&source));
       if (count <= 10)
         {
           register size_t
@@ -2909,7 +2909,7 @@ MagickExport unsigned long ReadBlobLSBLong(Image *image)
     value=ReadBlobStream(image,4,&source_v);
   else
     value=ReadBlob(image,4,source_v);
-  source=source_v;
+  source=(unsigned char*) source_v;
   if (value < 4)
     return((unsigned long) ~0);
   value=source[3] << 24;
@@ -2965,7 +2965,7 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
     value=ReadBlobStream(image,2,&source_v);
   else
     value=ReadBlob(image,2,source_v);
-  source=source_v;
+  source=(unsigned char*) source_v;
   if (value < 2)
     return((unsigned short) ~0U);
   value=source[1] << 8;
@@ -3020,7 +3020,7 @@ MagickExport unsigned long ReadBlobMSBLong(Image *image)
     value=ReadBlobStream(image,4,&source_v);
   else
     value=ReadBlob(image,4,source_v);
-  source=source_v;
+  source=(unsigned char*) source_v;
   if (value < 4)
     return((unsigned long) ~0);
   value=source[0] << 24;
@@ -3076,7 +3076,7 @@ MagickExport unsigned short ReadBlobMSBShort(Image *image)
     value=ReadBlobStream(image,2,&source_v);
   else
     value=ReadBlob(image,2,source_v);
-  source=source_v;
+  source=(unsigned char*) source_v;
   if (value < 2)
     return((unsigned short) ~0U);
   value=source[0] << 8;

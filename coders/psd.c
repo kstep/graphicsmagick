@@ -417,7 +417,7 @@ typedef enum
   LabMode = 9
 } PSDImageType;
 
-static char* ModeToString( PSDImageType inType )
+static const char* ModeToString( PSDImageType inType )
 {
   switch ( inType )
     {

@@ -128,7 +128,7 @@ MagickExport const char *AccessDefinition(const ImageInfo *image_info,
   if (image_info->definitions)
     {
       FormatString(search_key, "%.60s:%.1024s", magick, key);
-      value=MagickMapAccessEntry(image_info->definitions,search_key,0);
+      value=(const char*) MagickMapAccessEntry((MagickMap) image_info->definitions,search_key,0);
     }
   return value;
 }
@@ -210,7 +210,7 @@ AddDefinitions(ImageInfo *image_info,const char *definitions,
     value[j]='\0';
     if (strlen(key) > 0)
       {
-        status &= MagickMapAddEntry(image_info->definitions,key,value,0,exception);
+        status &= MagickMapAddEntry((MagickMap) image_info->definitions,key,value,0,exception);
       }
     else
       {
@@ -1297,7 +1297,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     clone_info->attributes=CloneImage(image_info->attributes,0,0,True,
       &image_info->attributes->exception);
   if (image_info->definitions != (MagickMap) NULL)
-    clone_info->definitions=MagickMapCloneMap(image_info->definitions,0);
+    clone_info->definitions=MagickMapCloneMap((MagickMap) image_info->definitions,0);
   clone_info->client_data=image_info->client_data;
   clone_info->cache=image_info->cache;
   if (image_info->cache != (void *) NULL)
@@ -2430,7 +2430,7 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
   if (image_info->cache != (void *) NULL)
     DestroyCacheInfo(image_info->cache);
   if (image_info->definitions != (MagickMap) NULL)
-    MagickMapDeallocateMap(image_info->definitions);
+    MagickMapDeallocateMap((MagickMap) image_info->definitions);
   (void) memset((void *)image_info,0xbf,sizeof(ImageInfo));
   MagickFreeMemory(image_info);
 }
@@ -3963,9 +3963,9 @@ RemoveDefinitions(const ImageInfo *image_info,const char *keys)
     if (strlen(key) > 0)
       {
         if ((key[0] == '*') && (key[1] == '\0'))
-          MagickMapClearMap(image_info->definitions);
+          MagickMapClearMap((MagickMap) image_info->definitions);
         else
-          status &= MagickMapRemoveEntry(image_info->definitions,key);
+          status &= MagickMapRemoveEntry((MagickMap) image_info->definitions,key);
       }
     else
       {

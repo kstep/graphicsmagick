@@ -1783,7 +1783,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
     else if (LocaleCompare((char *) name, "group") == 0)
     {
       msl_info->nGroups++;
-      ReacquireMemory((void**) &msl_info->group_info, (msl_info->nGroups+1)*sizeof(MSLGroupInfo));
+      MagickReallocMemory(msl_info->group_info,(msl_info->nGroups+1)*sizeof(MSLGroupInfo));
       break;
     }
       ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);

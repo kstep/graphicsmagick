@@ -228,7 +228,7 @@ MagickExport unsigned int AcquireTemporaryFileName(char *filename)
 */
 MagickExport int AcquireTemporaryFileDescriptor(char *filename)
 {
-  char
+  const char
     *tempdir=0;
 
   int

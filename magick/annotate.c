@@ -1823,7 +1823,7 @@ static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
 }
 #else
 static MagickPassFail RenderX11(Image *image,const DrawInfo *draw_info,
-  const PointInfo *offset,TypeMetric *metrics)
+  const PointInfo *ARGUNUSED(offset),TypeMetric *ARGUNUSED(metrics))
 {
   ThrowBinaryException(MissingDelegateError,XWindowLibraryIsNotAvailable,
     draw_info->font);

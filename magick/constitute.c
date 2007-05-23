@@ -219,7 +219,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
       if (dispatch_type != UndefinedDispatchType)
         {
           register const unsigned char
-            *p = pixels;
+            *p = (const unsigned char*) pixels;
 
           for (y=0; y < (long) image->rows; y++)
             {
@@ -441,28 +441,28 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                 {
                 case CharPixel:
                   {
-                    register const unsigned char *p = pixels;
+                    register const unsigned char *p = (const unsigned char*) pixels;
                     quantum=ScaleCharToQuantum(*p++);
                     pixels = (const void *) p;
                     break;
                   }
                 case ShortPixel:
                   {
-                    register const unsigned short *p = pixels;
+                    register const unsigned short *p = (const unsigned short*) pixels;
                     quantum=ScaleShortToQuantum(*p++);
                     pixels = (const void *) p;
                     break;
                   }
                 case IntegerPixel:
                   {
-                    register const unsigned int *p = pixels;
+                    register const unsigned int *p = (const unsigned int*) pixels;
                     quantum=ScaleLongToQuantum(*p++);
                     pixels = (const void *) p;
                     break;
                   }
                 case LongPixel:
                   {
-                    register const unsigned long *p = pixels;
+                    register const unsigned long *p = (const unsigned long*) pixels;
                     quantum=ScaleLongToQuantum(*p++);
                     pixels = (const void *) p;
                     break;
@@ -470,7 +470,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                 case FloatPixel:
                   {
                     double quantum_float;
-                    register const float *p = pixels;
+                    register const float *p = (const float*) pixels;
                     quantum_float=(double) MaxRGB*(*p++);
                     quantum=RoundSignedToQuantum(quantum_float);
                     pixels = (const void *) p;
@@ -479,7 +479,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                 case DoublePixel:
                   {
                     double quantum_float;
-                    register const double *p = pixels;
+                    register const double *p = (const double*) pixels;
                     quantum_float=(double) MaxRGB*(*p++);
                     quantum=RoundSignedToQuantum(quantum_float);
                     pixels = (const void *) p;
@@ -699,7 +699,7 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
       if (dispatch_type != UndefinedDispatchType)
         {
           register unsigned char
-            *q=pixels;
+            *q = (unsigned char*) pixels;
           
           for (y=0; y < (long) rows; y++)
             {
@@ -958,42 +958,42 @@ MagickExport MagickPassFail DispatchImage(const Image *image,const long x_offset
                 {
                 case CharPixel:
                   {
-                    register unsigned char *q = pixels;
+                    register unsigned char *q = (unsigned char*) pixels;
                     *q++=ScaleQuantumToChar(quantum);
                     pixels=(void *) q;
                     break;
                   }
                 case ShortPixel:
                   {
-                    register unsigned short *q = pixels;
+                    register unsigned short *q = (unsigned short*) pixels;
                     *q++=ScaleQuantumToShort(quantum);
                     pixels=(void *) q;
                     break;
                   }
                 case IntegerPixel:
                   {
-                    register unsigned int *q = pixels;
+                    register unsigned int *q = (unsigned int*) pixels;
                     *q++=ScaleQuantumToLong(quantum);
                     pixels=(void *) q;
                     break;
                   }
                 case LongPixel:
                   {
-                    register unsigned long *q = pixels;
+                    register unsigned long *q = (unsigned long*) pixels;
                     *q++=ScaleQuantumToLong(quantum);
                     pixels=(void *) q;
                     break;
                   }
                 case FloatPixel:
                   {
-                    register float *q = pixels;
+                    register float *q = (float*) pixels;
                     *q++=(float) ((double) quantum/MaxRGB);
                     pixels=(void *) q;
                     break;
                   }
                 case DoublePixel:
                   {
-                    register double *q = pixels;
+                    register double *q = (double*) pixels;
                     *q++=(double) quantum/MaxRGB;
                     pixels=(void *) q;
                     break;

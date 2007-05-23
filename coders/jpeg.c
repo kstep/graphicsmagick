@@ -1468,9 +1468,12 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   unsigned int
     status;
 
+  long
+    input_colorspace;
+
   unsigned long
-    input_colorspace,
     quality;
+
   /*
     Open image file.
   */

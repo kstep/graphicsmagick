@@ -2080,7 +2080,7 @@ static float lite_font_stringwidth( wmfAPI* API, wmfFont* font, char* str)
 /* Map font (similar to wmf_ipa_font_map) */
 
 /* Mappings to Postscript fonts: family, normal, italic, bold, bolditalic */
-static wmfFontMap WMFFontMap[] = {
+static const wmfFontMap WMFFontMap[] = {
   { "Courier",            "Courier",     "Courier-Oblique",   "Courier-Bold",   "Courier-BoldOblique"   },
   { "Helvetica",          "Helvetica",   "Helvetica-Oblique", "Helvetica-Bold", "Helvetica-BoldOblique" },
   { "Modern",             "Courier",     "Courier-Oblique",   "Courier-Bold",   "Courier-BoldOblique"   },
@@ -2093,17 +2093,17 @@ static wmfFontMap WMFFontMap[] = {
 };
 
 /* Mapping between base name and Ghostscript family name */
-static wmfMapping SubFontMap[] = {
-  { "Arial",      "Helvetica",	0 },
-  { "Courier",    "Courier",    0 },
-  { "Fixed",      "Courier",    0 },
-  { "Helvetica",  "Helvetica",  0 },
-  { "Sans",       "Helvetica",  0 },
-  { "Sym",        "Symbol",     0 },
-  { "Terminal",   "Courier",    0 },
-  { "Times",      "Times",      0 },
-  { "Wingdings",  "Symbol",     0 },
-  {  NULL,        NULL,         0 }
+static const wmfMapping SubFontMap[] = {
+  { "Arial",      "Helvetica",	(FT_Encoding) 0 },
+  { "Courier",    "Courier",    (FT_Encoding) 0 },
+  { "Fixed",      "Courier",    (FT_Encoding) 0 },
+  { "Helvetica",  "Helvetica",  (FT_Encoding) 0 },
+  { "Sans",       "Helvetica",  (FT_Encoding) 0 },
+  { "Sym",        "Symbol",     (FT_Encoding) 0 },
+  { "Terminal",   "Courier",    (FT_Encoding) 0 },
+  { "Times",      "Times",      (FT_Encoding) 0 },
+  { "Wingdings",  "Symbol",     (FT_Encoding) 0 },
+  {  NULL,        NULL,         (FT_Encoding) 0 }
 };
 
 static void lite_font_map( wmfAPI* API, wmfFont* font)

@@ -65,7 +65,7 @@ typedef enum
 
 typedef struct _OutputInfo
 {
-  char *name;
+  const char *name;
   LogOutputType mask;
 } OutputInfo;
 
@@ -101,7 +101,7 @@ typedef struct _LogInfo
 
 typedef struct _EventInfo
 {
-  char *name;
+  const char *name;
   LogEventType mask;
   int start_type;
   int end_type;
@@ -221,7 +221,7 @@ static LogEventType ParseEvents(const char *event_string)
   const char
     *p;
 
-  int
+  unsigned int
     i;
 
   LogEventType
@@ -237,7 +237,8 @@ static LogEventType ParseEvents(const char *event_string)
           if (LocaleNCompare(p,eventmask_map[i].name,
                              strlen(eventmask_map[i].name)) == 0)
             {
-              events|=eventmask_map[i].mask;
+              events = (LogEventType) ((unsigned int) events |
+                                       (unsigned int) eventmask_map[i].mask);
               break;
             }
         }
@@ -894,7 +895,8 @@ static MagickPassFail ReadLogConfigureFile(const char *basename,
       case 'e':
       {
         if (LocaleCompare((char *) keyword,"events") == 0)
-          log_info->events|=ParseEvents(token);
+          log_info->events = (LogEventType) ((unsigned int) log_info->events |
+                                             (unsigned int) ParseEvents(token));
         break;
       }
       case 'F':

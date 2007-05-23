@@ -180,7 +180,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (GetBlobStreamData(image))
     draw_info->primitive=AllocateString((char *) GetBlobStreamData(image));
   else
-    draw_info->primitive=FileToBlob(image->filename,&length,exception);
+    draw_info->primitive=(char *) FileToBlob(image->filename,&length,exception);
   if (draw_info->primitive == (char *) NULL)
     return((Image *) NULL);
   (void) DrawImage(image,draw_info);

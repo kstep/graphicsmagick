@@ -212,7 +212,7 @@ static unsigned int PushImageRLEPixels(Image *image,
   register long
     x;
 
-  register PixelPacket
+  PixelPacket
     pixel;
 
   register PixelPacket
@@ -1506,7 +1506,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 break;
               pixels_p=pixels;
               (void) ReadBlobZC(image,packet_size*image->columns,&pixels_p);
-              (void) ImportImagePixelArea(image,quantum_type,sample_size,pixels_p,0);
+              (void) ImportImagePixelArea(image,quantum_type,sample_size,(const unsigned char*) pixels_p,0);
               if (!SyncImagePixels(image))
                 break;
             }

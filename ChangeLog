@@ -1,3 +1,9 @@
+2007-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/xwindow.c (MagickXGetWindowImage): Set image->depth
+	appropriately.
+	* many files: Compiler warnings reduction.
+
 2007-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/cineon.c (ReadCINEONImage): Alter sample scaling

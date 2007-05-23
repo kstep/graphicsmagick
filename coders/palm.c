@@ -598,7 +598,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
           bit = 8 - bits_per_pixel;
           for(x = 0; x < (long) image->columns; x++)
             {
-	if (ptr - one_row >= bytes_per_row)
+	if ((unsigned long) (ptr - one_row) >= bytes_per_row)
           ThrowReaderException(CorruptImageError,CorruptImage,image);
               index =(IndexPacket) (mask - (((*ptr) & (mask << bit)) >> bit));
               indexes[x] = index;

@@ -168,18 +168,24 @@ extern MagickExport size_t
   setting pointer to NULL.
   C++ does not accept the final memory=_magick_mp without a cast.
 */
+#if defined(__cplusplus) || defined(c_plusplus)
+#define MagickTypeOf(var) __typeof__(var)
+#else
+#define MagickTypeOf(var) void*
+#endif
 #define MagickReallocMemory(memory,size) \
 { \
+    size_t _new_size = (size_t) (size); \
     void *_magick_mp; \
     if (memory == 0) \
-      _magick_mp=malloc((size_t) (size)); \
+      _magick_mp=malloc(_new_size); \
     else \
       { \
-        _magick_mp=realloc(memory,(size_t) (size)); \
+        _magick_mp=realloc(memory,_new_size); \
         if (_magick_mp == 0) \
           free(memory); \
       } \
-    memory=_magick_mp; \
+    memory=(MagickTypeOf(memory))_magick_mp; \
 }
 
 /*

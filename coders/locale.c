@@ -744,7 +744,7 @@ void WriteBlobStringEOL(Image *image)
 #endif
 }
 
-void WriteBlobStringWithEOL(Image *image,char *s)
+void WriteBlobStringWithEOL(Image *image,const char *s)
 {
   (void) WriteBlobString(image,s);
 #if defined(WIN32)
@@ -868,8 +868,10 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
     }
   else if (LocaleCompare(image_info->magick,"LOCALEH") == 0)
     {
+      const char
+        *fields[TREE_LEVELS_SUPPORTED];
+
       char
-        *fields[TREE_LEVELS_SUPPORTED],
         last[MaxTextExtent],
         last2[MaxTextExtent],
         category[MaxTextExtent],
@@ -926,7 +928,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       WriteBlobStringEOL(image);
       WriteBlobStringWithEOL(image,"#if defined(_INCLUDE_CATEGORYMAP_TABLE_)");
       WriteBlobStringWithEOL(image,"typedef struct _CategoryInfo{");
-      WriteBlobStringWithEOL(image,"  char *name;");
+      WriteBlobStringWithEOL(image,"  const char *name;");
       WriteBlobStringWithEOL(image,"  int offset;");
       WriteBlobStringWithEOL(image,"} CategoryInfo;");
       WriteBlobStringEOL(image);
@@ -979,7 +981,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       WriteBlobStringEOL(image);
       WriteBlobStringWithEOL(image,"#if defined(_INCLUDE_SEVERITYMAP_TABLE_)");
       WriteBlobStringWithEOL(image,"typedef struct _SeverityInfo{");
-      WriteBlobStringWithEOL(image,"  char *name;");
+      WriteBlobStringWithEOL(image,"  const char *name;");
       WriteBlobStringWithEOL(image,"  int offset;");
       WriteBlobStringWithEOL(image,"  ExceptionType severityid;");
       WriteBlobStringWithEOL(image,"} SeverityInfo;");
@@ -1027,7 +1029,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       WriteBlobStringWithEOL(image,"#if defined(_INCLUDE_TAGMAP_TABLE_)");
       WriteBlobStringWithEOL(image,"typedef struct _MessageInfo");
       WriteBlobStringWithEOL(image,"{");
-      WriteBlobStringWithEOL(image,"  char *name;");
+      WriteBlobStringWithEOL(image,"  const char *name;");
       WriteBlobStringWithEOL(image,"  int messageid;");
       WriteBlobStringWithEOL(image,"} MessageInfo;");
       WriteBlobStringEOL(image);

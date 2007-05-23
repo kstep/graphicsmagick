@@ -500,7 +500,7 @@ extern MagickExport const char *GetLocaleMessageFromID(const int);
 
 #if defined(_INCLUDE_CATEGORYMAP_TABLE_)
 typedef struct _CategoryInfo{
-  char *name;
+  const char *name;
   int offset;
 } CategoryInfo;
 
@@ -530,7 +530,7 @@ static const CategoryInfo category_map[] =
 
 #if defined(_INCLUDE_SEVERITYMAP_TABLE_)
 typedef struct _SeverityInfo{
-  char *name;
+  const char *name;
   int offset;
   ExceptionType severityid;
 } SeverityInfo;
@@ -596,7 +596,7 @@ static const SeverityInfo severity_map[] =
 #if defined(_INCLUDE_TAGMAP_TABLE_)
 typedef struct _MessageInfo
 {
-  char *name;
+  const char *name;
   int messageid;
 } MessageInfo;
 

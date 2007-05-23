@@ -149,16 +149,26 @@ typedef magick_uint32_t U32;
 typedef float R32;
 typedef unsigned int sample_t;
 
+/*
+  Union to allow R32 to be accessed as an unsigned U32 type for "unset
+  value" access.
+*/
+typedef union _R32_u
+{
+  U32   u;
+  R32   f;
+} R32_u;
+
 #define SET_UNDEFINED_U8(value)  (value=~0)
 #define SET_UNDEFINED_U16(value) (value=~0)
 #define SET_UNDEFINED_U32(value) (value=~0)
-#define SET_UNDEFINED_R32(value) (*((U32 *) &value)=~0)
+#define SET_UNDEFINED_R32(value) (((R32_u*) &value)->u=~0);
 #define SET_UNDEFINED_ASCII(value) (memset(value,0,sizeof(value)))
 
 #define IS_UNDEFINED_U8(value) (value == ((U8) ~0))
 #define IS_UNDEFINED_U16(value) (value == ((U16) ~0))
 #define IS_UNDEFINED_U32(value) (value == ((U32) ~0))
-#define IS_UNDEFINED_R32(value) (*((U32 *) &value) == ((U32) ~0))
+#define IS_UNDEFINED_R32(value) (((R32_u*) &value)->u == ((U32) ~0))
 #define IS_UNDEFINED_ASCII(value) (!(value[0] > 0))
 
 /*
@@ -169,7 +179,7 @@ typedef unsigned int sample_t;
 #define IMAGE_DATA_ROUNDING 8192
 
 /*
-  Iimage element descriptors.
+  Image element descriptors.
 */
 typedef enum
 {
@@ -741,7 +751,7 @@ static size_t DPXIOOctets(const long current_row, /* 0 based */
 #endif
 static const char *DescribeImageElementDescriptor(const DPXImageElementDescriptor descriptor)
 {
-  char *
+  const char *
     description="Unknown";
 
   static char
@@ -972,11 +982,11 @@ static void DescribeDPXImageElement(const DPXImageElement *element_info,
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Element %u: descriptor=%s(%u) transfer_characteristic=%s(%u) colorimetric=%s(%u)",
                         element,
-                        DescribeImageElementDescriptor(element_info->descriptor),
+                        DescribeImageElementDescriptor((DPXImageElementDescriptor) element_info->descriptor),
                         (unsigned int) element_info->descriptor,
-                        DescribeImageTransferCharacteristic(element_info->transfer_characteristic),
+                        DescribeImageTransferCharacteristic((DPXTransferCharacteristic) element_info->transfer_characteristic),
                         (unsigned int) element_info->transfer_characteristic,
-                        DescribeImageColorimetric(element_info->colorimetric),
+                        DescribeImageColorimetric((DPXColorimetric) element_info->colorimetric),
                         (unsigned int) element_info->colorimetric);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "Element %u: bits-per-sample=%u",
@@ -1275,7 +1285,7 @@ static void ReadRowSamples(const unsigned char *scanline,
   register unsigned long
     i;
 
-  register sample_t
+  sample_t
     *sp;
 
   register unsigned int
@@ -1296,7 +1306,7 @@ static void ReadRowSamples(const unsigned char *scanline,
 
       if (bits_per_sample == 10)
         {
-          register PackedU32Word
+          PackedU32Word
             packed_u32;
           
           register unsigned int
@@ -1487,7 +1497,7 @@ static void ReadRowSamples(const unsigned char *scanline,
   */
   if (bits_per_sample == 32)
     {
-      register PackedU32Word
+      PackedU32Word
         packed_u32;
 
       if (endian_type == MSBEndian)
@@ -1917,8 +1927,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           case ImageElementCbYCrA4444:
             {
               has_cbcr=MagickTrue;
-              colorimetric=dpx_image_info.element_info[element].colorimetric;
-              transfer_characteristic=dpx_image_info.element_info[element].transfer_characteristic;
+              colorimetric=(DPXColorimetric) dpx_image_info.element_info[element].colorimetric;
+              transfer_characteristic=(DPXTransferCharacteristic) dpx_image_info.element_info[element].transfer_characteristic;
               break;
             }
           case ImageElementRed:
@@ -1929,15 +1939,15 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           case ImageElementABGR:
             {
               has_rgb=MagickTrue;
-              colorimetric=dpx_image_info.element_info[element].colorimetric;
-              transfer_characteristic=dpx_image_info.element_info[element].transfer_characteristic;
+              colorimetric=(DPXColorimetric) dpx_image_info.element_info[element].colorimetric;
+              transfer_characteristic=(DPXTransferCharacteristic) dpx_image_info.element_info[element].transfer_characteristic;
               break;
             }
           case ImageElementLuma:
             {
               has_luma=MagickTrue;
-              colorimetric=dpx_image_info.element_info[element].colorimetric;
-              transfer_characteristic=dpx_image_info.element_info[element].transfer_characteristic;
+              colorimetric=(DPXColorimetric) dpx_image_info.element_info[element].colorimetric;
+              transfer_characteristic=(DPXTransferCharacteristic) dpx_image_info.element_info[element].transfer_characteristic;
               break;
             }
           default:
@@ -2078,8 +2088,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       element_descriptor=(DPXImageElementDescriptor)
         dpx_image_info.element_info[element].descriptor;
       transfer_characteristic=
-        dpx_image_info.element_info[element].transfer_characteristic;
-      packing_method=dpx_image_info.element_info[element].packing;
+        (DPXTransferCharacteristic) dpx_image_info.element_info[element].transfer_characteristic;
+      packing_method=(ImageComponentPackingMethod) dpx_image_info.element_info[element].packing;
       /*
         Allow the user to over-ride the packing method specified by the header.
       */
@@ -2237,7 +2247,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     status=MagickFail;
                     break;
                   }
-                ReadRowSamples(scanline_data,samples_per_row,bits_per_sample,
+                ReadRowSamples((const unsigned char*) scanline_data,samples_per_row,bits_per_sample,
                                packing_method,endian_type,swap_word_datums,samples);
               }
               /*
@@ -2822,7 +2832,7 @@ static void WriteRowSamples(const sample_t *samples,
 
       if (bits_per_sample == 10)
         {
-          register PackedU32Word
+          PackedU32Word
             packed_u32;
           
           register unsigned int
@@ -3009,7 +3019,7 @@ static void WriteRowSamples(const sample_t *samples,
   */
   if (bits_per_sample == 32)
     {
-      register PackedU32Word
+      PackedU32Word
         packed_u32;
 
       if (endian_type == MSBEndian)
@@ -3702,12 +3712,12 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   for (i=0; i < number_of_elements; i++)
     {
       strlcpy(dpx_image_info.element_info[i].description,
-              DescribeImageElementDescriptor(dpx_image_info.element_info[i].descriptor),
+              DescribeImageElementDescriptor((DPXImageElementDescriptor) dpx_image_info.element_info[i].descriptor),
               sizeof(dpx_image_info.element_info[0].description));
       strlcat(dpx_image_info.element_info[i].description," / ",
               sizeof(dpx_image_info.element_info[0].description));
       strlcat(dpx_image_info.element_info[i].description,
-              DescribeImageTransferCharacteristic(dpx_image_info.element_info[i].transfer_characteristic),
+              DescribeImageTransferCharacteristic((DPXTransferCharacteristic) dpx_image_info.element_info[i].transfer_characteristic),
               sizeof(dpx_image_info.element_info[0].description));
     }
 
@@ -3915,7 +3925,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       DescribeDPXImageElement(&dpx_image_info.element_info[element],element+1);
 
       bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;
-      transfer_characteristic=dpx_image_info.element_info[element].transfer_characteristic;
+      transfer_characteristic=(DPXTransferCharacteristic) dpx_image_info.element_info[element].transfer_characteristic;
 
       scale_from_short=1U;
       if (bits_per_sample < 16U)
@@ -3937,7 +3947,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       /*
         Determine component packing method.
       */
-      packing_method=dpx_image_info.element_info[element].packing;
+      packing_method=(ImageComponentPackingMethod) dpx_image_info.element_info[element].packing;
       samples_per_pixel=DPXSamplesPerPixel(element_descriptor);
       samples_per_row=samples_per_pixel*image->columns;
 

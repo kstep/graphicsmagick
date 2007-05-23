@@ -3269,7 +3269,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
       cache_info->offset=(*offset);
       if (!OpenCache(image,ReadMode))
         return(False);
-      cache_info=ReferenceCache(cache_info);
+      cache_info=(CacheInfo*) ReferenceCache(cache_info);
       *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
         "Attach persistent cache");
@@ -3287,7 +3287,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
         {
           (void) strlcpy(cache_info->cache_filename,filename,MaxTextExtent);
           LiberateSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
-          cache_info=ReferenceCache(cache_info);
+          cache_info=(CacheInfo*) ReferenceCache(cache_info);
           *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),
             "Usurp resident persistent cache");
@@ -3322,7 +3322,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
     if (!SyncImagePixels(clone_image))
       break;
   }
-  cache_info=ReferenceCache(cache_info);
+  cache_info=(CacheInfo*) ReferenceCache(cache_info);
   DestroyImage(clone_image);
   if (y < (long) image->rows)
     return(False);

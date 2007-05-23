@@ -342,7 +342,7 @@ static unsigned int JPEGEncodeImage(const ImageInfo *image_info,
     ThrowWriterException2(CoderError,image->exception.reason,image);
 
   Ascii85Initialize(image);
-  for (p=blob,i=0; i < length; i++)
+  for (p=(const unsigned char*) blob,i=0; i < length; i++)
     Ascii85Encode(image,(unsigned long) p[i]);
   Ascii85Flush(image);
   DestroyImage(jpeg_image);
