@@ -1,3 +1,9 @@
+2007-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resource.c (AcquireMagickResource): Map resource limit
+	was not being properly checked due to a typo.  The memory limit
+	was being tested instead.
+
 2007-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/xwindow.c (XGetWindowImage): Set image->depth
