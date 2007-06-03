@@ -147,7 +147,7 @@ MagickExport unsigned int AcquireMagickResource(const ResourceType type,
         resource_info.map+=size;
         if (resource_info.map_limit == ResourceInfinity)
           break;
-        status=resource_info.disk <=
+        status=resource_info.map <=
           ResourceToMegabytes(resource_info.map_limit);
         (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
                               "map +%lumb/%lumb/%lumb",MegabytesToResource(size),

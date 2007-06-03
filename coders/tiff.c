@@ -1448,8 +1448,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         QuantumType
           quantum_type;
 
-        if ((compress_tag == COMPRESSION_JPEG) ||
-            (compress_tag == COMPRESSION_OJPEG))
+        if (compress_tag == COMPRESSION_JPEG)
           {
             /* Following hack avoids the error message "Application
                transferred too many scanlines. (JPEGLib)." caused by
@@ -1465,8 +1464,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                                 &quantum_type,&quantum_samples) == MagickPass)
           {
             method=ScanLineMethod;
-            if ((compress_tag == COMPRESSION_JPEG) ||
-                (compress_tag == COMPRESSION_OJPEG))
+            if (compress_tag == COMPRESSION_JPEG)
               {
                 if (TIFFIsTiled(tiff))
                   method=TiledMethod;

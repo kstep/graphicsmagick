@@ -21,6 +21,24 @@
 </tr>
 </table>
 <p>
+2007-06-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.c (OpenBlob): Disable reading input files using
+        memory mapping since it has been learned that some operating
+        systems fail to do read-ahead on network files.  Without
+        read-ahead, performance is poor.
+  <LI> magick/resource.c (AcquireMagickResource): Map resource limit
+        was not being properly checked due to a typo.  The memory limit
+        was being tested instead.<BR>
+  <LI> coders/tiff.c (ReadTIFFImage): Use libtiff to decode OJPEG
+        compressed files into RGB.  Probably requires new OJPEG
+        implementation from Joris Van Damme which is new in libtiff and
+        not yet released. I am not completely sure that this approach is
+        correct yet.
+
+</UL>
+<p>
 2007-05-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
