@@ -1,3 +1,8 @@
+2007-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/miff.c (ReadMIFFImage): Handle case where compression
+	keyword is present but has value of 'None'.
+
 2007-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/resource.c (AcquireMagickResource): Map resource limit

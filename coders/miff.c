@@ -212,7 +212,7 @@ static unsigned int PushImageRLEPixels(Image *image,
   register long
     x;
 
-  register PixelPacket
+  PixelPacket
     pixel;
 
   register PixelPacket
@@ -829,6 +829,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   break;
             }
             *p='\0';
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "keyword=\"%s\" values=\"%s\"",keyword,values);
             /*
               Assign a value to the specified keyword.
             */
@@ -891,15 +893,18 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 if (LocaleCompare(keyword,"compression") == 0)
                   {
                     image->compression=UndefinedCompression;
-                    if (LocaleCompare(values,"Zip") == 0)
-                      image->compression=ZipCompression;
-                    else
-                      if (LocaleCompare(values,"BZip") == 0)
-                        image->compression=BZipCompression;
+                    if (LocaleCompare(values,"None") == 0)
+                      image->compression=NoCompression;
+                    else 
+                      if (LocaleCompare(values,"Zip") == 0)
+                        image->compression=ZipCompression;
                       else
-                        if ((LocaleCompare(values,"RLE") == 0) ||
-                            (LocaleCompare(values,"RunlengthEncoded") == 0))
-                          image->compression=RLECompression;
+                        if (LocaleCompare(values,"BZip") == 0)
+                          image->compression=BZipCompression;
+                        else
+                          if ((LocaleCompare(values,"RLE") == 0) ||
+                              (LocaleCompare(values,"RunlengthEncoded") == 0))
+                            image->compression=RLECompression;
                     break;
                   }
                 if (LocaleCompare(keyword,"columns") == 0)
@@ -1499,7 +1504,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 break;
               pixels_p=pixels;
               (void) ReadBlobZC(image,packet_size*image->columns,&pixels_p);
-              (void) PushImagePixels(image,quantum_type,pixels_p);
+              (void) PushImagePixels(image,quantum_type,(const unsigned char*) pixels_p);
               if (!SyncImagePixels(image))
                 break;
             }
