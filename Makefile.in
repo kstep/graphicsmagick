@@ -1904,7 +1904,7 @@ AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
 	-I$(srcdir)/ltdl -I$(srcdir)/ltdl/libltdl \
 	-I$(top_srcdir)/Magick++/lib
 ACLOCAL_AMFLAGS = -I ltdl/m4 -I m4
-MODULECOMMONFLAGS = -no-undefined -module -avoid-version
+MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -module -avoid-version
 
 # Options to pass when running configure in the distcheck target.
 #
@@ -2779,7 +2779,7 @@ LIBMAGICK = magick/libGraphicsMagick.la
 @WITH_MODULES_FALSE@magick_libGraphicsMagick_la_LIBADD = $(MAGICK_DEP_LIBS) $(LIBLTDL)
 @WITH_MODULES_TRUE@magick_libGraphicsMagick_la_LIBADD = $(MAGICK_DEP_LIBS) $(LIBLTDL)
 magick_libGraphicsMagick_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
-magick_libGraphicsMagick_la_LDFLAGS = -no-undefined \
+magick_libGraphicsMagick_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
 	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 @CONVENIENCE_LTDL_TRUE@magick_libGraphicsMagick_la_DEPENDENCIES = $(LIBLTDL)
@@ -4227,7 +4227,7 @@ WAND_MANS = \
 
 LIBWAND = wand/libGraphicsMagickWand.la
 wand_libGraphicsMagickWand_la_SOURCES = $(WAND_SOURCES)
-wand_libGraphicsMagickWand_la_LDFLAGS = -no-undefined \
+wand_libGraphicsMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
 	-version-info $(MAGICK_WAND_LIBRARY_CURRENT):$(MAGICK_WAND_LIBRARY_REVISION):$(MAGICK_WAND_LIBRARY_AGE)
 
 wand_libGraphicsMagickWand_la_LIBADD = $(LIBMAGICK) $(LIB_MATH)

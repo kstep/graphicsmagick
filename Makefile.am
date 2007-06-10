@@ -17,7 +17,7 @@ AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
 ACLOCAL_AMFLAGS = -I ltdl/m4 -I m4
 
-MODULECOMMONFLAGS = -no-undefined -module -avoid-version
+MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -module -avoid-version
 
 # Options to pass when running configure in the distcheck target.
 #

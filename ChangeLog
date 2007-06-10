@@ -1,3 +1,9 @@
+2007-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (OpenBlob): Use MAGICK_IOBUF_SIZE to tune the size
+	of the I/O buffer.  Sometimes performance is improved by using
+	something other than the current default of 16KB.
+
 2007-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/miff.c (ReadMIFFImage): Handle case where compression

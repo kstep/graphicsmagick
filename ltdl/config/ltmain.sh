@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh; do not edit by hand
 
-# ltmain.sh (GNU libtool 1.2463 2007/06/01 06:35:04) 2.1a
+# ltmain.sh (GNU libtool 1.2468 2007/06/09 17:46:40) 2.1a
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
@@ -65,7 +65,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool 1.2463 2007/06/01 06:35:04) 2.1a
+#       $progname:		(GNU libtool 1.2468 2007/06/09 17:46:40) 2.1a
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -74,8 +74,8 @@
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=2.1a
-TIMESTAMP=" 1.2463 2007/06/01 06:35:04"
-package_revision=1.2463
+TIMESTAMP=" 1.2468 2007/06/09 17:46:40"
+package_revision=1.2468
 
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
@@ -2591,15 +2591,27 @@ func_mode_install ()
 test "$mode" = install && func_mode_install ${1+"$@"}
 
 
-# func_emit_libtool_wrapper_script
+# func_emit_libtool_wrapper_script arg
+#
 # emit a libtool wrapper script on stdout
 # don't directly open a file because we may want to
 # incorporate the script contents within a cygwin/mingw
 # wrapper executable.  Must ONLY be called from within
 # func_mode_link because it depends on a number of variable
 # set therein.
+#
+# arg is the value that the WRAPPER_SCRIPT_BELONGS_IN_OBJDIR
+# variable will take.  If 'yes', then the emitted script
+# will assume that the directory in which it is stored is
+# the '.lib' directory.  This is a cygwin/mingw-specific
+# behavior.
 func_emit_libtool_wrapper_script ()
 {
+	func_emit_libtool_wrapper_script_arg1=no
+	if test -n "$1" ; then
+	  func_emit_libtool_wrapper_script_arg1=$1
+	fi
+
 	$ECHO "\
 #! $SHELL
 
@@ -2682,6 +2694,21 @@ else
     file=\`\$ECHO \"X\$file\" | \$Xsed -e 's%^.*/%%'\`
     file=\`ls -ld \"\$thisdir/\$file\" | ${SED} -n 's/.*-> //p'\`
   done
+
+  # Usually 'no', except on cygwin/mingw when embedded into
+  # the cwrapper.
+  WRAPPER_SCRIPT_BELONGS_IN_OBJDIR=$func_emit_libtool_wrapper_script_arg1
+  if test \"\$WRAPPER_SCRIPT_BELONGS_IN_OBJDIR\" = \"yes\"; then
+    # special case for '.'
+    if test \"\$thisdir\" = \".\"; then
+      thisdir=\`pwd\`
+    fi
+    # remove .libs from thisdir
+    case \"\$thisdir\" in
+    *[\\\\/]$objdir ) thisdir=\`\$ECHO \"X\$thisdir\" | \$Xsed -e 's%[\\\\/][^\\\\/]*$%%'\` ;;
+    $objdir )   thisdir=. ;;
+    esac
+  fi
 
   # Try to get the absolute directory name.
   absdir=\`cd \"\$thisdir\" && pwd\`
@@ -2806,7 +2833,7 @@ func_emit_libtool_cwrapperexe_source ()
    This wrapper executable should never be moved out of the build directory.
    If it is, it will not operate correctly.
 
-   Currently, it simply execs the wrapper *script* "/bin/sh $output",
+   Currently, it simply execs the wrapper *script* "$SHELL $output",
    but could eventually absorb all of the scripts functionality and
    exec $objdir/$outputname directly.
 */
@@ -2820,6 +2847,7 @@ EOF
 #include <assert.h>
 #include <string.h>
 #include <ctype.h>
+#include <errno.h>
 #include <sys/stat.h>
 
 #if defined(PATH_MAX)
@@ -2828,6 +2856,13 @@ EOF
 # define LT_PATHMAX MAXPATHLEN
 #else
 # define LT_PATHMAX 1024
+#endif
+
+#ifndef S_IXOTH
+# define S_IXOTH 0
+#endif
+#ifndef S_IXGRP
+# define S_IXGRP 0
 #endif
 
 #ifndef DIR_SEPARATOR
@@ -2864,71 +2899,185 @@ EOF
   if (stale) { free ((void *) stale); stale = 0; } \
 } while (0)
 
-/* -DDEBUG is fairly common in CFLAGS.  */
-#undef DEBUG
+#undef LTWRAPPER_DEBUGPRINTF
 #if defined DEBUGWRAPPER
-# define DEBUG(format, ...) fprintf(stderr, format, __VA_ARGS__)
+# define LTWRAPPER_DEBUGPRINTF(args) ltwrapper_debugprintf args
+static void
+ltwrapper_debugprintf (const char *fmt, ...)
+{
+    va_list args;
+    va_start (args, fmt);
+    (void) vfprintf (stderr, fmt, args);
+    va_end (args);
+}
 #else
-# define DEBUG(format, ...)
+# define LTWRAPPER_DEBUGPRINTF(args)
 #endif
 
 const char *program_name = NULL;
 
-void * xmalloc (size_t num);
-char * xstrdup (const char *string);
-const char * base_name (const char *name);
-char * find_executable(const char *wrapper);
-int    check_executable(const char *path);
-char * strendzap(char *str, const char *pat);
+void *xmalloc (size_t num);
+char *xstrdup (const char *string);
+const char *base_name (const char *name);
+char *find_executable (const char *wrapper);
+char *chase_symlinks (const char *pathspec);
+int make_executable (const char *path);
+int check_executable (const char *path);
+char *strendzap (char *str, const char *pat);
 void lt_fatal (const char *message, ...);
+
+static const char *script_text =
+EOF
+
+	    func_emit_libtool_wrapper_script yes |
+	        $SED -e 's/\([\\"]\)/\\\1/g' \
+	             -e 's/^/  "/' -e 's/$/\\n"/'
+	    echo ";"
+
+	    cat <<EOF
 
 int
 main (int argc, char *argv[])
 {
   char **newargz;
+  char *tmp_pathspec;
+  char *actual_cwrapper_path;
+  char *shwrapper_name;
+  FILE *shwrapper;
+
+  const char *dumpscript_opt = "--lt-dump-script";
   int i;
 
   program_name = (char *) xstrdup (base_name (argv[0]));
-  DEBUG("(main) argv[0]      : %s\n",argv[0]);
-  DEBUG("(main) program_name : %s\n",program_name);
-  newargz = XMALLOC(char *, argc+2);
+  LTWRAPPER_DEBUGPRINTF (("(main) argv[0]      : %s\n", argv[0]));
+  LTWRAPPER_DEBUGPRINTF (("(main) program_name : %s\n", program_name));
+
+  /* very simple arg parsing; don't want to rely on getopt */
+  for (i = 1; i < argc; i++)
+    {
+      if (strcmp (argv[i], dumpscript_opt) == 0)
+	{
+	  printf ("%s", script_text);
+	  return 0;
+	}
+    }
+
+  newargz = XMALLOC (char *, argc + 2);
 EOF
 
-	    cat <<EOF
-  newargz[0] = (char *) xstrdup("$SHELL");
+	    if test -n "$TARGETSHELL" ; then
+	      # no path translation at all
+	      lt_newargv0=$TARGETSHELL
+	    else
+	      case "$host" in
+		*mingw* )
+		  # awkward: cmd appends spaces to result
+		  lt_sed_strip_trailing_spaces="s/[ ]*\$//"
+		  lt_newargv0=`( cmd //c echo $SHELL | $SED -e "$lt_sed_strip_trailing_spaces" ) 2>/dev/null || echo $SHELL`
+		  case $lt_newargv0 in
+		    *.exe | *.EXE) ;;
+		    *) lt_newargv0=$lt_newargv0.exe ;;
+		  esac
+		  ;;
+		* ) lt_newargv0=$SHELL ;;
+	      esac
+	    fi
+
+		cat <<EOF
+  newargz[0] = (char *) xstrdup ("$lt_newargv0");
 EOF
 
 	    cat <<"EOF"
-  newargz[1] = find_executable(argv[0]);
-  if (newargz[1] == NULL)
-    lt_fatal("Couldn't find %s", argv[0]);
-  DEBUG("(main) found exe at : %s\n",newargz[1]);
-  /* we know the script has the same name, without the .exe */
-  /* so make sure newargz[1] doesn't end in .exe */
-  strendzap(newargz[1],".exe");
-  for (i = 1; i < argc; i++)
-    newargz[i+1] = xstrdup(argv[i]);
-  newargz[argc+1] = NULL;
+  tmp_pathspec = find_executable (argv[0]);
+  if (tmp_pathspec == NULL)
+    lt_fatal ("Couldn't find %s", argv[0]);
+  LTWRAPPER_DEBUGPRINTF (("(main) found exe (before symlink chase) at : %s\n",
+			  tmp_pathspec));
 
-  for (i=0; i<argc+1; i++)
+  actual_cwrapper_path = chase_symlinks (tmp_pathspec);
+  LTWRAPPER_DEBUGPRINTF (("(main) found exe (after symlink chase) at : %s\n",
+			  actual_cwrapper_path));
+  XFREE (tmp_pathspec);
+
+  shwrapper_name = (char *) xstrdup (base_name (actual_cwrapper_path));
+  strendzap (actual_cwrapper_path, shwrapper_name);
+
+  /* shwrapper_name transforms */
+  strendzap (shwrapper_name, ".exe");
+  tmp_pathspec = XMALLOC (char, (strlen (shwrapper_name) +
+				 strlen ("_ltshwrapper") + 1));
+  strcpy (tmp_pathspec, shwrapper_name);
+  strcat (tmp_pathspec, "_ltshwrapper");
+  XFREE (shwrapper_name);
+  shwrapper_name = tmp_pathspec;
+  tmp_pathspec = 0;
+  LTWRAPPER_DEBUGPRINTF (("(main) libtool shell wrapper name: %s\n",
+			  shwrapper_name));
+EOF
+
+	    cat <<EOF
+  newargz[1] =
+    XMALLOC (char, (strlen (actual_cwrapper_path) +
+		    strlen ("$objdir") + 1 + strlen (shwrapper_name) + 1));
+  strcpy (newargz[1], actual_cwrapper_path);
+  strcat (newargz[1], "$objdir");
+  strcat (newargz[1], "/");
+  strcat (newargz[1], shwrapper_name);
+EOF
+
+
+	    case $host_os in
+	      mingw*)
+	    cat <<"EOF"
   {
-    DEBUG("(main) newargz[%d]   : %s\n",i,newargz[i]);
-    ;
+    char* p;
+    while ((p = strchr (newargz[1], '\\')) != NULL)
+      {
+	*p = '/';
+      }
   }
+EOF
+	    ;;
+	    esac
+
+	    cat <<"EOF"
+  XFREE (shwrapper_name);
+  XFREE (actual_cwrapper_path);
+
+  /* note: do NOT use "wt" here! -- defer to underlying
+   * mount type on cygwin
+   */
+  if ((shwrapper = fopen (newargz[1], "w")) == 0)
+    {
+      lt_fatal ("Could not open %s for writing", newargz[1]);
+    }
+  fprintf (shwrapper, "%s", script_text);
+  fclose (shwrapper);
+
+  make_executable (newargz[1]);
+
+  for (i = 1; i < argc; i++)
+    newargz[i + 1] = xstrdup (argv[i]);
+  newargz[argc + 1] = NULL;
+
+  for (i = 0; i < argc + 1; i++)
+    {
+      LTWRAPPER_DEBUGPRINTF (("(main) newargz[%d]   : %s\n", i, newargz[i]));
+    }
 
 EOF
 
 	    case $host_os in
 	      mingw*)
 		cat <<EOF
-  execv("$SHELL",(char const **)newargz);
+  execv ("$lt_newargv0", (const char * const *) newargz);
 EOF
-	      ;;
+		;;
 	      *)
 		cat <<EOF
-  execv("$SHELL",newargz);
+  execv ("$lt_newargv0", newargz);
 EOF
-	      ;;
+		;;
 	    esac
 
 	    cat <<"EOF"
@@ -2938,7 +3087,7 @@ EOF
 void *
 xmalloc (size_t num)
 {
-  void * p = (void *) malloc (num);
+  void *p = (void *) malloc (num);
   if (!p)
     lt_fatal ("Memory exhausted");
 
@@ -2948,8 +3097,8 @@ xmalloc (size_t num)
 char *
 xstrdup (const char *string)
 {
-  return string ? strcpy ((char *) xmalloc (strlen (string) + 1), string) : NULL
-;
+  return string ? strcpy ((char *) xmalloc (strlen (string) + 1),
+			  string) : NULL;
 }
 
 const char *
@@ -2959,7 +3108,7 @@ base_name (const char *name)
 
 #if defined (HAVE_DOS_BASED_FILE_SYSTEM)
   /* Skip over the disk name in MSDOS pathnames. */
-  if (isalpha ((unsigned char)name[0]) && name[1] == ':')
+  if (isalpha ((unsigned char) name[0]) && name[1] == ':')
     name += 2;
 #endif
 
@@ -2970,155 +3119,227 @@ base_name (const char *name)
 }
 
 int
-check_executable(const char * path)
+check_executable (const char *path)
 {
   struct stat st;
 
-  DEBUG("(check_executable)  : %s\n", path ? (*path ? path : "EMPTY!") : "NULL!");
+  LTWRAPPER_DEBUGPRINTF (("(check_executable)  : %s\n",
+			  path ? (*path ? path : "EMPTY!") : "NULL!"));
   if ((!path) || (!*path))
     return 0;
 
-  if ((stat (path, &st) >= 0) &&
-      (
-	/* MinGW & native WIN32 do not support S_IXOTH or S_IXGRP */
-#if defined (S_IXOTH)
-       ((st.st_mode & S_IXOTH) == S_IXOTH) ||
-#endif
-#if defined (S_IXGRP)
-       ((st.st_mode & S_IXGRP) == S_IXGRP) ||
-#endif
-       ((st.st_mode & S_IXUSR) == S_IXUSR))
-      )
+  if ((stat (path, &st) >= 0)
+      && (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)))
     return 1;
   else
     return 0;
 }
 
+int
+make_executable (const char *path)
+{
+  int rval = 0;
+  struct stat st;
+
+  LTWRAPPER_DEBUGPRINTF (("(make_executable)   : %s\n",
+			  path ? (*path ? path : "EMPTY!") : "NULL!"));
+  if ((!path) || (!*path))
+    return 0;
+
+  if (stat (path, &st) >= 0)
+    {
+      rval = chmod (path, st.st_mode | S_IXOTH | S_IXGRP | S_IXUSR);
+    }
+  return rval;
+}
+
 /* Searches for the full path of the wrapper.  Returns
-   newly allocated full path name if found, NULL otherwise */
+   newly allocated full path name if found, NULL otherwise
+   Does not chase symlinks, even on platforms that support them.
+*/
 char *
-find_executable (const char* wrapper)
+find_executable (const char *wrapper)
 {
   int has_slash = 0;
-  const char* p;
-  const char* p_next;
+  const char *p;
+  const char *p_next;
   /* static buffer for getcwd */
   char tmp[LT_PATHMAX + 1];
   int tmp_len;
-  char* concat_name;
+  char *concat_name;
 
-  DEBUG("(find_executable)  : %s\n", wrapper ? (*wrapper ? wrapper : "EMPTY!") : "NULL!");
+  LTWRAPPER_DEBUGPRINTF (("(find_executable)   : %s\n",
+			  wrapper ? (*wrapper ? wrapper : "EMPTY!") : "NULL!"));
 
   if ((wrapper == NULL) || (*wrapper == '\0'))
     return NULL;
 
   /* Absolute path? */
 #if defined (HAVE_DOS_BASED_FILE_SYSTEM)
-  if (isalpha ((unsigned char)wrapper[0]) && wrapper[1] == ':')
-  {
-    concat_name = xstrdup (wrapper);
-    if (check_executable(concat_name))
-      return concat_name;
-    XFREE(concat_name);
-  }
-  else
-  {
-#endif
-    if (IS_DIR_SEPARATOR (wrapper[0]))
+  if (isalpha ((unsigned char) wrapper[0]) && wrapper[1] == ':')
     {
       concat_name = xstrdup (wrapper);
-      if (check_executable(concat_name))
+      if (check_executable (concat_name))
 	return concat_name;
-      XFREE(concat_name);
+      XFREE (concat_name);
     }
+  else
+    {
+#endif
+      if (IS_DIR_SEPARATOR (wrapper[0]))
+	{
+	  concat_name = xstrdup (wrapper);
+	  if (check_executable (concat_name))
+	    return concat_name;
+	  XFREE (concat_name);
+	}
 #if defined (HAVE_DOS_BASED_FILE_SYSTEM)
-  }
+    }
 #endif
 
   for (p = wrapper; *p; p++)
     if (*p == '/')
-    {
-      has_slash = 1;
-      break;
-    }
-  if (!has_slash)
-  {
-    /* no slashes; search PATH */
-    const char* path = getenv ("PATH");
-    if (path != NULL)
-    {
-      for (p = path; *p; p = p_next)
       {
-	const char* q;
-	size_t p_len;
-	for (q = p; *q; q++)
-	  if (IS_PATH_SEPARATOR(*q))
-	    break;
-	p_len = q - p;
-	p_next = (*q == '\0' ? q : q + 1);
-	if (p_len == 0)
-	{
-	  /* empty path: current directory */
-	  if (getcwd (tmp, LT_PATHMAX) == NULL)
-	    lt_fatal ("getcwd failed");
-	  tmp_len = strlen(tmp);
-	  concat_name = XMALLOC(char, tmp_len + 1 + strlen(wrapper) + 1);
-	  memcpy (concat_name, tmp, tmp_len);
-	  concat_name[tmp_len] = '/';
-	  strcpy (concat_name + tmp_len + 1, wrapper);
-	}
-	else
-	{
-	  concat_name = XMALLOC(char, p_len + 1 + strlen(wrapper) + 1);
-	  memcpy (concat_name, p, p_len);
-	  concat_name[p_len] = '/';
-	  strcpy (concat_name + p_len + 1, wrapper);
-	}
-	if (check_executable(concat_name))
-	  return concat_name;
-	XFREE(concat_name);
+	has_slash = 1;
+	break;
       }
+  if (!has_slash)
+    {
+      /* no slashes; search PATH */
+      const char *path = getenv ("PATH");
+      if (path != NULL)
+	{
+	  for (p = path; *p; p = p_next)
+	    {
+	      const char *q;
+	      size_t p_len;
+	      for (q = p; *q; q++)
+		if (IS_PATH_SEPARATOR (*q))
+		  break;
+	      p_len = q - p;
+	      p_next = (*q == '\0' ? q : q + 1);
+	      if (p_len == 0)
+		{
+		  /* empty path: current directory */
+		  if (getcwd (tmp, LT_PATHMAX) == NULL)
+		    lt_fatal ("getcwd failed");
+		  tmp_len = strlen (tmp);
+		  concat_name =
+		    XMALLOC (char, tmp_len + 1 + strlen (wrapper) + 1);
+		  memcpy (concat_name, tmp, tmp_len);
+		  concat_name[tmp_len] = '/';
+		  strcpy (concat_name + tmp_len + 1, wrapper);
+		}
+	      else
+		{
+		  concat_name =
+		    XMALLOC (char, p_len + 1 + strlen (wrapper) + 1);
+		  memcpy (concat_name, p, p_len);
+		  concat_name[p_len] = '/';
+		  strcpy (concat_name + p_len + 1, wrapper);
+		}
+	      if (check_executable (concat_name))
+		return concat_name;
+	      XFREE (concat_name);
+	    }
+	}
+      /* not found in PATH; assume curdir */
     }
-    /* not found in PATH; assume curdir */
-  }
   /* Relative path | not found in path: prepend cwd */
   if (getcwd (tmp, LT_PATHMAX) == NULL)
     lt_fatal ("getcwd failed");
-  tmp_len = strlen(tmp);
-  concat_name = XMALLOC(char, tmp_len + 1 + strlen(wrapper) + 1);
+  tmp_len = strlen (tmp);
+  concat_name = XMALLOC (char, tmp_len + 1 + strlen (wrapper) + 1);
   memcpy (concat_name, tmp, tmp_len);
   concat_name[tmp_len] = '/';
   strcpy (concat_name + tmp_len + 1, wrapper);
 
-  if (check_executable(concat_name))
+  if (check_executable (concat_name))
     return concat_name;
-  XFREE(concat_name);
+  XFREE (concat_name);
   return NULL;
 }
 
 char *
-strendzap(char *str, const char *pat)
+chase_symlinks (const char *pathspec)
+{
+#ifndef S_ISLNK
+  return xstrdup (pathspec);
+#else
+  char buf[LT_PATHMAX];
+  struct stat s;
+  int rv = 0;
+  char *tmp_pathspec = xstrdup (pathspec);
+  char *p;
+  int has_symlinks = 0;
+  while (strlen (tmp_pathspec) && !has_symlinks)
+    {
+      LTWRAPPER_DEBUGPRINTF (("checking path component for symlinks: %s\n",
+			      tmp_pathspec));
+      if (lstat (tmp_pathspec, &s) == 0)
+	{
+	  if (S_ISLNK (s.st_mode) != 0)
+	    {
+	      has_symlinks = 1;
+	      break;
+	    }
+
+	  /* search backwards for last DIR_SEPARATOR */
+	  p = tmp_pathspec + strlen (tmp_pathspec) - 1;
+	  while ((p > tmp_pathspec) && (!IS_DIR_SEPARATOR (*p)))
+	    p--;
+	  if ((p == tmp_pathspec) && (!IS_DIR_SEPARATOR (*p)))
+	    {
+	      /* no more DIR_SEPARATORS left */
+	      break;
+	    }
+	  *p = '\0';
+	}
+      else
+	{
+	  char *errstr = strerror (errno);
+	  lt_fatal ("Error accessing file %s (%s)", tmp_pathspec, errstr);
+	}
+    }
+  XFREE (tmp_pathspec);
+
+  if (!has_symlinks)
+    {
+      return xstrdup (pathspec);
+    }
+
+  tmp_pathspec = realpath (pathspec, buf);
+  if (tmp_pathspec == 0)
+    {
+      lt_fatal ("Could not follow symlinks for %s", pathspec);
+    }
+  return xstrdup (tmp_pathspec);
+#endif
+}
+
+char *
+strendzap (char *str, const char *pat)
 {
   size_t len, patlen;
 
-  assert(str != NULL);
-  assert(pat != NULL);
+  assert (str != NULL);
+  assert (pat != NULL);
 
-  len = strlen(str);
-  patlen = strlen(pat);
+  len = strlen (str);
+  patlen = strlen (pat);
 
   if (patlen <= len)
-  {
-    str += len - patlen;
-    if (strcmp(str, pat) == 0)
-      *str = '\0';
-  }
+    {
+      str += len - patlen;
+      if (strcmp (str, pat) == 0)
+	*str = '\0';
+    }
   return str;
 }
 
 static void
-lt_error_core (int exit_status, const char * mode,
-	  const char * message, va_list ap)
+lt_error_core (int exit_status, const char *mode,
+	       const char *message, va_list ap)
 {
   fprintf (stderr, "%s: %s: ", program_name, mode);
   vfprintf (stderr, message, ap);
@@ -6889,7 +7110,7 @@ EOF
 	$RM $output
 	trap "$RM $output; exit $EXIT_FAILURE" 1 2 15
 
-	func_emit_libtool_wrapper_script > $output
+	func_emit_libtool_wrapper_script no > $output
 	chmod +x $output
       }
       exit $EXIT_SUCCESS

@@ -2427,15 +2427,35 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                 image->blob->file=(FILE *) fopen(filename,type);
                 if (image->blob->file != (FILE *) NULL)
                   {
+                    char
+                      *vbuf_size_env = NULL;
+
                     unsigned char
                       magick[MaxTextExtent];
 
                     size_t
                       count;
 
-                    if (setvbuf(image->blob->file,NULL,_IOFBF,16384) != 0)
-                      (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-                                            "  setvbuf returns failure!");
+                    size_t
+                      vbuf_size = 16384;
+
+                    if ((vbuf_size_env = getenv("MAGICK_IOBUF_SIZE")))
+                    {
+                      vbuf_size = (size_t) atol(vbuf_size_env);
+                    }
+
+                    if (setvbuf(image->blob->file,NULL,_IOFBF,vbuf_size) != 0)
+                      {
+                        (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+                                              "  setvbuf of %lu bytes returns failure!",
+                                              (unsigned long) vbuf_size);
+                      }
+                    else
+                      {
+                        (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+                                              "  I/O buffer set to %lu bytes",
+                                              (unsigned long) vbuf_size);
+                      }
                     image->blob->type=FileStream;
                     (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                                           "  opened file %s as FileStream blob %p",

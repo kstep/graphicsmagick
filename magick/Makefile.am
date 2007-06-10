@@ -33,7 +33,7 @@ magick_libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS
 magick_libGraphicsMagick_la_LIBADD = $(MAGICK_DEP_LIBS) $(LIBLTDL)
 endif # WITH_MODULES
 magick_libGraphicsMagick_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
-magick_libGraphicsMagick_la_LDFLAGS = -no-undefined \
+magick_libGraphicsMagick_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
 	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 if CONVENIENCE_LTDL

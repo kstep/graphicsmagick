@@ -9767,7 +9767,7 @@ enable_dlopen=yes
 
 
 macro_version='2.1a'
-macro_revision='1.2463'
+macro_revision='1.2468'
 
 
 
@@ -10951,7 +10951,7 @@ test -z "$RANLIB" && RANLIB=:
 
 
 # Determine commands to create old-style static archives.
-old_archive_cmds='$AR $AR_FLAGS $oldlib$oldobjs$old_deplibs'
+old_archive_cmds='$AR $AR_FLAGS $oldlib$oldobjs'
 old_postinstall_cmds='chmod 644 $oldlib'
 old_postuninstall_cmds=
 

@@ -937,6 +937,23 @@ hard-coded or set by an installer.</td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    MAGICK_IOBUF_SIZE
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The amount of I/O buffering (in bytes) to use when reading and
+writing encoded files. The default is 16384, which is observed to work
+well for most cases. I/O performance to files accessed over a network is
+most likely to benefit by tuning this option. Larger values are not
+necessarily better (they may be slower!), and there is rarely any benefit
+from using values larger than 32768. Use convert's <strong>-verbose</strong> option
+in order to evaluate read and write rates in pixels per second.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     MAGICK_LIMIT_DISK
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum amount of disk space allowed for use by the pixel cache.</td></tr></table>

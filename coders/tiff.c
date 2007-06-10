@@ -1100,7 +1100,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
   do
     {
-      if (image_info->verbose)
+      if (image_info->verbose > 1)
         TIFFPrintDirectory(tiff,stdout,False);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
       if ((photometric == PHOTOMETRIC_LOGL) || (photometric == PHOTOMETRIC_LOGLUV))
@@ -3865,7 +3865,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             break;
           }
         }
-      if (image_info->verbose == MagickTrue)
+      if (image_info->verbose > 1)
         TIFFPrintDirectory(tiff,stdout,MagickFalse);
       if(!TIFFWriteDirectory(tiff))
         status=MagickFail;

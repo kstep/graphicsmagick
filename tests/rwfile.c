@@ -129,6 +129,10 @@ int main ( int argc, char **argv )
                 }
               (void) CloneString(&imageInfo->size,argv[arg]);
             }
+          else if (LocaleCompare("verbose",option+1) == 0)
+            {
+              imageInfo->verbose+=1;
+            }
         }
       else
         break;
@@ -136,7 +140,7 @@ int main ( int argc, char **argv )
   if (arg != argc-2)
     {
       (void) printf("arg=%d, argc=%d\n", arg, argc);
-      (void) printf ( "Usage: %s [-compress algorithm -debug events -depth integer -log format -nocheck -size geometry] infile format\n", argv[0] );
+      (void) printf ( "Usage: %s [-compress algorithm -debug events -depth integer -log format -nocheck -size geometry -verbose] infile format\n", argv[0] );
       (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;

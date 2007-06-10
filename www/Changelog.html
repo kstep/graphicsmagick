@@ -21,6 +21,15 @@
 </tr>
 </table>
 <p>
+2007-06-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.c (OpenBlob): Use MAGICK_IOBUF_SIZE to tune the size
+        of the I/O buffer.  Sometimes performance is improved by using
+        something other than the current default of 16KB.
+
+</UL>
+<p>
 2007-06-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -1930,19 +1930,25 @@ static unsigned int UnloadModule(const CoderInfo *coder_info,
   assert(coder_info->unregister_function != (void (*)(void)) NULL);
   assert(exception != (ExceptionInfo *) NULL);
 
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+                        "Unloading \"%s\" module ...", coder_info->tag);
+
   /*
     Invoke module unregister (UnregisterFORMATImage) function
   */
   coder_info->unregister_function();
 
   /*
-    Close module
+    Close module.  Don't close JP2 module since it uses atexit().
   */
-  if(lt_dlclose((ModuleHandle) coder_info->handle))
+  if ( strcmp("JP2",coder_info->tag) != 0 )
     {
-      FormatString(message,"\"%.1024s: %.1024s\"",name,lt_dlerror());
-      ThrowException(exception,ModuleError,FailedToCloseModule,message);
-      status=False;
+      if (lt_dlclose((ModuleHandle) coder_info->handle))
+        {
+          FormatString(message,"\"%.1024s: %.1024s\"",name,lt_dlerror());
+          ThrowException(exception,ModuleError,FailedToCloseModule,message);
+          status=False;
+        }
     }
   return (status);
 }
