@@ -1274,6 +1274,21 @@ static unsigned long ReadWordU32LE (void *state)
   return value;
 }
 
+/*
+  Decode row samples. Currently just one row but in the future may be
+                      multiple rows (e.g. 3).
+
+  scanline         -- Raw input data (may be 8-bit, 16-bit, 32-bit, or 64-bit types)
+                      which represents the encoded pixels for one or more scanlines.
+                      Underlying input data type is properly aligned for access.
+  samples_per_row  -- Number of samples to decode.
+  bits_per_sample  -- Number of bits in one decoded sample.
+  packing_method   -- Describes the way that samples are packed into enclosing words.
+  endian_type      -- The endian order of the enclosing words.
+  swap_word_datums -- Use alternate sample order (BGR vs RGB, CbYCr vs CrYCb) for
+                      samples filled into 32 bit words.
+  samples          -- decoded samples (currently unsigned 32-bit).
+*/
 static void ReadRowSamples(const unsigned char *scanline,
                            const unsigned int samples_per_row,
                            const unsigned int bits_per_sample,
@@ -2795,6 +2810,21 @@ static size_t WriteWordU32LE (void *state, const unsigned long value)
   return sizeof(magick_uint32_t);
 }
 
+/*
+  Encode row samples. Currently just one row but in the future may be
+                      multiple rows (e.g. 3).
+
+  samples          -- unencoded samples (currently unsigned 32-bit).
+  samples_per_row  -- Number of samples to encode.
+  bits_per_sample  -- Number of bits in one decoded sample.
+  packing_method   -- Describes the way that samples are packed into enclosing words.
+  endian_type      -- The endian order of the enclosing words.
+  swap_word_datums -- Use alternate sample order (BGR vs RGB, CbYCr vs CrYCb) for
+                      samples filled into 32 bit words.
+  scanline         -- Raw output data (may be 8-bit, 16-bit, 32-bit, or 64-bit types)
+                      which represents the encoded pixels for one or more scanlines.
+                      Underlying input data type is properly aligned for access.
+*/
 static void WriteRowSamples(const sample_t *samples,
                             const unsigned int samples_per_row,
                             const unsigned int bits_per_sample,
