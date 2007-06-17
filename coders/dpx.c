@@ -1186,47 +1186,46 @@ DPXOrientationToOrientationType(const unsigned int orientation)
   return orientation_type;
 }
 
-typedef union _PackedU32Word
-{
-  U32 word;
-  unsigned char octets[4];
-} PackedU32Word;
-
+#if defined(WORDS_BIGENDIAN)
 #define MSBImportOctets(scanline,packed_u32) \
 { \
-  packed_u32.octets[0]=*scanline++; \
-  packed_u32.octets[1]=*scanline++; \
-  packed_u32.octets[2]=*scanline++; \
-  packed_u32.octets[3]=*scanline++; \
-}
-
-#define LSBImportOctets(scanline,packed_u32) \
-{ \
-  packed_u32.octets[3]=*scanline++; \
-  packed_u32.octets[2]=*scanline++; \
-  packed_u32.octets[1]=*scanline++; \
-  packed_u32.octets[0]=*scanline++; \
-}
-
-#if defined(WORDS_BIGENDIAN)
-#define LSBOctetsToPackedU32Word(scanline,packed_u32) \
-{ \
-  LSBImportOctets(scanline,packed_u32); \
-}
-#define MSBOctetsToPackedU32Word(scanline,packed_u32) \
-{ \
-  MSBImportOctets(scanline,packed_u32); \
+  packed_u32 = *((magick_uint32_t *) scanline); \
+  scanline += 4; \
 }
 #else
-#define LSBOctetsToPackedU32Word(scanline,packed_u32) \
+#define MSBImportOctets(scanline,packed_u32) \
 { \
-  MSBImportOctets(scanline,packed_u32); \
+  packed_u32  = (((magick_uint32_t) *scanline++) << 24); \
+  packed_u32 |= (((magick_uint32_t) *scanline++) << 16); \
+  packed_u32 |= (((magick_uint32_t) *scanline++) << 8); \
+  packed_u32 |= (((magick_uint32_t) *scanline++)); \
 }
-#define MSBOctetsToPackedU32Word(scanline,packed_u32) \
+#endif
+
+#if !defined(WORDS_BIGENDIAN)
+#define LSBImportOctets(scanline,packed_u32) \
+{ \
+  packed_u32 = *((magick_uint32_t *) scanline); \
+  scanline += 4; \
+}
+#else
+#define LSBImportOctets(scanline,packed_u32) \
+{ \
+  packed_u32  = (((magick_uint32_t) *scanline++)); \
+  packed_u32 |= (((magick_uint32_t) *scanline++) << 8); \
+  packed_u32 |= (((magick_uint32_t) *scanline++) << 16); \
+  packed_u32 |= (((magick_uint32_t) *scanline++) << 24); \
+}
+#endif
+
+#define LSBOctetsToPackedU32Word(scanline,packed_u32) \
 { \
   LSBImportOctets(scanline,packed_u32); \
 }
-#endif
+#define MSBOctetsToPackedU32Word(scanline,packed_u32) \
+{ \
+  MSBImportOctets(scanline,packed_u32); \
+}
 
 /*
   Scale from a video level to a full-range level.
@@ -1321,7 +1320,7 @@ static void ReadRowSamples(const unsigned char *scanline,
 
       if (bits_per_sample == 10)
         {
-          PackedU32Word
+          register magick_uint32_t
             packed_u32;
           
           register unsigned int
@@ -1373,17 +1372,16 @@ static void ReadRowSamples(const unsigned char *scanline,
                 {
                   datum=0;
                   MSBOctetsToPackedU32Word(scanline,packed_u32);
-                  *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
-                  *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
-                  *sp++=(packed_u32.word >> shifts[datum]) & 0x3FF;
-
+                  *sp++=(packed_u32 >> shifts[datum++]) & 0x3FF;
+                  *sp++=(packed_u32 >> shifts[datum++]) & 0x3FF;
+                  *sp++=(packed_u32 >> shifts[datum]) & 0x3FF;
                 }
               if ((samples_per_row % 3))
                 {
                   datum=0;
                   MSBOctetsToPackedU32Word(scanline,packed_u32);
                   for (i=(samples_per_row % 3); i > 0; --i)
-                    *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
+                    *sp++=(packed_u32 >> shifts[datum++]) & 0x3FF;
                 }
             }
           else if (endian_type == LSBEndian)
@@ -1392,16 +1390,16 @@ static void ReadRowSamples(const unsigned char *scanline,
                 {
                   datum=0;
                   LSBOctetsToPackedU32Word(scanline,packed_u32);
-                  *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
-                  *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
-                  *sp++=(packed_u32.word >> shifts[datum]) & 0x3FF;
+                  *sp++=(packed_u32 >> shifts[datum++]) & 0x3FF;
+                  *sp++=(packed_u32 >> shifts[datum++]) & 0x3FF;
+                  *sp++=(packed_u32 >> shifts[datum]) & 0x3FF;
                 }
               if ((samples_per_row % 3))
                 {
                   datum=0;
                   LSBOctetsToPackedU32Word(scanline,packed_u32);
                   for (i=(samples_per_row % 3); i > 0; --i)
-                    *sp++=(packed_u32.word >> shifts[datum++]) & 0x3FF;
+                    *sp++=(packed_u32 >> shifts[datum++]) & 0x3FF;
                 }
             }
           return;
@@ -1512,7 +1510,7 @@ static void ReadRowSamples(const unsigned char *scanline,
   */
   if (bits_per_sample == 32)
     {
-      PackedU32Word
+      register magick_uint32_t
         packed_u32;
 
       if (endian_type == MSBEndian)
@@ -1520,7 +1518,7 @@ static void ReadRowSamples(const unsigned char *scanline,
           for (i=samples_per_row; i > 0; i--)
             {
               MSBOctetsToPackedU32Word(scanline,packed_u32);
-              *sp++=packed_u32.word;
+              *sp++=packed_u32;
             }
         }
       else if (endian_type == LSBEndian)
@@ -1528,7 +1526,7 @@ static void ReadRowSamples(const unsigned char *scanline,
           for (i=samples_per_row; i > 0; i--)
             {
               LSBOctetsToPackedU32Word(scanline,packed_u32);
-              *sp++=packed_u32.word;
+              *sp++=packed_u32;
             }
         }
       return;
@@ -2749,38 +2747,27 @@ static unsigned int OrientationTypeToDPXOrientation(const OrientationType orient
 
 #define MSBExportOctets(packed_u32,scanline) \
 { \
-  *scanline++=packed_u32.octets[0]; \
-  *scanline++=packed_u32.octets[1]; \
-  *scanline++=packed_u32.octets[2]; \
-  *scanline++=packed_u32.octets[3]; \
+  *scanline++=(unsigned char) ((packed_u32 >> 24) & 0xFF); \
+  *scanline++=(unsigned char) ((packed_u32 >> 16) & 0xFF); \
+  *scanline++=(unsigned char) ((packed_u32 >> 8) & 0xFF); \
+  *scanline++=(unsigned char) ((packed_u32) & 0xFF); \
 }
 #define LSBExportOctets(packed_u32,scanline) \
 { \
-  *scanline++=packed_u32.octets[3]; \
-  *scanline++=packed_u32.octets[2]; \
-  *scanline++=packed_u32.octets[1]; \
-  *scanline++=packed_u32.octets[0]; \
+  *scanline++=(unsigned char) ((packed_u32) & 0xFF); \
+  *scanline++=(unsigned char) ((packed_u32 >> 8) & 0xFF); \
+  *scanline++=(unsigned char) ((packed_u32 >> 18) & 0xFF); \
+  *scanline++=(unsigned char) ((packed_u32 >> 24) & 0xFF); \
 }
-#if defined(WORDS_BIGENDIAN)
-#define LSBPackedU32WordToOctets(packed_u32,scanline) \
-{ \
-  LSBExportOctets(packed_u32,scanline); \
-}
-#define MSBPackedU32WordToOctets(packed_u32,scanline) \
-{ \
-  MSBExportOctets(packed_u32,scanline); \
-}
-#else
-#define LSBPackedU32WordToOctets(packed_u32,scanline) \
-{ \
-  MSBExportOctets(packed_u32,scanline); \
-}
-#define MSBPackedU32WordToOctets(packed_u32,scanline) \
-{ \
-  LSBExportOctets(packed_u32,scanline); \
-}
-#endif
 
+#define LSBPackedU32WordToOctets(packed_u32,scanline) \
+{ \
+  LSBExportOctets(packed_u32,scanline); \
+}
+#define MSBPackedU32WordToOctets(packed_u32,scanline) \
+{ \
+  MSBExportOctets(packed_u32,scanline); \
+}
 
 /*
   WordStreamLSBWrite support
@@ -2862,7 +2849,7 @@ static void WriteRowSamples(const sample_t *samples,
 
       if (bits_per_sample == 10)
         {
-          PackedU32Word
+          register magick_uint32_t
             packed_u32;
           
           register unsigned int
@@ -2914,18 +2901,18 @@ static void WriteRowSamples(const sample_t *samples,
               for (i=(samples_per_row/3); i > 0; --i)
                 {
                   datum=0;
-                  packed_u32.word=0;
-                  packed_u32.word |= (*samples++ << shifts[datum++]);
-                  packed_u32.word |= (*samples++ << shifts[datum++]);
-                  packed_u32.word |= (*samples++ << shifts[datum]);
+                  packed_u32=0;
+                  packed_u32 |= (*samples++ << shifts[datum++]);
+                  packed_u32 |= (*samples++ << shifts[datum++]);
+                  packed_u32 |= (*samples++ << shifts[datum]);
                   MSBPackedU32WordToOctets(packed_u32,scanline);
                 }
               if ((samples_per_row % 3))
                 {
                   datum=0;
-                  packed_u32.word=0;
+                  packed_u32=0;
                   for (i=(samples_per_row % 3); i > 0; --i)
-                    packed_u32.word |= (*samples++ << shifts[datum++]);
+                    packed_u32 |= (*samples++ << shifts[datum++]);
                   MSBPackedU32WordToOctets(packed_u32,scanline);
                 }
             }
@@ -2935,18 +2922,18 @@ static void WriteRowSamples(const sample_t *samples,
               for (i=(samples_per_row/3); i > 0; --i)
                 {
                   datum=0;
-                  packed_u32.word=0;
-                  packed_u32.word |= (*samples++ << shifts[datum++]);
-                  packed_u32.word |= (*samples++ << shifts[datum++]);
-                  packed_u32.word |= (*samples++ << shifts[datum]);
+                  packed_u32=0;
+                  packed_u32 |= (*samples++ << shifts[datum++]);
+                  packed_u32 |= (*samples++ << shifts[datum++]);
+                  packed_u32 |= (*samples++ << shifts[datum]);
                   LSBPackedU32WordToOctets(packed_u32,scanline);
                 }
               if ((samples_per_row % 3))
                 {
                   datum=0;
-                  packed_u32.word=0;
+                  packed_u32=0;
                   for (i=(samples_per_row % 3); i > 0; --i)
-                    packed_u32.word |= (*samples++ << shifts[datum++]);
+                    packed_u32 |= (*samples++ << shifts[datum++]);
                   LSBPackedU32WordToOctets(packed_u32,scanline);
                 }
             }
@@ -3049,14 +3036,14 @@ static void WriteRowSamples(const sample_t *samples,
   */
   if (bits_per_sample == 32)
     {
-      PackedU32Word
+      register magick_uint32_t
         packed_u32;
 
       if (endian_type == MSBEndian)
         {
           for (i=samples_per_row; i > 0; i--)
             {
-              packed_u32.word=*samples++;
+              packed_u32=*samples++;
               MSBPackedU32WordToOctets(packed_u32,scanline);
             }
         }
@@ -3064,7 +3051,7 @@ static void WriteRowSamples(const sample_t *samples,
         {
           for (i=samples_per_row; i > 0; i--)
             {
-              packed_u32.word=*samples++;
+              packed_u32=*samples++;
               LSBPackedU32WordToOctets(packed_u32,scanline);
             }
         }
