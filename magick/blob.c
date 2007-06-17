@@ -2500,12 +2500,11 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
           {
             const char* env_val;
 
-            if ((env_val = getenv("MAGICK_MMAP_READ")) &&
-                (LocaleCompare(env_val,"TRUE") == 0))
+            if (*type == 'r')
               {
                 /*
                   Support reading from a file using memory mapping.
-
+                  
                   This code was used for years and definitely speeds
                   re-reading of the same file, but it has been discovered
                   that some operating systems (e.g. FreeBSD and Apple's
@@ -2513,7 +2512,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   files.  It will be disabled until we add a way to force
                   read-ahead.
                 */
-                if (*type == 'r')
+                if ((env_val = getenv("MAGICK_MMAP_READ")) &&
+                    (LocaleCompare(env_val,"TRUE") == 0))
                   {
                     const MagickInfo
                       *magick_info;
@@ -2564,15 +2564,15 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                       }
                   }
               }
-            /*
-              Support writing to a file using memory mapping.
-
-              This is an experimental feature which does seem to work
-              but does not obtain a performance gain so it is
-              disabled.
-            */
             else if (*type == 'w')
               {
+                /*
+                  Support writing to a file using memory mapping.
+                  
+                  This is an experimental feature which does seem to work
+                  but does not obtain a performance gain so it is
+                  disabled.
+                */
                 if ((env_val = getenv("MAGICK_MMAP_WRITE")) &&
                     (LocaleCompare(env_val,"TRUE") == 0))
                   {
