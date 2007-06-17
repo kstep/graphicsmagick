@@ -2440,9 +2440,9 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                       vbuf_size = 16384;
 
                     if ((vbuf_size_env = getenv("MAGICK_IOBUF_SIZE")))
-                    {
-                      vbuf_size = (size_t) atol(vbuf_size_env);
-                    }
+                      {
+                        vbuf_size = (size_t) atol(vbuf_size_env);
+                      }
 
                     if (setvbuf(image->blob->file,NULL,_IOFBF,vbuf_size) != 0)
                       {
@@ -2498,69 +2498,72 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
               }
         if (image->blob->type == FileStream)
           {
-#if 0
-            /*
-              Support reading from a file using memory mapping.
+            const char* env_val;
 
-              This code was used for years and definitely speeds
-              re-reading of the same file, but it has been discovered
-              that some operating systems (e.g. FreeBSD and Apple's
-              OS-X) fail to perform automatic read-ahead for network
-              files.  It will be disabled until we add a way to force
-              read-ahead.
-            */
-            if (*type == 'r')
+            if ((env_val = getenv("MAGICK_MMAP_READ")) &&
+                (LocaleCompare(env_val,"TRUE") == 0))
               {
-                const MagickInfo
-                  *magick_info;
-                
-                struct stat
-                  attributes;
+                /*
+                  Support reading from a file using memory mapping.
 
-                magick_info=GetMagickInfo(image_info->magick,&image->exception);
-                if ((magick_info != (const MagickInfo *) NULL) &&
-                    magick_info->blob_support)
+                  This code was used for years and definitely speeds
+                  re-reading of the same file, but it has been discovered
+                  that some operating systems (e.g. FreeBSD and Apple's
+                  OS-X) fail to perform automatic read-ahead for network
+                  files.  It will be disabled until we add a way to force
+                  read-ahead.
+                */
+                if (*type == 'r')
                   {
-                    if ((fstat(fileno(image->blob->file),&attributes) >= 0) &&
-                        (attributes.st_size > MinBlobExtent) &&
-                        (attributes.st_size == (off_t) ((size_t) attributes.st_size)))
-                      {
-                        size_t
-                          length;
-                      
-                        void
-                          *blob;
-                      
-                        length=(size_t) attributes.st_size;
+                    const MagickInfo
+                      *magick_info;
+                
+                    struct stat
+                      attributes;
 
-                        if(AcquireMagickResource(MapResource,length))
+                    magick_info=GetMagickInfo(image_info->magick,&image->exception);
+                    if ((magick_info != (const MagickInfo *) NULL) &&
+                        magick_info->blob_support)
+                      {
+                        if ((fstat(fileno(image->blob->file),&attributes) >= 0) &&
+                            (attributes.st_size > MinBlobExtent) &&
+                            (attributes.st_size == (off_t) ((size_t) attributes.st_size)))
                           {
-                            blob=MapBlob(fileno(image->blob->file),ReadMode,0,length);
-                            if (blob != (void *) NULL)
+                            size_t
+                              length;
+                      
+                            void
+                              *blob;
+                      
+                            length=(size_t) attributes.st_size;
+
+                            if(AcquireMagickResource(MapResource,length))
                               {
-                                /*
-                                  Format supports blobs-- use memory-mapped I/O.
-                                */
-                                if (image_info->file != (FILE *) NULL)
-                                  image->blob->exempt=False;
+                                blob=MapBlob(fileno(image->blob->file),ReadMode,0,length);
+                                if (blob != (void *) NULL)
+                                  {
+                                    /*
+                                      Format supports blobs-- use memory-mapped I/O.
+                                    */
+                                    if (image_info->file != (FILE *) NULL)
+                                      image->blob->exempt=False;
+                                    else
+                                      {
+                                        (void) fclose(image->blob->file);
+                                        image->blob->file=(FILE *) NULL;
+                                      }
+                                    AttachBlob(image->blob,blob,length);
+                                    image->blob->mapped=True;
+                                  }
                                 else
                                   {
-                                    (void) fclose(image->blob->file);
-                                    image->blob->file=(FILE *) NULL;
+                                    LiberateMagickResource(MapResource,length);
                                   }
-                                AttachBlob(image->blob,blob,length);
-                                image->blob->mapped=True;
-                              }
-                            else
-                              {
-                                LiberateMagickResource(MapResource,length);
                               }
                           }
                       }
                   }
               }
-#endif
-#if 0
             /*
               Support writing to a file using memory mapping.
 
@@ -2570,23 +2573,26 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             */
             else if (*type == 'w')
               {
-                size_t
-                  length;
-
-                void
-                  *blob;
-
-                length=8192;
-                blob=MapBlob(fileno(image->blob->file),WriteMode,0,length);
-                if (blob != (void *) NULL)
+                if ((env_val = getenv("MAGICK_MMAP_WRITE")) &&
+                    (LocaleCompare(env_val,"TRUE") == 0))
                   {
-                    image->blob->type=BlobStream;
-                    image->blob->quantum=DefaultBlobQuantum;
-                    image->blob->data=blob;
-                    image->blob->mapped=True;
+                    size_t
+                      length;
+
+                    void
+                      *blob;
+
+                    length=8192;
+                    blob=MapBlob(fileno(image->blob->file),WriteMode,0,length);
+                    if (blob != (void *) NULL)
+                      {
+                        image->blob->type=BlobStream;
+                        image->blob->quantum=DefaultBlobQuantum;
+                        image->blob->data=blob;
+                        image->blob->mapped=True;
+                      }
                   }
               }
-#endif
           }
       }
   image->blob->status=False;

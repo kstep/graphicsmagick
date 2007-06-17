@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2007-06-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (ReadDPXImage): Improved the pixel data marshalling
+        in order to obtain better read performance for 10-bit DPX.
+  <LI> magick/blob.c (OpenBlob): Added support for MAGICK_MMAP_READ and
+        MAGICK_MMAP_WRITE environment variable options to enable input and
+        output file access using mmap().
+
+</UL>
+<p>
 2007-06-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

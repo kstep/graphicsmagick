@@ -14969,6 +14969,36 @@ hard-coded or set by an installer.</td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    MAGICK_MMAP_READ
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>If <strong>MAGICK_MMAP_READ</strong> is set to <strong>TRUE</strong>, GraphicsMagick
+will attempt to memory-map the input file for reading. This usually
+substantially improves read performance if the file has recently been
+read. However, testing shows that performance may be reduced for files
+accessed for the first time via a network since some operating systems
+failed to do read-ahead over network mounts for memory mapped files.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_MMAP_WRITE
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>If <strong>MAGICK_MMAP_WRITE</strong> is set to <strong>TRUE</strong>, GraphicsMagick
+will attempt to memory-map the output file for writing. This is currently
+an experimental feature. Write performance is usually somewhat worse when
+using this approach rather than the default one.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     MAGICK_IOBUF_SIZE
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The amount of I/O buffering (in bytes) to use when reading and

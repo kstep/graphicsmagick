@@ -1,3 +1,11 @@
+2007-06-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (ReadDPXImage): Improved the pixel data marshalling
+	in order to obtain better read performance for 10-bit DPX.
+	* magick/blob.c (OpenBlob): Added support for MAGICK_MMAP_READ and
+	MAGICK_MMAP_WRITE environment variable options to enable input and
+	output file access using mmap().
+
 2007-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (OpenBlob): Use MAGICK_IOBUF_SIZE to tune the size
