@@ -1,3 +1,8 @@
+2007-06-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c: Fix problems encountered when reading and writing
+	from/to pipes or compressed files.
+
 2007-06-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (ReadDPXImage): Improved the pixel data marshalling

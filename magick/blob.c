@@ -311,14 +311,28 @@ static void *ExtendBlobWriteStream(Image *image,const size_t length)
           /* Memory mapped file */
           int
             filedes;
-      
+
+          size_t
+            extent,
+            quantum;
+
+          unsigned char
+            *data;
+
+          image->blob->data=0;
           filedes=fileno(image->blob->file);
-          image->blob->quantum<<=1;
-          image->blob->extent+=length+image->blob->quantum;
-          if(ftruncate(filedes,image->blob->extent) != 0)
-            return 0;
-          image->blob->data=(unsigned char*) MapBlob(filedes,WriteMode,0,image->blob->extent);
-          (void) SyncBlob(image);
+          quantum=image->blob->quantum;
+          quantum<<=1;
+          extent=image->blob->extent;
+          extent+=length+quantum;
+          if ((ftruncate(filedes,extent) == 0) &&
+              ((data=(unsigned char*) MapBlob(filedes,WriteMode,0,extent)) != 0))
+            {
+              image->blob->quantum=quantum;
+              image->blob->extent=extent;
+              image->blob->data=data;
+              (void) SyncBlob(image);
+            }
         }
       else
         {
@@ -346,7 +360,9 @@ static inline size_t WriteBlobStream(Image *image,const size_t length,const void
     if ((dest=ExtendBlobWriteStream(image,length)) == (void *) NULL)
       return 0;
 
+  fflush(stdout);
   (void) memcpy(dest,data,length);
+  fflush(stdout);
   image->blob->offset+=length;
   if (image->blob->offset > (magick_off_t) image->blob->length)
     image->blob->length=image->blob->offset;
@@ -2506,13 +2522,13 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   Support reading from a file using memory mapping.
                   
                   This code was used for years and definitely speeds
-                  re-reading of the same file, but it has been discovered
-                  that some operating systems (e.g. FreeBSD and Apple's
-                  OS-X) fail to perform automatic read-ahead for network
-                  files.  It will be disabled until we add a way to force
-                  read-ahead.
+                  re-reading of the same file, but it has been
+                  discovered that some operating systems (e.g. FreeBSD
+                  and Apple's OS-X) fail to perform automatic
+                  read-ahead for network files.  It will be disabled
+                  by default until we add a way to force read-ahead.
                 */
-                if ((env_val = getenv("MAGICK_MMAP_READ")) &&
+                if (((env_val = getenv("MAGICK_MMAP_READ")) != NULL) &&
                     (LocaleCompare(env_val,"TRUE") == 0))
                   {
                     const MagickInfo
@@ -2537,7 +2553,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                       
                             length=(size_t) attributes.st_size;
 
-                            if(AcquireMagickResource(MapResource,length))
+                            if (AcquireMagickResource(MapResource,length))
                               {
                                 blob=MapBlob(fileno(image->blob->file),ReadMode,0,length);
                                 if (blob != (void *) NULL)
@@ -2569,11 +2585,13 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                 /*
                   Support writing to a file using memory mapping.
                   
-                  This is an experimental feature which does seem to work
-                  but does not obtain a performance gain so it is
-                  disabled.
+                  This is an experimental feature which only partially
+                  works so it is disabled by default.
+
+                  FIXME: Does not work at all in conjunction with MAGICK_MMAP_READ
+                  and causes crashes in the test suite so I guess it is not ready yet.
                 */
-                if ((env_val = getenv("MAGICK_MMAP_WRITE")) &&
+                if (((env_val = getenv("MAGICK_MMAP_WRITE")) != NULL) &&
                     (LocaleCompare(env_val,"TRUE") == 0))
                   {
                     size_t
@@ -2590,6 +2608,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                         image->blob->quantum=DefaultBlobQuantum;
                         image->blob->data=blob;
                         image->blob->mapped=True;
+                        (void) SyncBlob(image);
                       }
                   }
               }

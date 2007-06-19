@@ -428,13 +428,8 @@ typedef struct _DPXHeader
 */
 static unsigned int IsDPX(const unsigned char *magick,const size_t length)
 {
-  if (length < 4)
-    return(False);
-  if (memcmp(magick,"SDPX",4) == 0)
-    return(True);
-  if (memcmp(magick,"XPDS",4) == 0)
-    return(True);
-  return(False);
+  return ((length >= 4) &&
+          ((memcmp(magick,"SDPX",4) == 0) || (memcmp(magick,"XPDS",4) == 0)));
 }
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2184,7 +2179,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               /*
                 Establish YCbCr video defaults.
-                 8 bit ==> Luma 16 to 235
+                8 bit ==> Luma 16 to 235
                 10 bit ==> Luma 64 to 940
               */
               reference_low = (((double) max_value_given_bits+1) * (64.0/1024.0));
@@ -2519,13 +2514,17 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                     break;
 
-              if (EOFBlob(image))
+              if (BlobIsSeekable(image))
+              {
+                magick_off_t reported_file_offset = TellBlob(image);
+                if (EOFBlob(image))
                 {
-                  printf("### File length %u, TellBlob says %u\n",
-                         dpx_file_info.file_size,
-                         (unsigned int) TellBlob(image));
+                  fprintf(stderr,"### File length %u, TellBlob says %ld\n",
+                          dpx_file_info.file_size,
+                          (long) reported_file_offset);
                   break;
                 }
+              }
             }
           /* break; */
         }
@@ -3845,7 +3844,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       element_descriptor=(DPXImageElementDescriptor)
         dpx_image_info.element_info[element].descriptor;
       max_samples_per_pixel=Max(max_samples_per_pixel,
-                                  DPXSamplesPerPixel(element_descriptor));
+                                DPXSamplesPerPixel(element_descriptor));
     }
   /*
     Allocate row samples.
@@ -3932,12 +3931,16 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
         ScaleY = 0.0,
         ScaleCbCr = 0.0;
 
-      if ((magick_off_t) dpx_image_info.element_info[element].data_offset !=
-          TellBlob(image))
+      if (BlobIsSeekable(image))
         {
-          printf("### Descriptor %u offset %u, TellBlob says %u\n",
-                 element+1, dpx_image_info.element_info[element].data_offset,
-                 (unsigned int) TellBlob(image));
+          magick_off_t reported_file_offset = TellBlob(image);
+          if ((magick_off_t) dpx_image_info.element_info[element].data_offset !=
+              reported_file_offset)
+            {
+              fprintf(stderr,"### Descriptor %u offset %u, TellBlob says %ld\n",
+                      element+1, dpx_image_info.element_info[element].data_offset,
+                      (long) reported_file_offset);
+            }
         }
       DescribeDPXImageElement(&dpx_image_info.element_info[element],element+1);
 
@@ -4249,14 +4252,18 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
             }
         }
     }
-
-  if ((magick_off_t) dpx_file_info.file_size != TellBlob(image))
+  
+  if (BlobIsSeekable(image))
     {
-      printf("### File length %u, TellBlob says %u\n",
-             dpx_file_info.file_size,
-             (unsigned int) TellBlob(image));
+      magick_off_t reported_file_offset = TellBlob(image);
+      if ((magick_off_t) dpx_file_info.file_size != reported_file_offset)
+        {
+          fprintf(stderr,"### File length %u, TellBlob says %ld\n",
+                  dpx_file_info.file_size,
+                  (long) reported_file_offset);
+        }
     }
-
+  
   MagickFreeMemory(samples);
   MagickFreeMemory(scanline);
   CloseBlob(image);  
