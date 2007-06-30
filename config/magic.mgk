@@ -79,6 +79,8 @@
   <magic name="SVG" offset="1" target="?xml" />
   <magic name="TIFF" offset="0" target="\115\115\000\052" />
   <magic name="TIFF" offset="0" target="\111\111\052\000" />
+  <magic name="BIGTIFF" offset="0" target="\115\115\000\053\000\010\000\000" />
+  <magic name="BIGTIFF" offset="0" target="\111\111\053\000\010\000\000\000" />
   <magic name="VICAR" offset="0" target="LBLSIZE" />
   <magic name="VICAR" offset="0" target="NJPL1I" />
   <magic name="VIFF" offset="0" target="\253\001" />

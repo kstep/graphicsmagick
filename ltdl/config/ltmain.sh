@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh; do not edit by hand
 
-# ltmain.sh (GNU libtool 1.2468 2007/06/09 17:46:40) 2.1a
+# ltmain.sh (GNU libtool 1.2475 2007/06/22 06:21:03) 2.1a
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
@@ -65,7 +65,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool 1.2468 2007/06/09 17:46:40) 2.1a
+#       $progname:		(GNU libtool 1.2475 2007/06/22 06:21:03) 2.1a
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -74,8 +74,8 @@
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=2.1a
-TIMESTAMP=" 1.2468 2007/06/09 17:46:40"
-package_revision=1.2468
+TIMESTAMP=" 1.2475 2007/06/22 06:21:03"
+package_revision=1.2475
 
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
@@ -517,7 +517,7 @@ EOF
 fi
 
 magic="%%%MAGIC variable%%%"
-
+magic_exe="%%%MAGIC EXE variable%%%"
 
 # Global variables.
 # $mode is unset
@@ -1043,13 +1043,55 @@ func_lalib_unsafe_p ()
     test "$lalib_p" = yes
 }
 
+# func_ltwrapper_script_p file
+# True iff FILE is a libtool wrapper script
+# This function is only a basic sanity check; it will hardly flush out
+# determined imposters.
+func_ltwrapper_script_p ()
+{
+    func_lalib_p "$1"
+}
+
+# func_ltwrapper_executable_p file
+# True iff FILE is a libtool wrapper executable
+# This function is only a basic sanity check; it will hardly flush out
+# determined imposters.
+func_ltwrapper_executable_p ()
+{
+    func_ltwrapper_exec_suffix=
+    case $1 in
+    *.exe) ;;
+    *) func_ltwrapper_exec_suffix=.exe ;;
+    esac
+    $GREP "$magic_exe" "$1$func_ltwrapper_exec_suffix" >/dev/null 2>&1
+}
+
+# func_ltwrapper_scriptname file
+# Assumes file is an ltwrapper_executable
+# uses $file to determine the appropriate filename for a
+# temporary ltwrapper_script.
+func_ltwrapper_scriptname ()
+{
+    func_ltwrapper_scriptname_result=""
+    if func_ltwrapper_executable_p "$1"; then
+	func_dirname "$1"
+	func_basename "$1"
+	func_stripname '' '.exe' "$func_basename_result"
+	if test -z "$func_dirname_result"; then
+	    func_ltwrapper_scriptname_result="./$objdir/${func_stripname_result}_ltshwrapper"
+	else
+	    func_ltwrapper_scriptname_result="$func_dirname_result/$objdir/${func_stripname_result}_ltshwrapper"
+	fi
+    fi
+}
+
 # func_ltwrapper_p file
-# True iff FILE is a libtool wrapper script.
+# True iff FILE is a libtool wrapper script or wrapper executable
 # This function is only a basic sanity check; it will hardly flush out
 # determined imposters.
 func_ltwrapper_p ()
 {
-    func_lalib_p "$1"
+    func_ltwrapper_script_p "$1" || func_ltwrapper_executable_p "$1"
 }
 
 
@@ -2031,12 +2073,14 @@ func_mode_execute ()
       -*) ;;
       *)
 	# Do a test to see if this is really a libtool program.
-	if func_ltwrapper_p "$file"; then
+	if func_ltwrapper_script_p "$file"; then
 	  func_source "$file"
-
-	  # Transform arg to wrapped name.
-	  file="$progdir/$program"
+	elif func_ltwrapper_executable_p "$file"; then
+	  func_ltwrapper_scriptname "$file"
+	  func_source "$func_ltwrapper_scriptname_result"
 	fi
+	# Transform arg to wrapped name.
+	file="$progdir/$program"
 	;;
       esac
       # Quote arguments (to preserve shell metacharacters).
@@ -2467,14 +2511,19 @@ func_mode_install ()
 	# Do a test to see if this is really a libtool program.
 	case $host in
 	*cygwin*|*mingw*)
-	    func_stripname '' '.exe' "$file"
-	    wrapper=$func_stripname_result
+	    if func_ltwrapper_executable_p "$file"; then
+	      func_ltwrapper_scriptname "$file"
+	      wrapper=$func_ltwrapper_scriptname_result
+	    else
+	      func_stripname '' '.exe' "$file"
+	      wrapper=$func_stripname_result
+	    fi
 	    ;;
 	*)
 	    wrapper=$file
 	    ;;
 	esac
-	if func_ltwrapper_p "$wrapper"; then
+	if func_ltwrapper_script_p "$wrapper"; then
 	  notinst_deplibs=
 	  relink_command=
 
@@ -2591,7 +2640,7 @@ func_mode_install ()
 test "$mode" = install && func_mode_install ${1+"$@"}
 
 
-# func_emit_libtool_wrapper_script arg
+# func_emit_wrapper arg
 #
 # emit a libtool wrapper script on stdout
 # don't directly open a file because we may want to
@@ -2605,11 +2654,11 @@ test "$mode" = install && func_mode_install ${1+"$@"}
 # will assume that the directory in which it is stored is
 # the '.lib' directory.  This is a cygwin/mingw-specific
 # behavior.
-func_emit_libtool_wrapper_script ()
+func_emit_wrapper ()
 {
-	func_emit_libtool_wrapper_script_arg1=no
+	func_emit_wrapper_arg1=no
 	if test -n "$1" ; then
-	  func_emit_libtool_wrapper_script_arg1=$1
+	  func_emit_wrapper_arg1=$1
 	fi
 
 	$ECHO "\
@@ -2697,7 +2746,7 @@ else
 
   # Usually 'no', except on cygwin/mingw when embedded into
   # the cwrapper.
-  WRAPPER_SCRIPT_BELONGS_IN_OBJDIR=$func_emit_libtool_wrapper_script_arg1
+  WRAPPER_SCRIPT_BELONGS_IN_OBJDIR=$func_emit_wrapper_arg1
   if test \"\$WRAPPER_SCRIPT_BELONGS_IN_OBJDIR\" = \"yes\"; then
     # special case for '.'
     if test \"\$thisdir\" = \".\"; then
@@ -2814,13 +2863,13 @@ else
 fi\
 "
 }
-# end: func_emit_libtool_wrapper_script
+# end: func_emit_wrapper
 
-# func_emit_libtool_cwrapperexe_source
+# func_emit_cwrapperexe_src
 # emit the source code for a wrapper executable on stdout
 # Must ONLY be called from within func_mode_link because
 # it depends on a number of variable set therein.
-func_emit_libtool_cwrapperexe_source ()
+func_emit_cwrapperexe_src ()
 {
 	cat <<EOF
 
@@ -2929,12 +2978,13 @@ void lt_fatal (const char *message, ...);
 static const char *script_text =
 EOF
 
-	    func_emit_libtool_wrapper_script yes |
+	    func_emit_wrapper yes |
 	        $SED -e 's/\([\\"]\)/\\\1/g' \
 	             -e 's/^/  "/' -e 's/$/\\n"/'
 	    echo ";"
 
 	    cat <<EOF
+const char * MAGIC_EXE = "$magic_exe";
 
 int
 main (int argc, char *argv[])
@@ -2943,6 +2993,7 @@ main (int argc, char *argv[])
   char *tmp_pathspec;
   char *actual_cwrapper_path;
   char *shwrapper_name;
+  intptr_t rval = 127;
   FILE *shwrapper;
 
   const char *dumpscript_opt = "--lt-dump-script";
@@ -3005,9 +3056,9 @@ EOF
   /* shwrapper_name transforms */
   strendzap (shwrapper_name, ".exe");
   tmp_pathspec = XMALLOC (char, (strlen (shwrapper_name) +
-				 strlen ("_ltshwrapper") + 1));
+				 strlen ("_ltshwrapperTMP") + 1));
   strcpy (tmp_pathspec, shwrapper_name);
-  strcat (tmp_pathspec, "_ltshwrapper");
+  strcat (tmp_pathspec, "_ltshwrapperTMP");
   XFREE (shwrapper_name);
   shwrapper_name = tmp_pathspec;
   tmp_pathspec = 0;
@@ -3070,19 +3121,28 @@ EOF
 	    case $host_os in
 	      mingw*)
 		cat <<EOF
-  execv ("$lt_newargv0", (const char * const *) newargz);
+  /* execv doesn't actually work on mingw as expected on unix */
+  rval = _spawnv (_P_WAIT, "$lt_newargv0", (const char * const *) newargz);
+  if (rval == -1)
+    {
+      /* failed to start process */
+      LTWRAPPER_DEBUGPRINTF (("(main) failed to launch target \"$lt_newargv0\": errno = %d\n", errno));
+      return 127;
+    }
+  return rval;
+}
 EOF
 		;;
 	      *)
 		cat <<EOF
   execv ("$lt_newargv0", newargz);
+  return rval; /* =127, but avoids unused variable warning */
+}
 EOF
 		;;
 	    esac
 
 	    cat <<"EOF"
-  return 127;
-}
 
 void *
 xmalloc (size_t num)
@@ -3359,7 +3419,7 @@ lt_fatal (const char *message, ...)
 }
 EOF
 }
-# end: func_emit_libtool_cwrapperexe_source
+# end: func_emit_cwrapperexe_src
 
 # func_mode_link arg...
 func_mode_link ()
@@ -5511,9 +5571,10 @@ func_mode_link ()
 	    age="0"
 	    ;;
 	  irix|nonstopux)
-	    current=`expr $number_major + $number_minor - 1`
+	    current=`expr $number_major + $number_minor`
 	    age="$number_minor"
 	    revision="$number_minor"
+	    lt_irix_increment=no
 	    ;;
 	  esac
 	  ;;
@@ -5583,7 +5644,11 @@ func_mode_link ()
 	  ;;
 
 	irix | nonstopux)
-	  major=`expr $current - $age + 1`
+	  if test "X$lt_irix_increment" = "Xno"; then
+	    major=`expr $current - $age`
+	  else
+	    major=`expr $current - $age + 1`
+	  fi
 
 	  case $version_type in
 	    nonstopux) verstring_prefix=nonstopux ;;
@@ -7090,28 +7155,43 @@ EOF
 	esac
 	case $host in
 	  *cygwin* | *mingw* )
-	    output_name=`basename $output`
-	    output_path=`dirname $output`
+	    func_basename "$output"
+	    output_name=$func_basename_result
+	    func_dirname "$output"
+	    output_path=$func_dirname_result
+	    if test -z "$output_path"; then
+	      output_path=.
+	    fi
 	    cwrappersource="$output_path/$objdir/lt-$output_name.c"
 	    cwrapper="$output_path/$output_name.exe"
 	    $RM $cwrappersource $cwrapper
 	    trap "$RM $cwrappersource $cwrapper; exit $EXIT_FAILURE" 1 2 15
 
-	    func_emit_libtool_cwrapperexe_source > $cwrappersource
+	    func_emit_cwrapperexe_src > $cwrappersource
 
-	  # we should really use a build-platform specific compiler
-	  # here, but OTOH, the wrappers (shell script and this C one)
-	  # are only useful if you want to execute the "real" binary.
-	  # Since the "real" binary is built for $host, then this
-	  # wrapper might as well be built for $host, too.
-	  $opt_dry_run || $LTCC $LTCFLAGS -s -o $cwrapper $cwrappersource
+	    # we should really use a build-platform specific compiler
+	    # here, but OTOH, the wrappers (shell script and this C one)
+	    # are only useful if you want to execute the "real" binary.
+	    # Since the "real" binary is built for $host, then this
+	    # wrapper might as well be built for $host, too.
+	    $opt_dry_run || $LTCC $LTCFLAGS -s -o $cwrapper $cwrappersource
+
+	    # Now, create the wrapper script for func_source use:
+	    func_ltwrapper_scriptname $cwrapper
+	    $RM $func_ltwrapper_scriptname_result
+	    trap "$RM $func_ltwrapper_scriptname_result; exit $EXIT_FAILURE" 1 2 15
+	    $opt_dry_run || {
+	      $cwrapper --lt-dump-script > $func_ltwrapper_scriptname_result
+	    }
+	  ;;
+	  * )
+	    $RM $output
+	    trap "$RM $output; exit $EXIT_FAILURE" 1 2 15
+
+	    func_emit_wrapper no > $output
+	    chmod +x $output
 	  ;;
 	esac
-	$RM $output
-	trap "$RM $output; exit $EXIT_FAILURE" 1 2 15
-
-	func_emit_libtool_wrapper_script no > $output
-	chmod +x $output
       }
       exit $EXIT_SUCCESS
       ;;
@@ -7561,8 +7641,15 @@ func_mode_uninstall ()
 	  esac
 	  # Do a test to see if this is a libtool program.
 	  if func_ltwrapper_p "$file"; then
-	    relink_command=
-	    func_source $dir/$noexename
+	    if func_ltwrapper_executable_p "$file"; then
+	      func_ltwrapper_scriptname "$file"
+	      relink_command=
+	      func_source $func_ltwrapper_scriptname_result
+	      rmfiles="$rmfiles $func_ltwrapper_scriptname_result"
+	    else
+	      relink_command=
+	      func_source $dir/$noexename
+	    fi
 
 	    # note $name still contains .exe if it was in $file originally
 	    # as does the version of $file that was added into $rmfiles

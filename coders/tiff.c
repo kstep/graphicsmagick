@@ -26,7 +26,7 @@
 %                                 July 1992                                   %
 %                     Re-Written For GraphicsMagick                           %
 %                             Bob Friesenhahn                                 %
-%                                2002-2005                                    %
+%                                2002-2007                                    %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -56,13 +56,14 @@
 #include "magick/utility.h"
 #include "magick/version.h"
 #if defined(HasTIFF)
-#  if defined(HAVE_TIFFCONF_H)
-#    include "tiffconf.h"
-#  endif /* defined(HAVE_TIFFCONF_H) */
+#  include "tiff.h"
 #  include "tiffio.h"
 #  if !defined(COMPRESSION_ADOBE_DEFLATE)
 #    define COMPRESSION_ADOBE_DEFLATE  8
 #  endif  /* !defined(COMPRESSION_ADOBE_DEFLATE) */
+#if defined(TIFF_VERSION_BIG)
+#  define HasBigTIFF 1
+#endif /* defined(TIFF_BIGTIFF_VERSION) */
 
 /*
   Global declarations.
@@ -110,12 +111,41 @@ static unsigned int
 */
 static unsigned int IsTIFF(const unsigned char *magick,const size_t length)
 {
-  if (length < 4)
+  if (length < 8)
     return(False);
+
+  /* Big endian Classic TIFF*/
   if (memcmp(magick,"\115\115\000\052",4) == 0)
     return(True);
+
+  /* Little endian Classic TIFF */
   if (memcmp(magick,"\111\111\052\000",4) == 0)
     return(True);
+
+#if defined(HasBigTIFF)
+  /*
+   * From http://www.remotesensing.org/libtiff/bigtiffdesign.html
+   *
+   * * The Version ID, in header bytes 2-3, formerly decimal 42, now changes to 43
+   * * Header bytes 4-5 contain the decimal number 8.
+   *   - If there is some other number here, a reader should give up.
+   *   - This is to provide a nice way to move to 16-byte pointers some day.
+   *
+   * * Header bytes 6-7 are reserved and must be zero.
+   *    - If they're not, a reader should give up.
+   *
+   * Also http://www.awaresystems.be/imaging/tiff/bigtiff.html
+   */
+
+  /* Big endian BigTIFF*/
+  if (memcmp(magick,"\115\115\000\053\000\010\000\000",8) == 0)
+    return(True);
+
+  /* Little endian BigTIFF */
+  if (memcmp(magick,"\111\111\053\000\010\000\000\000",8) == 0)
+    return(True);
+#endif
+
   return(False);
 }
 
@@ -151,16 +181,20 @@ static unsigned int IsTIFF(const unsigned char *magick,const size_t length)
 %
 %
 */
-#if defined(HAVE_TIFFMERGEFIELDINFO) && defined(HAVE_TIFFSETTAGEXTENDER)
+#if TIFFLIB_VERSION < 20050704 && defined(HAVE_TIFFMERGEFIELDINFO) && defined(HAVE_TIFFSETTAGEXTENDER)
 #  define EXTEND_TIFF_TAGS 1
 #  if !defined(TIFFTAG_EXIFIFD)
 #    define TIFFTAG_EXIFIFD 34665
 #  endif
+/* It seems that support was added for the EXIFIFDOffset tag in
+   libtiff release 3-7-3 which corresponds with TIFFLIB_VERSION
+   20050704 */
 static const TIFFFieldInfo
   ExtensionTiffFieldInfo[] =
   {
-    { TIFFTAG_EXIFIFD, -1, -1, TIFF_LONG, FIELD_CUSTOM,
-      MagickFalse, MagickTrue, "EXIF SubIFD Offset"
+    {
+      TIFFTAG_EXIFIFD, -1, -1, TIFF_LONG, FIELD_CUSTOM,
+      MagickFalse, MagickTrue, "EXIFIFDOffset"
     }
   };
 
@@ -197,7 +231,7 @@ void ExtensionTagsInitialize(void)
 	
   if (! first_time) return; /* Been there. Done that. */
   first_time = 0;
-	
+
   /* Grab the inherited method and install */
   _ParentExtender = TIFFSetTagExtender(ExtensionTagsDefaultDirectory);
 }
@@ -460,8 +494,10 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
   (void) vsnprintf(message,MaxTextExtent-2,format,warning);
   message[MaxTextExtent-2]='\0';
   (void) strlcat(message,".",MaxTextExtent);
-  tiff_exception=(ExceptionInfo *) MagickTsdGetSpecific(tsd_key);
-  ThrowException2(tiff_exception,CoderWarning,message,module);
+/*   tiff_exception=(ExceptionInfo *) MagickTsdGetSpecific(tsd_key); */
+/*   ThrowException2(tiff_exception,CoderWarning,message,module); */
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "TIFF Warning: %s",message);
   return(True);
 }
 
@@ -2454,6 +2490,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 ModuleExport void RegisterTIFFImage(void)
 {
 #define TIFFDescription  "Tagged Image File Format"
+#define BIGTIFFDescription  "Tagged Image File Format (64-bit offsets)"
+#define PTIFDescription "Pyramid encoded TIFF"
 #if defined(HasTIFF)
 
   char
@@ -2478,15 +2516,35 @@ ModuleExport void RegisterTIFFImage(void)
     version[i]=0;
   }
 
+  /*
+    Big TIFF (64-bit offsets)
+  */
+#if defined(HasBigTIFF)
+  entry=SetMagickInfo("BIGTIFF");
+  entry->thread_support=False; /* libtiff uses libjpeg which is not thread safe */
+  entry->decoder=(DecoderHandler) ReadTIFFImage;
+  entry->encoder=(EncoderHandler) WriteTIFFImage;
+  entry->adjoin=False;
+  entry->description=AcquireString(BIGTIFFDescription);
+  entry->module=AcquireString("TIFF");
+  (void) RegisterMagickInfo(entry);
+#endif /* defined(HasBigTIFF) */
+
+  /*
+    Pyramid TIFF (sequence of successively smaller versions of the same image)
+  */
   entry=SetMagickInfo("PTIF");
   entry->thread_support=False; /* libtiff uses libjpeg which is not thread safe */
   entry->decoder=(DecoderHandler) ReadTIFFImage;
   entry->encoder=(EncoderHandler) WritePTIFImage;
   entry->adjoin=False;
-  entry->description=AcquireString("Pyramid encoded TIFF");
+  entry->description=AcquireString(PTIFDescription);
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
 
+  /*
+    Another name for 32-bit TIFF
+  */
   entry=SetMagickInfo("TIF");
   entry->thread_support=False; /* libtiff uses libjpeg which is not thread safe */
   entry->decoder=(DecoderHandler) ReadTIFFImage;
@@ -2498,6 +2556,9 @@ ModuleExport void RegisterTIFFImage(void)
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
 
+  /*
+    Traditional 32-bit TIFF
+  */
   entry=SetMagickInfo("TIFF");
   entry->thread_support=False; /* libtiff uses libjpeg which is not thread safe */
   entry->decoder=(DecoderHandler) ReadTIFFImage;
@@ -2554,6 +2615,9 @@ ModuleExport void UnregisterTIFFImage(void)
       (void) MagickTsdKeyDelete(tsd_key);
       tsd_key = (MagickTsdKey_t) NULL;
     }
+#if defined(HasBigTIFF)
+  (void) UnregisterMagickInfo("BIGTIFF");
+#endif /* defined(HasBigTIFF) */
   (void) UnregisterMagickInfo("PTIF");
   (void) UnregisterMagickInfo("TIF");
   (void) UnregisterMagickInfo("TIFF");
@@ -2839,6 +2903,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
     'b'  force big-endian byte order
     'L'  force LSB to MSB bit order (weird)
     'B'  force MSB to LSB bit order (normal)
+    '8'  64-bit offsets (BigTIFF)
   */
   (void) strncpy(open_flags, "w", sizeof(open_flags));
   switch (image_info->endian)
@@ -2861,6 +2926,16 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /* Default is native byte order */
       }
     }
+
+#if defined(HasBigTIFF)
+  if (strcmp(image_info->magick,"BIGTIFF") == 0)
+    {
+      (void) strncat(open_flags, "8", sizeof(open_flags));
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Using 64-bit offsets (BigTIFF format)");
+    }
+#endif
 
   tiff=TIFFOpen(filename,open_flags);
   if (tiff == (TIFF *) NULL)

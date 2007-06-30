@@ -1,3 +1,11 @@
+2007-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c: Fixed -affine command argument
+	validation. Fixes SourceForge issue 1743141 "Affine matrix option
+	parsing".
+	* config/magic.mgk: Added detection for BigTIFF.
+	* coders/tiff.c: Preliminary work to support BigTIFF.
+
 2007-06-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c: Fix problems encountered when reading and writing

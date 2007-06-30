@@ -70,6 +70,24 @@ print("GRANITE (granite texture) ...\n");
 ++$test;
 testReadCompare('granite:', 'reference/read/granite.miff', q/size=>"70x46"/, 0, 0);
 
+
+# > -rw-r--r--   1 bfriesen home        3456 Mar 19  2006 input8.mat
+# gray level image stored in UINT8 LoEndian 2D
+
+# > -rw-r--r--   1 bfriesen home       26312 Mar 19  2006 input_dbl.mat
+# gray level image stored in double LoEndian 2D
+
+# > -rw-r--r--   1 bfriesen home       20560 Jun 27 16:19 input_lp.mat
+# gray level image stored in UINT8 HIEndian 2D
+#                                    ^^^^^^^^^
+
+# > -rw-r--r--   1 bfriesen home       65720 Mar 11  2003 input.mat
+# gray level image stored in UINT8 LoEndian 2D
+#   (guess same like input8)
+
+# > -rw-r--r--   1 bfriesen home        9992 Mar 19  2006 input_rgb.mat
+# true color image stored in  UINT8 LoEndian 3D
+
 print("MAT (MatLab image) ...\n");
 ++$test;
 testReadCompare('input.mat', 'reference/read/input_mat.miff', q//, 0, 0);

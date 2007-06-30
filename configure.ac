@@ -26,6 +26,7 @@ AC_CONFIG_AUX_DIR([ltdl/config])
 #
 # Save initial user-tunable values
 #
+LIBS_USER=$LIBS
 for var in CC CFLAGS  CPPFLAGS CXX CXXCPP LDFLAGS LIBS ; do
   eval isset=\${$var+set}
   if test "$isset" = 'set' ; then
@@ -833,26 +834,26 @@ AC_C_LONG_DOUBLE
 # C compiler predefines it.
 AC_C_CHAR_UNSIGNED
 
-# Obtain size of an 'signed short' and define as SIZEOF_SHORT
+# Obtain size of an 'signed short' and define as SIZEOF_SIGNED_SHORT
 AC_CHECK_SIZEOF(signed short)
 
 # Obtain size of an 'unsigned short' and define as SIZEOF_UNSIGNED_SHORT
 AC_CHECK_SIZEOF(unsigned short)
 
-# Obtain size of an 'signed int' and define as SIZEOF_INT
+# Obtain size of an 'signed int' and define as SIZEOF_SIGNED_INT
 AC_CHECK_SIZEOF(signed int)
 
 # Obtain size of an 'unsigned int' and define as SIZEOF_UNSIGNED_INT
 AC_CHECK_SIZEOF(unsigned int)
 
-# Obtain size of a 'signed long' and define as SIZEOF_LONG
+# Obtain size of a 'signed long' and define as SIZEOF_SIGNED_LONG
 AC_CHECK_SIZEOF(signed long)
 
 # Obtain size of a 'unsigned long' and define as SIZEOF_UNSIGNED_LONG
 AC_CHECK_SIZEOF(unsigned long)
 
-# Obtain size of a 'long long' and define as SIZEOF_LONG_LONG.  If
-# 'long long' is not supported then the value defined is zero.
+# Obtain size of a 'long long' and define as SIZEOF_SIGNED_LONG_LONG.  If
+# 'signed long long' is not supported then the value defined is zero.
 AC_CHECK_SIZEOF(signed long long)
 
 # Obtain size of a 'unsigned long long' and define as
@@ -2659,9 +2660,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD $LIBS_USER"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD $LIBS_USER"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -2693,8 +2694,8 @@ AC_DEFINE_UNQUOTED(GM_BUILD_CXXFLAGS,"${CXXFLAGS}",[CXXFLAGS used for C++ compil
 AC_DEFINE_UNQUOTED(GM_BUILD_LDFLAGS,"${LDFLAGS}",[LDFLAGS used for linking])
 AC_DEFINE_UNQUOTED(GM_BUILD_LIBS,"${MAGICK_DEP_LIBS}",[LIBS used for linking])
 
-# Intentionally over-ride LIBS so that libraries are supplied by makefiles instead.
-LIBS=""
+# Pass only user-provided LIBS as "global" libraries
+LIBS=$LIBS_USER
 
 #AC_SUBST(CPPFLAGS)
 AC_SUBST(X_CFLAGS)
