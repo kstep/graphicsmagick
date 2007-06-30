@@ -1534,7 +1534,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
+                if (i == argc)
                   ThrowCompositeException(OptionError,MissingArgument,
                     option);
               }
@@ -2825,7 +2825,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
+                if (i == argc)
                   ThrowConvertException(OptionError,MissingArgument,option);
               }
             break;
@@ -9932,7 +9932,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
+                if (i == argc)
                   ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;
@@ -9993,7 +9993,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
+                if (i == argc)
                   ThrowMogrifyException(OptionError,MissingArgument,option);
               }
             break;

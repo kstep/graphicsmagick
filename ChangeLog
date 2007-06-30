@@ -1,3 +1,9 @@
+2007-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c: Fixed -affine command argument
+	validation. Fixes SourceForge issue 1743141 "Affine matrix option
+	parsing".
+
 2007-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/miff.c (ReadMIFFImage): Handle case where compression
