@@ -63,7 +63,7 @@ The following options are available:
  -->
 <magicklog>
   <log events="None" />
-  <log output="stdout" />
+  <log output="stderr" />
   <log filename="Magick-%d.log" />
   <log generations="3" />
   <log limit="2000" />

@@ -37,7 +37,7 @@ m4_define([_LT_COPYING], [dnl
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 ])
 
-# serial 53 LT_INIT
+# serial 54 LT_INIT
 
 
 # LT_PREREQ(VERSION)
@@ -66,6 +66,7 @@ dnl unless we require an AC_DEFUNed macro:
 AC_REQUIRE([LTOPTIONS_VERSION])dnl
 AC_REQUIRE([LTSUGAR_VERSION])dnl
 AC_REQUIRE([LTVERSION_VERSION])dnl
+AC_REQUIRE([LTOBSOLETE_VERSION])dnl
 m4_require([_LT_PROG_LTMAIN])dnl
 m4_require([_LT_SET_OPTIONS], [_LT_SET_OPTIONS([$1])])dnl
 
@@ -1626,7 +1627,7 @@ else
     AC_CHECK_FUNC([shl_load],
 	  [lt_cv_dlopen="shl_load"],
       [AC_CHECK_LIB([dld], [shl_load],
-	    [lt_cv_dlopen="shl_load" lt_cv_dlopen_libs="-dld"],
+	    [lt_cv_dlopen="shl_load" lt_cv_dlopen_libs="-ldld"],
 	[AC_CHECK_FUNC([dlopen],
 	      [lt_cv_dlopen="dlopen"],
 	  [AC_CHECK_LIB([dl], [dlopen],
@@ -1634,7 +1635,7 @@ else
 	    [AC_CHECK_LIB([svld], [dlopen],
 		  [lt_cv_dlopen="dlopen" lt_cv_dlopen_libs="-lsvld"],
 	      [AC_CHECK_LIB([dld], [dld_link],
-		    [lt_cv_dlopen="dld_link" lt_cv_dlopen_libs="-dld"])
+		    [lt_cv_dlopen="dld_link" lt_cv_dlopen_libs="-ldld"])
 	      ])
 	    ])
 	  ])
@@ -3222,6 +3223,7 @@ lt_cv_sys_global_symbol_to_cdecl="sed -n -e 's/^T .* \(.*\)$/extern int \1();/p'
 
 # Transform an extracted symbol line into symbol name and symbol address
 lt_cv_sys_global_symbol_to_c_name_address="sed -n -e 's/^: \([[^ ]]*\) $/  {\\\"\1\\\", (void *) 0},/p' -e 's/^$symcode* \([[^ ]]*\) \([[^ ]]*\)$/  {\"\2\", (void *) \&\2},/p'"
+lt_cv_sys_global_symbol_to_c_name_address_lib_prefix="sed -n -e 's/^: \([[^ ]]*\) $/  {\\\"\1\\\", (void *) 0},/p' -e 's/^$symcode* \([[^ ]]*\) \(lib[[^ ]]*\)$/  {\"\2\", (void *) \&\2},/p' -e 's/^$symcode* \([[^ ]]*\) \([[^ ]]*\)$/  {\"lib\2\", (void *) \&\2},/p'"
 
 # Handle CRLF in mingw tool chain
 opt_cr=
@@ -3375,6 +3377,9 @@ _LT_DECL([global_symbol_to_cdecl], [lt_cv_sys_global_symbol_to_cdecl], [1],
 _LT_DECL([global_symbol_to_c_name_address],
     [lt_cv_sys_global_symbol_to_c_name_address], [1],
     [Transform the output of nm in a C name address pair])
+_LT_DECL([global_symbol_to_c_name_address_lib_prefix],
+    [lt_cv_sys_global_symbol_to_c_name_address_lib_prefix], [1],
+    [Transform the output of nm in a C name address pair when lib prefix is needed])
 ]) # _LT_CMD_GLOBAL_SYMBOLS
 
 

@@ -5191,7 +5191,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   }
 
   if ((magick_info != (const MagickInfo *) NULL) &&
-      magick_info->seekable_stream)
+      (magick_info->seekable_stream == MagickTrue))
     {
       unsigned int
         status;

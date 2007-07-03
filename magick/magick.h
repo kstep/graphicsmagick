@@ -51,7 +51,12 @@ typedef struct _MagickInfo
     adjoin,             /* coder may read/write multiple frames (default True) */
     raw,                /* coder requires that size be set (default False) */
     stealth,            /* coder should not appear in formats listing (default False) */
-    seekable_stream,    /* coder uses BLOB "seek" APIs (default False) */
+    seekable_stream,    /* coder requires BLOB "seek" and "tell" APIs (default False)
+                         *   Note that SetImageInfo() currently always copies input
+                         *   from a pipe, .gz, or .bz2 file, to a temporary file so
+                         *   that it can retrieve a bit of the file header in order to
+                         *   support the file header magic logic.
+                         */
     blob_support,	/* coder uses BLOB APIs (default True) */
     thread_support;     /* coder is thread safe (default True) */
 

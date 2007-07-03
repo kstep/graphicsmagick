@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2007-07-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/dpx.c (ReadDPXImage): Avoid using seek() if possible, and
+        don't use at all if the input is not seekable.
+  <LI> coders/psd.c (ReadPSDImage): Eliminate memory leak when reading
+        PSD files.  Fixes Sourceforge issue 1625477 "Memory leak reading
+        layered PSD Image".
+
+</UL>
+<p>
 2007-06-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

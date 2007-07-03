@@ -207,7 +207,7 @@ static void AllocateLogInfo( void )
 #if defined(WIN32)
       log_info->output_type=Win32EventlogOutput;
 #else
-      log_info->output_type=StdoutOutput;
+      log_info->output_type=StderrOutput;
 #endif
       GetTimerInfo(&log_info->timer);
     }

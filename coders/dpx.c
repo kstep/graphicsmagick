@@ -2077,11 +2077,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (dpx_image_info.element_info[element].data_offset != 0U))
         {
           pixels_offset=dpx_image_info.element_info[element].data_offset;
-          offset=SeekBlob(image,(magick_off_t) pixels_offset,SEEK_SET);
 #if 0
-          if (pixels_offset > offset)
+          offset=SeekBlob(image,(magick_off_t) pixels_offset,SEEK_SET);
+#else
+          if (pixels_offset >= offset)
             {
-              /* Data is ahead of current position.  Good! */
+              /* Data is at, or ahead of current position.  Good! */
               for ( ; offset < pixels_offset ; offset++ )
                 (void) ReadBlobByte(image);
             }
@@ -2090,6 +2091,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /* Data is behind current position.  Bad! */
               offset=SeekBlob(image,(magick_off_t) pixels_offset,SEEK_SET);
             }
+
+          /* Verify that we reached our offset objective */
+          if ( pixels_offset != offset)
+            ThrowReaderException(BlobError,UnableToSeekToOffset,image);
 #endif
         }
       bits_per_sample=dpx_image_info.element_info[element].bits_per_sample;

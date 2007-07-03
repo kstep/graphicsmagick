@@ -8353,6 +8353,7 @@ lt_cv_sys_global_symbol_to_cdecl="sed -n -e 's/^T .* \(.*\)$/extern int \1();/p'
 
 # Transform an extracted symbol line into symbol name and symbol address
 lt_cv_sys_global_symbol_to_c_name_address="sed -n -e 's/^: \([^ ]*\) $/  {\\\"\1\\\", (void *) 0},/p' -e 's/^$symcode* \([^ ]*\) \([^ ]*\)$/  {\"\2\", (void *) \&\2},/p'"
+lt_cv_sys_global_symbol_to_c_name_address_lib_prefix="sed -n -e 's/^: \([^ ]*\) $/  {\\\"\1\\\", (void *) 0},/p' -e 's/^$symcode* \([^ ]*\) \(lib[^ ]*\)$/  {\"\2\", (void *) \&\2},/p' -e 's/^$symcode* \([^ ]*\) \([^ ]*\)$/  {\"lib\2\", (void *) \&\2},/p'"
 
 # Handle CRLF in mingw tool chain
 opt_cr=
@@ -8514,6 +8515,11 @@ else
   { echo "$as_me:$LINENO: result: ok" >&5
 echo "${ECHO_T}ok" >&6; }
 fi
+
+
+
+
+
 
 
 
@@ -8897,7 +8903,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 8900 "configure"
+#line 8906 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9768,7 +9774,8 @@ enable_dlopen=yes
 
 
 macro_version='2.1a'
-macro_revision='1.2475'
+macro_revision='1.2480'
+
 
 
 
@@ -11014,7 +11021,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 11017 "configure"' > conftest.$ac_ext
+  echo '#line 11024 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -11574,11 +11581,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11577: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11584: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11581: \$? = $ac_status" >&5
+   echo "$as_me:11588: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -11896,11 +11903,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11899: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11906: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11903: \$? = $ac_status" >&5
+   echo "$as_me:11910: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -12001,11 +12008,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12004: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12011: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:12008: \$? = $ac_status" >&5
+   echo "$as_me:12015: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -12056,11 +12063,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12059: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12066: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:12063: \$? = $ac_status" >&5
+   echo "$as_me:12070: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14440,7 +14447,7 @@ fi
 { echo "$as_me:$LINENO: result: $ac_cv_lib_dld_shl_load" >&5
 echo "${ECHO_T}$ac_cv_lib_dld_shl_load" >&6; }
 if test $ac_cv_lib_dld_shl_load = yes; then
-  lt_cv_dlopen="shl_load" lt_cv_dlopen_libs="-dld"
+  lt_cv_dlopen="shl_load" lt_cv_dlopen_libs="-ldld"
 else
   { echo "$as_me:$LINENO: checking for dlopen" >&5
 echo $ECHO_N "checking for dlopen... $ECHO_C" >&6; }
@@ -14716,7 +14723,7 @@ fi
 { echo "$as_me:$LINENO: result: $ac_cv_lib_dld_dld_link" >&5
 echo "${ECHO_T}$ac_cv_lib_dld_dld_link" >&6; }
 if test $ac_cv_lib_dld_dld_link = yes; then
-  lt_cv_dlopen="dld_link" lt_cv_dlopen_libs="-dld"
+  lt_cv_dlopen="dld_link" lt_cv_dlopen_libs="-ldld"
 fi
 
 
@@ -14765,7 +14772,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 14768 "configure"
+#line 14775 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14865,7 +14872,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 14868 "configure"
+#line 14875 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -17618,11 +17625,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17621: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17628: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:17625: \$? = $ac_status" >&5
+   echo "$as_me:17632: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -17717,11 +17724,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17720: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17727: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:17724: \$? = $ac_status" >&5
+   echo "$as_me:17731: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17769,11 +17776,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17772: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17779: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:17776: \$? = $ac_status" >&5
+   echo "$as_me:17783: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -38122,6 +38129,7 @@ GCC='`$ECHO "X$GCC" | $Xsed -e "$delay_single_quote_subst"`'
 lt_cv_sys_global_symbol_pipe='`$ECHO "X$lt_cv_sys_global_symbol_pipe" | $Xsed -e "$delay_single_quote_subst"`'
 lt_cv_sys_global_symbol_to_cdecl='`$ECHO "X$lt_cv_sys_global_symbol_to_cdecl" | $Xsed -e "$delay_single_quote_subst"`'
 lt_cv_sys_global_symbol_to_c_name_address='`$ECHO "X$lt_cv_sys_global_symbol_to_c_name_address" | $Xsed -e "$delay_single_quote_subst"`'
+lt_cv_sys_global_symbol_to_c_name_address_lib_prefix='`$ECHO "X$lt_cv_sys_global_symbol_to_c_name_address_lib_prefix" | $Xsed -e "$delay_single_quote_subst"`'
 objdir='`$ECHO "X$objdir" | $Xsed -e "$delay_single_quote_subst"`'
 macro_version='`$ECHO "X$macro_version" | $Xsed -e "$delay_single_quote_subst"`'
 macro_revision='`$ECHO "X$macro_revision" | $Xsed -e "$delay_single_quote_subst"`'
@@ -38279,6 +38287,7 @@ compiler \
 lt_cv_sys_global_symbol_pipe \
 lt_cv_sys_global_symbol_to_cdecl \
 lt_cv_sys_global_symbol_to_c_name_address \
+lt_cv_sys_global_symbol_to_c_name_address_lib_prefix \
 LN_S \
 lt_SP2NL \
 lt_NL2SP \
@@ -39697,6 +39706,9 @@ global_symbol_to_cdecl=$lt_lt_cv_sys_global_symbol_to_cdecl
 
 # Transform the output of nm in a C name address pair.
 global_symbol_to_c_name_address=$lt_lt_cv_sys_global_symbol_to_c_name_address
+
+# Transform the output of nm in a C name address pair when lib prefix is needed.
+global_symbol_to_c_name_address_lib_prefix=$lt_lt_cv_sys_global_symbol_to_c_name_address_lib_prefix
 
 # The name of the directory that contains temporary libtool files.
 objdir=$objdir

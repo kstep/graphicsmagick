@@ -484,8 +484,8 @@ static void TIFFUnmapBlob(thandle_t ARGUNUSED(image),
 static unsigned int TIFFWarnings(const char *module,const char *format,
   va_list warning)
 {
-  ExceptionInfo
-    *tiff_exception;
+/*   ExceptionInfo */
+/*     *tiff_exception; */
 
   char
     message[MaxTextExtent];

@@ -86,17 +86,17 @@ typedef enum
 struct _BlobInfo
 {
   size_t
-    length,
-    extent,
-    quantum;
+    length,             /* The current size of the BLOB data. */
+    extent,             /* The amount of backing store currently allocated */
+    quantum;            /* The amount by which to increase the size of the backing store */
 
   unsigned int
-    mapped,
-    eof;
+    mapped,             /* True if backing store is a memory mapped file. */
+    eof;                /* True if input data has been entirely read. */
 
   magick_off_t
-    offset,
-    size;
+    offset,             /* Current offset (I/O point) as would be returned by TellBlob() */
+    size;               /* Size of the underlying file, or the BLOB */
 
   unsigned int
     exempt,             /* True if file descriptor should not be closed.*/
@@ -104,28 +104,29 @@ struct _BlobInfo
     temporary;          /* Associated file is a temporary file */
 
   StreamType
-    type;
+    type;               /* Classification for how BLOB I/O is implemented. */
 
   FILE
-    *file;
+    *file;              /* File handle for I/O (if any) */
 
   BlobMode
     mode;               /* Blob open mode */
 
   StreamHandler
-    stream;
+    stream;             /* Used to support pixel cache functions ReadStream() and WriteStream().
+                           unsigned int (*StreamHandler)(const Image *,const void *,const size_t) */
 
   unsigned char
     *data;              /* Blob or memory mapped data. */
 
   void
-    *semaphore;
+    *semaphore;         /* Lock for reference_count access */
 
   long
-    reference_count;
+    reference_count;    /* Number of times this blob is referenced. */
 
   unsigned long
-    signature;
+    signature;          /* Numeric value used to evaluate structure integrity. */
 };
 
 /*
@@ -186,9 +187,6 @@ static const char *BlobModeToString(BlobMode blob_mode)
     break;
   case WriteBinaryBlobMode:
     mode_string="WriteBinary";
-    break;
-  case IOBinaryBlobMode:
-    mode_string="IOBinary";
     break;
   }
   return mode_string;
@@ -1135,37 +1133,6 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t B l o b C l o s a b l e                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetBlobClosable() returns True if the blob may be closed, or False if it
-%  is exempt from being closed.
-%
-%  The format of the GetBlobClosable method is:
-%
-%      unsigned int GetBlobClosable(const Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: Image to query
-%
-%
-*/
-MagickExport unsigned int GetBlobClosable(const Image *image)
-{
-  assert(image != (const Image *) NULL);
-  assert(image->blob != (const BlobInfo *) NULL);
-  return (image->blob->exempt == 0);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t B l o b F i l e H a n d l e                                         %
 %                                                                             %
 %                                                                             %
@@ -1347,7 +1314,7 @@ MagickExport int GetBlobStatus(const Image *image)
 %
 %  GetBlobStreamData() returns the stream data for the image. The data is only
 %  available if the data is stored on the heap, or is memory mapped.
-%  otherwise a NULL value is returned.
+%  Otherwise a NULL value is returned.
 %
 %  The format of the GetBlobStreamData method is:
 %
@@ -2306,7 +2273,6 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
     case ReadBinaryBlobMode: type=(char *) "rb"; break;
     case WriteBlobMode: type=(char *) "w"; break;
     case WriteBinaryBlobMode: type=(char *) "w+b"; break;
-    case IOBinaryBlobMode: type=(char *) "w+b"; break;
     }
   if (image_info->stream != (StreamHandler) NULL)
     {
@@ -3229,7 +3195,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ReferenceBlob() increments the reference count associated with the pixel
-%  blob returning a pointer to the blob.
+%  blob, returning a pointer to the blob.
 %
 %  The format of the ReferenceBlob method is:
 %

@@ -875,6 +875,9 @@ typedef struct _Image
     signature;          /* Private, Unique code to validate structure */
 } Image;
 
+/*
+  Callback used by ReadStream() and WriteStream().
+*/
 typedef unsigned int
   (*StreamHandler)(const Image *,const void *,const size_t);
 

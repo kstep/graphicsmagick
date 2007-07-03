@@ -1,3 +1,11 @@
+2007-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c (ReadDPXImage): Avoid using seek() if possible, and
+	don't use at all if the input is not seekable.
+	* coders/psd.c (ReadPSDImage): Eliminate memory leak when reading
+	PSD files.  Fixes Sourceforge issue 1625477 "Memory leak reading
+	layered PSD Image".
+
 2007-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c: Fixed -affine command argument
