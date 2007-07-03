@@ -1,5 +1,8 @@
 2007-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* tiff: Update to libtiff version 3.8.2.
+	* magick/error.h (ThrowReaderException): Don't overwrite an
+	exception which was already thrown.
 	* magick/utility.c (MagickStrlCat): Replacement function for strlcat().
 	(MagickStrlCpy): Replacement function for strlcpy();
 

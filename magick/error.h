@@ -399,7 +399,10 @@ extern MagickExport WarningHandler
 }
 #define ThrowReaderException(code_,reason_,image_) \
 { \
-  ThrowException(exception,code_,reason_,image_ ? (image_)->filename : 0); \
+  if (UndefinedException == exception->severity) \
+    { \
+      ThrowException(exception,code_,reason_,image_ ? (image_)->filename : 0); \
+    } \
   if (image_) \
     { \
        CloseBlob(image_); \
