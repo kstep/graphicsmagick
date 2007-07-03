@@ -1,3 +1,8 @@
+2007-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (MagickStrlCat): Replacement function for strlcat().
+	(MagickStrlCpy): Replacement function for strlcpy();
+
 2007-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/psd.c (ReadPSDImage): Eliminate memory leak when reading

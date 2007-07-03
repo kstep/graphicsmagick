@@ -129,6 +129,10 @@ extern MagickExport void
 extern MagickExport void
   FormatString(char *,const char *,...) __attribute__((format (printf,2,3)));
 
+extern MagickExport size_t
+  MagickStrlCat(char *dst, const char *src, const size_t size),
+  MagickStrlCpy(char *dst, const char *src, const size_t size);
+
 #if defined(MAGICK_IMPLEMENTATION)
 
 /*
@@ -174,6 +178,14 @@ extern MagickExport void
   Force argument into range accepted by <ctype.h> functions.
 */
 #define CTYPE_ARG(value) ((int) ((unsigned char) (value)))
+
+#if !defined(HAVE_STRLCAT)
+#  define strlcat(dst,src,size) MagickStrlCat(dst,src,size)
+#endif
+
+#if !defined(HAVE_STRLCPY)
+#  define strlcpy(dst,src,size) MagickStrlCpy(dst,src,size)
+#endif
 
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 

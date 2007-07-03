@@ -3150,6 +3150,148 @@ MagickExport void LocaleUpper(char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  M a g i c k S t r l C a t                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickStrlCat appends the NULL-terminated string src to the end
+%  of dst.  It will append at most size - strlen(dst) - 1 bytes, NULL-
+%  terminating the result. The total length of the string which would have
+%  been created given sufficient buffer size (may be longer than size) is
+%  returned.  This function substitutes for strlcat() which is available
+%  under FreeBSD and Solaris 9.
+%
+%  Buffer overflow can be checked as  follows:
+%
+%    if (MagickStrlCat(dst, src, dstsize) >= dstsize)
+%      return -1;
+%
+%  The format of the MagickStrlCat method is:
+%
+%      size_t MagickStrlCat(char *dst, const char *src, size_t size)
+%
+%  A description of each parameter follows.
+%
+%   o  dst:  Destination string.
+%
+%   o  src:  Source string.
+%
+%   o  size: Maximum string length, including the terminating null.
+%
+*/
+MagickExport size_t MagickStrlCat(char *dst, const char *src, const size_t size)
+{
+  size_t
+    length;
+
+  char
+    *p;
+
+  const char
+    *q;
+
+  assert(dst != NULL);
+  assert(src != (const char *) NULL);
+  assert(size >= 1);
+
+  length=strlen(dst);
+
+  /*
+    Copy remaining characters from src while constraining length to
+    size - 1.
+  */
+  for ( p = dst + length, q = src;
+        (*q != 0) && (length < size - 1) ;
+        length++, p++, q++ )
+    *p = *q;
+
+  dst[length]='\0';
+
+  /*
+    Add remaining length of src to length.
+  */
+  while (*q++)
+    length++;
+
+  return length;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M a g i c k S t r l C p y                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickStrlCpy copies up to size - 1 characters from the NULL-
+%  terminated string src to dst, NULL-terminating the result. The total
+%  length of the string which would have been created given sufficient
+%  buffer size (may be longer than size) is returned. This function
+%  substitutes for strlcpy() which is available under FreeBSD and Solaris 9.
+%
+%  Buffer overflow can be checked as  follows:
+%
+%    if (MagickStrlCpy(dst, src, dstsize) >= dstsize)
+%      return -1;
+%
+%  The format of the MagickStrlCpy method is:
+%
+%      size_t MagickStrlCpy(char *dst, const char *src, size_t size)
+%
+%  A description of each parameter follows.
+%
+%   o  dst:  Destination string.
+%
+%   o  src:  Source string.
+%
+%   o  size: Maximum string length, including the terminating null.
+%
+*/
+MagickExport size_t MagickStrlCpy(char *dst, const char *src, const size_t size)
+{
+  size_t
+    length=0;
+
+  char
+    *p;
+
+  const char
+    *q;
+
+  assert(dst != NULL);
+  assert(src != (const char *) NULL);
+  assert(size >= 1);
+
+  /*
+    Copy src to dst within bounds of size-1.
+  */
+  for ( p=dst, q=src, length=0 ;
+        (*q != 0) && (length < size-1) ;
+        length++, p++, q++ )
+    *p = *q;
+
+  dst[length]='\0';
+
+  /*
+    Add remaining length of src to length.
+  */
+  while (*q++)
+    length++;
+
+  return length;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  M u l t i l i n e C e n s u s                                              %
 %                                                                             %
 %                                                                             %
