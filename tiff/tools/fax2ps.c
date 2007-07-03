@@ -1,4 +1,4 @@
-/* $Header$" */
+/* $Id$" */
 
 /*
  * Copyright (c) 1991-1997 Sam Leffler
@@ -23,31 +23,30 @@
  * LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 
  * OF THIS SOFTWARE.
  */
-#include <math.h>
+#include "tif_config.h"
+
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
+#include <math.h>
 #include <time.h>
 
-#if defined(VMS)
-#include <unixio.h>
-#elif defined(_WINDOWS)
-#include <io.h>
-#define	off_t	toff_t
-#else
-#include <unistd.h>
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
+#ifdef HAVE_IO_H
+# include <io.h>
 #endif
 
 #include "tiffio.h"
 
 float	defxres = 204.;		/* default x resolution (pixels/inch) */
 float	defyres = 98.;		/* default y resolution (lines/inch) */
-const float basePageWidth = 8.5;
-const float basePageHeight = 11.0;
 const float half = 0.5;
 const float points = 72.0;
-float	pageWidth = 8.5;	/* image page width (inches) */
-float	pageHeight = 11.0;	/* image page length (inches) */
+float	pageWidth = 0;		/* image page width (inches) */
+float	pageHeight = 0;		/* image page length (inches) */
 int	scaleToPage = 0;	/* if true, scale raster to page dimensions */
 int	totalPages = 0;		/* total # pages printed */
 int	row;			/* current output row */
@@ -66,7 +65,7 @@ printruns(unsigned char* buf, uint32* runs, uint32* erun, uint32 lastx)
 {
     static struct {
 	char white, black;
-	short width;
+	unsigned short width;
     } WBarr[] = {
 	{ 'd', 'n', 512 }, { 'e', 'o', 256 }, { 'f', 'p', 128 },
 	{ 'g', 'q',  64 }, { 'h', 'r',  32 }, { 'i', 's',  16 },
@@ -76,15 +75,15 @@ printruns(unsigned char* buf, uint32* runs, uint32* erun, uint32 lastx)
     static char* svalue =
 	" !\"#$&'*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abc";
     int colormode = 1;		/* 0 for white, 1 for black */
-    int runlength = 0;
+    uint32 runlength = 0;
     int n = maxline;
-    int x = 0;
+    uint32 x = 0;
     int l;
 
     (void) buf;
     printf("%d m(", row++);
     while (runs < erun) {
-	if (!runlength) {
+	if (runlength <= 0) {
 	    colormode ^= 1;
 	    runlength = *runs++;
 	    if (x+runlength > lastx)
@@ -116,7 +115,7 @@ printruns(unsigned char* buf, uint32* runs, uint32* erun, uint32 lastx)
 		l++;
 	}
 	while (runlength > 0 && runlength <= 6) {
-	    int bitsleft = 6;
+	    uint32 bitsleft = 6;
 	    int t = 0;
 	    while (bitsleft) {
 		if (runlength <= bitsleft) {
@@ -149,94 +148,6 @@ printruns(unsigned char* buf, uint32* runs, uint32* erun, uint32 lastx)
     }
     printf(")s\n");
 }
-
-void
-printTIF(TIFF* tif, int pageNumber)
-{
-    uint32 w, h;
-    uint16 unit;
-    float xres, yres, scale = 1.0;
-    tstrip_t s, ns;
-
-    TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
-    TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
-    if (!TIFFGetField(tif, TIFFTAG_XRESOLUTION, &xres)) {
-	TIFFWarning(TIFFFileName(tif),
-	    "No x-resolution, assuming %g dpi", defxres);
-	xres = defxres;
-    }
-    if (!TIFFGetField(tif, TIFFTAG_YRESOLUTION, &yres)) {
-	TIFFWarning(TIFFFileName(tif),
-	    "No y-resolution, assuming %g lpi", defyres);
-	yres = defyres;					/* XXX */
-    }
-    if (TIFFGetField(tif, TIFFTAG_RESOLUTIONUNIT, &unit) &&
-      unit == RESUNIT_CENTIMETER) {
-	xres *= 25.4;
-	yres *= 25.4;
-    }
-
-    printf("%%%%Page: \"%d\" %d\n", pageNumber, pageNumber);
-    printf("/$pageTop save def gsave\n");
-    if (scaleToPage)
-        scale = pageHeight / (h/yres) < pageWidth / (w/xres) ?
-            pageHeight / (h/yres) : pageWidth / (w/xres);
-    printf("%g %g translate\n",
-           points * (pageWidth - scale*w/xres) * half,
-           points * (scale*h/yres + (pageHeight - scale*h/yres) * half));
-    printf("%g %g scale\n", points/xres*scale, -points/yres*scale);
-    printf("0 setgray\n");
-    TIFFSetField(tif, TIFFTAG_FAXFILLFUNC, printruns);
-    ns = TIFFNumberOfStrips(tif);
-    row = 0;
-    for (s = 0; s < ns; s++)
-	(void) TIFFReadEncodedStrip(tif, s, (tdata_t) NULL, (tsize_t) -1);
-    printf("p\n");
-    printf("grestore $pageTop restore\n");
-    totalPages++;
-}
-
-#define	GetPageNumber(tif) \
-TIFFGetField(tif, TIFFTAG_PAGENUMBER, &pn, &ptotal)
-
-int
-findPage(TIFF* tif, int pageNumber)
-{
-    uint16 pn = (uint16) -1;
-    uint16 ptotal = (uint16) -1;
-    if (GetPageNumber(tif)) {
-	while (pn != pageNumber && TIFFReadDirectory(tif) && GetPageNumber(tif))
-	    ;
-	return (pn == pageNumber);
-    } else
-	return (TIFFSetDirectory(tif, pageNumber-1));
-}
-
-void
-fax2ps(TIFF* tif, int npages, int* pages, char* filename)
-{
-    if (npages > 0) {
-	uint16 pn, ptotal;
-	int i;
-
-	if (!GetPageNumber(tif))
-	    fprintf(stderr, "%s: No page numbers, counting directories.\n",
-		filename);
-	for (i = 0; i < npages; i++) {
-	    if (findPage(tif, pages[i]))
-		printTIF(tif, pages[i]);
-	    else
-		fprintf(stderr, "%s: No page number %d\n", filename, pages[i]);
-	}
-    } else {
-	int pageNumber = 1;
-	do
-	    printTIF(tif, pageNumber++);
-	while (TIFFReadDirectory(tif));
-    }
-}
-
-#undef GetPageNumber
 
 /* 
  * Create a special PostScript font for printing FAX documents.  By taking
@@ -275,6 +186,122 @@ emitFont(FILE* fd)
 	fprintf(fd, "%s\n", fontPrologue[i]);
 }
 
+void
+printTIF(TIFF* tif, uint16 pageNumber)
+{
+    uint32 w, h;
+    uint16 unit, compression;
+    float xres, yres, scale = 1.0;
+    tstrip_t s, ns;
+    time_t creation_time;
+
+    TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
+    TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
+    if (!TIFFGetField(tif, TIFFTAG_COMPRESSION, &compression)
+	|| compression < COMPRESSION_CCITTRLE
+	|| compression > COMPRESSION_CCITT_T6)
+	return;
+    if (!TIFFGetField(tif, TIFFTAG_XRESOLUTION, &xres) || !xres) {
+	TIFFWarning(TIFFFileName(tif),
+	    "No x-resolution, assuming %g dpi", defxres);
+	xres = defxres;
+    }
+    if (!TIFFGetField(tif, TIFFTAG_YRESOLUTION, &yres) || !yres) {
+	TIFFWarning(TIFFFileName(tif),
+	    "No y-resolution, assuming %g lpi", defyres);
+	yres = defyres;					/* XXX */
+    }
+    if (TIFFGetField(tif, TIFFTAG_RESOLUTIONUNIT, &unit) &&
+      unit == RESUNIT_CENTIMETER) {
+	xres *= 2.54F;
+	yres *= 2.54F;
+    }
+    if (pageWidth == 0)
+	pageWidth = w / xres;
+    if (pageHeight == 0)
+	pageHeight = h / yres;
+
+    printf("%%!PS-Adobe-3.0\n");
+    printf("%%%%Creator: fax2ps\n");
+#ifdef notdef
+    printf("%%%%Title: %s\n", file);
+#endif
+    creation_time = time(0);
+    printf("%%%%CreationDate: %s", ctime(&creation_time));
+    printf("%%%%Origin: 0 0\n");
+    printf("%%%%BoundingBox: 0 0 %u %u\n",
+	(int)(pageWidth * points), (int)(pageHeight * points));	/* XXX */
+    printf("%%%%Pages: (atend)\n");
+    printf("%%%%EndComments\n");
+    printf("%%%%BeginProlog\n");
+    emitFont(stdout);
+    printf("/d{bind def}def\n"); /* bind and def proc */
+    printf("/m{0 exch moveto}d\n");
+    printf("/s{show}d\n");
+    printf("/p{showpage}d \n");	/* end page */
+    printf("%%%%EndProlog\n");
+    printf("%%%%Page: \"%u\" %u\n", pageNumber, pageNumber);
+    printf("/$pageTop save def gsave\n");
+    if (scaleToPage)
+        scale = pageHeight / (h/yres) < pageWidth / (w/xres) ?
+            pageHeight / (h/yres) : pageWidth / (w/xres);
+    printf("%g %g translate\n",
+           points * (pageWidth - scale*w/xres) * half,
+           points * (scale*h/yres + (pageHeight - scale*h/yres) * half));
+    printf("%g %g scale\n", points/xres*scale, -points/yres*scale);
+    printf("0 setgray\n");
+    TIFFSetField(tif, TIFFTAG_FAXFILLFUNC, printruns);
+    ns = TIFFNumberOfStrips(tif);
+    row = 0;
+    for (s = 0; s < ns; s++)
+	(void) TIFFReadEncodedStrip(tif, s, (tdata_t) NULL, (tsize_t) -1);
+    printf("p\n");
+    printf("grestore $pageTop restore\n");
+    totalPages++;
+}
+
+#define	GetPageNumber(tif) \
+TIFFGetField(tif, TIFFTAG_PAGENUMBER, &pn, &ptotal)
+
+int
+findPage(TIFF* tif, uint16 pageNumber)
+{
+    uint16 pn = (uint16) -1;
+    uint16 ptotal = (uint16) -1;
+    if (GetPageNumber(tif)) {
+	while (pn != pageNumber && TIFFReadDirectory(tif) && GetPageNumber(tif))
+	    ;
+	return (pn == pageNumber);
+    } else
+	return (TIFFSetDirectory(tif, (tdir_t)(pageNumber-1)));
+}
+
+void
+fax2ps(TIFF* tif, uint16 npages, uint16* pages, char* filename)
+{
+    if (npages > 0) {
+	uint16 pn, ptotal;
+	int i;
+
+	if (!GetPageNumber(tif))
+	    fprintf(stderr, "%s: No page numbers, counting directories.\n",
+		filename);
+	for (i = 0; i < npages; i++) {
+	    if (findPage(tif, pages[i]))
+		printTIF(tif, pages[i]);
+	    else
+		fprintf(stderr, "%s: No page number %d\n", filename, pages[i]);
+	}
+    } else {
+	uint16 pageNumber = 0;
+	do
+	    printTIF(tif, pageNumber++);
+	while (TIFFReadDirectory(tif));
+    }
+}
+
+#undef GetPageNumber
+
 static int
 pcompar(const void* va, const void* vb)
 {
@@ -290,44 +317,37 @@ main(int argc, char** argv)
 {
     extern int optind;
     extern char* optarg;
-    int c, pageNumber;
-    int* pages = 0, npages = 0;
-    int dowarnings = 0;		/* if 1, enable library warnings */
-    time_t t;
+    uint16 *pages = NULL, npages = 0, pageNumber;
+    int c, dowarnings = 0;		/* if 1, enable library warnings */
     TIFF* tif;
 
     while ((c = getopt(argc, argv, "l:p:x:y:W:H:wS")) != -1)
 	switch (c) {
 	case 'H':		/* page height */
-	    pageHeight = atof(optarg);
+	    pageHeight = (float)atof(optarg);
 	    break;
 	case 'S':		/* scale to page */
 	    scaleToPage = 1;
 	    break;
 	case 'W':		/* page width */
-	    pageWidth = atof(optarg);
+	    pageWidth = (float)atof(optarg);
 	    break;
 	case 'p':		/* print specific page */
-	    pageNumber = atoi(optarg);
-	    if (pageNumber < 1) {
-		fprintf(stderr, "%s: Invalid page number (must be > 0).\n",
-		    optarg);
-		usage(-1);
-	    }
+	    pageNumber = (uint16)atoi(optarg);
 	    if (pages)
-		pages = (int*) realloc((char*) pages, (npages+1)*sizeof (int));
+		pages = (uint16*) realloc(pages, (npages+1)*sizeof(uint16));
 	    else
-		pages = (int*) malloc(sizeof (int));
+		pages = (uint16*) malloc(sizeof(uint16));
 	    pages[npages++] = pageNumber;
 	    break;
 	case 'w':
 	    dowarnings = 1;
 	    break;
 	case 'x':
-	    defxres = atof(optarg);
+	    defxres = (float)atof(optarg);
 	    break;
 	case 'y':
-	    defyres = atof(optarg);
+	    defyres = (float)atof(optarg);
 	    break;
 	case 'l':
 	    maxline = atoi(optarg);
@@ -336,28 +356,9 @@ main(int argc, char** argv)
 	    usage(-1);
 	}
     if (npages > 0)
-	qsort(pages, npages, sizeof (int), pcompar);
+	qsort(pages, npages, sizeof(uint16), pcompar);
     if (!dowarnings)
 	TIFFSetWarningHandler(0);
-    printf("%%!PS-Adobe-3.0\n");
-    printf("%%%%Creator: fax2ps\n");
-#ifdef notdef
-    printf("%%%%Title: %s\n", file);
-#endif
-    t = time(0);
-    printf("%%%%CreationDate: %s", ctime(&t));
-    printf("%%%%Origin: 0 0\n");
-    printf("%%%%BoundingBox: 0 0 %u %u\n",
-	(int)(pageWidth*72), (int)(pageHeight*72));	/* XXX */
-    printf("%%%%Pages: (atend)\n");
-    printf("%%%%EndComments\n");
-    printf("%%%%BeginProlog\n");
-    emitFont(stdout);
-    printf("/d{bind def}def\n"); /* bind and def proc */
-    printf("/m{0 exch moveto}d\n");
-    printf("/s{show}d\n");
-    printf("/p{showpage}d \n");	/* end page */
-    printf("%%%%EndProlog\n");
     if (optind < argc) {
 	do {
 	    tif = TIFFOpen(argv[optind], "r");
@@ -371,28 +372,27 @@ main(int argc, char** argv)
     } else {
 	int n;
 	FILE* fd;
-	char temp[1024], buf[16*1024];
+	char buf[16*1024];
 
-	strcpy(temp, "/tmp/fax2psXXXXXX");
-	(void) mktemp(temp);
-	fd = fopen(temp, "w");
+	fd = tmpfile();
 	if (fd == NULL) {
-	    fprintf(stderr, "Could not create temp file \"%s\"\n", temp);
+	    fprintf(stderr, "Could not create temporary file, exiting.\n");
+	    fclose(fd);
 	    exit(-2);
 	}
 	while ((n = read(fileno(stdin), buf, sizeof (buf))) > 0)
 	    write(fileno(fd), buf, n);
-	tif = TIFFOpen(temp, "r");
-#ifndef VMS
-	unlink(temp);
+	lseek(fileno(fd), 0, SEEK_SET);
+#if defined(_WIN32) && defined(USE_WIN32_FILEIO)
+	tif = TIFFFdOpen(_get_osfhandle(fileno(fd)), "temp", "r");
 #else
-	remove(temp);
+	tif = TIFFFdOpen(fileno(fd), "temp", "r");
 #endif
 	if (tif) {
 	    fax2ps(tif, npages, pages, "<stdin>");
 	    TIFFClose(tif);
 	} else
-	    fprintf(stderr, "%s: Can not open, or not a TIFF file.\n", temp);
+	    fprintf(stderr, "Can not open, or not a TIFF file.\n");
 	fclose(fd);
     }
     printf("%%%%Trailer\n");
@@ -412,7 +412,7 @@ char* stuff[] = {
 " -y yres       set default vertical resolution of input data (lpi)",
 " -S            scale output to page size",
 " -W width      set output page width (inches), default is 8.5",
-" -H height     set output page height (inchest), default is 11",
+" -H height     set output page height (inches), default is 11",
 NULL
 };
 
@@ -423,7 +423,10 @@ usage(int code)
 	int i;
 
 	setbuf(stderr, buf);
+        fprintf(stderr, "%s\n\n", TIFFGetVersion());
 	for (i = 0; stuff[i] != NULL; i++)
 		fprintf(stderr, "%s\n", stuff[i]);
 	exit(code);
 }
+
+/* vim: set ts=8 sts=8 sw=8 noet: */

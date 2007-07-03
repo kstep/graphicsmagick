@@ -1,4 +1,4 @@
-/* $Header$ */
+/* $Id$ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -24,13 +24,23 @@
  * OF THIS SOFTWARE.
  */
 
+#include "tif_config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef HAVE_STRINGS_H
+# include <strings.h>
+#endif
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
 #include "tiffio.h"
 
-#define	streq(a,b)	(strcmp(a,b) == 0)
+#define	streq(a,b)	(strcasecmp(a,b) == 0)
 
 int	showdata = 0;			/* show data */
 int	rawdata = 0;			/* show raw/decoded data */
@@ -53,7 +63,7 @@ main(int argc, char* argv[])
 	uint32 diroff = 0;
 	int chopstrips = 0;		/* disable strip chopping */
 
-	while ((c = getopt(argc, argv, "f:o:cdDSjlmrsvwz0123456789")) != -1)
+	while ((c = getopt(argc, argv, "f:o:cdDSjilmrsvwz0123456789")) != -1)
 		switch (c) {
 		case '0': case '1': case '2': case '3':
 		case '4': case '5': case '6': case '7':
@@ -113,15 +123,22 @@ main(int argc, char* argv[])
 		tif = TIFFOpen(argv[optind], chopstrips ? "rC" : "rc");
 		if (tif != NULL) {
 			if (dirnum != -1) {
-				if (TIFFSetDirectory(tif, dirnum))
+				if (TIFFSetDirectory(tif, (tdir_t) dirnum))
 					tiffinfo(tif, order, flags);
 			} else if (diroff != 0) {
 				if (TIFFSetSubDirectory(tif, diroff))
 					tiffinfo(tif, order, flags);
 			} else {
-				do
+				do {
+					uint32 offset;
+
 					tiffinfo(tif, order, flags);
-				while (TIFFReadDirectory(tif));
+					if (TIFFGetField(tif, TIFFTAG_EXIFIFD,
+							 &offset)) {
+						if (TIFFReadEXIFDirectory(tif, offset))
+							tiffinfo(tif, order, flags);
+					}
+				} while (TIFFReadDirectory(tif));
 			}
 			TIFFClose(tif);
 		}
@@ -155,6 +172,7 @@ usage(void)
 	int i;
 
 	setbuf(stderr, buf);
+        fprintf(stderr, "%s\n\n", TIFFGetVersion());
 	for (i = 0; stuff[i] != NULL; i++)
 		fprintf(stderr, "%s\n", stuff[i]);
 	exit(-1);
@@ -238,7 +256,7 @@ static void
 ShowTile(uint32 row, uint32 col, tsample_t sample,
     unsigned char* pp, uint32 nrow, uint32 rowsize)
 {
-	register tsize_t cc;
+	uint32 cc;
 
 	printf("Tile (%lu,%lu", (unsigned long) row, (unsigned long) col);
 	if (sample != (tsample_t) -1)
@@ -336,7 +354,7 @@ TIFFReadData(TIFF* tif)
 static void
 ShowRawBytes(unsigned char* pp, uint32 n)
 {
-	tsize_t i;
+	uint32 i;
 
 	for (i = 0; i < n; i++) {
 		printf(" %02x", *pp++);
@@ -349,7 +367,7 @@ ShowRawBytes(unsigned char* pp, uint32 n)
 static void
 ShowRawWords(uint16* pp, uint32 n)
 {
-	tsize_t i;
+	uint32 i;
 
 	for (i = 0; i < n; i++) {
 		printf(" %04x", *pp++);
@@ -368,7 +386,7 @@ TIFFReadRawData(TIFF* tif, int bitrev)
 
 	TIFFGetField(tif, TIFFTAG_STRIPBYTECOUNTS, &stripbc);
 	if (nstrips > 0) {
-		tsize_t bufsize = stripbc[0];
+		uint32 bufsize = stripbc[0];
 		tdata_t buf = _TIFFmalloc(bufsize);
 		tstrip_t s;
 
@@ -427,3 +445,5 @@ tiffinfo(TIFF* tif, uint16 order, long flags)
 		TIFFReadData(tif);
 	}
 }
+
+/* vim: set ts=8 sts=8 sw=8 noet: */

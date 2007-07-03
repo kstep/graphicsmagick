@@ -1,4 +1,4 @@
-/* $Header$ */
+/* $Id$ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -24,49 +24,41 @@
  * OF THIS SOFTWARE.
  */
 
+#include "tif_config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#if defined(VMS)
-#include <unixio.h>
-#include <file.h>
-#elif defined(_WINDOWS)
-#include <io.h>
-#define	off_t	toff_t
-#include "tiffio.h"
-#include <fcntl.h>
-#elif defined(applec)
-#define open _open_ /* to avoid conflicts */
-#include <fcntl.h>
-#undef open
-int  open(const char*, int, int);
-typedef unsigned int off_t;
-#else /* !VMS && !_WINDOWS && !applec */
-#ifdef unix
-#include <sys/types.h>
-#endif
-#include <unistd.h>
-#include <fcntl.h>
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
 #endif
 
-#if defined(MSDOS)
-#include <malloc.h>
+#ifdef HAVE_FCNTL_H
+# include <fcntl.h>
 #endif
+
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+
+#ifdef HAVE_IO_H
+# include <io.h>
+#endif
+
+#include "tiffio.h"
 
 #ifndef O_BINARY
-#define	O_BINARY	0
+# define O_BINARY	0
 #endif
-
-#include "tiffio.h"
 
 char*	appname;
 char*	curfile;
 int	swabflag;
 int	bigendian;
-int	typeshift[13];		/* data type shift counts */
-long	typemask[13];		/* data type masks */
-int	maxitems = 24;		/* maximum indirect data items to print */
+int	typeshift[14];		/* data type shift counts */
+long	typemask[14];		/* data type masks */
+uint32	maxitems = 24;		/* maximum indirect data items to print */
 
 char*	bytefmt = "%s%#02x";		/* BYTE */
 char*	sbytefmt = "%s%d";		/* SBYTE */
@@ -78,15 +70,16 @@ char*	rationalfmt = "%s%g";		/* RATIONAL */
 char*	srationalfmt = "%s%g";		/* SRATIONAL */
 char*	floatfmt = "%s%g";		/* FLOAT */
 char*	doublefmt = "%s%g";		/* DOUBLE */
+char*	ifdfmt = "%s%#04x";		/* IFD offset */
 
-static	void dump(int, uint32);
+static	void dump(int, off_t);
 extern	int optind;
 extern	char* optarg;
 
 void
 usage()
 {
-	fprintf(stderr, "usage: %s [-h] [-o offset] file.tif ...\n", appname);
+	fprintf(stderr, "usage: %s [-h] [-o offset] [-m maxitems] file.tif ...\n", appname);
 	exit(-1);
 }
 
@@ -156,6 +149,7 @@ InitByteOrder(int magic)
 	typemask[ord(TIFF_SSHORT)] = 0xffff;
 	typemask[ord(TIFF_LONG)] = 0xffffffff;
 	typemask[ord(TIFF_SLONG)] = 0xffffffff;
+	typemask[ord(TIFF_IFD)] = 0xffffffff;
 	typemask[ord(TIFF_RATIONAL)] = 0xffffffff;
 	typemask[ord(TIFF_SRATIONAL)] = 0xffffffff;
 	typemask[ord(TIFF_FLOAT)] = 0xffffffff;
@@ -163,11 +157,12 @@ InitByteOrder(int magic)
 	typeshift[0] = 0;
 	typeshift[ord(TIFF_LONG)] = 0;
 	typeshift[ord(TIFF_SLONG)] = 0;
+	typeshift[ord(TIFF_IFD)] = 0;
 	typeshift[ord(TIFF_RATIONAL)] = 0;
 	typeshift[ord(TIFF_SRATIONAL)] = 0;
 	typeshift[ord(TIFF_FLOAT)] = 0;
 	typeshift[ord(TIFF_DOUBLE)] = 0;
-	if (magic == TIFF_BIGENDIAN) {
+	if (magic == TIFF_BIGENDIAN || magic == MDI_BIGENDIAN) {
 		typeshift[ord(TIFF_BYTE)] = 24;
 		typeshift[ord(TIFF_SBYTE)] = 24;
 		typeshift[ord(TIFF_SHORT)] = 16;
@@ -182,13 +177,13 @@ InitByteOrder(int magic)
 	}
 }
 
-static	uint32 ReadDirectory(int, unsigned, uint32);
+static	off_t ReadDirectory(int, unsigned, off_t);
 static	void ReadError(char*);
 static	void Error(const char*, ...);
 static	void Fatal(const char*, ...);
 
 static void
-dump(int fd, uint32 diroff)
+dump(int fd, off_t diroff)
 {
 	unsigned i;
 
@@ -198,8 +193,14 @@ dump(int fd, uint32 diroff)
 	/*
 	 * Setup the byte order handling.
 	 */
-	if (hdr.tiff_magic != TIFF_BIGENDIAN && hdr.tiff_magic != TIFF_LITTLEENDIAN)
-		Fatal("Not a TIFF file, bad magic number %u (%#x)",
+	if (hdr.tiff_magic != TIFF_BIGENDIAN && hdr.tiff_magic != TIFF_LITTLEENDIAN &&
+#if HOST_BIGENDIAN
+	    // MDI is sensitive to the host byte order, unlike TIFF
+	    MDI_BIGENDIAN != hdr.tiff_magic )
+#else
+	    MDI_LITTLEENDIAN != hdr.tiff_magic )
+#endif
+		Fatal("Not a TIFF or MDI file, bad magic number %u (%#x)",
 		    hdr.tiff_magic, hdr.tiff_magic);
 	InitByteOrder(hdr.tiff_magic);
 	/*
@@ -244,6 +245,7 @@ static int datawidth[] = {
     8,	/* TIFF_SRATIONAL */
     4,	/* TIFF_FLOAT */
     8,	/* TIFF_DOUBLE */
+    4	/* TIFF_IFD */
 };
 #define	NWIDTHS	(sizeof (datawidth) / sizeof (datawidth[0]))
 static	int TIFFFetchData(int, TIFFDirEntry*, void*);
@@ -259,11 +261,11 @@ static	void PrintLong(FILE*, const char*, TIFFDirEntry*);
  * and convert it to the internal format.
  * We read directories sequentially.
  */
-static uint32
-ReadDirectory(int fd, unsigned ix, uint32 off)
+static off_t
+ReadDirectory(int fd, unsigned ix, off_t off)
 {
 	register TIFFDirEntry *dp;
-	register int n;
+	register unsigned int n;
 	TIFFDirEntry *dir = 0;
 	uint16 dircount;
 	int space;
@@ -299,8 +301,8 @@ ReadDirectory(int fd, unsigned ix, uint32 off)
 	if (swabflag)
 		TIFFSwabLong(&nextdiroff);
 	printf("Directory %u: offset %lu (%#lx) next %lu (%#lx)\n", ix,
-	    (unsigned long) off, (unsigned long) off,
-	    (unsigned long) nextdiroff, (unsigned long) nextdiroff);
+	    (unsigned long)off, (unsigned long)off,
+	    (unsigned long)nextdiroff, (unsigned long)nextdiroff);
 	for (dp = dir, n = dircount; n > 0; n--, dp++) {
 		if (swabflag) {
 			TIFFSwabArrayOfShort(&dp->tdir_tag, 2);
@@ -316,6 +318,11 @@ ReadDirectory(int fd, unsigned ix, uint32 off)
 			continue;
 		}
 		space = dp->tdir_count * datawidth[dp->tdir_type];
+		if (space <= 0) {
+			printf(">\n");
+			Error("Invalid count for tag %u", dp->tdir_tag);
+			continue;
+                }
 		if (space <= 4) {
 			switch (dp->tdir_type) {
 			case TIFF_FLOAT:
@@ -347,11 +354,14 @@ ReadDirectory(int fd, unsigned ix, uint32 off)
 			case TIFF_SLONG:
 				PrintLong(stdout, slongfmt, dp);
 				break;
+			case TIFF_IFD:
+				PrintLong(stdout, ifdfmt, dp);
+				break;
 			}
 		} else {
 			unsigned char *data = (unsigned char *)_TIFFmalloc(space);
 			if (data) {
-				if (TIFFFetchData(fd, dp, data))
+				if (TIFFFetchData(fd, dp, data)) {
 					if (dp->tdir_count > maxitems) {
 						PrintData(stdout, dp->tdir_type,
 						    maxitems, data);
@@ -359,6 +369,7 @@ ReadDirectory(int fd, unsigned ix, uint32 off)
 					} else
 						PrintData(stdout, dp->tdir_type,
 						    dp->tdir_count, data);
+                                }
 				_TIFFfree(data);
 			} else
 				Error("No space for data for tag %u",
@@ -446,6 +457,7 @@ static	struct tagname {
     { TIFFTAG_JPEGRESTARTINTERVAL,"JPEGRestartInterval" },
     { TIFFTAG_JPEGLOSSLESSPREDICTORS,"JPEGLosslessPredictors" },
     { TIFFTAG_JPEGPOINTTRANSFORM,"JPEGPointTransform" },
+    { TIFFTAG_JPEGTABLES,       "JPEGTables" },
     { TIFFTAG_JPEGQTABLES,	"JPEGQTables" },
     { TIFFTAG_JPEGDCTABLES,	"JPEGDCTables" },
     { TIFFTAG_JPEGACTABLES,	"JPEGACTables" },
@@ -514,7 +526,7 @@ PrintByte(FILE* fd, const char* fmt, TIFFDirEntry* dp)
 {
 	char* sep = "";
 
-	if (hdr.tiff_magic != TIFF_LITTLEENDIAN) {
+	if (hdr.tiff_magic == TIFF_BIGENDIAN) {
 		switch ((int)dp->tdir_count) {
 		case 4: fprintf(fd, fmt, sep, dp->tdir_offset&0xff);
 			sep = " ";
@@ -542,7 +554,7 @@ PrintShort(FILE* fd, const char* fmt, TIFFDirEntry* dp)
 {
 	char *sep = "";
 
-	if (hdr.tiff_magic != TIFF_LITTLEENDIAN) {
+	if (hdr.tiff_magic == TIFF_BIGENDIAN) {
 		switch (dp->tdir_count) {
 		case 2: fprintf(fd, fmt, sep, dp->tdir_offset&0xffff);
 			sep = " ";
@@ -609,19 +621,19 @@ PrintData(FILE* fd, uint16 type, uint32 count, unsigned char* data)
 		PrintASCII(fd, count, data);
 		break;
 	case TIFF_SHORT: {
-		register uint16 *wp = (uint16*)data;
+		uint16 *wp = (uint16*)data;
 		while (count-- > 0)
 			fprintf(fd, shortfmt, sep, *wp++), sep = " ";
 		break;
 	}
 	case TIFF_SSHORT: {
-		register int16 *wp = (int16*)data;
+		int16 *wp = (int16*)data;
 		while (count-- > 0)
 			fprintf(fd, sshortfmt, sep, *wp++), sep = " ";
 		break;
 	}
 	case TIFF_LONG: {
-		register uint32 *lp = (uint32*)data;
+		uint32 *lp = (uint32*)data;
 		while (count-- > 0) {
 			fprintf(fd, longfmt, sep, (unsigned long) *lp++);
 			sep = " ";
@@ -629,13 +641,13 @@ PrintData(FILE* fd, uint16 type, uint32 count, unsigned char* data)
 		break;
 	}
 	case TIFF_SLONG: {
-		register int32 *lp = (int32*)data;
+		int32 *lp = (int32*)data;
 		while (count-- > 0)
 			fprintf(fd, slongfmt, sep, (long) *lp++), sep = " ";
 		break;
 	}
 	case TIFF_RATIONAL: {
-		register uint32 *lp = (uint32*)data;
+		uint32 *lp = (uint32*)data;
 		while (count-- > 0) {
 			if (lp[1] == 0)
 				fprintf(fd, "%sNan (%lu/%lu)", sep,
@@ -650,7 +662,7 @@ PrintData(FILE* fd, uint16 type, uint32 count, unsigned char* data)
 		break;
 	}
 	case TIFF_SRATIONAL: {
-		register int32 *lp = (int32*)data;
+		int32 *lp = (int32*)data;
 		while (count-- > 0) {
 			if (lp[1] == 0)
 				fprintf(fd, "%sNan (%ld/%ld)", sep,
@@ -664,15 +676,23 @@ PrintData(FILE* fd, uint16 type, uint32 count, unsigned char* data)
 		break;
 	}
 	case TIFF_FLOAT: {
-		register float *fp = (float *)data;
+		float *fp = (float *)data;
 		while (count-- > 0)
 			fprintf(fd, floatfmt, sep, *fp++), sep = " ";
 		break;
 	}
 	case TIFF_DOUBLE: {
-		register double *dp = (double *)data;
+		double *dp = (double *)data;
 		while (count-- > 0)
 			fprintf(fd, doublefmt, sep, *dp++), sep = " ";
+		break;
+	}
+	case TIFF_IFD: {
+		uint32 *lp = (uint32*)data;
+		while (count-- > 0) {
+			fprintf(fd, ifdfmt, sep, (unsigned long) *lp++);
+			sep = " ";
+		}
 		break;
 	}
 	}
@@ -688,8 +708,8 @@ TIFFFetchData(int fd, TIFFDirEntry* dir, void* cp)
 
 	w = (dir->tdir_type < NWIDTHS ? datawidth[dir->tdir_type] : 0);
 	cc = dir->tdir_count * w;
-	if (lseek(fd, (off_t) dir->tdir_offset, 0) == dir->tdir_offset &&
-	    read(fd, cp, cc) == cc) {
+	if (lseek(fd, (off_t)dir->tdir_offset, 0) != (off_t)-1
+	    && read(fd, cp, cc) != -1) {
 		if (swabflag) {
 			switch (dir->tdir_type) {
 			case TIFF_SHORT:
@@ -700,6 +720,7 @@ TIFFFetchData(int fd, TIFFDirEntry* dir, void* cp)
 			case TIFF_LONG:
 			case TIFF_SLONG:
 			case TIFF_FLOAT:
+			case TIFF_IFD:
 				TIFFSwabArrayOfLong((uint32*) cp,
 				    dir->tdir_count);
 				break;
@@ -753,3 +774,5 @@ Fatal(const char* fmt, ...)
 	va_end(ap);
 	exit(-1);
 }
+
+/* vim: set ts=8 sts=8 sw=8 noet: */

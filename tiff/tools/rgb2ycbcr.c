@@ -1,4 +1,4 @@
-/* $Header$ */
+/* $Id$ */
 
 /*
  * Copyright (c) 1991-1997 Sam Leffler
@@ -24,9 +24,15 @@
  * OF THIS SOFTWARE.
  */
 
+#include "tif_config.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
 
 #include "tiffio.h"
 
@@ -48,12 +54,12 @@ uint32	rowsperstrip = (uint32) -1;
 
 uint16	horizSubSampling = 2;		/* YCbCr horizontal subsampling */
 uint16	vertSubSampling = 2;		/* YCbCr vertical subsampling */
-float	ycbcrCoeffs[3] = { .299, .587, .114 };
+float	ycbcrCoeffs[3] = { .299F, .587F, .114F };
 /* default coding range is CCIR Rec 601-1 with no headroom/footroom */
-float	refBlackWhite[6] = { 0., 255., 128., 255., 128., 255. };
+float	refBlackWhite[6] = { 0.F, 255.F, 128.F, 255.F, 128.F, 255.F };
 
 static	int tiffcvt(TIFF* in, TIFF* out);
-static	void usage(void);
+static	void usage(int code);
 static	void setupLumaTables(void);
 
 int
@@ -75,8 +81,10 @@ main(int argc, char* argv[])
 			    compression = COMPRESSION_LZW;
 			else if (streq(optarg, "jpeg"))
 			    compression = COMPRESSION_JPEG;
+			else if (streq(optarg, "zip"))
+			    compression = COMPRESSION_ADOBE_DEFLATE;
 			else
-			    usage();
+			    usage(-1);
 			break;
 		case 'h':
 			horizSubSampling = atoi(optarg);
@@ -96,11 +104,11 @@ main(int argc, char* argv[])
 			refBlackWhite[5] = 240.;
 			break;
 		case '?':
-			usage();
+			usage(0);
 			/*NOTREACHED*/
 		}
 	if (argc - optind < 2)
-		usage();
+		usage(-1);
 	out = TIFFOpen(argv[argc-1], "w");
 	if (out == NULL)
 		return (-2);
@@ -151,8 +159,8 @@ setupLumaTables(void)
 	lumaRed = setupLuma(LumaRed);
 	lumaGreen = setupLuma(LumaGreen);
 	lumaBlue = setupLuma(LumaBlue);
-	D1 = 1./(2 - 2*LumaBlue);
-	D2 = 1./(2 - 2*LumaRed);
+	D1 = 1.F/(2.F - 2.F*LumaBlue);
+	D2 = 1.F/(2.F - 2.F*LumaRed);
 	Yzero = V2Code(0, refBlackWhite[0], refBlackWhite[1], 255);
 }
 
@@ -160,7 +168,7 @@ static void
 cvtClump(unsigned char* op, uint32* raster, uint32 ch, uint32 cw, uint32 w)
 {
 	float Y, Cb = 0, Cr = 0;
-	int j, k;
+	uint32 j, k;
 	/*
 	 * Convert ch-by-cw block of RGB
 	 * to YCbCr and sample accordingly.
@@ -317,13 +325,13 @@ tiffcvt(TIFF* in, TIFF* out)
 	return (cvtRaster(out, raster, width, height));
 }
 
-static char* usageMsg[] = {
+char* stuff[] = {
     "usage: rgb2ycbcr [-c comp] [-r rows] [-h N] [-v N] input... output\n",
     "where comp is one of the following compression algorithms:\n",
     " jpeg\t\tJPEG encoding\n",
     " lzw\t\tLempel-Ziv & Welch encoding\n",
-    " (lzw no longer supported by default due to Unisys patent enforcement)", 
-    " packbits\tPackBits encoding\n",
+    " zip\t\tdeflate encoding\n",
+    " packbits\tPackBits encoding (default)\n",
     " none\t\tno compression\n",
     "and the other options are:\n",
     " -r\trows/strip\n",
@@ -333,10 +341,17 @@ static char* usageMsg[] = {
 };
 
 static void
-usage(void)
+usage(int code)
 {
+	char buf[BUFSIZ];
 	int i;
-	for (i = 0; usageMsg[i]; i++)
-		fprintf(stderr, "%s", usageMsg[i]);
-	exit(-1);
+
+	setbuf(stderr, buf);
+       
+ fprintf(stderr, "%s\n\n", TIFFGetVersion());
+	for (i = 0; stuff[i] != NULL; i++)
+		fprintf(stderr, "%s\n", stuff[i]);
+	exit(code);
 }
+
+/* vim: set ts=8 sts=8 sw=8 noet: */

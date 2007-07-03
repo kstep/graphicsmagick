@@ -1,4 +1,4 @@
-/* $Header$ */
+/* $Id$ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -24,10 +24,16 @@
  * OF THIS SOFTWARE.
  */
 
+#include "tif_config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
 
 #include "rasterfile.h"
 #include "tiffio.h"
@@ -54,7 +60,7 @@ int
 main(int argc, char* argv[])
 {
 	unsigned char* buf;
-	uint32 row;
+	long row;
 	tsize_t linebytes, scanline;
 	TIFF *out;
 	FILE *in;
@@ -66,7 +72,7 @@ main(int argc, char* argv[])
 	extern int optind;
 	extern char* optarg;
 
-	while ((c = getopt(argc, argv, "c:r:")) != -1)
+	while ((c = getopt(argc, argv, "c:r:h")) != -1)
 		switch (c) {
 		case 'c':		/* compression scheme */
 			if (!processCompressOptions(optarg))
@@ -75,7 +81,7 @@ main(int argc, char* argv[])
 		case 'r':		/* rows/strip */
 			rowsperstrip = atoi(optarg);
 			break;
-		case '?':
+		case 'h':
 			usage();
 			/*NOTREACHED*/
 		}
@@ -90,7 +96,27 @@ main(int argc, char* argv[])
 		fprintf(stderr, "%s: Can not read header.\n", argv[optind]);
 		return (-2);
 	}
-	if (h.ras_magic != RAS_MAGIC) {
+	if (strcmp(h.ras_magic, RAS_MAGIC) == 0) {
+#ifndef WORDS_BIGENDIAN
+			TIFFSwabLong((uint32 *)&h.ras_width);
+			TIFFSwabLong((uint32 *)&h.ras_height);
+			TIFFSwabLong((uint32 *)&h.ras_depth);
+			TIFFSwabLong((uint32 *)&h.ras_length);
+			TIFFSwabLong((uint32 *)&h.ras_type);
+			TIFFSwabLong((uint32 *)&h.ras_maptype);
+			TIFFSwabLong((uint32 *)&h.ras_maplength);
+#endif
+	} else if (strcmp(h.ras_magic, RAS_MAGIC_INV) == 0) {
+#ifdef WORDS_BIGENDIAN
+			TIFFSwabLong((uint32 *)&h.ras_width);
+			TIFFSwabLong((uint32 *)&h.ras_height);
+			TIFFSwabLong((uint32 *)&h.ras_depth);
+			TIFFSwabLong((uint32 *)&h.ras_length);
+			TIFFSwabLong((uint32 *)&h.ras_type);
+			TIFFSwabLong((uint32 *)&h.ras_maptype);
+			TIFFSwabLong((uint32 *)&h.ras_maplength);
+#endif
+	} else {
 		fprintf(stderr, "%s: Not a rasterfile.\n", argv[optind]);
 		return (-3);
 	}
@@ -122,7 +148,7 @@ main(int argc, char* argv[])
 		mapsize = 1<<h.ras_depth; 
 		if (h.ras_maplength > mapsize*3) {
 			fprintf(stderr,
-			    "%s: Huh, %d colormap entries, should be %d?\n",
+			    "%s: Huh, %ld colormap entries, should be %d?\n",
 			    argv[optind], h.ras_maplength, mapsize*3);
 			return (-7);
 		}
@@ -181,8 +207,8 @@ main(int argc, char* argv[])
 	    TIFFDefaultStripSize(out, rowsperstrip));
 	for (row = 0; row < h.ras_height; row++) {
 		if (fread(buf, linebytes, 1, in) != 1) {
-			fprintf(stderr, "%s: scanline %lu: Read error.\n",
-			    argv[optind], (unsigned long) row);
+			fprintf(stderr, "%s: scanline %ld: Read error.\n",
+			    argv[optind], row);
 			break;
 		}
 		if (h.ras_type == RT_STANDARD && h.ras_depth == 24) {
@@ -210,11 +236,19 @@ processCompressOptions(char* opt)
 		compression = COMPRESSION_PACKBITS;
 	else if (strneq(opt, "jpeg", 4)) {
 		char* cp = strchr(opt, ':');
-		if (cp && isdigit(cp[1]))
+
+                compression = COMPRESSION_JPEG;
+                while( cp )
+                {
+                    if (isdigit((int)cp[1]))
 			quality = atoi(cp+1);
-		if (cp && strchr(cp, 'r'))
+                    else if (cp[1] == 'r' )
 			jpegcolormode = JPEGCOLORMODE_RAW;
-		compression = COMPRESSION_JPEG;
+                    else
+                        usage();
+
+                    cp = strchr(cp+1,':');
+                }
 	} else if (strneq(opt, "lzw", 3)) {
 		char* cp = strchr(opt, ':');
 		if (cp)
@@ -236,9 +270,8 @@ char* stuff[] = {
 " -r #		make each strip have no more than # rows",
 "",
 " -c lzw[:opts]	compress output with Lempel-Ziv & Welch encoding",
-"               (no longer supported by default due to Unisys patent enforcement)", 
 " -c zip[:opts]	compress output with deflate encoding",
-" -c jpeg[:opts]compress output with JPEG encoding",
+" -c jpeg[:opts]	compress output with JPEG encoding",
 " -c packbits	compress output with packbits encoding",
 " -c none	use no compression algorithm on output",
 "",
@@ -250,6 +283,7 @@ char* stuff[] = {
 "LZW and deflate options:",
 " #		set predictor value",
 "For example, -c lzw:2 to get LZW-encoded data with horizontal differencing",
+" -h		this help message",
 NULL
 };
 
@@ -260,7 +294,10 @@ usage(void)
 	int i;
 
 	setbuf(stderr, buf);
+        fprintf(stderr, "%s\n\n", TIFFGetVersion());
 	for (i = 0; stuff[i] != NULL; i++)
 		fprintf(stderr, "%s\n", stuff[i]);
 	exit(-1);
 }
+
+/* vim: set ts=8 sts=8 sw=8 noet: */
