@@ -28,8 +28,8 @@ or obtained by writing to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-#include "lt_error.h"
 #include "lt__private.h"
+#include "lt_error.h"
 
 static const char	*last_error	= 0;
 static const char	error_strings[LT_ERROR_MAX][LT_ERROR_LEN_MAX + 1] =

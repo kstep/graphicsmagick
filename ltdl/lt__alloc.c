@@ -28,16 +28,11 @@ or obtained by writing to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-#if defined(LT_CONFIG_H)
-#  include LT_CONFIG_H
-#else
-#  include <config.h>
-#endif
+#include "lt__private.h"
 
 #include <stdio.h>
 
 #include "lt__alloc.h"
-#include "lt__private.h"
 
 static void alloc_die_default (void);
 

@@ -28,8 +28,8 @@ or obtained by writing to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-#include "lt_dlloader.h"
 #include "lt__private.h"
+#include "lt_dlloader.h"
 
 #define RETURN_SUCCESS 0
 #define RETURN_FAILURE 1

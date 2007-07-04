@@ -24,16 +24,12 @@ demo/yellow_flower.gif
 Magick.pm
 Magick.pm.in
 Magick.xs
-Magick.xs-save
 Makefile.am
-Makefile.aperl
 Makefile.nt
 Makefile.PL
 Makefile.PL.in
 MANIFEST			This list of files
 PerlMagick
-perlmain.c
-perlmain.o
 README.txt
 t/blob.t
 t/bzlib/input.miff
@@ -128,13 +124,6 @@ t/input_rgb.mat
 t/jbig/input.jbig
 t/jbig/read.t
 t/jbig/write.t
-t/jng/gray_idat_tmp.jng
-t/jng/gray_jdaa_tmp.jng
-t/jng/gray_prog_idat_tmp.jng
-t/jng/gray_prog_jdaa_tmp.jng
-t/jng/gray_prog_tmp.jng
-t/jng/gray_tmp.jng
-t/jng/idat_tmp.jng
 t/jng/input_gray.jng
 t/jng/input_gray_idat.jng
 t/jng/input_gray_jdaa.jng
@@ -147,10 +136,6 @@ t/jng/input_prog.jng
 t/jng/input_prog_idat.jng
 t/jng/input_prog_jdaa.jng
 t/jng/input_rose.jng
-t/jng/jdaa_tmp.jng
-t/jng/prog_idat_tmp.jng
-t/jng/prog_jdaa_tmp.jng
-t/jng/prog_tmp.jng
 t/jng/read.t
 t/jng/write.t
 t/jp2/input.jp2
