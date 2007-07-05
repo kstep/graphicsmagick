@@ -61,6 +61,7 @@ MAGICK_BASE_SRCS = \
 	log.c \
 	magic.c \
 	magick.c \
+	magick_endian.c \
 	map.c \
 	memory.c \
 	module.c \
@@ -182,6 +183,7 @@ noinst_HEADERS = \
 	display.h \
 	locale_c.h \
 	mac.h \
+	magick_endian.h \
 	map.h \
 	nt_base.h \
 	nt_feature.h \

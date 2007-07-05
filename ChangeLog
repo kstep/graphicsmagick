@@ -1,3 +1,10 @@
+2007-07-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/cineon.c: The Kodak Cineon coder was such a disaster that
+	this module is back-ported from the 1.2 development version.  Some
+	features are lost in the process.  Resolves SourceForge issue
+	1486657 "Can't extract single channel from Cineon format".
+
 2007-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tiff: Update to libtiff version 3.8.2.

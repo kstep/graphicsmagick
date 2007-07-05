@@ -4865,7 +4865,7 @@ typedef struct _XYZColorTransformPacket
 static const size_t
   XYZMapAllocSize=(MaxMap+1)*sizeof(XYZColorTransformPacket);
 
-static const char *ColorspaceTypeToString(const ColorspaceType colorspace)
+MagickExport const char *ColorspaceTypeToString(const ColorspaceType colorspace)
 {
   const char
     *log_colorspace = "Unknown";
@@ -6976,6 +6976,7 @@ MagickExport unsigned int TransformColorspace(Image *image,
 %    o colorspace: the colorspace to transform the image to.
 %
 */
+
 typedef struct _RGBColorTransformPacket
 {
   int

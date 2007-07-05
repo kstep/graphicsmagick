@@ -92,23 +92,24 @@ am__libGraphicsMagick_la_SOURCES_DIST = animate.c annotate.c \
 	attribute.c blob.c cache.c cache_view.c color.c command.c \
 	composite.c compress.c constitute.c decorate.c delegate.c \
 	deprecate.c display.c draw.c effect.c enhance.c error.c fx.c \
-	gem.c image.c list.c locale.c log.c magic.c magick.c map.c \
-	memory.c module.c monitor.c montage.c paint.c pixel_iterator.c \
-	profile.c PreRvIcccm.c quantize.c registry.c render.c resize.c \
-	resource.c segment.c semaphore.c shear.c signature.c static.c \
-	stream.c tempfile.c timer.c transform.c type.c utility.c \
-	version.c widget.c xwindow.c nt_feature.c nt_base.c
+	gem.c image.c list.c locale.c log.c magic.c magick.c \
+	magick_endian.c map.c memory.c module.c monitor.c montage.c \
+	paint.c pixel_iterator.c profile.c PreRvIcccm.c quantize.c \
+	registry.c render.c resize.c resource.c segment.c semaphore.c \
+	shear.c signature.c static.c stream.c tempfile.c timer.c \
+	transform.c type.c utility.c version.c widget.c xwindow.c \
+	nt_feature.c nt_base.c
 am__objects_1 = animate.lo annotate.lo attribute.lo blob.lo cache.lo \
 	cache_view.lo color.lo command.lo composite.lo compress.lo \
 	constitute.lo decorate.lo delegate.lo deprecate.lo display.lo \
 	draw.lo effect.lo enhance.lo error.lo fx.lo gem.lo image.lo \
-	list.lo locale.lo log.lo magic.lo magick.lo map.lo memory.lo \
-	module.lo monitor.lo montage.lo paint.lo pixel_iterator.lo \
-	profile.lo PreRvIcccm.lo quantize.lo registry.lo render.lo \
-	resize.lo resource.lo segment.lo semaphore.lo shear.lo \
-	signature.lo static.lo stream.lo tempfile.lo timer.lo \
-	transform.lo type.lo utility.lo version.lo widget.lo \
-	xwindow.lo
+	list.lo locale.lo log.lo magic.lo magick.lo magick_endian.lo \
+	map.lo memory.lo module.lo monitor.lo montage.lo paint.lo \
+	pixel_iterator.lo profile.lo PreRvIcccm.lo quantize.lo \
+	registry.lo render.lo resize.lo resource.lo segment.lo \
+	semaphore.lo shear.lo signature.lo static.lo stream.lo \
+	tempfile.lo timer.lo transform.lo type.lo utility.lo \
+	version.lo widget.lo xwindow.lo
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 =  \
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@	nt_feature.lo
 @WIN32_NATIVE_BUILD_TRUE@am__objects_2 = nt_base.lo nt_feature.lo
@@ -202,6 +203,7 @@ EchoDelegate = @EchoDelegate@
 EditorDelegate = @EditorDelegate@
 FIGDecodeDelegate = @FIGDecodeDelegate@
 GMDelegate = @GMDelegate@
+GREP = @GREP@
 GSColorDevice = @GSColorDevice@
 GSEPSDevice = @GSEPSDevice@
 GSMonoDevice = @GSMonoDevice@
@@ -415,19 +417,14 @@ WITH_PERL_TRUE = @WITH_PERL_TRUE@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WWWDecodeDelegate = @WWWDecodeDelegate@
 WinPathScript = @WinPathScript@
+XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 ZipDelegate = @ZipDelegate@
-ac_ct_AR = @ac_ct_AR@
-ac_ct_AS = @ac_ct_AS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_DLLTOOL = @ac_ct_DLLTOOL@
-ac_ct_OBJDUMP = @ac_ct_OBJDUMP@
-ac_ct_RANLIB = @ac_ct_RANLIB@
-ac_ct_STRIP = @ac_ct_STRIP@
 acx_pthread_config = @acx_pthread_config@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
@@ -445,6 +442,9 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+datarootdir = @datarootdir@
+docdir = @docdir@
+dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 freetype_config = @freetype_config@
 ghostscript_font_dir = @ghostscript_font_dir@
@@ -453,17 +453,21 @@ host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
+htmldir = @htmldir@
 includedir = @includedir@/GraphicsMagick
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
+localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
+pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
+psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
@@ -520,6 +524,7 @@ MAGICK_BASE_SRCS = \
 	log.c \
 	magic.c \
 	magick.c \
+	magick_endian.c \
 	map.c \
 	memory.c \
 	module.c \
@@ -628,6 +633,7 @@ noinst_HEADERS = \
 	display.h \
 	locale_c.h \
 	mac.h \
+	magick_endian.h \
 	map.h \
 	nt_base.h \
 	nt_feature.h \
@@ -821,6 +827,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magick.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magick_endian.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/memory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/module.Plo@am__quote@

@@ -1093,6 +1093,9 @@ extern MagickExport void
   SetImageOpacity(Image *,const unsigned int),
   SyncImage(Image *);
 
+extern MagickExport const char
+  *ColorspaceTypeToString(const ColorspaceType colorspace);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
