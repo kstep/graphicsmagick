@@ -984,7 +984,7 @@ static void GenerateCineonTimeStamp(char *date_str, size_t date_str_length, char
 
   memset(timestamp,0,sizeof(timestamp));
   strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%S%Z",t);
-  timestamp[MaxTextExtent]='\0';
+  timestamp[MaxTextExtent-1]='\0';
   memset(date_str,0,date_str_length);
   strlcpy(date_str,timestamp,11);
   memset(time_str,0,time_str_length);
