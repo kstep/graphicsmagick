@@ -6365,18 +6365,18 @@ fi
 
 
 # HP-UX *does* need _LARGEFILE_SOURCE even though AC_FUNC_FSEEKO decides otherwise.
-{ echo "$as_me:$LINENO: checking for HP-UX _LARGEFILE_SOURCE" >&5
-echo $ECHO_N "checking for HP-UX _LARGEFILE_SOURCE... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking for special HP-UX _LARGEFILE_SOURCE" >&5
+echo $ECHO_N "checking for special HP-UX _LARGEFILE_SOURCE... $ECHO_C" >&6; }
 hpux_ac_cv_sys_largefile_source=no
-case "${host_os}" in
-  hppa*-hp-hpux* )
-  cat >>confdefs.h <<\_ACEOF
+case "${host}" in
+  hppa*-hp-hpux* ) # hppa2.0w-hp-hpux11.23
+    cat >>confdefs.h <<\_ACEOF
 #define _LARGEFILE_SOURCE 1
 _ACEOF
 
-  ac_cv_sys_largefile_source=yes
-  hpux_ac_cv_sys_largefile_source=yes
-  ;;
+    ac_cv_sys_largefile_source=yes
+    hpux_ac_cv_sys_largefile_source=yes
+    ;;
 esac
 { echo "$as_me:$LINENO: result: $hpux_ac_cv_sys_largefile_source" >&5
 echo "${ECHO_T}$hpux_ac_cv_sys_largefile_source" >&6; }
