@@ -1,3 +1,10 @@
+2007-07-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c: Only replace getc_unlocked() and putc__unlocked()
+	for a thread-safe build.
+	* magick/studio.h: Always use fseeko() and ftello() if they are
+	available.
+
 2007-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/dpx.c (ReadDPXImage): Avoid using seek() if possible, and

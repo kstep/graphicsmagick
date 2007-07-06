@@ -492,6 +492,9 @@
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
+/* The size of `off_t', as computed by sizeof. */
+#undef SIZEOF_OFF_T
+
 /* The size of `signed int', as computed by sizeof. */
 #undef SIZEOF_SIGNED_INT
 
@@ -503,6 +506,9 @@
 
 /* The size of `signed short', as computed by sizeof. */
 #undef SIZEOF_SIGNED_SHORT
+
+/* The size of `size_t', as computed by sizeof. */
+#undef SIZEOF_SIZE_T
 
 /* The size of `unsigned int', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_INT

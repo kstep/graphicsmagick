@@ -156,11 +156,15 @@ extern "C" {
 # endif
 #endif
 
-#if defined(_FILE_OFFSET_BITS)
-# if (_FILE_OFFSET_BITS == 64)
+/*
+  Use fseeko() and ftello() if they are available since they use
+  'off_t' rather than 'long'.  It is wrong to use fseeko() and
+  ftello() only on systems with special LFS support since some systems
+  (e.g. FreeBSD) support a 64-bit off_t by default.
+*/
+#if defined(HAVE_FSEEKO)
 #  define fseek  fseeko
 #  define ftell  ftello
-# endif
 #endif
 
 #if !defined(ExtendedSignedIntegralType)

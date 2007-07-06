@@ -294,8 +294,23 @@ fi
 # According to the X/Open LFS standard, setting _FILE_OFFSET_BITS to 64
 # remaps standard functions to their 64-bit equivalents.
 #
+# The LFS_CPPFLAGS substition is used to support building PerlMagick.
+# 
+#
 ########
 AC_SYS_LARGEFILE
+
+# If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
+# `_LARGEFILE_SOURCE' if necessary.
+# HP-UX *does* need _LARGEFILE_SOURCE even though AC_FUNC_FSEEKO decides otherwise.
+case "${host_os}" in
+  hppa*-hp-hpux* )
+  AC_DEFINE(_LARGEFILE_SOURCE,1)
+  ac_cv_sys_largefile_source=1
+  ;;
+esac
+AC_FUNC_FSEEKO
+
 LFS_CPPFLAGS=''
 if test "$enable_largefile" != no
 then
@@ -307,9 +322,6 @@ then
   then
     LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
   fi
-  # If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
-  # `_LARGEFILE_SOURCE' if necessary.
-  AC_FUNC_FSEEKO
   if  test "$ac_cv_sys_largefile_source" != 'no'
   then
     LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGEFILE_SOURCE=1"
@@ -860,6 +872,12 @@ AC_CHECK_SIZEOF(signed long long)
 # SIZEOF_UNSIGNED_LONG_LONG.  If 'unsigned long long' is not
 # supported then the value defined is zero.
 AC_CHECK_SIZEOF(unsigned long long)
+
+# Obtain size of off_t and define as SIZEOF_OFF_T
+AC_CHECK_SIZEOF(off_t)
+
+# Obtain size of size_t and define as SIZEOF_SIZE_T
+AC_CHECK_SIZEOF(size_t)
 
 # If `signal.h' declares signal as returning a pointer to a function
 # returning void, define RETSIGTYPE to be void; otherwise, define it
