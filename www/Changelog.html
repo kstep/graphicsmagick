@@ -21,6 +21,16 @@
 </tr>
 </table>
 <p>
+2007-07-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.c: Only replace getc_unlocked() and putc__unlocked()
+        for a thread-safe build.<BR>
+  <LI> magick/studio.h: Always use fseeko() and ftello() if they are
+        available.
+
+</UL>
+<p>
 2007-07-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -135,13 +135,15 @@ struct _BlobInfo
   support since Images are only allowed to be accessed by one thread at
   a time. Using the unlocked version improves performance by about 30%.
 */
-#if defined(HAVE_GETC_UNLOCKED)
-#  undef getc
-#  define getc getc_unlocked
-#endif
-#if defined(HAVE_PUTC_UNLOCKED)
-#  undef putc
-#  define putc putc_unlocked
+#if defined(HAVE_PTHREAD)
+#  if defined(HAVE_GETC_UNLOCKED)
+#    undef getc
+#    define getc getc_unlocked
+#  endif
+#  if defined(HAVE_PUTC_UNLOCKED)
+#    undef putc
+#    define putc putc_unlocked
+#  endif
 #endif
 
 #if defined(HAVE_MMAP_FILEIO)
