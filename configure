@@ -6365,21 +6365,16 @@ fi
 
 
 # HP-UX *does* need _LARGEFILE_SOURCE even though AC_FUNC_FSEEKO decides otherwise.
-{ echo "$as_me:$LINENO: checking for special HP-UX _LARGEFILE_SOURCE" >&5
-echo $ECHO_N "checking for special HP-UX _LARGEFILE_SOURCE... $ECHO_C" >&6; }
-hpux_ac_cv_sys_largefile_source=no
-case "${host}" in
-  hppa*-hp-hpux* ) # hppa2.0w-hp-hpux11.23
-    cat >>confdefs.h <<\_ACEOF
-#define _LARGEFILE_SOURCE 1
-_ACEOF
-
-    ac_cv_sys_largefile_source=1
-    hpux_ac_cv_sys_largefile_source=yes
-    ;;
-esac
-{ echo "$as_me:$LINENO: result: $hpux_ac_cv_sys_largefile_source" >&5
-echo "${ECHO_T}$hpux_ac_cv_sys_largefile_source" >&6; }
+# AC_MSG_CHECKING([for special HP-UX _LARGEFILE_SOURCE])
+# hpux_ac_cv_sys_largefile_source=no
+# case "${host}" in
+#  hppa*-hp-hpux* ) # hppa2.0w-hp-hpux11.23
+#    AC_DEFINE(_LARGEFILE_SOURCE,1)
+#    ac_cv_sys_largefile_source=1
+#    hpux_ac_cv_sys_largefile_source=yes
+#    ;;
+# esac
+# AC_MSG_RESULT($hpux_ac_cv_sys_largefile_source)
 # If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
 # `_LARGEFILE_SOURCE' if necessary.
 { echo "$as_me:$LINENO: checking for _LARGEFILE_SOURCE value needed for large files" >&5
@@ -8265,13 +8260,13 @@ if test "${lt_cv_nm_interface+set}" = set; then
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:8268: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:8263: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:8271: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:8266: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:8274: output\"" >&5)
+  (eval echo "\"\$as_me:8269: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -8924,7 +8919,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 8927 "configure"
+#line 8922 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11042,7 +11037,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 11045 "configure"' > conftest.$ac_ext
+  echo '#line 11040 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -11606,11 +11601,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11609: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11604: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11613: \$? = $ac_status" >&5
+   echo "$as_me:11608: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -11928,11 +11923,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11931: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11926: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11935: \$? = $ac_status" >&5
+   echo "$as_me:11930: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -12033,11 +12028,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12036: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12031: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:12040: \$? = $ac_status" >&5
+   echo "$as_me:12035: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -12088,11 +12083,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12091: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12086: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:12095: \$? = $ac_status" >&5
+   echo "$as_me:12090: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14797,7 +14792,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 14800 "configure"
+#line 14795 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14897,7 +14892,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 14900 "configure"
+#line 14895 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -17650,11 +17645,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17653: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17648: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:17657: \$? = $ac_status" >&5
+   echo "$as_me:17652: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -17749,11 +17744,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17752: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17747: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:17756: \$? = $ac_status" >&5
+   echo "$as_me:17751: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17801,11 +17796,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:17804: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:17799: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:17808: \$? = $ac_status" >&5
+   echo "$as_me:17803: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
