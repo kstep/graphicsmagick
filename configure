@@ -6374,7 +6374,7 @@ case "${host}" in
 #define _LARGEFILE_SOURCE 1
 _ACEOF
 
-    ac_cv_sys_largefile_source=yes
+    ac_cv_sys_largefile_source=1
     hpux_ac_cv_sys_largefile_source=yes
     ;;
 esac
