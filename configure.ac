@@ -302,14 +302,15 @@ AC_SYS_LARGEFILE
 
 # If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
 # `_LARGEFILE_SOURCE' if necessary.
+AC_FUNC_FSEEKO
 # HP-UX *does* need _LARGEFILE_SOURCE even though AC_FUNC_FSEEKO decides otherwise.
 case "${host_os}" in
   hppa*-hp-hpux* )
   AC_DEFINE(_LARGEFILE_SOURCE,1)
-  ac_cv_sys_largefile_source=1
+  ac_cv_sys_largefile_source=yes
   ;;
 esac
-AC_FUNC_FSEEKO
+
 
 LFS_CPPFLAGS=''
 if test "$enable_largefile" != no
