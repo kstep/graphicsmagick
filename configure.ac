@@ -302,16 +302,17 @@ AC_SYS_LARGEFILE
 
 # HP-UX *does* need _LARGEFILE_SOURCE even though AC_FUNC_FSEEKO decides otherwise.
 # This is a short-term workaround until we learn why AC_FUNC_FSEEKO is not reliable.
-AC_MSG_CHECKING([for special HP-UX _LARGEFILE_SOURCE])
-hpux_ac_cv_sys_largefile_source=no
-case "${host}" in
-  *-hp-hpux* ) # hppa2.0w-hp-hpux11.23, ia64-hp-hpux11.23
-    AC_DEFINE(_LARGEFILE_SOURCE,1)
-    ac_cv_sys_largefile_source=1
-    hpux_ac_cv_sys_largefile_source=yes
-    ;;
-esac
-AC_MSG_RESULT($hpux_ac_cv_sys_largefile_source)
+# AC_MSG_CHECKING([for special HP-UX _LARGEFILE_SOURCE])
+# hpux_ac_cv_sys_largefile_source=no
+# case "${host}" in
+#   *-hp-hpux* ) # hppa2.0w-hp-hpux11.23, ia64-hp-hpux11.23
+#     AC_DEFINE(_LARGEFILE_SOURCE,1)
+#     ac_cv_sys_largefile_source=1
+#     hpux_ac_cv_sys_largefile_source=yes
+#     ;;
+# esac
+# AC_MSG_RESULT($hpux_ac_cv_sys_largefile_source)
+
 # If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
 # `_LARGEFILE_SOURCE' if necessary.
 AC_FUNC_FSEEKO

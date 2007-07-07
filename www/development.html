@@ -3,10 +3,10 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>GraphicsMagick Development Process</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
-	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20041114;11393700">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20070707;15373800">
 	<META NAME="CLASSIFICATION" CONTENT="Description of the GraphicsMagick development and release processes.">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate,  sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
@@ -16,6 +16,7 @@
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		H2 { color: #000000 }
+		TH P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
@@ -122,38 +123,728 @@ Criteria: None</FONT></FONT></P>
 </TABLE>
 <P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Verification
 testing is vital to ensure the correct operation of the package.
-GraphicsMagick is compiled, and its entire test suite is executed, in
-the following environments:</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Solaris
-9 (SPARC platform, GCC 3.4, compiled with 32 bits)</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Solaris
-9 (SPARC platform, Forte 7, compiled with 32 bits)</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>FreeBSD
-5.0 (x686 platform, GCC 3.4)</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>AIX
-4.3.2 IBM C compiler (xlc), C code only.</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>AIX
-5.1 (IBM xlc vendor compiler)</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>HP-UX
-10.20 HP C compiler (cc), C code only.</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>HP-UX
-11.00 (HP C/C++ vendor compiler)</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>HP-UX
-11.11 (HP C/C++ vendor compiler)</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>IRIX
-6.5 (MIPSpro 7.4 vendor compiler)</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Digital
-Unix 4.0D (vendor compiler)</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Digital
-Unix 5.1 (vendor compiler)</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Gentoo
-Linux 6.3.</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Windows
-XP (built with Visual Studio .net)</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Windows
-XP (built with MINGW)</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Windows
-XP (built with Cygwin)</FONT></FONT></P>
+GraphicsMagick is compiled, and its test suite is executed, in the
+following environments:</FONT></FONT></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=4 CELLSPACING=3>
+	<COL WIDTH=41*>
+	<COL WIDTH=32*>
+	<COL WIDTH=20*>
+	<COL WIDTH=51*>
+	<COL WIDTH=15*>
+	<COL WIDTH=98*>
+	<TR VALIGN=TOP>
+		<TH WIDTH=16%>
+			<P>OS</P>
+		</TH>
+		<TH WIDTH=13%>
+			<P>Version</P>
+		</TH>
+		<TH WIDTH=8%>
+			<P>CPU</P>
+		</TH>
+		<TH WIDTH=20%>
+			<P>Tripplet</P>
+		</TH>
+		<TH WIDTH=6%>
+			<P>Bits</P>
+		</TH>
+		<TH WIDTH=38%>
+			<P>Compiler</P>
+		</TH>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Solaris</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>2.6</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>SPARC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>sparc-sun-solaris2.6</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>Sun WorkShop 6 update 2 C 5.3 Patch 111679-14 2004/02/20</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Solaris</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>7</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>SPARC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>sparc-sun-solaris2.7</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>Vendor (Sun)</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Solaris</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>8</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>SPARC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>sparc-sun-solaris2.8</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>Sun C 5.8 Patch 121015-04 2007/01/10</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Solaris</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>9</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>SPARC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>sparc-sun-solaris2.9</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>Sun C 5.8 Patch 121015-04 2007/01/10</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Solaris</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>9</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>SPARC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>sparc-sun-solaris2.9</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 4.2.0</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Solaris</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>9</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>SPARC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>sparc-sun-solaris2.9</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>64</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 4.2.0</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Solaris</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>10</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>SPARC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>sparc-sun-solaris2.10</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>Sun C 5.8 Patch 121015-04 2007/01/10</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Solaris</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>10</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>i386</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>i386-pc-solaris2.10</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>Sun C 5.8 Patch 121016-05 2007/01/10</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>HP-UX</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>10.20</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>PA-RISC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>hppa2.0-hp-hpux10.20</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>HP92453-01 A.10.32.30 HP C Compiler</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>HP-UX</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>11.00</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>PA-RISC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>hppa2.0w-hp-hpux11.00</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>HP92453-01 B.11.X.35098-35101.GP HP C Compiler</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>HP-UX</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>11.11</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>PA-RISC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>hppa2.0w-hp-hpux11.11</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>HP92453-01 B.11.X.35098-35101.GP HP C Compiler</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>HP-UX</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>11.23</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>PA-RISC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>hppa2.0w-hp-hpux11.23</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>HP92453-01 B.11.X.35098-35101.GP HP C Compiler</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>HP-UX</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>11.23</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>Itanium2</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>ia64-hp-hpux11.23</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>HP C/aC++ B3910B A.06.13 [Nov 27 2006]</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>AIX</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>4.3.3</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>PowerPC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>powerpc-ibm-aix4.3.3.0</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>C for AIX version 6.0.0</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>AIX</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>5.1</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>PowerPC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>powerpc-ibm-aix5.1.0.0</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>IBM XL C/C++ Enterprise Edition V8.0 for AIX</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>AIX</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>5.2</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>PowerPC</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>powerpc-ibm-aix5.2.0.0</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>IBM XL C/C++ Enterprise Edition V8.0 for AIX</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>AIX</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>5.3</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>POWER5+</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>powerpc-ibm-aix5.3.0.0</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>IBM XL C/C++ Enterprise Edition V8.0 for AIX</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Tru64 UNIX</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>4.0D</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>Alpha</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>alphaev5-dec-osf4.0d</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P><BR>
+			</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>Compaq C V6.5-207 (dtk) on Digital UNIX V4.0D</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Tru64 UNIX</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>5.1</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>Alpha</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>alphaev67-dec-osf5.1</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P><BR>
+			</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>Compaq C V6.5-303 (dtk) on Compaq Tru64 UNIX V5.1</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>IRIX</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>6.5</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>MIPS</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>mips-sgi-irix6.5</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P><BR>
+			</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>MIPSpro Compilers: Version 7.4.4m</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Redhat Linux</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>7.1</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>i686</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>i686-pc-linux-gnu</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P><BR>
+			</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 2.96</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Redhat Linux</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>9</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>i686</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>i686-pc-linux-gnu</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P><BR>
+			</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 3.2.2</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>RHEL</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>2.1</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>i686</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>i686-pc-linux-gnu</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P><BR>
+			</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 2.96</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>RHEL</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>3</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>i686</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>i686-pc-linux-gnu</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P><BR>
+			</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 3.2.3</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>RHEL</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>3</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>AMD64</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>x86_64-unknown-linux-gnu</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>64</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 3.2.3</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>RHEL</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>4</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>i686</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>i686-pc-linux-gnu</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P><BR>
+			</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 3.4.6</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>RHEL</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>4</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>AMD64</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>x86_64-unknown-linux-gnu</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>64</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 3.4.6</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>RHEL</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>5</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>i686</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>i686-pc-linux-gnu</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P><BR>
+			</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 4.1.1</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>RHEL</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>5</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>AMD64</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>x86_64-unknown-linux-gnu</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P><BR>
+			</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 4.1.1</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>FreeBSD</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>5.4</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>i686</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>i386-unknown-freebsd5.4</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 3.4.2</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Apple OS X</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>Tiger</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>G5</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>powerpc-apple-darwin8.10.0</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>GCC 3.3</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Windows XP</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>SP2</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>i686</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>i686-pc-cygwin</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>Cygwin 1.5.24-2 / GCC 3.4.4</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Windows XP</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>SP2</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>i686</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>i686-pc-mingw32</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>MinGW / GCC 3.2.3</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=16%>
+			<P>Windows XP</P>
+		</TD>
+		<TD WIDTH=13%>
+			<P>SP2</P>
+		</TD>
+		<TD WIDTH=8%>
+			<P>i686</P>
+		</TD>
+		<TD WIDTH=20%>
+			<P>N/A</P>
+		</TD>
+		<TD WIDTH=6%>
+			<P>32</P>
+		</TD>
+		<TD WIDTH=38%>
+			<P>Visual Studio 2003</P>
+		</TD>
+	</TR>
+</TABLE>
+<P><BR><BR>
+</P>
 <P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>The
 output of any tests which do not support self-validation (e.g. the
 Magick++ demos) is visually inspected for correctness.</FONT></FONT></P>
