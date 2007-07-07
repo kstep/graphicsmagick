@@ -72,8 +72,9 @@ DIST_COMMON = README $(am__include_HEADERS_DIST) \
 	$(am__noinst_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in COPYING.LIB
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/acx_pthread.m4 \
-	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
+	$(top_srcdir)/m4/acx_pthread.m4 $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

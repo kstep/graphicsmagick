@@ -4028,8 +4028,8 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
     }
   else if (WIFSIGNALED(status))
     {
-      snprintf(message,sizeof(message),"terminated due to signal %d",
-               WTERMSIG(status));
+      FormatString(message,"terminated due to signal %d",
+                   WTERMSIG(status));
       message_p=message;
     }
   message[sizeof(message)-1]='\0';

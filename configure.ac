@@ -261,6 +261,11 @@ fi
 #
 ########
 AC_SYS_LARGEFILE
+
+# If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
+# `_LARGEFILE_SOURCE' if necessary.
+AC_FUNC_FSEEKO
+
 LFS_CPPFLAGS=''
 if test "$enable_largefile" != no
 then
@@ -272,9 +277,6 @@ then
   then
     LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
   fi
-  # If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
-  # `_LARGEFILE_SOURCE' if necessary.
-  AC_FUNC_FSEEKO
   if  test "$ac_cv_sys_largefile_source" != 'no'
   then
     LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGEFILE_SOURCE=1"

@@ -4830,20 +4830,10 @@ fi
 rm -f conftest*
 fi
 
-LFS_CPPFLAGS=''
-if test "$enable_largefile" != no
-then
-  if test "$ac_cv_sys_file_offset_bits" != 'no'
-  then
-    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
-  fi
-  if test "$ac_cv_sys_large_files" != 'no'
-  then
-    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
-  fi
-  # If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
-  # `_LARGEFILE_SOURCE' if necessary.
-  echo "$as_me:$LINENO: checking for _LARGEFILE_SOURCE value needed for large files" >&5
+
+# If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
+# `_LARGEFILE_SOURCE' if necessary.
+echo "$as_me:$LINENO: checking for _LARGEFILE_SOURCE value needed for large files" >&5
 echo $ECHO_N "checking for _LARGEFILE_SOURCE value needed for large files... $ECHO_C" >&6
 if test "${ac_cv_sys_largefile_source+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -4856,11 +4846,13 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return !fseeko;
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -4901,11 +4893,13 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #define _LARGEFILE_SOURCE 1
-#include <stdio.h>
+#include <sys/types.h> /* for off_t */
+     #include <stdio.h>
 int
 main ()
 {
-return !fseeko;
+int (*fp) (FILE *, off_t, int) = fseeko;
+     return fseeko (stdin, 0, 0) && fp (stdin, 0, 0);
   ;
   return 0;
 }
@@ -4956,61 +4950,7 @@ rm -f conftest*
 # We used to try defining _XOPEN_SOURCE=500 too, to work around a bug
 # in glibc 2.1.3, but that breaks too many other things.
 # If you want fseeko and ftello with glibc, upgrade to a fixed glibc.
-echo "$as_me:$LINENO: checking for fseeko" >&5
-echo $ECHO_N "checking for fseeko... $ECHO_C" >&6
-if test "${ac_cv_func_fseeko+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdio.h>
-int
-main ()
-{
-return fseeko && fseeko (stdin, 0, 0);
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_func_fseeko=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_func_fseeko=no
-fi
-rm -f conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $ac_cv_func_fseeko" >&5
-echo "${ECHO_T}$ac_cv_func_fseeko" >&6
-if test $ac_cv_func_fseeko = yes; then
+if test $ac_cv_sys_largefile_source != unknown; then
 
 cat >>confdefs.h <<\_ACEOF
 #define HAVE_FSEEKO 1
@@ -5018,6 +4958,18 @@ _ACEOF
 
 fi
 
+
+LFS_CPPFLAGS=''
+if test "$enable_largefile" != no
+then
+  if test "$ac_cv_sys_file_offset_bits" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
+  fi
+  if test "$ac_cv_sys_large_files" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
+  fi
   if  test "$ac_cv_sys_largefile_source" != 'no'
   then
     LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGEFILE_SOURCE=1"
@@ -7459,7 +7411,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 7462 "configure"
+#line 7414 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -8859,7 +8811,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 8862 "configure"' > conftest.$ac_ext
+  echo '#line 8814 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -10935,11 +10887,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10938: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10890: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10942: \$? = $ac_status" >&5
+   echo "$as_me:10894: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -11170,11 +11122,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11173: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11125: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11177: \$? = $ac_status" >&5
+   echo "$as_me:11129: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -11237,11 +11189,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11240: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11192: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11244: \$? = $ac_status" >&5
+   echo "$as_me:11196: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -13413,7 +13365,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13416 "configure"
+#line 13368 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13511,7 +13463,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 13514 "configure"
+#line 13466 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15139,11 +15091,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15142: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15094: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15146: \$? = $ac_status" >&5
+   echo "$as_me:15098: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -15206,11 +15158,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15209: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15161: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:15213: \$? = $ac_status" >&5
+   echo "$as_me:15165: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16571,7 +16523,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 16574 "configure"
+#line 16526 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -16669,7 +16621,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 16672 "configure"
+#line 16624 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H

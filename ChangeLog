@@ -1,3 +1,8 @@
+2007-07-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* m4/ac_func_fseeko.m4: Use fixed version of AC_FUNC_FSEEKO.
+	* magick/utility.c (SystemCommand): Avoid use of snprintf().
+
 2007-07-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c: Only replace getc_unlocked() and putc__unlocked()
