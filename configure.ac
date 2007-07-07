@@ -305,7 +305,7 @@ AC_SYS_LARGEFILE
 AC_MSG_CHECKING([for special HP-UX _LARGEFILE_SOURCE])
 hpux_ac_cv_sys_largefile_source=no
 case "${host}" in
-  hppa*-hp-hpux* ) # hppa2.0w-hp-hpux11.23
+  *-hp-hpux* ) # hppa2.0w-hp-hpux11.23, ia64-hp-hpux11.23
     AC_DEFINE(_LARGEFILE_SOURCE,1)
     ac_cv_sys_largefile_source=1
     hpux_ac_cv_sys_largefile_source=yes

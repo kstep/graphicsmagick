@@ -5595,7 +5595,7 @@ case "${host_cpu}-${host_os}" in
         # The HP-UX compiler just warns about options it does not understand
         # but it needs -mt.
         *-hpux*)
-        acx_pthread_flags="-mt"
+        acx_pthread_flags="-mt $acx_pthread_flags"
         ;;
 esac
 
@@ -6376,7 +6376,7 @@ fi
 echo $ECHO_N "checking for special HP-UX _LARGEFILE_SOURCE... $ECHO_C" >&6; }
 hpux_ac_cv_sys_largefile_source=no
 case "${host}" in
-  hppa*-hp-hpux* ) # hppa2.0w-hp-hpux11.23
+  *-hp-hpux* ) # hppa2.0w-hp-hpux11.23, ia64-hp-hpux11.23
     cat >>confdefs.h <<\_ACEOF
 #define _LARGEFILE_SOURCE 1
 _ACEOF

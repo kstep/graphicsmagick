@@ -162,7 +162,7 @@ case "${host_cpu}-${host_os}" in
         # The HP-UX compiler just warns about options it does not understand
         # but it needs -mt.
         *-hpux*)
-        acx_pthread_flags="-mt"
+        acx_pthread_flags="-mt $acx_pthread_flags"
         ;;
 esac
 
