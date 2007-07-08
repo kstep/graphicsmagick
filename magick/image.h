@@ -128,6 +128,8 @@ typedef unsigned int Quantum;
   value + 0.5))
 #define ConstrainToQuantum(value) (value < 0 ? 0 : \
   (value > MaxRGB) ? MaxRGB : value)
+#define ScaleAnyToQuantum(x,max_value) \
+  ((Quantum) (((double) MaxRGB*x)/max_value+0.5))
 
 /*
   Deprecated defines.

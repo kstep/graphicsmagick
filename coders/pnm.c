@@ -212,7 +212,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  long
+  unsigned long
     y;
 
   LongPixelPacket
@@ -224,13 +224,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register long
+  register unsigned long
     x;
 
   register PixelPacket
     *q;
 
-  register long
+  register unsigned long
     i;
 
   register unsigned char
@@ -249,7 +249,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned long
     max_value,
-    packets,
+    packets;
+
+  Quantum
     *scale;
 
   /*
@@ -293,7 +295,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     number_pixels=image->columns*image->rows;
     if (number_pixels == 0)
       ThrowReaderException(CorruptImageError,NegativeOrZeroImageSize,image);
-    scale=(unsigned long *) NULL;
+    scale=(Quantum *) NULL;
     if (image->storage_class == PseudoClass)
       {
         /*
@@ -327,13 +329,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Compute pixel scaling table.
         */
-        scale=MagickAllocateMemory(unsigned long *,
-          (max_value+1)*sizeof(unsigned long));
-        if (scale == (unsigned long *) NULL)
+        scale=MagickAllocateMemory(Quantum *,
+          (max_value+1)*sizeof(Quantum));
+        if (scale == (Quantum *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        for (i=0; i <= (long) max_value; i++)
-          scale[i]=(unsigned long) (((double) MaxRGB*i)/max_value);
+        for (i=0; i <= max_value; i++)
+          scale[i]=ScaleAnyToQuantum((unsigned long) i, max_value);
       }
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -348,13 +350,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM image to pixel packets.
         */
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < image->columns; x++)
           {
             index=!PNMInteger(image,2);
             if (EOFBlob(image))
@@ -385,18 +387,18 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM image to pixel packets.
         */
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < image->columns; x++)
           {
             intensity=PNMInteger(image,10);
             if (EOFBlob(image))
                break;
-            if (scale != (unsigned long *) NULL)
+            if (scale != (Quantum *) NULL)
               intensity=scale[intensity];
             index=intensity;
             VerifyColormapIndex(image,index);
@@ -422,19 +424,19 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PNM image to pixel packets.
         */
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < image->columns; x++)
           {
             pixel.red=PNMInteger(image,10);
             pixel.green=PNMInteger(image,10);
             pixel.blue=PNMInteger(image,10);
             if (EOFBlob(image))
                break;
-            if (scale != (unsigned long *) NULL)
+            if (scale != (Quantum *) NULL)
               {
                 pixel.red=scale[pixel.red];
                 pixel.green=scale[pixel.green];
@@ -468,7 +470,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM raw image to pixel packets.
         */
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -476,7 +478,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           bit=0;
           byte=0;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < image->columns; x++)
           {
             if (bit == 0)
               byte=ReadBlobByte(image);
@@ -515,7 +517,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
@@ -527,7 +529,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           indexes=GetIndexes(image);
           if (image->depth <= 8)
-            for (x=0; x < (long) image->columns; x++)
+            for (x=0; x < image->columns; x++)
             {
               index=(*p++);
               if (index >= image->colors)
@@ -541,7 +543,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           else
             {
-              for (x=0; x < (long) image->columns; x++)
+              for (x=0; x < image->columns; x++)
               {
                 index=(*p << 8) | *(p+1);
                 p+=2;
@@ -577,7 +579,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
@@ -588,12 +590,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (q == (PixelPacket *) NULL)
             break;
           if (image->depth <= 8)
-            for (x=0; x < (long) image->columns; x++)
+            for (x=0; x < image->columns; x++)
             {
               pixel.red=(*p++);
               pixel.green=(*p++);
               pixel.blue=(*p++);
-              if (scale != (unsigned long *) NULL)
+              if (scale != (Quantum *) NULL)
                 {
                   pixel.red=scale[pixel.red];
                   pixel.green=scale[pixel.green];
@@ -605,7 +607,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q++;
             }
           else
-            for (x=0; x < (long) image->columns; x++)
+            for (x=0; x < image->columns; x++)
             {
               pixel.red=(*p << 8) | *(p+1);
               p+=2;
@@ -613,7 +615,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               p+=2;
               pixel.blue=(*p << 8) | *(p+1);
               p+=2;
-              if (scale != (unsigned long *) NULL)
+              if (scale != (Quantum *) NULL)
                 {
                   pixel.red=scale[pixel.red];
                   pixel.green=scale[pixel.green];
@@ -642,7 +644,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default:
         ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
-    if (scale != (unsigned long *) NULL)
+    if (scale != (Quantum *) NULL)
       MagickFreeMemory(scale);
     /*
       Proceed to next image.
