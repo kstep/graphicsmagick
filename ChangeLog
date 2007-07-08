@@ -1,5 +1,8 @@
 2007-07-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/studio.h: Provide pread() and pwrite() prototypes if they
+	are missing.
+	* configure.ac: Check for missing pread() and pwrite() prototypes.
 	* m4/ac_func_fseeko.m4: Use fixed version of AC_FUNC_FSEEKO.
 	* magick/utility.c (SystemCommand): Avoid use of snprintf().
 

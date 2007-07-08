@@ -289,13 +289,22 @@ extern "C" {
 /*
   Provide prototypes for several functions which are detected to be
   available, but which do not provide a prototype due to interface
-  standards conformace.
+  standards conformance (or a bug).
 */
-#if defined(HAVE_STRLCPY) && !defined(HAVE_STRLCPY_PROTOTYPE)
+
+#if defined(HAVE_PREAD) && defined(HAVE_DECL_PREAD) && !HAVE_DECL_PREAD
+ssize_t pread(int fildes, void *buf, size_t nbyte, off_t offset);
+#endif
+
+#if defined(HAVE_PWRITE) && defined(HAVE_DECL_PWRITE) && !HAVE_DECL_PWRITE
+ssize_t pwrite(int fildes, const void *buf, size_t nbyte, off_t offset);
+#endif
+
+#if defined(HAVE_STRLCPY) && defined(HAVE_DECL_STRLCPY) && !HAVE_DECL_STRLCPY
 extern size_t strlcpy(char *dst, const char *src, size_t dstsize);
 #endif
 
-#if defined(HAVE_VSNPRINTF) && !defined(HAVE_VSNPRINTF_PROTOTYPE)
+#if defined(HAVE_VSNPRINTF) && defined(HAVE_DECL_VSNPRINTF) && !HAVE_DECL_VSNPRINTF
 extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #endif
 

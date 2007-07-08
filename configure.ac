@@ -950,15 +950,16 @@ AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp \
 # Check for function prototypes
 #
 ########
-AC_EGREP_HEADER([strlcpy],[
-#include <stdio.h>
-#include <stdarg.h>],[
-AC_DEFINE(HAVE_STRLCPY_PROTOTYPE, 1, [Headers provide a prototype for strlcpy])])
 
-AC_EGREP_HEADER([vsnprintf],[
+AC_CHECK_DECLS([pread, pwrite],[],[],[
+#include <unistd.h>])
+
+AC_CHECK_DECLS([strlcpy],[],[],[
+#include <strings.h>])
+
+AC_CHECK_DECLS([vsnprintf],[],[],[
 #include <stdio.h>
-#include <stdarg.h>],[
-AC_DEFINE(HAVE_VSNPRINTF_PROTOTYPE, 1, [Headers provide a prototype for vsnprintf])])
+#include <stdarg.h>])
 
 ########
 #
