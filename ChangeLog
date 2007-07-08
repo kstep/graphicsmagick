@@ -1,3 +1,8 @@
+2007-07-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pnm.c (ReadPNMImage): Fix pixel scaling problem caused by
+	floating point rounding error.
+
 2007-07-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/studio.h: Provide pread() and pwrite() prototypes if they

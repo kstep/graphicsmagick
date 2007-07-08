@@ -333,7 +333,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         for (i=0; i <= (long) max_value; i++)
-          scale[i]=(unsigned long) (((double) MaxRGB*i)/max_value);
+          scale[i]=(unsigned long) (((double) MaxRGB*i)/max_value+0.5);
       }
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
