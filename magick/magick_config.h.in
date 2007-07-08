@@ -63,6 +63,22 @@
 /* define if the compiler supports const_cast<> */
 #undef HAVE_CONST_CAST
 
+/* Define to 1 if you have the declaration of `pread', and to 0 if you don't.
+   */
+#undef HAVE_DECL_PREAD
+
+/* Define to 1 if you have the declaration of `pwrite', and to 0 if you don't.
+   */
+#undef HAVE_DECL_PWRITE
+
+/* Define to 1 if you have the declaration of `strlcpy', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRLCPY
+
+/* Define to 1 if you have the declaration of `vsnprintf', and to 0 if you
+   don't. */
+#undef HAVE_DECL_VSNPRINTF
+
 /* define if the compiler supports default template parameters */
 #undef HAVE_DEFAULT_TEMPLATE_PARAMETERS
 
@@ -250,9 +266,6 @@
 /* Define to 1 if you have the `strlcpy' function. */
 #undef HAVE_STRLCPY
 
-/* Headers provide a prototype for strlcpy */
-#undef HAVE_STRLCPY_PROTOTYPE
-
 /* Define to 1 if you have the `sysconf' function. */
 #undef HAVE_SYSCONF
 
@@ -308,9 +321,6 @@
 
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
-
-/* Headers provide a prototype for vsnprintf */
-#undef HAVE_VSNPRINTF_PROTOTYPE
 
 /* Define to 1 if you have the `vsprintf' function. */
 #undef HAVE_VSPRINTF

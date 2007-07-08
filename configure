@@ -25729,50 +25729,287 @@ done
 # Check for function prototypes
 #
 ########
-cat >conftest.$ac_ext <<_ACEOF
+
+{ echo "$as_me:$LINENO: checking whether pread is declared" >&5
+echo $ECHO_N "checking whether pread is declared... $ECHO_C" >&6; }
+if test "${ac_cv_have_decl_pread+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <
-#include <stdio.h>
-#include <stdarg.h>>
 
+#include <unistd.h>
+
+int
+main ()
+{
+#ifndef pread
+  (void) pread;
+#endif
+
+  ;
+  return 0;
+}
 _ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "strlcpy" >/dev/null 2>&1; then
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_cv_have_decl_pread=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
 
+	ac_cv_have_decl_pread=no
+fi
 
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_STRLCPY_PROTOTYPE 1
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_have_decl_pread" >&5
+echo "${ECHO_T}$ac_cv_have_decl_pread" >&6; }
+if test $ac_cv_have_decl_pread = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_PREAD 1
 _ACEOF
+
+
+else
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_PREAD 0
+_ACEOF
+
 
 fi
-rm -f conftest*
-
-
-cat >conftest.$ac_ext <<_ACEOF
+{ echo "$as_me:$LINENO: checking whether pwrite is declared" >&5
+echo $ECHO_N "checking whether pwrite is declared... $ECHO_C" >&6; }
+if test "${ac_cv_have_decl_pwrite+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <
-#include <stdio.h>
-#include <stdarg.h>>
 
+#include <unistd.h>
+
+int
+main ()
+{
+#ifndef pwrite
+  (void) pwrite;
+#endif
+
+  ;
+  return 0;
+}
 _ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "vsnprintf" >/dev/null 2>&1; then
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_cv_have_decl_pwrite=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
 
+	ac_cv_have_decl_pwrite=no
+fi
 
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_VSNPRINTF_PROTOTYPE 1
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_have_decl_pwrite" >&5
+echo "${ECHO_T}$ac_cv_have_decl_pwrite" >&6; }
+if test $ac_cv_have_decl_pwrite = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_PWRITE 1
 _ACEOF
+
+
+else
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_PWRITE 0
+_ACEOF
+
 
 fi
-rm -f conftest*
+
+
+
+{ echo "$as_me:$LINENO: checking whether strlcpy is declared" >&5
+echo $ECHO_N "checking whether strlcpy is declared... $ECHO_C" >&6; }
+if test "${ac_cv_have_decl_strlcpy+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+#include <strings.h>
+
+int
+main ()
+{
+#ifndef strlcpy
+  (void) strlcpy;
+#endif
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_cv_have_decl_strlcpy=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_have_decl_strlcpy=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_have_decl_strlcpy" >&5
+echo "${ECHO_T}$ac_cv_have_decl_strlcpy" >&6; }
+if test $ac_cv_have_decl_strlcpy = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_STRLCPY 1
+_ACEOF
+
+
+else
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_STRLCPY 0
+_ACEOF
+
+
+fi
+
+
+
+{ echo "$as_me:$LINENO: checking whether vsnprintf is declared" >&5
+echo $ECHO_N "checking whether vsnprintf is declared... $ECHO_C" >&6; }
+if test "${ac_cv_have_decl_vsnprintf+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+#include <stdio.h>
+#include <stdarg.h>
+
+int
+main ()
+{
+#ifndef vsnprintf
+  (void) vsnprintf;
+#endif
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_cv_have_decl_vsnprintf=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_have_decl_vsnprintf=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_have_decl_vsnprintf" >&5
+echo "${ECHO_T}$ac_cv_have_decl_vsnprintf" >&6; }
+if test $ac_cv_have_decl_vsnprintf = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_VSNPRINTF 1
+_ACEOF
+
+
+else
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_DECL_VSNPRINTF 0
+_ACEOF
+
+
+fi
+
 
 
 ########
