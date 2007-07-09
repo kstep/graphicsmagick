@@ -7707,12 +7707,12 @@ static unsigned int MagickXMatteEditImage(Display *display,
               break;
             if (entry != 2)
               {
-                FormatString(matte,"%lu",OpaqueOpacity);
+                FormatString(matte,"%lu",(unsigned long) OpaqueOpacity);
                 if (LocaleCompare(MatteMenu[entry],"Transparent") == 0)
-                  FormatString(matte,"%lu",TransparentOpacity);
+                  FormatString(matte,"%lu",(unsigned long) TransparentOpacity);
                 break;
               }
-            FormatString(message,"Enter matte value (0 - %lu):",MaxRGB);
+            FormatString(message,"Enter matte value (0 - %lu):",(unsigned long) MaxRGB);
             (void) MagickXDialogWidget(display,windows,"Matte",message,matte);
             if (*matte == '\0')
               break;

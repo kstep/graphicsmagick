@@ -11,6 +11,8 @@
 #ifndef _MAGICK_CACHE_H
 #define _MAGICK_CACHE_H
 
+#include "magick/forward.h"
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -31,8 +33,8 @@ typedef enum
 /*
   Typedef declaractions.
 */
-typedef void
-  *Cache;
+
+typedef _CacheInfoPtr_ Cache;
 
 
 /*
@@ -73,7 +75,7 @@ extern MagickExport VirtualPixelMethod
   GetImageVirtualPixelMethod(const Image *image);
 
 extern MagickExport void
-  ClonePixelCacheMethods(Cache clone,const Cache cache),
+  ClonePixelCacheMethods(Cache clone_info,const Cache cache_info),
   DestroyCacheInfo(Cache cache),
   DestroyImagePixels(Image *image),
   GetCacheInfo(Cache *cache);

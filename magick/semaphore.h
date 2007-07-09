@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-typedef struct SemaphoreInfo SemaphoreInfo;
+typedef struct _SemaphoreInfo SemaphoreInfo;
 
 extern MagickExport SemaphoreInfo
   *AllocateSemaphoreInfo(void);

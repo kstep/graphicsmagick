@@ -50,7 +50,7 @@
 /*
   Struct declaractions.
 */
-struct SemaphoreInfo
+struct _SemaphoreInfo
 {
 #if defined(HAVE_PTHREAD)
   pthread_mutex_t

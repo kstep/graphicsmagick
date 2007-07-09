@@ -1000,13 +1000,13 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/deprecate.c magick/deprecate.h magick/display.c \
 	magick/display.h magick/draw.c magick/draw.h magick/effect.c \
 	magick/effect.h magick/enhance.c magick/enhance.h \
-	magick/error.c magick/error.h magick/fx.c magick/fx.h \
-	magick/gem.c magick/gem.h magick/image.c magick/image.h \
-	magick/list.c magick/list.h magick/locale.c magick/locale_c.h \
-	magick/log.c magick/log.h magick/magic.c magick/magic.h \
-	magick/magick.c magick/magick.h magick/magick_endian.c \
-	magick/magick_endian.h magick/map.c magick/map.h \
-	magick/memory.c magick/module.c magick/module.h \
+	magick/error.c magick/error.h magick/forward.h magick/fx.c \
+	magick/fx.h magick/gem.c magick/gem.h magick/image.c \
+	magick/image.h magick/list.c magick/list.h magick/locale.c \
+	magick/locale_c.h magick/log.c magick/log.h magick/magic.c \
+	magick/magic.h magick/magick.c magick/magick.h \
+	magick/magick_endian.c magick/magick_endian.h magick/map.c \
+	magick/map.h magick/memory.c magick/module.c magick/module.h \
 	magick/monitor.c magick/monitor.h magick/montage.c \
 	magick/montage.h magick/operator.c magick/operator.h \
 	magick/paint.c magick/paint.h magick/pixel_cache.h \
@@ -2827,6 +2827,7 @@ MAGICK_BASE_SRCS = \
 	magick/enhance.h \
 	magick/error.c \
 	magick/error.h \
+	magick/forward.h \
 	magick/fx.c \
 	magick/fx.h \
 	magick/gem.c \
@@ -2937,6 +2938,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/effect.h \
 	magick/enhance.h \
 	magick/error.h \
+	magick/forward.h \
 	magick/fx.h \
 	magick/gem.h \
 	magick/image.h \

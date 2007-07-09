@@ -17,13 +17,9 @@ extern "C" {
 #endif
 
 /*
-  Forward type declarations.
-*/
-typedef struct _Image *ImagePtr;
-
-/*
   Include declarations.
 */
+#include "magick/forward.h"
 #include "magick/colorspace.h"
 #include "magick/error.h"
 #include "magick/timer.h"
@@ -41,9 +37,9 @@ typedef struct _Image *ImagePtr;
 #define MaxValueGivenBits(bits) ((unsigned long) (0x01UL << (bits-1)) +((0x01UL << (bits-1))-1))
 
 #if (QuantumDepth == 8)
-#  define MaxColormapSize  256UL
-#  define MaxMap  255UL
-#  define MaxRGB  255UL
+#  define MaxColormapSize  256U
+#  define MaxMap  255U
+#  define MaxRGB  255U
 #  define ScaleCharToMap(value)        ((unsigned char) (value))
 #  define ScaleCharToQuantum(value)    ((Quantum) (value))
 #  define ScaleLongToQuantum(value)    ((Quantum) ((value)/16843009UL))
@@ -53,22 +49,22 @@ typedef struct _Image *ImagePtr;
 #  define ScaleQuantumToChar(quantum)  ((unsigned char) (quantum))
 #  define ScaleQuantumToLong(quantum)  ((unsigned long) (16843009UL*(quantum)))
 #  define ScaleQuantumToMap(quantum)   ((unsigned char) (quantum))
-#  define ScaleQuantumToShort(quantum) ((unsigned short) (257UL*(quantum)))
-#  define ScaleShortToQuantum(value)   ((Quantum) ((value)/257UL))
+#  define ScaleQuantumToShort(quantum) ((unsigned short) (257U*(quantum)))
+#  define ScaleShortToQuantum(value)   ((Quantum) ((value)/257U))
 #  define ScaleToQuantum(value)        ((unsigned long) (value))
 #  define ScaleQuantumToIndex(value)   ((unsigned char) (value))
    typedef unsigned char Quantum;
 #elif (QuantumDepth == 16)
-#  define MaxColormapSize  65536UL
-#  define MaxMap 65535UL
-#  define MaxRGB  65535UL
-#  define ScaleCharToMap(value)        ((unsigned short) (257UL*(value)))
-#  define ScaleCharToQuantum(value)    ((Quantum) (257UL*(value)))
+#  define MaxColormapSize  65536U
+#  define MaxMap 65535U
+#  define MaxRGB  65535U
+#  define ScaleCharToMap(value)        ((unsigned short) (257U*(value)))
+#  define ScaleCharToQuantum(value)    ((Quantum) (257U*(value)))
 #  define ScaleLongToQuantum(value)    ((Quantum) ((value)/65537UL))
-#  define ScaleMapToChar(value)        ((unsigned int) ((value)/257UL))
+#  define ScaleMapToChar(value)        ((unsigned int) ((value)/257U))
 #  define ScaleMapToQuantum(value)     ((Quantum) (value))
 #  define ScaleQuantum(quantum)        ((unsigned long) ((quantum)/257UL))
-#  define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/257UL))
+#  define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/257U))
 #  define ScaleQuantumToLong(quantum)  ((unsigned long) (65537UL*(quantum)))
 #  define ScaleQuantumToMap(quantum)   ((unsigned short) (quantum))
 #  define ScaleQuantumToShort(quantum) ((unsigned short) (quantum))
@@ -77,17 +73,17 @@ typedef struct _Image *ImagePtr;
 #  define ScaleQuantumToIndex(value)   ((unsigned short) (value))
    typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
-#  define MaxColormapSize  65536UL
-#  define MaxRGB  4294967295UL
-#  define ScaleCharToQuantum(value)    ((Quantum) (16843009UL*(value)))
+#  define MaxColormapSize  65536U
+#  define MaxRGB  4294967295U
+#  define ScaleCharToQuantum(value)    ((Quantum) (16843009U*(value)))
 #  define ScaleLongToQuantum(value)    ((Quantum) ((value)))
 #  define ScaleQuantum(quantum)        ((unsigned long) ((quantum)/16843009UL))
-#  define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/16843009UL))
+#  define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/16843009U))
 #  define ScaleQuantumToLong(quantum)  ((unsigned long) (quantum))
-#  define ScaleQuantumToShort(quantum) ((unsigned short) ((quantum)/65537UL))
-#  define ScaleShortToQuantum(value)   ((Quantum) (65537UL*(value)))
+#  define ScaleQuantumToShort(quantum) ((unsigned short) ((quantum)/65537U))
+#  define ScaleShortToQuantum(value)   ((Quantum) (65537U*(value)))
 #  define ScaleToQuantum(value)        ((unsigned long) (16843009UL*(value)))
-#  define ScaleQuantumToIndex(value)   ((unsigned short) ((value)/65537UL))
+#  define ScaleQuantumToIndex(value)   ((unsigned short) ((value)/65537U))
 
 /*
   MaxMap defines the maximum index value for algorithms which depend
@@ -99,15 +95,15 @@ typedef struct _Image *ImagePtr;
   that tables can become quite large and as the tables grow larger it
   may take more time to compute the table than to process the image.
 */
-#define MaxMap 65535UL
-#if MaxMap == 65535UL
-#  define ScaleCharToMap(value)        ((unsigned short) (257UL*(value)))
-#  define ScaleMapToChar(value)        ((unsigned int) ((value)/257UL))
-#  define ScaleMapToQuantum(value)     ((Quantum) (65537UL*(value)))
-#  define ScaleQuantumToMap(quantum)   ((unsigned short) ((quantum)/65537UL))
+#define MaxMap 65535U
+#if MaxMap == 65535U
+#  define ScaleCharToMap(value)        ((unsigned short) (257U*(value)))
+#  define ScaleMapToChar(value)        ((unsigned int) ((value)/257U))
+#  define ScaleMapToQuantum(value)     ((Quantum) (65537U*(value)))
+#  define ScaleQuantumToMap(quantum)   ((unsigned short) ((quantum)/65537U))
 #else
-#  define ScaleCharToMap(value)        ((unsigned short) ((MaxMap/255)*(value)))
-#  define ScaleMapToChar(value)        ((unsigned int) ((value)/(MaxMap/255)))
+#  define ScaleCharToMap(value)        ((unsigned short) ((MaxMap/255U)*(value)))
+#  define ScaleMapToChar(value)        ((unsigned int) ((value)/(MaxMap/255U)))
 #  define ScaleMapToQuantum(value)     ((Quantum) ((MaxRGB/MaxMap)*(value)))
 #  define ScaleQuantumToMap(quantum)   ((unsigned short) ((quantum)/(MaxRGB/MaxMap)))
 #endif
@@ -673,12 +669,6 @@ typedef struct _ImageStatistics
    ImageChannelStatistics opacity;
  } ImageStatistics;
 
-typedef struct _Ascii85Info _Ascii85Info_;
-
-typedef struct _BlobInfo _BlobInfo_;
-
-typedef struct _ImageAttribute  _ImageAttribute_;
-
 typedef struct _Image
 {
   ClassType
@@ -849,23 +839,23 @@ typedef struct _Image
   struct _Image
     *clip_mask;         /* Private, Clipping mask to apply when updating pixels */
 
-  void
-    *cache;             /* Private, image pixel cache */
+  _CacheInfoPtr_
+    cache;              /* Private, image pixel cache */
 
-  _ImageAttribute_
-    *attributes;        /* Private, Image attribute list */
+  _ImageAttributePtr_
+    attributes;         /* Private, Image attribute list */
 
-  _Ascii85Info_
-    *ascii85;           /* Private, supports huffman encoding */
+  _Ascii85InfoPtr_
+    ascii85;            /* Private, supports huffman encoding */
 
-  _BlobInfo_
-    *blob;              /* Private, file I/O object */
+  _BlobInfoPtr_
+    blob;               /* Private, file I/O object */
 
   long
     reference_count;    /* Private, Image reference count */
 
-  void
-    *semaphore;         /* Private, Per image lock (for reference count) */
+  _SemaphoreInfoPtr_
+    semaphore;          /* Private, Per image lock (for reference count) */
 
   unsigned int
     logging;            /* Private, True if logging is enabled */
@@ -972,8 +962,8 @@ typedef struct _ImageInfo
     Only private members appear past this point
   */
 
-  void
-    *cache;                  /* Private. Used to pass image via open cache */
+  _CacheInfoPtr_
+     cache;                  /* Private. Used to pass image via open cache */
 
   void
     *definitions;            /* Private. Map of coder specific options passed by user.
@@ -992,8 +982,8 @@ typedef struct _ImageInfo
   MagickBool
     affirm;                  /* Private, when true do not intuit image format */
 
-  void
-    *blob;                   /* Private, used to pass in open blob */
+  _BlobInfoPtr_
+    blob;                    /* Private, used to pass in open blob */
 
   size_t
     length;                  /* Private, used to pass in open blob length */

@@ -82,6 +82,7 @@ MAGICK_BASE_SRCS = \
 	magick/enhance.h \
 	magick/error.c \
 	magick/error.h \
+	magick/forward.h \
 	magick/fx.c \
 	magick/fx.h \
 	magick/gem.c \
@@ -197,6 +198,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/effect.h \
 	magick/enhance.h \
 	magick/error.h \
+	magick/forward.h \
 	magick/fx.h \
 	magick/gem.h \
 	magick/image.h \
