@@ -56,7 +56,7 @@ typedef struct gs_main_instance_s gs_main_instance;
 #endif
 
 #if !defined(MagickDLLCall)
-#  if defined(WIN32)
+#  if defined(MSWINDOWS)
 #    define MagickDLLCall __stdcall
 #  else
 #    define MagickDLLCall

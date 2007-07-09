@@ -45,7 +45,7 @@
 #include "magick/monitor.h"
 #include "magick/utility.h"
 #if defined(HasFPX)
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if !defined(vms) && !defined(macintosh) && !defined(MSWINDOWS)
 #include <fpxlib.h>
 #else
 #include "Fpxlib.h"

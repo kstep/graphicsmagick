@@ -35,7 +35,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(MSWINDOWS) || defined(__CYGWIN__)
 # include "magick/nt_feature.h"
 #endif
 #include "magick/blob.h"
@@ -172,7 +172,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
       if (type_list == (TypeInfo *) NULL)
         {
           (void) ReadTypeConfigureFile(TypeFilename,0,exception);
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(MSWINDOWS) || defined(__CYGWIN__)
           {
             TypeInfo
               *type_info;
@@ -626,7 +626,7 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
     *token,
     *xml;
 
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   char
     GhostscriptFontDir[MaxTextExtent];
 #endif
@@ -640,7 +640,7 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "File path=\"%.1024s\", recursion depth=%lu",basename,depth);
   (void) strcpy(path,basename);
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   /*
     For Windows, cache the location of the Ghostscript fonts.
   */
@@ -805,7 +805,7 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
 
             glyphs=(char *) NULL;
             (void) CloneString(&glyphs,token);
-#if defined(WIN32)
+#if defined(MSWINDOWS)
             if (strchr(glyphs,'@') != (char *) NULL)
               SubstituteString(&glyphs,"@ghostscript_font_dir@",GhostscriptFontDir);
 #endif
@@ -823,7 +823,7 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
               *metrics;
 
             metrics=AcquireString(token);
-#if defined(WIN32)
+#if defined(MSWINDOWS)
             if (strchr(metrics,'@') != (char *) NULL)
               SubstituteString(&metrics,"@ghostscript_font_dir@",GhostscriptFontDir);
 #endif

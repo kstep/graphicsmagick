@@ -21,13 +21,13 @@
 */
 #if defined(S_IRUSR) && defined(S_IWUSR)
 #  define S_MODE     (S_IRUSR | S_IWUSR)
-#elif defined (WIN32)
+#elif defined (MSWINDOWS)
 #  define S_MODE     (_S_IREAD | _S_IWRITE)
 #else
 # define S_MODE      0600
 #endif
 
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 # if defined(_P_tmpdir) && !defined(P_tmpdir)
 #  define P_tmpdir _P_tmpdir
 # endif
@@ -242,12 +242,12 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
   if (!tempdir)
     tempdir=getenv("TMPDIR");
 #endif /* POSIX */
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   if (!tempdir)
     tempdir=getenv("TMP");
   if (!tempdir)
     tempdir=getenv("TEMP");
-#endif /* WIN32 */
+#endif /* MSWINDOWS */
 #if defined(P_tmpdir)
   if (!tempdir)
     tempdir=P_tmpdir;

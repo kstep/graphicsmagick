@@ -370,7 +370,7 @@ MagickExport void InitializeMagickResources(void)
   }
 #endif /* defined(POSIX) */
 
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   {
     long
       total_physical_memory=0,
@@ -427,7 +427,7 @@ MagickExport void InitializeMagickResources(void)
     */
     max_files=2048-512;
   }
-#endif /* defined(WIN32) */
+#endif /* defined(MSWINDOWS) */
 
   /*
     Support using environment variables to set limits

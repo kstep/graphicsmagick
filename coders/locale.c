@@ -733,7 +733,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
 
 void WriteBlobStringEOL(Image *image)
 {
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   (void) WriteBlobString(image,"\r\n");
 #else
 #if defined(macintosh)
@@ -747,7 +747,7 @@ void WriteBlobStringEOL(Image *image)
 void WriteBlobStringWithEOL(Image *image,const char *s)
 {
   (void) WriteBlobString(image,s);
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   (void) WriteBlobString(image,"\r\n");
 #else
 #if defined(macintosh)

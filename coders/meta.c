@@ -1656,7 +1656,7 @@ static void formatString(Image *ofile, const char *s, int len)
       break;
     }
   }
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   (void) WriteBlobString(ofile,"\"\r\n");
 #else
 #if defined(macintosh)

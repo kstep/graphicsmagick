@@ -33,7 +33,16 @@ extern "C" {
 #include <stdio.h>
 #include <stdarg.h>
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+/*
+  Note that the WIN32 and WIN64 definitions are provided by the build
+  configuration rather than the compiler.  Definitions available from
+  the Windows compiler are _WIN32 and _WIN64.
+*/
+#if defined(WIN32) || defined(WIN64)
+# define MSWINDOWS
+#endif
+
+#if defined(MSWINDOWS) && !defined(__CYGWIN__)
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
 #  define _MAGICKDLL_
 # endif

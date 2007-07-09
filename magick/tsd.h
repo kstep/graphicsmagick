@@ -15,7 +15,7 @@
 
 #if defined(HAVE_PTHREAD)
 typedef pthread_key_t MagickTsdKey_t;
-#elif defined(WIN32)
+#elif defined(MSWINDOWS)
 typedef DWORD MagickTsdKey_t;
 #else
 typedef unsigned long * MagickTsdKey_t;

@@ -35,7 +35,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(MSWINDOWS) || defined(__CYGWIN__)
 # include "magick/nt_feature.h"
 #endif
 #include "magick/blob.h"
@@ -204,7 +204,7 @@ static void AllocateLogInfo( void )
       log_info->generation=0;
       log_info->count=0;
       log_info->events=NoEventsMask;
-#if defined(WIN32)
+#if defined(MSWINDOWS)
       log_info->output_type=Win32EventlogOutput;
 #else
       log_info->output_type=StderrOutput;
@@ -352,7 +352,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
   char
     *domain,
     *severity,
-#if defined(WIN32)
+#if defined(MSWINDOWS)
     nteventtype,
 #endif
     event[MaxTextExtent],
@@ -470,7 +470,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
     case FatalErrorException: severity=(char *) "FatalError"; break;
     default: severity=(char *) "Unknown"; break;
   }
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   switch ((type / 100) * 100)
   {
     case EventException: nteventtype=EVENTLOG_INFORMATION_TYPE; break;
@@ -587,7 +587,7 @@ MagickExport  unsigned int LogMagickEventList(const ExceptionType type,
       LiberateSemaphoreInfo(&log_semaphore);
       return(True);
     }
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   if (log_info->output_type & Win32DebugOutput)
     {
       char

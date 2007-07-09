@@ -16,7 +16,7 @@
 #ifndef _SPINLOCKS_H
 #define _SPINLOCKS_H
 
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 
 #define SPINLOCK_DELAY_MILLI_SECS 10
 
@@ -40,7 +40,7 @@ static void _spinlock_release (int *sl)
 #define SPINLOCK_WAIT _spinlock_wait(&spinlock_mutex)
 #define SPINLOCK_RELEASE _spinlock_release(&spinlock_mutex)
 
-#else /* not WIN32 */
+#else /* not MSWINDOWS */
 
 #if defined(HAVE_PTHREAD)
 
@@ -56,5 +56,5 @@ static pthread_mutex_t
 
 #endif /* HAVE_PTHREAD */
 
-#endif /* WIN32 */
+#endif /* MSWINDOWS */
 #endif /* _SPINLOCKS_H */

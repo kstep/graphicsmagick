@@ -1754,7 +1754,7 @@ MagickExport void MagickXDelay(Display *display,const unsigned long milliseconds
   (void) XFlush(display);
   if (milliseconds == 0)
     return;
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   Sleep(milliseconds);
 #elif defined(vms)
   {
@@ -5129,7 +5129,7 @@ MagickExport MagickXWindows *MagickXInitializeWindows(Display *display,
   windows->im_retain_colors=XInternAtom(display,"IM_RETAIN_COLORS",False);
   windows->im_exit=XInternAtom(display,"IM_EXIT",False);
   windows->dnd_protocols=XInternAtom(display,"DndProtocol",False);
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   (void) XSynchronize(display,IsWindows95());
 #endif
   if (IsEventLogging())

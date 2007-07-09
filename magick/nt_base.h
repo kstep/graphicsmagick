@@ -17,7 +17,7 @@ extern "C" {
 
 #include "magick/delegate.h"
 
-#define WIN32_LEAN_AND_MEAN
+#define MSWINDOWS_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>
 #include <winuser.h>
@@ -79,7 +79,7 @@ extern "C" {
 # define tempnam _tempnam
 #endif
 #define vsnprintf _vsnprintf 
-#if defined(_MT) && defined(WIN32)
+#if defined(_MT) && defined(MSWINDOWS)
 #define SAFE_GLOBAL __declspec(thread)
 #else
 #define SAFE_GLOBAL
@@ -172,7 +172,7 @@ typedef struct _DIR
   HANDLE
     hSearch;
 
-  WIN32_FIND_DATA
+  MSWINDOWS_FIND_DATA
     Win32FindData;
 
   BOOL

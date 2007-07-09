@@ -37,7 +37,7 @@
 */
 #include "magick/studio.h"
 #if defined(SupportMagickModules)
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(MSWINDOWS) || defined(__CYGWIN__)
 # include "magick/nt_feature.h"
 #endif
 #include "magick/blob.h"
@@ -973,7 +973,7 @@ MagickPassFail InitializeModuleSearchPath(MagickModuleType module_type,
     return (status);
   }
 # else
-#  if defined(WIN32)
+#  if defined(MSWINDOWS)
   {
     /*
       Locate path via registry key.
@@ -1005,10 +1005,10 @@ MagickPassFail InitializeModuleSearchPath(MagickModuleType module_type,
     LiberateSemaphoreInfo(&module_semaphore);
     return (status);
   }
-#  endif /* defined(WIN32) */
+#  endif /* defined(MSWINDOWS) */
 # endif /* !defined(MagickCoderModulesPath) */
-# if !defined(MagickCoderModulesPath) && !defined(WIN32)
-#  error MagickCoderModulesPath or WIN32 must be defined when UseInstalledMagick is defined
+# if !defined(MagickCoderModulesPath) && !defined(MSWINDOWS)
+#  error MagickCoderModulesPath or MSWINDOWS must be defined when UseInstalledMagick is defined
 # endif
 #else /* end defined(UseInstalledMagick) */
   if (getenv("MAGICK_HOME") != (char *) NULL)
@@ -1788,7 +1788,7 @@ static void TagToCoderModuleName(const char *tag,char *module_name)
   (void) FormatString(module_name,"%.1024s.la",tag);
   (void) LocaleLower(module_name);
 #else
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   if (LocaleNCompare("IM_MOD_",tag,7) == 0)
     (void) strlcpy(module_name,tag,MaxTextExtent);
   else
@@ -1799,7 +1799,7 @@ static void TagToCoderModuleName(const char *tag,char *module_name)
       FormatString(module_name,"IM_MOD_RL_%.1024s_.dll",tag);
 #  endif /* defined(_DEBUG) */
     }
-#endif  /* defined(WIN32) */
+#endif  /* defined(MSWINDOWS) */
 #endif /* defined(HasLTDL) */
 }
 

@@ -77,7 +77,7 @@ MATHeader;
 static const char *MonthsTab[12]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 static const char *DayOfWTab[7]={"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
 static const char *OsDesc=
-#ifdef __WIN32__
+#ifdef __MSWINDOWS__
     "PCWIN";
 #else
  #ifdef __APPLE__

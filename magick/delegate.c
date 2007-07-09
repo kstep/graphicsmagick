@@ -45,7 +45,7 @@
 #include "magick/constitute.h"
 #include "magick/delegate.h"
 #include "magick/log.h"
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(MSWINDOWS) || defined(__CYGWIN__)
 # include "magick/nt_feature.h"
 #endif
 #include "magick/semaphore.h"
@@ -579,7 +579,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
 MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
   const char *command)
 {
-#if defined(HasGS) || defined(WIN32)
+#if defined(HasGS) || defined(MSWINDOWS)
   char
     **argv;
 
@@ -594,7 +594,7 @@ MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
   register long
     i;
 
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   const GhostscriptVectors
     *gs_func;
 
@@ -816,7 +816,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 %
 %
 */
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 static void CatDelegatePath(char *path,
                                const char *binpath,
                                const char *command)
@@ -829,7 +829,7 @@ static void CatDelegatePath(char *path,
   strcpy(path,command);
   return;
 }
-#endif /* defined(WIN32) */
+#endif /* defined(MSWINDOWS) */
 static unsigned int ReadConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
@@ -946,7 +946,7 @@ static unsigned int ReadConfigureFile(const char *basename,
             if (LocaleCompare((char *) keyword,"command") == 0)
               {
                 delegate_list->commands=AllocateString(token);
-#if defined(WIN32)
+#if defined(MSWINDOWS)
                 if (strchr(delegate_list->commands,'@') != (char *) NULL)
                   {
                     char
@@ -1020,7 +1020,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                     SubstituteString((char **) &delegate_list->commands,
                                      "@HPGLDecodeDelegate@",path);
                   }
-#endif /* defined(WIN32) */
+#endif /* defined(MSWINDOWS) */
               } /* LocaleCompare */
             break;
           }

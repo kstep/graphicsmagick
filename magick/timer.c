@@ -123,7 +123,7 @@ static double ElapsedTime(void)
 
   return((double) times(&timer)/CLK_TCK);
 #else
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   return(NTElapsedTime());
 #else
   return((double) clock()/CLK_TCK);
@@ -224,7 +224,7 @@ MagickExport void GetTimerInfo(TimerInfo *time_info)
 */
 MagickExport double GetTimerResolution(void)
 {
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   return (0.02);
 #else
   return (1.0/CLK_TCK);
@@ -409,7 +409,7 @@ static double UserTime(void)
   (void) times(&timer);
   return((double) (timer.tms_utime+timer.tms_stime)/CLK_TCK);
 #else
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   return(NTUserTime());
 #else
   return((double) clock()/CLK_TCK);

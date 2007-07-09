@@ -37,7 +37,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(MSWINDOWS) || defined(__CYGWIN__)
 # include "magick/nt_feature.h"
 #endif
 #include "magick/blob.h"
@@ -1544,7 +1544,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   AddConfigurePath(path_map,&path_index,MagickShareConfigPath,exception);
 # endif /* defined(MagickShareConfigPath) */
 
-# if defined(WIN32) && !(defined(MagickLibConfigPath) || defined(MagickShareConfigPath))
+# if defined(MSWINDOWS) && !(defined(MagickLibConfigPath) || defined(MagickShareConfigPath))
   {
     char
       *registry_key,
@@ -1564,7 +1564,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     FormatString(path,"%.1024s%s",key_value,DirectorySeparator);
     AddConfigurePath(path_map,&path_index,path,exception);
   }
-#  endif /* defined(WIN32) */
+#  endif /* defined(MSWINDOWS) */
 
 #else /* !defined(UseInstalledMagick) */
 
@@ -1705,7 +1705,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   if (blob)
     return(blob);
 
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   {
     void
       *resource;
@@ -1714,7 +1714,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     if (resource)
       return resource;
   }
-#endif /* defined(WIN32) */
+#endif /* defined(MSWINDOWS) */
 
   ThrowException(exception,ConfigureError,UnableToAccessConfigureFile,
     filename);
@@ -2315,7 +2315,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                                 "  using stdout as StandardStream blob %p",
                                 &image->blob);
         }
-#if defined(WIN32)
+#if defined(MSWINDOWS)
       if (strchr(type,'b') != (char *) NULL)
         setmode(_fileno(image->blob->file),_O_BINARY);
 #endif
@@ -2332,7 +2332,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         /*
           Pipe image to ("w") or from ("r") a system command.
         */
-#if !defined(WIN32)
+#if !defined(MSWINDOWS)
         if (*type == 'w')
           (void) signal(SIGPIPE,SIG_IGN);
 #endif

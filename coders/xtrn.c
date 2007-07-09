@@ -58,7 +58,7 @@
 #include "magick/magick.h"
 #include "magick/pixel_cache.h"
 #include "magick/utility.h"
-#define WIN32_LEAN_AND_MEAN
+#define MSWINDOWS_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>
 #include <ole2.h>

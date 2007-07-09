@@ -37,7 +37,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(MSWINDOWS) || defined(__CYGWIN__)
 # include "magick/nt_feature.h"
 #endif
 #include "magick/blob.h"
@@ -116,9 +116,9 @@ MagickExport void DestroyMagick(void)
   DestroyMagickRegistry();
   DestroyMagickResources();
   DestroyTemporaryFiles();
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   NTGhostscriptUnLoadDLL();
-#endif /* defined(WIN32) */
+#endif /* defined(MSWINDOWS) */
   /*
     Destroy logging last since some components log their destruction.
   */
@@ -550,7 +550,7 @@ static Sigfunc *MagickCondSignal(int signo, Sigfunc *func)
   Signal handler to ensure that DestroyMagick is invoked in case the
   user aborts the program.
 
-  The WIN32 documentation says that SIGINT is not supported under any
+  The MSWINDOWS documentation says that SIGINT is not supported under any
   version of Windows. It also says that a new thread is created to
   handle the interrupt caused by CNTRL+C. The Windows signal
   documentation also says that it is unsafe to do anything useful from
@@ -629,7 +629,7 @@ static unsigned int IsValidFilesystemPath(const char *path)
       */
       if ((*path == *DirectorySeparator))
         return IsAccessibleNoLogging(path);
-#elif defined(WIN32)
+#elif defined(MSWINDOWS)
       /* For Windows we check to see if the path passed seems to be a 
          pathof any kind (contains delimiters) or seem to be either UNC
          path or one with a drive letter spec in it: \\Server\share, C:\
@@ -735,7 +735,7 @@ MagickExport void InitializeMagickSignalHandlers(void)
   (void) MagickCondSignal(SIGHUP,MagickSignalHandler);
 #endif
   /* interrupt (rubout), default terminate */
-#if defined(SIGINT) && !defined(WIN32)
+#if defined(SIGINT) && !defined(MSWINDOWS)
   (void) MagickCondSignal(SIGINT,MagickSignalHandler);
 #endif
   /* quit (ASCII FS), default terminate with core */
@@ -779,7 +779,7 @@ MagickExport void InitializeMagick(const char *path)
   MagickInitialized=InitInitialized;
   SPINLOCK_RELEASE;
 
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 # if defined(_DEBUG) && !defined(__BORLANDC__)
   {
     int
@@ -792,7 +792,7 @@ MagickExport void InitializeMagick(const char *path)
     // _ASSERTE(_CrtCheckMemory());
   }
 # endif /* defined(_DEBUG) */
-#endif /* defined(WIN32) */
+#endif /* defined(MSWINDOWS) */
 
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
@@ -889,7 +889,7 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 #if defined(vms)
   return(VMSIsMagickConflict(magick));
 #endif
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(MSWINDOWS) || defined(__CYGWIN__)
   return(NTIsMagickConflict(magick));
 #endif
   return(False);

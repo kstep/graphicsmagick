@@ -50,7 +50,7 @@
 
 #if defined(POSIX) && defined(S_IRUSR)
 #  define S_MODE     (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
-#elif defined (WIN32)
+#elif defined (MSWINDOWS)
 #  define S_MODE     (_S_IREAD | _S_IWRITE)
 #else
 # define S_MODE      0644 

@@ -15,9 +15,9 @@
 #if defined(HAVE_PTHREAD)
 #include <pthread.h>
 #endif /* defined(HAVE_PTHREAD) */
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 #  include <windows.h>
-#endif /* defined(WIN32) */
+#endif /* defined(MSWINDOWS) */
 #include "magick/tsd.h"
 
 /*
@@ -27,7 +27,7 @@ MagickExport MagickPassFail MagickTsdKeyCreate(MagickTsdKey_t *key)
 {
 #if defined(HAVE_PTHREAD)
   return ((pthread_key_create(key, 0) == 0) ? MagickPass : MagickFail);
-#elif defined(WIN32)
+#elif defined(MSWINDOWS)
   *key=TlsAlloc();
   return ((*key != TLS_OUT_OF_INDEXES) ? MagickPass : MagickFail);
 #else
@@ -44,7 +44,7 @@ MagickExport MagickPassFail MagickTsdKeyDelete(MagickTsdKey_t key)
 {
 #if defined(HAVE_PTHREAD)
   return ((pthread_key_delete(key) == 0) ? MagickPass : MagickFail);
-#elif defined(WIN32)
+#elif defined(MSWINDOWS)
   return ((TlsFree(key) != 0) ? MagickPass : MagickFail);
 #else
   MagickFreeMemory(key);
@@ -59,7 +59,7 @@ MagickExport MagickPassFail MagickTsdSetSpecific(MagickTsdKey_t key, const void 
 {
 #if defined(HAVE_PTHREAD)
   return ((pthread_setspecific(key, value) == 0) ? MagickPass : MagickFail);
-#elif defined(WIN32)
+#elif defined(MSWINDOWS)
   return ((TlsSetValue(key,(void *) value) != 0) ? MagickPass : MagickFail);
 #else
   *key=(unsigned long) value;
@@ -74,7 +74,7 @@ MagickExport void *MagickTsdGetSpecific(MagickTsdKey_t key)
 {
 #if defined(HAVE_PTHREAD)
   return (pthread_getspecific(key));
-#elif defined(WIN32)
+#elif defined(MSWINDOWS)
   return TlsGetValue(key);
 #else
   return (void *) (*key);

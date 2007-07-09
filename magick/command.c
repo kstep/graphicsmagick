@@ -129,7 +129,7 @@ static void
 static unsigned int
   HelpCommand(ImageInfo *image_info,int argc,char **argv,
               char **metadata,ExceptionInfo *exception),
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   RegisterCommand(ImageInfo *image_info,int argc,char **argv,
                  char **metadata,ExceptionInfo *exception),
 #endif
@@ -166,7 +166,7 @@ static const CommandInfo commands[] =
       MontageImageCommand, MontageUsage, 0 },
     { "version", "obtain release version",
       VersionCommand, 0, 0 },
-#if defined(WIN32)
+#if defined(MSWINDOWS)
     { "register", "register this application as the source of messages",
       RegisterCommand, 0, 0 },
 #endif
@@ -14276,7 +14276,7 @@ static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
   return True;
 }
 
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -14416,7 +14416,7 @@ MagickExport int GMCommand(int argc,char **argv)
   unsigned int
     status=True;
 
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   InitializeMagick((char *) NULL);
 #else
   InitializeMagick(argv[0]);

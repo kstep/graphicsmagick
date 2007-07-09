@@ -1156,7 +1156,7 @@ MagickExport void FormatString(char *string,const char *format,...)
 MagickExport unsigned int GetExecutionPath(char *path)
 {
   *path='\0';
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   return(NTGetExecutionPath(path));
 #endif
 #if defined(HAVE_GETEXECNAME)
@@ -4150,7 +4150,7 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
   status=MACSystemCommand(command);
   if (!status)
     message_p=strerror(status);
-#elif defined(WIN32)
+#elif defined(MSWINDOWS)
   status=NTSystemComman(command);
   if (!status)
     message_p=strerror(status);

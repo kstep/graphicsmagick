@@ -32,7 +32,7 @@
 %
 */
 
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(MSWINDOWS) || defined(__CYGWIN__)
 /*
   Include declarations.
 */
@@ -41,7 +41,7 @@
 #include "magick/monitor.h"
 #include "magick/nt_feature.h"
 #include "magick/pixel_cache.h"
-#define WIN32_LEAN_AND_MEAN
+#define MSWINDOWS_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>
 

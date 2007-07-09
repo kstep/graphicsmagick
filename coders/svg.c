@@ -47,7 +47,7 @@
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 #if defined(HasXML)
-#  if defined(WIN32)
+#  if defined(MSWINDOWS)
 #    if defined(__MINGW32__)
 #      define _MSC_VER
 #    endif

@@ -40,7 +40,7 @@
 #if defined(HAVE_PTHREAD)
 #include <pthread.h>
 #endif
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 #include <windows.h>
 #define USE_SPINLOCKS
 #define SPINLOCK_DELAY_MILLI_SECS 10
@@ -59,7 +59,7 @@ struct _SemaphoreInfo
   pthread_t
     owner_thread_id;    /* ID of thread which holds the lock */
 #endif
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   CRITICAL_SECTION
     mutex;		/* Windows critical section */
 
@@ -82,7 +82,7 @@ static pthread_mutex_t
   semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 #if !defined(USE_SPINLOCKS)
 static CRITICAL_SECTION
   semaphore_mutex;
@@ -151,7 +151,7 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
 #if defined(HAVE_PTHREAD)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 #if !defined(USE_SPINLOCKS)
   if (!active_semaphore)
     InitializeCriticalSection(&semaphore_mutex);
@@ -166,7 +166,7 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
 #if defined(HAVE_PTHREAD)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 #if !defined(USE_SPINLOCKS)
   LeaveCriticalSection(&semaphore_mutex);
 #else
@@ -247,7 +247,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
     semaphore_info->owner_thread_id=0;
   }
 #endif
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   InitializeCriticalSection(&semaphore_info->mutex);
 #endif
   semaphore_info->lock_depth=0;
@@ -280,7 +280,7 @@ MagickExport void DestroySemaphore(void)
 #if defined(HAVE_PTHREAD)
   (void) pthread_mutex_destroy(&semaphore_mutex);
 #endif
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 #if !defined(USE_SPINLOCKS)
   if (active_semaphore)
     DeleteCriticalSection(&semaphore_mutex);
@@ -321,7 +321,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 #if defined(HAVE_PTHREAD)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 #if !defined(USE_SPINLOCKS)
   if (!active_semaphore)
     InitializeCriticalSection(&semaphore_mutex);
@@ -334,14 +334,14 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 #if defined(HAVE_PTHREAD)
   (void) pthread_mutex_destroy(&(*semaphore_info)->mutex);
 #endif
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   DeleteCriticalSection(&(*semaphore_info)->mutex);
 #endif
   MagickFreeMemory((*semaphore_info));
 #if defined(HAVE_PTHREAD)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 #if !defined(USE_SPINLOCKS)
   LeaveCriticalSection(&semaphore_mutex);
 #else
@@ -375,7 +375,7 @@ MagickExport void InitializeSemaphore(void)
   (void) pthread_mutex_init(&semaphore_mutex,
     (const pthread_mutexattr_t *) NULL);
 #endif
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 #if !defined(USE_SPINLOCKS)
   if (!active_semaphore)
     InitializeCriticalSection(&semaphore_mutex);
@@ -473,7 +473,7 @@ MagickExport MagickPassFail LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
     semaphore_info->owner_thread_id=self;
   }
 #endif
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   EnterCriticalSection(&semaphore_info->mutex);
   /* Record the thread ID of the locking thread */
   semaphore_info->owner_thread_id=GetCurrentThreadId();
@@ -521,7 +521,7 @@ MagickExport MagickPassFail UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   if (pthread_mutex_unlock(&semaphore_info->mutex))
     return(MagickFail);
 #endif
-#if defined(WIN32)
+#if defined(MSWINDOWS)
   /* Enforce that unlocking thread is the same as the locking thread */
   assert(GetCurrentThreadId() == semaphore_info->owner_thread_id);
   LeaveCriticalSection(&semaphore_info->mutex);

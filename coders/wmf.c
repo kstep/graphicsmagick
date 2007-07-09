@@ -51,7 +51,7 @@
 #include "magick/utility.h"
 #include "magick/version.h"
 
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 /* The need for this under Visual C++ is a mystery to me */
 #  define M_PI MagickPI
 #endif

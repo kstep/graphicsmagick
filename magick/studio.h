@@ -15,7 +15,16 @@
 extern "C" {
 #endif
 
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+/*
+  Note that the WIN32 and WIN64 definitions are provided by the build
+  configuration rather than the compiler.  Definitions available from
+  the Windows compiler are _WIN32 and _WIN64.
+*/
+#if defined(WIN32) || defined(WIN64)
+# define MSWINDOWS
+#endif
+
+#if !defined(vms) && !defined(macintosh) && !defined(MSWINDOWS)
 # define POSIX
 #endif
 
@@ -63,7 +72,7 @@ extern "C" {
 #  define SupportMagickModules
 #endif 
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(MSWINDOWS) && !defined(__CYGWIN__)
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
 #  define _MAGICKDLL_
 # endif
@@ -133,7 +142,7 @@ extern "C" {
     Currently disabled since feature only seems to work from
     a DLL
   */
-#  if ((defined(WIN32) && defined(_DLL)) && !defined(__MINGW32__))
+#  if ((defined(MSWINDOWS) && defined(_DLL)) && !defined(__MINGW32__))
 #    define MAGICK_WINDOWS_MESSAGE_TABLES 1
 #  endif
 #endif
@@ -143,11 +152,11 @@ extern "C" {
 
 #include <stdarg.h>
 #include <stdio.h>
-#if defined(WIN32) && defined(_DEBUG)
+#if defined(MSWINDOWS) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #endif
 #include <stdlib.h>
-#if !defined(WIN32)
+#if !defined(MSWINDOWS)
 # include <unistd.h>
 #else
 # include <direct.h>
@@ -193,7 +202,7 @@ extern "C" {
 #include <signal.h>
 #include <assert.h>
 
-#if defined(WIN32) || defined(POSIX)
+#if defined(MSWINDOWS) || defined(POSIX)
 # include <sys/types.h>
 # include <sys/stat.h>
 # if defined(HAVE_FTIME)
@@ -228,7 +237,7 @@ extern "C" {
 # include "magick/magick_types.h"
 # include "magick/image.h"
 # include "magick/list.h"
-# if !defined(WIN32)
+# if !defined(MSWINDOWS)
 #  include <sys/time.h>
 #if defined(HAVE_SYS_TIMES_H)
 #  include <sys/times.h>
@@ -247,7 +256,7 @@ extern "C" {
 # include "magick/list.h"
 #endif
 
-#if defined(WIN32)
+#if defined(MSWINDOWS)
 # include "magick/nt_base.h"
 #endif
 #if defined(macintosh)
@@ -256,7 +265,7 @@ extern "C" {
 #if defined(vms)
 # include "magick/vms.h"
 #endif
-#if defined(HAVE_MMAP_FILEIO) && !defined(WIN32)
+#if defined(HAVE_MMAP_FILEIO) && !defined(MSWINDOWS)
 # include <sys/mman.h>
 #endif
 #if defined(HAVE_PTHREAD)
@@ -351,7 +360,7 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
     SetWarningHandler(MACWarningHandler)
 # endif
 
-# if defined(WIN32)
+# if defined(MSWINDOWS)
 #  define DirectorySeparator  "\\"
 #  define DirectoryListSeparator  ';'
 #  define EditorOptions ""
@@ -422,7 +431,7 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #  define MAP_FAILED      ((void *) -1)
 #endif
 
-#if defined(HasLTDL) || ( defined(WIN32) && defined(_DLL) )
+#if defined(HasLTDL) || ( defined(MSWINDOWS) && defined(_DLL) )
 #  define SupportMagickModules
 #endif
 
@@ -435,7 +444,7 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 /*
   I/O defines.
 */
-#if defined(WIN32) && !defined(Windows95) && !defined(__BORLANDC__)
+#if defined(MSWINDOWS) && !defined(Windows95) && !defined(__BORLANDC__)
   /* Windows '95 and Borland C do not support _lseeki64 */
 #  define MagickSeek(file,offset,whence)  _lseeki64(file,offset,whence)
 #  define MagickTell(file) _telli64(file)
