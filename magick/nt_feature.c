@@ -32,11 +32,11 @@
 %
 */
 
+#include "magick/studio.h"
 #if defined(MSWINDOWS) || defined(__CYGWIN__)
 /*
   Include declarations.
 */
-#include "magick/studio.h"
 #include "magick/utility.h"
 #include "magick/monitor.h"
 #include "magick/nt_feature.h"

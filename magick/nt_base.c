@@ -32,11 +32,11 @@
 %
 */
 
+#include "magick/studio.h"
 #if defined(MSWINDOWS)
 /*
   Include declarations.
 */
-#include "magick/studio.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/utility.h"
