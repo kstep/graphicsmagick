@@ -17,7 +17,7 @@ extern "C" {
 
 #include "magick/delegate.h"
 
-#define MSWINDOWS_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>
 #include <winuser.h>
@@ -172,7 +172,7 @@ typedef struct _DIR
   HANDLE
     hSearch;
 
-  MSWINDOWS_FIND_DATA
+  WIN32_FIND_DATA
     Win32FindData;
 
   BOOL
