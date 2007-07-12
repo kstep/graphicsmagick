@@ -550,7 +550,7 @@ static Sigfunc *MagickCondSignal(int signo, Sigfunc *func)
   Signal handler to ensure that DestroyMagick is invoked in case the
   user aborts the program.
 
-  The MSWINDOWS documentation says that SIGINT is not supported under any
+  The WIN32 documentation says that SIGINT is not supported under any
   version of Windows. It also says that a new thread is created to
   handle the interrupt caused by CNTRL+C. The Windows signal
   documentation also says that it is unsafe to do anything useful from

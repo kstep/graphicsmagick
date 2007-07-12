@@ -264,7 +264,7 @@ MagickExport MagickBool IsWindows95()
 
   version_info.dwOSVersionInfoSize=sizeof(version_info);
   if (GetVersionEx(&version_info) &&
-      (version_info.dwPlatformId == VER_PLATFORM_MSWINDOWS_WINDOWS))
+      (version_info.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS))
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -1733,7 +1733,7 @@ MagickExport double NTUserTime(void)
 
   OsVersionInfo.dwOSVersionInfoSize=sizeof(OSVERSIONINFO);
   GetVersionEx(&OsVersionInfo);
-  if (OsVersionInfo.dwPlatformId != VER_PLATFORM_MSWINDOWS_NT)
+  if (OsVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
     return(NTElapsedTime());
   status=GetProcessTimes(GetCurrentProcess(),&create_time,&exit_time,
     &kernel_time.filetime,&user_time.filetime);
