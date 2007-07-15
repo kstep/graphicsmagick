@@ -56,6 +56,15 @@ typedef struct _TokenInfo
 #  define __attribute__(x) /*nothing*/
 #endif
 
+/*
+  A callback function which behaves similar to strlcpy() except which
+  optionally translates text while it is copied and always returns
+  the number of characters which were actually copied rather than
+  the number of characters which were available to copy.
+*/
+typedef size_t
+  (*MagickTextTranslate)(char *dst, const char *src, const size_t size);
+
 extern MagickExport char
   *AcquireString(const char *),
   *AllocateString(const char *),
@@ -66,7 +75,8 @@ extern MagickExport char
   *SetClientName(const char *),
   **StringToArgv(const char *,int *),
   **StringToList(const char *),
-  *TranslateText(const ImageInfo *,Image *,const char *);
+  *TranslateText(const ImageInfo *,Image *,const char *),
+  *TranslateTextEx(const ImageInfo *,Image *,const char *,MagickTextTranslate);
 
 extern MagickExport const char
   *GetClientFilename(void),
@@ -103,7 +113,9 @@ extern MagickExport unsigned int
   IsAccessibleNoLogging(const char *),
   IsAccessibleAndNotEmpty(const char *),
   IsGeometry(const char *),
-  IsGlob(const char *);
+  IsGlob(const char *),
+  MagickSceneFileName(char *filename,const char* filename_template,
+    const char* scene_template,const MagickBool force,unsigned long scene);
 
 extern MagickExport unsigned long
   MultilineCensus(const char *);
@@ -131,7 +143,8 @@ extern MagickExport void
 
 extern MagickExport size_t
   MagickStrlCat(char *dst, const char *src, const size_t size),
-  MagickStrlCpy(char *dst, const char *src, const size_t size);
+  MagickStrlCpy(char *dst, const char *src, const size_t size),
+  MagickStrlCpyTrunc(char *dst, const char *src, const size_t size);
 
 #if defined(MAGICK_IMPLEMENTATION)
 

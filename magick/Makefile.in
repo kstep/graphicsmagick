@@ -98,8 +98,8 @@ am__libGraphicsMagick_la_SOURCES_DIST = animate.c annotate.c \
 	paint.c pixel_iterator.c profile.c PreRvIcccm.c quantize.c \
 	registry.c render.c resize.c resource.c segment.c semaphore.c \
 	shear.c signature.c static.c stream.c tempfile.c timer.c \
-	transform.c type.c utility.c version.c widget.c xwindow.c \
-	nt_feature.c nt_base.c
+	transform.c type.c unix_port.c utility.c version.c widget.c \
+	xwindow.c nt_feature.c nt_base.c
 am__objects_1 = animate.lo annotate.lo attribute.lo blob.lo cache.lo \
 	cache_view.lo color.lo command.lo composite.lo compress.lo \
 	constitute.lo decorate.lo delegate.lo deprecate.lo display.lo \
@@ -109,8 +109,8 @@ am__objects_1 = animate.lo annotate.lo attribute.lo blob.lo cache.lo \
 	pixel_iterator.lo profile.lo PreRvIcccm.lo quantize.lo \
 	registry.lo render.lo resize.lo resource.lo segment.lo \
 	semaphore.lo shear.lo signature.lo static.lo stream.lo \
-	tempfile.lo timer.lo transform.lo type.lo utility.lo \
-	version.lo widget.lo xwindow.lo
+	tempfile.lo timer.lo transform.lo type.lo unix_port.lo \
+	utility.lo version.lo widget.lo xwindow.lo
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 =  \
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@	nt_feature.lo
 @WIN32_NATIVE_BUILD_TRUE@am__objects_2 = nt_base.lo nt_feature.lo
@@ -547,6 +547,7 @@ MAGICK_BASE_SRCS = \
 	timer.c \
 	transform.c \
 	type.c \
+	unix_port.c \
 	utility.c \
 	version.c \
 	widget.c \
@@ -640,6 +641,7 @@ noinst_HEADERS = \
 	spinlock.h \
 	static.h \
 	studio.h \
+	unix_port.h \
 	tempfile.h \
 	vms.h
 
@@ -851,6 +853,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transform.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/type.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unix_port.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utility.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/widget.Plo@am__quote@

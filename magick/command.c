@@ -442,10 +442,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
               /*
                 Form filename for multi-part images.
               */
-              FormatString(filename,image_info->filename,scene);
-              if (LocaleCompare(filename,image_info->filename) == 0)
-                FormatString(filename,"%.1024s[%lu]",image_info->filename,
-                  scene);
+              (void) MagickSceneFileName(filename,image_info->filename,"[%lu]",MagickTrue,scene);
               (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
             }
           image_info->colorspace=quantize_info->colorspace;
@@ -5339,9 +5336,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               /*
                 Form filename for multi-part images.
               */
-              FormatString(filename,image_info->filename,scene);
-              if (LocaleCompare(filename,image_info->filename) == 0)
-                FormatString(filename,"%.1024s.%lu",image_info->filename,scene);
+              (void) MagickSceneFileName(filename,image_info->filename,".%lu",MagickTrue,scene);
               (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
             }
           (void) strcpy(image_info->magick,"MIFF");
@@ -11921,9 +11916,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               /*
                 Form filename for multi-part images.
               */
-              FormatString(filename,image_info->filename,scene);
-              if (LocaleCompare(filename,image_info->filename) == 0)
-                FormatString(filename,"%.1024s.%lu",image_info->filename,scene);
+              (void) MagickSceneFileName(filename,image_info->filename,".%lu",MagickTrue,scene);
               (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
             }
           (void) CloneString(&image_info->font,montage_info->font);

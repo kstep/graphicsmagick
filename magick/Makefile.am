@@ -86,6 +86,7 @@ MAGICK_BASE_SRCS = \
 	timer.c \
 	transform.c \
 	type.c \
+	unix_port.c \
 	utility.c \
 	version.c \
 	widget.c \
@@ -192,6 +193,7 @@ noinst_HEADERS = \
 	spinlock.h \
 	static.h \
 	studio.h \
+	unix_port.h \
 	tempfile.h \
 	vms.h
 
