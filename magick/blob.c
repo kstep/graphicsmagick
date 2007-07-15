@@ -2192,44 +2192,31 @@ MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 
 static void FormMultiPartFilename(Image *image, const ImageInfo *image_info)
 {
+  MagickBool
+    force;
+
   char
-    filename[MaxTextExtent],
-    *p;
+    filename[MaxTextExtent];
 
   /*
     Form filename for multi-part images.
   */
-  (void) strlcpy(filename,image->filename,MaxTextExtent);
-  for (p=strchr(filename,'%'); p != (char *) NULL; p=strchr(p+1,'%'))
-    {
-      char
-        *q;
+  force = ((!image_info->adjoin) &&
+           ((image->previous != (Image *) NULL) ||
+            (image->next != (Image *) NULL)));
+  if (MagickSceneFileName(filename,image->filename,".%lu",force,
+                          GetImageIndexInList(image)))
+    (void) strlcpy(image->filename,filename,MaxTextExtent);
 
-      q=p+1;
-      if (*q == '0')
-        (void) strtol(q,&q,10);
-      if (*q == 'd')
-        {
-          char
-            format[MaxTextExtent];
-
-          (void) strlcpy(format,p,MaxTextExtent);
-          FormatString(p,format,GetImageIndexInList(image));
-          break;
-        }
-    }
   if (!image_info->adjoin)
     if ((image->previous != (Image *) NULL) ||
         (image->next != (Image *) NULL))
       {
-        if (LocaleCompare(filename,image->filename) == 0)
-          FormatString(filename,"%.1024s.%lu",image->filename,
-                       GetImageIndexInList(image));
+        /* Propagate magick to next image in list. */
         if (image->next != (Image *) NULL)
           (void) strlcpy(image->next->magick,image->magick,
                          MaxTextExtent);
       }
-  (void) strlcpy(image->filename,filename,MaxTextExtent);
 }
 
 MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,

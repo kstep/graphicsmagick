@@ -32,8 +32,7 @@ typedef struct _DelegateInfo
     mode;
 
   unsigned int
-    stealth,
-    spawn;
+    stealth;
 
   unsigned long
     signature;

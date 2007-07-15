@@ -1468,7 +1468,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   unsigned int
     status;
 
-  long
+  unsigned long
     input_colorspace;
 
   unsigned long
@@ -1584,7 +1584,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 "  Input colorspace=%lu",input_colorspace);
         }
 
-      if (input_colorspace == jpeg_info.in_color_space)
+      if (input_colorspace == (unsigned long) jpeg_info.in_color_space)
         {
           /* Retrieve input sampling factors */
           attribute=GetImageAttribute(image,"JPEG-Sampling-factors");

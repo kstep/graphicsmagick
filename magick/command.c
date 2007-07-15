@@ -508,10 +508,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
               /*
                 Form filename for multi-part images.
               */
-              FormatString(filename,image_info->filename,scene);
-              if (LocaleCompare(filename,image_info->filename) == 0)
-                FormatString(filename,"%.1024s[%lu]",image_info->filename,
-                  scene);
+              (void) MagickSceneFileName(filename,image_info->filename,"[%lu]",MagickTrue,scene);
               (void) strlcpy(image_info->filename,filename,MaxTextExtent);
             }
           image_info->colorspace=quantize_info->colorspace;
@@ -5326,9 +5323,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               /*
                 Form filename for multi-part images.
               */
-              FormatString(filename,image_info->filename,scene);
-              if (LocaleCompare(filename,image_info->filename) == 0)
-                FormatString(filename,"%.1024s.%lu",image_info->filename,scene);
+              (void) MagickSceneFileName(filename,image_info->filename,".%lu",MagickTrue,scene);
               (void) strlcpy(image_info->filename,filename,MaxTextExtent);
             }
           (void) strcpy(image_info->magick,"MIFF");
@@ -11933,9 +11928,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               /*
                 Form filename for multi-part images.
               */
-              FormatString(filename,image_info->filename,scene);
-              if (LocaleCompare(filename,image_info->filename) == 0)
-                FormatString(filename,"%.1024s.%lu",image_info->filename,scene);
+              (void) MagickSceneFileName(filename,image_info->filename,".%lu",MagickTrue,scene);
               (void) strlcpy(image_info->filename,filename,MaxTextExtent);
             }
           (void) CloneString(&image_info->font,montage_info->font);
@@ -14484,6 +14477,7 @@ MagickExport int GMCommand(int argc,char **argv)
         {
           (void) fputs(text,stdout);
           (void) fputc('\n',stdout);
+          (void) fflush(stdout);
         }
       MagickFreeMemory(text);
     }

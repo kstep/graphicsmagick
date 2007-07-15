@@ -48,6 +48,9 @@
 #if defined(MSWINDOWS) || defined(__CYGWIN__)
 # include "magick/nt_feature.h"
 #endif
+#if defined(POSIX)
+# include "magick/unix_port.h"
+#endif
 #include "magick/semaphore.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -337,6 +340,51 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
 %
 %
 */
+static size_t
+UnixShellTextEscape(char *dst, const char *src, const size_t size)
+{
+  size_t
+    length=0;
+
+  char
+    *p;
+
+  const char
+    *q;
+
+  assert(dst != NULL);
+  assert(src != (const char *) NULL);
+  assert(size >= 1);
+
+  /*
+    Copy src to dst within bounds of size-1, while escaping special
+    characters.
+  */
+  for ( p=dst, q=src, length=0 ;
+        (*q != 0) && (length < size-1) ;
+        length++, p++, q++ )
+    {
+      register const char c = *q;
+      if ((c == '\\') ||
+          (c == '`') ||
+          (c == '"') ||
+          (c == '\n') ||
+          (c == '$'))
+        {
+          if (length+1 > size-1)
+            break;
+          *p = '\\';
+          p++;
+          length++;
+        }
+      *p = c;
+    }
+
+  dst[length]='\0';
+
+  return length;
+}
+
 MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   const char *decode,const char *encode,ExceptionInfo *exception)
 {
@@ -511,15 +559,99 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
       status=False;
       goto error_exit;
     }
-    /* Expand sprintf-style codes in delegate command to command string */
-    command=TranslateText(image_info,image,commands[i]);
-    if (command == (char *) NULL)
-      break;
-    /* Handle commands which should be backgrounded */
-    if (delegate_info->spawn)
-      (void) ConcatenateString(&command," &");
-    /* Execute delegate.  */
-    status=SystemCommand(image_info->verbose,command);
+#if defined(POSIX)
+    {
+      MagickBool
+        needs_shell;
+
+      /*
+        Check to see if command template must be executed via shell
+        due to using constructs requiring multiple processes or I/O
+        redirection.
+      */
+      needs_shell = MagickFalse;
+      {
+        char *
+          p;
+
+        p = commands[i];
+        for (p = commands[i]; *p; p++)
+          {
+            if (('&' == *p) ||
+                (';' == *p) ||
+                ('<' == *p) ||
+                ('>' == *p) ||
+                ('|' == *p))
+              {
+                needs_shell = MagickTrue;
+                break;
+              }
+          }
+      }
+
+      if (MagickFalse == needs_shell)
+        {
+          int
+            arg_count,
+            j;
+          
+          char
+            **arg_array;
+          
+          /*
+            Convert command template into an argument array.  Translate
+            each argument array element individually in order to
+            absolutely avoid any possibility that the number of arguments
+            may be altered due to substituted data.
+          */
+          arg_array = StringToArgv(commands[i],&arg_count);
+          for (j = 0; arg_array[j] != (const char*) NULL; j++)
+            {
+              if (strchr(arg_array[j], '%') != (const char*) NULL)
+                {
+                  char *expanded = TranslateText(image_info,image,arg_array[j]);
+                  if (expanded != (char *) NULL)
+                    {
+                      MagickFreeMemory(arg_array[j]);
+                      arg_array[j] = expanded;
+                    }
+                }
+            }
+          
+          /*
+            Execute delegate using our secure "spawn" facility.
+          */
+          status = MagickSpawnVP(image_info->verbose,arg_array[1],arg_array+1);
+        }
+      else
+        {
+          /*
+            Expand sprintf-style codes in delegate command to command
+            string, escaping replacement text appropriately
+          */
+          command=TranslateTextEx(image_info,image,commands[i],UnixShellTextEscape);
+          if (command == (char *) NULL)
+            break;
+          /*
+            Execute delegate using command shell.
+          */
+          status=SystemCommand(image_info->verbose,command);
+        }
+    }
+#else
+    {
+      /*
+        Expand sprintf-style codes in delegate command to command string
+      */
+      command=TranslateText(image_info,image,commands[i]);
+      if (command == (char *) NULL)
+        break;
+      /*
+        Execute delegate using command shell.
+      */
+      status=SystemCommand(image_info->verbose,command);
+    }
+#endif
     MagickFreeMemory(command);
     /* Liberate convenience temporary files */
     (void) LiberateTemporaryFile(image_info->unique);
@@ -572,7 +704,8 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
 %      executing it.
 %
 %    o command: The address of a character string containing the command to
-%      execute.
+%      execute.  The command is formulated through direct FormatString()
+%      substitutions rather than using TranslateText.
 %
 %
 */
@@ -617,7 +750,16 @@ MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
     {
       if (verbose)
         (void) fputs(command,stdout);
+#if defined(POSIX)
+      {
+        int arg_count;
+        char **arg_array;
+        arg_array = StringToArgv(command,&arg_count);
+        return MagickSpawnVP(arg_array[1],arg_array+1);
+      }
+#else
       return(SystemCommand(verbose,command));
+#endif
     }
   if (verbose)
     {
@@ -1064,11 +1206,6 @@ static unsigned int ReadConfigureFile(const char *basename,
         case 'S':
         case 's':
           {
-            if (LocaleCompare((char *) keyword,"spawn") == 0)
-              {
-                delegate_list->spawn=LocaleCompare(token,"True") == 0;
-                break;
-              }
             if (LocaleCompare((char *) keyword,"stealth") == 0)
               {
                 delegate_list->stealth=LocaleCompare(token,"True") == 0;

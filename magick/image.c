@@ -4602,17 +4602,18 @@ MagickExport MagickPassFail SetImageInfo(ImageInfo *image_info,
     }
   if (rectify)
     {
+      /*
+        Test for multiple image support in file filename template. In
+        this case, the filename contains a printf style string
+        containing some variation of %d (e.g. "image%02d.miff");
+      */
+
       const MagickInfo
         *magick_info;
 
-      /*
-        Rectify multi-image file support.
-        FIXME: Does not work!
-      */
-      FormatString(filename,image_info->filename,0);
-      if ((LocaleCompare(filename,image_info->filename) != 0) &&
-          (strchr(filename,'%') == (char *) NULL))
+      if (MagickSceneFileName(filename,image_info->filename,".%lu",MagickFalse,0))
         image_info->adjoin=False;
+
       magick_info=GetMagickInfo(magic,exception);
       if (magick_info != (const MagickInfo *) NULL)
         image_info->adjoin&=magick_info->adjoin;

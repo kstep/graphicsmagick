@@ -153,6 +153,7 @@ MAGICK_BASE_SRCS = \
 	magick/tsd.c \
 	magick/tsd.h \
 	magick/type.c \
+	magick/unix_port.c \
 	magick/utility.c \
 	magick/utility.h \
 	magick/version.c \
@@ -243,6 +244,7 @@ MAGICK_NOINST_HDRS = \
 	magick/spinlock.h \
 	magick/static.h \
 	magick/studio.h \
+	magick/unix_port.h \
 	magick/tempfile.h \
 	magick/vms.h
 

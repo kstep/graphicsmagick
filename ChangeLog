@@ -1,3 +1,20 @@
+2007-07-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (SetImageInfo): Address security issue noted by
+	CVE-2006-0082
+	http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-0082 in
+	which output filenames matching arbitrary printf specifications
+	may cause GraphicsMagick to crash.
+	* magick/utility.c (TranslateTextEx): New version of TranslateText
+	which allows copying each attribute via a user-provided callback
+	function.
+	* magick/delegate.c (InvokeDelegate): Implement secure delegate
+	execution in POSIX environments in order to avoid injection of
+	arbitrary shell commands via carefully crafted filenames.  Fixes
+	Debian Bug 345238 "[CVE-2005-4601] Shell command injection in
+	delegate code (via file names)"
+	http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=345238
+
 2007-07-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/forward.h: New header file to support forward type

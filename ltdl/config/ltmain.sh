@@ -1,6 +1,6 @@
 # Generated from ltmain.m4sh; do not edit by hand
 
-# ltmain.sh (GNU libtool 1.2484 2007/07/07 05:09:09) 2.1a
+# ltmain.sh (GNU libtool 1.2487 2007/07/14 18:46:19) 2.1a
 # Written by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
@@ -65,7 +65,7 @@
 #       compiler:		$LTCC
 #       compiler flags:		$LTCFLAGS
 #       linker:		$LD (gnu? $with_gnu_ld)
-#       $progname:		(GNU libtool 1.2484 2007/07/07 05:09:09) 2.1a
+#       $progname:		(GNU libtool 1.2487 2007/07/14 18:46:19) 2.1a
 #       automake:		$automake_version
 #       autoconf:		$autoconf_version
 #
@@ -74,8 +74,8 @@
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=2.1a
-TIMESTAMP=" 1.2484 2007/07/07 05:09:09"
-package_revision=1.2484
+TIMESTAMP=" 1.2487 2007/07/14 18:46:19"
+package_revision=1.2487
 
 # Be Bourne compatible
 if test -n "${ZSH_VERSION+set}" && (emulate sh) >/dev/null 2>&1; then
@@ -1074,14 +1074,9 @@ func_ltwrapper_scriptname ()
 {
     func_ltwrapper_scriptname_result=""
     if func_ltwrapper_executable_p "$1"; then
-	func_dirname "$1"
-	func_basename "$1"
+	func_dirname_and_basename "$1" "" "."
 	func_stripname '' '.exe' "$func_basename_result"
-	if test -z "$func_dirname_result"; then
-	    func_ltwrapper_scriptname_result="./$objdir/${func_stripname_result}_ltshwrapper"
-	else
-	    func_ltwrapper_scriptname_result="$func_dirname_result/$objdir/${func_stripname_result}_ltshwrapper"
-	fi
+	func_ltwrapper_scriptname_result="$func_dirname_result/$objdir/${func_stripname_result}_ltshwrapper"
     fi
 }
 
@@ -1804,9 +1799,8 @@ func_mode_compile ()
     test "X$libobj" != "X$func_quote_for_eval_result" \
       && $ECHO "X$libobj" | $GREP '[]~#^*{};<>?"'"'"' 	&()|`$[]' \
       && func_warning "libobj name \`$libobj' may not contain shell special characters."
-    func_basename "$obj"
+    func_dirname_and_basename "$obj" "/" ""
     objname="$func_basename_result"
-    func_dirname "$obj" "/" ""
     xdir="$func_dirname_result"
     lobj=${xdir}$objdir/$objname
 
@@ -2303,9 +2297,8 @@ func_mode_install ()
       destdir="$dest"
       destname=
     else
-      func_dirname "$dest" "" "."
+      func_dirname_and_basename "$dest" "" "."
       destdir="$func_dirname_result"
-      func_basename "$dest"
       destname="$func_basename_result"
 
       # Not a directory, so check to see that there is only one file specified.
@@ -7167,13 +7160,9 @@ EOF
 	esac
 	case $host in
 	  *cygwin* | *mingw* )
-	    func_basename "$output"
+	    func_dirname_and_basename "$output" "" "."
 	    output_name=$func_basename_result
-	    func_dirname "$output"
 	    output_path=$func_dirname_result
-	    if test -z "$output_path"; then
-	      output_path=.
-	    fi
 	    cwrappersource="$output_path/$objdir/lt-$output_name.c"
 	    cwrapper="$output_path/$output_name.exe"
 	    $RM $cwrappersource $cwrapper
@@ -7186,7 +7175,10 @@ EOF
 	    # are only useful if you want to execute the "real" binary.
 	    # Since the "real" binary is built for $host, then this
 	    # wrapper might as well be built for $host, too.
-	    $opt_dry_run || $LTCC $LTCFLAGS -s -o $cwrapper $cwrappersource
+	    $opt_dry_run || {
+	      $LTCC $LTCFLAGS -o $cwrapper $cwrappersource
+	      $STRIP $cwrapper
+	    }
 
 	    # Now, create the wrapper script for func_source use:
 	    func_ltwrapper_scriptname $cwrapper

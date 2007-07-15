@@ -490,6 +490,7 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
   char
     message[MaxTextExtent];
 
+  (void) module;
   errno=0;
   (void) vsnprintf(message,MaxTextExtent-2,format,warning);
   message[MaxTextExtent-2]='\0';

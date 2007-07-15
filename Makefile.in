@@ -1023,34 +1023,34 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/symbols.h magick/tempfile.c magick/tempfile.h \
 	magick/timer.c magick/timer.h magick/transform.c \
 	magick/transform.h magick/tsd.c magick/tsd.h magick/type.c \
-	magick/utility.c magick/utility.h magick/version.c \
-	magick/version.h magick/widget.c magick/widget.h \
-	magick/xwindow.c magick/xwindow.h magick/nt_feature.c \
-	magick/nt_feature.h magick/nt_base.c magick/nt_base.h \
-	coders/art.c coders/avi.c coders/avs.c coders/bmp.c \
-	coders/caption.c coders/cineon.c coders/cmyk.c coders/cut.c \
-	coders/dcm.c coders/dib.c coders/dps.c coders/dpx.c \
-	coders/fax.c coders/fits.c coders/gif.c coders/gradient.c \
-	coders/gray.c coders/histogram.c coders/html.c coders/icon.c \
-	coders/label.c coders/locale.c coders/logo.c coders/map.c \
-	coders/mat.c coders/matte.c coders/meta.c coders/miff.c \
-	coders/mono.c coders/mpc.c coders/mpeg.c coders/mpr.c \
-	coders/msl.c coders/mtv.c coders/mvg.c coders/null.c \
-	coders/otb.c coders/palm.c coders/pcd.c coders/pcl.c \
-	coders/pcx.c coders/pdb.c coders/pdf.c coders/pict.c \
-	coders/pix.c coders/plasma.c coders/pnm.c coders/preview.c \
-	coders/ps.c coders/ps2.c coders/ps3.c coders/psd.c \
-	coders/pwp.c coders/rgb.c coders/rla.c coders/rle.c \
-	coders/sct.c coders/sfw.c coders/sgi.c coders/stegano.c \
-	coders/sun.c coders/svg.c coders/tga.c coders/tile.c \
-	coders/tim.c coders/topol.c coders/ttf.c coders/txt.c \
-	coders/uil.c coders/url.c coders/uyvy.c coders/vicar.c \
-	coders/vid.c coders/viff.c coders/wbmp.c coders/wmf.c \
-	coders/wpg.c coders/xbm.c coders/xc.c coders/xcf.c \
-	coders/xpm.c coders/yuv.c coders/clipboard.c coders/emf.c \
-	coders/fpx.c coders/jbig.c coders/jpeg.c coders/jp2.c \
-	coders/png.c coders/ept.c coders/tiff.c coders/x.c \
-	coders/xwd.c filters/analyze.c
+	magick/unix_port.c magick/utility.c magick/utility.h \
+	magick/version.c magick/version.h magick/widget.c \
+	magick/widget.h magick/xwindow.c magick/xwindow.h \
+	magick/nt_feature.c magick/nt_feature.h magick/nt_base.c \
+	magick/nt_base.h coders/art.c coders/avi.c coders/avs.c \
+	coders/bmp.c coders/caption.c coders/cineon.c coders/cmyk.c \
+	coders/cut.c coders/dcm.c coders/dib.c coders/dps.c \
+	coders/dpx.c coders/fax.c coders/fits.c coders/gif.c \
+	coders/gradient.c coders/gray.c coders/histogram.c \
+	coders/html.c coders/icon.c coders/label.c coders/locale.c \
+	coders/logo.c coders/map.c coders/mat.c coders/matte.c \
+	coders/meta.c coders/miff.c coders/mono.c coders/mpc.c \
+	coders/mpeg.c coders/mpr.c coders/msl.c coders/mtv.c \
+	coders/mvg.c coders/null.c coders/otb.c coders/palm.c \
+	coders/pcd.c coders/pcl.c coders/pcx.c coders/pdb.c \
+	coders/pdf.c coders/pict.c coders/pix.c coders/plasma.c \
+	coders/pnm.c coders/preview.c coders/ps.c coders/ps2.c \
+	coders/ps3.c coders/psd.c coders/pwp.c coders/rgb.c \
+	coders/rla.c coders/rle.c coders/sct.c coders/sfw.c \
+	coders/sgi.c coders/stegano.c coders/sun.c coders/svg.c \
+	coders/tga.c coders/tile.c coders/tim.c coders/topol.c \
+	coders/ttf.c coders/txt.c coders/uil.c coders/url.c \
+	coders/uyvy.c coders/vicar.c coders/vid.c coders/viff.c \
+	coders/wbmp.c coders/wmf.c coders/wpg.c coders/xbm.c \
+	coders/xc.c coders/xcf.c coders/xpm.c coders/yuv.c \
+	coders/clipboard.c coders/emf.c coders/fpx.c coders/jbig.c \
+	coders/jpeg.c coders/jp2.c coders/png.c coders/ept.c \
+	coders/tiff.c coders/x.c coders/xwd.c filters/analyze.c
 am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-attribute.lo \
@@ -1105,6 +1105,7 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-transform.lo \
 	magick/magick_libGraphicsMagick_la-tsd.lo \
 	magick/magick_libGraphicsMagick_la-type.lo \
+	magick/magick_libGraphicsMagick_la-unix_port.lo \
 	magick/magick_libGraphicsMagick_la-utility.lo \
 	magick/magick_libGraphicsMagick_la-version.lo \
 	magick/magick_libGraphicsMagick_la-widget.lo \
@@ -2898,6 +2899,7 @@ MAGICK_BASE_SRCS = \
 	magick/tsd.c \
 	magick/tsd.h \
 	magick/type.c \
+	magick/unix_port.c \
 	magick/utility.c \
 	magick/utility.h \
 	magick/version.c \
@@ -2983,6 +2985,7 @@ MAGICK_NOINST_HDRS = \
 	magick/spinlock.h \
 	magick/static.h \
 	magick/studio.h \
+	magick/unix_port.h \
 	magick/tempfile.h \
 	magick/vms.h
 
@@ -5217,6 +5220,8 @@ magick/magick_libGraphicsMagick_la-tsd.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-type.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-unix_port.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-utility.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-version.lo: magick/$(am__dirstamp) \
@@ -6249,6 +6254,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-tsd.lo
 	-rm -f magick/magick_libGraphicsMagick_la-type.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-type.lo
+	-rm -f magick/magick_libGraphicsMagick_la-unix_port.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-unix_port.lo
 	-rm -f magick/magick_libGraphicsMagick_la-utility.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-utility.lo
 	-rm -f magick/magick_libGraphicsMagick_la-version.$(OBJEXT)
@@ -6580,6 +6587,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-transform.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-tsd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-type.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-unix_port.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-utility.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-version.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-widget.Plo@am__quote@
@@ -7727,6 +7735,13 @@ magick/magick_libGraphicsMagick_la-type.lo: magick/type.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/type.c' object='magick/magick_libGraphicsMagick_la-type.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-type.lo `test -f 'magick/type.c' || echo '$(srcdir)/'`magick/type.c
+
+magick/magick_libGraphicsMagick_la-unix_port.lo: magick/unix_port.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-unix_port.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-unix_port.Tpo -c -o magick/magick_libGraphicsMagick_la-unix_port.lo `test -f 'magick/unix_port.c' || echo '$(srcdir)/'`magick/unix_port.c
+@am__fastdepCC_TRUE@	mv -f magick/$(DEPDIR)/magick_libGraphicsMagick_la-unix_port.Tpo magick/$(DEPDIR)/magick_libGraphicsMagick_la-unix_port.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/unix_port.c' object='magick/magick_libGraphicsMagick_la-unix_port.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-unix_port.lo `test -f 'magick/unix_port.c' || echo '$(srcdir)/'`magick/unix_port.c
 
 magick/magick_libGraphicsMagick_la-utility.lo: magick/utility.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-utility.lo -MD -MP -MF magick/$(DEPDIR)/magick_libGraphicsMagick_la-utility.Tpo -c -o magick/magick_libGraphicsMagick_la-utility.lo `test -f 'magick/utility.c' || echo '$(srcdir)/'`magick/utility.c

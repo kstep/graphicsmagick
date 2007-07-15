@@ -1113,7 +1113,7 @@ MagickExport void FormatSize(const magick_int64_t size,char *format)
 */
 MagickExport void FormatStringList(char *string,const char *format, 
                                    va_list operands)
-{  
+{
 #if defined(HAVE_VSNPRINTF)
   (void) vsnprintf(string,MaxTextExtent,format,operands);
 #else
@@ -3263,6 +3263,92 @@ MagickExport void LocaleUpper(char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S c e n e F i l e N a m e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSceneFileName() uses a filename template and scene number
+%  in order to produce a unique filename for the scene.  If force is
+%  MagickFalse, then a substition is only performed if the template
+%  contains a valid substitution specification.  If force is MagickTrue,
+%  then the additional scene template is applied so that the generated
+%  filename is assured to be distinguished by the scene number.
+%
+%  The format of the MagickSceneFileName method is:
+%
+%      MagickBool MagickSceneFileName(char *filename, const char* template,
+%                                     unsigned long scene)
+%
+%  A description of each parameter follows:
+%
+%    o filename: Buffer to update with generated filename.  Buffer must
+%                be at least MaxTextExtent bytes long.
+%
+%    o template: Filename generation template (e.g. "image%02d.miff").
+%
+%    o scene_template: Template for scene part which is appended to
+%                template if template does not contain a scene format
+%                specification  (e.g. ".%lu" or "[%lu]").
+%
+%    o force:    If there is no embedded template in filename, then apply
+%                the scene template.
+%
+%    o scene:    Scene number.
+%
+*/
+MagickExport MagickBool MagickSceneFileName(char *filename,
+                                            const char* filename_template,
+                                            const char* scene_template,
+                                            const MagickBool force,
+                                            unsigned long scene)
+{
+  const char
+    *p;
+
+  MagickBool
+    status;
+
+  status = MagickFalse;
+  strlcpy(filename,filename_template,MaxTextExtent);
+  p=strchr(filename_template,'%');
+  if ((p != (char *) NULL) && ((strchr(p+1,'%') == (char *) NULL)))
+    {
+      for ( p=p+1; *p ; p++)
+        {
+          register const int c = *p;
+          if ('d' == c)
+            {
+              FormatString(filename,filename_template,scene);
+              break;
+            }
+          if (!isdigit(c))
+            {
+              status = MagickFalse;
+              break;
+            }
+        }
+    }
+
+  if ((force) && (LocaleCompare(filename,filename_template) == 0))
+    {
+      char format[MaxTextExtent];
+      strlcpy(format,"%.1024s",sizeof(format));
+      strlcat(format,scene_template,sizeof(format));
+      FormatString(filename,format,filename_template,scene);
+    }
+  if (LocaleCompare(filename,filename_template) != 0)
+    status = MagickTrue;
+
+  return status;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  M a g i c k S t r l C a t                                                  %
 %                                                                             %
 %                                                                             %
@@ -3396,6 +3482,64 @@ MagickExport size_t MagickStrlCpy(char *dst, const char *src, const size_t size)
   */
   while (*q++)
     length++;
+
+  return length;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M a g i c k S t r l C p y T r u n c                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickStrlCpyTrunc copies up to size - 1 characters from the NULL-
+%  terminated string src to dst, NULL-terminating the result.  The number of
+%  bytes copied (not including the terminating NULL) is returned.  This
+%  function is a useful alternative to using MagickStrlCpy() when the
+%  actual size copied is more useful than knowledge that truncation occured.
+%
+%  The format of the MagickStrlCat method is:
+%
+%      size_t MagickStrlCpyTrunc(char *dst, const char *src, size_t size)
+%
+%  A description of each parameter follows.
+%
+%   o  dst:  Destination string.
+%
+%   o  src:  Source string.
+%
+%   o  size: Maximum string length, including the terminating null.
+%
+*/
+MagickExport size_t MagickStrlCpyTrunc(char *dst, const char *src, const size_t size)
+{
+  size_t
+    length=0;
+
+  char
+    *p;
+
+  const char
+    *q;
+
+  assert(dst != NULL);
+  assert(src != (const char *) NULL);
+  assert(size >= 1);
+
+  /*
+    Copy src to dst within bounds of size-1.
+  */
+  for ( p=dst, q=src, length=0 ;
+        (*q != 0) && (length < size-1) ;
+        length++, p++, q++ )
+    *p = *q;
+
+  dst[length]='\0';
 
   return length;
 }
@@ -4552,11 +4696,57 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %      formatting characters.
 %
 */
-MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
-  const char *formatted_text)
+
+MagickExport char *TranslateText(const ImageInfo *image_info,
+                                 Image *image,
+                                 const char *formatted_text)
+{
+  //return TranslateTextEx(image_info,image,formatted_text,strlcpy);
+  return TranslateTextEx(image_info,image,formatted_text,MagickStrlCpyTrunc);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   T r a n s l a t e T e x t E x                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method TranslateTextEx replaces any embedded formatting characters with
+%  the appropriate image attribute and returns the translated text, while
+%  applying a text transformation for each substitution via a user provided
+%  translation function.  The translation function should behave similar to
+%  strlcpy() but may translate text while it is copied.
+%
+%  The format of the TranslateTextEx method is:
+%
+%      char *TranslateTextEx(const ImageInfo *image_info,Image *image,
+%        const char *formatted_text, MagickTextTranslate translate)
+%
+%  A description of each parameter follows:
+%
+%    o translated_text:  Method TranslateText returns the translated
+%      text string.
+%
+%    o image_info: The imageInfo.
+%
+%    o image: The image.
+%
+%    o formatted_text: The address of a character string containing the embedded
+%      formatting characters.
+%
+*/
+MagickExport char *TranslateTextEx(const ImageInfo *image_info,
+                                   Image *image,
+                                   const char *formatted_text,
+                                   MagickTextTranslate translate)
 {
   char
-    filename[MaxTextExtent],
+    buffer[MaxTextExtent],
     *text,
     *translated_text;
 
@@ -4580,6 +4770,10 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   if ((formatted_text == (const char *) NULL) || (*formatted_text == '\0'))
     return((char *) NULL);
   text=(char *) formatted_text;
+  /*
+    If text starts with '@' then try to replace it with the content of
+    the file name which follows.
+  */
   if ((*text == '@') && IsAccessible(text+1))
     {
       text=(char *) FileToBlob(text+1,&length,&image->exception);
@@ -4593,7 +4787,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   translated_text=MagickAllocateMemory(char *,length);
   if (translated_text == (char *) NULL)
     return NULL;
-  strcpy(translated_text,text);
+  strlcpy(translated_text,text,length);
   clone_info=CloneImageInfo(image_info);
   p=text;
   for (q=translated_text; *p != '\0'; p++)
@@ -4633,23 +4827,16 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       case 'b':
       {
         /* File size */
-        char
-          format[MaxTextExtent];
-
-        FormatSize(GetBlobSize(image),format);
-        (void) strcat(q,format);
-        while (*q != '\0')
-          q++;
+        FormatSize(GetBlobSize(image),buffer);
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'c':
       {
         /* Comment */
         attribute=GetImageAttribute(image,"comment");
-        if (attribute == (ImageAttribute *) NULL)
-          break;
-        (void) strlcpy(q,attribute->value,MaxTextExtent);
-        q+=strlen(attribute->value);
+        if (attribute != (ImageAttribute *) NULL)
+          q+=(translate)(q,attribute->value,MaxTextExtent);
         break;
       }
       case 'd':
@@ -4660,107 +4847,93 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         /*
           Label segment is the base of the filename.
         */
-        if (strlen(image->magick_filename) == 0)
-          break;
-        switch (*p)
-        {
-          case 'd':
+        if (strlen(image->magick_filename) != 0)
           {
-            /* Directory */
-            GetPathComponent(image->magick_filename,HeadPath,filename);
-            (void) strlcpy(q,filename,MaxTextExtent);
-            q+=strlen(filename);
-            break;
+            (void) strlcpy(buffer,"",MaxTextExtent);
+            switch (*p)
+              {
+              case 'd':
+                {
+                  /* Directory */
+                  GetPathComponent(image->magick_filename,HeadPath,buffer);
+                  break;
+                }
+              case 'e':
+                {
+                  /* Filename extension */
+                  GetPathComponent(image->magick_filename,ExtensionPath,buffer);
+                  break;
+                }
+              case 'f':
+                {
+                  /* Filename */
+                  GetPathComponent(image->magick_filename,TailPath,buffer);
+                  break;
+                }
+              case 't':
+                {
+                  /* Top of filename */
+                  GetPathComponent(image->magick_filename,BasePath,buffer);
+                  break;
+                }
+              }
+            q+=(translate)(q,buffer,MaxTextExtent);
           }
-          case 'e':
-          {
-            /* Filename extension */
-            GetPathComponent(image->magick_filename,ExtensionPath,filename);
-            (void) strlcpy(q,filename,MaxTextExtent);
-            q+=strlen(filename);
-            break;
-          }
-          case 'f':
-          {
-            /* Filename */
-            GetPathComponent(image->magick_filename,TailPath,filename);
-            (void) strlcpy(q,filename,MaxTextExtent);
-            q+=strlen(filename);
-            break;
-          }
-          case 't':
-          {
-            /* Top of filename */
-            GetPathComponent(image->magick_filename,BasePath,filename);
-            (void) strlcpy(q,filename,MaxTextExtent);
-            q+=strlen(filename);
-            break;
-          }
-        }
         break;
       }
       case 'g':
       {
         /* Group ? */
-        FormatString(q,"0x%lx",clone_info->group);
-        while (*q != '\0')
-          q++;
+        FormatString(buffer,"0x%lx",clone_info->group);
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'h':
       {
         /* Image height */
-        FormatString(q,"%lu",image->magick_rows ? image->magick_rows : 256);
-        while (*q != '\0')
-          q++;
+        FormatString(buffer,"%lu",image->magick_rows ? image->magick_rows : 256);
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'i':
       {
         /* Input filename */
-        (void) strlcpy(q,image->filename,MaxTextExtent);
-        q+=strlen(image->filename);
+        q+=(translate)(q,image->filename,MaxTextExtent);
         break;
       }
       case 'k':
       {
         /* Number of unique colors */
-        FormatString(q,"%lu",GetNumberColors(image,(FILE *) NULL,
-          &image->exception));
-        while (*q != '\0')
-          q++;
+        FormatString(buffer,"%lu",GetNumberColors(image,(FILE *) NULL,
+                                                  &image->exception));
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'l':
       {
         /* Label */
         attribute=GetImageAttribute(image,"label");
-        if (attribute == (ImageAttribute *) NULL)
-          break;
-        (void) strlcpy(q,attribute->value,MaxTextExtent);
-        q+=strlen(attribute->value);
+        if (attribute != (ImageAttribute *) NULL)
+          q+=(translate)(q,attribute->value,MaxTextExtent);
         break;
       }
       case 'm':
       {
         /* File format "magick" */
-        (void) strlcpy(q,image->magick,MaxTextExtent);
-        q+=strlen(image->magick);
+        q+=(translate)(q,image->magick,MaxTextExtent);
         break;
       }
       case 'n':
       {
         /* Number of scenes */
-        FormatString(q,"%lu",(unsigned long) GetImageListLength(image));
-        while (*q != '\0')
-          q++;
+        FormatString(buffer,"%lu",(unsigned long) GetImageListLength(image));
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'o':
       {
         /* Output filename */
-        (void) strlcpy(q,clone_info->filename,MaxTextExtent);
-        q+=strlen(clone_info->filename);
+        q+=(translate)(q,clone_info->filename,MaxTextExtent);
         break;
       }
       case 'p':
@@ -4775,97 +4948,81 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         p=image;
         for (page=1; p->previous != (Image *) NULL; page++)
           p=p->previous;
-        FormatString(q,"%lu",page);
-        while (*q != '\0')
-          q++;
+        FormatString(buffer,"%lu",page);
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'q':
       {
         /* Quantum depth */
-        FormatString(q,"%lu",GetImageDepth(image,&image->exception));
-        while (*q != '\0')
-          q++;
+        FormatString(buffer,"%lu",GetImageDepth(image,&image->exception));
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'r':
       {
-        /* Image storage class and colorspace */
+        /* Image storage class and colorspace
+           (e.g. "DirectClassRGB") */
         static char
           *ClassTypes[] =
           {
             (char *) "Undefined", (char *) "DirectClass",
             (char *) "PseudoClass", (char *) NULL
-          },
-          *ColorspaceTypes[] =
-          {
-            (char *) "undefined", (char *) "RGB", (char *) "Gray",
-            (char *) "Transparent", (char *) "OHTA", (char *) "XYZ",
-            (char *) "YCbCr", (char *) "YCC", (char *) "YIQ", (char *) "YPbPr",
-            (char *) "YUV", (char *) "CMYK", (char *) "sRGB", (char *) NULL
           };
 
-        FormatString(q,"%s%s%s",ClassTypes[image->storage_class],
-          ColorspaceTypes[image->colorspace],(image->matte ? "Matte" : ""));
-        while (*q != '\0')
-          q++;
+        FormatString(buffer,"%s%s%s",ClassTypes[image->storage_class],
+                     ColorspaceTypeToString(image->colorspace),
+                     (image->matte ? "Matte" : ""));
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 's':
       {
         /* Scene number */
-        FormatString(q,"%lu",image->scene);
+        FormatString(buffer,"%lu",image->scene);
         if (clone_info->subrange != 0)
-          FormatString(q,"%lu",clone_info->subimage);
-        while (*q != '\0')
-          q++;
+          FormatString(buffer,"%lu",clone_info->subimage);
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'u':
       {
         /* Unique temporary filename */
-        (void) strlcpy(filename,clone_info->unique,MaxTextExtent);
-        if (*filename == '\0')
-          if (!AcquireTemporaryFileName(filename))
+        if (strlcpy(buffer,clone_info->unique,MaxTextExtent) == 0)
+          if (!AcquireTemporaryFileName(buffer))
             break;
-        (void) strlcpy(q,filename,MaxTextExtent);
-        q+=strlen(filename);
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'w':
       {
         /* Image width */
-        FormatString(q,"%lu",
+        FormatString(buffer,"%lu",
           image->magick_columns ? image->magick_columns : 256);
-        while (*q != '\0')
-          q++;
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'x':
       {
         /* Horizontal resolution */
-        FormatString(q,"%g",image->x_resolution);
-        while (*q != '\0')
-          q++;
+        FormatString(buffer,"%g",image->x_resolution);
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'y':
       {
         /* Vertical resolution */
-        FormatString(q,"%g",image->y_resolution);
-        while (*q != '\0')
-          q++;
+        FormatString(buffer,"%g",image->y_resolution);
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case 'z':
       {
         /* Second unique temporary filename */
-        (void) strlcpy(filename,clone_info->zero,MaxTextExtent);
-        if (*filename == '\0')
-          if (!AcquireTemporaryFileName(filename))
+        if (strlcpy(buffer,clone_info->zero,MaxTextExtent) == 0)
+          if (!AcquireTemporaryFileName(buffer))
             break;
-        (void) strlcpy(q,filename,MaxTextExtent);
-        q+=strlen(filename);
+        q+=(translate)(q,buffer,MaxTextExtent);
         break;
       }
       case '[':
@@ -4874,45 +5031,43 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         char
           key[MaxTextExtent];
 
-        magick_off_t
-          offset;
-
-        if (strchr(p,']') == (char *) NULL)
-          break;
+        /* Extract attribute key string. */
         p++;
-        for (i=0; (i < MaxTextExtent) && (*p != ']'); i++)
+        for (i=0; (i < MaxTextExtent) && (*p) && (*p != ']'); i++)
+          {
           key[i]=(*p++);
+          }
+        if (']' != *p)
+          break;
         key[i]='\0';
+
+        /* Try to get the attibute from image */
         attribute=GetImageAttribute(image,key);
+
+        /* Try to get the attribute from image_info */
+        if (attribute == (const ImageAttribute *) NULL)
+            attribute=GetImageInfoAttribute(clone_info,image,key);
+
         if (attribute != (const ImageAttribute *) NULL)
           {
-            offset=strlen(attribute->value);
-            if ((size_t) (q-translated_text+offset) >= length)
+            /* Attributes may be larger than MaxTextExtent so make sure
+               there is sufficient memory allocated. Make sure that there
+               is at least MaxTextExtent left available after we have
+               concatenated our part. */
+            size_t
+              attribute_size;
+
+            attribute_size=strlen(attribute->value)+1;
+            if ((size_t) (q-translated_text+attribute_size+MaxTextExtent) >= length)
               {
-                length+=(offset+MaxTextExtent);
+                length+=(attribute_size+2*MaxTextExtent);
                 MagickReallocMemory(translated_text,length);
                 if (translated_text == (char *) NULL)
                   break;
                 q=translated_text+strlen(translated_text);
               }
-            (void) strcpy(q,attribute->value);
-            q+=offset;
-            break;
+            q+=(translate)(q,attribute->value,attribute_size+MaxTextExtent);
           }
-        attribute=GetImageInfoAttribute(clone_info,image,key);
-        if (attribute == (ImageAttribute *) NULL)
-          break;
-        offset=strlen(attribute->value);
-        if ((size_t) (q-translated_text+offset) >= length)
-          {
-            length+=(offset+MaxTextExtent);
-            MagickReallocMemory(translated_text,length);
-            if (translated_text == (char *) NULL)
-              break;
-            q=translated_text+strlen(translated_text);
-          }
-        (void) strcpy(q,attribute->value);
-        q+=offset;
         break;
       }
       case '#':
@@ -4920,10 +5075,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         /* Image signature */
         (void) SignatureImage(image);
         attribute=GetImageAttribute(image,"signature");
-        if (attribute == (ImageAttribute *) NULL)
-          break;
-        (void) strlcpy(q,attribute->value,MaxTextExtent);
-        q+=strlen(attribute->value);
+        if (attribute != (ImageAttribute *) NULL)
+          q+=(translate)(q,attribute->value,MaxTextExtent);
         break;
       }
       case '%':

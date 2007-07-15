@@ -1566,6 +1566,16 @@ static int GenerateWildcardAttribute(Image *image,const char *key)
   MagickPassFail
     status=MagickFail;
 
+  /*
+    Support a full "*" wildcard.
+  */
+  if (strcmp("*",key) == 0)
+    {
+      (void) GenerateIPTCAttribute((Image *) image,"IPTC:*");
+      (void) Generate8BIMAttribute((Image *) image,"8BIM:*");
+      (void) GenerateEXIFAttribute((Image *) image,"EXIF:*");
+    }
+
   key_length=strlen(key)-1;
   for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
     if (LocaleNCompare(key,p->key,key_length) == 0)
@@ -1644,6 +1654,15 @@ MagickExport const ImageAttribute *GetImageAttribute(const Image *image,
       /*
         Create an attribute named "foo:*" with all matching
         key=values and return it.
+      */
+      if (GenerateWildcardAttribute((Image *) image,key) == True)
+        return(GetImageAttribute(image,key));
+    }
+  else if ((key_length ==1) && (key[0] == '*'))
+    {
+      /*
+        Create an attribute named "*" with all key=values and return
+        it.
       */
       if (GenerateWildcardAttribute((Image *) image,key) == True)
         return(GetImageAttribute(image,key));
