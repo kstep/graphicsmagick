@@ -108,6 +108,7 @@ extern "C" {
 #  pragma warning(disable : 4142)
 #  pragma warning(disable : 4800)
 #  pragma warning(disable : 4786)
+#  pragma warning(disable : 4996) /* function deprecation warnings */
 # endif
 #else
 # define MagickExport
