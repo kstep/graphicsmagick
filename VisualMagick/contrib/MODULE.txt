@@ -1,1 +1,2 @@
-This is a placeholder to make sure that this directory exists.
+DEFINE = _CRT_SECURE_NO_WARNINGS
+DEFINE = _CRT_NONSTDC_NO_WARNINGS
