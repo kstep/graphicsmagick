@@ -89,6 +89,10 @@ namespace MagickLib
 #  define MagickDLLDeclExtern
 #endif
 
+#if defined(WIN32) && defined(_VISUALC_)
+#  pragma warning(disable : 4996) /* function deprecation warnings */
+#endif
+
 
 //
 // Import GraphicsMagick symbols and types which are used as part of the
@@ -788,7 +792,6 @@ namespace Magick
   using MagickLib::YNegative;
   using MagickLib::YValue;
   using MagickLib::ZoomImage;
-
 #endif // MAGICK_IMPLEMENTATION
 
 }
