@@ -1679,126 +1679,113 @@ ModuleExport void UnregisterMIFFImage(void)
 %
 %
 */
-static inline WriteRunlengthPacket(Image *image,PixelPacket *pixel,size_t length,unsigned char *q,IndexPacket index)
-{
-#if QuantumDepth > 8
-  unsigned long
-	  value;
-#endif /* QuantumDepth > */
-
-  if (image->storage_class != DirectClass)
-    {
-#if QuantumDepth > 16
-      if (image->depth > 16)
-        {
-          *q++=(unsigned char) (index >> 24);
-          *q++=(unsigned char) (index >> 16);
-        }
-#endif /* QuantumDepth > 16 */
-#if QuantumDepth > 8
-      if (image->depth > 8)
-        *q++=(unsigned char) (index >> 8);
-#endif /* QuantumDepth > 8 */
-      *q++=(unsigned char) index;
-    }
-  else
-    {
-      if (image->depth <= 8)
-        {
-          *q++=ScaleQuantumToChar(pixel->red);
-          *q++=ScaleQuantumToChar(pixel->green);
-          *q++=ScaleQuantumToChar(pixel->blue);
-          if (image->colorspace == CMYKColorspace)
-            {
-              *q++=ScaleQuantumToChar(pixel->opacity);
-              if (image->matte)
-                *q++=ScaleQuantumToChar(index);
-            }
-          else
-            if (image->matte)
-              *q++=ScaleQuantumToChar(pixel->opacity);
-        }
-#if QuantumDepth > 8
-      else
-        if (image->depth <= 16)
-          {
-            value=ScaleQuantumToShort(pixel->red);
-            *q++=(unsigned char) (value >> 8);
-            *q++=(unsigned char) value;
-            value=ScaleQuantumToShort(pixel->green);
-            *q++=(unsigned char) (value >> 8);
-            *q++=(unsigned char) value;
-            value=ScaleQuantumToShort(pixel->blue);
-            *q++=(unsigned char) (value >> 8);
-            *q++=(unsigned char) value;
-            if (image->colorspace == CMYKColorspace)
-              {
-                value=ScaleQuantumToShort(pixel->opacity);
-                *q++=(unsigned char) (value >> 8);
-                *q++=(unsigned char) value;
-                if (image->matte)
-                  {
-                    value=ScaleQuantumToShort(index);
-                    *q++=(unsigned char) (value >> 8);
-                    *q++=(unsigned char) value;
-                  }
-              }
-            else
-              if (image->matte)
-                {
-                  value=ScaleQuantumToShort(pixel->opacity);
-                  *q++=(unsigned char) (value >> 8);
-                  *q++=(unsigned char) value;
-                }
-          }
-#endif /* QuantumDepth > 8 */
-#if QuantumDepth > 16
-        else if (image->depth <= 32)
-          {
-            value=ScaleQuantumToLong(pixel->red);
-            *q++=(unsigned char) (value >> 24);
-            *q++=(unsigned char) (value >> 16);
-            *q++=(unsigned char) (value >> 8);
-            *q++=(unsigned char) value;
-            value=ScaleQuantumToLong(pixel->green);
-            *q++=(unsigned char) (value >> 24);
-            *q++=(unsigned char) (value >> 16);
-            *q++=(unsigned char) (value >> 8);
-            *q++=(unsigned char) value;
-            value=ScaleQuantumToLong(pixel->blue);
-            *q++=(unsigned char) (value >> 24);
-            *q++=(unsigned char) (value >> 16);
-            *q++=(unsigned char) (value >> 8);
-            *q++=(unsigned char) value;
-            if (image->colorspace == CMYKColorspace)
-              {
-                value=ScaleQuantumToLong(pixel->opacity);
-                *q++=(unsigned char) (value >> 24);
-                *q++=(unsigned char) (value >> 16);
-                *q++=(unsigned char) (value >> 8);
-                *q++=(unsigned char) value;
-                if (image->matte)
-                  {
-                    value=ScaleQuantumToLong(index);
-                    *q++=(unsigned char) (value >> 24);
-                    *q++=(unsigned char) (value >> 16);
-                    *q++=(unsigned char) (value >> 8);
-                    *q++=(unsigned char) value;
-                  }
-              }
-            else
-              if (image->matte)
-                {
-                  value=ScaleQuantumToLong(pixel->opacity);
-                  *q++=(unsigned char) (value >> 24);
-                  *q++=(unsigned char) (value >> 16);
-                  *q++=(unsigned char) (value >> 8);
-                  *q++=(unsigned char) value;
-                }
-          }
-#endif /* QuantumDepth > 16 */
-    }
-  *q++=(unsigned char) length;
+#define WriteRunlengthPacket(image,pixel,length,q,index) \
+{ \
+  if (image->storage_class != DirectClass) \
+    { \
+      if (image->depth > 16) \
+        { \
+          *q++=(unsigned char) (index >> 24); \
+          *q++=(unsigned char) (index >> 16); \
+        } \
+      if (image->depth > 8) \
+        *q++=(unsigned char) (index >> 8); \
+      *q++=(unsigned char) index; \
+    } \
+  else \
+    { \
+      if (image->depth <= 8) \
+        { \
+          *q++=ScaleQuantumToChar(pixel.red); \
+          *q++=ScaleQuantumToChar(pixel.green); \
+          *q++=ScaleQuantumToChar(pixel.blue); \
+          if (image->colorspace == CMYKColorspace) \
+            { \
+              *q++=ScaleQuantumToChar(pixel.opacity); \
+              if (image->matte) \
+                *q++=ScaleQuantumToChar(index); \
+            } \
+          else \
+            if (image->matte) \
+              *q++=ScaleQuantumToChar(pixel.opacity); \
+        } \
+      else \
+        if (image->depth <= 16) \
+          { \
+            value=ScaleQuantumToShort(pixel.red); \
+            *q++=(unsigned char) (value >> 8); \
+            *q++=(unsigned char) value; \
+            value=ScaleQuantumToShort(pixel.green); \
+            *q++=(unsigned char) (value >> 8); \
+            *q++=(unsigned char) value; \
+            value=ScaleQuantumToShort(pixel.blue); \
+            *q++=(unsigned char) (value >> 8); \
+            *q++=(unsigned char) value; \
+            if (image->colorspace == CMYKColorspace) \
+              { \
+                value=ScaleQuantumToShort(pixel.opacity); \
+                *q++=(unsigned char) (value >> 8); \
+                *q++=(unsigned char) value; \
+                if (image->matte) \
+                  { \
+                    value=ScaleQuantumToShort(index); \
+                    *q++=(unsigned char) (value >> 8); \
+                    *q++=(unsigned char) value; \
+                  } \
+              } \
+            else \
+              if (image->matte) \
+                { \
+                  value=ScaleQuantumToShort(pixel.opacity); \
+                  *q++=(unsigned char) (value >> 8); \
+                  *q++=(unsigned char) value; \
+                } \
+          } \
+        else \
+          { \
+            value=ScaleQuantumToLong(pixel.red); \
+            *q++=(unsigned char) (value >> 24); \
+            *q++=(unsigned char) (value >> 16); \
+            *q++=(unsigned char) (value >> 8); \
+            *q++=(unsigned char) value; \
+            value=ScaleQuantumToLong(pixel.green); \
+            *q++=(unsigned char) (value >> 24); \
+            *q++=(unsigned char) (value >> 16); \
+            *q++=(unsigned char) (value >> 8); \
+            *q++=(unsigned char) value; \
+            value=ScaleQuantumToLong(pixel.blue); \
+            *q++=(unsigned char) (value >> 24); \
+            *q++=(unsigned char) (value >> 16); \
+            *q++=(unsigned char) (value >> 8); \
+            *q++=(unsigned char) value; \
+            if (image->colorspace == CMYKColorspace) \
+              { \
+                value=ScaleQuantumToLong(pixel.opacity); \
+                *q++=(unsigned char) (value >> 24); \
+                *q++=(unsigned char) (value >> 16); \
+                *q++=(unsigned char) (value >> 8); \
+                *q++=(unsigned char) value; \
+                if (image->matte) \
+                  { \
+                    value=ScaleQuantumToLong(index); \
+                    *q++=(unsigned char) (value >> 24); \
+                    *q++=(unsigned char) (value >> 16); \
+                    *q++=(unsigned char) (value >> 8); \
+                    *q++=(unsigned char) value; \
+                  } \
+              } \
+            else \
+              if (image->matte) \
+                { \
+                  value=ScaleQuantumToLong(pixel.opacity); \
+                  *q++=(unsigned char) (value >> 24); \
+                  *q++=(unsigned char) (value >> 16); \
+                  *q++=(unsigned char) (value >> 8); \
+                  *q++=(unsigned char) value; \
+                } \
+          } \
+    } \
+  *q++=(unsigned char) length; \
 }
 
 static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
@@ -1859,7 +1846,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 
   unsigned long
     packet_size,
-    scene;
+    scene,
+    value;
 
 #if defined(HasZLIB)
   z_stream
@@ -2170,7 +2158,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             *q++=ScaleQuantumToChar(image->colormap[i].green);
             *q++=ScaleQuantumToChar(image->colormap[i].blue);
           }
-#if QuantumDepth > 8
         else
           if (image->depth <= 16)
             for (i=0; i < (long) image->colors; i++)
@@ -2182,8 +2169,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               *q++=ScaleQuantumToShort(image->colormap[i].blue) >> 8;
               *q++=ScaleQuantumToShort(image->colormap[i].blue);
             }
-#endif /* QuantumDepth > 8 */
-#if QuantumDepth > 16
           else
             for (i=0; i < (long) image->colors; i++)
             {
@@ -2200,7 +2185,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               *q++=image->colormap[i].blue >> 8;
               *q++=image->colormap[i].blue;
             }
-#endif /* QuantumDepth > 16 */
         (void) WriteBlob(image,packet_size*image->colors,colormap);
         MagickFreeMemory(colormap);
       }
@@ -2348,7 +2332,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             else
               {
                 if (x > 0)
-                  WriteRunlengthPacket(image,&pixel,length,q,index);
+                  WriteRunlengthPacket(image,pixel,length,q,index);
                 length=0;
               }
             if (image->storage_class == PseudoClass)
@@ -2356,7 +2340,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             pixel=(*p);
             p++;
           }
-          WriteRunlengthPacket(image,&pixel,length,q,index);
+          WriteRunlengthPacket(image,pixel,length,q,index);
           (void) WriteBlob(image,q-pixels,pixels);
           break;
         }
