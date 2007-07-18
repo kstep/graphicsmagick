@@ -144,10 +144,10 @@ static unsigned int
   signals.
 
 */
-static inline long FilePositionRead(int file, void *buffer, size_t length,
+static inline ssize_t FilePositionRead(int file, void *buffer, size_t length,
   magick_off_t offset)
 {
-  register long
+  register ssize_t
     count=0;
 
   register size_t
@@ -155,7 +155,7 @@ static inline long FilePositionRead(int file, void *buffer, size_t length,
 
 #if !HAVE_PREAD
   if ((MagickSeek(file,offset,SEEK_SET)) < 0)
-    return -1;
+    return (ssize_t)-1;
 #endif
 
   for (total_count=0; total_count < length; total_count+=count)
@@ -170,8 +170,8 @@ static inline long FilePositionRead(int file, void *buffer, size_t length,
         break;
     }
   if (count < 0)
-    return -1;
-  return (long) total_count;
+    return (ssize_t)-1;
+  return (ssize_t) total_count;
 }
 /*
 
@@ -181,10 +181,10 @@ static inline long FilePositionRead(int file, void *buffer, size_t length,
   by signals.
 
 */
-static inline long FilePositionWrite(int file, const void *buffer,
+static inline ssize_t FilePositionWrite(int file, const void *buffer,
   size_t length,magick_off_t offset)
 {
-  register long
+  register ssize_t
     count=0;
 
   register size_t
@@ -192,7 +192,7 @@ static inline long FilePositionWrite(int file, const void *buffer,
 
 #if !HAVE_PWRITE
   if ((MagickSeek(file,offset,SEEK_SET)) < 0)
-    return -1;
+    return (ssize_t)-1;
 #endif /* !HAVE_PWRITE */
   for (total_count=0; total_count < length; total_count+=count)
     {
@@ -206,8 +206,8 @@ static inline long FilePositionWrite(int file, const void *buffer,
         break;
     }
   if (count < 0)
-    return -1;
-  return (long) total_count;
+    return (ssize_t)-1;
+  return (ssize_t) total_count;
 }
 
 /*
@@ -817,8 +817,8 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
     cache_file,
     clone_file;
 
-  register size_t
-    i;
+  register magick_off_t
+    offset;
 
   size_t
     length;
@@ -892,16 +892,16 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
       if (clone_info->type != DiskCache)
         {
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => memory");
-          for (i=0; i < cache_info->length; i+=count)
+          for (offset=0; offset < cache_info->length; offset+=count)
           {
-            count=read(cache_file,(char *) clone_info->pixels+i,
-              (size_t) (cache_info->length-i));
+            count=read(cache_file,(char *) clone_info->pixels+offset,
+              (size_t) (cache_info->length-offset));
             if (count <= 0)
               break;
           }
           if (cache_info->file == -1)
             (void) close(cache_file);
-          if (i < cache_info->length)
+          if (offset < cache_info->length)
             ThrowBinaryException(CacheError,UnableToCloneCache,
               image->filename);
           return(True);
@@ -922,23 +922,23 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
               if (cache_info->file == -1)
                 (void) close(cache_file);
               ThrowBinaryException(FileOpenError,UnableToOpenFile,
-                clone_info->cache_filename)
+                                   clone_info->cache_filename);
             }
         }
       (void) MagickSeek(clone_file,cache_info->offset,SEEK_SET);
       if (cache_info->type != DiskCache)
         {
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => disk");
-          for (i=0; i < clone_info->length; i+=count)
+          for (offset=0L; offset < clone_info->length; offset+=count)
           {
-            count=write(clone_file,(char *) cache_info->pixels+i,
-              (size_t) (clone_info->length-i));
+            count=write(clone_file,(char *) cache_info->pixels+offset,
+              (size_t) (clone_info->length-offset));
             if (count <= 0)
               break;
           }
           if (clone_info->file == -1)
             (void) close(clone_file);
-          if (i < clone_info->length)
+          if (offset < clone_info->length)
             ThrowBinaryException(CacheError,UnableToCloneCache,
               image->filename);
           return(True);
@@ -953,19 +953,21 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
       if (clone_info->file == -1)
         (void) close(clone_file);
       ThrowBinaryException3(ResourceLimitFatalError,MemoryAllocationFailed,
-        UnableToCloneImage)
+                            UnableToCloneImage);
     }
   (void) MagickSeek(cache_file,cache_info->offset,SEEK_SET);
   (void) MagickSeek(clone_file,cache_info->offset,SEEK_SET);
-  for (i=0; (length=read(cache_file,buffer,MaxBufferSize)) > 0; )
+
+  for (offset=0, length=0; (count=read(cache_file,buffer,MaxBufferSize)) > 0; )
   {
-    for (i=0; i < length; i+=count)
+    length=(size_t) count;
+    for (offset=0; offset < (magick_off_t) length; offset+=count)
     {
-      count=write(clone_file,buffer+i,length-i);
+      count=write(clone_file,buffer+offset,length-offset);
       if (count <= 0)
         break;
     }
-    if (i < length)
+    if (offset < (magick_off_t) length)
       break;
   }
   if (cache_info->file == -1)
@@ -973,7 +975,7 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
   if (clone_info->file == -1)
     (void) close(clone_file);
   MagickFreeMemory(buffer);
-  if (i < length)
+  if (offset < (magick_off_t) length)
     ThrowBinaryException(CacheError,UnableToCloneCache,image->filename);
   return(True);
 }
@@ -2707,7 +2709,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
   for (y=0; y < (long) rows; y++)
   {
     if ((FilePositionRead(file,pixels,length,
-       cache_info->offset+offset*sizeof(PixelPacket))) < length)
+       cache_info->offset+offset*sizeof(PixelPacket))) < (ssize_t) length)
       break;
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;

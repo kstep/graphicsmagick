@@ -1,3 +1,8 @@
+2007-07-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/cache.c (ClonePixelCache): Eliminate bug when
+	size_t is an unsigned type.
+
 2007-07-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageInfo): Address security issue noted by
