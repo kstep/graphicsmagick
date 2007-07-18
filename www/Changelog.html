@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2007-07-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/miff.c (WriteRunlengthPacket): Converted excessively long
+        macro to a function and hopefully eliminate warnings when using
+        Visual Studio 2005.<BR>
+  <LI> magick/pixel_cache.c (ClonePixelCache): Eliminate bug when
+        size_t is an unsigned type.
+
+</UL>
+<p>
 2007-07-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

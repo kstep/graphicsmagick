@@ -367,10 +367,10 @@ static void
   signals.
 
 */
-static inline long FilePositionRead(int file, void *buffer, size_t length,
+static inline ssize_t FilePositionRead(int file, void *buffer, size_t length,
   magick_off_t offset)
 {
-  register long
+  register ssize_t
     count=0;
 
   register size_t
@@ -378,7 +378,7 @@ static inline long FilePositionRead(int file, void *buffer, size_t length,
 
 #if !HAVE_PREAD
   if ((MagickSeek(file,offset,SEEK_SET)) < 0)
-    return -1;
+    return (ssize_t)-1;
 #endif
 
   for (total_count=0; total_count < length; total_count+=count)
@@ -393,8 +393,8 @@ static inline long FilePositionRead(int file, void *buffer, size_t length,
         break;
     }
   if (count < 0)
-    return -1;
-  return (long) total_count;
+    return (ssize_t)-1;
+  return (ssize_t) total_count;
 }
 /*
 
@@ -404,10 +404,10 @@ static inline long FilePositionRead(int file, void *buffer, size_t length,
   by signals.
 
 */
-static inline long FilePositionWrite(int file, const void *buffer,
+static inline ssize_t FilePositionWrite(int file, const void *buffer,
   size_t length,magick_off_t offset)
 {
-  register long
+  register ssize_t
     count=0;
 
   register size_t
@@ -415,7 +415,7 @@ static inline long FilePositionWrite(int file, const void *buffer,
 
 #if !HAVE_PWRITE
   if ((MagickSeek(file,offset,SEEK_SET)) < 0)
-    return -1;
+    return (ssize_t)-1;
 #endif /* !HAVE_PWRITE */
   for (total_count=0; total_count < length; total_count+=count)
     {
@@ -429,8 +429,8 @@ static inline long FilePositionWrite(int file, const void *buffer,
         break;
     }
   if (count < 0)
-    return -1;
-  return (long) total_count;
+    return (ssize_t)-1;
+  return (ssize_t) total_count;
 }
 
 /*
@@ -1377,8 +1377,10 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
     }
   (void) MagickSeek(cache_file,cache_info->offset,SEEK_SET);
   (void) MagickSeek(clone_file,cache_info->offset,SEEK_SET);
-  for (offset=0; (length=read(cache_file,buffer,MaxBufferSize)) > 0; )
+
+  for (offset=0, length=0; (count=read(cache_file,buffer,MaxBufferSize)) > 0; )
   {
+    length=(size_t) count;
     for (offset=0; offset < (magick_off_t) length; offset+=count)
     {
       count=write(clone_file,buffer+offset,length-offset);
@@ -3542,7 +3544,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
   for (y=0; y < (long) rows; y++)
   {
     if ((FilePositionRead(file,pixels,length,
-       cache_info->offset+offset*sizeof(PixelPacket))) < (long) length)
+       cache_info->offset+offset*sizeof(PixelPacket))) < (ssize_t) length)
       break;
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;
