@@ -1259,6 +1259,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
             *q++=image->colormap[i].green;
             *q++=image->colormap[i].blue;
           }
+#if QuantumDepth > 8
         else
           for (i=0; i < (long) image->colors; i++)
           {
@@ -1269,6 +1270,8 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
             *q++=image->colormap[i].blue >> 8;
             *q++=image->colormap[i].blue & 0xff;
           }
+#endif /* QuantumDepth > 8 */
+
         (void) WriteBlob(image,packet_size*image->colors,colormap);
         MagickFreeMemory(colormap);
       }

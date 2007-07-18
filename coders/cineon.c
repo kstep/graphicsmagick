@@ -1106,7 +1106,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   /* Reference high data code value */
   cin_image_info.channel_info[0].reference_high_data_code = 1023;
   /* Reference high quantity represented */
-  cin_image_info.channel_info[0].reference_high_quantity = 2.048;
+  cin_image_info.channel_info[0].reference_high_quantity = 2.048F;
 
   /* Channel 1 (Green) */
   cin_image_info.channel_info[1] = cin_image_info.channel_info[0];

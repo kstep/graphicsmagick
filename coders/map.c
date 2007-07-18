@@ -356,6 +356,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
       *q++=image->colormap[i].green;
       *q++=image->colormap[i].blue;
     }
+#if QuantumDepth > 8
   else
     for (i=0; i < (long) image->colors; i++)
     {
@@ -366,6 +367,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
       *q++=image->colormap[i].blue >> 8;
       *q++=image->colormap[i].blue & 0xff;
     }
+#endif /* QuantumDepth > 8 */
   (void) WriteBlob(image,packet_size*image->colors,(char *) colormap);
   MagickFreeMemory(colormap);
   /*
@@ -380,8 +382,10 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
     q=pixels;
     for (x=0; x < (long) image->columns; x++)
     {
+#if QuantumDepth > 8
       if (image->colors > 256)
         *q++=indexes[x] >> 8;
+#endif /* QuantumDepth > 8 */
       *q++=indexes[x];
     }
     (void) WriteBlob(image,q-pixels,(char *) pixels);
