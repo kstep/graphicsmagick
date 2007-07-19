@@ -1,3 +1,9 @@
+2007-07-18  Daniel Kobras  <kobras@debian.org>
+
+	* magick/quantize.c (GrayscalePseudoClassImage): Fix computation
+	of memory required for colormap index
+	(colormap_heap_overflow_fix).
+
 2007-07-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/miff.c (WriteRunlengthPacket): Converted excessively long
