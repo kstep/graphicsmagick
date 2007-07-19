@@ -3541,7 +3541,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
           /*
             Allocate memory for colormap index
           */
-          colormap_index=MagickAllocateMemory(int *,MaxColormapSize*sizeof(int));
+          colormap_index=MagickAllocateMemory(int *,MaxColormapSize*sizeof(int *));
           if (colormap_index == (int *) NULL)
             {
               ThrowException3(&image->exception,ResourceLimitError,
@@ -3621,7 +3621,7 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
       */
       if (colormap_index == (int *) NULL)
         {
-          colormap_index=MagickAllocateMemory(int *,MaxColormapSize*sizeof(int));
+          colormap_index=MagickAllocateMemory(int *,MaxColormapSize*sizeof(int *));
           if (colormap_index == (int *) NULL)
             {
               ThrowException3(&image->exception,ResourceLimitError,
