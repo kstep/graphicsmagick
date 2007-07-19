@@ -2608,6 +2608,13 @@ ModuleExport void RegisterTIFFImage(void)
 ModuleExport void UnregisterTIFFImage(void)
 {
 #if defined(HasTIFF)
+#if defined(HasBigTIFF)
+  (void) UnregisterMagickInfo("BIGTIFF");
+#endif /* defined(HasBigTIFF) */
+  (void) UnregisterMagickInfo("PTIF");
+  (void) UnregisterMagickInfo("TIF");
+  (void) UnregisterMagickInfo("TIFF");
+
   /*
     Destroy thread specific data key.
   */
@@ -2616,12 +2623,6 @@ ModuleExport void UnregisterTIFFImage(void)
       (void) MagickTsdKeyDelete(tsd_key);
       tsd_key = (MagickTsdKey_t) NULL;
     }
-#if defined(HasBigTIFF)
-  (void) UnregisterMagickInfo("BIGTIFF");
-#endif /* defined(HasBigTIFF) */
-  (void) UnregisterMagickInfo("PTIF");
-  (void) UnregisterMagickInfo("TIF");
-  (void) UnregisterMagickInfo("TIFF");
 #endif
 }
 

@@ -178,8 +178,13 @@ extern MagickExport size_t
 /*
   Reallocate memory using provided pointer.  If pointer value is null,
   then allocate new memory. If reallocation fails then free memory,
-  setting pointer to NULL.
-  C++ does not accept the final memory=_magick_mp without a cast.
+  setting pointer to null.  If size is 0 and memory is not a null
+  pointer, then free memory.  This interface behaves similar to
+  realloc() except that memory is always freed (and pointer set to
+  null) if a memory allocation failure occurs.
+
+  C++ does not accept the final memory=_magick_mp without a cast so
+  use smart casting.
 */
 #if defined(__cplusplus) || defined(c_plusplus)
 #define MagickTypeOf(var) __typeof__(var)
@@ -189,15 +194,10 @@ extern MagickExport size_t
 #define MagickReallocMemory(memory,size) \
 { \
     size_t _new_size = (size_t) (size); \
-    void *_magick_mp; \
-    if (memory == 0) \
-      _magick_mp=malloc(_new_size); \
-    else \
-      { \
-        _magick_mp=realloc(memory,_new_size); \
-        if (_magick_mp == 0) \
-          free(memory); \
-      } \
+    void *_magick_mp = 0; \
+    _magick_mp=realloc(memory,_new_size); \
+    if ((_magick_mp == 0) && (memory != 0) && (_new_size != 0)) \
+       free(memory); \
     memory=(MagickTypeOf(memory))_magick_mp; \
 }
 

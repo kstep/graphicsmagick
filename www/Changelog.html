@@ -21,6 +21,17 @@
 </tr>
 </table>
 <p>
+2007-07-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.h (MagickReallocMemory): It seems that realloc()
+        frees the provided memory pointer if the requested size is zero.
+        This was causing MagickReallocMemory() to perform a double-free
+        under error conditions.  Inspired by Debian
+        realloc_double_free_fix patch by Daniel Kobras.
+
+</UL>
+<p>
 2007-07-18  Daniel Kobras  &lt;kobras@debian.org&gt;
 
 <UL>
