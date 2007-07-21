@@ -24,6 +24,17 @@
 2007-07-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/log.c (LogMagickEvent): Even though log file name comes
+        from a controlled source (log.mgk), perform safe numeric
+        substitution on it.<BR>
+  <LI> coders/xwd.c (ReadXWDImage): Eliminate conflict between locally
+        defined OVERFLOW macro and similarly named macro under Windows.
+
+</UL>
+<p>
+2007-07-18  Daniel Kobras  &lt;kobras@debian.org&gt;
+
+<UL>
   <LI> coders/xwd.c (ReadXWDImage): Integer overflow fix
         (CVE-2007-1797).  From Debian patch
         xwd_integer_overflow_fixes_CVE-2007-1797.

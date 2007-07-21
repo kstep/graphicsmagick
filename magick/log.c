@@ -519,8 +519,8 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
           char
             filename[MaxTextExtent];
 
-          FormatString(filename,log_info->filename,
-            log_info->generation);
+          (void) MagickSceneFileName(filename,log_info->filename,".%lu",
+                                     MagickFalse,log_info->generation);
           log_info->file=fopen(filename,"w");
           if (log_info->file == (FILE *) NULL)
             {
@@ -571,8 +571,8 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
           char
             filename[MaxTextExtent];
 
-          FormatString(filename,log_info->filename,
-            log_info->generation);
+          (void) MagickSceneFileName(filename,log_info->filename,".%lu",
+                                     MagickFalse,log_info->generation);
           log_info->file=fopen(filename,"w");
           if (log_info->file == (FILE *) NULL)
             {
