@@ -841,7 +841,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           packet_size=3;
         else
           packet_size=4;
-        (void) SeekBlob(image,start_position+14+bmp_info.size,SEEK_SET);
+        if (SeekBlob(image,start_position+14+bmp_info.size,SEEK_SET) == -1)
+	  ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
         (void) ReadBlob(image,packet_size*image->colors,(char *) bmp_colormap);
         p=bmp_colormap;
         for (i=0; i < (long) image->colors; i++)
@@ -860,7 +861,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image data.
     */
-    (void) SeekBlob(image,start_position+bmp_info.offset_bits,SEEK_SET);
+    if (SeekBlob(image,start_position+bmp_info.offset_bits,SEEK_SET) == -1)
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     if (bmp_info.compression == BI_RLE4)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
@@ -1262,7 +1264,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     *magick='\0';
     if (bmp_info.ba_offset != 0)
-      (void) SeekBlob(image,bmp_info.ba_offset,SEEK_SET);
+      if (SeekBlob(image,bmp_info.ba_offset,SEEK_SET) == -1)
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     (void) ReadBlob(image,2,(char *) magick);
     if (IsBMP(magick,2))
       {

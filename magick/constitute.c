@@ -2827,14 +2827,14 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         file.
       */
       if (image != (Image *) NULL)
-        (void) strncpy(image->magick,magick,MaxTextExtent-1);
+        (void) strlcpy(image->magick,magick,MaxTextExtent);
     }
   if (clone_info->temporary)
     {
       RemoveTemporaryInputFile(clone_info);
       clone_info->temporary=False;
       if (image != (Image *) NULL)
-        (void) strncpy(image->filename,filename,MaxTextExtent-1);
+        (void) strlcpy(image->filename,filename,MaxTextExtent);
     }
   if (image == (Image *) NULL)
     {

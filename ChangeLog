@@ -1,3 +1,49 @@
+2007-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/xwd.c (ReadXWDImage): Integer overflow fix
+	(CVE-2007-1797).  From Debian patch
+	xwd_integer_overflow_fixes_CVE-2007-1797.
+	(ReadXWDImage): Fix for integer under/overflow.  From Debian patch
+	xwd_overflow_fix.
+	* coders/wpg.c (ReadWPGImage): WPG segfault fix.  From Debian
+	patch wpg_segfault_fix.
+	* coders/viff.c (ReadVIFFImage): Verify number of bands prior to
+	using image.  From Debian patch viff_heap_corruption_fix.
+	* coders/tiff.c (TIFFErrors): TIFF error reporting security fix.
+	From Debian patch tiff_va_list_fix.
+	* coders/sun.c (ReadSUNImage): Sun segfault fix.  From Debian
+	patch sun_segfault_fix.
+	* magick/blob.c (ReadBlobStream): Never try to read data beyond
+	EOF in blob streams. Some (but not all) ReadBlob*() methods
+	already implemented similiar checks. Moving it to the central
+	ReadBlobStream() increases robustness and prevents out-of-bounds
+	reads.  From Debian readblob_offset_robustness patch.
+	* coders/pnm.c (ReadPNMImage): Validate pixel scaling.  From
+	Debian pnm_scale_fix patch.
+	* coders/pict.c (ReadPixmap): PICT segfault fix.  From Debian
+	pict_segfault_fix patch.
+	* coders/pcx.c (ReadPCXImage): PCX heap overflow fix.  From Debian
+	pcx_heap_overflow_fix patch.
+	(ReadPCXImage): PCX segfault fix.  From Debian pcx_segfault_fix.
+	* magick/montage.c, PerlMagick/t/montage.t: Do not pass bogus
+	negative values to modulate shadow in montage. Instead, drop a
+	constant grey shadow like current ImageMagick.  From Debian
+	montage_shadow_fix patch.
+	* coders/png.c (ReadMNGImage): MNG segfault fix.  From Debian
+	mng_segfault_fix patch.
+	* utilities/miff.4: MIFF man page apropos fix.  From
+	Debian miff_apropos_fix patch.
+	* coders/icon.c (ReadIconImage): Icon segfault fix.  From Debian
+	icon_segfault_fix patch.
+	* tests/drawtest.c: Make sure filename strings do not run out of
+	bounds in drawtest. From Debian drawtest_segfault_fix patch.
+	* config/delegates.mgk.in: Remove obsolete option -2 when calling
+	dcraw as a delegate.  From Debian dcraw_options_fix patch.
+	* coders/dcm.c (ReadDCMImage): Fix integer overflow in DCM
+	coder. (CVE-2007-1797).  From Debian dcm_overflow_fix patch.
+	* coders/bmp.c (ReadBMPImage): Verify file seek success.  From
+	Debian bmp_overflow_fix patch.
+
 2007-07-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.h (MagickReallocMemory): It seems that realloc()

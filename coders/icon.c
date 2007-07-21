@@ -196,12 +196,15 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     /*
       Verify Icon identifier.
     */
-    (void) SeekBlob(image,icon_file.directory[i].offset,SEEK_SET);
+    if (SeekBlob(image,icon_file.directory[i].offset,SEEK_SET) == -1)
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     icon_info.size=ReadBlobLSBLong(image);
     icon_info.width=ReadBlobLSBLong(image);
     icon_info.height=ReadBlobLSBLong(image);
     icon_info.planes=ReadBlobLSBShort(image);
     icon_info.bits_per_pixel=ReadBlobLSBShort(image);
+    if (icon_info.bits_per_pixel > 32)
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     icon_info.compression=ReadBlobLSBLong(image);
     icon_info.image_size=ReadBlobLSBLong(image);
     icon_info.x_pixels=ReadBlobLSBLong(image);
@@ -212,7 +215,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     image->columns=icon_info.width;
     image->rows=icon_info.height;
     image->depth=8;
-    if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel < 16))
+    if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel <= 16))
       {
         image->storage_class=PseudoClass;
         image->colors=icon_info.number_colors;

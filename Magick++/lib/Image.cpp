@@ -8,6 +8,7 @@
 #define MAGICK_IMPLEMENTATION
 
 #include "Magick++/Include.h"
+#include <cstdlib>
 #include <string>
 #include <string.h>
 #include <errno.h>

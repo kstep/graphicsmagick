@@ -367,6 +367,7 @@ int main ( int argc, char **argv )
       exit( 1 );
     }
 
+  outfile[MaxTextExtent-1]='\0';
   (void) strncpy( outfile, argv[1], MaxTextExtent-1 );
 
   if (LocaleNCompare("drawtest",argv[0],7) == 0)
@@ -401,7 +402,8 @@ int main ( int argc, char **argv )
   /*
    * Save image to file
    */
-  (void) strncpy( canvas->filename, outfile, sizeof(image_info->filename)-1);
+  canvas->filename[MaxTextExtent-1]='\0';
+  (void) strncpy( canvas->filename, outfile, MaxTextExtent-1);
   WriteImage ( image_info, canvas );
 
   DestroyExceptionInfo( &exception );

@@ -696,7 +696,7 @@ MagickExport Image *MontageImages(const Image *images,
                   break;
                 for (columns=0; columns < Min(tile_info.x,4); columns++)
                 {
-                  Modulate(0.0,0.0,-25.0+4*columns,&q->red,&q->green,&q->blue);
+                  Modulate(0.0,0.0,53.0,&q->red,&q->green,&q->blue);
                   q++;
                 }
                 if (!SyncImagePixels(montage))
@@ -710,7 +710,7 @@ MagickExport Image *MontageImages(const Image *images,
                   break;
                 for (columns=0; columns < (long) image->columns; columns++)
                 {
-                  Modulate(0.0,0.0,-25.0+4*rows,&q->red,&q->green,&q->blue);
+                  Modulate(0.0,0.0,53.0,&q->red,&q->green,&q->blue);
                   q++;
                 }
                 if (!SyncImagePixels(montage))

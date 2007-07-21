@@ -332,6 +332,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     if (number_pixels == 0)
       ThrowReaderException(CoderError,ImageColumnOrRowSizeIsNotSupported,
         image);
+    if (viff_info.number_data_bands < 1 || viff_info.number_data_bands > 4)
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     if ((viff_info.data_storage_type != VFF_TYP_BIT) &&
         (viff_info.data_storage_type != VFF_TYP_1_BYTE) &&
         (viff_info.data_storage_type != VFF_TYP_2_BYTE) &&

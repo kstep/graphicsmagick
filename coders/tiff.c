@@ -370,7 +370,6 @@ static unsigned int TIFFErrors(const char *module,const char *format,
     message[MaxTextExtent];
 
   errno=0;
-  (void) vsprintf(message,format,warning);
   (void) vsnprintf(message,MaxTextExtent-2,format,warning);
   message[MaxTextExtent-2]='\0';
   (void) strcat(message,".");
