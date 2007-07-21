@@ -1,3 +1,7 @@
+2007-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp: Include <cstdlib>
+
 2006-10-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (pixelColor): Don't enforce color "validity" when

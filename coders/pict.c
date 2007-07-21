@@ -65,6 +65,10 @@
   pixmap.plane_bytes=ReadBlobMSBLong(image); \
   pixmap.table=ReadBlobMSBLong(image); \
   pixmap.reserved=ReadBlobMSBLong(image); \
+  if (pixmap.bits_per_pixel <= 0 || pixmap.bits_per_pixel > 32 || \
+      pixmap.component_count <= 0 || pixmap.component_count > 4 || \
+      pixmap.component_size <= 0) \
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image); \
 }
 
 #define ReadRectangle(rectangle) \
@@ -73,6 +77,9 @@
   rectangle.left=ReadBlobMSBShort(image); \
   rectangle.bottom=ReadBlobMSBShort(image); \
   rectangle.right=ReadBlobMSBShort(image); \
+  if (rectangle.top > rectangle.bottom || \
+      rectangle.left > rectangle.right) \
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image); \
 }
 
 typedef struct _PICTCode

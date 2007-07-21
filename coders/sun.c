@@ -291,6 +291,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sun_info.maplength=ReadBlobMSBLong(image);
     image->columns= sun_info.width;
     image->rows= sun_info.height;
+    if (sun_info.depth == 0 || sun_info.depth > 32)
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     image->depth=sun_info.depth <= 8 ? 8 : QuantumDepth;
     if (sun_info.depth < 24)
       {
@@ -428,62 +430,75 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     else
       if (image->storage_class == PseudoClass)
-        for (y=0; y < (long) image->rows; y++)
         {
-          q=SetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          indexes=GetIndexes(image);
-          for (x=0; x < (long) image->columns; x++)
-            indexes[x]=(*p++);
-          if ((image->columns % 2) != 0)
-            p++;
-          if (!SyncImagePixels(image))
-            break;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
-                break;
-        }
-      else
-        for (y=0; y < (long) image->rows; y++)
-        {
-          q=SetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          for (x=0; x < (long) image->columns; x++)
+	  unsigned long n = image->rows*(image->columns+image->columns%2);
+	  if ((sun_info.type == RT_ENCODED && n > bytes_per_line*image->rows) ||
+	      (sun_info.type != RT_ENCODED && n > sun_info.length))
+	    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+          for (y=0; y < (long) image->rows; y++)
           {
-            if (image->matte)
-              q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(*p++));
-            if (sun_info.type == RT_STANDARD)
-              {
-                q->blue=ScaleCharToQuantum(*p++);
-                q->green=ScaleCharToQuantum(*p++);
-                q->red=ScaleCharToQuantum(*p++);
-              }
-            else
-              {
-                q->red=ScaleCharToQuantum(*p++);
-                q->green=ScaleCharToQuantum(*p++);
-                q->blue=ScaleCharToQuantum(*p++);
-              }
-            if (image->colors != 0)
-              {
-                q->red=image->colormap[q->red].red;
-                q->green=image->colormap[q->green].green;
-                q->blue=image->colormap[q->blue].blue;
-              }
-            q++;
+            q=SetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            indexes=GetIndexes(image);
+            for (x=0; x < (long) image->columns; x++)
+              indexes[x]=(*p++);
+            if ((image->columns % 2) != 0)
+              p++;
+            if (!SyncImagePixels(image))
+              break;
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  break;
           }
-          if (((image->columns % 2) != 0) && (image->matte == False))
-            p++;
-          if (!SyncImagePixels(image))
-            break;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
-                break;
-        }
+	}
+      else
+        {
+	  unsigned long n = image->columns*((image->matte) ? 4 : 3);
+	  n = image->rows*(n+image->columns%2);
+	  if ((sun_info.type == RT_ENCODED && n > bytes_per_line*image->rows) ||
+	      (sun_info.type != RT_ENCODED && n > sun_info.length))
+	    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+          for (y=0; y < (long) image->rows; y++)
+          {
+            q=SetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (long) image->columns; x++)
+            {
+              if (image->matte)
+                q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(*p++));
+              if (sun_info.type == RT_STANDARD)
+                {
+                  q->blue=ScaleCharToQuantum(*p++);
+                  q->green=ScaleCharToQuantum(*p++);
+                  q->red=ScaleCharToQuantum(*p++);
+                }
+              else
+                {
+                  q->red=ScaleCharToQuantum(*p++);
+                  q->green=ScaleCharToQuantum(*p++);
+                  q->blue=ScaleCharToQuantum(*p++);
+                }
+              if (image->colors != 0)
+                {
+                  q->red=image->colormap[q->red].red;
+                  q->green=image->colormap[q->green].green;
+                  q->blue=image->colormap[q->blue].blue;
+                }
+              q++;
+            }
+            if (((image->columns % 2) != 0) && (image->matte == False))
+              p++;
+            if (!SyncImagePixels(image))
+              break;
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  break;
+          }
+	}
     if (image->storage_class == PseudoClass)
       (void) SyncImage(image);
     MagickFreeMemory(sun_pixels);

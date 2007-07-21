@@ -208,6 +208,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (header.header_size < sz_XWDheader)
     ThrowReaderException(CorruptImageError,CorruptImage,image);
   length=header.header_size-sz_XWDheader;
+  if (length > ((~0UL)/sizeof(*comment)))
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   comment=MagickAllocateMemory(char *,length+1);
   if (comment == (char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -239,6 +241,13 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ximage->red_mask=header.red_mask;
   ximage->green_mask=header.green_mask;
   ximage->blue_mask=header.blue_mask;
+  /* Why those are signed ints is beyond me. */
+  if (ximage->depth < 0 || ximage->width < 0 || ximage->height < 0 ||
+      ximage->bitmap_pad < 0 || ximage->bytes_per_line < 0)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+  /* Guard against buffer overflow in libX11. */
+  if (ximage->bits_per_pixel > 32 || ximage->bitmap_unit > 32)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   status=XInitImage(ximage);
   if (status == False)
     ThrowReaderException(CorruptImageError,UnrecognizedXWDHeader,image);
@@ -251,7 +260,10 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       XWDColor
         color;
 
-      colors=MagickAllocateMemory(XColor *,header.ncolors*sizeof(XColor));
+      length=(size_t) header.ncolors;
+      if (length > ((~0UL)/sizeof(*colors)))
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
+      colors=MagickAllocateMemory(XColor *,length*sizeof(XColor));
       if (colors == (XColor *) NULL)
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       for (i=0; i < (long) header.ncolors; i++)
@@ -281,10 +293,17 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate the pixel buffer.
   */
-  if (ximage->format == ZPixmap)
-    length=ximage->bytes_per_line*ximage->height;
-  else
-    length=ximage->bytes_per_line*ximage->height*ximage->depth;
+#define OVERFLOW(c,a,b) ((b) != 0 && ((c)/(b) != (a)))
+  length=ximage->bytes_per_line*ximage->height;
+  if (OVERFLOW(length,ximage->bytes_per_line,ximage->height))
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+  if (ximage->format != ZPixmap)
+    {
+      size_t tmp=length;
+      length*=ximage->depth;
+      if (OVERFLOW(length,tmp,ximage->depth))
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
+    }
   ximage->data=MagickAllocateMemory(char *,length);
   if (ximage->data == (char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);

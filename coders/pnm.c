@@ -204,6 +204,20 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
   return(value);
 }
 
+#define ValidateScalingIndex(image, index, max) \
+	do { \
+		if (index < 0 || index > max) \
+			ThrowReaderException(CorruptImageError,CorruptImage, \
+			                     image); \
+	} while (0)
+
+#define ValidateScalingPixel(image, pixel, max) \
+	do { \
+		ValidateScalingIndex(image, pixel.red, max); \
+		ValidateScalingIndex(image, pixel.green, max); \
+		ValidateScalingIndex(image, pixel.blue, max); \
+	} while (0)
+
 static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
@@ -396,6 +410,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < image->columns; x++)
           {
             intensity=PNMInteger(image,10);
+            ValidateScalingIndex(image, intensity, max_value);
             if (EOFBlob(image))
                break;
             if (scale != (Quantum *) NULL)
@@ -436,6 +451,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             pixel.blue=PNMInteger(image,10);
             if (EOFBlob(image))
                break;
+            ValidateScalingPixel(image, pixel, max_value);
             if (scale != (Quantum *) NULL)
               {
                 pixel.red=scale[pixel.red];
@@ -595,6 +611,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               pixel.red=(*p++);
               pixel.green=(*p++);
               pixel.blue=(*p++);
+              ValidateScalingPixel(image, pixel, max_value);
               if (scale != (Quantum *) NULL)
                 {
                   pixel.red=scale[pixel.red];
@@ -615,6 +632,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               p+=2;
               pixel.blue=(*p << 8) | *(p+1);
               p+=2;
+              ValidateScalingPixel(image, pixel, max_value);
               if (scale != (Quantum *) NULL)
                 {
                   pixel.red=scale[pixel.red];

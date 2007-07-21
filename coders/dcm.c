@@ -2890,6 +2890,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           if ((quantum != 0) && (length != 0))
             {
+              if (length > ((~0UL)/quantum))
+                ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
               data=MagickAllocateMemory(unsigned char *,quantum*(length+1));
               if (data == (unsigned char *) NULL)
                 ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);

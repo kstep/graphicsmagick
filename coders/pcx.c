@@ -277,7 +277,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
   if (page_table != (ExtendedSignedIntegralType *) NULL)
-    (void) SeekBlob(image,(ExtendedSignedIntegralType) page_table[0],SEEK_SET);
+    if (SeekBlob(image,(ExtendedSignedIntegralType) page_table[0],SEEK_SET)
+        == -1)
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   count=ReadBlob(image,1,(char *) &pcx_info.identifier);
   for (id=1; id < 1024; id++)
   {
@@ -314,7 +316,11 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((pcx_info.bits_per_pixel != 8) || (pcx_info.planes == 1))
       if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
           ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
-        image->colors=1 << (pcx_info.bits_per_pixel*pcx_info.planes);
+	{
+          image->colors=1 << (pcx_info.bits_per_pixel*pcx_info.planes);
+	  if (image->colors > 256)
+	    image->colors = 256;
+	}
     if (!AllocateImageColormap(image,image->colors))
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
@@ -339,7 +345,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_packets=(unsigned long) image->rows*pcx_info.bytes_per_line*pcx_info.planes;
     pcx_pixels=MagickAllocateMemory(unsigned char *,pcx_packets);
     scanline=MagickAllocateMemory(unsigned char *,Max(image->columns,
-      (unsigned long) pcx_info.bytes_per_line)*pcx_info.planes);
+      (unsigned long) pcx_info.bytes_per_line)*Max(pcx_info.planes,8));
     if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -601,7 +607,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     if (page_table[id] == 0)
       break;
-    (void) SeekBlob(image,(ExtendedSignedIntegralType) page_table[id],SEEK_SET);
+    if (SeekBlob(image,(ExtendedSignedIntegralType) page_table[id],SEEK_SET)
+        == -1)
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     count=ReadBlob(image,1,(char *) &pcx_info.identifier);
     if ((count != 0) && (pcx_info.identifier == 0x0a))
       {

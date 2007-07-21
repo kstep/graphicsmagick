@@ -1061,7 +1061,7 @@ sub testMontage {
     print "not ok $test\n";
   } else {
     # Check REF_8 signature
-    #$montage->Display();
+    # $montage->Display();
     $signature=$montage->GetAttribute('signature');
     if ( defined( $signature ) ) {
       if ( $signature ne $ref_signature ) {

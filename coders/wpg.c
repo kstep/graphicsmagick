@@ -1029,8 +1029,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
             case 0x11:  /* Start PS l1 */
               if(Rec.RecordLength > 8)
                 image=ExtractPostscript(image,image_info,
-                  TellBlob(image)+8,   /* skip PS header in the wpg */
-                  (long) Rec.RecordLength-8,exception);
+                                        TellBlob(image)+8,   /* skip PS header in the wpg */
+                                        (long) Rec.RecordLength-8,exception);
               break;     
 
             case 0x14:  /* bitmap type 2 */
@@ -1070,7 +1070,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     NoMemory:
                       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                            image)
-                    }
+                        }
                   /* printf("Load default colormap \n"); */
                   for (i=0; (i < (int) image->colors) && (i < 256); i++)
                     {               
@@ -1111,36 +1111,36 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     }
 
               if(Rec.RecType==0x14 && BitmapHeader2.RotAngle!=0 && !image_info->ping)
-              {  
-		   // flop command                
-		 if(BitmapHeader2.RotAngle & 0x8000)
-                 {
-                   rotated_image = FlopImage(image, exception);
-		   rotated_image->blob = image->blob;
-		   image->blob = NULL;
-		   RemoveLastImageFromList(&image);
-		   AppendImageToList(&image,rotated_image);
-	         }
-		   // flip command
-		 if(BitmapHeader2.RotAngle & 0x2000)
-		 {
-	           rotated_image = FlipImage(image, exception);
-		   rotated_image->blob = image->blob;
-		   image->blob = NULL;
-		   RemoveLastImageFromList(&image);
-		   AppendImageToList(&image,rotated_image);		
-		 }
+                {  
+                  // flop command                
+                  if(BitmapHeader2.RotAngle & 0x8000)
+                    {
+                      rotated_image = FlopImage(image, exception);
+                      rotated_image->blob = image->blob;
+                      image->blob = NULL;
+                      RemoveLastImageFromList(&image);
+                      AppendImageToList(&image,rotated_image);
+                    }
+                  // flip command
+                  if(BitmapHeader2.RotAngle & 0x2000)
+                    {
+                      rotated_image = FlipImage(image, exception);
+                      rotated_image->blob = image->blob;
+                      image->blob = NULL;
+                      RemoveLastImageFromList(&image);
+                      AppendImageToList(&image,rotated_image);		
+                    }
 		
 		  // rotate command
-                 if(BitmapHeader2.RotAngle & 0x0FFF)
-		 {
-	           rotated_image = RotateImage(image, (BitmapHeader2.RotAngle & 0x0FFF), exception);
-		   rotated_image->blob = image->blob;
-		   image->blob = NULL;
-		   RemoveLastImageFromList(&image);
-		   AppendImageToList(&image,rotated_image);		
-		 }                
-              }
+                  if(BitmapHeader2.RotAngle & 0x0FFF)
+                    {
+                      rotated_image = RotateImage(image, (BitmapHeader2.RotAngle & 0x0FFF), exception);
+                      rotated_image->blob = image->blob;
+                      image->blob = NULL;
+                      RemoveLastImageFromList(&image);
+                      AppendImageToList(&image,rotated_image);		
+                    }                
+                }
 
               /* Allocate next image structure. */
               AllocateNextImage(image_info,image);
@@ -1155,8 +1155,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
             case 0x1B:  /* Postscript l2 */
               if(Rec.RecordLength>0x3C)
                 image=ExtractPostscript(image,image_info,
-                  TellBlob(image)+0x3C,   /* skip PS l2 header in the wpg */
-                  (long) Rec.RecordLength-0x3C,exception);
+                                        TellBlob(image)+0x3C,   /* skip PS l2 header in the wpg */
+                                        (long) Rec.RecordLength-0x3C,exception);
               break;
             }
         }
@@ -1284,32 +1284,32 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 }
 
 
-		if(CTM[0][0]<0 && !image_info->ping)
+              if(CTM[0][0]<0 && !image_info->ping)
 		{		/*?? RotAngle=360-RotAngle;*/
 		  rotated_image = FlopImage(image, exception);
 		  rotated_image->blob = image->blob;
 		  image->blob = NULL;
 		  RemoveLastImageFromList(&image);
 		  AppendImageToList(&image,rotated_image);
-			/* Try to change CTM according to Flip - I am not sure, must be checked.		  
-		  Tx(0,0)=-1;      Tx(1,0)=0;   Tx(2,0)=0;
-		  Tx(0,1)= 0;      Tx(1,1)=1;   Tx(2,1)=0;
-		  Tx(0,2)=(WPG._2Rect.X_ur+WPG._2Rect.X_ll);
-		                   Tx(1,2)=0;   Tx(2,2)=1; */                  
+                  /* Try to change CTM according to Flip - I am not sure, must be checked.		  
+                     Tx(0,0)=-1;      Tx(1,0)=0;   Tx(2,0)=0;
+                     Tx(0,1)= 0;      Tx(1,1)=1;   Tx(2,1)=0;
+                     Tx(0,2)=(WPG._2Rect.X_ur+WPG._2Rect.X_ll);
+                     Tx(1,2)=0;   Tx(2,2)=1; */                  
                 }
-		if(CTM[1][1]<0 && !image_info->ping)
+              if(CTM[1][1]<0 && !image_info->ping)
 		{		/*?? RotAngle=360-RotAngle;*/
 		  rotated_image = FlipImage(image, exception);
 		  rotated_image->blob = image->blob;
 		  image->blob = NULL;
 		  RemoveLastImageFromList(&image);
 		  AppendImageToList(&image,rotated_image);
-			  /* Try to change CTM according to Flip - I am not sure, must be checked.
-		  float_matrix Tx(3,3);
-		  Tx(0,0)= 1;   Tx(1,0)= 0;   Tx(2,0)=0;
-		  Tx(0,1)= 0;   Tx(1,1)=-1;   Tx(2,1)=0;
-		  Tx(0,2)= 0;   Tx(1,2)=(WPG._2Rect.Y_ur+WPG._2Rect.Y_ll);
-					      Tx(2,2)=1; */		  
+                  /* Try to change CTM according to Flip - I am not sure, must be checked.
+                     float_matrix Tx(3,3);
+                     Tx(0,0)= 1;   Tx(1,0)= 0;   Tx(2,0)=0;
+                     Tx(0,1)= 0;   Tx(1,1)=-1;   Tx(2,1)=0;
+                     Tx(0,2)= 0;   Tx(1,2)=(WPG._2Rect.Y_ur+WPG._2Rect.Y_ll);
+                     Tx(2,2)=1; */		  
 		}		
 		
 
@@ -1327,8 +1327,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 	      i=ReadBlobLSBShort(image);
               if(Rec2.RecordLength > (unsigned int) i)
                 image=ExtractPostscript(image,image_info,
-                  TellBlob(image)+i,		/*skip PS header in the wpg2*/
-                  (long) (Rec2.RecordLength-i-2),exception);
+                                        TellBlob(image)+i,		/*skip PS header in the wpg2*/
+                                        (long) (Rec2.RecordLength-i-2),exception);
               break;
 
 	    case 0x1B:          /*bitmap rectangle*/
@@ -1342,8 +1342,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     default:
       {
         ThrowReaderException(CoderError,DataEncodingSchemeIsNotSupported,image)
-      }
-   }
+          }
+    }
 
  Finish:
   CloseBlob(image);
@@ -1357,19 +1357,20 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     
     /*
       Rewind list, removing any empty images while rewinding.
-    */ 
+    */
     p=image;
+    image=NULL;
     while (p != (Image *) NULL)
-    {
-      if ((p->rows == 0) || (p->columns == 0))
-      {		// Image is empty, so erase it.	
-	DeleteImageFromList(&p);	
-        image=p;
-	continue;
+      {
+        Image *tmp=p;
+        if ((p->rows == 0) || (p->columns == 0)) {
+          p=p->previous;
+          DeleteImageFromList(&tmp);
+        } else {
+          image=p;
+          p=p->previous;
+        }
       }
-      image=p;      
-      p=p->previous;
-    }      
     
     /*
       Fix scene numbers

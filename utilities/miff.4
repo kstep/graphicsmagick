@@ -2,14 +2,16 @@
 .nh
 .TH MIFF 4 "$Date$" "ImageMagick"
 .SH NAME
-MIFF - Magick Image File Format is a platform-independent format for
+MIFF - Magick Image File Format
+.SH SYNOPSIS
+.B #include <image.h>
+.SH DESCRIPTION
+The Magick Image File Format (MIFF) is a platform-independent format for
 storing bitmap images.  MIFF is a part of the ImageMagick toolkit of
 image manipulation utilities for the X Window System.  ImageMagick is
 capable of converting many different image file formats to and from MIFF
 (e.g. JPEG, XPM, TIFF, etc.).
-.SH SYNOPSIS
-.B #include <image.h>
-.SH DESCRIPTION
+
 A MIFF image file consist of two sections.  The first section is a
 header composed of keys describing the image in text form.  The
 next section is the binary image data.  The header is separated from
