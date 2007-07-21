@@ -293,15 +293,15 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate the pixel buffer.
   */
-#define OVERFLOW(c,a,b) ((b) != 0 && ((c)/(b) != (a)))
+#define XWD_OVERFLOW(c,a,b) ((b) != 0 && ((c)/(b) != (a)))
   length=ximage->bytes_per_line*ximage->height;
-  if (OVERFLOW(length,ximage->bytes_per_line,ximage->height))
+  if (XWD_OVERFLOW(length,ximage->bytes_per_line,ximage->height))
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (ximage->format != ZPixmap)
     {
       size_t tmp=length;
       length*=ximage->depth;
-      if (OVERFLOW(length,tmp,ximage->depth))
+      if (XWD_OVERFLOW(length,tmp,ximage->depth))
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
   ximage->data=MagickAllocateMemory(char *,length);
