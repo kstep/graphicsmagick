@@ -6157,7 +6157,7 @@ WandExport unsigned int MagickReadImageBlob(MagickWand *wand,
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   read_info=CloneImageInfo(wand->image_info);
-  read_info->blob=(unsigned char *) blob;
+  read_info->blob=(_BlobInfoPtr_) blob;
   read_info->length=length;
   images=ReadImage(read_info,&wand->exception);
   DestroyImageInfo(read_info);
