@@ -635,6 +635,8 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *ARGUNUSED(draw_info),
     return((PathInfo *) NULL);
   coordinates=0;
   n=0;
+  p.x=(-1);
+  p.y=(-1);
   q.x=(-1);
   q.y=(-1);
   start=0;

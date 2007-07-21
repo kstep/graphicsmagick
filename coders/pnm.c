@@ -205,18 +205,19 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
 }
 
 #define ValidateScalingIndex(image, index, max) \
-	do { \
-		if (index < 0 || index > max) \
-			ThrowReaderException(CorruptImageError,CorruptImage, \
-			                     image); \
-	} while (0)
+  do \
+  { \
+    if (index > max) \
+      ThrowReaderException(CorruptImageError,CorruptImage, image); \
+  } while (0)
 
 #define ValidateScalingPixel(image, pixel, max) \
-	do { \
-		ValidateScalingIndex(image, pixel.red, max); \
-		ValidateScalingIndex(image, pixel.green, max); \
-		ValidateScalingIndex(image, pixel.blue, max); \
-	} while (0)
+  do \
+  { \
+    ValidateScalingIndex(image, pixel.red, max); \
+    ValidateScalingIndex(image, pixel.green, max); \
+    ValidateScalingIndex(image, pixel.blue, max); \
+  } while (0)
 
 static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {

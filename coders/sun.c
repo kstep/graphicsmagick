@@ -379,6 +379,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((count == 0) && (sun_info.type != RT_ENCODED))
       ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
     sun_pixels=sun_data;
+    bytes_per_line=0;
     if (sun_info.type == RT_ENCODED)
       {
         unsigned long

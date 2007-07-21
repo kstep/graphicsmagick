@@ -293,7 +293,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate the pixel buffer.
   */
-#define XWD_OVERFLOW(c,a,b) ((b) != 0 && ((c)/(b) != (a)))
+#define XWD_OVERFLOW(c,a,b) ((b) != 0 && ((c)/((size_t) b) != ((size_t) a)))
   length=ximage->bytes_per_line*ximage->height;
   if (XWD_OVERFLOW(length,ximage->bytes_per_line,ximage->height))
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
