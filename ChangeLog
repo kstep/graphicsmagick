@@ -1,5 +1,7 @@
 2007-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/magick_wand.c: Reduce the number of warnings when compiling
+	the Wand library.
 	* coders/xwd.c (XWD_OVERFLOW): Eliminate comparison between signed
 	and unsigned.
 	* coders/pnm.c (ValidateScalingIndex): Eliminate check to see if

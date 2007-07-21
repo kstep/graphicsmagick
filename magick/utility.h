@@ -58,6 +58,8 @@ typedef struct _TokenInfo
 
 #undef ARGUNUSED
 #define ARGUNUSED(arg) arg __attribute__((unused))
+#undef ARG_NOT_USED
+#define ARG_NOT_USED(arg) (void) arg
 
 /*
   A callback function which behaves similar to strlcpy() except which
