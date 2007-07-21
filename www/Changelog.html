@@ -24,6 +24,10 @@
 2007-07-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/xwd.c (XWD_OVERFLOW): Eliminate check to see if
+        unsigned type is less than zero.
+  <LI> coders/pnm.c (ValidateScalingIndex): Eliminate check to see if
+        unsigned type is less than zero.
   <LI> magick/log.c (LogMagickEvent): Even though log file name comes
         from a controlled source (log.mgk), perform safe numeric
         substitution on it.<BR>
