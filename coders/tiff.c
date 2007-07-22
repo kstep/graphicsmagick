@@ -45,6 +45,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/quantize.h"
 #include "magick/resize.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -1556,24 +1557,39 @@ static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
   ImageInfo
     *clone_info;
 
+  FilterTypes
+    filter;
+
   unsigned int
     status;
 
   /*
     Create pyramid-encoded TIFF image.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  filter=TriangleFilter;
+  if (image->is_monochrome)
+    filter=PointFilter;
   pyramid_image=CloneImage(image,0,0,True,&image->exception);
   if (pyramid_image == (Image *) NULL)
     ThrowWriterException2(FileOpenError,image->exception.reason,image);
   do
-  {
-    pyramid_image->next=ResizeImage(image,pyramid_image->columns/2,
-      pyramid_image->rows/2,TriangleFilter,1.0,&image->exception);
-    if (pyramid_image->next == (Image *) NULL)
-      ThrowWriterException2(FileOpenError,image->exception.reason,image);
-    pyramid_image->next->previous=pyramid_image;
-    pyramid_image=pyramid_image->next;
-  } while ((pyramid_image->columns > 64) && (pyramid_image->rows > 64));
+    {
+      pyramid_image->next=ResizeImage(image,pyramid_image->columns/2,
+                                      pyramid_image->rows/2,TriangleFilter,
+                                      1.0,&image->exception);
+      if (pyramid_image->next == (Image *) NULL)
+        ThrowWriterException2(FileOpenError,image->exception.reason,image);
+      if ((!image->is_monochrome) && (image->storage_class == PseudoClass))
+        (void) MapImage(pyramid_image->next,image,False);
+      pyramid_image->next->x_resolution=pyramid_image->x_resolution/2;
+      pyramid_image->next->y_resolution=pyramid_image->y_resolution/2;
+      pyramid_image->next->previous=pyramid_image;
+      pyramid_image=pyramid_image->next;
+    } while ((pyramid_image->columns > 64) && (pyramid_image->rows > 64));
   while (pyramid_image->previous != (Image *) NULL)
     pyramid_image=pyramid_image->previous;
   /*
@@ -1581,6 +1597,13 @@ static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
   */
   clone_info=CloneImageInfo(image_info);
   clone_info->adjoin=True;
+  strlcpy(clone_info->magick,"TIFF",MaxTextExtent);
+  strlcpy(image->magick,"TIFF",MaxTextExtent);
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Invoking \"%.1024s\" encoder, monochrome=%s, grayscale=%s",
+                        "TIFF",
+                        (image->is_monochrome != MagickFalse ? "True" : "False"),
+                        (image->is_grayscale != MagickFalse ? "True" : "False"));
   status=WriteTIFFImage(clone_info,pyramid_image);
   DestroyImageList(pyramid_image);
   DestroyImageInfo(clone_info);

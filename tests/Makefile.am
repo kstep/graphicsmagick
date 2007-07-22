@@ -80,10 +80,8 @@ endif
 
 if HasTIFF
 TIFF=TIFF
-PTIF=PTIF
 else
 TIFF=
-PTIF=
 endif
 
 if HasX11
