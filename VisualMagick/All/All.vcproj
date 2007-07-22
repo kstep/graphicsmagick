@@ -1,64 +1,47 @@
-<?xml version="1.0" encoding="Windows-1252"?>
+<?xml version="1.0" encoding = "Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="7.00"
 	Name="All"
-	ProjectGUID="{336311E3-242B-4B0A-A21E-B4AAC0DEE3DE}"
-	Keyword="MakeFileProj"
-	>
+	SccProjectName=""
+	SccLocalPath=""
+	Keyword="MakeFileProj">
 	<Platforms>
 		<Platform
-			Name="Win32"
-		/>
+			Name="Win32"/>
 	</Platforms>
-	<ToolFiles>
-	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\Debug"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="10"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			>
+			UseOfMFC="0">
 			<Tool
-				Name="VCPreBuildEventTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCCustomBuildTool"
-			/>
+				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCMIDLTool"
-			/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-			/>
+				Name="VCPreBuildEventTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="10"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			>
+			UseOfMFC="0">
 			<Tool
-				Name="VCPreBuildEventTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCCustomBuildTool"
-			/>
+				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCMIDLTool"
-			/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-			/>
+				Name="VCPreBuildEventTool"/>
 		</Configuration>
 	</Configurations>
-	<References>
-	</References>
 	<Files>
 	</Files>
 	<Globals>
