@@ -1,3 +1,9 @@
+2007-07-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/dpx.c: Add underscore suffix to macro local variable
+	names in order to avoid conflict with names in code using the
+	macros.
+
 2007-07-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.c: Reduce the number of warnings when compiling

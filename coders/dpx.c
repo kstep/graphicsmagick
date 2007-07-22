@@ -472,73 +472,73 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
 #define StringToAttribute(image,name,member) \
 { \
   char \
-    buffer[MaxTextExtent]; \
+    buffer_[MaxTextExtent]; \
 \
   if (!IS_UNDEFINED_ASCII(member)) \
     { \
-      strlcpy(buffer,member,Min(sizeof(member)+1,MaxTextExtent)); \
-      SetImageAttribute(image,name,buffer); \
-      LogSetImageAttribute(name,buffer); \
+      strlcpy(buffer_,member,Min(sizeof(member)+1,MaxTextExtent)); \
+      SetImageAttribute(image,name,buffer_); \
+      LogSetImageAttribute(name,buffer_); \
     } \
 }
 #define U8ToAttribute(image,name,member) \
 { \
   char \
-    buffer[MaxTextExtent]; \
+    buffer_[MaxTextExtent]; \
 \
   if (!IS_UNDEFINED_U8(member)) \
     { \
-      FormatString(buffer,"%u",(unsigned int) member); \
-      SetImageAttribute(image,name,buffer); \
-      LogSetImageAttribute(name,buffer); \
+      FormatString(buffer_,"%u",(unsigned int) member); \
+      SetImageAttribute(image,name,buffer_); \
+      LogSetImageAttribute(name,buffer_); \
     } \
 }
 #define U16ToAttribute(image,name,member) \
 { \
   char \
-    buffer[MaxTextExtent]; \
+    buffer_[MaxTextExtent]; \
 \
   if (!IS_UNDEFINED_U16(member)) \
     { \
-      FormatString(buffer,"%u",(unsigned int) member); \
-      SetImageAttribute(image,name,buffer); \
-      LogSetImageAttribute(name,buffer); \
+      FormatString(buffer_,"%u",(unsigned int) member); \
+      SetImageAttribute(image,name,buffer_); \
+      LogSetImageAttribute(name,buffer_); \
     } \
 }
 #define U32ToAttribute(image,name,member) \
 { \
   char \
-    buffer[MaxTextExtent]; \
+    buffer_[MaxTextExtent]; \
 \
   if (!IS_UNDEFINED_U32(member)) \
     { \
-      FormatString(buffer,"%u",member); \
-      SetImageAttribute(image,name,buffer); \
-      LogSetImageAttribute(name,buffer); \
+      FormatString(buffer_,"%u",member); \
+      SetImageAttribute(image,name,buffer_); \
+      LogSetImageAttribute(name,buffer_); \
     } \
 }
 #define U32ToBitsAttribute(image,name,member) \
 { \
   char \
-    buffer[MaxTextExtent]; \
+    buffer_[MaxTextExtent]; \
 \
   if (!IS_UNDEFINED_U32(member)) \
     { \
-      SMPTEBitsToString(member,buffer); \
-      SetImageAttribute(image,name,buffer); \
-      LogSetImageAttribute(name,buffer); \
+      SMPTEBitsToString(member,buffer_); \
+      SetImageAttribute(image,name,buffer_); \
+      LogSetImageAttribute(name,buffer_); \
     } \
 }
 #define R32ToAttribute(image,name,member) \
 { \
   char \
-    buffer[MaxTextExtent]; \
+    buffer_[MaxTextExtent]; \
 \
   if (!IS_UNDEFINED_R32(member)) \
     { \
-      FormatString(buffer,"%g",member); \
-      SetImageAttribute(image,name,buffer); \
-      LogSetImageAttribute(name,buffer); \
+      FormatString(buffer_,"%g",member); \
+      SetImageAttribute(image,name,buffer_); \
+      LogSetImageAttribute(name,buffer_); \
     } \
 }
 static void SwabDPXFileInfo(DPXFileInfo *file_info)
@@ -3093,15 +3093,15 @@ static void WriteRowSamples(const sample_t *samples,
 #define AttributeToU8(image_info,image,key,member) \
 { \
   const ImageAttribute \
-    *attribute; \
+    *attribute_; \
 \
   const char \
-    *definition_value; \
+    *definition_value_; \
 \
-  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
-    member=(U8) strtol(definition_value, (char **) NULL, 10); \
-  else if ((attribute=GetImageAttribute(image,key))) \
-    member=(U8) strtol(attribute->value, (char **) NULL, 10); \
+  if ((definition_value_=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(U8) strtol(definition_value_, (char **) NULL, 10); \
+  else if ((attribute_=GetImageAttribute(image,key))) \
+    member=(U8) strtol(attribute_->value, (char **) NULL, 10); \
   else \
     SET_UNDEFINED_U8(member); \
 }
@@ -3109,15 +3109,15 @@ static void WriteRowSamples(const sample_t *samples,
 #define AttributeToU16(image_info,image,key,member) \
 { \
   const ImageAttribute \
-    *attribute; \
+    *attribute_; \
 \
   const char \
-    *definition_value; \
+    *definition_value_; \
 \
-  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
-    member=(U16) strtol(definition_value, (char **) NULL, 10); \
-  else if ((attribute=GetImageAttribute(image,key))) \
-    member=(U16) strtol(attribute->value, (char **) NULL, 10); \
+  if ((definition_value_=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(U16) strtol(definition_value_, (char **) NULL, 10); \
+  else if ((attribute_=GetImageAttribute(image,key))) \
+    member=(U16) strtol(attribute_->value, (char **) NULL, 10); \
   else \
     SET_UNDEFINED_U16(member); \
 }
@@ -3125,15 +3125,15 @@ static void WriteRowSamples(const sample_t *samples,
 #define AttributeToU32(image_info,image,key,member) \
 { \
   const ImageAttribute \
-    *attribute; \
+    *attribute_; \
 \
   const char \
-    *definition_value; \
+    *definition_value_; \
 \
-  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
-    member=(U32) strtol(definition_value, (char **) NULL, 10); \
-  else if ((attribute=GetImageAttribute(image,key))) \
-    member=(U32) strtol(attribute->value, (char **) NULL, 10); \
+  if ((definition_value_=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(U32) strtol(definition_value_, (char **) NULL, 10); \
+  else if ((attribute_=GetImageAttribute(image,key))) \
+    member=(U32) strtol(attribute_->value, (char **) NULL, 10); \
   else \
     SET_UNDEFINED_U32(member); \
 }
@@ -3141,15 +3141,15 @@ static void WriteRowSamples(const sample_t *samples,
 #define AttributeBitsToU32(image_info,image,key,member) \
 { \
   const ImageAttribute \
-    *attribute; \
+    *attribute_; \
 \
   const char \
-    *definition_value; \
+    *definition_value_; \
 \
-  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
-    member=SMPTEStringToBits(definition_value); \
-  else if ((attribute=GetImageAttribute(image,key))) \
-    member=SMPTEStringToBits(attribute->value); \
+  if ((definition_value_=AccessDefinition(image_info,"dpx",key+4))) \
+    member=SMPTEStringToBits(definition_value_); \
+  else if ((attribute_=GetImageAttribute(image,key))) \
+    member=SMPTEStringToBits(attribute_->value); \
   else \
     SET_UNDEFINED_U32(member); \
 }
@@ -3157,15 +3157,15 @@ static void WriteRowSamples(const sample_t *samples,
 #define AttributeToR32(image_info,image,key,member) \
 { \
   const ImageAttribute \
-    *attribute; \
+    *attribute_; \
 \
   const char \
-    *definition_value; \
+    *definition_value_; \
 \
-  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
-    member=(R32) strtod(definition_value, (char **) NULL); \
-  else if ((attribute=GetImageAttribute(image,key))) \
-    member=(R32) strtod(attribute->value, (char **) NULL); \
+  if ((definition_value_=AccessDefinition(image_info,"dpx",key+4))) \
+    member=(R32) strtod(definition_value_, (char **) NULL); \
+  else if ((attribute_=GetImageAttribute(image,key))) \
+    member=(R32) strtod(attribute_->value, (char **) NULL); \
   else \
     SET_UNDEFINED_R32(member); \
 }
@@ -3178,15 +3178,15 @@ static void WriteRowSamples(const sample_t *samples,
 #define AttributeToString(image_info,image,key,member) \
 { \
   const ImageAttribute \
-    *attribute; \
+    *attribute_; \
 \
   const char \
-    *definition_value; \
+    *definition_value_; \
 \
-  if ((definition_value=AccessDefinition(image_info,"dpx",key+4))) \
-    (void) strncpy(member,definition_value,sizeof(member)); \
-  else if ((attribute=GetImageAttribute(image,key))) \
-    (void) strncpy(member,attribute->value,sizeof(member)); \
+  if ((definition_value_=AccessDefinition(image_info,"dpx",key+4))) \
+    (void) strncpy(member,definition_value_,sizeof(member)); \
+  else if ((attribute_=GetImageAttribute(image,key))) \
+    (void) strncpy(member,attribute_->value,sizeof(member)); \
   else \
     SET_UNDEFINED_ASCII(member); \
 }
