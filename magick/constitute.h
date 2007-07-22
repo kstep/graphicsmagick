@@ -140,56 +140,6 @@ extern MagickExport void
   ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options),
   ImportPixelAreaOptionsInit(ImportPixelAreaOptions *options);
 
-#if defined(MAGICK_IMPLEMENTATION)
-#define ExportModulo8Quantum(q,quantum_size,quantum) \
-{ \
-  register unsigned int \
-    shift=quantum_size; \
-\
-  do \
-    { \
-      shift -= 8U; \
-      *q++=(unsigned char) (((unsigned int) quantum) >> shift); \
-    } while( shift > 0U); \
-}
-
-#define ExportFloatQuantum(q,quantum) \
-{ \
-  *((float *) q) = quantum; \
-  q += sizeof(float); \
-}
-
-#define ExportDoubleQuantum(q,quantum) \
-{ \
-  *((double *) q) = quantum; \
-  q += sizeof(double); \
-}
-#define ImportModulo8Quantum(quantum,quantum_size,p) \
-{ \
-  register unsigned int \
-    shift=quantum_size; \
-\
-  quantum=0; \
-  do \
-    { \
-      shift -= 8U; \
-      quantum |= (*p++ << shift); \
-    } while( shift > 0U); \
-}
-
-#define ImportFloatQuantum(value,p) \
-{ \
-  value=*((float *) p); \
-  p += sizeof(float); \
-}
-
-#define ImportDoubleQuantum(value,p) \
-{ \
-  value=*((double *) p); \
-  p += sizeof(double); \
-}
-#endif /* defined(MAGICK_IMPLEMENTATION) */
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif /* defined(__cplusplus) || defined(c_plusplus) */

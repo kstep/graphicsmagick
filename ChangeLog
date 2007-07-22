@@ -1,5 +1,9 @@
 2007-07-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* libtool: Update to latest CVS libtool.
+	* magick/constitute.c (ExportModulo8Quantum): Move Import and
+	Export macros from header file since they are not used anywhere
+	else.
 	* coders/dpx.c: Add underscore suffix to macro local variable
 	names in order to avoid conflict with names in code using the
 	macros.

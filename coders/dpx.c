@@ -1181,45 +1181,19 @@ DPXOrientationToOrientationType(const unsigned int orientation)
   return orientation_type;
 }
 
-#if defined(WORDS_BIGENDIAN)
-#define MSBImportOctets(scanline,packed_u32) \
-{ \
-  packed_u32 = *((magick_uint32_t *) scanline); \
-  scanline += 4; \
-}
-#else
-#define MSBImportOctets(scanline,packed_u32) \
-{ \
-  packed_u32  = (((magick_uint32_t) *scanline++) << 24); \
-  packed_u32 |= (((magick_uint32_t) *scanline++) << 16); \
-  packed_u32 |= (((magick_uint32_t) *scanline++) << 8); \
-  packed_u32 |= (((magick_uint32_t) *scanline++)); \
-}
-#endif
-
-#if !defined(WORDS_BIGENDIAN)
-#define LSBImportOctets(scanline,packed_u32) \
-{ \
-  packed_u32 = *((magick_uint32_t *) scanline); \
-  scanline += 4; \
-}
-#else
-#define LSBImportOctets(scanline,packed_u32) \
+#define LSBOctetsToPackedU32Word(scanline,packed_u32) \
 { \
   packed_u32  = (((magick_uint32_t) *scanline++)); \
   packed_u32 |= (((magick_uint32_t) *scanline++) << 8); \
   packed_u32 |= (((magick_uint32_t) *scanline++) << 16); \
   packed_u32 |= (((magick_uint32_t) *scanline++) << 24); \
 }
-#endif
-
-#define LSBOctetsToPackedU32Word(scanline,packed_u32) \
-{ \
-  LSBImportOctets(scanline,packed_u32); \
-}
 #define MSBOctetsToPackedU32Word(scanline,packed_u32) \
 { \
-  MSBImportOctets(scanline,packed_u32); \
+  packed_u32  = (((magick_uint32_t) *scanline++) << 24); \
+  packed_u32 |= (((magick_uint32_t) *scanline++) << 16); \
+  packed_u32 |= (((magick_uint32_t) *scanline++) << 8); \
+  packed_u32 |= (((magick_uint32_t) *scanline++)); \
 }
 
 /*
@@ -2749,28 +2723,19 @@ static unsigned int OrientationTypeToDPXOrientation(const OrientationType orient
   return orientation;
 }
 
-#define MSBExportOctets(packed_u32,scanline) \
-{ \
-  *scanline++=(unsigned char) ((packed_u32 >> 24) & 0xFF); \
-  *scanline++=(unsigned char) ((packed_u32 >> 16) & 0xFF); \
-  *scanline++=(unsigned char) ((packed_u32 >> 8) & 0xFF); \
-  *scanline++=(unsigned char) ((packed_u32) & 0xFF); \
-}
-#define LSBExportOctets(packed_u32,scanline) \
+#define LSBPackedU32WordToOctets(packed_u32,scanline) \
 { \
   *scanline++=(unsigned char) ((packed_u32) & 0xFF); \
   *scanline++=(unsigned char) ((packed_u32 >> 8) & 0xFF); \
   *scanline++=(unsigned char) ((packed_u32 >> 18) & 0xFF); \
   *scanline++=(unsigned char) ((packed_u32 >> 24) & 0xFF); \
 }
-
-#define LSBPackedU32WordToOctets(packed_u32,scanline) \
-{ \
-  LSBExportOctets(packed_u32,scanline); \
-}
 #define MSBPackedU32WordToOctets(packed_u32,scanline) \
 { \
-  MSBExportOctets(packed_u32,scanline); \
+  *scanline++=(unsigned char) ((packed_u32 >> 24) & 0xFF); \
+  *scanline++=(unsigned char) ((packed_u32 >> 16) & 0xFF); \
+  *scanline++=(unsigned char) ((packed_u32 >> 8) & 0xFF); \
+  *scanline++=(unsigned char) ((packed_u32) & 0xFF); \
 }
 
 /*
