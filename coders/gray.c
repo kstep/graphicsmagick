@@ -126,7 +126,11 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   for (i=0; i < image->offset; i++)
-    (void) ReadBlobByte(image);
+    {
+      if (EOF == ReadBlobByte(image))
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
+                       image->filename);
+    }
   /*
     Support depth in multiples of 8 bits.
   */

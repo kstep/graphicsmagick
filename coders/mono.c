@@ -122,7 +122,11 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   for (i=0; i < image->offset; i++)
-    (void) ReadBlobByte(image);
+    {
+      if (EOF == ReadBlobByte(image))
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
+                       image->filename);
+    }
   /*
     Initialize image colormap.
   */

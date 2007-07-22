@@ -126,7 +126,11 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
       if (status == False)
         ThrowReaderException(FileOpenError,UnableToOpenFile,image);
       for (i=0; i < image->offset; i++)
-        (void) ReadBlobByte(image);
+        {
+          if (EOF == ReadBlobByte(image))
+            ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
+                           image->filename);
+        }
     }
   /*
     Allocate memory for a scanline.

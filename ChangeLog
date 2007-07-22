@@ -1,5 +1,8 @@
 2007-07-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/{cmyk.c, gray.c, mono.c, rgb.c, uyvy.c, wbmp.c, yuv.c}
+	(ReadFOOImage): Check for EOF while searching for start of image
+	data.
 	* tests/Makefile.am: Don't test PTIF format with blob I/O since it
 	is not possible to pass the rwblob test and it is really an output
 	driver rather than a format.

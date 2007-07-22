@@ -157,7 +157,11 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   for (i=0; i < image->offset; i++)
-    (void) ReadBlobByte(image);
+    {
+      if (EOF == ReadBlobByte(image))
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
+                       image->filename);
+    }
   if (!AllocateImageColormap(image,2))
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->ping)

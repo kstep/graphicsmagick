@@ -126,9 +126,12 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   */
   if (image->columns %2)
     ThrowReaderException(CorruptImageError,SubsamplingRequiresEvenWidth,image);
-
   for (i=0; i < image->offset; i++)
-    (void) ReadBlobByte(image);
+    {
+      if (EOF == ReadBlobByte(image))
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
+                       image->filename);
+    }
   image->depth=8;
   if (image_info->ping)
     {
